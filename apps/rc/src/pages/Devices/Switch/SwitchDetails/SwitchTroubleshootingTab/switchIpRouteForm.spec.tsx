@@ -40,7 +40,7 @@ describe('TroubleshootingIpRouteForm', () => {
       rest.get(
         SwitchUrlsInfo.getTroubleshooting.url,
         (req, res, ctx) => res(ctx.json(troubleshootingResult_route_result))),
-      rest.get(
+      rest.delete(
         SwitchUrlsInfo.getTroubleshootingClean.url,
         (req, res, ctx) => res(ctx.json({})))
     )

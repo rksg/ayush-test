@@ -17,7 +17,7 @@ import {
   useVenueDHCPProfileQuery,
   useApListQuery
 } from '@acx-ui/rc/services'
-import {  DHCPProfileAps, DHCPSaveData, DHCPConfigTypeEnum, ApDeviceStatusEnum, APExtended } from '@acx-ui/rc/utils'
+import {  DHCPProfileAps, DHCPSaveData, DHCPConfigTypeEnum, ApDeviceStatusEnum, APExtended, DHCP_LIMIT_NUMBER } from '@acx-ui/rc/utils'
 import {
   useTenantLink
 } from '@acx-ui/react-router-dom'
@@ -60,13 +60,16 @@ const VenueDHCPForm = (props: {
 
   const [serviceEnabled, setServiceEnabled] = useState<boolean|undefined>(true)
 
-
   const getSelectedDHCPMode = ()=> {
     if(dhcpProfileList && dhcpServiceID){
-      return dhcpProfileList[_.findIndex(dhcpProfileList, { id: dhcpServiceID })].dhcpMode
+      return dhcpProfileList[_.findIndex(dhcpProfileList,
+        { id: dhcpServiceID })].dhcpMode
     }else{
       return DHCPConfigTypeEnum.SIMPLE
     }
+  }
+  const isMaxNumberReached = ()=>{
+    return dhcpProfileList&&dhcpProfileList.length >= DHCP_LIMIT_NUMBER
   }
 
   useEffect(() => {
@@ -282,12 +285,20 @@ const VenueDHCPForm = (props: {
           </AntSelect>
         </StyledForm.Item>
 
-        <Link style={{ marginLeft: 10 }}
-          to={useTenantLink('/services/dhcp/create')}
-          state={{
-            origin: useTenantLink(`/venues/${params.venueId}/venue-details/services`),
-            param: { showConfig: true }
-          }}>
+        <Link style={isMaxNumberReached() ?
+          { marginLeft: 10, cursor: 'not-allowed', color: 'var(--acx-neutrals-40)' }:
+          { marginLeft: 10 }}
+        onClick={(e)=>{
+          if(isMaxNumberReached()){
+            e.preventDefault()
+            e.stopPropagation()
+          }
+        }}
+        to={useTenantLink('/services/dhcp/create')}
+        state={{
+          origin: useTenantLink(`/venues/${params.venueId}/venue-details/services`),
+          param: { showConfig: true }
+        }}>
           {$t({ defaultMessage: 'Add DHCP for Wi-Fi Service' })}
         </Link>
 

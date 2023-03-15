@@ -42,7 +42,8 @@ tooltipNode: Node,
       'uplink',
       'apStatusData',
       'apStatusData.cellularInfo',
-      'healthStatus'
+      'healthStatus',
+      'clients'
     ]
   }
 

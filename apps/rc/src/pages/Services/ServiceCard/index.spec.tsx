@@ -1,10 +1,11 @@
 import userEvent from '@testing-library/user-event'
 
-import { RadioCardCategory } from '@acx-ui/components'
+import { RadioCardCategory }   from '@acx-ui/components'
 import {
   ServiceType,
   getServiceRoutePath,
-  ServiceOperation
+  ServiceOperation,
+  getServiceCatalogRoutePath
 } from '@acx-ui/rc/utils'
 import { To, useTenantLink } from '@acx-ui/react-router-dom'
 import {
@@ -22,10 +23,17 @@ jest.mock('@acx-ui/user')
 const mockedHasRoles = hasRoles as jest.MockedFunction<typeof hasRoles>
 
 const mockedUseNavigate = jest.fn()
+const mockUseLocationValue = {
+  pathname: getServiceCatalogRoutePath(),
+  search: '',
+  hash: '',
+  state: null
+}
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUseNavigate,
-  useTenantLink: (to: To) => to
+  useTenantLink: (to: To) => to,
+  useLocation: jest.fn().mockImplementation(() => mockUseLocationValue)
 }))
 
 describe('ServiceCard', () => {
@@ -82,7 +90,11 @@ describe('ServiceCard', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
 
-    expect(mockedUseNavigate).toHaveBeenCalledWith(createPath.current)
+    expect(mockedUseNavigate).toHaveBeenCalledWith(createPath.current, {
+      state: {
+        from: mockUseLocationValue
+      }
+    })
   })
 
   it('should render service card with the count number', async () => {

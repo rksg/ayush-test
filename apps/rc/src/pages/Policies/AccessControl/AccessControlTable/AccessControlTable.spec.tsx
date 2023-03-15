@@ -3,7 +3,7 @@ import { rest }  from 'msw'
 import { Path }  from 'react-router-dom'
 
 import {
-  CommonUrlsInfo,
+  AccessControlUrls,
   getPolicyDetailsLink,
   getPolicyRoutePath,
   PolicyOperation,
@@ -17,16 +17,18 @@ import {
   within
 } from '@acx-ui/test-utils'
 
+import { enhancedAccessControlList } from '../__tests__/fixtures'
+
 import AccessControlTable from './AccessControlTable'
 
 const mockTableResult = {
   totalCount: 1,
   page: 1,
   data: [{
-    id: 'cc080e33-26a7-4d34-870f-b7f312fcfccb',
+    id: '7217d467353744d9aac8493324501be3',
     name: 'My Access Control 1',
     type: 'Access Control',
-    scope: '5'
+    scope: '1'
   }]
 }
 
@@ -54,8 +56,8 @@ describe('AccessControlTable', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getPoliciesList.url,
-        (req, res, ctx) => res(ctx.json(mockTableResult))
+        AccessControlUrls.getEnhancedAccessControlProfiles.url,
+        (req, res, ctx) => res(ctx.json(enhancedAccessControlList))
       )
     )
   })
