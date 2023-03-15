@@ -44,13 +44,10 @@ import { filterByAccess } from '@acx-ui/user'
 
 import { layer3ProtocolLabelMapping } from '../../contentsMap'
 
+import { AddModeProps, editModeProps } from './AccessControlForm'
+
 const { useWatch } = Form
 const { Option } = Select
-
-export interface editModeProps {
-  id: string,
-  isEdit: boolean
-}
 
 export interface Layer3DrawerProps {
   inputName?: string[],
@@ -59,9 +56,7 @@ export interface Layer3DrawerProps {
     viewText: string
   },
   isOnlyViewMode?: boolean,
-  onlyAddMode?: {
-    viewText: string
-  },
+  onlyAddMode?: AddModeProps,
   editMode?: editModeProps,
   setEditMode?: (editMode: editModeProps) => void
 }
@@ -167,11 +162,11 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     inputName = [],
     onlyViewMode = {} as { id: string, viewText: string },
     isOnlyViewMode = false,
-    onlyAddMode = {} as { viewText: string },
+    onlyAddMode = { enable: false, visible: false } as AddModeProps,
     editMode = { id: '', isEdit: false } as editModeProps,
     setEditMode = () => {}
   } = props
-  const [visible, setVisible] = useState(false)
+  const [visible, setVisible] = useState(onlyAddMode.enable ? onlyAddMode.visible : false)
   const form = Form.useFormInstance()
   const [ruleDrawerVisible, setRuleDrawerVisible] = useState(false)
   const [ruleDrawerEditMode, setRuleDrawerEditMode] = useState(false)
@@ -263,7 +258,9 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     if (requestId && queryPolicyName) {
       layer3SelectOptions.map(option => {
         if (option.props.children === queryPolicyName) {
-          form.setFieldValue([...inputName, 'l3AclPolicyId'], option.key)
+          if (!onlyAddMode.enable) {
+            form.setFieldValue([...inputName, 'l3AclPolicyId'], option.key)
+          }
           setQueryPolicyId(option.key as string)
           setQueryPolicyName('')
           setRequestId('')
@@ -271,6 +268,12 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       })
     }
   }, [layer3SelectOptions, requestId, policyName])
+
+  useEffect(() => {
+    if (onlyAddMode.enable && onlyAddMode.visible) {
+      setVisible(onlyAddMode.visible)
+    }
+  }, [onlyAddMode])
 
   const DragHandle = SortableHandle(() =>
     <Drag style={{ cursor: 'grab', color: '#6e6e6e' }} />
@@ -866,17 +869,8 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
   </Form>
 
   const ModelContent = () => {
-    if (onlyAddMode.viewText) {
-      return <Button
-        type='primary'
-        size='middle'
-        onClick={() => {
-          setVisible(true)
-          setQueryPolicyId('')
-        }
-        }>
-        {onlyAddMode.viewText}
-      </Button>
+    if (onlyAddMode.enable) {
+      return null
     }
 
     if (isOnlyViewMode) {

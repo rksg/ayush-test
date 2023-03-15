@@ -29,6 +29,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
+import { AddModeProps, editModeProps } from '../AccessControlForm'
+
 import {
   genRuleObject,
   transformToApplicationRule, transformToRulesForPayload,
@@ -42,11 +44,6 @@ import ApplicationRuleContent, {
 
 const { Option } = Select
 
-export interface editModeProps {
-  id: string,
-  isEdit: boolean
-}
-
 const { useWatch } = Form
 
 export interface ApplicationDrawerProps {
@@ -56,9 +53,7 @@ export interface ApplicationDrawerProps {
     viewText: string
   },
   isOnlyViewMode?: boolean,
-  onlyAddMode?: {
-    viewText: string
-  },
+  onlyAddMode?: AddModeProps,
   editMode?: editModeProps,
   setEditMode?: (editMode: editModeProps) => void
 }
@@ -153,11 +148,11 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     inputName = [],
     onlyViewMode = {} as { id: string, viewText: string },
     isOnlyViewMode = false,
-    onlyAddMode = {} as { viewText: string },
+    onlyAddMode = { enable: false, visible: false } as AddModeProps,
     editMode = { id: '', isEdit: false } as editModeProps,
     setEditMode = () => {}
   } = props
-  const [visible, setVisible] = useState(false)
+  const [visible, setVisible] = useState(onlyAddMode.enable ? onlyAddMode.visible : false)
   const form = Form.useFormInstance()
   const [ruleDrawerVisible, setRuleDrawerVisible] = useState(false)
   const [ruleDrawerEditMode, setRuleDrawerEditMode] = useState(false)
@@ -296,7 +291,9 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     if (requestId && queryPolicyName) {
       appSelectOptions.map(option => {
         if (option.props.children === queryPolicyName) {
-          form.setFieldValue('applicationPolicyId', option.key)
+          if (!onlyAddMode.enable) {
+            form.setFieldValue('applicationPolicyId', option.key)
+          }
           setQueryPolicyId(option.key as string)
           setQueryPolicyName('')
           setRequestId('')
@@ -305,6 +302,11 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     }
   }, [appSelectOptions, requestId, policyName])
 
+  useEffect(() => {
+    if (onlyAddMode.enable && onlyAddMode.visible) {
+      setVisible(onlyAddMode.visible)
+    }
+  }, [onlyAddMode])
 
   const basicColumns: TableProps<ApplicationsRule>['columns'] = [
     {
@@ -513,17 +515,8 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   </Form>
 
   const ModelContent = () => {
-    if (onlyAddMode.viewText) {
-      return <Button
-        type='primary'
-        size='middle'
-        onClick={() => {
-          setVisible(true)
-          setQueryPolicyId('')
-        }
-        }>
-        {onlyAddMode.viewText}
-      </Button>
+    if (onlyAddMode.enable) {
+      return null
     }
 
     if (isOnlyViewMode) {

@@ -23,16 +23,13 @@ import { AccessStatus, CommonResult, DeviceRule } from '@acx-ui/rc/utils'
 import { useParams }                              from '@acx-ui/react-router-dom'
 import { filterByAccess }                         from '@acx-ui/user'
 
+import { AddModeProps, editModeProps } from '../AccessControlForm'
+
 import DeviceOSRuleContent, { DrawerFormItem } from './DeviceOSRuleContent'
 
 const { Option } = Select
 
 const { useWatch } = Form
-
-export interface editModeProps {
-  id: string,
-  isEdit: boolean
-}
 
 export interface DeviceOSRule {
   ruleName: string,
@@ -53,9 +50,7 @@ export interface DeviceOSDrawerProps {
     viewText: string
   },
   isOnlyViewMode?: boolean,
-  onlyAddMode?: {
-    viewText: string
-  },
+  onlyAddMode?: AddModeProps,
   editMode?: editModeProps,
   setEditMode?: (editMode: editModeProps) => void
 }
@@ -95,16 +90,16 @@ const AclGridCol = ({ children }: { children: ReactNode }) => {
 
 const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   const { $t } = useIntl()
-  const [visible, setVisible] = useState(false)
   const params = useParams()
   const {
     inputName = [],
     onlyViewMode = {} as { id: string, viewText: string },
     isOnlyViewMode = false,
-    onlyAddMode = {} as { viewText: string },
+    onlyAddMode = { enable: false, visible: false } as AddModeProps,
     editMode = { id: '', isEdit: false } as editModeProps,
     setEditMode = () => {}
   } = props
+  const [visible, setVisible] = useState(onlyAddMode.enable ? onlyAddMode.visible : false)
   const [deviceOSDrawerVisible, setDeviceOSDrawerVisible] = useState(false)
   const [ruleDrawerEditMode, setRuleDrawerEditMode] = useState(false)
   const [deviceOSRuleList, setDeviceOSRuleList] = useState([] as DeviceOSRule[])
@@ -189,6 +184,12 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       }))] as DeviceOSRule[])
     }
   }, [devicePolicyInfo, queryPolicyId])
+
+  useEffect(() => {
+    if (onlyAddMode.enable && onlyAddMode.visible) {
+      setVisible(onlyAddMode.visible)
+    }
+  }, [onlyAddMode])
 
   const basicColumns: TableProps<DeviceOSRule>['columns'] = [
     {
@@ -460,17 +461,8 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   </Form>
 
   const ModelContent = () => {
-    if (onlyAddMode.viewText) {
-      return <Button
-        type='primary'
-        size='middle'
-        onClick={() => {
-          setVisible(true)
-          setQueryPolicyId('')
-        }
-        }>
-        {onlyAddMode.viewText}
-      </Button>
+    if (onlyAddMode.enable) {
+      return null
     }
 
     if (isOnlyViewMode) {

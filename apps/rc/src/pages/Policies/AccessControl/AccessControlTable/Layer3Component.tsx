@@ -19,9 +19,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
-import Layer3Drawer from '../AccessControlForm/Layer3Drawer'
-
-import { ActionButtonWrapper } from './AccessControlTable'
+import { AddModeProps } from '../AccessControlForm/AccessControlForm'
+import Layer3Drawer     from '../AccessControlForm/Layer3Drawer'
 
 
 const defaultPayload = {
@@ -38,6 +37,9 @@ const defaultPayload = {
 const Layer3Component = () => {
   const { $t } = useIntl()
   const params = useParams()
+  const [addModeStatus, setAddModeStatus] = useState(
+    { enable: true, visible: false } as AddModeProps
+  )
 
   const [ delL3AclPolicy ] = useDelL3AclPolicyMutation()
 
@@ -103,6 +105,13 @@ const Layer3Component = () => {
     }
   }, [networkTableQuery.data, networkIds])
 
+  const actions = [{
+    label: $t({ defaultMessage: 'Add Layer 3 Policy' }),
+    onClick: () => {
+      setAddModeStatus({ enable: true, visible: true })
+    }
+  }]
+
   const rowActions: TableProps<L3AclPolicy>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
@@ -140,11 +149,9 @@ const Layer3Component = () => {
   ]
 
   return <Loader states={[tableQuery]}>
-    <ActionButtonWrapper>
-      <Layer3Drawer
-        onlyAddMode={{ viewText: $t({ defaultMessage: 'Add Layer 3 Policy' }) }}
-      />
-    </ActionButtonWrapper>
+    <Layer3Drawer
+      onlyAddMode={addModeStatus}
+    />
     <Table<L3AclPolicy>
       columns={useColumns(networkFilterOptions, editMode, setEditMode)}
       enableApiFilter={true}
@@ -153,6 +160,7 @@ const Layer3Component = () => {
       onChange={tableQuery.handleTableChange}
       onFilterChange={tableQuery.handleFilterChange}
       rowKey='id'
+      actions={filterByAccess(actions)}
       rowActions={filterByAccess(rowActions)}
       rowSelection={{ type: 'radio' }}
     />

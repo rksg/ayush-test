@@ -25,13 +25,10 @@ import { AccessStatus, CommonResult, MacAddressFilterRegExp } from '@acx-ui/rc/u
 import { useParams }                                          from '@acx-ui/react-router-dom'
 import { filterByAccess }                                     from '@acx-ui/user'
 
+import { AddModeProps, editModeProps } from './AccessControlForm'
+
 const { useWatch } = Form
 const { Option } = Select
-
-export interface editModeProps {
-  id: string,
-  isEdit: boolean
-}
 
 export interface Layer2DrawerProps {
   inputName?: string[]
@@ -40,9 +37,7 @@ export interface Layer2DrawerProps {
     viewText: string
   },
   isOnlyViewMode?: boolean,
-  onlyAddMode?: {
-    viewText: string
-  },
+  onlyAddMode?: AddModeProps,
   editMode?: editModeProps,
   setEditMode?: (editMode: editModeProps) => void
 }
@@ -78,12 +73,12 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
     inputName = [],
     onlyViewMode = {} as { id: string, viewText: string },
     isOnlyViewMode = false,
-    onlyAddMode = {} as { viewText: string },
+    onlyAddMode = { enable: false, visible: false } as AddModeProps,
     editMode = { id: '', isEdit: false } as editModeProps,
     setEditMode = () => {}
   } = props
   const inputRef = useRef(null)
-  const [visible, setVisible] = useState(false)
+  const [visible, setVisible] = useState(onlyAddMode.enable ? onlyAddMode.visible : false)
   const [ruleDrawerVisible, setRuleDrawerVisible] = useState(false)
   const [addressTags, setAddressTags] = useState([] as string[])
   const [inputValue, setInputValue] = useState('')
@@ -174,7 +169,9 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
     if (requestId && queryPolicyName) {
       layer2SelectOptions.map(option => {
         if (option.props.children === queryPolicyName) {
-          form.setFieldValue([...inputName, 'l2AclPolicyId'], option.key)
+          if (!onlyAddMode.enable) {
+            form.setFieldValue([...inputName, 'l2AclPolicyId'], option.key)
+          }
           setQueryPolicyId(option.key as string)
           setQueryPolicyName('')
           setRequestId('')
@@ -182,6 +179,12 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
       })
     }
   }, [layer2SelectOptions, requestId, policyName])
+
+  useEffect(() => {
+    if (onlyAddMode.enable && onlyAddMode.visible) {
+      setVisible(onlyAddMode.visible)
+    }
+  }, [onlyAddMode])
 
   const [macAddressList, setMacAddressList] = useState([] as { macAddress: string }[])
 
@@ -530,17 +533,8 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
   </RuleContentWrapper>
 
   const ModeContent = () => {
-    if (onlyAddMode.viewText) {
-      return <Button
-        type='primary'
-        size='middle'
-        onClick={() => {
-          setVisible(true)
-          setQueryPolicyId('')
-        }
-        }>
-        {onlyAddMode.viewText}
-      </Button>
+    if (onlyAddMode.enable) {
+      return null
     }
 
     if (isOnlyViewMode) {
