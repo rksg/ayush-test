@@ -32,6 +32,13 @@ export const DHCPUrls: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile',
     newApi: true
   },
+  getDHCPProfilesViewModel: {
+    //Get DHCP Profiles LIST
+    method: 'post',
+    url: '/enhancedDhcpConfigServiceProfiles/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedDhcpConfigServiceProfiles/query',
+    newApi: true
+  },
   getVenueDHCPServiceProfile: {
     //Retrieve Venue DHCP Service Profile Settings
     method: 'get',

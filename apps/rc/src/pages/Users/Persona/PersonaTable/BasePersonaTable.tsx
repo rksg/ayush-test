@@ -25,7 +25,9 @@ function useColumns (props: PersonaTableColProps) {
   const { $t } = useIntl()
 
   const personaGroupList = useGetPersonaGroupListQuery({
-    params: { size: '2147483647', page: '0' }
+    payload: {
+      page: 1, pageSize: 2147483647, sortField: 'name', sortOrder: 'ASC'
+    }
   })
 
   const columns: TableProps<Persona>['columns'] = [

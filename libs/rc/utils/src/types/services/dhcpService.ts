@@ -23,7 +23,7 @@ export interface DHCPPool {
   id: string;
   name: string;
   description?: string;
-  // allowWired: boolean;
+  allowWired?: boolean;
   subnetAddress: string;
   subnetMask: string;
   startIpAddress: string;
@@ -56,7 +56,9 @@ export interface CreateDHCPFormFields {
 }
 export interface DHCPSaveData extends CreateDHCPFormFields {
   id?: string;
+  name?: string;
   usage: DHCPUsage[];
+  venueIds?: string[];
 }
 export interface DHCPUsage {
   venueId: string;
