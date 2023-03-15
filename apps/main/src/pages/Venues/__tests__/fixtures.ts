@@ -2767,7 +2767,6 @@ const defaultPageable: NewTablePageable = {
 
 export const mockEnabledPropertyConfig: PropertyConfigs = {
   status: PropertyConfigStatus.ENABLED,
-  enableGuestDpsk: false,
   personaGroupId: 'persona-group-id-1'
 }
 

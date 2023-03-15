@@ -25,10 +25,10 @@ import { VenueEditContext }   from '../index'
 
 const defaultPropertyConfigs: PropertyConfigs = {
   status: PropertyConfigStatus.DISABLED,
-  enableGuestDpsk: false,
   unitConfig: {
     maxUnitCount: 0,
     useMaxUnitCount: false,
+    guestAllowed: false,
     residentPortalAllowed: false
   },
   communicationConfiguration: {
@@ -76,7 +76,7 @@ export function PropertyManagementTab () {
       } else {
         await patchPropertyConfigs({
           params: { venueId },
-          payload: [{ op: 'replace', path: '/status', value: PropertyConfigStatus.DISABLED }]
+          payload: { status: PropertyConfigStatus.DISABLED }
         }).unwrap()
       }
 

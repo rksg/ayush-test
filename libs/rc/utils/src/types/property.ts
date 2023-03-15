@@ -13,10 +13,10 @@ export enum PropertyConfigStatus {
 
 export interface PropertyConfigs {
   status: PropertyConfigStatus,
-  enableGuestDpsk: boolean
   personaGroupId?: string,
   residentPortalId?: string,
   unitConfig?: {
+    guestAllowed: boolean
     residentPortalAllowed: boolean,
     useMaxUnitCount: boolean,
     maxUnitCount: number
