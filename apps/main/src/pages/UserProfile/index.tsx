@@ -1,5 +1,5 @@
-import { Row, Col, Form, Select, Typography }        from 'antd'
-import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
+import { Row, Col, Form, Select, Typography } from 'antd'
+import { useIntl }                            from 'react-intl'
 
 import {
   PageHeader,
@@ -12,12 +12,12 @@ import {
   useNavigate,
   useParams
 } from '@acx-ui/react-router-dom'
-import { RolesEnum }             from '@acx-ui/types'
 import {
   DetailLevel,
   UserProfile as UserProfileInterface,
   useUserProfileContext,
-  useUpdateUserProfileMutation
+  useUpdateUserProfileMutation,
+  roleStringMap
 } from '@acx-ui/user'
 
 import {
@@ -27,13 +27,6 @@ import * as UI from './styledComponents'
 
 interface fromLoc {
   from: string
-}
-
-const roleStringMap: Record<RolesEnum, MessageDescriptor> = {
-  [RolesEnum.PRIME_ADMIN]: defineMessage({ defaultMessage: 'Prime Admin' }),
-  [RolesEnum.ADMINISTRATOR]: defineMessage({ defaultMessage: 'Administrator' }),
-  [RolesEnum.GUEST_MANAGER]: defineMessage({ defaultMessage: 'Guest Manager' }),
-  [RolesEnum.READ_ONLY]: defineMessage({ defaultMessage: 'Read Only' })
 }
 
 export function UserProfile () {

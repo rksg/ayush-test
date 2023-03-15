@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
+import { act }   from 'react-dom/test-utils'
 
 import { AdministrationUrlsInfo, MspUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                            from '@acx-ui/store'
@@ -16,6 +17,32 @@ import { UserProfileContext, UserProfileContextProps, setUserProfile } from '@ac
 import { fakeUserProfile, fakedAdminLsit, fakeNonPrimeAdminUserProfile } from '../__tests__/fixtures'
 
 import AdministratorsTable from './index'
+
+jest.mock('./AddAdministratorDialog', () => ({
+  ...jest.requireActual('./AddAdministratorDialog'),
+  __esModule: true,
+  default: ({ visible, setVisible }: { visible: boolean, setVisible: (open:boolean) => void }) => {
+    return visible ?
+      <div data-testid='mocked-AddAdministratorDialog'>
+        Add New Administrator
+        <button onClick={() => setVisible}>Cancel</button>
+      </div>
+      : ''
+  }
+}))
+
+jest.mock('./EditAdministratorDialog', () => ({
+  ...jest.requireActual('./EditAdministratorDialog'),
+  __esModule: true,
+  default: ({ visible, setVisible }: { visible: boolean, setVisible: (open:boolean) => void }) => {
+    return visible ?
+      <div data-testid='mocked-EditAdministratorDialog'>
+        Edit Administrator
+        <button onClick={() => setVisible}>Cancel</button>
+      </div>
+      : ''
+  }
+}))
 
 const isPrimeAdmin : () => boolean = jest.fn().mockReturnValue(true)
 const userProfileContextValues = {
@@ -175,10 +202,16 @@ describe('Administrators Table', () => {
       </Provider>, {
         route: { params }
       })
+
     const row = await screen.findByRole('row', { name: /abc.cheng@email.com/i })
     await userEvent.click(within(row).getByRole('checkbox'))
+
     const row2 = await screen.findByRole('row', { name: /erp.cheng@email.com/i })
-    await userEvent.click(within(row2).getByRole('checkbox'))
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(async () => {
+      await userEvent.click(within(row2).getByRole('checkbox'))
+    })
+
     expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
   })
 
@@ -271,5 +304,45 @@ describe('Administrators Table', () => {
     const row = await screen.findByRole('row', { name: /abc.cheng@email.com/i })
     expect(within(row).queryByRole('checkbox')).toBeNull()
     expect(within(row).queryByRole('radio')).toBeNull()
+  })
+
+  it('should display blank when role is not valid', async () => {
+    const newFakedAdminLsit = [...fakedAdminLsit]
+    newFakedAdminLsit.push({
+      id: 'invalid_role_id',
+      email: 'invalidRole@email.com',
+      role: 'ROLE',
+      delegateToAllECs: false,
+      detailLevel: 'debug'
+    })
+
+    mockServer.use(
+      rest.get(
+        AdministrationUrlsInfo.getAdministrators.url,
+        (req, res, ctx) => res(ctx.json(newFakedAdminLsit))
+      )
+    )
+
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={{
+            data: fakeNonPrimeAdminUserProfile,
+            isPrimeAdmin
+          } as UserProfileContextProps}
+        >
+          <AdministratorsTable
+            currentUserMail='erp.cheng@email.com'
+            isPrimeAdminUser={false}
+            isMspEc={false}
+          />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    const row = await screen.findByRole('row', { name: /invalidRole@email.com/i })
+    const tableCells = within(row).getAllByRole('cell')
+    expect((tableCells[tableCells.length - 1] as HTMLElement).textContent).toBe('')
   })
 })
