@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react'
 
-import { Form }                   from 'antd'
-import _                          from 'lodash'
-import { useIntl }                from 'react-intl'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Form }                                from 'antd'
+import _                                       from 'lodash'
+import { useIntl }                             from 'react-intl'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import { PageHeader, showActionModal, StepsFormNew } from '@acx-ui/components'
 import {
@@ -11,9 +11,16 @@ import {
   useGetNetworkSegmentationGroupByIdQuery,
   useUpdateNetworkSegmentationGroupMutation
 } from '@acx-ui/rc/services'
-import { AccessSwitch, CatchErrorResponse, NetworkSegmentationGroup } from '@acx-ui/rc/utils'
-import { useTenantLink }                                              from '@acx-ui/react-router-dom'
-import { getIntl }                                                    from '@acx-ui/utils'
+import {
+  AccessSwitch,
+  CatchErrorResponse,
+  getServiceListRoutePath,
+  LocationExtended,
+  NetworkSegmentationGroup,
+  redirectPreviousPage
+} from '@acx-ui/rc/utils'
+import { useTenantLink } from '@acx-ui/react-router-dom'
+import { getIntl }       from '@acx-ui/utils'
 
 import { AccessSwitchForm }       from './AccessSwitchForm'
 import { DistributionSwitchForm } from './DistributionSwitchForm'
@@ -44,7 +51,9 @@ export default function NetworkSegmentationForm ({ editMode = false }: { editMod
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const linkToServices = useTenantLink('/services')
+  const location = useLocation()
+  const linkToServices = useTenantLink(getServiceListRoutePath(true))
+  const previousPath = (location as LocationExtended)?.state?.from?.pathname
 
   const [form] = Form.useForm()
   const [createNetworkSegmentationGroup] = useCreateNetworkSegmentationGroupMutation()
@@ -121,7 +130,7 @@ export default function NetworkSegmentationForm ({ editMode = false }: { editMod
       } else {
         await createNetworkSegmentationGroup({ params, payload: payload }).unwrap()
       }
-      navigate(linkToServices, { replace: true })
+      redirectPreviousPage(navigate, previousPath, linkToServices)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
       showActionModal({
@@ -153,7 +162,7 @@ export default function NetworkSegmentationForm ({ editMode = false }: { editMod
     />
     <StepsFormNew editMode={editMode}
       form={form}
-      onCancel={() => navigate(linkToServices)}
+      onCancel={() => redirectPreviousPage(navigate, previousPath, linkToServices)}
       onFinish={handleFinish}
       initialValues={{
         // Refactoring note:

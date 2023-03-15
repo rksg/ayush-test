@@ -9,7 +9,7 @@ import {
   getServiceRoutePath,
   ServiceOperation, ServiceType
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { TenantLink, useLocation, useParams } from '@acx-ui/react-router-dom'
 
 import * as UI                   from './styledComponents'
 import { AccessSwitchesTable }   from './Table/AccessSwitchesTable'
@@ -35,6 +35,7 @@ const NetworkSegmentationDetail = () => {
 
   const { $t } = useIntl()
   const params = useParams()
+  const location = useLocation()
 
   const { data: nsgData, isLoading } = useGetNetworkSegmentationGroupByIdQuery({ params })
 
@@ -203,7 +204,7 @@ const NetworkSegmentationDetail = () => {
           }
         ]}
         extra={[
-          <TenantLink
+          <TenantLink state={{ from: location }}
             to={getServiceDetailsLink({
               type: ServiceType.NETWORK_SEGMENTATION,
               oper: ServiceOperation.EDIT,
