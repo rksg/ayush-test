@@ -17,7 +17,7 @@ exports[`Incidents Page should match snapshot 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <button
-            class="styledComponents__Wrapper-sc-1tt9ql2-0 CwDXy"
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 kuUzTi"
             type="button"
           >
             <div
@@ -43,6 +43,10 @@ exports[`Incidents Page should match snapshot 1`] = `
                 </span>
               </div>
             </div>
+            <svg
+              class="styledComponents__DownArrow-sc-1tt9ql2-3 dstOsp"
+              data-testid="CaretDoubleDownOutlined"
+            />
           </button>
         </div>
       </div>
@@ -54,7 +58,7 @@ exports[`Incidents Page should match snapshot 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <button
-            class="styledComponents__Wrapper-sc-1tt9ql2-0 eWJXnG"
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 flLsgK"
             type="button"
           >
             <div
@@ -80,6 +84,10 @@ exports[`Incidents Page should match snapshot 1`] = `
                 </span>
               </div>
             </div>
+            <svg
+              class="styledComponents__DownArrow-sc-1tt9ql2-3 dstOsp"
+              data-testid="CaretDoubleDownOutlined"
+            />
           </button>
         </div>
       </div>
@@ -91,7 +99,7 @@ exports[`Incidents Page should match snapshot 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <button
-            class="styledComponents__Wrapper-sc-1tt9ql2-0 louHWs"
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 lkKwQw"
             type="button"
           >
             <div
@@ -112,6 +120,10 @@ exports[`Incidents Page should match snapshot 1`] = `
                 </span>
               </div>
             </div>
+            <svg
+              class="styledComponents__DownArrow-sc-1tt9ql2-3 dstOsp"
+              data-testid="CaretDoubleDownOutlined"
+            />
           </button>
         </div>
       </div>
@@ -123,7 +135,7 @@ exports[`Incidents Page should match snapshot 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <button
-            class="styledComponents__Wrapper-sc-1tt9ql2-0 jNKPmt"
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 hBmFIG"
             type="button"
           >
             <div
@@ -144,6 +156,10 @@ exports[`Incidents Page should match snapshot 1`] = `
                 </span>
               </div>
             </div>
+            <svg
+              class="styledComponents__DownArrow-sc-1tt9ql2-3 eVDFEp"
+              data-testid="CaretDoubleDownOutlined"
+            />
           </button>
         </div>
       </div>
@@ -169,7 +185,7 @@ exports[`Incidents Page should show - when no data 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <button
-            class="styledComponents__Wrapper-sc-1tt9ql2-0 CwDXy"
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 kuUzTi"
             type="button"
           >
             <div
@@ -195,6 +211,10 @@ exports[`Incidents Page should show - when no data 1`] = `
                 </span>
               </div>
             </div>
+            <svg
+              class="styledComponents__DownArrow-sc-1tt9ql2-3 dstOsp"
+              data-testid="CaretDoubleDownOutlined"
+            />
           </button>
         </div>
       </div>
@@ -206,7 +226,7 @@ exports[`Incidents Page should show - when no data 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <button
-            class="styledComponents__Wrapper-sc-1tt9ql2-0 eWJXnG"
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 flLsgK"
             type="button"
           >
             <div
@@ -232,6 +252,10 @@ exports[`Incidents Page should show - when no data 1`] = `
                 </span>
               </div>
             </div>
+            <svg
+              class="styledComponents__DownArrow-sc-1tt9ql2-3 dstOsp"
+              data-testid="CaretDoubleDownOutlined"
+            />
           </button>
         </div>
       </div>
@@ -243,7 +267,7 @@ exports[`Incidents Page should show - when no data 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <button
-            class="styledComponents__Wrapper-sc-1tt9ql2-0 louHWs"
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 lkKwQw"
             type="button"
           >
             <div
@@ -264,6 +288,10 @@ exports[`Incidents Page should show - when no data 1`] = `
                 </span>
               </div>
             </div>
+            <svg
+              class="styledComponents__DownArrow-sc-1tt9ql2-3 dstOsp"
+              data-testid="CaretDoubleDownOutlined"
+            />
           </button>
         </div>
       </div>
@@ -275,7 +303,7 @@ exports[`Incidents Page should show - when no data 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <button
-            class="styledComponents__Wrapper-sc-1tt9ql2-0 jNKPmt"
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 hBmFIG"
             type="button"
           >
             <div
@@ -296,6 +324,10 @@ exports[`Incidents Page should show - when no data 1`] = `
                 </span>
               </div>
             </div>
+            <svg
+              class="styledComponents__DownArrow-sc-1tt9ql2-3 eVDFEp"
+              data-testid="CaretDoubleDownOutlined"
+            />
           </button>
         </div>
       </div>
@@ -304,10 +336,10 @@ exports[`Incidents Page should show - when no data 1`] = `
 </DocumentFragment>
 `;
 
-exports[`box should render correctly 1`] = `
+exports[`box should render correctly with toggle disabled 1`] = `
 <DocumentFragment>
   <button
-    class="styledComponents__Wrapper-sc-1tt9ql2-0 CwDXy"
+    class="styledComponents__Wrapper-sc-1tt9ql2-0 kuUzTi"
     type="button"
   >
     <div
@@ -337,6 +369,47 @@ exports[`box should render correctly 1`] = `
         </span>
       </div>
     </div>
+  </button>
+</DocumentFragment>
+`;
+
+exports[`box should render correctly with toggle enabled 1`] = `
+<DocumentFragment>
+  <button
+    class="styledComponents__Wrapper-sc-1tt9ql2-0 kuUzTi"
+    type="button"
+  >
+    <div
+      class="ant-statistic styledComponents__Statistic-sc-1tt9ql2-1 GsEIY"
+    >
+      <div
+        class="ant-statistic-title"
+      >
+        test box
+      </div>
+      <div
+        class="ant-statistic-content"
+      >
+        <span
+          class="ant-statistic-content-value"
+        >
+          <span
+            class="ant-statistic-content-value-int"
+          >
+            100
+          </span>
+        </span>
+        <span
+          class="ant-statistic-content-suffix"
+        >
+          /suffix
+        </span>
+      </div>
+    </div>
+    <svg
+      class="styledComponents__UpArrow-sc-1tt9ql2-2 dKUscz"
+      data-testid="CaretDoubleUpOutlined"
+    />
   </button>
 </DocumentFragment>
 `;
