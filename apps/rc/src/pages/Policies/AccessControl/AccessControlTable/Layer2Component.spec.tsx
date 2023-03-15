@@ -12,7 +12,12 @@ import {
   screen, waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
-import { aclList, layer2PolicyListResponse, layer2Response } from '../__tests__/fixtures'
+import {
+  aclList,
+  enhancedLayer2PolicyListResponse,
+  layer2PolicyListResponse,
+  layer2Response
+} from '../__tests__/fixtures'
 
 import Layer2Component from './Layer2Component'
 
@@ -30,6 +35,15 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 }))
 
 describe('AccessControlTable', () => {
+  beforeEach(async () => {
+    mockServer.use(
+      rest.post(
+        AccessControlUrls.getEnhancedL2AclPolicies.url,
+        (req, res, ctx) => res(ctx.json(enhancedLayer2PolicyListResponse))
+      )
+    )
+  })
+
   it('should render Layer2Component in AccessControlTable', async () => {
     mockServer.use(rest.post(
       AccessControlUrls.getL2AclPolicyList.url,
@@ -58,7 +72,7 @@ describe('AccessControlTable', () => {
       }
     )
 
-    const targetName = layer2PolicyListResponse.data[0].name
+    const targetName = enhancedLayer2PolicyListResponse.data[0].name
     await userEvent.click(await screen.findByRole('cell', {
       name: targetName
     }))
@@ -102,7 +116,7 @@ describe('AccessControlTable', () => {
       }
     )
 
-    const targetName = layer2PolicyListResponse.data[0].name
+    const targetName = enhancedLayer2PolicyListResponse.data[0].name
     await userEvent.click(await screen.findByRole('cell', {
       name: targetName
     }))
