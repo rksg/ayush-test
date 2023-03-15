@@ -28,7 +28,8 @@ import {
   ApRadioCustomization,
   ApRadioParamsDual5G,
   VenueExtended,
-  VenueRadioCustomization
+  VenueRadioCustomization,
+  redirectPreviousPage
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -43,6 +44,7 @@ export function RadioSettings () {
   const basePath = useTenantLink('/devices/')
 
   const {
+    previousPath,
     editContextData,
     setEditContextData
   } = useContext(ApEditContext)
@@ -497,10 +499,9 @@ export function RadioSettings () {
         formRef={formRef}
         onFormChange={handleChange}
         onFinish={handleUpdateRadioSettings}
-        onCancel={() => navigate({
-          ...basePath,
-          pathname: `${basePath.pathname}/wifi/${serialNumber}/details/overview`
-        })}
+        onCancel={() =>
+          redirectPreviousPage(navigate, previousPath, basePath)
+        }
         buttonLabel={{
           submit: $t({ defaultMessage: 'Apply Radio' })
         }}

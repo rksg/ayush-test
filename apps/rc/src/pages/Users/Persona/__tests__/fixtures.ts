@@ -8,6 +8,9 @@ import {
   PersonaGroup
 } from '@acx-ui/rc/utils'
 
+const paginationPattern = '?size=:pageSize&page=:page&sort=:sort'
+export const replacePagination = (url: string) => url.replace(paginationPattern, '')
+
 const defaultPageable: NewTablePageable = {
   offset: 0,
   pageNumber: 0,

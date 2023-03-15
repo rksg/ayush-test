@@ -30,10 +30,6 @@ export function getDateRangeFilter (
 }
 export function defaultRanges (subRange?: DateRange[]) {
   const defaultRange: Partial<{ [key in DateRange]: moment.Moment[] }> = {
-    [DateRange.allTime]: [
-      moment().subtract(1, 'days').seconds(0),
-      moment().seconds(0)
-    ],
     [DateRange.last24Hours]: [
       moment().subtract(1, 'days').seconds(0),
       moment().seconds(0)
@@ -45,6 +41,10 @@ export function defaultRanges (subRange?: DateRange[]) {
     [DateRange.last30Days]: [
       moment().subtract(30, 'days').seconds(0),
       moment().seconds(0)
+    ],
+    [DateRange.allTime]: [
+      moment(undefined),
+      moment(undefined)
     ]
   }
   if (subRange) {
@@ -66,9 +66,6 @@ export function dateRangeForLast (
 }
 
 export const dateRangeMap : Record<DateRange, MessageDescriptor> = {
-  [DateRange.allTime]: defineMessage({
-    defaultMessage: 'All Time'
-  }),
   [DateRange.last24Hours]: defineMessage({
     defaultMessage: 'Last 24 Hours'
   }),
@@ -80,6 +77,9 @@ export const dateRangeMap : Record<DateRange, MessageDescriptor> = {
   }),
   [DateRange.custom]: defineMessage({
     defaultMessage: 'Custom'
+  }),
+  [DateRange.allTime]: defineMessage({
+    defaultMessage: 'All Time'
   })
 }
 

@@ -332,4 +332,35 @@ describe('SwitchConfigHistoryTable', () => {
     fireEvent.click(await within(modal).findByText('Success'))
     expect(await screen.findByTestId('CodeMirrorWidget')).toBeVisible()
   })
+
+  it('should reset radio value correctly', async () => {
+    const params = {
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      venueId: 'venueId',
+      activeTab: 'switch',
+      activeSubTab: 'history'
+    }
+
+    render(<Provider><SwitchConfigHistoryTable isVenueLevel={true} /></Provider>, {
+      route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
+    })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    // eslint-disable-next-line testing-library/no-node-access
+    const tbody = (await screen.findByRole('table')).querySelector('tbody')!
+    expect(tbody).toBeVisible()
+    const rows = await within(tbody).findAllByRole('row')
+    expect(rows).toHaveLength(list.response.list.length)
+
+    await userEvent.click(await within(rows[2]).findByRole('button'))
+    const modal = await screen.findByRole('dialog')
+    const radios = await within(modal).findAllByRole('radio')
+    fireEvent.click(radios[2])
+
+    const closeBtns = await within(modal).findAllByRole('button', { name: 'Close' })
+    await userEvent.click(closeBtns[0])
+    const checkedRadios = (await within(modal).findAllByRole('radio', { checked: true })) as HTMLInputElement[]
+    const checkedRadio = checkedRadios.filter(x => x.checked && x.value === 'ALL')
+    expect(checkedRadio).toHaveLength(1)
+  })
 })

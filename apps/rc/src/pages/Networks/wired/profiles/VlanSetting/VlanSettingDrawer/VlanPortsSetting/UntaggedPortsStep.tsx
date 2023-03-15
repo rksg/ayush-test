@@ -75,6 +75,11 @@ export function UntaggedPortsStep () {
         setSelectedItems1(untaggedPorts.filter(item=> item.split('/')[1] === '1'))
         setSelectedItems2(untaggedPorts.filter(item=> item.split('/')[1] === '2'))
         setSelectedItems3(untaggedPorts.filter(item=> item.split('/')[1] === '3'))
+      }else{
+        form.setFieldValue(['switchFamilyModels', 'untaggedPorts'], [])
+        setSelectedItems1([])
+        setSelectedItems2([])
+        setSelectedItems3([])
       }
     }
   }, [vlanSettingValues])
@@ -194,9 +199,10 @@ export function UntaggedPortsStep () {
     const portExists = vlanSelectedPorts.map(item => item?.map(
       obj => { return obj.untaggedPorts?.includes(timeslot)}))[0]
 
-    const disabledPorts = (vlanSettingValues.switchFamilyModels?.taggedPorts &&
-    vlanSettingValues.switchFamilyModels?.taggedPorts.includes(timeslot))
-    || (portExists && portExists[0]) || false
+    const taggedPorts =
+      vlanSettingValues.switchFamilyModels?.taggedPorts?.toString().split(',') || []
+
+    const disabledPorts = taggedPorts.includes(timeslot) || (portExists && portExists[0]) || false
     return disabledPorts
   }
 

@@ -13,3 +13,8 @@ export const FieldLabel = styled.div<{ width: string }>`
   align-items: baseline;
 `
 
+export const FieldGroup = styled.div`
+  display: grid;
+  grid-template-columns: [column-1] 150px [column-2] auto;
+  margin: 10px;
+`
