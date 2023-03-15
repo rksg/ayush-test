@@ -23,7 +23,7 @@ import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui
 import { filterByAccess }                                          from '@acx-ui/user'
 
 const defaultPayload = {
-  fields: ['id', 'name', 'tenantId', 'clientEntries', 'venueIds'],
+  fields: ['id', 'name', 'tenantId', 'clientEntries', 'venueIds', 'description'],
   searchString: '',
   filters: {}
 }
