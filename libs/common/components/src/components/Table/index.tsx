@@ -127,7 +127,6 @@ function Table <RecordType extends Record<string, any>> ({
   const { $t } = intl
   const [filterValues, setFilterValues] = useState<Filter>({})
   const [searchValue, setSearchValue] = useState<string>('')
-  // const { dataSource } = props
   const { dataSource, headerButton } = props
 
   const [colWidth, setColWidth] = useState<Record<string, number>>({})
