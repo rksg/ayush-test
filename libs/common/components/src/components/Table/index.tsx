@@ -1,4 +1,4 @@
-import React, { useMemo, useState, Key, useCallback, useEffect } from 'react'
+import React, { useMemo, useState, Key, useCallback, useEffect, useRef } from 'react'
 
 import ProTable, { ProTableProps as ProAntTableProps, ProColumnType } from '@ant-design/pro-table'
 import { Menu, MenuProps, Space }                                     from 'antd'
@@ -120,6 +120,15 @@ function useSelectedRowKeys <RecordType> (
   return [selectedRowKeys, setSelectedRowKeys]
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function debounce <Fn extends ((...args: any[]) => void)> (
+  fn?: Fn,
+  timeout = 1000
+) {
+  if (!fn) return
+  return _.debounce(fn, timeout)
+}
+
 // following the same typing from antd
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Table <RecordType extends Record<string, any>> ({
@@ -132,28 +141,24 @@ function Table <RecordType extends Record<string, any>> ({
   const [filterValues, setFilterValues] = useState<Filter>({})
   const [searchValue, setSearchValue] = useState<string>('')
   const [groupByValue, setGroupByValue] = useState<string | undefined>(undefined)
+  const onFilter = useRef(debounce(onFilterChange))
   const [colWidth, setColWidth] = useState<Record<string, number>>({})
   const allKeys = dataSource?.map(row => typeof rowKey === 'function' ? rowKey(row) : row[rowKey])
 
-  const debounced = useCallback( // eslint-disable-line react-hooks/exhaustive-deps
-    _.debounce(
-      (filter: Filter, searchString: string, groupBy: string | undefined) =>
-        onFilterChange && onFilterChange(filter, { searchString }, groupBy), 1000
-    ),
-    [onFilterChange]
-  )
+  useEffect(() => {
+    onFilter.current = debounce(onFilterChange)
+    return () => onFilter.current?.cancel()
+  }, [onFilterChange])
 
   useEffect(() => {
-    if(searchValue === '' || searchValue.length >= MIN_SEARCH_LENGTH)  {
-      debounced(filterValues, searchValue, groupByValue)
+    if(searchValue === '' || searchValue.length >= MIN_SEARCH_LENGTH) {
+      onFilter.current?.(filterValues, { searchString: searchValue })
     }
-    return () => debounced.cancel()
-  }, [searchValue, debounced]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [searchValue]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    debounced(filterValues, searchValue, groupByValue)
-    return () => debounced.cancel()
-  }, [groupByValue, filterValues, debounced]) // eslint-disable-line react-hooks/exhaustive-deps
+    onFilter.current?.(filterValues, { searchString: searchValue }, groupByValue)
+  }, [filterValues, groupByValue]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const baseColumns = useMemo(() => {
     const settingsColumn = {
