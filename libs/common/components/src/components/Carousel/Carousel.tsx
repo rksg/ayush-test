@@ -24,9 +24,9 @@ function Carousel ({
   style,
   ...props
 }: CarouselProps) {
-  const slider = useRef<CarouselRef>()
+  const sliderRef = useRef<CarouselRef>()
   useEffect(()=>{
-    slider.current?.goTo(0)
+    sliderRef.current?.goTo(0)
   },[contentList])
   return (
     <UI.Wrapper style={style}>
@@ -35,7 +35,7 @@ function Carousel ({
         {...props}
         style={style}
         ref={ref => {
-          slider.current = ref as CarouselRef
+          sliderRef.current = ref as CarouselRef
         }}
       >
         {contentList.map((list, index) => (
