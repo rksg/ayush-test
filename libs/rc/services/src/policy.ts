@@ -826,7 +826,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'Policy', id: 'DETAIL' }, { type: 'ClientIsolation', id: 'LIST' }]
     }),
-    getVLANPoolPolicyViewModelList: build.query<TableResult<VLANPoolViewModelType>, RequestPayload>({
+    getVLANPoolPolicyViewModelList:
+    build.query<TableResult<VLANPoolViewModelType>,RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.getVlanPoolViewModelList, params)
         return {
