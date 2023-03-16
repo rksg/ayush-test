@@ -13,14 +13,14 @@ export function IncidentsDashboardv2 ({ filters }: { filters: IncidentFilter }) 
   const response = useIncidentsBySeverityDashboardv2Query(filters)
   const { data: severities } = response
 
-  const incidentsCount: Boolean[] = []
   const incidentCountBySeverity: { [severity: string] : number } = {}
+  let noData = true
   severities && Object.entries(severities).forEach(([severity, data]) => {
-    incidentsCount.push(data.incidentsCount > 0)
+    if(data.incidentsCount > 0) {
+      noData = false
+    }
     incidentCountBySeverity[severity] = data?.incidentsCount
   })
-
-  const noData = incidentsCount.every(value => !value)
 
   const chartData: DonutChartData[] = []
   for (let prop in incidentCountBySeverity ) {

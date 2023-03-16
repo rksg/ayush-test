@@ -5,7 +5,8 @@ import { store }                  from '@acx-ui/store'
 import { mockGraphqlQuery }       from '@acx-ui/test-utils'
 import { DateRange, NetworkPath } from '@acx-ui/utils'
 
-import { api } from './services'
+import { expectedIncidentDashboardData } from './__tests__/fixtures'
+import { api }                           from './services'
 
 describe('IncidentsDashboardv2: services', () => {
   const props = {
@@ -15,18 +16,12 @@ describe('IncidentsDashboardv2: services', () => {
     path: [{ type: 'network', name: 'Network' }] as NetworkPath,
     filter: {}
   } as const
-  const expectedResponse = {
-    P1Count: 1,
-    P2Count: 3,
-    P3Count: 5,
-    P4Count: 7
-  }
   const expectedResult = {
     P1: {
       incidentsCount: 1
     },
     P2: {
-      incidentsCount: 3
+      incidentsCount: 30000
     },
     P3: {
       incidentsCount: 5
@@ -42,7 +37,7 @@ describe('IncidentsDashboardv2: services', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentsDashboardWidget', {
       data: {
         network: {
-          hierarchyNode: expectedResponse
+          hierarchyNode: expectedIncidentDashboardData
         }
       }
     })
