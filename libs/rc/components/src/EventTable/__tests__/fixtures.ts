@@ -1,3 +1,5 @@
+import { DetailLevel, UserProfile } from '@acx-ui/user'
+
 /* eslint-disable max-len */
 export const events = [{
   severity: 'Info',
@@ -163,3 +165,32 @@ export const eventsMetaForQuery = {
     'recipientName'
   ]
 }
+
+export const fakeUserProfile = {
+  region: '[NA]',
+  allowedRegions: [
+    {
+      name: 'US',
+      description: 'United States of America',
+      link: 'https://devalto.ruckuswireless.com',
+      current: true
+    }
+  ],
+  externalId: '0032h00000LUqcoAAD',
+  pver: 'acx-hybrid',
+  companyName: 'Dog Company 1551',
+  firstName: 'FisrtName 1551',
+  lastName: 'LastName 1551',
+  username: 'dog1551@email.com',
+  role: 'PRIME_ADMIN',
+  roles: ['PRIME_ADMIN'],
+  detailLevel: DetailLevel.DEBUGGING,
+  dateFormat: 'mm/dd/yyyy',
+  email: 'dog1551@email.com',
+  var: false,
+  tenantId: '8c36a0a9ab9d4806b060e112205add6f',
+  varTenantId: '8c36a0a9ab9d4806b060e112205add6f',
+  adminId: '4159559db15c4027903d9c3d4bdb8a7e',
+  support: false,
+  dogfood: false
+} as UserProfile

@@ -8,7 +8,7 @@ import { Provider }                                                             
 import { findTBody, mockRestApiQuery, render, renderHook, screen, waitFor, within } from '@acx-ui/test-utils'
 import { UserProfileContext, UserProfileContextProps }              from '@acx-ui/user'
 
-import { fakeUserProfile } from '../AdminLogTable/__tests__/fixtures'
+import { fakeUserProfile } from './__tests__/fixtures'
 
 import {
   events,
