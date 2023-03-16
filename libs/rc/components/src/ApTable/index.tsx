@@ -115,10 +115,10 @@ export function ApTable (props: ApTableProps) {
     useQuery: useApListQuery,
     defaultPayload: {
       ...defaultApPayload,
-      filters,
-      search: {
-        searchTargetFields: defaultApPayload.searchTargetFields
-      }
+      filters
+    },
+    search: {
+      searchTargetFields: defaultApPayload.searchTargetFields
     },
     option: { skip: Boolean(props.tableQuery) }
   })

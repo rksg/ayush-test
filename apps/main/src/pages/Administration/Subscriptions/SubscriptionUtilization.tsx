@@ -1,5 +1,5 @@
-import { Typography } from 'antd'
-import { useIntl }    from 'react-intl'
+import { Typography, Row, Col } from 'antd'
+import { useIntl }              from 'react-intl'
 
 import {
   cssStr,
@@ -17,7 +17,8 @@ import {
   EntitlementDeviceTypes,
   getEntitlementDeviceTypes
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { JwtTierValue } from '@acx-ui/rc/utils'
+import { useParams }    from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponent'
 
@@ -116,7 +117,14 @@ export const SubscriptionUtilization = () => {
     <Loader states={[queryResults]}>
       <UI.FullWidthSpace direction='vertical'>
         <Subtitle level={4}>
-          {$t({ defaultMessage: 'Subscription Utilization' })}
+          <Row>
+            <Col style={{
+              width: '75%'
+            }}>{$t({ defaultMessage: 'Subscription Utilization' })}</Col>
+            <Col style={{
+              width: '25%'
+            }}>{$t({ defaultMessage: 'Current Subscription Tier' })}: <b>{JwtTierValue()}</b></Col>
+          </Row>
         </Subtitle>
         <UI.FullWidthSpace size='large'>
           {

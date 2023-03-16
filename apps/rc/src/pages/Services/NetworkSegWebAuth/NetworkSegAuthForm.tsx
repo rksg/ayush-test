@@ -16,8 +16,8 @@ import {
   Subtitle
 } from '@acx-ui/components'
 import {
-  useCreateWebAuthTemplateMutation,
   useGetWebAuthTemplateQuery,
+  useCreateWebAuthTemplateMutation,
   useUpdateWebAuthTemplateMutation
 } from '@acx-ui/rc/services'
 import {
@@ -66,12 +66,12 @@ export default function NetworkSegAuthForm ({ editMode = false }: { editMode?: b
     }
   }, [data, editMode])
 
-  const saveData = async (data: WebAuthTemplate) => {
+  const saveData = async (value: WebAuthTemplate) => {
     try {
       if (editMode) {
-        await updateWebAuthTemplate({ params, payload: data }).unwrap()
+        await updateWebAuthTemplate({ params, payload: value }).unwrap()
       } else {
-        await createWebAuthTemplate({ params, payload: _.omit(data, 'id') }).unwrap()
+        await createWebAuthTemplate({ params, payload: _.omit(value, 'id') }).unwrap()
       }
 
       redirectPreviousPage(navigate, previousPath, linkToServices)
