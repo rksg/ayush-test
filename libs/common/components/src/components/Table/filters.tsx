@@ -36,7 +36,7 @@ export function getFilteredData <RecordType> (
     if (searchValue && searchValue.length >= MIN_SEARCH_LENGTH) {
       return searchables.some(column => {
         return (row[column.dataIndex as keyof RecordType] as unknown as string)
-          .toString()
+          ?.toString()
           .toLowerCase()
           .includes(searchValue.toLowerCase())
       })
