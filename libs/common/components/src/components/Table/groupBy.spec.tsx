@@ -6,10 +6,24 @@ import { IntlShape }                             from 'react-intl'
 import { GroupSelect, useGroupBy } from './groupBy'
 import { groupByColumns }          from './stories/GroupTable'
 
+const columnState = {
+  'name': {},
+  'deviceStatus': {},
+  'model': {},
+  'ip': {},
+  'apMac': {},
+  'venueName': {},
+  'switchName': {},
+  'clients': {},
+  'deviceGroupName': {},
+  'rf-channels': {},
+  'tags': {}
+}
+
 describe('Table Groupby', () => {
   describe('useGroupBy', () => {
     it('render hook correctly with valid data', async () => {
-      const { result } = renderHook(() => useGroupBy(groupByColumns, [], undefined))
+      const { result } = renderHook(() => useGroupBy(groupByColumns, [], undefined, columnState))
       const {
         isGroupByActive,
         expandable
@@ -19,7 +33,7 @@ describe('Table Groupby', () => {
     })
 
     it('render hook correctly with empty array groupable', () => {
-      const { result } = renderHook(() => useGroupBy([], [], undefined))
+      const { result } = renderHook(() => useGroupBy([], [], undefined, columnState))
       const {
         isGroupByActive,
         expandable
