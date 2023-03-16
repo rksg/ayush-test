@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request'
 
-import { dataApi }                               from '@acx-ui/analytics/services'
 import { AnalyticsFilter, calculateGranularity } from '@acx-ui/analytics/utils'
+import { dataApi }                               from '@acx-ui/store'
 
 export type App = {
   name: string
@@ -27,7 +27,7 @@ export const api = dataApi.injectEndpoints({
     >({
       query: (payload) => ({
         document: gql`
-          query TopApplicationsByTrafficPerClient($mac: String, $start: DateTime, 
+          query TopApplicationsByTrafficPerClient($mac: String, $start: DateTime,
             $end: DateTime, $n: Int!, $granularity: String!) {
               client(mac: $mac, start: $start, end: $end) {
                 topNApplicationByTraffic(n: $n) {
@@ -40,7 +40,7 @@ export const api = dataApi.injectEndpoints({
                   }
                 }
               }
-            }  
+            }
         `,
         variables: {
           n: 10,

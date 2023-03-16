@@ -131,7 +131,7 @@ exports[`Timeline should render 1`] = `
         <div
           class="ant-timeline-item-content"
         >
-          Dec 20 2022 04:27:30
+          12/20/2022 04:27:30
         </div>
       </li>
       <div
@@ -207,7 +207,7 @@ exports[`Timeline should render 1`] = `
         <div
           class="ant-timeline-item-content"
         >
-          Dec 20 2022 09:55:03
+          12/20/2022 09:55:03
         </div>
       </li>
       <div
@@ -232,7 +232,7 @@ exports[`Timeline should render 1`] = `
           <div
             class="styledComponents__ItemWrapper-sc-1to6ymf-1 gsdtQA"
           >
-            Dec 20 2022 09:55:04
+            12/20/2022 09:55:04
             <div
               class="styledComponents__ContentWrapper-sc-1to6ymf-2 hCoMWG"
             >
@@ -279,7 +279,7 @@ exports[`Timeline should render 1`] = `
         <div
           class="ant-timeline-item-content"
         >
-          Dec 20 2022 09:55:03
+          12/20/2022 09:55:03
         </div>
       </li>
       <div
@@ -304,7 +304,7 @@ exports[`Timeline should render 1`] = `
           <div
             class="styledComponents__ItemWrapper-sc-1to6ymf-1 gsdtQA"
           >
-            Dec 20 2022 09:55:04
+            12/20/2022 09:55:04
             <div
               class="styledComponents__ContentWrapper-sc-1to6ymf-2 hCoMWG"
             >

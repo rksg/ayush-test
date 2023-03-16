@@ -1,0 +1,22 @@
+{
+  "sourceRoot": "libs/common/formatter/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/common/formatter/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/common/formatter"],
+      "options": {
+        "jestConfig": "libs/common/formatter/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  }
+}

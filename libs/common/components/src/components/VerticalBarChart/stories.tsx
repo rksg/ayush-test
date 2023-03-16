@@ -2,7 +2,7 @@ import { withKnobs } from '@storybook/addon-knobs'
 import { storiesOf } from '@storybook/react'
 
 import type { BarChartData } from '@acx-ui/analytics/utils'
-import { formatter }         from '@acx-ui/utils'
+import { formatter }         from '@acx-ui/formatter'
 
 import { cssStr } from '../../theme/helper'
 

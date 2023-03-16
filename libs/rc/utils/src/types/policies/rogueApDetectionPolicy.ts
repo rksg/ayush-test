@@ -66,6 +66,14 @@ export interface VenueRoguePolicyType {
   rogueAps?: number
 }
 
+export interface EnhancedRoguePolicyType {
+  id: string,
+  name: string,
+  tenantId: string,
+  numOfRules: number,
+  venueIds: string[]
+}
+
 export interface RogueAPRule {
   name: string,
   priority?: number,

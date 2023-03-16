@@ -82,9 +82,9 @@ describe('Integrators', () => {
       <Provider>
         <Integrators />
       </Provider>, { route: { params, path: '/:tenantId/integrators' } })
-    expect(screen.getByText('3rd Party')).toBeVisible()
-    expect(screen.getByText('Manage own account')).toBeVisible()
-    expect(screen.getByText('Add')).toBeVisible()
+    expect(screen.getByText('Tech Partners')).toBeVisible()
+    expect(screen.getByText('Manage my account')).toBeVisible()
+    expect(screen.getByText('Add Tech Partner')).toBeVisible()
 
     // eslint-disable-next-line testing-library/no-node-access
     const tbody = screen.getByRole('table').querySelector('tbody')!

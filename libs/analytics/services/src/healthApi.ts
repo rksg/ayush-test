@@ -1,9 +1,8 @@
 import { gql } from 'graphql-request'
 
 import { AnalyticsFilter, calculateGranularity, kpiConfig } from '@acx-ui/analytics/utils'
+import { dataApi }                                          from '@acx-ui/store'
 import { NetworkPath }                                      from '@acx-ui/utils'
-
-import { dataApi } from './dataApi'
 
 export interface KpiThresholdType {
   timeToConnect: number;
@@ -82,7 +81,7 @@ const getHistogramQuery = (kpi: string) => {
     query histogramKPI(
       $path: [HierarchyNodeInput], $start: DateTime, $end: DateTime, $filter: FilterInput
     ) {
-      network(filter: $filter) { 
+      network(filter: $filter) {
         histogram: histogram(path: $path, start: $start, end: $end) {
           data: ${apiMetric}(splits: [${splits.join(', ')}])
         }

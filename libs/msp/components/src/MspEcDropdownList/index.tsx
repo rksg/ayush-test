@@ -167,8 +167,8 @@ export function MspEcDropdownList () {
     {
       title: $t({ defaultMessage: 'Tenant Id' }),
       dataIndex: 'id',
-      key: 'id',
-      show: false
+      key: 'id'
+      // show: false
     }
   ]
 
@@ -197,8 +197,8 @@ export function MspEcDropdownList () {
     {
       title: $t({ defaultMessage: 'Tenant Id' }),
       dataIndex: 'id',
-      key: 'id',
-      show: false
+      key: 'id'
+      // show: false
     }
   ]
 

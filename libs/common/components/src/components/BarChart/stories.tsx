@@ -7,7 +7,7 @@ import { CallbackDataParams }                      from 'echarts/types/dist/shar
 import { renderToString }                          from 'react-dom/server'
 
 import type { BarChartData } from '@acx-ui/analytics/utils'
-import { formatter }         from '@acx-ui/utils'
+import { formatter }         from '@acx-ui/formatter'
 
 import { cssNumber, cssStr } from '../../theme/helper'
 import { Card }              from '../Card'
