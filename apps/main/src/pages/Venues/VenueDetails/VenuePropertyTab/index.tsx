@@ -58,7 +58,9 @@ export function VenuePropertyTab () {
 
   const queryUnitList = useTableQuery({
     useQuery: useGetPropertyUnitListQuery,
-    defaultPayload: {}
+    defaultPayload: {} as {
+      filters: { name: string|undefined }
+    }
   })
 
   const apViewModelPayload = {
@@ -303,15 +305,15 @@ export function VenuePropertyTab () {
   ]
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
-    const payload = { ...queryUnitList.payload }
+    const payload = queryUnitList.payload
+    const currentSearchString = payload.filters?.name ?? ''
 
-    Object.assign(payload, {
-      filters: customSearch?.searchString
-        ? { name: customSearch.searchString }
-        : undefined
+    if (currentSearchString === customSearch.searchString) return
+
+    queryUnitList.setPayload({
+      ...payload,
+      filters: { name: customSearch.searchString !== '' ? customSearch.searchString : undefined }
     })
-
-    queryUnitList.setPayload(payload)
   }
 
   return (
