@@ -101,8 +101,7 @@ export default function MyServices () {
       />
       <GridRow>
         {services.map(service => {
-          return (
-            !service.disabled && (service.tableQuery.data?.totalCount ?? 0) > 0 &&
+          return (!service.disabled &&
             <GridCol col={{ span: 6 }}>
               <ServiceCard
                 key={service.type}
