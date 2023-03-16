@@ -167,7 +167,7 @@ export function ApTable (props: ApTableProps) {
     },
     option: { skip: Boolean(props.tableQuery) || !Boolean(groupBySelection) }
   })
-  const inlineTableQuery = usePollingTableQuery({
+  const apListTableQuery = usePollingTableQuery({
     useQuery: useApListQuery,
     defaultPayload: {
       ...defaultApPayload,
@@ -178,14 +178,14 @@ export function ApTable (props: ApTableProps) {
     },
     option: { skip: Boolean(props.tableQuery) || Boolean(groupBySelection) }
   })
-  const tableQuery = props.tableQuery || groupBySelection ? groupByTableQuery : inlineTableQuery
+  const inlineTableQuery = groupBySelection ? groupByTableQuery : apListTableQuery
+  const tableQuery = props.tableQuery || inlineTableQuery
 
   const apAction = useApActions()
   const releaseTag = useIsSplitOn(Features.DEVICES)
   const statusFilterOptions = seriesMappingAP().map(({ key, name, color }) => ({
     key, value: <Badge color={color} text={name} />
   }))
-
   const tableData = tableQuery?.data?.data ?? []
   const linkToEditAp = useTenantLink('/devices/wifi/')
 
