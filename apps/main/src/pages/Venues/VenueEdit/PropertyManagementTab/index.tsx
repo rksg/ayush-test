@@ -122,7 +122,7 @@ export function PropertyManagementTab () {
             isPropertyEnable
           }}
         >
-          <StepsForm.FieldLabel width={'190px'}>
+          <StepsForm.FieldLabel width={'200px'}>
             {$t({ defaultMessage: 'Enable Property Management' })}
             <Form.Item
               name='isPropertyEnable'
