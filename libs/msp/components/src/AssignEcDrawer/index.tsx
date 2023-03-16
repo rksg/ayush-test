@@ -144,13 +144,17 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
       defaultPayload
     })
 
+    let dataSource = queryResults.data?.data
     let selectedKeys = [] as Key[]
     if (queryResults?.data && assignedEcs?.data) {
-      selectedKeys = queryResults?.data.data.filter(
-        rec => assignedEcs?.data?.mspec_list?.includes(rec.id)).map(rec => rec.id)
-      const selRows = queryResults?.data.data.filter(
-        rec => assignedEcs?.data?.mspec_list?.includes(rec.id))
+      selectedKeys = queryResults.data.data.filter(
+        rec => assignedEcs.data?.mspec_list?.includes(rec.id)).map(rec => rec.id)
+      const selRows = queryResults.data.data.filter(
+        rec => assignedEcs.data?.mspec_list?.includes(rec.id))
       form.setFieldValue('ecCustomers', selRows)
+      dataSource = tenantType === AccountType.MSP_INSTALLER
+        ? queryResults.data.data.filter(rec => !rec.installer || selectedKeys.includes(rec.id))
+        : queryResults.data.data.filter(rec => !rec.integrator || selectedKeys.includes(rec.id))
     }
 
     return (
@@ -158,7 +162,7 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
       ]}>
         <Table
           columns={columns}
-          dataSource={queryResults.data?.data}
+          dataSource={dataSource}
           rowKey='id'
           rowSelection={{
             type: 'checkbox',

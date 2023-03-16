@@ -156,6 +156,9 @@ describe('MspCustomers', () => {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
   })
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
   it('should render correctly', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }

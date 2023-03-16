@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
@@ -110,14 +110,43 @@ export function MspCustomers () {
   const [tenantType, setTenantType] = useState(AccountType.MSP_INTEGRATOR)
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerIntegratorVisible, setDrawerIntegratorVisible] = useState(false)
+  const [techParnersData, setTechPartnerData] = useState([] as MspEc[])
 
   const { data: userProfile } = useUserProfileContext()
   const { data: mspLabel } = useGetMspLabelQuery({ params })
+  const [deactivateMspEc] = useDeactivateMspEcMutation()
+  const [reactivateMspEc] = useReactivateMspEcMutation()
+  const [deleteMspEc, { isLoading: isDeleteEcUpdating }] = useDeleteMspEcMutation()
 
   const onBoard = mspLabel?.msp_label
   const ecFilters = isPrimeAdmin
     ? { tenantType: ['MSP_EC'] }
     : { mspAdmins: [userProfile.adminId], tenantType: ['MSP_EC'] }
+
+  const transformTechPartner = (id: string) => {
+    const rec = techParnersData.find(e => e.id === id)
+    return rec?.name ? rec.name : id
+  }
+
+  const { data: techPartners } = useTableQuery({
+    useQuery: useMspCustomerListQuery,
+    defaultPayload: {
+      filters: { tenantType: [AccountType.MSP_INTEGRATOR, AccountType.MSP_INSTALLER] },
+      fields: [
+        'id',
+        'name'
+      ],
+      pageSize: 10000,
+      sortField: 'name',
+      sortOrder: 'ASC'
+    }
+  })
+
+  useEffect(() => {
+    if (techPartners?.data) {
+      setTechPartnerData(techPartners?.data)
+    }
+  }, [techPartners?.data])
 
   const mspPayload = {
     searchString: '',
@@ -238,7 +267,7 @@ export function MspCustomers () {
         }
       },
       render: function (data, row) {
-        const val = row?.integrator ? 1 : '--'
+        const val = row?.integrator ? transformTechPartner(row.integrator) : '--'
         return (
           (isPrimeAdmin || isAdmin) && !userProfile?.support
             ? <Link to=''>{val}</Link> : val
@@ -260,7 +289,7 @@ export function MspCustomers () {
         }
       },
       render: function (data, row) {
-        const val = row?.installer ? 1 : '--'
+        const val = row?.installer ? transformTechPartner(row.installer) : '--'
         return (
           (isPrimeAdmin || isAdmin) && !userProfile?.support
             ? <Link to=''>{val}</Link> : val
@@ -345,18 +374,6 @@ export function MspCustomers () {
         searchTargetFields: mspPayload.searchTargetFields as string[]
       }
     })
-    const [
-      deleteMspEc,
-      { isLoading: isDeleteEcUpdating }
-    ] = useDeleteMspEcMutation()
-
-    const [
-      deactivateMspEc
-    ] = useDeactivateMspEcMutation()
-
-    const [
-      reactivateMspEc
-    ] = useReactivateMspEcMutation()
 
     const rowActions: TableProps<MspEc>['rowActions'] = [
       {

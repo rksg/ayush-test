@@ -508,10 +508,16 @@ export function ManageIntegrator () {
   }
 
   const ManageAssignedEcForm = () => {
-    return <UI.FieldLabelAdmins width='275px'>
-      <label>{intl.$t({ defaultMessage: 'Assigned Customers' })}</label>
-      <Form.Item children={<div>{displayAssignedEc()}</div>} />
-    </UI.FieldLabelAdmins>
+    return <>
+      <UI.FieldLabelAdmins width='275px'>
+        <label>{intl.$t({ defaultMessage: 'Assigned Customers' })}</label>
+        <Form.Item children={<div>{displayAssignedEc()}</div>} />
+      </UI.FieldLabelAdmins>
+      <UI.FieldLabelAdmins width='275px'>
+        <label>{intl.$t({ defaultMessage: 'Access Period' })}</label>
+        <Form.Item children={<div>Unlimited</div>} />
+      </UI.FieldLabelAdmins>
+    </>
   }
 
   const CustomerAdminsForm = () => {
@@ -731,6 +737,8 @@ export function ManageIntegrator () {
 
   const CustomerSubscriptionForm = () => {
     return <div>
+      <Subtitle level={3}>
+        { intl.$t({ defaultMessage: 'Subscriptions' }) }</Subtitle>
       <WifiSubscription />
       <SwitchSubscription />
       <UI.FieldLabel2 width='275px' style={{ marginTop: '18px' }}>
