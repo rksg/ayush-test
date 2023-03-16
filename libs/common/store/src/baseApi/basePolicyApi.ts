@@ -12,7 +12,9 @@ export const basePolicyApi = createApi({
     'SnmpAgent',
     'VLANPool',
     'AAA',
-    'AccessControl'
+    'AccessControl',
+    'RadiusAttributeGroup',
+    'RadiusAttribute'
   ],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
