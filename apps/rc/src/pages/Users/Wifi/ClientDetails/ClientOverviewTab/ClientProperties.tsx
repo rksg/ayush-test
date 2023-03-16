@@ -93,38 +93,32 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
         }
       }
 
-      const getApData = async () => {
-        try {
-          apData = await getAp({
-            params: { tenantId, serialNumber }
-          }, true).unwrap()
-        } catch {}
+      const getGuestData = async () => {
+        const list = (await getGuestsList({ params: { tenantId: tenantId }, payload }, true)
+          .unwrap()).data || []
+        if (list.length === 1) {
+          setGuestDetail(list[0])
+        }
       }
 
-      const getVenueData = async () => {
+      const getMetaData = async () => {
         try {
-          venueData = await getVenue({
-            params: { tenantId, venueId: clientDetails?.venueId }
-          }, true).unwrap()
-        } catch {}
-      }
-
-      const getNetworkData = async () => {
-        try {
+          if (serialNumber && !clientDetails.hasOwnProperty('isApExists')) {
+            apData = await getAp({
+              params: { tenantId, serialNumber }
+            }, true).unwrap()
+          }
+          if (!clientDetails.hasOwnProperty('isVenueExists')) {
+            venueData = await getVenue({
+              params: { tenantId, venueId: clientDetails?.venueId }
+            }, true).unwrap()
+          }
           networkData = await getNetwork({
             params: { tenantId, networkId: clientDetails?.networkId }
           }, true).unwrap()
           setData(apData, venueData, networkData)
         } catch {
           setData(apData, venueData, networkData)
-        }
-      }
-
-      const getGuestData = async () => {
-        const list = (await getGuestsList({ params: { tenantId: tenantId }, payload }, true)
-          .unwrap()).data || []
-        if (list.length === 1) {
-          setGuestDetail(list[0])
         }
       }
 
@@ -137,9 +131,11 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
           ...(apData && { apName: apData?.name }),
           ...(venueData && { venueName: venueData?.name }),
           ...(networkData && { networkName: networkData?.name }),
-          enableLinkToAp: !!apData,
-          enableLinkToNetwork: !!networkData,
-          enableLinkToVenue: !!venueData
+          enableLinkToAp: clientDetails.hasOwnProperty('isApExists') ?
+            !!clientDetails.isApExists : !!apData,
+          enableLinkToVenue: clientDetails.hasOwnProperty('isVenueExists') ?
+            !!clientDetails.isVenueExists : !!venueData,
+          enableLinkToNetwork: !!networkData
         })
 
         if ('guest' === networkData?.type) {
@@ -147,12 +143,7 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
         }
       }
 
-      if (serialNumber) {
-        getApData()
-      }
-      getVenueData()
-      getNetworkData()
-
+      getMetaData()
       // TODO: get dpsk/guest data
       // if (networkData?.type === 'dpsk') {
       //   const dpskData = await getDpskPassphraseByQuery({
@@ -199,15 +190,11 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
   }
 
   return <Card>
-    {
-      clientStatus === ClientStatusEnum.HISTORICAL ?
-        <>{ getProperties(clientStatus, networkType, clientDetails.clientMac) }</>:
-        <Loader states={[{
-          isLoading: !Object.keys(client).length
-        }]}>
-          { getProperties(clientStatus, networkType, clientDetails.clientMac) }
-        </Loader>
-    }
+    <Loader states={[{
+      isLoading: !Object.keys(client).length
+    }]}>
+      { getProperties(clientStatus, networkType, clientDetails.clientMac) }
+    </Loader>
   </Card>
 }
 
