@@ -53,6 +53,7 @@ import {
   SwitchFrontView,
   SwitchRearView,
   Lag,
+  SwitchVlan,
   enableNewApi
 } from '@acx-ui/rc/utils'
 import { baseSwitchApi } from '@acx-ui/store'
@@ -276,11 +277,13 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       }
     }),
     getPortSetting: build.query<PortSettingModel, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getPortSetting, params)
-        return {
-          ...req
-        }
+        return enableNewApi(SwitchUrlsInfo.getPortSetting) ? { ...req, body: payload } : { ...req }
+      },
+      transformResponse: (result: PortsSetting | PortSettingModel) => {
+        const res = _.get(result, 'response')
+        return Array.isArray(res) ? res.pop() : result
       },
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'SwitchPort', id: 'Setting' }]
@@ -311,6 +314,14 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         return {
           ...req,
           body: payload
+        }
+      }
+    }),
+    getSwitchVlanUnionByVenue: build.query<SwitchVlan[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getSwitchVlanUnionByVenue, params)
+        return {
+          ...req
         }
       }
     }),
@@ -345,17 +356,15 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     getTaggedVlansByVenue: build.query<SwitchVlans[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getTaggedVlansByVenue, params)
-        return {
-          ...req
-        }
+        return enableNewApi(SwitchUrlsInfo.getTaggedVlansByVenue) ?
+          { ...req, body: params } : { ...req }
       }
     }),
     getUntaggedVlansByVenue: build.query<SwitchVlans[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getUntaggedVlansByVenue, params)
-        return {
-          ...req
-        }
+        return enableNewApi(SwitchUrlsInfo.getUntaggedVlansByVenue) ?
+          { ...req, body: params } : { ...req }
       }
     }),
     getSwitchConfigurationProfileByVenue: build.query<SwitchProfile[], RequestPayload>({
@@ -717,9 +726,26 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     getSwitchClientDetails: build.query<SwitchClient, RequestPayload>({
       query: ({ params }) => {
         const clientListReq = createHttpRequest(SwitchUrlsInfo.getSwitchClientDetail, params)
+        if (enableNewApi(SwitchUrlsInfo.getSwitchClientDetail)) {
+          const payload = {
+            fields: ['switchId','clientVlan','venueId','switchSerialNumber','clientMac',
+              'clientName','clientDesc','clientType','switchPort','vlanName',
+              'switchName', 'venueName' ,'cog','id'],
+            filters: {
+              id: [_.get(params, 'clientId')]
+            }
+          }
+          return {
+            ...clientListReq, body: payload
+          }
+        }
         return {
           ...clientListReq
         }
+      },
+      transformResponse: (result: SwitchClient | TableResult<SwitchClient>) => {
+        const res = _.get(result, 'data')
+        return Array.isArray(res) ? res.pop() : result
       }
     }),
     getTroubleshooting: build.query<TroubleshootingResult, RequestPayload>({
@@ -1119,6 +1145,7 @@ export const {
   useLazyGetSwitchRoutedListQuery,
   useLazyGetVenueRoutedListQuery,
   useGetDefaultVlanQuery,
+  useLazyGetSwitchVlanUnionByVenueQuery,
   useGetSwitchVlanQuery,
   useLazyGetSwitchVlanQuery,
   useGetSwitchVlansQuery,

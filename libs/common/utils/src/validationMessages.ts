@@ -83,6 +83,10 @@ export const validationMessages = {
     defaultMessage: "This value should be lower than or equal to $'{max'}",
     description: 'Validation - max checks'
   }),
+  range: defineMessage({
+    defaultMessage: "This value should be between $'{min'} and $'{max'}",
+    description: 'Validation - range checks'
+  }),
   minStr: defineMessage({
     defaultMessage: "Field must be at least $'{min'} characters",
     description: 'Validation - string min checks'
@@ -378,7 +382,8 @@ export function prepareAntdValidateMessages ({ $t }: IntlShape): ValidateMessage
     whitespace: $t(validationMessages.whitespace),
     number: {
       min: $t(validationMessages.min),
-      max: $t(validationMessages.max)
+      max: $t(validationMessages.max),
+      range: $t(validationMessages.range)
     },
     string: {
       len: $t(validationMessages.lenStr),

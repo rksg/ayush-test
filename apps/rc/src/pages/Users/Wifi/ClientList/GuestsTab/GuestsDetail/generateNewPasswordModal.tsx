@@ -53,6 +53,7 @@ export function GenerateNewPasswordModal (props: {
         tenantId: props.tenantId,
         guestId: props.guestDetail.id
       }
+      payload.append('action', 'regenerate')
       await generateGuestPassword({ params, payload }).unwrap()
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .then((data: any) => {

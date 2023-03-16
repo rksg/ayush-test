@@ -111,9 +111,8 @@ const defaultFilters = {
 }
 
 export function HistoricalClientsTable
-({ searchString, setHistoricalClientCount, id } :
-  { searchString: string, setHistoricalClientCount: (historicalClientCount: number) => void,
-    id: string
+({ searchString, setHistoricalClientCount } :
+  { searchString: string, setHistoricalClientCount: (historicalClientCount: number) => void
   }) {
   const { $t } = useIntl()
   const params = useParams()
@@ -138,7 +137,7 @@ export function HistoricalClientsTable
     }, [tableQuery])
 
     return (
-      <div id={id}>
+      <div>
         <Loader states={[
           tableQuery
         ]}>

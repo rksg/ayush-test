@@ -5,7 +5,7 @@ import { CommonUrlsInfo, EdgeDhcpUrls, EdgeUrlsInfo, getServiceRoutePath, Networ
 import { Provider }                                                                                                                from '@acx-ui/store'
 import { mockServer, render, screen }                                                                                              from '@acx-ui/test-utils'
 
-import { mockEdgeData, mockEdgeDhcpDataList, mockNsgStatsList, mockVenueData } from '../__tests__/fixtures'
+import { mockEdgeData, mockEdgeDhcpDataList, mockNsgData, mockNsgStatsList, mockNsgSwitchInfoData, mockVenueData } from '../__tests__/fixtures'
 
 import NetworkSegmentationDetail from '.'
 
@@ -38,6 +38,14 @@ describe('NsgDetail', () => {
       rest.post(
         NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
         (req, res, ctx) => res(ctx.json(mockNsgStatsList))
+      ),
+      rest.get(
+        NetworkSegmentationUrls.getNetworkSegmentationGroupById.url,
+        (req, res, ctx) => res(ctx.json(mockNsgData))
+      ),
+      rest.get(
+        NetworkSegmentationUrls.getSwitchInfoByNSGId.url,
+        (req, res, ctx) => res(ctx.json(mockNsgSwitchInfoData))
       )
     )
   })
