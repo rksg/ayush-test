@@ -194,7 +194,7 @@ describe('Facts data format', () => {
         ' <b>common-internet-file-system</b> and <b>windows_update</b>.',
         '<b>96%</b> of user traffic went through 15% of APs last week.',
         'Top 3 applications in terms of users last week were <b>dns</b>,' +
-        ' <b>google_api</b> and <b>google_gen</b>.',
+        ' <b>google_api</b> and <b>google_gen</b>.'
       ],
       [
         'Average daily airtime utilization last week was 2.4 GHz: <b>53.8%</b>,' +

@@ -1,7 +1,7 @@
 import { Carousel } from '..'
 
 
-export function Nodata () {
+export function NoData () {
   const title = 'Did you know?'
   const subTitle = 'No data to report'
   const noData = 'When your network becomes active, we will have valuable insights for you here'
