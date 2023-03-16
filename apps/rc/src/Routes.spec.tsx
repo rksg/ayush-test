@@ -123,7 +123,7 @@ jest.mock('./pages/Services/Portal/PortalDetail', () => () => {
   return <div data-testid='PortalServiceDetail' />
 })
 
-jest.mock('./pages/Services/NetworkSegmentation/AddNetworkSegmentation', () => () => {
+jest.mock('./pages/Services/NetworkSegmentation/NetworkSegmentationForm', () => () => {
   return <div data-testid='NetworkSegmentationForm' />
 })
 
@@ -662,7 +662,7 @@ describe('RcRoutes: Policies', () => {
         wrapRoutes: false
       }
     })
-    expect(await screen.findByRole('heading', { level: 1, name: 'AAA Server' })).toBeVisible()
+    expect(await screen.findByRole('heading', { level: 1, name: /AAA Server/ })).toBeVisible()
   })
 
   test('should navigate to Access Control table', async () => {
@@ -712,7 +712,7 @@ describe('RcRoutes: Policies', () => {
         wrapRoutes: false
       }
     })
-    expect(await screen.findByRole('heading', { level: 1, name: 'VLAN Pools' })).toBeVisible()
+    expect(await screen.findByRole('heading', { level: 1, name: /VLAN Pools/ })).toBeVisible()
   })
 })
 

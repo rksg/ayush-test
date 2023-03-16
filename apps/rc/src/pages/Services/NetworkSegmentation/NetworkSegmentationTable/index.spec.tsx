@@ -1,8 +1,17 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, EdgeUrlsInfo, getServiceDetailsLink, getServiceRoutePath, NetworkSegmentationUrls, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                                         from '@acx-ui/store'
+import {
+  CommonUrlsInfo,
+  EdgeUrlsInfo,
+  getServiceDetailsLink,
+  getServiceListRoutePath,
+  getServiceRoutePath,
+  NetworkSegmentationUrls,
+  ServiceOperation,
+  ServiceType
+} from '@acx-ui/rc/utils'
+import { Provider } from '@acx-ui/store'
 import {
   mockServer, render,
   screen, within
@@ -15,9 +24,16 @@ import NetworkSegmentationTable from '.'
 
 
 const mockedUsedNavigate = jest.fn()
+const mockUseLocationValue = {
+  pathname: getServiceListRoutePath(),
+  search: '',
+  hash: '',
+  state: null
+}
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedUsedNavigate
+  useNavigate: () => mockedUsedNavigate,
+  useLocation: jest.fn().mockImplementation(() => mockUseLocationValue)
 }))
 
 describe('NetworkSegmentationList', () => {
@@ -124,6 +140,8 @@ describe('NetworkSegmentationList', () => {
       })}`,
       hash: '',
       search: ''
+    }, {
+      state: { from: mockUseLocationValue }
     })
   })
 

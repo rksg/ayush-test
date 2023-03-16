@@ -253,7 +253,7 @@ describe('Aps', () => {
     rebootSpy.mockReturnValueOnce(true)
 
     mockServer.use(
-      rest.post(
+      rest.patch(
         WifiUrlsInfo.rebootAp.url,
         (req, res, ctx) => rebootSpy() && res(ctx.json({ requestId: '456' }))
       ),

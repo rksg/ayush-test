@@ -1,16 +1,14 @@
+import { useIntl } from 'react-intl'
 
 import { Loader, Tabs }                                          from '@acx-ui/components'
 import { useGetEdgePortsStatusListQuery, useGetPortConfigQuery } from '@acx-ui/rc/services'
 import { useNavigate, useParams, useTenantLink }                 from '@acx-ui/react-router-dom'
-import { getIntl }                                               from '@acx-ui/utils'
 
 import PortsGeneral from './PortsGeneral'
 import SubInterface from './SubInterface'
 
-const { $t } = getIntl()
-
 const Ports = () => {
-
+  const { $t } = useIntl()
   const navigate = useNavigate()
   const { activeSubTab, serialNumber, tenantId } = useParams()
   const basePath = useTenantLink(`/devices/edge/${serialNumber}/edit/ports`)

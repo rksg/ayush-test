@@ -12,7 +12,7 @@ import {
   deviceStatusColors,
   ColumnType
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
 import {
   useApListQuery, useImportApMutation,useGroupByApListQuery
 } from '@acx-ui/rc/services'
@@ -32,16 +32,17 @@ import {
   APExtendedGrouped
 } from '@acx-ui/rc/utils'
 import { getFilters }                                        from '@acx-ui/rc/utils'
+import { SEARCH, FILTER }                                    from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                    from '@acx-ui/user'
 
 import { seriesMappingAP }           from '../DevicesWidget/helper'
 import { CsvSize, ImportFileDrawer } from '../ImportFileDrawer'
 import { useApActions }              from '../useApActions'
+
 import {
   getGroupableConfig
-} from './config';
-import { SEARCH, FILTER } from '@acx-ui/rc/utils'
+} from './config'
 
 type DeviceGroupBy = 'deviceStatus' | 'model' | 'deviceGroupName' | null
 
@@ -140,31 +141,31 @@ export function ApTable (props: ApTableProps) {
   const [tableFilter, setTableFilter] = useState<FILTER>(filters)
   const [tableSearch, setTableSearch] = useState<SEARCH>({})
   const { deviceStatusGroupableOptions, modelGroupableOptions, deviceGroupNameGroupableOptions } =
-    getGroupableConfig();
-const groupByTableQuery = usePollingTableQuery({
-  useQuery: useGroupByApListQuery,
-  defaultPayload: {
-    fields: groupedFields,
-    filters,
-    searchTargetFields: defaultApPayload.searchTargetFields,
+    getGroupableConfig()
+  const groupByTableQuery = usePollingTableQuery({
+    useQuery: useGroupByApListQuery,
+    defaultPayload: {
+      fields: groupedFields,
+      filters,
+      searchTargetFields: defaultApPayload.searchTargetFields,
+      search: {
+        searchTargetFields: defaultApPayload.searchTargetFields
+      }
+    },
+    option: { skip: Boolean(props.tableQuery) || !Boolean(groupBySelection) }
+  })
+  const inlineTableQuery = usePollingTableQuery({
+    useQuery: useApListQuery,
+    defaultPayload: {
+      ...defaultApPayload,
+      filters
+    },
     search: {
       searchTargetFields: defaultApPayload.searchTargetFields
-    }
-  },
-  option: { skip: Boolean(props.tableQuery) ||  !Boolean(groupBySelection)}
-})
-const inlineTableQuery = usePollingTableQuery({
-  useQuery: useApListQuery,
-  defaultPayload: {
-    ...defaultApPayload,
-    filters,
-    search: {
-      searchTargetFields: defaultApPayload.searchTargetFields
-    }
-  },
-  option: { skip: Boolean(props.tableQuery) ||  Boolean(groupBySelection)}
-})
-const tableQuery = props.tableQuery || groupBySelection ? groupByTableQuery : inlineTableQuery
+    },
+    option: { skip: Boolean(props.tableQuery) }
+  })
+  const tableQuery = props.tableQuery || groupBySelection ? groupByTableQuery : inlineTableQuery
 
   const apAction = useApActions()
   const releaseTag = useIsSplitOn(Features.DEVICES)
@@ -211,7 +212,7 @@ const tableQuery = props.tableQuery || groupBySelection ? groupByTableQuery : in
       dataIndex: 'model',
       searchable: searchable,
       sorter: true,
-      groupable: modelGroupableOptions,
+      groupable: modelGroupableOptions
     }, {
       key: 'ip',
       title: $t({ defaultMessage: 'IP Address' }),
@@ -303,7 +304,7 @@ const tableQuery = props.tableQuery || groupBySelection ? groupByTableQuery : in
       filterKey: 'deviceGroupId',
       filterable: filterables ? filterables['deviceGroupId'] : false,
       sorter: true,
-      groupable: deviceGroupNameGroupableOptions,
+      groupable: deviceGroupNameGroupableOptions
     }, {
       key: 'rf-channels',
       title: $t({ defaultMessage: 'RF Channels' }),
@@ -417,7 +418,7 @@ const tableQuery = props.tableQuery || groupBySelection ? groupByTableQuery : in
     }
   },[importResult])
 
-  useEffect(()=> {          
+  useEffect(()=> {
     tableQuery?.handleFilterChange(tableFilter, tableSearch, groupBySelection)
   },[groupBySelection,tableFilter,tableSearch])
 
@@ -430,10 +431,10 @@ const tableQuery = props.tableQuery || groupBySelection ? groupByTableQuery : in
         dataSource={tableData}
         rowKey='serialNumber'
         pagination={tableQuery?.pagination}
-            // @ts-ignore
+        // @ts-ignore
         onChange={tableQuery?.handleTableChange}
         enableApiFilter={true}
-                    // @ts-ignore
+        // @ts-ignore
         rowActions={filterByAccess(rowActions)}
         onFilterChange={useCallback((filter : any, search : any, groupBy: any) => {
           setTableFilter(filter)

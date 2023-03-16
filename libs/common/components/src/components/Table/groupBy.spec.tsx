@@ -1,50 +1,31 @@
 import { useState } from 'react'
 
 import { fireEvent, render, renderHook, screen } from '@testing-library/react'
-import { act }                                   from 'react-dom/test-utils'
 import { IntlShape }                             from 'react-intl'
 
-import { GroupSelect, useGroupBy }     from './groupBy'
-import { groupByColumns, groupTBData } from './stories/GroupTable'
+import { GroupSelect, useGroupBy } from './groupBy'
+import { groupByColumns }          from './stories/GroupTable'
 
 describe('Table Groupby', () => {
   describe('useGroupBy', () => {
     it('render hook correctly with valid data', async () => {
-      const { result } = renderHook(() => useGroupBy(groupByColumns, undefined))
+      const { result } = renderHook(() => useGroupBy(groupByColumns, [], undefined))
       const {
         isGroupByActive,
-        expandable,
-        parentColumns,
-        groupActionColumns
+        expandable
       } = result.current
       expect(isGroupByActive).toBeFalsy()
       expect(expandable).toBeUndefined()
-      expect(parentColumns).toMatchObject([])
-      expect(groupActionColumns).toMatchObject([])
     })
 
     it('render hook correctly with empty array groupable', () => {
-      const { result } = renderHook(() => useGroupBy([], undefined))
+      const { result } = renderHook(() => useGroupBy([], [], undefined))
       const {
         isGroupByActive,
-        expandable,
-        parentColumns,
-        groupActionColumns
+        expandable
       } = result.current
       expect(isGroupByActive).toBeFalsy()
       expect(expandable).toBeUndefined()
-      expect(parentColumns).toMatchObject([])
-      expect(groupActionColumns).toMatchObject([])
-    })
-
-    it('render hook for expandable props', () => {
-      const { result } = renderHook(() => useGroupBy(groupByColumns, 'deviceName'))
-      act(() => {result.current.isGroupByActive = true})
-      const { expandable } = result.current
-      const { rowExpandable } = expandable as
-      unknown as { rowExpandable: (data: typeof groupTBData[0]) => boolean }
-      expect(rowExpandable).toBeDefined()
-      expect(rowExpandable(groupTBData[0])).toBeTruthy()
     })
   })
 
