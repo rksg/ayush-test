@@ -61,20 +61,6 @@ async function checkFragment (asFragment: () => DocumentFragment) {
 }
 
 describe('ClientOverviewTab', () => {
-  beforeAll(() => mockServer.listen({
-    onUnhandledRequest: ({ url }) => {
-      //Force return the response to avoid the flaky test
-      if(url.href.includes('capabilities')){
-        return apCaps
-      } else if (url.href.includes('metas/query')){
-        return eventMetaList
-      } else {
-        // eslint-disable-next-line no-console
-        console.log('Unhandled Request:' + url.href)
-      }
-    }
-  }))
-
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
     store.dispatch(clientApi.util.resetApiState())
