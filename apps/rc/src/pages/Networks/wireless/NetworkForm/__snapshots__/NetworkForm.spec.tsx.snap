@@ -320,7 +320,6 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                     <button
                       class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                       id="details_differentSSID"
-                      style="font-size: 12px;"
                       type="button"
                     >
                       <span>
@@ -2593,7 +2592,6 @@ exports[`NetworkForm should create open network successfully 1`] = `
                     <button
                       class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                       id="details_differentSSID"
-                      style="font-size: 12px;"
                       type="button"
                     >
                       <span>
@@ -3235,9 +3233,9 @@ exports[`NetworkForm should create open network successfully 1`] = `
                         >
                           <label
                             class=""
-                            title="Use AAA Server:"
+                            title="Use Radius Server:"
                           >
-                            Use AAA Server:
+                            Use Radius Server:
                           </label>
                         </div>
                         <div

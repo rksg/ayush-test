@@ -1,7 +1,9 @@
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader, showActionModal }       from '@acx-ui/components'
-import { useDelVLANPoolPolicyMutation, useGetVLANPoolPolicyViewModelListQuery } from '@acx-ui/rc/services'
+import { Button, PageHeader, Table, TableProps, Loader, showActionModal }                          from '@acx-ui/components'
+import { SimpleListTooltip }                                                                       from '@acx-ui/rc/components'
+import { useDelVLANPoolPolicyMutation, useGetVenuesQuery, useGetVLANPoolPolicyViewModelListQuery } from '@acx-ui/rc/services'
 import {
   PolicyType,
   useTableQuery,
@@ -9,8 +11,10 @@ import {
   PolicyOperation,
   getPolicyListRoutePath,
   getPolicyRoutePath,
-  VLANPoolPolicyType,
-  VLAN_LIMIT_NUMBER
+  VLANPoolViewModelType,
+  VLAN_LIMIT_NUMBER,
+  FILTER,
+  SEARCH
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                          from '@acx-ui/user'
@@ -25,17 +29,19 @@ export default function VLANPoolTable () {
     useQuery: useGetVLANPoolPolicyViewModelListQuery,
     defaultPayload: {
       searchString: '',
+      searchTargetFields: ['name'],
       fields: [
         'id',
         'name',
         'vlanMembers',
         'venueApGroups',
         'venueIds'
-      ]
+      ],
+      filters: {}
     }
   })
 
-  const rowActions: TableProps<VLANPoolPolicyType>['rowActions'] = [
+  const rowActions: TableProps<VLANPoolViewModelType>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: ([{ id, name }], clearSelection) => {
@@ -66,7 +72,18 @@ export default function VLANPoolTable () {
       }
     }
   ]
-
+  const handleFilterChange = (filters: FILTER, search: SEARCH) => {
+    const currentPayload = tableQuery.payload
+    // eslint-disable-next-line max-len
+    if (currentPayload.searchString === search.searchString && _.isEqual(currentPayload.filters, filters)) {
+      return
+    }
+    tableQuery.setPayload({
+      ...currentPayload,
+      searchString: search.searchString as string,
+      filters
+    })
+  }
   return (
     <>
       <PageHeader
@@ -93,7 +110,7 @@ export default function VLANPoolTable () {
         ])}
       />
       <Loader states={[tableQuery]}>
-        <Table<VLANPoolPolicyType>
+        <Table<VLANPoolViewModelType>
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
@@ -101,6 +118,8 @@ export default function VLANPoolTable () {
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
+          onFilterChange={handleFilterChange}
+          enableApiFilter={true}
         />
       </Loader>
     </>
@@ -109,14 +128,30 @@ export default function VLANPoolTable () {
 
 function useColumns () {
   const { $t } = useIntl()
-
-  const columns: TableProps<VLANPoolPolicyType>['columns'] = [
+  const params = useParams()
+  const emptyVenues: { key: string, value: string }[] = []
+  const { venueNameMap } = useGetVenuesQuery({
+    params: { tenantId: params.tenantId },
+    payload: {
+      fields: ['name', 'id'],
+      sortField: 'name',
+      sortOrder: 'ASC'
+    }
+  }, {
+    selectFromResult: ({ data }) => ({
+      venueNameMap: data?.data
+        ? data.data.map(venue => ({ key: venue.id, value: venue.name }))
+        : emptyVenues
+    })
+  })
+  const columns: TableProps<VLANPoolViewModelType>['columns'] = [
     {
       key: 'name',
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
       sorter: true,
       defaultSortOrder: 'ascend',
+      searchable: true,
       render: function (data, row) {
         return (
           <TenantLink
@@ -134,7 +169,6 @@ function useColumns () {
       key: 'vlanMembers',
       title: $t({ defaultMessage: 'VLANs' }),
       dataIndex: 'vlanMembers',
-      sorter: true,
       render: (data) =>{
         return data?.toString()
       }
@@ -143,9 +177,21 @@ function useColumns () {
       key: 'venueIds',
       title: $t({ defaultMessage: 'Venues' }),
       dataIndex: 'venueIds',
-      sorter: true,
-      render: (data) =>{
-        return data? (data as []).length:0
+      filterable: venueNameMap,
+      render: (data, row) =>{
+        if (!row.venueIds || row.venueIds.length === 0) return 0
+        const venueIds = row.venueIds
+        const venueApGroups = row.venueApGroups
+        // eslint-disable-next-line max-len
+        const filterVenues = venueNameMap.filter(v => venueIds!.includes(v.key)).map(v => v)
+        const tooltipItems = filterVenues.map(v => {
+          const venueApGroup = _.find(venueApGroups,{ id: v.key })
+          if(venueApGroup?.apGroups.length===1&&venueApGroup.apGroups[0].allApGroups){
+            return v.value+ ' (All APs)'
+          }
+          return v.value+ ' ('+venueApGroup?.apGroups.length+' AP Groups)'
+        })
+        return <SimpleListTooltip items={tooltipItems} displayText={venueIds.length} />
       }
     }
   ]

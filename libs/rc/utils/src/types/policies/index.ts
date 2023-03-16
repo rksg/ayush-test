@@ -15,7 +15,7 @@ export enum PolicyType {
   VLAN_POOL = 'VLAN Pools',
   ROGUE_AP_DETECTION = 'Rogue AP Detection',
   SYSLOG = 'Syslog',
-  AAA = 'AAA Server',
+  AAA = 'Radius Server',
   CLIENT_ISOLATION = 'Client Isolation',
   MAC_REGISTRATION_LIST = 'MAC Registration List',
   LAYER_2_POLICY = 'Layer 2 Policy',

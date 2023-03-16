@@ -1,9 +1,11 @@
 import { useState } from 'react'
 
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { useDeletePortalMutation, useGetPortalProfileListQuery }          from '@acx-ui/rc/services'
+import { SimpleListTooltip }                                              from '@acx-ui/rc/components'
+import { useDeletePortalMutation, useGetPortalProfileListQuery, useNetworkListQuery }          from '@acx-ui/rc/services'
 import { useGetPortalLangMutation }                                       from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -15,7 +17,9 @@ import {
   Portal,
   PortalLanguageEnum,
   Demo,
-  PORTAL_LIMIT_NUMBER
+  PORTAL_LIMIT_NUMBER,
+  SEARCH,
+  FILTER
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                          from '@acx-ui/user'
@@ -40,7 +44,9 @@ export default function PortalTable () {
   const tableQuery = useTableQuery({
     useQuery: useGetPortalProfileListQuery,
     defaultPayload: {
-
+      filters: {},
+      searchTargetFields: ['name'],
+      searchString: ''
     }
   })
   const params = useParams()
@@ -75,13 +81,40 @@ export default function PortalTable () {
       }
     }
   ]
-
+  const handleFilterChange = (filters: FILTER, search: SEARCH) => {
+    const currentPayload = tableQuery.payload
+    // eslint-disable-next-line max-len
+    if (currentPayload.searchString === search.searchString && _.isEqual(currentPayload.filters, filters)) {
+      return
+    }
+    tableQuery.setPayload({
+      ...currentPayload,
+      searchString: search.searchString as string,
+      filters
+    })
+  }
+  const emptyNetworks: { key: string, value: string }[] = []
+  const { networkNameMap } = useNetworkListQuery({
+    params: { tenantId: params.tenantId },
+    payload: {
+      fields: ['name', 'id'],
+      sortField: 'name',
+      sortOrder: 'ASC'
+    }
+  }, {
+    selectFromResult: ({ data }) => ({
+      networkNameMap: data?.data
+        ? data.data.map(network => ({ key: network.id, value: network.name }))
+        : emptyNetworks
+    })
+  })
   const columns: TableProps<Portal>['columns'] = [
     {
       key: 'serviceName',
       title: intl.$t({ defaultMessage: 'Name' }),
       dataIndex: 'serviceName',
       sorter: true,
+      searchable: true,
       defaultSortOrder: 'ascend',
       render: function (data, row) {
         return (
@@ -100,7 +133,6 @@ export default function PortalTable () {
       key: 'language',
       title: intl.$t({ defaultMessage: 'Language' }),
       dataIndex: 'language',
-      sorter: true,
       render: (data, row) =>{
         return getLanguage(row.content.displayLangCode as keyof typeof PortalLanguageEnum )
       }
@@ -139,7 +171,15 @@ export default function PortalTable () {
       key: 'networkCount',
       title: intl.$t({ defaultMessage: 'Networks' }),
       dataIndex: 'networkCount',
-      align: 'center'
+      align: 'center',
+      filterable: networkNameMap,
+      render: (data, row) =>{
+        if (!row.networkIds || row.networkIds.length === 0) return 0
+        const networkIds = row.networkIds
+        // eslint-disable-next-line max-len
+        const tooltipItems = networkNameMap.filter(v => networkIds!.includes(v.key)).map(v => v.value)
+        return <SimpleListTooltip items={tooltipItems} displayText={networkIds.length} />
+      }
     }
   ]
   return (
@@ -171,6 +211,8 @@ export default function PortalTable () {
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
+          onFilterChange={handleFilterChange}
+          enableApiFilter={true}
         />
       </Loader>
     </>
