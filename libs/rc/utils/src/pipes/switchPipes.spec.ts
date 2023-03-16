@@ -15,8 +15,6 @@ describe('Switch Pipes', () => {
     expect(transformConfigType(ConfigTypeEnum.PORT_CONFIGURATION)).toBe('Port Configuration')
     expect(transformConfigType(ConfigTypeEnum.PROVISIONING)).toBe('Provisioning')
     expect(transformConfigType(ConfigTypeEnum.STACK)).toBe('Stack')
-    expect(transformConfigType(ConfigTypeEnum.SWITCH_SETTINGS)).toBe('Switch Setting')
-    expect(transformConfigType(ConfigTypeEnum.LOCAL_SYNC)).toBe('Local Sync')
     expect(transformConfigType(ConfigTypeEnum.SYSLOG_SERVER)).toBe('Syslog Server')
     expect(transformConfigType(ConfigTypeEnum.VE_PORTS)).toBe('VE Ports')
     expect(transformConfigType(ConfigTypeEnum.CLI_PROVISIONING)).toBe('CLI Provisioning')

@@ -163,8 +163,8 @@ export function Unit (props:{
     const slotsCount = Math.max(switchModelInfo?.powerSlots as number, switchModelInfo?.fanSlots as number)
 
     // The backend is not sort by slotNumber, so we need to sort it.
-    fanRearStatus?.sort((a, b) => a.slotNumber - b.slotNumber)
-    powerRearStatus?.sort((a, b) => a.slotNumber - b.slotNumber)
+    fanRearStatus?.slice().sort((a, b) => a.slotNumber - b.slotNumber)
+    powerRearStatus?.slice().sort((a, b) => a.slotNumber - b.slotNumber)
 
     const tmpRearView = {
       slots: []
