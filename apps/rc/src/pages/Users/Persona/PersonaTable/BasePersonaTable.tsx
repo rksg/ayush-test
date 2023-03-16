@@ -96,9 +96,10 @@ function useColumns (props: PersonaTableColProps) {
       key: 'assignedAp',
       dataIndex: 'assignedAp',
       title: $t({ defaultMessage: 'Assigned AP' }),
-      // render: (_, row) => {
+      render: (_, row) => {
       // TODO: fetch AP info by MacAddress?
-      // },
+        return row?.ethernetPorts?.[0]?.name
+      },
       ...props.ethernetPorts
     },
     {
