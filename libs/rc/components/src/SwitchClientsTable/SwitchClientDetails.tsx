@@ -44,7 +44,7 @@ export function SwitchClientDetails () {
   }, [data])
 
   const exportClientToCSV = () => {
-    const ClientCSVIgnoreProperty = ['switchId', 'venueId', 'id']
+    const ClientCSVIgnoreProperty = ['switchId', 'venueId', 'id', 'switchSerialNumber']
     const ClientCSVNamingMapping: Map<string, string> = new Map<string, string>([
       ['clientMac', 'Mac Address'],
       ['clientType', 'Device Type'],
@@ -68,7 +68,7 @@ export function SwitchClientDetails () {
     // Remove internal properties
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const exportClient: any = Object()
-    Object.assign(exportClient, { Status: $t({ defaultMessage: 'Connected' }), data })
+    Object.assign(exportClient, { Status: $t({ defaultMessage: 'Connected' }), ...data })
     for (const key of ClientCSVIgnoreProperty) {
       delete exportClient[key]
     }
