@@ -16,7 +16,7 @@ import {
   EventSeverityEnum
 } from '@acx-ui/rc/utils'
 import { CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
-import { useParams, TenantLink }         from '@acx-ui/react-router-dom'
+import { useParams }                     from '@acx-ui/react-router-dom'
 
 import { AlarmsDrawer } from '../AlarmsDrawer'
 
@@ -110,26 +110,26 @@ export function ApInfoWidget (props:{ currentAP: ApViewModel, filters: Analytics
       <GridRow style={{ flexGrow: '1' }}>
         <GridCol col={{ span: 1 }} />
         <GridCol col={{ span: 4 }}>
-          <UI.Wrapper onClick={() => setAlarmDrawerVisible(true)}>
+          <UI.Wrapper>
             <Loader states={[alarmQuery]}>
               { alarmData && alarmData.length > 0
-                ? <UI.DonutChartWidget
-                  title={$t({ defaultMessage: 'Alarms' })}
-                  style={{ width: 100, height: 100 }}
-                  legend={'name-value'}
-                  data={alarmData}/>
-                : <UI.PointerContainer>
-                  <NoActiveContent text={$t({ defaultMessage: 'No active alarms' })} />
-                </UI.PointerContainer>
+                ? <div onClick={() => setAlarmDrawerVisible(true)}>
+                  <UI.DonutChartWidget
+                    title={$t({ defaultMessage: 'Alarms' })}
+                    style={{ width: 100, height: 100 }}
+                    legend={'name-value'}
+                    data={alarmData}/>
+                </div>
+                : <NoActiveContent text={$t({ defaultMessage: 'No active alarms' })} />
               }
             </Loader>
           </UI.Wrapper>
         </GridCol>
         <GridCol col={{ span: 4 }}>
           <UI.Wrapper>
-            <TenantLink to={`/devices/wifi/${apId}/details/analytics`}>
+            <UI.TenantLinkSvg to={`/devices/wifi/${apId}/details/analytics`}>
               <IncidentBySeverityDonutChart type='no-card-style' filters={filters}/>
-            </TenantLink>
+            </UI.TenantLinkSvg>
           </UI.Wrapper>
         </GridCol>
         <GridCol col={{ span: 5 }}>
@@ -160,7 +160,11 @@ export function ApInfoWidget (props:{ currentAP: ApViewModel, filters: Analytics
           </UI.Wrapper>
         </GridCol>
       </GridRow>
-      <AlarmsDrawer visible={alarmDrawerVisible} setVisible={setAlarmDrawerVisible} />
+      <AlarmsDrawer
+        visible={alarmDrawerVisible}
+        setVisible={setAlarmDrawerVisible}
+        serialNumber={apId}
+      />
     </Card>
   )
 }
