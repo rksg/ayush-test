@@ -14,7 +14,7 @@ import {
   RogueVenue,
   getPolicyRoutePath,
   PolicyType,
-  PolicyOperation
+  PolicyOperation, CommonResult
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -27,7 +27,7 @@ import RogueAPDetectionSettingForm from './RogueAPDetectionSettingForm'
 type RogueAPDetectionFormProps = {
   edit: boolean,
   modalMode?: boolean,
-  modalCallBack?: () => void
+  modalCallBack?: (id?: string) => void
 }
 
 const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
@@ -64,8 +64,9 @@ const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
 
   const handleRogueAPDetectionPolicy = async (edit: boolean) => {
     try {
+      let results = {} as CommonResult
       if (!edit) {
-        await createRoguePolicy({
+        results = await createRoguePolicy({
           params,
           payload: transformPayload(state, false)
         }).unwrap()
@@ -75,7 +76,8 @@ const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
           payload: transformPayload(state, true)
         }).unwrap()
       }
-      modalMode ? modalCallBack?.() : navigate(linkToPolicies, { replace: true })
+      const response = results.response as { id: string }
+      modalMode ? modalCallBack?.(response.id) : navigate(linkToPolicies, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
