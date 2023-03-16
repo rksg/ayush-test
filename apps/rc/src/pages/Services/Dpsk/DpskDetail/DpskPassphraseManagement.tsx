@@ -12,6 +12,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { CopyOutlined }              from '@acx-ui/icons'
 import { CsvSize, ImportFileDrawer } from '@acx-ui/rc/components'
 import {
@@ -29,7 +30,6 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
-import { formatter }      from '@acx-ui/utils'
 
 import NetworkForm from '../../../Networks/wireless/NetworkForm/NetworkForm'
 
@@ -80,7 +80,7 @@ export default function DpskPassphraseManagement () {
       sorter: true,
       defaultSortOrder: 'descend',
       render: function (data) {
-        return formatter('dateTimeFormat')(data)
+        return formatter(DateFormatEnum.DateTimeFormat)(data)
       }
     },
     {

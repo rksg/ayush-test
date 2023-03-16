@@ -1,7 +1,6 @@
 import { MemoryRouter, BrowserRouter } from 'react-router-dom'
 
-import { dataApiURL }                                                                      from '@acx-ui/analytics/services'
-import { Provider, store }                                                                 from '@acx-ui/store'
+import { dataApiURL, Provider, store }                                                     from '@acx-ui/store'
 import { render, screen, fireEvent, mockGraphqlQuery, waitForElementToBeRemoved, cleanup } from '@acx-ui/test-utils'
 
 import { connectionDetailsByAp, connectionEvents, connectionQualities } from './__tests__/fixtures'

@@ -14,8 +14,8 @@ import {
 import { useIntl } from 'react-intl'
 
 import { Button, DrawerProps } from '@acx-ui/components'
+import { formatter }           from '@acx-ui/formatter'
 import { GuestErrorRes }       from '@acx-ui/user'
-import { formatter }           from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
