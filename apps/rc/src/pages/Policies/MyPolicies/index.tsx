@@ -6,6 +6,7 @@ import {
   useGetEnhancedAccessControlProfileListQuery,
   useGetAAAPolicyViewModelListQuery,
   useGetVLANPoolPolicyViewModelListQuery,
+  useEnhancedRoguePoliciesQuery,
   useGetApSnmpViewModelQuery,
   useGetEnhancedClientIsolationListQuery,
   useSyslogPolicyListQuery,
@@ -131,8 +132,8 @@ function useCardData (): CardDataProps[] {
     {
       type: PolicyType.ROGUE_AP_DETECTION,
       category: RadioCardCategory.WIFI,
-      totalCount: usePolicyListQuery({ // TODO should invoke self List API here when API is ready
-        params, payload: { ...defaultPayload, filters: { type: [PolicyType.ROGUE_AP_DETECTION] } }
+      totalCount: useEnhancedRoguePoliciesQuery({
+        params, payload: defaultPayload
       }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.LIST }))

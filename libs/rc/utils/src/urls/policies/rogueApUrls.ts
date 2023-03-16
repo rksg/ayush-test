@@ -42,5 +42,11 @@ export const RogueApUrls: { [key: string]: ApiInfo } = {
     url: '/venues/query',
     oldUrl: '/api/viewmodel/tenant/:tenantId/venue',
     newApi: true
+  },
+  getEnhancedRoguePolicyList: {
+    method: 'post',
+    url: '/enhancedRogueApPolicyProfiles/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedRogueApPolicyProfiles/query',
+    newApi: true
   }
 }

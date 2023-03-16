@@ -13,6 +13,7 @@ export const basePolicyApi = createApi({
     'VLANPool',
     'AAA',
     'AccessControl',
+    'RogueAp',
     'RadiusAttributeGroup',
     'RadiusAttribute'
   ],
