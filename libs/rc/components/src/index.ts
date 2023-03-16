@@ -22,9 +22,10 @@ export { EdgeDhcpSettingForm } from './EdgeDhcpSetting/EdgeDhcpSettingForm'
 export { PoolDrawer } from './EdgeDhcpSetting/DhcpPool/PoolDrawer'
 export {
   AdminLogTable,
+  useAdminLogsTableQuery,
   EventTable,
   useEventsTableQuery,
-  defaultSearch as eventDefaultSearch
+  eventDefaultSearch
 } from './EventTable'
 export {
   HistoricalClientsTable,

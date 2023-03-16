@@ -12,10 +12,7 @@ export const eventTypeMapping = {
   AP: defineMessage({ defaultMessage: 'AP' }),
   CLIENT: defineMessage({ defaultMessage: 'Client' }),
   SWITCH: defineMessage({ defaultMessage: 'Switch' }),
-  NETWORK: defineMessage({ defaultMessage: 'Network' }),
-  ADMIN: defineMessage({ defaultMessage: 'Admin' }),
-  ADMINACTIVITY: defineMessage({ defaultMessage: 'Admin Activity' }),
-  NOTIFICATION: defineMessage({ defaultMessage: 'Notification' })
+  NETWORK: defineMessage({ defaultMessage: 'Network' })
 }
 
 export const productMapping = {
@@ -27,4 +24,12 @@ export const productMapping = {
 export const adminLogTypeMapping = {
   ADMIN: defineMessage({ defaultMessage: 'Admin' }),
   NOTIFICATION: defineMessage({ defaultMessage: 'Notification' })
+}
+
+export const typeMapping = {
+  ...eventTypeMapping,
+  ...adminLogTypeMapping,
+  // this event type only visible from search
+  // hence not included in the 2 mapping above
+  ADMINACTIVITY: defineMessage({ defaultMessage: 'Admin Activity' })
 }

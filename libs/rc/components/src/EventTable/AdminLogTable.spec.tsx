@@ -22,23 +22,16 @@ describe('AdminLogTable', () => {
   } as unknown as TableQuery<AdminLog, RequestPayload<unknown>, unknown>
 
   it('should render activity list', async () => {
-    render(
-      <Provider>
-        <AdminLogTable tableQuery={tableQuery} />
-      </Provider>,
-      { route: { params } }
-    )
+    render(<AdminLogTable tableQuery={tableQuery} />, { route: { params }, wrapper: Provider })
     await screen.findByText(
-      'Admin FisrtName 12 LastName 12, dog12@email.com logged into the cloud controller.'
+      'Admin FisrtName 12 LastName 12, dog12@email.com logged into the cloud controller.', {
+        ignore: true
+      }
     )
   })
 
   it('should open/close activity drawer', async () => {
-    render(
-      <Provider>
-        <AdminLogTable tableQuery={tableQuery} />
-      </Provider>,
-      { route: { params } }
+    render(<AdminLogTable tableQuery={tableQuery} />, { route: { params }, wrapper: Provider }
     )
     await screen.findByText(
       'Admin FisrtName 12 LastName 12, dog12@email.com logged into the cloud controller.'
