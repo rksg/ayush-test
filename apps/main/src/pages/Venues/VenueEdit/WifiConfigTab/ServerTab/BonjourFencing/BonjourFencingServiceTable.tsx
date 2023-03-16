@@ -76,82 +76,78 @@ export function BonjourFencingServiceTable () {
 
   }, [apViewModelQuery?.data])
 
-  interface DisplayDataType {
-    key: React.Key
-    displayText: string
-  }
-
   const fencingRangeRender = (fencingRange: string) => {
     return (fencingRange === 'SAME_AP')?
       $t({ defaultMessage: 'Same AP' }) : $t({ defaultMessage: '1-hop AP neighbors' })
   }
 
-  const getWirelessRuleTooltip = (wirelessRule?: BonjourFencingWirelessRule) => {
-    if (!wirelessRule?.fencingRange) {
-      return
+  const getWirelessRuleTooltip = (data: boolean, wirelessRule?: BonjourFencingWirelessRule) => {
+    if (!data) {
+      return $t({ defaultMessage: 'OFF' })
     }
 
-    const data: DisplayDataType[] = []
-    let key: number = 1
+    if (!wirelessRule?.fencingRange) {
+      return $t({ defaultMessage: 'ON' })
+    }
 
     const firstRow = $t({ defaultMessage: 'Fencing Range:' })
-    data.push({ key, displayText: firstRow })
-    key++
-    data.push({ key, displayText: fencingRangeRender(wirelessRule.fencingRange) })
-    return (<>{data.map((item) => <div key={item.key}>{item.displayText}</div>)}</>)
+    const row = fencingRangeRender(wirelessRule.fencingRange)
+    const rows = [ firstRow, row ]
+    const tooltipTitle = rows.map(n => <div>{n}</div>)
+
+    return <Tooltip title={tooltipTitle}>{$t({ defaultMessage: 'ON' })}</Tooltip>
   }
 
-  const getWiredRulesTooltip = (wiredRules?: BonjourFencingWiredRule[], maxShow = 25) => {
-    if (!wiredRules?.length) {
-      return
+  const getWiredRulesTooltip = (
+    data: boolean,
+    wiredRules?: BonjourFencingWiredRule[],
+    maxShow = 25
+  ) => {
+    if (!data) {
+      return $t({ defaultMessage: 'OFF' })
     }
 
-    const data: DisplayDataType[] = []
-    const rulesLen = wiredRules.length
-    const rules = wiredRules.slice(0, maxShow)
-    let key: number = 1
+    const rulesLen = (wiredRules && wiredRules.length) || 0
 
-    if (rules) {
-      const firstRow = $t({ defaultMessage: 'Fencing Range:' })
-      data.push({ key, displayText: firstRow })
-      key++
-
-      rules.forEach(rule => {
-        const { name, fencingRange } = rule
-        data.push({ key, displayText: `${name}: ${fencingRangeRender(fencingRange)}` })
-        key++
-      })
-
-      if (rulesLen > maxShow) {
-        const lastRow = $t({
-          defaultMessage: 'And {total} more...' }, { total: rulesLen - maxShow })
-        data.push({ key, displayText: lastRow })
-      }
-
-      return (<>{data.map((item) => <div key={item.key}>{item.displayText}</div>)}</>)
+    if (!wiredRules || rulesLen === 0) {
+      return $t({ defaultMessage: 'ON' })
     }
 
-    return
-  }
+    const firstRow = $t({ defaultMessage: 'Fencing Range:' })
 
-  const getCustomMappingTooltip = (customStrings?: string[]) => {
-    if (!customStrings?.length) {
-      return
-    }
-
-    const data: DisplayDataType[] = []
-    let key: number = 1
-
-    const firstRow = $t({ defaultMessage: 'Custom String:' })
-    data.push({ key, displayText: firstRow })
-    key++
-
-    customStrings.forEach(customString => {
-      data.push({ key, displayText: customString })
-      key++
+    const truncateData = wiredRules.slice(0, maxShow-1)
+    const rules = truncateData.map(rule => {
+      const { name, fencingRange } = rule
+      return `${name}: ${fencingRangeRender(fencingRange)}`
     })
 
-    return (<>{data.map((item) => <div key={item.key}>{item.displayText}</div>)}</>)
+    const rows = [ firstRow ].concat(rules)
+    if (rulesLen > maxShow) {
+      const lastRow = $t({ defaultMessage: 'And {total} more...' },
+        { total: rulesLen - maxShow })
+
+      rows.push(lastRow)
+    }
+
+    const tooltipTitle = rows.map(n => <div>{n}</div>)
+
+    return <Tooltip title={tooltipTitle}>{$t({ defaultMessage: 'ON' })}</Tooltip>
+  }
+
+  const getCustomMappingTooltip = (data: boolean, customStrings?: string[]) => {
+    if (!data) {
+      return $t({ defaultMessage: 'OFF' })
+    }
+
+    if (!customStrings?.length) {
+      return $t({ defaultMessage: 'ON' })
+    }
+
+    const firstRow = $t({ defaultMessage: 'Custom String:' })
+    const rows = [ firstRow ].concat(customStrings)
+    const tooltipTitle = rows.map(n => <div>{n}</div>)
+
+    return <Tooltip title={tooltipTitle}>{$t({ defaultMessage: 'ON' })}</Tooltip>
   }
 
   const columns: TableProps<BonjourFencingService>['columns'] = [{
@@ -172,11 +168,7 @@ export function BonjourFencingServiceTable () {
     key: 'wirelessEnabled',
     align: 'center',
     render: function (data, row) {
-      if (data) {
-        return <Tooltip title={getWirelessRuleTooltip(row.wirelessRule)}>{'ON'}</Tooltip>
-      } else {
-        return 'OFF'
-      }
+      return getWirelessRuleTooltip(data as boolean, row.wirelessRule)
     }
   }, {
     title: $t({ defaultMessage: 'Wired Connection' }),
@@ -184,11 +176,7 @@ export function BonjourFencingServiceTable () {
     key: 'wiredEnabled',
     align: 'center',
     render: function (data, row) {
-      if (data) {
-        return <Tooltip title={getWiredRulesTooltip(row.wiredRules)}>{'ON'}</Tooltip>
-      } else {
-        return 'OFF'
-      }
+      return getWiredRulesTooltip(data as boolean, row.wiredRules)
     }
   }, {
     title: $t({ defaultMessage: 'Custom Mapping' }),
@@ -196,11 +184,7 @@ export function BonjourFencingServiceTable () {
     key: 'customMappingEnabled',
     align: 'center',
     render: function (data, row) {
-      if (data) {
-        return <Tooltip title={getCustomMappingTooltip(row.customStrings)}>{'ON'}</Tooltip>
-      } else {
-        return 'OFF'
-      }
+      return getCustomMappingTooltip(data as boolean, row.customStrings)
     }
   }]
 
@@ -220,19 +204,19 @@ export function BonjourFencingServiceTable () {
   ]
 
   const handleUpdateData = (data: BonjourFencingService) => {
-    const newData = [ ...bonjourFencingServices ]
-    const targetIdx = newData.findIndex((r: BonjourFencingService) => r.rowId === data.rowId)
+    const services = [ ...bonjourFencingServices ]
+    const targetIdx = services.findIndex((r: BonjourFencingService) => r.rowId === data.rowId)
 
-    updateRowId(data)
+    const newData = updateRowId(data)
 
     if (targetIdx === -1) {
-      newData.push(data)
+      services.push(newData)
     } else {
-      newData.splice(targetIdx, 1, data)
+      services.splice(targetIdx, 1, newData)
     }
 
     // Check the max number of "Other" service is 3.
-    const otherServices = newData.filter((r: BonjourFencingService) => r.service === 'OTHER')
+    const otherServices = services.filter((r: BonjourFencingService) => r.service === 'OTHER')
     if (otherServices.length > 3) {
       showActionModal({
         type: 'error',
@@ -241,7 +225,7 @@ export function BonjourFencingServiceTable () {
             $t({ defaultMessage: 'The max entries with "Other" service is 3.' })
       })
     } else {
-      setBonjourFencingServices(newData)
+      setBonjourFencingServices(services)
       setDrawerVisible(false)
       drawerForm.resetFields()
     }
