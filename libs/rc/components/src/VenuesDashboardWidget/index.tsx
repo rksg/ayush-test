@@ -84,7 +84,7 @@ export function VenuesDashboardWidgetV2 () {
     params: useParams(),
     payload: {
       filters: {
-        venueIds: venueIds ?? []
+        venueIds
       }
     }
   },{
@@ -100,6 +100,7 @@ export function VenuesDashboardWidgetV2 () {
           {({ height, width }) => (
             <DonutChart
               style={{ width, height }}
+              size={'medium'}
               data={queryResults.data} />
           )}
         </AutoSizer>

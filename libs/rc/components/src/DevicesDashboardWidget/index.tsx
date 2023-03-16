@@ -45,7 +45,7 @@ export function DevicesDashboardWidgetV2 () {
     params: useParams(),
     payload: {
       filters: {
-        venueIds: venueIds ?? []
+        venueIds
       }
     }
   },{

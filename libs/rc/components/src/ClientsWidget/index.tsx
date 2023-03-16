@@ -104,7 +104,7 @@ export function ClientsWidgetV2 () {
     params: useParams(),
     payload: {
       filters: {
-        venueIds: venueIds ?? []
+        venueIds
       }
     }
   }, {

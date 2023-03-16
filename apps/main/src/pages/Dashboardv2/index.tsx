@@ -26,7 +26,7 @@ import {
   AlarmWidgetV2,
   ClientsWidgetV2,
   DevicesDashboardWidgetV2,
-  MapWidget,
+  MapWidgetV2,
   VenuesDashboardWidgetV2
 } from '@acx-ui/rc/components'
 import { TenantLink }                        from '@acx-ui/react-router-dom'
@@ -113,7 +113,7 @@ function DashboardMapWidget () {
   return (
     <GridRow style={{ marginTop: '20px' }}>
       <GridCol col={{ span: 24 }} style={{ height: '428px' }}>
-        <MapWidget />
+        <MapWidgetV2 />
       </GridCol>
     </GridRow>
   )

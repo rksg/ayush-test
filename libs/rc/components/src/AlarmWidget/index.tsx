@@ -129,20 +129,7 @@ export function AlarmWidget () {
 }
 
 export function AlarmWidgetV2 () {
-  // const basePath = useTenantLink('/devices')
-  // const navigate = useNavigate()
   const { $t } = useIntl()
-
-  // const onNavigate = (alarm: Alarm) => {
-  //   let path = alarm.entityType === EventTypeEnum.AP
-  //     ? `wifi/${alarm.serialNumber}/details/overview`
-  //     : `switch/${alarm.switchMacAddress}/${alarm.serialNumber}/details/overview`
-
-  //   navigate({
-  //     ...basePath,
-  //     pathname: `${basePath.pathname}/${path}`
-  //   })
-  // }
 
   // Dashboard overview query
   const { filters } = useDashboardFilter()
@@ -153,7 +140,7 @@ export function AlarmWidgetV2 () {
     params: useParams(),
     payload: {
       filters: {
-        venueIds: venueIds ?? []
+        venueIds
       }
     }
   }, {
@@ -172,6 +159,7 @@ export function AlarmWidgetV2 () {
             (data && data.length > 0)
               ? <DonutChart
                 style={{ width, height }}
+                size={'medium'}
                 data={data}/>
               : <NoActiveData text={$t({ defaultMessage: 'No active alarms' })}/>
           )}

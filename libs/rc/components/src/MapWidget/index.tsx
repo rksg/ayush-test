@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { Loader, GoogleMap }                                      from '@acx-ui/components'
 import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
 import { useDashboardOverviewQuery, useDashboardV2OverviewQuery } from '@acx-ui/rc/services'
-import { useParams, useLocation }                                 from '@acx-ui/react-router-dom'
+import { useParams }                                              from '@acx-ui/react-router-dom'
 import { useDashboardFilter, NetworkNodePath }                    from '@acx-ui/utils'
 
 import VenuesMap             from './VenuesMap'
@@ -11,14 +11,20 @@ import { massageVenuesData } from './VenuesMap/helper'
 
 export function MapWidget () {
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
-  const location = useLocation()
   if (!isMapEnabled) {
     return <GoogleMap.NotEnabled />
   }
 
-  return location.pathname.includes('dashboardv2')
-    ? <ActualMapV2 />
-    : <ActualMap/>
+  return <ActualMap/>
+}
+
+export function MapWidgetV2 () {
+  const isMapEnabled = useIsSplitOn(Features.G_MAP)
+  if (!isMapEnabled) {
+    return <GoogleMap.NotEnabled />
+  }
+
+  return <ActualMapV2 />
 }
 
 function ActualMap () {
@@ -43,7 +49,7 @@ function ActualMapV2 () {
     params: useParams(),
     payload: {
       filters: {
-        venueIds: venueIds ?? []
+        venueIds
       }
     }
   })
