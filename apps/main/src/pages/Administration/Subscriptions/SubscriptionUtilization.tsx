@@ -119,10 +119,10 @@ export const SubscriptionUtilization = () => {
         <Subtitle level={4}>
           <Row>
             <Col style={{
-              width: '80%'
+              width: '75%'
             }}>{$t({ defaultMessage: 'Subscription Utilization' })}</Col>
             <Col style={{
-              width: '20%'
+              width: '25%'
             }}>{$t({ defaultMessage: 'Current Subscription Tier' })}: <b>{JwtTierValue()}</b></Col>
           </Row>
         </Subtitle>
