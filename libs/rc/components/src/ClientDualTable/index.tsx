@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, SyntheticEvent } from 'react'
 
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
@@ -27,49 +27,57 @@ export function ClientDualTable () {
       <div>* Search ignores columns that you chose to hide</div></div>` })
   }
 
+  const scrollToTarget = (e: SyntheticEvent, id: string) => {
+    e.preventDefault()
+    const element = document.getElementById(id)
+    if(element){
+      window.scrollTo({ top: element.offsetHeight })
+    }
+  }
+
   return <>
-    <SearchBarDiv>
-      <ClientSearchBar
-        placeHolder={
-          intl.$t({ defaultMessage: 'Search for connected and historical clients...' })}
-        onChange={async (value)=>{
-          if(value.length === 0 || value.length >= 2){
-            setSearchValue(value)
-          }
-        }}
-      />
-      <Tooltip.Question
-        title={<FormattedMessage {...getSearchToolTipText()}
-          values={{
-            div: (contents) => <div>{contents}</div>,
-            ul: (contents) => <ul>{contents}</ul>,
-            li: (contents) => <li>{contents}</li>
-          }}/>}
-        placement='bottom'
-        style={{ gap: '10px' }}
-      />
-    </SearchBarDiv>
-    <SearchCountDiv>
-      {searchValue.length >= 2 &&
+    <div id='ClientsTable'>
+      <SearchBarDiv>
+        <ClientSearchBar
+          placeHolder={
+            intl.$t({ defaultMessage: 'Search for connected and historical clients...' })}
+          onChange={async (value)=>{
+            if(value.length === 0 || value.length >= 2){
+              setSearchValue(value)
+            }
+          }}
+        />
+        <Tooltip.Question
+          title={<FormattedMessage {...getSearchToolTipText()}
+            values={{
+              div: (contents) => <div>{contents}</div>,
+              ul: (contents) => <ul>{contents}</ul>,
+              li: (contents) => <li>{contents}</li>
+            }}/>}
+          placement='bottom'
+          style={{ gap: '10px' }}
+        />
+      </SearchBarDiv>
+      <SearchCountDiv>
+        {searchValue.length >= 2 &&
           intl.$t({ defaultMessage: 'Search Results: {connectedClientCount} Connected clients | ' },
             { connectedClientCount })
-      }
-      {searchValue.length >= 2 &&
-          <Anchor onClick={(e) => e.preventDefault()}>
+        }
+        {searchValue.length >= 2 &&
+          <Anchor onClick={(e) => scrollToTarget(e, 'ClientsTable')}>
             <ClientLink
               data-testid='historicalLink'
-              href='#HistoricalClientsTable'
               title={intl.$t({ defaultMessage: '{historicalClientCount} Historical clients' },
                 { historicalClientCount })} />
           </Anchor>}
-    </SearchCountDiv>
-    <ConnectedClientsTable
-      searchString={searchValue}
-      setConnectedClientCount={setConnectedClientCount} />
+      </SearchCountDiv>
+      <ConnectedClientsTable
+        searchString={searchValue}
+        setConnectedClientCount={setConnectedClientCount} />
+    </div>
     {/* TODO: change string from search input */}
     { searchValue.length >= 2 &&
       <HistoricalClientsTable
-        id='HistoricalClientsTable'
         searchString={searchValue}
         setHistoricalClientCount={setHistoricalClientCount} />}
   </>
