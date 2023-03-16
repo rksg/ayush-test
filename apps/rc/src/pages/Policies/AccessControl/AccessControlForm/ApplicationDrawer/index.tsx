@@ -234,7 +234,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
           .map(avcCat => {
             return {
               ...avcCat,
-              appNames: []
+              appNames: ['All']
             }
           })
         ]
