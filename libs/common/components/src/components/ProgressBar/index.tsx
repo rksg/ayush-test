@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { intlFormats } from '@acx-ui/utils'
+import { intlFormats } from '@acx-ui/formatter'
 
 import { cssStr }  from '../../theme/helper'
 import { Tooltip } from '../Tooltip'

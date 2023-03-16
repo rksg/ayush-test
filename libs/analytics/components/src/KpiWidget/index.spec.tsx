@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { dataApiURL, healthApi }                        from '@acx-ui/analytics/services'
+import { healthApi }                                    from '@acx-ui/analytics/services'
 import { AnalyticsFilter }                              from '@acx-ui/analytics/utils'
-import { Provider, store }                              from '@acx-ui/store'
+import { dataApiURL, Provider, store }                  from '@acx-ui/store'
 import { render, screen, mockGraphqlQuery, renderHook } from '@acx-ui/test-utils'
 import { DateRange }                                    from '@acx-ui/utils'
 

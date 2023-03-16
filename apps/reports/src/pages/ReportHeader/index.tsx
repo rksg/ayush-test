@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import moment from 'moment'
+import moment from 'moment-timezone'
 
 import { NetworkFilter, FilterMode } from '@acx-ui/analytics/components'
 import { RangePicker, PageHeader }   from '@acx-ui/components'
