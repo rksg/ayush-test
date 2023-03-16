@@ -107,8 +107,6 @@ export const TableSettingsGlobalOverride = createGlobalStyle`
       }
       // prevent subtitle to appear in column setting
       ${SubTitle} { display: none; }
-
-
     }
 
     &-title {
