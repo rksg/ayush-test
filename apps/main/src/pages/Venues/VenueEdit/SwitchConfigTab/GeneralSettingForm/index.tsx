@@ -13,7 +13,8 @@ import {
   ConfigurationProfile,
   ProfileTypeEnum,
   networkWifiIpRegExp,
-  VenueSwitchConfiguration
+  VenueSwitchConfiguration,
+  redirectPreviousPage
 } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { getIntl }                               from '@acx-ui/utils'
@@ -56,7 +57,7 @@ export function GeneralSettingForm () {
   const navigate = useNavigate()
   const { tenantId, venueId, activeSubTab } = useParams()
   const basePath = useTenantLink('/venues/')
-  const { editContextData, setEditContextData } = useContext(VenueEditContext)
+  const { editContextData, setEditContextData, previousPath } = useContext(VenueEditContext)
 
   const formRef = useRef<StepsFormInstance<VenueSwitchConfiguration>>()
   const venueSwitchSetting = useVenueSwitchSettingQuery({ params: { tenantId, venueId } })
@@ -180,10 +181,9 @@ export function GeneralSettingForm () {
       <StepsForm
         formRef={formRef}
         onFinish={() => handleUpdate()}
-        onCancel={() => navigate({
-          ...basePath,
-          pathname: `${basePath.pathname}/${venueId}/venue-details/overview`
-        })}
+        onCancel={() =>
+          redirectPreviousPage(navigate, previousPath, basePath)
+        }
         buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
       >
         <StepsForm.StepForm

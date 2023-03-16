@@ -1,6 +1,7 @@
-import { waitFor } from '@testing-library/react'
-import userEvent   from '@testing-library/user-event'
-import { rest }    from 'msw'
+import { waitFor }       from '@testing-library/react'
+import userEvent         from '@testing-library/user-event'
+import { rest }          from 'msw'
+import { BrowserRouter } from 'react-router-dom'
 
 import {
   NewDpskBaseUrl,
@@ -16,7 +17,8 @@ import {
   mockDpskList,
   mockMacRegistrationList,
   mockPersonaGroup, mockPersonaGroupList,
-  mockPersonaGroupTableResult
+  mockPersonaGroupTableResult,
+  replacePagination
 } from '../__tests__/fixtures'
 
 import { PersonaGroupDrawer } from './index'
@@ -35,7 +37,7 @@ describe('Persona Group Drawer', () => {
         (req, res, ctx) => res(ctx.json(mockPersonaGroupList))
       ),
       rest.post(
-        PersonaUrls.searchPersonaGroupList.url,
+        replacePagination(PersonaUrls.searchPersonaGroupList.url),
         (req, res, ctx) => res(ctx.json(mockPersonaGroupTableResult))
       ),
       rest.patch(
@@ -47,7 +49,7 @@ describe('Persona Group Drawer', () => {
         (req, res, ctx) => res(ctx.json(mockPersonaGroup))
       ),
       rest.get(
-        MacRegListUrlsInfo.getMacRegistrationPools.url,
+        replacePagination(MacRegListUrlsInfo.getMacRegistrationPools.url),
         (req, res, ctx) => res(ctx.json(mockMacRegistrationList))
       ),
       rest.get(
@@ -86,12 +88,14 @@ describe('Persona Group Drawer', () => {
   it('should edit a persona group', async () => {
     render(
       <Provider>
-        <PersonaGroupDrawer
-          isEdit
-          visible
-          data={mockPersonaGroup}
-          onClose={closeFn}
-        />
+        <BrowserRouter>
+          <PersonaGroupDrawer
+            isEdit
+            visible
+            data={mockPersonaGroup}
+            onClose={closeFn}
+          />
+        </BrowserRouter>
       </Provider>
     )
 

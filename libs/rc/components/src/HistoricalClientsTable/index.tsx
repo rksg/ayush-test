@@ -9,6 +9,8 @@ import { Table, TableProps, Loader }       from '@acx-ui/components'
 import { useGetHistoricalClientListQuery } from '@acx-ui/rc/services'
 import {
   Client,
+  RequestPayload,
+  TableQuery,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                             from '@acx-ui/react-router-dom'
@@ -93,7 +95,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
   return columns
 }
 
-const defaultPayload = {
+export const defaultHistoricalClientPayload = {
   searchString: '',
   fields: ['clientMac', 'clientIP', 'userName', 'hostname', 'venueId',
     'serialNumber', 'ssid', 'disconnectTime', 'cog', 'ssid', 'venueName', 'apName',
@@ -109,15 +111,14 @@ const defaultFilters = {
 }
 
 export function HistoricalClientsTable
-({ searchString, setHistoricalClientCount, id } :
-  { searchString: string, setHistoricalClientCount: (historicalClientCount: number) => void,
-    id: string
+({ searchString, setHistoricalClientCount } :
+  { searchString: string, setHistoricalClientCount: (historicalClientCount: number) => void
   }) {
   const { $t } = useIntl()
   const params = useParams()
 
-  defaultPayload.searchString = searchString
-  defaultPayload.filters =
+  defaultHistoricalClientPayload.searchString = searchString
+  defaultHistoricalClientPayload.filters =
     params.venueId ? { ...defaultFilters, venueId: [params.venueId] } :
       params.serialNumber ? { ...defaultFilters, serialNumber: [params.serialNumber] } :
         params.apId ? { ...defaultFilters, serialNumber: [params.apId] } :
@@ -126,7 +127,7 @@ export function HistoricalClientsTable
   const HistoricalClientsTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useGetHistoricalClientListQuery,
-      defaultPayload
+      defaultPayload: defaultHistoricalClientPayload
     })
 
     useEffect(() => {
@@ -136,7 +137,7 @@ export function HistoricalClientsTable
     }, [tableQuery])
 
     return (
-      <div id={id}>
+      <div>
         <Loader states={[
           tableQuery
         ]}>
@@ -164,5 +165,20 @@ export function HistoricalClientsTable
 
   return (
     <HistoricalClientsTable />
+  )
+}
+
+export const GlobalSearchHistoricalClientsTable = (props: {
+  tableQuery?: TableQuery<Client, RequestPayload<unknown>, unknown>
+}) => {
+
+  const tableQuery = props.tableQuery
+  return (
+    <Table
+      columns={getCols(useIntl())}
+      dataSource={tableQuery?.data?.data}
+      onChange={tableQuery?.handleTableChange}
+      rowKey='clientMac'
+    />
   )
 }

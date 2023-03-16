@@ -73,7 +73,9 @@ const VLANPoolInstance = () => {
             'vlanPool',
             'vlanMembers'
           ], (data.vlanMembers as string).split(','))
-        }}/></Tooltip>
+        }}
+        vlanCount={vlanPoolList?.length||0}
+        /></Tooltip>
       </Space></Form.Item>
       <Form.Item name={['wlan', 'advancedCustomization','vlanPool','name']} noStyle>
         <Input type='hidden' />

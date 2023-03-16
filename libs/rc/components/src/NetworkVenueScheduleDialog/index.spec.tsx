@@ -27,7 +27,7 @@ describe('NetworkVenueTabScheduleDialog', () => {
   beforeAll(async () => {
     mockServer.use(
       rest.put(
-        WifiUrlsInfo.updateNetworkVenue.url,
+        WifiUrlsInfo.updateNetworkVenue.url.split('?')[0],
         (req, res, ctx) => res(ctx.json({ requestId: 'f229e6d6-f728-4b56-81ce-507877a4f4da' }))
       ),
       rest.get(

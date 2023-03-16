@@ -32,6 +32,7 @@ export interface EditContext {
   hasError?: boolean,
   oldData: unknown,
   newData: unknown,
+  previousPath?: string,
   updateChanges: () => void,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setData: (data: any) => void,
@@ -68,11 +69,14 @@ export const VenueEditContext = createContext({} as {
 
   editServerContextData: ServerSettingContext,
   setEditServerContextData: (data: ServerSettingContext) => void
+  previousPath: string
+  setPreviousPath: (data: string) => void
 })
 
 export function VenueEdit () {
   const { activeTab } = useParams()
   const Tab = tabs[activeTab as keyof typeof tabs]
+  const [previousPath, setPreviousPath] = useState('')
   const [editContextData, setEditContextData] = useState({} as EditContext)
   const [
     editNetworkingContextData, setEditNetworkingContextData
@@ -99,7 +103,9 @@ export function VenueEdit () {
       editSecurityContextData,
       setEditSecurityContextData,
       editServerContextData,
-      setEditServerContextData
+      setEditServerContextData,
+      previousPath,
+      setPreviousPath
     }}>
       <VenueEditPageHeader />
       { Tab && <Tab /> }
@@ -163,6 +169,7 @@ function processWifiTab (
     case 'servers':
       editServerContextData?.updateSyslog?.()
       editServerContextData?.updateBonjourFencing?.()
+      editServerContextData?.updateVenueApSnmp?.()
       break
   }
 }

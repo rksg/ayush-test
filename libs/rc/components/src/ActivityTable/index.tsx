@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import moment                     from 'moment'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps, Button } from '@acx-ui/components'
+import { useActivitiesQuery }                from '@acx-ui/rc/services'
 import {
   Activity,
   RequestPayload,
@@ -12,28 +13,26 @@ import {
   productMapping,
   severityMapping,
   statusMapping,
-  CommonUrlsInfo
+  CommonUrlsInfo,
+  TABLE_QUERY_LONG_POLLING_INTERVAL,
+  useTableQuery,
+  noDataDisplay
 } from '@acx-ui/rc/utils'
 import { formatter, useDateFilter } from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 
-export const defaultSorter = {
-  sortField: 'startDatetime',
-  sortOrder: 'DESC'
-}
-
 export const columnState = {
   defaultValue: {
     startDateTime: true,
-    product: false,
     status: true,
-    source: true,
+    product: false,
+    name: true,
     description: true
   }
 }
 
-export const useActivityTableFilter = () => {
+const useActivityTableFilter = () => {
   const { startDate, endDate } = useDateFilter()
   return {
     fromTime: moment(startDate).utc().format(),
@@ -41,7 +40,12 @@ export const useActivityTableFilter = () => {
   }
 }
 
-export const defaultPayload = {
+const defaultSorter = {
+  sortField: 'startDatetime',
+  sortOrder: 'DESC'
+}
+
+const defaultPayload = {
   url: CommonUrlsInfo.getActivityList.url,
   fields: [
     'startDatetime',
@@ -53,6 +57,28 @@ export const defaultPayload = {
     'descriptionData',
     'severity'
   ]
+}
+
+export function useActivityTableQuery (baseFilters: Record<string, string> = {}) {
+  const { fromTime, toTime } = useActivityTableFilter()
+  const filters = { ...baseFilters, fromTime, toTime }
+
+  const tableQuery = useTableQuery<Activity>({
+    useQuery: useActivitiesQuery,
+    defaultPayload: { ...defaultPayload, filters },
+    sorter: defaultSorter,
+    option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
+  })
+
+  useEffect(
+    () => tableQuery.setPayload({
+      ...tableQuery.payload,
+      filters: { ...(tableQuery.payload.filters as object), ...filters }
+    }),
+    [fromTime, toTime]
+  )
+
+  return tableQuery
 }
 
 interface ActivityTableProps {
@@ -104,16 +130,18 @@ const ActivityTable = ({
       dataIndex: 'product',
       sorter: true,
       render: function (_: React.ReactNode, row: { product: string }) {
-        const msg = productMapping[row.product as keyof typeof productMapping]
-        return $t(msg)
+        const key = row.product as keyof typeof productMapping
+        const msg = productMapping[key] ? $t(productMapping[key]) : noDataDisplay
+        return msg
       },
       filterable: (Array.isArray(filterables) ? filterables.includes('product') : filterables)
         && Object.entries(productMapping).map(([key, value])=>({ key, value: $t(value) }))
     },
     {
-      key: 'source',
+      key: 'name',
       title: $t({ defaultMessage: 'Source' }),
-      dataIndex: ['admin', 'name']
+      dataIndex: ['admin', 'name'],
+      sorter: true
     },
     {
       key: 'description',
@@ -146,14 +174,6 @@ const ActivityTable = ({
     {
       title: defineMessage({ defaultMessage: 'Source' }),
       value: data.admin.name
-    },
-    {
-      title: defineMessage({ defaultMessage: 'Admin IP' }),
-      value: data.admin.ip
-    },
-    {
-      title: defineMessage({ defaultMessage: 'Admin Interface' }),
-      value: data.admin.interface
     },
     {
       title: defineMessage({ defaultMessage: 'Description' }),
