@@ -7,11 +7,11 @@ import moment                     from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { LayoutUI, Loader, Badge, StatusIcon }                                              from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                                        from '@acx-ui/formatter'
 import { TimelineDrawer }                                                                   from '@acx-ui/rc/components'
 import { useActivitiesQuery }                                                               from '@acx-ui/rc/services'
 import { Activity, CommonUrlsInfo, useTableQuery, getActivityDescription, severityMapping } from '@acx-ui/rc/utils'
 import { useTenantLink, useNavigate }                                                       from '@acx-ui/react-router-dom'
-import { formatter }                                                                        from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -140,11 +140,11 @@ export default function ActivityButton () {
   const getDrawerData = (data: Activity) => [
     {
       title: defineMessage({ defaultMessage: 'Start Time' }),
-      value: formatter('dateTimeFormatWithSeconds')(data.startDatetime)
+      value: formatter(DateFormatEnum.DateTimeFormatWithSeconds)(data.startDatetime)
     },
     {
       title: defineMessage({ defaultMessage: 'End Time' }),
-      value: formatter('dateTimeFormatWithSeconds')(data.endDatetime)
+      value: formatter(DateFormatEnum.DateTimeFormatWithSeconds)(data.endDatetime)
     },
     {
       title: defineMessage({ defaultMessage: 'Severity' }),

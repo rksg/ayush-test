@@ -1,5 +1,3 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-
 import {
   LicenseUrlsInfo,
   Entitlement,
@@ -7,14 +5,7 @@ import {
   createHttpRequest,
   RequestPayload
 } from '@acx-ui/rc/utils'
-
-export const baseLicenseApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  reducerPath: 'licenseApi',
-  tagTypes: ['License'],
-  refetchOnMountOrArgChange: true,
-  endpoints: () => ({ })
-})
+import { baseLicenseApi } from '@acx-ui/store'
 
 export const licenseApi = baseLicenseApi.injectEndpoints({
   endpoints: (build) => ({
@@ -40,6 +31,7 @@ export const licenseApi = baseLicenseApi.injectEndpoints({
     })
   })
 })
+
 export const {
   useEntitlementListQuery,
   useEntitlementBannersQuery

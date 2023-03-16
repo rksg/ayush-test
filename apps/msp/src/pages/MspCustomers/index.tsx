@@ -11,7 +11,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   ManageAdminsDrawer,
   ResendInviteModal,
@@ -26,7 +27,6 @@ import {
   useGetMspLabelQuery
 } from '@acx-ui/rc/services'
 import {
-  DateFormatEnum,
   DelegationEntitlementRecord,
   EntitlementNetworkDeviceType,
   MspEc,
@@ -76,7 +76,7 @@ const transformCreationDate = (row: MspEc) => {
     return ''
   }
   const Epoch = creationDate - (creationDate % 1000)
-  const activeDate = moment(Epoch).format(DateFormatEnum.UserDateFormat)
+  const activeDate = formatter(DateFormatEnum.DateFormat)(Epoch)
   return activeDate
 }
 
@@ -93,7 +93,7 @@ const transformExpirationDate = (row: MspEc) => {
         target = entitlement
       }
     }
-    expirationDate = moment(target.expirationDate).format(DateFormatEnum.UserDateFormat)
+    expirationDate = formatter(DateFormatEnum.DateFormat)(target.expirationDate)
   })
   return expirationDate
 }
