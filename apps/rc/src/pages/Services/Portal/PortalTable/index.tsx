@@ -3,10 +3,9 @@ import { useState } from 'react'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { SimpleListTooltip }                                              from '@acx-ui/rc/components'
-import { useDeletePortalMutation, useGetPortalProfileListQuery, useNetworkListQuery }          from '@acx-ui/rc/services'
-import { useGetPortalLangMutation }                                       from '@acx-ui/rc/services'
+import { Button, PageHeader, Table, TableProps, Loader, showActionModal }             from '@acx-ui/components'
+import { useDeletePortalMutation, useGetPortalProfileListQuery, useNetworkListQuery } from '@acx-ui/rc/services'
+import { useGetPortalLangMutation }                                                   from '@acx-ui/rc/services'
 import {
   ServiceType,
   useTableQuery,
@@ -173,12 +172,13 @@ export default function PortalTable () {
       dataIndex: 'networkCount',
       align: 'center',
       filterable: networkNameMap,
-      render: (data, row) =>{
-        if (!row.networkIds || row.networkIds.length === 0) return 0
-        const networkIds = row.networkIds
-        // eslint-disable-next-line max-len
-        const tooltipItems = networkNameMap.filter(v => networkIds!.includes(v.key)).map(v => v.value)
-        return <SimpleListTooltip items={tooltipItems} displayText={networkIds.length} />
+      render: (data) =>{
+        return data?data:0
+        // if (!row.networkIds || row.networkIds.length === 0) return 0
+        // const networkIds = row.networkIds
+        // // eslint-disable-next-line max-len
+        // const tooltipItems = networkNameMap.filter(v => networkIds!.includes(v.key)).map(v => v.value)
+        // return <SimpleListTooltip items={tooltipItems} displayText={networkIds.length} />
       }
     }
   ]
