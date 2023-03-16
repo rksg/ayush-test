@@ -2,20 +2,37 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, EdgeDhcpUrls, EdgeUrlsInfo, NetworkSegmentationUrls } from '@acx-ui/rc/utils'
-import { Provider }                                                            from '@acx-ui/store'
+import {
+  CommonUrlsInfo,
+  EdgeDhcpUrls,
+  EdgeUrlsInfo,
+  NetworkSegmentationUrls,
+  SwitchUrlsInfo
+} from '@acx-ui/rc/utils'
+import { Provider } from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen,
   waitFor,
   within
-}                                 from '@acx-ui/test-utils'
+} from '@acx-ui/test-utils'
 
-import { mockEdgeData, mockEdgeDhcpDataList, mockNetworkGroup, mockVenueData, mockVenueNetworkData } from '../__tests__/fixtures'
+import {
+  mockEdgeData,
+  mockEdgeDhcpDataList,
+  mockNetworkGroup,
+  mockNsgData,
+  mockNsgSwitchInfoData,
+  mockVenueData,
+  mockVenueNetworkData,
+  switchLagList,
+  switchPortList,
+  switchVlanUnion,
+  webAuthList
+} from '../__tests__/fixtures'
 
-import AddNetworkSegmentation from '.'
-
+import NetworkSegmentationForm from '.'
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -44,12 +61,12 @@ jest.mock('antd', () => {
 
 const createNsgPath = '/:tenantId/services/networkSegmentation/create'
 
-describe('Create NetworkSegmentation', () => {
-  // eslint-disable-next-line @typescript-eslint/semi
-  let params: { tenantId: string };
+describe('Update NetworkSegmentation', () => {
+  let params: { tenantId: string, serviceId: string }
   beforeEach(() => {
     params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      serviceId: 'testServiceId'
     }
 
     mockServer.use(
@@ -81,24 +98,60 @@ describe('Create NetworkSegmentation', () => {
         CommonUrlsInfo.getNetworkDeepList.url,
         (req, res, ctx) => res(ctx.status(200))
       ),
-      rest.post(
-        NetworkSegmentationUrls.createNetworkSegmentationGroup.url,
+      rest.get(
+        NetworkSegmentationUrls.getNetworkSegmentationGroupById.url,
+        (req, res, ctx) => res(ctx.json(mockNsgData))
+      ),
+      rest.get(
+        NetworkSegmentationUrls.getSwitchInfoByNSGId.url,
+        (req, res, ctx) => res(ctx.json(mockNsgSwitchInfoData))
+      ),
+      rest.put(
+        NetworkSegmentationUrls.updateNetworkSegmentationGroup.url,
         (req, res, ctx) => res(ctx.status(202))
       ),
       rest.post(
-        EdgeDhcpUrls.addDhcpService.url,
-        (req, res, ctx) => res(ctx.status(202))
+        SwitchUrlsInfo.getSwitchPortlist.url,
+        (req, res, ctx) => res(ctx.json({ data: switchPortList }))
       ),
-      rest.patch(
-        EdgeDhcpUrls.patchDhcpService.url,
-        (req, res, ctx) => res(ctx.status(202))
+      rest.get(
+        SwitchUrlsInfo.getSwitchVlanUnion.url,
+        (req, res, ctx) => res(ctx.json(switchVlanUnion))
+      ),
+      rest.get(
+        SwitchUrlsInfo.getLagList.url,
+        (req, res, ctx) => res(ctx.json(switchLagList))
+      ),
+      rest.get(
+        NetworkSegmentationUrls.getWebAuthTemplate.url,
+        (req, res, ctx) => res(ctx.json({ ...webAuthList[0] }))
+      ),
+      rest.post(
+        NetworkSegmentationUrls.getWebAuthTemplateList.url,
+        (req, res, ctx) => res(ctx.json({ data: webAuthList }))
+      ),
+      rest.get(
+        NetworkSegmentationUrls.getAvailableSwitches.url,
+        (req, res, ctx) => res(ctx.json({ switchViewList: mockNsgSwitchInfoData.distributionSwitches }))
+      ),
+      rest.get(
+        NetworkSegmentationUrls.getAccessSwitchesByDS.url,
+        (req, res, ctx) => res(ctx.json({ switchViewList: mockNsgSwitchInfoData.accessSwitches }))
+      ),
+      rest.post(
+        NetworkSegmentationUrls.validateDistributionSwitchInfo.url,
+        (req, res, ctx) => res(ctx.json({ response: { valid: true } }))
+      ),
+      rest.post(
+        NetworkSegmentationUrls.validateAccessSwitchInfo.url,
+        (req, res, ctx) => res(ctx.json({ response: { valid: true } }))
       )
     )
   })
 
   it('should create networkSegmentation successfully', async () => {
     const user = userEvent.setup()
-    render(<AddNetworkSegmentation />, {
+    render(<NetworkSegmentationForm />, {
       wrapper: Provider,
       route: { params, path: createNsgPath }
     })
@@ -138,30 +191,46 @@ describe('Create NetworkSegmentation', () => {
     )
     await user.click(await screen.findByRole('checkbox', { name: 'Network 1' }))
     await user.click(await screen.findByRole('button', { name: 'Next' }))
-    // step4
+
+    // step 4
+    await user.click(await screen.findByRole('button', { name: 'Add Distribution Switch' }))
+    await user.selectOptions(
+      await screen.findByRole('combobox', { name: 'Distribution Switch' }),
+      await screen.findByRole('option', { name: 'FMN4221R00H---DS---3' })
+    )
+    await user.type(await screen.findByRole('textbox', { name: 'VLAN Range' }), '10')
+    await user.type(await screen.findByRole('textbox', { name: 'Lookback Interface ID' }), '12')
+    await user.type(await screen.findByRole('textbox', { name: 'Lookback Interface IP Address' }), '1.2.3.4')
+    await user.type(await screen.findByRole('textbox', { name: 'Lookback Interface Subnet Mask' }), '255.255.255.0')
+
+    await user.click(await screen.findByRole('button', { name: 'Select' }))
+    const asTransfer = await screen.findByRole('dialog', { name: /Select Access Switches/i })
+    await user.click(await within(asTransfer).findByText(/FEK3224R09N---AS---3/i))
+    await user.click(await within(asTransfer).findByRole('button', { name: /Add/i }))
+
+    await user.click(await within(asTransfer).findByRole('button', { name: 'Apply' }))
+
+    await user.click(await screen.findByRole('button', { name: 'Save' }))
+
+    await screen.findByRole('row', { name: /FMN4221R00H---DS---3/i })
+    await user.click(await screen.findByRole('button', { name: 'Next' }))
+
+    // step5
+    const asRow = await screen.findByRole('row', { name: /FEK3224R09N---AS---3/i })
+    await user.click(asRow)
+    await user.click(await screen.findByRole('button', { name: 'Edit' }))
+    await user.click(await screen.findByRole('button', { name: 'Save' }))
+
+    await user.click(await screen.findByRole('button', { name: 'Next' }))
+    // step6
     await user.click(await screen.findByRole('button', { name: 'Finish' }))
-  })
-
-
-  it('cancel and go back to device list', async () => {
-    const user = userEvent.setup()
-    render(<AddNetworkSegmentation />, {
-      wrapper: Provider,
-      route: { params, path: createNsgPath }
-    })
-    await user.click(await screen.findByRole('button', { name: 'Cancel' }))
-    expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/services`,
-      hash: '',
-      search: ''
-    })
-  })
+  }, 30000)
 
   it('Add DHCP service', async () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <AddNetworkSegmentation />
+        <NetworkSegmentationForm />
       </Provider>, {
         route: { params, path: createNsgPath }
       })
@@ -205,7 +274,7 @@ describe('Create NetworkSegmentation', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <AddNetworkSegmentation />
+        <NetworkSegmentationForm />
       </Provider>, {
         route: { params, path: createNsgPath }
       })

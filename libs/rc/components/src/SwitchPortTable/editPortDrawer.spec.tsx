@@ -98,16 +98,16 @@ describe('EditPortDrawer', () => {
       rest.get(SwitchUrlsInfo.getSwitchVlans.url,
         (_, res, ctx) => res(ctx.json(switchVlans))
       ),
-      rest.get(SwitchUrlsInfo.getPortSetting.url,
+      rest.post(SwitchUrlsInfo.getPortSetting.url,
         (_, res, ctx) => res(ctx.json(portSetting[0]))
       ),
       rest.get(SwitchUrlsInfo.getAclUnion.url,
         (_, res, ctx) => res(ctx.json(aclUnion))
       ),
-      rest.get(SwitchUrlsInfo.getTaggedVlansByVenue.url,
+      rest.post(SwitchUrlsInfo.getTaggedVlansByVenue.url,
         (_, res, ctx) => res(ctx.json([]))
       ),
-      rest.get(SwitchUrlsInfo.getUntaggedVlansByVenue.url,
+      rest.post(SwitchUrlsInfo.getUntaggedVlansByVenue.url,
         (_, res, ctx) => res(ctx.json([]))
       ),
       rest.post(SwitchUrlsInfo.getPortsSetting.url,
@@ -228,7 +228,7 @@ describe('EditPortDrawer', () => {
 
     it('should handle ICX7650-48F correctly', async () => {
       mockServer.use(
-        rest.get(SwitchUrlsInfo.getPortSetting.url,
+        rest.post(SwitchUrlsInfo.getPortSetting.url,
           (_, res, ctx) => res(ctx.json({
             ...portSetting[0],
             poeCapability: false,
@@ -282,7 +282,7 @@ describe('EditPortDrawer', () => {
 
     it('should handle tagged vlans by venue correctly', async () => {
       mockServer.use(
-        rest.get(SwitchUrlsInfo.getPortSetting.url,
+        rest.post(SwitchUrlsInfo.getPortSetting.url,
           (_, res, ctx) => res(ctx.json({
             ...portSetting[0],
             voiceVlan: 2,
@@ -290,7 +290,7 @@ describe('EditPortDrawer', () => {
             revert: true
           }))
         ),
-        rest.get(SwitchUrlsInfo.getUntaggedVlansByVenue.url,
+        rest.post(SwitchUrlsInfo.getUntaggedVlansByVenue.url,
           (_, res, ctx) => res(ctx.json(untaggedVlansByVenue))
         )
       )
@@ -321,13 +321,13 @@ describe('EditPortDrawer', () => {
 
     it('should handle untagged vlans by venue correctly', async () => {
       mockServer.use(
-        rest.get(SwitchUrlsInfo.getPortSetting.url,
+        rest.post(SwitchUrlsInfo.getPortSetting.url,
           (_, res, ctx) => res(ctx.json({
             ...portSetting[0],
             revert: true
           }))
         ),
-        rest.get(SwitchUrlsInfo.getTaggedVlansByVenue.url,
+        rest.post(SwitchUrlsInfo.getTaggedVlansByVenue.url,
           (_, res, ctx) => res(ctx.json(taggedVlansByVenue))
         )
       )
@@ -455,7 +455,7 @@ describe('EditPortDrawer', () => {
   describe('create/edit LLDP QoS', () => {
     it('should render Edit LLDP Table & Modal correctly', async () => {
       mockServer.use(
-        rest.get(SwitchUrlsInfo.getPortSetting.url,
+        rest.post(SwitchUrlsInfo.getPortSetting.url,
           (_, res, ctx) => res(ctx.json({
             ...portSetting[1],
             lldpQos: [{
@@ -495,7 +495,7 @@ describe('EditPortDrawer', () => {
 
     it('should delete LLDP correctly', async () => {
       mockServer.use(
-        rest.get(SwitchUrlsInfo.getPortSetting.url,
+        rest.post(SwitchUrlsInfo.getPortSetting.url,
           (_, res, ctx) => res(ctx.json(portSetting[1]))
         )
       )
@@ -531,7 +531,7 @@ describe('EditPortDrawer', () => {
     it('should create LLDP correctly', async () => {
       const user = userEvent.setup()
       mockServer.use(
-        rest.get(SwitchUrlsInfo.getPortSetting.url,
+        rest.post(SwitchUrlsInfo.getPortSetting.url,
           (_, res, ctx) => res(ctx.json({
             ...portSetting[1],
             lldpQos: null
@@ -579,7 +579,7 @@ describe('EditPortDrawer', () => {
     it('should create and edit LLDP correctly', async () => {
       const user = userEvent.setup()
       mockServer.use(
-        rest.get(SwitchUrlsInfo.getPortSetting.url,
+        rest.post(SwitchUrlsInfo.getPortSetting.url,
           (_, res, ctx) => res(ctx.json(portSetting[1]))
         )
       )
@@ -682,7 +682,7 @@ describe('EditPortDrawer', () => {
 
     it('should render status and vlans correctly (revert=true)', async () => {
       mockServer.use(
-        rest.get(SwitchUrlsInfo.getPortSetting.url,
+        rest.post(SwitchUrlsInfo.getPortSetting.url,
           (_, res, ctx) => res(ctx.json({
             ...portSetting[0],
             revert: true
