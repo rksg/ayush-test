@@ -29,7 +29,8 @@ import {
   UnitPersonaConfig,
   VenueLanPorts
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }          from '@acx-ui/react-router-dom'
+import { validationMessages } from '@acx-ui/utils'
 
 
 function AccessPointLanPortSelector (props: {
@@ -359,11 +360,14 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
         <Form.Item
           noStyle
           name={['unitPersona', 'vlan']}
+          rules={[{
+            type: 'number',
+            min: 1,
+            max: 4094,
+            message: $t(validationMessages.vlanRange)
+          }]}
         >
-          <InputNumber
-            min={1}
-            max={4094}
-          />
+          <InputNumber />
         </Form.Item>
       </Space>
     </Form.Item>
@@ -382,13 +386,15 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
       {
         enableGuestVlan &&
         <Form.Item
-          noStyle
           name={['guestPersona', 'vlan']}
+          rules={[{
+            type: 'number',
+            min: 1,
+            max: 4094,
+            message: $t(validationMessages.vlanRange)
+          }]}
         >
-          <InputNumber
-            min={1}
-            max={4094}
-          />
+          <InputNumber />
         </Form.Item>
       }
     </Space>
