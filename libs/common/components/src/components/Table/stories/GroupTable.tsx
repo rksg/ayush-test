@@ -796,7 +796,7 @@ export const groupByColumns: TableProps<APExtendedGroupedResponse | APExtended>[
       label: 'AP Group',
       actions: [{
         key: 'edit',
-        renderer: (record) => <a href={`/edit/${record.name}`}>Edit</a>
+        renderer: (record) => <a href={`/edit/${record.deviceGroupName}`}>Edit</a>
       }],
       attributes: [
         {
