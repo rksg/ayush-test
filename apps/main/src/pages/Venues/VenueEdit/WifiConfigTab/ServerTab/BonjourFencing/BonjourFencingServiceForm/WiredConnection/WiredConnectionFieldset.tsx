@@ -23,14 +23,15 @@ interface DeviceMacAddressModalProps {
   setVisible: (v: boolean) => void,
   handleUpdate: (data: DeviceMacAddressTableEntry[]) => void,
   maxAllowLen: number,
-  usedMacAddrs: string[]
+  usedMacAddrs: string[],
+  otherUsedMacAddrs: string[]
 }
 
 const DeviceMacAddressModal = (props: DeviceMacAddressModalProps) => {
   const { $t } = useIntl()
 
   const [form] = Form.useForm()
-  const { visible, setVisible, handleUpdate, maxAllowLen, usedMacAddrs } = props
+  const { visible, setVisible, handleUpdate, maxAllowLen, usedMacAddrs, otherUsedMacAddrs } = props
   const [disabledAddBtn, setDisableAddBtn] = useState(true)
   const [tags, setTags] = useState<TagData[]>([])
 
@@ -38,10 +39,11 @@ const DeviceMacAddressModal = (props: DeviceMacAddressModalProps) => {
     const tagsLen = newtags.length
     const hasAnyInvalid = _.some(newtags, ['isInValid', true])
     const hasAnyUsed = _.some(newtags, ['isUsed', true])
+    const hasAnyOtherRulesUsed = _.some(newtags, ['isUsedOtherRules', true])
 
     const hasAnyError = (tagsLen === 0 || tagsLen > maxAllowLen) ||
                         !!hasAnyInvalid ||
-                        !!hasAnyUsed
+                        !!hasAnyUsed || !!hasAnyOtherRulesUsed
 
     setDisableAddBtn(hasAnyError)
     setTags(newtags)
@@ -60,6 +62,7 @@ const DeviceMacAddressModal = (props: DeviceMacAddressModalProps) => {
         <MacAddressesTags
           maxNumOfTags={maxAllowLen}
           usedMacAddrs={usedMacAddrs}
+          otherUsedMacAddrs={otherUsedMacAddrs}
           tags={tags}
           tagsChanged={handleTagsChanged}
         />
@@ -113,13 +116,7 @@ const DeviceMacAddressTable = (props: DeviceMacAddressTableProps) => {
 
   const [showMacAddressModal, setShowMacAddressModal] = useState(false)
 
-
-  const getUsedAddress = () => {
-    const currentUsedMacAddr = tableData.map(d => d.deviceMacAddresses)
-    return _.concat(otherUsedMacAddrs, currentUsedMacAddr)
-  }
-
-  let usedMacAddrs = getUsedAddress()
+  const currentUsedMacAddr = tableData.map(d => d.deviceMacAddresses)
 
   const handleAdd = () => {
     // show
@@ -174,7 +171,9 @@ const DeviceMacAddressTable = (props: DeviceMacAddressTableProps) => {
           setVisible={setShowMacAddressModal}
           handleUpdate={updateTableData}
           maxAllowLen={maxNumOfMACAddress - tableData.length}
-          usedMacAddrs={usedMacAddrs}
+          usedMacAddrs={currentUsedMacAddr}
+          otherUsedMacAddrs={otherUsedMacAddrs}
+
         />
         <Table
           type='form'
@@ -211,18 +210,20 @@ const WiredRulesModal = (props: WiredRulesModalProps) => {
   const { visible, setVisible, handleUpdate, existedRules } = props
   const [disabledAddBtn, setDisableAddBtn] = useState(true)
   const [macAddrs, setMacAddrs] = useState<DeviceMacAddressTableEntry[]>([])
+  const [usedRuleNames, setUsedRuleNames] = useState<string[]>([])
   const [usedMacAddrs, setUsedMacAddrs] = useState<string[]>([])
   const [conflictMacAddes, setConflictMacAddes] = useState('')
   const { venueAps } = useContext(BonjourFencingServiceContext)
 
   useEffect(() => {
-    let usedMac: string[] = []
-    if (existedRules) {
-      existedRules.forEach(r => {
-        usedMac = _.concat(usedMac, r.deviceMacAddresses)
-      })
-    }
+    const rules = existedRules || []
+    const useNames = rules.map(r => r.name)
+    setUsedRuleNames(useNames)
 
+    let usedMac: string[] = []
+    rules.forEach(r => {
+      usedMac = _.concat(usedMac, r.deviceMacAddresses)
+    })
     setUsedMacAddrs(usedMac)
 
   }, [existedRules])
@@ -247,6 +248,14 @@ const WiredRulesModal = (props: WiredRulesModalProps) => {
     setDisableAddBtn(!isValid)
   }
 
+  const ruleNameDuplicationValidator = async () => {
+    const ruleName = form.getFieldValue('name')
+
+    return (usedRuleNames && usedRuleNames.includes(ruleName))
+      ? Promise.reject($t({ defaultMessage: 'The Rule Name already exists' }))
+      : Promise.resolve()
+  }
+
   const content = <Form
     form={form}
     layout='vertical'
@@ -262,7 +271,8 @@ const WiredRulesModal = (props: WiredRulesModalProps) => {
       rules={[
         { min: 2 },
         { max: 32 },
-        { required: true }
+        { required: true },
+        { validator: () => ruleNameDuplicationValidator() }
       ]}
     />
     <FencingRangeRadioGroup
@@ -305,11 +315,7 @@ const WiredRulesModal = (props: WiredRulesModalProps) => {
         <div style={{ color: 'red' }}>
           {$t({
             // eslint-disable-next-line max-len
-            defaultMessage: 'The MAC Address list can\'t contain the Closest AP MAC address.{br}{apName}:[{apMac}]'
-          }, {
-            br: <br/>,
-            apName: _.find(venueAps, (ap) => (ap.apMac === conflictMacAddes))?.name,
-            apMac: conflictMacAddes
+            defaultMessage: ' You have entered the same MAC address for both the device and the closest AP. Only Unique MAC addresses allowed.'
           })}
         </div>
       }
@@ -460,8 +466,6 @@ export const WiredConnectionFieldset = () => {
 
   useEffect(() => {
     const wiredRules = currentService?.wiredRules || []
-    //console.log('===== set WiredConnectFieldset data =====')
-    //console.log(wiredRules)
     setTableData(wiredRules)
   }, [ currentService ] )
 
