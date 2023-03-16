@@ -66,7 +66,7 @@ exports[`AP Information Widget should render "No active alarms" when no alarms e
               class="Grid__Container-sc-5irhjd-1 zzbxI"
             >
               <div
-                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1kux3bo-2 eHGaGv"
+                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1kux3bo-1 FsDbs"
               >
                 <div
                   class="ant-space-item"
@@ -108,13 +108,13 @@ exports[`AP Information Widget should render "No active alarms" when no alarms e
               class="Grid__Container-sc-5irhjd-1 zzbxI"
             >
               <div
-                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1kux3bo-2 eHGaGv"
+                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1kux3bo-1 FsDbs"
               >
                 <div
                   class="ant-space-item"
                 >
                   <a
-                    class="styledComponents__TenantLinkSvg-sc-1kux3bo-5 dkZZIP"
+                    class="styledComponents__TenantLinkSvg-sc-1kux3bo-4 eMltkO"
                     href="/t/tenant-id/devices/wifi/undefined/details/analytics"
                   >
                     <div
@@ -134,13 +134,13 @@ exports[`AP Information Widget should render "No active alarms" when no alarms e
               class="Grid__Container-sc-5irhjd-1 zzbxI"
             >
               <div
-                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1kux3bo-2 eHGaGv"
+                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1kux3bo-1 FsDbs"
               >
                 <div
                   class="ant-space-item"
                 >
                   <a
-                    class="styledComponents__TenantLinkBlack-sc-1kux3bo-4 eWXDya"
+                    class="styledComponents__TenantLinkBlack-sc-1kux3bo-3 hsPaUF"
                     href="/t/tenant-id/devices/wifi/undefined/details/analytics/health/overview"
                   >
                     <div
@@ -160,13 +160,13 @@ exports[`AP Information Widget should render "No active alarms" when no alarms e
               class="Grid__Container-sc-5irhjd-1 zzbxI"
             >
               <div
-                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1kux3bo-2 eHGaGv"
+                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1kux3bo-1 FsDbs"
               >
                 <div
                   class="ant-space-item"
                 >
                   <a
-                    class="styledComponents__TenantLinkBlack-sc-1kux3bo-4 eWXDya"
+                    class="styledComponents__TenantLinkBlack-sc-1kux3bo-3 hsPaUF"
                     href="/t/tenant-id/devices/wifi/undefined/details/analytics/health/overview"
                   >
                     <div
@@ -186,13 +186,13 @@ exports[`AP Information Widget should render "No active alarms" when no alarms e
               class="Grid__Container-sc-5irhjd-1 zzbxI"
             >
               <div
-                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1kux3bo-2 eHGaGv"
+                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1kux3bo-1 FsDbs"
               >
                 <div
                   class="ant-space-item"
                 >
                   <a
-                    class="styledComponents__TenantLinkBlack-sc-1kux3bo-4 eWXDya"
+                    class="styledComponents__TenantLinkBlack-sc-1kux3bo-3 hsPaUF"
                     href="/t/tenant-id/devices/wifi/undefined/details/analytics/health/overview"
                   >
                     <div
