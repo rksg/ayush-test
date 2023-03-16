@@ -31,12 +31,13 @@ import {
   useMspEcAdminListQuery,
   useUpdateCustomerMutation,
   useGetMspEcQuery,
-  // useGetMspEcDelegatedAdminsQuery,
+  useGetMspEcDelegatedAdminsQuery,
   useGetMspEcSupportQuery,
   useEnableMspEcSupportMutation,
   useDisableMspEcSupportMutation,
   useMspAssignmentSummaryQuery,
-  useMspAssignmentHistoryQuery
+  useMspAssignmentHistoryQuery,
+  useMspAdminListQuery
 } from '@acx-ui/rc/services'
 import {
   Address,
@@ -52,7 +53,8 @@ import {
   MspAssignmentHistory,
   MspAssignmentSummary,
   MspEcDelegatedAdmins,
-  MspIntegratorDelegated
+  MspIntegratorDelegated,
+  AssignActionEnum
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -196,7 +198,10 @@ export function ManageCustomer () {
   const { data: licenseAssignment } = useMspAssignmentHistoryQuery({ params: useParams() })
   const { data } =
       useGetMspEcQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
-  // const { data: delegatedAdmins } = useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId } })
+  const { data: Administrators } =
+      useMspAdminListQuery({ params: useParams() }, { skip: action !== 'edit' })
+  const { data: delegatedAdmins } =
+      useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
   const { data: ecAdministrators } =
       useMspEcAdminListQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
   const { data: ecSupport } =
@@ -266,6 +271,15 @@ export function ManageCustomer () {
       setSubscriptionEndDate(moment().add(30,'days').format(dateFormat))
     }
   }, [data, licenseSummary, licenseAssignment, ecSupport, userProfile, ecAdministrators])
+
+  useEffect(() => {
+    if (delegatedAdmins && Administrators) {
+      const admins = delegatedAdmins?.map((admin: MspEcDelegatedAdmins)=> admin.msp_admin_id)
+      const selAdmins = Administrators.filter(rec => admins.includes(rec.id))
+      setAdministrator(selAdmins)
+    }
+  }, [delegatedAdmins, Administrators])
+
   const [sameCountry, setSameCountry] = useState(true)
   const addressValidator = async (value: string) => {
     const isSameValue = value ===
@@ -339,17 +353,21 @@ export function ManageCustomer () {
       const ecFormData = { ...values }
       const today = EntitlementUtil.getServiceStartDate()
       const expirationDate = EntitlementUtil.getServiceEndDate(subscriptionEndDate)
+      const quantityWifi = _.isString(ecFormData.wifiLicense)
+        ? parseInt(ecFormData.wifiLicense, 10) : ecFormData.wifiLicense
+      const quantitySwitch = _.isString(ecFormData.switchLicense)
+        ? parseInt(ecFormData.switchLicense, 10) : ecFormData.switchLicense
       const assignLicense = trialSelected
-        ? { trialAction: 'ACTIVATE' }
+        ? { trialAction: AssignActionEnum.ACTIVATE }
         : { assignments: [{
-          quantity: ecFormData.wifiLicense,
-          action: 'ADD',
+          quantity: quantityWifi,
+          action: AssignActionEnum.ADD,
           isTrial: false,
           deviceType: 'MSP_WIFI'
         },
         {
-          quantity: ecFormData.switchLicense,
-          action: 'ADD',
+          quantity: quantitySwitch,
+          action: AssignActionEnum.ADD,
           isTrial: false,
           deviceType: 'MSP_SWITCH'
         }] }
@@ -406,41 +424,52 @@ export function ManageCustomer () {
       const ecFormData = { ...values }
       const today = EntitlementUtil.getServiceStartDate()
       const expirationDate = EntitlementUtil.getServiceEndDate(subscriptionEndDate)
-      let assignLicense =
-      isTrialEditMode ? {
-        subscription_start_date: today,
-        subscription_end_date: expirationDate,
-        assignments: [{
-          quantity: ecFormData.wifiLicense,
-          action: 'ADD',
+
+      const licAssignment = []
+      if (isTrialEditMode) {
+        const quantityWifi = _.isString(ecFormData.wifiLicense)
+          ? parseInt(ecFormData.wifiLicense, 10) : ecFormData.wifiLicense
+        licAssignment.push({
+          quantity: quantityWifi,
+          action: AssignActionEnum.ADD,
           isTrial: false,
           deviceType: 'MSP_WIFI'
-        },
-        {
-          quantity: ecFormData.switchLicense,
-          action: 'ADD',
+        })
+        const quantitySwitch = _.isString(ecFormData.switchLicense)
+          ? parseInt(ecFormData.switchLicense, 10) : ecFormData.switchLicense
+        licAssignment.push({
+          quantity: quantitySwitch,
+          action: AssignActionEnum.ADD,
           isTrial: false,
           deviceType: 'MSP_SWITCH'
-        }]
-      } : {
-        subscription_start_date: today,
-        subscription_end_date: expirationDate,
-        assignments: [{
-          quantity: ecFormData.wifiLicense,
-          assignmentId: getAssignmentId('MSP_WIFI'),
-          action: 'MODIFY',
-          isTrial: false,
-          deviceType: 'MSP_WIFI'
-        },
-        {
-          quantity: ecFormData.switchLicense,
-          assignmentId: getAssignmentId('MSP_SWITCH'),
-          action: 'MODIFY',
-          isTrial: false,
-          deviceSubtype: 'ICX',
-          deviceType: 'MSP_SWITCH'
-        }]
+        })
+      } else {
+        if (_.isString(ecFormData.wifiLicense)) {
+          const wifiAssignId = getAssignmentId('MSP_WIFI')
+          const quantityWifi = parseInt(ecFormData.wifiLicense, 10)
+          const actionWifi = wifiAssignId === 0 ? AssignActionEnum.ADD : AssignActionEnum.MODIFY
+          licAssignment.push({
+            quantity: quantityWifi,
+            assignmentId: wifiAssignId,
+            action: actionWifi,
+            isTrial: false,
+            deviceType: 'MSP_WIFI'
+          })
+        }
+        if (_.isString(ecFormData.switchLicense)) {
+          const switchAssignId = getAssignmentId('MSP_SWITCH')
+          const quantitySwitch = parseInt(ecFormData.switchLicense, 10)
+          const actionSwitch = switchAssignId === 0 ? AssignActionEnum.ADD : AssignActionEnum.MODIFY
+          licAssignment.push({
+            quantity: quantitySwitch,
+            assignmentId: switchAssignId,
+            action: actionSwitch,
+            deviceSubtype: 'ICX',
+            deviceType: 'MSP_SWITCH'
+          })
+        }
       }
+
       const customer: MspEcData = {
         tenant_type: 'MSP_EC',
         name: ecFormData.name,
@@ -448,7 +477,12 @@ export function ManageCustomer () {
         service_effective_date: today,
         service_expiration_date: expirationDate
       }
-      if (!isTrialMode) {
+      if (!isTrialMode && licAssignment.length > 0) {
+        let assignLicense = {
+          subscription_start_date: today,
+          subscription_end_date: expirationDate,
+          assignments: licAssignment
+        }
         customer.licenses = assignLicense
       }
 
@@ -512,7 +546,7 @@ export function ManageCustomer () {
     return <div style={{ marginTop: '5px', marginBottom: '30px' }}>
       {mspEcAdmins.map(admin =>
         <UI.AdminList>
-          {admin.email} ({intl.$t(roleDisplayText[admin.role])}
+          {admin.email} {intl.$t(roleDisplayText[admin.role])}
         </UI.AdminList>
       )}
     </div>
@@ -542,30 +576,30 @@ export function ManageCustomer () {
       <UI.FieldLabelAdmins width='275px' style={{ marginTop: '15px' }}>
         <label>{intl.$t({ defaultMessage: 'MSP Administrators' })}</label>
         <Form.Item children={<div>{displayMspAdmins()}</div>} />
-        <Form.Item
+        {!isEditMode && <Form.Item
           children={<UI.FieldTextLink onClick={() => setDrawerAdminVisible(true)}>
             {intl.$t({ defaultMessage: 'Manage' })}
           </UI.FieldTextLink>
           }
-        />
+        />}
       </UI.FieldLabelAdmins>
       <UI.FieldLabelAdmins width='275px' style={{ marginTop: '-12px' }}>
         <label>{intl.$t({ defaultMessage: 'Integrator' })}</label>
         <Form.Item children={displayIntegrator()} />
-        <Form.Item
+        {!isEditMode && <Form.Item
           children={<UI.FieldTextLink onClick={() => setDrawerIntegratorVisible(true)}>
             {intl.$t({ defaultMessage: 'Manage' })}
           </UI.FieldTextLink>}
-        />
+        />}
       </UI.FieldLabelAdmins>
       <UI.FieldLabelAdmins width='275px' style={{ marginTop: '-16px' }}>
         <label>{intl.$t({ defaultMessage: 'Installer' })}</label>
         <Form.Item children={displayInstaller()} />
-        <Form.Item
+        {!isEditMode && <Form.Item
           children={<UI.FieldTextLink onClick={() => setDrawerInstallerVisible(true)}>
             {intl.$t({ defaultMessage: 'Manage' })}
           </UI.FieldTextLink>}
-        />
+        />}
       </UI.FieldLabelAdmins>
     </>
   }

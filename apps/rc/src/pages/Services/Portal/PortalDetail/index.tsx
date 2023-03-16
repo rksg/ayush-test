@@ -28,7 +28,7 @@ export default function PortalServiceDetail () {
         title={queryResults.data?.serviceName||''}
         breadcrumb={[
           {
-            text: $t({ defaultMessage: 'Services' }),
+            text: $t({ defaultMessage: 'Portal Services' }),
             link: getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.LIST })
           }
         ]}

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { SortOrder } from 'antd/lib/table/interface'
 import moment        from 'moment-timezone'
@@ -125,7 +125,7 @@ export function VarCustomers () {
         })
     }
 
-    const columnsPendingInvitaion: TableProps<VarCustomer>['columns'] = [
+    const columnsPendingInvitation: TableProps<VarCustomer>['columns'] = [
       {
         title: $t({ defaultMessage: 'Account Name' }),
         dataIndex: 'tenantName',
@@ -164,17 +164,19 @@ export function VarCustomers () {
       }
     }
 
-    const PendingInvitaion = () => {
+    const PendingInvitation = () => {
       const tableQuery = useTableQuery({
         useQuery: useInviteCustomerListQuery,
         defaultPayload: invitationPayload
       })
-      setInviteCount(tableQuery.data?.totalCount as number)
+      useEffect(() => {
+        setInviteCount(tableQuery.data?.totalCount as number)
+      })
 
       return (
         <Loader states={[tableQuery]}>
           <Table
-            columns={columnsPendingInvitaion}
+            columns={columnsPendingInvitation}
             dataSource={tableQuery.data?.data}
             pagination={tableQuery.pagination}
             onChange={tableQuery.handleTableChange}
@@ -189,7 +191,7 @@ export function VarCustomers () {
         <Subtitle level={3}>
           {$t({ defaultMessage: 'Pending Invitations' })} ({inviteCount})</Subtitle>
 
-        <PendingInvitaion />
+        <PendingInvitation />
       </>
     )
   }
@@ -216,34 +218,16 @@ export function VarCustomers () {
       sorter: true
     },
     {
-      title: $t({ defaultMessage: 'Active Alarms' }),
-      dataIndex: 'alarmCount',
-      key: 'alarmCount',
-      sorter: true,
-      render: function (data) {
-        return (
-          <TenantLink to={''}>{data}</TenantLink>
-        )
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Active Incidents' }),
-      dataIndex: 'activeIncindents',
-      key: 'activeIncindents',
-      sorter: true,
-      render: function () {
-        return 0
-      }
-    },
-    {
       title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
       dataIndex: 'wifiLicenses',
+      align: 'center',
       key: 'wifiLicenses',
       sorter: true
     },
     {
       title: $t({ defaultMessage: 'Wi-Fi Licenses Utilization' }),
       dataIndex: 'wifiLicensesUtilization',
+      align: 'center',
       key: 'wifiLicensesUtilization',
       sorter: true,
       render: function (data, row) {
@@ -253,6 +237,7 @@ export function VarCustomers () {
     {
       title: $t({ defaultMessage: 'Switch Licenses' }),
       dataIndex: 'switchLicenses',
+      align: 'center',
       key: 'switchLicenses',
       sorter: true
     },
@@ -320,7 +305,7 @@ export function VarCustomers () {
         title={title}
         extra={
           <TenantLink to='/dashboard' key='add'>
-            <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
+            <Button>{$t({ defaultMessage: 'Manage my account' })}</Button>
           </TenantLink>
         }
       />

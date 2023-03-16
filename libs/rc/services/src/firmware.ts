@@ -44,11 +44,13 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
     }),
     getVenueVersionList: build.query<TableResult<FirmwareVenue>, RequestPayload>({
       query: ({ params, payload }) => {
-        const queryString = payload as { searchString: string }
+        // eslint-disable-next-line max-len
+        const queryString = payload as { searchString: string, filters: { version: [], type: string[] } }
         const req = createHttpRequest(FirmwareUrlsInfo.getVenueVersionList, {
           ...params,
-          version: '',
-          type: '',
+          version: queryString.filters?.version ? queryString.filters.version.join(',') : '',
+          // eslint-disable-next-line max-len
+          type: queryString.filters?.type ? queryString.filters.type.map(t => t.toLowerCase()).join(',') : '',
           search: queryString.searchString ?? ''
         })
         return{
