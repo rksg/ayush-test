@@ -1,4 +1,7 @@
+import { useEffect, useRef } from 'react'
+
 import { Carousel as AntCarousel, Space } from 'antd'
+import { CarouselRef }                    from 'antd/lib/carousel'
 import parse                              from 'html-react-parser'
 
 import * as UI from './styledComponents'
@@ -21,12 +24,19 @@ function Carousel ({
   style,
   ...props
 }: CarouselProps) {
+  const slider = useRef<CarouselRef>()
+  useEffect(()=>{
+    slider.current?.goTo(0)
+  },[contentList])
   return (
     <UI.Wrapper style={style}>
       <AntCarousel
         dotPosition={'bottom'}
         {...props}
         style={style}
+        ref={ref => {
+          slider.current = ref as CarouselRef
+        }}
       >
         {contentList.map((list, index) => (
           <div key={'carousel-card-'+index} className={classList}>
