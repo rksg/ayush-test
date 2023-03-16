@@ -86,8 +86,8 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
       onOk={triggerSubmit}
       onCancel={onModalCancel}
       okButtonProps={{
-        disabled: selectMode === VersionsSelectMode.Dropdown
-          && !!!selectedVersion
+        disabled: selectMode === undefined ||
+          (selectMode === VersionsSelectMode.Dropdown && !!!selectedVersion)
       }}
     >
       <Form

@@ -42,7 +42,8 @@ export function VenueFirmwareList () {
       key: 'name',
       dataIndex: 'name',
       sorter: true,
-      defaultSortOrder: 'ascend'
+      defaultSortOrder: 'ascend',
+      width: 120
     },
     {
       title: $t({ defaultMessage: 'Current Edge Firmware' }),
@@ -50,8 +51,9 @@ export function VenueFirmwareList () {
       dataIndex: 'versions[0].version',
       sorter: true,
       render: function (data, row) {
-        return row.versions[0].name || '--'
-      }
+        return row.versions?.[0]?.name || '--'
+      },
+      width: 120
     },
     {
       title: $t({ defaultMessage: 'Firmware Type' }),
@@ -59,12 +61,13 @@ export function VenueFirmwareList () {
       dataIndex: 'versions[0].category',
       sorter: true,
       render: function (data, row) {
-        if (!row.versions[0]) return '--'
+        if (!row.versions?.[0]) return '--'
         const text = transform(row.versions[0].category as FirmwareCategory, 'type')
         const subText = transform(row.versions[0].category as FirmwareCategory, 'subType')
         if (!subText) return text
         return `${text} (${subText})`
-      }
+      },
+      width: 120
     },
     {
       title: $t({ defaultMessage: 'Last Update' }),
@@ -74,7 +77,8 @@ export function VenueFirmwareList () {
       render: function (data, row) {
         if (!row.updatedDate) return '--'
         return toUserDate(row.updatedDate)
-      }
+      },
+      width: 120
     }
   ]
 
@@ -100,7 +104,7 @@ export function VenueFirmwareList () {
       firmwareVersion: data
     }
     try {
-      updateNow({ payload }).unwrap()
+      await updateNow({ payload }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

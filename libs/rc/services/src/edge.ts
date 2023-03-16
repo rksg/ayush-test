@@ -250,7 +250,17 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Edge', id: 'FIRMWARE_LIST' }]
+      providesTags: [{ type: 'Edge', id: 'FIRMWARE_LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Update Edge Firmware Now'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'FIRMWARE_LIST' }]))
+          })
+        })
+      }
     }),
     getAvailableEdgeFirmwareVersions: build.query<EdgeFirmwareVersion[], RequestPayload>({
       query: () => {
