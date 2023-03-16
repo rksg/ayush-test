@@ -9,6 +9,7 @@ export interface ApiInfo {
   method: string;
   newApi?: boolean;
   oldUrl?: string;
+  oldMethod?: string;
 }
 
 export const TenantIdFromJwt = () => {
@@ -46,6 +47,10 @@ export const isLocalHost = () => {
 
 export const isDev = () => {
   return window.location.hostname === 'devalto.ruckuswireless.com'
+}
+
+export const isQA = () => {
+  return window.location.hostname === 'qaalto.ruckuswireless.com'
 }
 
 export const isIntEnv = () => {
@@ -98,10 +103,11 @@ export const createHttpRequest = (
     window.location.origin
   const url = enableNewApi(apiInfo) ? generatePath(`${apiInfo.url}`, paramValues) :
     generatePath(`${apiInfo.oldUrl || apiInfo.url}`, paramValues)
+  const method = enableNewApi(apiInfo) ? apiInfo.method : (apiInfo.oldMethod || apiInfo.method)
   return {
     headers,
     credentials: 'include' as RequestCredentials,
-    method: apiInfo.method,
+    method: method,
     url: `${domain}${url}`
   }
 }
@@ -130,7 +136,7 @@ export const getFilters = (params: Params) => {
 export const enableNewApi = function (apiInfo: ApiInfo) {
   const hasOldUrl = !_.isEmpty(apiInfo?.oldUrl)
   if(apiInfo.newApi) {
-    return !hasOldUrl || isDev() || isLocalHost() || isIntEnv()
+    return !hasOldUrl || isDev() || isQA() || isLocalHost() || isIntEnv()
   } else {
     return false
   }

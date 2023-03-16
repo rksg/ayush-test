@@ -30,6 +30,7 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
   const [valueDays, setValueDays] = useState<string[]>(['Saturday'])
   const [valueTimes, setValueTimes] = useState<string[]>(['00:00-02:00'])
   const [modelVisible, setModelVisible] = useState(false)
+  const [disableSave, setDisableSave] = useState(false)
 
   useEffect(() => {
     if (data) {
@@ -55,6 +56,11 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
   const handleModalSubmit = (data: { valueDays: string[], valueTimes: string[] }) => {
     setValueDays(data.valueDays)
     setValueTimes(data.valueTimes)
+    if (data.valueDays.length === 0 || data.valueTimes.length ===0) {
+      setDisableSave(true)
+    } else {
+      setDisableSave(false)
+    }
   }
 
   const createRequest = (): UpgradePreferences => {
@@ -93,6 +99,7 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
         okText={$t({ defaultMessage: 'Save Preferences' })}
         onOk={triggerSubmit}
         onCancel={onModalCancel}
+        okButtonProps={{ disabled: disableSave }}
       >
         <Form
           form={form}
