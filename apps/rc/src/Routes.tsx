@@ -76,9 +76,8 @@ import MdnsProxyDetail              from './pages/Services/MdnsProxy/MdnsProxyDe
 import MdnsProxyForm                from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
 import MdnsProxyTable               from './pages/Services/MdnsProxy/MdnsProxyTable/MdnsProxyTable'
 import MyServices                   from './pages/Services/MyServices'
-import AddNetworkSegmentation       from './pages/Services/NetworkSegmentation/AddNetworkSegmentation'
-import EditNetworkSegmentation      from './pages/Services/NetworkSegmentation/EditNetworkSegmentation'
 import NetworkSegmentationDetail    from './pages/Services/NetworkSegmentation/NetworkSegmentationDetail'
+import NetworkSegmentationForm      from './pages/Services/NetworkSegmentation/NetworkSegmentationForm'
 import NetworkSegmentationTable     from './pages/Services/NetworkSegmentation/NetworkSegmentationTable'
 import NetworkSegAuthDetail         from './pages/Services/NetworkSegWebAuth/NetworkSegAuthDetail'
 import NetworkSegAuthForm           from './pages/Services/NetworkSegWebAuth/NetworkSegAuthForm'
@@ -297,7 +296,7 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
           oper: ServiceOperation.CREATE })}
-        element={<AddNetworkSegmentation />}
+        element={<NetworkSegmentationForm />}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
@@ -312,7 +311,7 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
           oper: ServiceOperation.EDIT })}
-        element={<EditNetworkSegmentation />}
+        element={<NetworkSegmentationForm editMode={true} />}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.WEBAUTH_SWITCH,

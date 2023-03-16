@@ -47,7 +47,7 @@ describe('SwitchMacAddressForm', () => {
       rest.get(
         SwitchUrlsInfo.getTroubleshooting.url,
         (req, res, ctx) => res(ctx.json(troubleshootingResult_macaddress_result))),
-      rest.get(
+      rest.delete(
         SwitchUrlsInfo.getTroubleshootingClean.url,
         (req, res, ctx) => res(ctx.json({}))),
       rest.post(

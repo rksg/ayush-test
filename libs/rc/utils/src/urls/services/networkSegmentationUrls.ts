@@ -32,13 +32,27 @@ export const NetworkSegmentationUrls: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/webAuthPageTemplates/:serviceId'
   },
-  getAccessSwitches: {
-    method: 'post',
-    url: '/api/switch/tenant/:tenantId/venue/:venueId/networkSegmentations/accessSwitches'
+
+  getAvailableSwitches: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations'
   },
-  getDistributionSwitches: {
+  getSwitchInfoByNSGId: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations/:serviceId'
+  },
+  getAccessSwitchesByDS: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations' +
+      '/distributions/:switchId/accessSwitches'
+  },
+  validateDistributionSwitchInfo: {
     method: 'post',
-    url: '/api/switch/tenant/:tenantId/venue/:venueId/networkSegmentations/distributionSwitches'
+    url: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations/distributionSwitchInfo'
+  },
+  validateAccessSwitchInfo: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations/accessSwitchInfo'
   },
   createNetworkSegmentationGroup: {
     method: 'post',
