@@ -236,6 +236,7 @@ export interface Address {
   longitude?: number
   notes?: string
   timezone?: string
+  countryCode?: string
 }
 
 export interface MeshOptions {

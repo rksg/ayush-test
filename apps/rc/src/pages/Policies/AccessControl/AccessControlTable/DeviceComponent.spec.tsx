@@ -12,7 +12,10 @@ import {
   screen, waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
-import { devicePolicyListResponse } from '../__tests__/fixtures'
+import {
+  devicePolicyListResponse,
+  enhancedDevicePolicyListResponse
+} from '../__tests__/fixtures'
 
 import DevicePolicyComponent from './DevicePolicyComponent'
 
@@ -30,6 +33,15 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 }))
 
 describe('AccessControlTable', () => {
+  beforeEach(async () => {
+    mockServer.use(
+      rest.post(
+        AccessControlUrls.getEnhancedDevicePolicies.url,
+        (req, res, ctx) => res(ctx.json(enhancedDevicePolicyListResponse))
+      )
+    )
+  })
+
   it('should render DeviceComponent in AccessControlTable', async () => {
     mockServer.use(rest.post(
       AccessControlUrls.getDevicePolicyList.url,
@@ -48,7 +60,7 @@ describe('AccessControlTable', () => {
       }
     )
 
-    const targetName = devicePolicyListResponse.data[0].name
+    const targetName = enhancedDevicePolicyListResponse.data[0].name
     await userEvent.click(await screen.findByRole('cell', {
       name: targetName
     }))
@@ -82,7 +94,7 @@ describe('AccessControlTable', () => {
       }
     )
 
-    const targetName = devicePolicyListResponse.data[0].name
+    const targetName = enhancedDevicePolicyListResponse.data[0].name
     await userEvent.click(await screen.findByRole('cell', {
       name: targetName
     }))
