@@ -522,12 +522,12 @@ export function ManageIntegrator () {
 
   const CustomerAdminsForm = () => {
     if (isEditMode) {
-      return <><Subtitle level={4}>
+      return <><Subtitle level={3}>
         { intl.$t({ defaultMessage: 'Account Administrator' }) }</Subtitle>
       <Form.Item children={displayCustomerAdmins()} />
       </>
     } else {
-      return <><Subtitle level={4}>
+      return <><Subtitle level={3}>
         { intl.$t({ defaultMessage: 'Account Administrator' }) }</Subtitle>
       <Form.Item
         name='admin_email'
@@ -737,8 +737,6 @@ export function ManageIntegrator () {
 
   const CustomerSubscriptionForm = () => {
     return <div>
-      <Subtitle level={3}>
-        { intl.$t({ defaultMessage: 'Subscriptions' }) }</Subtitle>
       <WifiSubscription />
       <SwitchSubscription />
       <UI.FieldLabel2 width='275px' style={{ marginTop: '18px' }}>
@@ -956,6 +954,8 @@ export function ManageIntegrator () {
           <MspAdminsForm />
           <ManageAssignedEcForm />
           <CustomerAdminsForm />
+          <Subtitle level={3}>
+            { intl.$t({ defaultMessage: 'Subscriptions' }) }</Subtitle>
           <CustomerSubscriptionForm />
         </StepsForm.StepForm>}
 

@@ -198,7 +198,7 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
         children={<Input type='number'/>}
         style={{ marginLeft: '10px', paddingRight: '20px' }}
       />
-      <label>Day(s) (1..60)</label>
+      <label>Day(s)</label>
     </UI.FieldLabelAccessPeriod>}
 
     <Subtitle level={4} style={{ marginTop: '20px' }}>

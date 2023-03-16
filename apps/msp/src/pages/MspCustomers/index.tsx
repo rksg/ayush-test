@@ -518,7 +518,7 @@ export function MspCustomers () {
         title={$t({ defaultMessage: 'MSP Customers' })}
         extra={isAdmin ?
           [<TenantLink to='/dashboard'>
-            <Button>{$t({ defaultMessage: 'Manage my account' })}</Button>
+            <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
           </TenantLink>,
           <MspTenantLink to='/dashboard/mspcustomers/create'>
             <Button
@@ -527,7 +527,7 @@ export function MspCustomers () {
           </MspTenantLink>
           ]
           : [<TenantLink to='/dashboard'>
-            <Button>{$t({ defaultMessage: 'Manage my account' })}</Button>
+            <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
           </TenantLink>
           ]}
       />

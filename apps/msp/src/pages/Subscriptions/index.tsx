@@ -262,7 +262,7 @@ export function Subscriptions () {
         title={$t({ defaultMessage: 'MSP Subscriptions' })}
         extra={
           <TenantLink to='/dashboard'>
-            <Button>{$t({ defaultMessage: 'Manage my account' })}</Button>
+            <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
           </TenantLink>
         }
       />
