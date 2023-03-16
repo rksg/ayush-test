@@ -36,15 +36,12 @@ export default function MyServices () {
     {
       type: ServiceType.MDNS_PROXY,
       category: RadioCardCategory.WIFI,
-      tableQuery: useGetEnhancedMdnsProxyListQuery({
-        params, payload: defaultPayload
-      })
+      tableQuery: useGetEnhancedMdnsProxyListQuery({ params, payload: defaultPayload })
     },
     {
       type: ServiceType.DHCP,
       category: RadioCardCategory.WIFI,
-      tableQuery: useGetDHCPProfileListViewModelQuery({ params,
-        payload: { ...defaultPayload } })
+      tableQuery: useGetDHCPProfileListViewModelQuery({ params, payload: defaultPayload })
     },
     {
       type: ServiceType.EDGE_DHCP,
@@ -74,9 +71,7 @@ export default function MyServices () {
     {
       type: ServiceType.WIFI_CALLING,
       category: RadioCardCategory.WIFI,
-      tableQuery: useGetWifiCallingServiceListQuery({
-        params, payload: defaultPayload
-      })
+      tableQuery: useGetWifiCallingServiceListQuery({ params, payload: defaultPayload })
     },
     {
       type: ServiceType.PORTAL,
@@ -107,7 +102,7 @@ export default function MyServices () {
       <GridRow>
         {services.map(service => {
           return (
-            !service.disabled &&
+            !service.disabled && (service.tableQuery.data?.totalCount ?? 0) > 0 &&
             <GridCol col={{ span: 6 }}>
               <ServiceCard
                 key={service.type}

@@ -61,28 +61,33 @@ export default function MyPolicies () {
         ])}
       />
       <GridRow>
-        {policies.filter(policy => !policy.disabled).map((policy, index) => {
-          return (
-            <GridCol key={policy.type} col={{ span: 6 }}>
-              <RadioCard
-                type={'default'}
-                key={`${policy.type}_${index}`}
-                value={policy.type}
-                title={$t({
-                  defaultMessage: '{name} ({count})'
-                }, {
-                  name: $t(policyTypeLabelMapping[policy.type]),
-                  count: policy.totalCount ?? 0
-                })}
-                description={$t(policyTypeDescMapping[policy.type])}
-                categories={[policy.category]}
-                onClick={() => {
-                  navigate(policy.listViewPath)
-                }}
-              />
-            </GridCol>
-          )
-        })}
+        {policies
+          .filter(policy => {
+            return !policy.disabled && (policy.totalCount ?? 0) > 0
+          })
+          .map((policy, index) => {
+            return (
+              <GridCol key={policy.type} col={{ span: 6 }}>
+                <RadioCard
+                  type={'default'}
+                  key={`${policy.type}_${index}`}
+                  value={policy.type}
+                  title={$t({
+                    defaultMessage: '{name} ({count})'
+                  }, {
+                    name: $t(policyTypeLabelMapping[policy.type]),
+                    count: policy.totalCount ?? 0
+                  })}
+                  description={$t(policyTypeDescMapping[policy.type])}
+                  categories={[policy.category]}
+                  onClick={() => {
+                    navigate(policy.listViewPath)
+                  }}
+                />
+              </GridCol>
+            )
+          })
+        }
       </GridRow>
     </>
   )
