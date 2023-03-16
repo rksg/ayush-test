@@ -1,5 +1,4 @@
-import { dataApi, dataApiURL } from '@acx-ui/analytics/services'
-import { Provider, store }     from '@acx-ui/store'
+import { dataApi, dataApiURL, Provider, store } from '@acx-ui/store'
 import {
   fireEvent,
   mockGraphqlQuery,
