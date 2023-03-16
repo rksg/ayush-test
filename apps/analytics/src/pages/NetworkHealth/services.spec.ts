@@ -2,9 +2,10 @@ import _ from 'lodash'
 
 import {
   networkHealthApi as api,
-  networkHealthApiURL as apiUrl
-} from '@acx-ui/analytics/services'
-import { Provider, store }                                                         from '@acx-ui/store'
+  networkHealthApiURL as apiUrl,
+  Provider,
+  store
+} from '@acx-ui/store'
 import { act, mockGraphqlMutation, mockGraphqlQuery, renderHook, waitFor, screen } from '@acx-ui/test-utils'
 
 import * as fixtures          from './__tests__/fixtures'

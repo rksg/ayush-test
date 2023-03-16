@@ -1,7 +1,6 @@
-import { dataApiURL }       from '@acx-ui/analytics/services'
-import { fakeIncident1 }    from '@acx-ui/analytics/utils'
-import { store }            from '@acx-ui/store'
-import { mockGraphqlQuery } from '@acx-ui/test-utils'
+import { fakeIncident1 }     from '@acx-ui/analytics/utils'
+import { dataApiURL, store } from '@acx-ui/store'
+import { mockGraphqlQuery }  from '@acx-ui/test-utils'
 
 import { api } from './services'
 

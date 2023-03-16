@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { createApi, fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 
 import {
   AccessSwitch,
@@ -16,14 +16,7 @@ import {
   transferToTableResult,
   WebAuthTemplate
 } from '@acx-ui/rc/utils'
-
-export const baseNsgApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  reducerPath: 'nsgApi',
-  tagTypes: ['Networksegmentation', 'WebAuthNSG'],
-  refetchOnMountOrArgChange: true,
-  endpoints: () => ({ })
-})
+import { baseNsgApi } from '@acx-ui/store'
 
 export const nsgApi = baseNsgApi.injectEndpoints({
   endpoints: (build) => ({
