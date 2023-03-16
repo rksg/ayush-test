@@ -1,4 +1,4 @@
-import moment                       from 'moment-timezone'
+import moment, { Moment }           from 'moment-timezone'
 import { defineMessage, IntlShape } from 'react-intl'
 
 import { getIntl } from '@acx-ui/utils'
@@ -146,7 +146,7 @@ export class EntitlementUtil {
     return moment(today.toString()).utc().format(dateFormat)
   }
 
-  public static getServiceEndDate (endDate?: string) {
+  public static getServiceEndDate (endDate?: string | Moment) {
     // const expiredDate = DateTimeUtilsService.getDateFromMomentByFormat(this.mspEcEndDate.value, this.userDateFormat);
     // expiredDate.setHours(23);
     // expiredDate.setMinutes(59);

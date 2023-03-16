@@ -1,5 +1,3 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-
 import {
   PersonaUrls,
   createHttpRequest,
@@ -15,14 +13,7 @@ import {
   downloadFile,
   RequestFormData
 } from '@acx-ui/rc/utils'
-
-export const basePersonaApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  tagTypes: ['PersonaGroup', 'Persona'],
-  reducerPath: 'personaGroupApi',
-  refetchOnMountOrArgChange: true,
-  endpoints: () => ({ })
-})
+import { basePersonaApi } from '@acx-ui/store'
 
 export const personaApi = basePersonaApi.injectEndpoints({
   endpoints: build => ({

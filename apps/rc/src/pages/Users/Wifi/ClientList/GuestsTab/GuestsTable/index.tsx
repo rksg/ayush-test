@@ -16,6 +16,7 @@ import {
   Loader
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { CsvSize, ImportFileDrawer } from '@acx-ui/rc/components'
 import {
   useGetGuestsListQuery,
@@ -223,8 +224,7 @@ export const GuestsTable = (props: { dateFilter: GuestDateFilter }) => {
             setVisible(true)
           }}
         >
-          {/* TODO: Wait for framework support userprofile-format dateTimeFormats */}
-          {moment(row.creationDate).format('DD/MM/YYYY HH:mm')}
+          {formatter(DateFormatEnum.DateTimeFormat)(row.creationDate)}
         </Button>
     },
     {
@@ -487,8 +487,7 @@ export const renderExpires = function (row: Guest) {
   const { $t } = getIntl()
   let expiresTime = ''
   if (row.expiryDate && row.expiryDate !== '0') {
-    // TODO: Wait for framework support userprofile-format dateTimeFormats
-    expiresTime = moment(row.expiryDate).format('DD/MM/YYYY HH:mm')
+    expiresTime = formatter(DateFormatEnum.DateTimeFormat)(row.expiryDate)
   } else if (!row.expiryDate || row.expiryDate === '0') {
     let result = ''
     if (row.passDurationHours) {

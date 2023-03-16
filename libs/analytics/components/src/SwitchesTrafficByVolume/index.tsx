@@ -2,11 +2,10 @@ import { take }    from 'lodash'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { getSeriesData, AnalyticsFilter } from '@acx-ui/analytics/utils'
-import { HistoricalCard, Loader,
-  MultiLineTimeSeriesChart, NoData,
-  qualitativeColorSet, StackedAreaChart } from '@acx-ui/components'
-import { formatter } from '@acx-ui/utils'
+import { getSeriesData, AnalyticsFilter }         from '@acx-ui/analytics/utils'
+import { HistoricalCard, Loader, MultiLineTimeSeriesChart,
+  qualitativeColorSet, StackedAreaChart, NoData } from '@acx-ui/components'
+import { formatter } from '@acx-ui/formatter'
 
 import {
   useSwitchesTrafficByVolumeQuery,

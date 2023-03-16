@@ -1,6 +1,6 @@
 import { gql } from 'graphql-request'
 
-import { dataApi }     from '@acx-ui/analytics/services'
+import { dataApi }     from '@acx-ui/store'
 import { NetworkPath } from '@acx-ui/utils'
 
 export interface SummaryData {

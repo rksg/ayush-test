@@ -1,8 +1,7 @@
-import { dataApiURL }       from '@acx-ui/analytics/services'
-import { IncidentFilter }   from '@acx-ui/analytics/utils'
-import { store }            from '@acx-ui/store'
-import { mockGraphqlQuery } from '@acx-ui/test-utils'
-import { DateRange }        from '@acx-ui/utils'
+import { IncidentFilter }    from '@acx-ui/analytics/utils'
+import { dataApiURL, store } from '@acx-ui/store'
+import { mockGraphqlQuery }  from '@acx-ui/test-utils'
+import { DateRange }         from '@acx-ui/utils'
 
 import { topSwitchesByErrorResponse } from './__tests__/fixtures'
 import { api }                        from './services'

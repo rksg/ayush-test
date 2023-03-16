@@ -24,6 +24,7 @@
       "@acx-ui/components": ["libs/common/components/src/index.ts"],
       "@acx-ui/config": ["libs/common/config/src/index.ts"],
       "@acx-ui/feature-toggle": ["libs/common/feature-toggle/src/index.ts"],
+      "@acx-ui/formatter": ["libs/common/formatter/src/index.ts"],
       "@acx-ui/icons": ["libs/common/icons/src/index.ts"],
       "@acx-ui/main/components": ["libs/main/components/src/index.ts"],
       "@acx-ui/msp/components": ["libs/msp/components/src/index.ts"],

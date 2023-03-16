@@ -9,7 +9,8 @@ import {
   RawIntlProvider
 } from 'react-intl'
 
-import { getIntl, intlFormats } from '@acx-ui/utils'
+import { intlFormats } from '@acx-ui/formatter'
+import { getIntl }     from '@acx-ui/utils'
 
 import { cssNumber, cssStr } from '../../theme/helper'
 import {

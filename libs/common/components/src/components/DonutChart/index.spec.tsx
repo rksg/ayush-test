@@ -1,7 +1,7 @@
 import { useIntl, defineMessage } from 'react-intl'
 
+import { intlFormats }    from '@acx-ui/formatter'
 import { render, screen } from '@acx-ui/test-utils'
-import { intlFormats }    from '@acx-ui/utils'
 
 import { cssStr }                              from '../../theme/helper'
 import { EventParams, TooltipFormatterParams } from '../Chart/helper'
