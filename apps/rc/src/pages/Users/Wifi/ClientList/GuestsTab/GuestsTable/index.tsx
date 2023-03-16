@@ -406,7 +406,8 @@ export const GuestsTable = (props: { dateFilter: GuestDateFilter }) => {
             case 'addGuestNetwork':
               return hasRoles([RolesEnum.ADMINISTRATOR, RolesEnum.PRIME_ADMIN])
             case 'importFromFile':
-              return true
+              return hasRoles([RolesEnum.ADMINISTRATOR,
+                RolesEnum.PRIME_ADMIN,RolesEnum.GUEST_MANAGER])
             default:
               return false
           }
