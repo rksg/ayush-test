@@ -25,11 +25,6 @@ export const PortalUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/portalServiceProfiles',
     newApi: true
   },
-  getPortalNetworkInstances: {
-    // [New API] no mapping found
-    method: 'get',
-    url: '/api/tenant/:tenantId/portal-service-profile/instances/:serviceId'
-  },
   getPortalProfileDetail: {
     method: 'get',
     url: '/portalServiceProfiles/:serviceId',

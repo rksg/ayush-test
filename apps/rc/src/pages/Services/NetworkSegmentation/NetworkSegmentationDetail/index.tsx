@@ -2,14 +2,14 @@ import { Space, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
 
 import { Button, Card, GridCol, GridRow, Loader, PageHeader, Tabs }                                                     from '@acx-ui/components'
-import { useGetEdgeDhcpServiceQuery, useGetEdgeListQuery, useGetNetworkSegmentationStatsListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
+import { useGetEdgeDhcpServiceQuery, useGetEdgeListQuery, useGetNetworkSegmentationGroupByIdQuery, useVenuesListQuery } from '@acx-ui/rc/services'
 import {
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath,
   ServiceOperation, ServiceType
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { TenantLink, useLocation, useParams } from '@acx-ui/react-router-dom'
 
 import * as UI                   from './styledComponents'
 import { AccessSwitchesTable }   from './Table/AccessSwitchesTable'
@@ -35,6 +35,9 @@ const NetworkSegmentationDetail = () => {
 
   const { $t } = useIntl()
   const params = useParams()
+  const location = useLocation()
+
+  const { data: nsgData, isLoading } = useGetNetworkSegmentationGroupByIdQuery({ params })
 
   const tabs = {
     aps: {
@@ -42,46 +45,22 @@ const NetworkSegmentationDetail = () => {
       content: <ApsTable />
     },
     distSwitches: {
-      title: $t({ defaultMessage: 'Dist. Switches (0)' }),
-      content: <DistSwitchesTable />
+      title: $t({ defaultMessage: 'Dist. Switches ({num})' },
+        { num: nsgData?.distributionSwitchInfos.length }),
+      content: <DistSwitchesTable dataSource={nsgData?.distributionSwitchInfos} />
     },
     accessSwitches: {
-      title: $t({ defaultMessage: 'Access Switches (0)' }),
-      content: <AccessSwitchesTable />
+      title: $t({ defaultMessage: 'Access Switches ({num})' },
+        { num: nsgData?.accessSwitchInfos.length }),
+      content: <AccessSwitchesTable
+        dataSource={nsgData?.accessSwitchInfos}
+        distributionSwitchInfos={nsgData?.distributionSwitchInfos} />
     },
     assignedSegments: {
       title: $t({ defaultMessage: 'Assigned Segments (0)' }),
       content: <AssignedSegmentsTable />
     }
   }
-
-  const getNetworkSegmentationPayload = {
-    fields: [
-      'id',
-      'name',
-      'tags',
-      'networkIds',
-      'venueInfos',
-      'edgeInfos'
-    ],
-    filters: { id: [params.serviceId] },
-    sortField: 'name',
-    sortOrder: 'ASC'
-  }
-
-  const {
-    networkSegmentationStats,
-    isLoading
-  } = useGetNetworkSegmentationStatsListQuery({
-    payload: getNetworkSegmentationPayload
-  }, {
-    selectFromResult: ({ data, isLoading }) => {
-      return {
-        networkSegmentationStats: data?.data[0],
-        isLoading
-      }
-    }
-  })
 
   // TODO if nsg es index is refactored, remove below scope
   /*Temp*/
@@ -105,8 +84,8 @@ const NetworkSegmentationDetail = () => {
       }
     })
   const { dhcpName, dhcpId, dhcpPools, isLoading: isDhcpLoading } = useGetEdgeDhcpServiceQuery(
-    { params: { id: networkSegmentationStats?.edgeInfos[0].dhcpInfoId } },{
-      skip: !!!networkSegmentationStats?.edgeInfos[0],
+    { params: { id: nsgData?.edgeInfos[0].dhcpInfoId } },{
+      skip: !!!nsgData?.edgeInfos[0],
       selectFromResult: ({ data, isLoading }) => {
         return {
           dhcpName: data?.serviceName,
@@ -131,7 +110,7 @@ const NetworkSegmentationDetail = () => {
       title: $t({ defaultMessage: 'Venue' }),
       content: () => {
         const venue = venueOptions?.find(item =>
-          item.value === networkSegmentationStats?.venueInfos[0]?.venueId)
+          item.value === nsgData?.venueInfos[0]?.venueId)
         if(venue) {
           return (
             <TenantLink to={`/venues/${venue.value}/venue-details/overview`}>
@@ -150,7 +129,7 @@ const NetworkSegmentationDetail = () => {
       title: $t({ defaultMessage: 'SmartEdge' }),
       content: () => {
         const edge = edgeOptions?.find(item =>
-          item.value === networkSegmentationStats?.edgeInfos[0]?.edgeId)
+          item.value === nsgData?.edgeInfos[0]?.edgeId)
         if(edge) {
           return (
             <TenantLink to={`/devices/edge/${edge.value}/edge-details/overview`}>
@@ -163,17 +142,17 @@ const NetworkSegmentationDetail = () => {
     },
     {
       title: $t({ defaultMessage: 'Number of Segments' }),
-      content: () => (networkSegmentationStats?.edgeInfos[0]?.segments)
+      content: () => (nsgData?.edgeInfos[0]?.segments)
     },
     {
       title: $t({ defaultMessage: 'Number of devices per segment' }),
-      content: () => (networkSegmentationStats?.edgeInfos[0]?.devices)
+      content: () => (nsgData?.edgeInfos[0]?.devices)
     },
     {
       title: $t({ defaultMessage: 'DHCP Service (Pool)' }),
       content: () => {
         if(dhcpName) {
-          const dhcpPoolId = networkSegmentationStats?.edgeInfos[0]?.dhcpPoolId
+          const dhcpPoolId = nsgData?.edgeInfos[0]?.dhcpPoolId
           const dhcpPool = dhcpPools?.find(item => item.id === dhcpPoolId)
           return (
             <TenantLink to={getServiceDetailsLink({
@@ -194,7 +173,7 @@ const NetworkSegmentationDetail = () => {
     },
     {
       title: $t({ defaultMessage: 'Networks' }),
-      content: () => (networkSegmentationStats?.networkIds?.length)
+      content: () => (nsgData?.networkIds?.length)
     },
     {
       title: $t({ defaultMessage: 'APs' }),
@@ -202,18 +181,18 @@ const NetworkSegmentationDetail = () => {
     },
     {
       title: $t({ defaultMessage: 'Dist. Switches' }),
-      content: () => (<></>)
+      content: () => (nsgData?.distributionSwitchInfos.length)
     },
     {
       title: $t({ defaultMessage: 'Access Switches' }),
-      content: () => (<></>)
+      content: () => (nsgData?.accessSwitchInfos.length)
     }
   ]
 
   return (
     <>
       <PageHeader
-        title={networkSegmentationStats && networkSegmentationStats.name}
+        title={nsgData && nsgData.name}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Services' }), link: getServiceListRoutePath(true) },
           {
@@ -225,7 +204,7 @@ const NetworkSegmentationDetail = () => {
           }
         ]}
         extra={[
-          <TenantLink
+          <TenantLink state={{ from: location }}
             to={getServiceDetailsLink({
               type: ServiceType.NETWORK_SEGMENTATION,
               oper: ServiceOperation.EDIT,
