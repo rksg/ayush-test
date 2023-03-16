@@ -62,20 +62,6 @@ exports[`SwitchTabs should render correctly 1`] = `
             class="ant-tabs-tab"
           >
             <div
-              aria-controls="rc-tabs-test-panel-reports"
-              aria-selected="false"
-              class="ant-tabs-tab-btn"
-              id="rc-tabs-test-tab-reports"
-              role="tab"
-              tabindex="0"
-            >
-              Reports
-            </div>
-          </div>
-          <div
-            class="ant-tabs-tab"
-          >
-            <div
               aria-controls="rc-tabs-test-panel-clients"
               aria-selected="false"
               class="ant-tabs-tab-btn"
@@ -197,15 +183,6 @@ exports[`SwitchTabs should render correctly 1`] = `
           aria-labelledby="rc-tabs-test-tab-troubleshooting"
           class="ant-tabs-tabpane"
           id="rc-tabs-test-panel-troubleshooting"
-          role="tabpanel"
-          style="display: none;"
-          tabindex="-1"
-        />
-        <div
-          aria-hidden="true"
-          aria-labelledby="rc-tabs-test-tab-reports"
-          class="ant-tabs-tabpane"
-          id="rc-tabs-test-panel-reports"
           role="tabpanel"
           style="display: none;"
           tabindex="-1"
