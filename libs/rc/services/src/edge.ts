@@ -11,7 +11,9 @@ import {
   EdgeUrlsInfo,
   PaginationQueryResult,
   RequestPayload,
-  TableResult
+  TableResult,
+  onSocketActivityChanged,
+  onActivityMessageReceived
 } from '@acx-ui/rc/utils'
 import { baseEdgeApi } from '@acx-ui/store'
 
@@ -54,7 +56,18 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Edge', id: 'LIST' }]
+      providesTags: [{ type: 'Edge', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Add Edge',
+            'Delete Edges'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'LIST' }]))
+          })
+        })
+      }
     }),
     deleteEdge: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
