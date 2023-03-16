@@ -108,7 +108,7 @@ describe('SwitchClientsTable', () => {
       rest.post(CommonUrlsInfo.getApsList.url, (_, res, ctx) =>
         res(ctx.json(apList))
       ),
-      rest.get(SwitchUrlsInfo.getSwitchClientDetail.url, (_, res, ctx) =>
+      rest.post(SwitchUrlsInfo.getSwitchClientDetail.url, (_, res, ctx) =>
         res(ctx.json(clientDetail))
       )
     )

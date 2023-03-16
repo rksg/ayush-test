@@ -71,7 +71,7 @@ describe('ApPacketCaptureForm', () => {
         (req, res, ctx) => res(ctx.json(r650Cap))),
       rest.post(WifiUrlsInfo.startPacketCapture.url,
         (req, res, ctx) => res(ctx.json(startPacketCackture))),
-      rest.post(WifiUrlsInfo.stopPacketCapture.url,
+      rest.delete(WifiUrlsInfo.stopPacketCapture.url,
         (req, res, ctx) => res(ctx.json(stopPacketCapture))),
       rest.get(WifiUrlsInfo.getPacketCaptureState.url,
         (req, res, ctx) => res(ctx.json(packetCaptureIdleResponse)))
