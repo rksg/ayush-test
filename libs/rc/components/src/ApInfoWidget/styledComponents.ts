@@ -4,10 +4,6 @@ import styled    from 'styled-components/macro'
 import { Card, DonutChart } from '@acx-ui/components'
 import { TenantLink }       from '@acx-ui/react-router-dom'
 
-export const PointerContainer = styled.div`
-  cursor: pointer;
-`
-
 export const Title = styled(Card.Title)`
   height: unset;
 `
@@ -28,5 +24,11 @@ export const TenantLinkBlack = styled(TenantLink)`
   color: var(--acx-primary-black);
   :hover {
     color: var(--acx-primary-black);
+  }
+`
+
+export const TenantLinkSvg = styled(TenantLink)`
+  svg {
+    cursor: pointer
   }
 `
