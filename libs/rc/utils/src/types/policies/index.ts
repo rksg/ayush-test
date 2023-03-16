@@ -6,6 +6,7 @@ export * from './clientIsolationPolicy'
 export * from './syslogPolicy'
 export * from './accessControl'
 export * from './apSnmp'
+export * from './radiusAttributeGroup'
 
 export { DeviceTypeEnum } from '../../models/DeviceTypeEnum'
 export { OsVendorEnum } from '../../models/OsVendorEnum'
@@ -22,7 +23,10 @@ export enum PolicyType {
   LAYER_3_POLICY = 'Layer 3 Policy',
   APPLICATION_POLICY = 'Application Policy',
   DEVICE_POLICY = 'Device Policy',
-  SNMP_AGENT = 'SNMP Agent'
+  SNMP_AGENT = 'SNMP Agent',
+  ADAPTIVE_POLICY = 'Adaptive Policy',
+  RADIUS_ATTRIBUTE_GROUP = 'RADIUS Attribute Group',
+  ADAPTIVE_POLICY_SET = 'Adaptive Policy Set'
 }
 
 export enum PolicyTechnology {
