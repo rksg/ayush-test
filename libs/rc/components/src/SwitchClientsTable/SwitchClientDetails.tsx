@@ -46,17 +46,17 @@ export function SwitchClientDetails () {
   const exportClientToCSV = () => {
     const ClientCSVIgnoreProperty = ['switchId', 'venueId', 'id', 'switchSerialNumber']
     const ClientCSVNamingMapping: Map<string, string> = new Map<string, string>([
-      ['clientMac', 'Mac Address'],
-      ['clientType', 'Device Type'],
-      ['clientName', 'Hostname'],
-      ['switchName', 'Switch Name'],
-      ['venueName', 'Venue Name'],
-      ['clientVlan', 'Vlan ID'],
-      ['vlanName', 'Vlan'],
-      ['switchSerialNumber', 'Switch Serial Number'],
-      ['clientDesc', 'Description'],
-      ['clientIpv4Addr', 'IP Address'],
-      ['switchPort', 'Port']
+      ['clientMac', $t({ defaultMessage: 'Mac Address' })],
+      ['clientType', $t({ defaultMessage: 'Device Type' })],
+      ['clientName', $t({ defaultMessage: 'Hostname' })],
+      ['switchName', $t({ defaultMessage: 'Switch Name' })],
+      ['venueName', $t({ defaultMessage: 'Venue Name' })],
+      ['clientVlan', $t({ defaultMessage: 'Vlan ID' })],
+      ['vlanName', $t({ defaultMessage: 'Vlan' })],
+      ['switchSerialNumber', $t({ defaultMessage: 'Switch Serial Number' })],
+      ['clientDesc', $t({ defaultMessage: 'Description' })],
+      ['clientIpv4Addr', $t({ defaultMessage: 'IP Address' })],
+      ['switchPort', $t({ defaultMessage: 'Port' })]
     ])
 
     const nowTime = getCurrentDate('YYYYMMDDHHMMSS')
