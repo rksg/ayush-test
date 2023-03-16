@@ -120,6 +120,7 @@ export interface Venue {
   networkId? : string
   vlanPoolId?: string
   activatedApsId?: string[]
+  dhcp?: { enabled: boolean }
 }
 
 export interface AlarmBase {
