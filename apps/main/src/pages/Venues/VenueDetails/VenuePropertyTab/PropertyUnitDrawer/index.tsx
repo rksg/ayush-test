@@ -5,7 +5,7 @@ import { useWatch }                                                  from 'antd/
 import _                                                             from 'lodash'
 import { useIntl }                                                   from 'react-intl'
 
-import { Drawer, Loader, showToast, StepsForm } from '@acx-ui/components'
+import { Drawer, Loader, StepsForm } from '@acx-ui/components'
 import {
   useAddPropertyUnitMutation,
   useApListQuery,
@@ -335,13 +335,8 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
       isEdit ? await handleEditUnit(values) : await handleAddUnit(values)
       onClose()
     } catch (e) {
-      showToast({
-        duration: 3,
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' }),
-        // FIXME: Correct the error message
-        link: { onClick: () => alert(JSON.stringify(e)) }
-      })
+      // eslint-disable-next-line no-console
+      console.log(e)
     }
   }
 
