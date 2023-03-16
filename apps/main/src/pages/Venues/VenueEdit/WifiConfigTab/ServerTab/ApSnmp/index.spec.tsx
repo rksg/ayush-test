@@ -56,8 +56,8 @@ describe('Ap Snmp', () => {
         route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
       })
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
-    await waitFor(() => screen.findByText('AP SNMP'))
-    expect(await screen.findByText(/AP SNMP/)).toBeVisible()
+    await waitFor(() => screen.findByText('Use AP SNMP'))
+    expect(await screen.findByText(/Use AP SNMP/)).toBeVisible()
     expect(await screen.findByText(/SNMP-1/)).toBeVisible()
 
   })
@@ -77,8 +77,8 @@ describe('Ap Snmp', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
       })
-    await waitFor(() => screen.findByText('AP SNMP'))
-    expect(await screen.findByText(/AP SNMP/)).toBeVisible()
+    await waitFor(() => screen.findByText('Use AP SNMP'))
+    expect(await screen.findByText(/Use AP SNMP/)).toBeVisible()
 
     fireEvent.mouseDown(await screen.findByRole('combobox'))
     const option = screen.getByText('SNMP-2')
@@ -100,8 +100,8 @@ describe('Ap Snmp', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
       })
-    await waitFor(() => screen.findByText('AP SNMP'))
-    expect(await screen.findByText(/AP SNMP/)).toBeVisible()
+    await waitFor(() => screen.findByText('Use AP SNMP'))
+    expect(await screen.findByText(/Use AP SNMP/)).toBeVisible()
 
     fireEvent.click(await screen.findByTestId('ApSnmp-switch'))
 
