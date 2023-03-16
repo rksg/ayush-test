@@ -398,8 +398,8 @@ function Table <RecordType extends Record<string, any>> ({
               {$t({ defaultMessage: 'Clear Filters' })}
             </Button>}
           </UI.HeaderLeft>
-          <UI.HeaderRight>
-            {headerButton && headerButton.disabled
+          { headerButton && <UI.HeaderRight>
+            {headerButton.disabled
               ? <DisabledButton
                 tooltipPlacement='topRight'
                 title={'No data'}
@@ -409,7 +409,9 @@ function Table <RecordType extends Record<string, any>> ({
                 icon={headerButton?.icon}
                 onClick={headerButton?.onClick}
               />}
-          </UI.HeaderRight>
+            </UI.HeaderRight>
+          }
+          
         </UI.HeaderComps>
       </UI.Header>
     )}
