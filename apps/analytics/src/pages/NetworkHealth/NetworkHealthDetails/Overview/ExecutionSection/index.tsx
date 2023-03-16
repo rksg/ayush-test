@@ -97,6 +97,7 @@ export const ExecutionSection: React.FC<{ details: NetworkHealthTest }> = props 
       <AutoSizer>
         {({ height, width }) => (
           <VerticalStackedBarChart
+            key={props.details.id}
             style={{ width, height }}
             data={chart.data}
             categories={chart.categories}

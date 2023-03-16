@@ -16,7 +16,8 @@ import {
   statusMapping,
   CommonUrlsInfo,
   TABLE_QUERY_LONG_POLLING_INTERVAL,
-  useTableQuery
+  useTableQuery,
+  noDataDisplay
 } from '@acx-ui/rc/utils'
 import { useDateFilter } from '@acx-ui/utils'
 
@@ -130,8 +131,9 @@ const ActivityTable = ({
       dataIndex: 'product',
       sorter: true,
       render: function (_: React.ReactNode, row: { product: string }) {
-        const msg = productMapping[row.product as keyof typeof productMapping]
-        return $t(msg)
+        const key = row.product as keyof typeof productMapping
+        const msg = productMapping[key] ? $t(productMapping[key]) : noDataDisplay
+        return msg
       },
       filterable: (Array.isArray(filterables) ? filterables.includes('product') : filterables)
         && Object.entries(productMapping).map(([key, value])=>({ key, value: $t(value) }))
