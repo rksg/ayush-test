@@ -16,7 +16,7 @@ describe('RogueAPDetectionScopeForm', () => {
   it('should render RogueAPDetectionScopeForm successfully', async () => {
 
     render(
-      <RogueAPDetectionScopeForm edit={false}/>
+      <RogueAPDetectionScopeForm />
       , {
         wrapper: wrapper,
         route: {
@@ -32,7 +32,7 @@ describe('RogueAPDetectionScopeForm', () => {
   it('should render RogueAPDetectionScopeForm with editMode successfully', async () => {
 
     render(
-      <RogueAPDetectionScopeForm edit={true}/>
+      <RogueAPDetectionScopeForm />
       , {
         wrapper: wrapper,
         route: {

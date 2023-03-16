@@ -2911,9 +2911,15 @@ export const portlistData = {
   page: 1,
   totalCount: 2
 }
+
 export const resultOfGetApSnmpAgentSettings = {
   apSnmpAgentProfileId: 'c1082e7d05d74eb897bb3600a15c1dc7',
   useVenueSettings: true,
+  enableApSnmp: true
+}
+
+export const resultOfGetVenueApSnmpAgentSettings = {
+  apSnmpAgentProfileId: 'c1082e7d05d74eb897bb3600a15c1dc7',
   enableApSnmp: true
 }
 

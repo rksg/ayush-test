@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 
+import { Tooltip } from 'antd'
 import { useIntl } from 'react-intl'
 
 import {
@@ -41,6 +42,8 @@ import {
   compareVersions,
   getApVersion,
   getApNextScheduleTpl,
+  getNextScheduleTplTooltip,
+  isNextScheduleTooltipDisabled,
   toUserDate
 } from '../../FirmwareUtils'
 import { PreferencesDialog } from '../../PreferencesDialog'
@@ -66,29 +69,28 @@ function useColumns (
       sorter: true,
       searchable: searchable,
       defaultSortOrder: 'ascend',
-      width: 120,
       render: function (data, row) {
         return row.name
       }
     },
     {
       title: intl.$t({ defaultMessage: 'Current AP Firmware' }),
-      key: 'versions[0].version',
-      dataIndex: 'versions[0].version',
+      key: 'version',
+      dataIndex: 'version',
       sorter: true,
       filterable: filterables ? filterables['version'] : false,
-      width: 120,
+      filterMultiple: false,
       render: function (data, row) {
         return row.versions[0].version ?? '--'
       }
     },
     {
       title: intl.$t({ defaultMessage: 'Firmware Type' }),
-      key: 'versions[0].category',
-      dataIndex: 'versions[0].category',
+      key: 'type',
+      dataIndex: 'type',
       sorter: true,
       filterable: filterables ? filterables['type'] : false,
-      width: 120,
+      filterMultiple: false,
       render: function (data, row) {
         if (!row.versions[0]) return '--'
         const text = transform(row.versions[0].category as FirmwareCategory, 'type')
@@ -101,8 +103,7 @@ function useColumns (
       title: intl.$t({ defaultMessage: 'Last Update' }),
       key: 'lastUpdate',
       dataIndex: 'lastUpdate',
-      sorter: true,
-      width: 120,
+      sorter: false,
       render: function (data, row) {
         if (!row.lastScheduleUpdate) return '--'
         return toUserDate(row.lastScheduleUpdate)
@@ -112,10 +113,15 @@ function useColumns (
       title: intl.$t({ defaultMessage: 'Next Update Schedule' }),
       key: 'nextSchedule',
       dataIndex: 'nextSchedule',
-      sorter: true,
-      width: 120,
+      sorter: false,
       render: function (data, row) {
-        return getApNextScheduleTpl(intl, row)
+        // return getApNextScheduleTpl(intl, row)
+        return (!isNextScheduleTooltipDisabled(row)
+          ? getApNextScheduleTpl(intl, row)
+          : <Tooltip title={getNextScheduleTplTooltip(row)} placement='bottom'>
+            {getApNextScheduleTpl(intl, row)}
+          </Tooltip>
+        )
       }
     }
   ]
