@@ -351,20 +351,18 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
 
   const withoutNsgForm = <>
     <Form.Item label={$t({ defaultMessage: 'VLAN' })}>
-      <Space>
-        <Form.Item
-          noStyle
-          name={['unitPersona', 'vlan']}
-          rules={[{
-            type: 'number',
-            min: 1,
-            max: 4094,
-            message: $t(validationMessages.vlanRange)
-          }]}
-        >
-          <InputNumber />
-        </Form.Item>
-      </Space>
+      <Form.Item
+        noStyle
+        name={['unitPersona', 'vlan']}
+        rules={[{
+          type: 'number',
+          min: 1,
+          max: 4094,
+          message: $t(validationMessages.vlanRange)
+        }]}
+      >
+        <InputNumber />
+      </Form.Item>
     </Form.Item>
 
     <StepsForm.FieldLabel width={'160px'}>
@@ -376,10 +374,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
         children={<Switch />}
       />
     </StepsForm.FieldLabel>
-
-    <Space>
-      {
-        enableGuestVlan &&
+    {enableGuestVlan &&
         <Form.Item
           name={['guestPersona', 'vlan']}
           rules={[{
@@ -391,8 +386,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
         >
           <InputNumber />
         </Form.Item>
-      }
-    </Space>
+    }
   </>
 
   const withNsgForm = (<>
