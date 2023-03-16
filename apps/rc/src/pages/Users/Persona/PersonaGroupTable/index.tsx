@@ -45,7 +45,7 @@ function useColumns (
     payload: { sortField: 'name', sortOrder: 'ASC', page: 1, pageSize: 10000 }
   })
   const { data: nsgList } = useGetNetworkSegmentationGroupListQuery(
-    {},
+    { params: { page: '1', pageSize: '10000', sort: 'name,asc' } },
     { skip: !networkSegmentationEnabled }
   )
 
@@ -201,7 +201,7 @@ export function PersonaGroupTable () {
       }
 
       if (nsgId) {
-        getNsgById({ params: { serviceId: nsgId } })
+        getNsgById({ params: { tenantId, serviceId: nsgId } })
           .then(result => {
             if (result.data) {
               nsgPools.set(nsgId, result.data.name)
