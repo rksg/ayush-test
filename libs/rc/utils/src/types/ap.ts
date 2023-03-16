@@ -399,7 +399,7 @@ export interface ApDirectedMulticast {
 }
 
 
-export type APExtendedGrouped = {
+export interface APExtendedGrouped extends APExtended {
   networks: {
     count: number
     names: string[]
@@ -413,6 +413,6 @@ export type APExtendedGrouped = {
   clients: number
   name?: string
   aps: APExtended[],
-  children?:  APExtended[],
+  children?: APExtended[],
   id?: number | string
 }

@@ -1,9 +1,10 @@
 /* eslint-disable max-len */
 import React, { useState, useEffect, useCallback } from 'react'
 
-import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
-import { Badge }               from 'antd'
-import { useIntl }             from 'react-intl'
+import { FetchBaseQueryError }                               from '@reduxjs/toolkit/dist/query'
+import { Badge }                                             from 'antd'
+import { SorterResult, TableCurrentDataSource, FilterValue } from 'antd/lib/table/interface'
+import { useIntl }                                           from 'react-intl'
 
 import {
   Loader,
@@ -44,7 +45,19 @@ import {
   getGroupableConfig
 } from './config'
 
+import type {
+  TablePaginationConfig
+} from 'antd'
+
 type DeviceGroupBy = 'deviceStatus' | 'model' | 'deviceGroupName' | null
+type OnTableChange = (
+  pagination: TablePaginationConfig,
+  filters: Record<string, FilterValue | null>,
+  sorter:
+    | SorterResult<APExtended | APExtendedGrouped>
+    | SorterResult<APExtended | APExtendedGrouped>[],
+  extra: TableCurrentDataSource<APExtended | APExtendedGrouped>
+) => void
 
 export const defaultApPayload = {
   searchString: '',
@@ -432,10 +445,8 @@ export function ApTable (props: ApTableProps) {
         dataSource={tableData}
         rowKey='serialNumber'
         pagination={tableQuery?.pagination}
-        // @ts-ignore
-        onChange={tableQuery?.handleTableChange}
+        onChange={tableQuery?.handleTableChange as OnTableChange}
         enableApiFilter={true}
-        // @ts-ignore
         rowActions={filterByAccess(rowActions)}
         onFilterChange={useCallback((filter : FILTER, search : SEARCH, groupBy?: string ) => {
           setTableFilter(filter)
