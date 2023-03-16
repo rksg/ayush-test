@@ -4,9 +4,10 @@ import userEvent from '@testing-library/user-event'
 
 import {
   networkHealthApi as api,
-  networkHealthApiURL as apiUrl
-} from '@acx-ui/analytics/services'
-import { Provider, store }                           from '@acx-ui/store'
+  networkHealthApiURL as apiUrl,
+  Provider,
+  store
+} from '@acx-ui/store'
 import { render, mockGraphqlQuery, screen, waitFor } from '@acx-ui/test-utils'
 
 import * as fixtures      from '../__tests__/fixtures'

@@ -1,11 +1,11 @@
 import { gql } from 'graphql-request'
 
-import { dataApi } from '@acx-ui/analytics/services'
 import {
   IncidentFilter,
   incidentSeverities,
   incidentCodes
 } from '@acx-ui/analytics/utils'
+import { dataApi } from '@acx-ui/store'
 
 export type IncidentsBySeverityData = {
   P1: number

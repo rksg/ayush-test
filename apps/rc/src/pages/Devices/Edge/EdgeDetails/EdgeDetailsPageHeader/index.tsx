@@ -5,7 +5,7 @@ import {
   Space,
   Badge
 } from 'antd'
-import moment      from 'moment'
+import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, RangePicker, showActionModal }  from '@acx-ui/components'
