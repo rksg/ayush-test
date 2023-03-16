@@ -449,6 +449,8 @@ export function RadioSettings () {
     formRef?.current?.setFieldValue('useVenueSettings', isUseVenue)
     setIsUseVenueSettings(isUseVenue)
 
+    const supportDual5G = isSupportDual5G()
+
     if (isUseVenue) {
       if (formRef?.current) {
         const currentData = formRef.current.getFieldsValue()
@@ -457,14 +459,16 @@ export function RadioSettings () {
       }
 
       if (venueRadioData) {
-        const supportDual5G = isSupportDual5G()
         updateFormData(venueRadioData)
         setIsDual5gMode((supportDual5G && venueRadioData.apRadioParamsDual5G?.enabled) || false)
+        onTabChange('Normal24GHz')
       }
     } else {
       if (currentRadioData) {
         setCurrentRadioData({ ...currentRadioData, useVenueSettings: isUseVenue })
         updateFormData(currentRadioData)
+        setIsDual5gMode((supportDual5G && currentRadioData.apRadioParamsDual5G?.enabled) || false)
+        onTabChange('Normal24GHz')
       }
     }
 
