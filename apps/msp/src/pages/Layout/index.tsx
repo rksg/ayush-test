@@ -4,6 +4,7 @@ import {
   Layout as LayoutComponent,
   LayoutUI
 } from '@acx-ui/components'
+import { SplitProvider } from '@acx-ui/feature-toggle'
 import {
   ActivityButton,
   AlarmsButton,
@@ -85,4 +86,11 @@ function Layout () {
     />
   )
 }
-export default Layout
+
+function LayoutWithSplitProvider () {
+  return <SplitProvider>
+    <Layout />
+  </SplitProvider>
+}
+
+export default LayoutWithSplitProvider

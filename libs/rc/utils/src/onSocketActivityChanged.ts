@@ -7,7 +7,7 @@ import {
 } from '@reduxjs/toolkit/query/react'
 import { Params } from 'react-router-dom'
 
-import { getJwtToken } from '@acx-ui/utils'
+import { getJwtToken, getTenantId } from '@acx-ui/utils'
 
 import { initialSocket } from './initialSocket'
 
@@ -43,9 +43,11 @@ export async function onSocketActivityChanged <
   const { cacheDataLoaded, cacheEntryRemoved } = api
 
   const token = getJwtToken()
-  const url = token ? `/activity?token=${token}&tenantId=${payload.params?.tenantId}`
-    : `/activity?tenantId=${payload.params?.tenantId}`
 
+  const tenantId = getTenantId()
+
+  const url = token ? `/activity?token=${token}&tenantId=${tenantId}`
+    : `/activity?tenantId=${tenantId}`
   const socket = initialSocket(url)
 
   await cacheDataLoaded
