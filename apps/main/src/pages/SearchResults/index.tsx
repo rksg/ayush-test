@@ -109,7 +109,8 @@ const searches = [
     const result = useEventsTableQuery(
       { entity_type: undefined },
       { ...eventDefaultSearch, searchString },
-      pagination
+      pagination,
+      0 // no polling
     )
     return {
       result,
