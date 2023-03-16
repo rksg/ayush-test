@@ -188,7 +188,7 @@ export function PropertyManagementTab () {
               </Row>
               <Row gutter={20}>
                 <Col span={8}>
-            Communication Templates:
+                  {$t({ defaultMessage: 'Communication Templates:' })}
                   <Form.Item
                     label={$t({ defaultMessage: 'Send communications via...' })}
                   >
@@ -198,14 +198,14 @@ export function PropertyManagementTab () {
                         name={['communicationConfiguration', 'sendEmail']}
                         valuePropName={'checked'}
                       >
-                        <Checkbox>Email</Checkbox>
+                        <Checkbox>{$t({ defaultMessage: 'Email' })}</Checkbox>
                       </Form.Item>
                       <Form.Item
                         noStyle
                         name={['communicationConfiguration', 'sendSms']}
                         valuePropName={'checked'}
                       >
-                        <Checkbox>SMS</Checkbox>
+                        <Checkbox>{$t({ defaultMessage: 'SMS' })}</Checkbox>
                       </Form.Item>
                     </Space>
                   </Form.Item>
