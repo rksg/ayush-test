@@ -76,17 +76,7 @@ export default function RogueAPDetectionTable () {
     defaultPayload
   })
 
-  const [venueFilterOptions, setVenueFilterOptions] = useState(
-    [] as { key: string, value: string }[]
-  )
   const [venueIds, setVenueIds] = useState([] as string[])
-
-  const venueTableQuery = useTableQuery<Venue>({
-    useQuery: useVenuesListQuery,
-    defaultPayload: {
-      ...useDefaultVenuePayload()
-    }
-  })
 
   useEffect(() => {
     if (tableQuery.data) {
@@ -97,26 +87,8 @@ export default function RogueAPDetectionTable () {
         }
       })
       setVenueIds([...new Set(unionVenueIds)])
-
-      venueTableQuery.setPayload({
-        ...defaultPayload,
-        filters: {
-          id: [...venueIds]
-        }
-      })
     }
   }, [tableQuery.data])
-
-  useEffect(() => {
-    if (venueTableQuery.data && venueIds.length) {
-      setVenueFilterOptions(
-        [...venueTableQuery.data.data.map(
-          (venue) => {
-            return { key: venue.id, value: venue.name }
-          })]
-      )
-    }
-  }, [venueTableQuery.data, venueIds])
 
   const rowActions: TableProps<EnhancedRoguePolicyType>['rowActions'] = [
     {
@@ -184,7 +156,7 @@ export default function RogueAPDetectionTable () {
       />
       <Loader states={[tableQuery]}>
         <Table<EnhancedRoguePolicyType>
-          columns={useColumns(venueFilterOptions)}
+          columns={useColumns(venueIds)}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
@@ -199,8 +171,38 @@ export default function RogueAPDetectionTable () {
   )
 }
 
-function useColumns (venueFilterOptions: { key: string, value: string }[]) {
+function useColumns (venueIds: string[]) {
   const { $t } = useIntl()
+
+  const [venueFilterOptions, setVenueFilterOptions] = useState(
+    [] as { key: string, value: string }[]
+  )
+
+  const venueTableQuery = useTableQuery<Venue>({
+    useQuery: useVenuesListQuery,
+    defaultPayload: {
+      ...useDefaultVenuePayload()
+    }
+  })
+
+  useEffect(() => {
+
+    venueTableQuery.setPayload({
+      ...defaultPayload,
+      filters: {
+        id: [...venueIds]
+      }
+    })
+
+    if (venueTableQuery.data && venueIds.length) {
+      setVenueFilterOptions(
+        [...venueTableQuery.data.data.map(
+          (venue) => {
+            return { key: venue.id, value: venue.name }
+          })]
+      )
+    }
+  }, [venueTableQuery.data, venueIds])
 
   const columns: TableProps<EnhancedRoguePolicyType>['columns'] = [
     {

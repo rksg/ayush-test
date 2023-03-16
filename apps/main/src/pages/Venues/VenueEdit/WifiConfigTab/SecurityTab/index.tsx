@@ -270,7 +270,7 @@ export function SecurityTab () {
                   }>
                   {$t({ defaultMessage: 'View Details' })}
                 </Button>
-                <RogueApModal />
+                <RogueApModal setPolicyId={setRoguePolicyIdValue}/>
               </Space>
               { rogueDrawerVisible && <RogueApDrawer
                 visible={rogueDrawerVisible}
