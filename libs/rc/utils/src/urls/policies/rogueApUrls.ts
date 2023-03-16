@@ -46,7 +46,7 @@ export const RogueApUrls: { [key: string]: ApiInfo } = {
   getEnhancedRoguePolicyList: {
     method: 'post',
     url: '/enhancedRogueApPolicyProfiles/query',
-    oldUrl: '/enhancedRogueApPolicyProfiles/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedRogueApPolicyProfiles/query',
     newApi: true
   }
 }
