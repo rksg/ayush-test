@@ -2,16 +2,30 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
-import { AdminLog, RequestPayload, TableQuery }        from '@acx-ui/rc/utils'
-import { Provider }                                    from '@acx-ui/store'
-import { render, screen }                              from '@acx-ui/test-utils'
-import { UserProfileContext, UserProfileContextProps } from '@acx-ui/user'
+import { AdminLog, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
+import { Provider }                             from '@acx-ui/store'
+import { render, screen }                       from '@acx-ui/test-utils'
 
-import { events, eventsMeta, fakeUserProfile } from './__tests__/fixtures'
+import { events, eventsMeta } from './__tests__/fixtures'
 
 import { AdminLogTable } from '.'
 
 const params = { tenantId: 'tenant-id' }
+
+const mockDownloadCSV = jest.fn()
+
+jest.mock('@acx-ui/user', () => ({
+  ...jest.requireActual('@acx-ui/user'),
+  useUserProfileContext: () => ({ data: {
+    detailLevel: 'it',
+    dateFormat: 'mm/dd/yyyy'
+  } })
+}))
+
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useDownloadEventsCSVMutation: () => [ mockDownloadCSV ]
+}))
 
 describe('AdminLogTable', () => {
   const tableQuery = {
@@ -22,18 +36,10 @@ describe('AdminLogTable', () => {
     handleTableChange: jest.fn()
   } as unknown as TableQuery<AdminLog, RequestPayload<unknown>, unknown>
 
-  const userProfileContextValues = {
-    data: fakeUserProfile
-  } as UserProfileContextProps
-
   it('should render activity list', async () => {
     render(
-      <Provider>
-        <UserProfileContext.Provider value={userProfileContextValues}>
-          <AdminLogTable tableQuery={tableQuery} />
-        </UserProfileContext.Provider>
-      </Provider>,
-      { route: { params } }
+      <AdminLogTable tableQuery={tableQuery} />,
+      { route: { params }, wrapper: Provider }
     )
     await screen.findByText(
       'Admin FisrtName 12 LastName 12, dog12@email.com logged into the cloud controller.'
@@ -42,12 +48,8 @@ describe('AdminLogTable', () => {
 
   it('should open/close activity drawer', async () => {
     render(
-      <Provider>
-        <UserProfileContext.Provider value={userProfileContextValues}>
-          <AdminLogTable tableQuery={tableQuery} />
-        </UserProfileContext.Provider>
-      </Provider>,
-      { route: { params } }
+      <AdminLogTable tableQuery={tableQuery} />,
+      { route: { params }, wrapper: Provider }
     )
     await screen.findByText(
       'Admin FisrtName 12 LastName 12, dog12@email.com logged into the cloud controller.'
@@ -60,13 +62,10 @@ describe('AdminLogTable', () => {
 
   it('should download csv on click', async () => {
     render(
-      <Provider>
-        <UserProfileContext.Provider value={userProfileContextValues}>
-          <AdminLogTable tableQuery={tableQuery} />
-        </UserProfileContext.Provider>
-      </Provider>,
-      { route: { params } }
+      <AdminLogTable tableQuery={tableQuery} />,
+      { route: { params }, wrapper: Provider }
     )
     await userEvent.click(screen.getByTestId('DownloadOutlined'))
+    expect(mockDownloadCSV).toBeCalled()
   })
 })

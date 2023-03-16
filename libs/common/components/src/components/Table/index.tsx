@@ -409,9 +409,9 @@ function Table <RecordType extends Record<string, any>> ({
                 icon={headerButton?.icon}
                 onClick={headerButton?.onClick}
               />}
-            </UI.HeaderRight>
+          </UI.HeaderRight>
           }
-          
+
         </UI.HeaderComps>
       </UI.Header>
     )}

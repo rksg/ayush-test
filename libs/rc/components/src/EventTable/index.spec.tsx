@@ -3,12 +3,9 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
 import { useIsSplitOn }                                                             from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, Event, EventBase, EventMeta, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, Event, EventBase, EventMeta, RequestPayload, TableQuery }  from '@acx-ui/rc/utils'
 import { Provider }                                                                 from '@acx-ui/store'
 import { findTBody, mockRestApiQuery, render, renderHook, screen, waitFor, within } from '@acx-ui/test-utils'
-import { UserProfileContext, UserProfileContextProps }              from '@acx-ui/user'
-
-import { fakeUserProfile } from './__tests__/fixtures'
 
 import {
   events,
@@ -19,9 +16,14 @@ import {
 
 import { EventTable, useEventsTableQuery } from '.'
 
+const mockDownloadCSV = jest.fn()
+
 jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user'),
-  useUserProfileContext: () => ({ data: { detailLevel: 'it' } })
+  useUserProfileContext: () => ({ data: {
+    detailLevel: 'it',
+    dateFormat: 'mm/dd/yyyy'
+  } })
 }))
 
 jest.mock('@acx-ui/components', () => ({
@@ -31,6 +33,12 @@ jest.mock('@acx-ui/components', () => ({
     <span data-testid='tooltip-content'>{props.title}</span>
   </div>
 }))
+
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useDownloadEventsCSVMutation: () => [ mockDownloadCSV ]
+}))
+
 
 const params = { tenantId: 'tenant-id' }
 
@@ -51,9 +59,6 @@ describe('EventTable', () => {
     handleTableChange: jest.fn()
   } as unknown as TableQuery<Event, RequestPayload<unknown>, unknown>
 
-  const userProfileContextValues = {
-    data: fakeUserProfile
-  } as UserProfileContextProps
 
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -61,9 +66,7 @@ describe('EventTable', () => {
 
   it('should render event list', async () => {
     render(
-      <UserProfileContext.Provider value={userProfileContextValues}>
-        <EventTable tableQuery={tableQuery} />,
-      </UserProfileContext.Provider>,
+      <EventTable tableQuery={tableQuery} />,
       { route: { params }, wrapper: Provider }
     )
 
@@ -87,9 +90,7 @@ describe('EventTable', () => {
 
   it('should render based on filterables/searchables is empty', async () => {
     render(
-      <UserProfileContext.Provider value={userProfileContextValues}>
-        <EventTable tableQuery={tableQuery} searchables={[]} filterables={[]}/>
-      </UserProfileContext.Provider>,
+      <EventTable tableQuery={tableQuery} searchables={[]} filterables={[]}/>,
       { route: { params }, wrapper: Provider }
     )
     await screen.findByText('Severity')
@@ -99,9 +100,7 @@ describe('EventTable', () => {
 
   it('should render based on filterables/searchables is false', async () => {
     render(
-        <UserProfileContext.Provider value={userProfileContextValues}>
-          <EventTable tableQuery={tableQuery} searchables={false} filterables={false}/>
-        </UserProfileContext.Provider>,
+      <EventTable tableQuery={tableQuery} searchables={false} filterables={false}/>,
       { route: { params }, wrapper: Provider }
     )
     await screen.findByText('Severity')
@@ -111,13 +110,11 @@ describe('EventTable', () => {
 
   it('should render based on filterables/searchables is array', async () => {
     render(
-        <UserProfileContext.Provider value={userProfileContextValues}>
-          <EventTable
-            tableQuery={tableQuery}
-            searchables={['message', 'entity_type']}
-            filterables={['severity', 'entity_type', 'product']}
-          />
-        </UserProfileContext.Provider>,
+      <EventTable
+        tableQuery={tableQuery}
+        searchables={['message', 'entity_type']}
+        filterables={['severity', 'entity_type', 'product']}
+      />,
       { route: { params }, wrapper: Provider }
     )
     await screen.findByPlaceholderText('Search Source, Description')
@@ -128,9 +125,7 @@ describe('EventTable', () => {
 
   it('should open/close event drawer', async () => {
     render(
-      <UserProfileContext.Provider value={userProfileContextValues}>
-        <EventTable tableQuery={tableQuery} />
-      </UserProfileContext.Provider>,
+      <EventTable tableQuery={tableQuery} />,
       { route: { params }, wrapper: Provider }
     )
     const row = await screen.findByRole('row', {
@@ -150,9 +145,7 @@ describe('EventTable', () => {
     }]
 
     render(
-      <UserProfileContext.Provider value={userProfileContextValues}>
-        <EventTable tableQuery={tableQuery} />
-      </UserProfileContext.Provider>,
+      <EventTable tableQuery={tableQuery} />,
       { route: { params }, wrapper: Provider }
     )
 
@@ -170,9 +163,7 @@ describe('EventTable', () => {
     }]
 
     render(
-      <UserProfileContext.Provider value={userProfileContextValues}>
-        <EventTable tableQuery={tableQuery} />
-      </UserProfileContext.Provider>,
+      <EventTable tableQuery={tableQuery} />,
       { route: { params }, wrapper: Provider }
     )
 
@@ -192,9 +183,7 @@ describe('EventTable', () => {
 
     const name = eventsMeta[3].switchName
     const { rerender } = render(
-      <UserProfileContext.Provider value={userProfileContextValues}>
-        <EventTable tableQuery={tableQuery} />
-      </UserProfileContext.Provider>,
+      <EventTable tableQuery={tableQuery} />,
       { route: { params }, wrapper: Provider }
     )
 
@@ -205,9 +194,7 @@ describe('EventTable', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
 
     rerender(
-      <UserProfileContext.Provider value={userProfileContextValues}>
-        <EventTable tableQuery={tableQuery} />
-      </UserProfileContext.Provider>
+      <EventTable tableQuery={tableQuery} />
     )
 
     elements = await screen.findAllByText(name)
@@ -217,14 +204,11 @@ describe('EventTable', () => {
 
   it('should download csv on click', async () => {
     render(
-      <Provider>
-        <UserProfileContext.Provider value={userProfileContextValues}>
-          <EventTable tableQuery={tableQuery} />
-        </UserProfileContext.Provider>
-      </Provider>,
-      { route: { params } }
+      <EventTable tableQuery={tableQuery} />,
+      { route: { params }, wrapper: Provider }
     )
     await userEvent.click(screen.getByTestId('DownloadOutlined'))
+    expect(mockDownloadCSV).toBeCalled()
   })
 })
 

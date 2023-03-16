@@ -12,10 +12,10 @@ import { Loader,
   Tooltip,
   Filter
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
-import { useEventsQuery }             from '@acx-ui/rc/services'
-import { DownloadOutlined }                                                                 from '@acx-ui/icons'
-import { useDownloadEventsCSVMutation }                                                     from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { DownloadOutlined }             from '@acx-ui/icons'
+import { useEventsQuery }               from '@acx-ui/rc/services'
+import { useDownloadEventsCSVMutation } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   Event,
@@ -27,8 +27,8 @@ import {
   TABLE_QUERY_LONG_POLLING_INTERVAL
 } from '@acx-ui/rc/utils'
 import { TenantLink, generatePath, useParams } from '@acx-ui/react-router-dom'
-import { useUserProfileContext }    from '@acx-ui/user'
-import { formatter, useDateFilter } from '@acx-ui/utils'
+import { useUserProfileContext }               from '@acx-ui/user'
+import { formatter, useDateFilter }            from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 
@@ -103,7 +103,8 @@ export function useEventsTableQuery (
   pagination?: Record<string, unknown>
 ) {
   const { fromTime, toTime } = useEventTableFilter()
-  const detailLevel = useUserProfileContext().data.detailLevel
+  const { data: userProfileData } = useUserProfileContext()
+  const detailLevel = userProfileData.detailLevel
   const filters = { ...baseFilters, fromTime, toTime }
 
   const tableQuery = usePollingTableQuery<Event>({
