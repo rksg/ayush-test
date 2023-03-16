@@ -170,13 +170,11 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   refreshLicensesData: {
-    // different method
-    // method: 'get',
-    // url: '/entitlements/summaries?refresh=true',
-    // oldUrl: '/api/tenant/:tenantId/entitlement/internal-refresh',
-    // newApi: true
-    method: 'post',
-    url: '/api/tenant/:tenantId/entitlement/internal-refresh'
+    method: 'get',
+    url: '/entitlements/summaries?refresh=true',
+    oldMethod: 'post',
+    oldUrl: '/api/tenant/:tenantId/entitlement/internal-refresh',
+    newApi: true
   }
   // acceptRejectInvitation: {
   //   method: 'put',

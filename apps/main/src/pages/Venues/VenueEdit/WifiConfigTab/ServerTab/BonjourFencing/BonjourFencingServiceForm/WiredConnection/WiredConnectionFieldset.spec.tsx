@@ -165,7 +165,7 @@ describe('WiredConnectionFieldset Component', () => {
     // Typo the existed MAC address
     await userEvent.click(await screen.findByTestId('InputTag'))
     await userEvent.type(await screen.findByTestId('InputTagField'), '11:11:11:11:11:15{enter}')
-    await screen.findByText('The MAC address has already existed.')
+    await screen.findByText('You have entered a duplicate MAC address already in use.')
 
     await userEvent.click(
       await within(
