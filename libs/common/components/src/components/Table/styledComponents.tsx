@@ -496,6 +496,8 @@ export const ExpandWrapper = styled.div`
 `
 
 export const GroupRow = styled.div`
+  margin-left: -20px;
+  margin-right: 20px;
   display: flex;
   justify-content: space-between;
 `
