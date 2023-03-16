@@ -142,7 +142,7 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
       }
     }),
     downloadEventsCSV: build.mutation<Blob, EventsExportPayload>({
-      query: (payload ) => {
+      query: (payload) => {
         const req = createHttpRequest(CommonUrlsInfo.downloadCSV,
           { tenantId: payload.tenantId }
         )

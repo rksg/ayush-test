@@ -120,10 +120,8 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
               <Select
                 loading={isVenueOptionsLoading}
                 onChange={onVenueChange}
-                options={[
-                  { label: $t({ defaultMessage: 'Select...' }), value: null },
-                  ...(venueOptions || [])
-                ]}
+                placeholder={$t({ defaultMessage: 'Select...' })}
+                options={venueOptions}
                 disabled={props.editMode}
               />
             }
