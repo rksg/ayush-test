@@ -36,8 +36,8 @@ describe('DpskPassphraseManagement', () => {
 
   beforeEach(() => {
     mockServer.use(
-      rest.get(
-        NewDpskPassphraseBaseUrl,
+      rest.post(
+        DpskUrls.getEnhancedPassphraseList.url,
         (req, res, ctx) => res(ctx.json(mockedDpskPassphraseList))
       )
     )
@@ -52,7 +52,7 @@ describe('DpskPassphraseManagement', () => {
       }
     )
 
-    const targetRecord = mockedDpskPassphraseList.content[0]
+    const targetRecord = mockedDpskPassphraseList.data[0]
 
     const targetRow = await screen.findByRole('row', { name: new RegExp(targetRecord.username) })
     expect(targetRow).toBeInTheDocument()
@@ -86,7 +86,7 @@ describe('DpskPassphraseManagement', () => {
       }
     )
 
-    const targetRecord = mockedDpskPassphraseList.content[0]
+    const targetRecord = mockedDpskPassphraseList.data[0]
 
     const targetRow = await screen.findByRole('row', { name: new RegExp(targetRecord.username) })
     await userEvent.click(within(targetRow).getByRole('checkbox'))

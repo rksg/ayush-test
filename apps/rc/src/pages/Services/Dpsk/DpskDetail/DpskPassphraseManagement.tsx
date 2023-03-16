@@ -17,13 +17,15 @@ import { CsvSize, ImportFileDrawer } from '@acx-ui/rc/components'
 import {
   useDeleteDpskPassphraseListMutation,
   useDownloadPassphrasesMutation,
-  useDpskPassphraseListQuery,
+  useGetEnhancedDpskPassphraseListQuery,
   useUploadPassphrasesMutation
 } from '@acx-ui/rc/services'
 import {
   ExpirationType,
+  FILTER,
   NetworkTypeEnum,
   NewDpskPassphrase,
+  SEARCH,
   transformAdvancedDpskExpirationText,
   useTableQuery
 } from '@acx-ui/rc/utils'
@@ -41,6 +43,11 @@ interface UploadPassphrasesFormFields {
   usernamePrefix: string
 }
 
+const defaultPayload = {
+  searchTargetFields: ['username'],
+  searchString: '',
+  filters: {}
+}
 
 export default function DpskPassphraseManagement () {
   const intl = useIntl()
@@ -53,15 +60,12 @@ export default function DpskPassphraseManagement () {
   const [ networkModalVisible, setNetworkModalVisible ] = useState(false)
   const params = useParams()
   const tableQuery = useTableQuery({
-    useQuery: useDpskPassphraseListQuery,
+    useQuery: useGetEnhancedDpskPassphraseListQuery,
     sorter: {
       sortField: 'createdDate',
-      sortOrder: 'desc'
+      sortOrder: 'DESC'
     },
-    defaultPayload: {
-      fields: ['check-all', 'id', 'passphrase', 'username',
-        'vlanId', 'mac', 'numberOfDevices', 'createdDate', 'expirationDate']
-    }
+    defaultPayload
   })
 
   const downloadPassphrases = () => {
@@ -86,7 +90,8 @@ export default function DpskPassphraseManagement () {
       title: $t({ defaultMessage: 'User Name' }),
       dataIndex: 'username',
       sorter: true,
-      ellipsis: true
+      ellipsis: true,
+      searchable: true
     },
     {
       key: 'numberOfDevices',
@@ -199,6 +204,18 @@ export default function DpskPassphraseManagement () {
     createType={NetworkTypeEnum.DPSK}
   />
 
+  const handleFilterChange = (filters: FILTER, search: SEARCH) => {
+    const currentPayload = tableQuery.payload
+    if (currentPayload.searchString === search.searchString) {
+      return
+    }
+    tableQuery.setPayload({
+      ...currentPayload,
+      searchString: search.searchString ?? ''
+    })
+  }
+
+
   return (<>
     <DpskPassphraseDrawer
       visible={addPassphrasesDrawerVisible}
@@ -254,6 +271,8 @@ export default function DpskPassphraseManagement () {
         rowActions={filterByAccess(rowActions)}
         rowSelection={{ type: 'checkbox' }}
         rowKey='id'
+        onFilterChange={handleFilterChange}
+        enableApiFilter={true}
       />
     </Loader>
   </>)

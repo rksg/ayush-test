@@ -54,8 +54,8 @@ describe('DpskDetails', () => {
       DpskUrls.getDpsk.url,
       (req, res, ctx) => res(ctx.json(mockedDpsk))
     ),
-    rest.get(
-      DpskUrls.getPassphraseList.url,
+    rest.post(
+      DpskUrls.getEnhancedPassphraseList.url,
       (req, res, ctx) => res(ctx.json(mockedDpskPassphraseList))
     )
   )

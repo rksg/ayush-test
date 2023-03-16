@@ -30,7 +30,7 @@ export const mockedSingleDpskPassphrase: Partial<CreateDpskPassphrasesFormFields
 }
 
 export const mockedDpskPassphraseList = {
-  content: [
+  data: [
     {
       id: '__PASSPHRASE_ID_1__',
       passphrase: 'abced12345',
@@ -61,13 +61,9 @@ export const mockedDpskPassphraseList = {
       createdDate: '2022-12-22T14:20:00'
     }
   ],
-  totalElements: 3,
-  totalPages: 1,
-  pageable: {
-    pageNumber: 0,
-    pageSize: 10
-  },
-  sort: []
+  page: 1,
+  totalCount: 3,
+  totalPages: 1
 }
 
 export const mockedNetworks = {

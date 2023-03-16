@@ -44,8 +44,8 @@ describe('DpskTable', () => {
 
   beforeEach(async () => {
     mockServer.use(
-      rest.get(
-        DpskUrls.getDpskList.url,
+      rest.post(
+        DpskUrls.getEnhancedDpskList.url,
         (req, res, ctx) => res(ctx.json({ ...mockedDpskList }))
       )
     )
@@ -60,7 +60,7 @@ describe('DpskTable', () => {
       }
     )
 
-    const targetDpsk = mockedDpskList.content[0]
+    const targetDpsk = mockedDpskList.data[0]
     expect(await screen.findByRole('button', { name: /Add DPSK Service/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: new RegExp(targetDpsk.name) })).toBeVisible()
   })
@@ -86,7 +86,7 @@ describe('DpskTable', () => {
       }
     )
 
-    const targetDpsk = mockedDpskList.content[0]
+    const targetDpsk = mockedDpskList.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(targetDpsk.name) })
     await userEvent.click(within(row).getByRole('radio'))
 
@@ -110,7 +110,7 @@ describe('DpskTable', () => {
       }
     )
 
-    const targetDpsk = mockedDpskList.content[0]
+    const targetDpsk = mockedDpskList.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(targetDpsk.name) })
     await userEvent.click(within(row).getByRole('radio'))
 

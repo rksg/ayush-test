@@ -9,7 +9,7 @@ import {
   Loader,
   showActionModal
 } from '@acx-ui/components'
-import { useDeleteDpskMutation, useGetDpskListQuery } from '@acx-ui/rc/services'
+import { useDeleteDpskMutation, useGetEnhancedDpskListQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
   useTableQuery,
@@ -29,13 +29,19 @@ import {
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                               from '@acx-ui/user'
 
+const defaultPayload = {
+  searchTargetFields: ['name'],
+  searchString: '',
+  filters: {}
+}
+
 export default function DpskTable () {
   const intl = useIntl()
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteDpsk ] = useDeleteDpskMutation()
 
-  const tableQuery = useTableQuery({ useQuery: useGetDpskListQuery, defaultPayload: {} })
+  const tableQuery = useTableQuery({ useQuery: useGetEnhancedDpskListQuery, defaultPayload })
 
   const rowActions: TableProps<DpskSaveData>['rowActions'] = [
     {
