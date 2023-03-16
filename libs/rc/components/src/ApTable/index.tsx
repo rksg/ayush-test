@@ -163,7 +163,7 @@ export function ApTable (props: ApTableProps) {
     search: {
       searchTargetFields: defaultApPayload.searchTargetFields
     },
-    option: { skip: Boolean(props.tableQuery) }
+    option: { skip: Boolean(props.tableQuery) || Boolean(groupBySelection) }
   })
   const tableQuery = props.tableQuery || groupBySelection ? groupByTableQuery : inlineTableQuery
 
@@ -423,6 +423,7 @@ export function ApTable (props: ApTableProps) {
   },[groupBySelection,tableFilter,tableSearch])
 
   const basePath = useTenantLink('/devices')
+
   return (
     <Loader states={[tableQuery]}>
       <Table<APExtended | APExtendedGrouped>
@@ -436,7 +437,7 @@ export function ApTable (props: ApTableProps) {
         enableApiFilter={true}
         // @ts-ignore
         rowActions={filterByAccess(rowActions)}
-        onFilterChange={useCallback((filter : any, search : any, groupBy: any) => {
+        onFilterChange={useCallback((filter : FILTER, search : SEARCH, groupBy?: string ) => {
           setTableFilter(filter)
           setTableSearch(search)
           setGroupBySelection?.(groupBy as DeviceGroupBy)
