@@ -16,5 +16,6 @@ export const MessageMapping = {
   enable_mfa_description_3: defineMessage({ defaultMessage: '- Managing the personal authentication settings will be done in the User Profile menu, accessible in the portal\'s header' }),
   enable_mfa_description_4: defineMessage({ defaultMessage: '- If MFA option is disabled, all users of this account are allowed to login using email and password, no extra authentication is required' }),
   enable_mfa_copy_codes_help_1: defineMessage({ defaultMessage: 'If admins have trouble receiving the security code, these codes below can be used as a backup method to access the account.' }),
-  enable_mfa_copy_codes_help_2: defineMessage({ defaultMessage: 'Make sure to copy and store them in a safe place.' })
+  enable_mfa_copy_codes_help_2: defineMessage({ defaultMessage: 'Make sure to copy and store them in a safe place.' }),
+  wifi_country_code_tooltip: defineMessage({ defaultMessage: 'Wi-Fi country code is used to indicate the available channels and power levels for use by access points at a venue. In most use cases the Wi-Fi country code is identical to the venue\'s location and need not be modified. If needed, you may select an alternate country code that is appropriate for your location.' })
 }
