@@ -3,12 +3,12 @@ import { useContext } from 'react'
 import { Button, Space } from 'antd'
 import { useIntl }       from 'react-intl'
 
-import { AnchorLayout, StepsForm, Tooltip }      from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }            from '@acx-ui/icons'
-import { VenueApModelCellular }                  from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { directedMulticastInfo }                 from '@acx-ui/utils'
+import { AnchorLayout, StepsForm, Tooltip }           from '@acx-ui/components'
+import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                 from '@acx-ui/icons'
+import { VenueApModelCellular, redirectPreviousPage } from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }                 from '@acx-ui/react-router-dom'
+import { directedMulticastInfo }                      from '@acx-ui/utils'
 
 import { VenueEditContext } from '../../index'
 
@@ -30,14 +30,13 @@ export interface NetworkingSettingContext {
 
 export function NetworkingTab () {
   const { $t } = useIntl()
-  const params = useParams()
-  const { venueId } = params
   const navigate = useNavigate()
   const basePath = useTenantLink('/venues/')
 
   const supportDirectedMulticast = useIsSplitOn(Features.DIRECTED_MULTICAST)
 
   const {
+    previousPath,
     editContextData,
     setEditContextData,
     editNetworkingContextData
@@ -114,10 +113,9 @@ export function NetworkingTab () {
   return (
     <StepsForm
       onFinish={handleUpdateAllSettings}
-      onCancel={() => navigate({
-        ...basePath,
-        pathname: `${basePath.pathname}/${venueId}/venue-details/overview`
-      })}
+      onCancel={() =>
+        redirectPreviousPage(navigate, previousPath, basePath)
+      }
       buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
     >
       <StepsForm.StepForm>

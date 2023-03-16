@@ -21,12 +21,12 @@ export interface Demo{
   bgImage: string
   logo?: string
   logoRatio?: number
-  welcomeText: string
+  welcomeText: string | undefined
   welcomeSize: number
   welcomeColor: string
   photo?: string
   photoRatio?: number
-  secondaryText: string
+  secondaryText: string | undefined
   secondarySize?: number
   secondaryColor?: string
   buttonColor?:string

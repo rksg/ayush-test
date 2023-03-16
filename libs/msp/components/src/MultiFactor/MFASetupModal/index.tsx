@@ -1,10 +1,10 @@
 import { useEffect } from 'react'
 
-import { Modal, Row, Col, Form, Typography, Space } from 'antd'
-import { useIntl }                                  from 'react-intl'
-import { useParams }                                from 'react-router-dom'
+import { Row, Col, Form, Typography, Space } from 'antd'
+import { useIntl }                           from 'react-intl'
+import { useParams }                         from 'react-router-dom'
 
-import { cssStr }              from '@acx-ui/components'
+import { cssStr, Modal }       from '@acx-ui/components'
 import {
   MFAMethod,
   useGetMfaTenantDetailsQuery,

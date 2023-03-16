@@ -24,9 +24,12 @@ import {
   RadiusValidateErrors,
   GuestNetworkTypeEnum,
   Demo,
-  GuestPortal
+  GuestPortal,
+  redirectPreviousPage,
+  LocationExtended
 } from '@acx-ui/rc/utils'
 import {
+  useLocation,
   useNavigate,
   useTenantLink,
   useParams
@@ -99,6 +102,7 @@ export default function NetworkForm (props:{
   const { modalMode, createType, modalCallBack } = props
   const intl = useIntl()
   const navigate = useNavigate()
+  const location = useLocation()
   const linkToNetworks = useTenantLink('/networks')
   const params = useParams()
   const editMode = params.action === 'edit'
@@ -116,6 +120,7 @@ export default function NetworkForm (props:{
     venues: []
   })
   const [portalDemo, setPortalDemo]=useState<Demo>()
+  const [previousPath, setPreviousPath] = useState('')
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
     if(!editMode&&!saveState.enableAccountingService){
       delete saveState.accountingRadius
@@ -134,9 +139,14 @@ export default function NetworkForm (props:{
       if (cloneMode) {
         formRef?.current?.setFieldsValue({ name: data.name + ' - copy' })
       }
-      updateSaveData({ ...data, isCloudpathEnabled: data.cloudpathServerId !== undefined })
+      updateSaveData({ ...data, isCloudpathEnabled: data.authRadius?true:false,
+        enableAccountingService: data.accountingRadius?true:false })
     }
   }, [data])
+
+  useEffect(() => {
+    setPreviousPath((location as LocationExtended)?.state?.from?.pathname)
+  }, [])
 
   const handleGuestMoreSetting = (data:GuestMore)=>{
     if(data.guestPortal){
@@ -219,7 +229,7 @@ export default function NetworkForm (props:{
     try {
       const payload = updateClientIsolationAllowlist(_.omit(saveState, 'id')) // omit id to handle clone
       await addNetwork({ params, payload }).unwrap()
-      modalMode? modalCallBack?.() : navigate(linkToNetworks, { replace: true })
+      modalMode? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -236,7 +246,7 @@ export default function NetworkForm (props:{
       deleteUnnecessaryFields()
       const payload = updateClientIsolationAllowlist({ ...saveState, venues: data.venues })
       await updateNetwork({ params, payload }).unwrap()
-      modalMode? modalCallBack?.() : navigate(linkToNetworks, { replace: true })
+      modalMode? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -351,7 +361,10 @@ export default function NetworkForm (props:{
         <StepsForm<NetworkSaveData>
           formRef={formRef}
           editMode={editMode}
-          onCancel={() => modalMode? modalCallBack?.() : navigate(linkToNetworks)}
+          onCancel={() => modalMode
+            ? modalCallBack?.()
+            : redirectPreviousPage(navigate, previousPath, linkToNetworks)
+          }
           onFinish={editMode ? handleEditNetwork : handleAddNetwork}
         >
           <StepsForm.StepForm
@@ -378,8 +391,11 @@ export default function NetworkForm (props:{
             title={intl.$t(settingTitle, { type: saveState.type })}
             onFinish={async (data) => {
               if (saveState.type !== NetworkTypeEnum.CAPTIVEPORTAL) {
-                const radiusChanged = !_.isEqual(data?.authRadius, saveState?.authRadius)
-                  || !_.isEqual(data?.accountingRadius, saveState?.accountingRadius)
+                const radiusChanged = !_.isEqual(
+                  data?.authRadius,
+                  // TODO: saveState?.authRadius would become null when user move back to settings, then radiusChanged will equal to true but there is no value in authRadius
+                  saveState?.authRadius === null ? undefined : saveState?.authRadius
+                ) || !_.isEqual(data?.accountingRadius, saveState?.accountingRadius)
                 const radiusValidate = !data.cloudpathServerId && radiusChanged
                   ? await checkIpsValues(data) : false
                 const hasRadiusError = radiusValidate

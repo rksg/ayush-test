@@ -46,6 +46,10 @@ export const validationMessages = {
     defaultMessage: 'Please enter a valid subnet mask',
     description: 'Validation - subnet mask checks'
   }),
+  isNotSubnetIp: defineMessage({
+    defaultMessage: 'Must be a network address',
+    description: 'Validation - subnet address checks'
+  }),
   subnetMaskBased255_255: defineMessage({
     defaultMessage: 'Please enter a valid Netmask based on the 255.255 mask prefix',
     description: 'Validation - subnet mask checks'
@@ -78,6 +82,10 @@ export const validationMessages = {
   max: defineMessage({
     defaultMessage: "This value should be lower than or equal to $'{max'}",
     description: 'Validation - max checks'
+  }),
+  range: defineMessage({
+    defaultMessage: "This value should be between $'{min'} and $'{max'}",
+    description: 'Validation - range checks'
   }),
   minStr: defineMessage({
     defaultMessage: "Field must be at least $'{min'} characters",
@@ -374,7 +382,8 @@ export function prepareAntdValidateMessages ({ $t }: IntlShape): ValidateMessage
     whitespace: $t(validationMessages.whitespace),
     number: {
       min: $t(validationMessages.min),
-      max: $t(validationMessages.max)
+      max: $t(validationMessages.max),
+      range: $t(validationMessages.range)
     },
     string: {
       len: $t(validationMessages.lenStr),

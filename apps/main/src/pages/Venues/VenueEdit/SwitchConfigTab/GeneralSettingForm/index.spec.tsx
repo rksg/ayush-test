@@ -200,7 +200,7 @@ describe('GeneralSettingForm', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Save' }))
   })
 
-  it('should navigate to venue details page when clicking cancel button', async () => {
+  it('should navigate to venue list page when clicking cancel button', async () => {
     render(<Provider>
       <VenueEditContext.Provider value={{ editContextData, setEditContextData }}>
         <GeneralSettingForm />
@@ -216,7 +216,7 @@ describe('GeneralSettingForm', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/venues/${params.venueId}/venue-details/overview`,
+      pathname: `/t/${params.tenantId}/venues`,
       hash: '',
       search: ''
     })

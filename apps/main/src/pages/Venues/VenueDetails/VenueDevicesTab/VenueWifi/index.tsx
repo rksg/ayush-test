@@ -46,7 +46,7 @@ function venueNameColTpl (
   }
   return (
     <Tooltip title={tooltipTitle[meshRole as APMeshRole]}>
-      <TenantLink to={`aps/${id}/details/overview`}>
+      <TenantLink to={`devices/wifi/${id}/details/overview`}>
         {icon[meshRole as APMeshRole]}
         {name}
       </TenantLink>
@@ -111,7 +111,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       align: 'center',
       render: function (data, row) {
         return (
-          <TenantLink to={`venues/${row.venueId}/overview`}>{data}</TenantLink>
+          <TenantLink to={`venues/${row.venueId}/venue-details/overview`}>{data}</TenantLink>
         )
       }
     },
@@ -119,26 +119,15 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       key: 'apUpRssi',
       title: intl.$t({ defaultMessage: 'Signal' }),
       dataIndex: 'apUpRssi',
-      sorter: true,
-      width: 5,
+      sorter: false,
+      width: 100,
       render: function (data, row) {
         if(row.meshRole !== APMeshRole.RAP && row.meshRole !== APMeshRole.EMAP){
           return (
-            <div><SignalDownIcon />{data}</div>
-          )
-        }
-        return
-      }
-    },
-    {
-      key: 'apDownRssi',
-      dataIndex: 'apDownRssi',
-      sorter: true,
-      width: 50,
-      render: function (data, row) {
-        if(row.meshRole !== APMeshRole.RAP && row.meshRole !== APMeshRole.EMAP){
-          return (
-            <span><SignalUpIcon />{data}</span>
+            <div>
+              <span style={{ paddingRight: '30px' }}><SignalDownIcon />{data}</span>
+              <span><SignalUpIcon />{row.apDownRssi}</span>
+            </div>
           )
         }
         return
@@ -176,7 +165,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
           return <Tooltip title={
             getNamesTooltip(row.clients, intl)}>{ row.clients.count || 0}</Tooltip>
         }else{
-          return 0
+          return row.clients
         }
       }
     },

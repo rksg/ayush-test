@@ -11,7 +11,7 @@ jest.mock('@acx-ui/analytics/components', () => ({
   IncidentsDashboardv2: () => <div data-testid={'analytics-IncidentsDashboardv2'} title='IncidentsDashboard' />,
   NetworkHistory: () => <div data-testid={'analytics-NetworkHistory'} title='NetworkHistory' />,
   SwitchesTrafficByVolume: () => <div data-testid={'analytics-SwitchesTrafficByVolume'} title='SwitchesTrafficByVolume' />,
-  TopApplicationsByTraffic: () => <div data-testid={'analytics-TopApplicationsByTraffic'} title='TopApplicationsByTraffic' />,
+  TopAppsByTraffic: () => <div data-testid={'analytics-TopAppsByTraffic'} title='TopAppsByTraffic' />,
   TopSSIDsByClient: () => <div data-testid={'analytics-TopSSIDsByClient'} title='TopSSIDsByClient' />,
   TopSSIDsByTraffic: () => <div data-testid={'analytics-TopSSIDsByTraffic'} title='TopSSIDsByTraffic' />,
   TopSwitchesByError: () => <div data-testid={'analytics-TopSwitchesByError'} title='TopSwitchesByError' />,
@@ -49,7 +49,7 @@ describe('Dashboard', () => {
     const wifiWidgets = [
       'TrafficByVolume',
       'ConnectedClientsOverTime',
-      'TopApplicationsByTraffic'
+      'TopAppsByTraffic'
     ]
     wifiWidgets.forEach(widget => expect(screen.getByTitle(widget)).toBeVisible())
 
