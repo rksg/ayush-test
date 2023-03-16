@@ -37,7 +37,7 @@ import {
   CommonResult,
   Layer3ProtocolType,
   portRegExp,
-  serverIpAddressRegExp,
+  networkWifiIpRegExp,
   subnetMaskIpRegExp
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
@@ -743,7 +743,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
                   name='sourceNetworkAddress'
                   rules={[
                     { required: true },
-                    { validator: (_, value) => serverIpAddressRegExp(value) }
+                    { validator: (_, value) => networkWifiIpRegExp(value) }
                   ]}
                 >
                   <Input placeholder={$t({ defaultMessage: 'Source Network Address' })}/>
@@ -770,7 +770,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
               name='sourceIp'
               rules={[
                 { required: true },
-                { validator: (_, value) => serverIpAddressRegExp(value) }
+                { validator: (_, value) => networkWifiIpRegExp(value) }
               ]}
             >
               <Input placeholder={$t({ defaultMessage: 'Source Ip' })}/>
@@ -824,7 +824,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
                       required: true,
                       message: $t({ defaultMessage: 'You must specify subnet network' })
                     },
-                    { validator: (_, value) => serverIpAddressRegExp(value) }
+                    { validator: (_, value) => networkWifiIpRegExp(value) }
                   ]}
                 >
                   <Input placeholder={$t({ defaultMessage: 'Destination Network Address' })}/>
@@ -856,7 +856,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
                 { required: true, message: $t({
                   defaultMessage: 'You must specify IP Address'
                 }) },
-                { validator: (_, value) => serverIpAddressRegExp(value) }
+                { validator: (_, value) => networkWifiIpRegExp(value) }
               ]}
             >
               <Input placeholder={$t({ defaultMessage: 'Destination Ip' })}/>
