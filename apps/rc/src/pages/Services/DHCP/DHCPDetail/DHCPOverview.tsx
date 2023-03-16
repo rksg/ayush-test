@@ -12,14 +12,14 @@ export default function DHCPOverView (props: { poolNumber:number | undefined,
   return (
     <Card type='solid-bg'>
       <GridRow justify='start'>
-        <GridCol col={{ span: 3 }}>
+        <GridCol col={{ span: 4 }}>
           <Card.Title>
             {$t({ defaultMessage: 'Number of Pools' })}
           </Card.Title>
           <Typography.Text>{props.poolNumber}</Typography.Text>
         </GridCol>
 
-        <GridCol col={{ span: 3 }}>
+        <GridCol col={{ span: 4 }}>
           <Card.Title>
             {$t({ defaultMessage: 'DHCP Configuration' })}
           </Card.Title>
