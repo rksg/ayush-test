@@ -116,7 +116,7 @@ describe('ManageIntegrator', () => {
         route: { params, path: '/:tenantId/integrators/create' }
       })
 
-    expect(screen.getByText('Add Integrator')).toBeVisible()
+    expect(screen.getByText('Add Tech Partner')).toBeVisible()
 
     expect(screen.getByRole('heading', { name: 'Account Details' })).toBeVisible()
     expect(screen.queryByRole('heading', { name: 'Customers' })).toBeNull()

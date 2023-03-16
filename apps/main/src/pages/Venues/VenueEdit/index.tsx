@@ -171,6 +171,7 @@ function processWifiTab (
     case 'servers':
       editServerContextData?.updateSyslog?.()
       editServerContextData?.updateBonjourFencing?.()
+      editServerContextData?.updateVenueApSnmp?.()
       break
   }
 }

@@ -60,6 +60,12 @@ export enum DateFormatEnum {
   UserDateFormat = 'MM/DD/YYYY'
 }
 
+export enum AssignActionEnum {
+  ADD = 'ADD',
+  MODIFY = 'MODIFY',
+  ACTIVATE = 'ACTIVATE'
+}
+
 export interface DelegationEntitlementRecord {
   consumed: string;
   entitlementDeviceType: EntitlementNetworkDeviceType;
