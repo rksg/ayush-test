@@ -356,7 +356,7 @@ function getInactiveTooltip (port: SwitchPortViewModel): string {
   return ''
 }
 
-function isLAGMemberPort (port: SwitchPortViewModel): boolean {
+export function isLAGMemberPort (port: SwitchPortViewModel): boolean {
   // 0: default, -1: after lag delete
   return !!port.lagId && port.lagId.trim() !== '0' && port.lagId.trim() !== '-1'
 }
