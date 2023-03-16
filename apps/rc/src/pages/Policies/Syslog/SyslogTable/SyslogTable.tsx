@@ -1,4 +1,3 @@
-import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
@@ -16,9 +15,7 @@ import {
   PolicyOperation,
   SyslogPolicyListType,
   getPolicyListRoutePath,
-  getPolicyRoutePath,
-  FILTER,
-  SEARCH
+  getPolicyRoutePath
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                          from '@acx-ui/user'
@@ -86,19 +83,6 @@ export default function SyslogTable () {
     }
   ]
 
-  const handleFilterChange = (filters: FILTER, search: SEARCH) => {
-    const currentPayload = tableQuery.payload
-    // eslint-disable-next-line max-len
-    if (currentPayload.searchString === search.searchString && _.isEqual(currentPayload.filters, filters)) {
-      return
-    }
-    tableQuery.setPayload({
-      ...currentPayload,
-      searchString: search.searchString as string,
-      filters
-    })
-  }
-
   return (
     <>
       <PageHeader
@@ -127,7 +111,7 @@ export default function SyslogTable () {
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
-          onFilterChange={handleFilterChange}
+          onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />
       </Loader>

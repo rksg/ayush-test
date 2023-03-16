@@ -22,10 +22,8 @@ import {
 } from '@acx-ui/rc/services'
 import {
   ExpirationType,
-  FILTER,
   NetworkTypeEnum,
   NewDpskPassphrase,
-  SEARCH,
   transformAdvancedDpskExpirationText,
   useTableQuery
 } from '@acx-ui/rc/utils'
@@ -204,18 +202,6 @@ export default function DpskPassphraseManagement () {
     createType={NetworkTypeEnum.DPSK}
   />
 
-  const handleFilterChange = (filters: FILTER, search: SEARCH) => {
-    const currentPayload = tableQuery.payload
-    if (currentPayload.searchString === search.searchString) {
-      return
-    }
-    tableQuery.setPayload({
-      ...currentPayload,
-      searchString: search.searchString ?? ''
-    })
-  }
-
-
   return (<>
     <DpskPassphraseDrawer
       visible={addPassphrasesDrawerVisible}
@@ -271,7 +257,7 @@ export default function DpskPassphraseManagement () {
         rowActions={filterByAccess(rowActions)}
         rowSelection={{ type: 'checkbox' }}
         rowKey='id'
-        onFilterChange={handleFilterChange}
+        onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
       />
     </Loader>
