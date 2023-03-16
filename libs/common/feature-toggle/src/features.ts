@@ -33,5 +33,5 @@ export enum Features {
   NEW_API='acx-ui-new-api',
   MAC_REGISTRATION = 'mac-registration-service-enabled',
   PERSONA = 'persona-service-enabled',
-  WISPR_ENCRYPT_MAC_IP = 'wifi-consumer-wispr-encrypt-mac-ip-toggle'
+  WISPR_ENCRYPT_MAC_IP = 'acx-ui-wispr-encrypt-mac-ip-toggle'
 }
