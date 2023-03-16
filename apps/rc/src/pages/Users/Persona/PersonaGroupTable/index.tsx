@@ -41,7 +41,9 @@ function useColumns (
   const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
 
   const { data: dpskPool } = useGetDpskListQuery({})
-  const { data: macList } = useMacRegListsQuery({})
+  const { data: macList } = useMacRegListsQuery({
+    payload: { sortField: 'name', sortOrder: 'ASC', page: 1, pageSize: 10000 }
+  })
   const { data: nsgList } = useGetNetworkSegmentationGroupListQuery(
     {},
     { skip: !networkSegmentationEnabled }
