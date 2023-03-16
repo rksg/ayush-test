@@ -178,7 +178,7 @@ function Table <RecordType extends Record<string, any>> ({
       show: Boolean(column.fixed || column.disable || (column.show ?? true)),
       children: 'children' in column ? column.children : undefined
     }))
-  }, [props.columns, type, searchValue, groupByValue]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [props.columns, type]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const columnsState = useColumnsState({ columns: baseColumns, columnState })
   const {
@@ -340,11 +340,11 @@ function Table <RecordType extends Record<string, any>> ({
                 new RegExp(escapeStringRegexp(searchValue), 'ig'), formatFn('$&') as string)
               : <Highlighter
                 highlightStyle={{
-                  fontWeight: 'bold', background: 'none', padding: 0, color: 'inherit'
-                }}
+                  fontWeight: 'bold', background: 'none', padding: 0, color: 'inherit' }}
                 searchWords={[searchValue]}
                 textToHighlight={textToHighlight}
-                autoEscape />
+                autoEscape
+              />
             : textToHighlight
         return col.render
           ? col.render(dom, entity, index, highlightFn, action, schema)
