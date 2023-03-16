@@ -56,6 +56,12 @@ export enum EntitlementDeviceSubType {
   MSP_WIFI_TEMP = 'MSP_WIFI_TEMP'
 }
 
+export enum AssignActionEnum {
+  ADD = 'ADD',
+  MODIFY = 'MODIFY',
+  ACTIVATE = 'ACTIVATE'
+}
+
 export interface DelegationEntitlementRecord {
   consumed: string;
   entitlementDeviceType: EntitlementNetworkDeviceType;

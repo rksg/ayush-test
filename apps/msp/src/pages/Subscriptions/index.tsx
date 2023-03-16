@@ -14,6 +14,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { get }                       from '@acx-ui/config'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   SubscriptionUsageReportDialog
@@ -111,7 +112,8 @@ export function Subscriptions () {
     {
       label: $t({ defaultMessage: 'Manage Subscriptions' }),
       onClick: () => {
-        window.open('https://support.ruckuswireless.com/cloud_subscriptions', '_blank')
+        const licenseUrl = get('MANAGE_LICENSES')
+        window.open(licenseUrl, '_blank')
       }
     },
     {
@@ -258,7 +260,7 @@ export function Subscriptions () {
         title={$t({ defaultMessage: 'MSP Subscriptions' })}
         extra={
           <TenantLink to='/dashboard'>
-            <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
+            <Button>{$t({ defaultMessage: 'Manage my account' })}</Button>
           </TenantLink>
         }
       />
