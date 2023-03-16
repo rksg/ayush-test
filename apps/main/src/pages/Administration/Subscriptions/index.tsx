@@ -7,17 +7,19 @@ import {
   TableProps,
   showToast
 } from '@acx-ui/components'
-import { get }                     from '@acx-ui/config'
-import { useIsSplitOn, Features }  from '@acx-ui/feature-toggle'
+import { get }                             from '@acx-ui/config'
+import { useIsSplitOn, Features }          from '@acx-ui/feature-toggle'
 import {
   useGetEntitlementsListQuery,
-  useRefreshEntitlementsMutation
+  useLazyRefreshEntitlementsQuery,
+  useInternalRefreshEntitlementsMutation
 } from '@acx-ui/rc/services'
 import {
   DateFormatEnum,
   EntitlementUtil,
   Entitlement,
-  EntitlementDeviceType
+  EntitlementDeviceType,
+  AdministrationUrlsInfo
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
@@ -67,7 +69,9 @@ const SubscriptionTable = () => {
   const isEdgeEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
 
   const queryResults = useGetEntitlementsListQuery({ params })
-  const [ refreshEntitlement ] = useRefreshEntitlementsMutation()
+  const isNewApi = AdministrationUrlsInfo.getEntitlementSummary.newApi
+  const [ refreshEntitlement ] = useLazyRefreshEntitlementsQuery()
+  const [ internalRefreshEntitlement ] = useInternalRefreshEntitlementsMutation()
   const licenseTypeOpts = subscriptionTypeFilterOpts($t)
 
   const columns: TableProps<Entitlement>['columns'] = [
@@ -156,7 +160,7 @@ const SubscriptionTable = () => {
       label: $t({ defaultMessage: 'Refresh' }),
       onClick: async () => {
         try {
-          await refreshEntitlement({ params }).unwrap()
+          await (isNewApi ? refreshEntitlement : internalRefreshEntitlement)({ params }).unwrap()
           showToast({
             type: 'success',
             content: $t({
@@ -182,6 +186,7 @@ const SubscriptionTable = () => {
     }
   })
 
+  // console.log(queryResults.isError)
   return (
     <Loader states={[queryResults]}>
       <Table

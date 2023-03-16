@@ -5,6 +5,7 @@ import { rest }  from 'msw'
 import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }               from '@acx-ui/store'
 import {
+  fireEvent,
   mockServer,
   render,
   screen,
@@ -83,13 +84,14 @@ describe('administrators delegation list', () => {
     expect(await screen.findByRole('row', { name: /Invitation Sent/i })).toBeValid()
     expect(await screen.findByRole('button', { name: 'Invite 3rd Party Administrator' })).toBeDisabled()
 
-    await userEvent.click(await screen.findByRole('button', { name: /Cancel Invitation/i }))
+    fireEvent.click(await screen.findByRole('button', { name: /Cancel Invitation/i }))
     await waitFor(async () => {
       expect(await screen.findByText('Cancel invitation?')).toBeVisible()
     })
 
-    await userEvent.click(await within(screen.getByRole('dialog'))
-      .findByRole('button', { name: /Cancel Invitation/i }))
+    const okBtn = await within(screen.getByRole('dialog'))
+      .findByRole('button', { name: /Cancel Invitation/i })
+    fireEvent.click(okBtn)
 
     await waitFor(async () => {
       expect(await within(screen.getByRole('table'))
@@ -97,6 +99,9 @@ describe('administrators delegation list', () => {
     })
 
     expect(mockedRevokeFn).toBeCalled()
+    await waitFor(async () => {
+      expect(okBtn).not.toBeVisible()
+    })
 
     // TODO: test accessible after received message via socketio
     // await waitFor(async () => {
@@ -129,9 +134,16 @@ describe('administrators delegation list', () => {
     expect(await screen.findByRole('row', { name: /Access granted/i })).toBeValid()
     expect(await screen.findByRole('button', { name: 'Invite 3rd Party Administrator' })).toBeDisabled()
 
-    await userEvent.click(await screen.findByRole('button', { name: /Revoke access/i }))
+    fireEvent.click(await screen.findByRole('button', { name: /Revoke access/i }))
     await waitFor(async () => {
       expect(await screen.findByText(/Are you sure you want to revoke access of partner/i)).toBeVisible()
+    })
+
+    const okBtn = await within(screen.getByRole('dialog'))
+      .findByRole('button', { name: /revoke access/i })
+    fireEvent.click(okBtn)
+    await waitFor(async () => {
+      expect(okBtn).not.toBeVisible()
     })
   })
 

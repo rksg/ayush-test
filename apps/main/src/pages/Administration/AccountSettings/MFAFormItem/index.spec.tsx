@@ -7,7 +7,8 @@ import {
   mockServer,
   render,
   screen,
-  fireEvent
+  fireEvent,
+  waitFor
 } from '@acx-ui/test-utils'
 import { UserUrlsInfo, MFAStatus } from '@acx-ui/user'
 
@@ -53,6 +54,9 @@ describe('Enable MFA Checkbox', () => {
     expect(okBtn).toBeVisible()
 
     fireEvent.click(okBtn)
+    await waitFor(() => {
+      expect(okBtn).not.toBeVisible()
+    })
   })
 
   it('should successfully copy codes', async () => {
@@ -97,10 +101,16 @@ describe('Enable MFA Checkbox', () => {
 
     const okBtn = await screen.findByRole('button', { name: 'Disable MFA' })
     expect(okBtn).toBeVisible()
+    fireEvent.click(okBtn)
+    await waitFor(() => {
+      expect(okBtn).not.toBeVisible()
+    })
   })
 
 
   it('should display error when click to disable MFA', async () => {
+    const spyLog = jest.spyOn(console, 'log')
+
     mockServer.use(
       rest.put(
         UserUrlsInfo.toggleMFA.url,
@@ -128,8 +138,10 @@ describe('Enable MFA Checkbox', () => {
     const okBtn = await screen.findByRole('button', { name: 'Disable MFA' })
     expect(okBtn).toBeVisible()
     fireEvent.click(okBtn)
-    // TODO
-    // expect(await screen.findByText('Server Error')).toBeVisible()
+    // FIXME: might need to fix when general error handler behavior changed.
+    await waitFor(() => {
+      expect(spyLog).toBeCalledWith({ data: null, status: 500 })
+    })
   })
 
   it('should be disabled to click toggle MFA', async () => {

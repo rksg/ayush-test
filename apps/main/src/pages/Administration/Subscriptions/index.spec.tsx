@@ -33,19 +33,26 @@ describe('Subscriptions', () => {
           : AdministrationUrlsInfo.getEntitlementsList.oldUrl as string,
         (req, res, ctx) => res(ctx.json(mockedEtitlementsList))
       ),
+      rest.get(AdministrationUrlsInfo.getEntitlementSummary.oldUrl as string,
+        (req, res, ctx) => {
+          return res(ctx.json(mockedSummary))
+        }
+      ),
       rest.get(
-        AdministrationUrlsInfo.getEntitlementSummary.newApi
-          ? AdministrationUrlsInfo.getEntitlementSummary.url
-          : AdministrationUrlsInfo.getEntitlementSummary.oldUrl as string,
-        (req, res, ctx) => res(
-          ctx.json(AdministrationUrlsInfo.getEntitlementSummary.newApi ? {
-            banners: [],
-            entitlements: mockedEtitlementsList,
-            summary: mockedSummary
-          } : mockedSummary))
+        AdministrationUrlsInfo.getEntitlementSummary.url,
+        (req, res, ctx) => {
+          if (req.url.searchParams.get('refresh') === 'true')
+            return res(ctx.status(202))
+          else
+            return res(ctx.json({
+              banners: [],
+              entitlements: mockedEtitlementsList,
+              summary: mockedSummary
+            }))
+        }
       ),
       rest.post(
-        AdministrationUrlsInfo.refreshLicensesData.url,
+        AdministrationUrlsInfo.internalRefreshLicensesData.url,
         (req, res, ctx) => res(ctx.status(202))
       )
     )
@@ -64,7 +71,7 @@ describe('Subscriptions', () => {
     expect(await screen.findByRole('row', { name: /ICX 7650/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: /ICX 7150-C08P .* Active/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: /Wi-Fi .* Expired/i })).toBeVisible()
-    expect((await screen.findAllByTestId('rc-StackedBarChart')).length).toBe(3)
+    expect((await screen.findAllByTestId('rc-StackedBarChart')).length).toBe(4)
 
     const licenseManagementButton =
     await screen.findByRole('button', { name: 'Manage Subsciptions' })
@@ -77,9 +84,23 @@ describe('Subscriptions', () => {
   })
 
   it('should display toast message when refresh failed', async () => {
+    const spyConsole = jest.spyOn(console, 'log')
     mockServer.use(
+      rest.get(
+        AdministrationUrlsInfo.refreshLicensesData.url.split('?')[0],
+        (req, res, ctx) => {
+          if (req.url.searchParams.get('refresh') === 'true')
+            return res(ctx.status(500))
+          else
+            return res(ctx.json({
+              banners: [],
+              entitlements: mockedEtitlementsList,
+              summary: mockedSummary
+            }))
+        }
+      ),
       rest.post(
-        AdministrationUrlsInfo.refreshLicensesData.url,
+        AdministrationUrlsInfo.internalRefreshLicensesData.url,
         (req, res, ctx) => res(ctx.status(500))
       )
     )
@@ -94,6 +115,10 @@ describe('Subscriptions', () => {
     await screen.findByRole('columnheader', { name: 'Device Count' })
     const refreshButton = await screen.findByRole('button', { name: 'Refresh' })
     fireEvent.click(refreshButton)
+    // FIXME: might need to fix when general error handler behavior changed.
+    await waitFor(() => {
+      expect(spyConsole).toBeCalled()
+    })
     // TODO
     // await waitFor(async () => {
     //   expect(await screen.findByText('Failed, please try again later.')).toBeVisible()

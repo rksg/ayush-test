@@ -26,10 +26,11 @@ const params = {
 }
 const examplePhoneNumber = PhoneNumberUtil.getInstance().getExampleNumber('US')
 const exampleMobile = `+${examplePhoneNumber.getCountryCode()} ${examplePhoneNumber.getNationalNumberOrDefault()}`
+const mockedSetVisible = jest.fn()
 describe('Recipient form dialog creation mode', () => {
   const dialogProps = {
     visible: true,
-    setVisible: jest.fn(),
+    setVisible: mockedSetVisible,
     editMode: false,
     editData: {} as NotificationRecipientUIModel,
     isDuplicated: jest.fn()
@@ -71,6 +72,9 @@ describe('Recipient form dialog creation mode', () => {
 
     const saveBtn = await screen.findByRole('button', { name: 'Save' })
     fireEvent.click(saveBtn)
+    await waitFor(() => {
+      expect(mockedSetVisible).toBeCalledWith(false)
+    })
   })
 
   it('should email validation works correctly', async () => {
@@ -94,7 +98,7 @@ describe('Recipient form dialog creation mode', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('alert'))
 
     const saveBtn = await screen.findByRole('button', { name: 'Save' })
-    await userEvent.click(saveBtn)
+    fireEvent.click(saveBtn)
     errorMessage = await screen.findByRole('alert')
     expect(errorMessage.textContent).toBe('Please enter Name')
     expect(saveBtn).toBeDisabled()

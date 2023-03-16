@@ -1,11 +1,10 @@
 /* eslint-disable max-len */
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
-import { act }   from 'react-dom/test-utils'
+import { rest } from 'msw'
 
 import { AdministrationUrlsInfo, MspUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                            from '@acx-ui/store'
 import {
+  fireEvent,
   mockServer,
   render,
   screen,
@@ -112,8 +111,10 @@ describe('Administrators table without prime-admin itself', () => {
       })
 
     const row = await screen.findByRole('row', { name: /abc.cheng@email.com/i })
-    await userEvent.click(within(row).getByRole('checkbox'))
-    expect(screen.queryByRole('button', { name: 'Delete' })).toBeNull()
+    fireEvent.click(within(row).getByRole('checkbox'))
+    await waitFor(() => {
+      expect(screen.queryByRole('button', { name: 'Delete' })).toBeNull()
+    })
   })
 })
 
@@ -173,18 +174,16 @@ describe('Administrators Table', () => {
     const rows = await screen.findAllByRole('row', { name: /@email.com/i })
     expect(rows.length).toBe(3)
     expect(await screen.findByRole('button', { name: 'Add Administrator' })).toBeInTheDocument()
-    await userEvent.click(await screen.findByRole('button', { name: 'Add Administrator' }))
-    await waitFor(async () => {
-      expect(await screen.findByText('Add New Administrator')).toBeInTheDocument()
-    })
-    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Add Administrator' }))
+    expect(await screen.findByText('Add New Administrator')).toBeInTheDocument()
+    fireEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     const row = await screen.findByRole('row', { name: /abc.cheng@email.com/i })
-    await userEvent.click(within(row).getByRole('checkbox'))
-    await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
-    await waitFor(async () => {
-      expect(await screen.findByText('Edit Administrator')).toBeInTheDocument()
-    })
-    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+    fireEvent.click(within(row).getByRole('checkbox'))
+    fireEvent.click(await screen.findByRole('button', { name: 'Edit' }))
+    expect(await screen.findByText('Edit Administrator')).toBeInTheDocument()
+    const cancelBtn = within(screen.getByTestId('mocked-EditAdministratorDialog'))
+      .getByRole('button', { name: 'Cancel' })
+    fireEvent.click(cancelBtn)
   })
 
   it('should hide edit button when multiple selected', async () => {
@@ -204,14 +203,9 @@ describe('Administrators Table', () => {
       })
 
     const row = await screen.findByRole('row', { name: /abc.cheng@email.com/i })
-    await userEvent.click(within(row).getByRole('checkbox'))
-
+    fireEvent.click(within(row).getByRole('checkbox'))
     const row2 = await screen.findByRole('row', { name: /erp.cheng@email.com/i })
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      await userEvent.click(within(row2).getByRole('checkbox'))
-    })
-
+    fireEvent.click(within(row2).getByRole('checkbox'))
     expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
   })
 
@@ -231,10 +225,14 @@ describe('Administrators Table', () => {
         route: { params }
       })
     const row = await screen.findByRole('row', { name: /erp.cheng@email.com/i })
-    await userEvent.click(within(row).getByRole('checkbox'))
-    await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
+    fireEvent.click(within(row).getByRole('checkbox'))
+    fireEvent.click(screen.getByRole('button', { name: 'Delete' }))
     await screen.findByText('Delete " "?')
-    await userEvent.click(screen.getByRole('button', { name: 'Delete Administrators' }))
+    const submitBtn = screen.getByRole('button', { name: 'Delete Administrators' })
+    fireEvent.click(submitBtn)
+    await waitFor(() => {
+      expect(submitBtn).not.toBeVisible()
+    })
   })
 
   it('should delete selected row(multiple)', async () => {
@@ -254,12 +252,16 @@ describe('Administrators Table', () => {
       })
 
     const row = await screen.findByRole('row', { name: /abc.cheng@email.com/i })
-    await userEvent.click(within(row).getByRole('checkbox'))
+    fireEvent.click(within(row).getByRole('checkbox'))
     const row2 = await screen.findByRole('row', { name: /erp.cheng@email.com/i })
-    await userEvent.click(within(row2).getByRole('checkbox'))
-    await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
+    fireEvent.click(within(row2).getByRole('checkbox'))
+    fireEvent.click(screen.getByRole('button', { name: 'Delete' }))
     await screen.findByText('Delete "2 Administrators"?')
-    await userEvent.click(screen.getByRole('button', { name: 'Delete Administrators' }))
+    const submitBtn = screen.getByRole('button', { name: 'Delete Administrators' })
+    fireEvent.click(submitBtn)
+    await waitFor(() => {
+      expect(submitBtn).not.toBeVisible()
+    })
   })
 
   it('should prime admin not be able to edit/delete himself/herself', async () => {
