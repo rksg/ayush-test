@@ -1,7 +1,13 @@
 import { useIntl } from 'react-intl'
 
 import { Button, GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
 import {
+  useGetEnhancedAccessControlProfileListQuery,
+  useGetAAAPolicyViewModelListQuery,
+  useGetVLANPoolPolicyViewModelListQuery,
+  useEnhancedRoguePoliciesQuery,
+  useGetApSnmpViewModelQuery,
   useGetEnhancedClientIsolationListQuery,
   useSyslogPolicyListQuery,
   usePolicyListQuery
@@ -84,22 +90,21 @@ export default function MyPolicies () {
 
 function useCardData (): CardDataProps[] {
   const params = useParams()
+  const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
 
   return [
     {
       type: PolicyType.AAA,
       category: RadioCardCategory.WIFI,
-      totalCount: usePolicyListQuery({ // TODO should invoke self List API here when API is ready
-        params, payload: { ...defaultPayload, filters: { type: [PolicyType.AAA] } }
-      }).data?.totalCount,
+      totalCount: useGetAAAPolicyViewModelListQuery({ params, payload: { } }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.LIST }))
     },
     {
       type: PolicyType.ACCESS_CONTROL,
       category: RadioCardCategory.WIFI,
-      totalCount: usePolicyListQuery({ // TODO should invoke self List API here when API is ready
-        params, payload: { ...defaultPayload, filters: { type: [PolicyType.ACCESS_CONTROL] } }
+      totalCount: useGetEnhancedAccessControlProfileListQuery({
+        params, payload: defaultPayload
       }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST }))
@@ -127,8 +132,8 @@ function useCardData (): CardDataProps[] {
     {
       type: PolicyType.ROGUE_AP_DETECTION,
       category: RadioCardCategory.WIFI,
-      totalCount: usePolicyListQuery({ // TODO should invoke self List API here when API is ready
-        params, payload: { ...defaultPayload, filters: { type: [PolicyType.ROGUE_AP_DETECTION] } }
+      totalCount: useEnhancedRoguePoliciesQuery({
+        params, payload: defaultPayload
       }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.LIST }))
@@ -145,11 +150,19 @@ function useCardData (): CardDataProps[] {
     {
       type: PolicyType.VLAN_POOL,
       category: RadioCardCategory.WIFI,
-      totalCount: usePolicyListQuery({ // TODO should invoke self List API here when API is ready
-        params, payload: { ...defaultPayload, filters: { type: [PolicyType.VLAN_POOL] } }
-      }).data?.totalCount,
+      totalCount: useGetVLANPoolPolicyViewModelListQuery({ params, payload: { } }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.LIST }))
+    },
+    {
+      type: PolicyType.SNMP_AGENT,
+      category: RadioCardCategory.WIFI,
+      totalCount: useGetApSnmpViewModelQuery({
+        params, payload: { ...defaultPayload }
+      }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.LIST })),
+      disabled: !supportApSnmp
     }
   ]
 }

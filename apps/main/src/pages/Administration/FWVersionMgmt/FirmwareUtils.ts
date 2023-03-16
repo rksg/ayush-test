@@ -3,6 +3,7 @@ import { IntlShape } from 'react-intl'
 
 import {
   firmwareTypeTrans,
+  FirmwareCategory,
   FirmwareVersion,
   FirmwareVenue,
   FirmwareSwitchVenue,
@@ -156,5 +157,16 @@ export const getApNextScheduleTpl = (intl: IntlShape, venue: FirmwareVenue) => {
     // eslint-disable-next-line max-len
     return isVersionSkipped ? intl.$t({ defaultMessage: 'Not scheduled (Skipped)' }) : intl.$t({ defaultMessage: 'Not scheduled' })
   }
+}
+
+export const isNextScheduleTooltipDisabled = (venue: FirmwareVenue) => {
+  const schedule = getApSchedule(venue)
+  return schedule
+}
+
+export const getNextScheduleTplTooltip = (venue: FirmwareVenue): string | undefined => {
+  const schedule = getApSchedule(venue)
+  // eslint-disable-next-line max-len
+  return schedule && schedule.versionInfo.version + ' (' + transform(schedule.versionInfo.category as FirmwareCategory) + ')'
 }
 

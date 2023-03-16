@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Key, useState } from 'react'
 
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
@@ -58,7 +58,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
         mspec_list: [] as string[]
       }
       if (selectedRows && selectedRows.integrator) {
-        selectedRows.ecCustomers.forEach((element: MspEc) => {
+        selectedRows.integrator.forEach((element: MspEc) => {
           payload.mspec_list.push (element.id)
         })
       }
@@ -113,15 +113,25 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
       defaultPayload
     })
 
+    let selectedKeys = [] as Key[]
+    if (tableQuery?.data && tenantId) {
+      selectedKeys = tableQuery?.data.data.filter(
+        mspEc => mspEc.assignedMspEcList.includes(tenantId)).map(mspEc => mspEc.id)
+      const selRows = tableQuery?.data.data.filter(
+        mspEc => mspEc.assignedMspEcList.includes(tenantId))
+      form.setFieldValue('integrator', selRows)
+    }
+
     return (
       <Loader states={[tableQuery
       ]}>
         <Table
           columns={columns}
           dataSource={tableQuery.data?.data}
-          rowKey='name'
+          rowKey='id'
           rowSelection={{
             type: 'radio',
+            selectedRowKeys: selectedKeys,
             onChange (selectedRowKeys, selectedRows) {
               form.setFieldValue('integrator', selectedRows)
             }
@@ -139,12 +149,11 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
     <IntegratorTable />
   </Form>
 
-  const footer = [
+  const footer =
     <Drawer.FormFooter
       onCancel={resetFields}
       onSave={async () => handleSave()}
     />
-  ]
 
   const title = tenantType === AccountType.MSP_INTEGRATOR
     ? $t({ defaultMessage: 'Manage Integrator' })
@@ -159,7 +168,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
       children={content}
       footer={footer}
       destroyOnClose={resetField}
-      width={'700px'}
+      width={500}
     />
   )
 }

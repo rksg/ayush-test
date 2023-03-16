@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom'
-import { rest } from 'msw'
+import { Modal } from 'antd'
+import { rest }  from 'msw'
 
 import { switchApi }                                     from '@acx-ui/rc/services'
 import { SwitchUrlsInfo }                                from '@acx-ui/rc/utils'
@@ -9,7 +10,10 @@ import { fireEvent, mockServer, render, screen, within } from '@acx-ui/test-util
 import { SwitchPortTable } from '.'
 
 const params = {
-  tenantId: 'tenant-id'
+  tenantId: 'tenant-id',
+  venueId: 'venue-id',
+  switchId: 'switch-id',
+  serialNumber: 'serial'
 }
 
 const portlistData_7650 = {
@@ -275,21 +279,26 @@ jest.mock('./editPortDrawer', () => ({
 
 
 describe('SwitchPortTable', () => {
-  beforeEach(() => {
+  afterEach(() => {
+    Modal.destroyAll()
+  })
+
+  it('should render ports of switch ICX7650 correctly', async () => {
     store.dispatch(switchApi.util.resetApiState())
     mockServer.use(
       rest.post(
         SwitchUrlsInfo.getSwitchPortlist.url,
         (req, res, ctx) => res(ctx.json(portlistData_7650))
+      ),
+      rest.get(
+        SwitchUrlsInfo.getSwitchVlanUnion.url,
+        (req, res, ctx) => res(ctx.json({}))
       )
     )
-  })
-
-  it('should render ports of switch ICX7650 correctly', async () => {
     render(<Provider>
       <SwitchPortTable isVenueLevel={false} />
     </Provider>, {
-      route: { params, path: '/:tenantId' }
+      route: { params, path: '/:tenantId/:switchId' }
     })
 
     await screen.findAllByText('1/1/1')
@@ -302,16 +311,21 @@ describe('SwitchPortTable', () => {
   })
 
   it('should render ports of switch ICX7150 correctly', async () => {
+    store.dispatch(switchApi.util.resetApiState())
     mockServer.use(
       rest.post(
         SwitchUrlsInfo.getSwitchPortlist.url,
         (req, res, ctx) => res(ctx.json(portlistData_7150))
+      ),
+      rest.get(
+        SwitchUrlsInfo.getSwitchVlanUnionByVenue.url,
+        (req, res, ctx) => res(ctx.json({}))
       )
     )
     render(<Provider>
       <SwitchPortTable isVenueLevel={true} />
     </Provider>, {
-      route: { params, path: '/:tenantId' }
+      route: { params, path: '/:tenantId/:venueId' }
     })
 
     await screen.findAllByText('1/1/1')

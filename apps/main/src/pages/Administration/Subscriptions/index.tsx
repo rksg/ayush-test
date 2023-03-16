@@ -7,6 +7,7 @@ import {
   TableProps,
   showToast
 } from '@acx-ui/components'
+import { get }                     from '@acx-ui/config'
 import { useIsSplitOn, Features }  from '@acx-ui/feature-toggle'
 import {
   useGetEntitlementsListQuery,
@@ -147,7 +148,8 @@ const SubscriptionTable = () => {
     {
       label: $t({ defaultMessage: 'Manage Subsciptions' }),
       onClick: () => {
-        window.open('https://support.ruckuswireless.com/cloud_subscriptions', '_blank')
+        const licenseUrl = get('MANAGE_LICENSES')
+        window.open(licenseUrl, '_blank')
       }
     },
     {

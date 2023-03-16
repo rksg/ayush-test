@@ -60,6 +60,12 @@ export enum DateFormatEnum {
   UserDateFormat = 'MM/DD/YYYY'
 }
 
+export enum AssignActionEnum {
+  ADD = 'ADD',
+  MODIFY = 'MODIFY',
+  ACTIVATE = 'ACTIVATE'
+}
+
 export interface DelegationEntitlementRecord {
   consumed: string;
   entitlementDeviceType: EntitlementNetworkDeviceType;
@@ -406,3 +412,8 @@ export interface MspLogoFile {
   createdDate?: Date,
   updatedDate?: Date
 }
+
+export interface ParentLogoUrl {
+  logo_url: string
+}
+

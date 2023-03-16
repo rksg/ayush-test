@@ -1,31 +1,18 @@
 export const mockedRogueApPoliciesList = {
   fields: [
-    'scope',
-    'name',
-    'health',
-    'cog',
     'id',
-    'technology',
-    'check-all',
-    'type',
-    'tags'
+    'name',
+    'numOfRules',
+    'venueIds'
   ],
-  totalCount: 2,
+  totalCount: 1,
   page: 1,
   data: [
     {
-      id: 'ebb16f640edf4272bc56aef4b37fb630',
-      name: 'Default profile',
-      type: 'Rogue AP Detection',
-      technology: 'WI-FI',
-      scope: 0
-    },
-    {
-      id: 'c61fd92dc48b43239a4c1e00e0616302',
-      name: 'roguePolicy1-rollback-1',
-      type: 'Rogue AP Detection',
-      technology: 'WI-FI',
-      scope: 1
+      id: 'cc080e33-26a7-4d34-870f-b7f312fcfccb',
+      name: 'My Rogue AP Detection 1',
+      numOfRules: 5,
+      venueIds: []
     }
   ]
 }

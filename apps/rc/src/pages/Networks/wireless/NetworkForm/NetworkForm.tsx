@@ -139,7 +139,8 @@ export default function NetworkForm (props:{
       if (cloneMode) {
         formRef?.current?.setFieldsValue({ name: data.name + ' - copy' })
       }
-      updateSaveData({ ...data, isCloudpathEnabled: data.cloudpathServerId !== undefined })
+      updateSaveData({ ...data, isCloudpathEnabled: data.authRadius?true:false,
+        enableAccountingService: data.accountingRadius?true:false })
     }
   }, [data])
 
@@ -390,8 +391,11 @@ export default function NetworkForm (props:{
             title={intl.$t(settingTitle, { type: saveState.type })}
             onFinish={async (data) => {
               if (saveState.type !== NetworkTypeEnum.CAPTIVEPORTAL) {
-                const radiusChanged = !_.isEqual(data?.authRadius, saveState?.authRadius)
-                  || !_.isEqual(data?.accountingRadius, saveState?.accountingRadius)
+                const radiusChanged = !_.isEqual(
+                  data?.authRadius,
+                  // TODO: saveState?.authRadius would become null when user move back to settings, then radiusChanged will equal to true but there is no value in authRadius
+                  saveState?.authRadius === null ? undefined : saveState?.authRadius
+                ) || !_.isEqual(data?.accountingRadius, saveState?.accountingRadius)
                 const radiusValidate = !data.cloudpathServerId && radiusChanged
                   ? await checkIpsValues(data) : false
                 const hasRadiusError = radiusValidate
