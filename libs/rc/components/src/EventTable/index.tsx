@@ -103,8 +103,7 @@ export function useEventsTableQuery (
   pagination?: Record<string, unknown>
 ) {
   const { fromTime, toTime } = useEventTableFilter()
-  const { data: userProfileData } = useUserProfileContext()
-  const detailLevel = userProfileData.detailLevel
+  const detailLevel = useUserProfileContext().data.detailLevel
   const filters = { ...baseFilters, fromTime, toTime }
 
   const tableQuery = usePollingTableQuery<Event>({

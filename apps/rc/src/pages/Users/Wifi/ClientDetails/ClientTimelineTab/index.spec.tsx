@@ -11,7 +11,10 @@ import { ClientTimelineTab } from '.'
 
 jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user'),
-  useUserProfileContext: () => ({ data: { detailLevel: 'it' } })
+  useUserProfileContext: () => ({ data: {
+    detailLevel: 'it',
+    dateFormat: 'mm/dd/yyyy'
+  } })
 }))
 
 jest.mock('./SessionTable', () => ({
