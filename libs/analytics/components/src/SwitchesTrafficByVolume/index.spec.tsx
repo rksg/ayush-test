@@ -65,6 +65,16 @@ describe('SwitchesTrafficByVolumeWidget', () => {
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
   })
+  it('should render area chart', async () => {
+    mockGraphqlQuery(dataApiURL, 'SwitchesTrafficByVolumeWidget', {
+      data: { network: { hierarchyNode: { timeSeries: sample } } }
+    })
+    const { asFragment } = render(
+      <Provider><SwitchesTrafficByVolume filters={filters} vizType={'area'}/></Provider>)
+    await screen.findByText('Traffic by Volume')
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+  })
   it('should render error', async () => {
     jest.spyOn(console, 'error').mockImplementation(() => {})
     mockGraphqlQuery(dataApiURL, 'SwitchesTrafficByVolumeWidget', {
