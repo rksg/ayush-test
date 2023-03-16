@@ -79,7 +79,7 @@ describe('SnmpAgentTable', () => {
 
     mockServer.use(
       rest.delete(
-        ApSnmpUrls.deleteApSnmpProfile.url,
+        ApSnmpUrls.deleteApSnmpPolicy.url,
         (req, res, ctx) => {
           deleteFn(req.body)
           return res(ctx.json({ requestId: '12345' }))
