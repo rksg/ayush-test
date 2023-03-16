@@ -491,10 +491,6 @@ export const Highlighter = styled.span`
   font-weight: bold;
 `
 
-export const ExpandWrapper = styled.div`
-  cursor: pointer;
-`
-
 export const GroupRow = styled.div`
   margin-left: -20px;
   margin-right: 20px;
