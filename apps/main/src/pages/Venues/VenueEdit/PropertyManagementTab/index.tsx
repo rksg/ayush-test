@@ -26,6 +26,7 @@ import { VenueEditContext }   from '../index'
 const defaultPropertyConfigs: PropertyConfigs = {
   status: PropertyConfigStatus.DISABLED,
   unitConfig: {
+    type: 'unitConfig',
     maxUnitCount: 0,
     useMaxUnitCount: false,
     guestAllowed: false,
@@ -45,18 +46,20 @@ export function PropertyManagementTab () {
   const navigate = useNavigate()
   const formRef = useRef<StepsFormInstance<PropertyConfigs>>()
   const { editContextData, setEditContextData } = useContext(VenueEditContext)
+  const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
   const [isPropertyEnable, setIsPropertyEnable] = useState(false)
   const [enableResidentPortal, setEnableResidentPortal] = useState(false)
   const [personaGroupVisible, setPersonaGroupVisible] = useState(false)
-  const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
   const { data: residentPortalList } = useGetResidentPortalListQuery({})
   const [updatePropertyConfigs] = useUpdatePropertyConfigsMutation()
   const [patchPropertyConfigs] = usePatchPropertyConfigsMutation()
 
   useEffect(() => {
-    if (propertyConfigsQuery.isLoading) return
-    setIsPropertyEnable(propertyConfigsQuery.data?.status === PropertyConfigStatus.ENABLED)
-  }, [propertyConfigsQuery.data])
+    if (propertyConfigsQuery.isLoading || !formRef.current) return
+    const enabled = propertyConfigsQuery.data?.status === PropertyConfigStatus.ENABLED
+    setIsPropertyEnable(enabled)
+    formRef?.current?.setFieldValue('isPropertyEnable', enabled)
+  }, [propertyConfigsQuery.data, formRef])
 
   const onFormFinish = async (_: string, info: FormFinishInfo) => {
     const enableProperty = info.values.isPropertyEnable
@@ -116,8 +119,7 @@ export function PropertyManagementTab () {
           initialValues={{
             ...defaultPropertyConfigs,
             ...propertyConfigsQuery.data,
-            isPropertyEnable:
-              propertyConfigsQuery?.data?.status === PropertyConfigStatus.ENABLED ?? false
+            isPropertyEnable
           }}
         >
           <StepsForm.FieldLabel width={'190px'}>
@@ -125,7 +127,7 @@ export function PropertyManagementTab () {
             <Form.Item
               name='isPropertyEnable'
               valuePropName={'checked'}
-              children={<Switch checked={isPropertyEnable} onChange={setIsPropertyEnable}/>}
+              children={<Switch onChange={setIsPropertyEnable}/>}
             />
           </StepsForm.FieldLabel>
           {isPropertyEnable &&
@@ -151,7 +153,6 @@ export function PropertyManagementTab () {
                   <Form.Item
                     hidden
                     name={['unitConfig', 'type']}
-                    initialValue={'unitConfig'}
                   />
                   <StepsForm.FieldLabel width={'190px'}>
                     {$t({ defaultMessage: 'Enable Guest DPSK for Units' })}

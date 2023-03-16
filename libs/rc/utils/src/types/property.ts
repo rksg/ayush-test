@@ -16,6 +16,7 @@ export interface PropertyConfigs {
   personaGroupId?: string,
   residentPortalId?: string,
   unitConfig?: {
+    type: string,
     guestAllowed: boolean
     residentPortalAllowed: boolean,
     useMaxUnitCount: boolean,
