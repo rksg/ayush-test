@@ -57,7 +57,8 @@ import {
   RadiusAttributeGroupUrlsInfo,
   RadiusAttributeGroup,
   RadiusAttribute,
-  RadiusAttributeVendor
+  RadiusAttributeVendor,
+  EnhancedRoguePolicyType
 } from '@acx-ui/rc/utils'
 
 
@@ -84,6 +85,7 @@ export const basePolicyApi = createApi({
     'VLANPool',
     'AAA',
     'AccessControl',
+    'RogueAp',
     'RadiusAttributeGroup',
     'RadiusAttribute'
   ],
@@ -93,7 +95,7 @@ export const basePolicyApi = createApi({
 
 export const policyApi = basePolicyApi.injectEndpoints({
   endpoints: (build) => ({
-    addRoguePolicy: build.mutation<RogueAPDetectionContextType, RequestPayload>({
+    addRoguePolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(RogueApUrls.addRoguePolicy, params)
         return {
@@ -101,7 +103,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'RogueAp', id: 'LIST' }]
     }),
     delRoguePolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -110,7 +112,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'RogueAp', id: 'LIST' }]
     }),
     addL2AclPolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -340,7 +342,16 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+      providesTags: [{ type: 'RogueAp', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'AddRogueApPolicyProfile'
+          ], () => {
+            api.dispatch(policyApi.util.invalidateTags([{ type: 'RogueAp', id: 'LIST' }]))
+          })
+        })
+      }
     }),
     getAccessControlProfileList: build.query<AccessControlInfoType[], RequestPayload>({
       query: ({ params }) => {
@@ -411,7 +422,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'RogueAp', id: 'LIST' }]
     }),
     roguePolicy: build.query<RogueAPDetectionContextType, RequestPayload>({
       query: ({ params }) => {
@@ -420,7 +431,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+      providesTags: [{ type: 'RogueAp', id: 'DETAIL' }]
     }),
     updateRoguePolicy: build.mutation<RogueAPDetectionTempType, RequestPayload>({
       query: ({ params, payload }) => {
@@ -430,7 +441,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'RogueAp', id: 'LIST' }]
     }),
     venueRoguePolicy: build.query<TableResult<VenueRoguePolicyType>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -441,6 +452,16 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+    }),
+    enhancedRoguePolicies: build.query<TableResult<EnhancedRoguePolicyType>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RogueApUrls.getEnhancedRoguePolicyList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'RogueAp', id: 'LIST' }]
     }),
     policyList: build.query<TableResult<Policy>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1406,6 +1427,7 @@ export const {
   useUpdateRoguePolicyMutation,
   useRoguePolicyQuery,
   useVenueRoguePolicyQuery,
+  useEnhancedRoguePoliciesQuery,
   useLazyMacRegListsQuery,
   useLazyMacRegistrationsQuery,
   useAddAAAPolicyMutation,
