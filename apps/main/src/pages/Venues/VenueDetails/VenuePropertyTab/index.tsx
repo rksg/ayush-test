@@ -86,7 +86,7 @@ export function VenuePropertyTab () {
   }, [propertyConfigsQuery.data])
 
   useEffect(() => {
-    if (queryUnitList.isLoading || !queryUnitList.data) return
+    if (queryUnitList.isLoading || !queryUnitList.data || !groupId) return
 
     const personaIds = queryUnitList.data.data
       .filter(({ id, personaId }) => (id && personaId))
@@ -97,7 +97,7 @@ export function VenuePropertyTab () {
     //   'b6616987-ddc4-4495-8b26-ee354f5adcd0']
 
     fetchPersonaData(personaIds)
-  }, [queryUnitList.isLoading])
+  }, [queryUnitList.isLoading, groupId])
 
   useEffect(() => {
     // console.log('I have persona :: ', personaMap)

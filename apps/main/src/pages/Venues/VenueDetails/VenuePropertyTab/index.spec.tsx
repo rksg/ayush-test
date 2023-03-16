@@ -14,9 +14,12 @@ import { VenuePropertyTab } from './index'
 
 const tenantId = '15a04f095a8f4a96acaf17e921e8a6df'
 const params = { tenantId, venueId: 'f892848466d047798430de7ac234e940' }
+const updateUnitFn = jest.fn()
 
 describe('Property Unit Page', () => {
   beforeEach(async () => {
+    updateUnitFn.mockClear()
+
     mockServer.use(
       rest.get(
         PropertyUrlsInfo.getPropertyConfigs.url,
@@ -38,13 +41,12 @@ describe('Property Unit Page', () => {
         PropertyUrlsInfo.deletePropertyUnits.url,
         (_, res, ctx) => res(ctx.json({}))
       ),
-      rest.post(
-        PropertyUrlsInfo.updatePropertyUnit.url,
-        (_, res, ctx) => res(ctx.json({}))
-      ),
       rest.patch(
         PropertyUrlsInfo.updatePropertyUnit.url,
-        (_, res, ctx) => res(ctx.json({}))
+        (_, res, ctx) => {
+          updateUnitFn()
+          return res(ctx.json({}))
+        }
       ),
       rest.get(
         PersonaUrls.getPersonaById.url,
@@ -96,6 +98,7 @@ describe('Property Unit Page', () => {
     await userEvent.click(firstRow)
     await userEvent.click(await screen.findByRole('button', { name: /suspend/i }))
     // Wait api processing
+    await waitFor(() => expect(updateUnitFn).toHaveBeenCalled())
     await waitFor(async () => await screen.findByRole('textbox'))
 
     // 'View Portal' Unit action
