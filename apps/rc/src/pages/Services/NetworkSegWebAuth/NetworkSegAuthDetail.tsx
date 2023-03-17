@@ -105,7 +105,7 @@ export default function NetworkSegAuthDetail () {
           </TenantLink>
         ])}
       />
-      <Card>
+      <Card type='solid-bg'>
         <NetworkSegAuthSummary data={data} />
       </Card>
       <br /><br />

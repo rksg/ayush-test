@@ -10,6 +10,7 @@ import {
   Select,
   Space
 } from 'antd'
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
@@ -116,6 +117,7 @@ export function AccessSwitchDrawer (props: {
       }, true).unwrap()
         .then((templateRes) => {
           setTemplate(templateRes)
+          form.setFieldsValue(_.omit(templateRes, ['id', 'name', 'tag']))
         })
         .catch(() => { })
     } else {
@@ -240,48 +242,24 @@ export function AccessSwitchDrawer (props: {
         </Form.Item>
 
         {webAuthPageType === 'USER_DEFINED' ? (<>
-          <Form.Item name='webAuthCustomTop'
-            label={$t({ defaultMessage: 'Header' })}>
-            <Input.TextArea autoSize placeholder={$t(defaultTemplateData['webAuthCustomTop'])}/>
-          </Form.Item>
-          <Form.Item name='webAuthCustomTitle'
-            label={$t({ defaultMessage: 'Title' })}>
-            <Input.TextArea autoSize placeholder={$t(defaultTemplateData['webAuthCustomTitle'])}/>
-          </Form.Item>
-          <Form.Item name='webAuthPasswordLabel'
-            label={$t({ defaultMessage: 'Password Label' })}>
-            <Input.TextArea autoSize placeholder={$t(defaultTemplateData['webAuthPasswordLabel'])}/>
-          </Form.Item>
-          <Form.Item name='webAuthCustomLoginButton'
-            label={$t({ defaultMessage: 'Button Text' })}>
-            <Input.TextArea autoSize
-              placeholder={$t(defaultTemplateData['webAuthCustomLoginButton'])} />
-          </Form.Item>
-          <Form.Item name='webAuthCustomBottom'
-            label={$t({ defaultMessage: 'Footer' })}>
-            <Input.TextArea autoSize placeholder={$t(defaultTemplateData['webAuthCustomBottom'])}/>
-          </Form.Item>
+          {
+            Object.keys(defaultTemplateData).map(name=>{
+              const item = defaultTemplateData[name as keyof typeof defaultTemplateData]
+              return (<Form.Item name={name} label={$t(item.label)}>
+                <Input.TextArea autoSize placeholder={$t(item.defaultMessage)} />
+              </Form.Item>)
+            })
+          }
         </>) : (<Card>
-          <Form.Item
-            label={$t({ defaultMessage: 'Header' })}>
-            <p>{template?.webAuthCustomTop}</p>
-          </Form.Item>
-          <Form.Item
-            label={$t({ defaultMessage: 'Title' })}>
-            <p>{template?.webAuthCustomTitle}</p>
-          </Form.Item>
-          <Form.Item
-            label={$t({ defaultMessage: 'Password Label' })}>
-            <p>{template?.webAuthPasswordLabel}</p>
-          </Form.Item>
-          <Form.Item
-            label={$t({ defaultMessage: 'Button Text' })}>
-            <p>{template?.webAuthCustomLoginButton}</p>
-          </Form.Item>
-          <Form.Item
-            label={$t({ defaultMessage: 'Footer' })}>
-            <p>{template?.webAuthCustomBottom}</p>
-          </Form.Item>
+          {
+            (Object.keys(defaultTemplateData) as (keyof typeof defaultTemplateData)[])
+              .map(name=>{
+                const item = defaultTemplateData[name]
+                return (<Form.Item name={name} label={$t(item.label)}>
+                  <p>{template?.[name]}</p>
+                </Form.Item>)
+              })
+          }
         </Card>)}
       </Form>
     </Drawer>
