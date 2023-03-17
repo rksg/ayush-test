@@ -586,10 +586,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'DpskPassphrase', id: 'LIST' }],
-      transformResponse (result: TableResult<NewDpskPassphrase>) {
-        return result
-      }
+      providesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
     }),
     deleteDpskPassphraseList: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {

@@ -27,9 +27,11 @@ import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-rout
 import { filterByAccess }                               from '@acx-ui/user'
 
 const defaultPayload = {
-  searchTargetFields: ['name'],
-  searchString: '',
   filters: {}
+}
+const defaultSearch = {
+  searchTargetFields: ['name'],
+  searchString: ''
 }
 
 export default function DpskTable () {
@@ -38,7 +40,11 @@ export default function DpskTable () {
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteDpsk ] = useDeleteDpskMutation()
 
-  const tableQuery = useTableQuery({ useQuery: useGetEnhancedDpskListQuery, defaultPayload })
+  const tableQuery = useTableQuery({
+    useQuery: useGetEnhancedDpskListQuery,
+    defaultPayload,
+    search: defaultSearch
+  })
 
   const rowActions: TableProps<DpskSaveData>['rowActions'] = [
     {

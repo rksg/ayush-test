@@ -42,9 +42,17 @@ interface UploadPassphrasesFormFields {
 }
 
 const defaultPayload = {
-  searchTargetFields: ['username'],
-  searchString: '',
   filters: {}
+}
+
+const defaultSearch = {
+  searchTargetFields: ['username'],
+  searchString: ''
+}
+
+const defaultSorter = {
+  sortField: 'createdDate',
+  sortOrder: 'DESC'
 }
 
 export default function DpskPassphraseManagement () {
@@ -59,11 +67,9 @@ export default function DpskPassphraseManagement () {
   const params = useParams()
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedDpskPassphraseListQuery,
-    sorter: {
-      sortField: 'createdDate',
-      sortOrder: 'DESC'
-    },
-    defaultPayload
+    sorter: defaultSorter,
+    defaultPayload,
+    search: defaultSearch
   })
 
   const downloadPassphrases = () => {
