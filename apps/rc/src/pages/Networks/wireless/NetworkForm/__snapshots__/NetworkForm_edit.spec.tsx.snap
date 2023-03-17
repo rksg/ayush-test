@@ -302,6 +302,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                     <button
                       class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                       id="details_differentSSID"
+                      style="font-size: 12px;"
                       type="button"
                     >
                       <span>
