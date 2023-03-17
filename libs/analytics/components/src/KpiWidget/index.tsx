@@ -4,7 +4,7 @@ import { useIntl, IntlShape } from 'react-intl'
 import { healthApi }                                           from '@acx-ui/analytics/services'
 import { AnalyticsFilter, kpiConfig, getSparklineGranularity } from '@acx-ui/analytics/utils'
 import { GridRow, GridCol, SparklineChart, Loader, Tooltip }   from '@acx-ui/components'
-import { intlFormats, formatter }                              from '@acx-ui/utils'
+import { intlFormats, formatter }                              from '@acx-ui/formatter'
 
 import { tranformHistResponse, transformTSResponse } from '../Health/Kpi/Pill'
 
@@ -82,8 +82,9 @@ export function KpiWidget ({
   const sparklineChartStyle = { height: 50, width: 130, display: 'inline' }
   const { startDate , endDate } = filters
   const intl = useIntl()
-
-  const historgramQuery = useKpiHistogramQuery({ ...filters, kpi: name }, {
+  const venueId = filters.filter?.networkNodes?.at(0)?.at(0)?.name
+  const historgramQuery = useKpiHistogramQuery({ ...filters,
+    path: [{ type: 'zone', name: venueId as string }], filter: {}, kpi: name }, {
     skip: !Boolean(histogram),
     selectFromResult: (response) => {
       const agg = response.data
@@ -99,6 +100,8 @@ export function KpiWidget ({
 
   const { sparklineData, ...queryResults } = useKpiTimeseriesQuery({
     ...filters,
+    path: [{ type: 'zone', name: venueId as string }],
+    filter: {},
     kpi: name,
     threshold: (threshold ?? '') as string,
     granularity: getSparklineGranularity(startDate,endDate)

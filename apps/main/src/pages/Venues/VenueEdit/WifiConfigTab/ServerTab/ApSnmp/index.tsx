@@ -128,7 +128,7 @@ export function ApSnmp () {
         width='max-content'
         style={{ height: '48px', display: 'flex', alignItems: 'center' }}
       >
-        <span>{$t({ defaultMessage: 'AP SNMP' })}</span>
+        <span>{$t({ defaultMessage: 'Use AP SNMP' })}</span>
         <Switch
           data-testid='ApSnmp-switch'
           checked={stateOfEnableApSnmp}

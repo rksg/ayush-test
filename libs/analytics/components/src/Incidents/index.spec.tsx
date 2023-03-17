@@ -1,7 +1,6 @@
 import '@testing-library/jest-dom'
 
-import { dataApiURL }                                  from '@acx-ui/analytics/services'
-import { Provider }                                    from '@acx-ui/store'
+import { dataApiURL, Provider }                        from '@acx-ui/store'
 import { fireEvent, mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
 import { networkHierarchy } from '../__tests__/fixtures'

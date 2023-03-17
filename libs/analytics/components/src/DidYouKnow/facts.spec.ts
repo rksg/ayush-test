@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
+import { formatter }  from '@acx-ui/formatter'
 import { renderHook } from '@acx-ui/test-utils'
-import { formatter }  from '@acx-ui/utils'
 
 import { formatText, toObject, getFactsData, DidYouKnowData, factsConfig } from './facts'
 

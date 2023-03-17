@@ -18,6 +18,7 @@ export function DhcpCheckbox () {
   const intl = useIntl()
   /* eslint-disable max-len */
   const guestDhcpDisableToolTipText = intl.$t({ defaultMessage: 'You cannot enable the DHCP service because the network is activated in a Mesh enabled Venue.' })
+  const guestDhcpToolTipText = intl.$t({ defaultMessage: 'RUCKUS DHCP service automatically creates and assigns a new DHCP-Guest Service and DHCP Pool for those Guest WLAN related venues that do not have a specified DHCP Service. Please refer to the DHCP Service at each Venue for more information.' })
   const [
     venues
   ] = [
@@ -34,19 +35,6 @@ export function DhcpCheckbox () {
     }
   })
 
-  // const dhcpApi = useGetDefaultGuestDhcpServiceProfileQuery({
-  //   params: useParams()
-  // })
-
-  // const [guestDhcp, setGuestDhcp] = useState({
-  //   guestDhcpIpSpec: '',
-  //   guestDhcpToolTipText: '',
-  //   guestDhcpLeaseTime: '',
-  //   subnetMask: '',
-  //   startIpAddress: '',
-  //   endIpAddress: ''
-  // })
-
   useEffect(() => {
     if (venueApi.data && venues) {
       venueApi.data.data?.forEach((venue:Venue) => {
@@ -57,24 +45,6 @@ export function DhcpCheckbox () {
     }
   }, [venueApi.data, venues])
 
-  // useEffect(() => {
-  //   if (dhcpApi.data) {
-  //     const dhcp = { ...dhcpApi.data }
-  //     const bitmask = IpUtilsService.getBitmaskSize(dhcp.subnetMask)
-  //     const guestDhcpIpSpec = dhcp.subnetAddress + '/' + bitmask.toString()
-  //     const guestDhcpToolTipText = intl.$t({ defaultMessage: 'Clients will recieve IP addresses in an isolated {guestDhcpIpSpec} network.' },
-  //       { guestDhcpIpSpec })
-  //     const leaseTime = []
-  //     if (dhcp.leaseTimeHours > 0) {
-  //       leaseTime.push(dhcp.leaseTimeHours + 'hrs')
-  //     }
-  //     if (dhcp.leaseTimeMinutes > 0) {
-  //       leaseTime.push(dhcp.leaseTimeMinutes + 'mins')
-  //     }
-
-  //   }
-  // }, [dhcpApi.data])
-
   return (
     <Form.Item><>
       <Form.Item
@@ -82,34 +52,16 @@ export function DhcpCheckbox () {
         name='enableDhcp'
         valuePropName='checked'
         initialValue={false}
-        children={<Checkbox>{intl.$t({ defaultMessage: 'Enable Ruckus DHCP service' })}</Checkbox>}
+        children={<Checkbox disabled={meshEnable}>{intl.$t({ defaultMessage: 'Enable Ruckus DHCP service' })}</Checkbox>}
       />
-      {meshEnable &&
-      <Tooltip title={guestDhcpDisableToolTipText} placement='bottom'>
-        <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} />
-      </Tooltip>}
-      {/* <Popover
-        placement='bottom'
-        content={
-          <UI.PopOverDiv>
-            <Descriptions title={intl.$t({ defaultMessage: 'Guest network pool details:' })}>
-              <Descriptions.Item label={intl.$t({ defaultMessage: 'IP address space' })}>{guestDhcp.guestDhcpIpSpec}</Descriptions.Item>
-              <Descriptions.Item label={intl.$t({ defaultMessage: 'Subnet mask' })}>{guestDhcp.subnetMask}</Descriptions.Item>
-              <Descriptions.Item label={intl.$t({ defaultMessage: 'Start IP Address' })}>{guestDhcp.startIpAddress}</Descriptions.Item>
-              <Descriptions.Item label={intl.$t({ defaultMessage: 'End IP Address' })}>{guestDhcp.endIpAddress}</Descriptions.Item>
-              <Descriptions.Item label={intl.$t({ defaultMessage: 'Lease time' })}>{guestDhcp.guestDhcpLeaseTime}</Descriptions.Item>
-            </Descriptions>
-          </UI.PopOverDiv>
-        }
-        overlayStyle={{
-          width: '800px'
-        }}
-        trigger='click'
+      <Tooltip title={meshEnable ?
+        guestDhcpDisableToolTipText :
+        guestDhcpToolTipText
+      }
+      placement='bottom'
       >
-        <Button type='link' style={{ marginLeft: '14px' }}>
-          {intl.$t({ defaultMessage: 'More details' })}
-        </Button>
-      </Popover> */}
+        <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} />
+      </Tooltip>
     </>
     </Form.Item>
   )

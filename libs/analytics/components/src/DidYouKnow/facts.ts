@@ -1,6 +1,6 @@
 import { IntlShape } from 'react-intl'
 
-import { formatter } from '@acx-ui/utils'
+import { formatter } from '@acx-ui/formatter'
 
 export type DidYouKnowData = {
   key: keyof typeof factsConfig

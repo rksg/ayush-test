@@ -1,7 +1,3 @@
-import {
-  createApi,
-  fetchBaseQuery
-} from '@reduxjs/toolkit/query/react'
 import { Params } from 'react-router-dom'
 
 import {
@@ -53,8 +49,14 @@ import {
   ClientIsolationViewModel,
   ApSnmpUrls, ApSnmpPolicy, VenueApSnmpSettings,
   ApSnmpSettings, ApSnmpApUsage, ApSnmpViewModelData,
-  EnhancedAccessControlInfoType
+  EnhancedAccessControlInfoType,
+  RadiusAttributeGroupUrlsInfo,
+  RadiusAttributeGroup,
+  RadiusAttribute,
+  RadiusAttributeVendor,
+  EnhancedRoguePolicyType
 } from '@acx-ui/rc/utils'
+import { basePolicyApi } from '@acx-ui/store'
 
 
 const RKS_NEW_UI = {
@@ -67,27 +69,9 @@ const clientIsolationMutationUseCases = [
   'DeleteClientIsolationAllowlist'
 ]
 
-export const basePolicyApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  reducerPath: 'policyApi',
-  tagTypes: [
-    'Policy',
-    'MacRegistrationPool',
-    'MacRegistration',
-    'ClientIsolation',
-    'Syslog',
-    'SnmpAgent',
-    'VLANPool',
-    'AAA',
-    'AccessControl'
-  ],
-  refetchOnMountOrArgChange: true,
-  endpoints: () => ({ })
-})
-
 export const policyApi = basePolicyApi.injectEndpoints({
   endpoints: (build) => ({
-    addRoguePolicy: build.mutation<RogueAPDetectionContextType, RequestPayload>({
+    addRoguePolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(RogueApUrls.addRoguePolicy, params)
         return {
@@ -95,7 +79,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'RogueAp', id: 'LIST' }]
     }),
     delRoguePolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -104,7 +88,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'RogueAp', id: 'LIST' }]
     }),
     addL2AclPolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -334,7 +318,16 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+      providesTags: [{ type: 'RogueAp', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'AddRogueApPolicyProfile'
+          ], () => {
+            api.dispatch(policyApi.util.invalidateTags([{ type: 'RogueAp', id: 'LIST' }]))
+          })
+        })
+      }
     }),
     getAccessControlProfileList: build.query<AccessControlInfoType[], RequestPayload>({
       query: ({ params }) => {
@@ -405,7 +398,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'RogueAp', id: 'LIST' }]
     }),
     roguePolicy: build.query<RogueAPDetectionContextType, RequestPayload>({
       query: ({ params }) => {
@@ -414,7 +407,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+      providesTags: [{ type: 'RogueAp', id: 'DETAIL' }]
     }),
     updateRoguePolicy: build.mutation<RogueAPDetectionTempType, RequestPayload>({
       query: ({ params, payload }) => {
@@ -424,7 +417,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'RogueAp', id: 'LIST' }]
     }),
     venueRoguePolicy: build.query<TableResult<VenueRoguePolicyType>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -435,6 +428,16 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+    }),
+    enhancedRoguePolicies: build.query<TableResult<EnhancedRoguePolicyType>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RogueApUrls.getEnhancedRoguePolicyList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'RogueAp', id: 'LIST' }]
     }),
     policyList: build.query<TableResult<Policy>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1232,8 +1235,121 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'SnmpAgent', id: 'AP' }]
+    }),
+    radiusAttributeGroupList: build.query<TableResult<RadiusAttributeGroup>, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const groupReq = createNewTableHttpRequest({
+          apiInfo: RadiusAttributeGroupUrlsInfo.getAttributeGroups,
+          params,
+          payload: payload as TableChangePayload
+        })
+        return {
+          ...groupReq
+        }
+      },
+      transformResponse (result: NewTableResult<RadiusAttributeGroup>) {
+        return transferToTableResult<RadiusAttributeGroup>(result)
+      },
+      providesTags: [{ type: 'RadiusAttributeGroup', id: 'LIST' }]
+    }),
+    // eslint-disable-next-line max-len
+    radiusAttributeGroupListByQuery: build.query<TableResult<RadiusAttributeGroup>, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(RadiusAttributeGroupUrlsInfo.getAttributeGroupsWithQuery, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    radiusAttributeList: build.query<TableResult<RadiusAttribute>, RequestPayload>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        const groupReq = createHttpRequest(
+          RadiusAttributeGroupUrlsInfo.getAttributes,
+          params
+        )
+        return {
+          ...groupReq
+        }
+      },
+      transformResponse (result: NewTableResult<RadiusAttribute>) {
+        return transferToTableResult<RadiusAttribute>(result)
+      },
+      providesTags: [{ type: 'RadiusAttribute', id: 'LIST' }]
+    }),
+    radiusAttributeVendorList: build.query<RadiusAttributeVendor, RequestPayload>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(
+          RadiusAttributeGroupUrlsInfo.getAttributeVendors, params
+        )
+        return {
+          ...req
+        }
+      }
+    }),
+    radiusAttributeListWithQuery: build.query<TableResult<RadiusAttribute>, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const groupReq = createHttpRequest(RadiusAttributeGroupUrlsInfo.getAttributesWithQuery, params)
+        return {
+          ...groupReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'RadiusAttribute', id: 'LIST' }]
+    }),
+    radiusAttribute: build.query<RadiusAttribute, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          RadiusAttributeGroupUrlsInfo.getAttribute, params
+        )
+        return {
+          ...req
+        }
+      }
+    }),
+    deleteRadiusAttributeGroup: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RadiusAttributeGroupUrlsInfo.deleteAttributeGroup, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'RadiusAttributeGroup', id: 'LIST' }]
+    }),
+    addRadiusAttributeGroup: build.mutation<RadiusAttributeGroup, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RadiusAttributeGroupUrlsInfo.createAttributeGroup, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'RadiusAttributeGroup', id: 'LIST' }]
+    }),
+    updateRadiusAttributeGroup: build.mutation<RadiusAttributeGroup, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RadiusAttributeGroupUrlsInfo.updateAttributeGroup, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'RadiusAttributeGroup', id: 'LIST' }]
+    }),
+    getRadiusAttributeGroup: build.query<RadiusAttributeGroup, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RadiusAttributeGroupUrlsInfo.getAttributeGroup, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'RadiusAttributeGroup', id: 'DETAIL' }]
     })
-
   })
 })
 
@@ -1287,6 +1403,7 @@ export const {
   useUpdateRoguePolicyMutation,
   useRoguePolicyQuery,
   useVenueRoguePolicyQuery,
+  useEnhancedRoguePoliciesQuery,
   useLazyMacRegListsQuery,
   useLazyMacRegistrationsQuery,
   useAddAAAPolicyMutation,
@@ -1340,5 +1457,17 @@ export const {
   useUpdateVenueApSnmpSettingsMutation,
   useGetApSnmpSettingsQuery,
   useUpdateApSnmpSettingsMutation,
-  useResetApSnmpSettingsMutation
+  useResetApSnmpSettingsMutation,
+  useRadiusAttributeGroupListQuery,
+  useGetRadiusAttributeGroupQuery,
+  useRadiusAttributeListQuery,
+  useRadiusAttributeVendorListQuery,
+  useRadiusAttributeListWithQueryQuery,
+  useLazyRadiusAttributeListWithQueryQuery,
+  useRadiusAttributeQuery,
+  useDeleteRadiusAttributeGroupMutation,
+  useLazyRadiusAttributeGroupListQuery,
+  useUpdateRadiusAttributeGroupMutation,
+  useAddRadiusAttributeGroupMutation,
+  useLazyRadiusAttributeGroupListByQueryQuery
 } = policyApi

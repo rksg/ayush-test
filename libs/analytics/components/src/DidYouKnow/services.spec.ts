@@ -1,5 +1,5 @@
-import { dataApiURL }       from '@acx-ui/analytics/services'
 import { AnalyticsFilter }  from '@acx-ui/analytics/utils'
+import { dataApiURL }       from '@acx-ui/store'
 import { store }            from '@acx-ui/store'
 import { mockGraphqlQuery } from '@acx-ui/test-utils'
 

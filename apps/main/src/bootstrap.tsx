@@ -1,6 +1,7 @@
 import React from 'react'
 
-import { createRoot } from 'react-dom/client'
+import { createRoot }    from 'react-dom/client'
+import { addMiddleware } from 'redux-dynamic-middlewares'
 
 import { ConfigProvider, ConfigProviderProps } from '@acx-ui/components'
 import { get }                                 from '@acx-ui/config'
@@ -9,7 +10,8 @@ import { Provider }                            from '@acx-ui/store'
 import { UserProfileProvider, UserUrlsInfo }   from '@acx-ui/user'
 import { getTenantId, createHttpRequest }      from '@acx-ui/utils'
 
-import AllRoutes from './AllRoutes'
+import AllRoutes           from './AllRoutes'
+import { errorMiddleware } from './errorMiddleware'
 
 import '@acx-ui/theme'
 
@@ -103,6 +105,8 @@ export async function init () {
   if ( get('DISABLE_PENDO') === 'false' ) {
     renderPendoAnalyticsTag()
   }
+
+  addMiddleware(errorMiddleware)
 
   root.render(
     <React.StrictMode>

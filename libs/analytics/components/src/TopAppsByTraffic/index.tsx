@@ -10,7 +10,7 @@ import {
   qualitativeColorSet
 } from '@acx-ui/components'
 import type { DonutChartData } from '@acx-ui/components'
-import { formatter }           from '@acx-ui/utils'
+import { formatter }           from '@acx-ui/formatter'
 
 import { HierarchyNodeData, useTopAppsByTrafficQuery } from './services'
 
