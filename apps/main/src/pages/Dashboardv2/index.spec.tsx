@@ -19,6 +19,7 @@ jest.mock('@acx-ui/analytics/components', () => ({
   TopSwitchesByTraffic: () => <div data-testid={'analytics-TopSwitchesByTraffic'} title='TopSwitchesByTraffic' />,
   TopSwitchModels: () => <div data-testid={'analytics-TopSwitchModels'} title='TopSwitchModels' />,
   TrafficByVolume: () => <div data-testid={'analytics-TrafficByVolume'} title='TrafficByVolume' />,
+  DidYouKnow: () => <div data-testid={'analytics-DidYouKnow'} title='DidYouKnow' />,
   ClientExperience: () => <div data-testid={'analytics-ClientExperience'} title='ClientExperience' />
 }))
 jest.mock('@acx-ui/rc/components', () => ({
