@@ -5,6 +5,7 @@ import { Col, Divider, Form, Row } from 'antd'
 import { useIntl }                 from 'react-intl'
 
 import { StepsForm, Subtitle }                                                 from '@acx-ui/components'
+import { Features, useIsSplitOn }                                              from '@acx-ui/feature-toggle'
 import { useMacRegListsQuery, useVenuesListQuery }                             from '@acx-ui/rc/services'
 import { Demo, NetworkSaveData, NetworkTypeEnum, transformDisplayText, Venue } from '@acx-ui/rc/utils'
 import { useParams }                                                           from '@acx-ui/react-router-dom'
@@ -40,7 +41,10 @@ export function SummaryForm (props: {
     return map
   }, {})
 
-  const { data: macRegListOption } = useMacRegListsQuery({})
+  const macRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
+  const { data: macRegListOption } = useMacRegListsQuery({
+    payload: { pageSize: 10000 }
+  }, { skip: !macRegistrationEnabled })
 
   const getVenues = function () {
     const venues = summaryData.venues
@@ -88,9 +92,10 @@ export function SummaryForm (props: {
               (summaryData.guestPortal?.guestNetworkType &&
                  $t(captiveTypes[summaryData.guestPortal?.guestNetworkType]))}
           />}
-          {summaryData.type !== NetworkTypeEnum.PSK &&
+          {summaryData.type !== NetworkTypeEnum.PSK&&
+            summaryData.type!==NetworkTypeEnum.CAPTIVEPORTAL&&
           <Form.Item
-            label={$t({ defaultMessage: 'Use AAA Server:' })}
+            label={$t({ defaultMessage: 'Use Radius Server:' })}
             children={
               summaryData.isCloudpathEnabled || summaryData.wlan?.macAddressAuthentication
                 ? $t({ defaultMessage: 'Yes' })
