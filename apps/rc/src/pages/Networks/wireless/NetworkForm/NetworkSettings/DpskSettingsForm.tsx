@@ -41,7 +41,7 @@ export function DpskSettingsForm () {
         isCloudpathEnabled: data.authRadius?true:false,
         dpskServiceProfileId: data?.dpskServiceProfileId,
         dpskWlanSecurity: data?.wlan?.wlanSecurity,
-        enableAccountingService: data.accountingRadius,
+        enableAccountingService: data.enableAccountingService,
         authRadius: data.authRadius,
         accountingRadius: data.accountingRadius,
         accountingRadiusId: data.accountingRadiusId||data.accountingRadius?.id,
@@ -73,6 +73,9 @@ function SettingsForm () {
 
     setData && setData({ ...data, isCloudpathEnabled: e.target.value })
   }
+  useEffect(()=>{
+    form.setFieldsValue({ ...data })
+  },[data])
   const disableAAA = !useIsSplitOn(Features.POLICIES)
   return (
     <>
@@ -103,7 +106,7 @@ function SettingsForm () {
                   { $t({ defaultMessage: 'Use the DPSK Service' }) }
                 </Radio>
                 <Radio value={true} disabled={editMode||disableAAA}>
-                  { $t({ defaultMessage: 'Use AAA Server' }) }
+                  { $t({ defaultMessage: 'Use Radius Server' }) }
                 </Radio>
               </Space>
             </Radio.Group>

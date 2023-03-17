@@ -1,8 +1,8 @@
 import userEvent from '@testing-library/user-event'
 
-import { dataApiURL, healthApi }            from '@acx-ui/analytics/services'
+import { healthApi }                        from '@acx-ui/analytics/services'
 import { AnalyticsFilter, kpiConfig }       from '@acx-ui/analytics/utils'
-import { Provider, store }                  from '@acx-ui/store'
+import { dataApiURL, Provider, store }      from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 import { DateRange, getIntl }               from '@acx-ui/utils'
 

@@ -11,8 +11,7 @@ import {
   formattedPath,
   impactedArea
 } from '@acx-ui/analytics/utils'
-import { formatter } from '@acx-ui/utils'
-
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
 import { ImpactedClientsDrawer, ImpactedAPsDrawer } from './ImpactedDrawer'
 
@@ -110,14 +109,14 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
       key: 'eventStartTime',
       getValue: (incident: Incident) => ({
         label: intl.$t({ defaultMessage: 'Event Start Time' }),
-        children: formatter('dateTimeFormat')(incident.startTime)
+        children: formatter(DateFormatEnum.DateTimeFormat)(incident.startTime)
       })
     },
     [Attributes.EventEndTime]: {
       key: 'eventEndTime',
       getValue: (incident: Incident) => ({
         label: intl.$t({ defaultMessage: 'Event End Time' }),
-        children: formatter('dateTimeFormat')(incident.endTime)
+        children: formatter(DateFormatEnum.DateTimeFormat)(incident.endTime)
       })
     }
   }

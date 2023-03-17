@@ -36,6 +36,12 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/viewmodel/:tenantId/dashboard/overview/',
     newApi: true
   },
+  getDashboardV2Overview: {
+    method: 'post',
+    url: '/dashboards/overviews/query',
+    oldUrl: '/api/viewmodel/:tenantId/dashboard/overview/query',
+    newApi: true
+  },
   getAlarmsList: {
     method: 'post',
     url: '/alarms/query',
@@ -498,10 +504,14 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getVenueBonjourFencingPolicy: {
     method: 'get',
-    url: '/api/venues/:venueId/bonjourFencingSettings'
+    url: '/venues/:venueId/bonjourFencingSettings',
+    oldUrl: '/api/venues/:venueId/bonjourFencingSettings',
+    newApi: true
   },
   updateVenueBonjourFencingPolicy: {
     method: 'put',
-    url: '/api/venues/:venueId/bonjourFencingSettings'
+    url: '/venues/:venueId/bonjourFencingSettings',
+    oldUrl: '/api/venues/:venueId/bonjourFencingSettings',
+    newApi: true
   }
 }

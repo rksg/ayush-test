@@ -10,7 +10,9 @@ import {
 import { useAaaPolicyQuery, useAddAAAPolicyMutation, useUpdateAAAPolicyMutation } from '@acx-ui/rc/services'
 import {
   AAAPolicyType,
-  getPolicyListRoutePath
+  getPolicyRoutePath,
+  PolicyOperation,
+  PolicyType
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -26,7 +28,8 @@ type AAAFormProps = {
 const AAAForm = (props: AAAFormProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const linkToPolicies = useTenantLink(getPolicyListRoutePath())
+  const tablePath = getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.LIST })
+  const linkToPolicies = useTenantLink(tablePath)
   const params = useParams()
   const edit = props.edit && !props.networkView
   const formRef = useRef<StepsFormInstance<AAAPolicyType>>()
@@ -76,10 +79,10 @@ const AAAForm = (props: AAAFormProps) => {
     <>
       {!props.networkView &&<PageHeader
         title={edit
-          ? $t({ defaultMessage: 'Edit AAA (802.1x) Server' })
-          : $t({ defaultMessage: 'Add AAA (802.1x) Server' })}
+          ? $t({ defaultMessage: 'Edit Radius (802.1x) Server' })
+          : $t({ defaultMessage: 'Add Radius (802.1x) Server' })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Policies' }), link: getPolicyListRoutePath() }
+          { text: $t({ defaultMessage: 'Radius Server' }), link: tablePath }
         ]}
       />}
       <StepsForm<AAAPolicyType>

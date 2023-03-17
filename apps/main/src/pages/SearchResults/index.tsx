@@ -8,7 +8,6 @@ import {
   NetworkTable,
   defaultNetworkPayload,
   EventTable,
-  eventDefaultPayload,
   SwitchTable,
   defaultSwitchPayload,
   defaultClientPayload,
@@ -16,12 +15,12 @@ import {
   defaultSwitchClientPayload,
   ClientsTable as SwitchClientTable,
   eventDefaultSearch,
+  useEventsTableQuery,
   defaultHistoricalClientPayload,
   GlobalSearchHistoricalClientsTable
 } from '@acx-ui/rc/components'
 import {
   useApListQuery,
-  useEventsQuery,
   useNetworkListQuery,
   useVenuesListQuery,
   useSwitchListQuery,
@@ -36,7 +35,6 @@ import {
   Venue,
   AP,
   ApExtraParams,
-  Event,
   SwitchRow,
   ClientList,
   SwitchClient,
@@ -108,22 +106,10 @@ const searches = [
     }
   },
   (searchString: string, $t: IntlShape['$t']) => {
-    const result = useTableQuery<Event>({
-      useQuery: useEventsQuery,
-      defaultPayload: {
-        ...eventDefaultPayload,
-        filters: {}
-      },
-      pagination,
-      search: {
-        searchString,
-        searchTargetFields: eventDefaultSearch.searchTargetFields
-      },
-      sorter: {
-        sortField: 'event_datetime',
-        sortOrder: 'DESC'
-      }
-    })
+    const result = useEventsTableQuery({}, {
+      searchString,
+      searchTargetFields: eventDefaultSearch.searchTargetFields
+    }, pagination)
     return {
       result,
       title: $t({ defaultMessage: 'Events' }),
@@ -152,8 +138,11 @@ const searches = [
     const result = useTableQuery<ClientList, RequestPayload<unknown>, unknown>({
       useQuery: useGetClientListQuery,
       defaultPayload: {
-        ...defaultClientPayload,
-        searchString
+        ...defaultClientPayload
+      },
+      search: {
+        searchString,
+        searchTargetFields: defaultClientPayload.searchTargetFields
       },
       pagination
     })
@@ -183,8 +172,11 @@ const searches = [
     const result = useTableQuery<SwitchClient, RequestPayload<unknown>, unknown>({
       useQuery: useGetSwitchClientListQuery,
       defaultPayload: {
-        ...defaultSwitchClientPayload,
-        searchString
+        ...defaultSwitchClientPayload
+      },
+      search: {
+        searchString,
+        searchTargetFields: defaultSwitchClientPayload.searchTargetFields
       },
       pagination
     })

@@ -1,8 +1,7 @@
 import { BrowserRouter } from 'react-router-dom'
 
-import { dataApiURL }         from '@acx-ui/analytics/services'
-import { fakeIncidentTtc }    from '@acx-ui/analytics/utils'
-import { Provider, store }    from '@acx-ui/store'
+import { fakeIncidentTtc }             from '@acx-ui/analytics/utils'
+import { dataApiURL, Provider, store } from '@acx-ui/store'
 import {
   screen,
   mockGraphqlQuery,

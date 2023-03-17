@@ -11,6 +11,7 @@ import {
   LeaseUnit,
   networkWifiIpRegExp,
   subnetMaskIpRegExp,
+  validateNetworkBaseIp,
   countIpMaxRange,
   countIpSize,
   IpInSubnetPool } from '@acx-ui/rc/utils'
@@ -115,6 +116,8 @@ export default function DHCPPoolTable ({
   const onAddOrEdit = (item?: DHCPPool) => {
     setVisible(true)
     if (item) {
+      form.setFieldsValue(item)
+      setLeaseUnit(item.leaseUnit||LeaseUnit.HOURS)
       if(item.vlanId===1){
         item.allowWired = true
         setVlanEnable(false)
@@ -122,9 +125,7 @@ export default function DHCPPoolTable ({
         item.allowWired = false
         setVlanEnable(true)
       }
-      form.setFieldsValue(item)
     }
-
     else form.resetFields()
   }
 
@@ -198,7 +199,9 @@ export default function DHCPPoolTable ({
           rules={[
             { required: true },
             { validator: (_, value) => networkWifiIpRegExp(value) },
-            { validator: (_, value) => subnetValidator(value, values(), form.getFieldValue('id')) }
+            { validator: (_, value) => subnetValidator(value, values(), form.getFieldValue('id')) },
+            // eslint-disable-next-line max-len
+            { validator: (_, value) => validateNetworkBaseIp(value, form.getFieldValue('subnetMask')) }
           ]}
           children={<Input />}
         />
@@ -264,7 +267,14 @@ export default function DHCPPoolTable ({
           name='secondaryDnsIp'
           label={$t({ defaultMessage: 'Secondary DNS IP' })}
           rules={[
-            { validator: (_, value) => networkWifiIpRegExp(value) }
+            { validator: (_, value) => networkWifiIpRegExp(value) },
+            { validator: (_, value) => {
+              if(value && !form.getFieldValue('primaryDnsIp')){
+                return Promise.reject($t({ defaultMessage:
+                  'Please fill the Primary DNS IP field first' }))
+              }
+              return Promise.resolve()
+            } }
           ]}
           children={<Input />}
         />

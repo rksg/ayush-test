@@ -17,7 +17,7 @@ import {
   useVenueDHCPProfileQuery,
   useApListQuery
 } from '@acx-ui/rc/services'
-import {  DHCPProfileAps, DHCPSaveData, DHCPConfigTypeEnum, ApDeviceStatusEnum, APExtended } from '@acx-ui/rc/utils'
+import {  DHCPProfileAps, DHCPSaveData, DHCPConfigTypeEnum, ApDeviceStatusEnum, APExtended, DHCP_LIMIT_NUMBER } from '@acx-ui/rc/utils'
 import {
   useTenantLink
 } from '@acx-ui/react-router-dom'
@@ -60,13 +60,16 @@ const VenueDHCPForm = (props: {
 
   const [serviceEnabled, setServiceEnabled] = useState<boolean|undefined>(true)
 
-
   const getSelectedDHCPMode = ()=> {
     if(dhcpProfileList && dhcpServiceID){
-      return dhcpProfileList[_.findIndex(dhcpProfileList, { id: dhcpServiceID })].dhcpMode
+      return dhcpProfileList[_.findIndex(dhcpProfileList,
+        { id: dhcpServiceID })].dhcpMode
     }else{
       return DHCPConfigTypeEnum.SIMPLE
     }
+  }
+  const isMaxNumberReached = ()=>{
+    return dhcpProfileList&&dhcpProfileList.length >= DHCP_LIMIT_NUMBER
   }
 
   useEffect(() => {
@@ -147,6 +150,9 @@ const VenueDHCPForm = (props: {
     return _.find(apList?.data, { serialNumber: sn })
   }
 
+  const blankOption = <Option key={''} value={''}>
+    {$t({ defaultMessage: 'Select AP...' })}
+  </Option>
   const gatewaysList = (gateways && gateways.length>0) ? gateways?.map((item,index)=>{
     const fieldsGateways = form.getFieldsValue().gateways
     const currentVal = fieldsGateways ? fieldsGateways[index] : null
@@ -160,6 +166,7 @@ const VenueDHCPForm = (props: {
           setGateways([...gatewayRawData])
         }}
         placeholder={$t({ defaultMessage: 'Select AP...' })}>
+          {blankOption}
           {getOptionList(form.getFieldsValue().gateways
             && form.getFieldsValue().gateways[index]
             && form.getFieldsValue().gateways[index].serialNumber).map(ap =>
@@ -200,6 +207,7 @@ const VenueDHCPForm = (props: {
           refreshList()
         }}
       >
+        {blankOption}
         {getOptionList(form.getFieldsValue().gateways
           && form.getFieldsValue().gateways[0].serialNumber).map(ap =>
           <Option key={ap.serialNumber} value={ap.serialNumber}>
@@ -282,12 +290,20 @@ const VenueDHCPForm = (props: {
           </AntSelect>
         </StyledForm.Item>
 
-        <Link style={{ marginLeft: 10 }}
-          to={useTenantLink('/services/dhcp/create')}
-          state={{
-            origin: useTenantLink(`/venues/${params.venueId}/venue-details/services`),
-            param: { showConfig: true }
-          }}>
+        <Link style={isMaxNumberReached() ?
+          { marginLeft: 10, cursor: 'not-allowed', color: 'var(--acx-neutrals-40)' }:
+          { marginLeft: 10 }}
+        onClick={(e)=>{
+          if(isMaxNumberReached()){
+            e.preventDefault()
+            e.stopPropagation()
+          }
+        }}
+        to={useTenantLink('/services/dhcp/create')}
+        state={{
+          origin: useTenantLink(`/venues/${params.venueId}/venue-details/services`),
+          param: { showConfig: true }
+        }}>
           {$t({ defaultMessage: 'Add DHCP for Wi-Fi Service' })}
         </Link>
 
@@ -302,6 +318,7 @@ const VenueDHCPForm = (props: {
         onChange={() => {
           refreshList()
         }}>
+        {blankOption}
         {getOptionList(form.getFieldsValue().primaryServerSN, true).map( ap =>
           <Option key={ap.serialNumber} value={ap.serialNumber}>
             {ap.name}
@@ -317,6 +334,7 @@ const VenueDHCPForm = (props: {
           refreshList()
         }}
       >
+        {blankOption}
         {getOptionList(form.getFieldsValue().backupServerSN, true).map( ap =>
           <Option key={ap.serialNumber} value={ap.serialNumber}>
             {ap.name}
