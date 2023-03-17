@@ -173,10 +173,10 @@ function useColumns () {
         const tooltipItems = filterVenues.map(v => {
           const venueApGroup = _.find(venueApGroups,{ id: v.key })
           if(venueApGroup?.apGroups.length===1&&venueApGroup.apGroups[0].allApGroups){
-            return v.value+' '+$t({ defaultMessage: '(All APs)' })
+            return $t({ defaultMessage: '{value} (All APs)' }, { value: v.value })
           }
-          return v.value+ ' ('+venueApGroup?.apGroups.length+' '
-            +$t({ defaultMessage: 'AP Groups)' })
+          return $t({ defaultMessage: '{value} ({count} AP Groups)' },
+            { value: v.value, count: venueApGroup?.apGroups.length })
         })
         return <SimpleListTooltip items={tooltipItems} displayText={venueIds.length} />
       }
