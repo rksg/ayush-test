@@ -186,6 +186,14 @@ describe('EventTable', () => {
     expect(elements).toHaveLength(1)
     elements.forEach(element => expect(element.nodeName).not.toBe('A'))
   })
+
+  it('should not render omitColumns',async () => {
+    render(
+      <EventTable tableQuery={tableQuery} omitColumns={['product']}/>,
+      { route: { params }, wrapper: Provider }
+    )
+    expect(screen.queryByText('Product')).toBeNull()
+  })
 })
 
 describe('useEventsTableQuery', () => {

@@ -1,6 +1,6 @@
 export {
   ActivityTable,
-  columnState,
+  columnState as activityTableColumnState,
   useActivityTableQuery
 } from './ActivityTable'
 export { AdminLogTable } from './AdminLogTable'
@@ -23,6 +23,7 @@ export { EdgeDhcpSettingForm } from './EdgeDhcpSetting/EdgeDhcpSettingForm'
 export { PoolDrawer } from './EdgeDhcpSetting/DhcpPool/PoolDrawer'
 export {
   EventTable,
+  defaultColumnState as eventTableColumnState,
   useEventsTableQuery,
   defaultSearch as eventDefaultSearch
 } from './EventTable'

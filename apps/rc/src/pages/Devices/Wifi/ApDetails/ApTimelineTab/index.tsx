@@ -4,8 +4,9 @@ import { useNavigate }                               from 'react-router-dom'
 import { Tabs }         from '@acx-ui/components'
 import {
   ActivityTable,
-  columnState,
+  activityTableColumnState,
   EventTable,
+  eventTableColumnState,
   useActivityTableQuery,
   useEventsTableQuery
 } from '@acx-ui/rc/components'
@@ -17,7 +18,11 @@ import { useApContext } from '../ApContext'
 const Events = () => {
   const { serialNumber } = useApContext()
   const tableQuery = useEventsTableQuery({ serialNumber: [serialNumber] })
-  return <EventTable tableQuery={tableQuery} filterables={['severity', 'entity_type']}/>
+  return <EventTable
+    tableQuery={tableQuery}
+    filterables={['severity', 'entity_type']}
+    columnState={{ defaultValue: { ...eventTableColumnState, product: false } }}
+  />
 }
 
 const Activities = () => {
@@ -27,7 +32,7 @@ const Activities = () => {
   return <ActivityTable
     tableQuery={tableQuery}
     filterables={['status']}
-    columnState={columnState}
+    columnState={activityTableColumnState}
   />
 }
 

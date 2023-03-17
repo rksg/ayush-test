@@ -94,6 +94,16 @@ export const defaultSearch = {
   searchTargetFields: ['entity_id', 'message', 'apMac', 'clientMac']
 }
 
+export const defaultColumnState = {
+  event_datetime: true,
+  severity: true,
+  entity_type: true,
+  product: true,
+  source: true,
+  macAddress: false,
+  message: true
+}
+
 export function useEventsTableQuery (
   baseFilters: Record<string, unknown> = {},
   search: Record<string, unknown> = defaultSearch,
@@ -134,7 +144,9 @@ interface EventTableProps {
   tableQuery: TableQuery<Event, RequestPayload<unknown>, unknown>,
   searchables?: boolean | string[]
   filterables?: boolean | string[]
-  detailLevel?: string
+  detailLevel?: string,
+  columnState?: TableProps<Event>['columnState']
+  omitColumns?: string[]
 }
 
 type EntityType = typeof entityTypes[number]
@@ -241,7 +253,7 @@ const getDescription = (data: Event, highlightFn?: TableHighlightFnArgs) => {
 }
 
 export const EventTable = ({
-  tableQuery, searchables = true, filterables = true
+  tableQuery, searchables = true, filterables = true, columnState, omitColumns
 }: EventTableProps) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
@@ -315,6 +327,12 @@ export const EventTable = ({
       searchable: Array.isArray(searchables) ? searchables.includes('entity_type') : searchables
     },
     {
+      key: 'macAddress',
+      title: $t({ defaultMessage: 'MAC Address' }),
+      dataIndex: 'macAddress',
+      sorter: true
+    },
+    {
       key: 'message',
       title: $t({ defaultMessage: 'Description' }),
       dataIndex: 'message',
@@ -360,12 +378,13 @@ export const EventTable = ({
   return <Loader states={[tableQuery]}>
     <Table
       rowKey='id'
-      columns={columns}
+      columns={columns.filter(({ key })=>!(omitColumns && omitColumns.includes(key)))}
       dataSource={tableQuery.data?.data ?? []}
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
       onFilterChange={tableQuery.handleFilterChange}
       enableApiFilter={true}
+      columnState={columnState || { defaultValue: defaultColumnState }}
     />
     {visible && <TimelineDrawer
       title={defineMessage({ defaultMessage: 'Event Details' })}

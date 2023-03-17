@@ -4,8 +4,9 @@ import { useNavigate, useParams }                    from 'react-router-dom'
 import { Tabs }         from '@acx-ui/components'
 import {
   ActivityTable,
-  columnState,
+  activityTableColumnState,
   EventTable,
+  eventTableColumnState,
   useActivityTableQuery,
   useEventsTableQuery
 } from '@acx-ui/rc/components'
@@ -15,7 +16,11 @@ import { useTenantLink } from '@acx-ui/react-router-dom'
 const Events = () => {
   const { networkId } = useParams()
   const tableQuery = useEventsTableQuery({ networkId: [networkId] })
-  return <EventTable tableQuery={tableQuery} filterables={['severity', 'entity_type']}/>
+  return <EventTable
+    tableQuery={tableQuery}
+    filterables={['severity', 'entity_type']}
+    columnState={{ defaultValue: { ...eventTableColumnState, product: false } }}
+  />
 }
 
 const Activities = () => {
@@ -25,7 +30,7 @@ const Activities = () => {
   return <ActivityTable
     tableQuery={tableQuery}
     filterables={['status']}
-    columnState={columnState}
+    columnState={activityTableColumnState}
   />
 }
 
