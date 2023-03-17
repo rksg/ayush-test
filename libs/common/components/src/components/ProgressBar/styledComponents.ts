@@ -8,4 +8,7 @@ export const Progress = styled(AntProgress)`
       border-radius: 2px;
     }
   }
+  .ant-progress-inner, .ant-progress-bg {
+    border-radius: 0px 3px 3px 0px !important;
+  }
 `
