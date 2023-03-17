@@ -2,12 +2,14 @@
 import { GridCol, GridRow } from '@acx-ui/components'
 import { formatter }        from '@acx-ui/utils'
 
-import { FunnelChart } from './funnelChart'
+import { FunnelChart }    from './funnelChart'
+import { HealthPieChart } from './HealthPieChart'
 import {
   Section,
   Title,
   Separator
 }                                from './styledComponents'
+
 
 const getFormattedToFunnel = (type, {
   authFailure,
@@ -75,7 +77,7 @@ const HealthDrillDown = () => {
         </div>
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '210px' }}>
-        PIE chart
+        <HealthPieChart />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '210px' }}>
            Table
