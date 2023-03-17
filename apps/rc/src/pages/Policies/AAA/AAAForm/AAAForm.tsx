@@ -79,10 +79,10 @@ const AAAForm = (props: AAAFormProps) => {
     <>
       {!props.networkView &&<PageHeader
         title={edit
-          ? $t({ defaultMessage: 'Edit AAA (802.1x) Server' })
-          : $t({ defaultMessage: 'Add AAA (802.1x) Server' })}
+          ? $t({ defaultMessage: 'Edit Radius (802.1x) Server' })
+          : $t({ defaultMessage: 'Add Radius (802.1x) Server' })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'AAA Server' }), link: tablePath }
+          { text: $t({ defaultMessage: 'Radius Server' }), link: tablePath }
         ]}
       />}
       <StepsForm<AAAPolicyType>
