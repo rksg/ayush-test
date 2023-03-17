@@ -439,7 +439,7 @@ export function TopologyGraph (props:{ venueId?: string,
     const allnodes = svg.selectAll('g.node')
     // this is selected / searched node
     const selectedNode = allnodes.nodes().filter((node: any) =>{
-      return ((node.__data__.config.mac).toLowerCase() === deviceMac.toLowerCase())
+      return ((node.__data__.config.mac)?.toLowerCase() === deviceMac?.toLowerCase())
       && node.__data__.id !== 'cloud_id'
     })
 
