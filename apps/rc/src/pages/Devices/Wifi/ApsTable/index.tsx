@@ -3,7 +3,6 @@ import React                   from 'react'
 
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import { Menu, MenuProps }     from 'antd'
-import { omit, uniqueId }      from 'lodash'
 import { useIntl }             from 'react-intl'
 
 import {
@@ -30,27 +29,6 @@ export default function ApsTable () {
       venueFilterOptions: data?.data.map(v=>({ key: v.id, value: v.name })) || true
     })
   })
-  const groupedFields = [
-    'check-all',
-    'name',
-    'deviceStatus',
-    'model',
-    'meshRole',
-    'IP',
-    'apMac',
-    'venueName',
-    'switchName',
-    'clients',
-    'deviceGroupName',
-    'apStatusData.APRadio.band',
-    'tags',
-    'serialNumber',
-    'fwVersion',
-    'cog',
-    'venueId',
-    'apStatusData.APRadio.radioId',
-    'apStatusData.APRadio.channel'
-  ]
   const { apgroupFilterOptions } = useApGroupsListQuery(
     {
       params: { tenantId },
@@ -61,12 +39,14 @@ export default function ApsTable () {
         page: 1,
         sortOrder: 'ASC',
         total: 0,
-        filters:{ isDefault: [false] },
+        filters: { isDefault: [false] }
       }
     },
     {
       selectFromResult: ({ data }) => {
-        return {apgroupFilterOptions: data?.data.map((v) => ({ key: v.id, value: v.name })) || true }
+        return {
+          apgroupFilterOptions: data?.data.map((v) => ({ key: v.id, value: v.name })) || true
+        }
       }
     }
   )

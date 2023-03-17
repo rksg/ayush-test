@@ -117,9 +117,6 @@ export const apApi = baseApApi.injectEndpoints({
     apGroupsList: build.query<TableResult<ApGroup>, RequestPayload>({
       query: ({ params, payload }) => {
         let venueListReq = createHttpRequest(WifiUrlsInfo.getApGroupsList, params)
-        if((payload as { groupBy : string })?.groupBy){
-          venueListReq = createHttpRequest(WifiUrlsInfo.getApGroupsListByGroup, params)
-        }
         return {
           ...venueListReq,
           body: payload
@@ -733,19 +730,18 @@ const transformGroupByList = (result: TableResult<APExtendedGrouped, ApExtraPara
     channel60: false
   }
   result.data = result.data.map(item => {
-    let newItem = {...item, children : [] as APExtended[], serialNumber
-      : _.uniqueId()}
+    let newItem = { ...item, children: [] as APExtended[], serialNumber: _.uniqueId() }
     const aps = (item as unknown as { aps: APExtended[] }).aps?.map(ap => {
       const { APRadio, lanPortStatus } = ap.apStatusData || {}
 
       if (APRadio) {
         setAPRadioInfo(ap, APRadio, channelColumnStatus)
       }
-  
+
       if (lanPortStatus) {
         setPoEPortStatus(ap, lanPortStatus)
       }
-  
+
       return ap
     })
     newItem.children = aps as unknown as APExtended[]

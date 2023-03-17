@@ -433,10 +433,9 @@ export function ApTable (props: ApTableProps) {
 
   useEffect(()=> {
     tableQuery?.handleFilterChange(tableFilter, tableSearch, groupBySelection)
-  },[groupBySelection,tableFilter,tableSearch])
+  },[groupBySelection,tableFilter,tableSearch, tableQuery])
 
   const basePath = useTenantLink('/devices')
-
   return (
     <Loader states={[tableQuery]}>
       <Table<APExtended | APExtendedGrouped>
