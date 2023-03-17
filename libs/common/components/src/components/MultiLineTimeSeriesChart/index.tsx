@@ -13,8 +13,8 @@ import { isEmpty }    from 'lodash'
 import { useIntl }    from 'react-intl'
 
 import type { TimeSeriesChartData }       from '@acx-ui/analytics/utils'
+import { formatter }                      from '@acx-ui/formatter'
 import type { TimeStamp, TimeStampRange } from '@acx-ui/types'
-import { formatter }                      from '@acx-ui/utils'
 
 import {
   gridOptions,

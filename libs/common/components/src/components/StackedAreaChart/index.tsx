@@ -10,8 +10,8 @@ import { isEmpty, sumBy } from 'lodash'
 import { useIntl }        from 'react-intl'
 
 import { TimeSeriesChartData } from '@acx-ui/analytics/utils'
+import { formatter }           from '@acx-ui/formatter'
 import type { TimeStampRange } from '@acx-ui/types'
-import { formatter }           from '@acx-ui/utils'
 
 import {
   gridOptions,

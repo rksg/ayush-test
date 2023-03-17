@@ -4,8 +4,8 @@ import { useIntl, defineMessage, IntlShape } from 'react-intl'
 
 import { defaultSort, dateSort, sortProp } from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Table, Card } from '@acx-ui/components'
+import { DateFormatEnum, formatter }       from '@acx-ui/formatter'
 import { TenantLink }                      from '@acx-ui/react-router-dom'
-import { formatter }                       from '@acx-ui/utils'
 
 import { usePoeLowTableQuery, ImpactedAP } from './services'
 
@@ -86,7 +86,7 @@ export const PoeLowTable: React.FC<ChartProps> = (props) => {
       dataIndex: 'eventTime',
       key: 'eventTime',
       render: (_, value) =>
-        formatter('dateTimeFormat')(value.eventTime),
+        formatter(DateFormatEnum.DateTimeFormat)(value.eventTime),
       sorter: { compare: sortProp('eventTime', dateSort) }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
