@@ -12,7 +12,6 @@ import { SwitchDhcpTab }            from './SwitchDhcpTab'
 import { SwitchIncidentsTab }       from './SwitchIncidentsTab'
 import { SwitchOverviewTab }        from './SwitchOverviewTab'
 import SwitchPageHeader             from './SwitchPageHeader'
-import { SwitchReportsTab }         from './SwitchReportsTab'
 import { SwitchTimelineTab }        from './SwitchTimelineTab'
 import { SwitchTroubleshootingTab } from './SwitchTroubleshootingTab'
 
@@ -20,7 +19,6 @@ const tabs = {
   overview: SwitchOverviewTab,
   incidents: SwitchIncidentsTab,
   troubleshooting: SwitchTroubleshootingTab,
-  reports: SwitchReportsTab,
   clients: SwitchClientsTab,
   configuration: SwitchConfigurationTab,
   dhcp: SwitchDhcpTab,

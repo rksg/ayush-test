@@ -107,10 +107,18 @@ export function DistributionSwitchForm () {
     <StepsForm.Title>
       {$t({ defaultMessage: 'Distribution Switch Settings' })}
     </StepsForm.Title>
-    <Form.Item name='distributionSwitchInfos' hidden />
     <DistributionSwitchTable rowActions={rowActions}
       dataSource={dsList}
       rowSelection={{ type: 'radio', selectedRowKeys: selected ? [selected.id] : [] }} />
+    <Form.Item name='distributionSwitchInfos'
+      rules={[{
+        validator: (_, dsList) => {
+          return (dsList && dsList.length > 0) ? Promise.resolve() :
+            Promise.reject(new Error($t({ defaultMessage:
+            'Please add at least 1 distribution switch.' })))
+        }
+      }]}
+    />
     <DistributionSwitchDrawer
       open={openDrawer}
       editRecord={selected}

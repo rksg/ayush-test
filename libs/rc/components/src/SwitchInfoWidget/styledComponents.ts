@@ -18,10 +18,6 @@ export const Container = styled.div`
   }
 `
 
-export const PointerContainer = styled.div`
-  cursor: pointer;
-`
-
 export const ChartTopTitle = styled.span`
   color: var(--acx-primary-black);
   font-family: var(--acx-neutral-brand-font);
@@ -49,5 +45,11 @@ export const TenantLinkBlack = styled(TenantLink)`
   color: var(--acx-primary-black);
   :hover {
     color: var(--acx-primary-black);
+  }
+`
+
+export const TenantLinkSvg = styled(TenantLink)`
+  svg {
+    cursor: pointer
   }
 `

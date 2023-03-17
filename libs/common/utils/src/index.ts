@@ -1,5 +1,4 @@
 export * from './apiService'
-export * from './formatter'
 export * from './dateFilter'
 export * from './locales'
 export * from './dateUtil'
