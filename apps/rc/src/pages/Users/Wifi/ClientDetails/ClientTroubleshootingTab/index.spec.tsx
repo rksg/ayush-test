@@ -1,8 +1,7 @@
 
 import { useEffect } from 'react'
 
-import { dataApiURL }         from '@acx-ui/analytics/services'
-import { Provider }           from '@acx-ui/store'
+import { dataApiURL, Provider } from '@acx-ui/store'
 import {
   mockGraphqlQuery,
   render,

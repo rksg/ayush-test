@@ -1,9 +1,8 @@
 import '@testing-library/jest-dom'
 
-import { dataApiURL }                       from '@acx-ui/analytics/services'
 import { fakeIncidentPoePd }                from '@acx-ui/analytics/utils'
 import { useIsSplitOn }                     from '@acx-ui/feature-toggle'
-import { Provider, store }                  from '@acx-ui/store'
+import { dataApiURL, Provider, store }      from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
 import { impactedApi, Response } from './services'

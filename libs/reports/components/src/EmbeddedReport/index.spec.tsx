@@ -9,7 +9,7 @@ import { mockServer }                         from '@acx-ui/test-utils'
 
 import { ReportType, reportTypeDataStudioMapping } from '../mapping/reportsMapping'
 
-import { EmbeddedReport } from '.'
+import { EmbeddedReport, convertDateTimeToSqlFormat } from '.'
 
 const mockEmbedDashboard = jest.fn()
 jest.mock('@superset-ui/embedded-sdk', () => ({
@@ -37,6 +37,13 @@ const getEmbeddedReponse = {
     uuid: 'ac940866-a6f3-4113-81c1-ffb82983ce51'
   }
 } as DashboardMetadata
+
+describe('convertDateTimeToSqlFormat', () => {
+  it('should convert date to sqlDateTimeFormat', () => {
+    expect(convertDateTimeToSqlFormat('2022-12-16T08:05:00+05:30'))
+      .toEqual('2022-12-16 02:35:00')
+  })
+})
 
 describe('EmbeddedDashboard', () => {
   const oldEnv = process.env

@@ -7,14 +7,14 @@ import {
   TableProps,
   showToast
 } from '@acx-ui/components'
-import { get }                     from '@acx-ui/config'
-import { useIsSplitOn, Features }  from '@acx-ui/feature-toggle'
+import { get }                       from '@acx-ui/config'
+import { useIsSplitOn, Features }    from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   useGetEntitlementsListQuery,
   useRefreshEntitlementsMutation
 } from '@acx-ui/rc/services'
 import {
-  DateFormatEnum,
   EntitlementUtil,
   Entitlement,
   EntitlementDeviceType
@@ -109,7 +109,7 @@ const SubscriptionTable = () => {
       dataIndex: 'effectiveDate',
       key: 'effectiveDate',
       render: function (_, row) {
-        return moment(row.effectiveDate).format(DateFormatEnum.UserDateFormat)
+        return formatter(DateFormatEnum.DateFormat)(row.effectiveDate)
       }
     },
     {
@@ -117,7 +117,7 @@ const SubscriptionTable = () => {
       dataIndex: 'expirationDate',
       key: 'expirationDate',
       render: function (_, row) {
-        return moment(row.expirationDate).format(DateFormatEnum.UserDateFormat)
+        return formatter(DateFormatEnum.DateFormat)(row.expirationDate)
       }
     },
     {
@@ -125,8 +125,8 @@ const SubscriptionTable = () => {
       dataIndex: 'timeLeft',
       key: 'timeLeft',
       render: function (_, row) {
-        const remaingDays = EntitlementUtil.timeLeftInDays(row.expirationDate)
-        return EntitlementUtil.timeLeftValues(remaingDays)
+        const remainingDays = EntitlementUtil.timeLeftInDays(row.expirationDate)
+        return EntitlementUtil.timeLeftValues(remainingDays)
       }
     },
     {

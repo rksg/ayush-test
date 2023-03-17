@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import _                                            from 'lodash'
-import moment                                       from 'moment'
+import moment                                       from 'moment-timezone'
 import { defineMessage, useIntl, FormattedMessage } from 'react-intl'
 
 import { Loader,
@@ -12,6 +12,7 @@ import { Loader,
   Tooltip
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }  from '@acx-ui/formatter'
 import { useEventsQuery }             from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
@@ -25,7 +26,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, generatePath } from '@acx-ui/react-router-dom'
 import { useUserProfileContext }    from '@acx-ui/user'
-import { formatter, useDateFilter } from '@acx-ui/utils'
+import { useDateFilter }            from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 
@@ -263,7 +264,7 @@ export const EventTable = ({
             setVisible(true)
             setCurrent(row)
           }}
-        >{formatter('dateTimeFormatWithSeconds')(row.event_datetime)}</Button>
+        >{formatter(DateFormatEnum.DateTimeFormatWithSeconds)(row.event_datetime)}</Button>
       }
     },
     {
@@ -331,7 +332,7 @@ export const EventTable = ({
   const getDrawerData = (data: Event) => [
     {
       title: defineMessage({ defaultMessage: 'Time' }),
-      value: formatter('dateTimeFormatWithSeconds')(data.event_datetime)
+      value: formatter(DateFormatEnum.DateTimeFormatWithSeconds)(data.event_datetime)
     },
     {
       title: defineMessage({ defaultMessage: 'Severity' }),

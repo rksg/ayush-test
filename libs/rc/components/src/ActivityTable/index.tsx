@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 
-import moment                     from 'moment'
+import moment                     from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps, Button } from '@acx-ui/components'
+import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
 import { useActivitiesQuery }                from '@acx-ui/rc/services'
 import {
   Activity,
@@ -18,7 +19,7 @@ import {
   useTableQuery,
   noDataDisplay
 } from '@acx-ui/rc/utils'
-import { formatter, useDateFilter } from '@acx-ui/utils'
+import { useDateFilter } from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 
@@ -110,7 +111,7 @@ const ActivityTable = ({
             setVisible(true)
             setCurrent(row)
           }}
-        >{formatter('dateTimeFormatWithSeconds')(row.startDatetime)}</Button>
+        >{formatter(DateFormatEnum.DateTimeFormatWithSeconds)(row.startDatetime)}</Button>
       }
     },
     {
@@ -158,11 +159,11 @@ const ActivityTable = ({
   const getDrawerData = (data: Activity) => [
     {
       title: defineMessage({ defaultMessage: 'Start Time' }),
-      value: formatter('dateTimeFormatWithSeconds')(data.startDatetime)
+      value: formatter(DateFormatEnum.DateTimeFormatWithSeconds)(data.startDatetime)
     },
     {
       title: defineMessage({ defaultMessage: 'End Time' }),
-      value: formatter('dateTimeFormatWithSeconds')(data.endDatetime)
+      value: formatter(DateFormatEnum.DateTimeFormatWithSeconds)(data.endDatetime)
     },
     {
       title: defineMessage({ defaultMessage: 'Severity' }),

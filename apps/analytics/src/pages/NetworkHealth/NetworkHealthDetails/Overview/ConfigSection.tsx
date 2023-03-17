@@ -4,7 +4,7 @@ import _                                     from 'lodash'
 import { IntlShape, useIntl, defineMessage } from 'react-intl'
 
 import { DescriptionSection } from '@acx-ui/analytics/components'
-import { formatter }          from '@acx-ui/utils'
+import { formatter }          from '@acx-ui/formatter'
 
 import { authMethodsByCode }    from '../../authMethods'
 import { AuthenticationMethod } from '../../NetworkHealthForm/FormItems/AuthenticationMethod'

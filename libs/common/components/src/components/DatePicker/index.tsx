@@ -7,9 +7,9 @@ import {
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { ClockOutlined } from '@acx-ui/icons'
+import {  DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { ClockOutlined }              from '@acx-ui/icons'
 import {
-  dateTimeFormats,
   defaultRanges,
   DateRange,
   dateRangeMap,
@@ -45,7 +45,6 @@ interface DatePickerProps {
   showAllTime?: boolean;
 }
 const AntRangePicker = AntDatePicker.RangePicker
-const { dateFormat, dateTimeFormat } = dateTimeFormats
 
 export const RangePicker = ({
   showTimePicker,
@@ -143,7 +142,7 @@ export const RangePicker = ({
         )}
         value={[range?.startDate, range?.endDate]}
         format={isCalendarOpen || selectionType === DateRange.custom
-          ? (showTimePicker ? dateTimeFormat : dateFormat)
+          ? formatter(showTimePicker ? DateFormatEnum.DateTimeFormat : DateFormatEnum.DateFormat)
           : rangeText
         }
         allowClear={false}
