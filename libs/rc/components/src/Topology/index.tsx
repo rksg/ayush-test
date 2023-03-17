@@ -439,7 +439,8 @@ export function TopologyGraph (props:{ venueId?: string,
     const allnodes = svg.selectAll('g.node')
     // this is selected / searched node
     const selectedNode = allnodes.nodes().filter((node: any) =>{
-      return (node.__data__.config.mac === deviceMac) && node.__data__.id !== 'cloud_id'
+      return ((node.__data__.config.mac).toLowerCase() === deviceMac.toLowerCase())
+      && node.__data__.id !== 'cloud_id'
     })
 
     return selectedNode && selectedNode[0]
@@ -487,6 +488,12 @@ export function TopologyGraph (props:{ venueId?: string,
               data-testid='searchNodes'
               options={filterNodes}
               filterOption={(inputValue, option) =>{
+                if (inputValue === '') {
+                  highlightPath(undefined)
+                  hoverNode(undefined)
+                  highlightAll()
+                  return false
+                }
                 return !!((option as OptionType).item.id as string).toLowerCase()
                   .includes(inputValue.toLowerCase()) ||
                   !!((option as OptionType).item.name as string).toLowerCase()
