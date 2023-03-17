@@ -23,7 +23,8 @@ function VenueEditTabs () {
   const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
-  const enablePropertyManagement = useIsSplitOn(Features.PROPERTY_MANAGEMENT)
+  const enablePersona = useIsSplitOn(Features.PERSONA)
+  const enablePropertyManagement = useIsSplitOn(Features.PROPERTY_MANAGEMENT) && enablePersona
   const basePath = useTenantLink(`/venues/${params.venueId}/edit/`)
   const {
     editContextData,
