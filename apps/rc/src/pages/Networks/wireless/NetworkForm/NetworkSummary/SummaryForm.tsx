@@ -92,7 +92,8 @@ export function SummaryForm (props: {
               (summaryData.guestPortal?.guestNetworkType &&
                  $t(captiveTypes[summaryData.guestPortal?.guestNetworkType]))}
           />}
-          {summaryData.type !== NetworkTypeEnum.PSK &&
+          {summaryData.type !== NetworkTypeEnum.PSK&&
+            summaryData.type!==NetworkTypeEnum.CAPTIVEPORTAL&&
           <Form.Item
             label={$t({ defaultMessage: 'Use Radius Server:' })}
             children={
