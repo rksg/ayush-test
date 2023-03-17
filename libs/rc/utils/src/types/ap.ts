@@ -399,4 +399,5 @@ export type ImportErrorRes = {
   }[],
   downloadUrl?: string
   txId: string
+  fileErrorsCount: number
 }

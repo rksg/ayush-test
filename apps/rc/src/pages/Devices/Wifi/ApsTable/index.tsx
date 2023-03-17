@@ -59,7 +59,7 @@ export default function ApsTable () {
     'assets/templates/aps_import_template.csv'
 
   useEffect(()=>{
-    if (importResult) {
+    if (importResult.fileErrorsCount === 0) {
       setImportVisible(false)
     }
   },[importResult])

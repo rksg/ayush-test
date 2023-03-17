@@ -371,7 +371,7 @@ export function ApTable (props: ApTableProps) {
     'assets/templates/aps_import_template.csv'
 
   useEffect(()=>{
-    if (importResult.isSuccess) {
+    if (importResult.fileErrorsCount === 0) {
       setImportVisible(false)
     }
   },[importResult])
