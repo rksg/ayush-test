@@ -1,4 +1,3 @@
-import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal, Tooltip }              from '@acx-ui/components'
@@ -13,8 +12,6 @@ import {
   getServiceRoutePath,
   DHCPSaveData,
   DHCP_LIMIT_NUMBER,
-  SEARCH,
-  FILTER,
   DHCPPool
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
@@ -74,18 +71,6 @@ export default function DHCPTable () {
       }
     }
   ]
-  const handleFilterChange = (filters: FILTER, search: SEARCH) => {
-    const currentPayload = tableQuery.payload
-    // eslint-disable-next-line max-len
-    if (currentPayload.searchString === search.searchString && _.isEqual(currentPayload.filters, filters)) {
-      return
-    }
-    tableQuery.setPayload({
-      ...currentPayload,
-      searchString: search.searchString as string,
-      filters
-    })
-  }
   return (
     <>
       <PageHeader
@@ -120,7 +105,7 @@ export default function DHCPTable () {
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
-          onFilterChange={handleFilterChange}
+          onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />
       </Loader>
@@ -161,7 +146,6 @@ function useColumns () {
     {
       key: 'name',
       title: $t({ defaultMessage: 'Name' }),
-      align: 'center',
       dataIndex: 'name'
     },
     {
@@ -220,7 +204,7 @@ function useColumns () {
         const dhcpPools = row.dhcpPools
         return <Tooltip title={
           <Table<DHCPPool>
-            type='tooltip'
+            type='compactBordered'
             style={{ width: 500 }}
             columnState={{ hidden: true }}
             columns={poolColumns}

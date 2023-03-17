@@ -12,9 +12,7 @@ import {
   getPolicyListRoutePath,
   getPolicyRoutePath,
   VLANPoolViewModelType,
-  VLAN_LIMIT_NUMBER,
-  FILTER,
-  SEARCH
+  VLAN_LIMIT_NUMBER
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                          from '@acx-ui/user'
@@ -72,18 +70,6 @@ export default function VLANPoolTable () {
       }
     }
   ]
-  const handleFilterChange = (filters: FILTER, search: SEARCH) => {
-    const currentPayload = tableQuery.payload
-    // eslint-disable-next-line max-len
-    if (currentPayload.searchString === search.searchString && _.isEqual(currentPayload.filters, filters)) {
-      return
-    }
-    tableQuery.setPayload({
-      ...currentPayload,
-      searchString: search.searchString as string,
-      filters
-    })
-  }
   return (
     <>
       <PageHeader
@@ -118,7 +104,7 @@ export default function VLANPoolTable () {
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
-          onFilterChange={handleFilterChange}
+          onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />
       </Loader>
@@ -187,9 +173,10 @@ function useColumns () {
         const tooltipItems = filterVenues.map(v => {
           const venueApGroup = _.find(venueApGroups,{ id: v.key })
           if(venueApGroup?.apGroups.length===1&&venueApGroup.apGroups[0].allApGroups){
-            return v.value+ ' (All APs)'
+            return v.value+' '+$t({ defaultMessage: '(All APs)' })
           }
-          return v.value+ ' ('+venueApGroup?.apGroups.length+' AP Groups)'
+          return v.value+ ' ('+venueApGroup?.apGroups.length+' '
+            +$t({ defaultMessage: 'AP Groups)' })
         })
         return <SimpleListTooltip items={tooltipItems} displayText={venueIds.length} />
       }

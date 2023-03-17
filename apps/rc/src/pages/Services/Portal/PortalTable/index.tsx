@@ -1,6 +1,5 @@
 import { useState } from 'react'
 
-import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal }             from '@acx-ui/components'
@@ -16,9 +15,7 @@ import {
   Portal,
   PortalLanguageEnum,
   Demo,
-  PORTAL_LIMIT_NUMBER,
-  SEARCH,
-  FILTER
+  PORTAL_LIMIT_NUMBER
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                          from '@acx-ui/user'
@@ -80,18 +77,6 @@ export default function PortalTable () {
       }
     }
   ]
-  const handleFilterChange = (filters: FILTER, search: SEARCH) => {
-    const currentPayload = tableQuery.payload
-    // eslint-disable-next-line max-len
-    if (currentPayload.searchString === search.searchString && _.isEqual(currentPayload.filters, filters)) {
-      return
-    }
-    tableQuery.setPayload({
-      ...currentPayload,
-      searchString: search.searchString as string,
-      filters
-    })
-  }
   const emptyNetworks: { key: string, value: string }[] = []
   const { networkNameMap } = useNetworkListQuery({
     params: { tenantId: params.tenantId },
@@ -211,7 +196,7 @@ export default function PortalTable () {
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
-          onFilterChange={handleFilterChange}
+          onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />
       </Loader>
