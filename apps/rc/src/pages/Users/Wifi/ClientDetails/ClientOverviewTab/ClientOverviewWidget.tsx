@@ -23,6 +23,7 @@ export function ClientOverviewWidget ({ clientStatistic, clientStatus, clientDet
     <Loader states={[{
       isLoading: !Object.keys(clientStatistic ?? {}).length
         || !Object.keys(clientStatus).length
+        || !Object.keys(clientDetails).length
     }]}>
       <GridRow style={{ flexGrow: '1' }}>
         <UI.GridCol col={{ span: 5 }}>
