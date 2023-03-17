@@ -51,7 +51,9 @@ export function AuthAccServerSetting () {
     }
   },[accountingRadius])
   useEffect(()=>{
-    form.setFieldsValue(data)
+    if(data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.Cloudpath){
+      form.setFieldsValue(data)
+    }
   },[data])
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
