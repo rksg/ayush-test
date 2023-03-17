@@ -2,6 +2,14 @@ import styled from 'styled-components/macro'
 
 import { Button, Modal } from '@acx-ui/components'
 
+export const ScheduleTooltipText = styled.span`
+  font-size: 12px;
+`
+
+export const ScheduleText = styled.span`
+  cursor: pointer;
+`
+
 export const BannerVersion = styled.div`
   font-family: "OpenSans-Regular", "Open Sans", sans-serif;
   font-size: 14px;

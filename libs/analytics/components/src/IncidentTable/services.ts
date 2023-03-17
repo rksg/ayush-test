@@ -2,7 +2,6 @@ import { gql }               from 'graphql-request'
 import moment                from 'moment-timezone'
 import { MessageDescriptor } from 'react-intl'
 
-import { dataApi }    from '@acx-ui/analytics/services'
 import {
   IncidentFilter,
   incidentCodes,
@@ -15,6 +14,7 @@ import {
   calculateSeverity
 } from '@acx-ui/analytics/utils'
 import type { RecordWithChildren } from '@acx-ui/components'
+import { dataApi }                 from '@acx-ui/store'
 import { getIntl }                 from '@acx-ui/utils'
 
 const durationValue = (start: string, end: string) => moment(end).diff(moment(start))

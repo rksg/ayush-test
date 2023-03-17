@@ -4,8 +4,7 @@ import { useEffect } from 'react'
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Subtitle, Tooltip }                                                                              from '@acx-ui/components'
-import { Table, TableProps, Loader }                                                                      from '@acx-ui/components'
+import { Subtitle, Tooltip, Table, TableProps, Loader  }                                                  from '@acx-ui/components'
 import { useGetClientListQuery, useVenuesListQuery, useApListQuery }                                      from '@acx-ui/rc/services'
 import { ClientList, getDeviceTypeIcon, getOsTypeIcon, RequestPayload, TableQuery, usePollingTableQuery } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                                                                          from '@acx-ui/react-router-dom'
@@ -13,9 +12,6 @@ import { TenantLink, useParams }                                                
 import { ClientHealthIcon } from '../ClientHealthIcon'
 
 import * as UI from './styledComponents'
-
-// TODO: userProfileService.userHasRole(user, 'OFFICE_ADMIN')
-const hasGuestManagerRole = false
 
 function GetVenueFilterOptions (tenantId: string|undefined) {
   const { venueFilterOptions } = useVenuesListQuery({ params: { tenantId }, payload: {
@@ -70,7 +66,7 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       disable: true,
       defaultSortOrder: 'ascend',
       render: (data, row) => {
-        return <TenantLink to={`users/wifi/clients/${row.clientMac}/details/overview?hostname=${data}`}>{data || '--'}</TenantLink>
+        return <TenantLink to={`users/wifi/clients/${row.clientMac}/details/overview?hostname=${data}&clientStatus=connected`}>{data || '--'}</TenantLink>
       }
     },
     {
@@ -142,13 +138,9 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       dataIndex: 'venueId',
       filterable: apId ? false : venueId ? false : GetVenueFilterOptions(tenantId),
       render: (data, row) => {
-        if(hasGuestManagerRole){
-          return row.venueName
-        }else{
-          return (
-            <TenantLink to={`/venues/${data}/venue-details/overview`}>{row.venueName}</TenantLink>
-          )
-        }
+        return (
+          <TenantLink to={`/venues/${data}/venue-details/overview`}>{row.venueName}</TenantLink>
+        )
       }
     },
     {
@@ -157,13 +149,9 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       dataIndex: 'serialNumber',
       filterable: apId ? false : GetApFilterOptions(tenantId, venueId),
       render: (data, row) => {
-        if(hasGuestManagerRole){
-          return row.apName
-        }else{
-          return (
-            <TenantLink to={`/devices/wifi/${data}/details/overview`}>{row.apName}</TenantLink>
-          )
-        }
+        return (
+          <TenantLink to={`/devices/wifi/${data}/details/overview`}>{row.apName}</TenantLink>
+        )
       }
     },
     {

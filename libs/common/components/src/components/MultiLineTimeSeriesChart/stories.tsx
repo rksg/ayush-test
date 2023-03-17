@@ -6,8 +6,8 @@ import { connect }          from 'echarts'
 import ReactECharts         from 'echarts-for-react'
 
 import { TimeSeriesChartData, incidentSeverities } from '@acx-ui/analytics/utils'
+import { formatter }                               from '@acx-ui/formatter'
 import { TimeStamp, TimeStampRange }               from '@acx-ui/types'
-import { formatter }                               from '@acx-ui/utils'
 
 import { cssStr } from '../../theme/helper'
 import { Button } from '../Button'
