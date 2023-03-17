@@ -49,7 +49,14 @@ const RogueAPDetectionVenueDetail = () => {
       title: $t({ defaultMessage: 'Address' }),
       dataIndex: 'city',
       sorter: true,
-      key: 'city'
+      key: 'city',
+      render: (data, row) => {
+        let trimCity = row.city?.trim()
+        if (trimCity && trimCity[0] === ',') {
+          trimCity.replace(',', '')
+        }
+        return [row.country, trimCity].join(',')
+      }
     },
     {
       title: $t({ defaultMessage: 'Rogue APs' }),

@@ -683,7 +683,7 @@ describe('util', () => {
     it('tooltipFormatter should return correct Html string for events', async () => {
       expect(labelFormatter(useTooltipParameters('events', eventDataObj), mockTimeWindow))
         .toMatch(
-          'Nov 14 05:19:21 Client associated (802.11) @ R750-11-112 (94:B3:4F:3D:15:B0) 5 GHz'
+          '11/14/2022 05:19:21 Client associated (802.11) @ R750-11-112 (94:B3:4F:3D:15:B0) 5 GHz'
         )
 
       expect(labelFormatter([{ seriesName: 'events' }] as unknown as TooltipHelper, mockTimeWindow))
@@ -716,7 +716,7 @@ describe('util', () => {
       expect(
         labelFormatter(useTooltipParameters('roaming', eventDataObj, 'scatter'), mockTimeWindow))
         .toMatch(
-          'Nov 14 05:19:21 Client associated (802.11) @ R750-11-112 (94:B3:4F:3D:15:B0) 5 GHz'
+          '11/14/2022 05:19:21 Client associated (802.11) @ R750-11-112 (94:B3:4F:3D:15:B0) 5 GHz'
         )
 
       expect(

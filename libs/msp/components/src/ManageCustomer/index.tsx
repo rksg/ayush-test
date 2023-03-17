@@ -24,8 +24,9 @@ import {
   StepsFormInstance,
   Subtitle
 } from '@acx-ui/components'
-import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
-import { SearchOutlined }         from '@acx-ui/icons'
+import { useIsSplitOn, Features }    from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { SearchOutlined }            from '@acx-ui/icons'
 import {
   useAddCustomerMutation,
   useMspEcAdminListQuery,
@@ -42,7 +43,6 @@ import {
 import {
   Address,
   dateDisplayText,
-  DateFormatEnum,
   DateSelectionEnum,
   emailRegExp,
   MspAdministrator,
@@ -63,9 +63,8 @@ import {
 } from '@acx-ui/react-router-dom'
 import { RolesEnum }              from '@acx-ui/types'
 import { useGetUserProfileQuery } from '@acx-ui/user'
-import {
-  AccountType
-} from '@acx-ui/utils'
+import { AccountType }            from '@acx-ui/utils'
+
 
 import { ManageAdminsDrawer } from '../ManageAdminsDrawer'
 // eslint-disable-next-line import/order
@@ -160,7 +159,6 @@ export function ManageCustomer () {
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
   const formRef = useRef<StepsFormInstance<EcFormData>>()
-  const dateFormat = DateFormatEnum.UserDateFormat
   const { action, status, tenantId, mspEcTenantId } = useParams()
 
   const [isTrialMode, setTrialMode] = useState(false)
@@ -180,8 +178,8 @@ export function ManageCustomer () {
   const [drawerIntegratorVisible, setDrawerIntegratorVisible] = useState(false)
   const [drawerInstallerVisible, setDrawerInstallerVisible] = useState(false)
   const [startSubscriptionVisible, setStartSubscriptionVisible] = useState(false)
-  const [subscriptionStartDate, setSubscriptionStartDate] = useState('')
-  const [subscriptionEndDate, setSubscriptionEndDate] = useState('')
+  const [subscriptionStartDate, setSubscriptionStartDate] = useState<moment.Moment>()
+  const [subscriptionEndDate, setSubscriptionEndDate] = useState<moment.Moment>()
   const [address, updateAddress] = useState<Address>(isMapEnabled? {} : defaultAddress)
   const [formData, setFormData] = useState({} as Partial<EcFormData>)
 
@@ -244,8 +242,8 @@ export function ManageCustomer () {
       data?.is_active === 'true' ? setTrialActive(true) : setTrialActive(false)
       status === 'Trial' ? setTrialMode(true) : setTrialMode(false)
 
-      setSubscriptionStartDate(moment(data?.service_effective_date).format(dateFormat))
-      setSubscriptionEndDate(moment(data?.service_expiration_date).format(dateFormat))
+      setSubscriptionStartDate(moment(data?.service_effective_date))
+      setSubscriptionEndDate(moment(data?.service_expiration_date))
       setWifiLicense(wLic)
       setSwitchLicense(sLic)
       // updateAddress(data?.street_address as Address)
@@ -267,8 +265,8 @@ export function ManageCustomer () {
         })
         setAdministrator(administrator)
       }
-      setSubscriptionStartDate(moment().format(dateFormat))
-      setSubscriptionEndDate(moment().add(30,'days').format(dateFormat))
+      setSubscriptionStartDate(moment())
+      setSubscriptionEndDate(moment().add(30,'days'))
     }
   }, [data, licenseSummary, licenseAssignment, ecSupport, userProfile, ecAdministrators])
 
@@ -554,8 +552,7 @@ export function ManageCustomer () {
 
   const startSubscription = (startDate: Date) => {
     if (startDate) {
-      const dateString = moment(startDate).format(dateFormat)
-      setSubscriptionStartDate(dateString)
+      setSubscriptionStartDate(moment(startDate))
       setTrialMode(false)
     }
   }
@@ -727,7 +724,7 @@ export function ManageCustomer () {
   }
 
   function expirationDateOnChange (props: unknown, expirationDate: string) {
-    setSubscriptionEndDate(expirationDate)
+    setSubscriptionEndDate(moment(expirationDate))
   }
 
   const onSelectChange = (value: string) => {
@@ -736,17 +733,17 @@ export function ManageCustomer () {
       setCustomeDate(true)
     } else {
       if (value === DateSelectionEnum.THIRTY_DAYS) {
-        setSubscriptionEndDate(moment().add(30,'days').format(dateFormat))
+        setSubscriptionEndDate(moment().add(30,'days'))
       } else if (value === DateSelectionEnum.SIXTY_DAYS) {
-        setSubscriptionEndDate(moment().add(60,'days').format(dateFormat))
+        setSubscriptionEndDate(moment().add(60,'days'))
       } else if (value === DateSelectionEnum.NINETY_DAYS) {
-        setSubscriptionEndDate(moment().add(90,'days').format(dateFormat))
+        setSubscriptionEndDate(moment().add(90,'days'))
       } else if (value === DateSelectionEnum.ONE_YEAR) {
-        setSubscriptionEndDate(moment().add(1,'years').format(dateFormat))
+        setSubscriptionEndDate(moment().add(1,'years'))
       } else if (value === DateSelectionEnum.THREE_YEARS) {
-        setSubscriptionEndDate(moment().add(3,'years').format(dateFormat))
+        setSubscriptionEndDate(moment().add(3,'years'))
       } else if (value === DateSelectionEnum.FIVE_YEARS) {
-        setSubscriptionEndDate(moment().add(5,'years').format(dateFormat))
+        setSubscriptionEndDate(moment().add(5,'years'))
       }
       setCustomeDate(false)
     }
@@ -777,11 +774,11 @@ export function ManageCustomer () {
 
         <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
           <label>{intl.$t({ defaultMessage: 'Trial Start Date' })}</label>
-          <label>{subscriptionStartDate}</label>
+          <label>{formatter(DateFormatEnum.DateFormat)(subscriptionStartDate)}</label>
         </UI.FieldLabel2>
         <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
           <label>{intl.$t({ defaultMessage: '30 Day Trial Ends on' })}</label>
-          <label>{subscriptionEndDate}</label>
+          <label>{formatter(DateFormatEnum.DateFormat)(subscriptionEndDate)}</label>
         </UI.FieldLabel2></div>
       }
 
@@ -793,7 +790,7 @@ export function ManageCustomer () {
 
         <UI.FieldLabel2 width='275px' style={{ marginTop: '18px' }}>
           <label>{intl.$t({ defaultMessage: 'Service Start Date' })}</label>
-          <label>{subscriptionStartDate}</label>
+          <label>{formatter(DateFormatEnum.DateFormat)(subscriptionStartDate)}</label>
         </UI.FieldLabel2>
 
         <UI.FieldLabeServiceDate width='275px' style={{ marginTop: '10px' }}>
@@ -818,9 +815,9 @@ export function ManageCustomer () {
             label=''
             children={
               <DatePicker
-                format={dateFormat}
+                format={formatter(DateFormatEnum.DateFormat)}
                 disabled={!customDate}
-                defaultValue={moment(subscriptionEndDate, dateFormat)}
+                defaultValue={moment(formatter(DateFormatEnum.DateFormat)(subscriptionEndDate))}
                 onChange={expirationDateOnChange}
                 disabledDate={(current) => {
                   return current && current < moment().endOf('day')
@@ -876,11 +873,11 @@ export function ManageCustomer () {
 
         <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
           <label>{intl.$t({ defaultMessage: 'Trial Start Date' })}</label>
-          <label>{subscriptionStartDate}</label>
+          <label>{formatter(DateFormatEnum.DateFormat)(subscriptionStartDate)}</label>
         </UI.FieldLabel2>
         <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
           <label>{intl.$t({ defaultMessage: '30 Day Trial Ends on' })}</label>
-          <label>{subscriptionEndDate}</label>
+          <label>{formatter(DateFormatEnum.DateFormat)(subscriptionEndDate)}</label>
         </UI.FieldLabel2></div>
       }
 
@@ -891,7 +888,7 @@ export function ManageCustomer () {
         <SwitchSubscription />
         <UI.FieldLabel2 width='275px' style={{ marginTop: '18px' }}>
           <label>{intl.$t({ defaultMessage: 'Service Start Date' })}</label>
-          <label>{subscriptionStartDate}</label>
+          <label>{formatter(DateFormatEnum.DateFormat)(subscriptionStartDate)}</label>
         </UI.FieldLabel2>
 
         <UI.FieldLabeServiceDate width='275px' style={{ marginTop: '10px' }}>
@@ -916,9 +913,9 @@ export function ManageCustomer () {
             label=''
             children={
               <DatePicker
-                format={dateFormat}
+                format={formatter(DateFormatEnum.DateFormat)}
                 disabled={!customDate}
-                defaultValue={moment(subscriptionEndDate, dateFormat)}
+                defaultValue={moment(formatter(DateFormatEnum.DateFormat)(subscriptionEndDate))}
                 onChange={expirationDateOnChange}
                 disabledDate={(current) => {
                   return current && current < moment().endOf('day')
@@ -1003,7 +1000,7 @@ export function ManageCustomer () {
         <Form.Item style={{ marginTop: '-22px' }}
           label={intl.$t({ defaultMessage: 'Service Expiration Date' })}
         >
-          <Paragraph>{subscriptionEndDate}</Paragraph>
+          <Paragraph>{formatter(DateFormatEnum.DateFormat)(subscriptionEndDate)}</Paragraph>
         </Form.Item></>
     )
   }

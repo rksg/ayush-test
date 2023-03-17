@@ -1,9 +1,8 @@
 import userEvent             from '@testing-library/user-event'
 import { DefaultOptionType } from 'antd/lib/select'
 
-import { dataApiURL }                                   from '@acx-ui/analytics/services'
 import { defaultNetworkPath }                           from '@acx-ui/analytics/utils'
-import { Provider, store }                              from '@acx-ui/store'
+import { dataApiURL, Provider, store }                  from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, fireEvent  } from '@acx-ui/test-utils'
 import { DateRange, NetworkPath }                       from '@acx-ui/utils'
 

@@ -1,36 +1,12 @@
-import { configureStore, isRejectedWithValue }            from '@reduxjs/toolkit'
-import { createApi, fetchBaseQuery }                      from '@reduxjs/toolkit/query/react'
-import { defineMessage, FormattedMessage }                from 'react-intl'
-import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
+import React from 'react'
 
-import { dataApi, networkHealthApi }                           from '@acx-ui/analytics/services'
-import { showActionModal, ActionModalType, ErrorDetailsProps } from '@acx-ui/components'
-import {
-  baseCommonApi as commonApi,
-  baseNetworkApi as networkApi,
-  baseVenueApi as venueApi,
-  baseEventAlarmApi as eventAlarmApi,
-  baseTimelineApi as timelineApi,
-  baseServiceApi as serviceApi,
-  apApi,
-  baseDhcpApi as dhcpApi,
-  baseMspApi as mspApi,
-  baseLicenseApi as licenseApi,
-  baseEdgeApi as edgeApi,
-  basePolicyApi as policyApi,
-  baseClientApi as clientApi,
-  baseSwitchApi as switchApi,
-  baseAdministrationApi as administrationApi,
-  baseFirmwareApi as firmwareApi,
-  baseEdgeDhcpApi as edgeDhcpApi,
-  basePersonaApi as personaApi,
-  baseNsgApi as nsgApi
-} from '@acx-ui/rc/services'
-import { getIntl } from '@acx-ui/utils'
+import { Middleware, isRejectedWithValue } from '@reduxjs/toolkit'
+import { FormattedMessage, defineMessage } from 'react-intl'
 
-import type { Middleware } from '@reduxjs/toolkit'
+import { ActionModalType, ErrorDetailsProps, showActionModal } from '@acx-ui/components'
+import { getIntl }                                             from '@acx-ui/utils'
 
-type ErrorAction = {
+export type ErrorAction = {
   type: string,
   meta: {
     baseQueryMeta: {
@@ -60,7 +36,8 @@ const ignoreEndpointList = [
   'addEdge', 'clientInfo', 'getClientDetails', 'createNetworkSegmentationGroup',
   'getPropertyConfigs'
 ]
-const errorMessage = {
+
+export const errorMessage = {
   SERVER_ERROR: {
     title: defineMessage({ defaultMessage: 'Server Error' }),
     content: defineMessage({
@@ -101,7 +78,7 @@ const errorMessage = {
   }
 }
 
-const getErrorContent = (action: ErrorAction) => {
+export const getErrorContent = (action: ErrorAction) => {
   const { $t } = getIntl()
   const status = action.meta.baseQueryMeta?.response?.status || action.payload?.originalStatus
 
@@ -192,15 +169,7 @@ export const showErrorModal = (details: {
   }
 }
 
-export const userApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  reducerPath: 'userApi',
-  tagTypes: ['UserProfile', 'Mfa'],
-  refetchOnMountOrArgChange: true,
-  endpoints: () => ({ })
-})
-
-const errorMiddleware: Middleware = () => (next) => (action: ErrorAction) => {
+export const errorMiddleware: Middleware = () => (next) => (action: ErrorAction) => {
   const isDevModeOn = window.location.hostname === 'localhost'
   const endpoint = action?.meta?.arg?.endpointName || ''
   if (isRejectedWithValue(action)) {
@@ -216,78 +185,3 @@ const errorMiddleware: Middleware = () => (next) => (action: ErrorAction) => {
   }
   return next(action)
 }
-
-const isDev = process.env['NODE_ENV'] === 'development'
-const isTest = process.env['NODE_ENV'] === 'test'
-
-export const store = configureStore({
-  reducer: {
-    [commonApi.reducerPath]: commonApi.reducer,
-    [networkApi.reducerPath]: networkApi.reducer,
-    [venueApi.reducerPath]: venueApi.reducer,
-    [eventAlarmApi.reducerPath]: eventAlarmApi.reducer,
-    [timelineApi.reducerPath]: timelineApi.reducer,
-    [dataApi.reducerPath]: dataApi.reducer,
-    [apApi.reducerPath]: apApi.reducer,
-    [userApi.reducerPath]: userApi.reducer,
-    [dataApi.reducerPath]: dataApi.reducer,
-    [dhcpApi.reducerPath]: dhcpApi.reducer,
-    [serviceApi.reducerPath]: serviceApi.reducer,
-    [mspApi.reducerPath]: mspApi.reducer,
-    [licenseApi.reducerPath]: licenseApi.reducer,
-    [edgeApi.reducerPath]: edgeApi.reducer,
-    [policyApi.reducerPath]: policyApi.reducer,
-    [clientApi.reducerPath]: clientApi.reducer,
-    [switchApi.reducerPath]: switchApi.reducer,
-    [administrationApi.reducerPath]: administrationApi.reducer,
-    [firmwareApi.reducerPath]: firmwareApi.reducer,
-    [edgeDhcpApi.reducerPath]: edgeDhcpApi.reducer,
-    [personaApi.reducerPath]: personaApi.reducer,
-    [networkHealthApi.reducerPath]: networkHealthApi.reducer,
-    [nsgApi.reducerPath]: nsgApi.reducer
-  },
-
-  middleware: (getDefaultMiddleware) => {
-    return getDefaultMiddleware({
-      serializableCheck: isDev ? undefined : false,
-      immutableCheck: isDev ? undefined : false
-    }).concat([
-      ...(!isTest ? [errorMiddleware] : []),
-      commonApi.middleware,
-      networkApi.middleware,
-      venueApi.middleware,
-      eventAlarmApi.middleware,
-      timelineApi.middleware,
-      dataApi.middleware,
-      apApi.middleware,
-      userApi.middleware,
-      dataApi.middleware,
-      dhcpApi.middleware,
-      serviceApi.middleware,
-      mspApi.middleware,
-      licenseApi.middleware,
-      edgeApi.middleware,
-      policyApi.middleware,
-      clientApi.middleware,
-      switchApi.middleware,
-      administrationApi.middleware,
-      firmwareApi.middleware,
-      edgeDhcpApi.middleware,
-      personaApi.middleware,
-      networkHealthApi.middleware,
-      nsgApi.middleware
-    ])
-  },
-
-  devTools: !isDev
-})
-
-export type AppState = ReturnType<typeof store.getState>
-export type AppDispatch = typeof store.dispatch
-
-export function baseSelector (state: AppState) {
-  return state
-}
-
-export const useAppDispatch = () => useDispatch<AppDispatch>()
-export const useAppSelector: TypedUseSelectorHook<AppState> = useSelector

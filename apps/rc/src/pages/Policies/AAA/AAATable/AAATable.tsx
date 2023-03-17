@@ -1,7 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { useDeleteAAAPolicyMutation, useGetAAAPolicyViewModelListQuery }  from '@acx-ui/rc/services'
+import { Button, PageHeader, Table, TableProps, Loader, showActionModal }                     from '@acx-ui/components'
+import { SimpleListTooltip }                                                                  from '@acx-ui/rc/components'
+import { useDeleteAAAPolicyMutation, useGetAAAPolicyViewModelListQuery, useNetworkListQuery } from '@acx-ui/rc/services'
 import {
   PolicyType,
   useTableQuery,
@@ -17,6 +18,7 @@ import { Path, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui
 import { filterByAccess }                                          from '@acx-ui/user'
 
 
+
 export default function AAATable () {
   const { $t } = useIntl()
   const navigate = useNavigate()
@@ -26,6 +28,9 @@ export default function AAATable () {
   const tableQuery = useTableQuery({
     useQuery: useGetAAAPolicyViewModelListQuery,
     defaultPayload: {
+      filters: {},
+      searchString: '',
+      searchTargetFields: ['name']
     }
   })
 
@@ -60,13 +65,12 @@ export default function AAATable () {
       }
     }
   ]
-
   return (
     <>
       <PageHeader
         title={
           $t({
-            defaultMessage: 'AAA Server ({count})'
+            defaultMessage: 'Radius Server ({count})'
           },
           {
             count: tableQuery.data?.totalCount
@@ -82,7 +86,7 @@ export default function AAATable () {
             <Button type='primary'
               disabled={tableQuery.data?.totalCount
                 ? tableQuery.data?.totalCount >= AAA_LIMIT_NUMBER
-                : false} >{$t({ defaultMessage: 'Add AAA Server' })}</Button>
+                : false} >{$t({ defaultMessage: 'Add Radius Server' })}</Button>
           </TenantLink>
         ])}
       />
@@ -95,6 +99,8 @@ export default function AAATable () {
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
+          onFilterChange={tableQuery.handleFilterChange}
+          enableApiFilter={true}
         />
       </Loader>
     </>
@@ -103,13 +109,29 @@ export default function AAATable () {
 
 function useColumns () {
   const { $t } = useIntl()
-
+  const params = useParams()
+  const emptyNetworks: { key: string, value: string }[] = []
+  const { networkNameMap } = useNetworkListQuery({
+    params: { tenantId: params.tenantId },
+    payload: {
+      fields: ['name', 'id'],
+      sortField: 'name',
+      sortOrder: 'ASC'
+    }
+  }, {
+    selectFromResult: ({ data }) => ({
+      networkNameMap: data?.data
+        ? data.data.map(network => ({ key: network.id, value: network.name }))
+        : emptyNetworks
+    })
+  })
   const columns: TableProps<AAAViewModalType>['columns'] = [
     {
       key: 'name',
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
       sorter: true,
+      searchable: true,
       defaultSortOrder: 'ascend',
       render: function (data, row) {
         return (
@@ -126,7 +148,7 @@ function useColumns () {
     },
     {
       key: 'type',
-      title: $t({ defaultMessage: 'AAA Type' }),
+      title: $t({ defaultMessage: 'Radius Type' }),
       dataIndex: 'type',
       sorter: true,
       render: (data) =>{
@@ -149,10 +171,14 @@ function useColumns () {
       key: 'networkIds',
       title: $t({ defaultMessage: 'Networks' }),
       dataIndex: 'networkIds',
-      sorter: true,
       align: 'center',
+      filterable: networkNameMap,
       render: (data, row) =>{
-        return data?row.networkIds?.length:''
+        if (!row.networkIds || row.networkIds.length === 0) return 0
+        const networkIds = row.networkIds
+        // eslint-disable-next-line max-len
+        const tooltipItems = networkNameMap.filter(v => networkIds!.includes(v.key)).map(v => v.value)
+        return <SimpleListTooltip items={tooltipItems} displayText={networkIds.length} />
       }
     }
   ]

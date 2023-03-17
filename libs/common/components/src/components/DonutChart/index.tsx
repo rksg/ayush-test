@@ -9,7 +9,8 @@ import {
   RawIntlProvider
 } from 'react-intl'
 
-import { getIntl, intlFormats } from '@acx-ui/utils'
+import { intlFormats } from '@acx-ui/formatter'
+import { getIntl }     from '@acx-ui/utils'
 
 import { cssNumber, cssStr } from '../../theme/helper'
 import {
@@ -37,7 +38,7 @@ interface DonutChartOptionalProps {
   showLabel: boolean,
   showTotal: boolean,
   legend: 'value' | 'name' | 'name-value',
-  size: 'small' | 'large' | 'x-large'
+  size: 'small' | 'medium' | 'large' | 'x-large'
 }
 
 const defaultProps: DonutChartOptionalProps = {
@@ -160,6 +161,21 @@ export function DonutChart ({
         ...commonStyles
       }
     },
+    'medium': {
+      title: {
+        ...commonFontStyle,
+        fontFamily: cssStr('--acx-chart-font'),
+        fontSize: cssNumber('--acx-headline-2-font-size'),
+        lineHeight: cssNumber('--acx-headline-2-line-height'),
+        fontWeight: cssNumber('--acx-headline-2-font-weight-bold')
+      },
+      value: {
+        ...commonFontStyle,
+        fontSize: cssNumber('--acx-subtitle-1-font-size'),
+        lineHeight: cssNumber('--acx-subtitle-1-line-height'),
+        fontWeight: cssNumber('--acx-subtitle-1-font-weight')
+      }
+    },
     'large': {
       title: {
         ...commonFontStyle,
@@ -202,6 +218,8 @@ export function DonutChart ({
         return ['82%', '92%']
       case props.showLabel:
         return ['62%', '78%']
+      case props.size === 'medium':
+        return ['76%', '92%']
       case props.size === 'x-large':
         return ['58%', '82%']
       default:

@@ -7,9 +7,9 @@ import moment            from 'moment-timezone'
 import { ValidatorRule } from 'rc-field-form/lib/interface'
 import { useIntl }       from 'react-intl'
 
-import { networkHealthApi }                          from '@acx-ui/analytics/services'
 import { showToast, TableProps, useStepFormContext } from '@acx-ui/components'
 import { useParams }                                 from '@acx-ui/react-router-dom'
+import { networkHealthApi }                          from '@acx-ui/store'
 import { TABLE_DEFAULT_PAGE_SIZE }                   from '@acx-ui/utils'
 
 import { authMethodsByClientType }     from './authMethods'
