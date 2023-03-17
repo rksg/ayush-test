@@ -1,6 +1,5 @@
-import { dataApiURL, dataApi } from '@acx-ui/analytics/services'
-import { AnalyticsFilter }     from '@acx-ui/analytics/utils'
-import { Provider, store }     from '@acx-ui/store'
+import { AnalyticsFilter }                      from '@acx-ui/analytics/utils'
+import { dataApiURL, dataApi, Provider, store } from '@acx-ui/store'
 import {
   render,
   cleanup,

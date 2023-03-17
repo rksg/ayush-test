@@ -6,7 +6,7 @@ import { IntlShape, MessageDescriptor, defineMessage, useIntl } from 'react-intl
 
 import { noDataSymbol }     from '@acx-ui/analytics/utils'
 import { GridCol, Tooltip } from '@acx-ui/components'
-import { formatter }        from '@acx-ui/utils'
+import { formatter }        from '@acx-ui/formatter'
 
 import { Pill } from './styledComponents'
 

@@ -1,4 +1,4 @@
-import moment      from 'moment'
+import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Button, DisabledButton, PageHeader, RangePicker } from '@acx-ui/components'

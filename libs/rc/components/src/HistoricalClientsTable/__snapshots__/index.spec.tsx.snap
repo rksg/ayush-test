@@ -682,7 +682,7 @@ exports[`HistoricalClientsTable should render correctly 1`] = `
                                   class="ant-table-cell ant-table-column-sort"
                                 >
                                   <a
-                                    href="/t/tenant-id/users/wifi/clients/24:41:8c:c3:16:df/details/overview?clientStatus=historical&period=%7B%22startDate%22%3A%222022-11-09T08%3A16%3A07%2B00%3A00%22%2C%22endDate%22%3A%222022-11-10T08%3A16%3A07%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
+                                    href="/t/tenant-id/users/wifi/clients/24:41:8c:c3:16:df/details/overview?hostname=LP-YGUO1&clientStatus=historical&period=%7B%22startDate%22%3A%222022-11-09T08%3A16%3A07%2B00%3A00%22%2C%22endDate%22%3A%222022-11-10T08%3A16%3A07%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
                                   >
                                     LP-YGUO1
                                   </a>
@@ -724,7 +724,7 @@ exports[`HistoricalClientsTable should render correctly 1`] = `
                                 <td
                                   class="ant-table-cell"
                                 >
-                                  Nov 10 2022 08:16
+                                  11/10/2022 08:16
                                 </td>
                                 <td
                                   class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
@@ -739,7 +739,7 @@ exports[`HistoricalClientsTable should render correctly 1`] = `
                                   class="ant-table-cell ant-table-column-sort"
                                 >
                                   <a
-                                    href="/t/tenant-id/users/wifi/clients/b2:db:24:a0:08:a9/details/overview?clientStatus=historical&period=%7B%22startDate%22%3A%222022-11-02T04%3A04%3A22%2B00%3A00%22%2C%22endDate%22%3A%222022-11-03T04%3A04%3A22%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
+                                    href="/t/tenant-id/users/wifi/clients/b2:db:24:a0:08:a9/details/overview?hostname=false&clientStatus=historical&period=%7B%22startDate%22%3A%222022-11-02T04%3A04%3A22%2B00%3A00%22%2C%22endDate%22%3A%222022-11-03T04%3A04%3A22%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
                                   >
                                     --
                                   </a>
@@ -785,7 +785,7 @@ exports[`HistoricalClientsTable should render correctly 1`] = `
                                 <td
                                   class="ant-table-cell"
                                 >
-                                  Nov 03 2022 04:04
+                                  11/03/2022 04:04
                                 </td>
                                 <td
                                   class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"

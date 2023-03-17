@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { intlFormats } from '@acx-ui/utils'
+import { intlFormats } from '@acx-ui/formatter'
 
 import { cssStr }  from '../../theme/helper'
 import { Tooltip } from '../Tooltip'
@@ -48,6 +48,23 @@ export function ProgressBar ({
     <UI.Progress
       percent={normalizePercent(percent)}
       steps={5}
+      showInfo={false}
+      trailColor={cssStr('--acx-neutrals-30')}
+      strokeWidth={10}
+      strokeColor={strokeColorsByPercent(percent)} />
+  </Tooltip>
+}
+
+export function ProgressBarV2 ({
+  percent
+}: ProgressBarProps) {
+  const { $t } = useIntl()
+
+  return <Tooltip
+    placement={'top'}
+    title={$t(intlFormats.percentFormat, { value: percent/100 })}>
+    <UI.Progress
+      percent={percent}
       showInfo={false}
       trailColor={cssStr('--acx-neutrals-30')}
       strokeWidth={10}

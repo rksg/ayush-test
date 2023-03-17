@@ -8,11 +8,10 @@ import {
   NoData,
   Subtitle
 } from '@acx-ui/components'
+// import { formatter } from '@acx-ui/formatter'
 import {
   SpaceWrapper
 } from '@acx-ui/rc/components'
-// import { formatter } from '@acx-ui/utils'
-
 
 const Wrapper = styled.div`
   height: 100%;

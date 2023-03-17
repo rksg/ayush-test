@@ -1,7 +1,7 @@
-import { dataApiURL, healthApi }   from '@acx-ui/analytics/services'
-import { AnalyticsFilter }         from '@acx-ui/analytics/utils'
-import { BrowserRouter as Router } from '@acx-ui/react-router-dom'
-import { Provider, store }         from '@acx-ui/store'
+import { healthApi }                   from '@acx-ui/analytics/services'
+import { AnalyticsFilter }             from '@acx-ui/analytics/utils'
+import { BrowserRouter as Router }     from '@acx-ui/react-router-dom'
+import { dataApiURL, Provider, store } from '@acx-ui/store'
 import {
   cleanup,
   mockGraphqlMutation,

@@ -92,11 +92,9 @@ const GMap: React.FC<MapProps> = ({
 
   React.useEffect(() => {
     if (map && venueInfoWindow) {
-      if(markerClusterer){
-        markerClusterer.clearMarkers()
-      }
-      const maxVenueCountPerVenue = (venues?.length > 0) ?
-        _.maxBy(venues, 'apsCount')?.apsCount : null
+      const maxVenueCountPerVenue = (venues?.length > 0)
+        ?_.maxBy(venues, 'apsCount')?.apsCount
+        : null
 
       // Build the updated markers
       const markers = venues?.map((venueMarker: VenueMarkerOptions) => {
@@ -164,13 +162,18 @@ const GMap: React.FC<MapProps> = ({
       const visibleMarkers = markers.filter(marker => marker.getVisible())
       if (visibleMarkers && visibleMarkers.length > 0) {
         if(cluster){
-          setMarkerClusterer(new MarkerClusterer({
-            map,
-            markers: visibleMarkers,
-            renderer: new VenueClusterRenderer(map, intl, onNavigate),
-            algorithm: new SuperClusterAlgorithm({ maxZoom: 17 }),
-            onClusterClick: onClusterClick
-          }))
+          if (!markerClusterer) {
+            setMarkerClusterer(new MarkerClusterer({
+              map,
+              markers: visibleMarkers,
+              renderer: new VenueClusterRenderer(map, intl, onNavigate),
+              algorithm: new SuperClusterAlgorithm({ maxZoom: 17 }),
+              onClusterClick: onClusterClick
+            }))
+          } else {
+            markerClusterer.clearMarkers()
+            markerClusterer.addMarkers(visibleMarkers)
+          }
         }
         // Set bounds so all markers are visible
         const bounds = new google.maps.LatLngBounds()

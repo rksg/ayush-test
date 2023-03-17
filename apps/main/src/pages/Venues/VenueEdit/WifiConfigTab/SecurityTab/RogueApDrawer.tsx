@@ -98,6 +98,7 @@ const RogueApDrawer = (props: {
     footer={
       <Drawer.FormFooter
         showAddAnother={false}
+        showSaveButton={false}
         onCancel={handleRogueApDrawerClose}
         onSave={async () => {
           try {
