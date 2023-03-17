@@ -1,9 +1,8 @@
 import moment from 'moment-timezone'
 
-import { dataApiURL }       from '@acx-ui/analytics/services'
-import { fakeIncident1 }    from '@acx-ui/analytics/utils'
-import { store }            from '@acx-ui/store'
-import { mockGraphqlQuery } from '@acx-ui/test-utils'
+import { fakeIncident1 }     from '@acx-ui/analytics/utils'
+import { dataApiURL, store } from '@acx-ui/store'
+import { mockGraphqlQuery }  from '@acx-ui/test-utils'
 
 import { buffer6hr }             from './__tests__/fixtures'
 import { TimeSeriesChartTypes }  from './config'

@@ -16,8 +16,8 @@ import {
   Loader,
   NoData
 } from '@acx-ui/components'
+import { formatter, intlFormats }                             from '@acx-ui/formatter'
 import { NavigateFunction, Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { formatter, intlFormats }                             from '@acx-ui/utils'
 
 import { useTopSwitchesByPoEUsageQuery } from './services'
 

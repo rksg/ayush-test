@@ -1,6 +1,5 @@
-import { dataApiURL }         from '@acx-ui/analytics/services'
-import { fakeIncident1 }      from '@acx-ui/analytics/utils'
-import { Provider, store }    from '@acx-ui/store'
+import { fakeIncident1 }               from '@acx-ui/analytics/utils'
+import { dataApiURL, Provider, store } from '@acx-ui/store'
 import {
   render,
   screen,

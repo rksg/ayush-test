@@ -1,8 +1,7 @@
 import '@testing-library/jest-dom'
 
-import { dataApiURL }                       from '@acx-ui/analytics/services'
 import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
-import { Provider, store }                  from '@acx-ui/store'
+import { dataApiURL, Provider, store }      from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 import { DateRange }                        from '@acx-ui/utils'
 
@@ -61,6 +60,16 @@ describe('SwitchesTrafficByVolumeWidget', () => {
     })
     const { asFragment } =render(
       <Provider> <SwitchesTrafficByVolume filters={filters}/></Provider>)
+    await screen.findByText('Traffic by Volume')
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+  })
+  it('should render area chart', async () => {
+    mockGraphqlQuery(dataApiURL, 'SwitchesTrafficByVolumeWidget', {
+      data: { network: { hierarchyNode: { timeSeries: sample } } }
+    })
+    const { asFragment } = render(
+      <Provider><SwitchesTrafficByVolume filters={filters} vizType={'area'}/></Provider>)
     await screen.findByText('Traffic by Volume')
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
