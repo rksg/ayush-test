@@ -56,7 +56,7 @@ const list = {
         }
       ],
       id: '701fe9df5f6b4c17928a29851c07cc05',
-      integrator: '675dc01dc28846c383219b00d2f28f48',
+      installer: '675dc01dc28846c383219b00d2f28f48',
       mspAdminCount: 1,
       mspAdmins: ['aefb12fab1194bf6ba061ddcec14230d'],
       mspEcAdminCount: 1,
@@ -124,6 +124,12 @@ describe('MspCustomers', () => {
   beforeEach(async () => {
     services.useGetMspLabelQuery = jest.fn().mockImplementation(() => {
       return { data: mspPortal }
+    })
+    services.useMspAdminListQuery = jest.fn().mockImplementation(() => {
+      return { data: [] }
+    })
+    services.useGetMspEcDelegatedAdminsQuery = jest.fn().mockImplementation(() => {
+      return { data: undefined }
     })
     jest.spyOn(services, 'useMspCustomerListQuery')
     jest.spyOn(services, 'useSupportMspCustomerListQuery')
@@ -380,5 +386,85 @@ describe('MspCustomers', () => {
     list.data.forEach((item, index) => {
       expect(within(rows[index]).getByText(item.name)).toBeVisible()
     })
+  })
+  it('should open dialog when msp admin count link clicked', async () => {
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile }
+    })
+    user.hasRoles = jest.fn().mockImplementation(() => {
+      return true
+    })
+    render(
+      <Provider>
+        <MspCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard/mspCustomers' }
+      })
+
+    const row = await screen.findByRole('row', { name: /ec 111/i })
+    fireEvent.click(within(row).getByRole('link', { name: '1' }))
+
+    expect(screen.getByRole('dialog')).toBeVisible()
+    expect(screen.getByText('Manage MSP Administrators')).toBeVisible()
+  })
+  it('should open dialog when integrator link clicked', async () => {
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile }
+    })
+    user.hasRoles = jest.fn().mockImplementation(() => {
+      return true
+    })
+    render(
+      <Provider>
+        <MspCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard/mspCustomers' }
+      })
+
+    const row = await screen.findByRole('row', { name: /ec 111/i })
+    fireEvent.click(within(row).getByRole('link', { name: '675dc01dc28846c383219b00d2f28f48' }))
+
+    expect(screen.getByRole('dialog')).toBeVisible()
+  })
+  it('should open dialog when installer link clicked', async () => {
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile }
+    })
+    user.hasRoles = jest.fn().mockImplementation(() => {
+      return true
+    })
+    render(
+      <Provider>
+        <MspCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard/mspCustomers' }
+      })
+
+    const row = await screen.findByRole('row', { name: /ec 222/i })
+    fireEvent.click(within(row).getByRole('link', { name: '675dc01dc28846c383219b00d2f28f48' }))
+
+    expect(screen.getByRole('dialog')).toBeVisible()
+  })
+  it('should render table correctly if not admin', async () => {
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile }
+    })
+    user.hasRoles = jest.fn().mockImplementation(() => {
+      return false
+    })
+    render(
+      <Provider>
+        <MspCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard/mspCustomers' }
+      })
+
+    const row1 = await screen.findByRole('row', { name: /ec 111/i })
+    expect(within(row1).queryByRole('link', { name: '675dc01dc28846c383219b00d2f28f48' }))
+      .toBeNull()
+
+    const row2 = await screen.findByRole('row', { name: /ec 222/i })
+    expect(within(row2).queryByRole('link', { name: '675dc01dc28846c383219b00d2f28f48' }))
+      .toBeNull()
   })
 })
