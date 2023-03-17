@@ -9,7 +9,8 @@ import {
   FirmwareSwitchVenue,
   FirmwareVenueVersion,
   FirmwareType,
-  Schedule
+  Schedule,
+  EdgeFirmwareVersion
 } from '@acx-ui/rc/utils'
 
 export const expirationTimeUnits: Record<string, string> = {
@@ -79,7 +80,7 @@ function getApFieldInVersions<T extends keyof FirmwareVenueVersion> (venue: Firm
 
 const transform = firmwareTypeTrans()
 
-export const getVersionLabel = (version: FirmwareVersion): string => {
+export const getVersionLabel = (version: FirmwareVersion | EdgeFirmwareVersion): string => {
   const versionName = version?.name
   const versionType = transform(version?.category)
   const versionOnboardDate = transformToUserDate(version)
@@ -94,7 +95,8 @@ export const getSwitchVersionLabel = (version: FirmwareVersion): string => {
   return `${versionName} (${versionType})`
 }
 
-const transformToUserDate = (firmwareVersion: FirmwareVersion): string | undefined => {
+const transformToUserDate = (firmwareVersion: FirmwareVersion | EdgeFirmwareVersion)
+: string | undefined => {
   return toUserDate(firmwareVersion?.onboardDate as string)
 }
 
