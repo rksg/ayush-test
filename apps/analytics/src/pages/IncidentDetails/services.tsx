@@ -1,9 +1,9 @@
 import { gql } from 'graphql-request'
 
-import { dataApi }                      from '@acx-ui/analytics/services'
 import { transformIncidentQueryResult } from '@acx-ui/analytics/utils'
 import type { Incident }                from '@acx-ui/analytics/utils'
 import { useParams }                    from '@acx-ui/react-router-dom'
+import { dataApi }                      from '@acx-ui/store'
 
 const detailQueryProps = {
   incident: `

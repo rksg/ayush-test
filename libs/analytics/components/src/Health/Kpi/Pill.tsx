@@ -10,9 +10,9 @@ import {
 import { AnalyticsFilter, kpiConfig } from '@acx-ui/analytics/utils'
 import { Tooltip }                    from '@acx-ui/components'
 import { ProgressPill, Loader }       from '@acx-ui/components'
+import { formatter }                  from '@acx-ui/formatter'
 import { InformationOutlined }        from '@acx-ui/icons'
 import { TimeStampRange }             from '@acx-ui/types'
-import { formatter }                  from '@acx-ui/utils'
 
 import * as UI from '../styledComponents'
 

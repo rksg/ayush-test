@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import userEvent from '@testing-library/user-event'
-import moment    from 'moment'
+import moment    from 'moment-timezone'
 
 import { Provider  } from '@acx-ui/store'
 import {
