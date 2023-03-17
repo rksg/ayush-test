@@ -155,7 +155,7 @@ export const tooltipFormatter = (
   const intl = getIntl()
   const param = parameters as TooltipFormatterParams
   const value = param.value as string[]
-  const name = param.seriesName
+  const name = param.seriesName?.replace(/<\d+>/,'')
   const formattedValue = dataFormatter ? dataFormatter(value[0]) : value[0]
   const tooltipFormat = format ?? defineMessage({
     defaultMessage: '{name}<br></br><space><b>{formattedValue}</b></space>',
@@ -196,7 +196,6 @@ export function StackedBarChart <TChartData extends ChartData = ChartData> ({
 
   useOnAxisLabelClick(eChartsRef, onAxisLabelClick)
   const triggerAxisLabelEvent : boolean = typeof onAxisLabelClick === 'function'
-
   let option: EChartsOption = {
     animation,
     silent: !showTooltip,

@@ -4,7 +4,7 @@ import { defineMessage }             from 'react-intl'
 
 import { StackedBarChart } from '.'
 
-import { getDeviceConnectionStatusColors } from '@acx-ui/components'
+import { getDeviceConnectionStatusColorsv2 } from '@acx-ui/components'
 
 export const data = [{
   category: 'Infrastructure',
@@ -35,9 +35,10 @@ export const data = [{
 export const singleBar = [{
   category: 'Something',
   series: [
-    { name: 'Requires Attention',value: 4 },
-    { name: 'In Setup Phase',value: 5 },
-    { name: 'Operational',value: 13 }]
+    { name: '<0>In Setup Phase',value: 5 },
+    { name: '<1>Requires Attention',value: 4 },
+    { name: '<2>Transient Issue',value: 2 },
+    { name: '<3>Operational',value: 13 }]
 }]
 
 storiesOf('StackedBarChart', module)
@@ -47,10 +48,10 @@ storiesOf('StackedBarChart', module)
     showLabels
     data={data} />)
   .add('Single Chart View', () => <StackedBarChart
-    style={{ height: 110, width: 400 }}
+    style={{ height: 110, width: 500 }}
     showLabels={false}
     barWidth={20}
-    barColors={getDeviceConnectionStatusColors()}
+    barColors={getDeviceConnectionStatusColorsv2()}
     data={singleBar} />)
   .add('With Knobs', () => <StackedBarChart
     style={{ height: 110, width: 250 }}

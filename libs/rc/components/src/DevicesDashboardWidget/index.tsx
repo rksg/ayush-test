@@ -7,9 +7,10 @@ import {
   getApDonutChartData,
   getEdgeDonutChartData,
   getSwitchDonutChartData,
-  getApStackedBarChartData
+  getApStackedBarChartData,
+  getSwitchStackedBarChartData
 } from '../DevicesWidget/helper'
-import { DevicesWidget } from '../DevicesWidget/index'
+import { DevicesWidget, DevicesWidgetv2 } from '../DevicesWidget/index'
 
 export function DevicesDashboardWidget () {
   const queryResults = useDashboardOverviewQuery({
@@ -18,7 +19,6 @@ export function DevicesDashboardWidget () {
     selectFromResult: ({ data, ...rest }) => ({
       data: {
         apData: getApDonutChartData(data?.summary?.aps?.summary),
-        apStackedData: getApStackedBarChartData(data?.summary?.aps?.summary),
         switchData: getSwitchDonutChartData(data),
         edgeData: getEdgeDonutChartData(data?.summary?.edges)
       },
@@ -26,13 +26,10 @@ export function DevicesDashboardWidget () {
     })
   })
 
-  console.log('>>> Stacked bar chart data : ', queryResults.data.apStackedData)
-
   return (
     <Loader states={[queryResults]}>
       <DevicesWidget
         apData={queryResults.data.apData}
-        apStackedData={queryResults.data.apStackedData}
         switchData={queryResults.data.switchData}
         edgeData={queryResults.data.edgeData}
         enableArrowClick
@@ -56,10 +53,8 @@ export function DevicesDashboardWidgetV2 () {
   },{
     selectFromResult: ({ data, ...rest }) => ({
       data: {
-        apData: getApDonutChartData(data?.summary?.aps?.summary),
         apStackedData: getApStackedBarChartData(data?.summary?.aps?.summary),
-        switchData: getSwitchDonutChartData(data),
-        edgeData: getEdgeDonutChartData(data?.summary?.edges)
+        switchStackedData: getSwitchStackedBarChartData(data)
       },
       ...rest
     })
@@ -67,11 +62,9 @@ export function DevicesDashboardWidgetV2 () {
 
   return (
     <Loader states={[queryResults]}>
-      <DevicesWidget
-        apData={queryResults.data.apData}
+      <DevicesWidgetv2
         apStackedData={queryResults.data.apStackedData}
-        switchData={queryResults.data.switchData}
-        edgeData={queryResults.data.edgeData}
+        switchStackedData={queryResults.data.switchStackedData}
         enableArrowClick
       />
     </Loader>

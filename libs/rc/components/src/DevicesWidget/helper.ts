@@ -80,6 +80,38 @@ export const getSwitchDonutChartData = (overviewData: Dashboard | undefined): Do
   return chartData
 }
 
+export const getSwitchStackedBarChartData = (overviewData: Dashboard | undefined): ChartData[] => {
+  const series = getSwitchDonutChartData(overviewData)
+  const statusList = [
+    SwitchStatusEnum.OPERATIONAL,
+    SwitchStatusEnum.DISCONNECTED,
+    SwitchStatusEnum.INITIALIZING
+  ]
+  const finalSeries=seriesMappingSwitch()
+    .filter(status=>statusList.includes(status.key as SwitchStatusEnum)).map(status=>{
+      const matched=series.filter(item=>item.name===status.name)
+      let value=0
+      if(matched.length){
+        value=matched[0].value
+      }
+      switch(status.key){
+        case SwitchStatusEnum.OPERATIONAL:
+          return { name: `<3>${status.name}`, value }
+        case SwitchStatusEnum.DISCONNECTED:
+          return { name: `<2>${status.name}`, value }
+        case SwitchStatusEnum.INITIALIZING:
+          return { name: `<0>${status.name}`, value }
+        default:
+          return { name: `<4>${status.name}`, value }
+      }
+    })
+  finalSeries.push({ name: '<1>Unknown', value: 0 })
+  return [{
+    category: 'Switches',
+    series: finalSeries
+  }]
+}
+
 export const getVenueSwitchDonutChartData =
 (venueDetails: VenueDetailHeader | undefined): DonutChartData[] => {
   const chartData: DonutChartData[] = []
@@ -150,32 +182,31 @@ export const getApDonutChartData =
 
 export const getApStackedBarChartData =
 (apsSummary: VenueDetailHeader['aps']['summary'] | undefined): ChartData[] => {
-  const series: ChartData['series'] = []
-  if (apsSummary) {
-    seriesMappingAP().forEach(({ key, name }) => {
-      const value = apsSummary[key as ApVenueStatusEnum]
-      if (key === ApVenueStatusEnum.OFFLINE && value) {
-        const setupPhase = find(series, {
-          name: getAPStatusDisplayName(ApVenueStatusEnum.IN_SETUP_PHASE, true)
-        })
-        const value = apsSummary[key]!
-        if (setupPhase) {
-          setupPhase.name = `${setupPhase.name}: ${setupPhase.value}, ${name}: ${value}`
-          setupPhase.value = setupPhase.value + value
-        } else {
-          series.push({ name, value })
-        }
+  const series = getApDonutChartData(apsSummary)
+  const finalSeries=seriesMappingAP()
+    .filter(status=>status.key!==ApVenueStatusEnum.OFFLINE).map(status=>{
+      const matched=series.filter(item=>item.name===status.name)
+      let value=0
+      if(matched.length){
+        value=matched[0].value
       }
-      else if (value) {
-        series.push({ name, value })
+      switch(status.key){
+        case ApVenueStatusEnum.OPERATIONAL:
+          return { name: `<3>${status.name}`, value }
+        case ApVenueStatusEnum.TRANSIENT_ISSUE:
+          return { name: `<2>${status.name}`, value }
+        case ApVenueStatusEnum.REQUIRES_ATTENTION:
+          return { name: `<1>${status.name}`, value }
+        case ApVenueStatusEnum.IN_SETUP_PHASE:
+          return { name: `<0>${status.name}`, value }
+        default:
+          return { name: `<4>${status.name}`, value }
       }
     })
-  }
-  console.log('#>>>>> : getApStackedBarChartData : ' + JSON.stringify(series))
 
   return [{
     category: 'Access Points',
-    series
+    series: finalSeries
   }]
 }
 
