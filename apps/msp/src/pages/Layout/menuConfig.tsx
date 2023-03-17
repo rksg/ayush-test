@@ -43,23 +43,23 @@ export function useMenuConfig (tenantType: string) {
         {
           path: '/dashboard/mspCustomers',
           name: $t({ defaultMessage: 'MSP Customers' }),
-          disabled: isVar
+          hidden: isVar
         },
         {
           path: '/dashboard/varCustomers',
           name: isSupport ? $t({ defaultMessage: 'RUCKUS Customers' })
             : $t({ defaultMessage: 'VAR Customers' }),
-          disabled: isNonVarMSP || isIntegrator
+          hidden: isNonVarMSP || isIntegrator
         }
       ]
     },
     {
       path: '/integrators',
-      name: $t({ defaultMessage: 'Tech Partner' }),
+      name: $t({ defaultMessage: 'Tech Partners' }),
       tenantType: 'v',
       inactiveIcon: IntegratorsOutlined,
       activeIcon: IntegratorsSolid,
-      disabled: isVar || isIntegrator || isSupport
+      hidden: isVar || isIntegrator || isSupport
     },
     {
       path: '/deviceInventory',
@@ -67,7 +67,7 @@ export function useMenuConfig (tenantType: string) {
       tenantType: 'v',
       inactiveIcon: DevicesOutlined,
       activeIcon: DevicesSolid,
-      disabled: isSupport
+      hidden: isSupport
     },
     {
       path: '/mspLicenses',
@@ -75,7 +75,7 @@ export function useMenuConfig (tenantType: string) {
       tenantType: 'v',
       inactiveIcon: MspSubscriptionOutlined,
       activeIcon: MspSubscriptionSolid,
-      disabled: isIntegrator || isSupport
+      hidden: isIntegrator || isSupport
     },
     genPlaceholder(),
     {
@@ -84,7 +84,7 @@ export function useMenuConfig (tenantType: string) {
       tenantType: 'v',
       inactiveIcon: ConfigurationOutlined,
       activeIcon: ConfigurationSolid,
-      disabled: !isPrimeAdmin || isIntegrator || isSupport
+      hidden: !isPrimeAdmin || isIntegrator || isSupport
     }
   ]
 

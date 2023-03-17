@@ -27,6 +27,7 @@ interface MenuItem {
   routes?: Array<MenuItem>
   pro_layout_parentKeys?: string[]
   disabled?: boolean
+  hidden?: boolean
 }
 
 export interface LayoutProps {
@@ -52,13 +53,13 @@ export function Layout ({
   const location = useLocation()
   const basePath = useTenantLink('/')
   const mspBasePath = useTenantLink('/', 'v')
-  const newRoutes = routes.map((item => {
+  const newRoutes = routes.filter(item => !item.hidden).map((item => {
     const base = item.tenantType === 'v' ? mspBasePath : basePath
     return {
       ...item,
       path: `${base.pathname}${item.path}`,
       uri: item.path,
-      routes: item.disabled ? [] : item.routes?.map(sub=>({
+      routes: item.disabled ? [] : item.routes?.filter(sub => !sub.hidden).map(sub=>({
         ...sub,
         path: `${base.pathname}${sub.path}`,
         uri: sub.path
@@ -82,12 +83,14 @@ export function Layout ({
         </>
       }}
     </TenantNavLink>
-    return item.disabled
-      ? <Tooltip placement='right' title={$t(notAvailableMsg)}>
-        {/* workaround for showing tooltip when link disabled */}
-        <span>{link}</span>
-      </Tooltip>
-      : link
+    return item.hidden
+      ? <span></span>
+      : item.disabled
+        ? <Tooltip placement='right' title={$t(notAvailableMsg)}>
+          {/* workaround for showing tooltip when link disabled */}
+          <span>{link}</span>
+        </Tooltip>
+        : link
   }
 
   return <UI.Wrapper>
