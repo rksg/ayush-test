@@ -6,7 +6,8 @@ import AutoSizer    from 'react-virtualized-auto-sizer'
 
 import { Incident }                                      from '@acx-ui/analytics/utils'
 import { Card, DonutChart, Loader, qualitativeColorSet } from '@acx-ui/components'
-import { formatter, getIntl }                            from '@acx-ui/utils'
+import { formatter }                                     from '@acx-ui/formatter'
+import { getIntl }                                       from '@acx-ui/utils'
 
 import {
   NetworkImpactChart,

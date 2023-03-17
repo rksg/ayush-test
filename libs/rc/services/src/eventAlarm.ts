@@ -1,5 +1,4 @@
-import { FetchBaseQueryError }       from '@reduxjs/toolkit/query'
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 
 import {
   Alarm,
@@ -12,16 +11,9 @@ import {
   CommonResult,
   Dashboard
 } from '@acx-ui/rc/utils'
+import { baseEventAlarmApi } from '@acx-ui/store'
 
 import { getMetaList } from './utils'
-
-export const baseEventAlarmApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  reducerPath: 'eventAlarmApi',
-  tagTypes: ['Alarms'],
-  refetchOnMountOrArgChange: true,
-  endpoints: () => ({ })
-})
 
 export const eventAlarmApi = baseEventAlarmApi.injectEndpoints({
   endpoints: (build) => ({

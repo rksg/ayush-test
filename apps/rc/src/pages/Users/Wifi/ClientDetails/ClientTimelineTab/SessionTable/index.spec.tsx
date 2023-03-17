@@ -1,6 +1,5 @@
-import { dataApiURL }              from '@acx-ui/analytics/services'
-import { BrowserRouter as Router } from '@acx-ui/react-router-dom'
-import { Provider, store }         from '@acx-ui/store'
+import { BrowserRouter as Router }     from '@acx-ui/react-router-dom'
+import { dataApiURL, Provider, store } from '@acx-ui/store'
 import {
   mockGraphqlQuery,
   render, screen,

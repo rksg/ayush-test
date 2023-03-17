@@ -8,6 +8,7 @@
     "common-components": "libs/common/components",
     "common-config": "libs/common/config",
     "common-feature-toggle": "libs/common/feature-toggle",
+    "common-formatter": "libs/common/formatter",
     "common-icons": "libs/common/icons",
     "common-user": "libs/common/user",
     "common-store": "libs/common/store",
