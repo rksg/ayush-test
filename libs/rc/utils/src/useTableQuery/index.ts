@@ -173,6 +173,7 @@ export function useTableQuery <
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH, groupBy? : GROUPBY) => {
     const { searchString, searchTargetFields, filters, ...rest } = payload
+    console.log(groupBy)
     const toBeRemovedFilter = _.isEmpty(customFilters)
       ? filterKeys
       : Object.keys(customFilters).filter(key => !customFilters[key])
@@ -186,7 +187,7 @@ export function useTableQuery <
         ..._.omit({ ...filters as Object, ...customFilters }, toBeRemovedFilter),
         ..._.pick(initialPayload.filters, toBeRemovedFilter)
       },
-      ...(groupBy ?{ groupBy: groupBy } :{})
+      groupBy: groupBy
     } as unknown as Payload)
     setSearch(toBeSearch)
     setFilterKeys([...new Set([ ...filterKeys, ...Object.keys(customFilters) ])]

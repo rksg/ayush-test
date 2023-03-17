@@ -13,9 +13,9 @@ import {
   deviceStatusColors,
   ColumnType
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import {
-  useApListQuery, useImportApMutation,useGroupByApListQuery
+  useApListQuery, useImportApMutation
 } from '@acx-ui/rc/services'
 import {
   ApDeviceStatusEnum,
@@ -150,34 +150,19 @@ export function ApTable (props: ApTableProps) {
   const params = useParams()
   const filters = getFilters(params) as FILTER
   const { searchable, filterables } = props
-  const [groupBySelection, setGroupBySelection] = useState<DeviceGroupBy>(null)
-  const [tableFilter, setTableFilter] = useState<FILTER>(filters)
-  const [tableSearch, setTableSearch] = useState<SEARCH>({})
-  const groupByTableQuery = usePollingTableQuery({
-    useQuery: useGroupByApListQuery,
-    defaultPayload: {
-      fields: groupedFields,
-      filters,
-      searchTargetFields: defaultApPayload.searchTargetFields,
-      search: {
-        searchTargetFields: defaultApPayload.searchTargetFields
-      }
-    },
-    option: { skip: Boolean(props.tableQuery) || !Boolean(groupBySelection) }
-  })
   const apListTableQuery = usePollingTableQuery({
     useQuery: useApListQuery,
     defaultPayload: {
       ...defaultApPayload,
+      groupByFields: groupedFields,
       filters
     },
     search: {
       searchTargetFields: defaultApPayload.searchTargetFields
     },
-    option: { skip: Boolean(props.tableQuery) || Boolean(groupBySelection) }
+    option: { skip: Boolean(props.tableQuery) }
   })
-  const inlineTableQuery = groupBySelection ? groupByTableQuery : apListTableQuery
-  const tableQuery = props.tableQuery || inlineTableQuery
+  const tableQuery = props.tableQuery || apListTableQuery
 
   const apAction = useApActions()
   const releaseTag = useIsSplitOn(Features.DEVICES)
@@ -428,10 +413,6 @@ export function ApTable (props: ApTableProps) {
       setImportVisible(false)
     }
   },[importResult])
-  useEffect(()=> {
-    tableQuery?.handleFilterChange(tableFilter, tableSearch, groupBySelection)
-  },[groupBySelection,tableFilter,tableSearch, tableQuery])
-
   const basePath = useTenantLink('/devices')
   return (
     <Loader states={[tableQuery]}>
@@ -444,11 +425,7 @@ export function ApTable (props: ApTableProps) {
         onChange={tableQuery?.handleTableChange as OnTableChange}
         enableApiFilter={true}
         rowActions={filterByAccess(rowActions)}
-        onFilterChange={useCallback((filter : FILTER, search : SEARCH, groupBy?: string ) => {
-          setTableFilter(filter)
-          setTableSearch(search)
-          setGroupBySelection?.(groupBy as DeviceGroupBy)
-        },[setGroupBySelection,setTableFilter, setTableSearch])}
+        onFilterChange={tableQuery?.handleFilterChange}
         actions={props.enableActions ? filterByAccess([{
           label: $t({ defaultMessage: 'Add AP' }),
           onClick: () => {

@@ -1,4 +1,5 @@
-import _ from 'lodash'
+import _          from 'lodash'
+import { Params } from 'react-router-dom'
 
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
@@ -43,14 +44,23 @@ import { baseApApi } from '@acx-ui/store'
 export const apApi = baseApApi.injectEndpoints({
   endpoints: (build) => ({
     apList: build.query<TableResult<APExtended, ApExtraParams>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const apListReq = createHttpRequest(CommonUrlsInfo.getApsList, params)
+      query: ({ params, payload }:{ payload:Record<string,unknown>, params: Params<string> }) => {
+        const hasGroupBy = (payload as { groupBy : string })?.groupBy
+        const fields = hasGroupBy ? payload.groupByFields : payload.fields
+        let apsReq = createHttpRequest(CommonUrlsInfo.getApsList, params)
+        if(hasGroupBy){
+          apsReq = createHttpRequest(CommonUrlsInfo.getApGroupsListByGroup, params)
+        }
         return {
-          ...apListReq,
-          body: payload
+          ...apsReq,
+          body: { ...payload, fields: fields }
         }
       },
-      transformResponse (result: TableResult<APExtended, ApExtraParams>) {
+      transformResponse (
+        result: TableResult<APExtended, ApExtraParams>,_: unknown, args: Record<string,unknown>
+      ) {
+        if((args?.payload as Record<string,unknown>)?.groupBy)
+          return transformGroupByList(result as TableResult<APExtendedGrouped, ApExtraParams>)
         return transformApList(result)
       },
       keepUnusedDataFor: 0,
@@ -66,34 +76,6 @@ export const apApi = baseApApi.injectEndpoints({
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'GROUP' }]))
-          })
-        })
-      }
-    }),
-    groupByApList: build.query<TableResult<APExtendedGrouped, ApExtraParams>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const apListReq = createHttpRequest(CommonUrlsInfo.getApGroupsListByGroup, params)
-        return {
-          ...apListReq,
-          body: payload
-        }
-      },
-      transformResponse (result: TableResult<APExtendedGrouped, ApExtraParams>) {
-        return transformGroupByList(result)
-      },
-      keepUnusedDataFor: 0,
-      providesTags: [{ type: 'Ap', id: 'LIST' }],
-      async onCacheEntryAdded (requestArgs, api) {
-        await onSocketActivityChanged(requestArgs, api, (msg) => {
-          const activities = [
-            'AddAps',
-            'UpdateAp',
-            'DeleteAp',
-            'DeleteAps',
-            'AddApGroupLegacy'
-          ]
-          onActivityMessageReceived(msg, activities, () => {
-            api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'LIST' }]))
           })
         })
       }
@@ -588,7 +570,6 @@ export const apApi = baseApApi.injectEndpoints({
 
 export const {
   useApListQuery,
-  useGroupByApListQuery,
   useLazyApListQuery,
   useApDetailHeaderQuery,
   useApViewModelQuery,
