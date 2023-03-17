@@ -488,12 +488,6 @@ export function TopologyGraph (props:{ venueId?: string,
               data-testid='searchNodes'
               options={filterNodes}
               filterOption={(inputValue, option) =>{
-                if (inputValue === '') {
-                  highlightPath(undefined)
-                  hoverNode(undefined)
-                  highlightAll()
-                  return false
-                }
                 return !!((option as OptionType).item.id as string).toLowerCase()
                   .includes(inputValue.toLowerCase()) ||
                   !!((option as OptionType).item.name as string).toLowerCase()
@@ -510,6 +504,17 @@ export function TopologyGraph (props:{ venueId?: string,
                 hoverNode(getSelectedNode(option.item.mac as string))
               }}
               allowClear={true}
+              onSearch={
+                (inputValue) => {
+                  if (inputValue === '') {
+                    highlightPath(undefined)
+                    hoverNode(undefined)
+                    highlightAll()
+                    return false
+                  }
+                  return
+                }
+              }
               onClear={() => {
                 highlightPath(undefined)
                 hoverNode(undefined)
