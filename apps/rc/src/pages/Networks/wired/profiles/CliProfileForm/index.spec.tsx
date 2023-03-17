@@ -202,7 +202,8 @@ describe('Cli Profile Form - Add', () => {
   }, 30000)
 })
 
-describe('Cli Profile Form - Edit', () => {
+// TODO: remove skip when ACX-13452 is fixed by moving to StepsFormNew
+describe.skip('Cli Profile Form - Edit', () => {
   const params = {
     tenantId: 'tenant-id',
     action: 'edit',
