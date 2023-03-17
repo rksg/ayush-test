@@ -143,12 +143,8 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
       return false
     }
 
-    if (editMode.isEdit) {
-      return !editMode.isEdit
-    }
-
-    if (localEditMode.isEdit) {
-      return !localEditMode.isEdit
+    if (editMode.isEdit || localEditMode.isEdit) {
+      return false
     }
 
     return !_.isNil(layer2PolicyInfo)

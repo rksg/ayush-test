@@ -227,12 +227,8 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       return false
     }
 
-    if (editMode.isEdit) {
-      return !editMode.isEdit
-    }
-
-    if (localEditMode.isEdit) {
-      return !localEditMode.isEdit
+    if (editMode.isEdit || localEditMode.isEdit) {
+      return false
     }
 
     return !_.isNil(layer3PolicyInfo)

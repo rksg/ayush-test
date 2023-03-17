@@ -156,12 +156,8 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       return false
     }
 
-    if (editMode.isEdit) {
-      return !editMode.isEdit
-    }
-
-    if (localEditMode.isEdit) {
-      return !localEditMode.isEdit
+    if (editMode.isEdit || localEditMode.isEdit) {
+      return false
     }
 
     return !_.isNil(devicePolicyInfo)
