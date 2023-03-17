@@ -68,7 +68,8 @@ export function SwitchClientDetails () {
     // Remove internal properties
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const exportClient: any = Object()
-    Object.assign(exportClient, { Status: $t({ defaultMessage: 'Connected' }), ...data })
+    const statusLabel = $t({ defaultMessage: 'Status' })
+    Object.assign(exportClient, { [statusLabel]: $t({ defaultMessage: 'Connected' }), ...data })
     for (const key of ClientCSVIgnoreProperty) {
       delete exportClient[key]
     }
