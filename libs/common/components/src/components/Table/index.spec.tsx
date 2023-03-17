@@ -9,6 +9,8 @@ import { GroupTable }                                       from './stories/Grou
 
 import { Table, TableProps } from '.'
 
+const { type, clear } = userEvent
+
 jest.mock('react-resizable', () => ({
   Resizable: jest.fn().mockImplementation((props) => (
     // eslint-disable-next-line testing-library/no-node-access
@@ -709,7 +711,7 @@ describe('Table component', () => {
       const validSearchTerm = 'sample address'
       const input = await screen
         .findByPlaceholderText('Search Name, Given Name, Surname, Description, Address')
-      fireEvent.change(input, { target: { value: validSearchTerm } })
+      await type(input, validSearchTerm)
 
       await screen.findByText('highlighted')
       expect(customHighlighter).toBeCalled()
@@ -725,20 +727,18 @@ describe('Table component', () => {
 
       const input = await screen
         .findByPlaceholderText('Search Name, Given Name, Surname, Description, Address')
-      fireEvent.change(input, { target: { value: 'J' } })
-      await new Promise((r)=>{setTimeout(r, 1000)})
+      await type(input, 'J')
       expect(onFilterChange).not.toBeCalled()
 
-      fireEvent.change(input, { target: { value: 'John Doe' } })
-      await new Promise((r)=>{setTimeout(r, 1000)})
-      expect(onFilterChange).toBeCalledTimes(1)
+      await clear(input)
+      await type(input, 'John Doe')
+      await waitFor(() => expect(onFilterChange).toBeCalledTimes(1))
 
-      fireEvent.change(input, { target: { value: '' } })
+      await clear(input)
       const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
       const nameFilter = filters[0]
       fireEvent.keyDown(nameFilter, { key: 'John Doe', code: 'John Doe' })
-      await new Promise((r)=>{setTimeout(r, 1000)})
-      expect(onFilterChange).toBeCalledTimes(2)
+      await waitFor(() => expect(onFilterChange).toBeCalledTimes(2))
     })
 
     it('should not do local filter/search when enableApiFilter', async () => {

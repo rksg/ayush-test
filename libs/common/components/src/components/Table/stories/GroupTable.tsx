@@ -796,7 +796,7 @@ export const groupByColumns: TableProps<APExtendedGroupedResponse | APExtended>[
       label: 'AP Group',
       actions: [{
         key: 'edit',
-        renderer: (record) => <a href={`/edit/${record.name}`}>Edit</a>
+        renderer: (record) => <a href={`/edit/${record.deviceGroupName}`}>Edit</a>
       }],
       attributes: [
         {
@@ -827,13 +827,21 @@ export const groupByColumns: TableProps<APExtendedGroupedResponse | APExtended>[
   {
     title: 'RF Channels',
     key: 'rf-channels',
-    dataIndex: 'rf-channels'
+    dataIndex: 'rf-channels',
+    children: ['channel24', 'channel50'].map(channel => ({
+      key: channel,
+      dataIndex: channel,
+      title: <Table.SubTitle children={channel} />,
+      align: 'center',
+      render: () => 36
+    }))
   },
   {
     title: 'Tags',
     key: 'tags',
     dataIndex: 'tags',
-    filterable: true
+    filterable: true,
+    show: false
   }
 ]
 

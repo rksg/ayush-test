@@ -1,4 +1,4 @@
-import React, { useMemo, useState, Key, useCallback, useEffect } from 'react'
+import React, { useMemo, useState, Key, useCallback, useEffect, useRef } from 'react'
 
 import ProTable, { ProTableProps as ProAntTableProps, ProColumnType } from '@ant-design/pro-table'
 import { Menu, MenuProps, Space }                                     from 'antd'
@@ -49,12 +49,6 @@ export type {
   TableColumn
 } from './types'
 
-
-function isGroupColumn <RecordType, ValueType = 'text'> (
-  column: TableColumn<RecordType, ValueType>
-): column is ColumnGroupType<RecordType, ValueType> {
-  return column.hasOwnProperty('children')
-}
 
 export interface TableProps <RecordType>
   extends Omit<ProAntTableProps<RecordType, ParamsType>,
@@ -126,20 +120,13 @@ function useSelectedRowKeys <RecordType> (
   return [selectedRowKeys, setSelectedRowKeys]
 }
 
-function getHighlightFn (searchValue: string): TableHighlightFnArgs {
-  return (textToHighlight, formatFn) =>
-    (searchValue && searchValue.length >= MIN_SEARCH_LENGTH && textToHighlight)
-      ? formatFn
-        ? textToHighlight.replace(
-          new RegExp(escapeStringRegexp(searchValue), 'ig'), formatFn('$&') as string)
-        : <Highlighter
-          highlightStyle={{
-            fontWeight: 'bold', background: 'none', padding: 0, color: 'inherit'
-          }}
-          searchWords={[searchValue]}
-          textToHighlight={textToHighlight}
-          autoEscape />
-      : textToHighlight
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function debounce <Fn extends ((...args: any[]) => void)> (
+  fn?: Fn,
+  timeout = 1000
+) {
+  if (!fn) return
+  return _.debounce(fn, timeout)
 }
 
 // following the same typing from antd
@@ -154,36 +141,26 @@ function Table <RecordType extends Record<string, any>> ({
   const [filterValues, setFilterValues] = useState<Filter>({})
   const [searchValue, setSearchValue] = useState<string>('')
   const [groupByValue, setGroupByValue] = useState<string | undefined>(undefined)
+  const onFilter = useRef(debounce(onFilterChange))
   const [colWidth, setColWidth] = useState<Record<string, number>>({})
   const allKeys = dataSource?.map(row => typeof rowKey === 'function' ? rowKey(row) : row[rowKey])
-  const {
-    groupable,
-    expandable,
-    renderGroupRow,
-    isGroupByActive
-  } = useGroupBy<RecordType>(props.columns, allKeys, groupByValue)
-
-  const debounced = useCallback( // eslint-disable-line react-hooks/exhaustive-deps
-    _.debounce(
-      (filter: Filter, searchString: string, groupBy: string | undefined) =>
-        onFilterChange && onFilterChange(filter, { searchString }, groupBy), 1000
-    ),
-    [onFilterChange]
-  )
 
   useEffect(() => {
-    if(searchValue === '' || searchValue.length >= MIN_SEARCH_LENGTH)  {
-      debounced(filterValues, searchValue, groupByValue)
+    onFilter.current = debounce(onFilterChange)
+    return () => onFilter.current?.cancel()
+  }, [onFilterChange])
+
+  useEffect(() => {
+    if(searchValue === '' || searchValue.length >= MIN_SEARCH_LENGTH) {
+      onFilter.current?.(filterValues, { searchString: searchValue })
     }
-    return () => debounced.cancel()
-  }, [searchValue, debounced]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [searchValue]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    debounced(filterValues, searchValue, groupByValue)
-    return () => debounced.cancel()
-  }, [groupByValue, filterValues, debounced]) // eslint-disable-line react-hooks/exhaustive-deps
+    onFilter.current?.(filterValues, { searchString: searchValue }, groupByValue)
+  }, [filterValues, groupByValue]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  let columns = useMemo(() => {
+  const baseColumns = useMemo(() => {
     const settingsColumn = {
       key: settingsKey,
       fixed: 'right' as 'right',
@@ -191,36 +168,8 @@ function Table <RecordType extends Record<string, any>> ({
       children: []
     }
 
-    const tableCols = isGroupByActive
-      ? props.columns.map((col, columnIndex) => {
-        const { render, searchable, key } = col
-        const renderer: typeof render = (dom, record, index, highlightFn, action, schema) => {
-          if ('children' in record) {
-            return columnIndex === 0 ? renderGroupRow(record) : null
-          } else {
-            if (render) {
-              return render(dom, record, index, highlightFn, action, schema)
-            }
-            if (searchable) {
-              return getHighlightFn(searchValue)(_.get(record, key))
-            }
-            return dom
-          }
-        }
-        return {
-          ...col,
-          onCell: (record: RecordType) => ({
-            colSpan: ('children' in record)
-              ? (columnIndex === 0 ? props.columns.length : 0)
-              : 1
-          }),
-          render: renderer
-        }
-      })
-      : props.columns
-
     const cols = type === 'tall'
-      ? [...tableCols, settingsColumn] as typeof props.columns
+      ? [...props.columns, settingsColumn] as typeof props.columns
       : props.columns
 
     return cols.map(column => ({
@@ -232,11 +181,17 @@ function Table <RecordType extends Record<string, any>> ({
       </UI.TitleWithTooltip> : column.title,
       disable: Boolean(column.fixed || column.disable),
       show: Boolean(column.fixed || column.disable || (column.show ?? true)),
-      children: isGroupColumn(column) ? column.children : undefined
+      children: 'children' in column ? column.children : undefined
     }))
-  }, [props.columns, type, searchValue, groupByValue]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [props.columns, type]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const columnsState = useColumnsState({ columns, columnState })
+  const columnsState = useColumnsState({ columns: baseColumns, columnState })
+  const {
+    groupable,
+    expandable,
+    columns,
+    isGroupByActive
+  } = useGroupBy<RecordType>(baseColumns, allKeys, groupByValue, columnsState.value)
 
   const setting: SettingOptionType | false = type === 'tall' && !columnState?.hidden ? {
     draggable: true,
@@ -302,7 +257,7 @@ function Table <RecordType extends Record<string, any>> ({
     field: keyof TableColumn<RecordType, 'text'>
   ) => Object.values(columns.reduce((all, column) => {
     if(column[field]) { all[column.key] = column }
-    if(isGroupColumn(column) && column.children?.length > 0)
+    if('children' in column && column.children?.length > 0)
       column.children.forEach((child) => {
         if(child[field]) { all[child.key] = child }
       })
@@ -383,7 +338,19 @@ function Table <RecordType extends Record<string, any>> ({
     ...col,
     ...( col.searchable && {
       render: ((dom, entity, index, action, schema) => {
-        const highlightFn: TableHighlightFnArgs = getHighlightFn(searchValue)
+        const highlightFn: TableHighlightFnArgs = (textToHighlight, formatFn) =>
+          (searchValue && searchValue.length >= MIN_SEARCH_LENGTH && textToHighlight)
+            ? formatFn
+              ? textToHighlight.replace(
+                new RegExp(escapeStringRegexp(searchValue), 'ig'), formatFn('$&') as string)
+              : <Highlighter
+                highlightStyle={{
+                  fontWeight: 'bold', background: 'none', padding: 0, color: 'inherit' }}
+                searchWords={[searchValue]}
+                textToHighlight={textToHighlight}
+                autoEscape
+              />
+            : textToHighlight
         return col.render
           ? col.render(dom, entity, index, highlightFn, action, schema)
           : highlightFn(_.get(entity, col.dataIndex))
@@ -393,8 +360,8 @@ function Table <RecordType extends Record<string, any>> ({
 
   const finalColumns = columns.map(column => ({
     ..._.flow([columnResize, columnRender])(column),
-    ...(column.children && {
-      children: column.children.map(child => _.flow([columnRender, columnResize])(child))
+    ...('children' in column && {
+      children: column.children?.map(child => _.flow([columnRender, columnResize])(child))
     })
   }))
 
