@@ -215,7 +215,7 @@ describe('SwitchClientsTable', () => {
     await waitForElementToBeRemoved(() =>
       screen.queryByRole('img', { name: 'loader' })
     )
-    await screen.findByRole('heading', { level: 1, name: '34:20:E3:2C:B5:B0' })
+    await screen.findByRole('heading', { level: 1, name: 'RuckusAP' })
 
     const exportCSVButton = await screen.findByRole('button', { name: 'Download Information' })
     await userEvent.click(exportCSVButton)
