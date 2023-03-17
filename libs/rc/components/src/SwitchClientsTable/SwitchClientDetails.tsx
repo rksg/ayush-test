@@ -98,12 +98,6 @@ export function SwitchClientDetails () {
     },
     {
       title: <span>
-        {$t({ defaultMessage: 'Hostname' })}
-      </span>,
-      value: <span>{data?.clientName || '--'}</span>
-    },
-    {
-      title: <span>
         {$t({ defaultMessage: 'Description' })}
       </span>,
       value: <span>{data?.clientDesc || 'N/A'}</span>
@@ -148,7 +142,7 @@ export function SwitchClientDetails () {
   return (
     <Loader states={[{ isLoading }]}>
       <PageHeader
-        title={data?.clientMac}
+        title={data?.clientName}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Switch Users' }), link: '/users/switch' }
         ]}
