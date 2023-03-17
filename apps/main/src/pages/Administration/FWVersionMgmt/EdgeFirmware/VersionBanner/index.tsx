@@ -1,12 +1,12 @@
 import { useIntl } from 'react-intl'
 
+import { DateFormatEnum, formatter }     from '@acx-ui/formatter'
 import { useGetLatestEdgeFirmwareQuery } from '@acx-ui/rc/services'
 import {
   FirmwareCategory,
   firmwareTypeTrans,
   LatestEdgeFirmwareVersion
 } from '@acx-ui/rc/utils'
-import { formatter } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -20,7 +20,7 @@ export const VersionBanner = () => {
 
   const getReleaseDate = () => {
     // eslint-disable-next-line max-len
-    return `${transform(firmware?.category, 'type')}(${transform(firmware?.category, 'subType')})-${formatter('dateFormat')(firmware?.createdDate)}`
+    return `${transform(firmware?.category, 'type')}(${transform(firmware?.category, 'subType')})-${formatter(DateFormatEnum.DateFormat)(firmware?.createdDate)}`
   }
 
   return (
