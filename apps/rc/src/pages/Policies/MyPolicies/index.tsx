@@ -122,7 +122,8 @@ function useCardData (): CardDataProps[] {
     {
       type: PolicyType.MAC_REGISTRATION_LIST,
       category: RadioCardCategory.WIFI,
-      totalCount: useMacRegListsQuery({ params }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      totalCount: useMacRegListsQuery({ params }, { skip: !macRegistrationEnabled }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST })),
       disabled: !macRegistrationEnabled
