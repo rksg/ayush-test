@@ -14,22 +14,27 @@ export const NetworkSegmentationUrls: { [key: string]: ApiInfo } = {
   },
   getWebAuthTemplate: {
     method: 'get',
+    newApi: true,
     url: '/webAuthPageTemplates/:serviceId'
   },
   getWebAuthTemplateList: {
     method: 'post',
+    newApi: true,
     url: '/webAuthPageTemplates/query'
   },
   addWebAuthTemplate: {
     method: 'post',
+    newApi: true,
     url: '/webAuthPageTemplates'
   },
   updateWebAuthTemplate: {
     method: 'put',
+    newApi: true,
     url: '/webAuthPageTemplates/:serviceId'
   },
   deleteWebAuthTemplate: {
     method: 'delete',
+    newApi: true,
     url: '/webAuthPageTemplates/:serviceId'
   },
 
