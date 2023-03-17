@@ -55,7 +55,7 @@ export function useMenuConfig (tenantType: string) {
     },
     {
       path: '/integrators',
-      name: $t({ defaultMessage: 'Tech Partner' }),
+      name: $t({ defaultMessage: 'Tech Partners' }),
       tenantType: 'v',
       inactiveIcon: IntegratorsOutlined,
       activeIcon: IntegratorsSolid,
