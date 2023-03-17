@@ -6,9 +6,9 @@ import { ConnectionEventPopover }      from '@acx-ui/analytics/components'
 import { mapCodeToReason }             from '@acx-ui/analytics/utils'
 import { TableProps, cssStr, Tooltip } from '@acx-ui/components'
 import type { TableColumn }            from '@acx-ui/components'
+import { formatter }                   from '@acx-ui/formatter'
 import { TenantLink }                  from '@acx-ui/react-router-dom'
-import { getIntl, formatter }          from '@acx-ui/utils'
-import { NetworkPath }                 from '@acx-ui/utils'
+import { getIntl, NetworkPath }        from '@acx-ui/utils'
 
 import * as contents from '../../contents'
 import {

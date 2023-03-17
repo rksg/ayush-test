@@ -14,8 +14,14 @@ import {
   categoryCodeMap,
   IncidentCode
 } from '@acx-ui/analytics/utils'
-import { TimeStampRange }              from '@acx-ui/types'
-import { formatter, getIntl, formats } from '@acx-ui/utils'
+import {
+  formatter,
+  formats,
+  DateFormatEnum,
+  userDateTimeFormat
+} from '@acx-ui/formatter'
+import { TimeStampRange } from '@acx-ui/types'
+import { getIntl }        from '@acx-ui/utils'
 
 import {
   rssGroups,
@@ -57,7 +63,6 @@ type RBGA = { r: number; b: number; g: number; a: number }
 const connection = 'connection'
 const performance = 'performance'
 const infrastructure = 'infrastructure'
-const dateFormat = 'MMM DD HH:mm:ss'
 const EAP = 'eap'
 const EAPOL = 'eapol'
 
@@ -462,7 +467,7 @@ export const transformIncidents = (
       id: incident.id,
       start: +new Date(incident.startTime),
       end: +new Date(incident.endTime),
-      date: formatter('dateTimeFormatWithSeconds')(incident.startTime),
+      date: formatter(DateFormatEnum.DateTimeFormatWithSeconds)(incident.startTime),
       description: `${intl.$t(category)} (${intl.$t(subCategory)})`,
       title,
       icon: <UI.IncidentEvent color={color}>{severity}</UI.IncidentEvent>,
@@ -621,6 +626,7 @@ export function calculateInterval (timewindow: TimeStampRange) {
 export const labelFormatter = (input: unknown, timewindow: TimeStampRange) => {
   const params = input as { value:number, seriesData: Object }
   const intl = getIntl()
+  const dateFormat = userDateTimeFormat(DateFormatEnum.DateTimeFormatWithSeconds)
   const trackerDate = (params)?.value
   const seriesData = (params)?.seriesData
   const seriesName = Array.isArray(seriesData) ? seriesData[0]?.seriesName : ''

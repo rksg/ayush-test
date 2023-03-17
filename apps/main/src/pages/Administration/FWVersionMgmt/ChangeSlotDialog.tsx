@@ -32,6 +32,7 @@ export function ChangeSlotDialog (props: ChangeSlotDialogProps) {
   const [disabledDays, setDisabledDays] = useState(false)
   const [valueTimes, setValueTimes] = useState<string[]>([])
   const [disabledTimes, setDisabledTimes] = useState(false)
+  const [disableSave, setDisableSave] = useState(false)
 
   useEffect(() => {
     if (days) {
@@ -57,6 +58,11 @@ export function ChangeSlotDialog (props: ChangeSlotDialogProps) {
         setDisabledDays(false)
       }
       setValueDays(newValue)
+      if (newValue.length === 0 || valueTimes.length ===0) {
+        setDisableSave(true)
+      } else {
+        setDisableSave(false)
+      }
     },
     placeholder: 'Select Item...',
     maxTagCount: 0
@@ -77,6 +83,11 @@ export function ChangeSlotDialog (props: ChangeSlotDialogProps) {
         setDisabledTimes(false)
       }
       setValueTimes(newValue)
+      if (valueDays.length === 0 || newValue.length ===0) {
+        setDisableSave(true)
+      } else {
+        setDisableSave(false)
+      }
     },
     placeholder: 'Select Item...',
     maxTagCount: 0
@@ -104,6 +115,7 @@ export function ChangeSlotDialog (props: ChangeSlotDialogProps) {
       okText={$t({ defaultMessage: 'Save' })}
       onOk={triggerSubmit}
       onCancel={onModalCancel}
+      okButtonProps={{ disabled: disableSave }}
     >
       <UI.FieldGroup>
         <label>
