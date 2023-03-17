@@ -1,10 +1,9 @@
-import _                             from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Table, TableProps, Card, Loader }                                                                                           from '@acx-ui/components'
-import { useAaaNetworkInstancesQuery }                                                                                               from '@acx-ui/rc/services'
-import { AAAPolicyNetwork, captiveNetworkTypes, GuestNetworkTypeEnum, NetworkTypeEnum, networkTypes, useTableQuery, FILTER, SEARCH } from '@acx-ui/rc/utils'
-import { TenantLink }                                                                                                                from '@acx-ui/react-router-dom'
+import { Table, TableProps, Card, Loader }                                                                           from '@acx-ui/components'
+import { useAaaNetworkInstancesQuery }                                                                               from '@acx-ui/rc/services'
+import { AAAPolicyNetwork, captiveNetworkTypes, GuestNetworkTypeEnum, NetworkTypeEnum, networkTypes, useTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                                from '@acx-ui/react-router-dom'
 
 export default function AAAInstancesTable (){
 
@@ -56,18 +55,6 @@ export default function AAAInstancesTable (){
       }
     }
   ]
-  const handleFilterChange = (filters: FILTER, search: SEARCH) => {
-    const currentPayload = tableQuery.payload
-    // eslint-disable-next-line max-len
-    if (currentPayload.searchString === search.searchString && _.isEqual(currentPayload.filters, filters)) {
-      return
-    }
-    tableQuery.setPayload({
-      ...currentPayload,
-      searchString: search.searchString as string,
-      filters
-    })
-  }
   return (
     <Loader states={[tableQuery]}>
       <Card title={$t({ defaultMessage: 'Instances ({count})' },
@@ -78,7 +65,7 @@ export default function AAAInstancesTable (){
           onChange={tableQuery.handleTableChange}
           dataSource={tableQuery.data?.data}
           rowKey='id'
-          onFilterChange={handleFilterChange}
+          onFilterChange={tableQuery.handleFilterChange}
         />
       </Card>
     </Loader>
