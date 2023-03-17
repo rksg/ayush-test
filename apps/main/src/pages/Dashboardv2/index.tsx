@@ -21,8 +21,7 @@ import {
   PageHeader,
   RangePicker,
   ContentSwitcher,
-  ContentSwitcherProps,
-  Card
+  ContentSwitcherProps
 } from '@acx-ui/components'
 import { VenueFilter }      from '@acx-ui/main/components'
 import {
