@@ -67,6 +67,7 @@ export interface ApplicationsRule {
   accessControl: string,
   details: string,
   ruleSettings: {
+    category?: string
     appCategory?: string
     appNameSystemDefined?: string
     appNameUserDefined?: string
@@ -633,6 +634,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         children={<ApplicationRuleContent
           avcSelectOptions={avcSelectOptions}
           applicationsRuleList={applicationsRuleList}
+          applicationsRule={applicationsRule}
           editMode={ruleDrawerEditMode}
           drawerForm={drawerForm}
         />}
