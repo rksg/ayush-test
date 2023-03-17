@@ -3,6 +3,7 @@ import _, { find } from 'lodash'
 import { cssStr, DonutChartData } from '@acx-ui/components'
 import {
   Dashboard,
+  ChartData,
   ApVenueStatusEnum,
   SwitchStatusEnum,
   EdgeStatusSeverityEnum,
@@ -145,6 +146,37 @@ export const getApDonutChartData =
     })
   }
   return chartData
+}
+
+export const getApStackedBarChartData =
+(apsSummary: VenueDetailHeader['aps']['summary'] | undefined): ChartData[] => {
+  const series: ChartData['series'] = []
+  if (apsSummary) {
+    seriesMappingAP().forEach(({ key, name }) => {
+      const value = apsSummary[key as ApVenueStatusEnum]
+      if (key === ApVenueStatusEnum.OFFLINE && value) {
+        const setupPhase = find(series, {
+          name: getAPStatusDisplayName(ApVenueStatusEnum.IN_SETUP_PHASE, true)
+        })
+        const value = apsSummary[key]!
+        if (setupPhase) {
+          setupPhase.name = `${setupPhase.name}: ${setupPhase.value}, ${name}: ${value}`
+          setupPhase.value = setupPhase.value + value
+        } else {
+          series.push({ name, value })
+        }
+      }
+      else if (value) {
+        series.push({ name, value })
+      }
+    })
+  }
+  console.log('#>>>>> : getApStackedBarChartData : ' + JSON.stringify(series))
+
+  return [{
+    category: 'Access Points',
+    series
+  }]
 }
 
 const seriesMappingEdge = () => [

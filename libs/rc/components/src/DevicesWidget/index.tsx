@@ -1,26 +1,30 @@
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { Card, DonutChart }       from '@acx-ui/components'
-import type { DonutChartData }    from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { useNavigateToPath }      from '@acx-ui/react-router-dom'
+import { Card, DonutChart, getDeviceConnectionStatusColors, StackedBarChart } from '@acx-ui/components'
+import type { DonutChartData }                                                from '@acx-ui/components'
+import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
+import { ChartData }                                                          from '@acx-ui/rc/utils'
+import { useNavigateToPath }                                                  from '@acx-ui/react-router-dom'
 
 export  { seriesMappingAP } from './helper'
 
 export function DevicesWidget (props: {
-  apData: DonutChartData[], switchData: DonutChartData[], edgeData: DonutChartData[],
+  apData: DonutChartData[],
+  apStackedData?: ChartData[],
+  switchData: DonutChartData[],
+  edgeData: DonutChartData[],
   enableArrowClick?: boolean
 }) {
   const { $t } = useIntl()
   const onArrowClick = useNavigateToPath('/devices/')
 
-  const edgeSupported = useIsSplitOn(Features.EDGES)
+  // const edgeSupported = useIsSplitOn(Features.EDGES)
 
-  let numDonut = 2
-  if (edgeSupported) {
-    numDonut++
-  }
+  // let numDonut = 2
+  // if (edgeSupported) {
+  //   numDonut++
+  // }
 
   return (
     <Card title={$t({ defaultMessage: 'Devices' })}
@@ -28,7 +32,12 @@ export function DevicesWidget (props: {
       <AutoSizer>
         {({ height, width }) => (
           <div style={{ display: 'inline-flex' }}>
-            <DonutChart
+            <StackedBarChart
+              style={{ width: width, height }}
+              data={props.apStackedData!}
+              barColors={getDeviceConnectionStatusColors()}
+            />
+            {/* <DonutChart
               style={{ width: width/numDonut, height }}
               title={$t({ defaultMessage: 'Wi-Fi' })}
               data={props.apData}/>
@@ -39,7 +48,7 @@ export function DevicesWidget (props: {
             { edgeSupported && (<DonutChart
               style={{ width: width/numDonut, height }}
               title={$t({ defaultMessage: 'SmartEdge' })}
-              data={props.edgeData}/>)}
+              data={props.edgeData}/>)} */}
           </div>
         )}
       </AutoSizer>

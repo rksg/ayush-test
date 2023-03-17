@@ -6,7 +6,8 @@ import { useDashboardFilter, NetworkNodePath }                    from '@acx-ui/
 import {
   getApDonutChartData,
   getEdgeDonutChartData,
-  getSwitchDonutChartData
+  getSwitchDonutChartData,
+  getApStackedBarChartData
 } from '../DevicesWidget/helper'
 import { DevicesWidget } from '../DevicesWidget/index'
 
@@ -17,6 +18,7 @@ export function DevicesDashboardWidget () {
     selectFromResult: ({ data, ...rest }) => ({
       data: {
         apData: getApDonutChartData(data?.summary?.aps?.summary),
+        apStackedData: getApStackedBarChartData(data?.summary?.aps?.summary),
         switchData: getSwitchDonutChartData(data),
         edgeData: getEdgeDonutChartData(data?.summary?.edges)
       },
@@ -24,10 +26,13 @@ export function DevicesDashboardWidget () {
     })
   })
 
+  console.log('>>> Stacked bar chart data : ', queryResults.data.apStackedData)
+
   return (
     <Loader states={[queryResults]}>
       <DevicesWidget
         apData={queryResults.data.apData}
+        apStackedData={queryResults.data.apStackedData}
         switchData={queryResults.data.switchData}
         edgeData={queryResults.data.edgeData}
         enableArrowClick
@@ -52,6 +57,7 @@ export function DevicesDashboardWidgetV2 () {
     selectFromResult: ({ data, ...rest }) => ({
       data: {
         apData: getApDonutChartData(data?.summary?.aps?.summary),
+        apStackedData: getApStackedBarChartData(data?.summary?.aps?.summary),
         switchData: getSwitchDonutChartData(data),
         edgeData: getEdgeDonutChartData(data?.summary?.edges)
       },
@@ -63,6 +69,7 @@ export function DevicesDashboardWidgetV2 () {
     <Loader states={[queryResults]}>
       <DevicesWidget
         apData={queryResults.data.apData}
+        apStackedData={queryResults.data.apStackedData}
         switchData={queryResults.data.switchData}
         edgeData={queryResults.data.edgeData}
         enableArrowClick
