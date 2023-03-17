@@ -119,7 +119,10 @@ export default function PoliciesTable () {
     [PolicyType.LAYER_3_POLICY]: useDelL3AclPolicyMutation(),
     [PolicyType.APPLICATION_POLICY]: useDelAppPolicyMutation(),
     [PolicyType.DEVICE_POLICY]: useDelDevicePolicyMutation(),
-    [PolicyType.SNMP_AGENT]: useDeleteApSnmpPolicyMutation()
+    [PolicyType.SNMP_AGENT]: useDeleteApSnmpPolicyMutation(),
+    [PolicyType.ADAPTIVE_POLICY]: [],
+    [PolicyType.ADAPTIVE_POLICY_SET]: [],
+    [PolicyType.RADIUS_ATTRIBUTE_GROUP]: []
   }
 
   const tableQuery = useTableQuery({

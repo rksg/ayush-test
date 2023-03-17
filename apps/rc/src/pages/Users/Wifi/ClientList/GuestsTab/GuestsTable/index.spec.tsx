@@ -12,7 +12,8 @@ import {
   waitFor,
   within
 } from '@acx-ui/test-utils'
-import { DateRange } from '@acx-ui/utils'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
+import { DateRange }                      from '@acx-ui/utils'
 
 import {
   AllowedNetworkList,
@@ -73,10 +74,6 @@ describe('Guest Table', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/users/wifi/guests' }
       })
-
-
-
-
     await screen.findByText('test1')
     jest.useRealTimers()
   })
@@ -102,6 +99,10 @@ describe('Guest Table', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/users/wifi/guests' }
       })
+
+    const userProfile = getUserProfile()
+    setUserProfile({ ...userProfile, profile: {
+      ...userProfile.profile, dateFormat: 'dd/mm/yyyy' } })
 
     fireEvent.click(await screen.findByText('20/11/2022 08:57'))
     await screen.findByText('Guest Details')

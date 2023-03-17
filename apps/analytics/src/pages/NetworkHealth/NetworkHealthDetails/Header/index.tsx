@@ -2,7 +2,7 @@ import _                                                        from 'lodash'
 import { IntlShape, MessageDescriptor, defineMessage, useIntl } from 'react-intl'
 
 import { Loader, SuspenseBoundary } from '@acx-ui/components'
-import { formatter }                from '@acx-ui/utils'
+import { formatter }                from '@acx-ui/formatter'
 
 import { authMethodsByCode }                    from '../../authMethods'
 import { AuthenticationMethod }                 from '../../NetworkHealthForm/FormItems/AuthenticationMethod'

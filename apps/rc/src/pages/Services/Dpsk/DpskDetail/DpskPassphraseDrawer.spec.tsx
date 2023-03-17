@@ -1,5 +1,5 @@
 import userEvent from '@testing-library/user-event'
-import moment    from 'moment'
+import moment    from 'moment-timezone'
 import { rest }  from 'msw'
 
 import {

@@ -64,10 +64,20 @@ export function AccessSwitchForm () {
     <Typography.Paragraph>
       {$t({ defaultMessage: 'Set the configuration on these access switches:' })}
     </Typography.Paragraph>
-    <Form.Item name='accessSwitchInfos' hidden />
     <AccessSwitchTable rowActions={rowActions}
       rowSelection={{ type: 'radio', selectedRowKeys: selected? selected.map(as=>as.id) : [] }}
       dataSource={accessSwitchInfos} />
+    <Form.Item name='accessSwitchInfos'
+      rules={[{
+        validator: (_, asList) => {
+          const checkFn = (as: AccessSwitch) =>
+            as.vlanId && as.uplinkInfo?.uplinkId && as.webAuthPageType
+          return asList.every(checkFn) ? Promise.resolve() :
+            Promise.reject(new Error($t({ defaultMessage:
+            'Please fill out the configuration for all of the access switches.' })))
+        }
+      }]}
+    />
     <AccessSwitchDrawer
       open={open}
       editRecords={selected}

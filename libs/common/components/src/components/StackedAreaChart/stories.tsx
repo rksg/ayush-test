@@ -1,7 +1,7 @@
 import { storiesOf } from '@storybook/react'
 
+import { formatter } from '@acx-ui/formatter'
 import { TimeStamp } from '@acx-ui/types'
-import { formatter } from '@acx-ui/utils'
 
 import { StackedAreaChart } from '.'
 

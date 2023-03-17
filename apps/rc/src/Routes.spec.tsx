@@ -215,6 +215,18 @@ jest.mock('./pages/Policies/RogueAPDetection/RogueAPDetectionForm/RogueAPDetecti
   return <div data-testid='RogueAPDetectionForm' />
 })
 
+jest.mock('./pages/Policies/AdaptivePolicy/RadiusAttributeGroup/RadiusAttributeGroupForm/RadiusAttributeGroupForm', () => () => {
+  return <div data-testid='RadiusAttributeGroupForm' />
+})
+
+jest.mock('./pages/Policies/AdaptivePolicy/RadiusAttributeGroup/RadiusAttributeGroupTable', () => () => {
+  return <div data-testid='AdaptivePolicyList' />
+})
+
+jest.mock('./pages/Policies/AdaptivePolicy/RadiusAttributeGroup/RadiusAttributeGroupDetail/RadiusAttributeGroupDetail', () => () => {
+  return <div data-testid='RadiusAttributeGroupDetail' />
+})
+
 describe('RcRoutes: Devices', () => {
   test('should redirect devices to devices/wifi', async () => {
     render(<Provider><RcRoutes /></Provider>, {
@@ -567,6 +579,50 @@ describe('RcRoutes: Policies', () => {
     expect(screen.getByText(/configure/i)).toBeVisible()
   })
 
+  test('should navigate to create RADIUS ATTRIBUTE GROUP page', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.CREATE }),
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('RadiusAttributeGroupForm')).toBeVisible()
+  })
+
+  test('should navigate to edit RADIUS ATTRIBUTE GROUP page', async () => {
+    let path = getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.EDIT })
+    path = path.replace(':policyId', 'policyId')
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + path,
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('RadiusAttributeGroupForm')).toBeVisible()
+  })
+
+  test('should navigate to detail RADIUS ATTRIBUTE GROUP page', async () => {
+    let path = getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.DETAIL })
+    path = path.replace(':policyId', 'policyId')
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + path,
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('RadiusAttributeGroupDetail')).toBeVisible()
+  })
+
+  test('should navigate to RADIUS ATTRIBUTE GROUP table', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST }),
+        wrapRoutes: false
+      }
+    })
+    expect(await screen.findByRole('heading', { level: 1, name: 'Adaptive Policy' })).toBeVisible()
+  })
+
   test('should navigate to create MAC_REGISTRATION_LIST page', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
@@ -662,7 +718,7 @@ describe('RcRoutes: Policies', () => {
         wrapRoutes: false
       }
     })
-    expect(await screen.findByRole('heading', { level: 1, name: /AAA Server/ })).toBeVisible()
+    expect(await screen.findByRole('heading', { level: 1, name: /Radius Server/ })).toBeVisible()
   })
 
   test('should navigate to Access Control table', async () => {
