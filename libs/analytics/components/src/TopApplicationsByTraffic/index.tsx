@@ -12,7 +12,7 @@ import {
   ContentSwitcher,
   ContentSwitcherProps
 } from '@acx-ui/components'
-import { formatter, intlFormats } from '@acx-ui/utils'
+import { formatter, intlFormats } from '@acx-ui/formatter'
 
 import { useTopApplicationsByTrafficQuery, TopApplicationByTrafficData } from './services'
 import { TrafficPercent }                                                from './styledComponents'

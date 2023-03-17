@@ -476,7 +476,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             style="text-align: center;"
                                           >
                                             <div
-                                              class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 bHawIk"
+                                              class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"
                                             >
                                               <div
                                                 class="ant-progress-steps-outer"
@@ -582,7 +582,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             style="text-align: center;"
                                           >
                                             <div
-                                              class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 bHawIk"
+                                              class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"
                                             >
                                               <div
                                                 class="ant-progress-steps-outer"
@@ -688,7 +688,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             style="text-align: center;"
                                           >
                                             <div
-                                              class="ant-progress ant-progress-steps ant-progress-status-success ant-progress-default styledComponents__Progress-sc-vd53zu-0 bHawIk"
+                                              class="ant-progress ant-progress-steps ant-progress-status-success ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"
                                             >
                                               <div
                                                 class="ant-progress-steps-outer"
@@ -794,7 +794,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             style="text-align: center;"
                                           >
                                             <div
-                                              class="ant-progress ant-progress-steps ant-progress-status-success ant-progress-default styledComponents__Progress-sc-vd53zu-0 bHawIk"
+                                              class="ant-progress ant-progress-steps ant-progress-status-success ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"
                                             >
                                               <div
                                                 class="ant-progress-steps-outer"
@@ -891,7 +891,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             style="text-align: center;"
                                           >
                                             <div
-                                              class="ant-progress ant-progress-steps ant-progress-status-success ant-progress-default styledComponents__Progress-sc-vd53zu-0 bHawIk"
+                                              class="ant-progress ant-progress-steps ant-progress-status-success ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"
                                             >
                                               <div
                                                 class="ant-progress-steps-outer"

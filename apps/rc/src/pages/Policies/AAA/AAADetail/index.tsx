@@ -19,7 +19,7 @@ export default function AAAPolicyDetail () {
       <PageHeader
         title={queryResults.data?.name||''}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'AAA Server' }),
+          { text: $t({ defaultMessage: 'Radius Server' }),
             link: getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.LIST }) }
         ]}
         extra={filterByAccess([

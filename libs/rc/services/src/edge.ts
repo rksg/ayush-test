@@ -1,5 +1,3 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-
 import {
   CommonResult,
   createHttpRequest,
@@ -13,16 +11,11 @@ import {
   EdgeUrlsInfo,
   PaginationQueryResult,
   RequestPayload,
-  TableResult
+  TableResult,
+  onSocketActivityChanged,
+  onActivityMessageReceived
 } from '@acx-ui/rc/utils'
-
-export const baseEdgeApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  reducerPath: 'edgeApi',
-  tagTypes: ['Edge'],
-  refetchOnMountOrArgChange: true,
-  endpoints: () => ({ })
-})
+import { baseEdgeApi } from '@acx-ui/store'
 
 export const edgeApi = baseEdgeApi.injectEndpoints({
   endpoints: (build) => ({
@@ -63,7 +56,18 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Edge', id: 'LIST' }]
+      providesTags: [{ type: 'Edge', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Add Edge',
+            'Delete Edges'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'LIST' }]))
+          })
+        })
+      }
     }),
     deleteEdge: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
