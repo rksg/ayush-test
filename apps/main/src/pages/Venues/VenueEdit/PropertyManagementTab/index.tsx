@@ -186,43 +186,43 @@ export function PropertyManagementTab () {
                   }
                 </Col>
               </Row>
-              <Row gutter={20}>
-                <Col span={8}>
-                  {$t({ defaultMessage: 'Communication Templates:' })}
-                  <Form.Item
-                    label={$t({ defaultMessage: 'Send communications via...' })}
-                  >
-                    <Space direction={'vertical'}>
-                      <Form.Item
-                        noStyle
-                        name={['communicationConfiguration', 'sendEmail']}
-                        valuePropName={'checked'}
-                      >
-                        <Checkbox>{$t({ defaultMessage: 'Email' })}</Checkbox>
-                      </Form.Item>
-                      <Form.Item
-                        noStyle
-                        name={['communicationConfiguration', 'sendSms']}
-                        valuePropName={'checked'}
-                      >
-                        <Checkbox>{$t({ defaultMessage: 'SMS' })}</Checkbox>
-                      </Form.Item>
-                    </Space>
-                  </Form.Item>
-                  <Form.Item
-                    name={['communicationConfiguration', 'unitAssignmentTemplateId']}
-                    label={$t({ defaultMessage: 'Onboarding Template' })}
-                    // rules={[{ required: true }]}
-                    children={<Select />}
-                  />
-                  <Form.Item
-                    name={['communicationConfiguration', 'passphraseChangeTemplateId']}
-                    label={$t({ defaultMessage: 'Passphrase Reset Template' })}
-                    // rules={[{ required: true }]}
-                    children={<Select />}
-                  />
-                </Col>
-              </Row>
+              {/*<Row gutter={20}>*/}
+              {/*  <Col span={8}>*/}
+              {/*    {$t({ defaultMessage: 'Communication Templates:' })}*/}
+              {/*    <Form.Item*/}
+              {/*      label={$t({ defaultMessage: 'Send communications via...' })}*/}
+              {/*    >*/}
+              {/*      <Space direction={'vertical'}>*/}
+              {/*        <Form.Item*/}
+              {/*          noStyle*/}
+              {/*          name={['communicationConfiguration', 'sendEmail']}*/}
+              {/*          valuePropName={'checked'}*/}
+              {/*        >*/}
+              {/*          <Checkbox>{$t({ defaultMessage: 'Email' })}</Checkbox>*/}
+              {/*        </Form.Item>*/}
+              {/*        <Form.Item*/}
+              {/*          noStyle*/}
+              {/*          name={['communicationConfiguration', 'sendSms']}*/}
+              {/*          valuePropName={'checked'}*/}
+              {/*        >*/}
+              {/*          <Checkbox>{$t({ defaultMessage: 'SMS' })}</Checkbox>*/}
+              {/*        </Form.Item>*/}
+              {/*      </Space>*/}
+              {/*    </Form.Item>*/}
+              {/*    <Form.Item*/}
+              {/*      name={['communicationConfiguration', 'unitAssignmentTemplateId']}*/}
+              {/*      label={$t({ defaultMessage: 'Onboarding Template' })}*/}
+              {/*      // rules={[{ required: true }]}*/}
+              {/*      children={<Select />}*/}
+              {/*    />*/}
+              {/*    <Form.Item*/}
+              {/*      name={['communicationConfiguration', 'passphraseChangeTemplateId']}*/}
+              {/*      label={$t({ defaultMessage: 'Passphrase Reset Template' })}*/}
+              {/*      // rules={[{ required: true }]}*/}
+              {/*      children={<Select />}*/}
+              {/*    />*/}
+              {/*  </Col>*/}
+              {/*</Row>*/}
             </>
           }
         </StepsForm.StepForm>
