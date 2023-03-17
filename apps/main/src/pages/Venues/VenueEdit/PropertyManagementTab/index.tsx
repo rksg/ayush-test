@@ -1,8 +1,8 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 
-import { Checkbox, Col, Form, Row, Select, Space, Switch } from 'antd'
-import { FormFinishInfo }                                  from 'rc-field-form/lib/FormContext'
-import { useIntl }                                         from 'react-intl'
+import { Col, Form, Row, Select, Switch } from 'antd'
+import { FormFinishInfo }                 from 'rc-field-form/lib/FormContext'
+import { useIntl }                        from 'react-intl'
 
 import { Button, Loader, StepsForm, StepsFormInstance } from '@acx-ui/components'
 import { PersonaGroupSelect }                           from '@acx-ui/rc/components'
@@ -131,51 +131,50 @@ export function PropertyManagementTab () {
             />
           </StepsForm.FieldLabel>
           {isPropertyEnable &&
-            <>
-              <Row gutter={20}>
-                <Col span={8}>
-                  <Form.Item
-                    name='personaGroupId'
-                    label={$t({ defaultMessage: 'Persona Group' })}
-                    rules={[{ required: true }]}
+            <Row gutter={20}>
+              <Col span={8}>
+                <Form.Item
+                  name='personaGroupId'
+                  label={$t({ defaultMessage: 'Persona Group' })}
+                  rules={[{ required: true }]}
+                >
+                  <PersonaGroupSelect />
+                </Form.Item>
+                <Form.Item noStyle>
+                  <Button
+                    type={'link'}
+                    size={'small'}
+                    onClick={() => setPersonaGroupVisible(true)}
                   >
-                    <PersonaGroupSelect />
-                  </Form.Item>
-                  <Form.Item noStyle>
-                    <Button
-                      type={'link'}
-                      size={'small'}
-                      onClick={() => setPersonaGroupVisible(true)}
-                    >
-                      {$t({ defaultMessage: 'Add Persona Group' })}
-                    </Button>
-                  </Form.Item>
+                    {$t({ defaultMessage: 'Add Persona Group' })}
+                  </Button>
+                </Form.Item>
+                <Form.Item
+                  hidden
+                  name={['unitConfig', 'type']}
+                />
+                <StepsForm.FieldLabel width={'190px'}>
+                  {$t({ defaultMessage: 'Enable Guest DPSK for Units' })}
                   <Form.Item
-                    hidden
-                    name={['unitConfig', 'type']}
+                    name={['unitConfig', 'guestAllowed']}
+                    rules={[{ required: true }]}
+                    valuePropName={'checked'}
+                    children={<Switch />}
                   />
-                  <StepsForm.FieldLabel width={'190px'}>
-                    {$t({ defaultMessage: 'Enable Guest DPSK for Units' })}
-                    <Form.Item
-                      name={['unitConfig', 'guestAllowed']}
-                      rules={[{ required: true }]}
-                      valuePropName={'checked'}
-                      children={<Switch />}
-                    />
-                  </StepsForm.FieldLabel>
-                  <StepsForm.FieldLabel width={'190px'}>
-                    {$t({ defaultMessage: 'Enable Resident Portal' })}
-                    <Form.Item
-                      name={['unitConfig', 'residentPortalAllowed']}
-                      rules={[{ required: true }]}
-                      valuePropName={'checked'}
-                      children={<Switch
-                        checked={enableResidentPortal}
-                        onChange={setEnableResidentPortal}
-                      />}
-                    />
-                  </StepsForm.FieldLabel>
-                  {enableResidentPortal &&
+                </StepsForm.FieldLabel>
+                <StepsForm.FieldLabel width={'190px'}>
+                  {$t({ defaultMessage: 'Enable Resident Portal' })}
+                  <Form.Item
+                    name={['unitConfig', 'residentPortalAllowed']}
+                    rules={[{ required: true }]}
+                    valuePropName={'checked'}
+                    children={<Switch
+                      checked={enableResidentPortal}
+                      onChange={setEnableResidentPortal}
+                    />}
+                  />
+                </StepsForm.FieldLabel>
+                {enableResidentPortal &&
                     <Form.Item
                       name='residentPortalId'
                       label={$t({ defaultMessage: 'Resident Portal profile' })}
@@ -183,47 +182,9 @@ export function PropertyManagementTab () {
                       children={<Select options={residentPortalList?.data
                         .map(r => ({ value: r.id, label: r.name })) ?? []}/>}
                     />
-                  }
-                </Col>
-              </Row>
-              {/*<Row gutter={20}>*/}
-              {/*  <Col span={8}>*/}
-              {/*    {$t({ defaultMessage: 'Communication Templates:' })}*/}
-              {/*    <Form.Item*/}
-              {/*      label={$t({ defaultMessage: 'Send communications via...' })}*/}
-              {/*    >*/}
-              {/*      <Space direction={'vertical'}>*/}
-              {/*        <Form.Item*/}
-              {/*          noStyle*/}
-              {/*          name={['communicationConfiguration', 'sendEmail']}*/}
-              {/*          valuePropName={'checked'}*/}
-              {/*        >*/}
-              {/*          <Checkbox>{$t({ defaultMessage: 'Email' })}</Checkbox>*/}
-              {/*        </Form.Item>*/}
-              {/*        <Form.Item*/}
-              {/*          noStyle*/}
-              {/*          name={['communicationConfiguration', 'sendSms']}*/}
-              {/*          valuePropName={'checked'}*/}
-              {/*        >*/}
-              {/*          <Checkbox>{$t({ defaultMessage: 'SMS' })}</Checkbox>*/}
-              {/*        </Form.Item>*/}
-              {/*      </Space>*/}
-              {/*    </Form.Item>*/}
-              {/*    <Form.Item*/}
-              {/*      name={['communicationConfiguration', 'unitAssignmentTemplateId']}*/}
-              {/*      label={$t({ defaultMessage: 'Onboarding Template' })}*/}
-              {/*      // rules={[{ required: true }]}*/}
-              {/*      children={<Select />}*/}
-              {/*    />*/}
-              {/*    <Form.Item*/}
-              {/*      name={['communicationConfiguration', 'passphraseChangeTemplateId']}*/}
-              {/*      label={$t({ defaultMessage: 'Passphrase Reset Template' })}*/}
-              {/*      // rules={[{ required: true }]}*/}
-              {/*      children={<Select />}*/}
-              {/*    />*/}
-              {/*  </Col>*/}
-              {/*</Row>*/}
-            </>
+                }
+              </Col>
+            </Row>
           }
         </StepsForm.StepForm>
       </StepsForm>
