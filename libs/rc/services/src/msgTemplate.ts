@@ -10,13 +10,7 @@ import {
   Registration
 } from '@acx-ui/rc/utils'
 
-export const baseMsgTemplateApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  tagTypes: ['TemplateScope', 'Template', 'Registration'],
-  reducerPath: 'msgTemplateApi',
-  refetchOnMountOrArgChange: true,
-  endpoints: () => ({ })
-})
+import { baseMsgTemplateApi } from '@acx-ui/store'
 
 export const msgTemplateApi = baseMsgTemplateApi.injectEndpoints({
   endpoints: build => ({
@@ -56,7 +50,7 @@ export const msgTemplateApi = baseMsgTemplateApi.injectEndpoints({
         }
       },
       providesTags: (result, error, arg) =>
-        [{ type: 'Registration', id: (arg.registrationId as string) }]
+        [{ type: 'TemplateRegistration', id: (arg.registrationId as string) }]
     }),
     putRegistrationById: build.mutation<Registration, RequestPayload>({
       query: ({ params, payload }) => {
@@ -67,7 +61,7 @@ export const msgTemplateApi = baseMsgTemplateApi.injectEndpoints({
         }
       },
       invalidatesTags: (result, error, arg) =>
-        [{ type: 'Registration', id: (arg.registrationId as string) }]
+        [{ type: 'TemplateRegistration', id: (arg.registrationId as string) }]
     })
   })
 })
