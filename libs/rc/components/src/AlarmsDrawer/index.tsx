@@ -13,6 +13,7 @@ import {
   Button
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { formatter }              from '@acx-ui/formatter'
 import {
   useAlarmsListQuery,
   useClearAlarmMutation,
@@ -24,7 +25,6 @@ import {
 import { Alarm, CommonUrlsInfo, useTableQuery, EventSeverityEnum, EventTypeEnum } from '@acx-ui/rc/utils'
 import { useParams, TenantLink }                                                  from '@acx-ui/react-router-dom'
 import { store }                                                                  from '@acx-ui/store'
-import { formatter }                                                              from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 

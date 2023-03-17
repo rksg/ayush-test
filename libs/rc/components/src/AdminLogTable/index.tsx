@@ -3,8 +3,8 @@ import { useState } from 'react'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps, Button  }   from '@acx-ui/components'
+import { DateFormatEnum, formatter }            from '@acx-ui/formatter'
 import { AdminLog, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
-import { formatter }                            from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 
@@ -34,7 +34,7 @@ const AdminLogTable = ({ tableQuery }: AdminLogTableProps) => {
             setVisible(true)
             setCurrent(row)
           }}
-        >{formatter('dateTimeFormatWithSeconds')(row.event_datetime)}</Button>
+        >{formatter(DateFormatEnum.DateTimeFormatWithSeconds)(row.event_datetime)}</Button>
       }
     },
     {
@@ -80,7 +80,7 @@ const AdminLogTable = ({ tableQuery }: AdminLogTableProps) => {
   const getDrawerData = (data: AdminLog) => [
     {
       title: defineMessage({ defaultMessage: 'Time' }),
-      value: formatter('dateTimeFormatWithSeconds')(data.event_datetime)
+      value: formatter(DateFormatEnum.DateTimeFormatWithSeconds)(data.event_datetime)
     },
     {
       title: defineMessage({ defaultMessage: 'Severity' }),

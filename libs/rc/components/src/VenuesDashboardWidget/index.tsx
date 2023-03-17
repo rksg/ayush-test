@@ -1,14 +1,15 @@
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { cssStr, Loader, Card , DonutChart } from '@acx-ui/components'
-import type { DonutChartData }               from '@acx-ui/components'
-import { useDashboardOverviewQuery }         from '@acx-ui/rc/services'
+import { cssStr, Loader, Card , DonutChart }                      from '@acx-ui/components'
+import type { DonutChartData }                                    from '@acx-ui/components'
+import { useDashboardOverviewQuery, useDashboardV2OverviewQuery } from '@acx-ui/rc/services'
 import {
   Dashboard,
   ApVenueStatusEnum
 } from '@acx-ui/rc/utils'
-import { useNavigateToPath, useParams } from '@acx-ui/react-router-dom'
+import { useNavigateToPath, useParams }        from '@acx-ui/react-router-dom'
+import { useDashboardFilter, NetworkNodePath } from '@acx-ui/utils'
 
 import { getAPStatusDisplayName } from '../MapWidget/VenuesMap/helper'
 
@@ -63,6 +64,43 @@ export function VenuesDashboardWidget () {
           {({ height, width }) => (
             <DonutChart
               style={{ width, height }}
+              data={queryResults.data} />
+          )}
+        </AutoSizer>
+      </Card>
+    </Loader>
+  )
+}
+
+export function VenuesDashboardWidgetV2 () {
+  const { $t } = useIntl()
+  const onArrowClick = useNavigateToPath('/venues/')
+
+  const { filters } = useDashboardFilter()
+  const { filter: { networkNodes } } = filters
+  const venueIds = networkNodes?.map((networkNode: NetworkNodePath) => networkNode[0].name)
+
+  const queryResults = useDashboardV2OverviewQuery({
+    params: useParams(),
+    payload: {
+      filters: {
+        venueIds
+      }
+    }
+  },{
+    selectFromResult: ({ data, ...rest }) => ({
+      data: getVenuesDonutChartData(data),
+      ...rest
+    })
+  })
+  return (
+    <Loader states={[queryResults]}>
+      <Card title={$t({ defaultMessage: 'Venues' })} onArrowClick={onArrowClick}>
+        <AutoSizer>
+          {({ height, width }) => (
+            <DonutChart
+              style={{ width, height }}
+              size={'medium'}
               data={queryResults.data} />
           )}
         </AutoSizer>

@@ -1,23 +1,23 @@
 import { useEffect } from 'react'
 
 import { Typography } from 'antd'
-import moment         from 'moment'
+import moment         from 'moment-timezone'
 import { useIntl }    from 'react-intl'
 
-import { cssStr, Subtitle }                from '@acx-ui/components'
-import { Table, TableProps, Loader }       from '@acx-ui/components'
-import { useGetHistoricalClientListQuery } from '@acx-ui/rc/services'
+import { cssStr, Subtitle, Table, TableProps, Loader } from '@acx-ui/components'
+import { formatter, DateFormatEnum }                   from '@acx-ui/formatter'
+import { useGetHistoricalClientListQuery }             from '@acx-ui/rc/services'
 import {
   Client,
   RequestPayload,
   TableQuery,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                             from '@acx-ui/react-router-dom'
-import { encodeParameter, DateFilter, DateRange, formatter } from '@acx-ui/utils'
+import { TenantLink, useParams }                  from '@acx-ui/react-router-dom'
+import { encodeParameter, DateFilter, DateRange } from '@acx-ui/utils'
 
 function getCols (intl: ReturnType<typeof useIntl>) {
-  const dateTimeFormatter = formatter('dateTimeFormat')
+  const dateTimeFormatter = formatter(DateFormatEnum.DateTimeFormat)
   const columns: TableProps<Client>['columns'] = [{
     key: 'hostname',
     title: intl.$t({ defaultMessage: 'Hostname' }),
@@ -147,6 +147,7 @@ export function HistoricalClientsTable
           <Table
             columns={getCols(useIntl())}
             dataSource={tableQuery.data?.data}
+            pagination={tableQuery.pagination}
             onChange={tableQuery.handleTableChange}
             rowKey='clientMac'
           />
