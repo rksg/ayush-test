@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
 import { Badge }               from 'antd'
@@ -14,7 +14,7 @@ import {
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import {
-  useApListQuery, useImportApMutation
+  useApListQuery, useImportApMutation, useLazyImportResultQuery
 } from '@acx-ui/rc/services'
 import {
   ApDeviceStatusEnum,
@@ -363,6 +363,7 @@ export function ApTable (props: ApTableProps) {
   }]
   const [ importVisible, setImportVisible ] = useState(false)
   const [ importCsv, importResult ] = useImportApMutation()
+  const [ importQuery ] = useLazyImportResultQuery()
   const apGpsFlag = useIsSplitOn(Features.AP_GPS)
   const importTemplateLink = apGpsFlag ?
     'assets/templates/aps_import_template_with_gps.csv' :
@@ -420,7 +421,9 @@ export function ApTable (props: ApTableProps) {
         isLoading={importResult.isLoading}
         importError={importResult.error as FetchBaseQueryError}
         importRequest={(formData) => {
-          importCsv({ params, payload: formData })
+          importCsv({ params, payload: formData , callback: () => {
+            awat importQuery(params, true)
+          } }).unwrap()
         }}
         onClose={() => setImportVisible(false)}/>
     </Loader>

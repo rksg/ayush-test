@@ -158,6 +158,11 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber',
     newApi: true
   },
+  getImportResult: {
+    method: 'get',
+    url: '/venues/aps/importResults',
+    newApi: true
+  },
   getVenueDefaultApGroup: {
     method: 'get',
     url: '/venues/:venueId/apGroups',

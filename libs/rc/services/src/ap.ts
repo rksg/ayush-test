@@ -25,8 +25,10 @@ import {
   APPhoto,
   ApViewModel,
   VenueDefaultApGroup,
+  ApiInfo,
   AddApGroup,
   CommonResult,
+  ImportErrorRes,
   PacketCaptureState,
   Capabilities,
   PacketCaptureOperationResponse,
@@ -134,7 +136,7 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
     }),
-    importAp: build.mutation<{}, RequestFormData>({
+    importAp: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.addAp, params, {
           'Content-Type': undefined,
@@ -145,7 +147,31 @@ export const apApi = baseApApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Ap', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          try {
+            const data = await api.cacheDataLoaded
+            //eslint-disable-next-line no-console
+            console.log(data)
+            if (data && msg.useCase === 'XXX') {
+              (requestArgs.callback as Function)(data)
+            }
+          } catch {
+          }
+        })
+      }
+    }),
+    importResult: build.query<ImportErrorRes, RequestPayload>({
+      query: ({ params, payload }) => {
+        const { requestId } = payload as { requestId: string }
+        const api:ApiInfo = { ...WifiUrlsInfo.getImportResult }
+        api.url += `?requestId=${requestId}`
+        const req = createHttpRequest(api, params)
+        return {
+          ...req
+        }
+      }
     }),
     getAp: build.query<ApDeep, RequestPayload>({
       query: ({ params, payload }) => {
@@ -593,6 +619,7 @@ export const {
   useBlinkLedApMutation,
   useFactoryResetApMutation,
   useImportApMutation,
+  useLazyImportResultQuery,
   useLazyGetDhcpApQuery,
   useGetApPhotoQuery,
   useAddApPhotoMutation,
