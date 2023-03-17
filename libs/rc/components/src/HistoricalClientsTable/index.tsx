@@ -32,7 +32,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       })
       /* eslint-disable max-len */
       return <TenantLink
-        to={`/users/wifi/clients/${clientMac}/details/overview?clientStatus=historical&period=${period}`}
+        to={`/users/wifi/clients/${clientMac}/details/overview?hostname=${data}&clientStatus=historical&period=${period}`}
       >
         {data ? data : '--'}
       </TenantLink>
