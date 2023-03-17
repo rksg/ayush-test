@@ -113,11 +113,11 @@ export default function ApsTable () {
         templateLink={importTemplateLink}
         visible={importVisible}
         isLoading={importResult.isLoading}
-        importError={importResult.error as FetchBaseQueryError}
+        importError={{ data: importResult } as FetchBaseQueryError}
         importRequest={(formData)=>{
-          importCsv({ params: { tenantId }, payload: formData,
-            callback: async (data: CommonResult) => {
-              const result = await importQuery({ payload: { requestId: data.requestId } }, true)
+          importCsv({ payload: formData,
+            callback: async (response: CommonResult) => {
+              const result = await importQuery({ payload: { requestId: response.requestId } }, true)
                 .unwrap()
               setImportResult(result)
             } }).unwrap()
