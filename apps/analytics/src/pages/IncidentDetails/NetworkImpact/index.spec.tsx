@@ -1,6 +1,5 @@
-import { dataApiURL }                                                  from '@acx-ui/analytics/services'
 import { Incident }                                                    from '@acx-ui/analytics/utils'
-import { Provider, store }                                             from '@acx-ui/store'
+import { dataApiURL, Provider, store }                                 from '@acx-ui/store'
 import { mockGraphqlQuery, render, waitForElementToBeRemoved, screen } from '@acx-ui/test-utils'
 
 import { NetworkImpactChartTypes, networkImpactChartConfigs } from './config'

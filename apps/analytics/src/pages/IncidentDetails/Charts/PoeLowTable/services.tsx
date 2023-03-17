@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request'
 
-import { dataApi }  from '@acx-ui/analytics/services'
 import { Incident } from '@acx-ui/analytics/utils'
+import { dataApi }  from '@acx-ui/store'
 import { getIntl }  from '@acx-ui/utils'
 
 import { poeApPwrModeEnumMap } from './poeApPwrModeEnumMap'

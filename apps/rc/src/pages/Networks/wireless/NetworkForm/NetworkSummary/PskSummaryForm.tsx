@@ -3,7 +3,8 @@ import React from 'react'
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { useMacRegListsQuery } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useMacRegListsQuery }    from '@acx-ui/rc/services'
 import {
   AaaServerTypeEnum,
   NetworkSaveData,
@@ -19,7 +20,10 @@ export function PskSummaryForm (props: {
   const { $t } = useIntl()
   const { summaryData } = props
 
-  const { data: macRegListOption } = useMacRegListsQuery({})
+  const macRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
+  const { data: macRegListOption } = useMacRegListsQuery({
+    payload: { pageSize: 10000 }
+  }, { skip: !macRegistrationEnabled })
 
   return (
     <>

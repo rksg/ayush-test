@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react'
 
 import { Row }     from 'antd'
-import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import {
@@ -15,6 +14,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { get }                       from '@acx-ui/config'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   SubscriptionUsageReportDialog
 } from '@acx-ui/msp/components'
@@ -24,7 +25,6 @@ import {
   useRefreshMspEntitlementMutation
 } from '@acx-ui/rc/services'
 import {
-  DateFormatEnum,
   EntitlementUtil,
   MspEntitlement
 } from '@acx-ui/rc/utils'
@@ -74,8 +74,7 @@ export function Subscriptions () {
       dataIndex: 'effectiveDate',
       key: 'effectiveDate',
       render: function (_, row) {
-        const expirationDate = new Date(Date.parse(row.expirationDate))
-        return moment(expirationDate).format(DateFormatEnum.UserDateFormat)
+        return formatter(DateFormatEnum.DateFormat)(row.effectiveDate)
       }
     },
     {
@@ -83,8 +82,7 @@ export function Subscriptions () {
       dataIndex: 'expirationDate',
       key: 'expirationDate',
       render: function (_, row) {
-        const remaingDays = EntitlementUtil.timeLeftInDays(row.expirationDate)
-        return EntitlementUtil.timeLeftValues(remaingDays)
+        return formatter(DateFormatEnum.DateFormat)(row.expirationDate)
       }
     },
     {
@@ -92,8 +90,8 @@ export function Subscriptions () {
       dataIndex: 'timeLeft',
       key: 'timeLeft',
       render: function (_, row) {
-        const remaingDays = EntitlementUtil.timeLeftInDays(row.expirationDate)
-        return EntitlementUtil.timeLeftValues(remaingDays)
+        const remainingDays = EntitlementUtil.timeLeftInDays(row.expirationDate)
+        return EntitlementUtil.timeLeftValues(remainingDays)
       }
     },
     {
@@ -114,7 +112,8 @@ export function Subscriptions () {
     {
       label: $t({ defaultMessage: 'Manage Subscriptions' }),
       onClick: () => {
-        window.open('https://support.ruckuswireless.com/cloud_subscriptions', '_blank')
+        const licenseUrl = get('MANAGE_LICENSES')
+        window.open(licenseUrl, '_blank')
       }
     },
     {
@@ -261,7 +260,7 @@ export function Subscriptions () {
         title={$t({ defaultMessage: 'MSP Subscriptions' })}
         extra={
           <TenantLink to='/dashboard'>
-            <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
+            <Button>{$t({ defaultMessage: 'Manage my account' })}</Button>
           </TenantLink>
         }
       />

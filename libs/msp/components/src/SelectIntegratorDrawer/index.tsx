@@ -168,7 +168,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
       children={content}
       footer={footer}
       destroyOnClose={resetField}
-      width={700}
+      width={500}
     />
   )
 }

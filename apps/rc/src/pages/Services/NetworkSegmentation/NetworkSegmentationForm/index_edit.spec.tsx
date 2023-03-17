@@ -7,8 +7,7 @@ import {
   CommonUrlsInfo,
   EdgeDhcpUrls,
   EdgeUrlsInfo,
-  NetworkSegmentationUrls,
-  SwitchUrlsInfo
+  NetworkSegmentationUrls
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
@@ -25,9 +24,6 @@ import {
   mockNsgSwitchInfoData,
   mockVenueData,
   mockVenueNetworkData,
-  switchLagList,
-  switchPortList,
-  switchVlanUnion,
   webAuthList
 } from '../__tests__/fixtures'
 
@@ -110,40 +106,12 @@ describe('Update NetworkSegmentation', () => {
         (req, res, ctx) => res(ctx.status(202))
       ),
       rest.post(
-        SwitchUrlsInfo.getSwitchPortlist.url,
-        (req, res, ctx) => res(ctx.json({ data: switchPortList }))
-      ),
-      rest.get(
-        SwitchUrlsInfo.getSwitchVlanUnion.url,
-        (req, res, ctx) => res(ctx.json(switchVlanUnion))
-      ),
-      rest.get(
-        SwitchUrlsInfo.getLagList.url,
-        (req, res, ctx) => res(ctx.json(switchLagList))
-      ),
-      rest.get(
-        NetworkSegmentationUrls.getWebAuthTemplate.url,
-        (req, res, ctx) => res(ctx.json({ ...webAuthList[0] }))
-      ),
-      rest.post(
         NetworkSegmentationUrls.getWebAuthTemplateList.url,
         (req, res, ctx) => res(ctx.json({ data: webAuthList }))
       ),
       rest.get(
         NetworkSegmentationUrls.getAvailableSwitches.url,
         (req, res, ctx) => res(ctx.json({ switchViewList: mockNsgSwitchInfoData.distributionSwitches }))
-      ),
-      rest.get(
-        NetworkSegmentationUrls.getAccessSwitchesByDS.url,
-        (req, res, ctx) => res(ctx.json({ switchViewList: mockNsgSwitchInfoData.accessSwitches }))
-      ),
-      rest.post(
-        NetworkSegmentationUrls.validateDistributionSwitchInfo.url,
-        (req, res, ctx) => res(ctx.json({ response: { valid: true } }))
-      ),
-      rest.post(
-        NetworkSegmentationUrls.validateAccessSwitchInfo.url,
-        (req, res, ctx) => res(ctx.json({ response: { valid: true } }))
       )
     )
   })
