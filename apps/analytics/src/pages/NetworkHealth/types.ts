@@ -1,7 +1,7 @@
 import { TypedUseMutationResult } from '@reduxjs/toolkit/dist/query/react'
 import _                          from 'lodash'
 
-import { NetworkHealthBaseQuery } from '@acx-ui/analytics/services'
+import { NetworkHealthBaseQuery } from '@acx-ui/store'
 import { APListNode, PathNode }   from '@acx-ui/utils'
 
 type UUID = string

@@ -1,7 +1,6 @@
 import userEvent from '@testing-library/user-event'
 
-import { networkHealthApiURL }                                   from '@acx-ui/analytics/services'
-import { Provider }                                              from '@acx-ui/store'
+import { networkHealthApiURL, Provider }                         from '@acx-ui/store'
 import { mockGraphqlMutation, mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
 import { fetchServiceGuardTest, runServiceGuardTest } from '../../__tests__/fixtures'

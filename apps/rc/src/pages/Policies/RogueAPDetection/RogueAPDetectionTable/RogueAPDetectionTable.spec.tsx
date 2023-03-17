@@ -23,11 +23,10 @@ import RogueAPDetectionTable from './RogueAPDetectionTable'
 
 const mockTableResult = {
   fields: [
-    'scope',
-    'name',
-    'cog',
     'id',
-    'type'
+    'name',
+    'numOfRules',
+    'venueIds'
   ],
   totalCount: 1,
   page: 1,
@@ -35,8 +34,53 @@ const mockTableResult = {
     {
       id: 'cc080e33-26a7-4d34-870f-b7f312fcfccb',
       name: 'My Rogue AP Detection 1',
-      type: 'Rogue AP Detection',
-      scope: '0'
+      numOfRules: 5,
+      venueIds: []
+    }
+  ]
+}
+
+const mockVenueResult = {
+  fields: [
+    'country',
+    'clients',
+    'city',
+    'latitude',
+    'switches',
+    'edges',
+    'description',
+    'check-all',
+    'networks',
+    'switchClients',
+    'name',
+    'cog',
+    'id',
+    'aggregatedApStatus',
+    'longitude',
+    'status'
+  ],
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      id: '2e7a2dd226c8422ab62316b57f5a8631',
+      name: 'My-Venue',
+      description: 'My-Venue',
+      city: 'New York',
+      country: 'United States',
+      latitude: '40.7690084',
+      longitude: '-73.9431541',
+      networks: {
+        count: 1,
+        names: [
+          'test-psk'
+        ],
+        vlans: [
+          1
+        ]
+      },
+      status: '1_InSetupPhase',
+      aggregatedApClientHealth: []
     }
   ]
 }
@@ -67,6 +111,14 @@ describe('RogueAPDetectionTable', () => {
       rest.post(
         CommonUrlsInfo.getPoliciesList.url,
         (req, res, ctx) => res(ctx.json(mockTableResult))
+      ),
+      rest.post(
+        RogueApUrls.getEnhancedRoguePolicyList.url,
+        (req, res, ctx) => res(ctx.json(mockTableResult))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (req, res, ctx) => res(ctx.json(mockVenueResult))
       )
     )
   })
