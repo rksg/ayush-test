@@ -107,5 +107,21 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     // [New API] no mapping found
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/edges/:serialNumber/ports'
+  },
+  getLatestEdgeFirmware: {
+    method: 'get',
+    url: '/api/edges/upgrade/version/latest'
+  },
+  getVenueEdgeFirmwareList: {
+    method: 'get',
+    url: '/api/edges/upgrade/venue'
+  },
+  getAvailableEdgeFirmwareVersions: {
+    method: 'get',
+    url: '/api/edges/upgrade/version'
+  },
+  updateEdgeFirmware: {
+    method: 'post',
+    url: '/api/edges/upgrade/updateNow'
   }
 }
