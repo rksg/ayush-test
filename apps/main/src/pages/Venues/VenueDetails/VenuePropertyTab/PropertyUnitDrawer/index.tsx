@@ -43,8 +43,8 @@ function AccessPointLanPortSelector (props: {
   const form = Form.useFormInstance()
   const [selectedModel, setSelectedModel] = useState({} as VenueLanPorts)
   const selectedApMac = Form.useWatch('accessAp')
-  const apName = ethernetPorts?.[0].name
-  const accessAp = ethernetPorts?.[0].macAddress.replaceAll('-', ':')
+  const apName = ethernetPorts?.[0]?.name
+  const accessAp = ethernetPorts?.[0]?.macAddress?.replaceAll('-', ':')
   const ports = ethernetPorts?.map(p => p.portIndex)
 
   const venueLanPorts = useGetVenueLanPortsQuery({ params: { tenantId, venueId } })
@@ -187,7 +187,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
             const { personaId, guestPersonaId } = result.data
             // TODO: access point need to parsing here
             // console.log('Unit :: ', result.data)
-            fetchPersonaInfo(personaId, guestPersonaId)
+            combinePersonaInfo(personaId, guestPersonaId, result.data)
           }
         })
         .catch(() => {
@@ -196,7 +196,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
     }
   }, [visible, unitId])
 
-  const fetchPersonaInfo = (personaId?: string, guestPersonaId?: string) => {
+  const combinePersonaInfo = (personaId?: string, guestPersonaId?: string, data?: PropertyUnit) => {
     let personaPromise, guestPromise
 
     if (personaId) {
@@ -209,11 +209,12 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
 
     Promise.all([personaPromise, guestPromise])
       .then(([personaResult, guestResult]) => {
+        form.setFieldsValue(data ?? {})
         if (personaResult?.data) {
           // console.log('Persona :: ', result.data)
           const { vlan, dpskPassphrase, ethernetPorts, vni } = personaResult.data as Persona
           if (withNsg) {
-            const accessAp = ethernetPorts?.[0].macAddress.replaceAll('-', ':')
+            const accessAp = ethernetPorts?.[0]?.macAddress?.replaceAll('-', ':')
             const ports = ethernetPorts?.map(p => p.portIndex)
             setEthernetPorts(ethernetPorts)
             form.setFieldValue('accessAp', accessAp)
@@ -422,7 +423,6 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
             name='propertyUnitForm'
             form={form}
             layout={'vertical'}
-            initialValues={unitResult.data}
           >
             <Form.Item name='id' noStyle><Input type='hidden' /></Form.Item>
             <Form.Item name='personaId' noStyle><Input type='hidden' /></Form.Item>
