@@ -1,5 +1,6 @@
 import { Form, Select, FormItemProps } from 'antd'
 import { useIntl }                     from 'react-intl'
+import _                               from 'lodash'
 
 import { useGetTemplateScopeByIdQuery,
   useGetAllTemplatesByTemplateScopeIdQuery,
@@ -69,12 +70,12 @@ export function TemplateSelector (props: TemplateSelectorProps) {
     && templatesRequest.isSuccess
     && !registrationRequest.isLoading) {
 
-    formItemProps.label = $t(templateScopeLabels[templateScopeRequest.data.nameLocalizationKey])
+    formItemProps.label = $t(_.get(templateScopeLabels, templateScopeRequest.data.nameLocalizationKey))
     isLoading = false
     isDisabled = false
     options = templatesRequest.data.content.map(({ id, nameLocalizationKey, userProvidedName }) =>
       ({ value: id,
-        label: (userProvidedName? userProvidedName : $t(templateNames[nameLocalizationKey])) }))
+        label: (userProvidedName? userProvidedName : $t(_.get(templateNames, nameLocalizationKey))) }))
 
     if(initialTemplateId) {
       let initialSelection = options.find(t => t.value === initialTemplateId)
