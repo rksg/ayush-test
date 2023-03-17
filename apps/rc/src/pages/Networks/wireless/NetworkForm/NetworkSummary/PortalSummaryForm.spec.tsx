@@ -134,7 +134,26 @@ describe('PortalSummaryForm', () => {
   it('should render cloudpath successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
     portalData.componentDisplay.wifi4eu = true
-    wisprDataWPA2.wlan.bypassCPUsingMacAddressAuthentication = false
+    render(
+      <Provider>
+        <Form>
+          <PortalSummaryForm summaryData={cloudPathDataNone} portalData={portalData}/>
+        </Form>
+      </Provider>,
+      {
+        route: { params }
+      }
+    )
+    expect(await screen.findByText('Enrollment Workflow URL'))
+      .toBeVisible()
+  })
+  it('should render cloudpath 2 successfully', async () => {
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+    portalData.componentDisplay.wifi4eu = true
+    cloudPathDataNone.wlan.bypassCNA = true
+    cloudPathDataNone.wlan.bypassCPUsingMacAddressAuthentication = false
+    cloudPathDataNone.enableAccountingProxy = false
+    cloudPathDataNone.enableAuthProxy = false
     render(
       <Provider>
         <Form>
