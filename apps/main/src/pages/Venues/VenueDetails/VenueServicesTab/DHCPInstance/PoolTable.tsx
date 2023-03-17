@@ -7,13 +7,13 @@ import { useIntl, FormattedList } from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
 import { Table, TableProps, showActionModal, Loader, Tooltip, UsageRate } from '@acx-ui/components'
+import { formatter }                                                      from '@acx-ui/formatter'
 import {
   useVenueDHCPPoolsQuery,
   useActivateDHCPPoolMutation,
   useDeactivateDHCPPoolMutation } from '@acx-ui/rc/services'
 import { VenueDHCPPoolInst } from '@acx-ui/rc/utils'
 import { hasAccess }         from '@acx-ui/user'
-import { formatter }         from '@acx-ui/utils'
 
 import { ReadonlySwitch } from './styledComponents'
 

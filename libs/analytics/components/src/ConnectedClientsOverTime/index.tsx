@@ -9,7 +9,7 @@ import {
   HistoricalCard,
   Loader, StackedAreaChart,
   NoData, MultiLineTimeSeriesChart, qualitativeColorSet } from '@acx-ui/components'
-import { formatter } from '@acx-ui/utils'
+import { formatter } from '@acx-ui/formatter'
 
 import { ConnectedClientsOverTimeData, useConnectedClientsOverTimeQuery } from './services'
 

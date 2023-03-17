@@ -1,5 +1,4 @@
-import { networkHealthApiURL }              from '@acx-ui/analytics/services'
-import { Provider }                         from '@acx-ui/store'
+import { networkHealthApiURL, Provider }    from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
 import { fetchServiceGuardTest } from '../../__tests__/fixtures'

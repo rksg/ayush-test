@@ -2,9 +2,9 @@ import userEvent from '@testing-library/user-event'
 
 import {
   networkHealthApi as api,
-  networkHealthApiURL as apiUrl
-} from '@acx-ui/analytics/services'
-import { store }                    from '@acx-ui/store'
+  networkHealthApiURL as apiUrl,
+  store
+} from '@acx-ui/store'
 import { mockGraphqlQuery, screen } from '@acx-ui/test-utils'
 
 import { renderForm }            from '../../__tests__/fixtures'
