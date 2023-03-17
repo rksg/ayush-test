@@ -94,10 +94,14 @@ const SubscriptionTable = () => {
       dataIndex: 'deviceSubType',
       key: 'deviceSubType',
       render: function (_, row) {
-        if (row.deviceType === EntitlementDeviceType.SWITCH)
-          return EntitlementUtil.deviceSubTypeToText(row?.deviceSubType)
-        else
-          return EntitlementUtil.tempLicenseToString(row.tempLicense === true)
+        if (row.tempLicense === true) {
+          return EntitlementUtil.tempLicenseToString(true)
+        } else {
+          if (row.deviceType === EntitlementDeviceType.SWITCH)
+            return EntitlementUtil.deviceSubTypeToText(row?.deviceSubType)
+          else
+            return EntitlementUtil.tempLicenseToString(false)
+        }
       }
     },
     {
@@ -186,7 +190,6 @@ const SubscriptionTable = () => {
     }
   })
 
-  // console.log(queryResults.isError)
   return (
     <Loader states={[queryResults]}>
       <Table

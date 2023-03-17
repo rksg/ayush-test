@@ -52,7 +52,7 @@ describe('Subscriptions', () => {
         }
       ),
       rest.post(
-        AdministrationUrlsInfo.internalRefreshLicensesData.url,
+        AdministrationUrlsInfo.internalRefreshLicensesData.oldUrl as string,
         (req, res, ctx) => res(ctx.status(202))
       )
     )
@@ -100,7 +100,7 @@ describe('Subscriptions', () => {
         }
       ),
       rest.post(
-        AdministrationUrlsInfo.internalRefreshLicensesData.url,
+        AdministrationUrlsInfo.internalRefreshLicensesData.oldUrl as string,
         (req, res, ctx) => res(ctx.status(500))
       )
     )
