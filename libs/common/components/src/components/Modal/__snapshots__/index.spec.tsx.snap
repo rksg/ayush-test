@@ -15,7 +15,7 @@ exports[`Modal should render custom footer 1`] = `
     <div
       aria-labelledby="test-id"
       aria-modal="true"
-      class="ant-modal styledComponents__Modal-sc-k3durc-0 fTqDXw"
+      class="ant-modal styledComponents__Modal-sc-k3durc-0 iMLhOF"
       role="dialog"
       style="width: 520px;"
     >
@@ -25,40 +25,44 @@ exports[`Modal should render custom footer 1`] = `
         tabindex="0"
       />
       <div
-        class="ant-modal-content"
+        class=""
       >
         <div
-          class="ant-modal-header"
+          class="ant-modal-content"
         >
           <div
-            class="ant-modal-title"
-            id="test-id"
+            class="ant-modal-header"
           >
-            Basic Modal
+            <div
+              class="ant-modal-title"
+              id="test-id"
+            >
+              Basic Modal
+            </div>
           </div>
-        </div>
-        <div
-          class="ant-modal-body"
-        >
-          <p>
-            Some contents...
-          </p>
-          <p>
-            Some contents...
-          </p>
-          <p>
-            Some contents...
-          </p>
-        </div>
-        <div
-          class="ant-modal-footer"
-        >
-          <button>
-            CustomFooterCancel
-          </button>
-          <button>
-            CustomFooterConfirm
-          </button>
+          <div
+            class="ant-modal-body"
+          >
+            <p>
+              Some contents...
+            </p>
+            <p>
+              Some contents...
+            </p>
+            <p>
+              Some contents...
+            </p>
+          </div>
+          <div
+            class="ant-modal-footer"
+          >
+            <button>
+              CustomFooterCancel
+            </button>
+            <button>
+              CustomFooterConfirm
+            </button>
+          </div>
         </div>
       </div>
       <div
