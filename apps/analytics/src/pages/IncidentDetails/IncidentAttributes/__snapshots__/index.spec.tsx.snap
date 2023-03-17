@@ -324,7 +324,7 @@ exports[`IncidentAttributes should match snapshot 1`] = `
                   <span
                     class="styledComponents__TextContent-sc-1l4qm8r-0"
                   >
-                    Jul 19 2022 05:15
+                    07/19/2022 05:15
                   </span>
                 </span>
               </div>
@@ -364,7 +364,7 @@ exports[`IncidentAttributes should match snapshot 1`] = `
                   <span
                     class="styledComponents__TextContent-sc-1l4qm8r-0"
                   >
-                    Jul 20 2022 02:42
+                    07/20/2022 02:42
                   </span>
                 </span>
               </div>

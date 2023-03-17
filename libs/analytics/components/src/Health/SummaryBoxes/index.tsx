@@ -3,7 +3,7 @@ import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 import { noDataSymbol, AnalyticsFilter } from '@acx-ui/analytics/utils'
 import { GridRow, GridCol, Loader }      from '@acx-ui/components'
-import { formatter, intlFormats }        from '@acx-ui/utils'
+import { formatter, intlFormats }        from '@acx-ui/formatter'
 
 import { useSummaryQuery }    from './services'
 import { Wrapper, Statistic } from './styledComponents'

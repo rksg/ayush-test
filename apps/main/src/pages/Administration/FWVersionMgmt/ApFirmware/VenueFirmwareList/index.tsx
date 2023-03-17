@@ -47,10 +47,19 @@ import {
   toUserDate
 } from '../../FirmwareUtils'
 import { PreferencesDialog } from '../../PreferencesDialog'
+import * as UI               from '../../styledComponents'
 
 import { ChangeScheduleDialog } from './ChangeScheduleDialog'
 import { RevertDialog }         from './RevertDialog'
 import { UpdateNowDialog }      from './UpdateNowDialog'
+
+type TablePaginationPosition =
+  | 'topLeft'
+  | 'topCenter'
+  | 'topRight'
+  | 'bottomLeft'
+  | 'bottomCenter'
+  | 'bottomRight'
 
 const transform = firmwareTypeTrans()
 
@@ -81,7 +90,7 @@ function useColumns (
       filterable: filterables ? filterables['version'] : false,
       filterMultiple: false,
       render: function (data, row) {
-        return row.versions[0].version ?? '--'
+        return row.versions ? row.versions[0].version : '--'
       }
     },
     {
@@ -92,7 +101,7 @@ function useColumns (
       filterable: filterables ? filterables['type'] : false,
       filterMultiple: false,
       render: function (data, row) {
-        if (!row.versions[0]) return '--'
+        if (!row.versions) return '--'
         const text = transform(row.versions[0].category as FirmwareCategory, 'type')
         const subText = transform(row.versions[0].category as FirmwareCategory, 'subType')
         if (!subText) return text
@@ -118,8 +127,9 @@ function useColumns (
         // return getApNextScheduleTpl(intl, row)
         return (!isNextScheduleTooltipDisabled(row)
           ? getApNextScheduleTpl(intl, row)
-          : <Tooltip title={getNextScheduleTplTooltip(row)} placement='bottom'>
-            {getApNextScheduleTpl(intl, row)}
+          // eslint-disable-next-line max-len
+          : <Tooltip title={<UI.ScheduleTooltipText>{getNextScheduleTplTooltip(row)}</UI.ScheduleTooltipText>} placement='bottom'>
+            <UI.ScheduleText>{getApNextScheduleTpl(intl, row)}</UI.ScheduleText>
           </Tooltip>
         )
       }
@@ -161,6 +171,7 @@ export const VenueFirmwareTable = (
   const [eolModels, setEolModels] = useState<string[]>([])
   const [changeUpgradeVersions, setChangeUpgradeVersions] = useState<FirmwareVersion[]>([])
   const [revertVersions, setRevertVersions] = useState<FirmwareVersion[]>([])
+  const pageBotton: TablePaginationPosition | 'none' = 'none'
 
   const [updateUpgradePreferences] = useUpdateUpgradePreferencesMutation()
   const { data: preferencesData } = useGetUpgradePreferencesQuery({ params })
@@ -506,7 +517,8 @@ export const VenueFirmwareTable = (
       <Table
         columns={columns}
         dataSource={tableData}
-        pagination={tableQuery.pagination}
+        // eslint-disable-next-line max-len
+        pagination={{ pageSize: 10000, position: [pageBotton as TablePaginationPosition , pageBotton as TablePaginationPosition] }}
         onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}

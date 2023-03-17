@@ -5,7 +5,8 @@ import { MessageDescriptor } from 'react-intl'
 import AutoSizer             from 'react-virtualized-auto-sizer'
 
 import { GridCol, GridRow, VerticalStackedBarChart, VerticalStackedBarChartData, cssStr } from '@acx-ui/components'
-import { formatter, getIntl }                                                             from '@acx-ui/utils'
+import { formatter }                                                                      from '@acx-ui/formatter'
+import { getIntl }                                                                        from '@acx-ui/utils'
 
 import { NetworkHealthTest, TestStage } from '../../../types'
 import { stagesFromConfig }             from '../../../utils'
@@ -96,6 +97,7 @@ export const ExecutionSection: React.FC<{ details: NetworkHealthTest }> = props 
       <AutoSizer>
         {({ height, width }) => (
           <VerticalStackedBarChart
+            key={props.details.id}
             style={{ width, height }}
             data={chart.data}
             categories={chart.categories}

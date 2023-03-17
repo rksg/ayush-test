@@ -11,7 +11,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   ManageAdminsDrawer,
   ResendInviteModal,
@@ -26,7 +27,6 @@ import {
   useGetMspLabelQuery
 } from '@acx-ui/rc/services'
 import {
-  DateFormatEnum,
   DelegationEntitlementRecord,
   EntitlementNetworkDeviceType,
   MspEc,
@@ -76,7 +76,7 @@ const transformCreationDate = (row: MspEc) => {
     return ''
   }
   const Epoch = creationDate - (creationDate % 1000)
-  const activeDate = moment(Epoch).format(DateFormatEnum.UserDateFormat)
+  const activeDate = formatter(DateFormatEnum.DateFormat)(Epoch)
   return activeDate
 }
 
@@ -93,7 +93,7 @@ const transformExpirationDate = (row: MspEc) => {
         target = entitlement
       }
     }
-    expirationDate = moment(target.expirationDate).format(DateFormatEnum.UserDateFormat)
+    expirationDate = formatter(DateFormatEnum.DateFormat)(target.expirationDate)
   })
   return expirationDate
 }
@@ -107,6 +107,7 @@ export function MspCustomers () {
 
   const [modalVisible, setModalVisible] = useState(false)
   const [ecTenantId, setTenantId] = useState('')
+  const [tenantType, setTenantType] = useState(AccountType.MSP_INTEGRATOR)
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerIntegratorVisible, setDrawerIntegratorVisible] = useState(false)
 
@@ -191,30 +192,12 @@ export function MspCustomers () {
       title: $t({ defaultMessage: 'Address' }),
       dataIndex: 'streetAddress',
       key: 'streetAddress',
-      sorter: true,
-      show: false
+      sorter: true
     },
     {
-      title: $t({ defaultMessage: 'Active Alarm' }),
-      dataIndex: 'alarmCount',
-      key: 'alarmCount',
-      sorter: true,
-      render: function () {
-        return '0'
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Active Incidents' }),
-      dataIndex: 'activeIncidents',
-      key: 'activeIncindents',
-      sorter: true,
-      render: function () {
-        return 0
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'MSP Admins' }),
+      title: $t({ defaultMessage: 'MSP Admin Count' }),
       dataIndex: 'mspAdminCount',
+      align: 'center',
       key: 'mspAdminCount',
       sorter: true,
       onCell: (data) => {
@@ -227,13 +210,15 @@ export function MspCustomers () {
       },
       render: function (data) {
         return (
-          (isPrimeAdmin || isAdmin) ? <Link to=''>{data}</Link> : data
+          (isPrimeAdmin || isAdmin) && !userProfile?.support
+            ? <Link to=''>{data}</Link> : data
         )
       }
     },
     {
-      title: $t({ defaultMessage: 'Customer Admins' }),
+      title: $t({ defaultMessage: 'Customer Admin Count' }),
       dataIndex: 'mspEcAdminCount',
+      align: 'center',
       key: 'mspEcAdminCount',
       sorter: true,
       show: false
@@ -242,18 +227,43 @@ export function MspCustomers () {
       title: $t({ defaultMessage: 'Integrator' }),
       dataIndex: 'integrator',
       key: 'integrator',
+      show: !userProfile?.support,
       onCell: (data) => {
         return {
           onClick: () => {
             setTenantId(data.id)
+            setTenantType(AccountType.MSP_INTEGRATOR)
             setDrawerIntegratorVisible(true)
           }
         }
       },
       render: function (data, row) {
-        const val = row?.integrator ? 1 : 0
+        const val = row?.integrator ? 1 : '--'
         return (
-          (isPrimeAdmin || isAdmin) ? <Link to=''>{val}</Link> : val
+          (isPrimeAdmin || isAdmin) && !userProfile?.support
+            ? <Link to=''>{val}</Link> : val
+        )
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Installer' }),
+      dataIndex: 'installer',
+      key: 'installer',
+      show: !userProfile?.support,
+      onCell: (data) => {
+        return {
+          onClick: () => {
+            setTenantId(data.id)
+            setTenantType(AccountType.MSP_INSTALLER)
+            setDrawerIntegratorVisible(true)
+          }
+        }
+      },
+      render: function (data, row) {
+        const val = row?.installer ? 1 : '--'
+        return (
+          (isPrimeAdmin || isAdmin) && !userProfile?.support
+            ? <Link to=''>{val}</Link> : val
         )
       }
     },
@@ -261,6 +271,7 @@ export function MspCustomers () {
       title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
       dataIndex: 'wifiLicenses',
       key: 'wifiLicenses',
+      align: 'center',
       sorter: true,
       render: function (data, row) {
         return transformApEntitlement(row)
@@ -269,6 +280,7 @@ export function MspCustomers () {
     {
       title: $t({ defaultMessage: 'Wi-Fi License Utilization' }),
       dataIndex: 'wifiLicensesUtilization',
+      align: 'center',
       key: 'wifiLicensesUtilization',
       sorter: true,
       render: function (data, row) {
@@ -278,6 +290,7 @@ export function MspCustomers () {
     {
       title: $t({ defaultMessage: 'Switch Licenses' }),
       dataIndex: 'switchLicens',
+      align: 'center',
       key: 'switchLicens',
       sorter: true,
       render: function (data, row) {
@@ -287,6 +300,7 @@ export function MspCustomers () {
     {
       title: $t({ defaultMessage: 'SmartEdge Licenses' }),
       dataIndex: 'edgeLicenses',
+      align: 'center',
       key: 'edgeLicenses',
       sorter: true,
       show: edgeEnabled,
@@ -313,7 +327,7 @@ export function MspCustomers () {
       }
     },
     {
-      title: $t({ defaultMessage: 'Tenant Id' }),
+      title: $t({ defaultMessage: 'Tenant ID' }),
       dataIndex: 'id',
       key: 'id',
       show: false,
@@ -487,7 +501,7 @@ export function MspCustomers () {
         title={$t({ defaultMessage: 'MSP Customers' })}
         extra={isAdmin ?
           [<TenantLink to='/dashboard'>
-            <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
+            <Button>{$t({ defaultMessage: 'Manage my account' })}</Button>
           </TenantLink>,
           <MspTenantLink to='/dashboard/mspcustomers/create'>
             <Button
@@ -496,7 +510,7 @@ export function MspCustomers () {
           </MspTenantLink>
           ]
           : [<TenantLink to='/dashboard'>
-            <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
+            <Button>{$t({ defaultMessage: 'Manage my account' })}</Button>
           </TenantLink>
           ]}
       />
@@ -516,7 +530,7 @@ export function MspCustomers () {
       {drawerIntegratorVisible && <SelectIntegratorDrawer
         visible={drawerIntegratorVisible}
         tenantId={ecTenantId}
-        tenantType={AccountType.MSP_INTEGRATOR}
+        tenantType={tenantType}
         setVisible={setDrawerIntegratorVisible}
         setSelected={() => {}}
       />}

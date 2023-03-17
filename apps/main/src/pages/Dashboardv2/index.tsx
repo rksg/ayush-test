@@ -4,6 +4,7 @@ import { useIntl } from 'react-intl'
 
 import {
   ConnectedClientsOverTime,
+  ClientExperience,
   SwitchesTrafficByVolume,
   TopAppsByTraffic,
   TopSSIDsByTraffic,
@@ -11,7 +12,8 @@ import {
   TopSwitchesByPoEUsage,
   TopSwitchesByTraffic,
   TopSwitchModels,
-  TrafficByVolume } from '@acx-ui/analytics/components'
+  TrafficByVolume,
+  DidYouKnow } from '@acx-ui/analytics/components'
 import {
   GridRow,
   GridCol,
@@ -21,11 +23,13 @@ import {
   ContentSwitcherProps,
   Card
 } from '@acx-ui/components'
-import { VenueFilter }    from '@acx-ui/main/components'
+import { VenueFilter }      from '@acx-ui/main/components'
 import {
-  AlarmWidget,
-  MapWidget,
-  VenuesDashboardWidget
+  AlarmWidgetV2,
+  ClientsWidgetV2,
+  DevicesDashboardWidgetV2,
+  MapWidgetV2,
+  VenuesDashboardWidgetV2
 } from '@acx-ui/rc/components'
 import { TenantLink }                        from '@acx-ui/react-router-dom'
 import { useDateFilter, useDashboardFilter } from '@acx-ui/utils'
@@ -111,7 +115,7 @@ function DashboardMapWidget () {
   return (
     <GridRow style={{ marginTop: '20px' }}>
       <GridCol col={{ span: 24 }} style={{ height: '428px' }}>
-        <MapWidget />
+        <MapWidgetV2 />
       </GridCol>
     </GridRow>
   )
@@ -122,7 +126,7 @@ function SwitchWidgets () {
   return (
     <GridRow>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <SwitchesTrafficByVolume filters={filters}/>
+        <SwitchesTrafficByVolume filters={filters} vizType={'area'} />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
         <TopSwitchesByPoEUsage filters={filters}/>
@@ -141,41 +145,37 @@ function SwitchWidgets () {
 }
 
 function CommonDashboardWidgets () {
-  // const { filters } = useDashboardFilter()
+  const { filters } = useDashboardFilter()
 
   return (
     <GridRow>
       <GridCol col={{ span: 18 }} style={{ height: '410px' }}>
         <GridRow>
           <GridCol col={{ span: 8 }} style={{ height: '200px' }}>
-            <AlarmWidget showList={false} />
+            <AlarmWidgetV2 />
           </GridCol>
           <GridCol col={{ span: 8 }} style={{ height: '200px' }}>
             <Card title='Incidents'>
             </Card>
           </GridCol>
           <GridCol col={{ span: 8 }} style={{ height: '200px' }}>
-            <Card title='Client Experience'>
-            </Card>
+            <ClientExperience filters={filters}/>
           </GridCol>
         </GridRow>
         <GridRow style={{ marginTop: '10px' }}>
           <GridCol col={{ span: 8 }} style={{ height: '200px' }}>
-            <VenuesDashboardWidget />
+            <VenuesDashboardWidgetV2 />
           </GridCol>
           <GridCol col={{ span: 8 }} style={{ height: '200px' }}>
-            <Card title='Devices'>
-            </Card>
+            <DevicesDashboardWidgetV2 />
           </GridCol>
           <GridCol col={{ span: 8 }} style={{ height: '200px' }}>
-            <Card title='Clients'>
-            </Card>
+            <ClientsWidgetV2 />
           </GridCol>
         </GridRow>
       </GridCol>
       <GridCol col={{ span: 6 }} style={{ height: '410px' }}>
-        <Card title='Did you know?'>
-        </Card>
+        <DidYouKnow filters={filters}/>
       </GridCol>
     </GridRow>
   )
