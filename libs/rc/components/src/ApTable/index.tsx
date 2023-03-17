@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 
 import { FetchBaseQueryError }                               from '@reduxjs/toolkit/dist/query'
 import { Badge }                                             from 'antd'
@@ -153,8 +153,6 @@ export function ApTable (props: ApTableProps) {
   const [groupBySelection, setGroupBySelection] = useState<DeviceGroupBy>(null)
   const [tableFilter, setTableFilter] = useState<FILTER>(filters)
   const [tableSearch, setTableSearch] = useState<SEARCH>({})
-  const { deviceStatusGroupableOptions, modelGroupableOptions, deviceGroupNameGroupableOptions } =
-    getGroupableConfig()
   const groupByTableQuery = usePollingTableQuery({
     useQuery: useGroupByApListQuery,
     defaultPayload: {
@@ -189,7 +187,7 @@ export function ApTable (props: ApTableProps) {
   const tableData = tableQuery?.data?.data ?? []
   const linkToEditAp = useTenantLink('/devices/wifi/')
 
-  const columns = React.useMemo(() => {
+  const columns = useMemo(() => {
     const extraParams = tableQuery?.data?.extra ?? {
       channel24: true,
       channel50: false,
@@ -217,7 +215,7 @@ export function ApTable (props: ApTableProps) {
       disable: true,
       filterKey: 'deviceStatusSeverity',
       filterable: filterables ? statusFilterOptions : false,
-      groupable: deviceStatusGroupableOptions,
+      groupable: getGroupableConfig()?.deviceStatusGroupableOptions,
       render: (status: unknown) => <APStatus status={status as ApDeviceStatusEnum} />
     }, {
       key: 'model',
@@ -225,7 +223,7 @@ export function ApTable (props: ApTableProps) {
       dataIndex: 'model',
       searchable: searchable,
       sorter: true,
-      groupable: modelGroupableOptions
+      groupable: getGroupableConfig()?.modelGroupableOptions
     }, {
       key: 'ip',
       title: $t({ defaultMessage: 'IP Address' }),
@@ -317,7 +315,7 @@ export function ApTable (props: ApTableProps) {
       filterKey: 'deviceGroupId',
       filterable: filterables ? filterables['deviceGroupId'] : false,
       sorter: true,
-      groupable: deviceGroupNameGroupableOptions
+      groupable: getGroupableConfig()?.deviceGroupNameGroupableOptions
     }, {
       key: 'rf-channels',
       title: $t({ defaultMessage: 'RF Channels' }),
@@ -372,7 +370,7 @@ export function ApTable (props: ApTableProps) {
         )
       }
     }] as TableProps<APExtended | APExtendedGrouped>['columns']
-  }, [$t, tableQuery?.data?.extra])
+  }, [$t, tableQuery?.data?.extra, filterables,releaseTag, searchable,statusFilterOptions])
 
   const isActionVisible = (
     selectedRows: APExtended[],
@@ -430,7 +428,6 @@ export function ApTable (props: ApTableProps) {
       setImportVisible(false)
     }
   },[importResult])
-
   useEffect(()=> {
     tableQuery?.handleFilterChange(tableFilter, tableSearch, groupBySelection)
   },[groupBySelection,tableFilter,tableSearch, tableQuery])
@@ -451,7 +448,7 @@ export function ApTable (props: ApTableProps) {
           setTableFilter(filter)
           setTableSearch(search)
           setGroupBySelection?.(groupBy as DeviceGroupBy)
-        },[setGroupBySelection, setTableSearch, setTableFilter])}
+        },[setGroupBySelection,setTableFilter, setTableSearch])}
         actions={props.enableActions ? filterByAccess([{
           label: $t({ defaultMessage: 'Add AP' }),
           onClick: () => {

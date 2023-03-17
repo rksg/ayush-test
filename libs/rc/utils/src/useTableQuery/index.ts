@@ -169,7 +169,7 @@ export function useTableQuery <
       }
     }
     handlePagination(api.data)
-  }, [api.data])
+  }, [api.data,pagination.page, pagination.pageSize,payload])
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH, groupBy? : GROUPBY) => {
     const { searchString, searchTargetFields, filters, ...rest } = payload
@@ -186,7 +186,7 @@ export function useTableQuery <
         ..._.omit({ ...filters as Object, ...customFilters }, toBeRemovedFilter),
         ..._.pick(initialPayload.filters, toBeRemovedFilter)
       },
-      ...(groupBy ?{ groupBy : groupBy} :{})
+      ...(groupBy ?{ groupBy: groupBy } :{})
     } as unknown as Payload)
     setSearch(toBeSearch)
     setFilterKeys([...new Set([ ...filterKeys, ...Object.keys(customFilters) ])]
