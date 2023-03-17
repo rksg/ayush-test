@@ -17,7 +17,8 @@ import {
   transformVLAN,
   transformAps,
   transformRadios,
-  transformScheduling
+  transformScheduling,
+  NetworkVenueScheduleDialog
 } from '@acx-ui/rc/components'
 import {
   useAddNetworkVenueMutation,
@@ -34,13 +35,13 @@ import {
   generateDefaultNetworkVenue,
   useScheduleSlotIndexMap,
   aggregateApGroupPayload,
-  RadioTypeEnum
+  RadioTypeEnum,
+  SchedulingModalState
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }      from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 import { useGetNetwork } from '../services'
-
-import { SchedulingModalState, NetworkVenueScheduleDialog } from './NetworkVenueScheduleDialog'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
 
@@ -442,7 +443,7 @@ export function NetworkVenuesTab () {
       }
       <Table
         rowKey='id'
-        rowActions={rowActions}
+        rowActions={filterByAccess(rowActions)}
         rowSelection={{
           type: 'checkbox'
         }}

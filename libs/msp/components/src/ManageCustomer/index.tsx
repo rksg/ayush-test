@@ -24,46 +24,47 @@ import {
   StepsFormInstance,
   Subtitle
 } from '@acx-ui/components'
-import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
-import { SearchOutlined }         from '@acx-ui/icons'
+import { useIsSplitOn, Features }    from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { SearchOutlined }            from '@acx-ui/icons'
 import {
   useAddCustomerMutation,
   useMspEcAdminListQuery,
   useUpdateCustomerMutation,
   useGetMspEcQuery,
-  // useGetMspEcDelegatedAdminsQuery,
+  useGetMspEcDelegatedAdminsQuery,
   useGetMspEcSupportQuery,
   useEnableMspEcSupportMutation,
   useDisableMspEcSupportMutation,
   useMspAssignmentSummaryQuery,
   useMspAssignmentHistoryQuery,
-  useGetUserProfileQuery
+  useMspAdminListQuery
 } from '@acx-ui/rc/services'
 import {
   Address,
   dateDisplayText,
-  DateFormatEnum,
   DateSelectionEnum,
   emailRegExp,
   MspAdministrator,
   MspEc,
   MspEcData,
   roleDisplayText,
-  RolesEnum,
   EntitlementUtil,
   MspAssignmentHistory,
   MspAssignmentSummary,
   MspEcDelegatedAdmins,
-  MspIntegratorDelegated
+  MspIntegratorDelegated,
+  AssignActionEnum
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import {
-  AccountType
-} from '@acx-ui/utils'
+import { RolesEnum }              from '@acx-ui/types'
+import { useGetUserProfileQuery } from '@acx-ui/user'
+import { AccountType }            from '@acx-ui/utils'
+
 
 import { ManageAdminsDrawer } from '../ManageAdminsDrawer'
 // eslint-disable-next-line import/order
@@ -153,11 +154,11 @@ const defaultAddress: Address = {
 export function ManageCustomer () {
   const intl = useIntl()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
+  const edgeEnabled = useIsSplitOn(Features.EDGES)
 
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
   const formRef = useRef<StepsFormInstance<EcFormData>>()
-  const dateFormat = DateFormatEnum.UserDateFormat
   const { action, status, tenantId, mspEcTenantId } = useParams()
 
   const [isTrialMode, setTrialMode] = useState(false)
@@ -177,8 +178,8 @@ export function ManageCustomer () {
   const [drawerIntegratorVisible, setDrawerIntegratorVisible] = useState(false)
   const [drawerInstallerVisible, setDrawerInstallerVisible] = useState(false)
   const [startSubscriptionVisible, setStartSubscriptionVisible] = useState(false)
-  const [subscriptionStartDate, setSubscriptionStartDate] = useState('')
-  const [subscriptionEndDate, setSubscriptionEndDate] = useState('')
+  const [subscriptionStartDate, setSubscriptionStartDate] = useState<moment.Moment>()
+  const [subscriptionEndDate, setSubscriptionEndDate] = useState<moment.Moment>()
   const [address, updateAddress] = useState<Address>(isMapEnabled? {} : defaultAddress)
   const [formData, setFormData] = useState({} as Partial<EcFormData>)
 
@@ -195,7 +196,10 @@ export function ManageCustomer () {
   const { data: licenseAssignment } = useMspAssignmentHistoryQuery({ params: useParams() })
   const { data } =
       useGetMspEcQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
-  // const { data: delegatedAdmins } = useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId } })
+  const { data: Administrators } =
+      useMspAdminListQuery({ params: useParams() }, { skip: action !== 'edit' })
+  const { data: delegatedAdmins } =
+      useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
   const { data: ecAdministrators } =
       useMspEcAdminListQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
   const { data: ecSupport } =
@@ -238,8 +242,8 @@ export function ManageCustomer () {
       data?.is_active === 'true' ? setTrialActive(true) : setTrialActive(false)
       status === 'Trial' ? setTrialMode(true) : setTrialMode(false)
 
-      setSubscriptionStartDate(moment(data?.service_effective_date).format(dateFormat))
-      setSubscriptionEndDate(moment(data?.service_expiration_date).format(dateFormat))
+      setSubscriptionStartDate(moment(data?.service_effective_date))
+      setSubscriptionEndDate(moment(data?.service_expiration_date))
       setWifiLicense(wLic)
       setSwitchLicense(sLic)
       // updateAddress(data?.street_address as Address)
@@ -261,10 +265,19 @@ export function ManageCustomer () {
         })
         setAdministrator(administrator)
       }
-      setSubscriptionStartDate(moment().format(dateFormat))
-      setSubscriptionEndDate(moment().add(30,'days').format(dateFormat))
+      setSubscriptionStartDate(moment())
+      setSubscriptionEndDate(moment().add(30,'days'))
     }
   }, [data, licenseSummary, licenseAssignment, ecSupport, userProfile, ecAdministrators])
+
+  useEffect(() => {
+    if (delegatedAdmins && Administrators) {
+      const admins = delegatedAdmins?.map((admin: MspEcDelegatedAdmins)=> admin.msp_admin_id)
+      const selAdmins = Administrators.filter(rec => admins.includes(rec.id))
+      setAdministrator(selAdmins)
+    }
+  }, [delegatedAdmins, Administrators])
+
   const [sameCountry, setSameCountry] = useState(true)
   const addressValidator = async (value: string) => {
     const isSameValue = value ===
@@ -338,17 +351,21 @@ export function ManageCustomer () {
       const ecFormData = { ...values }
       const today = EntitlementUtil.getServiceStartDate()
       const expirationDate = EntitlementUtil.getServiceEndDate(subscriptionEndDate)
+      const quantityWifi = _.isString(ecFormData.wifiLicense)
+        ? parseInt(ecFormData.wifiLicense, 10) : ecFormData.wifiLicense
+      const quantitySwitch = _.isString(ecFormData.switchLicense)
+        ? parseInt(ecFormData.switchLicense, 10) : ecFormData.switchLicense
       const assignLicense = trialSelected
-        ? { trialAction: 'ACTIVATE' }
+        ? { trialAction: AssignActionEnum.ACTIVATE }
         : { assignments: [{
-          quantity: ecFormData.wifiLicense,
-          action: 'ADD',
+          quantity: quantityWifi,
+          action: AssignActionEnum.ADD,
           isTrial: false,
           deviceType: 'MSP_WIFI'
         },
         {
-          quantity: ecFormData.switchLicense,
-          action: 'ADD',
+          quantity: quantitySwitch,
+          action: AssignActionEnum.ADD,
           isTrial: false,
           deviceType: 'MSP_SWITCH'
         }] }
@@ -395,11 +412,8 @@ export function ManageCustomer () {
       // const ecTenantId = result.tenant_id
       }
       navigate(linkToCustomers, { replace: true })
-    } catch {
-      showToast({
-        type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -408,41 +422,52 @@ export function ManageCustomer () {
       const ecFormData = { ...values }
       const today = EntitlementUtil.getServiceStartDate()
       const expirationDate = EntitlementUtil.getServiceEndDate(subscriptionEndDate)
-      let assignLicense =
-      isTrialEditMode ? {
-        subscription_start_date: today,
-        subscription_end_date: expirationDate,
-        assignments: [{
-          quantity: ecFormData.wifiLicense,
-          action: 'ADD',
+
+      const licAssignment = []
+      if (isTrialEditMode) {
+        const quantityWifi = _.isString(ecFormData.wifiLicense)
+          ? parseInt(ecFormData.wifiLicense, 10) : ecFormData.wifiLicense
+        licAssignment.push({
+          quantity: quantityWifi,
+          action: AssignActionEnum.ADD,
           isTrial: false,
           deviceType: 'MSP_WIFI'
-        },
-        {
-          quantity: ecFormData.switchLicense,
-          action: 'ADD',
+        })
+        const quantitySwitch = _.isString(ecFormData.switchLicense)
+          ? parseInt(ecFormData.switchLicense, 10) : ecFormData.switchLicense
+        licAssignment.push({
+          quantity: quantitySwitch,
+          action: AssignActionEnum.ADD,
           isTrial: false,
           deviceType: 'MSP_SWITCH'
-        }]
-      } : {
-        subscription_start_date: today,
-        subscription_end_date: expirationDate,
-        assignments: [{
-          quantity: ecFormData.wifiLicense,
-          assignmentId: getAssignmentId('MSP_WIFI'),
-          action: 'MODIFY',
-          isTrial: false,
-          deviceType: 'MSP_WIFI'
-        },
-        {
-          quantity: ecFormData.switchLicense,
-          assignmentId: getAssignmentId('MSP_SWITCH'),
-          action: 'MODIFY',
-          isTrial: false,
-          deviceSubtype: 'ICX',
-          deviceType: 'MSP_SWITCH'
-        }]
+        })
+      } else {
+        if (_.isString(ecFormData.wifiLicense)) {
+          const wifiAssignId = getAssignmentId('MSP_WIFI')
+          const quantityWifi = parseInt(ecFormData.wifiLicense, 10)
+          const actionWifi = wifiAssignId === 0 ? AssignActionEnum.ADD : AssignActionEnum.MODIFY
+          licAssignment.push({
+            quantity: quantityWifi,
+            assignmentId: wifiAssignId,
+            action: actionWifi,
+            isTrial: false,
+            deviceType: 'MSP_WIFI'
+          })
+        }
+        if (_.isString(ecFormData.switchLicense)) {
+          const switchAssignId = getAssignmentId('MSP_SWITCH')
+          const quantitySwitch = parseInt(ecFormData.switchLicense, 10)
+          const actionSwitch = switchAssignId === 0 ? AssignActionEnum.ADD : AssignActionEnum.MODIFY
+          licAssignment.push({
+            quantity: quantitySwitch,
+            assignmentId: switchAssignId,
+            action: actionSwitch,
+            deviceSubtype: 'ICX',
+            deviceType: 'MSP_SWITCH'
+          })
+        }
       }
+
       const customer: MspEcData = {
         tenant_type: 'MSP_EC',
         name: ecFormData.name,
@@ -450,17 +475,19 @@ export function ManageCustomer () {
         service_effective_date: today,
         service_expiration_date: expirationDate
       }
-      if (!isTrialMode) {
+      if (!isTrialMode && licAssignment.length > 0) {
+        let assignLicense = {
+          subscription_start_date: today,
+          subscription_end_date: expirationDate,
+          assignments: licAssignment
+        }
         customer.licenses = assignLicense
       }
 
       await updateCustomer({ params: { mspEcTenantId: mspEcTenantId }, payload: customer }).unwrap()
       navigate(linkToCustomers, { replace: true })
-    } catch {
-      showToast({
-        type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -517,7 +544,7 @@ export function ManageCustomer () {
     return <div style={{ marginTop: '5px', marginBottom: '30px' }}>
       {mspEcAdmins.map(admin =>
         <UI.AdminList>
-          {admin.email} ({intl.$t(roleDisplayText[admin.role])}
+          {admin.email} {intl.$t(roleDisplayText[admin.role])}
         </UI.AdminList>
       )}
     </div>
@@ -525,8 +552,7 @@ export function ManageCustomer () {
 
   const startSubscription = (startDate: Date) => {
     if (startDate) {
-      const dateString = moment(startDate).format(dateFormat)
-      setSubscriptionStartDate(dateString)
+      setSubscriptionStartDate(moment(startDate))
       setTrialMode(false)
     }
   }
@@ -547,30 +573,30 @@ export function ManageCustomer () {
       <UI.FieldLabelAdmins width='275px' style={{ marginTop: '15px' }}>
         <label>{intl.$t({ defaultMessage: 'MSP Administrators' })}</label>
         <Form.Item children={<div>{displayMspAdmins()}</div>} />
-        <Form.Item
+        {!isEditMode && <Form.Item
           children={<UI.FieldTextLink onClick={() => setDrawerAdminVisible(true)}>
             {intl.$t({ defaultMessage: 'Manage' })}
           </UI.FieldTextLink>
           }
-        />
+        />}
       </UI.FieldLabelAdmins>
       <UI.FieldLabelAdmins width='275px' style={{ marginTop: '-12px' }}>
         <label>{intl.$t({ defaultMessage: 'Integrator' })}</label>
         <Form.Item children={displayIntegrator()} />
-        <Form.Item
+        {!isEditMode && <Form.Item
           children={<UI.FieldTextLink onClick={() => setDrawerIntegratorVisible(true)}>
             {intl.$t({ defaultMessage: 'Manage' })}
           </UI.FieldTextLink>}
-        />
+        />}
       </UI.FieldLabelAdmins>
       <UI.FieldLabelAdmins width='275px' style={{ marginTop: '-16px' }}>
         <label>{intl.$t({ defaultMessage: 'Installer' })}</label>
         <Form.Item children={displayInstaller()} />
-        <Form.Item
+        {!isEditMode && <Form.Item
           children={<UI.FieldTextLink onClick={() => setDrawerInstallerVisible(true)}>
             {intl.$t({ defaultMessage: 'Manage' })}
           </UI.FieldTextLink>}
-        />
+        />}
       </UI.FieldLabelAdmins>
     </>
   }
@@ -698,7 +724,7 @@ export function ManageCustomer () {
   }
 
   function expirationDateOnChange (props: unknown, expirationDate: string) {
-    setSubscriptionEndDate(expirationDate)
+    setSubscriptionEndDate(moment(expirationDate))
   }
 
   const onSelectChange = (value: string) => {
@@ -707,17 +733,17 @@ export function ManageCustomer () {
       setCustomeDate(true)
     } else {
       if (value === DateSelectionEnum.THIRTY_DAYS) {
-        setSubscriptionEndDate(moment().add(30,'days').format(dateFormat))
+        setSubscriptionEndDate(moment().add(30,'days'))
       } else if (value === DateSelectionEnum.SIXTY_DAYS) {
-        setSubscriptionEndDate(moment().add(60,'days').format(dateFormat))
+        setSubscriptionEndDate(moment().add(60,'days'))
       } else if (value === DateSelectionEnum.NINETY_DAYS) {
-        setSubscriptionEndDate(moment().add(90,'days').format(dateFormat))
+        setSubscriptionEndDate(moment().add(90,'days'))
       } else if (value === DateSelectionEnum.ONE_YEAR) {
-        setSubscriptionEndDate(moment().add(1,'years').format(dateFormat))
+        setSubscriptionEndDate(moment().add(1,'years'))
       } else if (value === DateSelectionEnum.THREE_YEARS) {
-        setSubscriptionEndDate(moment().add(3,'years').format(dateFormat))
+        setSubscriptionEndDate(moment().add(3,'years'))
       } else if (value === DateSelectionEnum.FIVE_YEARS) {
-        setSubscriptionEndDate(moment().add(5,'years').format(dateFormat))
+        setSubscriptionEndDate(moment().add(5,'years'))
       }
       setCustomeDate(false)
     }
@@ -748,11 +774,11 @@ export function ManageCustomer () {
 
         <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
           <label>{intl.$t({ defaultMessage: 'Trial Start Date' })}</label>
-          <label>{subscriptionStartDate}</label>
+          <label>{formatter(DateFormatEnum.DateFormat)(subscriptionStartDate)}</label>
         </UI.FieldLabel2>
         <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
           <label>{intl.$t({ defaultMessage: '30 Day Trial Ends on' })}</label>
-          <label>{subscriptionEndDate}</label>
+          <label>{formatter(DateFormatEnum.DateFormat)(subscriptionEndDate)}</label>
         </UI.FieldLabel2></div>
       }
 
@@ -764,7 +790,7 @@ export function ManageCustomer () {
 
         <UI.FieldLabel2 width='275px' style={{ marginTop: '18px' }}>
           <label>{intl.$t({ defaultMessage: 'Service Start Date' })}</label>
-          <label>{subscriptionStartDate}</label>
+          <label>{formatter(DateFormatEnum.DateFormat)(subscriptionStartDate)}</label>
         </UI.FieldLabel2>
 
         <UI.FieldLabeServiceDate width='275px' style={{ marginTop: '10px' }}>
@@ -789,9 +815,9 @@ export function ManageCustomer () {
             label=''
             children={
               <DatePicker
-                format={dateFormat}
+                format={formatter(DateFormatEnum.DateFormat)}
                 disabled={!customDate}
-                defaultValue={moment(subscriptionEndDate, dateFormat)}
+                defaultValue={moment(formatter(DateFormatEnum.DateFormat)(subscriptionEndDate))}
                 onChange={expirationDateOnChange}
                 disabledDate={(current) => {
                   return current && current < moment().endOf('day')
@@ -840,14 +866,18 @@ export function ManageCustomer () {
           <label>{intl.$t({ defaultMessage: 'Switch Subscription' })}</label>
           <label>{intl.$t({ defaultMessage: '25 devices' })}</label>
         </UI.FieldLabel2>
+        {edgeEnabled && <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
+          <label>{intl.$t({ defaultMessage: 'SmartEdge Subscription' })}</label>
+          <label>{intl.$t({ defaultMessage: '25 devices' })}</label>
+        </UI.FieldLabel2>}
 
         <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
           <label>{intl.$t({ defaultMessage: 'Trial Start Date' })}</label>
-          <label>{subscriptionStartDate}</label>
+          <label>{formatter(DateFormatEnum.DateFormat)(subscriptionStartDate)}</label>
         </UI.FieldLabel2>
         <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
           <label>{intl.$t({ defaultMessage: '30 Day Trial Ends on' })}</label>
-          <label>{subscriptionEndDate}</label>
+          <label>{formatter(DateFormatEnum.DateFormat)(subscriptionEndDate)}</label>
         </UI.FieldLabel2></div>
       }
 
@@ -858,7 +888,7 @@ export function ManageCustomer () {
         <SwitchSubscription />
         <UI.FieldLabel2 width='275px' style={{ marginTop: '18px' }}>
           <label>{intl.$t({ defaultMessage: 'Service Start Date' })}</label>
-          <label>{subscriptionStartDate}</label>
+          <label>{formatter(DateFormatEnum.DateFormat)(subscriptionStartDate)}</label>
         </UI.FieldLabel2>
 
         <UI.FieldLabeServiceDate width='275px' style={{ marginTop: '10px' }}>
@@ -883,9 +913,9 @@ export function ManageCustomer () {
             label=''
             children={
               <DatePicker
-                format={dateFormat}
+                format={formatter(DateFormatEnum.DateFormat)}
                 disabled={!customDate}
-                defaultValue={moment(subscriptionEndDate, dateFormat)}
+                defaultValue={moment(formatter(DateFormatEnum.DateFormat)(subscriptionEndDate))}
                 onChange={expirationDateOnChange}
                 disabledDate={(current) => {
                   return current && current < moment().endOf('day')
@@ -961,10 +991,16 @@ export function ManageCustomer () {
         >
           <Paragraph>{switchAssigned}</Paragraph>
         </Form.Item>
+        {edgeEnabled && <Form.Item style={{ marginTop: '-22px' }}
+          label={intl.$t({ defaultMessage: 'SmartEdge Subscriptions' })}
+        >
+          <Paragraph>25</Paragraph>
+        </Form.Item>}
+
         <Form.Item style={{ marginTop: '-22px' }}
           label={intl.$t({ defaultMessage: 'Service Expiration Date' })}
         >
-          <Paragraph>{subscriptionEndDate}</Paragraph>
+          <Paragraph>{formatter(DateFormatEnum.DateFormat)(subscriptionEndDate)}</Paragraph>
         </Form.Item></>
     )
   }

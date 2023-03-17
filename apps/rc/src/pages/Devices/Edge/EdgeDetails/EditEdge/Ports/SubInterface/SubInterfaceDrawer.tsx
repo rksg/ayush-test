@@ -4,7 +4,7 @@ import { Form, Input, InputNumber, Select } from 'antd'
 import { useIntl }                          from 'react-intl'
 import { useParams }                        from 'react-router-dom'
 
-import { Alert, Drawer, showToast }                                                                      from '@acx-ui/components'
+import { Alert, Drawer }                                                                                 from '@acx-ui/components'
 import { useAddSubInterfacesMutation, useUpdateSubInterfacesMutation }                                   from '@acx-ui/rc/services'
 import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeSubInterface, serverIpAddressRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
 import { validationMessages }                                                                            from '@acx-ui/utils'
@@ -78,12 +78,9 @@ const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
       } else {
         await addSubInterface(requestPayload).unwrap()
       }
-    } catch {
+    } catch (error) {
       // TODO error message not be defined
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+      console.log(error) // eslint-disable-line no-console
     }
     handleClose()
   }

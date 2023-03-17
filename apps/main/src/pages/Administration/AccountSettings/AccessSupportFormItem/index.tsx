@@ -5,15 +5,15 @@ import { useIntl }                                       from 'react-intl'
 import { useParams }                                     from 'react-router-dom'
 import styled                                            from 'styled-components/macro'
 
-import { showToast }                           from '@acx-ui/components'
-import { SpaceWrapper, useUserProfileContext } from '@acx-ui/rc/components'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { SpaceWrapper }              from '@acx-ui/rc/components'
 import {
   useEnableAccessSupportMutation,
   useDisableAccessSupportMutation,
   useGetEcTenantDelegationQuery,
   useGetTenantDelegationQuery
-} from '@acx-ui/rc/services'
-import { formatter } from '@acx-ui/utils'
+}                                    from '@acx-ui/rc/services'
+import { useUserProfileContext } from '@acx-ui/user'
 
 import { MessageMapping } from '../MessageMapping'
 
@@ -21,8 +21,7 @@ import * as UI from './styledComponents'
 
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
-
- interface AccessSupportFormItemProps {
+interface AccessSupportFormItemProps {
   className?: string;
   isMspEc: boolean;
   canMSPDelegation: boolean;
@@ -67,7 +66,8 @@ const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
     if (responseCreatedDate) {
-      const newCreatedDate = formatter('dateTimeFormatWithTimezone')(responseCreatedDate, timezone)
+      const newCreatedDate = formatter(
+        DateFormatEnum.DateTimeFormatWithTimezone)(responseCreatedDate, timezone)
       setCreatedDate(newCreatedDate.replace(/\+\d\d:\d\d/, '').replace('UTC UTC', 'UTC'))
     }
   }, [])
@@ -78,11 +78,8 @@ const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
 
     try {
       await triggerAction({ params }).unwrap()
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

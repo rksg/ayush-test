@@ -1,9 +1,8 @@
 import '@testing-library/jest-dom'
 
-import { dataApiURL }                                         from '@acx-ui/analytics/services'
 import { AnalyticsFilter }                                    from '@acx-ui/analytics/utils'
 import { SwitchUrlsInfo }                                     from '@acx-ui/rc/utils'
-import { Provider }                                           from '@acx-ui/store'
+import { dataApiURL, Provider }                               from '@acx-ui/store'
 import { render, screen, mockRestApiQuery, mockGraphqlQuery } from '@acx-ui/test-utils'
 
 import {
@@ -21,18 +20,6 @@ const params = {
   switchId: 'switchId',
   serialNumber: 'serialNumber'
 }
-
-jest.mock('@acx-ui/analytics/utils', () => ({
-  ...jest.requireActual('@acx-ui/analytics/utils'),
-  useAnalyticsFilter: () => ({
-    filters: { path: [{ type: 'network', name: 'Network' }] },
-    getNetworkFilter: jest
-      .fn()
-      .mockReturnValueOnce({
-        networkFilter: { path: [{ type: 'network', name: 'Network' }] }
-      })
-  })
-}))
 
 const mockedUsedNavigate = jest.fn()
 

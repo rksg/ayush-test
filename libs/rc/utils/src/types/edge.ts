@@ -1,3 +1,4 @@
+import { FirmwareCategory }                                         from '..'
 import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeStatusSeverityEnum } from '../models/EdgeEnum'
 
 export interface EdgeGeneralSetting {
@@ -29,7 +30,7 @@ export interface Edge extends EdgeResourceUtilization {
   venueId: string
   tags: string[]
   description?: string
-  fwVersion?: string
+  firmwareVersion?: string
 }
 export interface EdgeStatus extends EdgeResourceUtilization {
   serialNumber: string
@@ -44,7 +45,7 @@ export interface EdgeStatus extends EdgeResourceUtilization {
   deviceStatusSeverity: string
   ip: string
   ports: string
-  fwVersion?: string
+  firmwareVersion?: string
 }
 export interface EdgeDetails {
   serialNumber: string
@@ -110,4 +111,27 @@ export interface EdgeStatusSeverityStatistic {
     [key in EdgeStatusSeverityEnum]?: number
   },
   totalCount: number
+}
+
+export interface LatestEdgeFirmwareVersion extends EdgeFirmwareVersion {
+  createdDate: string
+}
+
+export interface EdgeVenueFirmware {
+  id: string
+  name: string
+  updatedDate: string
+  versions: EdgeFirmwareVersion[]
+}
+
+export interface EdgeFirmwareVersion {
+  name: string
+  category: FirmwareCategory
+  id?: string
+  onboardDate: string
+}
+
+export interface EdgeFirmwareUpdateData {
+  venueIds: string[]
+  firmwareVersion: string
 }

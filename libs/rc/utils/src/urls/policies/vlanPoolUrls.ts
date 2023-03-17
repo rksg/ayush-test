@@ -3,26 +3,38 @@ import { ApiInfo } from '../../apiService'
 export const VlanPoolUrls: { [key: string]: ApiInfo } = {
   deleteVLANPoolPolicy: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/wifi/vlan-pool/:policyId'
+    url: '/vlanPools/:policyId',
+    oldUrl: '/api/tenant/:tenantId/wifi/vlan-pool/:policyId',
+    newApi: true
   },
   addVLANPoolPolicy: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/vlan-pool'
+    url: '/vlanPools',
+    oldUrl: '/api/tenant/:tenantId/wifi/vlan-pool',
+    newApi: true
   },
   getVLANPoolPolicy: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/vlan-pool/:policyId'
+    url: '/vlanPools/:policyId',
+    oldUrl: '/api/tenant/:tenantId/wifi/vlan-pool/:policyId',
+    newApi: true
   },
   updateVLANPoolPolicy: {
     method: 'put',
-    url: '/api/tenant/:tenantId/wifi/vlan-pool/:policyId'
+    url: '/vlanPools/:policyId',
+    oldUrl: '/api/tenant/:tenantId/wifi/vlan-pool/:policyId',
+    newApi: true
   },
   getVLANPoolPolicyList: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/vlan-pool/query'
+    url: '/vlanPools/query',
+    oldUrl: '/api/tenant/:tenantId/wifi/vlan-pool/query',
+    newApi: true
   },
   getVLANPoolVenues: {
     method: 'post',
-    url: '/api/vlanPools/:policyId/venues'
+    url: '/vlanPools/:policyId/venues',
+    oldUrl: '/api/vlanPools/:policyId/venues',
+    newApi: true
   }
 }

@@ -2,9 +2,8 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Drawer, LayoutUI, Loader, SearchBar, Table, TableProps } from '@acx-ui/components'
-import { CaretDownSolid }                                         from '@acx-ui/icons'
-import { useUserProfileContext }                                  from '@acx-ui/rc/components'
+import { Drawer, LayoutUI, Loader, Table, TableProps } from '@acx-ui/components'
+import { CaretDownSolid }                              from '@acx-ui/icons'
 import {
   useMspCustomerListDropdownQuery,
   useVarCustomerListDropdownQuery,
@@ -13,6 +12,7 @@ import {
 }  from '@acx-ui/rc/services'
 import { MspEc, TenantIdFromJwt, useTableQuery, VarCustomer } from '@acx-ui/rc/utils'
 import { getBasePath, Link, useParams  }                      from '@acx-ui/react-router-dom'
+import { useUserProfileContext }                              from '@acx-ui/user'
 import { AccountType }                                        from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
@@ -29,7 +29,6 @@ export function MspEcDropdownList () {
   const { $t } = useIntl()
 
   const [customerName, setCustomerName] = useState('')
-  const [searchString, setSearchString] = useState('')
   const [visible, setVisible] = useState(false)
   const [delegationType, setDelegationType] = useState('')
 
@@ -43,8 +42,10 @@ export function MspEcDropdownList () {
     if (tenantDetail && userProfile) {
       UpdateDelegationType(tenantDetail?.tenantType, userProfile?.support)
     }
+    if (tenantDetail?.name) {
+      setCustomerName(() => tenantDetail?.name)
+    }
   }, [tenantDetail, userProfile])
-
 
   function UpdateDelegationType (tenantType?: string, support?: boolean) {
     if (support === true) {
@@ -65,26 +66,32 @@ export function MspEcDropdownList () {
 
   const mspEcPayload = {
     searchString: '',
-    filters: { tenantType: [AccountType.MSP_EC] },
+    filters: {
+      mspAdmins: [userProfile.adminId],
+      tenantType: [AccountType.MSP_EC] },
     fields: [
       'id',
       'name',
       'tenantType',
       'status',
       'streetAddress'
-    ]
+    ],
+    searchTargetFields: ['name']
   }
 
   const integratorPayload = {
     searchString: '',
-    filters: { tenantType: [AccountType.MSP_INSTALLER, AccountType.MSP_INTEGRATOR] },
+    filters: {
+      mspAdmins: [userProfile.adminId],
+      tenantType: [AccountType.MSP_INSTALLER, AccountType.MSP_INTEGRATOR] },
     fields: [
       'id',
       'name',
       'tenantType',
       'status',
       'streetAddress'
-    ]
+    ],
+    searchTargetFields: ['name']
   }
 
   const varPayload = {
@@ -124,6 +131,7 @@ export function MspEcDropdownList () {
       'status',
       'streetAddress'
     ],
+    searchTargetFields: ['name'],
     filters: {
       includeExpired: [false]
     }
@@ -134,11 +142,12 @@ export function MspEcDropdownList () {
       title: $t({ defaultMessage: 'Customers' }),
       dataIndex: 'name',
       key: 'name',
+      searchable: true,
+      disable: true,
       defaultSortOrder: 'ascend',
       onCell: () => {
         return {
           onClick: () => {
-            setSearchString('')
             setVisible(false)
           }
         }
@@ -153,14 +162,13 @@ export function MspEcDropdownList () {
     {
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'status',
-      show: delegationType === DelegationType.MSP_EC,
       key: 'status'
     },
     {
       title: $t({ defaultMessage: 'Tenant Id' }),
       dataIndex: 'id',
-      key: 'id',
-      show: false
+      key: 'id'
+      // show: false
     }
   ]
 
@@ -169,11 +177,12 @@ export function MspEcDropdownList () {
       title: $t({ defaultMessage: 'Customers' }),
       dataIndex: 'tenantName',
       key: 'tenantName',
+      searchable: true,
+      disable: true,
       defaultSortOrder: 'ascend',
       onCell: () => {
         return {
           onClick: () => {
-            setSearchString('')
             setVisible(false)
           }
         }
@@ -188,8 +197,8 @@ export function MspEcDropdownList () {
     {
       title: $t({ defaultMessage: 'Tenant Id' }),
       dataIndex: 'id',
-      key: 'id',
-      show: false
+      key: 'id'
+      // show: false
     }
   ]
 
@@ -197,6 +206,9 @@ export function MspEcDropdownList () {
     useQuery: useMspCustomerListDropdownQuery,
     apiParams: { tenantId: TenantIdFromJwt() },
     defaultPayload: mspEcPayload,
+    search: {
+      searchTargetFields: mspEcPayload.searchTargetFields as string[]
+    },
     option: { skip: delegationType !== DelegationType.MSP_EC }
   })
 
@@ -204,6 +216,9 @@ export function MspEcDropdownList () {
     useQuery: useMspCustomerListDropdownQuery,
     apiParams: { tenantId: TenantIdFromJwt() },
     defaultPayload: integratorPayload,
+    search: {
+      searchTargetFields: integratorPayload.searchTargetFields as string[]
+    },
     option: { skip: delegationType !== DelegationType.MSP_INTEGRATOR }
   })
 
@@ -211,6 +226,9 @@ export function MspEcDropdownList () {
     useQuery: useVarCustomerListDropdownQuery,
     apiParams: { tenantId: TenantIdFromJwt() },
     defaultPayload: varPayload,
+    search: {
+      searchTargetFields: varPayload.searchTargetFields as string[]
+    },
     option: { skip: delegationType !== DelegationType.VAR_REC }
   })
 
@@ -218,6 +236,9 @@ export function MspEcDropdownList () {
     useQuery: useSupportCustomerListDropdownQuery,
     apiParams: { tenantId: TenantIdFromJwt() },
     defaultPayload: supportEcPayload,
+    search: {
+      searchTargetFields: supportEcPayload.searchTargetFields as string[]
+    },
     option: { skip: delegationType !== DelegationType.SUPPORT_MSP_EC }
   })
 
@@ -225,59 +246,39 @@ export function MspEcDropdownList () {
     useQuery: useVarCustomerListDropdownQuery,
     apiParams: { tenantId: TenantIdFromJwt() },
     defaultPayload: supportPayload,
+    search: {
+      searchTargetFields: supportPayload.searchTargetFields as string[]
+    },
     option: { skip: delegationType !== DelegationType.SUPPORT_REC }
   })
 
-  useEffect(()=>{
-    if (tenantDetail?.name) {
-      setCustomerName(() => tenantDetail?.name)
-    }
-
-    if(tableQueryMspEc?.data && delegationType === DelegationType.MSP_EC) {
-      tableQueryMspEc.setPayload({ ...tableQueryMspEc.payload, searchString: searchString })
-    }
-    if(tableQueryMspEc?.data && delegationType === DelegationType.MSP_INTEGRATOR) {
-      tableQueryMspEc.setPayload({ ...tableQueryIntegrator.payload, searchString: searchString })
-    }
-    if(tableQueryVarRec?.data && delegationType === DelegationType.VAR_REC) {
-      tableQueryVarRec.setPayload({ ...tableQueryVarRec.payload, searchString: searchString })
-    }
-    if(tableQuerySupportEc?.data && delegationType === DelegationType.SUPPORT_MSP_EC) {
-      tableQuerySupportEc.setPayload({ ...tableQuerySupportEc.payload, searchString: searchString })
-    }
-    if(tableQuerySupport?.data && delegationType === DelegationType.SUPPORT_REC) {
-      tableQuerySupport.setPayload({ ...tableQuerySupport.payload, searchString: searchString })
-    }
-  }, [tenantDetail?.name, searchString])
-
   const onClose = () => {
-    setSearchString('')
     setVisible(false)
   }
 
   const ContentMspEc = () => {
     return <Loader states={[tableQueryMspEc]}>
-      <SearchBar onChange={setSearchString}/>
 
       <Table
         columns={customerColumns}
         dataSource={tableQueryMspEc.data?.data}
         pagination={tableQueryMspEc.pagination}
         onChange={tableQueryMspEc.handleTableChange}
+        onFilterChange={tableQueryMspEc.handleFilterChange}
         rowKey='id'
       />
     </Loader>
   }
 
-  const ContentIntergrator = () => {
+  const ContentIntegrator = () => {
     return <Loader states={[tableQueryIntegrator]}>
-      <SearchBar onChange={setSearchString}/>
 
       <Table
         columns={customerColumns}
         dataSource={tableQueryIntegrator.data?.data}
         pagination={tableQueryIntegrator.pagination}
         onChange={tableQueryIntegrator.handleTableChange}
+        onFilterChange={tableQueryIntegrator.handleFilterChange}
         rowKey='id'
       />
     </Loader>
@@ -285,13 +286,13 @@ export function MspEcDropdownList () {
 
   const ContentVar = () => {
     return <Loader states={[tableQueryVarRec]}>
-      <SearchBar onChange={setSearchString}/>
 
       <Table
         columns={supportColumns}
         dataSource={tableQueryVarRec.data?.data}
         pagination={tableQueryVarRec.pagination}
         onChange={tableQueryVarRec.handleTableChange}
+        onFilterChange={tableQueryVarRec.handleFilterChange}
         rowKey='id'
       />
     </Loader>
@@ -299,13 +300,13 @@ export function MspEcDropdownList () {
 
   const ContentSupport = () => {
     return <Loader states={[tableQuerySupport]}>
-      <SearchBar onChange={setSearchString}/>
 
       <Table
         columns={supportColumns}
         dataSource={tableQuerySupport.data?.data}
         pagination={tableQuerySupport.pagination}
         onChange={tableQuerySupport.handleTableChange}
+        onFilterChange={tableQuerySupport.handleFilterChange}
         rowKey='id'
       />
     </Loader>
@@ -313,27 +314,30 @@ export function MspEcDropdownList () {
 
   const ContentSupportEc = () => {
     return <Loader states={[tableQuerySupportEc]}>
-      <SearchBar onChange={setSearchString}/>
 
       <Table
         columns={customerColumns}
         dataSource={tableQuerySupportEc.data?.data}
         pagination={tableQuerySupportEc.pagination}
         onChange={tableQuerySupportEc.handleTableChange}
+        onFilterChange={tableQuerySupportEc.handleFilterChange}
         rowKey='id'
       />
     </Loader>
   }
 
   let contentx = ContentMspEc()
+  let colWidth = 420
   if (delegationType === DelegationType.SUPPORT_REC) {
+    colWidth = 360
     contentx = ContentSupport()
   } else if (delegationType === DelegationType.SUPPORT_MSP_EC) {
     contentx = ContentSupportEc()
   } else if (delegationType === DelegationType.VAR_REC) {
+    colWidth = 360
     contentx = ContentVar()
   } else if (delegationType === DelegationType.MSP_INTEGRATOR) {
-    contentx = ContentIntergrator()
+    contentx = ContentIntegrator()
   }
 
   return (
@@ -345,7 +349,7 @@ export function MspEcDropdownList () {
         />
       </UI.CompanyNameDropdown>
       <Drawer
-        width={360}
+        width={colWidth}
         title={$t({ defaultMessage: 'Change Customer' })}
         visible={visible}
         onClose={onClose}

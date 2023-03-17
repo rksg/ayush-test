@@ -1,8 +1,7 @@
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Row }     from 'antd'
-import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import {
@@ -15,13 +14,17 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { get }                       from '@acx-ui/config'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import {
+  SubscriptionUsageReportDialog
+} from '@acx-ui/msp/components'
 import {
   useMspEntitlementListQuery,
   useMspAssignmentSummaryQuery,
   useRefreshMspEntitlementMutation
 } from '@acx-ui/rc/services'
 import {
-  DateFormatEnum,
   EntitlementUtil,
   MspEntitlement
 } from '@acx-ui/rc/utils'
@@ -33,6 +36,7 @@ export function Subscriptions () {
   const [usedWifiCount, setUsedWifiCount] = useState(0)
   const [totalSwitchCount, setTotalSwitchCount] = useState(0)
   const [usedSwitchCount, setUsedSwitchCount] = useState(0)
+  const [showDialog, setShowDialog] = useState(false)
 
   const { tenantId } = useParams()
 
@@ -70,7 +74,7 @@ export function Subscriptions () {
       dataIndex: 'effectiveDate',
       key: 'effectiveDate',
       render: function (_, row) {
-        return moment(row.effectiveDate).format(DateFormatEnum.UserDateFormat)
+        return formatter(DateFormatEnum.DateFormat)(row.effectiveDate)
       }
     },
     {
@@ -78,7 +82,7 @@ export function Subscriptions () {
       dataIndex: 'expirationDate',
       key: 'expirationDate',
       render: function (_, row) {
-        return moment(row.expirationDate).format(DateFormatEnum.UserDateFormat)
+        return formatter(DateFormatEnum.DateFormat)(row.expirationDate)
       }
     },
     {
@@ -86,8 +90,8 @@ export function Subscriptions () {
       dataIndex: 'timeLeft',
       key: 'timeLeft',
       render: function (_, row) {
-        const remaingDays = EntitlementUtil.timeLeftInDays(row.expirationDate)
-        return EntitlementUtil.timeLeftValues(remaingDays)
+        const remainingDays = EntitlementUtil.timeLeftInDays(row.expirationDate)
+        return EntitlementUtil.timeLeftValues(remainingDays)
       }
     },
     {
@@ -102,13 +106,14 @@ export function Subscriptions () {
     {
       label: $t({ defaultMessage: 'Generate Usage Report' }),
       onClick: () => {
-        // TODO
+        setShowDialog(true)
       }
     },
     {
-      label: $t({ defaultMessage: 'Manage Subsciptions' }),
+      label: $t({ defaultMessage: 'Manage Subscriptions' }),
       onClick: () => {
-        window.open('https://support.ruckuswireless.com/cloud_subscriptions', '_blank')
+        const licenseUrl = get('MANAGE_LICENSES')
+        window.open(licenseUrl, '_blank')
       }
     },
     {
@@ -129,28 +134,30 @@ export function Subscriptions () {
         ...rest
       })
     })
-    if (queryResults.data) {
-      const wifiData = queryResults.data?.filter(n => n.deviceType === 'MSP_WIFI')
-      let wifiQuantity = 0
-      let wifiUsed = 0
-      wifiData.forEach(summary => {
-        wifiQuantity += summary.quantity + summary.remainingDevices
-        wifiUsed += summary.quantity
-        setTotalWifiCount(wifiQuantity)
-        setUsedWifiCount(wifiUsed)
-      })
-    }
-    if (queryResults.data) {
-      const switchData = queryResults.data?.filter(n => n.deviceType === 'MSP_SWITCH')
-      let switchQuantity = 0
-      let switchUsed = 0
-      switchData.forEach(summary => {
-        switchQuantity += summary.quantity + summary.remainingDevices
-        switchUsed += summary.quantity
-        setTotalSwitchCount(switchQuantity)
-        setUsedSwitchCount(switchUsed)
-      })
-    }
+    useEffect(() => {
+      if (queryResults.data) {
+        const wifiData = queryResults.data?.filter(n => n.deviceType === 'MSP_WIFI')
+        let wifiQuantity = 0
+        let wifiUsed = 0
+        wifiData.forEach(summary => {
+          wifiQuantity += summary.quantity + summary.remainingDevices
+          wifiUsed += summary.quantity
+          setTotalWifiCount(wifiQuantity)
+          setUsedWifiCount(wifiUsed)
+        })
+      }
+      if (queryResults.data) {
+        const switchData = queryResults.data?.filter(n => n.deviceType === 'MSP_SWITCH')
+        let switchQuantity = 0
+        let switchUsed = 0
+        switchData.forEach(summary => {
+          switchQuantity += summary.quantity + summary.remainingDevices
+          switchUsed += summary.quantity
+          setTotalSwitchCount(switchQuantity)
+          setUsedSwitchCount(switchUsed)
+        })
+      }
+    })
 
     const barColors = [
       cssStr('--acx-accents-blue-50'),
@@ -162,7 +169,7 @@ export function Subscriptions () {
         <Subtitle level={4}>
           {$t({ defaultMessage: 'Subscription Utilization' })}</Subtitle>
         <Row>
-          <label>Wi-Fi</label>
+          <label>{$t({ defaultMessage: 'Wi-Fi' })}</label>
           <StackedBarChart
             style={{ marginLeft: 8, height: 16, width: 135 }}
             showLabels={false}
@@ -182,7 +189,7 @@ export function Subscriptions () {
           />
           <label style={{ marginLeft: 8 }}>{usedWifiCount} / {totalWifiCount}</label>
 
-          <label style={{ marginLeft: 40 }}>Switch</label>
+          <label style={{ marginLeft: 40 }}>{$t({ defaultMessage: 'Switch' })}</label>
           <StackedBarChart
             style={{ marginLeft: 8, height: 16, width: 135 }}
             showLabels={false}
@@ -239,6 +246,10 @@ export function Subscriptions () {
           dataSource={subscriptionData}
           rowKey='id'
         />
+        <SubscriptionUsageReportDialog
+          visible={showDialog}
+          setVisible={setShowDialog}
+        />
       </Loader>
     )
   }
@@ -247,11 +258,11 @@ export function Subscriptions () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'MSP Subscriptions' })}
-        extra={[
-          <TenantLink to='/dashboard' key='ownAccount'>
-            <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
+        extra={
+          <TenantLink to='/dashboard'>
+            <Button>{$t({ defaultMessage: 'Manage my account' })}</Button>
           </TenantLink>
-        ]}
+        }
       />
       <SubscriptionUtilization />
       <SubscriptionTable />

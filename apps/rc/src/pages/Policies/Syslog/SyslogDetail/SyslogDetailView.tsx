@@ -12,6 +12,7 @@ import {
 import { getPolicyRoutePath, PolicyType, SyslogConstant, SyslogDetailContextType } from '@acx-ui/rc/utils'
 import { getPolicyDetailsLink, PolicyOperation }                                   from '@acx-ui/rc/utils'
 import { TenantLink }                                                              from '@acx-ui/react-router-dom'
+import { filterByAccess }                                                          from '@acx-ui/user'
 
 
 import SyslogDetailContent from './SyslogDetailContent'
@@ -22,29 +23,28 @@ export const SyslogDetailContext = createContext({} as SyslogDetailContextType)
 const SyslogDetailView = () => {
   const { $t } = useIntl()
   const params = useParams()
-  const [venueId, setVenueId] = useState([] as string[])
+  const [filtersId, setFiltersId] = useState([] as string[])
   const [policyName, setPolicyName] = useState('' as string)
 
   return (
-    <SyslogDetailContext.Provider value={{ venueId, setVenueId, policyName, setPolicyName }}>
+    <SyslogDetailContext.Provider value={{ filtersId, setFiltersId, policyName, setPolicyName }}>
       <PageHeader
         title={policyName}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Syslog' }),
             link: getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.LIST }) }
         ]}
-        extra={policyName !== SyslogConstant.DefaultProfile ? [
+        extra={policyName !== SyslogConstant.DefaultProfile ? filterByAccess([
           <TenantLink to={getPolicyDetailsLink({
             type: PolicyType.SYSLOG,
             oper: PolicyOperation.EDIT,
             policyId: params.policyId as string
-          })}
-          key='edit'>
+          })}>
             <Button key={'configure'} type={'primary'}>
               {$t({ defaultMessage: 'Configure' })}
             </Button>
           </TenantLink>
-        ]: []}
+        ]) : []}
       />
 
       <GridRow>
@@ -52,7 +52,7 @@ const SyslogDetailView = () => {
           <SyslogDetailContent />
         </GridCol>
         <GridCol col={{ span: 24 }}>
-          { venueId.length && <SyslogVenueDetail /> }
+          { (filtersId.length > 0) && <SyslogVenueDetail /> }
         </GridCol>
       </GridRow>
     </SyslogDetailContext.Provider>

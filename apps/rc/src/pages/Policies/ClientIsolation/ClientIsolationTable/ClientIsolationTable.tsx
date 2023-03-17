@@ -1,30 +1,31 @@
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { useDeleteClientIsolationMutation, usePolicyListQuery }           from '@acx-ui/rc/services'
+import { SimpleListTooltip }                                              from '@acx-ui/rc/components'
+import {
+  useDeleteClientIsolationMutation,
+  useGetEnhancedClientIsolationListQuery,
+  useGetVenuesQuery
+} from '@acx-ui/rc/services'
 import {
   PolicyType,
   useTableQuery,
   getPolicyDetailsLink,
   PolicyOperation,
-  Policy,
   getPolicyListRoutePath,
-  getPolicyRoutePath
+  getPolicyRoutePath,
+  ClientIsolationViewModel,
+  FILTER,
+  SEARCH
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess }                                          from '@acx-ui/user'
 
 const defaultPayload = {
+  fields: ['id', 'name', 'tenantId', 'clientEntries', 'venueIds'],
   searchString: '',
-  filters: {
-    type: [PolicyType.CLIENT_ISOLATION]
-  },
-  fields: [
-    'id',
-    'name',
-    'type',
-    'scope',
-    'cog'
-  ]
+  filters: {}
 }
 
 export default function ClientIsolationTable () {
@@ -34,12 +35,12 @@ export default function ClientIsolationTable () {
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn ] = useDeleteClientIsolationMutation()
 
-  const tableQuery = useTableQuery({
-    useQuery: usePolicyListQuery,
+  const tableQuery = useTableQuery<ClientIsolationViewModel>({
+    useQuery: useGetEnhancedClientIsolationListQuery,
     defaultPayload
   })
 
-  const rowActions: TableProps<Policy>['rowActions'] = [
+  const rowActions: TableProps<ClientIsolationViewModel>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: ([{ id, name }], clearSelection) => {
@@ -71,34 +72,47 @@ export default function ClientIsolationTable () {
     }
   ]
 
+  const handleFilterChange = (filters: FILTER, search: SEARCH) => {
+    const currentPayload = tableQuery.payload
+    // eslint-disable-next-line max-len
+    if (currentPayload.searchString === search.searchString && _.isEqual(currentPayload.filters, filters)) {
+      return
+    }
+    tableQuery.setPayload({
+      ...currentPayload,
+      searchString: search.searchString,
+      filters
+    })
+  }
+
   return (
     <>
       <PageHeader
-        title={
-          $t({
-            defaultMessage: 'Client Isolation'
-          })
-        }
+        title={$t({ defaultMessage: 'Client Isolation' })}
         breadcrumb={[
-          // eslint-disable-next-line max-len
-          { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) }
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          }
         ]}
-        extra={[
+        extra={filterByAccess([
           // eslint-disable-next-line max-len
-          <TenantLink to={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.CREATE })} key='add'>
+          <TenantLink to={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.CREATE })}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Client Isolation Pofile' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <Loader states={[tableQuery]}>
-        <Table<Policy>
+        <Table<ClientIsolationViewModel>
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={rowActions}
+          rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
+          onFilterChange={handleFilterChange}
+          enableApiFilter={true}
         />
       </Loader>
     </>
@@ -107,14 +121,30 @@ export default function ClientIsolationTable () {
 
 function useColumns () {
   const { $t } = useIntl()
+  const params = useParams()
+  const emptyVenues: { key: string, value: string }[] = []
+  const { venueNameMap } = useGetVenuesQuery({
+    params: { tenantId: params.tenantId },
+    payload: {
+      fields: ['name', 'id'],
+      sortField: 'name',
+      sortOrder: 'ASC'
+    }
+  }, {
+    selectFromResult: ({ data }) => ({
+      venueNameMap: data?.data
+        ? data.data.map(venue => ({ key: venue.id, value: venue.name }))
+        : emptyVenues
+    })
+  })
 
-  const columns: TableProps<Policy>['columns'] = [
+  const columns: TableProps<ClientIsolationViewModel>['columns'] = [
     {
       key: 'name',
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
       sorter: true,
-      defaultSortOrder: 'ascend',
+      searchable: true,
       render: function (data, row) {
         return (
           <TenantLink
@@ -129,11 +159,39 @@ function useColumns () {
       }
     },
     {
-      key: 'scope',
-      title: $t({ defaultMessage: 'Scope' }),
-      dataIndex: 'scope',
-      sorter: true,
-      align: 'center'
+      key: 'description',
+      title: $t({ defaultMessage: 'Description' }),
+      dataIndex: 'description'
+    },
+    {
+      key: 'clientEntries',
+      title: $t({ defaultMessage: 'Client Entries' }),
+      dataIndex: 'clientEntries',
+      align: 'center',
+      render: function (data) {
+        return data
+          ? <SimpleListTooltip
+            items={data as string[]}
+            displayText={(data as string[]).length}
+            title={$t({ defaultMessage: 'MAC Address' })}
+          />
+          : 0
+      }
+    },
+    {
+      key: 'venueIds',
+      title: $t({ defaultMessage: 'Venues' }),
+      dataIndex: 'venueIds',
+      align: 'center',
+      filterKey: 'venueIds',
+      filterable: venueNameMap,
+      render: function (data, row) {
+        if (!row.venueIds || row.venueIds.length === 0) return 0
+
+        // eslint-disable-next-line max-len
+        const tooltipItems = venueNameMap.filter(v => row.venueIds!.includes(v.key)).map(v => v.value)
+        return <SimpleListTooltip items={tooltipItems} displayText={row.venueIds.length} />
+      }
     }
   ]
 

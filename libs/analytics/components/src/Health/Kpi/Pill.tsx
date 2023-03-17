@@ -10,9 +10,9 @@ import {
 import { AnalyticsFilter, kpiConfig } from '@acx-ui/analytics/utils'
 import { Tooltip }                    from '@acx-ui/components'
 import { ProgressPill, Loader }       from '@acx-ui/components'
+import { formatter }                  from '@acx-ui/formatter'
 import { InformationOutlined }        from '@acx-ui/icons'
 import { TimeStampRange }             from '@acx-ui/types'
-import { formatter }                  from '@acx-ui/utils'
 
 import * as UI from '../styledComponents'
 
@@ -59,25 +59,22 @@ function HealthPill ({ filters, kpi, timeWindow, threshold }: {
   const { histogram, pill, text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
   const { $t } = useIntl()
   const [ startDate, endDate ] = timeWindow as [string, string]
-  let queryResults
-  if (histogram) {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    queryResults = healthApi.useKpiHistogramQuery(
-      { ...filters, startDate, endDate, kpi }, {
-        selectFromResult: ({ data, ...rest }) => ({
-          ...rest,
-          data: data ? tranformHistResponse({ ...data!, kpi, threshold }) : { success: 0, total: 0 }
-        })
-      })
-  } else {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    queryResults = healthApi.useKpiTimeseriesQuery({ ...filters, kpi }, {
-      selectFromResult: ({ data, ...rest }) => ({
-        ...rest,
-        data: data ? transformTSResponse(data!, { startDate, endDate }) : { success: 0, total: 0 }
-      })
+  const histogramQuery = healthApi.useKpiHistogramQuery({ ...filters, startDate, endDate, kpi }, {
+    skip: !Boolean(histogram),
+    selectFromResult: ({ data, ...rest }) => ({
+      ...rest,
+      data: data ? tranformHistResponse({ ...data!, kpi, threshold }) : { success: 0, total: 0 }
     })
-  }
+  })
+  const timeseriesQuery = healthApi.useKpiTimeseriesQuery({ ...filters, kpi }, {
+    skip: Boolean(histogram),
+    selectFromResult: ({ data, ...rest }) => ({
+      ...rest,
+      data: data ? transformTSResponse(data!, { startDate, endDate }) : { success: 0, total: 0 }
+    })
+  })
+  const queryResults = histogram ? histogramQuery : timeseriesQuery
+
   const { success, total } = queryResults.data as PillData
   const percent = total > 0 ? (success / total) * 100 : 0
   const { pillSuffix, description, thresholdDesc, thresholdFormatter, tooltip } = pill

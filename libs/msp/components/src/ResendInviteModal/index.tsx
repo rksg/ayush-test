@@ -1,15 +1,12 @@
 
 import { useState } from 'react'
 
-import { Form, Input, Modal } from 'antd'
-import { useIntl }            from 'react-intl'
+import { Form, Input } from 'antd'
+import { useIntl }     from 'react-intl'
 
-import {
-  useResendEcInvitationMutation
-} from '@acx-ui/rc/services'
-import {
-  emailRegExp
-} from '@acx-ui/rc/utils'
+import { Modal }                         from '@acx-ui/components'
+import { useResendEcInvitationMutation } from '@acx-ui/rc/services'
+import { emailRegExp }                   from '@acx-ui/rc/utils'
 
 interface ResendInviteModalProps {
   visible: boolean
@@ -33,15 +30,13 @@ export const ResendInviteModal = (props: ResendInviteModalProps) =>{
       const hasErrors = form.getFieldsError().map(item => item.errors).flat().length > 0
       !(email && !hasErrors ) ? disableButton(true) : disableButton(false)
     }}
-    onFinish={() => setVisible(false)}
   >
     <Form.Item
       label={$t({ defaultMessage:
         'Enter the email of the administrator you need to re-send an invitation to:' })}
       name='email'
       rules={[
-        { validator: (_, value) => emailRegExp(value) },
-        { message: $t({ defaultMessage: 'Please enter a valid email address!' }) }
+        { validator: (_, value) => emailRegExp(value) }
       ]}
     >
       {<Input />}
@@ -57,7 +52,7 @@ export const ResendInviteModal = (props: ResendInviteModalProps) =>{
     const { email } = form.getFieldsValue()
     const payload = {
       admin_email: email,
-      resend: false
+      resend: true
     }
     resendInvitation({ payload, params: { mspEcTenantId: tenantId } })
       .then(() => {

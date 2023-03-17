@@ -11,13 +11,12 @@ import {
   LeaseUnit,
   networkWifiIpRegExp,
   subnetMaskIpRegExp,
+  validateNetworkBaseIp,
   countIpMaxRange,
   countIpSize,
   IpInSubnetPool } from '@acx-ui/rc/utils'
 import { DHCPConfigTypeEnum }          from '@acx-ui/rc/utils'
 import { getIntl, validationMessages } from '@acx-ui/utils'
-
-import { DEFAULT_GUEST_DHCP_NAME } from '../DHCPForm'
 
 import { PoolTable } from './PoolTable'
 
@@ -108,14 +107,25 @@ export default function DHCPPoolTable ({
   const valueMap = useRef<Record<string, DHCPPool>>(value ? _.keyBy(value, 'id') : {})
   const [visible, setVisible] = useState(false)
   const [vlanEnable, setVlanEnable] = useState(true)
-
+  const [leaseUnit, setLeaseUnit] = useState(LeaseUnit.HOURS)
+  const [previousVal, setPreviousVal] = useState(300)
   const values = () => Object.values(valueMap.current)
 
   const handleChanged = () => onChange?.(values())
 
   const onAddOrEdit = (item?: DHCPPool) => {
     setVisible(true)
-    if (item) form.setFieldsValue(item)
+    if (item) {
+      form.setFieldsValue(item)
+      setLeaseUnit(item.leaseUnit||LeaseUnit.HOURS)
+      if(item.vlanId===1){
+        item.allowWired = true
+        setVlanEnable(false)
+      }else{
+        item.allowWired = false
+        setVlanEnable(true)
+      }
+    }
     else form.resetFields()
   }
 
@@ -161,10 +171,7 @@ export default function DHCPPoolTable ({
           ]}
           validateFirst
           hasFeedback
-          children={<Input disabled={
-            isEdit() &&
-            isDefaultService &&
-            form.getFieldValue('name') === DEFAULT_GUEST_DHCP_NAME}/>}
+          children={<Input/>}
         />
         <Form.Item
           name='description'
@@ -181,6 +188,7 @@ export default function DHCPPoolTable ({
                 form.setFieldsValue({ vlanId: 1 })
                 setVlanEnable(false)
               } else {
+                form.setFieldsValue({ vlanId: previousVal })
                 setVlanEnable(true)
               }
             }}/>}
@@ -191,7 +199,9 @@ export default function DHCPPoolTable ({
           rules={[
             { required: true },
             { validator: (_, value) => networkWifiIpRegExp(value) },
-            { validator: (_, value) => subnetValidator(value, values(), form.getFieldValue('id')) }
+            { validator: (_, value) => subnetValidator(value, values(), form.getFieldValue('id')) },
+            // eslint-disable-next-line max-len
+            { validator: (_, value) => validateNetworkBaseIp(value, form.getFieldValue('subnetMask')) }
           ]}
           children={<Input />}
         />
@@ -257,7 +267,14 @@ export default function DHCPPoolTable ({
           name='secondaryDnsIp'
           label={$t({ defaultMessage: 'Secondary DNS IP' })}
           rules={[
-            { validator: (_, value) => networkWifiIpRegExp(value) }
+            { validator: (_, value) => networkWifiIpRegExp(value) },
+            { validator: (_, value) => {
+              if(value && !form.getFieldValue('primaryDnsIp')){
+                return Promise.reject($t({ defaultMessage:
+                  'Please fill the Primary DNS IP field first' }))
+              }
+              return Promise.resolve()
+            } }
           ]}
           children={<Input />}
         />
@@ -267,14 +284,26 @@ export default function DHCPPoolTable ({
               noStyle
               name='leaseTime'
               label={$t({ defaultMessage: 'Lease Time' })}
+              validateTrigger='onChange'
               rules={[
-                { required: true }
+                { required: true },
+                { validator: (_, value) => {
+                  if(value<(leaseUnit === LeaseUnit.HOURS?1:5) ||
+                    value >(leaseUnit === LeaseUnit.HOURS?24:1440)){
+                    return Promise.reject($t({ defaultMessage:
+                      'Value must between 5-1440 minutes or 1-24 hours' }))
+                  }
+                  return Promise.resolve()
+                } }
               ]}
             >
-              <InputNumber data-testid='leaseTime' min={1} max={1440} style={{ width: '100%' }} />
+              <InputNumber data-testid='leaseTime'
+                min={leaseUnit === LeaseUnit.HOURS?1:5}
+                max={leaseUnit === LeaseUnit.HOURS?24:1440}
+                style={{ width: '100%' }} />
             </Form.Item>
             <Form.Item noStyle name='leaseUnit'>
-              <Select data-testid='leaseType'>
+              <Select data-testid='leaseType' onChange={(value)=>setLeaseUnit(value)}>
                 <Option value={'leaseTimeHours'}>{$t({ defaultMessage: 'Hours' })}</Option>
                 <Option value={'leaseTimeMinutes'}>{$t({ defaultMessage: 'Minutes' })}</Option>
               </Select>
@@ -295,6 +324,9 @@ export default function DHCPPoolTable ({
           label={$t({ defaultMessage: 'VLAN' })}
           children={<InputNumber
             disabled={!vlanEnable}
+            onChange={(val)=>{
+              setPreviousVal(val)
+            }}
             min={1}
             max={4094} />}
         />
@@ -313,7 +345,8 @@ export default function DHCPPoolTable ({
         isDefaultService={isDefaultService}
       />
       <Drawer
-        title={$t({ defaultMessage: 'Add DHCP Pool' })}
+        title={isEdit()? $t({ defaultMessage: 'Edit DHCP Pool' }):
+          $t({ defaultMessage: 'Add DHCP Pool' })}
         visible={visible}
         onClose={onClose}
         mask={true}
@@ -321,7 +354,7 @@ export default function DHCPPoolTable ({
         destroyOnClose={true}
         width={900}
         footer={<Drawer.FormFooter
-          showAddAnother={!isEdit()}
+          showAddAnother={!isEdit()&&values().length<3}
           buttonLabel={({
             addAnother: $t({ defaultMessage: 'Add another pool' }),
             save: isEdit() ? $t({ defaultMessage: 'Update' }) : $t({ defaultMessage: 'Add' })

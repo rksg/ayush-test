@@ -1,13 +1,11 @@
 import { useEffect, useState } from 'react'
 
-import moment from 'moment'
+import moment from 'moment-timezone'
 
 import { NetworkFilter, FilterMode } from '@acx-ui/analytics/components'
-import {
-  RangePicker,
-  PageHeader } from '@acx-ui/components'
-import { useReportsFilter }                from '@acx-ui/reports/utils'
-import { useDateFilter, dateRangeForLast } from '@acx-ui/utils'
+import { RangePicker, PageHeader }   from '@acx-ui/components'
+import { useReportsFilter }          from '@acx-ui/reports/utils'
+import { useDateFilter }             from '@acx-ui/utils'
 
 export function ReportHeader (props: {
   name: string,
@@ -50,7 +48,6 @@ export function ReportHeader (props: {
           shouldQuerySwitch={shouldQuerySwitch}
           showRadioBand={showRadioBand}
           multiple={true}
-          replaceWithId={true}
           filterMode={mode}
           filterFor={'reports'}
           isRadioBandDisabled={isRadioBandDisabled}
@@ -59,7 +56,6 @@ export function ReportHeader (props: {
         <RangePicker
           key='range-picker'
           selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
-          enableDates={dateRangeForLast(3,'months')}
           onDateApply={setDateFilter as CallableFunction}
           showTimePicker
           selectionType={range}

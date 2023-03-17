@@ -1,5 +1,5 @@
-import moment            from 'moment-timezone'
-import { defineMessage } from 'react-intl'
+import moment, { Moment }           from 'moment-timezone'
+import { defineMessage, IntlShape } from 'react-intl'
 
 import { getIntl } from '@acx-ui/utils'
 
@@ -29,7 +29,26 @@ export class EntitlementUtil {
     return 'Wi-Fi'
   }
 
-  public static deviceSubTypeToText (deviceSubType: EntitlementDeviceSubType): string {
+  public static getDeviceTypeText ($t: IntlShape['$t'], deviceType: EntitlementDeviceType): string {
+    switch (deviceType) {
+      case EntitlementDeviceType.WIFI:
+      case EntitlementDeviceType.MSP_WIFI:
+        return $t({ defaultMessage: 'Wi-Fi' })
+      case EntitlementDeviceType.SWITCH:
+      case EntitlementDeviceType.MSP_SWITCH:
+        return $t({ defaultMessage: 'Switch' })
+      case EntitlementDeviceType.LTE:
+        return $t({ defaultMessage: 'LTE' })
+      case EntitlementDeviceType.ANALYTICS:
+        return $t({ defaultMessage: 'Analytics' })
+      case EntitlementDeviceType.EDGE:
+        return $t({ defaultMessage: 'SmartEdge' })
+      default:
+        return ''
+    }
+  }
+
+  public static deviceSubTypeToText (deviceSubType: EntitlementDeviceSubType | undefined): string {
     switch (deviceSubType) {
       case EntitlementDeviceSubType.ICX71L:
         return 'ICX 7150-C08P'
@@ -62,6 +81,8 @@ export class EntitlementUtil {
       case EntitlementNetworkDeviceType.SWITCH: type = 'switch'; break
       case EntitlementNetworkDeviceType.WIFI:
       case EntitlementNetworkDeviceType.LTE: type = 'ap'; break
+      default:
+        return ''
     }
     return getIntl().$t(devicesCountMap[type], { count })
   }
@@ -72,6 +93,8 @@ export class EntitlementUtil {
     switch (deviceType) {
       case 'MSP_SWITCH': type = 'switch'; break
       case 'MSP_WIFI': type = 'ap'; break
+      default:
+        return ''
     }
     return getIntl().$t(devicesCountMap[type], { count })
   }
@@ -123,7 +146,7 @@ export class EntitlementUtil {
     return moment(today.toString()).utc().format(dateFormat)
   }
 
-  public static getServiceEndDate (endDate?: string) {
+  public static getServiceEndDate (endDate?: string | Moment) {
     // const expiredDate = DateTimeUtilsService.getDateFromMomentByFormat(this.mspEcEndDate.value, this.userDateFormat);
     // expiredDate.setHours(23);
     // expiredDate.setMinutes(59);

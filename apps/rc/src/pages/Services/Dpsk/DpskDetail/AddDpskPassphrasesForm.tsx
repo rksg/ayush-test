@@ -17,11 +17,13 @@ import {
   CreateDpskPassphrasesFormFields,
   ExpirationMode
 } from '@acx-ui/rc/utils'
+import { validationMessages } from '@acx-ui/utils'
 
 import { unlimitedNumberOfDeviceLabel } from './contentsMap'
 import * as UI                          from './styledComponents'
 
 const MAX_PASSPHRASES = 5000
+const MAX_DEVICES_PER_PASSPHRASE = 50
 
 enum DeviceNumberType {
   LIMITED,
@@ -64,9 +66,16 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
         name='numberOfPassphrases'
         initialValue={1}
         rules={[
-          { required: true }
+          { required: true },
+          {
+            type: 'number',
+            min: 1,
+            max: MAX_PASSPHRASES,
+            // eslint-disable-next-line max-len
+            message: $t({ defaultMessage: 'Number of Passphrases must be between 1 and {max}' }, { max: MAX_PASSPHRASES })
+          }
         ]}
-        children={<InputNumber min={1} max={MAX_PASSPHRASES} />}
+        children={<InputNumber />}
       />
       <Form.Item
         label={
@@ -86,7 +95,10 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
             <Space size={'middle'} direction='vertical'>
               <UI.FieldSpace>
                 <Radio value={DeviceNumberType.LIMITED}>
-                  {$t({ defaultMessage: 'Set number (1-50)' })}
+                  {$t(
+                    { defaultMessage: 'Set number (1-{max})' },
+                    { max: MAX_DEVICES_PER_PASSPHRASE }
+                  )}
                 </Radio>
                 {deviceNumberType === DeviceNumberType.LIMITED &&
                   <Form.Item
@@ -95,10 +107,21 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
                     rules={[
                       {
                         required: true,
-                        message: $t({ defaultMessage: 'Please enter Number of Passphrases' })
+                        // eslint-disable-next-line max-len
+                        message: $t({ defaultMessage: 'Please enter Number of Devices Per Passphrase' })
+                      },
+                      {
+                        type: 'number',
+                        min: 1,
+                        max: MAX_DEVICES_PER_PASSPHRASE,
+                        message: $t(
+                          // eslint-disable-next-line max-len
+                          { defaultMessage: 'Number of Devices Per Passphrase must be between 1 and {max}' },
+                          { max: MAX_DEVICES_PER_PASSPHRASE }
+                        )
                       }
                     ]}
-                    children={<InputNumber min={1} max={50} />}
+                    children={<InputNumber />}
                   />
                 }
               </UI.FieldSpace>
@@ -189,11 +212,18 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
             />
           </>
         }
+        rules={[
+          {
+            type: 'number',
+            min: 1,
+            max: 4094,
+            message: $t(validationMessages.vlanRange)
+          }
+        ]}
         name='vlanId'
         children={
           <InputNumber
             placeholder={$t({ defaultMessage: 'If empty, the network\'s default will be used' })}
-            max={4094}
             style={{ width: '100%' }}
           />
         }

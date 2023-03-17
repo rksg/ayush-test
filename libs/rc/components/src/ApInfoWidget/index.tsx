@@ -1,19 +1,24 @@
+import { useState } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import {
   IncidentBySeverityDonutChart, KpiWidget, TtcTimeWidget
 } from '@acx-ui/analytics/components'
-import { healthApi }                                                           from '@acx-ui/analytics/services'
-import { AnalyticsFilter, kpiConfig }                                          from '@acx-ui/analytics/utils'
-import { cssStr, Loader, Card, DonutChart, GridRow, GridCol, NoActiveContent } from '@acx-ui/components'
-import type { DonutChartData }                                                 from '@acx-ui/components'
-import {  useAlarmsListQuery }                                                 from '@acx-ui/rc/services'
+import { healthApi }                                               from '@acx-ui/analytics/services'
+import { AnalyticsFilter, kpiConfig }                              from '@acx-ui/analytics/utils'
+import { cssStr, Loader, Card, GridRow, GridCol, NoActiveContent } from '@acx-ui/components'
+import type { DonutChartData }                                     from '@acx-ui/components'
+import {  useAlarmsListQuery }                                     from '@acx-ui/rc/services'
 import {
   Alarm,
   ApViewModel,
   EventSeverityEnum
 } from '@acx-ui/rc/utils'
 import { CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
+import { useParams }                     from '@acx-ui/react-router-dom'
+
+import { AlarmsDrawer } from '../AlarmsDrawer'
 
 import * as UI from './styledComponents'
 
@@ -71,7 +76,9 @@ export const getChartData = (alarms: Alarm[]): DonutChartData[] => {
 
 export function ApInfoWidget (props:{ currentAP: ApViewModel, filters: AnalyticsFilter }) {
   const { $t } = useIntl()
+  const { apId } = useParams()
   const { currentAP, filters } = props
+  const [alarmDrawerVisible, setAlarmDrawerVisible] = useState(false)
 
   // Alarms list query
   const alarmQuery = useTableQuery({
@@ -87,7 +94,7 @@ export function ApInfoWidget (props:{ currentAP: ApViewModel, filters: Analytics
       sortOrder: 'DESC'
     },
     pagination: {
-      pageSize: 25,
+      pageSize: 10000,
       page: 1,
       total: 0
     }
@@ -106,11 +113,13 @@ export function ApInfoWidget (props:{ currentAP: ApViewModel, filters: Analytics
           <UI.Wrapper>
             <Loader states={[alarmQuery]}>
               { alarmData && alarmData.length > 0
-                ? <DonutChart
-                  title={$t({ defaultMessage: 'Alarms' })}
-                  style={{ width: 100, height: 100 }}
-                  legend={'name-value'}
-                  data={alarmData}/>
+                ? <div onClick={() => setAlarmDrawerVisible(true)}>
+                  <UI.DonutChartWidget
+                    title={$t({ defaultMessage: 'Alarms' })}
+                    style={{ width: 100, height: 100 }}
+                    legend={'name-value'}
+                    data={alarmData}/>
+                </div>
                 : <NoActiveContent text={$t({ defaultMessage: 'No active alarms' })} />
               }
             </Loader>
@@ -118,31 +127,44 @@ export function ApInfoWidget (props:{ currentAP: ApViewModel, filters: Analytics
         </GridCol>
         <GridCol col={{ span: 4 }}>
           <UI.Wrapper>
-            <IncidentBySeverityDonutChart type='no-card-style' filters={filters}/>
+            <UI.TenantLinkSvg to={`/devices/wifi/${apId}/details/analytics`}>
+              <IncidentBySeverityDonutChart type='no-card-style' filters={filters}/>
+            </UI.TenantLinkSvg>
           </UI.Wrapper>
         </GridCol>
         <GridCol col={{ span: 5 }}>
           <UI.Wrapper>
-            <KpiWidget type='no-chart-style' filters={filters} name='connectionSuccess' />
+            <UI.TenantLinkBlack to={`/devices/wifi/${apId}/details/analytics/health/overview`}>
+              <KpiWidget type='no-chart-style' filters={filters} name='connectionSuccess' />
+            </UI.TenantLinkBlack>
           </UI.Wrapper>
         </GridCol>
         <GridCol col={{ span: 5 }}>
           <UI.Wrapper>
-            <TtcTimeWidget filters={filters}/>
+            <UI.TenantLinkBlack to={`/devices/wifi/${apId}/details/analytics/health/overview`}>
+              <TtcTimeWidget filters={filters}/>
+            </UI.TenantLinkBlack>
           </UI.Wrapper>
         </GridCol>
         <GridCol col={{ span: 5 }}>
           <UI.Wrapper>
-            <KpiWidget
-              type='no-chart-style'
-              filters={filters}
-              name='clientThroughput'
-              threshold={healthData?.clientThroughputThreshold?.value ??
-                kpiConfig.clientThroughput.histogram.initialThreshold}
-            />
+            <UI.TenantLinkBlack to={`/devices/wifi/${apId}/details/analytics/health/overview`}>
+              <KpiWidget
+                type='no-chart-style'
+                filters={filters}
+                name='clientThroughput'
+                threshold={healthData?.clientThroughputThreshold?.value ??
+                  kpiConfig.clientThroughput.histogram.initialThreshold}
+              />
+            </UI.TenantLinkBlack>
           </UI.Wrapper>
         </GridCol>
       </GridRow>
+      <AlarmsDrawer
+        visible={alarmDrawerVisible}
+        setVisible={setAlarmDrawerVisible}
+        serialNumber={apId}
+      />
     </Card>
   )
 }

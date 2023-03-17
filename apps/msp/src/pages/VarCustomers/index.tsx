@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 import { SortOrder } from 'antd/lib/table/interface'
 import moment        from 'moment-timezone'
 import { useIntl }   from 'react-intl'
@@ -6,23 +8,27 @@ import {
   Button,
   Loader,
   PageHeader,
+  showActionModal,
+  Subtitle,
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useUserProfileContext } from '@acx-ui/rc/components'
+import { DateFormatEnum, formatter }  from '@acx-ui/formatter'
 import {
-  useVarCustomerListQuery
+  useInviteCustomerListQuery,
+  useVarCustomerListQuery,
+  useAcceptRejectInvitationMutation
 } from '@acx-ui/rc/services'
 import {
-  DateFormatEnum,
   DelegationEntitlementRecord,
   EntitlementNetworkDeviceType,
   EntitlementUtil,
   VarCustomer,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { getBasePath, Link, TenantLink } from '@acx-ui/react-router-dom'
-
+import { getBasePath, Link, TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { RolesEnum }                                from '@acx-ui/types'
+import { hasRoles, useUserProfileContext }          from '@acx-ui/user'
 
 const transformApUtilization = (row: VarCustomer) => {
   if (row.entitlements) {
@@ -59,7 +65,7 @@ const transformNextExpirationDate = (row: VarCustomer) => {
           target = entitlement
         }
       }
-      expirationDate = moment(target.expirationDate).format(DateFormatEnum.UserDateFormat)
+      expirationDate = formatter(DateFormatEnum.DateFormat)(target.expirationDate)
       toBeRemoved = EntitlementUtil.getNetworkDeviceTypeUnitText(target.entitlementDeviceType,
         parseInt(target.toBeRemovedQuantity, 10))
     })
@@ -70,8 +76,124 @@ const transformNextExpirationDate = (row: VarCustomer) => {
 
 export function VarCustomers () {
   const { $t } = useIntl()
+  const { tenantId } = useParams()
+  const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   const { data: userProfile } = useUserProfileContext()
+  const [ handleInvitation
+  ] = useAcceptRejectInvitationMutation()
+
+  const InvitationList = () => {
+    const [inviteCount, setInviteCount] = useState(0)
+
+    const onAcceptInvite = (row: VarCustomer) => {
+      return <>
+        <Button onClick={() => handleReject(row)}>{$t({ defaultMessage: 'Reject' })}</Button>
+        <Button onClick={() => handleAccept(row)}
+          type='secondary'
+          style={{ marginLeft: 10 }}>{$t({ defaultMessage: 'Accept' })}</Button>
+      </>
+    }
+
+    const handleReject = (row: VarCustomer) => {
+      showActionModal({
+        type: 'confirm',
+        title: $t({ defaultMessage: 'Reject Request?' }),
+        content: $t({ defaultMessage: 'Are you sure you want to reject this delegation request?' }),
+        okText: $t({ defaultMessage: 'Yes' }),
+        cancelText: $t({ defaultMessage: 'No' }),
+        onOk: () => {
+          const payload = {
+            accept: false,
+            fromTenantId: row.tenantId
+          }
+          handleInvitation({ payload, params: { tenantId, delegationId: row.id } })
+            .then(() => {
+            })
+        }
+      })
+    }
+
+    const handleAccept = (row: VarCustomer) => {
+      const payload = {
+        accept: true,
+        fromTenantId: row.tenantId
+      }
+      handleInvitation({ payload, params: { tenantId, delegationId: row.id } })
+        .then(() => {
+        })
+    }
+
+    const columnsPendingInvitation: TableProps<VarCustomer>['columns'] = [
+      {
+        title: $t({ defaultMessage: 'Account Name' }),
+        dataIndex: 'tenantName',
+        key: 'tenantName',
+        sorter: true,
+        defaultSortOrder: 'ascend' as SortOrder,
+        render: function (data) {
+          return (
+            <TenantLink to={''}>{data}</TenantLink>
+          )
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Account Email' }),
+        dataIndex: 'tenantEmail',
+        key: 'tenantEmail',
+        sorter: true
+      },
+      {
+        dataIndex: 'acceptInvite',
+        key: 'acceptInvite',
+        width: 220,
+        render: function (data, row) {
+          return onAcceptInvite(row)
+        }
+      }
+    ]
+
+    const invitationPayload = {
+      searchString: '',
+      fields: ['tenantName', 'tenantEmail'],
+      filters: {
+        status: ['DELEGATION_STATUS_INVITED'],
+        delegationType: ['DELEGATION_TYPE_VAR'],
+        isValid: [true]
+      }
+    }
+
+    const PendingInvitation = () => {
+      const tableQuery = useTableQuery({
+        useQuery: useInviteCustomerListQuery,
+        defaultPayload: invitationPayload
+      })
+      useEffect(() => {
+        setInviteCount(tableQuery.data?.totalCount as number)
+      })
+
+      return (
+        <Loader states={[tableQuery]}>
+          <Table
+            columns={columnsPendingInvitation}
+            dataSource={tableQuery.data?.data}
+            pagination={tableQuery.pagination}
+            onChange={tableQuery.handleTableChange}
+            rowKey='id'
+          />
+        </Loader>
+      )
+    }
+
+    return (
+      <>
+        <Subtitle level={3}>
+          {$t({ defaultMessage: 'Pending Invitations' })} ({inviteCount})</Subtitle>
+
+        <PendingInvitation />
+      </>
+    )
+  }
 
   const customerColumns: TableProps<VarCustomer>['columns'] = [
     {
@@ -95,34 +217,16 @@ export function VarCustomers () {
       sorter: true
     },
     {
-      title: $t({ defaultMessage: 'Active Alarms' }),
-      dataIndex: 'alarmCount',
-      key: 'alarmCount',
-      sorter: true,
-      render: function (data) {
-        return (
-          <TenantLink to={''}>{data}</TenantLink>
-        )
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Active Incidents' }),
-      dataIndex: 'activeIncindents',
-      key: 'activeIncindents',
-      sorter: true,
-      render: function () {
-        return 0
-      }
-    },
-    {
       title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
       dataIndex: 'wifiLicenses',
+      align: 'center',
       key: 'wifiLicenses',
       sorter: true
     },
     {
       title: $t({ defaultMessage: 'Wi-Fi Licenses Utilization' }),
       dataIndex: 'wifiLicensesUtilization',
+      align: 'center',
       key: 'wifiLicensesUtilization',
       sorter: true,
       render: function (data, row) {
@@ -132,6 +236,7 @@ export function VarCustomers () {
     {
       title: $t({ defaultMessage: 'Switch Licenses' }),
       dataIndex: 'switchLicenses',
+      align: 'center',
       key: 'switchLicenses',
       sorter: true
     },
@@ -171,7 +276,10 @@ export function VarCustomers () {
   const VarCustomerTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useVarCustomerListQuery,
-      defaultPayload: varCustomerPayload
+      defaultPayload: varCustomerPayload,
+      search: {
+        searchTargetFields: varCustomerPayload.searchTargetFields as string[]
+      }
     })
 
     return (
@@ -194,13 +302,14 @@ export function VarCustomers () {
     <>
       <PageHeader
         title={title}
-        extra={[
+        extra={
           <TenantLink to='/dashboard' key='add'>
-            <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
+            <Button>{$t({ defaultMessage: 'Manage my account' })}</Button>
           </TenantLink>
-        ]}
+        }
       />
 
+      {!userProfile?.support && isAdmin && <InvitationList />}
       <VarCustomerTable />
     </>
   )

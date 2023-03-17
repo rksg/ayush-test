@@ -46,7 +46,7 @@ export interface RogueAPDetectionTempType {
     name: string,
     description?: string,
     venues: RogueVenue[],
-    rules: number
+    rules: RogueAPRule[]
 }
 
 export interface VenueRoguePolicyType {
@@ -64,6 +64,14 @@ export interface VenueRoguePolicyType {
   },
   activate?: boolean,
   rogueAps?: number
+}
+
+export interface EnhancedRoguePolicyType {
+  id: string,
+  name: string,
+  tenantId: string,
+  numOfRules: number,
+  venueIds: string[]
 }
 
 export interface RogueAPRule {

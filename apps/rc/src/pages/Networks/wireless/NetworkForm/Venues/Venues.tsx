@@ -13,6 +13,7 @@ import {
 } from '@acx-ui/components'
 import {
   NetworkApGroupDialog,
+  NetworkVenueScheduleDialog,
   transformAps,
   transformRadios,
   transformScheduling
@@ -25,14 +26,12 @@ import {
   useTableQuery,
   Venue,
   useScheduleSlotIndexMap,
-  generateDefaultNetworkVenue
+  generateDefaultNetworkVenue,
+  SchedulingModalState
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }      from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
-import {
-  SchedulingModalState,
-  NetworkVenueScheduleDialog
-} from '../../NetworkDetails/NetworkVenuesTab/NetworkVenueScheduleDialog'
 import NetworkFormContext from '../NetworkFormContext'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
@@ -373,7 +372,7 @@ export function Venues () {
         <Loader states={[tableQuery]}>
           <Table
             rowKey='id'
-            rowActions={rowActions}
+            rowActions={filterByAccess(rowActions)}
             rowSelection={{
               type: 'checkbox'
             }}

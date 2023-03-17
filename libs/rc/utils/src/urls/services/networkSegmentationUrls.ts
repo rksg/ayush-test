@@ -4,43 +4,79 @@ import { ApiInfo } from '../../apiService'
 export const NetworkSegmentationUrls: { [key: string]: ApiInfo } = {
   getNetworkSegmentationGroupById: {
     method: 'get',
+    newApi: true,
     url: '/networkSegmentationGroups/:serviceId'
   },
   getNetworkSegmentationGroupList: {
     method: 'get',
+    newApi: true,
     url: '/networkSegmentationGroups'
   },
   getWebAuthTemplate: {
     method: 'get',
-    url: '/api/switch/tenant/:tenantId/webAuthPageTemplates/:serviceId'
+    newApi: true,
+    url: '/webAuthPageTemplates/:serviceId'
   },
   getWebAuthTemplateList: {
     method: 'post',
-    url: '/api/switch/tenant/:tenantId/webAuthPageTemplates/query'
+    newApi: true,
+    url: '/webAuthPageTemplates/query'
   },
   addWebAuthTemplate: {
     method: 'post',
-    url: '/api/switch/tenant/:tenantId/webAuthPageTemplates'
+    newApi: true,
+    url: '/webAuthPageTemplates'
   },
   updateWebAuthTemplate: {
     method: 'put',
-    url: '/api/switch/tenant/:tenantId/webAuthPageTemplates/:serviceId'
+    newApi: true,
+    url: '/webAuthPageTemplates/:serviceId'
   },
   deleteWebAuthTemplate: {
     method: 'delete',
-    url: '/api/switch/tenant/:tenantId/webAuthPageTemplates/:serviceId'
+    newApi: true,
+    url: '/webAuthPageTemplates/:serviceId'
   },
-  getAccessSwitches: {
-    method: 'post',
-    url: '/api/switch/tenant/:tenantId/venue/:venueId/networkSegmentations/accessSwitches'
+
+  getAvailableSwitches: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations'
   },
-  getDistributionSwitches: {
+  getSwitchInfoByNSGId: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations/:serviceId'
+  },
+  getAccessSwitchesByDS: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations' +
+      '/distributions/:switchId/accessSwitches'
+  },
+  validateDistributionSwitchInfo: {
     method: 'post',
-    url: '/api/switch/tenant/:tenantId/venue/:venueId/networkSegmentations/distributionSwitches'
+    url: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations/distributionSwitchInfo'
+  },
+  validateAccessSwitchInfo: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations/accessSwitchInfo'
   },
   createNetworkSegmentationGroup: {
     method: 'post',
     newApi: true,
     url: '/networkSegmentationGroups'
+  },
+  getNetworkSegmentationStatsList: {
+    method: 'post',
+    newApi: true,
+    url: '/networkSegmentationGroups/query'
+  },
+  deleteNetworkSegmentationGroup: {
+    method: 'delete',
+    newApi: true,
+    url: '/networkSegmentationGroups/:serviceId'
+  },
+  updateNetworkSegmentationGroup: {
+    method: 'put',
+    newApi: true,
+    url: '/networkSegmentationGroups/:serviceId'
   }
 }

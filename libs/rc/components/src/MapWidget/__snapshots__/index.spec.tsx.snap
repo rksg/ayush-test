@@ -11,3 +11,15 @@ exports[`Map should render map if feature flag is on 1`] = `
   </div>
 </DocumentFragment>
 `;
+
+exports[`Map v2 should render map if feature flag is on 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+  >
+    <h1>
+      LOADING
+    </h1>
+  </div>
+</DocumentFragment>
+`;

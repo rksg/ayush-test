@@ -104,7 +104,7 @@ function Histogram ({
     setKpiThreshold({ ...thresholds, [kpi]: splitsAfterIsReverseCheck[newValue - 1] })
   }
   const queryResults = healthApi.useKpiHistogramQuery(
-    { ...filters, kpi, threshold: histogram?.initialThreshold },
+    { ...filters, kpi },
     {
       selectFromResult: ({ data, ...rest }) => ({
         ...rest,

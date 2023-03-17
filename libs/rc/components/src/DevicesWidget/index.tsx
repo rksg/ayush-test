@@ -6,6 +6,7 @@ import type { DonutChartData }    from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { useNavigateToPath }      from '@acx-ui/react-router-dom'
 
+export  { seriesMappingAP } from './helper'
 
 export function DevicesWidget (props: {
   apData: DonutChartData[], switchData: DonutChartData[], edgeData: DonutChartData[],
@@ -37,7 +38,7 @@ export function DevicesWidget (props: {
               data={props.switchData}/>
             { edgeSupported && (<DonutChart
               style={{ width: width/numDonut, height }}
-              title={$t({ defaultMessage: 'Edge' })}
+              title={$t({ defaultMessage: 'SmartEdge' })}
               data={props.edgeData}/>)}
           </div>
         )}

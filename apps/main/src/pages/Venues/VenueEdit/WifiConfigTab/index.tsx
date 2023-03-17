@@ -44,7 +44,7 @@ export function WifiConfigTab () {
       radio: $t({ defaultMessage: 'Radio' }),
       networking: $t({ defaultMessage: 'Networking' }),
       security: $t({ defaultMessage: 'Security' }),
-      servers: $t({ defaultMessage: 'External Servers' }),
+      servers: $t({ defaultMessage: 'Services & Policies' }),
       settings: $t({ defaultMessage: 'Advanced Settings' })
     }
 
@@ -70,7 +70,7 @@ export function WifiConfigTab () {
         <SecurityTab />
       </Tabs.TabPane>
       <Tabs.TabPane
-        disabled={!useIsSplitOn(Features.DEVICES)}
+        disabled={!useIsSplitOn(Features.POLICIES)}
         tab={tabTitleMap('servers')}
         key='servers'
       >

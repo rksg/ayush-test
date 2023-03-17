@@ -5,7 +5,6 @@ import { Divider,
   Menu,
   MenuProps,
   Space } from 'antd'
-import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 
@@ -16,9 +15,10 @@ import {
   TableProps,
   Descriptions
 } from '@acx-ui/components'
-import { ArrowExpand }           from '@acx-ui/icons'
-import { ClientHealthIcon }      from '@acx-ui/rc/components'
-import { useGetGuestsListQuery } from '@acx-ui/rc/services'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { ArrowExpand }               from '@acx-ui/icons'
+import { ClientHealthIcon }          from '@acx-ui/rc/components'
+import { useGetGuestsListQuery }     from '@acx-ui/rc/services'
 import {
   getOsTypeIcon,
   Guest,
@@ -28,6 +28,8 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { RolesEnum }             from '@acx-ui/types'
+import { hasRoles }              from '@acx-ui/user'
 
 import {
   renderAllowedNetwork,
@@ -178,8 +180,7 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
       sorter: false,
       defaultSortOrder: 'ascend',
       render: function (data, row) {
-        // TODO: Wait for framework support userprofile-format dateTimeFormats
-        return moment(row.connectSince).format('DD/MM/YYYY HH:mm')
+        return formatter(DateFormatEnum.DateTimeFormat)(row.connectSince)
       }
     }
   ]
@@ -209,22 +210,28 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
   const menu = (
     <Menu
       onClick={handleMenuClick}
-      items={[{
-        label: $t({ defaultMessage: 'Generate New Password' }),
-        key: 'generatePassword'
-      }, {
-        label: $t({ defaultMessage: 'Download Information' }),
-        key: 'downloadInformation'
-      }, {
-        label: $t({ defaultMessage: 'Disable Guest' }),
-        key: 'disableGuest'
-      }, {
-        label: $t({ defaultMessage: 'Enable Guest' }),
-        key: 'enableGuest'
-      }, {
-        label: $t({ defaultMessage: 'Delete Guest' }),
-        key: 'deleteGuest'
-      }].filter((item) => {
+      items={hasRoles([RolesEnum.READ_ONLY]) ? [
+        {
+          label: $t({ defaultMessage: 'Download Information' }),
+          key: 'downloadInformation'
+        }
+      ] : [
+        {
+          label: $t({ defaultMessage: 'Generate New Password' }),
+          key: 'generatePassword'
+        }, {
+          label: $t({ defaultMessage: 'Download Information' }),
+          key: 'downloadInformation'
+        }, {
+          label: $t({ defaultMessage: 'Disable Guest' }),
+          key: 'disableGuest'
+        }, {
+          label: $t({ defaultMessage: 'Enable Guest' }),
+          key: 'enableGuest'
+        }, {
+          label: $t({ defaultMessage: 'Delete Guest' }),
+          key: 'deleteGuest'
+        }].filter((item) => {
         if (item.key === 'enableGuest' &&
         guestDetail.guestStatus !== GuestStatusEnum.DISABLED) {
           return false
@@ -288,10 +295,9 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
         label={$t({ defaultMessage: 'Allowed Network' })}
         children={renderAllowedNetwork(guestDetail)} />
 
-      {/* TODO: Wait for framework support userprofile-format dateTimeFormats */}
       <Descriptions.Item
         label={$t({ defaultMessage: 'Guest Created' })}
-        children={moment(guestDetail.creationDate).format('DD/MM/YYYY HH:mm')} />
+        children={formatter(DateFormatEnum.DateTimeFormat)(guestDetail.creationDate)} />
 
       <Descriptions.Item
         label={$t({ defaultMessage: 'Access Expires' })}

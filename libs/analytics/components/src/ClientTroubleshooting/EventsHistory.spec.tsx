@@ -1,8 +1,8 @@
 import { cleanup } from '@testing-library/react'
 
-import { Incident }                  from '@acx-ui/analytics/utils'
-import { Provider }                  from '@acx-ui/store'
-import { render, screen, fireEvent } from '@acx-ui/test-utils'
+import { Incident }                       from '@acx-ui/analytics/utils'
+import { Provider }                       from '@acx-ui/store'
+import { act, render, screen, fireEvent } from '@acx-ui/test-utils'
 
 import { connectionEvents } from './__tests__/fixtures'
 import { History }          from './EventsHistory'
@@ -25,6 +25,7 @@ const incidents = [{
   slaThreshold: 2000
 }] as Incident[]
 describe('EventsHistory', () => {
+  afterEach(() => jest.restoreAllMocks())
   it('should render correctly without data', async () => {
     const params = {
       tenantId: 'tenant-id',
@@ -37,6 +38,7 @@ describe('EventsHistory', () => {
       connectionDetailsByAp: [],
       connectionQualities: []
     }
+    const onPanelCallback = jest.fn(() => ({ onClick: () => {}, selected: () => false }))
     render(
       <Provider>
         <History
@@ -44,6 +46,7 @@ describe('EventsHistory', () => {
           filters={null}
           historyContentToggle
           setHistoryContentToggle={jest.fn()}
+          onPanelCallback={onPanelCallback}
         />
       </Provider>,
       {
@@ -67,6 +70,7 @@ describe('EventsHistory', () => {
       connectionDetailsByAp: [],
       connectionQualities: []
     }
+    const onPanelCallback = jest.fn(() => ({ onClick: () => {}, selected: () => false }))
     render(
       <Provider>
         <History
@@ -74,6 +78,7 @@ describe('EventsHistory', () => {
           filters={{}}
           historyContentToggle
           setHistoryContentToggle={jest.fn()}
+          onPanelCallback={onPanelCallback}
         />
       </Provider>,
       {
@@ -84,7 +89,7 @@ describe('EventsHistory', () => {
       }
     )
     expect(await screen.findByText('History')).toBeVisible()
-    expect(screen.getByText('Nov 14 2022 06:33:31')).toBeVisible()
+    expect(screen.getByText('11/14/2022 06:33:31')).toBeVisible()
     expect(screen.getByText('Connection (Time To Connect)')).toBeVisible()
   })
   it('should render with data and filters', async () => {
@@ -103,6 +108,7 @@ describe('EventsHistory', () => {
       category: ['performance'],
       type: ['roamed']
     } as unknown as Filters
+    const onPanelCallback = jest.fn(() => ({ onClick: () => {}, selected: () => false }))
     render(
       <Provider>
         <History
@@ -110,6 +116,7 @@ describe('EventsHistory', () => {
           filters={filters}
           historyContentToggle
           setHistoryContentToggle={jest.fn()}
+          onPanelCallback={onPanelCallback}
         />
       </Provider>,
       {
@@ -120,9 +127,10 @@ describe('EventsHistory', () => {
       }
     )
     expect(await screen.findByText('History')).toBeVisible()
-    expect(screen.getByText('Nov 14 2022 06:33:31')).toBeVisible()
+    expect(screen.getByText('11/14/2022 06:33:31')).toBeVisible()
     expect(screen.queryByText('Connection (Time To Connect)')).toBeNull()
     cleanup()
+
     render(
       <Provider>
         <History
@@ -130,6 +138,7 @@ describe('EventsHistory', () => {
           filters={{ ...filters, type: ['incident'], category: [] } as unknown as Filters}
           historyContentToggle
           setHistoryContentToggle={jest.fn()}
+          onPanelCallback={onPanelCallback}
         />
       </Provider>,
       {
@@ -156,6 +165,7 @@ describe('EventsHistory', () => {
       connectionQualities: []
     }
     const setHistoryContentToggle = jest.fn()
+    const onPanelCallback = jest.fn(() => ({ onClick: () => {}, selected: () => false }))
     render(
       <Provider>
         <History
@@ -163,6 +173,7 @@ describe('EventsHistory', () => {
           filters={null}
           historyContentToggle
           setHistoryContentToggle={setHistoryContentToggle}
+          onPanelCallback={onPanelCallback}
         />
       </Provider>,
       {
@@ -176,5 +187,52 @@ describe('EventsHistory', () => {
     const collapse = screen.getByTestId('history-collapse')
     fireEvent.click(collapse)
     expect(setHistoryContentToggle).toBeCalledWith(false)
+  })
+  it('should handle event clicks', async () => {
+    const params = {
+      tenantId: 'tenant-id',
+      clientId: 'clientMac',
+      activeTab: 'troubleshooting'
+    }
+    const data = {
+      connectionEvents,
+      incidents,
+      connectionDetailsByAp: [],
+      connectionQualities: []
+    }
+    const setHistoryContentToggle = jest.fn()
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const onClick = jest.fn((_val: boolean) => {})
+    const onPanelCallback = jest.fn(() => ({ onClick, selected: () => true }))
+    const scrollIntoView = jest.fn()
+    const ogView = HTMLElement.prototype.scrollIntoView
+    HTMLElement.prototype.scrollIntoView = scrollIntoView
+    render(
+      <Provider>
+        <History
+          data={data}
+          filters={null}
+          historyContentToggle
+          setHistoryContentToggle={setHistoryContentToggle}
+          onPanelCallback={onPanelCallback}
+        />
+      </Provider>,
+      {
+        route: {
+          params,
+          path: '/:tenantId/users/wifi/clients/:clientId/details/:activeTab'
+        }
+      }
+    )
+    expect(await screen.findByText('History')).toBeVisible()
+    const events = await screen.findAllByTestId('history-item-icon')
+    expect(events).toBeTruthy()
+    const firstEvent = events[0]
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(() => { fireEvent.click(firstEvent) })
+    expect(onPanelCallback).toBeCalledTimes(4)
+    expect(onClick).toBeCalledTimes(1)
+    expect(scrollIntoView).toBeCalledTimes(3)
+    HTMLElement.prototype.scrollIntoView = ogView
   })
 })

@@ -112,7 +112,9 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
         style={{
           display: fromClient ? '' : 'none',
           width: '100%', marginLeft: '10px', marginRight: '10px' }}
-        marks={{ 0: '0.1 Mbps', 200: '200 Mbps' }}
+        marks={{ 0.1: '0.1 Mbps', 200: '200 Mbps' }}
+        step={0.1}
+        min={0.1}
         max={200}
         defaultValue={fromClientValue}
         onChange={(value) => {
@@ -136,7 +138,9 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
         style={{
           display: toClient ? '' : 'none',
           width: '100%', marginLeft: '10px', marginRight: '10px' }}
-        marks={{ 0: '0.1 Mbps', 200: '200 Mbps' }}
+        marks={{ 0.1: '0.1 Mbps', 200: '200 Mbps' }}
+        step={0.1}
+        min={0.1}
         max={200}
         defaultValue={toClientValue}
         onChange={(value) => {

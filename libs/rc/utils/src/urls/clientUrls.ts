@@ -3,38 +3,69 @@ import { ApiInfo } from '../apiService'
 export const ClientUrlsInfo: { [key: string]: ApiInfo } = {
   getClientList: {
     method: 'post',
-    url: '/api/viewmodel/:tenantId/client/clientlist'
+    url: '/clients/clientlist',
+    oldUrl: '/api/viewmodel/:tenantId/client/clientlist',
+    newApi: true
   },
   getClientMeta: {
     method: 'post',
-    url: '/api/viewmodel/:tenantId/client/meta'
+    url: '/clients/metas',
+    oldUrl: '/api/viewmodel/:tenantId/client/meta',
+    newApi: true
   },
   getClientDetails: {
+    // Path variable not match
+    // method: 'get',
+    // url: '/clients/:clientId/query',
+    // oldUrl: '/api/viewmodel/:tenantId/client/:clientId',
+    // newApi: true
     method: 'get',
     url: '/api/viewmodel/:tenantId/client/:clientId'
   },
   deleteGuests: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/wifi/guest-user'
+    url: '/guestUsers',
+    oldUrl: '/api/tenant/:tenantId/wifi/guest-user',
+    newApi: true
   },
   importGuestPass: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/guest-user/import'
+    url: '/networks/:networkId/guestUsers',
+    oldUrl: '/api/tenant/:tenantId/wifi/guest-user/import',
+    newApi: true
   },
   enableGuests: {
-    method: 'post',
-    url: '/api/tenant/:tenantId/wifi/guest-user/:guestId/enable'
+    method: 'patch',
+    url: '/guestUsers/:guestId',
+    oldMethod: 'post',
+    oldUrl: '/api/tenant/:tenantId/wifi/guest-user/:guestId/enable',
+    newApi: true
   },
   disableGuests: {
-    method: 'post',
-    url: '/api/tenant/:tenantId/wifi/guest-user/:guestId/disable'
+    method: 'patch',
+    url: '/guestUsers/:guestId',
+    oldMethod: 'post',
+    oldUrl: '/api/tenant/:tenantId/wifi/guest-user/:guestId/disable',
+    newApi: true
   },
   getGuests: {
     method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/guest/csv-file'
+    url: '/guestUsers/query/csvFiles',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/guest/csv-file',
+    newApi: true
   },
   generateGuestPassword: {
-    method: 'post',
-    url: '/api/tenant/:tenantId/wifi/guest-user/:guestId/regenerate'
+    method: 'patch',
+    url: '/guestUsers/:guestId',
+    oldMethod: 'post',
+    oldUrl: '/api/tenant/:tenantId/wifi/guest-user/:guestId/regenerate',
+    newApi: true
+  },
+  disconnectClient: {
+    method: 'patch',
+    url: '/aps/clients',
+    oldMethod: 'post',
+    oldUrl: '/api/tenant/:tenantId/wifi/disconnect-client',
+    newApi: true
   }
 }

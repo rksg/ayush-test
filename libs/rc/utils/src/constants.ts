@@ -1,5 +1,7 @@
 import { defineMessage } from 'react-intl'
 
+import { SwitchModelInfoMap } from './types'
+
 export enum NetworkTypeEnum {
   PSK = 'psk',
   OPEN = 'open',
@@ -214,8 +216,6 @@ export enum ConfigTypeEnum {
   PORT_CONFIGURATION = 'PORT_CONFIGURATION',
   PROVISIONING = 'PROVISIONING',
   STACK = 'STACK',
-  SWITCH_SETTINGS = 'SWITCH_SETTINGS',
-  LOCAL_SYNC = 'LOCAL_SYNC',
   SYSLOG_SERVER = 'SYSLOG_SERVER',
   VE_PORTS = 'VE_PORTS',
   CLI_PROVISIONING = 'CLI_PROVISIONING',
@@ -787,3 +787,217 @@ export enum ConfigurationBackupStatus {
   SUCCESS = 'SUCCESS',
   FAILED = 'FAILED'
 }
+
+export enum PortTaggedEnum {
+  EMPTY = '',
+  TAGGED = 'TAGGED',
+  UNTAGGED = 'UNTAGGED',
+  LAG = 'LAG'
+}
+
+export enum UnitStatus {
+  OK = 'OK',
+  FAILED = 'FAILED',
+  NOT_PRESENT = 'NOT_PRESENT', // Legacy value - need confirm
+  OTHER = 'OTHER', // Somehow SZ may send 'Other' status
+}
+
+export enum PortLabelType {
+  GENERAL = '', // 1, 2. For high end models, fiber port doesn't have port label too
+  COPPER = 'C', // C1, C2
+  FIBER = 'X', // X1, X2 for 10G fiber port
+  FIBER_1G = 'F' // F1, F2 for 1G fiber port
+}
+
+export const ICX_MODELS_INFORMATION: SwitchModelInfoMap = {
+  ICX7150: {
+    'C12P': {
+      powerSlots: 1, fanSlots: 0, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.COPPER },
+        { portLabel: PortLabelType.FIBER }
+      ]
+    },
+    'C08P': {
+      powerSlots: 1, fanSlots: 0, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.FIBER_1G }
+      ]
+    },
+    'C08PT': {
+      powerSlots: 1, fanSlots: 0, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.FIBER_1G }
+      ]
+    },
+    'C10ZP': {
+      powerSlots: 1, fanSlots: 0, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.COPPER },
+        { portLabel: PortLabelType.FIBER }
+      ]
+    },
+    '24': {
+      powerSlots: 1, fanSlots: 0, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.COPPER },
+        { portLabel: PortLabelType.FIBER }
+      ]
+    },
+    '24P': {
+      powerSlots: 1, fanSlots: 2, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.COPPER },
+        { portLabel: PortLabelType.FIBER }
+      ]
+    },
+    '24F': {
+      powerSlots: 1, fanSlots: 2, portModuleSlots: [
+        { portLabel: PortLabelType.FIBER },
+        { portLabel: PortLabelType.COPPER },
+        { portLabel: PortLabelType.FIBER }
+      ]
+    },
+    '48': {
+      powerSlots: 1, fanSlots: 0, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.COPPER },
+        { portLabel: PortLabelType.FIBER }
+      ]
+    },
+    '48P': {
+      powerSlots: 1, fanSlots: 2, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.COPPER },
+        { portLabel: PortLabelType.FIBER }
+      ]
+    },
+    '48PF': {
+      powerSlots: 1, fanSlots: 3, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.COPPER },
+        { portLabel: PortLabelType.FIBER }
+      ]
+    },
+    '48ZP': {
+      powerSlots: 2, fanSlots: 2, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.FIBER }
+      ]
+    }
+  },
+  ICX7550: {
+    '24': {
+      powerSlots: 2, fanSlots: 3, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
+    },
+    '48': {
+      powerSlots: 2, fanSlots: 3, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
+    },
+    '24P': {
+      powerSlots: 2, fanSlots: 3, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
+    },
+    '48P': {
+      powerSlots: 2, fanSlots: 3, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
+    },
+    '24ZP': {
+      powerSlots: 2, fanSlots: 3, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
+    },
+    '48ZP': {
+      powerSlots: 2, fanSlots: 3, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
+    },
+    '24F': {
+      powerSlots: 2, fanSlots: 3, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
+    },
+    '48F': {
+      powerSlots: 2, fanSlots: 3, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
+    }
+
+  },
+  ICX7650: {
+    '48P': {
+      powerSlots: 2, fanSlots: 2, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
+    },
+    '48ZP': {
+      powerSlots: 2, fanSlots: 2, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
+    },
+    '48F': {
+      powerSlots: 2, fanSlots: 2, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
+    }
+  },
+  ICX7850: {
+    '32Q': {
+      powerSlots: 2, fanSlots: 6, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
+    },
+    '48FS': {
+      powerSlots: 2, fanSlots: 5, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
+    },
+    '48F': {
+      powerSlots: 2, fanSlots: 5, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
+    },
+    '48C': {
+      powerSlots: 2, fanSlots: 5, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
+    }
+  }
+}
+
+export const PORTAL_LIMIT_NUMBER = 256
+export const DHCP_LIMIT_NUMBER = 120
+export const VLAN_LIMIT_NUMBER = 64
+export const AAA_LIMIT_NUMBER = 32

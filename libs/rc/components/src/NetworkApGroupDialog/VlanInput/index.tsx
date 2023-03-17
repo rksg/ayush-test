@@ -32,14 +32,21 @@ export function VlanInput ({ apgroup, wlan, onChange }: { apgroup: NetworkApGrou
   const [isEditMode, setEditMode] = useState(false)
   const [isDirty, setDirty] = useState(false)
 
+  const apGroupVlanType = apgroup?.vlanId ? VlanType.VLAN : VlanType.Pool
   const apGroupVlanId = apgroup?.vlanId || wlan?.vlanId
-  const apGroupVlanPool = apgroup?.vlanPoolId ? {
-    name: apgroup.vlanPoolName || '',
-    id: apgroup.vlanPoolId || '',
-    vlanMembers: []
-  } : wlan?.advancedCustomization?.vlanPool
-
-  const apGroupVlanType = apGroupVlanPool ? VlanType.Pool : VlanType.VLAN
+  const apGroupVlanPool = apGroupVlanType === VlanType.Pool
+    ? apgroup.vlanPoolName
+      ? {
+        name: apgroup.vlanPoolName || '',
+        id: apgroup.vlanPoolId || '',
+        vlanMembers: []
+      }
+      : wlan?.advancedCustomization?.vlanPool
+    : {
+      name: '',
+      id: '',
+      vlanMembers: []
+    }
 
   const defaultVlanString = getVlanString(wlan?.advancedCustomization?.vlanPool, wlan?.vlanId)
 
@@ -48,6 +55,7 @@ export function VlanInput ({ apgroup, wlan, onChange }: { apgroup: NetworkApGrou
   const [selectedVlan, setSelectedVlan] = useState<VlanDate>(initVlanData)
   const [editingVlan, setEditingVlan] = useState<VlanDate>(initVlanData)
   const [vlanLabel, setVlanLabel] = useState('')
+  const [disabledApply, setDisabledApply] = useState(false)
 
   const { vlanPoolSelectOptions } = useVlanPoolListQuery({ params: useParams() }, {
     selectFromResult ({ data }) {
@@ -62,7 +70,7 @@ export function VlanInput ({ apgroup, wlan, onChange }: { apgroup: NetworkApGrou
     const compareKeys = ['vlanString', 'vlanType']
     const selected = getVlanString(selectedVlan.vlanPool, selectedVlan.vlanId)
     const label = getVlanString(
-      selectedVlan.vlanPool,
+      selectedVlan.vlanType === VlanType.Pool ? selectedVlan.vlanPool : null,
       selectedVlan.vlanId,
       _.isEqual(
         _.pick(selected, compareKeys),
@@ -73,6 +81,14 @@ export function VlanInput ({ apgroup, wlan, onChange }: { apgroup: NetworkApGrou
 
     setDirty(!_.isEqual(selectedVlan, initVlanData))
   }, [selectedVlan])
+
+  useEffect(() => {
+    if (editingVlan.vlanType === VlanType.VLAN) {
+      setDisabledApply(!editingVlan.vlanId)
+    } else if (editingVlan.vlanType === VlanType.Pool) {
+      setDisabledApply(!editingVlan.vlanPool)
+    }
+  }, [editingVlan])
 
   const handleVlanTypeChange = (value: VlanType) => {
     setEditingVlan({
@@ -123,6 +139,7 @@ export function VlanInput ({ apgroup, wlan, onChange }: { apgroup: NetworkApGrou
     onChange(initVlanData)
   }
 
+  const isPoolType = editingVlan.vlanType === VlanType.Pool
   return (
     <Space size='small'>
       { isEditMode ? (
@@ -136,13 +153,17 @@ export function VlanInput ({ apgroup, wlan, onChange }: { apgroup: NetworkApGrou
           ) : (
             <Select labelInValue
               onChange={handleVlanPoolChange}
+              value={{
+                value: isPoolType ? editingVlan.vlanPool?.id || '' : '',
+                label: isPoolType ? editingVlan.vlanPool?.name || '' : ''
+              }}
               fieldNames={{ label: 'name', value: 'id' }}
               // value={editingVlan.vlanPool}
               placeholder={$t({ defaultMessage: 'Select profile...' })}
               options={vlanPoolSelectOptions}
               style={{ width: '88px' }} />
           )}
-          <Button type='link' icon={<CheckOutlined />} onClick={()=>{handleApply()}}></Button>
+          <Button type='link' icon={<CheckOutlined />} disabled={disabledApply} onClick={()=>{handleApply()}}></Button>
           <Button type='link' icon={<CloseOutlined />} onClick={()=>{handleCancel()}}></Button>
         </>
       ) : (

@@ -1,4 +1,4 @@
-import { find } from 'lodash'
+import _, { find } from 'lodash'
 
 import { cssStr, DonutChartData } from '@acx-ui/components'
 import {
@@ -7,7 +7,8 @@ import {
   SwitchStatusEnum,
   EdgeStatusSeverityEnum,
   VenueDetailHeader,
-  EdgeStatusSeverityStatistic
+  EdgeStatusSeverityStatistic,
+  transformSwitchStatus
 } from '@acx-ui/rc/utils'
 
 import {
@@ -31,12 +32,36 @@ const seriesMappingSwitch = () => [
     color: cssStr('--acx-semantics-green-50') }
 ] as Array<{ key: string, name: string, color: string }>
 
+export const seriesSwitchStatusMapping = () => [
+  { key: SwitchStatusEnum.NEVER_CONTACTED_CLOUD,
+    name: transformSwitchStatus(SwitchStatusEnum.NEVER_CONTACTED_CLOUD).message
+  },
+  { key: SwitchStatusEnum.INITIALIZING,
+    name: transformSwitchStatus(SwitchStatusEnum.INITIALIZING).message
+  },
+  { key: SwitchStatusEnum.FIRMWARE_UPD_START,
+    name: transformSwitchStatus(SwitchStatusEnum.FIRMWARE_UPD_START).message
+  },
+  { key: SwitchStatusEnum.OPERATIONAL,
+    name: transformSwitchStatus(SwitchStatusEnum.OPERATIONAL).message
+  },
+  { key: SwitchStatusEnum.DISCONNECTED,
+    name: transformSwitchStatus(SwitchStatusEnum.DISCONNECTED).message
+  },
+  { key: SwitchStatusEnum.STACK_MEMBER_NEVER_CONTACTED,
+    name: transformSwitchStatus(SwitchStatusEnum.STACK_MEMBER_NEVER_CONTACTED).message
+  }
+] as Array<{ key: string, name: string }>
+
 export const getSwitchDonutChartData = (overviewData: Dashboard | undefined): DonutChartData[] => {
   const chartData: DonutChartData[] = []
   const switchesSummary = overviewData?.summary?.switches?.summary
   if (switchesSummary) {
     seriesMappingSwitch().forEach(({ key, name, color }) => {
-      const value = parseInt(switchesSummary[key as SwitchStatusEnum]!, 10)
+      // ES response has different case (dev is upper case, qa is lower case)
+      // eslint-disable-next-line max-len
+      const count = switchesSummary[key as SwitchStatusEnum]! || _.get(switchesSummary, key.toLowerCase())
+      const value = parseInt(count, 10)
       if(key === SwitchStatusEnum.INITIALIZING && value) {
         const neverContactedCloud = find(chartData, {
           name: getSwitchStatusDisplayName(SwitchStatusEnum.NEVER_CONTACTED_CLOUD) })
@@ -146,7 +171,7 @@ export const getEdgeDonutChartData: (statistic?: EdgeStatusSeverityStatistic) =>
   if (statistic) {
     seriesMappingEdge().forEach(({ key, name, color }) => {
       const value = statistic.summary[key as EdgeStatusSeverityEnum]
-      if (key === EdgeStatusSeverityEnum.OFFLINE) {
+      if (key === EdgeStatusSeverityEnum.OFFLINE && value) {
         const setupPhase = find(chartData, {
           name: getEdgeStatusDisplayName(EdgeStatusSeverityEnum.IN_SETUP_PHASE, false)
         })

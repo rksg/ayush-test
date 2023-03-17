@@ -58,7 +58,8 @@ export const connectionEvents: ConnectionEvent[] = [
     code: null,
     state: 'join',
     failedMsgId: null,
-    radio: '5'
+    radio: '5',
+    key: 'first_event'
   },
   {
     timestamp: '2022-11-14T06:33:31.646Z',
@@ -83,7 +84,8 @@ export const connectionEvents: ConnectionEvent[] = [
     code: null,
     state: 'normal',
     failedMsgId: null,
-    radio: '5'
+    radio: '5',
+    key: 'second_event'
   },
   {
     timestamp: '2022-11-14T06:33:31.976Z',
@@ -108,7 +110,8 @@ export const connectionEvents: ConnectionEvent[] = [
     code: null,
     state: 'spurious-info-updated',
     failedMsgId: null,
-    radio: '5'
+    radio: '5',
+    key: 'third_event'
   },
   {
     timestamp: '2022-11-14T06:33:33.049Z',
@@ -133,7 +136,8 @@ export const connectionEvents: ConnectionEvent[] = [
     code: null,
     state: 'spurious-info-updated',
     failedMsgId: null,
-    radio: '5'
+    radio: '5',
+    key: 'fourth_event'
   },
   {
     timestamp: '2022-11-14T06:33:33.130Z',
@@ -158,7 +162,8 @@ export const connectionEvents: ConnectionEvent[] = [
     code: null,
     state: 'spurious-info-updated',
     failedMsgId: null,
-    radio: '5'
+    radio: '5',
+    key: 'fifth_event'
   },
   {
     timestamp: '2022-11-14T06:33:34.036Z',
@@ -183,7 +188,8 @@ export const connectionEvents: ConnectionEvent[] = [
     code: null,
     state: 'spurious-info-updated',
     failedMsgId: null,
-    radio: '5'
+    radio: '5',
+    key: 'sixth_event'
   },
   {
     timestamp: '2022-11-14T06:35:04.571Z',
@@ -208,7 +214,8 @@ export const connectionEvents: ConnectionEvent[] = [
     code: 'eap',
     state: 'normal',
     failedMsgId: '22',
-    radio: '5'
+    radio: '5',
+    key: 'seventh_event'
   },
   {
     timestamp: '2022-11-14T06:35:07.441Z',
@@ -233,7 +240,8 @@ export const connectionEvents: ConnectionEvent[] = [
     code: null,
     state: 'normal',
     failedMsgId: '3',
-    radio: '5'
+    radio: '5',
+    key: 'eighth_event'
   }
 ]
 export const connectionQualities = [

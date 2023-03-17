@@ -1,21 +1,23 @@
 import { useEffect } from 'react'
 
 import { Typography } from 'antd'
-import moment         from 'moment'
+import moment         from 'moment-timezone'
 import { useIntl }    from 'react-intl'
 
-import { cssStr, Subtitle }                from '@acx-ui/components'
-import { Table, TableProps, Loader }       from '@acx-ui/components'
-import { useGetHistoricalClientListQuery } from '@acx-ui/rc/services'
+import { cssStr, Subtitle, Table, TableProps, Loader } from '@acx-ui/components'
+import { formatter, DateFormatEnum }                   from '@acx-ui/formatter'
+import { useGetHistoricalClientListQuery }             from '@acx-ui/rc/services'
 import {
   Client,
+  RequestPayload,
+  TableQuery,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                             from '@acx-ui/react-router-dom'
-import { encodeParameter, DateFilter, DateRange, formatter } from '@acx-ui/utils'
+import { TenantLink, useParams }                  from '@acx-ui/react-router-dom'
+import { encodeParameter, DateFilter, DateRange } from '@acx-ui/utils'
 
 function getCols (intl: ReturnType<typeof useIntl>) {
-  const dateTimeFormatter = formatter('dateTimeFormat')
+  const dateTimeFormatter = formatter(DateFormatEnum.DateTimeFormat)
   const columns: TableProps<Client>['columns'] = [{
     key: 'hostname',
     title: intl.$t({ defaultMessage: 'Hostname' }),
@@ -93,7 +95,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
   return columns
 }
 
-const defaultPayload = {
+export const defaultHistoricalClientPayload = {
   searchString: '',
   fields: ['clientMac', 'clientIP', 'userName', 'hostname', 'venueId',
     'serialNumber', 'ssid', 'disconnectTime', 'cog', 'ssid', 'venueName', 'apName',
@@ -109,23 +111,23 @@ const defaultFilters = {
 }
 
 export function HistoricalClientsTable
-({ searchString, setHistoricalClientCount, id } :
-  { searchString: string, setHistoricalClientCount: (historicalClientCount: number) => void,
-    id: string
+({ searchString, setHistoricalClientCount } :
+  { searchString: string, setHistoricalClientCount: (historicalClientCount: number) => void
   }) {
   const { $t } = useIntl()
   const params = useParams()
 
-  defaultPayload.searchString = searchString
-  defaultPayload.filters =
+  defaultHistoricalClientPayload.searchString = searchString
+  defaultHistoricalClientPayload.filters =
     params.venueId ? { ...defaultFilters, venueId: [params.venueId] } :
       params.serialNumber ? { ...defaultFilters, serialNumber: [params.serialNumber] } :
-        defaultFilters
+        params.apId ? { ...defaultFilters, serialNumber: [params.apId] } :
+          defaultFilters
 
   const HistoricalClientsTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useGetHistoricalClientListQuery,
-      defaultPayload
+      defaultPayload: defaultHistoricalClientPayload
     })
 
     useEffect(() => {
@@ -135,7 +137,7 @@ export function HistoricalClientsTable
     }, [tableQuery])
 
     return (
-      <div id={id}>
+      <div>
         <Loader states={[
           tableQuery
         ]}>
@@ -163,5 +165,20 @@ export function HistoricalClientsTable
 
   return (
     <HistoricalClientsTable />
+  )
+}
+
+export const GlobalSearchHistoricalClientsTable = (props: {
+  tableQuery?: TableQuery<Client, RequestPayload<unknown>, unknown>
+}) => {
+
+  const tableQuery = props.tableQuery
+  return (
+    <Table
+      columns={getCols(useIntl())}
+      dataSource={tableQuery?.data?.data}
+      onChange={tableQuery?.handleTableChange}
+      rowKey='clientMac'
+    />
   )
 }

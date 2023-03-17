@@ -1,16 +1,17 @@
 import React from 'react'
 
-import { createRoot } from 'react-dom/client'
+import { createRoot }    from 'react-dom/client'
+import { addMiddleware } from 'redux-dynamic-middlewares'
 
 import { ConfigProvider, ConfigProviderProps } from '@acx-ui/components'
 import { get }                                 from '@acx-ui/config'
-import { UserProfileProvider }                 from '@acx-ui/rc/components'
-import { CommonUrlsInfo, createHttpRequest }   from '@acx-ui/rc/utils'
 import { BrowserRouter }                       from '@acx-ui/react-router-dom'
 import { Provider }                            from '@acx-ui/store'
-import { getTenantId }                         from '@acx-ui/utils'
+import { UserProfileProvider, UserUrlsInfo }   from '@acx-ui/user'
+import { getTenantId, createHttpRequest }      from '@acx-ui/utils'
 
-import AllRoutes from './AllRoutes'
+import AllRoutes           from './AllRoutes'
+import { errorMiddleware } from './errorMiddleware'
 
 import '@acx-ui/theme'
 
@@ -61,11 +62,7 @@ export function renderPendoAnalyticsTag () {
 
 export async function pendoInitalization (): Promise<void> {
   const tenantId = getTenantId()
-  const param = { tenantId }
-  const userProfileRequest = createHttpRequest (
-    CommonUrlsInfo.getUserProfile,
-    param
-  )
+  const userProfileRequest = createHttpRequest(UserUrlsInfo.getUserProfile, { tenantId })
   const url = userProfileRequest.url
 
   try {
@@ -108,6 +105,8 @@ export async function init () {
   if ( get('DISABLE_PENDO') === 'false' ) {
     renderPendoAnalyticsTag()
   }
+
+  addMiddleware(errorMiddleware)
 
   root.render(
     <React.StrictMode>

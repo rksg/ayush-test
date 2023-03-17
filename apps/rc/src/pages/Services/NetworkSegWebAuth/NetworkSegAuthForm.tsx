@@ -11,21 +11,22 @@ import { defineMessage, useIntl } from 'react-intl'
 import {
   Button,
   PageHeader,
-  showToast,
   StepsForm,
   StepsFormInstance,
   Subtitle
 } from '@acx-ui/components'
 import {
-  useCreateWebAuthTemplateMutation,
   useGetWebAuthTemplateQuery,
+  useCreateWebAuthTemplateMutation,
   useUpdateWebAuthTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   getServiceListRoutePath,
+  LocationExtended,
+  redirectPreviousPage,
   WebAuthTemplate
 } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
@@ -47,6 +48,7 @@ export default function NetworkSegAuthForm ({ editMode = false }: { editMode?: b
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
+  const location = useLocation()
   const linkToServices = useTenantLink(getServiceListRoutePath(true))
 
   const [createWebAuthTemplate] = useCreateWebAuthTemplateMutation()
@@ -55,6 +57,8 @@ export default function NetworkSegAuthForm ({ editMode = false }: { editMode?: b
 
   const formRef = useRef<StepsFormInstance<WebAuthTemplate>>()
 
+  const previousPath = (location as LocationExtended)?.state?.from?.pathname
+
   useEffect(() => {
     formRef.current?.resetFields()
     if (data && editMode) {
@@ -62,20 +66,17 @@ export default function NetworkSegAuthForm ({ editMode = false }: { editMode?: b
     }
   }, [data, editMode])
 
-  const saveData = async (data: WebAuthTemplate) => {
+  const saveData = async (value: WebAuthTemplate) => {
     try {
       if (editMode) {
-        await updateWebAuthTemplate({ params, payload: data }).unwrap()
+        await updateWebAuthTemplate({ params, payload: value }).unwrap()
       } else {
-        await createWebAuthTemplate({ params, payload: _.omit(data, 'id') }).unwrap()
+        await createWebAuthTemplate({ params, payload: _.omit(value, 'id') }).unwrap()
       }
 
-      navigate(linkToServices, { replace: true })
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+      redirectPreviousPage(navigate, previousPath, linkToServices)
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -109,7 +110,7 @@ export default function NetworkSegAuthForm ({ editMode = false }: { editMode?: b
       <StepsForm<WebAuthTemplate>
         formRef={formRef}
         editMode={editMode}
-        onCancel={() => navigate(linkToServices)}
+        onCancel={() => redirectPreviousPage(navigate, previousPath, linkToServices)}
         onFinish={saveData}
       >
         <StepsForm.StepForm

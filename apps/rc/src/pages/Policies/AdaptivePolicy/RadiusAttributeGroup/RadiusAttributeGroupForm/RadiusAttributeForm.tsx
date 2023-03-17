@@ -1,26 +1,19 @@
 import React, { useEffect, useState } from 'react'
 
 import { Form, FormInstance, Input, Select, Space, TreeSelect } from 'antd'
-import { defineMessage, useIntl }                               from 'react-intl'
+import {  useIntl }                                             from 'react-intl'
 
 import { Loader }                                                                      from '@acx-ui/components'
 import { useLazyRadiusAttributeListWithQueryQuery, useRadiusAttributeVendorListQuery } from '@acx-ui/rc/services'
 import { AttributeAssignment, OperatorType, RadiusAttribute, treeNode }                from '@acx-ui/rc/utils'
+
+import { AttributeOperationLabelMapping } from '../../../contentsMap'
 
 
 interface RadiusAttributeFormProps {
   form: FormInstance,
   editAttribute?: AttributeAssignment
 }
-
-const OperationTypeOption = [
-  { label: defineMessage({ defaultMessage: 'Add (Multiple)' }), value: OperatorType.ADD },
-  // eslint-disable-next-line max-len
-  { label: defineMessage({ defaultMessage: 'Add or Replace (Single)' }), value: OperatorType.ADD_REPLACE },
-  // eslint-disable-next-line max-len
-  { label: defineMessage({ defaultMessage: 'ADD if it Doesn\'t Exist' }), value: OperatorType.DOES_NOT_EXIST }
-]
-
 
 export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
   const { $t } = useIntl()
@@ -51,7 +44,7 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
   const onLoadData = async (treeNode: any) => {
     const defaultPayload = {
       page: 0,
-      pageSize: 10000
+      pageSize: '10000'
     }
     const payload = treeNode.value === commonAttributeKey ?
       { ...defaultPayload, filters: { showOnDefault: true } } :
@@ -97,7 +90,7 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
   }
 
   return (
-    <Loader states={[radiusAttributeVendorListQuery]}>
+    <Loader states={[{ isLoading: radiusAttributeVendorListQuery.isLoading }]}>
       <Form layout='vertical' form={form}>
         <Form.Item name='id' hidden children={<Input />}/>
         <Form.Item name='attributeName'
@@ -117,9 +110,11 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
         </Form.Item>
         <Form.Item label={$t({ defaultMessage: 'Condition Value' })}>
           <Space direction='horizontal'>
-            <Form.Item name='operator' initialValue={OperationTypeOption[0].value}>
+            <Form.Item name='operator' initialValue={OperatorType.ADD}>
               <Select
-                options={OperationTypeOption?.map(p => ({ label: $t(p.label), value: p.value }))}>
+                options={Object.keys(OperatorType).map(option =>
+                // eslint-disable-next-line max-len
+                  ({ label: $t(AttributeOperationLabelMapping[option as OperatorType]), value: option }))}>
               </Select>
             </Form.Item>
             <Form.Item name='attributeValue'

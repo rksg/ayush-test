@@ -4,20 +4,22 @@ import { TableProps }  from 'antd'
 import { FilterValue } from 'antd/lib/table/interface'
 import _               from 'lodash'
 
-import { useParams, Params }                         from '@acx-ui/react-router-dom'
-import { UseQuery, UseQueryResult, UseQueryOptions } from '@acx-ui/types'
-import { TABLE_DEFAULT_PAGE_SIZE }                   from '@acx-ui/utils'
+import { useParams, Params } from '@acx-ui/react-router-dom'
+import {
+  RequestPayload,
+  UseQuery,
+  UseQueryResult,
+  UseQueryOptions
+} from '@acx-ui/types'
+import { TABLE_DEFAULT_PAGE_SIZE } from '@acx-ui/utils'
 
 import { ApiInfo, createHttpRequest } from '../apiService'
-
 
 export const TABLE_QUERY_POLLING_INTERVAL = 30_000
 export const TABLE_QUERY_LONG_POLLING_INTERVAL = 300_000
 
-export interface RequestPayload <Payload = unknown> extends Record<string,unknown> {
-  params?: Params<string>
-  payload?: Payload
-}
+export { RequestPayload }
+
 export interface RequestFormData <FormData = unknown> {
   params?: Params<string>
   payload?: FormData
@@ -205,8 +207,8 @@ export function useTableQuery <
     } as SORTER
 
     const paginationDetail = {
-      page: customPagination.current,
-      pageSize: customPagination.pageSize
+      page: customPagination.current ?? payload.page,
+      pageSize: customPagination.pageSize ?? payload.pageSize
     } as PAGINATION
 
     const tableProps = { ...sorterDetail, ...paginationDetail }
@@ -228,14 +230,6 @@ export function useTableQuery <
   } as TableQuery<ResultType, Payload, ResultExtra>
 }
 
-export interface TableChangePayload {
-  sortField: string
-  sortOrder: 'ASC' | 'DESC'
-  page: number
-  pageSize: number
-  pageStartZero?: boolean
-}
-
 export interface NewTablePageable {
   offset: number
   pageNumber: number
@@ -249,6 +243,14 @@ export interface NewTablePageable {
   unpaged: boolean
 }
 
+export interface TableChangePayload {
+  sortField: string
+  sortOrder: 'ASC' | 'DESC'
+  page: number
+  pageSize: number
+  pageStartZero?: boolean
+}
+
 export interface NewTableResult<T> {
   totalElements: number
   totalPages: number
@@ -259,6 +261,14 @@ export interface NewTableResult<T> {
   }
   content: T[]
   pageable: NewTablePageable
+}
+export interface NewAPITableResult<T>{
+  content: T[]
+  paging: {
+    page: number,
+    pageSize: number,
+    totalCount: number
+  }
 }
 
 export interface NewTableResultPolicy<T> {
@@ -287,6 +297,14 @@ export function transferToTableResult<T> (newResult: NewTableResult<T>): TableRe
     data: newResult.content,
     page: newResult.pageable ? newResult.pageable.pageNumber + 1 : 1,
     totalCount: newResult.totalElements
+  }
+}
+
+export function transferNewResToTableResult<T> (newResult: NewAPITableResult<T>): TableResult<T> {
+  return {
+    data: newResult.content,
+    page: newResult.paging? newResult.paging.page + 1 : 1,
+    totalCount: newResult.paging.totalCount
   }
 }
 

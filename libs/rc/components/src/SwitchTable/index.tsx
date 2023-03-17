@@ -1,16 +1,20 @@
 /* eslint-disable max-len */
 import { useState } from 'react'
 
-import { Space, Badge } from 'antd'
-import { useIntl }      from 'react-intl'
+import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
+import { Space, Badge }        from 'antd'
+import { useIntl }             from 'react-intl'
 
 import {
   Table,
   TableProps,
   Loader,
-  deviceStatusColors
+  deviceStatusColors,
+  ColumnType
 } from '@acx-ui/components'
-import { useLazyGetJwtTokenQuery, useSwitchListQuery } from '@acx-ui/rc/services'
+import { useImportSwitchesMutation,
+  useLazyGetJwtTokenQuery,
+  useSwitchListQuery } from '@acx-ui/rc/services'
 import {
   getSwitchStatusString,
   SwitchRow,
@@ -22,12 +26,16 @@ import {
   getFilters,
   TableQuery,
   RequestPayload,
-  SwitchStatusEnum
+  SwitchStatusEnum,
+  isStrictOperationalSwitch
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess }                                    from '@acx-ui/user'
 
-import { SwitchCliSession } from '../SwitchCliSession'
-import { useSwitchActions } from '../useSwitchActions'
+import { seriesSwitchStatusMapping } from '../DevicesWidget/helper'
+import { CsvSize, ImportFileDrawer } from '../ImportFileDrawer'
+import { SwitchCliSession }          from '../SwitchCliSession'
+import { useSwitchActions }          from '../useSwitchActions'
 
 export const SwitchStatus = (
   { row, showText = true }: { row: SwitchRow, showText?: boolean }
@@ -50,6 +58,8 @@ const handleStatusColor = (status: DeviceConnectionStatus) => {
 }
 
 export const defaultSwitchPayload = {
+  searchString: '',
+  searchTargetFields: ['name', 'model', 'switchMac', 'ipAddress'],
   fields: [
     'check-all','name','deviceStatus','model','activeSerial','switchMac','ipAddress','venueName','uptime',
     'clientCount','cog','id','serialNumber','isStack','formStacking','venueId','switchName','configReady',
@@ -60,11 +70,19 @@ export const defaultSwitchPayload = {
 export function SwitchTable (props : {
   showAllColumns?: boolean,
   tableQuery?: TableQuery<SwitchRow, RequestPayload<unknown>, unknown>
+  searchable?: boolean
+  enableActions?: boolean
+  filterableKeys?: { [key: string]: ColumnType['filterable'] }
 }) {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
+  const { showAllColumns, searchable, filterableKeys } = props
   const linkToEditSwitch = useTenantLink('/devices/switch/')
+
+  const [ importVisible, setImportVisible] = useState(false)
+  const [ importCsv, importResult ] = useImportSwitchesMutation()
+  const importTemplateLink = 'assets/templates/switches_import_template.csv'
 
   const inlineTableQuery = usePollingTableQuery({
     useQuery: useSwitchListQuery,
@@ -72,13 +90,29 @@ export function SwitchTable (props : {
       filters: getFilters(params),
       ...defaultSwitchPayload
     },
+    search: {
+      searchTargetFields: defaultSwitchPayload.searchTargetFields
+    },
     option: { skip: Boolean(props.tableQuery) }
   })
   const tableQuery = props.tableQuery || inlineTableQuery
-  const { showAllColumns } = props
 
   const switchAction = useSwitchActions()
   const tableData = tableQuery.data?.data ?? []
+
+  const statusFilterOptions = seriesSwitchStatusMapping().map(({ key, name }) => ({
+    key, value: name
+  }))
+
+  const switchType = () => [
+    { key: null, text: $t({ defaultMessage: 'All Switches' }) },
+    { key: 'true', text: $t({ defaultMessage: 'Stack' }) },
+    { key: 'false', text: $t({ defaultMessage: 'Standalone' }) }
+  ] as Array<{ key: string, text: string }>
+
+  const switchFilterOptions = switchType().map(({ key, text }) => ({
+    key, value: text
+  }))
 
   const [getJwtToken] = useLazyGetJwtTokenQuery()
   const [cliModalState, setCliModalOpen] = useState(false)
@@ -87,6 +121,7 @@ export function SwitchTable (props : {
     serialNumber: '',
     switchName: ''
   })
+  const [stackTooltip, setStackTooltip] = useState('')
 
   const columns: TableProps<SwitchRow>['columns'] = [{
     key: 'name',
@@ -95,6 +130,11 @@ export function SwitchTable (props : {
     sorter: true,
     defaultSortOrder: 'ascend',
     disable: true,
+    searchable: searchable,
+    filterKey: 'isStack',
+    filterMultiple: false,
+    filterValueNullable: false,
+    filterable: filterableKeys ? switchFilterOptions : false,
     render: (data, row) => {
       return row.isFirstLevel ?
         <TenantLink to={`/devices/switch/${row.id || row.serialNumber}/${row.serialNumber}/details/overview`}>
@@ -110,12 +150,16 @@ export function SwitchTable (props : {
     title: $t({ defaultMessage: 'Status' }),
     dataIndex: 'deviceStatus',
     sorter: true,
+    filterMultiple: false,
+    filterable: filterableKeys ? statusFilterOptions : false,
     render: (data, row) => <SwitchStatus row={row} />
   }, {
     key: 'model',
     title: $t({ defaultMessage: 'Model' }),
     dataIndex: 'model',
-    sorter: true
+    filterable: filterableKeys ? filterableKeys['model'] : false,
+    sorter: true,
+    searchable: searchable
   }, {
     key: 'activeSerial',
     title: $t({ defaultMessage: 'Serial Number' }),
@@ -127,12 +171,14 @@ export function SwitchTable (props : {
     title: $t({ defaultMessage: 'MAC Address' }),
     dataIndex: 'switchMac',
     sorter: true,
+    searchable: searchable,
     render: (data) => typeof data === 'string' && data.toUpperCase()
   }, {
     key: 'ipAddress',
     title: $t({ defaultMessage: 'IP Address' }),
     dataIndex: 'ipAddress',
-    sorter: true
+    sorter: true,
+    searchable: searchable
   },
   // { TODO: Health scope
   //   key: 'incidents',
@@ -144,6 +190,8 @@ export function SwitchTable (props : {
     title: $t({ defaultMessage: 'Venue' }),
     dataIndex: 'venueName',
     sorter: true,
+    filterKey: 'venueId',
+    filterable: filterableKeys ? filterableKeys['venueId'] : false,
     render: (data, row) => (
       <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{data}</TenantLink>
     )
@@ -158,7 +206,9 @@ export function SwitchTable (props : {
     dataIndex: 'clientCount',
     sorter: true,
     render: (data, row) => (
-      <TenantLink to={`/devices/switch/${row.id || row.serialNumber}/${row.serialNumber}/details/clients`}>{data || 0}</TenantLink>
+      <TenantLink to={`/devices/switch/${row.id || row.serialNumber}/${row.serialNumber}/details/clients`}>
+        {data ? data : ((row.unitStatus === undefined) ? 0 : '') }
+      </TenantLink>
     )
   }
   // { // TODO: Waiting for TAG feature support
@@ -190,6 +240,7 @@ export function SwitchTable (props : {
     disabled: (rows) => rows[0].deviceStatus === SwitchStatusEnum.DISCONNECTED
   }, {
     label: $t({ defaultMessage: 'CLI Session' }),
+    key: 'EnableCliSessionButton',
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
     disabled: (rows) => {
       const row = rows[0]
@@ -204,9 +255,29 @@ export function SwitchTable (props : {
     }
   }, {
     label: $t({ defaultMessage: 'Stack Switches' }),
-    disabled: true,
-    onClick: () => {
-      // TODO:
+    tooltip: stackTooltip, // TODO: tooltip won't show when button is disabled
+    disabled: (rows) => {
+      const modelFamily = rows[0]?.model?.split('-')[0]
+      const venueId = rows[0]?.venueId
+      const notOperational = rows.find(i =>
+        !isStrictOperationalSwitch(i?.deviceStatus, i?.configReady, i?.syncedSwitchConfig ?? false))
+      const invalid = rows.find(i =>
+        i?.model.split('-')[0] !== modelFamily || i?.venueId !== venueId)
+      const hasStack = rows.find(i => i.isStack || i.formStacking)
+      setStackTooltip('')
+
+      if(!!hasStack) {
+        setStackTooltip($t({ defaultMessage: 'Switches should be standalone' }))
+      } else if(!!notOperational) {
+        setStackTooltip($t({ defaultMessage: 'Switch must be operational before you can stack switches' }))
+      } else if(!!invalid) {
+        setStackTooltip($t({ defaultMessage: 'Switches should belong to the same model family and venue' }))
+      }
+
+      return !!notOperational || !!invalid || !!hasStack
+    },
+    onClick: (selectedRows) => {
+      navigate(`stack/${selectedRows?.[0]?.venueId}/${selectedRows.map(row => row.serialNumber).join('_')}/add`, { replace: false })
     }
   }, {
     label: $t({ defaultMessage: 'Delete' }),
@@ -219,13 +290,15 @@ export function SwitchTable (props : {
   // const retrieveData () => {}
 
   return <Loader states={[tableQuery]}>
-    <Table
+    <Table<SwitchRow>
       columns={columns}
       dataSource={tableData}
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
+      onFilterChange={tableQuery.handleFilterChange}
+      enableApiFilter={true}
       rowKey={(record)=> record.serialNumber + (!record.isFirstLevel ? 'stack-member' : '')}
-      rowActions={rowActions}
+      rowActions={filterByAccess(rowActions)}
       rowSelection={{
         type: 'checkbox',
         renderCell: (checked, record, index, originNode) => {
@@ -234,6 +307,23 @@ export function SwitchTable (props : {
             : null
         }
       }}
+      actions={filterByAccess(props.enableActions ? [{
+        label: $t({ defaultMessage: 'Add Switch' }),
+        onClick: () => {
+          navigate(`${linkToEditSwitch.pathname}/add`)
+        }
+      }, {
+        label: $t({ defaultMessage: 'Add Stack' }),
+        onClick: () => {
+          navigate(`${linkToEditSwitch.pathname}/stack/add`)
+        }
+      }, {
+        label: $t({ defaultMessage: 'Import from file' }),
+        onClick: () => {
+          setImportVisible(true)
+        }
+      }
+      ] : [])}
     />
     <SwitchCliSession
       modalState={cliModalState}
@@ -241,6 +331,20 @@ export function SwitchTable (props : {
       serialNumber={cliData.serialNumber}
       jwtToken={cliData.token}
       switchName={cliData.switchName}
+    />
+    <ImportFileDrawer type='Switch'
+      title={$t({ defaultMessage: 'Import from file' })}
+      maxSize={CsvSize['5MB']}
+      maxEntries={50}
+      acceptType={['csv']}
+      templateLink={importTemplateLink}
+      visible={importVisible}
+      isLoading={importResult.isLoading}
+      importError={importResult.error as FetchBaseQueryError}
+      importRequest={(formData) => {
+        importCsv({ params, payload: formData })
+      }}
+      onClose={() => setImportVisible(false)}
     />
   </Loader>
 }

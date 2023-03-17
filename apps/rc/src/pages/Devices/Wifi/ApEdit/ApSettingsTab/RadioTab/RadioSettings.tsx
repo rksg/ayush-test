@@ -6,7 +6,7 @@ import { Col, Form, Radio, RadioChangeEvent, Row, Space, Switch } from 'antd'
 import { cloneDeep, includes }                                    from 'lodash'
 import { FormattedMessage, useIntl }                              from 'react-intl'
 
-import { Button, Loader, showToast, StepsForm, StepsFormInstance, Tabs, Tooltip } from '@acx-ui/components'
+import { Button, Loader, StepsForm, StepsFormInstance, Tabs, Tooltip } from '@acx-ui/components'
 import {
   ApRadioTypeEnum,
   channelBandwidth24GOptions,
@@ -28,7 +28,8 @@ import {
   ApRadioCustomization,
   ApRadioParamsDual5G,
   VenueExtended,
-  VenueRadioCustomization
+  VenueRadioCustomization,
+  redirectPreviousPage
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -43,6 +44,7 @@ export function RadioSettings () {
   const basePath = useTenantLink('/devices/')
 
   const {
+    previousPath,
     editContextData,
     setEditContextData
   } = useContext(ApEditContext)
@@ -383,13 +385,8 @@ export function RadioSettings () {
           payload: payload
         }).unwrap()
       }
-    } catch(error) {
-      // eslint-disable-next-line no-console
-      console.log(error)
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -502,10 +499,9 @@ export function RadioSettings () {
         formRef={formRef}
         onFormChange={handleChange}
         onFinish={handleUpdateRadioSettings}
-        onCancel={() => navigate({
-          ...basePath,
-          pathname: `${basePath.pathname}/wifi/${serialNumber}/details/overview`
-        })}
+        onCancel={() =>
+          redirectPreviousPage(navigate, previousPath, basePath)
+        }
         buttonLabel={{
           submit: $t({ defaultMessage: 'Apply Radio' })
         }}

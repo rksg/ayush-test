@@ -7,7 +7,8 @@ import _                                 from 'lodash'
 import { useIntl }                       from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
-import { Button, Loader, showToast } from '@acx-ui/components'
+import { Button, Loader }            from '@acx-ui/components'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   useGetTroubleshootingQuery,
   useGetVlanListBySwitchLevelQuery,
@@ -19,9 +20,6 @@ import {
   TroubleshootingMacAddressOptionsEnum,
   TroubleshootingType
 } from '@acx-ui/rc/utils'
-import { formatter } from '@acx-ui/utils'
-
-
 
 export function SwitchMacAddressForm () {
   const { $t } = useIntl()
@@ -153,39 +151,45 @@ export function SwitchMacAddressForm () {
     try {
       const macAddressTableType = form.getFieldValue('refineOption')
       let payload = {
-        macAddressTableType: TroubleshootingMacAddressOptionsEnum.NONE
+        macAddressTableType: TroubleshootingMacAddressOptionsEnum.NONE,
+        troubleshootingType: 'mac-address-table'
       } as {
         macAddressTableType: TroubleshootingMacAddressOptionsEnum,
         portIdentify?: string,
         vlanId?: string,
-        macAddress?: string
+        macAddress?: string,
+        troubleshootingType: string
+        troubleshootingPayload?: object
       }
 
       switch(macAddressTableType) {
         case TroubleshootingMacAddressOptionsEnum.PORT:
           const portIdentify = form.getFieldValue('portIdentify')
           if (!_.isEmpty(portIdentify)) {
-            payload = {
-              portIdentify,
-              macAddressTableType
+            payload.portIdentify = portIdentify
+            payload.macAddressTableType = macAddressTableType
+            payload.troubleshootingPayload = {
+              portIdentify, macAddressTableType
             }
           }
           break
         case TroubleshootingMacAddressOptionsEnum.VLAN:
           const vlanId = form.getFieldValue('vlanId')
           if (!_.isEmpty(vlanId) || Number(vlanId) > 0) {
-            payload = {
-              vlanId,
-              macAddressTableType
+            payload.vlanId = vlanId
+            payload.macAddressTableType = macAddressTableType
+            payload.troubleshootingPayload = {
+              vlanId, macAddressTableType
             }
           }
           break
         case TroubleshootingMacAddressOptionsEnum.MAC:
           const macAddress = form.getFieldValue('macAddress')
           if (!_.isEmpty(macAddress)) {
-            payload = {
-              macAddress,
-              macAddressTableType
+            payload.macAddress = macAddress
+            payload.macAddressTableType = macAddressTableType
+            payload.troubleshootingPayload = {
+              macAddress, macAddressTableType
             }
           }
           break
@@ -195,12 +199,9 @@ export function SwitchMacAddressForm () {
       if (result) {
         refetchResult()
       }
-    } catch {
+    } catch (error) {
       setIsValid(false)
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -338,7 +339,7 @@ export function SwitchMacAddressForm () {
           <Form.Item
             label={$t({ defaultMessage: 'Last synced at' })}
             children={
-              formatter('dateTimeFormatWithSeconds')(lasySyncTime)}
+              formatter(DateFormatEnum.DateTimeFormatWithSeconds)(lasySyncTime)}
           />}
 
         <Form.Item wrapperCol={{ offset: 0, span: 16 }}

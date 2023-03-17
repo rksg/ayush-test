@@ -1,14 +1,14 @@
 import { gql } from 'graphql-request'
 
-import { dataApi }                             from '@acx-ui/analytics/services'
 import { AnalyticsFilter, defaultNetworkPath } from '@acx-ui/analytics/utils'
+import { dataApi }                             from '@acx-ui/store'
 import { NetworkPath, PathNode }               from '@acx-ui/utils'
 
 type NetworkData = PathNode & { id:string, path: NetworkPath }
 type NetworkHierarchyFilter = AnalyticsFilter & { shouldQuerySwitch? : Boolean }
 
 export type ApOrSwitch = {
-  path: NetworkPath
+  path?: NetworkPath
   name: string
   mac: string
 }

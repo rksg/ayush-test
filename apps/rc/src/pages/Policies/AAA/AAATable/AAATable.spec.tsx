@@ -3,7 +3,7 @@ import { rest }  from 'msw'
 import { Path }  from 'react-router-dom'
 
 import {
-  CommonUrlsInfo,
+  AaaUrls,
   getPolicyDetailsLink,
   getPolicyRoutePath,
   PolicyOperation,
@@ -14,6 +14,7 @@ import {
   mockServer,
   render,
   screen,
+  waitFor,
   within
 } from '@acx-ui/test-utils'
 
@@ -21,14 +22,18 @@ import AAATable from './AAATable'
 
 const mockTableResult = {
   totalCount: 1,
-  page: 1,
   data: [{
     id: 'cc080e33-26a7-4d34-870f-b7f312fcfccb',
     name: 'My AAA Server 1',
-    type: 'AAA',
-    scope: '5'
+    type: 'AUTHENTICATION',
+    primary: {
+      ip: '1.1.1.1',
+      port: 1811,
+      sharedSecret: 'xxxxxxxx'
+    }
   }]
 }
+
 
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
@@ -54,7 +59,7 @@ describe('AAATable', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getPoliciesList.url,
+        AaaUrls.getAAAPolicyViewModelList.url,
         (req, res, ctx) => res(ctx.json(mockTableResult))
       )
     )
@@ -70,12 +75,47 @@ describe('AAATable', () => {
     )
 
     const targetName = mockTableResult.data[0].name
-    expect(await screen.findByRole('button', { name: /Add AAA Server/i })).toBeVisible()
+    expect(await screen.findByRole('button', { name: /Add Radius Server/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: new RegExp(targetName) })).toBeVisible()
   })
 
   // TODO Should implement this after API is ready
-  it.todo('should delete selected row')
+  it('should delete selected row', async () => {
+    const deleteFn = jest.fn()
+
+    mockServer.use(
+      rest.delete(
+        AaaUrls.deleteAAAPolicy.url,
+        (req, res, ctx) => {
+          deleteFn(req.body)
+          return res(ctx.json({ requestId: '12345' }))
+        }
+      )
+    )
+
+    render(
+      <Provider>
+        <AAATable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+
+    const target = mockTableResult.data[0]
+    const row = await screen.findByRole('row', { name: new RegExp(target.name) })
+    await userEvent.click(within(row).getByRole('radio'))
+
+    await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+
+    expect(await screen.findByText('Delete "' + target.name + '"?')).toBeVisible()
+
+    // eslint-disable-next-line max-len
+    await userEvent.click(await screen.findByRole('button', { name: /Delete Policy/i }))
+
+    await waitFor(() => {
+      expect(deleteFn).toHaveBeenCalled()
+    })
+  })
 
   it('should navigate to the Edit view', async () => {
     render(

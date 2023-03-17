@@ -4,9 +4,11 @@ import { Divider, Space } from 'antd'
 import { useIntl }        from 'react-intl'
 
 import { Card, Loader, Subtitle, Tooltip, Descriptions }                       from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                           from '@acx-ui/formatter'
 import { WifiSignal }                                                          from '@acx-ui/rc/components'
 import {
   useLazyGetApQuery,
+  useLazyGetGuestsListQuery,
   useLazyGetNetworkQuery,
   useLazyGetVenueQuery
   // TODO:
@@ -22,10 +24,10 @@ import {
   NetworkSaveData,
   transformQosPriorityType,
   QosPriorityEnum,
-  VenueExtended
+  VenueExtended,
+  Guest
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { formatter }             from '@acx-ui/utils'
 import { getIntl }               from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
@@ -48,6 +50,8 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
   const [getAp] = useLazyGetApQuery()
   const [getVenue] = useLazyGetVenueQuery()
   const [getNetwork] = useLazyGetNetworkQuery()
+  const [getGuestsList] = useLazyGetGuestsListQuery()
+  const [guestDetail, setGuestDetail] = useState({} as Guest)
 
   // TODO: dpsk
   // const [getDpskPassphraseByQuery] = useLazyGetDpskPassphraseByQueryQuery()
@@ -58,6 +62,37 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
       let venueData = null as unknown as VenueExtended
       let networkData = null as NetworkSaveData | null
       const serialNumber = clientDetails?.apSerialNumber || clientDetails?.serialNumber
+
+      const payload = {
+        searchString: clientDetails.clientMac,
+        searchTargetFields: [
+          'devicesMac'
+        ],
+        fields: [
+          'creationDate',
+          'name',
+          'mobilePhoneNumber',
+          'emailAddress',
+          'guestType',
+          'ssid',
+          'expiryDate',
+          'guestStatus',
+          'id',
+          'networkId',
+          'maxNumberOfClients',
+          'devicesMac',
+          'guestStatus',
+          'socialLogin',
+          'clients',
+          'notes'
+        ],
+        filters: {
+          includeExpired: [
+            true
+          ]
+        }
+      }
+
       const getApData = async () => {
         try {
           apData = await getAp({
@@ -85,6 +120,14 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
         }
       }
 
+      const getGuestData = async () => {
+        const list = (await getGuestsList({ params: { tenantId: tenantId }, payload }, true)
+          .unwrap()).data || []
+        if (list.length === 1) {
+          setGuestDetail(list[0])
+        }
+      }
+
       const setData = (apData: ApDeep, venueData: VenueExtended, networkData: NetworkSaveData | null
       ) => {
         setNetworkType(networkData?.type || '')
@@ -98,9 +141,15 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
           enableLinkToNetwork: !!networkData,
           enableLinkToVenue: !!venueData
         })
+
+        if ('guest' === networkData?.type) {
+          getGuestData()
+        }
       }
 
-      getApData()
+      if (serialNumber) {
+        getApData()
+      }
       getVenueData()
       getNetworkData()
 
@@ -113,7 +162,7 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
     }
   }, [clientDetails])
 
-  const getProperties = (clientStatus: string, networkType: string) => {
+  const getProperties = (clientStatus: string, networkType: string, clientMac: string) => {
     let obj = null
     switch (clientStatus) {
       case ClientStatusEnum.CONNECTED:
@@ -121,7 +170,8 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
           <ClientDetails client={client} />,
           <OperationalData client={client} />,
           <Connection client={client} />,
-          (networkType === 'guest' && <GuestDetails />),
+          (networkType === 'guest' &&
+            <GuestDetails guestDetail={guestDetail} clientMac={clientMac}/>),
           (networkType === 'dpsk' && <DpskPassphraseDetails />),
           <WiFiCallingDetails client={client} />
         ]
@@ -130,7 +180,8 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
         obj = [
           <ClientDetails client={client} />,
           <LastSession client={client} />,
-          (networkType === 'guest' && <GuestDetails />),
+          (networkType === 'guest' &&
+            <GuestDetails guestDetail={guestDetail} clientMac={clientMac}/>),
           (networkType === 'dpsk' && <DpskPassphraseDetails />),
           <WiFiCallingDetails client={client} />
         ]
@@ -148,11 +199,15 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
   }
 
   return <Card>
-    <Loader states={[{
-      isLoading: !Object.keys(client).length
-    }]}>
-      { getProperties(clientStatus, networkType) }
-    </Loader>
+    {
+      clientStatus === ClientStatusEnum.HISTORICAL ?
+        <>{ getProperties(clientStatus, networkType, clientDetails.clientMac) }</>:
+        <Loader states={[{
+          isLoading: !Object.keys(client).length
+        }]}>
+          { getProperties(clientStatus, networkType, clientDetails.clientMac) }
+        </Loader>
+    }
   </Card>
 }
 
@@ -166,18 +221,18 @@ function ClientDetails ({ client }: { client: ClientExtended }) {
     <Descriptions labelWidthPercent={50}>
       <Descriptions.Item
         label={$t({ defaultMessage: 'MAC Address' })}
-        children={client?.clientMac}
+        children={client?.clientMac || '--'}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'IP Address' })}
-        children={client?.ipAddress || client?.clientIP}
+        children={client?.ipAddress || client?.clientIP || '--'}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'OS' })}
-        children={<UI.OsType size={4}>
+        children={client?.osType ? <UI.OsType size={4}>
           {getOsTypeIcon(client?.osType || '')}
           {client?.osType}
-        </UI.OsType>}
+        </UI.OsType> : '--'}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Host Name' })}
@@ -257,7 +312,7 @@ function Connection ({ client }: { client: ClientExtended }) {
           title={$t({ defaultMessage: 'Service Set Identifier' })}
         >{$t({ defaultMessage: 'SSID' })}
         </Tooltip>}
-        children={client?.networkSsid}
+        children={client?.networkSsid || '--'}
       />
       <Descriptions.Item
         label={<Tooltip
@@ -265,7 +320,7 @@ function Connection ({ client }: { client: ClientExtended }) {
           title={$t({ defaultMessage: 'Virtual Local Area Network Identifier' })}
         >{$t({ defaultMessage: 'VLAN ID' })}
         </Tooltip>}
-        children={client?.vlan}
+        children={client?.vlan || '--'}
       />
       <Descriptions.Item
         label={<Tooltip
@@ -273,7 +328,7 @@ function Connection ({ client }: { client: ClientExtended }) {
           title={$t({ defaultMessage: 'Basic Service Set Identifier' })}
         >{$t({ defaultMessage: 'BSSID' })}
         </Tooltip>}
-        children={client?.bssid}
+        children={client?.bssid || '--'}
       />
     </Descriptions>
   </>
@@ -295,36 +350,36 @@ function OperationalData ({ client }: { client: ClientExtended }) {
           title={intl.$t({ defaultMessage: 'Radio Frequency Channel' })}
         >{intl.$t({ defaultMessage: 'RF Channel' })}
         </Tooltip>}
-        children={client?.rfChannel}
+        children={client?.rfChannel || '--'}
       />
       <Descriptions.Item
         label={intl.$t({ defaultMessage: 'Traffic From Client' })}
-        children={<Tooltip
+        children={client?.transmittedBytes ? <Tooltip
           placement='bottom'
           title={`${numberFormatter(client?.transmittedBytes)} B`}
         >
           {bytesFormatter(client?.transmittedBytes)}
-        </Tooltip>}
+        </Tooltip> : '--'}
       />
       <Descriptions.Item
         label={intl.$t({ defaultMessage: 'Packets From Client' })}
-        children={numberFormatter(client?.transmittedPackets)}
+        children={client?.transmittedPackets ? numberFormatter(client?.transmittedPackets) : '--'}
       />
       <Descriptions.Item
         label={intl.$t({ defaultMessage: 'Traffic To Client' })}
-        children={<Tooltip
+        children={client?.receivedBytes ? <Tooltip
           placement='bottom'
           title={`${numberFormatter(client?.receivedBytes)} B`}
         >{bytesFormatter(client?.receivedBytes)}
-        </Tooltip>}
+        </Tooltip> : '--'}
       />
       <Descriptions.Item
         label={intl.$t({ defaultMessage: 'Packets To Client' })}
-        children={numberFormatter(client?.receivedPackets)}
+        children={client?.receivedPackets ? numberFormatter(client?.receivedPackets) : '--'}
       />
       <Descriptions.Item
         label={intl.$t({ defaultMessage: 'Frames Dropped' })}
-        children={numberFormatter(client?.framesDropped)}
+        children={client?.framesDropped ? numberFormatter(client?.framesDropped) : '--'}
       />
       <Descriptions.Item
         label={<Tooltip
@@ -419,7 +474,7 @@ function LastSession ({ client }: { client: ClientExtended }) {
   const { $t } = getIntl()
   const durationFormatter = formatter('durationFormat')
   const getTimeFormat = (data: number) =>
-    formatter('dateTime12hourFormat')(data * 1000)
+    formatter(DateFormatEnum.DateTimeFormat)(data * 1000)
 
   return <>
     <Subtitle level={4}>
@@ -488,8 +543,10 @@ function LastSession ({ client }: { client: ClientExtended }) {
   </>
 }
 
-// TODO
-function GuestDetails () {
+function GuestDetails ({ guestDetail, clientMac }: {
+                        guestDetail: Guest
+                        clientMac: string
+                      }) {
   const { $t } = getIntl()
   return <>
     <Subtitle level={4}>
@@ -498,35 +555,41 @@ function GuestDetails () {
     <Descriptions labelWidthPercent={50}>
       <Descriptions.Item
         label={$t({ defaultMessage: 'Guest Name' })}
-        children={'--'}
+        children={guestDetail?.name || '--'}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Mobile Phone' })}
-        children={'--'}
+        children={guestDetail?.mobilePhoneNumber || '--'}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Email' })}
-        children={'--'}
+        children={guestDetail?.emailAddress || '--'}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Notes' })}
-        children={'--'}
+        children={guestDetail?.notes || '--'}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Guest Created' })}
-        children={'--'}
+        children={formatter(DateFormatEnum.DateTimeFormat)(guestDetail?.creationDate) || '--'}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Guest Expires' })}
-        children={'--'}
+        children={formatter(DateFormatEnum.DateTimeFormat)(guestDetail?.expiryDate) || '--'}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Max no. of clients' })}
-        children={'--'}
+        children={guestDetail?.maxNumberOfClients || '--'}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Other devices' })}
-        children={'--'}
+        children={guestDetail?.clients?.filter(client => clientMac !== client.clientMac).map(
+          client =>
+            <TenantLink
+              // eslint-disable-next-line max-len
+              to={`/users/wifi/clients/${client.clientMac}/details/overview?hostname=${client.hostname}`}>
+              {client.clientMac}
+            </TenantLink>) || '--'}
       />
     </Descriptions>
   </>

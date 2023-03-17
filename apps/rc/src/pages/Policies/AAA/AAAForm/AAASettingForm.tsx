@@ -3,8 +3,7 @@ import { useEffect } from 'react'
 import { Form, Input, InputNumber, Radio, Space } from 'antd'
 import { useIntl }                                from 'react-intl'
 
-import { Fieldset, GridCol, GridRow, StepsForm }                                      from '@acx-ui/components'
-import { ToggleButton }                                                               from '@acx-ui/rc/components'
+import { Button, Fieldset, GridCol, GridRow, StepsForm }                              from '@acx-ui/components'
 import { useLazyGetAAAPolicyListQuery }                                               from '@acx-ui/rc/services'
 import {
   AAAPolicyType, checkObjectNotExists, networkWifiIpRegExp, networkWifiSecretRegExp
@@ -15,7 +14,8 @@ import { useParams } from '@acx-ui/react-router-dom'
 
 type AAASettingFormProps = {
   edit: boolean,
-  saveState: AAAPolicyType
+  saveState: AAAPolicyType,
+  type?: string
 }
 
 const AAASettingForm = (props: AAASettingFormProps) => {
@@ -28,7 +28,7 @@ const AAASettingForm = (props: AAASettingFormProps) => {
   const [enableSecondaryServer, type ] =
     [useWatch('enableSecondaryServer'), useWatch('type')]
   const nameValidator = async (value: string) => {
-    const list = (await getAAAPolicyList({ params }).unwrap())
+    const list = (await getAAAPolicyList({ params }).unwrap()).data
       .filter(policy => policy.id !== params.policyId)
       .map(policy => ({ name: policy.name }))
     return checkObjectNotExists(list, { name: value } ,
@@ -44,8 +44,8 @@ const AAASettingForm = (props: AAASettingFormProps) => {
   const ACCT_FORBIDDEN_PORT = 1812
   const AUTH_FORBIDDEN_PORT = 1813
   const validateRadiusPort = async (value: number)=>{
-    if((value === 1812 && type === 'ACCOUNTING')||
-    (value === 1813 && type === 'AUTHENTICATION')){
+    if((value === ACCT_FORBIDDEN_PORT && type === 'ACCOUNTING')||
+    (value === AUTH_FORBIDDEN_PORT && type === 'AUTHENTICATION')){
       return Promise.reject(
         $t({ defaultMessage: 'Authentication radius port '+
         'cannot be {authForbiddenPort} and Accounting radius '+
@@ -75,8 +75,17 @@ const AAASettingForm = (props: AAASettingFormProps) => {
         <Form.Item
           name='type'
           label={$t({ defaultMessage: 'Type' })}
-          initialValue='AUTHENTICATION'
-          children={<Radio.Group>
+          initialValue={props.type || 'AUTHENTICATION'}
+          children={<Radio.Group disabled={props.type? true: false}
+            onChange={(e)=>{
+              if(e.target.value==='ACCOUNTING'){
+                form.setFieldValue(['primary', 'port'], AUTH_FORBIDDEN_PORT)
+                form.setFieldValue(['secondary', 'port'], AUTH_FORBIDDEN_PORT)
+              }else{
+                form.setFieldValue(['primary', 'port'], ACCT_FORBIDDEN_PORT)
+                form.setFieldValue(['secondary', 'port'], ACCT_FORBIDDEN_PORT)
+              }
+            }}>
             <Space direction='vertical'>
               <Radio key='authentication' value={'AUTHENTICATION'}>
                 {$t({ defaultMessage: 'Authentication RADIUS Server' })}
@@ -107,14 +116,14 @@ const AAASettingForm = (props: AAASettingFormProps) => {
               <Form.Item
                 name={['primary', 'port']}
                 style={{ display: 'inline-block', width: 'calc(43%)' }}
-                label={$t({ defaultMessage: 'Authentication Port' })}
+                label={$t({ defaultMessage: 'Port' })}
                 rules={[
                   { required: true },
                   { type: 'number', min: 1 },
                   { type: 'number', max: 65535 },
                   { validator: (_, value) => validateRadiusPort(value) }
                 ]}
-                initialValue={1811}
+                initialValue={type === 'ACCOUNTING'? AUTH_FORBIDDEN_PORT:ACCT_FORBIDDEN_PORT}
                 children={<InputNumber min={1} max={65535} />}
               />
             </div>
@@ -130,10 +139,15 @@ const AAASettingForm = (props: AAASettingFormProps) => {
             />
           </Fieldset>
           <Form.Item noStyle name='enableSecondaryServer'>
-            <ToggleButton
-              enableText={$t({ defaultMessage: 'Remove Secondary Server' })}
-              disableText={$t({ defaultMessage: 'Add Secondary Server' })}
-            />
+            <Button
+              type='link'
+              onClick={() => {
+                form.setFieldValue('enableSecondaryServer',!enableSecondaryServer)
+              }}
+            >
+              {enableSecondaryServer ? $t({ defaultMessage: 'Remove Secondary Server' }):
+                $t({ defaultMessage: 'Add Secondary Server' })}
+            </Button>
           </Form.Item>
           {enableSecondaryServer &&
           <Fieldset label={$t({ defaultMessage: 'Secondary Server' })}
@@ -165,14 +179,14 @@ const AAASettingForm = (props: AAASettingFormProps) => {
               <Form.Item
                 name={['secondary', 'port']}
                 style={{ display: 'inline-block', width: 'calc(43%)' }}
-                label={$t({ defaultMessage: 'Authentication Port' })}
+                label={$t({ defaultMessage: 'Port' })}
                 rules={[
                   { required: true },
                   { type: 'number', min: 1 },
                   { type: 'number', max: 65535 },
                   { validator: (_, value) => validateRadiusPort(value) }
                 ]}
-                initialValue={1814}
+                initialValue={type === 'ACCOUNTING'? AUTH_FORBIDDEN_PORT:ACCT_FORBIDDEN_PORT}
                 children={<InputNumber min={1} max={65535} />}
               />
             </div>

@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request'
 
-import { dataApi }                  from '@acx-ui/analytics/services'
 import { incidentCodes, Incident  } from '@acx-ui/analytics/utils'
+import { dataApi }                  from '@acx-ui/store'
 import { DateFilter, NetworkPath }  from '@acx-ui/utils'
 
 export type ConnectionEvent = {
@@ -16,7 +16,8 @@ export type ConnectionEvent = {
   apName: string,
   path: NetworkPath,
   ssid?: string | null,
-  messageIds?: Array<string>
+  messageIds?: Array<string>,
+  key?: string
 }
 
 export type ConnectionQuality = {

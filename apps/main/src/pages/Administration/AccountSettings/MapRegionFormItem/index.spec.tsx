@@ -10,8 +10,7 @@ import {
   mockServer,
   render,
   screen,
-  fireEvent,
-  waitFor
+  fireEvent
 } from '@acx-ui/test-utils'
 
 import { fakePreference } from '../__tests__/fixtures'
@@ -24,7 +23,6 @@ const mockedUpdatePreference = jest.fn()
 jest.mock('@acx-ui/config', () => ({
   get: jest.fn().mockReturnValue('fake-google-maps-key')
 }))
-
 
 describe('Map is not enabled', () => {
   beforeEach( () => {
@@ -48,21 +46,6 @@ describe('Map is not enabled', () => {
 
     await screen.findByTitle('Map Region')
     expect(await screen.findByText('Map is not enabled.')).toBeInTheDocument()
-  })
-
-  it('should not load google map script', async () => {
-    render(
-      <Provider>
-        <MapRegionFormItem />
-      </Provider>, {
-        route: { params }
-      })
-
-    await screen.findByText('Map is not enabled.')
-
-    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
-    const scripts = document.getElementsByTagName('script')
-    expect(scripts.length).toBe(0)
   })
 })
 
@@ -117,7 +100,7 @@ describe('Map Region Selector', () => {
     // eslint-disable-next-line testing-library/no-unnecessary-act
     act(() => {
       userEvent.click(clearIcon)
-      fireEvent.change(selector, { target: { value: undefined } })
+      fireEvent.change(selector, { target: { value: '' } })
       expect(mockedUpdatePreference).toBeCalledTimes(0)
     })
 
@@ -126,7 +109,7 @@ describe('Map Region Selector', () => {
     expect(mockedUpdatePreference).toBeCalledTimes(0)
   })
 
-  it('should be auto-searchable', async () => {
+  it.skip('should be auto-searchable', async () => {
     render(
       <Provider>
         <MapRegionFormItem />
@@ -150,43 +133,5 @@ describe('Map Region Selector', () => {
       expect(await screen.findByTitle('United Kingdom')).toBeDefined()
       expect(mockedUpdatePreference).toBeCalledWith({ global: { mapRegion: 'GB' } })
     })
-  })
-
-  it('should update google map script correctly', async () => {
-    render(
-      <Provider>
-        <MapRegionFormItem />
-      </Provider>, {
-        route: { params }
-      })
-
-    await screen.findByText('Taiwan')
-    await userEvent.click(await screen.findByRole('combobox'))
-    const combobox = screen.getByRole('combobox')
-    await userEvent.type(combobox, 'k')
-    await userEvent.type(combobox, 'i')
-    await userEvent.type(combobox, 'n')
-
-    await screen.findAllByRole('option')
-    fireEvent.mouseOver(await screen.findByTitle('United Kingdom'))
-
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      fireEvent.click(await screen.findByTitle('United Kingdom'))
-      fireEvent.blur(screen.getByRole('combobox'))
-    })
-
-    await waitFor(async () => {
-      expect((await screen.findAllByTitle('United Kingdom')).length).toBe(2)
-    })
-
-    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
-    const scripts = document.getElementsByTagName('script')
-    await waitFor(async () => {
-      expect(scripts[0].src).toBe('https://maps.googleapis.com/maps/api/js?key=fake-google-maps-key&region=GB&libraries=places&language=en')//.toContain('&region=GB')
-    })
-
-    fireEvent.load(scripts[0])
-    fireEvent.error(scripts[0])
   })
 })

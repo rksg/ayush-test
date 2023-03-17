@@ -4,18 +4,20 @@ import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
 import {
-  PageHeader, showToast, StepsForm,
+  PageHeader, showActionModal, StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
 import {
   EdgeSettingForm
 } from '@acx-ui/rc/components'
-import { useAddEdgeMutation } from '@acx-ui/rc/services'
-import { EdgeGeneralSetting } from '@acx-ui/rc/utils'
+import { useAddEdgeMutation }                     from '@acx-ui/rc/services'
+import { CatchErrorResponse, EdgeGeneralSetting } from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink
 } from '@acx-ui/react-router-dom'
+
+import { getErrorModalInfo } from './errorMessageMapping'
 
 const AddEdge = () => {
 
@@ -27,17 +29,12 @@ const AddEdge = () => {
 
   const handleAddEdge = async (data: EdgeGeneralSetting) => {
     try {
-      // TODO when Tags component ready remove this
-      const payload = { ...data, tags: [] as string[] }
-      if(data.tags) {
-        payload.tags = data.tags.split(',').map(item => item.trim())
-      }
-      await addEdge({ payload: payload }).unwrap()
+      await addEdge({ payload: data }).unwrap()
       navigate(linkToEdgeList, { replace: true })
-    } catch {
-      showToast({
+    } catch (error) {
+      showActionModal({
         type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
+        ...getErrorModalInfo(error as CatchErrorResponse)
       })
     }
   }

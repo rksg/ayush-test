@@ -4,7 +4,7 @@ import { useIntl, IntlShape } from 'react-intl'
 import { healthApi }                                           from '@acx-ui/analytics/services'
 import { AnalyticsFilter, kpiConfig, getSparklineGranularity } from '@acx-ui/analytics/utils'
 import { GridRow, GridCol, SparklineChart, Loader, Tooltip }   from '@acx-ui/components'
-import { intlFormats, formatter }                              from '@acx-ui/utils'
+import { intlFormats, formatter }                              from '@acx-ui/formatter'
 
 import { tranformHistResponse, transformTSResponse } from '../Health/Kpi/Pill'
 
@@ -81,57 +81,57 @@ export function KpiWidget ({
   const { histogram } = Object(kpiConfig[name as keyof typeof kpiConfig])
   const sparklineChartStyle = { height: 50, width: 130, display: 'inline' }
   const { startDate , endDate } = filters
-  const venueFilter = filters.filter?.networkNodes?.at(0)?.at(0)
   const intl = useIntl()
-  let numerator=0, denominator=0
-  if(histogram){
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const histQueryResults = useKpiHistogramQuery(
-      { ...filters,
-        path: venueFilter ? [...filters.path, venueFilter] : filters.path,
-        startDate,
-        endDate,
-        kpi: name })
-    const { success, total } = histQueryResults.data ?
-      tranformHistResponse({ ...histQueryResults.data!,
-        kpi: name, threshold: threshold as number }) : { success: 0, total: 0 }
-    numerator = success
-    denominator = total
-  }
-  const queryResults= useKpiTimeseriesQuery({
+  const venueId = filters.filter?.networkNodes?.at(0)?.at(0)?.name
+  const historgramQuery = useKpiHistogramQuery({ ...filters,
+    path: [{ type: 'zone', name: venueId as string }], filter: {}, kpi: name }, {
+    skip: !Boolean(histogram),
+    selectFromResult: (response) => {
+      const agg = response.data
+        ? tranformHistResponse({ data: response.data.data, kpi: name, threshold: threshold! })
+        : undefined
+      return {
+        ...response,
+        numerator: agg?.success ?? 0,
+        denominator: agg?.total ?? 0
+      }
+    }
+  })
+
+  const { sparklineData, ...queryResults } = useKpiTimeseriesQuery({
     ...filters,
-    path: venueFilter ? [...filters.path, venueFilter] : filters.path,
+    path: [{ type: 'zone', name: venueId as string }],
+    filter: {},
     kpi: name,
     threshold: (threshold ?? '') as string,
     granularity: getSparklineGranularity(startDate,endDate)
+  }, {
+    selectFromResult: (response) => {
+      const agg = response.data && transformTSResponse(response.data, { startDate, endDate })
+      return {
+        ...response,
+        sparklineData: response.data ? getSparklineData(response.data.data as TimeseriesData) : [],
+        numerator: agg?.success ?? 0,
+        denominator: agg?.total ?? 0
+      }
+    }
   })
-  const { data: results } = queryResults
 
-  if(!histogram){
-    const { success, total } = results ? transformTSResponse(results!,
-      { startDate, endDate }) : { success: 0, total: 0 }
-    numerator = success
-    denominator = total
-  }
-
-
-  const kpiInfoText=getKpiInfoText(numerator, denominator, threshold, intl)
-
-  const sparklineData:number[] = results?.data ?
-    getSparklineData(results.data as TimeseriesData) : []
+  const { numerator, denominator } = histogram ? historgramQuery : queryResults
+  const kpiInfoText = getKpiInfoText(numerator, denominator, threshold, intl)
 
   const percent = numerator && denominator ? numerator / denominator : 0
 
   let percentIcon = <UI.CriticalIcon/>
 
-  if(percent > 0.6){
+  if (percent > 0.6) {
     percentIcon = <UI.HealthyIcon/>
-  }else if(percent > 0.2){
+  } else if (percent > 0.2) {
     percentIcon = <UI.MajorIcon/>
   }
 
   return(
-    <Loader states={[queryResults]}>
+    <Loader states={[historgramQuery, queryResults]}>
       {type === 'no-chart-style' ?
         <GridRow>
           <GridCol col={{ span: 24 }} >
@@ -175,7 +175,7 @@ export function KpiWidget ({
             </Tooltip>
           </GridCol>
           <GridCol col={{ span: 11 }}>
-            {results?.data && <SparklineChart data={sparklineData}
+            {queryResults.data?.data && <SparklineChart data={sparklineData}
               style={sparklineChartStyle}
               isTrendLine={true} />}
           </GridCol>

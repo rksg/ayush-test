@@ -8,7 +8,7 @@ export const DeviceList = styled(List)`
 
     .ant-list-items {
         max-height: 180px;
-        overflow: overlay;
+        overflow: scroll;
     }
 `
 

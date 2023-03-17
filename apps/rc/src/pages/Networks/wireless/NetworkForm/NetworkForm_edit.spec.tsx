@@ -14,6 +14,7 @@ import {
   waitFor,
   within
 } from '@acx-ui/test-utils'
+import { UserUrlsInfo } from '@acx-ui/user'
 
 import {
   venuesResponse,
@@ -157,7 +158,7 @@ describe('NetworkForm', () => {
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
-      rest.get(CommonUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
+      rest.get(UserUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
         res(ctx.json({ COMMON: '{}' }))
       ),
       rest.get(WifiUrlsInfo.getNetwork.url, (_, res, ctx) =>

@@ -1,7 +1,6 @@
-import { dataApiURL }                                                  from '@acx-ui/analytics/services'
 import { AnalyticsFilter }                                             from '@acx-ui/analytics/utils'
 import { noDataDisplay }                                               from '@acx-ui/rc/utils'
-import { Provider }                                                    from '@acx-ui/store'
+import { dataApiURL, Provider }                                        from '@acx-ui/store'
 import { mockGraphqlQuery, render, waitForElementToBeRemoved, screen } from '@acx-ui/test-utils'
 import { DateRange }                                                   from '@acx-ui/utils'
 
@@ -77,6 +76,18 @@ describe('ClientHealth', () => {
 
     await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
     expect(await screen.findAllByText(noDataDisplay)).toHaveLength(3)
+  })
+
+  it('should render warning icon for max event error', async () => {
+    mockGraphqlQuery(dataApiURL, 'ClientInfo', { error: {
+      message: 'CTP:MAX_EVENTS_EXCEEDED'
+    } })
+
+    render(<Provider>
+      <ClientHealth filter={filters} clientMac={testMac}/>
+    </Provider>)
+    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
+    expect(await screen.findByTestId('WarningTriangleOutlined')).toBeDefined()
   })
 
   describe('durations', () => {

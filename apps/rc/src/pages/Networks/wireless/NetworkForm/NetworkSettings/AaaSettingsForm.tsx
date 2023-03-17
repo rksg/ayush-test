@@ -21,12 +21,10 @@ import {
   WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 
-import AAAInstance        from '../AAAInstance'
-import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
-import NetworkFormContext from '../NetworkFormContext'
-
-import { NetworkMoreSettingsForm } from './../NetworkMoreSettings/NetworkMoreSettingsForm'
-import { CloudpathServerForm }     from './CloudpathServerForm'
+import AAAInstance                 from '../AAAInstance'
+import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext          from '../NetworkFormContext'
+import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
 const { Option } = Select
 
@@ -38,10 +36,9 @@ export function AaaSettingsForm () {
   useEffect(()=>{
     if((editMode || cloneMode) && data){
       form.setFieldsValue({
-        isCloudpathEnabled: data.isCloudpathEnabled,
         enableAuthProxy: data.enableAuthProxy,
         enableAccountingProxy: data.enableAccountingProxy,
-        enableAccountingService: data.accountingRadius,
+        enableAccountingService: data.enableAccountingService,
         authRadius: data.authRadius,
         accountingRadius: data.accountingRadius,
         wlanSecurity: data?.wlan?.wlanSecurity,
@@ -66,18 +63,7 @@ export function AaaSettingsForm () {
 
 function SettingsForm () {
   const { $t } = useIntl()
-  const form = Form.useFormInstance()
-  const { data, setData } = useContext(NetworkFormContext)
-  const [
-    isCloudpathEnabled,
-    wlanSecurity,
-    enableAccountingService
-  ] = [
-    useWatch('isCloudpathEnabled'),
-    useWatch('wlanSecurity'),
-    useWatch('enableAccountingService')
-  ]
-
+  const wlanSecurity = useWatch('wlanSecurity')
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
   const wpa2Description = <FormattedMessage
     /* eslint-disable max-len */
@@ -102,19 +88,6 @@ function SettingsForm () {
     defaultMessage: 'WPA3 is the highest level of Wi-Fi security available but is supported only by devices manufactured after 2019.'
   })
 
-  const onCloudPathChange = (checked: boolean) => {
-    if(checked){
-      delete data?.authRadius
-      delete data?.accountingRadius
-    }else{
-      delete data?.cloudpathServerId
-      form.setFieldsValue({
-        cloudpathServerId: ''
-      })
-    }
-    setData && setData({ ...data, isCloudpathEnabled: checked })
-  }
-
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
       <div>
@@ -138,27 +111,24 @@ function SettingsForm () {
             </Select>
           </Form.Item>
         }
-        <Form.Item>
-          <Form.Item noStyle name='isCloudpathEnabled' valuePropName='checked'>
-            <Switch onChange={onCloudPathChange}/>
-          </Form.Item>
-          <span>{ $t({ defaultMessage: 'Use Cloudpath Server' }) }</span>
-        </Form.Item>
       </div>
       <div>
-        {isCloudpathEnabled ? <CloudpathServerForm /> : <AaaService />}
+        <AaaService />
       </div>
     </Space>
   )
 
   function AaaService () {
     const { $t } = useIntl()
-    const { data, setData } = useContext(NetworkFormContext)
-
-    const onChange = (value: boolean, fieldName: string) => {
+    const { setData, data } = useContext(NetworkFormContext)
+    const enableAccountingService = useWatch('enableAccountingService')
+    const form = Form.useFormInstance()
+    const onProxyChange = (value: boolean, fieldName: string) => {
       setData && setData({ ...data, [fieldName]: value })
     }
-
+    useEffect(()=>{
+      form.setFieldsValue(data)
+    },[data])
     const proxyServiceTooltip = <Tooltip
       placement='bottom'
       children={<QuestionMarkCircleOutlined />}
@@ -179,25 +149,20 @@ function SettingsForm () {
               name='enableAuthProxy'
               valuePropName='checked'
               initialValue={false}
-              children={<Switch onChange={
-                (checked)=>onChange(checked, 'enableAuthProxy')}/>}
+              children={<Switch onChange={(value)=>onProxyChange(value,'enableAuthProxy')}/>}
             />
             <span>{ $t({ defaultMessage: 'Proxy Service' }) }</span>
             {proxyServiceTooltip}
           </Form.Item>
         </div>
         <div>
-
-          <Form.Item>
-            <Subtitle level={3}>{ $t({ defaultMessage: 'Accounting Service' }) }</Subtitle>
-            <Form.Item
-              name='enableAccountingService'
-              valuePropName='checked'
-              initialValue={false}
-              children={<Switch onChange={
-                (checked)=>onChange(checked, 'enableAccountingService')}/>}
-            />
-          </Form.Item>
+          <Subtitle level={3}>{ $t({ defaultMessage: 'Accounting Service' }) }</Subtitle>
+          <Form.Item
+            name='enableAccountingService'
+            valuePropName='checked'
+            initialValue={false}
+            children={<Switch onChange={(value)=>onProxyChange(value,'enableAccountingService')}/>}
+          />
           {enableAccountingService && (
             <>
               <AAAInstance serverLabel={$t({ defaultMessage: 'Accounting Server' })}
@@ -208,8 +173,8 @@ function SettingsForm () {
                   name='enableAccountingProxy'
                   valuePropName='checked'
                   initialValue={false}
-                  children={<Switch onChange={
-                    (checked)=>onChange(checked, 'enableAccountingProxy')}/>}
+                  children={<Switch
+                    onChange={(value)=>onProxyChange(value,'enableAccountingProxy')}/>}
                 />
                 <span>{ $t({ defaultMessage: 'Proxy Service' }) }</span>
                 {proxyServiceTooltip}

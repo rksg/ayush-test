@@ -1,10 +1,12 @@
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { showActionModal, Table, TableProps }        from '@acx-ui/components'
-import { useLazyRadiusAttributeGroupListQuery }      from '@acx-ui/rc/services'
-import { AttributeAssignment, checkObjectNotExists } from '@acx-ui/rc/utils'
-import { useParams }                                 from '@acx-ui/react-router-dom'
+import { Table, TableProps }                                       from '@acx-ui/components'
+import { useLazyRadiusAttributeGroupListByQueryQuery }             from '@acx-ui/rc/services'
+import { AttributeAssignment, checkObjectNotExists, OperatorType } from '@acx-ui/rc/utils'
+import { useParams }                                               from '@acx-ui/react-router-dom'
+
+import { AttributeOperationLabelMapping } from '../../../contentsMap'
 
 
 function useColumns () {
@@ -20,7 +22,8 @@ function useColumns () {
       key: 'attributeValue',
       dataIndex: 'attributeValue',
       render: function (data, row) {
-        return `${row.operator} '${row.attributeValue}'`
+        // eslint-disable-next-line max-len
+        return `${$t(AttributeOperationLabelMapping[row.operator as OperatorType])} '${row.attributeValue}'`
       }
     }
   ]
@@ -34,7 +37,7 @@ interface RadiusAttributeGroupSettingFormProps {
 
 export function RadiusAttributeGroupSettingForm (props: RadiusAttributeGroupSettingFormProps) {
   const { $t } = useIntl()
-  const [attributeGroup] = useLazyRadiusAttributeGroupListQuery()
+  const [attributeGroup] = useLazyRadiusAttributeGroupListByQueryQuery()
   const { policyId } = useParams()
   const form = Form.useFormInstance()
   const attributeAssignments = Form.useWatch('attributeAssignments')
@@ -46,9 +49,13 @@ export function RadiusAttributeGroupSettingForm (props: RadiusAttributeGroupSett
 
   const nameValidator = async (value: string) => {
     const list = (await attributeGroup({
+      params: {
+        excludeContent: 'false'
+      },
       payload: {
-        page: '1',
-        pageSize: '2147483647'
+        fields: [ 'name' ],
+        page: 0, pageSize: 10,
+        filters: { name: value }
       }
     }).unwrap()).data.filter(n => n.id !== policyId)
       .map(n => ({ name: n.name }))
@@ -68,21 +75,11 @@ export function RadiusAttributeGroupSettingForm (props: RadiusAttributeGroupSett
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows, clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Attribute' }),
-            entityValue: selectedRows[0].attributeName
-          },
-          onOk: () => {
-            const newAttributes = attributeAssignments.filter((r: AttributeAssignment) => {
-              return selectedRows[0].id !== r.id
-            })
-            handleAttributeAssignments(newAttributes)
-            clearSelection()
-          }
+        const newAttributes = attributeAssignments.filter((r: AttributeAssignment) => {
+          return selectedRows[0].id !== r.id
         })
+        handleAttributeAssignments(newAttributes)
+        clearSelection()
       }
     }
   ]

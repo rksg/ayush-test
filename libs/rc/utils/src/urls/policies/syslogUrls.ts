@@ -1,20 +1,64 @@
 import { ApiInfo } from '../../apiService'
 
 export const SyslogUrls: { [key: string]: ApiInfo } = {
+  deleteSyslogPolicy: {
+    method: 'delete',
+    url: '/syslogServerProfiles/:policyId',
+    oldUrl: '/api/syslogServerProfiles/:policyId',
+    newApi: true
+  },
+  deleteSyslogPolicies: {
+    method: 'delete',
+    url: '/syslogServerProfiles',
+    oldUrl: '/api/syslogServerProfiles',
+    newApi: true
+  },
   addSyslogPolicy: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/syslogServerProfiles'
+    url: '/syslogServerProfiles',
+    oldUrl: '/api/syslogServerProfiles',
+    newApi: true
   },
   getSyslogPolicy: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/rogueApPolicyProfiles/:policyId'
+    url: '/syslogServerProfiles/:policyId',
+    oldUrl: '/api/syslogServerProfiles/:policyId',
+    newApi: true
+  },
+  updateSyslogPolicy: {
+    method: 'put',
+    url: '/syslogServerProfiles/:policyId',
+    oldUrl: '/api/syslogServerProfiles/:policyId',
+    newApi: true
   },
   getSyslogPolicyList: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/syslogServerProfiles'
+    url: '/syslogServerProfiles',
+    oldUrl: '/api/syslogServerProfiles',
+    newApi: true
   },
-  getVenueSyslogPolicy: {
+  getVenueSyslogAp: {
+    method: 'get',
+    url: '/venues/:venueId/syslogServerProfileSettings',
+    oldUrl: '/api/venues/:venueId/syslogServerProfileSettings',
+    newApi: true
+  },
+  updateVenueSyslogAp: {
     method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/venue'
+    url: '/venues/:venueId/syslogServerProfileSettings',
+    oldUrl: '/api/venues/:venueId/syslogServerProfileSettings',
+    newApi: true
+  },
+  getVenueSyslogList: {
+    method: 'post',
+    url: '/venues/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/venue',
+    newApi: true
+  },
+  syslogPolicyList: {
+    method: 'post',
+    url: '/enhancedSyslogServerProfiles/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedSyslogServerProfiles/query',
+    newApi: true
   }
 }

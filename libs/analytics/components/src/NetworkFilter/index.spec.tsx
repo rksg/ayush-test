@@ -1,19 +1,18 @@
 import userEvent             from '@testing-library/user-event'
 import { DefaultOptionType } from 'antd/lib/select'
 
-import { dataApiURL }                                   from '@acx-ui/analytics/services'
 import { defaultNetworkPath }                           from '@acx-ui/analytics/utils'
-import { Provider, store }                              from '@acx-ui/store'
+import { dataApiURL, Provider, store }                  from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, fireEvent  } from '@acx-ui/test-utils'
 import { DateRange, NetworkPath }                       from '@acx-ui/utils'
 
 import { api as incidentApi } from '../IncidentTable/services'
 
 import { networkHierarchy }  from './__tests__/fixtures'
-import { api }               from './services'
+import { api, Child }        from './services'
 import { NonSelectableItem } from './styledComponents'
 
-import { NetworkFilter, onApply, displayRender, getSupersetRlsClause } from './index'
+import { NetworkFilter, onApply, displayRender, getSupersetRlsClause, getNetworkFilterData } from './index'
 
 const mockIncidents = [
   {
@@ -193,7 +192,7 @@ describe('Network Filter', () => {
     fireEvent.click(screen.getByText('venue1'))
     const path = [
       { type: 'network', name: 'Network' },
-      { type: 'zone', name: 'venue1' }
+      { type: 'zone', name: 'id3' }
     ]
     const raw = [JSON.stringify(path)]
     expect(mockSetNetworkPath).toHaveBeenCalledTimes(1)
@@ -211,7 +210,6 @@ describe('Network Filter', () => {
       shouldQuerySwitch
       showRadioBand={true}
       filterFor='reports'
-      replaceWithId={true}
     /></Provider>)
     await screen.findByText('Entire Organization')
     await userEvent.click(await screen.findByRole('combobox'))
@@ -255,7 +253,7 @@ describe('Network Filter', () => {
         }]
       ], ['6', '2.4'], [
         // eslint-disable-next-line max-len
-        ['[{"type":"network","name":"Network"},{"type":"switchGroup","name":"id5"}]', 'switchesswg1'],
+        ['[{"type":"network","name":"Network"},{"type":"switchGroup","name":"id5"}]', 'switchesid5'],
         ['[{"type":"network","name":"Network"},{"type":"switchGroup","name":"id4"}]'],
         ['[{"type":"network","name":"Network"},{"type":"zone","name":"id1"}]']
       ]
@@ -273,7 +271,6 @@ describe('Network Filter', () => {
       shouldQuerySwitch
       showRadioBand={true}
       filterFor='reports'
-      replaceWithId={true}
       filterMode={'ap'}
     /></Provider>)
     await screen.findByText('Entire Organization')
@@ -292,7 +289,6 @@ describe('Network Filter', () => {
       shouldQuerySwitch
       showRadioBand={true}
       filterFor='reports'
-      replaceWithId={true}
       filterMode={'switch'}
     /></Provider>)
     await screen.findByText('Entire Organization')
@@ -311,7 +307,6 @@ describe('Network Filter', () => {
       shouldQuerySwitch
       filterFor='reports'
       showRadioBand={true}
-      replaceWithId={true}
     /></Provider>)
     await screen.findByText('Entire Organization')
     await userEvent.click(await screen.findByRole('combobox'))
@@ -342,7 +337,7 @@ describe('Network Filter', () => {
     fireEvent.click(screen.getByText('swg'))
     const path = [
       { type: 'network', name: 'Network' },
-      { type: 'switchGroup', name: 'swg' }
+      { type: 'switchGroup', name: 'id4' }
     ]
     const raw = [JSON.stringify(path)]
     expect(mockSetNetworkPath).toHaveBeenCalledTimes(1)
@@ -531,5 +526,35 @@ describe('getSupersetRlsClause',()=>{
     ]
     const rlsClause = getSupersetRlsClause(paths,['6','2.4'])
     expect(rlsClause).toMatchSnapshot()
+  })
+})
+
+describe('getNetworkFilterData', () => {
+  it('should not replace venue name with id', () => {
+    const data: Child[] = [{
+      id: '473f0528888b4e09872b1560711d9dbd',
+      type: 'zone',
+      name: 'Some Name',
+      path: [
+        { type: 'network', name: 'Network' },
+        { type: 'zone', name: 'Some Name' }
+      ],
+      aps: [
+        { name: 'AP Name', mac: '00:00:00:00:00:00' }
+      ],
+      switches: [
+        { name: 'Switch Name', mac: '11:11:11:11:11:11' }
+      ]
+    }]
+    const [firstItem] = getNetworkFilterData(data, {}, 'both', false)
+
+    /* eslint-disable testing-library/no-node-access */
+    const [apItem, switchItem] = firstItem.children!
+    expect(JSON.parse(String(firstItem.value))[1].name).toEqual('Some Name')
+    expect(apItem.value).toEqual('apsSome Name')
+    expect(JSON.parse(String(apItem.children?.[0].value))[1].name).toEqual('Some Name')
+    expect(switchItem.value).toEqual('switchesSome Name')
+    expect(JSON.parse(String(switchItem.children?.[0].value))[1].name).toEqual('Some Name')
+    /* eslint-enable testing-library/no-node-access */
   })
 })

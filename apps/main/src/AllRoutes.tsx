@@ -6,8 +6,10 @@ import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 import Administration    from './pages/Administration'
 import AnalyticsBase     from './pages/Analytics'
 import Dashboard         from './pages/Dashboard'
+import Dashboardv2       from './pages/Dashboardv2'
 import DevicesBase       from './pages/Devices'
 import Layout            from './pages/Layout'
+import { MFACheck }      from './pages/Layout/MFACheck'
 import NetworksBase      from './pages/Networks'
 import PoliciesBase      from './pages/Policies'
 import ReportsBase       from './pages/Reports'
@@ -31,42 +33,50 @@ function AllRoutes () {
   useStreamActivityMessagesQuery({})
   return rootRoutes(
     <>
-      <Route path='t/:tenantId' element={<Layout />}>
-        <Route index element={<TenantNavigate replace to='/dashboard' />} />
-        <Route path='dashboard' element={<Dashboard />} />
-        <Route path='userprofile' element={<UserProfile />} />
-        <Route path='analytics/*' element={<AnalyticsBase />}>
-          <Route path='*' element={<AnalyticsRoutes />} />
+      <Route path='t/:tenantId' element={<MFACheck />}>
+        <Route path='*' element={<Layout />}>
+          <Route index element={<TenantNavigate replace to='/dashboard' />} />
+          <Route path='dashboard' element={<Dashboard />} />
+          <Route path='dashboardv2' element={<Dashboardv2 />} />
+          <Route path='userprofile' element={<UserProfile />} />
+          <Route path='analytics/*' element={<AnalyticsBase />}>
+            <Route path='*' element={<AnalyticsRoutes />} />
+          </Route>
+          <Route path='timeline/*' element={<TimelineBase />}>
+            <Route path='*' element={<RcRoutes />} />
+          </Route>
+          <Route path='serviceValidation/*' element={<ServiceValidation />}>
+            <Route path='*' element={<AnalyticsRoutes />} />
+          </Route>
+          <Route path='reports/*' element={<ReportsBase />}>
+            <Route path='*' element={<ReportsRoutes />} />
+          </Route>
+          <Route path='dataStudio/*' element={<ReportsBase />}>
+            <Route path='*' element={<ReportsRoutes />} />
+          </Route>
+          <Route path='devices/*' element={<DevicesBase />}>
+            <Route path='*' element={<RcRoutes />} />
+          </Route>
+          <Route path='networks/*' element={<NetworksBase />}>
+            <Route path='*' element={<RcRoutes />} />
+          </Route>
+          <Route path='search/:searchVal' element={<SearchResults />} />
+          <Route path='services/*' element={<ServicesBase />}>
+            <Route path='*' element={<RcRoutes />} />
+          </Route>
+          <Route path='policies/*' element={<PoliciesBase />}>
+            <Route path='*' element={<RcRoutes />} />
+          </Route>
+          <Route path='users/*' element={<UsersBase />}>
+            <Route path='*' element={<RcRoutes />} />
+          </Route>
+          <Route path='venues/*' element={<VenuesRoutes />} />
+          <Route path='administration/*' element={<AdministrationRoutes />} />
         </Route>
-        <Route path='timeline/*' element={<TimelineBase />}>
-          <Route path='*' element={<RcRoutes />} />
-        </Route>
-        <Route path='serviceValidation/*' element={<ServiceValidation />}>
-          <Route path='*' element={<AnalyticsRoutes />} />
-        </Route>
-        <Route path='reports/*' element={<ReportsBase />}>
-          <Route path='*' element={<ReportsRoutes />} />
-        </Route>
-        <Route path='devices/*' element={<DevicesBase />}>
-          <Route path='*' element={<RcRoutes />} />
-        </Route>
-        <Route path='networks/*' element={<NetworksBase />}>
-          <Route path='*' element={<RcRoutes />} />
-        </Route>
-        <Route path='search/:searchVal' element={<SearchResults />} />
-        <Route path='services/*' element={<ServicesBase />}>
-          <Route path='*' element={<RcRoutes />} />
-        </Route>
-        <Route path='policies/*' element={<PoliciesBase />}>
-          <Route path='*' element={<RcRoutes />} />
-        </Route>
-        <Route path='users/*' element={<UsersBase />}>
-          <Route path='*' element={<RcRoutes />} />
-        </Route>
-        <Route path='venues/*' element={<VenuesRoutes />} />
-        <Route path='administration/*' element={<AdministrationRoutes />} />
       </Route>
-      <Route path='v/:tenantId/*' element={<MspRoutes />} />
+      <Route path='v/:tenantId/*' element={<MFACheck />}>
+        <Route path='*' element={<MspRoutes />}/>
+      </Route>
     </>
   )
 }

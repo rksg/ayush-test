@@ -1,20 +1,20 @@
-import React, { useState, useRef, ChangeEventHandler, useEffect } from 'react'
+import React, { useState, useRef, ChangeEventHandler, useEffect, useContext } from 'react'
 
-import { Row, Col, Form, Input } from 'antd'
-import _                         from 'lodash'
-import { useIntl }               from 'react-intl'
+import { Row, Col, Form, Input, Select } from 'antd'
+import _                                 from 'lodash'
+import { useIntl }                       from 'react-intl'
 
 import {
   GoogleMap,
   GoogleMapMarker,
   PageHeader,
-  showToast,
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
 import { get }                    from '@acx-ui/config'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { SearchOutlined }         from '@acx-ui/icons'
+import { countryCodes }           from '@acx-ui/rc/components'
 import {
   useAddVenueMutation,
   useLazyVenuesListQuery,
@@ -22,12 +22,20 @@ import {
   useUpdateVenueMutation,
   useNewAddVenueMutation
 } from '@acx-ui/rc/services'
-import { Address, VenueExtended, checkObjectNotExists } from '@acx-ui/rc/utils'
+import {
+  Address,
+  VenueExtended,
+  checkObjectNotExists,
+  redirectPreviousPage
+} from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
+
+import { MessageMapping }   from '../../Administration/AccountSettings/MessageMapping'
+import { VenueEditContext } from '../VenueEdit'
 
 interface AddressComponent {
   long_name?: string;
@@ -137,18 +145,26 @@ export function VenuesForm () {
   })
   const [marker, setMarker] = React.useState<google.maps.LatLng>()
   const [address, updateAddress] = useState<Address>(isMapEnabled? {} : defaultAddress)
+  const [countryCode, setCountryCode] = useState('')
 
   const { tenantId, venueId, action } = useParams()
   const { data } = useGetVenueQuery({ params: { tenantId, venueId } }, { skip: !venueId })
+  const { previousPath } = useContext(VenueEditContext)
 
   useEffect(() => {
     if (data) {
+      const defaultCountryCode = data.address?.countryCode
+      ?? countryCodes.find(code => code.label === data.address.country)?.value
+      ?? ''
+      setCountryCode(defaultCountryCode)
+
       formRef.current?.setFieldsValue({
         name: data?.name,
         description: data?.description,
-        address: data?.address
+        address: { ...data?.address, countryCode: defaultCountryCode }
       })
       updateAddress(data?.address as Address)
+
 
       if (isMapEnabled && window.google) {
         const latlng = new google.maps.LatLng({
@@ -202,7 +218,7 @@ export function VenuesForm () {
     autocomplete.addListener('place_changed', async () => {
       const place = autocomplete.getPlace()
       const { latlng, address } = await addressParser(place)
-      const isSameCountry = data && (data?.address.country === address.country) || false
+      const isSameCountry = (data && (data?.address.country === address.country)) || false
       setSameCountry(isSameCountry)
       let errorList = []
 
@@ -227,7 +243,7 @@ export function VenuesForm () {
   const handleAddVenue = async (values: VenueExtended) => {
     try {
       const formData = { ...values }
-      formData.address = address
+      formData.address = countryCode ? { ...address, countryCode } : address
       if (isNewApi) {
         await newAddVenue({ params, payload: formData }).unwrap() //Only for IT test
       } else {
@@ -235,25 +251,19 @@ export function VenuesForm () {
       }
 
       navigate(linkToVenues, { replace: true })
-    } catch {
-      showToast({
-        type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
   const handleEditVenue = async (values: VenueExtended) => {
     try {
       const formData = { ...values }
-      formData.address = address
+      formData.address = countryCode ? { ...address, countryCode } : address
       await updateVenue({ params, payload: formData }).unwrap()
       navigate(linkToVenues, { replace: true })
-    } catch {
-      showToast({
-        type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -268,7 +278,9 @@ export function VenuesForm () {
       <StepsForm
         formRef={formRef}
         onFinish={action === 'edit' ? handleEditVenue : handleAddVenue}
-        onCancel={() => navigate(linkToVenues)}
+        onCancel={() =>
+          redirectPreviousPage(navigate, previousPath, linkToVenues)
+        }
         buttonLabel={{ submit: action === 'edit' ?
           intl.$t({ defaultMessage: 'Save' }):
           intl.$t({ defaultMessage: 'Add' }) }}
@@ -352,6 +364,27 @@ export function VenuesForm () {
               </GoogleMap.FormItem>
             </Col>
           </Row>
+          {isMapEnabled &&
+          <Row gutter={20}>
+            <Col span={8}>
+              <Form.Item
+                label={intl.$t({ defaultMessage: 'Wi-Fi Country Code' })}
+                tooltip={intl.$t( MessageMapping.wifi_country_code_tooltip )}
+                name={['address', 'countryCode']}
+              >
+                <Select
+                  options={countryCodes}
+                  onChange={(countryCode: string) => setCountryCode(countryCode)}
+                  showSearch
+                  allowClear
+                  optionFilterProp='label'
+                  placeholder='Please select a country'
+                  disabled={action === 'edit'}
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+          }
         </StepsForm.StepForm>
       </StepsForm>
     </>

@@ -5,8 +5,9 @@ export * from './vlanPoolPolicy'
 export * from './clientIsolationPolicy'
 export * from './syslogPolicy'
 export * from './accessControl'
-export * from './rulesManagement'
+export * from './apSnmp'
 export * from './radiusAttributeGroup'
+export * from './rulesManagement'
 
 export { DeviceTypeEnum } from '../../models/DeviceTypeEnum'
 export { OsVendorEnum } from '../../models/OsVendorEnum'
@@ -16,13 +17,14 @@ export enum PolicyType {
   VLAN_POOL = 'VLAN Pools',
   ROGUE_AP_DETECTION = 'Rogue AP Detection',
   SYSLOG = 'Syslog',
-  AAA = 'AAA',
+  AAA = 'Radius Server',
   CLIENT_ISOLATION = 'Client Isolation',
   MAC_REGISTRATION_LIST = 'MAC Registration List',
   LAYER_2_POLICY = 'Layer 2 Policy',
   LAYER_3_POLICY = 'Layer 3 Policy',
   APPLICATION_POLICY = 'Application Policy',
   DEVICE_POLICY = 'Device Policy',
+  SNMP_AGENT = 'SNMP Agent',
   ADAPTIVE_POLICY = 'Adaptive Policy',
   RADIUS_ATTRIBUTE_GROUP = 'RADIUS Attribute Group',
   ADAPTIVE_POLICY_SET = 'Adaptive Policy Set'

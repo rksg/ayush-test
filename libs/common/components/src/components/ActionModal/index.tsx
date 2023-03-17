@@ -16,19 +16,20 @@ import * as UI from './styledComponents'
 const { Panel } = Collapse
 const { TextArea } = Input
 
-type ModalType = 'info' | 'error' | 'confirm' | 'warning'
+export type ActionModalType = 'info' | 'error' | 'confirm' | 'warning'
 
 type DeleteContent = {
   action: 'DELETE',
   entityName: string,
   entityValue?: string,
   numOfEntities?: number,
-  confirmationText?: string
+  confirmationText?: string,
+  extraContent?: React.ReactNode
 }
 
 type ErrorContent = {
   action: 'SHOW_ERRORS',
-  errorDetails: ErrorDetailsProps
+  errorDetails?: ErrorDetailsProps
 }
 
 type CustomButtonsContent = {
@@ -37,7 +38,7 @@ type CustomButtonsContent = {
 }
 
 export interface ModalProps extends ModalFuncProps {
-  type: ModalType,
+  type: ActionModalType,
   customContent?: DeleteContent | ErrorContent | CustomButtonsContent
 }
 
@@ -87,7 +88,9 @@ const transformProps = (props: ModalProps, modal: ModalRef) => {
   const { $t } = getIntl()
   switch (props.customContent?.action) {
     case 'DELETE':
-      const { numOfEntities = 1, entityName, entityValue, confirmationText } = props.customContent
+      const {
+        numOfEntities = 1, entityName, entityValue, confirmationText, extraContent
+      } = props.customContent
 
       const title = $t({
         defaultMessage: `Delete "{count, plural,
@@ -103,6 +106,7 @@ const transformProps = (props: ModalProps, modal: ModalRef) => {
             other {these}
           } {formattedEntityName}?`
         }, { count: numOfEntities, formattedEntityName: entityName })}
+        {extraContent}
         {confirmationText && <ConfirmForm text={confirmationText} modal={modal} />}
       </>)
       props = {
@@ -119,7 +123,12 @@ const transformProps = (props: ModalProps, modal: ModalRef) => {
       const { errorDetails } = props.customContent
       props = {
         ...props,
-        content: <ErrorTemplate content={props.content} errors={errorDetails} modal={modal} />,
+        content: <ErrorTemplate
+          content={props.content}
+          errors={errorDetails}
+          modal={modal}
+          onOk={props.onOk}
+        />,
         okText: ' ',
         className: 'modal-custom'
       }
@@ -139,7 +148,8 @@ const transformProps = (props: ModalProps, modal: ModalRef) => {
 
 function ErrorTemplate (props: {
   content: React.ReactNode,
-  errors: ErrorDetailsProps,
+  errors?: ErrorDetailsProps,
+  onOk?: () => void,
   modal: ModalRef
 }) {
   const { $t } = getIntl()
@@ -148,12 +158,16 @@ function ErrorTemplate (props: {
     <>
       <UI.Content>{props.content}</UI.Content>
       <UI.Footer>
-        <CollapsePanel
+        {props.errors && <CollapsePanel
           header={$t({ defaultMessage: 'Technical details' })}
           content={props.errors}
-        />
+        />}
         <UI.FooterButtons>
-          <Button type='primary' onClick={() => props.modal.destroy()}>{okText}</Button>
+          <Button type='primary'
+            onClick={() => {
+              props.onOk?.()
+              props.modal.destroy()
+            }}>{okText}</Button>
         </UI.FooterButtons>
       </UI.Footer>
     </>

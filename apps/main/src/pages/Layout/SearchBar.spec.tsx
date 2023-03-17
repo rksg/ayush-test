@@ -1,6 +1,8 @@
 import '@testing-library/jest-dom'
+import { useState } from 'react'
 
 import { useIsSplitOn }              from '@acx-ui/feature-toggle'
+import { HeaderContext }             from '@acx-ui/main/components'
 import { useLocation }               from '@acx-ui/react-router-dom'
 import { Provider }                  from '@acx-ui/store'
 import { render, screen, fireEvent } from '@acx-ui/test-utils'
@@ -14,6 +16,23 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate,
   useLocation: jest.fn()
 }))
+
+interface SearchProps {
+  defaultExpand?: boolean
+}
+function SearchBarMock (props: SearchProps) {
+
+  const [searchExpanded, setSearchExpanded] = useState<boolean>(!!props.defaultExpand)
+  const [licenseExpanded, setLicenseExpanded] = useState<boolean>(false)
+
+  return (
+    <HeaderContext.Provider value={{
+      searchExpanded, licenseExpanded, setSearchExpanded, setLicenseExpanded }}>
+      <SearchBar />
+    </HeaderContext.Provider>
+  )
+}
+
 
 describe('Search Bar (feature enabled)', () => {
   jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -30,7 +49,7 @@ describe('Search Bar (feature enabled)', () => {
   it('should trigger search on send click', async () => {
     jest.mocked(useLocation).mockReturnValue(location)
     render(<Provider>
-      <SearchBar />
+      <SearchBarMock />
     </Provider>, {
       route: {
         path: '/t/:tenantId/dashboard',
@@ -56,7 +75,7 @@ describe('Search Bar (feature enabled)', () => {
       pathname: '/t/t1/search/abc'
     })
     render(<Provider>
-      <SearchBar />
+      <SearchBarMock defaultExpand={true}/>
     </Provider>, {
       route: {
         path: '/t/:tenantId/search/:searchVal',
@@ -78,7 +97,7 @@ describe('Search Bar (feature enabled)', () => {
       pathname: '/t/t1/search/abc'
     })
     render(<Provider>
-      <SearchBar />
+      <SearchBarMock defaultExpand={true}/>
     </Provider>, {
       route: {
         path: '/t/:tenantId/search/:searchVal',
@@ -94,7 +113,7 @@ describe('Search Bar (feature enabled)', () => {
       ...location
     })
     render(<Provider>
-      <SearchBar />
+      <SearchBarMock />
     </Provider>, {
       route: {
         path: '/t/:tenantId/dashboard',
@@ -114,7 +133,7 @@ describe('Search Bar (feature enabled)', () => {
       key: 'default'
     })
     render(<Provider>
-      <SearchBar />
+      <SearchBarMock defaultExpand={true}/>
     </Provider>, {
       route: {
         path: '/t/:tenantId/search/:searchVal',
@@ -136,7 +155,7 @@ describe('Search Bar (feature disabled)', () => {
   it('should trigger search on send click', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(<Provider>
-      <SearchBar />
+      <SearchBarMock />
     </Provider>, {
       route: {
         path: '/t/:tenantId/dashboard',

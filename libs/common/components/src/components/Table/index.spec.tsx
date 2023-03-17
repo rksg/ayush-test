@@ -9,6 +9,8 @@ import { columns as filteredColumns, data as filteredData } from './stories/Filt
 
 import { Table, TableProps } from '.'
 
+const { type, clear } = userEvent
+
 jest.mock('react-resizable', () => ({
   Resizable: jest.fn().mockImplementation((props) => (
     // eslint-disable-next-line testing-library/no-node-access
@@ -554,7 +556,8 @@ describe('Table component', () => {
       { label: 'Edit', onClick: onEdit },
       { label: 'Delete', onClick: onDelete, disabled: true, tooltip: 'can not delete' },
       { label: 'Backup', onClick: onBackup,
-        disabled: (rows) => rows.length !== 1, tooltip: 'can not backup' }
+        disabled: (rows) => rows.length !== 1,
+        tooltip: (rows) => rows.length !== 1 ? 'can not backup' : undefined }
     ]
 
     render(<Table
@@ -568,10 +571,11 @@ describe('Table component', () => {
     fireEvent.click(within(row1).getByRole('checkbox'))
     const deleteButton = screen.getByRole('button', { name: /delete/i })
     expect(deleteButton).toBeDisabled()
-    const backupButton = screen.getByRole('button', { name: /backup/i })
+    let backupButton = screen.getByRole('button', { name: /backup/i })
     expect(backupButton).not.toBeDisabled()
     const row2 = await screen.findByRole('row', { name: /jane/i })
     fireEvent.click(within(row2).getByRole('checkbox'))
+    backupButton = screen.getByRole('button', { name: /backup/i })
     expect(backupButton).toBeDisabled()
   })
 
@@ -605,11 +609,19 @@ describe('Table component', () => {
         dataSource={filteredData}
         rowSelection={{ selectedRowKeys: [] }}
       />)
-      const validSearchTerm = 'John Doe'
       const input = await screen
         .findByPlaceholderText('Search Name, Given Name, Surname, Description, Address')
+
+      expect(await screen.findAllByRole('checkbox')).toHaveLength(5)
+
+      const invalidSearchTerm = 'w'
+      fireEvent.change(input, { target: { value: invalidSearchTerm } })
+      expect(await screen.findAllByRole('checkbox')).toHaveLength(5)
+
+      const validSearchTerm = 'John Doe'
       fireEvent.change(input, { target: { value: validSearchTerm } })
       expect(await screen.findAllByText(validSearchTerm)).toHaveLength(1)
+      expect(await screen.findAllByRole('checkbox')).toHaveLength(2)
 
       fireEvent.change(input, { target: { value: 'edna' } })
       expect(await screen.findAllByText('Jane')).toHaveLength(1)
@@ -697,7 +709,7 @@ describe('Table component', () => {
       const validSearchTerm = 'sample address'
       const input = await screen
         .findByPlaceholderText('Search Name, Given Name, Surname, Description, Address')
-      fireEvent.change(input, { target: { value: validSearchTerm } })
+      await type(input, validSearchTerm)
 
       await screen.findByText('highlighted')
       expect(customHighlighter).toBeCalled()
@@ -713,20 +725,18 @@ describe('Table component', () => {
 
       const input = await screen
         .findByPlaceholderText('Search Name, Given Name, Surname, Description, Address')
-      fireEvent.change(input, { target: { value: 'J' } })
-      await new Promise((r)=>{setTimeout(r, 1000)})
+      await type(input, 'J')
       expect(onFilterChange).not.toBeCalled()
 
-      fireEvent.change(input, { target: { value: 'John Doe' } })
-      await new Promise((r)=>{setTimeout(r, 1000)})
-      expect(onFilterChange).toBeCalledTimes(1)
+      await clear(input)
+      await type(input, 'John Doe')
+      await waitFor(() => expect(onFilterChange).toBeCalledTimes(1))
 
-      fireEvent.change(input, { target: { value: '' } })
+      await clear(input)
       const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
       const nameFilter = filters[0]
       fireEvent.keyDown(nameFilter, { key: 'John Doe', code: 'John Doe' })
-      await new Promise((r)=>{setTimeout(r, 1000)})
-      expect(onFilterChange).toBeCalledTimes(2)
+      await waitFor(() => expect(onFilterChange).toBeCalledTimes(2))
     })
 
     it('should not do local filter/search when enableApiFilter', async () => {
@@ -734,6 +744,7 @@ describe('Table component', () => {
         columns={filteredColumns}
         dataSource={filteredData}
         enableApiFilter={true}
+        floatRightFilters={true}
       />)
       const input = await screen
         .findByPlaceholderText('Search Name, Given Name, Surname, Description, Address')

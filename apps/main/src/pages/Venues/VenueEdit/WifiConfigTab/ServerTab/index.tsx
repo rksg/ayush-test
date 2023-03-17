@@ -2,31 +2,40 @@ import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { AnchorLayout, showToast, StepsForm }    from '@acx-ui/components'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { AnchorLayout, StepsForm }    from '@acx-ui/components'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { redirectPreviousPage }       from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../../'
 
-import { Syslog } from './Syslog'
+import { ApSnmp }         from './ApSnmp'
+import { BonjourFencing } from './BonjourFencing/BonjourFencing'
+import { Syslog }         from './Syslog'
 
 export interface ServerSettingContext {
-  updateSyslog: (() => void)
-  discardSyslog: (() => void)
+  updateSyslog: (() => void),
+  discardSyslog: (() => void),
+  updateBonjourFencing: (() => void),
+  discardBonjourFencing: (() => void),
+  updateVenueApSnmp: (() => void),
+  discardVenueApSnmp: (() => void),
 }
-
 
 export function ServerTab () {
   const { $t } = useIntl()
-  const params = useParams()
-  const { venueId } = params
   const navigate = useNavigate()
   const basePath = useTenantLink('/venues/')
 
   const {
+    previousPath,
     editContextData,
     setEditContextData,
     editServerContextData
   } = useContext(VenueEditContext)
+
+  const supportBonjourFencing = useIsSplitOn(Features.BONJOUR_FENCING)
+  const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
 
   const items = [{
     title: $t({ defaultMessage: 'Syslog Server' }),
@@ -38,28 +47,53 @@ export function ServerTab () {
     </>
   }]
 
+  if (supportBonjourFencing) {
+    items.push({
+      title: $t({ defaultMessage: 'Bonjour Fencing' }),
+      content: <>
+        <StepsForm.SectionTitle id='bonjour-fencing'>
+          { $t({ defaultMessage: 'Bonjour Fencing' }) }
+        </StepsForm.SectionTitle>
+        <BonjourFencing />
+      </>
+    })
+  }
+
+  if (supportApSnmp) {
+    items.push({
+      title: $t({ defaultMessage: 'AP SNMP' }),
+      content: <>
+        <StepsForm.SectionTitle id='ap-snmp'>
+          { $t({ defaultMessage: 'AP SNMP' }) }
+        </StepsForm.SectionTitle>
+        <ApSnmp/>
+      </>
+    })
+  }
+
+
   const handleUpdateSetting = async () => {
     try {
       await editServerContextData?.updateSyslog?.()
+      await editServerContextData?.updateBonjourFencing?.()
+      await editServerContextData?.updateVenueApSnmp?.()
+
+
       setEditContextData({
         ...editContextData,
         isDirty: false
       })
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
   return (
     <StepsForm
       onFinish={handleUpdateSetting}
-      onCancel={() => navigate({
-        ...basePath,
-        pathname: `${basePath.pathname}/${venueId}/venue-details/overview`
-      })}
+      onCancel={() =>
+        redirectPreviousPage(navigate, previousPath, basePath)
+      }
       buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
     >
       <StepsForm.StepForm>
@@ -68,4 +102,3 @@ export function ServerTab () {
     </StepsForm>
   )
 }
-

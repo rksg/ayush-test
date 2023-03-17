@@ -5,6 +5,7 @@ export * from './components/BarChart'
 export * from './components/Boundary'
 export * from './components/Button'
 export * from './components/Card'
+export * from './components/Carousel'
 export * from './components/Chart'
 export type { EventParams } from './components/Chart'
 export * from './components/Collapse'
@@ -13,11 +14,14 @@ export { ContentSwitcher } from './components/ContentSwitcher'
 export type { ContentSwitcherProps } from './components/ContentSwitcher'
 export * from './components/DatePicker'
 export * from './components/Descriptions'
-export * from './components/VerticalBarChart'
-export * from './components/DonutChart'
+export { VerticalBarChart } from './components/VerticalBarChart'
+export type { VerticalBarChartProps } from './components/VerticalBarChart'
+export { DonutChart, onChartClick } from './components/DonutChart'
+export type { DonutChartData, DonutChartProps } from './components/DonutChart'
 export * from './components/Dropdown'
 export * from './components/Drawer'
 export * from './components/Fieldset'
+export * from './components/FlattenCascader'
 export * from './components/GoogleMap'
 export * from './components/Grid'
 export * from './components/Layout'
@@ -32,18 +36,19 @@ export * from './components/NoData'
 export * from './components/PageHeader'
 export * from './components/Pill'
 export * from './components/ProgressBar'
+export * from './components/UsageRate'
 export * from './components/RadioCard'
 export * from './components/SearchBar'
 export * from './components/SelectionControl'
 export * from './components/SparklineChart'
 export * from './components/StackedAreaChart'
-export * from './components/StackedBarChart'
+export { StackedBarChart } from './components/StackedBarChart'
+export type { StackedBarChartProps } from './components/StackedBarChart'
 export * from './components/StepsForm'
 export {
   StepsForm as StepsFormNew,
   useStepFormContext,
-  createStepsFormContext,
-  useWatch
+  createStepsFormContext
 } from './components/StepsFormNew'
 export type {
   FieldSummaryProps,
@@ -57,4 +62,9 @@ export * from './components/Timeline'
 export * from './components/Toast'
 export * from './components/Tooltip'
 export type { TooltipProps } from './components/Tooltip'
+export { VerticalStackedBarChart } from './components/VerticalStackedBarChart'
+export type {
+  VerticalStackedBarChartData,
+  VerticalStackedBarChartProps
+} from './components/VerticalStackedBarChart'
 export * from './theme/helper'

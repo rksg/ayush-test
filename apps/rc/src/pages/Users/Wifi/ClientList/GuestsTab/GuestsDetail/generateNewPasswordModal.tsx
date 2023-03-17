@@ -1,15 +1,13 @@
 import { useState } from 'react'
 
 import { Checkbox, Form, Tooltip, Typography } from 'antd'
-import moment                                  from 'moment'
+import moment, { LocaleSpecifier }             from 'moment-timezone'
 import { useParams }                           from 'react-router-dom'
 
-import { cssStr, Modal, showToast }         from '@acx-ui/components'
+import { cssStr, Modal }                    from '@acx-ui/components'
+import { DateFormatEnum, formatter }        from '@acx-ui/formatter'
 import { useGenerateGuestPasswordMutation } from '@acx-ui/rc/services'
-import {
-  useLazyGetNetworkQuery,
-  useLazyGetUserProfileQuery
-} from '@acx-ui/rc/services'
+import { useLazyGetNetworkQuery }           from '@acx-ui/rc/services'
 import {
   getGuestDictionaryByLangCode,
   Guest,
@@ -46,9 +44,7 @@ export function GenerateNewPasswordModal (props: {
 
   const [generateGuestPassword] = useGenerateGuestPasswordMutation()
   const [getNetwork] = useLazyGetNetworkQuery()
-  const [getUserProfile] = useLazyGetUserProfileQuery()
   const params = useParams()
-
 
   const saveModal = (async () => {
     try {
@@ -57,17 +53,15 @@ export function GenerateNewPasswordModal (props: {
         tenantId: props.tenantId,
         guestId: props.guestDetail.id
       }
+      payload.append('action', 'regenerate')
       await generateGuestPassword({ params, payload }).unwrap()
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .then((data: any) => {
           handleGuestPassResponse(data.response)
           closeModal()
         })
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   })
 
@@ -101,11 +95,10 @@ export function GenerateNewPasswordModal (props: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const prepareGuestToPrint = async (guest: any) =>{
     const currentMoment = moment()
-    const userProfile = await getUserProfile({ params })
-    const currentDate = currentMoment.format(userProfile.data?.dateFormat.toUpperCase())
+    const currentDate = formatter(DateFormatEnum.DateFormat)(currentMoment)
     const langCode = guest.langCode || guest.locale
     const momentLocale = getMomentLocale(langCode)
-    moment.locale(momentLocale)
+    currentMoment.locale(momentLocale as LocaleSpecifier)
 
     const name = guest.name
     const wifiNetwork = guest.ssid

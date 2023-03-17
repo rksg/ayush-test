@@ -5,19 +5,16 @@ import { useIntl }   from 'react-intl'
 
 import {
   Button,
-  DisabledButton,
   PageHeader,
   showActionModal,
-  showToast,
   Table,
   TableProps,
   Loader
 } from '@acx-ui/components'
 import {
-  DownloadOutlined
-} from '@acx-ui/icons'
-import {
-  ResendInviteModal
+  AssignEcDrawer,
+  ResendInviteModal,
+  ManageAdminsDrawer
 } from '@acx-ui/msp/components'
 import {
   useDeleteMspEcMutation,
@@ -27,7 +24,10 @@ import {
   useTableQuery,
   MspEc
 } from '@acx-ui/rc/utils'
-import { getBasePath, Link, TenantLink, MspTenantLink } from '@acx-ui/react-router-dom'
+import { getBasePath, Link, TenantLink, MspTenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                                from '@acx-ui/types'
+import { filterByAccess }                                                           from '@acx-ui/user'
+import { hasRoles }                                                                 from '@acx-ui/user'
 import {
   AccountType
 } from '@acx-ui/utils'
@@ -48,14 +48,20 @@ const defaultPayload = {
     'mspEcAdminCount',
     'wifiLicense',
     'switchLicens'
-  ]
+  ],
+  searchTargetFields: ['name']
 }
 
 export function Integrators () {
   const { $t } = useIntl()
+  const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
+  const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
+  const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
+  const [drawerEcVisible, setDrawerEcVisible] = useState(false)
   const [modalVisible, setModalVisible] = useState(false)
   const [tenantId, setTenantId] = useState('')
+  const [tenantType, setTenantType] = useState('')
 
   const columns: TableProps<MspEc>['columns'] = [
     {
@@ -73,48 +79,66 @@ export function Integrators () {
       }
     },
     {
-      title: $t({ defaultMessage: 'Account Type' }),
+      title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'tenantType',
       key: 'tenantType',
-      sorter: true
-    },
-    {
-      title: $t({ defaultMessage: 'Customers Assigned' }),
-      dataIndex: 'assignedMspEcList',
-      key: 'assignedMspEcList',
       sorter: true,
       render: function (data, row) {
-        return transformAssignedCustomerCount(row)
+        return row.tenantType === AccountType.MSP_INTEGRATOR
+          ? $t({ defaultMessage: 'Integrator' }) : $t({ defaultMessage: 'Installer' })
       }
     },
     {
-      title: $t({ defaultMessage: 'MSP Admins' }),
+      title: $t({ defaultMessage: 'MSP Admin Count' }),
       dataIndex: 'mspAdminCount',
+      align: 'center',
       key: 'mspAdminCount',
       sorter: true,
+      onCell: (data) => {
+        return {
+          onClick: () => {
+            setTenantId(data.id)
+            setDrawerAdminVisible(true)
+          }
+        }
+      },
       render: function (data) {
         return (
-          <TenantLink to={''}>{data}</TenantLink>
+          (isPrimeAdmin || isAdmin) ? <Link to=''>{data}</Link> : data
         )
       }
     },
     {
-      title: $t({ defaultMessage: 'Account Admins' }),
-      dataIndex: 'mspEcAdminCount',
-      key: 'mspEcAdminCount',
-      sorter: true
-    },
-    {
-      title: $t({ defaultMessage: 'Active Incidents' }),
-      dataIndex: 'activeIncidents',
-      key: 'activeIncidents',
+      title: $t({ defaultMessage: 'Assigned Customers Count' }),
+      dataIndex: 'assignedMspEcList',
+      align: 'center',
+      key: 'assignedMspEcList',
       sorter: true,
-      render: function () {
-        return '0'
+      onCell: (data) => {
+        return {
+          onClick: () => {
+            setTenantId(data.id)
+            setTenantType(data.tenantType)
+            if (!drawerEcVisible) setDrawerEcVisible(true)
+          }
+        }
+      },
+      render: function (data, row) {
+        return (isPrimeAdmin || isAdmin)
+          ? <Link to=''>{transformAssignedCustomerCount(row)}</Link>
+          : transformAssignedCustomerCount(row)
       }
     },
     {
-      title: $t({ defaultMessage: 'Tenant Id' }),
+      title: $t({ defaultMessage: 'Account Admin Count' }),
+      dataIndex: 'mspEcAdminCount',
+      align: 'center',
+      key: 'mspEcAdminCount',
+      sorter: true,
+      show: false
+    },
+    {
+      title: $t({ defaultMessage: 'Tenant ID' }),
       dataIndex: 'id',
       key: 'id',
       sorter: true
@@ -122,9 +146,14 @@ export function Integrators () {
   ]
 
   const IntegratorssTable = () => {
+    const navigate = useNavigate()
+    const basePath = useTenantLink('/integrators/edit', 'v')
     const tableQuery = useTableQuery({
       useQuery: useMspCustomerListQuery,
-      defaultPayload
+      defaultPayload,
+      search: {
+        searchTargetFields: defaultPayload.searchTargetFields as string[]
+      }
     })
     const [
       deleteMspEc,
@@ -133,12 +162,15 @@ export function Integrators () {
 
     const rowActions: TableProps<MspEc>['rowActions'] = [
       {
-        label: $t({ defaultMessage: 'Manage' }),
-        onClick: (selectedRows) =>
-          showToast({
-            type: 'info',
-            content: `Manage ${selectedRows[0].name}`
+        label: $t({ defaultMessage: 'Edit' }),
+        onClick: (selectedRows) => {
+          setTenantId(selectedRows[0].id)
+          const type = selectedRows[0].tenantType
+          navigate({
+            ...basePath,
+            pathname: `${basePath.pathname}/${type}/${selectedRows[0].id}`
           })
+        }
       },
       {
         label: $t({ defaultMessage: 'Resend Invitation Email' }),
@@ -171,7 +203,7 @@ export function Integrators () {
         { isLoading: false, isFetching: isDeleteEcUpdating }]}>
         <Table
           columns={columns}
-          rowActions={rowActions}
+          rowActions={filterByAccess(rowActions)}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
@@ -186,18 +218,34 @@ export function Integrators () {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: '3rd Party' })}
-        extra={[
-          <TenantLink to='/dashboard' key='ownAccount'>
-            <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
-          </TenantLink>,
-          <MspTenantLink to='/integrators/create' key='add'>
-            <Button type='primary'>{$t({ defaultMessage: 'Add Integrator' })}</Button>
-          </MspTenantLink>,
-          <DisabledButton key='download' icon={<DownloadOutlined />} />
-        ]}
+        title={$t({ defaultMessage: 'Tech Partners' })}
+        extra={isAdmin ?
+          [
+            <TenantLink to='/dashboard'>
+              <Button>{$t({ defaultMessage: 'Manage my account' })}</Button>
+            </TenantLink>,
+            <MspTenantLink to='/integrators/create'>
+              <Button type='primary'>{$t({ defaultMessage: 'Add Tech Partner' })}</Button>
+            </MspTenantLink>
+          ]
+          : [<TenantLink to='/dashboard'>
+            <Button>{$t({ defaultMessage: 'Manage my account' })}</Button>
+          </TenantLink>
+          ]}
       />
       <IntegratorssTable />
+      {drawerAdminVisible && <ManageAdminsDrawer
+        visible={drawerAdminVisible}
+        setVisible={setDrawerAdminVisible}
+        setSelected={() => {}}
+        tenantId={tenantId}
+      />}
+      {setDrawerEcVisible && <AssignEcDrawer
+        visible={drawerEcVisible}
+        setVisible={setDrawerEcVisible}
+        tenantId={tenantId}
+        tenantType={tenantType}
+      />}
       <ResendInviteModal
         visible={modalVisible}
         setVisible={setModalVisible}

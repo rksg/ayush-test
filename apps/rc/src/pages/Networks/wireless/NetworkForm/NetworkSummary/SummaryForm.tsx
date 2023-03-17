@@ -1,9 +1,12 @@
-import { EnvironmentOutlined }            from '@ant-design/icons'
-import { Col, Divider, Form, Input, Row } from 'antd'
-import { useIntl }                        from 'react-intl'
+import React from 'react'
+
+import { EnvironmentOutlined }     from '@ant-design/icons'
+import { Col, Divider, Form, Row } from 'antd'
+import { useIntl }                 from 'react-intl'
 
 import { StepsForm, Subtitle }                                                 from '@acx-ui/components'
-import { useCloudpathListQuery, useVenuesListQuery }                           from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }                                              from '@acx-ui/feature-toggle'
+import { useMacRegListsQuery, useVenuesListQuery }                             from '@acx-ui/rc/services'
 import { Demo, NetworkSaveData, NetworkTypeEnum, transformDisplayText, Venue } from '@acx-ui/rc/utils'
 import { useParams }                                                           from '@acx-ui/react-router-dom'
 
@@ -16,6 +19,7 @@ import { PskSummaryForm }    from './PskSummaryForm'
 
 const defaultPayload = {
   searchString: '',
+  pageSize: 10000,
   fields: [
     'name',
     'id'
@@ -28,16 +32,7 @@ export function SummaryForm (props: {
 }) {
   const { $t } = useIntl()
   const { summaryData, portalData } = props
-  const selectedId = summaryData.cloudpathServerId
   const params = useParams()
-  const { selected } = useCloudpathListQuery({ params }, {
-    selectFromResult ({ data }) {
-      return {
-        selected: data?.find((item) => item.id === selectedId)
-      }
-    }
-  })
-
   const { data } = useVenuesListQuery({ params:
     { tenantId: params.tenantId, networkId: 'UNKNOWN-NETWORK-ID' }, payload: defaultPayload })
 
@@ -45,6 +40,11 @@ export function SummaryForm (props: {
     map[obj.id] = obj
     return map
   }, {})
+
+  const macRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
+  const { data: macRegListOption } = useMacRegListsQuery({
+    payload: { pageSize: 10000 }
+  }, { skip: !macRegistrationEnabled })
 
   const getVenues = function () {
     const venues = summaryData.venues
@@ -65,6 +65,7 @@ export function SummaryForm (props: {
     }
   }
 
+  // @ts-ignore
   return (
     <>
       <StepsForm.Title>{ $t({ defaultMessage: 'Summary' }) }</StepsForm.Title>
@@ -91,45 +92,43 @@ export function SummaryForm (props: {
               (summaryData.guestPortal?.guestNetworkType &&
                  $t(captiveTypes[summaryData.guestPortal?.guestNetworkType]))}
           />}
-          {summaryData.type !== NetworkTypeEnum.PSK &&
+          {summaryData.type !== NetworkTypeEnum.PSK&&
+            summaryData.type!==NetworkTypeEnum.CAPTIVEPORTAL&&
           <Form.Item
-            label={$t({ defaultMessage: 'Use Cloudpath Server:' })}
-            children={summaryData.isCloudpathEnabled ? 'Yes' : 'No'}
+            label={$t({ defaultMessage: 'Use Radius Server:' })}
+            children={
+              summaryData.isCloudpathEnabled || summaryData.wlan?.macAddressAuthentication
+                ? $t({ defaultMessage: 'Yes' })
+                : $t({ defaultMessage: 'No' })
+            }
           />
           }
-          {summaryData.isCloudpathEnabled && selected &&
+          {summaryData.isCloudpathEnabled && !summaryData.wlan?.macRegistrationListId &&
             <>
               <Form.Item
-                label={$t({ defaultMessage: 'Cloudpath Server' })}
-                children={selected.name}
-              />
-              <Form.Item
-                label={$t({ defaultMessage: 'Deployment Type' })}
-                children={selected.deploymentType}
-              />
-              <Form.Item
                 label={$t({ defaultMessage: 'Authentication Server' })}
-                children={`${selected.authRadius.primary.ip}:${selected.authRadius.primary.port}`}
+                children={`${summaryData.authRadius?.name}`}
               />
-              {selected.accountingRadius &&
+              {summaryData.accountingRadius &&
                 <Form.Item
                   label={$t({ defaultMessage: 'Accounting Service' })}
-                  children={`${selected.accountingRadius?.primary.ip}:
-                    ${selected.accountingRadius?.primary.port}`}
+                  children={`${summaryData.accountingRadius?.name}`}
                 />
               }
-              <Form.Item
-                label={$t({ defaultMessage: 'Shared Secret' })}
-                children={<Input.Password
-                  readOnly
-                  bordered={false}
-                  value={selected.authRadius.primary.sharedSecret}
-                />}
-              />
             </>
           }
-          {summaryData.type === NetworkTypeEnum.AAA && !summaryData.isCloudpathEnabled &&
+          {summaryData.type === NetworkTypeEnum.AAA
+          && !summaryData.isCloudpathEnabled && !summaryData.wlan?.macRegistrationListId &&
            <AaaSummaryForm summaryData={summaryData} />
+          }
+          {summaryData.wlan?.macAddressAuthentication && summaryData.wlan?.macRegistrationListId &&
+          <Form.Item
+            label={$t({ defaultMessage: 'Mac registration list:' })}
+            children={
+              `${macRegListOption?.data.find(
+                regList => regList.id === summaryData.wlan?.macRegistrationListId
+              )?.name}`
+            }/>
           }
           {summaryData.type === NetworkTypeEnum.DPSK &&
             <DpskSummaryForm summaryData={summaryData} />

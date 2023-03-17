@@ -1,5 +1,7 @@
-import GuestsTable from './GuestsTable'
+import { GuestDateFilter } from '../PageHeader'
 
-export function GuestsTab () {
-  return <GuestsTable />
+import { GuestsTable } from './GuestsTable'
+
+export function GuestsTab (props: { dateFilter: GuestDateFilter }) {
+  return <GuestsTable dateFilter={props.dateFilter} />
 }

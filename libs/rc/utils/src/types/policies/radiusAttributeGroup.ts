@@ -11,11 +11,12 @@ export interface AttributeAssignment {
   attributeName: string,
   operator: OperatorType,
   attributeValue: string,
-  dataType: DataType
+  dataType: DataType,
+  operatorName?: string
 }
 
 export interface RadiusAttributeGroup {
-  id?: string,
+  id: string,
   name: string,
   description?: string,
   attributeAssignments: AttributeAssignment []
@@ -32,12 +33,6 @@ export interface treeNode {
   children?: treeNode [] | undefined
   isLeaf: boolean,
   dataType?: string
-}
-
-export interface Assignment {
-  id?:string,
-  externalAssignmentIdentifier: string,
-  serviceName: string
 }
 
 export enum OperatorType {
