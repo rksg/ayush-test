@@ -50,7 +50,7 @@ export default function ApsTable () {
   })
 
   const [ importCsv ] = useImportApMutation()
-  const [ importQuery ] = useLazyImportResultQuery()
+  const [ importQuery, { isLoading: isImportResultLoading } ] = useLazyImportResultQuery()
   const [ importResult, setImportResult ] = useState<ImportErrorRes>({} as ImportErrorRes)
 
   const apGpsFlag = useIsSplitOn(Features.AP_GPS)
@@ -112,7 +112,7 @@ export default function ApsTable () {
         acceptType={['csv']}
         templateLink={importTemplateLink}
         visible={importVisible}
-        isLoading={importResult.isLoading}
+        isLoading={isImportResultLoading}
         importError={{ data: importResult } as FetchBaseQueryError}
         importRequest={(formData)=>{
           importCsv({ payload: formData,

@@ -363,7 +363,7 @@ export function ApTable (props: ApTableProps) {
   }]
   const [ importVisible, setImportVisible ] = useState(false)
   const [ importCsv ] = useImportApMutation()
-  const [ importQuery ] = useLazyImportResultQuery()
+  const [ importQuery, { isLoading: isImportResultLoading } ] = useLazyImportResultQuery()
   const [ importResult, setImportResult ] = useState<ImportErrorRes>({} as ImportErrorRes)
   const apGpsFlag = useIsSplitOn(Features.AP_GPS)
   const importTemplateLink = apGpsFlag ?
@@ -419,7 +419,7 @@ export function ApTable (props: ApTableProps) {
         acceptType={['csv']}
         templateLink={importTemplateLink}
         visible={importVisible}
-        isLoading={importResult.isLoading}
+        isLoading={isImportResultLoading}
         importError={{ data: importResult } as FetchBaseQueryError}
         importRequest={(formData) => {
           importCsv({ params, payload: formData ,
