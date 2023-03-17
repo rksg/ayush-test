@@ -6,7 +6,7 @@ import AutoSizer         from 'react-virtualized-auto-sizer'
 import { KPITimeseriesResponse, healthApi } from '@acx-ui/analytics/services'
 import { AnalyticsFilter, kpiConfig }       from '@acx-ui/analytics/utils'
 import { Loader, VerticalBarChart, NoData } from '@acx-ui/components'
-import { formatter }                        from '@acx-ui/utils'
+import { formatter }                        from '@acx-ui/formatter'
 
 const barChartText = {
   title: defineMessage({ defaultMessage: 'last 7 days' })

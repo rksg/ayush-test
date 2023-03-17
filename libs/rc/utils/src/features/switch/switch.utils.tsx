@@ -61,7 +61,23 @@ export const modelMap: ReadonlyMap<string, string> = new Map([
   ['FMP', 'ICX7550-24ZP'],
   ['FMQ', 'ICX7550-48ZP'],
   ['FMR', 'ICX7550-24F'],
-  ['FMS', 'ICX7550-48F']
+  ['FMS', 'ICX7550-48F'],
+  ['FNC', 'ICX8200-24'],
+  ['FND', 'ICX8200-24P'],
+  ['FNF', 'ICX8200-48'],
+  ['FNG', 'ICX8200-48P'],
+  ['FNH', 'ICX8200-48PF'],
+  ['FNM', 'ICX8200-48PF2'],
+  ['FNS', 'ICX8200-C08PF'],
+  ['FNE', 'ICX8200-24ZP'],
+  ['FNJ', 'ICX8200-24F'],
+  ['FNK', 'ICX8200-24FX'],
+  ['FNL', 'ICX8200-48F'],
+  ['FNN', 'ICX8200-48ZP2'],
+  ['FNR', 'ICX8200-C08ZP'],
+  ['FNU', 'ICX8200-C08P-DC'],
+  ['FNQ', 'ICX8200-C08PT'],
+  ['FNP', 'ICX8200-C08P']
 ])
 
 export const ICX_MODELS_MODULES = {
@@ -115,7 +131,7 @@ export const ICX_MODELS_MODULES = {
     '48F': [['48X1G'], ['4X1/10/25G']],
     'C08ZP': [['4X100M/1/2.5/5/10G'], ['2X1/10/25G']],
     'C08PT': [['8X10/100/1000Mbps'], ['2X1G']],
-    'C08PDC': [['8X10/100/1000Mbps'], ['1X1G']]
+    'C08PDC': [['8X10/100/1000Mbps'], ['2X1G']]
   }
 }
 

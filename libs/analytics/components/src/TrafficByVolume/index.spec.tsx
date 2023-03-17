@@ -1,8 +1,7 @@
 import '@testing-library/jest-dom'
 
-import { dataApiURL }                       from '@acx-ui/analytics/services'
 import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
-import { Provider, store }                  from '@acx-ui/store'
+import { dataApiURL, Provider, store }      from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 import { DateRange }                        from '@acx-ui/utils'
 
@@ -54,14 +53,24 @@ describe('TrafficByVolumeWidget', () => {
     mockGraphqlQuery(dataApiURL, 'TrafficByVolumeWidget', {
       data: { network: { hierarchyNode: { timeSeries: sample } } }
     })
-    render(<Provider> <TrafficByVolume filters={filters}/></Provider>)
+    render(<Provider><TrafficByVolume filters={filters}/></Provider>)
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
   it('should render chart', async () => {
     mockGraphqlQuery(dataApiURL, 'TrafficByVolumeWidget', {
       data: { network: { hierarchyNode: { timeSeries: sample } } }
     })
-    const { asFragment } =render(<Provider> <TrafficByVolume filters={filters}/></Provider>)
+    const { asFragment } = render(<Provider><TrafficByVolume filters={filters}/></Provider>)
+    await screen.findByText('Traffic by Volume')
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+  })
+  it('should render area chart', async () => {
+    mockGraphqlQuery(dataApiURL, 'TrafficByVolumeWidget', {
+      data: { network: { hierarchyNode: { timeSeries: sample } } }
+    })
+    const { asFragment } = render(
+      <Provider><TrafficByVolume filters={filters} vizType={'area'}/></Provider>)
     await screen.findByText('Traffic by Volume')
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
@@ -80,7 +89,7 @@ describe('TrafficByVolumeWidget', () => {
     mockGraphqlQuery(dataApiURL, 'TrafficByVolumeWidget', {
       data: { network: { hierarchyNode: { timeSeries: sampleNoData } } }
     })
-    render( <Provider> <TrafficByVolume filters={filters}/> </Provider>)
+    render(<Provider><TrafficByVolume filters={filters}/></Provider>)
     expect(await screen.findByText('No data to display')).toBeVisible()
     jest.resetAllMocks()
   })

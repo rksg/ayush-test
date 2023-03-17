@@ -3235,9 +3235,9 @@ exports[`NetworkForm should create open network successfully 1`] = `
                         >
                           <label
                             class=""
-                            title="Use AAA Server:"
+                            title="Use Radius Server:"
                           >
-                            Use AAA Server:
+                            Use Radius Server:
                           </label>
                         </div>
                         <div

@@ -77,7 +77,7 @@ export function AccessSwitchTable (props: {
       let displayText = ''
       if (row.webAuthPageType === 'USER_DEFINED') {
         displayText = $t({ defaultMessage: 'custom' })
-      } else {
+      } else if (row.webAuthPageType === 'TEMPLATE') {
         displayText = templateListResult?.data.find(tp => tp.id === row.templateId)?.name ||
           $t({ defaultMessage: 'template' })
       }

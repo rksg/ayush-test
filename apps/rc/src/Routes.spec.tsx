@@ -718,7 +718,7 @@ describe('RcRoutes: Policies', () => {
         wrapRoutes: false
       }
     })
-    expect(await screen.findByRole('heading', { level: 1, name: /AAA Server/ })).toBeVisible()
+    expect(await screen.findByRole('heading', { level: 1, name: /Radius Server/ })).toBeVisible()
   })
 
   test('should navigate to Access Control table', async () => {

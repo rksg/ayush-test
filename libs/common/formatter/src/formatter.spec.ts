@@ -1,10 +1,11 @@
-import moment from 'moment-timezone'
+import { getUserProfile, setUserProfile, UserProfile } from '@acx-ui/user'
 
 import {
   formatter,
   formats,
   convertEpochToRelativeTime,
-  convertDateTimeToSqlFormat } from './formatter'
+  DateFormatEnum
+} from './formatter'
 
 function testFormat (
   format: keyof typeof formats,
@@ -247,42 +248,36 @@ describe('formatter', () => {
     })
   })
   describe('dateTimeFormats', () => {
-    it('Should format a timestamp to MMM DD YYYY', () => {
-      expect(formatter('dateFormat')(1456885800000))
-        .toBe(moment(1456885800000).format('MMM DD YYYY'))
+    beforeEach(() => {
+      setUserProfile({ profile: {} as UserProfile, allowedOperations: [] })
     })
-    it('Should format a timestamp to HH:mm', () => {
-      expect(formatter('timeFormat')(1456885800000))
-        .toBe(moment(1456885800000).format('HH:mm'))
+
+    it('Should format a timestamp to default format', () => {
+      expect(formatter(DateFormatEnum.DateFormat)(1456885800000))
+        .toBe('Mar 02 2016')
     })
-    it('Should format a timestamp to HH:mm:ss', () => {
-      expect(formatter('secondFormat')(1456885800000))
-        .toBe(moment(1456885800000).format('HH:mm:ss'))
+    it('Should format a timestamp to default format with HH:mm', () => {
+      expect(formatter(DateFormatEnum.DateTimeFormat)(1456885800000))
+        .toBe('Mar 02 2016 02:30')
     })
-    it('Should format a timestamp to MMM DD YYYY HH:mm', () => {
-      expect(formatter('dateTimeFormat')(1456885800000))
-        .toBe(moment(1456885800000).format('MMM DD YYYY HH:mm'))
+    it('Should format a timestamp to default format with HH:mm:ss', () => {
+      expect(formatter(DateFormatEnum.DateTimeFormatWithSeconds)(1456885800000))
+        .toBe('Mar 02 2016 02:30:00')
     })
-    it('Should format a timestamp to MMM DD YYYY HH:mm:ss', () => {
-      expect(formatter('dateTimeFormatWithSeconds')(1456885800000))
-        .toBe(moment(1456885800000).format('MMM DD YYYY HH:mm:ss'))
-    })
-    it('Should format a timestamp to MMM DD', () => {
-      expect(formatter('monthDateFormat')(1456885800000))
-        .toBe(moment(1456885800000).format('MMM DD'))
-    })
-    it('Should format a timestamp to HH', () => {
-      expect(formatter('hourFormat')(1456885800000))
-        .toBe(moment(1456885800000).format('HH'))
-    })
-    it('Should format a timestamp to DD/MM/YYYY hh:mm A', () => {
-      expect(formatter('dateTime12hourFormat')(1456885800000))
-        .toBe(moment(1456885800000).format('DD/MM/YYYY hh:mm A'))
+    it('Should format based on user profile setting', () => {
+      const userProfile = getUserProfile()
+      setUserProfile({ ...userProfile, profile: {
+        ...userProfile.profile, dateFormat: 'dd/mm/yyyy' } })
+      expect(formatter(DateFormatEnum.DateFormat)(1456885800000))
+        .toBe('02/03/2016')
     })
     it('With tz', () => {
-      expect(formatter('dateTimeFormatWithSeconds')(1456885800000, 'America/Los_Angeles'))
-        .toBe(moment(1456885800000).tz('America/Los_Angeles')
-          .format('MMM DD YYYY HH:mm:ss Z').replace('+00:00', 'UTC'))
+      const userProfile = getUserProfile()
+      setUserProfile({ ...userProfile, profile: {
+        ...userProfile.profile, dateFormat: 'mm/dd/yyyy' } })
+      expect(formatter(DateFormatEnum.DateTimeFormatWithTimezone)(
+        1456885800000, 'America/Los_Angeles'))
+        .toBe('03/01/2016 - 18:30 PST -08:00')
     })
   })
   describe('intlFormats', () => {
@@ -341,12 +336,6 @@ describe('formatter', () => {
       it('Should return relative time', () => {
         expect(typeof formatter('longDurationFormat')(convertEpochToRelativeTime(1669693917)))
           .toBe('string')
-      })
-    })
-    describe('convertDateTimeToSqlFormat', () => {
-      it('should convert date to sqlDateTimeFormat', () => {
-        expect(convertDateTimeToSqlFormat('2022-12-16T08:05:00+05:30'))
-          .toEqual('2022-12-16 02:35:00')
       })
     })
   })
