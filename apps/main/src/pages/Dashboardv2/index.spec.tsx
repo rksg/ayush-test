@@ -40,7 +40,7 @@ describe('Dashboard', () => {
   it('renders correctly', async () => {
     render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
 
-    expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(6)
+    expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(7)
     expect(await screen.findAllByTestId(/^rc/)).toHaveLength(5)
   })
 
@@ -69,7 +69,7 @@ describe('Dashboard', () => {
   it('should switch tab correctly', async () => {
     render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
     fireEvent.click(await screen.findByText('Switch'))
-    expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(7)
+    expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(8)
     expect(await screen.findAllByTestId(/^rc/)).toHaveLength(5)
   })
   it('should show report link correctly', async () => {
