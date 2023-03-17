@@ -12,7 +12,8 @@ import {
   TopSwitchesByPoEUsage,
   TopSwitchesByTraffic,
   TopSwitchModels,
-  TrafficByVolume } from '@acx-ui/analytics/components'
+  TrafficByVolume,
+  DidYouKnow } from '@acx-ui/analytics/components'
 import {
   GridRow,
   GridCol,
@@ -174,8 +175,7 @@ function CommonDashboardWidgets () {
         </GridRow>
       </GridCol>
       <GridCol col={{ span: 6 }} style={{ height: '410px' }}>
-        <Card title='Did you know?'>
-        </Card>
+        <DidYouKnow filters={filters}/>
       </GridCol>
     </GridRow>
   )

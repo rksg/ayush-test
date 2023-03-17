@@ -16,7 +16,7 @@ import {
 } from '@acx-ui/rc/utils'
 
 export const policyTypeLabelMapping: Record<PolicyType, MessageDescriptor> = {
-  [PolicyType.AAA]: defineMessage({ defaultMessage: 'AAA Server' }),
+  [PolicyType.AAA]: defineMessage({ defaultMessage: 'Radius Server' }),
   [PolicyType.ACCESS_CONTROL]: defineMessage({ defaultMessage: 'Access Control' }),
   [PolicyType.CLIENT_ISOLATION]: defineMessage({ defaultMessage: 'Client Isolation' }),
   [PolicyType.ROGUE_AP_DETECTION]: defineMessage({ defaultMessage: 'Rogue AP Detection' }),
