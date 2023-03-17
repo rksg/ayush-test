@@ -1,9 +1,11 @@
 import AdaptivePolicyTable          from './AdaptivePolicy/AdaptivePolicyTable'
 import AdaptivePolicyListPageHeader from './AdaptivePolicyListPageHeader'
 import AdaptivePolicySetTable       from './AdaptivePolicySet/AdaptivePolicySetTable'
+import RadiusAttributeGroupTable    from './RadiusAttributeGroup/RadiusAttributeGroupTable'
 
 
 const tabs = {
+  radiusAttributeGroup: RadiusAttributeGroupTable,
   adaptivePolicy: AdaptivePolicyTable,
   adaptivePolicySet: AdaptivePolicySetTable
 }

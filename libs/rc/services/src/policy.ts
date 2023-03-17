@@ -1757,6 +1757,7 @@ export const {
   useUpdateRadiusAttributeGroupMutation,
   useAddRadiusAttributeGroupMutation,
   useLazyRadiusAttributeGroupListByQueryQuery,
+  useLazyGetRadiusAttributeGroupQuery,
   // policy
   useAdaptivePolicyListQuery,
   useLazyAdaptivePolicyListQuery,

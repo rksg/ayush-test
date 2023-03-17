@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react'
 
+import { ProForm }             from '@ant-design/pro-form'
 import { Form, Input, Select } from 'antd'
 import { useIntl }             from 'react-intl'
 
-import { Drawer, Loader, useWatch }                                             from '@acx-ui/components'
+import { Drawer, Loader }                                                       from '@acx-ui/components'
 import { useLazyAttributesListQuery }                                           from '@acx-ui/rc/services'
 import { AccessCondition, checkObjectNotExists, CriteriaOption, RuleAttribute } from '@acx-ui/rc/utils'
+
+import useWatch = ProForm.useWatch
 
 interface AccessConditionDrawerProps {
   visible: boolean
