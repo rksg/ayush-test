@@ -408,6 +408,15 @@ describe('Wired', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
     await screen.findByRole('heading', { level: 3, name: /Venues/ })
+    const venueSwitch = await screen.findAllByRole('switch')
+    await userEvent.click(venueSwitch[0])
+    await userEvent.click(venueSwitch[1])
+    await userEvent.click(venueSwitch[0])
+
+    const venueCheckbox = await screen.findAllByRole('checkbox')
+    await userEvent.click(venueCheckbox[0])
+    await userEvent.click(await screen.findByRole('button', { name: 'Deactivate' }) )
+    await userEvent.click(await screen.findByRole('button', { name: 'Activate' }) )
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
     await screen.findByRole('heading', { level: 3, name: /Summary/ })
