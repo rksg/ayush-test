@@ -94,7 +94,7 @@ export function SummaryForm (props: {
           />}
           {summaryData.type !== NetworkTypeEnum.PSK &&
           <Form.Item
-            label={$t({ defaultMessage: 'Use AAA Server:' })}
+            label={$t({ defaultMessage: 'Use Radius Server:' })}
             children={
               summaryData.isCloudpathEnabled || summaryData.wlan?.macAddressAuthentication
                 ? $t({ defaultMessage: 'Yes' })
