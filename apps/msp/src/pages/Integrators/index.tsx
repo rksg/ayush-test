@@ -243,6 +243,7 @@ export function Integrators () {
       {setDrawerEcVisible && <AssignEcDrawer
         visible={drawerEcVisible}
         setVisible={setDrawerEcVisible}
+        setSelected={() => {}}
         tenantId={tenantId}
         tenantType={tenantType}
       />}

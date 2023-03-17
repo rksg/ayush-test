@@ -23,17 +23,11 @@ import {
   StepsFormInstance,
   Subtitle
 } from '@acx-ui/components'
-import {
-  Loader,
-  Table,
-  TableProps
-} from '@acx-ui/components'
 import { useIsSplitOn, Features }    from '@acx-ui/feature-toggle'
 import { formatter, DateFormatEnum } from '@acx-ui/formatter'
 import { SearchOutlined }            from '@acx-ui/icons'
 import {
   useAddCustomerMutation,
-  useMspCustomerListQuery,
   useMspEcAdminListQuery,
   useUpdateCustomerMutation,
   useGetMspEcQuery,
@@ -55,7 +49,6 @@ import {
   MspAssignmentHistory,
   MspAssignmentSummary,
   MspEcDelegatedAdmins,
-  useTableQuery,
   AssignActionEnum
 } from '@acx-ui/rc/utils'
 import {
@@ -67,6 +60,7 @@ import { RolesEnum }              from '@acx-ui/types'
 import { useGetUserProfileQuery } from '@acx-ui/user'
 import { AccountType  }           from '@acx-ui/utils'
 
+import { AssignEcDrawer }     from '../AssignEcDrawer'
 import { ManageAdminsDrawer } from '../ManageAdminsDrawer'
 // eslint-disable-next-line import/order
 import * as UI from '../styledComponents'
@@ -167,6 +161,7 @@ export function ManageIntegrator () {
   const [assignedLicense, setAssignedLicense] = useState([] as MspAssignmentHistory[])
   const [customDate, setCustomeDate] = useState(true)
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
+  const [drawerAssignedEcVisible, setDrawerAssignedEcVisible] = useState(false)
   const [subscriptionStartDate, setSubscriptionStartDate] = useState<moment.Moment>()
   const [subscriptionEndDate, setSubscriptionEndDate] = useState<moment.Moment>()
   const [address, updateAddress] = useState<Address>(isMapEnabled? {} : defaultAddress)
@@ -430,6 +425,10 @@ export function ManageIntegrator () {
     setAdministrator(selected)
   }
 
+  const selectedAssignEc = (selected: MspEc[]) => {
+    setSelectedEcs(selected)
+  }
+
   const displayMspAdmins = ( ) => {
     if (!mspAdmins || mspAdmins.length === 0)
       return '--'
@@ -446,9 +445,9 @@ export function ManageIntegrator () {
     if (!selectedEcs || selectedEcs.length === 0)
       return '--'
     return <>
-      {selectedEcs.map(admin =>
+      {selectedEcs.map(ec =>
         <UI.AdminList>
-          {admin.name}
+          {ec.name}
         </UI.AdminList>
       )}
     </>
@@ -604,80 +603,6 @@ export function ManageIntegrator () {
   }
 
   const AssignEcForm = () => {
-    const columns: TableProps<MspEc>['columns'] = [
-      {
-        title: intl.$t({ defaultMessage: 'Customer' }),
-        dataIndex: 'name',
-        key: 'name',
-        sorter: true,
-        searchable: true,
-        defaultSortOrder: 'ascend'
-      },
-      {
-        title: intl.$t({ defaultMessage: 'Status' }),
-        dataIndex: 'status',
-        key: 'status',
-        sorter: true
-      },
-      {
-        title: intl.$t({ defaultMessage: 'Address' }),
-        dataIndex: 'streetAddress',
-        key: 'streetAddress',
-        width: 200,
-        sorter: true
-      },
-      {
-        title: intl.$t({ defaultMessage: 'Wi-Fi Licenses' }),
-        dataIndex: 'wifiLicenses',
-        key: 'wifiLicenses',
-        align: 'center'
-      },
-      {
-        title: intl.$t({ defaultMessage: 'Switch Licenses' }),
-        dataIndex: 'switchLicenses',
-        key: 'switchLicenses',
-        align: 'center'
-      }
-    ]
-
-    const defaultPayload = {
-      searchString: '',
-      filters: { tenantType: ['MSP_EC'] },
-      fields: [
-        'id',
-        'name',
-        'tenantType',
-        'status',
-        'wifiLicense',
-        'switchLicens',
-        'streetAddress'
-      ]
-    }
-
-    const CustomerTable = () => {
-      const queryResults = useTableQuery({
-        useQuery: useMspCustomerListQuery,
-        defaultPayload
-      })
-
-      return (
-        <Loader states={[queryResults
-        ]}>
-          <Table
-            columns={columns}
-            dataSource={queryResults.data?.data}
-            rowKey='id'
-            rowSelection={{
-              type: 'checkbox',
-              onChange (selectedRowKeys, selectedRows) {
-                formRef.current?.setFieldValue(['ecCustomers'], selectedRows)
-              }
-            }}
-          />
-        </Loader>
-      )
-    }
-
     const onChange = (e: RadioChangeEvent) => {
       setUnlimitSelected(e.target.value)
     }
@@ -706,29 +631,40 @@ export function ManageIntegrator () {
                 {
                   if(parseInt(value, 10) > 60 || parseInt(value, 10) < 1) {
                     return Promise.reject(
-                      `${intl.$t({ defaultMessage: 'Invalid number' })} `
+                      `${intl.$t({ defaultMessage: 'Value must be between 1 and 60 days' })} `
                     )
                   }
                   return Promise.resolve()
                 }
                 }]}
-                children={<Input type='number'/>}
+                children={<Input disabled={unlimitSelected} type='number'/>}
                 style={{ paddingRight: '20px' }}
               />
-              <label>Day(s) (1..60)</label>
+              <label>Day(s)</label>
             </UI.FieldLabelAccessPeriod>
           </Space>
         </Radio.Group>
       </Form.Item>
 
-      <Subtitle level={4}>
+      <UI.FieldLabelAdmins width='275px'>
+        <label>{intl.$t({ defaultMessage: 'Assigned Customers' })}</label>
+        <Form.Item children={<div>{displayAssignedEc()}</div>} />
+        <Form.Item
+          children={<UI.FieldTextLink onClick={() => setDrawerAssignedEcVisible(true)}>
+            {intl.$t({ defaultMessage: 'Manage' })}
+          </UI.FieldTextLink>
+          }
+        />
+      </UI.FieldLabelAdmins>
+
+      {/* <Subtitle level={4}>
         { intl.$t({ defaultMessage: 'Select customer accounts to assign to this integrator:' }) }
       </Subtitle>
       <Form.Item
         name='mspEcList'
       >
         <CustomerTable />
-      </Form.Item>
+      </Form.Item> */}
     </>
     return (
       <div>{content}</div>
@@ -1016,8 +952,6 @@ export function ManageIntegrator () {
             onFinish={async (data) => {
               const ecData = { ...formData, ...data }
               setFormData(ecData)
-              const customers = formRef.current?.getFieldsValue(['ecCustomers'])
-              setSelectedEcs(customers?.ecCustomers)
               return true
             }}
           >
@@ -1062,6 +996,13 @@ export function ManageIntegrator () {
         setVisible={setDrawerAdminVisible}
         setSelected={selectedMspAdmins}
         tenantId={mspEcTenantId}
+      />}
+      {drawerAssignedEcVisible && <AssignEcDrawer
+        visible={drawerAssignedEcVisible}
+        setVisible={setDrawerAssignedEcVisible}
+        setSelected={selectedAssignEc}
+        tenantId={mspEcTenantId}
+        tenantType={unlimitSelected ? AccountType.MSP_INTEGRATOR : AccountType.MSP_INSTALLER}
       />}
     </>
   )
