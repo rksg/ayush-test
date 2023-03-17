@@ -1,18 +1,9 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-
 import {
   RequestPayload,
   onSocketActivityChanged,
   showActivityToast
 } from '@acx-ui/rc/utils'
-
-
-export const baseCommonApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  reducerPath: 'commonApi',
-  refetchOnMountOrArgChange: true,
-  endpoints: () => ({ })
-})
+import { baseCommonApi } from '@acx-ui/store'
 
 export const commonApi = baseCommonApi.injectEndpoints({
   endpoints: (build) => ({

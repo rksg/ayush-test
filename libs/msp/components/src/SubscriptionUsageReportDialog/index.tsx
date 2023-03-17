@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { Form, Radio, RadioChangeEvent, Select, SelectProps, Space } from 'antd'
-import moment                                                        from 'moment'
+import moment                                                        from 'moment-timezone'
 import { useIntl }                                                   from 'react-intl'
 import { useParams }                                                 from 'react-router-dom'
 

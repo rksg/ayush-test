@@ -1,5 +1,3 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-
 import {
   CommonResult,
   createHttpRequest,
@@ -20,14 +18,7 @@ import {
   onSocketActivityChanged,
   onActivityMessageReceived
 } from '@acx-ui/rc/utils'
-
-export const baseEdgeApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  reducerPath: 'edgeApi',
-  tagTypes: ['Edge'],
-  refetchOnMountOrArgChange: true,
-  endpoints: () => ({ })
-})
+import { baseEdgeApi } from '@acx-ui/store'
 
 export const edgeApi = baseEdgeApi.injectEndpoints({
   endpoints: (build) => ({

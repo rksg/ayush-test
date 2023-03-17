@@ -9,7 +9,31 @@ import { render,
   renderHook
 } from '@acx-ui/test-utils'
 
-import { ClientsWidget, getAPClientChartData, getSwitchClientChartData } from '.'
+import { ClientsWidget, ClientsWidgetV2,
+  getAPClientChartData,
+  getSwitchClientChartData } from '.'
+
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  useDashboardFilter: () => ({
+    filters: {
+      filter: {
+        networkNodes: [
+          {
+            0: {
+              name: 'Venue A',
+              id: 'venue_a'
+            },
+            1: {
+              name: 'Subnet 1',
+              id: 'subnet_1'
+            }
+          }
+        ]
+      }
+    }
+  })
+}))
 
 describe('Clients widget', () => {
 
@@ -22,6 +46,25 @@ describe('Clients widget', () => {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
     const { asFragment } = render(<Provider><ClientsWidget /></Provider>,
+      { route: { params } })
+    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await screen.findByText('Clients')
+    expect(asFragment().querySelector('svg')).toBeDefined()
+  })
+})
+
+describe('Clients widget v2', () => {
+
+  beforeEach(() => {
+    mockRestApiQuery(CommonUrlsInfo.getDashboardV2Overview.url, 'post',{})
+  })
+
+  it('should render loader and then chart', async () => {
+    const params = {
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+    }
+    const { asFragment } = render(<Provider><ClientsWidgetV2 /></Provider>,
       { route: { params } })
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))

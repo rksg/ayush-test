@@ -1,7 +1,6 @@
 import userEvent from '@testing-library/user-event'
 
-import { dataApi, dataApiURL }              from '@acx-ui/analytics/services'
-import { store }                            from '@acx-ui/store'
+import { dataApi, dataApiURL, store }       from '@acx-ui/store'
 import { mockGraphqlQuery, screen, within } from '@acx-ui/test-utils'
 
 import { mockNetworkHierarchy, renderForm } from '../../../__tests__/fixtures'

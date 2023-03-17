@@ -2,15 +2,16 @@ import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
+import { networkApi }     from '@acx-ui/rc/services'
+import { CommonUrlsInfo } from '@acx-ui/rc/utils'
 import {
   dataApi,
   dataApiURL,
   networkHealthApi as api,
-  networkHealthApiURL as apiUrl
-} from '@acx-ui/analytics/services'
-import { networkApi }      from '@acx-ui/rc/services'
-import { CommonUrlsInfo }  from '@acx-ui/rc/utils'
-import { Provider, store } from '@acx-ui/store'
+  networkHealthApiURL as apiUrl,
+  Provider,
+  store
+} from '@acx-ui/store'
 import {
   mockGraphqlMutation,
   mockGraphqlQuery,

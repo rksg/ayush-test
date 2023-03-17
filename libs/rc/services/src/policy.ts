@@ -1,7 +1,3 @@
-import {
-  createApi,
-  fetchBaseQuery
-} from '@reduxjs/toolkit/query/react'
 import { Params } from 'react-router-dom'
 
 import {
@@ -22,7 +18,7 @@ import {
   VenueSyslogPolicyType,
   VenueSyslogSettingType,
   VenueRoguePolicyType,
-  VLANPoolPolicyType, VlanPoolUrls, VLANPoolVenues,
+  VLANPoolPolicyType, VLANPoolViewModelType, VlanPoolUrls, VLANPoolVenues,
   TableResult,
   onSocketActivityChanged,
   onActivityMessageReceived,
@@ -60,6 +56,7 @@ import {
   RadiusAttributeVendor,
   EnhancedRoguePolicyType
 } from '@acx-ui/rc/utils'
+import { basePolicyApi } from '@acx-ui/store'
 
 
 const RKS_NEW_UI = {
@@ -71,27 +68,6 @@ const clientIsolationMutationUseCases = [
   'UpdateClientIsolationAllowlist',
   'DeleteClientIsolationAllowlist'
 ]
-
-export const basePolicyApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  reducerPath: 'policyApi',
-  tagTypes: [
-    'Policy',
-    'MacRegistrationPool',
-    'MacRegistration',
-    'ClientIsolation',
-    'Syslog',
-    'SnmpAgent',
-    'VLANPool',
-    'AAA',
-    'AccessControl',
-    'RogueAp',
-    'RadiusAttributeGroup',
-    'RadiusAttribute'
-  ],
-  refetchOnMountOrArgChange: true,
-  endpoints: () => ({ })
-})
 
 export const policyApi = basePolicyApi.injectEndpoints({
   endpoints: (build) => ({
@@ -847,7 +823,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'Policy', id: 'DETAIL' }, { type: 'ClientIsolation', id: 'LIST' }]
     }),
-    getVLANPoolPolicyViewModelList: build.query<TableResult<VLANPoolPolicyType>, RequestPayload>({
+    getVLANPoolPolicyViewModelList:
+    build.query<TableResult<VLANPoolViewModelType>,RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.getVlanPoolViewModelList, params)
         return {

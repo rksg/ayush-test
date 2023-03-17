@@ -7,7 +7,7 @@ import {
   TimeSeriesDataType
 }                                         from '@acx-ui/analytics/utils'
 import { Card, NoData, StackedAreaChart } from '@acx-ui/components'
-import { formatter }                      from '@acx-ui/utils'
+import { formatter }                      from '@acx-ui/formatter'
 
 import type { TimeSeriesChartProps } from '../types'
 
