@@ -54,7 +54,9 @@ export function DevicesDashboardWidgetV2 () {
     selectFromResult: ({ data, ...rest }) => ({
       data: {
         apStackedData: getApStackedBarChartData(data?.summary?.aps?.summary),
-        switchStackedData: getSwitchStackedBarChartData(data)
+        switchStackedData: getSwitchStackedBarChartData(data),
+        apTotalCount: data?.aps?.totalCount,
+        switchTotalCount: data?.switches?.totalCount
       },
       ...rest
     })
@@ -65,6 +67,8 @@ export function DevicesDashboardWidgetV2 () {
       <DevicesWidgetv2
         apStackedData={queryResults.data.apStackedData}
         switchStackedData={queryResults.data.switchStackedData}
+        apTotalCount={queryResults.data.apTotalCount || 0}
+        switchTotalCount={queryResults.data.switchTotalCount || 0}
         enableArrowClick
       />
     </Loader>

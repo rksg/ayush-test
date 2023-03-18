@@ -1,11 +1,11 @@
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { Card, DonutChart, getDeviceConnectionStatusColorsv2, StackedBarChart } from '@acx-ui/components'
-import type { DonutChartData }                                                  from '@acx-ui/components'
-import { Features, useIsSplitOn }                                               from '@acx-ui/feature-toggle'
-import { ChartData }                                                            from '@acx-ui/rc/utils'
-import { useNavigateToPath }                                                    from '@acx-ui/react-router-dom'
+import { Card, DonutChart, getDeviceConnectionStatusColorsv2, GridCol, GridRow, StackedBarChart } from '@acx-ui/components'
+import type { DonutChartData }                                                                    from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                 from '@acx-ui/feature-toggle'
+import { ChartData }                                                                              from '@acx-ui/rc/utils'
+import { useNavigateToPath }                                                                      from '@acx-ui/react-router-dom'
 
 export  { seriesMappingAP } from './helper'
 
@@ -53,30 +53,54 @@ export function DevicesWidget (props: {
 export function DevicesWidgetv2 (props: {
   apStackedData: ChartData[],
   switchStackedData: ChartData[],
+  apTotalCount: number,
+  switchTotalCount: number,
   enableArrowClick?: boolean
 }) {
   const { $t } = useIntl()
   const onArrowClick = useNavigateToPath('/devices/')
 
   // const edgeSupported = useIsSplitOn(Features.EDGES)
-
+  const marginTop = '13px'
   return (
     <Card title={$t({ defaultMessage: 'Devices' })}
       onArrowClick={props.enableArrowClick ? onArrowClick : undefined}>
       <AutoSizer>
         {({ height, width }) => (
-          <><div>
-            <StackedBarChart
-              style={{ width: width, height: height/2 }}
-              data={props.apStackedData!}
-              barColors={getDeviceConnectionStatusColorsv2()} />
+          <div style={{ display: 'block', height, width }}>
+            <GridRow style={{ marginTop: '30px' }}>
+              <GridCol col={{ span: 9 }} style={{ marginTop: marginTop }}>
+                Access Points
+              </GridCol>
+              <GridCol col={{ span: 13 }}>
+                <StackedBarChart
+                  style={{ height: (height/2) - 30 }}
+                  data={props.apStackedData!}
+                  showLabels={false}
+                  showTotal={false}
+                  barColors={getDeviceConnectionStatusColorsv2()} />
+              </GridCol>
+              <GridCol col={{ span: 2 }} style={{ marginTop: marginTop, marginLeft: '-13px' }}>
+                {props.apTotalCount}
+              </GridCol>
+            </GridRow>
+            <GridRow>
+              <GridCol col={{ span: 9 }} style={{ marginTop: marginTop }}>
+                Switches
+              </GridCol>
+              <GridCol col={{ span: 13 }}>
+                <StackedBarChart
+                  style={{ height: (height/2) - 30 }}
+                  data={props.switchStackedData!}
+                  showLabels={false}
+                  showTotal={false}
+                  barColors={getDeviceConnectionStatusColorsv2()} />
+              </GridCol>
+              <GridCol col={{ span: 2 }} style={{ marginTop: marginTop, marginLeft: '-13px' }}>
+                {props.switchTotalCount}
+              </GridCol>
+            </GridRow>
           </div>
-          <div>
-            <StackedBarChart
-              style={{ width: width, height: height/2 }}
-              data={props.switchStackedData!}
-              barColors={getDeviceConnectionStatusColorsv2()} />
-          </div></>
         )}
       </AutoSizer>
     </Card>

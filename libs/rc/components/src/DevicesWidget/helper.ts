@@ -18,6 +18,12 @@ import {
   getSwitchStatusDisplayName
 } from '../MapWidget/VenuesMap/helper'
 
+function sortByName (a: { name: string },b: { name: string }) {
+  const x = a.name.toLowerCase()
+  const y = b.name.toLowerCase()
+  return x < y ? -1 : x > y ? 1 : 0
+}
+
 const seriesMappingSwitch = () => [
   { key: SwitchStatusEnum.DISCONNECTED,
     name: getSwitchStatusDisplayName(SwitchStatusEnum.DISCONNECTED),
@@ -107,8 +113,8 @@ export const getSwitchStackedBarChartData = (overviewData: Dashboard | undefined
     })
   finalSeries.push({ name: '<1>Unknown', value: 0 })
   return [{
-    category: 'Switches',
-    series: finalSeries
+    category: '',
+    series: finalSeries.sort(sortByName)
   }]
 }
 
@@ -205,8 +211,8 @@ export const getApStackedBarChartData =
     })
 
   return [{
-    category: 'Access Points',
-    series: finalSeries
+    category: '',
+    series: finalSeries.sort(sortByName)
   }]
 }
 
