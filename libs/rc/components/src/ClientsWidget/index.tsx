@@ -2,10 +2,11 @@ import { countBy, isEmpty }   from 'lodash'
 import { IntlShape, useIntl } from 'react-intl'
 import AutoSizer              from 'react-virtualized-auto-sizer'
 
-import { cssStr, Loader, Card , DonutChart }                     from '@acx-ui/components'
+import { cssStr, Loader, Card , DonutChart, GridRow, GridCol,
+  getDeviceConnectionStatusColorsv2, StackedBarChart } from '@acx-ui/components'
 import type { DonutChartData }                                   from '@acx-ui/components'
 import { useDashboardOverviewQuery,useDashboardV2OverviewQuery } from '@acx-ui/rc/services'
-import { Dashboard }                                             from '@acx-ui/rc/utils'
+import { ChartData, Dashboard }                                  from '@acx-ui/rc/utils'
 import { useNavigateToPath, useParams }                          from '@acx-ui/react-router-dom'
 import { useDashboardFilter, NetworkNodePath }                   from '@acx-ui/utils'
 
@@ -37,6 +38,40 @@ export const getAPClientChartData = (
   return chartData
 }
 
+export const getAPClientStackedBarChartData = (
+  overviewData: Dashboard | undefined,
+  { $t }: IntlShape
+): ChartData[] => {
+  const seriesMapping = [
+    { name: $t({ defaultMessage: 'Unknown' }) },
+    { name: $t({ defaultMessage: 'Poor' }) },
+    { name: $t({ defaultMessage: 'Average' }) },
+    { name: $t({ defaultMessage: 'Good' }) }
+  ] as Array<{ name: string, color: string }>
+
+  const clientDto = overviewData?.summary?.clients?.clientDto.map(item=>{
+    if(item.healthCheckStatus === undefined){
+      return {
+        ...item,
+        healthCheckStatus: 'Unknown'
+      }
+    }
+    return item
+  })
+  const counts = countBy(clientDto, client => client.healthCheckStatus)
+  const series: ChartData['series'] = []
+  seriesMapping.forEach(({ name }, index) => {
+    series.push({
+      name: `<${index}>${name}`,
+      value: counts[name] || 0
+    })
+  })
+  return [{
+    category: '',
+    series
+  }]
+}
+
 export const getSwitchClientChartData = (
   overviewData: Dashboard | undefined,
   { $t }: IntlShape
@@ -51,6 +86,22 @@ export const getSwitchClientChartData = (
     })
   }
   return chartData
+}
+
+export const getSwitchClientStackedBarChartData = (
+  overviewData: Dashboard | undefined,
+  { $t }: IntlShape
+): ChartData[] => {
+  const series: ChartData['series'] = []
+  const switchClients = overviewData?.summary?.switchClients
+  series.push({
+    name: $t({ defaultMessage: 'Clients' }),
+    value: switchClients?.totalCount || 0
+  })
+  return [{
+    category: '',
+    series
+  }]
 }
 
 export function ClientsWidget () {
@@ -111,29 +162,53 @@ export function ClientsWidgetV2 () {
     selectFromResult: ({ data, ...rest }) => ({
       ...rest,
       data: {
-        apData: getAPClientChartData(data, intl),
-        switchData: getSwitchClientChartData(data, intl)
+        apData: getAPClientStackedBarChartData(data, intl),
+        switchData: getSwitchClientStackedBarChartData(data, intl),
+        apClientCount: data?.summary?.clients?.totalCount || 0,
+        switchClientCount: data?.summary?.switchClients?.totalCount || 0
       }
     })
   })
-
+  const marginTop = '13px'
   const { $t } = intl
   return (
     <Loader states={[queryResults]}>
       <Card title={$t({ defaultMessage: 'Clients' })} onArrowClick={onArrowClick}>
         <AutoSizer>
           {({ height, width }) => (
-            <div style={{ display: 'inline-flex' }}>
-              <DonutChart
-                style={{ width: width/2 , height }}
-                title={$t({ defaultMessage: 'Wi-Fi' })}
-                showLegend={false}
-                data={queryResults.data.apData}/>
-              <DonutChart
-                style={{ width: width/2, height }}
-                title={$t({ defaultMessage: 'Switch' })}
-                showLegend={false}
-                data={queryResults.data.switchData}/>
+            <div style={{ display: 'block', height, width }}>
+              <GridRow style={{ marginTop: '30px' }}>
+                <GridCol col={{ span: 9 }} style={{ marginTop: marginTop }}>
+                Wi-Fi
+                </GridCol>
+                <GridCol col={{ span: 13 }}>
+                  <StackedBarChart
+                    style={{ height: (height/2) - 30 }}
+                    data={queryResults.data.apData}
+                    showLabels={false}
+                    showTotal={false}
+                    barColors={getDeviceConnectionStatusColorsv2()} />
+                </GridCol>
+                <GridCol col={{ span: 2 }} style={{ marginTop: marginTop, marginLeft: '-13px' }}>
+                  {queryResults.data.apClientCount}
+                </GridCol>
+              </GridRow>
+              <GridRow>
+                <GridCol col={{ span: 9 }} style={{ marginTop: marginTop }}>
+                Wired
+                </GridCol>
+                <GridCol col={{ span: 13 }}>
+                  <StackedBarChart
+                    style={{ height: (height/2) - 30 }}
+                    data={queryResults.data.switchData}
+                    showLabels={false}
+                    showTotal={false}
+                    barColors={getDeviceConnectionStatusColorsv2()} />
+                </GridCol>
+                <GridCol col={{ span: 2 }} style={{ marginTop: marginTop, marginLeft: '-13px' }}>
+                  {queryResults.data.switchClientCount}
+                </GridCol>
+              </GridRow>
             </div>
           )}
         </AutoSizer>
