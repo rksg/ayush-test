@@ -70,6 +70,8 @@ describe('administrators delegation list', () => {
     await waitFor(async () => {
       expect(await screen.findByRole('dialog')).toBeInTheDocument()
     })
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
   })
 
   it('should render correctly', async () => {

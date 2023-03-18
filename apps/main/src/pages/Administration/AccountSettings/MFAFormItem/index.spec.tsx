@@ -142,6 +142,9 @@ describe('Enable MFA Checkbox', () => {
     await waitFor(() => {
       expect(spyLog).toBeCalledWith({ data: null, status: 500 })
     })
+    await waitFor(() => {
+      expect(okBtn).not.toBeVisible()
+    })
   })
 
   it('should be disabled to click toggle MFA', async () => {

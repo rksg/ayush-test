@@ -40,13 +40,16 @@ const MapRegionFormItem = () => {
           {isMapEnabled ? (
             <Select
               value={currentMapRegion}
-              options={countryCodes}
               onChange={handleMapRegionChange}
               showSearch
               allowClear
-              optionFilterProp='label'
+              optionFilterProp='children'
               disabled={isUpdatingPreference || isLoadingPreference}
-            />
+            >
+              {countryCodes.map(({ label, value }) =>
+                (<Select.Option value={value} key={value} children={label}/>)
+              )}
+            </Select>
           ) :
             $t(MessageMapping.map_region_not_enabled_message)
           }

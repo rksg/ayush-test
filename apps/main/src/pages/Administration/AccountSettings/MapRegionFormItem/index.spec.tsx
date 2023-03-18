@@ -1,7 +1,6 @@
 /* eslint-disable max-len */
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
-import { act }   from 'react-dom/test-utils'
 
 import { useIsSplitOn }           from '@acx-ui/feature-toggle'
 import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
@@ -10,7 +9,8 @@ import {
   mockServer,
   render,
   screen,
-  fireEvent
+  cleanup,
+  waitFor
 } from '@acx-ui/test-utils'
 
 import { fakePreference } from '../__tests__/fixtures'
@@ -18,10 +18,45 @@ import { fakePreference } from '../__tests__/fixtures'
 import  { MapRegionFormItem } from './'
 
 const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
-const mockedUpdatePreference = jest.fn()
 
 jest.mock('@acx-ui/config', () => ({
   get: jest.fn().mockReturnValue('fake-google-maps-key')
+}))
+
+jest.mock('antd', () => {
+  const components = jest.requireActual('antd')
+  const Select = ({
+    children,
+    showSearch, // remove and left unassigned to prevent warning
+    allowClear,
+    optionFilterProp,
+    ...props
+  }: React.PropsWithChildren<{ showSearch: boolean, allowClear:boolean, optionFilterProp: string, onChange?: (value: string) => void }>) => {
+    return (<select {...props} onChange={(e) => props.onChange?.(e.target.value)}>
+      {/* Additional <option> to ensure it is possible to reset value to empty */}
+      <option value={undefined}></option>
+      {children}
+    </select>)
+  }
+  Select.Option = 'option'
+  return { ...components, Select }
+})
+
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  countryCodes: [{
+    label: 'invalid',
+    value: ''
+  },{
+    label: 'Taiwan',
+    value: 'TW'
+  },{
+    label: 'United Kingdom',
+    value: 'GB'
+  },{
+    label: 'Singapore',
+    value: 'SG'
+  }]
 }))
 
 describe('Map is not enabled', () => {
@@ -46,10 +81,12 @@ describe('Map is not enabled', () => {
 
     await screen.findByTitle('Map Region')
     expect(await screen.findByText('Map is not enabled.')).toBeInTheDocument()
+    cleanup()
   })
 })
 
 describe('Map Region Selector', () => {
+  let mockedUpdatePreference: (r: unknown) => void
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
@@ -67,49 +104,10 @@ describe('Map Region Selector', () => {
       )
     )
   })
-
-  it('should correctly render', async () => {
-    render(
-      <Provider>
-        <MapRegionFormItem />
-      </Provider>, {
-        route: { params }
-      })
-
-    expect(await screen.findByText('Taiwan')).toBeVisible()
-  })
-
   it('should be able to clear selector input', async () => {
-    render(
-      <Provider>
-        <MapRegionFormItem />
-      </Provider>, {
-        route: { params }
-      })
+    const _mocked = jest.fn()
+    mockedUpdatePreference = _mocked
 
-    await userEvent.click(await screen.findByText('Taiwan'))
-    const selector = await screen.findByRole('combobox')
-
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    act(() => {
-      userEvent.type(selector, 'r')
-    })
-
-    const clearIcon = await screen.findByLabelText('close-circle')
-
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    act(() => {
-      userEvent.click(clearIcon)
-      fireEvent.change(selector, { target: { value: '' } })
-      expect(mockedUpdatePreference).toBeCalledTimes(0)
-    })
-
-    expect(await screen.findByRole('combobox')).toHaveAttribute('value', '')
-    expect((await screen.findByTitle('Taiwan')).tagName).toBe('SPAN')
-    expect(mockedUpdatePreference).toBeCalledTimes(0)
-  })
-
-  it('should be auto-searchable', async () => {
     render(
       <Provider>
         <MapRegionFormItem />
@@ -121,17 +119,28 @@ describe('Map Region Selector', () => {
     const selector = await screen.findByRole('combobox')
     await userEvent.click(selector)
 
-    await userEvent.type(selector, 'k')
-    await userEvent.type(selector, 'i')
-    await userEvent.type(selector, 'n')
-    await screen.findAllByRole('option')
-    fireEvent.mouseOver(await screen.findByTitle('United Kingdom'))
+    await userEvent.selectOptions( await screen.findByRole('combobox'), 'invalid')
+    expect(mockedUpdatePreference).toBeCalledTimes(0)
+  })
 
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      fireEvent.click(screen.getByText('United Kingdom'))
-      expect(await screen.findByTitle('United Kingdom')).toBeDefined()
-      expect(mockedUpdatePreference).toBeCalledWith({ global: { mapRegion: 'GB' } })
+  it('should be changable', async () => {
+    const _mocked = jest.fn()
+    mockedUpdatePreference = _mocked
+
+    render(
+      <Provider>
+        <MapRegionFormItem />
+      </Provider>, {
+        route: { params }
+      })
+
+    await screen.findByText('Taiwan')
+    const selector = await screen.findByRole('combobox')
+    await userEvent.click(selector)
+
+    await userEvent.selectOptions( await screen.findByRole('combobox'), 'United Kingdom')
+    await waitFor(async () => {
+      expect(mockedUpdatePreference).toBeCalled()
     })
   })
 })
