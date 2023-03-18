@@ -6,8 +6,9 @@ import { Button, Modal, ModalType } from '@acx-ui/components'
 
 import RogueAPDetectionForm from './RogueAPDetectionForm/RogueAPDetectionForm'
 
-const RogueApModal = () => {
+const RogueApModal = (props: { setPolicyId: (id: string) => void }) => {
   const { $t } = useIntl()
+  const { setPolicyId } = props
   const [visible, setVisible] = useState(false)
 
   return <>
@@ -25,7 +26,10 @@ const RogueApModal = () => {
         <RogueAPDetectionForm
           edit={false}
           modalMode={true}
-          modalCallBack={() => setVisible(false)}
+          modalCallBack={(id) => {
+            setVisible(false)
+            if (id) setPolicyId(id)
+          }}
         />}
       onCancel={() => setVisible(false)}
     />

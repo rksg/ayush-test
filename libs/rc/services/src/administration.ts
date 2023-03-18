@@ -1,5 +1,3 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-
 import {
   CommonResult,
   createHttpRequest,
@@ -29,14 +27,7 @@ import {
   Entitlement,
   NewEntitlementSummary
 } from '@acx-ui/rc/utils'
-
-export const baseAdministrationApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  reducerPath: 'administrationApi',
-  tagTypes: ['Administration', 'License', 'RadiusClientConfig'],
-  refetchOnMountOrArgChange: true,
-  endpoints: () => ({ })
-})
+import { baseAdministrationApi } from '@acx-ui/store'
 
 export const administrationApi = baseAdministrationApi.injectEndpoints({
   endpoints: (build) => ({

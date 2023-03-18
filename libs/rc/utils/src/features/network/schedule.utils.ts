@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { useEffect, useState } from 'react'
 
-import moment from 'moment'
+import moment from 'moment-timezone'
 
 import { get } from '@acx-ui/config'
 

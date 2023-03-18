@@ -4,7 +4,7 @@ import { NamePath } from 'antd/es/form/interface'
 import {
   networkHealthApi as api,
   networkHealthApiURL as apiUrl
-} from '@acx-ui/analytics/services'
+} from '@acx-ui/store'
 import { store }                            from '@acx-ui/store'
 import { mockGraphqlQuery, screen, within } from '@acx-ui/test-utils'
 

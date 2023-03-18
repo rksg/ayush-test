@@ -3,7 +3,7 @@ import React from 'react'
 import { useIntl } from 'react-intl'
 
 import type { IncidentSeverities } from '@acx-ui/analytics/utils'
-import { intlFormats }             from '@acx-ui/utils'
+import { intlFormats }             from '@acx-ui/formatter'
 
 import { cssStr } from '../../theme/helper'
 
