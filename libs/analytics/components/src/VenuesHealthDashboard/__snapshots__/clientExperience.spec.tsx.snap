@@ -64,7 +64,7 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
             >
               <div
                 class="ant-row Grid__GridRow-sc-5irhjd-2"
-                style="margin: 10px -10px 15px -10px;"
+                style="margin: 10px -10px 10px -10px;"
               >
                 <div
                   class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
@@ -105,7 +105,7 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
               </div>
               <div
                 class="ant-row Grid__GridRow-sc-5irhjd-2"
-                style="margin: -10px -10px 15px -10px;"
+                style="margin: -10px -10px 10px -10px;"
               >
                 <div
                   class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
@@ -146,7 +146,7 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
               </div>
               <div
                 class="ant-row Grid__GridRow-sc-5irhjd-2"
-                style="margin: -10px -10px 15px -10px;"
+                style="margin: -10px -10px 10px -10px;"
               >
                 <div
                   class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
@@ -187,7 +187,7 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
               </div>
               <div
                 class="ant-row Grid__GridRow-sc-5irhjd-2"
-                style="margin: -10px -10px 15px -10px;"
+                style="margin: -10px -10px 10px -10px;"
               >
                 <div
                   class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
@@ -197,6 +197,47 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                     class="Grid__Container-sc-5irhjd-1 zzbxI"
                   >
                     Online APs
+                  </div>
+                </div>
+                <div
+                  class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                  style="padding: 10px 10px 10px 10px;"
+                >
+                  <div
+                    class="Grid__Container-sc-5irhjd-1 zzbxI"
+                  >
+                    <div
+                      class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"
+                    >
+                      <div
+                        class="ant-progress-outer"
+                      >
+                        <div
+                          class="ant-progress-inner"
+                          style="background-color: rgb(212, 212, 212);"
+                        >
+                          <div
+                            class="ant-progress-bg"
+                            style="width: 0%; height: 10px; background: rgb(237, 28, 36);"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="ant-row Grid__GridRow-sc-5irhjd-2"
+                style="margin: -10px -10px 10px -10px;"
+              >
+                <div
+                  class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                  style="padding: 10px 10px 10px 10px;"
+                >
+                  <div
+                    class="Grid__Container-sc-5irhjd-1 zzbxI"
+                  >
+                    AP Capacity
                   </div>
                 </div>
                 <div
@@ -314,7 +355,7 @@ exports[`Client Experience should render widget with proper data 1`] = `
             >
               <div
                 class="ant-row Grid__GridRow-sc-5irhjd-2"
-                style="margin: 10px -10px 15px -10px;"
+                style="margin: 10px -10px 10px -10px;"
               >
                 <div
                   class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
@@ -355,7 +396,7 @@ exports[`Client Experience should render widget with proper data 1`] = `
               </div>
               <div
                 class="ant-row Grid__GridRow-sc-5irhjd-2"
-                style="margin: -10px -10px 15px -10px;"
+                style="margin: -10px -10px 10px -10px;"
               >
                 <div
                   class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
@@ -396,7 +437,7 @@ exports[`Client Experience should render widget with proper data 1`] = `
               </div>
               <div
                 class="ant-row Grid__GridRow-sc-5irhjd-2"
-                style="margin: -10px -10px 15px -10px;"
+                style="margin: -10px -10px 10px -10px;"
               >
                 <div
                   class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
@@ -437,7 +478,7 @@ exports[`Client Experience should render widget with proper data 1`] = `
               </div>
               <div
                 class="ant-row Grid__GridRow-sc-5irhjd-2"
-                style="margin: -10px -10px 15px -10px;"
+                style="margin: -10px -10px 10px -10px;"
               >
                 <div
                   class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
@@ -469,6 +510,47 @@ exports[`Client Experience should render widget with proper data 1`] = `
                           <div
                             class="ant-progress-bg"
                             style="width: 67.05309396485866%; height: 10px; background: rgb(35, 171, 54);"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="ant-row Grid__GridRow-sc-5irhjd-2"
+                style="margin: -10px -10px 10px -10px;"
+              >
+                <div
+                  class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                  style="padding: 10px 10px 10px 10px;"
+                >
+                  <div
+                    class="Grid__Container-sc-5irhjd-1 zzbxI"
+                  >
+                    AP Capacity
+                  </div>
+                </div>
+                <div
+                  class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                  style="padding: 10px 10px 10px 10px;"
+                >
+                  <div
+                    class="Grid__Container-sc-5irhjd-1 zzbxI"
+                  >
+                    <div
+                      class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"
+                    >
+                      <div
+                        class="ant-progress-outer"
+                      >
+                        <div
+                          class="ant-progress-inner"
+                          style="background-color: rgb(212, 212, 212);"
+                        >
+                          <div
+                            class="ant-progress-bg"
+                            style="width: 52.083333333333336%; height: 10px; background: rgb(249, 195, 75);"
                           />
                         </div>
                       </div>

@@ -8,17 +8,19 @@ export type HierarchyNodeData = {
   health: HealthData[]
 }
 
+type SLA = [number, number] | [null, null]
+
 export type HealthData = {
     zoneId: string
     zoneName: string
-    timeToConnectSLA: [number, number]
-    timeToConnectThreshold: string
-    clientThroughputSLA: [number, number]
-    clientThroughputThreshold: string
-    connectionSuccessSLA: [number, number]
-    onlineApsSLA: [number, number],
-    apCapacitySLA: [number, number],
-    apCapacityThreshold: string
+    timeToConnectSLA: SLA
+    timeToConnectThreshold: string | null
+    clientThroughputSLA: SLA
+    clientThroughputThreshold: string | null
+    connectionSuccessSLA: SLA
+    onlineApsSLA: SLA
+    apCapacitySLA: SLA
+    apCapacityThreshold: string| null
 }
 
 interface Response <T> {
