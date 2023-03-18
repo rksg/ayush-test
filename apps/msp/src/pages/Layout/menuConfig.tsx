@@ -42,8 +42,7 @@ export function useMenuConfig (tenantType: string) {
       routes: [
         {
           path: '/dashboard/mspCustomers',
-          name: $t({ defaultMessage: 'MSP Customers' }),
-          hidden: isVar
+          name: $t({ defaultMessage: 'MSP Customers' })
         },
         {
           path: '/dashboard/varCustomers',
