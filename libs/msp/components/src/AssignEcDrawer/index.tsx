@@ -184,28 +184,30 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
 
   const content =
   <Form layout='vertical' form={form} onFinish={onClose}>
-    <Subtitle level={4}>{$t({ defaultMessage: 'Access Periods' })}</Subtitle>
-    {tenantType === AccountType.MSP_INTEGRATOR && <label>Not Limited</label>}
-    {tenantType === AccountType.MSP_INSTALLER && <UI.FieldLabelAccessPeriod width='275px'>
-      <label>Limited To</label>
-      <Form.Item
-        name='number_of_days'
-        initialValue={'7'}
-        rules={[{ validator: (_, value) =>
-        {
-          if(parseInt(value, 10) > 60 || parseInt(value, 10) < 1) {
-            return Promise.reject(
-              `${$t({ defaultMessage: 'Value must be between 1 and 60 days' })} `
-            )
+    {tenantId && <div>
+      <Subtitle level={4}>{$t({ defaultMessage: 'Access Periods' })}</Subtitle>
+      {tenantType === AccountType.MSP_INTEGRATOR && <label>Not Limited</label>}
+      {tenantType === AccountType.MSP_INSTALLER && <UI.FieldLabelAccessPeriod width='275px'>
+        <label>Limited To</label>
+        <Form.Item
+          name='number_of_days'
+          initialValue={'7'}
+          rules={[{ validator: (_, value) =>
+          {
+            if(parseInt(value, 10) > 60 || parseInt(value, 10) < 1) {
+              return Promise.reject(
+                `${$t({ defaultMessage: 'Value must be between 1 and 60 days' })} `
+              )
+            }
+            return Promise.resolve()
           }
-          return Promise.resolve()
-        }
-        }]}
-        children={<Input type='number'/>}
-        style={{ marginLeft: '10px', paddingRight: '20px' }}
-      />
-      <label>Day(s)</label>
-    </UI.FieldLabelAccessPeriod>}
+          }]}
+          children={<Input type='number'/>}
+          style={{ marginLeft: '10px', paddingRight: '20px' }}
+        />
+        <label>Day(s)</label>
+      </UI.FieldLabelAccessPeriod>}</div>}
+
 
     <Subtitle level={4} style={{ marginTop: '20px' }}>
       { $t({ defaultMessage: 'Select customer accounts to assign to this integrator:' }) }
