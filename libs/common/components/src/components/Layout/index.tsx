@@ -83,14 +83,12 @@ export function Layout ({
         </>
       }}
     </TenantNavLink>
-    return item.hidden
-      ? <span></span>
-      : item.disabled
-        ? <Tooltip placement='right' title={$t(notAvailableMsg)}>
-          {/* workaround for showing tooltip when link disabled */}
-          <span>{link}</span>
-        </Tooltip>
-        : link
+    return item.disabled
+      ? <Tooltip placement='right' title={$t(notAvailableMsg)}>
+        {/* workaround for showing tooltip when link disabled */}
+        <span>{link}</span>
+      </Tooltip>
+      : link
   }
 
   return <UI.Wrapper>
