@@ -145,7 +145,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
     : $t({ defaultMessage: 'Select customer\'s Installer' })
   const content =
   <Form layout='vertical' form={form} onFinish={onClose}>
-    <Subtitle level={3}>{selectedCustomer}</Subtitle>
+    <Subtitle level={4}>{selectedCustomer}</Subtitle>
     <IntegratorTable />
   </Form>
 
