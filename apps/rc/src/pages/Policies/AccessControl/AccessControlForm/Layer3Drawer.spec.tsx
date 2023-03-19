@@ -415,7 +415,7 @@ describe('Layer3Drawer Component', () => {
       screen.getByRole('option', { name: 'l3-010' })
     )
 
-    await userEvent.click(screen.getByText(/view details/i))
+    await userEvent.click(screen.getByText(/edit details/i))
 
     await screen.findByText(/layer 3 rules \(1\)/i)
   })
