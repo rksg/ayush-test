@@ -448,13 +448,14 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
       },
       providesTags: [{ type: 'License', id: 'LIST' }]
     }),
-    refreshEntitlements: build.query<CommonResult, RequestPayload>({
+    refreshEntitlements: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(AdministrationUrlsInfo.refreshLicensesData, params)
         return {
           ...req
         }
-      }
+      },
+      invalidatesTags: [{ type: 'License', id: 'LIST' }]
     }),
     internalRefreshEntitlements: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -536,7 +537,7 @@ export const {
   useDeleteNotificationRecipientMutation,
   useGetEntitlementSummaryQuery,
   useGetEntitlementsListQuery,
-  useLazyRefreshEntitlementsQuery,
+  useRefreshEntitlementsMutation,
   useInternalRefreshEntitlementsMutation,
   useGetRadiusClientConfigQuery,
   useUpdateRadiusClientConfigMutation,

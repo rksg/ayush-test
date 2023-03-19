@@ -12,7 +12,7 @@ import { useIsSplitOn, Features }          from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }       from '@acx-ui/formatter'
 import {
   useGetEntitlementsListQuery,
-  useLazyRefreshEntitlementsQuery,
+  useRefreshEntitlementsMutation,
   useInternalRefreshEntitlementsMutation
 } from '@acx-ui/rc/services'
 import {
@@ -70,7 +70,7 @@ const SubscriptionTable = () => {
 
   const queryResults = useGetEntitlementsListQuery({ params })
   const isNewApi = AdministrationUrlsInfo.getEntitlementSummary.newApi
-  const [ refreshEntitlement ] = useLazyRefreshEntitlementsQuery()
+  const [ refreshEntitlement ] = useRefreshEntitlementsMutation()
   const [ internalRefreshEntitlement ] = useInternalRefreshEntitlementsMutation()
   const licenseTypeOpts = subscriptionTypeFilterOpts($t)
 
