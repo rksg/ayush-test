@@ -1,7 +1,25 @@
 import { Modal as AntModal } from 'antd'
-import styled                from 'styled-components/macro'
+import styled, { css }       from 'styled-components/macro'
 
 import { ActionsContainer } from '../StepsForm/styledComponents'
+
+const withStepsFormStyle = css`
+  ${ActionsContainer} {
+    position: sticky;
+    width: 100%;
+    &::before {
+      border-bottom-left-radius: 12px;
+      border-bottom-right-radius: 12px;
+      inset: 0 -24px 0 -24px;
+    }
+  }
+  .ant-modal-body {
+    padding-bottom: 0px;
+  }
+  .ant-modal-footer {
+    display: none;
+  }
+`
 
 export const Modal = styled(AntModal)`
   .ant-modal-content {
@@ -40,23 +58,9 @@ export const Modal = styled(AntModal)`
     padding-top: 3px;
   }
 
-  .ant-modal-content:has(${ActionsContainer}) {
-    ${ActionsContainer} {
-      position: sticky;
-      width: 100%;
-      &::before {
-        border-bottom-left-radius: 12px;
-        border-bottom-right-radius: 12px;
-        inset: 0 -24px 0 -24px;
-      }
-    }
-    .ant-modal-body {
-      padding-bottom: 0px;
-    }
-    .ant-modal-footer {
-      display: none;
-    }
-  }
+  // hack to address FF not supporting :has
+  .has-steps-form .ant-modal-content { ${withStepsFormStyle} }
+  .ant-modal-content:has(${ActionsContainer}) { ${withStepsFormStyle} }
 `
 
 export const SubTitleWrapper = styled.div`

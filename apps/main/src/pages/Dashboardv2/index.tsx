@@ -4,6 +4,7 @@ import { useIntl } from 'react-intl'
 
 import {
   ConnectedClientsOverTime,
+  IncidentsDashboardv2,
   ClientExperience,
   SwitchesTrafficByVolume,
   TopAppsByTraffic,
@@ -12,15 +13,15 @@ import {
   TopSwitchesByPoEUsage,
   TopSwitchesByTraffic,
   TopSwitchModels,
-  TrafficByVolume } from '@acx-ui/analytics/components'
+  TrafficByVolume,
+  DidYouKnow } from '@acx-ui/analytics/components'
 import {
   GridRow,
   GridCol,
   PageHeader,
   RangePicker,
   ContentSwitcher,
-  ContentSwitcherProps,
-  Card
+  ContentSwitcherProps
 } from '@acx-ui/components'
 import { VenueFilter }      from '@acx-ui/main/components'
 import {
@@ -154,8 +155,7 @@ function CommonDashboardWidgets () {
             <AlarmWidgetV2 />
           </GridCol>
           <GridCol col={{ span: 8 }} style={{ height: '200px' }}>
-            <Card title='Incidents'>
-            </Card>
+            <IncidentsDashboardv2 filters={filters} />
           </GridCol>
           <GridCol col={{ span: 8 }} style={{ height: '200px' }}>
             <ClientExperience filters={filters}/>
@@ -174,8 +174,7 @@ function CommonDashboardWidgets () {
         </GridRow>
       </GridCol>
       <GridCol col={{ span: 6 }} style={{ height: '410px' }}>
-        <Card title='Did you know?'>
-        </Card>
+        <DidYouKnow filters={filters}/>
       </GridCol>
     </GridRow>
   )
