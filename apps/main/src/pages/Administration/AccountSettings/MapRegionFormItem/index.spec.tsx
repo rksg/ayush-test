@@ -1,18 +1,14 @@
 /* eslint-disable max-len */
-import { UseQueryHookResult, UseQueryStateResult } from '@reduxjs/toolkit/dist/query/react/buildHooks'
-import { fireEvent }                               from '@storybook/testing-library'
-import userEvent                                   from '@testing-library/user-event'
-import { rest }                                    from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { useIsSplitOn }                                     from '@acx-ui/feature-toggle'
-import { usePreference }                                    from '@acx-ui/rc/components'
 import { AdministrationUrlsInfo, TenantPreferenceSettings } from '@acx-ui/rc/utils'
 import { Provider  }                                        from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen,
-  cleanup,
   waitFor
 } from '@acx-ui/test-utils'
 import { UseQueryResult } from '@acx-ui/types'
@@ -32,8 +28,8 @@ jest.mock('antd', () => {
   const Select = ({
     children,
     showSearch, // remove and left unassigned to prevent warning
-    allowClear,
-    optionFilterProp,
+    allowClear, // remove and left unassigned to prevent warning
+    optionFilterProp, // remove and left unassigned to prevent warning
     ...props
   }: React.PropsWithChildren<{ showSearch: boolean, allowClear:boolean, optionFilterProp: string, onChange?: (value: string) => void }>) => {
     return (<select {...props} onChange={(e) => props.onChange?.(e.target.value)}>
