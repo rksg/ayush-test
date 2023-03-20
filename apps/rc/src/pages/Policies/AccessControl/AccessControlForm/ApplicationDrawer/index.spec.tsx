@@ -467,7 +467,7 @@ describe('ApplicationDrawer Component', () => {
     await userEvent.click(screen.getByText('app1rule1'))
 
     await userEvent.click(screen.getByRole('button', {
-      name: /edit/i
+      name: 'Edit'
     }))
 
     await screen.findByText(/application access settings/i)
@@ -629,7 +629,7 @@ describe('ApplicationDrawer Component', () => {
       screen.getByRole('option', { name: 'app1' })
     )
 
-    await userEvent.click(screen.getByText(/view details/i))
+    await userEvent.click(screen.getByText(/edit details/i))
 
     await screen.findByText(/rules \(2\)/i)
 
