@@ -12,7 +12,7 @@ import {
   deviceStatusColors,
   ColumnType
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
 import {
   useApListQuery, useImportApMutation, useLazyImportResultQuery
 } from '@acx-ui/rc/services'
