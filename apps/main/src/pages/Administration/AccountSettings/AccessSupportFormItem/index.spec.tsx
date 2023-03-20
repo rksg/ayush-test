@@ -41,10 +41,15 @@ describe('Access Support Form Item', () => {
   })
 
   it('should be able to enable access support', async () => {
+    const getTenantDelegationFn = jest.fn()
+
     mockServer.use(
       rest.get(
         AdministrationUrlsInfo.getTenantDelegation.url.split('?')[0],
-        (_req, res, ctx) => res(ctx.json([]))
+        (_req, res, ctx) => {
+          getTenantDelegationFn(_req.url.search)
+          return res(ctx.json([]))
+        }
       ),
       rest.post(
         AdministrationUrlsInfo.enableAccessSupport.url,
@@ -61,7 +66,7 @@ describe('Access Support Form Item', () => {
           value={userProfileContextValues}
         >
           <AccessSupportFormItem
-            isMspEc={false}
+            hasMSPEcLabel={false}
             canMSPDelegation={true}
           />
         </UserProfileContext.Provider>
@@ -70,6 +75,10 @@ describe('Access Support Form Item', () => {
       })
 
     const formItem = screen.getByRole('checkbox', { name: 'Enable access to Ruckus support' })
+    await waitFor(() => {
+      expect(getTenantDelegationFn).toBeCalledWith('?type=SUPPORT')
+    })
+
     await waitFor(() => expect(formItem).not.toBeDisabled())
 
     expect(formItem).not.toBeChecked()
@@ -93,7 +102,7 @@ describe('Access Support Form Item', () => {
           value={userProfileContextValues}
         >
           <AccessSupportFormItem
-            isMspEc={false}
+            hasMSPEcLabel={false}
             canMSPDelegation={true}
           />
         </UserProfileContext.Provider>
@@ -119,7 +128,7 @@ describe('Access Support Form Item', () => {
           value={userProfileContextValues}
         >
           <AccessSupportFormItem
-            isMspEc={false}
+            hasMSPEcLabel={false}
             canMSPDelegation={true}
           />
         </UserProfileContext.Provider>
@@ -145,7 +154,7 @@ describe('Access Support Form Item', () => {
           value={supportUser}
         >
           <AccessSupportFormItem
-            isMspEc={false}
+            hasMSPEcLabel={false}
             canMSPDelegation={true}
           />
         </UserProfileContext.Provider>
@@ -177,7 +186,7 @@ describe('Access Support Form Item - Msp Delegate EC', () => {
       rest.get(
         AdministrationUrlsInfo.getTenantDelegation.url.split('?')[0],
         (_req, res, ctx) => {
-          getTenantDelegationFn()
+          getTenantDelegationFn(_req.url.search)
           return res(ctx.json([]))
         }
       ),
@@ -193,7 +202,7 @@ describe('Access Support Form Item - Msp Delegate EC', () => {
           value={MspECUser}
         >
           <AccessSupportFormItem
-            isMspEc={true}
+            hasMSPEcLabel={true}
             canMSPDelegation={false}
           />
         </UserProfileContext.Provider>
@@ -204,7 +213,7 @@ describe('Access Support Form Item - Msp Delegate EC', () => {
     const formItem = screen.getByRole('checkbox', { name: 'Enable access to Ruckus support' })
 
     await waitFor(() => {
-      expect(getTenantDelegationFn).toBeCalled()
+      expect(getTenantDelegationFn).toBeCalledWith('?type=SUPPORT_EC')
     })
     expect(formItem).not.toBeDisabled()
     expect(screen.getByRole('checkbox', { name: 'Enable access to Ruckus support' })).not.toBeChecked()

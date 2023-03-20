@@ -23,7 +23,7 @@ import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 interface AccessSupportFormItemProps {
   className?: string;
-  isMspEc: boolean;
+  hasMSPEcLabel: boolean;
   canMSPDelegation: boolean;
 }
 
@@ -33,7 +33,7 @@ const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
   const { data: userProfileData } = useUserProfileContext()
   const {
     className,
-    isMspEc,
+    hasMSPEcLabel,
     canMSPDelegation
   } = props
   const [isSupportAccessEnabled, setIsSupportAccessEnabled] = useState(false)
@@ -46,10 +46,8 @@ const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
     { isLoading: isDisableAccessSupportUpdating }]
     = useDisableAccessSupportMutation()
 
-  let isMspDelegatedEC = false
-  if (userProfileData?.varTenantId && canMSPDelegation === false) {
-    isMspDelegatedEC = isMspEc
-  }
+  const isMspDelegatedEC = hasMSPEcLabel && userProfileData?.varTenantId
+                              && canMSPDelegation === false
 
   const {
     data: ecTenantDelegationData,
@@ -60,7 +58,7 @@ const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
     data: tenantDelegationData,
     isLoading: isLoadingTenantDelegation,
     isFetching: isFetchingTenantDelegation
-  }= useGetTenantDelegationQuery({ params }, { skip: isMspDelegatedEC })
+  }= useGetTenantDelegationQuery({ params }, { skip: !!isMspDelegatedEC })
 
   const updateCreatedDate = useCallback((responseCreatedDate: string | undefined) => {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
