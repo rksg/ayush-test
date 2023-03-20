@@ -6,6 +6,7 @@ import { VenueDevicesTab }   from './VenueDevicesTab'
 import { VenueNetworksTab }  from './VenueNetworksTab'
 import { VenueOverviewTab }  from './VenueOverviewTab'
 import VenuePageHeader       from './VenuePageHeader'
+import { VenuePropertyTab }  from './VenuePropertyTab'
 import { VenueServicesTab }  from './VenueServicesTab'
 import { VenueTimelineTab }  from './VenueTimelineTab'
 
@@ -15,6 +16,7 @@ const tabs = {
   clients: VenueClientsTab,
   devices: VenueDevicesTab,
   networks: VenueNetworksTab,
+  units: VenuePropertyTab,
   services: VenueServicesTab,
   timeline: VenueTimelineTab
 }

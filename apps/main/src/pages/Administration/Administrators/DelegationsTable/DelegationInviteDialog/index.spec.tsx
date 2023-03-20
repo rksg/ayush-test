@@ -5,6 +5,7 @@ import { rest }  from 'msw'
 import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }               from '@acx-ui/store'
 import {
+  fireEvent,
   mockServer,
   render,
   screen,
@@ -53,7 +54,7 @@ describe('Add administrator dialog component', () => {
     const emailInput = await screen.findByRole('textbox', { name: 'Administrator Email' })
     await userEvent.type(emailInput, 'c123@email.com')
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Find' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Find' }))
     await waitFor(() => {
       expect(mockedFindVARFn).toHaveBeenCalledWith('username=c123%40email.com')
     })
@@ -62,10 +63,12 @@ describe('Add administrator dialog component', () => {
       expect(await screen.findByText(/The following 3rd party administrator was found/i)).toBeVisible()
     })
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Send Invitation' }))
+    const inviteBtn = await screen.findByRole('button', { name: 'Send Invitation' })
+    fireEvent.click(inviteBtn)
     await waitFor(() => {
-      expect(mockedCloseDialog).toBeCalledWith(false)
+      expect(inviteBtn).not.toBeVisible()
     })
+    expect(mockedCloseDialog).toBeCalledWith(false)
   })
 
   it('should correctly display MSP EC admin not found error message', async () => {
@@ -96,7 +99,7 @@ describe('Add administrator dialog component', () => {
     const emailInput = await screen.findByRole('textbox', { name: 'Administrator Email' })
     await userEvent.type(emailInput, 'c123@gamil.com')
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Find' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Find' }))
     await waitFor(async () => {
       expect(await screen.findByText('The specified email address is not linked to any 3rd party administrator. Try using a different email address.')).toBeVisible()
     })

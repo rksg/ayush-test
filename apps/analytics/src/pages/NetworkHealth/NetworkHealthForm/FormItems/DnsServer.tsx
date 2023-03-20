@@ -63,11 +63,14 @@ DnsServer.FieldSummary = function DnsServerFieldSummary () {
   const { $t } = useIntl()
   const { isCustom } = useIsCustom()
 
-  return <Form.Item
-    name={name as unknown as NamePath}
-    label={$t(label)}
-    children={<StepsFormNew.FieldSummary<string>
-      convert={(value) => isCustom ? String(value) : $t({ defaultMessage: 'Default' })}
-    />}
-  />
+  return<>
+    <Form.Item
+      name={name as unknown as NamePath}
+      label={$t(label)}
+      children={<StepsFormNew.FieldSummary<string>
+        convert={(value) => isCustom ? String(value) : $t({ defaultMessage: 'Default' })}
+      />}
+    />
+    <Form.Item name='isDnsServerCustom' hidden />
+  </>
 }
