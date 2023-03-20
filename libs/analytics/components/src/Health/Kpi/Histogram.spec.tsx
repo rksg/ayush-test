@@ -1,8 +1,8 @@
 import { act } from 'react-dom/test-utils'
 
-import { dataApiURL, healthApi } from '@acx-ui/analytics/services'
-import { AnalyticsFilter }       from '@acx-ui/analytics/utils'
-import { Provider, store }       from '@acx-ui/store'
+import { healthApi }                   from '@acx-ui/analytics/services'
+import { AnalyticsFilter }             from '@acx-ui/analytics/utils'
+import { dataApiURL, Provider, store } from '@acx-ui/store'
 import {
   mockGraphqlQuery,
   mockGraphqlMutation,

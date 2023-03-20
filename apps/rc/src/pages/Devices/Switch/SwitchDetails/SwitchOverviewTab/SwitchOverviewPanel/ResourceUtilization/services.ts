@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request'
 
-import { dataApi }                               from '@acx-ui/analytics/services'
 import { AnalyticsFilter, calculateGranularity } from '@acx-ui/analytics/utils'
+import { dataApi }                               from '@acx-ui/store'
 
 export type ResourceUtilizationData = {
   time: string[]
@@ -27,7 +27,7 @@ export const api = dataApi.injectEndpoints({
       query: (payload) => ({
         document: gql`
           query SwitchResourceUtilizationMetrics(
-            $path: [HierarchyNodeInput], $granularity: String, $end: DateTime, 
+            $path: [HierarchyNodeInput], $granularity: String, $end: DateTime,
             $start: DateTime, $filter: FilterInput) {
             network(end: $end, start: $start, filter: $filter) {
               hierarchyNode(path: $path) {
