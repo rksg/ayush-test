@@ -1,7 +1,5 @@
 import { QueryReturnValue } from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import {
-  createApi,
-  fetchBaseQuery,
   FetchBaseQueryError,
   FetchBaseQueryMeta
 } from '@reduxjs/toolkit/query/react'
@@ -25,7 +23,6 @@ import {
   WifiCallingSetting,
   DpskSaveData,
   DpskUrls,
-  PortalDetailInstances,
   Portal,
   PortalUrlsInfo,
   NewTableResult,
@@ -42,10 +39,6 @@ import {
   TableChangePayload,
   RequestFormData,
   createNewTableHttpRequest,
-  NetworkSegmentationUrls,
-  WebAuthTemplate,
-  AccessSwitch,
-  DistributionSwitch,
   downloadFile,
   NewAPITableResult,
   transferNewResToTableResult,
@@ -57,7 +50,8 @@ import {
   ApplicationPolicy,
   AccessControlProfile
 } from '@acx-ui/rc/utils'
-import { getJwtToken } from '@acx-ui/utils'
+import { baseServiceApi } from '@acx-ui/store'
+import { getJwtToken }    from '@acx-ui/utils'
 
 const defaultNewTablePaginationParams: TableChangePayload = {
   sortField: 'name',
@@ -78,15 +72,6 @@ const mDnsProxyMutationUseCases = [
   'ActivateMulticastDnsProxyServiceProfileAps',
   'DeactivateMulticastDnsProxyServiceProfileAps'
 ]
-
-export const baseServiceApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  reducerPath: 'serviceApi',
-  // eslint-disable-next-line max-len
-  tagTypes: ['Service', 'Dpsk', 'DpskPassphrase', 'MdnsProxy', 'MdnsProxyAp', 'WifiCalling', 'DHCP', 'Portal'],
-  refetchOnMountOrArgChange: true,
-  endpoints: () => ({ })
-})
 
 export const serviceApi = baseServiceApi.injectEndpoints({
   endpoints: (build) => ({
@@ -647,15 +632,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       }
     }),
-    portalNetworkInstances: build.query<TableResult<PortalDetailInstances>, RequestPayload>({
-      query: ({ params }) => {
-        const instancesRes = createHttpRequest(PortalUrlsInfo.getPortalNetworkInstances, params)
-        return {
-          ...instancesRes
-        }
-      },
-      providesTags: [{ type: 'Service', id: 'LIST' }]
-    }),
     getPortalProfileDetail: build.query<Portal | undefined, RequestPayload>({
       query: ({ params }) => {
         const portalDetailReq = createHttpRequest(PortalUrlsInfo.getPortalProfileDetail, params)
@@ -711,77 +687,10 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       }
-    }),
-    getWebAuthTemplate: build.query<WebAuthTemplate, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest( NetworkSegmentationUrls.getWebAuthTemplate, params)
-        return {
-          ...req
-        }
-      }
-    }),
-    webAuthTemplateList: build.query<TableResult<WebAuthTemplate>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest( NetworkSegmentationUrls.getWebAuthTemplateList, params)
-        return {
-          ...req,
-          body: payload
-        }
-      },
-      providesTags: [{ type: 'Service', id: 'LIST' }]
-    }),
-    createWebAuthTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest( NetworkSegmentationUrls.addWebAuthTemplate, params)
-        return {
-          ...req,
-          body: payload
-        }
-      },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
-    }),
-    updateWebAuthTemplate: build.mutation<WebAuthTemplate, RequestPayload<WebAuthTemplate>>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest( NetworkSegmentationUrls.updateWebAuthTemplate, params)
-        return {
-          ...req,
-          body: payload
-        }
-      },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
-    }),
-    deleteWebAuthTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest( NetworkSegmentationUrls.deleteWebAuthTemplate, params)
-        return {
-          ...req
-        }
-      },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
-    }),
-
-    getAccessSwitches: build.query<TableResult<AccessSwitch>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest( NetworkSegmentationUrls.getAccessSwitches, params)
-        return {
-          ...req,
-          body: payload
-        }
-      }
-    }),
-    getDistributionSwitches: build.query<TableResult<DistributionSwitch>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest( NetworkSegmentationUrls.getAccessSwitches, params)
-        return {
-          ...req,
-          body: payload
-        }
-      }
     })
 
   })
 })
-
 
 export const {
   useCloudpathListQuery,
@@ -823,7 +732,6 @@ export const {
   useDownloadPassphrasesMutation,
   useGetPortalQuery,
   useSavePortalMutation,
-  usePortalNetworkInstancesQuery,
   useGetPortalProfileDetailQuery,
   useLazyGetPortalProfileListQuery,
   useGetPortalProfileListQuery,
@@ -831,12 +739,5 @@ export const {
   useDeletePortalMutation,
   useUpdatePortalMutation,
   useUploadURLMutation,
-  useGetWebAuthTemplateQuery,
-  useWebAuthTemplateListQuery,
-  useCreateWebAuthTemplateMutation,
-  useUpdateWebAuthTemplateMutation,
-  useDeleteWebAuthTemplateMutation,
-  useGetAccessSwitchesQuery,
-  useGetDistributionSwitchesQuery,
   useGetDHCPProfileListViewModelQuery
 } = serviceApi

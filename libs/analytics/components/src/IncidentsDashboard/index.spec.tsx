@@ -1,10 +1,9 @@
 import '@testing-library/jest-dom'
 import { BrowserRouter } from 'react-router-dom'
 
-import { dataApiURL }         from '@acx-ui/analytics/services'
-import { IncidentFilter }     from '@acx-ui/analytics/utils'
-import { Path }               from '@acx-ui/react-router-dom'
-import { Provider, store }    from '@acx-ui/store'
+import { IncidentFilter }              from '@acx-ui/analytics/utils'
+import { Path }                        from '@acx-ui/react-router-dom'
+import { dataApiURL, Provider, store } from '@acx-ui/store'
 import {
   cleanup,
   mockGraphqlQuery,

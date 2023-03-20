@@ -4,6 +4,7 @@ import {
   Layout as LayoutComponent,
   LayoutUI
 } from '@acx-ui/components'
+import { SplitProvider } from '@acx-ui/feature-toggle'
 import {
   ActivityButton,
   AlarmsButton,
@@ -76,8 +77,11 @@ function Layout () {
       }
       rightHeaderContent={<>
         <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>
-        <AlarmsButton/>
-        <ActivityButton/>
+        {!isGuestManager &&
+          <>
+            <AlarmsButton />
+            <ActivityButton />
+          </>}
         <FetchBot showFloatingButton={false} statusCallback={setSupportStatus}/>
         <HelpButton supportStatus={supportStatus}/>
         <UserButton/>
@@ -85,4 +89,11 @@ function Layout () {
     />
   )
 }
-export default Layout
+
+function LayoutWithSplitProvider () {
+  return <SplitProvider>
+    <Layout />
+  </SplitProvider>
+}
+
+export default LayoutWithSplitProvider
