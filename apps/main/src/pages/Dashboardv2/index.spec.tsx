@@ -8,7 +8,7 @@ import Dashboard from '.'
 /* eslint-disable max-len */
 jest.mock('@acx-ui/analytics/components', () => ({
   ConnectedClientsOverTime: () => <div data-testid={'analytics-ConnectedClientsOverTime'} title='ConnectedClientsOverTime' />,
-  IncidentsDashboard: () => <div data-testid={'analytics-IncidentsDashboard'} title='IncidentsDashboard' />,
+  IncidentsDashboardv2: () => <div data-testid={'analytics-IncidentsDashboardv2'} title='IncidentsDashboard' />,
   NetworkHistory: () => <div data-testid={'analytics-NetworkHistory'} title='NetworkHistory' />,
   SwitchesTrafficByVolume: () => <div data-testid={'analytics-SwitchesTrafficByVolume'} title='SwitchesTrafficByVolume' />,
   TopAppsByTraffic: () => <div data-testid={'analytics-TopAppsByTraffic'} title='TopAppsByTraffic' />,
@@ -19,14 +19,15 @@ jest.mock('@acx-ui/analytics/components', () => ({
   TopSwitchesByTraffic: () => <div data-testid={'analytics-TopSwitchesByTraffic'} title='TopSwitchesByTraffic' />,
   TopSwitchModels: () => <div data-testid={'analytics-TopSwitchModels'} title='TopSwitchModels' />,
   TrafficByVolume: () => <div data-testid={'analytics-TrafficByVolume'} title='TrafficByVolume' />,
-  VenuesHealthDashboard: () => <div data-testid={'analytics-VenuesHealthDashboard'} title='VenuesHealthDashboard' />
+  DidYouKnow: () => <div data-testid={'analytics-DidYouKnow'} title='DidYouKnow' />,
+  ClientExperience: () => <div data-testid={'analytics-ClientExperience'} title='ClientExperience' />
 }))
 jest.mock('@acx-ui/rc/components', () => ({
-  AlarmWidget: () => <div data-testid={'rc-AlarmWidget'} title='AlarmWidget' />,
-  ClientsWidget: () => <div data-testid={'rc-ClientsWidget'} title='ClientsWidget' />,
-  DevicesDashboardWidget: () => <div data-testid={'rc-DevicesDashboardWidget'} title='DevicesDashboardWidget' />,
-  MapWidget: () => <div data-testid={'rc-MapWidget'} title='MapWidget' />,
-  VenuesDashboardWidget: () => <div data-testid={'rc-VenuesDashboardWidget'} title='VenuesDashboardWidget' />
+  AlarmWidgetV2: () => <div data-testid={'rc-AlarmWidgetV2'} title='AlarmWidgetV2' />,
+  ClientsWidgetV2: () => <div data-testid={'rc-ClientsWidgetV2'} title='ClientsWidgetV2' />,
+  DevicesDashboardWidgetV2: () => <div data-testid={'rc-DevicesDashboardWidgetV2'} title='DevicesDashboardWidgetV2' />,
+  MapWidgetV2: () => <div data-testid={'rc-MapWidgetV2'} title='MapWidgetV2' />,
+  VenuesDashboardWidgetV2: () => <div data-testid={'rc-VenuesDashboardWidgetV2'} title='VenuesDashboardWidgetV2' />
 }))
 /* eslint-enable */
 
@@ -39,8 +40,8 @@ describe('Dashboard', () => {
   it('renders correctly', async () => {
     render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
 
-    expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(4)
-    expect(await screen.findAllByTestId(/^rc/)).toHaveLength(3)
+    expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(7)
+    expect(await screen.findAllByTestId(/^rc/)).toHaveLength(5)
   })
 
   it('switches between tabs', async () => {
@@ -68,8 +69,8 @@ describe('Dashboard', () => {
   it('should switch tab correctly', async () => {
     render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
     fireEvent.click(await screen.findByText('Switch'))
-    expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(5)
-    expect(await screen.findAllByTestId(/^rc/)).toHaveLength(3)
+    expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(8)
+    expect(await screen.findAllByTestId(/^rc/)).toHaveLength(5)
   })
   it('should show report link correctly', async () => {
     render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)

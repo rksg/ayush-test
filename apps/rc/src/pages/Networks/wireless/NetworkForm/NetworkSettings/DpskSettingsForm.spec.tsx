@@ -57,7 +57,7 @@ describe('DpskSettingsForm', () => {
       }
     )
 
-    await userEvent.click(screen.getByText('Use AAA Server'))
+    await userEvent.click(screen.getByText('Use Radius Server'))
   })
 
   it('should render edit form with DPSK service profile', async () => {

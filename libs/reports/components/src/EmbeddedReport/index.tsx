@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { embedDashboard, EmbeddedDashboard } from '@superset-ui/embedded-sdk'
+import moment                                from 'moment'
 
 import { getSupersetRlsClause } from '@acx-ui/analytics/components'
 import {
@@ -10,12 +11,16 @@ import {
 import { useParams }                                                       from '@acx-ui/react-router-dom'
 import { useGuestTokenMutation, useEmbeddedIdMutation, BASE_RELATIVE_URL } from '@acx-ui/reports/services'
 import { useReportsFilter }                                                from '@acx-ui/reports/utils'
-import { useDateFilter, convertDateTimeToSqlFormat, getJwtToken }          from '@acx-ui/utils'
+import { useDateFilter, getJwtToken }                                      from '@acx-ui/utils'
 
 interface ReportProps {
   embedDashboardName: string
   rlsClause?: string
   hideHeader?: boolean
+}
+
+export function convertDateTimeToSqlFormat (dateTime: string): string {
+  return moment.utc(dateTime).format('YYYY-MM-DD HH:mm:ss')
 }
 
 export function EmbeddedReport (props: ReportProps) {

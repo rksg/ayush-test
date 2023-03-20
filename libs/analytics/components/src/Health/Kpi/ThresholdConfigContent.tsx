@@ -3,7 +3,7 @@ import { MouseEventHandler } from 'react'
 import { useIntl,  defineMessage, MessageDescriptor } from 'react-intl'
 
 import { Button, DisabledButton } from '@acx-ui/components'
-import { formatter }              from '@acx-ui/utils'
+import { formatter }              from '@acx-ui/formatter'
 
 import * as UI from './styledComponents'
 

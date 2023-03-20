@@ -1,11 +1,10 @@
 import userEvent         from '@testing-library/user-event'
 import { defineMessage } from 'react-intl'
 
-import { dataApiURL }                                                       from '@acx-ui/analytics/services'
 import { AnalyticsFilter }                                                  from '@acx-ui/analytics/utils'
 import { useIsSplitOn }                                                     from '@acx-ui/feature-toggle'
 import { BrowserRouter as Router }                                          from '@acx-ui/react-router-dom'
-import { Provider, store }                                                  from '@acx-ui/store'
+import { Provider, store, dataApiURL }                                      from '@acx-ui/store'
 import { render, waitForElementToBeRemoved, screen, mockGraphqlQuery, act } from '@acx-ui/test-utils'
 import { DateRange }                                                        from '@acx-ui/utils'
 

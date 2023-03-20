@@ -13,6 +13,7 @@ import {
   Button
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { formatter }              from '@acx-ui/formatter'
 import {
   useAlarmsListQuery,
   useClearAlarmMutation,
@@ -24,20 +25,21 @@ import {
 import { Alarm, CommonUrlsInfo, useTableQuery, EventSeverityEnum, EventTypeEnum } from '@acx-ui/rc/utils'
 import { useParams, TenantLink }                                                  from '@acx-ui/react-router-dom'
 import { store }                                                                  from '@acx-ui/store'
-import { formatter }                                                              from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
 export interface AlarmsType {
   setVisible: (visible: boolean) => void,
-  visible?: boolean
+  visible?: boolean,
+  serialNumber?: string
 }
 
 const defaultPayload: {
     url: string
     fields: string[]
     filters?: {
-      severity?: string[]
+      severity?: string[],
+      serialNumber?: string[]
     }
   } = {
     url: CommonUrlsInfo.getAlarmsList.url,
@@ -55,7 +57,8 @@ const defaultPayload: {
       'venueName',
       'apName',
       'switchName',
-      'sourceType'
+      'sourceType',
+      'switchMacAddress'
     ]
   }
 
@@ -63,7 +66,7 @@ export function AlarmsDrawer (props: AlarmsType) {
   const params = useParams()
   const { data } = useGetAlarmCountQuery({ params })
   const { $t } = useIntl()
-  const { visible, setVisible } = props
+  const { visible, setVisible, serialNumber } = props
 
   const toggleForSwitch = useIsSplitOn(Features.DEVICES)
 
@@ -92,13 +95,23 @@ export function AlarmsDrawer (props: AlarmsType) {
   })
 
   useEffect(()=>{
+    const { payload } = tableQuery
+    let filters = severity === 'all' ? {} : { severity: [severity] }
     tableQuery.setPayload({
-      ...tableQuery.payload,
-      filters: severity==='all' ? {} : { severity: [severity] }
+      ...payload,
+      filters
     })
 
+    if(serialNumber){
+      filters = { ...filters, ...{ serialNumber: [serialNumber] } }
+      tableQuery.setPayload({
+        ...payload,
+        filters
+      })
+    }
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tableQuery.data, severity, data])
+  }, [tableQuery.data, severity, data, serialNumber])
 
   const getIconBySeverity = (severity: EventSeverityEnum)=>{
 
@@ -122,8 +135,9 @@ export function AlarmsDrawer (props: AlarmsType) {
       }
       case EventTypeEnum.SWITCH: {
         if(toggleForSwitch){
+          const switchId = alarm.switchMacAddress || alarm.serialNumber
           return <TenantLink
-            to={`/devices/switch/${alarm.entityId}/${alarm.serialNumber}/details/timeline`}>
+            to={`/devices/switch/${switchId}/${alarm.serialNumber}/details/timeline`}>
             {alarm.switchName}
           </TenantLink>
         }else{

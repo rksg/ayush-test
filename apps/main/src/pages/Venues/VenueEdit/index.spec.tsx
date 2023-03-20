@@ -25,6 +25,7 @@ jest.mock('react-router-dom', () => ({
 
 describe('VenueEdit', () => {
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
       rest.get(
@@ -46,6 +47,7 @@ describe('VenueEdit', () => {
     await screen.findByRole('tab', { name: 'Venue Details' })
     await screen.findByRole('tab', { name: 'Wi-Fi Configuration' })
     await screen.findByRole('tab', { name: 'Switch Configuration' })
+    await screen.findByRole('tab', { name: 'Property Management' })
   })
 
   it('should handle tab changes', async () => {

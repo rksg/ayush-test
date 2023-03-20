@@ -219,7 +219,7 @@ describe('SnmpAgentForm', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
   })
 
-  it('should Profile name not empty and duplicated', async () => {
+  it('should Policy name not empty and duplicated', async () => {
     render(
       <Provider>
         <SnmpAgentForm editMode={false}/>
@@ -230,11 +230,11 @@ describe('SnmpAgentForm', () => {
     const header = screen.getByRole('heading', { name: /Add SNMP Agent/i })
     expect(header).toBeInTheDocument()
 
-    // profile name can't empty
+    // Policy name can't empty
     await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
-    await screen.findByText('Please enter Profile Name')
+    await screen.findByText('Please enter Policy Name')
 
-    // profile name can't be duplicate
+    // Policy name can't be duplicate
     const inputElem = await screen.findByRole('textbox')
     await userEvent.type(inputElem, 'www')
     expect(inputElem).toHaveAttribute('value', 'www')

@@ -1,5 +1,5 @@
-import { QueryReturnValue }                                                   from '@reduxjs/toolkit/dist/query/baseQueryTypes'
-import { createApi, fetchBaseQuery, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
+import { QueryReturnValue }                        from '@reduxjs/toolkit/dist/query/baseQueryTypes'
+import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
 
 import {
   CommonUrlsInfo,
@@ -20,18 +20,11 @@ import {
   WifiUrlsInfo,
   ExternalProviders
 } from '@acx-ui/rc/utils'
+import { baseNetworkApi } from '@acx-ui/store'
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
 }
-
-export const baseNetworkApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  reducerPath: 'networkApi',
-  tagTypes: ['Network', 'Venue'],
-  refetchOnMountOrArgChange: true,
-  endpoints: () => ({ })
-})
 
 export const networkApi = baseNetworkApi.injectEndpoints({
   endpoints: (build) => ({
@@ -271,6 +264,17 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       providesTags: [{ type: 'Network', id: 'Overview' }]
     }),
+    dashboardV2Overview: build.query<Dashboard, RequestPayload>({
+      query: ({ params, payload }) => {
+        const dashboardOverviewReq
+          = createHttpRequest(CommonUrlsInfo.getDashboardV2Overview, params)
+        return {
+          ...dashboardOverviewReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Network', id: 'Overview' }]
+    }),
     validateRadius: build.query<RadiusValidate, RequestPayload>({
       query: ({ params, payload }) => {
         const validateRadiusReq = createHttpRequest(CommonUrlsInfo.validateRadius, params)
@@ -393,7 +397,10 @@ export const {
   useApNetworkListQuery,
   useVenueNetworkListQuery,
   useDashboardOverviewQuery,
+  useDashboardV2OverviewQuery,
   useValidateRadiusQuery,
   useLazyValidateRadiusQuery,
   useExternalProvidersQuery
 } = networkApi
+
+export { baseNetworkApi }
