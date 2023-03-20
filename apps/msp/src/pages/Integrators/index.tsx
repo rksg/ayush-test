@@ -186,7 +186,7 @@ export function Integrators () {
             type: 'confirm',
             customContent: {
               action: 'DELETE',
-              entityName: $t({ defaultMessage: 'Integrator' }),
+              entityName: $t({ defaultMessage: 'Tech Partner' }),
               entityValue: name,
               confirmationText: $t({ defaultMessage: 'Delete' })
             },
