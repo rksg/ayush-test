@@ -108,7 +108,7 @@ export default function MyServices () {
         {services.map(service => {
           return (
             !service.disabled &&
-            <GridCol col={{ span: 6 }}>
+            <GridCol key={service.type} col={{ span: 6 }}>
               <ServiceCard
                 key={service.type}
                 serviceType={service.type}

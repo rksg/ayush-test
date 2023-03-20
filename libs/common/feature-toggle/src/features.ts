@@ -34,5 +34,6 @@ export enum Features {
   MAC_REGISTRATION = 'mac-registration-service-enabled',
   PERSONA = 'persona-service-enabled',
   WISPR_ENCRYPT_MAC_IP = 'acx-ui-wispr-encrypt-mac-ip-toggle',
+  PROPERTY_MANAGEMENT = 'property-management-enabled',
   RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled'
 }
