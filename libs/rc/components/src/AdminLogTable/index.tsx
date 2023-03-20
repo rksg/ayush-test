@@ -115,6 +115,7 @@ const AdminLogTable = ({ tableQuery }: AdminLogTableProps) => {
       onChange={tableQuery.handleTableChange}
       onFilterChange={tableQuery.handleFilterChange}
       enableApiFilter={true}
+      columnState={{ hidden: true }}
     />
     {visible && <TimelineDrawer
       title={defineMessage({ defaultMessage: 'Log Details' })}

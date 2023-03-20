@@ -306,6 +306,7 @@ export const VenueFirmwareTable = (
     ]}>
       <Table
         columns={columns}
+        columnState={{ hidden: true }}
         dataSource={tableQuery.data?.data}
         // dataSource={tableData}
         pagination={tableQuery.pagination}

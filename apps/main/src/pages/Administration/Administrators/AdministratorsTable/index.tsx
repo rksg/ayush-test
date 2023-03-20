@@ -217,6 +217,7 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
       </UI.TableTitleWrapper>
       <Table
         columns={columns}
+        columnState={{ hidden: true }}
         dataSource={adminList}
         rowKey='id'
         components={{

@@ -505,6 +505,7 @@ export const VenueFirmwareTable = (
     ]}>
       <Table
         columns={columns}
+        columnState={{ hidden: true }}
         dataSource={tableData}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}

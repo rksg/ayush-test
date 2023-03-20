@@ -380,6 +380,7 @@ export function Venues () {
             dataSource={tableData}
             pagination={tableQuery.pagination}
             onChange={tableQuery.handleTableChange}
+            columnState={{ hidden: true }}
           />
           <Form.Provider
             onFormFinish={handleApGroupFormFinish}
