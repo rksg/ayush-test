@@ -2,9 +2,9 @@ import _                                       from 'lodash'
 import { FormattedMessage, MessageDescriptor } from 'react-intl'
 
 import { Table, TableHighlightFnArgs, Tooltip } from '@acx-ui/components'
-import { noDataDisplay, Event, replaceStrings } from '@acx-ui/rc/utils'
+import { Event, replaceStrings }                from '@acx-ui/rc/utils'
 import { TenantLink, generatePath }             from '@acx-ui/react-router-dom'
-import { getIntl }                              from '@acx-ui/utils'
+import { getIntl, noDataDisplay }               from '@acx-ui/utils'
 
 import { typeMapping } from './mapping'
 import * as UI         from './styledComponents'

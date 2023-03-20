@@ -1,9 +1,10 @@
 import { isNull }                                    from 'lodash'
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
-import { noDataSymbol, AnalyticsFilter } from '@acx-ui/analytics/utils'
-import { GridRow, GridCol, Loader }      from '@acx-ui/components'
-import { formatter, intlFormats }        from '@acx-ui/formatter'
+import { AnalyticsFilter }          from '@acx-ui/analytics/utils'
+import { GridRow, GridCol, Loader } from '@acx-ui/components'
+import { formatter, intlFormats }   from '@acx-ui/formatter'
+import { noDataDisplay }            from '@acx-ui/utils'
 
 import { useSummaryQuery }    from './services'
 import { Wrapper, Statistic } from './styledComponents'
@@ -63,7 +64,7 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
         totalCount !== 0
       )
         ? $t(intlFormats.percentFormat, { value: (successCount / totalCount) })
-        : noDataSymbol
+        : noDataDisplay
       const failureCount = !isNull(totalCount) && !isNull(successCount)
         ? totalCount - successCount
         : null
@@ -72,14 +73,14 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
         ...rest,
         data: {
           totalCount: isNull(totalCount)
-            ? noDataSymbol : $t(intlFormats.countFormat, { value: totalCount }),
+            ? noDataDisplay : $t(intlFormats.countFormat, { value: totalCount }),
           successCount: isNull(successCount)
-            ? noDataSymbol : $t(intlFormats.countFormat, { value: successCount }),
+            ? noDataDisplay : $t(intlFormats.countFormat, { value: successCount }),
           failureCount: isNull(failureCount)
-            ? noDataSymbol : $t(intlFormats.countFormat, { value: failureCount }),
+            ? noDataDisplay : $t(intlFormats.countFormat, { value: failureCount }),
           successPercentage,
           averageTtc: isNull(averageTtc)
-            ? noDataSymbol : formatter('durationFormat')(averageTtc) as string
+            ? noDataDisplay : formatter('durationFormat')(averageTtc) as string
         }
       }
     }

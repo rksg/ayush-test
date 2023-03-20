@@ -5,8 +5,6 @@ import {
 } from './constants'
 import { BridgeServiceEnum } from './models'
 
-export const noDataDisplay = '--' as const
-
 export enum PskWlanSecurityEnum {
   WPA2Personal = 'WPA2 (Recommended)',
   WPA3 = 'WPA3',

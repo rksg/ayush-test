@@ -4,7 +4,6 @@ import { Col, Input, Row, Space, Typography } from 'antd'
 import { useIntl }                            from 'react-intl'
 import {  useParams }                         from 'react-router-dom'
 
-import { noDataSymbol }                                                          from '@acx-ui/analytics/utils'
 import { Button, cssStr, Loader, PageHeader, Subtitle }                          from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                from '@acx-ui/feature-toggle'
 import { CopyOutlined }                                                          from '@acx-ui/icons'
@@ -16,6 +15,7 @@ import {
 } from '@acx-ui/rc/services'
 import { PersonaGroup }   from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
+import { noDataDisplay }  from '@acx-ui/utils'
 
 import { DpskPoolLink, MacRegistrationPoolLink, NetworkSegmentationLink, PersonaGroupLink } from '../LinkHelper'
 import { PersonaDrawer }                                                                    from '../PersonaDrawer'
@@ -186,7 +186,7 @@ function PersonaDetails () {
                       {item.label}:
                     </Typography.Paragraph>
                   </Col>
-                  <Col span={12}>{item.value ?? noDataSymbol}</Col>
+                  <Col span={12}>{item.value ?? noDataDisplay}</Col>
                 </Row>
               )}
             </Loader>
@@ -199,7 +199,7 @@ function PersonaDetails () {
                     {item.label}:
                   </Typography.Paragraph>
                 </Col>
-                <Col span={12}>{item.value ?? noDataSymbol}</Col>
+                <Col span={12}>{item.value ?? noDataDisplay}</Col>
               </Row>
             )}
           </Col>
