@@ -1,0 +1,385 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Devices widget V2 should render loader and then chart 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-13w5wfx-4 lfySov"
+    type="default"
+  >
+    <div
+      class="ant-card"
+    >
+      <div
+        class="ant-card-head"
+      >
+        <div
+          class="ant-card-head-wrapper"
+        >
+          <div
+            class="ant-card-head-title"
+          >
+            <div
+              class="ant-space ant-space-horizontal ant-space-align-center"
+            >
+              <div
+                class="ant-space-item"
+              >
+                <div
+                  class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                >
+                  Devices
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="ant-card-extra"
+          >
+            <div
+              class="ant-space ant-space-horizontal ant-space-align-center"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-card-body"
+      >
+        <div
+          style="overflow: visible; height: 0px; width: 0px;"
+        >
+          <div
+            style="display: block; height: 800px; width: 1280px;"
+          >
+            <div
+              class="ant-row Grid__GridRow-sc-5irhjd-2"
+              style="margin: 30px -10px -10px -10px;"
+            >
+              <div
+                class="ant-col ant-col-11 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                style="padding: 10px 10px 10px 10px;"
+              >
+                <div
+                  class="Grid__Container-sc-5irhjd-1 zzbxI"
+                  style="margin-top: 13px;"
+                >
+                  Access Points
+                </div>
+              </div>
+              <div
+                class="ant-col ant-col-11 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                style="padding: 10px 10px 10px 10px;"
+              >
+                <div
+                  class="Grid__Container-sc-5irhjd-1 zzbxI"
+                >
+                  <div
+                    _echarts_instance_="ec_1679308801929"
+                    class="echarts-for-react "
+                    size-sensor-id="5"
+                    style="height: 370px; position: relative;"
+                  >
+                    <div
+                      style="position: relative; overflow: hidden; width: 1280px; height: 800px;"
+                    >
+                      <svg
+                        baseProfile="full"
+                        height="800"
+                        style="position:absolute;left:0;top:0;user-select:none"
+                        version="1.1"
+                        width="1280"
+                        xmlns="http://www.w3.org/2000/svg"
+                        xmlns:xlink="http://www.w3.org/1999/xlink"
+                      >
+                        <rect
+                          fill="none"
+                          fill-opacity="1"
+                          height="800"
+                          id="0"
+                          width="1280"
+                          x="0"
+                          y="0"
+                        />
+                        <g />
+                      </svg>
+                    </div>
+                    <div
+                      class=""
+                    />
+                    <object
+                      class="size-sensor-object"
+                      data="about:blank"
+                      style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                      tabindex="-1"
+                      type="text/html"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="ant-col ant-col-2 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                style="padding: 10px 10px 10px 10px;"
+              >
+                <div
+                  class="Grid__Container-sc-5irhjd-1 zzbxI"
+                  style="margin-top: 13px; margin-left: -13px;"
+                >
+                  1
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-row Grid__GridRow-sc-5irhjd-2"
+              style="margin: -10px -10px -10px -10px;"
+            >
+              <div
+                class="ant-col ant-col-11 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                style="padding: 10px 10px 10px 10px;"
+              >
+                <div
+                  class="Grid__Container-sc-5irhjd-1 zzbxI"
+                  style="margin-top: 13px;"
+                >
+                  Switches
+                </div>
+              </div>
+              <div
+                class="ant-col ant-col-11 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                style="padding: 10px 10px 10px 10px;"
+              >
+                <div
+                  class="Grid__Container-sc-5irhjd-1 zzbxI"
+                >
+                  <div
+                    _echarts_instance_="ec_1679308801930"
+                    class="echarts-for-react "
+                    size-sensor-id="6"
+                    style="height: 370px; position: relative;"
+                  >
+                    <div
+                      style="position: relative; overflow: hidden; width: 1280px; height: 800px;"
+                    >
+                      <svg
+                        baseProfile="full"
+                        height="800"
+                        style="position:absolute;left:0;top:0;user-select:none"
+                        version="1.1"
+                        width="1280"
+                        xmlns="http://www.w3.org/2000/svg"
+                        xmlns:xlink="http://www.w3.org/1999/xlink"
+                      >
+                        <rect
+                          fill="none"
+                          fill-opacity="1"
+                          height="800"
+                          id="0"
+                          width="1280"
+                          x="0"
+                          y="0"
+                        />
+                        <g />
+                      </svg>
+                    </div>
+                    <div
+                      class=""
+                    />
+                    <object
+                      class="size-sensor-object"
+                      data="about:blank"
+                      style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                      tabindex="-1"
+                      type="text/html"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="ant-col ant-col-2 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                style="padding: 10px 10px 10px 10px;"
+              >
+                <div
+                  class="Grid__Container-sc-5irhjd-1 zzbxI"
+                  style="margin-top: 13px; margin-left: -13px;"
+                >
+                  1
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="resize-triggers"
+        >
+          <div
+            class="expand-trigger"
+          >
+            <div
+              style="width: 1281px; height: 801px;"
+            />
+          </div>
+          <div
+            class="contract-trigger"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Devices widget V2 should render proper data for zero devices 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-13w5wfx-4 lfySov"
+    type="default"
+  >
+    <div
+      class="ant-card"
+    >
+      <div
+        class="ant-card-head"
+      >
+        <div
+          class="ant-card-head-wrapper"
+        >
+          <div
+            class="ant-card-head-title"
+          >
+            <div
+              class="ant-space ant-space-horizontal ant-space-align-center"
+            >
+              <div
+                class="ant-space-item"
+              >
+                <div
+                  class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                >
+                  Devices
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="ant-card-extra"
+          >
+            <div
+              class="ant-space ant-space-horizontal ant-space-align-center"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-card-body"
+      >
+        <div
+          style="overflow: visible; height: 0px; width: 0px;"
+        >
+          <div
+            style="display: block; height: 800px; width: 1280px;"
+          >
+            <div
+              class="ant-row Grid__GridRow-sc-5irhjd-2"
+              style="margin: 30px -10px -10px -10px;"
+            >
+              <div
+                class="ant-col ant-col-11 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                style="padding: 10px 10px 10px 10px;"
+              >
+                <div
+                  class="Grid__Container-sc-5irhjd-1 zzbxI"
+                  style="margin-top: 13px;"
+                >
+                  No Access Points
+                </div>
+              </div>
+              <div
+                class="ant-col ant-col-11 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                style="padding: 10px 10px 10px 10px;"
+              >
+                <div
+                  class="Grid__Container-sc-5irhjd-1 zzbxI"
+                >
+                  <div
+                    style="height: 370px; padding-top: 13px;"
+                  >
+                    <a
+                      href="/t/tenant-id/devices/wifi/add"
+                    >
+                      Add Access Point
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="ant-col ant-col-2 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                style="padding: 10px 10px 10px 10px;"
+              >
+                <div
+                  class="Grid__Container-sc-5irhjd-1 zzbxI"
+                  style="margin-top: 13px; margin-left: -13px;"
+                />
+              </div>
+            </div>
+            <div
+              class="ant-row Grid__GridRow-sc-5irhjd-2"
+              style="margin: -10px -10px -10px -10px;"
+            >
+              <div
+                class="ant-col ant-col-11 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                style="padding: 10px 10px 10px 10px;"
+              >
+                <div
+                  class="Grid__Container-sc-5irhjd-1 zzbxI"
+                  style="margin-top: 13px;"
+                >
+                  No Switches
+                </div>
+              </div>
+              <div
+                class="ant-col ant-col-11 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                style="padding: 10px 10px 10px 10px;"
+              >
+                <div
+                  class="Grid__Container-sc-5irhjd-1 zzbxI"
+                >
+                  <div
+                    style="height: 370px; padding-top: 13px;"
+                  >
+                    <a
+                      href="/t/tenant-id/devices/switch/add"
+                    >
+                      Add Switch
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="ant-col ant-col-2 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                style="padding: 10px 10px 10px 10px;"
+              >
+                <div
+                  class="Grid__Container-sc-5irhjd-1 zzbxI"
+                  style="margin-top: 13px; margin-left: -13px;"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="resize-triggers"
+        >
+          <div
+            class="expand-trigger"
+          >
+            <div
+              style="width: 1281px; height: 801px;"
+            />
+          </div>
+          <div
+            class="contract-trigger"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

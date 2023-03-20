@@ -3,7 +3,7 @@ import { render,
   screen
 } from '@acx-ui/test-utils'
 
-import { DevicesWidget } from '.'
+import { DevicesWidget, DevicesWidgetv2 } from '.'
 
 describe('Devices widget', () => {
   it('should render loader and then chart', async () => {
@@ -26,6 +26,58 @@ describe('Devices widget', () => {
     const { asFragment } = render(
       <Provider>
         <DevicesWidget apData={[]} switchData={[]} edgeData={[]} enableArrowClick/>
+      </Provider>,
+      { route: { params } })
+    await screen.findByText('Devices')
+    expect(asFragment().querySelectorAll('div[data-testid="ArrowChevronRight"]')).toBeTruthy()
+  })
+})
+
+describe('Devices widget V2', () => {
+  it('should render loader and then chart', async () => {
+    const params = {
+      tenantId: 'tenant-id'
+    }
+    const { asFragment } = render(
+      <Provider>
+        <DevicesWidgetv2 apStackedData={[]}
+          switchStackedData={[]}
+          apTotalCount={1}
+          switchTotalCount={1}/>
+      </Provider>,
+      { route: { params } })
+    await screen.findByText('Devices')
+    expect(asFragment().querySelector('svg')).toBeDefined()
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('should render proper data for zero devices', async () => {
+    const params = {
+      tenantId: 'tenant-id'
+    }
+    const { asFragment } = render(
+      <Provider>
+        <DevicesWidgetv2 apStackedData={[]}
+          switchStackedData={[]}
+          apTotalCount={0}
+          switchTotalCount={0}/>
+      </Provider>,
+      { route: { params } })
+    await screen.findByText('Devices')
+    expect(asFragment().querySelector('svg')).toBeDefined()
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('should render correctly with right arrow enabled', async () => {
+    const params = {
+      tenantId: 'tenant-id'
+    }
+    const { asFragment } = render(
+      <Provider>
+        <DevicesWidgetv2 apStackedData={[]}
+          switchStackedData={[]}
+          apTotalCount={0}
+          switchTotalCount={0}
+          enableArrowClick
+        />
       </Provider>,
       { route: { params } })
     await screen.findByText('Devices')

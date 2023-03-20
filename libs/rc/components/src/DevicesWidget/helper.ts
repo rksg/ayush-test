@@ -161,7 +161,8 @@ export const seriesMappingAP = () => [
 ] as Array<{ key: string, name: string, color: string }>
 
 export const getApDonutChartData =
-(apsSummary: VenueDetailHeader['aps']['summary'] | undefined): DonutChartData[] => {
+(apsSummary: VenueDetailHeader['aps']['summary'] | undefined,
+  shouldShowOffline:boolean=true): DonutChartData[] => {
   const chartData: DonutChartData[] = []
   if (apsSummary) {
     seriesMappingAP().forEach(({ key, name, color }) => {
@@ -172,10 +173,17 @@ export const getApDonutChartData =
         })
         const value = apsSummary[key]!
         if (setupPhase) {
-          setupPhase.name = `${setupPhase.name}: ${setupPhase.value}, ${name}: ${value}`
+          if(shouldShowOffline)
+            setupPhase.name = `${setupPhase.name}: ${setupPhase.value}, ${name}: ${value}`
+          else
+            setupPhase.name = `${setupPhase.name}`
           setupPhase.value = setupPhase.value + value
         } else {
-          chartData.push({ name, value, color })
+          if(shouldShowOffline)
+            chartData.push({ name, value, color })
+          else
+            chartData.push({ name: getAPStatusDisplayName(ApVenueStatusEnum.IN_SETUP_PHASE, false),
+              value, color })
         }
       }
       else if (value) {
@@ -188,7 +196,7 @@ export const getApDonutChartData =
 
 export const getApStackedBarChartData =
 (apsSummary: VenueDetailHeader['aps']['summary'] | undefined): ChartData[] => {
-  const series = getApDonutChartData(apsSummary)
+  const series = getApDonutChartData(apsSummary,false)
   const finalSeries=seriesMappingAP()
     .filter(status=>status.key!==ApVenueStatusEnum.OFFLINE).map(status=>{
       const matched=series.filter(item=>item.name===status.name)
