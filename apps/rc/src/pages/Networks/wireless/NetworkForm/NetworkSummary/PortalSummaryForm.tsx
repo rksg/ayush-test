@@ -3,8 +3,9 @@ import { useIntl }     from 'react-intl'
 
 import { NetworkSaveData, Demo, PortalLanguageEnum, GuestNetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
 
-import { getLanguage } from '../../../../Services/commonUtils'
-import * as UI         from '../styledComponents'
+import { getLanguage }          from '../../../../Services/commonUtils'
+import { AuthAccServerSummary } from '../CaptivePortal/AuthAccServerSummary'
+import * as UI                  from '../styledComponents'
 export function PortalSummaryForm (props: {
   summaryData: NetworkSaveData;
   portalData?: Demo
@@ -12,9 +13,10 @@ export function PortalSummaryForm (props: {
   const { summaryData, portalData } = props
   const intl = useIntl()
   const $t = intl.$t
+  const isCloudPath = summaryData.guestPortal?.guestNetworkType===GuestNetworkTypeEnum.Cloudpath
   return (
     <>
-      {summaryData.guestPortal?.guestNetworkType===GuestNetworkTypeEnum.Cloudpath&&
+      {isCloudPath&&
       <Form.Item
         label={$t({ defaultMessage: 'Enrollment Workflow URL:' })}
         children={summaryData.guestPortal?.externalPortalUrl}
@@ -75,6 +77,13 @@ export function PortalSummaryForm (props: {
           }
         />
       </>
+      }
+      {(summaryData.guestPortal?.guestNetworkType===GuestNetworkTypeEnum.WISPr||
+        isCloudPath)&&
+        <AuthAccServerSummary summaryData={summaryData.guestPortal?.wisprPage||summaryData}
+          isCloudPath={isCloudPath}
+          enableAcctProxy={summaryData.enableAccountingProxy}
+          enableAuthProxy={summaryData.enableAuthProxy}/>
       }
       {summaryData.guestPortal?.guestNetworkType!==GuestNetworkTypeEnum.Cloudpath&&
       <Form.Item
@@ -164,14 +173,14 @@ export function PortalSummaryForm (props: {
             $t({ defaultMessage: 'No' })}
         />
       }
-      {summaryData.guestPortal?.guestNetworkType===GuestNetworkTypeEnum.Cloudpath&&
+      {isCloudPath&&
       <Form.Item
         label={$t({ defaultMessage: 'Use MAC authentication during reconnection:' })}
         children={summaryData.wlan?.bypassCPUsingMacAddressAuthentication?
           $t({ defaultMessage: 'Yes' }):$t({ defaultMessage: 'No' })}
       />
       }
-      {summaryData.guestPortal?.guestNetworkType===GuestNetworkTypeEnum.Cloudpath&&
+      {isCloudPath&&
       <Form.Item
         label={$t({ defaultMessage: 'Use Bypass Captive Network Assistant:' })}
         children={summaryData.wlan?.bypassCNA?

@@ -362,6 +362,7 @@ export function SwitchForm () {
                     { required: true },
                     { validator: (_, value) => serialNumberRegExp(value) }
                   ]}
+                  validateTrigger={['onKeyUp', 'onBlur']}
                   validateFirst
                   children={<Input disabled={readOnly || editMode} />}
                 />
@@ -393,6 +394,7 @@ export function SwitchForm () {
                   initialValue={MEMEBER_TYPE.STANDALONE}
                 >
                   <Radio.Group
+                    defaultValue={MEMEBER_TYPE.STANDALONE}
                     onChange={(e: RadioChangeEvent) => {
                       return setSwitchRole(e.target.value)
                     }}

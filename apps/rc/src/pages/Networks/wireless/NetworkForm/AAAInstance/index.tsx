@@ -31,7 +31,8 @@ const AAAInstance = (props:{
   useEffect(()=>{
     if(aaaListQuery?.data){
       setAaaData([...aaaListQuery.data])
-      setAaaList(aaaListQuery.data.map(m => ({ label: m.name, value: m.id })))
+      setAaaList(((aaaListQuery.data?.filter(d => d.type === radiusType[props.type])))
+        .map(m => ({ label: m.name, value: m.id })))
     }
   },[aaaListQuery])
   return (
@@ -84,7 +85,7 @@ const AAAInstance = (props:{
                 `${AaaServerOrderEnum.PRIMARY}.port`)
             })} />
           <Form.Item
-            label={$t({ defaultMessage: 'Shared Secret:' })}
+            label={$t({ defaultMessage: 'Shared Secret' })}
             children={<Input.Password
               readOnly
               bordered={false}
@@ -102,7 +103,7 @@ const AAAInstance = (props:{
                 `${AaaServerOrderEnum.SECONDARY}.port`)
             })} />
           <Form.Item
-            label={$t({ defaultMessage: 'Shared Secret:' })}
+            label={$t({ defaultMessage: 'Shared Secret' })}
             children={<Input.Password
               readOnly
               bordered={false}

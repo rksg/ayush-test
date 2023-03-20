@@ -32,6 +32,7 @@ import * as UI from '../styledComponents'
 interface IntegratorDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
+  setSelected: (selected: MspEc[]) => void
   tenantId?: string
   tenantType?: string
 }
@@ -39,7 +40,7 @@ interface IntegratorDrawerProps {
 export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
   const { $t } = useIntl()
 
-  const { visible, setVisible, tenantId, tenantType } = props
+  const { visible, setVisible, setSelected, tenantId, tenantType } = props
   const [resetField, setResetField] = useState(false)
   const [form] = Form.useForm()
 
@@ -70,11 +71,16 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
       })
     }
 
-    assignMspCustomers({ payload, params: { mspIntegratorId: tenantId } })
-      .then(() => {
-        setVisible(false)
-        resetFields()
-      })
+    if (tenantId) {
+      assignMspCustomers({ payload, params: { mspIntegratorId: tenantId } })
+        .then(() => {
+          setVisible(false)
+          resetFields()
+        })
+    } else {
+      setSelected(selectedRows.ecCustomers)
+    }
+
     setVisible(false)
   }
 
@@ -144,13 +150,17 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
       defaultPayload
     })
 
+    let dataSource = queryResults.data?.data
     let selectedKeys = [] as Key[]
-    if (queryResults?.data && assignedEcs?.data) {
-      selectedKeys = queryResults?.data.data.filter(
-        rec => assignedEcs?.data?.mspec_list?.includes(rec.id)).map(rec => rec.id)
-      const selRows = queryResults?.data.data.filter(
-        rec => assignedEcs?.data?.mspec_list?.includes(rec.id))
+    if (queryResults?.data && (isSkip || assignedEcs?.data)) {
+      selectedKeys = queryResults.data.data.filter(
+        rec => assignedEcs.data?.mspec_list?.includes(rec.id)).map(rec => rec.id)
+      const selRows = queryResults.data.data.filter(
+        rec => assignedEcs.data?.mspec_list?.includes(rec.id))
       form.setFieldValue('ecCustomers', selRows)
+      dataSource = tenantType === AccountType.MSP_INSTALLER
+        ? queryResults.data.data.filter(rec => !rec.installer || selectedKeys.includes(rec.id))
+        : queryResults.data.data.filter(rec => !rec.integrator || selectedKeys.includes(rec.id))
     }
 
     return (
@@ -158,7 +168,7 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
       ]}>
         <Table
           columns={columns}
-          dataSource={queryResults.data?.data}
+          dataSource={dataSource}
           rowKey='id'
           rowSelection={{
             type: 'checkbox',
@@ -174,28 +184,30 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
 
   const content =
   <Form layout='vertical' form={form} onFinish={onClose}>
-    <Subtitle level={4}>{$t({ defaultMessage: 'Access Periods' })}</Subtitle>
-    {tenantType === AccountType.MSP_INTEGRATOR && <label>Not Limited</label>}
-    {tenantType === AccountType.MSP_INSTALLER && <UI.FieldLabelAccessPeriod width='275px'>
-      <label>Limited To</label>
-      <Form.Item
-        name='number_of_days'
-        initialValue={'7'}
-        rules={[{ validator: (_, value) =>
-        {
-          if(parseInt(value, 10) > 60 || parseInt(value, 10) < 1) {
-            return Promise.reject(
-              `${$t({ defaultMessage: 'Invalid number' })} `
-            )
+    {tenantId && <div>
+      <Subtitle level={4}>{$t({ defaultMessage: 'Access Periods' })}</Subtitle>
+      {tenantType === AccountType.MSP_INTEGRATOR && <label>Not Limited</label>}
+      {tenantType === AccountType.MSP_INSTALLER && <UI.FieldLabelAccessPeriod width='275px'>
+        <label>Limited To</label>
+        <Form.Item
+          name='number_of_days'
+          initialValue={'7'}
+          rules={[{ validator: (_, value) =>
+          {
+            if(parseInt(value, 10) > 60 || parseInt(value, 10) < 1) {
+              return Promise.reject(
+                `${$t({ defaultMessage: 'Value must be between 1 and 60 days' })} `
+              )
+            }
+            return Promise.resolve()
           }
-          return Promise.resolve()
-        }
-        }]}
-        children={<Input type='number'/>}
-        style={{ marginLeft: '10px', paddingRight: '20px' }}
-      />
-      <label>Day(s) (1..60)</label>
-    </UI.FieldLabelAccessPeriod>}
+          }]}
+          children={<Input type='number'/>}
+          style={{ marginLeft: '10px', paddingRight: '20px' }}
+        />
+        <label>Day(s)</label>
+      </UI.FieldLabelAccessPeriod>}</div>}
+
 
     <Subtitle level={4} style={{ marginTop: '20px' }}>
       { $t({ defaultMessage: 'Select customer accounts to assign to this integrator:' }) }
