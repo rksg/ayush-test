@@ -81,7 +81,14 @@ export function TopologyGraph (props:{ venueId?: string,
 
       const { edges, nodes } = topologyGraphData as GraphData
 
-      const uiEdges: Link[] = Object.assign([], edges)
+      const uiEdges: Link[] = Object.assign([], edges.map((edge: Link) => {
+        return {
+          ...edge,
+          from: edge?.from.toLowerCase(),
+          to: edge?.to.toLowerCase()
+        }
+      })
+      )
 
       // Add nodes to the graph.
 
