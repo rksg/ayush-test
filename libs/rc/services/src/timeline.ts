@@ -1,5 +1,4 @@
-import { FetchBaseQueryError }       from '@reduxjs/toolkit/query'
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 
 import {
   Activity,
@@ -15,6 +14,7 @@ import {
   RequestPayload,
   onSocketActivityChanged
 } from '@acx-ui/rc/utils'
+import { baseTimelineApi } from '@acx-ui/store'
 
 import { getMetaList } from './utils'
 
@@ -30,14 +30,6 @@ const metaFields = [
   'floorPlanName',
   'recipientName'
 ]
-
-export const baseTimelineApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  reducerPath: 'timelineApi',
-  tagTypes: ['Activity', 'Event', 'AdminLog'],
-  refetchOnMountOrArgChange: true,
-  endpoints: () => ({ })
-})
 
 export const timelineApi = baseTimelineApi.injectEndpoints({
   endpoints: (build) => ({

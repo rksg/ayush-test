@@ -14,11 +14,17 @@ import {
   NoData,
   Tooltip
 } from '@acx-ui/components'
-import { TenantLink, useNavigateToPath }           from '@acx-ui/react-router-dom'
-import { intlFormats, formatter, notAvailableMsg } from '@acx-ui/utils'
+import { intlFormats, formatter }        from '@acx-ui/formatter'
+import { TenantLink, useNavigateToPath } from '@acx-ui/react-router-dom'
+import { notAvailableMsg }               from '@acx-ui/utils'
 
 import { useHealthQuery, HealthData } from './services'
 import * as UI                        from './styledComponents'
+
+export const calcPercent = ([val, sum]:(number | null)[]) => {
+  const percent = val !== null && sum ? val / sum : null
+  return { percent, formatted: formatter('percentFormatRound')(percent) }
+}
 
 export function VenuesHealthDashboard ({
   filters
@@ -134,10 +140,6 @@ export function VenuesHealthDashboard ({
       }
     }
   ]
-  const calcPercent = ([val, sum]:(number | null)[]) => {
-    const percent = val !== null && sum ? val / sum : null
-    return { percent, formatted: formatter('percentFormatRound')(percent) }
-  }
 
   const calculateClientExp = (slas:(number|null)[]) => {
     const arr = slas.filter(sla => sla !== null)

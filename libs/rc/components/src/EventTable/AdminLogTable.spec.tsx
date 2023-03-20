@@ -39,6 +39,26 @@ describe('AdminLogTable', () => {
     await userEvent.click(screen.getByRole('button', { name: /2022/ }))
     screen.getByText('Log Details')
     await userEvent.click(screen.getByRole('button', { name: 'Close' }))
-    expect(screen.queryByText('Activity Details')).toBeNull()
+    expect(screen.queryByText('Log Details')).toBeNull()
+  })
+
+  it('should close drawer, when data changed', async () => {
+    const { rerender } = render(
+      <Provider>
+        <AdminLogTable tableQuery={tableQuery} />
+      </Provider>,
+      { route: { params } }
+    )
+    await screen.findByText(
+      'Admin FisrtName 12 LastName 12, dog12@email.com logged into the cloud controller.'
+    )
+    await userEvent.click(screen.getByRole('button', { name: /2022/ }))
+    screen.getByText('Log Details')
+
+    const newTableQuery = {
+      ...tableQuery, data: { data: [] }
+    } as unknown as TableQuery<AdminLog, RequestPayload<unknown>, unknown>
+    rerender(<Provider><AdminLogTable tableQuery={newTableQuery} /></Provider>)
+    expect(screen.queryByText('Log Details')).toBeNull()
   })
 })

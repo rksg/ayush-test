@@ -33,8 +33,10 @@ export const PortalUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getPortalProfileList: {
     method: 'get',
-    url: '/portalServiceProfiles?size=:pageSize&page=:page&sort=:sort',
-    oldUrl: '/api/portalServiceProfiles?size=:pageSize&page=:page&sort=:sort',
+    // eslint-disable-next-line max-len
+    url: '/portalServiceProfiles?pageSize=:pageSize&page=:page&sort=:sort',
+    // eslint-disable-next-line max-len
+    oldUrl: '/api/portalServiceProfiles?pageSize=:pageSize&page=:page&sort=:sort',
     newApi: true
   },
   getPortalLang: {

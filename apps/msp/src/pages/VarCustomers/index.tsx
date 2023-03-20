@@ -13,13 +13,13 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { DateFormatEnum, formatter }  from '@acx-ui/formatter'
 import {
   useInviteCustomerListQuery,
   useVarCustomerListQuery,
   useAcceptRejectInvitationMutation
 } from '@acx-ui/rc/services'
 import {
-  DateFormatEnum,
   DelegationEntitlementRecord,
   EntitlementNetworkDeviceType,
   EntitlementUtil,
@@ -29,7 +29,6 @@ import {
 import { getBasePath, Link, TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }          from '@acx-ui/user'
-
 
 const transformApUtilization = (row: VarCustomer) => {
   if (row.entitlements) {
@@ -66,7 +65,7 @@ const transformNextExpirationDate = (row: VarCustomer) => {
           target = entitlement
         }
       }
-      expirationDate = moment(target.expirationDate).format(DateFormatEnum.UserDateFormat)
+      expirationDate = formatter(DateFormatEnum.DateFormat)(target.expirationDate)
       toBeRemoved = EntitlementUtil.getNetworkDeviceTypeUnitText(target.entitlementDeviceType,
         parseInt(target.toBeRemovedQuantity, 10))
     })
@@ -305,7 +304,7 @@ export function VarCustomers () {
         title={title}
         extra={
           <TenantLink to='/dashboard' key='add'>
-            <Button>{$t({ defaultMessage: 'Manage my account' })}</Button>
+            <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
           </TenantLink>
         }
       />

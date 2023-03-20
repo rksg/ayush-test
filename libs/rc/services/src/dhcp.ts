@@ -1,18 +1,10 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-
 import {
   WifiUrlsInfo,
   createHttpRequest,
   RequestPayload,
   DhcpServiceProfile
 } from '@acx-ui/rc/utils'
-
-export const baseDhcpApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  reducerPath: 'dhcpApi',
-  refetchOnMountOrArgChange: true,
-  endpoints: () => ({ })
-})
+import { baseDhcpApi } from '@acx-ui/store'
 
 export const dhcpApi = baseDhcpApi.injectEndpoints({
   endpoints: (build) => ({

@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Descriptions }                                          from '@acx-ui/components'
+import { formatter }                                             from '@acx-ui/formatter'
 import { ApViewModel, CelluarInfo, CellularSim, SimPresentData } from '@acx-ui/rc/utils'
-import { formatter }                                             from '@acx-ui/utils'
 
 import { SimPresent } from './SimPresent'
 

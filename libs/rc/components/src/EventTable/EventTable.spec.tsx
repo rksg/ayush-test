@@ -116,7 +116,27 @@ describe('EventTable', () => {
     await userEvent.click(within(row).getByRole('button', { name: /2022/ }))
     screen.getByText('Event Details')
     await userEvent.click(screen.getByRole('button', { name: 'Close' }))
-    expect(screen.queryByText('Activity Details')).toBeNull()
+    expect(screen.queryByText('Event Details')).toBeNull()
+  })
+
+  it('should close drawer, when data changed', async () => {
+    const { rerender } = render(
+      <Provider>
+        <EventTable tableQuery={tableQuery} />
+      </Provider>,
+      { route: { params } }
+    )
+    const row = await screen.findByRole('row', {
+      name: /AP 730-11-60 RF operating channel was changed from channel 7 to channel 9./
+    })
+    await userEvent.click(within(row).getByRole('button', { name: /2022/ }))
+    screen.getByText('Event Details')
+
+    const newTableQuery = {
+      ...tableQuery, data: { data: [] }
+    } as unknown as TableQuery<Event, RequestPayload<unknown>, unknown>
+    rerender(<Provider><EventTable tableQuery={newTableQuery} /></Provider>)
+    expect(screen.queryByText('Event Details')).toBeNull()
   })
 
   it('renders value as-is for non entity prop', async () => {

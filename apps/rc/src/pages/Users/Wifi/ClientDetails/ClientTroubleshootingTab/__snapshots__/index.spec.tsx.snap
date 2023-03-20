@@ -4,27 +4,27 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
 <DocumentFragment>
   <div
     class="ant-row"
-    style="margin: -8px -8px -8px -8px; flex: 1;"
+    style="margin: -8px -10px -8px -10px; flex: 1;"
   >
     <div
       class="ant-col ant-col-18"
-      style="padding: 8px 8px 8px 8px;"
+      style="padding: 8px 10px 8px 10px;"
     >
       <div
         class="ant-row"
-        style="margin: -16px -8px -16px -8px; justify-content: end;"
+        style="margin: -16px -10px -16px -10px; justify-content: end;"
       >
         <div
-          class="ant-col ant-col-15"
-          style="padding: 16px 8px 16px 8px;"
+          class="ant-col ant-col-24"
+          style="padding: 16px 10px 16px 10px;"
         >
           <div
             class="ant-row ant-row-no-wrap"
-            style="margin: -3px -3px -3px -3px; justify-content: end;"
+            style="margin: -3px -6px -3px -6px; justify-content: end;"
           >
             <div
               class="ant-col"
-              style="padding: 3px 3px 3px 3px; flex: 0 0 185px; min-width: 0;"
+              style="padding: 3px 6px 3px 6px; flex: 0 0 185px; min-width: 0;"
             >
               <div
                 class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
@@ -105,7 +105,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
             </div>
             <div
               class="ant-col"
-              style="padding: 3px 3px 3px 3px; flex: 0 0 185px; min-width: 0;"
+              style="padding: 3px 6px 3px 6px; flex: 0 0 185px; min-width: 0;"
             >
               <div
                 class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
@@ -186,7 +186,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
             </div>
             <div
               class="ant-col"
-              style="padding: 3px 3px 3px 3px; flex: 0 0 185px; min-width: 0;"
+              style="padding: 3px 6px 3px 6px; flex: 0 0 185px; min-width: 0;"
             >
               <div
                 class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
@@ -269,7 +269,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
         </div>
         <div
           class="ant-col ant-col-24"
-          style="padding: 16px 8px 16px 8px;"
+          style="padding: 16px 10px 16px 10px;"
         >
           <div
             class="styledComponents__TimelineLoaderWrapper-sc-hmshlr-16 cgZiZV"
@@ -1021,7 +1021,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
     </div>
     <div
       class="ant-col ant-col-6"
-      style="padding: 8px 8px 8px 8px;"
+      style="padding: 8px 10px 8px 10px;"
     >
       <div
         class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"

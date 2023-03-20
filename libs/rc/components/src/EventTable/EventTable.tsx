@@ -1,10 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import { defineMessage, useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps, Button } from '@acx-ui/components'
+import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
 import { Event, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
-import { formatter }                         from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 
@@ -30,6 +30,8 @@ export const EventTable = ({
   const [visible, setVisible] = useState(false)
   const [current, setCurrent] = useState<Event>()
 
+  useEffect(() => { setVisible(false) },[tableQuery.data?.data])
+
   const columns: TableProps<Event>['columns'] = [
     {
       key: 'event_datetime',
@@ -45,7 +47,7 @@ export const EventTable = ({
             setVisible(true)
             setCurrent(row)
           }}
-        >{formatter('dateTimeFormatWithSeconds')(row.event_datetime)}</Button>
+        >{formatter(DateFormatEnum.DateTimeFormatWithSeconds)(row.event_datetime)}</Button>
       }
     },
     {
@@ -100,7 +102,7 @@ export const EventTable = ({
   const getDrawerData = (data: Event) => [
     {
       title: defineMessage({ defaultMessage: 'Time' }),
-      value: formatter('dateTimeFormatWithSeconds')(data.event_datetime)
+      value: formatter(DateFormatEnum.DateTimeFormatWithSeconds)(data.event_datetime)
     },
     {
       title: defineMessage({ defaultMessage: 'Severity' }),

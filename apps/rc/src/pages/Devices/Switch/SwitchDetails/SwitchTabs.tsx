@@ -28,7 +28,6 @@ function SwitchTabs (props:{ switchDetail: SwitchViewModel }) {
       <Tabs.TabPane tab={$t({ defaultMessage: 'Incidents' })} key='incidents' />
       {isOperational &&
         <Tabs.TabPane tab={$t({ defaultMessage: 'Troubleshooting' })} key='troubleshooting' />}
-      <Tabs.TabPane tab={$t({ defaultMessage: 'Reports' })} key='reports' />
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Clients ({clientsCount})' }, { clientsCount: switchDetail?.clientCount || 0 })}
         key='clients'

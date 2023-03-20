@@ -1,6 +1,5 @@
-import { networkHealthApiURL }                                  from '@acx-ui/analytics/services'
 import { useIsTierAllowed }                                     from '@acx-ui/feature-toggle'
-import { Provider }                                             from '@acx-ui/store'
+import { networkHealthApiURL, Provider }                        from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitFor, fireEvent } from '@acx-ui/test-utils'
 import { RolesEnum }                                            from '@acx-ui/types'
 import { getUserProfile, setUserProfile }                       from '@acx-ui/user'
