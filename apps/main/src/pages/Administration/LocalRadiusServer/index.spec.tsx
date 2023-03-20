@@ -3,6 +3,7 @@ import { fireEvent, within } from '@testing-library/react'
 import { rest }              from 'msw'
 
 
+import { useIsSplitOn }                                          from '@acx-ui/feature-toggle'
 import { RadiusClientConfigUrlsInfo }                            from '@acx-ui/rc/utils'
 import { Provider }                                              from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
@@ -17,6 +18,8 @@ describe('RadiusServerTab', () => {
   const radiusSetting = { host: '31.2.5.12', authenticationPort: 1812, accountingPort: 1813 }
 
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
     mockServer.use(
       rest.get(
         RadiusClientConfigUrlsInfo.getRadiusClient.url,
@@ -34,6 +37,7 @@ describe('RadiusServerTab', () => {
   })
 
   it('should render radius config correctly', async () => {
+
     render(<Provider><LocalRadiusServer /></Provider>, {
       route: { params: {
         tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
@@ -145,5 +149,17 @@ describe('RadiusServerTab', () => {
     await screen.findByText('Delete "' + config.ipAddress[0] + '"?')
 
     await userEvent.click(await screen.findByRole('button', { name: 'Delete IP address' }))
+  })
+
+  it('should not render when ff is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+
+    render(<Provider><LocalRadiusServer /></Provider>, {
+      route: { params: {
+        tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+      }, path: '/:tenantId' }
+    })
+
+    await screen.findByText('Local RADIUS Server is not enabled')
   })
 })

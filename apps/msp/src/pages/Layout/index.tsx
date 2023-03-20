@@ -77,8 +77,11 @@ function Layout () {
       }
       rightHeaderContent={<>
         <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>
-        <AlarmsButton/>
-        <ActivityButton/>
+        {!isGuestManager &&
+          <>
+            <AlarmsButton />
+            <ActivityButton />
+          </>}
         <FetchBot showFloatingButton={false} statusCallback={setSupportStatus}/>
         <HelpButton supportStatus={supportStatus}/>
         <UserButton/>

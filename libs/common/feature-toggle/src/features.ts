@@ -32,5 +32,7 @@ export enum Features {
   AP_SNMP='wifi-consumer-ap-snmp-toggle',
   NEW_API='acx-ui-new-api',
   MAC_REGISTRATION = 'mac-registration-service-enabled',
-  PERSONA = 'persona-service-enabled'
+  PERSONA = 'persona-service-enabled',
+  PROPERTY_MANAGEMENT = 'property-management-enabled',
+  RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled'
 }
