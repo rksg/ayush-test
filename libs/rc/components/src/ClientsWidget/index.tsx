@@ -171,6 +171,7 @@ export function ClientsWidgetV2 () {
   })
   const marginTop = '13px'
   const { $t } = intl
+  const { apClientCount, apData, switchClientCount, switchData } = queryResults.data
   return (
     <Loader states={[queryResults]}>
       <Card title={$t({ defaultMessage: 'Clients' })} onArrowClick={onArrowClick}>
@@ -178,35 +179,41 @@ export function ClientsWidgetV2 () {
           {({ height, width }) => (
             <div style={{ display: 'block', height, width }}>
               <GridRow style={{ marginTop: '30px' }}>
-                <GridCol col={{ span: 9 }} style={{ marginTop: marginTop }}>
-                Wi-Fi
+                <GridCol col={{ span: 11 }} style={{ marginTop: marginTop }}>
+                  { apClientCount > 0 ? $t({ defaultMessage: 'Wi-Fi' })
+                    : $t({ defaultMessage: 'No Wi-Fi clients' }) }
                 </GridCol>
-                <GridCol col={{ span: 13 }}>
-                  <StackedBarChart
+                <GridCol col={{ span: 11 }}>
+                  { apClientCount > 0 ? <StackedBarChart
                     style={{ height: (height/2) - 30 }}
-                    data={queryResults.data.apData}
+                    data={apData}
                     showLabels={false}
                     showTotal={false}
                     barColors={getDeviceConnectionStatusColorsv2()} />
+                    : <div style={{ height: (height/2) - 30 }}/>
+                  }
                 </GridCol>
                 <GridCol col={{ span: 2 }} style={{ marginTop: marginTop, marginLeft: '-13px' }}>
-                  {queryResults.data.apClientCount}
+                  {apClientCount || ''}
                 </GridCol>
               </GridRow>
               <GridRow>
-                <GridCol col={{ span: 9 }} style={{ marginTop: marginTop }}>
-                Wired
+                <GridCol col={{ span: 11 }} style={{ marginTop: marginTop }}>
+                  { switchClientCount > 0 ? $t({ defaultMessage: 'Wired' })
+                    : $t({ defaultMessage: 'No Wired clients' }) }
                 </GridCol>
-                <GridCol col={{ span: 13 }}>
-                  <StackedBarChart
+                <GridCol col={{ span: 11 }}>
+                  { apClientCount > 0 ? <StackedBarChart
                     style={{ height: (height/2) - 30 }}
-                    data={queryResults.data.switchData}
+                    data={switchData}
                     showLabels={false}
                     showTotal={false}
                     barColors={getDeviceConnectionStatusColorsv2()} />
+                    : <div style={{ height: (height/2) - 30 }}/>
+                  }
                 </GridCol>
                 <GridCol col={{ span: 2 }} style={{ marginTop: marginTop, marginLeft: '-13px' }}>
-                  {queryResults.data.switchClientCount}
+                  {switchClientCount || ''}
                 </GridCol>
               </GridRow>
             </div>
