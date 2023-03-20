@@ -187,7 +187,7 @@ export function Unit (props:{
 
   const getOfflineSwitchPort = (member: StackMember) => {
     const portStatus = []
-    const portCount = Number(member.model?.split('-')[1].replace(/\D/g, ''))
+    const portCount = Number(member.model?.split('-')[1].replace(/\D/g, '').slice(0, 2))
 
     for (let i = 1; i < portCount + 1; i++) {
       portStatus.push({
