@@ -1,3 +1,4 @@
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal, Tooltip }              from '@acx-ui/components'
@@ -43,6 +44,11 @@ export default function DHCPTable () {
   const rowActions: TableProps<DHCPSaveData>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
+      visible: (selectedRows) => {
+        return !_.some(selectedRows, (row)=>{
+          return row.venueIds && row.venueIds.length>0
+        })
+      },
       onClick: ([{ id, name }], clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -59,6 +65,11 @@ export default function DHCPTable () {
     },
     {
       label: $t({ defaultMessage: 'Edit' }),
+      visible: (selectedRows) => {
+        return !_.some(selectedRows, (row)=>{
+          return row.venueIds && row.venueIds.length>0
+        })
+      },
       onClick: ([{ id }]) => {
         navigate({
           ...tenantBasePath,
