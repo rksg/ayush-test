@@ -2,9 +2,9 @@ import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
 import { venueApi }                                                                                               from '@acx-ui/rc/services'
-import { CommonUrlsInfo, ConnectionStates, ConnectionStatus, DeviceStates, DeviceTypes, ShowTopologyFloorplanOn } from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, ConnectionStates, ConnectionStatus, DeviceStates, DeviceTypes, Link, NetworkDevice, Node, ShowTopologyFloorplanOn } from '@acx-ui/rc/utils'
 import { Provider, store }                                                                                        from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved }                                       from '@acx-ui/test-utils'
+import { fireEvent, logRoles, mockServer, render, screen, waitForElementToBeRemoved }                                       from '@acx-ui/test-utils'
 
 import { TopologyGraph } from '.'
 
@@ -23,10 +23,17 @@ const fields = [
   'deviceStatus'
 ]
 
-const graphData = {
+const graphData: {
+  totalCount: number,
+  page: number | string,
+  data: [{
+    edges: Link[],
+    nodes: Node[]
+  }]
+} = {
   fields,
   totalCount: 1,
-  page: null,
+  page: 0,
   data: [
     {
       edges: [{
@@ -218,7 +225,7 @@ const graphData = {
           childCount: 0
         },
         {
-          type: 'any-device',
+          type: 'any-device' as DeviceTypes,
           category: 'Ap',
           name: 'Ap008',
           mac: '5C:DF:89:2A:AF:10',
@@ -322,6 +329,8 @@ describe('Topology', () => {
 
 
     await screen.findByTestId('topologyGraph')
+
+    logRoles(document.body)
 
     const switchDevices = await screen.findAllByTestId('Switch')
 
