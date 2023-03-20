@@ -73,7 +73,7 @@ describe('Firmware Venues Table', () => {
       })
 
     await screen.findByText('Latest Version: 1.0.0.1710')
-    await screen.findByText('Release(Recommended)-Feb 02 2023')
+    await screen.findByText('Release(Recommended)-02/02/2023')
     const row = await screen.findAllByRole('row', { name: /My-Venue/i })
     expect(row.length).toBe(3)
   })
