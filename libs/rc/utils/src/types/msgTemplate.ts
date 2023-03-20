@@ -43,8 +43,8 @@ interface PageData {
 }
 
 export interface TemplateSelectionContent {
-  templateScopeType: MessageType, 
-  templateScopeNameKey: string, 
-  defaultTemplateId: string, 
+  templateScopeType: MessageType,
+  templateScopeNameKey: string,
+  defaultTemplateId: string,
   templates: Array<Template>
 }

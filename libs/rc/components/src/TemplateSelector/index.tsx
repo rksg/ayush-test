@@ -1,11 +1,12 @@
-import { Form, Select, FormItemProps, Spin } from 'antd'
-import { useIntl }                     from 'react-intl'
-import _                               from 'lodash'
+import { useEffect, useState } from 'react'
 
-import { useGetTemplateSelectionContentQuery} from '@acx-ui/rc/services'
+import { Form, Select, FormItemProps, Spin } from 'antd'
+import _                                     from 'lodash'
+import { useIntl }                           from 'react-intl'
+
+import { useGetTemplateSelectionContentQuery } from '@acx-ui/rc/services'
 
 import { templateNames, templateScopeLabels } from './MsgTemplateLocalizedMessages'
-import { useEffect, useState } from 'react'
 
 export interface TemplateSelectorProps {
   formItemProps?: FormItemProps,
@@ -24,18 +25,18 @@ export function TemplateSelector (props: TemplateSelectorProps) {
   } = props
 
   const templateDataRequest = useGetTemplateSelectionContentQuery(
-    {params: {templateScopeId: scopeId, registrationId: registrationId}})
+    { params: { templateScopeId: scopeId, registrationId: registrationId } })
 
 
-  const [templateOptions, setTemplateOptions] = useState<Array<{value:string, label:string}>>([])
+  const [templateOptions, setTemplateOptions] = useState<Array<{ value:string, label:string }>>([])
 
   const form = Form.useFormInstance()
-  
+
   const formItemProps = {
-      name: props.scopeId + 'templateId',
-      ...props.formItemProps
-    }
-  
+    name: props.scopeId + 'templateId',
+    ...props.formItemProps
+  }
+
   const [formItemLabel, setFormItemLabel] = useState($t({ defaultMessage: 'Loading Templates...' }))
 
   // Setup form options ////
@@ -43,11 +44,11 @@ export function TemplateSelector (props: TemplateSelectorProps) {
     if(!templateDataRequest.isSuccess) {
       return
     }
-    
+
     let options = templateDataRequest.data?.templates.map((t) =>
-         ({ value: t.id,
-           label: (t.userProvidedName? 
-            t.userProvidedName : $t(_.get(templateNames, t.nameLocalizationKey))) }))
+      ({ value: t.id,
+        label: (t.userProvidedName?
+          t.userProvidedName : $t(_.get(templateNames, t.nameLocalizationKey))) }))
     setTemplateOptions(options)
   }, [templateDataRequest.isSuccess, templateDataRequest.data?.templates])
 
@@ -57,35 +58,38 @@ export function TemplateSelector (props: TemplateSelectorProps) {
     let initialTemplateId = templateDataRequest.data?.defaultTemplateId
 
     if(!currentFormValue && initialTemplateId) {
-      let initialSelection = templateOptions.find(t => t.value === templateDataRequest.data?.defaultTemplateId)
+      let initialSelection =
+        templateOptions.find(t => t.value === templateDataRequest.data?.defaultTemplateId)
+
       form.setFieldValue(formItemProps.name, initialSelection)
     }
-  }, [templateDataRequest.data?.defaultTemplateId, templateDataRequest.data?.templates, templateOptions])
+  }, [templateDataRequest.data?.defaultTemplateId,
+    templateDataRequest.data?.templates, templateOptions])
 
-  const [componentMode, setComponentMode] = useState<"LOADING" | "ERROR" | "LOADED">("LOADING")
+  const [componentMode, setComponentMode] = useState<'LOADING' | 'ERROR' | 'LOADED'>('LOADING')
 
   useEffect(() => {
-    let content;
     if(templateDataRequest.isLoading) {
-      setComponentMode("LOADING")
+      setComponentMode('LOADING')
     } else if(templateDataRequest.isError) {
-      setComponentMode("ERROR")
+      setComponentMode('ERROR')
     } else if(templateDataRequest.isSuccess) {
-      setComponentMode("LOADED")
+      setComponentMode('LOADED')
     }
   }, [templateDataRequest.isLoading, templateDataRequest.isError, templateDataRequest.isSuccess])
 
   useEffect(() => {
-    if(componentMode === "LOADED" && templateDataRequest.data?.templateScopeNameKey) {
-      setFormItemLabel($t(_.get(templateScopeLabels, templateDataRequest.data.templateScopeNameKey)))
+    if(componentMode === 'LOADED' && templateDataRequest.data?.templateScopeNameKey) {
+      setFormItemLabel(
+        $t(_.get(templateScopeLabels, templateDataRequest.data.templateScopeNameKey)))
     } else {
       setFormItemLabel($t({ defaultMessage: 'Loading Templates...' }))
     }
   }, [templateDataRequest.data?.templateScopeNameKey, componentMode])
 
 
-  if(componentMode !== "LOADED") {
-    return (<div style={{display:'block'}}><Spin></Spin></div>)
+  if(componentMode !== 'LOADED') {
+    return (<div style={{ display: 'block' }}><Spin></Spin></div>)
   } else {
     return (
       <Form.Item {...formItemProps}
