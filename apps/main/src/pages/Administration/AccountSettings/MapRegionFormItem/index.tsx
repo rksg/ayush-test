@@ -19,7 +19,7 @@ const MapRegionFormItem = () => {
     updateReqState
   } = usePreference()
 
-  const handleMapRegionChange = async (regionCode:string) => {
+  const handleMapRegionChange = (regionCode:string) => {
     if (!regionCode) return
     const payload = {
       global: { ...preferenceData?.global, mapRegion: regionCode }

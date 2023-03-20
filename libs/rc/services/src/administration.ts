@@ -434,6 +434,17 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'License', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'Refresh License'
+          ], () => {
+            api.dispatch(administrationApi.util.invalidateTags([
+              { type: 'License', id: 'LIST' }
+            ]))
+          })
+        })
+      },
       transformResponse: (response) => {
         return AdministrationUrlsInfo.getEntitlementSummary.newApi ?
           (response as NewEntitlementSummary).summary : response as EntitlementSummary[]
@@ -446,7 +457,18 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'License', id: 'LIST' }]
+      providesTags: [{ type: 'License', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'Refresh License'
+          ], () => {
+            api.dispatch(administrationApi.util.invalidateTags([
+              { type: 'License', id: 'LIST' }
+            ]))
+          })
+        })
+      }
     }),
     refreshEntitlements: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {

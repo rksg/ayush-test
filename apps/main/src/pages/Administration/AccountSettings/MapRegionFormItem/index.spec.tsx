@@ -1,10 +1,13 @@
 /* eslint-disable max-len */
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
+import { UseQueryHookResult, UseQueryStateResult } from '@reduxjs/toolkit/dist/query/react/buildHooks'
+import { fireEvent }                               from '@storybook/testing-library'
+import userEvent                                   from '@testing-library/user-event'
+import { rest }                                    from 'msw'
 
-import { useIsSplitOn }           from '@acx-ui/feature-toggle'
-import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider  }              from '@acx-ui/store'
+import { useIsSplitOn }                                     from '@acx-ui/feature-toggle'
+import { usePreference }                                    from '@acx-ui/rc/components'
+import { AdministrationUrlsInfo, TenantPreferenceSettings } from '@acx-ui/rc/utils'
+import { Provider  }                                        from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -12,6 +15,7 @@ import {
   cleanup,
   waitFor
 } from '@acx-ui/test-utils'
+import { UseQueryResult } from '@acx-ui/types'
 
 import { fakePreference } from '../__tests__/fixtures'
 
@@ -42,6 +46,7 @@ jest.mock('antd', () => {
   return { ...components, Select }
 })
 
+const mockedUpdatePreference = jest.fn()
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
   countryCodes: [{
@@ -56,8 +61,20 @@ jest.mock('@acx-ui/rc/components', () => ({
   },{
     label: 'Singapore',
     value: 'SG'
-  }]
+  }],
+  usePreference: () => {
+    return {
+      data: { global: {
+        mapRegion: 'TW'
+      } },
+      currentMapRegion: 'TW',
+      update: mockedUpdatePreference,
+      getReqState: { isLoading: false, isFetching: false } as UseQueryResult<TenantPreferenceSettings>,
+      updateReqState: { isLoading: false } as UseQueryResult<TenantPreferenceSettings>
+    }
+  }
 }))
+
 
 describe('Map is not enabled', () => {
   beforeEach( () => {
@@ -81,12 +98,10 @@ describe('Map is not enabled', () => {
 
     await screen.findByTitle('Map Region')
     expect(await screen.findByText('Map is not enabled.')).toBeInTheDocument()
-    cleanup()
   })
 })
 
 describe('Map Region Selector', () => {
-  let mockedUpdatePreference: (r: unknown) => void
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
@@ -94,20 +109,11 @@ describe('Map Region Selector', () => {
       rest.get(
         AdministrationUrlsInfo.getPreferences.url,
         (_req, res, ctx) => res(ctx.json(fakePreference))
-      ),
-      rest.put(
-        AdministrationUrlsInfo.updatePreferences.url,
-        (_req, res, ctx) => {
-          mockedUpdatePreference(_req.body)
-          return res(ctx.status(200))
-        }
       )
     )
   })
-  it('should be able to clear selector input', async () => {
-    const _mocked = jest.fn()
-    mockedUpdatePreference = _mocked
 
+  it('should be able to clear selector input', async () => {
     render(
       <Provider>
         <MapRegionFormItem />
@@ -118,15 +124,11 @@ describe('Map Region Selector', () => {
     await screen.findByText('Taiwan')
     const selector = await screen.findByRole('combobox')
     await userEvent.click(selector)
-
-    await userEvent.selectOptions( await screen.findByRole('combobox'), 'invalid')
+    await userEvent.selectOptions(selector, 'invalid')
     expect(mockedUpdatePreference).toBeCalledTimes(0)
   })
 
   it('should be changable', async () => {
-    const _mocked = jest.fn()
-    mockedUpdatePreference = _mocked
-
     render(
       <Provider>
         <MapRegionFormItem />
@@ -137,10 +139,10 @@ describe('Map Region Selector', () => {
     await screen.findByText('Taiwan')
     const selector = await screen.findByRole('combobox')
     await userEvent.click(selector)
-
-    await userEvent.selectOptions( await screen.findByRole('combobox'), 'United Kingdom')
+    await userEvent.selectOptions(selector, 'United Kingdom')
     await waitFor(async () => {
       expect(mockedUpdatePreference).toBeCalled()
     })
   })
 })
+
