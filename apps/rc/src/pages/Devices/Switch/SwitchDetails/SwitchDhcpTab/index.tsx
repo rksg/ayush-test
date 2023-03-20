@@ -125,6 +125,7 @@ export function SwitchDhcpLeaseTable () {
     <Loader states={[{ isLoading }]}>
       <Table
         columns={columns}
+        columnState={{ hidden: true }}
         dataSource={leaseData}
         rowKey='clientId' />
     </Loader>

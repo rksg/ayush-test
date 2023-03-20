@@ -127,6 +127,7 @@ export function SwitchDhcpPoolTable () {
   return (
     <Loader states={[tableQuery]}>
       <Table columns={columns}
+        columnState={{ hidden: true }}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}

@@ -114,6 +114,7 @@ export function SwitchOverviewVLANs () {
     >
       <Table
         columns={columns}
+        columnState={{ hidden: true }}
         type='tall'
         onChange={tableQuery.handleTableChange}
         pagination={tableQuery.pagination}
