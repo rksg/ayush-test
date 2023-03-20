@@ -49,8 +49,9 @@ export default function ApsTable () {
     })
   })
 
+  const [ isImportResultLoading, setIsImportResultLoading ] = useState(false)
   const [ importCsv ] = useImportApMutation()
-  const [ importQuery, { isLoading: isImportResultLoading } ] = useLazyImportResultQuery()
+  const [ importQuery ] = useLazyImportResultQuery()
   const [ importResult, setImportResult ] = useState<ImportErrorRes>({} as ImportErrorRes)
 
   const apGpsFlag = useIsSplitOn(Features.AP_GPS)
@@ -62,6 +63,7 @@ export default function ApsTable () {
     if (importResult.fileErrorsCount === 0) {
       setImportVisible(false)
     }
+    setIsImportResultLoading(false)
   },[importResult])
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
@@ -114,10 +116,12 @@ export default function ApsTable () {
         visible={importVisible}
         isLoading={isImportResultLoading}
         importError={{ data: importResult } as FetchBaseQueryError}
-        importRequest={(formData)=>{
-          importCsv({ payload: formData,
+        importRequest={(formData) => {
+          setIsImportResultLoading(true)
+          importCsv({ params: { tenantId }, payload: formData,
             callback: async (response: CommonResult) => {
-              const result = await importQuery({ payload: { requestId: response.requestId } }, true)
+              const result = await importQuery(
+                { payload: { requestId: response.requestId } }, true)
                 .unwrap()
               setImportResult(result)
             } }).unwrap()

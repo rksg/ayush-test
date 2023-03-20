@@ -361,9 +361,10 @@ export function ApTable (props: ApTableProps) {
       apAction.showDownloadApLog(rows[0].serialNumber, params.tenantId)
     }
   }]
+  const [ isImportResultLoading, setIsImportResultLoading ] = useState(false)
   const [ importVisible, setImportVisible ] = useState(false)
   const [ importCsv ] = useImportApMutation()
-  const [ importQuery, { isLoading: isImportResultLoading } ] = useLazyImportResultQuery()
+  const [ importQuery ] = useLazyImportResultQuery()
   const [ importResult, setImportResult ] = useState<ImportErrorRes>({} as ImportErrorRes)
   const apGpsFlag = useIsSplitOn(Features.AP_GPS)
   const importTemplateLink = apGpsFlag ?
@@ -374,6 +375,7 @@ export function ApTable (props: ApTableProps) {
     if (importResult.fileErrorsCount === 0) {
       setImportVisible(false)
     }
+    setIsImportResultLoading(false)
   },[importResult])
 
   const basePath = useTenantLink('/devices')
@@ -422,9 +424,11 @@ export function ApTable (props: ApTableProps) {
         isLoading={isImportResultLoading}
         importError={{ data: importResult } as FetchBaseQueryError}
         importRequest={(formData) => {
-          importCsv({ params, payload: formData ,
+          setIsImportResultLoading(true)
+          importCsv({ params: {}, payload: formData,
             callback: async (res: CommonResult) => {
-              const result = await importQuery({ payload: { requestId: res.requestId } }, true)
+              const result = await importQuery(
+                { payload: { requestId: res.requestId } }, true)
                 .unwrap()
               setImportResult(result)
             } }).unwrap()

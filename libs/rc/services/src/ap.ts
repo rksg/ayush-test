@@ -143,11 +143,14 @@ export const apApi = baseApApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
           try {
-            const data = await api.cacheDataLoaded
-            //eslint-disable-next-line no-console
-            console.log(data)
-            if (data && msg.useCase === 'XXX') {
-              (requestArgs.callback as Function)(data)
+            const response = await api.cacheDataLoaded
+            if (response && msg.useCase === 'ImportApsCsv'
+            && ((msg.steps?.find((step) => {
+              return step.id === 'ImportAps'
+            })?.status === 'FAIL') || (msg.steps?.find((step) => {
+              return step.id === 'PostProcessedImportAps'
+            })?.status !== 'IN_PROGRESS'))) {
+              (requestArgs.callback as Function)(response.data)
             }
           } catch {
           }
