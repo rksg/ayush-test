@@ -46,9 +46,11 @@ const SnmpAgentSettingForm = (props: SnmpAgentSettingFormProps) => {
               { required: true },
               { min: 2 },
               { max: 32 },
-              { validator: (rule, value) => nameValidator(value) }
+              { validator: (rule, value) => nameValidator(value),
+                validateTrigger: 'onChange' }
             ]}
             validateFirst
+            validateTrigger='onChange'
             hasFeedback
             initialValue={''}
             children={<Input/>}
