@@ -2,9 +2,10 @@ import { withKnobs,object, boolean } from '@storybook/addon-knobs'
 import { storiesOf }                 from '@storybook/react'
 import { defineMessage }             from 'react-intl'
 
+import { getDeviceConnectionStatusColorsv2 } from '../../index'
+
 import { StackedBarChart } from '.'
 
-import { getDeviceConnectionStatusColorsv2 } from '@acx-ui/components'
 
 export const data = [{
   category: 'Infrastructure',
