@@ -2,13 +2,14 @@ import { useEffect, useState } from 'react'
 
 import { defineMessage, useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps, Button  }   from '@acx-ui/components'
+import { Loader, Table, TableProps, Button }    from '@acx-ui/components'
 import { DateFormatEnum, formatter }            from '@acx-ui/formatter'
 import { AdminLog, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 
-import { adminLogTypeMapping, severityMapping } from './mapping'
+import { filtersFrom, getDescription, getSource, valueFrom } from './helpers'
+import { adminLogTypeMapping, severityMapping }              from './mapping'
 
 interface AdminLogTableProps {
   tableQuery: TableQuery<AdminLog, RequestPayload<unknown>, unknown>
@@ -43,39 +44,32 @@ const AdminLogTable = ({ tableQuery }: AdminLogTableProps) => {
       title: $t({ defaultMessage: 'Severity' }),
       dataIndex: 'severity',
       sorter: true,
-      render: function (_, row) {
-        const msg = severityMapping[row.severity as keyof typeof severityMapping]
-        return $t(msg)
-      }
+      render: (_, row) => valueFrom(severityMapping, row.severity)
     },
     {
       key: 'entity_type',
       title: $t({ defaultMessage: 'Event Type' }),
       dataIndex: 'entity_type',
       sorter: true,
-      render: function (_, row, __, highlightFn) {
-        const type = row.entity_type as keyof typeof adminLogTypeMapping
-        return highlightFn($t(adminLogTypeMapping[type]))
-      },
-      filterable: Object.entries(adminLogTypeMapping)
-        .map(([key, value])=>({ key, value: $t(value) })),
-      searchable: true
+      searchable: true,
+      render: (_, row, __, highlightFn) =>
+        highlightFn(valueFrom(adminLogTypeMapping, row.entity_type)),
+      filterable: filtersFrom(adminLogTypeMapping)
     },
     {
       key: 'adminName',
       title: $t({ defaultMessage: 'Source' }),
       dataIndex: 'adminName',
-      sorter: true
+      sorter: true,
+      render: (_, row) => getSource(row)
     },
     {
       key: 'message',
       title: $t({ defaultMessage: 'Description' }),
       dataIndex: 'message',
       sorter: true,
-      render: function (_, row, __, highlightFn) {
-        return highlightFn(JSON.parse(row.message).message_template)
-      },
-      searchable: true
+      searchable: true,
+      render: (_, row, __, highlightFn) => getDescription(row, highlightFn)
     }
   ]
   const getDrawerData = (data: AdminLog) => [
@@ -85,25 +79,19 @@ const AdminLogTable = ({ tableQuery }: AdminLogTableProps) => {
     },
     {
       title: defineMessage({ defaultMessage: 'Severity' }),
-      value: (() => {
-        const msg = severityMapping[data.severity as keyof typeof severityMapping]
-        return $t(msg)
-      })()
+      value: valueFrom(severityMapping, data.severity)
     },
     {
       title: defineMessage({ defaultMessage: 'Event Type' }),
-      value: (() => {
-        const msg = adminLogTypeMapping[data.entity_type as keyof typeof adminLogTypeMapping]
-        return $t(msg)
-      })()
+      value: valueFrom(adminLogTypeMapping, data.entity_type)
     },
     {
       title: defineMessage({ defaultMessage: 'Source' }),
-      value: data.adminName
+      value: getSource(data)
     },
     {
       title: defineMessage({ defaultMessage: 'Description' }),
-      value: JSON.parse(data.message).message_template
+      value: getDescription(data)
     }
   ]
 

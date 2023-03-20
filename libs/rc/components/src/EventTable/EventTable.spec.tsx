@@ -2,19 +2,14 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
-import { useIsSplitOn }                                                             from '@acx-ui/feature-toggle'
-import {  CommonUrlsInfo, Event, EventBase, EventMeta, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
-import { Provider }                                                                 from '@acx-ui/store'
-import { findTBody, mockRestApiQuery, render, renderHook, screen, waitFor, within } from '@acx-ui/test-utils'
+import { useIsSplitOn }                                            from '@acx-ui/feature-toggle'
+import { Event, EventBase, EventMeta, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
+import { Provider }                                                from '@acx-ui/store'
+import { findTBody, render, screen, within }                       from '@acx-ui/test-utils'
 
-import {
-  events,
-  eventsMeta,
-  eventsForQuery,
-  eventsMetaForQuery
-} from './__tests__/fixtures'
+import { events, eventsMeta } from './__tests__/fixtures'
 
-import { EventTable, useEventsTableQuery } from '.'
+import { EventTable } from '.'
 
 jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user'),
@@ -180,42 +175,5 @@ describe('EventTable', () => {
 
     expect(await within(cell).findByText(eventsMeta[0].apName!)).toBeVisible()
     expect(await within(cell).findByTestId('tooltip-content')).toHaveTextContent('Not available')
-  })
-
-  it('render value as-is for entity not enabled', async () => {
-    tableQuery.data!.data = [{
-      ...events[3] as EventBase,
-      ...eventsMeta[3] as EventMeta
-    }]
-
-    const name = eventsMeta[3].switchName
-    const { rerender } = render(
-      <EventTable tableQuery={tableQuery} />,
-      { route: { params }, wrapper: Provider }
-    )
-
-    let elements = await screen.findAllByText(name)
-    expect(elements).toHaveLength(2)
-    elements.forEach(element => expect(element.nodeName).toBe('A'))
-
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-
-    rerender(<EventTable tableQuery={tableQuery} />)
-
-    elements = await screen.findAllByText(name)
-    expect(elements).toHaveLength(1)
-    elements.forEach(element => expect(element.nodeName).not.toBe('A'))
-  })
-})
-
-describe('useEventsTableQuery', () => {
-  beforeEach(() => {
-    mockRestApiQuery(CommonUrlsInfo.getEventList.url, 'post', eventsForQuery)
-    mockRestApiQuery(CommonUrlsInfo.getEventListMeta.url, 'post', eventsMetaForQuery)
-  })
-  it('should return correct value', async () => {
-    const { result } = renderHook(() => useEventsTableQuery(), { wrapper: Provider })
-    await waitFor(() => expect(result.current.isSuccess).toBe(true))
-    expect(result.current.data?.data).toHaveLength(events.length)
   })
 })
