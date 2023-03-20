@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { defineMessage, useIntl } from 'react-intl'
 
@@ -18,6 +18,7 @@ const AdminLogTable = ({ tableQuery }: AdminLogTableProps) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const [current, setCurrent] = useState<AdminLog>()
+  useEffect(() => { setVisible(false) },[tableQuery.data?.data])
 
   const columns: TableProps<AdminLog>['columns'] = [
     {
@@ -110,7 +111,7 @@ const AdminLogTable = ({ tableQuery }: AdminLogTableProps) => {
     <Table
       rowKey='id'
       columns={columns}
-      dataSource={tableQuery.data?.data}
+      dataSource={tableQuery.data?.data ?? []}
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
       onFilterChange={tableQuery.handleFilterChange}
