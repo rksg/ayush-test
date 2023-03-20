@@ -833,12 +833,18 @@ export function ManageCustomer () {
 
   const CustomerSubscription = () => {
     return <>
-      <h4>{intl.$t({ defaultMessage: 'Start service in' })}</h4>
+      <Subtitle level={3}>{intl.$t({ defaultMessage: 'Start service in' })}</Subtitle>
       <Form.Item
         name='trialMode'
         initialValue={true}
       >
-        <Radio.Group onChange={(e: RadioChangeEvent) => {setTrialSelected(e.target.value)}}>
+        <Radio.Group onChange={(e: RadioChangeEvent) => {
+          if (e.target.value) {
+            setSubscriptionStartDate(moment())
+            setSubscriptionEndDate(moment().add(30,'days'))
+          }
+          setTrialSelected(e.target.value)
+        }}>
           <Space direction='vertical'>
             <Radio
               value={true}
