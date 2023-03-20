@@ -158,7 +158,7 @@ export const impactValues = <Type extends 'ap' | 'client'> (
   type: Type,
   incident: Incident
 ): (
-  Record<`${Type}ImpactRatio`, '-' | number | null> &
+  Record<`${Type}ImpactRatio`, '--' | number | null> &
   Record<
     `${Type}ImpactRatioFormatted` | `${Type}ImpactCountFormatted` | `${Type}ImpactDescription`,
     string
