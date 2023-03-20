@@ -323,8 +323,6 @@ describe('Topology', () => {
 
     await screen.findByTestId('topologyGraph')
 
-    logRoles(document.body)
-
     const switchDevices = await screen.findAllByTestId('Switch')
 
     expect(switchDevices.length).toBe(2)
