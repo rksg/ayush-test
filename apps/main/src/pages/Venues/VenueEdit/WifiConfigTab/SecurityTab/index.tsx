@@ -76,7 +76,7 @@ export function SecurityTab () {
         return {
           selectOptions: DEFAULT_OPTIONS.map(item => <Option key={item.id}>{item.name}</Option>),
           selected: DEFAULT_OPTIONS.find((item) =>
-            item.id === formRef.current?.getFieldValue('roguePolicyId')
+            item.id === DEFAULT_POLICY_ID
           )
         }
       }
@@ -88,10 +88,6 @@ export function SecurityTab () {
   })
 
   useEffect(() => {
-    if (selectOptions.length === 0) {
-      // for some venues that have not enabled the rogue policy
-      formRef.current?.setFieldValue('roguePolicyId', DEFAULT_POLICY_ID)
-    }
     if (selectOptions.length > 0) {
       if (_.isEmpty(formRef.current?.getFieldValue('roguePolicyId'))){
         // eslint-disable-next-line max-len
