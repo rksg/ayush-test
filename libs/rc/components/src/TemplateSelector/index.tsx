@@ -1,12 +1,11 @@
-import { Form, Select, FormItemProps } from 'antd'
+import { Form, Select, FormItemProps, Spin } from 'antd'
 import { useIntl }                     from 'react-intl'
 import _                               from 'lodash'
 
-import { useGetTemplateScopeByIdQuery,
-  useGetAllTemplatesByTemplateScopeIdQuery,
-  useGetRegistrationByIdQuery } from '@acx-ui/rc/services'
+import { useGetTemplateSelectionContentQuery} from '@acx-ui/rc/services'
 
 import { templateNames, templateScopeLabels } from './MsgTemplateLocalizedMessages'
+import { useEffect, useState } from 'react'
 
 export interface TemplateSelectorProps {
   formItemProps?: FormItemProps,
@@ -24,85 +23,82 @@ export function TemplateSelector (props: TemplateSelectorProps) {
     placeholder = $t({ defaultMessage: 'Select Template...' })
   } = props
 
-  const templateScopeRequest =
-    useGetTemplateScopeByIdQuery({ params: { templateScopeId: scopeId } })
-  const templatesRequest =
-    useGetAllTemplatesByTemplateScopeIdQuery({ params: { templateScopeId: scopeId } })
-  const registrationRequest =
-    useGetRegistrationByIdQuery({
-      params: { templateScopeId: scopeId, registrationId: registrationId } })
+  const templateDataRequest = useGetTemplateSelectionContentQuery(
+    {params: {templateScopeId: scopeId, registrationId: registrationId}})
 
-  let initialTemplateId:string = ''
-  let registrationRequestFailed = false
-  if(registrationRequest.isError
-    && 'status' in registrationRequest.error
-    && registrationRequest.error.status === 404
-    && templateScopeRequest.data?.defaultTemplateId) {
 
-    initialTemplateId = templateScopeRequest.data.defaultTemplateId
-
-  } else if(registrationRequest.isSuccess && registrationRequest.data?.templateId) {
-    initialTemplateId = registrationRequest.data.templateId
-  } else if(registrationRequest.isError) {
-    registrationRequestFailed = true
-  }
+  const [templateOptions, setTemplateOptions] = useState<Array<{value:string, label:string}>>([])
 
   const form = Form.useFormInstance()
+  
+  const formItemProps = {
+      name: props.scopeId + 'templateId',
+      ...props.formItemProps
+    }
+  
+  const [formItemLabel, setFormItemLabel] = useState($t({ defaultMessage: 'Loading Templates...' }))
 
-  let isLoading = true
-  let isDisabled = true
-  let options = new Array<{ value:string, label:string }>()
-  let formItemProps = {
-    name: props.scopeId + 'templateId',
-    label: $t({ defaultMessage: 'Loading Templates...' }),
-    ...props.formItemProps
-  }
-  if(templateScopeRequest.isLoading
-    || templatesRequest.isLoading
-    || registrationRequest.isLoading) {
+  // Setup form options ////
+  useEffect(() => {
+    if(!templateDataRequest.isSuccess) {
+      return
+    }
+    
+    let options = templateDataRequest.data?.templates.map((t) =>
+         ({ value: t.id,
+           label: (t.userProvidedName? 
+            t.userProvidedName : $t(_.get(templateNames, t.nameLocalizationKey))) }))
+    setTemplateOptions(options)
+  }, [templateDataRequest.isSuccess, templateDataRequest.data?.templates])
 
-    isLoading = true
-    isDisabled = true
-    formItemProps.label = $t({ defaultMessage: 'Loading Templates...' })
-    options = []
+  // Set intitial selected value
+  useEffect(() => {
+    let currentFormValue = form.getFieldValue(formItemProps.name)
+    let initialTemplateId = templateDataRequest.data?.defaultTemplateId
 
-  } else if(templateScopeRequest.isSuccess
-    && templatesRequest.isSuccess
-    && !registrationRequest.isLoading) {
-
-    formItemProps.label = $t(_.get(templateScopeLabels, templateScopeRequest.data.nameLocalizationKey))
-    isLoading = false
-    isDisabled = false
-    options = templatesRequest.data.content.map(({ id, nameLocalizationKey, userProvidedName }) =>
-      ({ value: id,
-        label: (userProvidedName? userProvidedName : $t(_.get(templateNames, nameLocalizationKey))) }))
-
-    if(initialTemplateId) {
-      let initialSelection = options.find(t => t.value === initialTemplateId)
+    if(!currentFormValue && initialTemplateId) {
+      let initialSelection = templateOptions.find(t => t.value === templateDataRequest.data?.defaultTemplateId)
       form.setFieldValue(formItemProps.name, initialSelection)
     }
+  }, [templateDataRequest.data?.defaultTemplateId, templateDataRequest.data?.templates, templateOptions])
 
-  } else if(templateScopeRequest.isError || templatesRequest.isError || registrationRequestFailed) {
+  const [componentMode, setComponentMode] = useState<"LOADING" | "ERROR" | "LOADED">("LOADING")
 
-    isLoading=false
-    isDisabled=true
-    formItemProps.label = $t({ defaultMessage: 'Error Loading templates...' })
-    options=[]
+  useEffect(() => {
+    let content;
+    if(templateDataRequest.isLoading) {
+      setComponentMode("LOADING")
+    } else if(templateDataRequest.isError) {
+      setComponentMode("ERROR")
+    } else if(templateDataRequest.isSuccess) {
+      setComponentMode("LOADED")
+    }
+  }, [templateDataRequest.isLoading, templateDataRequest.isError, templateDataRequest.isSuccess])
 
+  useEffect(() => {
+    if(componentMode === "LOADED" && templateDataRequest.data?.templateScopeNameKey) {
+      setFormItemLabel($t(_.get(templateScopeLabels, templateDataRequest.data.templateScopeNameKey)))
+    } else {
+      setFormItemLabel($t({ defaultMessage: 'Loading Templates...' }))
+    }
+  }, [templateDataRequest.data?.templateScopeNameKey, componentMode])
+
+
+  if(componentMode !== "LOADED") {
+    return (<div style={{display:'block'}}><Spin></Spin></div>)
+  } else {
+    return (
+      <Form.Item {...formItemProps}
+        label={formItemLabel}>
+        <Select
+          placeholder={placeholder}
+          options={templateOptions}
+          onSelect={(item:unknown, option:unknown) => {
+            form.setFieldValue(formItemProps.name, option)
+            form.validateFields()
+          }}
+        />
+      </Form.Item>
+    )
   }
-
-  return (
-    <Form.Item {...formItemProps}>
-      <Select
-        loading={isLoading}
-        disabled={isDisabled}
-        placeholder={placeholder}
-        options={options}
-        onSelect={(item:unknown, option:unknown) => {
-          form.setFieldValue(formItemProps.name, option)
-          form.validateFields()
-        }}
-      />
-    </Form.Item>
-  )
 }

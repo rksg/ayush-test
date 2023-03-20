@@ -41,3 +41,10 @@ interface PageData {
     pageSize: Number,
     pageCount: Number
 }
+
+export interface TemplateSelectionContent {
+  templateScopeType: MessageType, 
+  templateScopeNameKey: string, 
+  defaultTemplateId: string, 
+  templates: Array<Template>
+}
