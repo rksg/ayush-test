@@ -1023,7 +1023,7 @@ exports[`Switch Stack Form - Add should render correctly 1`] = `
             style="margin-right: 12px;"
           >
             <button
-              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 gaYDUd"
+              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 dtmqDA"
               type="button"
             >
               <span>

@@ -114,7 +114,7 @@ exports[`Import CSV Drawer should render correctly 1`] = `
     >
       <div>
         <button
-          class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 gaYDUd"
+          class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 dtmqDA"
           disabled=""
           type="button"
         >

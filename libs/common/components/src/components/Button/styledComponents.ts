@@ -10,7 +10,6 @@ export const Button = styled(AntButton)<{ $customType: string | null }>`
       border-color: var(--acx-accents-orange-50);      
     }
     &:hover,
-    &:focus-visible,
     &.ant-btn-loading {
       background-color: var(--acx-accents-orange-60);
       border-color: var(--acx-accents-orange-60);
