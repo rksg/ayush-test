@@ -4,7 +4,7 @@ import AutoSizer                  from 'react-virtualized-auto-sizer'
 import { AnalyticsFilter, getSeriesData }                                  from '@acx-ui/analytics/utils'
 import { DonutChartData, MultiLineTimeSeriesChart }                        from '@acx-ui/components'
 import { HistoricalCard, Loader, NoData, DonutChart, qualitativeColorSet } from '@acx-ui/components'
-import { formatter }                                                       from '@acx-ui/utils'
+import { formatter }                                                       from '@acx-ui/formatter'
 
 import { Ports, useTopPortsQuery } from './services'
 

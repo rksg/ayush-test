@@ -40,6 +40,14 @@ import { PreferencesDialog } from '../../PreferencesDialog'
 import { ChangeScheduleDialog } from './ChangeScheduleDialog'
 import { UpdateNowDialog }      from './UpdateNowDialog'
 
+type TablePaginationPosition =
+  | 'topLeft'
+  | 'topCenter'
+  | 'topRight'
+  | 'bottomLeft'
+  | 'bottomCenter'
+  | 'bottomRight'
+
 const transform = firmwareTypeTrans()
 
 function useColumns (
@@ -56,29 +64,28 @@ function useColumns (
       sorter: true,
       searchable: searchable,
       defaultSortOrder: 'ascend',
-      width: 120,
       render: function (data, row) {
         return row.name
       }
     },
     {
       title: intl.$t({ defaultMessage: 'Current Firmware' }),
-      key: 'switchFirmwareVersion.id',
-      dataIndex: 'switchFirmwareVersion.id',
+      key: 'version',
+      dataIndex: 'version',
       sorter: true,
       filterable: filterables ? filterables['version'] : false,
-      width: 120,
+      filterMultiple: false,
       render: function (data, row) {
         return row.switchFirmwareVersion?.id ?? '--'
       }
     },
     {
       title: intl.$t({ defaultMessage: 'Firmware Type' }),
-      key: 'switchFirmwareVersion.category',
-      dataIndex: 'switchFirmwareVersion.category',
+      key: 'type',
+      dataIndex: 'type',
       sorter: true,
       filterable: filterables ? filterables['type'] : false,
-      width: 120,
+      filterMultiple: false,
       render: function (data, row) {
         return transform(row.switchFirmwareVersion?.category, 'type') ?? '--'
       }
@@ -87,8 +94,7 @@ function useColumns (
       title: intl.$t({ defaultMessage: 'Last Update' }),
       key: 'lastUpdate',
       dataIndex: 'lastUpdate',
-      sorter: true,
-      width: 120,
+      sorter: false,
       render: function (data, row) {
         return row.lastScheduleUpdateTime ? toUserDate(row.lastScheduleUpdateTime) : '--'
       }
@@ -97,8 +103,7 @@ function useColumns (
       title: intl.$t({ defaultMessage: 'Next Update Schedule' }),
       key: 'nextSchedule',
       dataIndex: 'nextSchedule',
-      sorter: true,
-      width: 120,
+      sorter: false,
       render: function (data, row) {
         return getNextScheduleTpl(intl, row)
       }
@@ -110,27 +115,6 @@ function useColumns (
 
 export const useDefaultVenuePayload = (): RequestPayload => {
   return {
-    // fields: [
-    //   'check-all',
-    //   'name',
-    //   'description',
-    //   'city',
-    //   'country',
-    //   'networks',
-    //   'aggregatedApStatus',
-    //   'switches',
-    //   'switchClients',
-    //   'clients',
-    //   'cog',
-    //   'latitude',
-    //   'longitude',
-    //   'status',
-    //   'id'
-    // ],
-    // searchTargetFields: ['name', 'description'],
-    // filters: {},
-    // sortField: 'name',
-    // sortOrder: 'ASC'
     firmwareType: '',
     firmwareVersion: '',
     search: '',
@@ -158,6 +142,7 @@ export const VenueFirmwareTable = (
   const [venues, setVenues] = useState<FirmwareSwitchVenue[]>([])
   const [upgradeVersions, setUpgradeVersions] = useState<FirmwareVersion[]>([])
   const [changeUpgradeVersions, setChangeUpgradeVersions] = useState<FirmwareVersion[]>([])
+  const pageBotton: TablePaginationPosition | 'none' = 'none'
 
   const [updateUpgradePreferences] = useUpdateUpgradePreferencesMutation()
   const { data: preferencesData } = useGetUpgradePreferencesQuery({ params })
@@ -307,8 +292,8 @@ export const VenueFirmwareTable = (
       <Table
         columns={columns}
         dataSource={tableQuery.data?.data}
-        // dataSource={tableData}
-        pagination={tableQuery.pagination}
+        // eslint-disable-next-line max-len
+        pagination={{ pageSize: 10000, position: [pageBotton as TablePaginationPosition , pageBotton as TablePaginationPosition] }}
         onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}

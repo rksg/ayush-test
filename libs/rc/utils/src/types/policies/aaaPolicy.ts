@@ -18,6 +18,7 @@ export interface AAATacacsServer{
 export interface AAATempType {
   id?: string,
   name: string,
+  type?: 'ACCOUNTING' | 'AUTHENTICATION',
   primary?: RadiusServer,
   secondary?: RadiusServer
 }

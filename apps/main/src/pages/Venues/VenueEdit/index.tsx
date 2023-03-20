@@ -10,6 +10,7 @@ import { VenueLed,
 import { useParams } from '@acx-ui/react-router-dom'
 import { getIntl }   from '@acx-ui/utils'
 
+import { PropertyManagementTab }    from './PropertyManagementTab'
 import { SwitchConfigTab }          from './SwitchConfigTab'
 import { VenueDetailsTab }          from './VenueDetailsTab'
 import VenueEditPageHeader          from './VenueEditPageHeader'
@@ -21,7 +22,8 @@ import { ServerSettingContext }     from './WifiConfigTab/ServerTab'
 const tabs = {
   details: VenueDetailsTab,
   wifi: WifiConfigTab,
-  switch: SwitchConfigTab
+  switch: SwitchConfigTab,
+  property: PropertyManagementTab
 }
 
 export interface EditContext {
@@ -169,6 +171,7 @@ function processWifiTab (
     case 'servers':
       editServerContextData?.updateSyslog?.()
       editServerContextData?.updateBonjourFencing?.()
+      editServerContextData?.updateVenueApSnmp?.()
       break
   }
 }

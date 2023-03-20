@@ -1,8 +1,7 @@
 import { BrowserRouter } from 'react-router-dom'
 
-import { dataApiURL }                       from '@acx-ui/analytics/services'
 import { defaultNetworkPath }               from '@acx-ui/analytics/utils'
-import { Provider, store }                  from '@acx-ui/store'
+import { dataApiURL, Provider, store }      from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
 import { header1, header4 } from './__tests__/fixtures'

@@ -40,8 +40,10 @@ export interface DHCPPool {
   vlanId: number;
   dhcpOptions: DHCPOption[];
   activated?: boolean;
+  startAddress: string;
+  endAddress: string;
+  networkAddress: string;
 }
-
 export interface DHCPOption{
   optId: string;
   id: number;
