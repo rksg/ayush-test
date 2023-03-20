@@ -56,10 +56,10 @@ describe('TopAppsByTrafficWidget', () => {
     const contentSwitcher = asFragment()
       .querySelector('div.ant-card-body > div > div:nth-child(1) > div')
     expect(contentSwitcher).toMatchSnapshot('contentSwitcher')
-    const trafficContent = asFragment().querySelector('div.ant-card-body')
+    const trafficContent = asFragment().querySelector('div.ant-card-body svg')
     expect(trafficContent).toMatchSnapshot('trafficContent')
     fireEvent.click(screen.getByText('By Clients'))
-    const clientContent = asFragment().querySelector('div.ant-card-body')
+    const clientContent = asFragment().querySelector('div.ant-card-body svg')
     expect(clientContent).toMatchSnapshot('clientContent')
 
   })
