@@ -361,6 +361,7 @@ export interface SupportDelegation {
 export interface AssignedEc {
   delegated_to: string;
   delegation_type: string;
+  expiry_date?: string;
   mspec_list: string[];
 }
 
