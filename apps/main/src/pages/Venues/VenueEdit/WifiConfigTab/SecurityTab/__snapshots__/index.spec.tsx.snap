@@ -186,7 +186,7 @@ exports[`SecurityTab should render correctly 1`] = `
               style="margin-right: 12px;"
             >
               <button
-                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 glXBEv"
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 gaYDUd"
                 type="button"
               >
                 <span>
