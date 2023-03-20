@@ -8,19 +8,13 @@ import RogueVenueTable from './RogueVenueTable'
 
 const VenueSelectInfo = () => {
   const { $t } = useIntl()
-  return <><div style={{ display: 'flex' }}>
-    <Space wrap size={8} >
-      <QuestionMarkCircleOutlined/>
-    </Space>
+  return <><div style={{ display: 'grid', gridTemplateColumns: '32px 1fr' }}>
+    <QuestionMarkCircleOutlined/>
     <Space wrap size={8} >
       {/* eslint-disable-next-line max-len */}
       {$t({ defaultMessage: 'If Rogue AP Detection is OFF for a venue and you activate a policy, Rogue detection will be turned ON for the venue automatically.' })}
     </Space>
-  </div>
-  <div style={{ display: 'flex' }}>
-    <Space wrap size={8} >
-      <QuestionMarkCircleOutlined/>
-    </Space>
+    <QuestionMarkCircleOutlined/>
     <Space wrap size={8} >
       {/* eslint-disable-next-line max-len */}
       {$t({ defaultMessage: 'Only 1 rogue AP classification profile can be active at any venue at any time.' })}
