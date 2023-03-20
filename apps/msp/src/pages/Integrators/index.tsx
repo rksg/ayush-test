@@ -222,14 +222,14 @@ export function Integrators () {
         extra={isAdmin ?
           [
             <TenantLink to='/dashboard'>
-              <Button>{$t({ defaultMessage: 'Manage my account' })}</Button>
+              <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
             </TenantLink>,
             <MspTenantLink to='/integrators/create'>
               <Button type='primary'>{$t({ defaultMessage: 'Add Tech Partner' })}</Button>
             </MspTenantLink>
           ]
           : [<TenantLink to='/dashboard'>
-            <Button>{$t({ defaultMessage: 'Manage my account' })}</Button>
+            <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
           </TenantLink>
           ]}
       />
@@ -243,6 +243,7 @@ export function Integrators () {
       {setDrawerEcVisible && <AssignEcDrawer
         visible={drawerEcVisible}
         setVisible={setDrawerEcVisible}
+        setSelected={() => {}}
         tenantId={tenantId}
         tenantType={tenantType}
       />}

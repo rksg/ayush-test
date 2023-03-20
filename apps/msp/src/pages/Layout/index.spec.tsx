@@ -141,7 +141,7 @@ describe('Layout', () => {
       expect(await screen.findByText('My Customers')).toBeVisible()
     })
 
-    expect(screen.getByRole('menuitem', { name: 'Tech Partner' }))
+    expect(screen.getByRole('menuitem', { name: 'Tech Partners' }))
       .toHaveAttribute('aria-disabled', 'true')
     expect(screen.getByRole('menuitem', { name: 'Device Inventory' }))
       .toHaveAttribute('aria-disabled', 'true')
@@ -162,7 +162,7 @@ describe('Layout', () => {
     await waitFor(async () => {
       expect(await screen.findByText('My Customers')).toBeVisible()
     })
-    expect(screen.getByRole('menuitem', { name: 'Tech Partner' }))
+    expect(screen.getByRole('menuitem', { name: 'Tech Partners' }))
       .toHaveAttribute('aria-disabled', 'true')
     expect(screen.getByRole('menuitem', { name: 'Device Inventory' }))
       .toHaveAttribute('aria-disabled', 'false')
@@ -183,7 +183,7 @@ describe('Layout', () => {
     await waitFor(async () => {
       expect(await screen.findByText('My Customers')).toBeVisible()
     })
-    expect(screen.getByRole('menuitem', { name: 'Tech Partner' }))
+    expect(screen.getByRole('menuitem', { name: 'Tech Partners' }))
       .toHaveAttribute('aria-disabled', 'false')
     expect(screen.getByRole('menuitem', { name: 'Device Inventory' }))
       .toHaveAttribute('aria-disabled', 'false')
