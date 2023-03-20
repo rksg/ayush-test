@@ -358,7 +358,21 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'AccessControl', id: 'DETAIL' }]
+      providesTags: [{ type: 'AccessControl', id: 'DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'AddL2AclPolicy',
+            'UpdateL2AclPolicy',
+            'DeleteL2AclPolicy',
+            'DeleteBulkL2AclPolicies'
+          ], () => {
+            api.dispatch(policyApi.util.invalidateTags([
+              { type: 'AccessControl', id: 'DETAIL' }
+            ]))
+          })
+        })
+      }
     }),
     getEnhancedL3AclProfileList: build.query<TableResult<L3AclPolicy>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -368,7 +382,21 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'AccessControl', id: 'DETAIL' }]
+      providesTags: [{ type: 'AccessControl', id: 'DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'AddL3AclPolicy',
+            'UpdateL3AclPolicy',
+            'DeleteL3AclPolicy',
+            'DeleteBulkL3AclPolicies'
+          ], () => {
+            api.dispatch(policyApi.util.invalidateTags([
+              { type: 'AccessControl', id: 'DETAIL' }
+            ]))
+          })
+        })
+      }
     }),
     getEnhancedDeviceProfileList: build.query<TableResult<DevicePolicy>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -378,7 +406,21 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'AccessControl', id: 'DETAIL' }]
+      providesTags: [{ type: 'AccessControl', id: 'DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'AddDevicePolicy',
+            'UpdateDevicePolicy',
+            'DeleteDevicePolicy',
+            'DeleteBulkDevicePolicies'
+          ], () => {
+            api.dispatch(policyApi.util.invalidateTags([
+              { type: 'AccessControl', id: 'DETAIL' }
+            ]))
+          })
+        })
+      }
     }),
     getEnhancedApplicationProfileList: build.query<TableResult<ApplicationPolicy>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -388,7 +430,21 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'AccessControl', id: 'DETAIL' }]
+      providesTags: [{ type: 'AccessControl', id: 'DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'AddApplicationPolicy',
+            'UpdateApplicationPolicy',
+            'DeleteApplicationPolicy',
+            'DeleteBulkApplicationPolicies'
+          ], () => {
+            api.dispatch(policyApi.util.invalidateTags([
+              { type: 'AccessControl', id: 'DETAIL' }
+            ]))
+          })
+        })
+      }
     }),
     delRoguePolicies: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
