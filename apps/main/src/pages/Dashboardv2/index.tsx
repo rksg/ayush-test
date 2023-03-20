@@ -8,13 +8,13 @@ import {
   ClientExperience,
   SwitchesTrafficByVolume,
   TopAppsByTraffic,
-  TopSSIDsByTraffic,
   TopSwitchesByError,
   TopSwitchesByPoEUsage,
   TopSwitchesByTraffic,
   TopSwitchModels,
   TrafficByVolume,
-  DidYouKnow } from '@acx-ui/analytics/components'
+  DidYouKnow,
+  TopWiFiNetworks } from '@acx-ui/analytics/components'
 import {
   GridRow,
   GridCol,
@@ -102,7 +102,7 @@ function ApWidgets () {
         <ConnectedClientsOverTime filters={filters} vizType={'area'} />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <TopSSIDsByTraffic filters={filters}/>
+        <TopWiFiNetworks filters={filters}/>
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
         <TopAppsByTraffic filters={filters}/>
