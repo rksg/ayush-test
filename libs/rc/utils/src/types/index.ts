@@ -38,6 +38,7 @@ export * from './firmware'
 export * from './timeline'
 export * from './persona'
 export * from './radiusClientConfig'
+export * from './property'
 
 export interface CommonResult {
   requestId: string
