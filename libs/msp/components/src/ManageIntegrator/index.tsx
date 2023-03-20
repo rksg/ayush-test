@@ -34,7 +34,8 @@ import {
   useMspAssignmentSummaryQuery,
   useMspAssignmentHistoryQuery,
   useMspAdminListQuery,
-  useGetMspEcDelegatedAdminsQuery
+  useGetMspEcDelegatedAdminsQuery,
+  useMspCustomerListQuery
 } from '@acx-ui/rc/services'
 import {
   Address,
@@ -49,7 +50,8 @@ import {
   MspAssignmentHistory,
   MspAssignmentSummary,
   MspEcDelegatedAdmins,
-  AssignActionEnum
+  AssignActionEnum,
+  useTableQuery
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -189,6 +191,23 @@ export function ManageIntegrator () {
       useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
   const { data: ecAdministrators } =
       useMspEcAdminListQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
+  const queryResults = useTableQuery({
+    useQuery: useMspCustomerListQuery,
+    defaultPayload: {
+      searchString: '',
+      filters: { tenantType: ['MSP_EC'] },
+      fields: [
+        'id',
+        'name',
+        'tenantType',
+        'status',
+        'wifiLicense',
+        'switchLicens',
+        'streetAddress'
+      ]
+    },
+    option: { skip: action !== 'edit' }
+  })
 
   useEffect(() => {
     if (licenseSummary) {
@@ -247,6 +266,14 @@ export function ManageIntegrator () {
       setAdministrator(selAdmins)
     }
   }, [delegatedAdmins, Administrators])
+
+  useEffect(() => {
+    if (queryResults.data?.data && isEditMode) {
+      setSelectedEcs(tenantType === AccountType.MSP_INTEGRATOR
+        ? queryResults.data.data.filter(mspEc => mspEc.integrator === mspEcTenantId)
+        : queryResults.data.data.filter(mspEc => mspEc.installer === mspEcTenantId))
+    }
+  }, [queryResults])
 
   const [sameCountry, setSameCountry] = useState(true)
   const addressValidator = async (value: string) => {
@@ -434,7 +461,7 @@ export function ManageIntegrator () {
       return '--'
     return <>
       {mspAdmins.map(admin =>
-        <UI.AdminList>
+        <UI.AdminList key={admin.id}>
           {admin.email} ({intl.$t(roleDisplayText[admin.role])})
         </UI.AdminList>
       )}
@@ -446,7 +473,7 @@ export function ManageIntegrator () {
       return '--'
     return <>
       {selectedEcs.map(ec =>
-        <UI.AdminList>
+        <UI.AdminList key={ec.id}>
           {ec.name}
         </UI.AdminList>
       )}
@@ -605,6 +632,9 @@ export function ManageIntegrator () {
   const AssignEcForm = () => {
     const onChange = (e: RadioChangeEvent) => {
       setUnlimitSelected(e.target.value)
+      if (e.target.value) {
+        selectedAssignEc([])
+      }
     }
 
     const content =
@@ -848,6 +878,10 @@ export function ManageIntegrator () {
         buttonLabel={{ submit: isEditMode ?
           intl.$t({ defaultMessage: 'Save' }):
           intl.$t({ defaultMessage: 'Add Tech Partner' }) }}
+        onCurrentChange={() => {
+          setDrawerAdminVisible(false)
+          setDrawerAssignedEcVisible(false)
+        }}
       >
         {isEditMode && <StepsForm.StepForm>
           <Subtitle level={3}>
