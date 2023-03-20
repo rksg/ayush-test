@@ -9,7 +9,8 @@ import {
   RawIntlProvider
 } from 'react-intl'
 
-import { getIntl, intlFormats } from '@acx-ui/utils'
+import { intlFormats } from '@acx-ui/formatter'
+import { getIntl }     from '@acx-ui/utils'
 
 import { cssNumber, cssStr } from '../../theme/helper'
 import {
@@ -37,7 +38,7 @@ interface DonutChartOptionalProps {
   showLabel: boolean,
   showTotal: boolean,
   legend: 'value' | 'name' | 'name-value',
-  size: 'small' | 'large'
+  size: 'small' | 'medium' | 'large' | 'x-large'
 }
 
 const defaultProps: DonutChartOptionalProps = {
@@ -127,6 +128,14 @@ export function DonutChart ({
     })
   }
 
+  const legendStyles = {
+    color: cssStr('--acx-primary-black'),
+    fontFamily: cssStr('--acx-neutral-brand-font'),
+    fontSize: cssNumber('--acx-body-5-font-size'),
+    lineHeight: cssNumber('--acx-body-5-line-height'),
+    fontWeight: cssNumber('--acx-body-5-font-weight')
+  }
+
   const commonStyles = {
     color: cssStr('--acx-primary-black'),
     fontFamily: cssStr('--acx-chart-font'),
@@ -141,7 +150,7 @@ export function DonutChart ({
   }
 
   const styles = {
-    small: {
+    'small': {
       title: {
         ...commonFontStyle,
         fontSize: cssNumber('--acx-subtitle-6-font-size'),
@@ -152,7 +161,22 @@ export function DonutChart ({
         ...commonStyles
       }
     },
-    large: {
+    'medium': {
+      title: {
+        ...commonFontStyle,
+        fontFamily: cssStr('--acx-chart-font'),
+        fontSize: cssNumber('--acx-headline-2-font-size'),
+        lineHeight: cssNumber('--acx-headline-2-line-height'),
+        fontWeight: cssNumber('--acx-headline-2-font-weight-bold')
+      },
+      value: {
+        ...commonFontStyle,
+        fontSize: cssNumber('--acx-subtitle-1-font-size'),
+        lineHeight: cssNumber('--acx-subtitle-1-line-height'),
+        fontWeight: cssNumber('--acx-subtitle-1-font-weight')
+      }
+    },
+    'large': {
       title: {
         ...commonFontStyle,
         fontSize: cssNumber('--acx-body-2-font-size'),
@@ -166,11 +190,40 @@ export function DonutChart ({
         fontWeight: cssNumber('--acx-subtitle-1-font-weight')
       }
     },
-    label: {
+    'x-large': {
+      title: {
+        ...commonFontStyle,
+        fontSize: cssNumber('--acx-body-2-font-size'),
+        lineHeight: cssNumber('--acx-body-2-line-height'),
+        fontWeight: cssNumber('--acx-body-font-weight')
+      },
+      value: {
+        ...commonFontStyle,
+        fontSize: cssNumber('--acx-subtitle-1-font-size'),
+        lineHeight: cssNumber('--acx-subtitle-1-line-height'),
+        fontWeight: cssNumber('--acx-subtitle-1-font-weight')
+      }
+    },
+    'label': {
       ...commonFontStyle,
       fontSize: cssNumber('--acx-body-4-font-size'),
       lineHeight: cssNumber('--acx-body-4-line-height'),
       fontWeight: cssNumber('--acx-body-font-weight')
+    }
+  }
+
+  const getDonutRadius = () => {
+    switch(true) {
+      case isEmpty:
+        return ['82%', '92%']
+      case props.showLabel:
+        return ['62%', '78%']
+      case props.size === 'medium':
+        return ['76%', '92%']
+      case props.size === 'x-large':
+        return ['58%', '82%']
+      default:
+        return ['78%', '92%']
     }
   }
 
@@ -196,15 +249,15 @@ export function DonutChart ({
     legend: {
       show: props.showLegend,
       top: 'middle',
-      left: '60%',
+      left: props.size === 'x-large' ? '55%' : '60%',
       orient: 'vertical',
       icon: 'circle',
       selectedMode: false,
-      itemGap: 4,
+      itemGap: props.size === 'x-large'? 16 : 4,
       itemWidth: 8,
       itemHeight: 8,
       textStyle: {
-        ...commonStyles
+        ...legendStyles
       },
       itemStyle: {
         borderWidth: 0
@@ -228,9 +281,7 @@ export function DonutChart ({
         type: 'pie',
         cursor: props.onClick ? 'pointer' : 'auto',
         center: [props.showLegend && !isEmpty ? '30%' : '50%', '50%'],
-        radius: isEmpty
-          ? ['82%', '92%']
-          : props.showLabel ? ['62%', '78%'] : ['78%', '92%'],
+        radius: getDonutRadius(),
         avoidLabelOverlap: true,
         label: {
           show: props.showLabel,
@@ -255,7 +306,7 @@ export function DonutChart ({
           length2: isSmall ? 5 : 10
         },
         itemStyle: {
-          borderWidth: props.size === 'large' ? 2 : 1,
+          borderWidth: props.size === 'large' || props.size === 'x-large' ? 2 : 1,
           borderColor: isEmpty ? cssStr('--acx-neutrals-25') : cssStr('--acx-primary-white')
         }
       }

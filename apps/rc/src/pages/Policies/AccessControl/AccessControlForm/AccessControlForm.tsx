@@ -28,6 +28,16 @@ type AccessControlFormProps = {
   editMode: boolean
 }
 
+export interface editModeProps {
+  id: string,
+  isEdit: boolean
+}
+
+export interface AddModeProps {
+  enable: boolean,
+  visible: boolean
+}
+
 export const genAclPayloadObject = (accessControlProfile: AccessControlFormFields) => {
   let aclPayloadObject = {} as AccessControlFormFields
 

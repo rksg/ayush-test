@@ -3,7 +3,7 @@ import { storiesOf }              from '@storybook/react'
 import { defineMessage, useIntl } from 'react-intl'
 import AutoSizer                  from 'react-virtualized-auto-sizer'
 
-import { intlFormats } from '@acx-ui/utils'
+import { intlFormats } from '@acx-ui/formatter'
 
 import { cssStr }      from '../../theme/helper'
 import { Card }        from '../Card'
@@ -144,6 +144,25 @@ storiesOf('Donut Chart', module)
                   <space><b>{formattedValue}</b> ({formattedPercent})</space>`
               })}
               size={'large'}
+              dataFormatter={(v) => $t(intlFormats.countFormat, { value: v as number })}
+              data={topSwitchModels}/>
+          )}
+        </AutoSizer>
+      </Card>
+    </div>})
+  .add('Extra Large - with Legends', () => {
+    const { $t } = useIntl()
+    return <div style={{ width: 496, height: 278 }}>
+      <Card title='Top 5 Switch Models'>
+        <AutoSizer>
+          {({ height, width }) => (
+            <DonutChart
+              style={{ width, height }}
+              showLabel={false}
+              showTotal={false}
+              showLegend={true}
+              legend={'name'}
+              size={'x-large'}
               dataFormatter={(v) => $t(intlFormats.countFormat, { value: v as number })}
               data={topSwitchModels}/>
           )}

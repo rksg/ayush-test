@@ -1,7 +1,7 @@
 import { useIntl, defineMessage } from 'react-intl'
 
+import { intlFormats }    from '@acx-ui/formatter'
 import { render, screen } from '@acx-ui/test-utils'
-import { intlFormats }    from '@acx-ui/utils'
 
 import { cssStr }                              from '../../theme/helper'
 import { EventParams, TooltipFormatterParams } from '../Chart/helper'
@@ -194,5 +194,63 @@ describe('tooltipFormatter', () => {
       format
     )({ ...singleparameters, percent: 10 })).toMatchSnapshot()
     expect(formatter).toBeCalledTimes(2)
+  })
+})
+
+describe('Donut Chart - medium', () => {
+  it('should render the chart properly with data and only title, without legend', async () => {
+    const { asFragment } = render(<DonutChart
+      style={{ width: 238, height: 176 }}
+      data={data}
+      size={'medium'}
+      onClick={jest.fn()}
+      title='Donut Chart'
+      showLegend={false}
+      showTotal={false}/>)
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+    expect(screen.getByText('Donut Chart').getAttribute('style'))
+      .toEqual("font-size:24px;font-family:'Montserrat', sans-serif;font-weight:600;")
+  })
+  it('should render the chart with title and value passed as prop, with Legends', async () => {
+    const { asFragment } = render(<DonutChart
+      style={{ width: 238, height: 176 }}
+      data={data}
+      size={'medium'}
+      title='Some Title'
+      value='100'
+      legend='name'
+      showLegend={true}
+      showTotal={false}/>)
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+    expect(screen.getByText('Requires Attention')).toBeVisible()
+  })
+})
+
+describe('Donut Chart - x-large', () => {
+  it('should render the chart properly with data and only title, without legend', async () => {
+    const { asFragment } = render(<DonutChart
+      style={{ width: 238, height: 176 }}
+      data={data}
+      size={'x-large'}
+      onClick={jest.fn()}
+      title='Donut Chart'
+      showLegend={false}
+      showTotal={false}/>)
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+    expect(screen.getByText('Donut Chart').getAttribute('style'))
+      .toEqual("font-size:16px;font-family:'Open Sans', sans-serif;font-weight:400;")
+  })
+  it('should render the chart with title and value passed as prop, with Legends', async () => {
+    const { asFragment } = render(<DonutChart
+      style={{ width: 238, height: 176 }}
+      data={data}
+      size={'x-large'}
+      title='Some Title'
+      value='100'
+      legend='name'
+      showLegend={true}
+      showTotal={false}/>)
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+    expect(screen.getByText('Requires Attention')).toBeVisible()
   })
 })

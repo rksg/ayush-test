@@ -1,7 +1,7 @@
 import {
   networkHealthApi as api,
   networkHealthApiURL
-} from '@acx-ui/analytics/services'
+} from '@acx-ui/store'
 import { Provider, store } from '@acx-ui/store'
 import { render, screen }  from '@acx-ui/test-utils'
 import {

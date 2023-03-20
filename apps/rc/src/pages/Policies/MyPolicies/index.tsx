@@ -3,12 +3,14 @@ import { useIntl } from 'react-intl'
 import { Button, GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
 import {
+  useGetEnhancedAccessControlProfileListQuery,
   useGetAAAPolicyViewModelListQuery,
   useGetVLANPoolPolicyViewModelListQuery,
+  useEnhancedRoguePoliciesQuery,
   useGetApSnmpViewModelQuery,
   useGetEnhancedClientIsolationListQuery,
   useSyslogPolicyListQuery,
-  usePolicyListQuery
+  useMacRegListsQuery
 } from '@acx-ui/rc/services'
 import {
   getPolicyRoutePath,
@@ -89,6 +91,7 @@ export default function MyPolicies () {
 function useCardData (): CardDataProps[] {
   const params = useParams()
   const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
+  const macRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
 
   return [
     {
@@ -101,8 +104,8 @@ function useCardData (): CardDataProps[] {
     {
       type: PolicyType.ACCESS_CONTROL,
       category: RadioCardCategory.WIFI,
-      totalCount: usePolicyListQuery({ // TODO should invoke self List API here when API is ready
-        params, payload: { ...defaultPayload, filters: { type: [PolicyType.ACCESS_CONTROL] } }
+      totalCount: useGetEnhancedAccessControlProfileListQuery({
+        params, payload: defaultPayload
       }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST }))
@@ -119,19 +122,17 @@ function useCardData (): CardDataProps[] {
     {
       type: PolicyType.MAC_REGISTRATION_LIST,
       category: RadioCardCategory.WIFI,
-      totalCount: usePolicyListQuery({ // TODO should invoke self List API here when API is ready
-        // eslint-disable-next-line max-len
-        params, payload: { ...defaultPayload, filters: { type: [PolicyType.MAC_REGISTRATION_LIST] } }
-      }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      totalCount: useMacRegListsQuery({ params }, { skip: !macRegistrationEnabled }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST })),
-      disabled: true
+      disabled: !macRegistrationEnabled
     },
     {
       type: PolicyType.ROGUE_AP_DETECTION,
       category: RadioCardCategory.WIFI,
-      totalCount: usePolicyListQuery({ // TODO should invoke self List API here when API is ready
-        params, payload: { ...defaultPayload, filters: { type: [PolicyType.ROGUE_AP_DETECTION] } }
+      totalCount: useEnhancedRoguePoliciesQuery({
+        params, payload: defaultPayload
       }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.LIST }))

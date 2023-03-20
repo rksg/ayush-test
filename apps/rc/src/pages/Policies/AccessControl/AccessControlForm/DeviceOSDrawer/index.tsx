@@ -23,16 +23,13 @@ import { AccessStatus, CommonResult, DeviceRule } from '@acx-ui/rc/utils'
 import { useParams }                              from '@acx-ui/react-router-dom'
 import { filterByAccess }                         from '@acx-ui/user'
 
+import { AddModeProps, editModeProps } from '../AccessControlForm'
+
 import DeviceOSRuleContent, { DrawerFormItem } from './DeviceOSRuleContent'
 
 const { Option } = Select
 
 const { useWatch } = Form
-
-export interface editModeProps {
-  id: string,
-  isEdit: boolean
-}
 
 export interface DeviceOSRule {
   ruleName: string,
@@ -53,6 +50,7 @@ export interface DeviceOSDrawerProps {
     viewText: string
   },
   isOnlyViewMode?: boolean,
+  onlyAddMode?: AddModeProps,
   editMode?: editModeProps,
   setEditMode?: (editMode: editModeProps) => void
 }
@@ -92,15 +90,19 @@ const AclGridCol = ({ children }: { children: ReactNode }) => {
 
 const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   const { $t } = useIntl()
-  const [visible, setVisible] = useState(false)
   const params = useParams()
   const {
     inputName = [],
     onlyViewMode = {} as { id: string, viewText: string },
     isOnlyViewMode = false,
+    onlyAddMode = { enable: false, visible: false } as AddModeProps,
     editMode = { id: '', isEdit: false } as editModeProps,
     setEditMode = () => {}
   } = props
+  const [visible, setVisible] = useState(onlyAddMode.enable ? onlyAddMode.visible : false)
+  const [localEditMode, setLocalEdiMode] = useState(
+    { id: '', isEdit: false } as editModeProps
+  )
   const [deviceOSDrawerVisible, setDeviceOSDrawerVisible] = useState(false)
   const [ruleDrawerEditMode, setRuleDrawerEditMode] = useState(false)
   const [deviceOSRuleList, setDeviceOSRuleList] = useState([] as DeviceOSRule[])
@@ -154,8 +156,8 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       return false
     }
 
-    if (editMode) {
-      return !editMode.isEdit
+    if (editMode.isEdit || localEditMode.isEdit) {
+      return false
     }
 
     return !_.isNil(devicePolicyInfo)
@@ -169,7 +171,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   }, [editMode])
 
   useEffect(() => {
-    if (devicePolicyInfo) {
+    if (devicePolicyInfo && (isViewMode() || editMode.isEdit || localEditMode.isEdit)) {
       contentForm.setFieldValue('policyName', devicePolicyInfo.name)
       contentForm.setFieldValue('deviceDefaultAccess', devicePolicyInfo.defaultAccess)
       setDeviceOSRuleList([...devicePolicyInfo.rules.map((deviceRule: DeviceRule) => ({
@@ -185,6 +187,12 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       }))] as DeviceOSRule[])
     }
   }, [devicePolicyInfo, queryPolicyId])
+
+  useEffect(() => {
+    if (onlyAddMode.enable && onlyAddMode.visible) {
+      setVisible(onlyAddMode.visible)
+    }
+  }, [onlyAddMode])
 
   const basicColumns: TableProps<DeviceOSRule>['columns'] = [
     {
@@ -264,6 +272,11 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     clearFieldsValue()
     if (editMode.isEdit) {
       setEditMode({
+        id: '', isEdit: false
+      })
+    }
+    if (localEditMode.isEdit) {
+      setLocalEdiMode({
         id: '', isEdit: false
       })
     }
@@ -455,9 +468,13 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     />
   </Form>
 
-  return (
-    <>
-      { isOnlyViewMode ? <Button
+  const modelContent = () => {
+    if (onlyAddMode.enable) {
+      return null
+    }
+
+    if (isOnlyViewMode) {
+      return <Button
         type='link'
         size={'small'}
         onClick={() => {
@@ -466,50 +483,60 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         }
         }>
         {onlyViewMode.viewText}
-      </Button>: <GridRow style={{ width: '350px' }}>
-        <GridCol col={{ span: 12 }}>
-          <Form.Item
-            name={[...inputName, 'devicePolicyId']}
-            rules={[{
-              required: true
-            }, {
-              message: $t({ defaultMessage: 'Please select Device & OS profile' })
-            }]}
-            children={
-              <Select
-                placeholder={$t({ defaultMessage: 'Select profile...' })}
-                onChange={(value) => {
-                  setQueryPolicyId(value)
-                }}
-                children={deviceSelectOptions}
-              />
-            }
-          />
-        </GridCol>
-        <AclGridCol>
-          <Button type='link'
-            disabled={!devicePolicyId}
-            onClick={() => {
-              if (devicePolicyId) {
-                setVisible(true)
-                setQueryPolicyId(devicePolicyId)
-              }
-            }
-            }>
-            {$t({ defaultMessage: 'View Details' })}
-          </Button>
-        </AclGridCol>
-        <AclGridCol>
-          <Button type='link'
-            onClick={() => {
+      </Button>
+    }
+
+    return <GridRow style={{ width: '350px' }}>
+      <GridCol col={{ span: 12 }}>
+        <Form.Item
+          name={[...inputName, 'devicePolicyId']}
+          rules={[{
+            required: true
+          }, {
+            message: $t({ defaultMessage: 'Please select Device & OS profile' })
+          }]}
+          children={
+            <Select
+              style={{ width: '150px' }}
+              placeholder={$t({ defaultMessage: 'Select profile...' })}
+              onChange={(value) => {
+                setQueryPolicyId(value)
+              }}
+              children={deviceSelectOptions}
+            />
+          }
+        />
+      </GridCol>
+      <AclGridCol>
+        <Button type='link'
+          disabled={!devicePolicyId}
+          onClick={() => {
+            if (devicePolicyId) {
               setVisible(true)
-              setQueryPolicyId('')
-              clearFieldsValue()
-            }}>
-            {$t({ defaultMessage: 'Add New' })}
-          </Button>
-        </AclGridCol>
-      </GridRow> }
+              setQueryPolicyId(devicePolicyId)
+              setLocalEdiMode({ id: devicePolicyId, isEdit: true })
+            }
+          }
+          }>
+          {$t({ defaultMessage: 'Edit Details' })}
+        </Button>
+      </AclGridCol>
+      <AclGridCol>
+        <Button type='link'
+          onClick={() => {
+            setVisible(true)
+            setQueryPolicyId('')
+            clearFieldsValue()
+          }}>
+          {$t({ defaultMessage: 'Add New' })}
+        </Button>
+      </AclGridCol>
+    </GridRow>
+  }
+
+  return (
+    <>
+      {modelContent()}
       <Drawer
         title={$t({ defaultMessage: 'Device & OS Access Settings' })}
         visible={visible}
@@ -525,7 +552,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
               try {
                 if (!isViewMode()) {
                   await contentForm.validateFields()
-                  await handleDevicePolicy(editMode.isEdit)
+                  await handleDevicePolicy(editMode.isEdit || localEditMode.isEdit)
                 }
                 handleDeviceOSDrawerClose()
               } catch (error) {

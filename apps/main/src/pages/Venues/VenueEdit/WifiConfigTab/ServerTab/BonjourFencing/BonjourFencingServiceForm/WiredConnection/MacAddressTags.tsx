@@ -9,33 +9,39 @@ import { Plus } from '@acx-ui/icons'
 export interface TagData {
   value: string,
   isInValid?: boolean,
-  isUsed?: boolean
+  isUsed?: boolean,
+  isUsedOtherRules?: boolean
 }
 
 interface MacAddressesTagsProps {
   maxNumOfTags?: number,
   usedMacAddrs?: string[],
+  otherUsedMacAddrs?: string[]
   tags: TagData[],
   tagsChanged: (data: TagData[]) => void
+}
+
+enum MacErrorTypeEnum {
+  None,
+  Format,
+  IsCurrentRuleUsed,
+  IsOtherRulesUsed
 }
 
 export const MacAddressesTags = (props: MacAddressesTagsProps) => {
   const { $t } = useIntl()
 
-  const { maxNumOfTags, usedMacAddrs=[], tags=[], tagsChanged } = props
+  const { maxNumOfTags, usedMacAddrs=[], otherUsedMacAddrs=[], tags=[], tagsChanged } = props
 
   const [inputVisible, setInputVisible] = useState(false)
   const [inputValue, setInputValue] = useState('')
-  const [hasMacFormatError, setHasMacFormatError] = useState(false)
-  const [isUsedMacAddr, setIsUsedMacAddr] = useState(false)
-
+  const [macErrorType, setMacErrorType] = useState(MacErrorTypeEnum.None)
   const inputRef = useRef<InputRef>(null)
   const editInputRef = useRef<InputRef>(null)
 
   useEffect(() => {
     if (tags.length === 0) {
-      setHasMacFormatError(false)
-      setIsUsedMacAddr(false)
+      setMacErrorType(MacErrorTypeEnum.None)
     }
   }, [tags])
 
@@ -51,12 +57,17 @@ export const MacAddressesTags = (props: MacAddressesTagsProps) => {
 
 
   const handleClose = (removedTag: TagData) => {
-    const { isInValid = false, isUsed = false } = removedTag
+    const { isInValid = false, isUsed = false, isUsedOtherRules = false } = removedTag
     const newTags = tags.filter((tag) => tag.value !== removedTag.value)
     tagsChanged(newTags)
 
-    if (isInValid) setHasMacFormatError(false)
-    if (isUsed) setIsUsedMacAddr(false)
+    if (isInValid && macErrorType === MacErrorTypeEnum.Format) {
+      setMacErrorType(MacErrorTypeEnum.None)
+    } else if (isUsed && macErrorType === MacErrorTypeEnum.IsCurrentRuleUsed) {
+      setMacErrorType(MacErrorTypeEnum.None)
+    } else if (isUsedOtherRules && macErrorType === MacErrorTypeEnum.IsOtherRulesUsed) {
+      setMacErrorType(MacErrorTypeEnum.None)
+    }
   }
 
   const showInput = () => {
@@ -99,12 +110,14 @@ export const MacAddressesTags = (props: MacAddressesTagsProps) => {
   const createTagData = (inputVaue: string) => {
     const isValid = isValidMacAddress(inputVaue)
     const newTagValue = isValid? convertToStandardMacAddress(inputValue) : inputVaue
-    const isUsed = isValid && _.includes(usedMacAddrs, inputVaue)
+    const isUsed = isValid && _.includes(usedMacAddrs, newTagValue)
+    const isUsedOtherRules = isValid && _.includes(otherUsedMacAddrs, newTagValue)
 
     return {
       value: newTagValue,
       isInValid: !isValid,
-      isUsed
+      isUsed,
+      isUsedOtherRules
     }
   }
 
@@ -117,8 +130,16 @@ export const MacAddressesTags = (props: MacAddressesTagsProps) => {
         const newData = [...tags, newTag]
         tagsChanged(newData)
 
-        setHasMacFormatError(newTag.isInValid)
-        setIsUsedMacAddr(newTag.isUsed)
+        const { isInValid, isUsed, isUsedOtherRules } = newTag
+        if (isInValid) {
+          setMacErrorType(MacErrorTypeEnum.Format)
+        } else if (isUsed) {
+          setMacErrorType(MacErrorTypeEnum.IsCurrentRuleUsed)
+        } else if (isUsedOtherRules) {
+          setMacErrorType(MacErrorTypeEnum.IsOtherRulesUsed)
+        } else {
+          setMacErrorType(MacErrorTypeEnum.None)
+        }
       }
     }
     setInputVisible(false)
@@ -144,7 +165,6 @@ export const MacAddressesTags = (props: MacAddressesTagsProps) => {
     userSelect: 'none',
     borderRadius,
     backgroundColor: 'black'
-
   }
 
   const tagFailStyle: CSSProperties = {
@@ -190,7 +210,8 @@ export const MacAddressesTags = (props: MacAddressesTagsProps) => {
                 key={tagValue}
                 closable={true}
                 color='white'
-                style={(tag.isInValid || tag.isUsed)? tagFailStyle : tagStyle}
+                style={(tag.isInValid || tag.isUsed || tag.isUsedOtherRules)
+                  ? tagFailStyle : tagStyle}
                 onClose={() => handleClose(tag)}
               >
                 <span>
@@ -207,18 +228,24 @@ export const MacAddressesTags = (props: MacAddressesTagsProps) => {
             )
           })}
         </Space>
-        { !hasMacFormatError && !isUsedMacAddr &&
+        { macErrorType === MacErrorTypeEnum.None &&
           (!maxNumOfTags || tags.length < maxNumOfTags) && InputTag
         }
       </Space>
-      {hasMacFormatError &&
+      {macErrorType === MacErrorTypeEnum.Format &&
         <div style={{ color: 'red' }}>
           {$t({ defaultMessage: 'The format of a MAC address is not correct.' })}
         </div>
       }
-      {isUsedMacAddr &&
+      {macErrorType === MacErrorTypeEnum.IsCurrentRuleUsed &&
         <div style={{ color: 'red' }}>
-          {$t({ defaultMessage: 'The MAC address has already existed.' })}
+          {$t({ defaultMessage: 'You have entered a duplicate MAC address already in use.' })}
+        </div>
+      }
+      {macErrorType === MacErrorTypeEnum.IsOtherRulesUsed &&
+        <div style={{ color: 'red' }}>
+          {$t({ defaultMessage:
+            'You have already entered this MAC address for this service type.' })}
         </div>
       }
     </Space>

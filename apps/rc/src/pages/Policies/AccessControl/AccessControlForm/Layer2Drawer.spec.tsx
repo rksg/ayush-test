@@ -266,7 +266,7 @@ describe('Layer2Drawer Component', () => {
       screen.getByRole('option', { name: 'allowl2' })
     )
 
-    await userEvent.click(screen.getByText(/view details/i))
+    await userEvent.click(screen.getByText(/edit details/i))
 
     await screen.findByText(/layer 2 settings/i)
 

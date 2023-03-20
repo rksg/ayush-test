@@ -7,8 +7,8 @@ import AutoSizer    from 'react-virtualized-auto-sizer'
 import { KPITimeseriesResponse, healthApi }         from '@acx-ui/analytics/services'
 import { AnalyticsFilter, kpiConfig }               from '@acx-ui/analytics/utils'
 import { Loader, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
+import { formatter }                                from '@acx-ui/formatter'
 import type { TimeStamp, TimeStampRange }           from '@acx-ui/types'
-import { formatter }                                from '@acx-ui/utils'
 
 const transformResponse = ({ data, time }: KPITimeseriesResponse) => data
   .map((datum, index) => ([

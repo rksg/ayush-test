@@ -146,30 +146,30 @@ export function SwitchInfoWidget (props:{
         <GridRow style={{ flexGrow: '1' }}>
           <GridCol col={{ span: 1 }} />
           <GridCol col={{ span: 4 }}>
-            <UI.Wrapper onClick={() => setAlarmDrawerVisible(true)}>
+            <UI.Wrapper>
               <Loader states={[alarmQuery]}>
                 { alarmData && alarmData.length > 0
-                  ?<UI.DonutChartWidget
-                    title={$t({ defaultMessage: 'Alarms' })}
-                    style={{ width: 100, height: 100 }}
-                    legend={'name-value'}
-                    data={alarmData}/>
-                  : <UI.PointerContainer>
-                    <NoActiveContent
-                      text={$t({ defaultMessage: 'No active alarms' })}
-                    />
-                  </UI.PointerContainer>
+                  ?<div onClick={() => setAlarmDrawerVisible(true)}>
+                    <UI.DonutChartWidget
+                      title={$t({ defaultMessage: 'Alarms' })}
+                      style={{ width: 100, height: 100 }}
+                      legend={'name-value'}
+                      data={alarmData}/>
+                  </div>
+                  : <NoActiveContent
+                    text={$t({ defaultMessage: 'No active alarms' })}
+                  />
                 }
               </Loader>
             </UI.Wrapper>
           </GridCol>
           <GridCol col={{ span: 4 }}>
             <UI.Wrapper>
-              <TenantLink
+              <UI.TenantLinkSvg
                 to={`/devices/switch/${params.switchId}/${params.serialNumber}/details/incidents`}
               >
                 <IncidentBySeverityDonutChart type='no-card-style' filters={filters}/>
-              </TenantLink>
+              </UI.TenantLinkSvg>
             </UI.Wrapper>
           </GridCol>
           <GridCol col={{ span: 4 }}>
@@ -236,7 +236,11 @@ export function SwitchInfoWidget (props:{
         onClose={()=>setVisible(false)}
         switchDetail={switchDetail}
       /> }
-      <AlarmsDrawer visible={alarmDrawerVisible} setVisible={setAlarmDrawerVisible} />
+      <AlarmsDrawer
+        visible={alarmDrawerVisible}
+        setVisible={setAlarmDrawerVisible}
+        serialNumber={params.serialNumber}
+      />
     </UI.Container>
   )
 }

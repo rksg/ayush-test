@@ -1,8 +1,7 @@
 import { BrowserRouter } from 'react-router-dom'
 
-import { dataApiURL }               from '@acx-ui/analytics/services'
 import { fakeIncidentRss }          from '@acx-ui/analytics/utils'
-import { store }                    from '@acx-ui/store'
+import { dataApiURL, store }        from '@acx-ui/store'
 import { mockGraphqlQuery, render } from '@acx-ui/test-utils'
 
 import { noBuffer }             from '../__tests__/fixtures'
