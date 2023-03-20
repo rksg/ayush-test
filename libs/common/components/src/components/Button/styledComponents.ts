@@ -5,12 +5,7 @@ export const Button = styled(AntButton)<{ $customType: string | null }>`
   ${props => props.$customType === 'secondary' ? css`
     background-color: var(--acx-accents-orange-50);
     border-color: var(--acx-accents-orange-50);
-    &:focus {
-      background-color: var(--acx-accents-orange-50);
-      border-color: var(--acx-accents-orange-50);      
-    }
-    &:hover,
-    &.ant-btn-loading {
+    &:hover, &:focus {
       background-color: var(--acx-accents-orange-60);
       border-color: var(--acx-accents-orange-60);
     }

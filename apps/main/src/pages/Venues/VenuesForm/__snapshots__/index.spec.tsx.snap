@@ -459,7 +459,7 @@ exports[`Venues Form should render venues form 1`] = `
             style="margin-right: 12px;"
           >
             <button
-              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 dtmqDA"
+              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 glXBEv"
               type="button"
             >
               <span>

@@ -1048,7 +1048,7 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
                 class="ant-space-item"
               >
                 <button
-                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 dtmqDA"
+                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 glXBEv"
                   type="button"
                 >
                   <span>

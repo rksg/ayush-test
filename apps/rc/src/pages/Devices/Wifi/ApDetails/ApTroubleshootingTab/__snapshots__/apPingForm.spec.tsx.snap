@@ -69,7 +69,7 @@ exports[`ApPingForm should render correctly 1`] = `
                   class="ant-form-item-control-input-content"
                 >
                   <button
-                    class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 dtmqDA"
+                    class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 glXBEv"
                     disabled=""
                     type="submit"
                   >
