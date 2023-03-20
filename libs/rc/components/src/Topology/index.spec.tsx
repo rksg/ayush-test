@@ -2,9 +2,9 @@ import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
 import { venueApi }                                                                                               from '@acx-ui/rc/services'
-import { CommonUrlsInfo, ConnectionStates, ConnectionStatus, DeviceStates, DeviceTypes, Link, NetworkDevice, Node, ShowTopologyFloorplanOn } from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, ConnectionStates, ConnectionStatus, DeviceStates, DeviceTypes, ShowTopologyFloorplanOn } from '@acx-ui/rc/utils'
 import { Provider, store }                                                                                        from '@acx-ui/store'
-import { fireEvent, logRoles, mockServer, render, screen, waitForElementToBeRemoved }                                       from '@acx-ui/test-utils'
+import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved }                                       from '@acx-ui/test-utils'
 
 import { TopologyGraph } from '.'
 
@@ -23,17 +23,10 @@ const fields = [
   'deviceStatus'
 ]
 
-const graphData: {
-  totalCount: number,
-  page: number | string,
-  data: [{
-    edges: Link[],
-    nodes: Node[]
-  }]
-} = {
+const graphData = {
   fields,
   totalCount: 1,
-  page: 0,
+  page: null,
   data: [
     {
       edges: [{
