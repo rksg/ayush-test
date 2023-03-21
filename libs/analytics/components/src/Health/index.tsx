@@ -59,11 +59,6 @@ const HealthPage = (props: { filters?: AnalyticsFilter; path?: string }) => {
             setDrilldownSelection={setDrilldownSelection}
           />
           <HealthDrillDown />
-          <SummaryBoxes
-            filters={healthPageFilters}
-            drilldownSelection={drilldownSelection}
-            setDrilldownSelection={setDrilldownSelection}
-          />
         </GridCol>
         <HealthPageContextProvider>
           <GridCol col={{ span: 24 }} style={{ height: '210px' }}>
