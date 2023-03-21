@@ -178,6 +178,7 @@ function useColumns (
       sorter: true,
       searchable: true,
       defaultSortOrder: 'ascend',
+      fixed: 'left',
       render: function (data, row) {
         return <Layer2Drawer
           editMode={row.id === editMode.id ? editMode : { id: '', isEdit: false }}

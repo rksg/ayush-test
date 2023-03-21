@@ -221,6 +221,7 @@ export const getTableColumns = ({
       dataIndex: 'apName',
       key: 'apName',
       width: 150,
+      fixed: 'left',
       render: function (text, row) {
         const { apMac } = row
         return (

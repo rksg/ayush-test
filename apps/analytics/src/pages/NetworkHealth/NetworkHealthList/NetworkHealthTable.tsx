@@ -167,6 +167,7 @@ export function NetworkHealthTable () {
       dataIndex: 'name',
       sorter: { compare: sortProp('name', defaultSort) },
       searchable: true,
+      fixed: 'left',
       render: (value, row, _, highlightFn) => {
         const highlightedValue = highlightFn(String(value))
         return row.latestTest?.summary.apsTestedCount

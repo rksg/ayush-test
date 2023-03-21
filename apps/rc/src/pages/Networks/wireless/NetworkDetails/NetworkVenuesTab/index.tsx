@@ -265,7 +265,8 @@ export function NetworkVenuesTab () {
       key: 'name',
       title: $t({ defaultMessage: 'Venue' }),
       dataIndex: 'name',
-      sorter: true
+      sorter: true,
+      fixed: 'left'
     },
     {
       key: 'city',

@@ -66,6 +66,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
       dataIndex: 'name',
       sorter: true,
       defaultSortOrder: 'ascend',
+      fixed: 'left',
       render: (data, row) => {
         return (
           <TenantLink to={`/devices/edge/${row.serialNumber}/edge-details/overview`}>

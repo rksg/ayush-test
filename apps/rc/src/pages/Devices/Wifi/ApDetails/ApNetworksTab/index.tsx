@@ -39,6 +39,7 @@ export function ApNetworksTab () {
       dataIndex: 'name',
       sorter: true,
       defaultSortOrder: 'ascend',
+      fixed: 'left',
       render: function (data, row) {
         return (disabledType.includes(row.nwSubType as NetworkTypeEnum)) ? data :(
           <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>

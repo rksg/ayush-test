@@ -40,6 +40,7 @@ export function SwitchOverviewACLs () {
       dataIndex: 'name',
       defaultSortOrder: 'ascend',
       sorter: true,
+      fixed: 'left',
       render: (data, row) =>
         <Button
           type='link'

@@ -180,6 +180,7 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
       searchable: true,
       sorter: true,
       defaultSortOrder: 'ascend',
+      fixed: 'left',
       render: function (data, row) {
         return (
           <TenantLink
