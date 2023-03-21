@@ -1214,7 +1214,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getApUsageByApSnmp: build.query<TableResult<ApSnmpApUsage>, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(ApSnmpUrls.getApUsageByApSnmpProfile, params, RKS_NEW_UI)
+        const req = createHttpRequest(ApSnmpUrls.getApUsageByApSnmpPolicy, params, RKS_NEW_UI)
         return {
           ...req,
           body: payload
