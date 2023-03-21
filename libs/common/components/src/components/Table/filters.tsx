@@ -59,7 +59,7 @@ export function renderSearch <RecordType> (
   intl: IntlShape,
   searchables: TableColumn<RecordType, 'text'>[],
   searchValue: string,
-  setSearchValue: Function, 
+  setSearchValue: Function,
   hasGroupBy?: Boolean
 ): React.ReactNode {
   return <UI.SearchInput
