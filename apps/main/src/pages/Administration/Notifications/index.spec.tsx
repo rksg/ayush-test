@@ -8,6 +8,7 @@ import {
   mockServer,
   render,
   screen,
+  waitFor,
   within
 } from '@acx-ui/test-utils'
 
@@ -117,8 +118,12 @@ describe('Notification List', () => {
     const row = await screen.findByRole('row', { name: /testUser 1/i })
     await userEvent.click(within(row).getByRole('checkbox'))
     await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
+    const dialog = await screen.findByRole('dialog')
     await screen.findByText('Delete "testUser 1"?')
     await userEvent.click(screen.getByRole('button', { name: 'Delete Recipients' }))
+    await waitFor(() => {
+      expect(dialog).not.toBeInTheDocument()
+    })
   })
 
   it('should delete selected row(multiple)', async () => {
@@ -134,8 +139,12 @@ describe('Notification List', () => {
     await userEvent.click(within(row1).getByRole('checkbox'))
     await userEvent.click(within(row2).getByRole('checkbox'))
     await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
+    const dialog = await screen.findByRole('dialog')
     await screen.findByText('Delete "2 Recipients"?')
     await userEvent.click(screen.getByRole('button', { name: 'Delete Recipients' }))
+    await waitFor(() => {
+      expect(dialog).not.toBeInTheDocument()
+    })
   })
 
   it('should check duplicate endpoint correctly', async () => {
