@@ -53,7 +53,7 @@ export function IncidentBySeverityDonutChart ({ filters, type }:
                     legend='name-value'
                     data={data}
                   />
-                  : <NoActiveContent text={$t({ defaultMessage: 'No active incidents' })} />
+                  : <NoActiveContent text={$t({ defaultMessage: 'No reported incidents' })} />
               }
             </>
             : <AutoSizer>
@@ -63,7 +63,7 @@ export function IncidentBySeverityDonutChart ({ filters, type }:
                     style={{ width, height }}
                     legend='name-value'
                     data={data}/>
-                  : <NoActiveData text={$t({ defaultMessage: 'No active incidents' })} />
+                  : <NoActiveData text={$t({ defaultMessage: 'No reported incidents' })} />
               )}
             </AutoSizer>
         }
