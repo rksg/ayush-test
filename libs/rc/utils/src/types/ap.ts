@@ -416,3 +416,13 @@ export interface APExtendedGrouped extends APExtended {
   children?: APExtended[],
   id?: number | string
 }
+export type ImportErrorRes = {
+  errors: {
+    code: number
+    description?: string
+    message?: string
+  }[],
+  downloadUrl?: string
+  txId: string
+  fileErrorsCount: number
+}

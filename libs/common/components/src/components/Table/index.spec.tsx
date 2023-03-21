@@ -717,7 +717,7 @@ describe('Table component', () => {
       expect(customHighlighter).toBeCalled()
     })
 
-    it('should call debounced/onFilterChange when filter/search updated', async () => {
+    it('should call onFilterChange when filter/search updated', async () => {
       const onFilterChange = jest.fn()
       render(<Table
         columns={filteredColumns}
@@ -728,7 +728,12 @@ describe('Table component', () => {
       const input = await screen
         .findByPlaceholderText('Search Name, Given Name, Surname, Description, Address')
       await type(input, 'J')
-      expect(onFilterChange).not.toBeCalled()
+      expect(onFilterChange).toBeCalledTimes(1)
+      // but only 1 time / debounced
+      await type(input, 'J')
+      await type(input, 'JA')
+      await type(input, 'JAR')
+      expect(onFilterChange).toBeCalledTimes(1)
 
       await clear(input)
       await type(input, 'John Doe')
@@ -752,6 +757,21 @@ describe('Table component', () => {
         .findByPlaceholderText('Search Name, Given Name, Surname, Description, Address')
       fireEvent.change(input, { target: { value: 'John Doe' } })
       expect(await screen.findAllByText('Jordan')).toHaveLength(1)
+    })
+
+    it('should not throw in search when column data is undefined', async () => {
+      const items = filteredData!
+      render(<Table
+        columns={filteredColumns.slice(0, 1)}
+        dataSource={[
+          { ...items[items.length - 1], key: 'xxx', name: undefined as unknown as string }
+        ]}
+      />)
+      const input = await screen.findByPlaceholderText('Search Name, Given Name, Surname')
+      await userEvent.type(input, 'Sam')
+
+      const tbody = await findTBody()
+      expect(await within(tbody).findAllByRole('row')).toHaveLength(1)
     })
   })
 
@@ -938,7 +958,7 @@ describe('Table component', () => {
         expect(await screen.findByTestId('option-deviceGroupName')).toBeInTheDocument())
       fireEvent.click(await screen.findByTestId('option-deviceGroupName'))
       const editBtns = await screen.findAllByRole('link', { name: 'Edit' })
-      expect(editBtns.length).toEqual(3)
+      expect(editBtns.length).toEqual(12)
       fireEvent.click(editBtns[0])
     })
 

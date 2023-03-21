@@ -91,7 +91,8 @@ export function AlarmsDrawer (props: AlarmsType) {
     },
     pagination: {
       pageSize: 25
-    }
+    },
+    option: { skip: !visible }
   })
 
   useEffect(()=>{

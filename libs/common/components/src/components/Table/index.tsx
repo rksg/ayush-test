@@ -120,15 +120,6 @@ function useSelectedRowKeys <RecordType> (
   return [selectedRowKeys, setSelectedRowKeys]
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function debounce <Fn extends ((...args: any[]) => void)> (
-  fn?: Fn,
-  timeout = 1000
-) {
-  if (!fn) return
-  return _.debounce(fn, timeout)
-}
-
 // following the same typing from antd
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Table <RecordType extends Record<string, any>> ({
@@ -141,19 +132,22 @@ function Table <RecordType extends Record<string, any>> ({
   const [filterValues, setFilterValues] = useState<Filter>({})
   const [searchValue, setSearchValue] = useState<string>('')
   const [groupByValue, setGroupByValue] = useState<string | undefined>(undefined)
-  const onFilter = useRef(debounce(onFilterChange))
+  const onFilter = useRef(onFilterChange)
   const [colWidth, setColWidth] = useState<Record<string, number>>({})
   const allKeys = dataSource?.map(row => typeof rowKey === 'function' ? rowKey(row) : row[rowKey])
+  const updateSearch = _.debounce(() => {
+    onFilter.current?.(filterValues, { searchString: searchValue })
+  }, 1000)
 
   useEffect(() => {
-    onFilter.current = debounce(onFilterChange)
-    return () => onFilter.current?.cancel()
+    onFilter.current = onFilterChange
   }, [onFilterChange])
 
   useEffect(() => {
     if(searchValue === '' || searchValue.length >= MIN_SEARCH_LENGTH) {
-      onFilter.current?.(filterValues, { searchString: searchValue })
+      updateSearch()
     }
+    return () => updateSearch.cancel()
   }, [searchValue]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {

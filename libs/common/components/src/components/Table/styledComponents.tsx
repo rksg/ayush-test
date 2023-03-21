@@ -86,6 +86,7 @@ export const TableSettingsGlobalOverride = createGlobalStyle`
         padding-bottom: 8px;
       }
       .ant-tree-switcher { display: none; }
+      .ant-tree-list-holder { max-height: 275px !important; }
       .ant-tree-treenode-disabled {
         .ant-tree-draggable-icon { visibility: hidden; }
       }
