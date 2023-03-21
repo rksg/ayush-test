@@ -95,12 +95,12 @@ export function Integrators () {
       key: 'mspAdminCount',
       sorter: true,
       onCell: (data) => {
-        return {
+        return (isPrimeAdmin || isAdmin) ? {
           onClick: () => {
             setTenantId(data.id)
             setDrawerAdminVisible(true)
           }
-        }
+        } : {}
       },
       render: function (data) {
         return (
@@ -115,13 +115,13 @@ export function Integrators () {
       key: 'assignedMspEcList',
       sorter: true,
       onCell: (data) => {
-        return {
+        return (isPrimeAdmin || isAdmin) ? {
           onClick: () => {
             setTenantId(data.id)
             setTenantType(data.tenantType)
             if (!drawerEcVisible) setDrawerEcVisible(true)
           }
-        }
+        } : {}
       },
       render: function (data, row) {
         return (isPrimeAdmin || isAdmin)
