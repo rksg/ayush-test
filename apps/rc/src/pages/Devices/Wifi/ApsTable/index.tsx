@@ -26,16 +26,21 @@ export default function ApsTable () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const [ importVisible, setImportVisible ] = useState(false)
-  const { venueFilterOptions } = useVenuesListQuery({ params: { tenantId }, payload: {
-    fields: ['name', 'country', 'latitude', 'longitude', 'id'],
-    pageSize: 10000,
-    sortField: 'name',
-    sortOrder: 'ASC'
-  } }, {
-    selectFromResult: ({ data }) => ({
-      venueFilterOptions: data?.data.map(v=>({ key: v.id, value: v.name })) || true
+  const { venueFilterOptions } = useVenuesListQuery(
+    {
+      params: { tenantId },
+      payload: {
+        fields: ['name', 'country', 'latitude', 'longitude', 'id'],
+        pageSize: 10000,
+        sortField: 'name',
+        sortOrder: 'ASC'
+      }
+    },
+    {
+      selectFromResult: ({ data }) => ({
+        venueFilterOptions: data?.data.map(v=>({ key: v.id, value: v.name })) || true
+      })
     })
-  })
   const { apgroupFilterOptions } = useApGroupsListQuery(
     {
       params: { tenantId },
@@ -132,8 +137,7 @@ export default function ApsTable () {
               setImportResult(result)
             } }).unwrap()
         }}
-        onClose={() => setImportVisible(false)}
-      />
+        onClose={() => setImportVisible(false)}/>
     </>
   )
 }
