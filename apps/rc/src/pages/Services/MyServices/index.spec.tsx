@@ -81,7 +81,7 @@ describe('MyServices', () => {
       (req, res, ctx) => res(ctx.json({ ...mockedServiceList }))
     ),
     rest.post(
-      WifiCallingUrls.getWifiCallingList.url,
+      WifiCallingUrls.getEnhancedWifiCallingList.url,
       (req, res, ctx) => res(ctx.json(mockWifiCallingTableResult))
     )
   )

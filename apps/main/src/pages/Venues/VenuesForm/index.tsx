@@ -261,7 +261,6 @@ export function VenuesForm () {
       const formData = { ...values }
       formData.address = countryCode ? { ...address, countryCode } : address
       await updateVenue({ params, payload: formData }).unwrap()
-      navigate(linkToVenues, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

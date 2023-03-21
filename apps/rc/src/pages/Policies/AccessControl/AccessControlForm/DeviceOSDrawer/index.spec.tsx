@@ -674,7 +674,7 @@ describe('DeviceOSDrawer Component', () => {
     await userEvent.click(await screen.findByText(/rule1/i))
 
     await userEvent.click(screen.getByRole('button', {
-      name: /edit/i
+      name: 'Edit'
     }))
 
     await userEvent.click(screen.getByRole('checkbox', {
@@ -735,7 +735,7 @@ describe('DeviceOSDrawer Component', () => {
       screen.getByRole('option', { name: 'device1' })
     )
 
-    await userEvent.click(screen.getByText(/view details/i))
+    await userEvent.click(screen.getByText(/edit details/i))
 
     await screen.findByText(/rules \(2\)/i)
 

@@ -167,6 +167,8 @@ describe('Access Support Form Item', () => {
 
 describe('Access Support Form Item - Msp Delegate EC', () => {
   it('should render correctly', async () => {
+    const spyConsole = jest.spyOn(console, 'log')
+
     const MspECUser = {
       data: { ...fakeUserProfile, varTenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
     } as UserProfileContextProps
@@ -209,7 +211,9 @@ describe('Access Support Form Item - Msp Delegate EC', () => {
     expect(formItem).not.toBeDisabled()
     expect(screen.getByRole('checkbox', { name: 'Enable access to Ruckus support' })).not.toBeChecked()
     fireEvent.click(formItem)
-    // TODO
-    // expect(await screen.findByText('Server Error')).toBeVisible()
+    // FIXME: might need to fix when general error handler behavior changed.
+    await waitFor(() => {
+      expect(spyConsole).toBeCalled()
+    })
   })
 })
