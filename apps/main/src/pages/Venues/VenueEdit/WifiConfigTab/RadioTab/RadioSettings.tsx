@@ -214,11 +214,13 @@ export function RadioSettings () {
   }, [triBandApModels])
 
   useEffect(() => {
-
     const triBandEnabled = !!(triBandRadioFeatureFlag && tripleBandRadioSettingsData?.enabled)
     setIsTriBandRadio(hasTriBandAps || triBandEnabled)
     isTriBandRadioRef.current = hasTriBandAps || triBandEnabled
 
+  }, [tripleBandRadioSettingsData, triBandRadioFeatureFlag, hasTriBandAps])
+
+  useEffect(() => {
     const setRadioFormData = (data: VenueRadioCustomization) => {
       setEditRadioContextData({ radioData: data })
       formRef?.current?.setFieldsValue(data)
@@ -239,8 +241,7 @@ export function RadioSettings () {
     if (venueSavedChannelsData){
       setRadioFormData(venueSavedChannelsData)
     }
-  }, [tripleBandRadioSettingsData, venueSavedChannelsData,
-    triBandRadioFeatureFlag, hasTriBandAps])
+  }, [venueSavedChannelsData])
 
   const [currentTab, setCurrentTab] = useState('Normal24GHz')
 
@@ -249,10 +250,9 @@ export function RadioSettings () {
   }
 
   const onTriBandTypeRadioChange = (e: RadioChangeEvent) => {
-    setIsDual5gMode(e.target.value)
-    /* if(e.target.value){
-      formRef.current?.setFieldValue(['radioParamsDual5G', 'enabled'], true)
-    } */
+    const isDual5GEnabled = e.target.value
+    setIsDual5gMode(isDual5GEnabled)
+    formRef.current?.setFieldValue(['radioParamsDual5G', 'enabled'], isDual5GEnabled)
     onTabChange('Normal24GHz')
   }
 
