@@ -375,6 +375,17 @@ export function ApTable (props: ApTableProps) {
   },[importResult])
 
   const basePath = useTenantLink('/devices')
+  const handleTableChange: TableProps<APExtended>['onChange'] = (
+    pagination, filters, sorter, extra
+  ) => {
+    const customSorter = Array.isArray(sorter)
+      ? sorter[0] : sorter
+    if ('IP'.includes(customSorter.field as string)) {
+      customSorter.field = 'ip'
+    }
+    // @ts-ignore
+    tableQuery.handleTableChange(pagination, filters, customSorter, extra)
+  }
   return (
     <Loader states={[tableQuery]}>
       <Table<APExtended>
@@ -383,7 +394,7 @@ export function ApTable (props: ApTableProps) {
         dataSource={tableData}
         rowKey='serialNumber'
         pagination={tableQuery.pagination}
-        onChange={tableQuery.handleTableChange}
+        onChange={handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
         rowActions={filterByAccess(rowActions)}
