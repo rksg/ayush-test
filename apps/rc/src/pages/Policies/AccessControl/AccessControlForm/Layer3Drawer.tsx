@@ -257,13 +257,6 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       contentForm.setFieldValue('policyName', layer3PolicyInfo.name)
       contentForm.setFieldValue('layer3Access', layer3PolicyInfo.defaultAccess)
       setLayer3RuleList([...layer3PolicyInfo.l3Rules.map(l3Rule => {
-        // console.table(l3Rule)
-        // if (l3Rule.source.enableIpSubnet) {
-        //   l3Rule.source.subnet = l3Rule.source.ip
-        // }
-        // if (l3Rule.destination.enableIpSubnet) {
-        //   l3Rule.destination.subnet = l3Rule.destination.ip
-        // }
         return {
           access: l3Rule.access,
           description: l3Rule.description,
