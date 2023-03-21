@@ -751,6 +751,21 @@ describe('Table component', () => {
       fireEvent.change(input, { target: { value: 'John Doe' } })
       expect(await screen.findAllByText('Jordan')).toHaveLength(1)
     })
+
+    it('should not throw in search when column data is undefined', async () => {
+      const items = filteredData!
+      render(<Table
+        columns={filteredColumns.slice(0, 1)}
+        dataSource={[
+          { ...items[items.length - 1], key: 'xxx', name: undefined as unknown as string }
+        ]}
+      />)
+      const input = await screen.findByPlaceholderText('Search Name, Given Name, Surname')
+      await userEvent.type(input, 'Sam')
+
+      const tbody = await findTBody()
+      expect(await within(tbody).findAllByRole('row')).toHaveLength(1)
+    })
   })
 
   describe('show/hide columnSort', () => {
