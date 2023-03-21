@@ -23,7 +23,7 @@ describe('TopAppsByTraffic', () => {
         hierarchyNode: topWifiByNetworkFixture
       }
     }
-    mockGraphqlQuery(dataApiURL, 'TopSSIDsByNetworkWidget', {
+    mockGraphqlQuery(dataApiURL, 'TopSSIDsWidget', {
       data: expectedResult
     })
     const { status, data, error } = await store.dispatch(
@@ -42,7 +42,7 @@ describe('TopAppsByTraffic', () => {
         }
       }
     }
-    mockGraphqlQuery(dataApiURL, 'TopSSIDsByNetworkWidget', {
+    mockGraphqlQuery(dataApiURL, 'TopSSIDsWidget', {
       data: expectedResult
     })
     const { status, data, error } = await store.dispatch(
@@ -53,7 +53,7 @@ describe('TopAppsByTraffic', () => {
     expect(error).toBe(undefined)
   })
   it('should return error', async () => {
-    mockGraphqlQuery(dataApiURL, 'TopSSIDsByNetworkWidget', {
+    mockGraphqlQuery(dataApiURL, 'TopSSIDsWidget', {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(

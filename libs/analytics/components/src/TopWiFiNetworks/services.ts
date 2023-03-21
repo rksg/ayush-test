@@ -30,7 +30,7 @@ export const api = dataApi.injectEndpoints({
     >({
       query: (payload) => ({
         document: gql`
-        query TopSSIDsByNetworkWidget($path: [HierarchyNodeInput],
+        query TopSSIDsWidget($path: [HierarchyNodeInput],
           $start: DateTime, $end: DateTime, $n: Int!, $filter: FilterInput) {
           network(end: $end, start: $start,filter : $filter) {
             hierarchyNode(path: $path) {

@@ -23,7 +23,7 @@ describe('TopAppsByTrafficWidget', () => {
   )
 
   it('should render loader', async () => {
-    mockGraphqlQuery(dataApiURL, 'TopSSIDsByNetworkWidget', {
+    mockGraphqlQuery(dataApiURL, 'TopSSIDsWidget', {
       data: { network: { hierarchyNode: topWifiByNetworkFixture } }
     })
     render( <Provider> <TopWiFiNetworks filters={filters}/></Provider>)
@@ -33,7 +33,7 @@ describe('TopAppsByTrafficWidget', () => {
   })
 
   it('should render for empty data', async () => {
-    mockGraphqlQuery(dataApiURL, 'TopSSIDsByNetworkWidget', {
+    mockGraphqlQuery(dataApiURL, 'TopSSIDsWidget', {
       data: { network: { hierarchyNode: {
         topNSSIDByTraffic: [],
         topNSSIDByClient: []
@@ -47,7 +47,7 @@ describe('TopAppsByTrafficWidget', () => {
   })
 
   it('should render Tabs', async () => {
-    mockGraphqlQuery(dataApiURL, 'TopSSIDsByNetworkWidget', {
+    mockGraphqlQuery(dataApiURL, 'TopSSIDsWidget', {
       data: { network: { hierarchyNode: topWifiByNetworkFixture } }
     })
     const { asFragment } = render( <Provider> <TopWiFiNetworks
