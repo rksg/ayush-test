@@ -7,7 +7,7 @@ export interface TemplateScope {
     defaultTemplateId: string
 }
 
-enum MessageType {
+export enum MessageType {
     EMAIL = 'EMAIL',
     SMS = 'SMS',
     WEBPUSH = 'WEBPUSH'

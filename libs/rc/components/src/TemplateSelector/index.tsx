@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react'
 
-import { Form, Select, FormItemProps, Spin } from 'antd'
+import { Form, Select, FormItemProps, Spin, Button } from 'antd'
 import _                                     from 'lodash'
 import { useIntl }                           from 'react-intl'
 
 import { useGetTemplateSelectionContentQuery } from '@acx-ui/rc/services'
 
 import { templateNames, templateScopeLabels } from './MsgTemplateLocalizedMessages'
+import { Modal } from '@acx-ui/components'
+import { Template } from '@acx-ui/rc/utils'
+import { TemplatePreview } from './TemplatePreview'
 
 export interface TemplateSelectorProps {
   formItemProps?: FormItemProps,
@@ -68,6 +71,7 @@ export function TemplateSelector (props: TemplateSelectorProps) {
 
   const [componentMode, setComponentMode] = useState<'LOADING' | 'ERROR' | 'LOADED'>('LOADING')
 
+  // Set component data loading state
   useEffect(() => {
     if(templateDataRequest.isLoading) {
       setComponentMode('LOADING')
@@ -78,6 +82,7 @@ export function TemplateSelector (props: TemplateSelectorProps) {
     }
   }, [templateDataRequest.isLoading, templateDataRequest.isError, templateDataRequest.isSuccess])
 
+  // Set Form Item Label
   useEffect(() => {
     if(componentMode === 'LOADED' && templateDataRequest.data?.templateScopeNameKey) {
       setFormItemLabel(
@@ -88,10 +93,30 @@ export function TemplateSelector (props: TemplateSelectorProps) {
   }, [templateDataRequest.data?.templateScopeNameKey, componentMode])
 
 
+  // Preview Modal Management ///////////////////////
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [previewTemplate, setPreviewTemplate] = useState<Template | undefined>(undefined);
+
+  // TODO: only enable button if form item has template selected
+
+  const showModal = () => {
+    let selectedOption = form.getFieldValue(formItemProps.name)
+    let previewTemplate = templateDataRequest.data?.templates.find(t => t.id === selectedOption.value)
+    setPreviewTemplate(previewTemplate)
+    setIsModalOpen(true)
+  };
+
+  const handleCancel = () => {
+    console.log("HANDLE CANCEL")
+    setIsModalOpen(false);
+  };
+
+  // RENDER //////////////////////////////////////////////////////
   if(componentMode !== 'LOADED') {
     return (<div style={{ display: 'block' }}><Spin></Spin></div>)
   } else {
     return (
+      <div>
       <Form.Item {...formItemProps}
         label={formItemLabel}>
         <Select
@@ -103,6 +128,22 @@ export function TemplateSelector (props: TemplateSelectorProps) {
           }}
         />
       </Form.Item>
+
+      <Button type="link" size="small" onClick={showModal}>
+        {$t({defaultMessage: 'Preview'})}
+      </Button>
+      <Modal 
+        title={ previewTemplate ? 
+          (previewTemplate.userProvidedName ? 
+            previewTemplate.userProvidedName : 
+            $t(_.get(templateNames, previewTemplate.nameLocalizationKey)))
+          : $t({defaultMessage: "Template Preview Unavailable"})} 
+        visible={isModalOpen}
+        onCancel={handleCancel}
+        footer={[]}>
+          <TemplatePreview templateType={templateDataRequest.data?.templateScopeType} template={previewTemplate} />
+      </Modal>
+      </div>
     )
   }
 }
