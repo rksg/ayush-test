@@ -209,7 +209,7 @@ export function VenuePropertyTab () {
       onClick: () => setUploadCsvDrawerVisible(true)
     },
     {
-      label: $t({ defaultMessage: 'Export To File' }),
+      label: $t({ defaultMessage: 'Export To CSV' }),
       onClick: downloadUnit
     }
   ]
@@ -381,7 +381,7 @@ export function VenuePropertyTab () {
         />
       }
       <ImportFileDrawer
-        title={$t({ defaultMessage: 'Import from file' })}
+        title={$t({ defaultMessage: 'Import Units From File' })}
         visible={uploadCsvDrawerVisible}
         isLoading={uploadCsvResult.isLoading}
         type='PropertyUnit'

@@ -45,8 +45,6 @@ export const PropertyUrlsInfo: { [key in PropertyUrlType]: ApiInfo } = {
     newApi: true,
     url: '/venues/:venueId/units/query'
   },
-
-  // TODO: Not integration test
   getUnitById: {
     method: 'get',
     newApi: true,
