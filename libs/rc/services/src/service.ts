@@ -566,7 +566,16 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
     }),
-    // eslint-disable-next-line max-len
+    updateDpskPassphrases: build.mutation<CommonResult, RequestPayload<DpskPassphrasesSaveData>>({
+      query: ({ params, payload }) => {
+        const createDpskPassphrasesReq = createHttpRequest(DpskUrls.updatePassphrase, params)
+        return {
+          ...createDpskPassphrasesReq,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
+    }),
     dpskPassphraseList: build.query<TableResult<NewDpskPassphrase>, RequestPayload>({
       query: ({ params, payload }) => {
         const getDpskPassphraseListReq = createNewTableHttpRequest({
@@ -583,6 +592,16 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         return transferToTableResult<NewDpskPassphrase>(result)
       },
       providesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
+    }),
+    getDpskPassphrase: build.query<NewDpskPassphrase, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(DpskUrls.getPassphrase, params)
+
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'DpskPassphrase', id: 'DETAIL' }]
     }),
     deleteDpskPassphraseList: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -726,7 +745,9 @@ export const {
   useLazyGetDpskListQuery,
   useDeleteDpskMutation,
   useDpskPassphraseListQuery,
+  useGetDpskPassphraseQuery,
   useCreateDpskPassphrasesMutation,
+  useUpdateDpskPassphrasesMutation,
   useDeleteDpskPassphraseListMutation,
   useUploadPassphrasesMutation,
   useDownloadPassphrasesMutation,

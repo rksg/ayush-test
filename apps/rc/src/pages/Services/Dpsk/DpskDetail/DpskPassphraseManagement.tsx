@@ -12,6 +12,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { CopyOutlined }              from '@acx-ui/icons'
 import { CsvSize, ImportFileDrawer } from '@acx-ui/rc/components'
@@ -33,25 +34,30 @@ import { filterByAccess } from '@acx-ui/user'
 
 import NetworkForm from '../../../Networks/wireless/NetworkForm/NetworkForm'
 
-import { unlimitedNumberOfDeviceLabel } from './contentsMap'
-import DpskPassphraseDrawer             from './DpskPassphraseDrawer'
+import { unlimitedNumberOfDeviceLabel }                 from './contentsMap'
+import DpskPassphraseDrawer, { DpskPassphraseEditMode } from './DpskPassphraseDrawer'
 
 
 interface UploadPassphrasesFormFields {
   usernamePrefix: string
 }
 
-
 export default function DpskPassphraseManagement () {
   const intl = useIntl()
   const { $t } = intl
   const [ addPassphrasesDrawerVisible, setAddPassphrasesDrawerVisible ] = useState(false)
+  const [
+    passphrasesDrawerEditMode,
+    setPassphrasesDrawerEditMode
+  ] = useState<DpskPassphraseEditMode>({ isEdit: false })
   const [ deletePassphrases ] = useDeleteDpskPassphraseListMutation()
   const [ uploadCsv, uploadCsvResult ] = useUploadPassphrasesMutation()
   const [ downloadCsv ] = useDownloadPassphrasesMutation()
   const [ uploadCsvDrawerVisible, setUploadCsvDrawerVisible ] = useState(false)
   const [ networkModalVisible, setNetworkModalVisible ] = useState(false)
   const params = useParams()
+  const isCloudpathEnabled = useIsSplitOn(Features.DPSK_CLOUDPATH_FEATURE)
+
   const tableQuery = useTableQuery({
     useQuery: useDpskPassphraseListQuery,
     sorter: {
@@ -153,6 +159,15 @@ export default function DpskPassphraseManagement () {
 
   const rowActions: TableProps<NewDpskPassphrase>['rowActions'] = [
     {
+      label: $t({ defaultMessage: 'Edit Passphrase' }),
+      // eslint-disable-next-line max-len
+      visible: (selectedRows: NewDpskPassphrase[]) => isCloudpathEnabled && selectedRows.length === 1,
+      onClick: ([selectedRow]) => {
+        setPassphrasesDrawerEditMode({ isEdit: true, passphraseId: selectedRow.id })
+        setAddPassphrasesDrawerVisible(true)
+      }
+    },
+    {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows: NewDpskPassphrase[], clearSelection) => {
         showActionModal({
@@ -176,7 +191,10 @@ export default function DpskPassphraseManagement () {
   const actions = [
     {
       label: $t({ defaultMessage: 'Add Passphrases' }),
-      onClick: () => setAddPassphrasesDrawerVisible(true)
+      onClick: () => {
+        setPassphrasesDrawerEditMode({ isEdit: false })
+        setAddPassphrasesDrawerVisible(true)
+      }
     },
     {
       label: $t({ defaultMessage: 'Import From File' }),
@@ -203,6 +221,7 @@ export default function DpskPassphraseManagement () {
     <DpskPassphraseDrawer
       visible={addPassphrasesDrawerVisible}
       setVisible={setAddPassphrasesDrawerVisible}
+      editMode={passphrasesDrawerEditMode}
     />
     <ImportFileDrawer type='DPSK'
       title={$t({ defaultMessage: 'Import from file' })}

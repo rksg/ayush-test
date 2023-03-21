@@ -26,14 +26,17 @@ export interface NewDpskPassphrase {
   id: string;
   passphrase: string;
   username?: string;
-  vlanId?: string;
+  vlanId?: number;
   mac?: string;
   numberOfDevices?: number;
   createdDate: string;
   expirationDate: string;
+  email?: string;
+  phoneNumber?: string;
 }
 
 export interface CreateDpskPassphrasesFormFields {
+  id: string | undefined;
   numberOfPassphrases: number;
   passphrase?: string;
   username?: string;
@@ -41,9 +44,12 @@ export interface CreateDpskPassphrasesFormFields {
   mac?: string;
   numberOfDevices?: number;
   expiration: Omit<ExpirationDateEntity, 'offset'>
+  email?: string;
+  phoneNumber?: string;
 }
 
 export interface DpskPassphrasesSaveData {
+  id: string | undefined;
   numberOfPassphrases: number;
   passphrase?: string;
   username?: string;
@@ -51,4 +57,6 @@ export interface DpskPassphrasesSaveData {
   mac?: string;
   numberOfDevices?: number;
   expirationDate?: string;
+  email?: string;
+  phoneNumber?: string;
 }

@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
 import { CreateDpskPassphrasesFormFields } from '@acx-ui/rc/utils'
+import { Provider }                        from '@acx-ui/store'
 import { render, renderHook, screen }      from '@acx-ui/test-utils'
 
 import AddDpskPassphrasesForm from './AddDpskPassphrasesForm'
@@ -13,7 +14,11 @@ describe('AddDpskPassphrasesForm', () => {
       return form
     })
 
-    render(<AddDpskPassphrasesForm form={formRef.current} />)
+    render(
+      <Provider>
+        <AddDpskPassphrasesForm form={formRef.current} editMode={{ isEdit: false }} />
+      </Provider>
+    )
 
     await userEvent.click(await screen.findByLabelText('Unlimited'))
 

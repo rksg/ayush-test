@@ -33,5 +33,6 @@ export enum Features {
   NEW_API='acx-ui-new-api',
   MAC_REGISTRATION = 'mac-registration-service-enabled',
   PERSONA = 'persona-service-enabled',
-  RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled'
+  RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
+  DPSK_CLOUDPATH_FEATURE = 'acx-ui-dpsk-cloudpath-feature-enabled'
 }

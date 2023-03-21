@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import {
   Form,
@@ -10,16 +10,24 @@ import {
   Space
 } from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
+import { useParams }                 from 'react-router-dom'
 
-import { Tooltip }                from '@acx-ui/components'
-import { ExpirationDateSelector } from '@acx-ui/rc/components'
+import { Tooltip }                   from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { ExpirationDateSelector }    from '@acx-ui/rc/components'
+import { useGetDpskPassphraseQuery } from '@acx-ui/rc/services'
 import {
   CreateDpskPassphrasesFormFields,
-  ExpirationMode
+  emailRegExp,
+  ExpirationDateEntity,
+  ExpirationMode,
+  NewDpskPassphrase,
+  phoneRegExp
 } from '@acx-ui/rc/utils'
 import { validationMessages } from '@acx-ui/utils'
 
 import { unlimitedNumberOfDeviceLabel } from './contentsMap'
+import { DpskPassphraseEditMode }       from './DpskPassphraseDrawer'
 import * as UI                          from './styledComponents'
 
 const MAX_PASSPHRASES = 5000
@@ -32,14 +40,21 @@ enum DeviceNumberType {
 
 export interface AddDpskPassphrasesFormProps {
   form: FormInstance<CreateDpskPassphrasesFormFields>
+  editMode: DpskPassphraseEditMode
 }
 
 export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormProps) {
   const { $t } = useIntl()
-  const { form } = props
+  const params = useParams()
+  const { form, editMode } = props
   const numberOfDevices = Form.useWatch('numberOfDevices', form)
   const numberOfPassphrases = Form.useWatch('numberOfPassphrases', form)
   const [ deviceNumberType, setDeviceNumberType ] = useState(DeviceNumberType.LIMITED)
+  const isCloudpathEnabled = useIsSplitOn(Features.DPSK_CLOUDPATH_FEATURE)
+  const { data: serverData, isSuccess } = useGetDpskPassphraseQuery(
+    { params: ({ ...params, passphraseId: editMode.passphraseId }) },
+    { skip: !editMode.isEdit }
+  )
 
   const onDeviceNumberTypeChange = (e: RadioChangeEvent) => {
     setDeviceNumberType(e.target.value)
@@ -53,10 +68,26 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
     return numberOfPassphrases === 1
   }
 
+  useEffect(() => {
+    if (serverData && editMode.isEdit && isSuccess) {
+      if (!serverData.numberOfDevices) {
+        setDeviceNumberType(DeviceNumberType.UNLIMITED)
+      }
+      form.setFieldsValue(transferServerDataToFormFields(serverData))
+    }
+  }, [serverData, isSuccess, editMode.isEdit])
+
+  useEffect(() => {
+    return () => {
+      form.resetFields()
+    }
+  }, [])
+
   return (
-    <Form layout='vertical'
-      form={form}
-    >
+    <Form layout='vertical' form={form}>
+      <Form.Item name='id' noStyle>
+        <Input type='hidden' />
+      </Form.Item>
       <Form.Item
         label={$t({
           defaultMessage: 'Number of Passphrases (Up to {maximum} passphrases)'
@@ -76,6 +107,7 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
           }
         ]}
         children={<InputNumber />}
+        hidden={editMode.isEdit}
       />
       <Form.Item
         label={
@@ -91,7 +123,7 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
           </>
         }
         children={
-          <Radio.Group defaultValue={deviceNumberType} onChange={onDeviceNumberTypeChange}>
+          <Radio.Group value={deviceNumberType} onChange={onDeviceNumberTypeChange}>
             <Space size={'middle'} direction='vertical'>
               <UI.FieldSpace>
                 <Radio value={DeviceNumberType.LIMITED}>
@@ -238,6 +270,43 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
           [ExpirationMode.AFTER_TIME]: false
         }}
       />
+      {isCloudpathEnabled && <>
+        <Form.Item
+          label={$t({ defaultMessage: 'Contact Email Address' })}
+          name='email'
+          rules={[
+            { validator: (_, value) => emailRegExp(value) }
+          ]}
+          children={<Input placeholder={$t({ defaultMessage: 'Enter email address' })} />}
+        />
+        <Form.Item
+          name='phoneNumber'
+          label={$t({ defaultMessage: 'Contact Phone Number' })}
+          rules={[
+            { validator: (_, value) => phoneRegExp(value) }
+          ]}
+          children={
+            <Input placeholder={$t({ defaultMessage: 'Enter phone number' })} />
+          }
+        />
+      </>}
     </Form>
   )
+}
+
+function transferServerDataToFormFields (data: NewDpskPassphrase): CreateDpskPassphrasesFormFields {
+  const { expirationDate, createdDate, ...rest } = data
+  const expiration = new ExpirationDateEntity()
+
+  if (expirationDate) {
+    expiration.setToByDate(expirationDate)
+  } else {
+    expiration.setToNever()
+  }
+
+  return {
+    ...rest,
+    numberOfPassphrases: 1,
+    expiration
+  }
 }

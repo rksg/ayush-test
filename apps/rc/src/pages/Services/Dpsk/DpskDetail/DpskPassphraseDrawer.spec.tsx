@@ -53,7 +53,7 @@ describe('DpskPassphraseDrawer', () => {
 
     render(
       <Provider>
-        <DpskPassphraseDrawer visible={true} setVisible={setVisible} />
+        <DpskPassphraseDrawer visible={true} setVisible={setVisible} editMode={{ isEdit: false }} />
       </Provider>, {
         route: { params: paramsForPassphraseTab, path: detailPath }
       }
@@ -86,7 +86,7 @@ describe('DpskPassphraseDrawer', () => {
 
     render(
       <Provider>
-        <DpskPassphraseDrawer visible={true} setVisible={jest.fn()} />
+        <DpskPassphraseDrawer visible={true} setVisible={jest.fn()} editMode={{ isEdit: false }} />
       </Provider>, {
         route: { params: paramsForPassphraseTab, path: detailPath }
       }
@@ -119,7 +119,7 @@ describe('DpskPassphraseDrawer', () => {
 
     render(
       <Provider>
-        <DpskPassphraseDrawer visible={true} setVisible={jest.fn()} />
+        <DpskPassphraseDrawer visible={true} setVisible={jest.fn()} editMode={{ isEdit: false }} />
       </Provider>, {
         route: { params: paramsForPassphraseTab, path: detailPath }
       }
