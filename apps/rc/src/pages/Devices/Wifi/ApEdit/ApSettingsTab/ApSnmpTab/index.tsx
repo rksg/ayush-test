@@ -139,6 +139,16 @@ export function ApSnmp () {
       useVenueSettings: stateOfUseVenueSettings
     }
 
+    // Condition guard, if user didn't change anything, don't send API
+    if (payload.apSnmpAgentProfileId === '') {
+      showToast({
+        type: 'info',
+        content: $t({ defaultMessage: 'SNMP agent is required when AP SNMP is enabled' })
+      })
+
+      return
+    }
+
     try {
       setEditContextData && setEditContextData({
         ...editContextData,
