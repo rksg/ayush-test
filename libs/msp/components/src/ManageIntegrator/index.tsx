@@ -221,7 +221,7 @@ export function ManageIntegrator () {
       const wifi = assigned.filter(en => en.deviceType === 'MSP_WIFI' && en.status === 'VALID')
       const wLic = wifi.length > 0 ? wifi[0].quantity : 0
       const sw = assigned.filter(en => en.deviceType === 'MSP_SWITCH' && en.status === 'VALID')
-      const sLic = sw.length > 0 ? sw[0].quantity : 0
+      const sLic = sw.length > 0 ? sw.reduce((acc, cur) => cur.quantity + acc, 0) : 0
 
       formRef.current?.setFieldsValue({
         name: data?.name,
