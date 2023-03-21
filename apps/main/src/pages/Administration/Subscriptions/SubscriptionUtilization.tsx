@@ -1,5 +1,5 @@
-import { Typography } from 'antd'
-import { useIntl }    from 'react-intl'
+import { Typography, Row, Col } from 'antd'
+import { useIntl }              from 'react-intl'
 
 import {
   cssStr,
@@ -17,7 +17,8 @@ import {
   EntitlementDeviceTypes,
   getEntitlementDeviceTypes
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { JwtTierValue } from '@acx-ui/rc/utils'
+import { useParams }    from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponent'
 
@@ -41,6 +42,8 @@ const SubscriptionUtilizationWidget = (props: SubscriptionUtilizationWidgetProps
     ]
   } = props
 
+  const isZeroQuantity = total <= 0
+
   return (
     <SpaceWrapper size='small' justifycontent='space-around'>
       <Typography.Text>{title}</Typography.Text>
@@ -54,9 +57,9 @@ const SubscriptionUtilizationWidget = (props: SubscriptionUtilizationWidgetProps
           category: `${deviceType} Licenses `,
           series: [
             { name: 'used',
-              value: used * 100 / total },
+              value: isZeroQuantity ? 0: (used * 100 / total) },
             { name: 'available',
-              value: (total-used)* 100/total }
+              value: isZeroQuantity ? 100 : ((total-used) * 100 / total) }
           ]
         }]}
         barColors={barColors}
@@ -82,12 +85,14 @@ const subscriptionUtilizationTransformer = (
     let quantity = 0
     let used = 0
 
-    summaryData.forEach(summary => {
-      quantity += summary.quantity
-      used += (summary.deviceCount ?? 0)
-    })
+    // only display types that has data in summary
+    if (summaryData.length > 0) {
+      summaryData.forEach(summary => {
+        quantity += summary.quantity
+        used += summary.deviceCount
+      })
 
-    if (quantity > 0) {
+      // including to display 0 quantity.
       result[deviceType] = {
         total: quantity,
         used: used
@@ -116,7 +121,14 @@ export const SubscriptionUtilization = () => {
     <Loader states={[queryResults]}>
       <UI.FullWidthSpace direction='vertical'>
         <Subtitle level={4}>
-          {$t({ defaultMessage: 'Subscription Utilization' })}
+          <Row>
+            <Col style={{
+              width: '75%'
+            }}>{$t({ defaultMessage: 'Subscription Utilization' })}</Col>
+            <Col style={{
+              width: '25%'
+            }}>{$t({ defaultMessage: 'Current Subscription Tier' })}: <b>{JwtTierValue()}</b></Col>
+          </Row>
         </Subtitle>
         <UI.FullWidthSpace size='large'>
           {

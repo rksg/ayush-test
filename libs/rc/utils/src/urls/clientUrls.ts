@@ -35,48 +35,37 @@ export const ClientUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   enableGuests: {
-    // different method
-    // method: 'patch',
-    // url: '/guestUsers/:guestUserId',
-    // oldUrl: '/api/tenant/:tenantId/wifi/guest-user/:guestId/enable',
-    // newApi: true
-    method: 'post',
-    url: '/api/tenant/:tenantId/wifi/guest-user/:guestId/enable'
+    method: 'patch',
+    url: '/guestUsers/:guestId',
+    oldMethod: 'post',
+    oldUrl: '/api/tenant/:tenantId/wifi/guest-user/:guestId/enable',
+    newApi: true
   },
   disableGuests: {
-    // different method
-    // method: 'patch',
-    // url: '/guestUsers/:guestUserId',
-    // oldUrl: '/api/tenant/:tenantId/wifi/guest-user/:guestId/disable',
-    // newApi: true
-    method: 'post',
-    url: '/api/tenant/:tenantId/wifi/guest-user/:guestId/disable'
+    method: 'patch',
+    url: '/guestUsers/:guestId',
+    oldMethod: 'post',
+    oldUrl: '/api/tenant/:tenantId/wifi/guest-user/:guestId/disable',
+    newApi: true
   },
   getGuests: {
-    // 404 Not Found
-    // method: 'post',
-    // url: '/guestUsers/query/csvFiles',
-    // oldUrl: '/api/viewmodel/tenant/:tenantId/guest/csv-file',
-    // newApi: true
     method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/guest/csv-file'
+    url: '/guestUsers/query/csvFiles',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/guest/csv-file',
+    newApi: true
   },
   generateGuestPassword: {
-    // different method
-    // method: 'patch',
-    // url: '/guestUsers/:guestUserId',
-    // oldUrl: '/api/tenant/:tenantId/wifi/guest-user/:guestId/regenerate',
-    // newApi: true
-    method: 'post',
-    url: '/api/tenant/:tenantId/wifi/guest-user/:guestId/regenerate'
+    method: 'patch',
+    url: '/guestUsers/:guestId',
+    oldMethod: 'post',
+    oldUrl: '/api/tenant/:tenantId/wifi/guest-user/:guestId/regenerate',
+    newApi: true
   },
   disconnectClient: {
-    // different method
-    // method: 'patch',
-    // url: '/aps/clients',
-    // oldUrl: '/api/tenant/:tenantId/wifi/disconnect-client',
-    // newApi: true
-    method: 'post',
-    url: '/api/tenant/:tenantId/wifi/disconnect-client'
+    method: 'patch',
+    url: '/aps/clients',
+    oldMethod: 'post',
+    oldUrl: '/api/tenant/:tenantId/wifi/disconnect-client',
+    newApi: true
   }
 }

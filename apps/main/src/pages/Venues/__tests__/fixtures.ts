@@ -2,13 +2,18 @@
 import {
   ExternalAntenna,
   GuestNetworkTypeEnum,
+  PropertyConfigs,
+  PropertyConfigStatus,
+  PropertyUnit,
+  PropertyUnitStatus,
   RadioEnum,
   RadioTypeEnum,
   WlanSecurityEnum,
   FacilityEnum,
   FlowLevelEnum,
   PriorityEnum,
-  ProtocolEnum
+  ProtocolEnum,
+  PersonaGroup, NewTableResult, NewTablePageable
 } from '@acx-ui/rc/utils'
 
 export const successResponse = {
@@ -2747,6 +2752,71 @@ export const validChannelsData = {
   }
 }
 
+const defaultPageable: NewTablePageable = {
+  offset: 0,
+  pageNumber: 0,
+  pageSize: 10,
+  paged: true,
+  sort: {
+    unsorted: true,
+    sorted: false,
+    empty: false
+  },
+  unpaged: false
+}
+
+export const mockEnabledPropertyConfig: PropertyConfigs = {
+  status: PropertyConfigStatus.ENABLED,
+  personaGroupId: 'persona-group-id-1'
+}
+
+// export const mockPropertyUnitList: NewTableResult<PropertyUnit> = {
+//   pageable: propertyPageable,
+//   sort: propertyPageable.sort,
+//   totalElements: 1,
+//   totalPages: 1,
+//   content: [
+//     {
+//       id: 'unit-id-1',
+//       name: 'unit-1',
+//       status: PropertyUnitStatus.ENABLED,
+//       dpsks: []
+//     }
+//   ]
+// }
+
+export const mockPersonaGroupWithoutNSG: PersonaGroup = {
+  id: 'persona-group-id-1',
+  name: 'Class A',
+  description: '',
+  macRegistrationPoolId: 'mac-id-1',
+  dpskPoolId: 'dpsk-pool-2',
+  propertyId: 'propertyId-100'
+}
+
+export const mockPropertyUnitList: NewTableResult<PropertyUnit> = {
+  pageable: defaultPageable,
+  sort: defaultPageable.sort,
+  totalElements: 1,
+  totalPages: 1,
+  content: [
+    {
+      id: 'unit-id-1',
+      name: 'unit-1',
+      status: PropertyUnitStatus.ENABLED,
+      dpsks: [],
+      personaId: 'persona-1',
+      vni: 0
+    }
+  ]
+}
+
+export const mockPropertyUnit: PropertyUnit = {
+  ...mockPropertyUnitList.content[0],
+  personaId: 'unit-persona-id-1',
+  guestPersonaId: 'guest-unit-persona-id-1'
+}
+
 export const venueSyslog = {
   serviceProfileId: '31846cfe930b49b4802b302f35029589',
   enabled: true
@@ -2784,3 +2854,69 @@ export const syslogServerProfiles = [{
     'bc20590f588948f1822dd20aa8a1914c'
   ]
 }]
+
+export const resultOfGetVenueApSnmpAgentSettings = {
+  apSnmpAgentProfileId: 'c1082e7d05d74eb897bb3600a15c1dc7',
+  enableApSnmp: true
+}
+
+export const resultOfUpdateApSnmpAgentSettings = { requestId: '5aa421fd-25e9-4952-b3e0-a3a39c9a52bb' }
+
+export const resultOfGetApSnmpAgentProfiles = [
+  {
+    tenantId: '3de62cf01fea4f75a00163cd5a6cd97d',
+    snmpV2Agents: [
+      {
+        communityName: 'test',
+        readPrivilege: true,
+        trapPrivilege: true,
+        notificationType: 'Trap',
+        targetAddr: '10.206.78.28',
+        targetPort: 162
+      }
+    ],
+    snmpV3Agents: [
+      {
+        userName: 'testUser',
+        readPrivilege: true,
+        trapPrivilege: false,
+        notificationType: 'Trap',
+        targetPort: 162,
+        authProtocol: 'SHA',
+        authPassword: '00000000',
+        privacyProtocol: 'AES',
+        privacyPassword: '00000000'
+      }
+    ],
+    policyName: 'SNMP-1',
+    id: 'c1082e7d05d74eb897bb3600a15c1dc7'
+  },
+  {
+    tenantId: '3de62cf01fea4f75a00163cd5a6cd97d',
+    snmpV2Agents: [
+      {
+        communityName: 'test',
+        readPrivilege: true,
+        trapPrivilege: true,
+        notificationType: 'Trap',
+        targetAddr: '10.206.78.28',
+        targetPort: 162
+      }
+    ],
+    snmpV3Agents: [
+      {
+        userName: 'testUser',
+        readPrivilege: true,
+        trapPrivilege: false,
+        notificationType: 'Trap',
+        targetPort: 162,
+        authProtocol: 'SHA',
+        authPassword: '00000000',
+        privacyProtocol: 'AES',
+        privacyPassword: '00000000'
+      }
+    ],
+    policyName: 'SNMP-2',
+    id: 'l8oz9aez7mbyxgdkktvruibnqcw03hfs'
+  }
+]

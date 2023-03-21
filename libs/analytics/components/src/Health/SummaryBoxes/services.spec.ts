@@ -1,6 +1,5 @@
-import { dataApiURL }       from '@acx-ui/analytics/services'
-import { store }            from '@acx-ui/store'
-import { mockGraphqlQuery } from '@acx-ui/test-utils'
+import { dataApiURL, store } from '@acx-ui/store'
+import { mockGraphqlQuery }  from '@acx-ui/test-utils'
 
 import { fakeSummary }         from './__tests__/fixtures'
 import { api, RequestPayload } from './services'

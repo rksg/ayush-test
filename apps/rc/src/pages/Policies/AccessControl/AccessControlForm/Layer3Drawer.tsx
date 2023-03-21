@@ -37,20 +37,17 @@ import {
   CommonResult,
   Layer3ProtocolType,
   portRegExp,
-  serverIpAddressRegExp,
+  networkWifiIpRegExp,
   subnetMaskIpRegExp
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
 import { layer3ProtocolLabelMapping } from '../../contentsMap'
 
+import { AddModeProps, editModeProps } from './AccessControlForm'
+
 const { useWatch } = Form
 const { Option } = Select
-
-export interface editModeProps {
-  id: string,
-  isEdit: boolean
-}
 
 export interface Layer3DrawerProps {
   inputName?: string[],
@@ -59,6 +56,7 @@ export interface Layer3DrawerProps {
     viewText: string
   },
   isOnlyViewMode?: boolean,
+  onlyAddMode?: AddModeProps,
   editMode?: editModeProps,
   setEditMode?: (editMode: editModeProps) => void
 }
@@ -164,10 +162,14 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     inputName = [],
     onlyViewMode = {} as { id: string, viewText: string },
     isOnlyViewMode = false,
+    onlyAddMode = { enable: false, visible: false } as AddModeProps,
     editMode = { id: '', isEdit: false } as editModeProps,
     setEditMode = () => {}
   } = props
-  const [visible, setVisible] = useState(false)
+  const [visible, setVisible] = useState(onlyAddMode.enable ? onlyAddMode.visible : false)
+  const [localEditMode, setLocalEdiMode] = useState(
+    { id: '', isEdit: false } as editModeProps
+  )
   const form = Form.useFormInstance()
   const [ruleDrawerVisible, setRuleDrawerVisible] = useState(false)
   const [ruleDrawerEditMode, setRuleDrawerEditMode] = useState(false)
@@ -225,8 +227,8 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       return false
     }
 
-    if (editMode) {
-      return !editMode.isEdit
+    if (editMode.isEdit || localEditMode.isEdit) {
+      return false
     }
 
     return !_.isNil(layer3PolicyInfo)
@@ -240,7 +242,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
   }, [editMode])
 
   useEffect(() => {
-    if (layer3PolicyInfo) {
+    if (layer3PolicyInfo && (isViewMode() || editMode.isEdit || localEditMode.isEdit)) {
       contentForm.setFieldValue('policyName', layer3PolicyInfo.name)
       contentForm.setFieldValue('layer3Access', layer3PolicyInfo.defaultAccess)
       setLayer3RuleList([...layer3PolicyInfo.l3Rules.map(l3Rule => ({
@@ -259,7 +261,9 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     if (requestId && queryPolicyName) {
       layer3SelectOptions.map(option => {
         if (option.props.children === queryPolicyName) {
-          form.setFieldValue([...inputName, 'l3AclPolicyId'], option.key)
+          if (!onlyAddMode.enable) {
+            form.setFieldValue([...inputName, 'l3AclPolicyId'], option.key)
+          }
           setQueryPolicyId(option.key as string)
           setQueryPolicyName('')
           setRequestId('')
@@ -267,6 +271,12 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       })
     }
   }, [layer3SelectOptions, requestId, policyName])
+
+  useEffect(() => {
+    if (onlyAddMode.enable && onlyAddMode.visible) {
+      setVisible(onlyAddMode.visible)
+    }
+  }, [onlyAddMode])
 
   const DragHandle = SortableHandle(() =>
     <Drag style={{ cursor: 'grab', color: '#6e6e6e' }} />
@@ -380,6 +390,11 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     clearFieldsValue()
     if (editMode.isEdit) {
       setEditMode({
+        id: '', isEdit: false
+      })
+    }
+    if (localEditMode.isEdit) {
+      setLocalEdiMode({
         id: '', isEdit: false
       })
     }
@@ -724,7 +739,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
                   name='sourceNetworkAddress'
                   rules={[
                     { required: true },
-                    { validator: (_, value) => serverIpAddressRegExp(value) }
+                    { validator: (_, value) => networkWifiIpRegExp(value) }
                   ]}
                 >
                   <Input placeholder={$t({ defaultMessage: 'Source Network Address' })}/>
@@ -751,7 +766,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
               name='sourceIp'
               rules={[
                 { required: true },
-                { validator: (_, value) => serverIpAddressRegExp(value) }
+                { validator: (_, value) => networkWifiIpRegExp(value) }
               ]}
             >
               <Input placeholder={$t({ defaultMessage: 'Source Ip' })}/>
@@ -805,7 +820,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
                       required: true,
                       message: $t({ defaultMessage: 'You must specify subnet network' })
                     },
-                    { validator: (_, value) => serverIpAddressRegExp(value) }
+                    { validator: (_, value) => networkWifiIpRegExp(value) }
                   ]}
                 >
                   <Input placeholder={$t({ defaultMessage: 'Destination Network Address' })}/>
@@ -837,7 +852,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
                 { required: true, message: $t({
                   defaultMessage: 'You must specify IP Address'
                 }) },
-                { validator: (_, value) => serverIpAddressRegExp(value) }
+                { validator: (_, value) => networkWifiIpRegExp(value) }
               ]}
             >
               <Input placeholder={$t({ defaultMessage: 'Destination Ip' })}/>
@@ -861,9 +876,13 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     </Fieldset>
   </Form>
 
-  return (
-    <>
-      { isOnlyViewMode ? <Button
+  const modelContent = () => {
+    if (onlyAddMode.enable) {
+      return null
+    }
+
+    if (isOnlyViewMode) {
+      return <Button
         type='link'
         size={'small'}
         onClick={() => {
@@ -872,49 +891,59 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         }
         }>
         {onlyViewMode.viewText}
-      </Button>: <GridRow style={{ width: '350px' }}>
-        <GridCol col={{ span: 12 }}>
-          <Form.Item
-            name={[...inputName, 'l3AclPolicyId']}
-            rules={[{
-              required: true
-            }, {
-              message: $t({ defaultMessage: 'Please select Layer 3 profile' })
-            }]}
-            children={
-              <Select
-                placeholder={$t({ defaultMessage: 'Select profile...' })}
-                onChange={(value) => {
-                  setQueryPolicyId(value)
-                }}
-                children={layer3SelectOptions}
-              />
-            }
-          />
-        </GridCol>
-        <AclGridCol>
-          <Button type='link'
-            disabled={!l3AclPolicyId}
-            onClick={() => {
-              if (l3AclPolicyId) {
-                setVisible(true)
-                setQueryPolicyId(l3AclPolicyId)
-              }
-            }
-            }>
-            {$t({ defaultMessage: 'View Details' })}
-          </Button>
-        </AclGridCol>
-        <AclGridCol>
-          <Button type='link'
-            onClick={() => {
+      </Button>
+    }
+
+    return <GridRow style={{ width: '350px' }}>
+      <GridCol col={{ span: 12 }}>
+        <Form.Item
+          name={[...inputName, 'l3AclPolicyId']}
+          rules={[{
+            required: true
+          }, {
+            message: $t({ defaultMessage: 'Please select Layer 3 profile' })
+          }]}
+          children={
+            <Select
+              style={{ width: '150px' }}
+              placeholder={$t({ defaultMessage: 'Select profile...' })}
+              onChange={(value) => {
+                setQueryPolicyId(value)
+              }}
+              children={layer3SelectOptions}
+            />
+          }
+        />
+      </GridCol>
+      <AclGridCol>
+        <Button type='link'
+          disabled={!l3AclPolicyId}
+          onClick={() => {
+            if (l3AclPolicyId) {
               setVisible(true)
-              setQueryPolicyId('')
-            }}>
-            {$t({ defaultMessage: 'Add New' })}
-          </Button>
-        </AclGridCol>
-      </GridRow> }
+              setQueryPolicyId(l3AclPolicyId)
+              setLocalEdiMode({ id: l3AclPolicyId, isEdit: true })
+            }
+          }
+          }>
+          {$t({ defaultMessage: 'Edit Details' })}
+        </Button>
+      </AclGridCol>
+      <AclGridCol>
+        <Button type='link'
+          onClick={() => {
+            setVisible(true)
+            setQueryPolicyId('')
+          }}>
+          {$t({ defaultMessage: 'Add New' })}
+        </Button>
+      </AclGridCol>
+    </GridRow>
+  }
+
+  return (
+    <>
+      {modelContent()}
       <Drawer
         title={$t({ defaultMessage: 'Layer 3 Settings' })}
         visible={visible}
@@ -931,7 +960,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
               try {
                 await contentForm.validateFields()
                 if (!isViewMode()) {
-                  await handleL3AclPolicy(editMode.isEdit)
+                  await handleL3AclPolicy(editMode.isEdit || localEditMode.isEdit)
                 }
                 handleLayer3DrawerClose()
               } catch (error) {

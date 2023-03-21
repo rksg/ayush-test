@@ -1,8 +1,7 @@
-import moment from 'moment'
+import moment from 'moment-timezone'
 
-import { dataApiURL }                                                   from '@acx-ui/analytics/services'
 import { fakeIncident }                                                 from '@acx-ui/analytics/utils'
-import { Provider, store }                                              from '@acx-ui/store'
+import { dataApiURL, Provider, store }                                  from '@acx-ui/store'
 import { act, fireEvent, mockGraphqlQuery, render, renderHook, screen } from '@acx-ui/test-utils'
 
 import { ImpactedAP, impactedApi, ImpactedClient } from './services'

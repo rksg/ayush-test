@@ -34,9 +34,12 @@ import {
   IGMP_SNOOPING_TYPE,
   Vlan,
   SwitchStatusEnum,
-  isOperationalSwitch
+  isOperationalSwitch,
+  redirectPreviousPage,
+  LocationExtended
 } from '@acx-ui/rc/utils'
 import {
+  useLocation,
   useNavigate,
   useTenantLink,
   useParams
@@ -72,6 +75,7 @@ export function SwitchForm () {
   const { tenantId, switchId, action } = useParams()
   const editMode = action === 'edit'
   const navigate = useNavigate()
+  const location = useLocation()
   const formRef = useRef<StepsFormInstance<Switch>>()
   const basePath = useTenantLink('/devices/')
   const venuesList = useVenuesListQuery({ params: { tenantId: tenantId }, payload: defaultPayload })
@@ -98,6 +102,7 @@ export function SwitchForm () {
   const [readOnly, setReadOnly] = useState(false)
   const [disableIpSetting, setDisableIpSetting] = useState(false)
   const dataFetchedRef = useRef(false)
+  const [previousPath, setPreviousPath] = useState('')
 
   const switchListPayload = {
     searchString: '',
@@ -106,6 +111,10 @@ export function SwitchForm () {
     searchTargetFields: ['model'],
     pageSize: 10000
   }
+
+  useEffect(() => {
+    setPreviousPath((location as LocationExtended)?.state?.from?.pathname)
+  }, [])
 
   useEffect(() => {
     if (venueId && switchModel && switchRole === MEMEBER_TYPE.MEMBER) {
@@ -248,10 +257,9 @@ export function SwitchForm () {
 
       dataFetchedRef.current = false
 
-      navigate({
-        ...basePath,
-        pathname: `${basePath.pathname}/switch`
-      })
+      if (!deviceOnline) { // only one tab
+        redirectPreviousPage(navigate, previousPath, `${basePath.pathname}/switch`)
+      }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -297,10 +305,9 @@ export function SwitchForm () {
     <StepsForm
       formRef={formRef}
       onFinish={editMode ? handleEditSwitch : handleAddSwitch}
-      onCancel={() => navigate({
-        ...basePath,
-        pathname: `${basePath.pathname}/switch`
-      })}
+      onCancel={() =>
+        redirectPreviousPage(navigate, previousPath, `${basePath.pathname}/switch`)
+      }
       buttonLabel={{
         submit: readOnly ? $t({ defaultMessage: 'OK' }) :
           editMode ?
@@ -355,6 +362,7 @@ export function SwitchForm () {
                     { required: true },
                     { validator: (_, value) => serialNumberRegExp(value) }
                   ]}
+                  validateTrigger={['onKeyUp', 'onBlur']}
                   validateFirst
                   children={<Input disabled={readOnly || editMode} />}
                 />
@@ -386,6 +394,7 @@ export function SwitchForm () {
                   initialValue={MEMEBER_TYPE.STANDALONE}
                 >
                   <Radio.Group
+                    defaultValue={MEMEBER_TYPE.STANDALONE}
                     onChange={(e: RadioChangeEvent) => {
                       return setSwitchRole(e.target.value)
                     }}

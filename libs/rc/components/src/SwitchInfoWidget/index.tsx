@@ -6,11 +6,11 @@ import { useIntl }    from 'react-intl'
 import {
   IncidentBySeverityDonutChart
 } from '@acx-ui/analytics/components'
-import { AnalyticsFilter }                                                     from '@acx-ui/analytics/utils'
-import { cssStr, Loader, Card, DonutChart, GridRow, GridCol, NoActiveContent } from '@acx-ui/components'
-import type { DonutChartData }                                                 from '@acx-ui/components'
-import { Client, PoeUsage }                                                    from '@acx-ui/icons'
-import {  useAlarmsListQuery }                                                 from '@acx-ui/rc/services'
+import { AnalyticsFilter }                                         from '@acx-ui/analytics/utils'
+import { cssStr, Loader, Card, GridRow, GridCol, NoActiveContent } from '@acx-ui/components'
+import type { DonutChartData }                                     from '@acx-ui/components'
+import { Client, PoeUsage }                                        from '@acx-ui/icons'
+import { useAlarmsListQuery }                                      from '@acx-ui/rc/services'
 import {
   Alarm,
   EventSeverityEnum,
@@ -18,7 +18,9 @@ import {
   SwitchViewModel
 } from '@acx-ui/rc/utils'
 import { CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
-import { useParams }                     from '@acx-ui/react-router-dom'
+import { useParams, TenantLink }         from '@acx-ui/react-router-dom'
+
+import { AlarmsDrawer } from '../AlarmsDrawer'
 
 import * as UI                 from './styledComponents'
 import { SwitchDetailsDrawer } from './SwitchDetailsDrawer'
@@ -81,6 +83,7 @@ export function SwitchInfoWidget (props:{
   const { $t } = useIntl()
   const { switchDetail, filters } = props
   const [visible, setVisible] = useState(false)
+  const [alarmDrawerVisible, setAlarmDrawerVisible] = useState(false)
 
   // Alarms list query
   const alarmQuery = useTableQuery({
@@ -96,7 +99,7 @@ export function SwitchInfoWidget (props:{
       sortOrder: 'DESC'
     },
     pagination: {
-      pageSize: 25,
+      pageSize: 10000,
       page: 1,
       total: 0
     }
@@ -122,7 +125,7 @@ export function SwitchInfoWidget (props:{
     ]
     const data = !chartData[0].value && !chartData[1].value ? [] : chartData
     return (
-      <DonutChart
+      <UI.DonutChartWidget
         title={$t({ defaultMessage: 'Ports' })}
         style={{ width: 100, height: 100 }}
         data={data}
@@ -146,25 +149,38 @@ export function SwitchInfoWidget (props:{
             <UI.Wrapper>
               <Loader states={[alarmQuery]}>
                 { alarmData && alarmData.length > 0
-                  ? <DonutChart
-                    title={$t({ defaultMessage: 'Alarms' })}
-                    style={{ width: 100, height: 100 }}
-                    legend={'name-value'}
-                    data={alarmData}/>
-                  : <NoActiveContent text={$t({ defaultMessage: 'No active alarms' })} />
+                  ?<div onClick={() => setAlarmDrawerVisible(true)}>
+                    <UI.DonutChartWidget
+                      title={$t({ defaultMessage: 'Alarms' })}
+                      style={{ width: 100, height: 100 }}
+                      legend={'name-value'}
+                      data={alarmData}/>
+                  </div>
+                  : <NoActiveContent
+                    text={$t({ defaultMessage: 'No active alarms' })}
+                  />
                 }
               </Loader>
             </UI.Wrapper>
           </GridCol>
           <GridCol col={{ span: 4 }}>
             <UI.Wrapper>
-              <IncidentBySeverityDonutChart type='no-card-style' filters={filters}/>
+              <UI.TenantLinkSvg
+                to={`/devices/switch/${params.switchId}/${params.serialNumber}/details/incidents`}
+              >
+                <IncidentBySeverityDonutChart type='no-card-style' filters={filters}/>
+              </UI.TenantLinkSvg>
             </UI.Wrapper>
           </GridCol>
           <GridCol col={{ span: 4 }}>
-            <UI.Wrapper>
-              <PortsDonutWidget />
-            </UI.Wrapper>
+            <TenantLink
+              // eslint-disable-next-line max-len
+              to={`/devices/switch/${params.switchId}/${params.serialNumber}/details/overview/ports`}
+            >
+              <UI.Wrapper>
+                <PortsDonutWidget />
+              </UI.Wrapper>
+            </TenantLink>
           </GridCol>
           <GridCol col={{ span: 5 }}>
             <GridRow>
@@ -180,9 +196,13 @@ export function SwitchInfoWidget (props:{
                   </UI.ChartTopTitle>
                 </UI.Wrapper>
                 <UI.Wrapper style={{ marginTop: '5px' }}>
-                  <UI.LargeText>
-                    {switchDetail?.clientCount || 0}
-                  </UI.LargeText>
+                  <UI.TenantLinkBlack
+                    to={`/devices/switch/${params.switchId}/${params.serialNumber}/details/clients`}
+                  >
+                    <UI.LargeText>
+                      {switchDetail?.clientCount || 0}
+                    </UI.LargeText>
+                  </UI.TenantLinkBlack>
                 </UI.Wrapper>
               </GridCol>
             </GridRow>
@@ -216,6 +236,11 @@ export function SwitchInfoWidget (props:{
         onClose={()=>setVisible(false)}
         switchDetail={switchDetail}
       /> }
+      <AlarmsDrawer
+        visible={alarmDrawerVisible}
+        setVisible={setAlarmDrawerVisible}
+        serialNumber={params.serialNumber}
+      />
     </UI.Container>
   )
 }

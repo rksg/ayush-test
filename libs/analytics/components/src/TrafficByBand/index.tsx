@@ -3,7 +3,7 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { getSeriesData, AnalyticsFilter }                 from '@acx-ui/analytics/utils'
 import { Card, Loader, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
-import { formatter }                                      from '@acx-ui/utils'
+import { formatter }                                      from '@acx-ui/formatter'
 
 import {
   useTrafficByBandQuery,

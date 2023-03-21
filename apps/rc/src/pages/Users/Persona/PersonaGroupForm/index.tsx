@@ -10,7 +10,8 @@ import { checkObjectNotExists, DpskSaveData, PersonaGroup, useTableQuery }      
 
 import MacRegistrationListForm
   from '../../../Policies/MacRegistrationList/MacRegistrationListForm/MacRegistrationListForm'
-import DpskForm from '../../../Services/Dpsk/DpskForm/DpskForm'
+import DpskForm                                  from '../../../Services/Dpsk/DpskForm/DpskForm'
+import { DpskPoolLink, MacRegistrationPoolLink } from '../LinkHelper'
 
 export function PersonaGroupForm (props: {
   form: FormInstance,
@@ -92,15 +93,21 @@ export function PersonaGroupForm (props: {
               <Form.Item
                 name='dpskPoolId'
                 children={
-                  <Select
-                    disabled={!!defaultValue?.dpskPoolId}
-                    placeholder={$t({ defaultMessage: 'Select...' })}
-                    options={
-                      dpskPoolList?.data?.data
-                        .filter(pool => !pool.identityId)
-                        .map(pool => ({ value: pool.id, label: pool.name }))
-                    }
-                  />
+                  !defaultValue?.dpskPoolId
+                    ? <Select
+                      disabled={!!defaultValue?.dpskPoolId}
+                      placeholder={$t({ defaultMessage: 'Select...' })}
+                      options={
+                        dpskPoolList?.data?.data
+                          .filter(pool => !pool.identityId)
+                          .map(pool => ({ value: pool.id, label: pool.name }))
+                      }
+                    />
+                    : <DpskPoolLink
+                      name={dpskPoolList?.data?.data
+                        ?.find(p => p.id === defaultValue?.dpskPoolId)?.name}
+                      dpskPoolId={defaultValue?.dpskPoolId}
+                    />
                 }
                 rules={
                   [{
@@ -112,12 +119,14 @@ export function PersonaGroupForm (props: {
             </Form.Item>
           </Col>
           <Col span={2}>
-            <Button
-              type={'link'}
-              onClick={() => setDpskModalVisible(true)}
-            >
-              {$t({ defaultMessage: 'Add' })}
-            </Button>
+            {!defaultValue?.dpskPoolId &&
+              <Button
+                type={'link'}
+                onClick={() => setDpskModalVisible(true)}
+              >
+                {$t({ defaultMessage: 'Add' })}
+              </Button>
+            }
           </Col>
           <Col span={21}>
             <Form.Item
@@ -125,25 +134,33 @@ export function PersonaGroupForm (props: {
               valuePropName='value'
               label={$t({ defaultMessage: 'MAC Registration List' })}
               children={
-                <Select
-                  allowClear
-                  disabled={!!defaultValue?.macRegistrationPoolId}
-                  placeholder={$t({ defaultMessage: 'Select...' })}
-                  options={
-                    macRegistrationPoolList.data?.data
-                      .map(pool => ({ value: pool.id, label: pool.name }))
-                  }
-                />
+                !defaultValue?.macRegistrationPoolId
+                  ? <Select
+                    allowClear
+                    disabled={!!defaultValue?.macRegistrationPoolId}
+                    placeholder={$t({ defaultMessage: 'Select...' })}
+                    options={
+                      macRegistrationPoolList.data?.data
+                        .map(pool => ({ value: pool.id, label: pool.name }))
+                    }
+                  />
+                  : <MacRegistrationPoolLink
+                    name={macRegistrationPoolList.data?.data
+                      ?.find(mac => mac.id === defaultValue.macRegistrationPoolId)?.name}
+                    macRegistrationPoolId={defaultValue?.macRegistrationPoolId}
+                  />
               }
             />
           </Col>
           <Col span={2}>
-            <Button
-              type={'link'}
-              onClick={() => setMacModalVisible(true)}
-            >
-              {$t({ defaultMessage: 'Add' })}
-            </Button>
+            {!defaultValue?.macRegistrationPoolId &&
+              <Button
+                type={'link'}
+                onClick={() => setMacModalVisible(true)}
+              >
+                {$t({ defaultMessage: 'Add' })}
+              </Button>
+            }
           </Col>
         </Row>
       </Space>

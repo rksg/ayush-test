@@ -14,6 +14,9 @@ import {
   UsersThreeOutlined,
   UsersThreeSolid
 } from '@acx-ui/icons'
+import { TenantType }  from '@acx-ui/react-router-dom'
+import { RolesEnum }   from '@acx-ui/types'
+import { hasRoles }    from '@acx-ui/user'
 import { AccountType } from '@acx-ui/utils'
 
 const MspSubscriptionOutlined =
@@ -22,6 +25,8 @@ const MspSubscriptionSolid = styled(MspSubscriptionSolidBase)`${LayoutUI.iconSol
 
 export function useMenuConfig (tenantType: string) {
   const { $t } = useIntl()
+
+  const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
   const isVar = tenantType === AccountType.VAR
   const isNonVarMSP = tenantType === AccountType.MSP_NON_VAR
   const isSupport = tenantType === 'SUPPORT'
@@ -38,50 +43,44 @@ export function useMenuConfig (tenantType: string) {
       routes: [
         {
           path: '/dashboard/mspCustomers',
-          name: $t({ defaultMessage: 'MSP Customers' }),
-          disabled: isVar
+          name: $t({ defaultMessage: 'MSP Customers' })
         },
-        {
+        ...((isNonVarMSP || isIntegrator) ? [] : [{
           path: '/dashboard/varCustomers',
           name: isSupport ? $t({ defaultMessage: 'RUCKUS Customers' })
-            : $t({ defaultMessage: 'VAR Customers' }),
-          disabled: isNonVarMSP || isIntegrator
-        }
+            : $t({ defaultMessage: 'VAR Customers' })
+        }])
       ]
     },
-    {
+    ...((isVar || isIntegrator || isSupport) ? [] : [{
       path: '/integrators',
-      name: $t({ defaultMessage: '3rd Party' }),
-      tenantType: 'v',
+      name: $t({ defaultMessage: 'Tech Partners' }),
+      tenantType: 'v' as TenantType,
       inactiveIcon: IntegratorsOutlined,
-      activeIcon: IntegratorsSolid,
-      disabled: isVar || isIntegrator || isSupport
-    },
-    {
+      activeIcon: IntegratorsSolid
+    }]),
+    ...(isSupport ? [] : [{
       path: '/deviceInventory',
       name: $t({ defaultMessage: 'Device Inventory' }),
-      tenantType: 'v',
+      tenantType: 'v' as TenantType,
       inactiveIcon: DevicesOutlined,
-      activeIcon: DevicesSolid,
-      disabled: isSupport
-    },
-    {
+      activeIcon: DevicesSolid
+    }]),
+    ...((isIntegrator || isSupport) ? [] : [{
       path: '/mspLicenses',
       name: $t({ defaultMessage: 'Subscriptions' }),
-      tenantType: 'v',
+      tenantType: 'v' as TenantType,
       inactiveIcon: MspSubscriptionOutlined,
-      activeIcon: MspSubscriptionSolid,
-      disabled: isIntegrator || isSupport
-    },
+      activeIcon: MspSubscriptionSolid
+    }]),
     genPlaceholder(),
-    {
+    ...((!isPrimeAdmin || isIntegrator || isSupport) ? [] : [{
       path: '/portalSetting',
       name: $t({ defaultMessage: 'Settings' }),
-      tenantType: 'v',
+      tenantType: 'v' as TenantType,
       inactiveIcon: ConfigurationOutlined,
-      activeIcon: ConfigurationSolid,
-      disabled: isVar || isIntegrator || isSupport
-    }
+      activeIcon: ConfigurationSolid
+    }])
   ]
 
   return config

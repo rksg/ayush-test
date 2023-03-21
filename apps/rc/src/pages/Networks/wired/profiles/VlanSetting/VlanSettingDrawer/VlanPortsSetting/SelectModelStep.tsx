@@ -4,8 +4,7 @@ import { useState, useEffect, SetStateAction, useContext } from 'react'
 import { Row, Col, Form, Radio, Typography, RadioChangeEvent, Checkbox, Select, Input } from 'antd'
 import { CheckboxChangeEvent }                                                          from 'antd/lib/checkbox'
 
-import { Card, Tooltip } from '@acx-ui/components'
-// import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
+import { Card, Tooltip }                           from '@acx-ui/components'
 import { ICX_MODELS_MODULES, SwitchModelPortData } from '@acx-ui/rc/utils'
 import { getIntl }                                 from '@acx-ui/utils'
 
@@ -57,14 +56,9 @@ export function SelectModelStep (props: { editMode: boolean }) {
       untaggedPorts: []
     })
 
-  //const switchSupportIcx8200FF = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200)
-
   useEffect(() => {
     if(ICX_MODELS_MODULES){
-      const familiesData = Object.keys(ICX_MODELS_MODULES).filter(key=> {
-        return key !== 'ICX8200'
-        // return !switchSupportIcx8200FF && key !== 'ICX8200' //TODO
-      }).map(key => {
+      const familiesData = Object.keys(ICX_MODELS_MODULES).map(key => {
         return { label: `ICX-${key.split('ICX')[1]}`, value: key }
       })
       setFamilies(familiesData)
@@ -88,6 +82,8 @@ export function SelectModelStep (props: { editMode: boolean }) {
         selectedOptionOfSlot3: selectedEnable3.option,
         selectedOptionOfSlot4: selectedEnable4.option
       })
+      setFamily(selectedFamily)
+      setModel(selectedModel)
       familyChangeAction(selectedFamily)
       modelChangeAction(selectedFamily, selectedModel)
       setEnableSlot2(selectedEnable2.enable)
@@ -199,6 +195,8 @@ export function SelectModelStep (props: { editMode: boolean }) {
       setModuleSelectionEnable(true)
       setModule2SelectionEnable(true)
       setModule3SelectionEnable(true)
+    }else{
+      setModuleSelectionEnable(true)
     }
     setModel(model)
     checkIfModuleFixed(family, model)
@@ -288,7 +286,7 @@ export function SelectModelStep (props: { editMode: boolean }) {
         const familyIndex = selectedFamily as keyof typeof ICX_MODELS_MODULES
         const familyList = ICX_MODELS_MODULES[familyIndex]
         const modelIndex = selectedModel as keyof typeof familyList
-        slotPortInfo = familyList[modelIndex][slotNumber - 1][0]
+        slotPortInfo = slotOption || familyList[modelIndex][slotNumber - 1][0]
         totalPortNumber = slotPortInfo.split('X')[0]
       }
 
@@ -349,7 +347,7 @@ export function SelectModelStep (props: { editMode: boolean }) {
                     <Radio key={value} value={value} disabled={editMode}>
                       <Tooltip
                         title={''}>
-                        {label}
+                        <div data-testid={value}>{label}</div>
                       </Tooltip>
                     </Radio>
                   ))}
@@ -373,7 +371,7 @@ export function SelectModelStep (props: { editMode: boolean }) {
                     <Radio key={value} value={value} disabled={editMode}>
                       <Tooltip
                         title={''}>
-                        {label}
+                        <div data-testid={value}>{label}</div>
                       </Tooltip>
                     </Radio>
                   ))}

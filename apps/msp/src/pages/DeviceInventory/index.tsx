@@ -20,7 +20,6 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { filterByAccess }        from '@acx-ui/user'
 
 export const deviceTypeMapping = {
   DVCNWTYPE_WIFI: defineMessage({ defaultMessage: 'Access Point' }),
@@ -206,13 +205,17 @@ export function DeviceInventory () {
       'apMac',
       'model',
       'customerName',
-      'deviceStatus' ]
+      'deviceStatus' ],
+    searchTargetFields: ['apMac', 'switchMac', 'serialNumber']
   }
 
   const DeviceTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useDeviceInventoryListQuery,
-      defaultPayload
+      defaultPayload,
+      search: {
+        searchTargetFields: defaultPayload.searchTargetFields as string[]
+      }
     })
 
     return (
@@ -234,11 +237,11 @@ export function DeviceInventory () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Device Inventory' })}
-        extra={filterByAccess([
+        extra={
           <TenantLink to='/dashboard'>
-            <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
+            <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
           </TenantLink>
-        ])}
+        }
       />
       <DeviceTable />
     </>

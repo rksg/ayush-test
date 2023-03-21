@@ -310,8 +310,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
 
   const validateVlan = () => {
     const { $t } = getIntl()
-    if (_.isEmpty(form.getFieldValue('untaggedVlan')) &&
-      _.isEmpty(form.getFieldValue('taggedVlans'))) {
+    if (!form.getFieldValue('untaggedVlan') && !form.getFieldValue('taggedVlans')) {
       return Promise.reject(
         $t({ defaultMessage: 'Each port must be a member of at least one VLAN' }))
     }
@@ -341,7 +340,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   }
 
   const footer = [
-    <Space style={{ display: 'flex', marginLeft: 'auto' }} key='edit-port-footer'>
+    <Space key='edit-port-footer'>
       <Button key='cancelBtn' onClick={onClose}>
         {$t({ defaultMessage: 'Cancel' })}
       </Button>
@@ -349,7 +348,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
         key='okBtn'
         type='secondary'
         onClick={() => form.submit()}>
-        {$t({ defaultMessage: 'Ok' })}
+        {$t({ defaultMessage: 'Add' })}
       </Button>
     </Space>
   ]

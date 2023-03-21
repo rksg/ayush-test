@@ -113,10 +113,15 @@ exports[`AP Information Widget should render "No active alarms" when no alarms e
                 <div
                   class="ant-space-item"
                 >
-                  <div
-                    data-testid="analytics-IncidentBySeverityDonutChart"
-                    title="IncidentBySeverityDonutChart"
-                  />
+                  <a
+                    class="styledComponents__TenantLinkSvg-sc-1kux3bo-4 eMltkO"
+                    href="/t/tenant-id/devices/wifi/undefined/details/analytics"
+                  >
+                    <div
+                      data-testid="analytics-IncidentBySeverityDonutChart"
+                      title="IncidentBySeverityDonutChart"
+                    />
+                  </a>
                 </div>
               </div>
             </div>
@@ -134,10 +139,15 @@ exports[`AP Information Widget should render "No active alarms" when no alarms e
                 <div
                   class="ant-space-item"
                 >
-                  <div
-                    data-testid="analytics-KpiWidget"
-                    title="KpiWidget"
-                  />
+                  <a
+                    class="styledComponents__TenantLinkBlack-sc-1kux3bo-3 hsPaUF"
+                    href="/t/tenant-id/devices/wifi/undefined/details/analytics/health/overview"
+                  >
+                    <div
+                      data-testid="analytics-KpiWidget"
+                      title="KpiWidget"
+                    />
+                  </a>
                 </div>
               </div>
             </div>
@@ -155,10 +165,15 @@ exports[`AP Information Widget should render "No active alarms" when no alarms e
                 <div
                   class="ant-space-item"
                 >
-                  <div
-                    data-testid="analytics-TtcTimeWidget"
-                    title="TtcTimeWidget"
-                  />
+                  <a
+                    class="styledComponents__TenantLinkBlack-sc-1kux3bo-3 hsPaUF"
+                    href="/t/tenant-id/devices/wifi/undefined/details/analytics/health/overview"
+                  >
+                    <div
+                      data-testid="analytics-TtcTimeWidget"
+                      title="TtcTimeWidget"
+                    />
+                  </a>
                 </div>
               </div>
             </div>
@@ -176,10 +191,15 @@ exports[`AP Information Widget should render "No active alarms" when no alarms e
                 <div
                   class="ant-space-item"
                 >
-                  <div
-                    data-testid="analytics-KpiWidget"
-                    title="KpiWidget"
-                  />
+                  <a
+                    class="styledComponents__TenantLinkBlack-sc-1kux3bo-3 hsPaUF"
+                    href="/t/tenant-id/devices/wifi/undefined/details/analytics/health/overview"
+                  >
+                    <div
+                      data-testid="analytics-KpiWidget"
+                      title="KpiWidget"
+                    />
+                  </a>
                 </div>
               </div>
             </div>

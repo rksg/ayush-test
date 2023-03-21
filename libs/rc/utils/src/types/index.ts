@@ -38,6 +38,7 @@ export * from './firmware'
 export * from './timeline'
 export * from './persona'
 export * from './radiusClientConfig'
+export * from './property'
 
 export interface CommonResult {
   requestId: string
@@ -379,8 +380,10 @@ export interface DnsProxyContextType {
 export interface WifiCallingSetting {
   id: string,
   serviceName: string,
-  description: string | undefined,
+  description?: string | undefined,
   qosPriority: QosPriorityEnum,
+  tenantId?: string,
+  name?: string,
   epdgs?: EPDG[],
   networkIds?: string[]
 }

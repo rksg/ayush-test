@@ -4,7 +4,7 @@ import {
   MenuProps,
   Space
 } from 'antd'
-import moment      from 'moment'
+import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, RangePicker } from '@acx-ui/components'
@@ -17,6 +17,7 @@ import {
   ApDeviceStatusEnum
 } from '@acx-ui/rc/utils'
 import {
+  useLocation,
   useNavigate,
   useTenantLink
 } from '@acx-ui/react-router-dom'
@@ -34,6 +35,7 @@ function ApPageHeader () {
   const apAction = useApActions()
 
   const navigate = useNavigate()
+  const location = useLocation()
   const basePath = useTenantLink(`/devices/wifi/${serialNumber}`)
   const linkToWifi = useTenantLink('/devices/wifi/')
 
@@ -104,12 +106,16 @@ function ApPageHeader () {
         </Dropdown>,
         <Button
           type='primary'
-          onClick={() =>
+          onClick={() => {
             navigate({
               ...basePath,
               pathname: `${basePath.pathname}/edit/details`
+            }, {
+              state: {
+                from: location
+              }
             })
-          }
+          }}
         >{$t({ defaultMessage: 'Configure' })}</Button>
       ])}
       footer={<ApTabs apDetail={data as ApDetailHeader} />}

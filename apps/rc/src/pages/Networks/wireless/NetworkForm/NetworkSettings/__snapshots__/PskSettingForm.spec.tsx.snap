@@ -476,7 +476,7 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
                                                     <div
                                                       class="styledComponents__RadioDescription-sc-1mpg945-2 dxaZmg"
                                                     >
-                                                      Use 802.1X standard and WPA2 security protocols to authenticate users using an authentication server on thenetwork
+                                                      Use 802.1X standard and WPA2 security protocols to authenticate users using an authentication server on the network
                                                     </div>
                                                   </span>
                                                 </span>
@@ -606,39 +606,64 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
                     >
                       Open Settings
                     </h3>
-                    <div
-                      class="ant-form-item"
-                    >
+                    <div>
                       <div
-                        class="ant-row ant-form-item-row"
+                        class="ant-form-item"
                       >
                         <div
-                          class="ant-col ant-form-item-control"
+                          class="ant-row ant-form-item-row"
                         >
                           <div
-                            class="ant-form-item-control-input"
+                            class="ant-col ant-form-item-control"
                           >
                             <div
-                              class="ant-form-item-control-input-content"
+                              class="ant-form-item-control-input"
                             >
-                              <button
-                                aria-checked="false"
-                                class="ant-switch ant-switch-disabled"
-                                disabled=""
-                                id="settings_wlan_macAddressAuthentication"
-                                role="switch"
-                                type="button"
+                              <div
+                                class="ant-form-item-control-input-content"
                               >
                                 <div
-                                  class="ant-switch-handle"
-                                />
-                                <span
-                                  class="ant-switch-inner"
-                                />
-                              </button>
-                              <span>
-                                Use MAC Auth
-                              </span>
+                                  class="ant-form-item"
+                                >
+                                  <div
+                                    class="ant-row ant-form-item-row"
+                                  >
+                                    <div
+                                      class="ant-col ant-form-item-control"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input"
+                                      >
+                                        <div
+                                          class="ant-form-item-control-input-content"
+                                        >
+                                          <button
+                                            aria-checked="false"
+                                            class="ant-switch ant-switch-disabled"
+                                            disabled=""
+                                            id="settings_wlan_macAddressAuthentication"
+                                            role="switch"
+                                            type="button"
+                                          >
+                                            <div
+                                              class="ant-switch-handle"
+                                            />
+                                            <span
+                                              class="ant-switch-inner"
+                                            />
+                                          </button>
+                                          <span>
+                                            MAC Authentication
+                                          </span>
+                                          <svg
+                                            data-testid="QuestionMarkCircleOutlined"
+                                          />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -917,9 +942,9 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
                         >
                           <label
                             class=""
-                            title="Use AAA Server:"
+                            title="Use Radius Server:"
                           >
-                            Use AAA Server:
+                            Use Radius Server:
                           </label>
                         </div>
                         <div

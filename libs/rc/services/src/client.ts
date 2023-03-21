@@ -1,5 +1,6 @@
-import { createApi, fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 
+import { convertEpochToRelativeTime, formatter } from '@acx-ui/formatter'
 import {
   Client,
   ClientList,
@@ -21,17 +22,10 @@ import {
   downloadFile,
   transformByte,
   WifiUrlsInfo,
-  RequestFormData
+  RequestFormData, enableNewApi
 } from '@acx-ui/rc/utils'
-import { convertEpochToRelativeTime, formatter, getJwtToken } from '@acx-ui/utils'
-
-export const baseClientApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  reducerPath: 'clientApi',
-  refetchOnMountOrArgChange: true,
-  tagTypes: ['Client', 'Guest', 'HistoricalClient'],
-  endpoints: () => ({ })
-})
+import { baseClientApi } from '@acx-ui/store'
+import { getJwtToken }   from '@acx-ui/utils'
 
 export const clientApi = baseClientApi.injectEndpoints({
   endpoints: (build) => ({
@@ -67,6 +61,12 @@ export const clientApi = baseClientApi.injectEndpoints({
     disconnectClient: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(ClientUrlsInfo.disconnectClient, params)
+        if (enableNewApi(ClientUrlsInfo.disconnectClient)) {
+          payload = {
+            action: 'disconnect',
+            clients: payload
+          }
+        }
         return {
           ...req,
           body: payload

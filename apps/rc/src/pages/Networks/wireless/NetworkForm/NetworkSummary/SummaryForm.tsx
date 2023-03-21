@@ -1,9 +1,12 @@
+import React from 'react'
+
 import { EnvironmentOutlined }     from '@ant-design/icons'
 import { Col, Divider, Form, Row } from 'antd'
 import { useIntl }                 from 'react-intl'
 
 import { StepsForm, Subtitle }                                                 from '@acx-ui/components'
-import { useVenuesListQuery }                                                  from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }                                              from '@acx-ui/feature-toggle'
+import { useMacRegListsQuery, useVenuesListQuery }                             from '@acx-ui/rc/services'
 import { Demo, NetworkSaveData, NetworkTypeEnum, transformDisplayText, Venue } from '@acx-ui/rc/utils'
 import { useParams }                                                           from '@acx-ui/react-router-dom'
 
@@ -38,6 +41,11 @@ export function SummaryForm (props: {
     return map
   }, {})
 
+  const macRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
+  const { data: macRegListOption } = useMacRegListsQuery({
+    payload: { pageSize: 10000 }
+  }, { skip: !macRegistrationEnabled })
+
   const getVenues = function () {
     const venues = summaryData.venues
     const rows = []
@@ -57,6 +65,7 @@ export function SummaryForm (props: {
     }
   }
 
+  // @ts-ignore
   return (
     <>
       <StepsForm.Title>{ $t({ defaultMessage: 'Summary' }) }</StepsForm.Title>
@@ -83,13 +92,18 @@ export function SummaryForm (props: {
               (summaryData.guestPortal?.guestNetworkType &&
                  $t(captiveTypes[summaryData.guestPortal?.guestNetworkType]))}
           />}
-          {summaryData.type !== NetworkTypeEnum.PSK &&
+          {summaryData.type !== NetworkTypeEnum.PSK&&
+            summaryData.type!==NetworkTypeEnum.CAPTIVEPORTAL&&
           <Form.Item
-            label={$t({ defaultMessage: 'Use AAA Server:' })}
-            children={summaryData.isCloudpathEnabled ? 'Yes' : 'No'}
+            label={$t({ defaultMessage: 'Use Radius Server:' })}
+            children={
+              summaryData.isCloudpathEnabled || summaryData.wlan?.macAddressAuthentication
+                ? $t({ defaultMessage: 'Yes' })
+                : $t({ defaultMessage: 'No' })
+            }
           />
           }
-          {summaryData.isCloudpathEnabled &&
+          {summaryData.isCloudpathEnabled && !summaryData.wlan?.macRegistrationListId &&
             <>
               <Form.Item
                 label={$t({ defaultMessage: 'Authentication Server' })}
@@ -103,8 +117,18 @@ export function SummaryForm (props: {
               }
             </>
           }
-          {summaryData.type === NetworkTypeEnum.AAA && !summaryData.isCloudpathEnabled &&
+          {summaryData.type === NetworkTypeEnum.AAA
+          && !summaryData.isCloudpathEnabled && !summaryData.wlan?.macRegistrationListId &&
            <AaaSummaryForm summaryData={summaryData} />
+          }
+          {summaryData.wlan?.macAddressAuthentication && summaryData.wlan?.macRegistrationListId &&
+          <Form.Item
+            label={$t({ defaultMessage: 'Mac registration list:' })}
+            children={
+              `${macRegListOption?.data.find(
+                regList => regList.id === summaryData.wlan?.macRegistrationListId
+              )?.name}`
+            }/>
           }
           {summaryData.type === NetworkTypeEnum.DPSK &&
             <DpskSummaryForm summaryData={summaryData} />

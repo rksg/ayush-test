@@ -7,17 +7,19 @@ import moment                               from 'moment-timezone'
 import { useIntl }                          from 'react-intl'
 
 import { Button, PageHeader, RangePicker, Tooltip }         from '@acx-ui/components'
+import { DateFormatEnum, formatter }                        from '@acx-ui/formatter'
 import { ArrowExpand }                                      from '@acx-ui/icons'
 import { SwitchCliSession, SwitchStatus, useSwitchActions } from '@acx-ui/rc/components'
 import { useGetJwtTokenQuery, useLazyGetSwitchListQuery }   from '@acx-ui/rc/services'
 import { SwitchRow, SwitchStatusEnum, SwitchViewModel }     from '@acx-ui/rc/utils'
 import {
+  useLocation,
   useNavigate,
   useTenantLink,
   useParams
 }                  from '@acx-ui/react-router-dom'
-import { filterByAccess }           from '@acx-ui/user'
-import { formatter, useDateFilter } from '@acx-ui/utils'
+import { filterByAccess } from '@acx-ui/user'
+import { useDateFilter }  from '@acx-ui/utils'
 
 import SwitchTabs from './SwitchTabs'
 
@@ -33,7 +35,7 @@ DELETE = 'DELETE'
 
 function SwitchPageHeader () {
   const { $t } = useIntl()
-  const { switchId, serialNumber, tenantId } = useParams()
+  const { switchId, serialNumber, tenantId, activeTab, activeSubTab } = useParams()
   const switchAction = useSwitchActions()
   const {
     switchDetailsContextData
@@ -41,6 +43,7 @@ function SwitchPageHeader () {
   const { switchDetailHeader, currentSwitchOperational } = switchDetailsContextData
 
   const navigate = useNavigate()
+  const location = useLocation()
   const basePath = useTenantLink(`/devices/switch/${switchId}/${serialNumber}`)
   const linkToSwitch = useTenantLink('/devices/switch/')
 
@@ -91,16 +94,34 @@ function SwitchPageHeader () {
     }
   }
 
-  const handleSyncButton = function (value: string, isSync: boolean) {
+  const handleSyncButton = (value: string, isSync: boolean) => {
     let result = value
     if (isSync) {
       result = $t({ defaultMessage: 'Sync data operation in progress...' })
       refetchResult()
     } else if (!_.isEmpty(value)) {
-      result = `${$t({ defaultMessage: 'Last synced at ' })} ${formatter('dateTimeFormatWithSeconds')(value)}`
+      result = `${$t({ defaultMessage: 'Last synced at ' })} ${
+        formatter(DateFormatEnum.DateTimeFormatWithSeconds)(value)}`
     }
     setIsSyncing(isSync)
     setSyncDataEndTime(result)
+  }
+
+  const checkTimeFilterDisabled = () => {
+    switch(activeTab){
+      case 'overview':
+        if(typeof activeSubTab === 'undefined'){
+          return false
+        }
+        return activeSubTab !== 'panel'
+      case 'troubleshooting':
+      case 'clients':
+      case 'configuration':
+      case 'dhcp':
+        return true
+      default:
+        return false
+    }
   }
 
   useEffect(() => {
@@ -162,7 +183,7 @@ function SwitchPageHeader () {
           { text: $t({ defaultMessage: 'Switches' }), link: '/devices/switch' }
         ]}
         extra={filterByAccess([
-          <RangePicker
+          !checkTimeFilterDisabled() && <RangePicker
             key='range-picker'
             selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
             onDateApply={setDateFilter as CallableFunction}
@@ -182,7 +203,11 @@ function SwitchPageHeader () {
             onClick={() =>
               navigate({
                 ...basePath,
-                pathname: `${basePath.pathname}${switchDetailHeader.isStack ? '/stack' : ''}/edit`
+                pathname: `${basePath.pathname}${switchDetailHeader?.isStack ? '/stack' : ''}/edit`
+              }, {
+                state: {
+                  from: location
+                }
               })
             }
           >{$t({ defaultMessage: 'Configure' })}</Button>

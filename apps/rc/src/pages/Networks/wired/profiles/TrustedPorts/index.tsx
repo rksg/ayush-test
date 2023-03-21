@@ -126,6 +126,7 @@ export function TrustedPorts () {
               label: $t({ defaultMessage: 'Add Model' }),
               onClick: () => {
                 setOpenModal(true)
+                setSelected(undefined)
               }
             }])}
             rowSelection={{

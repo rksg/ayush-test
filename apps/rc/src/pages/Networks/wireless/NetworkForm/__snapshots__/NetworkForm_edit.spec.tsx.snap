@@ -82,7 +82,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
               class="ant-steps ant-steps-vertical ant-steps-dot"
             >
               <div
-                class="ant-steps-item ant-steps-item-process ant-steps-item-active"
+                class="ant-steps-item ant-steps-item-process ant-steps-item-active ant-steps-item-disabled"
               >
                 <div
                   class="ant-steps-item-container"
@@ -113,12 +113,10 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                 </div>
               </div>
               <div
-                class="ant-steps-item ant-steps-item-wait"
+                class="ant-steps-item ant-steps-item-wait ant-steps-item-disabled"
               >
                 <div
                   class="ant-steps-item-container"
-                  role="button"
-                  tabindex="0"
                 >
                   <div
                     class="ant-steps-item-tail"
@@ -146,12 +144,10 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                 </div>
               </div>
               <div
-                class="ant-steps-item ant-steps-item-wait"
+                class="ant-steps-item ant-steps-item-wait ant-steps-item-disabled"
               >
                 <div
                   class="ant-steps-item-container"
-                  role="button"
-                  tabindex="0"
                 >
                   <div
                     class="ant-steps-item-tail"
@@ -179,12 +175,10 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                 </div>
               </div>
               <div
-                class="ant-steps-item ant-steps-item-wait"
+                class="ant-steps-item ant-steps-item-wait ant-steps-item-disabled"
               >
                 <div
                   class="ant-steps-item-container"
-                  role="button"
-                  tabindex="0"
                 >
                   <div
                     class="ant-steps-item-tail"
@@ -450,39 +444,64 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                     >
                       Open Settings
                     </h3>
-                    <div
-                      class="ant-form-item"
-                    >
+                    <div>
                       <div
-                        class="ant-row ant-form-item-row"
+                        class="ant-form-item"
                       >
                         <div
-                          class="ant-col ant-form-item-control"
+                          class="ant-row ant-form-item-row"
                         >
                           <div
-                            class="ant-form-item-control-input"
+                            class="ant-col ant-form-item-control"
                           >
                             <div
-                              class="ant-form-item-control-input-content"
+                              class="ant-form-item-control-input"
                             >
-                              <button
-                                aria-checked="false"
-                                class="ant-switch ant-switch-disabled"
-                                disabled=""
-                                id="settings_wlan_macAddressAuthentication"
-                                role="switch"
-                                type="button"
+                              <div
+                                class="ant-form-item-control-input-content"
                               >
                                 <div
-                                  class="ant-switch-handle"
-                                />
-                                <span
-                                  class="ant-switch-inner"
-                                />
-                              </button>
-                              <span>
-                                Use MAC Auth
-                              </span>
+                                  class="ant-form-item"
+                                >
+                                  <div
+                                    class="ant-row ant-form-item-row"
+                                  >
+                                    <div
+                                      class="ant-col ant-form-item-control"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input"
+                                      >
+                                        <div
+                                          class="ant-form-item-control-input-content"
+                                        >
+                                          <button
+                                            aria-checked="false"
+                                            class="ant-switch ant-switch-disabled"
+                                            disabled=""
+                                            id="settings_wlan_macAddressAuthentication"
+                                            role="switch"
+                                            type="button"
+                                          >
+                                            <div
+                                              class="ant-switch-handle"
+                                            />
+                                            <span
+                                              class="ant-switch-inner"
+                                            />
+                                          </button>
+                                          <span>
+                                            MAC Authentication
+                                          </span>
+                                          <svg
+                                            data-testid="QuestionMarkCircleOutlined"
+                                          />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </div>

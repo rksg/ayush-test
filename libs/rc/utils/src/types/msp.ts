@@ -56,8 +56,10 @@ export enum EntitlementDeviceSubType {
   MSP_WIFI_TEMP = 'MSP_WIFI_TEMP'
 }
 
-export enum DateFormatEnum {
-  UserDateFormat = 'MM/DD/YYYY'
+export enum AssignActionEnum {
+  ADD = 'ADD',
+  MODIFY = 'MODIFY',
+  ACTIVATE = 'ACTIVATE'
 }
 
 export interface DelegationEntitlementRecord {
@@ -163,7 +165,7 @@ export enum DateSelectionEnum {
 }
 
 export const dateDisplayText = {
-  [DateSelectionEnum.CUSTOME_DATE]: defineMessage({ defaultMessage: 'Custome date' }),
+  [DateSelectionEnum.CUSTOME_DATE]: defineMessage({ defaultMessage: 'Custom date' }),
   [DateSelectionEnum.FIVE_YEARS]: defineMessage({ defaultMessage: 'Five Years' }),
   [DateSelectionEnum.THREE_YEARS]: defineMessage({ defaultMessage: 'Three Years' }),
   [DateSelectionEnum.ONE_YEAR]: defineMessage({ defaultMessage: 'One Year' }),
@@ -406,3 +408,8 @@ export interface MspLogoFile {
   createdDate?: Date,
   updatedDate?: Date
 }
+
+export interface ParentLogoUrl {
+  logo_url: string
+}
+

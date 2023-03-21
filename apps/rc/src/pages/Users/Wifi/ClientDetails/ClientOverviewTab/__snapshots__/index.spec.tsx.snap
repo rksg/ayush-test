@@ -764,7 +764,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    24/11/2022 07:37 AM
+                                    11/24/2022 07:37
                                   </span>
                                 </div>
                               </td>
@@ -787,7 +787,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    24/11/2022 08:07 AM
+                                    11/24/2022 08:07
                                   </span>
                                 </div>
                               </td>
@@ -1827,7 +1827,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    24/11/2022 07:37 AM
+                                    11/24/2022 07:37
                                   </span>
                                 </div>
                               </td>
@@ -1850,7 +1850,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    24/11/2022 08:07 AM
+                                    11/24/2022 08:07
                                   </span>
                                 </div>
                               </td>
@@ -3063,7 +3063,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    24/11/2022 07:37 AM
+                                    11/24/2022 07:37
                                   </span>
                                 </div>
                               </td>
@@ -3086,7 +3086,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    24/11/2022 08:07 AM
+                                    11/24/2022 08:07
                                   </span>
                                 </div>
                               </td>
@@ -3137,7 +3137,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                     <a
                                       href="/t/tenant-id/devices/aps/422039000230/details/overview"
                                     >
-                                      --
+                                      UI team ONLY
                                     </a>
                                   </span>
                                 </div>
@@ -3164,7 +3164,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                     <a
                                       href="/t/tenant-id/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
                                     >
-                                      --
+                                      UI-TEST-VENUE
                                     </a>
                                   </span>
                                 </div>
@@ -3342,7 +3342,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    Dec 13 2022 15:20
+                                    12/13/2022 15:20
                                   </span>
                                 </div>
                               </td>
@@ -3365,7 +3365,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    Dec 13 2022 15:20
+                                    12/13/2022 15:20
                                   </span>
                                 </div>
                               </td>
@@ -4345,7 +4345,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    24/11/2022 07:37 AM
+                                    11/24/2022 07:37
                                   </span>
                                 </div>
                               </td>
@@ -4368,7 +4368,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    24/11/2022 08:07 AM
+                                    11/24/2022 08:07
                                   </span>
                                 </div>
                               </td>
@@ -5479,7 +5479,11 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    UI team ONLY
+                                    <a
+                                      href="/t/tenant-id/devices/aps/422039000230/details/overview"
+                                    >
+                                      UI team ONLY
+                                    </a>
                                   </span>
                                 </div>
                               </td>
@@ -5502,7 +5506,11 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    UI-TEST-VENUE
+                                    <a
+                                      href="/t/tenant-id/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
+                                    >
+                                      UI-TEST-VENUE
+                                    </a>
                                   </span>
                                 </div>
                               </td>
@@ -6580,7 +6588,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    0
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -7669,17 +7677,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client w
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <div
-                                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__OsType-sc-75u9lp-4 ezlfJi"
-                                    >
-                                      <div
-                                        class="ant-space-item"
-                                      >
-                                        <svg
-                                          data-testid="GenericOs"
-                                        />
-                                      </div>
-                                    </div>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -7927,7 +7925,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client w
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    0
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -9268,7 +9266,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render dpsk cli
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    0
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -10793,7 +10791,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    0
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -11241,7 +11239,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    Dec 13 2022 15:20
+                                    12/13/2022 15:20
                                   </span>
                                 </div>
                               </td>
@@ -11264,7 +11262,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    Dec 13 2022 15:20
+                                    12/13/2022 15:20
                                   </span>
                                 </div>
                               </td>
@@ -12365,7 +12363,7 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    0
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -13597,7 +13595,7 @@ exports[`ClientOverviewTab OverviewWidget should render correctly when search pa
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    24/11/2022 07:37 AM
+                                    11/24/2022 07:37
                                   </span>
                                 </div>
                               </td>
@@ -13620,7 +13618,7 @@ exports[`ClientOverviewTab OverviewWidget should render correctly when search pa
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    24/11/2022 08:07 AM
+                                    11/24/2022 08:07
                                   </span>
                                 </div>
                               </td>
@@ -14660,7 +14658,7 @@ exports[`ClientOverviewTab OverviewWidget should render historical client info c
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    24/11/2022 07:37 AM
+                                    11/24/2022 07:37
                                   </span>
                                 </div>
                               </td>
@@ -14683,7 +14681,7 @@ exports[`ClientOverviewTab OverviewWidget should render historical client info c
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    24/11/2022 08:07 AM
+                                    11/24/2022 08:07
                                   </span>
                                 </div>
                               </td>

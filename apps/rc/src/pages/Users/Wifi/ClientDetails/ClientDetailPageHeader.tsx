@@ -1,11 +1,12 @@
 import { Dropdown, Menu, MenuProps, Space } from 'antd'
-import moment                               from 'moment'
+import moment                               from 'moment-timezone'
 import { useIntl }                          from 'react-intl'
 
 import { Button, DisabledButton, PageHeader, RangePicker }       from '@acx-ui/components'
 import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
 import { ArrowExpand, ClockOutlined }                            from '@acx-ui/icons'
 import { useDisconnectClientMutation, useGetClientDetailsQuery } from '@acx-ui/rc/services'
+import { ClientStatusEnum }                                      from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useParams,
@@ -39,7 +40,10 @@ function ClientDetailPageHeader () {
   const { $t } = useIntl()
   const { tenantId, clientId } = useParams()
   const [searchParams] = useSearchParams()
-  const { data: clentDetails } = useGetClientDetailsQuery({ params: { tenantId, clientId } })
+  const { data: clentDetails } = useGetClientDetailsQuery(
+    { params: { tenantId, clientId } },
+    { skip: searchParams.get('clientStatus') === ClientStatusEnum.HISTORICAL }
+  )
   const [disconnectClient] = useDisconnectClientMutation()
   const navigate = useNavigate()
   const basePath = useTenantLink('/users/wifi/clients')

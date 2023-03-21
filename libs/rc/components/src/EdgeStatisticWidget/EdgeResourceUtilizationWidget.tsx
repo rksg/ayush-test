@@ -7,7 +7,7 @@ import {
   MultiLineTimeSeriesChart,
   NoData
 } from '@acx-ui/components'
-import { formatter } from '@acx-ui/utils'
+import { formatter } from '@acx-ui/formatter'
 
 function EdgeResourceUtilizationWidget () {
   const { $t } = useIntl()

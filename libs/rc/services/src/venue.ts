@@ -1,5 +1,4 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   CommonUrlsInfo,
   DHCPUrls,
@@ -53,21 +52,20 @@ import {
   VenueDirectedMulticast,
   VenueLoadBalancing,
   TopologyData,
-  VenueBonjourFencingPolicy
+  VenueBonjourFencingPolicy,
+  PropertyConfigs,
+  PropertyUrlsInfo,
+  PropertyUnit,
+  ResidentPortal,
+  NewTableResult,
+  transferToTableResult
 } from '@acx-ui/rc/utils'
-import { formatter, getJwtToken } from '@acx-ui/utils'
+import { baseVenueApi } from '@acx-ui/store'
+import { getJwtToken }  from '@acx-ui/utils'
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
 }
-
-export const baseVenueApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  reducerPath: 'venueApi',
-  tagTypes: ['Venue', 'Device', 'VenueFloorPlan', 'AAA', 'ExternalAntenna', 'VenueRadio'],
-  refetchOnMountOrArgChange: true,
-  endpoints: () => ({})
-})
 
 export const venueApi = baseVenueApi.injectEndpoints({
   endpoints: (build) => ({
@@ -135,6 +133,13 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...req,
           body: payload
         }
+      },
+      transformResponse (result: { data: Venue[] }) {
+        result.data.map(venue => {
+          venue.switches = venue.switches ? venue.switches : 0
+          return venue
+        })
+        return result
       }
     }),
     updateVenue: build.mutation<VenueExtended, RequestPayload>({
@@ -328,7 +333,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'Update Switch Position',
             'UpdateApPosition',
-            'UpdateCloudpathServerPosition'], () => {
+            'UpdateCloudpathServerPosition',
+            'DeleteFloorPlan'], () => {
             api.dispatch(venueApi.util.invalidateTags([{ type: 'VenueFloorPlan', id: 'DEVICE' }]))
           })
         })
@@ -710,25 +716,6 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
-    getVenueSyslogAp: build.query<VenueSyslog, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getVenueSyslogAp, params)
-        return{
-          ...req
-        }
-      },
-      providesTags: [{ type: 'Venue', id: 'Syslog' }],
-      async onCacheEntryAdded (requestArgs, api) {
-        await onSocketActivityChanged(requestArgs, api, (msg) => {
-          const activities = [
-            'UpdateVenueSyslog'
-          ]
-          onActivityMessageReceived(msg, activities, () => {
-            api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'Syslog' }]))
-          })
-        })
-      }
-    }),
     updateVenueSyslogAp: build.mutation<VenueSyslog, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.updateVenueSyslogAp, params)
@@ -857,7 +844,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return {
           data: res.response.list ? res.response.list.map(item => ({
             ...item,
-            startTime: formatter('dateTimeFormatWithSeconds')(item.startTime),
+            startTime: formatter(DateFormatEnum.DateTimeFormatWithSeconds)(item.startTime),
             configType: (item.configType as unknown as string[])
               .map(type => transformConfigType(type)).join(', '),
             dispatchStatus: transformConfigStatus(item.dispatchStatus)
@@ -945,6 +932,140 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Venue', id: 'BONJOUR_FENCING' }]
+    }),
+    getPropertyConfigs: build.query<PropertyConfigs, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          PropertyUrlsInfo.getPropertyConfigs,
+          params,
+          { Accept: 'application/hal+json' }
+        )
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'PropertyConfigs', id: 'ID' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Enable Property',
+            'Disable Property'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(venueApi.util.invalidateTags([{ type: 'PropertyConfigs', id: 'ID' }]))
+          })
+        })
+      }
+    }),
+    updatePropertyConfigs: build.mutation<PropertyConfigs, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.updatePropertyConfigs, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'PropertyConfigs', id: 'ID' }]
+    }),
+    patchPropertyConfigs: build.mutation<PropertyConfigs, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          PropertyUrlsInfo.patchPropertyConfigs,
+          params,
+          { 'Content-Type': 'application/json-patch+json' })
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'PropertyConfigs', id: 'ID' }]
+    }),
+    addPropertyUnit: build.mutation<PropertyUnit, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.addPropertyUnit, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
+    }),
+
+    // TODO: Not integration test
+    // eslint-disable-next-line max-len
+    getPropertyUnitById: build.query<PropertyUnit, RequestPayload<{ venueId: string, unitId: string }>>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(PropertyUrlsInfo.getUnitById, params, { Accept: 'application/hal+json' })
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'PropertyUnit', id: 'ID' }]
+    }),
+    getPropertyUnitList: build.query<TableResult<PropertyUnit>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          PropertyUrlsInfo.getPropertyUnitList,
+          params,
+          { Accept: 'application/hal+json' }
+        )
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      transformResponse (result: NewTableResult<PropertyUnit>) {
+        return transferToTableResult<PropertyUnit>(result)
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Adding unit',
+            'Updating unit',
+            'Deleting units'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(venueApi.util.invalidateTags([
+              { type: 'PropertyUnit', id: 'LIST' },
+              { type: 'PropertyUnit', id: 'ID' }
+            ]))
+          })
+        })
+      },
+      providesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
+    }),
+    updatePropertyUnit: build.mutation<PropertyUnit, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.updatePropertyUnit, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
+    }),
+    deletePropertyUnits: build.mutation<PropertyUnit, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.deletePropertyUnits, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
+    }),
+    getResidentPortalList: build.query<TableResult<ResidentPortal>, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.getResidentPortalList, params)
+        return {
+          ...req
+        }
+      },
+      transformResponse (result: NewTableResult<ResidentPortal>) {
+        return transferToTableResult<ResidentPortal>(result)
+      },
+      providesTags: [{ type: 'ResidentPortal', id: 'LIST' }]
     })
   })
 })
@@ -1030,5 +1151,16 @@ export const {
   useUpdateVenueLoadBalancingMutation,
   useGetTopologyQuery,
   useGetVenueBonjourFencingQuery,
-  useUpdateVenueBonjourFencingMutation
+  useUpdateVenueBonjourFencingMutation,
+  useGetPropertyConfigsQuery,
+  useUpdatePropertyConfigsMutation,
+  usePatchPropertyConfigsMutation,
+  useAddPropertyUnitMutation,
+
+  useGetPropertyUnitByIdQuery,
+  useLazyGetPropertyUnitByIdQuery,
+  useGetPropertyUnitListQuery,
+  useUpdatePropertyUnitMutation,
+  useDeletePropertyUnitsMutation,
+  useGetResidentPortalListQuery
 } = venueApi

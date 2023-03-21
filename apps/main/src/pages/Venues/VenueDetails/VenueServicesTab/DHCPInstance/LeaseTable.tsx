@@ -6,8 +6,10 @@ import { useParams } from 'react-router-dom'
 
 import { Table, TableProps }        from '@acx-ui/components'
 import { useVenuesLeasesListQuery } from '@acx-ui/rc/services'
-import { DHCPLeases }               from '@acx-ui/rc/utils'
-
+import {
+  DHCPLeases,
+  DHCPLeasesStatusEnum
+} from '@acx-ui/rc/utils'
 
 export default function VenueLeaseTable (){
   const params = useParams()
@@ -25,6 +27,7 @@ export default function VenueLeaseTable (){
     },
     {
       key: 'IPAddress',
+      searchable: true,
       title: $t({ defaultMessage: 'IP Address' }),
       dataIndex: 'ipAddress'
     },
@@ -36,14 +39,20 @@ export default function VenueLeaseTable (){
     },
     {
       key: 'MACAddress',
+      searchable: true,
       title: $t({ defaultMessage: 'MAC Address' }),
       dataIndex: 'macAddress'
     },
     {
       key: 'Status',
       title: $t({ defaultMessage: 'Status' }),
+      searchable: true,
       // filterable: true, // TODO: change to search or provide static list
-      dataIndex: 'status'
+      dataIndex: 'status',
+      render: (data)=> data === DHCPLeasesStatusEnum.ONLINE ?
+        $t({ defaultMessage: 'Online' })
+        :
+        $t({ defaultMessage: 'Offline' })
     },
     {
       key: 'LeaseExpires',

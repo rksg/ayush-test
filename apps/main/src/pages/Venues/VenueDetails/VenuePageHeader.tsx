@@ -1,4 +1,4 @@
-import moment      from 'moment'
+import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Button, DisabledButton, PageHeader, RangePicker } from '@acx-ui/components'
@@ -7,6 +7,7 @@ import { ClockOutlined }                                   from '@acx-ui/icons'
 import { useVenueDetailsHeaderQuery }                      from '@acx-ui/rc/services'
 import { VenueDetailHeader }                               from '@acx-ui/rc/utils'
 import {
+  useLocation,
   useNavigate,
   useTenantLink,
   useParams
@@ -41,6 +42,7 @@ function VenuePageHeader () {
   const { data } = useVenueDetailsHeaderQuery({ params: { tenantId, venueId } })
 
   const navigate = useNavigate()
+  const location = useLocation()
   const basePath = useTenantLink(`/venues/${venueId}`)
 
   return (
@@ -57,6 +59,10 @@ function VenuePageHeader () {
             navigate({
               ...basePath,
               pathname: `${basePath.pathname}/edit/details`
+            }, {
+              state: {
+                from: location
+              }
             })
           }
         >{$t({ defaultMessage: 'Configure' })}</Button>
