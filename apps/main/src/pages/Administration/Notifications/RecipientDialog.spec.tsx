@@ -28,11 +28,12 @@ const params = {
 }
 const examplePhoneNumber = PhoneNumberUtil.getInstance().getExampleNumber('US')
 const exampleMobile = `+${examplePhoneNumber.getCountryCode()} ${examplePhoneNumber.getNationalNumberOrDefault()}`
+const mockedSetVisible = jest.fn()
 describe('Recipient form dialog creation mode', () => {
   const mockedAddFn = jest.fn()
   const dialogProps = {
     visible: true,
-    setVisible: jest.fn(),
+    setVisible: mockedSetVisible,
     editMode: false,
     editData: {} as NotificationRecipientUIModel,
     isDuplicated: jest.fn()
@@ -81,6 +82,9 @@ describe('Recipient form dialog creation mode', () => {
         destination: 'test_user@gmail.com',
         type: NotificationEndpointType.email
       }]
+    })
+    await waitFor(() => {
+      expect(mockedSetVisible).toBeCalledWith(false)
     })
   })
 

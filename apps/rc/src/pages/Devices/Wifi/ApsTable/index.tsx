@@ -9,11 +9,17 @@ import {
   Dropdown,
   PageHeader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
-import { ApTable, CsvSize, ImportFileDrawer }                            from '@acx-ui/rc/components'
-import { useApGroupsListQuery, useImportApMutation, useVenuesListQuery } from '@acx-ui/rc/services'
-import { TenantLink, useParams }                                         from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                from '@acx-ui/user'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
+import { ApTable, CsvSize, ImportFileDrawer } from '@acx-ui/rc/components'
+import {
+  useApGroupsListQuery,
+  useImportApMutation,
+  useLazyImportResultQuery,
+  useVenuesListQuery
+} from '@acx-ui/rc/services'
+import { CommonResult, ImportErrorRes } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }        from '@acx-ui/react-router-dom'
+import { filterByAccess }               from '@acx-ui/user'
 
 export default function ApsTable () {
   const { $t } = useIntl()
@@ -43,7 +49,10 @@ export default function ApsTable () {
     })
   })
 
-  const [ importCsv, importResult ] = useImportApMutation()
+  const [ isImportResultLoading, setIsImportResultLoading ] = useState(false)
+  const [ importCsv ] = useImportApMutation()
+  const [ importQuery ] = useLazyImportResultQuery()
+  const [ importResult, setImportResult ] = useState<ImportErrorRes>({} as ImportErrorRes)
 
   const apGpsFlag = useIsSplitOn(Features.AP_GPS)
   const importTemplateLink = apGpsFlag ?
@@ -51,9 +60,10 @@ export default function ApsTable () {
     'assets/templates/aps_import_template.csv'
 
   useEffect(()=>{
-    if (importResult.isSuccess) {
+    if (importResult.fileErrorsCount === 0) {
       setImportVisible(false)
     }
+    setIsImportResultLoading(false)
   },[importResult])
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
@@ -104,10 +114,17 @@ export default function ApsTable () {
         acceptType={['csv']}
         templateLink={importTemplateLink}
         visible={importVisible}
-        isLoading={importResult.isLoading}
-        importError={importResult.error as FetchBaseQueryError}
-        importRequest={(formData)=>{
-          importCsv({ params: { tenantId }, payload: formData })
+        isLoading={isImportResultLoading}
+        importError={{ data: importResult } as FetchBaseQueryError}
+        importRequest={(formData) => {
+          setIsImportResultLoading(true)
+          importCsv({ params: { tenantId }, payload: formData,
+            callback: async (response: CommonResult) => {
+              const result = await importQuery(
+                { payload: { requestId: response.requestId } }, true)
+                .unwrap()
+              setImportResult(result)
+            } }).unwrap()
         }}
         onClose={()=>setImportVisible(false)}/>
     </>
