@@ -39,7 +39,7 @@ import { CsvSize, ImportFileDrawer } from '../ImportFileDrawer'
 import { useApActions }              from '../useApActions'
 
 import {
-  getGroupableConfig
+  getGroupableConfig, groupedFields
 } from './config'
 
 export const defaultApPayload = {
@@ -54,27 +54,6 @@ export const defaultApPayload = {
     'fwVersion'
   ]
 }
-const groupedFields = [
-  'check-all',
-  'name',
-  'deviceStatus',
-  'model',
-  'meshRole',
-  'IP',
-  'apMac',
-  'venueName',
-  'switchName',
-  'clients',
-  'deviceGroupName',
-  'apStatusData.APRadio.band',
-  'tags',
-  'serialNumber',
-  'fwVersion',
-  'cog',
-  'venueId',
-  'apStatusData.APRadio.radioId',
-  'apStatusData.APRadio.channel'
-]
 
 const handleStatusColor = (status: DeviceConnectionStatus) => {
   return `var(${deviceStatusColors[status]})`

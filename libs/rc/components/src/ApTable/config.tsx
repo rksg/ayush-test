@@ -149,3 +149,25 @@ export const getGroupableConfig = () => {
   }
   return { deviceStatusGroupableOptions, deviceGroupNameGroupableOptions, modelGroupableOptions }
 }
+
+export const groupedFields = [
+  'check-all',
+  'name',
+  'deviceStatus',
+  'model',
+  'meshRole',
+  'IP',
+  'apMac',
+  'venueName',
+  'switchName',
+  'clients',
+  'deviceGroupName',
+  'apStatusData.APRadio.band',
+  'tags',
+  'serialNumber',
+  'fwVersion',
+  'cog',
+  'venueId',
+  'apStatusData.APRadio.radioId',
+  'apStatusData.APRadio.channel'
+]
