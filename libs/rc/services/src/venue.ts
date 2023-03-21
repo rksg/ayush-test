@@ -135,13 +135,6 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...req,
           body: payload
         }
-      },
-      transformResponse (result: { data: Venue[] }) {
-        result.data.map(venue => {
-          venue.switches = venue.switches ? venue.switches : 0
-          return venue
-        })
-        return result
       }
     }),
     updateVenue: build.mutation<VenueExtended, RequestPayload>({
@@ -335,7 +328,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'Update Switch Position',
             'UpdateApPosition',
-            'UpdateCloudpathServerPosition'], () => {
+            'UpdateCloudpathServerPosition',
+            'DeleteFloorPlan'], () => {
             api.dispatch(venueApi.util.invalidateTags([{ type: 'VenueFloorPlan', id: 'DEVICE' }]))
           })
         })
