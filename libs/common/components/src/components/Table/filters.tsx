@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Select }      from 'antd'
 import { FilterValue } from 'antd/lib/table/interface'
 import { IntlShape }   from 'react-intl'
@@ -19,7 +17,7 @@ function hasChildrenColumn <RecordType> (
 }
 
 export function getFilteredData <RecordType> (
-  dataSource: readonly (RecordType|RecordWithChildren<RecordType>)[] | undefined,
+  dataSource: readonly (RecordType | RecordWithChildren<RecordType>)[] | undefined,
   filterValues: Filter,
   activeFilters: TableColumn<RecordType, 'text'>[],
   searchables: TableColumn<RecordType, 'text'>[],
@@ -35,7 +33,8 @@ export function getFilteredData <RecordType> (
     }
     if (searchValue && searchValue.length >= MIN_SEARCH_LENGTH) {
       return searchables.some(column => {
-        return (row[column.dataIndex as keyof RecordType] as unknown as string)
+        const target = row[column.dataIndex as keyof RecordType]
+        return typeof target === 'string' && target
           ?.toString()
           .toLowerCase()
           .includes(searchValue.toLowerCase())
@@ -79,14 +78,13 @@ export function renderFilter <RecordType> (
   filterValues: Filter,
   setFilterValues: Function,
   enableApiFilter: boolean
-): React.ReactNode {
+) {
   const key = (column.filterKey || column.dataIndex) as keyof RecordType
   const addToFilter = (data: string[], value: string) => {
-    if (!data.includes(value)) {
+    if (typeof value !== 'undefined' && !data.includes(value)) {
       data.push(value)
     }
   }
-
   const options = Array.isArray(column.filterable)
     ? column.filterable
     : !enableApiFilter
