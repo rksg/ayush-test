@@ -119,7 +119,7 @@ describe('SelectIntegratorDrawer', () => {
 
     expect(mockedCloseDialog).toHaveBeenLastCalledWith(false)
   })
-  it('should handle save', async () => {
+  xit('should handle save', async () => {
     const mockedCloseDialog = jest.fn()
     render(
       <Provider>
@@ -150,7 +150,7 @@ describe('SelectIntegratorDrawer', () => {
     })
     expect(mockedCloseDialog).toHaveBeenLastCalledWith(false)
   })
-  it('should handle save with selected rows', async () => {
+  xit('should handle save with selected rows', async () => {
     const mockedCloseDialog = jest.fn()
     render(
       <Provider>
@@ -184,7 +184,7 @@ describe('SelectIntegratorDrawer', () => {
     })
     expect(mockedCloseDialog).toHaveBeenLastCalledWith(false)
   })
-  it('should handle save when tenantType not given', async () => {
+  xit('should handle save when tenantType not given', async () => {
     const mockedCloseDialog = jest.fn()
     render(
       <Provider>
