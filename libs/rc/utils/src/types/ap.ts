@@ -397,3 +397,14 @@ export interface ApDirectedMulticast {
   wirelessEnabled: boolean,
   networkEnabled: boolean
 }
+
+export type ImportErrorRes = {
+  errors: {
+    code: number
+    description?: string
+    message?: string
+  }[],
+  downloadUrl?: string
+  txId: string
+  fileErrorsCount: number
+}

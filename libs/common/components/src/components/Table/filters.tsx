@@ -35,7 +35,7 @@ export function getFilteredData <RecordType> (
       return searchables.some(column => {
         const target = row[column.dataIndex as keyof RecordType]
         return typeof target === 'string' && target
-          .toString()
+          ?.toString()
           .toLowerCase()
           .includes(searchValue.toLowerCase())
       })
@@ -121,10 +121,13 @@ export function renderFilter <RecordType> (
     allowClear
     style={{ width: 200 }}
   >
-    {options?.map(option =>
-      <Select.Option value={option.key} key={option.key} data-testid={`option-${option.key}`} >
-        {option.value}
-      </Select.Option>
+    {options?.map((option, index) =>
+      <Select.Option
+        value={option.key}
+        key={option.key ?? index}
+        data-testid={`option-${option.key}`}
+        children={option.value}
+      />
     )}
   </UI.FilterSelect>
 }

@@ -19,7 +19,6 @@ import {
   VenuesHealthDashboard
 } from '@acx-ui/analytics/components'
 import {
-  DisabledButton,
   GridRow,
   GridCol,
   PageHeader,
@@ -27,9 +26,6 @@ import {
   ContentSwitcher,
   ContentSwitcherProps
 } from '@acx-ui/components'
-import {
-  DownloadOutlined
-} from '@acx-ui/icons'
 import { VenueFilter }    from '@acx-ui/main/components'
 import {
   AlarmWidget,
@@ -92,10 +88,7 @@ function DashboardPageHeader () {
           onDateApply={setDateFilter as CallableFunction}
           showTimePicker
           selectionType={range}
-        />,
-        <DisabledButton
-          tooltipPlacement='topRight'
-          icon={<DownloadOutlined />} />
+        />
       ])}
     />
   )

@@ -9,7 +9,7 @@ import {
   useGetEnhancedMdnsProxyListQuery,
   useGetNetworkSegmentationStatsListQuery,
   useGetPortalProfileListQuery,
-  useGetWifiCallingServiceListQuery,
+  useGetEnhancedWifiCallingServiceListQuery,
   useWebAuthTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -74,7 +74,7 @@ export default function MyServices () {
     {
       type: ServiceType.WIFI_CALLING,
       category: RadioCardCategory.WIFI,
-      tableQuery: useGetWifiCallingServiceListQuery({
+      tableQuery: useGetEnhancedWifiCallingServiceListQuery({
         params, payload: defaultPayload
       })
     },
@@ -108,7 +108,7 @@ export default function MyServices () {
         {services.map(service => {
           return (
             !service.disabled &&
-            <GridCol col={{ span: 6 }}>
+            <GridCol key={service.type} col={{ span: 6 }}>
               <ServiceCard
                 key={service.type}
                 serviceType={service.type}

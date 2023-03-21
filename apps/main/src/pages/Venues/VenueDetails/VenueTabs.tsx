@@ -15,7 +15,8 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   const navigate = useNavigate()
   const enableVenueAnalytics = useIsSplitOn(Features.VENUE_ANALYTICS)
   const enabledServices = useIsSplitOn(Features.SERVICES)
-  const enablePersona = useIsSplitOn(Features.PERSONA)
+  const enableMacRegistration = useIsSplitOn(Features.MAC_REGISTRATION)
+  const enablePersona = useIsSplitOn(Features.PERSONA) && enableMacRegistration
   const enableProperty = useIsSplitOn(Features.PROPERTY_MANAGEMENT) && enablePersona
   const { data: unitQuery } = useGetPropertyUnitListQuery({
     params: { venueId: params.venueId },
