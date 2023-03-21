@@ -304,7 +304,7 @@ export function VarCustomers () {
         title={title}
         extra={
           <TenantLink to='/dashboard' key='add'>
-            <Button>{$t({ defaultMessage: 'Manage my account' })}</Button>
+            <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
           </TenantLink>
         }
       />

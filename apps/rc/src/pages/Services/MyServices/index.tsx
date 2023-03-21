@@ -9,7 +9,7 @@ import {
   useGetEnhancedMdnsProxyListQuery,
   useGetNetworkSegmentationStatsListQuery,
   useGetPortalProfileListQuery,
-  useGetWifiCallingServiceListQuery,
+  useGetEnhancedWifiCallingServiceListQuery,
   useWebAuthTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -30,6 +30,7 @@ export default function MyServices () {
   const params = useParams()
   const earlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
   const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
+  const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const isEdgeDhcpEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
 
   const services = [
@@ -71,7 +72,9 @@ export default function MyServices () {
     {
       type: ServiceType.WIFI_CALLING,
       category: RadioCardCategory.WIFI,
-      tableQuery: useGetWifiCallingServiceListQuery({ params, payload: defaultPayload })
+      tableQuery: useGetEnhancedWifiCallingServiceListQuery({
+        params, payload: defaultPayload
+      })
     },
     {
       type: ServiceType.PORTAL,
@@ -82,9 +85,9 @@ export default function MyServices () {
       type: ServiceType.WEBAUTH_SWITCH,
       category: RadioCardCategory.SWITCH,
       tableQuery: useWebAuthTemplateListQuery({ params, payload: { ...defaultPayload } }, {
-        skip: !networkSegmentationEnabled
+        skip: !networkSegmentationEnabled || !networkSegmentationSwitchEnabled
       }),
-      disabled: !networkSegmentationEnabled
+      disabled: !networkSegmentationEnabled || !networkSegmentationSwitchEnabled
     }
   ]
 
@@ -101,8 +104,9 @@ export default function MyServices () {
       />
       <GridRow>
         {services.map(service => {
-          return (!service.disabled &&
-            <GridCol col={{ span: 6 }}>
+          return (
+            !service.disabled &&
+            <GridCol key={service.type} col={{ span: 6 }}>
               <ServiceCard
                 key={service.type}
                 serviceType={service.type}

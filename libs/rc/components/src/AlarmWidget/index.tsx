@@ -68,9 +68,10 @@ export function AlarmWidget () {
   const { $t } = useIntl()
 
   const onNavigate = (alarm: Alarm) => {
+    let switchId = alarm.switchMacAddress || alarm.serialNumber
     let path = alarm.entityType === EventTypeEnum.AP
       ? `wifi/${alarm.serialNumber}/details/overview`
-      : `switch/${alarm.switchMacAddress}/${alarm.serialNumber}/details/overview`
+      : `switch/${switchId}/${alarm.serialNumber}/details/overview`
 
     navigate({
       ...basePath,
