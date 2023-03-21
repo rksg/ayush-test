@@ -70,6 +70,7 @@ export function SwitchVeTable ( { isVenueLevel } : {
     title: $t({ defaultMessage: 'VE' }),
     dataIndex: 'veId',
     sorter: true,
+    fixed: 'left',
     render: function (data) {
       return `VE-${data}`
     }
