@@ -1,5 +1,4 @@
-import { dataApiURL }       from '@acx-ui/analytics/services'
-import { store }            from '@acx-ui/store'
+import { dataApiURL, store }            from '@acx-ui/store'
 import { mockGraphqlQuery } from '@acx-ui/test-utils'
 
 import { mockConnectionFailureResponse, mockPathWithAp, mockTtcResponse } from './__tests__/fixtures'

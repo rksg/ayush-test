@@ -3,7 +3,7 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { useAnalyticsFilter }                                                                   from '@acx-ui/analytics/utils'
 import { Card, ContentSwitcher, ContentSwitcherProps, DonutChart, Loader, qualitativeColorSet } from '@acx-ui/components'
-import { formatter }                                                                            from '@acx-ui/utils'
+import { formatter }                                                                            from '@acx-ui/formatter'
 
 import { ImpactedNodesAndWlans, usePieChartQuery } from './services'
 
@@ -25,7 +25,7 @@ const transformData = (
   }[]
 } => {
   if (!data) return { nodes: [], wlans: [] }
-  // TODO: attempt to optimise later
+
   const colors = qualitativeColorSet()
   const len = colors.length
   switch (queryType) {

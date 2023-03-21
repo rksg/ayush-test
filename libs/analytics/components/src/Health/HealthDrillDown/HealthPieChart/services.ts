@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request'
 import _       from 'lodash'
 
-import { dataApi }     from '@acx-ui/analytics/services'
+import { dataApi }     from '@acx-ui/store'
 import { NetworkPath } from '@acx-ui/utils'
 
 
@@ -75,3 +75,4 @@ export const api = dataApi.injectEndpoints({
 })
 
 export const { usePieChartQuery } = api
+
