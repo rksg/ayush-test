@@ -6,7 +6,7 @@ import { GridRow, GridCol, Loader }      from '@acx-ui/components'
 import { useIsSplitOn, Features }        from '@acx-ui/feature-toggle'
 import { formatter, intlFormats }        from '@acx-ui/formatter'
 
-import { OpenType } from '..'
+import { DrilldownSelection } from '..'
 
 import { useSummaryQuery }                        from './services'
 import { Wrapper, Statistic, UpArrow, DownArrow } from './styledComponents'
@@ -45,10 +45,10 @@ export const Box = (props: BoxProps) => {
   return box
 }
 
-export const SummaryBoxes = ({ filters, openType, setOpenType }: {
+export const SummaryBoxes = ({ filters, drilldownSelection, setDrilldownSelection }: {
   filters: AnalyticsFilter,
-  openType: OpenType,
-  setOpenType: (val: OpenType) => void
+  drilldownSelection: DrilldownSelection,
+  setDrilldownSelection: (val: DrilldownSelection) => void
 }) => {
   const intl = useIntl()
   const { $t } = intl
@@ -58,9 +58,10 @@ export const SummaryBoxes = ({ filters, openType, setOpenType }: {
     end: filters.endDate
   }
   const toggleEnable = useIsSplitOn(Features.HEALTH_DRILLDOWN)
-  const toggleConnectionFailure = () => setOpenType(openType !== 'connectionFailure'
-    ? 'connectionFailure' : 'none')
-  const toggleTtc = () => setOpenType(openType !== 'ttc' ? 'ttc' : 'none')
+  const toggleConnectionFailure = () => setDrilldownSelection(
+    drilldownSelection !== 'connectionFailure' ? 'connectionFailure' : 'none'
+  )
+  const toggleTtc = () => setDrilldownSelection(drilldownSelection !== 'ttc' ? 'ttc' : 'none')
 
   const queryResults = useSummaryQuery(payload, {
     selectFromResult: ({ data, ...rest }) => {
@@ -101,7 +102,7 @@ export const SummaryBoxes = ({ filters, openType, setOpenType }: {
       type: 'successCount',
       title: defineMessage({ defaultMessage: 'Successful Connections' }),
       suffix: `/${queryResults.data.totalCount}`,
-      isOpen: openType === 'connectionFailure',
+      isOpen: drilldownSelection === 'connectionFailure',
       onClick: toggleConnectionFailure,
       value: queryResults.data.successCount,
       toggleEnable
@@ -110,7 +111,7 @@ export const SummaryBoxes = ({ filters, openType, setOpenType }: {
       type: 'failureCount',
       title: defineMessage({ defaultMessage: 'Failed Connections' }),
       suffix: `/${queryResults.data.totalCount}`,
-      isOpen: openType === 'connectionFailure',
+      isOpen: drilldownSelection === 'connectionFailure',
       onClick: toggleConnectionFailure,
       value: queryResults.data.failureCount,
       toggleEnable
@@ -118,7 +119,7 @@ export const SummaryBoxes = ({ filters, openType, setOpenType }: {
     {
       type: 'successPercentage',
       title: defineMessage({ defaultMessage: 'Connection Success Ratio' }),
-      isOpen: openType === 'connectionFailure',
+      isOpen: drilldownSelection === 'connectionFailure',
       onClick: toggleConnectionFailure,
       value: queryResults.data.successPercentage,
       toggleEnable
@@ -126,7 +127,7 @@ export const SummaryBoxes = ({ filters, openType, setOpenType }: {
     {
       type: 'averageTtc',
       title: defineMessage({ defaultMessage: 'Avg Time To Connect' }),
-      isOpen: openType === 'ttc',
+      isOpen: drilldownSelection === 'ttc',
       onClick: toggleTtc,
       value: queryResults.data.averageTtc,
       toggleEnable
