@@ -601,7 +601,7 @@ export function EditPortDrawer ({
       const untaggedVlan = venueUntaggedVlan || profileDefaultVlan
       untagged = untaggedVlan
       tagged = venueTaggedVlans.toString()
-      if (untaggedVlan === defaultVlan && !venueTaggedVlans) {
+      if (Number(untaggedVlan) === Number(defaultVlan) && !venueTaggedVlans) {
         status = 'default' // Venue no setting, revert to default
       }
     }
