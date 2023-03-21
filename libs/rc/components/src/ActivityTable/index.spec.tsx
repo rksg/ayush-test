@@ -42,4 +42,22 @@ describe('ActivityTable', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Close' }))
     expect(screen.queryByText('Activity Details')).toBeNull()
   })
+
+  it('should close drawer, when data changed', async () => {
+    const { rerender } = render(
+      <Provider>
+        <ActivityTable tableQuery={tableQuery} />
+      </Provider>,
+      { route: { params } }
+    )
+    await screen.findByRole('row', { name: /Network ' 123roam ' was updated/ })
+    await userEvent.click(screen.getAllByRole('button', { name: /2022/ })[0])
+    screen.getByText('Activity Details')
+
+    const newTableQuery = {
+      ...tableQuery, data: { data: [] }
+    } as unknown as TableQuery<Activity, RequestPayload<unknown>, unknown>
+    rerender(<Provider><ActivityTable tableQuery={newTableQuery} /></Provider>)
+    expect(screen.queryByText('Activity Details')).toBeNull()
+  })
 })
