@@ -6,7 +6,7 @@ import { AdminLog, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
 import { Provider }                             from '@acx-ui/store'
 import { render, screen }                       from '@acx-ui/test-utils'
 
-import { events, eventsMeta } from './__tests__/fixtures'
+import { adminLogs, adminLogsMeta } from './__tests__/fixtures'
 
 import { AdminLogTable } from '.'
 
@@ -14,31 +14,24 @@ const params = { tenantId: 'tenant-id' }
 
 describe('AdminLogTable', () => {
   const tableQuery = {
-    data: { data: events.map(base =>
-      ({ ...base, ...eventsMeta.find(meta => meta.id === base.id) }))
+    data: { data: adminLogs.map(base =>
+      ({ ...base, ...adminLogsMeta.find(meta => meta.id === base.id) }))
     },
     pagination: { current: 1, page: 1, pageSize: 10, total: 0 },
     handleTableChange: jest.fn()
   } as unknown as TableQuery<AdminLog, RequestPayload<unknown>, unknown>
 
   it('should render activity list', async () => {
-    render(
-      <Provider>
-        <AdminLogTable tableQuery={tableQuery} />
-      </Provider>,
-      { route: { params } }
-    )
+    render(<AdminLogTable tableQuery={tableQuery} />, { route: { params }, wrapper: Provider })
     await screen.findByText(
-      'Admin FisrtName 12 LastName 12, dog12@email.com logged into the cloud controller.'
+      'Admin FisrtName 12 LastName 12, dog12@email.com logged into the cloud controller.', {
+        ignore: true
+      }
     )
   })
 
   it('should open/close activity drawer', async () => {
-    render(
-      <Provider>
-        <AdminLogTable tableQuery={tableQuery} />
-      </Provider>,
-      { route: { params } }
+    render(<AdminLogTable tableQuery={tableQuery} />, { route: { params }, wrapper: Provider }
     )
     await screen.findByText(
       'Admin FisrtName 12 LastName 12, dog12@email.com logged into the cloud controller.'

@@ -5,16 +5,7 @@ import { DateFormatEnum, formatter }               from '@acx-ui/formatter'
 import { useAdminLogsQuery }                       from '@acx-ui/rc/services'
 import { AdminLog, CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
 
-export interface EventList {
-  adminName: string;
-  entity_id: string;
-  entity_type: string;
-  id: string;
-  message: string;
-  raw_event: string;
-  severity: string;
-  event_datetime: string;
-}
+export type EventList = AdminLog
 
 export function RecentLogin (props: { userEmail: string }) {
   const { $t } = useIntl()
