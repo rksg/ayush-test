@@ -13,8 +13,8 @@ import { includes, isEmpty } from 'lodash'
 import { useIntl }           from 'react-intl'
 import styled                from 'styled-components/macro'
 
-import { Loader, StepsForm, StepsFormInstance, Tabs, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
+import { Loader, showActionModal, StepsForm, StepsFormInstance, Tabs, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                               from '@acx-ui/feature-toggle'
 import { ApRadioTypeEnum,
   channelBandwidth24GOptions,
   channelBandwidth5GOptions,
@@ -85,6 +85,7 @@ export function RadioSettings () {
   const { tenantId, venueId } = useParams()
 
   const formRef = useRef<StepsFormInstance<VenueRadioCustomization>>()
+  const isTriBandRadioRef = useRef<boolean>(false)
   const [isTriBandRadio, setIsTriBandRadio] = useState(false)
   const [isDual5gMode, setIsDual5gMode] = useState(true)
 
@@ -216,6 +217,7 @@ export function RadioSettings () {
 
     const triBandEnabled = !!(triBandRadioFeatureFlag && tripleBandRadioSettingsData?.enabled)
     setIsTriBandRadio(hasTriBandAps || triBandEnabled)
+    isTriBandRadioRef.current = hasTriBandAps || triBandEnabled
 
     const setRadioFormData = (data: VenueRadioCustomization) => {
       setEditRadioContextData({ radioData: data })
@@ -223,6 +225,7 @@ export function RadioSettings () {
 
       const dual5GData = data?.radioParamsDual5G
       setIsDual5gMode(!!dual5GData?.enabled)
+
       setIsLower5gInherit(!!dual5GData?.inheritParamsLower5G)
       setIsUpper5gInherit(!!dual5GData?.inheritParamsUpper5G)
 
@@ -270,35 +273,25 @@ export function RadioSettings () {
       const indoorChannels = curForm?.getFieldValue(['radioParams50G', 'allowedIndoorChannels'])
       const outdoorChannels = curForm?.getFieldValue(['radioParams50G', 'allowedOutdoorChannels'])
 
-      radioParams50G.allowedIndoorChannels = indoorChannels
+      //radioParams50G.allowedIndoorChannels = indoorChannels
       radioParams50G.allowedOutdoorChannels = (combineChannels)? indoorChannels : outdoorChannels
     }
   }
 
   const updateDual5gData = (formData: VenueRadioCustomization) => {
     const { radioParamsDual5G } = formData
-    const curForm = formRef.current
 
     if (!radioParamsDual5G) {
       return
     }
 
-    const { radioParamsLower5G, radioParamsUpper5G } = radioParamsDual5G
+
+    const { enabled: dual5gEnabled } = radioParamsDual5G
     const isSupportLower5G = bandwidthLower5GOptions.length > 0
     const isSupportUpper5G = bandwidthUpper5GOptions.length > 0
 
-    if (isSupportLower5G) {
-      if (radioParamsLower5G) {
-        radioParamsLower5G.allowedIndoorChannels =
-          // eslint-disable-next-line max-len
-          curForm?.getFieldValue(['radioParamsDual5G', 'radioParamsLower5G',
-            'allowedIndoorChannels'])
-        radioParamsLower5G.allowedOutdoorChannels =
-          curForm?.getFieldValue(['radioParamsDual5G', 'radioParamsLower5G',
-            'allowedOutdoorChannels'])
-      }
-    } else {
-      if (isDual5gMode) {
+    if (!isSupportLower5G) {
+      if (dual5gEnabled) {
         radioParamsDual5G.inheritParamsLower5G = false
       } else {
         delete radioParamsDual5G.inheritParamsLower5G
@@ -306,17 +299,8 @@ export function RadioSettings () {
       delete radioParamsDual5G.radioParamsLower5G
     }
 
-    if (isSupportUpper5G) {
-      if (radioParamsUpper5G) {
-        radioParamsUpper5G.allowedIndoorChannels =
-          curForm?.getFieldValue(['radioParamsDual5G', 'radioParamsUpper5G',
-            'allowedIndoorChannels'])
-        radioParamsUpper5G.allowedOutdoorChannels =
-          curForm?.getFieldValue(['radioParamsDual5G', 'radioParamsUpper5G',
-            'allowedOutdoorChannels'])
-      }
-    } else {
-      if (isDual5gMode) {
+    if (!isSupportUpper5G) {
+      if (dual5gEnabled) {
         radioParamsDual5G.inheritParamsUpper5G = false
       } else {
         delete radioParamsDual5G.inheritParamsUpper5G
@@ -341,27 +325,87 @@ export function RadioSettings () {
     }
   }
 
+  const validateRadioChannels = ( data: VenueRadioCustomization ) => {
+    const { radioParams24G, radioParams50G, radioParams6G, radioParamsDual5G } = data
+
+    const validateChannels = (channels: unknown[] | undefined, title: string) => {
+      if (Array.isArray(channels) && channels.length <2) {
+        showActionModal({
+          type: 'error',
+          title: title,
+          content: $t({ defaultMessage: 'Please select at least two channels' })
+        })
+        return false
+      }
+      return true
+    }
+
+    const channel24 = radioParams24G?.allowedChannels
+    const title24 = $t({ defaultMessage: '2.4 GHz - Channel selection' })
+    if (!validateChannels(channel24, title24)) return false
+
+    const indoorChannel5 = radioParams50G?.allowedIndoorChannels
+    const indoorTitle5 = $t({ defaultMessage: '5 GHz - Indoor AP channel selection' })
+    if (!validateChannels(indoorChannel5, indoorTitle5)) return false
+
+    const outdoorChannel5 = radioParams50G?.allowedOutdoorChannels
+    const outdoorTitle5 = $t({ defaultMessage: '5 GHz - Outdoor AP channel selection' })
+    if (!validateChannels(outdoorChannel5, outdoorTitle5)) return false
+
+    const channel6 = radioParams6G?.allowedChannels
+    const title6 = $t({ defaultMessage: '6 GHz - Channel selection' })
+    if (!validateChannels(channel6, title6)) return false
+
+    const { radioParamsLower5G, radioParamsUpper5G } = radioParamsDual5G || {}
+    const indoorLowerChannel5 = radioParamsLower5G?.allowedIndoorChannels
+    const indoorLowerTitle5 = $t({ defaultMessage: 'Lower 5 GHz - Indoor AP channel selection' })
+    if (!validateChannels(indoorLowerChannel5, indoorLowerTitle5)) return false
+
+    const outdoorLowerChannel5 = radioParamsLower5G?.allowedOutdoorChannels
+    const outdoorLowerTitle5 = $t({ defaultMessage: 'Lower 5 GHz - Outdoor AP channel selection' })
+    if (!validateChannels(outdoorLowerChannel5, outdoorLowerTitle5)) return false
+
+    const indoorUpperChannel5 = radioParamsUpper5G?.allowedIndoorChannels
+    const indoorUpperTitle5 = $t({ defaultMessage: 'Upper 5 GHz - Indoor AP channel selection' })
+    if (!validateChannels(indoorUpperChannel5, indoorUpperTitle5)) return false
+
+    const outdoorUpperChannel5 = radioParamsUpper5G?.allowedOutdoorChannels
+    const outdoorUpperTitle5 = $t({ defaultMessage: 'Upper 5 GHz - Outdoor AP channel selection' })
+    if (!validateChannels(outdoorUpperChannel5, outdoorUpperTitle5)) return false
+
+    return true
+  }
+
+
   const handleUpdateRadioSettings = async (formData: VenueRadioCustomization) => {
+    const d = formRef?.current?.getFieldsValue() || formData
+    const data = { ...d }
 
-    update5gData(formData)
+    update5gData(data)
 
-    if (isTriBandRadio) {
-      updateDual5gData(formData)
-      update6gData(formData)
+    const isTriBandRadioEnabled = isTriBandRadioRef.current
+
+    if (isTriBandRadioEnabled) {
+      updateDual5gData(data)
+      update6gData(data)
     } else {
-      delete formData.radioParamsDual5G
-      delete formData.radioParams6G
+      delete data.radioParamsDual5G
+      delete data.radioParams6G
+    }
+
+    if (!validateRadioChannels(data)) {
+      return
     }
 
     try {
       await updateVenueTripleBandRadioSettings({
         params: { tenantId, venueId },
-        payload: { enabled: isTriBandRadio }
+        payload: { enabled: isTriBandRadioEnabled }
       }).unwrap()
 
       await updateVenueRadioCustomization({
         params: { tenantId, venueId },
-        payload: formData
+        payload: data
       }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -381,6 +425,13 @@ export function RadioSettings () {
       radioData: formRef.current?.getFieldsValue(),
       updateWifiRadio: handleUpdateRadioSettings
     })
+  }
+
+  const handleTriBandEnableChanged = (checked: boolean) => {
+    setIsTriBandRadio(checked)
+    isTriBandRadioRef.current = checked
+    onTabChange('Normal24GHz')
+    handleChange()
   }
 
   const handleResetDefaultSettings = (radioType: ApRadioTypeEnum) => {
@@ -452,15 +503,10 @@ export function RadioSettings () {
                 <Switch
                   disabled={hasTriBandAps}
                   checked={isTriBandRadio}
+                  defaultChecked={isTriBandRadio}
                   onClick={(checked, event) => {
                     event.stopPropagation()
-                    setIsTriBandRadio(checked)
-                    setEditContextData({
-                      ...editContextData,
-                      unsavedTabKey: 'radio',
-                      isDirty: true
-                    })
-                    onTabChange('Normal24GHz')
+                    handleTriBandEnableChanged(checked)
                   }}
                   style={{ marginLeft: '20px' }}
                 />
@@ -603,7 +649,6 @@ export function RadioSettings () {
                     <Form.Item
                       label={$t({ defaultMessage: '5GHz settings:' })}
                       name={['radioParamsDual5G', 'inheritParamsUpper5G']}
-                      initialValue={true}
                     >
                       <Radio.Group onChange={onUpper5gTypeChange}>
                         <Radio value={true}>
