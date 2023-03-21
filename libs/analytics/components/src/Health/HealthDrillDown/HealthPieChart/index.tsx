@@ -1,18 +1,18 @@
-import { useIntl } from 'react-intl'
-import AutoSizer   from 'react-virtualized-auto-sizer'
+import { useIntl } from 'react-intl';
+import AutoSizer from 'react-virtualized-auto-sizer';
 
-import { useAnalyticsFilter } from '@acx-ui/analytics/utils'
+import { useAnalyticsFilter } from '@acx-ui/analytics/utils';
 import {
   Card,
   ContentSwitcher,
   ContentSwitcherProps,
   DonutChart,
   Loader,
-  qualitativeColorSet
-} from '@acx-ui/components'
-import { formatter } from '@acx-ui/formatter'
+  qualitativeColorSet,
+} from '@acx-ui/components';
+import { formatter } from '@acx-ui/formatter';
 
-import { ImpactedNodesAndWlans, usePieChartQuery } from './services'
+import { ImpactedNodesAndWlans, usePieChartQuery } from './services';
 
 const transformData = (
   data: ImpactedNodesAndWlans | undefined,
@@ -32,42 +32,42 @@ const transformData = (
   }[];
 } => {
   if (data) {
-    const colors = qualitativeColorSet()
+    const colors = qualitativeColorSet();
     switch (queryType) {
       case 'connectionFailure': {
         const nodes = data.network.hierarchyNode.nodes.map((node, index) => ({
           ...node,
           name: node.key,
-          color: colors[index]
-        }))
+          color: colors[index],
+        }));
         const wlans = data.network.hierarchyNode.wlans.map((node, index) => ({
           ...node,
           name: node.key,
-          color: colors[index]
-        }))
-        return { nodes, wlans }
+          color: colors[index],
+        }));
+        return { nodes, wlans };
       }
       case 'timeToConnect': {
         const nodes = data.network.hierarchyNode.nodes.map((node, index) => ({
           ...node,
           name: node.key,
-          color: colors[index]
-        }))
+          color: colors[index],
+        }));
         const wlans = data.network.hierarchyNode.wlans.map((node, index) => ({
           ...node,
           name: node.key,
-          color: colors[index]
-        }))
-        return { nodes, wlans }
+          color: colors[index],
+        }));
+        return { nodes, wlans };
       }
       default:
-        return { nodes: [], wlans: [] }
+        return { nodes: [], wlans: [] };
     }
   }
-  return { nodes: [], wlans: [] }
-}
+  return { nodes: [], wlans: [] };
+};
 
-function getHealthPieChart (
+function getHealthPieChart(
   data: { key: string; value: number; name: string; color: string }[],
   height: number,
   width: number,
@@ -80,25 +80,25 @@ function getHealthPieChart (
       showLegend={false}
       dataFormatter={dataFormatter}
     />
-  )
+  );
 }
 
 export const HealthPieChart = ({
   queryType = 'connectionFailure',
-  queryFilter = 'connectionFailure'
+  queryFilter = 'connectionFailure',
 }) => {
-  const { $t } = useIntl()
-  const analyticsFilter = useAnalyticsFilter()
-  const { startDate: start, endDate: end, path } = analyticsFilter.filters
+  const { $t } = useIntl();
+  const analyticsFilter = useAnalyticsFilter();
+  const { startDate: start, endDate: end, path } = analyticsFilter.filters;
   const queryResults = usePieChartQuery({
     start,
     end,
     path,
     queryType,
-    queryFilter
-  })
+    queryFilter,
+  });
 
-  const { nodes, wlans } = transformData(queryResults.data, queryType)
+  const { nodes, wlans } = transformData(queryResults.data, queryType);
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
@@ -109,7 +109,7 @@ export const HealthPieChart = ({
       value: 'nodes',
       children: (
         <Card
-          type='no-border'
+          type="no-border"
           title={$t(
             { defaultMessage: 'Top {count} Impacted {type}' },
             { count: wlans.length, type: 'Venues' }
@@ -121,7 +121,7 @@ export const HealthPieChart = ({
             }
           </AutoSizer>
         </Card>
-      )
+      ),
     },
     {
       label: $t(
@@ -131,7 +131,7 @@ export const HealthPieChart = ({
       value: 'wlans',
       children: (
         <Card
-          type='no-border'
+          type="no-border"
           title={$t(
             { defaultMessage: 'Top {count} Impacted {type}' },
             { count: nodes.length, type: 'Networks' }
@@ -148,13 +148,13 @@ export const HealthPieChart = ({
             }
           </AutoSizer>
         </Card>
-      )
-    }
-  ]
+      ),
+    },
+  ];
 
   return (
     <Loader states={[queryResults]}>
-      <ContentSwitcher tabDetails={tabDetails} size='small' />
+      <ContentSwitcher tabDetails={tabDetails} size="small" />
     </Loader>
-  )
-}
+  );
+};
