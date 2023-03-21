@@ -30,7 +30,7 @@ export interface AP {
   apMac?: string,
   apStatusData?: {
     APRadio?: Array<RadioProperties>,
-    cellularInfo: CelluarInfo,
+    cellularInfo?: CelluarInfo,
     APSystem?: APSystem,
     lanPortStatus?: Array<LanPortStatusProperties>
   },
@@ -61,7 +61,7 @@ export interface AP {
   }
   hops?: number,
   apDownRssi?: number,
-  apUpRssi: number,
+  apUpRssi?: number,
   poePort?: string,
   healthStatus?: string
 }
@@ -75,16 +75,23 @@ export interface ApViewModel extends AP {
 }
 
 export interface APExtended extends AP {
-  channel24?: string,
-  channel50?: string,
-  channelL50?: string,
-  channelU50?: string,
-  channel60?: string,
+  channel24?: string | number,
+  channel50?: string | number,
+  channelL50?: string | number,
+  channelU50?: string | number,
+  channel60?: string | number,
   hasPoeStatus?: boolean,
   isPoEStatusUp?: boolean,
   poePortInfo?: string,
   xPercent?: number,
-  yPercent?: number
+  yPercent?: number,
+  members?: number,
+  incidents?: number,
+  clients?: number,
+  networks?: {
+    count?: number
+  },
+  name?: string
 }
 
 export interface CelluarInfo {
@@ -299,9 +306,9 @@ export interface PingAp {
 }
 
 export interface RadioProperties {
-  Rssi: string,
-  txPower?: string,
-  channel: string,
+  Rssi: string | null,
+  txPower?: string | null,
+  channel: string | number,
   band?: string,
   radioId?: number,
   operativeChannelBandwidth?: string
@@ -389,4 +396,15 @@ export interface ApDirectedMulticast {
   wiredEnabled: boolean,
   wirelessEnabled: boolean,
   networkEnabled: boolean
+}
+
+export type ImportErrorRes = {
+  errors: {
+    code: number
+    description?: string
+    message?: string
+  }[],
+  downloadUrl?: string
+  txId: string
+  fileErrorsCount: number
 }

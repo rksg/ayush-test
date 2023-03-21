@@ -85,7 +85,9 @@ export const getVenueSwitchDonutChartData =
   const switchesSummary = venueDetails?.switches?.summary
   if (switchesSummary) {
     seriesMappingSwitch().forEach(({ key, name, color }) => {
-      const value = switchesSummary[key as SwitchStatusEnum]
+      // ES response has different case (dev is upper case, qa is lower case)
+      // eslint-disable-next-line max-len
+      const value = switchesSummary[key as SwitchStatusEnum]! || _.get(switchesSummary, key.toLowerCase())
       if(key === SwitchStatusEnum.INITIALIZING && value) {
         const neverContactedCloud = find(chartData, {
           name: getSwitchStatusDisplayName(SwitchStatusEnum.NEVER_CONTACTED_CLOUD) })
