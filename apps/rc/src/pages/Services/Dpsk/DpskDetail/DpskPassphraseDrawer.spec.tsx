@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import moment    from 'moment-timezone'
 import { rest }  from 'msw'
 
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   CreateDpskPassphrasesFormFields,
   DpskDetailsTabKey,
@@ -9,6 +10,7 @@ import {
   ExpirationDateEntity,
   ExpirationMode,
   getServiceRoutePath,
+  NewDpskPassphraseBaseUrlWithId,
   ServiceOperation,
   ServiceType
 } from '@acx-ui/rc/utils'
@@ -18,8 +20,9 @@ import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 import {
   mockedTenantId,
   mockedServiceId,
-  mockedDpskPassphrase,
-  mockedSingleDpskPassphrase
+  mockedDpskPassphraseFormFields,
+  mockedSingleDpskPassphrase,
+  mockedDpskPassphrase
 } from './__tests__/fixtures'
 import DpskPassphraseDrawer from './DpskPassphraseDrawer'
 
@@ -59,12 +62,12 @@ describe('DpskPassphraseDrawer', () => {
       }
     )
 
-    await populateValues(mockedDpskPassphrase)
+    await populateValues(mockedDpskPassphraseFormFields)
 
     await userEvent.click(await screen.findByRole('button', { name: /Add/ }))
 
     await waitFor(() => {
-      expect(saveFn).toHaveBeenCalledWith(mockedDpskPassphrase)
+      expect(saveFn).toHaveBeenCalledWith(mockedDpskPassphraseFormFields)
     })
 
     await waitFor(() => {
@@ -92,7 +95,7 @@ describe('DpskPassphraseDrawer', () => {
       }
     )
 
-    await populateValues(mockedDpskPassphrase)
+    await populateValues(mockedDpskPassphraseFormFields)
 
     await userEvent.click(await screen.findByRole('button', { name: /Add/ }))
 
@@ -138,6 +141,59 @@ describe('DpskPassphraseDrawer', () => {
 
     await waitFor(() => {
       expect(saveFn).toHaveBeenCalled()
+    })
+  })
+
+  it('should update data', async () => {
+    const updateFn = jest.fn()
+
+    mockServer.use(
+      rest.get(
+        NewDpskPassphraseBaseUrlWithId,
+        (req, res, ctx) => res(ctx.json({ ...mockedDpskPassphrase }))
+      ),
+      rest.put(
+        NewDpskPassphraseBaseUrlWithId,
+        (req, res, ctx) => {
+          updateFn(req.body)
+          return res(ctx.json(req.body))
+        }
+      )
+    )
+
+    const editingData = {
+      ...mockedDpskPassphrase,
+      email: 'testing@commscope.com',
+      phoneNumber: '+8860987111222'
+    }
+
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    render(
+      <Provider>
+        <DpskPassphraseDrawer
+          visible={true}
+          setVisible={jest.fn()}
+          editMode={{ isEdit: true, passphraseId: mockedDpskPassphrase.id }}
+        />
+      </Provider>, {
+        route: { params: paramsForPassphraseTab, path: detailPath }
+      }
+    )
+
+    await userEvent.type(await screen.findByLabelText('Contact Email Address'), editingData.email)
+    // eslint-disable-next-line max-len
+    await userEvent.type(await screen.findByLabelText('Contact Phone Number'), editingData.phoneNumber)
+
+    await userEvent.click(await screen.findByRole('button', { name: /Save/ }))
+
+    const { createdDate, ...other } = editingData
+    const expectedPayload = {
+      ...other,
+      numberOfPassphrases: 1
+    }
+    await waitFor(() => {
+      expect(updateFn).toHaveBeenCalledWith(expectedPayload)
     })
   })
 })

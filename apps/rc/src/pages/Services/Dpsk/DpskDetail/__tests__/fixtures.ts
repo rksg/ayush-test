@@ -13,7 +13,7 @@ export const mockedDpsk = {
   expirationOffset: 1
 }
 
-export const mockedDpskPassphrase: Partial<CreateDpskPassphrasesFormFields> = {
+export const mockedDpskPassphraseFormFields: Partial<CreateDpskPassphrasesFormFields> = {
   numberOfPassphrases: 5,
   numberOfDevices: 1,
   username: 'User 1',
@@ -68,6 +68,15 @@ export const mockedDpskPassphraseList = {
     pageSize: 10
   },
   sort: []
+}
+
+export const mockedDpskPassphrase = {
+  id: '__PASSPHRASE_ID_1__',
+  passphrase: 'abced12345',
+  username: 'DPSK_USER_1',
+  vlanId: 1,
+  createdDate: '2022-12-07T21:39:00',
+  expirationDate: '2022-12-08T08:39:00'
 }
 
 export const mockedNetworks = {

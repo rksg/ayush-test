@@ -1,13 +1,15 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }             from '@acx-ui/feature-toggle'
 import {
   ServiceType,
   DpskDetailsTabKey,
   getServiceRoutePath,
   ServiceOperation,
   NewDpskPassphraseBaseUrl,
-  DpskUrls
+  DpskUrls,
+  NewDpskPassphraseBaseUrlWithId
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
@@ -21,7 +23,8 @@ import {
 import {
   mockedDpskPassphraseList,
   mockedTenantId,
-  mockedServiceId
+  mockedServiceId,
+  mockedDpskPassphrase
 } from './__tests__/fixtures'
 import DpskPassphraseManagement from './DpskPassphraseManagement'
 
@@ -172,5 +175,32 @@ describe('DpskPassphraseManagement', () => {
     await waitFor(() => {
       expect(exportFn).toHaveBeenCalled()
     })
+  })
+
+  it('should edit selected passphrase', async () => {
+    mockServer.use(
+      rest.get(
+        NewDpskPassphraseBaseUrlWithId,
+        (req, res, ctx) => res(ctx.json({ ...mockedDpskPassphrase }))
+      )
+    )
+
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <DpskPassphraseManagement />
+      </Provider>, {
+        route: { params: paramsForPassphraseTab, path: detailPath }
+      }
+    )
+
+    const targetRecord = mockedDpskPassphraseList.content[0]
+
+    const targetRow = await screen.findByRole('row', { name: new RegExp(targetRecord.username) })
+    await userEvent.click(within(targetRow).getByRole('checkbox'))
+    await userEvent.click(await screen.findByRole('button', { name: /Edit Passphrase/i }))
+
+    const dialog = await screen.findByRole('dialog')
+    expect(within(dialog).getByRole('button', { name: /Save/i })).toBeVisible()
   })
 })
