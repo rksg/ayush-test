@@ -74,7 +74,8 @@ export function Subscriptions () {
       dataIndex: 'effectiveDate',
       key: 'effectiveDate',
       render: function (_, row) {
-        return formatter(DateFormatEnum.DateFormat)(row.effectiveDate)
+        const effectiveDate = new Date(Date.parse(row.effectiveDate))
+        return formatter(DateFormatEnum.DateFormat)(effectiveDate)
       }
     },
     {
@@ -82,7 +83,8 @@ export function Subscriptions () {
       dataIndex: 'expirationDate',
       key: 'expirationDate',
       render: function (_, row) {
-        return formatter(DateFormatEnum.DateFormat)(row.expirationDate)
+        const expirationDate = new Date(Date.parse(row.expirationDate))
+        return formatter(DateFormatEnum.DateFormat)(expirationDate)
       }
     },
     {
@@ -260,7 +262,7 @@ export function Subscriptions () {
         title={$t({ defaultMessage: 'MSP Subscriptions' })}
         extra={
           <TenantLink to='/dashboard'>
-            <Button>{$t({ defaultMessage: 'Manage my account' })}</Button>
+            <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
           </TenantLink>
         }
       />

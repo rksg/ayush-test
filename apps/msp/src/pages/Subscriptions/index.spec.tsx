@@ -89,6 +89,10 @@ describe('Subscriptions', () => {
       rest.post(
         MspUrlsInfo.getMspCustomersListDropdown.url,
         (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        MspUrlsInfo.getMspCustomersList.url,
+        (req, res, ctx) => res(ctx.json({}))
       )
     )
     params = {

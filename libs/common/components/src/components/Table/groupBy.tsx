@@ -67,7 +67,9 @@ export function useGroupBy<RecordType> (
         </UI.GroupCell>
       </UI.GroupRow>
     )
-    const columnCount = columns.reduce((count, column) => columnsState[column.key].show !== false
+    const columnCount = columns.reduce((count, column) => columnsState
+      && columnsState[column.key]
+      && columnsState[column.key].show !== false
       ? count + ('children' in column ? column.children?.length || 1 : 1)
       : count, 0)
     const addColSpan = (colSpan: number) =>

@@ -57,7 +57,8 @@ const defaultPayload: {
       'venueName',
       'apName',
       'switchName',
-      'sourceType'
+      'sourceType',
+      'switchMacAddress'
     ]
   }
 
@@ -134,8 +135,9 @@ export function AlarmsDrawer (props: AlarmsType) {
       }
       case EventTypeEnum.SWITCH: {
         if(toggleForSwitch){
+          const switchId = alarm.switchMacAddress || alarm.serialNumber
           return <TenantLink
-            to={`/devices/switch/${alarm.entityId}/${alarm.serialNumber}/details/timeline`}>
+            to={`/devices/switch/${switchId}/${alarm.serialNumber}/details/timeline`}>
             {alarm.switchName}
           </TenantLink>
         }else{
