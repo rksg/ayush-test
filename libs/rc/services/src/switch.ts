@@ -603,7 +603,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const req = createHttpRequest(SwitchUrlsInfo.addVePort, params)
         return {
           ...req,
-          body: payload
+          body: enableNewApi(SwitchUrlsInfo.addVePort) ? [payload] : payload
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'VE' }]
@@ -834,7 +834,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const req = createHttpRequest(SwitchUrlsInfo.addLag, params)
         return {
           ...req,
-          body: payload
+          body: enableNewApi(SwitchUrlsInfo.addLag) ? [payload] : payload
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'LAG' }]
