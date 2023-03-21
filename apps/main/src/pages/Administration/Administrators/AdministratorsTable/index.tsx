@@ -97,6 +97,18 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
     return isSelected
   }
 
+  const handleRowSelectChange = (record: unknown,
+    selected: boolean, selectedRows: Administrator[]) => {
+    if (selectedRows.length === 1) {
+      const allPrimeAdminSelected = isAllPrimeAdminSelected(selectedRows)
+      const selfSelected = isSelfSelected(selectedRows)
+
+      // name is the only editable field:
+      // - the only one prime admin
+      setEditNameOnly(selfSelected || allPrimeAdminSelected)
+    }
+  }
+
   const columns:TableProps<Administrator>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
@@ -129,12 +141,7 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
         //  - multiple-selected
 
         if (selectedRows.length === 1) {
-          const allPrimeAdminSelected = isAllPrimeAdminSelected(selectedRows)
           const selfSelected = isSelfSelected(selectedRows)
-
-          // name is the only editable field:
-          // - the only one prime admin
-          setEditNameOnly(selfSelected || allPrimeAdminSelected)
 
           return selfSelected === false
         } else {
@@ -234,7 +241,8 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
             // only prime-admin cannot edit/delete itself
             disabled: record.email === currentUserMail && isPrimeAdminUser,
             name: record.fullName
-          })
+          }),
+          onSelect: handleRowSelectChange
         } : undefined}
         actions={filterByAccess(tableActions)}
       />

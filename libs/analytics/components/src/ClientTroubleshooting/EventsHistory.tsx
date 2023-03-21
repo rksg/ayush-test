@@ -5,9 +5,9 @@ import { flatten }            from 'lodash'
 import { IntlShape, useIntl } from 'react-intl'
 import AutoSizer              from 'react-virtualized-auto-sizer'
 
-import { ArrowCollapse } from '@acx-ui/icons'
-import { TenantLink }    from '@acx-ui/react-router-dom'
-import { formatter }     from '@acx-ui/utils'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { ArrowCollapse }             from '@acx-ui/icons'
+import { TenantLink }                from '@acx-ui/react-router-dom'
 
 import {
   DisplayEvent,
@@ -61,7 +61,7 @@ const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlS
     const color = eventColorByCategory[event.category as keyof typeof eventColorByCategory]
     return {
       start: event.start,
-      date: formatter('dateTimeFormatWithSeconds')(event.start),
+      date: formatter(DateFormatEnum.DateTimeFormatWithSeconds)(event.start),
       description: formatEventDesc(event, intl),
       title: formatEventDesc(event, intl),
       icon: <UI.EventTypeIcon color={color} data-testid='history-item-icon'/>,

@@ -3,16 +3,15 @@ export {
   columnState as activityTableColumnState,
   useActivityTableQuery
 } from './ActivityTable'
-export { AdminLogTable } from './AdminLogTable'
-export { AlarmWidget } from './AlarmWidget'
+export { AlarmWidget, AlarmWidgetV2 } from './AlarmWidget'
 export { ApInfoWidget } from './ApInfoWidget'
 export { ApTable, APStatus, defaultApPayload } from './ApTable'
 export { ClientDualTable } from './ClientDualTable'
 export { ClientHealthIcon } from './ClientHealthIcon'
-export { ClientsWidget } from './ClientsWidget'
+export { ClientsWidget, ClientsWidgetV2 } from './ClientsWidget'
 export { CodeMirrorWidget } from './CodeMirrorWidget'
 export { ConnectedClientsTable, defaultClientPayload } from './ConnectedClientsTable'
-export { DevicesDashboardWidget } from './DevicesDashboardWidget'
+export { DevicesDashboardWidget, DevicesDashboardWidgetV2 } from './DevicesDashboardWidget'
 export { DevicesWidget, seriesMappingAP } from './DevicesWidget'
 export { EdgeSettingForm } from './EdgeSettingForm'
 export { EdgesTable, EdgeStatusLight, defaultEdgeTablePayload } from './EdgesTable'
@@ -22,10 +21,12 @@ export { EdgeInfoWidget }  from './EdgeInfoWidget'
 export { EdgeDhcpSettingForm } from './EdgeDhcpSetting/EdgeDhcpSettingForm'
 export { PoolDrawer } from './EdgeDhcpSetting/DhcpPool/PoolDrawer'
 export {
+  AdminLogTable,
+  useAdminLogsTableQuery,
   EventTable,
   defaultColumnState as eventTableColumnState,
   useEventsTableQuery,
-  defaultSearch as eventDefaultSearch
+  eventDefaultSearch
 } from './EventTable'
 export {
   HistoricalClientsTable,
@@ -38,7 +39,7 @@ export { LanPortSettings } from './LanPortSettings'
 export { NetworkApGroupDialog } from './NetworkApGroupDialog'
 export { NetworkVenueScheduleDialog } from './NetworkVenueScheduleDialog'
 export { NetworkTable, defaultNetworkPayload } from './NetworkTable'
-export { MapWidget } from './MapWidget'
+export { MapWidget, MapWidgetV2 } from './MapWidget'
 export { RadioSettingsChannels } from './RadioSettingsChannels'
 export { SingleRadioSettings, RadioSettingsForm } from './RadioSettings'
 export { StatusLight } from './StatusLight'
@@ -54,7 +55,7 @@ export { useApActions } from './useApActions'
 export { useSwitchActions } from './useSwitchActions'
 export { VenueDevicesWidget } from './VenueDevicesWidget'
 export { VenueAlarmWidget } from './VenueAlarmWidget'
-export { VenuesDashboardWidget } from './VenuesDashboardWidget'
+export { VenuesDashboardWidget, VenuesDashboardWidgetV2 } from './VenuesDashboardWidget'
 export { WifiSignal } from './WifiSignal'
 export { AlarmsDrawer } from './AlarmsDrawer'
 export { ApSelector } from './ApSelector'

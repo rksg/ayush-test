@@ -1,3 +1,5 @@
+import { useLayoutEffect, useRef, useState } from 'react'
+
 import { ModalProps as AntModalProps } from 'antd'
 import { useIntl }                     from 'react-intl'
 
@@ -16,6 +18,18 @@ interface ModalProps extends AntModalProps {
   type?: ModalType,
   title: string
   subTitle?: string
+}
+
+function HasStepsFormContainer (props: React.HTMLAttributes<HTMLDivElement>) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [hasStepsForm, setHasStepsForm] = useState(false)
+  useLayoutEffect(() => {
+    setHasStepsForm(Boolean(ref.current?.querySelector('.ant-pro-steps-form')))
+  })
+  const className = [props.className, hasStepsForm ? 'has-steps-form' : '']
+    .filter(Boolean)
+    .join(' ')
+  return <div {...props} ref={ref} className={className} />
 }
 
 export function Modal ({
@@ -40,6 +54,7 @@ export function Modal ({
       </Button>
     ]
   }
+
   return (
     <UI.Modal
       {...props}
@@ -47,6 +62,7 @@ export function Modal ({
         closable: false,
         width: props.width || '95%'
       })}
+      modalRender={node => <HasStepsFormContainer children={node} />}
       onCancel={onCancel}
       closeIcon={<CloseSymbol />}
       title={props.subTitle ? TitleWithSubtitle(props.title, props.subTitle) : props.title}

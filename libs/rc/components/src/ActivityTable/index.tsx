@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 
-import moment                     from 'moment'
+import moment                     from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps, Button } from '@acx-ui/components'
+import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
 import { useActivitiesQuery }                from '@acx-ui/rc/services'
 import {
   Activity,
@@ -15,9 +16,10 @@ import {
   statusMapping,
   CommonUrlsInfo,
   TABLE_QUERY_LONG_POLLING_INTERVAL,
-  useTableQuery
+  useTableQuery,
+  noDataDisplay
 } from '@acx-ui/rc/utils'
-import { formatter, useDateFilter } from '@acx-ui/utils'
+import { useDateFilter } from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 
@@ -91,7 +93,8 @@ const ActivityTable = ({
 }: ActivityTableProps) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
-  const [current, setCurrent] = useState<string>()
+  const [current, setCurrent] = useState<Activity>()
+  useEffect(() => { setVisible(false) },[tableQuery.data?.data])
 
   const columns: TableProps<Activity>['columns'] = [
     {
@@ -106,9 +109,9 @@ const ActivityTable = ({
           size='small'
           onClick={()=>{
             setVisible(true)
-            setCurrent(row.requestId)
+            setCurrent(row)
           }}
-        >{formatter('dateTimeFormatWithSeconds')(row.startDatetime)}</Button>
+        >{formatter(DateFormatEnum.DateTimeFormatWithSeconds)(row.startDatetime)}</Button>
       }
     },
     {
@@ -129,8 +132,9 @@ const ActivityTable = ({
       dataIndex: 'product',
       sorter: true,
       render: function (_: React.ReactNode, row: { product: string }) {
-        const msg = productMapping[row.product as keyof typeof productMapping]
-        return $t(msg)
+        const key = row.product as keyof typeof productMapping
+        const msg = productMapping[key] ? $t(productMapping[key]) : noDataDisplay
+        return msg
       },
       filterable: (Array.isArray(filterables) ? filterables.includes('product') : filterables)
         && Object.entries(productMapping).map(([key, value])=>({ key, value: $t(value) }))
@@ -155,11 +159,11 @@ const ActivityTable = ({
   const getDrawerData = (data: Activity) => [
     {
       title: defineMessage({ defaultMessage: 'Start Time' }),
-      value: formatter('dateTimeFormatWithSeconds')(data.startDatetime)
+      value: formatter(DateFormatEnum.DateTimeFormatWithSeconds)(data.startDatetime)
     },
     {
       title: defineMessage({ defaultMessage: 'End Time' }),
-      value: formatter('dateTimeFormatWithSeconds')(data.endDatetime)
+      value: formatter(DateFormatEnum.DateTimeFormatWithSeconds)(data.endDatetime)
     },
     {
       title: defineMessage({ defaultMessage: 'Severity' }),
@@ -183,7 +187,7 @@ const ActivityTable = ({
     <Table
       rowKey='startDatetime'
       columns={columns}
-      dataSource={tableQuery.data?.data}
+      dataSource={tableQuery.data?.data ?? []}
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
       onFilterChange={tableQuery.handleFilterChange}
@@ -194,10 +198,8 @@ const ActivityTable = ({
       title={defineMessage({ defaultMessage: 'Activity Details' })}
       visible={visible}
       onClose={()=>setVisible(false)}
-      data={getDrawerData(tableQuery.data?.data
-        .find(row => current && row.requestId === current)!)}
-      timeLine={tableQuery.data?.data
-        .find(row => current && row.requestId === current)?.steps}
+      data={getDrawerData(current)}
+      timeLine={current.steps}
     /> }
   </Loader>
 }

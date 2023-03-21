@@ -239,7 +239,7 @@ export function DeviceInventory () {
         title={$t({ defaultMessage: 'Device Inventory' })}
         extra={
           <TenantLink to='/dashboard'>
-            <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
+            <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
           </TenantLink>
         }
       />
