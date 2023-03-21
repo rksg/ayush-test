@@ -84,7 +84,7 @@ export interface SEARCH {
 }
 
 export interface FILTER extends Record<string, FilterValue | null> {}
-export type GROUPBY = string | undefined | null
+export type GROUPBY = string | null
 
 const transferSorter = (order:string) => {
   return order === 'ascend' ? SORTER_ABBR.ascend : SORTER_ABBR.descend
@@ -186,7 +186,7 @@ export function useTableQuery <
         ..._.omit({ ...filters as Object, ...customFilters }, toBeRemovedFilter),
         ..._.pick(initialPayload.filters, toBeRemovedFilter)
       },
-      groupBy: groupBy
+      groupBy
     } as unknown as Payload)
     setSearch(toBeSearch)
     setFilterKeys([...new Set([ ...filterKeys, ...Object.keys(customFilters) ])]

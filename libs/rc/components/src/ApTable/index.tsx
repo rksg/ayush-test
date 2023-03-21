@@ -1,10 +1,9 @@
 /* eslint-disable max-len */
 import React, { useState, useEffect, useMemo } from 'react'
 
-import { FetchBaseQueryError }                               from '@reduxjs/toolkit/dist/query'
-import { Badge }                                             from 'antd'
-import { SorterResult, TableCurrentDataSource, FilterValue } from 'antd/lib/table/interface'
-import { useIntl }                                           from 'react-intl'
+import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
+import { Badge }               from 'antd'
+import { useIntl }             from 'react-intl'
 
 import {
   Loader,
@@ -44,19 +43,6 @@ import { useApActions }              from '../useApActions'
 import {
   getGroupableConfig
 } from './config'
-
-import type {
-  TablePaginationConfig
-} from 'antd'
-
-type OnTableChange = (
-  pagination: TablePaginationConfig,
-  filters: Record<string, FilterValue | null>,
-  sorter:
-    | SorterResult<APExtended | APExtendedGrouped>
-    | SorterResult<APExtended | APExtendedGrouped>[],
-  extra: TableCurrentDataSource<APExtended | APExtendedGrouped>
-) => void
 
 export const defaultApPayload = {
   searchString: '',
@@ -340,15 +326,15 @@ export function ApTable (props: ApTableProps) {
       show: false,
       sorter: false,
       render: (data, row : APExtended) => {
-        if (!row?.hasPoeStatus) {
+        if (!row.hasPoeStatus) {
           return <span></span>
         }
 
-        const iconColor = (row?.isPoEStatusUp) ? '--acx-semantics-green-50' : '--acx-neutrals-50'
+        const iconColor = (row.isPoEStatusUp) ? '--acx-semantics-green-50' : '--acx-neutrals-50'
         return (
           <span>
             <Badge color={`var(${iconColor})`}
-              text={transformDisplayText(row?.poePortInfo)}
+              text={transformDisplayText(row.poePortInfo)}
             />
           </span>
         )
@@ -421,7 +407,7 @@ export function ApTable (props: ApTableProps) {
         dataSource={tableData}
         rowKey='serialNumber'
         pagination={tableQuery?.pagination}
-        onChange={tableQuery?.handleTableChange as OnTableChange}
+        onChange={tableQuery?.handleTableChange}
         enableApiFilter={true}
         rowActions={filterByAccess(rowActions)}
         onFilterChange={tableQuery?.handleFilterChange}

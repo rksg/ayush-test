@@ -43,9 +43,10 @@ import { baseApApi } from '@acx-ui/store'
 
 export const apApi = baseApApi.injectEndpoints({
   endpoints: (build) => ({
-    apList: build.query<TableResult<APExtended, ApExtraParams>, RequestPayload>({
+    apList: build.query<TableResult<APExtended | APExtendedGrouped, ApExtraParams>,
+    RequestPayload>({
       query: ({ params, payload }:{ payload:Record<string,unknown>, params: Params<string> }) => {
-        const hasGroupBy = (payload as { groupBy : string })?.groupBy
+        const hasGroupBy = payload?.groupBy
         const fields = hasGroupBy ? payload.groupByFields : payload.fields
         let apsReq = createHttpRequest(CommonUrlsInfo.getApsList, params)
         if(hasGroupBy){
@@ -57,14 +58,16 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       transformResponse (
-        result: TableResult<APExtended, ApExtraParams>,_: unknown, args: Record<string,unknown>
+        result: TableResult<APExtended, ApExtraParams>,
+        _: unknown,
+        args: { payload : Record<string,unknown> }
       ) {
-        if((args?.payload as Record<string,unknown>)?.groupBy)
+        if((args?.payload)?.groupBy)
           return transformGroupByList(result as TableResult<APExtendedGrouped, ApExtraParams>)
         return transformApList(result)
       },
       keepUnusedDataFor: 0,
-      providesTags: [{ type: 'Ap', id: 'GROUP' }],
+      providesTags: [{ type: 'Ap', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
@@ -75,7 +78,7 @@ export const apApi = baseApApi.injectEndpoints({
             'AddApGroupLegacy'
           ]
           onActivityMessageReceived(msg, activities, () => {
-            api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'GROUP' }]))
+            api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'LIST' }]))
           })
         })
       }
@@ -90,7 +93,7 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     apGroupsList: build.query<TableResult<ApGroup>, RequestPayload>({
       query: ({ params, payload }) => {
-        let venueListReq = createHttpRequest(WifiUrlsInfo.getApGroupsList, params)
+        const venueListReq = createHttpRequest(WifiUrlsInfo.getApGroupsList, params)
         return {
           ...venueListReq,
           body: payload

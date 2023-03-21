@@ -91,7 +91,7 @@ export interface APExtended extends AP {
   networks?: {
     count?: number
   },
-  name?: string,
+  name?: string
 }
 
 export interface CelluarInfo {
