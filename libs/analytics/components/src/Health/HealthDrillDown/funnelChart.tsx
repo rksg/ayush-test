@@ -9,7 +9,7 @@ import React, {
 
 import _ from 'lodash'
 
-import { formatter } from '@acx-ui/utils'
+import { formatter } from '@acx-ui/formatter'
 
 import {
   ChartContainer,
