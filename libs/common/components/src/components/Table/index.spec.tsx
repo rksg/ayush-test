@@ -1,11 +1,11 @@
-import '@testing-library/jest-dom'
 import { useState } from 'react'
 
 import userEvent from '@testing-library/user-event'
 
-import { render, fireEvent, screen, within, mockDOMSize, findTBody, waitFor } from '@acx-ui/test-utils'
+import { render, fireEvent, screen, within, mockDOMSize, findTBody, waitFor, cleanup, act } from '@acx-ui/test-utils'
 
 import { columns as filteredColumns, data as filteredData } from './stories/FilteredTable'
+import { GroupTable }                                       from './stories/GroupTable'
 
 import { Table, TableProps } from '.'
 
@@ -33,6 +33,8 @@ type TestRow = {
 }
 
 describe('Table component', () => {
+  afterEach(() => cleanup())
+
   const testColumns: TableProps<TestRow>['columns'] = [
     { title: 'Name', dataIndex: 'name', key: 'name' },
     { title: 'Age', dataIndex: 'age', key: 'age', tooltip: 'tooltip' },
@@ -715,7 +717,7 @@ describe('Table component', () => {
       expect(customHighlighter).toBeCalled()
     })
 
-    it('should call debounced/onFilterChange when filter/search updated', async () => {
+    it('should call onFilterChange when filter/search updated', async () => {
       const onFilterChange = jest.fn()
       render(<Table
         columns={filteredColumns}
@@ -726,7 +728,12 @@ describe('Table component', () => {
       const input = await screen
         .findByPlaceholderText('Search Name, Given Name, Surname, Description, Address')
       await type(input, 'J')
-      expect(onFilterChange).not.toBeCalled()
+      expect(onFilterChange).toBeCalledTimes(1)
+      // but only 1 time / debounced
+      await type(input, 'J')
+      await type(input, 'JA')
+      await type(input, 'JAR')
+      expect(onFilterChange).toBeCalledTimes(1)
 
       await clear(input)
       await type(input, 'John Doe')
@@ -912,6 +919,89 @@ describe('Table component', () => {
       })
 
       expect(listToolBarItem).toBeTruthy()
+    })
+  })
+
+  describe('groupBy table', () => {
+    it('should render groupBy correctly', async () => {
+      render(<GroupTable />)
+      const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
+      expect(filters.length).toBe(4)
+      const groupBySelector = filters[3]
+      fireEvent.mouseDown(groupBySelector)
+      await waitFor(async () =>
+        expect(await screen.findByTestId('option-deviceGroupName')).toBeInTheDocument())
+      fireEvent.click(await screen.findByTestId('option-deviceGroupName'))
+      const clearBtn = await screen.findByRole('button', { name: 'Clear Filters' })
+      fireEvent.click(clearBtn)
+    })
+
+    it('should expand and close table row', async () => {
+      render(<GroupTable />)
+      const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
+      expect(filters.length).toBe(4)
+      const groupBySelector = filters[3]
+      fireEvent.mouseDown(groupBySelector)
+      await waitFor(async () =>
+        expect(await screen.findByTestId('option-deviceGroupName')).toBeInTheDocument())
+      fireEvent.click(await screen.findByTestId('option-deviceGroupName'))
+      fireEvent.click(await screen.findByRole('img', { name: 'close-circle' }))
+    })
+
+    it('should trigger edit action', async () => {
+      render(<GroupTable />)
+      const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
+      expect(filters.length).toBe(4)
+      const groupBySelector = filters[3]
+      fireEvent.mouseDown(groupBySelector)
+      await waitFor(async () =>
+        expect(await screen.findByTestId('option-deviceGroupName')).toBeInTheDocument())
+      fireEvent.click(await screen.findByTestId('option-deviceGroupName'))
+      const editBtns = await screen.findAllByRole('link', { name: 'Edit' })
+      expect(editBtns.length).toEqual(12)
+      fireEvent.click(editBtns[0])
+    })
+
+    it('should support groupBy, search and filter', async () => {
+      jest.useFakeTimers()
+      render(<GroupTable />)
+      const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
+      expect(filters.length).toBe(4)
+      const groupBySelector = filters[3]
+      // eslint-disable-next-line testing-library/no-unnecessary-act
+      act(() => {
+        fireEvent.mouseDown(groupBySelector)
+        jest.advanceTimersByTime(2000)
+      })
+      await waitFor(async () =>
+        expect(await screen.findByTestId('option-deviceStatus')).toBeInTheDocument())
+      // eslint-disable-next-line testing-library/no-unnecessary-act
+      await act(async () => {
+        fireEvent.click(await screen.findByTestId('option-deviceStatus'))
+        jest.advanceTimersByTime(2000)
+      })
+
+      const statusFilter = filters[0]
+      const filterTerm1 = '2_00_Operational'
+      // eslint-disable-next-line testing-library/no-unnecessary-act
+      act(() => {
+        fireEvent.change(statusFilter, { target: { value: filterTerm1 } })
+        jest.advanceTimersByTime(2000)
+      })
+      expect(await screen.findAllByText(filterTerm1)).toHaveLength(6)
+
+      const searchInput = await screen.findByPlaceholderText(
+        'Search AP Name, MAC Addresses, AP Group'
+      )
+
+      const searchTerm = '34:2'
+      userEvent.type(searchInput, searchTerm)
+      jest.advanceTimersByTime(3000)
+
+      const targetElems = await screen.findAllByText('Members: 2')
+      expect(targetElems).toHaveLength(1)
+
+      jest.useRealTimers()
     })
   })
 })

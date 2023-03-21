@@ -7,6 +7,7 @@ import { CompactTableWithBorders }    from './CompactTableWithBorders'
 import { CustomTable }                from './CustomTable'
 import { FilteredTable }              from './FilteredTable'
 import { FormTable }                  from './FormTable'
+import { GroupTable }                 from './GroupTable'
 import { MultipleSorterTable }        from './MultipleSorterTable'
 import { MultiSelectTable }           from './MultiSelectTable'
 import { NoSelectedBarTable }         from './NoSelectedBarTable'
@@ -24,5 +25,5 @@ storiesOf('Table', module)
   .add('Compact', CompactTable)
   .add('Compact Table With Borders in Rows', CompactTableWithBorders)
   .add('Form Table', FormTable)
-
+  .add('Group Table', GroupTable)
 export {}
