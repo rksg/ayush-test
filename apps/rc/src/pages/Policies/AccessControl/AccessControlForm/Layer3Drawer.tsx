@@ -180,6 +180,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
   const [requestId, setRequestId] = useState('')
   const [sourceValue, setSourceValue] = useState(1)
   const [destValue, setDestValue] = useState(1)
+  const [skipFetch, setSkipFetch] = useState(true)
   const [contentForm] = Form.useForm()
   const [drawerForm] = Form.useForm()
 
@@ -218,11 +219,12 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     }
   })
 
+
   const { data: layer3PolicyInfo } = useGetL3AclPolicyQuery(
     {
       params: { ...params, l3AclPolicyId: isOnlyViewMode ? onlyViewMode.id : l3AclPolicyId }
     },
-    { skip: !isOnlyViewMode && (l3AclPolicyId === '' || l3AclPolicyId === undefined) }
+    { skip: skipFetch }
   )
 
   const isViewMode = () => {
@@ -236,6 +238,12 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
 
     return !_.isNil(layer3PolicyInfo)
   }
+
+  useEffect(() => {
+    if (!isOnlyViewMode && (l3AclPolicyId === '' || l3AclPolicyId === undefined)) {
+      setSkipFetch(false)
+    }
+  }, [isOnlyViewMode, l3AclPolicyId])
 
   useEffect(() => {
     if (editMode.isEdit && editMode.id !== '') {
