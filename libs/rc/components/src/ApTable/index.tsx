@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 
 import { FetchBaseQueryError }                               from '@reduxjs/toolkit/dist/query'
 import { Badge }                                             from 'antd'
@@ -33,7 +33,7 @@ import {
   APExtendedGrouped
 } from '@acx-ui/rc/utils'
 import { getFilters }                                        from '@acx-ui/rc/utils'
-import { SEARCH, FILTER }                                    from '@acx-ui/rc/utils'
+import { FILTER }                                            from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                    from '@acx-ui/user'
 
@@ -49,7 +49,6 @@ import type {
   TablePaginationConfig
 } from 'antd'
 
-type DeviceGroupBy = 'deviceStatus' | 'model' | 'deviceGroupName' | null
 type OnTableChange = (
   pagination: TablePaginationConfig,
   filters: Record<string, FilterValue | null>,

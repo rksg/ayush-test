@@ -710,11 +710,9 @@ const transformGroupByList = (result: TableResult<APExtendedGrouped, ApExtraPara
       if (APRadio) {
         setAPRadioInfo(ap, APRadio, channelColumnStatus)
       }
-
       if (lanPortStatus) {
         setPoEPortStatus(ap, lanPortStatus)
       }
-
       return ap
     })
     newItem.children = aps as unknown as APExtended[]

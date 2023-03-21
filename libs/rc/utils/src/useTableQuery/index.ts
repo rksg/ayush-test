@@ -173,7 +173,6 @@ export function useTableQuery <
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH, groupBy? : GROUPBY) => {
     const { searchString, searchTargetFields, filters, ...rest } = payload
-    console.log(groupBy)
     const toBeRemovedFilter = _.isEmpty(customFilters)
       ? filterKeys
       : Object.keys(customFilters).filter(key => !customFilters[key])
