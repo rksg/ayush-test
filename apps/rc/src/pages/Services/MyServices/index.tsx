@@ -9,7 +9,7 @@ import {
   useGetEnhancedMdnsProxyListQuery,
   useGetNetworkSegmentationStatsListQuery,
   useGetPortalProfileListQuery,
-  useGetWifiCallingServiceListQuery,
+  useGetEnhancedWifiCallingServiceListQuery,
   useWebAuthTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -75,7 +75,7 @@ export default function MyServices () {
     {
       type: ServiceType.WIFI_CALLING,
       category: RadioCardCategory.WIFI,
-      tableQuery: useGetWifiCallingServiceListQuery({
+      tableQuery: useGetEnhancedWifiCallingServiceListQuery({
         params, payload: defaultPayload
       })
     },
