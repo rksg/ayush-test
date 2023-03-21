@@ -12,9 +12,9 @@ import {
   deviceStatusColors,
   ColumnType
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
 import {
-  useApListQuery, useImportApMutation
+  useApListQuery, useImportApMutation, useLazyImportResultQuery
 } from '@acx-ui/rc/services'
 import {
   ApDeviceStatusEnum,
@@ -30,7 +30,7 @@ import {
   RequestPayload,
   usePollingTableQuery
 } from '@acx-ui/rc/utils'
-import { getFilters }                                        from '@acx-ui/rc/utils'
+import { getFilters, CommonResult, ImportErrorRes }          from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                    from '@acx-ui/user'
 
@@ -361,17 +361,21 @@ export function ApTable (props: ApTableProps) {
       apAction.showDownloadApLog(rows[0].serialNumber, params.tenantId)
     }
   }]
+  const [ isImportResultLoading, setIsImportResultLoading ] = useState(false)
   const [ importVisible, setImportVisible ] = useState(false)
-  const [ importCsv, importResult ] = useImportApMutation()
+  const [ importCsv ] = useImportApMutation()
+  const [ importQuery ] = useLazyImportResultQuery()
+  const [ importResult, setImportResult ] = useState<ImportErrorRes>({} as ImportErrorRes)
   const apGpsFlag = useIsSplitOn(Features.AP_GPS)
   const importTemplateLink = apGpsFlag ?
     'assets/templates/aps_import_template_with_gps.csv' :
     'assets/templates/aps_import_template.csv'
 
   useEffect(()=>{
-    if (importResult.isSuccess) {
+    if (importResult.fileErrorsCount === 0) {
       setImportVisible(false)
     }
+    setIsImportResultLoading(false)
   },[importResult])
 
   const basePath = useTenantLink('/devices')
@@ -417,10 +421,17 @@ export function ApTable (props: ApTableProps) {
         acceptType={['csv']}
         templateLink={importTemplateLink}
         visible={importVisible}
-        isLoading={importResult.isLoading}
-        importError={importResult.error as FetchBaseQueryError}
+        isLoading={isImportResultLoading}
+        importError={{ data: importResult } as FetchBaseQueryError}
         importRequest={(formData) => {
-          importCsv({ params, payload: formData })
+          setIsImportResultLoading(true)
+          importCsv({ params: {}, payload: formData,
+            callback: async (res: CommonResult) => {
+              const result = await importQuery(
+                { payload: { requestId: res.requestId } }, true)
+                .unwrap()
+              setImportResult(result)
+            } }).unwrap()
         }}
         onClose={() => setImportVisible(false)}/>
     </Loader>

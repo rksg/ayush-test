@@ -36,7 +36,7 @@ export function getFilteredData <RecordType> (
     if (searchValue && searchValue.length >= MIN_SEARCH_LENGTH) {
       return searchables.some(column => {
         return (row[column.dataIndex as keyof RecordType] as unknown as string)
-          .toString()
+          ?.toString()
           .toLowerCase()
           .includes(searchValue.toLowerCase())
       })
@@ -123,10 +123,13 @@ export function renderFilter <RecordType> (
     allowClear
     style={{ width: 200 }}
   >
-    {options?.map(option =>
-      <Select.Option value={option.key} key={option.key} data-testid={`option-${option.key}`} >
-        {option.value}
-      </Select.Option>
+    {options?.map((option, index) =>
+      <Select.Option
+        value={option.key}
+        key={option.key ?? index}
+        data-testid={`option-${option.key}`}
+        children={option.value}
+      />
     )}
   </UI.FilterSelect>
 }

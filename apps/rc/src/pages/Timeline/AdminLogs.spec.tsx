@@ -2,8 +2,9 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
+import { timelineApi }                      from '@acx-ui/rc/services'
 import { CommonUrlsInfo }                   from '@acx-ui/rc/utils'
-import { Provider }                         from '@acx-ui/store'
+import { Provider, store }                  from '@acx-ui/store'
 import { mockRestApiQuery, render, screen } from '@acx-ui/test-utils'
 
 import { events, eventsMeta } from './__tests__/adminLogsFixtures'
@@ -18,6 +19,7 @@ jest.mock('@acx-ui/user', () => ({
 
 describe('AdminLogs', () => {
   beforeEach(() => {
+    store.dispatch(timelineApi.util.resetApiState())
     mockRestApiQuery(CommonUrlsInfo.getEventList.url, 'post', events)
     mockRestApiQuery(CommonUrlsInfo.getEventListMeta.url, 'post', eventsMeta)
   })

@@ -4,7 +4,9 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   // TODO Need Owner to check it
   getMspCustomersList: {
     method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/mspeclist'
+    url: '/mspecs/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/mspeclist',
+    newApi: true
   },
   getMspDeviceInventory: {
     method: 'post',
