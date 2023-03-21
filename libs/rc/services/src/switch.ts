@@ -603,7 +603,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const req = createHttpRequest(SwitchUrlsInfo.addVePort, params)
         return {
           ...req,
-           body: enableNewApi(SwitchUrlsInfo.addVePort) ? [payload] : payload
+          body: enableNewApi(SwitchUrlsInfo.addVePort) ? [payload] : payload
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'VE' }]
