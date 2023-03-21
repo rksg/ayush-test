@@ -20,6 +20,7 @@ import {
 } from '@acx-ui/rc/services'
 import { CommonResult, ImportErrorRes } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }        from '@acx-ui/react-router-dom'
+import { filterByAccess }               from '@acx-ui/user'
 
 export default function ApsTable () {
   const { $t } = useIntl()
@@ -40,20 +41,16 @@ export default function ApsTable () {
       params: { tenantId },
       payload: {
         fields: ['name', 'venueId', 'clients', 'networks', 'venueName', 'id'],
-        pageSize: 10,
+        pageSize: 10000,
         sortField: 'name',
-        page: 1,
         sortOrder: 'ASC',
-        total: 0,
         filters: { isDefault: [false] }
       }
     },
     {
-      selectFromResult: ({ data }) => {
-        return {
-          apgroupFilterOptions: data?.data.map((v) => ({ key: v.id, value: v.name })) || true
-        }
-      }
+      selectFromResult: ({ data }) => ({
+        apgroupFilterOptions: data?.data.map((v) => ({ key: v.id, value: v.name })) || true
+      })
     }
   )
 
@@ -99,11 +96,11 @@ export default function ApsTable () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Wi-Fi' })}
-        extra={[
-          <Dropdown overlay={addMenu} key='addMenu'>
-            {() => <Button type='primary'>{$t({ defaultMessage: 'Add' })}</Button>}
-          </Dropdown>
-        ]}
+        extra={filterByAccess([
+          <Dropdown overlay={addMenu}>{() =>
+            <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
+          }</Dropdown>
+        ])}
       />
       <ApTable
         searchable={true}
