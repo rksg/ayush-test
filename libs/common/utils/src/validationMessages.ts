@@ -76,31 +76,31 @@ export const validationMessages = {
     description: 'Validation - exclusion checks'
   }),
   min: defineMessage({
-    defaultMessage: "This value should be higher than or equal to $'{min'}",
+    defaultMessage: 'This value should be higher than or equal to ${min}',
     description: 'Validation - min checks'
   }),
   max: defineMessage({
-    defaultMessage: "This value should be lower than or equal to $'{max'}",
+    defaultMessage: 'This value should be lower than or equal to ${max}',
     description: 'Validation - max checks'
   }),
   range: defineMessage({
-    defaultMessage: "This value should be between $'{min'} and $'{max'}",
+    defaultMessage: 'This value should be between ${min} and ${max}',
     description: 'Validation - range checks'
   }),
   minStr: defineMessage({
-    defaultMessage: "Field must be at least $'{min'} characters",
+    defaultMessage: 'Field must be at least ${min} characters',
     description: 'Validation - string min checks'
   }),
   maxStr: defineMessage({
-    defaultMessage: "Field exceeds $'{max'} characters",
+    defaultMessage: 'Field exceeds ${max} characters',
     description: 'Validation - string max checks'
   }),
   lenStr: defineMessage({
-    defaultMessage: "Field must be exactly $'{len'} characters",
+    defaultMessage: 'Field must be exactly ${len} characters',
     description: 'Validation - string len checks'
   }),
   rangeStr: defineMessage({
-    defaultMessage: "Field must be between $'{min'} and $'{max'} characters",
+    defaultMessage: 'Field must be between ${min} and ${max} characters',
     description: 'Validation - string range checks'
   }),
   hasGraveAccentAndDollarSign: defineMessage({

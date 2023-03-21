@@ -448,10 +448,37 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       providesTags: [{ type: 'Service', id: 'DETAIL' }, { type: 'WifiCalling', id: 'DETAIL' }]
     }),
-    getWifiCallingServiceList: build.query<TableResult<WifiCallingSetting>, RequestPayload>({
-      query: ({ params, payload }) => {
+    getWifiCallingServiceList: build.query<WifiCallingSetting[], RequestPayload>({
+      query: ({ params }) => {
         const wifiCallingServiceListReq = createHttpRequest(
           WifiCallingUrls.getWifiCallingList, params
+        )
+        return {
+          ...wifiCallingServiceListReq
+        }
+      },
+      providesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'AddWiFiCallingProfile',
+            'UpdateWiFiCallingProfile',
+            'DeleteWiFiCallingProfile',
+            'DeleteWiFiCallingProfiles'
+          ], () => {
+            api.dispatch(serviceApi.util.invalidateTags([
+              { type: 'Service', id: 'LIST' },
+              { type: 'WifiCalling', id: 'LIST' }
+            ]))
+          })
+        })
+      }
+    }),
+    // eslint-disable-next-line max-len
+    getEnhancedWifiCallingServiceList: build.query<TableResult<WifiCallingSetting>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const wifiCallingServiceListReq = createHttpRequest(
+          WifiCallingUrls.getEnhancedWifiCallingList, params
         )
         return {
           ...wifiCallingServiceListReq,
@@ -735,6 +762,7 @@ export const {
   useDeleteWifiCallingServiceMutation,
   useGetWifiCallingServiceQuery,
   useGetWifiCallingServiceListQuery,
+  useGetEnhancedWifiCallingServiceListQuery,
   useCreateWifiCallingServiceMutation,
   useUpdateWifiCallingServiceMutation,
   useCreateDpskMutation,
