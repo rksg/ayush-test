@@ -69,33 +69,29 @@ export function TopWiFiNetworks ({
   const wifiByTraffic = <AutoSizer>
     {({ height, width }) => (
       isTrafficDataAvailable ?
-        <div>
-          <DonutChart
-            style={{ width, height: height-30 }}
-            data={data.traffic}
-            showLegend={true}
-            showTotal={false}
-            legend='name'
-            dataFormatter={dataFormatter}
-            size={'x-large'}
-          />
-        </div>
+        <DonutChart
+          style={{ width, height: height-30 }}
+          data={data.traffic}
+          showLegend={true}
+          showTotal={false}
+          legend='name'
+          dataFormatter={dataFormatter}
+          size={'x-large'}
+        />
         : <NoData />
     )}
   </AutoSizer>
   const wifiByClients = <AutoSizer>
     {({ height, width }) => (
       isClientDataAvailable ?
-        <div>
-          <DonutChart
-            style={{ width, height: height-30 }}
-            data={data.client}
-            showLegend={true}
-            showTotal={false}
-            legend='name'
-            size={'x-large'}
-          />
-        </div>
+        <DonutChart
+          style={{ width, height: height-30 }}
+          data={data.client}
+          showLegend={true}
+          showTotal={false}
+          legend='name'
+          size={'x-large'}
+        />
         : <NoData />
     )}
   </AutoSizer>
