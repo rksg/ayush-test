@@ -84,6 +84,6 @@ describe('IncidentDashboardv2', () => {
         </Provider>
       </BrowserRouter>
     )
-    await screen.findByText('No active incidents')
+    await screen.findByText('No reported incidents')
   })
 })

@@ -586,6 +586,7 @@ function CoordinatesModal (props: {
             {venueName}. Are you sure you want to place the device in this new position?`
         }, { venueName: selectedVenue.name }),
         okText: $t({ defaultMessage: 'Drop It' }),
+        cancelText: $t({ defaultMessage: 'Cancel' }),
         onOk: () => onSaveCoordinates(latLng),
         onCancel: () => setGpsModalVisible(false)
       })

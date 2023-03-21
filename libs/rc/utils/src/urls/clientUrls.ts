@@ -35,14 +35,14 @@ export const ClientUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   enableGuests: {
-    method: 'patch',
+    method: 'PATCH',
     url: '/guestUsers/:guestId',
     oldMethod: 'post',
     oldUrl: '/api/tenant/:tenantId/wifi/guest-user/:guestId/enable',
     newApi: true
   },
   disableGuests: {
-    method: 'patch',
+    method: 'PATCH',
     url: '/guestUsers/:guestId',
     oldMethod: 'post',
     oldUrl: '/api/tenant/:tenantId/wifi/guest-user/:guestId/disable',
@@ -55,14 +55,14 @@ export const ClientUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   generateGuestPassword: {
-    method: 'patch',
+    method: 'PATCH',
     url: '/guestUsers/:guestId',
     oldMethod: 'post',
     oldUrl: '/api/tenant/:tenantId/wifi/guest-user/:guestId/regenerate',
     newApi: true
   },
   disconnectClient: {
-    method: 'patch',
+    method: 'PATCH',
     url: '/aps/clients',
     oldMethod: 'post',
     oldUrl: '/api/tenant/:tenantId/wifi/disconnect-client',

@@ -1,7 +1,6 @@
 /* eslint-disable max-len */
 import { useContext, useEffect, useState } from 'react'
 
-import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps, showActionModal, showToast }                                                                                       from '@acx-ui/components'
@@ -42,7 +41,7 @@ export function SwitchConfigBackupTable () {
   const [ restoreConfigBackup ] = useRestoreConfigBackupMutation()
   const [ downloadConfigBackup ] = useDownloadConfigBackupMutation()
   const [ deleteConfigBackups ] = useDeleteConfigBackupsMutation()
-  const { currentSwitchOperational, switchName } = switchDetailsContextData
+  const { currentSwitchOperational } = switchDetailsContextData
 
   const showViewModal = (rows: ConfigurationBackup[], clearSelection: ()=>void) => {
     setViewData(rows[0])
@@ -172,14 +171,14 @@ export function SwitchConfigBackupTable () {
     })
   }
 
-  const downloadBackup = (id: string) => {
+  const downloadBackup = (row: ConfigurationBackup) => {
     downloadConfigBackup({
       params: {
         ...params,
-        configId: id
+        configId: row.id
       } })
       .unwrap().then((res)=>{
-        const downloadFileName = 'switch_configuration_' + switchName + '_' + moment().format('YYYYMMDDHHmmss') + '.txt'
+        const downloadFileName = row.name + '.txt'
         const blob = new Blob([res.response], { type: 'text/plain;charset=utf-8' })
         handleBlobDownloadFile(blob, downloadFileName)
       })
@@ -210,7 +209,7 @@ export function SwitchConfigBackupTable () {
     label: $t({ defaultMessage: 'Download' }),
     disabled: () => !enabledRowButton.find(item => item === 'Download'),
     onClick: (rows) => {
-      downloadBackup(rows[0].id)
+      downloadBackup(rows[0])
     }
   }, {
     label: $t({ defaultMessage: 'Delete' }),
