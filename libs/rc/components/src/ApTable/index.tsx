@@ -261,7 +261,7 @@ export function ApTable (props: ApTableProps) {
       filterKey: 'deviceGroupId',
       filterable: filterables ? filterables['deviceGroupId'] : false,
       sorter: true,
-      groupable: getGroupableConfig()?.deviceGroupNameGroupableOptions
+      groupable: getGroupableConfig(params, apAction)?.deviceGroupNameGroupableOptions
     }, {
       key: 'rf-channels',
       title: $t({ defaultMessage: 'RF Channels' }),

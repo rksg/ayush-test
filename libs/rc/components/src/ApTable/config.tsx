@@ -1,12 +1,17 @@
+import { Button }        from 'antd'
 import { defineMessage } from 'react-intl'
 
 import { ApDeviceStatusEnum, APExtended } from '@acx-ui/rc/utils'
-import { TenantLink }                     from '@acx-ui/react-router-dom'
+import { Params, TenantLink }             from '@acx-ui/react-router-dom'
 import { getIntl }                        from '@acx-ui/utils'
 
 import { APStatus } from '.'
 
-export const getGroupableConfig = () => {
+export const getGroupableConfig = (
+  params? :Readonly<Params<string>>,
+  apAction?: {
+    showDeleteApGroups: (record: APExtended, tenantId: string) => void
+  } ) => {
   const { $t } = getIntl()
   const deviceStatusGroupableOptions = {
     key: 'deviceStatus',
@@ -106,6 +111,25 @@ export const getGroupableConfig = () => {
           <TenantLink to={`devices/apgroups/${record.deviceGroupId}/edit`}>
             {$t(defineMessage({ defaultMessage: 'Edit' }))}
           </TenantLink>
+        )
+      }, {
+        key: 'delete',
+        renderer: (record: APExtended) => (
+          <Button
+            style={{
+              padding: '0px',
+              margin: '0px',
+              height: '0px',
+              top: '-1px'
+            }}
+            type='link'
+            size='small'
+            onClick={() => {
+              apAction?.showDeleteApGroups(record, params?.tenantId || '')
+            }}
+          >
+            {$t(defineMessage({ defaultMessage: 'Delete' }))}
+          </Button>
         )
       }
     ],
