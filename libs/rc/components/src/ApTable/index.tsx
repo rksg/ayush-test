@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import React, { useState, useEffect, useMemo } from 'react'
 
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
@@ -125,7 +124,6 @@ interface ApTableProps
   searchable?: boolean
   enableActions?: boolean
   filterables?: { [key: string]: ColumnType['filterable'] }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 }
 
 export function ApTable (props: ApTableProps) {
@@ -173,7 +171,7 @@ export function ApTable (props: ApTableProps) {
       disable: true,
       searchable: searchable,
       render: (data, row : APExtended, _, highlightFn) => (
-        <TenantLink to={`/devices/wifi/${row?.serialNumber}/details/overview`}>
+        <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>
           {searchable ? highlightFn(row.name || '--') : data}</TenantLink>
       )
     }, {
@@ -289,14 +287,16 @@ export function ApTable (props: ApTableProps) {
       key: 'rf-channels',
       title: $t({ defaultMessage: 'RF Channels' }),
       children: Object.entries(extraParams)
-        .map(([channel, visible]) => visible ? {
-          key: channel,
-          dataIndex: channel,
-          title: <Table.SubTitle children={channelTitleMap[channel as keyof ApExtraParams]} />,
-          align: 'center',
-          ellipsis: true,
-          render: (data: never, row: { [x: string]: string | undefined }) => transformDisplayText(row[channel])
-        } : null)
+        .map(([channel, visible]) => visible
+          ? {
+            key: channel,
+            dataIndex: channel,
+            title: <Table.SubTitle children={channelTitleMap[channel as keyof ApExtraParams]} />,
+            align: 'center',
+            ellipsis: true,
+            render: (data: never, row: { [x: string]: string | undefined }) =>
+              transformDisplayText(row[channel]) }
+          : null)
         .filter(Boolean)
     }, {
       key: 'tags',
@@ -409,11 +409,11 @@ export function ApTable (props: ApTableProps) {
         columns={columns}
         dataSource={tableData}
         rowKey='serialNumber'
-        pagination={tableQuery?.pagination}
-        onChange={tableQuery?.handleTableChange}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
+        onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
         rowActions={filterByAccess(rowActions)}
-        onFilterChange={tableQuery?.handleFilterChange}
         actions={props.enableActions ? filterByAccess([{
           label: $t({ defaultMessage: 'Add AP' }),
           onClick: () => {
