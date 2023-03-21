@@ -69,6 +69,7 @@ export function SwitchVeTable ( { isVenueLevel } : {
     key: 'veId',
     title: $t({ defaultMessage: 'VE' }),
     dataIndex: 'veId',
+    defaultSortOrder: 'ascend',
     sorter: true,
     render: function (data) {
       return `VE-${data}`
