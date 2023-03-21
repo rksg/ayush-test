@@ -5,7 +5,7 @@ import { rest }  from 'msw'
 
 import { CommonUrlsInfo, DpskUrls, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                               from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }    from '@acx-ui/test-utils'
+import { mockServer, render, screen }             from '@acx-ui/test-utils'
 
 import {
   cloudpathResponse,
@@ -107,13 +107,13 @@ describe('DpskSettingsForm', () => {
     )
 
     await userEvent.click(await screen.findByRole('button', { name: /Add DPSK Service/ }))
-    expect(await screen.findByRole('dialog', { name: /Add DPSK service/ })).toBeVisible()
 
-    await userEvent.click((await screen.findAllByRole('button', { name: /Cancel/ }))[1])
-    await waitFor(() => {
-      expect(screen.queryByRole('dialog', { name: /Add DPSK service/ })).toBeNull()
-    }, {
-      timeout: 2000
-    })
+    const dialog = await screen.findByRole('dialog', { name: /Add DPSK service/ })
+    expect(dialog).toBeVisible()
+
+    const buttons = await screen.findAllByRole('button', { name: /Cancel/, hidden: true })
+    await userEvent.click(buttons[1])
+
+    expect(dialog).not.toBeInTheDocument()
   })
 })

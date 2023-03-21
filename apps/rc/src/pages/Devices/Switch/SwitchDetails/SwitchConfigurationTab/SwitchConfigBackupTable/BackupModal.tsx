@@ -16,6 +16,7 @@ export function BackupModal (props:{
   const { visible, handleCancel } = props
   const [form] = Form.useForm()
   const [addConfigBackup] = useAddConfigBackupMutation()
+  const { serialNumber } = params
 
   const onOk = () => {
     form.submit()
@@ -49,7 +50,7 @@ export function BackupModal (props:{
           { max: 64 },
           { validator: (_, value) => excludeQuoteRegExp(value) }
         ]}
-        initialValue={'Manual_' + moment().format('YYYYMMDDHHmmss')}
+        initialValue={`Config Backup-${serialNumber}-${moment().format('YYYYMMDDHHmmss')}`}
         validateFirst
         children={<Input />}
       />
