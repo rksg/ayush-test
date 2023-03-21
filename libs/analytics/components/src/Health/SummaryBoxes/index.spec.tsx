@@ -20,10 +20,10 @@ describe('box', () => {
     type: 'successCount',
     title: defineMessage({ defaultMessage: 'test box' }),
     suffix: '/suffix',
-    value: '100',
-    toggleEnable: true
+    value: '100'
   }
   it('should render correctly with toggle enabled', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     const onClick = jest.fn()
     const { asFragment } = render(<Box {...boxProps} isOpen onClick={onClick}/>)
     expect(asFragment()).toMatchSnapshot()
@@ -32,8 +32,9 @@ describe('box', () => {
   })
 
   it('should render correctly with toggle disabled', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     const onClick = jest.fn()
-    const falseToggleBoxProps = { ...boxProps, toggleEnable: false }
+    const falseToggleBoxProps = { ...boxProps }
     const { asFragment } = render(<Box {...falseToggleBoxProps} isOpen onClick={onClick}/>)
     expect(asFragment()).toMatchSnapshot()
   })

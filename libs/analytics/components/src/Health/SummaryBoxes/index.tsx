@@ -18,16 +18,16 @@ interface BoxProps {
   value: string
   suffix?: string
   isOpen: boolean
-  toggleEnable: boolean
   onClick: () => void
 }
 
 export const Box = (props: BoxProps) => {
+  const toggleEnable = useIsSplitOn(Features.HEALTH_DRILLDOWN)
   const { $t } = useIntl()
   const box = <Wrapper
     $type={props.type}
     $isOpen={props.isOpen}
-    $disabled={!props.toggleEnable}
+    $disabled={!toggleEnable}
     onClick={props.onClick}
   >
     <Statistic
@@ -36,7 +36,7 @@ export const Box = (props: BoxProps) => {
       value={props.value}
       suffix={props.suffix}
     />
-    {props.toggleEnable
+    {toggleEnable
       ? (props.isOpen)
         ? <UpArrow $type={props.type}/>
         : <DownArrow $type={props.type}/>
@@ -57,7 +57,6 @@ export const SummaryBoxes = ({ filters, drilldownSelection, setDrilldownSelectio
     start: filters.startDate,
     end: filters.endDate
   }
-  const toggleEnable = useIsSplitOn(Features.HEALTH_DRILLDOWN)
   const toggleConnectionFailure = () => setDrilldownSelection(
     drilldownSelection !== 'connectionFailure' ? 'connectionFailure' : 'none'
   )
@@ -104,8 +103,7 @@ export const SummaryBoxes = ({ filters, drilldownSelection, setDrilldownSelectio
       suffix: `/${queryResults.data.totalCount}`,
       isOpen: drilldownSelection === 'connectionFailure',
       onClick: toggleConnectionFailure,
-      value: queryResults.data.successCount,
-      toggleEnable
+      value: queryResults.data.successCount
     },
     {
       type: 'failureCount',
@@ -113,24 +111,21 @@ export const SummaryBoxes = ({ filters, drilldownSelection, setDrilldownSelectio
       suffix: `/${queryResults.data.totalCount}`,
       isOpen: drilldownSelection === 'connectionFailure',
       onClick: toggleConnectionFailure,
-      value: queryResults.data.failureCount,
-      toggleEnable
+      value: queryResults.data.failureCount
     },
     {
       type: 'successPercentage',
       title: defineMessage({ defaultMessage: 'Connection Success Ratio' }),
       isOpen: drilldownSelection === 'connectionFailure',
       onClick: toggleConnectionFailure,
-      value: queryResults.data.successPercentage,
-      toggleEnable
+      value: queryResults.data.successPercentage
     },
     {
       type: 'averageTtc',
       title: defineMessage({ defaultMessage: 'Avg Time To Connect' }),
       isOpen: drilldownSelection === 'ttc',
       onClick: toggleTtc,
-      value: queryResults.data.averageTtc,
-      toggleEnable
+      value: queryResults.data.averageTtc
     }
   ]
 
