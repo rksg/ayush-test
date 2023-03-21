@@ -30,6 +30,7 @@ export default function MyServices () {
   const params = useParams()
   const earlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
   const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
+  const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const isEdgeDhcpEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
 
   const services = [
@@ -87,9 +88,9 @@ export default function MyServices () {
       type: ServiceType.WEBAUTH_SWITCH,
       category: RadioCardCategory.SWITCH,
       tableQuery: useWebAuthTemplateListQuery({ params, payload: { ...defaultPayload } }, {
-        skip: !networkSegmentationEnabled
+        skip: !networkSegmentationEnabled || !networkSegmentationSwitchEnabled
       }),
-      disabled: !networkSegmentationEnabled
+      disabled: !networkSegmentationEnabled || !networkSegmentationSwitchEnabled
     }
   ]
 
