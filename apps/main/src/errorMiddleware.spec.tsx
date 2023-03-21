@@ -186,7 +186,7 @@ describe('errorMiddleware', () => {
     }))
     afterEach(() => Object.defineProperty(window, 'location', {
       configurable: true, enumerable: true, value: location }))
-    it.skip('no token', async () => {
+    it('no token', async () => {
       const thunk = createAsyncThunk<string>('executeQuery', (_, { rejectWithValue }) => {
         return rejectWithValue({ originalStatus: 403 })
       })
@@ -202,7 +202,7 @@ describe('errorMiddleware', () => {
       })
       expect(window.location.href).toBe('/logout')
     })
-    it.skip('with token', async () => {
+    it('with token', async () => {
       sessionStorage.setItem('jwt', 'testToken')
       const token = sessionStorage.getItem('jwt')
       const thunk = createAsyncThunk<string>('executeQuery', (_, { rejectWithValue }) => {
