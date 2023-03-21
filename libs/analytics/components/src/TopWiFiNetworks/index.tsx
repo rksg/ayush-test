@@ -110,7 +110,7 @@ export function TopWiFiNetworks ({
       <HistoricalCard title={$t({ defaultMessage: 'Top Wi-Fi Networks' })}>
         <AutoSizer>
           {({ height, width }) => (
-            <div style={{ display: 'block', height, width, margin: '-40px 0 0 0' }}>
+            <div style={{ display: 'block', height, width, margin: '-36px 0 0 0' }}>
               <ContentSwitcher tabDetails={tabDetails} align='right' size='small' />
             </div>
           )}

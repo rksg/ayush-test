@@ -1,4 +1,5 @@
 
+import { Menu }    from 'antd'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
@@ -16,6 +17,8 @@ import {
   DidYouKnow,
   TopWiFiNetworks } from '@acx-ui/analytics/components'
 import {
+  Button,
+  Dropdown,
   GridRow,
   GridCol,
   PageHeader,
@@ -32,6 +35,7 @@ import {
   VenuesDashboardWidgetV2
 } from '@acx-ui/rc/components'
 import { TenantLink }                        from '@acx-ui/react-router-dom'
+import { filterByAccess }                    from '@acx-ui/user'
 import { useDateFilter, useDashboardFilter } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
@@ -72,12 +76,39 @@ export default function Dashboardv2 () {
 
 function DashboardPageHeader () {
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
-
   const { $t } = useIntl()
+
+  const addMenu = <Menu
+    expandIcon={<UI.MenuExpandArrow />}
+    items={[{
+      key: 'add-venue',
+      label: <TenantLink to='venues/add'>{$t({ defaultMessage: 'Venue' })}</TenantLink>
+    }, {
+      key: 'add-wifi-network',
+      label: <TenantLink to='networks/wireless/add'>{
+        $t({ defaultMessage: 'Wi-Fi Network' })}
+      </TenantLink>
+    }, {
+      key: 'add-ap',
+      label: $t({ defaultMessage: 'Device' }),
+      // type: 'group',
+      children: [{
+        key: 'add-ap',
+        label: <TenantLink to='devices/wifi/add'>{$t({ defaultMessage: 'Wi-Fi AP' })}</TenantLink>
+      }, {
+        key: 'add-switch',
+        label: <TenantLink to='devices/switch/add'>{$t({ defaultMessage: 'Switch' })}</TenantLink>
+      }]
+    }]}
+  />
+
   return (
     <PageHeader
       title={$t({ defaultMessage: 'Dashboard' })}
-      extra={[
+      extra={filterByAccess([
+        <Dropdown overlay={addMenu} placement={'bottomRight'}>{() =>
+          <Button type='primary'>{ $t({ defaultMessage: 'Add...' }) }</Button>
+        }</Dropdown>,
         <VenueFilter key='hierarchy-filter'/>,
         <RangePicker
           key='range-picker'
@@ -86,7 +117,7 @@ function DashboardPageHeader () {
           showTimePicker
           selectionType={range}
         />
-      ]}
+      ])}
     />
   )
 }

@@ -86,7 +86,7 @@ export function IncidentsDashboard ({ filters }: { filters: IncidentFilter }) {
       <AutoSizer>
         {({ width, height }) => (
           noData
-            ? <NoActiveData text={$t({ defaultMessage: 'No active incidents' })} />
+            ? <NoActiveData text={$t({ defaultMessage: 'No reported incidents' })} />
             : <UI.Container style={{ width, height }}>
               <UI.SeveritiesContainer>
                 {headers.map((datum, index) => <IncidentSeverityWidget key={index} data={datum} />)}
