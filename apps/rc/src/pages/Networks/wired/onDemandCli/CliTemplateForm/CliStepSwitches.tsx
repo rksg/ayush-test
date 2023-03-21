@@ -19,7 +19,7 @@ export function CliStepSwitches () {
 
   const { data: venues } = useGetVenuesQuery({
     params: { tenantId }, payload: {
-      fields: ['name', 'switches', 'id', 'operationalSwitches'],
+      fields: ['name', 'switches', 'id'], // TODO: add 'operationalSwitches' for new api
       sortField: 'name',
       sortOrder: 'ASC'
     }
@@ -62,7 +62,7 @@ export function CliStepSwitches () {
 
   useEffect(() => {
     if (venues?.data) {
-      const switches = venues?.data.filter((v) => v.operationalSwitches)
+      const switches = venues?.data.filter((v) => v.switches) // operationalSwitches
         .map((v) => ({ id: v.id })) as CliTemplateVenueSwitches[]
       setVenueSwitches(switches)
     }
@@ -166,9 +166,10 @@ export function CliStepSwitches () {
                   <Checkbox />
                 </Form.Item> */}
                 <Space>{v?.name}</Space>
-                <Space>{v?.operationalSwitches ?? 0}{$t({ defaultMessage: 'Switches' })}</Space>
+                {/* v?.operationalSwitches ?? 0 */}
+                <Space>{v?.switches ?? 0}{$t({ defaultMessage: 'Switches' })}</Space>
               </Space>}
-              collapsible={v?.operationalSwitches ? 'header' : 'disabled'}
+              collapsible={v?.switches ? 'header' : 'disabled'}
               key={v?.id}
             >
               <Loader states={[{
