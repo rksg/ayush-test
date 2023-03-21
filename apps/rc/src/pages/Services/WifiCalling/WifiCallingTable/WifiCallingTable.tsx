@@ -6,7 +6,7 @@ import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '
 import { defaultNetworkPayload }                                          from '@acx-ui/rc/components'
 import {
   useDeleteWifiCallingServiceMutation,
-  useGetWifiCallingServiceListQuery,
+  useGetEnhancedWifiCallingServiceListQuery,
   useNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -49,7 +49,7 @@ export default function WifiCallingTable () {
   const [networkIds, setNetworkIds] = useState([] as string[])
 
   const tableQuery = useTableQuery({
-    useQuery: useGetWifiCallingServiceListQuery,
+    useQuery: useGetEnhancedWifiCallingServiceListQuery,
     defaultPayload
   })
 
