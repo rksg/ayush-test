@@ -2,6 +2,7 @@ import { waitFor } from '@testing-library/react'
 import userEvent   from '@testing-library/user-event'
 import { rest }    from 'msw'
 
+import { useIsSplitOn }                                                                       from '@acx-ui/feature-toggle'
 import { PersonaUrls, MacRegListUrlsInfo, DpskUrls, CommonUrlsInfo, NetworkSegmentationUrls } from '@acx-ui/rc/utils'
 import { Provider }                                                                           from '@acx-ui/store'
 import { fireEvent, within, mockServer, render, screen, waitForElementToBeRemoved }           from '@acx-ui/test-utils'
@@ -17,6 +18,8 @@ import {
 
 import { PersonaGroupTable } from '.'
 
+// To enable NSG FF and allow to call api
+jest.mocked(useIsSplitOn).mockReturnValue(true)
 
 describe('Persona Group Table', () => {
   let params: { tenantId: string }
@@ -60,7 +63,7 @@ describe('Persona Group Table', () => {
         (req, res, ctx) => res(ctx.json( { id: 'nsg-id-1', name: 'nsg-name-1' }))
       ),
       rest.get(
-        NetworkSegmentationUrls.getNetworkSegmentationGroupList.url,
+        replacePagination(NetworkSegmentationUrls.getNetworkSegmentationGroupList.url),
         // just for filterable options generation
         (req, res, ctx) => res(ctx.json({ content: [{ id: 'nsg-id-1', name: 'nsg-name-1' }] }))
       )

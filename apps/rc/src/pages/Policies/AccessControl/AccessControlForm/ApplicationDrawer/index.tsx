@@ -166,6 +166,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   const [requestId, setRequestId] = useState('')
   const [avcSelectOptions, setAvcSelectOptions] = useState([] as AvcCategory[])
   const [applicationsRule, setApplicationsRule] = useState({} as ApplicationsRule)
+  const [skipFetch, setSkipFetch] = useState(true)
   const [drawerForm] = Form.useForm()
   const [contentForm] = Form.useForm()
 
@@ -206,7 +207,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         applicationPolicyId: isOnlyViewMode ? onlyViewMode.id : applicationPolicyId
       }
     },
-    { skip: !isOnlyViewMode && (applicationPolicyId === '' || applicationPolicyId === undefined) }
+    { skip: skipFetch }
   )
 
   const [categoryAppMappingObject, setCategoryAppMappingObject] = useState({} as {
@@ -273,6 +274,12 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
 
     return !_.isNil(appPolicyInfo)
   }
+
+  useEffect(() => {
+    if (!isOnlyViewMode && (applicationPolicyId === '' || applicationPolicyId === undefined)) {
+      setSkipFetch(false)
+    }
+  }, [isOnlyViewMode, applicationPolicyId])
 
   useEffect(() => {
     if (editMode.isEdit && editMode.id !== '') {
