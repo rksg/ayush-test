@@ -9,7 +9,7 @@ exports[`Network Filter should list only venues having APs 1`] = `
       class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
     >
       <div
-        class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
+        class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 jcbjTn ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
         style="max-width: 180px;"
       >
         <div
@@ -371,7 +371,7 @@ exports[`Network Filter should list only venues having Switches 1`] = `
       class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
     >
       <div
-        class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
+        class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 jcbjTn ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
         style="max-width: 180px;"
       >
         <div
@@ -733,7 +733,7 @@ exports[`Network Filter should select network node and bands 1`] = `
       class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
     >
       <div
-        class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-focused ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
+        class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 jcbjTn ant-select-focused ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
         style="max-width: 180px;"
       >
         <div
@@ -1310,7 +1310,7 @@ exports[`Network Filter should select network node and bands with onApplyFn 1`] 
       class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
     >
       <div
-        class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-focused ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
+        class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 jcbjTn ant-select-focused ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
         style="max-width: 180px;"
       >
         <div
@@ -1726,7 +1726,7 @@ exports[`Network Filter with incident severity should not show any severity circ
       class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
     >
       <div
-        class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-single ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
+        class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 jcbjTn ant-select-single ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
       >
         <div
           class="ant-select-selector"
@@ -1874,7 +1874,7 @@ exports[`Network Filter with incident severity should show only venue severities
       class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
     >
       <div
-        class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-single ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
+        class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 jcbjTn ant-select-single ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
       >
         <div
           class="ant-select-selector"
@@ -2022,7 +2022,7 @@ exports[`Network Filter with incident severity should show severity only once on
       class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
     >
       <div
-        class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-single ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
+        class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 jcbjTn ant-select-single ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
       >
         <div
           class="ant-select-selector"
