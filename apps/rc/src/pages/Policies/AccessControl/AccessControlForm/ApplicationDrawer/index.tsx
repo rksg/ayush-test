@@ -404,9 +404,14 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       const updateId = applicationsRuleList.findIndex(
         rule => rule.priority === applicationsRule.priority
       )
+      let ruleId = {} as { id?: string }
+      if (applicationsRuleList[updateId].id) {
+        ruleId.id = applicationsRuleList[updateId].id
+      }
       applicationsRuleList[updateId] = {
+        ...ruleId,
         ...ruleObject,
-        priority: updateId
+        priority: updateId + 1
       }
       setApplicationsRuleList([...applicationsRuleList])
     } else {
