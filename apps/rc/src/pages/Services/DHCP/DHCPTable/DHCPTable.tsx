@@ -43,6 +43,11 @@ export default function DHCPTable () {
   const rowActions: TableProps<DHCPSaveData>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
+      visible: (selectedRows) => {
+        return !selectedRows.some((row)=>{
+          return row.venueIds && row.venueIds.length>0
+        })
+      },
       onClick: ([{ id, name }], clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -59,6 +64,11 @@ export default function DHCPTable () {
     },
     {
       label: $t({ defaultMessage: 'Edit' }),
+      visible: (selectedRows) => {
+        return !selectedRows.some((row)=>{
+          return row.venueIds && row.venueIds.length>0
+        })
+      },
       onClick: ([{ id }]) => {
         navigate({
           ...tenantBasePath,
