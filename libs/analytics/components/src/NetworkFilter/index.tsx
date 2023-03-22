@@ -17,6 +17,7 @@ import { useIncidentsListQuery } from '../IncidentTable/services'
 import { LabelWithSeverityCircle }                  from './LabelWithSeverityCircles'
 import { Child, useNetworkFilterQuery, ApOrSwitch } from './services'
 import * as UI                                      from './styledComponents'
+import { useState } from 'react'
 
 export type FilterMode = 'ap' | 'switch' | 'both' | 'none'
 
@@ -297,6 +298,7 @@ function ConnectedNetworkFilter (
     radioBandDisabledReason } : ConnectedNetworkFilterProps
 ) {
   const { $t } = useIntl()
+  const [ open, setOpen ] = useState(false)
   const { setNetworkPath, filters, raw } = useAnalyticsFilter()
   const { setNetworkPath: setReportsNetworkPath,
     raw: reportsRaw, filters: reportsFilter } = useReportsFilter()
@@ -324,7 +326,7 @@ function ConnectedNetworkFilter (
   })
   const rawVal = filterFor === 'reports' ? reportsRaw : raw
   return (
-    <UI.Container>
+    <UI.Container $open={open}>
       <Loader states={[queryResults]}>
         <Select
           placeholder={$t({ defaultMessage: 'Entire Organization' })}
@@ -367,6 +369,8 @@ function ConnectedNetworkFilter (
           displayRender={displayRender}
           showSearch={{ filter: search }}
           allowClear
+          popupVisible={open}
+          onPopupVisibleChange={setOpen}
         />
       </Loader>
     </UI.Container>
