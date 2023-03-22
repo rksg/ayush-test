@@ -91,7 +91,6 @@ export const PoolDrawer = (props: PoolDrawerProps) => {
           label={$t({ defaultMessage: 'Pool Name' })}
           rules={[
             { required: true },
-            { min: 1 },
             { max: 15 },
             {
               validator: (_, value) =>
