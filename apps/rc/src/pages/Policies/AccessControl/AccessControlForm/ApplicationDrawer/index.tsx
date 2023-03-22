@@ -276,9 +276,9 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   }
 
   useEffect(() => {
-    if (!isOnlyViewMode && (applicationPolicyId === '' || applicationPolicyId === undefined)) {
-      setSkipFetch(false)
-    }
+    setSkipFetch(
+      !isOnlyViewMode && (applicationPolicyId === '' || applicationPolicyId === undefined)
+    )
   }, [isOnlyViewMode, applicationPolicyId])
 
   useEffect(() => {
