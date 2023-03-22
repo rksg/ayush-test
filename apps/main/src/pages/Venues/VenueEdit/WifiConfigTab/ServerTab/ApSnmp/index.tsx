@@ -4,7 +4,7 @@ import { Form, Select, Space, Switch } from 'antd'
 import { isEqual }                     from 'lodash'
 import { useIntl }                     from 'react-intl'
 
-import { Loader, StepsForm, showToast }   from '@acx-ui/components'
+import { Loader, StepsForm, showToast }  from '@acx-ui/components'
 import {
   useGetApSnmpPolicyListQuery,
   useGetVenueApSnmpSettingsQuery,
