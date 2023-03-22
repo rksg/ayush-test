@@ -91,8 +91,8 @@ export const PoolDrawer = (props: PoolDrawerProps) => {
           label={$t({ defaultMessage: 'Pool Name' })}
           rules={[
             { required: true },
-            { min: 2 },
-            { max: 32 },
+            { min: 1 },
+            { max: 15 },
             {
               validator: (_, value) =>
                 nameValidator(value, props.allPool, form.getFieldValue('id'))
@@ -125,10 +125,7 @@ export const PoolDrawer = (props: PoolDrawerProps) => {
           label={$t({ defaultMessage: 'End IP Address' })}
           rules={[
             { required: true },
-            { validator: (_, value) => networkWifiIpRegExp(value) },
-            { validator: (_, value) => countIpMaxRange(
-              form.getFieldValue('poolStartIp'), value)
-            }
+            { validator: (_, value) => networkWifiIpRegExp(value) }
           ]}
           children={<Input />}
         />
