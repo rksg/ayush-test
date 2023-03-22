@@ -44,25 +44,21 @@ export function TrustedPorts () {
         trustedPortType: TrustedPortTypeEnum.ALL
       }))
 
-    if(editMode){
-      if(currentData.trustedPorts){
-        const filterTrustedPortModels = trustedPortModels
-          .filter(item => !currentData.trustedPorts.map(
-            tpItem => tpItem.model).includes(item.model))
+    if(currentData.trustedPorts){
+      const filterTrustedPortModels = trustedPortModels
+        .filter(item => !currentData.trustedPorts.map(
+          tpItem => tpItem.model).includes(item.model)) || []
 
-        const mergedTrustPorts =
-          [...currentData.trustedPorts, ...filterTrustedPortModels] as TrustedPort[]
-        form.setFieldValue('trustedPorts', mergedTrustPorts)
-        setRuleList(mergedTrustPorts)
-      }else{
-        form.setFieldValue('trustedPorts', trustedPortModels)
-        setRuleList(trustedPortModels as TrustedPort[])
-      }
+      const mergedTrustPorts =
+        [...currentData.trustedPorts, ...filterTrustedPortModels] as TrustedPort[]
+
+      form.setFieldValue('trustedPorts', mergedTrustPorts)
+      setRuleList(mergedTrustPorts as TrustedPort[])
     }else{
       form.setFieldValue('trustedPorts', trustedPortModels)
       setRuleList(trustedPortModels as TrustedPort[])
     }
-  }, [currentData, editMode])
+  }, [currentData, form])
 
   const trustedPortsColumns: TableProps<TrustedPort>['columns']= [{
     title: $t({ defaultMessage: 'Model' }),
@@ -108,11 +104,11 @@ export function TrustedPorts () {
             entityValue: model
           },
           onOk: async () => {
-            setRuleList(
-              ruleList?.filter(row => {
-                return row.model !== model
-              })
-            )
+            const ruleRows = ruleList?.filter(row => {
+              return row.model !== model
+            })
+            setRuleList(ruleRows)
+            form.setFieldValue('trustedPorts', ruleRows)
             clearSelection()
           }
         })
