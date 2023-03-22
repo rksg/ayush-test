@@ -30,13 +30,19 @@ interface EventTableProps {
   tableQuery: TableQuery<Event, RequestPayload<unknown>, unknown>,
   searchables?: boolean | string[]
   filterables?: boolean | string[]
+  eventTypeMap?: Partial<typeof eventTypeMapping>
   detailLevel?: string
   columnState?: TableProps<Event>['columnState']
   omitColumns?: string[]
 }
 
 export const EventTable = ({
-  tableQuery, searchables = true, filterables = true, columnState, omitColumns
+  tableQuery,
+  searchables = true,
+  filterables = true,
+  eventTypeMap = eventTypeMapping,
+  columnState,
+  omitColumns
 }: EventTableProps) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
@@ -76,7 +82,7 @@ export const EventTable = ({
       dataIndex: 'entity_type',
       sorter: true,
       render: (_, row) => valueFrom(typeMapping, row.entity_type),
-      filterable: filtersFrom(eventTypeMapping, filterables, 'entity_type')
+      filterable: filtersFrom(eventTypeMap, filterables, 'entity_type')
     },
     {
       key: 'product',

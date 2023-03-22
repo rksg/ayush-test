@@ -26,7 +26,8 @@ export {
   EventTable,
   defaultColumnState as eventTableColumnState,
   useEventsTableQuery,
-  eventDefaultSearch
+  eventDefaultSearch,
+  eventTypeMapping
 } from './EventTable'
 export {
   HistoricalClientsTable,
