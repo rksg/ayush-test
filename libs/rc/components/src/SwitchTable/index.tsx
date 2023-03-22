@@ -67,13 +67,16 @@ export const defaultSwitchPayload = {
   ]
 }
 
-export function SwitchTable (props : {
+interface SwitchTableProps
+  extends Omit<TableProps<SwitchRow>, 'columns'> {
   showAllColumns?: boolean,
   tableQuery?: TableQuery<SwitchRow, RequestPayload<unknown>, unknown>
   searchable?: boolean
   enableActions?: boolean
   filterableKeys?: { [key: string]: ColumnType['filterable'] }
-}) {
+}
+
+export function SwitchTable (props : SwitchTableProps) {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
@@ -218,7 +221,7 @@ export function SwitchTable (props : {
       //   dataIndex: 'tags'
       // }
     ] as TableProps<SwitchRow>['columns']
-  }, [$t])
+  }, [$t, filterableKeys])
 
   const isActionVisible = (
     selectedRows: SwitchRow[],
@@ -293,6 +296,7 @@ export function SwitchTable (props : {
 
   return <Loader states={[tableQuery]}>
     <Table<SwitchRow>
+      {...props}
       columns={columns}
       dataSource={tableData}
       pagination={tableQuery.pagination}

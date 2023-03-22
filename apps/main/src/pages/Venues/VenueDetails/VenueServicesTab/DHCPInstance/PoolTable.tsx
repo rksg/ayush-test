@@ -114,9 +114,14 @@ export default function VenuePoolTable (){
       key: 'primaryDnsIp',
       title: $t({ defaultMessage: 'DNS IP' }),
       dataIndex: 'primaryDnsIp',
-      render: (data, rowData)=>
-        (rowData.primaryDnsIp && rowData.secondaryDnsIp) ?
-          <FormattedList type='unit' value={[rowData.primaryDnsIp, rowData.secondaryDnsIp]} />:''
+      render: (data, rowData)=> {
+        if(rowData.primaryDnsIp && rowData.secondaryDnsIp){
+          // eslint-disable-next-line max-len
+          return <FormattedList type='unit' value={[rowData.primaryDnsIp, rowData.secondaryDnsIp]} />
+        }
+        return rowData.primaryDnsIp|| ''
+      }
+
     },
     {
       key: 'PoolSize',
