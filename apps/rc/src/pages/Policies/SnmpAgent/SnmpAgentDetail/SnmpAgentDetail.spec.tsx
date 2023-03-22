@@ -47,7 +47,7 @@ describe('SnmpAgentForm', () => {
     mockServer.use(
       rest.post(ApSnmpUrls.getApSnmpFromViewModel.url,
         (_, res, ctx) => res(ctx.json(mockOverviewData))),
-      rest.post(ApSnmpUrls.getApUsageByApSnmpProfile.url,
+      rest.post(ApSnmpUrls.getApUsageByApSnmpPolicy.url,
         (_, res, ctx) => res(ctx.json(mockInstancesData)))
     )
   })

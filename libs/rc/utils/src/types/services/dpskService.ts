@@ -51,7 +51,7 @@ export interface CreateDpskPassphrasesFormFields {
 export interface DpskPassphrasesSaveData {
   id: string | undefined;
   numberOfPassphrases: number;
-  passphrase?: string;
+  passphrase?: string | null;
   username?: string;
   vlanId?: number;
   mac?: string;
