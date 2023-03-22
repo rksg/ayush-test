@@ -55,12 +55,12 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
   }, [availableVersions])
 
   useEffect(() => {
-    if (selectMode === VersionsSelectMode.Dropdown && !selectedVersion) {
+    if (!selectedDate || (selectMode === VersionsSelectMode.Dropdown && !selectedVersion)) {
       setDisableSave(true)
     } else {
       setDisableSave(false)
     }
-  }, [selectMode, selectedVersion])
+  }, [selectMode, selectedVersion, selectedDate])
 
   let versionOptions: FirmwareVersion[] = []
   let otherVersions: FirmwareVersion[] = []
