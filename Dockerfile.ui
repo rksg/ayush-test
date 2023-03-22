@@ -110,9 +110,9 @@ RUN \
   # Move all other apps into main
   ls | grep -v main | xargs mv -t main && \
   # Create structure to match deployment need
-  mkdir -p api/ui-beta && \
+  mkdir -p api/ui && \
   # Move all files into it
-  mv -v main/* api/ui-beta/. && \
+  mv -v main/* api/ui/. && \
   # Remove the main folder
   rm -rf main
 
