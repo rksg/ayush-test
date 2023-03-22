@@ -143,6 +143,7 @@ export const getTableColumns = ({
       dataIndex: key,
       key: key,
       align: 'center',
+      disable: true,
       width: 100,
       render: function (_, row: TestResultByAP, index: number) {
         const failure = getClientFailureInfo(row)[key]
