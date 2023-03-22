@@ -36,7 +36,7 @@ export function IncidentsDashboardv2 ({ filters }: { filters: IncidentFilter }) 
       <AutoSizer>
         {({ width, height }) => (
           noData
-            ? <NoActiveData text={$t({ defaultMessage: 'No active incidents' })} />
+            ? <NoActiveData text={$t({ defaultMessage: 'No reported incidents' })} />
             : <UI.Container style={{ width, height }}>
               <DonutChart
                 style={{ width, height }}
@@ -44,7 +44,7 @@ export function IncidentsDashboardv2 ({ filters }: { filters: IncidentFilter }) 
                 showLabel={false}
                 showTotal={true}
                 showLegend={false}
-                size={'small'}
+                size={'medium'}
               />
             </UI.Container>
         )}
