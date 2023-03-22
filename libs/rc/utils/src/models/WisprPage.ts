@@ -15,6 +15,8 @@ export class WisprPage {
 
   accountingRadius?: Radius
 
+  providerName?: string
+
   constructor () {
     this.captivePortalUrl = ''
 
