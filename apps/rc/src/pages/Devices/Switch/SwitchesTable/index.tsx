@@ -97,8 +97,13 @@ export default function SwitchesTable () {
         visible={importVisible}
         isLoading={importResult.isLoading}
         importError={importResult.error as FetchBaseQueryError}
-        importRequest={(formData)=>{
-          importCsv({ params: { tenantId }, payload: formData })
+        importRequest={async (formData)=>{
+          await importCsv({ params: { tenantId }, payload: formData }
+          ).unwrap().then(() => {
+            setImportVisible(false)
+          }).catch((error) => {
+            console.log(error) // eslint-disable-line no-console
+          })
         }}
         onClose={()=>setImportVisible(false)}
       />
