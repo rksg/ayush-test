@@ -86,7 +86,7 @@ export function ApSnmp () {
           await getVenueApSnmpSettings(
             { params: { tenantId, venueId: RetrievedApDetails?.venueId } }, true).unwrap()
         )
-        setStateOfApSnmpSettings(settingsInDatabase)
+        setStateOfApSnmpSettings({ ...defaultApSnmpSettings, ...settingsInDatabase })
         setStateVenueOfApSnmpSettings(venueApSnmpSetting)
         setStateOfEnableApSnmp(settingsInDatabase.enableApSnmp)
         setStateOfUseVenueSettings(settingsInDatabase.useVenueSettings)
@@ -134,13 +134,12 @@ export function ApSnmp () {
 
     const payload : ApSnmpSettings
     = {
-      ...stateOfApSnmpSettings,
-      ...formRef.current?.getFieldsValue(),
+      ...formRef.current?.getFieldsValue()!!,
       useVenueSettings: stateOfUseVenueSettings
     }
 
     // Condition guard, if user didn't change anything, don't send API
-    if (payload.apSnmpAgentProfileId === '') {
+    if (payload.enableApSnmp === true && payload.apSnmpAgentProfileId === '') {
       showToast({
         type: 'info',
         content: $t({ defaultMessage: 'SNMP agent is required when AP SNMP is enabled' })

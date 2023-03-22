@@ -98,7 +98,7 @@ export function ApSnmp () {
   const updateVenueApSnmpSetting = async (data?: VenueApSnmpSettings) => {
 
     // Condition guard, if user didn't change anything, don't send API
-    if (data?.apSnmpAgentProfileId === '') {
+    if (data?.enableApSnmp === true && data?.apSnmpAgentProfileId === '') {
       showToast({
         type: 'info',
         content: $t({ defaultMessage: 'SNMP agent is required when AP SNMP is enabled' })
