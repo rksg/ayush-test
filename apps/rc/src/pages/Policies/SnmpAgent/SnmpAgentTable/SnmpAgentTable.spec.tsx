@@ -75,6 +75,17 @@ describe('SnmpAgentTable', () => {
   })
 
   it('should delete selected row', async () => {
+    const deleteFn = jest.fn()
+
+    mockServer.use(
+      rest.delete(
+        ApSnmpUrls.deleteApSnmpPolicy.url,
+        (req, res, ctx) => {
+          deleteFn(req.body)
+          return res(ctx.json({ requestId: '12345' }))
+        }
+      )
+    )
 
     render(
       <Provider>
