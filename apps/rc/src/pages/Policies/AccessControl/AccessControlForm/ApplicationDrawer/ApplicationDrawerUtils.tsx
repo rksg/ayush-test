@@ -100,8 +100,8 @@ export const genRuleObject = (drawerForm: FormInstance) => {
       protocol: drawerForm.getFieldValue('protocol'),
       uplink: drawerForm.getFieldValue('uplink') * 1000,
       downlink: drawerForm.getFieldValue('downlink') * 1000,
-      upLinkMarkingType: drawerForm.getFieldValue(['uplinkMarking', 'value']),
-      markingPriority: drawerForm.getFieldValue(['uplinkMarking', 'strategy']),
+      upLinkMarkingType: drawerForm.getFieldValue(['uplinkMarking', 'strategy']),
+      markingPriority: drawerForm.getFieldValue(['uplinkMarking', 'value']),
       downLinkMarkingType: drawerForm.getFieldValue(['downlinkPriority', 'value'])
     }
   }
@@ -147,7 +147,7 @@ export const transformToRulesForPayload = (
       userAppConfig.destinationPort = rule.ruleSettings.destinationPort
     }
 
-    if (rule.accessControl.toUpperCase() === ApplicationAclType.QOS) {
+    if (rule.accessControl.toUpperCase() !== ApplicationAclType.RATE_LIMIT) {
       delete rule.ruleSettings.uplink
       delete rule.ruleSettings.downlink
       delete rule.ruleSettings.appNameSystemDefined

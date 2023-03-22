@@ -127,11 +127,11 @@ export const GenDetailsContent = (props: { editRow: ApplicationsRule }) => {
       return <span>{ $t({
         // eslint-disable-next-line max-len
         defaultMessage: 'Uplink marking: {uplinkStrategy} ({uplinkValue}) | Downlink priority: {downlinkValue}' }, {
-        uplinkStrategy: editRow.ruleSettings.markingPriority ? $t(appRateStrategyLabelMapping[
-          editRow.ruleSettings.markingPriority as RateStrategyEnum
+        uplinkStrategy: editRow.ruleSettings.markingPriority ? $t(appRateTypeLabelMapping[
+          editRow.ruleSettings.markingPriority as RateTypeEnum
         ]) : '',
-        uplinkValue: editRow.ruleSettings.upLinkMarkingType ? $t(appRateTypeLabelMapping[
-          editRow.ruleSettings.upLinkMarkingType as RateTypeEnum
+        uplinkValue: editRow.ruleSettings.upLinkMarkingType ? $t(appRateStrategyLabelMapping[
+          editRow.ruleSettings.upLinkMarkingType as RateStrategyEnum
         ]) : '',
         downlinkValue: editRow.ruleSettings.downLinkMarkingType ? $t(appRateStrategyLabelMapping[
           editRow.ruleSettings.downLinkMarkingType as RateStrategyEnum
