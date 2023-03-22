@@ -70,6 +70,12 @@ export function PortalSummaryForm (props: {
           label={$t({ defaultMessage: 'Captive Portal URL:' })}
           children={summaryData.guestPortal?.wisprPage?.captivePortalUrl}
         />
+        <Form.Item
+          label={$t({ defaultMessage: 'Encryption for Users’ MAC and IP addresses:' })}
+          children={summaryData.guestPortal?.wisprPage?.encryptMacIpEnabled ?
+            $t({ defaultMessage: 'Yes' }):$t({ defaultMessage: 'No' })
+          }
+        />
       </>
       }
       {(summaryData.guestPortal?.guestNetworkType===GuestNetworkTypeEnum.WISPr||
