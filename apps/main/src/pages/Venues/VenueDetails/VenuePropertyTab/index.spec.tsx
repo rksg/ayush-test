@@ -113,4 +113,72 @@ describe('Property Unit Page', () => {
     // Make sure clearSelection() be called
     await waitFor(async () => await screen.findByRole('textbox'))
   })
+
+  it('should import from file', async () => {
+    const importFn = jest.fn()
+
+    mockServer.use(
+      rest.post(
+        PropertyUrlsInfo.importPropertyUnits.url,
+        (req, res, ctx) => {
+          importFn()
+          return res(ctx.json({}))
+        })
+    )
+
+    render(
+      <Provider><VenuePropertyTab /></Provider>,
+      { route: { params } }
+    )
+
+    await userEvent.click(await screen.findByRole('button', { name: /Import From File/ }))
+
+    const dialog = await screen.findByRole('dialog')
+
+    const xlsxFile = new File(
+      [''],
+      'unit_import_template.xlsx',
+      { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }
+    )
+
+    // eslint-disable-next-line testing-library/no-node-access
+    await userEvent.upload(document.querySelector('input[type=file]')!, xlsxFile)
+
+    await userEvent.click(await within(dialog).findByRole('button', { name: /Import/ }))
+
+    await waitFor(() => expect(importFn).toHaveBeenCalled())
+  })
+
+  it('should export Units to CSV', async () => {
+    const exportFn = jest.fn()
+
+    mockServer.use(
+      rest.post(
+        PropertyUrlsInfo.exportPropertyUnits.url,
+        (req, res, ctx) => {
+          const headers = req['headers']
+
+          if (headers.get('accept') !== 'text/csv') {
+            return res(ctx.json(mockPropertyUnitList))
+          } else {
+            exportFn()
+
+            return res(ctx.set({
+              'content-disposition': 'attachment; filename=Units_20230118100829.csv',
+              'content-type': 'text/csv;charset=ISO-8859-1'
+            }), ctx.text('Property'))
+          }
+        }
+      )
+    )
+
+    render(
+      <Provider><VenuePropertyTab /></Provider>,
+      { route: { params } }
+    )
+
+    const exportBtn = await screen.findByRole('button', { name: /export to csv/i })
+    await userEvent.click(exportBtn)
+    await waitFor(() => expect(exportFn).toHaveBeenCalled())
+  })
 })
