@@ -20,7 +20,7 @@ export const NonSelectableItem = styled.div.attrs(
 )`
   width: 100%;
 `
-export const Container = styled.div.attrs((props: {$open?: boolean}) => props)`
+export const Container = styled.div.attrs((props: { $open?: boolean }) => props)`
   min-width: 165px;
   max-width: 322px;
   ${(props) => props.$open ? css`width: 322px;` : css`width: 165px;`}

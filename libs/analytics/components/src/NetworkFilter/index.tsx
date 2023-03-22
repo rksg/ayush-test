@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { DefaultOptionType }         from 'antd/lib/select'
 import { omit, groupBy, pick, find } from 'lodash'
 import { SingleValueType }           from 'rc-cascader/lib/Cascader'
@@ -17,7 +19,6 @@ import { useIncidentsListQuery } from '../IncidentTable/services'
 import { LabelWithSeverityCircle }                  from './LabelWithSeverityCircles'
 import { Child, useNetworkFilterQuery, ApOrSwitch } from './services'
 import * as UI                                      from './styledComponents'
-import { useState } from 'react'
 
 export type FilterMode = 'ap' | 'switch' | 'both' | 'none'
 
