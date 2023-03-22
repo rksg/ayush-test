@@ -48,7 +48,9 @@ export const mspApi = baseMspApi.injectEndpoints({
             'CreateMspEc',
             'UpdateMspEc',
             'Deactivate MspEc',
-            'Reactivate MspEc'
+            'Reactivate MspEc',
+            'Update MSP Admin list',
+            'assign MspEc List To delegate'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(mspApi.util.invalidateTags([{ type: 'Msp', id: 'LIST' }]))
