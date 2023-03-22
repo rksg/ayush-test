@@ -92,10 +92,14 @@ export interface L3Rule {
   description: string,
   destination: {
     enableIpSubnet: boolean,
+    subnet?: string,
+    ip?: string,
     port: string
   },
   priority: number,
   source: {
+    subnet?: string,
+    ip?: string,
     enableIpSubnet: boolean
   },
   protocol?: string

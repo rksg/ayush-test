@@ -51,6 +51,9 @@ export const ScheduleModal = styled(Modal)`
 .ant-modal-body{
   overflow: initial;
 }
+.ant-modal-content{
+  max-height: initial;
+}
 `
 export const ChangeButton = styled(Button)`
   position: absolute;

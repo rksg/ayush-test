@@ -3,9 +3,9 @@ import { useEffect } from 'react'
 import { Col, Form, Input, Row } from 'antd'
 import { useIntl }               from 'react-intl'
 
-import { Drawer }                                                                 from '@acx-ui/components'
-import { countIpMaxRange, EdgeDhcpPool, networkWifiIpRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
-import { getIntl, validationMessages }                                            from '@acx-ui/utils'
+import { Drawer }                                                from '@acx-ui/components'
+import { EdgeDhcpPool, networkWifiIpRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
+import { getIntl, validationMessages }                           from '@acx-ui/utils'
 
 interface PoolDrawerProps {
   visible: boolean
@@ -91,8 +91,7 @@ export const PoolDrawer = (props: PoolDrawerProps) => {
           label={$t({ defaultMessage: 'Pool Name' })}
           rules={[
             { required: true },
-            { min: 2 },
-            { max: 32 },
+            { max: 15 },
             {
               validator: (_, value) =>
                 nameValidator(value, props.allPool, form.getFieldValue('id'))
@@ -125,10 +124,7 @@ export const PoolDrawer = (props: PoolDrawerProps) => {
           label={$t({ defaultMessage: 'End IP Address' })}
           rules={[
             { required: true },
-            { validator: (_, value) => networkWifiIpRegExp(value) },
-            { validator: (_, value) => countIpMaxRange(
-              form.getFieldValue('poolStartIp'), value)
-            }
+            { validator: (_, value) => networkWifiIpRegExp(value) }
           ]}
           children={<Input />}
         />
