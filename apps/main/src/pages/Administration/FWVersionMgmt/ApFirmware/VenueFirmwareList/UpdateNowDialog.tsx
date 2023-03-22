@@ -169,7 +169,7 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
                     <UI.SelectDiv>
                       <Radio value={VersionsSelectMode.Dropdown}>
                         <Select
-                          style={{ width: '400px', fontSize: '12px' }}
+                          style={{ width: '460px', fontSize: '12px' }}
                           placeholder='Select other version...'
                           onChange={handleChange}
                           options={otherOptions}
@@ -191,7 +191,7 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
                 style={{ margin: 12 }}>
                 {latestEolVersion}
               </Radio>
-              <UI.ItemModel>AP Models: {eolModels?.join(',')}</UI.ItemModel>
+              <UI.ItemModel>AP Models: {eolModels?.join(', ')}</UI.ItemModel>
             </UI.Section>
             : null
           }
