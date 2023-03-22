@@ -12,16 +12,19 @@ import { EmptyDescription } from './styledComponents'
 
 
 //for Local test, use '/docs/ruckusone/userguide/mapfile/doc-mapper.json'
-// TODO: change to use '/docs/ruckusone/userguide/mapfile/doc-mapper.json' for local and prod after gateway adds route
-export const getMappingURL = () => process.env['NODE_ENV'] === 'development'
-  ? '/docs/ruckusone/userguide/mapfile/doc-mapper.json'
-  : 'https://docs.cloud.ruckuswireless.com/ruckusone/userguide/mapfile/doc-mapper.json'
+export const getMappingURL = (isMspUser:boolean) => {
+  return process.env['NODE_ENV'] === 'development'
+    // eslint-disable-next-line max-len
+    ? isMspUser ? '/docs/ruckusone/mspguide/mapfile/doc-mapper.json':'/docs/ruckusone/userguide/mapfile/doc-mapper.json'
+    // eslint-disable-next-line max-len
+    : isMspUser ? 'https://docs.cloud.ruckuswireless.com/ruckusone/mspguide/mapfile/doc-mapper.json' : 'https://docs.cloud.ruckuswireless.com/ruckusone/userguide/mapfile/doc-mapper.json'
+}
 
 // for local test, use '/docs/ruckusone/userguide/'
-// TODO: change to use '/docs/alto/latest/' for local and prod after gateway adds route
-export const getDocsURL = () => process.env['NODE_ENV'] === 'development'
-  ? '/docs/ruckusone/userguide/'
-  : 'https://docs.cloud.ruckuswireless.com/ruckusone/userguide/'
+export const getDocsURL = (isMspUser:boolean) => process.env['NODE_ENV'] === 'development'
+  ? isMspUser ? '/docs/ruckusone/mspguide/':'/docs/ruckusone/userguide/'
+  // eslint-disable-next-line max-len
+  : isMspUser ? 'https://docs.cloud.ruckuswireless.com/ruckusone/mspguide/':'https://docs.cloud.ruckuswireless.com/ruckusone/userguide/'
 
 export const DOCS_HOME_URL = 'https://docs.cloud.ruckuswireless.com'
 
@@ -38,8 +41,8 @@ const useBasePath = () => {
   })
 }
 
-const getMapping = async (basePath: string, showError: () => void) => {
-  let result = await fetch(getMappingURL(), {
+const getMapping = async (basePath: string, showError: () => void, isMspUser:boolean) => {
+  let result = await fetch(getMappingURL(isMspUser), {
     method: 'GET',
     headers: {
       Accept: 'application/json'
@@ -59,9 +62,10 @@ const getMapping = async (basePath: string, showError: () => void) => {
 const updateDesc = async (
   destFile: string,
   onComplete: (content: string) => void,
-  onError: () => void
+  onError: () => void,
+  isMspUser:boolean
 ) => {
-  const result = await fetch(getDocsURL() + destFile)
+  const result = await fetch(getDocsURL(isMspUser) + destFile)
   if(!result.ok){
     onError()
     return
@@ -83,6 +87,7 @@ export default function HelpPage (props: {
   const { $t } = useIntl()
   const [helpDesc, setHelpDesc] = useState<string>()
   const [helpUrl, setHelpUrl] = useState<string|null>()
+  const [isMSPUserType, setIsMSPUserType] = useState<boolean>(false)
   const basePath = useBasePath()
 
   const showError = useCallback(() => {
@@ -93,7 +98,15 @@ export default function HelpPage (props: {
   useEffect(() => {
     if (!props.modalState) return
     (async ()=> {
-      const mappingRs = await getMapping(basePath, showError)
+      let isMspUser = false
+      if(basePath.startsWith('v/*') || basePath.startsWith('*/v')){
+        setIsMSPUserType(true)
+        isMspUser=true
+      }else{
+        setIsMSPUserType(false)
+        isMspUser=false
+      }
+      const mappingRs = await getMapping(basePath, showError, isMspUser)
       if (!mappingRs) {
         return showError()
       }
@@ -101,9 +114,10 @@ export default function HelpPage (props: {
         mappingRs as string,
         (content) => {
           setHelpDesc(content)
-          setHelpUrl(getDocsURL() + mappingRs)
+          setHelpUrl(getDocsURL(isMspUser) + mappingRs)
         },
-        showError
+        showError,
+        isMspUser
       )
     })()
   }, [props.modalState, showError, basePath])
@@ -124,7 +138,10 @@ export default function HelpPage (props: {
         {' '}
         <Button
           onClick={()=>{
-            window.open(DOCS_HOME_URL+'/ruckusone/userguide/index.html', '_blank')
+            isMSPUserType ?
+              window.open(DOCS_HOME_URL+'/ruckusone/mspguide/index.html', '_blank')
+              :
+              window.open(DOCS_HOME_URL+'/ruckusone/userguide/index.html', '_blank')
           }}
           type='link'
           size='small'>
