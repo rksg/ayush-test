@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 
+import { Tooltip } from 'antd'
 import * as _      from 'lodash'
 import { useIntl } from 'react-intl'
 
@@ -15,9 +16,10 @@ import {
   useUpdateUpgradePreferencesMutation,
   useGetSwitchVenueVersionListQuery,
   useGetSwitchAvailableFirmwareListQuery,
-  useGetSwitchFirmwareVersionIdListQuery,
+  useGetSwitchCurrentVersionsQuery,
   useSkipSwitchUpgradeSchedulesMutation,
-  useUpdateSwitchVenueSchedulesMutation
+  useUpdateSwitchVenueSchedulesMutation,
+  useGetSwitchFirmwarePredownloadQuery
 } from '@acx-ui/rc/services'
 import {
   UpgradePreferences,
@@ -27,15 +29,20 @@ import {
   TableQuery,
   RequestPayload,
   firmwareTypeTrans,
-  useTableQuery
+  useTableQuery,
+  sortProp,
+  defaultSort
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
 import {
   getNextScheduleTpl,
+  getSwitchNextScheduleTplTooltip,
+  isSwitchNextScheduleTooltipDisabled,
   toUserDate
 } from '../../FirmwareUtils'
 import { PreferencesDialog } from '../../PreferencesDialog'
+import * as UI               from '../../styledComponents'
 
 import { ChangeScheduleDialog } from './ChangeScheduleDialog'
 import { UpdateNowDialog }      from './UpdateNowDialog'
@@ -61,9 +68,10 @@ function useColumns (
       title: intl.$t({ defaultMessage: 'Venue Name' }),
       key: 'name',
       dataIndex: 'name',
-      sorter: true,
+      // sorter: true,
+      sorter: { compare: sortProp('name', defaultSort) },
       searchable: searchable,
-      defaultSortOrder: 'ascend',
+      // defaultSortOrder: 'ascend',
       render: function (data, row) {
         return row.name
       }
@@ -72,7 +80,8 @@ function useColumns (
       title: intl.$t({ defaultMessage: 'Current Firmware' }),
       key: 'version',
       dataIndex: 'version',
-      sorter: true,
+      // sorter: true,
+      sorter: { compare: sortProp('switchFirmwareVersion.id', defaultSort) },
       filterable: filterables ? filterables['version'] : false,
       filterMultiple: false,
       render: function (data, row) {
@@ -83,7 +92,8 @@ function useColumns (
       title: intl.$t({ defaultMessage: 'Firmware Type' }),
       key: 'type',
       dataIndex: 'type',
-      sorter: true,
+      // sorter: true,
+      sorter: { compare: sortProp('switchFirmwareVersion.category', defaultSort) },
       filterable: filterables ? filterables['type'] : false,
       filterMultiple: false,
       render: function (data, row) {
@@ -105,7 +115,14 @@ function useColumns (
       dataIndex: 'nextSchedule',
       sorter: false,
       render: function (data, row) {
-        return getNextScheduleTpl(intl, row)
+        // return getNextScheduleTpl(intl, row)
+        return (!isSwitchNextScheduleTooltipDisabled(row)
+          ? getNextScheduleTpl(intl, row)
+          // eslint-disable-next-line max-len
+          : <Tooltip title={<UI.ScheduleTooltipText>{getSwitchNextScheduleTplTooltip(row)}</UI.ScheduleTooltipText>} placement='bottom'>
+            <UI.ScheduleText>{getNextScheduleTpl(intl, row)}</UI.ScheduleText>
+          </Tooltip>
+        )
       }
     }
   ]
@@ -143,6 +160,8 @@ export const VenueFirmwareTable = (
   const [upgradeVersions, setUpgradeVersions] = useState<FirmwareVersion[]>([])
   const [changeUpgradeVersions, setChangeUpgradeVersions] = useState<FirmwareVersion[]>([])
   const pageBotton: TablePaginationPosition | 'none' = 'none'
+
+  const { data: preDownload } = useGetSwitchFirmwarePredownloadQuery({ params })
 
   const [updateUpgradePreferences] = useUpdateUpgradePreferencesMutation()
   const { data: preferencesData } = useGetUpgradePreferencesQuery({ params })
@@ -324,6 +343,8 @@ export const VenueFirmwareTable = (
         data={preferences}
         onCancel={handleModalCancel}
         onSubmit={handleModalSubmit}
+        isSwitch={true}
+        preDownload={preDownload?.preDownload}
       />
     </Loader>
   )
@@ -340,11 +361,11 @@ export function VenueFirmwareList () {
     }
   })
 
-  const { versionFilterOptions } = useGetSwitchFirmwareVersionIdListQuery({ params: useParams() }, {
+  const { versionFilterOptions } = useGetSwitchCurrentVersionsQuery({ params: useParams() }, {
     selectFromResult ({ data }) {
       return {
         // eslint-disable-next-line max-len
-        versionFilterOptions: data?.map(v=>({ key: v.id, value: v.id })) || true
+        versionFilterOptions: data?.currentVersions?.map(v=>({ key: v, value: v })) || true
       }
     }
   })
