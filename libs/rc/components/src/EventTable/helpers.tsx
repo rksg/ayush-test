@@ -50,10 +50,9 @@ export function EntityLink ({ entityKey, data, highlightFn = val => val }: {
   const [entity] = _.kebabCase(entityKey).split('-') as [EntityType]
   const name = <>{highlightFn(String(data[entityKey] || extraHandle(entity)))}</>
 
-  if (!entityTypes.includes('transaction' === entity ? 'switch' : entity)) return name
+  if (!entityTypes.includes(entity)) return name
 
-  // eslint-disable-next-line max-len
-  const existKey = `is${_.capitalize('transaction' === entity ? 'switch' : entity)}Exists` as EntityExistsKey
+  const existKey = `is${_.capitalize(identifyExistKey(entity))}Exists` as EntityExistsKey
   const exists = data[existKey as keyof typeof data]
 
   if (!exists) return <Tooltip
@@ -134,8 +133,9 @@ export const getDescription = (data: Event, highlightFn?: TableHighlightFnArgs) 
 }
 
 const extraHandle = (entityType: EntityType) => {
-  if ('transaction' === entityType) {
-    return configurationUpdate
-  }
-  return noDataDisplay
+  return 'transaction' === entityType ? configurationUpdate : noDataDisplay
+}
+
+const identifyExistKey = (entityType: EntityType) => {
+  return 'transaction' === entityType ? 'switch' : entityType
 }
