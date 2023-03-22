@@ -150,16 +150,4 @@ describe('RadiusServerTab', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Delete IP address' }))
   })
-
-  // it('should not render when ff is off', async () => {
-  //   jest.mocked(useIsSplitOn).mockReturnValue(false)
-  //
-  //   render(<Provider><LocalRadiusServer /></Provider>, {
-  //     route: { params: {
-  //       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
-  //     }, path: '/:tenantId' }
-  //   })
-  //
-  //   await screen.findByText('Local RADIUS Server is not enabled')
-  // })
 })
