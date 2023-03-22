@@ -1,5 +1,5 @@
 // @ts-nocheck
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 
 const DefaultSection = styled.div`
   background-color: rgb(255, 255, 255);
@@ -28,9 +28,38 @@ export const PieChartContainer = styled.div`
   border-color: rgba(173, 186, 193, 1);
 `
 
-export const Separator = styled.hr`
+export const Separator = styled.hr.attrs((props: {
+    $center?: number
+}) => props)`
   border-top: 0.5px solid rgba(173, 186, 193, 1);
-  margin: 2px 10px;
+  margin: 0px 10px;
+  ${props => props.$center
+    ? css`:after, :before {
+          content: "";
+          display: block;
+          width: 0;
+          height: 0;
+          border: 10px solid transparent;
+          border-bottom-color: var(--acx-primary-white);
+          outline-color: rgba(173, 186, 193, 1);
+          border-top: 0px;
+          position: absolute;
+          top: -10px;
+        }`
+    : css`:after, :before {
+          content: "";
+          display: block;
+          width: 0;
+          height: 0;
+          border: 10px solid transparent;
+          border-bottom-color: var(--acx-primary-black);
+          border-top: 0px;
+          position: absolute;
+          top: -10px;
+          left: 50%;
+        }`
+  }
+
 `
 
 export const ImpactedClientsContainer = styled.div`
