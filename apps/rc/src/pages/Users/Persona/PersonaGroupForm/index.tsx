@@ -6,7 +6,7 @@ import { useIntl }                                            from 'react-intl'
 
 import { Button, Modal, ModalType, Subtitle }                                           from '@acx-ui/components'
 import { useGetDpskListQuery, useLazySearchPersonaGroupListQuery, useMacRegListsQuery } from '@acx-ui/rc/services'
-import { checkObjectNotExists, DpskSaveData, PersonaGroup, useTableQuery }              from '@acx-ui/rc/utils'
+import { checkObjectNotExists, DpskSaveData, PersonaGroup }                             from '@acx-ui/rc/utils'
 
 import MacRegistrationListForm
   from '../../../Policies/MacRegistrationList/MacRegistrationListForm/MacRegistrationListForm'
@@ -26,10 +26,8 @@ export function PersonaGroupForm (props: {
 
   const dpskPoolList = useGetDpskListQuery({ })
 
-  const macRegistrationPoolList = useTableQuery({
-    useQuery: useMacRegListsQuery,
-    apiParams: { size: '2147483647', page: '0', sort: 'name,ASC' },
-    defaultPayload: { }
+  const { data: macRegistrationPoolList } = useMacRegListsQuery({
+    payload: { sortField: 'name', sortOrder: 'ASC', page: 1, pageSize: 10000 }
   })
 
   const [searchPersonaGroupList] = useLazySearchPersonaGroupListQuery()
@@ -140,12 +138,12 @@ export function PersonaGroupForm (props: {
                     disabled={!!defaultValue?.macRegistrationPoolId}
                     placeholder={$t({ defaultMessage: 'Select...' })}
                     options={
-                      macRegistrationPoolList.data?.data
-                        .map(pool => ({ value: pool.id, label: pool.name }))
+                      macRegistrationPoolList?.data
+                        ?.map(pool => ({ value: pool.id, label: pool.name }))
                     }
                   />
                   : <MacRegistrationPoolLink
-                    name={macRegistrationPoolList.data?.data
+                    name={macRegistrationPoolList?.data
                       ?.find(mac => mac.id === defaultValue.macRegistrationPoolId)?.name}
                     macRegistrationPoolId={defaultValue?.macRegistrationPoolId}
                   />

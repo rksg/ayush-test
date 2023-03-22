@@ -10,7 +10,7 @@ export const NetworkSegmentationUrls: { [key: string]: ApiInfo } = {
   getNetworkSegmentationGroupList: {
     method: 'get',
     newApi: true,
-    url: '/networkSegmentationGroups'
+    url: '/networkSegmentationGroups?size=:pageSize&page=:page&sort=:sort'
   },
   getWebAuthTemplate: {
     method: 'get',
