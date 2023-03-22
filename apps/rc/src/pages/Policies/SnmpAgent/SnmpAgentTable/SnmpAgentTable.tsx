@@ -19,6 +19,7 @@ import { filterByAccess }            from '@acx-ui/user'
 const defaultPayload = {
   searchString: '',
   fields: [ 'id', 'name', 'v2Agents', 'v3Agents', 'venues', 'aps', 'tags' ],
+  searchTargetFields: ['name', 'v2Agents.name', 'v3Agents.name', 'venues.name', 'aps.name'],
   sortField: 'name',
   sortOrder: 'ASC',
   page: 1,
@@ -66,7 +67,10 @@ export default function SnmpAgentTable () {
 
   const tableQuery = useTableQuery({
     useQuery: useGetApSnmpViewModelQuery,
-    defaultPayload
+    defaultPayload,
+    search: {
+      searchTargetFields: defaultPayload.searchTargetFields as string[]
+    }
   })
 
   const [ deleteFn ] = useDeleteApSnmpPolicyMutation()
