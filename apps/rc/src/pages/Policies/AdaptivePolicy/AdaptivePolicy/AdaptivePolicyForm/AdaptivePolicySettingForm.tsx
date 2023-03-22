@@ -25,7 +25,10 @@ function useColumns () {
     {
       key: 'name',
       title: $t({ defaultMessage: 'Condition Type' }),
-      dataIndex: 'name'
+      dataIndex: 'name',
+      render: function (data, row) {
+        return row.name ?? row.id
+      }
     },
     {
       title: $t({ defaultMessage: 'Condition Value' }),
@@ -75,11 +78,11 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
 
   const [getAttributeGroup] = useLazyGetRadiusAttributeGroupQuery()
 
-  useEffect(() => {
-    if(templateList?.data && templateList?.data.length > 0) {
-      form.setFieldValue('templateTypeId', templateList?.data[0].id)
-    }
-  }, [templateList?.data])
+  // useEffect(() => {
+  //   if(templateList?.data && templateList?.data.length > 0) {
+  //     form.setFieldValue('templateTypeId', templateList?.data[0].id)
+  //   }
+  // }, [templateList?.data])
 
   useEffect( () =>{
     if(attributeGroupId) {

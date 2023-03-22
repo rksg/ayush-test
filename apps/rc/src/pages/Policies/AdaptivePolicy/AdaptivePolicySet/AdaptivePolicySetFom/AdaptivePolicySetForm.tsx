@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -9,10 +9,11 @@ import {
   useAddPrioritizedPolicyMutation,
   useDeletePrioritizedPolicyMutation,
   useGetAdaptivePolicySetQuery,
-  useGetPrioritizedPoliciesQuery,
+  useLazyGetPrioritizedPoliciesQuery,
   useUpdateAdaptivePolicySetMutation
 } from '@acx-ui/rc/services'
 import {
+  AdaptivePolicy,
   getPolicyListRoutePath,
   getPolicyRoutePath,
   PolicyOperation,
@@ -36,16 +37,17 @@ export default function H (props: AdaptivePolicySetFormProps) {
   const formRef = useRef<StepsFormInstance>()
 
   const [addAdaptivePolicySet] = useAddAdaptivePolicySetMutation()
-  const [updateAdaptiveSetPolicy, { isLoading: isUpdating }] = useUpdateAdaptivePolicySetMutation()
+  const [updateAdaptiveSetPolicy] = useUpdateAdaptivePolicySetMutation()
   // eslint-disable-next-line max-len
   const { data, isLoading: isGetPolicyLoading } = useGetAdaptivePolicySetQuery({ params: { policySetId: policyId } }, { skip: !editMode })
-  // eslint-disable-next-line max-len
-  const { data: prioritizedPoliciesData, isLoading: isGetPrioritizedPoliciesLoading } = useGetPrioritizedPoliciesQuery({
-    params: { policySetId: policyId } }, { skip: !editMode })
+  const [isUpdating, setIsUpdating] = useState(false)
+  const [accessPolicies, setAccessPolicies] = useState([] as AdaptivePolicy [])
 
   // eslint-disable-next-line max-len
-  const [addPrioritizedPolicy, { isLoading: isAddPrioritizedPolicyUpdating }] = useAddPrioritizedPolicyMutation()
+  const [addPrioritizedPolicy] = useAddPrioritizedPolicyMutation()
   const [deletePrioritizedPolicy] = useDeletePrioritizedPolicyMutation()
+  // eslint-disable-next-line max-len
+  const [getPrioritizedPolicies] = useLazyGetPrioritizedPoliciesQuery()
 
   useEffect(() => {
     if(data && editMode) {
@@ -55,51 +57,62 @@ export default function H (props: AdaptivePolicySetFormProps) {
     }
   }, [data, editMode])
 
-  useEffect(() => {
-    if(prioritizedPoliciesData) {
-      formRef.current?.setFieldValue('accessPolicies', prioritizedPoliciesData.data)
-    }
-  }, [prioritizedPoliciesData])
-
   const handleSubmit = async () => {
     const data = formRef.current?.getFieldsValue()
     try {
+      setIsUpdating(true)
       const policyPayload = {
         name: data.name,
         description: data.name
       }
 
-      let usePolicySetId
       if(editMode){
         await updateAdaptiveSetPolicy({
           params: { policySetId: policyId },
           payload: policyPayload
         }).unwrap()
-        usePolicySetId = policyId
+
+        let result =
+          await getPrioritizedPolicies({ params: { policySetId: policyId } }).unwrap()
+        // delete policies
+        if (result.data) {
+          const prioritizedPolicies = result.data
+          for(let policy of prioritizedPolicies) {
+            if(accessPolicies.findIndex(p => p.id === policy.policyId) === -1) {
+              await deletePrioritizedPolicy({
+                params: { policySetId: policyId, policyId: policy.policyId }
+              }).unwrap()
+            }
+          }
+        }
+        // get list again for newer prioritized policies and do add or update policies
+        result = await getPrioritizedPolicies({ params: { policySetId: policyId } }).unwrap()
+        if (result.data) {
+          const prioritizedPolicies = result.data
+          for (let i = 0; i < accessPolicies.length; i++) {
+            const id = accessPolicies[i].id
+            const index = prioritizedPolicies.findIndex(p => p.policyId === id)
+            if(i !== index) {
+              await addPrioritizedPolicy({
+                params: { policySetId: policyId, policyId: id },
+                payload: { policyId: id, priority: i }
+              }).unwrap()
+            }
+          }
+        }
       } else {
-        const { id } = await addAdaptivePolicySet({
+        const { id: policySetId } = await addAdaptivePolicySet({
           payload: policyPayload
         }).unwrap()
-        usePolicySetId = id
-      }
 
-      if(data.accessPolicies) {
-        for(let policy of data.accessPolicies) {
+        for (const i in accessPolicies) {
+          const policyId = accessPolicies[i].id
           await addPrioritizedPolicy({
-            params: { policySetId: usePolicySetId, policyId: policy.policyId },
-            payload: { policyId: policy.policyId }
+            params: { policySetId: policySetId, policyId: policyId },
+            payload: { policyId: policyId, priority: i }
           }).unwrap()
         }
       }
-
-      if(data.accessDeletePolicies) {
-        for(let policy of data.accessDeletePolicies) {
-          await deletePrioritizedPolicy({
-            params: { policySetId: usePolicySetId, policyId: policy.policyId }
-          }).unwrap()
-        }
-      }
-
       showToast({
         type: 'success',
         content: $t(
@@ -108,10 +121,11 @@ export default function H (props: AdaptivePolicySetFormProps) {
           { name: data.name, editMode }
         )
       })
-
       navigate(linkToList, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
+    } finally {
+      setIsUpdating(false)
     }
   }
 
@@ -138,10 +152,13 @@ export default function H (props: AdaptivePolicySetFormProps) {
         <StepsForm.StepForm
           initialValues={{ accessDeletePolicies: [] as PrioritizedPolicy [] }}>
           <Loader states={[{
-            isLoading: isGetPolicyLoading || isGetPrioritizedPoliciesLoading,
-            isFetching: isUpdating || isAddPrioritizedPolicyUpdating
+            isLoading: isGetPolicyLoading,
+            isFetching: isUpdating
           }]}>
-            <AdaptivePolicySetSettingForm/>
+            <AdaptivePolicySetSettingForm
+              editMode={editMode}
+              accessPolicies={accessPolicies}
+              setAccessPolicies={setAccessPolicies}/>
           </Loader>
         </StepsForm.StepForm>
       </StepsForm>

@@ -16,56 +16,8 @@ import {
   PolicyType, useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess }                               from '@acx-ui/user'
 
-function useColumns (conditionsMap: Map<string, string>, templateIdMap: Map<string, string>) {
-  const { $t } = useIntl()
-  const columns: TableProps<AdaptivePolicy>['columns'] = [
-    {
-      title: $t({ defaultMessage: 'Name' }),
-      key: 'name',
-      dataIndex: 'name',
-      sorter: true,
-      searchable: true,
-      defaultSortOrder: 'ascend',
-      render: function (data, row) {
-        return (
-          <TenantLink
-            to={
-              getAdaptivePolicyDetailLink({
-                oper: PolicyOperation.DETAIL,
-                policyId: row.id!,
-                templateId: templateIdMap.get(row.policyType) ?? ''
-              })}
-          >{data}</TenantLink>
-        )
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Policy Type' }),
-      key: 'policyType',
-      dataIndex: 'policyType'
-    },
-    {
-      title: $t({ defaultMessage: 'Access Conditions' }),
-      key: 'accessConditions',
-      dataIndex: 'accessConditions',
-      align: 'center',
-      render: (_, row) => {
-        return conditionsMap.get(row.id) ?? '0'
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Policy Set Membership' }),
-      key: 'policySetCount',
-      dataIndex: 'policySetCount',
-      align: 'center',
-      render: function () {
-        return '0'
-      }
-    }
-  ]
-  return columns
-}
 
 export default function AdaptivePolicyTable () {
   const { $t } = useIntl()
@@ -115,6 +67,56 @@ export default function AdaptivePolicyTable () {
     setConditionCountMap(conditionPools)
   }, [tableQuery.data, templateList?.data])
 
+  function useColumns () {
+    const { $t } = useIntl()
+    const columns: TableProps<AdaptivePolicy>['columns'] = [
+      {
+        title: $t({ defaultMessage: 'Name' }),
+        key: 'name',
+        dataIndex: 'name',
+        sorter: true,
+        searchable: true,
+        defaultSortOrder: 'ascend',
+        render: function (data, row) {
+          return (
+            <TenantLink
+              to={
+                getAdaptivePolicyDetailLink({
+                  oper: PolicyOperation.DETAIL,
+                  policyId: row.id!,
+                  templateId: templateIdMap.get(row.policyType) ?? ''
+                })}
+            >{data}</TenantLink>
+          )
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Policy Type' }),
+        key: 'policyType',
+        dataIndex: 'policyType'
+      },
+      {
+        title: $t({ defaultMessage: 'Access Conditions' }),
+        key: 'accessConditions',
+        dataIndex: 'accessConditions',
+        align: 'center',
+        render: (_, row) => {
+          return conditionCountMap.get(row.id) ?? '0'
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Policy Set Membership' }),
+        key: 'policySetCount',
+        dataIndex: 'policySetCount',
+        align: 'center',
+        render: function () {
+          return '0'
+        }
+      }
+    ]
+    return columns
+  }
+
   const rowActions: TableProps<AdaptivePolicy>['rowActions'] = [{
     visible: (selectedRows) => selectedRows.length === 1,
     label: $t({ defaultMessage: 'Edit' }),
@@ -137,8 +139,7 @@ export default function AdaptivePolicyTable () {
         customContent: {
           action: 'DELETE',
           entityName: $t({ defaultMessage: 'policy' }),
-          entityValue: name,
-          confirmationText: 'Delete'
+          entityValue: name
         },
         onOk: async () => {
           deletePolicy({ params: { policyId: id, templateId: templateIdMap.get(policyType) } })
@@ -150,10 +151,7 @@ export default function AdaptivePolicyTable () {
               })
               clearSelection()
             }).catch((error) => {
-              showToast({
-                type: 'error',
-                content: error.data.message
-              })
+              console.log(error) // eslint-disable-line no-console
             })
         }
       })
@@ -167,14 +165,14 @@ export default function AdaptivePolicyTable () {
         isFetching: isDeletePolicyUpdating }
     ]}>
       <Table
-        columns={useColumns(conditionCountMap, templateIdMap)}
+        columns={useColumns()}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='id'
         rowActions={rowActions}
         rowSelection={{ type: 'radio' }}
-        actions={[{
+        actions={filterByAccess([{
           label: $t({ defaultMessage: 'Add Policy' }),
           onClick: () => {
             navigate({
@@ -185,7 +183,7 @@ export default function AdaptivePolicyTable () {
               })
             })
           }
-        }]}
+        }])}
       />
     </Loader>
   )

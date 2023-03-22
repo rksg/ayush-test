@@ -95,8 +95,7 @@ export default function RadiusAttributeGroupTable () {
           customContent: {
             action: 'DELETE',
             entityName: $t({ defaultMessage: 'group' }),
-            entityValue: name,
-            confirmationText: 'Delete'
+            entityValue: name
           },
           onOk: async () => {
             deleteGroup({ params: { policyId: id } })

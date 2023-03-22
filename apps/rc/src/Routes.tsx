@@ -16,33 +16,33 @@ import {
 import { Navigate, rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                                    from '@acx-ui/store'
 
-import Edges                                        from './pages/Devices/Edge'
-import AddEdge                                      from './pages/Devices/Edge/AddEdge'
-import EdgeDetails                                  from './pages/Devices/Edge/EdgeDetails'
-import EditEdge                                     from './pages/Devices/Edge/EdgeDetails/EditEdge'
-import { StackForm }                                from './pages/Devices/Switch/StackForm'
-import SwitchDetails                                from './pages/Devices/Switch/SwitchDetails'
-import { SwitchClientDetailsPage }                  from './pages/Devices/Switch/SwitchDetails/SwitchClientsTab/SwitchClientDetailsPage'
-import SwitchesTable                                from './pages/Devices/Switch/SwitchesTable'
-import { SwitchForm }                               from './pages/Devices/Switch/SwitchForm'
-import ApDetails                                    from './pages/Devices/Wifi/ApDetails'
-import { ApEdit }                                   from './pages/Devices/Wifi/ApEdit'
-import { ApForm }                                   from './pages/Devices/Wifi/ApForm'
-import { ApGroupForm }                              from './pages/Devices/Wifi/ApGroupForm'
-import ApsTable                                     from './pages/Devices/Wifi/ApsTable'
-import Wired                                        from './pages/Networks/wired'
-import CliTemplateForm                              from './pages/Networks/wired/onDemandCli/CliTemplateForm'
-import CliProfileForm                               from './pages/Networks/wired/profiles/CliProfileForm'
-import { ConfigurationProfileForm }                 from './pages/Networks/wired/profiles/ConfigurationProfileForm'
-import NetworkDetails                               from './pages/Networks/wireless/NetworkDetails/NetworkDetails'
-import NetworkForm                                  from './pages/Networks/wireless/NetworkForm/NetworkForm'
-import NetworksTable                                from './pages/Networks/wireless/NetworksTable'
-import AAAPolicyDetail                              from './pages/Policies/AAA/AAADetail'
-import AAAForm                                      from './pages/Policies/AAA/AAAForm/AAAForm'
-import AAATable                                     from './pages/Policies/AAA/AAATable/AAATable'
-import AccessControlDetail                          from './pages/Policies/AccessControl/AccessControlDetail'
-import AccessControlForm                            from './pages/Policies/AccessControl/AccessControlForm/AccessControlForm'
-import AccessControlTable                           from './pages/Policies/AccessControl/AccessControlTable/AccessControlTable'
+import Edges                                                    from './pages/Devices/Edge'
+import AddEdge                                                  from './pages/Devices/Edge/AddEdge'
+import EdgeDetails                                              from './pages/Devices/Edge/EdgeDetails'
+import EditEdge                                                 from './pages/Devices/Edge/EdgeDetails/EditEdge'
+import { StackForm }                                            from './pages/Devices/Switch/StackForm'
+import SwitchDetails                                            from './pages/Devices/Switch/SwitchDetails'
+import { SwitchClientDetailsPage }                              from './pages/Devices/Switch/SwitchDetails/SwitchClientsTab/SwitchClientDetailsPage'
+import SwitchesTable                                            from './pages/Devices/Switch/SwitchesTable'
+import { SwitchForm }                                           from './pages/Devices/Switch/SwitchForm'
+import ApDetails                                                from './pages/Devices/Wifi/ApDetails'
+import { ApEdit }                                               from './pages/Devices/Wifi/ApEdit'
+import { ApForm }                                               from './pages/Devices/Wifi/ApForm'
+import { ApGroupForm }                                          from './pages/Devices/Wifi/ApGroupForm'
+import ApsTable                                                 from './pages/Devices/Wifi/ApsTable'
+import Wired                                                    from './pages/Networks/wired'
+import CliTemplateForm                                          from './pages/Networks/wired/onDemandCli/CliTemplateForm'
+import CliProfileForm                                           from './pages/Networks/wired/profiles/CliProfileForm'
+import { ConfigurationProfileForm }                             from './pages/Networks/wired/profiles/ConfigurationProfileForm'
+import NetworkDetails                                           from './pages/Networks/wireless/NetworkDetails/NetworkDetails'
+import NetworkForm                                              from './pages/Networks/wireless/NetworkForm/NetworkForm'
+import NetworksTable                                            from './pages/Networks/wireless/NetworksTable'
+import AAAPolicyDetail                                          from './pages/Policies/AAA/AAADetail'
+import AAAForm                                                  from './pages/Policies/AAA/AAAForm/AAAForm'
+import AAATable                                                 from './pages/Policies/AAA/AAATable/AAATable'
+import AccessControlDetail                                      from './pages/Policies/AccessControl/AccessControlDetail'
+import AccessControlForm                                        from './pages/Policies/AccessControl/AccessControlForm/AccessControlForm'
+import AccessControlTable                                       from './pages/Policies/AccessControl/AccessControlTable/AccessControlTable'
 import AdaptivePolicyList, { AdaptivePolicyTabKey }             from './pages/Policies/AdaptivePolicy'
 import { AdaptivePolicyDetail }                                 from './pages/Policies/AdaptivePolicy/AdaptivePolicy/AdaptivePolicyDetail/AdaptivePolicyDetail'
 import AdaptivePolicyForm                                       from './pages/Policies/AdaptivePolicy/AdaptivePolicy/AdaptivePolicyForm/AdaptivePolicyForm'
@@ -543,16 +543,6 @@ function PolicyRoutes () {
       />
       <Route
         // eslint-disable-next-line max-len
-        path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST })}
-        element={<AdaptivePolicyList tabKey={AdaptivePolicyTabKey.ADAPTIVE_POLICY}/>}
-      />
-      <Route
-        // eslint-disable-next-line max-len
-        path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.LIST })}
-        element={<AdaptivePolicyList tabKey={AdaptivePolicyTabKey.ADAPTIVE_POLICY_SET}/>}
-      />
-      <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.CREATE })}
         element={<RadiusAttributeGroupForm />}
       />
@@ -565,6 +555,44 @@ function PolicyRoutes () {
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.DETAIL })}
         element={<RadiusAttributeGroupDetail />} />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST })}
+        element={<AdaptivePolicyList tabKey={AdaptivePolicyTabKey.ADAPTIVE_POLICY}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.LIST })}
+        element={<AdaptivePolicyList tabKey={AdaptivePolicyTabKey.ADAPTIVE_POLICY_SET}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.CREATE })}
+        element={<AdaptivePolicyForm/>}
+      />
+      <Route
+        path={getAdaptivePolicyDetailRoutePath(PolicyOperation.EDIT)}
+        element={<AdaptivePolicyForm editMode={true}/>}
+      />
+      <Route
+        path={getAdaptivePolicyDetailRoutePath(PolicyOperation.DETAIL)}
+        element={<AdaptivePolicyDetail/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.CREATE })}
+        element={<AdaptivePolicySetForm/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.EDIT })}
+        element={<AdaptivePolicySetForm editMode={true}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.DETAIL })}
+        element={<AdaptivePolicySetDetail/>}
+      />
     </Route>
   )
 }

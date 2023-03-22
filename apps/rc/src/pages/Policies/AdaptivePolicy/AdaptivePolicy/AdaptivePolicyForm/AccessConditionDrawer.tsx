@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from 'react'
 
-import { ProForm }             from '@ant-design/pro-form'
 import { Form, Input, Select } from 'antd'
 import { useIntl }             from 'react-intl'
 
 import { Drawer, Loader }                                                       from '@acx-ui/components'
 import { useLazyAttributesListQuery }                                           from '@acx-ui/rc/services'
 import { AccessCondition, checkObjectNotExists, CriteriaOption, RuleAttribute } from '@acx-ui/rc/utils'
-
-import useWatch = ProForm.useWatch
 
 interface AccessConditionDrawerProps {
   visible: boolean
@@ -27,8 +24,7 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
   const [form] = Form.useForm()
   const [resetField, setResetField] = useState(false)
   const [attributes, setAttributes] = useState([] as RuleAttribute [])
-  const conditionId = useWatch('conditionId', form)
-  const typeName = useWatch('name', form)
+  const conditionId = Form.useWatch('conditionId', form)
 
   const [attributeList, { isLoading } ] = useLazyAttributesListQuery()
 
@@ -42,6 +38,8 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
         setAttributes(list.data)
       }
       setData()
+    } else {
+      setAttributes([] as RuleAttribute [])
     }
   }, [templateId])
 
@@ -61,12 +59,18 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
         conditionId: editCondition.id,
         templateAttributeId: editCondition.templateAttributeId,
         name: editCondition.name,
-        criteriaType: editCondition.evaluationRule.criteriaType,
+        // eslint-disable-next-line max-len
+        criteriaType: getCriteriaOptionByValue(editCondition.evaluationRule.criteriaType),
         attributeValue: editCondition.evaluationRule.regexStringCriteria
       }
       form.setFieldsValue(editData)
     }
   }, [editCondition, visible])
+
+  const getCriteriaOptionByValue = (value: string) => {
+    // eslint-disable-next-line max-len
+    return Object.keys(CriteriaOption).find(item => CriteriaOption[item as keyof typeof CriteriaOption] === value)
+  }
 
   const onSubmit = () => {
     const data = form.getFieldsValue()
@@ -83,14 +87,14 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
     onClose()
   }
 
-  const conditionsValidator = async (value: number) => {
+  const conditionsValidator = async (attributeId: number) => {
     if(!accessConditions)
       return Promise.resolve()
     const list =
       // eslint-disable-next-line max-len
-      accessConditions.filter(n => n.templateAttributeId === value && n.id !== conditionId).map(n => ({ name: n.name }))
+      accessConditions.filter(n => n.templateAttributeId === attributeId && n.id !== conditionId).map(n => ({ name: n.templateAttributeId }))
     // eslint-disable-next-line max-len
-    return checkObjectNotExists(list, { name: typeName }, $t({ defaultMessage: 'Condition Type' }))
+    return checkObjectNotExists(list, { name: attributeId }, $t({ defaultMessage: 'Condition Type' }))
   }
 
   const content = (
@@ -107,7 +111,7 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
           ]}
         >
           <Select
-          // eslint-disable-next-line max-len
+            disabled={isEdit}
             options={attributes.map(p => ({ label: p.name, value: p.id }))}
             onChange={(value) => {
               const attr = attributes.find((attribute) => attribute.id === value)
@@ -122,20 +126,11 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
           >
           </Select>
         </Form.Item>
-        {/*<Form.Item label={$t({ defaultMessage: 'Condition Value' })}>*/}
-        {/*<Space direction='horizontal'>*/}
-        {/*  <Form.Item name='operator' initialValue={OperationTypeOption[0].value}>*/}
-        {/*    <Select*/}
-        {/*      options={OperationTypeOption?.map(p => ({ label: $t(p.label), value: p.value }))}>*/}
-        {/*    </Select>*/}
-        {/*  </Form.Item>*/}
         <Form.Item label={$t({ defaultMessage: 'Condition Value' })}
           name='attributeValue'
           rules={[{ required: true,
             message: $t({ defaultMessage: 'Please enter Condition Value' }) }]}
           children={<Input />}/>
-        {/*</Space>*/}
-        {/*</Form.Item>*/}
       </Form>
     </Loader>
   )

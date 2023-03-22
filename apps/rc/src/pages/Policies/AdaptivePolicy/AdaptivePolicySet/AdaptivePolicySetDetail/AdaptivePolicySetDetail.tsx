@@ -7,6 +7,7 @@ import { useParams }              from 'react-router-dom'
 import { Button, Card, GridCol, GridRow, Loader, PageHeader, Table, TableProps } from '@acx-ui/components'
 import { useGetAdaptivePolicySetQuery }                                          from '@acx-ui/rc/services'
 import {
+  getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
   PolicyOperation,
@@ -68,8 +69,11 @@ export function AdaptivePolicySetDetail () {
           <TenantLink
             key='edit'
             to={
-              getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET,
-                oper: PolicyOperation.EDIT })
+              getPolicyDetailsLink({
+                type: PolicyType.ADAPTIVE_POLICY_SET,
+                oper: PolicyOperation.EDIT,
+                policyId: policyId as string
+              })
             }
           >
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>

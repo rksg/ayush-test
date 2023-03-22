@@ -1479,9 +1479,19 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'AdaptivePolicy', id: 'LIST' }]
     }),
-    addPolicyConditions: build.mutation<AdaptivePolicy, RequestPayload>({
+    addPolicyConditions: build.mutation<AccessCondition, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(RulesManagementUrlsInfo.addConditions, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'AdaptivePolicyCondition', id: 'LIST' }]
+    }),
+    updatePolicyConditions: build.mutation<AccessCondition, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RulesManagementUrlsInfo.updateConditions, params)
         return {
           ...req,
           body: payload
@@ -1510,7 +1520,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       transformResponse (result: NewTableResult<AccessCondition>) {
         return transferToTableResult<AccessCondition>(result)
-      }
+      },
+      providesTags: [{ type: 'AdaptivePolicyCondition', id: 'LIST' }]
     }),
     updateAdaptivePolicy: build.mutation<AdaptivePolicy, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1772,7 +1783,9 @@ export const {
   useLazyGetConditionsInPolicyQuery,
   useUpdateAdaptivePolicyMutation,
   useAddPolicyConditionsMutation,
+  useUpdatePolicyConditionsMutation,
   useLazyAdaptivePolicyLisByQueryQuery,
+  useDeletePolicyConditionsMutation,
   // policy set
   useAdaptivePolicySetListQuery,
   useLazyAdaptivePolicySetLisByQueryQuery,

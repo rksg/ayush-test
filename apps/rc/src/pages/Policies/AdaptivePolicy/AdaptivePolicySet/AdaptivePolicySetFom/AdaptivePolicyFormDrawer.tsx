@@ -7,7 +7,7 @@ import {
   useAddPolicyConditionsMutation
 } from '@acx-ui/rc/services'
 
-import AdaptivePolicyForm from '../../AdaptivePolicy/AdaptivePolicyForm/AdaptivePolicyForm'
+import { AdaptivePolicySettingForm } from '../../AdaptivePolicy/AdaptivePolicyForm/AdaptivePolicySettingForm'
 
 interface AdaptivePolicyFormDrawerProps {
   visible: boolean
@@ -83,7 +83,7 @@ export function AdaptivePolicyFormDrawer (props: AdaptivePolicyFormDrawerProps) 
   const content = (
     <Form layout={'vertical'}
       form={form}>
-      <AdaptivePolicyForm drawerMode={true}/>
+      <AdaptivePolicySettingForm drawerMode={true}/>
     </Form>
   )
 

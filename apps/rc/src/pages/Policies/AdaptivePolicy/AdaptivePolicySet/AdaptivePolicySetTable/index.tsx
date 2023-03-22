@@ -15,42 +15,7 @@ import {
   PolicyType, useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-
-function useColumns (policyCountMap: Map<string, string>) {
-  const { $t } = useIntl()
-  const columns: TableProps<AdaptivePolicySet>['columns'] = [
-    {
-      title: $t({ defaultMessage: 'Name' }),
-      key: 'name',
-      dataIndex: 'name',
-      sorter: true,
-      searchable: true,
-      defaultSortOrder: 'ascend',
-      render: function (data, row) {
-        return (
-          <TenantLink
-            to={
-              getPolicyDetailsLink({
-                type: PolicyType.ADAPTIVE_POLICY_SET,
-                oper: PolicyOperation.DETAIL,
-                policyId: row.id!
-              })}
-          >{data}</TenantLink>
-        )
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Contained Policies' }),
-      key: 'policyCount',
-      dataIndex: 'policyCount',
-      align: 'center',
-      render: (_, row) => {
-        return policyCountMap.get(row.id) ?? '0'
-      }
-    }
-  ]
-  return columns
-}
+import { filterByAccess }                               from '@acx-ui/user'
 
 export default function AdaptivePolicySetTable () {
   const { $t } = useIntl()
@@ -80,14 +45,51 @@ export default function AdaptivePolicySetTable () {
     tableQuery.data?.data.forEach(policy => {
       const { id } = policy
       getPrioritizedPolicies({ params: { policySetId: id } })
+        .unwrap()
         .then(result => {
           if (result.data) {
-            policyCountMap.set(id, result.data.totalCount)
+            policyCountMap.set(id, result.totalCount)
           }
         })
     })
     setPolicyCountMap(policyCountMap)
   }, [tableQuery.data])
+
+  function useColumns () {
+    const { $t } = useIntl()
+    const columns: TableProps<AdaptivePolicySet>['columns'] = [
+      {
+        title: $t({ defaultMessage: 'Name' }),
+        key: 'name',
+        dataIndex: 'name',
+        sorter: true,
+        searchable: true,
+        defaultSortOrder: 'ascend',
+        render: function (data, row) {
+          return (
+            <TenantLink
+              to={
+                getPolicyDetailsLink({
+                  type: PolicyType.ADAPTIVE_POLICY_SET,
+                  oper: PolicyOperation.DETAIL,
+                  policyId: row.id!
+                })}
+            >{data}</TenantLink>
+          )
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Contained Policies' }),
+        key: 'policyCount',
+        dataIndex: 'policyCount',
+        align: 'center',
+        render: (_, row) => {
+          return policyCountMap.get(row.id) ?? '0'
+        }
+      }
+    ]
+    return columns
+  }
 
   const rowActions: TableProps<AdaptivePolicySet>['rowActions'] = [{
     visible: (selectedRows) => selectedRows.length === 1,
@@ -111,8 +113,7 @@ export default function AdaptivePolicySetTable () {
         customContent: {
           action: 'DELETE',
           entityName: $t({ defaultMessage: 'policy set' }),
-          entityValue: name,
-          confirmationText: 'Delete'
+          entityValue: name
         },
         onOk: async () => {
           deletePolicy({ params: { policySetId: id } })
@@ -131,31 +132,33 @@ export default function AdaptivePolicySetTable () {
     }
   }]
 
+  const actions = [{
+    label: $t({ defaultMessage: 'Add Set' }),
+    onClick: () => {
+      navigate({
+        ...tenantBasePath,
+        pathname: `${tenantBasePath.pathname}/` + getPolicyRoutePath({
+          type: PolicyType.ADAPTIVE_POLICY_SET,
+          oper: PolicyOperation.CREATE
+        })
+      })
+    }
+  }]
+
   return (
     <Loader states={[
       tableQuery,
       { isLoading: isGetPrioritizedPoliciesUpdating, isFetching: isDeletePolicyUpdating }
     ]}>
       <Table
-        columns={useColumns(policyCountMap)}
+        columns={useColumns()}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='id'
         rowActions={rowActions}
         rowSelection={{ type: 'radio' }}
-        actions={[{
-          label: $t({ defaultMessage: 'Add Set' }),
-          onClick: () => {
-            navigate({
-              ...tenantBasePath,
-              pathname: `${tenantBasePath.pathname}/` + getPolicyRoutePath({
-                type: PolicyType.ADAPTIVE_POLICY_SET,
-                oper: PolicyOperation.CREATE
-              })
-            })
-          }
-        }]}
+        actions={filterByAccess(actions)}
       />
     </Loader>
   )

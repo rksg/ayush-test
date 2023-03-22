@@ -9,8 +9,7 @@ export interface AdaptivePolicy {
   name: string,
   description: string,
   policyType: string,
-  onMatchResponse: string,
-  prioritizedSelect?: boolean
+  onMatchResponse: string
 }
 
 export interface PrioritizedPolicy {

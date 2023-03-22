@@ -40,6 +40,14 @@ export const RulesManagementUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: policyTemplateApiBaseUrl + '/:templateId/policies/:policyId/conditions'
   },
+  updateConditions: {
+    method: 'PATCH',
+    url: policyTemplateApiBaseUrl + '/:templateId/policies/:policyId/conditions/:conditionId'
+  },
+  deleteConditions: {
+    method: 'delete',
+    url: policyTemplateApiBaseUrl + '/:templateId/policies/:policyId/conditions/:conditionId'
+  },
   createPolicy: {
     method: 'post',
     url: policyTemplateApiBaseUrl + '/:templateId/policies'
@@ -51,10 +59,6 @@ export const RulesManagementUrlsInfo: { [key: string]: ApiInfo } = {
   deletePolicy: {
     method: 'delete',
     url: policyTemplateApiBaseUrl + '/:templateId/policies/:policyId'
-  },
-  deleteConditions: {
-    method: 'delete',
-    url: policyTemplateApiBaseUrl + '/:templateId/policies/:policyId/conditions/:conditionId'
   },
   getPolicySets: {
     method: 'get',
