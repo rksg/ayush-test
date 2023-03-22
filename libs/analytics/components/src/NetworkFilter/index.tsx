@@ -370,8 +370,8 @@ function ConnectedNetworkFilter (
           displayRender={displayRender}
           showSearch={{ filter: search }}
           allowClear
-          popupVisible={open}
-          onPopupVisibleChange={setOpen}
+          open={open}
+          onDropdownVisibleChange={setOpen}
         />
       </Loader>
     </UI.Container>
