@@ -45,7 +45,7 @@ export default function DHCPTable () {
     {
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedRows) => {
-        return !_.some(selectedRows, (row)=>{
+        return !selectedRows.some((row)=>{
           return row.venueIds && row.venueIds.length>0
         })
       },
@@ -66,7 +66,7 @@ export default function DHCPTable () {
     {
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedRows) => {
-        return !_.some(selectedRows, (row)=>{
+        return !selectedRows.some((row)=>{
           return row.venueIds && row.venueIds.length>0
         })
       },
