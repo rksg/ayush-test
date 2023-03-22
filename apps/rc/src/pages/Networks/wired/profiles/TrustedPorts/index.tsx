@@ -1,12 +1,12 @@
 import { useState, useContext, useEffect } from 'react'
 
-import { Row, Col, Form, Input } from 'antd'
-import _                         from 'lodash'
+import { Row, Col, Form, Input, Typography } from 'antd'
+import _                                     from 'lodash'
 
-import { showActionModal, StepsForm, Table, TableProps } from '@acx-ui/components'
-import { TrustedPort }                                   from '@acx-ui/rc/utils'
-import { filterByAccess }                                from '@acx-ui/user'
-import { getIntl }                                       from '@acx-ui/utils'
+import { showActionModal, StepsForm, Table, TableProps, Button }                     from '@acx-ui/components'
+import { SwitchConfigurationProfile, SwitchModel, TrustedPort, TrustedPortTypeEnum } from '@acx-ui/rc/utils'
+import { filterByAccess }                                                            from '@acx-ui/user'
+import { getIntl }                                                                   from '@acx-ui/utils'
 
 import { ConfigurationProfileFormContext } from '../ConfigurationProfileFormContext'
 
@@ -30,17 +30,41 @@ export function TrustedPorts () {
   const form = Form.useFormInstance()
   const { currentData, editMode } = useContext(ConfigurationProfileFormContext)
   const [openModal, setOpenModal] = useState(false)
+  const [notDeletable, setNotDeletable] = useState(true)
   const [selected, setSelected] = useState<TrustedPort>()
   const [ruleList, setRuleList] = useState<TrustedPort[]>([])
 
   useEffect(() => {
-    if(currentData.trustedPorts && editMode){
-      form.setFieldValue('trustedPorts', currentData.trustedPorts)
-      setRuleList(currentData.trustedPorts || [])
-    }
-  }, [currentData])
+    const trustedPortModels = generateTrustedPortsModels(currentData)
+      .map(item => ({
+        vlanDemand: true,
+        model: item.model,
+        slots: item.slots,
+        trustPorts: [],
+        trustedPortType: TrustedPortTypeEnum.ALL
+      }))
 
-  const aclsColumns: TableProps<TrustedPort>['columns']= [{
+    if(editMode){
+      if(currentData.trustedPorts){
+        const filterTrustedPortModels = trustedPortModels
+          .filter(item => !currentData.trustedPorts.map(
+            tpItem => tpItem.model).includes(item.model))
+
+        const mergedTrustPorts =
+          [...currentData.trustedPorts, ...filterTrustedPortModels] as TrustedPort[]
+        form.setFieldValue('trustedPorts', mergedTrustPorts)
+        setRuleList(mergedTrustPorts)
+      }else{
+        form.setFieldValue('trustedPorts', trustedPortModels)
+        setRuleList(trustedPortModels as TrustedPort[])
+      }
+    }else{
+      form.setFieldValue('trustedPorts', trustedPortModels)
+      setRuleList(trustedPortModels as TrustedPort[])
+    }
+  }, [currentData, editMode])
+
+  const trustedPortsColumns: TableProps<TrustedPort>['columns']= [{
     title: $t({ defaultMessage: 'Model' }),
     dataIndex: 'model',
     key: 'model'
@@ -48,9 +72,19 @@ export function TrustedPorts () {
     title: $t({ defaultMessage: 'Trusted' }),
     dataIndex: 'trustPorts',
     key: 'trustPorts',
-    render: (data) => {
-      const taggedPorts = ((data || []) as string[])?.join(', ')
-      return taggedPorts
+    render: (data, row) => {
+      if(data?.toString() === ''){
+        return <Button type='link'
+          onClick={()=>{
+            setSelected(row)
+            setOpenModal(true)
+          }}>
+          {$t({ defaultMessage: 'Please select...' })}
+        </Button>
+      }else{
+        const taggedPorts = ((data || []) as string[])?.join(', ')
+        return taggedPorts
+      }
     }
   }]
 
@@ -64,6 +98,7 @@ export function TrustedPorts () {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
+      disabled: notDeletable,
       onClick: ([{ model }], clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -106,21 +141,38 @@ export function TrustedPorts () {
     setOpenModal(false)
   }
 
+  const generateTrustedPortsModels = (profile: SwitchConfigurationProfile) => {
+    const models: SwitchModel[] = []
+    profile?.vlans.forEach((v) => {
+      if ((v.ipv4DhcpSnooping === false && v.arpInspection === false) ||
+      _.isEmpty(v.switchFamilyModels)) {
+        return
+      }
+      v.switchFamilyModels?.forEach((m) => {
+        const exist = models.find(item => item.model === m.model)
+        if (!exist) {
+          models.push(m)
+        }
+      })
+    })
+    return models
+  }
+
   return (
     <>
       <Row gutter={20}>
         <Col span={20}>
           <StepsForm.Title children={$t({ defaultMessage: 'Trusted Ports' })} />
-          <label>
+          <Typography.Paragraph>
             {
               // eslint-disable-next-line max-len
               $t({ defaultMessage: 'To support DHCP snooping and/or ARP inspection, please select the trusted ports for each switch model you deploy' })
             }
-          </label>
+          </Typography.Paragraph>
           <Table
             rowKey='model'
             rowActions={filterByAccess(rowActions)}
-            columns={aclsColumns}
+            columns={trustedPortsColumns}
             dataSource={ruleList}
             actions={filterByAccess([{
               label: $t({ defaultMessage: 'Add Model' }),
@@ -132,9 +184,12 @@ export function TrustedPorts () {
             rowSelection={{
               type: 'radio',
               onChange: (keys: React.Key[]) => {
-                setSelected(
-                  ruleList?.find((i: { model: string }) => i.model === keys[0])
-                )
+                const selected = ruleList?.find((i: { model: string }) => i.model === keys[0])
+                const notDeletable = currentData.vlans?.some(v => {
+                  return v.switchFamilyModels?.some(sf => sf.model === selected?.model)
+                })
+                setSelected(selected)
+                setNotDeletable(notDeletable)
               }
             }}
           />
