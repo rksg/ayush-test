@@ -4,10 +4,17 @@ import { Form, Radio, RadioChangeEvent, Space, Typography } from 'antd'
 import { useForm }                                          from 'antd/lib/form/Form'
 import { useIntl }                                          from 'react-intl'
 
-import { Modal }              from '@acx-ui/components'
+import {
+  Modal
+} from '@acx-ui/components'
+import {
+  useUpdateSwitchFirmwarePredownloadMutation
+} from '@acx-ui/rc/services'
 import { UpgradePreferences } from '@acx-ui/rc/utils'
+import { useParams }          from '@acx-ui/react-router-dom'
 
 import { ChangeSlotDialog } from './ChangeSlotDialog'
+import { PreDownload }      from './PreDownload'
 import * as UI              from './styledComponents'
 
 enum ScheduleMode {
@@ -19,18 +26,24 @@ interface PreferencesDialogProps {
   visible: boolean,
   onCancel: () => void,
   onSubmit: (data: UpgradePreferences) => void,
-  data: UpgradePreferences
+  data: UpgradePreferences,
+  isSwitch?: boolean,
+  preDownload?: boolean
 }
 
 export function PreferencesDialog (props: PreferencesDialogProps) {
   const { $t } = useIntl()
+  const params = useParams()
   const [form] = useForm()
-  const { visible, onSubmit, onCancel, data } = props
+  const { visible, onSubmit, onCancel, data, isSwitch, preDownload } = props
+  const [updateSwitchFirmwarePredownload] = useUpdateSwitchFirmwarePredownloadMutation()
   const [scheduleMode, setScheduleMode] = useState(ScheduleMode.Automatically)
   const [valueDays, setValueDays] = useState<string[]>(['Saturday'])
   const [valueTimes, setValueTimes] = useState<string[]>(['00:00-02:00'])
   const [modelVisible, setModelVisible] = useState(false)
   const [disableSave, setDisableSave] = useState(false)
+  const [checked, setChecked] = useState(false)
+
 
   useEffect(() => {
     if (data) {
@@ -44,6 +57,12 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
       setValueTimes([...data.times])
     }
   }, [])
+
+  useEffect(() => {
+    if (preDownload) {
+      setChecked(preDownload)
+    }
+  }, [preDownload])
 
   const showSlotModal = () => {
     setModelVisible(true)
@@ -72,7 +91,14 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
     }
   }
 
-  const triggerSubmit = () => {
+  const triggerSubmit = async () => {
+    if (isSwitch) {
+      try {
+        await updateSwitchFirmwarePredownload({ params, payload: checked }).unwrap()
+      } catch (error) {
+        console.log(error) // eslint-disable-line no-console
+      }
+    }
     onSubmit(createRequest())
     onCancel()
   }
@@ -87,6 +113,7 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
     data.autoSchedule ? setScheduleMode(ScheduleMode.Automatically) : setScheduleMode(ScheduleMode.Manually)
     setValueDays([...data.days as string[]])
     setValueTimes([...data.times as string[]])
+    setChecked(preDownload as boolean)
     onCancel()
   }
 
@@ -137,6 +164,12 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
             </div>
           </Form.Item>
         </Form>
+        {isSwitch && scheduleMode === ScheduleMode.Automatically ?
+          <PreDownload
+            checked={checked}
+            setChecked={setChecked}
+          />
+          : null}
       </Modal>
       <ChangeSlotDialog
         visible={modelVisible}

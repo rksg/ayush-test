@@ -1,6 +1,7 @@
 import {
   CommonResult,
   CurrentVersions,
+  PreDownload,
   TableResult,
   UpgradePreferences,
   FirmwareUrlsInfo,
@@ -205,6 +206,26 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
+    }),
+    getSwitchFirmwarePredownload: build.query<PreDownload, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getSwitchFirmwarePredownload, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'SwitchFirmware', id: 'PREDOWNLOAD' }]
+    }),
+    updateSwitchFirmwarePredownload: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.updateSwitchFirmwarePredownload, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      // eslint-disable-next-line max-len
+      invalidatesTags: [{ type: 'SwitchFirmware', id: 'LIST' }, { type: 'SwitchFirmware', id: 'PREDOWNLOAD' }]
     })
   })
 })
@@ -225,5 +246,7 @@ export const {
   useGetSwitchFirmwareVersionIdListQuery,
   useGetSwitchVenueVersionListQuery,
   useGetSwitchAvailableFirmwareListQuery,
-  useGetSwitchCurrentVersionsQuery
+  useGetSwitchCurrentVersionsQuery,
+  useGetSwitchFirmwarePredownloadQuery,
+  useUpdateSwitchFirmwarePredownloadMutation
 } = firmwareApi
