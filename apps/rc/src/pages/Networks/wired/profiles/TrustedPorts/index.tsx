@@ -28,7 +28,7 @@ export interface VlanTrustPortInterface {
 export function TrustedPorts () {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
-  const { currentData, editMode } = useContext(ConfigurationProfileFormContext)
+  const { currentData } = useContext(ConfigurationProfileFormContext)
   const [openModal, setOpenModal] = useState(false)
   const [notDeletable, setNotDeletable] = useState(true)
   const [selected, setSelected] = useState<TrustedPort>()
