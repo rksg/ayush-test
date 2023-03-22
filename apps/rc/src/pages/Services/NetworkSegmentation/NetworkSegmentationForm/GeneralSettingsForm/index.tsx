@@ -3,9 +3,9 @@ import { Col, Form, Input, Row, Select } from 'antd'
 import { FormattedMessage, useIntl }     from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
-import { Alert, StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
-import { CheckMarkCircleSolid }                          from '@acx-ui/icons'
-import { useGetPropertyQuery, useVenuesListQuery }       from '@acx-ui/rc/services'
+import { Alert, StepsForm, Tooltip, useStepFormContext }  from '@acx-ui/components'
+import { CheckMarkCircleSolid }                           from '@acx-ui/icons'
+import { useGetPropertyConfigsQuery, useVenuesListQuery } from '@acx-ui/rc/services'
 
 import { NetworkSegmentationGroupForm } from '..'
 import { useWatch }                     from '../../useWatch'
@@ -39,7 +39,7 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
         }
       }
     })
-  const { personaGroupId } = useGetPropertyQuery(
+  const { personaGroupId } = useGetPropertyConfigsQuery(
     { params: { venueId } },
     {
       skip: !!!venueId,

@@ -38,7 +38,6 @@ export * from './firmware'
 export * from './timeline'
 export * from './persona'
 export * from './radiusClientConfig'
-export * from './propertyManagement'
 export * from './property'
 
 export interface CommonResult {
