@@ -2,6 +2,12 @@ import styled from 'styled-components/macro'
 
 import { Button, Modal } from '@acx-ui/components'
 
+export const SelectDiv = styled.div`
+  .ant-select-selector {
+    padding: 0 !important;
+  }
+`
+
 export const DateContainer = styled.div`
   height: auto;
   display: grid;
@@ -22,15 +28,20 @@ export const PreferencesSection = styled.div`
 `
 
 export const TitleActive = styled.div`
-  color: #7f7f7f;
+  color: #333333;
+  font-weight: 600;
+  margin: 12px 10px 0;
 `
 
 export const TitleLegacy = styled.div`
-  color: #7f7f7f;
+  color: #333333;
+  font-weight: 600;
+  margin: 12px 10px 0;
 `
 
 export const ItemModel = styled.div`
-  margin-left: 28px;
+  font-size: 12px;
+  margin: -10px 0 0 37px;
 `
 
 export const Ul = styled.ul`

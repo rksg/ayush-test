@@ -248,14 +248,14 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   rebootAp: {
-    method: 'patch',
+    method: 'PATCH',
     url: '/venues/aps/:serialNumber',
     oldMethod: 'post',
     oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/reboot',
     newApi: true
   },
   factoryResetAp: {
-    method: 'patch',
+    method: 'PATCH',
     url: '/venues/aps/:serialNumber',
     oldMethod: 'post',
     oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/factory-reset',
@@ -301,14 +301,14 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   pingAp: {
-    method: 'patch',
+    method: 'PATCH',
     url: '/venues/aps/:serialNumber',
     oldMethod: 'post',
     oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ping',
     newApi: true
   },
   traceRouteAp: {
-    method: 'patch',
+    method: 'PATCH',
     url: '/venues/aps/:serialNumber',
     oldMethod: 'post',
     oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/trace-route',
@@ -334,7 +334,7 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   blinkLedAp: {
-    method: 'patch',
+    method: 'PATCH',
     url: '/venues/aps/:serialNumber',
     oldMethod: 'post',
     oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/blink-led',
