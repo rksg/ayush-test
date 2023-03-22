@@ -1,47 +1,48 @@
-import { useState } from 'react';
-import { useIntl } from 'react-intl';
+import { useState } from 'react'
+
+import { useIntl } from 'react-intl'
 
 import {
   AnalyticsFilter,
   useAnalyticsFilter,
   categoryTabs,
-  CategoryTab,
-} from '@acx-ui/analytics/utils';
-import { GridCol, GridRow, Tabs } from '@acx-ui/components';
+  CategoryTab
+} from '@acx-ui/analytics/utils'
+import { GridCol, GridRow, Tabs } from '@acx-ui/components'
 import {
   useNavigate,
   useParams,
-  useTenantLink,
-} from '@acx-ui/react-router-dom';
+  useTenantLink
+} from '@acx-ui/react-router-dom'
 
-import { Header } from '../Header';
+import { Header } from '../Header'
 
-import ConnectedClientsOverTime from './ConnectedClientsOverTime';
-import { HealthDrillDown } from './HealthDrillDown';
-import { HealthPageContextProvider } from './HealthPageContext';
-import Kpis from './Kpi';
-import * as UI from './styledComponents';
-import { SummaryBoxes } from './SummaryBoxes';
+import ConnectedClientsOverTime      from './ConnectedClientsOverTime'
+import { HealthDrillDown }           from './HealthDrillDown'
+import { HealthPageContextProvider } from './HealthPageContext'
+import Kpis                          from './Kpi'
+import * as UI                       from './styledComponents'
+import { SummaryBoxes }              from './SummaryBoxes'
 
-export type DrilldownSelection = 'connectionFailure' | 'ttc' | 'none';
+export type DrilldownSelection = 'connectionFailure' | 'ttc' | 'none'
 
 const HealthPage = (props: { filters?: AnalyticsFilter; path?: string }) => {
-  const { $t } = useIntl();
-  const { filters: widgetFilters } = props;
-  const params = useParams();
-  const selectedTab = params['categoryTab'] ?? categoryTabs[0].value;
-  const navigate = useNavigate();
-  const basePath = useTenantLink(props.path ?? '/analytics/health/tab/');
-  const { filters } = useAnalyticsFilter();
-  const healthPageFilters = widgetFilters ? widgetFilters : filters;
+  const { $t } = useIntl()
+  const { filters: widgetFilters } = props
+  const params = useParams()
+  const selectedTab = params['categoryTab'] ?? categoryTabs[0].value
+  const navigate = useNavigate()
+  const basePath = useTenantLink(props.path ?? '/analytics/health/tab/')
+  const { filters } = useAnalyticsFilter()
+  const healthPageFilters = widgetFilters ? widgetFilters : filters
   const [drilldownSelection, setDrilldownSelection] =
-    useState<DrilldownSelection>('none');
+    useState<DrilldownSelection>('none')
 
   const onTabChange = (tab: string) =>
     navigate({
       ...basePath,
-      pathname: `${basePath.pathname}/${tab}`,
-    });
+      pathname: `${basePath.pathname}/${tab}`
+    })
   return (
     <>
       {!widgetFilters && (
@@ -58,7 +59,7 @@ const HealthPage = (props: { filters?: AnalyticsFilter; path?: string }) => {
             drilldownSelection={drilldownSelection}
             setDrilldownSelection={setDrilldownSelection}
           />
-          <HealthDrillDown />
+          <HealthDrillDown drilldownSelection={drilldownSelection}/>
         </GridCol>
         <HealthPageContextProvider>
           <GridCol col={{ span: 24 }} style={{ height: '210px' }}>
@@ -85,6 +86,6 @@ const HealthPage = (props: { filters?: AnalyticsFilter; path?: string }) => {
         </HealthPageContextProvider>
       </GridRow>
     </>
-  );
-};
-export { HealthPage };
+  )
+}
+export { HealthPage }

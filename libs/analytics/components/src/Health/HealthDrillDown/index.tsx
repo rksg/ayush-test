@@ -5,6 +5,7 @@ import { formatter } from '@acx-ui/formatter';
 import { FunnelChart } from './funnelChart';
 import { HealthPieChart } from './HealthPieChart';
 import { Section, Title, Separator } from './styledComponents';
+import type { OpenType } from '.'
 
 const getFormattedToFunnel = (
   type,
@@ -36,7 +37,11 @@ const getFormattedToFunnel = (
     value: dhcpFailure,
   },
 ];
-const HealthDrillDown = () => {
+const HealthDrillDown = ({
+  drilldownSelection,
+}: {
+  drilldownSelection: OpenType;
+}) => {
   return (
     <GridRow>
       <GridCol col={{ span: 24 }} style={{ minHeight: '105px' }}>
@@ -79,7 +84,7 @@ const HealthDrillDown = () => {
         </div>
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '210px' }}>
-        <HealthPieChart />
+        <HealthPieChart drilldownSelection={drilldownSelection}/>
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '210px' }}>
         Table
