@@ -24,7 +24,7 @@ const list = {
         '6a0d92dee47942dda28d29770696c6a0',
         '45a1214beeee4c098289cd6446c89e44'
       ],
-      id: 'b1c3860e3cb644c5913b75d5a391e914',
+      id: 'b1c3860e3cb644c5913b75d5a391e915',
       name: 'installer',
       status: 'Active',
       tenantType: 'MSP_INSTALLER'
