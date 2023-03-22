@@ -558,6 +558,7 @@ export const {
   useGetMspEcDelegatedAdminsQuery,
   useGetMspEcQuery,
   useGetAssignedMspEcToIntegratorQuery,
+  useLazyGetAssignedMspEcToIntegratorQuery,
   useAssignMspEcToIntegratorMutation,
   useDeactivateMspEcMutation,
   useReactivateMspEcMutation,
