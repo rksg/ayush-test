@@ -81,7 +81,7 @@ export function TopologyGraph (props:{ venueId?: string,
 
       const { edges, nodes } = topologyGraphData as GraphData
 
-      const uiEdges: Link[] = Object.assign([], edges)
+      const uiEdges: Link[] = Array.from(edges)
 
       // Add nodes to the graph.
 
@@ -439,7 +439,8 @@ export function TopologyGraph (props:{ venueId?: string,
     const allnodes = svg.selectAll('g.node')
     // this is selected / searched node
     const selectedNode = allnodes.nodes().filter((node: any) =>{
-      return (node.__data__.config.mac === deviceMac) && node.__data__.id !== 'cloud_id'
+      return ((node.__data__.config.mac)?.toLowerCase() === deviceMac?.toLowerCase())
+      && node.__data__.id !== 'cloud_id'
     })
 
     return selectedNode && selectedNode[0]
@@ -503,6 +504,17 @@ export function TopologyGraph (props:{ venueId?: string,
                 hoverNode(getSelectedNode(option.item.mac as string))
               }}
               allowClear={true}
+              onSearch={
+                (inputValue) => {
+                  if (inputValue === '') {
+                    highlightPath(undefined)
+                    hoverNode(undefined)
+                    highlightAll()
+                    return false
+                  }
+                  return
+                }
+              }
               onClear={() => {
                 highlightPath(undefined)
                 hoverNode(undefined)

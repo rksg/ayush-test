@@ -135,7 +135,9 @@ const SubscriptionTable = () => {
       key: 'timeLeft',
       render: function (_, row) {
         const remainingDays = EntitlementUtil.timeLeftInDays(row.expirationDate)
-        return EntitlementUtil.timeLeftValues(remainingDays)
+        return remainingDays < 0
+          ? <UI.Expired>{EntitlementUtil.timeLeftValues(remainingDays)}</UI.Expired>
+          : EntitlementUtil.timeLeftValues(remainingDays)
       }
     },
     {
@@ -148,7 +150,7 @@ const SubscriptionTable = () => {
       render: function (_, row) {
         return row.status === 'valid'
           ? $t({ defaultMessage: 'Active' })
-          : $t({ defaultMessage: 'Expired' })
+          : <UI.Expired>{$t({ defaultMessage: 'Expired' })}</UI.Expired>
       }
     }
   ]
