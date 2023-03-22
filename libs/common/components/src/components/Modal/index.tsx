@@ -20,6 +20,18 @@ interface ModalProps extends AntModalProps {
   subTitle?: string
 }
 
+function HasStepsFormContainer (props: React.HTMLAttributes<HTMLDivElement>) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [hasStepsForm, setHasStepsForm] = useState(false)
+  useLayoutEffect(() => {
+    setHasStepsForm(Boolean(ref.current?.querySelector('.ant-pro-steps-form')))
+  })
+  const className = [props.className, hasStepsForm ? 'has-steps-form' : '']
+    .filter(Boolean)
+    .join(' ')
+  return <div {...props} ref={ref} className={className} />
+}
+
 export function Modal ({
   type = ModalType.Default,
   footer,
@@ -32,8 +44,6 @@ export function Modal ({
   ...props
 }: ModalProps) {
   const { $t } = useIntl()
-  const ref = useRef<HTMLDivElement>(null)
-  const [hasStepsForm, setHasStepsForm] = useState(false)
   if (!footer) {
     footer = [
       <Button {...cancelButtonProps as ButtonProps} key='cancel' onClick={onCancel}>
@@ -44,10 +54,7 @@ export function Modal ({
       </Button>
     ]
   }
-  // hack to address FF not supporting :has
-  useLayoutEffect(() => {
-    setHasStepsForm(Boolean(ref.current?.querySelector('.ant-pro-steps-form')))
-  })
+
   return (
     <UI.Modal
       {...props}
@@ -55,9 +62,7 @@ export function Modal ({
         closable: false,
         width: props.width || '95%'
       })}
-      modalRender={node => <div
-        ref={ref}
-        className={hasStepsForm ? 'has-steps-form' : ''}>{node}</div>}
+      modalRender={node => <HasStepsFormContainer children={node} />}
       onCancel={onCancel}
       closeIcon={<CloseSymbol />}
       title={props.subTitle ? TitleWithSubtitle(props.title, props.subTitle) : props.title}
