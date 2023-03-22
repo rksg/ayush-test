@@ -53,12 +53,12 @@ export function SwitchDhcpTab () {
         content: $t({ defaultMessage: `
           This switch can no longer act as a DHCP client once DHCP server is enabled.` }),
         onOk: () => {
-          updateDhcpServerState({ params: { tenantId, switchId }, payload: { status: checked } })
+          updateDhcpServerState({ params: { tenantId, switchId }, payload: { state: checked } })
         }
       })
       return
     } else {
-      updateDhcpServerState({ params: { tenantId, switchId }, payload: { status: checked } })
+      updateDhcpServerState({ params: { tenantId, switchId }, payload: { state: checked } })
     }
   }
 
