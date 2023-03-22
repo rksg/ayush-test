@@ -230,12 +230,12 @@ export function MspCustomers () {
       key: 'mspAdminCount',
       sorter: true,
       onCell: (data) => {
-        return {
+        return (isPrimeAdmin || isAdmin) && !userProfile?.support ? {
           onClick: () => {
             setTenantId(data.id)
             setDrawerAdminVisible(true)
           }
-        }
+        } : {}
       },
       render: function (data) {
         return (
@@ -258,13 +258,13 @@ export function MspCustomers () {
       key: 'integrator',
       show: !userProfile?.support,
       onCell: (data) => {
-        return {
+        return (isPrimeAdmin || isAdmin) && !userProfile?.support ? {
           onClick: () => {
             setTenantId(data.id)
             setTenantType(AccountType.MSP_INTEGRATOR)
             setDrawerIntegratorVisible(true)
           }
-        }
+        } : {}
       },
       render: function (data, row) {
         const val = row?.integrator ? transformTechPartner(row.integrator) : '--'
@@ -280,13 +280,13 @@ export function MspCustomers () {
       key: 'installer',
       show: !userProfile?.support,
       onCell: (data) => {
-        return {
+        return (isPrimeAdmin || isAdmin) && !userProfile?.support ? {
           onClick: () => {
             setTenantId(data.id)
             setTenantType(AccountType.MSP_INSTALLER)
             setDrawerIntegratorVisible(true)
           }
-        }
+        } : {}
       },
       render: function (data, row) {
         const val = row?.installer ? transformTechPartner(row.installer) : '--'
