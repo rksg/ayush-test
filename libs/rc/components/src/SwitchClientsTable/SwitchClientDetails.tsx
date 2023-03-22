@@ -6,6 +6,7 @@ import { PageHeader, GridRow, GridCol, Descriptions, Loader, Subtitle, Button } 
 import { useGetSwitchClientDetailsQuery, useLazyApListQuery }                   from '@acx-ui/rc/services'
 import { exportCSV, SWITCH_CLIENT_TYPE }                                        from '@acx-ui/rc/utils'
 import { useParams, TenantLink }                                                from '@acx-ui/react-router-dom'
+import { filterByAccess }                                                       from '@acx-ui/user'
 import { getCurrentDate }                                                       from '@acx-ui/utils'
 
 interface Client {
@@ -43,11 +44,19 @@ export function SwitchClientDetails () {
   }, [data])
 
   const exportClientToCSV = () => {
-    const ClientCSVIgnoreProperty = ['switchId', 'venueId']
+    const ClientCSVIgnoreProperty = ['switchId', 'venueId', 'id', 'switchSerialNumber']
     const ClientCSVNamingMapping: Map<string, string> = new Map<string, string>([
-      ['clientDesc', 'hostname'],
-      ['clientIpv4Addr', 'ip'],
-      ['switchPort', 'port']
+      ['clientMac', $t({ defaultMessage: 'Mac Address' })],
+      ['clientType', $t({ defaultMessage: 'Device Type' })],
+      ['clientName', $t({ defaultMessage: 'Hostname' })],
+      ['switchName', $t({ defaultMessage: 'Switch Name' })],
+      ['venueName', $t({ defaultMessage: 'Venue Name' })],
+      ['clientVlan', $t({ defaultMessage: 'Vlan ID' })],
+      ['vlanName', $t({ defaultMessage: 'Vlan' })],
+      ['switchSerialNumber', $t({ defaultMessage: 'Switch Serial Number' })],
+      ['clientDesc', $t({ defaultMessage: 'Description' })],
+      ['clientIpv4Addr', $t({ defaultMessage: 'IP Address' })],
+      ['switchPort', $t({ defaultMessage: 'Port' })]
     ])
 
     const nowTime = getCurrentDate('YYYYMMDDHHMMSS')
@@ -59,7 +68,8 @@ export function SwitchClientDetails () {
     // Remove internal properties
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const exportClient: any = Object()
-    Object.assign(exportClient, data)
+    const statusLabel = $t({ defaultMessage: 'Status' })
+    Object.assign(exportClient, { [statusLabel]: $t({ defaultMessage: 'Connected' }), ...data })
     for (const key of ClientCSVIgnoreProperty) {
       delete exportClient[key]
     }
@@ -85,12 +95,6 @@ export function SwitchClientDetails () {
         (data?.clientType === SWITCH_CLIENT_TYPE.ROUTER ?
           <span>{$t({ defaultMessage: 'Router' })}</span> :
           <span>{data?.clientType || '--'}</span>)
-    },
-    {
-      title: <span>
-        {$t({ defaultMessage: 'Hostname' })}
-      </span>,
-      value: <span>{data?.clientName || '--'}</span>
     },
     {
       title: <span>
@@ -138,14 +142,14 @@ export function SwitchClientDetails () {
   return (
     <Loader states={[{ isLoading }]}>
       <PageHeader
-        title={data?.clientMac}
+        title={data?.clientName}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Switch Users' }), link: '/users/switch' }
         ]}
-        extra={[
-          <Button key='export' type='link' onClick={exportClientToCSV}>
+        extra={filterByAccess([
+          <Button key='DownloadSwitchUsers' type='link' onClick={exportClientToCSV}>
             {$t({ defaultMessage: 'Download Information' })}</Button>
-        ]}
+        ])}
       />
 
       <GridRow>

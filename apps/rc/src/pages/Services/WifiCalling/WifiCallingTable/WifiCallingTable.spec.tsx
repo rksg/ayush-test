@@ -22,14 +22,32 @@ import {
 import WifiCallingTable from './WifiCallingTable'
 
 const mockTableResult = {
-  totalCount: 3,
+  fields: [
+    'ePDGs',
+    'epdg',
+    'qosPriority',
+    'networkIds',
+    'epdgs',
+    'name',
+    'tenantId',
+    'id'
+  ],
+  totalCount: 1,
   page: 1,
-  data: [{
-    id: 'cc080e33-26a7-4d34-870f-b7f312fcfccb',
-    name: 'My Wi-Fi Calling-1',
-    type: 'Wi-Fi Calling',
-    scope: '5'
-  }]
+  data: [
+    {
+      id: 'b6ebccae545c44c1935ddaf746f5b048',
+      name: 'wifi-1',
+      qosPriority: 'WIFICALLING_PRI_VOICE',
+      networkIds: [],
+      tenantId: '1977de24c7824b0b975c4d02806e081f',
+      epdgs: [
+        {
+          domain: 'a.b.comd'
+        }
+      ]
+    }
+  ]
 }
 
 const mockedUseNavigate = jest.fn()
@@ -57,6 +75,10 @@ describe('WifiCallingTable', () => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getServicesList.url,
+        (req, res, ctx) => res(ctx.json(mockTableResult))
+      ),
+      rest.post(
+        WifiCallingUrls.getEnhancedWifiCallingList.url,
         (req, res, ctx) => res(ctx.json(mockTableResult))
       )
     )

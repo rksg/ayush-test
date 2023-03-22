@@ -6,7 +6,8 @@ import _                  from 'lodash'
 import { useIntl }        from 'react-intl'
 import { useParams }      from 'react-router-dom'
 
-import { Button, Loader, showToast }    from '@acx-ui/components'
+import { Button, Loader }               from '@acx-ui/components'
+import { DateFormatEnum, formatter }    from '@acx-ui/formatter'
 import {
   useGetTroubleshootingQuery,
   useIpRouteMutation,
@@ -15,7 +16,6 @@ import {
 import {
   TroubleshootingType
 } from '@acx-ui/rc/utils'
-import { formatter } from '@acx-ui/utils'
 
 export function SwitchIpRouteForm () {
   const { $t } = useIntl()
@@ -71,11 +71,8 @@ export function SwitchIpRouteForm () {
       if (result) {
         refetchResult()
       }
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -102,7 +99,7 @@ export function SwitchIpRouteForm () {
           <Form.Item
             label={$t({ defaultMessage: 'Last synced at' })}
             children={
-              formatter('dateTimeFormatWithSeconds')(lasySyncTime)}
+              formatter(DateFormatEnum.DateTimeFormatWithSeconds)(lasySyncTime)}
           />}
 
         <Form.Item wrapperCol={{ offset: 0, span: 16 }}

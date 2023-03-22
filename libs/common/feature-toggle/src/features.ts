@@ -20,6 +20,7 @@ export enum Features {
   CLIENT_TROUBLESHOOTING = 'acx-ui-client-troubleshooting-toggle',
   TIMELINE = 'acx-ui-timeline-toggle',
   NETWORK_SEGMENTATION='acx-ui-network-segmentation-toggle',
+  NETWORK_SEGMENTATION_SWITCH='switch-consumer-nsg-toggle',
   UNRELEASED='acx-ui-unreleased',
   SERVICE_VALIDATION = 'acx-ui-service-validation-toggle',
   DIRECTED_MULTICAST='wifi-consumer-directed-multicast-toggle',
@@ -30,5 +31,11 @@ export enum Features {
   SWITCH_SUPPORT_ICX8200 = 'switch-support-icx8200',
   BONJOUR_FENCING='wifi-consumer-bonjour-fencing-toggle',
   AP_SNMP='wifi-consumer-ap-snmp-toggle',
-  NEW_API='acx-ui-new-api'
+  NEW_API='acx-ui-new-api',
+  MAC_REGISTRATION = 'mac-registration-service-enabled',
+  PERSONA = 'persona-service-enabled',
+  WISPR_ENCRYPT_MAC_IP = 'acx-ui-wispr-encrypt-mac-ip-toggle',
+  HEALTH_DRILLDOWN = 'acx-ui-health-drilldown-toggle',
+  PROPERTY_MANAGEMENT = 'property-management-enabled',
+  RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled'
 }

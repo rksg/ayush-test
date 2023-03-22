@@ -1,14 +1,23 @@
 import { ReactNode } from 'react'
 
-import { useIntl }                from 'react-intl'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useIntl, FormattedMessage } from 'react-intl'
+import { useNavigate, useParams }    from 'react-router-dom'
 
-import { showActionModal, Loader, TableProps, Tooltip, Table  }              from '@acx-ui/components'
-import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
-import { useDeleteNetworkMutation }                                          from '@acx-ui/rc/services'
-import { NetworkTypeEnum, Network, NetworkType, TableQuery, RequestPayload } from '@acx-ui/rc/utils'
-import { TenantLink, useTenantLink }                                         from '@acx-ui/react-router-dom'
-import { getIntl, notAvailableMsg }                                          from '@acx-ui/utils'
+import { showActionModal, Loader, TableProps, Tooltip, Table  } from '@acx-ui/components'
+import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
+import { useDeleteNetworkMutation, useLazyVenuesListQuery }     from '@acx-ui/rc/services'
+import {
+  NetworkTypeEnum,
+  Network,
+  NetworkType,
+  TableQuery,
+  RequestPayload,
+  GuestNetworkTypeEnum,
+  checkVenuesNotInSetup
+} from '@acx-ui/rc/utils'
+import { TenantLink, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess }            from '@acx-ui/user'
+import { getIntl, notAvailableMsg }  from '@acx-ui/utils'
 
 
 const disabledType: NetworkTypeEnum[] = []
@@ -173,6 +182,18 @@ const rowSelection = (intl: ReturnType<typeof useIntl>) => {
   return params
 }
 
+/* eslint-disable max-len */
+const getDeleteMessage = (messageKey: string) => {
+  const { $t } = getIntl()
+  const deleteMessageMap = {
+    deletingGuestPass: $t({ defaultMessage: 'Deleting Guest Pass network will invalidate all its related guest passes.' }),
+    deletingDPSK: $t({ defaultMessage: 'Deleting DPSK network will remove all its related DPSK User Credentials (Passphrases).' }),
+    hasAdvertisedVenues: $t({ defaultMessage: 'Note that this will affect the service on all venues and APs that the network is activated on.' })
+  }
+  return deleteMessageMap?.[messageKey as keyof typeof deleteMessageMap]
+}
+/* eslint-enable max-len */
+
 interface NetworkTableProps {
   tableQuery: TableQuery<Network, RequestPayload<unknown>, unknown>,
   selectable?: boolean
@@ -189,9 +210,16 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
   const [
     deleteNetwork, { isLoading: isDeleteNetworkUpdating }
   ] = useDeleteNetworkMutation()
+  const [venuesList] = useLazyVenuesListQuery()
 
   if(!isServicesEnabled){
     disabledType.push(NetworkTypeEnum.CAPTIVEPORTAL)
+  }
+
+  async function getAdvertisedVenuesStatus (selectedNetwork: Network) {
+    const payload = { fields: ['name', 'status'], filters: { name: selectedNetwork.venues.names } }
+    const list = (await venuesList({ params: { tenantId }, payload }, true).unwrap()).data
+    return list
   }
 
   const rowActions: TableProps<Network>['rowActions'] = [
@@ -209,15 +237,36 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ name, id }], clearSelection) => {
+      onClick: async ([selected], clearSelection) => {
+        const isDeletingDPSK = isSelectedDpskNetwork([selected])
+        const isDeletingGuestPass = isSelectedGuestNetwork([selected])
+        const networkAdvertisedVenues = await getAdvertisedVenuesStatus(selected)
+        const hideConfirmation = selected?.venues?.count === 0
+          ? true : !checkVenuesNotInSetup(networkAdvertisedVenues)
+
         showActionModal({
           type: 'confirm',
           customContent: {
             action: 'DELETE',
             entityName: $t({ defaultMessage: 'Network' }),
-            entityValue: name
+            entityValue: selected.name,
+            extraContent: <FormattedMessage
+              defaultMessage={`
+              <br></br>
+              {deletingGuestPass}
+              {deletingDPSK}
+              <br></br>
+              {confirmation}`}
+              values={{
+                deletingGuestPass: isDeletingGuestPass ? getDeleteMessage('deletingGuestPass') : '',
+                deletingDPSK: isDeletingDPSK ? getDeleteMessage('deletingDPSK') : '',
+                confirmation: !hideConfirmation ? getDeleteMessage('hasAdvertisedVenues') : '',
+                br: () => <br />
+              }}
+            />,
+            ...( !hideConfirmation && { confirmationText: 'Delete' })
           },
-          onOk: () => deleteNetwork({ params: { tenantId, networkId: id } })
+          onOk: () => deleteNetwork({ params: { tenantId, networkId: selected.id } })
             .then(clearSelection)
         })
       }
@@ -235,9 +284,24 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='id'
-        rowActions={rowActions}
+        rowActions={filterByAccess(rowActions)}
         rowSelection={selectable ? { type: 'radio', ...rowSelection(intl) } : undefined}
       />
     </Loader>
   )
+}
+
+function isSelectedGuestNetwork (networks: Network[]) {
+  const guestNetworks = networks.filter(network => {
+    const { nwSubType, captiveType } = network
+    return (nwSubType === NetworkTypeEnum.CAPTIVEPORTAL &&
+      captiveType === GuestNetworkTypeEnum.GuestPass)
+  })
+
+  return guestNetworks?.length > 0
+}
+
+function isSelectedDpskNetwork (networks: Network[]) {
+  const dpskNetworks = networks.filter(network => network.nwSubType === NetworkTypeEnum.DPSK)
+  return dpskNetworks?.length > 0
 }

@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
 import { Space, Badge }        from 'antd'
@@ -12,7 +12,6 @@ import {
   deviceStatusColors,
   ColumnType
 } from '@acx-ui/components'
-import { hasAccesses } from '@acx-ui/rbac'
 import { useImportSwitchesMutation,
   useLazyGetJwtTokenQuery,
   useSwitchListQuery } from '@acx-ui/rc/services'
@@ -31,6 +30,7 @@ import {
   isStrictOperationalSwitch
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess }                                    from '@acx-ui/user'
 
 import { seriesSwitchStatusMapping } from '../DevicesWidget/helper'
 import { CsvSize, ImportFileDrawer } from '../ImportFileDrawer'
@@ -88,10 +88,10 @@ export function SwitchTable (props : {
     useQuery: useSwitchListQuery,
     defaultPayload: {
       filters: getFilters(params),
-      ...defaultSwitchPayload,
-      search: {
-        searchTargetFields: defaultSwitchPayload.searchTargetFields
-      }
+      ...defaultSwitchPayload
+    },
+    search: {
+      searchTargetFields: defaultSwitchPayload.searchTargetFields
     },
     option: { skip: Boolean(props.tableQuery) }
   })
@@ -123,100 +123,102 @@ export function SwitchTable (props : {
   })
   const [stackTooltip, setStackTooltip] = useState('')
 
-  const columns: TableProps<SwitchRow>['columns'] = [{
-    key: 'name',
-    title: $t({ defaultMessage: 'Switch' }),
-    dataIndex: 'name',
-    sorter: true,
-    defaultSortOrder: 'ascend',
-    disable: true,
-    searchable: searchable,
-    filterKey: 'isStack',
-    filterMultiple: false,
-    filterValueNullable: false,
-    filterable: filterableKeys ? switchFilterOptions : false,
-    render: (data, row) => {
-      return row.isFirstLevel ?
-        <TenantLink to={`/devices/switch/${row.id || row.serialNumber}/${row.serialNumber}/details/overview`}>
-          {getSwitchName(row)}
-        </TenantLink> :
-        <Space>
-          <>{getSwitchName(row)}</>
-          <span>({getStackMemberStatus(row.unitStatus || '', true)})</span>
-        </Space>
+  const columns = React.useMemo(() => {
+    return [{
+      key: 'name',
+      title: $t({ defaultMessage: 'Switch' }),
+      dataIndex: 'name',
+      sorter: true,
+      defaultSortOrder: 'ascend',
+      disable: true,
+      searchable: searchable,
+      filterKey: 'isStack',
+      filterMultiple: false,
+      filterValueNullable: false,
+      filterable: filterableKeys ? switchFilterOptions : false,
+      render: (data, row) => {
+        return row.isFirstLevel ?
+          <TenantLink to={`/devices/switch/${row.id || row.serialNumber}/${row.serialNumber}/details/overview`}>
+            {getSwitchName(row)}
+          </TenantLink> :
+          <Space>
+            <>{getSwitchName(row)}</>
+            <span>({getStackMemberStatus(row.unitStatus || '', true)})</span>
+          </Space>
+      }
+    }, {
+      key: 'deviceStatus',
+      title: $t({ defaultMessage: 'Status' }),
+      dataIndex: 'deviceStatus',
+      sorter: true,
+      filterMultiple: false,
+      filterable: filterableKeys ? statusFilterOptions : false,
+      render: (data, row) => <SwitchStatus row={row}/>
+    }, {
+      key: 'model',
+      title: $t({ defaultMessage: 'Model' }),
+      dataIndex: 'model',
+      filterable: filterableKeys ? filterableKeys['model'] : false,
+      sorter: true,
+      searchable: searchable
+    }, {
+      key: 'activeSerial',
+      title: $t({ defaultMessage: 'Serial Number' }),
+      dataIndex: 'activeSerial',
+      sorter: true,
+      show: !!showAllColumns
+    }, {
+      key: 'switchMac',
+      title: $t({ defaultMessage: 'MAC Address' }),
+      dataIndex: 'switchMac',
+      sorter: true,
+      searchable: searchable,
+      render: (data) => typeof data === 'string' && data.toUpperCase()
+    }, {
+      key: 'ipAddress',
+      title: $t({ defaultMessage: 'IP Address' }),
+      dataIndex: 'ipAddress',
+      sorter: true,
+      searchable: searchable
+    },
+    // { TODO: Health scope
+    //   key: 'incidents',
+    //   title: $t({ defaultMessage: 'Incidents' }),
+    //   dataIndex: 'incidents',
+    // },
+    {
+      key: 'venueName',
+      title: $t({ defaultMessage: 'Venue' }),
+      dataIndex: 'venueName',
+      sorter: true,
+      filterKey: 'venueId',
+      filterable: filterableKeys ? filterableKeys['venueId'] : false,
+      render: (data, row) => (
+        <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{data}</TenantLink>
+      )
+    }, {
+      key: 'uptime',
+      title: $t({ defaultMessage: 'Up Time' }),
+      dataIndex: 'uptime',
+      sorter: true
+    }, {
+      key: 'clientCount',
+      title: $t({ defaultMessage: 'Clients' }),
+      dataIndex: 'clientCount',
+      sorter: true,
+      render: (data, row) => (
+        <TenantLink to={`/devices/switch/${row.id || row.serialNumber}/${row.serialNumber}/details/clients`}>
+          {data ? data : ((row.unitStatus === undefined) ? 0 : '')}
+        </TenantLink>
+      )
     }
-  }, {
-    key: 'deviceStatus',
-    title: $t({ defaultMessage: 'Status' }),
-    dataIndex: 'deviceStatus',
-    sorter: true,
-    filterMultiple: false,
-    filterable: filterableKeys ? statusFilterOptions : false,
-    render: (data, row) => <SwitchStatus row={row} />
-  }, {
-    key: 'model',
-    title: $t({ defaultMessage: 'Model' }),
-    dataIndex: 'model',
-    filterable: filterableKeys ? filterableKeys['model'] : false,
-    sorter: true,
-    searchable: searchable
-  }, {
-    key: 'activeSerial',
-    title: $t({ defaultMessage: 'Serial Number' }),
-    dataIndex: 'activeSerial',
-    sorter: true,
-    show: !!showAllColumns
-  }, {
-    key: 'switchMac',
-    title: $t({ defaultMessage: 'MAC Address' }),
-    dataIndex: 'switchMac',
-    sorter: true,
-    searchable: searchable,
-    render: (data) => typeof data === 'string' && data.toUpperCase()
-  }, {
-    key: 'ipAddress',
-    title: $t({ defaultMessage: 'IP Address' }),
-    dataIndex: 'ipAddress',
-    sorter: true,
-    searchable: searchable
-  },
-  // { TODO: Health scope
-  //   key: 'incidents',
-  //   title: $t({ defaultMessage: 'Incidents' }),
-  //   dataIndex: 'incidents',
-  // },
-  {
-    key: 'venueName',
-    title: $t({ defaultMessage: 'Venue' }),
-    dataIndex: 'venueName',
-    sorter: true,
-    filterKey: 'venueId',
-    filterable: filterableKeys ? filterableKeys['venueId'] : false,
-    render: (data, row) => (
-      <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{data}</TenantLink>
-    )
-  }, {
-    key: 'uptime',
-    title: $t({ defaultMessage: 'Up Time' }),
-    dataIndex: 'uptime',
-    sorter: true
-  }, {
-    key: 'clientCount',
-    title: $t({ defaultMessage: 'Clients' }),
-    dataIndex: 'clientCount',
-    sorter: true,
-    render: (data, row) => (
-      <TenantLink to={`/devices/switch/${row.id || row.serialNumber}/${row.serialNumber}/details/clients`}>
-        {data ? data : ((row.unitStatus === undefined) ? 0 : '') }
-      </TenantLink>
-    )
-  }
-  // { // TODO: Waiting for TAG feature support
-  //   key: 'tags',
-  //   title: $t({ defaultMessage: 'Tags' }),
-  //   dataIndex: 'tags'
-  // }
-  ]
+      // { // TODO: Waiting for TAG feature support
+      //   key: 'tags',
+      //   title: $t({ defaultMessage: 'Tags' }),
+      //   dataIndex: 'tags'
+      // }
+    ] as TableProps<SwitchRow>['columns']
+  }, [$t])
 
   const isActionVisible = (
     selectedRows: SwitchRow[],
@@ -240,6 +242,7 @@ export function SwitchTable (props : {
     disabled: (rows) => rows[0].deviceStatus === SwitchStatusEnum.DISCONNECTED
   }, {
     label: $t({ defaultMessage: 'CLI Session' }),
+    key: 'EnableCliSessionButton',
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
     disabled: (rows) => {
       const row = rows[0]
@@ -297,7 +300,7 @@ export function SwitchTable (props : {
       onFilterChange={tableQuery.handleFilterChange}
       enableApiFilter={true}
       rowKey={(record)=> record.serialNumber + (!record.isFirstLevel ? 'stack-member' : '')}
-      rowActions={rowActions}
+      rowActions={filterByAccess(rowActions)}
       rowSelection={{
         type: 'checkbox',
         renderCell: (checked, record, index, originNode) => {
@@ -306,7 +309,7 @@ export function SwitchTable (props : {
             : null
         }
       }}
-      actions={hasAccesses(props.enableActions ? [{
+      actions={filterByAccess(props.enableActions ? [{
         label: $t({ defaultMessage: 'Add Switch' }),
         onClick: () => {
           navigate(`${linkToEditSwitch.pathname}/add`)

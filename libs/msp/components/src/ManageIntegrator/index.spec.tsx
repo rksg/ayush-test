@@ -2,9 +2,10 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, MspUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                    from '@acx-ui/store'
-import { mockServer, render, screen }  from '@acx-ui/test-utils'
+import { MspUrlsInfo }                from '@acx-ui/rc/utils'
+import { Provider }                   from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { UserUrlsInfo }               from '@acx-ui/user'
 
 import { ManageIntegrator } from '.'
 
@@ -98,7 +99,7 @@ describe('ManageIntegrator', () => {
     )
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getUserProfile.url,
+        UserUrlsInfo.getUserProfile.url,
         (req, res, ctx) => res(ctx.json(userProfile))
       )
     )
@@ -115,7 +116,7 @@ describe('ManageIntegrator', () => {
         route: { params, path: '/:tenantId/integrators/create' }
       })
 
-    expect(screen.getByText('Add Integrator')).toBeVisible()
+    expect(screen.getByText('Add Tech Partner')).toBeVisible()
 
     expect(screen.getByRole('heading', { name: 'Account Details' })).toBeVisible()
     expect(screen.queryByRole('heading', { name: 'Customers' })).toBeNull()

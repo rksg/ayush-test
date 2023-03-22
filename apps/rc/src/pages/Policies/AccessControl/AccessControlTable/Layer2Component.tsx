@@ -1,38 +1,55 @@
-import { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
+import { defaultNetworkPayload }                      from '@acx-ui/rc/components'
 import {
   useDelL2AclPolicyMutation,
   useGetAccessControlProfileListQuery,
-  useL2AclPolicyListQuery
+  useGetEnhancedL2AclProfileListQuery,
+  useNetworkListQuery
 } from '@acx-ui/rc/services'
-import { L2AclPolicy, PolicyType, useTableQuery } from '@acx-ui/rc/utils'
+import { AclOptionType, L2AclPolicy, Network, useTableQuery } from '@acx-ui/rc/utils'
+import { filterByAccess }                                     from '@acx-ui/user'
 
-import Layer2Drawer from '../AccessControlForm/Layer2Drawer'
-
+import { AddModeProps } from '../AccessControlForm/AccessControlForm'
+import Layer2Drawer     from '../AccessControlForm/Layer2Drawer'
 
 const defaultPayload = {
   searchString: '',
-  filters: {
-    type: [PolicyType.LAYER_2_POLICY]
-  },
   fields: [
     'id',
     'name',
     'description',
-    'macAddressesCount',
-    'networksCount'
-  ]
+    'macAddress',
+    'networkIds'
+  ],
+  page: 1
 }
 
 const Layer2Component = () => {
   const { $t } = useIntl()
   const params = useParams()
+  const [addModeStatus, setAddModeStatus] = useState(
+    { enable: true, visible: false } as AddModeProps
+  )
 
   const [ delL2AclPolicy ] = useDelL2AclPolicyMutation()
+
+  const [networkFilterOptions, setNetworkFilterOptions] = useState([] as AclOptionType[])
+  const [networkIds, setNetworkIds] = useState([] as string[])
+
+  const networkTableQuery = useTableQuery<Network>({
+    useQuery: useNetworkListQuery,
+    defaultPayload: {
+      ...defaultNetworkPayload,
+      filters: {
+        id: [...networkIds]
+      }
+    }
+  })
 
   const { data: accessControlList } = useGetAccessControlProfileListQuery({
     params: params
@@ -49,15 +66,52 @@ const Layer2Component = () => {
   })
 
   const tableQuery = useTableQuery({
-    useQuery: useL2AclPolicyListQuery,
+    useQuery: useGetEnhancedL2AclProfileListQuery,
     defaultPayload
   })
+
+  useEffect(() => {
+    if (tableQuery.data) {
+      let unionNetworkIds = [] as string[]
+      tableQuery.data.data.map(layer2Policy => {
+        if (layer2Policy.networkIds) {
+          unionNetworkIds.push(...layer2Policy.networkIds)
+        }
+      })
+      setNetworkIds([...new Set(unionNetworkIds)])
+
+      networkTableQuery.setPayload({
+        ...defaultPayload,
+        filters: {
+          id: [...networkIds]
+        }
+      })
+    }
+  }, [tableQuery.data])
+
+  useEffect(() => {
+    if (networkTableQuery.data && networkIds.length) {
+      setNetworkFilterOptions(
+        [...networkTableQuery.data.data.map(
+          (network) => {
+            return { key: network.id, value: network.name }
+          })]
+      )
+    }
+  }, [networkTableQuery.data, networkIds])
+
+  const actions = [{
+    label: $t({ defaultMessage: 'Add Layer 2 Policy' }),
+    onClick: () => {
+      setAddModeStatus({ enable: true, visible: true })
+    }
+  }]
 
   const rowActions: TableProps<L2AclPolicy>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ name, id, networksCount }], clearSelection) => {
-        if (networksCount !== 0 || accessControlList?.includes(id)) {
+      onClick: ([{ name, id, networkIds }], clearSelection) => {
+        if (networkIds?.length !== 0 || accessControlList?.includes(id)) {
           showActionModal({
             type: 'error',
             content: $t({
@@ -90,21 +144,29 @@ const Layer2Component = () => {
   ]
 
   return <Loader states={[tableQuery]}>
+    <Layer2Drawer
+      onlyAddMode={addModeStatus}
+    />
     <Table<L2AclPolicy>
-      columns={useColumns(editMode, setEditMode)}
+      columns={useColumns(networkFilterOptions, editMode, setEditMode)}
+      enableApiFilter={true}
       dataSource={tableQuery.data?.data}
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
+      onFilterChange={tableQuery.handleFilterChange}
       rowKey='id'
-      rowActions={rowActions}
+      actions={filterByAccess(actions)}
+      rowActions={filterByAccess(rowActions)}
       rowSelection={{ type: 'radio' }}
     />
   </Loader>
 }
 
-function useColumns (editMode: { id: string, isEdit: boolean }, setEditMode: (editMode: {
-  id: string, isEdit: boolean
-}) => void) {
+function useColumns (
+  networkFilterOptions: AclOptionType[],
+  editMode: { id: string, isEdit: boolean },
+  setEditMode: (editMode: { id: string, isEdit: boolean }
+  ) => void) {
   const { $t } = useIntl()
 
   const columns: TableProps<L2AclPolicy>['columns'] = [
@@ -129,22 +191,23 @@ function useColumns (editMode: { id: string, isEdit: boolean }, setEditMode: (ed
       key: 'description',
       title: $t({ defaultMessage: 'Description' }),
       dataIndex: 'description',
-      align: 'left',
       sorter: true
     },
     {
-      key: 'macAddressesCount',
+      key: 'macAddress',
       title: $t({ defaultMessage: 'MAC Addresses' }),
-      dataIndex: 'macAddressesCount',
+      dataIndex: 'macAddress',
       align: 'center',
       sorter: true
     },
     {
-      key: 'networksCount',
+      key: 'networkIds',
       title: $t({ defaultMessage: 'Networks' }),
-      dataIndex: 'networksCount',
+      dataIndex: 'networkIds',
+      filterable: networkFilterOptions,
       align: 'center',
-      sorter: true
+      sorter: true,
+      render: (data, row) => row.networkIds?.length
     }
   ]
 

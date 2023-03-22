@@ -214,9 +214,12 @@ describe('HelpPage menus Button', () => {
     await userEvent.click(screen.getByRole('menuitem', { name: 'Supported Device Models' }))
 
     await userEvent.click(helpBtn)
+    await userEvent.click(screen.getByRole('menuitem', { name: 'How-To Videos' }))
+
+    await userEvent.click(helpBtn)
     await userEvent.click(screen.getByRole('menuitem', { name: 'Firewall ACL Inputs' }))
 
-    expect(mockOpenFn).toBeCalledTimes(4)
+    expect(mockOpenFn).toBeCalledTimes(5)
   })
 
 })

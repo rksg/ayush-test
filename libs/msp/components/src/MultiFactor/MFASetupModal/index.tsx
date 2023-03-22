@@ -1,12 +1,15 @@
 import { useEffect } from 'react'
 
-import { Modal, Row, Col, Form, Typography, Space } from 'antd'
-import { useIntl }                                  from 'react-intl'
-import { useParams }                                from 'react-router-dom'
+import { Row, Col, Form, Typography, Space } from 'antd'
+import { useIntl }                           from 'react-intl'
+import { useParams }                         from 'react-router-dom'
 
-import { cssStr }                                                  from '@acx-ui/components'
-import { useGetMfaTenantDetailsQuery, useGetMfaAdminDetailsQuery } from '@acx-ui/rc/services'
-import { MFAMethod }                                               from '@acx-ui/rc/utils'
+import { cssStr, Modal }       from '@acx-ui/components'
+import {
+  MFAMethod,
+  useGetMfaTenantDetailsQuery,
+  useGetMfaAdminDetailsQuery
+} from '@acx-ui/user'
 
 import { AuthenticationMethod }       from '../AuthenticationMethod'
 import { BackupAuthenticationMethod } from '../BackupAuthenticationMethod'
@@ -31,7 +34,9 @@ export const MFASetupModal = (props: MFASetupModalProps) => {
 
   const handleCancel = () => {
     // redirect to login page
-    window.location.href = '/logout'
+    const token = sessionStorage.getItem('jwt')?? null
+    sessionStorage.removeItem('jwt')
+    window.location.href = token? `/logout?token=${token}` : '/logout'
   }
 
   useEffect(() => {

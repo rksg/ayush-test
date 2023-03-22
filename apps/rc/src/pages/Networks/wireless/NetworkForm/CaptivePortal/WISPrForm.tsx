@@ -13,6 +13,7 @@ import { FormattedMessage, useIntl } from 'react-intl'
 import { useParams }                 from 'react-router-dom'
 
 import { Button, GridCol, GridRow, StepsForm, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import {
   InformationSolid,
   QuestionMarkCircleOutlined
@@ -38,6 +39,7 @@ export function WISPrForm () {
     editMode,
     cloneMode
   } = useContext(NetworkFormContext)
+  const enableWISPREncryptMacIP = useIsSplitOn(Features.WISPR_ENCRYPT_MAC_IP)
   const { $t } = useIntl()
   const params = useParams()
   const inputKey = useRef<InputRef>(null)
@@ -54,7 +56,6 @@ export function WISPrForm () {
     if(providerData.data){
       const providers = providerData.data.providers
       setExternalProviders(providers)
-      form.setFieldValue(['guestPortal','wisprPage','integrationKey'], generateRandomString())
     }
     if((editMode || cloneMode) && data){
       if(data.guestPortal?.wisprPage?.accountingRadius){
@@ -100,6 +101,9 @@ export function WISPrForm () {
       }
     }
   },[providerData.data,data])
+  useEffect(()=>{
+    form.setFieldValue(['guestPortal','wisprPage','integrationKey'], generateRandomString())
+  },[])
   const onGenerateHexKey = () => {
     let hexKey = generateHexKey(26)
     form.setFieldsValue({ wlan: { wepHexKey: hexKey.substring(0, 26) } })
@@ -343,13 +347,23 @@ export function WISPrForm () {
           name={['wlan','bypassCPUsingMacAddressAuthentication']}
           noStyle
           valuePropName='checked'
-          initialValue={false}
+          initialValue={true}
           children={
             <Checkbox>
               {$t({ defaultMessage: 'Enable MAC auth bypass' })}
             </Checkbox>
           }
         />
+        {enableWISPREncryptMacIP && <Form.Item
+          name={['guestPortal','wisprPage', 'encryptMacIpEnabled']}
+          valuePropName='checked'
+          initialValue={true}
+          children={
+            <Checkbox>
+              {$t({ defaultMessage: 'Enable the encryption for users’ MAC and IP addresses' })}
+            </Checkbox>
+          }
+        />}
         <DhcpCheckbox />
         <Form.Item
           name={['walledGardensString']}

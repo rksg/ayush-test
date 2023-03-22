@@ -185,7 +185,7 @@ exports[`DpskSettingsForm should render DPSK form successfully 1`] = `
                                   />
                                 </span>
                                 <span>
-                                  Use Cloudpath Server
+                                  Use Radius Server
                                 </span>
                               </label>
                             </div>

@@ -6,7 +6,7 @@ import { IntlShape, MessageDescriptor, defineMessage, useIntl } from 'react-intl
 
 import { noDataSymbol }     from '@acx-ui/analytics/utils'
 import { GridCol, Tooltip } from '@acx-ui/components'
-import { formatter }        from '@acx-ui/utils'
+import { formatter }        from '@acx-ui/formatter'
 
 import { Pill } from './styledComponents'
 
@@ -90,7 +90,7 @@ export const StatusBlock = ({ field, values, configured }: StatusBlockProps) => 
   </GridCol>
 }
 
-export const Status = ( { details }: ReturnType<typeof getExecutionSectionData>) => <>{
+export const Status = ({ details } : { details: ReturnType<typeof getExecutionSectionData> }) => <>{
   Object.keys(statusColumns).map(field =>
     <StatusBlock
       key={field}

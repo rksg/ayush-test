@@ -14,18 +14,21 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { DeleteSolid, DownloadOutlined }                                              from '@acx-ui/icons'
-import { useAddL2AclPolicyMutation, useGetL2AclPolicyQuery, useL2AclPolicyListQuery } from '@acx-ui/rc/services'
-import { AccessStatus, CommonResult, MacAddressFilterRegExp }                         from '@acx-ui/rc/utils'
-import { useParams }                                                                  from '@acx-ui/react-router-dom'
+import { DeleteSolid, DownloadOutlined } from '@acx-ui/icons'
+import {
+  useAddL2AclPolicyMutation,
+  useGetL2AclPolicyQuery,
+  useL2AclPolicyListQuery,
+  useUpdateL2AclPolicyMutation
+} from '@acx-ui/rc/services'
+import { AccessStatus, CommonResult, MacAddressFilterRegExp } from '@acx-ui/rc/utils'
+import { useParams }                                          from '@acx-ui/react-router-dom'
+import { filterByAccess }                                     from '@acx-ui/user'
+
+import { AddModeProps, editModeProps } from './AccessControlForm'
 
 const { useWatch } = Form
 const { Option } = Select
-
-export interface editModeProps {
-  id: string,
-  isEdit: boolean
-}
 
 export interface Layer2DrawerProps {
   inputName?: string[]
@@ -33,7 +36,8 @@ export interface Layer2DrawerProps {
     id: string,
     viewText: string
   },
-  isOnlyViewMode?: boolean
+  isOnlyViewMode?: boolean,
+  onlyAddMode?: AddModeProps,
   editMode?: editModeProps,
   setEditMode?: (editMode: editModeProps) => void
 }
@@ -69,17 +73,22 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
     inputName = [],
     onlyViewMode = {} as { id: string, viewText: string },
     isOnlyViewMode = false,
+    onlyAddMode = { enable: false, visible: false } as AddModeProps,
     editMode = { id: '', isEdit: false } as editModeProps,
     setEditMode = () => {}
   } = props
   const inputRef = useRef(null)
-  const [visible, setVisible] = useState(false)
+  const [visible, setVisible] = useState(onlyAddMode.enable ? onlyAddMode.visible : false)
+  const [localEditMode, setLocalEdiMode] = useState(
+    { id: '', isEdit: false } as editModeProps
+  )
   const [ruleDrawerVisible, setRuleDrawerVisible] = useState(false)
   const [addressTags, setAddressTags] = useState([] as string[])
   const [inputValue, setInputValue] = useState('')
   const [queryPolicyId, setQueryPolicyId] = useState('')
   const [queryPolicyName, setQueryPolicyName] = useState('')
   const [requestId, setRequestId] = useState('')
+  const [skipFetch, setSkipFetch] = useState(true)
   const form = Form.useFormInstance()
   const [contentForm] = Form.useForm()
   const MAC_ADDRESS_LIMIT = 128
@@ -96,11 +105,20 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
 
   const [ createL2AclPolicy ] = useAddL2AclPolicyMutation()
 
+  const [ updateL2AclPolicy ] = useUpdateL2AclPolicyMutation()
+
   const { layer2SelectOptions, layer2List } = useL2AclPolicyListQuery({
     params: { ...params, requestId: requestId },
     payload: {
-      fields: ['name', 'id'], sortField: 'name',
-      sortOrder: 'ASC', page: 1, pageSize: 10000
+      fields: [
+        'id',
+        'name',
+        'description',
+        'macAddress',
+        'networkIds'
+      ],
+      page: 1,
+      pageSize: 25
     }
   }, {
     selectFromResult ({ data }) {
@@ -118,7 +136,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
     {
       params: { ...params, l2AclPolicyId: isOnlyViewMode ? onlyViewMode.id : l2AclPolicyId }
     },
-    { skip: !isOnlyViewMode && (l2AclPolicyId === '' || l2AclPolicyId === undefined) }
+    { skip: skipFetch }
   )
 
   const isViewMode = () => {
@@ -126,12 +144,18 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
       return false
     }
 
-    if (editMode) {
-      return !editMode.isEdit
+    if (editMode.isEdit || localEditMode.isEdit) {
+      return false
     }
 
     return !_.isNil(layer2PolicyInfo)
   }
+
+  useEffect(() => {
+    if (!isOnlyViewMode && (l2AclPolicyId === '' || l2AclPolicyId === undefined)) {
+      setSkipFetch(false)
+    }
+  }, [isOnlyViewMode, l2AclPolicyId])
 
   useEffect(() => {
     if (editMode.isEdit && editMode.id !== '') {
@@ -141,7 +165,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
   }, [editMode])
 
   useEffect(() => {
-    if (layer2PolicyInfo) {
+    if (layer2PolicyInfo && (isViewMode() || editMode.isEdit || localEditMode.isEdit)) {
       contentForm.setFieldValue('policyName', layer2PolicyInfo.name)
       contentForm.setFieldValue('layer2Access', layer2PolicyInfo.access)
       setMacAddressList(layer2PolicyInfo.macAddresses.map(address => ({
@@ -155,7 +179,9 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
     if (requestId && queryPolicyName) {
       layer2SelectOptions.map(option => {
         if (option.props.children === queryPolicyName) {
-          form.setFieldValue([...inputName, 'l2AclPolicyId'], option.key)
+          if (!onlyAddMode.enable) {
+            form.setFieldValue([...inputName, 'l2AclPolicyId'], option.key)
+          }
           setQueryPolicyId(option.key as string)
           setQueryPolicyName('')
           setRequestId('')
@@ -163,6 +189,12 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
       })
     }
   }, [layer2SelectOptions, requestId, policyName])
+
+  useEffect(() => {
+    if (onlyAddMode.enable && onlyAddMode.visible) {
+      setVisible(onlyAddMode.visible)
+    }
+  }, [onlyAddMode])
 
   const [macAddressList, setMacAddressList] = useState([] as { macAddress: string }[])
 
@@ -231,6 +263,11 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
     clearFieldsValue()
     if (editMode.isEdit) {
       setEditMode({
+        id: '', isEdit: false
+      })
+    }
+    if (localEditMode.isEdit) {
+      setLocalEdiMode({
         id: '', isEdit: false
       })
     }
@@ -311,7 +348,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
       }
       setInputValue('')
     } catch (e) {
-      invalidateMacToast()
+      console.log(e) // eslint-disable-line no-console
     }
   }
 
@@ -323,19 +360,32 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
     onClick: handleClearAction
   }] : []
 
+  const convertToPayload = (policyId?: string) => {
+    let id = {}
+    if (policyId) {
+      id = { id: policyId }
+    }
+    let payload = {
+      name: policyName,
+      access: accessStatus,
+      macAddresses: macAddressList.map((item: { macAddress: string }) =>
+        item.macAddress
+      ),
+      description: null
+    }
+
+    return {
+      ...id,
+      ...payload
+    }
+  }
+
   const handleL2AclPolicy = async (edit: boolean) => {
     try {
       if (!edit) {
         const l2AclRes: CommonResult = await createL2AclPolicy({
           params: params,
-          payload: {
-            name: policyName,
-            access: accessStatus,
-            macAddresses: macAddressList.map((item: { macAddress: string }) =>
-              item.macAddress
-            ),
-            description: null
-          }
+          payload: convertToPayload()
         }).unwrap()
         // let responseData = l2AclRes.response as {
         //   [key: string]: string
@@ -344,16 +394,14 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
         // setQueryPolicyId(responseData.id)
         setRequestId(l2AclRes.requestId)
         setQueryPolicyName(policyName)
+      } else {
+        await updateL2AclPolicy({
+          params: { ...params, l2AclPolicyId: queryPolicyId },
+          payload: convertToPayload(queryPolicyId)
+        }).unwrap()
       }
-    } catch(error) {
-      const responseData = error as { status: number, data: { [key: string]: string } }
-      showToast({
-        type: 'error',
-        duration: 10,
-        content: $t({ defaultMessage: 'An error occurred: {error}' }, {
-          error: responseData.data.error
-        })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -364,14 +412,17 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
         label={$t({ defaultMessage: 'Policy Name:' })}
         rules={[
           { required: true },
-          { required: true,
-            validator: (_, value) => {
-              if (layer2List && layer2List.find(layer2 => layer2 === value)) {
-                return Promise.reject($t({
-                  defaultMessage: 'A policy with that name already exists'
-                }))
-              }
-              return Promise.resolve()}
+          { min: 2 },
+          { max: 32 },
+          { validator: (_, value) => {
+            if (layer2List && layer2List
+              .filter(layer2 => editMode ? (layer2PolicyInfo?.name !== layer2) : true)
+              .findIndex(layer2 => layer2 === value) !== -1) {
+              return Promise.reject($t({
+                defaultMessage: 'A policy with that name already exists'
+              }))
+            }
+            return Promise.resolve()}
           }
         ]}
         children={<Input disabled={isViewMode()}/>}
@@ -458,7 +509,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
           columns={basicColumns}
           dataSource={macAddressList}
           rowKey='macAddress'
-          actions={actions}
+          actions={filterByAccess(actions)}
           columnState={{ hidden: true }}
         />
       </Form.Item>
@@ -496,9 +547,13 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
     />
   </RuleContentWrapper>
 
-  return (
-    <>
-      { isOnlyViewMode ? <Button
+  const modeContent = () => {
+    if (onlyAddMode.enable) {
+      return null
+    }
+
+    if (isOnlyViewMode) {
+      return <Button
         type='link'
         size={'small'}
         onClick={() => {
@@ -507,49 +562,59 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
         }
         }>
         {onlyViewMode.viewText}
-      </Button>: <GridRow style={{ width: '350px' }}>
-        <GridCol col={{ span: 12 }}>
-          <Form.Item
-            name={[...inputName, 'l2AclPolicyId']}
-            rules={[{
-              required: true
-            }, {
-              message: $t({ defaultMessage: 'Please select Layer 2 profile' })
-            }]}
-            children={
-              <Select
-                placeholder={$t({ defaultMessage: 'Select profile...' })}
-                onChange={(value) => {
-                  setQueryPolicyId(value)
-                }}
-                children={layer2SelectOptions}
-              />
-            }
-          />
-        </GridCol>
-        <AclGridCol>
-          <Button type='link'
-            disabled={!l2AclPolicyId}
-            onClick={() => {
-              if (l2AclPolicyId) {
-                setVisible(true)
-                setQueryPolicyId(l2AclPolicyId)
-              }
-            }
-            }>
-            {$t({ defaultMessage: 'View Details' })}
-          </Button>
-        </AclGridCol>
-        <AclGridCol>
-          <Button type='link'
-            onClick={() => {
+      </Button>
+    }
+
+    return <GridRow style={{ width: '350px' }}>
+      <GridCol col={{ span: 12 }}>
+        <Form.Item
+          name={[...inputName, 'l2AclPolicyId']}
+          rules={[{
+            required: true
+          }, {
+            message: $t({ defaultMessage: 'Please select Layer 2 profile' })
+          }]}
+          children={
+            <Select
+              style={{ width: '150px' }}
+              placeholder={$t({ defaultMessage: 'Select profile...' })}
+              onChange={(value) => {
+                setQueryPolicyId(value)
+              }}
+              children={layer2SelectOptions}
+            />
+          }
+        />
+      </GridCol>
+      <AclGridCol>
+        <Button type='link'
+          disabled={!l2AclPolicyId}
+          onClick={() => {
+            if (l2AclPolicyId) {
               setVisible(true)
-              setQueryPolicyId('')
-            }}>
-            {$t({ defaultMessage: 'Add New' })}
-          </Button>
-        </AclGridCol>
-      </GridRow> }
+              setQueryPolicyId(l2AclPolicyId)
+              setLocalEdiMode({ id: l2AclPolicyId, isEdit: true })
+            }
+          }
+          }>
+          {$t({ defaultMessage: 'Edit Details' })}
+        </Button>
+      </AclGridCol>
+      <AclGridCol>
+        <Button type='link'
+          onClick={() => {
+            setVisible(true)
+            setQueryPolicyId('')
+          }}>
+          {$t({ defaultMessage: 'Add New' })}
+        </Button>
+      </AclGridCol>
+    </GridRow>
+  }
+
+  return (
+    <>
+      {modeContent()}
       <Drawer
         title={$t({ defaultMessage: 'Layer 2 Settings' })}
         visible={visible}
@@ -565,7 +630,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
               try {
                 await contentForm.validateFields()
                 if (!isViewMode()) {
-                  await handleL2AclPolicy(false)
+                  await handleL2AclPolicy(editMode.isEdit || localEditMode.isEdit)
                 }
                 handleLayer2DrawerClose()
               } catch (error) {

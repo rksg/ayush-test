@@ -10,6 +10,7 @@ import { VenueLed,
 import { useParams } from '@acx-ui/react-router-dom'
 import { getIntl }   from '@acx-ui/utils'
 
+import { PropertyManagementTab }    from './PropertyManagementTab'
 import { SwitchConfigTab }          from './SwitchConfigTab'
 import { VenueDetailsTab }          from './VenueDetailsTab'
 import VenueEditPageHeader          from './VenueEditPageHeader'
@@ -21,7 +22,8 @@ import { ServerSettingContext }     from './WifiConfigTab/ServerTab'
 const tabs = {
   details: VenueDetailsTab,
   wifi: WifiConfigTab,
-  switch: SwitchConfigTab
+  switch: SwitchConfigTab,
+  property: PropertyManagementTab
 }
 
 export interface EditContext {
@@ -32,6 +34,7 @@ export interface EditContext {
   hasError?: boolean,
   oldData: unknown,
   newData: unknown,
+  previousPath?: string,
   updateChanges: () => void,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setData: (data: any) => void,
@@ -68,11 +71,14 @@ export const VenueEditContext = createContext({} as {
 
   editServerContextData: ServerSettingContext,
   setEditServerContextData: (data: ServerSettingContext) => void
+  previousPath: string
+  setPreviousPath: (data: string) => void
 })
 
 export function VenueEdit () {
   const { activeTab } = useParams()
   const Tab = tabs[activeTab as keyof typeof tabs]
+  const [previousPath, setPreviousPath] = useState('')
   const [editContextData, setEditContextData] = useState({} as EditContext)
   const [
     editNetworkingContextData, setEditNetworkingContextData
@@ -99,7 +105,9 @@ export function VenueEdit () {
       editSecurityContextData,
       setEditSecurityContextData,
       editServerContextData,
-      setEditServerContextData
+      setEditServerContextData,
+      previousPath,
+      setPreviousPath
     }}>
       <VenueEditPageHeader />
       { Tab && <Tab /> }
@@ -163,6 +171,7 @@ function processWifiTab (
     case 'servers':
       editServerContextData?.updateSyslog?.()
       editServerContextData?.updateBonjourFencing?.()
+      editServerContextData?.updateVenueApSnmp?.()
       break
   }
 }

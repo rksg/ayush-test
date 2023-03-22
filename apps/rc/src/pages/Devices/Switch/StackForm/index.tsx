@@ -30,7 +30,6 @@ import {
   StepsFormInstance,
   TableProps,
   Table,
-  showToast,
   Tabs,
   Tooltip,
   Alert
@@ -48,16 +47,18 @@ import {
   useLazyGetSwitchListQuery
 } from '@acx-ui/rc/services'
 import {
-  CatchErrorResponse,
   Switch,
   getSwitchModel,
   SWITCH_SERIAL_PATTERN,
   SwitchTable,
   SwitchStatusEnum,
   isOperationalSwitch,
-  SwitchViewModel
+  SwitchViewModel,
+  redirectPreviousPage,
+  LocationExtended
 } from '@acx-ui/rc/utils'
 import {
+  useLocation,
   useNavigate,
   useTenantLink,
   useParams
@@ -87,6 +88,7 @@ export function StackForm () {
   const editMode = action === 'edit'
   const formRef = useRef<StepsFormInstance<Switch>>()
   const navigate = useNavigate()
+  const location = useLocation()
   const basePath = useTenantLink('/devices/')
   const modelNotSupportStack = ['ICX7150-C08P', 'ICX7150-C08PT']
   const stackSwitches = stackList?.split('_') ?? []
@@ -102,6 +104,7 @@ export function StackForm () {
   const [getStackMemberList] = useLazyGetStackMemberListQuery()
   const [getSwitchList] = useLazyGetSwitchListQuery()
 
+  const [previousPath, setPreviousPath] = useState('')
   const [venueOption, setVenueOption] = useState([] as DefaultOptionType[])
   const [apGroupOption, setApGroupOption] = useState([] as DefaultOptionType[])
 
@@ -250,6 +253,10 @@ export function StackForm () {
     }
   }, [venuesList, switchData, switchDetail])
 
+  useEffect(() => {
+    setPreviousPath((location as LocationExtended)?.state?.from?.pathname)
+  }, [])
+
   const handleChange = (row: SwitchTable, index: number) => {
     const dataRows = [...tableData]
     const serialNumber = formRef.current?.getFieldValue(
@@ -305,12 +312,8 @@ export function StackForm () {
         ...basePath,
         pathname: `${basePath.pathname}/switch`
       })
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (e: any) {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: '{message}' }, { message: e.data.errors[0].message })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -368,12 +371,8 @@ export function StackForm () {
         ...basePath,
         pathname: `${basePath.pathname}/switch`
       })
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (e: any) {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: '{message}' }, { message: e.data.errors[0].message })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -397,13 +396,7 @@ export function StackForm () {
         pathname: `${basePath.pathname}/switch`
       })
     } catch (error) {
-      const errorRes = error as CatchErrorResponse
-      const message
-        = errorRes?.data?.errors?.[0]?.message ?? $t({ defaultMessage: 'An error occurred' })
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: '{message}' }, { message })
-      })
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -642,10 +635,7 @@ export function StackForm () {
           : (isStackSwitches ? handleSaveStackSwitches : handleAddSwitchStack)
         }
         onCancel={() =>
-          navigate({
-            ...basePath,
-            pathname: `${basePath.pathname}/switch`
-          })
+          redirectPreviousPage(navigate, previousPath, `${basePath.pathname}/switch`)
         }
         buttonLabel={{
           submit: readOnly ? $t({ defaultMessage: 'OK' }) :

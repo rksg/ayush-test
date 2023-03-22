@@ -125,7 +125,7 @@ export function Unit (props:{
            && _.isInteger(member.unitId)) {
         getSwitchPortDetail(switchMac as string, serialNumber as string, member.unitId?.toString() as string)
       } else {
-        getOfflineSwitchPort(member)
+        getOfflineSwitchPort(unitData.model as string)
       }
     }
   }, [member])
@@ -163,8 +163,8 @@ export function Unit (props:{
     const slotsCount = Math.max(switchModelInfo?.powerSlots as number, switchModelInfo?.fanSlots as number)
 
     // The backend is not sort by slotNumber, so we need to sort it.
-    fanRearStatus?.sort((a, b) => a.slotNumber - b.slotNumber)
-    powerRearStatus?.sort((a, b) => a.slotNumber - b.slotNumber)
+    fanRearStatus?.slice().sort((a, b) => a.slotNumber - b.slotNumber)
+    powerRearStatus?.slice().sort((a, b) => a.slotNumber - b.slotNumber)
 
     const tmpRearView = {
       slots: []
@@ -185,9 +185,9 @@ export function Unit (props:{
     setRearView(tmpRearView)
   }
 
-  const getOfflineSwitchPort = (member: StackMember) => {
+  const getOfflineSwitchPort = (model: string) => {
     const portStatus = []
-    const portCount = Number(member.model?.split('-')[1].replace(/\D/g, ''))
+    const portCount = Number(model?.split('-')[1].replace(/\D/g, '').slice(0, 2))
 
     for (let i = 1; i < portCount + 1; i++) {
       portStatus.push({
@@ -228,7 +228,7 @@ export function Unit (props:{
 
     return {
       switchUnit: switchMember.unitId,
-      model: getUnitSwitchModel(switchMember),
+      model: switchMember.model || getUnitSwitchModel(switchMember),
       serialNumber: switchMember.serialNumber,
       stackId: switchMember.id,
       poeUsage: getPoeUsage(switchMember as unknown as SwitchViewModel),

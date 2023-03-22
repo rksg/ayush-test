@@ -1,46 +1,27 @@
-import React, { useEffect } from 'react'
-
 import { defineMessage, useIntl, MessageDescriptor } from 'react-intl'
 import { useNavigate, useParams }                    from 'react-router-dom'
 
 import { Tabs }         from '@acx-ui/components'
 import {
+  ActivityTable,
   EventTable,
-  eventDefaultPayload,
-  eventDefaultSearch,
-  eventDefaultSorter,
-  useEventTableFilter
+  useActivityTableQuery,
+  useEventsTableQuery
 } from '@acx-ui/rc/components'
-import { useEventsQuery }             from '@acx-ui/rc/services'
-import {
-  Event,
-  usePollingTableQuery,
-  TimelineTypes,
-  TABLE_QUERY_LONG_POLLING_INTERVAL
-} from '@acx-ui/rc/utils'
+import { TimelineTypes } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 
 const Events = () => {
   const { venueId } = useParams()
-  const { fromTime, toTime } = useEventTableFilter()
-  useEffect(()=>{
-    tableQuery.setPayload({
-      ...tableQuery.payload,
-      filters: { ...eventDefaultPayload.filters, venueId: [ venueId ], fromTime, toTime }
-    })
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fromTime, toTime, venueId])
-  const tableQuery = usePollingTableQuery<Event>({
-    useQuery: useEventsQuery,
-    defaultPayload: {
-      ...eventDefaultPayload,
-      filters: { ...eventDefaultPayload.filters, venueId: [ venueId ], fromTime, toTime }
-    },
-    sorter: eventDefaultSorter,
-    search: eventDefaultSearch,
-    option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
-  })
+  const tableQuery = useEventsTableQuery({ venueId: [venueId] })
   return <EventTable tableQuery={tableQuery}/>
+}
+
+const Activities = () => {
+  const { venueId } = useParams()
+  const tableQuery = useActivityTableQuery({ entityType: 'VENUE', entityId: venueId! })
+
+  return <ActivityTable tableQuery={tableQuery} filterables={['status', 'product']}/>
 }
 
 const tabs : {
@@ -48,6 +29,11 @@ const tabs : {
   title: MessageDescriptor,
   component: () => JSX.Element
 }[] = [
+  {
+    key: 'activities',
+    title: defineMessage({ defaultMessage: 'Activities' }),
+    component: Activities
+  },
   {
     key: 'events',
     title: defineMessage({ defaultMessage: 'Events' }),

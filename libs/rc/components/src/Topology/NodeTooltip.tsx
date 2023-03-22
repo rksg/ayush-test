@@ -42,7 +42,8 @@ tooltipNode: Node,
       'uplink',
       'apStatusData',
       'apStatusData.cellularInfo',
-      'healthStatus'
+      'healthStatus',
+      'clients'
     ]
   }
 
@@ -60,7 +61,7 @@ tooltipNode: Node,
   })
 
   const { data: switchDetail, isLoading: switchLoading } =
-    useSwitchDetailHeaderQuery({ params: { ...params, switchId: tooltipNode.mac } },
+    useSwitchDetailHeaderQuery({ params: { ...params, switchId: tooltipNode.id } },
       { skip: skipSwitchCall(tooltipNode?.type as DeviceTypes) })
 
 

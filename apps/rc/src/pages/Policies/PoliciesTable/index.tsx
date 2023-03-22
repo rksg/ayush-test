@@ -12,7 +12,8 @@ import {
   useDelL2AclPolicyMutation,
   useDelL3AclPolicyMutation,
   useDelAppPolicyMutation,
-  useDelDevicePolicyMutation
+  useDelDevicePolicyMutation,
+  useDeleteApSnmpPolicyMutation
 } from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink,
@@ -25,6 +26,7 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess }                               from '@acx-ui/user'
 
 import { policyTechnologyLabelMapping, policyTypeLabelMapping } from '../contentsMap'
 
@@ -116,7 +118,11 @@ export default function PoliciesTable () {
     [PolicyType.LAYER_2_POLICY]: useDelL2AclPolicyMutation(),
     [PolicyType.LAYER_3_POLICY]: useDelL3AclPolicyMutation(),
     [PolicyType.APPLICATION_POLICY]: useDelAppPolicyMutation(),
-    [PolicyType.DEVICE_POLICY]: useDelDevicePolicyMutation()
+    [PolicyType.DEVICE_POLICY]: useDelDevicePolicyMutation(),
+    [PolicyType.SNMP_AGENT]: useDeleteApSnmpPolicyMutation(),
+    [PolicyType.ADAPTIVE_POLICY]: [],
+    [PolicyType.ADAPTIVE_POLICY_SET]: [],
+    [PolicyType.RADIUS_ATTRIBUTE_GROUP]: []
   }
 
   const tableQuery = useTableQuery({
@@ -181,11 +187,11 @@ export default function PoliciesTable () {
             policyCount: tableQuery.data?.totalCount
           })
         }
-        extra={[
-          <TenantLink to={getSelectPolicyRoutePath(true)} key='add'>
+        extra={filterByAccess([
+          <TenantLink to={getSelectPolicyRoutePath(true)}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Policy or Profile' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <Loader states={[tableQuery]}>
         <Table
@@ -194,7 +200,7 @@ export default function PoliciesTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={rowActions}
+          rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
         />
       </Loader>

@@ -2,8 +2,15 @@ import { ApiInfo } from '../apiService'
 
 export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   GetDefaultDhcpServiceProfileForGuestNetwork: {
+    // used in testcase
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/dhcp-service-profile/guest-network-default'
+  },
+  getVlanPoolViewModelList: {
+    method: 'post',
+    url: '/enhancedVlanPoolProfiles/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedVlanPoolProfiles/query',
+    newApi: true
   },
   getVlanPools: {
     method: 'get',
@@ -25,7 +32,9 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   },
   deleteNetwork: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/wifi/network/:networkId'
+    url: '/networks/:networkId',
+    oldUrl: '/api/tenant/:tenantId/wifi/network/:networkId',
+    newApi: true
   },
   addNetworkVenue: {
     method: 'post',
@@ -52,6 +61,7 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getVenueApCapabilities: {
+    // [New API] private api
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/capabilities'
   },
@@ -86,16 +96,14 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getVenueTripleBandRadioSettings: {
+    // [New API] private api
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/tri-band'
   },
   updateVenueTripleBandRadioSettings: {
+    // [New API] private api
     method: 'put',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/tri-band'
-  },
-  getLteBandLockChannel: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/wifi/venue/:venueId/lte-band-lock-channel'
   },
   getAvailableLteBands: {
     method: 'get',
@@ -134,6 +142,7 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getWifiCapabilities: {
+    // [New API] private api
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/capabilities'
   },
@@ -149,18 +158,22 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber',
     newApi: true
   },
-  getVenueDefaultApGroup: {
-    // new api not working
-    // method: 'get',
-    // url: '/venues/:venueId/apGroups',
-    // oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/default-ap-group',
-    // newApi: true
+  getImportResult: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/venue/:venueId/default-ap-group'
+    url: '/venues/aps/importResults',
+    newApi: true
+  },
+  getVenueDefaultApGroup: {
+    method: 'get',
+    url: '/venues/:venueId/apGroups',
+    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/default-ap-group',
+    newApi: true
   },
   getApGroupsList: {
     method: 'post',
-    url: '/api/viewmodel/:tenantId/ap-groups'
+    url: '/apGroups/query',
+    oldUrl: '/api/viewmodel/:tenantId/ap-groups',
+    newApi: true
   },
   addApGroup: {
     method: 'post',
@@ -170,27 +183,39 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getApsByApGroup: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/ap-group/:apGroupId/ap'
+    url: '/venues/apGroups/:apGroupId/aps',
+    oldUrl: '/api/tenant/:tenantId/wifi/ap-group/:apGroupId/ap',
+    newApi: true
   },
   getApGroup: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/ap-group/:apGroupId'
+    url: '/venues/apGroups/:apGroupId',
+    oldUrl: '/api/tenant/:tenantId/wifi/ap-group/:apGroupId',
+    newApi: true
   },
   updateApGroup: {
     method: 'put',
-    url: '/api/tenant/:tenantId/wifi/ap-group/:apGroupId'
+    url: '/venues/apGroups/:apGroupId',
+    oldUrl: '/api/tenant/:tenantId/wifi/ap-group/:apGroupId',
+    newApi: true
   },
   deleteApGroup: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/wifi/ap-group/:apGroupId'
+    url: '/venues/apGroups/:apGroupId',
+    oldUrl: '/api/tenant/:tenantId/wifi/ap-group/:apGroupId',
+    newApi: true
   },
   deleteApGroups: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/wifi/ap-group'
+    url: '/venues/apGroups',
+    oldUrl: '/api/tenant/:tenantId/wifi/ap-group',
+    newApi: true
   },
   getDhcpAp: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/ap/dhcp-ap'
+    url: '/venues/dhcpApSettings/query',
+    oldUrl: '/api/tenant/:tenantId/wifi/ap/dhcp-ap',
+    newApi: true
   },
   deleteAp: {
     method: 'delete',
@@ -222,18 +247,19 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/download-log',
     newApi: true
   },
-  apAction: {
-    method: 'patch',
+  rebootAp: {
+    method: 'PATCH',
     url: '/venues/aps/:serialNumber',
+    oldMethod: 'post',
+    oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/reboot',
     newApi: true
   },
-  rebootAp: {
-    method: 'post',
-    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/reboot'
-  },
   factoryResetAp: {
-    method: 'post',
-    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/factory-reset'
+    method: 'PATCH',
+    url: '/venues/aps/:serialNumber',
+    oldMethod: 'post',
+    oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/factory-reset',
+    newApi: true
   },
   getApPhoto: {
     method: 'get',
@@ -242,6 +268,11 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   addApPhoto: {
+    // 500 Internal Server Error
+    // method: 'post',
+    // url: '/venues/aps/:serialNumber/pictures',
+    // oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/picture/deep',
+    // newApi: true
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/picture/deep'
   },
@@ -270,20 +301,31 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   pingAp: {
-    method: 'post',
-    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ping'
+    method: 'PATCH',
+    url: '/venues/aps/:serialNumber',
+    oldMethod: 'post',
+    oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ping',
+    newApi: true
   },
   traceRouteAp: {
-    method: 'post',
-    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/trace-route'
+    method: 'PATCH',
+    url: '/venues/aps/:serialNumber',
+    oldMethod: 'post',
+    oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/trace-route',
+    newApi: true
   },
   startPacketCapture: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ui/packet-capture/start'
+    url: '/venues/aps/:serialNumber/packets',
+    oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ui/packet-capture/start',
+    newApi: true
   },
   stopPacketCapture: {
-    method: 'post',
-    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ui/packet-capture/stop'
+    method: 'delete',
+    url: '/venues/aps/:serialNumber/packets',
+    oldMethod: 'post',
+    oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ui/packet-capture/stop',
+    newApi: true
   },
   getPacketCaptureState: {
     method: 'get',
@@ -292,8 +334,11 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   blinkLedAp: {
-    method: 'post',
-    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/blink-led'
+    method: 'PATCH',
+    url: '/venues/aps/:serialNumber',
+    oldMethod: 'post',
+    oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/blink-led',
+    newApi: true
   },
   updateApLanPorts: {
     method: 'put',
@@ -302,6 +347,7 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getApCapabilities: {
+    // [New API] private api
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/capabilities'
   },
@@ -331,42 +377,62 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getVenueDirectedMulticast: {
     method: 'get',
-    url: '/api/venues/:venueId/directedMulticastSettings'
+    url: '/venues/:venueId/directedMulticastSettings',
+    oldUrl: '/api/venues/:venueId/directedMulticastSettings',
+    newApi: true
   },
   updateVenueDirectedMulticast: {
     method: 'put',
-    url: '/api/venues/:venueId/directedMulticastSettings'
+    url: '/venues/:venueId/directedMulticastSettings',
+    oldUrl: '/api/venues/:venueId/directedMulticastSettings',
+    newApi: true
   },
   getApDirectedMulticast: {
     method: 'get',
-    url: '/api/venues/aps/:serialNumber/directedMulticastSettings'
+    url: '/venues/aps/:serialNumber/directedMulticastSettings',
+    oldUrl: '/api/venues/aps/:serialNumber/directedMulticastSettings',
+    newApi: true
   },
   updateApDirectedMulticast: {
     method: 'put',
-    url: '/api/venues/aps/:serialNumber/directedMulticastSettings'
+    url: '/venues/aps/:serialNumber/directedMulticastSettings',
+    oldUrl: '/api/venues/aps/:serialNumber/directedMulticastSettings',
+    newApi: true
   },
   resetApDirectedMulticast: {
     method: 'delete',
-    url: '/api/venues/aps/:serialNumber/directedMulticastSettings'
+    url: '/venues/aps/:serialNumber/directedMulticastSettings',
+    oldUrl: '/api/venues/aps/:serialNumber/directedMulticastSettings',
+    newApi: true
   },
   getVenueLoadBalancing: {
     method: 'get',
-    url: '/api/venues/:venueId/loadBalancingSettings'
+    url: '/venues/:venueId/loadBalancingSettings',
+    oldUrl: '/api/venues/:venueId/loadBalancingSettings',
+    newApi: true
   },
   updateVenueLoadBalancing: {
     method: 'put',
-    url: '/api/venues/:venueId/loadBalancingSettings'
+    url: '/venues/:venueId/loadBalancingSettings',
+    oldUrl: '/api/venues/:venueId/loadBalancingSettings',
+    newApi: true
   },
   getApNetworkSettings: {
     method: 'get',
-    url: '/api/venues/aps/:serialNumber/networkSettings'
+    url: '/venues/aps/:serialNumber/networkSettings',
+    oldUrl: '/api/venues/aps/:serialNumber/networkSettings',
+    newApi: true
   },
   updateApNetworkSettings: {
     method: 'put',
-    url: '/api/venues/aps/:serialNumber/networkSettings'
+    url: '/venues/aps/:serialNumber/networkSettings',
+    oldUrl: '/api/venues/aps/:serialNumber/networkSettings',
+    newApi: true
   },
   resetApNetworkSettings: {
     method: 'delete',
-    url: '/api/venues/aps/:serialNumber/networkSettings'
+    url: '/venues/aps/:serialNumber/networkSettings',
+    oldUrl: '/api/venues/aps/:serialNumber/networkSettings',
+    newApi: true
   }
 }

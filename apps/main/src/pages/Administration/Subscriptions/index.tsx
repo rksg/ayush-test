@@ -1,5 +1,5 @@
-import moment      from 'moment-timezone'
-import { useIntl } from 'react-intl'
+import moment                 from 'moment-timezone'
+import { IntlShape, useIntl } from 'react-intl'
 
 import {
   Loader,
@@ -7,46 +7,101 @@ import {
   TableProps,
   showToast
 } from '@acx-ui/components'
+import { get }                             from '@acx-ui/config'
+import { useIsSplitOn, Features }          from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }       from '@acx-ui/formatter'
 import {
   useGetEntitlementsListQuery,
-  useRefreshEntitlementsMutation
+  useRefreshEntitlementsMutation,
+  useInternalRefreshEntitlementsMutation
 } from '@acx-ui/rc/services'
 import {
-  DateFormatEnum,
   EntitlementUtil,
   Entitlement,
-  EntitlementDeviceType
+  EntitlementDeviceType,
+  AdministrationUrlsInfo
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }      from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 import * as UI                     from './styledComponent'
 import { SubscriptionUtilization } from './SubscriptionUtilization'
 
+const subscriptionTypeFilterOpts = ($t: IntlShape['$t']) => [
+  { key: '', value: $t({ defaultMessage: 'All Subscriptions' }) },
+  {
+    key: EntitlementDeviceType.ANALYTICS,
+    value: EntitlementUtil.getDeviceTypeText($t, EntitlementDeviceType.ANALYTICS )
+  },
+  {
+    key: EntitlementDeviceType.SWITCH,
+    value: EntitlementUtil.getDeviceTypeText($t, EntitlementDeviceType.SWITCH )
+  },
+  {
+    key: EntitlementDeviceType.WIFI,
+    value: EntitlementUtil.getDeviceTypeText($t, EntitlementDeviceType.WIFI )
+  },
+  {
+    key: EntitlementDeviceType.EDGE,
+    value: EntitlementUtil.getDeviceTypeText($t, EntitlementDeviceType.EDGE )
+  },
+  {
+    key: EntitlementDeviceType.LTE,
+    value: EntitlementUtil.getDeviceTypeText($t, EntitlementDeviceType.LTE )
+  }
+]
+
+const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
+  { key: '', value: $t({ defaultMessage: 'Show All' }) },
+  {
+    key: 'valid',
+    value: $t({ defaultMessage: 'Show Active' })
+  },
+  {
+    key: 'invalid',
+    value: $t({ defaultMessage: 'Show Expired' })
+  }
+]
 
 const SubscriptionTable = () => {
   const { $t } = useIntl()
   const params = useParams()
+  const isEdgeEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
 
   const queryResults = useGetEntitlementsListQuery({ params })
-
+  const isNewApi = AdministrationUrlsInfo.getEntitlementSummary.newApi
   const [ refreshEntitlement ] = useRefreshEntitlementsMutation()
+  const [ internalRefreshEntitlement ] = useInternalRefreshEntitlementsMutation()
+  const licenseTypeOpts = subscriptionTypeFilterOpts($t)
 
   const columns: TableProps<Entitlement>['columns'] = [
     {
       title: $t({ defaultMessage: 'Subscription' }),
-      dataIndex: 'name',
-      key: 'name',
-      filterable: true
+      dataIndex: 'deviceType',
+      key: 'deviceType',
+      filterMultiple: false,
+      filterValueNullable: true,
+      filterable: licenseTypeOpts.filter(o =>
+        (isEdgeEnabled && o.key === EntitlementDeviceType.EDGE)
+        || o.key !== EntitlementDeviceType.EDGE
+      ),
+      render: function (_, row) {
+        return EntitlementUtil.getDeviceTypeText($t, row.deviceType)
+      }
     },
     {
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'deviceSubType',
       key: 'deviceSubType',
       render: function (_, row) {
-        if (row.deviceType === EntitlementDeviceType.SWITCH)
-          return EntitlementUtil.deviceSubTypeToText(row?.deviceSubType)
-        else
-          return EntitlementUtil.tempLicenseToString(row.tempLicense === true)
+        if (row.tempLicense === true) {
+          return EntitlementUtil.tempLicenseToString(true)
+        } else {
+          if (row.deviceType === EntitlementDeviceType.SWITCH)
+            return EntitlementUtil.deviceSubTypeToText(row?.deviceSubType)
+          else
+            return EntitlementUtil.tempLicenseToString(false)
+        }
       }
     },
     {
@@ -62,7 +117,7 @@ const SubscriptionTable = () => {
       dataIndex: 'effectiveDate',
       key: 'effectiveDate',
       render: function (_, row) {
-        return moment(row.effectiveDate).format(DateFormatEnum.UserDateFormat)
+        return formatter(DateFormatEnum.DateFormat)(row.effectiveDate)
       }
     },
     {
@@ -70,7 +125,7 @@ const SubscriptionTable = () => {
       dataIndex: 'expirationDate',
       key: 'expirationDate',
       render: function (_, row) {
-        return moment(row.expirationDate).format(DateFormatEnum.UserDateFormat)
+        return formatter(DateFormatEnum.DateFormat)(row.expirationDate)
       }
     },
     {
@@ -78,15 +133,24 @@ const SubscriptionTable = () => {
       dataIndex: 'timeLeft',
       key: 'timeLeft',
       render: function (_, row) {
-        const remaingDays = EntitlementUtil.timeLeftInDays(row.expirationDate)
-        return EntitlementUtil.timeLeftValues(remaingDays)
+        const remainingDays = EntitlementUtil.timeLeftInDays(row.expirationDate)
+        return remainingDays < 0
+          ? <UI.Expired>{EntitlementUtil.timeLeftValues(remainingDays)}</UI.Expired>
+          : EntitlementUtil.timeLeftValues(remainingDays)
       }
     },
     {
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'status',
       key: 'status',
-      filterable: true
+      filterMultiple: false,
+      filterValueNullable: true,
+      filterable: statusTypeFilterOpts($t),
+      render: function (_, row) {
+        return row.status === 'valid'
+          ? $t({ defaultMessage: 'Active' })
+          : <UI.Expired>{$t({ defaultMessage: 'Expired' })}</UI.Expired>
+      }
     }
   ]
 
@@ -94,27 +158,23 @@ const SubscriptionTable = () => {
     {
       label: $t({ defaultMessage: 'Manage Subsciptions' }),
       onClick: () => {
-        window.open('https://support.ruckuswireless.com/cloud_subscriptions', '_blank')
+        const licenseUrl = get('MANAGE_LICENSES')
+        window.open(licenseUrl, '_blank')
       }
     },
     {
       label: $t({ defaultMessage: 'Refresh' }),
       onClick: async () => {
         try {
-          await refreshEntitlement({ params }).unwrap()
+          await (isNewApi ? refreshEntitlement : internalRefreshEntitlement)({ params }).unwrap()
           showToast({
             type: 'success',
             content: $t({
               defaultMessage: 'Successfully refreshed.'
             })
           })
-        } catch {
-          showToast({
-            type: 'error',
-            content: $t({
-              defaultMessage: 'Failed, please try again later.'
-            })
-          })
+        } catch (error) {
+          console.log(error) // eslint-disable-line no-console
         }
       }
     }
@@ -122,17 +182,12 @@ const SubscriptionTable = () => {
 
   const GetStatus = (expirationDate: string) => {
     const isValid = moment(expirationDate).isAfter(Date.now())
-    if( isValid) {
-      return $t({ defaultMessage: 'Active' })
-    } else {
-      return $t({ defaultMessage: 'Expired' })
-    }
+    return isValid ? 'valid' : 'invalid'
   }
 
   const subscriptionData = queryResults.data?.map(response => {
     return {
       ...response,
-      name: EntitlementUtil.getDeviceTypeText($t, response?.deviceType),
       status: GetStatus(response?.expirationDate)
     }
   })
@@ -141,7 +196,7 @@ const SubscriptionTable = () => {
     <Loader states={[queryResults]}>
       <Table
         columns={columns}
-        actions={actions}
+        actions={filterByAccess(actions)}
         dataSource={subscriptionData}
         rowKey='id'
       />

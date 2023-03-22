@@ -1,18 +1,20 @@
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { getUrlForTest, MspUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
+import { ApDeviceStatusEnum, MspUrlsInfo, SwitchStatusEnum } from '@acx-ui/rc/utils'
+import { Provider }                                          from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen,
-  within
+  within,
+  waitFor
 } from '@acx-ui/test-utils'
 
 import { DeviceInventory } from '.'
 
 const list = {
-  totalCount: 9,
+  totalCount: 10,
   page: 1,
   data: [
     {
@@ -22,7 +24,7 @@ const list = {
       model: 'R750',
       name: "EC 111's AP",
       customerName: 'EC 111',
-      deviceStatus: '1_01_NeverContactedCloud',
+      deviceStatus: ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD,
       venueName: 'My-Venue',
       managedAs: 'MSP',
       tenantId: '1456b8a156354b6e98dff3ebc7b25b82'
@@ -34,7 +36,7 @@ const list = {
       model: 'ICX-7150-Co8P',
       name: "EC 222's AP",
       customerName: 'EC 222',
-      deviceStatus: 'PREPROVISIONED',
+      deviceStatus: SwitchStatusEnum.STACK_MEMBER_NEVER_CONTACTED,
       venueName: 'Venue 2',
       managedAs: 'MSP',
       tenantId: '1456b8a156354b6e98dff3ebc7b25b82'
@@ -42,11 +44,11 @@ const list = {
     {
       apMac: '89:28:38:22:77:24',
       serialNumber: '892838227723',
-      deviceType: 'DVCNWTYPE_SWITCH2',
+      deviceType: 'DVCNWTYPE_SWITCH',
       model: 'ICX-7550',
       name: "EC 333's AP",
       customerName: 'EC 333',
-      deviceStatus: 'INITIALIZING',
+      deviceStatus: SwitchStatusEnum.INITIALIZING,
       venueName: 'Venue 3',
       managedAs: 'MSP',
       tenantId: '1456b8a156354b6e98dff3ebc7b25b82'
@@ -54,11 +56,11 @@ const list = {
     {
       apMac: '89:28:38:22:77:26',
       serialNumber: '892838227723',
-      deviceType: 'DVCNWTYPE_SWITCH2',
+      deviceType: 'DVCNWTYPE_SWITCH',
       model: 'ICX-7150-08',
       name: "EC 444's Switch",
       customerName: 'EC 444',
-      deviceStatus: 'APPLYINGFIRMWARE',
+      deviceStatus: SwitchStatusEnum.APPLYING_FIRMWARE,
       venueName: 'Venue 4',
       managedAs: 'MSP',
       tenantId: '1456b8a156354b6e98dff3ebc7b25b82'
@@ -66,11 +68,11 @@ const list = {
     {
       apMac: '89:28:38:22:77:27',
       serialNumber: '892838227723',
-      deviceType: 'DVCNWTYPE_SWITCH4',
+      deviceType: 'DVCNWTYPE_SWITCH',
       model: 'ICX-7850',
       name: "EC 555's Switch",
       customerName: 'EC 555',
-      deviceStatus: 'ONLINE',
+      deviceStatus: SwitchStatusEnum.OPERATIONAL,
       venueName: 'Venue 5',
       managedAs: 'MSP',
       tenantId: '1456b8a156354b6e98dff3ebc7b25b82'
@@ -78,11 +80,11 @@ const list = {
     {
       apMac: '89:28:38:22:77:28',
       serialNumber: '892838227723',
-      deviceType: 'DVCNWTYPE_WIFI2',
+      deviceType: 'DVCNWTYPE_WIFI',
       model: 'R650',
       name: "EC 666's Switch",
       customerName: 'EC 666',
-      deviceStatus: 'OFFLINE',
+      deviceStatus: ApDeviceStatusEnum.OFFLINE,
       venueName: 'Venue 6',
       managedAs: 'MSP',
       tenantId: '1456b8a156354b6e98dff3ebc7b25b82'
@@ -90,11 +92,11 @@ const list = {
     {
       apMac: '89:28:38:22:77:29',
       serialNumber: '892838227723',
-      deviceType: 'DVCNWTYPE_SWITCH6',
+      deviceType: 'DVCNWTYPE_SWITCH',
       model: 'ICX-7150',
       name: "EC 777's Switch",
       customerName: 'EC 777',
-      deviceStatus: 'STACK_MEMBER_PREPROVISIONED',
+      deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD,
       venueName: 'Venue 7',
       managedAs: 'MSP',
       tenantId: '1456b8a156354b6e98dff3ebc7b25b82'
@@ -114,7 +116,7 @@ const list = {
     {
       apMac: '89:28:38:22:77:31',
       serialNumber: '892838227723',
-      deviceType: 'DVCNWTYPE_WIFI3',
+      deviceType: 'DVCNWTYPE_SWITCH',
       model: 'R720',
       name: "EC 999's Switch",
       customerName: 'EC 999',
@@ -122,49 +124,134 @@ const list = {
       venueName: 'Venue 9',
       managedAs: 'MSP',
       tenantId: '1456b8a156354b6e98dff3ebc7b25b82'
+    },
+    {
+      apMac: '89:28:38:22:77:32',
+      serialNumber: '892838227723',
+      deviceType: 'DVCNWTYPE_SWITCH',
+      model: 'R720',
+      name: "EC 100's Switch",
+      customerName: 'EC 100',
+      deviceStatus: SwitchStatusEnum.DISCONNECTED,
+      venueName: 'Venue 10',
+      managedAs: 'MSP',
+      tenantId: '1456b8a156354b6e98dff3ebc7b25b82'
     }
   ]
 }
 
-const mockedUsedNavigate = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedUsedNavigate
+const services = require('@acx-ui/rc/services')
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services')
+}))
+const utils = require('@acx-ui/rc/utils')
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils')
 }))
 
 describe('Device Inventory Table', () => {
-  const params = {
-    mspTenantId: 'mspTenant-Id',
-    tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
-  }
+  let params: { tenantId: string }
   beforeEach(async () => {
+    utils.useTableQuery = jest.fn().mockImplementation(() => {
+      return { data: list }
+    })
+    jest.spyOn(services, 'useExportDeviceInventoryMutation')
     mockServer.use(
       rest.post(
-        getUrlForTest(MspUrlsInfo.getMspDeviceInventory),
-        (req, res, ctx) => res(ctx.json(list))
+        MspUrlsInfo.exportMspEcDeviceInventory.url,
+        (req, res, ctx) => res(ctx.json({ requestId: '123' }))
       )
     )
+    global.URL.createObjectURL = jest.fn()
+    HTMLAnchorElement.prototype.click = jest.fn()
+    params = {
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+    }
   })
   it('should render page header and grid layout', async () => {
-    render(<Provider><DeviceInventory /></Provider>, { route: { params } })
-    expect(await screen.findByText('Device Inventory')).toBeVisible()
-    expect(screen.getByText('Manage own account')).toBeVisible()
+    utils.useTableQuery = jest.fn().mockImplementation(() => {
+      return { data: list }
+    })
+    render(
+      <Provider>
+        <DeviceInventory />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByText('Device Inventory')).toBeVisible()
+    expect(screen.getByText('Manage My Account')).toBeVisible()
   })
   it('should render table', async () => {
-    const { asFragment } = render(
+    utils.useTableQuery = jest.fn().mockImplementation(() => {
+      return { data: list }
+    })
+    render(
       <Provider>
         <DeviceInventory />
       </Provider>, {
         route: { params, path: '/:tenantId/deviceinventory' }
       })
 
-    const tbody = (await screen.findByRole('table')).querySelector('tbody')!
+    // eslint-disable-next-line testing-library/no-node-access
+    const tbody = screen.getByRole('table').querySelector('tbody')!
     expect(tbody).toBeVisible()
     const rows = await within(tbody).findAllByRole('row')
     expect(rows).toHaveLength(list.data.length)
     list.data.forEach((item, index) => {
       expect(within(rows[index]).getByText(item.apMac)).toBeVisible()
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect(screen.getAllByText('Never contacted cloud')).toHaveLength(3)
+    expect(screen.getByText('Never contacted Active Switch')).toBeVisible()
+    expect(screen.getByText('Initializing')).toBeVisible()
+    expect(screen.getByText('Firmware updating')).toBeVisible()
+    expect(screen.getByText('Operational')).toBeVisible()
+    expect(screen.getByText('Requires Attention')).toBeVisible()
+  })
+  it('should export when button clicked', async () => {
+    utils.useTableQuery = jest.fn().mockImplementation(() => {
+      return { data: list }
+    })
+    render(
+      <Provider>
+        <DeviceInventory />
+      </Provider>, {
+        route: { params, path: '/:tenantId/deviceinventory' }
+      })
+
+    const button = screen.getByRole('button', { name: 'Export To CSV' })
+    expect(button).toBeVisible()
+    await userEvent.click(button)
+
+    const value: [Function, Object] = [
+      expect.any(Function),
+      expect.objectContaining({
+        data: {},
+        status: 'fulfilled'
+      })
+    ]
+    await waitFor(() =>
+      expect(services.useExportDeviceInventoryMutation).toHaveLastReturnedWith(value))
+  })
+  it('should render correctly when no data', async () => {
+    utils.useTableQuery = jest.fn().mockImplementation(() => {
+      return { data: {
+        totalCount: 0,
+        page: 1,
+        data: []
+      } }
+    })
+    render(
+      <Provider>
+        <DeviceInventory />
+      </Provider>, {
+        route: { params, path: '/:tenantId/deviceinventory' }
+      })
+
+    // eslint-disable-next-line testing-library/no-node-access
+    const tbody = screen.getByRole('table').querySelector('tbody')!
+    expect(tbody).toBeVisible()
+    const rows = await within(tbody).findAllByRole('row')
+    expect(rows).toHaveLength(1)
   })
 })

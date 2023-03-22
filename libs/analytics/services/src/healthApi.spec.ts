@@ -1,10 +1,11 @@
 import { configureStore, SerializedError } from '@reduxjs/toolkit'
 
 import { AnalyticsFilter }                       from '@acx-ui/analytics/utils'
+import { dataApi, dataApiURL }                   from '@acx-ui/store'
 import { mockGraphqlMutation, mockGraphqlQuery } from '@acx-ui/test-utils'
 import { DateRange, NetworkPath, NodeType }      from '@acx-ui/utils'
 
-import { dataApi, dataApiURL, healthApi } from '.'
+import { healthApi } from '.'
 
 describe('Services for health kpis', () => {
   const store = configureStore({

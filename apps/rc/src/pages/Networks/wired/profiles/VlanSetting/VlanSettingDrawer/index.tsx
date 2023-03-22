@@ -12,7 +12,7 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Drawer, Table, TableProps } from '@acx-ui/components'
+import { Drawer, showActionModal, Table, TableProps } from '@acx-ui/components'
 import {
   SwitchModel,
   SwitchModelPortData,
@@ -21,6 +21,7 @@ import {
   validateVlanNameWithoutDVlans,
   Vlan
 } from '@acx-ui/rc/utils'
+import { filterByAccess } from '@acx-ui/user'
 
 
 import * as UI            from './styledComponents'
@@ -164,15 +165,25 @@ function VlanSettingForm (props: VlanSettingFormProps) {
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows, clearSelection) => {
-        setRuleList(
-          ruleList?.filter((option: { model: string }) => {
-            return !selectedRows
-              .map((r) => r.model)
-              .includes(option.model)
-          })
-        )
-        setSelected(undefined)
-        clearSelection()
+        showActionModal({
+          type: 'confirm',
+          customContent: {
+            action: 'DELETE',
+            entityName: $t({ defaultMessage: 'Model' }),
+            entityValue: selectedRows[0].model
+          },
+          onOk: () => {
+            setRuleList(
+              ruleList?.filter((option: { model: string }) => {
+                return !selectedRows
+                  .map((r) => r.model)
+                  .includes(option.model)
+              })
+            )
+            setSelected(undefined)
+            clearSelection()
+          }
+        })
       }
     }
   ]
@@ -204,7 +215,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
   }
 
   return (
-    <>
+    <div data-testid='addVlanDrawer'>
       <Form
         layout='vertical'
         form={form}
@@ -340,7 +351,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
       </Row>
       <Table
         rowKey='model'
-        rowActions={rowActions}
+        rowActions={filterByAccess(rowActions)}
         columns={columns}
         rowSelection={{
           type: 'radio',
@@ -361,6 +372,6 @@ function VlanSettingForm (props: VlanSettingFormProps) {
         onSave={onSaveVlan}
         vlanList={vlansList}
       />
-    </>
+    </div>
   )
 }

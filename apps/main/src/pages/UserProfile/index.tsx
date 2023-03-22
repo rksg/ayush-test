@@ -1,24 +1,24 @@
-import { Row, Col, Form, Select, Typography }        from 'antd'
-import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
+import { Row, Col, Form, Select, Typography } from 'antd'
+import { useIntl }                            from 'react-intl'
 
 import {
   PageHeader,
   StepsForm,
   Tabs
 } from '@acx-ui/components'
-import { MultiFactor }                  from '@acx-ui/msp/components'
-import { useUserProfileContext }        from '@acx-ui/rc/components'
-import { useUpdateUserProfileMutation } from '@acx-ui/rc/services'
-import {
-  DetailLevel,
-  UserProfile as UserProfileInterface,
-  RolesEnum
-} from '@acx-ui/rc/utils'
+import { MultiFactor } from '@acx-ui/msp/components'
 import {
   useLocation,
   useNavigate,
   useParams
 } from '@acx-ui/react-router-dom'
+import {
+  DetailLevel,
+  UserProfile as UserProfileInterface,
+  useUserProfileContext,
+  useUpdateUserProfileMutation,
+  roleStringMap
+} from '@acx-ui/user'
 
 import {
   RecentLogin
@@ -27,13 +27,6 @@ import * as UI from './styledComponents'
 
 interface fromLoc {
   from: string
-}
-
-const roleStringMap: Record<RolesEnum, MessageDescriptor> = {
-  [RolesEnum.PRIME_ADMIN]: defineMessage({ defaultMessage: 'Prime Admin' }),
-  [RolesEnum.ADMINISTRATOR]: defineMessage({ defaultMessage: 'Administrator' }),
-  [RolesEnum.GUEST_MANAGER]: defineMessage({ defaultMessage: 'Guest Manager' }),
-  [RolesEnum.READ_ONLY]: defineMessage({ defaultMessage: 'Read Only' })
 }
 
 export function UserProfile () {

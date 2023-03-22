@@ -1,31 +1,21 @@
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { useDelVLANPoolPolicyMutation, usePolicyListQuery }               from '@acx-ui/rc/services'
+import { Button, PageHeader, Table, TableProps, Loader, showActionModal }                          from '@acx-ui/components'
+import { SimpleListTooltip }                                                                       from '@acx-ui/rc/components'
+import { useDelVLANPoolPolicyMutation, useGetVenuesQuery, useGetVLANPoolPolicyViewModelListQuery } from '@acx-ui/rc/services'
 import {
   PolicyType,
   useTableQuery,
   getPolicyDetailsLink,
   PolicyOperation,
-  Policy,
   getPolicyListRoutePath,
-  getPolicyRoutePath
+  getPolicyRoutePath,
+  VLANPoolViewModelType,
+  VLAN_LIMIT_NUMBER
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-
-const defaultPayload = {
-  searchString: '',
-  filters: {
-    type: [PolicyType.VLAN_POOL]
-  },
-  fields: [
-    'id',
-    'name',
-    'type',
-    'scope',
-    'cog'
-  ]
-}
+import { filterByAccess }                                          from '@acx-ui/user'
 
 export default function VLANPoolTable () {
   const { $t } = useIntl()
@@ -33,13 +23,23 @@ export default function VLANPoolTable () {
   const params = useParams()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn ] = useDelVLANPoolPolicyMutation()
-
   const tableQuery = useTableQuery({
-    useQuery: usePolicyListQuery,
-    defaultPayload
+    useQuery: useGetVLANPoolPolicyViewModelListQuery,
+    defaultPayload: {
+      searchString: '',
+      searchTargetFields: ['name'],
+      fields: [
+        'id',
+        'name',
+        'vlanMembers',
+        'venueApGroups',
+        'venueIds'
+      ],
+      filters: {}
+    }
   })
 
-  const rowActions: TableProps<Policy>['rowActions'] = [
+  const rowActions: TableProps<VLANPoolViewModelType>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: ([{ id, name }], clearSelection) => {
@@ -70,35 +70,42 @@ export default function VLANPoolTable () {
       }
     }
   ]
-
   return (
     <>
       <PageHeader
         title={
           $t({
-            defaultMessage: 'VLAN Pools'
+            defaultMessage: 'VLAN Pools ({count})'
+          },
+          {
+            count: tableQuery.data?.totalCount
           })
         }
         breadcrumb={[
           // eslint-disable-next-line max-len
           { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) }
         ]}
-        extra={[
+        extra={filterByAccess([
           // eslint-disable-next-line max-len
-          <TenantLink to={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.CREATE })} key='add'>
-            <Button type='primary'>{$t({ defaultMessage: 'Add VLAN Pool' })}</Button>
+          <TenantLink to={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.CREATE })}>
+            <Button type='primary'
+              disabled={tableQuery.data?.totalCount
+                ? tableQuery.data?.totalCount >= VLAN_LIMIT_NUMBER
+                : false} >{$t({ defaultMessage: 'Add VLAN Pool' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <Loader states={[tableQuery]}>
-        <Table<Policy>
+        <Table<VLANPoolViewModelType>
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={rowActions}
+          rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
+          onFilterChange={tableQuery.handleFilterChange}
+          enableApiFilter={true}
         />
       </Loader>
     </>
@@ -107,14 +114,30 @@ export default function VLANPoolTable () {
 
 function useColumns () {
   const { $t } = useIntl()
-
-  const columns: TableProps<Policy>['columns'] = [
+  const params = useParams()
+  const emptyVenues: { key: string, value: string }[] = []
+  const { venueNameMap } = useGetVenuesQuery({
+    params: { tenantId: params.tenantId },
+    payload: {
+      fields: ['name', 'id'],
+      sortField: 'name',
+      sortOrder: 'ASC'
+    }
+  }, {
+    selectFromResult: ({ data }) => ({
+      venueNameMap: data?.data
+        ? data.data.map(venue => ({ key: venue.id, value: venue.name }))
+        : emptyVenues
+    })
+  })
+  const columns: TableProps<VLANPoolViewModelType>['columns'] = [
     {
       key: 'name',
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
       sorter: true,
       defaultSortOrder: 'ascend',
+      searchable: true,
       render: function (data, row) {
         return (
           <TenantLink
@@ -129,11 +152,34 @@ function useColumns () {
       }
     },
     {
-      key: 'scope',
-      title: $t({ defaultMessage: 'Scope' }),
-      dataIndex: 'scope',
-      sorter: true,
-      align: 'center'
+      key: 'vlanMembers',
+      title: $t({ defaultMessage: 'VLANs' }),
+      dataIndex: 'vlanMembers',
+      render: (data) =>{
+        return data?.toString()
+      }
+    },
+    {
+      key: 'venueIds',
+      title: $t({ defaultMessage: 'Venues' }),
+      dataIndex: 'venueIds',
+      filterable: venueNameMap,
+      render: (data, row) =>{
+        if (!row.venueIds || row.venueIds.length === 0) return 0
+        const venueIds = row.venueIds
+        const venueApGroups = row.venueApGroups
+        // eslint-disable-next-line max-len
+        const filterVenues = venueNameMap.filter(v => venueIds!.includes(v.key)).map(v => v)
+        const tooltipItems = filterVenues.map(v => {
+          const venueApGroup = _.find(venueApGroups,{ id: v.key })
+          if(venueApGroup?.apGroups.length===1&&venueApGroup.apGroups[0].allApGroups){
+            return $t({ defaultMessage: '{value} (All APs)' }, { value: v.value })
+          }
+          return $t({ defaultMessage: '{value} ({count} AP Groups)' },
+            { value: v.value, count: venueApGroup?.apGroups.length })
+        })
+        return <SimpleListTooltip items={tooltipItems} displayText={venueIds.length} />
+      }
     }
   ]
 

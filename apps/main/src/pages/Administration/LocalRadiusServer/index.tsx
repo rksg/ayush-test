@@ -1,16 +1,16 @@
 import { useIntl } from 'react-intl'
 
-import { Fieldset } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 import { RadiusServerForm } from './RadiusServerForm'
 
 const LocalRadiusServer = () => {
   const { $t } = useIntl()
-  return(
-    // eslint-disable-next-line max-len
-    <Fieldset style={{ border: 'none' }} checked={true} label={$t({ defaultMessage: 'Local RADIUS (AAA) Server' })}>
-      <RadiusServerForm/>
-    </Fieldset>
+  const radiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
+
+  return (
+    radiusClientEnabled ? <RadiusServerForm/> :
+      <span>{ $t({ defaultMessage: 'Local RADIUS Server is not enabled' }) }</span>
   )
 }
 

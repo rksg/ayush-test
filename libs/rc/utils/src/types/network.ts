@@ -100,6 +100,7 @@ export interface NetworkSaveData {
     saePassphrase?: string;
     managementFrameProtection?: string;
     macAddressAuthentication?: boolean;
+    macRegistrationListId?: string;
     macAuthMacFormat?: string;
     wlanSecurity?: WlanSecurityEnum;
     wepHexKey?: string;
@@ -133,20 +134,24 @@ export interface Regions{
     primary: {
       ip: string;
       port: string;
+      sharedSecret?: string;
     };
     secondary: {
       ip: string;
       port: string;
+      sharedSecret?: string;
     };
   },
   accountingRadius?: {
     primary: {
       ip: string;
       port: string;
+      sharedSecret?: string;
     };
     secondary: {
       ip: string;
       port: string;
+      sharedSecret?: string;
     };
   }
 }

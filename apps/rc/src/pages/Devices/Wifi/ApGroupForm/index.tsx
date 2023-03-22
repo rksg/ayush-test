@@ -8,7 +8,6 @@ import { useIntl }                                 from 'react-intl'
 import {
   PageHeader,
   Loader,
-  showToast,
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
@@ -98,11 +97,14 @@ export function ApGroupForm () {
 
   const handleVenueChange = async (value: string,
     extraMemberList?: { name: string; key: string; }[]) => {
-    const defaultApGroupOption = value ?
-      (await venueDefaultApGroup({ params: { tenantId: tenantId, venueId: value } })).data
-        ?.aps?.map((item: ApDeep) => ({
-          name: item.name.toString(), key: item.serialNumber
-        })) : []
+    const defaultApGroupOption: { name: string, key: string }[] = []
+
+    if (value) {
+      (await venueDefaultApGroup({ params: { tenantId: tenantId, venueId: value } }))
+        .data?.map(x => x.aps?.map((item: ApDeep) =>
+          defaultApGroupOption.push({ name: item.name.toString(), key: item.serialNumber }))
+        )
+    }
 
     if (extraMemberList && defaultApGroupOption) {
       setApsOption(defaultApGroupOption.concat(extraMemberList) as TransferItem[])
@@ -113,6 +115,7 @@ export function ApGroupForm () {
   }
 
   const handleAddApGroup = async (values: AddApGroup) => {
+    const venueId = formRef.current?.getFieldValue('venueId')
     try {
       if (values.apSerialNumbers) {
         values.apSerialNumbers = values.apSerialNumbers.map(i => { return { serialNumber: i } })
@@ -123,15 +126,12 @@ export function ApGroupForm () {
       if (isEditMode) {
         await updateApGroup({ params: { tenantId, apGroupId }, payload }).unwrap()
       } else {
-        await addApGroup({ params: { tenantId }, payload }).unwrap()
+        await addApGroup({ params: { tenantId, venueId }, payload }).unwrap()
       }
 
       navigate(`${basePath.pathname}/wifi`, { replace: true })
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

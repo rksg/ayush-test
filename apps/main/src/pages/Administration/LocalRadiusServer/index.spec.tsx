@@ -3,6 +3,7 @@ import { fireEvent, within } from '@testing-library/react'
 import { rest }              from 'msw'
 
 
+import { useIsSplitOn }                                          from '@acx-ui/feature-toggle'
 import { RadiusClientConfigUrlsInfo }                            from '@acx-ui/rc/utils'
 import { Provider }                                              from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
@@ -17,6 +18,8 @@ describe('RadiusServerTab', () => {
   const radiusSetting = { host: '31.2.5.12', authenticationPort: 1812, accountingPort: 1813 }
 
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
     mockServer.use(
       rest.get(
         RadiusClientConfigUrlsInfo.getRadiusClient.url,
@@ -34,19 +37,16 @@ describe('RadiusServerTab', () => {
   })
 
   it('should render radius config correctly', async () => {
+
     render(<Provider><LocalRadiusServer /></Provider>, {
       route: { params: {
         tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
       }, path: '/:tenantId' }
     })
-    const fieldButton = screen.getByRole('switch', { name: 'Local RADIUS (AAA) Server' })
-    await userEvent.click(fieldButton)
-
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const eyeButton = screen.getByRole('img', { name: 'eye-invisible' })
     expect(eyeButton).toBeTruthy()
-    await userEvent.click(fieldButton)
 
     expect(await screen.findByText(config.ipAddress[0])).toBeVisible()
     expect(await screen.findByText(radiusSetting.host)).toBeVisible()
@@ -62,9 +62,6 @@ describe('RadiusServerTab', () => {
       }, path: '/:tenantId' }
     })
 
-    const fieldButton = screen.getByRole('switch', { name: 'Local RADIUS (AAA) Server' })
-    await userEvent.click(fieldButton)
-
     await screen.findByText('RADIUS Host')
 
     const changeButton = screen.getByRole('button', { name: 'Change' })
@@ -77,6 +74,11 @@ describe('RadiusServerTab', () => {
     const saveButton = screen.getByRole('button', { name: 'Save' })
     expect(cancelButton).toBeTruthy()
 
+    // screen.getByRole('img111', { name: 'caret-down' })
+
+    const input = await screen.findByRole('textbox')
+    await userEvent.type(input, '123457890')
+
     const generateButton = screen.getByRole('button', { name: 'Generate New Passphrase' })
     expect(generateButton).toBeTruthy()
     await userEvent.click(generateButton)
@@ -85,14 +87,31 @@ describe('RadiusServerTab', () => {
     await userEvent.click(saveButton)
   })
 
+  it('should change secret and cancel correctly', async () => {
+
+    render(<Provider><LocalRadiusServer /></Provider>, {
+      route: { params: {
+        tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+      }, path: '/:tenantId' }
+    })
+
+    await screen.findByText('RADIUS Host')
+
+    const changeButton = screen.getByRole('button', { name: 'Change' })
+    expect(changeButton).toBeTruthy()
+    await userEvent.click(changeButton)
+
+    const cancelButton = screen.getByRole('button', { name: 'Cancel' })
+    expect(cancelButton).toBeTruthy()
+    await userEvent.click(cancelButton)
+  })
+
   it('should show drawer correctly', async () => {
     render(<Provider><LocalRadiusServer /></Provider>, {
       route: { params: {
         tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
       }, path: '/:tenantId' }
     })
-    const fieldButton = screen.getByRole('switch', { name: 'Local RADIUS (AAA) Server' })
-    await userEvent.click(fieldButton)
 
     await screen.findByText('RADIUS Host')
 
@@ -119,8 +138,6 @@ describe('RadiusServerTab', () => {
         tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
       }, path: '/:tenantId' }
     })
-    const fieldButton = screen.getByRole('switch', { name: 'Local RADIUS (AAA) Server' })
-    fireEvent.click(fieldButton)
 
     await screen.findByText('RADIUS Host')
 
@@ -132,5 +149,17 @@ describe('RadiusServerTab', () => {
     await screen.findByText('Delete "' + config.ipAddress[0] + '"?')
 
     await userEvent.click(await screen.findByRole('button', { name: 'Delete IP address' }))
+  })
+
+  it('should not render when ff is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+
+    render(<Provider><LocalRadiusServer /></Provider>, {
+      route: { params: {
+        tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+      }, path: '/:tenantId' }
+    })
+
+    await screen.findByText('Local RADIUS Server is not enabled')
   })
 })

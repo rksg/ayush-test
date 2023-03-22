@@ -10,7 +10,6 @@ import {
 import { isEqual } from 'lodash'
 import { useIntl } from 'react-intl'
 
-
 import { Button, StepsForm, Table, TableProps, Loader, showToast } from '@acx-ui/components'
 import { DeleteOutlinedIcon }                                      from '@acx-ui/icons'
 import {
@@ -19,7 +18,7 @@ import {
   useGetVenueApModelsQuery,
   useUpdateVenueLedOnMutation
 } from '@acx-ui/rc/services'
-import { VenueLed } from '@acx-ui/rc/utils'
+import { VenueLed, redirectPreviousPage } from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
@@ -42,7 +41,7 @@ export function AdvancedSettingForm () {
   const venueLed = useGetVenueLedOnQuery({ params: { tenantId, venueId } })
   const venueApModels = useGetVenueApModelsQuery({ params: { tenantId, venueId } })
   const [updateVenueLedOn, { isLoading: isUpdatingVenueLedOn }] = useUpdateVenueLedOnMutation()
-  const { editContextData, setEditContextData } = useContext(VenueEditContext)
+  const { editContextData, setEditContextData, previousPath } = useContext(VenueEditContext)
 
   const defaultArray: VenueLed[] = []
   const defaultOptionArray: ModelOption[] = []
@@ -186,31 +185,35 @@ export function AdvancedSettingForm () {
   }
 
   const handleUpdateSetting = async () => {
-    try {
-      setEditContextData({
-        ...editContextData,
-        oldData: editContextData?.newData,
-        isDirty: false
-      })
-      await updateVenueLedOn({
-        params: { tenantId, venueId },
-        payload: tableData.filter(data => data.model)
-      })
-    } catch {
+    const isValid = !tableData.find(data => !data.model)
+    if (!isValid) {
       showToast({
         type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
+        content: $t({ defaultMessage: 'Please select model' })
       })
+    } else {
+      try {
+        setEditContextData({
+          ...editContextData,
+          oldData: editContextData?.newData,
+          isDirty: false
+        })
+        await updateVenueLedOn({
+          params: { tenantId, venueId },
+          payload: tableData.filter(data => data.model)
+        })
+      } catch (error) {
+        console.log(error) // eslint-disable-line no-console
+      }
     }
   }
 
   return (
     <StepsForm
       onFinish={() => handleUpdateSetting()}
-      onCancel={() => navigate({
-        ...basePath,
-        pathname: `${basePath.pathname}/${venueId}/venue-details/overview`
-      })}
+      onCancel={() =>
+        redirectPreviousPage(navigate, previousPath, basePath)
+      }
       buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
     >
       <StepsForm.StepForm>

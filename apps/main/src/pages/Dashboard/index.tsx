@@ -19,7 +19,6 @@ import {
   VenuesHealthDashboard
 } from '@acx-ui/analytics/components'
 import {
-  DisabledButton,
   GridRow,
   GridCol,
   PageHeader,
@@ -27,9 +26,6 @@ import {
   ContentSwitcher,
   ContentSwitcherProps
 } from '@acx-ui/components'
-import {
-  DownloadOutlined
-} from '@acx-ui/icons'
 import { VenueFilter }    from '@acx-ui/main/components'
 import {
   AlarmWidget,
@@ -39,6 +35,7 @@ import {
   VenuesDashboardWidget
 } from '@acx-ui/rc/components'
 import { TenantLink }                        from '@acx-ui/react-router-dom'
+import { filterByAccess }                    from '@acx-ui/user'
 import { useDateFilter, useDashboardFilter } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
@@ -83,7 +80,7 @@ function DashboardPageHeader () {
   return (
     <PageHeader
       title={$t({ defaultMessage: 'Dashboard' })}
-      extra={[
+      extra={filterByAccess([
         <VenueFilter key='hierarchy-filter'/>,
         <RangePicker
           key='range-picker'
@@ -91,12 +88,8 @@ function DashboardPageHeader () {
           onDateApply={setDateFilter as CallableFunction}
           showTimePicker
           selectionType={range}
-        />,
-        <DisabledButton
-          tooltipPlacement='topRight'
-          key='download'
-          icon={<DownloadOutlined />} />
-      ]}
+        />
+      ])}
     />
   )
 }

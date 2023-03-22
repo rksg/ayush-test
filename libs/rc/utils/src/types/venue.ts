@@ -137,6 +137,8 @@ export interface NetworkDevice {
 	snr?: number;
 	macAddress?: string;
 	rogueCategoryType?: RogueDeviceCategoryType;
+	apMac?: string;
+	switchMac?: string;
 }
 
 export interface RogueApInfo {
@@ -234,6 +236,7 @@ export interface Address {
   longitude?: number
   notes?: string
   timezone?: string
+  countryCode?: string
 }
 
 export interface MeshOptions {
@@ -795,3 +798,8 @@ export interface VenueBonjourFencingPolicy {
   services?: BonjourFencingService[]
 }
 
+export enum ShowTopologyFloorplanOn {
+	VENUE_OVERVIEW='VENUE_OVERVIEW',
+	AP_OVERVIEW='AP_OVERVIEW',
+	SWITCH_OVERVIEW='SWITCH_OVERVIEW'
+}

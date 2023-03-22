@@ -19,7 +19,7 @@ exports[`EdgeDhcpDetail Should render EdgeDhcpDetail successfully 1`] = `
               <a
                 href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/services/list"
               >
-                My Services
+                Services
               </a>
             </span>
             <span
@@ -355,7 +355,7 @@ exports[`EdgeDhcpDetail Should render EdgeDhcpDetail successfully 1`] = `
                   Instances (0)
                 </h2>
                 <div
-                  class="styledComponents__Wrapper-sc-1abm7iv-12 iqWyRG"
+                  class="styledComponents__Wrapper-sc-1abm7iv-12 QuVDX"
                 >
                   <div
                     class="ant-pro-table"

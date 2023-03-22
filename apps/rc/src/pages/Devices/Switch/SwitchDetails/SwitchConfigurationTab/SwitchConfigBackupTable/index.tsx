@@ -1,13 +1,13 @@
 /* eslint-disable max-len */
 import { useContext, useEffect, useState } from 'react'
 
-import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps, showActionModal, showToast }                                                                                       from '@acx-ui/components'
 import { useDeleteConfigBackupsMutation, useDownloadConfigBackupMutation, useGetSwitchConfigBackupListQuery, useRestoreConfigBackupMutation }          from '@acx-ui/rc/services'
 import { BACKUP_DISABLE_TOOLTIP, BACKUP_IN_PROGRESS_TOOLTIP, ConfigurationBackup, handleBlobDownloadFile, RESTORE_IN_PROGRESS_TOOLTIP, useTableQuery } from '@acx-ui/rc/utils'
 import { useParams }                                                                                                                                   from '@acx-ui/react-router-dom'
+import { filterByAccess }                                                                                                                              from '@acx-ui/user'
 
 import { SwitchDetailsContext } from '../..'
 
@@ -41,7 +41,7 @@ export function SwitchConfigBackupTable () {
   const [ restoreConfigBackup ] = useRestoreConfigBackupMutation()
   const [ downloadConfigBackup ] = useDownloadConfigBackupMutation()
   const [ deleteConfigBackups ] = useDeleteConfigBackupsMutation()
-  const { currentSwitchOperational, switchName } = switchDetailsContextData
+  const { currentSwitchOperational } = switchDetailsContextData
 
   const showViewModal = (rows: ConfigurationBackup[], clearSelection: ()=>void) => {
     setViewData(rows[0])
@@ -171,26 +171,28 @@ export function SwitchConfigBackupTable () {
     })
   }
 
-  const downloadBackup = (id: string) => {
+  const downloadBackup = (row: ConfigurationBackup) => {
     downloadConfigBackup({
       params: {
         ...params,
-        configId: id
+        configId: row.id
       } })
       .unwrap().then((res)=>{
-        const downloadFileName = 'switch_configuration_' + switchName + '_' + moment().format('YYYYMMDDHHmmss') + '.txt'
+        const downloadFileName = row.name + '.txt'
         const blob = new Blob([res.response], { type: 'text/plain;charset=utf-8' })
         handleBlobDownloadFile(blob, downloadFileName)
       })
   }
 
   const rowActions: TableProps<ConfigurationBackup>['rowActions'] = [{
+    key: 'ViewConfig',
     label: $t({ defaultMessage: 'View' }),
     disabled: () => !enabledRowButton.find(item => item === 'View'),
     onClick: (rows, clearSelection) => {
       showViewModal(rows, clearSelection)
     }
   }, {
+    key: 'CompareConfig',
     label: $t({ defaultMessage: 'Compare' }),
     disabled: () => !enabledRowButton.find(item => item === 'Compare'),
     onClick: (rows) => {
@@ -203,10 +205,11 @@ export function SwitchConfigBackupTable () {
       showRestoreModal(rows[0], clearSelection)
     }
   }, {
+    key: 'DownloadConfig',
     label: $t({ defaultMessage: 'Download' }),
     disabled: () => !enabledRowButton.find(item => item === 'Download'),
     onClick: (rows) => {
-      downloadBackup(rows[0].id)
+      downloadBackup(rows[0])
     }
   }, {
     label: $t({ defaultMessage: 'Delete' }),
@@ -218,7 +221,7 @@ export function SwitchConfigBackupTable () {
   ]
 
   const viewModalActions = {
-    compare:　showCompareModal,
+    compare: showCompareModal,
     restore: showRestoreModal,
     download: downloadBackup,
     delete: showDeleteModal
@@ -239,8 +242,8 @@ export function SwitchConfigBackupTable () {
         rowKey='id'
         columns={columns}
         dataSource={tableData}
-        rowActions={rowActions}
-        actions={rightActions}
+        rowActions={filterByAccess(rowActions)}
+        actions={filterByAccess(rightActions)}
         onChange={tableQuery.handleTableChange}
         rowSelection={{
           type: 'checkbox',

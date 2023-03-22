@@ -3,9 +3,9 @@ import { Col, Form, Input, Row, Select } from 'antd'
 import { FormattedMessage, useIntl }     from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
-import { Alert, StepsForm, useStepFormContext }    from '@acx-ui/components'
-import { CheckMarkCircleSolid }                    from '@acx-ui/icons'
-import { useGetPropertyQuery, useVenuesListQuery } from '@acx-ui/rc/services'
+import { Alert, StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
+import { CheckMarkCircleSolid }                          from '@acx-ui/icons'
+import { useGetPropertyQuery, useVenuesListQuery }       from '@acx-ui/rc/services'
 
 import { NetworkSegmentationGroupForm } from '..'
 import { useWatch }                     from '../../useWatch'
@@ -29,7 +29,7 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const { form } = useStepFormContext<NetworkSegmentationGroupForm>()
-  const venue = useWatch('venueId', form)
+  const venueId = useWatch('venueId', form)
   const { venueOptions, isLoading: isVenueOptionsLoading } = useVenuesListQuery(
     { params: { tenantId: tenantId }, payload: venueOptionsDefaultPayload }, {
       selectFromResult: ({ data, isLoading }) => {
@@ -40,9 +40,9 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
       }
     })
   const { personaGroupId } = useGetPropertyQuery(
-    { params: { venueId: venue } },
+    { params: { venueId } },
     {
-      skip: !!!venue,
+      skip: !!!venueId,
       selectFromResult: ({ data }) => {
         return {
           personaGroupId: data?.personaGroupId
@@ -114,20 +114,25 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
           <Form.Item
             name='venueId'
             label={
-            // eslint-disable-next-line max-len
-              $t({ defaultMessage: 'Venue with the property management enabled' })
+              <>
+                {$t({ defaultMessage: 'Venue with the property management enabled' })}
+                <Tooltip.Question
+                  title={$t({ defaultMessage: `To enable the property management for a venue,
+                    please go to the Venue configuration/property management page to enable it.` })}
+                  placement='bottom'
+                />
+              </>
             }
             rules={[{
-              required: true
+              required: true,
+              message: $t({ defaultMessage: 'Please select a Venue' })
             }]}
             children={
               <Select
                 loading={isVenueOptionsLoading}
                 onChange={onVenueChange}
-                options={[
-                  { label: $t({ defaultMessage: 'Select...' }), value: null },
-                  ...(venueOptions || [])
-                ]}
+                placeholder={$t({ defaultMessage: 'Select...' })}
+                options={venueOptions}
                 disabled={props.editMode}
               />
             }

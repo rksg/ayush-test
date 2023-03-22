@@ -1,4 +1,4 @@
-import { get, omit } from 'lodash'
+import { get, isEmpty, omit } from 'lodash'
 
 import {
   NetworkTypeEnum,
@@ -34,7 +34,7 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
     ...{
       enableAuthProxy: data.enableAuthProxy,
       enableSecondaryAuthServer: data.enableSecondaryAuthServer,
-      authRadius
+      authRadius: isEmpty(authRadius) ? null : authRadius
     }
   }
 
@@ -92,7 +92,10 @@ const parseOpenSettingDataToSave = (data: NetworkSaveData, editMode: boolean) =>
       ...saveData,
       ...{
         wlan: {
+          ...saveData.wlan,
           advancedCustomization: new OpenWlanAdvancedCustomization(),
+          macAddressAuthentication: data.wlan?.macAddressAuthentication,
+          macRegistrationListId: data.wlan?.macRegistrationListId,
           enable: true,
           vlanId: 1
         }
@@ -164,7 +167,7 @@ const parsePskSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
       ...saveData,
       ...{
         enableSecondaryAuthServer: data.enableSecondaryAuthServer,
-        authRadius
+        authRadius: isEmpty(authRadius) ? null : authRadius
       }
     }
 
@@ -309,11 +312,17 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     advancedCustomization.clientIsolationOptions = { autoVrrp: false }
   }
 
+  let vlanId = undefined
+  if(!get(data, 'enableVlanPooling')){
+    advancedCustomization.vlanPool=null
+    vlanId = data?.wlan?.vlanId ?? originalData?.wlan?.vlanId
+  }
+
   let saveData:NetworkSaveData = {
     ...originalData,
     wlan: {
       ...originalData?.wlan,
-      vlanId: data?.wlan?.vlanId ?? originalData?.wlan?.vlanId,
+      vlanId,
       advancedCustomization
     }
   }

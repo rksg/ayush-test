@@ -1,12 +1,25 @@
 import React from 'react'
 
-import { useIsSplitOn }            from '@acx-ui/feature-toggle'
-import { Provider }                from '@acx-ui/store'
-import { render, screen, cleanup } from '@acx-ui/test-utils'
+import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Provider }                       from '@acx-ui/store'
+import { render, screen, cleanup }        from '@acx-ui/test-utils'
+import { RolesEnum }                      from '@acx-ui/types'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
 
 import AllRoutes from './AllRoutes'
 
-
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useStreamActivityMessagesQuery: jest.fn(),
+  useGetMspEcProfileQuery: () => ({ data: {
+    msp_label: '',
+    name: '',
+    service_effective_date: '',
+    service_expiration_date: '',
+    is_active: 'false'
+  } }),
+  useGetPreferencesQuery: () => ({ data: {} })
+}))
 jest.mock('@acx-ui/main/components', () => ({
   ...jest.requireActual('@acx-ui/main/components'),
   LicenseBanner: () => <div data-testid='license-banner' />,
@@ -18,9 +31,11 @@ jest.mock('@acx-ui/main/components', () => ({
 }))
 jest.mock('@acx-ui/rc/components', () => ({
   CloudMessageBanner: () => <div data-testid='cloud-message-banner' />,
-  useUserProfileContext: () => ({
-    data: { companyName: 'Mock company' }
-  })
+  useUpdateGoogleMapRegion: () => { return { update: jest.fn() }}
+}))
+jest.mock('@acx-ui/user', () => ({
+  ...jest.requireActual('@acx-ui/user'),
+  useUserProfileContext: () => ({ data: { companyName: 'Mock company' } })
 }))
 jest.mock('./pages/Dashboard', () => () => {
   return <div data-testid='dashboard' />
@@ -181,5 +196,36 @@ describe('AllRoutes', () => {
       }
     })
     expect(await screen.findByTestId('msp')).toBeVisible()
+  })
+
+  test('should not see anayltics & service validation if not admin', async () => {
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+
+    const { rerender } = render(<AllRoutes />, {
+      wrapper: Provider,
+      route: {
+        path: '/t/tenantId/dashboard'
+      }
+    })
+
+    const analytics = await screen.findByRole('menuitem', { name: 'AI Analytics' })
+    const serviceValidation = await screen.findByRole('menuitem', { name: 'Service Validation' })
+    expect(analytics).toBeVisible()
+    expect(serviceValidation).toBeVisible()
+
+    setUserProfile({
+      allowedOperations: [],
+      profile: {
+        ...getUserProfile().profile,
+        roles: [RolesEnum.READ_ONLY]
+      }
+    })
+
+    rerender(<AllRoutes />)
+
+    await screen.findAllByRole('menuitem')
+
+    expect(analytics).not.toBeInTheDocument()
+    expect(serviceValidation).not.toBeInTheDocument()
   })
 })

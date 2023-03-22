@@ -5,12 +5,14 @@ import { rest }  from 'msw'
 import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }               from '@acx-ui/store'
 import {
+  fireEvent,
   mockServer,
   render,
   screen,
   waitFor,
   within
 } from '@acx-ui/test-utils'
+import { hasRoles } from '@acx-ui/user'
 
 import { fakeDelegationList } from '../__tests__/fixtures'
 
@@ -18,10 +20,16 @@ import { AdministrationDelegationsTable } from './AdministrationDelegationsTable
 
 
 const mockedRevokeFn = jest.fn()
+jest.mock('@acx-ui/user', () => ({
+  ...jest.requireActual('@acx-ui/user'),
+  hasRoles: jest.fn()
+}))
 describe('administrators delegation list', () => {
   let params: { tenantId: string }
 
   beforeEach(() => {
+    (hasRoles as jest.Mock).mockReturnValue(true)
+
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
@@ -62,6 +70,8 @@ describe('administrators delegation list', () => {
     await waitFor(async () => {
       expect(await screen.findByRole('dialog')).toBeInTheDocument()
     })
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
   })
 
   it('should render correctly', async () => {
@@ -81,8 +91,9 @@ describe('administrators delegation list', () => {
       expect(await screen.findByText('Cancel invitation?')).toBeVisible()
     })
 
-    await userEvent.click(await within(screen.getByRole('dialog'))
-      .findByRole('button', { name: /Cancel Invitation/i }))
+    const okBtn = await within(screen.getByRole('dialog'))
+      .findByRole('button', { name: /Cancel Invitation/i })
+    await userEvent.click(okBtn)
 
     await waitFor(async () => {
       expect(await within(screen.getByRole('table'))
@@ -90,6 +101,9 @@ describe('administrators delegation list', () => {
     })
 
     expect(mockedRevokeFn).toBeCalled()
+    await waitFor(async () => {
+      expect(okBtn).not.toBeVisible()
+    })
 
     // TODO: test accessible after received message via socketio
     // await waitFor(async () => {
@@ -126,6 +140,13 @@ describe('administrators delegation list', () => {
     await waitFor(async () => {
       expect(await screen.findByText(/Are you sure you want to revoke access of partner/i)).toBeVisible()
     })
+
+    const okBtn = await within(screen.getByRole('dialog'))
+      .findByRole('button', { name: /revoke access/i })
+    await userEvent.click(okBtn)
+    await waitFor(async () => {
+      expect(okBtn).not.toBeVisible()
+    })
   })
 
   it('should render correctly when it is support user', async () => {
@@ -151,5 +172,55 @@ describe('administrators delegation list', () => {
     expect(screen.queryByRole('columnheader', { name: 'Action' })).toBeNull()
     expect(await screen.findByRole('row', { name: /Access granted/i })).toBeValid()
     expect(screen.queryByRole('button', { name: 'Invite 3rd Party Administrator' })).toBeNull()
+  })
+})
+
+describe('when use it not permmited role', () => {
+  const params = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
+  beforeEach(() => {
+    (hasRoles as jest.Mock).mockReturnValue(false)
+  })
+
+  it('Invite 3rd Party Administrator button should not disappear', async () => {
+
+    mockServer.use(
+      rest.get(
+        AdministrationUrlsInfo.getDelegations.url.split('?type=')[0],
+        (req, res, ctx) => res(ctx.json(fakeDelegationList))
+      )
+    )
+
+    render(
+      <Provider>
+        <AdministrationDelegationsTable isSupport={true}/>
+      </Provider>, {
+        route: { params }
+      })
+
+    await screen.findAllByRole('row')
+    expect(screen.queryByRole('button', { name: 'Invite 3rd Party Administrator' })).toBeNull()
+  })
+
+  it('Revoke Invitation button should disappear when use does not has permmision', async () => {
+    const fakeDelegationListAccepted = [ ...fakeDelegationList ]
+    fakeDelegationListAccepted[0].status = 'ACCEPTED'
+
+    mockServer.use(
+      rest.get(
+        AdministrationUrlsInfo.getDelegations.url.split('?type=')[0],
+        (req, res, ctx) => res(ctx.json(fakeDelegationListAccepted))
+      )
+    )
+
+    render(
+      <Provider>
+        <AdministrationDelegationsTable isSupport={false}/>
+      </Provider>, {
+        route: { params }
+      })
+
+    await screen.findAllByRole('row')
+    expect(await screen.findByRole('row', { name: /Access granted/i })).toBeValid()
+    expect(screen.queryByRole('columnheader', { name: 'Action' })).toBeNull()
   })
 })

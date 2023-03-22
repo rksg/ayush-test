@@ -3,11 +3,15 @@ import { ApiInfo } from '../apiService'
 export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   getTenantDetails: {
     method: 'get',
-    url: '/api/tenant/:tenantId'
+    url: '/tenants/self',
+    oldUrl: '/api/tenant/:tenantId',
+    newApi: true
   },
   getRegisteredUsersList: {
     method: 'get',
-    url: '/api/tenant/:tenantId/admins/registered'
+    url: '/admins/registered',
+    oldUrl: '/api/tenant/:tenantId/admins/registered',
+    newApi: true
   },
   getAdministrators: {
     method: 'get',
@@ -47,11 +51,15 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getRecoveryPassphrase: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/recovery'
+    url: '/recoveryPskSettings',
+    oldUrl: '/api/tenant/:tenantId/wifi/recovery',
+    newApi: true
   },
   updateRecoveryPassphrase: {
     method: 'put',
-    url: '/api/tenant/:tenantId/wifi/recovery'
+    url: '/recoveryPskSettings',
+    oldUrl: '/api/tenant/:tenantId/wifi/recovery',
+    newApi: true
   },
   getDelegations: {
     method: 'get',
@@ -73,7 +81,9 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getMspEcDelegations: {
     method: 'get',
-    url: '/api/tenant/:tenantId/delegation?type=MSP'
+    url: '/tenants/delegations?type=MSP',
+    oldUrl: '/api/tenant/:tenantId/delegation?type=MSP',
+    newApi: true
   },
   enableAccessSupport: {
     method: 'post',
@@ -89,59 +99,89 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getPreferences: {
     method: 'get',
-    url: '/api/tenant/:tenantId/preferences'
+    url: '/tenants/preferences',
+    oldUrl: '/api/tenant/:tenantId/preferences',
+    newApi: true
   },
   updatePreferences: {
     method: 'put',
-    url: '/api/tenant/:tenantId/preferences'
+    url: '/tenants/preferences',
+    oldUrl: '/api/tenant/:tenantId/preferences',
+    newApi: true
   },
   revokeInvitation: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/delegation/:delegationId'
+    url: '/tenants/delegations/:delegationId',
+    oldUrl: '/api/tenant/:tenantId/delegation/:delegationId',
+    newApi: true
   },
   inviteVAR: {
     method: 'post',
-    url: '/api/tenant/:tenantId/delegation'
+    url: '/tenants/delegations',
+    oldUrl: '/api/tenant/:tenantId/delegation',
+    newApi: true
   },
   findVAR: {
     method: 'get',
-    url: '/api/tenant/:tenantId/find-var'
+    url: '/tenants/find-var',
+    oldUrl: '/api/tenant/:tenantId/find-var',
+    newApi: true
   },
   getNotificationRecipients: {
     method: 'get',
-    url: '/api/tenant/:tenantId/notification-recipient'
+    url: '/tenants/notificationRecipients',
+    oldUrl: '/api/tenant/:tenantId/notification-recipient',
+    newApi: true
   },
   addRecipient: {
     method: 'post',
-    url: '/api/tenant/:tenantId/notification-recipient'
+    url: '/tenants/notificationRecipients',
+    oldUrl: '/api/tenant/:tenantId/notification-recipient',
+    newApi: true
   },
   updateRecipient: {
     method: 'put',
-    url: '/api/tenant/:tenantId/notification-recipient/:recipientId'
+    url: '/tenants/notificationRecipients/:recipientId',
+    oldUrl: '/api/tenant/:tenantId/notification-recipient/:recipientId',
+    newApi: true
   },
   deleteNotificationRecipients: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/notification-recipient'
+    url: '/tenants/notificationRecipients',
+    oldUrl: '/api/tenant/:tenantId/notification-recipient',
+    newApi: true
   },
   deleteNotificationRecipient: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/notification-recipient/:recipientId'
+    url: '/tenants/notificationRecipients/:recipientId',
+    oldUrl: '/api/tenant/:tenantId/notification-recipient/:recipientId',
+    newApi: true
   },
   getEntitlementSummary: {
     method: 'get',
-    newApi: false,
     url: '/entitlements/summaries',
-    oldUrl: '/api/tenant/:tenantId/entitlement/summary'
+    oldUrl: '/api/tenant/:tenantId/entitlement/summary',
+    newApi: true
   },
   getEntitlementsList: {
     method: 'get',
-    newApi: false,
     url: '/entitlements',
-    oldUrl: '/api/tenant/:tenantId/entitlement'
+    oldUrl: '/api/tenant/:tenantId/entitlement',
+    newApi: true
   },
   refreshLicensesData: {
-    method: 'post',
-    url: '/api/tenant/:tenantId/entitlement/internal-refresh'
+    method: 'get',
+    url: '/entitlements/summaries?refresh=true',
+    oldMethod: 'post',
+    oldUrl: '/api/tenant/:tenantId/entitlement/internal-refresh',
+    newApi: true
+  },
+  internalRefreshLicensesData: {
+    method: 'get',
+    url: '/entitlements/summaries?refresh=true',
+    oldMethod: 'post',
+    oldUrl: '/api/tenant/:tenantId/entitlement/internal-refresh',
+    newApi: false
   }
   // acceptRejectInvitation: {
   //   method: 'put',

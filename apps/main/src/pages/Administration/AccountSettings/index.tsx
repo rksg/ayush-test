@@ -2,14 +2,16 @@ import { Form, Divider } from 'antd'
 import { useParams }     from 'react-router-dom'
 import styled            from 'styled-components/macro'
 
-import { Loader }                from '@acx-ui/components'
-import { useUserProfileContext } from '@acx-ui/rc/components'
+import { Loader }           from '@acx-ui/components'
 import {
   useGetRecoveryPassphraseQuery,
-  useGetMfaTenantDetailsQuery,
   useGetMspEcProfileQuery
 } from '@acx-ui/rc/services'
 import { MSPUtils, isDelegationMode } from '@acx-ui/rc/utils'
+import {
+  useUserProfileContext,
+  useGetMfaTenantDetailsQuery
+} from '@acx-ui/user'
 
 import { AccessSupportFormItem }         from './AccessSupportFormItem'
 import { DefaultSystemLanguageFormItem } from './DefaultSystemLanguageFormItem'
@@ -35,10 +37,9 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const mspEcProfileData = useGetMspEcProfileQuery({ params })
 
   const canMSPDelegation = isDelegationMode() === false
-  let isMspEc = mspUtils.isMspEc(mspEcProfileData.data)
-  if (userProfileData?.varTenantId && canMSPDelegation === false) {
-    isMspEc = false
-  }
+  const hasMSPEcLabel = mspUtils.isMspEc(mspEcProfileData.data)
+  // has msp-ec label AND non-delegationMode
+  const isMspEc = hasMSPEcLabel && userProfileData?.varTenantId && canMSPDelegation === true
 
   const isPrimeAdminUser = isPrimeAdmin()
   const showRksSupport = isMspEc === false
@@ -70,7 +71,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
           <>
             <Divider />
             <AccessSupportFormItem
-              isMspEc={isMspEc}
+              hasMSPEcLabel={hasMSPEcLabel}
               canMSPDelegation={canMSPDelegation}
             />
           </>

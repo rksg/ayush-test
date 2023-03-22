@@ -12,9 +12,9 @@ import {
   deviceStatusColors,
   ColumnType
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
 import {
-  useApListQuery, useImportApMutation
+  useApListQuery, useImportApMutation, useLazyImportResultQuery
 } from '@acx-ui/rc/services'
 import {
   ApDeviceStatusEnum,
@@ -30,8 +30,9 @@ import {
   RequestPayload,
   usePollingTableQuery
 } from '@acx-ui/rc/utils'
-import { getFilters }                                        from '@acx-ui/rc/utils'
+import { getFilters, CommonResult, ImportErrorRes }          from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess }                                    from '@acx-ui/user'
 
 import { seriesMappingAP }           from '../DevicesWidget/helper'
 import { CsvSize, ImportFileDrawer } from '../ImportFileDrawer'
@@ -114,10 +115,10 @@ export function ApTable (props: ApTableProps) {
     useQuery: useApListQuery,
     defaultPayload: {
       ...defaultApPayload,
-      filters,
-      search: {
-        searchTargetFields: defaultApPayload.searchTargetFields
-      }
+      filters
+    },
+    search: {
+      searchTargetFields: defaultApPayload.searchTargetFields
     },
     option: { skip: Boolean(props.tableQuery) }
   })
@@ -360,20 +361,35 @@ export function ApTable (props: ApTableProps) {
       apAction.showDownloadApLog(rows[0].serialNumber, params.tenantId)
     }
   }]
+  const [ isImportResultLoading, setIsImportResultLoading ] = useState(false)
   const [ importVisible, setImportVisible ] = useState(false)
-  const [ importCsv, importResult ] = useImportApMutation()
+  const [ importCsv ] = useImportApMutation()
+  const [ importQuery ] = useLazyImportResultQuery()
+  const [ importResult, setImportResult ] = useState<ImportErrorRes>({} as ImportErrorRes)
   const apGpsFlag = useIsSplitOn(Features.AP_GPS)
   const importTemplateLink = apGpsFlag ?
     'assets/templates/aps_import_template_with_gps.csv' :
     'assets/templates/aps_import_template.csv'
 
   useEffect(()=>{
-    if (importResult.isSuccess) {
+    if (importResult.fileErrorsCount === 0) {
       setImportVisible(false)
     }
+    setIsImportResultLoading(false)
   },[importResult])
 
   const basePath = useTenantLink('/devices')
+  const handleTableChange: TableProps<APExtended>['onChange'] = (
+    pagination, filters, sorter, extra
+  ) => {
+    const customSorter = Array.isArray(sorter)
+      ? sorter[0] : sorter
+    if ('IP'.includes(customSorter.field as string)) {
+      customSorter.field = 'ip'
+    }
+    // @ts-ignore
+    tableQuery.handleTableChange(pagination, filters, customSorter, extra)
+  }
   return (
     <Loader states={[tableQuery]}>
       <Table<APExtended>
@@ -382,11 +398,11 @@ export function ApTable (props: ApTableProps) {
         dataSource={tableData}
         rowKey='serialNumber'
         pagination={tableQuery.pagination}
-        onChange={tableQuery.handleTableChange}
+        onChange={handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
-        rowActions={rowActions}
-        actions={props.enableActions ? [{
+        rowActions={filterByAccess(rowActions)}
+        actions={props.enableActions ? filterByAccess([{
           label: $t({ defaultMessage: 'Add AP' }),
           onClick: () => {
             navigate({
@@ -407,8 +423,7 @@ export function ApTable (props: ApTableProps) {
           onClick: () => {
             setImportVisible(true)
           }
-        }
-        ] : []}
+        }]) : []}
       />
       <ImportFileDrawer type='AP'
         title={$t({ defaultMessage: 'Import from file' })}
@@ -417,10 +432,17 @@ export function ApTable (props: ApTableProps) {
         acceptType={['csv']}
         templateLink={importTemplateLink}
         visible={importVisible}
-        isLoading={importResult.isLoading}
-        importError={importResult.error as FetchBaseQueryError}
+        isLoading={isImportResultLoading}
+        importError={{ data: importResult } as FetchBaseQueryError}
         importRequest={(formData) => {
-          importCsv({ params, payload: formData })
+          setIsImportResultLoading(true)
+          importCsv({ params: {}, payload: formData,
+            callback: async (res: CommonResult) => {
+              const result = await importQuery(
+                { payload: { requestId: res.requestId } }, true)
+                .unwrap()
+              setImportResult(result)
+            } }).unwrap()
         }}
         onClose={() => setImportVisible(false)}/>
     </Loader>

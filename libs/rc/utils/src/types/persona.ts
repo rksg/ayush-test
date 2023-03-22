@@ -28,8 +28,16 @@ export interface Persona {
   dpskPassphrase?: string,
   devices?: PersonaDevice[],
   ethernetPorts?: PersonaEthernetPort[],
+  identityId?: string,
   createdAt?: string,
-  updatedAt?: string
+  updatedAt?: string,
+  switches?: PersonaSwitch[]
+}
+
+export interface PersonaSwitch {
+  macAddress: string,
+  portId: number,
+  personaId: string
 }
 
 export interface PersonaDevice {

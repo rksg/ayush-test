@@ -3,7 +3,7 @@ import {
 } from '@ant-design/icons'
 import { Form, Input, Modal, Radio } from 'antd'
 import saveAs                        from 'file-saver'
-import moment                        from 'moment'
+import moment                        from 'moment-timezone'
 import { RawIntlProvider, useIntl }  from 'react-intl'
 
 import { cssStr, showActionModal, showToast } from '@acx-ui/components'
@@ -99,12 +99,8 @@ export function useApActions () {
 
         callBack && callBack()
       })
-      .catch(() => {
-        showToast({
-          key: toastKey,
-          type: 'error',
-          content: $t({ defaultMessage: 'Failed to download AP support log.' })
-        })
+      .catch((error) => {
+        console.log(error) // eslint-disable-line no-console
       })
   }
 

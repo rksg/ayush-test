@@ -6,6 +6,7 @@ import { useParams }    from 'react-router-dom'
 
 import { noDataSymbol }                                                 from '@acx-ui/analytics/utils'
 import { Button, Card, Loader, PageHeader, Subtitle, GridRow, GridCol } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import {
   useLazyGetVenueQuery,
   useLazyGetDpskQuery,
@@ -13,13 +14,12 @@ import {
   useLazyGetMacRegListQuery,
   useLazyGetNetworkSegmentationGroupByIdQuery
 } from '@acx-ui/rc/services'
-import { PersonaGroup } from '@acx-ui/rc/utils'
+import { PersonaGroup }   from '@acx-ui/rc/utils'
+import { filterByAccess } from '@acx-ui/user'
 
 import { DpskPoolLink, MacRegistrationPoolLink, NetworkSegmentationLink, VenueLink } from '../LinkHelper'
 import { PersonaGroupDrawer }                                                        from '../PersonaGroupDrawer'
 import { BasePersonaTable }                                                          from '../PersonaTable/BasePersonaTable'
-
-
 
 function PersonaGroupDetailsPageHeader (props: {
   title?: string,
@@ -28,11 +28,11 @@ function PersonaGroupDetailsPageHeader (props: {
   const { $t } = useIntl()
   const { title, onClick } = props
 
-  const extra = [
-    <Button key={'config-btn'} type={'primary'} onClick={onClick}>
+  const extra = filterByAccess([
+    <Button type={'primary'} onClick={onClick}>
       {$t({ defaultMessage: 'Configure' })}
     </Button>
-  ]
+  ])
 
   return (
     <PageHeader
@@ -50,6 +50,7 @@ function PersonaGroupDetailsPageHeader (props: {
 
 function PersonaGroupDetails () {
   const { $t } = useIntl()
+  const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
   const { personaGroupId, tenantId } = useParams()
   const [editVisible, setEditVisible] = useState(false)
   const [venueDisplay, setVenueDisplay] = useState<{ id?: string, name?: string }>()
@@ -89,7 +90,7 @@ function PersonaGroupDetails () {
         })
     }
 
-    if (nsgId) {
+    if (nsgId && networkSegmentationEnabled) {
       let name: string | undefined
       getNsgById({ params: { serviceId: nsgId } })
         .then(result => name = result.data?.name)

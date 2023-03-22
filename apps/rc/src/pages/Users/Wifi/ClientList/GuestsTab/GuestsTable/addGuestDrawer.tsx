@@ -15,16 +15,16 @@ import {
 import { PhoneNumberUtil }                            from 'google-libphonenumber'
 import { HumanizeDuration, HumanizeDurationLanguage } from 'humanize-duration-ts'
 import _                                              from 'lodash'
-import moment, { LocaleSpecifier }                    from 'moment'
+import moment, { LocaleSpecifier }                    from 'moment-timezone'
 import { useIntl }                                    from 'react-intl'
 import { useParams }                                  from 'react-router-dom'
 
 import { Button, Drawer, cssStr, showActionModal } from '@acx-ui/components'
+import { DateFormatEnum, formatter }               from '@acx-ui/formatter'
 import {
   useLazyGetGuestNetworkListQuery,
   useAddGuestPassMutation,
-  useLazyGetNetworkQuery,
-  useLazyGetUserProfileQuery
+  useLazyGetNetworkQuery
 } from '@acx-ui/rc/services'
 import {
   excludeExclamationRegExp,
@@ -37,10 +37,10 @@ import {
   base64Images,
   PdfGeneratorService,
   Guest,
-  LangCode,
-  GuestErrorRes
+  LangCode
 } from '@acx-ui/rc/utils'
-import { getIntl } from '@acx-ui/utils'
+import { GuestErrorRes } from '@acx-ui/user'
+import { getIntl }       from '@acx-ui/utils'
 
 import {
   MobilePhoneSolidIcon,
@@ -602,7 +602,6 @@ export function showGuestErrorModal (errorRes: GuestErrorRes) {
 
 export function useHandleGuestPassResponse (params: { tenantId: string }) {
   const [getNetwork] = useLazyGetNetworkQuery()
-  const [getUserProfile] = useLazyGetUserProfileQuery()
 
   const getGuestPrintTemplate =
   (guestDetails: { langCode: LangCode }, useUpdatedTemplate: boolean) => {
@@ -614,9 +613,8 @@ export function useHandleGuestPassResponse (params: { tenantId: string }) {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const prepareGuestToPrint = async (guest: any, guestNumber: any) =>{
-    const userProfile = await getUserProfile({ params })
     const currentMoment = moment()
-    const currentDate = currentMoment.format(userProfile.data?.dateFormat.toUpperCase())
+    const currentDate = formatter(DateFormatEnum.DateFormat)(currentMoment)
     const langCode = guest.langCode || guest.locale
     const momentLocale = getMomentLocale(langCode)
     currentMoment.locale(momentLocale as LocaleSpecifier)

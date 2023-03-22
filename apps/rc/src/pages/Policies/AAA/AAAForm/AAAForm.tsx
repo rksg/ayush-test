@@ -3,14 +3,16 @@ import { useRef, useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import {
-  PageHeader, showToast,
+  PageHeader,
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
 import { useAaaPolicyQuery, useAddAAAPolicyMutation, useUpdateAAAPolicyMutation } from '@acx-ui/rc/services'
 import {
   AAAPolicyType,
-  getPolicyListRoutePath
+  getPolicyRoutePath,
+  PolicyOperation,
+  PolicyType
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -26,7 +28,8 @@ type AAAFormProps = {
 const AAAForm = (props: AAAFormProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const linkToPolicies = useTenantLink(getPolicyListRoutePath())
+  const tablePath = getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.LIST })
+  const linkToPolicies = useTenantLink(tablePath)
   const params = useParams()
   const edit = props.edit && !props.networkView
   const formRef = useRef<StepsFormInstance<AAAPolicyType>>()
@@ -67,12 +70,8 @@ const AAAForm = (props: AAAFormProps) => {
   const handleAAAPolicy = async (data: AAAPolicyType) => {
     try {
       await addOrUpdateAAA(data, edit)
-    } catch(error) {
-      showToast({
-        type: 'error',
-        duration: 10,
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -80,10 +79,10 @@ const AAAForm = (props: AAAFormProps) => {
     <>
       {!props.networkView &&<PageHeader
         title={edit
-          ? $t({ defaultMessage: 'Edit AAA (802.1x) Server' })
-          : $t({ defaultMessage: 'Add AAA (802.1x) Server' })}
+          ? $t({ defaultMessage: 'Edit Radius (802.1x) Server' })
+          : $t({ defaultMessage: 'Add Radius (802.1x) Server' })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Policies' }), link: getPolicyListRoutePath() }
+          { text: $t({ defaultMessage: 'Radius Server' }), link: tablePath }
         ]}
       />}
       <StepsForm<AAAPolicyType>

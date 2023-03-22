@@ -11,6 +11,7 @@ import {
   useTableQuery,
   VenueRoguePolicyType
 } from '@acx-ui/rc/utils'
+import { filterByAccess } from '@acx-ui/user'
 
 import RogueAPDetectionContext from '../RogueAPDetectionContext'
 
@@ -39,7 +40,9 @@ const RogueVenueTable = () => {
   const { state, dispatch } = useContext(RogueAPDetectionContext)
 
   const activateVenue = (selectRows: VenueRoguePolicyType[]) => {
-    if (selectRows.filter(row => row.hasOwnProperty('rogueDetection')).length > 0) {
+    if (selectRows.filter(row =>
+      row.hasOwnProperty('rogueDetection') && row.rogueDetection !== undefined
+    ).length > 0) {
       showActionModal({
         type: 'warning',
         title: $t({ defaultMessage: 'Change Rogue AP Profile?' }),
@@ -70,6 +73,16 @@ const RogueVenueTable = () => {
           }]
         }
       })
+    } else {
+      dispatch({
+        type: RogueAPDetectionActionTypes.ADD_VENUES,
+        payload: selectRows.map(row => {
+          return {
+            id: row.id,
+            name: row.name
+          }
+        })
+      } as RogueAPDetectionActionPayload)
     }
   }
 
@@ -195,7 +208,7 @@ const RogueVenueTable = () => {
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
       rowKey='id'
-      rowActions={rowActions}
+      rowActions={filterByAccess(rowActions)}
       rowSelection={{ type: 'checkbox' }}
     />
   )

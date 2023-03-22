@@ -3,12 +3,14 @@ import { IntlShape } from 'react-intl'
 
 import {
   firmwareTypeTrans,
+  FirmwareCategory,
   FirmwareVersion,
   FirmwareVenue,
   FirmwareSwitchVenue,
   FirmwareVenueVersion,
   FirmwareType,
-  Schedule
+  Schedule,
+  EdgeFirmwareVersion
 } from '@acx-ui/rc/utils'
 
 export const expirationTimeUnits: Record<string, string> = {
@@ -78,7 +80,7 @@ function getApFieldInVersions<T extends keyof FirmwareVenueVersion> (venue: Firm
 
 const transform = firmwareTypeTrans()
 
-export const getVersionLabel = (version: FirmwareVersion): string => {
+export const getVersionLabel = (version: FirmwareVersion | EdgeFirmwareVersion): string => {
   const versionName = version?.name
   const versionType = transform(version?.category)
   const versionOnboardDate = transformToUserDate(version)
@@ -93,7 +95,8 @@ export const getSwitchVersionLabel = (version: FirmwareVersion): string => {
   return `${versionName} (${versionType})`
 }
 
-const transformToUserDate = (firmwareVersion: FirmwareVersion): string | undefined => {
+const transformToUserDate = (firmwareVersion: FirmwareVersion | EdgeFirmwareVersion)
+: string | undefined => {
   return toUserDate(firmwareVersion?.onboardDate as string)
 }
 
@@ -156,5 +159,28 @@ export const getApNextScheduleTpl = (intl: IntlShape, venue: FirmwareVenue) => {
     // eslint-disable-next-line max-len
     return isVersionSkipped ? intl.$t({ defaultMessage: 'Not scheduled (Skipped)' }) : intl.$t({ defaultMessage: 'Not scheduled' })
   }
+}
+
+export const isNextScheduleTooltipDisabled = (venue: FirmwareVenue) => {
+  const schedule = getApSchedule(venue)
+  return schedule
+}
+
+export const getNextScheduleTplTooltip = (venue: FirmwareVenue): string | undefined => {
+  const schedule = getApSchedule(venue)
+  // eslint-disable-next-line max-len
+  return schedule && schedule.versionInfo.version + ' (' + transform(schedule.versionInfo.category as FirmwareCategory) + ')'
+}
+
+export const isSwitchNextScheduleTooltipDisabled = (venue: FirmwareSwitchVenue) => {
+  return venue.nextSchedule
+}
+
+export const getSwitchNextScheduleTplTooltip = (venue: FirmwareSwitchVenue): string | undefined => {
+  if (venue.nextSchedule) {
+    // eslint-disable-next-line max-len
+    return venue.nextSchedule.version?.name + ' (' + transform(venue.nextSchedule.version?.category as FirmwareCategory) + ')'
+  }
+  return ''
 }
 

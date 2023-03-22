@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react'
 
 import { DatePicker, Select, Form, Radio, RadioChangeEvent, Space, Typography } from 'antd'
 import { useForm }                                                              from 'antd/lib/form/Form'
+import dayjs                                                                    from 'dayjs'
 import { useIntl }                                                              from 'react-intl'
+
 
 import {
   AVAILABLE_SLOTS,
@@ -18,7 +20,8 @@ import {
 
 import * as UI from './styledComponents'
 
-import type { DatePickerProps  } from 'antd'
+import type { DatePickerProps }  from 'antd'
+import type { RangePickerProps } from 'antd/es/date-picker'
 
 enum VersionsSelectMode {
   Radio,
@@ -52,12 +55,12 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
   }, [availableVersions])
 
   useEffect(() => {
-    if (selectMode === VersionsSelectMode.Dropdown && !selectedVersion) {
+    if (!selectedDate || (selectMode === VersionsSelectMode.Dropdown && !selectedVersion)) {
       setDisableSave(true)
     } else {
       setDisableSave(false)
     }
-  }, [selectMode, selectedVersion])
+  }, [selectMode, selectedVersion, selectedDate])
 
   let versionOptions: FirmwareVersion[] = []
   let otherVersions: FirmwareVersion[] = []
@@ -89,6 +92,13 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
 
   const handleChange = (value: string) => {
     setSelectedVersion(value)
+  }
+
+  const startDate = dayjs().endOf('day')
+  const endDate = startDate.add(21, 'day')
+  const disabledDate: RangePickerProps['disabledDate'] = (current) => {
+  // Can not select days before today and today
+    return current && (current < startDate || current > endDate)
   }
 
   const onChange: DatePickerProps['onChange'] = (date, dateString) => {
@@ -180,7 +190,11 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
           <UI.TitleActive>Selected time will apply to each venue according to own time-zone</UI.TitleActive>}
         <UI.DateContainer>
           <label>Update date:</label>
-          <DatePicker onChange={onChange} />
+          <DatePicker
+            showToday={false}
+            disabledDate={disabledDate}
+            onChange={onChange}
+          />
         </UI.DateContainer>
         { selectedDate ?
           <UI.DateContainer>

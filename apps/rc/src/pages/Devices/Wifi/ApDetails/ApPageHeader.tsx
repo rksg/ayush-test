@@ -4,7 +4,7 @@ import {
   MenuProps,
   Space
 } from 'antd'
-import moment      from 'moment'
+import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, RangePicker } from '@acx-ui/components'
@@ -17,10 +17,12 @@ import {
   ApDeviceStatusEnum
 } from '@acx-ui/rc/utils'
 import {
+  useLocation,
   useNavigate,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { useDateFilter } from '@acx-ui/utils'
+import { filterByAccess } from '@acx-ui/user'
+import { useDateFilter }  from '@acx-ui/utils'
 
 import { useApContext } from './ApContext'
 import ApTabs           from './ApTabs'
@@ -33,6 +35,7 @@ function ApPageHeader () {
   const apAction = useApActions()
 
   const navigate = useNavigate()
+  const location = useLocation()
   const basePath = useTenantLink(`/devices/wifi/${serialNumber}`)
   const linkToWifi = useTenantLink('/devices/wifi/')
 
@@ -85,7 +88,7 @@ function ApPageHeader () {
       breadcrumb={[
         { text: $t({ defaultMessage: 'Access Points' }), link: '/devices/wifi' }
       ]}
-      extra={[
+      extra={filterByAccess([
         <RangePicker
           key='date-filter'
           selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
@@ -93,7 +96,7 @@ function ApPageHeader () {
           showTimePicker
           selectionType={range}
         />,
-        <Dropdown overlay={menu} key='actionMenu'>
+        <Dropdown overlay={menu}>
           <Button>
             <Space>
               {$t({ defaultMessage: 'More Actions' })}
@@ -102,16 +105,19 @@ function ApPageHeader () {
           </Button>
         </Dropdown>,
         <Button
-          key='configure'
           type='primary'
-          onClick={() =>
+          onClick={() => {
             navigate({
               ...basePath,
               pathname: `${basePath.pathname}/edit/details`
+            }, {
+              state: {
+                from: location
+              }
             })
-          }
+          }}
         >{$t({ defaultMessage: 'Configure' })}</Button>
-      ]}
+      ])}
       footer={<ApTabs apDetail={data as ApDetailHeader} />}
     />
   )

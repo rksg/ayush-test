@@ -1,6 +1,6 @@
 import { gql } from 'graphql-request'
 
-import { dataApi } from '@acx-ui/analytics/services'
+import { dataApi } from '@acx-ui/store'
 
 export interface ImpactedAP {
   name: string

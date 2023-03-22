@@ -9,10 +9,10 @@ import {
   Modal,
   ModalType,
   showActionModal,
-  showToast,
   Table,
   TableProps
 } from '@acx-ui/components'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { CopyOutlined }              from '@acx-ui/icons'
 import { CsvSize, ImportFileDrawer } from '@acx-ui/rc/components'
 import {
@@ -28,8 +28,8 @@ import {
   transformAdvancedDpskExpirationText,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
-import { formatter } from '@acx-ui/utils'
+import { useParams }      from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 import NetworkForm from '../../../Networks/wireless/NetworkForm/NetworkForm'
 
@@ -65,11 +65,8 @@ export default function DpskPassphraseManagement () {
   })
 
   const downloadPassphrases = () => {
-    downloadCsv({ params }).unwrap().catch(() => {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'Failed to export passphrases.' })
-      })
+    downloadCsv({ params }).unwrap().catch((error) => {
+      console.log(error) // eslint-disable-line no-console
     })
   }
 
@@ -81,7 +78,7 @@ export default function DpskPassphraseManagement () {
       sorter: true,
       defaultSortOrder: 'descend',
       render: function (data) {
-        return formatter('dateTimeFormat')(data)
+        return formatter(DateFormatEnum.DateTimeFormat)(data)
       }
     },
     {
@@ -209,8 +206,8 @@ export default function DpskPassphraseManagement () {
     />
     <ImportFileDrawer type='DPSK'
       title={$t({ defaultMessage: 'Import from file' })}
-      maxSize={CsvSize['5MB']}
-      maxEntries={512}
+      maxSize={CsvSize['20MB']}
+      maxEntries={5000}
       acceptType={['csv']}
       templateLink='assets/templates/DPSK_import_template_expiration.csv'
       visible={uploadCsvDrawerVisible}
@@ -221,17 +218,18 @@ export default function DpskPassphraseManagement () {
         try {
           await uploadCsv({ params, payload: formData }).unwrap()
           setUploadCsvDrawerVisible(false)
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (error: any) {
-          if (error.data?.message) {
-            showToast({
-              type: 'error',
-              content: error.data.message
-            })
-          }
+        } catch (error) {
+          console.log(error) // eslint-disable-line no-console
         }
       }}
-      onClose={() => setUploadCsvDrawerVisible(false)} >
+      onClose={() => setUploadCsvDrawerVisible(false)}
+      extraDescription={[
+        // eslint-disable-next-line max-len
+        $t({ defaultMessage: 'Notice: Existing DPSK passphrases with the same MAC address will be overwritten, and the previous passphrase will be unusable' }),
+        // eslint-disable-next-line max-len
+        $t({ defaultMessage: 'The properties you set here for "User Name Prefix" will not replace any value that you manually define in the imported file' })
+      ]}
+    >
       <Form.Item
         name='usernamePrefix'
         label={$t({ defaultMessage: 'User name prefix' })}
@@ -244,6 +242,7 @@ export default function DpskPassphraseManagement () {
       visible={networkModalVisible}
       mask={true}
       children={networkForm}
+      destroyOnClose={true}
     />
     <Loader states={[tableQuery]}>
       <Table<NewDpskPassphrase>
@@ -251,8 +250,8 @@ export default function DpskPassphraseManagement () {
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
-        actions={actions}
-        rowActions={rowActions}
+        actions={filterByAccess(actions)}
+        rowActions={filterByAccess(rowActions)}
         rowSelection={{ type: 'checkbox' }}
         rowKey='id'
       />

@@ -4,7 +4,7 @@ import { useIntl, IntlShape } from 'react-intl'
 import { healthApi }                                           from '@acx-ui/analytics/services'
 import { AnalyticsFilter, kpiConfig, getSparklineGranularity } from '@acx-ui/analytics/utils'
 import { GridRow, GridCol, SparklineChart, Loader, Tooltip }   from '@acx-ui/components'
-import { intlFormats, formatter }                              from '@acx-ui/utils'
+import { intlFormats, formatter }                              from '@acx-ui/formatter'
 
 import { tranformHistResponse, transformTSResponse } from '../Health/Kpi/Pill'
 
@@ -81,15 +81,10 @@ export function KpiWidget ({
   const { histogram } = Object(kpiConfig[name as keyof typeof kpiConfig])
   const sparklineChartStyle = { height: 50, width: 130, display: 'inline' }
   const { startDate , endDate } = filters
-  const venueFilter = filters.filter?.networkNodes?.at(0)?.at(0)
   const intl = useIntl()
-
-  const historgramQuery = useKpiHistogramQuery({
-    ...filters,
-    startDate, endDate,
-    path: venueFilter ? [...filters.path, venueFilter] : filters.path,
-    kpi: name
-  }, {
+  const venueId = filters.filter?.networkNodes?.at(0)?.at(0)?.name
+  const historgramQuery = useKpiHistogramQuery({ ...filters,
+    path: [{ type: 'zone', name: venueId as string }], filter: {}, kpi: name }, {
     skip: !Boolean(histogram),
     selectFromResult: (response) => {
       const agg = response.data
@@ -105,7 +100,8 @@ export function KpiWidget ({
 
   const { sparklineData, ...queryResults } = useKpiTimeseriesQuery({
     ...filters,
-    path: venueFilter ? [...filters.path, venueFilter] : filters.path,
+    path: [{ type: 'zone', name: venueId as string }],
+    filter: {},
     kpi: name,
     threshold: (threshold ?? '') as string,
     granularity: getSparklineGranularity(startDate,endDate)

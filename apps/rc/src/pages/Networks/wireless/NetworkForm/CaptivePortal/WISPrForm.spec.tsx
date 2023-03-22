@@ -3,9 +3,11 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { StepsForm }                             from '@acx-ui/components'
+import { useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, WifiUrlsInfo }          from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent } from '@acx-ui/test-utils'
+import { UserUrlsInfo }                          from '@acx-ui/user'
 
 import {
   venuesResponse,
@@ -28,7 +30,7 @@ describe('CaptiveNetworkForm-WISPr', () => {
       guestPortal: wisprDataWPA2.guestPortal,
       wlan: { ...networkDeepResponse.wlan, ...wisprDataWPA2.wlan } }
     mockServer.use(
-      rest.get(CommonUrlsInfo.getAllUserSettings.url,
+      rest.get(UserUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuesResponse))),
@@ -59,6 +61,7 @@ describe('CaptiveNetworkForm-WISPr', () => {
   const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', action: 'edit' }
 
   it('should test WISPr network successfully', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<Provider><NetworkFormContext.Provider
       value={{
         editMode: true, cloneMode: true, data: wisprDataWPA2
@@ -110,6 +113,8 @@ describe('CaptiveNetworkForm-WISPr', () => {
       { name: /Enable Ruckus DHCP service/ }))
     await userEvent.click(await screen.findByRole('checkbox',
       { name: /Enable MAC auth bypass/ }))
+    await userEvent.click(await screen.findByRole('checkbox',
+      { name: /Enable the encryption for users’ MAC and IP addresses/ }))
     // await userEvent.click(await screen.findByText('More details'))
   })
 })

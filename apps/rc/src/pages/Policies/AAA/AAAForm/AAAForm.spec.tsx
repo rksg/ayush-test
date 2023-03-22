@@ -3,9 +3,10 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 
-import { CommonUrlsInfo, AaaUrls }               from '@acx-ui/rc/utils'
+import { AaaUrls }                               from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
+import { UserUrlsInfo }                          from '@acx-ui/user'
 
 import AAAForm from './AAAForm'
 
@@ -38,7 +39,7 @@ const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', type: '
 describe('AAAForm', () => {
   beforeEach(()=>{
     mockServer.use(
-      rest.get(CommonUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
+      rest.get(UserUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
         res(ctx.json({ COMMON: '{}' }))
       ),
       rest.get(
@@ -74,6 +75,7 @@ describe('AAAForm', () => {
       'test1234')
     await userEvent.click(await screen.findByRole('radio', { name: /Authentication/ }))
     await userEvent.click(await screen.findByRole('radio', { name: /Accounting/ }))
+    await userEvent.click(await screen.findByRole('radio', { name: /Authentication/ }))
     const inputProfile = await screen.findByLabelText(/Profile Name/)
     fireEvent.change(inputProfile, { target: { value: 'test1' } })
     fireEvent.blur(inputProfile)
@@ -96,7 +98,7 @@ async function editAAA (){
     { target: { value: '2.3.3.4' } })
   await userEvent.type((await screen.findAllByLabelText('Shared Secret'))[0],
     'test1234')
-  const port2 = (await screen.findAllByRole('spinbutton', { name: 'Authentication Port' }))[1]
+  const port2 = (await screen.findAllByRole('spinbutton', { name: 'Port' }))[1]
   fireEvent.change((await screen.findAllByLabelText('IP Address'))[1],
     { target: { value: '2.3.3.4' } })
   await userEvent.type((await screen.findAllByLabelText('Shared Secret'))[1],

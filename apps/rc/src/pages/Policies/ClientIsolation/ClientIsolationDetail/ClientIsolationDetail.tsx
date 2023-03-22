@@ -11,6 +11,7 @@ import {
   getPolicyRoutePath
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { filterByAccess }        from '@acx-ui/user'
 
 import { ClientIsolationInstancesTable } from './ClientIsolationInstancesTable'
 
@@ -31,18 +32,15 @@ export default function ClientIsolationDetail () {
             link: getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.LIST })
           }
         ]}
-        extra={[
-          <TenantLink
-            to={getPolicyDetailsLink({
-              type: PolicyType.CLIENT_ISOLATION,
-              oper: PolicyOperation.EDIT,
-              policyId: params.policyId as string
-            })}
-            key='edit'
-          >
+        extra={filterByAccess([
+          <TenantLink to={getPolicyDetailsLink({
+            type: PolicyType.CLIENT_ISOLATION,
+            oper: PolicyOperation.EDIT,
+            policyId: params.policyId as string
+          })}>
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <GridRow>
         <GridCol col={{ span: 24 }}>

@@ -1,28 +1,30 @@
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 
+import { Form }                   from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
 import { useNavigate }            from 'react-router-dom'
 
-import {
-  noDataSymbol,
-  sortProp,
-  defaultSort,
-  dateSort
-} from '@acx-ui/analytics/utils'
-import { Loader, TableProps, Table, showActionModal, showToast } from '@acx-ui/components'
-import { useUserProfileContext }                                 from '@acx-ui/rc/components'
-import { TenantLink, useTenantLink }                             from '@acx-ui/react-router-dom'
-import { formatter }                                             from '@acx-ui/utils'
+import { noDataSymbol, sortProp, defaultSort, dateSort }                from '@acx-ui/analytics/utils'
+import { Loader, TableProps, Table, showActionModal, showToast, Modal } from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                    from '@acx-ui/formatter'
+import { TenantLink, useTenantLink }                                    from '@acx-ui/react-router-dom'
+import { useUserProfileContext }                                        from '@acx-ui/user'
 
 import * as contents      from '../contents'
+import { TestName }       from '../NetworkHealthForm/FormItems'
 import {
   useMutationResponseEffect,
   useAllNetworkHealthSpecsQuery,
   useDeleteNetworkHealthTestMutation,
   useRunNetworkHealthTestMutation,
+  useCloneNetworkHealthTestMutation,
   NetworkHealthTableRow
-}                               from '../services'
-import { ClientType, TestType } from '../types'
+} from '../services'
+import {
+  ClientType,
+  NetworkHealthSpec,
+  TestType
+} from '../types'
 import {
   statsFromSummary,
   formatApsUnderTest,
@@ -45,6 +47,10 @@ export function NetworkHealthTable () {
   const { data: userProfile } = useUserProfileContext()
   const { deleteTest, response: deleteResponse } = useDeleteNetworkHealthTestMutation()
   const { runTest, response: runResponse } = useRunNetworkHealthTestMutation()
+  const { cloneTest, response: cloneResponse } = useCloneNetworkHealthTestMutation()
+
+  const [form] = Form.useForm()
+  const [clone, setClone] = useState<NetworkHealthSpec['id']|null>(null)
 
   useMutationResponseEffect(deleteResponse, useCallback(() => {
     showToast({
@@ -57,6 +63,13 @@ export function NetworkHealthTable () {
     showToast({
       type: 'success',
       content: $t(contents.messageMapping.RUN_TEST_SUCCESS)
+    })
+  }, [$t]))
+
+  useMutationResponseEffect(cloneResponse, useCallback(() => {
+    showToast({
+      type: 'success',
+      content: $t(contents.messageMapping.TEST_CLONED)
     })
   }, [$t]))
 
@@ -94,8 +107,7 @@ export function NetworkHealthTable () {
     },
     {
       label: $t(defineMessage({ defaultMessage: 'Clone' })),
-      onClick: /* istanbul ignore next */ () => {},
-      disabled: true
+      onClick: ([{ id }]) => setClone(id)
     },
     {
       label: $t(defineMessage({ defaultMessage: 'Delete' })),
@@ -115,6 +127,38 @@ export function NetworkHealthTable () {
       }
     }
   ]
+
+  const handleCleanUp = () => {
+    setClone(null)
+    form.resetFields()
+    const clearButton = document?.querySelector('button[data-id="table-clear-btn"]')
+    if (clearButton) {
+      // @ts-ignore
+      clearButton.click()
+    }
+  }
+
+  const handleFinish = ({ name }: Pick<NetworkHealthSpec, 'name'>) => {
+    cloneTest({ id: clone!, name })
+    handleCleanUp()
+  }
+
+  const cloneModal = <Modal
+    title={$t({ defaultMessage: 'Clone test' })}
+    visible={!!clone}
+    onCancel={handleCleanUp}
+    okText={$t({ defaultMessage: 'Save' })}
+    onOk={() => form.submit()}
+    destroyOnClose={true}
+  >
+    <Form
+      form={form}
+      validateTrigger='onBlur'
+      onFinish={handleFinish}
+    >
+      <TestName />
+    </Form>
+  </Modal>
 
   const ColumnHeaders: TableProps<NetworkHealthTableRow>['columns'] = [
     {
@@ -161,7 +205,7 @@ export function NetworkHealthTable () {
       title: $t(defineMessage({ defaultMessage: 'Last Run' })),
       dataIndex: ['latestTest', 'createdAt'],
       render: (_, row) => row.latestTest?.createdAt
-        ? formatter('dateTimeFormatWithSeconds')(row.latestTest?.createdAt)
+        ? formatter(DateFormatEnum.DateTimeFormatWithSeconds)(row.latestTest?.createdAt)
         : noDataSymbol,
       sorter: { compare: sortProp('latestTest.createdAt', dateSort) }
     },
@@ -194,6 +238,7 @@ export function NetworkHealthTable () {
         showSorterTooltip={false}
         columnEmptyText={noDataSymbol}
       />
+      {cloneModal}
     </Loader>
   )
 }

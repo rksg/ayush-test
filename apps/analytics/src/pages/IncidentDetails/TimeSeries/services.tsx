@@ -1,8 +1,8 @@
 import { gql }                from 'graphql-request'
 import moment, { unitOfTime } from 'moment-timezone'
 
-import { dataApi }                        from '@acx-ui/analytics/services'
 import { Incident, calculateGranularity } from '@acx-ui/analytics/utils'
+import { dataApi }                        from '@acx-ui/store'
 
 import { timeSeriesCharts, TimeSeriesChartTypes } from './config'
 

@@ -1,3 +1,5 @@
+import React from 'react'
+
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader } from '@acx-ui/components'
@@ -7,7 +9,8 @@ import {
   getPolicyListRoutePath,
   getPolicyRoutePath
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }     from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 import AccessControlTabs from './AccessControlTabs'
 
@@ -27,16 +30,15 @@ export default function AccessControlTable () {
           link: getPolicyListRoutePath(true)
         }
       ]}
-      extra={[
+      extra={filterByAccess([
         <TenantLink
           to={getPolicyRoutePath({
             type: PolicyType.ACCESS_CONTROL,
             oper: PolicyOperation.CREATE
-          })}
-          key='add'>
+          })}>
           <Button type='primary'>{$t({ defaultMessage: 'Add Access Control Set' })}</Button>
         </TenantLink>
-      ]}
+      ])}
       footer={<AccessControlTabs />}
     />
   )

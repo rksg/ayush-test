@@ -4,7 +4,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import {
-  PageHeader, showToast,
+  PageHeader,
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
@@ -26,6 +26,16 @@ import AccessControlSettingForm from './AccessControlSettingForm'
 
 type AccessControlFormProps = {
   editMode: boolean
+}
+
+export interface editModeProps {
+  id: string,
+  isEdit: boolean
+}
+
+export interface AddModeProps {
+  enable: boolean,
+  visible: boolean
 }
 
 export const genAclPayloadObject = (accessControlProfile: AccessControlFormFields) => {
@@ -149,11 +159,8 @@ const AccessControlForm = (props: AccessControlFormProps) => {
       }
 
       navigate(linkToPolicies, { replace: true })
-    } catch(error) {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

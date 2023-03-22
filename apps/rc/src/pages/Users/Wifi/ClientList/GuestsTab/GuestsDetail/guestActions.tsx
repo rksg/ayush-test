@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { showActionModal, showToast } from '@acx-ui/components'
+import { showActionModal }   from '@acx-ui/components'
 import {
   useGetGuestsMutation,
   useDeleteGuestsMutation,
@@ -24,11 +24,8 @@ export function useGuestActions () {
     const guestIds = Array.isArray(guest) ? guest.map(g => g.id) : [guest.id]
 
     getGuests({ params: { tenantId }, payload: { dateFormat, timezone, guestIds } })
-      .catch(() => {
-        showToast({
-          type: 'error',
-          content: $t({ defaultMessage: 'Failed to download Information.' })
-        })
+      .catch((error) => {
+        console.log(error) // eslint-disable-line no-console
       })
   }
 

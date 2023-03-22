@@ -2,13 +2,13 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { apApi }                          from '@acx-ui/rc/services'
-import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                from '@acx-ui/store'
-import { mockServer, render, screen }     from '@acx-ui/test-utils'
+import { apApi }                                        from '@acx-ui/rc/services'
+import { CommonUrlsInfo, SwitchUrlsInfo }               from '@acx-ui/rc/utils'
+import { Provider, store }                              from '@acx-ui/store'
+import { mockRestApiQuery, mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { switchDetailData }   from './__tests__/fixtures'
-import { events, eventsMeta } from './SwitchTimelineTab/__tests__/fixtures'
+import { switchDetailData } from './__tests__/fixtures'
+import { activities }       from './SwitchTimelineTab/__tests__/fixtures'
 
 import SwitchDetails from '.'
 
@@ -31,13 +31,10 @@ jest.mock('@acx-ui/reports/components', () => ({
 describe('SwitchDetails', () => {
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
+    mockRestApiQuery(CommonUrlsInfo.getActivityList.url, 'post', activities)
     mockServer.use(
       rest.get( SwitchUrlsInfo.getSwitchDetailHeader.url,
-        (_, res, ctx) => res(ctx.json(switchDetailData))),
-      rest.post(CommonUrlsInfo.getEventList.url,
-        (_, res, ctx) => res(ctx.json(events))),
-      rest.post(CommonUrlsInfo.getEventListMeta.url,
-        (_, res, ctx) => res(ctx.json(eventsMeta)))
+        (_, res, ctx) => res(ctx.json(switchDetailData)))
     )
   })
 
@@ -52,7 +49,7 @@ describe('SwitchDetails', () => {
       route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab' }
     })
 
-    expect(screen.getAllByRole('tab')).toHaveLength(11)
+    expect(screen.getAllByRole('tab')).toHaveLength(10)
   })
 
   it('should navigate to incidents tab correctly', async () => {
@@ -83,19 +80,6 @@ describe('SwitchDetails', () => {
       .toEqual('Troubleshooting')
   })
 
-  it('should navigate to reports tab correctly', async () => {
-    const params = {
-      tenantId: 'tenant-id',
-      switchId: 'switchId',
-      serialNumber: 'serialNumber',
-      activeTab: 'reports'
-    }
-    render(<Provider><SwitchDetails /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab' }
-    })
-    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
-      .toEqual('Reports')
-  })
 
   it('should navigate to clients tab correctly', async () => {
     const params = {
@@ -151,7 +135,7 @@ describe('SwitchDetails', () => {
     })
     expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
       .toEqual('Timeline')
-    await screen.findByTestId('rc-EventTable')
+    await screen.findByTestId('rc-ActivityTable')
   })
 
   it('should not navigate to non-existent tab', async () => {

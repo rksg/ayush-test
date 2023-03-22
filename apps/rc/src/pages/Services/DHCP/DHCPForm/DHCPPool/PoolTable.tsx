@@ -8,8 +8,10 @@ import {
   TableProps
 } from '@acx-ui/components'
 import { DHCPPool, LeaseUnit } from '@acx-ui/rc/utils'
+import { filterByAccess }      from '@acx-ui/user'
 
 export function PoolTable (props:{
+  readonly?: boolean
   data: DHCPPool[]
   onAdd?: () => void
   onEdit?: (data?: DHCPPool) => void
@@ -17,7 +19,7 @@ export function PoolTable (props:{
   isDefaultService?: Boolean
 }) {
   const { $t } = useIntl()
-  const { data } = props
+  const { data, readonly } = props
   const [ errorVisible, showError ] = useState<Boolean>(false)
   const errorMessage = defineMessage({
     defaultMessage: 'Only one record can be selected for editing!'
@@ -113,9 +115,9 @@ export function PoolTable (props:{
         rowKey='id'
         columns={columns}
         dataSource={data}
-        rowActions={rowActions}
-        actions={actions}
-        rowSelection={{}}
+        rowActions={filterByAccess(rowActions)}
+        actions={!readonly ? filterByAccess(actions) : undefined}
+        rowSelection={!readonly ? {} : undefined}
       />
     </>
   )

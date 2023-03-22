@@ -31,19 +31,25 @@ import {
   ServiceValidationSolid,
   ServiceValidationOutlined
 } from '@acx-ui/icons'
-import { getServiceCatalogRoutePath, getServiceListRoutePath, RolesEnum } from '@acx-ui/rc/utils'
+import { getServiceCatalogRoutePath, getServiceListRoutePath } from '@acx-ui/rc/utils'
+import { RolesEnum }                                           from '@acx-ui/types'
+import { hasRoles }                                            from '@acx-ui/user'
 
 const AIOutlined = styled(AIOutlinedBase)`${LayoutUI.iconOutlinedOverride}`
 const AISolid = styled(AISolidBase)`${LayoutUI.iconOutlinedOverride}`
 const ServicesSolid = styled(ServicesSolidBase)`${LayoutUI.iconSolidOverride}`
 const PoliciesSolid = styled(PoliciesSolidBase)`${LayoutUI.iconSolidOverride}`
 
-export function useMenuConfig (userRole: RolesEnum) {
+export function useMenuConfig () {
   const { $t } = useIntl()
   const showSV = useIsSplitOn(Features.SERVICE_VALIDATION)
   const earlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
   const isEdgeEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
   const isAdministrationEnabled = useIsSplitOn(Features.UNRELEASED) || earlyBetaEnabled
+  const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
+  const isPersonaEnabled = useIsSplitOn(Features.PERSONA)
+  const isMacRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
 
   const config: LayoutProps['menuConfig'] = [
     {
@@ -52,7 +58,7 @@ export function useMenuConfig (userRole: RolesEnum) {
       inactiveIcon: SpeedIndicatorOutlined,
       activeIcon: SpeedIndicatorSolid
     },
-    {
+    ...(isAdmin ? [{
       path: '/analytics',
       name: $t({ defaultMessage: 'AI Analytics' }),
       inactiveIcon: AIOutlined,
@@ -77,14 +83,14 @@ export function useMenuConfig (userRole: RolesEnum) {
         //   name: $t({ defaultMessage: 'Config Change' })
         // }
       ]
-    },
+    }] : []),
     {
       path: '/timeline',
       name: $t({ defaultMessage: 'Timeline' }),
       inactiveIcon: CalendarDateOutlined,
       activeIcon: CalendarDateSolid
     },
-    ...(useIsTierAllowed('ANLT-ADV') ? [{
+    ...(useIsTierAllowed('ANLT-ADV') && isAdmin ? [{
       path: '/serviceValidation',
       name: $t({ defaultMessage: 'Service Validation' }),
       inactiveIcon: ServiceValidationOutlined,
@@ -181,11 +187,12 @@ export function useMenuConfig (userRole: RolesEnum) {
           name: $t({ defaultMessage: 'Switch' }),
           disabled: !useIsSplitOn(Features.USERS)
         },
-        {
-          path: '/users/persona-management',
-          name: $t({ defaultMessage: 'Persona Management' }),
-          disabled: !useIsSplitOn(Features.SERVICES)
-        }
+        ...(isPersonaEnabled && isMacRegistrationEnabled)
+          ? [{
+            path: '/users/persona-management',
+            name: $t({ defaultMessage: 'Persona Management' })
+          }]
+          : []
       ]
     },
     genPlaceholder(),
@@ -249,7 +256,7 @@ export function useMenuConfig (userRole: RolesEnum) {
       disabled: !isAdministrationEnabled
     }
   ]
-  if (userRole === RolesEnum.GUEST_MANAGER) {
+  if (isGuestManager) {
     return []
   }
   return config

@@ -5,6 +5,7 @@ import { rest }  from 'msw'
 import { CommonUrlsInfo, GuestNetworkTypeEnum, PortalUrlsInfo, WifiUrlsInfo }        from '@acx-ui/rc/utils'
 import { Provider }                                                                  from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { UserUrlsInfo }                                                              from '@acx-ui/user'
 
 import {
   venuesResponse,
@@ -37,7 +38,7 @@ describe('CaptiveNetworkForm-ClickThrough', () => {
       guestPortal: { redirectUrl: 'dbaidu.com', guestNetworkType: GuestNetworkTypeEnum.ClickThrough
       } }
     mockServer.use(
-      rest.get(CommonUrlsInfo.getAllUserSettings.url,
+      rest.get(UserUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuesResponse))),
@@ -59,8 +60,9 @@ describe('CaptiveNetworkForm-ClickThrough', () => {
         (_, res, ctx) => res(ctx.json({ response: [clickThroughData] }))),
       rest.get(CommonUrlsInfo.getExternalProviders.url,
         (_, res, ctx) => res(ctx.json(externalProviders))),
-      rest.get(PortalUrlsInfo.getPortalProfileList.url,
-        (_, res, ctx) => res(ctx.json({ content: portalList }))
+      rest.get(PortalUrlsInfo.getPortalProfileList.url
+        .replace('?pageSize=:pageSize&page=:page&sort=:sort', ''),
+      (_, res, ctx) => res(ctx.json({ content: portalList }))
       ),
       rest.get(CommonUrlsInfo.getCloudpathList.url, (_, res, ctx) =>
         res(ctx.json([]))

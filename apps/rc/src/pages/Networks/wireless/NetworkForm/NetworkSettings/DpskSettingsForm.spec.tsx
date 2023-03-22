@@ -19,6 +19,8 @@ import NetworkFormContext from '../NetworkFormContext'
 import { DpskSettingsForm } from './DpskSettingsForm'
 
 describe('DpskSettingsForm', () => {
+  const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+
   beforeEach(() => {
     mockServer.use(
       rest.get(CommonUrlsInfo.getCloudpathList.url,
@@ -35,11 +37,9 @@ describe('DpskSettingsForm', () => {
   })
 
   it('should render DPSK form successfully', async () => {
-    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
-
     const { asFragment } = render(
       <Provider>
-        <Form><DpskSettingsForm saveState={{}} /></Form>
+        <Form><DpskSettingsForm /></Form>
       </Provider>, {
         route: { params }
       }
@@ -49,22 +49,18 @@ describe('DpskSettingsForm', () => {
   })
 
   it('should render Cloudpath Server form successfully', async () => {
-    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
-
     render(
       <Provider>
-        <Form><DpskSettingsForm saveState={{}} /></Form>
+        <Form><DpskSettingsForm /></Form>
       </Provider>, {
         route: { params }
       }
     )
 
-    await userEvent.click(screen.getByText('Use Cloudpath Server'))
+    await userEvent.click(screen.getByText('Use Radius Server'))
   })
 
   it('should render edit form with DPSK service profile', async () => {
-    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
-
     render(
       <Provider>
         <NetworkFormContext.Provider value={{
@@ -73,7 +69,7 @@ describe('DpskSettingsForm', () => {
           data: partialDpskNetworkEntity,
           setData: jest.fn()
         }}>
-          <Form><DpskSettingsForm saveState={{}} /></Form>
+          <Form><DpskSettingsForm /></Form>
         </NetworkFormContext.Provider>
       </Provider>, {
         route: { params }
@@ -85,11 +81,9 @@ describe('DpskSettingsForm', () => {
   })
 
   it('should display DPSK service detail when select the dropdown list', async () => {
-    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
-
     render(
       <Provider>
-        <Form><DpskSettingsForm saveState={{}} /></Form>
+        <Form><DpskSettingsForm /></Form>
       </Provider>, {
         route: { params }
       }
@@ -101,5 +95,25 @@ describe('DpskSettingsForm', () => {
     expect(await screen.findByText('Keyboard Friendly')).toBeVisible()
     expect(await screen.findByText('24 Characters')).toBeVisible()
     expect(await screen.findByText('2 hours')).toBeVisible()
+  })
+
+  it('should open the Add DPSK Service modal', async () => {
+    render(
+      <Provider>
+        <Form><DpskSettingsForm /></Form>
+      </Provider>, {
+        route: { params }
+      }
+    )
+
+    await userEvent.click(await screen.findByRole('button', { name: /Add DPSK Service/ }))
+
+    const dialog = await screen.findByRole('dialog', { name: /Add DPSK service/ })
+    expect(dialog).toBeVisible()
+
+    const buttons = await screen.findAllByRole('button', { name: /Cancel/, hidden: true })
+    await userEvent.click(buttons[1])
+
+    expect(dialog).not.toBeInTheDocument()
   })
 })

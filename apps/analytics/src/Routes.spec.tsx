@@ -1,7 +1,8 @@
-import { networkHealthApiURL }                                  from '@acx-ui/analytics/services'
 import { useIsTierAllowed }                                     from '@acx-ui/feature-toggle'
-import { Provider }                                             from '@acx-ui/store'
+import { networkHealthApiURL, Provider }                        from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitFor, fireEvent } from '@acx-ui/test-utils'
+import { RolesEnum }                                            from '@acx-ui/types'
+import { getUserProfile, setUserProfile }                       from '@acx-ui/user'
 
 import { fetchServiceGuardSpec, fetchServiceGuardTest } from './pages/NetworkHealth/__tests__/fixtures'
 import AnalyticsRoutes                                  from './Routes'
@@ -219,6 +220,39 @@ describe('if tier no access', () => {
       },
       wrapper: Provider
     })
+    expect(container).toBeEmptyDOMElement()
+  })
+})
+
+describe('RBAC', () => {
+  beforeEach(() => setUserProfile({
+    allowedOperations: [],
+    profile: {
+      ...getUserProfile().profile,
+      roles: [RolesEnum.READ_ONLY]
+    }
+  }))
+
+  it('non-admin no access to analytics', async () => {
+    const { container } = render(<AnalyticsRoutes />, {
+      wrapper: Provider,
+      route: {
+        path: '/t/tenantId/analytics',
+        wrapRoutes: false
+      }
+    })
+
+    expect(container).toBeEmptyDOMElement()
+  })
+  it('non-admin no access to service validation', async () => {
+    const { container } = render(<AnalyticsRoutes />, {
+      wrapper: Provider,
+      route: {
+        path: '/t/tenantId/serviceValidation',
+        wrapRoutes: false
+      }
+    })
+
     expect(container).toBeEmptyDOMElement()
   })
 })

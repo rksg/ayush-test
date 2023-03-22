@@ -19,8 +19,9 @@ import {
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
+import { DateFormatEnum, formatter }      from '@acx-ui/formatter'
 import type { TimeStampRange, TimeStamp } from '@acx-ui/types'
-import { formatter, getIntl }             from '@acx-ui/utils'
+import { getIntl }                        from '@acx-ui/utils'
 
 import { cssNumber, cssStr } from '../../theme/helper'
 import { ResetButton }       from '../Chart'
@@ -68,7 +69,7 @@ export interface MultiBarTimeSeriesChart extends Omit<EChartsReactProps, 'option
   dataFormatter?: ChartFormatterFn;
   tooltipFormatter?: TooltipFormatterCallback<TopLevelFormatterParams>;
   seriesFormatters?: Record<string, ChartFormatterFn>;
-  LabelFormatter?: LabelFormatterCallback<unknown>;
+  labelFormatter?: LabelFormatterCallback<unknown>;
   showToolTip?: boolean;
 }
 export const mapping = [{ key: 'SwitchStatus', series: 'Switch', color: 'green' }] as {
@@ -93,7 +94,7 @@ export function defaultLabelFormatter (
           : $t({ defaultMessage: 'Disconnected' })
   })
   return (
-    formatter('dateTimeFormat')(params.value) +
+    formatter(DateFormatEnum.DateTimeFormat)(params.value) +
     '\n' +
     $t({ defaultMessage: 'Status' }) +
     ': ' +
@@ -187,7 +188,7 @@ export function MultiBarTimeSeriesChart ({
   hasXaxisLabel,
   zoomEnabled = false,
   seriesFormatters,
-  LabelFormatter,
+  labelFormatter,
   showToolTip,
   ...props
 }: MultiBarTimeSeriesChart) {
@@ -251,8 +252,8 @@ export function MultiBarTimeSeriesChart ({
           ...(tooltipOptions() as Object),
           height: 40,
           show: true,
-          formatter: LabelFormatter
-            ? LabelFormatter
+          formatter: labelFormatter
+            ? labelFormatter
             : function (params) {
               return defaultLabelFormatter(data, params as unknown as CallbackDataParams)
             }

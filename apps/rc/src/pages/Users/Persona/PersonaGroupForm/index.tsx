@@ -6,11 +6,12 @@ import { useIntl }                                            from 'react-intl'
 
 import { Button, Modal, ModalType, Subtitle }                                           from '@acx-ui/components'
 import { useGetDpskListQuery, useLazySearchPersonaGroupListQuery, useMacRegListsQuery } from '@acx-ui/rc/services'
-import { checkObjectNotExists, PersonaGroup, useTableQuery }                            from '@acx-ui/rc/utils'
+import { checkObjectNotExists, DpskSaveData, PersonaGroup }                             from '@acx-ui/rc/utils'
 
 import MacRegistrationListForm
   from '../../../Policies/MacRegistrationList/MacRegistrationListForm/MacRegistrationListForm'
-import DpskForm from '../../../Services/Dpsk/DpskForm/DpskForm'
+import DpskForm                                  from '../../../Services/Dpsk/DpskForm/DpskForm'
+import { DpskPoolLink, MacRegistrationPoolLink } from '../LinkHelper'
 
 export function PersonaGroupForm (props: {
   form: FormInstance,
@@ -25,10 +26,8 @@ export function PersonaGroupForm (props: {
 
   const dpskPoolList = useGetDpskListQuery({ })
 
-  const macRegistrationPoolList = useTableQuery({
-    useQuery: useMacRegListsQuery,
-    apiParams: { size: '2147483647', page: '0', sort: 'name,ASC' },
-    defaultPayload: { }
+  const { data: macRegistrationPoolList } = useMacRegListsQuery({
+    payload: { sortField: 'name', sortOrder: 'ASC', page: 1, pageSize: 10000 }
   })
 
   const [searchPersonaGroupList] = useLazySearchPersonaGroupListQuery()
@@ -92,15 +91,21 @@ export function PersonaGroupForm (props: {
               <Form.Item
                 name='dpskPoolId'
                 children={
-                  <Select
-                    disabled={!!defaultValue?.dpskPoolId}
-                    placeholder={$t({ defaultMessage: 'Select...' })}
-                    options={
-                      dpskPoolList?.data?.data
-                        .filter(pool => !pool.identityId)
-                        .map(pool => ({ value: pool.id, label: pool.name }))
-                    }
-                  />
+                  !defaultValue?.dpskPoolId
+                    ? <Select
+                      disabled={!!defaultValue?.dpskPoolId}
+                      placeholder={$t({ defaultMessage: 'Select...' })}
+                      options={
+                        dpskPoolList?.data?.data
+                          .filter(pool => !pool.identityId)
+                          .map(pool => ({ value: pool.id, label: pool.name }))
+                      }
+                    />
+                    : <DpskPoolLink
+                      name={dpskPoolList?.data?.data
+                        ?.find(p => p.id === defaultValue?.dpskPoolId)?.name}
+                      dpskPoolId={defaultValue?.dpskPoolId}
+                    />
                 }
                 rules={
                   [{
@@ -112,12 +117,14 @@ export function PersonaGroupForm (props: {
             </Form.Item>
           </Col>
           <Col span={2}>
-            <Button
-              type={'link'}
-              onClick={() => setDpskModalVisible(true)}
-            >
-              {$t({ defaultMessage: 'Add' })}
-            </Button>
+            {!defaultValue?.dpskPoolId &&
+              <Button
+                type={'link'}
+                onClick={() => setDpskModalVisible(true)}
+              >
+                {$t({ defaultMessage: 'Add' })}
+              </Button>
+            }
           </Col>
           <Col span={21}>
             <Form.Item
@@ -125,25 +132,33 @@ export function PersonaGroupForm (props: {
               valuePropName='value'
               label={$t({ defaultMessage: 'MAC Registration List' })}
               children={
-                <Select
-                  allowClear
-                  disabled={!!defaultValue?.macRegistrationPoolId}
-                  placeholder={$t({ defaultMessage: 'Select...' })}
-                  options={
-                    macRegistrationPoolList.data?.data
-                      .map(pool => ({ value: pool.id, label: pool.name }))
-                  }
-                />
+                !defaultValue?.macRegistrationPoolId
+                  ? <Select
+                    allowClear
+                    disabled={!!defaultValue?.macRegistrationPoolId}
+                    placeholder={$t({ defaultMessage: 'Select...' })}
+                    options={
+                      macRegistrationPoolList?.data
+                        ?.map(pool => ({ value: pool.id, label: pool.name }))
+                    }
+                  />
+                  : <MacRegistrationPoolLink
+                    name={macRegistrationPoolList?.data
+                      ?.find(mac => mac.id === defaultValue.macRegistrationPoolId)?.name}
+                    macRegistrationPoolId={defaultValue?.macRegistrationPoolId}
+                  />
               }
             />
           </Col>
           <Col span={2}>
-            <Button
-              type={'link'}
-              onClick={() => setMacModalVisible(true)}
-            >
-              {$t({ defaultMessage: 'Add' })}
-            </Button>
+            {!defaultValue?.macRegistrationPoolId &&
+              <Button
+                type={'link'}
+                onClick={() => setMacModalVisible(true)}
+              >
+                {$t({ defaultMessage: 'Add' })}
+              </Button>
+            }
           </Col>
         </Row>
       </Space>
@@ -154,9 +169,16 @@ export function PersonaGroupForm (props: {
         type={ModalType.ModalStepsForm}
         children={<DpskForm
           modalMode
-          modalCallBack={onDpskModalClose}
+          modalCallBack={(result?: DpskSaveData) => {
+            if (result) {
+              form.setFieldValue('dpskPoolId', result.id)
+            }
+            onDpskModalClose()
+          }}
         />}
         onCancel={onDpskModalClose}
+        width={1200}
+        destroyOnClose={true}
       />
 
       <Modal
@@ -168,6 +190,7 @@ export function PersonaGroupForm (props: {
           modalCallBack={onMacModalClose}
         />}
         onCancel={onMacModalClose}
+        width={1200}
       />
     </Form>
   )

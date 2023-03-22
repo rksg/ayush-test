@@ -21,18 +21,26 @@ import {
 import {
   MspEcDropdownList
 } from '@acx-ui/msp/components'
-import { CloudMessageBanner, useUserProfileContext }             from '@acx-ui/rc/components'
-import { isDelegationMode, RolesEnum, TenantIdFromJwt }          from '@acx-ui/rc/utils'
-import { getBasePath, Link, Outlet, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { useParams }                                             from '@acx-ui/react-router-dom'
+import { CloudMessageBanner, useUpdateGoogleMapRegion }                from '@acx-ui/rc/components'
+import { useGetPreferencesQuery }                                      from '@acx-ui/rc/services'
+import { isDelegationMode, TenantIdFromJwt, TenantPreferenceSettings } from '@acx-ui/rc/utils'
+import { getBasePath, Link, Outlet, useNavigate, useTenantLink }       from '@acx-ui/react-router-dom'
+import { useParams }                                                   from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                   from '@acx-ui/types'
+import { hasRoles, useUserProfileContext }                             from '@acx-ui/user'
 
 import { useMenuConfig } from './menuConfig'
 import SearchBar         from './SearchBar'
 import * as UI           from './styledComponents'
 
+const getMapRegion = (data: TenantPreferenceSettings | undefined): string => {
+  return data?.global.mapRegion as string
+}
 
 function Layout () {
   const [supportStatus,setSupportStatus] = useState('')
+  const [isSkip, setSkipQuery] = useState(false)
+
   const { data: userProfile } = useUserProfileContext()
   const companyName = userProfile?.companyName
   const showHomeButton = isDelegationMode() || userProfile?.var
@@ -44,21 +52,31 @@ function Layout () {
 
   const [searchExpanded, setSearchExpanded] = useState<boolean>(searchFromUrl !== '')
   const [licenseExpanded, setLicenseExpanded] = useState<boolean>(false)
+  const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
+
+  const { data } = useGetPreferencesQuery({ params }, { skip: isSkip })
+  const { update: updateGoogleMapRegion } = useUpdateGoogleMapRegion()
 
   useEffect(() => {
-    if (userProfile) {
-      if(userProfile.role === RolesEnum.GUEST_MANAGER){
-        navigate({
-          ...basePath,
-          pathname: `${basePath.pathname}`
-        })
-      }
+    if (data?.global) {
+      const currentMapRegion = getMapRegion(data)
+      updateGoogleMapRegion(currentMapRegion)
+      setSkipQuery(true)
     }
-  }, [userProfile])
+  }, [data])
+
+  useEffect(() => {
+    if (isGuestManager && params['*'] !== 'guestsManager') {
+      navigate({
+        ...basePath,
+        pathname: `${basePath.pathname}`
+      })
+    }
+  }, [isGuestManager, params['*']])
 
   return (
     <LayoutComponent
-      menuConfig={useMenuConfig(userProfile?.role as RolesEnum)}
+      menuConfig={useMenuConfig()}
       content={
         <>
           <CloudMessageBanner />
@@ -90,8 +108,11 @@ function Layout () {
         {isDelegationMode()
           ? <MspEcDropdownList/>
           : <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>}
-        <AlarmsButton/>
-        <ActivityButton/>
+        {!isGuestManager &&
+          <>
+            <AlarmsButton />
+            <ActivityButton />
+          </>}
         <FetchBot showFloatingButton={false} statusCallback={setSupportStatus}/>
         <HelpButton supportStatus={supportStatus}/>
         <UserButton/>

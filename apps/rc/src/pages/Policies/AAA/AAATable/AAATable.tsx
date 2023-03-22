@@ -1,44 +1,40 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { usePolicyListQuery, useDeleteAAAPolicyMutation }                 from '@acx-ui/rc/services'
+import { Button, PageHeader, Table, TableProps, Loader, showActionModal }                     from '@acx-ui/components'
+import { SimpleListTooltip }                                                                  from '@acx-ui/rc/components'
+import { useDeleteAAAPolicyMutation, useGetAAAPolicyViewModelListQuery, useNetworkListQuery } from '@acx-ui/rc/services'
 import {
   PolicyType,
   useTableQuery,
   getPolicyDetailsLink,
   PolicyOperation,
-  Policy,
   getPolicyListRoutePath,
-  getPolicyRoutePath
+  getPolicyRoutePath,
+  AAAViewModalType,
+  AAAPurposeEnum,
+  AAA_LIMIT_NUMBER
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
+import { filterByAccess }                                          from '@acx-ui/user'
 
-const defaultPayload = {
-  searchString: '',
-  filters: {
-    type: [PolicyType.AAA]
-  },
-  fields: [
-    'id',
-    'name',
-    'type',
-    'scope',
-    'cog'
-  ]
-}
+
 
 export default function AAATable () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const { tenantId } = useParams()
   const tenantBasePath: Path = useTenantLink('')
-
-  const tableQuery = useTableQuery({
-    useQuery: usePolicyListQuery,
-    defaultPayload
-  })
   const [ deleteFn ] = useDeleteAAAPolicyMutation()
-  const rowActions: TableProps<Policy>['rowActions'] = [
+  const tableQuery = useTableQuery({
+    useQuery: useGetAAAPolicyViewModelListQuery,
+    defaultPayload: {
+      filters: {},
+      searchString: '',
+      searchTargetFields: ['name']
+    }
+  })
+
+  const rowActions: TableProps<AAAViewModalType>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: ([{ id, name }], clearSelection) => {
@@ -69,35 +65,42 @@ export default function AAATable () {
       }
     }
   ]
-
   return (
     <>
       <PageHeader
         title={
           $t({
-            defaultMessage: 'AAA Server'
+            defaultMessage: 'Radius Server ({count})'
+          },
+          {
+            count: tableQuery.data?.totalCount
           })
         }
         breadcrumb={[
           // eslint-disable-next-line max-len
           { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) }
         ]}
-        extra={[
+        extra={filterByAccess([
           // eslint-disable-next-line max-len
-          <TenantLink to={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })} key='add'>
-            <Button type='primary'>{$t({ defaultMessage: 'Add AAA Server' })}</Button>
+          <TenantLink to={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}>
+            <Button type='primary'
+              disabled={tableQuery.data?.totalCount
+                ? tableQuery.data?.totalCount >= AAA_LIMIT_NUMBER
+                : false} >{$t({ defaultMessage: 'Add Radius Server' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <Loader states={[tableQuery]}>
-        <Table<Policy>
+        <Table<AAAViewModalType>
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={rowActions}
+          rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
+          onFilterChange={tableQuery.handleFilterChange}
+          enableApiFilter={true}
         />
       </Loader>
     </>
@@ -106,13 +109,29 @@ export default function AAATable () {
 
 function useColumns () {
   const { $t } = useIntl()
-
-  const columns: TableProps<Policy>['columns'] = [
+  const params = useParams()
+  const emptyNetworks: { key: string, value: string }[] = []
+  const { networkNameMap } = useNetworkListQuery({
+    params: { tenantId: params.tenantId },
+    payload: {
+      fields: ['name', 'id'],
+      sortField: 'name',
+      sortOrder: 'ASC'
+    }
+  }, {
+    selectFromResult: ({ data }) => ({
+      networkNameMap: data?.data
+        ? data.data.map(network => ({ key: network.id, value: network.name }))
+        : emptyNetworks
+    })
+  })
+  const columns: TableProps<AAAViewModalType>['columns'] = [
     {
       key: 'name',
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
       sorter: true,
+      searchable: true,
       defaultSortOrder: 'ascend',
       render: function (data, row) {
         return (
@@ -128,11 +147,39 @@ function useColumns () {
       }
     },
     {
-      key: 'scope',
-      title: $t({ defaultMessage: 'Scope' }),
-      dataIndex: 'scope',
+      key: 'type',
+      title: $t({ defaultMessage: 'Radius Type' }),
+      dataIndex: 'type',
       sorter: true,
-      align: 'center'
+      render: (data) =>{
+        return data?AAAPurposeEnum[data as keyof typeof AAAPurposeEnum]:''
+      }
+    },
+    {
+      key: 'primary',
+      title: $t({ defaultMessage: 'Primary Server' }),
+      dataIndex: 'primary',
+      sorter: true
+    },
+    {
+      key: 'secondary',
+      title: $t({ defaultMessage: 'Secondary Server' }),
+      dataIndex: 'secondary',
+      sorter: true
+    },
+    {
+      key: 'networkIds',
+      title: $t({ defaultMessage: 'Networks' }),
+      dataIndex: 'networkIds',
+      align: 'center',
+      filterable: networkNameMap,
+      render: (data, row) =>{
+        if (!row.networkIds || row.networkIds.length === 0) return 0
+        const networkIds = row.networkIds
+        // eslint-disable-next-line max-len
+        const tooltipItems = networkNameMap.filter(v => networkIds!.includes(v.key)).map(v => v.value)
+        return <SimpleListTooltip items={tooltipItems} displayText={networkIds.length} />
+      }
     }
   ]
 

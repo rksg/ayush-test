@@ -1,14 +1,15 @@
 import { useState } from 'react'
 
-import { Form, Input, Modal, Button } from 'antd'
-import { FieldData }                  from 'rc-field-form/lib/interface'
-import { useIntl }                    from 'react-intl'
+import { Form, Input, Button } from 'antd'
+import { FieldData }           from 'rc-field-form/lib/interface'
+import { useIntl }             from 'react-intl'
 
+import { Modal }               from '@acx-ui/components'
 import {
+  MFAMethod,
   useMfaResendOTPMutation,
   useSetupMFAAccountMutation
-} from '@acx-ui/rc/services'
-import { MFAMethod } from '@acx-ui/rc/utils'
+} from '@acx-ui/user'
 
 import { OTPMethodProps } from '../OneTimePassword'
 

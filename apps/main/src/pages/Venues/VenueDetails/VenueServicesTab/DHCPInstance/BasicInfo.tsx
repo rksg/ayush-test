@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 
 import { Button, Form }           from 'antd'
 import _                          from 'lodash'
@@ -12,12 +12,14 @@ import {
 } from '@acx-ui/rc/services'
 import { DHCPConfigTypeEnum } from '@acx-ui/rc/utils'
 import { TenantLink }         from '@acx-ui/react-router-dom'
-
+import { hasAccess }          from '@acx-ui/user'
 
 import useDHCPInfo   from './hooks/useDHCPInfo'
 import VenueDHCPForm from './VenueDHCPForm'
 
-
+interface DHCPFormRefType {
+  resetForm: Function,
+}
 export default function BasicInfo () {
   type LocationState = {
     showConfig?: boolean
@@ -33,7 +35,7 @@ export default function BasicInfo () {
   const SPAN_NUM = 3
   const dhcpInfo = useDHCPInfo()
   const natGateway = _.take(dhcpInfo.gateway, DISPLAY_GATEWAY_MAX_NUM)
-
+  const dhcpForm = useRef<DHCPFormRefType>()
   const [form] = Form.useForm()
 
   const { data: dhcpProfileList } = useGetDHCPProfileListQuery({ params })
@@ -150,14 +152,16 @@ export default function BasicInfo () {
           </GridCol>
         </>}
         <GridCol col={{ span: SPAN_NUM }}>
-          <Button style={{ paddingLeft: 0 }}
-            onClick={()=>{
-              setVisible(true)
-            }}
-            type='link'
-            block>
-            {$t({ defaultMessage: 'Manage Local Service' })}
-          </Button>
+          {hasAccess() &&
+            <Button style={{ paddingLeft: 0 }}
+              onClick={()=>{
+                setVisible(true)
+              }}
+              type='link'
+              block>
+              {$t({ defaultMessage: 'Manage Local Service' })}
+            </Button>
+          }
         </GridCol>
       </GridRow>
     </Card>
@@ -168,6 +172,7 @@ export default function BasicInfo () {
       width={650}
       onCancel={() => {
         setVisible(false)
+        dhcpForm.current?.resetForm()
         form.resetFields()
       }}
       onOk={async () => {
@@ -193,7 +198,7 @@ export default function BasicInfo () {
         }
       }}
     >
-      <VenueDHCPForm form={form} />
+      <VenueDHCPForm form={form} ref={dhcpForm} />
     </Modal>
   </>
 }

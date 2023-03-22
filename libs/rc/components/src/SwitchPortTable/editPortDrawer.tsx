@@ -38,7 +38,6 @@ import {
   MultipleEditPortMessages,
   poeBudgetRegExp,
   PORT_SPEED,
-  showGeneralError,
   SwitchPortViewModel,
   SwitchVlanUnion,
   PortSettingModel,
@@ -320,7 +319,8 @@ export function EditPortDrawer ({
   const getSinglePortValue = async (portSpeed: string[], defaultVlan: string) => {
     const vid = isVenueLevel ? venueId : switchDetail?.venueId
     const portSetting = await getPortSetting({
-      params: { tenantId, switchId, portIdentifier: selectedPorts?.[0]?.portIdentifier }
+      params: { tenantId, switchId, portIdentifier: selectedPorts?.[0]?.portIdentifier },
+      payload: [selectedPorts?.[0]?.portIdentifier]
     }, true).unwrap()
 
     const requestPort = selectedPorts?.[0]?.portIdentifier?.split('/').slice(1, 3).join('/')
@@ -328,8 +328,6 @@ export function EditPortDrawer ({
       tenantId, venueId: vid,
       model: selectedPorts?.[0]?.switchModel, port: `1/${requestPort}`
     }
-    // const taggedVlansByVenue = await getTaggedVlansByVenue({ params, payload: params }, true).unwrap()
-    // const untaggedVlansByVenue = await getUntaggedVlansByVenue({ params, payload: params }, true).unwrap()
     const taggedVlansByVenue = await getTaggedVlansByVenue({ params }, true).unwrap()
     const untaggedVlansByVenue = await getUntaggedVlansByVenue({ params }, true).unwrap()
 
@@ -446,7 +444,7 @@ export function EditPortDrawer ({
 
   const getOverrideDisabled = (field: string) => {
     switch (field) {
-      case 'portEnable': return disablePoeCapability
+      case 'poeEnable': return disablePoeCapability
       case 'poeClass':
       case 'poePriority':
       case 'poeBudget':
@@ -559,7 +557,7 @@ export function EditPortDrawer ({
       setDrawerVisible(false)
 
     } catch (err) {
-      showGeneralError(err)
+      console.log(err) // eslint-disable-line no-console
     }
   }
 
@@ -603,7 +601,7 @@ export function EditPortDrawer ({
       const untaggedVlan = venueUntaggedVlan || profileDefaultVlan
       untagged = untaggedVlan
       tagged = venueTaggedVlans.toString()
-      if (untaggedVlan === defaultVlan && !venueTaggedVlans) {
+      if (Number(untaggedVlan) === Number(defaultVlan) && !venueTaggedVlans) {
         status = 'default' // Venue no setting, revert to default
       }
     }
@@ -745,17 +743,21 @@ export function EditPortDrawer ({
               isMultipleEdit && !portEnableCheckbox && hasMultipleValue.includes('portEnable')
                 ? <MultipleText />
                 : <Tooltip title={getFieldTooltip('portEnable')}>
-                  <Form.Item
-                    name='portEnable'
-                    noStyle
-                    valuePropName='checked'
-                    initialValue={false}
-                  >
-                    <Switch
-                      disabled={getFieldDisabled('portEnable')}
-                      className={getToggleClassName('portEnable', isMultipleEdit, hasMultipleValue)}
-                    />
-                  </Form.Item>
+                  <Space>
+                    <Form.Item
+                      name='portEnable'
+                      noStyle
+                      valuePropName='checked'
+                      initialValue={false}
+                    >
+                      <Switch
+                        disabled={getFieldDisabled('portEnable')}
+                        className={
+                          getToggleClassName('portEnable', isMultipleEdit, hasMultipleValue)
+                        }
+                      />
+                    </Form.Item>
+                  </Space>
                 </Tooltip>
             }
           />,
@@ -765,21 +767,24 @@ export function EditPortDrawer ({
         { getFieldTemplate(
           <Form.Item
             noStyle
-            children={<Tooltip title={getFieldTooltip('poeEnable')}>
-              {isMultipleEdit && !poeEnableCheckbox && hasMultipleValue.includes('poeEnable')
-                ? <MultipleText />
-                : <Form.Item
-                  name='poeEnable'
-                  noStyle
-                  valuePropName='checked'
-                  initialValue={false}
-                >
-                  <Switch
-                    disabled={getFieldDisabled('poeEnable')}
-                    className={getToggleClassName('poeEnable', isMultipleEdit, hasMultipleValue)}
-                  />
-                </Form.Item>
-              }</Tooltip>
+            children={isMultipleEdit && !poeEnableCheckbox && hasMultipleValue.includes('poeEnable')
+              ? <MultipleText />
+              : <Tooltip title={getFieldTooltip('poeEnable')}>
+                <Space>
+                  <Form.Item
+                    name='poeEnable'
+                    noStyle
+                    valuePropName='checked'
+                    initialValue={false}
+                  >
+                    <Switch
+                      disabled={getFieldDisabled('poeEnable')}
+                      className={getToggleClassName('poeEnable', isMultipleEdit, hasMultipleValue)}
+                    />
+                  </Form.Item>
+                </Space>
+              </Tooltip>
+
             }
           />,
           'poeEnable', $t({ defaultMessage: 'PoE Enabled' }), true

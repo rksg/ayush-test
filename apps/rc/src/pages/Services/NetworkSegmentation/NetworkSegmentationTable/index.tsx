@@ -18,7 +18,8 @@ import {
   ServiceType,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink, useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess }                                                 from '@acx-ui/user'
 
 const getNetworkSegmentationPayload = {
   fields: [
@@ -50,6 +51,7 @@ const NetworkSegmentationTable = () => {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
+  const location = useLocation()
   const basePath = useTenantLink('')
   const tableQuery = useTableQuery({
     useQuery: useGetNetworkSegmentationStatsListQuery,
@@ -175,7 +177,7 @@ const NetworkSegmentationTable = () => {
             oper: ServiceOperation.EDIT,
             serviceId: selectedRows[0].id!
           })}`
-        })
+        }, { state: { from: location } })
       }
     },
     {
@@ -210,12 +212,15 @@ const NetworkSegmentationTable = () => {
         breadcrumb={[
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
-        extra={[
-          // eslint-disable-next-line max-len
-          <TenantLink to={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION, oper: ServiceOperation.CREATE })} key='add'>
+        extra={filterByAccess([
+          <TenantLink state={{ from: location }}
+            to={getServiceRoutePath({
+              type: ServiceType.NETWORK_SEGMENTATION,
+              oper: ServiceOperation.CREATE
+            })}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Network Segmenation' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <Loader states={[
         tableQuery,
@@ -227,7 +232,7 @@ const NetworkSegmentationTable = () => {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={rowActions}
+          rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'checkbox' }}
         />
       </Loader>

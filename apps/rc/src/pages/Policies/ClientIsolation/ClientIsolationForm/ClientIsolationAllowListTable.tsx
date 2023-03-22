@@ -6,6 +6,7 @@ import { showActionModal, Table, TableProps } from '@acx-ui/components'
 import {
   ClientIsolationClient
 } from '@acx-ui/rc/utils'
+import { filterByAccess } from '@acx-ui/user'
 
 import { AddNewClientDrawer }                               from './AddNewClientDrawer'
 import { ALLOW_LIST_MAX_COUNT }                             from './ClientIsolationSettingsForm'
@@ -168,7 +169,7 @@ export function ClientIsolationAllowListTable (props: ClientIsolationAllowListTa
         columns={columns}
         dataSource={allowList}
         rowKey='mac'
-        actions={[
+        actions={filterByAccess([
           {
             label: $t({ defaultMessage: 'Select from Connected Clients' }),
             onClick: () => handleSelectConnectedClientAction(),
@@ -179,8 +180,8 @@ export function ClientIsolationAllowListTable (props: ClientIsolationAllowListTa
             onClick: () => handleAddNewClientAction(),
             disabled: allowList.length === ALLOW_LIST_MAX_COUNT
           }
-        ]}
-        rowActions={rowActions}
+        ])}
+        rowActions={filterByAccess(rowActions)}
         rowSelection={{ type: 'radio' }}
       />
     </>

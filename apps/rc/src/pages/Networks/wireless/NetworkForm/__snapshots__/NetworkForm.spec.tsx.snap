@@ -499,7 +499,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                                                     <div
                                                       class="styledComponents__RadioDescription-sc-1mpg945-2 dxaZmg"
                                                     >
-                                                      Use 802.1X standard and WPA2 security protocols to authenticate users using an authentication server on thenetwork
+                                                      Use 802.1X standard and WPA2 security protocols to authenticate users using an authentication server on the network
                                                     </div>
                                                   </span>
                                                 </span>
@@ -974,7 +974,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                                                 />
                                               </button>
                                               <span>
-                                                Use MAC Auth
+                                                MAC Authentication
                                               </span>
                                               <svg
                                                 data-testid="QuestionMarkCircleOutlined"
@@ -1097,7 +1097,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                               </span>
                             </div>
                             <div
-                              class="styledComponents__Wrapper-sc-1abm7iv-12 iqWyRG"
+                              class="styledComponents__Wrapper-sc-1abm7iv-12 QuVDX"
                             >
                               <div
                                 class="ant-pro-table"
@@ -2771,7 +2771,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                                     <div
                                                       class="styledComponents__RadioDescription-sc-1mpg945-2 dxaZmg"
                                                     >
-                                                      Use 802.1X standard and WPA2 security protocols to authenticate users using an authentication server on thenetwork
+                                                      Use 802.1X standard and WPA2 security protocols to authenticate users using an authentication server on the network
                                                     </div>
                                                   </span>
                                                 </span>
@@ -2900,38 +2900,63 @@ exports[`NetworkForm should create open network successfully 1`] = `
                     >
                       Open Settings
                     </h3>
-                    <div
-                      class="ant-form-item"
-                    >
+                    <div>
                       <div
-                        class="ant-row ant-form-item-row"
+                        class="ant-form-item"
                       >
                         <div
-                          class="ant-col ant-form-item-control"
+                          class="ant-row ant-form-item-row"
                         >
                           <div
-                            class="ant-form-item-control-input"
+                            class="ant-col ant-form-item-control"
                           >
                             <div
-                              class="ant-form-item-control-input-content"
+                              class="ant-form-item-control-input"
                             >
-                              <button
-                                aria-checked="false"
-                                class="ant-switch"
-                                id="settings_isCloudpathEnabled"
-                                role="switch"
-                                type="button"
+                              <div
+                                class="ant-form-item-control-input-content"
                               >
                                 <div
-                                  class="ant-switch-handle"
-                                />
-                                <span
-                                  class="ant-switch-inner"
-                                />
-                              </button>
-                              <span>
-                                Use Cloudpath Server
-                              </span>
+                                  class="ant-form-item"
+                                >
+                                  <div
+                                    class="ant-row ant-form-item-row"
+                                  >
+                                    <div
+                                      class="ant-col ant-form-item-control"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input"
+                                      >
+                                        <div
+                                          class="ant-form-item-control-input-content"
+                                        >
+                                          <button
+                                            aria-checked="false"
+                                            class="ant-switch"
+                                            id="settings_wlan_macAddressAuthentication"
+                                            role="switch"
+                                            type="button"
+                                          >
+                                            <div
+                                              class="ant-switch-handle"
+                                            />
+                                            <span
+                                              class="ant-switch-inner"
+                                            />
+                                          </button>
+                                          <span>
+                                            MAC Authentication
+                                          </span>
+                                          <svg
+                                            data-testid="QuestionMarkCircleOutlined"
+                                          />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -3210,9 +3235,9 @@ exports[`NetworkForm should create open network successfully 1`] = `
                         >
                           <label
                             class=""
-                            title="Use Cloudpath Server:"
+                            title="Use Radius Server:"
                           >
-                            Use Cloudpath Server:
+                            Use Radius Server:
                           </label>
                         </div>
                         <div
