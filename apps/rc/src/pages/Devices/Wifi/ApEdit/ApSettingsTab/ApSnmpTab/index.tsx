@@ -132,9 +132,9 @@ export function ApSnmp () {
 
   const sendApSnmpSetting = async () => {
 
-    const payload : ApSnmpSettings
+    const payload
     = {
-      ...formRef.current?.getFieldsValue()!!,
+      ...formRef.current?.getFieldsValue(),
       useVenueSettings: stateOfUseVenueSettings
     }
 
@@ -179,6 +179,8 @@ export function ApSnmp () {
   const customize = async () => {
     setStateOfUseVenueSettings(false)
     formRef?.current?.setFieldsValue(stateOfApSnmpSettings)
+    // Even though the form is been set again, but it won't trigger rendering, so we need to trigger it manually
+    setStateOfEnableApSnmp(stateOfApSnmpSettings.enableApSnmp)
   }
 
 

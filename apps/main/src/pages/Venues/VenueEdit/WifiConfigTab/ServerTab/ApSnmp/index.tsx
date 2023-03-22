@@ -97,17 +97,17 @@ export function ApSnmp () {
 
   const updateVenueApSnmpSetting = async (data?: VenueApSnmpSettings) => {
 
-    // Condition guard, if user didn't change anything, don't send API
-    if (data?.enableApSnmp === true && data?.apSnmpAgentProfileId === '') {
-      showToast({
-        type: 'info',
-        content: $t({ defaultMessage: 'SNMP agent is required when AP SNMP is enabled' })
-      })
-
-      return
-    }
-
     try {
+
+      // Condition guard, if user didn't change anything, don't send API
+      if (data?.enableApSnmp === true && data?.apSnmpAgentProfileId === '') {
+        showToast({
+          type: 'info',
+          content: $t({ defaultMessage: 'SNMP agent is required when AP SNMP is enabled' })
+        })
+        return
+      }
+
       setEditContextData && setEditContextData({
         ...editContextData,
         unsavedTabKey: 'servers',
@@ -115,7 +115,10 @@ export function ApSnmp () {
         isDirty: false,
         hasError: false
       })
-      const payload = data
+
+      /* eslint-disable max-len */
+      const payload = data?.enableApSnmp === true ? { ...data } : { enableApSnmp: data?.enableApSnmp }
+
       if (payload) {
         await updateApSnmpSettings({ params: { venueId } , payload }).unwrap()
       }
@@ -154,7 +157,7 @@ export function ApSnmp () {
           data-testid='snmp-select'
           defaultValue={RetrievedVenueApSnmpAgentProfileId}
           options={[
-            { label: $t({ defaultMessage: 'Select SNMP Agent...' }), value: '' },
+            { label: $t({ defaultMessage: 'Select...' }), value: '' },
             ...RetrievedVenueApSnmpAgentOptions
           ]}
           onChange={(id => {
@@ -169,7 +172,7 @@ export function ApSnmp () {
           })}
           style={{ marginLeft: '20px' }}
         >
-          {$t({ defaultMessage: 'Add SNMP Agent' })}
+          {$t({ defaultMessage: 'Add' })}
         </TenantLink>
       </Form.Item>}
     </Space>
