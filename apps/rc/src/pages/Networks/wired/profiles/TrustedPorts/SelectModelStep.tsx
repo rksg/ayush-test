@@ -213,6 +213,7 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
         form.setFieldValue('selectedOptionOfSlot4', optionListForSlot4[0]?.value)
         break
     }
+    onModuleChange()
   }
 
   const onModuleChange = () => {
