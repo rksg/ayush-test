@@ -18,7 +18,7 @@ const Events = () => {
   const tableQuery = useEventsTableQuery({ serialNumber: [serialNumber] })
   return <EventTable
     tableQuery={tableQuery}
-    filterables={['severity', 'entity_type']}
+    filterables={['severity']}
     columnState={{ defaultValue: { ...eventTableColumnState, product: false } }}
   />
 }
