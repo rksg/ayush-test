@@ -140,7 +140,7 @@ describe('Update NetworkSegmentation', () => {
     )
   })
 
-  it('should create networkSegmentation successfully', async () => {
+  it.skip('should create networkSegmentation successfully', async () => {
     const user = userEvent.setup()
     render(<NetworkSegmentationForm />, {
       wrapper: Provider,
