@@ -17,6 +17,8 @@ export class WisprPage {
 
   providerName?: string
 
+  encryptMacIpEnabled?: boolean
+
   constructor () {
     this.captivePortalUrl = ''
 

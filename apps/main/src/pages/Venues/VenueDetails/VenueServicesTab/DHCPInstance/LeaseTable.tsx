@@ -8,9 +8,8 @@ import { Table, TableProps }        from '@acx-ui/components'
 import { useVenuesLeasesListQuery } from '@acx-ui/rc/services'
 import {
   DHCPLeases,
-  DHCPLeasesStatusEnum }               from '@acx-ui/rc/utils'
-
-
+  DHCPLeasesStatusEnum
+} from '@acx-ui/rc/utils'
 
 export default function VenueLeaseTable (){
   const params = useParams()

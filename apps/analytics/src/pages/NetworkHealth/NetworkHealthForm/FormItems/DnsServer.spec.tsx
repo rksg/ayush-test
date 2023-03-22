@@ -71,18 +71,20 @@ describe('DnsServer', () => {
 
 describe('DnsServer.FieldSummary', () => {
   it('renders for Default', async () => {
-    renderForm(<DnsServer.FieldSummary />, {
+    const { container } = renderForm(<DnsServer.FieldSummary />, {
       initialValues: {
         isDnsServerCustom: false
       }
     })
 
     expect(screen.getByTestId('field')).toHaveTextContent('Default')
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+    expect(container.getElementsByClassName('ant-form-item-hidden').length).toBe(1)
   })
 
   it('hidden if selected auth method not require this field', async () => {
     const value = '10.10.10.10'
-    renderForm(<DnsServer.FieldSummary />, {
+    const { container } = renderForm(<DnsServer.FieldSummary />, {
       initialValues: {
         isDnsServerCustom: true,
         configs: [{ dnsServer: value }]
@@ -90,5 +92,7 @@ describe('DnsServer.FieldSummary', () => {
     })
 
     expect(screen.getByTestId('field')).toHaveTextContent(value)
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+    expect(container.getElementsByClassName('ant-form-item-hidden').length).toBe(1)
   })
 })

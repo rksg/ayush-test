@@ -1,3 +1,5 @@
+import { useCallback, useRef } from 'react'
+
 import { ButtonProps as AntButtonProps, TooltipProps } from 'antd'
 import { useIntl }                                     from 'react-intl'
 
@@ -14,6 +16,10 @@ export interface ButtonProps extends Omit<AntButtonProps, 'type'> {
 }
 
 export function Button ({ type = 'default', ...props }: ButtonProps) {
+  const ref = useRef<HTMLButtonElement>(null)
+  const handleOnMouseUp = useCallback(() => {
+    ref.current?.blur()
+  }, [])
   let customType = null
   if (type === 'secondary') {
     customType = 'secondary'
@@ -21,8 +27,10 @@ export function Button ({ type = 'default', ...props }: ButtonProps) {
   }
   return (
     <UI.Button
+      ref={ref}
       type={type as AntButtonProps['type']}
       $customType={customType}
+      onMouseUp={handleOnMouseUp}
       {...props}
     />
   )

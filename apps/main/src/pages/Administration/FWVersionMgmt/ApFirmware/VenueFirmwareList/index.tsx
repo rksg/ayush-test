@@ -33,7 +33,9 @@ import {
   TableQuery,
   RequestPayload,
   firmwareTypeTrans,
-  useTableQuery
+  useTableQuery,
+  sortProp,
+  defaultSort
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
@@ -75,9 +77,10 @@ function useColumns (
       title: intl.$t({ defaultMessage: 'Venue Name' }),
       key: 'name',
       dataIndex: 'name',
-      sorter: true,
+      // sorter: true,
+      sorter: { compare: sortProp('name', defaultSort) },
       searchable: searchable,
-      defaultSortOrder: 'ascend',
+      // defaultSortOrder: 'ascend',
       render: function (data, row) {
         return row.name
       }
@@ -86,7 +89,8 @@ function useColumns (
       title: intl.$t({ defaultMessage: 'Current AP Firmware' }),
       key: 'version',
       dataIndex: 'version',
-      sorter: true,
+      // sorter: true,
+      sorter: { compare: sortProp('versions[0].version', defaultSort) },
       filterable: filterables ? filterables['version'] : false,
       filterMultiple: false,
       render: function (data, row) {
@@ -97,7 +101,8 @@ function useColumns (
       title: intl.$t({ defaultMessage: 'Firmware Type' }),
       key: 'type',
       dataIndex: 'type',
-      sorter: true,
+      // sorter: true,
+      sorter: { compare: sortProp('versions[0].category', defaultSort) },
       filterable: filterables ? filterables['type'] : false,
       filterMultiple: false,
       render: function (data, row) {
@@ -124,7 +129,6 @@ function useColumns (
       dataIndex: 'nextSchedule',
       sorter: false,
       render: function (data, row) {
-        // return getApNextScheduleTpl(intl, row)
         return (!isNextScheduleTooltipDisabled(row)
           ? getApNextScheduleTpl(intl, row)
           // eslint-disable-next-line max-len
