@@ -4,7 +4,7 @@ import { Form, Select, Space, Switch } from 'antd'
 import { isEqual }                     from 'lodash'
 import { useIntl }                     from 'react-intl'
 
-import { Loader, StepsForm, showToast }  from '@acx-ui/components'
+import { Loader, StepsForm, showToast, showActionModal } from '@acx-ui/components'
 import {
   useGetApSnmpPolicyListQuery,
   useGetVenueApSnmpSettingsQuery,
@@ -101,8 +101,8 @@ export function ApSnmp () {
 
       // Condition guard, if user didn't change anything, don't send API
       if (data?.enableApSnmp === true && data?.apSnmpAgentProfileId === '') {
-        showToast({
-          type: 'info',
+        showActionModal({
+          type: 'error',
           content: $t({ defaultMessage: 'SNMP agent is required when AP SNMP is enabled' })
         })
         return
