@@ -2,6 +2,14 @@ import styled from 'styled-components/macro'
 
 import { Button, Modal } from '@acx-ui/components'
 
+export const PreDownloadLabel = styled.label`
+  font-size: 15px;
+  font-weight: 600;
+  font-family: Arial Bold, Arial, sans-serif;
+  margin: 15px 0px;
+  display: block;
+`
+
 export const ScheduleTooltipText = styled.span`
   font-size: 12px;
 `
