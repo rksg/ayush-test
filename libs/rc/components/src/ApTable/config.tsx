@@ -1,11 +1,47 @@
-import { Button }        from 'antd'
-import { defineMessage } from 'react-intl'
+import { Button }                   from 'antd'
+import { defineMessage, IntlShape } from 'react-intl'
 
 import { ApDeviceStatusEnum, APExtended } from '@acx-ui/rc/utils'
 import { Params, TenantLink }             from '@acx-ui/react-router-dom'
 import { getIntl }                        from '@acx-ui/utils'
 
 import { APStatus } from '.'
+
+const commonAttributes = ($t: IntlShape['$t']) => [
+  {
+    key: 'members',
+    renderer: (record: APExtended) => (
+      <div>
+        {$t(defineMessage({ defaultMessage: 'Members' }))}: {record.members}
+      </div>
+    )
+  },
+  {
+    key: 'incidents',
+    renderer: (record: APExtended) => (
+      <div>
+        {$t(defineMessage({ defaultMessage: 'Incidents (24 hours)' }))}: {record.incidents}
+      </div>
+    )
+  },
+  {
+    key: 'clients',
+    renderer: (record: APExtended) => (
+      <div>
+        {$t(defineMessage({ defaultMessage: 'Connected Clients' }))}: {record.clients}
+      </div>
+    )
+  },
+  {
+    key: 'networks',
+    renderer: (record: APExtended) => (
+      <div>
+        {$t(defineMessage({ defaultMessage: 'Wireless Networks' }))}:{' '}
+        {record.networks ? record.networks.count : 0}
+      </div>
+    )
+  }
+]
 
 export const getGroupableConfig = (
   params? :Readonly<Params<string>>,
@@ -23,39 +59,7 @@ export const getGroupableConfig = (
           <APStatus status={record.deviceStatus as ApDeviceStatusEnum} />
         )
       },
-      {
-        key: 'members',
-        renderer: (record: APExtended) => (
-          <div>
-            {$t(defineMessage({ defaultMessage: 'Members' }))}: {record.members}
-          </div>
-        )
-      },
-      {
-        key: 'incidents',
-        renderer: (record: APExtended) => (
-          <div>
-            {$t(defineMessage({ defaultMessage: 'Incidents (24 hours)' }))}: {record.incidents}
-          </div>
-        )
-      },
-      {
-        key: 'clients',
-        renderer: (record: APExtended) => (
-          <div>
-            {$t(defineMessage({ defaultMessage: 'Connected Clients' }))}: {record.clients}
-          </div>
-        )
-      },
-      {
-        key: 'networks',
-        renderer: (record: APExtended) => (
-          <div>
-            {$t(defineMessage({ defaultMessage: 'Wireless Networks' }))}:{' '}
-            {record.networks ? record.networks.count : 0}
-          </div>
-        )
-      }
+      ...commonAttributes($t)
     ]
   }
   const modelGroupableOptions = {
@@ -66,39 +70,7 @@ export const getGroupableConfig = (
         key: 'model',
         renderer: (record: APExtended) => <div style={{ fontStyle: 'bold' }}>{record.model}</div>
       },
-      {
-        key: 'members',
-        renderer: (record: APExtended) => (
-          <div>
-            {$t(defineMessage({ defaultMessage: 'Members' }))}: {record.members}
-          </div>
-        )
-      },
-      {
-        key: 'incidents',
-        renderer: (record: APExtended) => (
-          <div>
-            {$t(defineMessage({ defaultMessage: 'Incidents (24 hours)' }))}: {record.incidents}
-          </div>
-        )
-      },
-      {
-        key: 'clients',
-        renderer: (record: APExtended) => (
-          <div>
-            {$t(defineMessage({ defaultMessage: 'Connected Clients' }))}: {record.clients}
-          </div>
-        )
-      },
-      {
-        key: 'networks',
-        renderer: (record: APExtended) => (
-          <div>
-            {$t(defineMessage({ defaultMessage: 'Wireless Networks' }))}:{' '}
-            {record.networks ? record.networks.count : 0}
-          </div>
-        )
-      }
+      ...commonAttributes($t)
     ]
   }
   const deviceGroupNameGroupableOptions = {
@@ -140,35 +112,7 @@ export const getGroupableConfig = (
           <div style={{ fontStyle: 'bold' }}>{record.deviceGroupName}</div>
         )
       },
-      {
-        key: 'members',
-        renderer: (record: APExtended) => (
-          <div>
-            {$t(defineMessage({ defaultMessage: 'Members' }))}: {record.members}
-          </div>
-        )
-      },
-      {
-        key: 'incidents',
-        renderer: (record: APExtended) => <div>Incidents (24 hours): {record.incidents}</div>
-      },
-      {
-        key: 'clients',
-        renderer: (record: APExtended) => (
-          <div>
-            {$t(defineMessage({ defaultMessage: 'Connected Clients' }))}: {record.clients}
-          </div>
-        )
-      },
-      {
-        key: 'networks',
-        renderer: (record: APExtended) => (
-          <div>
-            {$t(defineMessage({ defaultMessage: 'Wireless Networks' }))}:{' '}
-            {record.networks ? record.networks.count : 0}
-          </div>
-        )
-      }
+      ...commonAttributes($t)
     ]
   }
   return { deviceStatusGroupableOptions, deviceGroupNameGroupableOptions, modelGroupableOptions }
