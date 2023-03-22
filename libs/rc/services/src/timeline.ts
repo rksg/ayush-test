@@ -1,5 +1,4 @@
-import { FetchBaseQueryError }       from '@reduxjs/toolkit/query'
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 
 import { Filter } from '@acx-ui/components'
 import {
@@ -19,6 +18,7 @@ import {
   SEARCH,
   SORTER
 } from '@acx-ui/rc/utils'
+import { baseTimelineApi } from '@acx-ui/store'
 
 import { getMetaList } from './utils'
 
@@ -34,14 +34,6 @@ const metaFields = [
   'floorPlanName',
   'recipientName'
 ]
-
-export const baseTimelineApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  reducerPath: 'timelineApi',
-  tagTypes: ['Activity', 'Event', 'AdminLog'],
-  refetchOnMountOrArgChange: true,
-  endpoints: () => ({ })
-})
 
 export type EventsExportPayload = {
   clientDateFormat: string
@@ -102,8 +94,11 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
         return {
           data: {
             ...baseList,
-            data: baseListData.map((base) =>
-              ({ ...base, ...(metaListData.find(meta=>meta.id === base.id)) })) as Event[]
+            data: baseListData.map((base) => ({
+              ...base,
+              ...{ entity_type: base.entity_type.toUpperCase() },
+              ...(metaListData.find(meta=>meta.id === base.id))
+            })) as Event[]
           }
         }
       }

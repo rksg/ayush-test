@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react'
 
 import { DatePicker, Select, Form, Radio, RadioChangeEvent, Space, Typography } from 'antd'
 import { useForm }                                                              from 'antd/lib/form/Form'
-import moment                                                                   from 'moment-timezone'
+import dayjs                                                                    from 'dayjs'
 import { useIntl }                                                              from 'react-intl'
+
 
 import {
   AVAILABLE_SLOTS,
@@ -54,12 +55,12 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
   }, [availableVersions])
 
   useEffect(() => {
-    if (selectMode === VersionsSelectMode.Dropdown && !selectedVersion) {
+    if (!selectedDate || (selectMode === VersionsSelectMode.Dropdown && !selectedVersion)) {
       setDisableSave(true)
     } else {
       setDisableSave(false)
     }
-  }, [selectMode, selectedVersion])
+  }, [selectMode, selectedVersion, selectedDate])
 
   let versionOptions: FirmwareVersion[] = []
   let otherVersions: FirmwareVersion[] = []
@@ -93,11 +94,11 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
     setSelectedVersion(value)
   }
 
-  const startDate = moment()
-  const endDate = moment().add(21, 'days')
+  const startDate = dayjs().endOf('day')
+  const endDate = startDate.add(21, 'day')
   const disabledDate: RangePickerProps['disabledDate'] = (current) => {
   // Can not select days before today and today
-    return current && (current <= startDate || current > endDate)
+    return current && (current < startDate || current > endDate)
   }
 
   const onChange: DatePickerProps['onChange'] = (date, dateString) => {

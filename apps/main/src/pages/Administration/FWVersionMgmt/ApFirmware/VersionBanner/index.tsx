@@ -1,6 +1,7 @@
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
+import { formatter, DateFormatEnum } from '@acx-ui/formatter'
 import {
   useGetLatestFirmwareListQuery
 } from '@acx-ui/rc/services'
@@ -10,7 +11,6 @@ import {
   FirmwareVenueVersion,
   FirmwareCategory
 } from '@acx-ui/rc/utils'
-import { formatter } from '@acx-ui/utils'
 
 import * as UI from '../../styledComponents'
 
@@ -23,6 +23,7 @@ export const VersionBanner = () => {
   const versions = getReleaseFirmware(latestReleaseVersions)
   const firmware = versions[0]
 
+  if (!firmware) return null
   return (
     <div>
       <UI.BannerVersion>
@@ -33,8 +34,9 @@ export const VersionBanner = () => {
         <span>{transform(firmware?.category, 'type')} </span>
         <span>({transform(firmware?.category, 'subType')})</span>
         <span> - </span>
-        { // eslint-disable-next-line max-len
-          <UI.BannerVersionName>{formatter('dateFormat')(firmware?.createdDate)}</UI.BannerVersionName>}
+        <UI.BannerVersionName>
+          {formatter(DateFormatEnum.DateFormat)(firmware?.createdDate)}
+        </UI.BannerVersionName>
       </UI.BannerVersion>
     </div>
   )

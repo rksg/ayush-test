@@ -22,8 +22,8 @@ import {
   TooltipWrapper,
   EventParams
 }                                     from '@acx-ui/components'
+import { formatter }                                          from '@acx-ui/formatter'
 import { NavigateFunction, Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { formatter }                                          from '@acx-ui/utils'
 
 import { useTopSwitchesByTrafficQuery } from './services'
 

@@ -16,6 +16,7 @@ import {
   Loader
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { CsvSize, ImportFileDrawer } from '@acx-ui/rc/components'
 import {
   useGetGuestsListQuery,
@@ -31,7 +32,9 @@ import {
   Network,
   NetworkTypeEnum,
   GuestNetworkTypeEnum,
-  RequestPayload
+  RequestPayload,
+  FILTER,
+  SEARCH
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                         from '@acx-ui/types'
@@ -223,8 +226,7 @@ export const GuestsTable = (props: { dateFilter: GuestDateFilter }) => {
             setVisible(true)
           }}
         >
-          {/* TODO: Wait for framework support userprofile-format dateTimeFormats */}
-          {moment(row.creationDate).format('DD/MM/YYYY HH:mm')}
+          {formatter(DateFormatEnum.DateTimeFormat)(row.creationDate)}
         </Button>
     },
     {
@@ -262,6 +264,7 @@ export const GuestsTable = (props: { dateFilter: GuestDateFilter }) => {
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'guestType',
       filterable: guestTypeFilterOptions,
+      filterMultiple: false,
       sorter: true,
       render: function (data, row) {
         return renderGuestType(row.guestType)
@@ -361,6 +364,12 @@ export const GuestsTable = (props: { dateFilter: GuestDateFilter }) => {
     }
   ]
 
+  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
+    if (customFilters.guestType?.includes('SelfSign')) {
+      customFilters.guestType.push('HostGuest')
+    }
+    tableQuery.handleFilterChange(customFilters,customSearch)
+  }
 
   return (
     <Loader states={[
@@ -375,7 +384,7 @@ export const GuestsTable = (props: { dateFilter: GuestDateFilter }) => {
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
-        onFilterChange={tableQuery.handleFilterChange}
+        onFilterChange={handleFilterChange}
         enableApiFilter={true}
         rowKey='id'
         rowActions={rowActions}
@@ -406,7 +415,8 @@ export const GuestsTable = (props: { dateFilter: GuestDateFilter }) => {
             case 'addGuestNetwork':
               return hasRoles([RolesEnum.ADMINISTRATOR, RolesEnum.PRIME_ADMIN])
             case 'importFromFile':
-              return true
+              return hasRoles([RolesEnum.ADMINISTRATOR,
+                RolesEnum.PRIME_ADMIN,RolesEnum.GUEST_MANAGER])
             default:
               return false
           }
@@ -487,8 +497,7 @@ export const renderExpires = function (row: Guest) {
   const { $t } = getIntl()
   let expiresTime = ''
   if (row.expiryDate && row.expiryDate !== '0') {
-    // TODO: Wait for framework support userprofile-format dateTimeFormats
-    expiresTime = moment(row.expiryDate).format('DD/MM/YYYY HH:mm')
+    expiresTime = formatter(DateFormatEnum.DateTimeFormat)(row.expiryDate)
   } else if (!row.expiryDate || row.expiryDate === '0') {
     let result = ''
     if (row.passDurationHours) {
@@ -519,9 +528,6 @@ export const renderGuestType = (value: string) => {
       result = $t({ defaultMessage: 'Managed' })
       break
     case GuestTypesEnum.SELF_SIGN_IN:
-      result = $t({ defaultMessage: 'Self Sign In' })
-      break
-    case GuestTypesEnum.HOST_GUEST:
       result = $t({ defaultMessage: 'Self Sign In' })
       break
     default:

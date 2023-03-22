@@ -1,5 +1,3 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-
 import {
   CommonResult,
   createHttpRequest,
@@ -13,16 +11,14 @@ import {
   EdgeUrlsInfo,
   PaginationQueryResult,
   RequestPayload,
-  TableResult
+  TableResult,
+  LatestEdgeFirmwareVersion,
+  EdgeVenueFirmware,
+  EdgeFirmwareVersion,
+  onSocketActivityChanged,
+  onActivityMessageReceived
 } from '@acx-ui/rc/utils'
-
-export const baseEdgeApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  reducerPath: 'edgeApi',
-  tagTypes: ['Edge'],
-  refetchOnMountOrArgChange: true,
-  endpoints: () => ({ })
-})
+import { baseEdgeApi } from '@acx-ui/store'
 
 export const edgeApi = baseEdgeApi.injectEndpoints({
   endpoints: (build) => ({
@@ -63,7 +59,18 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Edge', id: 'LIST' }]
+      providesTags: [{ type: 'Edge', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Add Edge',
+            'Delete Edges'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'LIST' }]))
+          })
+        })
+      }
     }),
     deleteEdge: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -218,6 +225,51 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       transformResponse (result: TableResult<EdgePortStatus>) {
         return result?.data
       }
+    }),
+    getLatestEdgeFirmware: build.query<LatestEdgeFirmwareVersion[], RequestPayload>({
+      query: () => {
+        const req = createHttpRequest(EdgeUrlsInfo.getLatestEdgeFirmware)
+        return {
+          ...req
+        }
+      }
+    }),
+    getVenueEdgeFirmwareList: build.query<EdgeVenueFirmware[], RequestPayload>({
+      query: () => {
+        const req = createHttpRequest(EdgeUrlsInfo.getVenueEdgeFirmwareList)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'FIRMWARE_LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Update Edge Firmware Now'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'FIRMWARE_LIST' }]))
+          })
+        })
+      }
+    }),
+    getAvailableEdgeFirmwareVersions: build.query<EdgeFirmwareVersion[], RequestPayload>({
+      query: () => {
+        const req = createHttpRequest(EdgeUrlsInfo.getAvailableEdgeFirmwareVersions)
+        return {
+          ...req
+        }
+      }
+    }),
+    updateEdgeFirmware: build.mutation<CommonResult, RequestPayload>({
+      query: ({ payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.updateEdgeFirmware)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'FIRMWARE_LIST' }]
     })
   })
 })
@@ -241,5 +293,9 @@ export const {
   useGetStaticRoutesQuery,
   useUpdateStaticRoutesMutation,
   useEdgeBySerialNumberQuery,
-  useGetEdgePortsStatusListQuery
+  useGetEdgePortsStatusListQuery,
+  useGetAvailableEdgeFirmwareVersionsQuery,
+  useGetVenueEdgeFirmwareListQuery,
+  useUpdateEdgeFirmwareMutation,
+  useGetLatestEdgeFirmwareQuery
 } = edgeApi

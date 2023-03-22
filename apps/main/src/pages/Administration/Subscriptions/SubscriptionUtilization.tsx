@@ -42,6 +42,8 @@ const SubscriptionUtilizationWidget = (props: SubscriptionUtilizationWidgetProps
     ]
   } = props
 
+  const isZeroQuantity = total <= 0
+
   return (
     <SpaceWrapper size='small' justifycontent='space-around'>
       <Typography.Text>{title}</Typography.Text>
@@ -55,9 +57,9 @@ const SubscriptionUtilizationWidget = (props: SubscriptionUtilizationWidgetProps
           category: `${deviceType} Licenses `,
           series: [
             { name: 'used',
-              value: used * 100 / total },
+              value: isZeroQuantity ? 0: (used * 100 / total) },
             { name: 'available',
-              value: (total-used)* 100/total }
+              value: isZeroQuantity ? 100 : ((total-used) * 100 / total) }
           ]
         }]}
         barColors={barColors}
@@ -83,12 +85,14 @@ const subscriptionUtilizationTransformer = (
     let quantity = 0
     let used = 0
 
-    summaryData.forEach(summary => {
-      quantity += summary.quantity
-      used += summary.deviceCount
-    })
+    // only display types that has data in summary
+    if (summaryData.length > 0) {
+      summaryData.forEach(summary => {
+        quantity += summary.quantity
+        used += summary.deviceCount
+      })
 
-    if (quantity > 0) {
+      // including to display 0 quantity.
       result[deviceType] = {
         total: quantity,
         used: used

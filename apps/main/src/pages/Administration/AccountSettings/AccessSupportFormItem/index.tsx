@@ -5,15 +5,15 @@ import { useIntl }                                       from 'react-intl'
 import { useParams }                                     from 'react-router-dom'
 import styled                                            from 'styled-components/macro'
 
-import { SpaceWrapper }         from '@acx-ui/rc/components'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { SpaceWrapper }              from '@acx-ui/rc/components'
 import {
   useEnableAccessSupportMutation,
   useDisableAccessSupportMutation,
   useGetEcTenantDelegationQuery,
   useGetTenantDelegationQuery
-} from '@acx-ui/rc/services'
+}                                    from '@acx-ui/rc/services'
 import { useUserProfileContext } from '@acx-ui/user'
-import { formatter }             from '@acx-ui/utils'
 
 import { MessageMapping } from '../MessageMapping'
 
@@ -21,10 +21,9 @@ import * as UI from './styledComponents'
 
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
-
- interface AccessSupportFormItemProps {
+interface AccessSupportFormItemProps {
   className?: string;
-  isMspEc: boolean;
+  hasMSPEcLabel: boolean;
   canMSPDelegation: boolean;
 }
 
@@ -34,7 +33,7 @@ const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
   const { data: userProfileData } = useUserProfileContext()
   const {
     className,
-    isMspEc,
+    hasMSPEcLabel,
     canMSPDelegation
   } = props
   const [isSupportAccessEnabled, setIsSupportAccessEnabled] = useState(false)
@@ -47,10 +46,8 @@ const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
     { isLoading: isDisableAccessSupportUpdating }]
     = useDisableAccessSupportMutation()
 
-  let isMspDelegatedEC = false
-  if (userProfileData?.varTenantId && canMSPDelegation === false) {
-    isMspDelegatedEC = isMspEc
-  }
+  const isMspDelegatedEC = hasMSPEcLabel && userProfileData?.varTenantId
+                              && canMSPDelegation === false
 
   const {
     data: ecTenantDelegationData,
@@ -61,13 +58,14 @@ const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
     data: tenantDelegationData,
     isLoading: isLoadingTenantDelegation,
     isFetching: isFetchingTenantDelegation
-  }= useGetTenantDelegationQuery({ params }, { skip: isMspDelegatedEC })
+  }= useGetTenantDelegationQuery({ params }, { skip: !!isMspDelegatedEC })
 
   const updateCreatedDate = useCallback((responseCreatedDate: string | undefined) => {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
     if (responseCreatedDate) {
-      const newCreatedDate = formatter('dateTimeFormatWithTimezone')(responseCreatedDate, timezone)
+      const newCreatedDate = formatter(
+        DateFormatEnum.DateTimeFormatWithTimezone)(responseCreatedDate, timezone)
       setCreatedDate(newCreatedDate.replace(/\+\d\d:\d\d/, '').replace('UTC UTC', 'UTC'))
     }
   }, [])

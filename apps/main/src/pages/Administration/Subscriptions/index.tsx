@@ -7,17 +7,19 @@ import {
   TableProps,
   showToast
 } from '@acx-ui/components'
-import { get }                     from '@acx-ui/config'
-import { useIsSplitOn, Features }  from '@acx-ui/feature-toggle'
+import { get }                             from '@acx-ui/config'
+import { useIsSplitOn, Features }          from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }       from '@acx-ui/formatter'
 import {
   useGetEntitlementsListQuery,
-  useRefreshEntitlementsMutation
+  useRefreshEntitlementsMutation,
+  useInternalRefreshEntitlementsMutation
 } from '@acx-ui/rc/services'
 import {
-  DateFormatEnum,
   EntitlementUtil,
   Entitlement,
-  EntitlementDeviceType
+  EntitlementDeviceType,
+  AdministrationUrlsInfo
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
@@ -67,7 +69,9 @@ const SubscriptionTable = () => {
   const isEdgeEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
 
   const queryResults = useGetEntitlementsListQuery({ params })
+  const isNewApi = AdministrationUrlsInfo.getEntitlementSummary.newApi
   const [ refreshEntitlement ] = useRefreshEntitlementsMutation()
+  const [ internalRefreshEntitlement ] = useInternalRefreshEntitlementsMutation()
   const licenseTypeOpts = subscriptionTypeFilterOpts($t)
 
   const columns: TableProps<Entitlement>['columns'] = [
@@ -90,10 +94,14 @@ const SubscriptionTable = () => {
       dataIndex: 'deviceSubType',
       key: 'deviceSubType',
       render: function (_, row) {
-        if (row.deviceType === EntitlementDeviceType.SWITCH)
-          return EntitlementUtil.deviceSubTypeToText(row?.deviceSubType)
-        else
-          return EntitlementUtil.tempLicenseToString(row.tempLicense === true)
+        if (row.tempLicense === true) {
+          return EntitlementUtil.tempLicenseToString(true)
+        } else {
+          if (row.deviceType === EntitlementDeviceType.SWITCH)
+            return EntitlementUtil.deviceSubTypeToText(row?.deviceSubType)
+          else
+            return EntitlementUtil.tempLicenseToString(false)
+        }
       }
     },
     {
@@ -109,7 +117,7 @@ const SubscriptionTable = () => {
       dataIndex: 'effectiveDate',
       key: 'effectiveDate',
       render: function (_, row) {
-        return moment(row.effectiveDate).format(DateFormatEnum.UserDateFormat)
+        return formatter(DateFormatEnum.DateFormat)(row.effectiveDate)
       }
     },
     {
@@ -117,7 +125,7 @@ const SubscriptionTable = () => {
       dataIndex: 'expirationDate',
       key: 'expirationDate',
       render: function (_, row) {
-        return moment(row.expirationDate).format(DateFormatEnum.UserDateFormat)
+        return formatter(DateFormatEnum.DateFormat)(row.expirationDate)
       }
     },
     {
@@ -125,8 +133,10 @@ const SubscriptionTable = () => {
       dataIndex: 'timeLeft',
       key: 'timeLeft',
       render: function (_, row) {
-        const remaingDays = EntitlementUtil.timeLeftInDays(row.expirationDate)
-        return EntitlementUtil.timeLeftValues(remaingDays)
+        const remainingDays = EntitlementUtil.timeLeftInDays(row.expirationDate)
+        return remainingDays < 0
+          ? <UI.Expired>{EntitlementUtil.timeLeftValues(remainingDays)}</UI.Expired>
+          : EntitlementUtil.timeLeftValues(remainingDays)
       }
     },
     {
@@ -139,7 +149,7 @@ const SubscriptionTable = () => {
       render: function (_, row) {
         return row.status === 'valid'
           ? $t({ defaultMessage: 'Active' })
-          : $t({ defaultMessage: 'Expired' })
+          : <UI.Expired>{$t({ defaultMessage: 'Expired' })}</UI.Expired>
       }
     }
   ]
@@ -156,7 +166,7 @@ const SubscriptionTable = () => {
       label: $t({ defaultMessage: 'Refresh' }),
       onClick: async () => {
         try {
-          await refreshEntitlement({ params }).unwrap()
+          await (isNewApi ? refreshEntitlement : internalRefreshEntitlement)({ params }).unwrap()
           showToast({
             type: 'success',
             content: $t({

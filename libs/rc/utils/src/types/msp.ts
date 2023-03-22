@@ -56,10 +56,6 @@ export enum EntitlementDeviceSubType {
   MSP_WIFI_TEMP = 'MSP_WIFI_TEMP'
 }
 
-export enum DateFormatEnum {
-  UserDateFormat = 'MM/DD/YYYY'
-}
-
 export enum AssignActionEnum {
   ADD = 'ADD',
   MODIFY = 'MODIFY',
@@ -365,6 +361,7 @@ export interface SupportDelegation {
 export interface AssignedEc {
   delegated_to: string;
   delegation_type: string;
+  expiry_date?: string;
   mspec_list: string[];
 }
 

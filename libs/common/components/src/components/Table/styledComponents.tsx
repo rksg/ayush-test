@@ -86,6 +86,7 @@ export const TableSettingsGlobalOverride = createGlobalStyle`
         padding-bottom: 8px;
       }
       .ant-tree-switcher { display: none; }
+      .ant-tree-list-holder { max-height: 275px !important; }
       .ant-tree-treenode-disabled {
         .ant-tree-draggable-icon { visibility: hidden; }
       }
@@ -371,6 +372,22 @@ export const Wrapper = styled.div<StyledTable>`
     }
 
     .ant-table {
+      .parent-row-data {
+        background-color: var(--acx-neutrals-20) !important;
+
+        .ant-table-cell-row-hover {
+          background-color: var(--acx-neutrals-20) !important;
+        }
+
+        .ant-table-cell-fix-right {
+          background-color: var(--acx-neutrals-20) !important;
+        }
+
+        .ant-table-column-sort {
+          background-color: var(--acx-neutrals-20) !important;
+        }
+      }
+
       &-cell-fix-left {
         border-bottom: 1px solid var(--acx-neutrals-30) !important;
       }
@@ -482,4 +499,16 @@ export const Divider = styled(AntDivider)`
 
 export const Highlighter = styled.span`
   font-weight: bold;
+`
+
+export const GroupRow = styled.div`
+  margin-left: -20px;
+  margin-right: 20px;
+  display: flex;
+  justify-content: space-between;
+`
+export const GroupCell = styled.div`
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
 `

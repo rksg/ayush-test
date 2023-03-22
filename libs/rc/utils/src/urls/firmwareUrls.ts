@@ -95,6 +95,14 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/upgrade/tenant/:tenantId/invalid-time'
   },
+  getSwitchFirmwarePredownload: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/switch/upgrade/preDownload'
+  },
+  updateSwitchFirmwarePredownload: {
+    method: 'put',
+    url: '/api/switch/tenant/:tenantId/switch/upgrade/preDownload'
+  },
   getPreferences: {
     method: 'get',
     url: '/tenants/preferences',

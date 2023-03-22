@@ -1,6 +1,6 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import _                             from 'lodash'
+import _ from 'lodash'
 
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   ApExtraParams,
   AP,
@@ -25,8 +25,10 @@ import {
   APPhoto,
   ApViewModel,
   VenueDefaultApGroup,
+  ApiInfo,
   AddApGroup,
   CommonResult,
+  ImportErrorRes,
   PacketCaptureState,
   Capabilities,
   PacketCaptureOperationResponse,
@@ -37,15 +39,7 @@ import {
   ApDirectedMulticast,
   APNetworkSettings
 } from '@acx-ui/rc/utils'
-import { formatter } from '@acx-ui/utils'
-
-export const baseApApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  reducerPath: 'apApi',
-  tagTypes: ['Ap'],
-  refetchOnMountOrArgChange: true,
-  endpoints: () => ({})
-})
+import { baseApApi } from '@acx-ui/store'
 
 export const apApi = baseApApi.injectEndpoints({
   endpoints: (build) => ({
@@ -134,7 +128,7 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
     }),
-    importAp: build.mutation<{}, RequestFormData>({
+    importAp: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.addAp, params, {
           'Content-Type': undefined,
@@ -145,7 +139,34 @@ export const apApi = baseApApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Ap', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          try {
+            const response = await api.cacheDataLoaded
+            if (response && msg.useCase === 'ImportApsCsv'
+            && ((msg.steps?.find((step) => {
+              return step.id === 'ImportAps'
+            })?.status === 'FAIL') || (msg.steps?.find((step) => {
+              return step.id === 'PostProcessedImportAps'
+            })?.status !== 'IN_PROGRESS'))) {
+              (requestArgs.callback as Function)(response.data)
+            }
+          } catch {
+          }
+        })
+      }
+    }),
+    importResult: build.query<ImportErrorRes, RequestPayload>({
+      query: ({ params, payload }) => {
+        const { requestId } = payload as { requestId: string }
+        const api:ApiInfo = { ...WifiUrlsInfo.getImportResult }
+        api.url += `?requestId=${requestId}`
+        const req = createHttpRequest(api, params)
+        return {
+          ...req
+        }
+      }
     }),
     getAp: build.query<ApDeep, RequestPayload>({
       query: ({ params, payload }) => {
@@ -593,6 +614,7 @@ export const {
   useBlinkLedApMutation,
   useFactoryResetApMutation,
   useImportApMutation,
+  useLazyImportResultQuery,
   useLazyGetDhcpApQuery,
   useGetApPhotoQuery,
   useAddApPhotoMutation,
@@ -693,7 +715,9 @@ const transformApList = (result: TableResult<APExtended, ApExtraParams>) => {
 
 const transformApViewModel = (result: ApViewModel) => {
   const ap = JSON.parse(JSON.stringify(result))
-  ap.lastSeenTime = ap.lastSeenTime ? formatter('dateTimeFormatWithSeconds')(ap.lastSeenTime) : '--'
+  ap.lastSeenTime = ap.lastSeenTime
+    ? formatter(DateFormatEnum.DateTimeFormatWithSeconds)(ap.lastSeenTime)
+    : '--'
 
   const { APSystem, APRadio } = ap.apStatusData || {}
   // get uptime field.

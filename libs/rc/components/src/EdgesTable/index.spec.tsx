@@ -55,7 +55,7 @@ describe('Edge Table', () => {
         route: { params, path: '/:tenantId/devices/edge/list' }
       })
     const row = await screen.findAllByRole('row', { name: /Smart Edge/i })
-    expect(row.length).toBe(5)
+    expect(row.length).toBe(10)
   })
 
   it('edge detail page link should be correct', async () => {
@@ -91,11 +91,11 @@ describe('Edge Table', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/list' }
       })
-    const row = await screen.findByRole('row', { name: /Smart Edge 1/i })
+    const row = await screen.findByRole('row', { name: /Smart Edge 2/i })
     await user.click(within(row).getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Edit' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/devices/edge/0000000001/edit/general-settings`,
+      pathname: `/t/${params.tenantId}/devices/edge/0000000002/edit/general-settings`,
       hash: '',
       search: ''
     })
@@ -123,10 +123,10 @@ describe('Edge Table', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/list' }
       })
-    const row = await screen.findByRole('row', { name: /Smart Edge 1/i })
+    const row = await screen.findByRole('row', { name: /Smart Edge 2/i })
     await user.click(within(row).getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Delete' }))
-    await screen.findByText('Delete "Smart Edge 1"?')
+    await screen.findByText('Delete "Smart Edge 2"?')
     await user.click(screen.getByRole('button', { name: 'Delete Edges' }))
   })
 
@@ -138,7 +138,7 @@ describe('Edge Table', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/list' }
       })
-    const row = await screen.findByRole('row', { name: /Smart Edge 5/i })
+    const row = await screen.findByRole('row', { name: /Smart Edge 2/i })
     await user.click(within(row).getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Send OTP' }))
     await screen.findByText('Are you sure you want to send OTP?')
@@ -153,7 +153,7 @@ describe('Edge Table', () => {
         route: { params, path: '/:tenantId/devices/edge/list' }
       })
 
-    await screen.findByRole('row', { name: /Smart Edge 1/i })
+    await screen.findByRole('row', { name: /Smart Edge 2/i })
     expect(screen.queryByRole('columnheader', { name: /Venue/i })).not.toBeInTheDocument()
     expect((await screen.findAllByRole('columnheader')).length).toBe(9)
   })
@@ -166,10 +166,10 @@ describe('Edge Table', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/list' }
       })
-    const row1 = await screen.findByRole('row', { name: /Smart Edge 1/i })
     const row2 = await screen.findByRole('row', { name: /Smart Edge 2/i })
-    await user.click(within(row1).getByRole('checkbox'))
+    const row3 = await screen.findByRole('row', { name: /Smart Edge 3/i })
     await user.click(within(row2).getByRole('checkbox'))
+    await user.click(within(row3).getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Delete' }))
     await screen.findByText('Delete "2 Edges"?')
     await user.click(screen.getByRole('button', { name: 'Delete Edges' }))

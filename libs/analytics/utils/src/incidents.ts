@@ -1,6 +1,7 @@
 import { capitalize } from 'lodash'
 
-import { formatter, intlFormats, getIntl, PathNode, NodeType } from '@acx-ui/utils'
+import { formatter, intlFormats }      from '@acx-ui/formatter'
+import { getIntl, PathNode, NodeType } from '@acx-ui/utils'
 
 import { noDataSymbol }        from './constants'
 import { kpiConfig }           from './healthKPIConfig'
