@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { Form, Select, FormItemProps, Spin, Button } from 'antd'
+import { Form, Select, FormItemProps, Spin, Button, Row, Col } from 'antd'
 import _                                     from 'lodash'
 import { useIntl }                           from 'react-intl'
 
@@ -41,6 +41,7 @@ export function TemplateSelector (props: TemplateSelectorProps) {
   }
 
   const [formItemLabel, setFormItemLabel] = useState($t({ defaultMessage: 'Loading Templates...' }))
+  const [isPreviewAvailable, setPreviewAvailable] = useState(false)
 
   // Setup form options ////
   useEffect(() => {
@@ -65,6 +66,7 @@ export function TemplateSelector (props: TemplateSelectorProps) {
         templateOptions.find(t => t.value === templateDataRequest.data?.defaultTemplateId)
 
       form.setFieldValue(formItemProps.name, initialSelection)
+      setPreviewAvailable(true)
     }
   }, [templateDataRequest.data?.defaultTemplateId,
     templateDataRequest.data?.templates, templateOptions])
@@ -97,8 +99,6 @@ export function TemplateSelector (props: TemplateSelectorProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [previewTemplate, setPreviewTemplate] = useState<Template | undefined>(undefined);
 
-  // TODO: only enable button if form item has template selected
-
   const showModal = () => {
     let selectedOption = form.getFieldValue(formItemProps.name)
     let previewTemplate = templateDataRequest.data?.templates.find(t => t.id === selectedOption.value)
@@ -107,7 +107,6 @@ export function TemplateSelector (props: TemplateSelectorProps) {
   };
 
   const handleCancel = () => {
-    console.log("HANDLE CANCEL")
     setIsModalOpen(false);
   };
 
@@ -116,34 +115,38 @@ export function TemplateSelector (props: TemplateSelectorProps) {
     return (<div style={{ display: 'block' }}><Spin></Spin></div>)
   } else {
     return (
-      <div>
-      <Form.Item {...formItemProps}
-        label={formItemLabel}>
-        <Select
-          placeholder={placeholder}
-          options={templateOptions}
-          onSelect={(item:unknown, option:unknown) => {
-            form.setFieldValue(formItemProps.name, option)
-            form.validateFields()
-          }}
-        />
-      </Form.Item>
-
-      <Button type="link" size="small" onClick={showModal}>
-        {$t({defaultMessage: 'Preview'})}
-      </Button>
-      <Modal 
-        title={ previewTemplate ? 
-          (previewTemplate.userProvidedName ? 
-            previewTemplate.userProvidedName : 
-            $t(_.get(templateNames, previewTemplate.nameLocalizationKey)))
-          : $t({defaultMessage: "Template Preview Unavailable"})} 
-        visible={isModalOpen}
-        onCancel={handleCancel}
-        footer={[]}>
-          <TemplatePreview templateType={templateDataRequest.data?.templateScopeType} template={previewTemplate} />
-      </Modal>
-      </div>
+      <Row>
+        <Col flex="auto">
+          <Form.Item {...formItemProps}
+            label={formItemLabel}>
+            <Select
+              placeholder={placeholder}
+              options={templateOptions}
+              onSelect={(item:unknown, option:unknown) => {
+                form.setFieldValue(formItemProps.name, option)
+                form.validateFields()
+                setPreviewAvailable(option? true : false)
+              }}
+            />
+          </Form.Item>
+        </Col>
+        <Col>
+          <Button disabled={!isPreviewAvailable} type="link" size="small" onClick={showModal}>
+            {$t({defaultMessage: 'Preview'})}
+          </Button>
+          <Modal 
+            title={ previewTemplate ? 
+              (previewTemplate.userProvidedName ? 
+                previewTemplate.userProvidedName : 
+                $t(_.get(templateNames, previewTemplate.nameLocalizationKey)))
+              : $t({defaultMessage: "Template Preview Unavailable"})} 
+            visible={isModalOpen}
+            onCancel={handleCancel}
+            footer={[]}>
+              <TemplatePreview templateType={templateDataRequest.data?.templateScopeType} template={previewTemplate} />
+          </Modal>
+        </Col>
+      </Row>
     )
   }
 }
