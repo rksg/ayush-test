@@ -11,7 +11,8 @@ import * as UI         from './styledComponents'
 
 type EntityType = typeof entityTypes[number]
 type EntityExistsKey = `is${Capitalize<EntityType>}Exists`
-const entityTypes = ['ap', 'client', 'network', 'switch', 'venue'] as const
+const entityTypes = ['ap', 'client', 'network', 'switch', 'venue', 'transaction'] as const
+const configurationUpdate = 'Configuration Update' as const
 
 export function EntityLink ({ entityKey, data, highlightFn = val => val }: {
   entityKey: keyof Event, data: Event, highlightFn?: TableHighlightFnArgs
@@ -39,15 +40,19 @@ export function EntityLink ({ entityKey, data, highlightFn = val => val }: {
     venue: {
       path: 'venues/:venueId/venue-details/overview',
       params: ['venueId']
+    },
+    transaction: {
+      path: 'devices/switch/:switchMac/:serialNumber/details/configuration/history',
+      params: ['switchMac', 'serialNumber']
     }
   }
 
   const [entity] = _.kebabCase(entityKey).split('-') as [EntityType]
-  const name = <>{highlightFn(String(data[entityKey] || noDataDisplay))}</>
+  const name = <>{highlightFn(String(data[entityKey] || extraHandle(entity)))}</>
 
   if (!entityTypes.includes(entity)) return name
 
-  const existKey = `is${_.capitalize(entity)}Exists` as EntityExistsKey
+  const existKey = `is${_.capitalize(identifyExistKey(entity))}Exists` as EntityExistsKey
   const exists = data[existKey as keyof typeof data]
 
   if (!exists) return <Tooltip
@@ -125,4 +130,12 @@ export const getDescription = (data: Event, highlightFn?: TableHighlightFnArgs) 
   } catch {
     return noDataDisplay
   }
+}
+
+const extraHandle = (entityType: EntityType) => {
+  return 'transaction' === entityType ? configurationUpdate : noDataDisplay
+}
+
+const identifyExistKey = (entityType: EntityType) => {
+  return 'transaction' === entityType ? 'switch' : entityType
 }
