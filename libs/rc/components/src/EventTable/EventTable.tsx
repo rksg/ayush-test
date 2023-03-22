@@ -79,7 +79,7 @@ export const EventTable = ({
     {
       key: 'entity_type',
       title: $t({ defaultMessage: 'Event Type' }),
-      dataIndex: 'entity_type',
+      dataIndex: 'entity_id',
       sorter: true,
       render: (_, row) => valueFrom(typeMapping, row.entity_type),
       filterable: filtersFrom(eventTypeMap, filterables, 'entity_type')
