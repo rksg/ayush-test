@@ -1274,10 +1274,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [
-        { type: 'SnmpAgent', id: 'LIST' },
-        { type: 'SnmpAgent', id: 'VENUE' },
-        { type: 'SnmpAgent', id: 'AP' }],
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'SnmpAgent', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
@@ -1285,7 +1283,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
             'UpdateApSnmpAgent',
             'DeleteApSnmpAgentProfile'
           ], () => {
-            api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
+            api.dispatch(policyApi.util.invalidateTags([{ type: 'SnmpAgent', id: 'LIST' }]))
           })
         })
       }
