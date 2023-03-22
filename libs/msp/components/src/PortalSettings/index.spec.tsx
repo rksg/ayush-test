@@ -88,6 +88,29 @@ const baseUrl: BaseUrl =
     {
       base_url: 'msp.devalto.ruckuswireless.com'
     }
+const mspEntitlements = [
+  {
+    id: '373415642-1',
+    deviceType: 'MSP_SWITCH',
+    deviceSubType: 'ICX71',
+    sku: 'CLD-MS71-1001',
+    quantity: 100,
+    effectiveDate: 'Tue Mar 29 00:00:00 UTC 2022',
+    expirationDate: 'Wed Mar 29 23:59:59 UTC 2023',
+    isTrial: false,
+    status: 'VALID'
+  },
+  {
+    id: '373415602-1',
+    deviceType: 'MSP_WIFI',
+    sku: 'CLD-MW00-1001',
+    quantity: 100,
+    effectiveDate: 'Tue Mar 29 00:00:00 UTC 2022',
+    expirationDate: 'Wed Mar 29 23:59:59 UTC 2023',
+    isTrial: false,
+    status: 'VALID'
+  }
+]
 
 const services = require('@acx-ui/rc/services')
 jest.mock('@acx-ui/rc/services', () => ({
@@ -115,7 +138,9 @@ describe('PortalSettings', () => {
     utils.loadImageWithJWT = jest.fn().mockImplementation((imageId: string) => {
       return Promise.resolve(fileUrl + imageId)
     })
-    // services.useGetUploadURLMutation = jest.fn().mockResolvedValue(uploadUrlResponse)
+    services.useMspEntitlementListQuery = jest.fn().mockImplementation(() => {
+      return { data: mspEntitlements }
+    })
     global.URL.createObjectURL = jest.fn()
     jest.spyOn(global.URL, 'createObjectURL')
   })

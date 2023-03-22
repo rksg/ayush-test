@@ -1,10 +1,10 @@
 import '@testing-library/jest-dom'
-import { rest } from 'msw'
+import { Path, rest } from 'msw'
 
-import { MspUrlsInfo }                                            from '@acx-ui/rc/utils'
-import { Provider }                                               from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent, within, waitFor } from '@acx-ui/test-utils'
-import { AccountType }                                            from '@acx-ui/utils'
+import { MspUrlsInfo }                                                                       from '@acx-ui/rc/utils'
+import { Provider }                                                                          from '@acx-ui/store'
+import { mockServer, render, screen, fireEvent, within, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { AccountType }                                                                       from '@acx-ui/utils'
 
 import { SelectIntegratorDrawer } from '.'
 
@@ -22,7 +22,7 @@ const list = {
     {
       assignedMspEcList: [
         '6a0d92dee47942dda28d29770696c6a0',
-        '45a1214beeee4c098289cd6446c89e44'
+        '3061bd56e37445a8993ac834c01e2710'
       ],
       id: 'b1c3860e3cb644c5913b75d5a391e915',
       name: 'installer',
@@ -30,6 +30,12 @@ const list = {
       tenantType: 'MSP_INSTALLER'
     }
   ]
+}
+
+const assignedEc = {
+  delegated_to: '',
+  delegation_type: '',
+  mspec_list: ['6a0d92dee47942dda28d29770696c6a0','3061bd56e37445a8993ac834c01e2710']
 }
 
 const services = require('@acx-ui/rc/services')
@@ -48,6 +54,12 @@ describe('SelectIntegratorDrawer', () => {
       rest.post(
         MspUrlsInfo.assignMspEcToIntegrator.url,
         (req, res, ctx) => res(ctx.json({ requestId: '123' }))
+      )
+    )
+    mockServer.use(
+      rest.get(
+        MspUrlsInfo.getAssignedMspEcToIntegrator.url.split('?')[0] as Path,
+        (req, res, ctx) => res(ctx.json(assignedEc))
       )
     )
     params = {
@@ -119,7 +131,7 @@ describe('SelectIntegratorDrawer', () => {
 
     expect(mockedCloseDialog).toHaveBeenLastCalledWith(false)
   })
-  xit('should handle save', async () => {
+  it('should handle save without selected rows', async () => {
     const mockedCloseDialog = jest.fn()
     render(
       <Provider>
@@ -132,6 +144,7 @@ describe('SelectIntegratorDrawer', () => {
         route: { params, path: '/:tenantId/dashboard/mspCustomers/create' }
       })
 
+    fireEvent.click(screen.getByRole('button', { name: 'Clear selection' }))
     fireEvent.click(screen.getByRole('button', { name: 'Save' }))
 
     const value: [Function, Object] = [
@@ -150,7 +163,7 @@ describe('SelectIntegratorDrawer', () => {
     })
     expect(mockedCloseDialog).toHaveBeenLastCalledWith(false)
   })
-  xit('should handle save with selected rows', async () => {
+  it('should handle save with selected rows', async () => {
     const mockedCloseDialog = jest.fn()
     render(
       <Provider>
@@ -184,13 +197,14 @@ describe('SelectIntegratorDrawer', () => {
     })
     expect(mockedCloseDialog).toHaveBeenLastCalledWith(false)
   })
-  xit('should handle save when tenantType not given', async () => {
+  it('should handle save when tenantType not given', async () => {
     const mockedCloseDialog = jest.fn()
+    const mockedSetSelected = jest.fn()
     render(
       <Provider>
         <SelectIntegratorDrawer visible={true}
           setVisible={mockedCloseDialog}
-          setSelected={jest.fn()}
+          setSelected={mockedSetSelected}
           tenantId={params.tenantId} />
       </Provider>, {
         route: { params, path: '/:tenantId/dashboard/mspCustomers/create' }
@@ -201,21 +215,15 @@ describe('SelectIntegratorDrawer', () => {
     expect(screen.getByText('1 selected')).toBeVisible()
     fireEvent.click(screen.getByRole('button', { name: 'Save' }))
 
-    const value: [Function, Object] = [
-      expect.any(Function),
-      expect.objectContaining({
-        data: { requestId: '123' },
-        status: 'fulfilled'
-      })
-    ]
-
+    const integrator = [expect.objectContaining({
+      id: 'b1c3860e3cb644c5913b75d5a391e914'
+    })]
+    expect(services.useAssignMspEcToIntegratorMutation).toHaveBeenCalledTimes(2)
     await waitFor(() => {
-      expect(services.useAssignMspEcToIntegratorMutation).toHaveLastReturnedWith(value)
-    })
-    await waitFor(() => {
-      expect(mockedCloseDialog).toHaveBeenCalledTimes(3)
+      expect(mockedSetSelected).toHaveBeenLastCalledWith(undefined, integrator)
     })
     expect(mockedCloseDialog).toHaveBeenLastCalledWith(false)
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: /loading/ }))
   })
   it('should handle save when tenantId not given', async () => {
     const mockedCloseDialog = jest.fn()
@@ -229,7 +237,7 @@ describe('SelectIntegratorDrawer', () => {
         route: { params, path: '/:tenantId/dashboard/mspCustomers/create' }
       })
 
-    expect(services.useAssignMspEcToIntegratorMutation).toHaveBeenCalledTimes(1)
+    expect(services.useAssignMspEcToIntegratorMutation).toHaveBeenCalledTimes(2)
     const radios = screen.getAllByRole('radio')
     fireEvent.click(radios.at(0)!)
     expect(screen.getByText('1 selected')).toBeVisible()
@@ -238,10 +246,11 @@ describe('SelectIntegratorDrawer', () => {
     const integrator = [expect.objectContaining({
       id: 'b1c3860e3cb644c5913b75d5a391e914'
     })]
-    expect(services.useAssignMspEcToIntegratorMutation).toHaveBeenCalledTimes(1)
+    expect(services.useAssignMspEcToIntegratorMutation).toHaveBeenCalledTimes(2)
     await waitFor(() => {
       expect(mockedSetSelected).toHaveBeenLastCalledWith(undefined, integrator)
     })
     expect(mockedCloseDialog).toHaveBeenLastCalledWith(false)
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: /loading/ }))
   })
 })

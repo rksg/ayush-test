@@ -152,7 +152,7 @@ describe('ManageCustomer', () => {
     expect(await screen.findByText('Please enter Customer Name')).toBeVisible()
   })
 
-  xit('should have correct workflow', async () => {
+  it('should have correct workflow', async () => {
     render(
       <Provider>
         <ManageCustomer />

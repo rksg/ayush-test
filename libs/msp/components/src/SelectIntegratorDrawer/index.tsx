@@ -1,4 +1,4 @@
-import { Key, useState } from 'react'
+import { Key, useEffect, useState } from 'react'
 
 import { Form }    from 'antd'
 import moment      from 'moment-timezone'
@@ -39,6 +39,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
   const [resetField, setResetField] = useState(false)
   const [original, setOriginal] = useState({} as MspEc)
   const [form] = Form.useForm()
+  const [selectedKeys, setSelectedKeys] = useState<Key[]>([])
 
   const [getAssignedEc] = useLazyGetAssignedMspEcToIntegratorQuery()
 
@@ -56,7 +57,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
 
   const handleSave = async () => {
     const selectedRows = form.getFieldsValue(['integrator'])
-    if (tenantId) {
+    if (tenantId && tenantType) {
       // remove from orginal one, then add to the new one
       if (original?.assignedMspEcList) {
         const integrtorId = original.id
@@ -144,22 +145,23 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
     ]
   }
 
-  const IntegratorTable = () => {
-    const tableQuery = useTableQuery({
-      useQuery: useMspCustomerListQuery,
-      defaultPayload
-    })
+  const tableQuery = useTableQuery({
+    useQuery: useMspCustomerListQuery,
+    defaultPayload
+  })
 
-    let selectedKeys = [] as Key[]
+  useEffect(() => {
     if (tableQuery?.data && tenantId) {
-      selectedKeys = tableQuery?.data.data.filter(
-        mspEc => mspEc.assignedMspEcList.includes(tenantId)).map(mspEc => mspEc.id)
+      setSelectedKeys(tableQuery?.data.data.filter(
+        mspEc => mspEc.assignedMspEcList.includes(tenantId)).map(mspEc => mspEc.id))
       const selRows = tableQuery?.data.data.filter(
         mspEc => mspEc.assignedMspEcList.includes(tenantId))
       setOriginal(selRows?.[0])
       form.setFieldValue('integrator', selRows)
     }
+  }, [tableQuery.data])
 
+  const IntegratorTable = () => {
     return (
       <Loader states={[tableQuery
       ]}>

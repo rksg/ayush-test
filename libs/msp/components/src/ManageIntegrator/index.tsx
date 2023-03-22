@@ -270,7 +270,7 @@ export function ManageIntegrator () {
         ? ecList.data.data.filter(mspEc => mspEc.integrator === mspEcTenantId)
         : ecList.data.data.filter(mspEc => mspEc.installer === mspEcTenantId))
     }
-  }, [ecList])
+  }, [ecList.data])
 
   const [sameCountry, setSameCountry] = useState(true)
   const addressValidator = async (value: string) => {
