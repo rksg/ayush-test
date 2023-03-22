@@ -4,6 +4,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
+import { CsvSize, ImportFileDrawer }                             from '@acx-ui/rc/components'
 import {
   useDeletePropertyUnitsMutation,
   useGetPropertyConfigsQuery,
@@ -13,7 +14,9 @@ import {
   useLazyGetPersonaGroupByIdQuery,
   useLazyGetPropertyUnitByIdQuery,
   useLazyGetSwitchListQuery,
-  useUpdatePropertyUnitMutation
+  useUpdatePropertyUnitMutation,
+  useImportPropertyUnitsMutation,
+  useLazyDownloadPropertyUnitsQuery
 } from '@acx-ui/rc/services'
 import {
   APExtended,
@@ -46,6 +49,7 @@ export function VenuePropertyTab () {
     isEdit: false,
     visible: false
   })
+  const [uploadCsvDrawerVisible, setUploadCsvDrawerVisible] = useState(false)
 
   const [getUnitById] = useLazyGetPropertyUnitByIdQuery()
   const [deleteUnitByIds] = useDeletePropertyUnitsMutation()
@@ -55,6 +59,8 @@ export function VenuePropertyTab () {
     useState<string|undefined>(propertyConfigsQuery?.data?.personaGroupId)
   const [getPersonaById] = useLazyGetPersonaByIdQuery()
   const [getPersonaGroupById, personaGroupQuery] = useLazyGetPersonaGroupByIdQuery()
+  const [downloadCsv] = useLazyDownloadPropertyUnitsQuery()
+  const [uploadCsv, uploadCsvResult] = useImportPropertyUnitsMutation()
 
   const queryUnitList = useTableQuery({
     useQuery: useGetPropertyUnitListQuery,
@@ -62,6 +68,27 @@ export function VenuePropertyTab () {
       filters: { name: string|undefined }
     }
   })
+
+  const importUnits = async (formData: FormData) => {
+    try {
+      await uploadCsv({
+        params: { venueId },
+        payload: formData
+      }).unwrap()
+      setUploadCsvDrawerVisible(false)
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
+  }
+
+  const downloadUnit = () => {
+    downloadCsv({
+      params: { venueId },
+      payload: queryUnitList.payload
+    }).unwrap().catch((error) => {
+      console.log(error) // eslint-disable-line no-console
+    })
+  }
 
   const apViewModelPayload = {
     fields: ['name', 'venueName', 'serialNumber', 'apMac', 'IP', 'model', 'venueId'],
@@ -176,6 +203,14 @@ export function VenuePropertyTab () {
     {
       label: $t({ defaultMessage: 'Add Unit' }),
       onClick: () => setDrawerState({ isEdit: false, visible: true, unitId: undefined })
+    },
+    {
+      label: $t({ defaultMessage: 'Import From File' }),
+      onClick: () => setUploadCsvDrawerVisible(true)
+    },
+    {
+      label: $t({ defaultMessage: 'Export To CSV' }),
+      onClick: downloadUnit
     }
   ]
 
@@ -345,6 +380,19 @@ export function VenuePropertyTab () {
           onClose={() => setDrawerState({ isEdit: false, visible: false, unitId: undefined })}
         />
       }
+      <ImportFileDrawer
+        title={$t({ defaultMessage: 'Import Units From File' })}
+        visible={uploadCsvDrawerVisible}
+        isLoading={uploadCsvResult.isLoading}
+        type='PropertyUnit'
+        acceptType={['xlsx']}
+        maxSize={CsvSize['5MB']}
+        maxEntries={512}
+        templateLink='assets/templates/units_import_template.xlsx'
+        importRequest={importUnits}
+        formDataName={'unitImports'}
+        onClose={() => setUploadCsvDrawerVisible(false)}
+      />
     </Loader>
   )
 }
