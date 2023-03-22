@@ -78,7 +78,8 @@ export function ImportFileDrawer (props: ImportFileDrawerProps) {
   }, [form, props.visible])
 
   useEffect(()=>{
-    if (importError?.data) {
+    const importErrorData = (importError?.data ?? {}) as object
+    if (Object.keys(importErrorData).length) {
       const errorObj = importError?.data as ImportErrorRes
       let errors, downloadUrl
       let description = ''
@@ -194,7 +195,7 @@ export function ImportFileDrawer (props: ImportFileDrawerProps) {
           </Typography.Text> }
         <Button type='primary'>{ fileDescription ?
           $t({ defaultMessage: 'Change File' }) :
-          $t({ defaultMessage: 'Browser' }) }
+          $t({ defaultMessage: 'Browse' }) }
         </Button>
       </Space>
     </Upload.Dragger>
