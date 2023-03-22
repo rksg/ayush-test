@@ -73,7 +73,8 @@ export default function SwitchesTable () {
     }
   }, {
     selectFromResult: ({ data }) => ({
-      getSwitchModelList: data?.data.map(v => ({ key: v.name, value: v.name })) || true
+      getSwitchModelList: data?.data
+        .map(v =>({ key: v.name.toUpperCase(), value: v.name.toUpperCase() })) || true
     })
   })
 
