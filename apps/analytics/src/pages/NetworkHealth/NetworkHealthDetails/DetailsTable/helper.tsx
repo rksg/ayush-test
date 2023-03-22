@@ -252,8 +252,8 @@ export const getTableColumns = ({
     columns.push(
       {
         title: $t(defineMessage({ defaultMessage: 'Station AP Name' })),
-        dataIndex: 'stationAp',
-        key: 'stationAp',
+        dataIndex: 'stationApName',
+        key: 'stationApName',
         width: 150,
         render: function (_, row) {
           const { stationAp } = row
@@ -267,8 +267,8 @@ export const getTableColumns = ({
       },
       {
         title: $t(defineMessage({ defaultMessage: 'Station AP MAC' })),
-        dataIndex: 'stationAp',
-        key: 'stationAp',
+        dataIndex: 'stationApMac',
+        key: 'stationApMac',
         width: 150,
         render: function (_, row) {
           const { stationAp } = row
@@ -277,8 +277,8 @@ export const getTableColumns = ({
       },
       {
         title: $t(defineMessage({ defaultMessage: 'Station AP SNR' })),
-        dataIndex: 'stationAp',
-        key: 'stationAp',
+        dataIndex: 'stationApSnr',
+        key: 'stationApSnr',
         align: 'center',
         width: 150,
         render: function (_, row, index) {
