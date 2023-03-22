@@ -37,11 +37,7 @@ const getFormattedToFunnel = (
     value: dhcpFailure,
   },
 ];
-const HealthDrillDown = ({
-  drilldownSelection,
-}: {
-  drilldownSelection: OpenType;
-}) => {
+const HealthDrillDown = () => {
   return (
     <GridRow>
       <GridCol col={{ span: 24 }} style={{ minHeight: '105px' }}>
@@ -83,8 +79,11 @@ const HealthDrillDown = ({
           )}
         </div>
       </GridCol>
+      <GridCol col={{ span: 24 }}>
+        <Separator />
+      </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '210px' }}>
-        <HealthPieChart drilldownSelection={drilldownSelection}/>
+        <HealthPieChart />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '210px' }}>
         Table

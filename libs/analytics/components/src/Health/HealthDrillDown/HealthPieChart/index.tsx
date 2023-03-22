@@ -100,9 +100,6 @@ export const HealthPieChart = ({
 
   const { nodes, wlans } = transformData(queryResults.data, queryType)
   const venues = nodes.length > 1 ? 'Venues' : 'Venue'
-  const venueTitle = nodes.length > 1
-    ? 'TOP {count} IMPACTED {venues}'
-    : '{count} IMPACTED {venues}'
   const networks = wlans.length > 1 ? 'Networks' : 'Network'
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
@@ -113,7 +110,7 @@ export const HealthPieChart = ({
         <Card
           type='no-border'
           title={$t(
-            { defaultMessage: venueTitle },
+            { defaultMessage: 'Top {count} Impacted {venues}' },
             { count: wlans.length, venues }
           )}
         >

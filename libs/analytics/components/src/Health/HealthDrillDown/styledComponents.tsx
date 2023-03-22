@@ -30,7 +30,7 @@ export const PieChartContainer = styled.div`
 
 export const Separator = styled.hr`
   border-top: 0.5px solid rgba(173, 186, 193, 1);
-  margin: 20px 10px;
+  margin: 2px 10px;
 `
 
 export const ImpactedClientsContainer = styled.div`
