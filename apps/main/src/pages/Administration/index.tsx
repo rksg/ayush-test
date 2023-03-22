@@ -18,7 +18,7 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
   const { activeTab } = useParams()
   const basePath = useTenantLink('/administration')
   const navigate = useNavigate()
-
+  const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
 
   const onTabChange = (tab: string) => {
     navigate({
@@ -43,7 +43,9 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
         tab={$t({ defaultMessage: 'Firmware Version Management' })}
         key='fwVersionMgmt'
       />
-      <Tabs.TabPane tab={$t({ defaultMessage: 'Local RADIUS Server' })} key='localRadiusServer' />
+      { isRadiusClientEnabled &&
+        <Tabs.TabPane tab={$t({ defaultMessage: 'Local RADIUS Server' })} key='localRadiusServer' />
+      }
     </Tabs>
   )
 }
@@ -62,6 +64,7 @@ export default function Administration () {
   const { tenantId, activeTab } = useParams()
   const isEdgeEarlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
   const isEnable = useIsSplitOn(Features.UNRELEASED) || isEdgeEarlyBetaEnabled
+  const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
   const { data: userProfileData } = useUserProfileContext()
 
   if (!isEnable) {
@@ -80,7 +83,8 @@ export default function Administration () {
     return <span>{ $t({ defaultMessage: 'Administrators is not allowed to access.' }) }</span>
   }
 
-  const ActiveTabPane = tabPanes[activeTab as keyof typeof tabPanes]
+  const ActiveTabPane = (activeTab === 'localRadiusServer' && !isRadiusClientEnabled) ?
+    undefined: tabPanes[activeTab as keyof typeof tabPanes]
 
   return (<>
     <PageHeader
