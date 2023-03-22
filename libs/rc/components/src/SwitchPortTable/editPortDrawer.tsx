@@ -735,6 +735,17 @@ export function EditPortDrawer ({
         labelAlign='left'
         onValuesChange={onValuesChange}
       >
+        { !isMultipleEdit && getFieldTemplate(
+          <Form.Item
+            {...getFormItemLayout(isMultipleEdit)}
+            name='name'
+            label={$t({ defaultMessage: 'Port Name' })}
+            initialValue=''
+            children={<Input />}
+          />,
+          'name', $t({ defaultMessage: 'Port Name' })
+        )}
+
         { getFieldTemplate(
           <Form.Item
             noStyle
