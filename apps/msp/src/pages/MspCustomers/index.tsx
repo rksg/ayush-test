@@ -24,7 +24,9 @@ import {
   useReactivateMspEcMutation,
   useMspCustomerListQuery,
   useSupportMspCustomerListQuery,
-  useGetMspLabelQuery
+  useGetMspLabelQuery,
+  useIntegratorCustomerListQuery,
+  useGetTenantDetailsQuery
 } from '@acx-ui/rc/services'
 import {
   DelegationEntitlementRecord,
@@ -120,16 +122,22 @@ export function MspCustomers () {
 
   const onBoard = mspLabel?.msp_label
   const ecFilters = isPrimeAdmin
-    ? { tenantType: ['MSP_EC'] }
-    : { mspAdmins: [userProfile.adminId], tenantType: ['MSP_EC'] }
+    ? { tenantType: [AccountType.MSP_EC] }
+    : { mspAdmins: [userProfile.adminId], tenantType: [AccountType.MSP_EC] }
 
   const transformTechPartner = (id: string) => {
     const rec = techParnersData.find(e => e.id === id)
     return rec?.name ? rec.name : id
   }
 
+  const tenantDetailsData = useGetTenantDetailsQuery({ params })
+  const isIntegrator =
+    (tenantDetailsData.data?.tenantType === AccountType.MSP_INSTALLER ||
+     tenantDetailsData.data?.tenantType === AccountType.MSP_INTEGRATOR)
+  const parentTenantid = tenantDetailsData.data?.mspEc?.parentMspId
+
   const { data: techPartners } = useTableQuery({
-    useQuery: useMspCustomerListQuery,
+    useQuery: useIntegratorCustomerListQuery,
     defaultPayload: {
       filters: { tenantType: [AccountType.MSP_INTEGRATOR, AccountType.MSP_INSTALLER] },
       fields: [
@@ -160,6 +168,32 @@ export function MspCustomers () {
       'alarmCount',
       'mspAdminCount',
       'mspEcAdminCount',
+      'creationDate',
+      'expirationDate',
+      'wifiLicense',
+      'switchLicens',
+      'streetAddress'
+    ],
+    searchTargetFields: ['name']
+  }
+
+  const integratorPayload = {
+    searchString: '',
+    filters: {
+      mspTenantId: [parentTenantid],
+      tenantType: [AccountType.MSP_INSTALLER, AccountType.MSP_INTEGRATOR]
+    },
+    fields: [
+      'check-all',
+      'id',
+      'name',
+      'tenantType',
+      'status',
+      'alarmCount',
+      'mspAdminCount',
+      'mspEcAdminCount',
+      'mspInstallerAdminCount',
+      'mspIntegratorAdminCount',
       'creationDate',
       'expirationDate',
       'wifiLicense',
@@ -256,7 +290,7 @@ export function MspCustomers () {
       title: $t({ defaultMessage: 'Integrator' }),
       dataIndex: 'integrator',
       key: 'integrator',
-      show: !userProfile?.support,
+      show: !userProfile?.support && !isIntegrator,
       onCell: (data) => {
         return (isPrimeAdmin || isAdmin) && !userProfile?.support ? {
           onClick: () => {
@@ -278,7 +312,7 @@ export function MspCustomers () {
       title: $t({ defaultMessage: 'Installer' }),
       dataIndex: 'installer',
       key: 'installer',
-      show: !userProfile?.support,
+      show: !userProfile?.support && !isIntegrator,
       onCell: (data) => {
         return (isPrimeAdmin || isAdmin) && !userProfile?.support ? {
           onClick: () => {
@@ -487,6 +521,31 @@ export function MspCustomers () {
     )
   }
 
+  const IntegratorTable = () => {
+    const tableQuery = useTableQuery({
+      useQuery: useIntegratorCustomerListQuery,
+      defaultPayload: integratorPayload,
+      search: {
+        searchTargetFields: integratorPayload.searchTargetFields as string[]
+      }
+    })
+
+    return (
+      <Loader states={[
+        tableQuery,
+        { isLoading: false }]}>
+        <Table
+          columns={columns}
+          dataSource={tableQuery.data?.data}
+          pagination={tableQuery.pagination}
+          onChange={tableQuery.handleTableChange}
+          onFilterChange={tableQuery.handleFilterChange}
+          rowKey='id'
+        />
+      </Loader>
+    )
+  }
+
   const SupportEcTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useSupportMspCustomerListQuery,
@@ -532,7 +591,8 @@ export function MspCustomers () {
           ]}
       />
       {userProfile?.support && <SupportEcTable />}
-      {!userProfile?.support && <MspEcTable />}
+      {!userProfile?.support && !isIntegrator && <MspEcTable />}
+      {!userProfile?.support && isIntegrator && <IntegratorTable />}
       <ResendInviteModal
         visible={modalVisible}
         setVisible={setModalVisible}
