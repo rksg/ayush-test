@@ -4,7 +4,6 @@ import { Descriptions } from 'antd'
 import { useIntl }      from 'react-intl'
 import { useParams }    from 'react-router-dom'
 
-import { noDataSymbol }                                                 from '@acx-ui/analytics/utils'
 import { Button, Card, Loader, PageHeader, Subtitle, GridRow, GridCol } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import {
@@ -16,6 +15,7 @@ import {
 } from '@acx-ui/rc/services'
 import { PersonaGroup }   from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
+import { noDataDisplay }  from '@acx-ui/utils'
 
 import { DpskPoolLink, MacRegistrationPoolLink, NetworkSegmentationLink, VenueLink } from '../LinkHelper'
 import { PersonaGroupDrawer }                                                        from '../PersonaGroupDrawer'
@@ -170,7 +170,7 @@ function PersonaGroupDetails () {
                       key={info.title}
                       label={info.title}
                     >
-                      {info.value ?? noDataSymbol}
+                      {info.value ?? noDataDisplay}
                     </Descriptions.Item>
                   )
                 }
@@ -182,7 +182,7 @@ function PersonaGroupDetails () {
           <div>
             <Subtitle level={4}>
               {/* eslint-disable-next-line max-len */}
-              {$t({ defaultMessage: 'Personas' })} ({detailsQuery.data?.personas?.length ?? noDataSymbol})
+              {$t({ defaultMessage: 'Personas' })} ({detailsQuery.data?.personas?.length ?? noDataDisplay})
             </Subtitle>
 
             <BasePersonaTable
