@@ -462,10 +462,10 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'AddWiFiCallingProfile',
-            'UpdateWiFiCallingProfile',
-            'DeleteWiFiCallingProfile',
-            'DeleteWiFiCallingProfiles'
+            'AddWiFiCallingServiceProfile',
+            'UpdateWiFiCallingServiceProfile',
+            'DeleteWifiCallingServiceProfile',
+            'DeleteWiFiCallingServiceProfile'
           ], () => {
             api.dispatch(serviceApi.util.invalidateTags([
               { type: 'Service', id: 'LIST' },
@@ -490,10 +490,10 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'AddWiFiCallingProfile',
-            'UpdateWiFiCallingProfile',
-            'DeleteWiFiCallingProfile',
-            'DeleteWiFiCallingProfiles'
+            'AddWiFiCallingServiceProfile',
+            'UpdateWiFiCallingServiceProfile',
+            'DeleteWifiCallingServiceProfile',
+            'DeleteWiFiCallingServiceProfile'
           ], () => {
             api.dispatch(serviceApi.util.invalidateTags([
               { type: 'Service', id: 'LIST' },
