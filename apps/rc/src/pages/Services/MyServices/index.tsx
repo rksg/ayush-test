@@ -8,7 +8,7 @@ import {
   useGetDpskListQuery,
   useGetEnhancedMdnsProxyListQuery,
   useGetNetworkSegmentationStatsListQuery,
-  useGetPortalProfileListQuery,
+  useGetEnhancedPortalProfileListQuery,
   useGetEnhancedWifiCallingServiceListQuery,
   useWebAuthTemplateListQuery
 } from '@acx-ui/rc/services'
@@ -82,7 +82,7 @@ export default function MyServices () {
     {
       type: ServiceType.PORTAL,
       category: RadioCardCategory.WIFI,
-      tableQuery: useGetPortalProfileListQuery({ params })
+      tableQuery: useGetEnhancedPortalProfileListQuery({ params, payload: { filters: {} } })
     },
     {
       type: ServiceType.WEBAUTH_SWITCH,
