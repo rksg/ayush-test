@@ -79,8 +79,8 @@ const AAAForm = (props: AAAFormProps) => {
     <>
       {!props.networkView &&<PageHeader
         title={edit
-          ? $t({ defaultMessage: 'Edit Radius (802.1x) Server' })
-          : $t({ defaultMessage: 'Add Radius (802.1x) Server' })}
+          ? $t({ defaultMessage: 'Edit Radius Server' })
+          : $t({ defaultMessage: 'Add Radius Server' })}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Radius Server' }), link: tablePath }
         ]}
