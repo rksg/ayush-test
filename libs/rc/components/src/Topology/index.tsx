@@ -137,6 +137,13 @@ export function TopologyGraph (props:{ venueId?: string,
         return
       })
 
+      // if no root node available then remove cloud node
+      if (!rootNodes?.length) {
+        const cloudNodeIndex = uiNodes?.findIndex((node) => node.id === 'cloud_id')
+        if (cloudNodeIndex > -1)
+          uiNodes.splice(cloudNodeIndex,1)
+      }
+
       rootNodes.forEach(node => {
         const rootEdge: Link = {
           source: 'cloud_id',
