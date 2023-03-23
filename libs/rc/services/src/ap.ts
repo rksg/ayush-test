@@ -50,10 +50,9 @@ export const apApi = baseApApi.injectEndpoints({
       query: ({ params, payload }:{ payload:Record<string,unknown>, params: Params<string> }) => {
         const hasGroupBy = payload?.groupBy
         const fields = hasGroupBy ? payload.groupByFields : payload.fields
-        let apsReq = createHttpRequest(CommonUrlsInfo.getApsList, params)
-        if(hasGroupBy){
-          apsReq = createHttpRequest(CommonUrlsInfo.getApGroupsListByGroup, params)
-        }
+        const apsReq = hasGroupBy
+          ? createHttpRequest(CommonUrlsInfo.getApGroupsListByGroup, params)
+          : createHttpRequest(CommonUrlsInfo.getApsList, params)
         return {
           ...apsReq,
           body: { ...payload, fields: fields }
