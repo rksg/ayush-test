@@ -104,6 +104,7 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
           // display: fromClient ? '' : 'none',
           width: '100%', marginLeft: '10px', marginRight: '10px' }}
         marks={{ 0.25: '0.25 Mbps', 20: '20 Mbps' }}
+        min={0.25}
         max={20}
         defaultValue={maxUplinkRate.value ?? 0.25}
         onChange={(value) => {
@@ -132,6 +133,7 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
           // display: toClient ? '' : 'none',
           width: '100%', marginLeft: '10px', marginRight: '10px' }}
         marks={{ 0.25: '0.25 Mbps', 20: '20 Mbps' }}
+        min={0.25}
         max={20}
         defaultValue={maxDownlinkRate.value ?? 0.25}
         onChange={(value) => {
