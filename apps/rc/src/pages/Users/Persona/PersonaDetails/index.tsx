@@ -4,9 +4,9 @@ import { Col, Input, Row, Space, Typography } from 'antd'
 import { useIntl }                            from 'react-intl'
 import {  useParams }                         from 'react-router-dom'
 
-import { Button, cssStr, Loader, PageHeader, Subtitle }                          from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                from '@acx-ui/feature-toggle'
-import { CopyOutlined }                                                          from '@acx-ui/icons'
+import { Button, cssStr, Loader, PageHeader, Subtitle } from '@acx-ui/components'
+import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
+import { CopyOutlined }                                 from '@acx-ui/icons'
 import {
   useLazyGetDpskQuery,
   useGetPersonaByIdQuery,
