@@ -3,7 +3,7 @@
 exports[`Network Filter should list only venues having APs 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Container-sc-1x390s8-1 cpFBYq"
+    class="styledComponents__Container-sc-1x390s8-1 kxQAae"
   >
     <div
       class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
@@ -365,7 +365,7 @@ exports[`Network Filter should list only venues having APs 1`] = `
 exports[`Network Filter should list only venues having Switches 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Container-sc-1x390s8-1 cpFBYq"
+    class="styledComponents__Container-sc-1x390s8-1 kxQAae"
   >
     <div
       class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
@@ -727,7 +727,7 @@ exports[`Network Filter should list only venues having Switches 1`] = `
 exports[`Network Filter should select network node and bands 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Container-sc-1x390s8-1 cpFBYq"
+    class="styledComponents__Container-sc-1x390s8-1 kxQAae"
   >
     <div
       class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
@@ -1304,7 +1304,7 @@ exports[`Network Filter should select network node and bands 1`] = `
 exports[`Network Filter should select network node and bands with onApplyFn 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Container-sc-1x390s8-1 cpFBYq"
+    class="styledComponents__Container-sc-1x390s8-1 kxQAae"
   >
     <div
       class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
@@ -1720,7 +1720,7 @@ exports[`Network Filter should select network node and bands with onApplyFn 1`] 
 exports[`Network Filter with incident severity should not show any severity circle when hierarchyNode is empty 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Container-sc-1x390s8-1 cpFBYq"
+    class="styledComponents__Container-sc-1x390s8-1 kxQAae"
   >
     <div
       class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
@@ -1868,7 +1868,7 @@ exports[`Network Filter with incident severity should not show any severity circ
 exports[`Network Filter with incident severity should show only venue severities 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Container-sc-1x390s8-1 cpFBYq"
+    class="styledComponents__Container-sc-1x390s8-1 kxQAae"
   >
     <div
       class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
@@ -2016,7 +2016,7 @@ exports[`Network Filter with incident severity should show only venue severities
 exports[`Network Filter with incident severity should show severity only once on each node 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Container-sc-1x390s8-1 cpFBYq"
+    class="styledComponents__Container-sc-1x390s8-1 kxQAae"
   >
     <div
       class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"

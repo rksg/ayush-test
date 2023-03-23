@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 
 import {
   IncidentSeverities,
@@ -21,9 +21,9 @@ export const NonSelectableItem = styled.div.attrs(
   width: 100%;
 `
 export const Container = styled.div.attrs((props: { $open?: boolean }) => props)`
-  min-width: 165px;
+  min-width: 169px;
   max-width: 322px;
-  ${(props) => props.$open ? css`width: 322px;` : css`width: 165px;`}
+  ${(props) => props.$open ? 'width: 322px;' : 'width: 169px;'}
 `
 export const SeverityContainer = styled.div`
   display: flex;
