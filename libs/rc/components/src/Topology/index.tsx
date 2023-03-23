@@ -190,12 +190,18 @@ export function TopologyGraph (props:{ venueId?: string,
 
       render(svgGroup, graph)
 
-      select(graphRef.current).selectAll('g.node rect').remove()
+      select(graphRef.current)
+        .selectAll('g.node rect')
+        .attr('width', 32)
+        .attr('height', 32)
+        .attr('x', -16)
+        .attr('y', -24)
 
       select(graphRef.current).selectAll('g.node')
         .data(uiNodes)
         .attr('data-testid', 'topologyNode')
         .append('foreignObject')
+        .attr('pointer-events', 'none')
         .attr('width', 32)
         .attr('height', 32)
         .attr('x', -16)
@@ -352,8 +358,8 @@ export function TopologyGraph (props:{ venueId?: string,
     const debouncedHandleMouseEnter = debounce(function (node, d, self){
       setShowDeviceTooltip(true)
       setTooltipNode(node.config)
-      setTooltipPosition({ x: d?.layerX
-        , y: d?.layerY - 50 })
+      setTooltipPosition({ x: d?.offsetX + 30
+        , y: d?.offsetY })
       lowVisibleAll()
       if (selectedNode) {
         (selectedNode as SVGGElement).style.opacity = '1'

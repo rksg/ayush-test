@@ -1,32 +1,19 @@
 import { Badge, Button, Divider } from 'antd'
 import { useIntl }                from 'react-intl'
 
-import { Card, Descriptions, Loader, Subtitle }                                                                                   from '@acx-ui/components'
-import { DateFormatEnum, formatter }                                                                                              from '@acx-ui/formatter'
-import { ApDeviceStatusEnum, APExtended, APMeshRole, ApRadioBands, APView, RadioProperties, SwitchStatusEnum, transformApStatus } from '@acx-ui/rc/utils'
-import { noDataDisplay }                                                                                                          from '@acx-ui/utils'
+import { Card, Descriptions, Loader, Subtitle }                                                                    from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                                                               from '@acx-ui/formatter'
+import { ApDeviceStatusEnum, APMeshRole, APView, ApViewModel, noDataDisplay, SwitchStatusEnum, transformApStatus } from '@acx-ui/rc/utils'
 
 import * as UI                         from './styledComponents'
 import { getDeviceColor, getMeshRole } from './utils'
 
 export function APDetailsCard (props: {
-    apDetail: APExtended,
+    apDetail: ApViewModel,
     isLoading: boolean
   }) {
   const { apDetail, isLoading } = props
   const { $t } = useIntl()
-
-  const wirelessRadioDetails: RadioProperties[] =
-    apDetail?.apStatusData?.APRadio as RadioProperties[]
-
-  function getApRadio (band: ApRadioBands) {
-    switch (band) {
-      case ApRadioBands.band24: return $t({ defaultMessage: '2.4 GHz' })
-      case ApRadioBands.band50: return $t({ defaultMessage: '5 GHz' })
-      case ApRadioBands.band60: return $t({ defaultMessage: '6 GHz' })
-    }
-
-  }
 
   return <Card
     type='no-border'
@@ -101,15 +88,59 @@ export function APDetailsCard (props: {
               </label>
             </UI.TextHeader>
             {
-              wirelessRadioDetails && wirelessRadioDetails?.map(radioDetail => (
-                <UI.TextNumber>
-                  <label><Subtitle level={5}>{ getApRadio(radioDetail?.band as ApRadioBands) }
-                  </Subtitle></label>
-                  <span>{radioDetail?.channel || noDataDisplay}</span>
-                  <span>{radioDetail?.operativeChannelBandwidth || noDataDisplay}</span>
-                  <span>{radioDetail?.txPower || noDataDisplay}</span>
-                </UI.TextNumber>
-              ))
+              apDetail?.channel24 &&
+                (
+                  <UI.TextNumber>
+                    <label><Subtitle level={5}>{ '2.4 GHz' }</Subtitle></label>
+                    <span>{apDetail.channel24.channel || '--'}</span>
+                    <span>{apDetail.channel24.operativeChannelBandwidth || '--'}</span>
+                    <span>{apDetail.channel24.txPower || '--'}</span>
+                  </UI.TextNumber>
+                )
+            }
+            {
+              apDetail?.channel50 &&
+                (
+                  <UI.TextNumber>
+                    <label><Subtitle level={5}>{ '5 GHz' }</Subtitle></label>
+                    <span>{apDetail.channel50.channel || '--'}</span>
+                    <span>{apDetail.channel50.operativeChannelBandwidth || '--'}</span>
+                    <span>{apDetail.channel50.txPower || '--'}</span>
+                  </UI.TextNumber>
+                )
+            }
+            {
+              apDetail?.channelL50 &&
+                (
+                  <UI.TextNumber>
+                    <label><Subtitle level={5}>{ 'LO 5 GHz' }</Subtitle></label>
+                    <span>{apDetail.channelL50.channel || '--'}</span>
+                    <span>{apDetail.channelL50.operativeChannelBandwidth || '--'}</span>
+                    <span>{apDetail.channelL50.txPower || '--'}</span>
+                  </UI.TextNumber>
+                )
+            }
+            {
+              apDetail?.channelU50 &&
+                (
+                  <UI.TextNumber>
+                    <label><Subtitle level={5}>{ 'HI 5 GHz' }</Subtitle></label>
+                    <span>{apDetail.channelU50.channel || '--'}</span>
+                    <span>{apDetail.channelU50.operativeChannelBandwidth || '--'}</span>
+                    <span>{apDetail.channelU50.txPower || '--'}</span>
+                  </UI.TextNumber>
+                )
+            }
+            {
+              apDetail?.channel60 &&
+                (
+                  <UI.TextNumber>
+                    <label><Subtitle level={5}>{ '6 GHz' }</Subtitle></label>
+                    <span>{apDetail.channel60.channel || '--'}</span>
+                    <span>{apDetail.channel60.operativeChannelBandwidth || '--'}</span>
+                    <span>{apDetail.channel60.txPower || '--'}</span>
+                  </UI.TextNumber>
+                )
             }
             </UI.WirelessRadioTableContainer>
           </Descriptions.NoLabel>}
