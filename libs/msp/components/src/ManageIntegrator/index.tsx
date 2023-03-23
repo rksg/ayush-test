@@ -270,7 +270,7 @@ export function ManageIntegrator () {
         ? ecList.data.data.filter(mspEc => mspEc.integrator === mspEcTenantId)
         : ecList.data.data.filter(mspEc => mspEc.installer === mspEcTenantId))
     }
-  }, [ecList])
+  }, [ecList.data])
 
   const [sameCountry, setSameCountry] = useState(true)
   const addressValidator = async (value: string) => {
@@ -479,8 +479,12 @@ export function ManageIntegrator () {
 
   const displayAccessPeriod = () => {
     if(assignedEcs?.data?.expiry_date) {
-      return `${intl.$t({ defaultMessage: 'Expires On' })} 
-        ${formatter(DateFormatEnum.DateFormat)(assignedEcs?.data?.expiry_date)}`
+      const numOfDays = moment(assignedEcs.data.expiry_date).diff(moment(Date()), 'days')
+      return intl.$t(
+        { defaultMessage:
+          '{accessPeriod} {accessPeriod, plural, one {Day} other {Days}}' },
+        { accessPeriod: numOfDays }
+      )
     } else if (assignedEcs?.data?.delegation_type) {
       return intl.$t({ defaultMessage: 'Unlimited' })
     }
