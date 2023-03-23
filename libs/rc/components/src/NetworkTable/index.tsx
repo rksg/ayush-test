@@ -104,14 +104,14 @@ function getCols (intl: ReturnType<typeof useIntl>, isServicesEnabled: boolean) 
       sorter: false,
       align: 'center'
     },
-    {
-      key: 'services',
-      title: intl.$t({ defaultMessage: 'Services' }),
-      dataIndex: 'services',
-      sorter: true,
-      align: 'center',
-      show: isServicesEnabled
-    },
+    // { TODO: Wait for Services
+    //   key: 'services',
+    //   title: intl.$t({ defaultMessage: 'Services' }),
+    //   dataIndex: 'services',
+    //   sorter: true,
+    //   align: 'center',
+    //   show: isServicesEnabled
+    // },
     {
       key: 'vlan',
       title: intl.$t({ defaultMessage: 'VLAN' }),
