@@ -32,7 +32,6 @@ export function ApNetworksTab () {
   })
 
   const columns: TableProps<Network>['columns'] = React.useMemo(() => {
-    const disabledType = [NetworkTypeEnum.DPSK, NetworkTypeEnum.CAPTIVEPORTAL]
     return [{
       key: 'name',
       title: $t({ defaultMessage: 'Network Name' }),
@@ -41,11 +40,9 @@ export function ApNetworksTab () {
       defaultSortOrder: 'ascend',
       fixed: 'left',
       render: function (data, row) {
-        return (disabledType.includes(row.nwSubType as NetworkTypeEnum)) ? data :(
-          <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>
-            {data}
-          </TenantLink>
-        )
+        return <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>
+          {data}
+        </TenantLink>
       }
     }, {
       key: 'description',
