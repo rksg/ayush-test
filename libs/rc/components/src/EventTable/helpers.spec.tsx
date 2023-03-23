@@ -1,6 +1,7 @@
 import { TableHighlightFnArgs } from '@acx-ui/components'
-import { Event, noDataDisplay } from '@acx-ui/rc/utils'
+import { Event }                from '@acx-ui/rc/utils'
 import { render, screen }       from '@acx-ui/test-utils'
+import { noDataDisplay }        from '@acx-ui/utils'
 
 import { events, eventsMeta }        from './__tests__/fixtures'
 import { getDescription, valueFrom } from './helpers'
