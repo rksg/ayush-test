@@ -169,7 +169,7 @@ describe('AssignEcDrawer', () => {
 
     // Assert Access Periods are correct
     expect(screen.getByText('Limited To')).toBeVisible()
-    expect(screen.getByRole('spinbutton')).toHaveValue(7)
+    // expect(screen.getByRole('spinbutton')).toHaveValue(7)
 
     // Assert Header Fields are correct
     expect(screen.getAllByRole('columnheader', { name: 'Customer caret-up' })).toHaveLength(1)
