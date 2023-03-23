@@ -318,7 +318,7 @@ export function ApTable (props: ApTableProps) {
         )
       }
     }] as TableProps<APExtended | APExtendedGrouped>['columns']
-  }, [$t, tableQuery?.data?.extra, filterables,releaseTag, searchable,statusFilterOptions])
+  }, [$t, tableQuery.data?.extra])
 
   const isActionVisible = (
     selectedRows: APExtended[],
