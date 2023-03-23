@@ -39,6 +39,7 @@ export function loadMessages (locales: readonly string[]): string {
 
 export function renderPendoAnalyticsTag () {
   const script = document.createElement('script')
+  script.defer = true
   // @ts-ignore
   const key = get('PENDO_API_KEY')
   script.onerror = event => {
