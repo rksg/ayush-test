@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import {
+  CommonUrlsInfo,
   getServiceDetailsLink,
   getServiceRoutePath,
   PortalUrlsInfo,
@@ -18,7 +19,7 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { mockedPortalList } from './__tests__/fixtures'
+import { mockedPortalList, networksResponse } from './__tests__/fixtures'
 
 import PortalTable from '.'
 
@@ -45,10 +46,12 @@ describe('PortalTable', () => {
 
   beforeEach(async () => {
     mockServer.use(
-      rest.get(
-        PortalUrlsInfo.getPortalProfileList.url
-          .replace('?pageSize=:pageSize&page=:page&sort=:sort', ''),
+      rest.post(
+        PortalUrlsInfo.getEnhancedPortalProfileList.url,
         (req, res, ctx) => res(ctx.json({ ...mockedPortalList }))
+      ),
+      rest.post(CommonUrlsInfo.getVMNetworksList.url, (_, res, ctx) =>
+        res(ctx.json(networksResponse))
       ),
       rest.get(PortalUrlsInfo.getPortalLang.url,
         (_, res, ctx) => {
