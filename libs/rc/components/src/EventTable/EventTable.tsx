@@ -16,7 +16,7 @@ import {
   productMapping,
   typeMapping
 } from './mapping'
-import { useExportCsv } from './useExportCSV'
+import { useExportCsv } from './useExportCsv'
 
 interface EventTableProps {
   tableQuery: TableQuery<Event, RequestPayload<unknown>, unknown>,

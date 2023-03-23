@@ -3,7 +3,7 @@ import moment from 'moment-timezone'
 import { Event, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
 import { renderHook }                        from '@acx-ui/test-utils'
 
-import { useExportCsv } from './useExportCSV'
+import { useExportCsv } from './useExportCsv'
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),

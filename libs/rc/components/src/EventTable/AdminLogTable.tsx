@@ -11,7 +11,7 @@ import { TimelineDrawer } from '../TimelineDrawer'
 
 import { filtersFrom, getDescription, getSource, valueFrom } from './helpers'
 import { adminLogTypeMapping, severityMapping }              from './mapping'
-import { useExportCsv }                                      from './useExportCSV'
+import { useExportCsv }                                      from './useExportCsv'
 
 interface AdminLogTableProps {
   tableQuery: TableQuery<AdminLog, RequestPayload<unknown>, unknown>
