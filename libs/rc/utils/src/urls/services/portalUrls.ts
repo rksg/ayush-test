@@ -46,6 +46,7 @@ export const PortalUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getEnhancedPortalProfileList: {
     method: 'post',
-    url: '/portalServiceProfiles/query'
+    url: '/portalServiceProfiles/query',
+    newApi: true
   }
 }
