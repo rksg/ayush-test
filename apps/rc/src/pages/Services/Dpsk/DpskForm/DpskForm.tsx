@@ -5,6 +5,7 @@ import { useIntl } from 'react-intl'
 
 
 import {
+  Loader,
   PageHeader,
   StepsForm,
   StepsFormInstance
@@ -43,7 +44,11 @@ export default function DpskForm (props: DpskFormProps) {
 
   const [ createDpsk ] = useCreateDpskMutation()
   const [ updateDpsk ] = useUpdateDpskMutation()
-  const { data: dataFromServer } = useGetDpskQuery({ params }, { skip: !editMode })
+  const {
+    data: dataFromServer,
+    isLoading,
+    isFetching
+  } = useGetDpskQuery({ params }, { skip: !editMode })
   const formRef = useRef<StepsFormInstance<CreateDpskFormFields>>()
   const initialValues: Partial<CreateDpskFormFields> = {
     passphraseFormat: PassphraseFormatEnum.MOST_SECURED,
@@ -87,20 +92,22 @@ export default function DpskForm (props: DpskFormProps) {
           }
         ]}
       />}
-      <StepsForm<CreateDpskFormFields>
-        formRef={formRef}
-        onCancel={() => modalMode ? modalCallBack?.() : navigate(linkToServices)}
-        onFinish={saveData}
-      >
-        <StepsForm.StepForm<CreateDpskFormFields>
-          name='details'
-          title={$t({ defaultMessage: 'Settings' })}
-          initialValues={initialValues}
-          preserve={modalMode ? false : true}
+      <Loader states={[{ isLoading, isFetching }]}>
+        <StepsForm<CreateDpskFormFields>
+          formRef={formRef}
+          onCancel={() => modalMode ? modalCallBack?.() : navigate(linkToServices)}
+          onFinish={saveData}
         >
-          <DpskSettingsForm />
-        </StepsForm.StepForm>
-      </StepsForm>
+          <StepsForm.StepForm<CreateDpskFormFields>
+            name='details'
+            title={$t({ defaultMessage: 'Settings' })}
+            initialValues={initialValues}
+            preserve={modalMode ? false : true}
+          >
+            <DpskSettingsForm />
+          </StepsForm.StepForm>
+        </StepsForm>
+      </Loader>
     </>
   )
 }

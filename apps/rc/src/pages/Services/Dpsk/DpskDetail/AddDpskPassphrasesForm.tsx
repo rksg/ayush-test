@@ -26,16 +26,14 @@ import {
 } from '@acx-ui/rc/utils'
 import { validationMessages } from '@acx-ui/utils'
 
-import { unlimitedNumberOfDeviceLabel } from './contentsMap'
-import { DpskPassphraseEditMode }       from './DpskPassphraseDrawer'
-import * as UI                          from './styledComponents'
+import { MAX_DEVICES_PER_PASSPHRASE, MAX_PASSPHRASES } from '../constants'
 
-const MAX_PASSPHRASES = 5000
-const MAX_DEVICES_PER_PASSPHRASE = 50
+import { DpskPassphraseEditMode } from './DpskPassphraseDrawer'
+import { FieldSpace }             from './styledComponents'
 
 enum DeviceNumberType {
   LIMITED,
-  UNLIMITED
+  SAME_AS_POOL
 }
 
 export interface AddDpskPassphrasesFormProps {
@@ -71,7 +69,7 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
   useEffect(() => {
     if (serverData && editMode.isEdit && isSuccess) {
       if (!serverData.numberOfDevices) {
-        setDeviceNumberType(DeviceNumberType.UNLIMITED)
+        setDeviceNumberType(DeviceNumberType.SAME_AS_POOL)
       }
       form.setFieldsValue(transferServerDataToFormFields(serverData))
     }
@@ -125,7 +123,7 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
         children={
           <Radio.Group value={deviceNumberType} onChange={onDeviceNumberTypeChange}>
             <Space size={'middle'} direction='vertical'>
-              <UI.FieldSpace>
+              <FieldSpace>
                 <Radio value={DeviceNumberType.LIMITED}>
                   {$t(
                     { defaultMessage: 'Set number (1-{max})' },
@@ -156,9 +154,9 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
                     children={<InputNumber />}
                   />
                 }
-              </UI.FieldSpace>
-              <Radio value={DeviceNumberType.UNLIMITED}>
-                {$t(unlimitedNumberOfDeviceLabel)}
+              </FieldSpace>
+              <Radio value={DeviceNumberType.SAME_AS_POOL}>
+                {$t({ defaultMessage: 'Same as pool' })}
               </Radio>
             </Space>
           </Radio.Group>

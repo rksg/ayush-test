@@ -14,7 +14,8 @@ export interface CreateDpskFormFields {
   passphraseLength: number;
   passphraseFormat: PassphraseFormatEnum;
   expiration: ExpirationDateEntity;
-  policyDefaultAccess?: PolicyDefaultAccess
+  deviceCountLimit?: number;
+  policyDefaultAccess?: PolicyDefaultAccess;
 }
 export interface DpskSaveData {
   id?: string;
@@ -26,6 +27,7 @@ export interface DpskSaveData {
   expirationDate?: string; // If 'expirationType' is SPECIFIED_DATE then this field is the related date in format YYYY-MM-DD.
   networkIds?: string[];
   identityId?: string; // PersonaGroup id - This DPSK had bound with PersonaGroup
+  deviceCountLimit?: number;
   policyDefaultAccess?: boolean;
 }
 export interface NewDpskPassphrase {

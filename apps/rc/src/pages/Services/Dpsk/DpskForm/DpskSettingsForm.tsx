@@ -1,8 +1,13 @@
+import { useState } from 'react'
+
 import {
   Form,
   Input,
   Select,
-  InputNumber
+  InputNumber,
+  Radio,
+  Space,
+  RadioChangeEvent
 } from 'antd'
 import { FormattedMessage } from 'react-intl'
 
@@ -21,10 +26,18 @@ import {
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
+import { MAX_DEVICES_PER_PASSPHRASE } from '../constants'
 import {
   passphraseFormatDescription
 } from '../contentsMap'
+import { unlimitedNumberOfDeviceLabel } from '../DpskDetail/contentsMap'
 
+import { FieldSpace } from './styledComponents'
+
+enum DeviceNumberType {
+  LIMITED,
+  UNLIMITED
+}
 
 export default function DpskSettingsForm () {
   const intl = getIntl()
@@ -46,7 +59,7 @@ export default function DpskSettingsForm () {
     <Option key={key}>{transformDpskNetwork(intl, DpskNetworkType.FORMAT, key)}</Option>
   ))
 
-  return (
+  return (<>
     <GridRow>
       <GridCol col={{ span: 6 }}>
         <StepsForm.Title>{intl.$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
@@ -123,27 +136,81 @@ export default function DpskSettingsForm () {
           inputName={'expiration'}
           label={intl.$t({ defaultMessage: 'Expiration' })}
         />
-        {isCloudpathEnabled && <CloudpathFormItems />}
       </GridCol>
     </GridRow>
-  )
+    {isCloudpathEnabled && <CloudpathFormItems />}
+  </>)
 }
 
 function CloudpathFormItems () {
   const { $t } = getIntl()
+  const [ deviceNumberType, setDeviceNumberType ] = useState(DeviceNumberType.LIMITED)
+
+  const onDeviceNumberTypeChange = (e: RadioChangeEvent) => {
+    setDeviceNumberType(e.target.value)
+  }
 
   return (
-    <Form.Item name='policyDefaultAccess'
-      label={$t({ defaultMessage: 'Default Access' })}
-      initialValue={PolicyDefaultAccess.ACCEPT}
-      rules={[{ required: true }]}
-    >
-      <SelectionControl
-        options={[
-          { value: PolicyDefaultAccess.ACCEPT, label: $t({ defaultMessage: 'ACCEPT' }) },
-          { value: PolicyDefaultAccess.REJECT, label: $t({ defaultMessage: 'REJECT' }) }
-        ]}
-      />
-    </Form.Item>
+    <GridRow>
+      <GridCol col={{ span: 8 }}>
+        <Form.Item
+          label={$t({ defaultMessage: 'Devices allowed per passphrase' })}
+          rules={[{ required: true }]}
+          children={
+            <Radio.Group value={deviceNumberType} onChange={onDeviceNumberTypeChange}>
+              <Space size={'middle'} direction='vertical'>
+                <Radio value={DeviceNumberType.UNLIMITED}>
+                  {$t(unlimitedNumberOfDeviceLabel)}
+                </Radio>
+                <FieldSpace>
+                  <Radio value={DeviceNumberType.LIMITED}>
+                    {$t(
+                      { defaultMessage: 'Limited to...' },
+                      { max: MAX_DEVICES_PER_PASSPHRASE }
+                    )}
+                  </Radio>
+                  {deviceNumberType === DeviceNumberType.LIMITED &&
+                    <Form.Item
+                      name='deviceCountLimit'
+                      initialValue={1}
+                      rules={[
+                        {
+                          required: true,
+                          // eslint-disable-next-line max-len
+                          message: $t({ defaultMessage: 'Please enter Devices allowed per passphrase' })
+                        },
+                        {
+                          type: 'number',
+                          min: 1,
+                          max: MAX_DEVICES_PER_PASSPHRASE,
+                          message: $t(
+                            // eslint-disable-next-line max-len
+                            { defaultMessage: 'Number of Devices allowed per passphrase must be between 1 and {max}' },
+                            { max: MAX_DEVICES_PER_PASSPHRASE }
+                          )
+                        }
+                      ]}
+                      children={<InputNumber />}
+                    />
+                  }
+                </FieldSpace>
+              </Space>
+            </Radio.Group>
+          }
+        />
+        <Form.Item name='policyDefaultAccess'
+          label={$t({ defaultMessage: 'Default Access' })}
+          initialValue={PolicyDefaultAccess.ACCEPT}
+          rules={[{ required: true }]}
+        >
+          <SelectionControl
+            options={[
+              { value: PolicyDefaultAccess.ACCEPT, label: $t({ defaultMessage: 'ACCEPT' }) },
+              { value: PolicyDefaultAccess.REJECT, label: $t({ defaultMessage: 'REJECT' }) }
+            ]}
+          />
+        </Form.Item>
+      </GridCol>
+    </GridRow>
   )
 }
