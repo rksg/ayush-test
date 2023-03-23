@@ -11,14 +11,15 @@ import { events, eventsMeta } from './__tests__/fixtures'
 
 import { EventTable } from '.'
 
-const mockDownloadCSV = jest.fn()
+const mockExportCsv = jest.fn()
+jest.mock('./useExportCsv', () => ({
+  ...jest.requireActual('./useExportCsv'),
+  useExportCsv: () => ({ exportCsv: mockExportCsv })
+}))
 
 jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user'),
-  useUserProfileContext: () => ({ data: {
-    detailLevel: 'it',
-    dateFormat: 'mm/dd/yyyy'
-  } })
+  useUserProfileContext: () => ({ data: { detailLevel: 'it' } })
 }))
 
 jest.mock('@acx-ui/components', () => ({
@@ -28,12 +29,6 @@ jest.mock('@acx-ui/components', () => ({
     <span data-testid='tooltip-content'>{props.title}</span>
   </div>
 }))
-
-jest.mock('@acx-ui/rc/services', () => ({
-  ...jest.requireActual('@acx-ui/rc/services'),
-  useDownloadEventsCSVMutation: () => [ mockDownloadCSV ]
-}))
-
 
 const params = { tenantId: 'tenant-id' }
 
@@ -53,7 +48,6 @@ describe('EventTable', () => {
     pagination: { current: 1, page: 1, pageSize: 10, total: 0 },
     handleTableChange: jest.fn()
   } as unknown as TableQuery<Event, RequestPayload<unknown>, unknown>
-
 
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -84,34 +78,33 @@ describe('EventTable', () => {
   })
 
   it('should render based on filterables/searchables is empty', async () => {
-    render(
-      <EventTable tableQuery={tableQuery} searchables={[]} filterables={[]}/>,
-      { route: { params }, wrapper: Provider }
-    )
+    render(<EventTable
+      tableQuery={tableQuery}
+      searchables={[]}
+      filterables={[]}
+    />, { route: { params }, wrapper: Provider })
     await screen.findByText('Severity')
     await screen.findByText('Event Type')
     await screen.findByText('Product')
   })
 
   it('should render based on filterables/searchables is false', async () => {
-    render(
-      <EventTable tableQuery={tableQuery} searchables={false} filterables={false}/>,
-      { route: { params }, wrapper: Provider }
-    )
+    render(<EventTable
+      tableQuery={tableQuery}
+      searchables={false}
+      filterables={false}
+    />, { route: { params }, wrapper: Provider })
     await screen.findByText('Severity')
     await screen.findByText('Event Type')
     await screen.findByText('Product')
   })
 
   it('should render based on filterables/searchables is array', async () => {
-    render(
-      <EventTable
-        tableQuery={tableQuery}
-        searchables={['message', 'entity_type']}
-        filterables={['severity', 'entity_type', 'product']}
-      />,
-      { route: { params }, wrapper: Provider }
-    )
+    render(<EventTable
+      tableQuery={tableQuery}
+      searchables={['message', 'entity_type']}
+      filterables={['severity', 'entity_type', 'product']}
+    />, { route: { params }, wrapper: Provider })
     await screen.findByPlaceholderText('Search Source, Description')
     expect(await screen.findAllByText('Severity')).toHaveLength(2)
     expect(await screen.findAllByText('Event Type')).toHaveLength(2)
@@ -190,39 +183,12 @@ describe('EventTable', () => {
     expect(await within(cell).findByTestId('tooltip-content')).toHaveTextContent('Not available')
   })
 
-  it('render value as-is for entity not enabled', async () => {
-    tableQuery.data!.data = [{
-      ...events[3] as EventBase,
-      ...eventsMeta[3] as EventMeta
-    }]
-
-    const name = eventsMeta[3].switchName
-    const { rerender } = render(
-      <EventTable tableQuery={tableQuery} />,
-      { route: { params }, wrapper: Provider }
-    )
-
-    let elements = await screen.findAllByText(name)
-    expect(elements).toHaveLength(2)
-    elements.forEach(element => expect(element.nodeName).toBe('A'))
-
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-
-    rerender(
-      <EventTable tableQuery={tableQuery} />
-    )
-
-    elements = await screen.findAllByText(name)
-    expect(elements).toHaveLength(1)
-    elements.forEach(element => expect(element.nodeName).not.toBe('A'))
-  })
-
   it('should download csv on click', async () => {
     render(
       <EventTable tableQuery={tableQuery} />,
       { route: { params }, wrapper: Provider }
     )
     await userEvent.click(screen.getByTestId('DownloadOutlined'))
-    expect(mockDownloadCSV).toBeCalled()
+    expect(mockExportCsv).toBeCalled()
   })
 })

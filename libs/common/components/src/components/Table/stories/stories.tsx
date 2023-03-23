@@ -12,6 +12,7 @@ import { MultipleSorterTable }        from './MultipleSorterTable'
 import { MultiSelectTable }           from './MultiSelectTable'
 import { NoSelectedBarTable }         from './NoSelectedBarTable'
 import { SingleSelectTable }          from './SingleSelectTable'
+import { TableWithOptionButton }      from './TableWithOptionButton'
 
 storiesOf('Table', module)
   .add('Basic', BasicTable)
@@ -26,4 +27,5 @@ storiesOf('Table', module)
   .add('Compact Table With Borders in Rows', CompactTableWithBorders)
   .add('Form Table', FormTable)
   .add('Group Table', GroupTable)
+  .add('Table With Option Button', TableWithOptionButton)
 export {}

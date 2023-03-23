@@ -12,19 +12,10 @@ import { AdminLogTable } from '.'
 
 const params = { tenantId: 'tenant-id' }
 
-const mockDownloadCSV = jest.fn()
-
-jest.mock('@acx-ui/user', () => ({
-  ...jest.requireActual('@acx-ui/user'),
-  useUserProfileContext: () => ({ data: {
-    detailLevel: 'it',
-    dateFormat: 'mm/dd/yyyy'
-  } })
-}))
-
-jest.mock('@acx-ui/rc/services', () => ({
-  ...jest.requireActual('@acx-ui/rc/services'),
-  useDownloadEventsCSVMutation: () => [ mockDownloadCSV ]
+const mockExportCsv = jest.fn()
+jest.mock('./useExportCsv', () => ({
+  ...jest.requireActual('./useExportCsv'),
+  useExportCsv: () => ({ exportCsv: mockExportCsv })
 }))
 
 describe('AdminLogTable', () => {
@@ -83,6 +74,6 @@ describe('AdminLogTable', () => {
       { route: { params }, wrapper: Provider }
     )
     await userEvent.click(screen.getByTestId('DownloadOutlined'))
-    expect(mockDownloadCSV).toBeCalled()
+    expect(mockExportCsv).toBeCalled()
   })
 })

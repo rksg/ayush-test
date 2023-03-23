@@ -348,17 +348,10 @@ export const Header = styled.div`
   display: flex;
   justify-content: space-between;
 `
-export const HeaderLeft = styled.div`
-  text-align: right;
-`
-
-export const HeaderRight = styled.div`
-  padding-left: 10px;
-`
 
 export const HeaderComps = styled.div`
   display: flex;
-  justify-content: flex-end;
+  gap: 10px;
 `
 
 export const Wrapper = styled.div<StyledTable>`

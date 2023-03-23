@@ -1,22 +1,17 @@
 import { useEffect, useState } from 'react'
 
-import _                          from 'lodash'
-import moment                     from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps, Button, Filter } from '@acx-ui/components'
-import { DateFormatEnum, formatter }                 from '@acx-ui/formatter'
-import { DownloadOutlined }                          from '@acx-ui/icons'
-import { useDownloadEventsCSVMutation }              from '@acx-ui/rc/services'
-import { AdminLog, RequestPayload, TableQuery }      from '@acx-ui/rc/utils'
-import { useParams }                                 from '@acx-ui/react-router-dom'
-import { useUserProfileContext }                     from '@acx-ui/user'
-import { useDateFilter }                             from '@acx-ui/utils'
+import { Loader, Table, TableProps, Button }    from '@acx-ui/components'
+import { DateFormatEnum, formatter }            from '@acx-ui/formatter'
+import { DownloadOutlined }                     from '@acx-ui/icons'
+import { AdminLog, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 
 import { filtersFrom, getDescription, getSource, valueFrom } from './helpers'
 import { adminLogTypeMapping, severityMapping }              from './mapping'
+import { useExportCsv }                                      from './useExportCSV'
 
 interface AdminLogTableProps {
   tableQuery: TableQuery<AdminLog, RequestPayload<unknown>, unknown>
@@ -26,11 +21,11 @@ const AdminLogTable = ({ tableQuery }: AdminLogTableProps) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const [current, setCurrent] = useState<AdminLog>()
-  const [ downloadCsv ] = useDownloadEventsCSVMutation()
-  const params = useParams()
-  const { data: userProfileData } = useUserProfileContext()
-  const { startDate, endDate } = useDateFilter()
-  const tableData = tableQuery.data?.data ?? []
+  const { exportCsv, disabled } = useExportCsv<AdminLog>(
+    tableQuery,
+    ['event_datetime', 'severity', 'entity_type', 'entity_id', 'message']
+  )
+
   useEffect(() => { setVisible(false) },[tableQuery.data?.data])
 
   const columns: TableProps<AdminLog>['columns'] = [
@@ -107,40 +102,16 @@ const AdminLogTable = ({ tableQuery }: AdminLogTableProps) => {
     }
   ]
 
-  const payload = {
-    clientDateFormat: userProfileData.dateFormat.replace('mm', 'MM'),
-    clientTimeZone: moment.tz.guess(),
-    detailLevel: userProfileData.detailLevel,
-    eventsPeriodForExport: {
-      fromTime: moment.utc(startDate).format('YYYY-MM-DDTHH:mm:ss[Z]'),
-      toTime: moment.utc(endDate).format('YYYY-MM-DDTHH:mm:ss[Z]')
-    },
-    fields: ['event_datetime', 'severity', 'entity_type', 'entity_id', 'message'],
-    filters: _.omit(tableQuery?.payload?.filters as Filter, ['fromTime', 'toTime']),
-    isSupport: false,
-    searchString: tableQuery?.payload?.searchString as string,
-    searchTargetFields: tableQuery?.payload?.searchTargetFields as string[],
-    sortField: 'event_datetime',
-    sortOrder: 'DESC',
-    tenantId: params.tenantId!
-  }
-
-  const exportButton = {
-    icon: <DownloadOutlined />,
-    disabled: !(tableData && tableData.length > 0),
-    onClick: () => downloadCsv(payload)
-  }
-
   return <Loader states={[tableQuery]}>
     <Table
       rowKey='id'
       columns={columns}
-      dataSource={tableData}
+      dataSource={tableQuery.data?.data ?? []}
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
       onFilterChange={tableQuery.handleFilterChange}
       enableApiFilter={true}
-      headerButton={exportButton}
+      optionButton={{ icon: <DownloadOutlined />, disabled, onClick: exportCsv }}
     />
     {visible && <TimelineDrawer
       title={defineMessage({ defaultMessage: 'Log Details' })}

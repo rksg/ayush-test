@@ -1,5 +1,7 @@
 import { omit } from 'lodash'
 
+import { DownloadOutlined } from '@acx-ui/icons'
+
 import { Table, TableProps } from '..'
 import { showToast }         from '../../Toast'
 
@@ -225,6 +227,10 @@ export function FilteredTable () {
       rowActions={rowActions}
       dataSource={data}
       rowSelection={{ defaultSelectedRowKeys: [] }}
+      optionButton={{
+        icon: <DownloadOutlined />,
+        onClick: () => console.log('Option Button Clicked!') // eslint-disable-line no-console
+      }}
     />
     without selection:
     <Table<RecordType>
