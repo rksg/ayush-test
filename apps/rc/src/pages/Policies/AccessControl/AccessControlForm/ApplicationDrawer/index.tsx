@@ -127,11 +127,11 @@ export const GenDetailsContent = (props: { editRow: ApplicationsRule }) => {
       return <span>{ $t({
         // eslint-disable-next-line max-len
         defaultMessage: 'Uplink marking: {uplinkStrategy} ({uplinkValue}) | Downlink priority: {downlinkValue}' }, {
-        uplinkStrategy: editRow.ruleSettings.markingPriority ? $t(appRateStrategyLabelMapping[
-          editRow.ruleSettings.markingPriority as RateStrategyEnum
+        uplinkStrategy: editRow.ruleSettings.markingPriority ? $t(appRateTypeLabelMapping[
+          editRow.ruleSettings.markingPriority as RateTypeEnum
         ]) : '',
-        uplinkValue: editRow.ruleSettings.upLinkMarkingType ? $t(appRateTypeLabelMapping[
-          editRow.ruleSettings.upLinkMarkingType as RateTypeEnum
+        uplinkValue: editRow.ruleSettings.upLinkMarkingType ? $t(appRateStrategyLabelMapping[
+          editRow.ruleSettings.upLinkMarkingType as RateStrategyEnum
         ]) : '',
         downlinkValue: editRow.ruleSettings.downLinkMarkingType ? $t(appRateStrategyLabelMapping[
           editRow.ruleSettings.downLinkMarkingType as RateStrategyEnum
@@ -276,9 +276,9 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   }
 
   useEffect(() => {
-    if (!isOnlyViewMode && (applicationPolicyId === '' || applicationPolicyId === undefined)) {
-      setSkipFetch(false)
-    }
+    setSkipFetch(
+      !isOnlyViewMode && (applicationPolicyId === '' || applicationPolicyId === undefined)
+    )
   }, [isOnlyViewMode, applicationPolicyId])
 
   useEffect(() => {
@@ -404,9 +404,14 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       const updateId = applicationsRuleList.findIndex(
         rule => rule.priority === applicationsRule.priority
       )
+      let ruleId = {} as { id?: string }
+      if (applicationsRuleList[updateId].id) {
+        ruleId.id = applicationsRuleList[updateId].id
+      }
       applicationsRuleList[updateId] = {
+        ...ruleId,
         ...ruleObject,
-        priority: updateId
+        priority: updateId + 1
       }
       setApplicationsRuleList([...applicationsRuleList])
     } else {
