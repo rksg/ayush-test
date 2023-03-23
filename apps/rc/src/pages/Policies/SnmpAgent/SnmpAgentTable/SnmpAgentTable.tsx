@@ -1,5 +1,5 @@
 import _                                from 'lodash'
-import { useIntl }                      from 'react-intl'
+import { IntlShape, useIntl }           from 'react-intl'
 import { Path, useNavigate, useParams } from 'react-router-dom'
 
 import { Button, ColumnType, Loader, PageHeader, showActionModal, Table, TableProps, Tooltip } from '@acx-ui/components'
@@ -19,6 +19,7 @@ import { filterByAccess }            from '@acx-ui/user'
 const defaultPayload = {
   searchString: '',
   fields: [ 'id', 'name', 'v2Agents', 'v3Agents', 'venues', 'aps', 'tags' ],
+  searchTargetFields: ['name', 'v2Agents.name', 'v3Agents.name', 'venues.name', 'aps.name'],
   sortField: 'name',
   sortOrder: 'ASC',
   page: 1,
@@ -66,7 +67,10 @@ export default function SnmpAgentTable () {
 
   const tableQuery = useTableQuery({
     useQuery: useGetApSnmpViewModelQuery,
-    defaultPayload
+    defaultPayload,
+    search: {
+      searchTargetFields: defaultPayload.searchTargetFields as string[]
+    }
   })
 
   const [ deleteFn ] = useDeleteApSnmpPolicyMutation()
@@ -121,14 +125,14 @@ export default function SnmpAgentTable () {
         title={
           $t(
             { defaultMessage: 'SNMP Agent {count}' },
-            { count: (tableQuery.data)? `(${tableQuery.data.totalCount})` : '' }
+            { count: (list)? `(${list.totalCount})` : '' }
           )
         }
         breadcrumb={[
           // eslint-disable-next-line max-len
           { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) }
         ]}
-        extra={((tableQuery?.data?.totalCount as number) < 64) && filterByAccess([
+        extra={((list?.totalCount as number) < 64) && filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.CREATE })} key='add'>
             <Button type='primary'>
@@ -154,16 +158,31 @@ export default function SnmpAgentTable () {
   )
 }
 
-export function renderToListTooltip (data: SnmpColumnData) {
+export function renderToListTooltip ({ $t }: IntlShape, data: SnmpColumnData, maxShow = 25) {
   const { count, names } = data || {}
-  const tootipTitle = names?.map(n => <div>{n}</div>) || ''
-  return (count)? <Tooltip title={tootipTitle} placement='bottom'>{count}</Tooltip> : 0
+  const namesLen = (names && names.length) || 0
+
+  if (namesLen > 0) {
+    const truncateData = names.slice(0, maxShow-1)
+
+    if (namesLen > maxShow) {
+      truncateData.push(
+        $t({ defaultMessage: 'And {total} more...' },
+          { total: namesLen - maxShow })
+      )
+    }
+    const tootipTitle = truncateData.map(n => <div>{n}</div>)
+    return <Tooltip title={tootipTitle} placement='bottom'>{count}</Tooltip>
+  }
+
+  return count
 }
 
 function useColumns (
   searchable?: boolean,
   filterables?: { [key: string]: ColumnType['filterable'] }) {
-  const { $t } = useIntl()
+  const intl = useIntl()
+  const { $t } = intl
 
   const columns: TableProps<ApSnmpViewModelData>['columns'] = [
     {
@@ -192,7 +211,7 @@ function useColumns (
       dataIndex: 'v2Agents',
       align: 'center',
       render: function (data, row) {
-        return renderToListTooltip(row.v2Agents)
+        return renderToListTooltip(intl, row.v2Agents)
       }
     },
     {
@@ -201,7 +220,7 @@ function useColumns (
       dataIndex: 'v3Agents',
       align: 'center',
       render: function (data, row) {
-        return renderToListTooltip(row.v3Agents)
+        return renderToListTooltip(intl, row.v3Agents)
       }
     },
     {
@@ -212,7 +231,7 @@ function useColumns (
       filterKey: 'venues.name.keyword',
       filterable: filterables ? filterables['venues'] : false,
       render: function (data, row) {
-        return renderToListTooltip(row.venues)
+        return renderToListTooltip(intl, row.venues)
       }
     },
     {
@@ -221,7 +240,7 @@ function useColumns (
       dataIndex: 'aps',
       align: 'center',
       render: function (data, row) {
-        return renderToListTooltip(row.aps)
+        return renderToListTooltip(intl, row.aps)
       }
     }/*,
     {

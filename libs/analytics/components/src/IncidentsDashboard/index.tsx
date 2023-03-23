@@ -3,8 +3,8 @@ import AutoSizer                  from 'react-virtualized-auto-sizer'
 
 import { IncidentFilter }                                                        from '@acx-ui/analytics/utils'
 import { HistoricalCard, Loader, StackedBarChart, NoActiveData }                 from '@acx-ui/components'
+import { intlFormats }                                                           from '@acx-ui/formatter'
 import { NavigateFunction, Path, useNavigate, useNavigateToPath, useTenantLink } from '@acx-ui/react-router-dom'
-import { intlFormats }                                                           from '@acx-ui/utils'
 
 import {
   IncidentsBySeverityDataKey,
@@ -86,7 +86,7 @@ export function IncidentsDashboard ({ filters }: { filters: IncidentFilter }) {
       <AutoSizer>
         {({ width, height }) => (
           noData
-            ? <NoActiveData text={$t({ defaultMessage: 'No active incidents' })} />
+            ? <NoActiveData text={$t({ defaultMessage: 'No reported incidents' })} />
             : <UI.Container style={{ width, height }}>
               <UI.SeveritiesContainer>
                 {headers.map((datum, index) => <IncidentSeverityWidget key={index} data={datum} />)}

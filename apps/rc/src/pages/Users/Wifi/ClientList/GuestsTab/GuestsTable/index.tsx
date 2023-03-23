@@ -16,6 +16,7 @@ import {
   Loader
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { CsvSize, ImportFileDrawer } from '@acx-ui/rc/components'
 import {
   useGetGuestsListQuery,
@@ -31,14 +32,17 @@ import {
   Network,
   NetworkTypeEnum,
   GuestNetworkTypeEnum,
-  RequestPayload
+  RequestPayload,
+  FILTER,
+  SEARCH
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                         from '@acx-ui/types'
 import { GuestErrorRes, hasAccess, hasRoles }                from '@acx-ui/user'
-import { getIntl  }                                          from '@acx-ui/utils'
+import { DateRange, getIntl  }                               from '@acx-ui/utils'
 
 import NetworkForm                           from '../../../../../Networks/wireless/NetworkForm/NetworkForm'
+import { GuestDateFilter }                   from '../../PageHeader'
 import { defaultGuestPayload, GuestsDetail } from '../GuestsDetail'
 import { GenerateNewPasswordModal }          from '../GuestsDetail/generateNewPasswordModal'
 import { useGuestActions }                   from '../GuestsDetail/guestActions'
@@ -64,24 +68,45 @@ const defaultGuestNetworkPayload = {
   url: '/api/viewmodel/tenant/{tenantId}/network'
 }
 
-export const GuestsTable = () => {
+export const GuestsTable = (props: { dateFilter: GuestDateFilter }) => {
   const { $t } = useIntl()
   const params = useParams()
   const isServicesEnabled = useIsSplitOn(Features.SERVICES)
   const isReadOnly = hasRoles(RolesEnum.READ_ONLY)
+  const { startDate, endDate, range } = props.dateFilter
 
   const tableQuery = useTableQuery({
     useQuery: useGetGuestsListQuery,
     defaultPayload: {
       ...defaultGuestPayload,
       filters: {
-        includeExpired: ['true']
+        includeExpired: ['true'],
+        ...(range === DateRange.allTime ? {} : {
+          fromTime: [moment(startDate).utc().format()],
+          toTime: [moment(endDate).utc().format()]
+        })
       }
     },
     search: {
       searchTargetFields: ['name', 'mobilePhoneNumber', 'emailAddress']
     }
   })
+
+  useEffect(()=>{
+    const payload = tableQuery.payload as { filters?: Record<string, string[]> }
+    let customPayload = {
+      ...tableQuery.payload,
+      filters: {
+        ..._.omit(payload.filters, ['fromTime', 'toTime']),
+        includeExpired: ['true'],
+        ...(range === DateRange.allTime ? {} : {
+          fromTime: [moment(startDate).utc().format()],
+          toTime: [moment(endDate).utc().format()]
+        })
+      }
+    }
+    tableQuery.setPayload(customPayload)
+  }, [startDate, endDate, range])
 
   const networkListQuery = useTableQuery<Network, RequestPayload<unknown>, unknown>({
     useQuery: useNetworkListQuery,
@@ -201,8 +226,7 @@ export const GuestsTable = () => {
             setVisible(true)
           }}
         >
-          {/* TODO: Wait for framework support userprofile-format dateTimeFormats */}
-          {moment(row.creationDate).format('DD/MM/YYYY HH:mm')}
+          {formatter(DateFormatEnum.DateTimeFormat)(row.creationDate)}
         </Button>
     },
     {
@@ -240,6 +264,7 @@ export const GuestsTable = () => {
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'guestType',
       filterable: guestTypeFilterOptions,
+      filterMultiple: false,
       sorter: true,
       render: function (data, row) {
         return renderGuestType(row.guestType)
@@ -339,6 +364,12 @@ export const GuestsTable = () => {
     }
   ]
 
+  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
+    if (customFilters.guestType?.includes('SelfSign')) {
+      customFilters.guestType.push('HostGuest')
+    }
+    tableQuery.handleFilterChange(customFilters,customSearch)
+  }
 
   return (
     <Loader states={[
@@ -353,7 +384,7 @@ export const GuestsTable = () => {
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
-        onFilterChange={tableQuery.handleFilterChange}
+        onFilterChange={handleFilterChange}
         enableApiFilter={true}
         rowKey='id'
         rowActions={rowActions}
@@ -384,7 +415,8 @@ export const GuestsTable = () => {
             case 'addGuestNetwork':
               return hasRoles([RolesEnum.ADMINISTRATOR, RolesEnum.PRIME_ADMIN])
             case 'importFromFile':
-              return true
+              return hasRoles([RolesEnum.ADMINISTRATOR,
+                RolesEnum.PRIME_ADMIN,RolesEnum.GUEST_MANAGER])
             default:
               return false
           }
@@ -465,8 +497,7 @@ export const renderExpires = function (row: Guest) {
   const { $t } = getIntl()
   let expiresTime = ''
   if (row.expiryDate && row.expiryDate !== '0') {
-    // TODO: Wait for framework support userprofile-format dateTimeFormats
-    expiresTime = moment(row.expiryDate).format('DD/MM/YYYY HH:mm')
+    expiresTime = formatter(DateFormatEnum.DateTimeFormat)(row.expiryDate)
   } else if (!row.expiryDate || row.expiryDate === '0') {
     let result = ''
     if (row.passDurationHours) {
@@ -497,9 +528,6 @@ export const renderGuestType = (value: string) => {
       result = $t({ defaultMessage: 'Managed' })
       break
     case GuestTypesEnum.SELF_SIGN_IN:
-      result = $t({ defaultMessage: 'Self Sign In' })
-      break
-    case GuestTypesEnum.HOST_GUEST:
       result = $t({ defaultMessage: 'Self Sign In' })
       break
     default:

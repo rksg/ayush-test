@@ -261,7 +261,7 @@ export function MspEcDropdownList () {
 
       <Table
         columns={customerColumns}
-        dataSource={tableQueryMspEc.data?.data}
+        dataSource={tableQueryMspEc.data?.data.filter(mspEc => mspEc.id !== params.tenantId)}
         pagination={tableQueryMspEc.pagination}
         onChange={tableQueryMspEc.handleTableChange}
         onFilterChange={tableQueryMspEc.handleFilterChange}
@@ -275,7 +275,7 @@ export function MspEcDropdownList () {
 
       <Table
         columns={customerColumns}
-        dataSource={tableQueryIntegrator.data?.data}
+        dataSource={tableQueryIntegrator.data?.data.filter(mspEc => mspEc.id !== params.tenantId)}
         pagination={tableQueryIntegrator.pagination}
         onChange={tableQueryIntegrator.handleTableChange}
         onFilterChange={tableQueryIntegrator.handleFilterChange}
@@ -289,7 +289,7 @@ export function MspEcDropdownList () {
 
       <Table
         columns={supportColumns}
-        dataSource={tableQueryVarRec.data?.data}
+        dataSource={tableQueryVarRec.data?.data.filter(mspEc => mspEc.id !== params.tenantId)}
         pagination={tableQueryVarRec.pagination}
         onChange={tableQueryVarRec.handleTableChange}
         onFilterChange={tableQueryVarRec.handleFilterChange}
@@ -303,7 +303,7 @@ export function MspEcDropdownList () {
 
       <Table
         columns={supportColumns}
-        dataSource={tableQuerySupport.data?.data}
+        dataSource={tableQuerySupport.data?.data.filter(mspEc => mspEc.id !== params.tenantId)}
         pagination={tableQuerySupport.pagination}
         onChange={tableQuerySupport.handleTableChange}
         onFilterChange={tableQuerySupport.handleFilterChange}
@@ -317,7 +317,7 @@ export function MspEcDropdownList () {
 
       <Table
         columns={customerColumns}
-        dataSource={tableQuerySupportEc.data?.data}
+        dataSource={tableQuerySupportEc.data?.data.filter(mspEc => mspEc.id !== params.tenantId)}
         pagination={tableQuerySupportEc.pagination}
         onChange={tableQuerySupportEc.handleTableChange}
         onFilterChange={tableQuerySupportEc.handleFilterChange}

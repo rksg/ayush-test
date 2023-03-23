@@ -17,6 +17,22 @@ export interface AclOptionType {
   value: string
 }
 
+export interface EnhancedAccessControlInfoType {
+  id: string,
+  name: string,
+  l2AclPolicyName: string,
+  l2AclPolicyId: string,
+  l3AclPolicyName: string,
+  l3AclPolicyId: string,
+  devicePolicyName: string,
+  devicePolicyId: string,
+  applicationPolicyName: string,
+  applicationPolicyId: string,
+  clientRateUpLinkLimit: number,
+  clientRateDownLinkLimit: number,
+  networkIds: string[]
+}
+
 export interface AccessControlInfoType {
   id: string,
   name: string,
@@ -76,10 +92,14 @@ export interface L3Rule {
   description: string,
   destination: {
     enableIpSubnet: boolean,
+    subnet?: string,
+    ip?: string,
     port: string
   },
   priority: number,
   source: {
+    subnet?: string,
+    ip?: string,
     enableIpSubnet: boolean
   },
   protocol?: string
@@ -99,7 +119,9 @@ export interface AppRule {
   id: string,
   name: string,
   priority: number,
-  ruleType: string
+  ruleType: string,
+  uplink?: number,
+  downlink?: number
 }
 
 export interface AvcCategory {

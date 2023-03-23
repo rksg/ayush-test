@@ -128,7 +128,7 @@ export function ApSnmp () {
         width='max-content'
         style={{ height: '48px', display: 'flex', alignItems: 'center' }}
       >
-        <span>{$t({ defaultMessage: 'AP SNMP' })}</span>
+        <span>{$t({ defaultMessage: 'Use AP SNMP' })}</span>
         <Switch
           data-testid='ApSnmp-switch'
           checked={stateOfEnableApSnmp}
@@ -151,7 +151,7 @@ export function ApSnmp () {
           })}
           style={{ width: '200px' }}
         />
-        <TenantLink
+        {((RetrievedVenueApSnmpAgentList?.data?.length as number) < 64) && <TenantLink
           to={getPolicyRoutePath({
             type: PolicyType.SNMP_AGENT,
             oper: PolicyOperation.CREATE
@@ -159,7 +159,7 @@ export function ApSnmp () {
           style={{ marginLeft: '20px' }}
         >
           {$t({ defaultMessage: 'Add SNMP Agent' })}
-        </TenantLink>
+        </TenantLink>}
       </Form.Item>}
     </Space>
   </Loader>)

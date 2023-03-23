@@ -4,11 +4,12 @@ import { Form }                   from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
 import { useNavigate }            from 'react-router-dom'
 
-import { noDataSymbol, sortProp, defaultSort, dateSort }                from '@acx-ui/analytics/utils'
+import { sortProp, defaultSort, dateSort }                              from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Table, showActionModal, showToast, Modal } from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                    from '@acx-ui/formatter'
 import { TenantLink, useTenantLink }                                    from '@acx-ui/react-router-dom'
 import { useUserProfileContext }                                        from '@acx-ui/user'
-import { formatter }                                                    from '@acx-ui/utils'
+import { noDataDisplay }                                                from '@acx-ui/utils'
 
 import * as contents      from '../contents'
 import { TestName }       from '../NetworkHealthForm/FormItems'
@@ -205,8 +206,8 @@ export function NetworkHealthTable () {
       title: $t(defineMessage({ defaultMessage: 'Last Run' })),
       dataIndex: ['latestTest', 'createdAt'],
       render: (_, row) => row.latestTest?.createdAt
-        ? formatter('dateTimeFormatWithSeconds')(row.latestTest?.createdAt)
-        : noDataSymbol,
+        ? formatter(DateFormatEnum.DateTimeFormatWithSeconds)(row.latestTest?.createdAt)
+        : noDataDisplay,
       sorter: { compare: sortProp('latestTest.createdAt', dateSort) }
     },
     {
@@ -236,7 +237,7 @@ export function NetworkHealthTable () {
         rowActions={rowActions}
         rowKey='id'
         showSorterTooltip={false}
-        columnEmptyText={noDataSymbol}
+        columnEmptyText={noDataDisplay}
       />
       {cloneModal}
     </Loader>

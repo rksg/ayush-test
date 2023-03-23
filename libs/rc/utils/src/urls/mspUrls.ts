@@ -4,7 +4,9 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   // TODO Need Owner to check it
   getMspCustomersList: {
     method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/mspeclist'
+    url: '/mspecs/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/mspeclist',
+    newApi: true
   },
   getMspDeviceInventory: {
     method: 'post',
@@ -195,7 +197,7 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   },
   assignMspEcToIntegrator: {
     method: 'post',
-    // method: 'patch',
+    // method: 'PATCH',
     // url: '/mspCustomers/:mspEcTenantId/delegations'
     url: '/api/mspservice/tenant/assign/:mspIntegratorId'
   },
@@ -214,13 +216,13 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   deactivateMspEcAccount: {
-    // method: 'patch',
+    // method: 'PATCH',
     // url: /mspCustomers/:mspEcTenantId
     method: 'post',
     url: '/api/mspservice/tenant/:mspEcTenantId/deactivation'
   },
   reactivateMspEcAccount: {
-    // method: 'patch',
+    // method: 'PATCH',
     // url: /mspCustomers/:mspEcTenantId
     method: 'post',
     url: '/api/mspservice/tenant/:mspEcTenantId/reactivation'

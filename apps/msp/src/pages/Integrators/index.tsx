@@ -13,7 +13,8 @@ import {
 } from '@acx-ui/components'
 import {
   AssignEcDrawer,
-  ResendInviteModal
+  ResendInviteModal,
+  ManageAdminsDrawer
 } from '@acx-ui/msp/components'
 import {
   useDeleteMspEcMutation,
@@ -53,8 +54,10 @@ const defaultPayload = {
 
 export function Integrators () {
   const { $t } = useIntl()
+  const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
+  const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerEcVisible, setDrawerEcVisible] = useState(false)
   const [modalVisible, setModalVisible] = useState(false)
   const [tenantId, setTenantId] = useState('')
@@ -76,7 +79,7 @@ export function Integrators () {
       }
     },
     {
-      title: $t({ defaultMessage: 'Account Type' }),
+      title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'tenantType',
       key: 'tenantType',
       sorter: true,
@@ -86,46 +89,56 @@ export function Integrators () {
       }
     },
     {
-      title: $t({ defaultMessage: 'Customers Assigned' }),
+      title: $t({ defaultMessage: 'MSP Admin Count' }),
+      dataIndex: 'mspAdminCount',
+      align: 'center',
+      key: 'mspAdminCount',
+      sorter: true,
+      onCell: (data) => {
+        return (isPrimeAdmin || isAdmin) ? {
+          onClick: () => {
+            setTenantId(data.id)
+            setDrawerAdminVisible(true)
+          }
+        } : {}
+      },
+      render: function (data) {
+        return (
+          (isPrimeAdmin || isAdmin) ? <Link to=''>{data}</Link> : data
+        )
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Assigned Customers Count' }),
       dataIndex: 'assignedMspEcList',
+      align: 'center',
       key: 'assignedMspEcList',
       sorter: true,
       onCell: (data) => {
-        return {
+        return (isPrimeAdmin || isAdmin) ? {
           onClick: () => {
             setTenantId(data.id)
             setTenantType(data.tenantType)
             if (!drawerEcVisible) setDrawerEcVisible(true)
           }
-        }
+        } : {}
       },
       render: function (data, row) {
-        return <Link to=''>{transformAssignedCustomerCount(row)}</Link>
+        return (isPrimeAdmin || isAdmin)
+          ? <Link to=''>{transformAssignedCustomerCount(row)}</Link>
+          : transformAssignedCustomerCount(row)
       }
     },
     {
-      title: $t({ defaultMessage: 'MSP Admins' }),
-      dataIndex: 'mspAdminCount',
-      key: 'mspAdminCount',
-      sorter: true
-    },
-    {
-      title: $t({ defaultMessage: 'Account Admins' }),
+      title: $t({ defaultMessage: 'Account Admin Count' }),
       dataIndex: 'mspEcAdminCount',
+      align: 'center',
       key: 'mspEcAdminCount',
-      sorter: true
-    },
-    {
-      title: $t({ defaultMessage: 'Active Incidents' }),
-      dataIndex: 'activeIncidents',
-      key: 'activeIncidents',
       sorter: true,
-      render: function () {
-        return '0'
-      }
+      show: false
     },
     {
-      title: $t({ defaultMessage: 'Tenant Id' }),
+      title: $t({ defaultMessage: 'Tenant ID' }),
       dataIndex: 'id',
       key: 'id',
       sorter: true
@@ -173,7 +186,7 @@ export function Integrators () {
             type: 'confirm',
             customContent: {
               action: 'DELETE',
-              entityName: $t({ defaultMessage: 'Integrator' }),
+              entityName: $t({ defaultMessage: 'Tech Partner' }),
               entityValue: name,
               confirmationText: $t({ defaultMessage: 'Delete' })
             },
@@ -205,25 +218,32 @@ export function Integrators () {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: '3rd Party' })}
+        title={$t({ defaultMessage: 'Tech Partners' })}
         extra={isAdmin ?
           [
             <TenantLink to='/dashboard'>
-              <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
+              <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
             </TenantLink>,
             <MspTenantLink to='/integrators/create'>
-              <Button type='primary'>{$t({ defaultMessage: 'Add' })}</Button>
+              <Button type='primary'>{$t({ defaultMessage: 'Add Tech Partner' })}</Button>
             </MspTenantLink>
           ]
           : [<TenantLink to='/dashboard'>
-            <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
+            <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
           </TenantLink>
           ]}
       />
       <IntegratorssTable />
+      {drawerAdminVisible && <ManageAdminsDrawer
+        visible={drawerAdminVisible}
+        setVisible={setDrawerAdminVisible}
+        setSelected={() => {}}
+        tenantId={tenantId}
+      />}
       {setDrawerEcVisible && <AssignEcDrawer
         visible={drawerEcVisible}
         setVisible={setDrawerEcVisible}
+        setSelected={() => {}}
         tenantId={tenantId}
         tenantType={tenantType}
       />}

@@ -4,7 +4,7 @@ import { Table, TableProps, Loader, ColumnType } from '@acx-ui/components'
 import { useGetSwitchClientListQuery }           from '@acx-ui/rc/services'
 import {
   SwitchClient,
-  useTableQuery,
+  usePollingTableQuery,
   SWITCH_CLIENT_TYPE,
   TableQuery,
   RequestPayload
@@ -36,13 +36,13 @@ export function ClientsTable (props: {
       params.venueId ? { venueId: [params.venueId] } : {}
 
 
-  const inlineTableQuery = useTableQuery({
+  const inlineTableQuery = usePollingTableQuery({
     useQuery: useGetSwitchClientListQuery,
     defaultPayload: {
-      ...defaultSwitchClientPayload,
-      search: {
-        searchTargetFields: defaultSwitchClientPayload.searchTargetFields
-      }
+      ...defaultSwitchClientPayload
+    },
+    search: {
+      searchTargetFields: defaultSwitchClientPayload.searchTargetFields
     },
     option: { skip: !!props.tableQuery }
   })
@@ -50,20 +50,20 @@ export function ClientsTable (props: {
 
   function getCols (intl: ReturnType<typeof useIntl>) {
     const columns: TableProps<SwitchClient>['columns'] = [{
+      key: 'clientName',
+      title: intl.$t({ defaultMessage: 'Hostname' }),
+      dataIndex: 'clientName',
+      sorter: true,
+      render: (data, row) => {
+        return <TenantLink to={`users/switch/clients/${row.id}`}>{data || '--'}</TenantLink>
+      }
+    },
+    {
       key: 'clientMac',
       title: intl.$t({ defaultMessage: 'MAC Address' }),
       dataIndex: 'clientMac',
       sorter: true,
       searchable: searchable,
-      render: (data, row) => {
-        const name = data ? data.toString().toUpperCase() : '--'
-        return <TenantLink to={`users/switch/clients/${row.id}`}>{name}</TenantLink>
-      }
-    }, {
-      key: 'clientName',
-      title: intl.$t({ defaultMessage: 'Hostname' }),
-      dataIndex: 'clientName',
-      sorter: true,
       render: (data) => {
         return data || '--'
       }

@@ -1,7 +1,6 @@
 import userEvent from '@testing-library/user-event'
 
-import { networkHealthApiURL }              from '@acx-ui/analytics/services'
-import { Provider }                         from '@acx-ui/store'
+import { networkHealthApiURL, Provider }    from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
 import { fetchServiceGuardRelatedTests } from '../../__tests__/fixtures'
@@ -24,10 +23,10 @@ describe('ReRunButton', () => {
       route: { params: { tenantId: 't-id', testId: '1' } }
     })
 
-    expect(await screen.findByText('Feb 14 2023 00:00:00')).toBeVisible()
+    expect(await screen.findByText('02/14/2023 00:00:00')).toBeVisible()
 
     await userEvent.click(await screen.findByText('Test Time'))
-    expect(screen.getByText('Feb 15 2023 00:00:00')).toBeTruthy()
+    expect(screen.getByText('02/15/2023 00:00:00')).toBeTruthy()
   })
   it('should handle when no test data', async () => {
     mockGraphqlQuery(
@@ -36,6 +35,6 @@ describe('ReRunButton', () => {
       wrapper: Provider,
       route: { params: { tenantId: 't-id', testId: '1' } }
     })
-    expect(await screen.findByText('-')).toBeVisible()
+    expect(await screen.findByText('--')).toBeVisible()
   })
 })

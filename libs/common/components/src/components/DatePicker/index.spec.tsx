@@ -4,12 +4,12 @@ import userEvent          from '@testing-library/user-event'
 import moment             from 'moment-timezone'
 import { IntlProvider }   from 'react-intl'
 
+import { formatter, DateFormatEnum } from '@acx-ui/formatter'
 import {
   DateRange,
-  dateTimeFormats,
+  useDateFilter,
   getJwtTokenPayload,
-  AccountTier,
-  useDateFilter
+  AccountTier
 } from '@acx-ui/utils'
 
 import { DatePicker, RangePicker } from '.'
@@ -186,8 +186,8 @@ describe('RangePicker', () => {
     const yesterday = moment().subtract(1, 'day')
     const dateSelect = await screen.findAllByTitle(yesterday.format('YYYY-MM-DD'))
     await user.click(dateSelect[0])
-    const today = moment().format(dateTimeFormats.dateFormat)
-    const yestFormat = yesterday.format(dateTimeFormats.dateFormat)
+    const today = formatter(DateFormatEnum.DateFormat)(moment())
+    const yestFormat = formatter(DateFormatEnum.DateFormat)(yesterday)
     expect(screen.getByRole('display-date-range')).toHaveTextContent(`${yestFormat} - ${today}`)
     expect(onDateChange).toBeCalledTimes(1)
   })
@@ -312,7 +312,7 @@ describe('RangePicker', () => {
     await user.click(dateSelect[0])
     expect(
       screen.getByRole('display-date-range')
-    ).toHaveTextContent(moment().format(dateTimeFormats.dateFormat))
+    ).toHaveTextContent(formatter(DateFormatEnum.DateFormat)(moment()))
   })
   it.skip('should display only end date when start date is not selected', async () => {
     const onDateChange = jest.fn()
@@ -336,7 +336,7 @@ describe('RangePicker', () => {
     await user.click(dateSelect[0])
     expect(
       screen.getByRole('display-date-range')
-    ).toHaveTextContent(moment().format(dateTimeFormats.dateFormat))
+    ).toHaveTextContent(formatter(DateFormatEnum.DateFormat)(moment()))
   })
   it('should disable apply when startdate and end date are same', async () => {
     const onDateChange = jest.fn()
@@ -397,4 +397,51 @@ describe('RangePicker', () => {
     expect(apply).toHaveBeenCalledTimes(1)
   })
 
+  it('should display all time', async () => {
+    const onDateChange = jest.fn()
+    render(
+      <IntlProvider locale='en'>
+        <RangePicker
+          selectionType={DateRange.custom}
+          selectedRange={{ startDate: null, endDate: null }}
+          onDateChange={onDateChange}
+          onDateApply={() => {}}
+          showAllTime={true}
+        />
+      </IntlProvider>
+    )
+    const user = userEvent.setup()
+    const calenderSelect = await screen.findByPlaceholderText('Start date')
+    await user.click(calenderSelect)
+    expect(screen.getByRole('display-date-range')).toHaveTextContent('-')
+  })
+
+  it('should from all time change to last 24 hours correctly', async () => {
+    const onDateChange = jest.fn()
+    mockUseDateFilter.mockReturnValue({
+      startDate: '2022-01-01T00:00:00+08:00',
+      endDate: null,
+      range: 'All Time'
+    })
+
+    render(
+      <IntlProvider locale='en'>
+        <RangePicker
+          showTimePicker
+          rangeOptions={[DateRange.last24Hours, DateRange.last7Days]}
+          onDateChange={onDateChange}
+          selectionType={DateRange.custom}
+          onDateApply={() => {}}
+          selectedRange={{
+            startDate: moment('03/01/2022').seconds(0),
+            endDate: moment('03/01/2022').seconds(0)
+          }}
+        />
+      </IntlProvider>
+    )
+    const user = userEvent.setup()
+    const calenderSelect = await screen.findByPlaceholderText('Start date')
+    await user.click(calenderSelect)
+    expect(screen.getByRole('display-date-range')).toHaveTextContent('-')
+  })
 })

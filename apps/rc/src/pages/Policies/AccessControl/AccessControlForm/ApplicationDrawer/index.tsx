@@ -29,6 +29,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
+import { AddModeProps, editModeProps } from '../AccessControlForm'
+
 import {
   genRuleObject,
   transformToApplicationRule, transformToRulesForPayload,
@@ -42,11 +44,6 @@ import ApplicationRuleContent, {
 
 const { Option } = Select
 
-export interface editModeProps {
-  id: string,
-  isEdit: boolean
-}
-
 const { useWatch } = Form
 
 export interface ApplicationDrawerProps {
@@ -56,6 +53,7 @@ export interface ApplicationDrawerProps {
     viewText: string
   },
   isOnlyViewMode?: boolean,
+  onlyAddMode?: AddModeProps,
   editMode?: editModeProps,
   setEditMode?: (editMode: editModeProps) => void
 }
@@ -69,6 +67,7 @@ export interface ApplicationsRule {
   accessControl: string,
   details: string,
   ruleSettings: {
+    category?: string
     appCategory?: string
     appNameSystemDefined?: string
     appNameUserDefined?: string
@@ -128,11 +127,11 @@ export const GenDetailsContent = (props: { editRow: ApplicationsRule }) => {
       return <span>{ $t({
         // eslint-disable-next-line max-len
         defaultMessage: 'Uplink marking: {uplinkStrategy} ({uplinkValue}) | Downlink priority: {downlinkValue}' }, {
-        uplinkStrategy: editRow.ruleSettings.markingPriority ? $t(appRateStrategyLabelMapping[
-          editRow.ruleSettings.markingPriority as RateStrategyEnum
+        uplinkStrategy: editRow.ruleSettings.markingPriority ? $t(appRateTypeLabelMapping[
+          editRow.ruleSettings.markingPriority as RateTypeEnum
         ]) : '',
-        uplinkValue: editRow.ruleSettings.upLinkMarkingType ? $t(appRateTypeLabelMapping[
-          editRow.ruleSettings.upLinkMarkingType as RateTypeEnum
+        uplinkValue: editRow.ruleSettings.upLinkMarkingType ? $t(appRateStrategyLabelMapping[
+          editRow.ruleSettings.upLinkMarkingType as RateStrategyEnum
         ]) : '',
         downlinkValue: editRow.ruleSettings.downLinkMarkingType ? $t(appRateStrategyLabelMapping[
           editRow.ruleSettings.downLinkMarkingType as RateStrategyEnum
@@ -150,10 +149,14 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     inputName = [],
     onlyViewMode = {} as { id: string, viewText: string },
     isOnlyViewMode = false,
+    onlyAddMode = { enable: false, visible: false } as AddModeProps,
     editMode = { id: '', isEdit: false } as editModeProps,
     setEditMode = () => {}
   } = props
-  const [visible, setVisible] = useState(false)
+  const [visible, setVisible] = useState(onlyAddMode.enable ? onlyAddMode.visible : false)
+  const [localEditMode, setLocalEdiMode] = useState(
+    { id: '', isEdit: false } as editModeProps
+  )
   const form = Form.useFormInstance()
   const [ruleDrawerVisible, setRuleDrawerVisible] = useState(false)
   const [ruleDrawerEditMode, setRuleDrawerEditMode] = useState(false)
@@ -163,6 +166,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   const [requestId, setRequestId] = useState('')
   const [avcSelectOptions, setAvcSelectOptions] = useState([] as AvcCategory[])
   const [applicationsRule, setApplicationsRule] = useState({} as ApplicationsRule)
+  const [skipFetch, setSkipFetch] = useState(true)
   const [drawerForm] = Form.useForm()
   const [contentForm] = Form.useForm()
 
@@ -203,7 +207,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         applicationPolicyId: isOnlyViewMode ? onlyViewMode.id : applicationPolicyId
       }
     },
-    { skip: !isOnlyViewMode && (applicationPolicyId === '' || applicationPolicyId === undefined) }
+    { skip: skipFetch }
   )
 
   const [categoryAppMappingObject, setCategoryAppMappingObject] = useState({} as {
@@ -232,7 +236,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
           .map(avcCat => {
             return {
               ...avcCat,
-              appNames: []
+              appNames: ['All']
             }
           })
         ]
@@ -264,12 +268,18 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       return false
     }
 
-    if (editMode) {
-      return !editMode.isEdit
+    if (editMode.isEdit || localEditMode.isEdit) {
+      return false
     }
 
     return !_.isNil(appPolicyInfo)
   }
+
+  useEffect(() => {
+    setSkipFetch(
+      !isOnlyViewMode && (applicationPolicyId === '' || applicationPolicyId === undefined)
+    )
+  }, [isOnlyViewMode, applicationPolicyId])
 
   useEffect(() => {
     if (editMode.isEdit && editMode.id !== '') {
@@ -279,7 +289,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   }, [editMode])
 
   useEffect(() => {
-    if (appPolicyInfo) {
+    if (appPolicyInfo && (isViewMode() || editMode.isEdit || localEditMode.isEdit)) {
       contentForm.setFieldValue('policyName', appPolicyInfo.name)
       setApplicationsRuleList([...transformToApplicationRule(
         drawerForm, appPolicyInfo
@@ -292,7 +302,9 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     if (requestId && queryPolicyName) {
       appSelectOptions.map(option => {
         if (option.props.children === queryPolicyName) {
-          form.setFieldValue('applicationPolicyId', option.key)
+          if (!onlyAddMode.enable) {
+            form.setFieldValue('applicationPolicyId', option.key)
+          }
           setQueryPolicyId(option.key as string)
           setQueryPolicyName('')
           setRequestId('')
@@ -301,6 +313,11 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     }
   }, [appSelectOptions, requestId, policyName])
 
+  useEffect(() => {
+    if (onlyAddMode.enable && onlyAddMode.visible) {
+      setVisible(onlyAddMode.visible)
+    }
+  }, [onlyAddMode])
 
   const basicColumns: TableProps<ApplicationsRule>['columns'] = [
     {
@@ -371,6 +388,11 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         id: '', isEdit: false
       })
     }
+    if (localEditMode.isEdit) {
+      setLocalEdiMode({
+        id: '', isEdit: false
+      })
+    }
   }
 
   const handleAddApplicationsRule = () => {
@@ -382,9 +404,14 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       const updateId = applicationsRuleList.findIndex(
         rule => rule.priority === applicationsRule.priority
       )
+      let ruleId = {} as { id?: string }
+      if (applicationsRuleList[updateId].id) {
+        ruleId.id = applicationsRuleList[updateId].id
+      }
       applicationsRuleList[updateId] = {
+        ...ruleId,
         ...ruleObject,
-        priority: updateId
+        priority: updateId + 1
       }
       setApplicationsRuleList([...applicationsRuleList])
     } else {
@@ -508,9 +535,13 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     />
   </Form>
 
-  return (
-    <>
-      { isOnlyViewMode ? <Button
+  const modelContent = () => {
+    if (onlyAddMode.enable) {
+      return null
+    }
+
+    if (isOnlyViewMode) {
+      return <Button
         type='link'
         size={'small'}
         onClick={() => {
@@ -519,49 +550,59 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         }
         }>
         {onlyViewMode.viewText}
-      </Button> : <GridRow style={{ width: '350px' }}>
-        <GridCol col={{ span: 12 }}>
-          <Form.Item
-            name={[...inputName, 'applicationPolicyId']}
-            rules={[{
-              required: true
-            }, {
-              message: $t({ defaultMessage: 'Please select Application profile' })
-            }]}
-            children={
-              <Select
-                placeholder={$t({ defaultMessage: 'Select profile...' })}
-                onChange={(value) => {
-                  setQueryPolicyId(value)
-                }}
-                children={appSelectOptions}
-              />
-            }
-          />
-        </GridCol>
-        <AclGridCol>
-          <Button type='link'
-            disabled={!applicationPolicyId}
-            onClick={() => {
-              if (applicationPolicyId) {
-                setVisible(true)
-                setQueryPolicyId(applicationPolicyId)
-              }
-            }
-            }>
-            {$t({ defaultMessage: 'View Details' })}
-          </Button>
-        </AclGridCol>
-        <AclGridCol>
-          <Button type='link'
-            onClick={() => {
+      </Button>
+    }
+
+    return <GridRow style={{ width: '350px' }}>
+      <GridCol col={{ span: 12 }}>
+        <Form.Item
+          name={[...inputName, 'applicationPolicyId']}
+          rules={[{
+            required: true
+          }, {
+            message: $t({ defaultMessage: 'Please select Application profile' })
+          }]}
+          children={
+            <Select
+              style={{ width: '150px' }}
+              placeholder={$t({ defaultMessage: 'Select profile...' })}
+              onChange={(value) => {
+                setQueryPolicyId(value)
+              }}
+              children={appSelectOptions}
+            />
+          }
+        />
+      </GridCol>
+      <AclGridCol>
+        <Button type='link'
+          disabled={!applicationPolicyId}
+          onClick={() => {
+            if (applicationPolicyId) {
               setVisible(true)
-              setQueryPolicyId('')
-            }}>
-            {$t({ defaultMessage: 'Add New' })}
-          </Button>
-        </AclGridCol>
-      </GridRow> }
+              setQueryPolicyId(applicationPolicyId)
+              setLocalEdiMode({ id: applicationPolicyId, isEdit: true })
+            }
+          }
+          }>
+          {$t({ defaultMessage: 'Edit Details' })}
+        </Button>
+      </AclGridCol>
+      <AclGridCol>
+        <Button type='link'
+          onClick={() => {
+            setVisible(true)
+            setQueryPolicyId('')
+          }}>
+          {$t({ defaultMessage: 'Add New' })}
+        </Button>
+      </AclGridCol>
+    </GridRow>
+  }
+
+  return (
+    <>
+      {modelContent()}
       <Drawer
         title={$t({ defaultMessage: 'Application Access Settings' })}
         visible={visible}
@@ -578,7 +619,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
               try {
                 if (!isViewMode()) {
                   await contentForm.validateFields()
-                  await handleAppPolicy(editMode.isEdit)
+                  await handleAppPolicy(editMode.isEdit || localEditMode.isEdit)
                 }
                 handleApplicationsDrawerClose()
               } catch (error) {
@@ -601,6 +642,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         children={<ApplicationRuleContent
           avcSelectOptions={avcSelectOptions}
           applicationsRuleList={applicationsRuleList}
+          applicationsRule={applicationsRule}
           editMode={ruleDrawerEditMode}
           drawerForm={drawerForm}
         />}

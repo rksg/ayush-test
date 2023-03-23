@@ -106,10 +106,12 @@ const searches = [
     }
   },
   (searchString: string, $t: IntlShape['$t']) => {
-    const result = useEventsTableQuery({}, {
-      searchString,
-      searchTargetFields: eventDefaultSearch.searchTargetFields
-    }, pagination)
+    const result = useEventsTableQuery(
+      { entity_type: undefined },
+      { ...eventDefaultSearch, searchString },
+      pagination,
+      0 // no polling
+    )
     return {
       result,
       title: $t({ defaultMessage: 'Events' }),
@@ -138,8 +140,11 @@ const searches = [
     const result = useTableQuery<ClientList, RequestPayload<unknown>, unknown>({
       useQuery: useGetClientListQuery,
       defaultPayload: {
-        ...defaultClientPayload,
-        searchString
+        ...defaultClientPayload
+      },
+      search: {
+        searchString,
+        searchTargetFields: defaultClientPayload.searchTargetFields
       },
       pagination
     })
@@ -169,8 +174,11 @@ const searches = [
     const result = useTableQuery<SwitchClient, RequestPayload<unknown>, unknown>({
       useQuery: useGetSwitchClientListQuery,
       defaultPayload: {
-        ...defaultSwitchClientPayload,
-        searchString
+        ...defaultSwitchClientPayload
+      },
+      search: {
+        searchString,
+        searchTargetFields: defaultSwitchClientPayload.searchTargetFields
       },
       pagination
     })

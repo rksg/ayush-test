@@ -19,7 +19,7 @@ const list = {
       integrator: '675dc01dc28846c383219b00d2f28f48',
       mspAdminCount: 1,
       mspAdmins: ['aefb12fab1194bf6ba061ddcec14230d'],
-      mspEcAdminCount: 1,
+      mspEcAdminCount: 2,
       name: 'integrator 168',
       status: 'Active',
       streetAddress: '675 Tasman Dr, Sunnyvale, CA 94089, USA',
@@ -51,6 +51,10 @@ const utils = require('@acx-ui/rc/utils')
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils')
 }))
+const user = require('@acx-ui/user')
+jest.mock('@acx-ui/user', () => ({
+  ...jest.requireActual('@acx-ui/user')
+}))
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -73,6 +77,12 @@ describe('Integrators', () => {
     services.useGetAssignedMspEcToIntegratorQuery = jest.fn().mockImplementation(() => {
       return { data: {} }
     })
+    services.useMspAdminListQuery = jest.fn().mockImplementation(() => {
+      return { data: [] }
+    })
+    services.useGetMspEcDelegatedAdminsQuery = jest.fn().mockImplementation(() => {
+      return { data: undefined }
+    })
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
@@ -82,9 +92,9 @@ describe('Integrators', () => {
       <Provider>
         <Integrators />
       </Provider>, { route: { params, path: '/:tenantId/integrators' } })
-    expect(screen.getByText('3rd Party')).toBeVisible()
-    expect(screen.getByText('Manage own account')).toBeVisible()
-    expect(screen.getByText('Add')).toBeVisible()
+    expect(screen.getByText('Tech Partners')).toBeVisible()
+    expect(screen.getByText('Manage My Account')).toBeVisible()
+    expect(screen.getByText('Add Tech Partner')).toBeVisible()
 
     // eslint-disable-next-line testing-library/no-node-access
     const tbody = screen.getByRole('table').querySelector('tbody')!
@@ -111,7 +121,7 @@ describe('Integrators', () => {
     fireEvent.click(deleteButton)
 
     await screen.findByText('Delete "integrator 168"?')
-    const deleteEcButton = screen.getByRole('button', { name: 'Delete Integrator' })
+    const deleteEcButton = screen.getByRole('button', { name: 'Delete Tech Partner' })
     userEvent.type(screen.getByRole('textbox',
       { name: 'Type the word "Delete" to confirm:' }), 'Delete')
     await waitFor(() =>
@@ -180,5 +190,45 @@ describe('Integrators', () => {
     fireEvent.click(within(row).getByRole('link', { name: '0' }))
 
     expect(screen.getByRole('dialog')).toBeVisible()
+  })
+  it('should open dialog when msp admin count link clicked', async () => {
+    render(
+      <Provider>
+        <Integrators />
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard/integrators' }
+      })
+
+    const row = await screen.findByRole('row', { name: /integrator 168/i })
+    fireEvent.click(within(row).getByRole('link', { name: '1' }))
+
+    expect(screen.getByRole('dialog')).toBeVisible()
+    expect(screen.getByText('Manage MSP Administrators')).toBeVisible()
+  })
+  it('should render table correctly when not admin', async () => {
+    user.hasRoles = jest.fn().mockImplementation(() => {
+      return false
+    })
+
+    render(
+      <Provider>
+        <Integrators />
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard/integrators' }
+      })
+
+    // eslint-disable-next-line testing-library/no-node-access
+    const tbody = screen.getByRole('table').querySelector('tbody')!
+    expect(tbody).toBeVisible()
+
+    const rows = await within(tbody).findAllByRole('row')
+    expect(rows).toHaveLength(list.data.length)
+    list.data.forEach((item, index) => {
+      expect(within(rows[index]).getByText(item.name)).toBeVisible()
+    })
+
+    const row = await screen.findByRole('row', { name: /integrator 168/i })
+    expect(within(row).queryByRole('link', { name: '1' })).toBeNull()
+    expect(within(row).queryByRole('link', { name: '0' })).toBeNull()
   })
 })

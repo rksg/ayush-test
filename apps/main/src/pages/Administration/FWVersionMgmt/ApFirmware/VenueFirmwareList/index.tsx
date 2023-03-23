@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 
+import { Tooltip } from 'antd'
 import { useIntl } from 'react-intl'
 
 import {
@@ -32,7 +33,10 @@ import {
   TableQuery,
   RequestPayload,
   firmwareTypeTrans,
-  useTableQuery
+  useTableQuery,
+  sortProp,
+  defaultSort,
+  dateSort
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
@@ -41,13 +45,24 @@ import {
   compareVersions,
   getApVersion,
   getApNextScheduleTpl,
+  getNextScheduleTplTooltip,
+  isNextScheduleTooltipDisabled,
   toUserDate
 } from '../../FirmwareUtils'
 import { PreferencesDialog } from '../../PreferencesDialog'
+import * as UI               from '../../styledComponents'
 
 import { ChangeScheduleDialog } from './ChangeScheduleDialog'
 import { RevertDialog }         from './RevertDialog'
 import { UpdateNowDialog }      from './UpdateNowDialog'
+
+type TablePaginationPosition =
+  | 'topLeft'
+  | 'topCenter'
+  | 'topRight'
+  | 'bottomLeft'
+  | 'bottomCenter'
+  | 'bottomRight'
 
 const transform = firmwareTypeTrans()
 
@@ -60,37 +75,39 @@ function useColumns (
 
   const columns: TableProps<FirmwareVenue>['columns'] = [
     {
-      title: intl.$t({ defaultMessage: 'Venue Name' }),
+      title: intl.$t({ defaultMessage: 'Venue' }),
       key: 'name',
       dataIndex: 'name',
-      sorter: true,
+      // sorter: true,
+      sorter: { compare: sortProp('name', defaultSort) },
       searchable: searchable,
-      defaultSortOrder: 'ascend',
-      width: 120,
+      // defaultSortOrder: 'ascend',
       render: function (data, row) {
         return row.name
       }
     },
     {
       title: intl.$t({ defaultMessage: 'Current AP Firmware' }),
-      key: 'versions[0].version',
-      dataIndex: 'versions[0].version',
-      sorter: true,
+      key: 'version',
+      dataIndex: 'version',
+      // sorter: true,
+      sorter: { compare: sortProp('versions[0].version', defaultSort) },
       filterable: filterables ? filterables['version'] : false,
-      width: 120,
+      filterMultiple: false,
       render: function (data, row) {
-        return row.versions[0].version ?? '--'
+        return row.versions ? row.versions[0].version : '--'
       }
     },
     {
       title: intl.$t({ defaultMessage: 'Firmware Type' }),
-      key: 'versions[0].category',
-      dataIndex: 'versions[0].category',
-      sorter: true,
+      key: 'type',
+      dataIndex: 'type',
+      // sorter: true,
+      sorter: { compare: sortProp('versions[0].category', defaultSort) },
       filterable: filterables ? filterables['type'] : false,
-      width: 120,
+      filterMultiple: false,
       render: function (data, row) {
-        if (!row.versions[0]) return '--'
+        if (!row.versions) return '--'
         const text = transform(row.versions[0].category as FirmwareCategory, 'type')
         const subText = transform(row.versions[0].category as FirmwareCategory, 'subType')
         if (!subText) return text
@@ -101,8 +118,8 @@ function useColumns (
       title: intl.$t({ defaultMessage: 'Last Update' }),
       key: 'lastUpdate',
       dataIndex: 'lastUpdate',
-      sorter: true,
-      width: 120,
+      // sorter: false,
+      sorter: { compare: sortProp('lastScheduleUpdate', dateSort) },
       render: function (data, row) {
         if (!row.lastScheduleUpdate) return '--'
         return toUserDate(row.lastScheduleUpdate)
@@ -112,10 +129,16 @@ function useColumns (
       title: intl.$t({ defaultMessage: 'Next Update Schedule' }),
       key: 'nextSchedule',
       dataIndex: 'nextSchedule',
-      sorter: true,
-      width: 120,
+      // sorter: false,
+      sorter: { compare: sortProp('nextSchedules[0].startDateTime', dateSort) },
       render: function (data, row) {
-        return getApNextScheduleTpl(intl, row)
+        return (!isNextScheduleTooltipDisabled(row)
+          ? getApNextScheduleTpl(intl, row)
+          // eslint-disable-next-line max-len
+          : <Tooltip title={<UI.ScheduleTooltipText>{getNextScheduleTplTooltip(row)}</UI.ScheduleTooltipText>} placement='bottom'>
+            <UI.ScheduleText>{getApNextScheduleTpl(intl, row)}</UI.ScheduleText>
+          </Tooltip>
+        )
       }
     }
   ]
@@ -155,6 +178,7 @@ export const VenueFirmwareTable = (
   const [eolModels, setEolModels] = useState<string[]>([])
   const [changeUpgradeVersions, setChangeUpgradeVersions] = useState<FirmwareVersion[]>([])
   const [revertVersions, setRevertVersions] = useState<FirmwareVersion[]>([])
+  const pageBotton: TablePaginationPosition | 'none' = 'none'
 
   const [updateUpgradePreferences] = useUpdateUpgradePreferencesMutation()
   const { data: preferencesData } = useGetUpgradePreferencesQuery({ params })
@@ -500,7 +524,8 @@ export const VenueFirmwareTable = (
       <Table
         columns={columns}
         dataSource={tableData}
-        pagination={tableQuery.pagination}
+        // eslint-disable-next-line max-len
+        pagination={{ pageSize: 10000, position: [pageBotton as TablePaginationPosition , pageBotton as TablePaginationPosition] }}
         onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}

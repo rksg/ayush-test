@@ -1,5 +1,7 @@
 import { useState } from 'react'
+import React        from 'react'
 
+import { Tooltip }   from 'antd'
 import _             from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
@@ -17,9 +19,9 @@ import {
   useDeleteAdminMutation,
   useDeleteAdminsMutation
 } from '@acx-ui/rc/services'
-import { Administrator, MSPUtils }               from '@acx-ui/rc/utils'
-import { RolesEnum }                             from '@acx-ui/types'
-import { filterByAccess, useUserProfileContext } from '@acx-ui/user'
+import { Administrator, MSPUtils, sortProp, defaultSort }       from '@acx-ui/rc/utils'
+import { RolesEnum }                                            from '@acx-ui/types'
+import { filterByAccess, useUserProfileContext, roleStringMap } from '@acx-ui/user'
 
 import * as UI from '../styledComponents'
 
@@ -30,6 +32,10 @@ interface AdministratorsTableProps {
   currentUserMail: string | undefined;
   isPrimeAdminUser: boolean;
   isMspEc: boolean;
+}
+
+interface TooltipRowProps extends React.PropsWithChildren {
+  'data-row-key': string;
 }
 
 const AdministratorsTable = (props: AdministratorsTableProps) => {
@@ -91,24 +97,39 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
     return isSelected
   }
 
+  const handleRowSelectChange = (record: unknown,
+    selected: boolean, selectedRows: Administrator[]) => {
+    if (selectedRows.length === 1) {
+      const allPrimeAdminSelected = isAllPrimeAdminSelected(selectedRows)
+      const selfSelected = isSelfSelected(selectedRows)
+
+      // name is the only editable field:
+      // - the only one prime admin
+      setEditNameOnly(selfSelected || allPrimeAdminSelected)
+    }
+  }
+
   const columns:TableProps<Administrator>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
       key: 'id',
-      dataIndex: 'id',
-      render: (data, row) => {
-        return row.fullName
-      }
+      dataIndex: 'fullName',
+      sorter: { compare: sortProp('fullName', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Email' }),
       key: 'email',
-      dataIndex: 'email'
+      dataIndex: 'email',
+      sorter: { compare: sortProp('email', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Role' }),
-      key: 'roleDsc',
-      dataIndex: 'roleDsc'
+      key: 'role',
+      dataIndex: 'role',
+      sorter: { compare: sortProp('role', defaultSort) },
+      render: function (_, row) {
+        return roleStringMap[row.role] ? $t(roleStringMap[row.role]) : ''
+      }
     }
   ]
 
@@ -120,12 +141,7 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
         //  - multiple-selected
 
         if (selectedRows.length === 1) {
-          const allPrimeAdminSelected = isAllPrimeAdminSelected(selectedRows)
           const selfSelected = isSelfSelected(selectedRows)
-
-          // name is the only editable field:
-          // - the only one prime admin
-          setEditNameOnly(selfSelected || allPrimeAdminSelected)
 
           return selfSelected === false
         } else {
@@ -181,8 +197,19 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
     })
   }
 
-  // TODO: tooltip "'You cannot edit or delete yourself'"
-  //        for prime admin user select himself/herself
+  const TooltipRow: React.FC<TooltipRowProps> = (props) => {
+    const isPrimeAdminItself =
+      props['data-row-key'] === userProfileData.adminId && isPrimeAdminUser
+
+    return isPrimeAdminItself ?
+      <Tooltip
+        placement='topLeft'
+        title={$t({ defaultMessage: 'You cannot edit or delete yourself' })}
+      >
+        <tr {...props} />
+      </Tooltip>
+      : <tr {...props} />
+  }
 
   return (
     <Loader states={[
@@ -199,6 +226,11 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
         columns={columns}
         dataSource={adminList}
         rowKey='id'
+        components={{
+          body: {
+            row: TooltipRow
+          }
+        }}
         rowActions={isPrimeAdminUser
           ? filterByAccess(rowActions)
           : undefined}
@@ -208,7 +240,8 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
             // only prime-admin cannot edit/delete itself
             disabled: record.email === currentUserMail && isPrimeAdminUser,
             name: record.fullName
-          })
+          }),
+          onSelect: handleRowSelectChange
         } : undefined}
         actions={filterByAccess(tableActions)}
       />

@@ -56,8 +56,10 @@ export enum EntitlementDeviceSubType {
   MSP_WIFI_TEMP = 'MSP_WIFI_TEMP'
 }
 
-export enum DateFormatEnum {
-  UserDateFormat = 'MM/DD/YYYY'
+export enum AssignActionEnum {
+  ADD = 'ADD',
+  MODIFY = 'MODIFY',
+  ACTIVATE = 'ACTIVATE'
 }
 
 export interface DelegationEntitlementRecord {
@@ -90,7 +92,7 @@ export interface MspEc {
   wifiLicenses: string;
   switchLicenses: string;
   edgeLicenses?: string;
-  assignedMspEcList: string;
+  assignedMspEcList: string[];
   creationDate: number;
   entitlements: DelegationEntitlementRecord[];
 }
@@ -359,6 +361,7 @@ export interface SupportDelegation {
 export interface AssignedEc {
   delegated_to: string;
   delegation_type: string;
+  expiry_date?: string;
   mspec_list: string[];
 }
 

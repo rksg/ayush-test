@@ -25,11 +25,6 @@ export const PortalUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/portalServiceProfiles',
     newApi: true
   },
-  getPortalNetworkInstances: {
-    // [New API] no mapping found
-    method: 'get',
-    url: '/api/tenant/:tenantId/portal-service-profile/instances/:serviceId'
-  },
   getPortalProfileDetail: {
     method: 'get',
     url: '/portalServiceProfiles/:serviceId',
@@ -38,13 +33,20 @@ export const PortalUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getPortalProfileList: {
     method: 'get',
-    url: '/portalServiceProfiles?size=:pageSize&page=:page&sort=:sort',
-    oldUrl: '/api/portalServiceProfiles?size=:pageSize&page=:page&sort=:sort',
+    // eslint-disable-next-line max-len
+    url: '/portalServiceProfiles?pageSize=:pageSize&page=:page&sort=:sort',
+    // eslint-disable-next-line max-len
+    oldUrl: '/api/portalServiceProfiles?pageSize=:pageSize&page=:page&sort=:sort',
     newApi: true
   },
   getPortalLang: {
     // [New API] no mapping found
     method: 'get',
     url: '/g/ui/tenant/:tenantId/locales/:messageName'
+  },
+  getEnhancedPortalProfileList: {
+    method: 'post',
+    url: '/portalServiceProfiles/query',
+    newApi: true
   }
 }

@@ -152,7 +152,7 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
         >
           { versionOptions.length > 0 ?
             <div>
-              <Typography>
+              <Typography style={{ fontWeight: 700 }}>
                 { // eslint-disable-next-line max-len
                   $t({ defaultMessage: 'Choose which version to update the venue to:' })}
               </Typography>
@@ -166,14 +166,16 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
                     {getVersionLabel(versionOptions[0])}
                   </Radio>
                   { otherVersions.length > 0 ?
-                    <Radio value={VersionsSelectMode.Dropdown}>
-                      <Select
-                        style={{ width: '100%', fontSize: '12px' }}
-                        placeholder='Select other version...'
-                        onChange={handleChange}
-                        options={otherOptions}
-                      />
-                    </Radio>
+                    <UI.SelectDiv>
+                      <Radio value={VersionsSelectMode.Dropdown}>
+                        <Select
+                          style={{ width: '460px', fontSize: '12px' }}
+                          placeholder='Select other version...'
+                          onChange={handleChange}
+                          options={otherOptions}
+                        />
+                      </Radio>
+                    </UI.SelectDiv>
                     : null
                   }
                 </Space>
@@ -189,7 +191,7 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
                 style={{ margin: 12 }}>
                 {latestEolVersion}
               </Radio>
-              <UI.ItemModel>{eolModels}</UI.ItemModel>
+              <UI.ItemModel>AP Models: {eolModels?.join(', ')}</UI.ItemModel>
             </UI.Section>
             : null
           }

@@ -1,4 +1,4 @@
-import moment                                        from 'moment'
+import moment                                        from 'moment-timezone'
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 import { PageHeader, Tabs, RangePicker }         from '@acx-ui/components'

@@ -36,6 +36,13 @@ jest.mock('@acx-ui/analytics/components', () => ({
   ClientHealth: () => <div data-testid='anayltics-ClientHealth' title='ClientHealth' />
 }))
 
+jest.mock('socket.io-client')
+
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  getJwtTokenPayload: () => ({ tenantId: 'tenantId' })
+}))
+
 jest.mock('./TopApplications', () => ({
   TopApplications: () => <div data-testid={'rc-TopApplications'} title='TopApplications' />
 }))
@@ -69,8 +76,7 @@ describe('ClientOverviewTab', () => {
         (_, res, ctx) => res(ctx.json(clientApList[0]))),
       rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(clientNetworkList[0]))),
-      rest.get(
-        getUrlForTest(CommonUrlsInfo.getVenue),
+      rest.get(CommonUrlsInfo.getVenue.url,
         (_, res, ctx) => res(ctx.json(clientVenueList[0]))),
       rest.post(CommonUrlsInfo.getHistoricalClientList.url,
         (_, res, ctx) => res(ctx.json(histClientList))),
@@ -271,7 +277,7 @@ describe('ClientOverviewTab', () => {
         checkFragment(asFragment)
       })
 
-      it.skip('should render dpsk client correctly', async () => {
+      it('should render dpsk client correctly', async () => {
         mockServer.use(
           rest.get(ClientUrlsInfo.getClientDetails.url,
             (_, res, ctx) => res(ctx.json({
@@ -305,7 +311,7 @@ describe('ClientOverviewTab', () => {
         checkFragment(asFragment)
       })
 
-      it.skip('should render historical client without some data correctly', async () => {
+      it('should render historical client without some data correctly', async () => {
         jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('historical')
         mockServer.use(
           rest.post(CommonUrlsInfo.getHistoricalClientList.url,
@@ -332,7 +338,7 @@ describe('ClientOverviewTab', () => {
         checkFragment(asFragment)
       })
 
-      it.skip('should render historical client (guest) correctly', async () => {
+      it('should render historical client (guest) correctly', async () => {
         jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('historical')
         mockServer.use(
           rest.post(CommonUrlsInfo.getHistoricalClientList.url,
@@ -379,7 +385,7 @@ describe('ClientOverviewTab', () => {
         checkFragment(asFragment)
       })
 
-      it.skip('should render historical client (dpsk) correctly', async () => {
+      it('should render historical client (dpsk) correctly', async () => {
         jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('historical')
         mockServer.use(
           rest.get(WifiUrlsInfo.getNetwork.url,
@@ -396,7 +402,7 @@ describe('ClientOverviewTab', () => {
         checkFragment(asFragment)
       })
 
-      it.skip('should render correctly when search parameters is disappeared', async () => {
+      it('should render correctly when search parameters is disappeared', async () => {
         jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('')
         mockServer.use(
           rest.get(ClientUrlsInfo.getClientDetails.url,

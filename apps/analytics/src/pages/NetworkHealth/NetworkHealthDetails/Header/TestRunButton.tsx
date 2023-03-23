@@ -1,11 +1,11 @@
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { noDataSymbol }                                from '@acx-ui/analytics/utils'
 import { Button, Dropdown, Loader, Table, TableProps } from '@acx-ui/components'
+import { DateFormatEnum, formatter }                   from '@acx-ui/formatter'
 import { ArrowExpand }                                 from '@acx-ui/icons'
 import { TenantLink, useParams }                       from '@acx-ui/react-router-dom'
-import { formatter }                                   from '@acx-ui/utils'
+import { noDataDisplay }                               from '@acx-ui/utils'
 
 import { useNetworkHealthRelatedTests } from '../../services'
 
@@ -23,7 +23,7 @@ const TestRunTable = (
       key: 'createdAt',
       render: (_, value) =>
         <TenantLink to={`/serviceValidation/networkHealth/${value.specId}/tests/${value.id}`}>
-          {formatter('dateTimeFormatWithSeconds')(value.createdAt)}
+          {formatter(DateFormatEnum.DateTimeFormatWithSeconds)(value.createdAt)}
         </TenantLink>
     },
     {
@@ -66,9 +66,9 @@ export const TestRunButton = () => {
         <Space>
           <UI.ButtonTitleWrapper>{$t({ defaultMessage: 'Test Time' })}</UI.ButtonTitleWrapper>
           {queryResults.data && queryResults.data?.length > 0
-            ? formatter('dateTimeFormatWithSeconds')(
+            ? formatter(DateFormatEnum.DateTimeFormatWithSeconds)(
               queryResults.data.find((test)=>test.id === parseInt(params.testId!, 10))?.createdAt)
-            : noDataSymbol
+            : noDataDisplay
           }
           <ArrowExpand />
         </Space>

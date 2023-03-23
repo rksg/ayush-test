@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import { AnalyticsFilter, useAnalyticsFilter, categoryTabs, CategoryTab } from '@acx-ui/analytics/utils'
@@ -13,6 +15,9 @@ import Kpis                          from './Kpi'
 import * as UI                       from './styledComponents'
 import { SummaryBoxes }              from './SummaryBoxes'
 
+
+export type DrilldownSelection = 'connectionFailure' | 'ttc' | 'none'
+
 const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
   const { $t } = useIntl()
   const { filters: widgetFilters } = props
@@ -22,6 +27,7 @@ const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
   const basePath = useTenantLink(props.path ?? '/analytics/health/tab/')
   const { filters } = useAnalyticsFilter()
   const healthPageFilters = widgetFilters ? widgetFilters : filters
+  const [drilldownSelection, setDrilldownSelection] = useState<DrilldownSelection>('none')
 
   const onTabChange = (tab: string) =>
     navigate({
@@ -39,8 +45,11 @@ const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
       }
       <GridRow>
         <GridCol col={{ span: 24 }} style={{ minHeight: '105px' }}>
-          <SummaryBoxes filters={healthPageFilters} />
-          <HealthDrillDown/>
+          <SummaryBoxes
+            filters={healthPageFilters}
+            drilldownSelection={drilldownSelection}
+            setDrilldownSelection={setDrilldownSelection}
+          />
         </GridCol>
         <HealthPageContextProvider>
           <GridCol col={{ span: 24 }} style={{ height: '210px' }}>

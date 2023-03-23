@@ -1,12 +1,14 @@
 import userEvent         from '@testing-library/user-event'
 import { defineMessage } from 'react-intl'
 
-import { dataApiURL }                                                  from '@acx-ui/analytics/services'
-import { AnalyticsFilter }                                             from '@acx-ui/analytics/utils'
-import { BrowserRouter as Router }                                     from '@acx-ui/react-router-dom'
-import { Provider, store }                                             from '@acx-ui/store'
-import { render, waitForElementToBeRemoved, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
-import { DateRange }                                                   from '@acx-ui/utils'
+import { AnalyticsFilter }                                                  from '@acx-ui/analytics/utils'
+import { useIsSplitOn }                                                     from '@acx-ui/feature-toggle'
+import { BrowserRouter as Router }                                          from '@acx-ui/react-router-dom'
+import { Provider, store, dataApiURL }                                      from '@acx-ui/store'
+import { render, waitForElementToBeRemoved, screen, mockGraphqlQuery, act } from '@acx-ui/test-utils'
+import { DateRange }                                                        from '@acx-ui/utils'
+
+import { DrilldownSelection } from '..'
 
 import { fakeSummary, fakeEmptySummary } from './__tests__/fixtures'
 import { api }                           from './services'
@@ -18,17 +20,22 @@ describe('box', () => {
     type: 'successCount',
     title: defineMessage({ defaultMessage: 'test box' }),
     suffix: '/suffix',
-    // isOpen: false,
     value: '100'
   }
-  it('should render correctly', async () => {
-    // TODO: post GA
-    // const onClick = jest.fn()
-    // const { asFragment } = render(<Box {...boxProps} isOpen onClick={onClick}/>)
-    // expect(asFragment()).toMatchSnapshot()
-    // await userEvent.click(screen.getByTestId('CaretDoubleUpOutlined'))
-    // expect(onClick).toBeCalledTimes(1)
-    const { asFragment } = render(<Box {...boxProps} />)
+  it('should render correctly with toggle enabled', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const onClick = jest.fn()
+    const { asFragment } = render(<Box {...boxProps} isOpen onClick={onClick}/>)
+    expect(asFragment()).toMatchSnapshot()
+    await userEvent.click(screen.getByTestId('CaretDoubleUpOutlined'))
+    expect(onClick).toBeCalledTimes(1)
+  })
+
+  it('should render correctly with toggle disabled', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    const onClick = jest.fn()
+    const falseToggleBoxProps = { ...boxProps }
+    const { asFragment } = render(<Box {...falseToggleBoxProps} isOpen onClick={onClick}/>)
     expect(asFragment()).toMatchSnapshot()
   })
 })
@@ -46,51 +53,115 @@ describe('Incidents Page', () => {
   })
   it('should match snapshot', async () => {
     mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeSummary })
+    const drilldownSelection = 'none'
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     const { asFragment } = render(
-      <Router><Provider><SummaryBoxes filters={filters}/></Provider></Router>
+      <Router><Provider><SummaryBoxes
+        filters={filters}
+        drilldownSelection={drilldownSelection}
+        setDrilldownSelection={jest.fn()}
+      /></Provider></Router>
     )
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(asFragment()).toMatchSnapshot()
   })
   it('should show - when no data', async () => {
     mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeEmptySummary })
+    const drilldownSelection = 'none'
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     const { asFragment } = render(
-      <Router><Provider><SummaryBoxes filters={filters}/></Provider></Router>
+      <Router><Provider><SummaryBoxes filters={filters}
+        drilldownSelection={drilldownSelection}
+        setDrilldownSelection={jest.fn()}
+      /></Provider></Router>
     )
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(asFragment()).toMatchSnapshot()
   })
 
-  // TODO: remove skip after feature available
-  describe.skip('toggle stats', () => {
+  it('render when feature toggle is disabled', async () => {
+    mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeEmptySummary })
+    const drilldownSelection = 'none'
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    const { asFragment } = render(
+      <Router><Provider><SummaryBoxes filters={filters}
+        drilldownSelection={drilldownSelection}
+        setDrilldownSelection={jest.fn()}
+      /></Provider></Router>
+    )
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(asFragment()).toMatchSnapshot()
+  })
+
+  describe('toggle stats', () => {
     it('should handle toggle stats', async () => {
       mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeSummary })
-      render(<Router><Provider><SummaryBoxes filters={filters}/></Provider></Router>)
+      let drilldownSelection: DrilldownSelection = 'none'
+      const setDrilldownSelection = jest.fn(
+        (val: typeof drilldownSelection) => drilldownSelection = val
+      )
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      const { rerender } = render(<Router><Provider><SummaryBoxes
+        filters={filters}
+        drilldownSelection={drilldownSelection}
+        setDrilldownSelection={setDrilldownSelection}
+      /></Provider></Router>)
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
       const downArrows = screen.getAllByTestId('CaretDoubleDownOutlined')
       expect(downArrows).toHaveLength(4)
 
-      await userEvent.click(downArrows[0])
+      await act(async () => await userEvent.click(downArrows[0]))
+      rerender(<Router><Provider><SummaryBoxes
+        filters={filters}
+        drilldownSelection={drilldownSelection}
+        setDrilldownSelection={setDrilldownSelection}
+      /></Provider></Router>)
       const upArrows = screen.getAllByTestId('CaretDoubleUpOutlined')
       expect(upArrows).toHaveLength(3)
 
-      await userEvent.click(upArrows[1])
+      await act(async () => await userEvent.click(upArrows[0]))
+      rerender(<Router><Provider><SummaryBoxes
+        filters={filters}
+        drilldownSelection={drilldownSelection}
+        setDrilldownSelection={setDrilldownSelection}
+      /></Provider></Router>)
       expect(screen.getAllByTestId('CaretDoubleDownOutlined')).toHaveLength(4)
     })
 
     it('should handle toggle ttc', async () => {
       mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeSummary })
-      render(<Router><Provider><SummaryBoxes filters={filters}/></Provider></Router>)
+      let drilldownSelection: DrilldownSelection = 'none'
+      const setDrilldownSelection = jest.fn(
+        (val: typeof drilldownSelection) => drilldownSelection = val
+      )
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      const { rerender } = render(<Router><Provider><SummaryBoxes
+        filters={filters}
+        drilldownSelection={drilldownSelection}
+        setDrilldownSelection={setDrilldownSelection}
+      /></Provider></Router>)
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
       expect(screen.getAllByTestId('CaretDoubleDownOutlined')).toHaveLength(4)
 
       const button = screen.getByRole('button', { name: /time to connect/i })
-      await userEvent.click(button)
+      await act(async () => await userEvent.click(button))
+      rerender(<Router><Provider><SummaryBoxes
+        filters={filters}
+        drilldownSelection={drilldownSelection}
+        setDrilldownSelection={setDrilldownSelection}
+      /></Provider></Router>)
+
       expect(screen.getAllByTestId('CaretDoubleUpOutlined')).toHaveLength(1)
 
-      await userEvent.click(button)
+      await act(async () => await userEvent.click(button))
+      rerender(<Router><Provider><SummaryBoxes
+        filters={filters}
+        drilldownSelection={drilldownSelection}
+        setDrilldownSelection={setDrilldownSelection}
+      /></Provider></Router>)
+
       expect(screen.getAllByTestId('CaretDoubleDownOutlined')).toHaveLength(4)
     })
   })

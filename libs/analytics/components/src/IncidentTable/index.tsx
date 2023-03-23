@@ -10,15 +10,15 @@ import {
   severitySort,
   sortProp,
   Incident,
-  noDataSymbol,
   IncidentFilter,
   getRootCauseAndRecommendations,
   shortDescription,
   formattedPath
 } from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Drawer, Tooltip, Button } from '@acx-ui/components'
+import { DateFormatEnum, formatter }                   from '@acx-ui/formatter'
 import { TenantLink, useNavigateToPath }               from '@acx-ui/react-router-dom'
-import { formatter }                                   from '@acx-ui/utils'
+import { noDataDisplay }                               from '@acx-ui/utils'
 
 import {
   useIncidentsListQuery,
@@ -70,7 +70,7 @@ const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incid
 
 const DateLink = ({ value }: { value: IncidentTableRow }) => {
   return <TenantLink to={`/analytics/incidents/${value.id}`}>
-    {formatter('dateTimeFormat')(value.endTime)}
+    {formatter(DateFormatEnum.DateTimeFormat)(value.endTime)}
   </TenantLink>
 }
 
@@ -234,7 +234,7 @@ export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
         }}
         rowKey='id'
         showSorterTooltip={false}
-        columnEmptyText={noDataSymbol}
+        columnEmptyText={noDataDisplay}
         indentSize={6}
         onResetState={() => {
           setShowMuted(false)

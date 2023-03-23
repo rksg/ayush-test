@@ -5,7 +5,7 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 import { getSeriesData, AnalyticsFilter }                 from '@acx-ui/analytics/utils'
 import { HistoricalCard, Loader, StackedAreaChart,
   NoData, MultiLineTimeSeriesChart, qualitativeColorSet } from '@acx-ui/components'
-import { formatter } from '@acx-ui/utils'
+import { formatter } from '@acx-ui/formatter'
 
 import {
   useTrafficByVolumeQuery,

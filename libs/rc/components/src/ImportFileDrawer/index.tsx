@@ -14,8 +14,8 @@ import {
 import { useIntl } from 'react-intl'
 
 import { Button, DrawerProps } from '@acx-ui/components'
+import { formatter }           from '@acx-ui/formatter'
 import { GuestErrorRes }       from '@acx-ui/user'
-import { formatter }           from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -29,7 +29,7 @@ type ImportErrorRes = {
   txId: string
 } | GuestErrorRes
 
-type AcceptableType = 'csv' | 'txt'
+type AcceptableType = 'csv' | 'txt' | 'xlsx'
 
 interface ImportFileDrawerProps extends DrawerProps {
   templateLink?: string
@@ -38,9 +38,10 @@ interface ImportFileDrawerProps extends DrawerProps {
   isLoading?: boolean
   importError?: FetchBaseQueryError
   importRequest: (formData: FormData, values: object, content?: string)=>void
-  readAsText?: boolean
+  readAsText?: boolean,
+  formDataName?: string,
   acceptType: string[]
-  type: 'AP' | 'Switch' | 'GuestPass' | 'DPSK' | 'Persona' | 'CLI'
+  type: 'AP' | 'Switch' | 'GuestPass' | 'DPSK' | 'Persona' | 'CLI' | 'PropertyUnit'
   extraDescription?: string[]
 }
 
@@ -53,6 +54,7 @@ export const CsvSize = {
 
 const fileTypeMap: Record<AcceptableType, string[]>= {
   csv: ['text/csv', 'application/vnd.ms-excel'],
+  xlsx: ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
   txt: ['text/plain']
 }
 
@@ -62,7 +64,7 @@ export function ImportFileDrawer (props: ImportFileDrawerProps) {
 
   const { maxSize, maxEntries, isLoading, templateLink,
     importError, importRequest, readAsText, acceptType,
-    extraDescription } = props
+    extraDescription, formDataName = 'file' } = props
 
   const [fileDescription, setFileDescription] = useState<ReactNode>('')
   const [formData, setFormData] = useState<FormData>()
@@ -78,7 +80,8 @@ export function ImportFileDrawer (props: ImportFileDrawerProps) {
   }, [form, props.visible])
 
   useEffect(()=>{
-    if (importError?.data) {
+    const importErrorData = (importError?.data ?? {}) as object
+    if (Object.keys(importErrorData).length) {
       const errorObj = importError?.data as ImportErrorRes
       let errors, downloadUrl
       let description = ''
@@ -137,7 +140,7 @@ export function ImportFileDrawer (props: ImportFileDrawerProps) {
     }
 
     const newFormData = new FormData()
-    newFormData.append('file', file, file.name)
+    newFormData.append(formDataName, file, file.name)
 
     setFile(file)
     setFileName(file.name)
@@ -194,7 +197,7 @@ export function ImportFileDrawer (props: ImportFileDrawerProps) {
           </Typography.Text> }
         <Button type='primary'>{ fileDescription ?
           $t({ defaultMessage: 'Change File' }) :
-          $t({ defaultMessage: 'Browser' }) }
+          $t({ defaultMessage: 'Browse' }) }
         </Button>
       </Space>
     </Upload.Dragger>
@@ -202,7 +205,9 @@ export function ImportFileDrawer (props: ImportFileDrawerProps) {
       { templateLink && <li>
         <a href={templateLink} download>{$t({ defaultMessage: 'Download template' })}</a>
       </li> }
-      <li>{$t({ defaultMessage: 'File format must be csv' })}</li>
+      <li>{$t(
+        { defaultMessage: 'File format must be {acceptTypes}' },
+        { acceptTypes: acceptType.join(', ') })}</li>
       { maxEntries && <li>{$t(
         { defaultMessage: 'File may contain up to {maxEntries} entries' },
         { maxEntries })}</li>}

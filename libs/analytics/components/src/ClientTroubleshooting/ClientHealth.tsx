@@ -5,9 +5,9 @@ import { useIntl }            from 'react-intl'
 
 import { AnalyticsFilter }                              from '@acx-ui/analytics/utils'
 import { cssStr, cssNumber, Loader, Tooltip, BarChart } from '@acx-ui/components'
+import { formatter, DateFormatEnum }                    from '@acx-ui/formatter'
 import { WarningTriangleOutlined }                      from '@acx-ui/icons'
-import { noDataDisplay }                                from '@acx-ui/rc/utils'
-import { formatter, dateTimeFormats }                   from '@acx-ui/utils'
+import { noDataDisplay }                                from '@acx-ui/utils'
 
 import { LabelledQuality }                                       from './config'
 import { ClientInfoData, ConnectionQuality, useClientInfoQuery } from './services'
@@ -93,8 +93,8 @@ export function ClientHealth (
   return isMaxEventError
     ? <ErrorContainer>
       <Tooltip title={maxEventsMsg(
-        moment(startDate).format(dateTimeFormats.dateTimeFormat),
-        moment(endDate).format(dateTimeFormats.dateTimeFormat),
+        formatter(DateFormatEnum.DateTimeFormat)(startDate),
+        formatter(DateFormatEnum.DateTimeFormat)(endDate),
         intl
       )}><WarningTriangleOutlined />
       </Tooltip>

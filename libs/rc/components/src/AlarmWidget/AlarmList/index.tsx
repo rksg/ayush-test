@@ -1,8 +1,8 @@
 import { List, Space } from 'antd'
 
 import { Tooltip }                                 from '@acx-ui/components'
+import { formatter }                               from '@acx-ui/formatter'
 import { Alarm, EventSeverityEnum, EventTypeEnum } from '@acx-ui/rc/utils'
-import { formatter }                               from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
