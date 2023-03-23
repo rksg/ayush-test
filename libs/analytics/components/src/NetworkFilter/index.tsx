@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { DefaultOptionType }         from 'antd/lib/select'
 import { omit, groupBy, pick, find } from 'lodash'
 import { SingleValueType }           from 'rc-cascader/lib/Cascader'
@@ -297,6 +299,7 @@ function ConnectedNetworkFilter (
     radioBandDisabledReason } : ConnectedNetworkFilterProps
 ) {
   const { $t } = useIntl()
+  const [ open, setOpen ] = useState(false)
   const { setNetworkPath, filters, raw } = useAnalyticsFilter()
   const { setNetworkPath: setReportsNetworkPath,
     raw: reportsRaw, filters: reportsFilter } = useReportsFilter()
@@ -324,7 +327,7 @@ function ConnectedNetworkFilter (
   })
   const rawVal = filterFor === 'reports' ? reportsRaw : raw
   return (
-    <UI.Container>
+    <UI.Container $open={open}>
       <Loader states={[queryResults]}>
         <Select
           placeholder={$t({ defaultMessage: 'Entire Organization' })}
@@ -367,6 +370,8 @@ function ConnectedNetworkFilter (
           displayRender={displayRender}
           showSearch={{ filter: search }}
           allowClear
+          open={open}
+          onDropdownVisibleChange={setOpen}
         />
       </Loader>
     </UI.Container>
