@@ -68,14 +68,6 @@ export function MacRegistrationListOverviewTab () {
               </Col>
               <Col span={6}>
                 <Form.Item
-                  label={$t({ defaultMessage: 'Behavior' })}
-                >
-                  {/* eslint-disable-next-line max-len */}
-                  <Paragraph>{$t({ defaultMessage: 'Always redirect to authenticate user' })}</Paragraph>
-                </Form.Item>
-              </Col>
-              <Col span={6}>
-                <Form.Item
                   label={$t({ defaultMessage: 'Default Access' })}
                 >
                   <Paragraph>{data?.defaultAccess ?? ''}</Paragraph>
