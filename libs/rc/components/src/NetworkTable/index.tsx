@@ -22,7 +22,7 @@ import { getIntl, notAvailableMsg }  from '@acx-ui/utils'
 
 const disabledType: NetworkTypeEnum[] = []
 
-function getCols (intl: ReturnType<typeof useIntl>, isServicesEnabled: boolean) {
+function getCols (intl: ReturnType<typeof useIntl>) {
   const columns: TableProps<Network>['columns'] = [
     {
       key: 'name',
@@ -106,14 +106,14 @@ function getCols (intl: ReturnType<typeof useIntl>, isServicesEnabled: boolean) 
       sorter: false, // API does not seem to be working
       align: 'center'
     },
-    {
-      key: 'services',
-      title: intl.$t({ defaultMessage: 'Services' }),
-      dataIndex: 'services',
-      sorter: true,
-      align: 'center',
-      show: isServicesEnabled
-    },
+    // { TODO: Wait for Services
+    //   key: 'services',
+    //   title: intl.$t({ defaultMessage: 'Services' }),
+    //   dataIndex: 'services',
+    //   sorter: true,
+    //   align: 'center',
+    //   show: isServicesEnabled
+    // },
     {
       key: 'vlan',
       title: intl.$t({ defaultMessage: 'VLAN' }),
@@ -281,7 +281,7 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
       { isLoading: false, isFetching: isDeleteNetworkUpdating }
     ]}>
       <Table
-        columns={getCols(intl, isServicesEnabled)}
+        columns={getCols(intl)}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}

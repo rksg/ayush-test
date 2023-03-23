@@ -274,12 +274,12 @@ export function ApTable (props: ApTableProps) {
           render: (data: never, row: { [x: string]: string | undefined }) => transformDisplayText(row[channel])
         } : null)
         .filter(Boolean)
-    }, {
-      key: 'tags',
-      title: $t({ defaultMessage: 'Tags' }),
-      dataIndex: 'tags',
-      searchable: searchable,
-      sorter: true
+    // }, { TODO: Waiting for TAG feature support
+      // key: 'tags',
+      // title: $t({ defaultMessage: 'Tags' }),
+      // dataIndex: 'tags',
+      // searchable: searchable,
+      // sorter: true
       //TODO: Click-> Filter by Tag
     }, {
       key: 'serialNumber',
@@ -385,7 +385,7 @@ export function ApTable (props: ApTableProps) {
     const customSorter = Array.isArray(sorter)
       ? sorter[0] : sorter
     if ('IP'.includes(customSorter.field as string)) {
-      customSorter.field = 'ip'
+      customSorter.field = 'IP.keyword'
     }
     // @ts-ignore
     tableQuery.handleTableChange(pagination, filters, customSorter, extra)

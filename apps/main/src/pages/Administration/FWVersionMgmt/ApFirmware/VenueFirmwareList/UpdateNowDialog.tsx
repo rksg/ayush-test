@@ -84,7 +84,9 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
   const otherOptions = otherVersions.map((version) => {
     return {
       label: getVersionLabel(version),
-      value: version.name
+      value: version.name,
+      title: '',
+      style: { fontSize: 12 }
     }
   })
 
@@ -169,7 +171,7 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
                     <UI.SelectDiv>
                       <Radio value={VersionsSelectMode.Dropdown}>
                         <Select
-                          style={{ width: '460px', fontSize: '12px' }}
+                          style={{ width: '420px', fontSize: '12px' }}
                           placeholder='Select other version...'
                           onChange={handleChange}
                           options={otherOptions}
