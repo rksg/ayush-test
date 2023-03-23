@@ -33,7 +33,7 @@ function AllRoutes () {
   useStreamActivityMessagesQuery({})
   return rootRoutes(
     <>
-      <Route path='t/:tenantId' element={<MFACheck />}>
+      <Route path=':tenantId/t' element={<MFACheck />}>
         <Route path='*' element={<Layout />}>
           <Route index element={<TenantNavigate replace to='/dashboard' />} />
           <Route path='dashboard' element={<Dashboard />} />
@@ -74,16 +74,20 @@ function AllRoutes () {
           <Route path='administration/*' element={<AdministrationRoutes />} />
         </Route>
       </Route>
-      <Route path='v/:tenantId/*' element={<MFACheck />}>
+      <Route path=':tenantId/v/*' element={<MFACheck />}>
         <Route path='*' element={<MspRoutes />}/>
       </Route>
+      {/* <Route
+        path="*"
+        element={<TenantNavigate replace to='dashboard' />}
+      /> */}
     </>
   )
 }
 
 function VenuesRoutes () {
   return rootRoutes(
-    <Route path='t/:tenantId/venues'>
+    <Route path='/:tenantId/t/venues'>
       <Route index element={<VenuesTable />} />
       <Route path='add' element={<VenuesForm />} />
       <Route path=':venueId/venue-details/:activeTab' element={<VenueDetails />} />
@@ -103,7 +107,7 @@ function VenuesRoutes () {
 
 function AdministrationRoutes () {
   return rootRoutes(
-    <Route path='t/:tenantId/administration'>
+    <Route path=':tenantId/t/administration'>
       <Route
         index
         element={<TenantNavigate replace to='/administration/accountSettings' />}

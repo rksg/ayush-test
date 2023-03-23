@@ -77,7 +77,7 @@ export const rcToastTemplates:any = {
       SUCCESS: 'AP "${attributes.name}" was added',
       FAIL: 'AP "${attributes.name}" was not added'
     },
-    link: '/t/${tenantId}/aps/${entityId}/details/overview'
+    link: '${tenantId}/t/aps/${entityId}/details/overview'
   },
   AddAps: {
     messages: {
@@ -85,7 +85,7 @@ export const rcToastTemplates:any = {
       SUCCESS: 'AP "${attributes.name}" was added',
       FAIL: 'AP "${attributes.name}" was not added'
     },
-    link: '/t/${tenantId}/aps/${entityId}/details/overview'
+    link: '${tenantId}/t/aps/${entityId}/details/overview'
   },
   UpdateAp: {
     messages: {
@@ -93,7 +93,7 @@ export const rcToastTemplates:any = {
       SUCCESS: 'AP "${attributes.name}" was updated',
       FAIL: 'AP "${attributes.name}" was not updated'
     },
-    link: '/t/${tenantId}/aps/${entityId}/details/overview'
+    link: '${tenantId}/t/aps/${entityId}/details/overview'
   },
   DeleteAp: {
     messages: {
@@ -166,7 +166,7 @@ export const rcToastTemplates:any = {
       SUCCESS: 'Venue "${attributes.name}" was added',
       FAIL: 'Venue "${attributes.name}" was not added'
     },
-    link: '/t/${tenantId}/venues/${entityId}/overview'
+    link: '${tenantId}/t/venues/${entityId}/overview'
   },
   UpdateVenue: {
     messages: {
@@ -174,7 +174,7 @@ export const rcToastTemplates:any = {
       SUCCESS: 'Venue "${attributes.name}" was updated',
       FAIL: 'Venue "${attributes.name}" was not updated'
     },
-    link: '/t/${tenantId}/venues/${entityId}/overview'
+    link: '${tenantId}/t/venues/${entityId}/overview'
   },
   DeleteVenue: {
     messages: {
@@ -196,7 +196,7 @@ export const rcToastTemplates:any = {
       SUCCESS: 'Network "${attributes.name}" was added',
       FAIL: 'Network "${attributes.name}" was not added'
     },
-    link: '/t/${tenantId}/networks/wireless/${entityId}/network-details/overview'
+    link: '${tenantId}/t/networks/wireless/${entityId}/network-details/overview'
   },
   UpdateNetworkDeep: {
     messages: {
@@ -204,7 +204,7 @@ export const rcToastTemplates:any = {
       SUCCESS: 'Network "${attributes.name}" was updated',
       FAIL: 'Network "${attributes.name}" was not updated'
     },
-    link: '/t/${tenantId}/networks/wireless/${entityId}/network-details/overview'
+    link: '${tenantId}/t/networks/wireless/${entityId}/network-details/overview'
   },
   UpdateNetwork: {
     messages: {
@@ -212,7 +212,7 @@ export const rcToastTemplates:any = {
       SUCCESS: 'Network "${attributes.name}" was updated',
       FAIL: 'Network "${attributes.name}" was not updated'
     },
-    link: '/t/${tenantId}/networks/wireless/${entityId}/network-details/overview'
+    link: '${tenantId}/t/networks/wireless/${entityId}/network-details/overview'
   },
   DeleteNetwork: {
     messages: {
@@ -361,7 +361,7 @@ export const rcToastTemplates:any = {
       SUCCESS: 'Venue "${attributes.name}": Mesh was switched On/Off',
       FAIL: 'Venue "${attributes.name}": Mesh was not switched On/Off'
     },
-    link: '/t/${tenantId}/venues/${entityId}/${link}'
+    link: '${tenantId}/t/venues/${entityId}/${link}'
   },
   AddNetworkVenue: {
     messages: {
@@ -404,7 +404,7 @@ export const rcToastTemplates:any = {
       SUCCESS: 'Invitation sent to 3rd party administrator',
       FAIL: 'Sending invitation to 3rd party administrator failed'
     },
-    link: '/t/${tenantId}/administration/administrators'
+    link: '${tenantId}/t/administration/administrators'
   },
   UpdateOrderOfMembers: {
     messages: {
@@ -419,7 +419,7 @@ export const rcToastTemplates:any = {
       SUCCESS: 'Switch "${attributes.id}" was added',
       FAIL: 'Switch "${attributes.id}" was not added'
     },
-    link: '/t/${tenantId}/switches/${entityId}/details/overview'
+    link: '${tenantId}/t/switches/${entityId}/details/overview'
   },
   ConvertToStack: {
     messages: {
@@ -427,7 +427,7 @@ export const rcToastTemplates:any = {
       SUCCESS: 'Switch "${attributes.serialNumber}" was added',
       FAIL: 'Switch "${attributes.serialNumber}" was not added'
     },
-    link: '/t/${tenantId}/switches/${attributes.serialNumber}/details/overview'
+    link: '${tenantId}/t/switches/${attributes.serialNumber}/details/overview'
   },
   UpdateSwitch: {
     messages: {
@@ -436,7 +436,7 @@ export const rcToastTemplates:any = {
       FAIL: 'Switch "${attributes.id}" was not updated'
     },
     isSwitchConfig: {
-      link: '/t/${tenantId}/switches/${entityId}/details/config/history'
+      link: '${tenantId}/t/switches/${entityId}/details/config/history'
     }
   },
   DeleteSwitches: {
@@ -467,7 +467,7 @@ export const rcToastTemplates:any = {
       FAIL: 'Stack member was not added'
     },
     isSwitchConfig: {
-      link: '/t/${tenantId}/switches/${attributes.serialNumber}/details/config/history'
+      link: '${tenantId}/t/switches/${attributes.serialNumber}/details/config/history'
     }
   },
   UpdateVenueSettings: {
@@ -477,7 +477,7 @@ export const rcToastTemplates:any = {
       FAIL: 'Venue settings were not updated'
     },
     isSwitchConfig: {
-      link: '/t/${tenantId}/venues/${entityId}/network-devices/switch',
+      link: '${tenantId}/t/venues/${entityId}/network-devices/switch',
       tabView: 'config'
     }
   },
@@ -495,7 +495,7 @@ export const rcToastTemplates:any = {
       FAIL: 'DHCP server were not added'
     },
     isSwitchConfig: {
-      link: '/t/${tenantId}/switches/${attributes.serialNumber}/details/config/history'
+      link: '${tenantId}/t/switches/${attributes.serialNumber}/details/config/history'
     }
   },
   UpdateDhcpServer: {
@@ -505,7 +505,7 @@ export const rcToastTemplates:any = {
       FAIL: 'DHCP server were not updated'
     },
     isSwitchConfig: {
-      link: '/t/${tenantId}/switches/${attributes.serialNumber}/details/config/history'
+      link: '${tenantId}/t/switches/${attributes.serialNumber}/details/config/history'
     }
   },
   DeleteDhcpServer: {
@@ -515,7 +515,7 @@ export const rcToastTemplates:any = {
       FAIL: 'DHCP server were not deleted'
     },
     isSwitchConfig: {
-      link: '/t/${tenantId}/switches/${attributes.serialNumber}/details/config/history'
+      link: '${tenantId}/t/switches/${attributes.serialNumber}/details/config/history'
     }
   },
   DeleteDhcpServers: {
@@ -525,7 +525,7 @@ export const rcToastTemplates:any = {
       FAIL: 'DHCP server(s) were not deleted'
     },
     isSwitchConfig: {
-      link: '/t/${tenantId}/switches/${attributes.serialNumber}/details/config/history'
+      link: '${tenantId}/t/switches/${attributes.serialNumber}/details/config/history'
     }
   },
   UpdateDhcpServerState: {
@@ -535,7 +535,7 @@ export const rcToastTemplates:any = {
       FAIL: 'DHCP server state were not updated'
     },
     isSwitchConfig: {
-      link: '/t/${tenantId}/switches/${attributes.serialNumber}/details/config/history'
+      link: '${tenantId}/t/switches/${attributes.serialNumber}/details/config/history'
     }
   },
   AddStaticRoute: {
@@ -545,7 +545,7 @@ export const rcToastTemplates:any = {
       FAIL: 'Static route were not added'
     },
     isSwitchConfig: {
-      link: '/t/${tenantId}/switches/${attributes.serialNumber}/details/config/history'
+      link: '${tenantId}/t/switches/${attributes.serialNumber}/details/config/history'
     }
   },
   UpdateStaticRoute: {
@@ -555,7 +555,7 @@ export const rcToastTemplates:any = {
       FAIL: 'Static route were not updated'
     },
     isSwitchConfig: {
-      link: '/t/${tenantId}/switches/${attributes.serialNumber}/details/config/history'
+      link: '${tenantId}/t/switches/${attributes.serialNumber}/details/config/history'
     }
   },
   DeleteStaticRoutes: {
@@ -565,7 +565,7 @@ export const rcToastTemplates:any = {
       FAIL: 'Static route(s) were not deleted'
     },
     isSwitchConfig: {
-      link: '/t/${tenantId}/switches/${attributes.serialNumber}/details/config/history'
+      link: '${tenantId}/t/switches/${attributes.serialNumber}/details/config/history'
     }
   },
   AddVePort: {
@@ -575,7 +575,7 @@ export const rcToastTemplates:any = {
       FAIL: 'VE port were not added'
     },
     isSwitchConfig: {
-      link: '/t/${tenantId}/switches/${attributes.serialNumber}/details/config/history'
+      link: '${tenantId}/t/switches/${attributes.serialNumber}/details/config/history'
     }
   },
   UpdateVePort: {
@@ -585,7 +585,7 @@ export const rcToastTemplates:any = {
       FAIL: 'VE port were not updated'
     },
     isSwitchConfig: {
-      link: '/t/${tenantId}/switches/${attributes.serialNumber}/details/config/history'
+      link: '${tenantId}/t/switches/${attributes.serialNumber}/details/config/history'
     }
   },
   DeleteVePorts: {
@@ -595,7 +595,7 @@ export const rcToastTemplates:any = {
       FAIL: 'VE port(s) were not deleted'
     },
     isSwitchConfig: {
-      link: '/t/${tenantId}/switches/${attributes.serialNumber}/details/config/history'
+      link: '${tenantId}/t/switches/${attributes.serialNumber}/details/config/history'
     }
   },
   AddSwitchAcl: {
@@ -654,7 +654,7 @@ export const rcToastTemplates:any = {
       FAIL: 'VLAN were not added'
     },
     isSwitchConfig: {
-      link: '/t/${tenantId}/switches/${attributes.serialNumber}/details/config/history'
+      link: '${tenantId}/t/switches/${attributes.serialNumber}/details/config/history'
     }
   },
   UpdateSwitchVlan: {
@@ -664,7 +664,7 @@ export const rcToastTemplates:any = {
       FAIL: 'VLAN were not updated'
     },
     isSwitchConfig: {
-      link: '/t/${tenantId}/switches/${attributes.serialNumber}/details/config/history'
+      link: '${tenantId}/t/switches/${attributes.serialNumber}/details/config/history'
     }
   },
   DeleteSwitchVlans: {
@@ -674,7 +674,7 @@ export const rcToastTemplates:any = {
       FAIL: 'VLAN(s) were not deleted'
     },
     isSwitchConfig: {
-      link: '/t/${tenantId}/switches/${attributes.serialNumber}/details/config/history'
+      link: '${tenantId}/t/switches/${attributes.serialNumber}/details/config/history'
     }
   },
   AddLag: {
@@ -684,7 +684,7 @@ export const rcToastTemplates:any = {
       FAIL: 'LAG was not added'
     },
     isSwitchConfig: {
-      link: '/t/${tenantId}/switches/${attributes.serialNumber}/details/config/history'
+      link: '${tenantId}/t/switches/${attributes.serialNumber}/details/config/history'
     }
   },
   UpdateLag: {
@@ -694,7 +694,7 @@ export const rcToastTemplates:any = {
       FAIL: 'LAG was not updated'
     },
     isSwitchConfig: {
-      link: '/t/${tenantId}/switches/${attributes.serialNumber}/details/config/history'
+      link: '${tenantId}/t/switches/${attributes.serialNumber}/details/config/history'
     }
   },
   DeleteLag: {
@@ -704,7 +704,7 @@ export const rcToastTemplates:any = {
       FAIL: 'LAG was not deleted'
     },
     isSwitchConfig: {
-      link: '/t/${tenantId}/switches/${attributes.serialNumber}/details/config/history'
+      link: '${tenantId}/t/switches/${attributes.serialNumber}/details/config/history'
     }
   },
   DeleteConfigBackups: {
@@ -720,7 +720,7 @@ export const rcToastTemplates:any = {
       SUCCESS: 'Access rights of 3rd party administrator were revoked',
       FAIL: 'Access rights of 3rd party administrator were not revoked'
     },
-    link: '/t/${tenantId}/administration/administrators'
+    link: '${tenantId}/t/administration/administrators'
   },
   AllowAccessSupport: {
     messages: {
@@ -1281,7 +1281,7 @@ export const rcToastTemplates:any = {
       FAIL: 'Port(s) was not updated'
     },
     isSwitchConfig: {
-      link: '/t/${tenantId}/switches/${attributes.serialNumber}/details/config/history'
+      link: '${tenantId}/t/switches/${attributes.serialNumber}/details/config/history'
     }
   },
   AddProfile: {
@@ -1291,7 +1291,7 @@ export const rcToastTemplates:any = {
       FAIL: 'Switch profile "${attributes.name}" was not added'
     },
     isSwitchConfig: {
-      link: '/t/${tenantId}/venues/${attributes.venueId}/network-devices/switch',
+      link: '${tenantId}/t/venues/${attributes.venueId}/network-devices/switch',
       tabView: 'config'
     }
   },
@@ -1302,7 +1302,7 @@ export const rcToastTemplates:any = {
       FAIL: 'Switch profile "${attributes.name}" was not updated'
     },
     isSwitchConfig: {
-      link: '/t/${tenantId}/venues/${attributes.venueId}/network-devices/switch',
+      link: '${tenantId}/t/venues/${attributes.venueId}/network-devices/switch',
       tabView: 'config'
     }
   },
@@ -1462,7 +1462,7 @@ export const rcToastTemplates:any = {
       SUCCESS: 'DP "${attributes.name}" was added',
       FAIL: 'DP "${attributes.name}" was not added'
     }
-    // 'link': '/t/${tenantId}/dps/${entityId}/details/overview'
+    // 'link': '${tenantId}/t/dps/${entityId}/details/overview'
   },
   UpdateRecoveryPsk: {
     messages: {

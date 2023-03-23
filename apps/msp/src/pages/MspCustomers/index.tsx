@@ -202,7 +202,7 @@ export function MspCustomers () {
       sorter: true,
       defaultSortOrder: 'ascend',
       render: function (data, row, _, highlightFn) {
-        const to = `${getBasePath()}/t/${row.id}`
+        const to = `${getBasePath()}/${row.id}/t`
         return (
           (row.status === 'Active') ? <Link to={to}>{highlightFn(data as string)}</Link> : data
         )

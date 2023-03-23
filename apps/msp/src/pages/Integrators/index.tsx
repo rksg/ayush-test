@@ -72,7 +72,7 @@ export function Integrators () {
       searchable: true,
       defaultSortOrder: 'ascend' as SortOrder,
       render: function (data, row, _, highlightFn) {
-        const to = `${getBasePath()}/t/${row.id}`
+        const to = `${getBasePath()}/${row.id}/t`
         return (
           <Link to={to}>{highlightFn(data as string)}</Link>
         )

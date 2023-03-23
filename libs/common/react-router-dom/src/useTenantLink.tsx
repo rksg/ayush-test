@@ -24,5 +24,5 @@ export function useTenantLink (to: To, tenantType: TenantType = 't') {
     search.set(name, value)
   }
   path.search = search.toString()
-  return resolvePath(path, `${useBasePath()}/${tenantType}/${tenantId}`)
+  return resolvePath(path, `${useBasePath()}/${tenantId}/${tenantType}`)
 }

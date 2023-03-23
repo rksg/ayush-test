@@ -19,7 +19,7 @@ const reports = {
 
 export default function ReportsRoutes () {
   const routes = rootRoutes(
-    <Route path='t/:tenantId'>
+    <Route path=':tenantId/t'>
       <Route path='reports' element={<TenantNavigate replace to='/reports/overview' />}/>
       <Route path='reports/overview' element={reports.overview}/>
       <Route path='reports/wireless' element={reports.wireless} />

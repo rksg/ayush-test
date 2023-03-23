@@ -85,7 +85,7 @@ function Layout () {
       }
       leftHeaderContent={
         <UI.LeftHeaderWrapper>
-          { showHomeButton && <Link to={`${getBasePath()}/v/${TenantIdFromJwt()}`}>
+          { showHomeButton && <Link to={`${getBasePath()}/${TenantIdFromJwt()}/v`}>
             <UI.Home>
               <LayoutUI.Icon children={<HomeSolid />} />
               {$t({ defaultMessage: 'Home' })}

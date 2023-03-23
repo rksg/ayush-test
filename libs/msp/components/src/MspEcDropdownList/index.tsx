@@ -153,7 +153,7 @@ export function MspEcDropdownList () {
         }
       },
       render: function (data, row) {
-        const to = `${getBasePath()}/t/${row.id}`
+        const to = `${getBasePath()}/${row.id}/t`
         return (
           (row.status === 'Active') ? <Link to={to}>{data}</Link> : data
         )
@@ -188,7 +188,7 @@ export function MspEcDropdownList () {
         }
       },
       render: function (data, row) {
-        const to = `${getBasePath()}/t/${row.tenantId}`
+        const to = `${getBasePath()}/${row.tenantId}/t`
         return (
           <Link to={to}>{data}</Link>
         )

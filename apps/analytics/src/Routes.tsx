@@ -27,7 +27,7 @@ export default function AnalyticsRoutes () {
   if (!hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])) return <React.Fragment />
 
   const routes = rootRoutes(
-    <Route path='t/:tenantId'>
+    <Route path=':tenantId/t'>
       <Route path='analytics' element={<TenantNavigate replace to='/analytics/incidents' />} />
       <Route path='analytics/incidents' element={<IncidentListPage />} />
       <Route path='analytics/incidents/tab/:activeTab' element={<IncidentListPage />} />
