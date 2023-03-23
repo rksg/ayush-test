@@ -102,7 +102,8 @@ describe('AssignEcDrawer', () => {
       })
 
     expect(await screen.findByRole('dialog')).toBeVisible()
-    expect(screen.getByText('Select customer accounts to assign to this integrator:')).toBeVisible()
+    /* eslint-disable max-len */
+    expect(screen.getByText('Select customer accounts to assign to this tech partner:')).toBeVisible()
 
     const input = screen.getByPlaceholderText('Search Customer')
 
