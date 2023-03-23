@@ -16,10 +16,9 @@ import {
   statusMapping,
   CommonUrlsInfo,
   TABLE_QUERY_LONG_POLLING_INTERVAL,
-  useTableQuery,
-  noDataDisplay
+  useTableQuery
 } from '@acx-ui/rc/utils'
-import { useDateFilter } from '@acx-ui/utils'
+import { useDateFilter, noDataDisplay } from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 

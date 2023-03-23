@@ -10,7 +10,6 @@ import {
   severitySort,
   sortProp,
   Incident,
-  noDataSymbol,
   IncidentFilter,
   getRootCauseAndRecommendations,
   shortDescription,
@@ -19,6 +18,7 @@ import {
 import { Loader, TableProps, Drawer, Tooltip, Button } from '@acx-ui/components'
 import { DateFormatEnum, formatter }                   from '@acx-ui/formatter'
 import { TenantLink, useNavigateToPath }               from '@acx-ui/react-router-dom'
+import { noDataDisplay }                               from '@acx-ui/utils'
 
 import {
   useIncidentsListQuery,
@@ -236,7 +236,7 @@ export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
         }}
         rowKey='id'
         showSorterTooltip={false}
-        columnEmptyText={noDataSymbol}
+        columnEmptyText={noDataDisplay}
         indentSize={6}
         onResetState={() => {
           setShowMuted(false)

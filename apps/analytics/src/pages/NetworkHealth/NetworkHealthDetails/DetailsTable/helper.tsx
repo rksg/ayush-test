@@ -2,13 +2,13 @@ import { defineMessage }                       from '@formatjs/intl'
 import { upperFirst, without }                 from 'lodash'
 import { FormattedMessage, MessageDescriptor } from 'react-intl'
 
-import { ConnectionEventPopover }      from '@acx-ui/analytics/components'
-import { mapCodeToReason }             from '@acx-ui/analytics/utils'
-import { TableProps, cssStr, Tooltip } from '@acx-ui/components'
-import type { TableColumn }            from '@acx-ui/components'
-import { formatter }                   from '@acx-ui/formatter'
-import { TenantLink }                  from '@acx-ui/react-router-dom'
-import { getIntl, NetworkPath }        from '@acx-ui/utils'
+import { ConnectionEventPopover }              from '@acx-ui/analytics/components'
+import { mapCodeToReason }                     from '@acx-ui/analytics/utils'
+import { TableProps, cssStr, Tooltip }         from '@acx-ui/components'
+import type { TableColumn }                    from '@acx-ui/components'
+import { formatter }                           from '@acx-ui/formatter'
+import { TenantLink }                          from '@acx-ui/react-router-dom'
+import { getIntl, NetworkPath, noDataDisplay } from '@acx-ui/utils'
 
 import * as contents from '../../contents'
 import {
@@ -263,7 +263,7 @@ export const getTableColumns = ({
               to={`devices/wifi/${stationAp?.mac}/details/overview`}
               title={$t(stationAPDetailsText)}
             >{stationAp?.name}</TenantLink>
-          ) : '-'
+          ) : noDataDisplay
         }
       },
       {
@@ -273,7 +273,7 @@ export const getTableColumns = ({
         width: 150,
         render: function (_, row) {
           const { stationAp } = row
-          return stationAp?.mac ?? '-'
+          return stationAp?.mac ?? noDataDisplay
         }
       },
       {
@@ -286,7 +286,7 @@ export const getTableColumns = ({
           const { stationAp } = row
           return (
             <span key={`${stationAp?.snr}-${index}`}>
-              {formatter('decibelFormat')(stationAp?.snr || '-')}
+              {formatter('decibelFormat')(stationAp?.snr || noDataDisplay)}
             </span>
           )
         }
