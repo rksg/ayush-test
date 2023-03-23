@@ -274,12 +274,12 @@ export function ApTable (props: ApTableProps) {
           render: (data: never, row: { [x: string]: string | undefined }) => transformDisplayText(row[channel])
         } : null)
         .filter(Boolean)
-    }, {
-      key: 'tags',
-      title: $t({ defaultMessage: 'Tags' }),
-      dataIndex: 'tags',
-      searchable: searchable,
-      sorter: true
+    // }, { TODO: Waiting for TAG feature support
+      // key: 'tags',
+      // title: $t({ defaultMessage: 'Tags' }),
+      // dataIndex: 'tags',
+      // searchable: searchable,
+      // sorter: true
       //TODO: Click-> Filter by Tag
     }, {
       key: 'serialNumber',
