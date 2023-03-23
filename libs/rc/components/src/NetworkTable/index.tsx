@@ -22,7 +22,7 @@ import { getIntl, notAvailableMsg }  from '@acx-ui/utils'
 
 const disabledType: NetworkTypeEnum[] = []
 
-function getCols (intl: ReturnType<typeof useIntl>, isServicesEnabled: boolean) {
+function getCols (intl: ReturnType<typeof useIntl>) {
   const columns: TableProps<Network>['columns'] = [
     {
       key: 'name',
@@ -279,7 +279,7 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
       { isLoading: false, isFetching: isDeleteNetworkUpdating }
     ]}>
       <Table
-        columns={getCols(intl, isServicesEnabled)}
+        columns={getCols(intl)}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
