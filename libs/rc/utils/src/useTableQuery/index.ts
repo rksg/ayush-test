@@ -169,7 +169,7 @@ export function useTableQuery <
       }
     }
     handlePagination(api.data)
-  }, [api.data,pagination.page, pagination.pageSize,payload])
+  }, [api.data])
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH, groupBy? : GROUPBY) => {
     const { searchString, searchTargetFields, filters, ...rest } = payload
