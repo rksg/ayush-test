@@ -260,6 +260,7 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
       align: 'center',
       filterable: networkFilterOptions,
       sorter: true,
+      sortDirections: ['descend', 'ascend', 'descend'],
       render: (data, row) => row.networkIds.length
     }
   ]

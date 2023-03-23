@@ -199,7 +199,8 @@ function useColumns (
       title: $t({ defaultMessage: 'MAC Addresses' }),
       dataIndex: 'macAddress',
       align: 'center',
-      sorter: true
+      sorter: true,
+      sortDirections: ['descend', 'ascend', 'descend']
     },
     {
       key: 'networkIds',
@@ -208,6 +209,7 @@ function useColumns (
       filterable: networkFilterOptions,
       align: 'center',
       sorter: true,
+      sortDirections: ['descend', 'ascend', 'descend'],
       render: (data, row) => row.networkIds?.length
     }
   ]

@@ -209,6 +209,7 @@ export function SwitchTable (props : SwitchTableProps) {
       key: 'clientCount',
       title: $t({ defaultMessage: 'Clients' }),
       dataIndex: 'clientCount',
+      align: 'center',
       sorter: true,
       sortDirections: ['descend', 'ascend', 'descend'],
       render: (data, row) => (
