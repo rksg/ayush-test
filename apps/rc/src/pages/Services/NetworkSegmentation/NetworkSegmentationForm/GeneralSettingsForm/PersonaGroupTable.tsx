@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
 
-import { PersonaGroupLink } from 'apps/rc/src/pages/Users/Persona/LinkHelper'
-import { useIntl }          from 'react-intl'
+import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps }                                               from '@acx-ui/components'
 import { useGetDpskQuery, useGetPersonaGroupByIdQuery }                            from '@acx-ui/rc/services'
 import { DpskDetailsTabKey, getServiceDetailsLink, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
 import { TenantLink }                                                              from '@acx-ui/react-router-dom'
+
+import { PersonaGroupLink } from '../../../../Users/Persona/LinkHelper'
 
 interface PersonaGroupTableProps {
   personaGroupId?: string

@@ -350,3 +350,18 @@ export const switchVlanUnion = {
   ]
 }
 
+export const mockPropertyConfigs = {
+  personaGroupId: 'testPersonaId'
+}
+
+export const mockPersonaGroup = {
+  id: 'testPersonaId',
+  name: 'TestPersona',
+  personaCount: 2
+}
+
+export const mockDpsk = {
+  id: 'testDpskId',
+  name: 'TestDpsk',
+  networkIds: ['1', '2']
+}

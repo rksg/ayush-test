@@ -4,14 +4,14 @@ import { FormattedMessage, useIntl }     from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
 import { Alert, StepsForm, Tooltip, useStepFormContext }  from '@acx-ui/components'
-import { CheckMarkCircleSolid }                           from '@acx-ui/icons'
 import { useGetPropertyConfigsQuery, useVenuesListQuery } from '@acx-ui/rc/services'
 
-import { NetworkSegmentationGroupForm } from '..'
-import { useWatch }                     from '../../useWatch'
-import * as UI                          from '../styledComponents'
+import { NetworkSegmentationGroupFormData } from '..'
+import { useWatch }                         from '../../useWatch'
+import * as UI                              from '../styledComponents'
 
-import { PersonaGroupTable } from './PersonaGroupTable'
+import { PersonaGroupTable }  from './PersonaGroupTable'
+import { AlertCheckMarkIcon } from './styledComponents'
 
 interface GeneralSettingsFormProps {
   editMode?: boolean
@@ -28,7 +28,7 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
 
   const { $t } = useIntl()
   const { tenantId } = useParams()
-  const { form } = useStepFormContext<NetworkSegmentationGroupForm>()
+  const { form } = useStepFormContext<NetworkSegmentationGroupFormData>()
   const venueId = useWatch('venueId', form)
   const { venueOptions, isLoading: isVenueOptionsLoading } = useVenuesListQuery(
     { params: { tenantId: tenantId }, payload: venueOptionsDefaultPayload }, {
@@ -54,6 +54,13 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
   const onVenueChange = (value: string) => {
     const venueItem = venueOptions?.find(item => item.value === value)
     form.setFieldValue('venueName', venueItem?.label)
+    form.setFieldValue('edgeId', null)
+    form.setFieldValue('edgeId', null)
+    form.setFieldValue('edgeName', null)
+    form.setFieldValue('dhcpId', null)
+    form.setFieldValue('dhcpName', null)
+    form.setFieldValue('poolId', null)
+    form.setFieldValue('poolName', null)
   }
 
   const warningMsg = <FormattedMessage
@@ -67,9 +74,8 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
       '<icon></icon>Already had an SmartEdge deployed in the venue where you want to apply'}
 
     values={{
-      p: (...chunks) => <p>{chunks}</p>,
       br: () => <br />,
-      icon: () => <CheckMarkCircleSolid style={{ color: 'green' }}/>
+      icon: () => <AlertCheckMarkIcon />
     }}
   />
 

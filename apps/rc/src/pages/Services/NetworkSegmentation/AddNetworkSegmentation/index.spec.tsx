@@ -4,9 +4,12 @@ import { rest }  from 'msw'
 
 import {
   CommonUrlsInfo,
+  DpskUrls,
   EdgeDhcpUrls,
   EdgeUrlsInfo,
   NetworkSegmentationUrls,
+  PersonaUrls,
+  PropertyUrlsInfo,
   SwitchUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
@@ -19,10 +22,13 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
+  mockDpsk,
   mockEdgeData,
   mockEdgeDhcpDataList,
   mockNetworkGroup,
   mockNsgSwitchInfoData,
+  mockPersonaGroup,
+  mockPropertyConfigs,
   mockVenueData,
   mockVenueNetworkData,
   switchLagList,
@@ -31,7 +37,7 @@ import {
   webAuthList
 } from '../__tests__/fixtures'
 
-import NetworkSegmentationForm from '.'
+import AddNetworkSegmentation from '.'
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -42,11 +48,12 @@ jest.mock('react-router-dom', () => ({
 type MockSelectProps = React.PropsWithChildren<{
   onChange?: (value: string) => void
   options?: Array<{ label: string, value: unknown }>
+  loading?: boolean
 }>
 jest.mock('antd', () => {
   const components = jest.requireActual('antd')
-  const Select = ({ children, onChange, options, ...props }: MockSelectProps) => (
-    <select {...props} onChange={(e) => onChange?.(e.target.value)}>
+  const Select = ({ loading, children, onChange, options, ...props }: MockSelectProps) => (
+    <select {...props} onChange={(e) => onChange?.(e.target.value)} value=''>
       {/* Additional <option> to ensure it is possible to reset value to empty */}
       {children ? <><option value={undefined}></option>{children}</> : null}
       {options?.map((option, index) => (
@@ -60,7 +67,7 @@ jest.mock('antd', () => {
 
 const createNsgPath = '/:tenantId/services/networkSegmentation/create'
 
-describe('Update NetworkSegmentation', () => {
+describe('AddNetworkSegmentation', () => {
   let params: { tenantId: string, serviceId: string }
   beforeEach(() => {
     params = {
@@ -136,13 +143,25 @@ describe('Update NetworkSegmentation', () => {
       rest.post(
         NetworkSegmentationUrls.validateAccessSwitchInfo.url,
         (req, res, ctx) => res(ctx.json({ response: { valid: true } }))
+      ),
+      rest.get(
+        PropertyUrlsInfo.getPropertyConfigs.url,
+        (req, res, ctx) => res(ctx.json(mockPropertyConfigs))
+      ),
+      rest.get(
+        PersonaUrls.getPersonaGroupById.url,
+        (req, res, ctx) => res(ctx.json(mockPersonaGroup))
+      ),
+      rest.get(
+        DpskUrls.getDpsk.url,
+        (req, res, ctx) => res(ctx.json(mockDpsk))
       )
     )
   })
 
-  it.skip('should create networkSegmentation successfully', async () => {
+  it('should create networkSegmentation successfully', async () => {
     const user = userEvent.setup()
-    render(<NetworkSegmentationForm />, {
+    render(<AddNetworkSegmentation />, {
       wrapper: Provider,
       route: { params, path: createNsgPath }
     })
@@ -215,6 +234,6 @@ describe('Update NetworkSegmentation', () => {
     await user.click(await screen.findByRole('button', { name: 'Next' }))
     // step6
     await user.click(await screen.findByRole('button', { name: 'Finish' }))
-  }, 30000)
+  })
 
 })

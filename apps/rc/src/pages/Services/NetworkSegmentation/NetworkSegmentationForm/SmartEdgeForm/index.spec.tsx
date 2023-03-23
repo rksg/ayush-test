@@ -26,13 +26,14 @@ import { SmartEdgeForm } from './'
 type MockSelectProps = React.PropsWithChildren<{
   onChange?: (value: string) => void
   options?: Array<{ label: string, value: unknown }>
+  loading?: boolean
 }>
 jest.mock('antd', () => {
   const components = jest.requireActual('antd')
-  const Select = ({ children, onChange, options, ...props }: MockSelectProps) => (
-    <select {...props} onChange={(e) => onChange?.(e.target.value)}>
+  const Select = ({ loading, children, onChange, options, ...props }: MockSelectProps) => (
+    <select {...props} onChange={(e) => onChange?.(e.target.value)} value=''>
       {/* Additional <option> to ensure it is possible to reset value to empty */}
-      {children ? <><option value={undefined}></option>{children}</> : null}
+      {children ? <><option value={''}></option>{children}</> : null}
       {options?.map((option, index) => (
         <option key={`option-${index}`} value={option.value as string}>{option.label}</option>
       ))}
@@ -59,7 +60,7 @@ describe('Update NetworkSegmentation', () => {
       ),
       rest.post(
         EdgeDhcpUrls.addDhcpService.url,
-        (req, res, ctx) => res(ctx.json({}))
+        (req, res, ctx) => res(ctx.status(202))
       ),
       rest.get(
         EdgeDhcpUrls.getDhcpByEdgeId.url,
@@ -68,6 +69,10 @@ describe('Update NetworkSegmentation', () => {
       rest.get(
         EdgeDhcpUrls.getDhcpList.url,
         (req, res, ctx) => res(ctx.json(mockEdgeDhcpDataList))
+      ),
+      rest.patch(
+        EdgeDhcpUrls.patchDhcpService.url,
+        (req, res, ctx) => res(ctx.status(202))
       )
     )
   })
@@ -85,11 +90,12 @@ describe('Update NetworkSegmentation', () => {
       await screen.findByRole('combobox', { name: 'SmartEdge' }),
       await screen.findByRole('option', { name: 'Smart Edge 1' })
     )
-    user.click(await screen.findByRole('button', { name: 'Add' }))
+    await user.click(await screen.findByRole('button', { name: 'Add' }))
 
     const dhcpServiceNameInput = await screen.findByRole('textbox', { name: 'Service Name' })
     await user.type(dhcpServiceNameInput, 'myTest')
     await user.click(await screen.findByRole('button', { name: 'Add DHCP Pool' }))
+
     const poolNameInput = await screen.findByRole('textbox', { name: 'Pool Name' })
     const subnetMaskInput = await screen.findByRole('textbox', { name: 'Subnet Mask' })
     const startIpInput = await screen.findByRole('textbox', { name: 'Start IP Address' })

@@ -1,16 +1,11 @@
-import React, { useEffect } from 'react'
+import { ReactNode } from 'react'
 
-import { Form }                                from 'antd'
+import { FormInstance }                        from 'antd'
 import _                                       from 'lodash'
 import { useIntl }                             from 'react-intl'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
-import { PageHeader, showActionModal, StepsFormNew } from '@acx-ui/components'
-import {
-  useCreateNetworkSegmentationGroupMutation,
-  useGetNetworkSegmentationGroupByIdQuery,
-  useUpdateNetworkSegmentationGroupMutation
-} from '@acx-ui/rc/services'
+import { showActionModal, StepsFormNew } from '@acx-ui/components'
 import {
   AccessSwitch,
   CatchErrorResponse,
@@ -22,15 +17,20 @@ import {
 import { useTenantLink } from '@acx-ui/react-router-dom'
 import { getIntl }       from '@acx-ui/utils'
 
-import { AccessSwitchForm }       from './AccessSwitchForm'
-import { DistributionSwitchForm } from './DistributionSwitchForm'
-import { GeneralSettingsForm }    from './GeneralSettingsForm'
-import { SmartEdgeForm }          from './SmartEdgeForm'
-import { SummaryForm }            from './SummaryForm'
-import { WirelessNetworkForm }    from './WirelessNetworkForm'
+interface NetworkSegmentationFormProps {
+  editMode?: boolean
+  form?: FormInstance
+  onFinish: Function
+  initialValues?: Object
+  steps: NetworkSegmentationFormStep[]
+}
 
+interface NetworkSegmentationFormStep {
+  title: string
+  content: ReactNode
+}
 
-export interface NetworkSegmentationGroupForm extends NetworkSegmentationGroup {
+export interface NetworkSegmentationGroupFormData extends NetworkSegmentationGroup {
   venueId: string
   venueName: string
   edgeId: string
@@ -47,7 +47,8 @@ export interface NetworkSegmentationGroupForm extends NetworkSegmentationGroup {
   originalAccessSwitchInfos: AccessSwitch[]
 }
 
-export default function NetworkSegmentationForm ({ editMode = false }: { editMode?: boolean }) {
+export const NetworkSegmentationForm = (props: NetworkSegmentationFormProps) => {
+
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
@@ -55,54 +56,7 @@ export default function NetworkSegmentationForm ({ editMode = false }: { editMod
   const linkToServices = useTenantLink(getServiceListRoutePath(true))
   const previousPath = (location as LocationExtended)?.state?.from?.pathname
 
-  const [form] = Form.useForm()
-  const [createNetworkSegmentationGroup] = useCreateNetworkSegmentationGroupMutation()
-  const [updateNetworkSegmentationGroup] = useUpdateNetworkSegmentationGroupMutation()
-  const { data: nsgData } = useGetNetworkSegmentationGroupByIdQuery({ params }, { skip: !editMode })
-
-  const steps = [{
-    title: $t({ defaultMessage: 'General Settings' }),
-    content: <GeneralSettingsForm editMode={editMode} />
-  }, {
-    title: $t({ defaultMessage: 'SmartEdge' }),
-    content: <SmartEdgeForm />
-  }, {
-    title: $t({ defaultMessage: 'Wireless Network' }),
-    content: <WirelessNetworkForm />
-  }, {
-    title: $t({ defaultMessage: 'Dist. Switch' }),
-    content: <DistributionSwitchForm />
-  }, {
-    title: $t({ defaultMessage: 'Access Switch' }),
-    content: <AccessSwitchForm />
-  }]
-  if (!editMode) {
-    steps.push({
-      title: $t({ defaultMessage: 'Summary' }),
-      content: <SummaryForm />
-    })
-  }
-
-  useEffect(() => {
-    form.resetFields()
-    if(nsgData && editMode) {
-      form.setFieldValue('name', nsgData.name)
-      // form.setFieldValue('tags', nsgData.ta)
-      form.setFieldValue('venueId', nsgData.venueInfos[0]?.venueId)
-      form.setFieldValue('edgeId', nsgData.edgeInfos[0]?.edgeId)
-      form.setFieldValue('segments', nsgData.edgeInfos[0]?.segments)
-      form.setFieldValue('devices', nsgData.edgeInfos[0]?.devices)
-      form.setFieldValue('dhcpId', nsgData.edgeInfos[0]?.dhcpInfoId)
-      form.setFieldValue('poolId', nsgData.edgeInfos[0]?.dhcpPoolId)
-      form.setFieldValue('vxlanTunnelProfileId', nsgData.vxlanTunnelProfileId)
-      form.setFieldValue('networkIds', nsgData.networkIds)
-      form.setFieldValue('distributionSwitchInfos', nsgData.distributionSwitchInfos)
-      form.setFieldValue('accessSwitchInfos', nsgData.accessSwitchInfos)
-      form.setFieldValue('originalAccessSwitchInfos', nsgData.accessSwitchInfos)
-    }
-  }, [nsgData, editMode])
-
-  const handleFinish = async (formData: NetworkSegmentationGroupForm) => {
+  const handleFinish = async (formData: NetworkSegmentationGroupFormData) => {
     const payload = {
       id: formData.id,
       name: formData.name,
@@ -125,11 +79,7 @@ export default function NetworkSegmentationForm ({ editMode = false }: { editMod
       forceOverwriteReboot: formData.forceOverwriteReboot || false
     }
     try {
-      if (editMode) {
-        await updateNetworkSegmentationGroup({ params, payload: payload }).unwrap()
-      } else {
-        await createNetworkSegmentationGroup({ params, payload: payload }).unwrap()
-      }
+      await props.onFinish({ params, payload: payload }).unwrap()
       redirectPreviousPage(navigate, previousPath, linkToServices)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -154,32 +104,15 @@ export default function NetworkSegmentationForm ({ editMode = false }: { editMod
     }
   }
 
-  return (<>
-    <PageHeader
-      title={editMode ?
-        $t({ defaultMessage: 'Edit Network Segmentation Service' }) :
-        $t({ defaultMessage: 'Add Network Segmentation Service' })
-      }
-      breadcrumb={[
-        { text: $t({ defaultMessage: 'Services' }), link: '/services' }
-      ]}
-    />
-    <StepsFormNew editMode={editMode}
-      form={form}
+  return (
+    <StepsFormNew editMode={props.editMode}
+      form={props.form}
       onCancel={() => redirectPreviousPage(navigate, previousPath, linkToServices)}
       onFinish={handleFinish}
-      initialValues={{
-        // Refactoring note:
-        // Not sure if it make sense to have it as null,
-        // setting it null end up causing warning on shouldn't use null for Select.
-        // Will retain from its `defaultValue` usage,
-        // so it remain the same as what was implemented
-        // eslint-disable-next-line max-len
-        vxlanTunnelProfileId: null as unknown as NetworkSegmentationGroupForm['vxlanTunnelProfileId']
-      }}
+      initialValues={props.initialValues}
     >
       {
-        steps.map((item, index) =>
+        props.steps.map((item, index) =>
           <StepsFormNew.StepForm
             key={`step-${index}`}
             name={index.toString()}
@@ -189,7 +122,7 @@ export default function NetworkSegmentationForm ({ editMode = false }: { editMod
           </StepsFormNew.StepForm>)
       }
     </StepsFormNew>
-  </>)
+  )
 }
 
 export const afterSubmitMessage = (
