@@ -18,7 +18,7 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
   const { activeTab } = useParams()
   const basePath = useTenantLink('/administration')
   const navigate = useNavigate()
-
+  const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
 
   const onTabChange = (tab: string) => {
     navigate({
@@ -43,7 +43,9 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
         tab={$t({ defaultMessage: 'Firmware Version Management' })}
         key='fwVersionMgmt'
       />
-      <Tabs.TabPane tab={$t({ defaultMessage: 'Local RADIUS Server' })} key='localRadiusServer' />
+      { isRadiusClientEnabled &&
+        <Tabs.TabPane tab={$t({ defaultMessage: 'Local RADIUS Server' })} key='localRadiusServer' />
+      }
     </Tabs>
   )
 }
