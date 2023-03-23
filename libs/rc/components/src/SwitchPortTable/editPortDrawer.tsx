@@ -444,7 +444,7 @@ export function EditPortDrawer ({
 
   const getOverrideDisabled = (field: string) => {
     switch (field) {
-      case 'portEnable': return disablePoeCapability
+      case 'poeEnable': return disablePoeCapability
       case 'poeClass':
       case 'poePriority':
       case 'poeBudget':
@@ -601,7 +601,7 @@ export function EditPortDrawer ({
       const untaggedVlan = venueUntaggedVlan || profileDefaultVlan
       untagged = untaggedVlan
       tagged = venueTaggedVlans.toString()
-      if (untaggedVlan === defaultVlan && !venueTaggedVlans) {
+      if (Number(untaggedVlan) === Number(defaultVlan) && !venueTaggedVlans) {
         status = 'default' // Venue no setting, revert to default
       }
     }
@@ -735,6 +735,17 @@ export function EditPortDrawer ({
         labelAlign='left'
         onValuesChange={onValuesChange}
       >
+        { !isMultipleEdit && getFieldTemplate(
+          <Form.Item
+            {...getFormItemLayout(isMultipleEdit)}
+            name='name'
+            label={$t({ defaultMessage: 'Port Name' })}
+            initialValue=''
+            children={<Input />}
+          />,
+          'name', $t({ defaultMessage: 'Port Name' })
+        )}
+
         { getFieldTemplate(
           <Form.Item
             noStyle
@@ -743,17 +754,21 @@ export function EditPortDrawer ({
               isMultipleEdit && !portEnableCheckbox && hasMultipleValue.includes('portEnable')
                 ? <MultipleText />
                 : <Tooltip title={getFieldTooltip('portEnable')}>
-                  <Form.Item
-                    name='portEnable'
-                    noStyle
-                    valuePropName='checked'
-                    initialValue={false}
-                  >
-                    <Switch
-                      disabled={getFieldDisabled('portEnable')}
-                      className={getToggleClassName('portEnable', isMultipleEdit, hasMultipleValue)}
-                    />
-                  </Form.Item>
+                  <Space>
+                    <Form.Item
+                      name='portEnable'
+                      noStyle
+                      valuePropName='checked'
+                      initialValue={false}
+                    >
+                      <Switch
+                        disabled={getFieldDisabled('portEnable')}
+                        className={
+                          getToggleClassName('portEnable', isMultipleEdit, hasMultipleValue)
+                        }
+                      />
+                    </Form.Item>
+                  </Space>
                 </Tooltip>
             }
           />,
@@ -763,21 +778,24 @@ export function EditPortDrawer ({
         { getFieldTemplate(
           <Form.Item
             noStyle
-            children={<Tooltip title={getFieldTooltip('poeEnable')}>
-              {isMultipleEdit && !poeEnableCheckbox && hasMultipleValue.includes('poeEnable')
-                ? <MultipleText />
-                : <Form.Item
-                  name='poeEnable'
-                  noStyle
-                  valuePropName='checked'
-                  initialValue={false}
-                >
-                  <Switch
-                    disabled={getFieldDisabled('poeEnable')}
-                    className={getToggleClassName('poeEnable', isMultipleEdit, hasMultipleValue)}
-                  />
-                </Form.Item>
-              }</Tooltip>
+            children={isMultipleEdit && !poeEnableCheckbox && hasMultipleValue.includes('poeEnable')
+              ? <MultipleText />
+              : <Tooltip title={getFieldTooltip('poeEnable')}>
+                <Space>
+                  <Form.Item
+                    name='poeEnable'
+                    noStyle
+                    valuePropName='checked'
+                    initialValue={false}
+                  >
+                    <Switch
+                      disabled={getFieldDisabled('poeEnable')}
+                      className={getToggleClassName('poeEnable', isMultipleEdit, hasMultipleValue)}
+                    />
+                  </Form.Item>
+                </Space>
+              </Tooltip>
+
             }
           />,
           'poeEnable', $t({ defaultMessage: 'PoE Enabled' }), true

@@ -12,6 +12,8 @@ import {
   FirmwareCategory
 } from '@acx-ui/rc/utils'
 
+import * as UI from '../../styledComponents'
+
 const transform = firmwareTypeTrans()
 
 export const VersionBanner = () => {
@@ -21,20 +23,21 @@ export const VersionBanner = () => {
   const versions = getReleaseFirmware(latestReleaseVersions)
   const firmware = versions[0]
 
+  if (!firmware) return null
   return (
     <div>
-      <div>
-        {$t(
-          { defaultMessage: 'Latest Version: {count}' },
-          { count: firmware?.name }
-        )}
-      </div>
-      <div>
-        <span>{transform(firmware?.category, 'type')}</span>
+      <UI.BannerVersion>
+        <span>{$t({ defaultMessage: 'Latest Version:' })} </span>
+        <UI.BannerVersionName>{ firmware?.name }</UI.BannerVersionName>
+      </UI.BannerVersion>
+      <UI.BannerVersion>
+        <span>{transform(firmware?.category, 'type')} </span>
         <span>({transform(firmware?.category, 'subType')})</span>
-        <span>-</span>
-        <span>{formatter(DateFormatEnum.DateFormat)(firmware?.createdDate)}</span>
-      </div>
+        <span> - </span>
+        <UI.BannerVersionName>
+          {formatter(DateFormatEnum.DateFormat)(firmware?.createdDate)}
+        </UI.BannerVersionName>
+      </UI.BannerVersion>
     </div>
   )
 }
