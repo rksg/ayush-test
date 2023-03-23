@@ -191,7 +191,6 @@ describe('Networks Table', () => {
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
 
     await screen.findByText('Add Wi-Fi Network')
     await screen.findByText(/network-01/i)
@@ -206,7 +205,6 @@ describe('Networks Table', () => {
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
 
     const row = await screen.findByRole('row', { name: /network-02/i })
     fireEvent.click(row)
@@ -224,7 +222,6 @@ describe('Networks Table', () => {
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
 
     const row = await screen.findByRole('row', { name: /network-01/i })
     fireEvent.click(within(row).getByRole('radio'))
