@@ -50,6 +50,7 @@ function PersonaGroupDetailsPageHeader (props: {
 
 function PersonaGroupDetails () {
   const { $t } = useIntl()
+  const propertyEnabled = useIsSplitOn(Features.PROPERTY_MANAGEMENT)
   const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
   const { personaGroupId, tenantId } = useParams()
   const [editVisible, setEditVisible] = useState(false)
@@ -92,7 +93,7 @@ function PersonaGroupDetails () {
 
     if (nsgId && networkSegmentationEnabled) {
       let name: string | undefined
-      getNsgById({ params: { serviceId: nsgId } })
+      getNsgById({ params: { tenantId, serviceId: nsgId } })
         .then(result => name = result.data?.name)
         .finally(() => setNsgDisplay({ id: nsgId, name }))
     }
@@ -187,7 +188,9 @@ function PersonaGroupDetails () {
             <BasePersonaTable
               colProps={{
                 name: { searchable: true },
-                groupId: { show: false, filterable: false }
+                groupId: { show: false, filterable: false },
+                ...!propertyEnabled
+                  ? { identityId: { disable: true, show: false } } : {}
               }}/>
           </div>
         </GridCol>
