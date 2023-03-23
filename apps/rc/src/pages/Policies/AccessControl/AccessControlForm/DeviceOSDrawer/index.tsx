@@ -165,9 +165,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   }
 
   useEffect(() => {
-    if (!isOnlyViewMode && (devicePolicyId === '' || devicePolicyId === undefined)) {
-      setSkipFetch(false)
-    }
+    setSkipFetch(!isOnlyViewMode && (devicePolicyId === '' || devicePolicyId === undefined))
   }, [isOnlyViewMode, devicePolicyId])
 
   useEffect(() => {

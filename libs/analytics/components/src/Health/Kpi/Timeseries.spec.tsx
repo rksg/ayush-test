@@ -91,7 +91,7 @@ describe('Kpi timeseries', () => {
     expect(await screen.findByText('No data to display')).toBeVisible()
   })
   it('should format y value for timeseries', async () => {
-    expect(formatYDataPoint(null)).toStrictEqual('-')
+    expect(formatYDataPoint(null)).toStrictEqual('--')
     expect(formatYDataPoint(0.1)).toStrictEqual('10%')
   })
 })
