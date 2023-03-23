@@ -4,9 +4,9 @@ import { Statistic }                                            from 'antd'
 import _                                                        from 'lodash'
 import { IntlShape, MessageDescriptor, defineMessage, useIntl } from 'react-intl'
 
-import { noDataSymbol }     from '@acx-ui/analytics/utils'
 import { GridCol, Tooltip } from '@acx-ui/components'
 import { formatter }        from '@acx-ui/formatter'
+import { noDataDisplay }    from '@acx-ui/utils'
 
 import { Pill } from './styledComponents'
 
@@ -32,7 +32,7 @@ export const statusColumns: Record<string, StatusColumn> = {
   passedApsPercent: {
     title: defineMessage({ defaultMessage: 'Test Result' }),
     format: (value, state) => state === ConfigStatusEnum.NoData
-      ? noDataSymbol
+      ? noDataDisplay
       : formatter('percentFormat')(Math.abs(value || 0)),
     diff: (current, previous) => current! - previous!,
     badgeColor: value => (value > 0) ? StatusBadgeEnum.Positive : StatusBadgeEnum.Negative
@@ -40,24 +40,24 @@ export const statusColumns: Record<string, StatusColumn> = {
   avgPingTime: {
     title: defineMessage({ defaultMessage: 'Average Ping Time' }),
     format: (value, state, $t) => state === ConfigStatusEnum.Configured
-      ? (value ? formatter('durationFormat')(Math.abs(value)) : noDataSymbol)
-      : state === ConfigStatusEnum.NA ? $t({ defaultMessage: 'N/A' }) : noDataSymbol,
+      ? (value ? formatter('durationFormat')(Math.abs(value)) : noDataDisplay)
+      : state === ConfigStatusEnum.NA ? $t({ defaultMessage: 'N/A' }) : noDataDisplay,
     diff: (current, previous) => (current !== 0 && previous !== 0) ? current! - previous! : null,
     badgeColor: value => (value > 0) ? StatusBadgeEnum.Negative : StatusBadgeEnum.Positive
   },
   avgUpload: {
     title: defineMessage({ defaultMessage: 'Average Upload' }),
     format: (value, state, $t) => state === ConfigStatusEnum.Configured
-      ? (value ? formatter('networkSpeedFormat')(Math.abs(value)) : noDataSymbol)
-      : state === ConfigStatusEnum.NA ? $t({ defaultMessage: 'N/A' }) : noDataSymbol,
+      ? (value ? formatter('networkSpeedFormat')(Math.abs(value)) : noDataDisplay)
+      : state === ConfigStatusEnum.NA ? $t({ defaultMessage: 'N/A' }) : noDataDisplay,
     diff: (current, previous) => (current !== 0 && previous !== 0) ? current! - previous! : null,
     badgeColor: value => (value > 0) ? StatusBadgeEnum.Positive : StatusBadgeEnum.Negative
   },
   avgDownload: {
     title: defineMessage({ defaultMessage: 'Average Download' }),
     format: (value, state, $t) => state === ConfigStatusEnum.Configured
-      ? (value ? formatter('networkSpeedFormat')(Math.abs(value)) : noDataSymbol)
-      : state === ConfigStatusEnum.NA ? $t({ defaultMessage: 'N/A' }) : noDataSymbol,
+      ? (value ? formatter('networkSpeedFormat')(Math.abs(value)) : noDataDisplay)
+      : state === ConfigStatusEnum.NA ? $t({ defaultMessage: 'N/A' }) : noDataDisplay,
     diff: (current, previous) => (current !== 0 && previous !== 0) ? current! - previous! : null,
     badgeColor: value => (value > 0) ? StatusBadgeEnum.Positive : StatusBadgeEnum.Negative
   }

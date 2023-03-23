@@ -165,7 +165,7 @@ export function ApSnmp () {
           })}
           style={{ width: '200px' }}
         />
-        <TenantLink
+        {((RetrievedVenueApSnmpAgentList?.data?.length as number) < 64) && <TenantLink
           to={getPolicyRoutePath({
             type: PolicyType.SNMP_AGENT,
             oper: PolicyOperation.CREATE
@@ -173,7 +173,7 @@ export function ApSnmp () {
           style={{ marginLeft: '20px' }}
         >
           {$t({ defaultMessage: 'Add' })}
-        </TenantLink>
+        </TenantLink>}
       </Form.Item>}
     </Space>
   </Loader>)

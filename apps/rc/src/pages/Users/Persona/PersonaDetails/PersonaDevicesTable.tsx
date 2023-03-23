@@ -4,7 +4,6 @@ import moment        from 'moment-timezone'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { noDataSymbol }                                                  from '@acx-ui/analytics/utils'
 import { Loader, showActionModal, Subtitle, Table, TableProps, Tooltip } from '@acx-ui/components'
 import { SuccessSolid }                                                  from '@acx-ui/icons'
 import { OSIconContainer }                                               from '@acx-ui/rc/components'
@@ -15,6 +14,7 @@ import {
 } from '@acx-ui/rc/services'
 import { ClientList, getOsTypeIcon, Persona, PersonaDevice } from '@acx-ui/rc/utils'
 import { filterByAccess }                                    from '@acx-ui/user'
+import { noDataDisplay }                                     from '@acx-ui/utils'
 
 import { PersonaDeviceItem }          from '../PersonaForm/PersonaDevicesForm'
 import { PersonaDevicesImportDialog } from '../PersonaForm/PersonaDevicesImportDialog'
@@ -134,7 +134,7 @@ export function PersonaDevicesTable (props: {
       render: (data) => {
         return data
           ? moment(data as string).format('YYYY/MM/DD HH:MM A')
-          : noDataSymbol
+          : noDataDisplay
       }
     }
   ]
