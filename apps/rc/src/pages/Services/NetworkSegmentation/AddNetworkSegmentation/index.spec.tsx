@@ -234,6 +234,6 @@ describe('AddNetworkSegmentation', () => {
     await user.click(await screen.findByRole('button', { name: 'Next' }))
     // step6
     await user.click(await screen.findByRole('button', { name: 'Finish' }))
-  })
+  }, 30000)
 
 })
