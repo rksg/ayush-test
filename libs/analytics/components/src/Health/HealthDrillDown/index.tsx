@@ -1,6 +1,11 @@
 // @ts-nocheck
+import { useState } from 'react'
+
+import {  Divider } from 'antd'
+
 import { GridCol, GridRow } from '@acx-ui/components'
-import { formatter }        from '@acx-ui/utils'
+import { formatter }        from '@acx-ui/formatter'
+import { CloseSymbol }      from '@acx-ui/icons'
 
 import { FunnelChart } from './funnelChart'
 import {
@@ -9,6 +14,13 @@ import {
   Separator
 }                                from './styledComponents'
 
+export type DrilldownSelection = 'connectionFailure' | 'ttc' | null
+
+const titleConfig = {
+  connectionFailure: 'Connection Failures',
+  ttc: 'Average Time To Connect'
+}
+type Stages = 'authFailure'| 'assoFailure'|'eapFailure' | 'radiusFailure'| 'dhcpFailure' | null
 const getFormattedToFunnel = (type, {
   authFailure,
   assoFailure,
@@ -34,54 +46,53 @@ const getFormattedToFunnel = (type, {
   },
   { name: 'DHCP', label: type === 'connection' ? 'DHCP Failure' : 'DHCP', value: dhcpFailure }
 ]
-const HealthDrillDown = () => {
-  return (
-    <GridRow>
-      <GridCol col={{ span: 24 }} style={{ minHeight: '105px' }}>
-        <Title>{'Connection Steps'}</Title>
-        {/* <CloseButton onClick={() => setDrilldownSelection(null)} /> */}
-        <div>
-          { true ?
-            <FunnelChart valueLabel='Fail'
-              height={140}
-              stages={getFormattedToFunnel('ttc',{
-                authFailure: 228.46716757166308,
-                assoFailure: 252.04659838138593,
-                eapFailure: 352.08455161065757,
-                radiusFailure: 252.82345132743362,
-                dhcpFailure: 97.25188470066519
-              })}
-              colors={['#194f70', '#176291', '#1b79b5', '#208fd5', '#35b1ff']}
-              selectedStage={'eapFailure'}
-              onSelectStage={(stage) => console.log(stage)}
-              valueFormatter={formatter('countFormat')}
-            />
-            :
-            <FunnelChart valueLabel='Fail'
-              height={140}
-              stages={getFormattedToFunnel('ttc',{
-                authFailure: 228.46716757166308,
-                assoFailure: 252.04659838138593,
-                eapFailure: 352.08455161065757,
-                radiusFailure: 252.82345132743362,
-                dhcpFailure: 97.25188470066519
-              })}
-              colors={['#194f70', '#176291', '#1b79b5', '#208fd5', '#35b1ff']}
-              selectedStage={'dhcpFailure'}
-              onSelectStage={(stage) => console.log(stage)}
-              valueFormatter={valueFormatter}
-            />
+const HealthDrillDown = (props: {
+  drilldownSelection: DrilldownSelection;
+  setDrilldownSelection: CallableFunction;
+}) => {
+  const { drilldownSelection, setDrilldownSelection } = props
+  const [ selectedStage, setSelectedStage ] = useState<Stages>(null)
+  return drilldownSelection ? (
+    <GridRow style={{ marginTop: 25 }}>
+      <GridCol col={{ span: 24 }}>
+        <GridRow>
+          <GridCol col={{ span: 12 }}>
+            <Title>{titleConfig?.[drilldownSelection]}</Title>
+          </GridCol>
+          <GridCol col={{ span: 12 }} style={{ alignItems: 'end' }}>
+            <CloseSymbol onClick={() => setDrilldownSelection(null)} />
+          </GridCol>
+        </GridRow>
+        <FunnelChart
+          valueLabel='Fail'
+          height={140}
+          stages={getFormattedToFunnel(drilldownSelection, {
+            authFailure: 228.46716757166308,
+            assoFailure: 252.04659838138593,
+            eapFailure: 352.08455161065757,
+            radiusFailure: 252.82345132743362,
+            dhcpFailure: 97.25188470066519
+          })}
+          colors={['#194f70', '#176291', '#1b79b5', '#208fd5', '#35b1ff']}
+          selectedStage={selectedStage}
+          onSelectStage={(stage) => setSelectedStage(stage)}
+          valueFormatter={
+            drilldownSelection === 'connectionFailure' ? formatter('countFormat') : valueFormatter
           }
-        </div>
+        />
       </GridCol>
-      <GridCol col={{ span: 12 }} style={{ height: '210px' }}>
-        PIE chart
-      </GridCol>
-      <GridCol col={{ span: 12 }} style={{ height: '210px' }}>
-           Table
-      </GridCol>
-
+      <Divider />
+      {selectedStage && (
+        <>
+          <GridCol col={{ span: 12 }} style={{ height: '210px' }}>
+            PIE chart
+          </GridCol>
+          <GridCol col={{ span: 12 }} style={{ height: '210px' }}>
+            Table
+          </GridCol>
+        </>
+      )}
     </GridRow>
-  )
+  ) : null
 }
 export { HealthDrillDown }

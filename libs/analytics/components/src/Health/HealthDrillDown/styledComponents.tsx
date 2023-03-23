@@ -13,7 +13,6 @@ const DefaultSection = styled.div`
 export const Title = styled.div`
   font-size: 14px;
   font-weight: bold;
-  color: rgba(91, 117, 131, 1);
 `
 
 export const Section = styled(DefaultSection)`

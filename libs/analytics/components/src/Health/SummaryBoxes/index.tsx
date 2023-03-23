@@ -59,9 +59,9 @@ export const SummaryBoxes = ({ filters, drilldownSelection, setDrilldownSelectio
     end: filters.endDate
   }
   const toggleConnectionFailure = () => setDrilldownSelection(
-    drilldownSelection !== 'connectionFailure' ? 'connectionFailure' : 'none'
+    drilldownSelection !== 'connectionFailure' ? 'connectionFailure' : null
   )
-  const toggleTtc = () => setDrilldownSelection(drilldownSelection !== 'ttc' ? 'ttc' : 'none')
+  const toggleTtc = () => setDrilldownSelection(drilldownSelection !== 'ttc' ? 'ttc' : null)
 
   const queryResults = useSummaryQuery(payload, {
     selectFromResult: ({ data, ...rest }) => {
