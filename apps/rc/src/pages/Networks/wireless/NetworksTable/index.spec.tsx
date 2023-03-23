@@ -183,7 +183,7 @@ describe('Networks Table', () => {
   })
 
   it('should render table', async () => {
-    const { asFragment } = render(
+    render(
       <Provider>
         <NetworksTable />
       </Provider>, {
@@ -197,7 +197,7 @@ describe('Networks Table', () => {
   })
 
   it('should click disabled row', async () => {
-    const { asFragment } = render(
+    render(
       <Provider>
         <NetworksTable />
       </Provider>, {
@@ -214,7 +214,7 @@ describe('Networks Table', () => {
   })
 
   it('should delete selected row', async () => {
-    const { asFragment } = render(
+    render(
       <Provider>
         <NetworksTable />
       </Provider>, {
