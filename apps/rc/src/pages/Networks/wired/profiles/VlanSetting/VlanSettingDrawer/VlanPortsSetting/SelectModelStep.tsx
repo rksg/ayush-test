@@ -92,10 +92,14 @@ export function SelectModelStep (props: { editMode: boolean }) {
       checkIfModuleFixed(selectedFamily, selectedModel)
     }
 
-    if(model){
+    if(family){
+      setModel('')
+    }
+
+    if(family !=='' && model !== ''){
       modelChangeAction(family, model)
     }
-  }, [ICX_MODELS_MODULES, vlanSettingValues, model])
+  }, [ICX_MODELS_MODULES, vlanSettingValues, family, model])
 
   const checkIfModuleFixed = (family: string, model: string) => {
     if (family === 'ICX7550') {
@@ -168,7 +172,7 @@ export function SelectModelStep (props: { editMode: boolean }) {
   }
 
   const onFamilyChange = (e: RadioChangeEvent) => {
-    setModel('')
+    setFamily(e.target.value)
     familyChangeAction(e.target.value)
   }
 
@@ -177,7 +181,6 @@ export function SelectModelStep (props: { editMode: boolean }) {
       form.resetFields(['model', 'enableSlot2', 'enableSlot3', 'enableSlot4'])
       setModuleSelectionEnable(false)
     }
-    setFamily(family)
     const index = family as keyof typeof ICX_MODELS_MODULES
     const modelsList = ICX_MODELS_MODULES[index]
 
@@ -228,9 +231,9 @@ export function SelectModelStep (props: { editMode: boolean }) {
   }
 
   const onModuleChange = () => {
-    getSlots(family, model)
+    getSlots(form.getFieldValue('family'), form.getFieldValue('model'))
     setSwitchFamilyModels({ ...switchFamilyModels, slots: [] })
-    updateModelPortData(family, model)
+    updateModelPortData(form.getFieldValue('family'), form.getFieldValue('model'))
   }
 
   const updateModelPortData = (selectedFamily: string, selectedModel: string) => {
@@ -369,7 +372,7 @@ export function SelectModelStep (props: { editMode: boolean }) {
                 required={true}
                 initialValue={model}
                 children={<Radio.Group onChange={onModelChange}
-                  // defaultValue={model}
+                  defaultValue={model}
                 >
                   {models.map(({ label, value }) => (
                     <Radio key={value} value={value} disabled={editMode}>

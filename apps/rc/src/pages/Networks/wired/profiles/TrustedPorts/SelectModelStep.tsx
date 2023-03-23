@@ -87,10 +87,14 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
       setTrustedPorts(editRecord)
     }
 
-    if(model){
+    if(family){
+      setModel('')
+    }
+
+    if(family !=='' && model !== ''){
       modelChangeAction(family, model)
     }
-  }, [ICX_MODELS_MODULES, editRecord, model])
+  }, [ICX_MODELS_MODULES, editRecord, family, model])
 
   const checkIfModuleFixed = (family: string, model: string) => {
     if (family === 'ICX7550') {
@@ -163,7 +167,7 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
   }
 
   const onFamilyChange = (e: RadioChangeEvent) => {
-    setModel('')
+    setFamily(e.target.value)
     familyChangeAction(e.target.value)
   }
 
@@ -172,7 +176,6 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
       form.resetFields(['model', 'enableSlot2', 'enableSlot3', 'enableSlot4'])
       setModuleSelectionEnable(false)
     }
-    setFamily(family)
     const index = family as keyof typeof ICX_MODELS_MODULES
     const modelsList = ICX_MODELS_MODULES[index]
 
@@ -183,6 +186,7 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
   }
 
   const onModelChange = (e: RadioChangeEvent) => {
+    setModel(e.target.value)
     modelChangeAction(family, e.target.value)
   }
 
@@ -195,8 +199,9 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
       setModuleSelectionEnable(true)
       setModule2SelectionEnable(true)
       setModule3SelectionEnable(true)
+    }else{
+      setModuleSelectionEnable(true)
     }
-    setModel(model)
     checkIfModuleFixed(family, model)
     getSlots(family, model)
     setTrustedPorts({ ...trustedPorts, slots: [] })
@@ -222,9 +227,9 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
   }
 
   const onModuleChange = () => {
-    getSlots(family, model)
+    getSlots(form.getFieldValue('family'), form.getFieldValue('model'))
     setTrustedPorts({ ...trustedPorts, slots: [] })
-    updateModelPortData(family, model)
+    updateModelPortData(form.getFieldValue('family'), form.getFieldValue('model'))
   }
 
   const updateModelPortData = (selectedFamily: string, selectedModel: string) => {

@@ -9,9 +9,9 @@ import {
 import { Row, Col, Form, Typography, Checkbox, Input } from 'antd'
 import _                                               from 'lodash'
 
-import { Card, Tooltip }             from '@acx-ui/components'
-import { SwitchSlot2 as SwitchSlot } from '@acx-ui/rc/utils'
-import { getIntl }                   from '@acx-ui/utils'
+import { Card, Tooltip }                                 from '@acx-ui/components'
+import { SwitchSlot2 as SwitchSlot, getSwitchPortLabel } from '@acx-ui/rc/utils'
+import { getIntl }                                       from '@acx-ui/utils'
 
 import * as UI          from './styledComponents'
 import VlanPortsContext from './VlanPortsContext'
@@ -237,6 +237,12 @@ export function UntaggedPortsStep () {
     }
   }
 
+  const getPortLabel = (port: number, slot: number) => {
+    const model = vlanSettingValues.switchFamilyModels?.model || ''
+    const portLabel = getSwitchPortLabel(model, slot) + port.toString()
+    return portLabel
+  }
+
   return (
     <>
       <Row gutter={20}>
@@ -284,15 +290,8 @@ export function UntaggedPortsStep () {
                           data-disabled={getDisabledPorts(timeslot.value)}
                           style={{ width: '20px', height: '20px' }}
                         >
-                          {
-                            /* TODO for switch
-                            <UI.LighteningIcon />
-                            <UI.StackingIcon />
-                            <UI.RuckusUploadIcon />
-                            */
-                          }
                         </div>
-                        <p>{i+1}</p>
+                        <p>{getPortLabel(i+1, 1)}</p>
                       </Tooltip>,
                       value: timeslot.value,
                       disabled: getDisabledPorts(timeslot.value)
@@ -332,7 +331,7 @@ export function UntaggedPortsStep () {
                               data-disabled={getDisabledPorts(timeslot.value)}
                               style={{ width: '20px', height: '20px' }}
                             ></div>
-                            <p>{i+1}</p>
+                            <p>{getPortLabel(i+1, 2)}</p>
                           </Tooltip>,
                           value: timeslot.value,
                           disabled: getDisabledPorts(timeslot.value)
@@ -373,7 +372,7 @@ export function UntaggedPortsStep () {
                           data-disabled={getDisabledPorts(timeslot.value)}
                           style={{ width: '20px', height: '20px' }}
                         ></div>
-                        <p>{i+1}</p>
+                        <p>{getPortLabel(i+1, 3)}</p>
                       </Tooltip>,
                       value: timeslot.value,
                       disabled: getDisabledPorts(timeslot.value)
