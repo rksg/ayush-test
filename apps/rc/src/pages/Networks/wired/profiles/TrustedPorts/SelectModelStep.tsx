@@ -87,10 +87,10 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
       setTrustedPorts(editRecord)
     }
 
-    if(model && optionListForSlot2){
-      onModuleChange()
+    if(family && model && optionListForSlot2){
+      updateModelPortData(family, model)
     }
-  }, [ICX_MODELS_MODULES, editRecord, model, optionListForSlot2])
+  }, [ICX_MODELS_MODULES, editRecord, family, model, optionListForSlot2])
 
   const checkIfModuleFixed = (family: string, model: string) => {
     if (family === 'ICX7550') {

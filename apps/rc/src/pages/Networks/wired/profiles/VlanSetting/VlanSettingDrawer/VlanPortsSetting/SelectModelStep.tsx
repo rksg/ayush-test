@@ -92,10 +92,10 @@ export function SelectModelStep (props: { editMode: boolean }) {
       checkIfModuleFixed(selectedFamily, selectedModel)
     }
 
-    if(model && optionListForSlot2){
-      onModuleChange()
+    if(family && model && optionListForSlot2){
+      updateModelPortData(family, model)
     }
-  }, [ICX_MODELS_MODULES, vlanSettingValues, model, optionListForSlot2])
+  }, [ICX_MODELS_MODULES, vlanSettingValues, family, model, optionListForSlot2])
 
   const checkIfModuleFixed = (family: string, model: string) => {
     if (family === 'ICX7550') {
