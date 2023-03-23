@@ -1,6 +1,7 @@
 import { FormInstance } from 'antd'
 
 import {
+  ApplicationAclType,
   ApplicationPortMappingType,
   ApplicationRuleType,
   appPolicyInfoType
@@ -27,7 +28,7 @@ export const updateFormWithEditRow = (drawerForm: FormInstance, editRow: Applica
   // eslint-disable-next-line max-len
   drawerForm.setFieldValue('downlink', editRow.ruleSettings.downlink ? editRow.ruleSettings.downlink / 1000 : undefined)
   drawerForm.setFieldValue(['uplinkMarking', 'value'], editRow.ruleSettings.upLinkMarkingType)
-  drawerForm.setFieldValue(['downlinkMarking', 'value'], editRow.ruleSettings.downLinkMarkingType)
+  drawerForm.setFieldValue(['downlinkPriority', 'value'], editRow.ruleSettings.downLinkMarkingType)
   drawerForm.setFieldValue(['uplinkMarking', 'strategy'], editRow.ruleSettings.markingPriority)
 }
 
@@ -35,7 +36,7 @@ export const transformToApplicationRule = (
   drawerForm: FormInstance,
   appPolicyInfo: appPolicyInfoType
 ) => {
-  return appPolicyInfo.rules.map(rule => {
+  return appPolicyInfo.rules.map((rule, ruleId) => {
     let systemDefined = {} as { [key: string]: string | number }
     let userDefined = {} as { [key: string]: string | number }
     if (rule.ruleType === ApplicationRuleType.SIGNATURE) {
@@ -56,8 +57,14 @@ export const transformToApplicationRule = (
         userDefined.protocol = rule.protocol
       }
     }
+
+    let rateLimitObject = {} as { uplink?: number, downlink?: number }
+    if (rule.accessControl === ApplicationAclType.RATE_LIMIT) {
+      rateLimitObject.uplink = rule.uplink
+      rateLimitObject.downlink = rule.downlink
+    }
     return {
-      priority: rule.priority,
+      priority: ruleId + 1,
       id: rule.id,
       ruleName: rule.name,
       ruleType: rule.ruleType,
@@ -67,6 +74,7 @@ export const transformToApplicationRule = (
       ruleSettings: {
         ...systemDefined,
         ...userDefined,
+        ...rateLimitObject,
         ruleType: rule.ruleType
       }
     }
@@ -92,9 +100,9 @@ export const genRuleObject = (drawerForm: FormInstance) => {
       protocol: drawerForm.getFieldValue('protocol'),
       uplink: drawerForm.getFieldValue('uplink') * 1000,
       downlink: drawerForm.getFieldValue('downlink') * 1000,
-      upLinkMarkingType: drawerForm.getFieldValue(['uplinkMarking', 'value']),
-      markingPriority: drawerForm.getFieldValue(['uplinkMarking', 'strategy']),
-      downLinkMarkingType: drawerForm.getFieldValue(['downlinkMarking', 'value'])
+      upLinkMarkingType: drawerForm.getFieldValue(['uplinkMarking', 'strategy']),
+      markingPriority: drawerForm.getFieldValue(['uplinkMarking', 'value']),
+      downLinkMarkingType: drawerForm.getFieldValue(['downlinkPriority', 'value'])
     }
   }
 }
@@ -139,7 +147,20 @@ export const transformToRulesForPayload = (
       userAppConfig.destinationPort = rule.ruleSettings.destinationPort
     }
 
+    if (rule.accessControl.toUpperCase() !== ApplicationAclType.RATE_LIMIT) {
+      delete rule.ruleSettings.uplink
+      delete rule.ruleSettings.downlink
+      delete rule.ruleSettings.appNameSystemDefined
+    }
+
+    let ruleId = {} as { id: string }
+    if (rule.id) {
+      ruleId.id = rule.id
+    }
+
     return {
+      ...ruleId,
+      ...rule.ruleSettings,
       ...catAppConfig,
       ...userAppConfig,
       accessControl: rule.accessControl.toUpperCase(),
