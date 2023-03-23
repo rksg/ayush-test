@@ -80,7 +80,7 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
 
     if (adminInvitedError) {
       // eslint-disable-next-line max-len
-      message = $t({ defaultMessage: 'The email address belongs to a user of another Ruckus Cloud tenant. You may add this user as a 3rd party administrator.' })
+      message = $t({ defaultMessage: 'The email address belongs to a user of another RUCKUS One tenant. You may add this user as a 3rd party administrator.' })
 
       if (isMspEc) {
         // eslint-disable-next-line max-len

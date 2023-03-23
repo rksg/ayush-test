@@ -2,10 +2,10 @@
 import { defineMessage } from 'react-intl'
 
 export const MessageMapping = {
-  recovery_passphrase_tooltip: defineMessage({ defaultMessage: 'Passphrase of a special recovery network which is activated on AP once it loses connection with Ruckus Cloud.' }),
+  recovery_passphrase_tooltip: defineMessage({ defaultMessage: 'Passphrase of a special recovery network which is activated on AP once it loses connection with RUCKUS One.' }),
   recovery_passphrase_description_1: defineMessage({ defaultMessage: '- When you enter the passphrase make sure to type only 16 digits, no spaces' }),
   recovery_passphrase_description_2: defineMessage({ defaultMessage: '- The SSID of the recovery network is: “Recover.Me-xxxxxx” where “xxxxxx” are the last six characters of the AP\'s MAC address' }),
-  change_recovery_passphrase_description: defineMessage({ defaultMessage: 'Note: Changing the passphrase will be applied to disconnected APs only once they are reconnected to Ruckus Cloud' }),
+  change_recovery_passphrase_description: defineMessage({ defaultMessage: 'Note: Changing the passphrase will be applied to disconnected APs only once they are reconnected to RUCKUS One' }),
   recovery_passphrase_no_aps_message: defineMessage({ defaultMessage: 'This feature will become available once you add APs' }),
   default_system_language_description: defineMessage({ defaultMessage: 'Changes will affect only new user accounts. Existing user account that have logged in previously will stay unchanged.' }),
   map_region_description: defineMessage({ defaultMessage: 'Selected Map Region affects all the user in this account.' }),

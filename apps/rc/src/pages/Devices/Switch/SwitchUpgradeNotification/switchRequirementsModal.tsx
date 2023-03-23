@@ -127,22 +127,22 @@ export function SwitchRequirementsModal (props: {
       </body>
 
       <UI.SubTitle4 level={4}>
-        {$t({ defaultMessage: 'Connecting the switch to Cloud' })}</UI.SubTitle4>
+        {$t({ defaultMessage: 'Connecting the switch to RUCKUS One' })}</UI.SubTitle4>
 
       <UI.DescriptionBody>
-        {$t({ defaultMessage: 'Factory-default ICX switches and ICX switches with pre-existing configuration use different methods to connect to the RUCKUS Cloud.' })}
+        {$t({ defaultMessage: 'Factory-default ICX switches and ICX switches with pre-existing configuration use different methods to connect to RUCKUS One.' })}
       </UI.DescriptionBody>
 
       <UI.SubTitle4 level={4} style={{ marginTop: '20px' }}>
         {$t({ defaultMessage: 'Factory Default Switches' })}</UI.SubTitle4>
       <UI.DescriptionBody>
-        {$t({ defaultMessage: 'There are two options to connect the Ruckus Switch to the Cloud:' })}
+        {$t({ defaultMessage: 'There are two options to connect the RUCKUS Switch to RUCKUS One:' })}
       </UI.DescriptionBody>
 
       <UI.DescriptionBody>
-        {$t({ defaultMessage: 'Ruckus recommends that the ICX switch obtain an IP address from a DHCP server for connecting to the cloud.' })}
+        {$t({ defaultMessage: 'Ruckus Networks recommends that the ICX switch obtain an IP address from a DHCP server for connecting to RUCKUS One.' })}
         <br />
-        {$t({ defaultMessage: 'If DHCP is used to connect to the Ruckus Cloud, the ICX switch automatically creates default VLAN 1 and router Interface VE1 with the IP addresses obtained from the DHCP server.' })}
+        {$t({ defaultMessage: 'If DHCP is used to connect to RUCKUS One, the ICX switch automatically creates default VLAN 1 and router Interface VE1 with the IP addresses obtained from the DHCP server.' })}
       </UI.DescriptionBody>
       <UI.DescriptionBody>
         {$t({ defaultMessage: 'In the absence of a DHCP server, use the manager network-config wizard to connect to the cloud. Refer to "The Static IP Configuration Wizard" in this guide for more information.' })}
@@ -154,7 +154,7 @@ export function SwitchRequirementsModal (props: {
         {$t({ defaultMessage: 'Switches with Pre-existing Configuration' })}
       </UI.SubTitle4>
       <UI.DescriptionBody>
-        {$t({ defaultMessage: 'For switches with existing configuration, "manager registrar" should be present in the running configuration of the switch. Use the manager registrar-query-restart command on the switch CLI to initiate cloud discovery followed by a manager connect command to establish a connection with the Cloud.' })}
+        {$t({ defaultMessage: 'For switches with existing configuration, "manager registrar" should be present in the running configuration of the switch. Use the manager registrar-query-restart command on the switch CLI to initiate cloud discovery followed by a manager connect command to establish a connection with RUCKUS One.' })}
       </UI.DescriptionBody>
 
 
@@ -164,11 +164,11 @@ export function SwitchRequirementsModal (props: {
       </UI.SubTitle4>
 
       <UI.DescriptionBody>
-        {$t({ defaultMessage: 'Once the ICX switch is connected to the Ruckus Cloud:' })}
+        {$t({ defaultMessage: 'Once the ICX switch is connected to RUCKUS One:' })}
         <br />
         {$t({ defaultMessage: 'If it is the first time the ICX switch is connected to the cloud, the switch reloads after the necessary firmware is applied.' })}
         <br />
-        {$t({ defaultMessage: 'Ruckus Cloud assigns a username and password to the switch once it is managed by the Ruckus Cloud. Even if the switch is disconnected from the cloud, the switch username and password remain the same. The password can be obtained from the Ruckus Cloud GUI under the Venue’s ‘Switch Settings’.' })}
+        {$t({ defaultMessage: 'RUCKUS One assigns a username and password to the switch once it is managed by RUCKUS One. Even if the switch is disconnected from the cloud, the switch username and password remain the same. The password can be obtained from RUCKUS One GUI under the Venue’s ‘Switch Settings’.' })}
       </UI.DescriptionBody>
 
       <Subtitle level={5}>
@@ -179,7 +179,7 @@ export function SwitchRequirementsModal (props: {
       </UI.DescriptionBody>
 
       <UI.DescriptionBody style={{ color: cssStr('--acx-semantics-red-60') }}>
-        {$t({ defaultMessage: 'Switches must be kept on 09.0.10e release for Cloud. No manual upgrade to a later ICX firmware should be performed unless directed by Ruckus support. When a new cloud version becomes available, any required change in switch firmware will be handled by the Cloud automatically.' })}
+        {$t({ defaultMessage: 'Switches must be kept on 09.0.10e release for RUCKUS One. No manual upgrade to a later ICX firmware should be performed unless directed by Ruckus Support. When a new cloud version becomes available, any required change in switch firmware will be handled by RUCKUS One automatically.' })}
       </UI.DescriptionBody>
 
     </Modal>
