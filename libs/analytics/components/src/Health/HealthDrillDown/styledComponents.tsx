@@ -1,5 +1,5 @@
 // @ts-nocheck
-import styled, { css } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 
 const DefaultSection = styled.div`
   background-color: rgb(255, 255, 255);
@@ -28,38 +28,9 @@ export const PieChartContainer = styled.div`
   border-color: rgba(173, 186, 193, 1);
 `
 
-export const Separator = styled.hr.attrs((props: {
-    $center?: number
-}) => props)`
+export const Separator = styled.div`
   border-top: 0.5px solid rgba(173, 186, 193, 1);
   margin: 0px 10px;
-  ${props => props.$center
-    ? css`:after, :before {
-          content: "";
-          display: block;
-          width: 0;
-          height: 0;
-          border: 10px solid transparent;
-          border-bottom-color: var(--acx-primary-white);
-          outline-color: rgba(173, 186, 193, 1);
-          border-top: 0px;
-          position: absolute;
-          top: -10px;
-        }`
-    : css`:after, :before {
-          content: "";
-          display: block;
-          width: 0;
-          height: 0;
-          border: 10px solid transparent;
-          border-bottom-color: var(--acx-primary-black);
-          border-top: 0px;
-          position: absolute;
-          top: -10px;
-          left: 50%;
-        }`
-  }
-
 `
 
 export const ImpactedClientsContainer = styled.div`
@@ -178,3 +149,22 @@ export const Pin = styled.div`
     background: ${props => props.color};
   }
 `
+
+export const Point = styled.div`
+  background: var(--acx-primary-white);
+  border: 0.5px solid rgba(173, 186, 193, 1);
+  border-bottom-width: 0px;
+  border-left-width: 0px;
+  transform: rotate(-45deg);
+  position: relative;
+  left: 50%;
+  top: -10px;
+  width: 20px;
+  height: 20px;
+`
+
+export const VerticalSeparator = styled.div`
+  border-left: 0.5px solid rgba(173, 186, 193, 1);
+  margin: 10px 0px;
+`
+
