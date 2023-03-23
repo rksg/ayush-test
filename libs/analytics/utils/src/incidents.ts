@@ -1,9 +1,8 @@
 import { capitalize } from 'lodash'
 
-import { formatter, intlFormats }      from '@acx-ui/formatter'
-import { getIntl, PathNode, NodeType } from '@acx-ui/utils'
+import { formatter, intlFormats }                     from '@acx-ui/formatter'
+import { getIntl, PathNode, NodeType, noDataDisplay } from '@acx-ui/utils'
 
-import { noDataSymbol }        from './constants'
 import { kpiConfig }           from './healthKPIConfig'
 import { incidentInformation } from './incidentInformation'
 import incidentSeverities      from './incidentSeverities.json'
@@ -159,7 +158,7 @@ export const impactValues = <Type extends 'ap' | 'client'> (
   type: Type,
   incident: Incident
 ): (
-  Record<`${Type}ImpactRatio`, '-' | number | null> &
+  Record<`${Type}ImpactRatio`, '--' | number | null> &
   Record<
     `${Type}ImpactRatioFormatted` | `${Type}ImpactCountFormatted` | `${Type}ImpactDescription`,
     string
@@ -181,10 +180,10 @@ export const impactValues = <Type extends 'ap' | 'client'> (
 
   if ([total, count].some(value => [0, -1].includes(value!))) {
     return {
-      [`${type}ImpactRatio`]: noDataSymbol,
-      [`${type}ImpactRatioFormatted`]: noDataSymbol,
-      [`${type}ImpactCountFormatted`]: noDataSymbol,
-      [`${type}ImpactDescription`]: noDataSymbol
+      [`${type}ImpactRatio`]: noDataDisplay,
+      [`${type}ImpactRatioFormatted`]: noDataDisplay,
+      [`${type}ImpactCountFormatted`]: noDataDisplay,
+      [`${type}ImpactDescription`]: noDataDisplay
     } as ReturnType<typeof impactValues>
   }
 

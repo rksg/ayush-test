@@ -78,7 +78,11 @@ export function WISPrForm () {
         form.setFieldValue('walledGardensString',
           data.guestPortal?.walledGardens.toString().replace(/,/g, '\n'))
       }
-      const pName = data.guestPortal?.wisprPage?.externalProviderName
+      let pName = data.guestPortal?.wisprPage?.externalProviderName
+      if(data.guestPortal?.wisprPage?.customExternalProvider){
+        form.setFieldValue(['guestPortal','wisprPage','providerName'], pName)
+        pName = 'Other provider'
+      }
       if(pName){
         const regions = _.find(externalProviders,{ name: pName })?.regions
         setRegionOption(regions)

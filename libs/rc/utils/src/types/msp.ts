@@ -92,7 +92,7 @@ export interface MspEc {
   wifiLicenses: string;
   switchLicenses: string;
   edgeLicenses?: string;
-  assignedMspEcList: string;
+  assignedMspEcList: string[];
   creationDate: number;
   entitlements: DelegationEntitlementRecord[];
 }
