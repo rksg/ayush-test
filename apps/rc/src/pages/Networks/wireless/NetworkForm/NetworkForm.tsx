@@ -170,6 +170,16 @@ export default function NetworkForm (props:{
           minutesMapping[data.macCredentialsDurationUnit]
         }
       }
+      if(saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr
+        &&data.guestPortal.wisprPage?.customExternalProvider){
+        data.guestPortal = {
+          ...data.guestPortal,
+          wisprPage: {
+            ...data.guestPortal.wisprPage,
+            externalProviderName: data.guestPortal.wisprPage.providerName
+          }
+        }
+      }
     }
     return data
   }
