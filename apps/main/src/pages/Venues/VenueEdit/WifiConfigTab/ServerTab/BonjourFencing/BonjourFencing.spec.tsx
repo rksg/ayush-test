@@ -21,7 +21,7 @@ const params = {
   activeSubTab: 'servers'
 }
 
-describe('Venue Bonjour Fencing', () => {
+describe('Venue mDNS Fencing', () => {
   let editContextData = {} as EditContext
   const setEditContextData = jest.fn()
   let editServerContextData = {} as ServerSettingContext
@@ -63,7 +63,7 @@ describe('Venue Bonjour Fencing', () => {
     await screen.findByText('Manage Fencing services')
 
     await userEvent.click(
-      await screen.findByRole('switch', { name: 'Use Bonjour Fencing Service' })
+      await screen.findByRole('switch', { name: 'Use mDNS Fencing Service' })
     )
 
   })

@@ -144,6 +144,8 @@ export interface TraceRouteSwitch {
 }
 
 export interface VeViewModel {
+  ingressAclName?: string
+  egressAclName?: string
   name?: string
   dhcpRelayAgent?: string
   defaultVlan: boolean
