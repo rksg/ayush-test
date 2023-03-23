@@ -125,14 +125,14 @@ export default function SnmpAgentTable () {
         title={
           $t(
             { defaultMessage: 'SNMP Agent {count}' },
-            { count: (tableQuery.data)? `(${tableQuery.data.totalCount})` : '' }
+            { count: (list)? `(${list.totalCount})` : '' }
           )
         }
         breadcrumb={[
           // eslint-disable-next-line max-len
           { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) }
         ]}
-        extra={((tableQuery?.data?.totalCount as number) < 64) && filterByAccess([
+        extra={((list?.totalCount as number) < 64) && filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.CREATE })} key='add'>
             <Button type='primary'>
