@@ -118,7 +118,7 @@ export function SwitchRequirementsModal (props: {
             {$t({ defaultMessage: 'After upgrade, check the version again and make sure the switch is running UFI image.' })}
             <UI.CommandRectengle style={{ marginLeft: '20px' }}>
               SSH@7150-C12P#show version   <br />
-              Copyright (c) Ruckus Networks, Inc. All rights reserved.   <br />
+              &copy; CommScope, Inc. All Rights Reserved.   <br />
               UNIT 1: compiled on Jan 31 2023 at 21:55:19 labeled as SPR09010e  <br />
               (33554432 bytes) from Primary SPR09010e.bin (UFI)
             </UI.CommandRectengle>
