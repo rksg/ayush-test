@@ -9,9 +9,9 @@ import {
 import { Row, Col, Form, Typography, Checkbox, Input } from 'antd'
 import _                                               from 'lodash'
 
-import { Card, Tooltip }             from '@acx-ui/components'
-import { SwitchSlot2 as SwitchSlot } from '@acx-ui/rc/utils'
-import { getIntl }                   from '@acx-ui/utils'
+import { Card, Tooltip }                                 from '@acx-ui/components'
+import { SwitchSlot2 as SwitchSlot, getSwitchPortLabel } from '@acx-ui/rc/utils'
+import { getIntl }                                       from '@acx-ui/utils'
 
 import * as UI          from './styledComponents'
 import VlanPortsContext from './VlanPortsContext'
@@ -241,6 +241,43 @@ export function TaggedPortsStep () {
     return disabledPorts
   }
 
+  const getTooltip = (timeslot: string) => {
+    const untaggedPorts =
+    vlanSettingValues.switchFamilyModels?.untaggedPorts?.toString().split(',') || []
+
+    const vlanSelectedPorts = vlanList ? vlanList.map(item => item.switchFamilyModels
+      ?.filter(obj => obj.model === vlanSettingValues.switchFamilyModels?.model)) : []
+
+    const untaggedPortExists = vlanSelectedPorts.map(item => item?.map(
+      obj => { return obj.untaggedPorts?.includes(timeslot) }))[0]
+
+    const taggedPortExists = vlanSelectedPorts.map(item => item?.map(
+      obj => { return obj.taggedPorts?.includes(timeslot) }))[0]
+
+    const filteredModel = vlanList ? vlanList.filter(model => model.switchFamilyModels?.some(
+      switchModel => switchModel.model === vlanSettingValues.switchFamilyModels?.model)) : []
+
+    if(untaggedPorts.includes(timeslot)){
+      return <div>{$t({ defaultMessage: 'Port set as untagged' })}</div>
+    }else{
+      return <div>
+        <div>{$t({ defaultMessage: 'Networks on this port:' })}</div>
+        <div><UI.TagsOutlineIcon /><UI.PortSpan>
+          {untaggedPortExists && untaggedPortExists[0] ?
+            filteredModel[0].vlanId : '-'}</UI.PortSpan></div>
+        <div><UI.TagsSolidIcon /><UI.PortSpan>
+          {taggedPortExists && taggedPortExists[0] ?
+            filteredModel[0].vlanId : '-'}</UI.PortSpan></div>
+      </div>
+    }
+  }
+
+  const getPortLabel = (port: number, slot: number) => {
+    const model = vlanSettingValues.switchFamilyModels?.model || ''
+    const portLabel = getSwitchPortLabel(model, slot) + port.toString()
+    return portLabel
+  }
+
   return (
     <>
       <Row gutter={20}>
@@ -279,7 +316,7 @@ export function TaggedPortsStep () {
                     value={selectedItems1}
                     options={portsModule1.map((timeslot, i) => ({
                       label: <Tooltip
-                        title={''}
+                        title={getTooltip(timeslot.value)}
                       >
                         <div
                           id={`tagged_module1_${i}`}
@@ -288,7 +325,7 @@ export function TaggedPortsStep () {
                           data-disabled={getDisabledPorts(timeslot.value)}
                           style={{ width: '20px', height: '20px' }}
                         ></div>
-                        <p>{i+1}</p>
+                        <p>{getPortLabel(i+1, 1)}</p>
                       </Tooltip>,
                       value: timeslot.value,
                       disabled: getDisabledPorts(timeslot.value)
@@ -319,7 +356,7 @@ export function TaggedPortsStep () {
                         value={selectedItems2}
                         options={portsModule2.map((timeslot, i) => ({
                           label: <Tooltip
-                            title={timeslot.value}
+                            title={getTooltip(timeslot.value)}
                           >
                             <div
                               id={`tagged_module2_${i}`}
@@ -328,7 +365,7 @@ export function TaggedPortsStep () {
                               data-disabled={getDisabledPorts(timeslot.value)}
                               style={{ width: '20px', height: '20px' }}
                             ></div>
-                            <p>{i+1}</p>
+                            <p>{getPortLabel(i+1, 2)}</p>
                           </Tooltip>,
                           value: timeslot.value,
                           disabled: getDisabledPorts(timeslot.value)
@@ -360,7 +397,7 @@ export function TaggedPortsStep () {
                     value={selectedItems3}
                     options={portsModule3.map((timeslot, i) => ({
                       label: <Tooltip
-                        title={''}
+                        title={getTooltip(timeslot.value)}
                       >
                         <div
                           id={`tagged_module3_${i}`}
@@ -369,7 +406,7 @@ export function TaggedPortsStep () {
                           data-disabled={getDisabledPorts(timeslot.value)}
                           style={{ width: '20px', height: '20px' }}
                         ></div>
-                        <p>{i+1}</p>
+                        <p>{getPortLabel(i+1, 1)}</p>
                       </Tooltip>,
                       value: timeslot.value,
                       disabled: getDisabledPorts(timeslot.value)

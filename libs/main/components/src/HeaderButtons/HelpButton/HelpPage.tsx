@@ -29,14 +29,14 @@ export const getDocsURL = (isMspUser:boolean) => process.env['NODE_ENV'] === 'de
 export const DOCS_HOME_URL = 'https://docs.cloud.ruckuswireless.com'
 
 // eslint-disable-next-line max-len
-const reg = /([A-Z0-9]{11,})|([0-9a-fA-F]{1,2}[:]){5}([0-9a-fA-F]{1,2})|([a-f-\d]{32,36}|[A-F-\d]{32,36})|\d+\/?/g
+const reg = /([A-Z0-9]{11,})|([0-9a-fA-F]{1,2}[:]){5}([0-9a-fA-F]{1,2})|([a-f-\d]{32,36}|[A-F-\d]{32,36})|([a-zA-Z0-9+\=]{84})|\d+\/?/g
 
 const useBasePath = () => {
   const location = useLocation()
   const basePath = location.pathname.replace(new URL(document.baseURI).pathname,'')
   return _.replace(basePath, reg, (matchStr)=>{
     // eslint-disable-next-line max-len
-    const paramReg = /([A-Z0-9]{11,})|([0-9a-fA-F]{1,2}[:]){5}([0-9a-fA-F]{1,2})|([a-f-\d]{32,36}|[A-F-\d]{32,36})|\d+/g
+    const paramReg = /([A-Z0-9]{11,})|([0-9a-fA-F]{1,2}[:]){5}([0-9a-fA-F]{1,2})|([a-f-\d]{32,36}|[A-F-\d]{32,36})|([a-zA-Z0-9+\=]{84})|\d+/g
     return matchStr.replaceAll(paramReg,'*')
   })
 }

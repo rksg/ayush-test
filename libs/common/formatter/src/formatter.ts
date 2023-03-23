@@ -6,8 +6,8 @@ import {
   IntlShape
 } from 'react-intl'
 
-import { getUserProfile } from '@acx-ui/user'
-import { getIntl }        from '@acx-ui/utils'
+import { getUserProfile }         from '@acx-ui/user'
+import { getIntl, noDataDisplay } from '@acx-ui/utils'
 
 const bytes = [' B', ' KB', ' MB', ' GB', ' TB', ' PB', ' EB', ' ZB', ' YB']
 const watts = [' mW', ' W', ' kW', ' MW', ' GW', ' TW', ' PW']
@@ -225,8 +225,8 @@ export function formatter (
 ) {
   return function formatter (value: unknown, tz?: string): string {
     const intl = getIntl()
-    if (value === null || value === '-') {
-      return '-'
+    if (value === null || value === noDataDisplay) {
+      return noDataDisplay
     }
     if (isIntlFormat(name)) {
       return intl.$t(intlFormats[name], { value: value as number | string | Date })
@@ -238,7 +238,7 @@ export function formatter (
       const formatter = formats[name] as (value: unknown, intl: IntlShape) => string
       return formatter(value, intl)
     }
-    return '-'
+    return noDataDisplay
   }
 }
 

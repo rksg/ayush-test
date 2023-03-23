@@ -81,11 +81,11 @@ export function RevertDialog (props: RevertDialogProps) {
         name={'revertModalForm'}
       >
         <Form.Item>
-          <Typography>
+          <Typography style={{ fontWeight: 700 }}>
             { // eslint-disable-next-line max-len
               $t({ defaultMessage: 'Are you sure you wish to revert to previous firmware version?' })}
           </Typography>
-          <Typography>
+          <Typography style={{ fontWeight: 700 }}>
             {$t({ defaultMessage: 'Select one previous version:' })}
           </Typography>
           <Radio.Group

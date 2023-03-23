@@ -39,9 +39,9 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
   const [updateSwitchFirmwarePredownload] = useUpdateSwitchFirmwarePredownloadMutation()
   const [scheduleMode, setScheduleMode] = useState(ScheduleMode.Automatically)
   const [valueDays, setValueDays] = useState<string[]>(['Saturday'])
-  const [valueTimes, setValueTimes] = useState<string[]>(['00:00-02:00'])
+  const [valueTimes, setValueTimes] = useState<string[]>(['00:00 - 02:00'])
   const [modelVisible, setModelVisible] = useState(false)
-  const [disableSave, setDisableSave] = useState(false)
+  const [disableSave, setDisableSave] = useState(true)
   const [checked, setChecked] = useState(false)
 
 
@@ -105,6 +105,7 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
 
   const onScheduleModeChange = (e: RadioChangeEvent) => {
     setScheduleMode(e.target.value)
+    setDisableSave(false)
   }
 
   const onModalCancel = () => {
@@ -136,20 +137,24 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
             initialValue={ScheduleMode.Automatically}
           >
             <div>
-              <Typography>
+              <Typography style={{ fontWeight: 700 }}>
                 { // eslint-disable-next-line max-len
                   $t({ defaultMessage: 'Choose update schedule method:' })}
               </Typography>
-              <Radio.Group onChange={onScheduleModeChange} value={scheduleMode}>
+              <Radio.Group
+                style={{ margin: 12 }}
+                onChange={onScheduleModeChange}
+                value={scheduleMode}>
                 <Space direction={'vertical'}>
                   <Radio value={ScheduleMode.Automatically}>
                     {$t({ defaultMessage: 'Schedule Automatically' })}
                     { // eslint-disable-next-line max-len
                       <div>Upgrade preference saved for each venue based on venue’s local time-zone</div>}
                     <UI.PreferencesSection>
-                      <div>Preferred update slot(s):</div>
-                      <div>{valueDays.join(', ')}</div>
-                      <div>{valueTimes.join(', ')}</div>
+                      { // eslint-disable-next-line max-len
+                        <div style={{ fontWeight: 600, marginLeft: 8, paddingTop: 8 }}>Preferred update slot(s):</div>}
+                      <div style={{ marginTop: 4, marginLeft: 8 }}>{valueDays.join(', ')}</div>
+                      <div style={{ marginLeft: 8, paddingBottom: 8 }}>{valueTimes.join(', ')}</div>
                     </UI.PreferencesSection>
                     <UI.ChangeButton type='link' onClick={showSlotModal} block>
                       Change

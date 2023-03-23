@@ -252,13 +252,13 @@ export function SwitchPortTable ({ isVenueLevel }: {
     dataIndex: 'egressAclName',
     sorter: true,
     show: false
-  },
-  {
-    key: 'tags',
-    title: $t({ defaultMessage: 'Tags' }),
-    dataIndex: 'tags',
-    sorter: true
   }
+  // { TODO: Waiting for TAG feature support
+  //   key: 'tags',
+  //   title: $t({ defaultMessage: 'Tags' }),
+  //   dataIndex: 'tags',
+  //   sorter: true
+  // }
   ]
 
   const getColumns = () => columns.filter(
