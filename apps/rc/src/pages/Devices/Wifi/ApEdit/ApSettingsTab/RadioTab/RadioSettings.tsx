@@ -364,7 +364,7 @@ export function RadioSettings () {
   }
 
 
-  const vaildRadioChannels = ( data: ApRadioCustomization,
+  const validRadioChannels = ( data: ApRadioCustomization,
     hasRadio5G: boolean, hasRadioDual5G: boolean, hasRadio6G: boolean ) => {
 
     const { apRadioParams24G, apRadioParams50G, apRadioParams6G, apRadioParamsDual5G } = data
@@ -476,7 +476,7 @@ export function RadioSettings () {
         const hasRadioDual5G = (isSupportDual5GAp && isDual5gMode)
         const hasRadio6G = (isSupportTriBandRadioAp && !isDual5gMode) && bandwidth6GOptions.length > 0
 
-        if (!vaildRadioChannels(payload, hasRadio5G, hasRadioDual5G, hasRadio6G)) {
+        if (!validRadioChannels(payload, hasRadio5G, hasRadioDual5G, hasRadio6G)) {
           return
         }
 

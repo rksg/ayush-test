@@ -1,9 +1,10 @@
 import { Badge, Button } from 'antd'
 import { useIntl }       from 'react-intl'
 
-import { Card, Descriptions, Loader }                       from '@acx-ui/components'
-import { DateFormatEnum, formatter }                        from '@acx-ui/formatter'
-import { noDataDisplay, SwitchStatusEnum, SwitchViewModel } from '@acx-ui/rc/utils'
+import { Card, Descriptions, Loader }        from '@acx-ui/components'
+import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
+import { SwitchStatusEnum, SwitchViewModel } from '@acx-ui/rc/utils'
+import { noDataDisplay }                     from '@acx-ui/utils'
 
 import { getDeviceColor, switchStatus } from './utils'
 

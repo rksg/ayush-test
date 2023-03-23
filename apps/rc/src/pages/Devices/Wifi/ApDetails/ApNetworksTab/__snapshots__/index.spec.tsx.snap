@@ -428,7 +428,11 @@ exports[`Networks Table should render table 1`] = `
                               <td
                                 class="ant-table-cell ant-table-column-sort"
                               >
-                                network-10
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/wireless/ad850ca8595d4f2f9e7f208664cd9398/network-details/overview"
+                                >
+                                  network-10
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"

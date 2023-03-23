@@ -7,6 +7,7 @@ import {
   // RadioChangeEvent,
   // Space
 } from 'antd'
+import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import {
@@ -61,7 +62,7 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
   const handleSave = () => {
     let payload = {
       delegation_type: tenantType,
-      number_of_days: '',
+      number_of_days: form.getFieldValue(['number_of_days']),
       mspec_list: [] as string[]
     }
     const selectedRows = form.getFieldsValue(['ecCustomers'])
@@ -158,6 +159,11 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
       const selRows = queryResults.data.data.filter(
         rec => assignedEcs.data?.mspec_list?.includes(rec.id))
       form.setFieldValue('ecCustomers', selRows)
+      assignedEcs.data?.expiry_date
+        ? form.setFieldValue(['number_of_days'],
+          moment(assignedEcs.data.expiry_date).diff(moment(Date()), 'days'))
+        : form.setFieldValue(['number_of_days'], '')
+
       dataSource = tenantType === AccountType.MSP_INSTALLER
         ? queryResults.data.data.filter(rec => !rec.installer || selectedKeys.includes(rec.id))
         : queryResults.data.data.filter(rec => !rec.integrator || selectedKeys.includes(rec.id))
@@ -188,7 +194,7 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
       <Subtitle level={4}>{$t({ defaultMessage: 'Access Periods' })}</Subtitle>
       {tenantType === AccountType.MSP_INTEGRATOR && <label>Not Limited</label>}
       {tenantType === AccountType.MSP_INSTALLER && <UI.FieldLabelAccessPeriod width='275px'>
-        <label>Limited To</label>
+        <label>{$t({ defaultMessage: 'Limited To' })}</label>
         <Form.Item
           name='number_of_days'
           initialValue={'7'}
@@ -205,7 +211,7 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
           children={<Input type='number'/>}
           style={{ marginLeft: '10px', paddingRight: '20px' }}
         />
-        <label>Day(s)</label>
+        <label>{$t({ defaultMessage: 'Day(s)' })}</label>
       </UI.FieldLabelAccessPeriod>}</div>}
 
 
@@ -226,7 +232,7 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
 
   return (
     <Drawer
-      title={'Manage Customers Assigned'}
+      title={$t({ defaultMessage: 'Manage Customers Assigned' })}
       onBackClick={onClose}
       visible={visible}
       onClose={onClose}
