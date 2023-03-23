@@ -1,14 +1,13 @@
 import {
   Form,
   Input,
-  Col,
-  Row,
   Select,
   InputNumber
 } from 'antd'
-import { FormattedMessage, useIntl } from 'react-intl'
+import { FormattedMessage } from 'react-intl'
 
-import { StepsForm, Subtitle, Tooltip } from '@acx-ui/components'
+import { GridCol, GridRow, SelectionControl, StepsForm, Subtitle, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
 import {
   ExpirationDateSelector
 } from '@acx-ui/rc/components'
@@ -17,8 +16,10 @@ import {
   PassphraseFormatEnum,
   transformDpskNetwork,
   DpskNetworkType,
-  checkObjectNotExists
+  checkObjectNotExists,
+  PolicyDefaultAccess
 } from '@acx-ui/rc/utils'
+import { getIntl } from '@acx-ui/utils'
 
 import {
   passphraseFormatDescription
@@ -26,12 +27,13 @@ import {
 
 
 export default function DpskSettingsForm () {
-  const intl = useIntl()
+  const intl = getIntl()
   const form = Form.useFormInstance()
   const passphraseFormat = Form.useWatch<PassphraseFormatEnum>('passphraseFormat', form)
   const id = Form.useWatch<string>('id', form)
   const { Option } = Select
   const [ dpskList ] = useLazyGetDpskListQuery()
+  const isCloudpathEnabled = useIsSplitOn(Features.DPSK_CLOUDPATH_FEATURE)
 
   const nameValidator = async (value: string) => {
     const list = (await dpskList({}).unwrap()).data
@@ -45,8 +47,8 @@ export default function DpskSettingsForm () {
   ))
 
   return (
-    <Row>
-      <Col span={8}>
+    <GridRow>
+      <GridCol col={{ span: 6 }}>
         <StepsForm.Title>{intl.$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
         <Form.Item name='id' noStyle>
           <Input type='hidden' />
@@ -121,7 +123,27 @@ export default function DpskSettingsForm () {
           inputName={'expiration'}
           label={intl.$t({ defaultMessage: 'Expiration' })}
         />
-      </Col>
-    </Row>
+        {isCloudpathEnabled && <CloudpathFormItems />}
+      </GridCol>
+    </GridRow>
+  )
+}
+
+function CloudpathFormItems () {
+  const { $t } = getIntl()
+
+  return (
+    <Form.Item name='policyDefaultAccess'
+      label={$t({ defaultMessage: 'Default Access' })}
+      initialValue={PolicyDefaultAccess.ACCEPT}
+      rules={[{ required: true }]}
+    >
+      <SelectionControl
+        options={[
+          { value: PolicyDefaultAccess.ACCEPT, label: $t({ defaultMessage: 'ACCEPT' }) },
+          { value: PolicyDefaultAccess.REJECT, label: $t({ defaultMessage: 'REJECT' }) }
+        ]}
+      />
+    </Form.Item>
   )
 }

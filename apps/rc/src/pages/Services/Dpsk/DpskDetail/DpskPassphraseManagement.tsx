@@ -64,10 +64,7 @@ export default function DpskPassphraseManagement () {
       sortField: 'createdDate',
       sortOrder: 'desc'
     },
-    defaultPayload: {
-      fields: ['check-all', 'id', 'passphrase', 'username',
-        'vlanId', 'mac', 'numberOfDevices', 'createdDate', 'expirationDate']
-    }
+    defaultPayload: {}
   })
 
   const downloadPassphrases = () => {

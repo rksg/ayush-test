@@ -3,52 +3,53 @@ import {
   ExpirationMode,
   DpskSaveData,
   ExpirationType,
-  ExpirationDateEntity
+  ExpirationDateEntity,
+  PolicyDefaultAccess
 } from '@acx-ui/rc/utils'
 
 
 export function transferFormFieldsToSaveData (data: CreateDpskFormFields): DpskSaveData {
-  let expiration: Partial<DpskSaveData>
+  const { expiration, policyDefaultAccess, ...rest } = data
+  // eslint-disable-next-line max-len
+  let expirationForSaveData: Pick<DpskSaveData, 'expirationType' | 'expirationOffset' | 'expirationDate'>
 
-  if (data.expiration.mode === ExpirationMode.NEVER) {
-    expiration = { expirationType: null }
-  } else if (data.expiration.mode === ExpirationMode.BY_DATE) {
-    expiration = {
+  if (expiration.mode === ExpirationMode.NEVER) {
+    expirationForSaveData = { expirationType: null }
+  } else if (expiration.mode === ExpirationMode.BY_DATE) {
+    expirationForSaveData = {
       expirationType: ExpirationType.SPECIFIED_DATE,
-      expirationDate: data.expiration.date
+      expirationDate: expiration.date
     }
   } else {
-    expiration = {
-      expirationType: data.expiration.type,
-      expirationOffset: data.expiration.offset
+    expirationForSaveData = {
+      expirationType: expiration.type!,
+      expirationOffset: expiration.offset
     }
   }
 
   return {
-    name: data.name,
-    passphraseLength: data.passphraseLength,
-    passphraseFormat: data.passphraseFormat,
-    expirationType: null,
-    ...expiration
+    ...rest,
+    ...expirationForSaveData,
+    policyDefaultAccess: policyDefaultAccess === PolicyDefaultAccess.REJECT ? false : true
   }
 }
 
 export function transferSaveDataToFormFields (data: DpskSaveData): CreateDpskFormFields {
+  const { expirationType, expirationDate, expirationOffset, policyDefaultAccess, ...rest } = data
   let expiration: ExpirationDateEntity = new ExpirationDateEntity()
 
-  if (!data.expirationType) {
+  if (!expirationType) {
     expiration.setToNever()
-  } else if (data.expirationType === ExpirationType.SPECIFIED_DATE) {
-    expiration.setToByDate(data.expirationDate!)
+  } else if (expirationType === ExpirationType.SPECIFIED_DATE) {
+    expiration.setToByDate(expirationDate!)
   } else {
-    expiration.setToAfterTime(data.expirationType!, data.expirationOffset!)
+    expiration.setToAfterTime(expirationType!, expirationOffset!)
   }
 
   return {
-    id: data.id,
-    name: data.name,
-    passphraseFormat: data.passphraseFormat,
-    passphraseLength: data.passphraseLength,
+    ...rest,
+    // eslint-disable-next-line max-len
+    policyDefaultAccess: policyDefaultAccess ? PolicyDefaultAccess.ACCEPT : PolicyDefaultAccess.REJECT,
     expiration
   }
 }
