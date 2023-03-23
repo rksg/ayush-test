@@ -64,7 +64,6 @@ export default function Administration () {
   const { tenantId, activeTab } = useParams()
   const isEdgeEarlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
   const isEnable = useIsSplitOn(Features.UNRELEASED) || isEdgeEarlyBetaEnabled
-  const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
   const { data: userProfileData } = useUserProfileContext()
 
   if (!isEnable) {
@@ -83,8 +82,7 @@ export default function Administration () {
     return <span>{ $t({ defaultMessage: 'Administrators is not allowed to access.' }) }</span>
   }
 
-  const ActiveTabPane = (activeTab === 'localRadiusServer' && !isRadiusClientEnabled) ?
-    undefined: tabPanes[activeTab as keyof typeof tabPanes]
+  const ActiveTabPane = tabPanes[activeTab as keyof typeof tabPanes]
 
   return (<>
     <PageHeader
