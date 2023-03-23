@@ -385,7 +385,7 @@ export function ApTable (props: ApTableProps) {
     const customSorter = Array.isArray(sorter)
       ? sorter[0] : sorter
     if ('IP'.includes(customSorter.field as string)) {
-      customSorter.field = 'ip'
+      customSorter.field = 'IP.keyword'
     }
     // @ts-ignore
     tableQuery.handleTableChange(pagination, filters, customSorter, extra)
