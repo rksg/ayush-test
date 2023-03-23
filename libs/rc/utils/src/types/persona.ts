@@ -47,7 +47,8 @@ export interface PersonaDevice {
   hasMacRegistered?: boolean,
   lastSeenAt?: string,
   createdAt?: string,
-  updatedAt?: string
+  updatedAt?: string,
+  identityId?: string
 }
 
 export interface PersonaEthernetPort {

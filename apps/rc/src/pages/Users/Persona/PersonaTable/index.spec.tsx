@@ -2,11 +2,14 @@ import { waitFor } from '@testing-library/react'
 import userEvent   from '@testing-library/user-event'
 import { rest }    from 'msw'
 
-import { PersonaUrls }                                                              from '@acx-ui/rc/utils'
+import { useIsSplitOn }                                                             from '@acx-ui/feature-toggle'
+import { PersonaUrls, PropertyUrlsInfo }                                            from '@acx-ui/rc/utils'
 import { Provider }                                                                 from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved, fireEvent, within } from '@acx-ui/test-utils'
 
-import { mockPersonaGroupList, mockPersonaTableResult, replacePagination } from '../__tests__/fixtures'
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { mockEnabledPropertyConfig }                                                         from '../../../../../../main/src/pages/Venues/__tests__/fixtures'
+import { mockPersonaGroup, mockPersonaGroupList, mockPersonaTableResult, replacePagination } from '../__tests__/fixtures'
 
 import { PersonaTable } from '.'
 
@@ -28,19 +31,34 @@ describe('Persona Table', () => {
       rest.get(
         replacePagination(PersonaUrls.getPersonaGroupList.url),
         (req, res, ctx) => res(ctx.json(mockPersonaGroupList))
+      ),
+      rest.get(
+        PersonaUrls.getPersonaGroupById.url,
+        (req, res, ctx) => res(ctx.json(mockPersonaGroup))
+      ),
+      rest.get(
+        PropertyUrlsInfo.getPropertyConfigs.url,
+        (req, res, ctx) => res(ctx.json(mockEnabledPropertyConfig))
+      ),
+      rest.get(
+        PropertyUrlsInfo.getUnitById.url,
+        (req, res, ctx) => res(ctx.json({ id: 'unit-id-1', name: 'unit-name-1' }))
       )
     )
     params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      personaGroupId: 'persona-group-id'
     }
   })
 
   it('should render persona table', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
     render(
       <Provider>
         <PersonaTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/persona-management/persona-group' }
+        route: { params, path: '/:tenantId/users/persona-management/persona-group/:personaGroupId' }
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))

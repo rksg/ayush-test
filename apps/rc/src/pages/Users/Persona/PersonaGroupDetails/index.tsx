@@ -50,6 +50,7 @@ function PersonaGroupDetailsPageHeader (props: {
 
 function PersonaGroupDetails () {
   const { $t } = useIntl()
+  const propertyEnabled = useIsSplitOn(Features.PROPERTY_MANAGEMENT)
   const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
   const { personaGroupId, tenantId } = useParams()
   const [editVisible, setEditVisible] = useState(false)
@@ -187,7 +188,9 @@ function PersonaGroupDetails () {
             <BasePersonaTable
               colProps={{
                 name: { searchable: true },
-                groupId: { show: false, filterable: false }
+                groupId: { show: false, filterable: false },
+                ...!propertyEnabled
+                  ? { identityId: { disable: true, show: false } } : {}
               }}/>
           </div>
         </GridCol>
