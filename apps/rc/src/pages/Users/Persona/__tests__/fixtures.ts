@@ -5,7 +5,9 @@ import {
   NewTableResult,
   PassphraseFormatEnum,
   Persona,
-  PersonaGroup
+  PersonaGroup,
+  PropertyConfigs,
+  PropertyConfigStatus
 } from '@acx-ui/rc/utils'
 
 const paginationPattern = '?size=:pageSize&page=:page&sort=:sort'
@@ -212,4 +214,9 @@ export const mockDpskList = {
     pageSize: 10
   },
   sort: []
+}
+
+export const mockEnabledPropertyConfig: PropertyConfigs = {
+  status: PropertyConfigStatus.ENABLED,
+  personaGroupId: 'persona-group-id-1'
 }

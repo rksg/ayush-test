@@ -7,9 +7,13 @@ import { PersonaUrls, PropertyUrlsInfo }                                        
 import { Provider }                                                                 from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved, fireEvent, within } from '@acx-ui/test-utils'
 
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { mockEnabledPropertyConfig }                                                         from '../../../../../../main/src/pages/Venues/__tests__/fixtures'
-import { mockPersonaGroup, mockPersonaGroupList, mockPersonaTableResult, replacePagination } from '../__tests__/fixtures'
+import {
+  mockEnabledPropertyConfig,
+  mockPersonaGroup,
+  mockPersonaGroupList,
+  mockPersonaTableResult,
+  replacePagination
+} from '../__tests__/fixtures'
 
 import { PersonaTable } from '.'
 
