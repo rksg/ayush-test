@@ -69,10 +69,11 @@ export default function DpskPassphraseDrawer (props: DpskPassphraseDrawerProps) 
 
 // eslint-disable-next-line max-len
 function transferFormFieldsToSaveData (fields: CreateDpskPassphrasesFormFields): DpskPassphrasesSaveData {
-  const { expiration, ...rest } = fields
+  const { passphrase, expiration, ...rest } = fields
 
   return {
     ...rest,
+    passphrase: passphrase === '' ? null : passphrase,
     // eslint-disable-next-line max-len
     expirationDate: fields.expiration.mode === ExpirationMode.NEVER ? undefined : fields.expiration.date
   }

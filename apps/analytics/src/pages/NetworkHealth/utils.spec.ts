@@ -154,7 +154,7 @@ describe('formatApsUnderTest', () => {
   })
   it('should return correct value - no data test', ()=>{
     const result = formatApsUnderTest(undefined)
-    expect(result).toEqual('-')
+    expect(result).toEqual('--')
   })
 })
 
@@ -177,7 +177,7 @@ describe('formatLastResult', () => {
   })
   it('should return correct value - no data test', ()=>{
     const result = formatLastResult(undefined)
-    expect(result).toEqual('-')
+    expect(result).toEqual('--')
   })
 })
 

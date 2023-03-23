@@ -383,6 +383,7 @@ function ServiceRoutes () {
 }
 
 function PolicyRoutes () {
+  const isMacRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
   return rootRoutes(
     <Route path='t/:tenantId'>
       <Route path={getPolicyListRoutePath()} element={<MyPolicies />} />
@@ -444,23 +445,24 @@ function PolicyRoutes () {
         path={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.DETAIL })}
         element={<SyslogDetailView />}
       />
-      <Route
+      {isMacRegistrationEnabled ? <>
+        <Route
         // eslint-disable-next-line max-len
-        path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.DETAIL })}
-        element={<MacRegistrationListDetails />} />
-      <Route
+          path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.DETAIL })}
+          element={<MacRegistrationListDetails />} />
+        <Route
         // eslint-disable-next-line max-len
-        path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST })}
-        element={<MacRegistrationListsTable />} />
-      <Route
+          path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST })}
+          element={<MacRegistrationListsTable />} />
+        <Route
         // eslint-disable-next-line max-len
-        path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.CREATE })}
-        element={<MacRegistrationListForm />} />
-      <Route
+          path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.CREATE })}
+          element={<MacRegistrationListForm />} />
+        <Route
         // eslint-disable-next-line max-len
-        path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.EDIT })}
-        element={<MacRegistrationListForm editMode={true} />}
-      />
+          path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.EDIT })}
+          element={<MacRegistrationListForm editMode={true} />}
+        /> </> : <></> }
       <Route
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.CREATE })}

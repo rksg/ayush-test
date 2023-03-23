@@ -187,11 +187,12 @@ export function useMenuConfig () {
           name: $t({ defaultMessage: 'Switch' }),
           disabled: !useIsSplitOn(Features.USERS)
         },
-        {
-          path: '/users/persona-management',
-          name: $t({ defaultMessage: 'Persona Management' }),
-          disabled: !(isPersonaEnabled && isMacRegistrationEnabled)
-        }
+        ...(isPersonaEnabled && isMacRegistrationEnabled)
+          ? [{
+            path: '/users/persona-management',
+            name: $t({ defaultMessage: 'Persona Management' })
+          }]
+          : []
       ]
     },
     genPlaceholder(),

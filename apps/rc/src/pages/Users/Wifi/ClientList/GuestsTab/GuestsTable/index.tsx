@@ -32,7 +32,9 @@ import {
   Network,
   NetworkTypeEnum,
   GuestNetworkTypeEnum,
-  RequestPayload
+  RequestPayload,
+  FILTER,
+  SEARCH
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                         from '@acx-ui/types'
@@ -262,6 +264,7 @@ export const GuestsTable = (props: { dateFilter: GuestDateFilter }) => {
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'guestType',
       filterable: guestTypeFilterOptions,
+      filterMultiple: false,
       sorter: true,
       render: function (data, row) {
         return renderGuestType(row.guestType)
@@ -361,6 +364,12 @@ export const GuestsTable = (props: { dateFilter: GuestDateFilter }) => {
     }
   ]
 
+  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
+    if (customFilters.guestType?.includes('SelfSign')) {
+      customFilters.guestType.push('HostGuest')
+    }
+    tableQuery.handleFilterChange(customFilters,customSearch)
+  }
 
   return (
     <Loader states={[
@@ -375,7 +384,7 @@ export const GuestsTable = (props: { dateFilter: GuestDateFilter }) => {
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
-        onFilterChange={tableQuery.handleFilterChange}
+        onFilterChange={handleFilterChange}
         enableApiFilter={true}
         rowKey='id'
         rowActions={rowActions}
@@ -406,7 +415,8 @@ export const GuestsTable = (props: { dateFilter: GuestDateFilter }) => {
             case 'addGuestNetwork':
               return hasRoles([RolesEnum.ADMINISTRATOR, RolesEnum.PRIME_ADMIN])
             case 'importFromFile':
-              return true
+              return hasRoles([RolesEnum.ADMINISTRATOR,
+                RolesEnum.PRIME_ADMIN,RolesEnum.GUEST_MANAGER])
             default:
               return false
           }
@@ -518,9 +528,6 @@ export const renderGuestType = (value: string) => {
       result = $t({ defaultMessage: 'Managed' })
       break
     case GuestTypesEnum.SELF_SIGN_IN:
-      result = $t({ defaultMessage: 'Self Sign In' })
-      break
-    case GuestTypesEnum.HOST_GUEST:
       result = $t({ defaultMessage: 'Self Sign In' })
       break
     default:

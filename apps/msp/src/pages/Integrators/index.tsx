@@ -95,12 +95,12 @@ export function Integrators () {
       key: 'mspAdminCount',
       sorter: true,
       onCell: (data) => {
-        return {
+        return (isPrimeAdmin || isAdmin) ? {
           onClick: () => {
             setTenantId(data.id)
             setDrawerAdminVisible(true)
           }
-        }
+        } : {}
       },
       render: function (data) {
         return (
@@ -115,13 +115,13 @@ export function Integrators () {
       key: 'assignedMspEcList',
       sorter: true,
       onCell: (data) => {
-        return {
+        return (isPrimeAdmin || isAdmin) ? {
           onClick: () => {
             setTenantId(data.id)
             setTenantType(data.tenantType)
             if (!drawerEcVisible) setDrawerEcVisible(true)
           }
-        }
+        } : {}
       },
       render: function (data, row) {
         return (isPrimeAdmin || isAdmin)
@@ -186,7 +186,7 @@ export function Integrators () {
             type: 'confirm',
             customContent: {
               action: 'DELETE',
-              entityName: $t({ defaultMessage: 'Integrator' }),
+              entityName: $t({ defaultMessage: 'Tech Partner' }),
               entityValue: name,
               confirmationText: $t({ defaultMessage: 'Delete' })
             },
@@ -222,14 +222,14 @@ export function Integrators () {
         extra={isAdmin ?
           [
             <TenantLink to='/dashboard'>
-              <Button>{$t({ defaultMessage: 'Manage my account' })}</Button>
+              <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
             </TenantLink>,
             <MspTenantLink to='/integrators/create'>
               <Button type='primary'>{$t({ defaultMessage: 'Add Tech Partner' })}</Button>
             </MspTenantLink>
           ]
           : [<TenantLink to='/dashboard'>
-            <Button>{$t({ defaultMessage: 'Manage my account' })}</Button>
+            <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
           </TenantLink>
           ]}
       />
@@ -243,6 +243,7 @@ export function Integrators () {
       {setDrawerEcVisible && <AssignEcDrawer
         visible={drawerEcVisible}
         setVisible={setDrawerEcVisible}
+        setSelected={() => {}}
         tenantId={tenantId}
         tenantType={tenantType}
       />}
