@@ -11,6 +11,9 @@ export const DateContainer = styled.div`
   label {
     margin-top: 4px;
   }
+  .ant-picker-clear {
+    display: none;
+  }
 `
 
 export const Section = styled.div`
