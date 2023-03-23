@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { Form, Select, FormItemProps, Spin, Button, Row, Col } from 'antd'
 import _                                     from 'lodash'
@@ -30,9 +30,6 @@ export function TemplateSelector (props: TemplateSelectorProps) {
   const templateDataRequest = useGetTemplateSelectionContentQuery(
     { params: { templateScopeId: scopeId, registrationId: registrationId } })
 
-
-  const [templateOptions, setTemplateOptions] = useState<Array<{ value:string, label:string }>>([])
-
   const form = Form.useFormInstance()
 
   const formItemProps = {
@@ -40,60 +37,44 @@ export function TemplateSelector (props: TemplateSelectorProps) {
     ...props.formItemProps
   }
 
-  const [formItemLabel, setFormItemLabel] = useState($t({ defaultMessage: 'Loading Templates...' }))
   const [isPreviewAvailable, setPreviewAvailable] = useState(false)
 
-  // Setup form options ////
-  useEffect(() => {
-    if(!templateDataRequest.isSuccess) {
-      return
+  // Generate form data from data request
+  const { templateOptions, scopeLabel, initialOption } = useMemo(() => {
+    if (!templateDataRequest.isSuccess) {
+      return { templateOptions: [], scopeLabel: $t({ defaultMessage: 'Loading Templates...' }), initialOption: undefined }
     }
 
-    let options = templateDataRequest.data?.templates.map((t) =>
-      ({ value: t.id,
-        label: (t.userProvidedName?
-          t.userProvidedName : $t(_.get(templateNames, t.nameLocalizationKey))) }))
-    setTemplateOptions(options)
-  }, [templateDataRequest.isSuccess, templateDataRequest.data?.templates])
+    const templateOptions = templateDataRequest.data?.templates.map((t) =>
+        ({ value: t.id,
+          label: (t.userProvidedName?
+            t.userProvidedName : $t(_.get(templateNames, t.nameLocalizationKey))) }))
+
+    const scopeLabel = templateDataRequest.data?.templateScopeNameKey ?
+        $t(_.get(templateScopeLabels, templateDataRequest.data.templateScopeNameKey))
+        : $t({ defaultMessage: 'Loading Templates...' })
+
+    const initialOption =  templateDataRequest.data?.defaultTemplateId ?
+      templateOptions.find(t => t.value === templateDataRequest.data?.defaultTemplateId)
+      : undefined
+    
+
+    return {
+      templateOptions,
+      scopeLabel,
+      initialOption
+    }
+  }, [templateDataRequest.data])
 
   // Set intitial selected value
   useEffect(() => {
     let currentFormValue = form.getFieldValue(formItemProps.name)
-    let initialTemplateId = templateDataRequest.data?.defaultTemplateId
 
-    if(!currentFormValue && initialTemplateId) {
-      let initialSelection =
-        templateOptions.find(t => t.value === templateDataRequest.data?.defaultTemplateId)
-
-      form.setFieldValue(formItemProps.name, initialSelection)
+    if(!currentFormValue && initialOption) {
+      form.setFieldValue(formItemProps.name, initialOption)
       setPreviewAvailable(true)
     }
-  }, [templateDataRequest.data?.defaultTemplateId,
-    templateDataRequest.data?.templates, templateOptions])
-
-  const [componentMode, setComponentMode] = useState<'LOADING' | 'ERROR' | 'LOADED'>('LOADING')
-
-  // Set component data loading state
-  useEffect(() => {
-    if(templateDataRequest.isLoading) {
-      setComponentMode('LOADING')
-    } else if(templateDataRequest.isError) {
-      setComponentMode('ERROR')
-    } else if(templateDataRequest.isSuccess) {
-      setComponentMode('LOADED')
-    }
-  }, [templateDataRequest.isLoading, templateDataRequest.isError, templateDataRequest.isSuccess])
-
-  // Set Form Item Label
-  useEffect(() => {
-    if(componentMode === 'LOADED' && templateDataRequest.data?.templateScopeNameKey) {
-      setFormItemLabel(
-        $t(_.get(templateScopeLabels, templateDataRequest.data.templateScopeNameKey)))
-    } else {
-      setFormItemLabel($t({ defaultMessage: 'Loading Templates...' }))
-    }
-  }, [templateDataRequest.data?.templateScopeNameKey, componentMode])
-
+  }, [initialOption, templateOptions])
 
   // Preview Modal Management ///////////////////////
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -112,11 +93,13 @@ export function TemplateSelector (props: TemplateSelectorProps) {
 
   // RENDER //////////////////////////////////////////////////////
   return (
+    // TODO: style Loader, it isn't being contained within the form item right now
+    // TODO: Loader isn't responding well to network errors, fix that
     <Loader states={[templateDataRequest]}>
       <Row>
         <Col flex="auto">
           <Form.Item {...formItemProps}
-            label={formItemLabel}>
+            label={scopeLabel}>
             <Select
               placeholder={placeholder}
               options={templateOptions}
