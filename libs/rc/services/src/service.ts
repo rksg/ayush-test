@@ -42,7 +42,8 @@ import {
   downloadFile,
   NewAPITableResult,
   transferNewResToTableResult,
-  MdnsProxyViewModel
+  MdnsProxyViewModel,
+  PortalTablePayload
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -698,6 +699,33 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         })
       }
     }),
+    getEnhancedPortalProfileList: build.query<TableResult<Portal>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PortalUrlsInfo.getEnhancedPortalProfileList,
+          params)
+
+        return {
+          ...req,
+          body: _.omit(payload as PortalTablePayload, ['defaultPageSize', 'total'])
+        }
+      },
+      transformResponse (result: NewAPITableResult<Portal>) {
+        return transferNewResToTableResult<Portal>(result)
+      },
+      providesTags: [{ type: 'Service', id: 'LIST' },{ type: 'Portal', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'Add Portal Service Profile',
+            'Update Portal Service Profile',
+            'Delete Portal Service Profile',
+            'Delete Portal Service Profiles'
+          ], () => {
+            api.dispatch(serviceApi.util.invalidateTags([{ type: 'Portal', id: 'LIST' }]))
+          })
+        })
+      }
+    }),
     getPortalLang: build.mutation<{ [key: string]: string }, RequestPayload>({
       query: ({ params }) => {
         const portalLang = createHttpRequest(PortalUrlsInfo.getPortalLang, params)
@@ -767,5 +795,6 @@ export const {
   useDeletePortalMutation,
   useUpdatePortalMutation,
   useUploadURLMutation,
-  useGetDHCPProfileListViewModelQuery
+  useGetDHCPProfileListViewModelQuery,
+  useGetEnhancedPortalProfileListQuery
 } = serviceApi
