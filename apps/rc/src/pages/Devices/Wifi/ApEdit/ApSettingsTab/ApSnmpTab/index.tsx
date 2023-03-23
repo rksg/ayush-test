@@ -251,7 +251,7 @@ export function ApSnmp () {
                 />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            {((RetrievedApSnmpAgentList?.data?.length as number) < 64) && <Col span={12}>
               <TenantLink
                 to={getPolicyRoutePath({
                   type: PolicyType.SNMP_AGENT,
@@ -260,7 +260,7 @@ export function ApSnmp () {
               >
                 {$t({ defaultMessage: 'Add' })}
               </TenantLink>
-            </Col>
+            </Col>}
           </Row>
         </Col>
           }
