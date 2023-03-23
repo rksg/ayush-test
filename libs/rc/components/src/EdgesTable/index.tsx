@@ -80,6 +80,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
       key: 'deviceStatus',
       dataIndex: 'deviceStatus',
       sorter: true,
+      fixed: 'left',
       render: (data, row) => {
         return (
           <EdgeStatusLight data={row.deviceStatus} />

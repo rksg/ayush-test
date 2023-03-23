@@ -57,6 +57,7 @@ export const EventTable = ({
       dataIndex: 'event_datetime',
       defaultSortOrder: 'descend',
       sorter: true,
+      fixed: 'left',
       render: function (_, row) {
         return <Button
           type='link'

@@ -29,7 +29,7 @@ function getCols (intl: ReturnType<typeof useIntl>, isServicesEnabled: boolean) 
       title: intl.$t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
       sorter: true,
-      disable: true,
+      fixed: 'left',
       defaultSortOrder: 'ascend',
       render: function (data, row) {
         if(disabledType.indexOf(row.nwSubType as NetworkTypeEnum) > -1){
