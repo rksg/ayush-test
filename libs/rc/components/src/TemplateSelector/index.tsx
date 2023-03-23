@@ -7,7 +7,7 @@ import { useIntl }                           from 'react-intl'
 import { useGetTemplateSelectionContentQuery } from '@acx-ui/rc/services'
 
 import { templateNames, templateScopeLabels } from './MsgTemplateLocalizedMessages'
-import { Modal } from '@acx-ui/components'
+import { Loader, Modal } from '@acx-ui/components'
 import { Template } from '@acx-ui/rc/utils'
 import { TemplatePreview } from './TemplatePreview'
 
@@ -111,10 +111,8 @@ export function TemplateSelector (props: TemplateSelectorProps) {
   };
 
   // RENDER //////////////////////////////////////////////////////
-  if(componentMode !== 'LOADED') {
-    return (<div style={{ display: 'block' }}><Spin></Spin></div>)
-  } else {
-    return (
+  return (
+    <Loader states={[templateDataRequest]}>
       <Row>
         <Col flex="auto">
           <Form.Item {...formItemProps}
@@ -147,6 +145,6 @@ export function TemplateSelector (props: TemplateSelectorProps) {
           </Modal>
         </Col>
       </Row>
-    )
-  }
+    </Loader>
+  )
 }

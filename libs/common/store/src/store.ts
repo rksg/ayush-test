@@ -28,8 +28,6 @@ import {
   baseMsgTemplateApi as msgTemplateApi
 } from './baseApi'
 
-// TODO: should be no changes here
-
 const isDev = process.env['NODE_ENV'] === 'development'
 
 export const store = configureStore({
