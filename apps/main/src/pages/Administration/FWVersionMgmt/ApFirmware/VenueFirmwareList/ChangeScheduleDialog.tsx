@@ -55,12 +55,12 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
   }, [availableVersions])
 
   useEffect(() => {
-    if (selectMode === VersionsSelectMode.Dropdown && !selectedVersion) {
+    if (!selectedDate || (selectMode === VersionsSelectMode.Dropdown && !selectedVersion)) {
       setDisableSave(true)
     } else {
       setDisableSave(false)
     }
-  }, [selectMode, selectedVersion])
+  }, [selectMode, selectedVersion, selectedDate])
 
   let versionOptions: FirmwareVersion[] = []
   let otherVersions: FirmwareVersion[] = []
@@ -158,7 +158,7 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
           initialValue={VersionsSelectMode.Radio}
         >
           <div>
-            <Typography>
+            <Typography style={{ fontWeight: 700 }}>
               { // eslint-disable-next-line max-len
                 $t({ defaultMessage: 'Choose which version to update the venue to:' })}
             </Typography>
@@ -171,23 +171,25 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
                   {getVersionLabel(versionOptions[0])}
                 </Radio>
                 { otherVersions.length > 0 ?
-                  <Radio value={VersionsSelectMode.Dropdown}>
-                    <Select
-                      style={{ width: '100%', fontSize: '12px' }}
-                      placeholder='Select other version...'
-                      onChange={handleChange}
-                      options={otherOptions}
-                    />
-                  </Radio>
+                  <UI.SelectDiv>
+                    <Radio value={VersionsSelectMode.Dropdown}>
+                      <Select
+                        style={{ width: '460px', fontSize: '12px' }}
+                        placeholder='Select other version...'
+                        onChange={handleChange}
+                        options={otherOptions}
+                      />
+                    </Radio>
+                  </UI.SelectDiv>
                   : null
                 }
               </Space>
             </Radio.Group>
           </div>
         </Form.Item>
-        <UI.TitleActive>When do you want the update to run?</UI.TitleActive>
+        <UI.TitleDate>When do you want the update to run?</UI.TitleDate>
         { // eslint-disable-next-line max-len
-          <UI.TitleActive>Selected time will apply to each venue according to own time-zone</UI.TitleActive>}
+          <UI.Title2Date>Selected time will apply to each venue according to own time-zone</UI.Title2Date>}
         <UI.DateContainer>
           <label>Update date:</label>
           <DatePicker

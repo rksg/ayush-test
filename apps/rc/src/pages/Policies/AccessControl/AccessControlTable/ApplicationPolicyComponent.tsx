@@ -16,8 +16,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
+import { AddModeProps }  from '../AccessControlForm/AccessControlForm'
 import ApplicationDrawer from '../AccessControlForm/ApplicationDrawer'
-
 
 const defaultPayload = {
   fields: [
@@ -33,6 +33,9 @@ const defaultPayload = {
 const ApplicationPolicyComponent = () => {
   const { $t } = useIntl()
   const params = useParams()
+  const [addModeStatus, setAddModeStatus] = useState(
+    { enable: true, visible: false } as AddModeProps
+  )
 
   const [ delAppPolicy ] = useDelAppPolicyMutation()
 
@@ -99,6 +102,13 @@ const ApplicationPolicyComponent = () => {
     }
   }, [networkTableQuery.data, networkIds])
 
+  const actions = [{
+    label: $t({ defaultMessage: 'Add Application Policy' }),
+    onClick: () => {
+      setAddModeStatus({ enable: true, visible: true })
+    }
+  }]
+
   const rowActions: TableProps<ApplicationPolicy>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
@@ -136,6 +146,9 @@ const ApplicationPolicyComponent = () => {
   ]
 
   return <Loader states={[tableQuery]}>
+    <ApplicationDrawer
+      onlyAddMode={addModeStatus}
+    />
     <Table<ApplicationPolicy>
       columns={useColumns(networkFilterOptions, editMode, setEditMode)}
       enableApiFilter={true}
@@ -144,6 +157,7 @@ const ApplicationPolicyComponent = () => {
       onChange={tableQuery.handleTableChange}
       onFilterChange={tableQuery.handleFilterChange}
       rowKey='id'
+      actions={filterByAccess(actions)}
       rowActions={filterByAccess(rowActions)}
       rowSelection={{ type: 'radio' }}
     />

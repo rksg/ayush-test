@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Checkbox, Form, FormInstance, Input, Radio, RadioChangeEvent, Select, Slider } from 'antd'
 import { defineMessage, MessageDescriptor, useIntl }                                    from 'react-intl'
@@ -22,6 +22,7 @@ const { useWatch } = Form
 export interface ApplicationRuleDrawerProps {
   avcSelectOptions: AvcCategory[],
   applicationsRuleList: ApplicationsRule[],
+  applicationsRule: ApplicationsRule,
   editMode: boolean,
   drawerForm: FormInstance
 }
@@ -54,7 +55,7 @@ export const appRateStrategyLabelMapping: Record<RateStrategyEnum, MessageDescri
 
 const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
   const { $t } = useIntl()
-  const { avcSelectOptions, applicationsRuleList, editMode, drawerForm } = props
+  const { avcSelectOptions, applicationsRuleList, applicationsRule, editMode, drawerForm } = props
   const [category, setCategory] = useState('')
   const [sourceValue, setSourceValue] = useState(drawerForm.getFieldValue('accessControl'))
   const [maxUplinkRate, setMaxUplinkRate] = useState({
@@ -78,6 +79,12 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
     $t({ defaultMessage: 'TCP' }),
     $t({ defaultMessage: 'UDP' })
   ]
+
+  useEffect(() => {
+    if (applicationsRule.ruleSettings) {
+      setCategory(applicationsRule.ruleSettings.category ?? '')
+    }
+  }, [applicationsRule.ruleSettings])
 
   const rateLimitContent = <div>
     <div style={{ display: 'flex' }}>
@@ -310,7 +317,7 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
           return Promise.resolve()
         } }
       ]}
-      initialValue={$t({ defaultMessage: 'Select Category...' })}
+      initialValue={category || $t({ defaultMessage: 'Select Category...' })}
       children={selectCategory}
     /> }
     { ruleType === ApplicationRuleType.SIGNATURE && <DrawerFormItem
@@ -326,7 +333,9 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
         } }
       ]}
       initialValue={$t({ defaultMessage: 'Select Application...' })}
-      children={selectApplication(category)}
+      children={selectApplication(
+        category || drawerForm.getFieldValue('applicationNameSystemDefined')?.split('_')[0]
+      )}
     /> }
     {/* userDefined option */}
     { ruleType === ApplicationRuleType.USER_DEFINED && <DrawerFormItem

@@ -8,12 +8,12 @@ import Dashboard from '.'
 /* eslint-disable max-len */
 jest.mock('@acx-ui/analytics/components', () => ({
   ConnectedClientsOverTime: () => <div data-testid={'analytics-ConnectedClientsOverTime'} title='ConnectedClientsOverTime' />,
-  IncidentsDashboard: () => <div data-testid={'analytics-IncidentsDashboard'} title='IncidentsDashboard' />,
+  IncidentsDashboardv2: () => <div data-testid={'analytics-IncidentsDashboardv2'} title='IncidentsDashboard' />,
   NetworkHistory: () => <div data-testid={'analytics-NetworkHistory'} title='NetworkHistory' />,
   SwitchesTrafficByVolume: () => <div data-testid={'analytics-SwitchesTrafficByVolume'} title='SwitchesTrafficByVolume' />,
   TopAppsByTraffic: () => <div data-testid={'analytics-TopAppsByTraffic'} title='TopAppsByTraffic' />,
   TopSSIDsByClient: () => <div data-testid={'analytics-TopSSIDsByClient'} title='TopSSIDsByClient' />,
-  TopSSIDsByTraffic: () => <div data-testid={'analytics-TopSSIDsByTraffic'} title='TopSSIDsByTraffic' />,
+  TopWiFiNetworks: () => <div data-testid={'analytics-TopWiFiNetworks'} title='TopWiFiNetworks' />,
   TopSwitchesByError: () => <div data-testid={'analytics-TopSwitchesByError'} title='TopSwitchesByError' />,
   TopSwitchesByPoEUsage: () => <div data-testid={'analytics-TopSwitchesByPoEUsage'} title='TopSwitchesByPoEUsage' />,
   TopSwitchesByTraffic: () => <div data-testid={'analytics-TopSwitchesByTraffic'} title='TopSwitchesByTraffic' />,
@@ -40,7 +40,7 @@ describe('Dashboard', () => {
   it('renders correctly', async () => {
     render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
 
-    expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(6)
+    expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(7)
     expect(await screen.findAllByTestId(/^rc/)).toHaveLength(5)
   })
 
@@ -69,7 +69,7 @@ describe('Dashboard', () => {
   it('should switch tab correctly', async () => {
     render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
     fireEvent.click(await screen.findByText('Switch'))
-    expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(7)
+    expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(8)
     expect(await screen.findAllByTestId(/^rc/)).toHaveLength(5)
   })
   it('should show report link correctly', async () => {
