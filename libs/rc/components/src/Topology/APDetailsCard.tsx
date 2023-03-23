@@ -1,9 +1,10 @@
 import { Badge, Button, Divider } from 'antd'
 import { useIntl }                from 'react-intl'
 
-import { Card, Descriptions, Loader, Subtitle }                                                                    from '@acx-ui/components'
-import { DateFormatEnum, formatter }                                                                               from '@acx-ui/formatter'
-import { ApDeviceStatusEnum, APMeshRole, APView, ApViewModel, noDataDisplay, SwitchStatusEnum, transformApStatus } from '@acx-ui/rc/utils'
+import { Card, Descriptions, Loader, Subtitle }                                                     from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                                                from '@acx-ui/formatter'
+import { ApDeviceStatusEnum, APMeshRole, APView, ApViewModel, SwitchStatusEnum, transformApStatus } from '@acx-ui/rc/utils'
+import { noDataDisplay }                                                                            from '@acx-ui/utils'
 
 import * as UI                         from './styledComponents'
 import { getDeviceColor, getMeshRole } from './utils'
