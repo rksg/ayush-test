@@ -82,8 +82,9 @@ export function KpiWidget ({
   const sparklineChartStyle = { height: 50, width: 130, display: 'inline' }
   const { startDate , endDate } = filters
   const intl = useIntl()
-
-  const historgramQuery = useKpiHistogramQuery({ ...filters, kpi: name }, {
+  const venueId = filters.filter?.networkNodes?.at(0)?.at(0)?.name
+  const historgramQuery = useKpiHistogramQuery({ ...filters,
+    path: [{ type: 'zone', name: venueId as string }], filter: {}, kpi: name }, {
     skip: !Boolean(histogram),
     selectFromResult: (response) => {
       const agg = response.data
@@ -99,6 +100,8 @@ export function KpiWidget ({
 
   const { sparklineData, ...queryResults } = useKpiTimeseriesQuery({
     ...filters,
+    path: [{ type: 'zone', name: venueId as string }],
+    filter: {},
     kpi: name,
     threshold: (threshold ?? '') as string,
     granularity: getSparklineGranularity(startDate,endDate)

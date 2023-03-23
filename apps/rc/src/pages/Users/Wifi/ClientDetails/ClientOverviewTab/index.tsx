@@ -47,7 +47,9 @@ const historicalPayload = {
     'serialNumber', 'networkId', 'disconnectTime', 'ssid', 'osType',
     'sessionDuration', 'venueName', 'apName', 'bssid'],
   sortField: 'event_datetime',
-  searchTargetFields: ['clientMac']
+  searchTargetFields: ['clientMac'],
+  page: 1,
+  pageSize: 1
 }
 
 export function ClientOverviewTab () {
@@ -93,12 +95,15 @@ export function ClientOverviewTab () {
       setClientDetails((historicalisData?.data?.[0] ?? {}) as Client)
     }
 
-    getClientData()
+    clientStatus === ClientStatusEnum.CONNECTED
+      ? getClientData()
+      : getHistoricalClientData()
   }, [clientId])
 
   useEffect(() => {
     const serialNumber = clientDetails?.apSerialNumber || clientDetails?.serialNumber
-    if (serialNumber) {
+    const isApNotExists = clientDetails.isApExists === false
+    if (serialNumber && !isApNotExists) {
       const checkTribandAp = async () => {
         const apDetails = await getAp({
           params: { tenantId, serialNumber }

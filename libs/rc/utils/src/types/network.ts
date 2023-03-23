@@ -134,20 +134,24 @@ export interface Regions{
     primary: {
       ip: string;
       port: string;
+      sharedSecret?: string;
     };
     secondary: {
       ip: string;
       port: string;
+      sharedSecret?: string;
     };
   },
   accountingRadius?: {
     primary: {
       ip: string;
       port: string;
+      sharedSecret?: string;
     };
     secondary: {
       ip: string;
       port: string;
+      sharedSecret?: string;
     };
   }
 }

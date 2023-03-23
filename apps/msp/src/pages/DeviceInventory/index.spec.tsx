@@ -180,7 +180,7 @@ describe('Device Inventory Table', () => {
       })
 
     expect(screen.getByText('Device Inventory')).toBeVisible()
-    expect(screen.getByText('Manage my account')).toBeVisible()
+    expect(screen.getByText('Manage My Account')).toBeVisible()
   })
   it('should render table', async () => {
     utils.useTableQuery = jest.fn().mockImplementation(() => {

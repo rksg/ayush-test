@@ -264,6 +264,17 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       providesTags: [{ type: 'Network', id: 'Overview' }]
     }),
+    dashboardV2Overview: build.query<Dashboard, RequestPayload>({
+      query: ({ params, payload }) => {
+        const dashboardOverviewReq
+          = createHttpRequest(CommonUrlsInfo.getDashboardV2Overview, params)
+        return {
+          ...dashboardOverviewReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Network', id: 'Overview' }]
+    }),
     validateRadius: build.query<RadiusValidate, RequestPayload>({
       query: ({ params, payload }) => {
         const validateRadiusReq = createHttpRequest(CommonUrlsInfo.validateRadius, params)
@@ -386,6 +397,7 @@ export const {
   useApNetworkListQuery,
   useVenueNetworkListQuery,
   useDashboardOverviewQuery,
+  useDashboardV2OverviewQuery,
   useValidateRadiusQuery,
   useLazyValidateRadiusQuery,
   useExternalProvidersQuery

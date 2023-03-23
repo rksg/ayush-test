@@ -624,6 +624,7 @@ describe('RcRoutes: Policies', () => {
   })
 
   test('should navigate to create MAC_REGISTRATION_LIST page', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.CREATE }),
@@ -634,6 +635,7 @@ describe('RcRoutes: Policies', () => {
   })
 
   test('should navigate to edit MAC_REGISTRATION_LIST page', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     let path = getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.EDIT })
     path = path.replace(':policyId', 'policyId')
     render(<Provider><RcRoutes /></Provider>, {
@@ -718,7 +720,7 @@ describe('RcRoutes: Policies', () => {
         wrapRoutes: false
       }
     })
-    expect(await screen.findByRole('heading', { level: 1, name: /AAA Server/ })).toBeVisible()
+    expect(await screen.findByRole('heading', { level: 1, name: /Radius Server/ })).toBeVisible()
   })
 
   test('should navigate to Access Control table', async () => {

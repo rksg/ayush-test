@@ -147,6 +147,10 @@ export interface switchSchedule {
   timeSlot: {
     startDateTime: string;
     versionInfo: ScheduleVersionInfo;
+  };
+  version?: {
+    name: string;
+    category: FirmwareCategory;
   }
 }
 
@@ -165,6 +169,10 @@ export interface FirmwareSwitchVenue {
 
 export interface CurrentVersions {
   currentVersions: string[]
+}
+
+export interface PreDownload {
+  preDownload: boolean
 }
 
 export const firmwareTypeTrans = () => {

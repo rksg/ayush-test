@@ -70,6 +70,18 @@ describe('ConnectedClientsOverTimeWidget', () => {
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
   })
+  it('should render area chart', async () => {
+    mockGraphqlQuery(dataApiURL, 'ConnectedClientsOverTimeWidget', {
+      data: { network: { hierarchyNode: { timeSeries: sample } } }
+    })
+    const { asFragment } =render(
+      <Provider>
+        <ConnectedClientsOverTime filters={filters} vizType={'area'}/>
+      </Provider>)
+    await screen.findByText('Connected Clients Over Time')
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+  })
   it('should render error', async () => {
     jest.spyOn(console, 'error').mockImplementation(() => {})
     mockGraphqlQuery(dataApiURL, 'ConnectedClientsOverTimeWidget', {

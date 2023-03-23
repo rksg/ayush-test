@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Checkbox, Form, FormInstance, Input, Radio, RadioChangeEvent, Select, Slider } from 'antd'
 import { defineMessage, MessageDescriptor, useIntl }                                    from 'react-intl'
@@ -22,6 +22,7 @@ const { useWatch } = Form
 export interface ApplicationRuleDrawerProps {
   avcSelectOptions: AvcCategory[],
   applicationsRuleList: ApplicationsRule[],
+  applicationsRule: ApplicationsRule,
   editMode: boolean,
   drawerForm: FormInstance
 }
@@ -54,7 +55,7 @@ export const appRateStrategyLabelMapping: Record<RateStrategyEnum, MessageDescri
 
 const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
   const { $t } = useIntl()
-  const { avcSelectOptions, applicationsRuleList, editMode, drawerForm } = props
+  const { avcSelectOptions, applicationsRuleList, applicationsRule, editMode, drawerForm } = props
   const [category, setCategory] = useState('')
   const [sourceValue, setSourceValue] = useState(drawerForm.getFieldValue('accessControl'))
   const [maxUplinkRate, setMaxUplinkRate] = useState({
@@ -79,6 +80,12 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
     $t({ defaultMessage: 'UDP' })
   ]
 
+  useEffect(() => {
+    if (applicationsRule.ruleSettings) {
+      setCategory(applicationsRule.ruleSettings.category ?? '')
+    }
+  }, [applicationsRule.ruleSettings])
+
   const rateLimitContent = <div>
     <div style={{ display: 'flex' }}>
       <span style={{ width: '200px' }}>
@@ -97,6 +104,7 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
           // display: fromClient ? '' : 'none',
           width: '100%', marginLeft: '10px', marginRight: '10px' }}
         marks={{ 0.25: '0.25 Mbps', 20: '20 Mbps' }}
+        min={0.25}
         max={20}
         defaultValue={maxUplinkRate.value ?? 0.25}
         onChange={(value) => {
@@ -125,6 +133,7 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
           // display: toClient ? '' : 'none',
           width: '100%', marginLeft: '10px', marginRight: '10px' }}
         marks={{ 0.25: '0.25 Mbps', 20: '20 Mbps' }}
+        min={0.25}
         max={20}
         defaultValue={maxDownlinkRate.value ?? 0.25}
         onChange={(value) => {
@@ -310,7 +319,7 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
           return Promise.resolve()
         } }
       ]}
-      initialValue={$t({ defaultMessage: 'Select Category...' })}
+      initialValue={category || $t({ defaultMessage: 'Select Category...' })}
       children={selectCategory}
     /> }
     { ruleType === ApplicationRuleType.SIGNATURE && <DrawerFormItem
@@ -326,7 +335,9 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
         } }
       ]}
       initialValue={$t({ defaultMessage: 'Select Application...' })}
-      children={selectApplication(category)}
+      children={selectApplication(
+        category || drawerForm.getFieldValue('applicationNameSystemDefined')?.split('_')[0]
+      )}
     /> }
     {/* userDefined option */}
     { ruleType === ApplicationRuleType.USER_DEFINED && <DrawerFormItem

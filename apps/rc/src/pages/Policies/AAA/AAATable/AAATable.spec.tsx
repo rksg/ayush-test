@@ -75,7 +75,7 @@ describe('AAATable', () => {
     )
 
     const targetName = mockTableResult.data[0].name
-    expect(await screen.findByRole('button', { name: /Add AAA Server/i })).toBeVisible()
+    expect(await screen.findByRole('button', { name: /Add Radius Server/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: new RegExp(targetName) })).toBeVisible()
   })
 
