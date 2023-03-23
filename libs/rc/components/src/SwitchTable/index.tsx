@@ -209,6 +209,7 @@ export function SwitchTable (props : SwitchTableProps) {
       title: $t({ defaultMessage: 'Clients' }),
       dataIndex: 'clientCount',
       sorter: true,
+      sortDirections: ['descend', 'ascend', 'descend'],
       render: (data, row) => (
         <TenantLink to={`/devices/switch/${row.id || row.serialNumber}/${row.serialNumber}/details/clients`}>
           {data ? data : ((row.unitStatus === undefined) ? 0 : '')}

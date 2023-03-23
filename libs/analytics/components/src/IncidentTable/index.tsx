@@ -178,7 +178,8 @@ export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
       width: 130,
       dataIndex: 'clientImpact',
       key: 'clientImpact',
-      sorter: { compare: sortProp('clientImpact', clientImpactSort) }
+      sorter: { compare: sortProp('clientImpact', clientImpactSort) },
+      sortDirections: ['descend', 'ascend', 'descend']
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Impacted Clients' })),
@@ -186,6 +187,7 @@ export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
       dataIndex: 'impactedClients',
       key: 'impactedClients',
       sorter: { compare: sortProp('impactedClients', clientImpactSort) },
+      sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center'
     },
     {

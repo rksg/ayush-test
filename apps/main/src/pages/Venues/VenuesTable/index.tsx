@@ -98,6 +98,7 @@ function useColumns (
       key: 'aggregatedApStatus',
       dataIndex: 'aggregatedApStatus',
       sorter: true,
+      sortDirections: ['descend', 'ascend', 'descend'],
       render: function (data, row) {
         const count = row.aggregatedApStatus
           ? Object.values(row.aggregatedApStatus)
@@ -116,6 +117,7 @@ function useColumns (
       key: 'clients',
       dataIndex: 'clients',
       sorter: true,
+      sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center',
       render: function (data, row) {
         return (
@@ -131,6 +133,7 @@ function useColumns (
       key: 'switches',
       dataIndex: 'switches',
       sorter: true,
+      sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center',
       render: function (data, row) {
         return (
@@ -146,6 +149,7 @@ function useColumns (
       key: 'switchClients',
       dataIndex: 'switchClients',
       sorter: true,
+      sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center',
       render: function (data, row) {
         return (

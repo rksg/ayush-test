@@ -199,6 +199,7 @@ export function NetworkHealthTable () {
       dataIndex: 'apsCount',
       render: (value) => value,
       sorter: { compare: sortProp('apsCount', defaultSort) },
+      sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center'
     },
     {
@@ -216,6 +217,7 @@ export function NetworkHealthTable () {
       dataIndex: ['latestTest', 'summary', 'apsTestedCount'],
       render: (_, row) => formatApsUnderTest(row.latestTest?.summary),
       sorter: { compare: sortProp('latestTest.summary.apsTestedCount', defaultSort) },
+      sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center'
     },
     {

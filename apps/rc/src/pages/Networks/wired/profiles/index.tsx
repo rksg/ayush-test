@@ -34,6 +34,7 @@ export function ProfilesTab () {
     title: $t({ defaultMessage: 'Venues' }),
     dataIndex: 'venueCount',
     sorter: true,
+    sortDirections: ['descend', 'ascend', 'descend'],
     render: function (data, row) {
       if (row.venues) {
         return <Tooltip

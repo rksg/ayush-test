@@ -67,6 +67,7 @@ function getCols (intl: ReturnType<typeof useIntl>, isServicesEnabled: boolean) 
       title: intl.$t({ defaultMessage: 'Venues' }),
       dataIndex: ['venues', 'count'],
       sorter: true,
+      sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center',
       render: function (count, row) {
         if(disabledType.indexOf(row.nwSubType as NetworkTypeEnum) > -1){
@@ -86,6 +87,7 @@ function getCols (intl: ReturnType<typeof useIntl>, isServicesEnabled: boolean) 
       title: intl.$t({ defaultMessage: 'APs' }),
       dataIndex: 'aps',
       sorter: true,
+      sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center',
       render: function (data, row) {
         if(disabledType.indexOf(row.nwSubType as NetworkTypeEnum) > -1){
@@ -102,6 +104,7 @@ function getCols (intl: ReturnType<typeof useIntl>, isServicesEnabled: boolean) 
       title: intl.$t({ defaultMessage: 'Clients' }),
       dataIndex: 'clients',
       sorter: false,
+      sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center'
     },
     {
