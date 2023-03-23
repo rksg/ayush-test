@@ -20,9 +20,10 @@ export const NonSelectableItem = styled.div.attrs(
 )`
   width: 100%;
 `
-export const Container = styled.div`
-  min-width: 165px;
-  max-width: 180px;
+export const Container = styled.div.attrs((props: { $open?: boolean }) => props)`
+  min-width: 169px;
+  max-width: 322px;
+  ${(props) => props.$open ? 'width: 322px;' : 'width: 169px;'}
 `
 export const SeverityContainer = styled.div`
   display: flex;
