@@ -96,7 +96,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           const activities = [
             'AddSwitch',
             'UpdateSwitch',
-            'DeleteSwitch'
+            'DeleteSwitch',
+            'ImportSwitches'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(switchApi.util.invalidateTags([{ type: 'Switch', id: 'LIST' }]))
