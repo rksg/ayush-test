@@ -61,7 +61,7 @@ export interface TableProps <RecordType>
     rowKey?: ProAntTableProps<RecordType, ParamsType>['rowKey']
     columns: TableColumn<RecordType, 'text'>[]
     actions?: Array<TableAction>
-    rowActions?: Array<TableRowAction>
+    rowActions?: Array<TableRowAction<RecordType>>
     columnState?: ColumnStateOption
     rowSelection?: (ProAntTableProps<RecordType, ParamsType>['rowSelection']
       & AntTableProps<RecordType>['rowSelection']

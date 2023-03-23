@@ -133,7 +133,7 @@ export type TableAction = {
   dropdownMenu?: Omit<MenuProps, 'placement'>
 }
 
-export type TableRowAction = {
+export type TableRowAction<RecordType> = {
   key?: string
   label: string
   disabled?: boolean | ((selectedItems: RecordType[]) => boolean)
