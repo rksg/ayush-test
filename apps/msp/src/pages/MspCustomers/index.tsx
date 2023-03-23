@@ -137,7 +137,7 @@ export function MspCustomers () {
   const parentTenantid = tenantDetailsData.data?.mspEc?.parentMspId
 
   const { data: techPartners } = useTableQuery({
-    useQuery: useIntegratorCustomerListQuery,
+    useQuery: useMspCustomerListQuery,
     defaultPayload: {
       filters: { tenantType: [AccountType.MSP_INTEGRATOR, AccountType.MSP_INSTALLER] },
       fields: [
@@ -286,13 +286,12 @@ export function MspCustomers () {
       sorter: true,
       show: false
     },
-    {
+    ...(isIntegrator || userProfile?.support ? [] : [{
       title: $t({ defaultMessage: 'Integrator' }),
       dataIndex: 'integrator',
       key: 'integrator',
-      show: !userProfile?.support && !isIntegrator,
-      onCell: (data) => {
-        return (isPrimeAdmin || isAdmin) && !userProfile?.support ? {
+      onCell: (data: MspEc) => {
+        return (isPrimeAdmin || isAdmin) ? {
           onClick: () => {
             setTenantId(data.id)
             setTenantType(AccountType.MSP_INTEGRATOR)
@@ -300,21 +299,20 @@ export function MspCustomers () {
           }
         } : {}
       },
-      render: function (data, row) {
+      render: function (data: React.ReactNode, row: MspEc) {
         const val = row?.integrator ? transformTechPartner(row.integrator) : '--'
         return (
-          (isPrimeAdmin || isAdmin) && !userProfile?.support
+          (isPrimeAdmin || isAdmin)
             ? <Link to=''>{val}</Link> : val
         )
       }
-    },
-    {
+    }]),
+    ...(isIntegrator || userProfile?.support ? [] : [{
       title: $t({ defaultMessage: 'Installer' }),
       dataIndex: 'installer',
       key: 'installer',
-      show: !userProfile?.support && !isIntegrator,
-      onCell: (data) => {
-        return (isPrimeAdmin || isAdmin) && !userProfile?.support ? {
+      onCell: (data: MspEc) => {
+        return (isPrimeAdmin || isAdmin) ? {
           onClick: () => {
             setTenantId(data.id)
             setTenantType(AccountType.MSP_INSTALLER)
@@ -322,14 +320,14 @@ export function MspCustomers () {
           }
         } : {}
       },
-      render: function (data, row) {
+      render: function (data: React.ReactNode, row: MspEc) {
         const val = row?.installer ? transformTechPartner(row.installer) : '--'
         return (
-          (isPrimeAdmin || isAdmin) && !userProfile?.support
+          (isPrimeAdmin || isAdmin)
             ? <Link to=''>{val}</Link> : val
         )
       }
-    },
+    }]),
     {
       title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
       dataIndex: 'wifiLicenses',
