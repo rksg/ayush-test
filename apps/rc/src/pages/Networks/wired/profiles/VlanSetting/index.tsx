@@ -30,7 +30,14 @@ export function VlanSetting () {
   useEffect(() => {
     if(currentData.vlans && editMode){
       form.setFieldsValue(currentData)
-      setVlanTable(currentData.vlans)
+
+      const defaultVlanData = currentData.vlans.filter(
+        item => item.vlanName === 'DEFAULT-VLAN' )[0] || {}
+      setDefaultVlan(defaultVlanData)
+
+      const vlanList = currentData.vlans.filter(item => item.vlanName !== 'DEFAULT-VLAN' )
+      setVlanTable(vlanList)
+
     }
   }, [currentData, editMode])
 
@@ -100,8 +107,9 @@ export function VlanSetting () {
   }
 
   const handleSetVlan = (data: Vlan) => {
-    const filterData = vlanTable.filter(
-      (item: { vlanId: number }) => item.vlanId.toString() !== data.vlanId.toString())
+    const filterData = drawerFormRule?.vlanId ? vlanTable.filter(
+      (item: { vlanId: number }) => item.vlanId.toString() !== drawerFormRule?.vlanId.toString()) :
+      vlanTable
 
     const sfm = data.switchFamilyModels?.map(item => {
       return {
@@ -117,12 +125,14 @@ export function VlanSetting () {
     setVlanTable([...filterData, data])
     form.setFieldValue('vlans', [...filterData, data])
     setDrawerEditMode(false)
+    setDrawerFormRule(undefined)
     return true
   }
 
   const handleSetDefaultVlan = (data: Vlan) => {
     const vlans = form.getFieldValue('vlans') || []
-    form.setFieldValue('vlans', [...vlans, data])
+    form.setFieldValue('vlans',
+      [...vlans.filter((item: { vlanName: string }) => item.vlanName !== 'DEFAULT-VLAN'), data])
     setDefaultVlan(data)
     return true
   }

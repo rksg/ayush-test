@@ -86,7 +86,11 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
       checkIfModuleFixed(selectedFamily, selectedModel)
       setTrustedPorts(editRecord)
     }
-  }, [ICX_MODELS_MODULES, editRecord])
+
+    if(model && optionListForSlot2){
+      onModuleChange()
+    }
+  }, [ICX_MODELS_MODULES, editRecord, model, optionListForSlot2])
 
   const checkIfModuleFixed = (family: string, model: string) => {
     if (family === 'ICX7550') {
@@ -234,14 +238,15 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
       generateSlotData(slotNumber, true, [], '', selectedFamily, selectedModel)
     } else {
       const enable = form.getFieldValue(`enableSlot${slotNumber}`)
-      let option = form.getFieldValue(`selectedOptionOfSlot${slotNumber}`)
-
+      let option = optionListForSlot2[0]?.value
       let optionList = optionListForSlot2
       switch (slotNumber) {
         case 3:
+          option = optionListForSlot3[0]?.value
           optionList = optionListForSlot3
           break
         case 4:
+          option = optionListForSlot4[0]?.value
           optionList = optionListForSlot4
           break
       }

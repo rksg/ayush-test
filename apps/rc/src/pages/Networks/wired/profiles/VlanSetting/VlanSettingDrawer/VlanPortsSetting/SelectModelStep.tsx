@@ -91,7 +91,11 @@ export function SelectModelStep (props: { editMode: boolean }) {
       setEnableSlot4(selectedEnable4.enable)
       checkIfModuleFixed(selectedFamily, selectedModel)
     }
-  }, [ICX_MODELS_MODULES, vlanSettingValues])
+
+    if(model && optionListForSlot2){
+      onModuleChange()
+    }
+  }, [ICX_MODELS_MODULES, vlanSettingValues, model, optionListForSlot2])
 
   const checkIfModuleFixed = (family: string, model: string) => {
     if (family === 'ICX7550') {
@@ -240,18 +244,18 @@ export function SelectModelStep (props: { editMode: boolean }) {
       generateSlotData(slotNumber, true, [], '', selectedFamily, selectedModel)
     } else {
       const enable = form.getFieldValue(`enableSlot${slotNumber}`)
-      let option = form.getFieldValue(`selectedOptionOfSlot${slotNumber}`)
-
+      let option = optionListForSlot2[0]?.value
       let optionList = optionListForSlot2
       switch (slotNumber) {
         case 3:
+          option = optionListForSlot3[0]?.value
           optionList = optionListForSlot3
           break
         case 4:
+          option = optionListForSlot4[0]?.value
           optionList = optionListForSlot4
           break
       }
-
       if (!enable) {
         option = ''
       }
@@ -270,6 +274,7 @@ export function SelectModelStep (props: { editMode: boolean }) {
   const generateSlotData =
   (slotNumber: number, slotEnable: boolean, slotOptions: ModelsType[],
     slotOption: string, selectedFamily: string, selectedModel: string) => {
+
     if (slotEnable) {
       let totalPortNumber: string = '0'
       let slotPortInfo: string = ''
