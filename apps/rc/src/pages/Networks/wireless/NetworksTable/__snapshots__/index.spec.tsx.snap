@@ -134,7 +134,6 @@ exports[`Networks Table should click disabled row 1`] = `
                             <col />
                             <col />
                             <col />
-                            <col />
                             <col
                               style="width: 32px;"
                             />
@@ -457,67 +456,6 @@ exports[`Networks Table should click disabled row 1`] = `
                               </th>
                               <th
                                 class="ant-table-cell ant-table-column-has-sorters"
-                                style="text-align: center;"
-                                tabindex="0"
-                              >
-                                <div
-                                  class="ant-table-column-sorters"
-                                >
-                                  <span
-                                    class="ant-table-column-title"
-                                  >
-                                    Services
-                                  </span>
-                                  <span
-                                    class="ant-table-column-sorter ant-table-column-sorter-full"
-                                  >
-                                    <span
-                                      class="ant-table-column-sorter-inner"
-                                    >
-                                      <span
-                                        aria-label="caret-up"
-                                        class="anticon anticon-caret-up ant-table-column-sorter-up"
-                                        role="img"
-                                      >
-                                        <svg
-                                          aria-hidden="true"
-                                          data-icon="caret-up"
-                                          fill="currentColor"
-                                          focusable="false"
-                                          height="1em"
-                                          viewBox="0 0 1024 1024"
-                                          width="1em"
-                                        >
-                                          <path
-                                            d="M858.9 689L530.5 308.2c-9.4-10.9-27.5-10.9-37 0L165.1 689c-12.2 14.2-1.2 35 18.5 35h656.8c19.7 0 30.7-20.8 18.5-35z"
-                                          />
-                                        </svg>
-                                      </span>
-                                      <span
-                                        aria-label="caret-down"
-                                        class="anticon anticon-caret-down ant-table-column-sorter-down"
-                                        role="img"
-                                      >
-                                        <svg
-                                          aria-hidden="true"
-                                          data-icon="caret-down"
-                                          fill="currentColor"
-                                          focusable="false"
-                                          height="1em"
-                                          viewBox="0 0 1024 1024"
-                                          width="1em"
-                                        >
-                                          <path
-                                            d="M840.4 300H183.6c-19.7 0-30.7 20.8-18.5 35l328.4 380.8c9.4 10.9 27.5 10.9 37 0L858.9 335c12.2-14.2 1.2-35-18.5-35z"
-                                          />
-                                        </svg>
-                                      </span>
-                                    </span>
-                                  </span>
-                                </div>
-                              </th>
-                              <th
-                                class="ant-table-cell ant-table-column-has-sorters"
                                 tabindex="0"
                               >
                                 <div
@@ -671,15 +609,6 @@ exports[`Networks Table should click disabled row 1`] = `
                                    
                                 </div>
                               </td>
-                              <td
-                                style="padding: 0px; border: 0px; height: 0px;"
-                              >
-                                <div
-                                  style="height: 0px; overflow: hidden;"
-                                >
-                                   
-                                </div>
-                              </td>
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
@@ -748,10 +677,6 @@ exports[`Networks Table should click disabled row 1`] = `
                               >
                                 0
                               </td>
-                              <td
-                                class="ant-table-cell"
-                                style="text-align: center;"
-                              />
                               <td
                                 class="ant-table-cell"
                               >
@@ -824,10 +749,6 @@ exports[`Networks Table should click disabled row 1`] = `
                               >
                                 0
                               </td>
-                              <td
-                                class="ant-table-cell"
-                                style="text-align: center;"
-                              />
                               <td
                                 class="ant-table-cell"
                               >
@@ -907,10 +828,6 @@ exports[`Networks Table should click disabled row 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
-                                style="text-align: center;"
-                              />
-                              <td
-                                class="ant-table-cell"
                               >
                                 VLAN-1
                               </td>
@@ -981,10 +898,6 @@ exports[`Networks Table should click disabled row 1`] = `
                               >
                                 0
                               </td>
-                              <td
-                                class="ant-table-cell"
-                                style="text-align: center;"
-                              />
                               <td
                                 class="ant-table-cell"
                               >
@@ -1064,10 +977,6 @@ exports[`Networks Table should click disabled row 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
-                                style="text-align: center;"
-                              />
-                              <td
-                                class="ant-table-cell"
                               >
                                 VLAN-1
                               </td>
@@ -1138,10 +1047,6 @@ exports[`Networks Table should click disabled row 1`] = `
                               >
                                 0
                               </td>
-                              <td
-                                class="ant-table-cell"
-                                style="text-align: center;"
-                              />
                               <td
                                 class="ant-table-cell"
                               >
@@ -1216,10 +1121,6 @@ exports[`Networks Table should click disabled row 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
-                                style="text-align: center;"
-                              />
-                              <td
-                                class="ant-table-cell"
                               >
                                 VLAN-1
                               </td>
@@ -1290,10 +1191,6 @@ exports[`Networks Table should click disabled row 1`] = `
                               >
                                 0
                               </td>
-                              <td
-                                class="ant-table-cell"
-                                style="text-align: center;"
-                              />
                               <td
                                 class="ant-table-cell"
                               >
@@ -1373,10 +1270,6 @@ exports[`Networks Table should click disabled row 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
-                                style="text-align: center;"
-                              />
-                              <td
-                                class="ant-table-cell"
                               >
                                 VLAN Pool: 
                               </td>
@@ -1447,10 +1340,6 @@ exports[`Networks Table should click disabled row 1`] = `
                               >
                                 0
                               </td>
-                              <td
-                                class="ant-table-cell"
-                                style="text-align: center;"
-                              />
                               <td
                                 class="ant-table-cell"
                               >
@@ -1757,7 +1646,6 @@ exports[`Networks Table should delete selected row 1`] = `
                             <col />
                             <col />
                             <col />
-                            <col />
                             <col
                               style="width: 32px;"
                             />
@@ -2080,67 +1968,6 @@ exports[`Networks Table should delete selected row 1`] = `
                               </th>
                               <th
                                 class="ant-table-cell ant-table-column-has-sorters"
-                                style="text-align: center;"
-                                tabindex="0"
-                              >
-                                <div
-                                  class="ant-table-column-sorters"
-                                >
-                                  <span
-                                    class="ant-table-column-title"
-                                  >
-                                    Services
-                                  </span>
-                                  <span
-                                    class="ant-table-column-sorter ant-table-column-sorter-full"
-                                  >
-                                    <span
-                                      class="ant-table-column-sorter-inner"
-                                    >
-                                      <span
-                                        aria-label="caret-up"
-                                        class="anticon anticon-caret-up ant-table-column-sorter-up"
-                                        role="img"
-                                      >
-                                        <svg
-                                          aria-hidden="true"
-                                          data-icon="caret-up"
-                                          fill="currentColor"
-                                          focusable="false"
-                                          height="1em"
-                                          viewBox="0 0 1024 1024"
-                                          width="1em"
-                                        >
-                                          <path
-                                            d="M858.9 689L530.5 308.2c-9.4-10.9-27.5-10.9-37 0L165.1 689c-12.2 14.2-1.2 35 18.5 35h656.8c19.7 0 30.7-20.8 18.5-35z"
-                                          />
-                                        </svg>
-                                      </span>
-                                      <span
-                                        aria-label="caret-down"
-                                        class="anticon anticon-caret-down ant-table-column-sorter-down"
-                                        role="img"
-                                      >
-                                        <svg
-                                          aria-hidden="true"
-                                          data-icon="caret-down"
-                                          fill="currentColor"
-                                          focusable="false"
-                                          height="1em"
-                                          viewBox="0 0 1024 1024"
-                                          width="1em"
-                                        >
-                                          <path
-                                            d="M840.4 300H183.6c-19.7 0-30.7 20.8-18.5 35l328.4 380.8c9.4 10.9 27.5 10.9 37 0L858.9 335c12.2-14.2 1.2-35-18.5-35z"
-                                          />
-                                        </svg>
-                                      </span>
-                                    </span>
-                                  </span>
-                                </div>
-                              </th>
-                              <th
-                                class="ant-table-cell ant-table-column-has-sorters"
                                 tabindex="0"
                               >
                                 <div
@@ -2294,15 +2121,6 @@ exports[`Networks Table should delete selected row 1`] = `
                                    
                                 </div>
                               </td>
-                              <td
-                                style="padding: 0px; border: 0px; height: 0px;"
-                              >
-                                <div
-                                  style="height: 0px; overflow: hidden;"
-                                >
-                                   
-                                </div>
-                              </td>
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
@@ -2371,10 +2189,6 @@ exports[`Networks Table should delete selected row 1`] = `
                               >
                                 0
                               </td>
-                              <td
-                                class="ant-table-cell"
-                                style="text-align: center;"
-                              />
                               <td
                                 class="ant-table-cell"
                               >
@@ -2447,10 +2261,6 @@ exports[`Networks Table should delete selected row 1`] = `
                               >
                                 0
                               </td>
-                              <td
-                                class="ant-table-cell"
-                                style="text-align: center;"
-                              />
                               <td
                                 class="ant-table-cell"
                               >
@@ -2530,10 +2340,6 @@ exports[`Networks Table should delete selected row 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
-                                style="text-align: center;"
-                              />
-                              <td
-                                class="ant-table-cell"
                               >
                                 VLAN-1
                               </td>
@@ -2604,10 +2410,6 @@ exports[`Networks Table should delete selected row 1`] = `
                               >
                                 0
                               </td>
-                              <td
-                                class="ant-table-cell"
-                                style="text-align: center;"
-                              />
                               <td
                                 class="ant-table-cell"
                               >
@@ -2687,10 +2489,6 @@ exports[`Networks Table should delete selected row 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
-                                style="text-align: center;"
-                              />
-                              <td
-                                class="ant-table-cell"
                               >
                                 VLAN-1
                               </td>
@@ -2761,10 +2559,6 @@ exports[`Networks Table should delete selected row 1`] = `
                               >
                                 0
                               </td>
-                              <td
-                                class="ant-table-cell"
-                                style="text-align: center;"
-                              />
                               <td
                                 class="ant-table-cell"
                               >
@@ -2839,10 +2633,6 @@ exports[`Networks Table should delete selected row 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
-                                style="text-align: center;"
-                              />
-                              <td
-                                class="ant-table-cell"
                               >
                                 VLAN-1
                               </td>
@@ -2913,10 +2703,6 @@ exports[`Networks Table should delete selected row 1`] = `
                               >
                                 0
                               </td>
-                              <td
-                                class="ant-table-cell"
-                                style="text-align: center;"
-                              />
                               <td
                                 class="ant-table-cell"
                               >
@@ -2996,10 +2782,6 @@ exports[`Networks Table should delete selected row 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
-                                style="text-align: center;"
-                              />
-                              <td
-                                class="ant-table-cell"
                               >
                                 VLAN Pool: 
                               </td>
@@ -3070,10 +2852,6 @@ exports[`Networks Table should delete selected row 1`] = `
                               >
                                 0
                               </td>
-                              <td
-                                class="ant-table-cell"
-                                style="text-align: center;"
-                              />
                               <td
                                 class="ant-table-cell"
                               >
@@ -3380,7 +3158,6 @@ exports[`Networks Table should render table 1`] = `
                             <col />
                             <col />
                             <col />
-                            <col />
                             <col
                               style="width: 32px;"
                             />
@@ -3703,67 +3480,6 @@ exports[`Networks Table should render table 1`] = `
                               </th>
                               <th
                                 class="ant-table-cell ant-table-column-has-sorters"
-                                style="text-align: center;"
-                                tabindex="0"
-                              >
-                                <div
-                                  class="ant-table-column-sorters"
-                                >
-                                  <span
-                                    class="ant-table-column-title"
-                                  >
-                                    Services
-                                  </span>
-                                  <span
-                                    class="ant-table-column-sorter ant-table-column-sorter-full"
-                                  >
-                                    <span
-                                      class="ant-table-column-sorter-inner"
-                                    >
-                                      <span
-                                        aria-label="caret-up"
-                                        class="anticon anticon-caret-up ant-table-column-sorter-up"
-                                        role="img"
-                                      >
-                                        <svg
-                                          aria-hidden="true"
-                                          data-icon="caret-up"
-                                          fill="currentColor"
-                                          focusable="false"
-                                          height="1em"
-                                          viewBox="0 0 1024 1024"
-                                          width="1em"
-                                        >
-                                          <path
-                                            d="M858.9 689L530.5 308.2c-9.4-10.9-27.5-10.9-37 0L165.1 689c-12.2 14.2-1.2 35 18.5 35h656.8c19.7 0 30.7-20.8 18.5-35z"
-                                          />
-                                        </svg>
-                                      </span>
-                                      <span
-                                        aria-label="caret-down"
-                                        class="anticon anticon-caret-down ant-table-column-sorter-down"
-                                        role="img"
-                                      >
-                                        <svg
-                                          aria-hidden="true"
-                                          data-icon="caret-down"
-                                          fill="currentColor"
-                                          focusable="false"
-                                          height="1em"
-                                          viewBox="0 0 1024 1024"
-                                          width="1em"
-                                        >
-                                          <path
-                                            d="M840.4 300H183.6c-19.7 0-30.7 20.8-18.5 35l328.4 380.8c9.4 10.9 27.5 10.9 37 0L858.9 335c12.2-14.2 1.2-35-18.5-35z"
-                                          />
-                                        </svg>
-                                      </span>
-                                    </span>
-                                  </span>
-                                </div>
-                              </th>
-                              <th
-                                class="ant-table-cell ant-table-column-has-sorters"
                                 tabindex="0"
                               >
                                 <div
@@ -3917,15 +3633,6 @@ exports[`Networks Table should render table 1`] = `
                                    
                                 </div>
                               </td>
-                              <td
-                                style="padding: 0px; border: 0px; height: 0px;"
-                              >
-                                <div
-                                  style="height: 0px; overflow: hidden;"
-                                >
-                                   
-                                </div>
-                              </td>
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
@@ -3994,10 +3701,6 @@ exports[`Networks Table should render table 1`] = `
                               >
                                 0
                               </td>
-                              <td
-                                class="ant-table-cell"
-                                style="text-align: center;"
-                              />
                               <td
                                 class="ant-table-cell"
                               >
@@ -4070,10 +3773,6 @@ exports[`Networks Table should render table 1`] = `
                               >
                                 0
                               </td>
-                              <td
-                                class="ant-table-cell"
-                                style="text-align: center;"
-                              />
                               <td
                                 class="ant-table-cell"
                               >
@@ -4153,10 +3852,6 @@ exports[`Networks Table should render table 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
-                                style="text-align: center;"
-                              />
-                              <td
-                                class="ant-table-cell"
                               >
                                 VLAN-1
                               </td>
@@ -4227,10 +3922,6 @@ exports[`Networks Table should render table 1`] = `
                               >
                                 0
                               </td>
-                              <td
-                                class="ant-table-cell"
-                                style="text-align: center;"
-                              />
                               <td
                                 class="ant-table-cell"
                               >
@@ -4310,10 +4001,6 @@ exports[`Networks Table should render table 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
-                                style="text-align: center;"
-                              />
-                              <td
-                                class="ant-table-cell"
                               >
                                 VLAN-1
                               </td>
@@ -4384,10 +4071,6 @@ exports[`Networks Table should render table 1`] = `
                               >
                                 0
                               </td>
-                              <td
-                                class="ant-table-cell"
-                                style="text-align: center;"
-                              />
                               <td
                                 class="ant-table-cell"
                               >
@@ -4462,10 +4145,6 @@ exports[`Networks Table should render table 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
-                                style="text-align: center;"
-                              />
-                              <td
-                                class="ant-table-cell"
                               >
                                 VLAN-1
                               </td>
@@ -4536,10 +4215,6 @@ exports[`Networks Table should render table 1`] = `
                               >
                                 0
                               </td>
-                              <td
-                                class="ant-table-cell"
-                                style="text-align: center;"
-                              />
                               <td
                                 class="ant-table-cell"
                               >
@@ -4619,10 +4294,6 @@ exports[`Networks Table should render table 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
-                                style="text-align: center;"
-                              />
-                              <td
-                                class="ant-table-cell"
                               >
                                 VLAN Pool: 
                               </td>
@@ -4693,10 +4364,6 @@ exports[`Networks Table should render table 1`] = `
                               >
                                 0
                               </td>
-                              <td
-                                class="ant-table-cell"
-                                style="text-align: center;"
-                              />
                               <td
                                 class="ant-table-cell"
                               >

@@ -32,7 +32,7 @@ export function ChangeSlotDialog (props: ChangeSlotDialogProps) {
   const [disabledDays, setDisabledDays] = useState(false)
   const [valueTimes, setValueTimes] = useState<string[]>([])
   const [disabledTimes, setDisabledTimes] = useState(false)
-  const [disableSave, setDisableSave] = useState(false)
+  const [disableSave, setDisableSave] = useState(true)
 
   useEffect(() => {
     if (days) {
