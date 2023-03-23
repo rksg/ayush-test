@@ -92,10 +92,10 @@ export function SelectModelStep (props: { editMode: boolean }) {
       checkIfModuleFixed(selectedFamily, selectedModel)
     }
 
-    if(family && model && optionListForSlot2){
-      updateModelPortData(family, model)
+    if(model){
+      modelChangeAction(family, model)
     }
-  }, [ICX_MODELS_MODULES, vlanSettingValues, family, model, optionListForSlot2])
+  }, [ICX_MODELS_MODULES, vlanSettingValues, model])
 
   const checkIfModuleFixed = (family: string, model: string) => {
     if (family === 'ICX7550') {
@@ -168,6 +168,7 @@ export function SelectModelStep (props: { editMode: boolean }) {
   }
 
   const onFamilyChange = (e: RadioChangeEvent) => {
+    setModel('')
     familyChangeAction(e.target.value)
   }
 
@@ -187,6 +188,7 @@ export function SelectModelStep (props: { editMode: boolean }) {
   }
 
   const onModelChange = (e: RadioChangeEvent) => {
+    setModel(e.target.value)
     modelChangeAction(family, e.target.value)
   }
 
@@ -202,7 +204,6 @@ export function SelectModelStep (props: { editMode: boolean }) {
     }else{
       setModuleSelectionEnable(true)
     }
-    setModel(model)
     checkIfModuleFixed(family, model)
     getSlots(family, model)
     updateModelPortData(family, model)
@@ -244,15 +245,13 @@ export function SelectModelStep (props: { editMode: boolean }) {
       generateSlotData(slotNumber, true, [], '', selectedFamily, selectedModel)
     } else {
       const enable = form.getFieldValue(`enableSlot${slotNumber}`)
-      let option = optionListForSlot2[0]?.value
+      let option = form.getFieldValue(`selectedOptionOfSlot${slotNumber}`)
       let optionList = optionListForSlot2
       switch (slotNumber) {
         case 3:
-          option = optionListForSlot3[0]?.value
           optionList = optionListForSlot3
           break
         case 4:
-          option = optionListForSlot4[0]?.value
           optionList = optionListForSlot4
           break
       }
