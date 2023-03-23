@@ -34,7 +34,7 @@ export default function AAAPolicyModal (props:{
         {$t({ defaultMessage: 'Add Server' })}
       </Button>
       <Modal
-        title={$t({ defaultMessage: 'Add AAA (802.1x) Server' })}
+        title={$t({ defaultMessage: 'Add AAA Server' })}
         type={ModalType.ModalStepsForm}
         visible={visible}
         mask={true}
