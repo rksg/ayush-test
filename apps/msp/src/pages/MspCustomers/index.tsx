@@ -130,6 +130,14 @@ export function MspCustomers () {
     return rec?.name ? rec.name : id
   }
 
+  const transformAdminCount = (data: MspEc) => {
+    if (data?.mspInstallerAdminCount)
+      return data.mspInstallerAdminCount
+    else if (data?.mspIntegratorAdminCount)
+      return data.mspIntegratorAdminCount
+    return data.mspAdminCount
+  }
+
   const tenantDetailsData = useGetTenantDetailsQuery({ params })
   const isIntegrator =
     (tenantDetailsData.data?.tenantType === AccountType.MSP_INSTALLER ||
@@ -271,10 +279,10 @@ export function MspCustomers () {
           }
         } : {}
       },
-      render: function (data) {
+      render: function (data, row) {
         return (
           (isPrimeAdmin || isAdmin) && !userProfile?.support
-            ? <Link to=''>{data}</Link> : data
+            ? <Link to=''>{transformAdminCount(row)}</Link> : transformAdminCount(row)
         )
       }
     },
