@@ -530,7 +530,6 @@ export const VenueFirmwareTable = (
         onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
-        columnState={{ hidden: true }}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
         rowSelection={rowSelection}
