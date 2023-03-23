@@ -192,7 +192,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     policyName,
     l3AclPolicyId
   ] = [
-    useWatch<string>('layer3Access', contentForm),
+    useWatch<string>('layer3DefaultAccess', contentForm),
     useWatch<string>('policyName', contentForm),
     useWatch<string>([...inputName, 'l3AclPolicyId'])
   ]
@@ -240,9 +240,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
   }
 
   useEffect(() => {
-    if (!isOnlyViewMode && (l3AclPolicyId === '' || l3AclPolicyId === undefined)) {
-      setSkipFetch(false)
-    }
+    setSkipFetch(!isOnlyViewMode && (l3AclPolicyId === '' || l3AclPolicyId === undefined))
   }, [isOnlyViewMode, l3AclPolicyId])
 
   useEffect(() => {
@@ -255,7 +253,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
   useEffect(() => {
     if (layer3PolicyInfo && (isViewMode() || editMode.isEdit || localEditMode.isEdit)) {
       contentForm.setFieldValue('policyName', layer3PolicyInfo.name)
-      contentForm.setFieldValue('layer3Access', layer3PolicyInfo.defaultAccess)
+      contentForm.setFieldValue('layer3DefaultAccess', layer3PolicyInfo.defaultAccess)
       setLayer3RuleList([...layer3PolicyInfo.l3Rules.map(l3Rule => {
         return {
           access: l3Rule.access,
@@ -393,7 +391,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
 
   const clearFieldsValue = () => {
     contentForm.setFieldValue('policyName', undefined)
-    contentForm.setFieldValue('layer3Access', undefined)
+    contentForm.setFieldValue('layer3DefaultAccess', undefined)
     setLayer3RuleList(DEFAULT_LAYER3_RULES)
   }
 

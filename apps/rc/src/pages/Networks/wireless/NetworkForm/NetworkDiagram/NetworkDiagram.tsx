@@ -3,15 +3,13 @@ import { useContext, useState } from 'react'
 import { Row, Col, Space } from 'antd'
 import { useIntl }         from 'react-intl'
 
-import { Button }                from '@acx-ui/components'
-import { useCloudpathListQuery } from '@acx-ui/rc/services'
+import { Button }   from '@acx-ui/components'
 import {
   CloudpathDeploymentTypeEnum,
   CloudpathServer,
   GuestNetworkTypeEnum,
   NetworkTypeEnum
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
 
 import AaaCloudpathCloudDiagram      from '../../../../../assets/images/network-wizard-diagrams/aaa-cloudpath-cloud-deployment.png'
 import AaaCloudpathOnPremDiagram     from '../../../../../assets/images/network-wizard-diagrams/aaa-cloudpath-on-prem-deployment.png'
@@ -163,19 +161,11 @@ export function NetworkDiagram (props: NetworkDiagramProps) {
 
   const showButtons = !!data?.enableAuthProxy !== !!data?.enableAccountingProxy
   && data?.enableAccountingService
-  const { selected } = useCloudpathListQuery({ params: useParams() }, {
-    selectFromResult ({ data: cloudData }) {
-      return {
-        selected: cloudData?.find((item: CloudpathServer) => item.id === data?.cloudpathServerId)
-      }
-    }
-  })
-
   const enableMACAuth = data?.wlan?.macAddressAuthentication
 
   const diagram = getDiagram({
     ...data,
-    ...{ showButtons, enableAaaAuthBtn, cloudpathType: selected?.deploymentType, enableMACAuth },
+    ...{ showButtons, enableAaaAuthBtn, cloudpathType: undefined, enableMACAuth },
     ...props
   })
 
