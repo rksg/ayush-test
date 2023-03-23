@@ -103,8 +103,7 @@ function getCols (intl: ReturnType<typeof useIntl>, isServicesEnabled: boolean) 
       key: 'clients',
       title: intl.$t({ defaultMessage: 'Clients' }),
       dataIndex: 'clients',
-      sorter: false,
-      sortDirections: ['descend', 'ascend', 'descend'],
+      sorter: false, // API does not seem to be working
       align: 'center'
     },
     {
