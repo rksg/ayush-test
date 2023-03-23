@@ -93,7 +93,7 @@ function PersonaGroupDetails () {
 
     if (nsgId && networkSegmentationEnabled) {
       let name: string | undefined
-      getNsgById({ params: { serviceId: nsgId } })
+      getNsgById({ params: { tenantId, serviceId: nsgId } })
         .then(result => name = result.data?.name)
         .finally(() => setNsgDisplay({ id: nsgId, name }))
     }
