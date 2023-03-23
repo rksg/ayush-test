@@ -8,6 +8,11 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/viewmodel/tenant/:tenantId/mspeclist',
     newApi: true
   },
+  getIntegratorCustomersList: {
+    method: 'post',
+    url: '/techpartners/mspecs/query',
+    newApi: true
+  },
   getMspDeviceInventory: {
     method: 'post',
     url: '/msps/:tenantId/ecInventories/query',
