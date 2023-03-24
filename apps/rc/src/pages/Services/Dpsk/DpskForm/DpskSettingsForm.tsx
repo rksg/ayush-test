@@ -26,6 +26,7 @@ import { getIntl } from '@acx-ui/utils'
 
 import { MAX_DEVICES_PER_PASSPHRASE } from '../constants'
 import {
+  defaultAccessLabelMapping,
   passphraseFormatDescription
 } from '../contentsMap'
 import { unlimitedNumberOfDeviceLabel } from '../DpskDetail/contentsMap'
@@ -196,8 +197,14 @@ function CloudpathFormItems () {
         >
           <SelectionControl
             options={[
-              { value: PolicyDefaultAccess.ACCEPT, label: $t({ defaultMessage: 'ACCEPT' }) },
-              { value: PolicyDefaultAccess.REJECT, label: $t({ defaultMessage: 'REJECT' }) }
+              {
+                value: PolicyDefaultAccess.ACCEPT,
+                label: $t(defaultAccessLabelMapping[PolicyDefaultAccess.ACCEPT])
+              },
+              {
+                value: PolicyDefaultAccess.REJECT,
+                label: $t(defaultAccessLabelMapping[PolicyDefaultAccess.REJECT])
+              }
             ]}
           />
         </Form.Item>

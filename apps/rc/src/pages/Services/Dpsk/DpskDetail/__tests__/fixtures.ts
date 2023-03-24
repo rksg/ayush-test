@@ -15,7 +15,8 @@ export const mockedDpsk = {
 
 export const mockedCloudpathDpsk = {
   ...mockedDpsk,
-  deviceCountLimit: 1
+  deviceCountLimit: 1,
+  policyDefaultAccess: true
 }
 
 export const mockedDpskPassphraseFormFields: Partial<CreateDpskPassphrasesFormFields> = {
