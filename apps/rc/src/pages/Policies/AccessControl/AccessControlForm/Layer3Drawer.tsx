@@ -546,7 +546,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     drawerForm.setFieldValue('destination', ruleObj.destination)
     let destValue = 1
     if (ruleObj.destination.ipMask) {
-      drawerForm.setFieldValue(['destinationNetworkAddress'], ruleObj.destination.ip)
+      drawerForm.setFieldValue(['destNetworkAddress'], ruleObj.destination.ip)
       drawerForm.setFieldValue(['destMask'], ruleObj.destination.ipMask)
       destValue = 2
     } else if (ruleObj.destination.ip) {
