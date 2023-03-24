@@ -114,8 +114,8 @@ export const SummaryForm = () => {
           {$t({ defaultMessage: 'Wireless Networks' })}
         </UI.FieldTitle>
         <UI.FieldValue>
-          {networkNames?.map(item => (
-            <Row>
+          {networkNames?.map((item, index) => (
+            <Row key={`networkNames-${index}`}>
               {item}
             </Row>
           ))}

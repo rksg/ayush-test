@@ -10,10 +10,10 @@ import {
   DistributionSwitch,
   DistributionSwitchSaveData,
   networkWifiIpRegExp,
-  subnetMaskIpRegExp,
   SwitchLite
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }                   from '@acx-ui/react-router-dom'
+import { getIntl, validationMessages } from '@acx-ui/utils'
 
 export function DistributionSwitchDrawer (props: {
   open: boolean;
@@ -93,7 +93,7 @@ export function DistributionSwitchDrawer (props: {
         layout='vertical'
         initialValues={editRecord || defaultRecord}>
 
-        <Form.Item name='siteName' hidden />
+        <Form.Item name='siteName' hidden children={<Input />} />
         <Form.Item name='id'
           label={$t({ defaultMessage: 'Distribution Switch' })}
           rules={[{ required: true }]}
@@ -188,6 +188,8 @@ export function DistributionSwitchDrawer (props: {
     </Drawer>
   )
 }
+
+
 function SelectAccessSwitchModal ({
   visible, onSave, onCancel, selected, availableAs, switchId
 }: {
@@ -249,4 +251,14 @@ function SelectAccessSwitchModal ({
         onChange={handleChange}
         render={item => `${item.title} (${item.key})`} />
     </Modal>)
+}
+
+export function subnetMaskIpRegExp (value: string) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const re = new RegExp('^((128|192|224|240|248|252|254)\.0\.0\.0)|(255\.(((0|128|192|224|240|248|252|254)\.0\.0)|(255\.(((0|128|192|224|240|248|252|254)\.0)|255\.(0|128|192|224|240|248|252|254|255)))))$')
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.subnetMask))
+  }
+  return Promise.resolve()
 }

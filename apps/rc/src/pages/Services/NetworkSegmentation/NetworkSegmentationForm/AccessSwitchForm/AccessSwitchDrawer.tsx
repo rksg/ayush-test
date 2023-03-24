@@ -187,8 +187,8 @@ export function AccessSwitchDrawer (props: {
         onFinish={onSave}
         initialValues={editRecords ? editRecords[0] : {}}>
 
-        <Form.Item name='id' hidden />
-        <Form.Item name='distributionSwitchId' hidden />
+        <Form.Item name='id' hidden children={<Input />} />
+        <Form.Item name='distributionSwitchId' hidden children={<Input />} />
 
         <Form.Item label={$t({ defaultMessage: 'Uplink Port' })}>
           <Form.Item name={['uplinkInfo', 'uplinkType']} noStyle>
@@ -213,7 +213,7 @@ export function AccessSwitchDrawer (props: {
             placeholder={$t({ defaultMessage: 'Select ...' })} />
         </Form.Item>
 
-        <Form.Item name='webAuthPageType' hidden />
+        <Form.Item name='webAuthPageType' hidden children={<Input />} />
 
         <Row justify='space-between'>
           <Col>
@@ -245,7 +245,7 @@ export function AccessSwitchDrawer (props: {
           {
             Object.keys(defaultTemplateData).map(name=>{
               const item = defaultTemplateData[name as keyof typeof defaultTemplateData]
-              return (<Form.Item name={name} label={$t(item.label)}>
+              return (<Form.Item name={name} label={$t(item.label)} key={name}>
                 <Input.TextArea autoSize placeholder={$t(item.defaultMessage)} />
               </Form.Item>)
             })
@@ -255,7 +255,7 @@ export function AccessSwitchDrawer (props: {
             (Object.keys(defaultTemplateData) as (keyof typeof defaultTemplateData)[])
               .map(name=>{
                 const item = defaultTemplateData[name]
-                return (<Form.Item name={name} label={$t(item.label)}>
+                return (<Form.Item name={name} label={$t(item.label)} key={name}>
                   <p>{template?.[name]}</p>
                 </Form.Item>)
               })

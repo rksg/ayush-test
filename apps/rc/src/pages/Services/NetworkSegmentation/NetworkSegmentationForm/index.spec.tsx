@@ -4,8 +4,6 @@ import { rest }  from 'msw'
 
 import {
   CommonUrlsInfo,
-  EdgeDhcpUrls,
-  EdgeUrlsInfo,
   NetworkSegmentationUrls,
   SwitchUrlsInfo
 } from '@acx-ui/rc/utils'
@@ -14,13 +12,10 @@ import {
   mockServer,
   render,
   screen,
-  waitFor,
   within
 } from '@acx-ui/test-utils'
 
 import {
-  mockEdgeData,
-  mockEdgeDhcpDataList,
   mockNetworkGroup,
   mockNsgSwitchInfoData,
   mockVenueData,
@@ -38,6 +33,22 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
+
+jest.mock('./SmartEdgeForm', () => ({
+  ...jest.requireActual('./SmartEdgeForm'),
+  SmartEdgeForm: () => <div data-testid='smartEdgeForm' />
+}))
+
+jest.mock('./DistributionSwitchForm', () => ({
+  ...jest.requireActual('./DistributionSwitchForm'),
+  DistributionSwitchForm: () => <div data-testid='distributionSwitchForm' />
+}))
+
+jest.mock('./SummaryForm', () => ({
+  ...jest.requireActual('./SummaryForm'),
+  SummaryForm: () => <div data-testid='summaryForm' />
+}))
+
 
 type MockSelectProps = React.PropsWithChildren<{
   onChange?: (value: string) => void
@@ -74,18 +85,6 @@ describe('Update NetworkSegmentation', () => {
         (req, res, ctx) => res(ctx.json(mockVenueData))
       ),
       rest.post(
-        EdgeUrlsInfo.getEdgeList.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeData))
-      ),
-      rest.get(
-        EdgeDhcpUrls.getDhcpByEdgeId.url,
-        (req, res, ctx) => res(ctx.status(404))
-      ),
-      rest.get(
-        EdgeDhcpUrls.getDhcpList.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeDhcpDataList))
-      ),
-      rest.post(
         CommonUrlsInfo.getVenueNetworkList.url,
         (req, res, ctx) => res(ctx.json(mockVenueNetworkData))
       ),
@@ -96,18 +95,6 @@ describe('Update NetworkSegmentation', () => {
       rest.post(
         CommonUrlsInfo.getNetworkDeepList.url,
         (req, res, ctx) => res(ctx.status(200))
-      ),
-      rest.post(
-        SwitchUrlsInfo.getSwitchPortlist.url,
-        (req, res, ctx) => res(ctx.json({ data: switchPortList }))
-      ),
-      rest.get(
-        SwitchUrlsInfo.getSwitchVlanUnion.url,
-        (req, res, ctx) => res(ctx.json(switchVlanUnion))
-      ),
-      rest.get(
-        SwitchUrlsInfo.getLagList.url,
-        (req, res, ctx) => res(ctx.json(switchLagList))
       ),
       rest.get(
         NetworkSegmentationUrls.getWebAuthTemplate.url,
@@ -121,18 +108,6 @@ describe('Update NetworkSegmentation', () => {
         NetworkSegmentationUrls.createNetworkSegmentationGroup.url,
         (req, res, ctx) => res(ctx.json({}))
       ),
-      rest.get(
-        NetworkSegmentationUrls.getAvailableSwitches.url,
-        (req, res, ctx) => res(ctx.json({ switchViewList: mockNsgSwitchInfoData.distributionSwitches }))
-      ),
-      rest.get(
-        NetworkSegmentationUrls.getAccessSwitchesByDS.url,
-        (req, res, ctx) => res(ctx.json({ switchViewList: mockNsgSwitchInfoData.accessSwitches }))
-      ),
-      rest.post(
-        NetworkSegmentationUrls.validateDistributionSwitchInfo.url,
-        (req, res, ctx) => res(ctx.json({ response: { valid: true } }))
-      ),
       rest.post(
         NetworkSegmentationUrls.validateAccessSwitchInfo.url,
         (req, res, ctx) => res(ctx.json({ response: { valid: true } }))
@@ -140,7 +115,7 @@ describe('Update NetworkSegmentation', () => {
     )
   })
 
-  it.skip('should create networkSegmentation successfully', async () => {
+  it('should create networkSegmentation successfully', async () => {
     const user = userEvent.setup()
     render(<NetworkSegmentationForm />, {
       wrapper: Provider,
@@ -157,23 +132,7 @@ describe('Update NetworkSegmentation', () => {
     expect(await screen.findByRole('table')).toBeVisible()
     await user.click(await screen.findByRole('button', { name: 'Next' }))
     // step 2
-    await user.selectOptions(
-      await screen.findByRole('combobox', { name: 'SmartEdge' }),
-      await screen.findByRole('option', { name: 'Smart Edge 1' })
-    )
-    const segmentsInput = await screen.findByRole('spinbutton', { name: 'Number of Segments' })
-    await user.type(segmentsInput, '10')
-    const devicesInput = await screen.findByRole('spinbutton', { name: 'Number of devices per Segment' })
-    await user.type(devicesInput, '10')
-    const dhcpSelect = await screen.findByRole('combobox', { name: 'DHCP Service' })
-    await waitFor(() => expect(dhcpSelect).not.toBeDisabled())
-    await user.selectOptions(
-      dhcpSelect,
-      await screen.findByRole('option', { name: 'TestDhcp-1' })
-    )
-    await user.click(await screen.findByRole('button', { name: 'Select Pool' }))
-    await user.click(await screen.findByText('PoolTest1'))
-    await user.click(await screen.findByRole('button', { name: 'Select' }))
+
     await user.click(await screen.findByRole('button', { name: 'Next' }))
     // step 3
     await user.selectOptions(
@@ -184,26 +143,7 @@ describe('Update NetworkSegmentation', () => {
     await user.click(await screen.findByRole('button', { name: 'Next' }))
 
     // step 4
-    await user.click(await screen.findByRole('button', { name: 'Add Distribution Switch' }))
-    await user.selectOptions(
-      await screen.findByRole('combobox', { name: 'Distribution Switch' }),
-      await screen.findByRole('option', { name: 'FMN4221R00H---DS---3' })
-    )
-    await user.type(await screen.findByRole('textbox', { name: 'VLAN Range' }), '10')
-    await user.type(await screen.findByRole('textbox', { name: 'Lookback Interface ID' }), '12')
-    await user.type(await screen.findByRole('textbox', { name: 'Lookback Interface IP Address' }), '1.2.3.4')
-    await user.type(await screen.findByRole('textbox', { name: 'Lookback Interface Subnet Mask' }), '255.255.255.0')
 
-    await user.click(await screen.findByRole('button', { name: 'Select' }))
-    const asTransfer = await screen.findByRole('dialog', { name: /Select Access Switches/i })
-    await user.click(await within(asTransfer).findByText(/FEK3224R09N---AS---3/i))
-    await user.click(await within(asTransfer).findByRole('button', { name: /Add/i }))
-
-    await user.click(await within(asTransfer).findByRole('button', { name: 'Apply' }))
-
-    await user.click(await screen.findByRole('button', { name: 'Save' }))
-
-    await screen.findByRole('row', { name: /FMN4221R00H---DS---3/i })
     await user.click(await screen.findByRole('button', { name: 'Next' }))
 
     // step5

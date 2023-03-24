@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 
-import { Form }    from 'antd'
-import { useIntl } from 'react-intl'
+import { Form, Input } from 'antd'
+import { useIntl }     from 'react-intl'
 
 import { StepsFormNew, TableProps, useStepFormContext } from '@acx-ui/components'
 import { useGetAvailableSwitchesQuery }                 from '@acx-ui/rc/services'
@@ -52,6 +52,8 @@ export function DistributionSwitchForm () {
   const rowActions: TableProps<DistributionSwitch>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     onClick: (selectedRows) => {
+
+      console.log(selectedRows)
       setSelected(selectedRows[0])
       setOpenDrawer(true)
     }
@@ -120,7 +122,7 @@ export function DistributionSwitchForm () {
             'Please add at least 1 distribution switch.' })))
         }
       }]}
-    />
+      children={<Input type='hidden'/>} />
     <DistributionSwitchDrawer
       open={openDrawer}
       editRecord={selected}
