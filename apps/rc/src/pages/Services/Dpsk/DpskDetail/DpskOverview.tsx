@@ -6,15 +6,13 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   DpskNetworkType,
   DpskSaveData,
-  PolicyDefaultAccess,
   transformAdvancedDpskExpirationText,
   transformDpskNetwork
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
-import { defaultAccessLabelMapping } from '../contentsMap'
+import { displayDefaultAccess, displayDeviceCountLimit } from '../utils'
 
-import { unlimitedNumberOfDeviceLabel } from './contentsMap'
 import DpskInstancesTable from './DpskInstancesTable'
 
 export interface DpskOverviewProps {
@@ -64,20 +62,13 @@ export default function DpskOverview (props: DpskOverviewProps) {
                   {intl.$t({ defaultMessage: 'Devices allowed per passphrase' })}
                 </Card.Title>
                 <Typography.Paragraph>
-                  {data && (data.deviceCountLimit
-                    ? data?.deviceCountLimit
-                    : intl.$t(unlimitedNumberOfDeviceLabel))
-                  }
+                  {data && displayDeviceCountLimit(data.deviceCountLimit)}
                 </Typography.Paragraph>
               </GridCol>
               <GridCol col={{ span: 5 }}>
                 <Card.Title>{intl.$t({ defaultMessage: 'Default Access' })}</Card.Title>
                 <Typography.Paragraph>
-                  {data && intl.$t(defaultAccessLabelMapping[
-                    data.policyDefaultAccess === false
-                      ? PolicyDefaultAccess.REJECT
-                      : PolicyDefaultAccess.ACCEPT
-                  ])}
+                  {data && displayDefaultAccess(data.policyDefaultAccess)}
                 </Typography.Paragraph>
               </GridCol>
             </GridRow>
