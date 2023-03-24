@@ -33,7 +33,7 @@ export function ProfilesTab () {
     key: 'venueCount',
     title: $t({ defaultMessage: 'Venues' }),
     dataIndex: 'venueCount',
-    sorter: true,
+    sorter: false, // API does not seem to be working
     render: function (data, row) {
       if (row.venues) {
         return <Tooltip
@@ -83,6 +83,7 @@ export function ProfilesTab () {
     ]}>
       <Table
         columns={columns}
+        columnState={{ hidden: true }}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}

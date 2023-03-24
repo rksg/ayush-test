@@ -168,6 +168,7 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
       sorter: true,
       searchable: true,
       defaultSortOrder: 'ascend',
+      fixed: 'left',
       render: function (data, row) {
         return (
           <TenantLink
@@ -259,6 +260,7 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
       align: 'center',
       filterable: networkFilterOptions,
       sorter: true,
+      sortDirections: ['descend', 'ascend', 'descend'],
       render: (data, row) => row.networkIds.length
     }
   ]

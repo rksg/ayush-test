@@ -89,7 +89,7 @@ describe('CaptiveNetworkForm-GuestPass', () => {
     const redirectUrlInput = await screen.findByPlaceholderText('e.g. http://www.example.com')
     fireEvent.change(redirectUrlInput, { target: { value: 'https://www.commscope.com/ruckus/' } })
     await userEvent.click(await screen.findByRole('checkbox',
-      { name: /Enable Ruckus DHCP service/ }))
+      { name: /Enable RUCKUS DHCP service/ }))
     // await userEvent.click(await screen.findByText('More details'))
     await userEvent.click(await screen.findByText('Next'))
   })
