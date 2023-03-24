@@ -4,33 +4,44 @@ import { Col, Input, Row, Space, Typography } from 'antd'
 import { useIntl }                            from 'react-intl'
 import {  useParams }                         from 'react-router-dom'
 
-import { Button, cssStr, Loader, PageHeader, Subtitle }                          from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                from '@acx-ui/feature-toggle'
-import { CopyOutlined }                                                          from '@acx-ui/icons'
+import { Button, cssStr, Loader, PageHeader, Subtitle } from '@acx-ui/components'
+import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
+import { CopyOutlined }                                 from '@acx-ui/icons'
 import {
   useLazyGetDpskQuery,
   useGetPersonaByIdQuery,
   useLazyGetMacRegListQuery,
-  useLazyGetPersonaGroupByIdQuery, useLazyGetNetworkSegmentationGroupByIdQuery
+  useLazyGetPersonaGroupByIdQuery,
+  useLazyGetNetworkSegmentationGroupByIdQuery,
+  useLazyGetPropertyUnitByIdQuery
 } from '@acx-ui/rc/services'
 import { PersonaGroup }   from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 import { noDataDisplay }  from '@acx-ui/utils'
 
-import { DpskPoolLink, MacRegistrationPoolLink, NetworkSegmentationLink, PersonaGroupLink } from '../LinkHelper'
-import { PersonaDrawer }                                                                    from '../PersonaDrawer'
+import {
+  DpskPoolLink,
+  MacRegistrationPoolLink,
+  NetworkSegmentationLink,
+  PersonaGroupLink,
+  PropertyUnitLink
+} from '../LinkHelper'
+import { PersonaDrawer } from '../PersonaDrawer'
 
 import { PersonaDevicesTable } from './PersonaDevicesTable'
 
 
 function PersonaDetails () {
   const { $t } = useIntl()
+  const propertyEnabled = useIsSplitOn(Features.PROPERTY_MANAGEMENT)
   const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
   const { personaGroupId, personaId } = useParams()
   const [personaGroupData, setPersonaGroupData] = useState<PersonaGroup>()
   const [macPoolData, setMacPoolData] = useState({} as { id?: string, name?: string } | undefined)
   const [dpskPoolData, setDpskPoolData] = useState({} as { id?: string, name?: string } | undefined)
   const [nsgData, setNsgData] = useState({} as { id?: string, name?: string } | undefined)
+  const [unitData, setUnitData] =
+    useState({} as { venueId?: string, unitId?: string, name?: string } | undefined)
   const [editDrawerVisible, setEditDrawerVisible] = useState(false)
 
   // TODO: isLoading state?
@@ -38,6 +49,7 @@ function PersonaDetails () {
   const [getMacRegistrationById] = useLazyGetMacRegListQuery()
   const [getDpskPoolById] = useLazyGetDpskQuery()
   const [getNsgById] = useLazyGetNetworkSegmentationGroupByIdQuery()
+  const [getUnitById] = useLazyGetPropertyUnitByIdQuery()
   const personaDetailsQuery = useGetPersonaByIdQuery({
     params: { groupId: personaGroupId, id: personaId }
   })
@@ -80,6 +92,16 @@ function PersonaDetails () {
       getNsgById({ params: { serviceId: personaGroupData.nsgId } })
         .then(result => name = result.data?.name)
         .finally(() => setNsgData({ id: personaGroupData.nsgId, name }))
+    }
+
+    if (propertyEnabled && personaGroupData.propertyId && personaDetailsQuery?.data?.identityId) {
+      const venueId = personaGroupData.propertyId
+      const unitId = personaDetailsQuery.data.identityId
+      let name: string | undefined
+
+      getUnitById({ params: { venueId , unitId } })
+        .then(result => name = result.data?.name)
+        .finally(() => setUnitData({ venueId, unitId, name }))
     }
   }, [personaGroupData])
 
@@ -125,7 +147,14 @@ function PersonaDetails () {
         name={macPoolData?.name}
         macRegistrationPoolId={personaGroupData?.macRegistrationPoolId}
       />
-    }
+    },
+    ...propertyEnabled
+      ? [{ label: $t({ defaultMessage: 'Unit' }),
+        value:
+        <PropertyUnitLink
+          {...unitData}
+        />
+      }] : []
   ]
 
   const netSeg = [
