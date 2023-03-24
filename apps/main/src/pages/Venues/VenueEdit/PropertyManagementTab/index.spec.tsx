@@ -1,7 +1,7 @@
 
-import { within } from '@testing-library/react'
-import userEvent  from '@testing-library/user-event'
-import { rest }   from 'msw'
+import { waitFor, within } from '@testing-library/react'
+import userEvent           from '@testing-library/user-event'
+import { rest }            from 'msw'
 
 import { CommonUrlsInfo, MacRegListUrlsInfo, NewDpskBaseUrl, NewPersonaBaseUrl, PropertyUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                                                                from '@acx-ui/store'
@@ -14,8 +14,8 @@ import {
   mockPersonaGroupList,
   replacePagination
 } from '../../../../../../rc/src/pages/Users/Persona/__tests__/fixtures'
-import { mockEnabledPropertyConfig } from '../../__tests__/fixtures'
-import { VenueEditContext }          from '../index'
+import { mockEnabledPropertyConfig, mockResidentPortalProfileList } from '../../__tests__/fixtures'
+import { VenueEditContext }                                         from '../index'
 
 import { PropertyManagementTab } from './index'
 
@@ -32,9 +32,11 @@ describe('Property Config Tab', () => {
   const disabledParams = { tenantId, venueId: '206f35d341834d48a526eed6f3afbf99' }
 
   const setEditContextDataFn = jest.fn()
+  const saveConfigFn = jest.fn()
 
   beforeEach(async () => {
     setEditContextDataFn.mockClear()
+    saveConfigFn.mockClear()
 
     mockServer.use(
       rest.get(
@@ -49,7 +51,10 @@ describe('Property Config Tab', () => {
       ),
       rest.put(
         PropertyUrlsInfo.updatePropertyConfigs.url,
-        (req, res, ctx) => res(ctx.json({}))
+        (req, res, ctx) => {
+          saveConfigFn()
+          return res(ctx.json({}))
+        }
       ),
       rest.patch(
         PropertyUrlsInfo.patchPropertyConfigs.url,
@@ -60,8 +65,8 @@ describe('Property Config Tab', () => {
         (req, res, ctx) => res(ctx.json({ data: 'venue-id' }))
       ),
       rest.get(
-        PropertyUrlsInfo.getResidentPortalList.url,
-        (req, res, ctx) => res(ctx.json({ content: [] }))
+        replacePagination(PropertyUrlsInfo.getResidentPortalList.url),
+        (req, res, ctx) => res(ctx.json(mockResidentPortalProfileList))
       ),
       rest.get(
         NewPersonaBaseUrl,
@@ -165,11 +170,15 @@ describe('Property Config Tab', () => {
     // Change any field to trigger setEditContextData function
     const residentSwitch = await screen.findByLabelText('Enable Resident Portal')
 
+    // Verify the selector would show up
     await userEvent.click(residentSwitch)
-    expect(setEditContextDataFn).toBeCalled()
+    await screen.findByRole('combobox', { name: /resident portal profile/i })
+    await userEvent.click(residentSwitch)
 
     // Trigger save form
     const formSaveBtn = await screen.findByRole('button', { name: /save/i })
     await userEvent.click(formSaveBtn)
+
+    await waitFor(() => expect(saveConfigFn).toHaveBeenCalled())
   })
 })
