@@ -13,7 +13,7 @@ import {
   useUpdateAdaptivePolicyMutation, useUpdatePolicyConditionsMutation
 } from '@acx-ui/rc/services'
 import {
-  AccessCondition,
+  AccessCondition, CriteriaOption,
   getPolicyListRoutePath,
   getPolicyRoutePath,
   PolicyOperation,
@@ -88,14 +88,31 @@ export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
           const find = conditions.find(item => item.id === rule.id)
           if(find){
             // Update it if value was change
-            if(find.evaluationRule.regexStringCriteria !==
-              rule.evaluationRule.regexStringCriteria) {
-              await updateConditions({
-                params: { templateId: data.templateTypeId, policyId, conditionId: rule.id },
-                payload: {
-                  evaluationRule: { ...rule.evaluationRule }
-                }
-              }).unwrap()
+            if(find.evaluationRule.criteriaType === CriteriaOption.STRING) {
+              if (find.evaluationRule.regexStringCriteria !==
+                rule.evaluationRule.regexStringCriteria) {
+                await updateConditions({
+                  params: { templateId: data.templateTypeId, policyId, conditionId: rule.id },
+                  payload: {
+                    evaluationRule: { ...rule.evaluationRule }
+                  }
+                }).unwrap()
+              }
+            } else { // CriteriaOption.DATE_RANGE
+              const criteria = find.evaluationRule.dateRangeCriteria
+              if (criteria?.when !==
+                rule.evaluationRule.dateRangeCriteria?.when ||
+                criteria?.startTime !==
+                rule.evaluationRule.dateRangeCriteria?.startTime ||
+                criteria?.endTime !==
+                rule.evaluationRule.dateRangeCriteria?.endTime) {
+                await updateConditions({
+                  params: { templateId: data.templateTypeId, policyId, conditionId: rule.id },
+                  payload: {
+                    evaluationRule: { ...rule.evaluationRule }
+                  }
+                }).unwrap()
+              }
             }
           } else {
             await addConditions({

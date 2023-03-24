@@ -40,9 +40,26 @@ export interface AccessCondition {
   policyId?: string
 }
 
+export interface CriteriaFormData {
+  criteriaType: string,
+  attributeValue: string,
+  when: string,
+  start: string,
+  end: string
+}
+
 export interface EvaluationRule {
   criteriaType: CriteriaOption,
-  regexStringCriteria: string
+  regexStringCriteria?: string,
+  booleanCriteria?: boolean,
+  numberCriteria?: number,
+  dateRangeCriteria?: DateRangeCriteria
+}
+
+export interface DateRangeCriteria {
+  when: string,
+  startTime: string,
+  endTime: string
 }
 
 export enum RuleType {

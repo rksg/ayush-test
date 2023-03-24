@@ -1,4 +1,4 @@
-import { DataType, OperatorType } from '@acx-ui/rc/utils'
+import { CriteriaOption, DataType, OperatorType } from '@acx-ui/rc/utils'
 
 export const adaptivePolicyList = {
   paging: {
@@ -35,7 +35,7 @@ export const assignConditions = {
       templateAttributeId: 2017,
       name: 'Called Station Id',
       evaluationRule: {
-        criteriaType: 'StringCriteria',
+        criteriaType: CriteriaOption.STRING,
         regexStringCriteria: 'test*'
       }
     },
@@ -45,7 +45,7 @@ export const assignConditions = {
       templateAttributeId: 2018,
       name: 'Client Shortname',
       evaluationRule: {
-        criteriaType: 'StringCriteria',
+        criteriaType: CriteriaOption.STRING,
         regexStringCriteria: 'test*'
       }
     }

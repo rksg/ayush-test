@@ -7,12 +7,15 @@ import { v4 as uuidv4 }              from 'uuid'
 
 import { Button, Descriptions, GridCol, GridRow, Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
 import {
-  useLazyAdaptivePolicyLisByQueryQuery, useLazyGetRadiusAttributeGroupQuery,
+  useLazyAdaptivePolicyLisByQueryQuery,
+  useLazyGetRadiusAttributeGroupQuery,
   usePolicyTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
   AccessCondition,
-  AttributeAssignment, checkObjectNotExists,
+  AttributeAssignment,
+  checkObjectNotExists,
+  CriteriaOption,
   RadiusAttributeGroup
 } from '@acx-ui/rc/utils'
 
@@ -27,7 +30,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Condition Type' }),
       dataIndex: 'name',
       render: function (data, row) {
-        return row.name ?? row.id
+        return row.name
       }
     },
     {
@@ -35,7 +38,12 @@ function useColumns () {
       key: 'regexStringCriteria',
       dataIndex: 'regexStringCriteria',
       render: function (data, row) {
-        return row.evaluationRule.regexStringCriteria
+        if(row.evaluationRule.criteriaType === CriteriaOption.DATE_RANGE) {
+        // eslint-disable-next-line max-len
+          return `${row.evaluationRule.dateRangeCriteria?.when} ${row.evaluationRule.dateRangeCriteria?.startTime} - ${row.evaluationRule.dateRangeCriteria?.endTime}`
+        } else {
+          return row.evaluationRule.regexStringCriteria
+        }
       }
     }
   ]

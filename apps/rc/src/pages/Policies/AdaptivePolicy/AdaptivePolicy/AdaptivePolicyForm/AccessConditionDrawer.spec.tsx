@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { RulesManagementUrlsInfo }    from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { AccessCondition, RulesManagementUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                 from '@acx-ui/store'
+import { mockServer, render, screen }               from '@acx-ui/test-utils'
 
 import { assignConditions, attributeList } from './__test__/fixtures'
 import { AccessConditionDrawer }           from './AccessConditionDrawer'
@@ -26,7 +26,8 @@ describe('AccessConditionDrawer', () => {
           setVisible={jest.fn()}
           isEdit={false}
           setAccessCondition={jest.fn()}
-          templateId={200}/>
+          templateId={200}
+          accessConditions={[] as AccessCondition []}/>
       </Provider>,
       {
         route: { params: {
@@ -53,7 +54,8 @@ describe('AccessConditionDrawer', () => {
           setVisible={jest.fn()}
           isEdit={false}
           setAccessCondition={jest.fn()}
-          templateId={200}/>
+          templateId={200}
+          accessConditions={[] as AccessCondition []}/>
       </Provider>,
       {
         route: { params: {
@@ -76,7 +78,8 @@ describe('AccessConditionDrawer', () => {
           isEdit={true}
           setAccessCondition={jest.fn()}
           templateId={200}
-          editCondition={assignConditions.content[0]}/>
+          editCondition={assignConditions.content[0]}
+          accessConditions={[] as AccessCondition []}/>
       </Provider>,
       {
         route: { params: {

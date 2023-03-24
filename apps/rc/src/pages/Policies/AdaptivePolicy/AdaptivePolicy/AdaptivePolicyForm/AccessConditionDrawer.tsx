@@ -3,9 +3,14 @@ import React, { useEffect, useState } from 'react'
 import { Form, Input, Select } from 'antd'
 import { useIntl }             from 'react-intl'
 
-import { Drawer, Loader }                                                       from '@acx-ui/components'
-import { useLazyAttributesListQuery }                                           from '@acx-ui/rc/services'
-import { AccessCondition, checkObjectNotExists, CriteriaOption, RuleAttribute } from '@acx-ui/rc/utils'
+import { Drawer, Loader }             from '@acx-ui/components'
+import { useLazyAttributesListQuery } from '@acx-ui/rc/services'
+import {
+  AccessCondition,
+  checkObjectNotExists, CriteriaFormData,
+  CriteriaOption, EvaluationRule,
+  RuleAttribute
+} from '@acx-ui/rc/utils'
 
 interface AccessConditionDrawerProps {
   visible: boolean
@@ -25,6 +30,7 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
   const [resetField, setResetField] = useState(false)
   const [attributes, setAttributes] = useState([] as RuleAttribute [])
   const conditionId = Form.useWatch('conditionId', form)
+  const criteriaType = Form.useWatch('criteriaType', form)
 
   const [attributeList, { isLoading } ] = useLazyAttributesListQuery()
 
@@ -59,9 +65,9 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
         conditionId: editCondition.id,
         templateAttributeId: editCondition.templateAttributeId,
         name: editCondition.name,
-        // eslint-disable-next-line max-len
-        criteriaType: getCriteriaOptionByValue(editCondition.evaluationRule.criteriaType),
-        attributeValue: editCondition.evaluationRule.regexStringCriteria
+        ...toEvaluationRuleForm(editCondition.evaluationRule)
+        // criteriaType: getCriteriaOptionByValue(editCondition.evaluationRule.criteriaType)
+        // attributeValue: editCondition.evaluationRule.regexStringCriteria
       }
       form.setFieldsValue(editData)
     }
@@ -78,13 +84,46 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
       id: data.conditionId,
       name: data.name,
       templateAttributeId: data.templateAttributeId,
-      evaluationRule: {
-        criteriaType: CriteriaOption[data.criteriaType as keyof typeof CriteriaOption],
-        regexStringCriteria: data.attributeValue
-      }
+      evaluationRule: toEvaluationRuleData({ ...data })
     } as AccessCondition
     setAccessCondition(condition)
     onClose()
+  }
+
+  const toEvaluationRuleData = (data: CriteriaFormData) => {
+    const criteriaType = CriteriaOption[data.criteriaType as keyof typeof CriteriaOption]
+    if(criteriaType === CriteriaOption.DATE_RANGE) {
+      return {
+        criteriaType,
+        dateRangeCriteria: {
+          when: data.when,
+          startTime: data.start,
+          endTime: data.end
+        }
+      }
+    } else {
+      return {
+        criteriaType,
+        regexStringCriteria: data.attributeValue
+      }
+    }
+  }
+
+  const toEvaluationRuleForm = (evaluationRule: EvaluationRule) => {
+    const criteria = getCriteriaOptionByValue(evaluationRule.criteriaType)
+    if(criteria === CriteriaOption.DATE_RANGE) {
+      return {
+        criteriaType: criteria,
+        when: evaluationRule.dateRangeCriteria?.when,
+        start: evaluationRule.dateRangeCriteria?.startTime,
+        end: evaluationRule.dateRangeCriteria?.endTime
+      }
+    } else {
+      return {
+        criteriaType: criteria,
+        attributeValue: evaluationRule.regexStringCriteria
+      }
+    }
   }
 
   const conditionsValidator = async (attributeId: number) => {
@@ -96,6 +135,10 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
     // eslint-disable-next-line max-len
     return checkObjectNotExists(list, { name: attributeId }, $t({ defaultMessage: 'Condition Type' }))
   }
+
+  // const normalizeTime = (value: StoreValue) => {
+  //   return value && value.format('hh:mm A')
+  // }
 
   const content = (
     <Loader states={[{ isLoading }]}>
@@ -126,11 +169,38 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
           >
           </Select>
         </Form.Item>
-        <Form.Item label={$t({ defaultMessage: 'Condition Value' })}
-          name='attributeValue'
-          rules={[{ required: true,
-            message: $t({ defaultMessage: 'Please enter Condition Value' }) }]}
-          children={<Input />}/>
+        {
+          criteriaType !== 'DATE_RANGE' ?
+            <Form.Item label={$t({ defaultMessage: 'Condition Value' })}
+              name='attributeValue'
+              rules={[{ required: true }]}
+              children={<Input />}/>
+            : <>
+              <Form.Item label={$t({ defaultMessage: 'When' })}
+                name='when'
+                rules={[{ required: true }]}
+                children={
+                  <Select
+                    options={[
+                      { label: $t({ defaultMessage: 'All' }), value: 'All' },
+                      { label: $t({ defaultMessage: 'Weekend' }), value: 'Weekend' },
+                      { label: $t({ defaultMessage: 'Weekdays' }), value: 'Weekdays' }
+                    ]}
+                  />
+                }/>
+              <Form.Item label={$t({ defaultMessage: 'Start' })}
+                name='start'
+                rules={[{ required: true }]}
+                // normalize={normalizeTime}
+                //<TimePicker>
+                children={<Input/>}/>
+              <Form.Item label={$t({ defaultMessage: 'End' })}
+                name='end'
+                rules={[{ required: true }]}
+                // normalize={normalizeTime}
+                children={<Input />}/>
+            </>
+        }
       </Form>
     </Loader>
   )
