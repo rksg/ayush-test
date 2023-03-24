@@ -50,6 +50,7 @@ interface StackedBarOptionalProps {
   showTooltip: boolean
   setBarColor?: object
   axisLabelWidth?: number
+  totalValue?: number
 }
 
 const defaultProps: StackedBarOptionalProps = {
@@ -73,13 +74,17 @@ export interface StackedBarChartProps
     onAxisLabelClick?: (name: string) => void
   }
 
-const computeChartData = ({ category, series }: ChartData) => {
+const computeChartData = ({ category, series }: ChartData, isPercent=false) => {
   const values = _(series)
   const sum = values.sumBy('value')
   const firstIndex = values.findIndex(v => v.value !== 0)
   return series.map(({ name, value }, index) => {
+    let seriesValue = value
+    if(isPercent){
+      seriesValue = value/sum
+    }
     const data = {
-      value: [value, category, name, sum] as Dimensions,
+      value: [seriesValue, category, name, sum] as Dimensions,
       itemStyle: { borderRadius: [0] }
     }
     if (firstIndex === index) {
@@ -90,7 +95,8 @@ const computeChartData = ({ category, series }: ChartData) => {
 }
 
 const massageData = (
-  data: ChartData[], showTotal: boolean, barWidth: number): RegisteredSeriesOption['bar'][] => {
+  data: ChartData[], showTotal: boolean, barWidth: number, isPercent=false)
+  : RegisteredSeriesOption['bar'][] => {
   const seriesCommonConfig: RegisteredSeriesOption['bar'] = {
     type: 'bar',
     cursor: 'default',
@@ -109,7 +115,7 @@ const massageData = (
   }
 
   return _(data)
-    .map(computeChartData)
+    .map(chartData=>computeChartData(chartData,isPercent))
     .flatMap(items => items)
     .groupBy('value.2') // name
     .toPairs()
@@ -148,7 +154,8 @@ const massageData = (
 
 export const tooltipFormatter = (
   dataFormatter?: ((value: unknown) => string | null),
-  format?: MessageDescriptor
+  format?: MessageDescriptor,
+  sum?: number
 ) => (
   parameters: TooltipComponentFormatterCallbackParams
 ) => {
@@ -156,7 +163,11 @@ export const tooltipFormatter = (
   const param = parameters as TooltipFormatterParams
   const value = param.value as string[]
   const name = param.seriesName?.replace(/<\d+>/,'')
-  const formattedValue = dataFormatter ? dataFormatter(value[0]) : value[0]
+  let toolTipValue = value[0]
+  if(sum){
+    toolTipValue = (Number(value[0]) * sum).toString()
+  }
+  const formattedValue = dataFormatter ? dataFormatter(toolTipValue) : toolTipValue
   const tooltipFormat = format ?? defineMessage({
     defaultMessage: '{name}<br></br><space><b>{formattedValue}</b></space>',
     description: 'StackedBarChart: default tooltip format for stacked bar chart'
@@ -239,10 +250,11 @@ export function StackedBarChart <TChartData extends ChartData = ChartData> ({
       position: 'top',
       formatter: tooltipFormatter(
         dataFormatter,
-        props.tooltipFormat),
+        props.tooltipFormat,
+        props.totalValue),
       show: showTooltip
     },
-    series: massageData(data, showTotal, barWidth)
+    series: massageData(data, showTotal, barWidth, !!props.totalValue)
   }
   return (
     <ReactECharts

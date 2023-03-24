@@ -48,12 +48,25 @@ storiesOf('StackedBarChart', module)
     style={{ height: 110, width: 400 }}
     showLabels
     data={data} />)
-  .add('Single Chart View', () => <StackedBarChart
-    style={{ height: 110, width: 500 }}
-    showLabels={false}
-    barWidth={20}
-    barColors={getDeviceConnectionStatusColorsv2()}
-    data={singleBar} />)
+  .add('Single Chart View', () => <>
+    <h3>With prop.totalValue as 24</h3>
+    <StackedBarChart
+      style={{ height: 110, width: 500 }}
+      showLabels={false}
+      showTotal={false}
+      barWidth={20}
+      barColors={getDeviceConnectionStatusColorsv2()}
+      data={singleBar}
+      totalValue={24} // must pass this value to make proper width
+    />
+    <h3>Without prop.totalValue having width issue</h3>
+    <StackedBarChart
+      style={{ height: 110, width: 500 }}
+      showLabels={false}
+      showTotal={false}
+      barWidth={20}
+      barColors={getDeviceConnectionStatusColorsv2()}
+      data={singleBar} /></>)
   .add('With Knobs', () => <StackedBarChart
     style={{ height: 110, width: 250 }}
     showLabels={boolean('Show Labels', false)}
