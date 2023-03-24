@@ -1,15 +1,13 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }            from '@acx-ui/feature-toggle'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ServiceType,
   DpskDetailsTabKey,
   getServiceRoutePath,
   ServiceOperation,
-  NewDpskPassphraseBaseUrl,
-  DpskUrls,
-  NewDpskPassphraseBaseUrlWithId
+  DpskUrls
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
@@ -24,9 +22,15 @@ import {
   mockedDpskPassphraseList,
   mockedTenantId,
   mockedServiceId,
-  mockedDpskPassphrase
+  mockedDpskPassphrase,
+  mockedDpskPassphraseListWithPersona
 } from './__tests__/fixtures'
 import DpskPassphraseManagement from './DpskPassphraseManagement'
+
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  downloadFile: jest.fn()
+}))
 
 describe('DpskPassphraseManagement', () => {
   const paramsForPassphraseTab = {
@@ -40,8 +44,8 @@ describe('DpskPassphraseManagement', () => {
   beforeEach(() => {
     mockServer.use(
       rest.get(
-        NewDpskPassphraseBaseUrl,
-        (req, res, ctx) => res(ctx.json(mockedDpskPassphraseList))
+        DpskUrls.getPassphraseList.url,
+        (req, res, ctx) => res(ctx.json({ ...mockedDpskPassphraseList }))
       )
     )
   })
@@ -101,6 +105,30 @@ describe('DpskPassphraseManagement', () => {
     await userEvent.click(await screen.findByRole('button', { name: /Delete Passphrase/i }))
   })
 
+  it('should not delete selected passphrase when it is mapped to Persona', async () => {
+    mockServer.use(
+      rest.get(
+        DpskUrls.getPassphraseList.url,
+        (req, res, ctx) => res(ctx.json({ ...mockedDpskPassphraseListWithPersona }))
+      )
+    )
+
+    render(
+      <Provider>
+        <DpskPassphraseManagement />
+      </Provider>, {
+        route: { params: paramsForPassphraseTab, path: detailPath }
+      }
+    )
+
+    const targetRecord = mockedDpskPassphraseListWithPersona.content[0]
+
+    const targetRow = await screen.findByRole('row', { name: new RegExp(targetRecord.username) })
+    await userEvent.click(within(targetRow).getByRole('checkbox'))
+
+    expect(screen.queryByRole('button', { name: /Delete/ })).toBeNull()
+  })
+
   it('should show error message when import CSV file failed', async () => {
     mockServer.use(
       rest.post(
@@ -141,14 +169,14 @@ describe('DpskPassphraseManagement', () => {
 
     mockServer.use(
       rest.get(
-        NewDpskPassphraseBaseUrl,
+        DpskUrls.exportPassphrases.url,
         (req, res, ctx) => {
 
           const headers = req.headers['headers']
 
           // Get List API: 'Content-Type': 'application/json'
           if (headers['content-type'] === 'application/json') {
-            return res(ctx.json(mockedDpskPassphraseList))
+            return res(ctx.json({ ...mockedDpskPassphraseList }))
           }
 
           // Export to file API: 'Content-Type': 'text/csv'
@@ -180,7 +208,7 @@ describe('DpskPassphraseManagement', () => {
   it('should edit selected passphrase', async () => {
     mockServer.use(
       rest.get(
-        NewDpskPassphraseBaseUrlWithId,
+        DpskUrls.getPassphrase.url,
         (req, res, ctx) => res(ctx.json({ ...mockedDpskPassphrase }))
       )
     )

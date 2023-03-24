@@ -76,6 +76,29 @@ export const mockedDpskPassphraseList = {
   sort: []
 }
 
+export const mockedDpskPassphraseListWithPersona = {
+  content: [
+    {
+      id: '__PASSPHRASE_ID_1__',
+      passphrase: 'abced12345',
+      username: 'DPSK_USER_1',
+      vlanId: 1,
+      mac: null,
+      numberOfDevices: 3,
+      createdDate: '2022-12-07T21:39:00',
+      expirationDate: '2022-12-08T08:39:00',
+      identityId: '123456789'
+    }
+  ],
+  totalElements: 1,
+  totalPages: 1,
+  pageable: {
+    pageNumber: 0,
+    pageSize: 10
+  },
+  sort: []
+}
+
 export const mockedDpskPassphrase = {
   id: '__PASSPHRASE_ID_1__',
   passphrase: 'abced12345',

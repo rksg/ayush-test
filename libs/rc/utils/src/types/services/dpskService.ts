@@ -47,6 +47,7 @@ export interface NewDpskPassphrase {
   expirationDate: string;
   email?: string;
   phoneNumber?: string;
+  identityId?: string; // PersonaGroup id - This DPSK had bound with PersonaGroup
 }
 
 export interface CreateDpskPassphrasesFormFields {

@@ -40,6 +40,7 @@ export default function DpskTable () {
   const rowActions: TableProps<DpskSaveData>['rowActions'] = [
     {
       label: intl.$t({ defaultMessage: 'Delete' }),
+      visible: ([selectedRow]) => selectedRow && !selectedRow.identityId,
       onClick: ([{ id, name }], clearSelection) => {
         showActionModal({
           type: 'confirm',

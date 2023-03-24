@@ -166,6 +166,7 @@ export default function DpskPassphraseManagement () {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
+      visible: (selectedRows) => !selectedRows.some(row => row.identityId),
       onClick: (selectedRows: NewDpskPassphrase[], clearSelection) => {
         showActionModal({
           type: 'confirm',
