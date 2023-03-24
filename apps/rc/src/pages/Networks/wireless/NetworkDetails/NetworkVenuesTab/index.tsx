@@ -157,7 +157,7 @@ export function NetworkVenuesTab () {
     // }
     const network = networkQuery.data
     const newNetworkVenue = generateDefaultNetworkVenue(row.id, (network && network?.id) ? network.id : '')
-    const isWPA3security = row.wlan && row.wlan.wlanSecurity === 'WPA3'
+    const isWPA3security = network?.wlan && network?.wlan.wlanSecurity === 'WPA3'
     if (triBandRadioFeatureFlag && isWPA3security) {
       newNetworkVenue.allApGroupsRadioTypes?.push(RadioTypeEnum._6_GHz)
     }
@@ -265,7 +265,8 @@ export function NetworkVenuesTab () {
       key: 'name',
       title: $t({ defaultMessage: 'Venue' }),
       dataIndex: 'name',
-      sorter: true
+      sorter: true,
+      fixed: 'left'
     },
     {
       key: 'city',

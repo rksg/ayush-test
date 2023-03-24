@@ -122,6 +122,7 @@ export const ImpactedClientsDrawer: React.FC<ImpactedClientsDrawerProps> = (prop
       <Table<AggregatedImpactedClient>
         rowKey='mac'
         columns={columns}
+        columnState={{ hidden: true }}
         dataSource={queryResults.data}
       />
     </Loader>}
@@ -165,6 +166,7 @@ export const ImpactedAPsDrawer: React.FC<ImpactedDrawerProps> = (props) => {
       <Table<AggregatedImpactedAP>
         rowKey='mac'
         columns={columns}
+        columnState={{ hidden: true }}
         dataSource={queryResults.data}/>
     </Loader>}
   />

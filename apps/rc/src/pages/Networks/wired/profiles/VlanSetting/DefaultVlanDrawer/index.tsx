@@ -5,6 +5,7 @@ import {
   Form,
   FormInstance,
   Input,
+  InputNumber,
   Select
 } from 'antd'
 import { useIntl } from 'react-intl'
@@ -118,7 +119,7 @@ function DefaultVlanForm (props: DefaultVlanFormProps) {
           { validator: (_, value) => validateVlanName(value) },
           { validator: (_, value) => validateDuplicateVlanName(value, vlansList) }
         ]}
-        children={<Input />}
+        children={<InputNumber />}
       />
       <Form.Item
         name='spanningTreeProtocol'

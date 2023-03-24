@@ -39,7 +39,7 @@ describe('ClientTimelineTab', ()=>{
 
       }
     })
-    expect(await screen.findAllByText('730-11-60')).toHaveLength(2)
+    expect(await screen.findAllByText('730-11-60')).toHaveLength(1)
   })
 
   it('should render: Sessions', async () => {

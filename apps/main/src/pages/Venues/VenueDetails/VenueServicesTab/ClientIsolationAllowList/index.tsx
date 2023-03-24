@@ -28,6 +28,7 @@ export default function ClientIsolationAllowList () {
       dataIndex: 'name',
       key: 'name',
       sorter: true,
+      fixed: 'left',
       render: (data, row) => {
         return <TenantLink to={getPolicyDetailsLink({
           type: PolicyType.CLIENT_ISOLATION,

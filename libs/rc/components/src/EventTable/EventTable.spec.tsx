@@ -191,4 +191,12 @@ describe('EventTable', () => {
     await userEvent.click(screen.getByTestId('DownloadOutlined'))
     expect(mockExportCsv).toBeCalled()
   })
+
+  it('should not render omitColumns',async () => {
+    render(
+      <EventTable tableQuery={tableQuery} omitColumns={['product']}/>,
+      { route: { params }, wrapper: Provider }
+    )
+    expect(screen.queryByText('Product')).toBeNull()
+  })
 })

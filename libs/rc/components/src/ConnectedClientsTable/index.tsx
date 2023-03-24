@@ -63,7 +63,7 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       title: intl.$t({ defaultMessage: 'Hostname' }),
       dataIndex: 'hostname',
       sorter: true,
-      disable: true,
+      fixed: 'left',
       defaultSortOrder: 'ascend',
       render: (data, row) => {
         return <TenantLink to={`users/wifi/clients/${row.clientMac}/details/overview?hostname=${data}&clientStatus=connected`}>{data || '--'}</TenantLink>

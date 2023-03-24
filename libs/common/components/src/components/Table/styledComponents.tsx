@@ -100,6 +100,9 @@ export const TableSettingsGlobalOverride = createGlobalStyle`
         align-items: center;
         &:hover { background-color: unset; }
         .ant-tree-checkbox { margin-left: 24px; }
+        &.ant-tree-treenode-disabled .ant-tree-draggable-icon ~ .ant-tree-checkbox {
+          margin-left: 12px;
+        }
         .ant-tree-draggable-icon ~ .ant-tree-checkbox { margin-left: 0; }
       }
       .ant-tree:last-of-type {
