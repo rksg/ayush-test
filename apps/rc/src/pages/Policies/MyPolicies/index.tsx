@@ -158,7 +158,7 @@ function useCardData (): CardDataProps[] {
       category: RadioCardCategory.WIFI,
       totalCount: useGetApSnmpViewModelQuery({
         params, payload: { ...defaultPayload }
-      }).data?.totalCount,
+      }, { skip: !supportApSnmp }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.LIST })),
       disabled: !supportApSnmp
