@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 
-import { Form, Select, FormItemProps, Spin, Button, Row, Col } from 'antd'
+import { Form, Select, FormItemProps, Button, Row, Col } from 'antd'
 import _                                     from 'lodash'
 import { useIntl }                           from 'react-intl'
 
@@ -42,7 +42,9 @@ export function TemplateSelector (props: TemplateSelectorProps) {
   // Generate form data from data request
   const { templateOptions, scopeLabel, initialOption } = useMemo(() => {
     if (!templateDataRequest.isSuccess) {
-      return { templateOptions: [], scopeLabel: $t({ defaultMessage: 'Loading Templates...' }), initialOption: undefined }
+      return { templateOptions: [], 
+        scopeLabel: $t({ defaultMessage: 'Loading Templates...' }), 
+        initialOption: undefined }
     }
 
     const templateOptions = templateDataRequest.data?.templates.map((t) =>
@@ -82,7 +84,8 @@ export function TemplateSelector (props: TemplateSelectorProps) {
 
   const showModal = () => {
     let selectedOption = form.getFieldValue(formItemProps.name)
-    let previewTemplate = templateDataRequest.data?.templates.find(t => t.id === selectedOption.value)
+    let previewTemplate = 
+      templateDataRequest.data?.templates.find(t => t.id === selectedOption.value)
     setPreviewTemplate(previewTemplate)
     setIsModalOpen(true)
   };
@@ -93,9 +96,7 @@ export function TemplateSelector (props: TemplateSelectorProps) {
 
   // RENDER //////////////////////////////////////////////////////
   return (
-    // TODO: style Loader, it isn't being contained within the form item right now
-    // TODO: Loader isn't responding well to network errors, fix that
-    <Loader states={[templateDataRequest]}>
+    <Loader style={{ height: 'auto', minHeight: 45 }} states={[templateDataRequest]}>
       <Row>
         <Col flex="auto">
           <Form.Item {...formItemProps}
@@ -124,7 +125,9 @@ export function TemplateSelector (props: TemplateSelectorProps) {
             visible={isModalOpen}
             onCancel={handleCancel}
             footer={[]}>
-              <TemplatePreview templateType={templateDataRequest.data?.templateScopeType} template={previewTemplate} />
+              <TemplatePreview 
+                templateType={templateDataRequest.data?.templateScopeType} 
+                template={previewTemplate} />
           </Modal>
         </Col>
       </Row>
