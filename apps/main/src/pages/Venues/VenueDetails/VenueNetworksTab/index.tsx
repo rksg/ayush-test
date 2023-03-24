@@ -211,6 +211,7 @@ export function VenueNetworksTab () {
       dataIndex: 'name',
       sorter: true,
       defaultSortOrder: 'ascend',
+      fixed: 'left',
       render: function (data, row) {
         return (
           <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>{data}</TenantLink>

@@ -29,7 +29,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       title: intl.$t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
       sorter: true,
-      disable: true,
+      fixed: 'left',
       defaultSortOrder: 'ascend',
       render: function (data, row) {
         if(disabledType.indexOf(row.nwSubType as NetworkTypeEnum) > -1){
@@ -67,6 +67,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       title: intl.$t({ defaultMessage: 'Venues' }),
       dataIndex: ['venues', 'count'],
       sorter: true,
+      sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center',
       render: function (count, row) {
         if(disabledType.indexOf(row.nwSubType as NetworkTypeEnum) > -1){
@@ -86,6 +87,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       title: intl.$t({ defaultMessage: 'APs' }),
       dataIndex: 'aps',
       sorter: true,
+      sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center',
       render: function (data, row) {
         if(disabledType.indexOf(row.nwSubType as NetworkTypeEnum) > -1){
@@ -101,7 +103,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       key: 'clients',
       title: intl.$t({ defaultMessage: 'Clients' }),
       dataIndex: 'clients',
-      sorter: false,
+      sorter: false, // API does not seem to be working
       align: 'center'
     },
     // { TODO: Wait for Services

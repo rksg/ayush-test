@@ -212,6 +212,7 @@ function useColumns (venueIds: string[]) {
       sorter: true,
       searchable: true,
       defaultSortOrder: 'ascend',
+      fixed: 'left',
       render: function (data, row) {
         return (
           <TenantLink

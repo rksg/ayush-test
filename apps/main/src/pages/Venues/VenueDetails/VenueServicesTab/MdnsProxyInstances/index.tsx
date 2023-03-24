@@ -63,6 +63,7 @@ export default function MdnsProxyInstances () {
       dataIndex: 'apName',
       key: 'apName',
       sorter: true,
+      fixed: 'left',
       render: (data, row) => {
         // eslint-disable-next-line max-len
         return <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>{data}</TenantLink>

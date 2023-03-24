@@ -148,7 +148,7 @@ export function ApTable (props: ApTableProps) {
       title: $t({ defaultMessage: 'AP Name' }),
       dataIndex: 'name',
       sorter: true,
-      disable: true,
+      fixed: 'left',
       searchable: searchable,
       render: (data, row, _, highlightFn) => (
         <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>
@@ -159,7 +159,7 @@ export function ApTable (props: ApTableProps) {
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'deviceStatus',
       sorter: true,
-      disable: true,
+      fixed: 'left',
       filterKey: 'deviceStatusSeverity',
       filterable: filterables ? statusFilterOptions : false,
       render: (status: unknown) => <APStatus status={status as ApDeviceStatusEnum} />
