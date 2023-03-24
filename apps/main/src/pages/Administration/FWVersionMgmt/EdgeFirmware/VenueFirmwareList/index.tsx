@@ -116,6 +116,7 @@ export function VenueFirmwareList () {
     ]}>
       <Table
         columns={columns}
+        columnState={{ hidden: true }}
         dataSource={venueFirmwareList}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}

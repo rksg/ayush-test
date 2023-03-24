@@ -110,7 +110,7 @@ describe('CaptiveNetworkForm-WISPr', () => {
     fireEvent.change(redirectUrlInput, { target: { value: 'https://www.commscope.com/ruckus/' } })
     await userEvent.click(await screen.findByRole('checkbox', { name: /Redirect users to/ }))
     await userEvent.click(await screen.findByRole('checkbox',
-      { name: /Enable Ruckus DHCP service/ }))
+      { name: /Enable RUCKUS DHCP service/ }))
     await userEvent.click(await screen.findByRole('checkbox',
       { name: /Enable MAC auth bypass/ }))
     await userEvent.click(await screen.findByRole('checkbox',

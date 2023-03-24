@@ -98,6 +98,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
     searchable: true,
     sorter: true,
     defaultSortOrder: 'ascend',
+    fixed: 'left',
     render: (data, row) => row['portIdentifier']
   }, {
     key: 'name',
