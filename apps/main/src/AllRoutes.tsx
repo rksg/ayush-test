@@ -77,10 +77,9 @@ function AllRoutes () {
       <Route path=':tenantId/v/*' element={<MFACheck />}>
         <Route path='*' element={<MspRoutes />}/>
       </Route>
-      {/* <Route
-        path="*"
-        element={<TenantNavigate replace to='dashboard' />}
-      /> */}
+      {/* redirect old urls to dashboard */}
+      <Route path="t/:tenantId/*" element={<TenantNavigate replace to='dashboard' />} />
+      <Route path="v/:tenantId/*" element={<TenantNavigate replace to='dashboard' />} />
     </>
   )
 }
