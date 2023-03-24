@@ -19,6 +19,13 @@ export const TenantIdFromJwt = () => {
   return tenantIdFromJwt
 }
 
+export const PverFromJwt = () => {
+  const jwtToken = getJwtToken()
+  const pverFromJwt = getPverFromJwt(jwtToken as string)
+
+  return pverFromJwt
+}
+
 export const isDelegationMode = () => {
   const jwtToken = getJwtToken()
 
@@ -73,6 +80,20 @@ const getTenantIdFromJwt = (jwt: string) => {
     }
   }
   return getTenantId()
+}
+
+const getPverFromJwt = (jwt: string) => {
+  if (jwt) {
+    let tokens = jwt.split('.')
+
+    if (tokens.length >= 2) {
+      const jwtRuckus = JSON.parse(atob(tokens[1]))
+      if (jwtRuckus && jwtRuckus.pver) {
+        return jwtRuckus.pver
+      }
+    }
+  }
+  return 'ruckus-one'
 }
 
 export const createHttpRequest = (
