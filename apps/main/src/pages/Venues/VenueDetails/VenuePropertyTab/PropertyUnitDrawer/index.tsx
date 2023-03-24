@@ -33,19 +33,13 @@ import { useParams }          from '@acx-ui/react-router-dom'
 import { validationMessages } from '@acx-ui/utils'
 
 
-function AccessPointLanPortSelector (props: {
-  venueId: string,
-  ethernetPorts?: PersonaEthernetPort[] }
-) {
+function AccessPointLanPortSelector (props: { venueId: string }) {
   const { $t } = useIntl()
   const { tenantId } = useParams()
-  const { venueId, ethernetPorts } = props
+  const { venueId } = props
   const form = Form.useFormInstance()
   const [selectedModel, setSelectedModel] = useState({} as VenueLanPorts)
   const accessAp = Form.useWatch('accessAp')
-  // const apName = ethernetPorts?.[0]?.name
-  // const accessAp = ethernetPorts?.[0]?.macAddress?.replaceAll('-', ':')
-  // const ports = ethernetPorts?.map(p => p.portIndex)
 
   const { data: venueLanPorts } = useGetVenueLanPortsQuery({ params: { tenantId, venueId } })
 
@@ -57,8 +51,6 @@ function AccessPointLanPortSelector (props: {
     sortOrder: 'ASC'
   }
 
-  // const apOptions = [{ value: '30:87:D9:28:0C:C0', label: 'birdy-1', model: 'R510' }]
-
   const { data: apListResult } = useApListQuery({
     params: useParams(),
     payload: {
@@ -67,33 +59,10 @@ function AccessPointLanPortSelector (props: {
     }
   })
 
-  //{
-  //     selectFromResult ({ data }) {
-  //       return {
-  //         apOptions: data?.data
-  //           .filter((ap: APExtended) => ap.apMac && ap.model)
-  //           .map((ap: APExtended) => ({
-  //             value: ap.apMac,
-  //             label: ap.name,
-  //             model: ap.model
-  //           }))
-  //       }
-  //     }
-  //   }
-
   useEffect(() => {
     if (!venueLanPorts || !apListResult?.data || !accessAp) return
-    console.log('apListResult', apListResult)
-    console.log('venueLanPorts', venueLanPorts)
-    onSelectApChange(accessAp ?? '')
+    onSelectApChange(accessAp)
   }, [apListResult, venueLanPorts, accessAp])
-
-  // useEffect(() => {
-  //   if (!ethernetPorts || !apOptions) return
-  //   console.log('I got the ethernetPorts ::', ethernetPorts)
-  //   console.log('so I have apName :: ', apName, ' accessAp :: ', accessAp, ' ports :: ', ports)
-  //   onSelectApChange(accessAp ?? '')
-  // }, [ethernetPorts, apOptions])
 
   const apOptions = apListResult?.data
     ?.filter((ap: APExtended) => ap.apMac && ap.model)
@@ -104,14 +73,11 @@ function AccessPointLanPortSelector (props: {
     }))
 
   const onSelectApChange = (macAddress: string) => {
-    console.log('onSelectApChange :: ', macAddress, apOptions)
     const selectedAp = apOptions?.find(ap => ap.value === macAddress)
     const lanPort = venueLanPorts
       ?.find(lan => lan.model === selectedAp?.model) ?? {} as VenueLanPorts
     setSelectedModel(lanPort)
     form.setFieldValue('apName', selectedAp?.label)
-    // form.setFieldValue('accessAp', selectedAp?.value)
-    // form.setFieldValue('ports', ports?.map(i => i.toString()))
   }
 
   return (
@@ -119,17 +85,14 @@ function AccessPointLanPortSelector (props: {
       <Form.Item
         hidden
         name={'apName'}
-        // initialValue={apName}
       />
       <Form.Item
         label={$t({ defaultMessage: 'Select AP' })}
         name={'accessAp'}
-        // initialValue={accessAp}
         children={
           <Select
             placeholder={$t({ defaultMessage: 'Select...' })}
             onChange={(selected) => {
-              console.log('Need remove initial')
               form.setFieldValue('ports', [])
               onSelectApChange(selected)
             }}
@@ -138,7 +101,6 @@ function AccessPointLanPortSelector (props: {
       />
       <Form.Item
         name={'ports'}
-        // initialValue={ports}
         label={$t(
           { defaultMessage: 'Select LAN Ports for ({model})' },
           { model: selectedModel?.model ?? 'null' }
@@ -179,7 +141,6 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   const { isEdit, visible, onClose, venueId, unitId } = props
   const [form] = Form.useForm<PropertyUnitFormFields>()
   const [withNsg, setWithNsg] = useState(false)
-  const [ethernetPorts, setEthernetPorts] = useState<PersonaEthernetPort[]|undefined>()
 
   // VLAN fields state
   const enableGuestVlan = useWatch('enableGuestVlan', form)
@@ -208,19 +169,14 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   }, [propertyConfigsQuery.data])
 
   useEffect(() => {
-    if (!visible) {
-      setEthernetPorts(undefined)
-    }
-
     if (visible && unitId && venueId) {
       form.resetFields()
-      console.log('Get Unit by id ', unitId)
+      // console.log('Get Unit by id ', unitId)
       getUnitById({ params: { venueId, unitId } })
         .then(result => {
           if (result.data) {
             const { personaId, guestPersonaId } = result.data
-            // TODO: access point need to parsing here
-            console.log('Unit :: ', result.data)
+            // console.log('Unit :: ', result.data)
             combinePersonaInfo(personaId, guestPersonaId, result.data)
           }
         })
@@ -245,13 +201,13 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
       .then(([personaResult, guestResult]) => {
         form.setFieldsValue(data ?? {})
         if (personaResult?.data) {
-          console.log('Persona :: ', personaResult?.data)
+          // console.log('Persona :: ', personaResult?.data)
           const { vlan, dpskPassphrase, ethernetPorts, vni } = personaResult.data as Persona
           if (withNsg) {
             const apName = ethernetPorts?.[0]?.name
             const accessAp = ethernetPorts?.[0]?.macAddress?.replaceAll('-', ':')
             const ports = ethernetPorts?.map(p => p.portIndex)
-            setEthernetPorts(ethernetPorts)
+
             form.setFieldValue('apName', apName)
             form.setFieldValue('accessAp', accessAp)
             form.setFieldValue('ports', ports?.map(i => i.toString()))
@@ -264,7 +220,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
 
         if (guestResult?.data) {
           const { vlan, dpskPassphrase } = guestResult.data
-          console.log('Guest Persona :: ', guestResult?.data)
+          // console.log('Guest Persona :: ', guestResult?.data)
           if (!withNsg) {
             form.setFieldValue('enableGuestVlan', personaResult?.data?.vlan !== vlan)
             // if no timeout would not render exactly
@@ -286,7 +242,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
     // TODO: handle exception for more detail information
     const { name, resident, personaId, guestPersonaId, unitPersona, guestPersona,
       ports, accessAp, apName } = formValues
-    console.log('Edit action :: ', formValues)
+    // console.log('Edit action :: ', formValues)
 
     // update Unit
     const unitUpdateResult = await updateUnitMutation({
@@ -366,10 +322,10 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   }
 
   const handleOnFinish = async (values: PropertyUnitFormFields) => {
-    console.log('Form finish values = ', values)
+    // console.log('Form finish values = ', values)
 
     try {
-      // isEdit ? await handleEditUnit(values) : await handleAddUnit(values)
+      isEdit ? await handleEditUnit(values) : await handleAddUnit(values)
       onClose()
     } catch (e) {
       // eslint-disable-next-line no-console
@@ -434,7 +390,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
         children={<Input readOnly bordered={false}/>}
       />
     }
-    <AccessPointLanPortSelector venueId={venueId} ethernetPorts={ethernetPorts} />
+    <AccessPointLanPortSelector venueId={venueId} />
   </>)
 
   return (
