@@ -77,6 +77,7 @@ export default function DpskPassphraseManagement () {
       dataIndex: 'createdDate',
       sorter: true,
       defaultSortOrder: 'descend',
+      fixed: 'left',
       render: function (data) {
         return formatter(DateFormatEnum.DateTimeFormat)(data)
       }
