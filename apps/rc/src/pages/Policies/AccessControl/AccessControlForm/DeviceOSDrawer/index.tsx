@@ -438,6 +438,13 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     }
   }] as { label: string, onClick: () => void }[]
 
+  const ruleValidator = () => {
+    if (!deviceOSRuleList.length) {
+      return Promise.reject($t({ defaultMessage: 'No rule were added yet' }))
+    }
+    return Promise.resolve()
+  }
+
   const content = <Form layout='horizontal' form={contentForm}>
     <DrawerFormItem
       name={'policyName'}
@@ -474,6 +481,9 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       label={$t({ defaultMessage: 'Rules ({number})' }, {
         number: deviceOSRuleList.length
       })}
+      rules={[
+        { validator: () => ruleValidator() }
+      ]}
     />
     <Table
       columns={basicColumns}

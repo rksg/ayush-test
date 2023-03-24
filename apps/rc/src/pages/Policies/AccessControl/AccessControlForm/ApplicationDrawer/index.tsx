@@ -500,6 +500,13 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     }
   }] as { label: string, onClick: () => void }[]
 
+  const ruleValidator = () => {
+    if (!applicationsRuleList.length) {
+      return Promise.reject($t({ defaultMessage: 'No rule were added yet' }))
+    }
+    return Promise.resolve()
+  }
+
   const content = <Form layout='horizontal' form={contentForm}>
     <DrawerFormItem
       name={'policyName'}
@@ -524,6 +531,9 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     <DrawerFormItem
       name='applicationsRule'
       label={$t({ defaultMessage: 'Rules ({count})' }, { count: applicationsRuleList.length })}
+      rules={[
+        { validator: () => ruleValidator() }
+      ]}
     />
     <Table
       columns={basicColumns}
