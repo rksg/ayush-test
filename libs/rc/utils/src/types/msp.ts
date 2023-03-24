@@ -86,6 +86,8 @@ export interface MspEc {
   mspAdmins?: string[];
   mspAdminCount: string;
   mspEcAdminCount: string;
+  mspInstallerAdminCount?: number;
+  mspIntegratorAdminCount?: number;
   integrator?: string,
   installer?: string,
   expirationDate: string;

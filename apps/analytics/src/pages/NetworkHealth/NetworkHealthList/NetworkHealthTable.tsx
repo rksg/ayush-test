@@ -168,6 +168,7 @@ export function NetworkHealthTable () {
       dataIndex: 'name',
       sorter: { compare: sortProp('name', defaultSort) },
       searchable: true,
+      fixed: 'left',
       render: (value, row, _, highlightFn) => {
         const highlightedValue = highlightFn(String(value))
         return row.latestTest?.summary.apsTestedCount
@@ -199,6 +200,7 @@ export function NetworkHealthTable () {
       dataIndex: 'apsCount',
       render: (value) => value,
       sorter: { compare: sortProp('apsCount', defaultSort) },
+      sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center'
     },
     {
@@ -216,6 +218,7 @@ export function NetworkHealthTable () {
       dataIndex: ['latestTest', 'summary', 'apsTestedCount'],
       render: (_, row) => formatApsUnderTest(row.latestTest?.summary),
       sorter: { compare: sortProp('latestTest.summary.apsTestedCount', defaultSort) },
+      sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center'
     },
     {

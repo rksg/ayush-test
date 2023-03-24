@@ -58,6 +58,31 @@ export const mspApi = baseMspApi.injectEndpoints({
         })
       }
     }),
+    integratorCustomerList: build.query<TableResult<MspEc>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const mspCustomerListReq = createHttpRequest(MspUrlsInfo.getIntegratorCustomersList, params)
+        return {
+          ...mspCustomerListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'CreateMspEc',
+            'UpdateMspEc',
+            'Deactivate MspEc',
+            'Reactivate MspEc',
+            'Update MSP Admin list',
+            'assign MspEc List To delegate'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(mspApi.util.invalidateTags([{ type: 'Msp', id: 'LIST' }]))
+          })
+        })
+      }
+    }),
     deleteMspEc: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(MspUrlsInfo.deleteMspEcAccount, params)
@@ -532,6 +557,7 @@ export const mspApi = baseMspApi.injectEndpoints({
 })
 export const {
   useMspCustomerListQuery,
+  useIntegratorCustomerListQuery,
   useDeleteMspEcMutation,
   useVarCustomerListQuery,
   useInviteCustomerListQuery,
