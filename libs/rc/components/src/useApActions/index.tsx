@@ -259,7 +259,7 @@ const genDeleteModal = (
     {hideConfirmation && <Form.Item>{$t({ defaultMessage: `
       You are deleting one or more offline APs.
       When these offline devices come back online
-      their configuration will be factory reset and they will be removed from Ruckus Cloud.`
+      their configuration will be factory reset and they will be removed from RUCKUS One.`
     })}</Form.Item >}
 
     {!showResetFirmwareOption && !hideConfirmation && <Form.Item>{$t({

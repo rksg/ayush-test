@@ -11,7 +11,8 @@ export const DistSwitchesTable = (props: Omit<TableProps<DistributionSwitch>, 'c
     {
       title: $t({ defaultMessage: 'Dist. Switch' }),
       key: 'name',
-      dataIndex: 'name'
+      dataIndex: 'name',
+      fixed: 'left'
     },
     {
       title: $t({ defaultMessage: 'Model' }),

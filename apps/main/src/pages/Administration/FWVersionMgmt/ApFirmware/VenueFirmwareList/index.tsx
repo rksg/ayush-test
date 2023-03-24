@@ -33,7 +33,10 @@ import {
   TableQuery,
   RequestPayload,
   firmwareTypeTrans,
-  useTableQuery
+  useTableQuery,
+  sortProp,
+  defaultSort,
+  dateSort
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
@@ -72,12 +75,13 @@ function useColumns (
 
   const columns: TableProps<FirmwareVenue>['columns'] = [
     {
-      title: intl.$t({ defaultMessage: 'Venue Name' }),
+      title: intl.$t({ defaultMessage: 'Venue' }),
       key: 'name',
       dataIndex: 'name',
-      sorter: true,
+      // sorter: true,
+      sorter: { compare: sortProp('name', defaultSort) },
       searchable: searchable,
-      defaultSortOrder: 'ascend',
+      // defaultSortOrder: 'ascend',
       render: function (data, row) {
         return row.name
       }
@@ -86,7 +90,8 @@ function useColumns (
       title: intl.$t({ defaultMessage: 'Current AP Firmware' }),
       key: 'version',
       dataIndex: 'version',
-      sorter: true,
+      // sorter: true,
+      sorter: { compare: sortProp('versions[0].version', defaultSort) },
       filterable: filterables ? filterables['version'] : false,
       filterMultiple: false,
       render: function (data, row) {
@@ -97,7 +102,8 @@ function useColumns (
       title: intl.$t({ defaultMessage: 'Firmware Type' }),
       key: 'type',
       dataIndex: 'type',
-      sorter: true,
+      // sorter: true,
+      sorter: { compare: sortProp('versions[0].category', defaultSort) },
       filterable: filterables ? filterables['type'] : false,
       filterMultiple: false,
       render: function (data, row) {
@@ -112,7 +118,8 @@ function useColumns (
       title: intl.$t({ defaultMessage: 'Last Update' }),
       key: 'lastUpdate',
       dataIndex: 'lastUpdate',
-      sorter: false,
+      // sorter: false,
+      sorter: { compare: sortProp('lastScheduleUpdate', dateSort) },
       render: function (data, row) {
         if (!row.lastScheduleUpdate) return '--'
         return toUserDate(row.lastScheduleUpdate)
@@ -122,9 +129,9 @@ function useColumns (
       title: intl.$t({ defaultMessage: 'Next Update Schedule' }),
       key: 'nextSchedule',
       dataIndex: 'nextSchedule',
-      sorter: false,
+      // sorter: false,
+      sorter: { compare: sortProp('nextSchedules[0].startDateTime', dateSort) },
       render: function (data, row) {
-        // return getApNextScheduleTpl(intl, row)
         return (!isNextScheduleTooltipDisabled(row)
           ? getApNextScheduleTpl(intl, row)
           // eslint-disable-next-line max-len
@@ -516,6 +523,7 @@ export const VenueFirmwareTable = (
     ]}>
       <Table
         columns={columns}
+        columnState={{ hidden: true }}
         dataSource={tableData}
         // eslint-disable-next-line max-len
         pagination={{ pageSize: 10000, position: [pageBotton as TablePaginationPosition , pageBotton as TablePaginationPosition] }}

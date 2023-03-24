@@ -108,6 +108,7 @@ function ACLSettingForm (props: ACLSettingFormProps) {
   useEffect(() => {
     if(rule){
       form.setFieldsValue(rule)
+      setAclType(rule.aclType)
       setRuleList(rule.aclRules as AclStandardRule[] | AclExtendedRule[])
     }
   }, [form, rule])
@@ -225,8 +226,10 @@ function ACLSettingForm (props: ACLSettingFormProps) {
   const onAclTypeChange = (e: RadioChangeEvent) => {
     if (e.target.value === 'standard') {
       setRuleList([defaultStandardRuleList])
+      form.setFieldValue('aclRules', [defaultStandardRuleList])
     } else {
       setRuleList([defaultExtendedRuleList])
+      form.setFieldValue('aclRules', [defaultExtendedRuleList])
     }
     setAclType(e.target.value)
     form.validateFields()

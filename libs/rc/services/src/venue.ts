@@ -58,7 +58,9 @@ import {
   PropertyUnit,
   ResidentPortal,
   NewTableResult,
-  transferToTableResult
+  transferToTableResult,
+  downloadFile,
+  RequestFormData
 } from '@acx-ui/rc/utils'
 import { baseVenueApi } from '@acx-ui/store'
 import { getJwtToken }  from '@acx-ui/utils'
@@ -133,13 +135,6 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...req,
           body: payload
         }
-      },
-      transformResponse (result: { data: Venue[] }) {
-        result.data.map(venue => {
-          venue.switches = venue.switches ? venue.switches : 0
-          return venue
-        })
-        return result
       }
     }),
     updateVenue: build.mutation<VenueExtended, RequestPayload>({
@@ -990,8 +985,20 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
     }),
+    importPropertyUnits: build.mutation<{}, RequestFormData>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.importPropertyUnits, params, {
+          'Content-Type': undefined,
+          'Accept': undefined
+        })
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'PropertyUnit' }]
+    }),
 
-    // TODO: Not integration test
     // eslint-disable-next-line max-len
     getPropertyUnitById: build.query<PropertyUnit, RequestPayload<{ venueId: string, unitId: string }>>({
       query: ({ params }) => {
@@ -1034,6 +1041,27 @@ export const venueApi = baseVenueApi.injectEndpoints({
         })
       },
       providesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
+    }),
+    downloadPropertyUnits: build.query<Blob, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.exportPropertyUnits, {
+          ...params
+        },{
+          Accept: 'text/csv'
+        })
+
+        return {
+          ...req,
+          body: payload,
+          responseHandler: async (response) => {
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1]
+              : 'PropertyUnits.csv'
+            downloadFile(response, fileName)
+          }
+        }
+      }
     }),
     updatePropertyUnit: build.mutation<PropertyUnit, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1162,5 +1190,7 @@ export const {
   useGetPropertyUnitListQuery,
   useUpdatePropertyUnitMutation,
   useDeletePropertyUnitsMutation,
-  useGetResidentPortalListQuery
+  useGetResidentPortalListQuery,
+  useImportPropertyUnitsMutation,
+  useLazyDownloadPropertyUnitsQuery
 } = venueApi

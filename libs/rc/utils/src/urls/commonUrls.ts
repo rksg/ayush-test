@@ -74,7 +74,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   clearAlarm: {
     // different method
-    // method: 'patch',
+    // method: 'PATCH',
     // url: '/alarms/:alarmId',
     // oldUrl: '/api/eventalarmapi/:tenantId/alarm/clear/:alarmId',
     // newApi: true

@@ -88,6 +88,7 @@ const NetworkSegmentationTable = () => {
       dataIndex: 'name',
       sorter: true,
       defaultSortOrder: 'ascend',
+      fixed: 'left',
       render: (data, row) => {
         return (
           <TenantLink

@@ -64,7 +64,7 @@ export interface Layer3DrawerProps {
 interface Layer3NetworkCol {
   type: string,
   subnet?: string,
-  mask?: string,
+  ipMask?: string,
   ip?: string,
   port: string,
   enableIpSubnet?: boolean
@@ -121,14 +121,14 @@ const DEFAULT_LAYER3_RULES = [
     source: {
       type: 'Any',
       subnet: '',
-      mask: '',
+      ipMask: '',
       ip: '',
       port: ''
     },
     destination: {
       type: 'Any',
       subnet: '',
-      mask: '',
+      ipMask: '',
       ip: '',
       port: '67'
     }
@@ -141,14 +141,14 @@ const DEFAULT_LAYER3_RULES = [
     source: {
       type: 'Any',
       subnet: '',
-      mask: '',
+      ipMask: '',
       ip: '',
       port: ''
     },
     destination: {
       type: 'Any',
       subnet: '',
-      mask: '',
+      ipMask: '',
       ip: '',
       port: '53'
     }
@@ -178,17 +178,21 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
   const [queryPolicyId, setQueryPolicyId] = useState('')
   const [queryPolicyName, setQueryPolicyName] = useState('')
   const [requestId, setRequestId] = useState('')
+  const [sourceValue, setSourceValue] = useState(1)
+  const [destValue, setDestValue] = useState(1)
+  const [skipFetch, setSkipFetch] = useState(true)
   const [contentForm] = Form.useForm()
   const [drawerForm] = Form.useForm()
 
   const AnyText = $t({ defaultMessage: 'Any' })
+  const RuleSource =[RuleSourceType.ANY, RuleSourceType.SUBNET, RuleSourceType.IP]
 
   const [
     accessStatus,
     policyName,
     l3AclPolicyId
   ] = [
-    useWatch<string>('layer3Access', contentForm),
+    useWatch<string>('layer3DefaultAccess', contentForm),
     useWatch<string>('policyName', contentForm),
     useWatch<string>([...inputName, 'l3AclPolicyId'])
   ]
@@ -215,11 +219,12 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     }
   })
 
+
   const { data: layer3PolicyInfo } = useGetL3AclPolicyQuery(
     {
       params: { ...params, l3AclPolicyId: isOnlyViewMode ? onlyViewMode.id : l3AclPolicyId }
     },
-    { skip: !isOnlyViewMode && (l3AclPolicyId === '' || l3AclPolicyId === undefined) }
+    { skip: skipFetch }
   )
 
   const isViewMode = () => {
@@ -235,6 +240,10 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
   }
 
   useEffect(() => {
+    setSkipFetch(!isOnlyViewMode && (l3AclPolicyId === '' || l3AclPolicyId === undefined))
+  }, [isOnlyViewMode, l3AclPolicyId])
+
+  useEffect(() => {
     if (editMode.isEdit && editMode.id !== '') {
       setVisible(true)
       setQueryPolicyId(editMode.id)
@@ -244,15 +253,17 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
   useEffect(() => {
     if (layer3PolicyInfo && (isViewMode() || editMode.isEdit || localEditMode.isEdit)) {
       contentForm.setFieldValue('policyName', layer3PolicyInfo.name)
-      contentForm.setFieldValue('layer3Access', layer3PolicyInfo.defaultAccess)
-      setLayer3RuleList([...layer3PolicyInfo.l3Rules.map(l3Rule => ({
-        access: l3Rule.access,
-        description: l3Rule.description,
-        priority: l3Rule.priority,
-        protocol: l3Rule.protocol as Layer3ProtocolType ?? Layer3ProtocolType.ANYPROTOCOL,
-        source: { ...l3Rule.source },
-        destination: { ...l3Rule.destination }
-      }))] as Layer3Rule[])
+      contentForm.setFieldValue('layer3DefaultAccess', layer3PolicyInfo.defaultAccess)
+      setLayer3RuleList([...layer3PolicyInfo.l3Rules.map(l3Rule => {
+        return {
+          access: l3Rule.access,
+          description: l3Rule.description,
+          priority: l3Rule.priority,
+          protocol: l3Rule.protocol as Layer3ProtocolType ?? Layer3ProtocolType.ANYPROTOCOL,
+          source: { ...l3Rule.source },
+          destination: { ...l3Rule.destination }
+        }
+      }).sort((a, b) => a.priority - b.priority)] as Layer3Rule[])
     }
   }, [layer3PolicyInfo, queryPolicyId])
 
@@ -335,19 +346,19 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     }
   ]
 
-  const [sourceValue, setSourceValue] = useState(1)
-  const [destValue, setDestValue] = useState(1)
-
-  const RuleSource =[RuleSourceType.ANY, RuleSourceType.SUBNET, RuleSourceType.IP]
-
   const NetworkColumnComponent = (props: { network: Layer3NetworkCol }) => {
     const { network } = props
 
-    let ipString = network.type ?? RuleSourceType.ANY
-    if (network && network.type === RuleSourceType.SUBNET) {
-      ipString = `${network.subnet}/${network.mask}`
+    let ipString = RuleSourceType.ANY as string
+    if (network.type === RuleSourceType.SUBNET) {
+      ipString = `${network.subnet}/${network.ipMask}`
     }
-    if (network && network.type === RuleSourceType.IP) {
+    if (network.type === RuleSourceType.IP) {
+      ipString = `${network.ip}`
+    }
+    if (network.ipMask) {
+      ipString = `${network.ip}/${network.ipMask}`
+    } else if (network.ip) {
       ipString = `${network.ip}`
     }
 
@@ -380,8 +391,8 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
 
   const clearFieldsValue = () => {
     contentForm.setFieldValue('policyName', undefined)
-    contentForm.setFieldValue('layer3Access', undefined)
-    setLayer3RuleList([])
+    contentForm.setFieldValue('layer3DefaultAccess', undefined)
+    setLayer3RuleList(DEFAULT_LAYER3_RULES)
   }
 
   const handleLayer3DrawerClose = () => {
@@ -410,16 +421,22 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       source: {
         type: drawerForm.getFieldValue('sourceType') ?? AnyText,
         subnet: drawerForm.getFieldValue('sourceNetworkAddress') ?? '',
-        mask: drawerForm.getFieldValue('sourceMask') ?? '',
-        ip: drawerForm.getFieldValue('sourceIp') ?? '',
-        port: drawerForm.getFieldValue('sourcePort') ?? ''
+        ipMask: drawerForm.getFieldValue('sourceMask') ?? '',
+        ip: drawerForm.getFieldValue('sourceMask') !== undefined
+          ? drawerForm.getFieldValue('sourceNetworkAddress')
+          : drawerForm.getFieldValue('sourceIp'),
+        port: drawerForm.getFieldValue('sourcePort') ?? '',
+        enableIpSubnet: drawerForm.getFieldValue('sourceMask') !== undefined
       },
       destination: {
         type: drawerForm.getFieldValue('destType') ?? AnyText,
         subnet: drawerForm.getFieldValue('destNetworkAddress') ?? '',
-        mask: drawerForm.getFieldValue('destMask') ?? '',
-        ip: drawerForm.getFieldValue('destIp') ?? '',
-        port: drawerForm.getFieldValue('destPort') ?? ''
+        ipMask: drawerForm.getFieldValue('destMask') ?? '',
+        ip: drawerForm.getFieldValue('destMask') !== undefined
+          ? drawerForm.getFieldValue('destNetworkAddress')
+          : drawerForm.getFieldValue('destIp'),
+        port: drawerForm.getFieldValue('destPort') ?? '',
+        enableIpSubnet: drawerForm.getFieldValue('destMask') !== undefined
       }
     }
     if (ruleDrawerEditMode && layer3Rule.hasOwnProperty('priority')) {
@@ -445,6 +462,14 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     onClick: handleAddAction
   }] : []
 
+  const isEmptyValues = (value: string | boolean | undefined): boolean => {
+    return (
+      value === undefined ||
+      value === null ||
+      (typeof value === 'string' && value.trim().length === 0)
+    )
+  }
+
   const convertToPayload = (policyId?: string) => {
     let id = {}
     if (policyId) {
@@ -454,11 +479,13 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       name: policyName,
       defaultAccess: accessStatus,
       l3Rules: [...layer3RuleList.map(rule => {
+        rule.source.enableIpSubnet = rule.source.ipMask !== ''
+        rule.destination.enableIpSubnet = rule.destination.ipMask !== ''
         return {
           priority: rule.priority,
           access: rule.access,
-          source: { ..._.omitBy(rule.source, _.isEmpty) },
-          destination: { ..._.omitBy(rule.destination, _.isEmpty) },
+          source: { ..._.omitBy(rule.source, isEmptyValues) },
+          destination: { ..._.omitBy(rule.destination, isEmptyValues) },
           description: rule.description,
           protocol: rule.protocol !== Layer3ProtocolType.ANYPROTOCOL ? rule.protocol : null
         }
@@ -502,15 +529,35 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     drawerForm.setFieldValue('access', ruleObj.access)
     drawerForm.setFieldValue('protocol', ruleObj.protocol)
     drawerForm.setFieldValue('source', ruleObj.source)
-    drawerForm.setFieldValue(['sourceNetworkAddress'], ruleObj.source.subnet)
-    drawerForm.setFieldValue(['sourceMask'], ruleObj.source.mask)
-    drawerForm.setFieldValue(['sourceIp'], ruleObj.source.ip)
+    let sourceValue = 1
+    if (ruleObj.source.ipMask) {
+      drawerForm.setFieldValue(['sourceNetworkAddress'], ruleObj.source.ip)
+      drawerForm.setFieldValue(['sourceMask'], ruleObj.source.ipMask)
+      sourceValue = 2
+    } else if (ruleObj.source.ip) {
+      drawerForm.setFieldValue(
+        ['sourceIp'], ruleObj.source.ip
+      )
+      sourceValue = 3
+    }
+    setSourceValue(sourceValue)
+
     drawerForm.setFieldValue(['sourcePort'], ruleObj.source.port)
     drawerForm.setFieldValue('destination', ruleObj.destination)
-    drawerForm.setFieldValue(['destinationNetworkAddress'], ruleObj.destination.subnet)
-    drawerForm.setFieldValue(['destinationMask'], ruleObj.destination.mask)
-    drawerForm.setFieldValue(['destinationIp'], ruleObj.destination.ip)
-    drawerForm.setFieldValue(['destinationPort'], ruleObj.destination.port)
+    let destValue = 1
+    if (ruleObj.destination.ipMask) {
+      drawerForm.setFieldValue(['destinationNetworkAddress'], ruleObj.destination.ip)
+      drawerForm.setFieldValue(['destMask'], ruleObj.destination.ipMask)
+      destValue = 2
+    } else if (ruleObj.destination.ip) {
+      drawerForm.setFieldValue(
+        ['destIp'], ruleObj.destination.ip
+      )
+      destValue = 3
+    }
+    setDestValue(destValue)
+
+    drawerForm.setFieldValue(['destPort'], ruleObj.destination.port)
   }
 
   const rowActions: TableProps<Layer3Rule>['rowActions'] = isViewMode() ? [] : [{

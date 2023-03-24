@@ -67,13 +67,16 @@ export const defaultSwitchPayload = {
   ]
 }
 
-export function SwitchTable (props : {
+interface SwitchTableProps
+  extends Omit<TableProps<SwitchRow>, 'columns'> {
   showAllColumns?: boolean,
   tableQuery?: TableQuery<SwitchRow, RequestPayload<unknown>, unknown>
   searchable?: boolean
   enableActions?: boolean
   filterableKeys?: { [key: string]: ColumnType['filterable'] }
-}) {
+}
+
+export function SwitchTable (props : SwitchTableProps) {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
@@ -130,7 +133,7 @@ export function SwitchTable (props : {
       dataIndex: 'name',
       sorter: true,
       defaultSortOrder: 'ascend',
-      disable: true,
+      fixed: 'left',
       searchable: searchable,
       filterKey: 'isStack',
       filterMultiple: false,
@@ -151,6 +154,7 @@ export function SwitchTable (props : {
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'deviceStatus',
       sorter: true,
+      fixed: 'left',
       filterMultiple: false,
       filterable: filterableKeys ? statusFilterOptions : false,
       render: (data, row) => <SwitchStatus row={row}/>
@@ -205,7 +209,9 @@ export function SwitchTable (props : {
       key: 'clientCount',
       title: $t({ defaultMessage: 'Clients' }),
       dataIndex: 'clientCount',
+      align: 'center',
       sorter: true,
+      sortDirections: ['descend', 'ascend', 'descend'],
       render: (data, row) => (
         <TenantLink to={`/devices/switch/${row.id || row.serialNumber}/${row.serialNumber}/details/clients`}>
           {data ? data : ((row.unitStatus === undefined) ? 0 : '')}
@@ -218,7 +224,7 @@ export function SwitchTable (props : {
       //   dataIndex: 'tags'
       // }
     ] as TableProps<SwitchRow>['columns']
-  }, [$t])
+  }, [$t, filterableKeys])
 
   const isActionVisible = (
     selectedRows: SwitchRow[],
@@ -293,6 +299,7 @@ export function SwitchTable (props : {
 
   return <Loader states={[tableQuery]}>
     <Table<SwitchRow>
+      {...props}
       columns={columns}
       dataSource={tableData}
       pagination={tableQuery.pagination}

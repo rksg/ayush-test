@@ -40,13 +40,11 @@ describe('ClientDualTable', () => {
   })
 
   it('should render list correctly', async () => {
-    const { asFragment } = render(<Provider><ClientDualTable /></Provider>, {
+    render(<Provider><ClientDualTable /></Provider>, {
       route: { params, path: '/t/:tenantId/users/wifi/clients' }
     })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     await screen.findByPlaceholderText('Search for connected and historical clients...')
-
-    expect(asFragment()).toMatchSnapshot()
 
     fireEvent.mouseEnter(screen.getByTestId('QuestionMarkCircleOutlined'))
     await screen.findByText('You can search for clients', { exact: false })

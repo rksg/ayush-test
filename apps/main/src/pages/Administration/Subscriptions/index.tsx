@@ -1,3 +1,4 @@
+import { Space }              from 'antd'
 import moment                 from 'moment-timezone'
 import { IntlShape, useIntl } from 'react-intl'
 
@@ -79,6 +80,7 @@ const SubscriptionTable = () => {
       title: $t({ defaultMessage: 'Subscription' }),
       dataIndex: 'deviceType',
       key: 'deviceType',
+      fixed: 'left',
       filterMultiple: false,
       filterValueNullable: true,
       filterable: licenseTypeOpts.filter(o =>
@@ -134,7 +136,12 @@ const SubscriptionTable = () => {
       key: 'timeLeft',
       render: function (_, row) {
         const remainingDays = EntitlementUtil.timeLeftInDays(row.expirationDate)
-        return EntitlementUtil.timeLeftValues(remainingDays)
+        const TimeLeftWrapper = remainingDays < 0
+          ? UI.Expired
+          : (remainingDays <= 60 ? UI.Warning : Space)
+        return <TimeLeftWrapper>{
+          EntitlementUtil.timeLeftValues(remainingDays)
+        }</TimeLeftWrapper>
       }
     },
     {

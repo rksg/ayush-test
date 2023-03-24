@@ -147,7 +147,7 @@ export function ApTable (props: ApTableProps) {
       title: $t({ defaultMessage: 'AP Name' }),
       dataIndex: 'name',
       sorter: true,
-      disable: true,
+      fixed: 'left',
       searchable: searchable,
       render: (data, row : APExtended, _, highlightFn) => (
         <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>
@@ -158,7 +158,7 @@ export function ApTable (props: ApTableProps) {
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'deviceStatus',
       sorter: true,
-      disable: true,
+      fixed: 'left',
       filterKey: 'deviceStatusSeverity',
       filterable: filterables ? statusFilterOptions : false,
       groupable: getGroupableConfig()?.deviceStatusGroupableOptions,
@@ -277,12 +277,12 @@ export function ApTable (props: ApTableProps) {
               transformDisplayText(row[channel]) }
           : null)
         .filter(Boolean)
-    }, {
-      key: 'tags',
-      title: $t({ defaultMessage: 'Tags' }),
-      dataIndex: 'tags',
-      searchable: searchable,
-      sorter: true
+    // }, { TODO: Waiting for TAG feature support
+      // key: 'tags',
+      // title: $t({ defaultMessage: 'Tags' }),
+      // dataIndex: 'tags',
+      // searchable: searchable,
+      // sorter: true
       //TODO: Click-> Filter by Tag
     }, {
       key: 'serialNumber',
@@ -381,6 +381,17 @@ export function ApTable (props: ApTableProps) {
     setIsImportResultLoading(false)
   },[importResult])
   const basePath = useTenantLink('/devices')
+  const handleTableChange: TableProps<APExtended>['onChange'] = (
+    pagination, filters, sorter, extra
+  ) => {
+    const customSorter = Array.isArray(sorter)
+      ? sorter[0] : sorter
+    if ('IP'.includes(customSorter.field as string)) {
+      customSorter.field = 'IP.keyword'
+    }
+    // @ts-ignore
+    tableQuery.handleTableChange(pagination, filters, customSorter, extra)
+  }
   return (
     <Loader states={[tableQuery]}>
       <Table<APExtended | APExtendedGrouped>
@@ -389,7 +400,7 @@ export function ApTable (props: ApTableProps) {
         dataSource={tableData}
         rowKey='serialNumber'
         pagination={tableQuery.pagination}
-        onChange={tableQuery.handleTableChange}
+        onChange={handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
         rowActions={filterByAccess(rowActions)}

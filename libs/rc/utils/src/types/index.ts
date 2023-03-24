@@ -112,6 +112,7 @@ export interface Venue {
   allApDisabled: boolean
   // aps ??
   switches?: number
+  operationalSwitches?: number
   // switchClients ??
   // radios ??
   // scheduling ??

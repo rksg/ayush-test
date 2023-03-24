@@ -2,7 +2,7 @@ import { useContext, useState, useEffect } from 'react'
 
 import { Row, Col, Form, Input } from 'antd'
 
-import { showActionModal, Table, TableProps, StepsForm } from '@acx-ui/components'
+import { showActionModal, Table, TableProps, StepsForm, Tooltip } from '@acx-ui/components'
 import {
   Vlan,
   SwitchModel,
@@ -13,6 +13,7 @@ import { getIntl }        from '@acx-ui/utils'
 import { ConfigurationProfileFormContext } from '../ConfigurationProfileFormContext'
 
 import { DefaultVlanDrawer } from './DefaultVlanDrawer'
+import * as UI               from './styledComponents'
 import { VlanSettingDrawer } from './VlanSettingDrawer'
 
 export function VlanSetting () {
@@ -29,7 +30,14 @@ export function VlanSetting () {
   useEffect(() => {
     if(currentData.vlans && editMode){
       form.setFieldsValue(currentData)
-      setVlanTable(currentData.vlans)
+
+      const defaultVlanData = currentData.vlans.filter(
+        item => item.vlanName === 'DEFAULT-VLAN' )[0] || {}
+      setDefaultVlan(defaultVlanData)
+
+      const vlanList = currentData.vlans.filter(item => item.vlanName !== 'DEFAULT-VLAN' )
+      setVlanTable(vlanList)
+
     }
   }, [currentData, editMode])
 
@@ -60,22 +68,48 @@ export function VlanSetting () {
     title: $t({ defaultMessage: '# of Ports' }),
     dataIndex: 'switchFamilyModels',
     key: 'switchFamilyModels',
-    render: (data) => {
-      return data
-        ? (data as Vlan['switchFamilyModels'])?.reduce((result:number, row: SwitchModel) => {
-          const taggedPortsCount = row.taggedPorts ?
-            row.taggedPorts?.toString().split(',').length : 0
-          const untaggedPortsCount = row.untaggedPorts ?
-            row.untaggedPorts?.toString().split(',').length : 0
-          return result + taggedPortsCount + untaggedPortsCount
-        }, 0)
-        : 0
+    render: (data, row) => {
+      return <Tooltip
+        title={row.switchFamilyModels && generateTooltips(row.switchFamilyModels)}
+      >
+        {data
+          ? (data as Vlan['switchFamilyModels'])?.reduce((result:number, row: SwitchModel) => {
+            const taggedPortsCount = row.taggedPorts ?
+              row.taggedPorts?.toString().split(',').length : 0
+            const untaggedPortsCount = row.untaggedPorts ?
+              row.untaggedPorts?.toString().split(',').length : 0
+            return result + taggedPortsCount + untaggedPortsCount
+          }, 0)
+          : 0}
+      </Tooltip>
     }
   }]
 
+
+  const generateTooltips = (switchFamilyModels: SwitchModel[]) => {
+    const portTooltips = switchFamilyModels.map((item: SwitchModel) => {
+      const model = item.model
+      const untaggedPorts = item.untaggedPorts?.split(',').map(port => port.split('/')[2]).join(',')
+      const taggedPorts = item.taggedPorts?.split(',').map(port => port.split('/')[2]).join(',')
+      return {
+        model,
+        untaggedPorts,
+        taggedPorts
+      }
+    })
+
+    return <>{portTooltips.map(item => <div>
+      <div>{item.model}</div>
+      <div><UI.TagsOutlineIcon /><UI.PortSpan>{item.untaggedPorts || '--'}</UI.PortSpan></div>
+      <div><UI.TagsSolidIcon /><UI.PortSpan>{item.taggedPorts || '--'}</UI.PortSpan></div>
+    </div>)
+    }</>
+  }
+
   const handleSetVlan = (data: Vlan) => {
-    const filterData = vlanTable.filter(
-      (item: { vlanId: number }) => item.vlanId.toString() !== data.vlanId.toString())
+    const filterData = drawerFormRule?.vlanId ? vlanTable.filter(
+      (item: { vlanId: number }) => item.vlanId.toString() !== drawerFormRule?.vlanId.toString()) :
+      vlanTable
 
     const sfm = data.switchFamilyModels?.map(item => {
       return {
@@ -91,12 +125,14 @@ export function VlanSetting () {
     setVlanTable([...filterData, data])
     form.setFieldValue('vlans', [...filterData, data])
     setDrawerEditMode(false)
+    setDrawerFormRule(undefined)
     return true
   }
 
   const handleSetDefaultVlan = (data: Vlan) => {
     const vlans = form.getFieldValue('vlans') || []
-    form.setFieldValue('vlans', [...vlans, data])
+    form.setFieldValue('vlans',
+      [...vlans.filter((item: { vlanName: string }) => item.vlanName !== 'DEFAULT-VLAN'), data])
     setDefaultVlan(data)
     return true
   }
@@ -122,13 +158,13 @@ export function VlanSetting () {
             entityValue: selectedRows[0].vlanId.toString()
           },
           onOk: () => {
-            setVlanTable(
-              vlanTable?.filter((option: { vlanId: number }) => {
-                return !selectedRows
-                  .map((r) => r.vlanId)
-                  .includes(option.vlanId)
-              })
-            )
+            const vlanRows = vlanTable?.filter((option: { vlanId: number }) => {
+              return !selectedRows
+                .map((r) => r.vlanId)
+                .includes(option.vlanId)
+            })
+            setVlanTable(vlanRows)
+            form.setFieldValue('vlans', vlanRows)
             setDrawerEditMode(false)
             clearSelection()
           }

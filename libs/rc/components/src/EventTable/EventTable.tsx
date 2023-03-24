@@ -16,15 +16,33 @@ import {
   typeMapping
 } from './mapping'
 
+export const defaultColumnState = {
+  event_datetime: true,
+  severity: true,
+  entity_type: true,
+  product: true,
+  source: true,
+  macAddress: false,
+  message: true
+}
+
 interface EventTableProps {
   tableQuery: TableQuery<Event, RequestPayload<unknown>, unknown>,
   searchables?: boolean | string[]
   filterables?: boolean | string[]
+  eventTypeMap?: Partial<typeof eventTypeMapping>
   detailLevel?: string
+  columnState?: TableProps<Event>['columnState']
+  omitColumns?: string[]
 }
 
 export const EventTable = ({
-  tableQuery, searchables = true, filterables = true
+  tableQuery,
+  searchables = true,
+  filterables = true,
+  eventTypeMap = eventTypeMapping,
+  columnState,
+  omitColumns
 }: EventTableProps) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
@@ -39,6 +57,7 @@ export const EventTable = ({
       dataIndex: 'event_datetime',
       defaultSortOrder: 'descend',
       sorter: true,
+      fixed: 'left',
       render: function (_, row) {
         return <Button
           type='link'
@@ -61,10 +80,10 @@ export const EventTable = ({
     {
       key: 'entity_type',
       title: $t({ defaultMessage: 'Event Type' }),
-      dataIndex: 'entity_type',
+      dataIndex: 'entity_id',
       sorter: true,
       render: (_, row) => valueFrom(typeMapping, row.entity_type),
-      filterable: filtersFrom(eventTypeMapping, filterables, 'entity_type')
+      filterable: filtersFrom(eventTypeMap, filterables, 'entity_type')
     },
     {
       key: 'product',
@@ -85,6 +104,12 @@ export const EventTable = ({
         return getSource(row, searchable ? highlightFn : v => v)
       },
       searchable: Array.isArray(searchables) ? searchables.includes('entity_type') : searchables
+    },
+    {
+      key: 'macAddress',
+      title: $t({ defaultMessage: 'MAC Address' }),
+      dataIndex: 'macAddress',
+      sorter: true
     },
     {
       key: 'message',
@@ -125,7 +150,8 @@ export const EventTable = ({
   return <Loader states={[tableQuery]}>
     <Table
       rowKey='id'
-      columns={columns}
+      columns={columns.filter(({ key })=>!(omitColumns && omitColumns.includes(key)))}
+      columnState={columnState || { defaultValue: defaultColumnState }}
       dataSource={tableQuery.data?.data ?? []}
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}

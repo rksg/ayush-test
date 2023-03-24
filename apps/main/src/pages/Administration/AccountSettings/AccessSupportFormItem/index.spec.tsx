@@ -41,10 +41,15 @@ describe('Access Support Form Item', () => {
   })
 
   it('should be able to enable access support', async () => {
+    const getTenantDelegationFn = jest.fn()
+
     mockServer.use(
       rest.get(
         AdministrationUrlsInfo.getTenantDelegation.url.split('?')[0],
-        (_req, res, ctx) => res(ctx.json([]))
+        (_req, res, ctx) => {
+          getTenantDelegationFn(_req.url.search)
+          return res(ctx.json([]))
+        }
       ),
       rest.post(
         AdministrationUrlsInfo.enableAccessSupport.url,
@@ -61,7 +66,7 @@ describe('Access Support Form Item', () => {
           value={userProfileContextValues}
         >
           <AccessSupportFormItem
-            isMspEc={false}
+            hasMSPEcLabel={false}
             canMSPDelegation={true}
           />
         </UserProfileContext.Provider>
@@ -69,7 +74,11 @@ describe('Access Support Form Item', () => {
         route: { params }
       })
 
-    const formItem = screen.getByRole('checkbox', { name: 'Enable access to Ruckus support' })
+    const formItem = screen.getByRole('checkbox', { name: 'Enable access to Ruckus Support' })
+    await waitFor(() => {
+      expect(getTenantDelegationFn).toBeCalledWith('?type=SUPPORT')
+    })
+
     await waitFor(() => expect(formItem).not.toBeDisabled())
 
     expect(formItem).not.toBeChecked()
@@ -93,7 +102,7 @@ describe('Access Support Form Item', () => {
           value={userProfileContextValues}
         >
           <AccessSupportFormItem
-            isMspEc={false}
+            hasMSPEcLabel={false}
             canMSPDelegation={true}
           />
         </UserProfileContext.Provider>
@@ -119,7 +128,7 @@ describe('Access Support Form Item', () => {
           value={userProfileContextValues}
         >
           <AccessSupportFormItem
-            isMspEc={false}
+            hasMSPEcLabel={false}
             canMSPDelegation={true}
           />
         </UserProfileContext.Provider>
@@ -130,7 +139,7 @@ describe('Access Support Form Item', () => {
     const infoText = await screen.findByText('- Administrator-level access is granted on 01/10/2023 - 11:26 UTC')
     expect(infoText).toBeInTheDocument()
 
-    const formItem = screen.getByRole('checkbox', { name: 'Enable access to Ruckus support' })
+    const formItem = screen.getByRole('checkbox', { name: 'Enable access to Ruckus Support' })
     expect(formItem).toBeChecked()
   })
 
@@ -145,7 +154,7 @@ describe('Access Support Form Item', () => {
           value={supportUser}
         >
           <AccessSupportFormItem
-            isMspEc={false}
+            hasMSPEcLabel={false}
             canMSPDelegation={true}
           />
         </UserProfileContext.Provider>
@@ -153,9 +162,9 @@ describe('Access Support Form Item', () => {
         route: { params }
       })
 
-    screen.getByRole('checkbox', { name: 'Enable access to Ruckus support' })
-    fireEvent.mouseOver(screen.getByRole('checkbox', { name: 'Enable access to Ruckus support' }))
-    expect(screen.getByRole('checkbox', { name: 'Enable access to Ruckus support' })).toBeDisabled()
+    screen.getByRole('checkbox', { name: 'Enable access to Ruckus Support' })
+    fireEvent.mouseOver(screen.getByRole('checkbox', { name: 'Enable access to Ruckus Support' }))
+    expect(screen.getByRole('checkbox', { name: 'Enable access to Ruckus Support' })).toBeDisabled()
     await waitFor(async () => {
       expect(await screen.findByRole('tooltip')).toBeInTheDocument()
     })
@@ -179,7 +188,7 @@ describe('Access Support Form Item - Msp Delegate EC', () => {
       rest.get(
         AdministrationUrlsInfo.getTenantDelegation.url.split('?')[0],
         (_req, res, ctx) => {
-          getTenantDelegationFn()
+          getTenantDelegationFn(_req.url.search)
           return res(ctx.json([]))
         }
       ),
@@ -195,7 +204,7 @@ describe('Access Support Form Item - Msp Delegate EC', () => {
           value={MspECUser}
         >
           <AccessSupportFormItem
-            isMspEc={true}
+            hasMSPEcLabel={true}
             canMSPDelegation={false}
           />
         </UserProfileContext.Provider>
@@ -203,13 +212,13 @@ describe('Access Support Form Item - Msp Delegate EC', () => {
         route: { params }
       })
 
-    const formItem = screen.getByRole('checkbox', { name: 'Enable access to Ruckus support' })
+    const formItem = screen.getByRole('checkbox', { name: 'Enable access to Ruckus Support' })
 
     await waitFor(() => {
-      expect(getTenantDelegationFn).toBeCalled()
+      expect(getTenantDelegationFn).toBeCalledWith('?type=SUPPORT_EC')
     })
     expect(formItem).not.toBeDisabled()
-    expect(screen.getByRole('checkbox', { name: 'Enable access to Ruckus support' })).not.toBeChecked()
+    expect(screen.getByRole('checkbox', { name: 'Enable access to Ruckus Support' })).not.toBeChecked()
     fireEvent.click(formItem)
     // FIXME: might need to fix when general error handler behavior changed.
     await waitFor(() => {
