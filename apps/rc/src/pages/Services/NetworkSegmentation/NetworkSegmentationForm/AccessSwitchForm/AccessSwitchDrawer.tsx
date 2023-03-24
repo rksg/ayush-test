@@ -246,7 +246,10 @@ export function AccessSwitchDrawer (props: {
             Object.keys(defaultTemplateData).map(name=>{
               const item = defaultTemplateData[name as keyof typeof defaultTemplateData]
               return (<Form.Item name={name} label={$t(item.label)} key={name}>
-                <Input.TextArea autoSize placeholder={$t(item.defaultMessage)} />
+                <Input.TextArea autoSize
+                  placeholder={$t(item.defaultMessage, {
+                    year: new Date().getFullYear()
+                  })} />
               </Form.Item>)
             })
           }
