@@ -41,7 +41,7 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
   const [valueDays, setValueDays] = useState<string[]>(['Saturday'])
   const [valueTimes, setValueTimes] = useState<string[]>(['00:00 - 02:00'])
   const [modelVisible, setModelVisible] = useState(false)
-  const [disableSave, setDisableSave] = useState(false)
+  const [disableSave, setDisableSave] = useState(true)
   const [checked, setChecked] = useState(false)
 
 
@@ -105,6 +105,7 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
 
   const onScheduleModeChange = (e: RadioChangeEvent) => {
     setScheduleMode(e.target.value)
+    setDisableSave(false)
   }
 
   const onModalCancel = () => {
