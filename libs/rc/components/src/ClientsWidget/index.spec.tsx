@@ -67,8 +67,8 @@ describe('Clients widget v2', () => {
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     await screen.findByText('Clients')
-    await screen.findByText('No Wi-Fi clients')
-    await screen.findByText('No Wired clients')
+    await screen.findByText('No Wi-Fi Clients')
+    await screen.findByText('No Wired Clients')
     expect(asFragment().querySelectorAll('svg').length).toBe(1)
   })
   it('should render properly with chart', async () => {
