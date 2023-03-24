@@ -50,7 +50,9 @@ export function PropertyManagementTab () {
   const [isPropertyEnable, setIsPropertyEnable] = useState(false)
   const [enableResidentPortal, setEnableResidentPortal] = useState(false)
   const [personaGroupVisible, setPersonaGroupVisible] = useState(false)
-  const { data: residentPortalList } = useGetResidentPortalListQuery({})
+  const { data: residentPortalList } = useGetResidentPortalListQuery({
+    params: { page: '1', pageSize: '10000', sort: 'name,asc' }
+  })
   const [updatePropertyConfigs] = useUpdatePropertyConfigsMutation()
   const [patchPropertyConfigs] = usePatchPropertyConfigsMutation()
 
