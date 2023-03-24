@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 
 import {
   Form,
+  Input,
   Typography } from 'antd'
 import { useIntl } from 'react-intl'
 
@@ -77,7 +78,7 @@ export function AccessSwitchForm () {
             'Please fill out the configuration for all of the access switches.' })))
         }
       }]}
-    />
+      children={<Input type='hidden'/>} />
     <AccessSwitchDrawer
       open={open}
       editRecords={selected}

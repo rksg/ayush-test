@@ -4,26 +4,18 @@ import { rest }  from 'msw'
 
 import {
   CommonUrlsInfo,
-  NetworkSegmentationUrls,
-  SwitchUrlsInfo
+  NetworkSegmentationUrls
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
   mockServer,
   render,
-  screen,
-  within
+  screen
 } from '@acx-ui/test-utils'
 
 import {
-  mockNetworkGroup,
-  mockNsgSwitchInfoData,
-  mockVenueData,
-  mockVenueNetworkData,
-  switchLagList,
-  switchPortList,
-  switchVlanUnion,
-  webAuthList
+  mockNetworkGroup, mockVenueData,
+  mockVenueNetworkData
 } from '../__tests__/fixtures'
 
 import NetworkSegmentationForm from '.'
@@ -40,12 +32,12 @@ jest.mock('./SmartEdgeForm', () => ({
 }))
 
 jest.mock('./DistributionSwitchForm', () => ({
-  ...jest.requireActual('./DistributionSwitchForm'),
   DistributionSwitchForm: () => <div data-testid='distributionSwitchForm' />
 }))
-
+jest.mock('./AccessSwitchForm', () => ({
+  AccessSwitchForm: () => <div data-testid='accessSwitchForm' />
+}))
 jest.mock('./SummaryForm', () => ({
-  ...jest.requireActual('./SummaryForm'),
   SummaryForm: () => <div data-testid='summaryForm' />
 }))
 
@@ -71,7 +63,7 @@ jest.mock('antd', () => {
 
 const createNsgPath = '/:tenantId/services/networkSegmentation/create'
 
-describe('Update NetworkSegmentation', () => {
+describe('NetworkSegmentation', () => {
   let params: { tenantId: string, serviceId: string }
   beforeEach(() => {
     params = {
@@ -96,21 +88,9 @@ describe('Update NetworkSegmentation', () => {
         CommonUrlsInfo.getNetworkDeepList.url,
         (req, res, ctx) => res(ctx.status(200))
       ),
-      rest.get(
-        NetworkSegmentationUrls.getWebAuthTemplate.url,
-        (req, res, ctx) => res(ctx.json({ ...webAuthList[0] }))
-      ),
-      rest.post(
-        NetworkSegmentationUrls.getWebAuthTemplateList.url,
-        (req, res, ctx) => res(ctx.json({ data: webAuthList }))
-      ),
       rest.post(
         NetworkSegmentationUrls.createNetworkSegmentationGroup.url,
         (req, res, ctx) => res(ctx.json({}))
-      ),
-      rest.post(
-        NetworkSegmentationUrls.validateAccessSwitchInfo.url,
-        (req, res, ctx) => res(ctx.json({ response: { valid: true } }))
       )
     )
   })
@@ -132,7 +112,7 @@ describe('Update NetworkSegmentation', () => {
     expect(await screen.findByRole('table')).toBeVisible()
     await user.click(await screen.findByRole('button', { name: 'Next' }))
     // step 2
-
+    await screen.findByTestId('smartEdgeForm')
     await user.click(await screen.findByRole('button', { name: 'Next' }))
     // step 3
     await user.selectOptions(
@@ -143,17 +123,13 @@ describe('Update NetworkSegmentation', () => {
     await user.click(await screen.findByRole('button', { name: 'Next' }))
 
     // step 4
-
+    await screen.findByTestId('distributionSwitchForm')
     await user.click(await screen.findByRole('button', { name: 'Next' }))
-
     // step5
-    const asRow = await screen.findByRole('row', { name: /FEK3224R09N---AS---3/i })
-    await user.click(asRow)
-    await user.click(await screen.findByRole('button', { name: 'Edit' }))
-    await user.click(await screen.findByRole('button', { name: 'Save' }))
-
+    await screen.findByTestId('accessSwitchForm')
     await user.click(await screen.findByRole('button', { name: 'Next' }))
     // step6
+    await screen.findByTestId('summaryForm')
     await user.click(await screen.findByRole('button', { name: 'Finish' }))
   }, 30000)
 

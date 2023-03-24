@@ -3,14 +3,13 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { StepsFormNew }                     from '@acx-ui/components'
+import { StepsFormNew }     from '@acx-ui/components'
 import {
-  NetworkSegmentationUrls, SwitchUrlsInfo
+  NetworkSegmentationUrls
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
   mockServer,
-  prettyDOM,
   render,
   renderHook,
   screen,
@@ -18,10 +17,7 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
-  mockNsgSwitchInfoData,
-  switchLagList,
-  switchPortList,
-  switchVlanUnion
+  mockNsgSwitchInfoData
 } from '../../__tests__/fixtures'
 
 import { DistributionSwitchForm } from './'
@@ -57,18 +53,6 @@ describe('DistributionSwitchForm', () => {
     }
 
     mockServer.use(
-      rest.post(
-        SwitchUrlsInfo.getSwitchPortlist.url,
-        (req, res, ctx) => res(ctx.json({ data: switchPortList }))
-      ),
-      rest.get(
-        SwitchUrlsInfo.getSwitchVlanUnion.url,
-        (req, res, ctx) => res(ctx.json(switchVlanUnion))
-      ),
-      rest.get(
-        SwitchUrlsInfo.getLagList.url,
-        (req, res, ctx) => res(ctx.json(switchLagList))
-      ),
       rest.get(
         NetworkSegmentationUrls.getAvailableSwitches.url,
         (req, res, ctx) => res(ctx.json({ switchViewList: mockNsgSwitchInfoData.distributionSwitches }))
@@ -106,14 +90,13 @@ describe('DistributionSwitchForm', () => {
       })
     const row = await screen.findByRole('row', { name: /FMN4221R00H---DS---3/i })
     await user.click(await within(row).findByRole('radio'))
+    await user.click(await within(row).findByRole('radio')) // workaround
     const alert = await screen.findByRole('alert')
     await user.click(await within(alert).findByRole('button', { name: 'Edit' }))
 
-    console.log(prettyDOM(alert))
-
     const dialog = await screen.findByRole('dialog')
-    // await user.click(await within(dialog).findByRole('button', { name: 'Save' }))
-    // await user.click(await screen.findByRole('button', { name: 'Save' }))
+    await user.click(await within(dialog).findByRole('button', { name: 'Save' }))
+    await user.click(await within(alert).findByRole('button', { name: 'Delete' }))
   })
 
   it('should add DS correctly', async () => {
@@ -124,17 +107,8 @@ describe('DistributionSwitchForm', () => {
     })
 
     formRef.current.setFieldsValue({
-      // name: mockNsgData.name,
       venueId: 'venueId',
       edgeId: 'edgeId'
-      // segments: '',
-      // devices: '',
-      // dhcpName: '',
-      // poolName: '',
-      // tunnelProfileName: '',
-      // networkNames: [''],
-      // distributionSwitchInfos: mockNsgSwitchInfoData.distributionSwitches,
-      // accessSwitchInfos: mockNsgSwitchInfoData.accessSwitches
     })
 
     render(

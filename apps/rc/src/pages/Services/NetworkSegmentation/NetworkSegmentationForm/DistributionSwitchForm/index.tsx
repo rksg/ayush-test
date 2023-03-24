@@ -52,8 +52,6 @@ export function DistributionSwitchForm () {
   const rowActions: TableProps<DistributionSwitch>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     onClick: (selectedRows) => {
-
-      console.log(selectedRows)
       setSelected(selectedRows[0])
       setOpenDrawer(true)
     }
