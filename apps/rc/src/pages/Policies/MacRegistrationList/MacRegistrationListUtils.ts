@@ -16,7 +16,7 @@ export const expirationTimeUnits: Record<string, string> = {
 }
 
 export const toTimeString = (value?: string) => {
-  return value ? moment(value).utc().format('MM/DD/YYYY') : ''
+  return value ? moment.utc(value).local().format('MM/DD/YYYY hh:mm A') : ''
 }
 
 export const returnExpirationString = (data: Partial<MacRegistrationPool>) => {
@@ -46,7 +46,8 @@ export const transferExpirationFormFieldsToData = (data: ExpirationDateEntity) =
   } else if (data.mode === ExpirationMode.BY_DATE) {
     expiration = {
       expirationType: ExpirationType.SPECIFIED_DATE,
-      expirationDate: moment.utc(data.date).format('YYYY-MM-DDT23:59:59[Z]'),
+      // eslint-disable-next-line max-len
+      expirationDate: toExpireDate(data.date ?? ''),
       expirationEnabled: true
     }
   } else {
@@ -57,6 +58,10 @@ export const transferExpirationFormFieldsToData = (data: ExpirationDateEntity) =
     }
   }
   return expiration
+}
+
+export const toExpireDate = (date: string) => {
+  return moment(date + ' 23:59:59').utc().format('YYYY-MM-DDThh:mm:ss[Z]')
 }
 
 export const transferDataToExpirationFormFields = (data: MacRegistrationPool) => {

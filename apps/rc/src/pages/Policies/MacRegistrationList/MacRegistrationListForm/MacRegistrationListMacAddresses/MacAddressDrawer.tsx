@@ -18,16 +18,19 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
+import { toExpireDate } from '../../MacRegistrationListUtils'
+
 interface MacAddressDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
   isEdit: boolean
-  editData?: MacRegistration
+  editData?: MacRegistration,
+  expirationOfPool: string
 }
 
 export function MacAddressDrawer (props: MacAddressDrawerProps) {
   const intl = useIntl()
-  const { visible, setVisible, isEdit, editData } = props
+  const { visible, setVisible, isEdit, editData, expirationOfPool } = props
   const [resetField, setResetField] = useState(false)
   const [form] = Form.useForm()
   const [addMacRegistration] = useAddMacRegistrationMutation()
@@ -96,8 +99,8 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
           macAddress: data.macAddress,
           username: data.username?.length === 0 ? null : data.username,
           email: data.email?.length === 0 ? null : data.email,
-          expirationDate: data.expiration?.mode === ExpirationMode.NEVER ? null :
-            moment(data.expiration?.date).format('YYYY-MM-DDT23:59:59[Z]')
+          // eslint-disable-next-line max-len
+          expirationDate: data.expiration?.mode === ExpirationMode.NEVER ? null : toExpireDate(data.expiration?.date)
         }
         await addMacRegistration({
           params: { policyId },
@@ -146,7 +149,8 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
         inputName={'expiration'}
         label={intl.$t({ defaultMessage: 'MAC Address Expiration' })}
         modeLabel={{
-          [ExpirationMode.NEVER]: intl.$t({ defaultMessage: 'Never expires (Same as list)' })
+          // eslint-disable-next-line max-len
+          [ExpirationMode.NEVER]: intl.$t({ defaultMessage: '{time} (Same as list)' }, { time: expirationOfPool })
         }}
         modeAvailability={{
           [ExpirationMode.AFTER_TIME]: false

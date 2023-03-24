@@ -5,17 +5,17 @@ import { useIntl } from 'react-intl'
 import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
 import { CsvSize, ImportFileDrawer }                             from '@acx-ui/rc/components'
 import {
-  useDeleteMacRegistrationMutation,
+  useDeleteMacRegistrationMutation, useGetMacRegListQuery,
   useMacRegistrationsQuery,
   useUpdateMacRegistrationMutation,
   useUploadMacRegistrationMutation
 } from '@acx-ui/rc/services'
-import { MacRegistration, useTableQuery } from '@acx-ui/rc/utils'
-import { useParams }                      from '@acx-ui/react-router-dom'
-import { filterByAccess }                 from '@acx-ui/user'
+import { MacRegistration, MacRegistrationPool, useTableQuery } from '@acx-ui/rc/utils'
+import { useParams }                                           from '@acx-ui/react-router-dom'
+import { filterByAccess }                                      from '@acx-ui/user'
 
-import { MacAddressDrawer } from '../../MacRegistrationListForm/MacRegistrationListMacAddresses/MacAddressDrawer'
-import { toTimeString }     from '../../MacRegistrationListUtils'
+import { MacAddressDrawer }                     from '../../MacRegistrationListForm/MacRegistrationListMacAddresses/MacAddressDrawer'
+import { returnExpirationString, toTimeString } from '../../MacRegistrationListUtils'
 
 export function MacRegistrationsTab () {
   const { $t } = useIntl()
@@ -25,6 +25,8 @@ export function MacRegistrationsTab () {
   const [editData, setEditData] = useState({ } as MacRegistration)
   const [ uploadCsvDrawerVisible, setUploadCsvDrawerVisible ] = useState(false)
   const [ uploadCsv, uploadCsvResult ] = useUploadMacRegistrationMutation()
+
+  const macRegistrationListQuery = useGetMacRegListQuery({ params: { policyId } })
 
   const tableQuery = useTableQuery({
     useQuery: useMacRegistrationsQuery,
@@ -114,7 +116,8 @@ export function MacRegistrationsTab () {
       key: 'macAddress',
       dataIndex: 'macAddress',
       sorter: true,
-      defaultSortOrder: 'ascend'
+      defaultSortOrder: 'ascend',
+      searchable: true
     },
     {
       title: $t({ defaultMessage: 'Status' }),
@@ -156,8 +159,8 @@ export function MacRegistrationsTab () {
       dataIndex: 'expirationDate',
       sorter: true,
       render: function (data, row) {
-        // eslint-disable-next-line max-len
-        return row.expirationDate ? toTimeString(row.expirationDate) : $t({ defaultMessage: 'Never expires (Same as list)' })
+        return row.expirationDate ? toTimeString(row.expirationDate) :
+          returnExpirationString(macRegistrationListQuery.data ?? {} as MacRegistrationPool)
       }
     }
   ]
@@ -172,6 +175,8 @@ export function MacRegistrationsTab () {
         setVisible={setVisible}
         isEdit={isEditMode}
         editData={isEditMode ? editData : undefined}
+        // eslint-disable-next-line max-len
+        expirationOfPool={returnExpirationString(macRegistrationListQuery.data ?? {} as MacRegistrationPool)}
       />
       <ImportFileDrawer type='DPSK'
         title={$t({ defaultMessage: 'Import from file' })}
