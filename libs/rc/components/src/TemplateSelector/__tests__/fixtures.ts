@@ -26,7 +26,7 @@ export const mockedTemplates = {
         + '${property_management_name}. You may find the access and other details below.<br/><br/>'
         +'Resident Portal: <a href="${unit_portal_url}">${unit_portal_url_abbreviated}</a>'+
         '<br/><br/> Manager : ${manager_name}.',
-      extraFieldOneTemplate: 'Unit Assigned',
+      extraFieldOneTemplate: 'Unit Assigned Template One',
       editable: true
     },
     {
@@ -36,7 +36,7 @@ export const mockedTemplates = {
         +'${property_management_name}. You may find the access and other details below.<br/><br/>'
         +'Resident Portal: <a href="${unit_portal_url}">${unit_portal_url_abbreviated}</a>'
         +'<br/><br/> Manager : ${manager_name}.',
-      extraFieldOneTemplate: 'Unit Assigned',
+      extraFieldOneTemplate: 'Unit Assigned Template Two',
       editable: true
     }
   ]
@@ -46,4 +46,22 @@ export const mockedRegistration = {
   id: 'selected-registration-id',
   templateId: '44305c2c-9cb0-48cc-a967-c735e9a8cfbd',
   usageLocalizationKey: 'description.of.template.usage'
+}
+
+export const emailTemplate = {
+  id: '746ac7b2-1ec5-412c-9354-e5ac274b7bd9',
+  userProvidedName: 'E-Mail Template',
+  messageTemplate: '<p>E-Mail Template ${with.variable}.</p>',
+  extraFieldOneTemplate: 'Unit Assigned Template One',
+  nameLocalizationKey: '',
+  editable: true
+}
+
+export const smsTemplate = {
+  id: '746ac7b2-1ec5-412c-9354-e5ac274b7bd9',
+  userProvidedName: 'SMS Template',
+  messageTemplate: 'Hi ${user.name}, welcome to Ruckus!',
+  extraFieldOneTemplate: 'Unused for SMS templates',
+  nameLocalizationKey: '',
+  editable: true
 }

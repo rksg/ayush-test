@@ -8,7 +8,7 @@ import { Loader, Modal }                       from '@acx-ui/components'
 import { useGetTemplateSelectionContentQuery } from '@acx-ui/rc/services'
 import { Template }                            from '@acx-ui/rc/utils'
 
-import { templateNames, templateScopeLabels } from './MsgTemplateLocalizedMessages'
+import { templateNames, templateScopeLabels } from './msgTemplateLocalizedMessages'
 import { TemplatePreview }                    from './TemplatePreview'
 
 export interface TemplateSelectorProps {
