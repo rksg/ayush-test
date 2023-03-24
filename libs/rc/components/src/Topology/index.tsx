@@ -365,8 +365,8 @@ export function TopologyGraph (props:{ venueId?: string,
     const debouncedHandleMouseEnter = debounce(function (node, d, self){
       setShowDeviceTooltip(true)
       setTooltipNode(node.config)
-      setTooltipPosition({ x: d?.offsetX + 30
-        , y: d?.offsetY })
+      setTooltipPosition({ x: d?.layerX + 30
+        , y: d?.layerY })
       lowVisibleAll()
       if (selectedNode) {
         (selectedNode as SVGGElement).style.opacity = '1'
