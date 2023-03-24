@@ -215,7 +215,9 @@ export default function DpskPassphraseManagement () {
       isLoading={uploadCsvResult.isLoading}
       importRequest={async (formData, values) => {
         const formValues = values as UploadPassphrasesFormFields
-        formData.append('usernamePrefix', formValues.usernamePrefix)
+        if (formValues.usernamePrefix) {
+          formData.append('usernamePrefix', formValues.usernamePrefix)
+        }
         try {
           await uploadCsv({ params, payload: formData }).unwrap()
           setUploadCsvDrawerVisible(false)
