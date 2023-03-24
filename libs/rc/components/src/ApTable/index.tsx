@@ -389,8 +389,7 @@ export function ApTable (props: ApTableProps) {
     if ('IP'.includes(customSorter.field as string)) {
       customSorter.field = 'IP.keyword'
     }
-    // @ts-ignore
-    tableQuery.handleTableChange(pagination, filters, customSorter, extra)
+    tableQuery.handleTableChange?.(pagination, filters, customSorter, extra)
   }
   return (
     <Loader states={[tableQuery]}>
