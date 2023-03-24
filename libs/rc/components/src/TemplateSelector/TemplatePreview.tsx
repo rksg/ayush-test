@@ -1,5 +1,5 @@
-import _                                     from 'lodash'
-import { useIntl }                           from 'react-intl'
+import { useIntl } from 'react-intl'
+
 import { Template, MessageType } from '@acx-ui/rc/utils'
 
 export interface TemplatePreviewProps {
@@ -17,23 +17,23 @@ export function TemplatePreview (props: TemplatePreviewProps) {
 
   if(templateType === MessageType.EMAIL && template) {
     return (
-        <>
-            <p style={{borderBottom: '2px solid black', paddingBottom: '1em'}}>
-                <strong>
-                    {template.extraFieldOneTemplate}
-                </strong>
-            </p>
-            {/* TODO: Generally this HTML is trusted because it is input by ACX developers or input 
-                by the customer using the UI, however we could consider sanitizing it with 
+      <>
+        <p style={{ borderBottom: '2px solid black', paddingBottom: '1em' }}>
+          <strong>
+            {template.extraFieldOneTemplate}
+          </strong>
+        </p>
+        {/* NOTE: Generally this HTML is trusted because it is input by ACX developers or input
+                by the customer using the UI, however we could consider sanitizing it with
                 DOMPurify or something similar to be extra careful. */}
-            <div dangerouslySetInnerHTML=
-                {{__html: template.messageTemplate ? template.messageTemplate : ''}} />
-        </>
+        <div dangerouslySetInnerHTML={{ __html:
+          template.messageTemplate ? template.messageTemplate : '' }} />
+      </>
     )
   } else if(templateType === MessageType.SMS && template) {
     return (<p>{template.messageTemplate}</p>)
   } else {
-    return (<p>{$t({defaultMessage: "Template preview unavailable... "})}</p>)
+    return (<p>{$t({ defaultMessage: 'Template preview unavailable... ' })}</p>)
   }
-  
+
 }

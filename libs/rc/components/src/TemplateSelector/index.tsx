@@ -1,15 +1,15 @@
 import { useEffect, useMemo, useState } from 'react'
 
 import { Form, Select, FormItemProps, Button, Row, Col } from 'antd'
-import _                                     from 'lodash'
-import { useIntl }                           from 'react-intl'
+import _                                                 from 'lodash'
+import { useIntl }                                       from 'react-intl'
 
+import { Loader, Modal }                       from '@acx-ui/components'
 import { useGetTemplateSelectionContentQuery } from '@acx-ui/rc/services'
+import { Template }                            from '@acx-ui/rc/utils'
 
 import { templateNames, templateScopeLabels } from './MsgTemplateLocalizedMessages'
-import { Loader, Modal } from '@acx-ui/components'
-import { Template } from '@acx-ui/rc/utils'
-import { TemplatePreview } from './TemplatePreview'
+import { TemplatePreview }                    from './TemplatePreview'
 
 export interface TemplateSelectorProps {
   formItemProps?: FormItemProps,
@@ -42,24 +42,24 @@ export function TemplateSelector (props: TemplateSelectorProps) {
   // Generate form data from data request
   const { templateOptions, scopeLabel, initialOption } = useMemo(() => {
     if (!templateDataRequest.isSuccess) {
-      return { templateOptions: [], 
-        scopeLabel: $t({ defaultMessage: 'Loading Templates...' }), 
+      return { templateOptions: [],
+        scopeLabel: $t({ defaultMessage: 'Loading Templates...' }),
         initialOption: undefined }
     }
 
     const templateOptions = templateDataRequest.data?.templates.map((t) =>
-        ({ value: t.id,
-          label: (t.userProvidedName?
-            t.userProvidedName : $t(_.get(templateNames, t.nameLocalizationKey))) }))
+      ({ value: t.id,
+        label: (t.userProvidedName?
+          t.userProvidedName : $t(_.get(templateNames, t.nameLocalizationKey))) }))
 
     const scopeLabel = templateDataRequest.data?.templateScopeNameKey ?
-        $t(_.get(templateScopeLabels, templateDataRequest.data.templateScopeNameKey))
-        : $t({ defaultMessage: 'Loading Templates...' })
+      $t(_.get(templateScopeLabels, templateDataRequest.data.templateScopeNameKey))
+      : $t({ defaultMessage: 'Loading Templates...' })
 
-    const initialOption =  templateDataRequest.data?.defaultTemplateId ?
+    const initialOption = templateDataRequest.data?.defaultTemplateId ?
       templateOptions.find(t => t.value === templateDataRequest.data?.defaultTemplateId)
       : undefined
-    
+
 
     return {
       templateOptions,
@@ -79,26 +79,26 @@ export function TemplateSelector (props: TemplateSelectorProps) {
   }, [initialOption, templateOptions])
 
   // Preview Modal Management ///////////////////////
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [previewTemplate, setPreviewTemplate] = useState<Template | undefined>(undefined);
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [previewTemplate, setPreviewTemplate] = useState<Template | undefined>(undefined)
 
   const showModal = () => {
     let selectedOption = form.getFieldValue(formItemProps.name)
-    let previewTemplate = 
+    let previewTemplate =
       templateDataRequest.data?.templates.find(t => t.id === selectedOption.value)
     setPreviewTemplate(previewTemplate)
     setIsModalOpen(true)
-  };
+  }
 
   const handleCancel = () => {
-    setIsModalOpen(false);
-  };
+    setIsModalOpen(false)
+  }
 
   // RENDER //////////////////////////////////////////////////////
   return (
     <Loader style={{ height: 'auto', minHeight: 45 }} states={[templateDataRequest]}>
       <Row>
-        <Col flex="auto">
+        <Col flex='auto'>
           <Form.Item {...formItemProps}
             label={scopeLabel}>
             <Select
@@ -113,21 +113,21 @@ export function TemplateSelector (props: TemplateSelectorProps) {
           </Form.Item>
         </Col>
         <Col>
-          <Button disabled={!isPreviewAvailable} type="link" size="small" onClick={showModal}>
-            {$t({defaultMessage: 'Preview'})}
+          <Button disabled={!isPreviewAvailable} type='link' size='small' onClick={showModal}>
+            {$t({ defaultMessage: 'Preview' })}
           </Button>
-          <Modal 
-            title={ previewTemplate ? 
-              (previewTemplate.userProvidedName ? 
-                previewTemplate.userProvidedName : 
+          <Modal
+            title={previewTemplate ?
+              (previewTemplate.userProvidedName ?
+                previewTemplate.userProvidedName :
                 $t(_.get(templateNames, previewTemplate.nameLocalizationKey)))
-              : $t({defaultMessage: "Template Preview Unavailable"})} 
+              : $t({ defaultMessage: 'Template Preview Unavailable' })}
             visible={isModalOpen}
             onCancel={handleCancel}
             footer={[]}>
-              <TemplatePreview 
-                templateType={templateDataRequest.data?.templateScopeType} 
-                template={previewTemplate} />
+            <TemplatePreview
+              templateType={templateDataRequest.data?.templateScopeType}
+              template={previewTemplate} />
           </Modal>
         </Col>
       </Row>
