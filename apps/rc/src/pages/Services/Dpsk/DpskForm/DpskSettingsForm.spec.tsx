@@ -66,5 +66,6 @@ describe('DpskSettingsForm', () => {
     )
 
     expect(await screen.findByRole('radio', { name: /ACCEPT/ })).toBeVisible()
+    expect(await screen.findByRole('radio', { name: /Unlimited/ })).toBeVisible()
   })
 })

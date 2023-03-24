@@ -17,7 +17,8 @@ import {
   ServiceType,
   getServiceRoutePath,
   ServiceOperation,
-  DpskSaveData
+  DpskSaveData,
+  DeviceNumberType
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -52,7 +53,8 @@ export default function DpskForm (props: DpskFormProps) {
   const formRef = useRef<StepsFormInstance<CreateDpskFormFields>>()
   const initialValues: Partial<CreateDpskFormFields> = {
     passphraseFormat: PassphraseFormatEnum.MOST_SECURED,
-    passphraseLength: 18
+    passphraseLength: 18,
+    deviceNumberType: DeviceNumberType.UNLIMITED
   }
 
   useEffect(() => {

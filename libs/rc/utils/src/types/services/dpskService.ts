@@ -8,6 +8,11 @@ export enum PolicyDefaultAccess {
   REJECT = 'REJECT'
 }
 
+export enum DeviceNumberType {
+  LIMITED,
+  UNLIMITED
+}
+
 export interface CreateDpskFormFields {
   id?: string;
   name: string;
@@ -16,6 +21,7 @@ export interface CreateDpskFormFields {
   expiration: ExpirationDateEntity;
   deviceCountLimit?: number;
   policyDefaultAccess?: PolicyDefaultAccess;
+  deviceNumberType?: DeviceNumberType;
 }
 export interface DpskSaveData {
   id?: string;
