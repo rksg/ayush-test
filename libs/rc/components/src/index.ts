@@ -1,6 +1,6 @@
 export {
   ActivityTable,
-  columnState,
+  columnState as activityTableColumnState,
   useActivityTableQuery
 } from './ActivityTable'
 export { AlarmWidget, AlarmWidgetV2 } from './AlarmWidget'
@@ -24,8 +24,10 @@ export {
   AdminLogTable,
   useAdminLogsTableQuery,
   EventTable,
+  defaultColumnState as eventTableColumnState,
   useEventsTableQuery,
-  eventDefaultSearch
+  eventDefaultSearch,
+  eventTypeMapping
 } from './EventTable'
 export {
   HistoricalClientsTable,

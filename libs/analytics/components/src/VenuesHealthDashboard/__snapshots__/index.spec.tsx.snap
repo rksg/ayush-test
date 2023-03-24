@@ -854,7 +854,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             style="text-align: center;"
                                           >
                                             <span>
-                                              -
+                                              --
                                             </span>
                                           </td>
                                           <td
@@ -934,7 +934,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             style="text-align: center;"
                                           >
                                             <span>
-                                              -
+                                              --
                                             </span>
                                           </td>
                                           <td

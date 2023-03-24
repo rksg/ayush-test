@@ -183,6 +183,7 @@ function useColumns (
       sorter: true,
       searchable: true,
       defaultSortOrder: 'ascend',
+      fixed: 'left',
       render: function (data, row) {
         return <DeviceOSDrawer
           editMode={row.id === editMode.id ? editMode : { id: '', isEdit: false }}
@@ -203,7 +204,8 @@ function useColumns (
       title: $t({ defaultMessage: 'Rules' }),
       dataIndex: 'rules',
       align: 'center',
-      sorter: true
+      sorter: true,
+      sortDirections: ['descend', 'ascend', 'descend']
     },
     {
       key: 'networkIds',
@@ -212,6 +214,7 @@ function useColumns (
       align: 'center',
       filterable: networkFilterOptions,
       sorter: true,
+      sortDirections: ['descend', 'ascend', 'descend'],
       render: (data, row) => row.networkIds?.length
     }
   ]

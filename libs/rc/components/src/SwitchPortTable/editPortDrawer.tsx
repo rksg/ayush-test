@@ -145,8 +145,9 @@ export function EditPortDrawer ({
     ipsg,
     lldpQosCheckbox,
     ingressAclCheckbox,
-    egressAclCheckbox,
-    tagsCheckbox
+    egressAclCheckbox
+    // TODO: Waiting for TAG feature support
+    // tagsCheckbox
   } = (useWatch([], form) ?? {})
 
   const { tenantId, venueId, serialNumber } = useParams()
@@ -1255,7 +1256,7 @@ export function EditPortDrawer ({
           'egressAcl', $t({ defaultMessage: 'Egress ACL' })
         )}
 
-        { getFieldTemplate(
+        {/* { getFieldTemplate( TODO: Waiting for TAG feature support
           <Form.Item
             {...getFormItemLayout(isMultipleEdit)}
             name='tags'
@@ -1267,7 +1268,7 @@ export function EditPortDrawer ({
             }
           />,
           'tags', $t({ defaultMessage: 'Tags' })
-        )}
+        )} */}
 
       </UI.Form>
 

@@ -14,9 +14,9 @@ import {
   NoData,
   Tooltip
 } from '@acx-ui/components'
-import { intlFormats, formatter }        from '@acx-ui/formatter'
-import { TenantLink, useNavigateToPath } from '@acx-ui/react-router-dom'
-import { notAvailableMsg }               from '@acx-ui/utils'
+import { intlFormats, formatter }         from '@acx-ui/formatter'
+import { TenantLink, useNavigateToPath }  from '@acx-ui/react-router-dom'
+import { notAvailableMsg, noDataDisplay } from '@acx-ui/utils'
 
 import { useHealthQuery, HealthData } from './services'
 import * as UI                        from './styledComponents'
@@ -85,7 +85,7 @@ export function VenuesHealthDashboard ({
           kpiConfig.timeToConnect.histogram.initialThreshold
         const thresholdText = $t({ defaultMessage: '< {threshold}' },
           { threshold: formatter('durationFormat')(threshold) })
-        if(row.timeToConnectThreshold === null) return <span>-</span>
+        if(row.timeToConnectThreshold === null) return <span>{noDataDisplay}</span>
         const tooltipText=$t({
           defaultMessage: '{n} of {d} connections under {threshold}' },
         { n: $t(intlFormats.countFormat, { value: n }),
@@ -110,7 +110,7 @@ export function VenuesHealthDashboard ({
           kpiConfig.clientThroughput.histogram.initialThreshold
         const thresholdText = $t({ defaultMessage: '> {threshold}' },
           { threshold: formatter('networkSpeedFormat')(threshold) })
-        if(row.clientThroughputThreshold === null) return <span>-</span>
+        if(row.clientThroughputThreshold === null) return <span>{noDataDisplay}</span>
         const tooltipText = $t({
           defaultMessage: '{n} of {d} sessions above {threshold}' },
         { n: $t(intlFormats.countFormat, { value: n }),
