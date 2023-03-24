@@ -2,10 +2,10 @@ import { defineMessage } from 'react-intl'
 
 import { render } from '@acx-ui/test-utils'
 
-import { cssStr }                 from '../../theme/helper'
-import { TooltipFormatterParams } from '../Chart/helper'
+import { cssStr }                                                    from '../../theme/helper'
+import { getDeviceConnectionStatusColorsv2, TooltipFormatterParams } from '../Chart/helper'
 
-import { data } from './stories'
+import { data, singleBar } from './stories'
 
 import { StackedBarChart, tooltipFormatter } from '.'
 
@@ -42,6 +42,20 @@ describe('StackedBarChart', () => {
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(asFragment().querySelector('svg')).toBeDefined()
   })
+  it('should render chart with proper width', async () => {
+    const { asFragment } = render(
+      <StackedBarChart
+        style={{ height: 110, width: 500 }}
+        showLabels={false}
+        showTotal={false}
+        barWidth={20}
+        barColors={getDeviceConnectionStatusColorsv2()}
+        data={singleBar}
+        totalValue={24} // must pass this value to make proper width
+      />)
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+    expect(asFragment().querySelector('svg')).toMatchSnapshot()
+  })
 })
 
 describe('tooltipFormatter', () => {
@@ -51,6 +65,15 @@ describe('tooltipFormatter', () => {
   it('should return correct Html string for single value', async () => {
     const formatter = jest.fn(value=>`formatted-${value}`)
     expect(tooltipFormatter(formatter)(singleparameters))
+      .toMatchSnapshot()
+    expect(formatter).toBeCalledTimes(1)
+  })
+  it('should return correct Html string for single value for isPercent', async () => {
+    const params = {
+      color: 'color1', value: [0.85]
+    } as TooltipFormatterParams
+    const formatter = jest.fn(value=>`formatted-${value}`)
+    expect(tooltipFormatter(formatter,undefined,100)(params))
       .toMatchSnapshot()
     expect(formatter).toBeCalledTimes(1)
   })

@@ -74,7 +74,7 @@ export interface StackedBarChartProps
     onAxisLabelClick?: (name: string) => void
   }
 
-const computeChartData = ({ category, series }: ChartData, isPercent=false) => {
+const computeChartData = ({ category, series }: ChartData, isPercent:boolean) => {
   const values = _(series)
   const sum = values.sumBy('value')
   const firstIndex = values.findIndex(v => v.value !== 0)
@@ -95,7 +95,7 @@ const computeChartData = ({ category, series }: ChartData, isPercent=false) => {
 }
 
 const massageData = (
-  data: ChartData[], showTotal: boolean, barWidth: number, isPercent=false)
+  data: ChartData[], showTotal: boolean, barWidth: number, isPercent:boolean)
   : RegisteredSeriesOption['bar'][] => {
   const seriesCommonConfig: RegisteredSeriesOption['bar'] = {
     type: 'bar',
