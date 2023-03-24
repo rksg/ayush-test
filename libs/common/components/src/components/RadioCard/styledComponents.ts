@@ -102,7 +102,7 @@ export const Category = styled.div<{ color: string }>`
 
 export const Description = styled.div`
   color: var(--acx-neutrals-60);
-  font-size: var(--acx-body-5-font-size);
+  font-size: var(--acx-body-4-font-size);
   line-height: var(--acx-body-5-line-height);
   padding-bottom: 30px;
 `

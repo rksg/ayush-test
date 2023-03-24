@@ -62,7 +62,7 @@ exports[`Networks Table should render table 1`] = `
                   class="ant-spin-container"
                 >
                   <div
-                    class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
+                    class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-left ant-table-has-fix-right"
                   >
                     <div
                       class="ant-table-container"
@@ -75,7 +75,9 @@ exports[`Networks Table should render table 1`] = `
                           style="min-width: 100%; table-layout: auto;"
                         >
                           <colgroup>
-                            <col />
+                            <col
+                              style="width: 200px;"
+                            />
                             <col />
                             <col />
                             <col />
@@ -89,7 +91,8 @@ exports[`Networks Table should render table 1`] = `
                             <tr>
                               <th
                                 aria-sort="ascending"
-                                class="ant-table-cell ant-table-column-sort ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-sort ant-table-cell-fix-left ant-table-cell-fix-left-last ant-table-column-has-sorters"
+                                style="position: sticky; left: 0px;"
                                 tabindex="0"
                               >
                                 <div
@@ -393,7 +396,8 @@ exports[`Networks Table should render table 1`] = `
                               data-row-key="c9d5f4c771c34ad2898f7078cebbb191"
                             >
                               <td
-                                class="ant-table-cell ant-table-column-sort"
+                                class="ant-table-cell ant-table-column-sort ant-table-cell-fix-left ant-table-cell-fix-left-last"
+                                style="position: sticky; left: 0px;"
                               >
                                 <a
                                   href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/wireless/c9d5f4c771c34ad2898f7078cebbb191/network-details/overview"
@@ -426,7 +430,8 @@ exports[`Networks Table should render table 1`] = `
                               data-row-key="ad850ca8595d4f2f9e7f208664cd9398"
                             >
                               <td
-                                class="ant-table-cell ant-table-column-sort"
+                                class="ant-table-cell ant-table-column-sort ant-table-cell-fix-left ant-table-cell-fix-left-last"
+                                style="position: sticky; left: 0px;"
                               >
                                 <a
                                   href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/wireless/ad850ca8595d4f2f9e7f208664cd9398/network-details/overview"

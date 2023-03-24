@@ -37,6 +37,7 @@ export function AccessSwitchTable (props: AccessSwitchesTableProps) {
       key: 'name',
       title: $t({ defaultMessage: 'Access Switch' }),
       dataIndex: 'name',
+      fixed: 'left',
       sorter: true
     }, {
       key: 'model',

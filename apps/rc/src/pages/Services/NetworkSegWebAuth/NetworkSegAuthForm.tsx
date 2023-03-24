@@ -55,7 +55,7 @@ export const defaultTemplateData = {
       defineMessage({ defaultMessage: `This network is restricted to authorized users only.
       Violators may be subjected to legal prosecution.
       Acitvity on this network is monitored and may be used as evidence in a court of law.
-      Copyright 2022 Ruckus Networks` })
+      \u00A9 {year} CommScope, Inc. All Rights Reserved.` })
   }
 }
 
@@ -104,7 +104,9 @@ export default function NetworkSegAuthForm ({ editMode = false }: { editMode?: b
           <Form.Item name={name} children={<Input.TextArea autoSize />} />
           <Button type='link'
             onClick={()=>{
-              formRef?.current?.setFieldValue(name, $t(defaultTemplateData[name].defaultMessage))
+              formRef?.current?.setFieldValue(name, $t(defaultTemplateData[name].defaultMessage, {
+                year: new Date().getFullYear()
+              }))
             }}>
             {$t({ defaultMessage: 'Reset to default' })}
           </Button>

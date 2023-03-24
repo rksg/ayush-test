@@ -39,6 +39,7 @@ const RogueAPDetectionVenueDetail = () => {
       key: 'name',
       searchable: true,
       sorter: true,
+      fixed: 'left',
       render: (_, row, __, highlightFn) => {
         return <TenantLink to={`/venues/${row.id}/venue-details/overview`}>
           {highlightFn(row.name)}
