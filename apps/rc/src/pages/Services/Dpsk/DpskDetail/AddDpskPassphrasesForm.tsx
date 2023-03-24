@@ -12,10 +12,10 @@ import {
 import { FormattedMessage, useIntl } from 'react-intl'
 import { useParams }                 from 'react-router-dom'
 
-import { Tooltip }                   from '@acx-ui/components'
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
-import { ExpirationDateSelector }    from '@acx-ui/rc/components'
-import { useGetDpskPassphraseQuery } from '@acx-ui/rc/services'
+import { Tooltip }                                    from '@acx-ui/components'
+import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
+import { ExpirationDateSelector }                     from '@acx-ui/rc/components'
+import { useGetDpskPassphraseQuery, useGetDpskQuery } from '@acx-ui/rc/services'
 import {
   CreateDpskPassphrasesFormFields,
   emailRegExp,
@@ -28,8 +28,9 @@ import { validationMessages } from '@acx-ui/utils'
 
 import { MAX_DEVICES_PER_PASSPHRASE, MAX_PASSPHRASES } from '../constants'
 
-import { DpskPassphraseEditMode } from './DpskPassphraseDrawer'
-import { FieldSpace }             from './styledComponents'
+import { unlimitedNumberOfDeviceLabel } from './contentsMap'
+import { DpskPassphraseEditMode }       from './DpskPassphraseDrawer'
+import { FieldSpace }                   from './styledComponents'
 
 enum DeviceNumberType {
   LIMITED,
@@ -53,13 +54,35 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
     { params: ({ ...params, passphraseId: editMode.passphraseId }) },
     { skip: !editMode.isEdit }
   )
+  const { poolDeviceCount } = useGetDpskQuery({ params }, {
+    skip: !isCloudpathEnabled,
+    selectFromResult ({ data }) {
+      return {
+        poolDeviceCount: data?.deviceCountLimit
+      }
+    }
+  })
 
   const onDeviceNumberTypeChange = (e: RadioChangeEvent) => {
     setDeviceNumberType(e.target.value)
   }
 
-  const isMacAddressEnabled = () => {
+  const isSingleDeviceAndPassphrase = () => {
     return numberOfDevices === 1 && numberOfPassphrases === 1
+  }
+
+  const isMacAddressEnabled = () => {
+    if (isCloudpathEnabled) {
+      return isMacAddressEnabledWithPoolData()
+    }
+    return isSingleDeviceAndPassphrase()
+  }
+
+  const isMacAddressEnabledWithPoolData = () => {
+    if (deviceNumberType === DeviceNumberType.SAME_AS_POOL) {
+      return numberOfPassphrases === 1 && poolDeviceCount === 1
+    }
+    return isSingleDeviceAndPassphrase()
   }
 
   const isPassphraseEnabled = () => {
@@ -156,7 +179,13 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
                 }
               </FieldSpace>
               <Radio value={DeviceNumberType.SAME_AS_POOL}>
-                {$t({ defaultMessage: 'Same as pool' })}
+                {isCloudpathEnabled
+                  ? $t(
+                    { defaultMessage: 'Same as pool ({value})' },
+                    { value: poolDeviceCount ? poolDeviceCount : $t(unlimitedNumberOfDeviceLabel) }
+                  )
+                  : $t(unlimitedNumberOfDeviceLabel)
+                }
               </Radio>
             </Space>
           </Radio.Group>

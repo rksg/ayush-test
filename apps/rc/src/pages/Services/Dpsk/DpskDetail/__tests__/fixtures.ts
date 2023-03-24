@@ -13,6 +13,11 @@ export const mockedDpsk = {
   expirationOffset: 1
 }
 
+export const mockedCloudpathDpsk = {
+  ...mockedDpsk,
+  deviceCountLimit: 1
+}
+
 export const mockedDpskPassphraseFormFields: Partial<CreateDpskPassphrasesFormFields> = {
   numberOfPassphrases: 5,
   numberOfDevices: 1,
