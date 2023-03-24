@@ -93,9 +93,9 @@ export function APDetailsCard (props: {
                 (
                   <UI.TextNumber>
                     <label><Subtitle level={5}>{ '2.4 GHz' }</Subtitle></label>
-                    <span>{apDetail.channel24.channel || '--'}</span>
-                    <span>{apDetail.channel24.operativeChannelBandwidth || '--'}</span>
-                    <span>{apDetail.channel24.txPower || '--'}</span>
+                    <span>{apDetail.channel24.channel || noDataDisplay}</span>
+                    <span>{apDetail.channel24.operativeChannelBandwidth || noDataDisplay}</span>
+                    <span>{apDetail.channel24.txPower || noDataDisplay}</span>
                   </UI.TextNumber>
                 )
             }
@@ -104,9 +104,9 @@ export function APDetailsCard (props: {
                 (
                   <UI.TextNumber>
                     <label><Subtitle level={5}>{ '5 GHz' }</Subtitle></label>
-                    <span>{apDetail.channel50.channel || '--'}</span>
-                    <span>{apDetail.channel50.operativeChannelBandwidth || '--'}</span>
-                    <span>{apDetail.channel50.txPower || '--'}</span>
+                    <span>{apDetail.channel50.channel || noDataDisplay}</span>
+                    <span>{apDetail.channel50.operativeChannelBandwidth || noDataDisplay}</span>
+                    <span>{apDetail.channel50.txPower || noDataDisplay}</span>
                   </UI.TextNumber>
                 )
             }
@@ -115,9 +115,9 @@ export function APDetailsCard (props: {
                 (
                   <UI.TextNumber>
                     <label><Subtitle level={5}>{ 'LO 5 GHz' }</Subtitle></label>
-                    <span>{apDetail.channelL50.channel || '--'}</span>
-                    <span>{apDetail.channelL50.operativeChannelBandwidth || '--'}</span>
-                    <span>{apDetail.channelL50.txPower || '--'}</span>
+                    <span>{apDetail.channelL50.channel || noDataDisplay}</span>
+                    <span>{apDetail.channelL50.operativeChannelBandwidth || noDataDisplay}</span>
+                    <span>{apDetail.channelL50.txPower || noDataDisplay}</span>
                   </UI.TextNumber>
                 )
             }
@@ -126,9 +126,9 @@ export function APDetailsCard (props: {
                 (
                   <UI.TextNumber>
                     <label><Subtitle level={5}>{ 'HI 5 GHz' }</Subtitle></label>
-                    <span>{apDetail.channelU50.channel || '--'}</span>
-                    <span>{apDetail.channelU50.operativeChannelBandwidth || '--'}</span>
-                    <span>{apDetail.channelU50.txPower || '--'}</span>
+                    <span>{apDetail.channelU50.channel || noDataDisplay}</span>
+                    <span>{apDetail.channelU50.operativeChannelBandwidth || noDataDisplay}</span>
+                    <span>{apDetail.channelU50.txPower || noDataDisplay}</span>
                   </UI.TextNumber>
                 )
             }
@@ -137,9 +137,9 @@ export function APDetailsCard (props: {
                 (
                   <UI.TextNumber>
                     <label><Subtitle level={5}>{ '6 GHz' }</Subtitle></label>
-                    <span>{apDetail.channel60.channel || '--'}</span>
-                    <span>{apDetail.channel60.operativeChannelBandwidth || '--'}</span>
-                    <span>{apDetail.channel60.txPower || '--'}</span>
+                    <span>{apDetail.channel60.channel || noDataDisplay}</span>
+                    <span>{apDetail.channel60.operativeChannelBandwidth || noDataDisplay}</span>
+                    <span>{apDetail.channel60.txPower || noDataDisplay}</span>
                   </UI.TextNumber>
                 )
             }
