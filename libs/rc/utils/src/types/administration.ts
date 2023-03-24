@@ -76,6 +76,12 @@ export interface Administrator {
   fullName?: string;
 }
 
+export interface TenantMspEc {
+  parentMspId?: string;
+  serviceEffectiveDate: string;
+  serviceExpirationDate: string;
+}
+
 export interface TenantDetails {
   createdDate: string;
   entitlementId: string;
@@ -83,7 +89,7 @@ export interface TenantDetails {
   id: string;
   isActivated: boolean;
   maintenanceState: boolean;
-  mspEc?: boolean;
+  mspEc?: TenantMspEc;
   name: string;
   ruckusUser: boolean;
   status: string;
