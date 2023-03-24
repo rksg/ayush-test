@@ -414,27 +414,43 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
   const handleLayer3Rule = () => {
     setRuleDrawerEditMode(false)
 
+    let sourceIpSettings = {} as { subnet: string, ipMask: string, ip: string }
+    if (drawerForm.getFieldValue('sourceType')
+      && drawerForm.getFieldValue('sourceType') !== AnyText) {
+      sourceIpSettings = {
+        subnet: drawerForm.getFieldValue('sourceNetworkAddress') ?? '',
+        ipMask: drawerForm.getFieldValue('sourceMask') ?? '',
+        ip: drawerForm.getFieldValue('sourceMask') !== undefined
+          ? drawerForm.getFieldValue('sourceNetworkAddress')
+          : drawerForm.getFieldValue('sourceIp')
+      }
+    }
+
+    let destIpSettings = {} as { subnet: string, ipMask: string, ip: string }
+    if (drawerForm.getFieldValue('destType')
+      && drawerForm.getFieldValue('destType') !== AnyText) {
+      destIpSettings = {
+        subnet: drawerForm.getFieldValue('destNetworkAddress') ?? '',
+        ipMask: drawerForm.getFieldValue('destMask') ?? '',
+        ip: drawerForm.getFieldValue('destMask') !== undefined
+          ? drawerForm.getFieldValue('destNetworkAddress')
+          : drawerForm.getFieldValue('destIp')
+      }
+    }
+
     const ruleObject = {
       description: drawerForm.getFieldValue('description') ?? '',
       access: drawerForm.getFieldValue('access'),
       protocol: drawerForm.getFieldValue('protocol'),
       source: {
         type: drawerForm.getFieldValue('sourceType') ?? AnyText,
-        subnet: drawerForm.getFieldValue('sourceNetworkAddress') ?? '',
-        ipMask: drawerForm.getFieldValue('sourceMask') ?? '',
-        ip: drawerForm.getFieldValue('sourceMask') !== undefined
-          ? drawerForm.getFieldValue('sourceNetworkAddress')
-          : drawerForm.getFieldValue('sourceIp'),
+        ...sourceIpSettings,
         port: drawerForm.getFieldValue('sourcePort') ?? '',
         enableIpSubnet: drawerForm.getFieldValue('sourceMask') !== undefined
       },
       destination: {
         type: drawerForm.getFieldValue('destType') ?? AnyText,
-        subnet: drawerForm.getFieldValue('destNetworkAddress') ?? '',
-        ipMask: drawerForm.getFieldValue('destMask') ?? '',
-        ip: drawerForm.getFieldValue('destMask') !== undefined
-          ? drawerForm.getFieldValue('destNetworkAddress')
-          : drawerForm.getFieldValue('destIp'),
+        ...destIpSettings,
         port: drawerForm.getFieldValue('destPort') ?? '',
         enableIpSubnet: drawerForm.getFieldValue('destMask') !== undefined
       }
