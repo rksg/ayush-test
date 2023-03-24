@@ -46,7 +46,7 @@ exports[`HealthWidget should render for empty data: NoData 1`] = `
               <div
                 class="styledComponents__SubTitle-sc-13w5wfx-6 htaqLO"
               >
-                Top 5 Venues/Services with poor experience
+                Top Venues/Services with poor experience
               </div>
             </div>
             <div
@@ -219,7 +219,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
               <div
                 class="styledComponents__SubTitle-sc-13w5wfx-6 htaqLO"
               >
-                Top 5 Venues/Services with poor experience
+                Top Venues/Services with poor experience
               </div>
             </div>
             <div

@@ -1,3 +1,4 @@
+import { Space }              from 'antd'
 import { countBy, isEmpty }   from 'lodash'
 import { IntlShape, useIntl } from 'react-intl'
 import AutoSizer              from 'react-virtualized-auto-sizer'
@@ -7,7 +8,7 @@ import { cssStr, Loader, Card , DonutChart, GridRow, GridCol,
 import type { DonutChartData }                                   from '@acx-ui/components'
 import { useDashboardOverviewQuery,useDashboardV2OverviewQuery } from '@acx-ui/rc/services'
 import { ChartData, Dashboard }                                  from '@acx-ui/rc/utils'
-import { useNavigateToPath, useParams }                          from '@acx-ui/react-router-dom'
+import { useNavigateToPath, useParams, TenantLink }              from '@acx-ui/react-router-dom'
 import { useDashboardFilter, NetworkNodePath }                   from '@acx-ui/utils'
 
 export const getAPClientChartData = (
@@ -179,41 +180,64 @@ export function ClientsWidgetV2 () {
           {({ height, width }) => (
             <div style={{ display: 'block', height, width }}>
               <GridRow style={{ marginTop: '30px' }}>
-                <GridCol col={{ span: 11 }} style={{ marginTop: marginTop }}>
-                  { apClientCount > 0 ? $t({ defaultMessage: 'Wi-Fi' })
-                    : $t({ defaultMessage: 'No Wi-Fi clients' }) }
+                <GridCol col={{ span: 9 }} style={{ marginTop: marginTop }}>
+                  { apClientCount > 0
+                    ? $t({ defaultMessage: 'Wi-Fi' })
+                    : $t({ defaultMessage: 'No Wi-Fi Clients' }) }
                 </GridCol>
-                <GridCol col={{ span: 11 }}>
-                  { apClientCount > 0 ? <StackedBarChart
-                    style={{ height: (height/2) - 30 }}
-                    data={apData}
-                    showLabels={false}
-                    showTotal={false}
-                    barColors={getDeviceConnectionStatusColorsv2()} />
-                    : <div style={{ height: (height/2) - 30 }}/>
-                  }
-                </GridCol>
-                <GridCol col={{ span: 2 }} style={{ marginTop: marginTop, marginLeft: '-13px' }}>
-                  {apClientCount || ''}
+                <GridCol col={{ span: 15 }}>
+                  <Space>
+                    { apClientCount > 0 ?
+                      <>
+                        <StackedBarChart
+                          animation={false}
+                          style={{
+                            height: height / 2 - 30,
+                            width: width / 2 - 15,
+                            minWidth: width / 2 - 15
+                          }}
+                          data={apData}
+                          showLabels={false}
+                          showTotal={false}
+                          barColors={getDeviceConnectionStatusColorsv2()} />
+                        <TenantLink to={'/users/wifi/clients'}>
+                          {apClientCount || 0}
+                        </TenantLink>
+                      </>
+                      : <div style={{ height: (height/2) - 30 }}/>
+                    }
+                  </Space>
                 </GridCol>
               </GridRow>
               <GridRow>
-                <GridCol col={{ span: 11 }} style={{ marginTop: marginTop }}>
-                  { switchClientCount > 0 ? $t({ defaultMessage: 'Wired' })
-                    : $t({ defaultMessage: 'No Wired clients' }) }
+                <GridCol col={{ span: 9 }} style={{ marginTop: marginTop }}>
+                  { switchClientCount > 0
+                    ? $t({ defaultMessage: 'Wired' })
+                    : $t({ defaultMessage: 'No Wired Clients' }) }
                 </GridCol>
-                <GridCol col={{ span: 11 }}>
-                  { apClientCount > 0 ? <StackedBarChart
-                    style={{ height: (height/2) - 30 }}
-                    data={switchData}
-                    showLabels={false}
-                    showTotal={false}
-                    barColors={getDeviceConnectionStatusColorsv2()} />
-                    : <div style={{ height: (height/2) - 30 }}/>
-                  }
-                </GridCol>
-                <GridCol col={{ span: 2 }} style={{ marginTop: marginTop, marginLeft: '-13px' }}>
-                  {switchClientCount || ''}
+                <GridCol col={{ span: 15 }}>
+                  <Space>
+                    { switchClientCount > 0
+                      ?
+                      <>
+                        <StackedBarChart
+                          animation={false}
+                          style={{
+                            height: height/2 - 30,
+                            width: width/2 - 15,
+                            minWidth: width/2 - 15
+                          }}
+                          data={switchData}
+                          showLabels={false}
+                          showTotal={false}
+                          barColors={getDeviceConnectionStatusColorsv2()} />
+                        <TenantLink to={'/users/switch/clients'}>
+                          {switchClientCount || 0}
+                        </TenantLink>
+                      </>
+                      : <div style={{ height: (height/2) - 30 }}/>
+                    }
+                  </Space>
                 </GridCol>
               </GridRow>
             </div>
