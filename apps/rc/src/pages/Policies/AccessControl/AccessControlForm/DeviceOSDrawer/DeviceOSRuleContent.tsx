@@ -8,7 +8,12 @@ import { AccessStatus, DeviceTypeEnum, OsVendorEnum } from '@acx-ui/rc/utils'
 
 import { deviceTypeLabelMapping, osVenderLabelMapping } from '../../../contentsMap'
 
-import { getDeviceTypeOptions, getOsVendorOptions } from './DeviceOSDrawerUtils'
+import {
+  deviceOsVendorMappingTable,
+  getDeviceTypeOptions,
+  getOsVendorOptions,
+  isDeviceOSEnabled, isDeviceTypeEnabled
+} from './DeviceOSDrawerUtils'
 
 interface DeviceOSRuleContentProps {
   drawerForm: FormInstance,
@@ -38,13 +43,26 @@ interface DeviceOSRule {
   }
 }
 
+const { useWatch } = Form
+
 const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
   const { $t } = useIntl()
   const { drawerForm, deviceOSRuleList, ruleDrawerEditMode } = props
-  const [deviceType, setDeviceType] = useState('' as DeviceTypeEnum)
+  const [deviceType, setDeviceType] = useState(
+    drawerForm.getFieldValue('deviceType') as DeviceTypeEnum
+  )
   const [osVendor, setOsVendor] = useState(
     $t({ defaultMessage: 'Please select...' }) as OsVendorEnum
   )
+  const [deviceOSMappingTable] = useState(
+    deviceOsVendorMappingTable(deviceOSRuleList) as { [key: string]: string[] }
+  )
+
+  const [
+    access
+  ] = [
+    useWatch<string>('access', drawerForm)
+  ]
   const [osVendorOptionList, setOsVendorOptionList] = useState([] as {
     value: string, label: string
   }[])
@@ -52,23 +70,30 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
     ruleDrawerEditMode ? drawerForm.getFieldValue('fromClient') : false
   )
   const [fromClientValue, setFromClientValue] = useState(
-    ruleDrawerEditMode ? drawerForm.getFieldValue('fromClientValue') : 0
+    ruleDrawerEditMode ? drawerForm.getFieldValue('fromClientValue') : 200
   )
   const [toClient, setToClient] = useState(
     ruleDrawerEditMode ? drawerForm.getFieldValue('toClient') : false
   )
   const [toClientValue, setToClientValue] = useState(
-    ruleDrawerEditMode ? drawerForm.getFieldValue('toClientValue') : 0
+    ruleDrawerEditMode ? drawerForm.getFieldValue('toClientValue') : 200
   )
 
   useEffect(() => {
+    const tempOsVendor = drawerForm.getFieldValue('tempOsVendor')
     setOsVendorOptionList([
       { value: 'Please select...', label: $t({ defaultMessage: 'Please select...' }) },
       ...getOsVendorOptions(deviceType).map(option => ({
-        value: option, label: $t(osVenderLabelMapping[option as OsVendorEnum])
+        value: option,
+        label: $t(osVenderLabelMapping[option as OsVendorEnum]),
+        disabled: isDeviceOSEnabled(
+          deviceType,
+          option,
+          deviceOSMappingTable,
+          ruleDrawerEditMode ? tempOsVendor : '')
       }))
     ] as { value: string, label: string }[])
-  }, [deviceType])
+  }, [deviceType, osVendor])
 
   const EmptyElement = (props: { access: AccessStatus }) => {
     drawerForm.setFieldValue('deviceOSAccess', props.access)
@@ -116,7 +141,7 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
         step={0.1}
         min={0.1}
         max={200}
-        defaultValue={fromClientValue}
+        defaultValue={fromClientValue ?? 200}
         onChange={(value) => {
           drawerForm.setFieldValue('fromClientValue', value)
           setFromClientValue(value)
@@ -142,7 +167,7 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
         step={0.1}
         min={0.1}
         max={200}
-        defaultValue={toClientValue}
+        defaultValue={toClientValue ?? 200}
         onChange={(value) => {
           drawerForm.setFieldValue('toClientValue', value)
           setToClientValue(value)
@@ -198,7 +223,9 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
         options={[
           { value: 'Select...', label: $t({ defaultMessage: 'Select...' }) },
           ...getDeviceTypeOptions().map(option => ({
-            value: option, label: $t(deviceTypeLabelMapping[option as DeviceTypeEnum])
+            value: option,
+            label: $t(deviceTypeLabelMapping[option as DeviceTypeEnum]),
+            disabled: isDeviceTypeEnabled(option, deviceOSMappingTable)
           }))
         ]}
       />}
@@ -223,18 +250,18 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
         options={osVendorOptionList}
       />}
     />
-    <DrawerFormItem
+    {access !== AccessStatus.BLOCK && <DrawerFormItem
       name='rateLimit'
       label={$t({ defaultMessage: 'Rate Limit' })}
       initialValue={''}
       children={rateLimitContent}
-    />
-    <DrawerFormItem
+    />}
+    {access !== AccessStatus.BLOCK && <DrawerFormItem
       name='vlan'
       label={$t({ defaultMessage: 'VLAN' })}
       initialValue={''}
       children={<Input />}
-    />
+    />}
   </Form>
 }
 

@@ -59,6 +59,12 @@ export const GenDetailsColumn = (props: { row: DeviceOSRule }) => {
   const { $t } = useIntl()
   const { row } = props
 
+  if (row.access === AccessStatus.BLOCK) {
+    return <div>
+      {$t({ defaultMessage: 'All Traffic is blocked' })}
+    </div>
+  }
+
   const linkArray = []
   if (row.details.upLink >= 0) {
     linkArray.push($t({ defaultMessage: 'Uplink - {upLink} Mbps' }, {
@@ -289,15 +295,18 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
 
 
   const handleEditDetailsInfo = (rule: DeviceOSRule) => {
-    drawerForm.setFieldValue('details', rule.details)
-    drawerForm.setFieldValue('vlan', rule.details.vlan)
-    if (rule.details.upLink !== -1) {
-      drawerForm.setFieldValue('fromClient', true)
-      drawerForm.setFieldValue('fromClientValue', rule.details.upLink)
-    }
-    if (rule.details.downLink !== -1) {
-      drawerForm.setFieldValue('toClient', true)
-      drawerForm.setFieldValue('toClientValue', rule.details.downLink)
+    drawerForm.setFieldValue('access', rule.access)
+    if (rule.access !== AccessStatus.BLOCK) {
+      drawerForm.setFieldValue('details', rule.details)
+      drawerForm.setFieldValue('vlan', rule.details.vlan)
+      if (rule.details.upLink && rule.details.upLink !== -1) {
+        drawerForm.setFieldValue('fromClient', true)
+        drawerForm.setFieldValue('fromClientValue', rule.details.upLink)
+      }
+      if (rule.details.downLink && rule.details.downLink !== -1) {
+        drawerForm.setFieldValue('toClient', true)
+        drawerForm.setFieldValue('toClientValue', rule.details.downLink)
+      }
     }
   }
 
@@ -354,9 +363,11 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
           action: rule.access,
           deviceType: rule.deviceType,
           osVendor: rule.osVendor,
-          uploadRateLimit: rule.details.upLink >= 0 ? rule.details.upLink : null,
-          downloadRateLimit: rule.details.downLink >= 0 ? rule.details.downLink : null,
-          vlan: rule.details.vlan
+          uploadRateLimit: rule.access !== AccessStatus.BLOCK && rule.details.upLink >= 0
+            ? rule.details.upLink : null,
+          downloadRateLimit: rule.access !== AccessStatus.BLOCK && rule.details.downLink >= 0
+            ? rule.details.downLink : null,
+          vlan: rule.access !== AccessStatus.BLOCK ? rule.details.vlan : null
         }
       })],
       description: null
@@ -401,6 +412,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       drawerForm.setFieldValue('ruleName', editRow.ruleName)
       drawerForm.setFieldValue('deviceType', editRow.deviceType)
       drawerForm.setFieldValue('osVendor', editRow.osVendor)
+      drawerForm.setFieldValue('tempOsVendor', editRow.osVendor)
       handleEditDetailsInfo(editRow)
       clearSelection()
     }
