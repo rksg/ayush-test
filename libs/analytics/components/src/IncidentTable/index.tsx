@@ -171,7 +171,7 @@ export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
       dataIndex: 'subCategory',
       key: 'subCategory',
       sorter: { compare: sortProp('subCategory', defaultSort) },
-      show: false
+      filterable: true
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Client Impact' })),
