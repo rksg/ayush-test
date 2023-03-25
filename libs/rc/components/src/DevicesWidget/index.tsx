@@ -2,11 +2,13 @@ import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { Card, DonutChart, getDeviceConnectionStatusColorsv2, GridCol, GridRow, StackedBarChart } from '@acx-ui/components'
-import type { DonutChartData }                                                                    from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                 from '@acx-ui/feature-toggle'
-import { ChartData }                                                                              from '@acx-ui/rc/utils'
-import { TenantLink, useNavigateToPath }                                                          from '@acx-ui/react-router-dom'
+import { Card, DonutChart,
+  getDeviceConnectionStatusColorsv2,
+  GridCol, GridRow, StackedBarChart }    from '@acx-ui/components'
+import type { DonutChartData }           from '@acx-ui/components'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
+import { ChartData }                     from '@acx-ui/rc/utils'
+import { TenantLink, useNavigateToPath } from '@acx-ui/react-router-dom'
 
 export  { seriesMappingAP } from './helper'
 
@@ -61,15 +63,19 @@ export function DevicesWidgetv2 (props: {
   const { $t } = useIntl()
   const onArrowClick = useNavigateToPath('/devices/')
   const { apStackedData,switchStackedData,apTotalCount,switchTotalCount } = props
-  const marginTop = '13px'
   return (
     <Card title={$t({ defaultMessage: 'Devices' })}
       onArrowClick={props.enableArrowClick ? onArrowClick : undefined}>
       <AutoSizer>
         {({ height, width }) => (
-          <div style={{ display: 'block', height, width }}>
-            <GridRow style={{ marginTop: '30px' }}>
-              <GridCol col={{ span: 9 }} style={{ marginTop: marginTop }}>
+          <div style={{
+            height,
+            width,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center' }}>
+            <GridRow style={{ display: 'flex', alignItems: 'center' }}>
+              <GridCol col={{ span: 9 }}>
                 { apTotalCount > 0
                   ? $t({ defaultMessage: 'Access Points' })
                   : $t({ defaultMessage: 'No Access Points' }) }
@@ -82,8 +88,7 @@ export function DevicesWidgetv2 (props: {
                         animation={false}
                         style={{
                           height: height / 2 - 30,
-                          width: width / 2 - 15,
-                          minWidth: width / 2 - 15
+                          width: width / 2 - 15
                         }}
                         data={apStackedData}
                         showLabels={false}
@@ -94,7 +99,7 @@ export function DevicesWidgetv2 (props: {
                         {apTotalCount || 0}
                       </TenantLink>
                     </>
-                    : <div style={{ height: (height/2) - 30, paddingTop: '13px' }}>
+                    : <div style={{ height: (height/2) - 30, paddingTop: '1em' }}>
                       <TenantLink to={'/devices/wifi/add'}>
                         {$t({ defaultMessage: 'Add Access Point' })}
                       </TenantLink>
@@ -103,8 +108,8 @@ export function DevicesWidgetv2 (props: {
                 </Space>
               </GridCol>
             </GridRow>
-            <GridRow>
-              <GridCol col={{ span: 9 }} style={{ marginTop: marginTop }}>
+            <GridRow style={{ display: 'flex', alignItems: 'center' }}>
+              <GridCol col={{ span: 9 }}>
                 { switchTotalCount > 0
                   ? $t({ defaultMessage: 'Switches' })
                   : $t({ defaultMessage: 'No Switches' }) }
@@ -117,8 +122,7 @@ export function DevicesWidgetv2 (props: {
                         animation={false}
                         style={{
                           height: height/2 - 30,
-                          width: width/2 - 15,
-                          minWidth: width/2 - 15
+                          width: width/2 - 15
                         }}
                         data={switchStackedData}
                         showLabels={false}
@@ -129,8 +133,8 @@ export function DevicesWidgetv2 (props: {
                         {switchTotalCount || 0}
                       </TenantLink>
                     </>
-                    : <div style={{ height: (height/2) - 30, paddingTop: '13px' }}>
-                      <TenantLink to={'/devices/switch'}>
+                    : <div style={{ height: (height/2) - 30, paddingTop: '1em' }}>
+                      <TenantLink to={'/devices/switch/add'}>
                         {$t({ defaultMessage: 'Add Switch' })}
                       </TenantLink>
                     </div>

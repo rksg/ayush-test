@@ -170,7 +170,6 @@ export function ClientsWidgetV2 () {
       }
     })
   })
-  const marginTop = '13px'
   const { $t } = intl
   const { apClientCount, apData, switchClientCount, switchData } = queryResults.data
   return (
@@ -178,9 +177,14 @@ export function ClientsWidgetV2 () {
       <Card title={$t({ defaultMessage: 'Clients' })} onArrowClick={onArrowClick}>
         <AutoSizer>
           {({ height, width }) => (
-            <div style={{ display: 'block', height, width }}>
-              <GridRow style={{ marginTop: '30px' }}>
-                <GridCol col={{ span: 9 }} style={{ marginTop: marginTop }}>
+            <div style={{
+              height,
+              width,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center' }}>
+              <GridRow style={{ display: 'flex', alignItems: 'center' }}>
+                <GridCol col={{ span: 9 }}>
                   { apClientCount > 0
                     ? $t({ defaultMessage: 'Wi-Fi' })
                     : $t({ defaultMessage: 'No Wi-Fi Clients' }) }
@@ -210,8 +214,8 @@ export function ClientsWidgetV2 () {
                   </Space>
                 </GridCol>
               </GridRow>
-              <GridRow>
-                <GridCol col={{ span: 9 }} style={{ marginTop: marginTop }}>
+              <GridRow style={{ display: 'flex', alignItems: 'center' }}>
+                <GridCol col={{ span: 9 }}>
                   { switchClientCount > 0
                     ? $t({ defaultMessage: 'Wired' })
                     : $t({ defaultMessage: 'No Wired Clients' }) }
