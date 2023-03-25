@@ -1,45 +1,72 @@
-import { CSSProperties, useContext, useEffect, useState } from 'react'
+import { CSSProperties, useContext, useEffect, useRef, useState } from 'react'
 
 import { Form, Input }                              from 'antd'
 import _                                            from 'lodash'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
-import { Button, Modal, showActionModal, Table, TableProps } from '@acx-ui/components'
-import { DeleteOutlinedIcon }                                from '@acx-ui/icons'
+import { Modal, showActionModal, Table, TableProps } from '@acx-ui/components'
 
 
 import { BonjourFencingServiceContext }     from '../../BonjourFencingServiceTable'
 import { FieldsetItem, ProtocolRadioGroup } from '../../utils'
 
 interface CustomMappingTableEntry {
+  rowId?: string,
   id: string,
   customString: string,
   protocol: string
 }
 
 interface CustomMappingModalPorps {
+  isEditMode: boolean,
   visible: boolean,
-  setVisible: (v: boolean) => void,
+  curCustomString: CustomMappingTableEntry
+  usedCustomStrings: CustomMappingTableEntry[],
   handleUpdate: (data: CustomMappingTableEntry) => void,
-  usedCustomStrings: CustomMappingTableEntry[]
+  onCancel: () => void
+}
+
+const initCustomMappingFormData = {
+  customString: '',
+  protocol: 'tcp'
 }
 
 const CustomMappingModal = (props: CustomMappingModalPorps) => {
   const { $t } = useIntl()
   const [form] = Form.useForm()
-  const { visible, setVisible, handleUpdate, usedCustomStrings=[] } = props
+  const { visible, isEditMode, curCustomString, usedCustomStrings=[], handleUpdate } = props
   const [disabledAddBtn, setDisableAddBtn] = useState(true)
 
+  // reset form fields when modal is closed
+  const prevOpenRef = useRef(false)
+  useEffect(() => {
+    prevOpenRef.current = visible
+  }, [visible])
+
+  const prevOpen = prevOpenRef.current
+  useEffect(() => {
+    if (!visible && prevOpen) {
+      form.resetFields()
+      setDisableAddBtn(true)
+    }
+  }, [form, prevOpen, visible])
+
+  useEffect(() => {
+    form.setFieldsValue(curCustomString)
+  }, [form, curCustomString])
 
   const content = <Form
     form={form}
     layout='vertical'
-    initialValues={{}}
+    initialValues={initCustomMappingFormData}
     onFieldsChange={() => {
       const { customString } = form.getFieldsValue()
       setDisableAddBtn(!customString)
     }}
   >
+    <Form.Item name='rowId' noStyle>
+      <Input type='hidden' />
+    </Form.Item>
     <Form.Item required
       name='customString'
       label={$t({ defaultMessage: 'Custom string' })}
@@ -56,14 +83,8 @@ const CustomMappingModal = (props: CustomMappingModalPorps) => {
     />
   </Form>
 
-  const handleCancel = () => {
-    setVisible(false)
-    form.resetFields()
-    setDisableAddBtn(true)
-  }
-
   const handleOK = () => {
-    const { customString, protocol } = form.getFieldsValue()
+    const { customString, protocol, rowId } = form.getFieldsValue()
     const id = `_${customString}._${protocol}.`
 
     const isDuplicated = _.find(usedCustomStrings, (entry) => (entry.id === id))
@@ -86,22 +107,24 @@ const CustomMappingModal = (props: CustomMappingModalPorps) => {
       })
 
     } else {
-      handleUpdate({ id, customString, protocol })
-      form.resetFields()
-      setDisableAddBtn(true)
+      handleUpdate({ id, rowId, customString, protocol })
     }
   }
 
   return (
     <Modal
-      title={$t({ defaultMessage: 'Add Custom String' })}
+      title={isEditMode
+        ? $t({ defaultMessage: 'Edit Custom String' })
+        : $t({ defaultMessage: 'Add Custom String' })}
       visible={visible}
       centered
       maskClosable={false}
       keyboard={false}
       children={content}
-      okText={$t({ defaultMessage: 'Add' })}
-      onCancel={handleCancel}
+      okText={isEditMode
+        ? $t({ defaultMessage: 'Save' })
+        : $t({ defaultMessage: 'Add' })}
+      onCancel={props.onCancel}
       onOk={handleOK}
       okButtonProps={{
         disabled: disabledAddBtn
@@ -122,23 +145,50 @@ const CustomMappingTable = (props: CustomMappingTableProps) => {
 
   const { tableData = [], tableDataChanged, style } = props
 
-  const [showCustomMappingModal, setShowCustomMappingModal] = useState(false)
+  const [customMappingModalState, setCustomMappingModalState] = useState({
+    isEditMode: false,
+    visible: false,
+    curCustomString: {} as CustomMappingTableEntry,
+    usedCustomStrings: [] as CustomMappingTableEntry[]
+  })
 
 
   const handleAdd = () => {
-    setShowCustomMappingModal(true)
+    const usedCustomStrings = tableData
+
+    setCustomMappingModalState({
+      ...customMappingModalState,
+      isEditMode: false,
+      visible: true,
+      curCustomString: {} as CustomMappingTableEntry,
+      usedCustomStrings
+    })
   }
 
-  const handleDelete = (id: string) => {
-    const newData = tableData.filter(data => data.id !== id)
-    tableDataChanged(newData)
+  const updateRowId = (data: CustomMappingTableEntry) => {
+    return { ...data, rowId: data.id }
   }
 
-  const addTableData = (data: CustomMappingTableEntry) => {
-    const newData = [ ...tableData ]
-    newData.push(data)
-    tableDataChanged(newData)
-    setShowCustomMappingModal(false)
+  const updateTableData = (data: CustomMappingTableEntry) => {
+    const newTableData = [ ...tableData ]
+
+    const targetIdx = newTableData.findIndex((r: CustomMappingTableEntry) => r.rowId === data.rowId)
+
+    const newData = updateRowId(data)
+
+    if (targetIdx === -1) {
+      newTableData.push(newData)
+    } else {
+      newTableData.splice(targetIdx, 1, newData)
+    }
+
+    tableDataChanged(newTableData)
+
+    setCustomMappingModalState({
+      ...customMappingModalState,
+      visible: false
+    })
+
   }
 
   const columns: TableProps<CustomMappingTableEntry>['columns'] = [{
@@ -149,17 +199,6 @@ const CustomMappingTable = (props: CustomMappingTableProps) => {
     title: $t({ defaultMessage: 'Protocol' }),
     dataIndex: 'protocol',
     key: 'protocol'
-  }, {
-    key: 'action',
-    dataIndex: 'action',
-    render: (data, row) => <Button
-      key='delete'
-      role='deleteBtn'
-      ghost={true}
-      icon={<DeleteOutlinedIcon />}
-      style={{ height: '16px' }}
-      onClick={() => handleDelete(row.id)}
-    />
   }]
 
   const actions = [{
@@ -167,6 +206,45 @@ const CustomMappingTable = (props: CustomMappingTableProps) => {
     onClick: handleAdd,
     disabled: tableData && (tableData.length >= maxNumberOfCustomMappingLen)
   }]
+
+  const rowActions: TableProps<(typeof tableData)[0]>['rowActions'] = [
+    {
+      label: $t({ defaultMessage: 'Edit' }),
+      visible: (selectedRows) => selectedRows.length === 1,
+      disabled: customMappingModalState.visible,
+      onClick: (selectedRows, clearSelection) => {
+        const selectData = { ...selectedRows[0] }
+        const usedCustomStrings = tableData.filter( d => d.rowId !== selectData.rowId )
+
+        setCustomMappingModalState({
+          ...customMappingModalState,
+          isEditMode: true,
+          visible: true,
+          curCustomString: selectData,
+          usedCustomStrings
+        })
+
+        clearSelection()
+      }
+    }, {
+      label: $t({ defaultMessage: 'Delete' }),
+      disabled: customMappingModalState.visible,
+      onClick: (selectedRows, clearSelection) => {
+        const keys = selectedRows.map(row => row.rowId)
+        const newData = tableData.filter(d => keys.indexOf(d.rowId) === -1)
+        tableDataChanged(newData)
+
+        clearSelection()
+      }
+    }
+  ]
+
+  const handleCustomMappingModalCancel = () => {
+    setCustomMappingModalState({
+      ...customMappingModalState,
+      visible: false
+    })
+  }
 
   return (
     <Form.Item
@@ -182,16 +260,17 @@ const CustomMappingTable = (props: CustomMappingTableProps) => {
       }
       children={<>
         <CustomMappingModal
-          visible={showCustomMappingModal}
-          setVisible={setShowCustomMappingModal}
-          handleUpdate={addTableData}
-          usedCustomStrings={tableData}
+          {...customMappingModalState}
+          handleUpdate={updateTableData}
+          onCancel={handleCustomMappingModalCancel}
         />
-        <Table type='form'
-          rowKey='id'
+        <Table
+          rowKey='rowId'
           columns={columns}
           dataSource={tableData}
           actions={actions}
+          rowActions={rowActions}
+          rowSelection={{ type: 'checkbox' }}
         />
       </>
       }
@@ -210,8 +289,7 @@ export const CustomMappingFieldset = () => {
   useEffect(() => {
     const customStrings = currentService?.customStrings || []
     const initData = getTableDataFromCustomMapping(customStrings)
-    //console.log('===== set CustomMappingFieldset data =====')
-    //console.log(customStrings)
+
     setTableData(initData)
   }, [currentService])
 
@@ -220,6 +298,7 @@ export const CustomMappingFieldset = () => {
       const [customString, protocol] = data.split('.')
 
       return {
+        rowId: data,
         id: data,
         customString: customString.replace('_', ''),
         protocol: protocol.replace('_', '')
