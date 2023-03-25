@@ -27,8 +27,7 @@ interface CustomMappingModalPorps {
 }
 
 const initCustomMappingFormData = {
-  customString: '',
-  protocol: 'tcp'
+  customString: ''
 }
 
 const CustomMappingModal = (props: CustomMappingModalPorps) => {

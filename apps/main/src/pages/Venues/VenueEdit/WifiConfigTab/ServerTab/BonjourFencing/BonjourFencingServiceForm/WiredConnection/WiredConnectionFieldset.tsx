@@ -202,9 +202,9 @@ interface WiredRulesModalProps {
   onCancel: () => void
 }
 
-const initWireedRuleFormData = {
+const initWiredRuleFormData = {
   name: '',
-  fencingRange: 'SAME_AP',
+  //fencingRange: 'SAME_AP',
   deviceMacAddresses: [],
   closestApMac: ''
 }
@@ -299,7 +299,7 @@ const WiredRulesModal = (props: WiredRulesModalProps) => {
   const content = <Form
     form={form}
     layout='vertical'
-    initialValues={initWireedRuleFormData}
+    initialValues={initWiredRuleFormData}
     onFieldsChange={validateFormData}
   >
     <Form.Item name='rowId' noStyle>
