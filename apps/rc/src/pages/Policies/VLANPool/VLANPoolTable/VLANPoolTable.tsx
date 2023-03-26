@@ -138,6 +138,7 @@ function useColumns () {
       sorter: true,
       defaultSortOrder: 'ascend',
       searchable: true,
+      fixed: 'left',
       render: function (data, row) {
         return (
           <TenantLink

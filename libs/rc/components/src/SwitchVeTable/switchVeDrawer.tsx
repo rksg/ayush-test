@@ -93,7 +93,13 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
 
   useEffect(()=>{
     if (isEditMode && editData && visible) {
-      form.setFieldsValue(editData)
+      form.setFieldsValue({
+        ...editData,
+        ...{
+          ingressAcl: editData.ingressAclName || '',
+          egressAcl: editData.egressAclName || ''
+        }
+      })
       setIsIncludeIpSetting(!_.isEmpty(editData.ipAddressType))
       setEnableDhcp(editData.ipAddressType === IP_ADDRESS_TYPE.DYNAMIC)
       if (disableIpSetting) {

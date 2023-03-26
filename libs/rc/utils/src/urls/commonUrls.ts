@@ -74,7 +74,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   clearAlarm: {
     // different method
-    // method: 'patch',
+    // method: 'PATCH',
     // url: '/alarms/:alarmId',
     // oldUrl: '/api/eventalarmapi/:tenantId/alarm/clear/:alarmId',
     // newApi: true
@@ -92,6 +92,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/aps/query',
     oldUrl: '/api/viewmodel/:tenantId/aps',
     newApi: true
+  },
+  getApGroupsListByGroup: {
+    method: 'post',
+    url: '/api/viewmodel/:tenantId/aps/grouped'
   },
   getApGroupList: {
     method: 'get',

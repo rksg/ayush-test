@@ -1,29 +1,35 @@
 import { isNull }                                    from 'lodash'
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
-import { noDataSymbol, AnalyticsFilter } from '@acx-ui/analytics/utils'
-import { GridRow, GridCol, Loader }      from '@acx-ui/components'
-import { formatter, intlFormats }        from '@acx-ui/formatter'
+import { AnalyticsFilter }          from '@acx-ui/analytics/utils'
+import { GridRow, GridCol, Loader } from '@acx-ui/components'
+import { useIsSplitOn, Features }   from '@acx-ui/feature-toggle'
+import { formatter, intlFormats }   from '@acx-ui/formatter'
+import { noDataDisplay }            from '@acx-ui/utils'
 
-import { useSummaryQuery }    from './services'
-import { Wrapper, Statistic } from './styledComponents'
+import { DrilldownSelection } from '..'
+
+import { useSummaryQuery }                        from './services'
+import { Wrapper, Statistic, UpArrow, DownArrow } from './styledComponents'
+
 
 interface BoxProps {
   type: string,
   title: MessageDescriptor
   value: string
   suffix?: string
-  // TODO: post GA
-  // isOpen: boolean
-  // onClick: () => void
+  isOpen: boolean
+  onClick: () => void
 }
 
 export const Box = (props: BoxProps) => {
+  const toggleEnable = useIsSplitOn(Features.HEALTH_DRILLDOWN)
   const { $t } = useIntl()
   const box = <Wrapper
     $type={props.type}
-    // TODO: post GA
-    // onClick={props.onClick}
+    $isOpen={props.isOpen}
+    $disabled={!toggleEnable}
+    onClick={props.onClick}
   >
     <Statistic
       $type={props.type}
@@ -31,13 +37,20 @@ export const Box = (props: BoxProps) => {
       value={props.value}
       suffix={props.suffix}
     />
-    {/* TODO: post GA, hide for now */}
-    {/* {props.isOpen ? <UpArrow $type={props.type}/> : <DownArrow $type={props.type}/>} */}
+    {toggleEnable
+      ? (props.isOpen)
+        ? <UpArrow $type={props.type}/>
+        : <DownArrow $type={props.type}/>
+      : null}
   </Wrapper>
   return box
 }
 
-export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
+export const SummaryBoxes = ({ filters, drilldownSelection, setDrilldownSelection }: {
+  filters: AnalyticsFilter,
+  drilldownSelection: DrilldownSelection,
+  setDrilldownSelection: (val: DrilldownSelection) => void
+}) => {
   const intl = useIntl()
   const { $t } = intl
   const payload = {
@@ -45,11 +58,10 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
     start: filters.startDate,
     end: filters.endDate
   }
-
-  // TODO: post GA
-  // const [ openType, setOpenType ] = useState<'stats' | 'ttc' | 'none'>('none')
-  // const toggleStats = () => setOpenType(openType !== 'stats' ? 'stats' : 'none')
-  // const toggleTtc = () => setOpenType(openType !== 'ttc' ? 'ttc' : 'none')
+  const toggleConnectionFailure = () => setDrilldownSelection(
+    drilldownSelection !== 'connectionFailure' ? 'connectionFailure' : 'none'
+  )
+  const toggleTtc = () => setDrilldownSelection(drilldownSelection !== 'ttc' ? 'ttc' : 'none')
 
   const queryResults = useSummaryQuery(payload, {
     selectFromResult: ({ data, ...rest }) => {
@@ -63,7 +75,7 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
         totalCount !== 0
       )
         ? $t(intlFormats.percentFormat, { value: (successCount / totalCount) })
-        : noDataSymbol
+        : noDataDisplay
       const failureCount = !isNull(totalCount) && !isNull(successCount)
         ? totalCount - successCount
         : null
@@ -72,14 +84,14 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
         ...rest,
         data: {
           totalCount: isNull(totalCount)
-            ? noDataSymbol : $t(intlFormats.countFormat, { value: totalCount }),
+            ? noDataDisplay : $t(intlFormats.countFormat, { value: totalCount }),
           successCount: isNull(successCount)
-            ? noDataSymbol : $t(intlFormats.countFormat, { value: successCount }),
+            ? noDataDisplay : $t(intlFormats.countFormat, { value: successCount }),
           failureCount: isNull(failureCount)
-            ? noDataSymbol : $t(intlFormats.countFormat, { value: failureCount }),
+            ? noDataDisplay : $t(intlFormats.countFormat, { value: failureCount }),
           successPercentage,
           averageTtc: isNull(averageTtc)
-            ? noDataSymbol : formatter('durationFormat')(averageTtc) as string
+            ? noDataDisplay : formatter('durationFormat')(averageTtc) as string
         }
       }
     }
@@ -90,30 +102,30 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
       type: 'successCount',
       title: defineMessage({ defaultMessage: 'Successful Connections' }),
       suffix: `/${queryResults.data.totalCount}`,
-      // isOpen: openType === 'stats',
-      // onClick: toggleStats,  TODO: post GA
+      isOpen: drilldownSelection === 'connectionFailure',
+      onClick: toggleConnectionFailure,
       value: queryResults.data.successCount
     },
     {
       type: 'failureCount',
       title: defineMessage({ defaultMessage: 'Failed Connections' }),
       suffix: `/${queryResults.data.totalCount}`,
-      // isOpen: openType === 'stats',
-      // onClick: toggleStats,  // TODO: post GA
+      isOpen: drilldownSelection === 'connectionFailure',
+      onClick: toggleConnectionFailure,
       value: queryResults.data.failureCount
     },
     {
       type: 'successPercentage',
       title: defineMessage({ defaultMessage: 'Connection Success Ratio' }),
-      // isOpen: openType === 'stats',
-      // onClick: toggleStats,  // TODO: post GA
+      isOpen: drilldownSelection === 'connectionFailure',
+      onClick: toggleConnectionFailure,
       value: queryResults.data.successPercentage
     },
     {
       type: 'averageTtc',
       title: defineMessage({ defaultMessage: 'Avg Time To Connect' }),
-      // isOpen: openType === 'ttc',
-      // onClick: toggleTtc,  // TODO: post GA
+      isOpen: drilldownSelection === 'ttc',
+      onClick: toggleTtc,
       value: queryResults.data.averageTtc
     }
   ]

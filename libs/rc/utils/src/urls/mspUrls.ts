@@ -8,6 +8,11 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/viewmodel/tenant/:tenantId/mspeclist',
     newApi: true
   },
+  getIntegratorCustomersList: {
+    method: 'post',
+    url: '/techpartners/mspecs/query',
+    newApi: true
+  },
   getMspDeviceInventory: {
     method: 'post',
     url: '/msps/:tenantId/ecInventories/query',
@@ -197,7 +202,7 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   },
   assignMspEcToIntegrator: {
     method: 'post',
-    // method: 'patch',
+    // method: 'PATCH',
     // url: '/mspCustomers/:mspEcTenantId/delegations'
     url: '/api/mspservice/tenant/assign/:mspIntegratorId'
   },
@@ -216,13 +221,13 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   deactivateMspEcAccount: {
-    // method: 'patch',
+    // method: 'PATCH',
     // url: /mspCustomers/:mspEcTenantId
     method: 'post',
     url: '/api/mspservice/tenant/:mspEcTenantId/deactivation'
   },
   reactivateMspEcAccount: {
-    // method: 'patch',
+    // method: 'PATCH',
     // url: /mspCustomers/:mspEcTenantId
     method: 'post',
     url: '/api/mspservice/tenant/:mspEcTenantId/reactivation'

@@ -275,7 +275,7 @@ export function SingleRadioSettings (props:{
 
       if (isManualSelect) {
         if (channelLength !== 1) {
-          errorMessage = $t({ defaultMessage: 'Please select one channels' })
+          errorMessage = $t({ defaultMessage: 'Please select one channel' })
         }
       } else if (channelLength < 2) {
         errorMessage = $t({ defaultMessage: 'Please select at least two channels' })
@@ -326,7 +326,7 @@ export function SingleRadioSettings (props:{
             />
           </Col>
           { context === 'venue' && !inherit5G && !disable &&
-          <Col offset={2} span={6} style={{ paddingTop: '20px' }}>
+          <Col offset={4} span={6} style={{ paddingTop: '20px' }}>
             <Button type='link' onClick={resetToDefaule}>
               {$t({ defaultMessage: 'Reset to Default Settings' })}
             </Button>
@@ -337,15 +337,15 @@ export function SingleRadioSettings (props:{
           <Col span={4}>
             <div>{$t({ defaultMessage: 'Channel selection:' })}</div>
           </Col>
-          {channelErrMsg &&
-            <Col span={6}>
+          <Col span={8}>
+            {channelErrMsg &&
               <div style={{ color: cssStr('--acx-semantics-red-50') }}>
                 {channelErrMsg}
               </div>
-            </Col>
-          }
+            }
+          </Col>
           {showChannelBarControlLink &&
-            <Col offset={6} span={6} style={{ paddingLeft: 'unset' }}>
+            <Col span={6} style={{ paddingLeft: 'unset' }}>
               <ChannelBarControlPopover
                 initValue={displayRadioBarSettings}
                 onChannelBarDisplayChanged={updateChannelBarDisplaySettings} />
@@ -356,11 +356,11 @@ export function SingleRadioSettings (props:{
           <Col span={14}>
             <div style={{ color: cssStr('--acx-neutrals-50') }}>
               {
-                (context === 'venue')?
+                $t(
                   // eslint-disable-next-line max-len
-                  $t({ defaultMessage: 'Selected channels will be available for radio broadcasting in this venue. Hover to see overlapping channels' }) :
-                  // eslint-disable-next-line max-len
-                  $t({ defaultMessage: 'Selected channels will be available for radio broadcasting in this AP. Hover to see overlapping channels' })
+                  { defaultMessage: 'Selected channels will be available for radio broadcasting in this {context}. Hover to see overlapping channels' },
+                  { context: (context === 'venue')? 'venue' : 'AP' }
+                )
               }
             </div>
           </Col>

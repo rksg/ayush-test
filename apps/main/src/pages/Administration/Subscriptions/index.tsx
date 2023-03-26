@@ -1,3 +1,4 @@
+import { Space }              from 'antd'
 import moment                 from 'moment-timezone'
 import { IntlShape, useIntl } from 'react-intl'
 
@@ -7,17 +8,19 @@ import {
   TableProps,
   showToast
 } from '@acx-ui/components'
-import { get }                       from '@acx-ui/config'
-import { useIsSplitOn, Features }    from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { get }                             from '@acx-ui/config'
+import { useIsSplitOn, Features }          from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }       from '@acx-ui/formatter'
 import {
   useGetEntitlementsListQuery,
-  useRefreshEntitlementsMutation
+  useRefreshEntitlementsMutation,
+  useInternalRefreshEntitlementsMutation
 } from '@acx-ui/rc/services'
 import {
   EntitlementUtil,
   Entitlement,
-  EntitlementDeviceType
+  EntitlementDeviceType,
+  AdministrationUrlsInfo
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
@@ -67,7 +70,9 @@ const SubscriptionTable = () => {
   const isEdgeEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
 
   const queryResults = useGetEntitlementsListQuery({ params })
+  const isNewApi = AdministrationUrlsInfo.getEntitlementSummary.newApi
   const [ refreshEntitlement ] = useRefreshEntitlementsMutation()
+  const [ internalRefreshEntitlement ] = useInternalRefreshEntitlementsMutation()
   const licenseTypeOpts = subscriptionTypeFilterOpts($t)
 
   const columns: TableProps<Entitlement>['columns'] = [
@@ -75,6 +80,7 @@ const SubscriptionTable = () => {
       title: $t({ defaultMessage: 'Subscription' }),
       dataIndex: 'deviceType',
       key: 'deviceType',
+      fixed: 'left',
       filterMultiple: false,
       filterValueNullable: true,
       filterable: licenseTypeOpts.filter(o =>
@@ -90,10 +96,14 @@ const SubscriptionTable = () => {
       dataIndex: 'deviceSubType',
       key: 'deviceSubType',
       render: function (_, row) {
-        if (row.deviceType === EntitlementDeviceType.SWITCH)
-          return EntitlementUtil.deviceSubTypeToText(row?.deviceSubType)
-        else
-          return EntitlementUtil.tempLicenseToString(row.tempLicense === true)
+        if (row.tempLicense === true) {
+          return EntitlementUtil.tempLicenseToString(true)
+        } else {
+          if (row.deviceType === EntitlementDeviceType.SWITCH)
+            return EntitlementUtil.deviceSubTypeToText(row?.deviceSubType)
+          else
+            return EntitlementUtil.tempLicenseToString(false)
+        }
       }
     },
     {
@@ -126,7 +136,12 @@ const SubscriptionTable = () => {
       key: 'timeLeft',
       render: function (_, row) {
         const remainingDays = EntitlementUtil.timeLeftInDays(row.expirationDate)
-        return EntitlementUtil.timeLeftValues(remainingDays)
+        const TimeLeftWrapper = remainingDays < 0
+          ? UI.Expired
+          : (remainingDays <= 60 ? UI.Warning : Space)
+        return <TimeLeftWrapper>{
+          EntitlementUtil.timeLeftValues(remainingDays)
+        }</TimeLeftWrapper>
       }
     },
     {
@@ -156,7 +171,7 @@ const SubscriptionTable = () => {
       label: $t({ defaultMessage: 'Refresh' }),
       onClick: async () => {
         try {
-          await refreshEntitlement({ params }).unwrap()
+          await (isNewApi ? refreshEntitlement : internalRefreshEntitlement)({ params }).unwrap()
           showToast({
             type: 'success',
             content: $t({

@@ -5,7 +5,7 @@ import { FormInstance } from 'antd'
 import _                from 'lodash'
 import toArray          from 'rc-util/lib/Children/toArray'
 
-import { noDataSymbol } from '@acx-ui/analytics/utils'
+import { noDataDisplay } from '@acx-ui/utils'
 
 import * as UI                                                  from './styledComponents'
 import { InternalStepFormProps, StepFormProps, StepsFormProps } from './types'
@@ -81,6 +81,6 @@ export type FieldSummaryProps <T = unknown> = {
 }
 
 StepsForm.FieldSummary = function FieldSummary <T> ({ value, convert }: FieldSummaryProps<T>) {
-  convert = convert ?? ((value) => String(value ?? noDataSymbol))
+  convert = convert ?? ((value) => String(value ?? noDataDisplay))
   return <span>{convert(value)}</span>
 }

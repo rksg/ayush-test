@@ -54,6 +54,6 @@ describe('Score', () => {
     expect(screen.queryByText('Pass')).toBeVisible()
     expect(screen.queryByText('Fail')).toBeVisible()
     expect(screen.queryByText('Error')).toBeVisible()
-    expect(screen.queryAllByText('-')).toHaveLength(4)
+    expect(screen.queryAllByText('--')).toHaveLength(4)
   })
 })

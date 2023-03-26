@@ -172,3 +172,15 @@ export const getNextScheduleTplTooltip = (venue: FirmwareVenue): string | undefi
   return schedule && schedule.versionInfo.version + ' (' + transform(schedule.versionInfo.category as FirmwareCategory) + ')'
 }
 
+export const isSwitchNextScheduleTooltipDisabled = (venue: FirmwareSwitchVenue) => {
+  return venue.nextSchedule
+}
+
+export const getSwitchNextScheduleTplTooltip = (venue: FirmwareSwitchVenue): string | undefined => {
+  if (venue.nextSchedule) {
+    // eslint-disable-next-line max-len
+    return venue.nextSchedule.version?.name + ' (' + transform(venue.nextSchedule.version?.category as FirmwareCategory) + ')'
+  }
+  return ''
+}
+

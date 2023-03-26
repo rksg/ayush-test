@@ -66,7 +66,7 @@ export const errorMessage = {
   CHECK_YOUR_CONNECTION: {
     title: defineMessage({ defaultMessage: 'Check Your Connection' }),
     content: defineMessage({
-      defaultMessage: 'Ruckus Cloud needs you to be online,<br></br>you appear to be offline.'
+      defaultMessage: 'RUCKUS One needs you to be online,<br></br>you appear to be offline.'
     })
   },
   COUNTRY_INVALID: {

@@ -88,6 +88,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
   const [queryPolicyId, setQueryPolicyId] = useState('')
   const [queryPolicyName, setQueryPolicyName] = useState('')
   const [requestId, setRequestId] = useState('')
+  const [skipFetch, setSkipFetch] = useState(true)
   const form = Form.useFormInstance()
   const [contentForm] = Form.useForm()
   const MAC_ADDRESS_LIMIT = 128
@@ -135,7 +136,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
     {
       params: { ...params, l2AclPolicyId: isOnlyViewMode ? onlyViewMode.id : l2AclPolicyId }
     },
-    { skip: !isOnlyViewMode && (l2AclPolicyId === '' || l2AclPolicyId === undefined) }
+    { skip: skipFetch }
   )
 
   const isViewMode = () => {
@@ -149,6 +150,10 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
 
     return !_.isNil(layer2PolicyInfo)
   }
+
+  useEffect(() => {
+    setSkipFetch(!isOnlyViewMode && (l2AclPolicyId === '' || l2AclPolicyId === undefined))
+  }, [isOnlyViewMode, l2AclPolicyId])
 
   useEffect(() => {
     if (editMode.isEdit && editMode.id !== '') {
