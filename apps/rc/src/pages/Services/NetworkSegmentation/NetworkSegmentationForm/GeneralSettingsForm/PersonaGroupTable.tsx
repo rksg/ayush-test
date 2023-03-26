@@ -47,7 +47,7 @@ export const PersonaGroupTable = (props: PersonaGroupTableProps) => {
       {
         personaGroupName: personaGroupData?.name,
         personaGroupId: personaGroupData?.id,
-        personaCount: personaGroupData?.personaCount,
+        personaCount: personaGroupData?.personaCount || 0,
         dpskName: dpskData?.name,
         dpskId: dpskData?.id,
         dpskNetworkCount: dpskData?.networkIds?.length
@@ -79,7 +79,7 @@ export const PersonaGroupTable = (props: PersonaGroupTableProps) => {
           <TenantLink to={getServiceDetailsLink({
             type: ServiceType.DPSK,
             oper: ServiceOperation.DETAIL,
-            serviceId: row.dpskId!,
+            serviceId: row.dpskId! || '',
             activeTab: DpskDetailsTabKey.OVERVIEW
           })}>
             {data}

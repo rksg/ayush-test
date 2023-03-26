@@ -3,8 +3,8 @@ import { Col, Form, Input, Row, Select } from 'antd'
 import { FormattedMessage, useIntl }     from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
-import { Alert, StepsForm, Tooltip, useStepFormContext }  from '@acx-ui/components'
-import { useGetPropertyConfigsQuery, useVenuesListQuery } from '@acx-ui/rc/services'
+import { Alert, StepsForm, Tooltip, useStepFormContext }                                   from '@acx-ui/components'
+import { useGetPropertyConfigsQuery, useGetVenueWithSetPropertyQuery, useVenuesListQuery } from '@acx-ui/rc/services'
 
 import { NetworkSegmentationGroupFormData } from '..'
 import { useWatch }                         from '../../useWatch'
@@ -46,6 +46,18 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
       selectFromResult: ({ data }) => {
         return {
           personaGroupId: data?.personaGroupId
+        }
+      }
+    }
+  )
+
+  const { filteredVenueOptions } = useGetVenueWithSetPropertyQuery(
+    venueOptions?.map(option => option.value) || [],
+    {
+      skip: !!!venueOptions,
+      selectFromResult: ({ data }) => {
+        return {
+          filteredVenueOptions: venueOptions?.filter(option => data?.includes(option.value))
         }
       }
     }
@@ -138,7 +150,7 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
                 loading={isVenueOptionsLoading}
                 onChange={onVenueChange}
                 placeholder={$t({ defaultMessage: 'Select...' })}
-                options={venueOptions}
+                options={filteredVenueOptions}
                 disabled={props.editMode}
               />
             }
