@@ -357,7 +357,8 @@ export const mockPropertyConfigs = {
 export const mockPersonaGroup = {
   id: 'testPersonaId',
   name: 'TestPersona',
-  personaCount: 2
+  personaCount: 2,
+  dpskPoolId: 'testDpskId'
 }
 
 export const mockDpsk = {

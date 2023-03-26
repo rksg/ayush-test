@@ -103,6 +103,7 @@ export const PersonaGroupTable = (props: PersonaGroupTableProps) => {
     ]}>
       <Table
         type='form'
+        rowKey='personaGroupId'
         columns={columns}
         dataSource={tableData}
       />

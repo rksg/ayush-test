@@ -18,7 +18,6 @@ import { DistributionSwitchTable }  from './DistributionSwitchTable'
 export function DistributionSwitchForm () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
-  // const form = Form.useFormInstance()
   const { form } = useStepFormContext<NetworkSegmentationGroupFormData>()
 
   const [openDrawer, setOpenDrawer] = useState(false)

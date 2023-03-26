@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import {
   Form,
-  Typography } from 'antd'
+  Typography
+} from 'antd'
 import { useIntl } from 'react-intl'
 
 import {

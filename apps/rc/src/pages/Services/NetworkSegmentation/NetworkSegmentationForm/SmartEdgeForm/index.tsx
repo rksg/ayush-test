@@ -151,7 +151,10 @@ export const SmartEdgeForm = () => {
                 />
               </>
             }
-            rules={[{ required: true }]}
+            rules={[{
+              required: true,
+              message: $t({ defaultMessage: 'Please enter SmartEdge' })
+            }]}
             children={
               <Select
                 loading={isEdgeOptionsLoading}
