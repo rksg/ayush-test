@@ -92,6 +92,7 @@ function useCardData (): CardDataProps[] {
   const params = useParams()
   const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
   const macRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
+  const isEdgeEnabled = useIsSplitOn(Features.EDGES)
 
   return [
     {
@@ -162,6 +163,14 @@ function useCardData (): CardDataProps[] {
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.LIST })),
       disabled: !supportApSnmp
+    },
+    {
+      type: PolicyType.TUNNEL_PROFILE,
+      category: RadioCardCategory.WIFI,
+      totalCount: 0,
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.LIST })),
+      disabled: !isEdgeEnabled
     }
   ]
 }
