@@ -87,6 +87,7 @@ export function ApNetworksTab () {
   return (
     <Loader states={[tableQuery]}>
       <Table
+        settingsId='aps-networks-table'
         columns={columns}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}

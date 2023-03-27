@@ -523,7 +523,6 @@ export const VenueFirmwareTable = (
     ]}>
       <Table
         columns={columns}
-        columnState={{ hidden: true }}
         dataSource={tableData}
         // eslint-disable-next-line max-len
         pagination={{ pageSize: 10000, position: [pageBotton as TablePaginationPosition , pageBotton as TablePaginationPosition] }}

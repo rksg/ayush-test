@@ -401,6 +401,7 @@ describe('Table component', () => {
   it('calls onResetState', async () => {
     const reset = jest.fn()
     render(<Table
+      settingsId='test-settings-id'
       columns={testColumns}
       dataSource={testData}
       extraSettings={[<div>setting element</div>]}
@@ -885,8 +886,8 @@ describe('Table component', () => {
     }
 
 
-    it('hide the columnSort', async () => {
-      render(<Table {...props} columnState={{ ...columnState, hidden: true }} />)
+    it('hide the columnSort by default', async () => {
+      render(<Table {...props} />)
 
       const listToolbar = await screen.findByRole('generic', {
         name: (name, element) => {
@@ -903,8 +904,8 @@ describe('Table component', () => {
       expect(listToolBarItem).toBeNull()
     })
 
-    it('show the columnSort by default', async () => {
-      render(<Table {...props} columnState={{ ...columnState }} />)
+    it('show the columnSort when settingsId given', async () => {
+      render(<Table {...props} settingsId='settings-id' />)
 
       const listToolbar = await screen.findByRole('generic', {
         name: (name, element) => {

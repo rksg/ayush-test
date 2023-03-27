@@ -197,11 +197,12 @@ const getDeleteMessage = (messageKey: string) => {
 /* eslint-enable max-len */
 
 interface NetworkTableProps {
+  settingsId?: string
   tableQuery: TableQuery<Network, RequestPayload<unknown>, unknown>,
   selectable?: boolean
 }
 
-export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
+export function NetworkTable ({ settingsId, tableQuery, selectable }: NetworkTableProps) {
   const isServicesEnabled = useIsSplitOn(Features.SERVICES)
   const intl = useIntl()
   const { $t } = intl
@@ -281,6 +282,7 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
       { isLoading: false, isFetching: isDeleteNetworkUpdating }
     ]}>
       <Table
+        settingsId={settingsId}
         columns={getCols(intl)}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}

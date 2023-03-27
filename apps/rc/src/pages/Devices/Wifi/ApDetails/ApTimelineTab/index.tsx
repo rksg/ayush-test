@@ -21,6 +21,7 @@ const Events = () => {
   const { serialNumber } = useApContext()
   const tableQuery = useEventsTableQuery({ serialNumber: [serialNumber] })
   return <EventTable
+    settingsId='ap-event-table'
     tableQuery={tableQuery}
     filterables={['severity', 'entity_type']}
     eventTypeMap={omit(eventTypeMapping, 'SWITCH')}
@@ -33,6 +34,7 @@ const Activities = () => {
   const tableQuery = useActivityTableQuery({ entityType: 'AP', entityId: serialNumber! })
 
   return <ActivityTable
+    settingsId='ap-activities-table'
     tableQuery={tableQuery}
     filterables={['status']}
     columnState={activityTableColumnState}

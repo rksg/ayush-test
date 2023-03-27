@@ -374,6 +374,7 @@ export function VenueNetworksTab () {
       { isLoading: false, isFetching: isDeleteNetworkUpdating }
     ]}>
       <Table
+        settingsId='venue-network-table'
         rowKey='id'
         actions={filterByAccess(actions)}
         // rowSelection={{

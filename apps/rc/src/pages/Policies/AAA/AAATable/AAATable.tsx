@@ -92,6 +92,7 @@ export default function AAATable () {
       />
       <Loader states={[tableQuery]}>
         <Table<AAAViewModalType>
+          settingsId='policies-aaa-table'
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}

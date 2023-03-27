@@ -59,6 +59,7 @@ export default function ClientIsolationAllowList () {
   return (
     <Loader states={[tableQuery]}>
       <Table<ClientIsolationListUsageByVenue>
+        settingsId='venue-client-isolation-table'
         columns={columns}
         dataSource={tableQuery.data?.data}
         onChange={tableQuery.handleTableChange}

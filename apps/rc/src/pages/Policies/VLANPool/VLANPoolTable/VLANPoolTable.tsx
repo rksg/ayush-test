@@ -97,6 +97,7 @@ export default function VLANPoolTable () {
       />
       <Loader states={[tableQuery]}>
         <Table<VLANPoolViewModelType>
+          settingsId='policies-vlan-pool-table'
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}

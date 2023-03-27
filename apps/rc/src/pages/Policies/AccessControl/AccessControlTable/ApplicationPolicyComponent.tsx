@@ -150,6 +150,7 @@ const ApplicationPolicyComponent = () => {
       onlyAddMode={addModeStatus}
     />
     <Table<ApplicationPolicy>
+      settingsId='policies-access-control-applications-table'
       columns={useColumns(networkFilterOptions, editMode, setEditMode)}
       enableApiFilter={true}
       dataSource={tableQuery.data?.data}

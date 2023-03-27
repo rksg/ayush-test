@@ -27,6 +27,7 @@ export const defaultColumnState = {
 }
 
 interface EventTableProps {
+  settingsId?: string
   tableQuery: TableQuery<Event, RequestPayload<unknown>, unknown>,
   searchables?: boolean | string[]
   filterables?: boolean | string[]
@@ -37,6 +38,7 @@ interface EventTableProps {
 }
 
 export const EventTable = ({
+  settingsId,
   tableQuery,
   searchables = true,
   filterables = true,
@@ -149,6 +151,7 @@ export const EventTable = ({
 
   return <Loader states={[tableQuery]}>
     <Table
+      settingsId={settingsId}
       rowKey='id'
       columns={columns.filter(({ key })=>!(omitColumns && omitColumns.includes(key)))}
       columnState={columnState || { defaultValue: defaultColumnState }}

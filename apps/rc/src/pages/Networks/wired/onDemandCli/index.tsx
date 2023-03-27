@@ -83,7 +83,6 @@ export function OnDemandCliTab () {
     ]}>
       <Table
         columns={columns}
-        columnState={{ hidden: true }}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}

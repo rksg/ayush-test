@@ -84,7 +84,7 @@ const searches = [
     return {
       result,
       title: $t({ defaultMessage: 'Networks' }),
-      component: <NetworkTable tableQuery={result} />
+      component: <NetworkTable settingsId='search-network-table' tableQuery={result} />
     }
   },
   (searchString: string, $t: IntlShape['$t']) => {
@@ -115,7 +115,12 @@ const searches = [
     return {
       result,
       title: $t({ defaultMessage: 'Events' }),
-      component: <EventTable tableQuery={result} searchables={false} filterables={false} />
+      component: <EventTable
+        settingsId='timeline-event-table'
+        tableQuery={result}
+        searchables={false}
+        filterables={false}
+      />
     }
   },
   (searchString: string, $t: IntlShape['$t']) => {
@@ -185,7 +190,7 @@ const searches = [
     return {
       result,
       title: $t({ defaultMessage: 'Switch Clients' }),
-      component: <SwitchClientTable tableQuery={result} />
+      component: <SwitchClientTable settingsId='switch-client-table' tableQuery={result} />
     }
   }
 ]

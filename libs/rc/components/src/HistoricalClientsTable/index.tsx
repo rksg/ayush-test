@@ -177,6 +177,7 @@ export const GlobalSearchHistoricalClientsTable = (props: {
   const tableQuery = props.tableQuery
   return (
     <Table
+      settingsId='search-historical-client-table'
       columns={getCols(useIntl())}
       dataSource={tableQuery?.data?.data}
       onChange={tableQuery?.handleTableChange}

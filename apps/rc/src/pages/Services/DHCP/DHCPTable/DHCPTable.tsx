@@ -217,7 +217,6 @@ function useColumns () {
           <Table<DHCPPool>
             type='compactBordered'
             style={{ width: 500 }}
-            columnState={{ hidden: true }}
             columns={poolColumns}
             dataSource={dhcpPools}
           />

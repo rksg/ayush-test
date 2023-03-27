@@ -722,7 +722,6 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       actions={filterByAccess(actions)}
       rowActions={filterByAccess(rowActions)}
       rowSelection={{ type: 'radio' }}
-      columnState={{ hidden: true }}
       components={{
         body: {
           wrapper: DraggableContainer,

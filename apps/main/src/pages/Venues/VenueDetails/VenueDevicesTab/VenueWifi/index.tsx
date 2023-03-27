@@ -291,6 +291,7 @@ export function VenueMeshApsTable () {
       tableQuery
     ]}>
       <Table
+        settingsId='venue-mesh-ap-table'
         columns={getCols(useIntl())}
         dataSource={transformData(tableQuery?.data?.data || [])}
         pagination={tableQuery.pagination}

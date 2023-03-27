@@ -39,10 +39,16 @@ const Details = () => {
       title
     })
   )
+  const id = [
+    'network-health',
+    clientType,
+    config?.authenticationMethod
+  ].join('-').toLowerCase()
   const stagesKeys = stages.map((s) => s.key) as TestStage[]
   return (
     <Loader states={[queryResults]}>
       <Table<TestResultByAP>
+        settingsId={id}
         columns={getTableColumns({
           isWirelessClient,
           stagesKeys,
