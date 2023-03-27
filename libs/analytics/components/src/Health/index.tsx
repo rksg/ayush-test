@@ -51,6 +51,7 @@ const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
             setDrilldownSelection={setDrilldownSelection}
           />
           <HealthDrillDown
+            filters={filters}
             drilldownSelection={drilldownSelection}
             setDrilldownSelection={setDrilldownSelection}
           />
