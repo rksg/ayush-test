@@ -64,7 +64,10 @@ interface JwtToken {
 
 const cache = new Map<string, JwtToken>()
 
-// Fetch JWT token payload data
+export function getJwtToken () {
+  return sessionStorage.getItem('jwt') || null
+}
+
 export function getJwtTokenPayload () {
   const jwt = getJwtToken()
 
@@ -97,20 +100,16 @@ export function getJwtTokenPayload () {
   }
 }
 
-export function getJwtToken () {
-  if (sessionStorage.getItem('jwt')) {
-    return sessionStorage.getItem('jwt')
+export function getJwtHeaders ({ ignoreDelegation = false }: { ignoreDelegation?: boolean } = {}) {
+  return {
+    ...(getJwtToken() && { Authorization: `Bearer ${getJwtToken()}` }),
+    ...(!ignoreDelegation && isDelegationMode() && { 'x-rks-tenantid': getTenantId() })
   }
-  return null
 }
 
 export async function loadImageWithJWT (imageId: string) {
   let gImgUrl = ''
-  const headers = {
-    mode: 'no-cors',
-    ...(getJwtToken() ? { Authorization: `Bearer ${getJwtToken()}` } : {}),
-    ...(isDelegationMode() ? { 'x-rks-tenantid': getTenantId() } : {})
-  }
+  const headers = { mode: 'no-cors', ...getJwtHeaders() }
   const url = `/api/file/tenant/${getTenantId()}/${imageId}/url`
   const result = await fetch(url, { headers }).then(function (response) {
     return response.json()

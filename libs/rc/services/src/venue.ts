@@ -63,7 +63,6 @@ import {
   RequestFormData
 } from '@acx-ui/rc/utils'
 import { baseVenueApi } from '@acx-ui/store'
-import { getJwtToken }  from '@acx-ui/utils'
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
@@ -285,10 +284,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return {
           ...req,
           headers: {
-            'accept': 'application/json, text/plain, */*',
-            'x-rks-tenantid': params?.tenantId,
-            'content-type': 'application/json; charset=UTF-8',
-            ...(getJwtToken() ? { Authorization: `Bearer ${getJwtToken()}` } : {})
+            ...req.headers,
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json; charset=UTF-8'
           },
           body: payload
         }

@@ -1,8 +1,12 @@
 import _                        from 'lodash'
 import { generatePath, Params } from 'react-router-dom'
 
-import { getTenantId }              from './getTenantId'
-import { getJwtToken, AccountTier } from './jwtToken'
+import { getTenantId } from './getTenantId'
+import {
+  getJwtToken,
+  getJwtHeaders,
+  AccountTier
+} from './jwtToken'
 
 export interface ApiInfo {
   url: string;
@@ -79,29 +83,14 @@ export const createHttpRequest = (
   apiInfo: ApiInfo,
   paramValues?: Params<string>,
   customHeaders?: Record<string, unknown>,
-  ignoreHeader?: boolean
+  ignoreDelegation?: boolean
 ) => {
-  let defaultHeaders = {
+  const headers = {
     'Content-Type': 'application/json',
-    'Accept': 'application/json'
+    'Accept': 'application/json',
+    ...customHeaders,
+    ...getJwtHeaders({ ignoreDelegation })
   }
-  const tokenHeader = {
-    Authorization: ''
-  }
-
-  const jwtToken = getJwtToken()
-  const tenantId = getTenantId()
-  if (jwtToken !== null) {
-    const tenantIdFromJwt = getTenantIdFromJwt(jwtToken as string)
-    const extraHeader = {
-      'x-rks-tenantid': tenantId
-    }
-    tokenHeader.Authorization = `Bearer ${jwtToken}`
-    defaultHeaders = (ignoreHeader || tenantIdFromJwt === tenantId)
-      ? { ...tokenHeader, ...defaultHeaders }
-      : { ...tokenHeader, ...defaultHeaders, ...extraHeader }
-  }
-  const headers = { ...defaultHeaders, ...customHeaders }
   const domain = (enableNewApi(apiInfo) && !isLocalHost()) ?
     window.location.origin.replace('//', '//api.') :
     window.location.origin

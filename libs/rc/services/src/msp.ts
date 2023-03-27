@@ -1,3 +1,4 @@
+import _      from 'lodash'
 import moment from 'moment-timezone'
 
 import {
@@ -28,8 +29,7 @@ import {
   downloadFile,
   ParentLogoUrl
 } from '@acx-ui/rc/utils'
-import { baseMspApi }  from '@acx-ui/store'
-import { getJwtToken } from '@acx-ui/utils'
+import { baseMspApi } from '@acx-ui/store'
 
 export const mspApi = baseMspApi.injectEndpoints({
   endpoints: (build) => ({
@@ -456,9 +456,12 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     exportDeviceInventory: build.mutation<{ data: BlobPart }, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(MspUrlsInfo.exportMspEcDeviceInventory, {
-          ...params
-        })
+        const req = createHttpRequest(
+          MspUrlsInfo.exportMspEcDeviceInventory,
+          { ...params },
+          {},
+          true
+        )
         return {
           ...req,
           responseHandler: async (response) => {
@@ -471,9 +474,8 @@ export const mspApi = baseMspApi.injectEndpoints({
           },
           body: payload,
           headers: {
-            'Content-Type': 'application/json',
-            'accept': 'application/json,text/plain,*/*',
-            ...(getJwtToken() ? { Authorization: `Bearer ${getJwtToken()}` } : {})
+            ...req.headers,
+            Accept: 'application/json,text/plain,*/*'
           }
         }
       }
@@ -498,9 +500,12 @@ export const mspApi = baseMspApi.injectEndpoints({
               ? 'application/pdf'
               : ''
 
-        const licenseUsageRptReq =
-          createHttpRequest(MspUrlsInfo.getGenerateLicenseUsageRpt,
-            { ...params })
+        const licenseUsageRptReq = createHttpRequest(
+          MspUrlsInfo.getGenerateLicenseUsageRpt,
+          { ...params },
+          {},
+          true
+        )
         licenseUsageRptReq.url += '/' + payload
         return {
           ...licenseUsageRptReq,
@@ -511,8 +516,8 @@ export const mspApi = baseMspApi.injectEndpoints({
             return { status: response.status }
           },
           headers: {
-            'Content-Type': contentType,
-            ...(getJwtToken() ? { Authorization: `Bearer ${getJwtToken()}` } : {})
+            ..._.omit(licenseUsageRptReq.headers, 'Accept'),
+            'Content-Type': contentType
           }
         }
       }

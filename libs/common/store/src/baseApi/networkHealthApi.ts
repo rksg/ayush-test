@@ -1,14 +1,14 @@
 import { createApi }               from '@reduxjs/toolkit/query/react'
 import { graphqlRequestBaseQuery } from '@rtk-query/graphql-request-base-query'
 
-import { getJwtToken } from '@acx-ui/utils'
+import { getJwtHeaders } from '@acx-ui/utils'
 
 // eslint-disable-next-line max-len
 export const networkHealthApiURL = `${window.location.origin}/api/a4rc/api/rsa-mlisa-service-guard/graphql`
 
 const baseQuery = graphqlRequestBaseQuery({
   url: networkHealthApiURL,
-  ...(getJwtToken() ? { requestHeaders: { Authorization: `Bearer ${getJwtToken()}` } } : {})
+  requestHeaders: getJwtHeaders()
 })
 
 export type NetworkHealthBaseQuery = typeof baseQuery
