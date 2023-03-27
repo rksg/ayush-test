@@ -4,12 +4,13 @@ import { useIntl }                                                              
 import { useParams }                                                                                        from 'react-router-dom'
 import { SortableContainer, SortableElement, SortableHandle, SortableElementProps, SortableContainerProps } from 'react-sortable-hoc'
 
-import { Loader, Table, TableProps }                              from '@acx-ui/components'
-import { Drag }                                                   from '@acx-ui/icons'
+import { Loader, Table, TableProps }                                                                  from '@acx-ui/components'
+import { Drag }                                                                                       from '@acx-ui/icons'
+import { SimpleListTooltip }                                                                          from '@acx-ui/rc/components'
 import {
-  useAdaptivePolicyListQuery,
+  useAdaptivePolicyListQuery, useAdaptivePolicySetListQuery,
   useGetPrioritizedPoliciesQuery,
-  useLazyGetConditionsInPolicyQuery, usePolicyTemplateListQuery
+  useLazyGetConditionsInPolicyQuery, useLazyGetPrioritizedPoliciesQuery, usePolicyTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
   AdaptivePolicy,
@@ -34,10 +35,12 @@ const AccessPolicyTable = (props: AccessPolicyTableProps) => {
 
   const [conditionCountMap, setConditionCountMap] = useState(new Map())
   const [templateIdMap, setTemplateIdMap] = useState(new Map())
+  const [policySetPoliciesMap, setPolicySetPoliciesMap] = useState(new Map())
 
   const [getConditionsPolicy] = useLazyGetConditionsInPolicyQuery()
 
-  const { data: templateList } = usePolicyTemplateListQuery({ payload: {
+  // eslint-disable-next-line max-len
+  const { data: templateListData, isLoading: isGetTemplateListLoading } = usePolicyTemplateListQuery({ payload: {
     page: '1',
     pageSize: '1000',
     sortField: 'name',
@@ -57,35 +60,57 @@ const AccessPolicyTable = (props: AccessPolicyTableProps) => {
     }
   })
 
+  // eslint-disable-next-line max-len
+  const { data: adaptivePolicySetList } = useAdaptivePolicySetListQuery({ payload: { page: '1', pageSize: '2147483647' } })
+
+  const [getPrioritizedPolicies] = useLazyGetPrioritizedPoliciesQuery()
+
   useEffect(() => {
-    if(!adaptivePolicyListTableQuery.data || !prioritizedPoliciesData?.data)
+    // eslint-disable-next-line max-len
+    if(adaptivePolicyListTableQuery.isLoading || isGetPrioritizedPoliciesLoading || isGetTemplateListLoading)
       return
 
-    const accessPolicy = [] as AdaptivePolicy []
-    const allPolicyList = adaptivePolicyListTableQuery.data?.data
     const templateIds = new Map()
-    templateList?.data.forEach( template => {
+    templateListData?.data.forEach( template => {
       templateIds.set(template.ruleType, template.id)
     })
     setTemplateIdMap(templateIds)
 
-    const conditionCountMap = new Map()
-    prioritizedPoliciesData?.data.forEach(policy => {
-      const { policyId } = policy
-      const findPolicy = allPolicyList.find(p => p.id === policyId)
-      if(findPolicy) {
-        accessPolicy.push(findPolicy)
-        // eslint-disable-next-line max-len
-        getConditionsPolicy({ params: { policyId: policyId, templateId: templateIds.get(findPolicy.policyType) } })
-          .unwrap()
-          .then(result => {
-            conditionCountMap.set(policyId, result.data.length ?? 0)
-          })
+
+    const accessPolicy: AdaptivePolicy[] = []
+    prioritizedPoliciesData?.data.forEach(item => {
+      const policy = adaptivePolicyListTableQuery.data?.data.find(p => p.id === item.policyId)
+      if(policy) {
+        accessPolicy.push(policy)
       }
     })
-    setConditionCountMap(conditionCountMap)
     setAccessPolicies(accessPolicy)
-  }, [adaptivePolicyListTableQuery.data, prioritizedPoliciesData?.data])
+  }, [adaptivePolicyListTableQuery.data, prioritizedPoliciesData?.data, templateListData])
+
+  useEffect(() => {
+    accessPolicies.forEach(policy => {
+      const id = policy.id
+      // eslint-disable-next-line max-len
+      getConditionsPolicy({ params: { policyId: policy.id, templateId: templateIdMap.get(policy.policyType) } })
+        .then(result => {
+          setConditionCountMap(map => new Map(map.set(id, result.data?.data.length ?? 0)))
+        })
+    })
+  }, [accessPolicies])
+
+  useEffect(() => {
+    if(adaptivePolicySetList) {
+      adaptivePolicySetList.data.forEach(policySet => {
+        getPrioritizedPolicies({ params: { policySetId: policySet.id } })
+          .then(result => {
+            if (result.data) {
+              const policies : string []= result.data.data.map(p => p.policyId)
+              setPolicySetPoliciesMap(map => new Map(map.set(policySet.name, policies)))
+            }
+          })
+      })
+    }
+  }, [adaptivePolicySetList])
 
   const DragHandle = SortableHandle(() =>
     <Drag style={{ cursor: 'grab', color: '#6e6e6e' }} />
@@ -130,8 +155,15 @@ const AccessPolicyTable = (props: AccessPolicyTableProps) => {
       key: 'policySetMembership',
       dataIndex: 'policySetMembership',
       align: 'center',
-      render: function () {
-        return '0'
+      render: (data, row) => {
+        const policySets = [] as string []
+        policySetPoliciesMap.forEach((value, key) => {
+          if(value.find((item: string) => item === row.id)){
+            policySets.push(key)
+          }
+        })
+        return policySets.length === 0 ? '0' :
+          <SimpleListTooltip items={policySets} displayText={policySets.length} />
       }
     },
     {

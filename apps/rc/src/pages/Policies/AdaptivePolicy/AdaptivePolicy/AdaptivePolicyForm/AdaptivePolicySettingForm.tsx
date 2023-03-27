@@ -7,7 +7,7 @@ import { v4 as uuidv4 }              from 'uuid'
 
 import { Button, Descriptions, GridCol, GridRow, Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
 import {
-  useLazyAdaptivePolicyLisByQueryQuery,
+  useLazyAdaptivePolicyListByQueryQuery,
   useLazyGetRadiusAttributeGroupQuery,
   usePolicyTemplateListQuery
 } from '@acx-ui/rc/services'
@@ -21,34 +21,6 @@ import {
 
 import { AccessConditionDrawer }            from './AccessConditionDrawer'
 import { RadiusAttributeGroupSelectDrawer } from './RadiusAttributeGroupSelectDrawer'
-
-function useColumns () {
-  const { $t } = useIntl()
-  const columns: TableProps<AccessCondition>['columns'] = [
-    {
-      key: 'name',
-      title: $t({ defaultMessage: 'Condition Type' }),
-      dataIndex: 'name',
-      render: function (data, row) {
-        return row.name
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Condition Value' }),
-      key: 'regexStringCriteria',
-      dataIndex: 'regexStringCriteria',
-      render: function (data, row) {
-        if(row.evaluationRule.criteriaType === CriteriaOption.DATE_RANGE) {
-        // eslint-disable-next-line max-len
-          return `${row.evaluationRule.dateRangeCriteria?.when} ${row.evaluationRule.dateRangeCriteria?.startTime} - ${row.evaluationRule.dateRangeCriteria?.endTime}`
-        } else {
-          return row.evaluationRule.regexStringCriteria
-        }
-      }
-    }
-  ]
-  return columns
-}
 
 interface AdaptivePolicySettingFormProps {
   editMode?: boolean,
@@ -74,7 +46,7 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
   const form = Form.useFormInstance()
   const { policyId } = useParams()
 
-  const [policyList] = useLazyAdaptivePolicyLisByQueryQuery()
+  const [getPolicySetList] = useLazyAdaptivePolicyListByQueryQuery()
 
   const { data: templateList, isLoading } = usePolicyTemplateListQuery({
     payload: {
@@ -85,12 +57,6 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
   })
 
   const [getAttributeGroup] = useLazyGetRadiusAttributeGroupQuery()
-
-  // useEffect(() => {
-  //   if(templateList?.data && templateList?.data.length > 0) {
-  //     form.setFieldValue('templateTypeId', templateList?.data[0].id)
-  //   }
-  // }, [templateList?.data])
 
   useEffect( () =>{
     if(attributeGroupId) {
@@ -105,14 +71,42 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
     }
   }, [attributeGroupId])
 
+  const useColumns = () => {
+    const { $t } = useIntl()
+    const columns: TableProps<AccessCondition>['columns'] = [
+      {
+        key: 'name',
+        title: $t({ defaultMessage: 'Condition Type' }),
+        dataIndex: 'name',
+        render: function (data, row) {
+          return row.name
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Condition Value' }),
+        key: 'conditionValue',
+        dataIndex: 'conditionValue',
+        render: function (data, row) {
+          if(row.evaluationRule.criteriaType === CriteriaOption.DATE_RANGE) {
+            // eslint-disable-next-line max-len
+            return `${row.evaluationRule?.when} ${row.evaluationRule?.startTime} - ${row.evaluationRule?.endTime}`
+          } else {
+            return row.evaluationRule.regexStringCriteria
+          }
+        }
+      }
+    ]
+    return columns
+  }
+
   const nameValidator = async (value: string) => {
-    const list = (await policyList({
+    const list = (await getPolicySetList({
       params: {
         excludeContent: 'false'
       },
       payload: {
         fields: [ 'name' ],
-        page: 1, pageSize: 10,
+        page: 0, pageSize: 10,
         filters: { name: value }
       }
     }).unwrap()).data.filter(n => n.id !== policyId).map(n => ({ name: n.name }))

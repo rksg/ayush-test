@@ -86,8 +86,7 @@ describe('RadiusAttributeGroupTable', () => {
     await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
 
     expect(await screen.findByText('Delete "' + groupList.content[0].name + '"?')).toBeVisible()
-    fireEvent.change(screen.getByRole('textbox', { name: /type the word "delete" to confirm:/i }),
-      { target: { value: 'Delete' } })
+
     await userEvent.click(await screen.findByRole('button', { name: /Delete group/i }))
 
     await waitFor(() => {

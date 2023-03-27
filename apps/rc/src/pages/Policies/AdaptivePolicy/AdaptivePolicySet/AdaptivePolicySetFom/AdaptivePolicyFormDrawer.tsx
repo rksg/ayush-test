@@ -44,7 +44,7 @@ export function AdaptivePolicyFormDrawer (props: AdaptivePolicyFormDrawerProps) 
               ...rule,
               policyId: addedPolicyId
             }
-          }).unwrap()
+          })
         }
       }
       showToast({

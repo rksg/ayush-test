@@ -1,4 +1,4 @@
-import { CriteriaOption, DataType, OperatorType } from '@acx-ui/rc/utils'
+import { CriteriaOption } from '@acx-ui/rc/utils'
 
 export const adaptivePolicyList = {
   paging: {
@@ -32,22 +32,81 @@ export const assignConditions = {
     {
       id: 'a81bb403-d5e6-4c2b-a525-3bfbabebb48c',
       policyId: '20214c9d-3334-471a-8fc5-c621f43b59b9',
-      templateAttributeId: 2017,
-      name: 'Called Station Id',
+      templateAttributeId: 2012,
+      templateAttribute: {
+        id: 2012,
+        name: 'Device MAC Address',
+        description: "A regular expression defining the device's MAC Address to limit this policy.",
+        attributeTextMatch: 'MacAddress',
+        attributeType: 'STRING'
+      },
       evaluationRule: {
         criteriaType: CriteriaOption.STRING,
-        regexStringCriteria: 'test*'
+        regexStringCriteria: 'AA:BB:CC:DD:EE:FF'
       }
     },
     {
-      id: 'a81bb403-d5e6-4c2b-a525-3bfbabebb123',
+      id: '18f71dd5-eb2f-4f5f-baa8-c33df6f4abd2',
       policyId: '20214c9d-3334-471a-8fc5-c621f43b59b9',
-      templateAttributeId: 2018,
-      name: 'Client Shortname',
+      templateAttributeId: 2010,
+      templateAttribute: {
+        id: 2010,
+        name: 'Specific Time',
+        // eslint-disable-next-line max-len
+        description: 'Allows the user to define a specific time range for which this policy will allow access',
+        attributeTextMatch: 'date-range-json',
+        attributeType: 'DATE_RANGE'
+      },
+      evaluationRule: {
+        criteriaType: CriteriaOption.DATE_RANGE,
+        when: 'All',
+        startTime: '09:15:25',
+        endTime: '11:59:59'
+      }
+    },
+    {
+      id: '18f71dd5-eb2f-4f5f-baa8-c33df6f4abdf',
+      policyId: '20214c9d-3334-471a-8fc5-c621f43b59b9',
+      templateAttributeId: 2013,
+      templateAttribute: {
+        id: 2013,
+        name: 'Radius User Name',
+        description: 'A regular expression defining the User-Name(s) to limit this policy. ' +
+          'Could be name, could be realm.',
+        attributeTextMatch: 'User-Name',
+        attributeType: 'regex'
+      },
       evaluationRule: {
         criteriaType: CriteriaOption.STRING,
-        regexStringCriteria: 'test*'
+        regexStringCriteria: 'AA:BB:CC:DD:EE:FF'
       }
+    }
+  ]
+}
+
+export const attributeGroupReturnByQuery = {
+  totalCount: 1,
+  page: 0,
+  pageSize: 10,
+  data: [
+    {
+      name: 'group1',
+      id: 'a954a698-d40b-ae3e-ddbd-e08210c8d4b9',
+      description: 'test',
+      attributeAssignments: [
+        {
+          attributeName: 'attributeName1',
+          attributeValue: 'test',
+          dataType: 'INTEGER',
+          operator: 'DOES_NOT_EXIST'
+        },
+        {
+          attributeName: 'attributeName2',
+          attributeValue: 'test',
+          dataType: 'INTEGER',
+          operator: 'DOES_NOT_EXIST'
+        }
+      ]
     }
   ]
 }
@@ -62,14 +121,14 @@ export const groupList = {
         {
           attributeName: 'attributeName1',
           attributeValue: 'test',
-          dataType: DataType.INTEGER,
-          operator: OperatorType.ADD_REPLACE
+          dataType: 'INTEGER',
+          operator: 'DOES_NOT_EXIST'
         },
         {
           attributeName: 'attributeName2',
           attributeValue: 'test',
-          dataType: DataType.INTEGER,
-          operator: OperatorType.DOES_NOT_EXIST
+          dataType: 'INTEGER',
+          operator: 'DOES_NOT_EXIST'
         }
       ]
     }

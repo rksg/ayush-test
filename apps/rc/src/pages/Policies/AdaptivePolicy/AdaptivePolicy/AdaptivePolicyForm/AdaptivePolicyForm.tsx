@@ -13,7 +13,7 @@ import {
   useUpdateAdaptivePolicyMutation, useUpdatePolicyConditionsMutation
 } from '@acx-ui/rc/services'
 import {
-  AccessCondition, CriteriaOption,
+  AccessCondition, CriteriaOption, EvaluationRule,
   getPolicyListRoutePath,
   getPolicyRoutePath,
   PolicyOperation,
@@ -64,7 +64,9 @@ export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
 
   useEffect(() =>{
     if(conditionsData && editMode) {
-      formRef.current?.setFieldValue('evaluationRules', conditionsData.data)
+      formRef.current?.setFieldValue('evaluationRules', conditionsData.data.map(item => {
+        return { ...item , name: item.templateAttribute?.name }
+      } ))
     }
   }, [conditionsData, editMode])
 
@@ -85,43 +87,19 @@ export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
         const conditions: AccessCondition [] = conditionsData?.data ?? []
 
         for (let rule of data.evaluationRules) {
-          const find = conditions.find(item => item.id === rule.id)
-          if(find){
-            // Update it if value was change
-            if(find.evaluationRule.criteriaType === CriteriaOption.STRING) {
-              if (find.evaluationRule.regexStringCriteria !==
-                rule.evaluationRule.regexStringCriteria) {
-                await updateConditions({
-                  params: { templateId: data.templateTypeId, policyId, conditionId: rule.id },
-                  payload: {
-                    evaluationRule: { ...rule.evaluationRule }
-                  }
-                }).unwrap()
-              }
-            } else { // CriteriaOption.DATE_RANGE
-              const criteria = find.evaluationRule.dateRangeCriteria
-              if (criteria?.when !==
-                rule.evaluationRule.dateRangeCriteria?.when ||
-                criteria?.startTime !==
-                rule.evaluationRule.dateRangeCriteria?.startTime ||
-                criteria?.endTime !==
-                rule.evaluationRule.dateRangeCriteria?.endTime) {
-                await updateConditions({
-                  params: { templateId: data.templateTypeId, policyId, conditionId: rule.id },
-                  payload: {
-                    evaluationRule: { ...rule.evaluationRule }
-                  }
-                }).unwrap()
-              }
+          const existRule = conditions.find(item => item.id === rule.id)
+          if(existRule){  // Update conditions if value was changed
+            if(evaluationRuleChange(existRule.evaluationRule, rule.evaluationRule)) {
+              await updateConditions({
+                params: { templateId: data.templateTypeId, policyId, conditionId: rule.id },
+                payload: {
+                  evaluationRule: { ...rule.evaluationRule }
+                }
+              }).unwrap()
             }
-          } else {
-            await addConditions({
-              params: { templateId: data.templateTypeId, policyId },
-              payload: {
-                ...rule,
-                policyId
-              }
-            }).unwrap()
+          } else { // Add conditions
+            await addConditions({ params: { templateId: data.templateTypeId, policyId },
+              payload: { ...rule, policyId } }).unwrap()
           }
         }
 
@@ -147,12 +125,9 @@ export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
 
         if(addedPolicyId) {
           for (let rule of data.evaluationRules) {
-            await addConditions({
-              params: { templateId: data.templateTypeId, policyId: addedPolicyId },
-              payload: {
-                ...rule,
-                policyId: addedPolicyId
-              }
+            // eslint-disable-next-line max-len
+            await addConditions({ params: { templateId: data.templateTypeId, policyId: addedPolicyId },
+              payload: { ...rule, policyId: addedPolicyId }
             }).unwrap()
           }
         }
@@ -172,6 +147,21 @@ export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
       console.log(error) // eslint-disable-line no-console
     } finally {
       setIsUpdating(false)
+    }
+  }
+
+  // eslint-disable-next-line max-len
+  const evaluationRuleChange = (oldEvaluationRule: EvaluationRule, newEvaluationRule: EvaluationRule) => {
+    if(oldEvaluationRule.criteriaType === CriteriaOption.STRING) {
+      return (oldEvaluationRule.regexStringCriteria !==
+        newEvaluationRule.regexStringCriteria)
+    } else { // CriteriaOption.DATE_RANGE
+      return (oldEvaluationRule?.when !==
+        newEvaluationRule.when ||
+        oldEvaluationRule?.startTime !==
+        newEvaluationRule.startTime ||
+        oldEvaluationRule?.endTime !==
+        newEvaluationRule.endTime)
     }
   }
 

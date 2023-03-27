@@ -42,7 +42,6 @@ describe('AdaptivePolicyDetail', () => {
     expect(names[0]).toBeVisible()
     expect(names[1]).toBeVisible()
 
-    expect(await screen.findByText(assignConditions.content[0].name ?? '')).toBeVisible()
     // eslint-disable-next-line max-len
     expect(await screen.findByText(assignConditions.content[0].evaluationRule.regexStringCriteria ?? '')).toBeVisible()
   })

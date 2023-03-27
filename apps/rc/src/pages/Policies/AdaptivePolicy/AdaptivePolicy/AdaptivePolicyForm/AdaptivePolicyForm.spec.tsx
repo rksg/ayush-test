@@ -39,6 +39,10 @@ describe('AdaptivePolicyForm', () => {
       rest.post(
         RulesManagementUrlsInfo.getPoliciesByQuery.url,
         (req, res, ctx) => res(ctx.json(adaptivePolicyList))
+      ),
+      rest.get(
+        RadiusAttributeGroupUrlsInfo.getAttributeGroups.url,
+        (req, res, ctx) => res(ctx.json(groupList))
       )
     )
   })
@@ -64,11 +68,17 @@ describe('AdaptivePolicyForm', () => {
       ),
       rest.post(
         RulesManagementUrlsInfo.createPolicy.url,
-        (req, res, ctx) => res(ctx.json({}))
+        (req, res, ctx) => res(ctx.json({
+          id: 'policy_id'
+        }))
       ),
       rest.post(
         RulesManagementUrlsInfo.addConditions.url,
         (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        RadiusAttributeGroupUrlsInfo.getAttributeGroup.url,
+        (req, res, ctx) => res(ctx.json(groupList.content[0]))
       )
     )
 
@@ -87,6 +97,9 @@ describe('AdaptivePolicyForm', () => {
     await userEvent.type(
       await screen.findByRole('textbox', { name: 'Policy Name' }), 'testPolicy'
     )
+
+    // select policy type
+    await userEvent.click(screen.getByRole('radio', { name: /RADIUS/i }))
 
     // add condition
     await userEvent.click(screen.getByText('Add'))
@@ -109,7 +122,7 @@ describe('AdaptivePolicyForm', () => {
     fireEvent.click(within(row).getByRole('radio'))
     await userEvent.click(screen.getByText('Select'))
 
-    await screen.findByText('Change Group')
+    await screen.findByText('group1')
 
     await userEvent.click(screen.getByText('Apply'))
 
@@ -137,6 +150,18 @@ describe('AdaptivePolicyForm', () => {
       rest.get(
         RulesManagementUrlsInfo.getConditionsInPolicy.url,
         (req, res, ctx) => res(ctx.json(assignConditions))
+      ),
+      rest.get(
+        RadiusAttributeGroupUrlsInfo.getAttributeGroup.url,
+        (req, res, ctx) => res(ctx.json(groupList.content[0]))
+      ),
+      rest.delete(
+        RulesManagementUrlsInfo.deleteConditions.url,
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.patch(
+        RulesManagementUrlsInfo.updateConditions.url,
+        (req, res, ctx) => res(ctx.json({}))
       )
     )
 
@@ -159,17 +184,32 @@ describe('AdaptivePolicyForm', () => {
     await userEvent.type(policyInput, 'testPolicy')
 
     // eslint-disable-next-line max-len
-    const row = await screen.findByRole('row', { name: new RegExp(assignConditions.content[0].name) })
+    let row = await screen.findByRole('row', { name: new RegExp(assignConditions.content[0].templateAttribute.name) })
     fireEvent.click(within(row).getByRole('radio'))
     await userEvent.click(screen.getByText('Edit'))
 
     await screen.findByText('Edit Access Condition')
+    let inputs = await screen.findAllByRole('textbox')
+    expect(inputs).toHaveLength(5)
+    await userEvent.type(inputs[4], 'testValueChange')
     await userEvent.click(screen.getByText('Done'))
 
+    // eslint-disable-next-line max-len
+    row = await screen.findByRole('row', { name: new RegExp(assignConditions.content[1].templateAttribute.name) })
+    fireEvent.click(within(row).getByRole('radio'))
+    await userEvent.click(screen.getByText('Edit'))
+
+    await screen.findByText('Edit Access Condition')
+    await userEvent.click(screen.getByRole('combobox', { name: 'When' }))
+    await userEvent.click(await screen.findByText('Weekdays'))
+    await userEvent.type(inputs[4], 'testValueChange')
+    await userEvent.click(screen.getByText('Done'))
+
+    // eslint-disable-next-line max-len
+    row = await screen.findByRole('row', { name: new RegExp(assignConditions.content[2].templateAttribute.name) })
     fireEvent.click(within(row).getByRole('radio'))
     await userEvent.click(screen.getByText('Delete'))
-
-    await screen.findByText('Delete "' + assignConditions.content[0].name + '"?')
+    await screen.findByText('Delete "' + assignConditions.content[2].templateAttribute.name + '"?')
     await userEvent.click(screen.getByText('Delete Attribute'))
 
     await userEvent.click(screen.getByText('Apply'))

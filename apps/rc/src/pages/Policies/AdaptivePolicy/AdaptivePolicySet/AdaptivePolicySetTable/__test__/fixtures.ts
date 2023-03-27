@@ -19,6 +19,31 @@ export const policySetList = {
   ]
 }
 
+export const adaptivePolicyList = {
+  paging: {
+    totalCount: 2,
+    page: 1,
+    pageSize: 2,
+    pageCount: 2
+  },
+  content: [
+    {
+      id: '6dc81c95-3687-4352-b25b-aa5b583e5e2a',
+      name: 'ap1',
+      description: 'for test',
+      policyType: 'RADIUS',
+      onMatchResponse: 'test'
+    },
+    {
+      id: '6dc81c95-3687-4352-b25b-aa5b583e5e23',
+      name: 'ap2',
+      description: 'for test',
+      policyType: 'RADIUS',
+      onMatchResponse: 'test'
+    }
+  ]
+}
+
 export const prioritizedPolicies = {
   paging: { totalCount: 3, page: 1, pageSize: 3, pageCount: 1 },
   content: [

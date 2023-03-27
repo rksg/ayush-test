@@ -4,8 +4,8 @@ import { Form,Space, Typography } from 'antd'
 import { useIntl }                from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
-import { Button, Card, GridCol, GridRow, Loader, PageHeader, Table, TableProps } from '@acx-ui/components'
-import { useGetAdaptivePolicySetQuery }                                          from '@acx-ui/rc/services'
+import { Button, Card, GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
+import { useGetAdaptivePolicySetQuery }                       from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink,
   getPolicyListRoutePath,
@@ -15,36 +15,36 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
-export interface NetworkTable {
-  id: string,
-  name: string,
-  type: string,
-  venues: number
-}
-
-function useColumns () {
-  const { $t } = useIntl()
-  const columns: TableProps<NetworkTable>['columns'] = [
-    {
-      key: 'name',
-      title: $t({ defaultMessage: 'Network Name' }),
-      dataIndex: 'name',
-      defaultSortOrder: 'ascend'
-    },
-    {
-      title: $t({ defaultMessage: 'Type' }),
-      key: 'type',
-      dataIndex: 'type'
-    },
-    {
-      key: 'venues',
-      title: $t({ defaultMessage: 'Venues' }),
-      dataIndex: 'venues'
-    }
-  ]
-
-  return columns
-}
+// TODO: need to update after integrate with network
+// export interface NetworkTable {
+//   id: string,
+//   name: string,
+//   type: string,
+//   venues: number
+// }
+//
+// function useColumns () {
+//   const { $t } = useIntl()
+//   const columns: TableProps<NetworkTable>['columns'] = [
+//     {
+//       key: 'name',
+//       title: $t({ defaultMessage: 'Network Name' }),
+//       dataIndex: 'name',
+//       defaultSortOrder: 'ascend'
+//     },
+//     {
+//       title: $t({ defaultMessage: 'Type' }),
+//       key: 'type',
+//       dataIndex: 'type'
+//     },
+//     {
+//       key: 'venues',
+//       title: $t({ defaultMessage: 'Venues' }),
+//       dataIndex: 'venues'
+//     }
+//   ]
+//   return columns
+// }
 
 export function AdaptivePolicySetDetail () {
   const { $t } = useIntl()
@@ -101,16 +101,17 @@ export function AdaptivePolicySetDetail () {
             </Form>
           </Loader>
         </Card>
-        <Card title={$t({ defaultMessage: 'Instance ({size})' }, // TODO: need to update after integrate with network
-          { size: 0 })}>
-          <div style={{ width: '100%' }}>
-            <Table
-              rowKey='id'
-              columns={useColumns()}
-              dataSource={[] as NetworkTable []}
-            />
-          </div>
-        </Card>
+        {/* TODO: need to update after integrate with network*/}
+        {/*<Card title={$t({ defaultMessage: 'Instance ({size})' },*/}
+        {/*  { size: 0 })}>*/}
+        {/*  <div style={{ width: '100%' }}>*/}
+        {/*    <Table*/}
+        {/*      rowKey='id'*/}
+        {/*      columns={useColumns()}*/}
+        {/*      dataSource={[] as NetworkTable []}*/}
+        {/*    />*/}
+        {/*  </div>*/}
+        {/*</Card>*/}
       </Space>
     </>
   )

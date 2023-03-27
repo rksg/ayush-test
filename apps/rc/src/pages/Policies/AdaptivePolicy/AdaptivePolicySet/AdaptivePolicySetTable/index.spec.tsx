@@ -10,7 +10,7 @@ import { Path }                                                   from '@acx-ui/
 import { Provider }                                               from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
-import { policySetList, prioritizedPolicies } from './__test__/fixtures'
+import { policySetList, prioritizedPolicies, adaptivePolicyList } from './__test__/fixtures'
 
 import AdaptivePolicySetTable from './index'
 
@@ -45,6 +45,10 @@ describe('AdaptivePolicySetTable', () => {
       rest.get(
         RulesManagementUrlsInfo.getPrioritizedPolicies.url,
         (req, res, ctx) => res(ctx.json(prioritizedPolicies))
+      ),
+      rest.get(
+        RulesManagementUrlsInfo.getPolicies.url,
+        (req, res, ctx) => res(ctx.json(adaptivePolicyList))
       )
     )
   })
@@ -81,9 +85,6 @@ describe('AdaptivePolicySetTable', () => {
     fireEvent.click(deleteButton)
 
     await screen.findByText('Delete "ps12"?')
-
-    fireEvent.change(screen.getByRole('textbox', { name: /type the word "delete" to confirm:/i }),
-      { target: { value: 'Delete' } })
 
     const deleteListButton = screen.getByRole('button', { name: 'Delete policy set' })
     await waitFor(() => expect(deleteListButton).toBeEnabled())

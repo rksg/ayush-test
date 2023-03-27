@@ -43,10 +43,8 @@ export default function H (props: AdaptivePolicySetFormProps) {
   const [isUpdating, setIsUpdating] = useState(false)
   const [accessPolicies, setAccessPolicies] = useState([] as AdaptivePolicy [])
 
-  // eslint-disable-next-line max-len
   const [addPrioritizedPolicy] = useAddPrioritizedPolicyMutation()
   const [deletePrioritizedPolicy] = useDeletePrioritizedPolicyMutation()
-  // eslint-disable-next-line max-len
   const [getPrioritizedPolicies] = useLazyGetPrioritizedPoliciesQuery()
 
   useEffect(() => {
@@ -70,25 +68,27 @@ export default function H (props: AdaptivePolicySetFormProps) {
         await updateAdaptiveSetPolicy({
           params: { policySetId: policyId },
           payload: policyPayload
-        }).unwrap()
+        })
 
-        let result =
-          await getPrioritizedPolicies({ params: { policySetId: policyId } }).unwrap()
+        const { data } = await getPrioritizedPolicies({
+          params: { policySetId: policyId } })
         // delete policies
-        if (result.data) {
-          const prioritizedPolicies = result.data
+        if (data) {
+          const prioritizedPolicies = data.data
           for(let policy of prioritizedPolicies) {
             if(accessPolicies.findIndex(p => p.id === policy.policyId) === -1) {
               await deletePrioritizedPolicy({
                 params: { policySetId: policyId, policyId: policy.policyId }
-              }).unwrap()
+              })
             }
           }
         }
+
         // get list again for newer prioritized policies and do add or update policies
-        result = await getPrioritizedPolicies({ params: { policySetId: policyId } }).unwrap()
-        if (result.data) {
-          const prioritizedPolicies = result.data
+        const { data: newPolicies } = await getPrioritizedPolicies(
+          { params: { policySetId: policyId } })
+        if (newPolicies) {
+          const prioritizedPolicies = newPolicies.data
           for (let i = 0; i < accessPolicies.length; i++) {
             const id = accessPolicies[i].id
             const index = prioritizedPolicies.findIndex(p => p.policyId === id)
@@ -96,7 +96,7 @@ export default function H (props: AdaptivePolicySetFormProps) {
               await addPrioritizedPolicy({
                 params: { policySetId: policyId, policyId: id },
                 payload: { policyId: id, priority: i }
-              }).unwrap()
+              })
             }
           }
         }
@@ -110,7 +110,7 @@ export default function H (props: AdaptivePolicySetFormProps) {
           await addPrioritizedPolicy({
             params: { policySetId: policySetId, policyId: policyId },
             payload: { policyId: policyId, priority: i }
-          }).unwrap()
+          })
         }
       }
       showToast({

@@ -1,8 +1,12 @@
+import { useEffect, useState } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
+import { SimpleListTooltip }                                     from '@acx-ui/rc/components'
 import {
   useDeleteRadiusAttributeGroupMutation,
+  useLazyAdaptivePolicyListByQueryQuery,
   useRadiusAttributeGroupListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -12,51 +16,7 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-
-
-function useColumns () {
-  const { $t } = useIntl()
-  const columns: TableProps<RadiusAttributeGroup>['columns'] = [
-    {
-      title: $t({ defaultMessage: 'Name' }),
-      key: 'name',
-      dataIndex: 'name',
-      sorter: true,
-      searchable: true,
-      defaultSortOrder: 'ascend',
-      render: function (data, row) {
-        return (
-          <TenantLink
-            to={getPolicyDetailsLink({
-              type: PolicyType.RADIUS_ATTRIBUTE_GROUP,
-              oper: PolicyOperation.DETAIL,
-              policyId: row.id!
-            })}
-          >{data}</TenantLink>
-        )
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Attributes' }),
-      key: 'attributes',
-      dataIndex: 'attributes',
-      align: 'center',
-      render: function (data, row) {
-        return row.attributeAssignments.length
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Policies' }),
-      key: 'policies',
-      dataIndex: 'policies',
-      align: 'center',
-      render: function () {
-        return '0'
-      }
-    }
-  ]
-  return columns
-}
+import { filterByAccess }                               from '@acx-ui/user'
 
 export default function RadiusAttributeGroupTable () {
   const { $t } = useIntl()
@@ -64,10 +24,35 @@ export default function RadiusAttributeGroupTable () {
   const tenantBasePath: Path = useTenantLink('')
 
   const RadiusAttributeGroupTable = () => {
+    const [policyMap, setPolicyMap] = useState(new Map())
+
     const tableQuery = useTableQuery({
       useQuery: useRadiusAttributeGroupListQuery,
       defaultPayload: {}
     })
+
+    const [getPolicySetList] = useLazyAdaptivePolicyListByQueryQuery()
+
+    useEffect( () =>{
+      if(tableQuery.isLoading)
+        return
+
+      tableQuery.data?.data.forEach(item => {
+        getPolicySetList({
+          params: { excludeContent: 'false' },
+          payload: {
+            fields: [ 'name' ],
+            page: 0, pageSize: 2000,
+            filters: { onMatchResponse: item.id }
+          }
+        }).then(result => {
+          if (result.data) {
+            const policies : string []= result.data.data.map(p => p.name)
+            setPolicyMap(map => new Map(map.set(item.id, policies)))
+          }
+        })
+      })
+    }, [tableQuery.data])
 
     const [
       deleteGroup,
@@ -89,6 +74,8 @@ export default function RadiusAttributeGroupTable () {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
+      // eslint-disable-next-line max-len
+      disabled: (([selectedItem]) => selectedItem ? policyMap.get(selectedItem.id).length !== 0 : false),
       onClick: ([{ name, id }], clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -114,6 +101,52 @@ export default function RadiusAttributeGroupTable () {
       }
     }]
 
+    function useColumns () {
+      const { $t } = useIntl()
+      const columns: TableProps<RadiusAttributeGroup>['columns'] = [
+        {
+          title: $t({ defaultMessage: 'Name' }),
+          key: 'name',
+          dataIndex: 'name',
+          sorter: true,
+          searchable: true,
+          defaultSortOrder: 'ascend',
+          render: function (data, row) {
+            return (
+              <TenantLink
+                to={getPolicyDetailsLink({
+                  type: PolicyType.RADIUS_ATTRIBUTE_GROUP,
+                  oper: PolicyOperation.DETAIL,
+                  policyId: row.id!
+                })}
+              >{data}</TenantLink>
+            )
+          }
+        },
+        {
+          title: $t({ defaultMessage: 'Attributes' }),
+          key: 'attributes',
+          dataIndex: 'attributes',
+          align: 'center',
+          render: function (data, row) {
+            return row.attributeAssignments.length
+          }
+        },
+        {
+          title: $t({ defaultMessage: 'Policies' }),
+          key: 'policies',
+          dataIndex: 'policies',
+          align: 'center',
+          render: function (data, row) {
+            const policies = policyMap.get(row.id) ?? [] as string []
+            return policies.length === 0 ? '0' :
+              <SimpleListTooltip items={policies} displayText={policies.length}/>
+          }
+        }
+      ]
+      return columns
+    }
+
     return (
       <Loader states={[
         tableQuery,
@@ -125,9 +158,9 @@ export default function RadiusAttributeGroupTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={rowActions}
+          rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
-          actions={[{
+          actions={filterByAccess([{
             label: $t({ defaultMessage: 'Add Group' }),
             onClick: () => {
               navigate({
@@ -138,7 +171,7 @@ export default function RadiusAttributeGroupTable () {
                 })
               })
             }
-          }]}
+          }])}
         />
       </Loader>
     )

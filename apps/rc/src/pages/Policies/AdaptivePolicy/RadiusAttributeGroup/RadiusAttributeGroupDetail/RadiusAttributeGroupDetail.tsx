@@ -1,11 +1,12 @@
-import React from 'react'
-
 import { Col, Form, Row, Space, Typography } from 'antd'
 import { useIntl }                           from 'react-intl'
 import { useParams }                         from 'react-router-dom'
 
 import { Button, Card, Loader, PageHeader } from '@acx-ui/components'
-import { useGetRadiusAttributeGroupQuery }  from '@acx-ui/rc/services'
+import {
+  useAdaptivePolicyListByQueryQuery,
+  useGetRadiusAttributeGroupQuery
+} from '@acx-ui/rc/services'
 import {
   AttributeAssignment,
   getPolicyDetailsLink, getPolicyListRoutePath,
@@ -21,6 +22,13 @@ export default function RadiusAttributeGroupDetail () {
   const { policyId } = useParams()
   const { data, isFetching, isLoading } = useGetRadiusAttributeGroupQuery({ params: { policyId } })
   const { Paragraph } = Typography
+
+  // eslint-disable-next-line max-len
+  const { data: policyListData } = useAdaptivePolicyListByQueryQuery({ params: { policyId, excludeContent: 'true' }, payload: {
+    fields: [ 'name' ],
+    page: 0, pageSize: 2000,
+    filters: { onMatchResponse: policyId }
+  } })
 
   const getAttributes = function (attributes: Partial<AttributeAssignment> [] | undefined) {
     return attributes?.map((attribute) => {
@@ -73,7 +81,7 @@ export default function RadiusAttributeGroupDetail () {
                   <Form.Item
                     label={$t({ defaultMessage: 'Members' })}
                   >
-                    <Paragraph>0</Paragraph>
+                    <Paragraph>{policyListData?.totalCount ?? 0}</Paragraph>
                   </Form.Item>
                 </Col>
               </Row>

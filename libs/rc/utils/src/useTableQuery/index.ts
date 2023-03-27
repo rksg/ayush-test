@@ -267,19 +267,20 @@ export interface NewAPITableResult<T>{
   paging: {
     page: number,
     pageSize: number,
-    totalCount: number
+    totalCount: number,
+    pageCount?: number
   }
 }
 
-export interface NewTableResultPolicy<T> {
-  content: T[]
-  paging: {
-    totalCount: number,
-    page: number,
-    pageSize: number,
-    pageCount: number
-  }
-}
+// export interface NewTableResultPolicy<T> {
+//   content: T[]
+//   paging: {
+//     totalCount: number,
+//     page: number,
+//     pageSize: number,
+//     pageCount: number
+//   }
+// }
 
 interface CreateNewTableHttpRequestProps {
   apiInfo: ApiInfo
@@ -308,8 +309,8 @@ export function transferNewResToTableResult<T> (newResult: NewAPITableResult<T>)
   }
 }
 
-// eslint-disable-next-line max-len
-export function transferToTableResultPolicy<T> (newResult: NewTableResultPolicy<T>): TableResult<T> {
+// TODO updated 'page' number after service changed
+export function transferToTableResultPolicy<T> (newResult: NewAPITableResult<T>): TableResult<T> {
   return {
     data: newResult.content,
     page: newResult.paging ? newResult.paging.page : 1,

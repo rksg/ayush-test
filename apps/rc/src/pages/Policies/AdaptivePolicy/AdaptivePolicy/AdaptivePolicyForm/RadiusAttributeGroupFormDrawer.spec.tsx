@@ -7,20 +7,16 @@ import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved, withi
 
 import { radiusAttributeList, vendorList } from '../AdaptivePolicyTable/__test__/fixtures'
 
-import { groupList }                      from './__test__/fixtures'
+import { attributeGroupReturnByQuery }    from './__test__/fixtures'
 import { RadiusAttributeGroupFormDrawer } from './RadiusAttributeGroupFormDrawer'
 
 describe('RadiusAttributeGroupFormDrawer', () => {
 
   it('should render drawer and add successfully', async () => {
     mockServer.use(
-      rest.get(
-        RadiusAttributeGroupUrlsInfo.getAttributeGroups.url,
-        (req, res, ctx) => res(ctx.json(groupList))
-      ),
       rest.post(
         RadiusAttributeGroupUrlsInfo.getAttributeGroupsWithQuery.url,
-        (req, res, ctx) => res(ctx.json(groupList))
+        (req, res, ctx) => res(ctx.json(attributeGroupReturnByQuery))
       ),
       rest.post(
         RadiusAttributeGroupUrlsInfo.getAttributesWithQuery.url,
@@ -51,38 +47,38 @@ describe('RadiusAttributeGroupFormDrawer', () => {
 
     // set group name
     const input = await screen.findByRole('textbox', { name: 'Policy Name' })
-    await userEvent.type(input, 'testPolicy')
+    await userEvent.type(input, 'testGroup')
 
-    // add attribute
-    let addButtons = await screen.findAllByText('Add')
-    const addAttributeBtn = addButtons[0]
-    await userEvent.click(addAttributeBtn)
+    let addBtns = screen.getAllByText('Add')
+    await userEvent.click(addBtns[0])
+    await screen.findByText('Attribute Type')
 
-    const comboBox = await screen.findByRole('combobox', { name: 'Attribute Type' })
-    await userEvent.click(comboBox)
+    const inputs = await screen.findAllByRole('textbox')
+    const attributeValue = inputs[2]
+    await userEvent.type(attributeValue, 'testValue')
+
+    const comboBoxes = await screen.findAllByRole('combobox')
+    await userEvent.click(comboBoxes[0])
 
     const treeNodes = await screen.findAllByRole('img')
     await userEvent.click(treeNodes[1])
 
     await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loading' }))
 
-    await userEvent.click(await screen.findByText(radiusAttributeList.data[0].name))
+    await userEvent.click(await screen.findByText('Foundry-Privilege-Level'))
 
-    // set attribute value
-    const inputs = await screen.findAllByRole('textbox')
-    await userEvent.type(inputs[2], 'testValue')
+    addBtns = screen.getAllByText('Add')
+    await userEvent.click(addBtns[2])
 
-    addButtons = await screen.findAllByText('Add')
-    await userEvent.click(addButtons[2])
-
-    // eslint-disable-next-line max-len
-    const row = await screen.findByRole('row', { name: new RegExp(radiusAttributeList.data[0].name) })
+    const row = await screen.findByRole('row', { name: new RegExp('Foundry-Privilege-Level') })
     fireEvent.click(within(row).getByRole('radio'))
-    await userEvent.click(await screen.findByText('Edit'))
+    await userEvent.click(screen.getByText('Edit'))
+
     await userEvent.click(await screen.findByText('Done'))
 
-    await userEvent.click(addButtons[1])
+    addBtns = screen.getAllByText('Add')
+    await userEvent.click(addBtns[1])
 
-    await screen.findByText('Group testPolicy was added')
+    await screen.findByText('Group testGroup was added')
   })
 })

@@ -5,12 +5,12 @@ import {
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType,
-  RadiusAttributeGroupUrlsInfo
+  RadiusAttributeGroupUrlsInfo, RulesManagementUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider }                                              from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { mockGroup }              from './__tests__/fixtures'
+import { mockGroup, policyList }  from './__tests__/fixtures'
 import RadiusAttributeGroupDetail from './RadiusAttributeGroupDetail'
 
 describe('RadiusAttributeGroupDetail', () => {
@@ -18,12 +18,18 @@ describe('RadiusAttributeGroupDetail', () => {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
     policyId: mockGroup.id
   }
-  mockServer.use(
-    rest.get(
-      RadiusAttributeGroupUrlsInfo.getAttributeGroup.url,
-      (req, res, ctx) => res(ctx.json(mockGroup))
+  beforeEach(() => {
+    mockServer.use(
+      rest.get(
+        RadiusAttributeGroupUrlsInfo.getAttributeGroup.url,
+        (req, res, ctx) => res(ctx.json(mockGroup))
+      ),
+      rest.post(
+        RulesManagementUrlsInfo.getPoliciesByQuery.url,
+        (req, res, ctx) => res(ctx.json(policyList))
+      )
     )
-  )
+  })
 
   // eslint-disable-next-line max-len
   const path = '/:tenantId/' + getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.DETAIL })

@@ -92,12 +92,13 @@ describe('AccessConditionDrawer', () => {
     const saveButton = screen.getByText('Done')
     expect(saveButton).toBeInTheDocument()
 
-    await screen.findByText(assignConditions.content[0].name)
+    const condition = assignConditions.content[0]
 
     const inputs = await screen.findAllByRole('textbox')
-    expect(inputs[0]).toHaveValue(assignConditions.content[0].id)
-    expect(inputs[2]).toHaveValue(assignConditions.content[0].evaluationRule.criteriaType)
-    expect(inputs[3]).toHaveValue(assignConditions.content[0].evaluationRule.regexStringCriteria)
+    expect(inputs[0]).toHaveValue(condition.id)
+    expect(inputs[1]).toHaveValue(condition.templateAttribute.name)
+    expect(inputs[2]).toHaveValue('STRING')
+    expect(inputs[3]).toHaveValue(condition.evaluationRule.regexStringCriteria)
 
     await userEvent.click(saveButton)
   })

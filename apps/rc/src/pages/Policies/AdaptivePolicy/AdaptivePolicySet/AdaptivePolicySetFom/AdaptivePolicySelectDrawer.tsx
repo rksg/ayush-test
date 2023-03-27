@@ -4,9 +4,10 @@ import { Form, Switch } from 'antd'
 import { useIntl }      from 'react-intl'
 
 import { Drawer, Loader, Table, TableProps } from '@acx-ui/components'
+import { SimpleListTooltip }                 from '@acx-ui/rc/components'
 import {
-  useAdaptivePolicyListQuery,
-  useLazyGetConditionsInPolicyQuery,
+  useAdaptivePolicyListQuery, useAdaptivePolicySetListQuery,
+  useLazyGetConditionsInPolicyQuery, useLazyGetPrioritizedPoliciesQuery,
   usePolicyTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -30,13 +31,10 @@ export function AdaptivePoliciesSelectDrawer (props: AdaptivePoliciesSelectDrawe
   // eslint-disable-next-line max-len
   const { setVisible, visible, setAdaptivePolicyDrawerVisible, accessPolicies, setAccessPolicies } = props
 
-  // const accessPolicies: AdaptivePolicy [] = Form.useWatch('accessPolicies')
-
   const [conditionCountMap, setConditionCountMap] = useState(new Map())
-
   const [selectedPolicies, setSelectedPolicies] = useState(new Map())
-
   const [templateIdMap, setTemplateIdMap] = useState(new Map())
+  const [policySetPoliciesMap, setPolicySetPoliciesMap] = useState(new Map())
 
   const [getConditionsPolicy] = useLazyGetConditionsInPolicyQuery()
 
@@ -54,12 +52,30 @@ export function AdaptivePoliciesSelectDrawer (props: AdaptivePoliciesSelectDrawe
     defaultPayload: {}
   })
 
+  // eslint-disable-next-line max-len
+  const { data: adaptivePolicySetList } = useAdaptivePolicySetListQuery({ payload: { page: '1', pageSize: '2147483647' } })
+
+  const [getPrioritizedPolicies] = useLazyGetPrioritizedPoliciesQuery()
+
+  useEffect(() => {
+    if(adaptivePolicySetList) {
+      adaptivePolicySetList.data.forEach(policySet => {
+        getPrioritizedPolicies({ params: { policySetId: policySet.id } })
+          .then(result => {
+            if (result.data) {
+              const policies : string []= result.data.data.map(p => p.policyId)
+              setPolicySetPoliciesMap(map => new Map(map.set(policySet.name, policies)))
+            }
+          })
+      })
+    }
+  }, [adaptivePolicySetList])
+
   useEffect(() => {
     if (!visible || adaptivePolicyListTableQuery.isLoading || templateIsLoading)
       return
 
     const templateIds = new Map()
-    const conditionCountMap = new Map()
 
     templateList?.data.forEach( template => {
       templateIds.set(template.ruleType, template.id)
@@ -70,10 +86,9 @@ export function AdaptivePoliciesSelectDrawer (props: AdaptivePoliciesSelectDrawe
       const { id, policyType } = policy
       getConditionsPolicy({ params: { policyId: id, templateId: templateIds.get(policyType) } })
         .then(result => {
-          conditionCountMap.set(id, result.data?.data.length ?? 0)
+          setConditionCountMap(map => new Map(map.set(id, result.data?.data.length ?? 0)))
         })
     })
-    setConditionCountMap(conditionCountMap)
 
     if(accessPolicies) {
       setSelectedPolicies(new Map(accessPolicies.map(item => [item.id, item])))
@@ -118,8 +133,15 @@ export function AdaptivePoliciesSelectDrawer (props: AdaptivePoliciesSelectDrawe
         key: 'policySetCount',
         dataIndex: 'policySetCount',
         align: 'center',
-        render: function () {
-          return '0'
+        render: (data, row) => {
+          const policySets = [] as string []
+          policySetPoliciesMap.forEach((value, key) => {
+            if(value.find((item: string) => item === row.id)){
+              policySets.push(key)
+            }
+          })
+          return policySets.length === 0 ? '0' :
+            <SimpleListTooltip items={policySets} displayText={policySets.length} />
         }
       },
       {
@@ -142,12 +164,6 @@ export function AdaptivePoliciesSelectDrawer (props: AdaptivePoliciesSelectDrawe
   }
 
   const handleAdd = async () => {
-    // const selectPolicies = adaptivePolicies.filter(item => item.isSelect === true)
-    // form.setFieldValue('accessPolicies', selectPolicies)
-    // setVisible(false)
-    // console.log(selectedPolicies.values())
-    // form.setFieldValue('accessPolicies', Array.from(selectedPolicies.values()))
-    // setSelectedPolicies,
     setAccessPolicies(Array.from(selectedPolicies.values()))
     setVisible(false)
   }
@@ -165,32 +181,13 @@ export function AdaptivePoliciesSelectDrawer (props: AdaptivePoliciesSelectDrawe
   )
 
   const onSelectChange = (policy: AdaptivePolicy, check: boolean) => {
-    // const newPolicies: string [] =
     const newPolicies = new Map(selectedPolicies)
     if(check) {
       newPolicies.set(policy.id, policy)
-    //   newPolicies.push(policyId)
     } else {
       newPolicies.delete(policy.id)
-    //   newPolicies = selectedPolicies.filter(item => item !== policyId)
     }
     setSelectedPolicies(newPolicies)
-    // const newAccessPolicies: AccessPolicy [] =
-    //   adaptivePolicies ? adaptivePolicies.slice() : []
-    // if(check) {
-    //   newAccessPolicies.push({
-    //     id: policyId,
-    //     name: '',
-    //     accessConditions: 0,
-    //     policyType: '',
-    //     policySetMemberShip: 0
-    //   })
-    // } else {
-    //   // eslint-disable-next-line max-len
-    //   const targetIdx = newAccessPolicies.findIndex((r: AccessPolicy) => r.id === policyId)
-    //   newAccessPolicies.splice(targetIdx, 1)
-    // }
-    // setAdaptivePolicies(newAccessPolicies)
   }
 
   const content = (

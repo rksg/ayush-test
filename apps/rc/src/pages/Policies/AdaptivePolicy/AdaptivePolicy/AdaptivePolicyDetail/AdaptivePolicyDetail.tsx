@@ -4,56 +4,53 @@ import { Col, Form, Row, Space, Typography } from 'antd'
 import { useIntl }                           from 'react-intl'
 import { useParams }                         from 'react-router-dom'
 
-import { Button, Card, Loader, PageHeader, Table, TableProps }      from '@acx-ui/components'
+import { Button, Card, Loader, PageHeader }                         from '@acx-ui/components'
 import { useGetAdaptivePolicyQuery, useGetConditionsInPolicyQuery } from '@acx-ui/rc/services'
 import {
-  AccessCondition, getAdaptivePolicyDetailLink, getPolicyListRoutePath,
+  AccessCondition,
+  CriteriaOption,
+  getAdaptivePolicyDetailLink,
+  getPolicyListRoutePath,
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
-export interface VenueTable {
-  id: string,
-  name: string,
-  polices: number,
-  scopes: number
-}
-
-function useColumns () {
-  const { $t } = useIntl()
-  const columns: TableProps<VenueTable>['columns'] = [
-    {
-      key: 'name',
-      title: $t({ defaultMessage: 'Venue Name' }),
-      dataIndex: 'name',
-      defaultSortOrder: 'ascend'
-      // render: function (data, row) {
-      // if (disabledType.indexOf(row.nwSubType as NetworkTypeEnum) > -1) {
-      //   return data
-      // } else {
-      //   return (
-      //     <TenantLink
-      //       to={`/networks/wireless/${row.id}/network-details/overview`}>{data}</TenantLink>
-      //   )
-      // }
-      // }
-    },
-    {
-      title: $t({ defaultMessage: 'Contained Policies' }),
-      key: 'polices',
-      dataIndex: 'polices'
-    },
-    {
-      key: 'scopes',
-      title: $t({ defaultMessage: 'Scope' }),
-      dataIndex: 'scopes'
-    }
-  ]
-
-  return columns
-}
+// TODO: need to update after integrate with network*/}
+// function useColumns () {
+//   const { $t } = useIntl()
+//   const columns: TableProps<VenueTable>['columns'] = [
+//     {
+//       key: 'name',
+//       title: $t({ defaultMessage: 'Venue Name' }),
+//       dataIndex: 'name',
+//       defaultSortOrder: 'ascend'
+//       // render: function (data, row) {
+//       // if (disabledType.indexOf(row.nwSubType as NetworkTypeEnum) > -1) {
+//       //   return data
+//       // } else {
+//       //   return (
+//       //     <TenantLink
+//       //       to={`/networks/wireless/${row.id}/network-details/overview`}>{data}</TenantLink>
+//       //   )
+//       // }
+//       // }
+//     },
+//     {
+//       title: $t({ defaultMessage: 'Contained Policies' }),
+//       key: 'polices',
+//       dataIndex: 'polices'
+//     },
+//     {
+//       key: 'scopes',
+//       title: $t({ defaultMessage: 'Scope' }),
+//       dataIndex: 'scopes'
+//     }
+//   ]
+//
+//   return columns
+// }
 
 export function AdaptivePolicyDetail () {
   const { $t } = useIntl()
@@ -69,12 +66,17 @@ export function AdaptivePolicyDetail () {
     params: { policyId, templateId } })
 
   const getConditions = function (conditions : AccessCondition [] | undefined) {
-    return conditions?.map(((condition) =>{
+    return conditions?.map(((condition) => {
+      // eslint-disable-next-line max-len
+      const criteria = condition.evaluationRule.criteriaType === CriteriaOption.DATE_RANGE ?
+        // eslint-disable-next-line max-len
+        `${condition.evaluationRule?.when} ${condition.evaluationRule?.startTime} - ${condition.evaluationRule?.endTime}`
+        : condition.evaluationRule.regexStringCriteria
       return (
         <Col span={6} key={condition.id}>
           <Form.Item
-            label={condition.name ?? 'Need service support'}>
-            <Paragraph>{condition.evaluationRule.regexStringCriteria}</Paragraph>
+            label={condition.templateAttribute?.name ?? ''}>
+            <Paragraph>{criteria}</Paragraph>
           </Form.Item>
         </Col>
       )
@@ -134,16 +136,17 @@ export function AdaptivePolicyDetail () {
             </Form>
           </Loader>
         </Card>
-        <Card title={$t({ defaultMessage: 'Instance ({size})' }, // TODO: need to update after integrate with network
-          { size: 0 })}>
-          <div style={{ width: '100%' }}>
-            <Table
-              rowKey='id'
-              columns={useColumns()}
-              dataSource={[] as VenueTable []}
-            />
-          </div>
-        </Card>
+        {/*TODO: need to update after integrate with network*/}
+        {/*<Card title={$t({ defaultMessage: 'Instance ({size})' },*/}
+        {/*  { size: 0 })}>*/}
+        {/*  <div style={{ width: '100%' }}>*/}
+        {/*    <Table*/}
+        {/*      rowKey='id'*/}
+        {/*      columns={useColumns()}*/}
+        {/*      dataSource={[] as VenueTable []}*/}
+        {/*    />*/}
+        {/*  </div>*/}
+        {/*</Card>*/}
       </Space>
     </>
   )

@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react'
 
-import { Form, Input, Select } from 'antd'
-import { useIntl }             from 'react-intl'
+import { Form, Input, Select, TimePicker } from 'antd'
+import moment                              from 'moment'
+import { useIntl }                         from 'react-intl'
 
-import { Drawer, Loader }             from '@acx-ui/components'
-import { useLazyAttributesListQuery } from '@acx-ui/rc/services'
+import { Drawer, Loader }                              from '@acx-ui/components'
+import { useLazyGetPolicyTemplateAttributesListQuery } from '@acx-ui/rc/services'
 import {
   AccessCondition,
   checkObjectNotExists, CriteriaFormData,
   CriteriaOption, EvaluationRule,
   RuleAttribute
 } from '@acx-ui/rc/utils'
+
 
 interface AccessConditionDrawerProps {
   visible: boolean
@@ -32,7 +34,7 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
   const conditionId = Form.useWatch('conditionId', form)
   const criteriaType = Form.useWatch('criteriaType', form)
 
-  const [attributeList, { isLoading } ] = useLazyAttributesListQuery()
+  const [attributeList, { isLoading } ] = useLazyGetPolicyTemplateAttributesListQuery()
 
   useEffect(() => {
     if(templateId) {
@@ -64,10 +66,8 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
       const editData = {
         conditionId: editCondition.id,
         templateAttributeId: editCondition.templateAttributeId,
-        name: editCondition.name,
+        name: editCondition.name ?? editCondition.templateAttribute?.name,
         ...toEvaluationRuleForm(editCondition.evaluationRule)
-        // criteriaType: getCriteriaOptionByValue(editCondition.evaluationRule.criteriaType)
-        // attributeValue: editCondition.evaluationRule.regexStringCriteria
       }
       form.setFieldsValue(editData)
     }
@@ -95,11 +95,9 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
     if(criteriaType === CriteriaOption.DATE_RANGE) {
       return {
         criteriaType,
-        dateRangeCriteria: {
-          when: data.when,
-          startTime: data.start,
-          endTime: data.end
-        }
+        when: data.when,
+        startTime: moment(data.start).format('hh:mm:ss'),
+        endTime: moment(data.end).format('hh:mm:ss')
       }
     } else {
       return {
@@ -110,17 +108,16 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
   }
 
   const toEvaluationRuleForm = (evaluationRule: EvaluationRule) => {
-    const criteria = getCriteriaOptionByValue(evaluationRule.criteriaType)
-    if(criteria === CriteriaOption.DATE_RANGE) {
+    if(evaluationRule.criteriaType === CriteriaOption.DATE_RANGE) {
       return {
-        criteriaType: criteria,
-        when: evaluationRule.dateRangeCriteria?.when,
-        start: evaluationRule.dateRangeCriteria?.startTime,
-        end: evaluationRule.dateRangeCriteria?.endTime
+        criteriaType: getCriteriaOptionByValue(evaluationRule.criteriaType),
+        when: evaluationRule.when,
+        start: moment(evaluationRule.startTime, 'hh:mm:ss'),
+        end: moment(evaluationRule.endTime, 'hh:mm:ss')
       }
     } else {
       return {
-        criteriaType: criteria,
+        criteriaType: getCriteriaOptionByValue(evaluationRule.criteriaType),
         attributeValue: evaluationRule.regexStringCriteria
       }
     }
@@ -135,10 +132,6 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
     // eslint-disable-next-line max-len
     return checkObjectNotExists(list, { name: attributeId }, $t({ defaultMessage: 'Condition Type' }))
   }
-
-  // const normalizeTime = (value: StoreValue) => {
-  //   return value && value.format('hh:mm A')
-  // }
 
   const content = (
     <Loader states={[{ isLoading }]}>
@@ -191,14 +184,11 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
               <Form.Item label={$t({ defaultMessage: 'Start' })}
                 name='start'
                 rules={[{ required: true }]}
-                // normalize={normalizeTime}
-                //<TimePicker>
-                children={<Input/>}/>
+                children={<TimePicker/>}/>
               <Form.Item label={$t({ defaultMessage: 'End' })}
                 name='end'
                 rules={[{ required: true }]}
-                // normalize={normalizeTime}
-                children={<Input />}/>
+                children={<TimePicker/>}/>
             </>
         }
       </Form>

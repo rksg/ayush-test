@@ -26,10 +26,11 @@ export interface RuleTemplate {
 }
 
 export interface RuleAttribute {
-  id: string,
+  id: number,
   name: string,
   attributeTextMatch: string,
-  attributeType: string
+  attributeType: string,
+  description?: string
 }
 
 export interface AccessCondition {
@@ -37,7 +38,8 @@ export interface AccessCondition {
   name?: string,
   templateAttributeId: number | null,
   evaluationRule: EvaluationRule,
-  policyId?: string
+  policyId?: string,
+  templateAttribute?: RuleAttribute
 }
 
 export interface CriteriaFormData {
@@ -53,13 +55,9 @@ export interface EvaluationRule {
   regexStringCriteria?: string,
   booleanCriteria?: boolean,
   numberCriteria?: number,
-  dateRangeCriteria?: DateRangeCriteria
-}
-
-export interface DateRangeCriteria {
-  when: string,
-  startTime: string,
-  endTime: string
+  when?: string,
+  startTime?: string,
+  endTime?: string
 }
 
 export enum RuleType {

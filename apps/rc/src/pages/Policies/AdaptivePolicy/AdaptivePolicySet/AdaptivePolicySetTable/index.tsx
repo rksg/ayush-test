@@ -2,10 +2,13 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, showActionModal, showToast, Table, TableProps }           from '@acx-ui/components'
+import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
+import { SimpleListTooltip }                                     from '@acx-ui/rc/components'
 import {
+  useAdaptivePolicyListQuery,
   useAdaptivePolicySetListQuery,
-  useDeleteAdaptivePolicySetMutation, useLazyGetPrioritizedPoliciesQuery
+  useDeleteAdaptivePolicySetMutation,
+  useLazyGetPrioritizedPoliciesQuery
 } from '@acx-ui/rc/services'
 import {
   AdaptivePolicySet,
@@ -22,12 +25,15 @@ export default function AdaptivePolicySetTable () {
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
 
-  const [policyCountMap, setPolicyCountMap] = useState(new Map())
+  const [prioritizedPoliciesMap, setPrioritizedPoliciesMap] = useState(new Map())
 
   const tableQuery = useTableQuery({
     useQuery: useAdaptivePolicySetListQuery,
     defaultPayload: {}
   })
+
+  // eslint-disable-next-line max-len
+  const { data: policyList } = useAdaptivePolicyListQuery({ payload: { page: '1', pageSize: '2147483647' } })
 
   const [
     deletePolicy,
@@ -40,19 +46,17 @@ export default function AdaptivePolicySetTable () {
   useEffect(() => {
     if (tableQuery.isLoading)
       return
-
-    const policyCountMap = new Map()
     tableQuery.data?.data.forEach(policy => {
       const { id } = policy
       getPrioritizedPolicies({ params: { policySetId: id } })
         .unwrap()
         .then(result => {
           if (result.data) {
-            policyCountMap.set(id, result.totalCount)
+            const polices: string [] = result.data.map(item => item.policyId)
+            setPrioritizedPoliciesMap(map => new Map(map.set(id, polices)))
           }
         })
     })
-    setPolicyCountMap(policyCountMap)
   }, [tableQuery.data])
 
   function useColumns () {
@@ -84,7 +88,13 @@ export default function AdaptivePolicySetTable () {
         dataIndex: 'policyCount',
         align: 'center',
         render: (_, row) => {
-          return policyCountMap.get(row.id) ?? '0'
+          const pList: string [] = prioritizedPoliciesMap.get(row.id) ?? []
+          const policies: string [] = pList.map((item:string) => {
+            return policyList?.data.find(p => p.id === item)?.name ?? ''
+          })
+
+          return policies.length === 0 ? '0' :
+            <SimpleListTooltip items={policies} displayText={policies.length}/>
         }
       }
     ]
@@ -156,7 +166,7 @@ export default function AdaptivePolicySetTable () {
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='id'
-        rowActions={rowActions}
+        rowActions={filterByAccess(rowActions)}
         rowSelection={{ type: 'radio' }}
         actions={filterByAccess(actions)}
       />

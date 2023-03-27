@@ -5,7 +5,13 @@ import { Path }                                                                 
 import { Provider }                                                                 from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, within }                   from '@acx-ui/test-utils'
 
-import { assignConditions, policyList, templateList } from '../AdaptivePolicyDetail/__test__/fixtures'
+import {
+  adaptivePolicyList,
+  assignConditions,
+  policySetList,
+  templateList,
+  prioritizedPolicies
+} from './__test__/fixtures'
 
 import AdaptivePolicyTable from './index'
 
@@ -36,7 +42,7 @@ describe('AdaptivePolicyTable', () => {
     mockServer.use(
       rest.get(
         RulesManagementUrlsInfo.getPolicies.url,
-        (req, res, ctx) => res(ctx.json(policyList))
+        (req, res, ctx) => res(ctx.json(adaptivePolicyList))
       ),
       rest.get(
         RulesManagementUrlsInfo.getConditionsInPolicy.url,
@@ -45,6 +51,14 @@ describe('AdaptivePolicyTable', () => {
       rest.get(
         RulesManagementUrlsInfo.getPolicyTemplateList.url,
         (req, res, ctx) => res(ctx.json(templateList))
+      ),
+      rest.get(
+        RulesManagementUrlsInfo.getPolicySets.url,
+        (req, res, ctx) => res(ctx.json(policySetList))
+      ),
+      rest.get(
+        RulesManagementUrlsInfo.getPrioritizedPolicies.url,
+        (req, res, ctx) => res(ctx.json(prioritizedPolicies))
       )
     )
   })
@@ -54,13 +68,12 @@ describe('AdaptivePolicyTable', () => {
       route: { params, path: tablePath }
     })
 
-    const row1 = await screen.findByRole('row', { name: /dpsk1/ })
-    expect(row1).toHaveTextContent('1')
+    const row = await screen.findByRole('row', { name: /test1/ })
+    expect(row).toHaveTextContent('1')
   })
 
   it('should delete selected row', async () => {
     const deleteFn = jest.fn()
-
     mockServer.use(
       rest.delete(
         RulesManagementUrlsInfo.deletePolicy.url,
@@ -74,16 +87,13 @@ describe('AdaptivePolicyTable', () => {
       route: { params, path: tablePath }
     })
 
-    const row = await screen.findByRole('row', { name: 'dpsk1 DPSK 1 0' })
+    const row = await screen.findByRole('row', { name: 'test1 RADIUS 0 0' })
     fireEvent.click(within(row).getByRole('radio'))
 
     const deleteButton = screen.getByRole('button', { name: /delete/i })
     fireEvent.click(deleteButton)
 
-    await screen.findByText('Delete "dpsk1"?')
-
-    fireEvent.change(screen.getByRole('textbox', { name: /type the word "delete" to confirm:/i }),
-      { target: { value: 'Delete' } })
+    await screen.findByText('Delete "test1"?')
 
     const deleteListButton = screen.getByRole('button', { name: 'Delete policy' })
     await waitFor(() => expect(deleteListButton).toBeEnabled())
@@ -99,7 +109,8 @@ describe('AdaptivePolicyTable', () => {
       route: { params, path: tablePath }
     })
 
-    const row = await screen.findByRole('row', { name: 'dpsk1 DPSK 1 0' })
+    const row = await screen.findByRole('row', { name: 'test1 RADIUS 0 0' })
+    // const row = await screen.findByRole('row', { name: 'dpsk1 DPSK 1 0' })
     fireEvent.click(within(row).getByRole('radio'))
 
     const editButton = screen.getByRole('button', { name: /Edit/i })
