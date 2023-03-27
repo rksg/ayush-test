@@ -107,15 +107,16 @@ describe('getJwtHeaders', () => {
 })
 
 describe('loadImageWithJWT', () => {
-  const mockResponse = { signedUrl: 'https://example.com/image.png' }
-
-  beforeEach(() => {
-    global.fetch = jest.fn().mockImplementation(() => Promise.resolve({
-      json: () => Promise.resolve(mockResponse)
-    }))
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
   it('should return image URL when result is truthy', async () => {
+    global.fetch = jest.fn().mockImplementation(() => Promise.resolve({
+      ok: true,
+      status: 200,
+      json: () => Promise.resolve({ signedUrl: 'https://example.com/image.png' })
+    }))
     const originalUrl = window.location.href
     const url = 'http://dummy.com/api/ui/t/some-tenant-id/dashboard'
     Object.defineProperty(window, 'location', {
@@ -151,9 +152,9 @@ describe('loadImageWithJWT', () => {
     })
   })
 
-  it('should throw error when result is falsy', async () => {
+  it('should throw error when result is not ok', async () => {
     global.fetch = jest.fn().mockImplementation(() => Promise.resolve({
-      json: () => Promise.reject(new Error('Error! status: 404')),
+      ok: false,
       status: 404
     }))
     const imageId = '456'

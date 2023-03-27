@@ -108,16 +108,13 @@ export function getJwtHeaders ({ ignoreDelegation = false }: { ignoreDelegation?
 }
 
 export async function loadImageWithJWT (imageId: string) {
-  let gImgUrl = ''
   const headers = { mode: 'no-cors', ...getJwtHeaders() }
   const url = `/api/file/tenant/${getTenantId()}/${imageId}/url`
-  const result = await fetch(url, { headers }).then(function (response) {
-    return response.json()
-  })
-  if (result) {
-    gImgUrl = result.signedUrl
+  const response = await fetch(url, { headers })
+  if (!response.ok) {
+    throw new Error(`Error! status: ${response.status}`)
   } else {
-    throw new Error(`Error! status: ${result.status}`)
+    const result = await response.json()
+    return result.signedUrl
   }
-  return gImgUrl
 }
