@@ -1,10 +1,11 @@
 
-import { Col, Row } from 'antd'
-import { useIntl }  from 'react-intl'
+import { useEffect } from 'react'
 
-import { PageHeader, StepsFormNew }       from '@acx-ui/components'
-import { TunnelProfileForm }              from '@acx-ui/rc/components'
-import { useCreateTunnelProfileMutation } from '@acx-ui/rc/services'
+import { Col, Form, Row } from 'antd'
+import { useIntl }        from 'react-intl'
+
+import { PageHeader, StepsFormNew } from '@acx-ui/components'
+import { TunnelProfileForm }        from '@acx-ui/rc/components'
 import {
   getPolicyRoutePath,
   LocationExtended,
@@ -16,7 +17,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
-const AddTunnelProfile = () => {
+const EditTunnelProfile = () => {
 
   const { $t } = useIntl()
   const navigate = useNavigate()
@@ -27,11 +28,16 @@ const AddTunnelProfile = () => {
     oper: PolicyOperation.LIST
   })
   const linkToTableView = useTenantLink(tablePath)
-  const [createTunnelProfile] = useCreateTunnelProfileMutation()
+  // TODO need get tunnel profile data and update tunnel api
+  const [form] = Form.useForm()
 
-  const handleAddTunnelProfile = async (data: TunnelProfile) => {
+  useEffect(() => {
+
+  }, [])// TODO should watch tunnel profile data
+
+  const handleUpdateTunnelProfile = async (data: TunnelProfile) => {
     try {
-      await createTunnelProfile({ payload: data }).unwrap()
+      // await createTunnelProfile({ payload: data }).unwrap()
       redirectPreviousPage(navigate, previousPath, linkToTableView)
     } catch (error) {
       // TODO Error message TBD
@@ -41,18 +47,23 @@ const AddTunnelProfile = () => {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Add Tunnel Profile' })}
+        title={$t({ defaultMessage: 'Edit Tunnel Profile' })}
         breadcrumb={[
           {
             text: $t({ defaultMessage: 'Tunnel Profile' }),
             link: tablePath
+          },
+          {
+            text: '', // TODO tunnel name
+            link: '' // TODO tunnel detail page link
           }
         ]}
       />
       <StepsFormNew
-        onFinish={handleAddTunnelProfile}
+        form={form}
+        onFinish={handleUpdateTunnelProfile}
         onCancel={() => redirectPreviousPage(navigate, previousPath, linkToTableView)}
-        buttonLabel={{ submit: $t({ defaultMessage: 'Add' }) }}
+        buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
         initialValues={{
           mtuType: MtuTypeEnum.AUTO
         }}
@@ -69,4 +80,4 @@ const AddTunnelProfile = () => {
   )
 }
 
-export default AddTunnelProfile
+export default EditTunnelProfile

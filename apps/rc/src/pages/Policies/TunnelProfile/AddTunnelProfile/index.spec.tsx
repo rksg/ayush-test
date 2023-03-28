@@ -45,7 +45,7 @@ describe('AddTunnelProfile', () => {
       pathname: `/t/${params.tenantId}/policies/tunnelProfile/list`,
       hash: '',
       search: ''
-    }, { replace: true }))
+    }))
   })
 
   it('Click cancel button and go back to list page', async () => {
