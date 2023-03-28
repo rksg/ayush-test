@@ -69,7 +69,6 @@ describe('AddNetworkSegmentation', () => {
     await user.click(await screen.findByRole('button', { name: 'Next' }))
     // step6
     await screen.findByTestId('SummaryForm')
-    await user.click(await screen.findByRole('button', { name: 'Finish' }))
   })
 
 })

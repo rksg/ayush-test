@@ -17,7 +17,8 @@ import { Provider } from '@acx-ui/store'
 import {
   mockServer,
   render,
-  screen
+  screen,
+  waitFor
 } from '@acx-ui/test-utils'
 
 import {
@@ -129,9 +130,9 @@ describe('Update NetworkSegmentation', () => {
         NetworkSegmentationUrls.getWebAuthTemplateList.url,
         (req, res, ctx) => res(ctx.json({ data: webAuthList }))
       ),
-      rest.post(
-        NetworkSegmentationUrls.createNetworkSegmentationGroup.url,
-        (req, res, ctx) => res(ctx.json({}))
+      rest.put(
+        NetworkSegmentationUrls.updateNetworkSegmentationGroup.url,
+        (req, res, ctx) => res(ctx.status(202))
       ),
       rest.get(
         NetworkSegmentationUrls.getAvailableSwitches.url,
@@ -190,6 +191,11 @@ describe('Update NetworkSegmentation', () => {
     // step 5
     await screen.findByRole('row', { name: /FEK3224R09N---AS---3/i })
     await user.click(await screen.findByRole('button', { name: 'Finish' }))
+    await waitFor(() => expect(mockedUsedNavigate).toBeCalledWith({
+      hash: '',
+      pathname: `/t/${params.tenantId}/services/list`,
+      search: ''
+    }))
   })
 
 
