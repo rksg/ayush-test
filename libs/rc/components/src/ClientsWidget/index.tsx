@@ -199,7 +199,7 @@ export function ClientsWidgetV2 () {
                           data={apData}
                           showLabels={false}
                           showTotal={false}
-                          totalValue={apClientCount || 0}
+                          total={apClientCount || 0}
                           barColors={getDeviceConnectionStatusColorsv2()} />
                         <TenantLink to={'/users/wifi/clients'}>
                           {apClientCount || 0}
@@ -231,7 +231,7 @@ export function ClientsWidgetV2 () {
                           data={switchData}
                           showLabels={false}
                           showTotal={false}
-                          totalValue={switchClientCount || 0}
+                          total={switchClientCount || 0}
                           barColors={getDeviceConnectionStatusColorsv2()} />
                         <TenantLink to={'/users/switch/clients'}>
                           {switchClientCount || 0}

@@ -88,7 +88,7 @@ export function DevicesWidgetv2 (props: {
                         data={apStackedData}
                         showLabels={false}
                         showTotal={false}
-                        totalValue={apTotalCount || 0}
+                        total={apTotalCount || 0}
                         barColors={getDeviceConnectionStatusColorsv2()} />
                       <TenantLink to={'/devices/wifi'}>
                         {apTotalCount || 0}
@@ -123,7 +123,7 @@ export function DevicesWidgetv2 (props: {
                         data={switchStackedData}
                         showLabels={false}
                         showTotal={false}
-                        totalValue={switchTotalCount || 0}
+                        total={switchTotalCount || 0}
                         barColors={getDeviceConnectionStatusColorsv2()} />
                       <TenantLink to={'/devices/wifi'}>
                         {switchTotalCount || 0}

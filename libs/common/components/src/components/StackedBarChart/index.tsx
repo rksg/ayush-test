@@ -50,7 +50,7 @@ interface StackedBarOptionalProps {
   showTooltip: boolean
   setBarColor?: object
   axisLabelWidth?: number
-  totalValue?: number
+  total?: number
 }
 
 const defaultProps: StackedBarOptionalProps = {
@@ -76,15 +76,15 @@ export interface StackedBarChartProps
 
 const computeChartData = ({ category, series }: ChartData, isPercent:boolean) => {
   const values = _(series)
-  const sum = values.sumBy('value')
+  const total = values.sumBy('value')
   const firstIndex = values.findIndex(v => v.value !== 0)
   return series.map(({ name, value }, index) => {
     let seriesValue = value
     if(isPercent){
-      seriesValue = value/sum
+      seriesValue = value/total
     }
     const data = {
-      value: [seriesValue, category, name, sum] as Dimensions,
+      value: [seriesValue, category, name, total] as Dimensions,
       itemStyle: { borderRadius: [0] }
     }
     if (firstIndex === index) {
@@ -155,7 +155,7 @@ const massageData = (
 export const tooltipFormatter = (
   dataFormatter?: ((value: unknown) => string | null),
   format?: MessageDescriptor,
-  sum?: number
+  total?: number
 ) => (
   parameters: TooltipComponentFormatterCallbackParams
 ) => {
@@ -164,8 +164,8 @@ export const tooltipFormatter = (
   const value = param.value as string[]
   const name = param.seriesName?.replace(/<\d+>/,'')
   let toolTipValue = value[0]
-  if(sum){
-    toolTipValue = (Number(value[0]) * sum).toString()
+  if(total){
+    toolTipValue = (Number(value[0]) * total).toString()
   }
   const formattedValue = dataFormatter ? dataFormatter(toolTipValue) : toolTipValue
   const tooltipFormat = format ?? defineMessage({
@@ -251,10 +251,10 @@ export function StackedBarChart <TChartData extends ChartData = ChartData> ({
       formatter: tooltipFormatter(
         dataFormatter,
         props.tooltipFormat,
-        props.totalValue),
+        props.total),
       show: showTooltip
     },
-    series: massageData(data, showTotal, barWidth, !!props.totalValue)
+    series: massageData(data, showTotal, barWidth, !!props.total)
   }
   return (
     <ReactECharts

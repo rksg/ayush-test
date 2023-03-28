@@ -51,7 +51,7 @@ describe('StackedBarChart', () => {
         barWidth={20}
         barColors={getDeviceConnectionStatusColorsv2()}
         data={singleBar}
-        totalValue={24} // must pass this value to make proper width
+        total={24} // must pass this value to make proper width
       />)
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(asFragment().querySelector('svg')).toMatchSnapshot()
