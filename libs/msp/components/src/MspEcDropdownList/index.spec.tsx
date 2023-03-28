@@ -87,12 +87,6 @@ const varList = {
   ]
 }
 
-const tenantId = '3061bd56e37445a8993ac834c01e2710'
-
-jest.mock('@acx-ui/rc/utils', () => ({
-  ...jest.requireActual('@acx-ui/rc/utils'),
-  TenantIdFromJwt: () => ({ tenantId })
-}))
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom')
 }))

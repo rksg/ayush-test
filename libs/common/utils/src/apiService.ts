@@ -3,9 +3,8 @@ import { generatePath, Params } from 'react-router-dom'
 
 import { getTenantId } from './getTenantId'
 import {
-  getJwtToken,
-  getJwtHeaders,
-  AccountTier
+  getJwtTokenPayload,
+  getJwtHeaders
 } from './jwtToken'
 
 export interface ApiInfo {
@@ -16,33 +15,8 @@ export interface ApiInfo {
   oldMethod?: string;
 }
 
-export const TenantIdFromJwt = () => {
-  const jwtToken = getJwtToken()
-  const tenantIdFromJwt = getTenantIdFromJwt(jwtToken as string)
-
-  return tenantIdFromJwt
-}
-
 export const isDelegationMode = () => {
-  const jwtToken = getJwtToken()
-
-  return (getTenantIdFromJwt(jwtToken as string) !== getTenantId())
-}
-
-export const JwtTierValue = () => {
-  const jwtToken = getJwtToken()
-
-  if (jwtToken) {
-    const tokens = jwtToken.split('.')
-
-    if (tokens.length >= 2) {
-      const jwtRuckus = JSON.parse(atob(tokens[1]))
-      if (jwtRuckus && jwtRuckus.acx_account_tier) {
-        return jwtRuckus.acx_account_tier
-      }
-    }
-  }
-  return AccountTier.PLATINUM
+  return (getJwtTokenPayload().tenantId !== getTenantId())
 }
 
 export const isLocalHost = () => {
@@ -63,20 +37,6 @@ export const isScale = () => {
 
 export const isIntEnv = () => {
   return window.location.hostname === 'intalto.ruckuswireless.com'
-}
-
-const getTenantIdFromJwt = (jwt: string) => {
-  if (jwt) {
-    let tokens = jwt.split('.')
-
-    if (tokens.length >= 2) {
-      const jwtRuckus = JSON.parse(atob(tokens[1]))
-      if (jwtRuckus && jwtRuckus.tenantId) {
-        return jwtRuckus.tenantId
-      }
-    }
-  }
-  return getTenantId()
 }
 
 export const createHttpRequest = (
