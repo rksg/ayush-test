@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, {
   useMemo,
   useState,
@@ -7,7 +6,7 @@ import React, {
   useCallback
 }                   from 'react'
 
-import _ from 'lodash'
+import { get } from 'lodash'
 
 import { formatter } from '@acx-ui/formatter'
 
@@ -154,8 +153,8 @@ export function Labels ({
         }
       }
       // switch the line if overlap
-      const previousLeft = _.get(labelPositions, [i + 2, 'left'], Infinity)
-      const previousLine = _.get(labelPositions, [i + 2, 'line'])
+      const previousLeft = get(labelPositions, [i + 2, 'left'], Infinity)
+      const previousLine = get(labelPositions, [i + 2, 'line'])
       if (labelRightBoundary > previousLeft &&
           labelPositions[i].line === previousLine &&
           previousLine === 1

@@ -3,19 +3,30 @@ import { gql } from 'graphql-request'
 import { dataApi }     from '@acx-ui/store'
 import { NetworkPath } from '@acx-ui/utils'
 
-export interface SummaryData {
-  timeSeries: {
-    connectionSuccessAndAttemptCount: [[number, number]]
-  }
-  avgTTC: {
-    hierarchyNode: {
-      incidentCharts: {
-        ttc: [number]
-      }
+export interface ConnectionDrilldown {
+    connectionDrilldown: {
+        assocSuccessAndAttemptCount: [[number,number]],
+        authSuccessAndAttemptCount: [[number,number]],
+        eapSuccessAndAttemptCount: [[number,number]],
+        radiusSuccessAndAttemptCount: [[number,number]],
+        dhcpSuccessAndAttemptCount: [[number,number]],
     }
-  }
 }
-
+export interface TtcDrilldown {
+  network: {
+    hierarchyNode: {
+      ttcDrilldown: {
+        ttcByFailureTypes: {
+          ttcByEap: [number];
+          ttcByDhcp: [number];
+          ttcByAuth: [number];
+          ttcByAssoc: [number];
+          ttcByRadius: [number];
+        };
+      };
+    };
+  };
+}
 export interface RequestPayload {
   path: NetworkPath
   start: string
@@ -24,7 +35,7 @@ export interface RequestPayload {
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    connectionDrilldown: build.query<SummaryData, RequestPayload>({
+    connectionDrilldown: build.query<ConnectionDrilldown, RequestPayload>({
       query: (payload) => ({
         document: gql`
           query ConnectionDrilldown(
@@ -53,7 +64,7 @@ export const api = dataApi.injectEndpoints({
         }
       })
     }),
-    ttcDrilldown: build.query<SummaryData, RequestPayload>({
+    ttcDrilldown: build.query<TtcDrilldown, RequestPayload>({
       query: (payload) => ({
         document: gql`
           query ConnectionDrilldown(
