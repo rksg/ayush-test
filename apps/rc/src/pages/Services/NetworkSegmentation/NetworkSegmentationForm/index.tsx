@@ -33,6 +33,7 @@ interface NetworkSegmentationFormStep {
 export interface NetworkSegmentationGroupFormData extends NetworkSegmentationGroup {
   venueId: string
   venueName: string
+  personaGroupId: string
   edgeId: string
   edgeName: string
   dhcpId: string
@@ -62,7 +63,8 @@ export const NetworkSegmentationForm = (props: NetworkSegmentationFormProps) => 
       name: formData.name,
       vxlanTunnelProfileId: formData.vxlanTunnelProfileId,
       venueInfos: [{
-        venueId: formData.venueId
+        venueId: formData.venueId,
+        personaGroupId: formData.personaGroupId
       }],
       edgeInfos: [{
         edgeId: formData.edgeId,

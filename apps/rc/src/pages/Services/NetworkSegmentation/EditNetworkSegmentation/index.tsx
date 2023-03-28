@@ -4,7 +4,7 @@ import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { PageHeader }                                                                         from '@acx-ui/components'
+import { Loader, PageHeader }                                                                 from '@acx-ui/components'
 import { useGetNetworkSegmentationGroupByIdQuery, useUpdateNetworkSegmentationGroupMutation } from '@acx-ui/rc/services'
 
 import { NetworkSegmentationForm } from '../NetworkSegmentationForm'
@@ -19,7 +19,10 @@ const EditNetworkSegmentation = () => {
   const { $t } = useIntl()
   const params = useParams()
   const [form] = Form.useForm()
-  const { data: nsgData } = useGetNetworkSegmentationGroupByIdQuery({ params })
+  const {
+    data: nsgData,
+    isLoading: isNsgDataLoading
+  } = useGetNetworkSegmentationGroupByIdQuery({ params })
   const [updateNetworkSegmentationGroup] = useUpdateNetworkSegmentationGroupMutation()
 
   useEffect(() => {
@@ -72,12 +75,14 @@ const EditNetworkSegmentation = () => {
           { text: $t({ defaultMessage: 'Services' }), link: '/services' }
         ]}
       />
-      <NetworkSegmentationForm
-        form={form}
-        steps={steps}
-        onFinish={updateNetworkSegmentationGroup}
-        editMode
-      />
+      <Loader states={[{ isLoading: isNsgDataLoading }]}>
+        <NetworkSegmentationForm
+          form={form}
+          steps={steps}
+          onFinish={updateNetworkSegmentationGroup}
+          editMode
+        />
+      </Loader>
     </>
   )
 }

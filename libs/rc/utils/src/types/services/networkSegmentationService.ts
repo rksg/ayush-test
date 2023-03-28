@@ -23,7 +23,7 @@ export interface NetworkSegmentationGroupStats {
 
 export interface VenueInfo {
   venueId: string
-  personaId: string
+  personaGroupId: string
 }
 
 export interface EdgeInfo {

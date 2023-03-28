@@ -1,4 +1,6 @@
 
+import { useEffect } from 'react'
+
 import { Col, Form, Input, Row, Select } from 'antd'
 import { FormattedMessage, useIntl }     from 'react-intl'
 import { useParams }                     from 'react-router-dom'
@@ -62,6 +64,12 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
       }
     }
   )
+
+  useEffect(() => {
+    if(personaGroupId) {
+      form.setFieldValue('personaGroupId', personaGroupId)
+    }
+  }, [personaGroupId])
 
   const onVenueChange = (value: string) => {
     const venueItem = venueOptions?.find(item => item.value === value)

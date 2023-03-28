@@ -1,6 +1,6 @@
 
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Checkbox, Col, Form, Row, Select, Space } from 'antd'
 import { CheckboxValueType }                       from 'antd/lib/checkbox/Group'
@@ -28,6 +28,7 @@ export const WirelessNetworkForm = () => {
   const { $t } = useIntl()
   const params = useParams()
   const { form } = useStepFormContext<NetworkSegmentationGroupFormData>()
+  const [defaultTunnelValue, setDefaultTunnelValue] = useState('')
   const venueId = useWatch('venueId', form)
   const tunnelProfileId = useWatch('vxlanTunnelProfileId', form)
   const { networkOptions, isLoading: isDpskLoading } = useVenueNetworkListQuery({
@@ -46,6 +47,8 @@ export const WirelessNetworkForm = () => {
   useEffect(() => {
     if(!!!tunnelProfileId) {
       form.setFieldValue('tunnelProfileName', 'Default')
+    } else if(tunnelProfileId === params.tenantId) {
+      setDefaultTunnelValue(tunnelProfileId)
     }
   }, [])
 
@@ -67,7 +70,7 @@ export const WirelessNetworkForm = () => {
             children={
               <Select
                 options={[
-                  { label: $t({ defaultMessage: 'Default' }), value: '' }
+                  { label: $t({ defaultMessage: 'Default' }), value: defaultTunnelValue }
                 ]}
               />
             }
