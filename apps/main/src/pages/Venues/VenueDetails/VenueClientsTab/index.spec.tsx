@@ -46,7 +46,7 @@ describe('VenueClientsTab', () => {
       venueId: '7482d2efe90f48d0a898c96d42d2d0e7'
     }
     render(<Provider><VenueClientsTab /></Provider>, {
-      route: { params, path: '/t/:tenantId/venues/:venueId/venue-details/clients/wifi' }
+      route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/clients/wifi' }
     })
     const wifiTab = await screen.findByRole('tab', { name: 'Wi-Fi' })
     expect(wifiTab.getAttribute('aria-selected')).toBeTruthy()
@@ -55,7 +55,7 @@ describe('VenueClientsTab', () => {
     fireEvent.click(switchTab)
 
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/venues/${params.venueId}/venue-details/clients/switch`,
+      pathname: `/${params.tenantId}/t/venues/${params.venueId}/venue-details/clients/switch`,
       hash: '',
       search: ''
     })

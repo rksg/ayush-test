@@ -164,7 +164,7 @@ Array [
       class="ant-table-cell"
     >
       <a
-        href="/t/undefined/networks"
+        href="/undefined/t/networks"
       >
         birdywlan-dev
       </a>
@@ -267,7 +267,7 @@ Array [
       class="ant-table-cell"
     >
       <a
-        href="/t/undefined/networks"
+        href="/undefined/t/networks"
       >
         Home-550
       </a>

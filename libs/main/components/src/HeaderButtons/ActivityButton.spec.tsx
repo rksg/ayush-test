@@ -44,7 +44,7 @@ describe('ActivityButton', () => {
     await userEvent.click(screen.getByRole('button', { name: 'View all activities' }))
     expect(mockUseNavigate).toHaveBeenCalledWith({
       hash: '',
-      pathname: '/t/a27e3eb0bd164e01ae731da8d976d3b1/timeline',
+      pathname: '/a27e3eb0bd164e01ae731da8d976d3b1/t/timeline',
       search: ''
     })
   })

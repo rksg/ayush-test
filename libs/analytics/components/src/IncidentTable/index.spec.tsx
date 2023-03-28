@@ -158,7 +158,7 @@ describe('IncidentTable', () => {
 
     render(<Provider><IncidentTable filters={filters}/></Provider>, {
       route: {
-        path: '/t/tenantId/analytics/incidents',
+        path: '/tenantId/t/analytics/incidents',
         wrapRoutes: false
       }
     })
@@ -176,7 +176,7 @@ describe('IncidentTable', () => {
 
     const { container } = render(<Provider><IncidentTable filters={filters}/></Provider>, {
       route: {
-        path: '/t/tenantId/analytics/incidents',
+        path: '/tenantId/t/analytics/incidents',
         wrapRoutes: false
       }
     })
@@ -206,7 +206,7 @@ describe('IncidentTable', () => {
 
     render(<Provider><IncidentTable filters={filters}/></Provider>, {
       route: {
-        path: '/t/tenantId/analytics/incidents',
+        path: '/tenantId/t/analytics/incidents',
         wrapRoutes: false,
         params: {
           tenantId: '1'
@@ -229,7 +229,7 @@ describe('IncidentTable', () => {
     })
     render(<Provider><IncidentTable filters={filters}/></Provider>, {
       route: {
-        path: '/t/tenantId/analytics/incidents',
+        path: '/tenantId/t/analytics/incidents',
         wrapRoutes: false,
         params: {
           tenantId: '1'
@@ -267,7 +267,7 @@ describe('IncidentTable', () => {
 
     render(<Provider><IncidentTable filters={filters}/></Provider>, {
       route: {
-        path: '/t/tenantId/analytics/incidents',
+        path: '/tenantId/t/analytics/incidents',
         wrapRoutes: false,
         params: {
           tenantId: '1'
@@ -322,7 +322,7 @@ describe('IncidentTable', () => {
 
     render(<Provider><IncidentTable filters={filters}/></Provider>, {
       route: {
-        path: '/t/tenantId/analytics/incidents',
+        path: '/tenantId/t/analytics/incidents',
         wrapRoutes: false,
         params: {
           tenantId: '1'
@@ -364,7 +364,7 @@ describe('IncidentTable', () => {
 
     render(<Provider><IncidentTable filters={filters}/></Provider>,{
       route: {
-        path: '/t/tenantId/analytics/incidents',
+        path: '/tenantId/t/analytics/incidents',
         wrapRoutes: false,
         params: {
           tenantId: '1'
@@ -385,7 +385,7 @@ describe('IncidentTable', () => {
 
     render(<Provider><IncidentTable filters={filters}/></Provider>,{
       route: {
-        path: '/t/tenantId/analytics/incidents',
+        path: '/tenantId/t/analytics/incidents',
         wrapRoutes: false,
         params: {
           tenantId: '1'
@@ -406,7 +406,7 @@ describe('IncidentTable', () => {
 
     render(<Provider><IncidentTable filters={filters}/></Provider>,{
       route: {
-        path: '/t/tenantId/analytics/incidents',
+        path: '/tenantId/t/analytics/incidents',
         wrapRoutes: false,
         params: {
           tenantId: '1'
@@ -429,7 +429,7 @@ describe('IncidentTable', () => {
 
     render(<Provider><IncidentTable filters={filters}/></Provider>,{
       route: {
-        path: '/t/:tenantId/analytics/incidents',
+        path: '/:tenantId/t/analytics/incidents',
         params: { tenantId: '1' }
       }
     })
@@ -444,7 +444,7 @@ describe('IncidentTable', () => {
 
     await userEvent.click(button)
     expect(mockedNavigate).lastCalledWith(expect.objectContaining({
-      pathname: `/t/1/analytics/incidents/${incidentTests[0].id}`
+      pathname: `/1/t/analytics/incidents/${incidentTests[0].id}`
     }))
   })
 })

@@ -17,7 +17,7 @@ exports[`VenueEdit should render correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/tenant-id/venues"
+                href="/tenant-id/t/venues"
               >
                 Venues
               </a>

@@ -55,14 +55,14 @@ describe('VenueEdit', () => {
     render(<Provider><VenueEdit /></Provider>, { route: { params } })
     fireEvent.click(await screen.findByRole('tab', { name: 'Wi-Fi Configuration' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/venues/${params.venueId}/edit/wifi/radio`,
+      pathname: `/${params.tenantId}/t/venues/${params.venueId}/edit/wifi/radio`,
       hash: '',
       search: ''
     })
     fireEvent.click(await screen.findByRole('tab', { name: 'Venue Details' }))
     fireEvent.click(await screen.findByRole('tab', { name: 'Switch Configuration' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/venues/${params.venueId}/edit/switch/general`,
+      pathname: `/${params.tenantId}/t/venues/${params.venueId}/edit/switch/general`,
       hash: '',
       search: ''
     })
@@ -72,7 +72,7 @@ describe('VenueEdit', () => {
     render(<Provider><VenueEdit /></Provider>, { route: { params } })
     fireEvent.click(await screen.findByText('Back to venue details'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/venues/${params.venueId}/venue-details/overview`,
+      pathname: `/${params.tenantId}/t/venues/${params.venueId}/venue-details/overview`,
       hash: '',
       search: ''
     })

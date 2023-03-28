@@ -107,7 +107,7 @@ describe('VenueDetails', () => {
       activeTab: 'overview'
     }
     render(<Provider><VenueDetails /></Provider>, {
-      route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
+      route: { params, path: '/:tenantId/t/:venueId/venue-details/:activeTab' }
     })
     expect(await screen.findByText('testVenue')).toBeVisible()
     expect(screen.getAllByRole('tab')).toHaveLength(8)
@@ -120,7 +120,7 @@ describe('VenueDetails', () => {
       activeTab: 'analytics'
     }
     render(<Provider><VenueDetails /></Provider>, {
-      route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
+      route: { params, path: '/:tenantId/:venueId/t/venue-details/:activeTab' }
     })
     expect(await screen.findByTestId('rc-VenueAnalyticsTab')).toBeVisible()
   })
@@ -132,7 +132,7 @@ describe('VenueDetails', () => {
       activeTab: 'clients'
     }
     render(<Provider><VenueDetails /></Provider>, {
-      route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
+      route: { params, path: '/:tenantId/:venueId/t/venue-details/:activeTab' }
     })
     expect(await screen.findByTestId('rc-VenueClientsTab')).toBeVisible()
   })
@@ -144,7 +144,7 @@ describe('VenueDetails', () => {
       activeTab: 'devices'
     }
     render(<Provider><VenueDetails /></Provider>, {
-      route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
+      route: { params, path: '/:tenantId/t/:venueId/venue-details/:activeTab' }
     })
     expect(await screen.findByTestId('rc-VenueDevicesTab')).toBeVisible()
   })
@@ -156,7 +156,7 @@ describe('VenueDetails', () => {
       activeTab: 'networks'
     }
     render(<Provider><VenueDetails /></Provider>, {
-      route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
+      route: { params, path: '/:tenantId/t/:venueId/venue-details/:activeTab' }
     })
     expect(await screen.findByTestId('rc-VenueNetworksTab')).toBeVisible()
   })
@@ -168,7 +168,7 @@ describe('VenueDetails', () => {
       activeTab: 'services'
     }
     render(<Provider><VenueDetails /></Provider>, {
-      route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
+      route: { params, path: '/:tenantId/t/:venueId/venue-details/:activeTab' }
     })
     expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
       .toEqual('Services')
@@ -181,7 +181,7 @@ describe('VenueDetails', () => {
       activeTab: 'timeline'
     }
     render(<Provider><VenueDetails /></Provider>, {
-      route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
+      route: { params, path: '/:tenantId/t/:venueId/venue-details/:activeTab' }
     })
     expect(await screen.findByTestId('rc-VenueTimelineTab')).toBeVisible()
   })
@@ -193,7 +193,7 @@ describe('VenueDetails', () => {
       activeTab: 'not-exist'
     }
     render(<Provider><VenueDetails /></Provider>, {
-      route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
+      route: { params, path: '/:tenantId/t/:venueId/venue-details/:activeTab' }
     })
 
     expect(screen.getAllByRole('tab').filter(x => x.getAttribute('aria-selected') === 'true'))
@@ -206,7 +206,7 @@ describe('VenueDetails', () => {
       activeTab: 'overview'
     }
     render(<Provider><VenueDetails /></Provider>, {
-      route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
+      route: { params, path: '/:tenantId/t/:venueId/venue-details/:activeTab' }
     })
 
     await userEvent.click(await screen.findByRole('button', { name: 'Configure' }))

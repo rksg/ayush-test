@@ -61,7 +61,7 @@ describe('PoeLowTable', () => {
       </Provider>,
       {
         route: {
-          path: '/t/tenantId/analytics/incidents',
+          path: '/tenantId/t/analytics/incidents',
           wrapRoutes: false
         }
       }
@@ -70,7 +70,7 @@ describe('PoeLowTable', () => {
     expect(row1.textContent).toMatch(/ICX7550-48ZP Router/)
     const links: HTMLAnchorElement[] = screen.getAllByRole('link')
     expect(links[0].href).toBe(
-      'http://localhost/t/undefined/devices/switch/28:b3:71:29:8c:b6/one/details/overview'
+      'http://localhost/undefined/t/devices/switch/28:b3:71:29:8c:b6/one/details/overview'
     )
   })
   it('should not render links if devices flag not active', async () => {
@@ -82,7 +82,7 @@ describe('PoeLowTable', () => {
       </Provider>,
       {
         route: {
-          path: '/t/tenantId/analytics/incidents',
+          path: '/tenantId/t/analytics/incidents',
           wrapRoutes: false
         }
       }

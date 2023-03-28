@@ -65,7 +65,7 @@ describe('Layout', () => {
       content={<div>content</div>}
     />, {
       route: {
-        path: '/t/:tenantId/:page',
+        path: '/:tenantId/t/:page',
         params: { tenantId: 't-id', page: 'dashboard' }
       }
     })
@@ -81,7 +81,7 @@ describe('Layout', () => {
       content={<div>content</div>}
     />, {
       route: {
-        path: '/t/:tenantId/:page',
+        path: '/:tenantId/t/:page',
         params: { tenantId: 't-id', page: 'dashboard' }
       }
     })

@@ -173,7 +173,7 @@ describe('MspCustomers', () => {
       <Provider>
         <MspCustomers />
       </Provider>, {
-        route: { params, path: '/:tenantId/dashboard/mspCustomers' }
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
     expect(screen.getByText('MSP Customers')).toBeVisible()
     expect(screen.getByText('Manage My Account')).toBeVisible()
@@ -197,7 +197,7 @@ describe('MspCustomers', () => {
       <Provider>
         <MspCustomers />
       </Provider>, {
-        route: { params, path: '/:tenantId/dashboard/mspCustomers' }
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
 
     const row = await screen.findByRole('row', { name: /ec 222/i })
@@ -208,7 +208,7 @@ describe('MspCustomers', () => {
 
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       // eslint-disable-next-line max-len
-      pathname: `/v/${params.tenantId}/dashboard/mspcustomers/edit/Trial/${list.data.at(1)?.id}`,
+      pathname: `/${params.tenantId}/v/dashboard/mspcustomers/edit/Trial/${list.data.at(1)?.id}`,
       hash: '',
       search: ''
     })
@@ -221,7 +221,7 @@ describe('MspCustomers', () => {
       <Provider>
         <MspCustomers />
       </Provider>, {
-        route: { params, path: '/:tenantId/dashboard/mspCustomers' }
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
 
     const row = await screen.findByRole('row', { name: /ec 111/i })
@@ -232,7 +232,7 @@ describe('MspCustomers', () => {
 
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       // eslint-disable-next-line max-len
-      pathname: `/v/${params.tenantId}/dashboard/mspcustomers/edit/Paid/${list.data.at(0)?.id}`,
+      pathname: `/${params.tenantId}/v/dashboard/mspcustomers/edit/Paid/${list.data.at(0)?.id}`,
       hash: '',
       search: ''
     })
@@ -245,7 +245,7 @@ describe('MspCustomers', () => {
       <Provider>
         <MspCustomers />
       </Provider>, {
-        route: { params, path: '/:tenantId/dashboard/mspCustomers' }
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
 
     const row = await screen.findByRole('row', { name: /ec 111/i })
@@ -264,7 +264,7 @@ describe('MspCustomers', () => {
       <Provider>
         <MspCustomers />
       </Provider>, {
-        route: { params, path: '/:tenantId/dashboard/mspCustomers' }
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
 
     const row = await screen.findByRole('row', { name: /ec 111/i })
@@ -298,7 +298,7 @@ describe('MspCustomers', () => {
       <Provider>
         <MspCustomers />
       </Provider>, {
-        route: { params, path: '/:tenantId/dashboard/mspCustomers' }
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
     const row = await screen.findByRole('row', { name: /ec 333/i })
     fireEvent.click(within(row).getByRole('radio'))
@@ -332,7 +332,7 @@ describe('MspCustomers', () => {
       <Provider>
         <MspCustomers />
       </Provider>, {
-        route: { params, path: '/:tenantId/dashboard/mspCustomers' }
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
 
     const row = await screen.findByRole('row', { name: /ec 111/i })
@@ -372,7 +372,7 @@ describe('MspCustomers', () => {
       <Provider>
         <MspCustomers />
       </Provider>, {
-        route: { params, path: '/:tenantId/dashboard/mspCustomers' }
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
 
     expect(screen.getByText('Add Customer')).not.toBeVisible()
@@ -398,7 +398,7 @@ describe('MspCustomers', () => {
       <Provider>
         <MspCustomers />
       </Provider>, {
-        route: { params, path: '/:tenantId/dashboard/mspCustomers' }
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
 
     const row = await screen.findByRole('row', { name: /ec 111/i })
@@ -418,7 +418,7 @@ describe('MspCustomers', () => {
       <Provider>
         <MspCustomers />
       </Provider>, {
-        route: { params, path: '/:tenantId/dashboard/mspCustomers' }
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
 
     const row = await screen.findByRole('row', { name: /ec 111/i })
@@ -437,7 +437,7 @@ describe('MspCustomers', () => {
       <Provider>
         <MspCustomers />
       </Provider>, {
-        route: { params, path: '/:tenantId/dashboard/mspCustomers' }
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
 
     const row = await screen.findByRole('row', { name: /ec 222/i })
@@ -456,7 +456,7 @@ describe('MspCustomers', () => {
       <Provider>
         <MspCustomers />
       </Provider>, {
-        route: { params, path: '/:tenantId/dashboard/mspCustomers' }
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
 
     const row1 = await screen.findByRole('row', { name: /ec 111/i })

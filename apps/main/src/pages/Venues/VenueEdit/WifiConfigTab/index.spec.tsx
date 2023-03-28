@@ -39,7 +39,7 @@ describe('WifiConfigTab', () => {
 
     fireEvent.click(await screen.findByRole('tab', { name: 'Security' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/venues/${params.venueId}/edit/wifi/security`,
+      pathname: `/${params.tenantId}/t/venues/${params.venueId}/edit/wifi/security`,
       hash: '',
       search: ''
     })

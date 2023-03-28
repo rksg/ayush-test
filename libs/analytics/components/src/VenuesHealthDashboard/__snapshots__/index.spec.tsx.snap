@@ -464,7 +464,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                               class="styledComponents__VenueName-sc-hs49h-0 kJQqla"
                                             >
                                               <a
-                                                href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/venues/f0997ab93fa24670a961c98446d47ae6/venue-details/analytics/health/overview"
+                                                href="/ecc2d7cf9d2342fdb31ae0e24958fcac/t/venues/f0997ab93fa24670a961c98446d47ae6/venue-details/analytics/health/overview"
                                                 title="f0997ab93fa24670a961c98446d47ae6"
                                               >
                                                 f0997ab93fa24670a961c98446d47ae6
@@ -570,7 +570,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                               class="styledComponents__VenueName-sc-hs49h-0 kJQqla"
                                             >
                                               <a
-                                                href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/venues/96bf314d575341cf95942caa2b072106/venue-details/analytics/health/overview"
+                                                href="/ecc2d7cf9d2342fdb31ae0e24958fcac/t/venues/96bf314d575341cf95942caa2b072106/venue-details/analytics/health/overview"
                                                 title="Vaibhav-venue"
                                               >
                                                 Vaibhav-venue
@@ -676,7 +676,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                               class="styledComponents__VenueName-sc-hs49h-0 kJQqla"
                                             >
                                               <a
-                                                href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/venues/e5d28cb30cb44be9bea1c8e7135da928/venue-details/analytics/health/overview"
+                                                href="/ecc2d7cf9d2342fdb31ae0e24958fcac/t/venues/e5d28cb30cb44be9bea1c8e7135da928/venue-details/analytics/health/overview"
                                                 title="My-Venue"
                                               >
                                                 My-Venue
@@ -782,7 +782,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                               class="styledComponents__VenueName-sc-hs49h-0 kJQqla"
                                             >
                                               <a
-                                                href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/venues/1c0683276dce48679013dea12bf6abe0/venue-details/analytics/health/overview"
+                                                href="/ecc2d7cf9d2342fdb31ae0e24958fcac/t/venues/1c0683276dce48679013dea12bf6abe0/venue-details/analytics/health/overview"
                                                 title="test-Venue"
                                               >
                                                 test-Venue
@@ -879,7 +879,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                               class="styledComponents__VenueName-sc-hs49h-0 kJQqla"
                                             >
                                               <a
-                                                href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/venues/555548721e264115bda45a75043f65d7/venue-details/analytics/health/overview"
+                                                href="/ecc2d7cf9d2342fdb31ae0e24958fcac/t/venues/555548721e264115bda45a75043f65d7/venue-details/analytics/health/overview"
                                                 title="BDCSZ"
                                               >
                                                 BDCSZ

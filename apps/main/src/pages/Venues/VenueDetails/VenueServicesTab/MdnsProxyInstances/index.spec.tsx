@@ -38,7 +38,7 @@ describe('MdnsProxyInstances', () => {
     venueId: mockedVenueId
   }
 
-  const path = '/:tenantId/venues/:venueId/venue-details/services'
+  const path = '/:tenantId/t/venues/:venueId/venue-details/services'
 
   beforeEach(async () => {
     mockServer.use(

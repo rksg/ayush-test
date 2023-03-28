@@ -32,7 +32,7 @@ describe('VenueTabs', () => {
     await waitFor(() => screen.findByText('Networks (1)'))
     fireEvent.click(await screen.findByText('Networks (1)'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/venues/${params.venueId}/venue-details/networks`,
+      pathname: `/${params.tenantId}/t/venues/${params.venueId}/venue-details/networks`,
       hash: '',
       search: ''
     })

@@ -159,7 +159,7 @@ describe('VarCustomers', () => {
       <Provider>
         <VarCustomers />
       </Provider>, {
-        route: { params, path: '/:tenantId/dashboard/varCustomers' }
+        route: { params, path: '/:tenantId/v/dashboard/varCustomers' }
       })
 
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
@@ -183,7 +183,7 @@ describe('VarCustomers', () => {
       <Provider>
         <VarCustomers />
       </Provider>, {
-        route: { params, path: '/:tenantId/dashboard/varCustomers' }
+        route: { params, path: '/:tenantId/v/dashboard/varCustomers' }
       })
 
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
@@ -212,7 +212,7 @@ describe('VarCustomers', () => {
       <Provider>
         <VarCustomers />
       </Provider>, {
-        route: { params, path: '/:tenantId/dashboard/varCustomers' }
+        route: { params, path: '/:tenantId/v/dashboard/varCustomers' }
       })
 
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
@@ -246,7 +246,7 @@ describe('VarCustomers', () => {
       <Provider>
         <VarCustomers />
       </Provider>, {
-        route: { params, path: '/:tenantId/dashboard/varCustomers' }
+        route: { params, path: '/:tenantId/v/dashboard/varCustomers' }
       })
 
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))

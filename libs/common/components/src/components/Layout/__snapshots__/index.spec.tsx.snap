@@ -28,7 +28,7 @@ exports[`Layout should render correctly 1`] = `
             >
               <a
                 class=""
-                href="/t/undefined/dashboard"
+                href="/undefined/t/dashboard"
               >
                 <svg
                   data-testid="Logo"
@@ -57,7 +57,7 @@ exports[`Layout should render correctly 1`] = `
                   >
                     <a
                       class=""
-                      href="/t/undefined/dashboard"
+                      href="/undefined/t/dashboard"
                     >
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
@@ -95,7 +95,7 @@ exports[`Layout should render correctly 1`] = `
                     >
                       <a
                         class=""
-                        href="/t/undefined/analytics"
+                        href="/undefined/t/analytics"
                       >
                         <span
                           class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
@@ -130,7 +130,7 @@ exports[`Layout should render correctly 1`] = `
                   >
                     <a
                       class=""
-                      href="/t/undefined/timeline"
+                      href="/undefined/t/timeline"
                     >
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
@@ -168,7 +168,7 @@ exports[`Layout should render correctly 1`] = `
                     >
                       <a
                         class=""
-                        href="/t/undefined/servicevalidation"
+                        href="/undefined/t/servicevalidation"
                       >
                         <span
                           class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
@@ -202,7 +202,7 @@ exports[`Layout should render correctly 1`] = `
                   >
                     <a
                       class=""
-                      href="/t/undefined/reports"
+                      href="/undefined/t/reports"
                     >
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
@@ -235,7 +235,7 @@ exports[`Layout should render correctly 1`] = `
                   >
                     <a
                       class=""
-                      href="/t/undefined/1/placeholder"
+                      href="/undefined/t/1/placeholder"
                     >
                       <span
                         class="ant-pro-menu-item"
@@ -261,7 +261,7 @@ exports[`Layout should render correctly 1`] = `
                   >
                     <a
                       class=""
-                      href="/t/undefined/venues"
+                      href="/undefined/t/venues"
                     >
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
@@ -294,7 +294,7 @@ exports[`Layout should render correctly 1`] = `
                   >
                     <a
                       class=""
-                      href="/t/undefined/devices"
+                      href="/undefined/t/devices"
                     >
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
@@ -327,7 +327,7 @@ exports[`Layout should render correctly 1`] = `
                   >
                     <a
                       class=""
-                      href="/t/undefined/networks"
+                      href="/undefined/t/networks"
                     >
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
@@ -360,7 +360,7 @@ exports[`Layout should render correctly 1`] = `
                   >
                     <a
                       class=""
-                      href="/t/undefined/services"
+                      href="/undefined/t/services"
                     >
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
@@ -393,7 +393,7 @@ exports[`Layout should render correctly 1`] = `
                   >
                     <a
                       class=""
-                      href="/t/undefined/policies"
+                      href="/undefined/t/policies"
                     >
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
@@ -427,7 +427,7 @@ exports[`Layout should render correctly 1`] = `
                     <span>
                       <a
                         class=""
-                        href="/t/undefined/users"
+                        href="/undefined/t/users"
                       >
                         <span
                           class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
@@ -461,7 +461,7 @@ exports[`Layout should render correctly 1`] = `
                   >
                     <a
                       class=""
-                      href="/t/undefined/2/placeholder"
+                      href="/undefined/t/2/placeholder"
                     >
                       <span
                         class="ant-pro-menu-item"
@@ -487,7 +487,7 @@ exports[`Layout should render correctly 1`] = `
                   >
                     <a
                       class=""
-                      href="/t/undefined/administration"
+                      href="/undefined/t/administration"
                     >
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
@@ -647,7 +647,7 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
             >
               <a
                 class=""
-                href="/v/undefined/dashboard"
+                href="/undefined/v/dashboard"
               >
                 <svg
                   data-testid="Logo"
@@ -666,7 +666,7 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
               >
                 <li
                   class="ant-menu-item ant-menu-item-only-child"
-                  data-menu-id="rc-menu-uuid-test-/v/undefined/dashboard"
+                  data-menu-id="rc-menu-uuid-test-/undefined/v/dashboard"
                   role="menuitem"
                   style="padding-left: 16px;"
                   tabindex="-1"
@@ -677,7 +677,7 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
                   >
                     <a
                       class=""
-                      href="/v/undefined/dashboard"
+                      href="/undefined/v/dashboard"
                     >
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
@@ -828,7 +828,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
               <a
                 aria-current="page"
                 class="active"
-                href="/t/t-id/dashboard"
+                href="/t-id/t/dashboard"
               >
                 <svg
                   data-testid="Logo"
@@ -847,7 +847,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
               >
                 <li
                   class="ant-menu-item ant-menu-item-selected ant-menu-item-only-child"
-                  data-menu-id="rc-menu-uuid-test-/t/t-id/dashboard"
+                  data-menu-id="rc-menu-uuid-test-/t-id/t/dashboard"
                   role="menuitem"
                   style="padding-left: 16px;"
                   tabindex="-1"
@@ -859,7 +859,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                     <a
                       aria-current="page"
                       class="active"
-                      href="/t/t-id/dashboard"
+                      href="/t-id/t/dashboard"
                     >
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconSolid-sc-iwostn-7 bZgxDC OWPZI"
@@ -885,11 +885,11 @@ exports[`Layout should show tooltip when disabled 1`] = `
                   role="none"
                 >
                   <div
-                    aria-controls="rc-menu-uuid-test-/t/t-id/analytics-popup"
+                    aria-controls="rc-menu-uuid-test-/t-id/t/analytics-popup"
                     aria-expanded="false"
                     aria-haspopup="true"
                     class="ant-menu-submenu-title"
-                    data-menu-id="rc-menu-uuid-test-/t/t-id/analytics"
+                    data-menu-id="rc-menu-uuid-test-/t-id/t/analytics"
                     role="menuitem"
                     style="padding-left: 16px;"
                     tabindex="-1"
@@ -899,7 +899,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                     >
                       <a
                         class=""
-                        href="/t/t-id/analytics"
+                        href="/t-id/t/analytics"
                       >
                         <span
                           class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
@@ -924,7 +924,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                 </li>
                 <li
                   class="ant-menu-item ant-menu-item-only-child"
-                  data-menu-id="rc-menu-uuid-test-/t/t-id/timeline"
+                  data-menu-id="rc-menu-uuid-test-/t-id/t/timeline"
                   role="menuitem"
                   style="padding-left: 16px;"
                   tabindex="-1"
@@ -935,7 +935,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                   >
                     <a
                       class=""
-                      href="/t/t-id/timeline"
+                      href="/t-id/t/timeline"
                     >
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
@@ -961,11 +961,11 @@ exports[`Layout should show tooltip when disabled 1`] = `
                   role="none"
                 >
                   <div
-                    aria-controls="rc-menu-uuid-test-/t/t-id/servicevalidation-popup"
+                    aria-controls="rc-menu-uuid-test-/t-id/t/servicevalidation-popup"
                     aria-expanded="false"
                     aria-haspopup="true"
                     class="ant-menu-submenu-title"
-                    data-menu-id="rc-menu-uuid-test-/t/t-id/servicevalidation"
+                    data-menu-id="rc-menu-uuid-test-/t-id/t/servicevalidation"
                     role="menuitem"
                     style="padding-left: 16px;"
                     tabindex="-1"
@@ -975,7 +975,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                     >
                       <a
                         class=""
-                        href="/t/t-id/servicevalidation"
+                        href="/t-id/t/servicevalidation"
                       >
                         <span
                           class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
@@ -999,7 +999,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                 </li>
                 <li
                   class="ant-menu-item ant-menu-item-only-child"
-                  data-menu-id="rc-menu-uuid-test-/t/t-id/reports"
+                  data-menu-id="rc-menu-uuid-test-/t-id/t/reports"
                   role="menuitem"
                   style="padding-left: 16px;"
                   tabindex="-1"
@@ -1010,7 +1010,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                   >
                     <a
                       class=""
-                      href="/t/t-id/reports"
+                      href="/t-id/t/reports"
                     >
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
@@ -1033,7 +1033,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                 </li>
                 <li
                   class="ant-menu-item ant-menu-item-only-child"
-                  data-menu-id="rc-menu-uuid-test-/t/t-id/1/placeholder"
+                  data-menu-id="rc-menu-uuid-test-/t-id/t/1/placeholder"
                   role="menuitem"
                   style="padding-left: 16px;"
                   tabindex="-1"
@@ -1044,7 +1044,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                   >
                     <a
                       class=""
-                      href="/t/t-id/1/placeholder"
+                      href="/t-id/t/1/placeholder"
                     >
                       <span
                         class="ant-pro-menu-item"
@@ -1060,7 +1060,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                 </li>
                 <li
                   class="ant-menu-item ant-menu-item-only-child"
-                  data-menu-id="rc-menu-uuid-test-/t/t-id/venues"
+                  data-menu-id="rc-menu-uuid-test-/t-id/t/venues"
                   role="menuitem"
                   style="padding-left: 16px;"
                   tabindex="-1"
@@ -1071,7 +1071,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                   >
                     <a
                       class=""
-                      href="/t/t-id/venues"
+                      href="/t-id/t/venues"
                     >
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
@@ -1094,7 +1094,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                 </li>
                 <li
                   class="ant-menu-item ant-menu-item-only-child"
-                  data-menu-id="rc-menu-uuid-test-/t/t-id/devices"
+                  data-menu-id="rc-menu-uuid-test-/t-id/t/devices"
                   role="menuitem"
                   style="padding-left: 16px;"
                   tabindex="-1"
@@ -1105,7 +1105,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                   >
                     <a
                       class=""
-                      href="/t/t-id/devices"
+                      href="/t-id/t/devices"
                     >
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
@@ -1128,7 +1128,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                 </li>
                 <li
                   class="ant-menu-item ant-menu-item-only-child"
-                  data-menu-id="rc-menu-uuid-test-/t/t-id/networks"
+                  data-menu-id="rc-menu-uuid-test-/t-id/t/networks"
                   role="menuitem"
                   style="padding-left: 16px;"
                   tabindex="-1"
@@ -1139,7 +1139,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                   >
                     <a
                       class=""
-                      href="/t/t-id/networks"
+                      href="/t-id/t/networks"
                     >
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
@@ -1162,7 +1162,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                 </li>
                 <li
                   class="ant-menu-item ant-menu-item-only-child"
-                  data-menu-id="rc-menu-uuid-test-/t/t-id/services"
+                  data-menu-id="rc-menu-uuid-test-/t-id/t/services"
                   role="menuitem"
                   style="padding-left: 16px;"
                   tabindex="-1"
@@ -1173,7 +1173,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                   >
                     <a
                       class=""
-                      href="/t/t-id/services"
+                      href="/t-id/t/services"
                     >
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
@@ -1196,7 +1196,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                 </li>
                 <li
                   class="ant-menu-item ant-menu-item-only-child"
-                  data-menu-id="rc-menu-uuid-test-/t/t-id/policies"
+                  data-menu-id="rc-menu-uuid-test-/t-id/t/policies"
                   role="menuitem"
                   style="padding-left: 16px;"
                   tabindex="-1"
@@ -1207,7 +1207,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                   >
                     <a
                       class=""
-                      href="/t/t-id/policies"
+                      href="/t-id/t/policies"
                     >
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
@@ -1231,7 +1231,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                 <li
                   aria-disabled="true"
                   class="ant-menu-item ant-menu-item-disabled ant-menu-item-only-child"
-                  data-menu-id="rc-menu-uuid-test-/t/t-id/users"
+                  data-menu-id="rc-menu-uuid-test-/t-id/t/users"
                   role="menuitem"
                   style="padding-left: 16px;"
                   title="Users"
@@ -1244,7 +1244,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                     >
                       <a
                         class=""
-                        href="/t/t-id/users"
+                        href="/t-id/t/users"
                       >
                         <span
                           class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
@@ -1268,7 +1268,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                 </li>
                 <li
                   class="ant-menu-item ant-menu-item-only-child"
-                  data-menu-id="rc-menu-uuid-test-/t/t-id/2/placeholder"
+                  data-menu-id="rc-menu-uuid-test-/t-id/t/2/placeholder"
                   role="menuitem"
                   style="padding-left: 16px;"
                   tabindex="-1"
@@ -1279,7 +1279,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                   >
                     <a
                       class=""
-                      href="/t/t-id/2/placeholder"
+                      href="/t-id/t/2/placeholder"
                     >
                       <span
                         class="ant-pro-menu-item"
@@ -1295,7 +1295,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                 </li>
                 <li
                   class="ant-menu-item ant-menu-item-only-child"
-                  data-menu-id="rc-menu-uuid-test-/t/t-id/administration"
+                  data-menu-id="rc-menu-uuid-test-/t-id/t/administration"
                   role="menuitem"
                   style="padding-left: 16px;"
                   tabindex="-1"
@@ -1306,7 +1306,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                   >
                     <a
                       class=""
-                      href="/t/t-id/administration"
+                      href="/t-id/t/administration"
                     >
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"

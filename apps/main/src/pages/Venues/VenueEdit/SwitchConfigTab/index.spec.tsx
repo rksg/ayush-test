@@ -29,7 +29,7 @@ describe('SwitchConfigTab', () => {
 
     fireEvent.click(await screen.findByRole('tab', { name: 'AAA' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/venues/${params.venueId}/edit/switch/aaa`,
+      pathname: `/${params.tenantId}/t/venues/${params.venueId}/edit/switch/aaa`,
       hash: '',
       search: ''
     })

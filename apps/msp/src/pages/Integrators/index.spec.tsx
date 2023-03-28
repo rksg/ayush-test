@@ -91,7 +91,7 @@ describe('Integrators', () => {
     render(
       <Provider>
         <Integrators />
-      </Provider>, { route: { params, path: '/:tenantId/integrators' } })
+      </Provider>, { route: { params, path: '/:tenantId/v/integrators' } })
     expect(screen.getByText('Tech Partners')).toBeVisible()
     expect(screen.getByText('Manage My Account')).toBeVisible()
     expect(screen.getByText('Add Tech Partner')).toBeVisible()
@@ -111,7 +111,7 @@ describe('Integrators', () => {
       <Provider>
         <Integrators />
       </Provider>, {
-        route: { params, path: '/:tenantId/integrators' }
+        route: { params, path: '/:tenantId/v/integrators' }
       })
 
     const row = await screen.findByRole('row', { name: /integrator 168/i })
@@ -146,7 +146,7 @@ describe('Integrators', () => {
       <Provider>
         <Integrators />
       </Provider>, {
-        route: { params, path: '/:tenantId/dashboard/integrators' }
+        route: { params, path: '/:tenantId/v/dashboard/integrators' }
       })
 
     const row = await screen.findByRole('row', { name: /integrator 168/i })
@@ -162,7 +162,7 @@ describe('Integrators', () => {
       <Provider>
         <Integrators />
       </Provider>, {
-        route: { params, path: '/:tenantId/dashboard/integrators' }
+        route: { params, path: '/:tenantId/v/dashboard/integrators' }
       })
 
     const row = await screen.findByRole('row', { name: /integrator 168/i })
@@ -173,7 +173,7 @@ describe('Integrators', () => {
 
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       // eslint-disable-next-line max-len
-      pathname: `/v/${params.tenantId}/integrators/edit/${list.data.at(0)?.tenantType}/${list.data.at(0)?.id}`,
+      pathname: `/${params.tenantId}/v/integrators/edit/${list.data.at(0)?.tenantType}/${list.data.at(0)?.id}`,
       hash: '',
       search: ''
     })
@@ -183,7 +183,7 @@ describe('Integrators', () => {
       <Provider>
         <Integrators />
       </Provider>, {
-        route: { params, path: '/:tenantId/dashboard/integrators' }
+        route: { params, path: '/:tenantId/v/dashboard/integrators' }
       })
 
     const row = await screen.findByRole('row', { name: /integrator 168/i })
@@ -196,7 +196,7 @@ describe('Integrators', () => {
       <Provider>
         <Integrators />
       </Provider>, {
-        route: { params, path: '/:tenantId/dashboard/integrators' }
+        route: { params, path: '/:tenantId/v/dashboard/integrators' }
       })
 
     const row = await screen.findByRole('row', { name: /integrator 168/i })
@@ -214,7 +214,7 @@ describe('Integrators', () => {
       <Provider>
         <Integrators />
       </Provider>, {
-        route: { params, path: '/:tenantId/dashboard/integrators' }
+        route: { params, path: '/:tenantId/v/dashboard/integrators' }
       })
 
     // eslint-disable-next-line testing-library/no-node-access

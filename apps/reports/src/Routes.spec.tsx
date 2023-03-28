@@ -10,7 +10,7 @@ jest.mock('./pages/Report', () => ({
 test('should redirect reports to reports/network/wireless', async () => {
   render(<Provider><ReportsRoutes /></Provider>, {
     route: {
-      path: '/t/tenantId/reports',
+      path: '/tenantId/t/reports',
       wrapRoutes: false
     }
   })
@@ -19,7 +19,7 @@ test('should redirect reports to reports/network/wireless', async () => {
 test('should navigate to reports/network/wireless', async () => {
   render(<Provider><ReportsRoutes /></Provider>, {
     route: {
-      path: '/t/tenantId/reports/wireless',
+      path: '/tenantId/t/reports/wireless',
       wrapRoutes: false
     }
   })

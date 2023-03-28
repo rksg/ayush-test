@@ -192,7 +192,7 @@ describe('Layout', () => {
       expect(await screen.findByText('My Customers')).toBeVisible()
     })
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/users/guestsManager`,
+      pathname: `/${params.tenantId}/t/users/guestsManager`,
       hash: '',
       search: ''
     })

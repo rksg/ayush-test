@@ -65,7 +65,7 @@ describe('AdvancedSettingForm', () => {
           <AdvancedSettingForm />
         </VenueEditContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab' }
+        route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab' }
       })
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
     await screen.findByText('LEDs Status')
@@ -85,7 +85,7 @@ describe('AdvancedSettingForm', () => {
           <AdvancedSettingForm />
         </VenueEditContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab' }
+        route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab' }
       })
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
     await screen.findByText('E510')
@@ -117,11 +117,11 @@ describe('AdvancedSettingForm', () => {
           <AdvancedSettingForm />
         </VenueEditContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
+        route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab/:activeSubTab' }
       })
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/venues`,
+      pathname: `/${params.tenantId}/t/venues`,
       hash: '',
       search: ''
     })

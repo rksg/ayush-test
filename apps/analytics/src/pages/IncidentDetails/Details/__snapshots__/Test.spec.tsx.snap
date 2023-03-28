@@ -17,7 +17,7 @@ exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -202,7 +202,7 @@ exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -387,7 +387,7 @@ exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -572,7 +572,7 @@ exports[`Test Details should render ApservDowntimeHigh correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -757,7 +757,7 @@ exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -945,7 +945,7 @@ exports[`Test Details should render CovClientrssiLow correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -1145,7 +1145,7 @@ exports[`Test Details should render FailureTemplate correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -1333,7 +1333,7 @@ exports[`Test Details should render FailureTemplate correctly 2`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -1521,7 +1521,7 @@ exports[`Test Details should render FailureTemplate correctly 3`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -1709,7 +1709,7 @@ exports[`Test Details should render FailureTemplate correctly 4`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -1897,7 +1897,7 @@ exports[`Test Details should render FailureTemplate correctly 5`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -2085,7 +2085,7 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -2352,7 +2352,7 @@ exports[`Test Details should render SwitchPoePd correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -2564,7 +2564,7 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -2831,7 +2831,7 @@ exports[`Test Details should render Ttc correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>

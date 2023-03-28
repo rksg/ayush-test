@@ -83,7 +83,7 @@ describe('Venues Form', () => {
       <Provider>
         <VenuesForm />
       </Provider>, {
-        route: { params, path: '/:tenantId/venues/add' }
+        route: { params, path: '/:tenantId/t/venues/add' }
       })
 
     expect(asFragment()).toMatchSnapshot()
@@ -124,7 +124,7 @@ describe('Venues Form', () => {
       <Provider>
         <VenuesForm />
       </Provider>, {
-        route: { params, path: '/:tenantId/venues/add' }
+        route: { params, path: '/:tenantId/t/venues/add' }
       })
 
     const addressInput = screen.getByTestId('address-input')
@@ -136,7 +136,7 @@ describe('Venues Form', () => {
       <Provider>
         <VenuesForm />
       </Provider>, {
-        route: { params, path: '/:tenantId/venues/add' }
+        route: { params, path: '/:tenantId/t/venues/add' }
       })
 
     await screen.findByText('Map is not enabled')
@@ -147,12 +147,12 @@ describe('Venues Form', () => {
       <Provider>
         <VenuesForm />
       </Provider>, {
-        route: { params, path: '/:tenantId/venues/add' }
+        route: { params, path: '/:tenantId/t/venues/add' }
       })
 
     await userEvent.click(screen.getByText('Cancel'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/venues`,
+      pathname: `/${params.tenantId}/t/venues`,
       hash: '',
       search: ''
     })

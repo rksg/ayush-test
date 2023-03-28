@@ -37,7 +37,7 @@ describe('ReRunButton', () => {
 
     expect(await screen.findByText('Network Health test running')).toBeVisible()
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: '/t/t-id/serviceValidation/networkHealth/spec-id/tests/3',
+      pathname: '/t-id/t/serviceValidation/networkHealth/spec-id/tests/3',
       hash: '',
       search: ''
     })

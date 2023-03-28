@@ -62,7 +62,7 @@ describe('HealthPage', () => {
     await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
     fireEvent.click(await screen.findByText('Connection'))
     expect(mockedUseNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/analytics/health/tab/connection`,
+      pathname: `/${params.tenantId}/t/analytics/health/tab/connection`,
       hash: '',
       search: ''
     })

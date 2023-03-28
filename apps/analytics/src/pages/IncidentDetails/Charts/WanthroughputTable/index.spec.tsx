@@ -67,7 +67,7 @@ describe('WanthroughputTable', () => {
       </Provider>,
       {
         route: {
-          path: '/t/tenantId/analytics/incidents',
+          path: '/tenantId/t/analytics/incidents',
           wrapRoutes: false
         }
       }
@@ -76,7 +76,7 @@ describe('WanthroughputTable', () => {
     expect(row1.textContent).toMatch(/Bugbash_R560_Backup/)
     const links: HTMLAnchorElement[] = screen.getAllByRole('link')
     expect(links[0].href).toBe(
-      'http://localhost/t/undefined/devices/wifi/C8:84:8C:10:D3:30/details/overview'
+      'http://localhost/undefined/t/devices/wifi/C8:84:8C:10:D3:30/details/overview'
     )
   })
 
@@ -92,7 +92,7 @@ describe('WanthroughputTable', () => {
       </Provider>,
       {
         route: {
-          path: '/t/tenantId/analytics/incidents',
+          path: '/tenantId/t/analytics/incidents',
           wrapRoutes: false
         }
       }

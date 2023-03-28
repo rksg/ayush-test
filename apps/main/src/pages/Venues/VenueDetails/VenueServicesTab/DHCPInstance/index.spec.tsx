@@ -19,7 +19,7 @@ describe('Venue DHCP Instance', () => {
 
     const params = { tenantId: 'tenant-id', venueId: '3b11bcaffd6f4f4f9b2805b6fe24bf8b' }
     render(<Provider><DHCPInstance /></Provider>, {
-      route: { params, path: '/:tenantId/venues/:venueId/venue-details/services' }
+      route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/services' }
     })
 
     await screen.findByText('abcd')
