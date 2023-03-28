@@ -15,17 +15,13 @@ export const expirationTimeUnits: Record<string, string> = {
   YEARS_AFTER_TIME: 'Years'
 }
 
-export const toTimeString = (value?: string) => {
-  return value ? moment.utc(value).local().format('MM/DD/YYYY hh:mm A') : ''
-}
-
 export const returnExpirationString = (data: Partial<MacRegistrationPool>) => {
   const { $t } = getIntl()
   if (!data.expirationEnabled) {
     return $t({ defaultMessage: 'Never expires' })
   } else {
     if (data.expirationType === ExpirationType.SPECIFIED_DATE) {
-      return toTimeString(data?.expirationDate)
+      return toDateTimeString(data?.expirationDate)
     } else {
       // eslint-disable-next-line max-len
       return $t({ defaultMessage: 'After {offset} {unit}' }, {
@@ -46,8 +42,7 @@ export const transferExpirationFormFieldsToData = (data: ExpirationDateEntity) =
   } else if (data.mode === ExpirationMode.BY_DATE) {
     expiration = {
       expirationType: ExpirationType.SPECIFIED_DATE,
-      // eslint-disable-next-line max-len
-      expirationDate: toExpireDate(data.date ?? ''),
+      expirationDate: toUTCExpireDate(data.date ?? ''),
       expirationEnabled: true
     }
   } else {
@@ -60,8 +55,16 @@ export const transferExpirationFormFieldsToData = (data: ExpirationDateEntity) =
   return expiration
 }
 
-export const toExpireDate = (date: string) => {
-  return moment(date + ' 23:59:59').utc().format('YYYY-MM-DDThh:mm:ss[Z]')
+export const toDateTimeString = (value?: string) => {
+  return value ? moment.utc(value).local().format('MM/DD/YYYY hh:mm A') : ''
+}
+
+export const toUTCExpireDate = (date: string) => {
+  return moment(date + ' 23:59:59').utc()
+}
+
+export const toLocalDateString = (date: string) => {
+  return moment.utc(date).local().format('YYYY-MM-DD')
 }
 
 export const transferDataToExpirationFormFields = (data: MacRegistrationPool) => {
@@ -69,7 +72,7 @@ export const transferDataToExpirationFormFields = (data: MacRegistrationPool) =>
   if (!data.expirationEnabled) {
     expiration.setToNever()
   } else if (data.expirationType === ExpirationType.SPECIFIED_DATE) {
-    expiration.setToByDate(data.expirationDate!)
+    expiration.setToByDate(toLocalDateString(data.expirationDate!))
   } else {
     expiration.setToAfterTime(data.expirationType!, data.expirationOffset!)
   }

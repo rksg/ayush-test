@@ -14,8 +14,8 @@ import { MacRegistration, MacRegistrationPool, useTableQuery } from '@acx-ui/rc/
 import { useParams }                                           from '@acx-ui/react-router-dom'
 import { filterByAccess }                                      from '@acx-ui/user'
 
-import { MacAddressDrawer }                     from '../../MacRegistrationListForm/MacRegistrationListMacAddresses/MacAddressDrawer'
-import { returnExpirationString, toTimeString } from '../../MacRegistrationListUtils'
+import { MacAddressDrawer }                         from '../../MacRegistrationListForm/MacRegistrationListMacAddresses/MacAddressDrawer'
+import { returnExpirationString, toDateTimeString } from '../../MacRegistrationListUtils'
 
 export function MacRegistrationsTab () {
   const { $t } = useIntl()
@@ -150,7 +150,7 @@ export function MacRegistrationsTab () {
       key: 'registrationDate',
       dataIndex: 'registrationDate',
       render: function (data, row) {
-        return toTimeString(row.createdDate)
+        return toDateTimeString(row.createdDate)
       }
     },
     {
@@ -159,7 +159,7 @@ export function MacRegistrationsTab () {
       dataIndex: 'expirationDate',
       sorter: true,
       render: function (data, row) {
-        return row.expirationDate ? toTimeString(row.expirationDate) :
+        return row.expirationDate ? toDateTimeString(row.expirationDate) :
           returnExpirationString(macRegistrationListQuery.data ?? {} as MacRegistrationPool)
       }
     }

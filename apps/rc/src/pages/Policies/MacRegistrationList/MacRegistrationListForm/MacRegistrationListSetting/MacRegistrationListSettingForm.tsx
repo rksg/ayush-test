@@ -15,8 +15,7 @@ export function MacRegistrationListSettingForm () {
   const { policyId } = useParams()
 
   const { data: policySetsData } = useAdaptivePolicySetListQuery({
-    payload: { page: '1', pageSize: '2147483647' },
-    params: { policyId } })
+    payload: { page: 1, pageSize: '2147483647' } })
 
   const nameValidator = async (value: string) => {
     const list = (await macRegList({

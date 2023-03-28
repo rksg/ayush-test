@@ -26,8 +26,8 @@ describe('MacRegistrationListUtils parser', () => {
 
     expiration = transferExpirationFormFieldsToData(mockedExpirationByDate)
     // eslint-disable-next-line max-len
-    const utcTimeStr = moment(new Date(mockedExpirationByDate.date + ' 23:59:59')).utc().format('YYYY-MM-DDThh:mm:ss[Z]')
-    expect(expiration.expirationDate).toBe(utcTimeStr)
+    const utcTimeStr = moment(mockedExpirationByDate.date + ' 23:59:59').utc()
+    expect(expiration.expirationDate).toStrictEqual(utcTimeStr)
     expect(expiration.expirationType).toBe(ExpirationType.SPECIFIED_DATE)
 
     expiration = transferExpirationFormFieldsToData(mockedExpirationAfterTime)
