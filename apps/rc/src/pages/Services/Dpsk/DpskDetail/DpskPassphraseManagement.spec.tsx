@@ -1,15 +1,14 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }            from '@acx-ui/feature-toggle'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ServiceType,
   DpskDetailsTabKey,
   getServiceRoutePath,
   ServiceOperation,
   NewDpskPassphraseBaseUrl,
-  DpskUrls,
-  NewDpskPassphraseBaseUrlWithId
+  DpskUrls
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
@@ -27,6 +26,11 @@ import {
   mockedDpskPassphrase
 } from './__tests__/fixtures'
 import DpskPassphraseManagement from './DpskPassphraseManagement'
+
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  downloadFile: jest.fn()
+}))
 
 describe('DpskPassphraseManagement', () => {
   const paramsForPassphraseTab = {
@@ -177,10 +181,10 @@ describe('DpskPassphraseManagement', () => {
     })
   })
 
-  it('should edit selected passphrase', async () => {
+  it('should render the edit passphrase view', async () => {
     mockServer.use(
       rest.get(
-        NewDpskPassphraseBaseUrlWithId,
+        DpskUrls.getPassphrase.url,
         (req, res, ctx) => res(ctx.json({ ...mockedDpskPassphrase }))
       )
     )
@@ -202,5 +206,67 @@ describe('DpskPassphraseManagement', () => {
 
     const dialog = await screen.findByRole('dialog')
     expect(within(dialog).getByRole('button', { name: /Save/i })).toBeVisible()
+  })
+
+  it('should revoke/unrevoke the passphrases', async () => {
+    const [ revokeFn, unrevokeFn ] = [ jest.fn(), jest.fn() ]
+
+    mockServer.use(
+      rest.post(
+        DpskUrls.revokePassphrases.url,
+        (req, res, ctx) => {
+          const body = req.body as { ids: string[], updateState: string, revocationReason?: string }
+
+          if (body.updateState === 'REVOKE') {
+            revokeFn(body)
+          } else if (body.updateState === 'UNREVOKE') {
+            unrevokeFn(body)
+          }
+
+          return res(ctx.json({ requestId: '12345' }))
+        }
+      )
+    )
+
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <DpskPassphraseManagement />
+      </Provider>, {
+        route: { params: paramsForPassphraseTab, path: detailPath }
+      }
+    )
+
+    const targetRecord = mockedDpskPassphraseList.content[0]
+    const targetRow = await screen.findByRole('row', { name: new RegExp(targetRecord.username) })
+
+    await userEvent.click(within(targetRow).getByRole('checkbox'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Revoke' }))
+
+    const dialog = await screen.findByRole('dialog')
+    expect(await within(dialog).findByText('Revoke "' + targetRecord.username + '"?')).toBeVisible()
+
+    await userEvent.type(
+      within(dialog).getByRole('textbox', { name: /Type the reason to revoke/i }),
+      '1234'
+    )
+
+    await userEvent.click(within(dialog).getByRole('button', { name: /OK/i }))
+    await waitFor(() => {
+      expect(revokeFn).toHaveBeenCalledWith({
+        ids: [targetRecord.id],
+        revocationReason: '1234',
+        updateState: 'REVOKE'
+      })
+    })
+
+    await userEvent.click(await within(targetRow).findByRole('checkbox', { checked: false }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Unrevoke' }))
+    await waitFor(() => {
+      expect(unrevokeFn).toHaveBeenCalledWith({
+        ids: [targetRecord.id],
+        updateState: 'UNREVOKE'
+      })
+    })
   })
 })

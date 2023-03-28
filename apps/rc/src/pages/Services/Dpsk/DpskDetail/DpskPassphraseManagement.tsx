@@ -1,12 +1,13 @@
 import { useState } from 'react'
 
-import { Form, Input, Space } from 'antd'
-import { useIntl }            from 'react-intl'
+import { Modal as AntModal, Form, Input, Space } from 'antd'
+import { RawIntlProvider, useIntl }              from 'react-intl'
 
 import {
   Button,
   Loader,
   Modal,
+  ModalRef,
   ModalType,
   showActionModal,
   Table,
@@ -20,6 +21,7 @@ import {
   useDeleteDpskPassphraseListMutation,
   useDownloadPassphrasesMutation,
   useDpskPassphraseListQuery,
+  useRevokeDpskPassphraseListMutation,
   useUploadPassphrasesMutation
 } from '@acx-ui/rc/services'
 import {
@@ -31,6 +33,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
+import { getIntl }        from '@acx-ui/utils'
 
 import NetworkForm from '../../../Networks/wireless/NetworkForm/NetworkForm'
 
@@ -53,6 +56,7 @@ export default function DpskPassphraseManagement () {
   const [ deletePassphrases ] = useDeleteDpskPassphraseListMutation()
   const [ uploadCsv, uploadCsvResult ] = useUploadPassphrasesMutation()
   const [ downloadCsv ] = useDownloadPassphrasesMutation()
+  const [ revokePassphrases ] = useRevokeDpskPassphraseListMutation()
   const [ uploadCsvDrawerVisible, setUploadCsvDrawerVisible ] = useState(false)
   const [ networkModalVisible, setNetworkModalVisible ] = useState(false)
   const params = useParams()
@@ -113,15 +117,8 @@ export default function DpskPassphraseManagement () {
       sorter: false,
       render: function (data) {
         return (
-          <Space
-            direction='horizontal'
-            size={2}
-            onClick={(e)=> {e.stopPropagation()}}>
-            <Input.Password
-              readOnly
-              bordered={false}
-              value={data as string}
-            />
+          <Space direction='horizontal' size={2} onClick={(e)=> {e.stopPropagation()}}>
+            <Input.Password readOnly bordered={false} value={data as string} />
             <Button
               type='link'
               icon={<CopyOutlined />}
@@ -165,6 +162,36 @@ export default function DpskPassphraseManagement () {
       }
     },
     {
+      label: $t({ defaultMessage: 'Revoke' }),
+      visible: isCloudpathEnabled,
+      onClick: (selectedRows: NewDpskPassphrase[], clearSelection) => {
+        showRevokeModal(selectedRows, async (revocationReason: string) => {
+          await revokePassphrases({
+            params,
+            payload: {
+              ids: selectedRows.map(p => p.id),
+              updateState: 'REVOKE',
+              revocationReason
+            }
+          })
+          clearSelection()
+        })
+      }
+    },
+    {
+      label: $t({ defaultMessage: 'Unrevoke' }),
+      visible: isCloudpathEnabled,
+      onClick: (selectedRows: NewDpskPassphrase[], clearSelection) => {
+        revokePassphrases({
+          params,
+          payload: {
+            ids: selectedRows.map(p => p.id),
+            updateState: 'UNREVOKE'
+          }
+        }).then(clearSelection)
+      }
+    },
+    {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows: NewDpskPassphrase[], clearSelection) => {
         showActionModal({
@@ -176,8 +203,7 @@ export default function DpskPassphraseManagement () {
             numOfEntities: selectedRows.length
           },
           onOk: () => {
-            const passphraseIds = selectedRows.map(p => p.id)
-            deletePassphrases({ params, payload: passphraseIds })
+            deletePassphrases({ params, payload: selectedRows.map(p => p.id) })
             clearSelection()
           }
         })
@@ -273,4 +299,66 @@ export default function DpskPassphraseManagement () {
       />
     </Loader>
   </>)
+}
+
+// eslint-disable-next-line max-len
+function showRevokeModal (passphrases: NewDpskPassphrase[], onFinish: (revocationReason: string) => Promise<void>) {
+  const modal = AntModal.confirm({})
+  const { $t } = getIntl()
+
+  const getRevokeTitle = () => {
+    return $t({
+      defaultMessage: `Revoke "{count, plural,
+        one {{entityValue}}
+        other {{count} {formattedEntityName}}
+      }"?`
+    }, {
+      count: passphrases.length,
+      entityValue: passphrases[0].username,
+      formattedEntityName: $t({ defaultMessage: 'Passphrases' })
+    })
+  }
+
+  const content = <RevokeForm modal={modal} onFinish={onFinish} />
+
+  modal.update({
+    title: getRevokeTitle(),
+    okText: $t({ defaultMessage: 'OK' }),
+    cancelText: $t({ defaultMessage: 'Cancel' }),
+    maskClosable: false,
+    keyboard: false,
+    content: <RawIntlProvider value={getIntl()} children={content} />,
+    icon: <> </>
+  })
+}
+
+function RevokeForm (props: {
+  modal: ModalRef,
+  onFinish: (revocationReason: string) => Promise<void>
+}) {
+  const { $t } = getIntl()
+  const { modal, onFinish } = props
+  const [ form ] = Form.useForm()
+
+  modal.update({
+    onOk: async () => {
+      await onFinish(form.getFieldValue('reason'))
+    },
+    okButtonProps: { disabled: true }
+  })
+
+  return (
+    <Form form={form} layout='horizontal'>
+      <Form.Item
+        name='reason'
+        label={$t({ defaultMessage: 'Type the reason to revoke' })}
+      >
+        <Input onChange={(e) => {
+          modal.update({
+            okButtonProps: { disabled: !e.target.value }
+          })
+        }} />
+      </Form.Item>
+    </Form>
+  )
 }
