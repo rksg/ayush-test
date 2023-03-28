@@ -8,7 +8,11 @@ export const networkHealthApiURL = `${window.location.origin}/api/a4rc/api/rsa-m
 
 const baseQuery = graphqlRequestBaseQuery({
   url: networkHealthApiURL,
-  requestHeaders: getJwtHeaders()
+  prepareHeaders: (headers) => {
+    Object.entries(getJwtHeaders())
+      .forEach(([header, value]) => headers.set(header, value))
+    return headers
+  }
 })
 
 export type NetworkHealthBaseQuery = typeof baseQuery

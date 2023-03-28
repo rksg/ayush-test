@@ -10,7 +10,11 @@ export const dataApiURL = `${window.location.origin}/api/a4rc/api/rsa-data-api/g
 export const dataApi = createApi({
   baseQuery: graphqlRequestBaseQuery({
     url: dataApiURL,
-    requestHeaders: getJwtHeaders()
+    prepareHeaders: (headers) => {
+      Object.entries(getJwtHeaders())
+        .forEach(([header, value]) => headers.set(header, value))
+      return headers
+    }
   }),
   reducerPath: 'analytics-data-api',
   refetchOnMountOrArgChange: true,
