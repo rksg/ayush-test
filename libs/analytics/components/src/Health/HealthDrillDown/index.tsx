@@ -8,10 +8,10 @@ import { GridRow, GridCol, Loader } from '@acx-ui/components'
 import { formatter }                from '@acx-ui/formatter'
 import { CloseSymbol }              from '@acx-ui/icons'
 
-import { titleConfig, Stages,getFormattedToFunnel, DrilldownSelection } from './config'
-import { FunnelChart, valueFormatter }                                  from './funnelChart'
-import { useTtcDrilldownQuery, useConnectionDrilldownQuery }            from './services'
-import { Title }                                                        from './styledComponents'
+import { titleConfig, Stages,getFormattedToFunnel, DrilldownSelection, CONNECTIONFAILURE } from './config'
+import { FunnelChart, valueFormatter }                                                     from './funnelChart'
+import { useTtcDrilldownQuery, useConnectionDrilldownQuery }                               from './services'
+import { Title }                                                                           from './styledComponents'
 
 const HealthDrillDown = (props: {
   filters: AnalyticsFilter;
@@ -51,7 +51,7 @@ const HealthDrillDown = (props: {
         ...rest
       }
     },
-    skip: !Boolean(drilldownSelection === 'connectionFailure' || drilldownSelection)
+    skip: !Boolean(drilldownSelection === CONNECTIONFAILURE || drilldownSelection)
   })
   const ttcResults = useTtcDrilldownQuery(payload, {
     selectFromResult: (result) => {
@@ -71,11 +71,11 @@ const HealthDrillDown = (props: {
         dhcpFailure: dhcp?.[0] ?? null
       }, ...rest }
     },
-    skip: Boolean(drilldownSelection === 'connectionFailure' || drilldownSelection)
+    skip: Boolean(drilldownSelection === CONNECTIONFAILURE || drilldownSelection)
   }
   )
   const funnelChartData =
-    drilldownSelection === 'connectionFailure' ? connectionFailureResults : ttcResults
+    drilldownSelection === CONNECTIONFAILURE ? connectionFailureResults : ttcResults
   return drilldownSelection ? (
     <Loader states={[connectionFailureResults]}>
       <GridRow style={{ marginTop: 25 }}>
@@ -98,7 +98,7 @@ const HealthDrillDown = (props: {
             selectedStage={selectedStage}
             onSelectStage={(stage : Stages) => setSelectedStage(stage)}
             valueFormatter={
-              drilldownSelection === 'connectionFailure' ? formatter('countFormat') : valueFormatter
+              drilldownSelection === CONNECTIONFAILURE ? formatter('countFormat') : valueFormatter
             }
           />
         </GridCol>

@@ -9,6 +9,7 @@ export type Stages =
   | 'radiusFailure'
   | 'dhcpFailure'
   | null
+export type FunnelChartStages = { name : string, label : string, value : number | null }[]
 export type DrilldownSelection = 'connectionFailure' | 'ttc' | null
 
 export const getFormattedToFunnel = (
@@ -26,7 +27,7 @@ export const getFormattedToFunnel = (
     radiusFailure: number | null;
     dhcpFailure: number | null;
   }
-) => [
+) : FunnelChartStages => [
   {
     name: 'Authentication',
     label: type === 'connectionFailure' ? '802.11 Auth. Failure' : '802.11 Auth.',
@@ -49,3 +50,5 @@ export const getFormattedToFunnel = (
     value: dhcpFailure
   }
 ]
+
+export const CONNECTIONFAILURE = 'connectionFailure'

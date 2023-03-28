@@ -10,6 +10,7 @@ import { get } from 'lodash'
 
 import { formatter } from '@acx-ui/formatter'
 
+import { Stages, FunnelChartStages } from './config'
 import {
   ChartContainer,
   Stage,
@@ -30,23 +31,36 @@ export function useGetNode () {
   return [node, ref]
 }
 export function FunnelChart ({
-  height, stages, colors, selectedStage, onSelectStage, valueFormatter,
+  height,
+  stages,
+  colors,
+  selectedStage,
+  onSelectStage,
+  valueFormatter,
   valueLabel
+}: {
+  stages: FunnelChartStages;
+  height: number;
+  colors: [any];
+  selectedStage: Stages;
+  onSelectStage: CallableFunction;
+  valueFormatter: CallableFunction;
+  valueLabel: string;
 }) {
   const [parentNode, ref] = useGetNode()
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
-  const onClick = (name) => {
+  const onClick = (name: Stages) => {
     onSelectStage(name !== selectedStage ? name : '')
   }
   const enhancedStages = useMemo(() => {
     if (!parentNode) return []
     const parentWidth = parentNode.offsetWidth
     let totalWidth = parentWidth
-    const sum = stages.reduce((acc, { value }) => acc + value, 0)
+    const sum = stages.reduce((acc, { value }) => acc + (value ?? 0), 0)
     const filteredStages = stages
       .filter(({ value }) => value)
-      .map(stage => {
-        const formattedPct = formatter('percentFormat')(stage.value / sum)
+      .map((stage) => {
+        const formattedPct = formatter('percentFormat')(stage.value ?? 0 / sum)
         const pct = parseFloat(formattedPct) / 100
         const realWidth = Math.round(pct * parentWidth)
         // ensure stage is always visible visible, then reduce the width of other "normal" stages
@@ -60,42 +74,53 @@ export function FunnelChart ({
         }
       })
     let endPosition = 0
-    return filteredStages
-      .map((stage, i) => {
-        if (stage.width > minVisibleWidth) stage.width = stage.pct * totalWidth
-        endPosition += stage.width
-        return {
-          ...stage,
-          valueLabel,
-          valueFormatter,
-          onClick: onClick.bind(null, stage.name),
-          key: stage.name,
-          isSelected: stage.name === selectedStage,
-          idx: i,
-          bgColor: colors[i],
-          endPosition
-        }
-      })
+    return filteredStages.map((stage, i) => {
+      if (stage.width > minVisibleWidth) stage.width = stage.pct * totalWidth
+      endPosition += stage.width
+      return {
+        ...stage,
+        valueLabel,
+        valueFormatter,
+        onClick: onClick.bind(null, stage.name as Stages),
+        key: stage.name,
+        isSelected: stage.name === selectedStage,
+        idx: i,
+        bgColor: colors[i],
+        endPosition
+      }
+    })
   }, [stages, selectedStage, parentNode, windowWidth])
   useLayoutEffect(() => {
-    const handler = function resizeHandler () { setWindowWidth(window.innerWidth) }
+    const handler = function resizeHandler () {
+      setWindowWidth(window.innerWidth)
+    }
     window.addEventListener('resize', handler)
-    return function cleanup () { window.removeEventListener('resize', handler) }
+    return function cleanup () {
+      window.removeEventListener('resize', handler)
+    }
   }, [])
 
   return (
     <ChartContainer height={height} padding={chartPadding} ref={ref}>
-      {!enhancedStages.length ? <div>{'No data'}</div> : [
-        <StageList key={1}>
-          {enhancedStages.map((stage) => <Stage {...stage} />)}
-        </StageList>,
-        <Labels key={2}
-          onClick={onClick}
-          enhancedStages={enhancedStages}
-          parentNode={parentNode}
-          parentHeight={height}
-          colors={colors}
-        />]}
+      {!enhancedStages.length ? (
+        <div>{'No data'}</div>
+      ) : (
+        [
+          <StageList key={1}>
+            {enhancedStages.map((stage) => (
+              <Stage {...stage} />
+            ))}
+          </StageList>,
+          <Labels
+            key={2}
+            onClick={onClick}
+            enhancedStages={enhancedStages}
+            parentNode={parentNode}
+            parentHeight={height}
+            colors={colors}
+          />
+        ]
+      )}
     </ChartContainer>
   )
 }
@@ -106,6 +131,12 @@ export function Labels ({
   parentHeight,
   colors,
   onClick
+}: {
+  enhancedStages : any,
+  parentNode : any,
+  parentHeight : number,
+  colors : [any],
+  onClick : CallableFunction
 }) {
   const [childNodes, setChildNodes] = useState(new Array(enhancedStages.length).fill(null))
   const updateChildNodes = (i, node) => {
@@ -118,12 +149,12 @@ export function Labels ({
     }
   }
 
-  const defaultPosition = useMemo(() => enhancedStages.map(
-    ({ width, endPosition }) => ({
+  const defaultPosition = enhancedStages.map(
+    ({ width , endPosition } : { width: number, endPosition : number }) => ({
       left: endPosition - width / 2,
       pinPosition: 'left',
       line: 1
-    })))
+    }))
 
   const offsetWidths = childNodes.map(node => node && node.offsetWidth)
 
