@@ -11,11 +11,7 @@ import { CloseSymbol }              from '@acx-ui/icons'
 
 import { FunnelChart, valueFormatter }                       from './funnelChart'
 import { useTtcDrilldownQuery, useConnectionDrilldownQuery } from './services'
-import {
-  Section,
-  Title,
-  Separator
-}                                from './styledComponents'
+import { Title }                                             from './styledComponents'
 
 export type DrilldownSelection = 'connectionFailure' | 'ttc' | null
 
@@ -106,9 +102,6 @@ const HealthDrillDown = (props: {
   },
   { skip: Boolean(drilldownSelection === 'connectionFailure' || drilldownSelection) }
   )
-  console.log(connectionFailureResults)
-  console.log(ttcResults)
-
   const funnelChartData =
     drilldownSelection === 'connectionFailure' ? connectionFailureResults : ttcResults
   return drilldownSelection ? (
