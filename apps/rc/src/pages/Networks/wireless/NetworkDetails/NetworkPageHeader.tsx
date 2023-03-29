@@ -22,8 +22,17 @@ function NetworkPageHeader ({
   const navigate = useNavigate()
   const location = useLocation()
   const basePath = useTenantLink('/networks/wireless')
-  const { networkId } = useParams()
+  const { networkId, activeTab } = useParams()
   const { $t } = useIntl()
+  const enableTimeFilter = () => {
+    switch (activeTab) {
+        case "aps":
+        case "venues":
+            return false
+        default:
+            return true
+    }
+  }
   return (
     <PageHeader
       title={network.data?.name || ''}
@@ -40,13 +49,15 @@ function NetworkPageHeader ({
             />
           ]
           : [],
-        <RangePicker
+          enableTimeFilter()
+          ? <RangePicker
           key='date-filter'
           selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
           onDateApply={setDateFilter as CallableFunction}
           showTimePicker
           selectionType={range}
-        />,
+          />
+          : <div />,
         <Button
           type='primary'
           onClick={() =>
