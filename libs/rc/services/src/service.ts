@@ -640,6 +640,16 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
     }),
+    revokeDpskPassphraseList: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(DpskUrls.revokePassphrases, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
+    }),
     uploadPassphrases: build.mutation<{}, RequestFormData>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(DpskUrls.uploadPassphrases, params, {
@@ -777,6 +787,7 @@ export const {
   useCreateDpskPassphrasesMutation,
   useUpdateDpskPassphrasesMutation,
   useDeleteDpskPassphraseListMutation,
+  useRevokeDpskPassphraseListMutation,
   useUploadPassphrasesMutation,
   useDownloadPassphrasesMutation,
   useGetPortalQuery,

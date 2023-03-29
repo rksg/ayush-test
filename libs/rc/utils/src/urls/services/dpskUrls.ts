@@ -90,5 +90,11 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
     url: NewDpskPassphraseBaseUrl + '?timezone=:timezone&date-format=:dateFormat',
     oldUrl: DpskPassphraseBaseUrl + '?timezone=:timezone&date-format=:dateFormat',
     newApi: true
+  },
+  revokePassphrases: {
+    method: 'post',
+    url: NewDpskPassphraseBaseUrl + '/revocation',
+    oldUrl: DpskPassphraseBaseUrl + '/revocation',
+    newApi: true
   }
 }

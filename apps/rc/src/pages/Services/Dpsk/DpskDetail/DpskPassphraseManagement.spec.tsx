@@ -205,7 +205,7 @@ describe('DpskPassphraseManagement', () => {
     })
   })
 
-  it('should edit selected passphrase', async () => {
+  it('should render the edit passphrase view', async () => {
     mockServer.use(
       rest.get(
         DpskUrls.getPassphrase.url,
@@ -230,5 +230,67 @@ describe('DpskPassphraseManagement', () => {
 
     const dialog = await screen.findByRole('dialog')
     expect(within(dialog).getByRole('button', { name: /Save/i })).toBeVisible()
+  })
+
+  it('should revoke/unrevoke the passphrases', async () => {
+    const [ revokeFn, unrevokeFn ] = [ jest.fn(), jest.fn() ]
+
+    mockServer.use(
+      rest.post(
+        DpskUrls.revokePassphrases.url,
+        (req, res, ctx) => {
+          const body = req.body as { ids: string[], updateState: string, revocationReason?: string }
+
+          if (body.updateState === 'REVOKE') {
+            revokeFn(body)
+          } else if (body.updateState === 'UNREVOKE') {
+            unrevokeFn(body)
+          }
+
+          return res(ctx.json({ requestId: '12345' }))
+        }
+      )
+    )
+
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <DpskPassphraseManagement />
+      </Provider>, {
+        route: { params: paramsForPassphraseTab, path: detailPath }
+      }
+    )
+
+    const targetRecord = mockedDpskPassphraseList.content[0]
+    const targetRow = await screen.findByRole('row', { name: new RegExp(targetRecord.username) })
+
+    await userEvent.click(within(targetRow).getByRole('checkbox'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Revoke' }))
+
+    const dialog = await screen.findByRole('dialog')
+    expect(await within(dialog).findByText('Revoke "' + targetRecord.username + '"?')).toBeVisible()
+
+    await userEvent.type(
+      within(dialog).getByRole('textbox', { name: /Type the reason to revoke/i }),
+      '1234'
+    )
+
+    await userEvent.click(within(dialog).getByRole('button', { name: /OK/i }))
+    await waitFor(() => {
+      expect(revokeFn).toHaveBeenCalledWith({
+        ids: [targetRecord.id],
+        revocationReason: '1234',
+        updateState: 'REVOKE'
+      })
+    })
+
+    await userEvent.click(await within(targetRow).findByRole('checkbox', { checked: false }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Unrevoke' }))
+    await waitFor(() => {
+      expect(unrevokeFn).toHaveBeenCalledWith({
+        ids: [targetRecord.id],
+        updateState: 'UNREVOKE'
+      })
+    })
   })
 })
