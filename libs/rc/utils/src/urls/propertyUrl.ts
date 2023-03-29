@@ -14,8 +14,6 @@ type PropertyUrlType =
   'deletePropertyUnits' |
   'getResidentPortalList'
 
-const paginationParams = '?size=:pageSize&page=:page&sort=:sort'
-
 export const PropertyUrlsInfo: { [key in PropertyUrlType]: ApiInfo } = {
   getPropertyConfigs: {
     method: 'get',
@@ -70,6 +68,6 @@ export const PropertyUrlsInfo: { [key in PropertyUrlType]: ApiInfo } = {
   getResidentPortalList: {
     method: 'get',
     newApi: true,
-    url: `/residentPortals${paginationParams}`
+    url: '/residentPortals'
   }
 }

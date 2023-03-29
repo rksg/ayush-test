@@ -13,10 +13,7 @@ import {
   FlowLevelEnum,
   PriorityEnum,
   ProtocolEnum,
-  PersonaGroup,
-  NewTableResult,
-  NewTablePageable,
-  ResidentPortal
+  PersonaGroup, NewTableResult, NewTablePageable
 } from '@acx-ui/rc/utils'
 
 export const successResponse = {
@@ -2771,19 +2768,6 @@ const defaultPageable: NewTablePageable = {
 export const mockEnabledPropertyConfig: PropertyConfigs = {
   status: PropertyConfigStatus.ENABLED,
   personaGroupId: 'persona-group-id-1'
-}
-
-export const mockResidentPortalProfileList: NewTableResult<ResidentPortal> = {
-  pageable: defaultPageable,
-  sort: defaultPageable.sort,
-  totalElements: 1,
-  totalPages: 1,
-  content: [
-    {
-      id: 'resident-portal-profile-id-1',
-      name: 'resident-portal-profile-name-1'
-    }
-  ]
 }
 
 // export const mockPropertyUnitList: NewTableResult<PropertyUnit> = {
