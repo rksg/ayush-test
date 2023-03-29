@@ -4,14 +4,52 @@ import {
   DpskSaveData,
   ExpirationType,
   ExpirationDateEntity,
-  PolicyDefaultAccess
+  PolicyDefaultAccess,
+  DeviceNumberType
 } from '@acx-ui/rc/utils'
 
+// eslint-disable-next-line max-len
+type ExpirationTypeForSaveData = Pick<DpskSaveData, 'expirationType' | 'expirationOffset' | 'expirationDate'>
 
 export function transferFormFieldsToSaveData (data: CreateDpskFormFields): DpskSaveData {
-  const { expiration, policyDefaultAccess, ...rest } = data
-  // eslint-disable-next-line max-len
-  let expirationForSaveData: Pick<DpskSaveData, 'expirationType' | 'expirationOffset' | 'expirationDate'>
+  const { expiration, policyDefaultAccess, deviceNumberType, ...rest } = data
+
+  return {
+    ...rest,
+    ...(transferExpirationDateEntityToSaveData(expiration)),
+    policyDefaultAccess: policyDefaultAccess === PolicyDefaultAccess.REJECT ? false : true
+  }
+}
+
+export function transferSaveDataToFormFields (data: DpskSaveData): CreateDpskFormFields {
+  const {
+    expirationType,
+    expirationDate,
+    expirationOffset,
+    policyDefaultAccess,
+    deviceCountLimit,
+    ...rest
+  } = data
+
+  const expiration: ExpirationDateEntity = transferSaveDataToExpirationDateEntity({
+    expirationType,
+    expirationDate,
+    expirationOffset
+  })
+
+  return {
+    ...rest,
+    // eslint-disable-next-line max-len
+    policyDefaultAccess: policyDefaultAccess ? PolicyDefaultAccess.ACCEPT : PolicyDefaultAccess.REJECT,
+    deviceCountLimit,
+    deviceNumberType: deviceCountLimit ? DeviceNumberType.LIMITED : DeviceNumberType.UNLIMITED,
+    expiration
+  }
+}
+
+// eslint-disable-next-line max-len
+function transferExpirationDateEntityToSaveData (expiration: ExpirationDateEntity): ExpirationTypeForSaveData {
+  let expirationForSaveData: ExpirationTypeForSaveData
 
   if (expiration.mode === ExpirationMode.NEVER) {
     expirationForSaveData = { expirationType: null }
@@ -27,15 +65,12 @@ export function transferFormFieldsToSaveData (data: CreateDpskFormFields): DpskS
     }
   }
 
-  return {
-    ...rest,
-    ...expirationForSaveData,
-    policyDefaultAccess: policyDefaultAccess === PolicyDefaultAccess.REJECT ? false : true
-  }
+  return expirationForSaveData
 }
 
-export function transferSaveDataToFormFields (data: DpskSaveData): CreateDpskFormFields {
-  const { expirationType, expirationDate, expirationOffset, policyDefaultAccess, ...rest } = data
+// eslint-disable-next-line max-len
+function transferSaveDataToExpirationDateEntity (expirationForSaveData: ExpirationTypeForSaveData): ExpirationDateEntity {
+  const { expirationType, expirationDate, expirationOffset } = expirationForSaveData
   let expiration: ExpirationDateEntity = new ExpirationDateEntity()
 
   if (!expirationType) {
@@ -46,10 +81,5 @@ export function transferSaveDataToFormFields (data: DpskSaveData): CreateDpskFor
     expiration.setToAfterTime(expirationType!, expirationOffset!)
   }
 
-  return {
-    ...rest,
-    // eslint-disable-next-line max-len
-    policyDefaultAccess: policyDefaultAccess ? PolicyDefaultAccess.ACCEPT : PolicyDefaultAccess.REJECT,
-    expiration
-  }
+  return expiration
 }

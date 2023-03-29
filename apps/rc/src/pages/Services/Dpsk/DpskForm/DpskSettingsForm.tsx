@@ -1,13 +1,10 @@
-import { useState } from 'react'
-
 import {
   Form,
   Input,
   Select,
   InputNumber,
   Radio,
-  Space,
-  RadioChangeEvent
+  Space
 } from 'antd'
 import { FormattedMessage } from 'react-intl'
 
@@ -22,22 +19,19 @@ import {
   transformDpskNetwork,
   DpskNetworkType,
   checkObjectNotExists,
-  PolicyDefaultAccess
+  PolicyDefaultAccess,
+  DeviceNumberType
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
 import { MAX_DEVICES_PER_PASSPHRASE } from '../constants'
 import {
+  defaultAccessLabelMapping,
   passphraseFormatDescription
 } from '../contentsMap'
 import { unlimitedNumberOfDeviceLabel } from '../DpskDetail/contentsMap'
 
 import { FieldSpace } from './styledComponents'
-
-enum DeviceNumberType {
-  LIMITED,
-  UNLIMITED
-}
 
 export default function DpskSettingsForm () {
   const intl = getIntl()
@@ -144,11 +138,8 @@ export default function DpskSettingsForm () {
 
 function CloudpathFormItems () {
   const { $t } = getIntl()
-  const [ deviceNumberType, setDeviceNumberType ] = useState(DeviceNumberType.LIMITED)
-
-  const onDeviceNumberTypeChange = (e: RadioChangeEvent) => {
-    setDeviceNumberType(e.target.value)
-  }
+  const form = Form.useFormInstance()
+  const deviceNumberType = Form.useWatch('deviceNumberType', form)
 
   return (
     <GridRow>
@@ -156,8 +147,9 @@ function CloudpathFormItems () {
         <Form.Item
           label={$t({ defaultMessage: 'Devices allowed per passphrase' })}
           rules={[{ required: true }]}
+          name='deviceNumberType'
           children={
-            <Radio.Group value={deviceNumberType} onChange={onDeviceNumberTypeChange}>
+            <Radio.Group>
               <Space size={'middle'} direction='vertical'>
                 <Radio value={DeviceNumberType.UNLIMITED}>
                   {$t(unlimitedNumberOfDeviceLabel)}
@@ -205,8 +197,14 @@ function CloudpathFormItems () {
         >
           <SelectionControl
             options={[
-              { value: PolicyDefaultAccess.ACCEPT, label: $t({ defaultMessage: 'ACCEPT' }) },
-              { value: PolicyDefaultAccess.REJECT, label: $t({ defaultMessage: 'REJECT' }) }
+              {
+                value: PolicyDefaultAccess.ACCEPT,
+                label: $t(defaultAccessLabelMapping[PolicyDefaultAccess.ACCEPT])
+              },
+              {
+                value: PolicyDefaultAccess.REJECT,
+                label: $t(defaultAccessLabelMapping[PolicyDefaultAccess.REJECT])
+              }
             ]}
           />
         </Form.Item>

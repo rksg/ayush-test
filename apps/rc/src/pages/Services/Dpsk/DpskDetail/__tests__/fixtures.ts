@@ -13,6 +13,12 @@ export const mockedDpsk = {
   expirationOffset: 1
 }
 
+export const mockedCloudpathDpsk = {
+  ...mockedDpsk,
+  deviceCountLimit: 1,
+  policyDefaultAccess: true
+}
+
 export const mockedDpskPassphraseFormFields: Partial<CreateDpskPassphrasesFormFields> = {
   numberOfPassphrases: 5,
   numberOfDevices: 1,
@@ -62,6 +68,29 @@ export const mockedDpskPassphraseList = {
     }
   ],
   totalElements: 3,
+  totalPages: 1,
+  pageable: {
+    pageNumber: 0,
+    pageSize: 10
+  },
+  sort: []
+}
+
+export const mockedDpskPassphraseListWithPersona = {
+  content: [
+    {
+      id: '__PASSPHRASE_ID_1__',
+      passphrase: 'abced12345',
+      username: 'DPSK_USER_1',
+      vlanId: 1,
+      mac: null,
+      numberOfDevices: 3,
+      createdDate: '2022-12-07T21:39:00',
+      expirationDate: '2022-12-08T08:39:00',
+      identityId: '123456789'
+    }
+  ],
+  totalElements: 1,
   totalPages: 1,
   pageable: {
     pageNumber: 0,
