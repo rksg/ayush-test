@@ -263,12 +263,12 @@ describe('NetworkTable', () => {
     fireEvent.click(await screen.findByText(/Edit/i))
     expect(mockedUseNavigate).toBeCalledTimes(1)
     // eslint-disable-next-line max-len
-    expect(mockedUseNavigate).toBeCalledWith('/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/wireless/c9d5f4c771c34ad2898f7078cebbb191/edit', { replace: false })
+    expect(mockedUseNavigate).toBeCalledWith('/ecc2d7cf9d2342fdb31ae0e24958fcac/t/networks/wireless/c9d5f4c771c34ad2898f7078cebbb191/edit', { replace: false })
 
     fireEvent.click(await screen.findByText(/Clone/i))
     expect(mockedUseNavigate).toBeCalledTimes(2)
     // eslint-disable-next-line max-len
-    expect(mockedUseNavigate).toHaveBeenLastCalledWith('/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/wireless/c9d5f4c771c34ad2898f7078cebbb191/clone', { replace: false })
+    expect(mockedUseNavigate).toHaveBeenLastCalledWith('/ecc2d7cf9d2342fdb31ae0e24958fcac/t/networks/wireless/c9d5f4c771c34ad2898f7078cebbb191/clone', { replace: false })
 
   })
 
