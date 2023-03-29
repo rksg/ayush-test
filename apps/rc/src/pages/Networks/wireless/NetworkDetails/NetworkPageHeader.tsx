@@ -26,11 +26,11 @@ function NetworkPageHeader ({
   const { $t } = useIntl()
   const enableTimeFilter = () => {
     switch (activeTab) {
-        case "aps":
-        case "venues":
-            return false
-        default:
-            return true
+      case 'aps':
+      case 'venues':
+        return false
+      default:
+        return true
     }
   }
   return (
@@ -49,13 +49,13 @@ function NetworkPageHeader ({
             />
           ]
           : [],
-          enableTimeFilter()
+        enableTimeFilter()
           ? <RangePicker
-          key='date-filter'
-          selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
-          onDateApply={setDateFilter as CallableFunction}
-          showTimePicker
-          selectionType={range}
+            key='date-filter'
+            selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
+            onDateApply={setDateFilter as CallableFunction}
+            showTimePicker
+            selectionType={range}
           />
           : <div />,
         <Button

@@ -1,12 +1,9 @@
-import '@testing-library/react';
-import { render, screen } from '@acx-ui/test-utils';
-import NetworkPageHeader from './NetworkPageHeader';
-import { Provider } from '@acx-ui/store';
+import '@testing-library/react'
+import { Provider }       from '@acx-ui/store'
+import { render, screen } from '@acx-ui/test-utils'
 
-jest.mock('./ActiveVenueFilter', () => ({
-    ActiveVenueFilter: (setSelectedVenues?: CallableFunction, selectedVenues?: string[]) =>
-        <div>Active Venue Filter</div>
-}))
+import NetworkPageHeader from './NetworkPageHeader'
+
 
 describe('NetworkPageHeader', () => {
   it('should render correctly in overview', async () => {
@@ -19,14 +16,14 @@ describe('NetworkPageHeader', () => {
           params: {
             tenantId: 'testId',
             networkId: 'test',
-            activeTab: 'overview',
-          },
-        },
+            activeTab: 'overview'
+          }
+        }
       }
-    );
-    const dateFilter = await screen.findAllByPlaceholderText('Start date');
-    expect(dateFilter).toHaveLength(1);
-  });
+    )
+    const dateFilter = await screen.findAllByPlaceholderText('Start date')
+    expect(dateFilter).toHaveLength(1)
+  })
 
   it('should render without datefilter in aps/venue', async () => {
     render(
@@ -38,12 +35,12 @@ describe('NetworkPageHeader', () => {
           params: {
             tenantId: 'testId',
             networkId: 'test',
-            activeTab: 'aps',
-          },
-        },
+            activeTab: 'aps'
+          }
+        }
       }
-    );
-    const dateFilter = screen.queryByPlaceholderText('Start date');
-    expect(dateFilter).not.toBeInTheDocument();
-  });
-});
+    )
+    const dateFilter = screen.queryByPlaceholderText('Start date')
+    expect(dateFilter).not.toBeInTheDocument()
+  })
+})
