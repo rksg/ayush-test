@@ -57,55 +57,32 @@ export const Wrapper = styled.div`
             border-top-left-radius: 20px;
           }
         }
-        .ant-menu-title-content {
-          a {
-            display: block;
-            color: var(--acx-primary-white);
-          }
+        .ant-menu {
+          border: 0px;
+          height: 100%;
+          display: flex;
+          flex-flow: column;
         }
         .ant-menu-submenu {
           .ant-menu-submenu-title {
+            color: var(--acx-primary-white);
             font-family: var(--acx-accent-brand-font);
             font-size: var(--acx-headline-4-font-size);
             font-weight: var(--acx-headline-4-font-weight);
             border-left: 2px solid transparent;
             padding-left: var(--acx-sidebar-left-space) !important;
             padding-right: 0;
-            .ant-pro-menu-item {
-              transition: opacity 0.2s ease-in-out;
-            }
-          }
-          &-selected {
-            background-color: transparent;
-            .ant-menu-submenu-title {
+            &:has(.menu-active) {
               font-weight: var(--acx-headline-4-font-weight-bold);
-              border-left-color: var(--acx-accents-orange-50);
+              border-left: 2px solid var(--acx-accents-orange-50);
               background-color: var(--acx-neutrals-70);
             }
           }
-          &-open {
-            background-color: var(--acx-neutrals-80);
+          &:last-child {
+            margin-top: auto;
           }
-          .ant-menu-sub {
-            background-color: var(--acx-neutrals-80);
-            padding-bottom: 4px;
-            .ant-menu-item {
-              height: 32px;
-              margin: auto;
-              display: flex;
-              align-items: center;
-              background-color: var(--acx-neutrals-80);
-              border-left-color: transparent;
-              padding-left: calc(var(--acx-sidebar-left-space) + 2px) !important;
-              padding-right: 0;
-              font-size: var(--acx-headline-5-font-size);
-              font-weight: var(--acx-headline-5-font-weight);
-              opacity: 60%;
-              &-selected {
-                opacity: 100%;
-                font-weight: var(--acx-headline-5-font-weight-semi-bold);
-              }
-            }
+          &-open .ant-menu-submenu-title {
+            background-color: var(--acx-neutrals-70);
           }
         }
         .ant-menu-item {
@@ -116,30 +93,21 @@ export const Wrapper = styled.div`
           font-size: var(--acx-headline-4-font-size);
           font-weight: var(--acx-headline-4-font-weight);
           line-height: 38px;
-          &-disabled {
-            .ant-pro-menu-item-title {
-              color: var(--acx-primary-white);
-              opacity: 0.35;
-            }
-          }
-          &-selected {
+          &:has(.menu-active) {
             font-weight: var(--acx-headline-4-font-weight-bold);
-            border-left-color: var(--acx-accents-orange-50);
+            border-left: 2px solid var(--acx-accents-orange-50);
+            background-color: var(--acx-neutrals-70);
+          }
+          &-active {
+            background-color: var(--acx-neutrals-70);
           }
           .ant-menu-title-content {
-            .ant-pro-menu-item-title {
-              transition: opacity 0.2s ease-in-out;
-              vertical-align: middle;
-            }
+            a { color: var(--acx-primary-white); }
           }
           &.ant-pro-sider-collapsed-button {
             border: none;
             box-shadow: none;
           }
-        }
-        .ant-menu-item[data-menu-id$="/placeholder"] {
-          pointer-events: none;
-          height: 10px;
         }
         > div:first-child, .ant-layout-sider {
           flex: 0 0 var(--acx-sider-width) !important;
@@ -158,24 +126,18 @@ export const Wrapper = styled.div`
           min-width: var(--acx-sider-collapsed-width) !important;
           width: var(--acx-sider-collapsed-width) !important;
         }
-        .ant-menu-submenu {
-          &-open {
-            background-color: unset;
-          }
-          &-title {
-            .ant-pro-menu-item {
-              opacity: 0;
-            }
-          }
+        .ant-menu-submenu-title {
+          color: transparent;
         }
         .ant-menu-item {
-          .ant-pro-menu-item-title {
-            opacity: 0;
-          }
-        }
-        .ant-menu-submenu-popup {
-          .ant-menu-sub {
-            background-color: var(--acx-neutrals-80);
+          .ant-menu-title-content{
+            color: transparent;
+            a {
+              display: inline-block;
+              overflow: hidden;
+              white-space: nowrap;
+              color: transparent;
+            }
           }
         }
       }

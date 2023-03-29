@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 import styled      from 'styled-components/macro'
 
-import { LayoutProps, LayoutUI, genPlaceholder } from '@acx-ui/components'
+import { LayoutProps, LayoutUI, MenuItem } from '@acx-ui/components'
 import {
   ConfigurationOutlined,
   ConfigurationSolid,
@@ -33,55 +33,56 @@ export function useMenuConfig (tenantType: string) {
   const isIntegrator =
   tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
 
-  const config: LayoutProps['menuConfig'] = [
+  const config = [
     {
-      path: '/dashboard',
-      name: $t({ defaultMessage: 'My Customers' }),
-      tenantType: 'v',
+      key: 'dashboard',
+      label: $t({ defaultMessage: 'My Customers' }),
       inactiveIcon: UsersThreeOutlined,
       activeIcon: UsersThreeSolid,
-      routes: [
+      children: [
         {
-          path: '/dashboard/mspCustomers',
-          name: $t({ defaultMessage: 'MSP Customers' })
+          uri: '/dashboard/mspCustomers',
+          tenantType: 'v',
+          label: $t({ defaultMessage: 'MSP Customers' })
         },
         ...((isNonVarMSP || isIntegrator) ? [] : [{
-          path: '/dashboard/varCustomers',
-          name: isSupport ? $t({ defaultMessage: 'RUCKUS Customers' })
+          uri: '/dashboard/varCustomers',
+          tenantType: 'v',
+          label: isSupport
+            ? $t({ defaultMessage: 'RUCKUS Customers' })
             : $t({ defaultMessage: 'VAR Customers' })
         }])
-      ]
+      ] as MenuItem[]
     },
-    ...((isVar || isIntegrator || isSupport) ? [] : [{
-      path: '/integrators',
-      name: $t({ defaultMessage: 'Tech Partners' }),
+    !(isVar || isIntegrator || isSupport) && {
+      uri: '/integrators',
+      label: $t({ defaultMessage: 'Tech Partners' }),
       tenantType: 'v' as TenantType,
       inactiveIcon: IntegratorsOutlined,
       activeIcon: IntegratorsSolid
-    }]),
-    ...(isSupport ? [] : [{
-      path: '/deviceInventory',
-      name: $t({ defaultMessage: 'Device Inventory' }),
+    },
+    !isSupport && {
+      uri: '/deviceInventory',
+      label: $t({ defaultMessage: 'Device Inventory' }),
       tenantType: 'v' as TenantType,
       inactiveIcon: DevicesOutlined,
       activeIcon: DevicesSolid
-    }]),
-    ...((isIntegrator || isSupport) ? [] : [{
-      path: '/mspLicenses',
-      name: $t({ defaultMessage: 'Subscriptions' }),
+    },
+    !(isIntegrator || isSupport) && {
+      uri: '/mspLicenses',
+      label: $t({ defaultMessage: 'Subscriptions' }),
       tenantType: 'v' as TenantType,
       inactiveIcon: MspSubscriptionOutlined,
       activeIcon: MspSubscriptionSolid
-    }]),
-    genPlaceholder(),
-    ...((!isPrimeAdmin || isIntegrator || isSupport) ? [] : [{
-      path: '/portalSetting',
-      name: $t({ defaultMessage: 'Settings' }),
+    },
+    !(!isPrimeAdmin || isIntegrator || isSupport) && {
+      uri: '/portalSetting',
+      label: $t({ defaultMessage: 'Settings' }),
       tenantType: 'v' as TenantType,
       inactiveIcon: ConfigurationOutlined,
       activeIcon: ConfigurationSolid
-    }])
-  ]
+    }
+  ].filter(Boolean) as LayoutProps['menuConfig']
 
   return config
 }

@@ -811,12 +811,25 @@
         font-family: var(--acx-accent-brand-font);
         line-height: var(--acx-headline-5-line-height);
         font-size: var(--acx-headline-5-font-size);
-        opacity: 60%;
         font-weight: var(--acx-headline-5-font-weight);
-        &-selected {
-          opacity: 100%;
-          font-weight: var(--acx-headline-5-font-weight-bold);
+        padding-left: 16px;
+        &:active {
+          background: unset;
         }
+        .ant-menu-title-content {
+           color: var(--acx-neutrals-50);
+           a { color: var(--acx-neutrals-50); }
+          }
+        &-selected {
+          background-color: unset;
+        }
+      }
+      &:has(.ant-menu-item-group) {
+        display: flex;
+      }
+      .ant-menu-item-group-title {
+        font-weight: var(--acx-headline-4-font-weight-bold);
+        color: var(--acx-neutrals-50);
       }
     }
   }
