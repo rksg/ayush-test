@@ -92,6 +92,9 @@ const GMap: React.FC<MapProps> = ({
 
   React.useEffect(() => {
     if (map && venueInfoWindow) {
+      if (markerClusterer) {
+        markerClusterer.clearMarkers()
+      }
       const maxVenueCountPerVenue = (venues?.length > 0)
         ?_.maxBy(venues, 'apsCount')?.apsCount
         : null
