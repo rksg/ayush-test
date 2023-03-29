@@ -65,7 +65,7 @@ export const getAPClientStackedBarChartData = (
   const series: ChartData['series'] = []
   seriesMapping.forEach(({ name }, index) => {
     series.push({
-      name: `<${index}>${name}`,
+      name: `<${index}>${name}`, // We need to add weightage to maintain the color order on stackbar chart
       value: counts[name] || 0
     })
   })

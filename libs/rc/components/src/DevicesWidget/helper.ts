@@ -100,6 +100,9 @@ export const getSwitchStackedBarChartData = (overviewData: Dashboard | undefined
       if(matched.length){
         value=matched[0].value
       }
+      /*
+      We need to add weightage to maintain the color order on stackbar chart
+      */
       switch(status.key){
         case SwitchStatusEnum.OPERATIONAL:
           return { name: `<3>${status.name}`, value }
@@ -206,6 +209,9 @@ export const getApStackedBarChartData =
       if(matched.length){
         value=matched[0].value
       }
+      /*
+      We need to add weightage to maintain the color order on stackbar chart
+      */
       switch(status.key){
         case ApVenueStatusEnum.OPERATIONAL:
           return { name: `<3>${status.name}`, value }
