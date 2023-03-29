@@ -3,10 +3,10 @@ import { useState } from 'react'
 import { Divider } from 'antd'
 import { isNull }  from 'lodash'
 
-import { AnalyticsFilter }          from '@acx-ui/analytics/utils'
-import { GridRow, GridCol, Loader } from '@acx-ui/components'
-import { formatter }                from '@acx-ui/formatter'
-import { CloseSymbol }              from '@acx-ui/icons'
+import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
+import { GridRow, GridCol, Loader, cssStr } from '@acx-ui/components'
+import { formatter }                        from '@acx-ui/formatter'
+import { CloseSymbol }                      from '@acx-ui/icons'
 
 import {
   titleConfig,
@@ -14,12 +14,19 @@ import {
   getFormattedToFunnel,
   DrilldownSelection,
   CONNECTIONFAILURE,
-  valueFormatter,
-  FunnelChartColors
+  valueFormatter
 } from './config'
 import { FunnelChart }                                       from './funnelChart'
 import { useTtcDrilldownQuery, useConnectionDrilldownQuery } from './services'
 import { Title }                                             from './styledComponents'
+
+const FunnelChartColors = [
+  cssStr('--acx-accents-blue-80'),
+  cssStr('--acx-accents-blue-70'),
+  cssStr('--acx-accents-blue-60'),
+  cssStr('--acx-accents-blue-55'),
+  cssStr('--acx-accents-blue-50')
+]
 
 const HealthDrillDown = (props: {
   filters: AnalyticsFilter;

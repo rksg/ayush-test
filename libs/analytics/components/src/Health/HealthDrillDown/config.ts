@@ -1,6 +1,5 @@
 import { MouseEventHandler } from 'react'
 
-import { cssStr }    from '@acx-ui/components'
 import { formatter } from '@acx-ui/formatter'
 
 export const titleConfig = {
@@ -77,11 +76,3 @@ export const getFormattedToFunnel = (
 export const CONNECTIONFAILURE = 'connectionFailure'
 
 export const valueFormatter = (value: number) => formatter('durationFormat')(value)
-
-export const FunnelChartColors = [
-  cssStr('--acx-accents-blue-80'),
-  cssStr('--acx-accents-blue-70'),
-  cssStr('--acx-accents-blue-60'),
-  cssStr('--acx-accents-blue-55'),
-  cssStr('--acx-accents-blue-50')
-]
