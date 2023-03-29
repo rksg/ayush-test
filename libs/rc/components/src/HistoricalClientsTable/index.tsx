@@ -24,6 +24,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
     dataIndex: 'hostname',
     sorter: true,
     defaultSortOrder: 'ascend',
+    fixed: 'left',
     render: (data, { disconnectTime, clientMac }) => {
       const period = encodeParameter<DateFilter>({
         startDate: moment((disconnectTime as number) * 1000).subtract(24, 'hours').format(),
