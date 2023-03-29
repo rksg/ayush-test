@@ -14,16 +14,15 @@ import { WirelessConnectionFieldset } from './WirelessConnection/WirelessConnect
 
 
 interface BonjourFencingServicesFormProps {
-  form: FormInstance<BonjourFencingService>,
-  otherServices: BonjourFencingService[]
+  form: FormInstance<BonjourFencingService>
 }
 
 export default function BonjourFencingServiceForm (props: BonjourFencingServicesFormProps) {
   const { $t } = useIntl()
   const { Option } = Select
-  const { form, otherServices } = props
+  const { form } = props
 
-  const { currentServiceRef } = useContext(BonjourFencingServiceContext)
+  const { currentServiceRef, otherServices } = useContext(BonjourFencingServiceContext)
 
   const serviceType = Form.useWatch('service', form)
 

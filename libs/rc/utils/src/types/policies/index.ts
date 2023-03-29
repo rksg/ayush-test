@@ -7,6 +7,7 @@ export * from './syslogPolicy'
 export * from './accessControl'
 export * from './apSnmp'
 export * from './radiusAttributeGroup'
+export * from './tunnelProfile'
 
 export { DeviceTypeEnum } from '../../models/DeviceTypeEnum'
 export { OsVendorEnum } from '../../models/OsVendorEnum'
@@ -26,7 +27,8 @@ export enum PolicyType {
   SNMP_AGENT = 'SNMP Agent',
   ADAPTIVE_POLICY = 'Adaptive Policy',
   RADIUS_ATTRIBUTE_GROUP = 'RADIUS Attribute Group',
-  ADAPTIVE_POLICY_SET = 'Adaptive Policy Set'
+  ADAPTIVE_POLICY_SET = 'Adaptive Policy Set',
+  TUNNEL_PROFILE = 'Tunnel Profile'
 }
 
 export enum PolicyTechnology {

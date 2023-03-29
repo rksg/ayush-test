@@ -70,6 +70,7 @@ export { SelectConnectedClientsTable, OSIconContainer } from './SelectConnectedC
 export { usePreference, countryCodes } from './usePreference'
 export { useUpdateGoogleMapRegion } from './usePreference/useUpdateGoogleMapRegion'
 export type { updatePreferenceProps } from './usePreference'
+export { TunnelProfileForm } from './TunnelProfileForm'
 
 export * from './services'
 export * from './EdgeStatisticWidget'
