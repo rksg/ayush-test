@@ -83,16 +83,7 @@ function ApPageHeader () {
     />
   )
 
-  const enableTimeFilter = () => {
-    switch (activeTab) {
-        case 'clients':
-        case 'networks':
-        case 'troubleshooting':
-          return false
-        default:
-          return true
-    }
-  }
+  const enableTimeFilter = () => !['clients', 'networks', 'troubleshooting'].includes(activeTab as string)
 
   return (
     <PageHeader
@@ -110,7 +101,7 @@ function ApPageHeader () {
           showTimePicker
           selectionType={range}
         />
-        : <div />,
+        : <></>,
         <Dropdown overlay={menu}>
           <Button>
             <Space>

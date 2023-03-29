@@ -39,16 +39,8 @@ function DatePicker () {
 function VenuePageHeader () {
   const { $t } = useIntl()
   const { tenantId, venueId, activeTab } = useParams()
-  const enableTimeFilter = () => {
-    switch (activeTab) {
-      case 'networks':
-      case 'services':
-      case 'units':
-        return false
-      default:
-        return true
-    }
-  }
+  const enableTimeFilter = () => !['networks', 'services', 'units'].includes(activeTab as string)
+
   const { data } = useVenueDetailsHeaderQuery({ params: { tenantId, venueId } })
 
   const navigate = useNavigate()
@@ -62,7 +54,7 @@ function VenuePageHeader () {
         { text: $t({ defaultMessage: 'Venues' }), link: '/venues' }
       ]}
       extra={filterByAccess([
-        enableTimeFilter() ? <DatePicker key='date-filter' /> : <div />,
+        enableTimeFilter() ? <DatePicker key='date-filter' /> : <></>,
         <Button
           type='primary'
           onClick={() =>

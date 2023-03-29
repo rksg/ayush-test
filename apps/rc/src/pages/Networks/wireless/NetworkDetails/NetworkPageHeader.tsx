@@ -24,15 +24,7 @@ function NetworkPageHeader ({
   const basePath = useTenantLink('/networks/wireless')
   const { networkId, activeTab } = useParams()
   const { $t } = useIntl()
-  const enableTimeFilter = () => {
-    switch (activeTab) {
-      case 'aps':
-      case 'venues':
-        return false
-      default:
-        return true
-    }
-  }
+  const enableTimeFilter = () => !['aps', 'venues'].includes(activeTab as string)
   return (
     <PageHeader
       title={network.data?.name || ''}
@@ -57,7 +49,7 @@ function NetworkPageHeader ({
             showTimePicker
             selectionType={range}
           />
-          : <div />,
+          : <></>,
         <Button
           type='primary'
           onClick={() =>
