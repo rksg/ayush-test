@@ -162,6 +162,10 @@ export const tooltipFormatter = (
   const intl = getIntl()
   const param = parameters as TooltipFormatterParams
   const value = param.value as string[]
+  /*
+  Below replace method is required to remove weightage mentioned in between angle brackets `<` `>`
+  Like: <2> Operational, <1> Requires Attention
+  */
   const name = param.seriesName?.replace(/<\d+>/,'')
   let toolTipValue = value[0]
   if(total){
