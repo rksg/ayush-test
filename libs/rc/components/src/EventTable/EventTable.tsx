@@ -82,7 +82,7 @@ export const EventTable = ({
     {
       key: 'entity_type',
       title: $t({ defaultMessage: 'Event Type' }),
-      dataIndex: 'entity_id',
+      dataIndex: 'entity_type',
       sorter: true,
       render: (_, row) => valueFrom(typeMapping, row.entity_type),
       filterable: filtersFrom(eventTypeMap, filterables, 'entity_type')
@@ -98,7 +98,7 @@ export const EventTable = ({
     {
       key: 'source',
       title: $t({ defaultMessage: 'Source' }),
-      dataIndex: 'entity_type',
+      dataIndex: 'entity_id',
       sorter: true,
       render: function (_, row, __, highlightFn) {
         const searchable = Array.isArray(searchables)
