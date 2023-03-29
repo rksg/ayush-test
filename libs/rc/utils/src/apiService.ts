@@ -10,6 +10,5 @@ export {
   isLocalHost,
   isIntEnv,
   TenantIdFromJwt,
-  JwtTierValue,
-  PverFromJwt
+  JwtTierValue
 } from '@acx-ui/utils'

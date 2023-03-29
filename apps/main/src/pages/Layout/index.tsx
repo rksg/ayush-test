@@ -23,7 +23,7 @@ import {
 } from '@acx-ui/msp/components'
 import { CloudMessageBanner, useUpdateGoogleMapRegion }                             from '@acx-ui/rc/components'
 import { useGetPreferencesQuery }                                                   from '@acx-ui/rc/services'
-import { isDelegationMode, TenantIdFromJwt, TenantPreferenceSettings, PverFromJwt } from '@acx-ui/rc/utils'
+import { isDelegationMode, TenantIdFromJwt, TenantPreferenceSettings } from '@acx-ui/rc/utils'
 import { getBasePath, Link, Outlet, useNavigate, useTenantLink }                    from '@acx-ui/react-router-dom'
 import { useParams }                                                                from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                                from '@acx-ui/types'
@@ -32,9 +32,15 @@ import { hasRoles, useUserProfileContext }                                      
 import { useMenuConfig } from './menuConfig'
 import SearchBar         from './SearchBar'
 import * as UI           from './styledComponents'
+import { getJwtTokenPayload } from '@acx-ui/utils'
 
 const getMapRegion = (data: TenantPreferenceSettings | undefined): string => {
   return data?.global.mapRegion as string
+}
+export enum PverName {
+  ACX = 'acx',
+  ACX_HYBRID = 'acx-hybrid',
+  R1 = 'ruckus-one'
 }
 
 function Layout () {
@@ -56,7 +62,7 @@ function Layout () {
 
   const { data } = useGetPreferencesQuery({ params }, { skip: isSkip })
   const { update: updateGoogleMapRegion } = useUpdateGoogleMapRegion()
-  const isBackToRC = isDelegationMode() && (userProfile?.pver !== PverFromJwt() )
+  const isBackToRC = (PverName.ACX === getJwtTokenPayload().pver || PverName.ACX_HYBRID === getJwtTokenPayload().pver)
 
   useEffect(() => {
     if (data?.global) {
