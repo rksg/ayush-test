@@ -140,5 +140,8 @@ describe('SmartEdgeForm', () => {
     await user.type(gatewayInput, '1.2.3.4')
     const addDhcpPoolDrawer = screen.getAllByRole('dialog')[1]
     await user.click(within(addDhcpPoolDrawer).getByRole('button', { name: 'Add' }))
+
+    const selectDhcpPoolDrawer = screen.getAllByRole('dialog')[0]
+    await user.click(within(selectDhcpPoolDrawer).getByRole('button', { name: 'Select' }))
   })
 })

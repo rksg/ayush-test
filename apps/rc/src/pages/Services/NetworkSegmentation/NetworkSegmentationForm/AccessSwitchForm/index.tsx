@@ -25,7 +25,7 @@ export function AccessSwitchForm () {
   const { form } = useStepFormContext<NetworkSegmentationGroupForm>()
 
   const [open, setOpen] = useState(false)
-  const [selected, setSelected] = useState<AccessSwitch[]>()
+  const [selected, setSelected] = useState<AccessSwitch[]>([])
 
   const accessSwitchInfos = useWatch('accessSwitchInfos', form)
   const venueId = useWatch('venueId', form)
@@ -35,7 +35,7 @@ export function AccessSwitchForm () {
   }
 
   const onSave = (values: Partial<AccessSwitch>) => {
-    if (!selected || !accessSwitchInfos) return
+    if (!accessSwitchInfos) return
 
     const newList = accessSwitchInfos.map(as => {
       const isSelected = selected.map(item => item.id).includes(as.id)
@@ -44,7 +44,7 @@ export function AccessSwitchForm () {
       }
       return as
     })
-    setSelected(undefined)
+    setSelected([])
     setOpen(false)
 
     form.setFieldValue('accessSwitchInfos', newList)
@@ -66,7 +66,7 @@ export function AccessSwitchForm () {
       {$t({ defaultMessage: 'Set the configuration on these access switches:' })}
     </Typography.Paragraph>
     <AccessSwitchTable rowActions={rowActions}
-      rowSelection={{ type: 'radio', selectedRowKeys: selected? selected.map(as=>as.id) : [] }}
+      rowSelection={{ type: 'checkbox', selectedRowKeys: selected.map(as=>as.id) }}
       dataSource={accessSwitchInfos} />
     <Form.Item name='accessSwitchInfos'
       rules={[{
