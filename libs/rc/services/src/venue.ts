@@ -60,7 +60,9 @@ import {
   NewTableResult,
   transferToTableResult,
   downloadFile,
-  RequestFormData
+  RequestFormData,
+  createNewTableHttpRequest,
+  TableChangePayload
 } from '@acx-ui/rc/utils'
 import { baseVenueApi } from '@acx-ui/store'
 import { getJwtToken }  from '@acx-ui/utils'
@@ -1084,8 +1086,12 @@ export const venueApi = baseVenueApi.injectEndpoints({
       invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
     }),
     getResidentPortalList: build.query<TableResult<ResidentPortal>, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(PropertyUrlsInfo.getResidentPortalList, params)
+      query: ({ params, payload }) => {
+        const req = createNewTableHttpRequest({
+          apiInfo: PropertyUrlsInfo.getResidentPortalList,
+          params,
+          payload: payload as TableChangePayload
+        })
         return {
           ...req
         }

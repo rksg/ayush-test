@@ -51,7 +51,7 @@ export function PropertyManagementTab () {
   const [enableResidentPortal, setEnableResidentPortal] = useState(false)
   const [personaGroupVisible, setPersonaGroupVisible] = useState(false)
   const { data: residentPortalList } = useGetResidentPortalListQuery({
-    params: { page: '0', pageSize: '10000', sort: 'name,asc' }
+    payload: { page: 1, pageSize: 10000, sortField: 'name', sortOrder: 'ASC' }
   })
   const [updatePropertyConfigs] = useUpdatePropertyConfigsMutation()
   const [patchPropertyConfigs] = usePatchPropertyConfigsMutation()
