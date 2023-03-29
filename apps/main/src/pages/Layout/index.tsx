@@ -88,13 +88,13 @@ function Layout () {
       }
       leftHeaderContent={
         <UI.LeftHeaderWrapper>
-          { showHomeButton && <Link to={(isBackToRC? '/api/ui' :
+          { showHomeButton && <a href={(isBackToRC? '/api/ui' :
             `${getBasePath()}`) + `/v/${getJwtTokenPayload().tenantId}`}>
             <UI.Home>
               <LayoutUI.Icon children={<HomeSolid />} />
               {$t({ defaultMessage: 'Home' })}
             </UI.Home>
-          </Link> }
+          </a> }
           <RegionButton/>
           <HeaderContext.Provider value={{
             searchExpanded, licenseExpanded, setSearchExpanded, setLicenseExpanded }}>
