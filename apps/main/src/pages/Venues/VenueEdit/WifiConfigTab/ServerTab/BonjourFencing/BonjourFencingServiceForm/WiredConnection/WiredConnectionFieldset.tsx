@@ -1,4 +1,4 @@
-import { CSSProperties, useContext, useEffect, useState } from 'react'
+import { CSSProperties, useContext, useEffect, useRef, useState } from 'react'
 
 import { Form, Input, Select } from 'antd'
 import _                       from 'lodash'
@@ -7,6 +7,7 @@ import { useIntl }             from 'react-intl'
 
 import { Button, Modal, Table, TableProps } from '@acx-ui/components'
 import { DeleteOutlinedIcon }               from '@acx-ui/icons'
+import { BonjourFencingWiredRule }          from '@acx-ui/rc/utils'
 
 import { BonjourFencingServiceContext }         from '../../BonjourFencingServiceTable'
 import { FencingRangeRadioGroup, FieldsetItem } from '../../utils'
@@ -188,18 +189,24 @@ const DeviceMacAddressTable = (props: DeviceMacAddressTableProps) => {
 }
 
 
-interface WiredRulesTableEntry {
-  name: string,
-  fencingRange: string,
-  closestApMac: string,
-  deviceMacAddresses: string[]
+interface WiredRulesTableEntry extends BonjourFencingWiredRule {
+  rowId?: string
 }
 
 interface WiredRulesModalProps {
   visible: boolean,
-  setVisible: (v: boolean) => void,
+  isEditMode: boolean,
+  currentRule: WiredRulesTableEntry,
   existedRules: WiredRulesTableEntry[],
-  handleUpdate: (data: WiredRulesTableEntry) => void
+  handleUpdate: (data: WiredRulesTableEntry) => void,
+  onCancel: () => void
+}
+
+const initWiredRuleFormData = {
+  name: '',
+  //fencingRange: 'SAME_AP',
+  deviceMacAddresses: [],
+  closestApMac: ''
 }
 
 const WiredRulesModal = (props: WiredRulesModalProps) => {
@@ -207,24 +214,57 @@ const WiredRulesModal = (props: WiredRulesModalProps) => {
   const { Option } = Select
 
   const [form] = Form.useForm()
-  const { visible, setVisible, handleUpdate, existedRules } = props
+  const { visible = false, isEditMode, handleUpdate, currentRule, existedRules } = props
   const [disabledAddBtn, setDisableAddBtn] = useState(true)
   const [macAddrs, setMacAddrs] = useState<DeviceMacAddressTableEntry[]>([])
-  const [usedRuleNames, setUsedRuleNames] = useState<string[]>([])
+  const [usedRuleNames, setUsedRuleNames] = useState<string[]>()
   const [usedMacAddrs, setUsedMacAddrs] = useState<string[]>([])
+  const [usedClosestAps, setUsedClosedAps] = useState<string[]>()
   const [conflictMacAddes, setConflictMacAddes] = useState('')
   const { venueAps } = useContext(BonjourFencingServiceContext)
 
+  // reset form fields when modal is closed
+  const prevOpenRef = useRef(false)
+  useEffect(() => {
+    prevOpenRef.current = visible
+  }, [visible])
+
+  const prevOpen = prevOpenRef.current
+  useEffect(() => {
+    if (!visible && prevOpen) {
+      form.resetFields()
+      setMacAddrs([])
+      setDisableAddBtn(true)
+    }
+  }, [form, prevOpen, visible])
+
+  useEffect(() => {
+    form.setFieldsValue(currentRule)
+
+    const { deviceMacAddresses } = currentRule
+    if ( Array.isArray(deviceMacAddresses) && deviceMacAddresses.length > 0) {
+      const devMacAddrs = deviceMacAddresses.map(addr => ({ deviceMacAddresses: addr }))
+      setMacAddrs(devMacAddrs)
+    }
+
+  }, [form, currentRule ])
+
   useEffect(() => {
     const rules = existedRules || []
-    const useNames = rules.map(r => r.name)
-    setUsedRuleNames(useNames)
 
+    let usedNames: string[] = []
     let usedMac: string[] = []
+    let usedAps: string[] = []
+
     rules.forEach(r => {
       usedMac = _.concat(usedMac, r.deviceMacAddresses)
+      usedNames.push(r.name)
+      usedAps.push(r.closestApMac)
     })
+
+    setUsedRuleNames(usedNames)
     setUsedMacAddrs(usedMac)
+    setUsedClosedAps(usedAps)
 
   }, [existedRules])
 
@@ -259,9 +299,12 @@ const WiredRulesModal = (props: WiredRulesModalProps) => {
   const content = <Form
     form={form}
     layout='vertical'
-    initialValues={{}}
+    initialValues={initWiredRuleFormData}
     onFieldsChange={validateFormData}
   >
+    <Form.Item name='rowId' noStyle>
+      <Input type='hidden' />
+    </Form.Item>
     <Form.Item
       required
       name='name'
@@ -296,7 +339,7 @@ const WiredRulesModal = (props: WiredRulesModalProps) => {
         children={
           venueAps.map((ap) => {
             const { name, apMac } = ap
-            const isUsed = false//usedServices.includes(key)
+            const isUsed = usedClosestAps && usedClosestAps.includes(apMac)
             return (
               <Option key={apMac} value={apMac} disabled={isUsed}>
                 { name }
@@ -322,34 +365,25 @@ const WiredRulesModal = (props: WiredRulesModalProps) => {
     />
   </Form>
 
-  const resetFormData = () => {
-    form.resetFields()
-    setMacAddrs([])
-  }
-
   const handleOK = () => {
     const data = form.getFieldsValue()
     handleUpdate(data)
-    resetFormData()
-    setDisableAddBtn(true)
-  }
-
-  const handleCancel = () => {
-    setVisible(false)
-    resetFormData()
-    setDisableAddBtn(true)
   }
 
   return (
     <Modal
-      title={$t({ defaultMessage: 'Wired Connection' })}
+      title={isEditMode
+        ? $t({ defaultMessage: 'Edit Wired Connection' })
+        : $t({ defaultMessage: 'Add Wired Connection' })}
       visible={visible}
       centered
       maskClosable={false}
       keyboard={false}
       children={content}
-      okText={$t({ defaultMessage: 'Add' })}
-      onCancel={handleCancel}
+      okText={isEditMode
+        ? $t({ defaultMessage: 'Save' })
+        : $t({ defaultMessage: 'Add' })}
+      onCancel={props.onCancel}
       onOk={handleOK}
       okButtonProps={{
         disabled: disabledAddBtn
@@ -367,17 +401,25 @@ interface WiredRulesTableProps {
 const WiredRulesTable = (props: WiredRulesTableProps) => {
   const { $t } = useIntl()
   const { tableData, tableDataChanged, style } = props
-  const [ showWiredRuleModal, setShowWiredRuleModal ] = useState(false)
+  const [ wiredRuleNodalState, setWiredRuleNodalState ] = useState({
+    isEditMode: false,
+    visible: false,
+    currentRule: {} as WiredRulesTableEntry,
+    existedRules: [] as WiredRulesTableEntry[]
+  })
 
   const { venueAps } = useContext(BonjourFencingServiceContext)
 
   const handleAdd = () => {
-    setShowWiredRuleModal(true)
-  }
+    const existedRules = tableData
 
-  const handleDelete = (ruleName: string) => {
-    const newData = tableData.filter( d => d.name !== ruleName )
-    tableDataChanged(newData)
+    setWiredRuleNodalState({
+      ...wiredRuleNodalState,
+      isEditMode: false,
+      visible: true,
+      currentRule: {} as WiredRulesTableEntry,
+      existedRules
+    })
   }
 
   const columns: TableProps<WiredRulesTableEntry>['columns'] = [{
@@ -408,17 +450,6 @@ const WiredRulesTable = (props: WiredRulesTableProps) => {
       const ap = _.find(venueAps, (ap) => ap.apMac === data)
       return ap?.name || data
     }
-  }, {
-    key: 'action',
-    dataIndex: 'action',
-    render: (data, row) => <Button
-      key='delete'
-      role='deleteBtn'
-      ghost={true}
-      icon={<DeleteOutlinedIcon />}
-      style={{ height: '16px' }}
-      onClick={() => handleDelete(row.name)}
-    />
   }]
 
   const actions = [{
@@ -426,11 +457,68 @@ const WiredRulesTable = (props: WiredRulesTableProps) => {
     onClick: handleAdd
   }]
 
-  const addTableData = (data: WiredRulesTableEntry) => {
-    const newData = [ ...tableData ]
-    newData.push(data)
-    tableDataChanged(newData)
-    setShowWiredRuleModal(false)
+  const rowActions: TableProps<(typeof tableData)[0]>['rowActions'] = [
+    {
+      label: $t({ defaultMessage: 'Edit' }),
+      visible: (selectedRows) => selectedRows.length === 1,
+      disabled: wiredRuleNodalState.visible,
+      onClick: (selectedRows, clearSelection) => {
+        const selectData = { ...selectedRows[0] }
+        const existedRules = tableData.filter( d => d.rowId !== selectData.rowId )
+
+        setWiredRuleNodalState({
+          ...wiredRuleNodalState,
+          isEditMode: true,
+          visible: true,
+          currentRule: selectData,
+          existedRules
+        })
+
+        clearSelection()
+      }
+    }, {
+      label: $t({ defaultMessage: 'Delete' }),
+      disabled: wiredRuleNodalState.visible,
+      onClick: (selectedRows, clearSelection) => {
+        const keys = selectedRows.map(row => row.rowId)
+        const newData = tableData.filter(d => keys.indexOf(d.rowId) === -1)
+        tableDataChanged(newData)
+
+        clearSelection()
+      }
+    }
+  ]
+
+  const updateRowId = (data: WiredRulesTableEntry) => {
+    return { ...data, rowId: data.name }
+  }
+
+  const updateTableData = (data: WiredRulesTableEntry) => {
+    const newTableData = [ ...tableData ]
+
+    const targetIdx = newTableData.findIndex((r: WiredRulesTableEntry) => r.rowId === data.rowId)
+
+    const newData = updateRowId(data)
+
+    if (targetIdx === -1) {
+      newTableData.push(newData)
+    } else {
+      newTableData.splice(targetIdx, 1, newData)
+    }
+
+    tableDataChanged(newTableData)
+
+    setWiredRuleNodalState({
+      ...wiredRuleNodalState,
+      visible: false
+    })
+  }
+
+  const handleWireRulesModalCancel = () => {
+    setWiredRuleNodalState({
+      ...wiredRuleNodalState,
+      visible: false
+    })
   }
 
   return <Form.Item
@@ -440,17 +528,16 @@ const WiredRulesTable = (props: WiredRulesTableProps) => {
     label={$t({ defaultMessage: 'Fencing Rule' })}
     children={<>
       <WiredRulesModal
-        visible={showWiredRuleModal}
-        setVisible={setShowWiredRuleModal}
-        existedRules={tableData}
-        handleUpdate={addTableData}
-      />
+        {...wiredRuleNodalState}
+        handleUpdate={updateTableData}
+        onCancel={handleWireRulesModalCancel} />
       <Table
-        rowKey='name'
-        type='form'
+        rowKey='rowId'
         columns={columns}
         dataSource={tableData}
         actions={actions}
+        rowActions={rowActions}
+        rowSelection={{ type: 'checkbox' }}
       />
     </>}
   />
@@ -466,13 +553,14 @@ export const WiredConnectionFieldset = () => {
 
   useEffect(() => {
     const wiredRules = currentService?.wiredRules || []
-    setTableData(wiredRules)
+    const newData = wiredRules.map(wr => ({ ...wr, rowId: wr.name }))
+    setTableData(newData)
   }, [ currentService ] )
 
   const handleTableDataChanged = (data: WiredRulesTableEntry[]) => {
     setTableData(data)
-
-    form.setFieldValue('wiredRules', data)
+    const newFormData = data.map(d => _.omit(d, ['rowId']))
+    form.setFieldValue('wiredRules', newFormData)
   }
 
   return (

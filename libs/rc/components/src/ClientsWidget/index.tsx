@@ -11,6 +11,8 @@ import { ChartData, Dashboard }                                  from '@acx-ui/r
 import { useNavigateToPath, useParams, TenantLink }              from '@acx-ui/react-router-dom'
 import { useDashboardFilter, NetworkNodePath }                   from '@acx-ui/utils'
 
+import * as UI from '../DevicesWidget/styledComponents'
+
 export const getAPClientChartData = (
   overviewData: Dashboard | undefined,
   { $t }: IntlShape
@@ -170,7 +172,6 @@ export function ClientsWidgetV2 () {
       }
     })
   })
-  const marginTop = '13px'
   const { $t } = intl
   const { apClientCount, apData, switchClientCount, switchData } = queryResults.data
   return (
@@ -178,71 +179,66 @@ export function ClientsWidgetV2 () {
       <Card title={$t({ defaultMessage: 'Clients' })} onArrowClick={onArrowClick}>
         <AutoSizer>
           {({ height, width }) => (
-            <div style={{ display: 'block', height, width }}>
-              <GridRow style={{ marginTop: '30px' }}>
-                <GridCol col={{ span: 9 }} style={{ marginTop: marginTop }}>
+            <UI.WidgetContainer style={{ height, width }}>
+              <GridRow style={{ display: 'flex', alignItems: 'center' }}>
+                <GridCol col={{ span: 9 }}>
                   { apClientCount > 0
                     ? $t({ defaultMessage: 'Wi-Fi' })
-                    : $t({ defaultMessage: 'No Wi-Fi Clients' }) }
+                    : $t({ defaultMessage: 'No Wi-Fi Clients' })
+                  }
                 </GridCol>
                 <GridCol col={{ span: 15 }}>
-                  <Space>
-                    { apClientCount > 0 ?
-                      <>
-                        <StackedBarChart
-                          animation={false}
-                          style={{
-                            height: height / 2 - 30,
-                            width: width / 2 - 15,
-                            minWidth: width / 2 - 15
-                          }}
-                          data={apData}
-                          showLabels={false}
-                          showTotal={false}
-                          total={apClientCount || 0}
-                          barColors={getDeviceConnectionStatusColorsv2()} />
-                        <TenantLink to={'/users/wifi/clients'}>
-                          {apClientCount || 0}
-                        </TenantLink>
-                      </>
-                      : <div style={{ height: (height/2) - 30 }}/>
-                    }
-                  </Space>
+                  { apClientCount > 0
+                    ? <Space>
+                      <StackedBarChart
+                        animation={false}
+                        style={{
+                          height: height / 2 - 30,
+                          width: width / 2 - 15
+                        }}
+                        data={apData}
+                        showLabels={false}
+                        showTotal={false}
+                        total={apClientCount || 0}
+                        barColors={getDeviceConnectionStatusColorsv2()} />
+                      <TenantLink to={'/users/wifi/clients'}>
+                        {apClientCount || 0}
+                      </TenantLink>
+                    </Space>
+                    : <div style={{ height: (height/2) - 30 }}/>
+                  }
                 </GridCol>
               </GridRow>
-              <GridRow>
-                <GridCol col={{ span: 9 }} style={{ marginTop: marginTop }}>
+              <GridRow style={{ display: 'flex', alignItems: 'center' }}>
+                <GridCol col={{ span: 9 }}>
                   { switchClientCount > 0
                     ? $t({ defaultMessage: 'Wired' })
-                    : $t({ defaultMessage: 'No Wired Clients' }) }
+                    : $t({ defaultMessage: 'No Wired Clients' })
+                  }
                 </GridCol>
                 <GridCol col={{ span: 15 }}>
-                  <Space>
-                    { switchClientCount > 0
-                      ?
-                      <>
-                        <StackedBarChart
-                          animation={false}
-                          style={{
-                            height: height/2 - 30,
-                            width: width/2 - 15,
-                            minWidth: width/2 - 15
-                          }}
-                          data={switchData}
-                          showLabels={false}
-                          showTotal={false}
-                          total={switchClientCount || 0}
-                          barColors={getDeviceConnectionStatusColorsv2()} />
-                        <TenantLink to={'/users/switch/clients'}>
-                          {switchClientCount || 0}
-                        </TenantLink>
-                      </>
-                      : <div style={{ height: (height/2) - 30 }}/>
-                    }
-                  </Space>
+                  { switchClientCount > 0
+                    ? <Space>
+                      <StackedBarChart
+                        animation={false}
+                        style={{
+                          height: height/2 - 30,
+                          width: width/2 - 15
+                        }}
+                        data={switchData}
+                        showLabels={false}
+                        showTotal={false}
+                        total={switchClientCount || 0}
+                        barColors={getDeviceConnectionStatusColorsv2()} />
+                      <TenantLink to={'/users/switch/clients'}>
+                        {switchClientCount || 0}
+                      </TenantLink>
+                    </Space>
+                    : <div style={{ height: (height/2) - 30 }}/>
+                  }
                 </GridCol>
               </GridRow>
-            </div>
+            </UI.WidgetContainer>
           )}
         </AutoSizer>
       </Card>

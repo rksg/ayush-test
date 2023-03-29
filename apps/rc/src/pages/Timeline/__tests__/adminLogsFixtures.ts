@@ -17,7 +17,7 @@ export const events = {
       entity_type: 'Notification',
       event_datetime: '2023-03-07T06:52:21Z',
       id: 'e07ee7708e2043c0a83e3292f1386809',
-      entity_id: 'Ruckus Cloud',
+      entity_id: 'RUCKUS One',
       message: '{ "message_template": "An EMAIL notification was sent to mahesh.manyam@ruckuswireless.com successfully." }'
     }
   ],

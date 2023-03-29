@@ -97,8 +97,10 @@ describe('WiredConnectionFieldset Component', () => {
     await screen.findByRole('cell', { name: 'AA:BB:CC:DD:EE:FF' })
     await screen.findByRole('cell', { name: 'ap1' })
 
-    // delete rule
-    await userEvent.click(await screen.findByRole('deleteBtn'))
+    // select a row and then delete rule
+    let row = await screen.findByRole('row', { name: new RegExp('r1') })
+    await userEvent.click(within(row).getByRole('checkbox'))
+    await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
   })
 
   it ('should check the adding/deleting MAC address is correct', async () => {
@@ -185,5 +187,70 @@ describe('WiredConnectionFieldset Component', () => {
     let cancelBtns = await screen.findAllByRole('button', { name: 'Cancel' })
     expect(cancelBtns.length).toBe(2)
     await userEvent.click(cancelBtns[1])
+  })
+
+  it ('should edited entry correctly', async () => {
+    render(
+      <BonjourFencingServiceContext.Provider
+        value={{
+          currentServiceRef: serviceRef,
+          otherServices: otherServices,
+          venueAps: venueAps
+        }}>
+        <Form>
+          <WiredConnectionFieldset />
+        </Form>
+      </BonjourFencingServiceContext.Provider>
+    )
+
+    await userEvent.click(await screen.findByRole('switch', { name: 'Wired Connection' }))
+
+    // check table has been created
+    await screen.findByText('Fencing Rule')
+
+    // show modal to add rule
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
+
+    await screen.findByText('Add Wired Connection')
+    await userEvent.type(await screen.findByRole('textbox', { name: 'Rule Name' }), 'r1' )
+
+    // device MAC address settings
+    let addButtons = await screen.findAllByRole('button', { name: 'Add' })
+    expect(addButtons.length).toBe(3)
+
+    await userEvent.click(addButtons[1])
+
+    await screen.findAllByText('Add MAC Address')
+    await userEvent.click(await screen.findByTestId('InputTag'))
+    await userEvent.type(await screen.findByTestId('InputTagField'), 'AA:BB:CC:DD:EE:FF{enter}')
+
+    addButtons = await screen.findAllByRole('button', { name: 'Add' })
+    expect(addButtons.length).toBe(4)
+    await userEvent.click(addButtons[3])
+
+    await screen.findByRole('cell', { name: 'AA:BB:CC:DD:EE:FF' })
+
+    await userEvent.click(await screen.findByRole('combobox', { name: 'Closest AP' }))
+    await userEvent.click(await screen.findByTitle('ap1'))
+
+    addButtons = await screen.findAllByRole('button', { name: 'Add' })
+    await userEvent.click(addButtons[2])
+
+    await screen.findByRole('cell', { name: 'r1' })
+    await screen.findByRole('cell', { name: 'AA:BB:CC:DD:EE:FF' })
+    await screen.findByRole('cell', { name: 'ap1' })
+
+    // select a row and then edit rule
+    let row = await screen.findByRole('row', { name: new RegExp('r1') })
+    await userEvent.click(within(row).getByRole('checkbox'))
+    await userEvent.click(screen.getByRole('button', { name: /Edit/ }))
+
+    await screen.findByText('Edit Wired Connection')
+    await userEvent.type(await screen.findByRole('textbox', { name: 'Rule Name' }), '_edit' )
+    let saveButtons = await screen.findAllByRole('button', { name: 'Save' })
+    expect(saveButtons.length).toBe(1)
+    await userEvent.click(saveButtons[0])
+
+    await screen.findByRole('cell', { name: 'r1_edit' })
   })
 })

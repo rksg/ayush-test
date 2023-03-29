@@ -28,6 +28,7 @@ const AdminLogTable = ({ tableQuery }: AdminLogTableProps) => {
       dataIndex: 'event_datetime',
       defaultSortOrder: 'descend',
       sorter: true,
+      fixed: 'left',
       render: function (_, row) {
         return <Button
           type='link'
@@ -104,6 +105,7 @@ const AdminLogTable = ({ tableQuery }: AdminLogTableProps) => {
       onChange={tableQuery.handleTableChange}
       onFilterChange={tableQuery.handleFilterChange}
       enableApiFilter={true}
+      columnState={{ hidden: true }}
     />
     {visible && <TimelineDrawer
       title={defineMessage({ defaultMessage: 'Log Details' })}

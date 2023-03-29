@@ -28,6 +28,7 @@ export default function AAAInstancesTable (){
       dataIndex: 'networkName',
       searchable: true,
       sorter: true,
+      fixed: 'left',
       render: function (_data, row) {
         return (
           <TenantLink

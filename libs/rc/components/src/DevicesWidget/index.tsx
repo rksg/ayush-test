@@ -2,11 +2,15 @@ import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { Card, DonutChart, getDeviceConnectionStatusColorsv2, GridCol, GridRow, StackedBarChart } from '@acx-ui/components'
-import type { DonutChartData }                                                                    from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                 from '@acx-ui/feature-toggle'
-import { ChartData }                                                                              from '@acx-ui/rc/utils'
-import { TenantLink, useNavigateToPath }                                                          from '@acx-ui/react-router-dom'
+import { Card, DonutChart,
+  getDeviceConnectionStatusColorsv2,
+  GridCol, GridRow, StackedBarChart }    from '@acx-ui/components'
+import type { DonutChartData }           from '@acx-ui/components'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
+import { ChartData }                     from '@acx-ui/rc/utils'
+import { TenantLink, useNavigateToPath } from '@acx-ui/react-router-dom'
+
+import * as UI from './styledComponents'
 
 export  { seriesMappingAP } from './helper'
 
@@ -61,84 +65,77 @@ export function DevicesWidgetv2 (props: {
   const { $t } = useIntl()
   const onArrowClick = useNavigateToPath('/devices/')
   const { apStackedData,switchStackedData,apTotalCount,switchTotalCount } = props
-  const marginTop = '13px'
   return (
     <Card title={$t({ defaultMessage: 'Devices' })}
       onArrowClick={props.enableArrowClick ? onArrowClick : undefined}>
       <AutoSizer>
         {({ height, width }) => (
-          <div style={{ display: 'block', height, width }}>
-            <GridRow style={{ marginTop: '30px' }}>
-              <GridCol col={{ span: 9 }} style={{ marginTop: marginTop }}>
+          <UI.WidgetContainer style={{ height, width }}>
+            <GridRow align={'middle'}>
+              <GridCol col={{ span: 9 }}>
                 { apTotalCount > 0
                   ? $t({ defaultMessage: 'Access Points' })
                   : $t({ defaultMessage: 'No Access Points' }) }
               </GridCol>
               <GridCol col={{ span: 15 }}>
-                <Space>
-                  { apTotalCount > 0
-                    ? <>
-                      <StackedBarChart
-                        animation={false}
-                        style={{
-                          height: height / 2 - 30,
-                          width: width / 2 - 15,
-                          minWidth: width / 2 - 15
-                        }}
-                        data={apStackedData}
-                        showLabels={false}
-                        showTotal={false}
-                        total={apTotalCount || 0}
-                        barColors={getDeviceConnectionStatusColorsv2()} />
-                      <TenantLink to={'/devices/wifi'}>
-                        {apTotalCount || 0}
-                      </TenantLink>
-                    </>
-                    : <div style={{ height: (height/2) - 30, paddingTop: '13px' }}>
-                      <TenantLink to={'/devices/wifi/add'}>
-                        {$t({ defaultMessage: 'Add Access Point' })}
-                      </TenantLink>
-                    </div>
-                  }
-                </Space>
+                { apTotalCount > 0
+                  ? <Space>
+                    <StackedBarChart
+                      animation={false}
+                      style={{
+                        height: height/2 - 30,
+                        width: width/2 - 15
+                      }}
+                      data={apStackedData}
+                      showLabels={false}
+                      showTotal={false}
+                      total={apTotalCount || 0}
+                      barColors={getDeviceConnectionStatusColorsv2()} />
+                    <TenantLink to={'/devices/wifi'}>
+                      {apTotalCount || 0}
+                    </TenantLink>
+                  </Space>
+                  : <UI.LinkContainer style={{ height: height/2 - 30 }}>
+                    <TenantLink to={'/devices/wifi/add'}>
+                      {$t({ defaultMessage: 'Add Access Point' })}
+                    </TenantLink>
+                  </UI.LinkContainer>
+                }
               </GridCol>
             </GridRow>
-            <GridRow>
-              <GridCol col={{ span: 9 }} style={{ marginTop: marginTop }}>
+            <GridRow align={'middle'}>
+              <GridCol col={{ span: 9 }}>
                 { switchTotalCount > 0
                   ? $t({ defaultMessage: 'Switches' })
                   : $t({ defaultMessage: 'No Switches' }) }
               </GridCol>
               <GridCol col={{ span: 15 }}>
-                <Space>
-                  { switchTotalCount > 0
-                    ? <>
-                      <StackedBarChart
-                        animation={false}
-                        style={{
-                          height: height/2 - 30,
-                          width: width/2 - 15,
-                          minWidth: width/2 - 15
-                        }}
-                        data={switchStackedData}
-                        showLabels={false}
-                        showTotal={false}
-                        total={switchTotalCount || 0}
-                        barColors={getDeviceConnectionStatusColorsv2()} />
-                      <TenantLink to={'/devices/wifi'}>
-                        {switchTotalCount || 0}
-                      </TenantLink>
-                    </>
-                    : <div style={{ height: (height/2) - 30, paddingTop: '13px' }}>
-                      <TenantLink to={'/devices/switch'}>
-                        {$t({ defaultMessage: 'Add Switch' })}
-                      </TenantLink>
-                    </div>
-                  }
-                </Space>
+                { switchTotalCount > 0
+                  ? <Space>
+                    <StackedBarChart
+                      animation={false}
+                      style={{
+                        height: height/2 - 30,
+                        width: width/2 - 15
+                      }}
+                      data={switchStackedData}
+                      showLabels={false}
+                      showTotal={false}
+                      total={switchTotalCount || 0}
+                      barColors={getDeviceConnectionStatusColorsv2()} />
+                    <TenantLink to={'/devices/wifi'}>
+                      {switchTotalCount || 0}
+                    </TenantLink>
+                  </Space>
+                  : <UI.LinkContainer style={{ height: (height/2) - 30 }}>
+                    <TenantLink to={'/devices/switch/add'}>
+                      {$t({ defaultMessage: 'Add Switch' })}
+                    </TenantLink>
+                  </UI.LinkContainer>
+                }
               </GridCol>
             </GridRow>
-          </div>
+          </UI.WidgetContainer>
         )}
       </AutoSizer>
     </Card>

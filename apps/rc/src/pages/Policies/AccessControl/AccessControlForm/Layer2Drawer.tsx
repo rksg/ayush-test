@@ -152,9 +152,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
   }
 
   useEffect(() => {
-    if (!isOnlyViewMode && (l2AclPolicyId === '' || l2AclPolicyId === undefined)) {
-      setSkipFetch(false)
-    }
+    setSkipFetch(!isOnlyViewMode && (l2AclPolicyId === '' || l2AclPolicyId === undefined))
   }, [isOnlyViewMode, l2AclPolicyId])
 
   useEffect(() => {

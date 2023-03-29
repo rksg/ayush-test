@@ -92,9 +92,9 @@ describe('Facts data format', () => {
     'accounting for <b>26%</b> of user traffic.'
   }, {
     input: { key: 'l3AuthFailure', options: {
-      value0: '-'
+      value0: '--'
     } },
-    output: 'Average daily L3 authentication failure percentage last week was -.'
+    output: 'Average daily L3 authentication failure percentage last week was --.'
   }, {
     input: { key: 'topIncidentsApGroups', options: {
       label0: 'N/A',
