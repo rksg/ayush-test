@@ -12,7 +12,7 @@ import { networkHierarchy }  from './__tests__/fixtures'
 import { api, Child }        from './services'
 import { NonSelectableItem } from './styledComponents'
 
-import { NetworkFilter, onApply, displayRender, getSupersetRlsClause, getNetworkFilterData } from './index'
+import { NetworkFilter, onApply, displayRender, getNetworkFilterData } from './index'
 
 const mockIncidents = [
   {
@@ -463,69 +463,6 @@ describe('Network Filter with incident severity', () => {
     await userEvent.click(screen.getByRole('combobox'))
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment()).toMatchSnapshot()
-  })
-})
-
-describe('getSupersetRlsClause',()=>{
-  it('should return RLS clause based network filters',()=>{
-    const paths:NetworkPath[] = [
-      [{
-        type: 'network',
-        name: 'Network'
-      }, {
-        type: 'switchGroup',
-        name: 'Switch-Venue'
-      }, {
-        type: 'switch',
-        name: 'C0:C5:20:AA:33:2D'
-      }],
-      [{
-        type: 'network',
-        name: 'Network'
-      }, {
-        type: 'switchGroup',
-        name: 'Switch-Venue'
-      }, {
-        type: 'switch',
-        name: 'C0:C5:20:B2:11:59'
-      }],
-      [{
-        type: 'network',
-        name: 'Network'
-      }, {
-        type: 'switchGroup',
-        name: 'Switch-Venue1'
-      }],
-      [{
-        type: 'network',
-        name: 'Network'
-      }, {
-        type: 'zone',
-        name: 'Sindhuja-Venue'
-      }],
-      [{
-        type: 'network',
-        name: 'Network'
-      }, {
-        type: 'zone',
-        name: 'Sonali'
-      }, {
-        type: 'AP',
-        name: '00:0C:29:1E:9F:E4'
-      }],
-      [{
-        type: 'network',
-        name: 'Network'
-      }, {
-        type: 'zone',
-        name: 'Sonali'
-      }, {
-        type: 'AP',
-        name: '38:FF:36:13:DB:D0'
-      }]
-    ]
-    const rlsClause = getSupersetRlsClause(paths,['6','2.4'])
-    expect(rlsClause).toMatchSnapshot()
   })
 })
 

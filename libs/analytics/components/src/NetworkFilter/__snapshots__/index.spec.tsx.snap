@@ -2160,10 +2160,3 @@ exports[`Network Filter with incident severity should show severity only once on
   </div>
 </DocumentFragment>
 `;
-
-exports[`getSupersetRlsClause should return RLS clause based network filters 1`] = `
-Object {
-  "networkClause": " (\\"zoneName\\" in ('Sindhuja-Venue') OR \\"apMac\\" in ('00:0C:29:1E:9F:E4', '38:FF:36:13:DB:D0') OR \\"switchGroupLevelOneName\\" in ('Switch-Venue1') OR \\"switchId\\" in ('C0:C5:20:AA:33:2D', 'C0:C5:20:B2:11:59'))",
-  "radioBandClause": " \\"band\\" in ('6', '2.4')",
-}
-`;
