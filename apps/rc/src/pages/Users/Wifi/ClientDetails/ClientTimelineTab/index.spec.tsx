@@ -32,7 +32,7 @@ describe('ClientTimelineTab', ()=>{
       wrapper: Provider,
       route: {
         params: { tenantId: 't1', clientId: 'clientId' },
-        path: '/t/:tenantId/users/wifi/clients/:clientId/details/timeline/'
+        path: '/:tenantId/t/users/wifi/clients/:clientId/details/timeline/'
 
       }
     })
@@ -49,7 +49,7 @@ describe('ClientTimelineTab', ()=>{
           activeTab: 'timeline',
           activeSubTab: 'sessions'
         },
-        path: '/t/:tenantId/users/wifi/clients/:clientId/details/:activeTab/:activeSubTab'
+        path: '/:tenantId/t/users/wifi/clients/:clientId/details/:activeTab/:activeSubTab'
 
       }
     })

@@ -74,7 +74,7 @@ describe('MacRegistrationListDetails', () => {
 
     render(<Provider><MacRegistrationListDetails /></Provider>, {
       // eslint-disable-next-line max-len
-      route: { params, path: '/:tenantId/:policyId/:activeTab' }
+      route: { params, path: '/:tenantId/t/:policyId/:activeTab' }
     })
 
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
@@ -97,7 +97,7 @@ describe('MacRegistrationListDetails', () => {
       activeTab: 'not-exist'
     }
     render(<Provider><MacRegistrationListDetails /></Provider>, {
-      route: { params, path: '/:tenantId/:policyId/:activeTab' }
+      route: { params, path: '/:tenantId/t/:policyId/:activeTab' }
     })
 
     expect(screen.getAllByRole('tab').filter(x => x.getAttribute('aria-selected') === 'true'))

@@ -87,7 +87,7 @@ describe('PoliciesTable', () => {
       <Provider>
         <PoliciesTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/' + getPolicyListRoutePath() }
+        route: { params, path: '/:tenantId/t/' + getPolicyListRoutePath() }
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -105,7 +105,7 @@ describe('PoliciesTable', () => {
       <Provider>
         <PoliciesTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/' + getPolicyListRoutePath() }
+        route: { params, path: '/:tenantId/t/' + getPolicyListRoutePath() }
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -125,7 +125,7 @@ describe('PoliciesTable', () => {
       <Provider>
         <PoliciesTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/' + getPolicyListRoutePath() }
+        route: { params, path: '/:tenantId/t/' + getPolicyListRoutePath() }
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))

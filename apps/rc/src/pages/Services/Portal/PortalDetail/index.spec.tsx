@@ -194,7 +194,7 @@ describe('Portal Detail Page', () => {
         })
     )
     render(<Provider><PortalServiceDetail /></Provider>, {
-      route: { params, path: '/:tenantId/services/portal/:serviceId/detail' }
+      route: { params, path: '/:tenantId/t/services/portal/:serviceId/detail' }
     })
     expect(await screen.findByText('English')).toBeVisible()
     expect(await screen.findByText((`Instances (${list.data.length})`))).toBeVisible()
@@ -218,7 +218,7 @@ describe('Portal Detail Page', () => {
         })
     )
     render(<Provider><PortalServiceDetail /></Provider>, {
-      route: { params, path: '/:tenantId/services/portal/:serviceId/detail' }
+      route: { params, path: '/:tenantId/t/services/portal/:serviceId/detail' }
     })
     expect(await screen.findByText('English')).toBeVisible()
     expect(await screen.findByText((`Instances (${list.data.length})`))).toBeVisible()

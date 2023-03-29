@@ -49,7 +49,7 @@ describe('EditEdge general settings', () => {
       <Provider>
         <GeneralSettings />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/general-settings' }
+        route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/general-settings' }
       })
     await screen.findByRole('combobox', { name: 'Venue' })
     expect(asFragment()).toMatchSnapshot()
@@ -61,7 +61,7 @@ describe('EditEdge general settings', () => {
       <Provider>
         <GeneralSettings />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/general-settings' }
+        route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/general-settings' }
       })
     const edgeNameInput = await screen.findByRole('textbox', { name: 'SmartEdge Name' })
     fireEvent.change(edgeNameInput, { target: { value: '' } })
@@ -75,7 +75,7 @@ describe('EditEdge general settings', () => {
       <Provider>
         <GeneralSettings />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/general-settings' }
+        route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/general-settings' }
       })
     const edgeNameInput = await screen.findByRole('textbox', { name: 'SmartEdge Name' })
     fireEvent.change(edgeNameInput, { target: { value: 'edge_name_test' } })
@@ -92,11 +92,11 @@ describe('EditEdge general settings', () => {
       <Provider>
         <GeneralSettings />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/general-settings' }
+        route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/general-settings' }
       })
     await user.click(screen.getByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/devices/edge/list`,
+      pathname: `/${params.tenantId}/t/devices/edge/list`,
       hash: '',
       search: ''
     })
@@ -133,7 +133,7 @@ describe('EditEdge general settings api fail', () => {
       <Provider>
         <GeneralSettings />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/general-settings' }
+        route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/general-settings' }
       })
     const edgeNameInput = await screen.findByRole('textbox', { name: 'SmartEdge Name' })
     fireEvent.change(edgeNameInput, { target: { value: 'edge_name_test' } })

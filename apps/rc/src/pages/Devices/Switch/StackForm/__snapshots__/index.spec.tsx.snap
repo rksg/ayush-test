@@ -17,7 +17,7 @@ exports[`Switch Stack Form - Add should render correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/tenant-id/devices/switch"
+                href="/tenant-id/t/devices/switch"
               >
                 Switches
               </a>

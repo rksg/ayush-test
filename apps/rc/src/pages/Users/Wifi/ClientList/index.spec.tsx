@@ -48,13 +48,13 @@ describe('ClientList', () => {
       <Provider>
         <ClientList />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/wifi/:activeTab' }
+        route: { params, path: '/:tenantId/t/users/wifi/:activeTab' }
       })
 
     // await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     fireEvent.click(await screen.findByRole('tab', { name: 'Guest Pass Credentials' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/users/wifi/guests`,
+      pathname: `/${params.tenantId}/t/users/wifi/guests`,
       hash: '',
       search: ''
     })
@@ -66,7 +66,7 @@ describe('ClientList', () => {
       <Provider>
         <ClientList />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/wifi/:activeTab' }
+        route: { params, path: '/:tenantId/t/users/wifi/:activeTab' }
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))

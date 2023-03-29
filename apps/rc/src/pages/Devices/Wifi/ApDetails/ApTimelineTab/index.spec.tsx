@@ -41,7 +41,7 @@ describe('ApTimelineTab', ()=>{
       wrapper,
       route: {
         params: { tenantId: 't1', apId: '000000000001', activeSubTab: 'activities' },
-        path: '/t/:tenantId/devices/wifi/:apId/details/timeline/:activeSubTab'
+        path: '/:tenantId/t/devices/wifi/:apId/details/timeline/:activeSubTab'
       }
     })
 

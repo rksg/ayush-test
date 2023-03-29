@@ -118,7 +118,7 @@ describe('AP Form - Add', () => {
   })
   it('should render correctly', async () => {
     const { asFragment } = render(<Provider><ApForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/wifi/:action' }
+      route: { params, path: '/:tenantId/t/devices/wifi/:action' }
     })
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
@@ -128,7 +128,7 @@ describe('AP Form - Add', () => {
     expect(screen.queryByText('GPS Coordinates')).not.toBeInTheDocument()
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/devices`,
+      pathname: `/${params.tenantId}/t/devices`,
       hash: '',
       search: ''
     })
@@ -141,7 +141,7 @@ describe('AP Form - Add', () => {
 
     it('should handle Add AP', async () => {
       render(<Provider><ApForm /></Provider>, {
-        route: { params, path: '/:tenantId/devices/wifi/:action' }
+        route: { params, path: '/:tenantId/t/devices/wifi/:action' }
       })
       await changeVenue()
       await fillInForm()
@@ -150,7 +150,7 @@ describe('AP Form - Add', () => {
 
     it('should handle Add AP with custom coordinates', async () => {
       render(<Provider><ApForm /></Provider>, {
-        route: { params, path: '/:tenantId/devices/wifi/:action' }
+        route: { params, path: '/:tenantId/t/devices/wifi/:action' }
       })
       await changeVenue()
       await fillInForm()
@@ -165,7 +165,7 @@ describe('AP Form - Add', () => {
 
     it('should handle discard coordinates input', async () => {
       render(<Provider><ApForm /></Provider>, {
-        route: { params, path: '/:tenantId/devices/wifi/:action' }
+        route: { params, path: '/:tenantId/t/devices/wifi/:action' }
       })
       await changeVenue()
       await changeCoordinates(validCoordinates[0], false)
@@ -173,7 +173,7 @@ describe('AP Form - Add', () => {
 
     it('should handle valid coordinates input', async () => {
       render(<Provider><ApForm /></Provider>, {
-        route: { params, path: '/:tenantId/devices/wifi/:action' }
+        route: { params, path: '/:tenantId/t/devices/wifi/:action' }
       })
       await changeVenue()
       await changeCoordinates(validCoordinates[1], true)
@@ -216,7 +216,7 @@ describe('AP Form - Add', () => {
           })
       )
       render(<Provider><ApForm /></Provider>, {
-        route: { params, path: '/:tenantId/devices/wifi/:action' }
+        route: { params, path: '/:tenantId/t/devices/wifi/:action' }
       })
       await changeVenue()
       await fillInForm()
@@ -232,7 +232,7 @@ describe('AP Form - Add', () => {
           })
       )
       render(<Provider><ApForm /></Provider>, {
-        route: { params, path: '/:tenantId/devices/wifi/:action' }
+        route: { params, path: '/:tenantId/t/devices/wifi/:action' }
       })
       await changeVenue()
       await fillInForm()

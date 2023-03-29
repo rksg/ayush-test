@@ -25,7 +25,7 @@ describe('NetworkTimelineTab', ()=>{
       wrapper: Provider,
       route: {
         params: { tenantId: 't1', networkId: 'networkId', activeSubTab: 'activities' },
-        path: '/t/:tenantId/networks/wireless/:networkId/network-details/timeline/:activeSubTab'
+        path: '/:tenantId/t/networks/wireless/:networkId/network-details/timeline/:activeSubTab'
       }
     })
     expect(await screen.findAllByText('123roam')).toHaveLength(1)

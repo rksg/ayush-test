@@ -35,7 +35,7 @@ describe('RadiusAttributeGroupTable', () => {
   }
 
   // eslint-disable-next-line max-len
-  const tablePath = '/:tenantId/' + getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST })
+  const tablePath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST })
 
   beforeEach(() => {
     mockServer.use(

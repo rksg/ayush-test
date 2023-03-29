@@ -49,7 +49,7 @@ describe('SyslogTable', () => {
   }
 
   // eslint-disable-next-line max-len
-  const tablePath = '/:tenantId/' + getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.LIST })
+  const tablePath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.LIST })
 
   beforeEach(async () => {
     mockServer.use(

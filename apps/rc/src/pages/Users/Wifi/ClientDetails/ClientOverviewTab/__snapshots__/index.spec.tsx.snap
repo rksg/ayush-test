@@ -836,7 +836,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                                     class="ant-descriptions-item-content"
                                   >
                                     <a
-                                      href="/t/tenant-id/devices/aps/422039000230/details/overview"
+                                      href="/tenant-id/t/devices/aps/422039000230/details/overview"
                                     >
                                       UI team ONLY
                                     </a>
@@ -863,7 +863,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                                     class="ant-descriptions-item-content"
                                   >
                                     <a
-                                      href="/t/tenant-id/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
+                                      href="/tenant-id/t/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
                                     >
                                       UI-TEST-VENUE
                                     </a>
@@ -890,7 +890,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                                     class="ant-descriptions-item-content"
                                   >
                                     <a
-                                      href="/t/tenant-id/networks/wireless/0189575828434f94a7c0b0e611379d26/network-details/overview"
+                                      href="/tenant-id/t/networks/wireless/0189575828434f94a7c0b0e611379d26/network-details/overview"
                                     >
                                       NMS-app6-WLAN-QA
                                     </a>
@@ -1899,7 +1899,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                     class="ant-descriptions-item-content"
                                   >
                                     <a
-                                      href="/t/tenant-id/devices/aps/422039000230/details/overview"
+                                      href="/tenant-id/t/devices/aps/422039000230/details/overview"
                                     >
                                       UI team ONLY
                                     </a>
@@ -1926,7 +1926,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                     class="ant-descriptions-item-content"
                                   >
                                     <a
-                                      href="/t/tenant-id/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
+                                      href="/tenant-id/t/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
                                     >
                                       UI-TEST-VENUE
                                     </a>
@@ -1953,7 +1953,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                     class="ant-descriptions-item-content"
                                   >
                                     <a
-                                      href="/t/tenant-id/networks/wireless/0189575828434f94a7c0b0e611379d26/network-details/overview"
+                                      href="/tenant-id/t/networks/wireless/0189575828434f94a7c0b0e611379d26/network-details/overview"
                                     >
                                       NMS-app6-WLAN-QA
                                     </a>
@@ -3135,7 +3135,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                     class="ant-descriptions-item-content"
                                   >
                                     <a
-                                      href="/t/tenant-id/devices/aps/422039000230/details/overview"
+                                      href="/tenant-id/t/devices/aps/422039000230/details/overview"
                                     >
                                       UI team ONLY
                                     </a>
@@ -3162,7 +3162,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                     class="ant-descriptions-item-content"
                                   >
                                     <a
-                                      href="/t/tenant-id/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
+                                      href="/tenant-id/t/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
                                     >
                                       UI-TEST-VENUE
                                     </a>
@@ -3189,7 +3189,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                     class="ant-descriptions-item-content"
                                   >
                                     <a
-                                      href="/t/tenant-id/networks/wireless/0189575828434f94a7c0b0e611379d26/network-details/overview"
+                                      href="/tenant-id/t/networks/wireless/0189575828434f94a7c0b0e611379d26/network-details/overview"
                                     >
                                       --
                                     </a>
@@ -4417,7 +4417,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                     class="ant-descriptions-item-content"
                                   >
                                     <a
-                                      href="/t/tenant-id/devices/aps/422039000230/details/overview"
+                                      href="/tenant-id/t/devices/aps/422039000230/details/overview"
                                     >
                                       UI team ONLY
                                     </a>
@@ -4444,7 +4444,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                     class="ant-descriptions-item-content"
                                   >
                                     <a
-                                      href="/t/tenant-id/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
+                                      href="/tenant-id/t/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
                                     >
                                       UI-TEST-VENUE
                                     </a>
@@ -4471,7 +4471,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                     class="ant-descriptions-item-content"
                                   >
                                     <a
-                                      href="/t/tenant-id/networks/wireless/0189575828434f94a7c0b0e611379d26/network-details/overview"
+                                      href="/tenant-id/t/networks/wireless/0189575828434f94a7c0b0e611379d26/network-details/overview"
                                     >
                                       NMS-app6-WLAN-QA
                                     </a>
@@ -5480,7 +5480,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                     class="ant-descriptions-item-content"
                                   >
                                     <a
-                                      href="/t/tenant-id/devices/aps/422039000230/details/overview"
+                                      href="/tenant-id/t/devices/aps/422039000230/details/overview"
                                     >
                                       UI team ONLY
                                     </a>
@@ -5507,7 +5507,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                     class="ant-descriptions-item-content"
                                   >
                                     <a
-                                      href="/t/tenant-id/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
+                                      href="/tenant-id/t/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
                                     >
                                       UI-TEST-VENUE
                                     </a>
@@ -6754,7 +6754,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                                     class="ant-descriptions-item-content"
                                   >
                                     <a
-                                      href="/t/tenant-id/devices/wifi/422039000230/details/overview"
+                                      href="/tenant-id/t/devices/wifi/422039000230/details/overview"
                                     >
                                       UI team ONLY
                                     </a>
@@ -6781,7 +6781,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                                     class="ant-descriptions-item-content"
                                   >
                                     <a
-                                      href="/t/tenant-id/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
+                                      href="/tenant-id/t/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
                                     >
                                       UI-TEST-VENUE
                                     </a>
@@ -6808,7 +6808,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                                     class="ant-descriptions-item-content"
                                   >
                                     <a
-                                      href="/t/tenant-id/networks/wireless/423c3673e74f44e69c0f3b35cd579ecc/network-details/overview"
+                                      href="/tenant-id/t/networks/wireless/423c3673e74f44e69c0f3b35cd579ecc/network-details/overview"
                                     >
                                       NMS-app6-WLAN-QA
                                     </a>
@@ -9431,7 +9431,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render dpsk cli
                                     class="ant-descriptions-item-content"
                                   >
                                     <a
-                                      href="/t/tenant-id/devices/wifi/422039000230/details/overview"
+                                      href="/tenant-id/t/devices/wifi/422039000230/details/overview"
                                     >
                                       UI team ONLY
                                     </a>
@@ -9458,7 +9458,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render dpsk cli
                                     class="ant-descriptions-item-content"
                                   >
                                     <a
-                                      href="/t/tenant-id/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
+                                      href="/tenant-id/t/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
                                     >
                                       UI-TEST-VENUE
                                     </a>
@@ -9485,7 +9485,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render dpsk cli
                                     class="ant-descriptions-item-content"
                                   >
                                     <a
-                                      href="/t/tenant-id/networks/wireless/423c3673e74f44e69c0f3b35cd579ecc/network-details/overview"
+                                      href="/tenant-id/t/networks/wireless/423c3673e74f44e69c0f3b35cd579ecc/network-details/overview"
                                     >
                                       NMS-app6-WLAN-QA
                                     </a>
@@ -10957,7 +10957,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                     class="ant-descriptions-item-content"
                                   >
                                     <a
-                                      href="/t/tenant-id/devices/wifi/422039000230/details/overview"
+                                      href="/tenant-id/t/devices/wifi/422039000230/details/overview"
                                     >
                                       --
                                     </a>
@@ -10984,7 +10984,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                     class="ant-descriptions-item-content"
                                   >
                                     <a
-                                      href="/t/tenant-id/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
+                                      href="/tenant-id/t/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
                                     >
                                       --
                                     </a>
@@ -11011,7 +11011,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                     class="ant-descriptions-item-content"
                                   >
                                     <a
-                                      href="/t/tenant-id/networks/wireless/423c3673e74f44e69c0f3b35cd579ecc/network-details/overview"
+                                      href="/tenant-id/t/networks/wireless/423c3673e74f44e69c0f3b35cd579ecc/network-details/overview"
                                     >
                                       --
                                     </a>
@@ -12529,7 +12529,7 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                                     class="ant-descriptions-item-content"
                                   >
                                     <a
-                                      href="/t/tenant-id/devices/wifi/422039000230/details/overview"
+                                      href="/tenant-id/t/devices/wifi/422039000230/details/overview"
                                     >
                                       UI team ONLY
                                     </a>
@@ -12556,7 +12556,7 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                                     class="ant-descriptions-item-content"
                                   >
                                     <a
-                                      href="/t/tenant-id/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
+                                      href="/tenant-id/t/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
                                     >
                                       UI-TEST-VENUE
                                     </a>
@@ -12583,7 +12583,7 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                                     class="ant-descriptions-item-content"
                                   >
                                     <a
-                                      href="/t/tenant-id/networks/wireless/423c3673e74f44e69c0f3b35cd579ecc/network-details/overview"
+                                      href="/tenant-id/t/networks/wireless/423c3673e74f44e69c0f3b35cd579ecc/network-details/overview"
                                     >
                                       NMS-app6-WLAN-QA
                                     </a>
@@ -13667,7 +13667,7 @@ exports[`ClientOverviewTab OverviewWidget should render correctly when search pa
                                     class="ant-descriptions-item-content"
                                   >
                                     <a
-                                      href="/t/tenant-id/devices/aps/422039000230/details/overview"
+                                      href="/tenant-id/t/devices/aps/422039000230/details/overview"
                                     >
                                       UI team ONLY
                                     </a>
@@ -13694,7 +13694,7 @@ exports[`ClientOverviewTab OverviewWidget should render correctly when search pa
                                     class="ant-descriptions-item-content"
                                   >
                                     <a
-                                      href="/t/tenant-id/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
+                                      href="/tenant-id/t/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
                                     >
                                       UI-TEST-VENUE
                                     </a>
@@ -13721,7 +13721,7 @@ exports[`ClientOverviewTab OverviewWidget should render correctly when search pa
                                     class="ant-descriptions-item-content"
                                   >
                                     <a
-                                      href="/t/tenant-id/networks/wireless/0189575828434f94a7c0b0e611379d26/network-details/overview"
+                                      href="/tenant-id/t/networks/wireless/0189575828434f94a7c0b0e611379d26/network-details/overview"
                                     >
                                       NMS-app6-WLAN-QA
                                     </a>
@@ -14730,7 +14730,7 @@ exports[`ClientOverviewTab OverviewWidget should render historical client info c
                                     class="ant-descriptions-item-content"
                                   >
                                     <a
-                                      href="/t/tenant-id/devices/aps/422039000230/details/overview"
+                                      href="/tenant-id/t/devices/aps/422039000230/details/overview"
                                     >
                                       UI team ONLY
                                     </a>
@@ -14757,7 +14757,7 @@ exports[`ClientOverviewTab OverviewWidget should render historical client info c
                                     class="ant-descriptions-item-content"
                                   >
                                     <a
-                                      href="/t/tenant-id/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
+                                      href="/tenant-id/t/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
                                     >
                                       UI-TEST-VENUE
                                     </a>
@@ -14784,7 +14784,7 @@ exports[`ClientOverviewTab OverviewWidget should render historical client info c
                                     class="ant-descriptions-item-content"
                                   >
                                     <a
-                                      href="/t/tenant-id/networks/wireless/0189575828434f94a7c0b0e611379d26/network-details/overview"
+                                      href="/tenant-id/t/networks/wireless/0189575828434f94a7c0b0e611379d26/network-details/overview"
                                     >
                                       NMS-app6-WLAN-QA
                                     </a>

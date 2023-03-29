@@ -42,7 +42,7 @@ describe('Timeline', () => {
     )
     await userEvent.click(screen.getByText('Events'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/timeline/events`,
+      pathname: `/${params.tenantId}/t/timeline/events`,
       hash: '',
       search: ''
     })

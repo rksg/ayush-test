@@ -32,12 +32,12 @@ describe('SelectPolicyForm', () => {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
   }
 
-  const selectPolicyPath = '/:tenantId/' + getSelectPolicyRoutePath()
+  const selectPolicyPath = '/:tenantId/t/' + getSelectPolicyRoutePath()
 
   it('should navigate to the correct policy page', async () => {
     render(
       <SelectPolicyForm />, {
-        route: { params, path: '/:tenantId/' + getSelectPolicyRoutePath() }
+        route: { params, path: '/:tenantId/t/' + getSelectPolicyRoutePath() }
       }
     )
 

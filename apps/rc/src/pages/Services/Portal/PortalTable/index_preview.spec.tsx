@@ -21,7 +21,7 @@ import PortalTable from '.'
 
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
-  pathname: 't/__tenantId__',
+  pathname: '/__tenantId__/t',
   search: '',
   hash: ''
 }
@@ -39,8 +39,7 @@ describe('PortalTable', () => {
   }
 
   // eslint-disable-next-line max-len
-  const tablePath = '/:tenantId/' + getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.LIST })
-
+  const tablePath = '/:tenantId/t/' + getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.LIST })
   beforeEach(async () => {
     mockServer.use(
       rest.get(

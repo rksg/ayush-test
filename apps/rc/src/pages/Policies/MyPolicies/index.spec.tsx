@@ -26,7 +26,7 @@ describe('MyPolicies', () => {
     tenantId: '15320bc221d94d2cb537fa0189fee742'
   }
 
-  const path = '/t/:tenantId'
+  const path = '/:tenantId/t'
 
   mockServer.use(
     rest.post(
@@ -55,7 +55,7 @@ describe('MyPolicies', () => {
       }
     )
 
-    const createPageLink = `/t/${params.tenantId}/` + getSelectPolicyRoutePath()
+    const createPageLink = `/${params.tenantId}/t/` + getSelectPolicyRoutePath()
     // eslint-disable-next-line max-len
     expect(await screen.findByRole('link', { name: 'Add Policy or Profile' })).toHaveAttribute('href', createPageLink)
 

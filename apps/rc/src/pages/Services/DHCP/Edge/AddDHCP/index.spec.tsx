@@ -37,7 +37,7 @@ describe('AddEdgeDhcp', () => {
       <Provider>
         <AddDhcp/>
       </Provider>, {
-        route: { params, path: '/:tenantId/services/dhcp/create' }
+        route: { params, path: '/:tenantId/t/services/dhcp/create' }
       })
     await user.click(screen.getByRole('button', { name: 'Add' }))
     await screen.findByText('Please enter Service Name')
@@ -50,7 +50,7 @@ describe('AddEdgeDhcp', () => {
       <Provider>
         <AddDhcp />
       </Provider>, {
-        route: { params, path: '/:tenantId/services/dhcp/create' }
+        route: { params, path: '/:tenantId/t/services/dhcp/create' }
       })
     const serviceNameInput = screen.getByRole('textbox', { name: /service name/i })
     fireEvent.change(serviceNameInput, { target: { value: 'myTest' } })
@@ -91,11 +91,11 @@ describe('AddEdgeDhcp', () => {
       <Provider>
         <AddDhcp />
       </Provider>, {
-        route: { params, path: '/:tenantId/services/dhcp/create' }
+        route: { params, path: '/:tenantId/t/services/dhcp/create' }
       })
     await user.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/services`,
+      pathname: `/${params.tenantId}/t/services`,
       hash: '',
       search: ''
     })
@@ -123,7 +123,7 @@ describe('AddEdgeDhcp api fail', () => {
       <Provider>
         <AddDhcp />
       </Provider>, {
-        route: { params, path: '/:tenantId/services/dhcp/create' }
+        route: { params, path: '/:tenantId/t/services/dhcp/create' }
       })
     const serviceNameInput = screen.getByRole('textbox', { name: /service name/i })
     fireEvent.change(serviceNameInput, { target: { value: 'myTest' } })

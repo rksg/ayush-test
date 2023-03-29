@@ -31,7 +31,7 @@ const mockTableResult = {
 
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
-  pathname: 't/__tenantId__',
+  pathname: '__tenantId__/t',
   search: '',
   hash: ''
 }
@@ -48,7 +48,7 @@ describe('SnmpAgentTable', () => {
   }
 
   // eslint-disable-next-line max-len
-  const tablePath = '/:tenantId/' + getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.LIST })
+  const tablePath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.LIST })
 
   beforeEach(async () => {
     mockServer.use(

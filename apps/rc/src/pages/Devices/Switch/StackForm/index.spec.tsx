@@ -113,7 +113,7 @@ describe('Switch Stack Form - Add', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/devices/switch`,
+      pathname: `/${params.tenantId}/t/devices/switch`,
       hash: '',
       search: ''
     })
@@ -146,7 +146,7 @@ describe('Switch Stack Form - Add', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/devices/switch`,
+      pathname: `/${params.tenantId}/t/devices/switch`,
       hash: '',
       search: ''
     })
@@ -161,7 +161,7 @@ describe('Switch Stack Form - Add', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/devices/switch`,
+      pathname: `/${params.tenantId}/t/devices/switch`,
       hash: '',
       search: ''
     })

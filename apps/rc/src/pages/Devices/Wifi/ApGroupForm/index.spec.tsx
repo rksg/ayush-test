@@ -59,7 +59,7 @@ describe('AP Group Form - Add', () => {
   })
   it('should render correctly', async () => {
     const { asFragment } = render(<Provider><ApGroupForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/apgroups/:action' }
+      route: { params, path: '/:tenantId/t/devices/apgroups/:action' }
     })
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
@@ -69,7 +69,7 @@ describe('AP Group Form - Add', () => {
     expect(await screen.findByText('Group Member')).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/devices/wifi`,
+      pathname: `/${params.tenantId}/t/devices/wifi`,
       hash: '',
       search: ''
     })
@@ -77,7 +77,7 @@ describe('AP Group Form - Add', () => {
 
   it('add ap group', async () => {
     render(<Provider><ApGroupForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/apgroups/:action' }
+      route: { params, path: '/:tenantId/t/devices/apgroups/:action' }
     })
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
@@ -95,7 +95,7 @@ describe('AP Group Form - Add', () => {
     }))
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/devices/wifi`,
+      pathname: `/${params.tenantId}/t/devices/wifi`,
       hash: '',
       search: ''
     })
@@ -104,7 +104,7 @@ describe('AP Group Form - Add', () => {
   it('edit ap group', async () => {
     const params = { tenantId: 'tenant-id', apGroupId: 'apgroup-id', action: 'edit' }
     render(<Provider><ApGroupForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/apgroups/:apGroupId/:action' }
+      route: { params, path: '/:tenantId/t/devices/apgroups/:apGroupId/:action' }
     })
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Edit AP Group')).toBeVisible()

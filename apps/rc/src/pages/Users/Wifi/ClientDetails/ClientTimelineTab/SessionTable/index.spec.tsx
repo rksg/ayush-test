@@ -32,7 +32,7 @@ describe('SessionTable', () => {
 
     render(<Provider><SessionTable/></Provider>, {
       route: {
-        path: '/t/tenantId/users/wifi/clients/clientId/details/timeline/sessions',
+        path: '/tenantId/t/users/wifi/clients/clientId/details/timeline/sessions',
         wrapRoutes: false
       }
     })

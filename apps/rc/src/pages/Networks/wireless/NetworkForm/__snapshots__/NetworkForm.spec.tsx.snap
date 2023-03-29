@@ -17,7 +17,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/tenant-id/networks"
+                href="/tenant-id/t/networks"
               >
                 Networks
               </a>
@@ -2314,7 +2314,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/tenant-id/networks"
+                href="/tenant-id/t/networks"
               >
                 Networks
               </a>

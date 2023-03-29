@@ -114,7 +114,7 @@ describe('SwitchTable', () => {
     }
 
     render(<Provider><SwitchTable showAllColumns={true} searchable={true}/></Provider>, {
-      route: { params, path: '/:tenantId' }
+      route: { params, path: '/:tenantId/t' }
     })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -140,7 +140,7 @@ describe('SwitchTable', () => {
       tenantId: 'tenant-Id'
     }
     render(<Provider><SwitchTable showAllColumns={true} enableActions={true} /></Provider>, {
-      route: { params, path: '/:tenantId' }
+      route: { params, path: '/:tenantId/t' }
     })
 
     expect(await screen.findByText('Add Switch')).toBeVisible()
@@ -152,7 +152,7 @@ describe('SwitchTable', () => {
       tenantId: 'tenant-Id'
     }
     render(<Provider><SwitchTable showAllColumns={true} enableActions={true} /></Provider>, {
-      route: { params, path: '/:tenantId' }
+      route: { params, path: '/:tenantId/t' }
     })
 
     expect(await screen.findByText('Import from file')).toBeVisible()
@@ -164,7 +164,7 @@ describe('SwitchTable', () => {
       tenantId: 'tenant-Id'
     }
     render(<Provider><SwitchTable showAllColumns={true} enableActions={true} /></Provider>, {
-      route: { params, path: '/:tenantId' }
+      route: { params, path: '/:tenantId/t' }
     })
 
     expect(await screen.findByText('Add Stack')).toBeVisible()
@@ -177,7 +177,7 @@ describe('SwitchTable', () => {
     }
 
     render(<Provider><SwitchTable/></Provider>, {
-      route: { params, path: '/:tenantId' }
+      route: { params, path: '/:tenantId/t' }
     })
 
     const deleteSpy = jest.fn()
@@ -224,7 +224,7 @@ describe('SwitchTable', () => {
     }
 
     render(<Provider><SwitchTable showAllColumns={true} searchable={true}/></Provider>, {
-      route: { params, path: '/:tenantId' }
+      route: { params, path: '/:tenantId/t' }
     })
 
     const input =

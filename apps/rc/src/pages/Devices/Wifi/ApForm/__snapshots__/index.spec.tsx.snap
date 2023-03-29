@@ -17,7 +17,7 @@ exports[`AP Form - Add should render correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/tenant-id/devices/wifi"
+                href="/tenant-id/t/devices/wifi"
               >
                 Access Points
               </a>

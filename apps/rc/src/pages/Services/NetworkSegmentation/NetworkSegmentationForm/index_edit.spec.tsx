@@ -54,7 +54,7 @@ jest.mock('antd', () => {
   return { ...components, Select }
 })
 
-const updateNsgPath = '/:tenantId/services/networkSegmentation/:serviceId/edit'
+const updateNsgPath = '/:tenantId/t/services/networkSegmentation/:serviceId/edit'
 
 describe('Update NetworkSegmentation', () => {
   let params: { tenantId: string, serviceId: string }
@@ -149,7 +149,7 @@ describe('Update NetworkSegmentation', () => {
     })
     await user.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/services/list`,
+      pathname: `/${params.tenantId}/t/services/list`,
       hash: '',
       search: ''
     })

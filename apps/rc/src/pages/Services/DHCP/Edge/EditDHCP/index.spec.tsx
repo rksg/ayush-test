@@ -19,7 +19,7 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-const editPagePath = '/:tenantId/services/edgeDhcp/:serviceId/edit'
+const editPagePath = '/:tenantId/t/services/edgeDhcp/:serviceId/edit'
 
 describe('EditEdgeDhcp', () => {
   let params: { tenantId: string, serviceId: string }
@@ -100,7 +100,7 @@ describe('EditEdgeDhcp', () => {
       })
     await user.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/services`,
+      pathname: `/${params.tenantId}/t/services`,
       hash: '',
       search: ''
     })

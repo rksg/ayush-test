@@ -58,7 +58,7 @@ describe('EditEdge ports', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
     await screen.findByRole('tab', {
@@ -74,7 +74,7 @@ describe('EditEdge ports', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
     await screen.findByRole('tab', {
@@ -91,7 +91,7 @@ describe('EditEdge ports', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
 
@@ -113,13 +113,13 @@ describe('EditEdge ports', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
     await user.click(screen.getByRole('tab', { name: 'Sub-interface' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       // eslint-disable-next-line max-len
-      pathname: `/t/${params.tenantId}/devices/edge/${params.serialNumber}/edit/ports/sub-interface`,
+      pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/edit/ports/sub-interface`,
       hash: '',
       search: ''
     })

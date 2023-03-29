@@ -72,7 +72,7 @@ describe('DHCP Detail Page', () => {
       <Provider>
         <DHCPServiceDetail />
       </Provider>, {
-        route: { params, path: '/:tenantId/services/dhcp/:serviceId/detail' }
+        route: { params, path: '/:tenantId/t/services/dhcp/:serviceId/detail' }
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))

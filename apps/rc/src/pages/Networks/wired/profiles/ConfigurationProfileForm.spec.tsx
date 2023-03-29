@@ -66,7 +66,7 @@ describe('Wired', () => {
           <ConfigurationProfileForm />
         </ConfigurationProfileFormContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/networks/wired/profiles/add' }
+        route: { params, path: '/:tenantId/t/networks/wired/profiles/add' }
       })
 
     const profileNameInput = await screen.findByLabelText('Profile Name')
@@ -96,7 +96,7 @@ describe('Wired', () => {
           <ConfigurationProfileForm />
         </ConfigurationProfileFormContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/networks/wired/profiles/regular/:profileId/:action' }
+        route: { params, path: '/:tenantId/t/networks/wired/profiles/regular/:profileId/:action' }
       })
 
     expect(await screen.findByText('Edit Switch Configuration Profile')).toBeVisible()
@@ -113,7 +113,7 @@ describe('Wired', () => {
           <ConfigurationProfileForm />
         </ConfigurationProfileFormContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/networks/wired/profiles/add' }
+        route: { params, path: '/:tenantId/t/networks/wired/profiles/add' }
       })
 
     const profileNameInput = await screen.findByLabelText('Profile Name')
@@ -158,7 +158,7 @@ describe('Wired', () => {
           <ConfigurationProfileForm />
         </ConfigurationProfileFormContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/networks/wired/profiles/add' }
+        route: { params, path: '/:tenantId/t/networks/wired/profiles/add' }
       })
 
     const profileNameInput = await screen.findByLabelText('Profile Name')
@@ -223,7 +223,7 @@ describe('Wired', () => {
           <ConfigurationProfileForm />
         </ConfigurationProfileFormContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/networks/wired/profiles/regular/:profileId/:action' }
+        route: { params, path: '/:tenantId/t/networks/wired/profiles/regular/:profileId/:action' }
       })
 
     const profileNameInput = await screen.findByLabelText('Profile Name')
@@ -255,7 +255,7 @@ describe('Wired', () => {
           <ConfigurationProfileForm />
         </ConfigurationProfileFormContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/networks/wired/profiles/add' }
+        route: { params, path: '/:tenantId/t/networks/wired/profiles/add' }
       })
 
     const profileNameInput = await screen.findByLabelText('Profile Name')
@@ -317,7 +317,7 @@ describe('Wired', () => {
           <ConfigurationProfileForm />
         </ConfigurationProfileFormContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/networks/wired/profiles/add' }
+        route: { params, path: '/:tenantId/t/networks/wired/profiles/add' }
       })
 
     const profileNameInput = await screen.findByLabelText('Profile Name')
@@ -363,7 +363,7 @@ describe('Wired', () => {
           <ConfigurationProfileForm />
         </ConfigurationProfileFormContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/networks/wired/profiles/add' }
+        route: { params, path: '/:tenantId/t/networks/wired/profiles/add' }
       })
 
     const profileNameInput = await screen.findByLabelText('Profile Name')
@@ -424,7 +424,7 @@ describe('Wired', () => {
           <ConfigurationProfileForm />
         </ConfigurationProfileFormContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/networks/wired/profiles/add' }
+        route: { params, path: '/:tenantId/t/networks/wired/profiles/add' }
       })
 
     const profileNameInput = await screen.findByLabelText('Profile Name')

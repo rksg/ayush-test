@@ -30,7 +30,7 @@ describe('SwitchTimelineTab', () => {
           serialNumber: 'serialNumber',
           activeSubTab: 'activities'
         },
-        path: '/t/:tenantId/devices/switch/:switchId/:serialNumber/details/timeline/:activeSubTab'
+        path: '/:tenantId/t/devices/switch/:switchId/:serialNumber/details/timeline/:activeSubTab'
 
       }
     })

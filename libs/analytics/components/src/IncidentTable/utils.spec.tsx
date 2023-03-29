@@ -79,7 +79,7 @@ describe('IncidentTable: utils', () => {
           <GetIncidentBySeverity severityLabel={label} id={'test'}/>
         </Provider>, {
           route: {
-            path: '/t/tenantId/analytics/incidents',
+            path: 'tenantId/t/analytics/incidents',
             wrapRoutes: false,
             params: {
               tenantId: '1'

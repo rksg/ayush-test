@@ -24,7 +24,7 @@ describe('DpskInstancesTable', () => {
     activeTab: DpskDetailsTabKey.OVERVIEW
   }
   // eslint-disable-next-line max-len
-  const detailPath = '/:tenantId/' + getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.DETAIL })
+  const detailPath = '/:tenantId/t/' + getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.DETAIL })
 
   mockServer.use(
     rest.post(
@@ -36,7 +36,7 @@ describe('DpskInstancesTable', () => {
   it('should render the table', async () => {
     const targetNetwork = mockedNetworks.data[0]
     const networkLink =
-      `/t/${params.tenantId}/networks/wireless/${targetNetwork.id}/network-details/overview`
+      `/${params.tenantId}/t/networks/wireless/${targetNetwork.id}/network-details/overview`
 
     render(
       <Provider>

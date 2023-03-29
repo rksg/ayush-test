@@ -12,7 +12,7 @@ import NetworkSegmentationDetail from '.'
 
 describe('NsgDetail', () => {
   let params: { tenantId: string, serviceId: string }
-  const detailPath = '/:tenantId/' + getServiceRoutePath({
+  const detailPath = '/:tenantId/t/' + getServiceRoutePath({
     type: ServiceType.NETWORK_SEGMENTATION,
     oper: ServiceOperation.DETAIL
   })

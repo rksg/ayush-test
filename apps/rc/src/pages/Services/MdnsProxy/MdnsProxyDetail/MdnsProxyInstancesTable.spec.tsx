@@ -26,7 +26,7 @@ describe('MdnsProxyInstancesTable', () => {
     serviceId: '4b76b1952c80401b8500b00d68106576'
   }
   // eslint-disable-next-line max-len
-  const detailPath = '/:tenantId/' + getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.DETAIL })
+  const detailPath = '/:tenantId/t/' + getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.DETAIL })
 
   it('should render the table view', async () => {
     render(

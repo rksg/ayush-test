@@ -36,7 +36,7 @@ describe('SwitchTabs', () => {
     await waitFor(() => screen.findByText('Clients (1)'))
     fireEvent.click(await screen.findByText('Clients (1)'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/devices/switch/${params.switchId}/${params.serialNumber}/details/clients`,
+      pathname: `/${params.tenantId}/t/devices/switch/${params.switchId}/${params.serialNumber}/details/clients`,
       hash: '',
       search: ''
     })

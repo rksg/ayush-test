@@ -70,9 +70,9 @@ const list = {
 describe('MacRegistrationListForm', () => {
 
   // eslint-disable-next-line max-len
-  const createPath = '/:tenantId/' + getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.CREATE })
+  const createPath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.CREATE })
   // eslint-disable-next-line max-len
-  const editPath = '/:tenantId/' + getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.EDIT })
+  const editPath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.EDIT })
 
   beforeEach(() => {
     mockServer.use(

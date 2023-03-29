@@ -231,7 +231,7 @@ describe('RcRoutes: Devices', () => {
   test('should redirect devices to devices/wifi', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/devices',
+        path: '/tenantId/t/devices',
         wrapRoutes: false
       }
     })
@@ -241,7 +241,7 @@ describe('RcRoutes: Devices', () => {
   test('should navigate to devices/wifi', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/devices/wifi',
+        path: '/tenantId/t/devices/wifi',
         wrapRoutes: false
       }
     })
@@ -251,7 +251,7 @@ describe('RcRoutes: Devices', () => {
   test('should navigate to devices ap-details', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/devices/wifi/serialNumber/details/some-tab',
+        path: '/tenantId/t/devices/wifi/serialNumber/details/some-tab',
         wrapRoutes: false
       }
     })
@@ -261,7 +261,7 @@ describe('RcRoutes: Devices', () => {
   test('should navigate to devices/switch', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/devices/switch',
+        path: '/tenantId/t/devices/switch',
         wrapRoutes: false
       }
     })
@@ -271,7 +271,7 @@ describe('RcRoutes: Devices', () => {
   test('should navigate to devices AddEdge', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/devices/edge/add',
+        path: '/tenantId/t/devices/edge/add',
         wrapRoutes: false
       }
     })
@@ -281,7 +281,7 @@ describe('RcRoutes: Devices', () => {
   test('should navigate to devices EditEdge', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/devices/edge/serialNumber/edit/activeTab',
+        path: '/tenantId/t/devices/edge/serialNumber/edit/activeTab',
         wrapRoutes: false
       }
     })
@@ -291,7 +291,7 @@ describe('RcRoutes: Devices', () => {
   test('should navigate to devices EditEdge with subTab', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/devices/edge/serialNumber/edit/activeTab/activeSubTab',
+        path: '/tenantId/t/devices/edge/serialNumber/edit/activeTab/activeSubTab',
         wrapRoutes: false
       }
     })
@@ -304,7 +304,7 @@ describe('RcRoutes: Networks', () => {
   test('should navigate to networks', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/networks',
+        path: '/tenantId/t/networks',
         wrapRoutes: false
       }
     })
@@ -314,7 +314,7 @@ describe('RcRoutes: Networks', () => {
   test('should navigate to networks/add', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/networks/wireless/add',
+        path: '/tenantId/t/networks/wireless/add',
         wrapRoutes: false
       }
     })
@@ -324,7 +324,7 @@ describe('RcRoutes: Networks', () => {
   test('should navigate to network-details', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/networks/wireless/networkId/network-details/some-tab',
+        path: '/tenantId/t/networks/wireless/networkId/network-details/some-tab',
         wrapRoutes: false
       }
     })
@@ -334,7 +334,7 @@ describe('RcRoutes: Networks', () => {
   test('should navigate to network-action', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/networks/wireless/networkId/edit',
+        path: '/tenantId/t/networks/wireless/networkId/edit',
         wrapRoutes: false
       }
     })
@@ -347,7 +347,7 @@ describe('RcRoutes: Services', () => {
   test('should navigate to service list', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + getServiceListRoutePath(),
+        path: '/tenantId/t/' + getServiceListRoutePath(),
         wrapRoutes: false
       }
     })
@@ -357,7 +357,7 @@ describe('RcRoutes: Services', () => {
   test('should navigate to service catalog', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + getServiceCatalogRoutePath(),
+        path: '/tenantId/t/' + getServiceCatalogRoutePath(),
         wrapRoutes: false
       }
     })
@@ -367,7 +367,7 @@ describe('RcRoutes: Services', () => {
   test('should navigate to select service page', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + getSelectServiceRoutePath(),
+        path: '/tenantId/t/' + getSelectServiceRoutePath(),
         wrapRoutes: false
       }
     })
@@ -377,7 +377,7 @@ describe('RcRoutes: Services', () => {
   test('should navigate to create MdnsProxy page', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.CREATE }),
+        path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.CREATE }),
         wrapRoutes: false
       }
     })
@@ -388,7 +388,7 @@ describe('RcRoutes: Services', () => {
     const path = getServiceDetailsLink({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + path,
+        path: '/tenantId/t/' + path,
         wrapRoutes: false
       }
     })
@@ -399,7 +399,7 @@ describe('RcRoutes: Services', () => {
     const path = getServiceDetailsLink({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.DETAIL, serviceId: 'SERVICE_ID' })
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + path,
+        path: '/tenantId/t/' + path,
         wrapRoutes: false
       }
     })
@@ -409,7 +409,7 @@ describe('RcRoutes: Services', () => {
   test('should navigate to create DPSK page', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE }),
+        path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE }),
         wrapRoutes: false
       }
     })
@@ -420,7 +420,7 @@ describe('RcRoutes: Services', () => {
     const path = getServiceDetailsLink({ type: ServiceType.DPSK, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + path,
+        path: '/tenantId/t/' + path,
         wrapRoutes: false
       }
     })
@@ -430,7 +430,7 @@ describe('RcRoutes: Services', () => {
   test('should navigate to DPSK table page', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST }),
+        path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST }),
         wrapRoutes: false
       }
     })
@@ -440,7 +440,7 @@ describe('RcRoutes: Services', () => {
   test('should navigate to create WIFI_CALLING page', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.CREATE }),
+        path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.CREATE }),
         wrapRoutes: false
       }
     })
@@ -451,7 +451,7 @@ describe('RcRoutes: Services', () => {
     const path = getServiceDetailsLink({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + path,
+        path: '/tenantId/t/' + path,
         wrapRoutes: false
       }
     })
@@ -462,7 +462,7 @@ describe('RcRoutes: Services', () => {
     const path = getServiceDetailsLink({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.DETAIL, serviceId: 'SERVICE_ID' })
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + path,
+        path: '/tenantId/t/' + path,
         wrapRoutes: false
       }
     })
@@ -472,7 +472,7 @@ describe('RcRoutes: Services', () => {
   test('should navigate to create DHCP page', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE }),
+        path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE }),
         wrapRoutes: false
       }
     })
@@ -483,7 +483,7 @@ describe('RcRoutes: Services', () => {
     const path = getServiceDetailsLink({ type: ServiceType.DHCP, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + path,
+        path: '/tenantId/t/' + path,
         wrapRoutes: false
       }
     })
@@ -494,7 +494,7 @@ describe('RcRoutes: Services', () => {
     const path = getServiceDetailsLink({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL, serviceId: 'SERVICE_ID' })
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + path,
+        path: '/tenantId/t/' + path,
         wrapRoutes: false
       }
     })
@@ -504,7 +504,7 @@ describe('RcRoutes: Services', () => {
   test('should navigate to create Portal page', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE }),
+        path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE }),
         wrapRoutes: false
       }
     })
@@ -515,7 +515,7 @@ describe('RcRoutes: Services', () => {
     const path = getServiceDetailsLink({ type: ServiceType.PORTAL, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + path,
+        path: '/tenantId/t/' + path,
         wrapRoutes: false
       }
     })
@@ -526,7 +526,7 @@ describe('RcRoutes: Services', () => {
     const path = getServiceDetailsLink({ type: ServiceType.PORTAL, oper: ServiceOperation.DETAIL, serviceId: 'SERVICE_ID' })
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + path,
+        path: '/tenantId/t/' + path,
         wrapRoutes: false
       }
     })
@@ -539,7 +539,7 @@ describe('RcRoutes: Policies', () => {
   test('should navigate to My Policies', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + getPolicyListRoutePath(),
+        path: '/tenantId/t/' + getPolicyListRoutePath(),
         wrapRoutes: false
       }
     })
@@ -549,7 +549,7 @@ describe('RcRoutes: Policies', () => {
   test('should navigate to create ROGUE_AP_DETECTION page', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.CREATE }),
+        path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.CREATE }),
         wrapRoutes: false
       }
     })
@@ -561,7 +561,7 @@ describe('RcRoutes: Policies', () => {
     path = path.replace(':policyId', 'policyId')
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + path,
+        path: '/tenantId/t/' + path,
         wrapRoutes: false
       }
     })
@@ -572,7 +572,7 @@ describe('RcRoutes: Policies', () => {
     const path = getPolicyDetailsLink({ type: PolicyType.SYSLOG, oper: PolicyOperation.DETAIL, policyId: 'POLICY_ID' })
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + path,
+        path: '/tenantId/t/' + path,
         wrapRoutes: false
       }
     })
@@ -582,7 +582,7 @@ describe('RcRoutes: Policies', () => {
   test('should navigate to create RADIUS ATTRIBUTE GROUP page', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.CREATE }),
+        path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.CREATE }),
         wrapRoutes: false
       }
     })
@@ -594,7 +594,7 @@ describe('RcRoutes: Policies', () => {
     path = path.replace(':policyId', 'policyId')
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + path,
+        path: '/tenantId/t/' + path,
         wrapRoutes: false
       }
     })
@@ -606,7 +606,7 @@ describe('RcRoutes: Policies', () => {
     path = path.replace(':policyId', 'policyId')
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + path,
+        path: '/tenantId/t/' + path,
         wrapRoutes: false
       }
     })
@@ -616,7 +616,7 @@ describe('RcRoutes: Policies', () => {
   test('should navigate to RADIUS ATTRIBUTE GROUP table', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST }),
+        path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST }),
         wrapRoutes: false
       }
     })
@@ -627,7 +627,7 @@ describe('RcRoutes: Policies', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.CREATE }),
+        path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.CREATE }),
         wrapRoutes: false
       }
     })
@@ -640,7 +640,7 @@ describe('RcRoutes: Policies', () => {
     path = path.replace(':policyId', 'policyId')
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + path,
+        path: '/tenantId/t/' + path,
         wrapRoutes: false
       }
     })
@@ -651,7 +651,7 @@ describe('RcRoutes: Policies', () => {
   test('should navigate to create ACCESS_CONTROL page', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE }),
+        path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE }),
         wrapRoutes: false
       }
     })
@@ -663,7 +663,7 @@ describe('RcRoutes: Policies', () => {
     const path = getPolicyDetailsLink({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.DETAIL, policyId: 'POLICY_ID' })
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + path,
+        path: '/tenantId/t/' + path,
         wrapRoutes: false
       }
     })
@@ -674,7 +674,7 @@ describe('RcRoutes: Policies', () => {
     const path = getPolicyDetailsLink({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.EDIT, policyId: 'POLICY_ID' })
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + path,
+        path: '/tenantId/t/' + path,
         wrapRoutes: false
       }
     })
@@ -683,7 +683,7 @@ describe('RcRoutes: Policies', () => {
   test('should navigate to create AAA Policy page', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE }),
+        path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE }),
         wrapRoutes: false
       }
     })
@@ -695,7 +695,7 @@ describe('RcRoutes: Policies', () => {
     path = path.replace(':policyId', 'policyId')
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + path,
+        path: '/tenantId/t/' + path,
         wrapRoutes: false
       }
     })
@@ -706,7 +706,7 @@ describe('RcRoutes: Policies', () => {
     path = path.replace(':policyId', 'policyId')
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + path,
+        path: '/tenantId/t/' + path,
         wrapRoutes: false
       }
     })
@@ -716,7 +716,7 @@ describe('RcRoutes: Policies', () => {
   test('should navigate to AAA table', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.LIST }),
+        path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.LIST }),
         wrapRoutes: false
       }
     })
@@ -726,7 +726,7 @@ describe('RcRoutes: Policies', () => {
   test('should navigate to Access Control table', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST }),
+        path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST }),
         wrapRoutes: false
       }
     })
@@ -736,7 +736,7 @@ describe('RcRoutes: Policies', () => {
   test('should navigate to Client Isolation table', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.LIST }),
+        path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.LIST }),
         wrapRoutes: false
       }
     })
@@ -746,7 +746,7 @@ describe('RcRoutes: Policies', () => {
   test('should navigate to Rogue AP Detection table', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.LIST }),
+        path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.LIST }),
         wrapRoutes: false
       }
     })
@@ -756,7 +756,7 @@ describe('RcRoutes: Policies', () => {
   test('should navigate to Syslog Server table', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.LIST }),
+        path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.LIST }),
         wrapRoutes: false
       }
     })
@@ -766,7 +766,7 @@ describe('RcRoutes: Policies', () => {
   test('should navigate to VLAN Pools table', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.LIST }),
+        path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.LIST }),
         wrapRoutes: false
       }
     })
@@ -778,7 +778,7 @@ describe('RcRoutes: User', () => {
   test('should redirect user to user/wifi/clients', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/users/',
+        path: '/tenantId/t/users/',
         wrapRoutes: false
       }
     })
@@ -787,7 +787,7 @@ describe('RcRoutes: User', () => {
   test('should redirect user/wifi to user/wifi/clients', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/users/wifi',
+        path: '/tenantId/t/users/wifi',
         wrapRoutes: false
       }
     })
@@ -796,7 +796,7 @@ describe('RcRoutes: User', () => {
   test('should redirect to user/wifi/clients correctly', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/users/wifi/clients',
+        path: '/tenantId/t/users/wifi/clients',
         wrapRoutes: false
       }
     })
@@ -805,7 +805,7 @@ describe('RcRoutes: User', () => {
   test('should redirect details to details/overview', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/users/wifi/clients/clientId/details/',
+        path: '/tenantId/t/users/wifi/clients/clientId/details/',
         wrapRoutes: false
       }
     })
@@ -814,7 +814,7 @@ describe('RcRoutes: User', () => {
   test('should redirect to details/overview correctly', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/users/wifi/clients/clientId/details/overview',
+        path: '/tenantId/t/users/wifi/clients/clientId/details/overview',
         wrapRoutes: false
       }
     })
@@ -823,7 +823,7 @@ describe('RcRoutes: User', () => {
   test('should redirect details/timeline to details/timeline/events', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/users/wifi/clients/clientId/details/timeline',
+        path: '/tenantId/t/users/wifi/clients/clientId/details/timeline',
         wrapRoutes: false
       }
     })
@@ -832,7 +832,7 @@ describe('RcRoutes: User', () => {
   test('should redirect to details/timeline/events correctly', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/users/wifi/clients/clientId/details/timeline/events',
+        path: '/tenantId/t/users/wifi/clients/clientId/details/timeline/events',
         wrapRoutes: false
       }
     })
@@ -843,7 +843,7 @@ describe('RcRoutes: User', () => {
 
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/users/persona-management',
+        path: '/tenantId/t/users/persona-management',
         wrapRoutes: false
       }
     })
@@ -854,7 +854,7 @@ describe('RcRoutes: User', () => {
 
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/users/persona-management/persona-group/personGroupId/persona/personaId',
+        path: '/tenantId/t/users/persona-management/persona-group/personGroupId/persona/personaId',
         wrapRoutes: false
       }
     })
@@ -865,7 +865,7 @@ describe('RcRoutes: User', () => {
 
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/users/persona-management/persona-group/personGroupId',
+        path: '/tenantId/t/users/persona-management/persona-group/personGroupId',
         wrapRoutes: false
       }
     })
@@ -877,7 +877,7 @@ describe('RcRoutes: Timeline', () => {
   test('should redirect timeline to timeline/activities', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/timeline',
+        path: '/tenantId/t/timeline',
         wrapRoutes: false
       }
     })
@@ -887,7 +887,7 @@ describe('RcRoutes: Timeline', () => {
   test('should navigate to timeline/activities', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/timeline/activities',
+        path: '/tenantId/t/timeline/activities',
         wrapRoutes: false
       }
     })

@@ -73,7 +73,7 @@ describe('MyServices', () => {
     tenantId: '15320bc221d94d2cb537fa0189fee742'
   }
 
-  const path = '/t/:tenantId'
+  const path = '/:tenantId/t'
 
   mockServer.use(
     rest.post(
@@ -95,7 +95,7 @@ describe('MyServices', () => {
       }
     )
 
-    const createPageLink = `/t/${params.tenantId}/` + getSelectServiceRoutePath()
+    const createPageLink = `/${params.tenantId}/t/` + getSelectServiceRoutePath()
     // eslint-disable-next-line max-len
     expect(await screen.findByRole('link', { name: 'Add Service' })).toHaveAttribute('href', createPageLink)
   })

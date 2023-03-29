@@ -25,19 +25,19 @@ describe('AnalyticsTabs', () => {
     )
     render(<Provider>
       <AnalyticsTabs
-        healthPath='/t/t1/devices/wifi/000000000001/details/analytics/health'
+        healthPath='/t1/t/devices/wifi/000000000001/details/analytics/health'
         healthFilter={{} as AnalyticsFilter}
         incidentFilter={{} as AnalyticsFilter}
       />
     </Provider>, {
       route: {
         params: { tenantId: 't1', serialNumber: '000000000001' },
-        path: '/t/:tenantId/devices/wifi/:serialNumber/details/analytics'
+        path: '/:tenantId/t/devices/wifi/:serialNumber/details/analytics'
       }
     })
     fireEvent.click(await screen.findByText('Health'))
     expect(mockedUsedNavigate.mock.calls[0][0].pathname).toEqual(
-      '/t/t1/devices/wifi/000000000001/details/analytics/health/overview'
+      '/t1/t/devices/wifi/000000000001/details/analytics/health/overview'
     )
   })
   it('should handle tab changes', async () => {
@@ -46,19 +46,19 @@ describe('AnalyticsTabs', () => {
     )
     render(<Provider>
       <AnalyticsTabs
-        healthPath='/t/t1/devices/wifi/000000000001/details/analytics/health'
+        healthPath='/t1/t/devices/wifi/000000000001/details/analytics/health'
         healthFilter={{} as AnalyticsFilter}
         incidentFilter={{} as AnalyticsFilter}
       />
     </Provider>, {
       route: {
         params: { tenantId: 't1', serialNumber: '000000000001', activeSubTab: 'incidents' },
-        path: '/t/:tenantId/devices/wifi/:serialNumber/details/analytics/incidents/overview'
+        path: '/:tenantId/t/devices/wifi/:serialNumber/details/analytics/incidents/overview'
       }
     })
     fireEvent.click(await screen.findByText('Health'))
     expect(mockedUsedNavigate.mock.calls[0][0].pathname).toEqual(
-      '/t/t1/devices/wifi/000000000001/details/analytics/health/overview'
+      '/t1/t/devices/wifi/000000000001/details/analytics/health/overview'
     )
   })
 })

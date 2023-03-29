@@ -124,11 +124,11 @@ describe('AddEdge', () => {
       <Provider>
         <AddEdge />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/add' }
+        route: { params, path: '/:tenantId/t/devices/edge/add' }
       })
     await user.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/devices/edge/list`,
+      pathname: `/${params.tenantId}/t/devices/edge/list`,
       hash: '',
       search: ''
     })

@@ -57,7 +57,7 @@ describe('ClientTroubleshootingTab', () => {
     const { asFragment } = render(<TestWrapper />, {
       route: {
         params,
-        path: '/:tenantId/users/wifi/:clientId/details/:activeTab'
+        path: '/:tenantId/t/users/wifi/:clientId/details/:activeTab'
       }
     })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))

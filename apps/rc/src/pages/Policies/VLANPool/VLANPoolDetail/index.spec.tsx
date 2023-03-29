@@ -70,7 +70,7 @@ describe('VLAN Pool Detail Page', () => {
 
   it('should render VLAN Pool Detail page correctly', async () => {
     render(<Provider><VLANPoolDetail /></Provider>, {
-      route: { params, path: '/:tenantId/policies/vlanPool/:policyId/detail' }
+      route: { params, path: '/:tenantId/t/policies/vlanPool/:policyId/detail' }
     })
     expect(await screen.findByText('test')).toBeVisible()
     expect(await screen.findByText((`Instances (${list.data.length})`))).toBeVisible()

@@ -15,7 +15,7 @@ describe('AccessSwitchDrawer', () => {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
     serviceId: 'testServiceId'
   }
-  const path = '/:tenantId/services/networkSegmentation/:serviceId/edit'
+  const path = '/:tenantId/t/services/networkSegmentation/:serviceId/edit'
   beforeEach(async () => {
     mockServer.use(
       rest.post(

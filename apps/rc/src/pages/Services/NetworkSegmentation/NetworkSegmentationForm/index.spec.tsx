@@ -58,7 +58,7 @@ jest.mock('antd', () => {
   return { ...components, Select }
 })
 
-const createNsgPath = '/:tenantId/services/networkSegmentation/create'
+const createNsgPath = '/:tenantId/t/services/networkSegmentation/create'
 
 describe('Update NetworkSegmentation', () => {
   let params: { tenantId: string, serviceId: string }

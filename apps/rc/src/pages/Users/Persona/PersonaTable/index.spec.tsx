@@ -40,7 +40,7 @@ describe('Persona Table', () => {
       <Provider>
         <PersonaTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/persona-management/persona-group' }
+        route: { params, path: '/:tenantId/t/users/persona-management/persona-group' }
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -66,7 +66,7 @@ describe('Persona Table', () => {
       <Provider>
         <PersonaTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/persona-management/persona-group' }
+        route: { params, path: '/:tenantId/t/users/persona-management/persona-group' }
       })
 
     const createButton = await screen.findByRole('button', { name: /Add Persona/i })
@@ -95,7 +95,7 @@ describe('Persona Table', () => {
       <Provider><PersonaTable /></Provider>,
       { route: {
         params: { ...params, personaGroupId: mockPersonaGroupList.content[0].id },
-        path: '/:tenantId/users/persona-management/persona-group/:personaGroupId'
+        path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId'
       } }
     )
     await userEvent.click(await screen.findByRole('button', { name: /Import From File/ }))
@@ -138,7 +138,7 @@ describe('Persona Table', () => {
 
     render(
       <Provider><PersonaTable /></Provider>,
-      { route: { params, path: '/:tenantId/users/persona-management/persona-group' } }
+      { route: { params, path: '/:tenantId/t/users/persona-management/persona-group' } }
     )
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))

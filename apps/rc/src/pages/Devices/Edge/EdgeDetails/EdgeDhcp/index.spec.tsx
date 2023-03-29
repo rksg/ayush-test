@@ -49,7 +49,7 @@ describe('Edge DHCP', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
         }
       })
     const poolsTab = screen.getByRole('tab', { name: 'Pools' })
@@ -64,7 +64,7 @@ describe('Edge DHCP', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
         }
       })
     const leasesTab = screen.getByRole('tab', { name: 'Leases ( 0 online )' })
@@ -80,13 +80,13 @@ describe('Edge DHCP', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
         }
       })
     await user.click(screen.getByRole('tab', { name: 'Leases ( 0 online )' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       // eslint-disable-next-line max-len
-      pathname: `/t/${params.tenantId}/devices/edge/${params.serialNumber}/edge-details/dhcp/leases`,
+      pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/edge-details/dhcp/leases`,
       hash: '',
       search: ''
     })
@@ -124,7 +124,7 @@ describe('Edge DHCP', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
         }
       })
     await screen.findAllByRole('row', { name: /Pool/i })
@@ -144,7 +144,7 @@ describe('Edge DHCP', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
         }
       })
     await screen.findAllByRole('row', { name: /Pool/i })
@@ -189,7 +189,7 @@ describe('Edge DHCP no initial data', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
         }
       })
     await screen.findAllByRole('row', { name: /Pool/i })

@@ -63,7 +63,7 @@ describe('EditEdge', () => {
       <Provider>
         <EditEdge />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab' }
+        route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab' }
       })
     await screen.findByRole('tab', { name: 'Ports', selected: true })
   })
@@ -74,7 +74,7 @@ describe('EditEdge', () => {
       <Provider>
         <EditEdge />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab' }
+        route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab' }
       })
     await screen.findByRole('tab', { name: 'DNS Server', selected: true })
   })
@@ -85,7 +85,7 @@ describe('EditEdge', () => {
       <Provider>
         <EditEdge />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab' }
+        route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab' }
       })
     await screen.findByRole('tab', { name: 'Static Routes', selected: true })
   })
@@ -97,18 +97,18 @@ describe('EditEdge', () => {
       <Provider>
         <EditEdge />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab' }
+        route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab' }
       })
     await user.click(screen.getByRole('tab', { name: 'DNS Server' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/devices/edge/${params.serialNumber}/edit/dns`,
+      pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/edit/dns`,
       hash: '',
       search: ''
     })
     await user.click(screen.getByRole('tab', { name: 'Ports' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       // eslint-disable-next-line max-len
-      pathname: `/t/${params.tenantId}/devices/edge/${params.serialNumber}/edit/ports/ports-general`,
+      pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/edit/ports/ports-general`,
       hash: '',
       search: ''
     })

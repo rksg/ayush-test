@@ -60,7 +60,7 @@ describe('Firmware Venues Table', () => {
       <Provider>
         <VenueFirmwareList />
       </Provider>, {
-        route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
+        route: { params, path: '/:tenantId/t/administration/fwVersionMgmt' }
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -73,7 +73,7 @@ describe('Firmware Venues Table', () => {
       <Provider>
         <VenueFirmwareList />
       </Provider>, {
-        route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
+        route: { params, path: '/:tenantId/t/administration/fwVersionMgmt' }
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))

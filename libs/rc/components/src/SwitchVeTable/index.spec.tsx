@@ -66,7 +66,7 @@ describe('Switch VE Table', () => {
     render(<Provider><SwitchVeTable isVenueLevel={false} /></Provider>, {
       route: {
         params,
-        path: '/:tenantId/:switchId'
+        path: '/:tenantId/t/:switchId'
       }
     })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -77,7 +77,7 @@ describe('Switch VE Table', () => {
     render(<Provider><SwitchVeTable isVenueLevel={false} /></Provider>, {
       route: {
         params,
-        path: '/:tenantId/:switchId'
+        path: '/:tenantId/t/:switchId'
       }
     })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -105,7 +105,7 @@ describe('Switch VE Table', () => {
     render(<Provider><SwitchVeTable isVenueLevel={false} /></Provider>, {
       route: {
         params,
-        path: '/:tenantId/:switchId'
+        path: '/:tenantId/t/:switchId'
       }
     })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -118,7 +118,7 @@ describe('Switch VE Table', () => {
     render(<Provider><SwitchVeTable isVenueLevel={false} /></Provider>, {
       route: {
         params,
-        path: '/:tenantId/:switchId'
+        path: '/:tenantId/t/:switchId'
       }
     })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -135,7 +135,7 @@ describe('Switch VE Table', () => {
     render(<Provider><SwitchVeTable isVenueLevel={false} /></Provider>, {
       route: {
         params,
-        path: '/:tenantId/:switchId'
+        path: '/:tenantId/t/:switchId'
       }
     })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -156,7 +156,7 @@ describe('Switch VE Table', () => {
     render(<Provider><SwitchVeTable isVenueLevel={false} /></Provider>, {
       route: {
         params,
-        path: '/:tenantId/:switchId'
+        path: '/:tenantId/t/:switchId'
       }
     })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -180,7 +180,7 @@ describe('Switch VE Table', () => {
     render(<Provider><SwitchVeTable isVenueLevel={false} /></Provider>, {
       route: {
         params,
-        path: '/:tenantId/:switchId'
+        path: '/:tenantId/t/:switchId'
       }
     })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -194,7 +194,7 @@ describe('Switch VE Table', () => {
     render(<Provider><SwitchVeTable isVenueLevel={false} /></Provider>, {
       route: {
         params,
-        path: '/:tenantId/:switchId'
+        path: '/:tenantId/t/:switchId'
       }
     })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -220,7 +220,7 @@ describe('Switch VE Table', () => {
     render(<Provider><SwitchVeTable isVenueLevel={true} /></Provider>, {
       route: {
         params,
-        path: '/:tenantId/venues/:venueId/edit/switch/interfaces'
+        path: '/:tenantId/t/venues/:venueId/edit/switch/interfaces'
       }
     })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))

@@ -40,7 +40,7 @@ describe('SnmpAgentForm', () => {
     policyId: '4b76b1952c80401b8500b00d68106576'
   }
   // eslint-disable-next-line max-len
-  const detailPath = '/:tenantId/' + getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.DETAIL })
+  const detailPath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.DETAIL })
 
 
   beforeEach(async () => {
@@ -78,7 +78,7 @@ describe('SnmpAgentForm', () => {
   })
 
   it('should navigate to the edit page', async () => {
-    const editLink = `/t/${params.tenantId}/` + getPolicyDetailsLink({
+    const editLink = `/${params.tenantId}/t/` + getPolicyDetailsLink({
       type: PolicyType.SNMP_AGENT,
       oper: PolicyOperation.EDIT,
       policyId: params.policyId

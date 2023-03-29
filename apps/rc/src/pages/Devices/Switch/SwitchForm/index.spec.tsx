@@ -49,7 +49,7 @@ describe('Add switch form', () => {
 
   it('should render correctly', async () => {
     render(<Provider><SwitchForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/:action' }
+      route: { params, path: '/:tenantId/t/devices/switch/:action' }
     })
     expect(await screen.findByText(/add switch/i)).toBeVisible()
   })
@@ -57,7 +57,7 @@ describe('Add switch form', () => {
 
   it('should add standalone switch correctly', async () => {
     render(<Provider><SwitchForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/:action' }
+      route: { params, path: '/:tenantId/t/devices/switch/:action' }
     })
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findByText(/add switch/i)).toBeVisible()
@@ -77,7 +77,7 @@ describe('Add switch form', () => {
 
   it('should add stack member correctly', async () => {
     render(<Provider><SwitchForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/:action' }
+      route: { params, path: '/:tenantId/t/devices/switch/:action' }
     })
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findByText(/add switch/i)).toBeVisible()
@@ -99,7 +99,7 @@ describe('Add switch form', () => {
 
   it('should cancel chanage correctly', async () => {
     render(<Provider><SwitchForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/:action' }
+      route: { params, path: '/:tenantId/t/devices/switch/:action' }
     })
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findByText(/add switch/i)).toBeVisible()
@@ -107,7 +107,7 @@ describe('Add switch form', () => {
       await screen.findByLabelText(/serial number/i), { target: { value: 'invalid' } })
     await userEvent.click(await screen.findByRole('button', { name: /add/i }))
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
-    expect(mockedUsedNavigate).lastCalledWith('/t/tenant-id/devices/switch')
+    expect(mockedUsedNavigate).lastCalledWith('/tenant-id/t/devices/switch')
   })
 
   it('should handle error for add standalone switch correctly', async () => {
@@ -118,7 +118,7 @@ describe('Add switch form', () => {
         })
     )
     render(<Provider><SwitchForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/:action' }
+      route: { params, path: '/:tenantId/t/devices/switch/:action' }
     })
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findByText(/add switch/i)).toBeVisible()
@@ -145,7 +145,7 @@ describe('Add switch form', () => {
         })
     )
     render(<Provider><SwitchForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/:action' }
+      route: { params, path: '/:tenantId/t/devices/switch/:action' }
     })
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findByText(/add switch/i)).toBeVisible()
@@ -196,14 +196,14 @@ describe('Edit switch form', () => {
 
   it('should render edit switch form correctly', async () => {
     render(<Provider><SwitchForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/:action' }
+      route: { params, path: '/:tenantId/t/devices/switch/:switchId/:serialNumber/:action' }
     })
     expect(await screen.findByText(/ICX7150-C12 Router/i)).toBeVisible()
   })
 
   it('should render edit switch settings correctly', async () => {
     render(<Provider><SwitchForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/:action' }
+      route: { params, path: '/:tenantId/t/devices/switch/:switchId/:serialNumber/:action' }
     })
     expect(await screen.findByText(/ICX7150-C12 Router/i)).toBeVisible()
   })
@@ -215,14 +215,14 @@ describe('Edit switch form', () => {
         (_, res, ctx) => res(ctx.json(switchDetailHeader)))
     )
     render(<Provider><SwitchForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/:action' }
+      route: { params, path: '/:tenantId/t/devices/switch/:switchId/:serialNumber/:action' }
     })
     expect(await screen.findByText(/ICX7150-C12 Router/i)).toBeVisible()
   })
 
   it('should submit edit switch form correctly', async () => {
     render(<Provider><SwitchForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/:action' }
+      route: { params, path: '/:tenantId/t/devices/switch/:switchId/:serialNumber/:action' }
     })
 
     const settingsTab = await screen.findByRole('tab', { name: 'Settings' })
@@ -245,7 +245,7 @@ describe('Edit switch form', () => {
 
   it('should submit edit switch form with dynamic ip mode correctly', async () => {
     render(<Provider><SwitchForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/:action' }
+      route: { params, path: '/:tenantId/t/devices/switch/:switchId/:serialNumber/:action' }
     })
 
     const settingsTab = await screen.findByRole('tab', { name: 'Settings' })

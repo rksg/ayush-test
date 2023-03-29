@@ -17,7 +17,7 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/tenant-id/networks"
+                href="/tenant-id/t/networks"
               >
                 Networks
               </a>

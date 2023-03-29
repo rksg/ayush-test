@@ -23,7 +23,7 @@ describe('ClientList', () => {
       tenantId: 'tenant-id'
     }
     render(<Provider><ClientList /></Provider>, {
-      route: { params, path: '/:tenantId/users/switch/clients' }
+      route: { params, path: '/:tenantId/t/users/switch/clients' }
     })
     expect(await screen.findByText('Switch')).toBeVisible()
   })

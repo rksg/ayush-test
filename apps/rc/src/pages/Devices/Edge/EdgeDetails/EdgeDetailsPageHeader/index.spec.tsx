@@ -63,7 +63,7 @@ describe('Edge Detail Page Header', () => {
 
     fireEvent.click(screen.getByText('Configure'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/devices/edge/${currentEdge.serialNumber}/edit/general-settings`,
+      pathname: `/${params.tenantId}/t/devices/edge/${currentEdge.serialNumber}/edit/general-settings`,
       hash: '',
       search: ''
     })
@@ -86,7 +86,7 @@ describe('Edge Detail Page Header', () => {
     await screen.findByText(`Delete "${currentEdge.name}"?`)
     await userEvent.click(screen.getByRole('button', { name: 'Delete Edge' }))
     await waitFor(() => {
-      expect(mockedUsedNavigate).toHaveBeenCalledWith(`/t/${params.tenantId}/devices/edge/list`)
+      expect(mockedUsedNavigate).toHaveBeenCalledWith(`/${params.tenantId}/t/devices/edge/list`)
     })
   })
 
