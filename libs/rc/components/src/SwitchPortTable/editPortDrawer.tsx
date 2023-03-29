@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { Checkbox, Form, Input, Select, Space, Switch } from 'antd'
 import { DefaultOptionType }                            from 'antd/lib/select'
 import _                                                from 'lodash'
-import { defineMessage }                                from 'react-intl'
 
 import {
   Button,
