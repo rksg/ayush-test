@@ -32,10 +32,7 @@ export default function BonjourFencingDrawer (props: BonjourFencingDrawerProps) 
   }, [currentService])
 
 
-  const content = <BonjourFencingServiceForm
-    form={form}
-    otherServices={otherServices}
-  />
+  const content = <BonjourFencingServiceForm form={form} />
 
   const onClose = () => {
     setVisible(false)
@@ -45,16 +42,56 @@ export default function BonjourFencingDrawer (props: BonjourFencingDrawerProps) 
   const validFormData = (d: BonjourFencingService) => {
     const { service, wiredEnabled, wiredRules=[], customMappingEnabled, customStrings=[] } = d
 
-    if (service === BridgeServiceEnum.OTHER && !customMappingEnabled) {
-      showActionModal({
-        type: 'error',
-        //title: $t({ defaultMessage: 'Error' }),
-        content:
+    if (service === BridgeServiceEnum.OTHER) {
+      if (!customMappingEnabled) {
+        showActionModal({
+          type: 'error',
+          //title: $t({ defaultMessage: 'Error' }),
+          content:
           $t({
             defaultMessage: 'The Custom Mapping must be enabled when the service is \'Other\'.'
           })
-      })
-      return false
+        })
+        return false
+      }
+
+      const existedOtherService = otherServices.filter(s => s.service === BridgeServiceEnum.OTHER)
+      if (Array.isArray(existedOtherService) && wiredRules.length > 0) {
+        const curMacList = _.flatMap(wiredRules, (wr) => {
+          return wr.deviceMacAddresses
+        })
+
+        let inUseMacList: string[] = []
+        existedOtherService.forEach(s => {
+          const wrs = s.wiredRules
+
+          if (Array.isArray(wrs) && wrs.length > 0) {
+            const macList = _.flatMap(wrs, (wr) => {
+              return wr.deviceMacAddresses
+            })
+            inUseMacList = _.concat(inUseMacList, macList)
+          }
+        })
+        const conflictMacList = curMacList.filter(m => inUseMacList.includes(m))
+
+        if (conflictMacList.length > 0) {
+
+          showActionModal({
+            type: 'error',
+            //title: $t({ defaultMessage: 'Error' }),
+            content:
+            $t({
+              // eslint-disable-next-line max-len
+              defaultMessage: 'The below Device MAC Addresses already in use for another \'Other\' service.{br}{macList}'
+            },{
+              br: <br/>,
+              macList: conflictMacList.join(', ')
+            })
+          })
+          return false
+        }
+
+      }
     }
 
     if (wiredEnabled && wiredRules.length === 0) {

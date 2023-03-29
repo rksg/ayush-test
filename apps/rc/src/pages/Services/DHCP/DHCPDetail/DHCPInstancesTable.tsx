@@ -51,6 +51,7 @@ export default function DHCPInstancesTable (){
       title: $t({ defaultMessage: 'Venue Name' }),
       dataIndex: 'venue',
       sorter: true,
+      fixed: 'left',
       render: function (_data, row) {
         return (
           <TenantLink

@@ -158,6 +158,7 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
 
       <Table
         columns={columns}
+        columnState={{ hidden: true }}
         dataSource={data}
         rowKey='id'
         locale={{

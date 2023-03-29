@@ -16,7 +16,8 @@ export const AccessSwitchesTable = (props: AccessSwitchesTableProps) => {
     {
       title: $t({ defaultMessage: 'Access Switch' }),
       key: 'name',
-      dataIndex: 'name'
+      dataIndex: 'name',
+      fixed: 'left'
     },
     {
       title: $t({ defaultMessage: 'Model' }),

@@ -113,7 +113,7 @@ const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
                 value={isSupportAccessEnabled}
                 disabled={isDisabled}
               >
-                {$t({ defaultMessage: 'Enable access to Ruckus support' })}
+                {$t({ defaultMessage: 'Enable access to Ruckus Support' })}
               </Checkbox>
             </Tooltip>
 
