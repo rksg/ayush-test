@@ -15,6 +15,7 @@ import { ApTable, CsvSize, ImportFileDrawer } from '@acx-ui/rc/components'
 import {
   useApGroupsListQuery,
   useImportApMutation,
+  useImportApOldMutation,
   useLazyImportResultQuery,
   useVenuesListQuery
 } from '@acx-ui/rc/services'
@@ -61,16 +62,18 @@ export default function ApsTable () {
 
   const [ isImportResultLoading, setIsImportResultLoading ] = useState(false)
   const [ importCsv ] = useImportApMutation()
+  const [ importCsvOld ] = useImportApOldMutation()
   const [ importQuery ] = useLazyImportResultQuery()
   const [ importResult, setImportResult ] = useState<ImportErrorRes>({} as ImportErrorRes)
 
   const apGpsFlag = useIsSplitOn(Features.AP_GPS)
+  const wifiEdaFlag = useIsSplitOn(Features.WIFI_EDA_GATEWAY)
   const importTemplateLink = apGpsFlag ?
     'assets/templates/aps_import_template_with_gps.csv' :
     'assets/templates/aps_import_template.csv'
 
   useEffect(()=>{
-    if (importResult.fileErrorsCount === 0) {
+    if ( importResult.fileErrorsCount === 0 ) {
       setImportVisible(false)
     }
     setIsImportResultLoading(false)
@@ -129,13 +132,20 @@ export default function ApsTable () {
         importError={{ data: importResult } as FetchBaseQueryError}
         importRequest={(formData) => {
           setIsImportResultLoading(true)
-          importCsv({ params: { tenantId }, payload: formData,
-            callback: async (response: CommonResult) => {
-              const result = await importQuery(
-                { payload: { requestId: response.requestId } }, true)
-                .unwrap()
-              setImportResult(result)
-            } }).unwrap()
+          if (wifiEdaFlag) {
+            importCsv({ params: { tenantId }, payload: formData,
+              callback: async (response: CommonResult) => {
+                const result = await importQuery(
+                  { payload: { requestId: response.requestId } }, true)
+                  .unwrap()
+                setImportResult(result)
+              } }).unwrap()
+          } else {
+            importCsvOld({ params: { tenantId }, payload: formData ,
+              callback: async (response: ImportErrorRes) => {
+                setImportResult(response)
+              } }).unwrap()
+          }
         }}
         onClose={() => setImportVisible(false)}/>
     </>

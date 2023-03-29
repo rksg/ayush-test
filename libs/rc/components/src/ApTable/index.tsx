@@ -11,9 +11,9 @@ import {
   deviceStatusColors,
   ColumnType
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
 import {
-  useApListQuery, useImportApMutation, useLazyImportResultQuery
+  useApListQuery, useImportApMutation, useImportApOldMutation, useLazyImportResultQuery
 } from '@acx-ui/rc/services'
 import {
   ApDeviceStatusEnum,
@@ -367,9 +367,11 @@ export function ApTable (props: ApTableProps) {
   const [ isImportResultLoading, setIsImportResultLoading ] = useState(false)
   const [ importVisible, setImportVisible ] = useState(false)
   const [ importCsv ] = useImportApMutation()
+  const [ importCsvOld ] = useImportApOldMutation()
   const [ importQuery ] = useLazyImportResultQuery()
   const [ importResult, setImportResult ] = useState<ImportErrorRes>({} as ImportErrorRes)
   const apGpsFlag = useIsSplitOn(Features.AP_GPS)
+  const wifiEdaFlag = useIsSplitOn(Features.WIFI_EDA_GATEWAY)
   const importTemplateLink = apGpsFlag ?
     'assets/templates/aps_import_template_with_gps.csv' :
     'assets/templates/aps_import_template.csv'
@@ -437,13 +439,20 @@ export function ApTable (props: ApTableProps) {
         importError={{ data: importResult } as FetchBaseQueryError}
         importRequest={(formData) => {
           setIsImportResultLoading(true)
-          importCsv({ params: {}, payload: formData,
-            callback: async (res: CommonResult) => {
-              const result = await importQuery(
-                { payload: { requestId: res.requestId } }, true)
-                .unwrap()
-              setImportResult(result)
-            } }).unwrap()
+          if (wifiEdaFlag) {
+            importCsv({ params: {}, payload: formData,
+              callback: async (res: CommonResult) => {
+                const result = await importQuery(
+                  { payload: { requestId: res.requestId } }, true)
+                  .unwrap()
+                setImportResult(result)
+              } }).unwrap()
+          } else {
+            importCsvOld({ params: {}, payload: formData,
+              callback: async (res: ImportErrorRes) => {
+                setImportResult(res)
+              } }).unwrap()
+          }
         }}
         onClose={() => setImportVisible(false)}/>
     </Loader>

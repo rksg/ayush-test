@@ -141,6 +141,28 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
     }),
+    importApOld: build.mutation<ImportErrorRes, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.addAp, params, {
+          'Content-Type': undefined,
+          'Accept': '*/*'
+        })
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async () => {
+          try {
+            const response = await api.cacheDataLoaded
+            (requestArgs.callback as Function)(response)
+          } catch {
+          }
+        })
+      }
+    }),
     importAp: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.addAp, params, {
@@ -627,6 +649,7 @@ export const {
   useBlinkLedApMutation,
   useFactoryResetApMutation,
   useImportApMutation,
+  useImportApOldMutation,
   useLazyImportResultQuery,
   useLazyGetDhcpApQuery,
   useGetApPhotoQuery,
