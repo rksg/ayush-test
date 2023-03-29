@@ -123,7 +123,7 @@ export function DevicesWidgetv2 (props: {
                       showTotal={false}
                       total={switchTotalCount || 0}
                       barColors={getDeviceConnectionStatusColorsv2()} />
-                    <TenantLink to={'/devices/wifi'}>
+                    <TenantLink to={'/devices/switch'}>
                       {switchTotalCount || 0}
                     </TenantLink>
                   </Space>
