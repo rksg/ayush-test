@@ -130,7 +130,7 @@ export function FunnelChart ({
         [
           <StageList key={1}>
             {enhancedStages.map((stage) => (
-              <Stage {...stage} />
+              <Stage role={stage.name} {...stage} />
             ))}
           </StageList>,
           <Labels

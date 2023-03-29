@@ -20,14 +20,6 @@ import { FunnelChart }                                       from './funnelChart
 import { useTtcDrilldownQuery, useConnectionDrilldownQuery } from './services'
 import { Title }                                             from './styledComponents'
 
-const FunnelChartColors = [
-  cssStr('--acx-accents-blue-80'),
-  cssStr('--acx-accents-blue-70'),
-  cssStr('--acx-accents-blue-60'),
-  cssStr('--acx-accents-blue-55'),
-  cssStr('--acx-accents-blue-50')
-]
-
 const HealthDrillDown = (props: {
   filters: AnalyticsFilter;
   drilldownSelection: DrilldownSelection;
@@ -111,7 +103,14 @@ const HealthDrillDown = (props: {
             stages={getFormattedToFunnel(drilldownSelection, {
               ...funnelChartData?.data
             })}
-            colors={FunnelChartColors}
+            colors={[
+              cssStr('--acx-accents-blue-80'),
+              cssStr('--acx-accents-blue-70'),
+              cssStr('--acx-accents-blue-60'),
+              cssStr('--acx-accents-blue-55'),
+              cssStr('--acx-accents-blue-50')
+            ]
+            }
             selectedStage={selectedStage}
             onSelectStage={(stage: Stages) => setSelectedStage(stage)}
             valueFormatter={
