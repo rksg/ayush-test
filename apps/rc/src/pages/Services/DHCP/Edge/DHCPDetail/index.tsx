@@ -37,7 +37,8 @@ const EdgeDHCPDetail = () => {
       key: 'edgeId',
       dataIndex: 'edgeId',
       sorter: true,
-      defaultSortOrder: 'ascend'
+      defaultSortOrder: 'ascend',
+      fixed: 'left'
       // render: function (data, row) {
       //   return (
       //     <TenantLink to={`/devices/edge/${row.edgeId}/edge-details/overview`}>

@@ -143,6 +143,7 @@ export const getTableColumns = ({
       dataIndex: key,
       key: key,
       align: 'center',
+      disable: true,
       width: 100,
       render: function (_, row: TestResultByAP, index: number) {
         const failure = getClientFailureInfo(row)[key]
@@ -221,6 +222,7 @@ export const getTableColumns = ({
       dataIndex: 'apName',
       key: 'apName',
       width: 150,
+      fixed: 'left',
       render: function (text, row) {
         const { apMac } = row
         return (
@@ -251,8 +253,8 @@ export const getTableColumns = ({
     columns.push(
       {
         title: $t(defineMessage({ defaultMessage: 'Station AP Name' })),
-        dataIndex: 'stationAp',
-        key: 'stationAp',
+        dataIndex: 'stationApName',
+        key: 'stationApName',
         width: 150,
         render: function (_, row) {
           const { stationAp } = row
@@ -266,8 +268,8 @@ export const getTableColumns = ({
       },
       {
         title: $t(defineMessage({ defaultMessage: 'Station AP MAC' })),
-        dataIndex: 'stationAp',
-        key: 'stationAp',
+        dataIndex: 'stationApMac',
+        key: 'stationApMac',
         width: 150,
         render: function (_, row) {
           const { stationAp } = row
@@ -276,8 +278,8 @@ export const getTableColumns = ({
       },
       {
         title: $t(defineMessage({ defaultMessage: 'Station AP SNR' })),
-        dataIndex: 'stationAp',
-        key: 'stationAp',
+        dataIndex: 'stationApSnr',
+        key: 'stationApSnr',
         align: 'center',
         width: 150,
         render: function (_, row, index) {

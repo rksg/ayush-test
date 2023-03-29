@@ -127,6 +127,7 @@ export function SwitchDhcpPoolTable () {
   return (
     <Loader states={[tableQuery]}>
       <Table columns={columns}
+        columnState={{ hidden: true }}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
@@ -142,10 +143,7 @@ export function SwitchDhcpPoolTable () {
         rowActions={filterByAccess(rowActions)}
         rowSelection={{
           type: 'checkbox',
-          selectedRowKeys: selected ? [selected]:[],
-          onChange: (keys: React.Key[]) => {
-            setSelected(keys[0] as string)
-          }
+          selectedRowKeys: selected ? [selected]:[]
         }} />
       <AddPoolDrawer
         visible={drawerVisible}

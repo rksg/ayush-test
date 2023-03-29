@@ -40,6 +40,7 @@ export function SwitchOverviewVLANs () {
       dataIndex: 'vlanId',
       defaultSortOrder: 'ascend',
       sorter: true,
+      fixed: 'left',
       render: (data, row) =>
         <Button
           type='link'
@@ -115,6 +116,7 @@ export function SwitchOverviewVLANs () {
     >
       <Table
         columns={columns}
+        columnState={{ hidden: true }}
         type='tall'
         onChange={tableQuery.handleTableChange}
         pagination={tableQuery.pagination}
