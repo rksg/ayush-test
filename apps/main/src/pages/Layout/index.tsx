@@ -28,7 +28,7 @@ import { getBasePath, Link, Outlet, useNavigate, useTenantLink } from '@acx-ui/r
 import { useParams }                                             from '@acx-ui/react-router-dom'
 import { RolesEnum }                                             from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }                       from '@acx-ui/user'
-import { getJwtTokenPayload }                                    from '@acx-ui/utils'
+import { getJwtTokenPayload, PverName }                          from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
 import SearchBar         from './SearchBar'
@@ -36,11 +36,6 @@ import * as UI           from './styledComponents'
 
 const getMapRegion = (data: TenantPreferenceSettings | undefined): string => {
   return data?.global.mapRegion as string
-}
-export enum PverName {
-  ACX = 'acx',
-  ACX_HYBRID = 'acx-hybrid',
-  R1 = 'ruckus-one'
 }
 
 function Layout () {
