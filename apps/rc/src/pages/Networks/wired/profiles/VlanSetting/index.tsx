@@ -123,7 +123,11 @@ export function VlanSetting () {
 
     data.switchFamilyModels = sfm
     setVlanTable([...filterData, data])
-    form.setFieldValue('vlans', [...filterData, data])
+    if(defaultVlan){
+      form.setFieldValue('vlans', [...filterData, data, defaultVlan])
+    }else{
+      form.setFieldValue('vlans', [...filterData, data])
+    }
     setDrawerEditMode(false)
     setDrawerFormRule(undefined)
     return true
@@ -164,7 +168,11 @@ export function VlanSetting () {
                 .includes(option.vlanId)
             })
             setVlanTable(vlanRows)
-            form.setFieldValue('vlans', vlanRows)
+            if(defaultVlan){
+              form.setFieldValue('vlans', [...vlanRows, defaultVlan])
+            }else{
+              form.setFieldValue('vlans', [...vlanRows])
+            }
             setDrawerEditMode(false)
             clearSelection()
           }
