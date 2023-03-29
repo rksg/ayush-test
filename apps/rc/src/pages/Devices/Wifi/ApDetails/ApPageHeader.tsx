@@ -19,7 +19,8 @@ import {
 import {
   useLocation,
   useNavigate,
-  useTenantLink
+  useTenantLink,
+  useParams
 } from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 import { useDateFilter }  from '@acx-ui/utils'
@@ -33,6 +34,7 @@ function ApPageHeader () {
   const { tenantId, serialNumber } = useApContext()
   const { data } = useApDetailHeaderQuery({ params: { tenantId, serialNumber } })
   const apAction = useApActions()
+  const { activeTab } = useParams()
 
   const navigate = useNavigate()
   const location = useLocation()
@@ -81,6 +83,17 @@ function ApPageHeader () {
     />
   )
 
+  const enableTimeFilter = () => {
+    switch (activeTab) {
+        case 'clients':
+        case 'networks':
+        case 'troubleshooting':
+          return false
+        default:
+          return true
+    }
+  }
+
   return (
     <PageHeader
       title={data?.title || ''}
@@ -89,13 +102,15 @@ function ApPageHeader () {
         { text: $t({ defaultMessage: 'Access Points' }), link: '/devices/wifi' }
       ]}
       extra={filterByAccess([
-        <RangePicker
+        enableTimeFilter()
+        ? <RangePicker
           key='date-filter'
           selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
           onDateApply={setDateFilter as CallableFunction}
           showTimePicker
           selectionType={range}
-        />,
+        />
+        : <div />,
         <Dropdown overlay={menu}>
           <Button>
             <Space>
