@@ -8,7 +8,8 @@ import {
   dateAxisFormatter,
   timeSeriesTooltipFormatter,
   getDeviceConnectionStatusColors,
-  getTimeSeriesSymbol
+  getTimeSeriesSymbol,
+  getDeviceConnectionStatusColorsv2
 } from './helper'
 
 import type { TooltipFormatterParams } from './helper'
@@ -161,5 +162,16 @@ describe('getDeviceConnectionStatusColors', () => {
         '#ACAEB0',
         '#F9C34B',
         '#ED1C24'])
+  })
+})
+
+describe('getDeviceConnectionStatusColorsv2', () => {
+  it('should return the correct color for the device status', ()=>{
+    expect(getDeviceConnectionStatusColorsv2())
+      .toStrictEqual([
+        '#23AB36',
+        '#F9C34B',
+        '#ED1C24',
+        '#ACAEB0'])
   })
 })
