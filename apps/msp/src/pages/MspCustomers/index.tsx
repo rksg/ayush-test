@@ -24,7 +24,9 @@ import {
   useReactivateMspEcMutation,
   useMspCustomerListQuery,
   useSupportMspCustomerListQuery,
-  useGetMspLabelQuery
+  useGetMspLabelQuery,
+  useIntegratorCustomerListQuery,
+  useGetTenantDetailsQuery
 } from '@acx-ui/rc/services'
 import {
   DelegationEntitlementRecord,
@@ -120,13 +122,27 @@ export function MspCustomers () {
 
   const onBoard = mspLabel?.msp_label
   const ecFilters = isPrimeAdmin
-    ? { tenantType: ['MSP_EC'] }
-    : { mspAdmins: [userProfile.adminId], tenantType: ['MSP_EC'] }
+    ? { tenantType: [AccountType.MSP_EC] }
+    : { mspAdmins: [userProfile.adminId], tenantType: [AccountType.MSP_EC] }
 
   const transformTechPartner = (id: string) => {
     const rec = techParnersData.find(e => e.id === id)
     return rec?.name ? rec.name : id
   }
+
+  const transformAdminCount = (data: MspEc) => {
+    if (data?.mspInstallerAdminCount)
+      return data.mspInstallerAdminCount
+    else if (data?.mspIntegratorAdminCount)
+      return data.mspIntegratorAdminCount
+    return data.mspAdminCount
+  }
+
+  const tenantDetailsData = useGetTenantDetailsQuery({ params })
+  const isIntegrator =
+    (tenantDetailsData.data?.tenantType === AccountType.MSP_INSTALLER ||
+     tenantDetailsData.data?.tenantType === AccountType.MSP_INTEGRATOR)
+  const parentTenantid = tenantDetailsData.data?.mspEc?.parentMspId
 
   const { data: techPartners } = useTableQuery({
     useQuery: useMspCustomerListQuery,
@@ -160,6 +176,32 @@ export function MspCustomers () {
       'alarmCount',
       'mspAdminCount',
       'mspEcAdminCount',
+      'creationDate',
+      'expirationDate',
+      'wifiLicense',
+      'switchLicens',
+      'streetAddress'
+    ],
+    searchTargetFields: ['name']
+  }
+
+  const integratorPayload = {
+    searchString: '',
+    filters: {
+      mspTenantId: [parentTenantid],
+      tenantType: [AccountType.MSP_INSTALLER, AccountType.MSP_INTEGRATOR]
+    },
+    fields: [
+      'check-all',
+      'id',
+      'name',
+      'tenantType',
+      'status',
+      'alarmCount',
+      'mspAdminCount',
+      'mspEcAdminCount',
+      'mspInstallerAdminCount',
+      'mspIntegratorAdminCount',
       'creationDate',
       'expirationDate',
       'wifiLicense',
@@ -237,10 +279,10 @@ export function MspCustomers () {
           }
         } : {}
       },
-      render: function (data) {
+      render: function (data, row) {
         return (
           (isPrimeAdmin || isAdmin) && !userProfile?.support
-            ? <Link to=''>{data}</Link> : data
+            ? <Link to=''>{transformAdminCount(row)}</Link> : transformAdminCount(row)
         )
       }
     },
@@ -252,13 +294,12 @@ export function MspCustomers () {
       sorter: true,
       show: false
     },
-    {
+    ...(isIntegrator || userProfile?.support ? [] : [{
       title: $t({ defaultMessage: 'Integrator' }),
       dataIndex: 'integrator',
       key: 'integrator',
-      show: !userProfile?.support,
-      onCell: (data) => {
-        return (isPrimeAdmin || isAdmin) && !userProfile?.support ? {
+      onCell: (data: MspEc) => {
+        return (isPrimeAdmin || isAdmin) ? {
           onClick: () => {
             setTenantId(data.id)
             setTenantType(AccountType.MSP_INTEGRATOR)
@@ -266,21 +307,20 @@ export function MspCustomers () {
           }
         } : {}
       },
-      render: function (data, row) {
+      render: function (data: React.ReactNode, row: MspEc) {
         const val = row?.integrator ? transformTechPartner(row.integrator) : '--'
         return (
-          (isPrimeAdmin || isAdmin) && !userProfile?.support
+          (isPrimeAdmin || isAdmin)
             ? <Link to=''>{val}</Link> : val
         )
       }
-    },
-    {
+    }]),
+    ...(isIntegrator || userProfile?.support ? [] : [{
       title: $t({ defaultMessage: 'Installer' }),
       dataIndex: 'installer',
       key: 'installer',
-      show: !userProfile?.support,
-      onCell: (data) => {
-        return (isPrimeAdmin || isAdmin) && !userProfile?.support ? {
+      onCell: (data: MspEc) => {
+        return (isPrimeAdmin || isAdmin) ? {
           onClick: () => {
             setTenantId(data.id)
             setTenantType(AccountType.MSP_INSTALLER)
@@ -288,14 +328,14 @@ export function MspCustomers () {
           }
         } : {}
       },
-      render: function (data, row) {
+      render: function (data: React.ReactNode, row: MspEc) {
         const val = row?.installer ? transformTechPartner(row.installer) : '--'
         return (
-          (isPrimeAdmin || isAdmin) && !userProfile?.support
+          (isPrimeAdmin || isAdmin)
             ? <Link to=''>{val}</Link> : val
         )
       }
-    },
+    }]),
     {
       title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
       dataIndex: 'wifiLicenses',
@@ -487,6 +527,31 @@ export function MspCustomers () {
     )
   }
 
+  const IntegratorTable = () => {
+    const tableQuery = useTableQuery({
+      useQuery: useIntegratorCustomerListQuery,
+      defaultPayload: integratorPayload,
+      search: {
+        searchTargetFields: integratorPayload.searchTargetFields as string[]
+      }
+    })
+
+    return (
+      <Loader states={[
+        tableQuery,
+        { isLoading: false }]}>
+        <Table
+          columns={columns}
+          dataSource={tableQuery.data?.data}
+          pagination={tableQuery.pagination}
+          onChange={tableQuery.handleTableChange}
+          onFilterChange={tableQuery.handleFilterChange}
+          rowKey='id'
+        />
+      </Loader>
+    )
+  }
+
   const SupportEcTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useSupportMspCustomerListQuery,
@@ -532,7 +597,8 @@ export function MspCustomers () {
           ]}
       />
       {userProfile?.support && <SupportEcTable />}
-      {!userProfile?.support && <MspEcTable />}
+      {!userProfile?.support && !isIntegrator && <MspEcTable />}
+      {!userProfile?.support && isIntegrator && <IntegratorTable />}
       <ResendInviteModal
         visible={modalVisible}
         setVisible={setModalVisible}

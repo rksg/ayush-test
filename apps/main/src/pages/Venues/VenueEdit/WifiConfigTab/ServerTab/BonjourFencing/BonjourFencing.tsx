@@ -50,7 +50,15 @@ export function BonjourFencing () {
   const onInit = (data?: VenueBonjourFencingPolicy, needToSetInitData=false) => {
     const { enabled=false, services = [] } = data || {}
     setEnableBonjourFencing(enabled)
-    const newData = updateRowIds(services)
+    const newData = updateRowIds(services).sort((a, b) => {
+      const serviceA = a.service
+      const serviceB = b.service
+
+      if (serviceA > serviceB) return -1
+      if (serviceA < serviceB) return 1
+
+      return 0
+    })
     setBonjourFencingServices(newData)
 
     if (needToSetInitData) {

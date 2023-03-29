@@ -176,4 +176,12 @@ describe('EventTable', () => {
     expect(await within(cell).findByText(eventsMeta[0].apName!)).toBeVisible()
     expect(await within(cell).findByTestId('tooltip-content')).toHaveTextContent('Not available')
   })
+
+  it('should not render omitColumns',async () => {
+    render(
+      <EventTable tableQuery={tableQuery} omitColumns={['product']}/>,
+      { route: { params }, wrapper: Provider }
+    )
+    expect(screen.queryByText('Product')).toBeNull()
+  })
 })

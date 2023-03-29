@@ -133,7 +133,7 @@ export function SwitchTable (props : SwitchTableProps) {
       dataIndex: 'name',
       sorter: true,
       defaultSortOrder: 'ascend',
-      disable: true,
+      fixed: 'left',
       searchable: searchable,
       filterKey: 'isStack',
       filterMultiple: false,
@@ -154,6 +154,7 @@ export function SwitchTable (props : SwitchTableProps) {
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'deviceStatus',
       sorter: true,
+      fixed: 'left',
       filterMultiple: false,
       filterable: filterableKeys ? statusFilterOptions : false,
       render: (data, row) => <SwitchStatus row={row}/>
@@ -208,7 +209,9 @@ export function SwitchTable (props : SwitchTableProps) {
       key: 'clientCount',
       title: $t({ defaultMessage: 'Clients' }),
       dataIndex: 'clientCount',
+      align: 'center',
       sorter: true,
+      sortDirections: ['descend', 'ascend', 'descend'],
       render: (data, row) => (
         <TenantLink to={`/devices/switch/${row.id || row.serialNumber}/${row.serialNumber}/details/clients`}>
           {data ? data : ((row.unitStatus === undefined) ? 0 : '')}
