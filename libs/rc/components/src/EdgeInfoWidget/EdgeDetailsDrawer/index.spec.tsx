@@ -79,7 +79,7 @@ describe('Edge Detail Drawer', () => {
     const target = await screen.findByText(currentEdge.venueName)
     expect(target.tagName).toBe('A')
     expect(target.getAttribute('href'))
-      .toBe(`/t/${params.tenantId}/venues/${currentEdge.venueId}/venue-details/overview`)
+      .toBe(`/${params.tenantId}/t/venues/${currentEdge.venueId}/venue-details/overview`)
   })
 
   it('should render -- if dnsServers is not setting', async () => {

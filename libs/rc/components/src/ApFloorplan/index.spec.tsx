@@ -152,7 +152,7 @@ describe('AP floorplan', () => {
           venueId={params.venueId}
           apPosition={apDetails.position as ApPosition}/></Provider>, {
         route: {
-          params, path: '/:tenantId/venue/:venueId/floor-plan',
+          params, path: '/:tenantId/t/venue/:venueId/floor-plan',
           wrapRoutes: false
         }
       })
