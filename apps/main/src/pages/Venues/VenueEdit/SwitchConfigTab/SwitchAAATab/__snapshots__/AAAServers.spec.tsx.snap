@@ -44,7 +44,7 @@ exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = 
                 class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
               >
                 <div
-                  class="styledComponents__Wrapper-sc-1abm7iv-12 QuVDX"
+                  class="styledComponents__Wrapper-sc-1abm7iv-12 kskPjC"
                 >
                   <div
                     class="ant-space ant-space-horizontal ant-space-align-center"
@@ -427,7 +427,7 @@ exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = 
                 class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
               >
                 <div
-                  class="styledComponents__Wrapper-sc-1abm7iv-12 QuVDX"
+                  class="styledComponents__Wrapper-sc-1abm7iv-12 kskPjC"
                 >
                   <div
                     class="ant-space ant-space-horizontal ant-space-align-center"
@@ -731,7 +731,7 @@ exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = 
                 class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
               >
                 <div
-                  class="styledComponents__Wrapper-sc-1abm7iv-12 QuVDX"
+                  class="styledComponents__Wrapper-sc-1abm7iv-12 kskPjC"
                 >
                   <div
                     class="ant-space ant-space-horizontal ant-space-align-center"
@@ -1029,7 +1029,7 @@ exports[`AAAServers should render empty lists and alert message correctly 1`] = 
                 class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
               >
                 <div
-                  class="styledComponents__Wrapper-sc-1abm7iv-12 QuVDX"
+                  class="styledComponents__Wrapper-sc-1abm7iv-12 kskPjC"
                 >
                   <div
                     class="ant-space ant-space-horizontal ant-space-align-center"
@@ -1333,7 +1333,7 @@ exports[`AAAServers should render empty lists and alert message correctly 1`] = 
                 class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
               >
                 <div
-                  class="styledComponents__Wrapper-sc-1abm7iv-12 QuVDX"
+                  class="styledComponents__Wrapper-sc-1abm7iv-12 kskPjC"
                 >
                   <div
                     class="ant-space ant-space-horizontal ant-space-align-center"
@@ -1637,7 +1637,7 @@ exports[`AAAServers should render empty lists and alert message correctly 1`] = 
                 class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
               >
                 <div
-                  class="styledComponents__Wrapper-sc-1abm7iv-12 QuVDX"
+                  class="styledComponents__Wrapper-sc-1abm7iv-12 kskPjC"
                 >
                   <div
                     class="ant-space ant-space-horizontal ant-space-align-center"

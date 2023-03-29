@@ -122,7 +122,8 @@ export default function PoliciesTable () {
     [PolicyType.SNMP_AGENT]: useDeleteApSnmpPolicyMutation(),
     [PolicyType.ADAPTIVE_POLICY]: [],
     [PolicyType.ADAPTIVE_POLICY_SET]: [],
-    [PolicyType.RADIUS_ATTRIBUTE_GROUP]: []
+    [PolicyType.RADIUS_ATTRIBUTE_GROUP]: [],
+    [PolicyType.TUNNEL_PROFILE]: []
   }
 
   const tableQuery = useTableQuery({

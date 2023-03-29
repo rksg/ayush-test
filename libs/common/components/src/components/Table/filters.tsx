@@ -63,14 +63,15 @@ export function renderSearch <RecordType> (
   intl: IntlShape,
   searchables: TableColumn<RecordType, 'text'>[],
   searchValue: string,
-  setSearchValue: Function
+  setSearchValue: Function,
+  hasGroupBy?: Boolean
 ): React.ReactNode {
   return <UI.SearchInput
     onChange={e => setSearchValue(e.target.value)}
     placeholder={intl.$t({ defaultMessage: 'Search {searchables}' }, {
       searchables: searchables.map(column => column.title).join(', ')
     })}
-    style={{ width: 292 }}
+    style={{ width: hasGroupBy ? 200 : 292 }}
     value={searchValue}
     allowClear
   />
