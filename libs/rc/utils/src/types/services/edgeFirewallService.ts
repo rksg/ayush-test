@@ -19,11 +19,12 @@ export enum DdosAttackType {
 }
 
 export interface DdosRateLimitingRule {
+  // ddosAttackType is unique
   ddosAttackType: DdosAttackType;
   rateLimiting: number;
 }
 
-export enum Direction {
+export enum ACLDirection {
   OUTBOUND = 'OUTBOUND',
   INBOUND = 'INBOUND'
 }
@@ -31,7 +32,7 @@ export enum Direction {
 export interface StatefulAcl {
   name: string;
   description?: string;
-  direction: Direction;
+  direction: ACLDirection;
   rules: StatefulAclRule[];
 }
 

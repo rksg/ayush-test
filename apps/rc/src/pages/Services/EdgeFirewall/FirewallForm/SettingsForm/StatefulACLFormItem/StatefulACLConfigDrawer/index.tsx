@@ -1,0 +1,425 @@
+import { useCallback, useEffect, useMemo, useState } from 'react'
+
+import { Empty, Form, Input, Row, RowProps, Select, Space, Typography }                                     from 'antd'
+import TextArea                                                                                             from 'antd/lib/input/TextArea'
+import _                                                                                                    from 'lodash'
+import { IntlShape, useIntl }                                                                               from 'react-intl'
+import { SortableContainer, SortableElement, SortableHandle, SortableElementProps, SortableContainerProps } from 'react-sortable-hoc'
+
+import { cssNumber, Drawer, showActionModal, Table, TableProps, useStepFormContext } from '@acx-ui/components'
+import { ACLDirection, AddressType, StatefulAcl, StatefulAclRule }                   from '@acx-ui/rc/utils'
+import { filterByAccess }                                                            from '@acx-ui/user'
+import { getIntl }                                                                   from '@acx-ui/utils'
+
+import { FirewallForm }                                 from '../../..'
+import { StatefulACLRuleDialog, getAccessActionString } from '../StatefulACLRuleDialog'
+
+import { DragIcon, DragIconWrapper } from './styledComponents'
+
+interface StatefulACLRulesTableProps {
+  data?: StatefulAclRule[]
+}
+
+interface ACLDraggableTableRowProps extends RowProps {
+  'data-row-key': string;
+}
+const getRuleSrcDstString = (rowData: StatefulAclRule, isSource: boolean) => {
+  const intl = getIntl()
+  const { $t } = intl
+  const type = rowData[isSource ? 'sourceAddressType' : 'destinationAddressType']
+
+  switch(type) {
+    case AddressType.ANY_IP_ADDRESS:
+      return $t({ defaultMessage: 'Any' })
+
+    case AddressType.IP_ADDRESS:
+      return $t({ defaultMessage: '{ip}' },
+        { ip: rowData[isSource ? 'sourceAddress' : 'destinationAddress'] })
+
+    case AddressType.SUBNET_ADDRESS:
+      return <Row>
+        <Typography.Text>
+          {$t({ defaultMessage: 'Subnet: {subnet}' },
+            { subnet: rowData[isSource ? 'sourceAddress' : 'destinationAddress'] })}
+        </Typography.Text>
+        <Typography.Text>
+          {$t({ defaultMessage: 'Mask: {mask}' },
+            { mask: rowData[isSource ? 'sourceAddressMask' : 'destinationAddressMask'] })}
+        </Typography.Text>
+      </Row>
+    default:
+      return ''
+  }
+}
+
+// @ts-ignore
+const SortableItem = SortableElement((props: SortableElementProps) => <tr {...props} />)
+// @ts-ignore
+const SortContainer = SortableContainer((props: SortableContainerProps) => <tbody {...props} />)
+
+const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
+  const { $t } = useIntl()
+  const { data } = props
+  const form = Form.useFormInstance()
+  const [dialogVisible, setDialogVisible] = useState<boolean>(false)
+  const [editMode, setEditMode] = useState<boolean>(false)
+  const [editData, setEditData] = useState<StatefulAclRule>({} as StatefulAclRule)
+  const formData = form.getFieldsValue(true)
+
+  const onChangeDialogVisible = (checked: boolean) => {
+    setDialogVisible(checked)
+  }
+
+  const handleStatefulACLRuleSubmit = (newData: StatefulAclRule, isEdit: boolean) => {
+    const currentData = ([] as StatefulAclRule[]).concat(form.getFieldValue('rules'))
+
+    if (isEdit) {
+      const targetIdx = _.findIndex(currentData, { priority: newData.priority })
+      if (targetIdx > -1)
+        currentData[targetIdx] = newData
+    } else {
+      const lastItem = currentData.pop()
+      if (!lastItem) return
+
+      const lastPriority = lastItem.priority ?? (currentData.length + 1)
+      newData.priority = lastPriority
+      currentData.push(newData)
+      lastItem.priority = lastPriority + 1
+      currentData.push(lastItem)
+    }
+
+    form.setFieldValue('rules', currentData)
+  }
+
+  const onSortEnd = useCallback(
+    ({ oldIndex, newIndex }: { oldIndex: number; newIndex: number }) => {
+      if (oldIndex !== newIndex) {
+        let tempDataSource = data ? [...data] : []
+        let movingItem = tempDataSource[oldIndex]
+        tempDataSource.splice(oldIndex, 1)
+        tempDataSource = [...tempDataSource.slice(0, newIndex),
+          ...[movingItem], ...tempDataSource.slice(newIndex, tempDataSource.length)]
+        tempDataSource.sort((a, b) => Number(b.priority) - Number(a.priority))
+        form.setFieldValue('rules', tempDataSource)
+      }
+    }, [data, form])
+
+  const ACLDraggableContainer = useMemo(() =>
+    (props: SortableContainerProps) => {
+      return <SortContainer
+        useDragHandle
+        disableAutoscroll
+        onSortEnd={onSortEnd}
+        {...props}
+      />
+    }, [onSortEnd])
+
+  const ACLDraggableTableRow = useMemo(() =>
+    (props: ACLDraggableTableRowProps) => {
+      const { className, style, ...restProps } = props
+
+      const index = data?.findIndex(
+        (x) => (x.priority ?? '') === restProps['data-row-key']
+      )
+
+      return <SortableItem index={index ?? 0} {...restProps} />
+    }, [data])
+
+  const isDefaultRule = (rule: StatefulAclRule) => {
+    const rulesAmount = formData.rules.length
+
+    // inbound: last rule is the default rule
+    // outbound: default rules are No.1 - No.3 and the last one.
+    if (rule.priority === rulesAmount) {
+      return true
+    } else {
+      return formData.direction === ACLDirection.INBOUND ? false : Number(rule.priority) <= 3
+    }
+  }
+
+  const DragHandle = SortableHandle(() => <DragIcon />)
+
+  const columns: TableProps<StatefulAclRule>['columns'] = [
+    {
+      title: $t({ defaultMessage: 'Priority' }),
+      key: 'priority',
+      dataIndex: 'priority',
+      defaultSortOrder: 'ascend'
+    },
+    {
+      title: $t({ defaultMessage: 'Description' }),
+      key: 'description',
+      dataIndex: 'description'
+    },
+    {
+      title: $t({ defaultMessage: 'Access' }),
+      key: 'accessAction',
+      dataIndex: 'accessAction',
+      render: (_, row) => {
+        return getAccessActionString($t, row.accessAction)
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Source' }),
+      key: 'source',
+      dataIndex: 'source',
+      render: (_, row) => {
+        return getRuleSrcDstString(row, true)
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Src Port' }),
+      key: 'sourcePort',
+      dataIndex: 'sourcePort'
+    },
+    {
+      title: $t({ defaultMessage: 'Destination' }),
+      key: 'destination',
+      dataIndex: 'destination',
+      render: (_, row) => {
+        return getRuleSrcDstString(row, false)
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Dst Port' }),
+      key: 'destinationPort',
+      dataIndex: 'destinationPort'
+    },
+    {
+      title: $t({ defaultMessage: 'Protocol' }),
+      key: 'protocolType',
+      dataIndex: 'protocolType'
+    },
+    {
+      dataIndex: 'sort',
+      key: 'sort',
+      width: 60,
+      render: (data, row) => {
+        return <DragIconWrapper
+          disabled={isDefaultRule(row)}
+          data-testid={`${row.priority}_Icon`}
+        >
+          <DragHandle />
+        </DragIconWrapper>
+      }
+    }
+  ]
+
+  const rowActions: TableProps<StatefulAclRule>['rowActions'] = [
+    {
+      visible: (selectedRows) => selectedRows.length === 1,
+      label: $t({ defaultMessage: 'Edit' }),
+      onClick: (selectedRows) => {
+        setEditMode(true)
+        setEditData(selectedRows[0] as StatefulAclRule)
+        onChangeDialogVisible(true)
+      }
+    },
+    {
+      label: $t({ defaultMessage: 'Delete' }),
+      onClick: (rows) => {
+        showActionModal({
+          type: 'confirm',
+          customContent: {
+            action: 'DELETE',
+            entityName: $t({ defaultMessage: 'Rules' }),
+            entityValue: rows.length === 1 ? rows[0].priority+'' : undefined,
+            numOfEntities: rows.length
+          },
+          onOk: () => {
+            const currentData = ([] as StatefulAclRule[]).concat(form.getFieldValue('rules'))
+            rows.forEach((item) => {
+              currentData.splice(_.findIndex(currentData, item.priority), 1)
+            })
+
+            form.setFieldValue('rules', currentData)
+          }
+        })
+      }
+    }
+  ]
+
+  const actions: TableProps<StatefulAclRule>['actions'] = [
+    {
+      label: $t({ defaultMessage: 'Add Rule' }),
+      onClick: () => {
+        setEditMode(false)
+        setEditData({} as StatefulAclRule)
+        onChangeDialogVisible(true)
+      }
+    }
+  ]
+
+  return (
+    <>
+      <Table
+        columns={columns}
+        dataSource={data}
+        rowKey='priority'
+        rowActions={filterByAccess(rowActions)}
+        rowSelection={{
+          type: 'checkbox',
+          renderCell: (checked, record, index, originNode) => {
+            const isDefault = isDefaultRule(record)
+            return isDefault ? '': originNode
+          }
+        }}
+        actions={actions}
+        components={{
+          body: {
+            wrapper: ACLDraggableContainer,
+            row: ACLDraggableTableRow
+          }
+        }}
+        locale={{
+          emptyText: <Empty description={$t({ defaultMessage: 'No rules created yet' })} />
+        }}
+      />
+
+      <StatefulACLRuleDialog
+        visible={dialogVisible}
+        setVisible={onChangeDialogVisible}
+        onSubmit={handleStatefulACLRuleSubmit}
+        editMode={editMode}
+        editData={editData}
+      />
+    </>
+  )
+}
+
+export const getACLDirectionString = ($t: IntlShape['$t'], type: ACLDirection) => {
+  switch (type) {
+    case ACLDirection.INBOUND:
+      return $t({ defaultMessage: 'Inbound' })
+    case ACLDirection.OUTBOUND:
+      return $t({ defaultMessage: 'Outbound' })
+    default:
+      return ''
+  }
+}
+
+export const getACLDirections = ($t: IntlShape['$t'])
+  : Array<{ label: string, value: ACLDirection }> => {
+  return Object.keys(ACLDirection)
+    .map(key => ({
+      label: getACLDirectionString($t, key as ACLDirection),
+      value: key as ACLDirection
+    }))
+}
+
+interface StatefulACLConfigDrawerProps {
+  className?: string;
+  visible: boolean;
+  setVisible: (visible: boolean) => void;
+  editData: StatefulAcl;
+}
+
+export const StatefulACLConfigDrawer = (props: StatefulACLConfigDrawerProps) => {
+  const { visible, setVisible, editData } = props
+  const { $t } = useIntl()
+  const aclDirectionList = getACLDirections($t)
+  const { form: parentForm } = useStepFormContext<FirewallForm>()
+  const [form] = Form.useForm()
+
+  const onClose = () => {
+    setVisible(false)
+  }
+
+  const handleSubmit = async () => {
+    const newData = form.getFieldsValue()
+
+    // new data should be update into "statefulAcls" by its direction
+    const wholeOriginData = parentForm.getFieldValue('statefulAcls')
+    const targetIndex = _.findIndex(wholeOriginData, { direction: editData.direction })
+    wholeOriginData[targetIndex] = newData
+    parentForm.setFieldValue('statefulAcls', wholeOriginData)
+    onClose()
+  }
+
+  useEffect(() => {
+    if (visible)
+      form.setFieldsValue(editData)
+  }, [form, editData, visible])
+
+  const footer = [
+    <Drawer.FormFooter
+      buttonLabel={{ save: $t({ defaultMessage: 'Add' }) }}
+      onCancel={onClose}
+      onSave={async () => form.submit()}
+    />
+  ]
+
+  return (
+    <Drawer
+      title={$t({ defaultMessage: 'Stateful ACL Settings' })}
+      visible={visible}
+      onClose={onClose}
+      footer={footer}
+      destroyOnClose
+      width='60%'
+    >
+      <Form
+        form={form}
+        layout='vertical'
+        onFinish={handleSubmit}
+      >
+        <Form.Item
+          name='name'
+          label={$t({ defaultMessage: 'Stateful ACL Name' })}
+          rules={[{ required: true }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          name='description'
+          label={$t({ defaultMessage: 'Description' })}
+        >
+          <TextArea
+            rows={3}
+            maxLength={64}
+            placeholder='Enter a short description, up to 255 characters'
+          />
+        </Form.Item>
+        <Form.Item
+          name='direction'
+          label={$t({ defaultMessage: 'Direction' })}
+          tooltip={
+            // eslint-disable-next-line max-len
+            $t({ defaultMessage: 'Inbound - Traffic from Internet to WAN interface; Outbound - Traffic from WAN to Internet' })
+          }
+        >
+          <Select
+            options={aclDirectionList}
+            disabled
+          />
+        </Form.Item>
+
+        <Space
+          direction='vertical'
+          size={cssNumber('--acx-content-vertical-space')}
+        >
+          <Form.Item
+            shouldUpdate={(prevValues, currentValues) => {
+              return prevValues.rules !== currentValues.rules
+            }}
+          >
+            {({ getFieldValue }) => {
+              const rules = getFieldValue('rules')
+
+              return <Form.Item
+                name='rules'
+                label={$t({ defaultMessage: 'Rules({ruleCount})' },
+                  { ruleCount: rules?.length ?? 0 })}
+                rules={[{ required: true }]}
+                valuePropName='data'
+                initialValue={[] as StatefulAclRule[]}
+              >
+                <StatefulACLRulesTable />
+              </Form.Item>
+            }}
+          </Form.Item>
+        </Space>
+      </Form>
+    </Drawer>
+  )
+}

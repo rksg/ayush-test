@@ -12,12 +12,10 @@ export const ScopeForm = () => {
   // const { form } = useStepFormContext<FirewallForm>()
 
   return (
-    <>
-      <Row gutter={20}>
-        <Col span={8}>
-          <StepsForm.Title>{$t({ defaultMessage: 'Scope' })}</StepsForm.Title>
-        </Col>
-      </Row>
-    </>
+    <Row gutter={20}>
+      <Col span={8}>
+        <StepsForm.Title>{$t({ defaultMessage: 'Scope' })}</StepsForm.Title>
+      </Col>
+    </Row>
   )
 }
