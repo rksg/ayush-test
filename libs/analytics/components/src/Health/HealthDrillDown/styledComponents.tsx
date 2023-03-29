@@ -1,6 +1,8 @@
 // @ts-nocheck
 import styled from 'styled-components/macro'
 
+import { EnhancedStage } from './config'
+
 const DefaultSection = styled.div`
   background-color: rgb(255, 255, 255);
   padding: 10px;
@@ -83,7 +85,7 @@ export const HeadingNoPadding = styled(Heading)`
 `
 export const HeadingText = styled.div``
 
-export const ChartContainer = styled.div`
+export const ChartContainer = styled.div<{ height : number, padding : number }>`
   padding: ${props => props.padding}px 0;
   width: 100%;
   height: ${props => props.height + 'px'};
@@ -97,7 +99,7 @@ export const StageList = styled.div`
   width: 100%;
   position: relative;
 `
-export const Stage = styled.div`
+export const Stage = styled.div<EnhancedStage>`
   flex: 1 1 ${props => props.width}px;
   background: ${props => props.bgColor};
   cursor: pointer;
@@ -112,7 +114,7 @@ export const Stage = styled.div`
   }
 `
 
-export const Label = styled.div`
+export const Label = styled.div<{ pinPosition : string, line: number }>`
   position: absolute;
   cursor: pointer;
   height: 30px;
@@ -129,7 +131,7 @@ export const Label = styled.div`
     height: 60px;
   ` : ''}
 `
-export const Pin = styled.div`
+export const Pin = styled.div<{ pinPosition : string, dir: string,color : string }>`
   position: absolute;
   ${props => props.pinPosition}: 0;
   top: ${props => props.dir ? 0 : '50%'};

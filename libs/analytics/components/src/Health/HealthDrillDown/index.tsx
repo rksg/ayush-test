@@ -1,30 +1,38 @@
 import { useState } from 'react'
 
-import {  Divider } from 'antd'
-import { isNull }   from 'lodash'
+import { Divider } from 'antd'
+import { isNull }  from 'lodash'
 
 import { AnalyticsFilter }          from '@acx-ui/analytics/utils'
 import { GridRow, GridCol, Loader } from '@acx-ui/components'
 import { formatter }                from '@acx-ui/formatter'
 import { CloseSymbol }              from '@acx-ui/icons'
 
-import { titleConfig, Stages,getFormattedToFunnel, DrilldownSelection, CONNECTIONFAILURE } from './config'
-import { FunnelChart, valueFormatter }                                                     from './funnelChart'
-import { useTtcDrilldownQuery, useConnectionDrilldownQuery }                               from './services'
-import { Title }                                                                           from './styledComponents'
+import {
+  titleConfig,
+  Stages,
+  getFormattedToFunnel,
+  DrilldownSelection,
+  CONNECTIONFAILURE,
+  valueFormatter,
+  FunnelChartColors
+} from './config'
+import { FunnelChart }                                       from './funnelChart'
+import { useTtcDrilldownQuery, useConnectionDrilldownQuery } from './services'
+import { Title }                                             from './styledComponents'
 
 const HealthDrillDown = (props: {
   filters: AnalyticsFilter;
   drilldownSelection: DrilldownSelection;
   setDrilldownSelection: CallableFunction;
 }) => {
-  const { drilldownSelection, setDrilldownSelection,filters } = props
+  const { drilldownSelection, setDrilldownSelection, filters } = props
   const payload = {
     path: filters.path,
     start: filters.startDate,
     end: filters.endDate
   }
-  const [ selectedStage, setSelectedStage ] = useState<Stages>(null)
+  const [selectedStage, setSelectedStage] = useState<Stages>(null)
   const connectionFailureResults = useConnectionDrilldownQuery(payload, {
     selectFromResult: (result) => {
       const { data, ...rest } = result
@@ -60,61 +68,63 @@ const HealthDrillDown = (props: {
       const auth = ttcFailureTypes?.ttcByAuth
       const assoc = ttcFailureTypes?.ttcByAssoc
       const eap = ttcFailureTypes?.ttcByEap
-      const radius =ttcFailureTypes?.ttcByRadius
+      const radius = ttcFailureTypes?.ttcByRadius
       const dhcp = ttcFailureTypes?.ttcByDhcp
 
-      return { data: {
-        authFailure: auth?.[0] ?? null,
-        assoFailure: assoc?.[0] ?? null,
-        eapFailure: eap?.[0] ?? null,
-        radiusFailure: radius?.[0] ?? null,
-        dhcpFailure: dhcp?.[0] ?? null
-      }, ...rest }
+      return {
+        data: {
+          authFailure: auth?.[0] ?? null,
+          assoFailure: assoc?.[0] ?? null,
+          eapFailure: eap?.[0] ?? null,
+          radiusFailure: radius?.[0] ?? null,
+          dhcpFailure: dhcp?.[0] ?? null
+        },
+        ...rest
+      }
     },
     skip: Boolean(drilldownSelection === CONNECTIONFAILURE || drilldownSelection)
-  }
-  )
+  })
   const funnelChartData =
     drilldownSelection === CONNECTIONFAILURE ? connectionFailureResults : ttcResults
   return drilldownSelection ? (
-    <Loader states={[connectionFailureResults]}>
-      <GridRow style={{ marginTop: 25 }}>
-        <GridCol col={{ span: 24 }}>
-          <GridRow>
-            <GridCol col={{ span: 12 }}>
-              <Title>{titleConfig?.[drilldownSelection]}</Title>
-            </GridCol>
-            <GridCol col={{ span: 12 }} style={{ alignItems: 'end' }}>
-              <CloseSymbol onClick={() => setDrilldownSelection(null)} />
-            </GridCol>
-          </GridRow>
+    <GridRow style={{ marginTop: 25 }}>
+      <GridCol col={{ span: 24 }}>
+        <GridRow>
+          <GridCol col={{ span: 12 }}>
+            <Title>{titleConfig?.[drilldownSelection]}</Title>
+          </GridCol>
+          <GridCol col={{ span: 12 }} style={{ alignItems: 'end' }}>
+            <CloseSymbol onClick={() => setDrilldownSelection(null)} />
+          </GridCol>
+        </GridRow>
+        <Loader states={[connectionFailureResults]}>
           <FunnelChart
             valueLabel='Fail'
             height={140}
             stages={getFormattedToFunnel(drilldownSelection, {
               ...funnelChartData?.data
             })}
-            colors={['#194f70', '#176291', '#1b79b5', '#208fd5', '#35b1ff']}
+            colors={FunnelChartColors}
             selectedStage={selectedStage}
-            onSelectStage={(stage : Stages) => setSelectedStage(stage)}
+            onSelectStage={(stage: Stages) => setSelectedStage(stage)}
             valueFormatter={
               drilldownSelection === CONNECTIONFAILURE ? formatter('countFormat') : valueFormatter
             }
           />
-        </GridCol>
-        <Divider />
-        {selectedStage && (
-          <>
-            <GridCol col={{ span: 12 }} style={{ height: '210px' }}>
+        </Loader>
+      </GridCol>
+      <Divider />
+      {selectedStage && (
+        <>
+          <GridCol col={{ span: 12 }} style={{ height: '210px' }}>
             PIE chart
-            </GridCol>
-            <GridCol col={{ span: 12 }} style={{ height: '210px' }}>
+          </GridCol>
+          <GridCol col={{ span: 12 }} style={{ height: '210px' }}>
             Table
-            </GridCol>
-          </>
-        )}
-      </GridRow>
-    </Loader>
+          </GridCol>
+        </>
+      )}
+    </GridRow>
   ) : null
 }
 export { HealthDrillDown }

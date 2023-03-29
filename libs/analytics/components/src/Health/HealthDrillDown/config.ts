@@ -1,3 +1,8 @@
+import { MouseEventHandler } from 'react'
+
+import { cssStr }    from '@acx-ui/components'
+import { formatter } from '@acx-ui/formatter'
+
 export const titleConfig = {
   connectionFailure: 'Connection Failures',
   ttc: 'Average Time To Connect'
@@ -9,8 +14,26 @@ export type Stages =
   | 'radiusFailure'
   | 'dhcpFailure'
   | null
-export type FunnelChartStages = { name : string, label : string, value : number | null }[]
+export type FunnelChartStages = { name: string; label: string; value: number | null }[]
 export type DrilldownSelection = 'connectionFailure' | 'ttc' | null
+export type FunnelChartStage = {
+  formattedPct: string;
+  pct: number;
+  width: number;
+  name: string;
+  label: string;
+  value: number | null;
+}
+export type EnhancedStage = FunnelChartStage & {
+  valueLabel: string;
+  valueFormatter: CallableFunction;
+  onClick: MouseEventHandler<HTMLDivElement>;
+  key: string;
+  isSelected: boolean;
+  idx: number;
+  bgColor: string;
+  endPosition: number;
+}
 
 export const getFormattedToFunnel = (
   type: DrilldownSelection,
@@ -27,7 +50,7 @@ export const getFormattedToFunnel = (
     radiusFailure: number | null;
     dhcpFailure: number | null;
   }
-) : FunnelChartStages => [
+): FunnelChartStages => [
   {
     name: 'Authentication',
     label: type === 'connectionFailure' ? '802.11 Auth. Failure' : '802.11 Auth.',
@@ -52,3 +75,13 @@ export const getFormattedToFunnel = (
 ]
 
 export const CONNECTIONFAILURE = 'connectionFailure'
+
+export const valueFormatter = (value: number) => formatter('durationFormat')(value)
+
+export const FunnelChartColors = [
+  cssStr('--acx-accents-blue-80'),
+  cssStr('--acx-accents-blue-70'),
+  cssStr('--acx-accents-blue-60'),
+  cssStr('--acx-accents-blue-55'),
+  cssStr('--acx-accents-blue-50')
+]

@@ -3,27 +3,46 @@ import React, {
   useState,
   useEffect,
   useLayoutEffect,
-  useCallback
-}                   from 'react'
+  useCallback,
+  MouseEventHandler
+} from 'react'
 
 import { get } from 'lodash'
 
 import { formatter } from '@acx-ui/formatter'
 
-import { Stages, FunnelChartStages } from './config'
-import {
-  ChartContainer,
-  Stage,
-  Label,
-  Pin,
-  StageList
-}                   from './styledComponents'
+
+import { Stages, FunnelChartStages, EnhancedStage }     from './config'
+import { ChartContainer, Stage, Label, Pin, StageList } from './styledComponents'
 const minVisibleWidth = 10
 const chartPadding = 40
 
+type LabelPinProps = {
+  label: string;
+  left: number;
+  top: number;
+  dir: string;
+  pinPosition: string;
+  line: number;
+  idx: string;
+  formattedPct: string;
+  value: number;
+  valueFormatter: CallableFunction;
+  color: string;
+  labelRef: CallableFunction;
+  onClick: MouseEventHandler<HTMLDivElement>;
+}
+type LabelsProps = {
+  enhancedStages: EnhancedStage[];
+  parentNode: HTMLElement;
+  parentHeight: number;
+  colors: string[];
+  onClick: CallableFunction;
+}
+
 export function useGetNode () {
-  const [node, setNode] = useState(null)
-  const ref = useCallback(node => {
+  const [node, setNode] = useState<HTMLElement | null>(null)
+  const ref = useCallback((node: HTMLElement) => {
     if (node !== null) {
       setNode(node)
     }
@@ -41,7 +60,7 @@ export function FunnelChart ({
 }: {
   stages: FunnelChartStages;
   height: number;
-  colors: [any];
+  colors: string[];
   selectedStage: Stages;
   onSelectStage: CallableFunction;
   valueFormatter: CallableFunction;
@@ -52,15 +71,15 @@ export function FunnelChart ({
   const onClick = (name: Stages) => {
     onSelectStage(name !== selectedStage ? name : '')
   }
-  const enhancedStages = useMemo(() => {
+  const enhancedStages: EnhancedStage[] = useMemo(() => {
     if (!parentNode) return []
-    const parentWidth = parentNode.offsetWidth
+    const parentWidth = (parentNode as HTMLElement).offsetWidth
     let totalWidth = parentWidth
-    const sum = stages.reduce((acc, { value }) => acc + (value ?? 0), 0)
+    const sum = stages.reduce((acc, { value }) => acc + (value as number), 0)
     const filteredStages = stages
       .filter(({ value }) => value)
       .map((stage) => {
-        const formattedPct = formatter('percentFormat')(stage.value ?? 0 / sum)
+        const formattedPct = formatter('percentFormat')((stage.value as number) / sum)
         const pct = parseFloat(formattedPct) / 100
         const realWidth = Math.round(pct * parentWidth)
         // ensure stage is always visible visible, then reduce the width of other "normal" stages
@@ -101,7 +120,10 @@ export function FunnelChart ({
   }, [])
 
   return (
-    <ChartContainer height={height} padding={chartPadding} ref={ref}>
+    <ChartContainer
+      height={height}
+      padding={chartPadding}
+      ref={ref as unknown as React.RefObject<HTMLDivElement>}>
       {!enhancedStages.length ? (
         <div>{'No data'}</div>
       ) : (
@@ -115,7 +137,7 @@ export function FunnelChart ({
             key={2}
             onClick={onClick}
             enhancedStages={enhancedStages}
-            parentNode={parentNode}
+            parentNode={parentNode as HTMLElement}
             parentHeight={height}
             colors={colors}
           />
@@ -125,23 +147,17 @@ export function FunnelChart ({
   )
 }
 
-export function Labels ({
+export const Labels = ({
   enhancedStages,
   parentNode,
   parentHeight,
   colors,
   onClick
-}: {
-  enhancedStages : any,
-  parentNode : any,
-  parentHeight : number,
-  colors : [any],
-  onClick : CallableFunction
-}) {
+}: LabelsProps) => {
   const [childNodes, setChildNodes] = useState(new Array(enhancedStages.length).fill(null))
-  const updateChildNodes = (i, node) => {
+  const updateChildNodes = (i: number, node: HTMLElement) => {
     if (node !== childNodes[i]) {
-      setChildNodes(nodes => {
+      setChildNodes((nodes) => {
         const newNodes = nodes.slice()
         newNodes[i] = node
         return newNodes
@@ -150,13 +166,14 @@ export function Labels ({
   }
 
   const defaultPosition = enhancedStages.map(
-    ({ width , endPosition } : { width: number, endPosition : number }) => ({
+    ({ width, endPosition }: { width: number; endPosition: number }) => ({
       left: endPosition - width / 2,
       pinPosition: 'left',
       line: 1
-    }))
+    })
+  )
 
-  const offsetWidths = childNodes.map(node => node && node.offsetWidth)
+  const offsetWidths = childNodes.map((node) => node && node.offsetWidth)
 
   const labelPositions = useMemo(() => {
     const labelPositions = defaultPosition.slice()
@@ -171,7 +188,7 @@ export function Labels ({
       if (labelRightBoundary > parentNode.offsetWidth) {
         if (offsetWidth > stage.width) {
           labelPositions[i] = {
-            left: (stage.endPosition - stage.width / 2) - offsetWidth,
+            left: stage.endPosition - stage.width / 2 - offsetWidth,
             pinPosition: 'right',
             line: 1
           }
@@ -186,37 +203,56 @@ export function Labels ({
       // switch the line if overlap
       const previousLeft = get(labelPositions, [i + 2, 'left'], Infinity)
       const previousLine = get(labelPositions, [i + 2, 'line'])
-      if (labelRightBoundary > previousLeft &&
-          labelPositions[i].line === previousLine &&
-          previousLine === 1
-      ) labelPositions[i].line = 2
+      if (
+        labelRightBoundary > previousLeft &&
+        labelPositions[i].line === previousLine &&
+        previousLine === 1
+      )
+        labelPositions[i].line = 2
     }
 
     return labelPositions
   }, [parentNode, offsetWidths, enhancedStages])
   if (!parentNode) return null
 
-  return enhancedStages.map((stage, i) => {
-    const dir = i % 2 === 0
-    const top = !dir ? chartPadding - 30 : parentHeight - 40
-    const labelProps = {
-      ...stage,
-      ...labelPositions[i],
-      top,
-      dir: i % 2 === 0,
-      color: colors[i],
-      onClick: onClick.bind(null, stage.name),
-      labelRef: updateChildNodes
-    }
-    return (<LabelWithPin {...labelProps} />)
-  })
+  return (
+    <>
+      {enhancedStages.map((stage, i) => {
+        const dir = i % 2 === 0
+        const top = !dir ? chartPadding - 30 : parentHeight - 40
+        const labelProps = {
+          ...stage,
+          ...labelPositions[i],
+          top,
+          dir: i % 2 === 0,
+          color: colors[i],
+          onClick: (onClick as Function).bind(null, stage.name),
+          labelRef: updateChildNodes
+        } as unknown as LabelPinProps
+        return <LabelWithPin {...labelProps} />
+      })}
+    </>
+  )
 }
 
-
-export function LabelWithPin ({ label, left, top, dir, pinPosition, line, idx,
-  isSelected, formattedPct, value, valueFormatter, color, labelRef, onClick }) {
+export function LabelWithPin ({
+  label,
+  left,
+  top,
+  dir,
+  pinPosition,
+  line,
+  idx,
+  formattedPct,
+  value,
+  valueFormatter,
+  color,
+  labelRef,
+  onClick
+}: LabelPinProps) {
   const style = {
-    left, top
+    left,
+    top
   }
   const [node, ref] = useGetNode()
   useEffect(() => {
@@ -229,16 +265,12 @@ export function LabelWithPin ({ label, left, top, dir, pinPosition, line, idx,
   return (
     <Label
       onClick={onClick}
-      ref={ref}
+      ref={ref as unknown as React.RefObject<HTMLDivElement>}
       style={style}
-      isSelected={isSelected}
-      dir={dirForElement}
       line={line}
       pinPosition={pinPosition}>
-      <Pin dir={dirForElement} color={color} pinPosition={pinPosition} />{text}
+      <Pin dir={dirForElement} color={color} pinPosition={pinPosition} />
+      {text}
     </Label>
   )
 }
-
-export const valueFormatter = value => formatter('durationFormat')(value)
-
