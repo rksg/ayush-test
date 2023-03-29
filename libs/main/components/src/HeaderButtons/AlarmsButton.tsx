@@ -34,7 +34,9 @@ export default function AlarmsHeaderButton () {
       offset={[-3, 0]}
       children={<LayoutUI.ButtonSolid icon={<NotificationSolid />}
         onClick={()=>{
-          setVisible(true)
+          const event = new CustomEvent('showAlarmDrawer',
+            { detail: { data: { name: 'all' } } })
+          window.dispatchEvent(event)
         }}/>}
     />
     <AlarmsDrawer visible={visible} setVisible={setVisible} />
