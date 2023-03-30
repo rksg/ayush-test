@@ -11,8 +11,9 @@ import {
   Select,
   Space
 } from 'antd'
-import _           from 'lodash'
-import { useIntl } from 'react-intl'
+import { DefaultOptionType } from 'antd/lib/select'
+import _                     from 'lodash'
+import { useIntl }           from 'react-intl'
 
 import {
   Button,
@@ -32,6 +33,8 @@ import { AccessSwitch, AccessSwitchSaveData, UplinkInfo, WebAuthTemplate } from 
 import { useParams }                                                       from '@acx-ui/react-router-dom'
 
 import { defaultTemplateData } from '../../../NetworkSegWebAuth/NetworkSegAuthForm'
+
+import * as UI from './styledComponents'
 
 export function AccessSwitchDrawer (props: {
   open: boolean;
@@ -76,13 +79,23 @@ export function AccessSwitchDrawer (props: {
     }
   }, {
     skip: editRecords.length === 0,
-    selectFromResult: ({ data }) => ({
-      portList: _.uniqWith(data?.data?.map(port => ({
+    selectFromResult: ({ data }) => {
+      const portList = data?.data?.map(port => ({
         label: port.portIdentifier,
         value: port.portIdentifier,
+        switchMac: port.switchMac,
         disabled: isLAGMemberPort(port)
-      })), _.isEqual)
-    })
+      })) || []
+      // Group by switchMac
+      const switchPorts = portList.reduce((
+        accumulator: { [name: string]: DefaultOptionType[] }, currentValue) => {
+        const memo = accumulator[currentValue['switchMac']]
+        accumulator[currentValue['switchMac']] = memo ?
+          memo.concat(_.omit(currentValue, 'switchMac')) : []
+        return accumulator
+      }, {})
+      return { portList: _.intersectionWith(...(_.values(switchPorts)), _.isEqual) }
+    }
   })
   const { lagList } = useGetLagListQuery({ params: { tenantId, switchId } }, {
     skip: isMultipleEdit || !switchId,
@@ -141,23 +154,23 @@ export function AccessSwitchDrawer (props: {
     }
   }, [webAuthPageType])
 
-  const uplinkTypeMap = {
-    PORT: $t({ defaultMessage: 'Port' }),
-    LAG: $t({ defaultMessage: 'LAG' })
-  }
-
   const UplinkRadio = (props: {
     value: UplinkInfo['uplinkType'];
-    options?: { value?: string | number; label?: string; }[];
+    options?: DefaultOptionType[];
   }) => {
     const { value: radioValue, options } = props
+    const uplinkTypeMap = {
+      PORT: $t({ defaultMessage: 'Port' }),
+      LAG: $t({ defaultMessage: 'LAG' })
+    }
     return (
       <Radio value={radioValue}>
         <Space size='middle' style={{ height: '32px' }}>
           {uplinkTypeMap[radioValue]}
-          {uplinkInfoType === radioValue && <Form.Item name={['uplinkInfo', 'uplinkId']} noStyle>
-            {!options ?
-              <Input disabled={isMultipleEdit && !uplinkInfoOverwrite}
+          {uplinkInfoType === radioValue &&
+          <Form.Item name={['uplinkInfo', 'uplinkId']} noStyle>
+            {!options || options.length === 0 ?
+              <Input disabled={isMultipleEdit && !uplinkInfoOverwrite} //TODO: validator
                 style={{ width: '180px' }} /> :
               <Select options={options}
                 disabled={isMultipleEdit && !uplinkInfoOverwrite}
@@ -225,12 +238,11 @@ export function AccessSwitchDrawer (props: {
         { !isMultipleEdit && <Form.Item name='id' hidden children={<Input />} /> }
         { !isMultipleEdit && <Form.Item name='distributionSwitchId' hidden children={<Input />} />}
 
-        { isMultipleEdit ?
-          <><Form.Item>
-            <Checkbox onChange={(e)=>setUplinkInfoOverwrite(e.target.checked)}>
-              {$t({ defaultMessage: 'Uplink Port' })}
-            </Checkbox>
-          </Form.Item>
+        <UI.OverwriteFormItem label={<>
+          { isMultipleEdit &&
+            <Checkbox onChange={(e)=>setUplinkInfoOverwrite(e.target.checked)}></Checkbox>}
+          <span>{$t({ defaultMessage: 'Uplink Port' })}</span>
+        </>}>
           <Form.Item name={['uplinkInfo', 'uplinkType']} noStyle>
             <Radio.Group onChange={uplinkTypeChangeHandler}
               disabled={isMultipleEdit && !uplinkInfoOverwrite}>
@@ -239,47 +251,25 @@ export function AccessSwitchDrawer (props: {
                 <UplinkRadio value='LAG' options={lagList} />
               </Space>
             </Radio.Group>
-          </Form.Item></>:
-          <Form.Item label={$t({ defaultMessage: 'Uplink Port' })}>
-            <Form.Item name={['uplinkInfo', 'uplinkType']} noStyle>
-              <Radio.Group onChange={uplinkTypeChangeHandler}>
-                <Space direction='vertical'>
-                  <UplinkRadio value='PORT' options={portList} />
-                  <UplinkRadio value='LAG' options={lagList} />
-                </Space>
-              </Radio.Group>
-            </Form.Item>
           </Form.Item>
-        }
-        { isMultipleEdit ?
-          <><Form.Item>
-            <Checkbox onChange={(e)=>setVlanIdOverwrite(e.target.checked)}>
-              {<>{$t({ defaultMessage: 'VLAN ID' })}
-                <Tooltip
-                  title={$t({ defaultMessage: 'The VLAN for Net Seg Auth page' })}
-                  placement='right'><QuestionMarkCircleOutlined />
-                </Tooltip>
-              </>}
-            </Checkbox>
-          </Form.Item>
-          <Form.Item name='vlanId'
-            wrapperCol={{ span: 10 }}
-            rules={[{ required: vlanIdOverwrite }]}>
-            <Input disabled={isMultipleEdit && !vlanIdOverwrite} />
-          </Form.Item></>:
-          <Form.Item name='vlanId'
-            label={<>
-              {$t({ defaultMessage: 'VLAN ID' })}
-              <Tooltip
-                title={$t({ defaultMessage: 'The VLAN for Net Seg Auth page' })}
-                placement='right'><QuestionMarkCircleOutlined />
-              </Tooltip></>}
-            wrapperCol={{ span: 10 }}
-            rules={[{ required: true }]}>
-            <Select options={vlanList}
-              placeholder={$t({ defaultMessage: 'Select ...' })} />
-          </Form.Item>
-        }
+        </UI.OverwriteFormItem>
+        <UI.OverwriteFormItem name='vlanId'
+          label={<>
+            { isMultipleEdit &&
+              <Checkbox onChange={(e)=>setVlanIdOverwrite(e.target.checked)}></Checkbox>}
+            <span>{$t({ defaultMessage: 'VLAN ID' })}</span>
+            <Tooltip
+              title={$t({ defaultMessage: 'The VLAN for Net Seg Auth page' })}
+              placement='right'><QuestionMarkCircleOutlined />
+            </Tooltip>
+          </>}
+          wrapperCol={{ span: 10 }}
+          rules={[{ required: !isMultipleEdit || vlanIdOverwrite }]}>
+          { isMultipleEdit ?
+            <Input disabled={isMultipleEdit && !vlanIdOverwrite} />: //TODO: validator
+            <Select options={vlanList} placeholder={$t({ defaultMessage: 'Select ...' })} />
+          }
+        </UI.OverwriteFormItem>
         <Form.Item name='webAuthPageType' hidden children={<Input />} />
 
         <Row justify='space-between'>

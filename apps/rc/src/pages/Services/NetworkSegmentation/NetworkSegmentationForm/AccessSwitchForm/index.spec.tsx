@@ -105,14 +105,14 @@ describe('AccessSwitchForm', () => {
         route: { params, path: updateNsgPath }
       })
     const row = await screen.findByRole('row', { name: /FEK3224R09N---AS---3/i })
-    await user.click(await within(row).findByRole('radio'))
-    await user.click(await within(row).findByRole('radio')) // workaround
+    await user.click(await within(row).findByRole('checkbox'))
+
     const alert = await screen.findByRole('alert')
     await user.click(await within(alert).findByRole('button', { name: 'Edit' }))
 
     const dialog = await screen.findByRole('dialog')
     await user.click(await within(dialog).findByRole('button', { name: 'Save' }))
 
-    await waitFor(() => expect(within(row).getByRole('radio')).not.toBeChecked())
+    await waitFor(() => expect(within(row).getByRole('checkbox')).not.toBeChecked())
   })
 })
