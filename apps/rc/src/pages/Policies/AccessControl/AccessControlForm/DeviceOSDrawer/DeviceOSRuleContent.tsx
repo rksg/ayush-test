@@ -95,6 +95,15 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
     ] as { value: string, label: string }[])
   }, [deviceType, osVendor])
 
+  useEffect(() => {
+    if (fromClient) {
+      drawerForm.setFieldValue('fromClientValue', fromClientValue)
+    }
+    if (toClient) {
+      drawerForm.setFieldValue('toClientValue', toClientValue)
+    }
+  }, [fromClient, toClient])
+
   const EmptyElement = (props: { access: AccessStatus }) => {
     drawerForm.setFieldValue('deviceOSAccess', props.access)
     return <></>

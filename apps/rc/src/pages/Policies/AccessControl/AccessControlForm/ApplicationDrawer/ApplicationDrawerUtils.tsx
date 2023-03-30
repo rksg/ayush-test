@@ -27,9 +27,9 @@ export const updateFormWithEditRow = (drawerForm: FormInstance, editRow: Applica
   drawerForm.setFieldValue('uplink', editRow.ruleSettings.uplink ? editRow.ruleSettings.uplink / 1000 : undefined)
   // eslint-disable-next-line max-len
   drawerForm.setFieldValue('downlink', editRow.ruleSettings.downlink ? editRow.ruleSettings.downlink / 1000 : undefined)
-  drawerForm.setFieldValue(['uplinkMarking', 'value'], editRow.ruleSettings.upLinkMarkingType)
+  drawerForm.setFieldValue(['uplinkMarking', 'value'], editRow.ruleSettings.markingPriority)
   drawerForm.setFieldValue(['downlinkPriority', 'value'], editRow.ruleSettings.downLinkMarkingType)
-  drawerForm.setFieldValue(['uplinkMarking', 'strategy'], editRow.ruleSettings.markingPriority)
+  drawerForm.setFieldValue(['uplinkMarking', 'strategy'], editRow.ruleSettings.upLinkMarkingType)
 }
 
 export const transformToApplicationRule = (
@@ -63,6 +63,18 @@ export const transformToApplicationRule = (
       rateLimitObject.uplink = rule.uplink
       rateLimitObject.downlink = rule.downlink
     }
+
+    let qosObject = {} as {
+      upLinkMarkingType: string | undefined,
+      markingPriority: string | undefined,
+      downLinkMarkingType: string | undefined
+    }
+    if (rule.accessControl === ApplicationAclType.QOS) {
+      qosObject.upLinkMarkingType = rule.upLinkMarkingType
+      qosObject.markingPriority = rule.markingPriority
+      qosObject.downLinkMarkingType = rule.downLinkMarkingType
+    }
+
     return {
       priority: ruleId + 1,
       id: rule.id,
@@ -75,6 +87,7 @@ export const transformToApplicationRule = (
         ...systemDefined,
         ...userDefined,
         ...rateLimitObject,
+        ...qosObject,
         ruleType: rule.ruleType
       }
     }
@@ -119,7 +132,6 @@ export const transformToRulesForPayload = (
     }
     if (rule.ruleType === ApplicationRuleType.SIGNATURE
       && rule.ruleSettings.appNameSystemDefined
-      && rule.ruleSettings.appCategory
     ) {
       const [catName, appName] = rule.ruleSettings.appNameSystemDefined.split('_')
       const catAppMapping = categoryAppMappingObject[appName]

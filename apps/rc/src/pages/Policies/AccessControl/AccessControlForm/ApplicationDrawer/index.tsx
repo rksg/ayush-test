@@ -225,7 +225,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   })
 
   useEffect(() => {
-    if (avcCategoryList) {
+    if (avcCategoryList && avcCategoryList[0].catName !== 'All') {
       setAvcSelectOptions(
         [{
           catId: 0,
