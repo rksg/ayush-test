@@ -258,12 +258,12 @@ export function PortalSettings () {
 
   const getDefaultLogoUuid = async function ()
   {
-    const defaultLogoFile = await fetch(defaultPortalLogo)
+    const defaultLogoFile = await fetch(defaultLoginLogo)
       .then(res => res.blob())
       .then(blob => {
-        return new File([blob], defaultPortalLogo, { type: 'image/png' })
+        return new File([blob], defaultLoginLogo, { type: 'image/png' })
       })
-    const imageType: string = defaultPortalLogo.split(';base64', 1).at(0) ?? ''
+    const imageType: string = defaultLoginLogo.split(';base64', 1).at(0) ?? ''
     if (!imageType) {
       showToast({
         type: 'error',
