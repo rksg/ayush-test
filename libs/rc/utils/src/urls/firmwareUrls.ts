@@ -4,49 +4,68 @@ const venueVersionParams = '?firmware_version=:version&firmware_type=:type&searc
 
 export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
   getUpgradePreferences: {
-    // [New API] private api
+    // [New API] new uri not ready
     method: 'get',
-    url: '/api/upgrade/tenant/:tenantId/preference'
+    url: '/upgradeConfig/preferences',
+    oldUrl: '/api/upgrade/tenant/:tenantId/preference',
+    newApi: false
   },
   updateUpgradePreferences: {
-    // [New API] private api
+    // [New API] new uri not ready
     method: 'put',
-    url: '/api/upgrade/tenant/:tenantId/preference'
+    url: '/upgradeConfig/preferences',
+    oldUrl: '/api/upgrade/tenant/:tenantId/preference',
+    newApi: false
   },
   getVenueVersionList: {
-    // [New API] private api
+    // [New API] new uri not ready
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/upgrade/venue' + venueVersionParams
+    url: '/venues/apFirmwares/schedules' + venueVersionParams,
+    oldUrl: '/api/tenant/:tenantId/wifi/upgrade/venue' + venueVersionParams,
+    newApi: false
   },
   getLatestFirmwareList: {
-    // [New API] private api
+    // [New API] new uri not ready
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/upgrade/version/latest'
+    url: '/apFirmwares',
+    oldUrl: '/api/tenant/:tenantId/wifi/upgrade/version/latest',
+    newApi: false
   },
   getAvailableFirmwareList: {
-    // [New API] private api
+    // [New API] new uri not ready
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/upgrade/version/release'
+    url: '/apFirmwares',
+    oldUrl: '/api/tenant/:tenantId/wifi/upgrade/version/release',
+    newApi: false
   },
   getFirmwareVersionIdList: {
-    // [New API] private api
+    // [New API] new uri not ready
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/upgrade/version'
+    url: '/apFirmwares',
+    oldUrl: '/api/tenant/:tenantId/wifi/upgrade/version',
+    newApi: false
   },
   skipVenueUpgradeSchedules: {
-    // [New API] private api
+    // [New API] new uri not ready
     method: 'delete',
-    url: '/api/tenant/:tenantId/wifi/skip/venue/schedule'
+    url: '/venues/apFirmwares/schedules',
+    oldUrl: '/api/tenant/:tenantId/wifi/skip/venue/schedule',
+    newApi: false
   },
   updateVenueSchedules: {
-    // [New API] private api
+    // [New API] new uri not ready
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/upgrade/venue/schedule'
+    url: '/venues/apFirmwares/schedules',
+    oldUrl: '/api/tenant/:tenantId/wifi/upgrade/venue/schedule',
+    newApi: false
   },
   updateNow: {
-    // [New API] no new uri yet
-    method: 'post',
-    url: '/api/tenant/:tenantId/wifi/upgrade/update-now'
+    // [New API] new uri not ready
+    method: 'PATCH',
+    url: '/venues/apFirmwares',
+    oldMethod: 'post',
+    oldUrl: '/api/tenant/:tenantId/wifi/upgrade/update-now',
+    newApi: false
   },
   skipSwitchUpgradeSchedules: {
     method: 'delete',
@@ -91,17 +110,23 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getInvalidTimeSlots: {
-    // [New API] private api
+    // [New API] new uri not ready
     method: 'get',
-    url: '/api/upgrade/tenant/:tenantId/invalid-time'
+    url: '/upgradeConfig/invalidTime',
+    oldUrl: '/api/upgrade/tenant/:tenantId/invalid-time',
+    newApi: false
   },
   getSwitchFirmwarePredownload: {
     method: 'get',
-    url: '/api/switch/tenant/:tenantId/switch/upgrade/preDownload'
+    url: '/switchFirmwares/preDownload',
+    oldUrl: '/api/switch/tenant/:tenantId/switch/upgrade/preDownload',
+    newApi: true
   },
   updateSwitchFirmwarePredownload: {
     method: 'put',
-    url: '/api/switch/tenant/:tenantId/switch/upgrade/preDownload'
+    url: '/switchFirmwares/preDownload',
+    oldUrl: '/api/switch/tenant/:tenantId/switch/upgrade/preDownload',
+    newApi: true
   },
   getPreferences: {
     method: 'get',

@@ -110,14 +110,18 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getAvcCategory: {
-    // [New API] private api
+    // [New API] new uri not ready
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/capabilities/avc-cat'
+    url: '/applicationPolicies/capabilities/categories',
+    oldUrl: '/api/tenant/:tenantId/wifi/capabilities/avc-cat',
+    newApi: false
   },
   getAvcApp: {
-    // [New API] private api
+    // [New API] new uri not ready
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/capabilities/avc-app'
+    url: '/applicationPolicies/capabilities/applications',
+    oldUrl: '/api/tenant/:tenantId/wifi/capabilities/avc-app',
+    newApi: false
   },
   getAccessControlProfile: {
     method: 'get',

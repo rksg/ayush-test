@@ -40,24 +40,35 @@ export const NetworkSegmentationUrls: { [key: string]: ApiInfo } = {
 
   getAvailableSwitches: {
     method: 'get',
-    url: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations'
+    url: '/venues/:venueId/networkSegmentations',
+    oldUrl: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations',
+    newApi: true
   },
   getSwitchInfoByNSGId: {
     method: 'get',
-    url: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations/:serviceId'
+    url: '/venues/:venueId/networkSegmentations/:serviceId',
+    oldUrl: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations/:serviceId',
+    newApi: true
   },
   getAccessSwitchesByDS: {
     method: 'get',
-    url: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations' +
-      '/distributions/:switchId/accessSwitches'
+    url: '/venues/:venueId/networkSegmentations/distributions/:switchId/accessSwitches',
+    oldUrl: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations' +
+      '/distributions/:switchId/accessSwitches',
+    newApi: true
   },
   validateDistributionSwitchInfo: {
     method: 'post',
-    url: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations/distributionSwitchInfo'
+    url: '/venues/:venueId/networkSegmentations/distributionSwitchInfo',
+    // eslint-disable-next-line max-len
+    oldUrl: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations/distributionSwitchInfo',
+    newApi: true
   },
   validateAccessSwitchInfo: {
     method: 'post',
-    url: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations/accessSwitchInfo'
+    url: '/venues/:venueId/networkSegmentations/accessSwitchInfo',
+    oldUrl: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations/accessSwitchInfo',
+    newApi: true
   },
   createNetworkSegmentationGroup: {
     method: 'post',

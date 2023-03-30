@@ -142,7 +142,9 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   convertToStack: {
     method: 'post',
-    url: '/api/switch/tenant/:tenantId/switch/ConvertToStack'
+    url: '/switches/convertToStack',
+    oldUrl: '/api/switch/tenant/:tenantId/switch/ConvertToStack',
+    newApi: true
   },
   addStackMember: {
     method: 'post',
@@ -171,7 +173,9 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   downloadSwitchConfig: {
     method: 'get',
-    url: '/api/switch/tenant/:tenantId/configBackup/download/:configId'
+    url: '/switches/configBackupDownloads/:configId',
+    oldUrl: '/api/switch/tenant/:tenantId/configBackup/download/:configId',
+    newApi: true
   },
   deleteBackups: {
     method: 'delete',
@@ -344,8 +348,11 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getJwtToken: {
+    // [New API] private api
     method: 'get',
-    url: '/api/switch/tenant/:tenantId/switch/:serialNumber/jwt-token'
+    url: '/switches/:serialNumber/jwtToken',
+    oldUrl: '/api/switch/tenant/:tenantId/switch/:serialNumber/jwt-token',
+    newApi: false
   },
   getSwitchClientList: {
     method: 'post',
