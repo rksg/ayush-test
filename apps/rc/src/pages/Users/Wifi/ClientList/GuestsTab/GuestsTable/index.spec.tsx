@@ -54,7 +54,7 @@ describe('Guest Table', () => {
         CommonUrlsInfo.getVMNetworksList.url,
         (req, res, ctx) => res(ctx.json(AllowedNetworkList))
       ),
-      rest.post(
+      rest.patch(
         ClientUrlsInfo.generateGuestPassword.url,
         (req, res, ctx) => res(ctx.json(RegenerateGuestPassword))
       )
@@ -243,7 +243,7 @@ describe('Guest Table', () => {
       }
     }
     mockServer.use(
-      rest.post(
+      rest.patch(
         ClientUrlsInfo.generateGuestPassword.url,
         (req, res, ctx) => res(ctx.json(json))
       )
@@ -294,7 +294,7 @@ describe('Guest Table', () => {
       }
     }
     mockServer.use(
-      rest.post(
+      rest.patch(
         ClientUrlsInfo.generateGuestPassword.url,
         (req, res, ctx) => res(ctx.json(json))
       )
@@ -355,7 +355,7 @@ describe('Guest Table', () => {
 
   it('should handle error for generate password', async () => {
     mockServer.use(
-      rest.post(
+      rest.patch(
         ClientUrlsInfo.generateGuestPassword.url,
         (req, res, ctx) => res(ctx.status(404), ctx.json({}))
       )
