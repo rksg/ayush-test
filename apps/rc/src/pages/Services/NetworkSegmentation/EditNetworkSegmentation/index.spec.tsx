@@ -5,29 +5,41 @@ import { rest }  from 'msw'
 import {
   CatchErrorResponse,
   CommonUrlsInfo,
+  DpskUrls,
   EdgeDhcpUrls,
   EdgeUrlsInfo,
-  NetworkSegmentationUrls
+  NetworkSegmentationUrls,
+  PersonaUrls,
+  PropertyUrlsInfo,
+  SwitchUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
   mockServer,
   render,
-  screen
+  screen,
+  waitFor
 } from '@acx-ui/test-utils'
 
 import {
+  mockDpsk,
   mockEdgeData,
   mockEdgeDhcpDataList,
   mockNetworkGroup,
   mockNsgData,
   mockNsgSwitchInfoData,
+  mockPersonaGroup,
+  mockPropertyConfigs,
   mockVenueData,
   mockVenueNetworkData,
+  switchLagList,
+  switchPortList,
+  switchVlanUnion,
   webAuthList
 } from '../__tests__/fixtures'
+import { afterSubmitMessage } from '../NetworkSegmentationForm'
 
-import NetworkSegmentationForm, { afterSubmitMessage } from '.'
+import EditNetworkSegmentation from '.'
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -38,11 +50,12 @@ jest.mock('react-router-dom', () => ({
 type MockSelectProps = React.PropsWithChildren<{
   onChange?: (value: string) => void
   options?: Array<{ label: string, value: unknown }>
+  loading?: boolean
 }>
 jest.mock('antd', () => {
   const components = jest.requireActual('antd')
-  const Select = ({ children, onChange, options, ...props }: MockSelectProps) => (
-    <select {...props} onChange={(e) => onChange?.(e.target.value)}>
+  const Select = ({ loading, children, onChange, options, ...props }: MockSelectProps) => (
+    <select {...props} onChange={(e) => onChange?.(e.target.value)} value=''>
       {/* Additional <option> to ensure it is possible to reset value to empty */}
       {children ? <><option value={undefined}></option>{children}</> : null}
       {options?.map((option, index) => (
@@ -65,6 +78,10 @@ describe('Update NetworkSegmentation', () => {
     }
 
     mockServer.use(
+      rest.get(
+        NetworkSegmentationUrls.getNetworkSegmentationGroupById.url,
+        (req, res, ctx) => res(ctx.json(mockNsgData))
+      ),
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
         (req, res, ctx) => res(ctx.json(mockVenueData))
@@ -93,25 +110,61 @@ describe('Update NetworkSegmentation', () => {
         CommonUrlsInfo.getNetworkDeepList.url,
         (req, res, ctx) => res(ctx.status(200))
       ),
-      rest.get(
-        NetworkSegmentationUrls.getNetworkSegmentationGroupById.url,
-        (req, res, ctx) => res(ctx.json(mockNsgData))
+      rest.post(
+        SwitchUrlsInfo.getSwitchPortlist.url,
+        (req, res, ctx) => res(ctx.json({ data: switchPortList }))
       ),
       rest.get(
-        NetworkSegmentationUrls.getSwitchInfoByNSGId.url,
-        (req, res, ctx) => res(ctx.json(mockNsgSwitchInfoData))
+        SwitchUrlsInfo.getSwitchVlanUnion.url,
+        (req, res, ctx) => res(ctx.json(switchVlanUnion))
       ),
-      rest.put(
-        NetworkSegmentationUrls.updateNetworkSegmentationGroup.url,
-        (req, res, ctx) => res(ctx.status(202))
+      rest.get(
+        SwitchUrlsInfo.getLagList.url,
+        (req, res, ctx) => res(ctx.json(switchLagList))
+      ),
+      rest.get(
+        NetworkSegmentationUrls.getWebAuthTemplate.url,
+        (req, res, ctx) => res(ctx.json({ ...webAuthList[0] }))
       ),
       rest.post(
         NetworkSegmentationUrls.getWebAuthTemplateList.url,
         (req, res, ctx) => res(ctx.json({ data: webAuthList }))
       ),
+      rest.put(
+        NetworkSegmentationUrls.updateNetworkSegmentationGroup.url,
+        (req, res, ctx) => res(ctx.status(202))
+      ),
       rest.get(
         NetworkSegmentationUrls.getAvailableSwitches.url,
         (req, res, ctx) => res(ctx.json({ switchViewList: mockNsgSwitchInfoData.distributionSwitches }))
+      ),
+      rest.get(
+        NetworkSegmentationUrls.getAccessSwitchesByDS.url,
+        (req, res, ctx) => res(ctx.json({ switchViewList: mockNsgSwitchInfoData.accessSwitches }))
+      ),
+      rest.post(
+        NetworkSegmentationUrls.validateDistributionSwitchInfo.url,
+        (req, res, ctx) => res(ctx.json({ response: { valid: true } }))
+      ),
+      rest.post(
+        NetworkSegmentationUrls.validateAccessSwitchInfo.url,
+        (req, res, ctx) => res(ctx.json({ response: { valid: true } }))
+      ),
+      rest.get(
+        PropertyUrlsInfo.getPropertyConfigs.url,
+        (req, res, ctx) => res(ctx.json(mockPropertyConfigs))
+      ),
+      rest.get(
+        PersonaUrls.getPersonaGroupById.url,
+        (req, res, ctx) => res(ctx.json(mockPersonaGroup))
+      ),
+      rest.get(
+        DpskUrls.getDpsk.url,
+        (req, res, ctx) => res(ctx.json(mockDpsk))
+      ),
+      rest.get(
+        NetworkSegmentationUrls.getSwitchInfoByNSGId.url,
+        (req, res, ctx) => res(ctx.json(mockNsgSwitchInfoData))
       )
     )
   })
@@ -120,7 +173,7 @@ describe('Update NetworkSegmentation', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <NetworkSegmentationForm editMode={true} />
+        <EditNetworkSegmentation />
       </Provider>, {
         route: { params, path: updateNsgPath }
       })
@@ -138,12 +191,17 @@ describe('Update NetworkSegmentation', () => {
     // step 5
     await screen.findByRole('row', { name: /FEK3224R09N---AS---3/i })
     await user.click(await screen.findByRole('button', { name: 'Finish' }))
+    await waitFor(() => expect(mockedUsedNavigate).toBeCalledWith({
+      hash: '',
+      pathname: `/t/${params.tenantId}/services/list`,
+      search: ''
+    }))
   })
 
 
   it('cancel and go back to device list', async () => {
     const user = userEvent.setup()
-    render(<NetworkSegmentationForm />, {
+    render(<EditNetworkSegmentation />, {
       wrapper: Provider,
       route: { params, path: updateNsgPath }
     })
