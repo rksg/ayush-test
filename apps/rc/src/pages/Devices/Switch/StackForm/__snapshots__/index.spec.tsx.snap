@@ -514,7 +514,7 @@ exports[`Switch Stack Form - Add should render correctly 1`] = `
                           data-testid="dropContainer"
                         >
                           <div
-                            class="styledComponents__Wrapper-sc-1abm7iv-12 iyKqRw"
+                            class="styledComponents__Wrapper-sc-1abm7iv-12 bEjDtI"
                           >
                             <div
                               class="ant-pro-table"

@@ -96,7 +96,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           const activities = [
             'AddSwitch',
             'UpdateSwitch',
-            'DeleteSwitch'
+            'DeleteSwitch',
+            'ImportSwitches'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(switchApi.util.invalidateTags([{ type: 'Switch', id: 'LIST' }]))
@@ -603,7 +604,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const req = createHttpRequest(SwitchUrlsInfo.addVePort, params)
         return {
           ...req,
-          body: payload
+          body: enableNewApi(SwitchUrlsInfo.addVePort) ? [payload] : payload
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'VE' }]
@@ -834,7 +835,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const req = createHttpRequest(SwitchUrlsInfo.addLag, params)
         return {
           ...req,
-          body: payload
+          body: enableNewApi(SwitchUrlsInfo.addLag) ? [payload] : payload
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'LAG' }]

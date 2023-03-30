@@ -104,7 +104,8 @@ export function StepsForm <FormValue = any> (
             ? setStep
             : undefined
           const key = child.props.name ?? child.props.step ?? String(index)
-          return <Steps.Step {...{ key, title, onStepClick }} />
+          // Temporary measure until ACX-13452 is fixed by moving to StepsFormNew
+          return <Steps.Step {...{ key, title, onStepClick, disabled: editMode }} />
         })}
       </Steps>
     </UI.StepsContainer>

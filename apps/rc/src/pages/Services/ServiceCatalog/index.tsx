@@ -18,6 +18,7 @@ export default function ServiceCatalog () {
   const { $t } = useIntl()
   const earlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
   const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
+  const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const isEdgeDhcpEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
 
   const sets = [
@@ -55,7 +56,7 @@ export default function ServiceCatalog () {
         {
           type: ServiceType.WEBAUTH_SWITCH,
           categories: [RadioCardCategory.SWITCH],
-          disabled: !networkSegmentationEnabled
+          disabled: !networkSegmentationEnabled || !networkSegmentationSwitchEnabled
         }
       ]
     }

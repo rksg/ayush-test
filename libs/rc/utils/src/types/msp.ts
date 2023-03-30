@@ -86,13 +86,15 @@ export interface MspEc {
   mspAdmins?: string[];
   mspAdminCount: string;
   mspEcAdminCount: string;
+  mspInstallerAdminCount?: number;
+  mspIntegratorAdminCount?: number;
   integrator?: string,
   installer?: string,
   expirationDate: string;
   wifiLicenses: string;
   switchLicenses: string;
   edgeLicenses?: string;
-  assignedMspEcList: string;
+  assignedMspEcList: string[];
   creationDate: number;
   entitlements: DelegationEntitlementRecord[];
 }
@@ -361,6 +363,7 @@ export interface SupportDelegation {
 export interface AssignedEc {
   delegated_to: string;
   delegation_type: string;
+  expiry_date?: string;
   mspec_list: string[];
 }
 

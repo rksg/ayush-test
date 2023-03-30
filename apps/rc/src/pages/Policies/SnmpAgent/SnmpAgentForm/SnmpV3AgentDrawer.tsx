@@ -66,7 +66,8 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
       }
       style={{ width: '350px' }}
       rules={[
-        { required: true },
+        { required: true,
+          message: $t({ defaultMessage: 'Please enter User Name' }) },
         { min: 3 },
         { max: 32 },
         { validator: (_, value) => {

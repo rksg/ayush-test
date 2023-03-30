@@ -4,7 +4,7 @@ import { Form, Select, Switch, Row, Button, Col } from 'antd'
 import { isEqual }                                from 'lodash'
 import { useIntl }                                from 'react-intl'
 
-import { Loader, StepsForm, showToast, StepsFormInstance } from '@acx-ui/components'
+import { Loader, StepsForm, showToast, StepsFormInstance, showActionModal } from '@acx-ui/components'
 import {
   useGetApQuery,
   useGetApSnmpPolicyListQuery,
@@ -86,7 +86,7 @@ export function ApSnmp () {
           await getVenueApSnmpSettings(
             { params: { tenantId, venueId: RetrievedApDetails?.venueId } }, true).unwrap()
         )
-        setStateOfApSnmpSettings(settingsInDatabase)
+        setStateOfApSnmpSettings({ ...defaultApSnmpSettings, ...settingsInDatabase })
         setStateVenueOfApSnmpSettings(venueApSnmpSetting)
         setStateOfEnableApSnmp(settingsInDatabase.enableApSnmp)
         setStateOfUseVenueSettings(settingsInDatabase.useVenueSettings)
@@ -132,11 +132,19 @@ export function ApSnmp () {
 
   const sendApSnmpSetting = async () => {
 
-    const payload : ApSnmpSettings
+    const payload
     = {
-      ...stateOfApSnmpSettings,
       ...formRef.current?.getFieldsValue(),
       useVenueSettings: stateOfUseVenueSettings
+    }
+
+    // Condition guard, if user didn't change anything, don't send API
+    if (payload.enableApSnmp === true && payload.apSnmpAgentProfileId === '') {
+      showActionModal({
+        type: 'error',
+        content: $t({ defaultMessage: 'SNMP agent is required when AP SNMP is enabled' })
+      })
+      return
     }
 
     try {
@@ -170,6 +178,8 @@ export function ApSnmp () {
   const customize = async () => {
     setStateOfUseVenueSettings(false)
     formRef?.current?.setFieldsValue(stateOfApSnmpSettings)
+    // Even though the form is been set again, but it won't trigger rendering, so we need to trigger it manually
+    setStateOfEnableApSnmp(stateOfApSnmpSettings.enableApSnmp)
   }
 
 
@@ -251,7 +261,7 @@ export function ApSnmp () {
                 />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            {((RetrievedApSnmpAgentList?.data?.length as number) < 64) && <Col span={12}>
               <TenantLink
                 to={getPolicyRoutePath({
                   type: PolicyType.SNMP_AGENT,
@@ -260,7 +270,7 @@ export function ApSnmp () {
               >
                 {$t({ defaultMessage: 'Add' })}
               </TenantLink>
-            </Col>
+            </Col>}
           </Row>
         </Col>
           }

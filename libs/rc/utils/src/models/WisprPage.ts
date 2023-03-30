@@ -15,6 +15,10 @@ export class WisprPage {
 
   accountingRadius?: Radius
 
+  providerName?: string
+
+  encryptMacIpEnabled?: boolean
+
   constructor () {
     this.captivePortalUrl = ''
 

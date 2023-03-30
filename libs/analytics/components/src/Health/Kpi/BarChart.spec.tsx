@@ -90,7 +90,7 @@ describe('Threshold barchart', () => {
     expect(await screen.findByText('No data to display')).toBeVisible()
   })
   it('should format y value for barChart', async () => {
-    expect(formatYDataPoint(null)).toStrictEqual('-')
+    expect(formatYDataPoint(null)).toStrictEqual('--')
     expect(formatYDataPoint(0.1)).toStrictEqual('0.1%')
   })
 })

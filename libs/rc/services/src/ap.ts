@@ -1,4 +1,5 @@
-import _ from 'lodash'
+import _          from 'lodash'
+import { Params } from 'react-router-dom'
 
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
@@ -25,8 +26,10 @@ import {
   APPhoto,
   ApViewModel,
   VenueDefaultApGroup,
+  ApiInfo,
   AddApGroup,
   CommonResult,
+  ImportErrorRes,
   PacketCaptureState,
   Capabilities,
   PacketCaptureOperationResponse,
@@ -35,21 +38,33 @@ import {
   APExtended,
   LanPortStatusProperties,
   ApDirectedMulticast,
-  APNetworkSettings
+  APNetworkSettings,
+  APExtendedGrouped
 } from '@acx-ui/rc/utils'
 import { baseApApi } from '@acx-ui/store'
 
 export const apApi = baseApApi.injectEndpoints({
   endpoints: (build) => ({
-    apList: build.query<TableResult<APExtended, ApExtraParams>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const apListReq = createHttpRequest(CommonUrlsInfo.getApsList, params)
+    apList: build.query<TableResult<APExtended | APExtendedGrouped, ApExtraParams>,
+    RequestPayload>({
+      query: ({ params, payload }:{ payload:Record<string,unknown>, params: Params<string> }) => {
+        const hasGroupBy = payload?.groupBy
+        const fields = hasGroupBy ? payload.groupByFields : payload.fields
+        const apsReq = hasGroupBy
+          ? createHttpRequest(CommonUrlsInfo.getApGroupsListByGroup, params)
+          : createHttpRequest(CommonUrlsInfo.getApsList, params)
         return {
-          ...apListReq,
-          body: payload
+          ...apsReq,
+          body: { ...payload, fields: fields }
         }
       },
-      transformResponse (result: TableResult<APExtended, ApExtraParams>) {
+      transformResponse (
+        result: TableResult<APExtended, ApExtraParams>,
+        _: unknown,
+        args: { payload : Record<string,unknown> }
+      ) {
+        if((args?.payload)?.groupBy)
+          return transformGroupByList(result as TableResult<APExtendedGrouped, ApExtraParams>)
         return transformApList(result)
       },
       keepUnusedDataFor: 0,
@@ -126,7 +141,7 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
     }),
-    importAp: build.mutation<{}, RequestFormData>({
+    importAp: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.addAp, params, {
           'Content-Type': undefined,
@@ -137,7 +152,34 @@ export const apApi = baseApApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Ap', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          try {
+            const response = await api.cacheDataLoaded
+            if (response && msg.useCase === 'ImportApsCsv'
+            && ((msg.steps?.find((step) => {
+              return step.id === 'ImportAps'
+            })?.status === 'FAIL') || (msg.steps?.find((step) => {
+              return step.id === 'PostProcessedImportAps'
+            })?.status !== 'IN_PROGRESS'))) {
+              (requestArgs.callback as Function)(response.data)
+            }
+          } catch {
+          }
+        })
+      }
+    }),
+    importResult: build.query<ImportErrorRes, RequestPayload>({
+      query: ({ params, payload }) => {
+        const { requestId } = payload as { requestId: string }
+        const api:ApiInfo = { ...WifiUrlsInfo.getImportResult }
+        api.url += `?requestId=${requestId}`
+        const req = createHttpRequest(api, params)
+        return {
+          ...req
+        }
+      }
     }),
     getAp: build.query<ApDeep, RequestPayload>({
       query: ({ params, payload }) => {
@@ -585,6 +627,7 @@ export const {
   useBlinkLedApMutation,
   useFactoryResetApMutation,
   useImportApMutation,
+  useLazyImportResultQuery,
   useLazyGetDhcpApQuery,
   useGetApPhotoQuery,
   useAddApPhotoMutation,
@@ -681,6 +724,35 @@ const transformApList = (result: TableResult<APExtended, ApExtraParams>) => {
   })
   result.extra = channelColumnStatus
   return result
+}
+
+const transformGroupByList = (result: TableResult<APExtendedGrouped, ApExtraParams>) => {
+  let channelColumnStatus = {
+    channel24: true,
+    channel50: false,
+    channelL50: false,
+    channelU50: false,
+    channel60: false
+  }
+  result.data = result.data.map(item => {
+    let newItem = { ...item, children: [] as APExtended[], serialNumber: _.uniqueId() }
+    const aps = (item as unknown as { aps: APExtended[] }).aps?.map(ap => {
+      const { APRadio, lanPortStatus } = ap.apStatusData || {}
+
+      if (APRadio) {
+        setAPRadioInfo(ap, APRadio, channelColumnStatus)
+      }
+      if (lanPortStatus) {
+        setPoEPortStatus(ap, lanPortStatus)
+      }
+      return ap
+    })
+    newItem.children = aps as unknown as APExtended[]
+    return newItem
+  })
+  result.extra = channelColumnStatus
+  return result
+
 }
 
 const transformApViewModel = (result: ApViewModel) => {

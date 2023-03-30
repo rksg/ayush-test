@@ -109,6 +109,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   const [deviceOSRule, setDeviceOSRule] = useState({} as DeviceOSRule)
   const [queryPolicyId, setQueryPolicyId] = useState('')
   const [requestId, setRequestId] = useState('')
+  const [skipFetch, setSkipFetch] = useState(true)
   const [contentForm] = Form.useForm()
   const [drawerForm] = Form.useForm()
 
@@ -148,7 +149,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     {
       params: { ...params, devicePolicyId: isOnlyViewMode ? onlyViewMode.id : devicePolicyId }
     },
-    { skip: !isOnlyViewMode && (devicePolicyId === '' || devicePolicyId === undefined) }
+    { skip: skipFetch }
   )
 
   const isViewMode = () => {
@@ -162,6 +163,10 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
 
     return !_.isNil(devicePolicyInfo)
   }
+
+  useEffect(() => {
+    setSkipFetch(!isOnlyViewMode && (devicePolicyId === '' || devicePolicyId === undefined))
+  }, [isOnlyViewMode, devicePolicyId])
 
   useEffect(() => {
     if (editMode.isEdit && editMode.id !== '') {
