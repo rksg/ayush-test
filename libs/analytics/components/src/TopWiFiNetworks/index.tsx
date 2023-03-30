@@ -13,6 +13,7 @@ import {
 } from '@acx-ui/components'
 import type { DonutChartData } from '@acx-ui/components'
 import { formatter }           from '@acx-ui/formatter'
+import { useNavigateToPath }   from '@acx-ui/react-router-dom'
 
 import { HierarchyNodeData, useTopSSIDsByNetworkQuery } from './services'
 
@@ -62,6 +63,7 @@ export function TopWiFiNetworks ({
       ...rest
     })
   })
+  const clickHandler = useNavigateToPath('/networks')
 
   const { data } = queryResults
   const isTrafficDataAvailable = data && data.traffic.length > 0
@@ -77,8 +79,9 @@ export function TopWiFiNetworks ({
           legend='name'
           dataFormatter={dataFormatter}
           size={'x-large'}
+          onClick={clickHandler}
         />
-        : <NoData />
+        : <NoData style={{ margin: '38px 0 0 0' }}/>
     )}
   </AutoSizer>
   const wifiByClients = <AutoSizer>
@@ -91,8 +94,9 @@ export function TopWiFiNetworks ({
           showTotal={false}
           legend='name'
           size={'x-large'}
+          onClick={clickHandler}
         />
-        : <NoData />
+        : <NoData style={{ margin: '38px 0 0 0' }}/>
     )}
   </AutoSizer>
 

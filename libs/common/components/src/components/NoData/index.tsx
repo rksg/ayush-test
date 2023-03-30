@@ -6,13 +6,13 @@ import * as UI from './styledComponents'
 
 interface NoDataWrapperProps {
   text?: string
+  style?: { margin: string }
 }
-
-export function NoData ({ text }: NoDataWrapperProps) {
+export function NoData ({ text, style }: NoDataWrapperProps) {
   const { $t } = useIntl()
   text = text ? text : $t({ defaultMessage: 'No data to display' })
   return (
-    <UI.NoDataWrapper>
+    <UI.NoDataWrapper style={style}>
       <UI.NoDataTextWrapper>{text}</UI.NoDataTextWrapper>
     </UI.NoDataWrapper>
   )
