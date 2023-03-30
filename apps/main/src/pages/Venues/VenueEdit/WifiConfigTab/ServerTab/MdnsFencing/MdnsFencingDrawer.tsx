@@ -4,25 +4,25 @@ import { FormInstance } from 'antd/es/form/Form'
 import _                from 'lodash'
 import { useIntl }      from 'react-intl'
 
-import { Drawer, showActionModal }                  from '@acx-ui/components'
-import { BonjourFencingService, BridgeServiceEnum } from '@acx-ui/rc/utils'
+import { Drawer, showActionModal }               from '@acx-ui/components'
+import { MdnsFencingService, BridgeServiceEnum } from '@acx-ui/rc/utils'
 
-import BonjourFencingServiceForm        from './BonjourFencingServiceForm/BonjourFencingServiceForm'
-import { BonjourFencingServiceContext } from './BonjourFencingServiceTable'
+import MdnsFencingServiceForm        from './MdnsFencingServiceForm/MdnsFencingServiceForm'
+import { MdnsFencingServiceContext } from './MdnsFencingServiceTable'
 
 
-export interface BonjourFencingDrawerProps {
+export interface MdnsFencingDrawerProps {
   form: FormInstance,
   visible: boolean,
   setVisible: (v: boolean) => void,
-  onDataChanged: (d: BonjourFencingService) => void
+  onDataChanged: (d: MdnsFencingService) => void
 }
 
-export default function BonjourFencingDrawer (props: BonjourFencingDrawerProps) {
+export default function MdnsFencingDrawer (props: MdnsFencingDrawerProps) {
   const { $t } = useIntl()
   const { currentService={},
     otherServices,
-    currentServiceRef } = useContext(BonjourFencingServiceContext)
+    currentServiceRef } = useContext(MdnsFencingServiceContext)
   const { visible, setVisible, onDataChanged, form } = props
 
   const isEditMode = !_.isEmpty(currentService)
@@ -32,14 +32,13 @@ export default function BonjourFencingDrawer (props: BonjourFencingDrawerProps) 
   }, [currentService])
 
 
-  const content = <BonjourFencingServiceForm form={form} />
+  const content = <MdnsFencingServiceForm form={form} />
 
   const onClose = () => {
     setVisible(false)
-    form.resetFields()
   }
 
-  const validFormData = (d: BonjourFencingService) => {
+  const validFormData = (d: MdnsFencingService) => {
     const { service, wiredEnabled, wiredRules=[], customMappingEnabled, customStrings=[] } = d
 
     if (service === BridgeServiceEnum.OTHER) {
@@ -121,7 +120,7 @@ export default function BonjourFencingDrawer (props: BonjourFencingDrawerProps) 
 
   }
 
-  const onSave = async (d: BonjourFencingService) => {
+  const onSave = async (d: MdnsFencingService) => {
 
     try {
       const valid = await form.validateFields()
@@ -131,6 +130,13 @@ export default function BonjourFencingDrawer (props: BonjourFencingDrawerProps) 
       }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
+    }
+  }
+
+  // reset form fields when drawer is closed
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      form.resetFields()
     }
   }
 
@@ -144,6 +150,7 @@ export default function BonjourFencingDrawer (props: BonjourFencingDrawerProps) 
       onClose={onClose}
       destroyOnClose={true}
       children={content}
+      afterVisibleChange={handleOpenChange}
       footer={
         <Drawer.FormFooter
           showAddAnother={false}

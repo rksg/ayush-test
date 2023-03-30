@@ -506,16 +506,18 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/viewmodel/tenant/:tenantId/venue/:venueId/topology',
     newApi: true
   },
-  getVenueBonjourFencingPolicy: {
+  getVenueMdnsFencingPolicy: {
     method: 'get',
-    url: '/venues/:venueId/bonjourFencingSettings',
-    oldUrl: '/api/venues/:venueId/bonjourFencingSettings',
+    //url: '/venues/:venueId/bonjourFencingSettings',
+    url: '/venues/:venueId/mDnsFencingSettings',
+    oldUrl: '/api/venues/:venueId/mDnsFencingSettings ',
     newApi: true
   },
-  updateVenueBonjourFencingPolicy: {
+  updateVenueMdnsFencingPolicy: {
     method: 'put',
-    url: '/venues/:venueId/bonjourFencingSettings',
-    oldUrl: '/api/venues/:venueId/bonjourFencingSettings',
+    //url: '/venues/:venueId/bonjourFencingSettings',
+    url: '/venues/:venueId/mDnsFencingSettings',
+    oldUrl: '/api/venues/:venueId/mDnsFencingSettings ',
     newApi: true
   }
 }
