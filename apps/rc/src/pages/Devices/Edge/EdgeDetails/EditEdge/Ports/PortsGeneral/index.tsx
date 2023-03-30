@@ -21,12 +21,13 @@ export interface PortConfigFormType {
 }
 
 const PortsGeneral = (props: PortsGeneralProps) => {
-
+///
   const { data } = props
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
   const linkToEdgeList = useTenantLink('/devices/edge/list')
+  const linkToOverview = useTenantLink(`/devices/edge/${params.serialNumber}/edge-details/overview`)
   const [tabDetails, setTabDetails] = useState<ContentSwitcherProps['tabDetails']>([])
   const [currentTab, setCurrentTab] = useState<string>('0')
   const formRef = useRef<StepsFormInstance<PortConfigFormType>>()
@@ -142,6 +143,7 @@ const PortsGeneral = (props: PortsGeneralProps) => {
 
     try {
       await updatePortConfig({ params: params, payload: { ports: formData } }).unwrap()
+      navigate(linkToOverview)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
