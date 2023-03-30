@@ -104,8 +104,10 @@ export const createHttpRequest = (
       : { ...tokenHeader, ...defaultHeaders, ...extraHeader }
   }
   const headers = { ...defaultHeaders, ...customHeaders }
+  const newApiHostName = window.location.origin.replace(
+    window.location.hostname, get('NEW_API_DOMAIN_NAME'))
   const domain = (enableNewApi(apiInfo) && !isLocalHost()) ?
-    get('NEW_API_DOMAIN_NAME') : window.location.origin
+    newApiHostName : window.location.origin
   const url = enableNewApi(apiInfo) ? generatePath(`${apiInfo.url}`, paramValues) :
     generatePath(`${apiInfo.oldUrl || apiInfo.url}`, paramValues)
   const method = enableNewApi(apiInfo) ? apiInfo.method : (apiInfo.oldMethod || apiInfo.method)
