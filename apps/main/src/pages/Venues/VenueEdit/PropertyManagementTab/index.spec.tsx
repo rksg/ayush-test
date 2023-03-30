@@ -3,9 +3,16 @@ import { waitFor, within } from '@testing-library/react'
 import userEvent           from '@testing-library/user-event'
 import { rest }            from 'msw'
 
-import { CommonUrlsInfo, MacRegListUrlsInfo, NewDpskBaseUrl, NewPersonaBaseUrl, PropertyUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                                                from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved }                                   from '@acx-ui/test-utils'
+import {
+  CommonUrlsInfo,
+  MacRegListUrlsInfo,
+  NewDpskBaseUrl,
+  NewPersonaBaseUrl,
+  PersonaUrls,
+  PropertyUrlsInfo
+} from '@acx-ui/rc/utils'
+import { Provider }                                              from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import {
@@ -14,8 +21,8 @@ import {
   mockPersonaGroupList,
   replacePagination
 } from '../../../../../../rc/src/pages/Users/Persona/__tests__/fixtures'
-import { mockEnabledPropertyConfig, mockResidentPortalProfileList } from '../../__tests__/fixtures'
-import { VenueEditContext }                                         from '../index'
+import { mockEnabledPropertyConfig, mockPropertyUnitList, mockResidentPortalProfileList } from '../../__tests__/fixtures'
+import { VenueEditContext }                                                               from '../index'
 
 import { PropertyManagementTab } from './index'
 
@@ -79,6 +86,14 @@ describe('Property Config Tab', () => {
       rest.get(
         NewDpskBaseUrl,
         (req, res, ctx) => res(ctx.json(mockDpskList))
+      ),
+      rest.post(
+        PropertyUrlsInfo.getPropertyUnitList.url,
+        (_, res, ctx) => res(ctx.json(mockPropertyUnitList))
+      ),
+      rest.get(
+        PersonaUrls.getPersonaGroupById.url,
+        (_, res, ctx) => res(ctx.json(mockPersonaGroupList.content[0]))
       )
     )
   })

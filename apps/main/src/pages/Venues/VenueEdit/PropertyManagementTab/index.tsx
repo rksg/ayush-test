@@ -8,8 +8,10 @@ import { Button, Loader, StepsForm, StepsFormInstance } from '@acx-ui/components
 import { PersonaGroupSelect }                           from '@acx-ui/rc/components'
 import {
   useGetPropertyConfigsQuery,
+  useGetPropertyUnitListQuery,
   useGetResidentPortalListQuery,
   useGetVenueQuery,
+  useLazyGetPersonaGroupByIdQuery,
   usePatchPropertyConfigsMutation,
   useUpdatePropertyConfigsMutation
 } from '@acx-ui/rc/services'
@@ -17,6 +19,8 @@ import { PropertyConfigs, PropertyConfigStatus } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 // FIXME: move this component to common folder.
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { PersonaGroupLink } from '../../../../../../rc/src/pages/Users/Persona/LinkHelper'
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { PersonaGroupDrawer } from '../../../../../../rc/src/pages/Users/Persona/PersonaGroupDrawer'
 import { VenueEditContext }   from '../index'
@@ -48,6 +52,20 @@ export function PropertyManagementTab () {
   const { editContextData, setEditContextData } = useContext(VenueEditContext)
   const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
   const [personaGroupVisible, setPersonaGroupVisible] = useState(false)
+  const [groupData, setGroupData] = useState<{ id?: string, name?: string }>()
+  const [selectedGroupId, setSelectedGroupId] = useState<string|undefined>()
+  const [getPersonaGroupById] = useLazyGetPersonaGroupByIdQuery()
+  const { data: unitQuery } = useGetPropertyUnitListQuery({
+    params: { venueId },
+    payload: {
+      page: 1,
+      pageSize: 10,
+      sortField: 'name',
+      sortOrder: 'ASC'
+    }
+  })
+  const hasUnits = (unitQuery?.totalCount ?? -1) > 0
+
   const { data: residentPortalList } = useGetResidentPortalListQuery({
     payload: { page: 1, pageSize: 10000, sortField: 'name', sortOrder: 'ASC' }
   })
@@ -60,6 +78,15 @@ export function PropertyManagementTab () {
 
     formRef?.current.setFieldsValue(propertyConfigsQuery.data)
     formRef?.current.setFieldValue('isPropertyEnable', enabled)
+
+    const groupId = propertyConfigsQuery.data?.personaGroupId
+    if (groupId) {
+      setSelectedGroupId(groupId)
+      getPersonaGroupById({ params: { groupId } })
+        .then(result => {
+          setGroupData({ id: groupId, name: result.data?.name })
+        })
+    }
   }, [propertyConfigsQuery.data, formRef])
 
   const onFormFinish = async (_: string, info: FormFinishInfo) => {
@@ -135,9 +162,21 @@ export function PropertyManagementTab () {
                   label={$t({ defaultMessage: 'Persona Group' })}
                   rules={[{ required: true }]}
                 >
-                  <PersonaGroupSelect />
+                  {formRef?.current?.getFieldValue('personaGroupId') && hasUnits
+                    ? <PersonaGroupLink
+                      personaGroupId={selectedGroupId}
+                      name={groupData?.name}
+                    />
+                    : <PersonaGroupSelect
+                      filterProperty
+                      whiteList={selectedGroupId ? [selectedGroupId] : []}
+                    />
+                  }
                 </Form.Item>
-                <Form.Item noStyle>
+                <Form.Item
+                  noStyle
+                  hidden={(!!formRef?.current?.getFieldValue('personaGroupId') && hasUnits)}
+                >
                   <Button
                     type={'link'}
                     size={'small'}
