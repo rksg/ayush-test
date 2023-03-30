@@ -21,7 +21,6 @@ export interface PortConfigFormType {
 }
 
 const PortsGeneral = (props: PortsGeneralProps) => {
-///
   const { data } = props
   const { $t } = useIntl()
   const params = useParams()
