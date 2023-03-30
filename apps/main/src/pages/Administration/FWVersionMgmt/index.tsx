@@ -33,7 +33,7 @@ const FWVersionMgmt = () => {
   return (
     <Tabs
       defaultActiveKey='apFirmware'
-      type='third'
+      type='card'
     >
       {
         Object.entries(tabs).map((item) =>

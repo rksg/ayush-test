@@ -42,6 +42,7 @@ export default function PortalInstancesTable (){
       title: $t({ defaultMessage: 'Network Name' }),
       dataIndex: 'name',
       sorter: true,
+      fixed: 'left',
       render: function (_data, row) {
         return (
           <TenantLink
