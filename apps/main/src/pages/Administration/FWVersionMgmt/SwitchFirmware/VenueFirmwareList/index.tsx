@@ -85,7 +85,7 @@ function useColumns (
       filterable: filterables ? filterables['version'] : false,
       filterMultiple: false,
       render: function (data, row) {
-        return row.switchFirmwareVersion?.id ?? '--'
+        return row.switchFirmwareVersion?.id.replace('_b392', '') ?? '--'
       }
     },
     {
@@ -366,7 +366,7 @@ export function VenueFirmwareList () {
     selectFromResult ({ data }) {
       return {
         // eslint-disable-next-line max-len
-        versionFilterOptions: data?.currentVersions?.map(v=>({ key: v, value: v })) || true
+        versionFilterOptions: data?.currentVersions?.map(v=>({ key: v, value: v.replace('_b392', '') })) || true
       }
     }
   })
