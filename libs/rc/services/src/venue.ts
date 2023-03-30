@@ -945,8 +945,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            'Enable Property',
-            'Disable Property'
+            'ENABLE_PROPERTY',
+            'DISABLE_PROPERTY'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(venueApi.util.invalidateTags([{ type: 'PropertyConfigs', id: 'ID' }]))
@@ -1030,9 +1030,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            'Adding unit',
-            'Updating unit',
-            'Deleting units'
+            'ADD_UNIT',
+            'UPDATE_UNIT',
+            'DELETE_UNITS'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(venueApi.util.invalidateTags([
