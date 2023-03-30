@@ -1,9 +1,10 @@
 import React from 'react'
 
-import { Form, Input, Col, Row, Select, Switch, Space } from 'antd'
-import { useIntl }                                      from 'react-intl'
+import { Form, Input, Col, Row, Select, Switch } from 'antd'
+import { useIntl }                               from 'react-intl'
 
 import { SelectionControl }                                       from '@acx-ui/components'
+import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
 import { ExpirationDateSelector }                                 from '@acx-ui/rc/components'
 import { useAdaptivePolicySetListQuery, useLazyMacRegListsQuery } from '@acx-ui/rc/services'
 import { checkObjectNotExists }                                   from '@acx-ui/rc/utils'
@@ -14,8 +15,10 @@ export function MacRegistrationListSettingForm () {
   const [ macRegList ] = useLazyMacRegListsQuery()
   const { policyId } = useParams()
 
-  const { data: policySetsData } = useAdaptivePolicySetListQuery({
-    payload: { page: 1, pageSize: '2147483647' } })
+  const policyEnabled = useIsSplitOn(Features.POLICY_MANAGEMENT)
+
+  const { data: policySetsData } = useAdaptivePolicySetListQuery(
+    { payload: { page: 1, pageSize: '2147483647' } }, { skip: !policyEnabled })
 
   const nameValidator = async (value: string) => {
     const list = (await macRegList({
@@ -62,9 +65,9 @@ export function MacRegistrationListSettingForm () {
           />
         </Form.Item>
       </Col>
-      <Col span={24}>
-        <Form.Item>
-          <Space direction='horizontal'>
+      {policyEnabled &&
+        <Col span={24}>
+          <Form.Item>
             <Form.Item name='policySetId'
               label={$t({ defaultMessage: 'Access Policy Set' })}
               valuePropName='value'
@@ -79,9 +82,9 @@ export function MacRegistrationListSettingForm () {
                 />
               }
             />
-          </Space>
-        </Form.Item>
-      </Col>
+          </Form.Item>
+        </Col>
+      }
     </Row>
   )
 }

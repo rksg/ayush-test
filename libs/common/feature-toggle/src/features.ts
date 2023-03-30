@@ -34,5 +34,6 @@ export enum Features {
   MAC_REGISTRATION = 'mac-registration-service-enabled',
   PERSONA = 'persona-service-enabled',
   PROPERTY_MANAGEMENT = 'property-management-enabled',
-  RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled'
+  RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
+  POLICY_MANAGEMENT = 'policy-management-service-enabled'
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
@@ -10,7 +10,8 @@ import {
   Loader,
   showActionModal, showToast
 } from '@acx-ui/components'
-import { SimpleListTooltip } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { SimpleListTooltip }      from '@acx-ui/rc/components'
 import {
   useDeleteMacRegListMutation,
   useLazyGetAdaptivePolicySetQuery,
@@ -32,14 +33,16 @@ import { filterByAccess }                                          from '@acx-ui
 
 import { returnExpirationString } from '../MacRegistrationListUtils'
 
-
 export default function MacRegistrationListsTable () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
   const [policySetMap, setPolicySetMap] = useState(new Map())
-  const [venuesMap, setVenuesMap] = useState(new Map())
+  // const [venuesMap, setVenuesMap] = useState(new Map())
+  const [networkVenuesMap, setNetworkVenuesMap] = useState(new Map())
   const params = useParams()
+
+  const policyEnabled = useIsSplitOn(Features.POLICY_MANAGEMENT)
 
   const tableQuery = useTableQuery({
     useQuery: useMacRegListsQuery,
@@ -58,41 +61,28 @@ export default function MacRegistrationListsTable () {
     if (tableQuery.isLoading)
       return
 
-    const policySets = new Map()
-    const venues = new Map()
-
-    tableQuery.data?.data.forEach(macPools => {
-      const { id, policySetId, networkIds } = macPools
-      if (policySetId) {
-        getAdaptivePolicySet({ params: { policyId: policySetId } })
-          .then(result => {
-            if (result.data) {
-              policySets.set(policySetId, result.data.name)
-            }
-          })
-      }
-
-      if(networkIds && networkIds.length > 0) {
-        getNetworkList({
-          params,
-          payload: {
-            fields: [ 'venues', 'id' ],
-            filters: { id: networkIds && networkIds?.length > 0 ? networkIds : [''] }
-          } }).then(result => {
-          if (result.data?.data) {
-            const venuesNameSet = new Set()
-            result.data.data.forEach(v => {
-              v.venues.names.forEach(n => {
-                venuesNameSet.add(n)
-              })
-            })
-            venues.set(id, Array.from(venuesNameSet))
-          }
-        })
-      }
+    getNetworkList({
+      params,
+      payload: {
+        fields: [ 'venues', 'id' ]
+      } }).then(result => {
+      const networkList = new Map()
+      result.data?.data.forEach(n => networkList.set(n.id, n.venues.names))
+      setNetworkVenuesMap(networkList)
     })
-    setPolicySetMap(policySets)
-    setVenuesMap(venues)
+
+    if(policyEnabled) {
+      tableQuery.data?.data.forEach(macPools => {
+        const { policySetId } = macPools
+        if (policySetId) {
+          getAdaptivePolicySet({ params: { policyId: policySetId } })
+            .then(result => {
+              // eslint-disable-next-line max-len
+              setPolicySetMap(map => new Map(map.set(policySetId, result.data?.name ?? policySetId)))
+            })
+        }
+      })
+    }
   }, [tableQuery.data])
 
   function useColumns () {
@@ -130,14 +120,14 @@ export default function MacRegistrationListsTable () {
         key: 'defaultAccess',
         dataIndex: 'defaultAccess'
       },
-      {
+      ...(policyEnabled) ? [{
         title: $t({ defaultMessage: 'Access Policy Set' }),
         key: 'policySet',
         dataIndex: 'policySet',
-        render: function (data, row) {
+        render: function (data:ReactNode, row:MacRegistrationPool) {
           return row.policySetId ? policySetMap.get(row.policySetId) : ''
         }
-      },
+      }]: [],
       {
         title: $t({ defaultMessage: 'MAC Addresses' }),
         key: 'registrationCount',
@@ -162,9 +152,14 @@ export default function MacRegistrationListsTable () {
         dataIndex: 'venueCount',
         align: 'center',
         render: function (data, row) {
-          if(!venuesMap.has(row.id) || venuesMap.get(row.id).length === 0) return 0
-          // eslint-disable-next-line max-len
-          return <SimpleListTooltip items={venuesMap.get(row.id)} displayText={venuesMap.get(row.id).length} />
+          if(networkVenuesMap.size > 0) {
+            // eslint-disable-next-line max-len
+            const venueNames = row.networkIds?.map(id => networkVenuesMap.get(id)).flat().filter(item => item)
+            const toolTipItems: string [] = Array.from(new Set(venueNames))
+            return toolTipItems.length === 0 ? 0 :
+              <SimpleListTooltip items={toolTipItems} displayText={toolTipItems.length}/>
+          }
+          return 0
         }
       }
     ]

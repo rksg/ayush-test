@@ -5,6 +5,7 @@ import { useIntl }                           from 'react-intl'
 import { useParams }                         from 'react-router-dom'
 
 import { Card, Loader }              from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   useGetMacRegListQuery,
   useLazyGetAdaptivePolicySetQuery
@@ -24,8 +25,10 @@ export function MacRegistrationListOverviewTab () {
 
   const [ getAdaptivePolicySet ] = useLazyGetAdaptivePolicySetQuery()
 
+  const policyEnabled = useIsSplitOn(Features.POLICY_MANAGEMENT)
+
   useEffect(() => {
-    if(data?.policySetId) {
+    if(policyEnabled && data?.policySetId) {
       getAdaptivePolicySet({ params: { policyId: data.policySetId } })
         .then(result => {
           if (result.data) {
@@ -73,13 +76,15 @@ export function MacRegistrationListOverviewTab () {
                   <Paragraph>{data?.defaultAccess ?? ''}</Paragraph>
                 </Form.Item>
               </Col>
-              <Col span={6}>
-                <Form.Item
-                  label={$t({ defaultMessage: 'Access Policy Set' })}
-                >
-                  <Paragraph>{policySetName}</Paragraph>
-                </Form.Item>
-              </Col>
+              {policyEnabled &&
+                <Col span={6}>
+                  <Form.Item
+                    label={$t({ defaultMessage: 'Access Policy Set' })}
+                  >
+                    <Paragraph>{policySetName}</Paragraph>
+                  </Form.Item>
+                </Col>
+              }
             </Row>
           </Form>
         </Loader>
