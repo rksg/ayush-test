@@ -18,7 +18,7 @@ export const ClientUrlsInfo: { [key: string]: ApiInfo } = {
     // method: 'get',
     // url: '/clients/:clientId/query',
     // oldUrl: '/api/viewmodel/:tenantId/client/:clientId',
-    // newApi: false
+    // newApi: true
     method: 'get',
     url: '/api/viewmodel/:tenantId/client/:clientId'
   },

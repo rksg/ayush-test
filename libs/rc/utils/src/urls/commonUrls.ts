@@ -11,10 +11,12 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getNetworksDetailHeader: {
     // [New API] Path variable not match
+    // method: 'get',
+    // url: '/networks/:networkId/headerDetails',
+    // oldUrl: '/api/viewmodel/:tenantId/network/:networkId/detailheader',
+    // newApi: true
     method: 'get',
-    url: '/networks/:networkId/headerDetails',
-    oldUrl: '/api/viewmodel/:tenantId/network/:networkId/detailheader',
-    newApi: false
+    url: '/api/viewmodel/:tenantId/network/:networkId/detailheader'
   },
   getNetworksVenuesList: {
     method: 'post',
@@ -202,10 +204,12 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getVenueCityList: {
     // [New API] 404 Not Found
+    // method: 'post',
+    // url: '/venues/citylist/query',
+    // oldUrl: '/api/viewmodel/:tenantId/venue/citylist',
+    // newApi: true
     method: 'post',
-    url: '/venues/citylist/query',
-    oldUrl: '/api/viewmodel/:tenantId/venue/citylist',
-    newApi: false
+    url: '/api/viewmodel/:tenantId/venue/citylist'
   },
   getVenueSettings: {
     method: 'get',
