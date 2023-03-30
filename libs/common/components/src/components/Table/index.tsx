@@ -23,7 +23,7 @@ import {
   MIN_SEARCH_LENGTH
 } from './filters'
 import { useGroupBy, GroupSelect }      from './groupBy'
-import { OptionButton }                 from './OptionButton'
+import { IconButton }                   from './IconButton'
 import { ResizableColumn }              from './ResizableColumn'
 import * as UI                          from './styledComponents'
 import { settingsKey, useColumnsState } from './useColumnsState'
@@ -36,7 +36,7 @@ import type {
   ColumnStateOption,
   TableAction,
   TableRowAction,
-  OptionButtonProps
+  IconButtonProps
 } from './types'
 import type { ParamsType }        from '@ant-design/pro-provider'
 import type { SettingOptionType } from '@ant-design/pro-table/lib/components/ToolBar'
@@ -76,7 +76,7 @@ export interface TableProps <RecordType>
       search: { searchString?: string, searchTargetFields?: string[] },
       groupBy?: string | undefined
     ) => void
-    optionButton?: OptionButtonProps
+    iconButton?: IconButtonProps
   }
 
 export interface TableHighlightFnArgs {
@@ -113,7 +113,7 @@ function useSelectedRowKeys <RecordType> (
 // following the same typing from antd
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Table <RecordType extends Record<string, any>> ({
-  type = 'tall', columnState, enableApiFilter, optionButton, onFilterChange, ...props
+  type = 'tall', columnState, enableApiFilter, iconButton, onFilterChange, ...props
 }: TableProps<RecordType>) {
   const { dataSource } = props
   const rowKey = (props.rowKey ?? 'key')
@@ -259,7 +259,7 @@ function Table <RecordType extends Record<string, any>> ({
 
   const hasRowSelected = Boolean(selectedRowKeys.length)
   const hasHeader = !hasRowSelected &&
-    (Boolean(filterables.length) || Boolean(searchables.length) || Boolean(optionButton))
+    (Boolean(filterables.length) || Boolean(searchables.length) || Boolean(iconButton))
   const rowSelection: TableProps<RecordType>['rowSelection'] = props.rowSelection ? {
     ..._.omit(props.rowSelection, 'defaultSelectedRowKeys'),
     selectedRowKeys,
@@ -416,7 +416,7 @@ function Table <RecordType extends Record<string, any>> ({
               }}>
               {$t({ defaultMessage: 'Clear Filters' })}
             </Button>}
-          { type === 'tall' && optionButton && <OptionButton {...optionButton}/> }
+          { type === 'tall' && iconButton && <IconButton {...iconButton}/> }
         </UI.HeaderComps>
       </UI.Header>
     )}

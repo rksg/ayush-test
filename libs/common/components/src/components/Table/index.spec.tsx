@@ -605,11 +605,11 @@ describe('Table component', () => {
     expect(rowActions[1].onClick).toBeCalled()
   })
 
-  it('should render option button', () => {
+  it('should render icon button', () => {
     render(<Table
       columns={testColumns}
       dataSource={testData}
-      optionButton={{ icon: <DownloadOutlined /> }}
+      iconButton={{ icon: <DownloadOutlined /> }}
     />)
     expect(screen.getByTestId('DownloadOutlined')).toBeVisible()
   })

@@ -227,9 +227,9 @@ export function FilteredTable () {
       rowActions={rowActions}
       dataSource={data}
       rowSelection={{ defaultSelectedRowKeys: [] }}
-      optionButton={{
+      iconButton={{
         icon: <DownloadOutlined />,
-        onClick: () => console.log('Option Button Clicked!') // eslint-disable-line no-console
+        onClick: () => console.log('Icon Button Clicked!') // eslint-disable-line no-console
       }}
     />
     without selection:

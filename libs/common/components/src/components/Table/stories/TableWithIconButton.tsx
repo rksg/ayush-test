@@ -13,31 +13,31 @@ const basicData = [
   { key: '2', name: 'Jane Doe', age: 33, address: 'new address' }
 ]
 
-export function TableWithOptionButton () {
+export function TableWithIconButton () {
   return (<>
-    Table With Option Button
+    Table With Icon Button
     <Table
       columns={basicColumns}
       dataSource={basicData}
-      optionButton={{
+      iconButton={{
         icon: <DownloadOutlined />,
-        onClick: () => console.log('Option Button Clicked!') // eslint-disable-line no-console
+        onClick: () => console.log('Icon Button Clicked!') // eslint-disable-line no-console
       }}
     />
-    Table With Disabled Option Button
+    Table With Disabled Icon Button
     <Table
       columns={basicColumns}
       dataSource={basicData}
-      optionButton={{
+      iconButton={{
         icon: <DownloadOutlined />,
         disabled: true
       }}
     />
-    Table With Option Button with Menu
+    Table With Icon Button with Menu
     <Table
       columns={basicColumns}
       dataSource={basicData}
-      optionButton={{
+      iconButton={{
         icon: <MoreVertical />,
         dropdownMenu: {
           items: [

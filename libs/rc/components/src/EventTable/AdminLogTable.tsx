@@ -112,7 +112,7 @@ const AdminLogTable = ({ tableQuery }: AdminLogTableProps) => {
       onChange={tableQuery.handleTableChange}
       onFilterChange={tableQuery.handleFilterChange}
       enableApiFilter={true}
-      optionButton={{ icon: <DownloadOutlined />, disabled, onClick: exportCsv }}
+      iconButton={{ icon: <DownloadOutlined />, disabled, onClick: exportCsv }}
       columnState={{ hidden: true }}
     />
     {visible && <TimelineDrawer

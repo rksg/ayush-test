@@ -142,7 +142,7 @@ export type TableRowAction<RecordType> = {
   onClick: (selectedItems: RecordType[], clearSelection: () => void) => void
 }
 
-export type OptionButtonProps = {
+export type IconButtonProps = {
   key?: string
   icon: React.ReactNode
   disabled?: boolean

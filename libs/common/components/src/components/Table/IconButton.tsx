@@ -3,9 +3,9 @@ import { Menu } from 'antd'
 import { Button }   from '../Button'
 import { Dropdown } from '../Dropdown'
 
-import { OptionButtonProps } from './types'
+import { IconButtonProps } from './types'
 
-export const OptionButton = (props: OptionButtonProps) => {
+export const IconButton = (props: IconButtonProps) => {
   const button = <Button
     icon={props.icon}
     onClick={props.onClick}

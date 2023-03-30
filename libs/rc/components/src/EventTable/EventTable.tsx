@@ -163,7 +163,7 @@ export const EventTable = ({
       onChange={tableQuery.handleTableChange}
       onFilterChange={tableQuery.handleFilterChange}
       enableApiFilter={true}
-      optionButton={{ icon: <DownloadOutlined />, disabled, onClick: exportCsv }}
+      iconButton={{ icon: <DownloadOutlined />, disabled, onClick: exportCsv }}
     />
     {visible && <TimelineDrawer
       title={defineMessage({ defaultMessage: 'Event Details' })}
