@@ -28,6 +28,12 @@ export enum AccountType {
   MSP_INSTALLER = 'MSP_INSTALLER'
 }
 
+export enum PverName {
+  ACX = 'acx',
+  ACX_HYBRID = 'acx-hybrid',
+  R1 = 'ruckus-one'
+}
+
 interface JwtToken {
   swuId?: string
   tenantType?: AccountType
