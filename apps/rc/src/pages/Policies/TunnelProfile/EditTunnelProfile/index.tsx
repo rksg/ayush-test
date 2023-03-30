@@ -4,9 +4,11 @@ import { useEffect } from 'react'
 import { Col, Form, Row } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { PageHeader, StepsFormNew } from '@acx-ui/components'
-import { TunnelProfileForm }        from '@acx-ui/rc/components'
+import { PageHeader, StepsFormNew }                                 from '@acx-ui/components'
+import { TunnelProfileForm }                                        from '@acx-ui/rc/components'
+import { useGetTunnelProfileQuery, useUpdateTunnelProfileMutation } from '@acx-ui/rc/services'
 import {
+  getPolicyDetailsLink,
   getPolicyRoutePath,
   LocationExtended,
   MtuTypeEnum,
@@ -15,12 +17,13 @@ import {
   redirectPreviousPage,
   TunnelProfile
 } from '@acx-ui/rc/utils'
-import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 const EditTunnelProfile = () => {
 
   const { $t } = useIntl()
   const navigate = useNavigate()
+  const params = useParams()
   const location = useLocation()
   const previousPath = (location as LocationExtended)?.state?.from?.pathname
   const tablePath = getPolicyRoutePath({
@@ -28,16 +31,18 @@ const EditTunnelProfile = () => {
     oper: PolicyOperation.LIST
   })
   const linkToTableView = useTenantLink(tablePath)
-  // TODO need get tunnel profile data and update tunnel api
   const [form] = Form.useForm()
+  const { data: tunnelProfileData } = useGetTunnelProfileQuery({ params: { id: params.policyId } })
+  const [updateTunnelProfile] = useUpdateTunnelProfileMutation()
 
   useEffect(() => {
-
-  }, [])// TODO should watch tunnel profile data
+    form.setFieldsValue(tunnelProfileData)
+  }, [tunnelProfileData])
 
   const handleUpdateTunnelProfile = async (data: TunnelProfile) => {
     try {
-      // await createTunnelProfile({ payload: data }).unwrap()
+      let pathParams = { id: params.policyId }
+      await updateTunnelProfile({ params: pathParams, payload: data }).unwrap()
       redirectPreviousPage(navigate, previousPath, linkToTableView)
     } catch (error) {
       // TODO Error message TBD
@@ -54,8 +59,12 @@ const EditTunnelProfile = () => {
             link: tablePath
           },
           {
-            text: '', // TODO tunnel name
-            link: '' // TODO tunnel detail page link
+            text: tunnelProfileData?.name || '', // TODO tunnel name
+            link: getPolicyDetailsLink({
+              type: PolicyType.TUNNEL_PROFILE,
+              oper: PolicyOperation.DETAIL,
+              policyId: tunnelProfileData?.id || ''
+            })
           }
         ]}
       />
