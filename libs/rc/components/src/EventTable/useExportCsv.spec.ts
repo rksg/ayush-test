@@ -12,12 +12,17 @@ jest.mock('react-router-dom', () => ({
 
 jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user'),
-  useUserProfileContext: () => ({ data: { detailLevel: 'debug', dateFormat: 'mm/dd/yyyy' } })
+  useUserProfileContext: () => ({ data: {
+    detailLevel: 'debug',
+    dateFormat: 'mm/dd/yyyy',
+    support: false
+  } })
 }))
 
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
-  useDateFilter: () => ({ startDate: '2021-12-31T23:00:00Z', endDate: '2022-01-01T00:00:00Z' })
+  useDateFilter: () => ({ startDate: '2021-12-31T23:00:00Z', endDate: '2022-01-01T00:00:00Z' }),
+  useTenantId: () => 'tenantId'
 }))
 
 const mockDownloadCsv = jest.fn()
@@ -36,13 +41,14 @@ describe('useExportCsv', () => {
   })
 
   const fields = ['field1', 'field2']
+
   it('should return disabled = false if there is data', () => {
     const tableQuery = { data: { data: [{} as Event] }
     } as TableQuery<Event, RequestPayload<unknown>, unknown>
     const { result } = renderHook(() => useExportCsv(tableQuery, fields))
     expect(result.current.disabled).toBe(false)
   })
-  it('should return disabled = false if there is no data', () => {
+  it('should return disabled = true if there is no data', () => {
     const tableQuery = { data: {} } as TableQuery<Event, RequestPayload<unknown>, unknown>
     const { result } = renderHook(() => useExportCsv(tableQuery, fields))
     expect(result.current.disabled).toBe(true)
@@ -58,7 +64,8 @@ describe('useExportCsv', () => {
           fromTime: '2021-12-31T23:00:00Z',
           toTime: '2022-01-01T00:00:00Z'
         }
-      }
+      },
+      sorter: { sortField: 'event_datetime', sortOrder: 'DESC' }
     } as unknown as TableQuery<Event, RequestPayload<unknown>, unknown>
     const { result } = renderHook(() => useExportCsv(tableQuery, fields))
     result.current.exportCsv()
