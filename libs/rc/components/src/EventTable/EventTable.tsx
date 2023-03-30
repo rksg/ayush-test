@@ -33,7 +33,6 @@ interface EventTableProps {
   searchables?: boolean | string[]
   filterables?: boolean | string[]
   eventTypeMap?: Partial<typeof eventTypeMapping>
-  detailLevel?: string
   columnState?: TableProps<Event>['columnState']
   omitColumns?: string[]
 }
