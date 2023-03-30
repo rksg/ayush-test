@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { Checkbox, Form, Input, Select, Space, Switch } from 'antd'
 import { DefaultOptionType }                            from 'antd/lib/select'
 import _                                                from 'lodash'
-import { defineMessage }                                from 'react-intl'
 
 import {
   Button,
@@ -69,20 +68,14 @@ import {
   getVlanOptions,
   sortOptions,
   PortVlan,
-  MultipleText
+  MultipleText,
+  getPoeClass
 } from './editPortDrawer.utils'
 import { LldpQOSTable }    from './lldpQOSTable'
 import { SelectVlanModal } from './selectVlanModal'
 import * as UI             from './styledComponents'
 
-const poeClassOptions = [
-  { label: defineMessage({ defaultMessage: 'Negotiate' }), value: 'UNSET' },
-  { label: defineMessage({ defaultMessage: '0 (802.3af 15.4 W)' }), value: 'ZERO' },
-  { label: defineMessage({ defaultMessage: '1 (802.3af 4.0 W)' }), value: 'ONE' },
-  { label: defineMessage({ defaultMessage: '2 (802.3af 7.0 W)' }), value: 'TWO' },
-  { label: defineMessage({ defaultMessage: '3 (802.3af 15.4 W)' }), value: 'THREE' },
-  { label: defineMessage({ defaultMessage: '4 (802.3af 30 W)' }), value: 'FOUR' }
-]
+
 
 const poePriorityOptions = [
   { label: '1', value: 1 },
@@ -145,8 +138,9 @@ export function EditPortDrawer ({
     ipsg,
     lldpQosCheckbox,
     ingressAclCheckbox,
-    egressAclCheckbox,
-    tagsCheckbox
+    egressAclCheckbox
+    // TODO: Waiting for TAG feature support
+    // tagsCheckbox
   } = (useWatch([], form) ?? {})
 
   const { tenantId, venueId, serialNumber } = useParams()
@@ -735,6 +729,17 @@ export function EditPortDrawer ({
         labelAlign='left'
         onValuesChange={onValuesChange}
       >
+        { !isMultipleEdit && getFieldTemplate(
+          <Form.Item
+            {...getFormItemLayout(isMultipleEdit)}
+            name='name'
+            label={$t({ defaultMessage: 'Port Name' })}
+            initialValue=''
+            children={<Input />}
+          />,
+          'name', $t({ defaultMessage: 'Port Name' })
+        )}
+
         { getFieldTemplate(
           <Form.Item
             noStyle
@@ -799,7 +804,8 @@ export function EditPortDrawer ({
             children={isMultipleEdit && !poeClassCheckbox && hasMultipleValue.includes('poeClass')
               ? <MultipleText />
               : <Select
-                options={poeClassOptions?.map(p => ({ label: $t(p.label), value: p.value }))}
+                options={getPoeClass(selectedPorts).map(
+                  p => ({ label: $t(p.label), value: p.value }))}
                 disabled={getFieldDisabled('poeClass')}
               />}
           />,
@@ -1244,7 +1250,7 @@ export function EditPortDrawer ({
           'egressAcl', $t({ defaultMessage: 'Egress ACL' })
         )}
 
-        { getFieldTemplate(
+        {/* { getFieldTemplate( TODO: Waiting for TAG feature support
           <Form.Item
             {...getFormItemLayout(isMultipleEdit)}
             name='tags'
@@ -1256,7 +1262,7 @@ export function EditPortDrawer ({
             }
           />,
           'tags', $t({ defaultMessage: 'Tags' })
-        )}
+        )} */}
 
       </UI.Form>
 

@@ -50,7 +50,15 @@ export function BonjourFencing () {
   const onInit = (data?: VenueBonjourFencingPolicy, needToSetInitData=false) => {
     const { enabled=false, services = [] } = data || {}
     setEnableBonjourFencing(enabled)
-    const newData = updateRowIds(services)
+    const newData = updateRowIds(services).sort((a, b) => {
+      const serviceA = a.service
+      const serviceB = b.service
+
+      if (serviceA > serviceB) return -1
+      if (serviceA < serviceB) return 1
+
+      return 0
+    })
     setBonjourFencingServices(newData)
 
     if (needToSetInitData) {
@@ -96,7 +104,7 @@ export function BonjourFencing () {
           content:
               $t({ defaultMessage:
                 // eslint-disable-next-line max-len
-                'You must have at least one Bonjour Fencing Service when the Use Bonjour Fencing Service button is Enabled' })
+                'You must have at least one mDNS Fencing Service when the Use mDNS Fencing Service button is Enabled' })
         })
 
         await discardBonjourFencingSettings()
@@ -177,7 +185,7 @@ export function BonjourFencing () {
         <Row>
           <Col span={5}>
             <StepsForm.FieldLabel width='200px'>
-              { $t({ defaultMessage: 'Use Bonjour Fencing Service' }) }
+              { $t({ defaultMessage: 'Use mDNS Fencing Service' }) }
               <Form.Item
                 valuePropName='checked'
                 children={

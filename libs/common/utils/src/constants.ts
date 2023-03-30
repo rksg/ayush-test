@@ -10,3 +10,5 @@ export const directedMulticastInfo = defineMessage({
 })
 
 export const TABLE_DEFAULT_PAGE_SIZE = 10
+
+export const noDataDisplay = '--' as const

@@ -82,6 +82,7 @@ export default function DpskTable () {
       dataIndex: 'name',
       sorter: true,
       defaultSortOrder: 'ascend',
+      fixed: 'left',
       render: function (data, row) {
         return (
           <TenantLink

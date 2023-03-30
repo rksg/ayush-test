@@ -63,7 +63,8 @@ const SnmpV2AgentDrawer = (props: SnmpV2AgentDrawerProps) => {
       }
       style={{ width: '350px' }}
       rules={[
-        { required: true },
+        { required: true,
+          message: $t({ defaultMessage: 'Please enter Community Name' }) },
         { min: 1 },
         { max: 32 },
         { validator: (_, value) => {

@@ -49,10 +49,10 @@ export function ServerTab () {
 
   if (supportBonjourFencing) {
     items.push({
-      title: $t({ defaultMessage: 'Bonjour Fencing' }),
+      title: $t({ defaultMessage: 'mDNS Fencing' }),
       content: <>
         <StepsForm.SectionTitle id='bonjour-fencing'>
-          { $t({ defaultMessage: 'Bonjour Fencing' }) }
+          { $t({ defaultMessage: 'mDNS Fencing' }) }
         </StepsForm.SectionTitle>
         <BonjourFencing />
       </>

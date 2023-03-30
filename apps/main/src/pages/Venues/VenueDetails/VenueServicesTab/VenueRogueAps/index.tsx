@@ -85,7 +85,8 @@ export function VenueRogueAps () {
         key: 'rogueMac',
         title: intl.$t({ defaultMessage: 'BSSID' }),
         dataIndex: 'rogueMac',
-        searchable: true
+        searchable: true,
+        fixed: 'left'
       },
       {
         key: 'category',
