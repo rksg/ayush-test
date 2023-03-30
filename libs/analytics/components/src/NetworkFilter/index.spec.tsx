@@ -4,7 +4,7 @@ import { DefaultOptionType } from 'antd/lib/select'
 import { defaultNetworkPath }                           from '@acx-ui/analytics/utils'
 import { dataApiURL, Provider, store }                  from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, fireEvent  } from '@acx-ui/test-utils'
-import { DateRange, NetworkPath }                       from '@acx-ui/utils'
+import { DateRange }                                    from '@acx-ui/utils'
 
 import { api as incidentApi } from '../IncidentTable/services'
 
