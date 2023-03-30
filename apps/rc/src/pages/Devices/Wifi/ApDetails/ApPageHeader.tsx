@@ -83,7 +83,8 @@ function ApPageHeader () {
     />
   )
 
-  const enableTimeFilter = () => !['clients', 'networks', 'troubleshooting'].includes(activeTab as string)
+  const enableTimeFilter = () =>
+    !['clients', 'networks', 'troubleshooting'].includes(activeTab as string)
 
   return (
     <PageHeader
@@ -94,14 +95,14 @@ function ApPageHeader () {
       ]}
       extra={filterByAccess([
         enableTimeFilter()
-        ? <RangePicker
-          key='date-filter'
-          selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
-          onDateApply={setDateFilter as CallableFunction}
-          showTimePicker
-          selectionType={range}
-        />
-        : <></>,
+          ? <RangePicker
+            key='date-filter'
+            selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
+            onDateApply={setDateFilter as CallableFunction}
+            showTimePicker
+            selectionType={range}
+          />
+          : <></>,
         <Dropdown overlay={menu}>
           <Button>
             <Space>
