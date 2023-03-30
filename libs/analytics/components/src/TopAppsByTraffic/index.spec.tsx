@@ -28,7 +28,7 @@ describe('TopAppsByTrafficWidget', () => {
     })
     render( <Provider> <TopAppsByTraffic filters={filters}/></Provider>)
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
-    await screen.findByText('Top 5 Applications by Traffic')
+    await screen.findByText('Top Applications by Traffic')
 
   })
 
