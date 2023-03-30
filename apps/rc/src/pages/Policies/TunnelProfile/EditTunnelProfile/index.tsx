@@ -59,7 +59,7 @@ const EditTunnelProfile = () => {
             link: tablePath
           },
           {
-            text: tunnelProfileData?.name || '', // TODO tunnel name
+            text: tunnelProfileData?.name || '',
             link: getPolicyDetailsLink({
               type: PolicyType.TUNNEL_PROFILE,
               oper: PolicyOperation.DETAIL,
