@@ -156,10 +156,7 @@ function CloudpathFormItems () {
                 </Radio>
                 <FieldSpace>
                   <Radio value={DeviceNumberType.LIMITED}>
-                    {$t(
-                      { defaultMessage: 'Limited to...' },
-                      { max: MAX_DEVICES_PER_PASSPHRASE }
-                    )}
+                    {$t({ defaultMessage: 'Limited to...' })}
                   </Radio>
                   {deviceNumberType === DeviceNumberType.LIMITED &&
                     <Form.Item
