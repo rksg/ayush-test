@@ -1,13 +1,16 @@
+import { omit }                                      from 'lodash'
 import { defineMessage, useIntl, MessageDescriptor } from 'react-intl'
 import { useNavigate, useParams }                    from 'react-router-dom'
 
-import { Tabs }         from '@acx-ui/components'
+import { Tabs }      from '@acx-ui/components'
 import {
   ActivityTable,
-  columnState,
+  activityTableColumnState,
   EventTable,
+  eventTableColumnState,
   useActivityTableQuery,
-  useEventsTableQuery
+  useEventsTableQuery,
+  eventTypeMapping
 } from '@acx-ui/rc/components'
 import { TimelineTypes } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
@@ -15,7 +18,12 @@ import { useTenantLink } from '@acx-ui/react-router-dom'
 const Events = () => {
   const { networkId } = useParams()
   const tableQuery = useEventsTableQuery({ networkId: [networkId] })
-  return <EventTable tableQuery={tableQuery} filterables={['severity', 'entity_type']}/>
+  return <EventTable
+    tableQuery={tableQuery}
+    filterables={['severity', 'entity_type']}
+    eventTypeMap={omit(eventTypeMapping, 'SWITCH')}
+    columnState={{ defaultValue: { ...eventTableColumnState, product: false } }}
+  />
 }
 
 const Activities = () => {
@@ -25,7 +33,7 @@ const Activities = () => {
   return <ActivityTable
     tableQuery={tableQuery}
     filterables={['status']}
-    columnState={columnState}
+    columnState={activityTableColumnState}
   />
 }
 

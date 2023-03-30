@@ -216,7 +216,7 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
 
 
     <Subtitle level={4} style={{ marginTop: '20px' }}>
-      { $t({ defaultMessage: 'Select customer accounts to assign to this integrator:' }) }
+      { $t({ defaultMessage: 'Select customer accounts to assign to this tech partner:' }) }
     </Subtitle>
 
     <CustomerTable />

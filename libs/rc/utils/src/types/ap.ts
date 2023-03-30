@@ -398,6 +398,24 @@ export interface ApDirectedMulticast {
   networkEnabled: boolean
 }
 
+
+export interface APExtendedGrouped extends APExtended {
+  networks: {
+    count: number
+    names: string[]
+  }
+  members: number
+  incidents: number
+  deviceGroupId: string
+  deviceGroupName: string
+  deviceStatus: string
+  model: string
+  clients: number
+  name?: string
+  aps: APExtended[],
+  children?: APExtended[],
+  id?: number | string
+}
 export type ImportErrorRes = {
   errors: {
     code: number

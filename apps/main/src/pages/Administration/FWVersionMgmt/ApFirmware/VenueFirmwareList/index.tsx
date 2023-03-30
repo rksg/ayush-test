@@ -80,8 +80,8 @@ function useColumns (
       dataIndex: 'name',
       // sorter: true,
       sorter: { compare: sortProp('name', defaultSort) },
+      defaultSortOrder: 'ascend',
       searchable: searchable,
-      // defaultSortOrder: 'ascend',
       render: function (data, row) {
         return row.name
       }
@@ -131,6 +131,7 @@ function useColumns (
       dataIndex: 'nextSchedule',
       // sorter: false,
       sorter: { compare: sortProp('nextSchedules[0].startDateTime', dateSort) },
+      defaultSortOrder: 'ascend',
       render: function (data, row) {
         return (!isNextScheduleTooltipDisabled(row)
           ? getApNextScheduleTpl(intl, row)
@@ -252,7 +253,7 @@ export const VenueFirmwareTable = (
     visible: (selectedRows) => {
       let eolAp = false
       let allEolFwlatest = true
-      for (let v of venues) {
+      for (let v of selectedRows) {
         if (v['eolApFirmwares']) {
           eolAp = true
           if (allEolFwlatest) {
@@ -312,7 +313,7 @@ export const VenueFirmwareTable = (
       let eolName = ''
       let latestEolVersion = ''
       let eolModels: string[] = []
-      for (let v of venues) {
+      for (let v of selectedRows) {
         if (v['eolApFirmwares']) {
           eolAp = true
           eolName = v['eolApFirmwares'][0].name
@@ -523,6 +524,7 @@ export const VenueFirmwareTable = (
     ]}>
       <Table
         columns={columns}
+        columnState={{ hidden: true }}
         dataSource={tableData}
         // eslint-disable-next-line max-len
         pagination={{ pageSize: 10000, position: [pageBotton as TablePaginationPosition , pageBotton as TablePaginationPosition] }}

@@ -168,7 +168,7 @@ export function PortalSummaryForm (props: {
       }
       {summaryData.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.Cloudpath&&
         <Form.Item
-          label={$t({ defaultMessage: 'Ruckus DHCP Service:' })}
+          label={$t({ defaultMessage: 'RUCKUS DHCP Service:' })}
           children={summaryData.enableDhcp?$t({ defaultMessage: 'Yes' }):
             $t({ defaultMessage: 'No' })}
         />

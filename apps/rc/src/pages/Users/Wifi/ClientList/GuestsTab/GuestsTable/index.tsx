@@ -217,6 +217,7 @@ export const GuestsTable = (props: { dateFilter: GuestDateFilter }) => {
       dataIndex: 'creationDate',
       sorter: true,
       defaultSortOrder: 'ascend',
+      fixed: 'left',
       render: (data, row) =>
         <Button
           type='link'

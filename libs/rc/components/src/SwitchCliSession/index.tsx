@@ -21,7 +21,7 @@ export function SwitchCliSession (props: {
   const { setIsModalOpen, modalState, switchName } = props
 
   // eslint-disable-next-line max-len
-  const bannerMsg = $t({ defaultMessage: 'Telnet inside encrypted NATS session. Configuration changes made via CLI session may take up to 5 minutes to get updated on Ruckus Cloud interface.' })
+  const bannerMsg = $t({ defaultMessage: 'Telnet inside encrypted NATS session. Configuration changes made via CLI session may take up to 5 minutes to get updated on RUCKUS One interface.' })
   const title = $t({ defaultMessage: 'CLI Session - {switchName}' }, { switchName })
 
   const [bounds, setBounds] = useState({
