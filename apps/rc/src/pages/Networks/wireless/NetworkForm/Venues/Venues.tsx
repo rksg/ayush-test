@@ -9,7 +9,8 @@ import {
   Loader,
   StepsForm,
   Table,
-  TableProps
+  TableProps,
+  Tooltip
 } from '@acx-ui/components'
 import {
   NetworkApGroupDialog,
@@ -89,6 +90,8 @@ export function Venues () {
   const params = useParams()
 
   const { $t } = useIntl()
+  // eslint-disable-next-line max-len
+  let dhcpTooltip = $t({ defaultMessage: 'You cannot activate the DHCP service on this venue because it already enabled mesh setting' })
   const tableQuery = useTableQuery({
     useQuery: useNetworkVenueListQuery,
     apiParams: { networkId: getNetworkId() },
@@ -141,12 +144,24 @@ export function Venues () {
   const rowActions: TableProps<Venue>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Activate' }),
+      visible: (selectedRows) => {
+        const enabled = selectedRows.some((item)=>{
+          return item.mesh.enabled && (data && data.enableDhcp)
+        })
+        return !enabled
+      },
       onClick: (rows) => {
         handleActivateVenue(true, rows)
       }
     },
     {
       label: $t({ defaultMessage: 'Deactivate' }),
+      visible: (selectedRows) => {
+        const enabled = selectedRows.some((item)=>{
+          return item.mesh.enabled && (data && data.enableDhcp)
+        })
+        return !enabled
+      },
       onClick: (rows) => {
         handleActivateVenue(false, rows)
       }
@@ -228,14 +243,26 @@ export function Venues () {
       key: 'activated',
       title: $t({ defaultMessage: 'Activated' }),
       dataIndex: ['activated', 'isActivated'],
-      render: function (data, row) {
-        return <Switch
-          checked={Boolean(data)}
-          onClick={(checked, event) => {
-            event.stopPropagation()
-            handleActivateVenue(checked, [row])
-          }}
-        />
+      render: function (activated, row) {
+        let disabled = false
+        let title = dhcpTooltip
+        if(data && data.enableDhcp && row.mesh.enabled){
+          disabled = true
+        }else{
+          title = ''
+        }
+        return <Tooltip
+          // eslint-disable-next-line max-len
+          title={title}
+          placement='bottom'><Switch
+            disabled={disabled}
+            checked={Boolean(activated)}
+            onClick={(checked, event) => {
+              event.stopPropagation()
+              handleActivateVenue(checked, [row])
+            }}
+          /></Tooltip>
+
       }
     },
     {
