@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 import styled      from 'styled-components/macro'
 
-import { LayoutProps, LayoutUI, MenuItem }          from '@acx-ui/components'
+import { LayoutProps, LayoutUI }                    from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   AIOutlined as AIOutlinedBase,
@@ -14,6 +14,8 @@ import {
   DevicesSolid,
   LocationOutlined,
   LocationSolid,
+  LineChartOutline,
+  LineChartSolid,
   NetworksOutlined,
   NetworksSolid,
   ServicesOutlined,
@@ -31,24 +33,45 @@ const ServicesSolid = styled(ServicesSolidBase)`${LayoutUI.iconSolidOverride}`
 
 export function useMenuConfig () {
   const { $t } = useIntl()
-  const showSV = useIsSplitOn(Features.SERVICE_VALIDATION)
+  const showSV = useIsTierAllowed('ANLT-ADV')
+
   const earlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
-  // const isEdgeEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
+  const isSVEnabled = useIsSplitOn(Features.SERVICE_VALIDATION)
+  const isUserEnabled = useIsSplitOn(Features.USERS)
+  const isDeviceEnabled = useIsSplitOn(Features.DEVICES)
+  const isServiceEnabled = useIsSplitOn(Features.SERVICES)
+  const isPolicyEnabled = useIsSplitOn(Features.POLICIES)
   const isAdministrationEnabled = useIsSplitOn(Features.UNRELEASED) || earlyBetaEnabled
+  const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
+
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
 
   const config: LayoutProps['menuConfig'] = [
     {
-      key: 'dashboard',
       uri: '/dashboard',
       label: $t({ defaultMessage: 'Dashboard' }),
       inactiveIcon: SpeedIndicatorOutlined,
       activeIcon: SpeedIndicatorSolid,
       isActivePattern: ['/dashboard']
     },
+    ...(isAdmin ? [{
+      label: $t({ defaultMessage: 'Analytics & Reports' }),
+      inactiveIcon: AIOutlined,
+      activeIcon: AISolid,
+      isActivePattern: [
+        '/analytics',
+        '/serviceValidation'
+      ],
+      children: [
+        { uri: '/analytics/incidents', label: $t({ defaultMessage: 'Incidents' }) },
+        { uri: '/analytics/health', label: $t({ defaultMessage: 'Health' }) },
+        ...((showSV && isSVEnabled) ? [{
+          uri: '/serviceValidation/networkHealth', label: $t({ defaultMessage: 'Netowrk Health' })
+        }]:[])
+      ]
+    }]:[]),
     {
-      key: 'venues',
       uri: '/venues',
       label: $t({ defaultMessage: 'Venues' }),
       inactiveIcon: LocationOutlined,
@@ -56,49 +79,34 @@ export function useMenuConfig () {
       isActivePattern: ['/venues']
     },
     {
-      key: 'clients',
       label: $t({ defaultMessage: 'Clients' }),
       inactiveIcon: AccountCircleOutlined,
       activeIcon: AccountCircleSolid,
       isActivePattern: [
-        '/users/wifi/clients',
-        '/users/wifi/guests',
+        '/users/wifi',
         '/reports/clients',
-        '/users/switch/clients'
+        '/users/switch'
       ],
       children: [
         {
-          type: 'group',
+          type: 'group' as const,
           label: $t({ defaultMessage: 'Wireless' }),
           children: [
-            {
-              uri: '/users/wifi/clients',
-              label: $t({ defaultMessage: 'Wireless Clients List' })
-            } ,
-            {
-              uri: '/users/wifi/guests',
-              label: $t({ defaultMessage: 'Guest Pass Credentials' })
-            },
-            {
-              uri: '/reports/clients',
-              label: $t({ defaultMessage: 'Wireless Clients Report' })
-            }
+            { uri: '/users/wifi/clients', label: $t({ defaultMessage: 'Wireless Clients List' }) },
+            { uri: '/users/wifi/guests', label: $t({ defaultMessage: 'Guest Pass Credentials' }) },
+            { uri: '/reports/clients', label: $t({ defaultMessage: 'Wireless Clients Report' }) }
           ]
         },
-        {
-          type: 'group',
+        ...(isUserEnabled ? [{
+          type: 'group' as const,
           label: $t({ defaultMessage: 'Wired' }),
           children: [
-            {
-              uri: '/users/switch/clients',
-              label: $t({ defaultMessage: 'Wired Clients List' })
-            }
+            { uri: '/users/switch/clients', label: $t({ defaultMessage: 'Wired Clients List' }) }
           ]
-        }
-      ] as MenuItem[]
+        }]:[])
+      ]
     },
     {
-      key: 'wifi',
       label: $t({ defaultMessage: 'Wi-Fi' }),
       inactiveIcon: DevicesOutlined,
       activeIcon: DevicesSolid,
@@ -116,69 +124,24 @@ export function useMenuConfig () {
           type: 'group' as const,
           label: $t({ defaultMessage: 'Access Points' }),
           children: [
-            {
-              uri: '/devices/wifi',
-              label: $t({ defaultMessage: 'Access Point List' })
-            } ,
-            {
-              uri: '/reports/aps',
-              label: $t({ defaultMessage: 'AP Report' })
-            },
-            {
-              uri: '/reports/airtime',
-              label: $t({ defaultMessage: 'Airtime Utilization Report' })
-            }
+            { uri: '/devices/wifi', label: $t({ defaultMessage: 'Access Point List' }) } ,
+            { uri: '/reports/aps', label: $t({ defaultMessage: 'AP Report' }) },
+            { uri: '/reports/airtime', label: $t({ defaultMessage: 'Airtime Utilization Report' }) }
           ]
         },
         {
           type: 'group' as const,
           label: $t({ defaultMessage: 'Wi-Fi Networks' }),
           children: [
-            {
-              uri: '/networks/wireless',
-              label: $t({ defaultMessage: 'Wi-Fi Networks List' })
-            },
-            {
-              uri: '/reports/wlans',
-              label: $t({ defaultMessage: 'WLANs Report' })
-            },
-            {
-              uri: '/reports/applications',
-              label: $t({ defaultMessage: 'Applications Report' })
-            },
-            {
-              uri: '/reports/wireless',
-              label: $t({ defaultMessage: 'Wireless Report' })
-            }
-          ]
-        },
-        {
-          type: 'group' as const,
-          label: $t({ defaultMessage: 'Assurance' }),
-          children: [
-            ...(isAdmin ? [
-              {
-                uri: '/analytics/incidents',
-                label: $t({ defaultMessage: 'Incidents' })
-              },
-              {
-                uri: '/analytics/health',
-                label: $t({ defaultMessage: 'Health' })
-              }
-            ]:[]),
-            ...(useIsTierAllowed('ANLT-ADV') && isAdmin ? [
-              {
-                uri: '/serviceValidation/networkHealth',
-                label: $t({ defaultMessage: 'Netowrk Health' }),
-                disabled: !showSV
-              }
-            ]:[])
+            { uri: '/networks/wireless', label: $t({ defaultMessage: 'Wi-Fi Networks List' }) },
+            { uri: '/reports/wlans', label: $t({ defaultMessage: 'WLANs Report' }) },
+            { uri: '/reports/applications', label: $t({ defaultMessage: 'Applications Report' }) },
+            { uri: '/reports/wireless', label: $t({ defaultMessage: 'Wireless Report' }) }
           ]
         }
-      ].filter(item => item.children.length) as MenuItem[]
+      ]
     },
     {
-      key: 'wired',
       label: $t({ defaultMessage: 'Wired' }),
       inactiveIcon: NetworksOutlined,
       activeIcon: NetworksSolid,
@@ -189,22 +152,18 @@ export function useMenuConfig () {
       ],
       children: [
         {
-          type: 'group',
+          type: 'group' as const,
           label: $t({ defaultMessage: 'Switches' }),
           children: [
-            {
-              uri: '/devices/switch',
-              label: $t({ defaultMessage: 'Switch List' }),
-              disabled: !useIsSplitOn(Features.DEVICES)
-            } ,
-            {
-              uri: '/reports/wired',
-              label: $t({ defaultMessage: 'Wired Report' })
-            }
+            ...(isDeviceEnabled
+              ? [{ uri: '/devices/switch', label: $t({ defaultMessage: 'Switch List' }) }]
+              :[]
+            ),
+            { uri: '/reports/wired', label: $t({ defaultMessage: 'Wired Report' }) }
           ]
         },
         {
-          type: 'group',
+          type: 'group' as const,
           label: $t({ defaultMessage: 'Wired Network Profiles' }),
           children: [
             {
@@ -217,10 +176,9 @@ export function useMenuConfig () {
             }
           ]
         }
-      ] as MenuItem[]
+      ]
     },
     {
-      key: 'networkControl',
       label: $t({ defaultMessage: 'Network Control' }),
       inactiveIcon: ServicesOutlined,
       activeIcon: ServicesSolid,
@@ -229,93 +187,45 @@ export function useMenuConfig () {
         '/policies'
       ],
       children: [
-        {
-          uri: getServiceListRoutePath(true),
-          label: $t({ defaultMessage: 'My Services' }),
-          disabled: !useIsSplitOn(Features.SERVICES)
-        },
-        {
-          uri: getServiceCatalogRoutePath(true),
-          label: $t({ defaultMessage: 'Service Catalog' }),
-          disabled: !useIsSplitOn(Features.SERVICES)
-        },
-        {
-          uri: '/policies',
-          label: $t({ defaultMessage: 'Policies & Profiles' }),
-          disabled: !useIsSplitOn(Features.POLICIES)
-        }
-      ] as MenuItem[]
+        ...(isServiceEnabled ? [
+          {
+            uri: getServiceListRoutePath(true),
+            label: $t({ defaultMessage: 'My Services' })
+          },
+          {
+            uri: getServiceCatalogRoutePath(true),
+            label: $t({ defaultMessage: 'Service Catalog' })
+          }
+        ] :[]),
+        ...(isPolicyEnabled
+          ? [{ uri: '/policies', label: $t({ defaultMessage: 'Policies & Profiles' }) }]
+          : [])
+      ]
     },
     {
-      key: 'analytics',
-      label: $t({ defaultMessage: 'Analytics & Reports' }),
-      inactiveIcon: AIOutlined,
-      activeIcon: AISolid,
+      label: $t({ defaultMessage: 'Business Insights' }),
+      inactiveIcon: LineChartOutline,
+      activeIcon: LineChartSolid,
       isActivePattern: [
-        '/analytics',
-        '/serviceValidation',
         '/dataStudio',
         '/reports/overview'
       ],
       children: [
-        {
-          type: 'group' as const,
-          label: $t({ defaultMessage: 'Analytics' }),
-          children: [
-            ...(isAdmin ? [
-              {
-                uri: '/analytics/incidents',
-                label: $t({ defaultMessage: 'Incidents' })
-              },
-              {
-                uri: '/analytics/health',
-                label: $t({ defaultMessage: 'Health' })
-              }
-            ]:[]),
-            ...(useIsTierAllowed('ANLT-ADV') && isAdmin ? [
-              {
-                uri: '/serviceValidation/networkHealth',
-                label: $t({ defaultMessage: 'Netowrk Health' }),
-                disabled: !showSV
-              }
-            ]:[])
-          ]
-        },
-        {
-          type: 'group' as const,
-          label: $t({ defaultMessage: 'Data Studio BI' }),
-          children: [
-            {
-              uri: '/dataStudio',
-              label: $t({ defaultMessage: 'Home' })
-            }
-          ]
-        },
-        {
-          type: 'group' as const,
-          label: $t({ defaultMessage: 'Reports' }),
-          children: [
-            {
-              uri: '/reports/overview',
-              label: $t({ defaultMessage: 'Reports List' })
-            }
-          ]
-        }
-      ].filter(item => item.children.length) as MenuItem[]
+        { uri: '/dataStudio', label: $t({ defaultMessage: 'Data Studio' }) },
+        { uri: '/reports/overview', label: $t({ defaultMessage: 'Reports' }) }
+      ]
     },
-    {
-      key: '/administration',
+    ...(isAdministrationEnabled ? [{
       label: $t({ defaultMessage: 'Administration' }),
       inactiveIcon: AdminOutlined,
       activeIcon: AdminSolid,
-      disabled: !isAdministrationEnabled,
       isActivePattern: [
         '/timeline',
         '/administration'
       ],
       children: [
         {
-          type: 'group',
+          type: 'group' as const,
           label: $t({ defaultMessage: 'Timeline' }),
           children: [
             {
@@ -333,7 +243,7 @@ export function useMenuConfig () {
           ]
         },
         {
-          type: 'group',
+          type: 'group' as const,
           label: 'Account Management',
           children: [
             {
@@ -356,14 +266,14 @@ export function useMenuConfig () {
               uri: '/administration/fwVersionMgmt',
               label: $t({ defaultMessage: 'Firmware Version Management' })
             },
-            {
-              uri: '/administration/fwVersionMgmt',
+            ...(isRadiusClientEnabled ? [{
+              uri: '/administration/localRadiusServer',
               label: $t({ defaultMessage: 'Local RADIUS Server' })
-            }
+            }]:[])
           ]
         }
-      ] as MenuItem[]
-    }
+      ]
+    }]:[])
   ]
   if (isGuestManager) { return [] }
   return config

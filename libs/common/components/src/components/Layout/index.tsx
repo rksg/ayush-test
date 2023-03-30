@@ -1,44 +1,97 @@
 import React, { useState } from 'react'
 
-import ProLayout    from '@ant-design/pro-layout'
-import { Menu }     from 'antd'
-import { ItemType } from 'antd/lib/menu/hooks/useItems'
-import { useIntl }  from 'react-intl'
+import ProLayout                         from '@ant-design/pro-layout'
+import { Menu }                          from 'antd'
+import { ItemType as AntItemType }       from 'antd/lib/menu/hooks/useItems'
+import { get, has, uniqueId }            from 'lodash'
+import {
+  MenuItemType as RcMenuItemType,
+  SubMenuType as RcSubMenuType,
+  MenuItemGroupType as RcMenuItemGroupType,
+  MenuDividerType as RcMenuDividerType
+} from 'rc-menu/lib/interface'
+import { useIntl } from 'react-intl'
 
 import { Logo }                                   from '@acx-ui/icons'
 import { TenantType, useLocation, TenantNavLink } from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
-export type MenuItem = ItemType & {
+type SideNavProps = {
   uri?: string
   tenantType?: TenantType
   activeIcon?: React.FC
   inactiveIcon?: React.FC
   isActivePattern?: string[]
-  children?: MenuItem[]
+}
+
+type MenuItemType = Omit<RcMenuItemType, 'key'> & SideNavProps & {
+  danger?: boolean
+  icon?: React.ReactNode
+  title?: string
+}
+type SubMenuType = Omit<RcSubMenuType, 'children'|'key'> & SideNavProps & {
+  icon?: React.ReactNode
+  theme?: 'dark' | 'light'
+  children: ItemType[]
+}
+type MenuItemGroupType = Omit<RcMenuItemGroupType, 'children'> & {
+  children?: ItemType[]
+}
+type MenuDividerType = RcMenuDividerType & {
+  dashed?: boolean;
+}
+
+type ItemType = MenuItemType | SubMenuType | MenuItemGroupType | MenuDividerType | null
+
+
+export function isMenuItemType (value: ItemType): value is MenuItemType{
+  if(isSubMenuType(value)) return false
+  if(isMenuItemGroupType(value)) return false
+  if(isMenuDividerType(value)) return false
+  return true
+}
+
+export function isSubMenuType (value: ItemType): value is SubMenuType{
+  if (has(value, 'children') && !has(value, 'type')) return true
+  return false
+}
+
+export function isMenuItemGroupType (value: ItemType): value is MenuItemGroupType{
+  if (has(value, 'type') && get(value, 'type') === 'group') return true
+  return false
+}
+
+export function isMenuDividerType (value: ItemType): value is MenuDividerType{
+  if (has(value, 'type') && get(value, 'type') === 'divider') return true
+  return false
 }
 
 export interface LayoutProps {
-  menuConfig: MenuItem[];
-  bottomMenuConfig?: MenuItem[];
+  menuConfig: ItemType[];
   rightHeaderContent: React.ReactNode;
   leftHeaderContent?: React.ReactNode;
   content: React.ReactNode;
 }
 
-interface SiderMenuProps {
-  menuConfig: MenuItem[]
-}
-
-function SiderMenu (props: SiderMenuProps) {
+function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
   const location = useLocation()
   const breakpoint = /\/t\/\w+/
   const activeUri = location.pathname.split(breakpoint)?.[1]
 
-  const getLabel = (item: MenuItem) => ('label' in item) ? item.label : ''
-  function getMenuItem (item: MenuItem): MenuItem {
-    const { uri, tenantType, activeIcon, inactiveIcon, isActivePattern, children, ...rest } = item
+  const getLabel = (item: LayoutProps['menuConfig'][number]) =>
+    ('label' in item!) ? item.label : ''
+
+  const getMenuItem = (item: LayoutProps['menuConfig'][number]): AntItemType => {
+    if(isMenuDividerType(item)) { return item }
+    if(isMenuItemGroupType(item)) { return {
+      ...item,
+      key: uniqueId(),
+      label: getLabel(item),
+      children: item.children?.map(getMenuItem)
+    } }
+
+    const { uri, tenantType, activeIcon, inactiveIcon, isActivePattern, ...rest } = item!
     const isActive = isActivePattern?.some(pattern => activeUri?.includes(pattern))
     const IconComponent = (isActive ? activeIcon : inactiveIcon)as React.FC
     const content = <div className={Boolean(isActive) ? 'menu-active' : 'menu-inactive'}>
@@ -51,12 +104,14 @@ function SiderMenu (props: SiderMenuProps) {
     </div>
     return {
       ...rest,
+      key: uniqueId(),
       label: uri
         ? <TenantNavLink to={uri} tenantType={tenantType}>{content}</TenantNavLink>
         : content,
-      children: children?.map(getMenuItem)
-    } as MenuItem
+      ...(isSubMenuType(item) && { children: item.children.map(getMenuItem) })
+    }
   }
+
   return <Menu selectedKeys={[]} items={props.menuConfig.map(getMenuItem)}/>
 }
 
@@ -70,30 +125,8 @@ export function Layout ({
   const [collapsed, setCollapsed] = useState(false)
   const location = useLocation()
 
-  // const menuRender = (item: MenuItem, dom: React.ReactNode) => {
-  //   const link = <TenantNavLink to={item.uri!} tenantType={item.tenantType}>
-  //     {({ isActive }) => {
-  //       let icon: JSX.Element | undefined
-  //       if (isActive) {
-  //         const IconComponent = item.activeIcon as React.FC
-  //         icon = <UI.MenuIconSolid children={<IconComponent />} />
-  //       } else {
-  //         const IconComponent = item.inactiveIcon
-  //         if (IconComponent) icon = <UI.MenuIconOutlined children={<IconComponent />} />
-  //       }
-  //       return <>
-  //         {(icon && isEmpty(item.pro_layout_parentKeys)) ? icon : null}
-  //         {dom}
-  //       </>
-  //     }}
-  //   </TenantNavLink>
-  //   return item.disabled
-  //     ? <Tooltip placement='right' title={$t(notAvailableMsg)}>
-  //       {/* workaround for showing tooltip when link disabled */}
-  //       <span>{link}</span>
-  //     </Tooltip>
-  //     : link
-  // }
+  const dashboard = menuConfig
+    .find(item=> ('uri' in item!) && item.uri=== '/dashboard')
 
   return <UI.Wrapper>
     <ProLayout
@@ -106,7 +139,9 @@ export function Layout ({
       menuHeaderRender={() =>
         <TenantNavLink
           to='/dashboard'
-          tenantType={menuConfig.find(({ uri })=> uri === '/dashboard')?.tenantType || 't'}
+          tenantType={
+            ((isMenuItemType(dashboard!) || isSubMenuType(dashboard!)) && dashboard.tenantType)
+            || 't'}
         >
           <Logo />
         </TenantNavLink>

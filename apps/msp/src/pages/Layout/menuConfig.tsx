@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 import styled      from 'styled-components/macro'
 
-import { LayoutProps, LayoutUI, MenuItem } from '@acx-ui/components'
+import { LayoutProps, LayoutUI } from '@acx-ui/components'
 import {
   ConfigurationOutlined,
   ConfigurationSolid,
@@ -33,56 +33,54 @@ export function useMenuConfig (tenantType: string) {
   const isIntegrator =
   tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
 
-  const config = [
+  const config: LayoutProps['menuConfig'] = [
     {
-      key: 'dashboard',
       label: $t({ defaultMessage: 'My Customers' }),
       inactiveIcon: UsersThreeOutlined,
       activeIcon: UsersThreeSolid,
       children: [
         {
           uri: '/dashboard/mspCustomers',
-          tenantType: 'v',
+          tenantType: 'v' as TenantType,
           label: $t({ defaultMessage: 'MSP Customers' })
         },
         ...((isNonVarMSP || isIntegrator) ? [] : [{
           uri: '/dashboard/varCustomers',
-          tenantType: 'v',
+          tenantType: 'v' as TenantType,
           label: isSupport
             ? $t({ defaultMessage: 'RUCKUS Customers' })
             : $t({ defaultMessage: 'VAR Customers' })
         }])
-      ] as MenuItem[]
+      ].filter(Boolean)
     },
-    !(isVar || isIntegrator || isSupport) && {
+    ...((isVar || isIntegrator || isSupport) ? [] : [{
       uri: '/integrators',
-      label: $t({ defaultMessage: 'Tech Partners' }),
+      label: $t({ defaultMessage: '3rd Partners' }),
       tenantType: 'v' as TenantType,
       inactiveIcon: IntegratorsOutlined,
       activeIcon: IntegratorsSolid
-    },
-    !isSupport && {
+    }]),
+    ...(isSupport ? [] : [{
       uri: '/deviceInventory',
       label: $t({ defaultMessage: 'Device Inventory' }),
       tenantType: 'v' as TenantType,
       inactiveIcon: DevicesOutlined,
       activeIcon: DevicesSolid
-    },
-    !(isIntegrator || isSupport) && {
+    }]),
+    ...((isIntegrator || isSupport)? [] : [{
       uri: '/mspLicenses',
       label: $t({ defaultMessage: 'Subscriptions' }),
       tenantType: 'v' as TenantType,
       inactiveIcon: MspSubscriptionOutlined,
       activeIcon: MspSubscriptionSolid
-    },
-    !(!isPrimeAdmin || isIntegrator || isSupport) && {
+    }]),
+    ...((!isPrimeAdmin || isIntegrator || isSupport) ? [] : [{
       uri: '/portalSetting',
       label: $t({ defaultMessage: 'Settings' }),
       tenantType: 'v' as TenantType,
       inactiveIcon: ConfigurationOutlined,
       activeIcon: ConfigurationSolid
-    }
-  ].filter(Boolean) as LayoutProps['menuConfig']
-
+    }])
+  ]
   return config
 }

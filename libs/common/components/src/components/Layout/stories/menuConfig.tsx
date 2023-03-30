@@ -11,6 +11,8 @@ import {
   DevicesSolid,
   LocationOutlined,
   LocationSolid,
+  LineChartOutline,
+  LineChartSolid,
   NetworksOutlined,
   NetworksSolid,
   ServicesOutlined,
@@ -19,16 +21,15 @@ import {
   SpeedIndicatorSolid
 } from '@acx-ui/icons'
 
-import { LayoutProps, MenuItem } from '..'
-import { LayoutUI }              from '../styledComponents'
+import { LayoutProps } from '..'
+import { LayoutUI }    from '../styledComponents'
 
 const AIOutlined = styled(AIOutlinedBase)`${LayoutUI.iconOutlinedOverride}`
 const AISolid = styled(AISolidBase)`${LayoutUI.iconOutlinedOverride}`
 const ServicesSolid = styled(ServicesSolidBase)`${LayoutUI.iconSolidOverride}`
 
-const config: LayoutProps['menuConfig'] = [
+const config: LayoutProps['menuConfig']= [
   {
-    key: '/dashboard',
     uri: '/dashboard',
     label: 'Dashboard',
     inactiveIcon: SpeedIndicatorOutlined,
@@ -36,7 +37,20 @@ const config: LayoutProps['menuConfig'] = [
     isActivePattern: ['/dashboard']
   },
   {
-    key: '/venues',
+    label: 'Analytics & Reports',
+    inactiveIcon: AIOutlined,
+    activeIcon: AISolid,
+    isActivePattern: [
+      '/analytics',
+      '/serviceValidation'
+    ],
+    children: [
+      { uri: '/analytics/incidents', label: 'Incidents' },
+      { uri: '/analytics/health', label: 'Health' },
+      { uri: '/serviceValidation/networkHealth', label: 'Netowrk Health' }
+    ]
+  },
+  {
     uri: '/venues',
     label: 'Venues',
     inactiveIcon: LocationOutlined,
@@ -44,15 +58,13 @@ const config: LayoutProps['menuConfig'] = [
     isActivePattern: ['/venues']
   },
   {
-    key: '/clients',
     label: 'Clients',
     inactiveIcon: AccountCircleOutlined,
     activeIcon: AccountCircleSolid,
     isActivePattern: [
-      '/users/wifi/clients',
-      '/users/wifi/guests',
+      '/users/wifi',
       '/reports/clients',
-      '/users/switch/clients'
+      '/users/switch'
     ],
     children: [
       {
@@ -68,13 +80,12 @@ const config: LayoutProps['menuConfig'] = [
         type: 'group',
         label: 'Wired',
         children: [
-          { uri: '/users/switch/clients', label: 'Wired Clients List' }
+          { uri: '/users/switch/clients', label: 'Switch Clients List' }
         ]
       }
-    ] as MenuItem[]
+    ]
   },
   {
-    key: '/wifi',
     label: 'Wi-Fi',
     inactiveIcon: DevicesOutlined,
     activeIcon: DevicesSolid,
@@ -106,28 +117,17 @@ const config: LayoutProps['menuConfig'] = [
           { uri: '/reports/applications', label: 'Applications Report' },
           { uri: '/reports/wireless', label: 'Wireless Report' }
         ]
-      },
-      {
-        type: 'group',
-        label: 'Assurance',
-        children: [
-          { uri: '/analytics/incidents', label: 'Incidents' },
-          { uri: '/analytics/health', label: 'Health' },
-          { uri: '/serviceValidation/networkHealth', label: 'Network Health' }
-        ]
       }
-    ] as MenuItem[]
+    ]
   },
   {
-    key: '/wired',
     label: 'Wired',
     inactiveIcon: NetworksOutlined,
     activeIcon: NetworksSolid,
     isActivePattern: [
       '/devices/switch',
       '/reports/wired',
-      '/networks/wired/profiles',
-      '/networks/wired/onDemandCli'
+      '/networks/wired'
     ],
     children: [
       {
@@ -146,10 +146,9 @@ const config: LayoutProps['menuConfig'] = [
           { uri: '/networks/wired/onDemandCli', label: 'On-Demand CLI Configuration' }
         ]
       }
-    ] as MenuItem[]
+    ]
   },
   {
-    key: '/networkControl',
     label: 'Network Control',
     inactiveIcon: ServicesOutlined,
     activeIcon: ServicesSolid,
@@ -161,47 +160,22 @@ const config: LayoutProps['menuConfig'] = [
       { uri: '/services/list', label: 'My Services' },
       { uri: '/services/catalog', label: 'Service Catalog' },
       { uri: '/policies', label: 'Policies & Profiles' }
-    ] as MenuItem[]
+    ]
   },
   {
-    key: '/analytics',
-    label: 'Analytics & Reports',
-    inactiveIcon: AIOutlined,
-    activeIcon: AISolid,
+    label: 'Business Insights',
+    inactiveIcon: LineChartOutline,
+    activeIcon: LineChartSolid,
     isActivePattern: [
-      '/analytics',
-      '/serviceValidation',
       '/dataStudio',
       '/reports/overview'
     ],
     children: [
-      {
-        type: 'group',
-        label: 'Analytics',
-        children: [
-          { uri: '/analytics/incidents', label: 'Incidents' },
-          { uri: '/analytics/health', label: 'Health' },
-          { uri: '/serviceValidation/networkHealth', label: 'Netowrk Health' }
-        ]
-      },
-      {
-        type: 'group',
-        label: 'Data Studio BI',
-        children: [
-          { uri: '/dataStudio', label: 'Home' }
-        ]
-      },
-      {
-        type: 'group',
-        label: 'Reports',
-        children: [
-          { uri: '/reports/overview', label: 'Reports List' }
-        ]
-      }
-    ] as MenuItem[]
+      { uri: '/dataStudio', label: 'Data Studio' },
+      { uri: '/reports/overview', label: 'Reports' }
+    ]
   },
   {
-    key: '/administration',
     label: 'Administration',
     inactiveIcon: AdminOutlined,
     activeIcon: AdminSolid,
@@ -228,10 +202,10 @@ const config: LayoutProps['menuConfig'] = [
           { uri: '/administration/notifications', label: 'Notifications' },
           { uri: '/administration/subscriptions', label: 'Subscriptions' },
           { uri: '/administration/fwVersionMgmt', label: 'Firmware Version Management' },
-          { uri: '', label: 'Local RADIUS Server' }
+          { uri: '/administration/localRadiusServer', label: 'Local RADIUS Server' }
         ]
       }
-    ] as MenuItem[]
+    ]
   }
 ]
 
