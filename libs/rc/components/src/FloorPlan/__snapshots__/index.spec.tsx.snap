@@ -420,14 +420,14 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
     >
       <div
         class="ant-row"
-        style="margin: -10px -8px -10px -8px;"
+        style="margin: -10px 0px -10px 0px; padding-bottom: 8px;"
       >
         <div
           class="ant-col ant-col-12"
           style="padding: 10px 8px 10px 8px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 lfySov"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 lhrXqm"
             type="default"
           >
             <div
@@ -450,9 +450,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
                       >
                         <div
                           class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
-                        >
-                          TEST_2
-                        </div>
+                        />
                       </div>
                     </div>
                   </div>
@@ -468,6 +466,11 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
               <div
                 class="ant-card-body"
               >
+                <div
+                  class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                >
+                  TEST_2
+                </div>
                 <div
                   class="sc-papXJ iBkRgT"
                 >
@@ -528,7 +531,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
           style="padding: 10px 8px 10px 8px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 lfySov"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 lhrXqm"
             type="default"
           >
             <div
@@ -551,9 +554,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
                       >
                         <div
                           class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
-                        >
-                          dscx
-                        </div>
+                        />
                       </div>
                     </div>
                   </div>
@@ -569,6 +570,11 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
               <div
                 class="ant-card-body"
               >
+                <div
+                  class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                >
+                  dscx
+                </div>
                 <div
                   class="sc-papXJ iBkRgT"
                 >
