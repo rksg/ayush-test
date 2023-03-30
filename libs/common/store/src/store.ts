@@ -23,6 +23,7 @@ import {
   baseTimelineApi as timelineApi,
   baseVenueApi as venueApi,
   baseTunnelProfileApi as tunnelProfileApi,
+  baseConnectionMeteringApi as connectionMeteringApi,
   dataApi,
   networkHealthApi,
   userApi,
@@ -57,7 +58,8 @@ export const store = configureStore({
     [networkHealthApi.reducerPath]: networkHealthApi.reducer,
     [nsgApi.reducerPath]: nsgApi.reducer,
     [tunnelProfileApi.reducerPath]: tunnelProfileApi.reducer,
-    [msgTemplateApi.reducerPath]: msgTemplateApi.reducer
+    [msgTemplateApi.reducerPath]: msgTemplateApi.reducer,
+    [connectionMeteringApi.reducerPath]: connectionMeteringApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -90,7 +92,8 @@ export const store = configureStore({
       networkHealthApi.middleware,
       nsgApi.middleware,
       tunnelProfileApi.middleware,
-      msgTemplateApi.middleware
+      msgTemplateApi.middleware,
+      connectionMeteringApi.middleware
     ])
   },
 

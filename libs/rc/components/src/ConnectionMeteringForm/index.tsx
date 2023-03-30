@@ -1,0 +1,187 @@
+import { useEffect, useRef } from 'react'
+
+import { useIntl } from 'react-intl'
+
+import {
+  StepsForm,
+  StepsFormInstance,
+  Loader,
+  showToast
+} from '@acx-ui/components'
+import {
+  useGetConnectionMeteringByIdQuery,
+  useAddConnectionMeteringMutation,
+  useUpdateConnectionMeteringMutation
+} from '@acx-ui/rc/services'
+import {
+  getPolicyRoutePath,
+  PolicyType,
+  PolicyOperation,
+  getPolicyDetailsLink,
+  ConnectionMetering
+} from '@acx-ui/rc/utils'
+import {
+  useNavigate,
+  useParams,
+  useTenantLink
+} from '@acx-ui/react-router-dom'
+
+import { ConnectionMeteringSettingForm } from './ConnectionMeteringSetting/ConnectionMeteringSettingForm'
+
+
+function transformFormToData (form:ConnectingMeteringFormField | undefined):
+  Partial<ConnectionMetering> {
+  let data = {
+    ...form
+  }
+  if (!form?.rateLimitEnabled) {
+    data.uploadRate = 0
+    data.downloadRate = 0
+  }
+
+  if (!form?.consumptionControlEnabled) {
+    data.dataCapacity = undefined
+    data.billingCycleRepeat = false
+    data.billingCycleType = undefined
+    data.billingCycleDays = undefined
+    data.dataCapacityEnforced = false
+    data.dataCapacityThreshold = undefined
+  } else if (!form.billingCycleRepeat) {
+    data.billingCycleType = undefined
+    data.billingCycleDays = undefined
+  } else if (form.billingCycleType !== 'CYCLE_NUM_DAYS') {
+    data.billingCycleDays = undefined
+  }
+  return data
+}
+
+export enum ConnectionMeteringFormMode {
+  CREATE,
+  EDIT
+}
+
+export interface ConnectionMeteringFormProps {
+  mode: ConnectionMeteringFormMode
+  useModalMode?: boolean
+  modalCallback?: (result:ConnectionMetering | undefined )=>void
+}
+
+export interface ConnectingMeteringFormField extends ConnectionMetering {
+  rateLimitEnabled: boolean
+  consumptionControlEnabled: boolean
+}
+
+export function ConnectionMeteringForm (props: ConnectionMeteringFormProps) {
+  const { $t } = useIntl()
+  const { policyId } = useParams()
+  const { mode, useModalMode, modalCallback } = props
+  const form = useRef<StepsFormInstance<ConnectingMeteringFormField>>()
+  const originData = useRef<ConnectionMetering>()
+  const tablePath = mode === ConnectionMeteringFormMode.CREATE ?
+    getPolicyRoutePath( { type: PolicyType.CONNECTION_METERING,
+      oper: PolicyOperation.LIST }) :
+    getPolicyDetailsLink({
+      type: PolicyType.CONNECTION_METERING,
+      oper: PolicyOperation.DETAIL,
+      policyId: policyId !!
+    })
+  const navigate = useNavigate()
+  const linkToPolicies = useTenantLink(tablePath)
+
+  const [addConnectionMetering] = useAddConnectionMeteringMutation()
+  const [
+    updateConnectionMetering,
+    { isLoading: isUpdating }
+  ] = useUpdateConnectionMeteringMutation()
+  const handleAddConnectionMetering = async (submittedData: Partial<ConnectionMetering>) => {
+    return addConnectionMetering({ payload: { ...submittedData } }).unwrap()
+  }
+
+  const handleEditConnectionMetering = async (originData:ConnectionMetering|undefined,
+    submittedData: Partial<ConnectionMetering>) => {
+    if (originData === undefined) return
+
+    const connectinoMeteringKeys = ['name', 'uploadRate', 'downloadRate',
+      'dataCapacity', 'dataCapacityThreshold', 'dataCapacityEnforced',
+      'billingCycleRepeat', 'billingCycleType', 'billingCycleDays'] as const
+    const patchData = {}
+
+    connectinoMeteringKeys.forEach(key => {
+      if (submittedData[key] !== originData[key]) {
+        Object.assign(patchData, { [key]: submittedData[key] })
+      }
+    })
+
+    if (Object.keys(patchData).length === 0) return
+    return updateConnectionMetering({ params: { id: policyId }, payload: patchData }).unwrap()
+  }
+
+  const onFinish = async (mode:ConnectionMeteringFormMode) => {
+    try {
+      const data = transformFormToData(form.current?.getFieldsValue())
+      let result : ConnectionMetering | undefined
+      if (mode === ConnectionMeteringFormMode.EDIT) {
+        result = await handleEditConnectionMetering(originData.current, data)
+      } else if (mode === ConnectionMeteringFormMode.CREATE) {
+        result = await handleAddConnectionMetering(data)
+      }
+      useModalMode ? modalCallback?.(result) : navigate(linkToPolicies, { replace: true })
+    } catch (error) {
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: 'An error occurred' }),
+        // FIXME: Correct the error message
+        link: { onClick: () => alert(JSON.stringify(error)) }
+      })
+    }
+  }
+
+  const onCancel = ()=> {
+    if (!useModalMode) {
+      navigate(linkToPolicies, { replace: true })
+    }
+    modalCallback?.(undefined)
+  }
+
+  // eslint-disable-next-line max-len
+  const { data, isLoading } = useGetConnectionMeteringByIdQuery({ params: { id: policyId } }, { skip: mode === ConnectionMeteringFormMode.CREATE })
+  useEffect(()=> {
+    if (!data || isLoading) return
+    if (mode === ConnectionMeteringFormMode.EDIT) {
+      const connectionMetering = data as ConnectionMetering
+      const rateLimiteEnabled = ((connectionMetering.downloadRate > 0)
+      || (connectionMetering.uploadRate > 0))
+      const consumptionControlEnabled = (connectionMetering.dataCapacity > 0 )
+      form.current?.setFieldsValue({
+        rateLimitEnabled: rateLimiteEnabled,
+        consumptionControlEnabled: consumptionControlEnabled,
+        ...connectionMetering
+      })
+      originData.current = connectionMetering
+    }
+  }, [data, isLoading])
+
+  const buttonLabel = {
+    submit: mode === ConnectionMeteringFormMode.CREATE ?
+      $t({ defaultMessage: 'Add' }) : $t({ defaultMessage: 'Apply' })
+  }
+
+  return (
+    <StepsForm<ConnectingMeteringFormField>
+      formRef={form}
+      buttonLabel={buttonLabel}
+      onCancel={()=>onCancel()}
+      onFinish={()=> onFinish(props.mode)}>
+      <StepsForm.StepForm<ConnectingMeteringFormField>
+        name='settings'
+        title={$t({ defaultMessage: 'Settings' })}
+      >
+        <Loader states={[{
+          isLoading: isLoading,
+          isFetching: isUpdating
+        }]}>
+          <ConnectionMeteringSettingForm/>
+        </Loader>
+      </StepsForm.StepForm>
+    </StepsForm>)
+}

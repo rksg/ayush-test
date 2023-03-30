@@ -31,7 +31,9 @@ export interface Persona {
   identityId?: string,
   createdAt?: string,
   updatedAt?: string,
-  switches?: PersonaSwitch[]
+  switches?: PersonaSwitch[],
+  qosProfileId?: string,
+  qosProfileExpirationEpoch?:number
 }
 
 export interface PersonaSwitch {

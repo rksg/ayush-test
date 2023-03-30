@@ -48,7 +48,8 @@ const typePathMapping: Record<PolicyType, string> = {
   [PolicyType.ADAPTIVE_POLICY]: 'adaptivePolicy',
   [PolicyType.ADAPTIVE_POLICY_SET]: 'adaptivePolicySet',
   [PolicyType.RADIUS_ATTRIBUTE_GROUP]: 'radiusAttributeGroup',
-  [PolicyType.TUNNEL_PROFILE]: 'tunnelProfile'
+  [PolicyType.TUNNEL_PROFILE]: 'tunnelProfile',
+  [PolicyType.CONNECTION_METERING]: 'connectionMetering'
 }
 
 export function getPolicyRoutePath (props: PolicyRoutePathProps): string {

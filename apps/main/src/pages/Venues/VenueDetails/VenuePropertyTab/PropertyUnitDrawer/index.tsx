@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 
-import { Checkbox, Form, Input, InputNumber, Select, Space, Switch } from 'antd'
-import { useWatch }                                                  from 'antd/lib/form/Form'
-import _                                                             from 'lodash'
-import { useIntl }                                                   from 'react-intl'
+import { Checkbox, Col, Form, Input, InputNumber, Row, Select, Space, Switch } from 'antd'
+import { useWatch }                                                            from 'antd/lib/form/Form'
+import _                                                                       from 'lodash'
+import { useIntl }                                                             from 'react-intl'
 
-import { Drawer, Loader, StepsForm } from '@acx-ui/components'
+
+import { Drawer, Loader, StepsForm, Button,  Modal, ModalType } from '@acx-ui/components'
+import { ConnectionMeteringForm, ConnectionMeteringFormMode }   from '@acx-ui/rc/components'
 import {
   useAddPropertyUnitMutation,
   useApListQuery,
@@ -15,10 +17,12 @@ import {
   useGetPropertyConfigsQuery,
   useUpdatePropertyUnitMutation,
   useUpdatePersonaMutation,
-  useLazyGetPersonaGroupByIdQuery
+  useLazyGetPersonaGroupByIdQuery,
+  useGetConnectionMeteringListQuery
 } from '@acx-ui/rc/services'
 import {
   APExtended,
+  ConnectionMetering,
   emailRegExp,
   Persona,
   PersonaEthernetPort,
@@ -31,6 +35,70 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
 import { noDataDisplay, validationMessages } from '@acx-ui/utils'
+
+
+function ConnectionMeteringSettingForm () {
+  const { $t } = useIntl()
+  const form = Form.useFormInstance()
+  const [modalVisible, setModalVisible] = useState(false)
+  const onModalClose = () => setModalVisible(false)
+  const connectionMeteringList = useGetConnectionMeteringListQuery({})
+  return (
+    <>
+      <StepsForm.Title style={{ fontSize: '14px' }}>
+        {$t({ defaultMessage: 'Traffic Control' })}
+      </StepsForm.Title>
+      <Form.Item
+        label={$t({ defaultMessage: 'Connection Metering' })}
+        name={'connectionMetering'}
+        // eslint-disable-next-line max-len
+        tooltip={$t({ defaultMessage: 'All devices that belong to this unit will be applied to the selected connection metering policy' })}
+        children={
+          <Space direction={'vertical'} size={16} style={{ display: 'flex' }}>
+            <Row>
+              <Col span={21}>
+                <Select
+                  allowClear
+                  placeholder={$t({ defaultMessage: 'Select...' })}
+                  options={connectionMeteringList?.data?.data
+                    .map(list=> ({ value: list.id, label: list.name }))}
+                  value={form.getFieldValue('qosProfileId')}
+                  onChange={(v)=> {form.setFieldValue('qosProfileId', v)}}
+                />
+              </Col>
+              <Col span={3}>
+                <Button
+                  style={{ marginLeft: '5px' }}
+                  type={'link'}
+                  onClick={()=>setModalVisible(true)}
+                >
+                  {$t({ defaultMessage: 'Add' })}
+                </Button>
+              </Col>
+            </Row>
+          </Space>}
+      />
+      <Modal
+        title={$t({ defaultMessage: 'Add Connection Metering' })}
+        visible={modalVisible}
+        type={ModalType.ModalStepsForm}
+        children={<ConnectionMeteringForm
+          mode={ConnectionMeteringFormMode.CREATE}
+          useModalMode={true}
+          modalCallback={(result?: ConnectionMetering) => {
+            if (result) {
+              form.setFieldValue('qosProfileId', result.id)
+            }
+            onModalClose()
+          }}
+        />}
+        onCancel={onModalClose}
+        width={1200}
+        destroyOnClose={true}
+      />
+    </>
+  )
+}
 
 
 function AccessPointLanPortSelector (props: { venueId: string }) {
@@ -201,7 +269,9 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
       .then(([personaResult, guestResult]) => {
         form.setFieldsValue(data ?? {})
         if (personaResult?.data) {
-          const { vlan, dpskPassphrase, ethernetPorts, vni } = personaResult.data as Persona
+          const {
+            vlan, dpskPassphrase, ethernetPorts, vni, qosProfileId
+          } = personaResult.data as Persona
           if (withNsg) {
             const apName = ethernetPorts?.[0]?.name
             const accessAp = ethernetPorts?.[0]?.macAddress?.replaceAll('-', ':')
@@ -211,6 +281,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
             form.setFieldValue('accessAp', accessAp)
             form.setFieldValue('ports', ports?.map(i => i.toString()))
             form.setFieldValue('vxlan', vni ?? noDataDisplay)
+            form.setFieldValue('qosProfileId', qosProfileId)
           } else {
             form.setFieldValue(['unitPersona', 'vlan'], vlan)
           }
@@ -459,6 +530,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
               label={$t({ defaultMessage: 'Resident\'s Phone Number' })}
               children={<Input />}
             />
+            {true && <ConnectionMeteringSettingForm/>}
           </Form>
         </Loader>
       }

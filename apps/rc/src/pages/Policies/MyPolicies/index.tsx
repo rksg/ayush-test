@@ -174,6 +174,13 @@ function useCardData (): CardDataProps[] {
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.LIST })),
       disabled: !isEdgeEnabled
+    },
+    {
+      type: PolicyType.CONNECTION_METERING,
+      categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
+      totalCount: 0,
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.LIST }))
     }
   ]
 }

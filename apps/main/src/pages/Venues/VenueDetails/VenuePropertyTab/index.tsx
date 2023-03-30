@@ -1,10 +1,16 @@
 import { useEffect, useState } from 'react'
 
+
+import moment        from 'moment-timezone'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
+import styled        from 'styled-components/macro'
 
 import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
-import { CsvSize, ImportFileDrawer }                             from '@acx-ui/rc/components'
+import {
+  WarningTriangleSolid
+} from '@acx-ui/icons'
+import { CsvSize, ImportFileDrawer }      from '@acx-ui/rc/components'
 import {
   useDeletePropertyUnitsMutation,
   useGetPropertyConfigsQuery,
@@ -16,10 +22,12 @@ import {
   useLazyGetSwitchListQuery,
   useUpdatePropertyUnitMutation,
   useImportPropertyUnitsMutation,
-  useLazyDownloadPropertyUnitsQuery
+  useLazyDownloadPropertyUnitsQuery,
+  useLazyGetConnectionMeteringByIdQuery
 } from '@acx-ui/rc/services'
 import {
   APExtended,
+  ConnectionMetering,
   FILTER,
   Persona,
   PropertyUnit,
@@ -28,9 +36,64 @@ import {
   SwitchViewModel,
   useTableQuery
 } from '@acx-ui/rc/utils'
-
+import {
+  getPolicyDetailsLink, PolicyOperation, PolicyType
+} from '@acx-ui/rc/utils'
+import {
+  TenantLink
+} from '@acx-ui/react-router-dom'
 
 import { PropertyUnitDrawer } from './PropertyUnitDrawer'
+
+
+
+const WarningTriangle = styled(WarningTriangleSolid)
+  .attrs((props: { expired: boolean }) => props)`
+path:nth-child(1) {
+  fill: ${props => props.expired ? 'var(--acx-accents-orange-60);':'var(--acx-accents-orange-30);'}
+}
+path:nth-child(3) {
+  stroke: ${props => props.expired ?
+    'var(--acx-accents-orange-60);':'var(--acx-accents-orange-30);'}
+}
+`
+
+function ConnectionMeteringLink (props:{ id?: string, name?: string, expirationEpoch?: number }) {
+  const { $t } = useIntl()
+  const { id, name, expirationEpoch } = props
+  let expired = false
+  let tooltip = ''
+  let showWarning = false
+  if (expirationEpoch) {
+    const now = new Date().getTime() / 1000
+    if (expirationEpoch <= now) {
+      expired = true
+      showWarning = true
+    } else if ((expirationEpoch - now) / (60 * 60 * 24) < 7) {
+      showWarning = true
+      expired = false
+      // eslint-disable-next-line max-len
+      const expireDate = moment(new Date(0).setUTCSeconds(expirationEpoch)).format('yyyy/MM/DD')
+      // eslint-disable-next-line max-len
+      tooltip = $t({ defaultMessage: 'The Consumption data is due to expire on' }).concat(' ' + expireDate)
+    }
+  }
+  return (
+    <div style={{ fontSize: '16px' }}>
+      <div style={{ float: 'left', marginLeft: '5%' }}>
+        <TenantLink to={getPolicyDetailsLink({ type: PolicyType.CONNECTION_METERING,
+          oper: PolicyOperation.DETAIL, policyId: id ?? '' })}>
+          {name ?? id}
+        </TenantLink>
+      </div>
+      {showWarning &&
+        <div style={{ float: 'left', marginLeft: '10%' }} title={tooltip}>
+          <WarningTriangle expired={expired}/>
+        </div>
+      }
+    </div>
+  )
+}
 
 
 export function VenuePropertyTab () {
@@ -40,6 +103,7 @@ export function VenuePropertyTab () {
   const [personaMap, setPersonaMap] = useState(new Map<string, Persona>())
   const [apMap, setApMap] = useState(new Map())
   const [switchMap, setSwitchMap] = useState(new Map())
+  const [connectionMeteringMap, setConnectionMeteringMap] = useState(new Map())
   const [withNsg, setWithNsg] = useState(false)
   const [drawerState, setDrawerState] = useState<{
     isEdit: boolean,
@@ -54,6 +118,7 @@ export function VenuePropertyTab () {
   const [getUnitById] = useLazyGetPropertyUnitByIdQuery()
   const [deleteUnitByIds] = useDeletePropertyUnitsMutation()
   const [updateUnitById] = useUpdatePropertyUnitMutation()
+  const [getConnectionMeteringById] = useLazyGetConnectionMeteringByIdQuery()
   const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
   const [groupId, setGroupId] =
     useState<string|undefined>(propertyConfigsQuery?.data?.personaGroupId)
@@ -129,7 +194,7 @@ export function VenuePropertyTab () {
   useEffect(() => {
     const apMacs: string[] = []
     const switchMacs: string[] = []
-
+    const connectionMeteringSet: Set<string> = new Set()
     personaMap.forEach(p => {
       if (p?.ethernetPorts && p.ethernetPorts.length > 0) {
         apMacs.push(p.ethernetPorts[0].macAddress)
@@ -138,10 +203,15 @@ export function VenuePropertyTab () {
       if (p?.switches && p?.switches.length > 0) {
         switchMacs.push(p.switches[0].macAddress)
       }
+
+      if (p?.qosProfileId) {
+        connectionMeteringSet.add(p.qosProfileId)
+      }
     })
 
     fetchApData(apMacs)
     fetchSwitchData(switchMacs)
+    fetchConnectionMeteringData([...connectionMeteringSet])
   }, [personaMap])
 
   const fetchPersonaData = (ids: string[]) => {
@@ -150,6 +220,17 @@ export function VenuePropertyTab () {
         .then(result => {
           if (result.data) {
             setPersonaMap(map => new Map( map.set(id, result.data as Persona)))
+          }
+        })
+    })
+  }
+
+  const fetchConnectionMeteringData = (ids: string[]) => {
+    ids.forEach(id => {
+      getConnectionMeteringById({ params: { id } })
+        .then(result=>{
+          if (result.data) {
+            setConnectionMeteringMap(map => new Map(map.set(id, result.data as ConnectionMetering)))
           }
         })
     })
@@ -319,6 +400,23 @@ export function VenuePropertyTab () {
         const persona = personaMap.get(row.personaId)
         const switchMac = persona?.switches?.[0]?.macAddress ?? ''
         return (switchMap.get(switchMac) as SwitchViewModel)?.name
+      }
+    },
+    {
+      key: 'Connection Metering',
+      title: $t({ defaultMessage: 'Connection Metering' }),
+      dataIndex: ['connectionMetering'],
+      render: (_, row) => {
+        const persona = personaMap.get(row.personaId)
+        const connectionMeteringId = persona?.qosProfileId ?? ''
+        // eslint-disable-next-line max-len
+        const connectionMetering = connectionMeteringMap.get(connectionMeteringId) as ConnectionMetering
+        if (connectionMetering) {
+          // eslint-disable-next-line max-len
+          return <ConnectionMeteringLink id={connectionMetering.id} name={connectionMetering.name} expirationEpoch={persona?.qosProfileExpirationEpoch}/>
+        }
+        //return <ConnectionMeteringLink name='test' expirationEpoch={100000000}/>
+        return ''
       }
     },
     {

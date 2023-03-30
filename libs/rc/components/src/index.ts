@@ -76,7 +76,8 @@ export { GoogleMapWithPreference } from './GoogleMapWithPreference'
 export { TunnelProfileForm } from './TunnelProfileForm'
 export { EdgeDhcpPoolTable } from './EdgeDhcpPoolTable'
 export { EdgeDhcpLeaseTable } from './EdgeDhcpLeaseTable'
-
+// eslint-disable-next-line max-len
+export { ConnectionMeteringForm, ConnectionMeteringFormMode, ConnectionMeteringFormProps } from './ConnectionMeteringForm'
 export * from './services'
 export * from './EdgeStatisticWidget'
 export * from './pipes/apGroupPipes'
