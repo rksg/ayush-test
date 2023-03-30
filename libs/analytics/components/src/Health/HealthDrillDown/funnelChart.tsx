@@ -7,7 +7,8 @@ import React, {
   MouseEventHandler
 } from 'react'
 
-import { get } from 'lodash'
+import { get }                        from 'lodash'
+import { MessageDescriptor, useIntl } from 'react-intl'
 
 import { formatter } from '@acx-ui/formatter'
 
@@ -18,7 +19,7 @@ const minVisibleWidth = 10
 const chartPadding = 40
 
 type LabelPinProps = {
-  label: string;
+  label: MessageDescriptor;
   left: number;
   top: number;
   dir: string;
@@ -69,7 +70,7 @@ export function FunnelChart ({
   const [parentNode, ref] = useGetNode()
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
   const onClick = (name: Stages) => {
-    onSelectStage(name !== selectedStage ? name : '')
+    onSelectStage(name)
   }
   const enhancedStages: EnhancedStage[] = useMemo(() => {
     if (!parentNode) return []
@@ -82,7 +83,6 @@ export function FunnelChart ({
         const formattedPct = formatter('percentFormat')((stage.value as number) / sum)
         const pct = parseFloat(formattedPct) / 100
         const realWidth = Math.round(pct * parentWidth)
-        // ensure stage is always visible visible, then reduce the width of other "normal" stages
         const width = Math.max(realWidth, minVisibleWidth)
         totalWidth -= Math.max(width - realWidth, 0)
         return {
@@ -108,6 +108,7 @@ export function FunnelChart ({
         endPosition
       }
     })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stages, selectedStage, parentNode, windowWidth])
   useLayoutEffect(() => {
     const handler = function resizeHandler () {
@@ -212,6 +213,7 @@ export const Labels = ({
     }
 
     return labelPositions
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [parentNode, offsetWidths, enhancedStages])
   if (!parentNode) return null
 
@@ -255,12 +257,14 @@ export function LabelWithPin ({
     top
   }
   const [node, ref] = useGetNode()
+  const { $t } = useIntl()
   useEffect(() => {
     if (node !== null) labelRef(idx, node)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [node, idx])
   if (line === 2 && !dir) style.top -= 30
 
-  const text = `${label}: ${formattedPct}(${valueFormatter(value)})`
+  const text = `${$t(label)}: ${formattedPct}(${valueFormatter(value)})`
   const dirForElement = dir ? '_' : ''
   return (
     <Label

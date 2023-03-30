@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import { Divider } from 'antd'
 import { isNull }  from 'lodash'
+import { useIntl } from 'react-intl'
 
 import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
 import { GridRow, GridCol, Loader, cssStr } from '@acx-ui/components'
@@ -14,7 +15,8 @@ import {
   getFormattedToFunnel,
   DrilldownSelection,
   CONNECTIONFAILURE,
-  valueFormatter
+  valueFormatter,
+  TTC
 } from './config'
 import { FunnelChart }                                       from './funnelChart'
 import { useTtcDrilldownQuery, useConnectionDrilldownQuery } from './services'
@@ -26,6 +28,14 @@ const HealthDrillDown = (props: {
   setDrilldownSelection: CallableFunction;
 }) => {
   const { drilldownSelection, setDrilldownSelection, filters } = props
+  const { $t } = useIntl()
+  const colors = [
+    cssStr('--acx-accents-blue-80'),
+    cssStr('--acx-accents-blue-70'),
+    cssStr('--acx-accents-blue-60'),
+    cssStr('--acx-accents-blue-55'),
+    cssStr('--acx-accents-blue-50')
+  ]
   const payload = {
     path: filters.path,
     start: filters.startDate,
@@ -58,7 +68,7 @@ const HealthDrillDown = (props: {
         ...rest
       }
     },
-    skip: !Boolean(drilldownSelection === CONNECTIONFAILURE || drilldownSelection)
+    skip: !Boolean(drilldownSelection === CONNECTIONFAILURE)
   })
   const ttcResults = useTtcDrilldownQuery(payload, {
     selectFromResult: (result) => {
@@ -81,7 +91,7 @@ const HealthDrillDown = (props: {
         ...rest
       }
     },
-    skip: Boolean(drilldownSelection === CONNECTIONFAILURE || drilldownSelection)
+    skip: !Boolean(drilldownSelection === TTC)
   })
   const funnelChartData =
     drilldownSelection === CONNECTIONFAILURE ? connectionFailureResults : ttcResults
@@ -90,27 +100,23 @@ const HealthDrillDown = (props: {
       <GridCol col={{ span: 24 }}>
         <GridRow>
           <GridCol col={{ span: 12 }}>
-            <Title>{titleConfig?.[drilldownSelection]}</Title>
+            <Title>{$t(titleConfig?.[drilldownSelection])}</Title>
           </GridCol>
           <GridCol col={{ span: 12 }} style={{ alignItems: 'end' }}>
-            <CloseSymbol onClick={() => setDrilldownSelection(null)} />
+            <CloseSymbol
+              style={{ cursor: 'pointer' }}
+              onClick={() => setDrilldownSelection(null)}
+            />
           </GridCol>
         </GridRow>
-        <Loader states={[connectionFailureResults]}>
+        <Loader states={[funnelChartData]}>
           <FunnelChart
             valueLabel='Fail'
             height={140}
             stages={getFormattedToFunnel(drilldownSelection, {
               ...funnelChartData?.data
             })}
-            colors={[
-              cssStr('--acx-accents-blue-80'),
-              cssStr('--acx-accents-blue-70'),
-              cssStr('--acx-accents-blue-60'),
-              cssStr('--acx-accents-blue-55'),
-              cssStr('--acx-accents-blue-50')
-            ]
-            }
+            colors={colors}
             selectedStage={selectedStage}
             onSelectStage={(stage: Stages) => setSelectedStage(stage)}
             valueFormatter={
@@ -119,9 +125,9 @@ const HealthDrillDown = (props: {
           />
         </Loader>
       </GridCol>
-      <Divider />
       {selectedStage && (
         <>
+          <Divider />
           <GridCol col={{ span: 12 }} style={{ height: '210px' }}>
             PIE chart
           </GridCol>
