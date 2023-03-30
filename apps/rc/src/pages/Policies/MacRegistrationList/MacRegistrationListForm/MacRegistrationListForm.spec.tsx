@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
 import {
   ExpirationType,
   getPolicyRoutePath,
@@ -98,6 +99,8 @@ describe('MacRegistrationListForm', () => {
   const editPath = '/:tenantId/' + getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.EDIT })
 
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
     mockServer.use(
       rest.get(
         MacRegListUrlsInfo.getMacRegistrationPools.url,

@@ -1,5 +1,6 @@
 import { rest } from 'msw'
 
+import { useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, ExpirationType, MacRegListUrlsInfo, RulesManagementUrlsInfo }       from '@acx-ui/rc/utils'
 import { Provider }                                                                          from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
@@ -84,6 +85,7 @@ const list = {
 
 describe('MacRegistrationListsTable', () => {
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
       rest.get(
         MacRegListUrlsInfo.getMacRegistrationPools.url,
