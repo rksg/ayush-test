@@ -117,7 +117,8 @@ export const {
   useMfaRegisterAdminMutation,
   useMfaRegisterPhoneQuery,
   useMfaResendOTPMutation,
-  useDisableMFAMethodMutation
+  useDisableMFAMethodMutation,
+  useLazyGetUserProfilePverQuery
 } = userApi.injectEndpoints({
   endpoints: (build) => ({
     getAllUserSettings: build.query<UserSettings, RequestPayload>({
@@ -225,6 +226,20 @@ export const {
         body: payload
       }),
       invalidatesTags: [{ type: 'Mfa', id: 'DETAIL' }]
+    }),
+    getUserProfilePver: build.query<UserProfile, RequestPayload>({
+      query: ({ params }) => {
+        const CUSTOM_HEADER = {
+          'x-rks-tenantid': params?.includeTenantId
+        }
+        const req = createHttpRequest(
+          UserUrlsInfo.getUserProfile,
+          params, CUSTOM_HEADER, true
+        )
+        return {
+          ...req
+        }
+      }
     })
   })
 })
