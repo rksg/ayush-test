@@ -161,6 +161,11 @@ export function AlarmWidgetV2 () {
               ? <DonutChart
                 style={{ width, height }}
                 size={'medium'}
+                onClick={(e)=>{
+                  const event = new CustomEvent('showAlarmDrawer',
+                    { detail: { data: e.data } })
+                  window.dispatchEvent(event)
+                }}
                 data={data}/>
               : <NoActiveData text={$t({ defaultMessage: 'No active alarms' })}/>
           )}
