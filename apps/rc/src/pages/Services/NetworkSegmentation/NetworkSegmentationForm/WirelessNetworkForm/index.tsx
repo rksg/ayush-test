@@ -111,7 +111,7 @@ export const WirelessNetworkForm = () => {
                   <Checkbox.Group onChange={onNetworkChange}>
                     <Space direction='vertical'>
                       {networkOptions?.map(item => (
-                        <Checkbox value={item.value} children={item.label} />
+                        <Checkbox value={item.value} children={item.label} key={item.value} />
                       ))}
                     </Space>
                   </Checkbox.Group>

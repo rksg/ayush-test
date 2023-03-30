@@ -74,9 +74,9 @@ export const NetworkSegmentationForm = (props: NetworkSegmentationFormProps) => 
         dhcpPoolId: formData.poolId
       }],
       networkIds: formData.networkIds,
-      distributionSwitchInfos: formData.distributionSwitchInfos.map(ds=>_.omit(
+      distributionSwitchInfos: formData.distributionSwitchInfos?.map(ds=>_.omit(
         ds, ['accessSwitches', 'name'])),
-      accessSwitchInfos: formData.accessSwitchInfos.map(as=>_.omit(
+      accessSwitchInfos: formData.accessSwitchInfos?.map(as=>_.omit(
         as, ['name', 'familyId', 'firmwareVersion', 'model'])),
       forceOverwriteReboot: formData.forceOverwriteReboot || false
     }
