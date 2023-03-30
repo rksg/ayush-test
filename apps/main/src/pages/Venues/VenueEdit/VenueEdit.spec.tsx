@@ -4,7 +4,7 @@ import { Modal } from 'antd'
 import { rest }  from 'msw'
 
 import { venueApi }                                                                          from '@acx-ui/rc/services'
-import { CommonUrlsInfo, SyslogUrls }                                                        from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, SwitchUrlsInfo, SyslogUrls }                                        from '@acx-ui/rc/utils'
 import { Provider, store }                                                                   from '@acx-ui/store'
 import { render, screen, fireEvent, mockServer, waitFor, within, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -99,7 +99,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
         (_, res, ctx) => res(ctx.json({}))),
       rest.put(CommonUrlsInfo.updateVenueMesh.url,
         (_, res, ctx) => res(ctx.json({}))),
-      rest.get(CommonUrlsInfo.getSwitchConfigProfile.url,
+      rest.get(SwitchUrlsInfo.getSwitchConfigProfileDetail.url,
         (_, res, ctx) => res(ctx.json(switchConfigProfile[0]))),
       rest.get(SyslogUrls.getSyslogPolicyList.url,
         (_, res, ctx) => res(ctx.json(syslogServerProfiles)))
