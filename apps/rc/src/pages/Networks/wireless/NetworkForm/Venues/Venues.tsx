@@ -96,8 +96,6 @@ export function Venues () {
   const isWPA3security = data?.wlan && data?.wlan.wlanSecurity === 'WPA3'
 
   const { $t } = useIntl()
-  // eslint-disable-next-line max-len
-  let dhcpTooltip = $t({ defaultMessage: 'You cannot activate the DHCP service on this venue because it already enabled mesh setting' })
   const tableQuery = useTableQuery({
     useQuery: useNetworkVenueListQuery,
     apiParams: { networkId: getNetworkId() },
@@ -158,7 +156,7 @@ export function Venues () {
       label: $t({ defaultMessage: 'Activate' }),
       visible: (selectedRows) => {
         const enabled = selectedRows.some((item)=>{
-          return item.mesh.enabled && (data && data.enableDhcp)
+          return item.mesh && item.mesh.enabled && data && data.enableDhcp
         })
         return !enabled
       },
@@ -170,7 +168,7 @@ export function Venues () {
       label: $t({ defaultMessage: 'Deactivate' }),
       visible: (selectedRows) => {
         const enabled = selectedRows.some((item)=>{
-          return item.mesh.enabled && (data && data.enableDhcp)
+          return item.mesh && item.mesh.enabled && data && data.enableDhcp
         })
         return !enabled
       },
@@ -286,8 +284,9 @@ export function Venues () {
       dataIndex: ['activated', 'isActivated'],
       render: function (activated, row) {
         let disabled = false
-        let title = dhcpTooltip
-        if(data && data.enableDhcp && row.mesh.enabled){
+        // eslint-disable-next-line max-len
+        let title = $t({ defaultMessage: 'You cannot activate the DHCP service on this venue because it already enabled mesh setting' })
+        if(data && data.enableDhcp && row.mesh && row.mesh.enabled){
           disabled = true
         }else{
           title = ''
