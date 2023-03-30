@@ -56,7 +56,7 @@ describe('TopSwitchesByErrorWidget', () => {
         <TopSwitchesByError filters={filters}/>
       </Provider>, { route: { params } })
 
-    expect(await screen.findByText('Top 5 Switches by Error')).toBeVisible()
+    expect(await screen.findByText('Top Switches by Error')).toBeVisible()
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('div[class="ant-pro-table"]')).not.toBeNull()
   })
