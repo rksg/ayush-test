@@ -126,7 +126,7 @@ function Table <RecordType extends Record<string, any>> ({
   const [colWidth, setColWidth] = useState<Record<string, number>>({})
   const allKeys = dataSource?.map(row => typeof rowKey === 'function' ? rowKey(row) : row[rowKey])
   const updateSearch = _.debounce(() => {
-    onFilter.current?.(filterValues, { searchString: searchValue })
+    onFilter.current?.(filterValues, { searchString: searchValue }, groupByValue)
   }, 1000)
 
   useEffect(() => {
@@ -387,8 +387,9 @@ function Table <RecordType extends Record<string, any>> ({
         <div>
           <Space size={12}>
             {Boolean(searchables.length) &&
-              renderSearch<RecordType>(intl, searchables, searchValue, setSearchValue)
-            }
+              renderSearch<RecordType>(
+                intl, searchables, searchValue, setSearchValue, Boolean(groupable.length)
+              )}
             {filterables.map((column, i) =>
               renderFilter<RecordType>(
                 column, i, dataSource, filterValues, setFilterValues, !!enableApiFilter)
