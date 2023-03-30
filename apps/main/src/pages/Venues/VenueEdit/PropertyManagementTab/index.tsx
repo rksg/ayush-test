@@ -47,8 +47,6 @@ export function PropertyManagementTab () {
   const formRef = useRef<StepsFormInstance<PropertyConfigs>>()
   const { editContextData, setEditContextData } = useContext(VenueEditContext)
   const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
-  const [isPropertyEnable, setIsPropertyEnable] = useState(false)
-  const [enableResidentPortal, setEnableResidentPortal] = useState(false)
   const [personaGroupVisible, setPersonaGroupVisible] = useState(false)
   const { data: residentPortalList } = useGetResidentPortalListQuery({
     payload: { page: 1, pageSize: 10000, sortField: 'name', sortOrder: 'ASC' }
@@ -57,10 +55,11 @@ export function PropertyManagementTab () {
   const [patchPropertyConfigs] = usePatchPropertyConfigsMutation()
 
   useEffect(() => {
-    if (propertyConfigsQuery.isLoading || !formRef.current) return
+    if (propertyConfigsQuery.isLoading || !formRef.current || !propertyConfigsQuery.data) return
     const enabled = propertyConfigsQuery.data?.status === PropertyConfigStatus.ENABLED
-    setIsPropertyEnable(enabled)
-    formRef?.current?.setFieldValue('isPropertyEnable', enabled)
+
+    formRef?.current.setFieldsValue(propertyConfigsQuery.data)
+    formRef?.current.setFieldValue('isPropertyEnable', enabled)
   }, [propertyConfigsQuery.data, formRef])
 
   const onFormFinish = async (_: string, info: FormFinishInfo) => {
@@ -73,7 +72,7 @@ export function PropertyManagementTab () {
           payload: {
             ...info.values,
             venueName: venueData?.name ?? venueId,
-            status: isPropertyEnable
+            status: enableProperty
               ? PropertyConfigStatus.ENABLED
               : PropertyConfigStatus.DISABLED
           }
@@ -118,21 +117,17 @@ export function PropertyManagementTab () {
         buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
       >
         <StepsForm.StepForm
-          initialValues={{
-            ...defaultPropertyConfigs,
-            ...propertyConfigsQuery.data,
-            isPropertyEnable
-          }}
+          initialValues={defaultPropertyConfigs}
         >
           <StepsForm.FieldLabel width={'200px'}>
             {$t({ defaultMessage: 'Enable Property Management' })}
             <Form.Item
               name='isPropertyEnable'
               valuePropName={'checked'}
-              children={<Switch onChange={setIsPropertyEnable}/>}
+              children={<Switch />}
             />
           </StepsForm.FieldLabel>
-          {isPropertyEnable &&
+          {formRef?.current?.getFieldValue('isPropertyEnable') &&
             <Row gutter={20}>
               <Col span={8}>
                 <Form.Item
@@ -170,13 +165,10 @@ export function PropertyManagementTab () {
                     name={['unitConfig', 'residentPortalAllowed']}
                     rules={[{ required: true }]}
                     valuePropName={'checked'}
-                    children={<Switch
-                      checked={enableResidentPortal}
-                      onChange={setEnableResidentPortal}
-                    />}
+                    children={<Switch />}
                   />
                 </StepsForm.FieldLabel>
-                {enableResidentPortal &&
+                {formRef?.current?.getFieldValue(['unitConfig', 'residentPortalAllowed']) &&
                     <Form.Item
                       name='residentPortalId'
                       label={$t({ defaultMessage: 'Resident Portal profile' })}

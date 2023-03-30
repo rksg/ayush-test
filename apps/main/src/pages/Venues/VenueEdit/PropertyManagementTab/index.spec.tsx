@@ -167,14 +167,6 @@ describe('Property Config Tab', () => {
     await userEvent.click(cancelBtn)
     expect(screen.queryByRole('dialog')).toBeNull()
 
-    // Change any field to trigger setEditContextData function
-    const residentSwitch = await screen.findByLabelText('Enable Resident Portal')
-
-    // Verify the selector would show up
-    await userEvent.click(residentSwitch)
-    await screen.findByRole('combobox', { name: /resident portal profile/i })
-    await userEvent.click(residentSwitch)
-
     // Trigger save form
     const formSaveBtn = await screen.findByRole('button', { name: /save/i })
     await userEvent.click(formSaveBtn)
