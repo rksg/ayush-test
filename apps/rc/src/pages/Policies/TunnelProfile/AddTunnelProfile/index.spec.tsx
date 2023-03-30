@@ -14,7 +14,7 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-const tableViewPath = '/t/:tenantId/policies/tunnelProfile/list'
+const tableViewPath = '/:tenantId/t/policies/tunnelProfile/list'
 
 describe('AddTunnelProfile', () => {
   let params: { tenantId: string }
@@ -42,7 +42,7 @@ describe('AddTunnelProfile', () => {
     await user.type(policyNameField, 'TestTunnel')
     await user.click(screen.getByRole('button', { name: 'Add' }))
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/policies/tunnelProfile/list`,
+      pathname: `/${params.tenantId}/t/policies/tunnelProfile/list`,
       hash: '',
       search: ''
     }, { replace: true }))
@@ -58,7 +58,7 @@ describe('AddTunnelProfile', () => {
     )
     await user.click(screen.getByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/policies/tunnelProfile/list`,
+      pathname: `/${params.tenantId}/t/policies/tunnelProfile/list`,
       hash: '',
       search: ''
     })
