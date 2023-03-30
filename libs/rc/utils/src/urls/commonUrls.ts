@@ -333,18 +333,22 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   venueNetworkApGroup: {
     // [New API] request not support list
+    // method: 'post',
+    // url: '/networkActivations/query',
+    // oldUrl: '/api/tenant/:tenantId/wifi/venue/network-ap-group',
+    // newApi: false
     method: 'post',
-    url: '/networkActivations/query',
-    oldUrl: '/api/tenant/:tenantId/wifi/venue/network-ap-group',
-    newApi: false
+    url: '/api/tenant/:tenantId/wifi/venue/network-ap-group'
   },
   getNetworkDeepList: {
     // [New API] request not support list
-    method: 'get',
-    url: '/networks/:networkId',
-    oldMethod: 'post',
-    oldUrl: '/api/tenant/:tenantId/wifi/network/get/deep',
-    newApi: false
+    // method: 'get',
+    // url: '/networks/:networkId',
+    // oldMethod: 'post',
+    // oldUrl: '/api/tenant/:tenantId/wifi/network/get/deep',
+    // newApi: false
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/network/get/deep'
   },
   validateRadius: {
     // [New API] no mapping found
