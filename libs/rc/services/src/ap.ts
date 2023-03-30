@@ -1,4 +1,5 @@
-import _ from 'lodash'
+import _          from 'lodash'
+import { Params } from 'react-router-dom'
 
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
@@ -37,21 +38,33 @@ import {
   APExtended,
   LanPortStatusProperties,
   ApDirectedMulticast,
-  APNetworkSettings
+  APNetworkSettings,
+  APExtendedGrouped
 } from '@acx-ui/rc/utils'
 import { baseApApi } from '@acx-ui/store'
 
 export const apApi = baseApApi.injectEndpoints({
   endpoints: (build) => ({
-    apList: build.query<TableResult<APExtended, ApExtraParams>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const apListReq = createHttpRequest(CommonUrlsInfo.getApsList, params)
+    apList: build.query<TableResult<APExtended | APExtendedGrouped, ApExtraParams>,
+    RequestPayload>({
+      query: ({ params, payload }:{ payload:Record<string,unknown>, params: Params<string> }) => {
+        const hasGroupBy = payload?.groupBy
+        const fields = hasGroupBy ? payload.groupByFields : payload.fields
+        const apsReq = hasGroupBy
+          ? createHttpRequest(CommonUrlsInfo.getApGroupsListByGroup, params)
+          : createHttpRequest(CommonUrlsInfo.getApsList, params)
         return {
-          ...apListReq,
-          body: payload
+          ...apsReq,
+          body: { ...payload, fields: fields }
         }
       },
-      transformResponse (result: TableResult<APExtended, ApExtraParams>) {
+      transformResponse (
+        result: TableResult<APExtended, ApExtraParams>,
+        _: unknown,
+        args: { payload : Record<string,unknown> }
+      ) {
+        if((args?.payload)?.groupBy)
+          return transformGroupByList(result as TableResult<APExtendedGrouped, ApExtraParams>)
         return transformApList(result)
       },
       keepUnusedDataFor: 0,
@@ -711,6 +724,35 @@ const transformApList = (result: TableResult<APExtended, ApExtraParams>) => {
   })
   result.extra = channelColumnStatus
   return result
+}
+
+const transformGroupByList = (result: TableResult<APExtendedGrouped, ApExtraParams>) => {
+  let channelColumnStatus = {
+    channel24: true,
+    channel50: false,
+    channelL50: false,
+    channelU50: false,
+    channel60: false
+  }
+  result.data = result.data.map(item => {
+    let newItem = { ...item, children: [] as APExtended[], serialNumber: _.uniqueId() }
+    const aps = (item as unknown as { aps: APExtended[] }).aps?.map(ap => {
+      const { APRadio, lanPortStatus } = ap.apStatusData || {}
+
+      if (APRadio) {
+        setAPRadioInfo(ap, APRadio, channelColumnStatus)
+      }
+      if (lanPortStatus) {
+        setPoEPortStatus(ap, lanPortStatus)
+      }
+      return ap
+    })
+    newItem.children = aps as unknown as APExtended[]
+    return newItem
+  })
+  result.extra = channelColumnStatus
+  return result
+
 }
 
 const transformApViewModel = (result: ApViewModel) => {

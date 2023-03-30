@@ -35,7 +35,8 @@ import {
   firmwareTypeTrans,
   useTableQuery,
   sortProp,
-  defaultSort
+  defaultSort,
+  dateSort
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
@@ -74,13 +75,13 @@ function useColumns (
 
   const columns: TableProps<FirmwareVenue>['columns'] = [
     {
-      title: intl.$t({ defaultMessage: 'Venue Name' }),
+      title: intl.$t({ defaultMessage: 'Venue' }),
       key: 'name',
       dataIndex: 'name',
       // sorter: true,
       sorter: { compare: sortProp('name', defaultSort) },
+      defaultSortOrder: 'ascend',
       searchable: searchable,
-      // defaultSortOrder: 'ascend',
       render: function (data, row) {
         return row.name
       }
@@ -117,7 +118,8 @@ function useColumns (
       title: intl.$t({ defaultMessage: 'Last Update' }),
       key: 'lastUpdate',
       dataIndex: 'lastUpdate',
-      sorter: false,
+      // sorter: false,
+      sorter: { compare: sortProp('lastScheduleUpdate', dateSort) },
       render: function (data, row) {
         if (!row.lastScheduleUpdate) return '--'
         return toUserDate(row.lastScheduleUpdate)
@@ -127,7 +129,9 @@ function useColumns (
       title: intl.$t({ defaultMessage: 'Next Update Schedule' }),
       key: 'nextSchedule',
       dataIndex: 'nextSchedule',
-      sorter: false,
+      // sorter: false,
+      sorter: { compare: sortProp('nextSchedules[0].startDateTime', dateSort) },
+      defaultSortOrder: 'ascend',
       render: function (data, row) {
         return (!isNextScheduleTooltipDisabled(row)
           ? getApNextScheduleTpl(intl, row)
@@ -249,7 +253,7 @@ export const VenueFirmwareTable = (
     visible: (selectedRows) => {
       let eolAp = false
       let allEolFwlatest = true
-      for (let v of venues) {
+      for (let v of selectedRows) {
         if (v['eolApFirmwares']) {
           eolAp = true
           if (allEolFwlatest) {
@@ -309,7 +313,7 @@ export const VenueFirmwareTable = (
       let eolName = ''
       let latestEolVersion = ''
       let eolModels: string[] = []
-      for (let v of venues) {
+      for (let v of selectedRows) {
         if (v['eolApFirmwares']) {
           eolAp = true
           eolName = v['eolApFirmwares'][0].name
@@ -520,6 +524,7 @@ export const VenueFirmwareTable = (
     ]}>
       <Table
         columns={columns}
+        columnState={{ hidden: true }}
         dataSource={tableData}
         // eslint-disable-next-line max-len
         pagination={{ pageSize: 10000, position: [pageBotton as TablePaginationPosition , pageBotton as TablePaginationPosition] }}

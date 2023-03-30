@@ -56,7 +56,7 @@ export function VlanPortsModal (props: {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onSaveModel = async (data: any) => {
-    if(data.family && data.model){
+    if(data.family && data.model !== ''){
       setNoModelMsg(false)
       if(editMode){
         setVlanSettingValues({

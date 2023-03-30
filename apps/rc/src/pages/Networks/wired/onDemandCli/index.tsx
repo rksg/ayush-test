@@ -27,7 +27,7 @@ export function OnDemandCliTab () {
     key: 'switches',
     title: $t({ defaultMessage: 'Switches' }),
     dataIndex: 'switches',
-    sorter: true,
+    sorter: false, // API does not seem to be working
     render: function (data, row) {
       let switchArray: string[] = []
       row.venueSwitches?.forEach(venue => {
@@ -83,6 +83,7 @@ export function OnDemandCliTab () {
     ]}>
       <Table
         columns={columns}
+        columnState={{ hidden: true }}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}

@@ -2,7 +2,10 @@ import { withKnobs,object, boolean } from '@storybook/addon-knobs'
 import { storiesOf }                 from '@storybook/react'
 import { defineMessage }             from 'react-intl'
 
+import { getDeviceConnectionStatusColorsv2 } from '../../index'
+
 import { StackedBarChart } from '.'
+
 
 export const data = [{
   category: 'Infrastructure',
@@ -33,11 +36,10 @@ export const data = [{
 export const singleBar = [{
   category: 'Something',
   series: [
-    { name: 'P1', value: 4 },
-    { name: 'P2', value: 3 },
-    { name: 'P3', value: 5 },
-    { name: 'P4', value: 8 }
-  ]
+    { name: '<0>In Setup Phase',value: 5 },
+    { name: '<1>Requires Attention',value: 4 },
+    { name: '<2>Transient Issue',value: 2 },
+    { name: '<3>Operational',value: 13 }]
 }]
 
 storiesOf('StackedBarChart', module)
@@ -46,11 +48,25 @@ storiesOf('StackedBarChart', module)
     style={{ height: 110, width: 400 }}
     showLabels
     data={data} />)
-  .add('Single Chart View', () => <StackedBarChart
-    style={{ height: 110, width: 400 }}
-    showLabels={false}
-    barWidth={20}
-    data={singleBar} />)
+  .add('Single Chart View', () => <>
+    <h3>With prop.total as 24</h3>
+    <StackedBarChart
+      style={{ height: 110, width: 500 }}
+      showLabels={false}
+      showTotal={false}
+      barWidth={20}
+      barColors={getDeviceConnectionStatusColorsv2()}
+      data={singleBar}
+      total={24} // must pass this value to make proper width
+    />
+    <h3>Without prop.total having width issue</h3>
+    <StackedBarChart
+      style={{ height: 110, width: 500 }}
+      showLabels={false}
+      showTotal={false}
+      barWidth={20}
+      barColors={getDeviceConnectionStatusColorsv2()}
+      data={singleBar} /></>)
   .add('With Knobs', () => <StackedBarChart
     style={{ height: 110, width: 250 }}
     showLabels={boolean('Show Labels', false)}
