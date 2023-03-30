@@ -34,6 +34,7 @@ export enum Features {
   NEW_API='acx-ui-new-api',
   MAC_REGISTRATION = 'mac-registration-service-enabled',
   PERSONA = 'persona-service-enabled',
+  DPSK_CLOUDPATH_FEATURE = 'acx-ui-dpsk-cloudpath-feature-enabled',
   WISPR_ENCRYPT_MAC_IP = 'acx-ui-wispr-encrypt-mac-ip-toggle',
   HEALTH_DRILLDOWN = 'acx-ui-health-drilldown-toggle',
   PROPERTY_MANAGEMENT = 'property-management-enabled',

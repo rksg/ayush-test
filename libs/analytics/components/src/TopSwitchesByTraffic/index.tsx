@@ -90,7 +90,7 @@ function TopSwitchesByTrafficWidget ({ filters }: { filters : AnalyticsFilter })
 
   return (
     <Loader states={[queryResults]}>
-      <HistoricalCard title={$t({ defaultMessage: 'Top 5 Switches by Traffic' })}>
+      <HistoricalCard title={$t({ defaultMessage: 'Top Switches by Traffic' })}>
         <AutoSizer>
           {({ height, width }) => (
             data && data.source?.length

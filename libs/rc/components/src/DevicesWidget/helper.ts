@@ -3,6 +3,7 @@ import _, { find } from 'lodash'
 import { cssStr, DonutChartData } from '@acx-ui/components'
 import {
   Dashboard,
+  ChartData,
   ApVenueStatusEnum,
   SwitchStatusEnum,
   EdgeStatusSeverityEnum,
@@ -16,6 +17,12 @@ import {
   getEdgeStatusDisplayName,
   getSwitchStatusDisplayName
 } from '../MapWidget/VenuesMap/helper'
+
+function sortByName (a: { name: string },b: { name: string }) {
+  const x = a.name.toLowerCase()
+  const y = b.name.toLowerCase()
+  return x < y ? -1 : x > y ? 1 : 0
+}
 
 const seriesMappingSwitch = () => [
   { key: SwitchStatusEnum.DISCONNECTED,
@@ -79,6 +86,41 @@ export const getSwitchDonutChartData = (overviewData: Dashboard | undefined): Do
   return chartData
 }
 
+export const getSwitchStackedBarChartData = (overviewData: Dashboard | undefined): ChartData[] => {
+  const series = getSwitchDonutChartData(overviewData)
+  const statusList = [
+    SwitchStatusEnum.OPERATIONAL,
+    SwitchStatusEnum.DISCONNECTED,
+    SwitchStatusEnum.INITIALIZING
+  ]
+  const finalSeries=seriesMappingSwitch()
+    .filter(status=>statusList.includes(status.key as SwitchStatusEnum)).map(status=>{
+      const matched=series.filter(item=>item.name===status.name)
+      let value=0
+      if(matched.length){
+        value=matched[0].value
+      }
+      /*
+      We need to add weightage to maintain the color order on stackbar chart
+      */
+      switch(status.key){
+        case SwitchStatusEnum.OPERATIONAL:
+          return { name: `<3>${status.name}`, value }
+        case SwitchStatusEnum.DISCONNECTED:
+          return { name: `<2>${status.name}`, value }
+        case SwitchStatusEnum.INITIALIZING:
+          return { name: `<0>${status.name}`, value }
+        default:
+          return { name: `<4>${status.name}`, value }
+      }
+    })
+  finalSeries.push({ name: '<1>Unknown', value: 0 })
+  return [{
+    category: '',
+    series: finalSeries.sort(sortByName)
+  }]
+}
+
 export const getVenueSwitchDonutChartData =
 (venueDetails: VenueDetailHeader | undefined): DonutChartData[] => {
   const chartData: DonutChartData[] = []
@@ -124,7 +166,8 @@ export const seriesMappingAP = () => [
 ] as Array<{ key: string, name: string, color: string }>
 
 export const getApDonutChartData =
-(apsSummary: VenueDetailHeader['aps']['summary'] | undefined): DonutChartData[] => {
+(apsSummary: VenueDetailHeader['aps']['summary'] | undefined,
+  shouldShowOffline:boolean=true): DonutChartData[] => {
   const chartData: DonutChartData[] = []
   if (apsSummary) {
     seriesMappingAP().forEach(({ key, name, color }) => {
@@ -135,10 +178,17 @@ export const getApDonutChartData =
         })
         const value = apsSummary[key]!
         if (setupPhase) {
-          setupPhase.name = `${setupPhase.name}: ${setupPhase.value}, ${name}: ${value}`
+          if(shouldShowOffline)
+            setupPhase.name = `${setupPhase.name}: ${setupPhase.value}, ${name}: ${value}`
+          else
+            setupPhase.name = `${setupPhase.name}`
           setupPhase.value = setupPhase.value + value
         } else {
-          chartData.push({ name, value, color })
+          if(shouldShowOffline)
+            chartData.push({ name, value, color })
+          else
+            chartData.push({ name: getAPStatusDisplayName(ApVenueStatusEnum.IN_SETUP_PHASE, false),
+              value, color })
         }
       }
       else if (value) {
@@ -147,6 +197,39 @@ export const getApDonutChartData =
     })
   }
   return chartData
+}
+
+export const getApStackedBarChartData =
+(apsSummary: VenueDetailHeader['aps']['summary'] | undefined): ChartData[] => {
+  const series = getApDonutChartData(apsSummary,false)
+  const finalSeries=seriesMappingAP()
+    .filter(status=>status.key!==ApVenueStatusEnum.OFFLINE).map(status=>{
+      const matched=series.filter(item=>item.name===status.name)
+      let value=0
+      if(matched.length){
+        value=matched[0].value
+      }
+      /*
+      We need to add weightage to maintain the color order on stackbar chart
+      */
+      switch(status.key){
+        case ApVenueStatusEnum.OPERATIONAL:
+          return { name: `<3>${status.name}`, value }
+        case ApVenueStatusEnum.TRANSIENT_ISSUE:
+          return { name: `<2>${status.name}`, value }
+        case ApVenueStatusEnum.REQUIRES_ATTENTION:
+          return { name: `<1>${status.name}`, value }
+        case ApVenueStatusEnum.IN_SETUP_PHASE:
+          return { name: `<0>${status.name}`, value }
+        default:
+          return { name: `<4>${status.name}`, value }
+      }
+    })
+
+  return [{
+    category: '',
+    series: finalSeries.sort(sortByName)
+  }]
 }
 
 const seriesMappingEdge = () => [
