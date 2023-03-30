@@ -62,7 +62,10 @@ describe('Persona Table', () => {
       <Provider>
         <PersonaTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId' }
+        route: {
+          params,
+          path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId'
+        }
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
