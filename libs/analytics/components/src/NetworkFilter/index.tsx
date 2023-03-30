@@ -22,65 +22,6 @@ import * as UI                                      from './styledComponents'
 
 export type FilterMode = 'ap' | 'switch' | 'both' | 'none'
 
-export const getSupersetRlsClause = (paths?:NetworkPath[],radioBands?:RadioBand[]) => {
-  let radioBandClause = ''
-  let zoneClause = ''
-  let apClause = ''
-  let switchGroupClause = ''
-  let switchClause = ''
-  let networkClause = ''
-
-  if(radioBands?.length){
-    radioBandClause = ` "band" in (${radioBands.map(radioBand=>`'${radioBand}'`).join(', ')})`
-  }
-
-  if(paths?.length){
-    const zoneIds:string[] = []
-    const switchGroupIds:string[] = []
-    const apMacs:string[] = []
-    const switchMacs:string[]=[]
-    paths.forEach(path=>{
-      if(path.length === 2 && path[1].type === 'zone'){
-        zoneIds.push(`'${path[1].name}'`)
-      }
-      else if(path.length === 2 && path[1].type === 'switchGroup'){
-        switchGroupIds.push(`'${path[1].name}'`)
-      }
-      else if(path.length === 3 && path[2].type === 'AP'){
-        apMacs.push(`'${path[2].name}'`)
-      }
-      else if(path.length === 3 && path[2].type === 'switch'){
-        switchMacs.push(`'${path[2].name}'`)
-      }
-    })
-    if(zoneIds.length){
-      zoneClause = `"zoneName" in (${zoneIds.join(', ')})`
-    }
-
-    if(apMacs.length){
-      apClause = `"apMac" in (${apMacs.join(', ')})`
-    }
-
-    if(switchGroupIds.length){
-      switchGroupClause = `"switchGroupLevelOneName" in (${switchGroupIds.join(', ')})`
-    }
-
-    if(switchMacs.length){
-      switchClause = `"switchId" in (${switchMacs.join(', ')})`
-    }
-
-    if(zoneClause || apClause || switchGroupClause || switchClause){
-      networkClause = ` (${[zoneClause,apClause,switchGroupClause,switchClause]
-        .filter(item=>item!=='').join(' OR ')})`
-    }
-  }
-
-  return {
-    radioBandClause,
-    networkClause
-  }
-}
-
 export type NodesWithSeverity = Pick<Incident, 'sliceType'> & {
   venueName: string;
   severity: { [key: string]: number };

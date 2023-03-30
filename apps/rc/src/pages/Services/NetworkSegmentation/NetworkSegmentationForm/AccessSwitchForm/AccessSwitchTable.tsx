@@ -11,8 +11,8 @@ import { useWebAuthTemplateListQuery }      from '@acx-ui/rc/services'
 import { AccessSwitch, DistributionSwitch } from '@acx-ui/rc/utils'
 import { useParams }                        from '@acx-ui/react-router-dom'
 
-import { NetworkSegmentationGroupForm } from '..'
-import { defaultTemplateData }          from '../../../NetworkSegWebAuth/NetworkSegAuthForm'
+import { NetworkSegmentationGroupFormData } from '..'
+import { defaultTemplateData }              from '../../../NetworkSegWebAuth/NetworkSegAuthForm'
 
 
 interface AccessSwitchesTableProps extends Omit<TableProps<AccessSwitch>, 'columns'> {
@@ -22,7 +22,7 @@ interface AccessSwitchesTableProps extends Omit<TableProps<AccessSwitch>, 'colum
 export function AccessSwitchTable (props: AccessSwitchesTableProps) {
   const { $t } = useIntl()
   const { tenantId } = useParams()
-  const { form } = useStepFormContext<NetworkSegmentationGroupForm>()
+  const { form } = useStepFormContext<NetworkSegmentationGroupFormData>()
 
   const dsList: DistributionSwitch[] = form ?
     form.getFieldValue('distributionSwitchInfos') : props.distributionSwitchInfos

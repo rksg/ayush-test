@@ -5,18 +5,18 @@ import { useIntl }        from 'react-intl'
 
 import { Alert, StepsForm, Subtitle, useStepFormContext } from '@acx-ui/components'
 
-import { NetworkSegmentationGroupForm } from '..'
-import { useWatch }                     from '../../useWatch'
-import { AccessSwitchTable }            from '../AccessSwitchForm/AccessSwitchTable'
-import { DistributionSwitchTable }      from '../DistributionSwitchForm/DistributionSwitchTable'
-import * as UI                          from '../styledComponents'
+import { NetworkSegmentationGroupFormData } from '..'
+import { useWatch }                         from '../../useWatch'
+import { AccessSwitchTable }                from '../AccessSwitchForm/AccessSwitchTable'
+import { DistributionSwitchTable }          from '../DistributionSwitchForm/DistributionSwitchTable'
+import * as UI                              from '../styledComponents'
 
 import { SmartEdgeTable, SmartEdgeTableData } from './SmartEdgeTable'
 
 export const SummaryForm = () => {
 
   const { $t } = useIntl()
-  const { form } = useStepFormContext<NetworkSegmentationGroupForm>()
+  const { form } = useStepFormContext<NetworkSegmentationGroupFormData>()
   const [smartEdgeData, setSmartEdgeData] = useState<SmartEdgeTableData[]>([])
   const nsgName = useWatch('name', form)
   const tags = useWatch('tags', form)
