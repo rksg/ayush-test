@@ -38,7 +38,7 @@ describe('GeneralSettingForm', () => {
         (_, res, ctx) => res(ctx.json(venueSwitchSetting[0]))),
       rest.put(CommonUrlsInfo.updateVenueSwitchSetting.url,
         (_, res, ctx) => res(ctx.json(successResponse))),
-      rest.get(SwitchUrlsInfo.getSwitchConfigProfileDetail.url,
+      rest.get(SwitchUrlsInfo.getSwitchConfigProfile.url,
         (_, res, ctx) => res(ctx.json(switchConfigProfile[0])))
     )
   })
@@ -60,7 +60,7 @@ describe('GeneralSettingForm', () => {
     mockServer.use(
       rest.get(CommonUrlsInfo.getVenueSwitchSetting.url,
         (_, res, ctx) => res(ctx.json(venueSwitchSetting[2]))),
-      rest.get(SwitchUrlsInfo.getSwitchConfigProfileDetail.url,
+      rest.get(SwitchUrlsInfo.getSwitchConfigProfile.url,
         (_, res, ctx) => res(ctx.json(switchConfigProfile[1])))
     )
 

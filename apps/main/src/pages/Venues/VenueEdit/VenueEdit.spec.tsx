@@ -99,7 +99,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
         (_, res, ctx) => res(ctx.json({}))),
       rest.put(CommonUrlsInfo.updateVenueMesh.url,
         (_, res, ctx) => res(ctx.json({}))),
-      rest.get(SwitchUrlsInfo.getSwitchConfigProfileDetail.url,
+      rest.get(SwitchUrlsInfo.getSwitchConfigProfile.url,
         (_, res, ctx) => res(ctx.json(switchConfigProfile[0]))),
       rest.get(SyslogUrls.getSyslogPolicyList.url,
         (_, res, ctx) => res(ctx.json(syslogServerProfiles)))

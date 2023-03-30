@@ -40,7 +40,7 @@ describe('Wired', () => {
       rest.get(SwitchUrlsInfo.getCliFamilyModels.url,
         (_, res, ctx) => res(ctx.json(familyModels))
       ),
-      rest.get(SwitchUrlsInfo.getSwitchConfigProfileDetail.url,
+      rest.get(SwitchUrlsInfo.getSwitchConfigProfile.url,
         (_, res, ctx) => res(ctx.json(profile))
       ),
       rest.post(SwitchUrlsInfo.addSwitchConfigProfile.url,

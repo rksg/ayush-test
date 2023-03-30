@@ -220,7 +220,7 @@ describe.skip('Cli Profile Form - Edit', () => {
       rest.post(CommonUrlsInfo.getConfigProfiles.url,
         (_, res, ctx) => res(ctx.json({ data: profiles }))
       ),
-      rest.get(SwitchUrlsInfo.getSwitchConfigProfileDetail.url,
+      rest.get(SwitchUrlsInfo.getSwitchConfigProfile.url,
         (_, res, ctx) => res(ctx.json(cliProfile))
       ),
       rest.get(SwitchUrlsInfo.getCliConfigExamples.url,
