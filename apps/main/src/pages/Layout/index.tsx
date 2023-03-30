@@ -21,14 +21,14 @@ import {
 import {
   MspEcDropdownList
 } from '@acx-ui/msp/components'
-import { CloudMessageBanner, useUpdateGoogleMapRegion }          from '@acx-ui/rc/components'
-import { useGetPreferencesQuery }                                from '@acx-ui/rc/services'
-import { isDelegationMode, TenantPreferenceSettings }            from '@acx-ui/rc/utils'
-import { getBasePath, Link, Outlet, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { useParams }                                             from '@acx-ui/react-router-dom'
-import { RolesEnum }                                             from '@acx-ui/types'
-import { hasRoles, useUserProfileContext }                       from '@acx-ui/user'
-import { getJwtTokenPayload, PverName }                          from '@acx-ui/utils'
+import { CloudMessageBanner, useUpdateGoogleMapRegion }    from '@acx-ui/rc/components'
+import { useGetPreferencesQuery }                          from '@acx-ui/rc/services'
+import { isDelegationMode, TenantPreferenceSettings }      from '@acx-ui/rc/utils'
+import { getBasePath, Outlet, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { useParams }                                       from '@acx-ui/react-router-dom'
+import { RolesEnum }                                       from '@acx-ui/types'
+import { hasRoles, useUserProfileContext }                 from '@acx-ui/user'
+import { getJwtTokenPayload, PverName }                    from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
 import SearchBar         from './SearchBar'
@@ -88,13 +88,13 @@ function Layout () {
       }
       leftHeaderContent={
         <UI.LeftHeaderWrapper>
-          { showHomeButton && <Link to={(isBackToRC? '/api/ui' :
+          { showHomeButton && <a href={(isBackToRC? '/api/ui' :
             `${getBasePath()}`) + `/v/${getJwtTokenPayload().tenantId}`}>
             <UI.Home>
               <LayoutUI.Icon children={<HomeSolid />} />
               {$t({ defaultMessage: 'Home' })}
             </UI.Home>
-          </Link> }
+          </a> }
           <RegionButton/>
           <HeaderContext.Provider value={{
             searchExpanded, licenseExpanded, setSearchExpanded, setLicenseExpanded }}>
