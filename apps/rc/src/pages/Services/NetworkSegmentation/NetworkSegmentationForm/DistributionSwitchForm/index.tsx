@@ -8,8 +8,8 @@ import { useGetAvailableSwitchesQuery }                      from '@acx-ui/rc/se
 import { DistributionSwitch }                                from '@acx-ui/rc/utils'
 import { useParams }                                         from '@acx-ui/react-router-dom'
 
-import { NetworkSegmentationGroupForm } from '..'
-import { useWatch }                     from '../../useWatch'
+import { NetworkSegmentationGroupFormData } from '..'
+import { useWatch }                         from '../../useWatch'
 
 import { DistributionSwitchDrawer } from './DistributionSwitchDrawer'
 import { DistributionSwitchTable }  from './DistributionSwitchTable'
@@ -18,8 +18,7 @@ import { DistributionSwitchTable }  from './DistributionSwitchTable'
 export function DistributionSwitchForm () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
-  // const form = Form.useFormInstance()
-  const { form } = useStepFormContext<NetworkSegmentationGroupForm>()
+  const { form } = useStepFormContext<NetworkSegmentationGroupFormData>()
 
   const [openDrawer, setOpenDrawer] = useState(false)
   const [selected, setSelected] = useState<DistributionSwitch>()

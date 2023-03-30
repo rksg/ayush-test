@@ -119,7 +119,12 @@ export interface AppRule {
   id: string,
   name: string,
   priority: number,
-  ruleType: string
+  ruleType: string,
+  uplink?: number,
+  downlink?: number,
+  upLinkMarkingType?: string,
+  markingPriority?: string,
+  downLinkMarkingType? : string
 }
 
 export interface AvcCategory {

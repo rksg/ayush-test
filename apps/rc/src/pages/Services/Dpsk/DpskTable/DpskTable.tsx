@@ -8,6 +8,7 @@ import {
   Loader,
   showActionModal
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
 import { useDeleteDpskMutation, useGetEnhancedDpskListQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -26,6 +27,8 @@ import {
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                               from '@acx-ui/user'
 
+import { displayDefaultAccess, displayDeviceCountLimit } from '../utils'
+
 const defaultPayload = {
   filters: {}
 }
@@ -39,6 +42,7 @@ export default function DpskTable () {
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteDpsk ] = useDeleteDpskMutation()
+  const isCloudpathEnabled = useIsSplitOn(Features.DPSK_CLOUDPATH_FEATURE)
 
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedDpskListQuery,
@@ -49,6 +53,7 @@ export default function DpskTable () {
   const rowActions: TableProps<DpskSaveData>['rowActions'] = [
     {
       label: intl.$t({ defaultMessage: 'Delete' }),
+      visible: ([selectedRow]) => selectedRow && !selectedRow.identityId,
       onClick: ([{ id, name }], clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -95,6 +100,7 @@ export default function DpskTable () {
       sorter: true,
       defaultSortOrder: 'ascend',
       searchable: true,
+      fixed: 'left',
       render: function (data, row) {
         return (
           <TenantLink
@@ -152,6 +158,24 @@ export default function DpskTable () {
       align: 'center',
       render: function (data) {
         return data ? (data as Array<string>).length : 0
+      }
+    },
+    {
+      key: 'deviceCountLimit',
+      title: intl.$t({ defaultMessage: 'Devices allowed per passphrase' }),
+      dataIndex: 'deviceCountLimit',
+      show: isCloudpathEnabled,
+      render: function (data, row) {
+        return displayDeviceCountLimit(row.deviceCountLimit)
+      }
+    },
+    {
+      key: 'policyDefaultAccess',
+      title: intl.$t({ defaultMessage: 'Default Access' }),
+      dataIndex: 'policyDefaultAccess',
+      show: isCloudpathEnabled,
+      render: function (data, row) {
+        return displayDefaultAccess(row.policyDefaultAccess)
       }
     }
   ]

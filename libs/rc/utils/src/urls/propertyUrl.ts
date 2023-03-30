@@ -5,6 +5,8 @@ type PropertyUrlType =
   'updatePropertyConfigs' |
   'patchPropertyConfigs' |
   'addPropertyUnit' |
+  'importPropertyUnits' |
+  'exportPropertyUnits' |
 
   'getUnitById' |
   'getPropertyUnitList' |
@@ -33,8 +35,16 @@ export const PropertyUrlsInfo: { [key in PropertyUrlType]: ApiInfo } = {
     newApi: true,
     url: '/venues/:venueId/units'
   },
-
-  // TODO: Not integration test
+  importPropertyUnits: {
+    method: 'post',
+    newApi: true,
+    url: '/venues/:venueId/units'
+  },
+  exportPropertyUnits: {
+    method: 'post',
+    newApi: true,
+    url: '/venues/:venueId/units/query'
+  },
   getUnitById: {
     method: 'get',
     newApi: true,

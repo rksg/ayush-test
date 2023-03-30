@@ -78,7 +78,11 @@ export function WISPrForm () {
         form.setFieldValue('walledGardensString',
           data.guestPortal?.walledGardens.toString().replace(/,/g, '\n'))
       }
-      const pName = data.guestPortal?.wisprPage?.externalProviderName
+      let pName = data.guestPortal?.wisprPage?.externalProviderName
+      if(data.guestPortal?.wisprPage?.customExternalProvider){
+        form.setFieldValue(['guestPortal','wisprPage','providerName'], pName)
+        pName = 'Other provider'
+      }
       if(pName){
         const regions = _.find(externalProviders,{ name: pName })?.regions
         setRegionOption(regions)
@@ -248,7 +252,7 @@ export function WISPrForm () {
           label={<>{$t({ defaultMessage: 'Integration Key' })}
             <Tooltip.Question
               title={$t({ defaultMessage: 'Copy this password to your vendor\'s'
-            +' configuration, to allow it to connect to Ruckus Cloud' })}
+            +' configuration, to allow it to connect to RUCKUS One' })}
               placement='bottom' />
           </>}
           extra={

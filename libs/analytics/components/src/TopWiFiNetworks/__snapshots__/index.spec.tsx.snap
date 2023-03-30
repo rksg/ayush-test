@@ -534,7 +534,7 @@ exports[`TopAppsByTrafficWidget should render for empty data: NoData 1`] = `
             style="overflow: visible; height: 0px; width: 0px;"
           >
             <div
-              style="display: block; height: 800px; width: 1280px; margin: -36px 0px 0px 0px;"
+              style="display: block; height: 800px; width: 1280px; margin: -38px 0px 0px 0px;"
             >
               <div
                 style="text-align: right;"
@@ -592,6 +592,7 @@ exports[`TopAppsByTrafficWidget should render for empty data: NoData 1`] = `
               >
                 <div
                   class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                  style="margin: 38px 0px 0px 0px;"
                 >
                   <div
                     class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"

@@ -1,17 +1,19 @@
 import { useState } from 'react'
 
-import { Form, Input, Space } from 'antd'
-import { useIntl }            from 'react-intl'
+import { Modal as AntModal, Form, Input, Space } from 'antd'
+import { RawIntlProvider, useIntl }              from 'react-intl'
 
 import {
   Button,
   Loader,
   Modal,
+  ModalRef,
   ModalType,
   showActionModal,
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { CopyOutlined }              from '@acx-ui/icons'
 import { CsvSize, ImportFileDrawer } from '@acx-ui/rc/components'
@@ -19,6 +21,7 @@ import {
   useDeleteDpskPassphraseListMutation,
   useDownloadPassphrasesMutation,
   useGetEnhancedDpskPassphraseListQuery,
+  useRevokeDpskPassphraseListMutation,
   useUploadPassphrasesMutation
 } from '@acx-ui/rc/services'
 import {
@@ -30,11 +33,12 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
+import { getIntl }        from '@acx-ui/utils'
 
 import NetworkForm from '../../../Networks/wireless/NetworkForm/NetworkForm'
 
-import { unlimitedNumberOfDeviceLabel } from './contentsMap'
-import DpskPassphraseDrawer             from './DpskPassphraseDrawer'
+import { unlimitedNumberOfDeviceLabel }                 from './contentsMap'
+import DpskPassphraseDrawer, { DpskPassphraseEditMode } from './DpskPassphraseDrawer'
 
 
 interface UploadPassphrasesFormFields {
@@ -59,12 +63,19 @@ export default function DpskPassphraseManagement () {
   const intl = useIntl()
   const { $t } = intl
   const [ addPassphrasesDrawerVisible, setAddPassphrasesDrawerVisible ] = useState(false)
+  const [
+    passphrasesDrawerEditMode,
+    setPassphrasesDrawerEditMode
+  ] = useState<DpskPassphraseEditMode>({ isEdit: false })
   const [ deletePassphrases ] = useDeleteDpskPassphraseListMutation()
   const [ uploadCsv, uploadCsvResult ] = useUploadPassphrasesMutation()
   const [ downloadCsv ] = useDownloadPassphrasesMutation()
+  const [ revokePassphrases ] = useRevokeDpskPassphraseListMutation()
   const [ uploadCsvDrawerVisible, setUploadCsvDrawerVisible ] = useState(false)
   const [ networkModalVisible, setNetworkModalVisible ] = useState(false)
   const params = useParams()
+  const isCloudpathEnabled = useIsSplitOn(Features.DPSK_CLOUDPATH_FEATURE)
+
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedDpskPassphraseListQuery,
     sorter: defaultSorter,
@@ -85,6 +96,7 @@ export default function DpskPassphraseManagement () {
       dataIndex: 'createdDate',
       sorter: true,
       defaultSortOrder: 'descend',
+      fixed: 'left',
       render: function (data) {
         return formatter(DateFormatEnum.DateTimeFormat)(data)
       }
@@ -119,15 +131,8 @@ export default function DpskPassphraseManagement () {
       sorter: false,
       render: function (data) {
         return (
-          <Space
-            direction='horizontal'
-            size={2}
-            onClick={(e)=> {e.stopPropagation()}}>
-            <Input.Password
-              readOnly
-              bordered={false}
-              value={data as string}
-            />
+          <Space direction='horizontal' size={2} onClick={(e)=> {e.stopPropagation()}}>
+            <Input.Password readOnly bordered={false} value={data as string} />
             <Button
               type='link'
               icon={<CopyOutlined />}
@@ -162,7 +167,47 @@ export default function DpskPassphraseManagement () {
 
   const rowActions: TableProps<NewDpskPassphrase>['rowActions'] = [
     {
+      label: $t({ defaultMessage: 'Edit Passphrase' }),
+      // eslint-disable-next-line max-len
+      visible: (selectedRows: NewDpskPassphrase[]) => isCloudpathEnabled && selectedRows.length === 1,
+      onClick: ([selectedRow]) => {
+        setPassphrasesDrawerEditMode({ isEdit: true, passphraseId: selectedRow.id })
+        setAddPassphrasesDrawerVisible(true)
+      }
+    },
+    {
+      label: $t({ defaultMessage: 'Revoke' }),
+      visible: isCloudpathEnabled,
+      onClick: (selectedRows: NewDpskPassphrase[], clearSelection) => {
+        showRevokeModal(selectedRows, async (revocationReason: string) => {
+          await revokePassphrases({
+            params,
+            payload: {
+              ids: selectedRows.map(p => p.id),
+              updateState: 'REVOKE',
+              revocationReason
+            }
+          })
+          clearSelection()
+        })
+      }
+    },
+    {
+      label: $t({ defaultMessage: 'Unrevoke' }),
+      visible: isCloudpathEnabled,
+      onClick: (selectedRows: NewDpskPassphrase[], clearSelection) => {
+        revokePassphrases({
+          params,
+          payload: {
+            ids: selectedRows.map(p => p.id),
+            updateState: 'UNREVOKE'
+          }
+        }).then(clearSelection)
+      }
+    },
+    {
       label: $t({ defaultMessage: 'Delete' }),
+      visible: (selectedRows) => !selectedRows.some(row => row.identityId),
       onClick: (selectedRows: NewDpskPassphrase[], clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -173,8 +218,7 @@ export default function DpskPassphraseManagement () {
             numOfEntities: selectedRows.length
           },
           onOk: () => {
-            const passphraseIds = selectedRows.map(p => p.id)
-            deletePassphrases({ params, payload: passphraseIds })
+            deletePassphrases({ params, payload: selectedRows.map(p => p.id) })
             clearSelection()
           }
         })
@@ -185,7 +229,10 @@ export default function DpskPassphraseManagement () {
   const actions = [
     {
       label: $t({ defaultMessage: 'Add Passphrases' }),
-      onClick: () => setAddPassphrasesDrawerVisible(true)
+      onClick: () => {
+        setPassphrasesDrawerEditMode({ isEdit: false })
+        setAddPassphrasesDrawerVisible(true)
+      }
     },
     {
       label: $t({ defaultMessage: 'Import From File' }),
@@ -212,6 +259,7 @@ export default function DpskPassphraseManagement () {
     <DpskPassphraseDrawer
       visible={addPassphrasesDrawerVisible}
       setVisible={setAddPassphrasesDrawerVisible}
+      editMode={passphrasesDrawerEditMode}
     />
     <ImportFileDrawer type='DPSK'
       title={$t({ defaultMessage: 'Import from file' })}
@@ -223,7 +271,9 @@ export default function DpskPassphraseManagement () {
       isLoading={uploadCsvResult.isLoading}
       importRequest={async (formData, values) => {
         const formValues = values as UploadPassphrasesFormFields
-        formData.append('usernamePrefix', formValues.usernamePrefix)
+        if (formValues.usernamePrefix) {
+          formData.append('usernamePrefix', formValues.usernamePrefix)
+        }
         try {
           await uploadCsv({ params, payload: formData }).unwrap()
           setUploadCsvDrawerVisible(false)
@@ -268,4 +318,66 @@ export default function DpskPassphraseManagement () {
       />
     </Loader>
   </>)
+}
+
+// eslint-disable-next-line max-len
+function showRevokeModal (passphrases: NewDpskPassphrase[], onFinish: (revocationReason: string) => Promise<void>) {
+  const modal = AntModal.confirm({})
+  const { $t } = getIntl()
+
+  const getRevokeTitle = () => {
+    return $t({
+      defaultMessage: `Revoke "{count, plural,
+        one {{entityValue}}
+        other {{count} {formattedEntityName}}
+      }"?`
+    }, {
+      count: passphrases.length,
+      entityValue: passphrases[0].username,
+      formattedEntityName: $t({ defaultMessage: 'Passphrases' })
+    })
+  }
+
+  const content = <RevokeForm modal={modal} onFinish={onFinish} />
+
+  modal.update({
+    title: getRevokeTitle(),
+    okText: $t({ defaultMessage: 'OK' }),
+    cancelText: $t({ defaultMessage: 'Cancel' }),
+    maskClosable: false,
+    keyboard: false,
+    content: <RawIntlProvider value={getIntl()} children={content} />,
+    icon: <> </>
+  })
+}
+
+function RevokeForm (props: {
+  modal: ModalRef,
+  onFinish: (revocationReason: string) => Promise<void>
+}) {
+  const { $t } = getIntl()
+  const { modal, onFinish } = props
+  const [ form ] = Form.useForm()
+
+  modal.update({
+    onOk: async () => {
+      await onFinish(form.getFieldValue('reason'))
+    },
+    okButtonProps: { disabled: true }
+  })
+
+  return (
+    <Form form={form} layout='horizontal'>
+      <Form.Item
+        name='reason'
+        label={$t({ defaultMessage: 'Type the reason to revoke' })}
+      >
+        <Input onChange={(e) => {
+          modal.update({
+            okButtonProps: { disabled: !e.target.value }
+          })
+        }} />
+      </Form.Item>
+    </Form>
+  )
 }

@@ -29,3 +29,23 @@ export const mockedDpskList = {
   totalCount: 3,
   totalPages: 1
 }
+
+export const mockedDpskListWithPersona = {
+  content: [
+    {
+      id: '123456789a',
+      name: 'DPSK Service 1',
+      passphraseLength: 18,
+      passphraseFormat: 'MOST_SECURED',
+      expirationType: null,
+      identityId: '123456789'
+    }
+  ],
+  totalElements: 1,
+  totalPages: 1,
+  pageable: {
+    pageNumber: 0,
+    pageSize: 10
+  },
+  sort: []
+}

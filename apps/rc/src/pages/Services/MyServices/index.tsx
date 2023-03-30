@@ -8,7 +8,7 @@ import {
   useGetDpskListQuery,
   useGetEnhancedMdnsProxyListQuery,
   useGetNetworkSegmentationStatsListQuery,
-  useGetPortalProfileListQuery,
+  useGetEnhancedPortalProfileListQuery,
   useGetEnhancedWifiCallingServiceListQuery,
   useWebAuthTemplateListQuery
 } from '@acx-ui/rc/services'
@@ -46,7 +46,7 @@ export default function MyServices () {
     },
     {
       type: ServiceType.EDGE_DHCP,
-      category: RadioCardCategory.EDGE,
+      categories: [RadioCardCategory.EDGE],
       tableQuery: useGetDhcpStatsQuery({
         params, payload: { ...defaultPayload }
       },{
@@ -56,7 +56,7 @@ export default function MyServices () {
     },
     {
       type: ServiceType.NETWORK_SEGMENTATION,
-      category: RadioCardCategory.EDGE,
+      categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
       tableQuery: useGetNetworkSegmentationStatsListQuery({
         params, payload: { ...defaultPayload }
       },{
@@ -66,24 +66,24 @@ export default function MyServices () {
     },
     {
       type: ServiceType.DPSK,
-      category: RadioCardCategory.WIFI,
+      categories: [RadioCardCategory.WIFI],
       tableQuery: useGetDpskListQuery({})
     },
     {
       type: ServiceType.WIFI_CALLING,
-      category: RadioCardCategory.WIFI,
+      categories: [RadioCardCategory.WIFI],
       tableQuery: useGetEnhancedWifiCallingServiceListQuery({
         params, payload: defaultPayload
       })
     },
     {
       type: ServiceType.PORTAL,
-      category: RadioCardCategory.WIFI,
-      tableQuery: useGetPortalProfileListQuery({ params })
+      categories: [RadioCardCategory.WIFI],
+      tableQuery: useGetEnhancedPortalProfileListQuery({ params, payload: { filters: {} } })
     },
     {
       type: ServiceType.WEBAUTH_SWITCH,
-      category: RadioCardCategory.SWITCH,
+      categories: [RadioCardCategory.SWITCH],
       tableQuery: useWebAuthTemplateListQuery({ params, payload: { ...defaultPayload } }, {
         skip: !networkSegmentationEnabled || !networkSegmentationSwitchEnabled
       }),
@@ -110,7 +110,7 @@ export default function MyServices () {
               <ServiceCard
                 key={service.type}
                 serviceType={service.type}
-                categories={[service.category]}
+                categories={service.categories}
                 count={service.tableQuery.data?.totalCount}
                 type={'default'}
               />
