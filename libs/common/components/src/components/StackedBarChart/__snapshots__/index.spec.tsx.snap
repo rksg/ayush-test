@@ -1,7 +1,49 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`StackedBarChart should render chart with proper width 1`] = `
+<svg
+  baseProfile="full"
+  height="800"
+  style="position:absolute;left:0;top:0;user-select:none"
+  version="1.1"
+  width="1280"
+  xmlns="http://www.w3.org/2000/svg"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+>
+  <rect
+    fill="none"
+    fill-opacity="1"
+    height="800"
+    id="0"
+    width="1280"
+    x="0"
+    y="0"
+  />
+  <g>
+    <path
+      d="M0 390L693.3333 390L693.3333 410L0 410L0 390"
+      fill="#23AB36"
+    />
+    <path
+      d="M693.3333 390L800 390L800 410L693.3333 410L693.3333 390"
+      fill="#F9C34B"
+    />
+    <path
+      d="M800 390L1013.3333 390L1013.3333 410L800 410L800 390"
+      fill="#ED1C24"
+    />
+    <path
+      d="M1013.3333 390L1278 390A2 2 0 0 1 1280 392L1280 408A2 2 0 0 1 1278 410L1013.3333 410L1013.3333 390"
+      fill="#ACAEB0"
+    />
+  </g>
+</svg>
+`;
+
 exports[`tooltipFormatter should handle custom format 1`] = `"<div class=\\"styledComponents__TooltipWrapper-sc-ryy21w-0 cxnnu\\"><span class=\\"ant-badge ant-badge-status ant-badge-not-a-wrapper styledComponents__Badge-sc-ryy21w-1 gdrDEo acx-chart-tooltip\\"><span class=\\"ant-badge-status-dot\\" style=\\"background:color1\\"></span><span class=\\"ant-badge-status-text\\"><span></span> <br/> <span style=\\"margin-left:10px\\"> <b>formatted-10 units</b> </span></span></span></div>"`;
 
 exports[`tooltipFormatter should handle when dataFormatter is null 1`] = `"<div class=\\"styledComponents__TooltipWrapper-sc-ryy21w-0 cxnnu\\"><span class=\\"ant-badge ant-badge-status ant-badge-not-a-wrapper styledComponents__Badge-sc-ryy21w-1 gdrDEo acx-chart-tooltip\\"><span class=\\"ant-badge-status-dot\\" style=\\"background:color1\\"></span><span class=\\"ant-badge-status-text\\"><br/><span style=\\"margin-left:10px\\"><b>10</b></span></span></span></div>"`;
 
 exports[`tooltipFormatter should return correct Html string for single value 1`] = `"<div class=\\"styledComponents__TooltipWrapper-sc-ryy21w-0 cxnnu\\"><span class=\\"ant-badge ant-badge-status ant-badge-not-a-wrapper styledComponents__Badge-sc-ryy21w-1 gdrDEo acx-chart-tooltip\\"><span class=\\"ant-badge-status-dot\\" style=\\"background:color1\\"></span><span class=\\"ant-badge-status-text\\"><br/><span style=\\"margin-left:10px\\"><b>formatted-10</b></span></span></span></div>"`;
+
+exports[`tooltipFormatter should return correct Html string for single value for isPercent 1`] = `"<div class=\\"styledComponents__TooltipWrapper-sc-ryy21w-0 cxnnu\\"><span class=\\"ant-badge ant-badge-status ant-badge-not-a-wrapper styledComponents__Badge-sc-ryy21w-1 gdrDEo acx-chart-tooltip\\"><span class=\\"ant-badge-status-dot\\" style=\\"background:color1\\"></span><span class=\\"ant-badge-status-text\\"><br/><span style=\\"margin-left:10px\\"><b>formatted-85</b></span></span></span></div>"`;
