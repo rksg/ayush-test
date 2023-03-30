@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import React                   from 'react'
 
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import { Menu, MenuProps }     from 'antd'
@@ -25,29 +26,38 @@ export default function ApsTable () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const [ importVisible, setImportVisible ] = useState(false)
-
-  const { venueFilterOptions } = useVenuesListQuery({ params: { tenantId }, payload: {
-    fields: ['name', 'country', 'latitude', 'longitude', 'id'],
-    pageSize: 10000,
-    sortField: 'name',
-    sortOrder: 'ASC'
-  } }, {
-    selectFromResult: ({ data }) => ({
-      venueFilterOptions: data?.data.map(v=>({ key: v.id, value: v.name })) || true
+  const { venueFilterOptions } = useVenuesListQuery(
+    {
+      params: { tenantId },
+      payload: {
+        fields: ['name', 'country', 'latitude', 'longitude', 'id'],
+        pageSize: 10000,
+        sortField: 'name',
+        sortOrder: 'ASC'
+      }
+    },
+    {
+      selectFromResult: ({ data }) => ({
+        venueFilterOptions: data?.data.map(v=>({ key: v.id, value: v.name })) || true
+      })
     })
-  })
-
-  const { apgroupFilterOptions } = useApGroupsListQuery({ params: { tenantId }, payload: {
-    fields: ['name', 'venueId', 'clients', 'networks', 'venueName', 'id'],
-    pageSize: 10000,
-    sortField: 'name',
-    sortOrder: 'ASC',
-    filters: { isDefault: [false] }
-  } }, {
-    selectFromResult: ({ data }) => ({
-      apgroupFilterOptions: data?.data.map(v=>({ key: v.id, value: v.name })) || true
-    })
-  })
+  const { apgroupFilterOptions } = useApGroupsListQuery(
+    {
+      params: { tenantId },
+      payload: {
+        fields: ['name', 'venueId', 'clients', 'networks', 'venueName', 'id'],
+        pageSize: 10000,
+        sortField: 'name',
+        sortOrder: 'ASC',
+        filters: { isDefault: [false] }
+      }
+    },
+    {
+      selectFromResult: ({ data }) => ({
+        apgroupFilterOptions: data?.data.map((v) => ({ key: v.id, value: v.name })) || true
+      })
+    }
+  )
 
   const [ isImportResultLoading, setIsImportResultLoading ] = useState(false)
   const [ importCsv ] = useImportApMutation()
@@ -107,7 +117,8 @@ export default function ApsTable () {
           type: 'checkbox'
         }}
       />
-      <ImportFileDrawer type='AP'
+      <ImportFileDrawer
+        type='AP'
         title={$t({ defaultMessage: 'Import from file' })}
         maxSize={CsvSize['5MB']}
         maxEntries={512}
@@ -126,7 +137,7 @@ export default function ApsTable () {
               setImportResult(result)
             } }).unwrap()
         }}
-        onClose={()=>setImportVisible(false)}/>
+        onClose={() => setImportVisible(false)}/>
     </>
   )
 }

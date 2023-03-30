@@ -180,6 +180,7 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
       searchable: true,
       sorter: true,
       defaultSortOrder: 'ascend',
+      fixed: 'left',
       render: function (data, row) {
         return (
           <TenantLink
@@ -207,6 +208,7 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
       title: $t({ defaultMessage: 'ePDG' }),
       dataIndex: 'ePDGs',
       sorter: true,
+      sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center',
       render: (data, row) => row.epdgs?.length
     },
@@ -217,6 +219,7 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
       filterable: networkFilterOptions,
       align: 'center',
       sorter: true,
+      sortDirections: ['descend', 'ascend', 'descend'],
       render: (data, row) => row.networkIds?.length
     }
   ]

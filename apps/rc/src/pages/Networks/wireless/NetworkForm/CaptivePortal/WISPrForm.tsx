@@ -252,7 +252,7 @@ export function WISPrForm () {
           label={<>{$t({ defaultMessage: 'Integration Key' })}
             <Tooltip.Question
               title={$t({ defaultMessage: 'Copy this password to your vendor\'s'
-            +' configuration, to allow it to connect to Ruckus Cloud' })}
+            +' configuration, to allow it to connect to RUCKUS One' })}
               placement='bottom' />
           </>}
           extra={
