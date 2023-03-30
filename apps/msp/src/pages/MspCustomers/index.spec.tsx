@@ -5,6 +5,7 @@ import { Path, rest } from 'msw'
 import { MspUrlsInfo }                                            from '@acx-ui/rc/utils'
 import { Provider }                                               from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, within, waitFor } from '@acx-ui/test-utils'
+import { AccountType }                                            from '@acx-ui/utils'
 
 import { MspCustomers } from '.'
 
@@ -131,8 +132,12 @@ describe('MspCustomers', () => {
     services.useGetMspEcDelegatedAdminsQuery = jest.fn().mockImplementation(() => {
       return { data: undefined }
     })
+    services.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
+      return { data: undefined }
+    })
     jest.spyOn(services, 'useMspCustomerListQuery')
     jest.spyOn(services, 'useSupportMspCustomerListQuery')
+    jest.spyOn(services, 'useIntegratorCustomerListQuery')
     jest.spyOn(services, 'useDeleteMspEcMutation')
     jest.spyOn(services, 'useDeactivateMspEcMutation')
     jest.spyOn(services, 'useReactivateMspEcMutation')
@@ -156,6 +161,10 @@ describe('MspCustomers', () => {
       rest.post(
         MspUrlsInfo.reactivateMspEcAccount.url,
         (req, res, ctx) => res(ctx.json({ requestId: '123' }))
+      ),
+      rest.post(
+        MspUrlsInfo.getIntegratorCustomersList.url,
+        (req, res, ctx) => res(ctx.json({ ...list }))
       )
     )
     params = {
@@ -386,6 +395,70 @@ describe('MspCustomers', () => {
     list.data.forEach((item, index) => {
       expect(within(rows[index]).getByText(item.name)).toBeVisible()
     })
+  })
+  it('should render table for integrator', async () => {
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile }
+    })
+    const tenantDetails = { tenantType: AccountType.MSP_INSTALLER }
+    services.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
+      return { data: tenantDetails }
+    })
+    user.hasRoles = jest.fn().mockImplementation(() => {
+      return true
+    })
+    render(
+      <Provider>
+        <MspCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard/mspCustomers' }
+      })
+
+    // eslint-disable-next-line testing-library/no-node-access
+    const tbody = (await screen.findByRole('table')).querySelector('tbody')!
+    expect(tbody).toBeVisible()
+
+    const rows = within(tbody).getAllByRole('row')
+    expect(rows).toHaveLength(list.data.length)
+    list.data.forEach((item, index) => {
+      expect(within(rows[index]).getByText(item.name)).toBeVisible()
+    })
+
+    expect(screen.queryByText('Integrator')).toBeNull()
+
+    // Assert MSP Admin Count link works
+    const row = await screen.findByRole('row', { name: /ec 111/i })
+    fireEvent.click(within(row).getByRole('link', { name: '1' }))
+
+    expect(screen.getByRole('dialog')).toBeVisible()
+    expect(screen.getByText('Manage MSP Administrators')).toBeVisible()
+  })
+  it('should render table for mspec', async () => {
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile }
+    })
+    services.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
+      return { data: {} }
+    })
+    render(
+      <Provider>
+        <MspCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard/mspCustomers' }
+      })
+
+    // eslint-disable-next-line testing-library/no-node-access
+    const tbody = (await screen.findByRole('table')).querySelector('tbody')!
+    expect(tbody).toBeVisible()
+
+    const rows = within(tbody).getAllByRole('row')
+    expect(rows).toHaveLength(list.data.length)
+    list.data.forEach((item, index) => {
+      expect(within(rows[index]).getByText(item.name)).toBeVisible()
+    })
+
+    expect(screen.getByText('Integrator')).toBeVisible()
+    expect(screen.getByText('Installer')).toBeVisible()
   })
   it('should open dialog when msp admin count link clicked', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {

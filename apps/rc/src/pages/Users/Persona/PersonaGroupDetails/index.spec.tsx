@@ -5,13 +5,15 @@ import {
   PersonaUrls,
   MacRegListUrlsInfo,
   PersonaBaseUrl,
-  DpskUrls
+  DpskUrls,
+  PropertyUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider }                                                                 from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved, fireEvent, within } from '@acx-ui/test-utils'
 
 import {
   mockDpskPool,
+  mockEnabledPropertyConfig,
   mockMacRegistration,
   mockMacRegistrationList,
   mockPersonaGroup,
@@ -59,8 +61,20 @@ describe('Persona Group Details', () => {
         (req, res, ctx) => res(ctx.json(mockPersonaTableResult))
       ),
       rest.get(
+        replacePagination(PersonaUrls.getPersonaGroupList.url),
+        (req, res, ctx) => res(ctx.json(mockPersonaTableResult))
+      ),
+      rest.get(
         DpskUrls.getDpsk.url,
         (req, res, ctx) => res(ctx.json(mockDpskPool))
+      ),
+      rest.get(
+        PropertyUrlsInfo.getPropertyConfigs.url,
+        (req, res, ctx) => res(ctx.json(mockEnabledPropertyConfig))
+      ),
+      rest.get(
+        PropertyUrlsInfo.getUnitById.url,
+        (req, res, ctx) => res(ctx.json({ id: 'unit-id-1', name: 'unit-name-1' }))
       )
     )
     params = {

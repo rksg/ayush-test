@@ -66,6 +66,7 @@ import SnmpAgentTable             from './pages/Policies/SnmpAgent/SnmpAgentTabl
 import SyslogDetailView           from './pages/Policies/Syslog/SyslogDetail/SyslogDetailView'
 import SyslogForm                 from './pages/Policies/Syslog/SyslogForm/SyslogForm'
 import SyslogTable                from './pages/Policies/Syslog/SyslogTable/SyslogTable'
+import AddTunnelProfile           from './pages/Policies/TunnelProfile/AddTunnelProfile'
 import VLANPoolDetail             from './pages/Policies/VLANPool/VLANPoolDetail'
 import VLANPoolForm               from './pages/Policies/VLANPool/VLANPoolForm/VLANPoolForm'
 import VLANPoolTable              from './pages/Policies/VLANPool/VLANPoolTable/VLANPoolTable'
@@ -557,6 +558,10 @@ function PolicyRoutes () {
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.DETAIL })}
         element={<RadiusAttributeGroupDetail />} />
+      <Route
+        path={getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.CREATE })}
+        element={<AddTunnelProfile />}
+      />
     </Route>
   )
 }

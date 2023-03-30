@@ -626,7 +626,7 @@ exports[`Test Details should render ApservDowntimeHigh correctly 1`] = `
         <span
           class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
         >
-          High AP-RUCKUS Cloud connection failures in Venue: Default Zone
+          High AP-RUCKUS One connection failures in Venue: Default Zone
         </span>
       </div>
     </div>
