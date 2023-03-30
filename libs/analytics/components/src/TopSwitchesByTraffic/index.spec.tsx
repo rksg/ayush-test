@@ -59,7 +59,7 @@ describe('TopSwitchesByTrafficWidget', () => {
       data: topSwitchesByTrafficResponse
     })
     const { asFragment } =render(wrapper)
-    await screen.findByText('Top 5 Switches by Traffic')
+    await screen.findByText('Top Switches by Traffic')
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
   })
   it('should render error', async () => {
