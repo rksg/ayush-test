@@ -82,7 +82,7 @@ function TopSwitchesByPoEUsageWidget ({ filters }: { filters : AnalyticsFilter }
 
   return (
     <Loader states={[queryResults]}>
-      <HistoricalCard title={intl.$t({ defaultMessage: 'Top 5 Switches by PoE Usage' })}>
+      <HistoricalCard title={intl.$t({ defaultMessage: 'Top Switches by PoE Usage' })}>
         <AutoSizer>
           {({ height, width }) => (
             data && data.source?.length > 0
