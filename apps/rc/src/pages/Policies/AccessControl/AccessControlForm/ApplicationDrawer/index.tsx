@@ -224,26 +224,38 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     skip: !avcCategoryList
   })
 
-  useEffect(() => {
-    if (avcCategoryList && avcCategoryList[0].catName !== 'All') {
-      setAvcSelectOptions(
-        [{
-          catId: 0,
-          catName: 'All',
-          appNames: []
-        }, ...avcCategoryList.slice()
-          .sort((a: AvcCategory, b: AvcCategory) => a.catId - b.catId)
-          .map(avcCat => {
-            return {
-              ...avcCat,
-              appNames: ['All']
-            }
-          })
-        ]
-      )
-    }
+  const hasAllCategoryOption = () => {
+    return avcSelectOptions &&
+    avcSelectOptions.length > 0 &&
+    avcSelectOptions[0].catName === 'All'
+  }
 
-    if (avcAppList) {
+  useEffect(() => {
+    if (!avcCategoryList || hasAllCategoryOption()) return
+
+    setAvcSelectOptions(
+      [{
+        catId: 0,
+        catName: 'All',
+        appNames: []
+      },
+      ...avcCategoryList.slice()
+        .sort((a: AvcCategory, b: AvcCategory) => a.catId - b.catId)
+        .map(avcCat => ({ ...avcCat, appNames: ['All'] }))
+      ]
+    )
+  }, [avcCategoryList])
+
+  useEffect(() => {
+    if (!avcAppList) return
+
+    avcAppList.forEach(avcApp => {
+      categoryAppMappingObject[avcApp.appName] = avcApp.avcAppAndCatId
+    })
+    setCategoryAppMappingObject({ ...categoryAppMappingObject })
+
+
+    setAvcSelectOptions(avcSelectOptions => {
       avcAppList.forEach(avcApp => {
         let catId = avcSelectOptions.findIndex(option =>
           option.catId === avcApp.avcAppAndCatId.catId
@@ -251,15 +263,10 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         if (avcSelectOptions[catId]) {
           avcSelectOptions[catId].appNames.push(avcApp.appName)
         }
-
-        if (!categoryAppMappingObject.hasOwnProperty(avcApp.appName)) {
-          categoryAppMappingObject[avcApp.appName] = avcApp.avcAppAndCatId
-        }
       })
-      setAvcSelectOptions([...avcSelectOptions])
-      setCategoryAppMappingObject({ ...categoryAppMappingObject })
-    }
-  }, [avcCategoryList, avcAppList])
+      return avcSelectOptions
+    })
+  }, [avcAppList])
 
   const isViewMode = () => {
     if (queryPolicyId === '') {
