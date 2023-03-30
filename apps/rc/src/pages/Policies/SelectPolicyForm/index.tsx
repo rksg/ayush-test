@@ -26,6 +26,7 @@ export default function SelectPolicyForm () {
   const policiesTablePath: Path = useTenantLink(getPolicyListRoutePath(true))
   const tenantBasePath: Path = useTenantLink('')
   const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
+  const adaptivePolicy = useIsSplitOn(Features.POLICY_MANAGEMENT)
 
   const navigateToCreatePolicy = async function (data: { policyType: PolicyType }) {
     const policyCreatePath = getPolicyRoutePath({
@@ -50,6 +51,10 @@ export default function SelectPolicyForm () {
 
   if (supportApSnmp) {
     sets.push({ type: PolicyType.SNMP_AGENT, categories: [RadioCardCategory.WIFI] })
+  }
+
+  if(adaptivePolicy) {
+    sets.push({ type: PolicyType.ADAPTIVE_POLICY, categories: [RadioCardCategory.WIFI] })
   }
 
   return (
