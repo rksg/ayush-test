@@ -425,12 +425,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
       'configurationHistory/detail/:transactionId',
     newApi: true
   },
-  getSwitchConfigProfile: {
-    method: 'get',
-    url: '/switchProfiles/:profileId',
-    oldUrl: '/api/switch/tenant/:tenantId/profile/:profileId',
-    newApi: true
-  },
   getPoliciesList: {
     method: 'post',
     url: '/policyProfiles',

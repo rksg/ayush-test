@@ -451,14 +451,6 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
-    switchConfigProfile: build.query<ConfigurationProfile, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getSwitchConfigProfile, params)
-        return{
-          ...req
-        }
-      }
-    }),
     updateVenueSwitchSetting: build.mutation<Venue, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.updateVenueSwitchSetting, params)
@@ -1163,7 +1155,6 @@ export const {
   useConfigProfilesQuery,
   useVenueSwitchSettingQuery,
   useUpdateVenueSwitchSettingMutation,
-  useSwitchConfigProfileQuery,
   useVenueDHCPProfileQuery,
   useVenueDHCPPoolsQuery,
   useVenuesLeasesListQuery,
