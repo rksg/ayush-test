@@ -4,7 +4,8 @@ import {
   ApplicationAclType,
   ApplicationPortMappingType,
   ApplicationRuleType,
-  appPolicyInfoType
+  appPolicyInfoType,
+  AvcCategory
 } from '@acx-ui/rc/utils'
 
 import { ApplicationsRule } from './index'
@@ -122,48 +123,13 @@ export const genRuleObject = (drawerForm: FormInstance) => {
 
 export const transformToRulesForPayload = (
   applicationsRuleList: ApplicationsRule[],
-  categoryAppMappingObject: {
-    [key: string]: { catId: number, appId: number }
-  }
+  categoryAppMap: { [key: string]: { catId: number, appId: number } },
+  avcCategoryList: AvcCategory[]
 ) => {
   return applicationsRuleList.map(rule => {
-    let catAppConfig = {} as {
-      applicationId: number, applicationName: string, category: string, categoryId: number
-    }
-    if (rule.ruleType === ApplicationRuleType.SIGNATURE
-      && rule.ruleSettings.appNameSystemDefined
-    ) {
-      const [catName, appName] = rule.ruleSettings.appNameSystemDefined.split('_')
-      const catAppMapping = categoryAppMappingObject[appName]
-      catAppConfig.applicationId = catAppMapping.appId
-      catAppConfig.applicationName = appName
-      catAppConfig.categoryId = catAppMapping.catId
-      catAppConfig.category = catName
-    }
-
-    let userAppConfig = {} as {
-      portMapping?: string, destinationIp?: string, netmask?: string,
-      destinationPort: number, protocol: string, applicationName: string
-    }
-    if (rule.ruleSettings.appNameUserDefined
-      && rule.ruleSettings.destinationPort
-      && rule.ruleSettings.protocol) {
-      userAppConfig.applicationName = rule.ruleSettings.appNameUserDefined
-      userAppConfig.portMapping = rule.ruleSettings.portMappingOnly
-        ? ApplicationPortMappingType.PORT_ONLY
-        : ApplicationPortMappingType.IP_WITH_PORT
-      if (!rule.ruleSettings.portMappingOnly) {
-        userAppConfig.destinationIp = rule.ruleSettings.destinationIp
-        userAppConfig.netmask = rule.ruleSettings.netmask
-      }
-      userAppConfig.destinationPort = rule.ruleSettings.destinationPort
-    }
-
-    if (rule.accessControl.toUpperCase() !== ApplicationAclType.RATE_LIMIT) {
-      delete rule.ruleSettings.uplink
-      delete rule.ruleSettings.downlink
-      delete rule.ruleSettings.appNameSystemDefined
-    }
+    // eslint-disable-next-line max-len
+    const catAppConfig = transformCatAppConfigForPayload(rule, categoryAppMap, avcCategoryList)
+    const userAppConfig = transformUserAppConfigForPayload(rule)
 
     let ruleId = {} as { id: string }
     if (rule.id) {
@@ -181,4 +147,65 @@ export const transformToRulesForPayload = (
       ruleType: rule.ruleType
     }
   })
+}
+
+function transformCatAppConfigForPayload (
+  rule: ApplicationsRule,
+  categoryAppMap: { [key: string]: { catId: number, appId: number } },
+  avcCategoryList: AvcCategory[]
+) {
+  let catAppConfig = {} as {
+    applicationId: number, applicationName: string, category: string, categoryId: number
+  }
+
+  if (rule.ruleType === ApplicationRuleType.SIGNATURE
+    && rule.ruleSettings.appNameSystemDefined
+  ) {
+    const [catName, appName] = rule.ruleSettings.appNameSystemDefined.split('_')
+    let catAppMapping: { catId: number, appId: number }
+
+    if (appName === 'All') {
+      const targetCategory = avcCategoryList.find(category => category.catName === catName)
+      catAppMapping = {
+        appId: 0,
+        catId: targetCategory!.catId
+      }
+    } else {
+      catAppMapping = categoryAppMap[appName]
+    }
+    catAppConfig.applicationId = catAppMapping.appId
+    catAppConfig.applicationName = appName
+    catAppConfig.categoryId = catAppMapping.catId
+    catAppConfig.category = catName
+  }
+
+  return catAppConfig
+}
+
+function transformUserAppConfigForPayload (rule: ApplicationsRule) {
+  let userAppConfig = {} as {
+    portMapping?: string, destinationIp?: string, netmask?: string,
+    destinationPort: number, protocol: string, applicationName: string
+  }
+  if (rule.ruleSettings.appNameUserDefined
+    && rule.ruleSettings.destinationPort
+    && rule.ruleSettings.protocol) {
+    userAppConfig.applicationName = rule.ruleSettings.appNameUserDefined
+    userAppConfig.portMapping = rule.ruleSettings.portMappingOnly
+      ? ApplicationPortMappingType.PORT_ONLY
+      : ApplicationPortMappingType.IP_WITH_PORT
+    if (!rule.ruleSettings.portMappingOnly) {
+      userAppConfig.destinationIp = rule.ruleSettings.destinationIp
+      userAppConfig.netmask = rule.ruleSettings.netmask
+    }
+    userAppConfig.destinationPort = rule.ruleSettings.destinationPort
+  }
+
+  if (rule.accessControl.toUpperCase() !== ApplicationAclType.RATE_LIMIT) {
+    delete rule.ruleSettings.uplink
+    delete rule.ruleSettings.downlink
+    delete rule.ruleSettings.appNameSystemDefined
+  }
+
+  return userAppConfig
 }

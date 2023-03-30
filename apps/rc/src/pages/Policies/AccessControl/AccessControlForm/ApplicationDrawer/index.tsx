@@ -210,7 +210,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     { skip: skipFetch }
   )
 
-  const [categoryAppMappingObject, setCategoryAppMappingObject] = useState({} as {
+  const [categoryAppMap, setCategoryAppMap] = useState({} as {
     [key: string]: { catId: number, appId: number }
   })
 
@@ -250,9 +250,9 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     if (!avcAppList) return
 
     avcAppList.forEach(avcApp => {
-      categoryAppMappingObject[avcApp.appName] = avcApp.avcAppAndCatId
+      categoryAppMap[avcApp.appName] = avcApp.avcAppAndCatId
     })
-    setCategoryAppMappingObject({ ...categoryAppMappingObject })
+    setCategoryAppMap({ ...categoryAppMap })
 
 
     setAvcSelectOptions(avcSelectOptions => {
@@ -436,13 +436,17 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   }] : []
 
   const handleAppPolicy = async (edit: boolean) => {
+    const transformedRules = [
+      ...transformToRulesForPayload(applicationsRuleList, categoryAppMap, avcCategoryList!)
+    ]
+
     try {
       if (!edit) {
         const appRes: CommonResult = await createAppPolicy({
           params: params,
           payload: {
             name: policyName,
-            rules: [...transformToRulesForPayload(applicationsRuleList, categoryAppMappingObject)],
+            rules: transformedRules,
             description: null,
             tenantId: params.tenantId
           }
@@ -460,7 +464,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
           payload: {
             id: queryPolicyId,
             name: policyName,
-            rules: [...transformToRulesForPayload(applicationsRuleList, categoryAppMappingObject)],
+            rules: transformedRules,
             description: null,
             tenantId: params.tenantId
           }
