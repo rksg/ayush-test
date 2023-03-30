@@ -15,10 +15,12 @@ export const ClientUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getClientDetails: {
     // [New API] Path variable not match
+    // method: 'get',
+    // url: '/clients/:clientId/query',
+    // oldUrl: '/api/viewmodel/:tenantId/client/:clientId',
+    // newApi: false
     method: 'get',
-    url: '/clients/:clientId/query',
-    oldUrl: '/api/viewmodel/:tenantId/client/:clientId',
-    newApi: false
+    url: '/api/viewmodel/:tenantId/client/:clientId'
   },
   deleteGuests: {
     method: 'delete',
