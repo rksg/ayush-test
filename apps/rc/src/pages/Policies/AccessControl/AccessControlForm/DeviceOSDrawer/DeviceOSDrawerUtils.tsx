@@ -2,6 +2,26 @@ import { DeviceTypeEnum, OsVendorEnum } from '@acx-ui/rc/utils'
 
 import { DeviceOSRule } from './index'
 
+const deviceOsVendorMap: Record<string, string[]> = {
+  // eslint-disable-next-line max-len
+  [DeviceTypeEnum.Laptop]: [OsVendorEnum.All, OsVendorEnum.Windows, OsVendorEnum.MacOs, OsVendorEnum.ChromeOs, OsVendorEnum.Linux, OsVendorEnum.Ubuntu],
+  // eslint-disable-next-line max-len
+  [DeviceTypeEnum.Smartphone]: [OsVendorEnum.All, OsVendorEnum.Ios, OsVendorEnum.Android, OsVendorEnum.BlackBerry, OsVendorEnum.Windows],
+  // eslint-disable-next-line max-len
+  [DeviceTypeEnum.Tablet]: [OsVendorEnum.All, OsVendorEnum.Ios, OsVendorEnum.AmazonKindle, OsVendorEnum.Android, OsVendorEnum.Windows],
+  // eslint-disable-next-line max-len
+  [DeviceTypeEnum.Voip]: [OsVendorEnum.All, OsVendorEnum.CiscoIpPhone, OsVendorEnum.AvayaIpPhone, OsVendorEnum.LinksysPapVoip, OsVendorEnum.NortelIpPhone],
+  // eslint-disable-next-line max-len
+  [DeviceTypeEnum.Gaming]: [OsVendorEnum.All, OsVendorEnum.Xbox360, OsVendorEnum.PlayStation2, OsVendorEnum.GameCube, OsVendorEnum.Wii, OsVendorEnum.PlayStation3, OsVendorEnum.Xbox, OsVendorEnum.Nintendo],
+  // eslint-disable-next-line max-len
+  [DeviceTypeEnum.Printer]: [OsVendorEnum.All, OsVendorEnum.HpPrinter, OsVendorEnum.CanonPrinter, OsVendorEnum.XeroxPrinter, OsVendorEnum.DellPrinter, OsVendorEnum.BrotherPrinter, OsVendorEnum.EpsonPrinter],
+  // eslint-disable-next-line max-len
+  [DeviceTypeEnum.IotDevice]: [OsVendorEnum.All, OsVendorEnum.NestCamera, OsVendorEnum.NestThermostat, OsVendorEnum.WemoSmartSwitch, OsVendorEnum.WifiSmartPlug],
+  // eslint-disable-next-line max-len
+  [DeviceTypeEnum.HomeAvEquipment]: [OsVendorEnum.All, OsVendorEnum.SonyPlayer, OsVendorEnum.PanasonicG20Tv, OsVendorEnum.SamsungSmartTv, OsVendorEnum.AppleTv, OsVendorEnum.LibratoneSpeakers, OsVendorEnum.BoseSpeakers, OsVendorEnum.SonosSpeakers, OsVendorEnum.RokuStreamingStick],
+  [DeviceTypeEnum.WdsDevice]: [OsVendorEnum.All, OsVendorEnum.TelnetCpe]
+}
+
 export const getOsVendorOptions = (deviceType: DeviceTypeEnum) => {
   let OsVendorArray = []
   switch (deviceType) {
@@ -49,41 +69,21 @@ export const getDeviceTypeOptions = () => {
 }
 
 export const deviceOsVendorMappingTable = (deviceOSRuleList: DeviceOSRule[]) => {
-  const mappingTable = {
-    // eslint-disable-next-line max-len
-    [DeviceTypeEnum.Laptop]: [OsVendorEnum.All, OsVendorEnum.Windows, OsVendorEnum.MacOs, OsVendorEnum.ChromeOs, OsVendorEnum.Linux, OsVendorEnum.Ubuntu],
-    // eslint-disable-next-line max-len
-    [DeviceTypeEnum.Smartphone]: [OsVendorEnum.All, OsVendorEnum.Ios, OsVendorEnum.Android, OsVendorEnum.BlackBerry, OsVendorEnum.Windows],
-    // eslint-disable-next-line max-len
-    [DeviceTypeEnum.Tablet]: [OsVendorEnum.All, OsVendorEnum.Ios, OsVendorEnum.AmazonKindle, OsVendorEnum.Android, OsVendorEnum.Windows],
-    // eslint-disable-next-line max-len
-    [DeviceTypeEnum.Voip]: [OsVendorEnum.All, OsVendorEnum.CiscoIpPhone, OsVendorEnum.AvayaIpPhone, OsVendorEnum.LinksysPapVoip, OsVendorEnum.NortelIpPhone],
-    // eslint-disable-next-line max-len
-    [DeviceTypeEnum.Gaming]: [OsVendorEnum.All, OsVendorEnum.Xbox360, OsVendorEnum.PlayStation2, OsVendorEnum.GameCube, OsVendorEnum.Wii, OsVendorEnum.PlayStation3, OsVendorEnum.Xbox, OsVendorEnum.Nintendo],
-    // eslint-disable-next-line max-len
-    [DeviceTypeEnum.Printer]: [OsVendorEnum.All, OsVendorEnum.HpPrinter, OsVendorEnum.CanonPrinter, OsVendorEnum.XeroxPrinter, OsVendorEnum.DellPrinter, OsVendorEnum.BrotherPrinter, OsVendorEnum.EpsonPrinter],
-    // eslint-disable-next-line max-len
-    [DeviceTypeEnum.IotDevice]: [OsVendorEnum.All, OsVendorEnum.NestCamera, OsVendorEnum.NestThermostat, OsVendorEnum.WemoSmartSwitch, OsVendorEnum.WifiSmartPlug],
-    // eslint-disable-next-line max-len
-    [DeviceTypeEnum.HomeAvEquipment]: [OsVendorEnum.All, OsVendorEnum.SonyPlayer, OsVendorEnum.PanasonicG20Tv, OsVendorEnum.SamsungSmartTv, OsVendorEnum.AppleTv, OsVendorEnum.LibratoneSpeakers, OsVendorEnum.BoseSpeakers, OsVendorEnum.SonosSpeakers, OsVendorEnum.RokuStreamingStick],
-    [DeviceTypeEnum.WdsDevice]: [OsVendorEnum.All, OsVendorEnum.TelnetCpe]
-  } as { [key: string]: string[] }
-
   deviceOSRuleList.forEach(rule => {
     const { deviceType, osVendor } = rule
     if (osVendor === OsVendorEnum.All) {
-      mappingTable[deviceType] = []
+      deviceOsVendorMap[deviceType] = []
     } else {
       // eslint-disable-next-line max-len
-      mappingTable[deviceType] = mappingTable[deviceType].find((vendor: string) => vendor === osVendor)
-        ? mappingTable[deviceType]
+      deviceOsVendorMap[deviceType] = deviceOsVendorMap[deviceType].find((vendor: string) => vendor === osVendor)
+        ? deviceOsVendorMap[deviceType]
           .filter((vendor: string) => vendor !== osVendor)
           .filter((vendor: string) => vendor !== OsVendorEnum.All)
-        : mappingTable[deviceType]
+        : deviceOsVendorMap[deviceType]
     }
   })
 
-  return mappingTable
+  return deviceOsVendorMap
 }
 
 export const isDeviceOSEnabled = (

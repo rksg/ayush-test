@@ -244,7 +244,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     }
 
     if (avcAppList) {
-      avcAppList.map(avcApp => {
+      avcAppList.forEach(avcApp => {
         let catId = avcSelectOptions.findIndex(option =>
           option.catId === avcApp.avcAppAndCatId.catId
         )
@@ -256,9 +256,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
           categoryAppMappingObject[avcApp.appName] = avcApp.avcAppAndCatId
         }
       })
-      setAvcSelectOptions(
-        [...avcSelectOptions]
-      )
+      setAvcSelectOptions([...avcSelectOptions])
       setCategoryAppMappingObject({ ...categoryAppMappingObject })
     }
   }, [avcCategoryList, avcAppList])
