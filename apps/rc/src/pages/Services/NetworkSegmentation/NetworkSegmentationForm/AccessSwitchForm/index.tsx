@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import {
   Form,
-  Typography } from 'antd'
+  Typography
+} from 'antd'
 import { useIntl } from 'react-intl'
 
 import {
@@ -12,8 +13,8 @@ import {
 } from '@acx-ui/components'
 import { AccessSwitch } from '@acx-ui/rc/utils'
 
-import { NetworkSegmentationGroupForm } from '..'
-import { useWatch }                     from '../../useWatch'
+import { NetworkSegmentationGroupFormData } from '..'
+import { useWatch }                         from '../../useWatch'
 
 import { AccessSwitchDrawer } from './AccessSwitchDrawer'
 import { AccessSwitchTable }  from './AccessSwitchTable'
@@ -21,7 +22,7 @@ import { AccessSwitchTable }  from './AccessSwitchTable'
 
 export function AccessSwitchForm () {
   const { $t } = useIntl()
-  const { form } = useStepFormContext<NetworkSegmentationGroupForm>()
+  const { form } = useStepFormContext<NetworkSegmentationGroupFormData>()
 
   const [open, setOpen] = useState(false)
   const [selected, setSelected] = useState<AccessSwitch[]>()
