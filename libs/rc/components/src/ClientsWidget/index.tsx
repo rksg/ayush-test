@@ -181,13 +181,13 @@ export function ClientsWidgetV2 () {
           {({ height, width }) => (
             <UI.WidgetContainer style={{ height, width }}>
               <GridRow style={{ display: 'flex', alignItems: 'center' }}>
-                <GridCol col={{ span: 9 }}>
+                <GridCol col={{ span: apClientCount > 0 ? 9 : 12 }}>
                   { apClientCount > 0
                     ? $t({ defaultMessage: 'Wi-Fi' })
                     : $t({ defaultMessage: 'No Wi-Fi Clients' })
                   }
                 </GridCol>
-                <GridCol col={{ span: 15 }}>
+                <GridCol col={{ span: apClientCount > 0 ? 15 : 12 }}>
                   { apClientCount > 0
                     ? <Space>
                       <StackedBarChart
@@ -199,10 +199,10 @@ export function ClientsWidgetV2 () {
                         data={apData}
                         showLabels={false}
                         showTotal={false}
-                        total={apClientCount || 0}
+                        total={apClientCount}
                         barColors={getDeviceConnectionStatusColorsv2()} />
                       <TenantLink to={'/users/wifi/clients'}>
-                        {apClientCount || 0}
+                        {apClientCount}
                       </TenantLink>
                     </Space>
                     : <div style={{ height: (height/2) - 30 }}/>
@@ -210,13 +210,13 @@ export function ClientsWidgetV2 () {
                 </GridCol>
               </GridRow>
               <GridRow style={{ display: 'flex', alignItems: 'center' }}>
-                <GridCol col={{ span: 9 }}>
+                <GridCol col={{ span: switchClientCount > 0 ? 9 : 12 }}>
                   { switchClientCount > 0
                     ? $t({ defaultMessage: 'Wired' })
                     : $t({ defaultMessage: 'No Wired Clients' })
                   }
                 </GridCol>
-                <GridCol col={{ span: 15 }}>
+                <GridCol col={{ span: switchClientCount > 0 ? 15 : 12 }}>
                   { switchClientCount > 0
                     ? <Space>
                       <StackedBarChart
@@ -228,10 +228,10 @@ export function ClientsWidgetV2 () {
                         data={switchData}
                         showLabels={false}
                         showTotal={false}
-                        total={switchClientCount || 0}
+                        total={switchClientCount}
                         barColors={getDeviceConnectionStatusColorsv2()} />
                       <TenantLink to={'/users/switch/clients'}>
-                        {switchClientCount || 0}
+                        {switchClientCount}
                       </TenantLink>
                     </Space>
                     : <div style={{ height: (height/2) - 30 }}/>

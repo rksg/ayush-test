@@ -28,8 +28,24 @@ import {
   downloadFile,
   ParentLogoUrl
 } from '@acx-ui/rc/utils'
-import { baseMspApi }  from '@acx-ui/store'
-import { getJwtToken } from '@acx-ui/utils'
+import { baseMspApi }                from '@acx-ui/store'
+import { UserUrlsInfo, UserProfile } from '@acx-ui/user'
+import { getJwtToken, PverName }     from '@acx-ui/utils'
+
+export function useDelegateToMspEcPath () {
+  const [getTenantPver] = useLazyGetUserProfilePverQuery()
+  const delegateToMspEcPath = async (ecTenantId: string) => {
+    try {
+      const user = await getTenantPver({ params: { includeTenantId: ecTenantId } } ).unwrap()
+      window.location.href = (user?.pver === PverName.R1)
+        ? `/api/${encodeURIComponent('ui-beta')}/t/${ecTenantId}/dashboard`
+        : `/api/ui/t/${ecTenantId}/dashboard`
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
+  }
+  return { delegateToMspEcPath }
+}
 
 export const mspApi = baseMspApi.injectEndpoints({
   endpoints: (build) => ({
@@ -552,6 +568,20 @@ export const mspApi = baseMspApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    getUserProfilePver: build.query<UserProfile, RequestPayload>({
+      query: ({ params }) => {
+        const CUSTOM_HEADER = {
+          'x-rks-tenantid': params?.includeTenantId
+        }
+        const req = createHttpRequest(
+          UserUrlsInfo.getUserProfile,
+          params, CUSTOM_HEADER, true
+        )
+        return {
+          ...req
+        }
+      }
     })
   })
 })
@@ -600,5 +630,6 @@ export const {
   useExportDeviceInventoryMutation,
   useAcceptRejectInvitationMutation,
   useGetGenerateLicenseUsageRptQuery,
-  useGetParentLogoUrlQuery
+  useGetParentLogoUrlQuery,
+  useLazyGetUserProfilePverQuery
 } = mspApi
