@@ -18,12 +18,12 @@ import {
 } from '@acx-ui/msp/components'
 import {
   useDeleteMspEcMutation,
-  useMspCustomerListQuery
+  useMspCustomerListQuery,
+  useDelegateToMspEcPath
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
-  MspEc,
-  useDelegateToMspEcPath
+  MspEc
 } from '@acx-ui/rc/utils'
 import { Link, TenantLink, MspTenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                   from '@acx-ui/types'

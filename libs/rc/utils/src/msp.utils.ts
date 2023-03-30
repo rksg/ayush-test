@@ -1,8 +1,7 @@
 import moment, { Moment }           from 'moment-timezone'
 import { defineMessage, IntlShape } from 'react-intl'
 
-import { useLazyGetUserProfilePverQuery } from '@acx-ui/user'
-import { getIntl, PverName }              from '@acx-ui/utils'
+import { getIntl } from '@acx-ui/utils'
 
 import {
   EntitlementDeviceType,
@@ -210,19 +209,4 @@ export const MSPUtils = () => {
     isMspEc,
     isOnboardedMsp
   }
-}
-
-export function useDelegateToMspEcPath () {
-  const [getTenantPver] = useLazyGetUserProfilePverQuery()
-  const delegateToMspEcPath = async (ecTenantId: string) => {
-    try {
-      const user = await getTenantPver({ params: { includeTenantId: ecTenantId } } ).unwrap()
-      window.location.href = (user?.pver === PverName.R1)
-        ? `/api/${encodeURIComponent('ui-beta')}/t/${ecTenantId}/dashboard`
-        : `/api/ui/t/${ecTenantId}/dashboard`
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
-    }
-  }
-  return { delegateToMspEcPath }
 }

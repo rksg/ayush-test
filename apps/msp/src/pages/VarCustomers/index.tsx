@@ -13,19 +13,19 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { DateFormatEnum, formatter }  from '@acx-ui/formatter'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   useInviteCustomerListQuery,
   useVarCustomerListQuery,
-  useAcceptRejectInvitationMutation
+  useAcceptRejectInvitationMutation,
+  useDelegateToMspEcPath
 } from '@acx-ui/rc/services'
 import {
   DelegationEntitlementRecord,
   EntitlementNetworkDeviceType,
   EntitlementUtil,
   VarCustomer,
-  useTableQuery,
-  useDelegateToMspEcPath
+  useTableQuery
 } from '@acx-ui/rc/utils'
 import { Link, TenantLink, useParams }     from '@acx-ui/react-router-dom'
 import { RolesEnum }                       from '@acx-ui/types'
