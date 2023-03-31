@@ -72,6 +72,12 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/eventalarmapi/:tenantId/event/meta',
     newApi: true
   },
+  downloadCSV: {
+    method: 'post',
+    url: '/events/csvFiles',
+    oldUrl: '/api/eventalarmapi/:tenantId/event/export',
+    newApi: true
+  },
   clearAlarm: {
     // different method
     // method: 'PATCH',
