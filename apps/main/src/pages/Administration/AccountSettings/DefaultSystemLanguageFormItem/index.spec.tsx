@@ -1,27 +1,20 @@
 /* eslint-disable max-len */
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
-import { Provider  }      from '@acx-ui/store'
-import {
-  mockServer,
-  render,
-  screen,
-  waitFor
-} from '@acx-ui/test-utils'
-import { UseQueryResult } from '@acx-ui/types'
-import { AdministrationUrlsInfo, TenantPreferenceSettings } from '@acx-ui/rc/utils'
+import { TenantPreferenceSettings } from '@acx-ui/rc/utils'
+import { Provider  }                from '@acx-ui/store'
+import { render, screen }           from '@acx-ui/test-utils'
+import { UseQueryResult }           from '@acx-ui/types'
 
 import  { DefaultSystemLanguageFormItem } from './'
 
 jest.mock('antd', () => {
   const components = jest.requireActual('antd')
   const Select = ({
-                    children,
-                    showSearch, // remove and left unassigned to prevent warning
-                    allowClear, // remove and left unassigned to prevent warning
-                    optionFilterProp, // remove and left unassigned to prevent warning
-                    ...props
-                  }: React.PropsWithChildren<{ showSearch: boolean, allowClear:boolean, optionFilterProp: string, onChange?: (value: string) => void }>) => {
+    children,
+    showSearch, // remove and left unassigned to prevent warning
+    allowClear, // remove and left unassigned to prevent warning
+    optionFilterProp, // remove and left unassigned to prevent warning
+    ...props
+  }: React.PropsWithChildren<{ showSearch: boolean, allowClear:boolean, optionFilterProp: string, onChange?: (value: string) => void }>) => {
     return (<select {...props} onChange={(e) => props.onChange?.(e.target.value)}>
       <option value={undefined}></option>
       {children}
@@ -50,8 +43,8 @@ jest.mock('@acx-ui/rc/components', () => ({
   usePreference: () => {
     return {
       data: { global: {
-          preferredLanguage: 'en-US'
-        } },
+        preferredLanguage: 'en-US'
+      } },
       currentPreferredLang: 'en-US',
       update: mockedUpdatePreference,
       getReqState: { isLoading: false, isFetching: false } as UseQueryResult<TenantPreferenceSettings>,
