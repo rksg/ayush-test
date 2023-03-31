@@ -3,13 +3,25 @@ import {
   PassphraseFormatEnum
 } from '../../constants'
 
+export enum PolicyDefaultAccess {
+  ACCEPT = 'ACCEPT',
+  REJECT = 'REJECT'
+}
+
+export enum DeviceNumberType {
+  LIMITED,
+  UNLIMITED
+}
+
 export interface CreateDpskFormFields {
   id?: string;
   name: string;
   passphraseLength: number;
   passphraseFormat: PassphraseFormatEnum;
   expiration: ExpirationDateEntity;
-
+  deviceCountLimit?: number;
+  policyDefaultAccess?: PolicyDefaultAccess;
+  deviceNumberType?: DeviceNumberType;
 }
 export interface DpskSaveData {
   id?: string;
@@ -19,21 +31,27 @@ export interface DpskSaveData {
   expirationType: ExpirationType | null; // null means Never expires
   expirationOffset?: number; // If 'expirationType' is not SPECIFIED_DATE then this field is the offset amount
   expirationDate?: string; // If 'expirationType' is SPECIFIED_DATE then this field is the related date in format YYYY-MM-DD.
-  networkIds?: string[],
-  identityId?: string // PersonaGroup id - This DPSK had bound with PersonaGroup
+  networkIds?: string[];
+  identityId?: string; // PersonaGroup id - This DPSK had bound with PersonaGroup
+  deviceCountLimit?: number;
+  policyDefaultAccess?: boolean;
 }
 export interface NewDpskPassphrase {
   id: string;
   passphrase: string;
   username?: string;
-  vlanId?: string;
+  vlanId?: number;
   mac?: string;
   numberOfDevices?: number;
   createdDate: string;
   expirationDate: string;
+  email?: string;
+  phoneNumber?: string;
+  identityId?: string; // PersonaGroup id - This DPSK had bound with PersonaGroup
 }
 
 export interface CreateDpskPassphrasesFormFields {
+  id: string | undefined;
   numberOfPassphrases: number;
   passphrase?: string;
   username?: string;
@@ -41,9 +59,12 @@ export interface CreateDpskPassphrasesFormFields {
   mac?: string;
   numberOfDevices?: number;
   expiration: Omit<ExpirationDateEntity, 'offset'>
+  email?: string;
+  phoneNumber?: string;
 }
 
 export interface DpskPassphrasesSaveData {
+  id: string | undefined;
   numberOfPassphrases: number;
   passphrase?: string | null;
   username?: string;
@@ -51,4 +72,6 @@ export interface DpskPassphrasesSaveData {
   mac?: string;
   numberOfDevices?: number;
   expirationDate?: string;
+  email?: string;
+  phoneNumber?: string;
 }

@@ -1,7 +1,7 @@
 import React, { useMemo, useState, Key, useCallback, useEffect, useRef } from 'react'
 
 import ProTable, { ProTableProps as ProAntTableProps, ProColumnType } from '@ant-design/pro-table'
-import { Menu, MenuProps, Space }                                     from 'antd'
+import { Menu, Space }                                                from 'antd'
 import escapeStringRegexp                                             from 'escape-string-regexp'
 import _                                                              from 'lodash'
 import Highlighter                                                    from 'react-highlight-words'
@@ -23,16 +23,20 @@ import {
   MIN_SEARCH_LENGTH
 } from './filters'
 import { useGroupBy, GroupSelect }      from './groupBy'
+import { IconButton }                   from './IconButton'
 import { ResizableColumn }              from './ResizableColumn'
 import * as UI                          from './styledComponents'
 import { settingsKey, useColumnsState } from './useColumnsState'
 
 import type {
+  TableColumn,
+  TableColumnState,
   ColumnType,
   ColumnGroupType,
   ColumnStateOption,
-  TableColumn,
-  TableColumnState
+  TableAction,
+  TableRowAction,
+  IconButtonProps
 } from './types'
 import type { ParamsType }        from '@ant-design/pro-provider'
 import type { SettingOptionType } from '@ant-design/pro-table/lib/components/ToolBar'
@@ -49,7 +53,6 @@ export type {
   TableColumn
 } from './types'
 
-
 export interface TableProps <RecordType>
   extends Omit<ProAntTableProps<RecordType, ParamsType>,
   'bordered' | 'columns' | 'title' | 'type' | 'rowSelection'> {
@@ -57,22 +60,8 @@ export interface TableProps <RecordType>
     type?: 'tall' | 'compact' | 'tooltip' | 'form' | 'compactBordered'
     rowKey?: ProAntTableProps<RecordType, ParamsType>['rowKey']
     columns: TableColumn<RecordType, 'text'>[]
-    actions?: Array<{
-      key?: string
-      label: string
-      disabled?: boolean
-      tooltip?: string
-      onClick?: () => void
-      dropdownMenu?: Omit<MenuProps, 'placement'>
-    }>
-    rowActions?: Array<{
-      key?: string
-      label: string
-      disabled?: boolean | ((selectedItems: RecordType[]) => boolean)
-      tooltip?: string | ((selectedItems: RecordType[]) => string | undefined)
-      visible?: boolean | ((selectedItems: RecordType[]) => boolean)
-      onClick: (selectedItems: RecordType[], clearSelection: () => void) => void
-    }>
+    actions?: Array<TableAction>
+    rowActions?: Array<TableRowAction<RecordType>>
     columnState?: ColumnStateOption
     rowSelection?: (ProAntTableProps<RecordType, ParamsType>['rowSelection']
       & AntTableProps<RecordType>['rowSelection']
@@ -87,6 +76,7 @@ export interface TableProps <RecordType>
       search: { searchString?: string, searchTargetFields?: string[] },
       groupBy?: string | undefined
     ) => void
+    iconButton?: IconButtonProps
   }
 
 export interface TableHighlightFnArgs {
@@ -123,7 +113,7 @@ function useSelectedRowKeys <RecordType> (
 // following the same typing from antd
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Table <RecordType extends Record<string, any>> ({
-  type = 'tall', columnState, enableApiFilter, onFilterChange, ...props
+  type = 'tall', columnState, enableApiFilter, iconButton, onFilterChange, ...props
 }: TableProps<RecordType>) {
   const { dataSource } = props
   const rowKey = (props.rowKey ?? 'key')
@@ -268,7 +258,8 @@ function Table <RecordType extends Record<string, any>> ({
   })
 
   const hasRowSelected = Boolean(selectedRowKeys.length)
-  const hasHeader = !hasRowSelected && (Boolean(filterables.length) || Boolean(searchables.length))
+  const hasHeader = !hasRowSelected &&
+    (Boolean(filterables.length) || Boolean(searchables.length) || Boolean(iconButton))
   const rowSelection: TableProps<RecordType>['rowSelection'] = props.rowSelection ? {
     ..._.omit(props.rowSelection, 'defaultSelectedRowKeys'),
     selectedRowKeys,
@@ -411,8 +402,9 @@ function Table <RecordType extends Record<string, any>> ({
             />}
           </Space>
         </div>
-        <UI.HeaderRight>
-          {(Boolean(activeFilters.length) ||
+        <UI.HeaderComps>
+          {(
+            Boolean(activeFilters.length) ||
             (Boolean(searchValue) && searchValue.length >= MIN_SEARCH_LENGTH) ||
             isGroupByActive)
             && <Button
@@ -424,7 +416,8 @@ function Table <RecordType extends Record<string, any>> ({
               }}>
               {$t({ defaultMessage: 'Clear Filters' })}
             </Button>}
-        </UI.HeaderRight>
+          { type === 'tall' && iconButton && <IconButton {...iconButton}/> }
+        </UI.HeaderComps>
       </UI.Header>
     )}
     <ProTable<RecordType>
