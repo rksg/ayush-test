@@ -42,7 +42,8 @@ const Details = () => {
   const id = [
     'network-health',
     clientType,
-    config?.authenticationMethod
+    config?.authenticationMethod,
+    'table'
   ].join('-').toLowerCase()
   const stagesKeys = stages.map((s) => s.key) as TestStage[]
   return (
