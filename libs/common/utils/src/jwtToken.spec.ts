@@ -27,7 +27,7 @@ describe('jwtToken', () => {
 
   it('return token with tenant value from default values, when JWT not available', () => {
     // eslint-disable-next-line max-len
-    const url = 'http://dummy.com/api/ui/t/e3d0c24e808d42b1832d47db4c2a7914/dashboard/reports/(reportsAux:wifi-reports/wifi-dashboard-reports)'
+    const url = 'http://dummy.com/api/ui/e3d0c24e808d42b1832d47db4c2a7914/t/dashboard/reports/(reportsAux:wifi-reports/wifi-dashboard-reports)'
     Object.defineProperty(window, 'location', {
       value: {
         href: url,
@@ -83,7 +83,7 @@ describe('jwtToken', () => {
       json: () => Promise.resolve({ signedUrl: 'testImage' })
     }))
     // eslint-disable-next-line max-len
-    const url = 'http://dummy.com/api/ui/t/e3d0c24e808d42b1832d47db4c2a7914/dashboard/reports/(reportsAux:wifi-reports/wifi-dashboard-reports)'
+    const url = 'http://dummy.com/api/ui/e3d0c24e808d42b1832d47db4c2a7914/t/dashboard/reports/(reportsAux:wifi-reports/wifi-dashboard-reports)'
     Object.defineProperty(window, 'location', {
       value: {
         href: url,
