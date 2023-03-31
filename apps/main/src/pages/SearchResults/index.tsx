@@ -84,7 +84,7 @@ const searches = [
     return {
       result,
       title: $t({ defaultMessage: 'Networks' }),
-      component: <NetworkTable settingsId='search-network-table' tableQuery={result} />
+      component: <NetworkTable tableQuery={result} />
     }
   },
   (searchString: string, $t: IntlShape['$t']) => {
@@ -190,7 +190,7 @@ const searches = [
     return {
       result,
       title: $t({ defaultMessage: 'Switch Clients' }),
-      component: <SwitchClientTable settingsId='switch-client-table' tableQuery={result} />
+      component: <SwitchClientTable tableQuery={result} />
     }
   }
 ]

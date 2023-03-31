@@ -24,13 +24,12 @@ export const defaultSwitchClientPayload = {
 }
 
 export function ClientsTable (props: {
-  settingsId?: string
   tableQuery?: TableQuery<SwitchClient, RequestPayload<unknown>, unknown>
   searchable?: boolean
   filterableKeys?: { [key: string]: ColumnType['filterable'] }
 }) {
   const params = useParams()
-  const { searchable, filterableKeys, settingsId } = props
+  const { searchable, filterableKeys } = props
 
   defaultSwitchClientPayload.filters =
     params.switchId ? { switchId: [params.switchId] } :
@@ -151,7 +150,7 @@ export function ClientsTable (props: {
         tableQuery
       ]}>
         <Table
-          settingsId={settingsId}
+          settingsId='switch-clients-table'
           columns={getCols(useIntl())}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}

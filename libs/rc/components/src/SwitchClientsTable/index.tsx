@@ -48,7 +48,6 @@ export function SwitchClientsTable (props : {
   return (
     <div>
       <ClientsTable
-        settingsId='switch-client-table'
         searchable={true}
         filterableKeys={GetFilterable(!!filterByVenue, !!filterBySwitch)}
       />
