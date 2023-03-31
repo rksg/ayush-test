@@ -43,7 +43,6 @@ export type EventsExportPayload = {
     fromTime: string
     toTime: string
   }
-  fields: string[]
   filters: Filter
   isSupport: boolean
   tenantId: string

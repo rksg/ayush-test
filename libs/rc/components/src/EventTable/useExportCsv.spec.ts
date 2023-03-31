@@ -40,17 +40,15 @@ describe('useExportCsv', () => {
     moment.tz.setDefault(moment.tz.guess())
   })
 
-  const fields = ['field1', 'field2']
-
   it('should return disabled = false if there is data', () => {
     const tableQuery = { data: { data: [{} as Event] }
     } as TableQuery<Event, RequestPayload<unknown>, unknown>
-    const { result } = renderHook(() => useExportCsv(tableQuery, fields))
+    const { result } = renderHook(() => useExportCsv(tableQuery))
     expect(result.current.disabled).toBe(false)
   })
   it('should return disabled = true if there is no data', () => {
     const tableQuery = { data: {} } as TableQuery<Event, RequestPayload<unknown>, unknown>
-    const { result } = renderHook(() => useExportCsv(tableQuery, fields))
+    const { result } = renderHook(() => useExportCsv(tableQuery))
     expect(result.current.disabled).toBe(true)
   })
   it('should call downloadCsv with correct payload', () => {
@@ -67,7 +65,7 @@ describe('useExportCsv', () => {
       },
       sorter: { sortField: 'event_datetime', sortOrder: 'DESC' }
     } as unknown as TableQuery<Event, RequestPayload<unknown>, unknown>
-    const { result } = renderHook(() => useExportCsv(tableQuery, fields))
+    const { result } = renderHook(() => useExportCsv(tableQuery))
     result.current.exportCsv()
     expect(mockDownloadCsv).toBeCalled()
     expect(mockDownloadCsv).toBeCalledWith({
@@ -78,7 +76,6 @@ describe('useExportCsv', () => {
         fromTime: '2021-12-31T23:00:00Z',
         toTime: '2022-01-01T00:00:00Z'
       },
-      fields,
       filters: { entity_type: ['AP', 'CLIENT', 'SWITCH', 'NETWORK'] },
       isSupport: false,
       searchString: 'searchString',

@@ -48,10 +48,7 @@ export const EventTable = ({
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const [current, setCurrent] = useState<Event>()
-  const { exportCsv, disabled } = useExportCsv<Event>(
-    tableQuery,
-    ['event_datetime', 'severity', 'entity_type', 'product', 'entity_id', 'message']
-  )
+  const { exportCsv, disabled } = useExportCsv<Event>(tableQuery)
 
   useEffect(() => { setVisible(false) },[tableQuery.data?.data])
 

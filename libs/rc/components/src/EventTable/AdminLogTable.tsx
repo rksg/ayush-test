@@ -21,10 +21,7 @@ const AdminLogTable = ({ tableQuery }: AdminLogTableProps) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const [current, setCurrent] = useState<AdminLog>()
-  const { exportCsv, disabled } = useExportCsv<AdminLog>(
-    tableQuery,
-    ['event_datetime', 'severity', 'entity_type', 'entity_id', 'message']
-  )
+  const { exportCsv, disabled } = useExportCsv<AdminLog>(tableQuery)
 
   useEffect(() => { setVisible(false) },[tableQuery.data?.data])
 
