@@ -122,3 +122,29 @@ export type TableColumnState = Record<string, AntColumnsState>
 export type RecordWithChildren <RecordType> = RecordType & {
   children?: RecordType[]
 }
+
+export type TableAction = {
+  key?: string
+  label: string
+  disabled?: boolean
+  tooltip?: string
+  onClick?: () => void
+  dropdownMenu?: Omit<MenuProps, 'placement'>
+}
+
+export type TableRowAction<RecordType> = {
+  key?: string
+  label: string
+  disabled?: boolean | ((selectedItems: RecordType[]) => boolean)
+  tooltip?: string | ((selectedItems: RecordType[]) => string | undefined)
+  visible?: boolean | ((selectedItems: RecordType[]) => boolean)
+  onClick: (selectedItems: RecordType[], clearSelection: () => void) => void
+}
+
+export type IconButtonProps = {
+  key?: string
+  icon: React.ReactNode
+  disabled?: boolean
+  onClick?: () => void
+  dropdownMenu?: Omit<MenuProps, 'placement'>
+}

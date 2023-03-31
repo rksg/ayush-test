@@ -4,6 +4,7 @@ import { defineMessage, useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps, Button } from '@acx-ui/components'
 import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
+import { DownloadOutlined }                  from '@acx-ui/icons'
 import { Event, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
@@ -15,6 +16,7 @@ import {
   productMapping,
   typeMapping
 } from './mapping'
+import { useExportCsv } from './useExportCsv'
 
 export const defaultColumnState = {
   event_datetime: true,
@@ -32,7 +34,6 @@ interface EventTableProps {
   searchables?: boolean | string[]
   filterables?: boolean | string[]
   eventTypeMap?: Partial<typeof eventTypeMapping>
-  detailLevel?: string
   columnState?: TableProps<Event>['columnState']
   omitColumns?: string[]
 }
@@ -49,6 +50,7 @@ export const EventTable = ({
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const [current, setCurrent] = useState<Event>()
+  const { exportCsv, disabled } = useExportCsv<Event>(tableQuery)
 
   useEffect(() => { setVisible(false) },[tableQuery.data?.data])
 
@@ -160,6 +162,7 @@ export const EventTable = ({
       onChange={tableQuery.handleTableChange}
       onFilterChange={tableQuery.handleFilterChange}
       enableApiFilter={true}
+      iconButton={{ icon: <DownloadOutlined />, disabled, onClick: exportCsv }}
     />
     {visible && <TimelineDrawer
       title={defineMessage({ defaultMessage: 'Event Details' })}
