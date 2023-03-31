@@ -113,7 +113,7 @@ describe('VenueDetails', () => {
       route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
     })
     expect(await screen.findByText('testVenue')).toBeVisible()
-    expect(screen.getAllByRole('tab')).toHaveLength(8)
+    expect(screen.getAllByRole('tab')).toHaveLength(7)
   })
 
   it('should navigate to analytic tab correctly', async () => {

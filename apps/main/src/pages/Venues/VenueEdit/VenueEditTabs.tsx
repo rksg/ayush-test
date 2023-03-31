@@ -89,11 +89,11 @@ function VenueEditTabs () {
         key='switch'
         tab={intl.$t({ defaultMessage: 'Switch Configuration' })}
       />
-      {enablePropertyManagement ? <Tabs.TabPane
-        disabled={!enablePropertyManagement}
-        tab={intl.$t({ defaultMessage: 'Property Management' })}
-        key='property'
-      /> : null }
+      {enablePropertyManagement &&
+        <Tabs.TabPane
+          tab={intl.$t({ defaultMessage: 'Property Management' })}
+          key='property'
+        />}
     </Tabs>
   )
 }

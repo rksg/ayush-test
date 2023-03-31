@@ -1,10 +1,10 @@
 import { useIntl } from 'react-intl'
 
-import { Tabs }                                  from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { useGetPropertyUnitListQuery }           from '@acx-ui/rc/services'
-import { VenueDetailHeader }                     from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { Tabs }                                                    from '@acx-ui/components'
+import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
+import { useGetPropertyConfigsQuery, useGetPropertyUnitListQuery } from '@acx-ui/rc/services'
+import { PropertyConfigStatus, VenueDetailHeader }                 from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                   from '@acx-ui/react-router-dom'
 
 function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   const { $t } = useIntl()
@@ -24,6 +24,7 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
       sortOrder: 'ASC'
     }
   }, { skip: !enableProperty })
+  const { data: propertyConfig } = useGetPropertyConfigsQuery({ params }, { skip: !enableProperty })
 
   const onTabChange = (tab: string) =>
     navigate({
@@ -59,10 +60,12 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
         tab={$t({ defaultMessage: 'Networks ({networksCount})' }, { networksCount })}
         key='networks'
       />
-      {enableProperty ? <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Property Units ({unitCount})' }, { unitCount })}
-        key='units'
-      /> : null}
+      {(enableProperty && propertyConfig?.status === PropertyConfigStatus.ENABLED) &&
+        <Tabs.TabPane
+          tab={$t({ defaultMessage: 'Property Units ({unitCount})' }, { unitCount })}
+          key='units'
+        />
+      }
       {enabledServices ? <Tabs.TabPane
         tab={$t({ defaultMessage: 'Services' })}
         key='services'
