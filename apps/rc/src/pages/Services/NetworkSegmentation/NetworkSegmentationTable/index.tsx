@@ -228,7 +228,7 @@ const NetworkSegmentationTable = () => {
         { isLoading: false, isFetching: isNetworkSegmentationGroupDeleting }
       ]}>
         <Table
-          settingsId='network-segmentation-table'
+          settingsId='services-network-segmentation-table'
           columns={columns}
           dataSource={tableQuery?.data?.data}
           pagination={tableQuery.pagination}
