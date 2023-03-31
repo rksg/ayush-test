@@ -59,12 +59,12 @@ export default function SelectPolicyForm () {
   ]
 
   if (supportApSnmp) {
-    // eslint-disable-next-line max-len
-    const apSnmpRadioCard = { type: PolicyType.SNMP_AGENT, categories: [RadioCardCategory.WIFI], disabled: false }
     // AP SNMP Policy is limited to 64, so disable the radio card if the total count is 64
-    if (ApSnmpPolicyTotalCount < 64) { apSnmpRadioCard.disabled = true }
-
-    sets.push(apSnmpRadioCard)
+    sets.push({
+      type: PolicyType.SNMP_AGENT,
+      categories: [RadioCardCategory.WIFI],
+      disabled: (ApSnmpPolicyTotalCount === 64)
+    })
   }
   if (isEdgeEnabled) {
     // eslint-disable-next-line max-len
