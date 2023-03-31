@@ -28,7 +28,9 @@ export default function AAATable () {
   const tableQuery = useTableQuery({
     useQuery: useGetAAAPolicyViewModelListQuery,
     defaultPayload: {
-      filters: {},
+      filters: {}
+    },
+    search: {
       searchString: '',
       searchTargetFields: ['name']
     }

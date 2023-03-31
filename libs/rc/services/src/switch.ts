@@ -210,7 +210,6 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'SwitchPort', id: 'LIST' }]
     }),
-
     getProfiles: build.query<TableResult<SwitchProfileModel>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
@@ -222,8 +221,22 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: payload
         }
       },
-      keepUnusedDataFor: 0,
-      providesTags: [{ type: 'SwitchProfiles', id: 'LIST' }]
+      providesTags: [{ type: 'SwitchProfiles', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'AddSwitchConfigProfile',
+            'UpdateSwitchConfigProfile',
+            'DeleteSwitchConfigProfile'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(switchApi.util.invalidateTags([
+              { type: 'SwitchProfiles', id: 'LIST' },
+              { type: 'SwitchProfiles', id: 'DETAIL' }
+            ]))
+          })
+        })
+      }
     }),
     deleteProfiles: build.mutation<SwitchProfileModel, RequestPayload>({
       query: ({ params, payload }) => {
@@ -982,7 +995,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      providesTags: [{ type: 'SwitchProfiles', id: 'DETAIL' }]
     }),
     addSwitchConfigProfile: build.mutation<CliConfiguration, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1002,7 +1016,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'SwitchProfiles', id: 'LIST' }]
+      invalidatesTags: [
+        { type: 'SwitchProfiles', id: 'LIST' },
+        { type: 'SwitchProfiles', id: 'DETAIL' }
+      ]
     }),
     validateUniqueProfileName: build.query<TableResult<SwitchProfile>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1013,26 +1030,6 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     })
-    // addSwitchConfigProfile: build.mutation<CommonResult, RequestPayload>({
-    //   query: ({ params, payload }) => {
-    //     const req = createHttpRequest(SwitchUrlsInfo.addSwitchConfigProfile, params)
-    //     return {
-    //       ...req,
-    //       body: payload
-    //     }
-    //   },
-    //   invalidatesTags: [{ type: 'SwitchProfiles', id: 'LIST' }]
-    // }),
-    // updateSwitchConfigProfile: build.mutation<CommonResult, RequestPayload>({
-    //   query: ({ params, payload }) => {
-    //     const req = createHttpRequest(SwitchUrlsInfo.updateSwitchConfigProfile, params)
-    //     return {
-    //       ...req,
-    //       body: payload
-    //     }
-    //   },
-    //   invalidatesTags: [{ type: 'SwitchProfiles', id: 'LIST' }]
-    // }),
     // getCliFamilyModels: build.query<CliProfileFamilyModels[], RequestPayload>({
     //   query: ({ params, payload }) => {
     //     const req = createHttpRequest(SwitchUrlsInfo.getCliFamilyModels, params)

@@ -19,9 +19,11 @@ export default function PortalInstancesTable (){
       fields: ['name', 'id', 'captiveType', 'nwSubType', 'venues', 'clients'],
       filters: {
         id: data?.networkIds?.length? data?.networkIds : ['none']
-      },
-      sortField: 'name',
-      sortOrder: 'ASC'
+      }
+    },
+    search: {
+      searchTargetFields: ['name'],
+      searchString: ''
     }
   })
 
@@ -41,6 +43,7 @@ export default function PortalInstancesTable (){
       key: 'NetworkName',
       title: $t({ defaultMessage: 'Network Name' }),
       dataIndex: 'name',
+      searchable: true,
       sorter: true,
       fixed: 'left',
       render: function (_data, row) {
@@ -64,6 +67,7 @@ export default function PortalInstancesTable (){
       key: 'Venues',
       title: $t({ defaultMessage: 'Venues' }),
       dataIndex: ['venues', 'count'],
+      align: 'center',
       render: function (_data, row) {
         return <TenantLink
           to={`/networks/wireless/${row.id}/network-details/venues`}
@@ -74,6 +78,7 @@ export default function PortalInstancesTable (){
     {
       key: 'clients',
       title: $t({ defaultMessage: 'Number of Clients' }),
+      align: 'center',
       dataIndex: 'clients'
     }
   ]
@@ -87,6 +92,8 @@ export default function PortalInstancesTable (){
           onChange={tableQuery.handleTableChange}
           dataSource={tableQuery.data?.data}
           rowKey='id'
+          onFilterChange={tableQuery.handleFilterChange}
+          enableApiFilter={true}
         />
       </Card>
     </Loader>
