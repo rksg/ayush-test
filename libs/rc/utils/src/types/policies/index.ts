@@ -8,6 +8,7 @@ export * from './accessControl'
 export * from './apSnmp'
 export * from './radiusAttributeGroup'
 export * from './tunnelProfile'
+export * from './rulesManagement'
 
 export { DeviceTypeEnum } from '../../models/DeviceTypeEnum'
 export { OsVendorEnum } from '../../models/OsVendorEnum'
