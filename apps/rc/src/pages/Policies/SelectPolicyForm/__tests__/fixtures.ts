@@ -1,4 +1,4 @@
-export const apGroupsList = {
+export const snmpAgentList = {
   fields: ['id'],
   totalCount: 40,
   page: 1,
