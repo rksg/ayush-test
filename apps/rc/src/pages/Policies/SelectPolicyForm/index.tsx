@@ -9,25 +9,33 @@ import {
   StepsForm,
   RadioCardCategory
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { useGetApSnmpViewModelQuery } from '@acx-ui/rc/services'
 import {
   PolicyType,
   getPolicyListRoutePath,
   getPolicyRoutePath,
   PolicyOperation
 } from '@acx-ui/rc/utils'
-import { Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { Path, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { policyTypeDescMapping, policyTypeLabelMapping } from '../contentsMap'
 
 export default function SelectPolicyForm () {
   const { $t } = useIntl()
+  const params = useParams()
   const navigate = useNavigate()
   const policiesTablePath: Path = useTenantLink(getPolicyListRoutePath(true))
   const tenantBasePath: Path = useTenantLink('')
   const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
   const isEdgeEnabled = useIsSplitOn(Features.EDGES)
   const macRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
+  const ApSnmpPolicyTotalCount = useGetApSnmpViewModelQuery({
+    params,
+    payload: {
+      fields: ['id']
+    }
+  }).data?.totalCount || 0
 
   const navigateToCreatePolicy = async function (data: { policyType: PolicyType }) {
     const policyCreatePath = getPolicyRoutePath({
@@ -42,23 +50,30 @@ export default function SelectPolicyForm () {
   }
 
   const sets = [
-    { type: PolicyType.ACCESS_CONTROL, categories: [RadioCardCategory.WIFI] },
-    { type: PolicyType.VLAN_POOL, categories: [RadioCardCategory.WIFI] },
-    { type: PolicyType.ROGUE_AP_DETECTION, categories: [RadioCardCategory.WIFI] },
-    { type: PolicyType.AAA, categories: [RadioCardCategory.WIFI] },
-    { type: PolicyType.SYSLOG, categories: [RadioCardCategory.WIFI] },
-    { type: PolicyType.CLIENT_ISOLATION, categories: [RadioCardCategory.WIFI] }
+    { type: PolicyType.ACCESS_CONTROL, categories: [RadioCardCategory.WIFI], disabled: false },
+    { type: PolicyType.VLAN_POOL, categories: [RadioCardCategory.WIFI], disabled: false },
+    { type: PolicyType.ROGUE_AP_DETECTION, categories: [RadioCardCategory.WIFI], disabled: false },
+    { type: PolicyType.AAA, categories: [RadioCardCategory.WIFI], disabled: false },
+    { type: PolicyType.SYSLOG, categories: [RadioCardCategory.WIFI], disabled: false },
+    { type: PolicyType.CLIENT_ISOLATION, categories: [RadioCardCategory.WIFI], disabled: false }
   ]
 
   if (supportApSnmp) {
-    sets.push({ type: PolicyType.SNMP_AGENT, categories: [RadioCardCategory.WIFI] })
+    // eslint-disable-next-line max-len
+    const apSnmpRadioCard = { type: PolicyType.SNMP_AGENT, categories: [RadioCardCategory.WIFI], disabled: false }
+    // AP SNMP Policy is limited to 64, so disable the radio card if the total count is 64
+    if (ApSnmpPolicyTotalCount < 64) { apSnmpRadioCard.disabled = true }
+
+    sets.push(apSnmpRadioCard)
   }
   if (isEdgeEnabled) {
-    sets.push({ type: PolicyType.TUNNEL_PROFILE, categories: [RadioCardCategory.WIFI] })
+    // eslint-disable-next-line max-len
+    sets.push({ type: PolicyType.TUNNEL_PROFILE, categories: [RadioCardCategory.WIFI], disabled: false })
   }
 
   if(macRegistrationEnabled) {
-    sets.push({ type: PolicyType.MAC_REGISTRATION_LIST, categories: [RadioCardCategory.WIFI] })
+    // eslint-disable-next-line max-len
+    sets.push({ type: PolicyType.MAC_REGISTRATION_LIST, categories: [RadioCardCategory.WIFI], disabled: false })
   }
 
   return (
@@ -86,7 +101,7 @@ export default function SelectPolicyForm () {
               <GridRow>
                 {sets.map(set => <GridCol col={{ span: 6 }} key={set.type}>
                   <RadioCard
-                    type='radio'
+                    type={set.disabled ? 'disabled' : 'radio'}
                     key={set.type}
                     value={set.type}
                     title={$t(policyTypeLabelMapping[set.type])}
