@@ -195,7 +195,6 @@ export function Select (props: CascaderProps) {
     return (
       <UI.Cascader
         {...antProps}
-        style={{ maxWidth: 180 }}
         showArrow={true}
         value={currentValues}
         multiple

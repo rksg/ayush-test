@@ -1,4 +1,3 @@
-import React from 'react'
 
 import { useIntl } from 'react-intl'
 
@@ -11,8 +10,8 @@ import { useWebAuthTemplateListQuery } from '@acx-ui/rc/services'
 import { AccessSwitch }                from '@acx-ui/rc/utils'
 import { useParams }                   from '@acx-ui/react-router-dom'
 
-import { NetworkSegmentationGroupForm } from '..'
-import { useWatch }                     from '../../useWatch'
+import { NetworkSegmentationGroupFormData } from '..'
+import { useWatch }                         from '../../useWatch'
 
 
 export function AccessSwitchTable (props: {
@@ -23,7 +22,7 @@ export function AccessSwitchTable (props: {
 }) {
   const { $t } = useIntl()
   const { tenantId } = useParams()
-  const { form } = useStepFormContext<NetworkSegmentationGroupForm>()
+  const { form } = useStepFormContext<NetworkSegmentationGroupFormData>()
 
 
   const distributionSwitchInfos = useWatch('distributionSwitchInfos', form)

@@ -8,7 +8,16 @@ import { topWifiByNetworkFixture } from './__tests__/fixtures'
 import { api }                     from './services'
 
 import { dataFormatter, TopWiFiNetworks } from './index'
+const mockedNavigate = jest.fn()
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useNavigateToPath: () => mockedNavigate
+}))
 
+beforeEach(() => {
+  store.dispatch(api.util.resetApiState())
+  mockedNavigate.mockClear()
+})
 describe('TopAppsByTrafficWidget', () => {
   const filters:AnalyticsFilter = {
     startDate: '2022-01-01T00:00:00+08:00',
