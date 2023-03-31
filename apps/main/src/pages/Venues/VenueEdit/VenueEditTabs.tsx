@@ -2,7 +2,7 @@ import { useContext, useEffect, useRef } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs, Tooltip }                          from '@acx-ui/components'
+import { Tabs }                                   from '@acx-ui/components'
 import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import type { LocationExtended }                  from '@acx-ui/rc/utils'
 import {
@@ -12,7 +12,6 @@ import {
   useTenantLink,
   UNSAFE_NavigationContext as NavigationContext
 } from '@acx-ui/react-router-dom'
-import { notAvailableMsg } from '@acx-ui/utils'
 
 import { VenueEditContext, EditContext, showUnsavedModal } from './index'
 
@@ -90,15 +89,11 @@ function VenueEditTabs () {
         key='switch'
         tab={intl.$t({ defaultMessage: 'Switch Configuration' })}
       />
-      <Tabs.TabPane
+      {enablePropertyManagement ? <Tabs.TabPane
         disabled={!enablePropertyManagement}
-        tab={enablePropertyManagement
-          ? intl.$t({ defaultMessage: 'Property Management' })
-          : <Tooltip title={intl.$t(notAvailableMsg)}>
-            {intl.$t({ defaultMessage: 'Property Management' })}
-          </Tooltip>}
+        tab={intl.$t({ defaultMessage: 'Property Management' })}
         key='property'
-      />
+      /> : null }
     </Tabs>
   )
 }

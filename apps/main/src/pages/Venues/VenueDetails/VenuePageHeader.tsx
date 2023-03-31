@@ -1,17 +1,15 @@
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { Button, DisabledButton, PageHeader, RangePicker } from '@acx-ui/components'
-import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
-import { ClockOutlined }                                   from '@acx-ui/icons'
-import { useVenueDetailsHeaderQuery }                      from '@acx-ui/rc/services'
-import { VenueDetailHeader }                               from '@acx-ui/rc/utils'
+import { Button, PageHeader, RangePicker } from '@acx-ui/components'
+import { useVenueDetailsHeaderQuery }      from '@acx-ui/rc/services'
+import { VenueDetailHeader }               from '@acx-ui/rc/utils'
 import {
   useLocation,
   useNavigate,
   useTenantLink,
   useParams
-}                  from '@acx-ui/react-router-dom'
+} from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 import { useDateFilter }  from '@acx-ui/utils'
 
@@ -19,20 +17,14 @@ import VenueTabs from './VenueTabs'
 
 
 function DatePicker () {
-  const { $t } = useIntl()
-  const enableVenueAnalytics = useIsSplitOn(Features.VENUE_ANALYTICS)
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
 
-  return (enableVenueAnalytics)
-    ? <RangePicker
-      selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
-      onDateApply={setDateFilter as CallableFunction}
-      showTimePicker
-      selectionType={range}
-    />
-    : <DisabledButton icon={<ClockOutlined />}>
-      {$t({ defaultMessage: 'Last 24 Hours' })}
-    </DisabledButton>
+  return <RangePicker
+    selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
+    onDateApply={setDateFilter as CallableFunction}
+    showTimePicker
+    selectionType={range}
+  />
 }
 
 

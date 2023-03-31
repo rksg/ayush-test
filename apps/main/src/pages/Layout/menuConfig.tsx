@@ -124,7 +124,7 @@ export function useMenuConfig () {
           {
             path: '/devices/switch',
             name: $t({ defaultMessage: 'Switch' }),
-            disabled: !useIsSplitOn(Features.DEVICES)
+            disabled: true
           },
           ...isEdgeEnabled ? [{
             path: '/devices/edge/list',

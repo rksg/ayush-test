@@ -2,9 +2,8 @@ import { Dropdown, Menu, MenuProps, Space } from 'antd'
 import moment                               from 'moment-timezone'
 import { useIntl }                          from 'react-intl'
 
-import { Button, DisabledButton, PageHeader, RangePicker }       from '@acx-ui/components'
-import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
-import { ArrowExpand, ClockOutlined }                            from '@acx-ui/icons'
+import { Button, PageHeader, RangePicker }                       from '@acx-ui/components'
+import { ArrowExpand }                                           from '@acx-ui/icons'
 import { useDisconnectClientMutation, useGetClientDetailsQuery } from '@acx-ui/rc/services'
 import { ClientStatusEnum }                                      from '@acx-ui/rc/utils'
 import {
@@ -19,20 +18,14 @@ import { DateFilter, DateRange, encodeParameter, useDateFilter } from '@acx-ui/u
 import ClientDetailTabs from './ClientDetailTabs'
 
 function DatePicker () {
-  const { $t } = useIntl()
-  const enableAnalytics = useIsSplitOn(Features.CLIENT_TROUBLESHOOTING)
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
 
-  return enableAnalytics
-    ? <RangePicker
-      selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
-      onDateApply={setDateFilter as CallableFunction}
-      showTimePicker
-      selectionType={range}
-    />
-    : <DisabledButton icon={<ClockOutlined />}>
-      {$t({ defaultMessage: 'Last 24 Hours' })}
-    </DisabledButton>
+  return <RangePicker
+    selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
+    onDateApply={setDateFilter as CallableFunction}
+    showTimePicker
+    selectionType={range}
+  />
 }
 
 

@@ -63,16 +63,13 @@ exports[`ApSettingsTab should render correctly 1`] = `
           >
             <div
               aria-controls="rc-tabs-test-panel-proxy"
-              aria-disabled="false"
               aria-selected="false"
               class="ant-tabs-tab-btn"
               id="rc-tabs-test-tab-proxy"
               role="tab"
               tabindex="0"
             >
-              <span>
-                mDNS Proxy
-              </span>
+              mDNS Proxy
             </div>
           </div>
           <div
