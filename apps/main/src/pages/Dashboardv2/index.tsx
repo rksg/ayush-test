@@ -1,7 +1,7 @@
 
-import { Menu }    from 'antd'
-import moment      from 'moment-timezone'
-import { useIntl } from 'react-intl'
+import { Divider, Menu } from 'antd'
+import moment            from 'moment-timezone'
+import { useIntl }       from 'react-intl'
 
 import {
   ConnectedClientsOverTime,
@@ -58,6 +58,10 @@ export default function Dashboardv2 () {
     <>
       <DashboardPageHeader />
       <CommonDashboardWidgets />
+      <Divider dashed
+        style={{
+          borderColor: 'var(--acx-neutrals-30)',
+          margin: '20px 0px 5px 0px' }}/>
       <ContentSwitcher
         tabDetails={tabDetails}
         size='large'
@@ -69,6 +73,10 @@ export default function Dashboardv2 () {
           </UI.Wrapper>
         }
       />
+      <Divider dashed
+        style={{
+          borderColor: 'var(--acx-neutrals-30)',
+          margin: '20px 0px' }}/>
       <DashboardMapWidget />
     </>
   )
@@ -144,7 +152,7 @@ function ApWidgets () {
 
 function DashboardMapWidget () {
   return (
-    <GridRow style={{ marginTop: '20px' }}>
+    <GridRow>
       <GridCol col={{ span: 24 }} style={{ height: '428px' }}>
         <MapWidgetV2 />
       </GridCol>
