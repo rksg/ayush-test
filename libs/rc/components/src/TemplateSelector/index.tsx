@@ -5,13 +5,13 @@ import _                                                 from 'lodash'
 import { useIntl }                                       from 'react-intl'
 
 import { Loader, Modal }                       from '@acx-ui/components'
+import { Button as ACXButton }                 from '@acx-ui/components'
 import { useGetTemplateSelectionContentQuery } from '@acx-ui/rc/services'
 import { Template }                            from '@acx-ui/rc/utils'
 
 import { templateNames, templateScopeLabels } from './msgTemplateLocalizedMessages'
 import { TemplatePreview }                    from './TemplatePreview'
 
-import { Button as ACXButton } from '@acx-ui/components'
 
 export interface TemplateSelectorProps {
   formItemProps?: FormItemProps,
