@@ -12,6 +12,10 @@ const getMapRegion = (data: TenantPreferenceSettings | undefined): string => {
   return data?.global.mapRegion as string
 }
 
+const getPreferredLang = (data: TenantPreferenceSettings | undefined): string => {
+  return data?.global.preferredLanguage as string
+}
+
 export const countryCodes = COUNTRY_CODE.map(item=> ({
   label: item.name,
   value: item.code
@@ -30,6 +34,7 @@ export const usePreference = () => {
   const { data, ...getReqState } = useGetPreferencesQuery({ params })
   const [ updatePreference, updateReqState] = useUpdatePreferenceMutation()
   const currentMapRegion = getMapRegion(data)
+  const currentPreferredLang = getPreferredLang(data)
 
   const update = async (props: updatePreferenceProps) => {
     const { newData, onSuccess, onError } = props
@@ -57,6 +62,7 @@ export const usePreference = () => {
     currentMapRegion,
     getReqState,
     updateReqState,
+    currentPreferredLang,
     data,
     update,
     updatePreference
