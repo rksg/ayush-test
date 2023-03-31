@@ -79,36 +79,38 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
   const breakpoint = /\/t\/\w+/
   const activeUri = location.pathname.split(breakpoint)?.[1]
 
-  const getLabel = (item: LayoutProps['menuConfig'][number]) =>
-    ('label' in item!) ? item.label : ''
-
   const getMenuItem = (item: LayoutProps['menuConfig'][number]): AntItemType => {
     if(isMenuDividerType(item)) { return item }
     if(isMenuItemGroupType(item)) { return {
       ...item,
       key: uniqueId(),
-      label: getLabel(item),
+      label: get(item, 'label', ''),
       children: item.children?.map(getMenuItem)
     } }
 
     const { uri, tenantType, activeIcon, inactiveIcon, isActivePattern, ...rest } = item!
     const isActive = isActivePattern?.some(pattern => activeUri?.includes(pattern))
-    const IconComponent = (isActive ? activeIcon : inactiveIcon)as React.FC
-    const content = <div className={Boolean(isActive) ? 'menu-active' : 'menu-inactive'}>
+    const IconComponent = (isActive ? activeIcon : inactiveIcon || activeIcon )as React.FC
+    const content = <>
       {IconComponent &&
       (isActive
         ? <UI.MenuIconSolid children={<IconComponent />} />
         : <UI.MenuIconOutlined children={<IconComponent />} />)
       }
-      {getLabel(item)}
-    </div>
+      {get(item, 'label', '')}
+    </>
     return {
       ...rest,
+      className: Boolean(isActive) ? 'menu-active' : 'menu-inactive',
       key: uniqueId(),
       label: uri
         ? <TenantNavLink to={uri} tenantType={tenantType}>{content}</TenantNavLink>
         : content,
-      ...(isSubMenuType(item) && { children: item.children.map(getMenuItem) })
+      ...(isSubMenuType(item) && {
+        popupClassName: item.children.some(child => get(child, 'type') === 'group')
+          ? 'layout-group-horizontal' : '',
+        children: item.children.map(getMenuItem)
+      })
     }
   }
 

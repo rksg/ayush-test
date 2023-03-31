@@ -64,45 +64,53 @@ export const Wrapper = styled.div`
           flex-flow: column;
         }
         .ant-menu-submenu {
+          border-left: 2px solid transparent;
           .ant-menu-submenu-title {
+            height: 48px;
+            line-height: 48px;
             color: var(--acx-primary-white);
             font-family: var(--acx-accent-brand-font);
             font-size: var(--acx-headline-4-font-size);
             font-weight: var(--acx-headline-4-font-weight);
-            border-left: 2px solid transparent;
             padding-left: var(--acx-sidebar-left-space) !important;
             padding-right: 0;
-            &:has(.menu-active) {
-              font-weight: var(--acx-headline-4-font-weight-bold);
-              border-left: 2px solid var(--acx-accents-orange-50);
-              background-color: var(--acx-neutrals-70);
-            }
+            margin: 0;
+            &:active { background: unset; }
           }
           &:last-child {
             margin-top: auto;
           }
-          &-open .ant-menu-submenu-title {
+          &-open {
+            border-left: 2px solid var(--acx-neutrals-70);
+            background-color: var(--acx-neutrals-70);
+          }
+          &.menu-active {
+            font-weight: var(--acx-headline-4-font-weight-bold);
+            border-left: 2px solid var(--acx-accents-orange-50);
             background-color: var(--acx-neutrals-70);
           }
         }
         .ant-menu-item {
+          height: 48px;
+          line-height: 48px;
           border-left: 2px solid transparent;
           padding-left: var(--acx-sidebar-left-space) !important;
           padding-right: 0;
           font-family: var(--acx-accent-brand-font);
           font-size: var(--acx-headline-4-font-size);
           font-weight: var(--acx-headline-4-font-weight);
-          line-height: 38px;
-          &:has(.menu-active) {
-            font-weight: var(--acx-headline-4-font-weight-bold);
-            border-left: 2px solid var(--acx-accents-orange-50);
-            background-color: var(--acx-neutrals-70);
-          }
+          margin: 0;
+          &:active { background: unset; }
           &-active {
             background-color: var(--acx-neutrals-70);
           }
           .ant-menu-title-content {
             a { color: var(--acx-primary-white); }
+          }
+          &.menu-active {
+            font-weight: var(--acx-headline-4-font-weight-bold);
+            border-left: 2px solid var(--acx-accents-orange-50);
+            background-color: var(--acx-neutrals-70);
           }
           &.ant-pro-sider-collapsed-button {
             border: none;

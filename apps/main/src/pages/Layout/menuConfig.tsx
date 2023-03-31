@@ -56,7 +56,7 @@ export function useMenuConfig () {
       isActivePattern: ['/dashboard']
     },
     ...(isAdmin ? [{
-      label: $t({ defaultMessage: 'Analytics & Reports' }),
+      label: $t({ defaultMessage: 'AI Assurance' }),
       inactiveIcon: AIOutlined,
       activeIcon: AISolid,
       isActivePattern: [

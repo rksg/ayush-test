@@ -7,18 +7,17 @@ import {
   AccountCircleSolid,
   AdminOutlined,
   AdminSolid,
-  DevicesOutlined,
-  DevicesSolid,
   LocationOutlined,
   LocationSolid,
   LineChartOutline,
   LineChartSolid,
-  NetworksOutlined,
-  NetworksSolid,
   ServicesOutlined,
   ServicesSolid as ServicesSolidBase,
   SpeedIndicatorOutlined,
-  SpeedIndicatorSolid
+  SpeedIndicatorSolid,
+  SwitchOutline,
+  SwitchSolid,
+  WiFi
 } from '@acx-ui/icons'
 
 import { LayoutProps } from '..'
@@ -37,7 +36,7 @@ const config: LayoutProps['menuConfig']= [
     isActivePattern: ['/dashboard']
   },
   {
-    label: 'Analytics & Reports',
+    label: 'AI Assurance',
     inactiveIcon: AIOutlined,
     activeIcon: AISolid,
     isActivePattern: [
@@ -87,8 +86,7 @@ const config: LayoutProps['menuConfig']= [
   },
   {
     label: 'Wi-Fi',
-    inactiveIcon: DevicesOutlined,
-    activeIcon: DevicesSolid,
+    inactiveIcon: WiFi,
     isActivePattern: [
       '/devices/wifi',
       '/reports/aps',
@@ -122,8 +120,8 @@ const config: LayoutProps['menuConfig']= [
   },
   {
     label: 'Wired',
-    inactiveIcon: NetworksOutlined,
-    activeIcon: NetworksSolid,
+    inactiveIcon: SwitchOutline,
+    activeIcon: SwitchSolid,
     isActivePattern: [
       '/devices/switch',
       '/reports/wired',
