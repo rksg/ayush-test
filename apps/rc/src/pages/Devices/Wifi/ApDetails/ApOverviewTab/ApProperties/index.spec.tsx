@@ -32,6 +32,14 @@ describe('ApProperties', () => {
     )
     mockServer.use(
       rest.get(
+        CommonUrlsInfo.getVenueSettings.url,
+        (req, res, ctx) => res(ctx.json({
+          apPassword: 'admin!234'
+        }))
+      )
+    )
+    mockServer.use(
+      rest.get(
         WifiUrlsInfo.getApLanPorts.url,
         (req, res, ctx) => res(ctx.json(apLanPorts))
       )
