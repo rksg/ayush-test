@@ -351,8 +351,10 @@ export const Header = styled.div`
   display: flex;
   justify-content: space-between;
 `
-export const HeaderRight = styled.div`
-  text-align: right;
+
+export const HeaderComps = styled.div`
+  display: flex;
+  gap: 12px;
 `
 
 export const Wrapper = styled.div<StyledTable>`

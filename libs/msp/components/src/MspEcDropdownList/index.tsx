@@ -293,7 +293,7 @@ export function MspEcDropdownList () {
 
       <Table
         columns={supportColumns}
-        dataSource={tableQueryVarRec.data?.data.filter(mspEc => mspEc.id !== params.tenantId)}
+        dataSource={tableQueryVarRec.data?.data.filter(cus => cus.tenantId !== params.tenantId)}
         pagination={tableQueryVarRec.pagination}
         onChange={tableQueryVarRec.handleTableChange}
         onFilterChange={tableQueryVarRec.handleFilterChange}
@@ -307,7 +307,7 @@ export function MspEcDropdownList () {
 
       <Table
         columns={supportColumns}
-        dataSource={tableQuerySupport.data?.data.filter(mspEc => mspEc.id !== params.tenantId)}
+        dataSource={tableQuerySupport.data?.data.filter(cus => cus.tenantId !== params.tenantId)}
         pagination={tableQuerySupport.pagination}
         onChange={tableQuerySupport.handleTableChange}
         onFilterChange={tableQuerySupport.handleFilterChange}
