@@ -15,6 +15,7 @@ import { ApTable, CsvSize, ImportFileDrawer } from '@acx-ui/rc/components'
 import {
   useApGroupsListQuery,
   useImportApMutation,
+  useImportApOldMutation,
   useLazyImportResultQuery,
   useVenuesListQuery
 } from '@acx-ui/rc/services'
@@ -60,7 +61,8 @@ export default function ApsTable () {
   )
 
   const [ isImportResultLoading, setIsImportResultLoading ] = useState(false)
-  const [ importCsv, importCsvResult ] = useImportApMutation()
+  const [ importAps, importApsResult ] = useImportApOldMutation()
+  const [ importCsv ] = useImportApMutation()
   const [ importQuery ] = useLazyImportResultQuery()
   const [ importResult, setImportResult ] = useState<ImportErrorRes>({} as ImportErrorRes)
 
@@ -76,10 +78,13 @@ export default function ApsTable () {
     }
 
     setIsImportResultLoading(false)
-    if (importCsvResult.isSuccess) {
+    if (importApsResult.isSuccess) {
       setImportVisible(false)
+    } else if (importApsResult.isError && importApsResult?.error &&
+      'data' in importApsResult.error) {
+      setImportResult(importApsResult?.error.data as ImportErrorRes)
     }
-  },[importCsvResult])
+  },[importApsResult])
 
   useEffect(()=>{
     if (!wifiEdaFlag) {
@@ -154,7 +159,7 @@ export default function ApsTable () {
                 setImportResult(result)
               } }).unwrap()
           } else {
-            importCsv({ params: { tenantId }, payload: formData })
+            importAps({ params: { tenantId }, payload: formData })
           }
         }}
         onClose={() => setImportVisible(false)}/>

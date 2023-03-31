@@ -11,9 +11,9 @@ import {
   deviceStatusColors,
   ColumnType
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                                         from '@acx-ui/feature-toggle'
 import {
-  useApListQuery, useImportApMutation, useLazyImportResultQuery
+  useApListQuery, useImportApOldMutation, useImportApMutation, useLazyImportResultQuery
 } from '@acx-ui/rc/services'
 import {
   ApDeviceStatusEnum,
@@ -366,7 +366,8 @@ export function ApTable (props: ApTableProps) {
   }]
   const [ isImportResultLoading, setIsImportResultLoading ] = useState(false)
   const [ importVisible, setImportVisible ] = useState(false)
-  const [ importCsv, importCsvResult ] = useImportApMutation()
+  const [ importAps, importApsResult ] = useImportApOldMutation()
+  const [ importCsv ] = useImportApMutation()
   const [ importQuery ] = useLazyImportResultQuery()
   const [ importResult, setImportResult ] = useState<ImportErrorRes>({} as ImportErrorRes)
   const apGpsFlag = useIsSplitOn(Features.AP_GPS)
@@ -381,10 +382,13 @@ export function ApTable (props: ApTableProps) {
     }
 
     setIsImportResultLoading(false)
-    if (importCsvResult.isSuccess) {
+    if (importApsResult.isSuccess) {
       setImportVisible(false)
+    } else if (importApsResult.isError && importApsResult?.error &&
+      'data' in importApsResult.error) {
+      setImportResult(importApsResult?.error.data as ImportErrorRes)
     }
-  },[importCsvResult])
+  },[importApsResult])
 
   useEffect(()=>{
     if (!wifiEdaFlag) {
@@ -463,7 +467,7 @@ export function ApTable (props: ApTableProps) {
                 setImportResult(result)
               } }).unwrap()
           } else {
-            importCsv({ params: {}, payload: formData })
+            importAps({ params: {}, payload: formData })
           }
         }}
         onClose={() => setImportVisible(false)}/>
