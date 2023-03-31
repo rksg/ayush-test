@@ -8,7 +8,7 @@ import { mockedNetworkViewData, mockedTunnelProfileViewData } from '../__tests__
 
 import TunnelProfileDetail from '.'
 
-describe('EdgeDhcpDetail', () => {
+describe('TunnelProfileDetail', () => {
   let params: { tenantId: string, policyId: string }
   const detailPath = '/:tenantId/' + getPolicyRoutePath({
     type: PolicyType.TUNNEL_PROFILE,
@@ -32,7 +32,7 @@ describe('EdgeDhcpDetail', () => {
     )
   })
 
-  it('Should render EdgeDhcpDetail successfully', async () => {
+  it('Should render TunnelProfileDetail successfully', async () => {
     render(
       <Provider>
         <TunnelProfileDetail />

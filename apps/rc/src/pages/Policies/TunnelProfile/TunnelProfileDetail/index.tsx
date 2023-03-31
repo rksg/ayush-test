@@ -111,7 +111,7 @@ const TunnelProfileDetail = () => {
               <Typography.Title level={2}>
                 {$t(
                   { defaultMessage: 'Instances ({count})' },
-                  { count: tunnelProfileData.networkIds.length }
+                  { count: tunnelProfileData.networkIds?.length || 0 }
                 )}
               </Typography.Title>
             </UI.InstancesMargin>
