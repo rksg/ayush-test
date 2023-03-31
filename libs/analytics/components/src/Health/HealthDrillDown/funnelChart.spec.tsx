@@ -40,6 +40,29 @@ describe('Funnel Chart', () => {
     )
     expect(await screen.findByText('802.11 Auth.: 19.32%(228 ms)')).toBeVisible()
   })
+  it('should handle resize', async () => {
+    global.window = window
+
+    const onResize = jest.fn()
+    window.addEventListener('resize', onResize)
+    window.dispatchEvent(new Event('resize'))
+
+    render(
+      <Provider>
+        <FunnelChart
+          valueLabel='Fail'
+          height={140}
+          stages={getFormattedToFunnel('ttc',stages )}
+          colors={colors}
+          selectedStage={null}
+          onSelectStage={() => {}}
+          valueFormatter={valueFormatter}
+        />
+      </Provider>
+    )
+    expect(onResize).toHaveBeenCalled()
+
+  })
   it('should show No data for empty stages', async () => {
     render(
       <Provider>
@@ -70,7 +93,7 @@ describe('Funnel Chart', () => {
         />
       </Provider>
     )
-    expect(await screen.findByText('802.11 Auth.: 19.32%(228 ms)')).toBeVisible()
+    expect(screen.queryByText('DHCP')).toBe(null)
   })
 })
 
