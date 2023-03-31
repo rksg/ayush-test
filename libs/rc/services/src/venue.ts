@@ -60,7 +60,9 @@ import {
   NewTableResult,
   transferToTableResult,
   downloadFile,
-  RequestFormData
+  RequestFormData,
+  createNewTableHttpRequest,
+  TableChangePayload
 } from '@acx-ui/rc/utils'
 import { baseVenueApi } from '@acx-ui/store'
 import { getJwtToken }  from '@acx-ui/utils'
@@ -943,8 +945,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            'Enable Property',
-            'Disable Property'
+            'ENABLE_PROPERTY',
+            'DISABLE_PROPERTY'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(venueApi.util.invalidateTags([{ type: 'PropertyConfigs', id: 'ID' }]))
@@ -1028,9 +1030,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            'Adding unit',
-            'Updating unit',
-            'Deleting units'
+            'ADD_UNIT',
+            'UPDATE_UNIT',
+            'DELETE_UNITS'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(venueApi.util.invalidateTags([
@@ -1084,8 +1086,12 @@ export const venueApi = baseVenueApi.injectEndpoints({
       invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
     }),
     getResidentPortalList: build.query<TableResult<ResidentPortal>, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(PropertyUrlsInfo.getResidentPortalList, params)
+      query: ({ params, payload }) => {
+        const req = createNewTableHttpRequest({
+          apiInfo: PropertyUrlsInfo.getResidentPortalList,
+          params,
+          payload: payload as TableChangePayload
+        })
         return {
           ...req
         }
