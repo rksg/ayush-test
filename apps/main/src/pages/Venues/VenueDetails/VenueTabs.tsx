@@ -1,12 +1,12 @@
 import { useIntl } from 'react-intl'
 
-import { Tooltip }                               from '@acx-ui/components'
-import { Tabs }                                  from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { useGetPropertyUnitListQuery }           from '@acx-ui/rc/services'
-import { VenueDetailHeader }                     from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { notAvailableMsg }                       from '@acx-ui/utils'
+import { Tooltip }                                                 from '@acx-ui/components'
+import { Tabs }                                                    from '@acx-ui/components'
+import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
+import { useGetPropertyConfigsQuery, useGetPropertyUnitListQuery } from '@acx-ui/rc/services'
+import { PropertyConfigStatus, VenueDetailHeader }                 from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                   from '@acx-ui/react-router-dom'
+import { notAvailableMsg }                                         from '@acx-ui/utils'
 
 function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   const { $t } = useIntl()
@@ -27,6 +27,7 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
       sortOrder: 'ASC'
     }
   }, { skip: !enableProperty })
+  const { data: propertyConfig } = useGetPropertyConfigsQuery({ params }, { skip: !enableProperty })
 
   const onTabChange = (tab: string) =>
     navigate({
@@ -65,16 +66,12 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
         tab={$t({ defaultMessage: 'Networks ({networksCount})' }, { networksCount })}
         key='networks'
       />
-      <Tabs.TabPane
-        // FIXME: If property enable or not
-        disabled={!enableProperty}
-        tab={enableProperty
-          ? $t({ defaultMessage: 'Property Units ({unitCount})' }, { unitCount })
-          : <Tooltip title={$t(notAvailableMsg)}>
-            {$t({ defaultMessage: 'Property Units' })}
-          </Tooltip>}
-        key='units'
-      />
+      {(enableProperty && propertyConfig?.status === PropertyConfigStatus.ENABLED) &&
+        <Tabs.TabPane
+          tab={$t({ defaultMessage: 'Property Units ({unitCount})' }, { unitCount })}
+          key='units'
+        />
+      }
       <Tabs.TabPane
         disabled={!enabledServices}
         tab={enabledServices
