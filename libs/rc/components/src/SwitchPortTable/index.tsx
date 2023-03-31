@@ -26,7 +26,7 @@ import { SwitchLagDrawer } from '../SwitchLagDrawer'
 import { EditPortDrawer } from './editPortDrawer'
 import * as UI            from './styledComponents'
 
-const STACK_PORT_FIELD = 'SwitchPortStackingPortField'
+const STACK_PORT_FIELD = 'usedInFormingStack'
 
 export function SwitchPortTable ({ isVenueLevel }: {
   isVenueLevel: boolean

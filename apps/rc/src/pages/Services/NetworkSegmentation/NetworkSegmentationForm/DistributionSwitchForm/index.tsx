@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react'
 
-import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, StepsForm, TableProps, useStepFormContext } from '@acx-ui/components'
-import { useGetAvailableSwitchesQuery }                      from '@acx-ui/rc/services'
-import { DistributionSwitch }                                from '@acx-ui/rc/utils'
-import { useParams }                                         from '@acx-ui/react-router-dom'
+import { StepsFormNew, TableProps, useStepFormContext } from '@acx-ui/components'
+import { useGetAvailableSwitchesQuery }                 from '@acx-ui/rc/services'
+import { DistributionSwitch }                           from '@acx-ui/rc/utils'
+import { useParams }                                    from '@acx-ui/react-router-dom'
 
 import { NetworkSegmentationGroupFormData } from '..'
 import { useWatch }                         from '../../useWatch'
@@ -100,24 +99,17 @@ export function DistributionSwitchForm () {
   }
 
   return (<>
-    <Button type='link' style={{ float: 'right' }} onClick={addHandler}>
-      { $t({ defaultMessage: 'Add Distribution Switch' }) }
-    </Button>
-    <StepsForm.Title>
+    <StepsFormNew.Title>
       {$t({ defaultMessage: 'Distribution Switch Settings' })}
-    </StepsForm.Title>
+    </StepsFormNew.Title>
     <DistributionSwitchTable rowActions={rowActions}
+      actions={[{
+        key: 'addDs',
+        label: $t({ defaultMessage: 'Add Distribution Switch' }),
+        onClick: () => addHandler()
+      }]}
       dataSource={dsList}
       rowSelection={{ type: 'radio', selectedRowKeys: selected ? [selected.id] : [] }} />
-    <Form.Item name='distributionSwitchInfos'
-      rules={[{
-        validator: (_, dsList) => {
-          return (dsList && dsList.length > 0) ? Promise.resolve() :
-            Promise.reject(new Error($t({ defaultMessage:
-            'Please add at least 1 distribution switch.' })))
-        }
-      }]}
-    />
     <DistributionSwitchDrawer
       open={openDrawer}
       editRecord={selected}

@@ -1,21 +1,23 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
 import {
   ExpirationType,
   getPolicyRoutePath,
-  MacRegListUrlsInfo, PolicyOperation, PolicyType
+  MacRegListUrlsInfo, PolicyOperation, PolicyType, RulesManagementUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Path, To, useTenantLink }                                                    from '@acx-ui/react-router-dom'
-import { Provider }                                                                   from '@acx-ui/store'
-import { mockServer, render, renderHook, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { Path, To, useTenantLink }                                                               from '@acx-ui/react-router-dom'
+import { Provider }                                                                              from '@acx-ui/store'
+import { fireEvent, mockServer, render, renderHook, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import {
   mockedCreateFormData
 } from '../../../Services/Dpsk/DpskForm/__tests__/fixtures'
-import { mockedTenantId } from '../../../Services/MdnsProxy/MdnsProxyForm/__tests__/fixtures'
 
 import MacRegistrationListForm from './MacRegistrationListForm'
+
+const mockedTenantId = 'tenant-id'
 
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
@@ -32,6 +34,27 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   }
 }))
 
+const policySetList = {
+  paging: {
+    totalCount: 2,
+    page: 1,
+    pageSize: 2,
+    pageCount: 1
+  },
+  content: [
+    {
+      id: '50f5cec9-850d-483d-8272-6ee5657f53da',
+      name: 'testPolicySet',
+      description: 'for test'
+    },
+    {
+      id: '6ef51aa0-55da-4dea-9936-c6b7c7b11164',
+      name: 'testPolicySet1',
+      description: 'for test'
+    }
+  ]
+}
+
 const macRegList = {
   id: '373377b0cb6e46ea8982b1c80aabe1fa1',
   autoCleanup: true,
@@ -41,7 +64,8 @@ const macRegList = {
   name: 'Registration pool',
   expirationType: ExpirationType.SPECIFIED_DATE,
   expirationDate: '2050-11-02T06:59:59Z',
-  defaultAccess: 'REJECT'
+  defaultAccess: 'REJECT',
+  policySetId: policySetList.content[0].id
 }
 
 const list = {
@@ -75,6 +99,8 @@ describe('MacRegistrationListForm', () => {
   const editPath = '/:tenantId/' + getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.EDIT })
 
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
     mockServer.use(
       rest.get(
         MacRegListUrlsInfo.getMacRegistrationPools.url,
@@ -87,6 +113,10 @@ describe('MacRegistrationListForm', () => {
       rest.post(
         MacRegListUrlsInfo.createMacRegistrationPool.url,
         (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        RulesManagementUrlsInfo.getAdaptivePolicySets.url,
+        (req, res, ctx) => res(ctx.json(policySetList))
       )
     )
   })
@@ -97,7 +127,7 @@ describe('MacRegistrationListForm', () => {
         <MacRegistrationListForm />
       </Provider>, {
         route: {
-          params: { tenantId: 'tenant-id' },
+          params: { tenantId: mockedTenantId },
           path: createPath
         }
       }
@@ -111,7 +141,7 @@ describe('MacRegistrationListForm', () => {
       </Provider>,
       {
         route: {
-          params: { tenantId: 'tenant-id' },
+          params: { tenantId: mockedTenantId },
           path: createPath
         }
       })
@@ -136,6 +166,11 @@ describe('MacRegistrationListForm', () => {
     await userEvent.click(expirationTypeElem)
     await userEvent.click(screen.getByText('Days'))
 
+    const policySet = comboboxElems[1]
+    fireEvent.mouseDown(policySet)
+    const option = await screen.findAllByText(policySetList.content[0].name)
+    await userEvent.click(option[0])
+
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
 
     const validating = await screen.findByRole('img', { name: 'loading' })
@@ -154,7 +189,7 @@ describe('MacRegistrationListForm', () => {
         <MacRegistrationListForm editMode={true} />
       </Provider>, {
         route: {
-          params: { tenantId: 'tenant-id', policyId: '373377b0cb6e46ea8982b1c80aabe1fa1' },
+          params: { tenantId: mockedTenantId, policyId: macRegList.id },
           path: editPath
         }
       }
@@ -172,7 +207,7 @@ describe('MacRegistrationListForm', () => {
     // expect(errorMsgElem).toBeInTheDocument()
   })
 
-  it.skip('should add list and show error Toast', async () => {
+  it('should add list and show error Toast', async () => {
     mockServer.use(
       rest.post(
         MacRegListUrlsInfo.createMacRegistrationPool.url,
@@ -182,13 +217,13 @@ describe('MacRegistrationListForm', () => {
     render(
       <Provider>
         <MacRegistrationListForm/>
-      </Provider>, {
+      </Provider>,
+      {
         route: {
-          params: { tenantId: 'tenant-id' },
+          params: { tenantId: mockedTenantId },
           path: createPath
         }
-      }
-    )
+      })
 
     await userEvent.type(
       await screen.findByRole('textbox', { name: /name/i }),
@@ -197,6 +232,11 @@ describe('MacRegistrationListForm', () => {
 
     const expirationModeElem = screen.getByRole('radio', { name: /Never/i })
     await userEvent.click(expirationModeElem)
+
+    const comboboxElems = await screen.findAllByRole('combobox')
+    fireEvent.mouseDown(comboboxElems[0])
+    const option = await screen.findAllByText(policySetList.content[0].name)
+    await userEvent.click(option[0])
 
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
 
@@ -220,7 +260,7 @@ describe('MacRegistrationListForm', () => {
         editMode={true}/>
       </Provider>, {
         // eslint-disable-next-line max-len
-        route: { params: { tenantId: 'tenant-id', policyId: '373377b0cb6e46ea8982b1c80aabe1fa1' },
+        route: { params: { tenantId: mockedTenantId, policyId: '373377b0cb6e46ea8982b1c80aabe1fa1' },
           path: editPath }
       })
 
@@ -247,7 +287,8 @@ describe('MacRegistrationListForm', () => {
       <Provider>
         <MacRegistrationListForm />
       </Provider>, {
-        route: { params: { tenantId: 'tenant-id', policyId: '373377b0cb6e46ea8982b1c80aabe1fa1' },
+        // eslint-disable-next-line max-len
+        route: { params: { tenantId: mockedTenantId, policyId: '373377b0cb6e46ea8982b1c80aabe1fa1' },
           path: createPath }
       }
     )

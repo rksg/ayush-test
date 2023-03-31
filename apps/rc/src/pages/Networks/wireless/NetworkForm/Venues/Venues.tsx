@@ -284,8 +284,9 @@ export function Venues () {
       title: $t({ defaultMessage: 'APs' }),
       dataIndex: 'aps',
       width: 80,
-      render: function (data, row) {
-        return transformAps(getCurrentVenue(row), (e) => handleClickApGroups(row, e))
+      render: function (currentData, row) {
+        return transformAps(getCurrentVenue(row),
+          data as NetworkSaveData, (e) => handleClickApGroups(row, e))
       }
     },
     {
@@ -293,8 +294,9 @@ export function Venues () {
       title: $t({ defaultMessage: 'Radios' }),
       dataIndex: 'radios',
       width: 140,
-      render: function (data, row) {
-        return transformRadios(getCurrentVenue(row), (e) => handleClickApGroups(row, e))
+      render: function (currentData, row) {
+        return transformRadios(getCurrentVenue(row),
+          data as NetworkSaveData, (e) => handleClickApGroups(row, e))
       }
     },
     {
