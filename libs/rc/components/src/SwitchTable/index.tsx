@@ -300,7 +300,7 @@ export function SwitchTable (props : SwitchTableProps) {
   return <Loader states={[tableQuery]}>
     <Table<SwitchRow>
       {...props}
-      settingsId='switches-table'
+      settingsId='switch-table'
       columns={columns}
       dataSource={tableData}
       pagination={tableQuery.pagination}

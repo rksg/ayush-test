@@ -279,7 +279,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
 
   return <Loader states={[tableQuery]}>
     <Table
-      settingsId='venues-switch-port-table'
+      settingsId='switch-port-table'
       columns={getColumns()}
       dataSource={transformData(tableQuery.data?.data)}
       pagination={tableQuery.pagination}

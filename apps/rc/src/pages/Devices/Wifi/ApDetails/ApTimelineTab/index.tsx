@@ -34,7 +34,7 @@ const Activities = () => {
   const tableQuery = useActivityTableQuery({ entityType: 'AP', entityId: serialNumber! })
 
   return <ActivityTable
-    settingsId='ap-activities-table'
+    settingsId='ap-activity-table'
     tableQuery={tableQuery}
     filterables={['status']}
     columnState={activityTableColumnState}

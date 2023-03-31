@@ -154,7 +154,7 @@ const DevicePolicyComponent = () => {
       onlyAddMode={addModeStatus}
     />
     <Table<DevicePolicy>
-      settingsId='policies-access-control-device-os-table'
+      settingsId='policies-access-control-device-policy-table'
       columns={useColumns(networkFilterOptions, editMode, setEditMode)}
       enableApiFilter={true}
       dataSource={tableQuery.data?.data}

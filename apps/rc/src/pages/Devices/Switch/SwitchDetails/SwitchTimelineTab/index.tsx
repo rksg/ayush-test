@@ -29,7 +29,7 @@ const Activities = () => {
   const tableQuery = useActivityTableQuery({ entityType: 'SWITCH', entityId: serialNumber! })
 
   return <ActivityTable
-    settingsId='switch-activities-table'
+    settingsId='switch-activity-table'
     tableQuery={tableQuery}
     filterables={['status']}
     columnState={activityTableColumnState}

@@ -218,7 +218,7 @@ export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
   return (
     <Loader states={[queryResults]}>
       <UI.IncidentTableWrapper
-        settingsId='incidents-table'
+        settingsId='incident-table'
         type='tall'
         dataSource={data}
         columns={ColumnHeaders}

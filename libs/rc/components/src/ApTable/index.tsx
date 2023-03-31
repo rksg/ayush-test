@@ -395,7 +395,7 @@ export function ApTable (props: ApTableProps) {
     <Loader states={[tableQuery]}>
       <Table<APExtended | APExtendedGrouped>
         {...props}
-        settingsId='aps-table'
+        settingsId='ap-table'
         columns={columns}
         dataSource={tableData}
         rowKey='serialNumber'

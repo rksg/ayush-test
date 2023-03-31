@@ -32,7 +32,7 @@ const Activities = () => {
   const tableQuery = useActivityTableQuery({ entityType: 'NETWORK', entityId: networkId! })
 
   return <ActivityTable
-    settingsId='network-activities-table'
+    settingsId='network-activity-table'
     tableQuery={tableQuery}
     filterables={['status']}
     columnState={activityTableColumnState}

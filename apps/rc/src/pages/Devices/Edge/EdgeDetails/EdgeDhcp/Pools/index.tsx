@@ -65,7 +65,7 @@ const Pools = ({ tableQuery }: PoolsProps) => {
   return (
     <Loader states={[tableQuery]}>
       <Table
-        settingsId='edges-dhcp-pool-table'
+        settingsId='edge-dhcp-pools-table'
         columns={columns}
         dataSource={tableQuery?.data?.data}
         pagination={tableQuery.pagination}
