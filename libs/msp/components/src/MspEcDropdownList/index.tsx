@@ -11,10 +11,10 @@ import {
   useGetTenantDetailQuery,
   useDelegateToMspEcPath
 }  from '@acx-ui/rc/services'
-import { MspEc, TenantIdFromJwt, useTableQuery, VarCustomer } from '@acx-ui/rc/utils'
-import { getBasePath, Link, useParams  }                      from '@acx-ui/react-router-dom'
-import { useUserProfileContext }                              from '@acx-ui/user'
-import { AccountType }                                        from '@acx-ui/utils'
+import { MspEc, useTableQuery, VarCustomer } from '@acx-ui/rc/utils'
+import { getBasePath, Link, useParams  }     from '@acx-ui/react-router-dom'
+import { useUserProfileContext }             from '@acx-ui/user'
+import { AccountType, getJwtTokenPayload }   from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -208,7 +208,7 @@ export function MspEcDropdownList () {
 
   const tableQueryMspEc = useTableQuery({
     useQuery: useMspCustomerListDropdownQuery,
-    apiParams: { tenantId: TenantIdFromJwt() },
+    apiParams: { tenantId: getJwtTokenPayload().tenantId },
     defaultPayload: mspEcPayload,
     search: {
       searchTargetFields: mspEcPayload.searchTargetFields as string[]
@@ -218,7 +218,7 @@ export function MspEcDropdownList () {
 
   const tableQueryIntegrator = useTableQuery({
     useQuery: useMspCustomerListDropdownQuery,
-    apiParams: { tenantId: TenantIdFromJwt() },
+    apiParams: { tenantId: getJwtTokenPayload().tenantId },
     defaultPayload: integratorPayload,
     search: {
       searchTargetFields: integratorPayload.searchTargetFields as string[]
@@ -228,7 +228,7 @@ export function MspEcDropdownList () {
 
   const tableQueryVarRec = useTableQuery({
     useQuery: useVarCustomerListDropdownQuery,
-    apiParams: { tenantId: TenantIdFromJwt() },
+    apiParams: { tenantId: getJwtTokenPayload().tenantId },
     defaultPayload: varPayload,
     search: {
       searchTargetFields: varPayload.searchTargetFields as string[]
@@ -238,7 +238,7 @@ export function MspEcDropdownList () {
 
   const tableQuerySupportEc = useTableQuery({
     useQuery: useSupportCustomerListDropdownQuery,
-    apiParams: { tenantId: TenantIdFromJwt() },
+    apiParams: { tenantId: getJwtTokenPayload().tenantId },
     defaultPayload: supportEcPayload,
     search: {
       searchTargetFields: supportEcPayload.searchTargetFields as string[]
@@ -248,7 +248,7 @@ export function MspEcDropdownList () {
 
   const tableQuerySupport = useTableQuery({
     useQuery: useVarCustomerListDropdownQuery,
-    apiParams: { tenantId: TenantIdFromJwt() },
+    apiParams: { tenantId: getJwtTokenPayload().tenantId },
     defaultPayload: supportPayload,
     search: {
       searchTargetFields: supportPayload.searchTargetFields as string[]
