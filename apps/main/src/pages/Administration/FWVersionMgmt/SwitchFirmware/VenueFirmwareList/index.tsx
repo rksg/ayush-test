@@ -12,8 +12,8 @@ import {
   Loader
 } from '@acx-ui/components'
 import {
-  useGetUpgradePreferencesQuery,
-  useUpdateUpgradePreferencesMutation,
+  useGetSwitchUpgradePreferencesQuery,
+  useUpdateSwitchUpgradePreferencesMutation,
   useGetSwitchVenueVersionListQuery,
   useGetSwitchAvailableFirmwareListQuery,
   useGetSwitchCurrentVersionsQuery,
@@ -163,8 +163,8 @@ export const VenueFirmwareTable = (
 
   const { data: preDownload } = useGetSwitchFirmwarePredownloadQuery({ params })
 
-  const [updateUpgradePreferences] = useUpdateUpgradePreferencesMutation()
-  const { data: preferencesData } = useGetUpgradePreferencesQuery({ params })
+  const [updateUpgradePreferences] = useUpdateSwitchUpgradePreferencesMutation()
+  const { data: preferencesData } = useGetSwitchUpgradePreferencesQuery({ params })
   const preferenceDays = preferencesData?.days?.map((day) => {
     return day.charAt(0).toUpperCase() + day.slice(1).toLowerCase()
   })
