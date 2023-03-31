@@ -427,9 +427,9 @@ export function MoreSettingsForm (props: {
           label={$t({ defaultMessage: 'Directed MC/BC Threshold:' })}
           initialValue={5}
           rules={[{
-            type: 'number', max: 128, min: 0,
+            type: 'number', max: 5, min: 0,
             message: $t({
-              defaultMessage: 'Directed MC/BC Threshold must be between 0 and 128'
+              defaultMessage: 'Directed MC/BC Threshold must be between 0 and 5'
             })
           }]}
           style={{ marginBottom: '15px', width: '300px' }}

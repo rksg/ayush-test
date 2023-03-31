@@ -23,7 +23,8 @@ export default function VenueLeaseTable (){
       searchable: true,
       title: $t({ defaultMessage: 'Hostname' }),
       dataIndex: 'hostname',
-      sorter: true
+      sorter: true,
+      fixed: 'left'
     },
     {
       key: 'IPAddress',

@@ -691,7 +691,7 @@ export function ManageCustomer () {
 
   const WifiSubscription = () => {
     const wifiLicenses = availableLicense.filter(p => p.deviceType === 'MSP_WIFI')
-    let remainingDevices = 0
+    let remainingDevices = assignedWifiLicense
     wifiLicenses.forEach( (lic: MspAssignmentSummary) => {
       remainingDevices += lic.remainingDevices
     })
@@ -716,7 +716,7 @@ export function ManageCustomer () {
 
   const SwitchSubscription = () => {
     const switchLicenses = availableLicense.filter(p => p.deviceType === 'MSP_SWITCH')
-    let remainingDevices = 0
+    let remainingDevices = assignedSwitchLicense
     switchLicenses.forEach( (lic: MspAssignmentSummary) => {
       remainingDevices += lic.remainingDevices
     })
@@ -743,14 +743,14 @@ export function ManageCustomer () {
     return <>
       <div>
         <h4 style={{ display: 'inline-block', marginTop: '38px', marginRight: '25px' }}>
-          {intl.$t({ defaultMessage: 'Enable access to RUCKUS One support' })}</h4>
+          {intl.$t({ defaultMessage: 'Enable access to Ruckus Support' })}</h4>
         <Switch defaultChecked={ecSupportEnabled} onChange={ecSupportOnChange}/></div>
       <div><label>
-        {intl.$t({ defaultMessage: 'If checked, Ruckus support team is granted a temporary' +
+        {intl.$t({ defaultMessage: 'If checked, Ruckus Support team is granted a temporary' +
   ' administrator-level access for 21 days.' })}</label>
       </div>
       <label>
-        {intl.$t({ defaultMessage: 'Enable when requested by Ruckus support team.' })}</label>
+        {intl.$t({ defaultMessage: 'Enable when requested by Ruckus Support team.' })}</label>
     </>
   }
 

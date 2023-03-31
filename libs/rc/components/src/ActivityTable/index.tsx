@@ -102,6 +102,7 @@ const ActivityTable = ({
       dataIndex: 'startDatetime',
       defaultSortOrder: 'descend',
       sorter: true,
+      fixed: 'left',
       render: function (_, row) {
         return <Button
           type='link'

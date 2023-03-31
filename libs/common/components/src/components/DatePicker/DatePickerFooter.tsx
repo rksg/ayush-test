@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react'
 
 import { range as timepickerRange } from 'lodash'
+import { useIntl }                  from 'react-intl'
 
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { CaretDownSolid }            from '@acx-ui/icons'
@@ -50,6 +51,7 @@ export const DatePickerFooter = ({
   setIsCalendarOpen,
   onDateApply
 }: DatePickerFooterProps) => {
+  const { $t } = useIntl()
   const onButtonClick = (type: string) => {
     if (type === 'cancel') {
       setRange(defaultValue)
@@ -117,7 +119,7 @@ export const DatePickerFooter = ({
         </UI.SelectedRange>
         <UI.Buttons>
           <Button onClick={() => onButtonClick('cancel')} size={'small'}>
-            Cancel
+            {$t({ defaultMessage: 'Cancel' })}
           </Button>
           <Button
             type={'secondary'}
@@ -129,7 +131,7 @@ export const DatePickerFooter = ({
               range.startDate.isSame(range.endDate)
             }
           >
-            Apply
+            {$t({ defaultMessage: 'Apply' })}
           </Button>
         </UI.Buttons>
       </UI.RangeApplyRow>

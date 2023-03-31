@@ -40,6 +40,7 @@ export function SwitchOverviewACLs () {
       dataIndex: 'name',
       defaultSortOrder: 'ascend',
       sorter: true,
+      fixed: 'left',
       render: (data, row) =>
         <Button
           type='link'
@@ -66,6 +67,7 @@ export function SwitchOverviewACLs () {
     >
       <Table
         columns={columns}
+        columnState={{ hidden: true }}
         type={'tall'}
         onChange={tableQuery.handleTableChange}
         pagination={tableQuery.pagination}

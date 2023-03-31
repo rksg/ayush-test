@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from 'react'
+import { useEffect, useState, useContext, useRef } from 'react'
 
 import { Form, Switch } from 'antd'
 import _                from 'lodash'
@@ -11,6 +11,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   NetworkApGroupDialog,
   NetworkVenueScheduleDialog,
@@ -27,7 +28,8 @@ import {
   Venue,
   useScheduleSlotIndexMap,
   generateDefaultNetworkVenue,
-  SchedulingModalState
+  SchedulingModalState,
+  RadioTypeEnum
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
@@ -87,6 +89,10 @@ export function Venues () {
 
   const activatedNetworkVenues: NetworkVenue[] = Form.useWatch('venues')
   const params = useParams()
+  const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
+
+  const prevIsWPA3securityRef = useRef(false)
+  const isWPA3security = data?.wlan && data?.wlan.wlanSecurity === 'WPA3'
 
   const { $t } = useIntl()
   const tableQuery = useTableQuery({
@@ -115,7 +121,13 @@ export function Venues () {
     let newSelectedNetworkVenues: NetworkVenue[] = [...activatedNetworkVenues]
     if (isActivate) {
       const newActivatedNetworkVenues: NetworkVenue[] =
-        rows.map(row => generateDefaultNetworkVenue(row.id, row.networkId as string))
+        rows.map(row => {
+          const newNetworkVenue = generateDefaultNetworkVenue(row.id, row.networkId as string)
+          if (triBandRadioFeatureFlag && isWPA3security) {
+            newNetworkVenue.allApGroupsRadioTypes?.push(RadioTypeEnum._6_GHz)
+          }
+          return newNetworkVenue
+        })
       newSelectedNetworkVenues = _.uniq([...newSelectedNetworkVenues, ...newActivatedNetworkVenues])
     } else {
       const handleVenuesIds = rows.map(row => row.id)
@@ -184,6 +196,35 @@ export function Venues () {
       }
     }
   }, [data])
+
+  useEffect(() => {
+    if (data?.wlan) {
+      if (prevIsWPA3securityRef.current === true && data.wlan.wlanSecurity !== 'WPA3') {
+        if (activatedNetworkVenues?.length > 0) {
+          // remove radio 6g when wlanSecurity is changed from WPA3 to others
+          const newActivatedNetworkVenues = activatedNetworkVenues.map(venue => {
+            const { allApGroupsRadioTypes, apGroups } = venue
+            if (allApGroupsRadioTypes && allApGroupsRadioTypes.includes(RadioTypeEnum._6_GHz)) {
+              allApGroupsRadioTypes.splice(allApGroupsRadioTypes.indexOf(RadioTypeEnum._6_GHz), 1)
+            }
+            if (apGroups && apGroups.length > 0) {
+              apGroups.forEach(apGroup => {
+                if (apGroup.radioTypes && apGroup.radioTypes.includes(RadioTypeEnum._6_GHz)) {
+                  apGroup.radioTypes.splice(apGroup.radioTypes.indexOf(RadioTypeEnum._6_GHz), 1)
+                }
+              })
+            }
+            return venue
+          })
+
+          handleVenueSaveData(newActivatedNetworkVenues)
+          setTableDataActivate(tableData, newActivatedNetworkVenues.map(i=>i.venueId))
+        }
+      }
+      prevIsWPA3securityRef.current = (data.wlan.wlanSecurity === 'WPA3')
+
+    }
+  }, [data?.wlan])
 
   const scheduleSlotIndexMap = useScheduleSlotIndexMap(tableData)
 
