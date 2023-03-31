@@ -8,8 +8,8 @@ const getWrapper = (initialEntries: string, appendedPath: string = '') =>
   ({ children }: { children: React.ReactElement }) => (
     <MemoryRouter initialEntries={[initialEntries]}>
       <Routes>
-        <Route path={`/t/:tenantId${'/' + appendedPath}`} element={children} />
-        <Route path={`/v/:tenantId${'/' + appendedPath}`} element={children} />
+        <Route path={`/:tenantId/t${'/' + appendedPath}`} element={children} />
+        <Route path={`/:tenantId/v${'/' + appendedPath}`} element={children} />
         <Route path='*' element={children} />
       </Routes>
     </MemoryRouter>
@@ -17,7 +17,7 @@ const getWrapper = (initialEntries: string, appendedPath: string = '') =>
 
 describe('useTenantId', () => {
   const tenantId = 'tenant-id'
-  const initPath = `/t/${tenantId}`
+  const initPath = `/${tenantId}/t`
 
   beforeEach(() => {
     Object.defineProperty(window, 'location', {
@@ -52,7 +52,7 @@ describe('useTenantId', () => {
   it('path does not prefix with /t or /v', () => {
     const { result } = renderHook(
       () => useTenantId(),
-      { wrapper: getWrapper(`/r/${tenantId}`) }
+      { wrapper: getWrapper(`/${tenantId}/r`) }
     )
 
     expect(result.current).toEqual(undefined)
@@ -60,7 +60,7 @@ describe('useTenantId', () => {
 })
 
 describe('tenant type v', () => {
-  const initPath = '/v/v-tenant'
+  const initPath = '/v-tenant/v'
   const { location } = window
 
   beforeEach(() => {
@@ -120,5 +120,8 @@ describe('other path', () => {
     )
 
     expect(result.current).toEqual(undefined)
+  })
+  it('return undefined', () => {
+    expect(getTenantId('/')).toEqual(undefined)
   })
 })
