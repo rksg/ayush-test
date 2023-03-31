@@ -109,7 +109,10 @@ const TunnelProfileDetail = () => {
           <Card>
             <UI.InstancesMargin>
               <Typography.Title level={2}>
-                {$t({ defaultMessage: 'Instances' })}
+                {$t(
+                  { defaultMessage: 'Instances ({count})' },
+                  { count: tunnelProfileData.networkIds.length }
+                )}
               </Typography.Title>
             </UI.InstancesMargin>
             <NetworkTable networkIds={tunnelProfileData.networkIds || []} />
