@@ -6,8 +6,8 @@ import { usePreference } from '@acx-ui/rc/components'
 import { MessageMapping } from '../MessageMapping'
 
 const supportedLangs = [
-  { label: 'English', value: 'en' }
-  // { label: 'Japanese', value: 'jp' }
+  { label: 'English', value: 'en-US' }
+  // { label: 'Japanese', value: 'ja-JP' }
 ]
 
 const DefaultSystemLanguageFormItem = () => {
