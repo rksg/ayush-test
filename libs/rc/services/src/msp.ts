@@ -1,3 +1,4 @@
+import _      from 'lodash'
 import moment from 'moment-timezone'
 
 import {
@@ -30,7 +31,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { baseMspApi }                from '@acx-ui/store'
 import { UserUrlsInfo, UserProfile } from '@acx-ui/user'
-import { getJwtToken, PverName }     from '@acx-ui/utils'
+import { PverName }                  from '@acx-ui/utils'
 
 export function useDelegateToMspEcPath () {
   const [getTenantPver] = useLazyGetUserProfilePverQuery()
@@ -497,9 +498,12 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     exportDeviceInventory: build.mutation<{ data: BlobPart }, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(MspUrlsInfo.exportMspEcDeviceInventory, {
-          ...params
-        })
+        const req = createHttpRequest(
+          MspUrlsInfo.exportMspEcDeviceInventory,
+          { ...params },
+          {},
+          true
+        )
         return {
           ...req,
           responseHandler: async (response) => {
@@ -512,9 +516,8 @@ export const mspApi = baseMspApi.injectEndpoints({
           },
           body: payload,
           headers: {
-            'Content-Type': 'application/json',
-            'accept': 'application/json,text/plain,*/*',
-            ...(getJwtToken() ? { Authorization: `Bearer ${getJwtToken()}` } : {})
+            ...req.headers,
+            Accept: 'application/json,text/plain,*/*'
           }
         }
       }
@@ -539,9 +542,12 @@ export const mspApi = baseMspApi.injectEndpoints({
               ? 'application/pdf'
               : ''
 
-        const licenseUsageRptReq =
-          createHttpRequest(MspUrlsInfo.getGenerateLicenseUsageRpt,
-            { ...params })
+        const licenseUsageRptReq = createHttpRequest(
+          MspUrlsInfo.getGenerateLicenseUsageRpt,
+          { ...params },
+          {},
+          true
+        )
         licenseUsageRptReq.url += '/' + payload
         return {
           ...licenseUsageRptReq,
@@ -552,8 +558,8 @@ export const mspApi = baseMspApi.injectEndpoints({
             return { status: response.status }
           },
           headers: {
-            'Content-Type': contentType,
-            ...(getJwtToken() ? { Authorization: `Bearer ${getJwtToken()}` } : {})
+            ..._.omit(licenseUsageRptReq.headers, 'Accept'),
+            'Content-Type': contentType
           }
         }
       }

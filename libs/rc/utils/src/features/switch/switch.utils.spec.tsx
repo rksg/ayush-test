@@ -16,7 +16,8 @@ import {
   transformSwitchUnitStatus,
   isRouter,
   isEmpty,
-  getSwitchPortLabel
+  getSwitchPortLabel,
+  sortPortFunction
 } from '.'
 
 const switchRow ={
@@ -78,6 +79,13 @@ describe('switch.utils', () => {
   describe('Test getSwitchPortLabel function', () => {
     it('should render correctly', async () => {
       expect(getSwitchPortLabel('ICX7150-C12P', 1)).toEqual('')
+    })
+  })
+
+  describe('Test sortPortFunction function', () => {
+    it('should render correctly', async () => {
+      expect([{ id: '1/1/10' }, { id: '1/1/2' }].sort(sortPortFunction))
+        .toStrictEqual([{ id: '1/1/2' }, { id: '1/1/10' }])
     })
   })
 

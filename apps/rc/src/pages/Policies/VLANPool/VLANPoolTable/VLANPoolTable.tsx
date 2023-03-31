@@ -26,8 +26,6 @@ export default function VLANPoolTable () {
   const tableQuery = useTableQuery({
     useQuery: useGetVLANPoolPolicyViewModelListQuery,
     defaultPayload: {
-      searchString: '',
-      searchTargetFields: ['name'],
       fields: [
         'id',
         'name',
@@ -36,6 +34,10 @@ export default function VLANPoolTable () {
         'venueIds'
       ],
       filters: {}
+    },
+    search: {
+      searchString: '',
+      searchTargetFields: ['name']
     }
   })
 
