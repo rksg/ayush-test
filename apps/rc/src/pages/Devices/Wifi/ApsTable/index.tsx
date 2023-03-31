@@ -15,7 +15,6 @@ import { ApTable, CsvSize, ImportFileDrawer } from '@acx-ui/rc/components'
 import {
   useApGroupsListQuery,
   useImportApMutation,
-  useImportApOldMutation,
   useLazyImportResultQuery,
   useVenuesListQuery
 } from '@acx-ui/rc/services'
@@ -61,8 +60,7 @@ export default function ApsTable () {
   )
 
   const [ isImportResultLoading, setIsImportResultLoading ] = useState(false)
-  const [ importCsv ] = useImportApMutation()
-  const [ importCsvOld ] = useImportApOldMutation()
+  const [ importCsv, importCsvResult ] = useImportApMutation()
   const [ importQuery ] = useLazyImportResultQuery()
   const [ importResult, setImportResult ] = useState<ImportErrorRes>({} as ImportErrorRes)
 
@@ -73,10 +71,25 @@ export default function ApsTable () {
     'assets/templates/aps_import_template.csv'
 
   useEffect(()=>{
+    if (wifiEdaFlag) {
+      return
+    }
+
+    setIsImportResultLoading(false)
+    if (importCsvResult.isSuccess) {
+      setImportVisible(false)
+    }
+  },[importCsvResult])
+
+  useEffect(()=>{
+    if (!wifiEdaFlag) {
+      return
+    }
+
+    setIsImportResultLoading(false)
     if ( importResult.fileErrorsCount === 0 ) {
       setImportVisible(false)
     }
-    setIsImportResultLoading(false)
   },[importResult])
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
@@ -141,10 +154,7 @@ export default function ApsTable () {
                 setImportResult(result)
               } }).unwrap()
           } else {
-            importCsvOld({ params: { tenantId }, payload: formData ,
-              callback: async (response: ImportErrorRes) => {
-                setImportResult(response)
-              } }).unwrap()
+            importCsv({ params: { tenantId }, payload: formData })
           }
         }}
         onClose={() => setImportVisible(false)}/>
