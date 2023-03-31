@@ -1004,7 +1004,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      providesTags: [{ type: 'SwitchProfiles', id: 'DETAIL' }]
     }),
     addSwitchConfigProfile: build.mutation<CliConfiguration, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1024,7 +1025,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'SwitchProfiles', id: 'LIST' }]
+      invalidatesTags: [
+        { type: 'SwitchProfiles', id: 'LIST' },
+        { type: 'SwitchProfiles', id: 'DETAIL' }
+      ]
     }),
     validateUniqueProfileName: build.query<TableResult<SwitchProfile>, RequestPayload>({
       query: ({ params, payload }) => {
