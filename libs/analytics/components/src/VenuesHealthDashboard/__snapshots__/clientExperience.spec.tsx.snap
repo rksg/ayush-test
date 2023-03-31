@@ -49,7 +49,22 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
             >
               <div
                 class="ant-space ant-space-horizontal ant-space-align-center"
-              />
+              >
+                <div
+                  class="ant-space-item"
+                >
+                  <button
+                    class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-13w5wfx-3 bUhsmM"
+                    title="Expand"
+                    type="button"
+                  >
+                    <svg
+                      class="styledComponents__ArrowChevronRightIcon-sc-13w5wfx-0 bIuzgA"
+                      data-testid="ArrowChevronRight"
+                    />
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -299,7 +314,22 @@ exports[`Client Experience should render widget with proper data 1`] = `
             >
               <div
                 class="ant-space ant-space-horizontal ant-space-align-center"
-              />
+              >
+                <div
+                  class="ant-space-item"
+                >
+                  <button
+                    class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-13w5wfx-3 bUhsmM"
+                    title="Expand"
+                    type="button"
+                  >
+                    <svg
+                      class="styledComponents__ArrowChevronRightIcon-sc-13w5wfx-0 bIuzgA"
+                      data-testid="ArrowChevronRight"
+                    />
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
