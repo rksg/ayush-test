@@ -9,14 +9,12 @@ import {
   Table,
   TableProps,
   ProgressBar,
-  ContentSwitcher,
-  ContentSwitcherProps,
   NoData,
   Tooltip
 } from '@acx-ui/components'
-import { intlFormats, formatter }         from '@acx-ui/formatter'
-import { TenantLink, useNavigateToPath }  from '@acx-ui/react-router-dom'
-import { notAvailableMsg, noDataDisplay } from '@acx-ui/utils'
+import { intlFormats, formatter }        from '@acx-ui/formatter'
+import { TenantLink, useNavigateToPath } from '@acx-ui/react-router-dom'
+import { noDataDisplay }                 from '@acx-ui/utils'
 
 import { useHealthQuery, HealthData } from './services'
 import * as UI                        from './styledComponents'
@@ -170,9 +168,9 @@ export function VenuesHealthDashboard ({
         onlineApsPercent: onlineApsPercent.formatted,
         clientExperience
       }
-    }).filter(item=>item.clientExperience!==null)
-      .sort((a,b)=>(a.clientExperience as number) - (b.clientExperience as number))
-      .slice(0,5)
+    }).filter(item => item.clientExperience !== null)
+      .sort((a, b) => (a.clientExperience as number) - (b.clientExperience as number))
+      .slice(0, 6)
   }
 
   const healthData = data && data.health.length ? getHealthData(data.health) : null
@@ -188,36 +186,18 @@ export function VenuesHealthDashboard ({
     </UI.Wrapper>
     : <NoData/>
 
-  const tabDetails:ContentSwitcherProps['tabDetails']=[
-    {
-      label: $t({ defaultMessage: 'Venue' }),
-      children: clientExpTab,
-      value: 'clientExp'
-    },
-    {
-      label: <Tooltip title={$t(notAvailableMsg)}>
-        {$t({ defaultMessage: 'Service' })}
-      </Tooltip>,
-      children: <>
-        {$t({ defaultMessage: 'Coming Soon' })}
-      </>,
-      value: 'services',
-      disabled: true
-    }
-  ]
-
   const onArrowClick = useNavigateToPath('/analytics/health/')
   return (
     <Loader states={[queryResults]}>
       <HistoricalCard
         title={$t({ defaultMessage: 'Client Experience' })}
-        subTitle={$t({ defaultMessage: 'Top Venues/Services with poor experience' })}
+        subTitle={$t({ defaultMessage: 'Top Venues with poor experience' })}
         onArrowClick={onArrowClick}
       >
         <AutoSizer>
           {({ height, width }) => (
             <div style={{ display: 'block', height, width }}>
-              <ContentSwitcher tabDetails={tabDetails} size='small' />
+              {clientExpTab}
             </div>)}
         </AutoSizer>
       </HistoricalCard>
