@@ -193,7 +193,7 @@ describe('Update NetworkSegmentation', () => {
     await user.click(await screen.findByRole('button', { name: 'Finish' }))
     await waitFor(() => expect(mockedUsedNavigate).toBeCalledWith({
       hash: '',
-      pathname: `/t/${params.tenantId}/services/list`,
+      pathname: `/${params.tenantId}/t/services/list`,
       search: ''
     }))
   })
