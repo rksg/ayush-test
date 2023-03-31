@@ -1,10 +1,6 @@
-import userEvent from '@testing-library/user-event'
-
-import { render, screen, fireEvent, waitFor, logRoles } from '@acx-ui/test-utils'
+import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
 import { renderFilter, filterOption } from './filters'
-
-const { click, type, clear } = userEvent
 
 describe('Table Filters', () => {
   afterEach(() => jest.resetAllMocks())
