@@ -70,7 +70,7 @@ export function TemplateSelector (props: TemplateSelectorProps) {
     }
   }, [templateDataRequest.data])
 
-  // Set intitial selected value
+  // Set initial selected value
   useEffect(() => {
     let currentFormValue = form.getFieldValue(formItemProps.name)
 
