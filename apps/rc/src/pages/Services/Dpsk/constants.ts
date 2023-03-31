@@ -1,0 +1,2 @@
+export const MAX_PASSPHRASES = 5000
+export const MAX_DEVICES_PER_PASSPHRASE = 50
