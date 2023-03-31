@@ -244,33 +244,32 @@ export function ApSnmp () {
           {stateOfEnableApSnmp &&
         <Col data-testid='hidden-block' span={12}>
           <Row align='middle'>
-            <Col span={10}>
-              <Form.Item name='apSnmpAgentProfileId'
-                label='SNMP Agent'
-                style={{ marginBottom: '0px' }}>
-                <Select
-                  data-testid='snmp-select'
-                  disabled={stateOfUseVenueSettings}
-                  options={[
-                    { label: $t({ defaultMessage: 'Select...' }), value: '' },
-                    ...RetrievedApSnmpAgentList?.data?.map(
-                      item => ({ label: item.policyName, value: item.id })
-                    ) ?? []
-                  ]}
-                  style={{ width: '200px' }}
-                />
-              </Form.Item>
-            </Col>
-            {((RetrievedApSnmpAgentList?.data?.length as number) < 64) && <Col span={12}>
-              <TenantLink
-                to={getPolicyRoutePath({
-                  type: PolicyType.SNMP_AGENT,
-                  oper: PolicyOperation.CREATE
-                })}
-              >
-                {$t({ defaultMessage: 'Add' })}
-              </TenantLink>
-            </Col>}
+            <Form.Item name='apSnmpAgentProfileId'
+              label='SNMP Agent'
+              style={{ marginBottom: '0px' }}>
+              <Select
+                data-testid='snmp-select'
+                disabled={stateOfUseVenueSettings}
+                options={[
+                  { label: $t({ defaultMessage: 'Select...' }), value: '' },
+                  ...RetrievedApSnmpAgentList?.data?.map(
+                    item => ({ label: item.policyName, value: item.id })
+                  ) ?? []
+                ]}
+                style={{ width: '200px' }}
+              />
+            </Form.Item>
+            {((RetrievedApSnmpAgentList?.data?.length as number) < 64) &&
+                <TenantLink
+                  to={getPolicyRoutePath({
+                    type: PolicyType.SNMP_AGENT,
+                    oper: PolicyOperation.CREATE
+                  })}
+                  style={{ marginLeft: '20px' }}
+                >
+                  {$t({ defaultMessage: 'Add' })}
+                </TenantLink>
+            }
           </Row>
         </Col>
           }
