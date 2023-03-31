@@ -7,10 +7,10 @@ import { useIsSplitOn, Features }   from '@acx-ui/feature-toggle'
 import { formatter, intlFormats }   from '@acx-ui/formatter'
 import { noDataDisplay }            from '@acx-ui/utils'
 
-import { DrilldownSelection } from '..'
 
 import { useSummaryQuery }                        from './services'
 import { Wrapper, Statistic, UpArrow, DownArrow } from './styledComponents'
+import { DrilldownSelection } from '../HealthDrillDown/config'
 
 
 interface BoxProps {
@@ -59,9 +59,9 @@ export const SummaryBoxes = ({ filters, drilldownSelection, setDrilldownSelectio
     end: filters.endDate
   }
   const toggleConnectionFailure = () => setDrilldownSelection(
-    drilldownSelection !== 'connectionFailure' ? 'connectionFailure' : 'none'
+    drilldownSelection !== 'connectionFailure' ? 'connectionFailure' : null
   )
-  const toggleTtc = () => setDrilldownSelection(drilldownSelection !== 'ttc' ? 'ttc' : 'none')
+  const toggleTtc = () => setDrilldownSelection(drilldownSelection !== 'ttc' ? 'ttc' : null)
 
   const queryResults = useSummaryQuery(payload, {
     selectFromResult: ({ data, ...rest }) => {

@@ -2,18 +2,9 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import {
-  AnalyticsFilter,
-  useAnalyticsFilter,
-  categoryTabs,
-  CategoryTab
-} from '@acx-ui/analytics/utils'
-import { GridCol, GridRow, Tabs } from '@acx-ui/components'
-import {
-  useNavigate,
-  useParams,
-  useTenantLink
-} from '@acx-ui/react-router-dom'
+import { AnalyticsFilter, useAnalyticsFilter, categoryTabs, CategoryTab } from '@acx-ui/analytics/utils'
+import { GridCol, GridRow, Tabs }                                         from '@acx-ui/components'
+import { useNavigate, useParams, useTenantLink }                          from '@acx-ui/react-router-dom'
 
 import { Header } from '../Header'
 
@@ -23,8 +14,7 @@ import { HealthPageContextProvider } from './HealthPageContext'
 import Kpis                          from './Kpi'
 import * as UI                       from './styledComponents'
 import { SummaryBoxes }              from './SummaryBoxes'
-
-export type DrilldownSelection = 'connectionFailure' | 'ttc' | 'none'
+import { DrilldownSelection } from './HealthDrillDown/config'
 
 const HealthPage = (props: { filters?: AnalyticsFilter; path?: string }) => {
   const { $t } = useIntl()
@@ -36,7 +26,7 @@ const HealthPage = (props: { filters?: AnalyticsFilter; path?: string }) => {
   const { filters } = useAnalyticsFilter()
   const healthPageFilters = widgetFilters ? widgetFilters : filters
   const [drilldownSelection, setDrilldownSelection] =
-    useState<DrilldownSelection>('none')
+    useState<DrilldownSelection>(null)
 
   const onTabChange = (tab: string) =>
     navigate({
@@ -45,13 +35,13 @@ const HealthPage = (props: { filters?: AnalyticsFilter; path?: string }) => {
     })
   return (
     <>
-      {!widgetFilters && (
-        <Header
-          title={$t({ defaultMessage: 'Health' })}
-          shouldQuerySwitch={false}
-          withIncidents={false}
-        />
-      )}
+      {!widgetFilters &&
+      <Header
+        title={$t({ defaultMessage: 'Health' })}
+        shouldQuerySwitch={false}
+        withIncidents={false}
+      />
+      }
       <GridRow>
         <GridCol col={{ span: 24 }} style={{ minHeight: '105px' }}>
           <SummaryBoxes
@@ -59,7 +49,11 @@ const HealthPage = (props: { filters?: AnalyticsFilter; path?: string }) => {
             drilldownSelection={drilldownSelection}
             setDrilldownSelection={setDrilldownSelection}
           />
-          <HealthDrillDown />
+          <HealthDrillDown
+            filters={filters}
+            drilldownSelection={drilldownSelection}
+            setDrilldownSelection={setDrilldownSelection}
+          />
         </GridCol>
         <HealthPageContextProvider>
           <GridCol col={{ span: 24 }} style={{ height: '210px' }}>
