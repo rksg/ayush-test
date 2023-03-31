@@ -54,7 +54,9 @@ import {
   RadiusAttributeGroup,
   RadiusAttribute,
   RadiusAttributeVendor,
-  EnhancedRoguePolicyType
+  EnhancedRoguePolicyType,
+  RulesManagementUrlsInfo,
+  AdaptivePolicySet
 } from '@acx-ui/rc/utils'
 import { basePolicyApi } from '@acx-ui/store'
 
@@ -1484,6 +1486,31 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'RadiusAttributeGroup', id: 'DETAIL' }]
+    }),
+    adaptivePolicySetList: build.query<TableResult<AdaptivePolicySet>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const poolsReq = createNewTableHttpRequest({
+          apiInfo: RulesManagementUrlsInfo.getAdaptivePolicySets,
+          params,
+          payload: payload as TableChangePayload
+        })
+        return {
+          ...poolsReq
+        }
+      },
+      transformResponse (result: NewTableResult<AdaptivePolicySet>) {
+        return transferToTableResult<AdaptivePolicySet>(result)
+      },
+      providesTags: [{ type: 'AdaptivePolicySet', id: 'LIST' }]
+    }),
+    getAdaptivePolicySet: build.query<AdaptivePolicySet, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RulesManagementUrlsInfo.getAdaptivePolicySet, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'AdaptivePolicySet', id: 'DETAIL' }]
     })
   })
 })
@@ -1604,5 +1631,8 @@ export const {
   useLazyRadiusAttributeGroupListQuery,
   useUpdateRadiusAttributeGroupMutation,
   useAddRadiusAttributeGroupMutation,
-  useLazyRadiusAttributeGroupListByQueryQuery
+  useLazyRadiusAttributeGroupListByQueryQuery,
+  useAdaptivePolicySetListQuery,
+  useGetAdaptivePolicySetQuery,
+  useLazyGetAdaptivePolicySetQuery
 } = policyApi
