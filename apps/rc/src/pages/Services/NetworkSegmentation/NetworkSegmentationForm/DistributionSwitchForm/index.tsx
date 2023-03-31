@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { Form, Input } from 'antd'
-import { useIntl }     from 'react-intl'
+import { useIntl } from 'react-intl'
 
 import { StepsFormNew, TableProps, useStepFormContext } from '@acx-ui/components'
 import { useGetAvailableSwitchesQuery }                 from '@acx-ui/rc/services'
@@ -111,15 +110,6 @@ export function DistributionSwitchForm () {
       }]}
       dataSource={dsList}
       rowSelection={{ type: 'radio', selectedRowKeys: selected ? [selected.id] : [] }} />
-    <Form.Item name='distributionSwitchInfos'
-      rules={[{
-        validator: (_, dsList) => {
-          return (dsList && dsList.length > 0) ? Promise.resolve() :
-            Promise.reject(new Error($t({ defaultMessage:
-            'Please add at least 1 distribution switch.' })))
-        }
-      }]}
-      children={<Input type='hidden'/>} />
     <DistributionSwitchDrawer
       open={openDrawer}
       editRecord={selected}

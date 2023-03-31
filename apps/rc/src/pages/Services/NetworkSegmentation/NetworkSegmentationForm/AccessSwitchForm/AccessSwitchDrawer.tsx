@@ -1,23 +1,16 @@
 import React, { useState, useEffect } from 'react'
 
 import {
-  Card,
-  Checkbox,
-  Col,
-  Form,
-  Input,
-  Radio,
-  Row,
-  Select,
-  Space
+  Card, Checkbox, Col,
+  Form, Input, InputNumber,
+  Radio, Row, Select, Space
 } from 'antd'
 import { DefaultOptionType } from 'antd/lib/select'
 import _                     from 'lodash'
 import { useIntl }           from 'react-intl'
 
 import {
-  Button,
-  Drawer, Subtitle, Tooltip
+  Button, Drawer, Subtitle, Tooltip
 } from '@acx-ui/components'
 import { QuestionMarkCircleOutlined }   from '@acx-ui/icons'
 import { isLAGMemberPort }              from '@acx-ui/rc/components'
@@ -29,8 +22,15 @@ import {
   useGetLagListQuery,
   useValidateAccessSwitchInfoMutation
 } from '@acx-ui/rc/services'
-import { AccessSwitch, AccessSwitchSaveData, UplinkInfo, WebAuthTemplate } from '@acx-ui/rc/utils'
-import { useParams }                                                       from '@acx-ui/react-router-dom'
+import {
+  AccessSwitch,
+  AccessSwitchSaveData,
+  validateVlanName,
+  UplinkInfo,
+  WebAuthTemplate
+} from '@acx-ui/rc/utils'
+import { useParams }          from '@acx-ui/react-router-dom'
+import { validationMessages } from '@acx-ui/utils'
 
 import { defaultTemplateData } from '../../../NetworkSegWebAuth/NetworkSegAuthForm'
 
@@ -89,9 +89,9 @@ export function AccessSwitchDrawer (props: {
       // Group by switchMac
       const switchPorts = portList.reduce((
         accumulator: { [name: string]: DefaultOptionType[] }, currentValue) => {
-        const memo = accumulator[currentValue['switchMac']]
-        accumulator[currentValue['switchMac']] = memo ?
-          memo.concat(_.omit(currentValue, 'switchMac')) : []
+        const currentPortList = accumulator[currentValue['switchMac']]
+        accumulator[currentValue['switchMac']] = currentPortList ?
+          currentPortList.concat(_.omit(currentValue, 'switchMac')) : []
         return accumulator
       }, {})
       return { portList: _.intersectionWith(...(_.values(switchPorts)), _.isEqual) }
@@ -127,10 +127,10 @@ export function AccessSwitchDrawer (props: {
   useEffect(() => {
     form.resetFields()
     form.setFieldValue('webAuthPageType', editingWebAuthPageType)
-    setUplinkInfoOverwrite(false)
-    setVlanIdOverwrite(false)
-    setWebAuthPageOverwrite(false)
-  }, [form, open, editingWebAuthPageType])
+    setUplinkInfoOverwrite(!isMultipleEdit)
+    setVlanIdOverwrite(!isMultipleEdit)
+    setWebAuthPageOverwrite(!isMultipleEdit)
+  }, [form, open, editingWebAuthPageType, isMultipleEdit])
 
 
   useEffect(() => {
@@ -163,17 +163,27 @@ export function AccessSwitchDrawer (props: {
       PORT: $t({ defaultMessage: 'Port' }),
       LAG: $t({ defaultMessage: 'LAG' })
     }
+    const uplinkIdValidatorMap = {
+      PORT: /^\d\/\d\/\d{1,2}$/,
+      LAG: /\d+/
+    }
     return (
       <Radio value={radioValue}>
         <Space size='middle' style={{ height: '32px' }}>
           {uplinkTypeMap[radioValue]}
           {uplinkInfoType === radioValue &&
-          <Form.Item name={['uplinkInfo', 'uplinkId']} noStyle>
-            {!options || options.length === 0 ?
-              <Input disabled={isMultipleEdit && !uplinkInfoOverwrite} //TODO: validator
+          <Form.Item name={['uplinkInfo', 'uplinkId']}
+            rules={[
+              { required: uplinkInfoOverwrite },
+              { pattern: uplinkIdValidatorMap[radioValue],
+                message: $t(validationMessages.invalid) }
+            ]}
+            noStyle>
+            { isMultipleEdit && (!options || options.length === 0) ?
+              <Input disabled={!uplinkInfoOverwrite}
                 style={{ width: '180px' }} /> :
               <Select options={options}
-                disabled={isMultipleEdit && !uplinkInfoOverwrite}
+                disabled={!uplinkInfoOverwrite}
                 placeholder={$t({ defaultMessage: 'Select ...' })}
                 style={{ width: '180px' }} />
             }
@@ -187,9 +197,9 @@ export function AccessSwitchDrawer (props: {
   }
 
   const beforeSave = async () => {
-    const values: AccessSwitchSaveData = form.getFieldsValue()
+    const values: AccessSwitchSaveData = form.getFieldsValue(true)
     try {
-      if (!isMultipleEdit) {
+      if (!isMultipleEdit) {  //TODO: multi check
         await validateAccessSwitchInfo({
           params: { tenantId, venueId },
           payload: values
@@ -210,7 +220,7 @@ export function AccessSwitchDrawer (props: {
         templateId: values.templateId,
         webAuthPageType: values.webAuthPageType } : {}
     } : values
-    if (isMultipleEdit && !webAuthPageOverwrite) {
+    if (!webAuthPageOverwrite) {
       data = _.omit(data, Object.keys(defaultTemplateData))
     }
     onSave && onSave(data)
@@ -234,18 +244,14 @@ export function AccessSwitchDrawer (props: {
         form={form}
         onFinish={saveHandler}
         initialValues={!isMultipleEdit ? editRecords[0] : {}}>
-
-        { !isMultipleEdit && <Form.Item name='id' hidden children={<Input />} /> }
-        { !isMultipleEdit && <Form.Item name='distributionSwitchId' hidden children={<Input />} />}
-
         <UI.OverwriteFormItem label={<>
           { isMultipleEdit &&
             <Checkbox onChange={(e)=>setUplinkInfoOverwrite(e.target.checked)}></Checkbox>}
           <span>{$t({ defaultMessage: 'Uplink Port' })}</span>
         </>}>
-          <Form.Item name={['uplinkInfo', 'uplinkType']} noStyle>
+          <Form.Item name={['uplinkInfo', 'uplinkType']} rules={[{ required: true }]} noStyle>
             <Radio.Group onChange={uplinkTypeChangeHandler}
-              disabled={isMultipleEdit && !uplinkInfoOverwrite}>
+              disabled={!uplinkInfoOverwrite}>
               <Space direction='vertical'>
                 <UplinkRadio value='PORT' options={portList} />
                 <UplinkRadio value='LAG' options={lagList} />
@@ -253,22 +259,24 @@ export function AccessSwitchDrawer (props: {
             </Radio.Group>
           </Form.Item>
         </UI.OverwriteFormItem>
-        <UI.OverwriteFormItem name='vlanId'
-          label={<>
-            { isMultipleEdit &&
-              <Checkbox onChange={(e)=>setVlanIdOverwrite(e.target.checked)}></Checkbox>}
-            <span>{$t({ defaultMessage: 'VLAN ID' })}</span>
-            <Tooltip
-              title={$t({ defaultMessage: 'The VLAN for Net Seg Auth page' })}
-              placement='right'><QuestionMarkCircleOutlined />
-            </Tooltip>
-          </>}
-          wrapperCol={{ span: 10 }}
-          rules={[{ required: !isMultipleEdit || vlanIdOverwrite }]}>
-          { isMultipleEdit ?
-            <Input disabled={isMultipleEdit && !vlanIdOverwrite} />: //TODO: validator
-            <Select options={vlanList} placeholder={$t({ defaultMessage: 'Select ...' })} />
-          }
+        <UI.OverwriteFormItem label={<>
+          { isMultipleEdit &&
+            <Checkbox onChange={(e)=>setVlanIdOverwrite(e.target.checked)}></Checkbox>}
+          <span>{$t({ defaultMessage: 'VLAN ID' })}</span>
+          <Tooltip title={$t({ defaultMessage: 'The VLAN for Net Seg Auth page' })}
+            placement='right'><QuestionMarkCircleOutlined />
+          </Tooltip>
+        </>}
+        wrapperCol={{ span: 10 }}>
+          <Form.Item name='vlanId'
+            rules={vlanIdOverwrite ?
+              [{ validator: (_, value) => validateVlanName(value) }] : []}
+            noStyle>
+            { isMultipleEdit ?
+              <InputNumber disabled={!vlanIdOverwrite} min={1} max={4095} />:
+              <Select options={vlanList} placeholder={$t({ defaultMessage: 'Select ...' })} />
+            }
+          </Form.Item>
         </UI.OverwriteFormItem>
         <Form.Item name='webAuthPageType' hidden children={<Input />} />
 
@@ -287,12 +295,12 @@ export function AccessSwitchDrawer (props: {
           </Col>
           <Col>{webAuthPageType === 'USER_DEFINED' ?
             <Button type='link'
-              disabled={isMultipleEdit && !webAuthPageOverwrite}
+              disabled={!webAuthPageOverwrite}
               onClick={()=>form.setFieldValue('webAuthPageType', 'TEMPLATE')}>
               {$t({ defaultMessage: 'Select Auth Template' })}
             </Button> :
             <Button type='link'
-              disabled={isMultipleEdit && !webAuthPageOverwrite}
+              disabled={!webAuthPageOverwrite}
               onClick={()=>form.setFieldValue('webAuthPageType', 'USER_DEFINED')}>
               {$t({ defaultMessage: 'Customize' })}
             </Button>}
@@ -304,7 +312,7 @@ export function AccessSwitchDrawer (props: {
           hidden={webAuthPageType === 'USER_DEFINED'}>
           <Select
             placeholder={$t({ defaultMessage: 'Select Template ...' })}
-            disabled={isMultipleEdit && !webAuthPageOverwrite}
+            disabled={!webAuthPageOverwrite}
             options={templateList?.map(t => ({
               value: t.id, label: t.name
             }))} />
@@ -316,7 +324,7 @@ export function AccessSwitchDrawer (props: {
               const item = defaultTemplateData[name as keyof typeof defaultTemplateData]
               return (<Form.Item name={name} label={$t(item.label)} key={name}>
                 <Input.TextArea autoSize
-                  disabled={isMultipleEdit && !webAuthPageOverwrite}
+                  disabled={!webAuthPageOverwrite}
                   placeholder={$t(item.defaultMessage, {
                     year: new Date().getFullYear()
                   })} />

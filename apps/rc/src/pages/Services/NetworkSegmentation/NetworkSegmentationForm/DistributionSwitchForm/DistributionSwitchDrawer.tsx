@@ -37,11 +37,11 @@ export function DistributionSwitchDrawer (props: {
   const defaultRecord = { siteKeepAlive: '5', siteRetry: '3', siteName: edgeId }
 
   const [openModal, setOpenModal] = useState(false)
-  const [asList, setAsList] = useState<AccessSwitch[]>([])
 
   const [validateDistributionSwitchInfo] = useValidateDistributionSwitchInfoMutation()
 
   const dsId = Form.useWatch('id', form)
+  const asList = Form.useWatch('accessSwitches', form)
 
   const { availableAs } = useGetAccessSwitchesByDSQuery(
     { params: { tenantId, venueId, switchId: dsId } }, {
@@ -57,7 +57,7 @@ export function DistributionSwitchDrawer (props: {
 
   useEffect(() => {
     form.resetFields()
-    setAsList(editRecord?.accessSwitches || [])
+    form.setFieldValue('accessSwitches', editRecord?.accessSwitches || [])
   }, [form, open, editRecord])
 
   const handleFormFinish = (values: DistributionSwitch) => {
@@ -175,10 +175,15 @@ export function DistributionSwitchDrawer (props: {
           dataSource={asList}
           type='form'
           rowKey='id' />
+        <Form.Item rules={[{
+          required: true,
+          message: $t({ defaultMessage: 'Please select at least 1 access switch.' }) }]}
+        name='accessSwitches'
+        children={<Input type='hidden' />} />
       </Form>
       <SelectAccessSwitchModal visible={openModal}
         onSave={(newAsList) => {
-          setAsList(newAsList)
+          form.setFieldValue('accessSwitches', newAsList)
           setOpenModal(false)
         }}
         onCancel={() => setOpenModal(false)}

@@ -72,6 +72,9 @@ export function AccessSwitchForm () {
     <Form.Item name='accessSwitchInfos'
       rules={[{
         validator: (_, asList) => {
+          if (!asList || asList.length === 0) {
+            Promise.resolve()
+          }
           const checkFn = (as: AccessSwitch) =>
             as.vlanId && as.uplinkInfo?.uplinkId && as.webAuthPageType
           return asList.every(checkFn) ? Promise.resolve() :
