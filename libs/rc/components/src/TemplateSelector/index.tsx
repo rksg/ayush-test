@@ -11,6 +11,8 @@ import { Template }                            from '@acx-ui/rc/utils'
 import { templateNames, templateScopeLabels } from './msgTemplateLocalizedMessages'
 import { TemplatePreview }                    from './TemplatePreview'
 
+import { Button as ACXButton } from '@acx-ui/components'
+
 export interface TemplateSelectorProps {
   formItemProps?: FormItemProps,
   placeholder?: string,
@@ -124,7 +126,14 @@ export function TemplateSelector (props: TemplateSelectorProps) {
               : $t({ defaultMessage: 'Template Preview Unavailable' })}
             visible={isModalOpen}
             onCancel={handleCancel}
-            footer={[]}>
+            footer={[
+              <ACXButton
+                style={{ width: '83px' }}
+                key='okBtn'
+                type='secondary'
+                onClick={handleCancel}>
+                {$t({ defaultMessage: 'OK' })}
+              </ACXButton>]}>
             <TemplatePreview
               templateType={templateDataRequest.data?.templateScopeType}
               template={previewTemplate} />

@@ -38,7 +38,7 @@ export const templateNames = {
     defaultMessage: 'Default Template'
   }),
   'unit.template.noportal.en_us.assigned.email': defineMessage({
-    defaultMessage: 'Default Template With No Portal URL'
+    defaultMessage: 'Default Template - No Portal URL'
   }),
   'unit.template.default.en_us.assigned.sms': defineMessage({
     defaultMessage: 'Default Template'
