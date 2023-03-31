@@ -84,8 +84,8 @@ export const Point = styled.div`
   height: 20px;
 `
 
-export const VerticalSeparator = styled.div`
-  border-left: 0.5px solid rgba(173, 186, 193, 1);
+export const Separator = styled.div`
+  border-top: 0.5px solid rgba(173, 186, 193, 1);
   margin: 10px 0px;
 `
 

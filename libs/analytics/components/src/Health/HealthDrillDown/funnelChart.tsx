@@ -69,7 +69,8 @@ export function FunnelChart ({
 }) {
   const [parentNode, ref] = useGetNode()
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
-  const onClick = (name: Stages) => {
+  const onClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, name: Stages) => {
+    console.log(event)
     onSelectStage(name)
   }
   const enhancedStages: EnhancedStage[] = useMemo(() => {
@@ -100,7 +101,7 @@ export function FunnelChart ({
         ...stage,
         valueLabel,
         valueFormatter,
-        onClick: onClick.bind(null, stage.name as Stages),
+        onClick: (event) => onClick(event, stage.name as Stages),
         key: stage.name,
         isSelected: stage.name === selectedStage,
         idx: i,
@@ -228,7 +229,8 @@ export const Labels = ({
           top,
           dir: i % 2 === 0,
           color: colors[i],
-          onClick: (onClick as Function).bind(null, stage.name),
+          onClick: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
+            (onClick as CallableFunction)(event, stage.name),
           labelRef: updateChildNodes
         } as unknown as LabelPinProps
         return <LabelWithPin {...labelProps} />

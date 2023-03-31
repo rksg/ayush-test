@@ -1,6 +1,5 @@
 import { useState } from 'react'
 
-import { Divider } from 'antd'
 import { isNull }  from 'lodash'
 import { useIntl } from 'react-intl'
 
@@ -20,7 +19,7 @@ import {
 } from './config'
 import { FunnelChart }                                       from './funnelChart'
 import { useTtcDrilldownQuery, useConnectionDrilldownQuery } from './services'
-import { Title }                                             from './styledComponents'
+import { Point, Separator, Title }                                             from './styledComponents'
 
 const HealthDrillDown = (props: {
   filters: AnalyticsFilter;
@@ -130,7 +129,9 @@ const HealthDrillDown = (props: {
       </GridCol>
       {selectedStage && (
         <>
-          <Divider />
+          <GridCol col={{ span: 24 }} style={{ height: '5px' }}>
+            <Separator><Point /></Separator>
+          </GridCol>
           <GridCol col={{ span: 12 }} style={{ height: '210px' }}>
             PIE chart
           </GridCol>
