@@ -1,3 +1,4 @@
+import { rest }    from 'msw'
 import { useIntl } from 'react-intl'
 
 import { CommonUrlsInfo } from '@acx-ui/rc/utils'
@@ -6,7 +7,8 @@ import { render,
   screen,
   mockRestApiQuery,
   waitForElementToBeRemoved,
-  renderHook
+  renderHook,
+  mockServer
 } from '@acx-ui/test-utils'
 
 import { ClientsWidget, ClientsWidgetV2,
@@ -55,12 +57,8 @@ describe('Clients widget', () => {
 })
 
 describe('Clients widget v2', () => {
-
-  beforeEach(() => {
+  it('should render loader and then content for no data', async () => {
     mockRestApiQuery(CommonUrlsInfo.getDashboardV2Overview.url, 'post',{})
-  })
-
-  it('should render loader and then chart', async () => {
     const params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
@@ -69,7 +67,52 @@ describe('Clients widget v2', () => {
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     await screen.findByText('Clients')
-    expect(asFragment().querySelector('svg')).toBeDefined()
+    await screen.findByText('No Wi-Fi Clients')
+    await screen.findByText('No Wired Clients')
+    expect(asFragment().querySelectorAll('svg').length).toBe(1)
+  })
+  it('should render properly with chart', async () => {
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getDashboardV2Overview.url,
+        (req, res, ctx) => res(ctx.json({
+          summary: {
+            switchClients: {
+              summary: {},
+              totalCount: 2
+            },
+            clients: {
+              summary: {},
+              totalCount: 4,
+              clientDto: [{
+                healthCheckStatus: 'Good'
+              },{
+                healthCheckStatus: 'Poor'
+              },{
+                healthCheckStatus: 'Good'
+              },{
+                healthCheckStatus: 'Unknown'
+              },
+              {
+                someKey: 'someValue'
+              }
+              ]
+            }
+          }
+        }))
+      )
+    )
+    const params = {
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+    }
+    const { asFragment } = render(<Provider><ClientsWidgetV2 /></Provider>,
+      { route: { params } })
+    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await screen.findByText('Clients')
+    await screen.findByText('Wi-Fi')
+    await screen.findByText('Wired')
+    expect(asFragment().querySelectorAll('svg').length).toBe(3)
   })
 })
 

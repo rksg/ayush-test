@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { StepsForm, PageHeader, StepsFormInstance, Loader } from '@acx-ui/components'
+import { StepsForm, PageHeader, StepsFormInstance, Loader, showActionModal } from '@acx-ui/components'
 import {
   useAddSwitchConfigProfileMutation,
   useUpdateSwitchConfigProfileMutation,
@@ -65,6 +65,26 @@ export function ConfigurationProfileForm () {
   }
 
   const updateCurrentData = async (data: Partial<SwitchConfigurationProfile>) => {
+    setCurrentData({
+      ...currentData,
+      ...data
+    })
+
+    return true
+  }
+
+  const updateTrustedPortsCurrentData = async (data: Partial<SwitchConfigurationProfile>) => {
+    const hasEmptyTrustPorts = data.trustedPorts?.some(port => port.trustPorts.length === 0)
+
+    if(hasEmptyTrustPorts){
+      showActionModal({
+        type: 'error',
+        title: $t({ defaultMessage: 'Error' }),
+        content: $t({ defaultMessage: 'No Trusted Ports selected' })
+      })
+      return false
+    }
+
     setCurrentData({
       ...currentData,
       ...data
@@ -150,7 +170,7 @@ export function ConfigurationProfileForm () {
           {(ipv4DhcpSnooping || arpInspection) &&
             <StepsForm.StepForm
               title={$t({ defaultMessage: 'Trusted Ports' })}
-              onFinish={updateCurrentData}
+              onFinish={updateTrustedPortsCurrentData}
             >
               <TrustedPorts />
             </StepsForm.StepForm>

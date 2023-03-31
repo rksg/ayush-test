@@ -80,6 +80,7 @@ const SubscriptionTable = () => {
       title: $t({ defaultMessage: 'Subscription' }),
       dataIndex: 'deviceType',
       key: 'deviceType',
+      fixed: 'left',
       filterMultiple: false,
       filterValueNullable: true,
       filterable: licenseTypeOpts.filter(o =>

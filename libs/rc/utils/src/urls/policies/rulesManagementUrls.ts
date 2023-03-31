@@ -1,5 +1,4 @@
-import { ApiInfo } from '@acx-ui/utils'
-
+import { ApiInfo } from '../../apiService'
 
 const policySetApiBaseUrl = '/policySets'
 const policyTemplateApiBaseUrl = '/policyTemplates'
@@ -7,6 +6,16 @@ const policyTemplateApiBaseUrl = '/policyTemplates'
 const paginationParams = '?size=:pageSize&page=:page&sort=:sort'
 
 export const RulesManagementUrlsInfo: { [key: string]: ApiInfo } = {
+  getAdaptivePolicySets: {
+    method: 'get',
+    newApi: true,
+    url: policySetApiBaseUrl + paginationParams
+  },
+  getAdaptivePolicySet: {
+    method: 'get',
+    newApi: true,
+    url: policySetApiBaseUrl + '/:policyId'
+  },
   getPolicyTemplateList: {
     method: 'get',
     url: policyTemplateApiBaseUrl + paginationParams

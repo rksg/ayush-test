@@ -3,52 +3,83 @@ import {
   ExpirationMode,
   DpskSaveData,
   ExpirationType,
-  ExpirationDateEntity
+  ExpirationDateEntity,
+  PolicyDefaultAccess,
+  DeviceNumberType
 } from '@acx-ui/rc/utils'
 
+// eslint-disable-next-line max-len
+type ExpirationTypeForSaveData = Pick<DpskSaveData, 'expirationType' | 'expirationOffset' | 'expirationDate'>
 
 export function transferFormFieldsToSaveData (data: CreateDpskFormFields): DpskSaveData {
-  let expiration: Partial<DpskSaveData>
-
-  if (data.expiration.mode === ExpirationMode.NEVER) {
-    expiration = { expirationType: null }
-  } else if (data.expiration.mode === ExpirationMode.BY_DATE) {
-    expiration = {
-      expirationType: ExpirationType.SPECIFIED_DATE,
-      expirationDate: data.expiration.date
-    }
-  } else {
-    expiration = {
-      expirationType: data.expiration.type,
-      expirationOffset: data.expiration.offset
-    }
-  }
+  const { expiration, policyDefaultAccess, deviceNumberType, ...rest } = data
 
   return {
-    name: data.name,
-    passphraseLength: data.passphraseLength,
-    passphraseFormat: data.passphraseFormat,
-    expirationType: null,
-    ...expiration
+    ...rest,
+    ...(transferExpirationDateEntityToSaveData(expiration)),
+    policyDefaultAccess: policyDefaultAccess === PolicyDefaultAccess.REJECT ? false : true
   }
 }
 
 export function transferSaveDataToFormFields (data: DpskSaveData): CreateDpskFormFields {
-  let expiration: ExpirationDateEntity = new ExpirationDateEntity()
+  const {
+    expirationType,
+    expirationDate,
+    expirationOffset,
+    policyDefaultAccess,
+    deviceCountLimit,
+    ...rest
+  } = data
 
-  if (!data.expirationType) {
-    expiration.setToNever()
-  } else if (data.expirationType === ExpirationType.SPECIFIED_DATE) {
-    expiration.setToByDate(data.expirationDate!)
-  } else {
-    expiration.setToAfterTime(data.expirationType!, data.expirationOffset!)
-  }
+  const expiration: ExpirationDateEntity = transferSaveDataToExpirationDateEntity({
+    expirationType,
+    expirationDate,
+    expirationOffset
+  })
 
   return {
-    id: data.id,
-    name: data.name,
-    passphraseFormat: data.passphraseFormat,
-    passphraseLength: data.passphraseLength,
+    ...rest,
+    // eslint-disable-next-line max-len
+    policyDefaultAccess: policyDefaultAccess ? PolicyDefaultAccess.ACCEPT : PolicyDefaultAccess.REJECT,
+    deviceCountLimit,
+    deviceNumberType: deviceCountLimit ? DeviceNumberType.LIMITED : DeviceNumberType.UNLIMITED,
     expiration
   }
+}
+
+// eslint-disable-next-line max-len
+function transferExpirationDateEntityToSaveData (expiration: ExpirationDateEntity): ExpirationTypeForSaveData {
+  let expirationForSaveData: ExpirationTypeForSaveData
+
+  if (expiration.mode === ExpirationMode.NEVER) {
+    expirationForSaveData = { expirationType: null }
+  } else if (expiration.mode === ExpirationMode.BY_DATE) {
+    expirationForSaveData = {
+      expirationType: ExpirationType.SPECIFIED_DATE,
+      expirationDate: expiration.date
+    }
+  } else {
+    expirationForSaveData = {
+      expirationType: expiration.type!,
+      expirationOffset: expiration.offset
+    }
+  }
+
+  return expirationForSaveData
+}
+
+// eslint-disable-next-line max-len
+function transferSaveDataToExpirationDateEntity (expirationForSaveData: ExpirationTypeForSaveData): ExpirationDateEntity {
+  const { expirationType, expirationDate, expirationOffset } = expirationForSaveData
+  let expiration: ExpirationDateEntity = new ExpirationDateEntity()
+
+  if (!expirationType) {
+    expiration.setToNever()
+  } else if (expirationType === ExpirationType.SPECIFIED_DATE) {
+    expiration.setToByDate(expirationDate!)
+  } else {
+    expiration.setToAfterTime(expirationType!, expirationOffset!)
+  }
+
+  return expiration
 }

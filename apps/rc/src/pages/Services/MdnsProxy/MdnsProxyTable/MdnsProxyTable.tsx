@@ -149,6 +149,7 @@ function useColumns () {
       dataIndex: 'name',
       sorter: true,
       searchable: true,
+      fixed: 'left',
       render: function (data, row) {
         return (
           <TenantLink

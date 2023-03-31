@@ -26,6 +26,8 @@ export default function SelectPolicyForm () {
   const policiesTablePath: Path = useTenantLink(getPolicyListRoutePath(true))
   const tenantBasePath: Path = useTenantLink('')
   const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
+  const isEdgeEnabled = useIsSplitOn(Features.EDGES)
+  const macRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
   const adaptivePolicy = useIsSplitOn(Features.POLICY_MANAGEMENT)
 
   const navigateToCreatePolicy = async function (data: { policyType: PolicyType }) {
@@ -51,6 +53,13 @@ export default function SelectPolicyForm () {
 
   if (supportApSnmp) {
     sets.push({ type: PolicyType.SNMP_AGENT, categories: [RadioCardCategory.WIFI] })
+  }
+  if (isEdgeEnabled) {
+    sets.push({ type: PolicyType.TUNNEL_PROFILE, categories: [RadioCardCategory.WIFI] })
+  }
+
+  if(macRegistrationEnabled) {
+    sets.push({ type: PolicyType.MAC_REGISTRATION_LIST, categories: [RadioCardCategory.WIFI] })
   }
 
   if(adaptivePolicy) {

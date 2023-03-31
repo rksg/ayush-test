@@ -47,7 +47,8 @@ const typePathMapping: Record<PolicyType, string> = {
   [PolicyType.SNMP_AGENT]: 'snmpAgent',
   [PolicyType.ADAPTIVE_POLICY]: 'adaptivePolicy',
   [PolicyType.ADAPTIVE_POLICY_SET]: 'adaptivePolicySet',
-  [PolicyType.RADIUS_ATTRIBUTE_GROUP]: 'radiusAttributeGroup'
+  [PolicyType.RADIUS_ATTRIBUTE_GROUP]: 'radiusAttributeGroup',
+  [PolicyType.TUNNEL_PROFILE]: 'tunnelProfile'
 }
 
 export function getPolicyRoutePath (props: PolicyRoutePathProps): string {

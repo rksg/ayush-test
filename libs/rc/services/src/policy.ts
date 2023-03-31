@@ -55,13 +55,16 @@ import {
   RadiusAttribute,
   RadiusAttributeVendor,
   EnhancedRoguePolicyType,
-  AdaptivePolicy,
   RulesManagementUrlsInfo,
+  AdaptivePolicySet,
+  AdaptivePolicy,
   RuleTemplate,
   RuleAttribute,
-  AccessCondition, AdaptivePolicySet, PrioritizedPolicy,
-  transferToTableResultPolicy, Assignment, NewAPITableResult
-
+  AccessCondition,
+  PrioritizedPolicy,
+  transferToTableResultPolicy,
+  Assignment,
+  NewAPITableResult
 } from '@acx-ui/rc/utils'
 import { basePolicyApi } from '@acx-ui/store'
 
@@ -1898,6 +1901,7 @@ export const {
   useUpdateRadiusAttributeGroupMutation,
   useAddRadiusAttributeGroupMutation,
   useLazyRadiusAttributeGroupListByQueryQuery,
+  useLazyGetAdaptivePolicySetQuery,
   useLazyGetRadiusAttributeGroupQuery,
   // policy
   useAdaptivePolicyListQuery,

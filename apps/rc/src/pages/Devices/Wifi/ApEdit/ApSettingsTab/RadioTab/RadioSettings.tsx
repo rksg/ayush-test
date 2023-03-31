@@ -122,7 +122,7 @@ export function RadioSettings () {
 
   const isSupportDual5G = () => {
     return (isSupportDual5GAp &&
-           bandwidthUpper5GOptions.length > 0 &&
+           bandwidthLower5GOptions.length > 0 &&
            bandwidthUpper5GOptions.length > 0)
   }
 
@@ -307,7 +307,7 @@ export function RadioSettings () {
   }, [apRadioSavedData])
 
   useEffect(() => {
-    if (initData) {
+    if (!isEmpty(initData)) {
       const apRadioData = { ...initData }
       const {
         apRadioParamsDual5G,
@@ -333,7 +333,7 @@ export function RadioSettings () {
       setIsUseVenueSettings(apRadioData.useVenueSettings || false)
     }
 
-  }, [initData])
+  }, [initData, isSupportDual5GAp, bandwidthLower5GOptions, bandwidthUpper5GOptions])
 
   const [currentTab, setCurrentTab] = useState('Normal24GHz')
 

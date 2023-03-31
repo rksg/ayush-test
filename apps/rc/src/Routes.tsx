@@ -76,6 +76,7 @@ import SnmpAgentTable             from './pages/Policies/SnmpAgent/SnmpAgentTabl
 import SyslogDetailView           from './pages/Policies/Syslog/SyslogDetail/SyslogDetailView'
 import SyslogForm                 from './pages/Policies/Syslog/SyslogForm/SyslogForm'
 import SyslogTable                from './pages/Policies/Syslog/SyslogTable/SyslogTable'
+import AddTunnelProfile           from './pages/Policies/TunnelProfile/AddTunnelProfile'
 import VLANPoolDetail             from './pages/Policies/VLANPool/VLANPoolDetail'
 import VLANPoolForm               from './pages/Policies/VLANPool/VLANPoolForm/VLANPoolForm'
 import VLANPoolTable              from './pages/Policies/VLANPool/VLANPoolTable/VLANPoolTable'
@@ -93,8 +94,9 @@ import MdnsProxyDetail            from './pages/Services/MdnsProxy/MdnsProxyDeta
 import MdnsProxyForm              from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
 import MdnsProxyTable             from './pages/Services/MdnsProxy/MdnsProxyTable/MdnsProxyTable'
 import MyServices                 from './pages/Services/MyServices'
+import AddNetworkSegmentation     from './pages/Services/NetworkSegmentation/AddNetworkSegmentation'
+import EditNetworkSegmentation    from './pages/Services/NetworkSegmentation/EditNetworkSegmentation'
 import NetworkSegmentationDetail  from './pages/Services/NetworkSegmentation/NetworkSegmentationDetail'
-import NetworkSegmentationForm    from './pages/Services/NetworkSegmentation/NetworkSegmentationForm'
 import NetworkSegmentationTable   from './pages/Services/NetworkSegmentation/NetworkSegmentationTable'
 import NetworkSegAuthDetail       from './pages/Services/NetworkSegWebAuth/NetworkSegAuthDetail'
 import NetworkSegAuthForm         from './pages/Services/NetworkSegWebAuth/NetworkSegAuthForm'
@@ -313,7 +315,7 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
           oper: ServiceOperation.CREATE })}
-        element={<NetworkSegmentationForm />}
+        element={<AddNetworkSegmentation />}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
@@ -328,7 +330,7 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
           oper: ServiceOperation.EDIT })}
-        element={<NetworkSegmentationForm editMode={true} />}
+        element={<EditNetworkSegmentation />}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.WEBAUTH_SWITCH,
@@ -587,6 +589,12 @@ function PolicyRoutes () {
       />
       <Route
         // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.DETAIL })}
+        element={<RadiusAttributeGroupDetail />} />
+      <Route
+        path={getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.CREATE })}
+        element={<AddTunnelProfile />}
+      />
         path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.EDIT })}
         element={<AdaptivePolicySetForm editMode={true}/>}
       />

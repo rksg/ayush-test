@@ -32,7 +32,8 @@ export const policyTypeLabelMapping: Record<PolicyType, MessageDescriptor> = {
   // eslint-disable-next-line max-len
   [PolicyType.RADIUS_ATTRIBUTE_GROUP]: defineMessage({ defaultMessage: 'Radius Attribute group' }),
   // eslint-disable-next-line max-len
-  [PolicyType.ADAPTIVE_POLICY_SET]: defineMessage({ defaultMessage: 'Adaptive Policy Set(TBD)' })
+  [PolicyType.ADAPTIVE_POLICY_SET]: defineMessage({ defaultMessage: 'Adaptive Policy Set(TBD)' }),
+  [PolicyType.TUNNEL_PROFILE]: defineMessage({ defaultMessage: 'Tunnel Profile' })
 }
 export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.AAA]: defineMessage({ defaultMessage: 'Create a RADIUS server profile for AAA on wireless devices' }),
@@ -47,8 +48,7 @@ export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.APPLICATION_POLICY]: defineMessage({ defaultMessage: 'Application Policy (TBD)' }),
   [PolicyType.DEVICE_POLICY]: defineMessage({ defaultMessage: 'Device Policy (TBD)' }),
   [PolicyType.SNMP_AGENT]: defineMessage({ defaultMessage: 'Provides external notification to network administrators' }),
-  [PolicyType.DEVICE_POLICY]: defineMessage({ defaultMessage: 'Device Policy (TBD)' }),
-  // eslint-disable-next-line max-len
+  [PolicyType.TUNNEL_PROFILE]: defineMessage({ defaultMessage: 'Provides IP address to end devices' }),
   [PolicyType.ADAPTIVE_POLICY]: defineMessage({ defaultMessage: 'Create adaptive policies for user and device connectivity on wired or wireless networks' }),
   [PolicyType.ADAPTIVE_POLICY_SET]: defineMessage({ defaultMessage: 'Adaptive Policy Set' }),
   [PolicyType.RADIUS_ATTRIBUTE_GROUP]: defineMessage({ defaultMessage: 'Radius Attribute group' })
