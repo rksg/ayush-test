@@ -13,7 +13,7 @@ import {
   MacRegistrationPoolFormFields,
   getPolicyRoutePath,
   PolicyType,
-  PolicyOperation
+  PolicyOperation, getPolicyListRoutePath
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -47,8 +47,8 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
         name: data.name,
         autoCleanup: data.autoCleanup,
         ...transferDataToExpirationFormFields(data),
-        defaultAccess: data.defaultAccess
-        // policyId
+        defaultAccess: data.defaultAccess,
+        policySetId: data.policySetId
       })
     }
   }, [data, editMode])
@@ -59,8 +59,8 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
         name: data.name,
         autoCleanup: data.autoCleanup,
         ...transferExpirationFormFieldsToData(data.expiration),
-        defaultAccess: data.defaultAccess
-        // policyId
+        defaultAccess: data.defaultAccess,
+        policySetId: data.policySetId
       }
       await addMacRegList({ payload: saveData }).unwrap()
 
@@ -84,8 +84,8 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
         name: data.name,
         ...transferExpirationFormFieldsToData(data.expiration),
         autoCleanup: data.autoCleanup,
-        defaultAccess: data.defaultAccess
-        // policyId
+        defaultAccess: data.defaultAccess,
+        policySetId: data.policySetId
       }
       await updateMacRegList({
         params: { policyId },
@@ -113,11 +113,11 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
           ? intl.$t({ defaultMessage: 'Configure {listName}' }, { listName: data?.name })
           : intl.$t({ defaultMessage: 'Add MAC Registration List' })}
         breadcrumb={[
-          {
-            text: intl.$t({ defaultMessage: 'Policies & Profiles > MAC Registration Lists' }),
+          // eslint-disable-next-line max-len
+          { text: intl.$t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) },
+          { text: intl.$t({ defaultMessage: 'MAC Registration Lists' }),
             // eslint-disable-next-line max-len
-            link: getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST })
-          }
+            link: getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST }) }
         ]}
       />}
       <StepsForm<MacRegistrationPoolFormFields>
