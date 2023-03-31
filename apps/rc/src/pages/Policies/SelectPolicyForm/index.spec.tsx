@@ -1,16 +1,22 @@
 import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
+import { policyApi }        from '@acx-ui/rc/services'
 import {
   PolicyType,
+  ApSnmpUrls,
   getPolicyRoutePath,
   getSelectPolicyRoutePath,
   PolicyOperation,
   getPolicyListRoutePath
 } from '@acx-ui/rc/utils'
-import { Path, useTenantLink }        from '@acx-ui/react-router-dom'
-import { render, renderHook, screen } from '@acx-ui/test-utils'
+import { Path, useTenantLink }                    from '@acx-ui/react-router-dom'
+import { Provider, store }                        from '@acx-ui/store'
+import { render, renderHook, screen, mockServer } from '@acx-ui/test-utils'
+
+import { snmpAgentList } from './__tests__/fixtures'
 
 import SelectPolicyForm from '.'
 
@@ -28,15 +34,27 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 }))
 
 describe('SelectPolicyForm', () => {
+
   const params = {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
   }
+
+  beforeEach(() => {
+    store.dispatch(policyApi.util.resetApiState())
+    mockServer.use(
+      rest.post(ApSnmpUrls.getApSnmpFromViewModel.url, (req, res, ctx) => {
+        return res(ctx.json(snmpAgentList))
+      })
+    )
+  })
 
   const selectPolicyPath = '/:tenantId/' + getSelectPolicyRoutePath()
 
   it('should navigate to the correct policy page', async () => {
     render(
-      <SelectPolicyForm />, {
+      <Provider>
+        <SelectPolicyForm />
+      </Provider>, {
         route: { params, path: '/:tenantId/' + getSelectPolicyRoutePath() }
       }
     )
@@ -59,7 +77,9 @@ describe('SelectPolicyForm', () => {
     const { result } = renderHook(() => useTenantLink(getPolicyListRoutePath(true)))
 
     render(
-      <SelectPolicyForm />, {
+      <Provider>
+        <SelectPolicyForm />
+      </Provider>, {
         route: { params, path: selectPolicyPath }
       }
     )
