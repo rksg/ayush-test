@@ -1,11 +1,10 @@
 import _                        from 'lodash'
 import { generatePath, Params } from 'react-router-dom'
 
-import { getTenantId } from './getTenantId'
-import {
-  getJwtTokenPayload,
-  getJwtHeaders
-} from './jwtToken'
+import { get } from '@acx-ui/config'
+
+import { getTenantId }                       from './getTenantId'
+import { getJwtTokenPayload, getJwtHeaders } from './jwtToken'
 
 export interface ApiInfo {
   url: string;
@@ -24,19 +23,19 @@ export const isLocalHost = () => {
 }
 
 export const isDev = () => {
-  return window.location.hostname === 'devalto.ruckuswireless.com'
+  return window.location.hostname.includes('devalto.ruckuswireless.com')
 }
 
 export const isQA = () => {
-  return window.location.hostname === 'qaalto.ruckuswireless.com'
+  return window.location.hostname.includes('qaalto.ruckuswireless.com')
 }
 
 export const isScale = () => {
-  return window.location.hostname === 'scalealto.ruckuswireless.com'
+  return window.location.hostname.includes('scalealto.ruckuswireless.com')
 }
 
 export const isIntEnv = () => {
-  return window.location.hostname === 'intalto.ruckuswireless.com'
+  return window.location.hostname.includes('intalto.ruckuswireless.com')
 }
 
 export const createHttpRequest = (
@@ -51,9 +50,10 @@ export const createHttpRequest = (
     ...customHeaders,
     ...getJwtHeaders({ ignoreDelegation })
   }
+  const newApiHostName = window.location.origin.replace(
+    window.location.hostname, get('NEW_API_DOMAIN_NAME'))
   const domain = (enableNewApi(apiInfo) && !isLocalHost()) ?
-    window.location.origin.replace('//', '//api.') :
-    window.location.origin
+    newApiHostName : window.location.origin
   const url = enableNewApi(apiInfo) ? generatePath(`${apiInfo.url}`, paramValues) :
     generatePath(`${apiInfo.oldUrl || apiInfo.url}`, paramValues)
   const method = enableNewApi(apiInfo) ? apiInfo.method : (apiInfo.oldMethod || apiInfo.method)

@@ -8,7 +8,8 @@ import {
   useMspCustomerListDropdownQuery,
   useVarCustomerListDropdownQuery,
   useSupportCustomerListDropdownQuery,
-  useGetTenantDetailQuery
+  useGetTenantDetailQuery,
+  useDelegateToMspEcPath
 }  from '@acx-ui/rc/services'
 import { MspEc, useTableQuery, VarCustomer } from '@acx-ui/rc/utils'
 import { getBasePath, Link, useParams  }     from '@acx-ui/react-router-dom'
@@ -34,6 +35,7 @@ export function MspEcDropdownList () {
 
   const params = useParams()
   const { data: tenantDetail } = useGetTenantDetailQuery({ params })
+  const { delegateToMspEcPath } = useDelegateToMspEcPath()
 
   // user profile for tenant from jwt token
   const { data: userProfile } = useUserProfileContext()
@@ -145,10 +147,11 @@ export function MspEcDropdownList () {
       searchable: true,
       disable: true,
       defaultSortOrder: 'ascend',
-      onCell: () => {
+      onCell: (data) => {
         return {
           onClick: () => {
             setVisible(false)
+            delegateToMspEcPath(data.id)
           }
         }
       },
@@ -180,10 +183,11 @@ export function MspEcDropdownList () {
       searchable: true,
       disable: true,
       defaultSortOrder: 'ascend',
-      onCell: () => {
+      onCell: (data) => {
         return {
           onClick: () => {
             setVisible(false)
+            delegateToMspEcPath(data.tenantId)
           }
         }
       },
@@ -289,7 +293,7 @@ export function MspEcDropdownList () {
 
       <Table
         columns={supportColumns}
-        dataSource={tableQueryVarRec.data?.data.filter(mspEc => mspEc.id !== params.tenantId)}
+        dataSource={tableQueryVarRec.data?.data.filter(cus => cus.tenantId !== params.tenantId)}
         pagination={tableQueryVarRec.pagination}
         onChange={tableQueryVarRec.handleTableChange}
         onFilterChange={tableQueryVarRec.handleFilterChange}
@@ -303,7 +307,7 @@ export function MspEcDropdownList () {
 
       <Table
         columns={supportColumns}
-        dataSource={tableQuerySupport.data?.data.filter(mspEc => mspEc.id !== params.tenantId)}
+        dataSource={tableQuerySupport.data?.data.filter(cus => cus.tenantId !== params.tenantId)}
         pagination={tableQuerySupport.pagination}
         onChange={tableQuerySupport.handleTableChange}
         onFilterChange={tableQuerySupport.handleFilterChange}

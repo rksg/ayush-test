@@ -80,7 +80,7 @@ const varList = {
     {
       entitlements: [],
       id: '2242a683a7594d7896385cfef1fe4442',
-      tenantId: '3061bd56e37445a8993ac834c01e2710',
+      tenantId: '30c86e37445a8993ac834c01e2710',
       tenantName: 'Eva Airways',
       tenantEmail: 'eva@mail.com'
     }
