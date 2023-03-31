@@ -64,7 +64,7 @@ describe('PortalTable', () => {
     )
   })
 
-  it.skip('should render the table', async () => {
+  it('should render the table', async () => {
     render(
       <Provider>
         <PortalTable />
