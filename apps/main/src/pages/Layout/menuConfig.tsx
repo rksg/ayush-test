@@ -184,8 +184,7 @@ export function useMenuConfig () {
         },
         {
           path: '/users/switch',
-          name: $t({ defaultMessage: 'Switch' }),
-          disabled: !useIsSplitOn(Features.USERS)
+          name: $t({ defaultMessage: 'Switch' })
         },
         ...(isPersonaEnabled && isMacRegistrationEnabled)
           ? [{
