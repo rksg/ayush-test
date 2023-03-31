@@ -11,6 +11,7 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   getIntegratorCustomersList: {
     method: 'post',
     url: '/techpartners/mspecs/query',
+    oldUrl: '/techpartners/mspecs/query',
     newApi: true
   },
   getMspDeviceInventory: {

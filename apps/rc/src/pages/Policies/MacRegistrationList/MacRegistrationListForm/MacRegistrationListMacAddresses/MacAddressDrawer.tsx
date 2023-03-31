@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import { Form, Input } from 'antd'
-import moment          from 'moment-timezone'
+import _               from 'lodash'
 import { useIntl }     from 'react-intl'
 
 import { Drawer, showToast }         from '@acx-ui/components'
@@ -18,16 +18,19 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
+import { toLocalDateString, toUTCExpireDate } from '../../MacRegistrationListUtils'
+
 interface MacAddressDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
   isEdit: boolean
-  editData?: MacRegistration
+  editData?: MacRegistration,
+  expirationOfPool: string
 }
 
 export function MacAddressDrawer (props: MacAddressDrawerProps) {
   const intl = useIntl()
-  const { visible, setVisible, isEdit, editData } = props
+  const { visible, setVisible, isEdit, editData, expirationOfPool } = props
   const [resetField, setResetField] = useState(false)
   const [form] = Form.useForm()
   const [addMacRegistration] = useAddMacRegistrationMutation()
@@ -55,7 +58,7 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
     if (editData && visible) {
       let expiration: ExpirationDateEntity = new ExpirationDateEntity()
       if(editData.expirationDate) {
-        expiration.setToByDate(editData.expirationDate!)
+        expiration.setToByDate(toLocalDateString(editData.expirationDate!))
       }
       else {
         expiration.setToNever()
@@ -79,26 +82,20 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
     try {
       await form.validateFields()
       const data = form.getFieldsValue()
+      const payload = {
+        macAddress: data.macAddress,
+        username: data.username?.length === 0 ? null : data.username,
+        email: data.email?.length === 0 ? null : data.email,
+        expirationDate: data.expiration?.mode === ExpirationMode.NEVER ? null :
+          toUTCExpireDate(data.expiration?.date)
+      }
       if (isEdit) {
-        const payload = {
-          username: data.username?.length === 0 ? null : data.username,
-          email: data.email?.length === 0 ? null : data.email,
-          expirationDate: data.expiration?.mode === ExpirationMode.NEVER ? null :
-            moment.utc(data.expiration?.date).format('YYYY-MM-DDT23:59:59[Z]')
-        }
         await editMacRegistration(
           {
             params: { policyId, registrationId: editData?.id },
-            payload
+            payload: _.omit(payload, 'macAddress')
           }).unwrap()
       } else {
-        const payload = {
-          macAddress: data.macAddress,
-          username: data.username?.length === 0 ? null : data.username,
-          email: data.email?.length === 0 ? null : data.email,
-          expirationDate: data.expiration?.mode === ExpirationMode.NEVER ? null :
-            moment(data.expiration?.date).format('YYYY-MM-DDT23:59:59[Z]')
-        }
         await addMacRegistration({
           params: { policyId },
           payload
@@ -146,7 +143,8 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
         inputName={'expiration'}
         label={intl.$t({ defaultMessage: 'MAC Address Expiration' })}
         modeLabel={{
-          [ExpirationMode.NEVER]: intl.$t({ defaultMessage: 'Never expires (Same as list)' })
+          // eslint-disable-next-line max-len
+          [ExpirationMode.NEVER]: intl.$t({ defaultMessage: '{time} (Same as list)' }, { time: expirationOfPool })
         }}
         modeAvailability={{
           [ExpirationMode.AFTER_TIME]: false
