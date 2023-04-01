@@ -4,8 +4,9 @@ import { RulesManagementUrlsInfo }    from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { adaptivePolicy }          from './__test__/fixtures'
-import { AdaptivePolicySetDetail } from './AdaptivePolicySetDetail'
+
+import { adaptivePolicy, prioritizedPolicies } from './__test__/fixtures'
+import { AdaptivePolicySetDetail }             from './AdaptivePolicySetDetail'
 
 describe('AdaptivePolicySetDetail', () => {
   beforeEach(() => {
@@ -13,6 +14,10 @@ describe('AdaptivePolicySetDetail', () => {
       rest.get(
         RulesManagementUrlsInfo.getPolicySet.url,
         (req, res, ctx) => res(ctx.json(adaptivePolicy))
+      ),
+      rest.get(
+        RulesManagementUrlsInfo.getPrioritizedPolicies.url,
+        (req, res, ctx) => res(ctx.json(prioritizedPolicies))
       )
     )
   })

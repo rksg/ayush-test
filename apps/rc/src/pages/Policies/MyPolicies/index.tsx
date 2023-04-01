@@ -11,8 +11,7 @@ import {
   useGetEnhancedClientIsolationListQuery,
   useSyslogPolicyListQuery,
   useMacRegListsQuery,
-  useAdaptivePolicyListQuery,
-  usePolicyListQuery
+  useAdaptivePolicyListQuery
 } from '@acx-ui/rc/services'
 import {
   getPolicyRoutePath,
@@ -95,6 +94,8 @@ function useCardData (): CardDataProps[] {
   const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
   const macRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
   const isEdgeEnabled = useIsSplitOn(Features.EDGES)
+  const adaptivePolicyEnabled = useIsSplitOn(Features.POLICY_MANAGEMENT)
+  const attributeGroupEnabled = useIsSplitOn(Features.RADIUS_ATTRIBUTE_GROUP_CONFIG)
 
   return [
     {
@@ -179,7 +180,8 @@ function useCardData (): CardDataProps[] {
       category: RadioCardCategory.WIFI,
       totalCount: useAdaptivePolicyListQuery({ params, payload: {} }).data?.totalCount,
       // eslint-disable-next-line max-len
-      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST }))
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST })),
+      disabled: !adaptivePolicyEnabled || !attributeGroupEnabled
     }
   ]
 }

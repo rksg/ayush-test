@@ -386,6 +386,10 @@ function ServiceRoutes () {
 
 function PolicyRoutes () {
   const isMacRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
+  const isAttributeGroupEnabled = useIsSplitOn(Features.RADIUS_ATTRIBUTE_GROUP_CONFIG)
+  // eslint-disable-next-line max-len
+  const isAdaptivePolicyEnabled = useIsSplitOn(Features.POLICY_MANAGEMENT) && isAttributeGroupEnabled
+
   return rootRoutes(
     <Route path='t/:tenantId'>
       <Route path={getPolicyListRoutePath()} element={<MyPolicies />} />
@@ -541,68 +545,68 @@ function PolicyRoutes () {
         element={<SnmpAgentDetail />}
       />
       <Route
-        // eslint-disable-next-line max-len
-        path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST })}
-        element={<AdaptivePolicyList tabKey={AdaptivePolicyTabKey.RADIUS_ATTRIBUTE_GROUP}/>}
-      />
-      <Route
-        // eslint-disable-next-line max-len
-        path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.CREATE })}
-        element={<RadiusAttributeGroupForm />}
-      />
-      <Route
-        // eslint-disable-next-line max-len
-        path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.EDIT })}
-        element={<RadiusAttributeGroupForm editMode={true}/>}
-      />
-      <Route
-        // eslint-disable-next-line max-len
-        path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.DETAIL })}
-        element={<RadiusAttributeGroupDetail />} />
-      <Route
-        // eslint-disable-next-line max-len
-        path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST })}
-        element={<AdaptivePolicyList tabKey={AdaptivePolicyTabKey.ADAPTIVE_POLICY}/>}
-      />
-      <Route
-        // eslint-disable-next-line max-len
-        path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.LIST })}
-        element={<AdaptivePolicyList tabKey={AdaptivePolicyTabKey.ADAPTIVE_POLICY_SET}/>}
-      />
-      <Route
-        // eslint-disable-next-line max-len
-        path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.CREATE })}
-        element={<AdaptivePolicyForm/>}
-      />
-      <Route
-        path={getAdaptivePolicyDetailRoutePath(PolicyOperation.EDIT)}
-        element={<AdaptivePolicyForm editMode={true}/>}
-      />
-      <Route
-        path={getAdaptivePolicyDetailRoutePath(PolicyOperation.DETAIL)}
-        element={<AdaptivePolicyDetail/>}
-      />
-      <Route
-        // eslint-disable-next-line max-len
-        path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.CREATE })}
-        element={<AdaptivePolicySetForm/>}
-      />
-      <Route
-        // eslint-disable-next-line max-len
-        path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.DETAIL })}
-        element={<RadiusAttributeGroupDetail />} />
-      <Route
         path={getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.CREATE })}
         element={<AddTunnelProfile />}
       />
-        path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.EDIT })}
-        element={<AdaptivePolicySetForm editMode={true}/>}
-      />
-      <Route
+      {isAdaptivePolicyEnabled && <>
+        <Route
+          // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST })}
+          element={<AdaptivePolicyList tabKey={AdaptivePolicyTabKey.RADIUS_ATTRIBUTE_GROUP}/>}
+        />
+        <Route
         // eslint-disable-next-line max-len
-        path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.DETAIL })}
-        element={<AdaptivePolicySetDetail/>}
-      />
+          path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.CREATE })}
+          element={<RadiusAttributeGroupForm />}
+        />
+        <Route
+        // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.EDIT })}
+          element={<RadiusAttributeGroupForm editMode={true}/>}
+        />
+        <Route
+        // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.DETAIL })}
+          element={<RadiusAttributeGroupDetail />} />
+        <Route
+        // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST })}
+          element={<AdaptivePolicyList tabKey={AdaptivePolicyTabKey.ADAPTIVE_POLICY}/>}
+        />
+        <Route
+        // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.CREATE })}
+          element={<AdaptivePolicyForm/>}
+        />
+        <Route
+          path={getAdaptivePolicyDetailRoutePath(PolicyOperation.EDIT)}
+          element={<AdaptivePolicyForm editMode={true}/>}
+        />
+        <Route
+          path={getAdaptivePolicyDetailRoutePath(PolicyOperation.DETAIL)}
+          element={<AdaptivePolicyDetail/>}
+        />
+        <Route
+        // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.CREATE })}
+          element={<AdaptivePolicySetForm/>}
+        />
+        <Route
+        // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.EDIT })}
+          element={<AdaptivePolicySetForm editMode={true}/>}
+        />
+        <Route
+        // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.DETAIL })}
+          element={<AdaptivePolicySetDetail/>}
+        />
+        <Route
+        // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.LIST })}
+          element={<AdaptivePolicyList tabKey={AdaptivePolicyTabKey.ADAPTIVE_POLICY_SET}/>}
+        /> </>
+      }
     </Route>
   )
 }

@@ -4,8 +4,8 @@ import { Form,Space, Typography } from 'antd'
 import { useIntl }                from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
-import { Button, Card, GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
-import { useGetAdaptivePolicySetQuery }                       from '@acx-ui/rc/services'
+import { Button, Card, GridCol, GridRow, Loader, PageHeader }           from '@acx-ui/components'
+import { useGetAdaptivePolicySetQuery, useGetPrioritizedPoliciesQuery } from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink,
   getPolicyListRoutePath,
@@ -54,6 +54,9 @@ export function AdaptivePolicySetDetail () {
   // eslint-disable-next-line max-len
   const { data: policySetData, isLoading: isGetAdaptivePolicySetLoading }= useGetAdaptivePolicySetQuery({ params: { policySetId: policyId } })
 
+  // eslint-disable-next-line max-len
+  const { data: prioritizedPolicies } = useGetPrioritizedPoliciesQuery({ params: { policySetId: policyId } })
+
   return (
     <>
       <PageHeader
@@ -94,7 +97,7 @@ export function AdaptivePolicySetDetail () {
                 </GridCol>
                 <GridCol col={{ span: 6 }}>
                   <Form.Item label={$t({ defaultMessage: 'Members' })}>
-                    <Paragraph>0</Paragraph>
+                    <Paragraph>{prioritizedPolicies?.totalCount ?? 0}</Paragraph>
                   </Form.Item>
                 </GridCol>
               </GridRow>

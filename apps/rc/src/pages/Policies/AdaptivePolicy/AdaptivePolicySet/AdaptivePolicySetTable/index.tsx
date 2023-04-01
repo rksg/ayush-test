@@ -8,7 +8,7 @@ import {
   useAdaptivePolicyListQuery,
   useAdaptivePolicySetListQuery,
   useDeleteAdaptivePolicySetMutation,
-  useLazyGetPrioritizedPoliciesQuery
+  useLazyGetPrioritizedPoliciesQuery, useMacRegListsQuery
 } from '@acx-ui/rc/services'
 import {
   AdaptivePolicySet,
@@ -26,6 +26,7 @@ export default function AdaptivePolicySetTable () {
   const tenantBasePath: Path = useTenantLink('')
 
   const [prioritizedPoliciesMap, setPrioritizedPoliciesMap] = useState(new Map())
+  const [assignedMacPoolList, setAssignedMacPoolList] = useState([] as string [])
 
   const tableQuery = useTableQuery({
     useQuery: useAdaptivePolicySetListQuery,
@@ -42,6 +43,17 @@ export default function AdaptivePolicySetTable () {
 
   // eslint-disable-next-line max-len
   const [getPrioritizedPolicies, { isLoading: isGetPrioritizedPoliciesUpdating }] = useLazyGetPrioritizedPoliciesQuery()
+
+  const { data: macRegList } = useMacRegListsQuery({
+    payload: { pageSize: 10000 }
+  })
+
+  useEffect(() => {
+    if(macRegList) {
+      const policySets = macRegList.data.map(item => item.policySetId ?? '')
+      setAssignedMacPoolList(Array.from(new Set(policySets)))
+    }
+  }, [macRegList])
 
   useEffect(() => {
     if (tableQuery.isLoading)
@@ -117,6 +129,10 @@ export default function AdaptivePolicySetTable () {
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
+    disabled: (([selectedItem]) =>
+      (selectedItem && selectedItem.id)
+        ? assignedMacPoolList.findIndex(item => item === selectedItem.id) !== -1 : false
+    ),
     onClick: ([{ name, id }], clearSelection) => {
       showActionModal({
         type: 'confirm',
