@@ -691,7 +691,7 @@ export function ManageCustomer () {
 
   const WifiSubscription = () => {
     const wifiLicenses = availableLicense.filter(p => p.deviceType === 'MSP_WIFI')
-    let remainingDevices = 0
+    let remainingDevices = assignedWifiLicense
     wifiLicenses.forEach( (lic: MspAssignmentSummary) => {
       remainingDevices += lic.remainingDevices
     })
@@ -716,7 +716,7 @@ export function ManageCustomer () {
 
   const SwitchSubscription = () => {
     const switchLicenses = availableLicense.filter(p => p.deviceType === 'MSP_SWITCH')
-    let remainingDevices = 0
+    let remainingDevices = assignedSwitchLicense
     switchLicenses.forEach( (lic: MspAssignmentSummary) => {
       remainingDevices += lic.remainingDevices
     })
