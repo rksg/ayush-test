@@ -141,7 +141,6 @@ exports[`VenueEdit should render correctly 1`] = `
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-property"
-                    aria-disabled="false"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-property"

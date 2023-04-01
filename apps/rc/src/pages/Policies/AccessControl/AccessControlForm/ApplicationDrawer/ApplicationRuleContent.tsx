@@ -104,6 +104,7 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
           // display: fromClient ? '' : 'none',
           width: '100%', marginLeft: '10px', marginRight: '10px' }}
         marks={{ 0.25: '0.25 Mbps', 20: '20 Mbps' }}
+        min={0.25}
         max={20}
         defaultValue={maxUplinkRate.value ?? 0.25}
         onChange={(value) => {
@@ -132,6 +133,7 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
           // display: toClient ? '' : 'none',
           width: '100%', marginLeft: '10px', marginRight: '10px' }}
         marks={{ 0.25: '0.25 Mbps', 20: '20 Mbps' }}
+        min={0.25}
         max={20}
         defaultValue={maxDownlinkRate.value ?? 0.25}
         onChange={(value) => {
@@ -155,13 +157,18 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
       Object.entries(avcSelectOptions).map(entry => {
         const [category, appList] = entry
         if (Number(category) !== 0) {
-          optionsList.push(...appList.appNames.map((appName) => {
-            return `${avcSelectOptions[Number(category)].catName}_${appName}`
-          }))
+          optionsList.push(...appList.appNames
+            .filter((appName) => appName !== 'All')
+            .map((appName) => {
+              return `${avcSelectOptions[Number(category)].catName}_${appName}`
+            }))
         }
       })
       return <Select
         style={{ width: '100%' }}
+        onChange={(evt) => {
+          drawerForm.setFieldValue('applicationNameSystemDefined', evt)
+        }}
       >
         {optionsList.map(option => {
           return <Select.Option key={option} value={option}>
@@ -175,6 +182,9 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
 
     return <Select
       style={{ width: '100%' }}
+      onChange={(evt) => {
+        drawerForm.setFieldValue('applicationNameSystemDefined', evt)
+      }}
     >
       {avcSelectOptions[categoryId]?.appNames.map((avcApp: string) => {
         return <Select.Option key={`${category}_${avcApp}`} value={`${category}_${avcApp}`}>

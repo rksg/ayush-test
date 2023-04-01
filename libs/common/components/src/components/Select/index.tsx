@@ -78,7 +78,11 @@ export function Select (props: CascaderProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultValue])
 
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpenState] = React.useState(props.open ?? false)
+  const setOpen = (val: boolean) => {
+    setOpenState(val)
+    props.onDropdownVisibleChange && props.onDropdownVisibleChange(val)
+  }
   const [currentRadioBands, setCurrentRadioBands] = React
     .useState<CheckboxValueType[]>(initialRadioBands)
   const [savedRadioBands, setSavedRadioBands] = React
@@ -191,7 +195,6 @@ export function Select (props: CascaderProps) {
     return (
       <UI.Cascader
         {...antProps}
-        style={{ maxWidth: 180 }}
         showArrow={true}
         value={currentValues}
         multiple

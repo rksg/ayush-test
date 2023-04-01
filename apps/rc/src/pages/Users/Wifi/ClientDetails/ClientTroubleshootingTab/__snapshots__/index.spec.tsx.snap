@@ -27,8 +27,8 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
               style="padding: 3px 6px 3px 6px; flex: 0 0 185px; min-width: 0;"
             >
               <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
-                style="max-width: 180px;"
+                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 jcbjTn ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
+                style="min-width: 150px;"
               >
                 <div
                   class="ant-select-selector"
@@ -108,8 +108,8 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
               style="padding: 3px 6px 3px 6px; flex: 0 0 185px; min-width: 0;"
             >
               <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
-                style="max-width: 180px;"
+                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 jcbjTn ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
+                style="min-width: 150px;"
               >
                 <div
                   class="ant-select-selector"
@@ -189,8 +189,8 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
               style="padding: 3px 6px 3px 6px; flex: 0 0 185px; min-width: 0;"
             >
               <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
-                style="max-width: 180px;"
+                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 jcbjTn ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
+                style="min-width: 150px;"
               >
                 <div
                   class="ant-select-selector"

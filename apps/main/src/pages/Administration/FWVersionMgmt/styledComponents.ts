@@ -55,6 +55,7 @@ export const Section = styled.div`
 `
 
 export const PreferencesSection = styled.div`
+  margin-top: 8px;
   background-color: #e3e4e5;
 `
 
@@ -93,7 +94,9 @@ export const ChangeButton = styled(Button)`
   position: absolute;
   top: 40px;
   right: 12px;
+  margin: 8px;
   width: 50px !important;
+  font-size: 12px;
 `
 
 export const FieldGroup = styled.div`

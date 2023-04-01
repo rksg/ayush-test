@@ -84,7 +84,10 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
           ...data
         }
         await updateAAAServer({
-          params,
+          params: {
+            ...params,
+            aaaServerId: payload.id
+          },
           payload
         }).unwrap()
       }
@@ -221,7 +224,7 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
         { validator: (_, value) => excludeSpaceRegExp(value) },
         { validator: (_, value) => validateUsername(value) }
       ]}
-      children={<Input />}
+      children={<Input disabled={(editData as LocalUser).username === 'admin'}/>}
     />
     <Form.Item
       name='password'
@@ -253,7 +256,9 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
       name='level'
       initialValue={AAA_Level_Type.READ_WRITE}
     >
-      <Select>
+      <Select
+        disabled={(editData as LocalUser).username === 'admin'}
+      >
         {
           Object.entries(AAA_Level_Type).map(([label, value]) => (
             <Option key={label} value={value}>{$t(levelDisplayText[value])}</Option>

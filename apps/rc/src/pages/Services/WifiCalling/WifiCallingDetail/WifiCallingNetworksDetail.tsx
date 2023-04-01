@@ -28,7 +28,8 @@ const WifiCallingNetworksDetail = () => {
       title: $t({ defaultMessage: 'Network Name' }),
       dataIndex: 'name',
       searchable: true,
-      key: 'name'
+      key: 'name',
+      fixed: 'left'
     },
     {
       title: $t({ defaultMessage: 'Type' }),

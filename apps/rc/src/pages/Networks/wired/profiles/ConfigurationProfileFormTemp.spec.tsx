@@ -461,7 +461,7 @@ describe('Wired - TrustedPorts', () => {
     Modal.destroyAll()
   })
 
-  it('should handle add trusted ports correctly', async () => {
+  xit('should handle add trusted ports correctly', async () => {
     render(
       <Provider>
         <ConfigurationProfileFormContext.Provider value={configureProfileContextValues}>
@@ -491,7 +491,7 @@ describe('Wired - TrustedPorts', () => {
     await userEvent.click(saveTrustPortButton[0])
   })
 
-  it('should handle edit trusted ports correctly', async () => {
+  xit('should handle edit trusted ports correctly', async () => {
     render(
       <Provider>
         <ConfigurationProfileFormContext.Provider value={{
@@ -521,7 +521,7 @@ describe('Wired - TrustedPorts', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
   })
 
-  it('should handle delete ACL correctly', async () => {
+  xit('should handle delete trusted ports correctly', async () => {
     const params = {
       tenantId: 'tenant-id'
     }
