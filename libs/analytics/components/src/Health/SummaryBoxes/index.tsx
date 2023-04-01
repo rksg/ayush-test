@@ -8,9 +8,10 @@ import { formatter, intlFormats }   from '@acx-ui/formatter'
 import { noDataDisplay }            from '@acx-ui/utils'
 
 
+import { DrilldownSelection } from '../HealthDrillDown/config'
+
 import { useSummaryQuery }                        from './services'
 import { Wrapper, Statistic, UpArrow, DownArrow } from './styledComponents'
-import { DrilldownSelection } from '../HealthDrillDown/config'
 
 
 interface BoxProps {

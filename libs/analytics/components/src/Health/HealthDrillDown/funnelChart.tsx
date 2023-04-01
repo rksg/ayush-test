@@ -69,9 +69,8 @@ export function FunnelChart ({
 }) {
   const [parentNode, ref] = useGetNode()
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
-  const onClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, name: Stages) => {
-    console.log(event)
-    onSelectStage(name)
+  const onClick = (width: number, name: Stages) => {
+    onSelectStage(width, name)
   }
   const enhancedStages: EnhancedStage[] = useMemo(() => {
     if (!parentNode) return []
@@ -94,14 +93,15 @@ export function FunnelChart ({
         }
       })
     let endPosition = 0
-    return filteredStages.map((stage, i) => {
-      if (stage.width > minVisibleWidth) stage.width = stage.pct * totalWidth
+    const endStages = filteredStages.map((stage, i) => {
+      if (stage.width > minVisibleWidth) {
+        stage.width = stage.pct * totalWidth
+      }
       endPosition += stage.width
       return {
         ...stage,
         valueLabel,
         valueFormatter,
-        onClick: (event) => onClick(event, stage.name as Stages),
         key: stage.name,
         isSelected: stage.name === selectedStage,
         idx: i,
@@ -109,6 +109,10 @@ export function FunnelChart ({
         endPosition
       }
     })
+    return endStages.map((stage) => ({
+      ...stage,
+      onClick: () => onClick(stage.endPosition - stage.width / 2, stage.name as Stages)
+    }))
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stages, selectedStage, parentNode, windowWidth])
   useLayoutEffect(() => {
@@ -229,8 +233,9 @@ export const Labels = ({
           top,
           dir: i % 2 === 0,
           color: colors[i],
-          onClick: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
-            (onClick as CallableFunction)(event, stage.name),
+          onClick: () => (onClick as CallableFunction)(
+            stage.endPosition - stage.width / 2, stage.name
+          ),
           labelRef: updateChildNodes
         } as unknown as LabelPinProps
         return <LabelWithPin {...labelProps} />

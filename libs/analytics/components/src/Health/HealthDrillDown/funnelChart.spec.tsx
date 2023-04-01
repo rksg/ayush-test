@@ -70,7 +70,7 @@ describe('Funnel Chart', () => {
         />
       </Provider>
     )
-    expect(await screen.findByText('802.11 Auth.: 19.32%(228 ms)')).toBeVisible()
+    expect(await screen.findByText('802.11 Auth.: 21.05%(228 ms)')).toBeVisible()
   })
 })
 

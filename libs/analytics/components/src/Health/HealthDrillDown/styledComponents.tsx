@@ -71,17 +71,17 @@ export const Pin = styled.div<{ pinPosition : string, dir: string,color : string
   }
 `
 
-export const Point = styled.div`
+export const Point = styled.div.attrs((props: { $xPos?: number }) => props)`
   background: var(--acx-primary-white);
   border: 0.5px solid rgba(173, 186, 193, 1);
   border-bottom-width: 0px;
   border-left-width: 0px;
   transform: rotate(-45deg);
   position: relative;
-  left: 50%;
   top: -10px;
   width: 20px;
   height: 20px;
+  ${props => props.$xPos ? `left: ${props.$xPos}px;` : 'left: 50%;'}
 `
 
 export const Separator = styled.div`
