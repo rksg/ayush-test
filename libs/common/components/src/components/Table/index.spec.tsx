@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import userEvent from '@testing-library/user-event'
 
+import { DownloadOutlined }                                                                 from '@acx-ui/icons'
 import { render, fireEvent, screen, within, mockDOMSize, findTBody, waitFor, cleanup, act } from '@acx-ui/test-utils'
 
 import { columns as filteredColumns, data as filteredData } from './stories/FilteredTable'
@@ -602,6 +603,15 @@ describe('Table component', () => {
     expect(rowActions[1].onClick).not.toBeCalled()
     fireEvent.click(deleteButton)
     expect(rowActions[1].onClick).toBeCalled()
+  })
+
+  it('should render icon button', () => {
+    render(<Table
+      columns={testColumns}
+      dataSource={testData}
+      iconButton={{ icon: <DownloadOutlined /> }}
+    />)
+    expect(screen.getByTestId('DownloadOutlined')).toBeVisible()
   })
 
   describe('search & filter', () => {

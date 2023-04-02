@@ -254,7 +254,7 @@ export function VenueNetworksTab () {
       dataIndex: 'vlan',
       width: 80,
       render: function (data, row) {
-        return transformVLAN(getCurrentVenue(row), row.deepNetwork?.wlan, (e) => handleClickApGroups(row, e))
+        return transformVLAN(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e))
       }
     },
     {
@@ -263,7 +263,7 @@ export function VenueNetworksTab () {
       dataIndex: 'aps',
       width: 80,
       render: function (data, row) {
-        return transformAps(getCurrentVenue(row), (e) => handleClickApGroups(row, e))
+        return transformAps(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e))
       }
     },
     {
@@ -272,7 +272,7 @@ export function VenueNetworksTab () {
       dataIndex: 'radios',
       width: 140,
       render: function (data, row) {
-        return transformRadios(getCurrentVenue(row), (e) => handleClickApGroups(row, e))
+        return transformRadios(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e))
       }
     },
     {
