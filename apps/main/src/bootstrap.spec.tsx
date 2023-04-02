@@ -1,5 +1,7 @@
 import '@testing-library/jest-dom'
 
+import { createRoot } from 'react-dom/client'
+
 import { act, screen } from '@acx-ui/test-utils'
 
 import * as bootstrap from './bootstrap'
@@ -23,11 +25,12 @@ jest.mock('@acx-ui/user', () => ({
 
 describe('bootstrap.init', () => {
   it('renders correctly', async () => {
-    const root = document.createElement('div')
-    root.id = 'root'
-    document.body.appendChild(root)
+    const rootEl = document.createElement('div')
+    rootEl.id = 'root'
+    document.body.appendChild(rootEl)
+    const root = createRoot(rootEl)
 
-    await act(() => bootstrap.init())
+    await act(() => bootstrap.init(root))
     expect(screen.getByTestId('all-routes')).toBeVisible()
   })
 })

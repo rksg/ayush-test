@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { createRoot }    from 'react-dom/client'
+import { Root }          from 'react-dom/client'
 import { addMiddleware } from 'redux-dynamic-middlewares'
 
 import { ConfigProvider, ConfigProviderProps } from '@acx-ui/components'
@@ -94,9 +94,7 @@ export async function pendoInitalization (): Promise<void> {
   }
 }
 
-export async function init () {
-  const container = document.getElementById('root')
-  const root = createRoot(container!)
+export async function init (root: Root) {
   const browserLang = loadMessages(navigator.languages)
   const queryParams = new URLSearchParams(window.location.search)
   const lang = (queryParams.get('lang') ?? browserLang) as ConfigProviderProps['lang']
