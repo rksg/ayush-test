@@ -559,5 +559,11 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/switches/lags/:lagId',
     oldUrl: '/api/switch/tenant/:tenantId/lag/:lagId',
     newApi: true
+  },
+  getSwitchConfigProfileDetail: {
+    method: 'get',
+    url: '/switchProfiles/:profileId',
+    oldUrl: '/api/switch/tenant/:tenantId/profile/:profileId',
+    newApi: true
   }
 }

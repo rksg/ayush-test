@@ -13,7 +13,8 @@ import { VlanSetting }                                               from './Vla
 const currentData = {
   name: 'test-profile',
   description: '',
-  acls: []
+  acls: [],
+  vlans: [{ arpInspection: true, switchFamilyModels: [] }]
 }
 
 describe('Wired - VlanSetting', () => {
@@ -461,7 +462,7 @@ describe('Wired - TrustedPorts', () => {
     Modal.destroyAll()
   })
 
-  xit('should handle add trusted ports correctly', async () => {
+  it('should handle add trusted ports correctly', async () => {
     render(
       <Provider>
         <ConfigurationProfileFormContext.Provider value={configureProfileContextValues}>
@@ -476,10 +477,10 @@ describe('Wired - TrustedPorts', () => {
     await screen.findByRole('heading', { level: 3, name: /Trusted Ports/ })
 
     await userEvent.click(await screen.findByRole('button', { name: 'Add Model' }))
-    const dialog = await screen.findByRole('dialog')
-    const family = await screen.findByText('ICX-7150')
+    const dialog = await screen.findByTestId('trustedPortModal')
+    const family = await within(dialog).findByTestId('ICX7150')
     await userEvent.click(family)
-    const model = await screen.findByText('24')
+    const model = await within(dialog).findByTestId('24')
     await userEvent.click(model)
     const nextTrustPortButton = await within(dialog).findByRole('button', { name: 'Next' })
     await userEvent.click(nextTrustPortButton)
@@ -491,7 +492,7 @@ describe('Wired - TrustedPorts', () => {
     await userEvent.click(saveTrustPortButton[0])
   })
 
-  xit('should handle edit trusted ports correctly', async () => {
+  it('should handle edit trusted ports correctly', async () => {
     render(
       <Provider>
         <ConfigurationProfileFormContext.Provider value={{
@@ -521,7 +522,7 @@ describe('Wired - TrustedPorts', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
   })
 
-  xit('should handle delete trusted ports correctly', async () => {
+  it('should handle delete trusted ports correctly', async () => {
     const params = {
       tenantId: 'tenant-id'
     }
