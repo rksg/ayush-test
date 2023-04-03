@@ -51,7 +51,7 @@ const mockedFinishFn = jest.fn()
 
 const createNsgPath = '/:tenantId/services/networkSegmentation/create'
 
-describe('AddNetworkSegmentation', () => {
+describe('SummaryForm', () => {
   let params: { tenantId: string, serviceId: string }
   beforeEach(() => {
     params = {
@@ -67,7 +67,7 @@ describe('AddNetworkSegmentation', () => {
     )
   })
 
-  it('Step5 - Access switch success', async () => {
+  it('should render correctly', async () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
       form.setFieldValue('name', 'testNsgName')
