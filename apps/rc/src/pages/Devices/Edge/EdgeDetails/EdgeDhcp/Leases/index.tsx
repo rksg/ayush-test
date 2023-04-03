@@ -45,6 +45,7 @@ const Leases = () => {
   return (
     <Loader>
       <Table
+        settingsId='edge-dhcp-leases-table'
         columns={columns}
         dataSource={[] as EdgeDhcpLease[]}
       />

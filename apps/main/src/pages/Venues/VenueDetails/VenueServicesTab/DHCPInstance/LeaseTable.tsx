@@ -64,6 +64,7 @@ export default function VenueLeaseTable (){
 
   return (
     <Table
+      settingsId='venue-dhcp-lease-table'
       columns={columns}
       dataSource={leasesList}
       rowKey='macAddress'
