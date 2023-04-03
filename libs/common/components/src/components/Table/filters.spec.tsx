@@ -65,7 +65,7 @@ describe('Table Filters', () => {
 
 describe('filterOption', () => {
   it('return correct state', () => {
-    expect(filterOption('an', { key: 'jj', children: 'ant' })).toBe(true)
-    expect(filterOption('j', { key: 'jj', children: 'ant' })).toBe(false)
+    expect(filterOption('an', { key: 'jj', title: 'ant' })).toBe(true)
+    expect(filterOption('j', { key: 'jj', title: 'ant' })).toBe(false)
   })
 })
