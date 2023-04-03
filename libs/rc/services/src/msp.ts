@@ -207,7 +207,17 @@ export const mspApi = baseMspApi.injectEndpoints({
           ...mspEntitlementListReq
         }
       },
-      providesTags: [{ type: 'Msp', id: 'LIST' }]
+      providesTags: [{ type: 'Msp', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'MSP license refresh flow'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(mspApi.util.invalidateTags([{ type: 'Msp', id: 'LIST' }]))
+          })
+        })
+      }
     }),
     mspEntitlementSummary: build.query<MspEntitlementSummary[], RequestPayload>({
       query: ({ params }) => {
@@ -217,7 +227,17 @@ export const mspApi = baseMspApi.injectEndpoints({
           ...mspEntitlementSummaryReq
         }
       },
-      providesTags: [{ type: 'Msp', id: 'LIST' }]
+      providesTags: [{ type: 'Msp', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'MSP license refresh flow'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(mspApi.util.invalidateTags([{ type: 'Msp', id: 'LIST' }]))
+          })
+        })
+      }
     }),
     mspAssignmentSummary: build.query<MspAssignmentSummary[], RequestPayload>({
       query: ({ params }) => {
