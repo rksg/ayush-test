@@ -50,7 +50,7 @@ export const SmartEdgeTable = (props: SmartEdgeTableProps) => {
   ]
 
   return (
-    <Table
+    <Table rowKey={'edgeName'}
       type='form'
       columns={columns}
       dataSource={props.data}

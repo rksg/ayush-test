@@ -3,15 +3,16 @@ import { Divider, Input }       from 'antd'
 import { capitalize, includes } from 'lodash'
 import { useIntl }              from 'react-intl'
 
-import { ContentSwitcher, ContentSwitcherProps, Drawer, Descriptions }                          from '@acx-ui/components'
-import { useApLanPortsQuery, useGetApRadioCustomizationQuery, useGetVenueQuery }                from '@acx-ui/rc/services'
-import { ApDetails, ApLanPort, ApRadio, ApVenueStatusEnum, ApViewModel, DeviceGps, gpsToFixed } from '@acx-ui/rc/utils'
-import { TenantLink }                                                                           from '@acx-ui/react-router-dom'
+import { ContentSwitcher, ContentSwitcherProps, Drawer, Descriptions }                                     from '@acx-ui/components'
+import { useApLanPortsQuery, useGetApRadioCustomizationQuery, useGetVenueQuery, useGetVenueSettingsQuery } from '@acx-ui/rc/services'
+import { ApDetails, ApLanPort, ApRadio, ApVenueStatusEnum, ApViewModel, DeviceGps, gpsToFixed }            from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                      from '@acx-ui/react-router-dom'
 
 import { useApContext } from '../../ApContext'
 
 import { ApCellularProperties } from './ApCellularProperties'
 import { ApDetailsSettings }    from './ApDetailsSettings'
+import * as UI                  from './styledComponents'
 
 interface ApDetailsDrawerProps {
   visible: boolean
@@ -27,6 +28,13 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const { APSystem, cellularInfo: currentCellularInfo } = currentAP?.apStatusData || {}
   const ipTypeDisplay = (APSystem?.ipType) ? ` [${capitalize(APSystem?.ipType)}]` : ''
   const { data: venueData } = useGetVenueQuery({
+    params: { tenantId, venueId: currentAP?.venueId }
+  },
+  {
+    skip: !currentAP?.venueId
+  })
+
+  const { data: venueSettings } = useGetVenueSettingsQuery({
     params: { tenantId, venueId: currentAP?.venueId }
   },
   {
@@ -90,14 +98,16 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
       <Divider/>
       <Descriptions labelWidthPercent={50}>
         {
-          currentAP.password &&
+          venueSettings?.apPassword &&
           <Descriptions.Item
             label={$t({ defaultMessage: 'Admin Password' })}
-            children={<Input.Password
-              readOnly
-              bordered={false}
-              value={currentAP.password}
-            />}
+            children={<UI.DetailsPassword>
+              <Input.Password
+                readOnly
+                bordered={false}
+                value={venueSettings?.apPassword}
+              />
+            </UI.DetailsPassword>}
           />
         }
         <Descriptions.Item

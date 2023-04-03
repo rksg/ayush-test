@@ -725,6 +725,7 @@ export interface CliConfiguration {
   name?: string
   cli?: string
   reload?: boolean
+  applyNow?: boolean
   applyLater?: boolean
   venueSwitches?: CliTemplateVenueSwitches[]
   variables?: CliTemplateVariable[]
