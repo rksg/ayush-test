@@ -1,5 +1,5 @@
-import { Typography, Row, Col } from 'antd'
-import { useIntl }              from 'react-intl'
+import { Typography, Row, Col }      from 'antd'
+import { useIntl, FormattedMessage } from 'react-intl'
 
 import {
   cssStr,
@@ -17,8 +17,8 @@ import {
   EntitlementDeviceTypes,
   getEntitlementDeviceTypes
 } from '@acx-ui/rc/utils'
-import { JwtTierValue } from '@acx-ui/rc/utils'
-import { useParams }    from '@acx-ui/react-router-dom'
+import { useParams }          from '@acx-ui/react-router-dom'
+import { getJwtTokenPayload } from '@acx-ui/utils'
 
 import * as UI from './styledComponent'
 
@@ -127,7 +127,15 @@ export const SubscriptionUtilization = () => {
             }}>{$t({ defaultMessage: 'Subscription Utilization' })}</Col>
             <Col style={{
               width: '25%'
-            }}>{$t({ defaultMessage: 'Current Subscription Tier' })}: <b>{JwtTierValue()}</b></Col>
+            }}>
+              <FormattedMessage
+                defaultMessage='Current Subscription Tier: <b>{tier}</b>'
+                values={{
+                  tier: getJwtTokenPayload().acx_account_tier,
+                  b: (chunk) => <b>{chunk}</b>
+                }}
+              />
+            </Col>
           </Row>
         </Subtitle>
         <UI.FullWidthSpace size='large'>

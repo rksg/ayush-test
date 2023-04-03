@@ -41,7 +41,9 @@ export default function PortalTable () {
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedPortalProfileListQuery,
     defaultPayload: {
-      filters: {},
+      filters: {}
+    },
+    search: {
       searchTargetFields: ['serviceName'],
       searchString: ''
     }
