@@ -82,7 +82,7 @@ describe('MacAddressDrawer', () => {
           setVisible={jest.fn()}
           isEdit={false}
           editData={undefined}
-        />
+          expirationOfPool='Never expires'/>
       </Provider>,
       {
         route: { params: {
@@ -109,6 +109,7 @@ describe('MacAddressDrawer', () => {
           setVisible={jest.fn()}
           isEdit={false}
           editData={undefined}
+          expirationOfPool='Never expires'
         />
       </Provider>,
       {
@@ -133,6 +134,7 @@ describe('MacAddressDrawer', () => {
           setVisible={jest.fn()}
           isEdit={true}
           editData={macAddress}
+          expirationOfPool='Never expires'
         />
       </Provider>,
       {

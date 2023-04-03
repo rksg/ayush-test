@@ -47,7 +47,7 @@ const mockedFinishFn = jest.fn()
 
 const createNsgPath = '/:tenantId/t/services/networkSegmentation/create'
 
-describe('NetworkSegmentation', () => {
+describe('SmartEdgeForm', () => {
   let params: { tenantId: string, serviceId: string }
   beforeEach(() => {
     params = {

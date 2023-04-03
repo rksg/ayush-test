@@ -37,7 +37,7 @@ jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user'),
   useUserProfileContext: () => ({ data: { companyName: 'Mock company' } })
 }))
-jest.mock('./pages/Dashboard', () => () => {
+jest.mock('./pages/Dashboardv2', () => () => {
   return <div data-testid='dashboard' />
 })
 jest.mock('analytics/Routes', () => () => {

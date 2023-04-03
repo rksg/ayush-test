@@ -27,8 +27,6 @@ export default function DHCPTable () {
   const tableQuery = useTableQuery({
     useQuery: useGetDHCPProfileListViewModelQuery,
     defaultPayload: {
-      searchString: '',
-      searchTargetFields: ['name'],
       filters: {},
       fields: [
         'id',
@@ -37,6 +35,10 @@ export default function DHCPTable () {
         'venueIds',
         'technology'
       ]
+    },
+    search: {
+      searchString: '',
+      searchTargetFields: ['name']
     }
   })
 

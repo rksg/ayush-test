@@ -18,16 +18,17 @@ import {
 } from '@acx-ui/msp/components'
 import {
   useDeleteMspEcMutation,
-  useMspCustomerListQuery
+  useMspCustomerListQuery,
+  useDelegateToMspEcPath
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
   MspEc
 } from '@acx-ui/rc/utils'
-import { getBasePath, Link, TenantLink, MspTenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { RolesEnum }                                                                from '@acx-ui/types'
-import { filterByAccess }                                                           from '@acx-ui/user'
-import { hasRoles }                                                                 from '@acx-ui/user'
+import { Link, TenantLink, MspTenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                   from '@acx-ui/types'
+import { filterByAccess }                                              from '@acx-ui/user'
+import { hasRoles }                                                    from '@acx-ui/user'
 import {
   AccountType
 } from '@acx-ui/utils'
@@ -62,6 +63,7 @@ export function Integrators () {
   const [modalVisible, setModalVisible] = useState(false)
   const [tenantId, setTenantId] = useState('')
   const [tenantType, setTenantType] = useState('')
+  const { delegateToMspEcPath } = useDelegateToMspEcPath()
 
   const columns: TableProps<MspEc>['columns'] = [
     {
@@ -71,10 +73,14 @@ export function Integrators () {
       sorter: true,
       searchable: true,
       defaultSortOrder: 'ascend' as SortOrder,
+      onCell: (data) => {
+        return {
+          onClick: () => { delegateToMspEcPath(data.id) }
+        }
+      },
       render: function (data, row, _, highlightFn) {
-        const to = `${getBasePath()}/${row.id}/t`
         return (
-          <Link to={to}>{highlightFn(data as string)}</Link>
+          <Link to=''>{highlightFn(data as string)}</Link>
         )
       }
     },
