@@ -29,6 +29,7 @@ export const defaultColumnState = {
 }
 
 interface EventTableProps {
+  settingsId?: string
   tableQuery: TableQuery<Event, RequestPayload<unknown>, unknown>,
   searchables?: boolean | string[]
   filterables?: boolean | string[]
@@ -38,6 +39,7 @@ interface EventTableProps {
 }
 
 export const EventTable = ({
+  settingsId,
   tableQuery,
   searchables = true,
   filterables = true,
@@ -82,7 +84,7 @@ export const EventTable = ({
     {
       key: 'entity_type',
       title: $t({ defaultMessage: 'Event Type' }),
-      dataIndex: 'entity_id',
+      dataIndex: 'entity_type',
       sorter: true,
       render: (_, row) => valueFrom(typeMapping, row.entity_type),
       filterable: filtersFrom(eventTypeMap, filterables, 'entity_type')
@@ -98,7 +100,7 @@ export const EventTable = ({
     {
       key: 'source',
       title: $t({ defaultMessage: 'Source' }),
-      dataIndex: 'entity_type',
+      dataIndex: 'entity_id',
       sorter: true,
       render: function (_, row, __, highlightFn) {
         const searchable = Array.isArray(searchables)
@@ -151,6 +153,7 @@ export const EventTable = ({
 
   return <Loader states={[tableQuery]}>
     <Table
+      settingsId={settingsId}
       rowKey='id'
       columns={columns.filter(({ key })=>!(omitColumns && omitColumns.includes(key)))}
       columnState={columnState || { defaultValue: defaultColumnState }}

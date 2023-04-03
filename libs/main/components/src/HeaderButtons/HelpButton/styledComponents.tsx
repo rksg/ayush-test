@@ -19,6 +19,8 @@ export const CopyableText = styled(Typography.Link)
   .attrs({ copyable: true })<CopyableTextProps>`
   margin-bottom: 3px !important;
   display: block;
+  cursor: auto !important;
+  color:var(--acx-primary-black) !important;
 `
 export const ButtonWrapper = styled.span`
   line-height: 1;

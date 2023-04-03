@@ -24,12 +24,12 @@ import {
 
 describe('Test apGroupPipes.utils', () => {
   it('transformVLAN', async () => {
-    let view = render(transformVLAN(networkVenue_allAps, network.wlan))
+    let view = render(transformVLAN(networkVenue_allAps, network))
 
     expect(screen.getByText('VLAN-1 (Default)')).toBeDefined()
 
     view.unmount()
-    view = render(transformVLAN(networkVenue_apgroup, network.wlan))
+    view = render(transformVLAN(networkVenue_apgroup, network))
 
     expect(screen.getByText('VLAN Pool: pool1 (Custom)')).toBeDefined()
 
@@ -41,7 +41,7 @@ describe('Test apGroupPipes.utils', () => {
       apGroupId: 'b88d85d886f741a08f521244cb8cc5c5',
       apGroupName: 'APs not assigned to any group',
       vlanId: 1
-    }] }, network.wlan))
+    }] }, network))
 
     expect(screen.getByText('VLAN-1 (Custom)')).toBeDefined()
 
@@ -61,7 +61,7 @@ describe('Test apGroupPipes.utils', () => {
       radioTypes: [ RadioTypeEnum._2_4_GHz, RadioTypeEnum._5_GHz],
       isDefault: false,
       vlanId: 1
-    }] }, network.wlan))
+    }] }, network))
 
     expect(screen.getByText('Per AP Group')).toBeDefined()
 
@@ -69,12 +69,12 @@ describe('Test apGroupPipes.utils', () => {
   })
 
   it('transformAps', async () => {
-    let view = render(transformAps(networkVenue_allAps))
+    let view = render(transformAps(networkVenue_allAps, network))
 
     expect(screen.getByText('All APs')).toBeDefined()
 
     view.unmount()
-    view = render(transformAps(networkVenue_apgroup))
+    view = render(transformAps(networkVenue_apgroup, network))
 
     expect(screen.getByText('Unassigned APs')).toBeDefined()
 
@@ -86,31 +86,31 @@ describe('Test apGroupPipes.utils', () => {
       radioTypes: [ RadioTypeEnum._2_4_GHz, RadioTypeEnum._5_GHz],
       isDefault: false,
       vlanId: 1
-    }] }))
+    }] }, network))
     expect(screen.getByText('ewrw')).toBeDefined()
   })
 
   it('transformRadios', async () => {
-    let view = render(transformRadios(networkVenue_apgroup))
+    let view = render(transformRadios(networkVenue_apgroup, network))
 
     expect(screen.getByText('2.4 GHz')).toBeDefined()
 
     view.unmount()
-    view = render(transformRadios(networkVenue_allAps))
+    view = render(transformRadios(networkVenue_allAps, network))
 
     expect(screen.getByText('2.4 GHz, 5 GHz')).toBeDefined()
 
     view.unmount()
     view = render(transformRadios({ ...networkVenue_allAps,
       allApGroupsRadioTypes: [ RadioTypeEnum._2_4_GHz, RadioTypeEnum._5_GHz, RadioTypeEnum._6_GHz]
-    }))
+    }, network))
 
     expect(screen.getByText('All')).toBeDefined()
 
     view.unmount()
     view = render(transformRadios({ ...networkVenue_allAps,
       allApGroupsRadioTypes: undefined
-    }))
+    }, network))
 
     expect(screen.getByText('2.4 GHz / 5 GHz')).toBeDefined()
 
@@ -118,7 +118,7 @@ describe('Test apGroupPipes.utils', () => {
     view = render(transformRadios({ ...networkVenue_allAps,
       allApGroupsRadioTypes: undefined,
       allApGroupsRadio: RadioEnum._5_GHz
-    }))
+    }, network))
 
     expect(screen.getByText('5 GHz')).toBeDefined()
 
@@ -138,7 +138,7 @@ describe('Test apGroupPipes.utils', () => {
       radioTypes: [ RadioTypeEnum._2_4_GHz, RadioTypeEnum._5_GHz],
       isDefault: false,
       vlanId: 1
-    }] }))
+    }] }, network))
 
     expect(screen.getByText('Per AP Group')).toBeDefined()
   })

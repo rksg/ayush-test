@@ -1,4 +1,8 @@
-import { Select }      from 'antd'
+import { Select }     from 'antd'
+import {
+  BaseOptionType,
+  DefaultOptionType
+} from 'antd/lib/select'
 import { FilterValue } from 'antd/lib/table/interface'
 import { IntlShape }   from 'react-intl'
 
@@ -117,6 +121,7 @@ export function renderFilter <RecordType> (
         setFilterValues({ ...filterValues, [key]: isValidValue ? filterValue : undefined })
       }
     }}
+    filterOption={filterOption}
     placeholder={column.title as string}
     showArrow
     allowClear
@@ -131,4 +136,11 @@ export function renderFilter <RecordType> (
       />
     )}
   </UI.FilterSelect>
+}
+
+export const filterOption = (
+  input: string,
+  option: DefaultOptionType | BaseOptionType | undefined
+) => {
+  return option?.children?.toLowerCase().includes(input.toLowerCase())
 }
