@@ -20,6 +20,7 @@ import {
 import { FunnelChart }                                       from './funnelChart'
 import { useTtcDrilldownQuery, useConnectionDrilldownQuery } from './services'
 import { Point, Separator, Title }                           from './styledComponents'
+import { HealthPieChart } from './HealthPieChart'
 
 const HealthDrillDown = (props: {
   filters: AnalyticsFilter;
@@ -139,7 +140,7 @@ const HealthDrillDown = (props: {
             <Separator><Point $xPos={xPos}/></Separator>
           </GridCol>
           <GridCol col={{ span: 12 }} style={{ height: '210px' }}>
-            PIE chart
+           <HealthPieChart queryType={drilldownSelection} queryFilter={selectedStage}/>
           </GridCol>
           <GridCol col={{ span: 12 }} style={{ height: '210px' }}>
             Table

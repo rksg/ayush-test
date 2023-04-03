@@ -13,10 +13,11 @@ import {
 import { formatter } from '@acx-ui/formatter'
 
 import { ImpactedNodesAndWlans, usePieChartQuery } from './services'
+import { DrilldownSelection, Stages } from '../config'
 
 const transformData = (
   data: ImpactedNodesAndWlans | undefined,
-  queryType: string
+  queryType: DrilldownSelection
 ): {
   nodes: {
     key: string;
@@ -47,7 +48,7 @@ const transformData = (
         }))
         return { nodes, wlans }
       }
-      case 'timeToConnect': {
+      case 'ttc': {
         const nodes = data.network.hierarchyNode.nodes.map((node, index) => ({
           ...node,
           name: node.key,
@@ -84,8 +85,11 @@ function getHealthPieChart (
 }
 
 export const HealthPieChart = ({
-  queryType = 'connectionFailure',
-  queryFilter = 'connectionFailure'
+  queryType,
+  queryFilter,
+}: {
+  queryType: DrilldownSelection,
+  queryFilter: Stages
 }) => {
   const { $t } = useIntl()
   const analyticsFilter = useAnalyticsFilter()
@@ -94,8 +98,8 @@ export const HealthPieChart = ({
     start,
     end,
     path,
-    queryType,
-    queryFilter
+    queryType: queryType as string,
+    queryFilter: queryFilter as string
   })
 
   const { nodes, wlans } = transformData(queryResults.data, queryType)
