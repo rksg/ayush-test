@@ -39,7 +39,7 @@ export function useDelegateToMspEcPath () {
     try {
       const user = await getTenantPver({ params: { includeTenantId: ecTenantId } } ).unwrap()
       window.location.href = (user?.pver === PverName.R1)
-        ? `/api/${encodeURIComponent('ui-beta')}/t/${ecTenantId}/dashboard`
+        ? `/${ecTenantId}/t/dashboard`
         : `/api/ui/t/${ecTenantId}/dashboard`
     } catch (error) {
       console.log(error) // eslint-disable-line no-console

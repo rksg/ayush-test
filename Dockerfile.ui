@@ -105,14 +105,15 @@ COPY tools/docker/nginx/nginx.conf \
   tools/docker/nginx/env.json.template \
   /etc/nginx/
 
-COPY --from=acx-ui-tests /app/dist/apps ./
+COPY --from=build /app/dist/apps ./
 RUN \
+  touch abc.html && \
   # Move all other apps into main
   ls | grep -v main | xargs mv -t main && \
   # Create structure to match deployment need
-  mkdir -p api/ui && \
+  # mkdir -p api/ui && \
   # Move all files into it
-  mv -v main/* api/ui/. && \
+  mv -v main/* ./ && \
   # Remove the main folder
   rm -rf main
 
