@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
-import { renderFilter } from './filters'
+import { renderFilter, filterOption } from './filters'
 
 describe('Table Filters', () => {
   afterEach(() => jest.resetAllMocks())
@@ -60,5 +60,12 @@ describe('Table Filters', () => {
         false
       ))
     })
+  })
+})
+
+describe('filterOption', () => {
+  it('return correct state', () => {
+    expect(filterOption('an', { key: 'jj', children: 'ant' })).toBe(true)
+    expect(filterOption('j', { key: 'jj', children: 'ant' })).toBe(false)
   })
 })

@@ -90,7 +90,6 @@ export function SessionTable () {
         dataSource={data}
         columns={ColumnHeaders}
         rowKey={(record)=> record.firstConnection + record.disconnectTime}
-        columnState={{ hidden: true }}
       />
     </Loader>
   )
