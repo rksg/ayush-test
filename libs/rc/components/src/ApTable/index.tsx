@@ -1,5 +1,4 @@
-/* eslint-disable max-len */
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
 import { Badge }               from 'antd'
@@ -28,9 +27,10 @@ import {
   transformDisplayText,
   TableQuery,
   RequestPayload,
-  usePollingTableQuery
+  usePollingTableQuery,
+  APExtendedGrouped
 } from '@acx-ui/rc/utils'
-import { getFilters, CommonResult, ImportErrorRes }          from '@acx-ui/rc/utils'
+import { getFilters, CommonResult, ImportErrorRes, FILTER }  from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                    from '@acx-ui/user'
 
@@ -38,7 +38,9 @@ import { seriesMappingAP }           from '../DevicesWidget/helper'
 import { CsvSize, ImportFileDrawer } from '../ImportFileDrawer'
 import { useApActions }              from '../useApActions'
 
-
+import {
+  getGroupableConfig, groupedFields
+} from './config'
 
 export const defaultApPayload = {
   searchString: '',
@@ -64,7 +66,6 @@ const channelTitleMap: Record<keyof ApExtraParams, string> = {
   channelU50: 'HI 5 GHz',
   channel60: '6 GHz'
 }
-
 const transformMeshRole = (value: APMeshRole) => {
   let meshRole = ''
   switch (value) {
@@ -108,13 +109,13 @@ export function ApTable (props: ApTableProps) {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const params = useParams()
-  const filters = getFilters(params)
+  const filters = getFilters(params) as FILTER
   const { searchable, filterables } = props
-
-  const inlineTableQuery = usePollingTableQuery({
+  const apListTableQuery = usePollingTableQuery({
     useQuery: useApListQuery,
     defaultPayload: {
       ...defaultApPayload,
+      groupByFields: groupedFields,
       filters
     },
     search: {
@@ -122,20 +123,18 @@ export function ApTable (props: ApTableProps) {
     },
     option: { skip: Boolean(props.tableQuery) }
   })
-  const tableQuery = props.tableQuery || inlineTableQuery
+  const tableQuery = props.tableQuery || apListTableQuery
 
   const apAction = useApActions()
   const releaseTag = useIsSplitOn(Features.DEVICES)
-
   const statusFilterOptions = seriesMappingAP().map(({ key, name, color }) => ({
-    key, value: <Badge color={color} text={name} />
+    key, value: name, label: <Badge color={color} text={name} />
   }))
-
-  const tableData = tableQuery.data?.data ?? []
+  const tableData = tableQuery?.data?.data ?? []
   const linkToEditAp = useTenantLink('/devices/wifi/')
 
-  const columns = React.useMemo(() => {
-    const extraParams = tableQuery.data?.extra ?? {
+  const columns = useMemo(() => {
+    const extraParams = tableQuery?.data?.extra ?? {
       channel24: true,
       channel50: false,
       channelL50: false,
@@ -143,14 +142,14 @@ export function ApTable (props: ApTableProps) {
       channel60: false
     }
 
-    return [{
+    const columns: TableProps<APExtended | APExtendedGrouped>['columns'] = [{
       key: 'name',
       title: $t({ defaultMessage: 'AP Name' }),
       dataIndex: 'name',
       sorter: true,
-      disable: true,
+      fixed: 'left',
       searchable: searchable,
-      render: (data, row, _, highlightFn) => (
+      render: (data, row : APExtended, _, highlightFn) => (
         <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>
           {searchable ? highlightFn(row.name || '--') : data}</TenantLink>
       )
@@ -159,16 +158,18 @@ export function ApTable (props: ApTableProps) {
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'deviceStatus',
       sorter: true,
-      disable: true,
+      fixed: 'left',
       filterKey: 'deviceStatusSeverity',
       filterable: filterables ? statusFilterOptions : false,
+      groupable: getGroupableConfig()?.deviceStatusGroupableOptions,
       render: (status: unknown) => <APStatus status={status as ApDeviceStatusEnum} />
     }, {
       key: 'model',
       title: $t({ defaultMessage: 'Model' }),
       dataIndex: 'model',
       searchable: searchable,
-      sorter: true
+      sorter: true,
+      groupable: getGroupableConfig()?.modelGroupableOptions
     }, {
       key: 'ip',
       title: $t({ defaultMessage: 'IP Address' }),
@@ -223,14 +224,14 @@ export function ApTable (props: ApTableProps) {
       filterKey: 'venueId',
       filterable: filterables ? filterables['venueId'] : false,
       sorter: true,
-      render: (data, row) => (
+      render: (data, row : APExtended) => (
         <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{data}</TenantLink>
       )
     }, {
       key: 'switchName',
       title: $t({ defaultMessage: 'Switch' }),
       dataIndex: 'switchName',
-      render: (data, row) => {
+      render: (data, row : APExtended) => {
         return (
           <TenantLink to={`/switches/${row.venueId}/details/overview`}>{data}</TenantLink>
         )
@@ -240,13 +241,13 @@ export function ApTable (props: ApTableProps) {
       title: $t({ defaultMessage: 'Mesh Role' }),
       dataIndex: 'meshRole',
       sorter: true,
-      render: transformMeshRole
+      render: (data) => transformMeshRole(data as APMeshRole)
     }, {
       key: 'clients',
       title: $t({ defaultMessage: 'Clients' }),
       dataIndex: 'clients',
       align: 'center',
-      render: (data, row) => {
+      render: (data, row : APExtended) => {
         return releaseTag ?
           <TenantLink to={`/devices/wifi/${row.serialNumber}/details/clients`}>
             {transformDisplayNumber(row.clients)}
@@ -259,27 +260,32 @@ export function ApTable (props: ApTableProps) {
       dataIndex: 'deviceGroupName',
       filterKey: 'deviceGroupId',
       filterable: filterables ? filterables['deviceGroupId'] : false,
-      sorter: true
-      //TODO: Click-> Filter by AP group
+      sorter: true,
+      groupable: getGroupableConfig(params, apAction)?.deviceGroupNameGroupableOptions
     }, {
       key: 'rf-channels',
+      dataIndex: 'rf-channels',
       title: $t({ defaultMessage: 'RF Channels' }),
-      children: Object.entries(extraParams)
-        .map(([channel, visible]) => visible ? {
+      children: Object.entries(extraParams).reduce((acc, [channel, visible]) => {
+        if (!visible) return acc
+        const key = channel as keyof ApExtraParams
+        acc.push({
           key: channel,
           dataIndex: channel,
-          title: <Table.SubTitle children={channelTitleMap[channel as keyof ApExtraParams]} />,
+          title: <Table.SubTitle children={channelTitleMap[key]} />,
           align: 'center',
           ellipsis: true,
-          render: (data: never, row: { [x: string]: string | undefined }) => transformDisplayText(row[channel])
-        } : null)
-        .filter(Boolean)
-    }, {
-      key: 'tags',
-      title: $t({ defaultMessage: 'Tags' }),
-      dataIndex: 'tags',
-      searchable: searchable,
-      sorter: true
+          render: (data, row) =>
+            transformDisplayText(row[key] as string)
+        })
+        return acc
+      }, [] as TableProps<APExtended | APExtendedGrouped>['columns'])
+    // }, { TODO: Waiting for TAG feature support
+      // key: 'tags',
+      // title: $t({ defaultMessage: 'Tags' }),
+      // dataIndex: 'tags',
+      // searchable: searchable,
+      // sorter: true
       //TODO: Click-> Filter by Tag
     }, {
       key: 'serialNumber',
@@ -300,7 +306,7 @@ export function ApTable (props: ApTableProps) {
       dataIndex: 'poePort',
       show: false,
       sorter: false,
-      render: (data, row) => {
+      render: (data, row : APExtended) => {
         if (!row.hasPoeStatus) {
           return <span></span>
         }
@@ -314,7 +320,9 @@ export function ApTable (props: ApTableProps) {
           </span>
         )
       }
-    }] as TableProps<APExtended>['columns']
+    }]
+
+    return columns
   }, [$t, tableQuery.data?.extra])
 
   const isActionVisible = (
@@ -377,7 +385,6 @@ export function ApTable (props: ApTableProps) {
     }
     setIsImportResultLoading(false)
   },[importResult])
-
   const basePath = useTenantLink('/devices')
   const handleTableChange: TableProps<APExtended>['onChange'] = (
     pagination, filters, sorter, extra
@@ -385,15 +392,15 @@ export function ApTable (props: ApTableProps) {
     const customSorter = Array.isArray(sorter)
       ? sorter[0] : sorter
     if ('IP'.includes(customSorter.field as string)) {
-      customSorter.field = 'ip'
+      customSorter.field = 'IP.keyword'
     }
-    // @ts-ignore
-    tableQuery.handleTableChange(pagination, filters, customSorter, extra)
+    tableQuery.handleTableChange?.(pagination, filters, customSorter, extra)
   }
   return (
     <Loader states={[tableQuery]}>
-      <Table<APExtended>
+      <Table<APExtended | APExtendedGrouped>
         {...props}
+        settingsId='ap-table'
         columns={columns}
         dataSource={tableData}
         rowKey='serialNumber'

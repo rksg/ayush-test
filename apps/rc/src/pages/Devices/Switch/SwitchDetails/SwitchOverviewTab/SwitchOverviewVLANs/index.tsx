@@ -40,6 +40,7 @@ export function SwitchOverviewVLANs () {
       dataIndex: 'vlanId',
       defaultSortOrder: 'ascend',
       sorter: true,
+      fixed: 'left',
       render: (data, row) =>
         <Button
           type='link'

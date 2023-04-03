@@ -56,6 +56,9 @@ export type {
   StepFormProps as StepFormNewProps
 } from './components/StepsFormNew'
 export * from './components/Subtitle'
+export type {
+  Filter
+} from './components/Table/filters'
 export * from './components/Table'
 export * from './components/Tabs'
 export * from './components/Timeline'

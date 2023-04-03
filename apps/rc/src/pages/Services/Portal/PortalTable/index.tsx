@@ -41,7 +41,9 @@ export default function PortalTable () {
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedPortalProfileListQuery,
     defaultPayload: {
-      filters: {},
+      filters: {}
+    },
+    search: {
       searchTargetFields: ['serviceName'],
       searchString: ''
     }
@@ -101,6 +103,7 @@ export default function PortalTable () {
       sorter: true,
       searchable: true,
       defaultSortOrder: 'ascend',
+      fixed: 'left',
       render: function (data, row) {
         return (
           <TenantLink

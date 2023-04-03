@@ -10,7 +10,9 @@ import {
   getSwitchDonutChartData,
   getApDonutChartData,
   getVenueSwitchDonutChartData,
-  getEdgeDonutChartData
+  getEdgeDonutChartData,
+  getSwitchStackedBarChartData,
+  getApStackedBarChartData
 } from './helper'
 
 describe('getApDonutChartData', () => {
@@ -54,6 +56,33 @@ describe('getApDonutChartData', () => {
   })
 })
 
+describe('getApStackedBarChartData', () => {
+  const data = {
+    summary: {
+      aps: {
+        summary: {
+          '1_InSetupPhase': 5,
+          '3_RequiresAttention': 3,
+          '1_InSetupPhase_Offline': 3
+        },
+        totalCount: 1
+      }
+    }
+  }
+  it('should return correct formatted data', async () => {
+    expect(getApStackedBarChartData(data.summary.aps.summary)).toMatchSnapshot()
+
+    //Removing 1_InSetupPhase, and it should return 1_InSetupPhase_Offline count
+    const modifiedData = omit(data, 'summary.aps.summary.1_InSetupPhase')
+    expect(getApStackedBarChartData(modifiedData.summary.aps.summary))
+      .toMatchSnapshot('omit-InSetupPhase')
+  })
+  it('should return empty array if no data', ()=>{
+    expect(getApStackedBarChartData(null as unknown as
+       VenueDetailHeader['aps']['summary'])).toMatchSnapshot()
+  })
+})
+
 describe('getSwitchDonutChartData', () => {
   const data = {
     summary: {
@@ -92,6 +121,31 @@ describe('getSwitchDonutChartData', () => {
   })
   it('should return empty array if no data', ()=>{
     expect(getSwitchDonutChartData(null as unknown as Dashboard)).toEqual([])
+  })
+})
+
+describe('getSwitchStackedBarChartData', () => {
+  const data = {
+    summary: {
+      switches: {
+        summary: {
+          PREPROVISIONED: '2',
+          ONLINE: '1',
+          INITIALIZING: '3'
+        },
+        totalCount: 3
+      }
+    }
+  }
+  it('should return correct formatted data', async () => {
+    expect(getSwitchStackedBarChartData(data)).toMatchSnapshot()
+
+    // Removing PREPROVISIONED, and it should return INITIALIZING count
+    const modifiedData = omit(data, 'summary.switches.summary.PREPROVISIONED')
+    expect(getSwitchStackedBarChartData(modifiedData)).toMatchSnapshot()
+  })
+  it('should return empty array if no data', ()=>{
+    expect(getSwitchStackedBarChartData(null as unknown as Dashboard)).toMatchSnapshot()
   })
 })
 

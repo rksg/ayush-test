@@ -1,4 +1,8 @@
-import { Select }      from 'antd'
+import { Select }     from 'antd'
+import {
+  BaseOptionType,
+  DefaultOptionType
+} from 'antd/lib/select'
 import { FilterValue } from 'antd/lib/table/interface'
 import { IntlShape }   from 'react-intl'
 
@@ -59,14 +63,15 @@ export function renderSearch <RecordType> (
   intl: IntlShape,
   searchables: TableColumn<RecordType, 'text'>[],
   searchValue: string,
-  setSearchValue: Function
+  setSearchValue: Function,
+  hasGroupBy?: Boolean
 ): React.ReactNode {
   return <UI.SearchInput
     onChange={e => setSearchValue(e.target.value)}
     placeholder={intl.$t({ defaultMessage: 'Search {searchables}' }, {
       searchables: searchables.map(column => column.title).join(', ')
     })}
-    style={{ width: 292 }}
+    style={{ width: hasGroupBy ? 200 : 292 }}
     value={searchValue}
     allowClear
   />
@@ -97,7 +102,7 @@ export function renderFilter <RecordType> (
         }
         addToFilter(data, datum[key] as unknown as string)
         return data
-      }, []).sort().map(v => ({ key: v, value: v }))
+      }, []).sort().map(v => ({ key: v, value: v, label: v }))
       : []
 
   return <UI.FilterSelect
@@ -116,6 +121,7 @@ export function renderFilter <RecordType> (
         setFilterValues({ ...filterValues, [key]: isValidValue ? filterValue : undefined })
       }
     }}
+    filterOption={filterOption}
     placeholder={column.title as string}
     showArrow
     allowClear
@@ -126,8 +132,16 @@ export function renderFilter <RecordType> (
         value={option.key}
         key={option.key ?? index}
         data-testid={`option-${option.key}`}
-        children={option.value}
+        title={option.value}
+        children={option.label ?? option.value}
       />
     )}
   </UI.FilterSelect>
+}
+
+export function filterOption (
+  input: string,
+  option: DefaultOptionType | BaseOptionType | undefined
+) {
+  return option?.title?.toLowerCase().includes(input.toLowerCase())
 }

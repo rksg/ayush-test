@@ -23,7 +23,8 @@ export default function VenueLeaseTable (){
       searchable: true,
       title: $t({ defaultMessage: 'Hostname' }),
       dataIndex: 'hostname',
-      sorter: true
+      sorter: true,
+      fixed: 'left'
     },
     {
       key: 'IPAddress',
@@ -63,6 +64,7 @@ export default function VenueLeaseTable (){
 
   return (
     <Table
+      settingsId='venue-dhcp-lease-table'
       columns={columns}
       dataSource={leasesList}
       rowKey='macAddress'

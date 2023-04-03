@@ -1,9 +1,13 @@
+
 import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Drawer }                           from '@acx-ui/components'
-import { useCreateDpskPassphrasesMutation } from '@acx-ui/rc/services'
+import { Drawer }                    from '@acx-ui/components'
+import {
+  useCreateDpskPassphrasesMutation,
+  useUpdateDpskPassphrasesMutation
+} from '@acx-ui/rc/services'
 import {
   CreateDpskPassphrasesFormFields,
   DpskPassphrasesSaveData,
@@ -12,27 +16,41 @@ import {
 
 import AddDpskPassphrasesForm from './AddDpskPassphrasesForm'
 
+export interface DpskPassphraseEditMode {
+  isEdit: boolean;
+  passphraseId?: string;
+}
+
 export interface DpskPassphraseDrawerProps {
   visible: boolean;
   setVisible: (v: boolean) => void;
+  editMode: DpskPassphraseEditMode;
 }
 
 export default function DpskPassphraseDrawer (props: DpskPassphraseDrawerProps) {
   const { $t } = useIntl()
-  const { visible, setVisible } = props
+  const { visible, setVisible, editMode } = props
   const params = useParams()
   const [ createPassphrases ] = useCreateDpskPassphrasesMutation()
-  const [ manualSettingForm ] = Form.useForm<CreateDpskPassphrasesFormFields>()
+  const [ updatePassphrases ] = useUpdateDpskPassphrasesMutation()
+  const [ formInstance ] = Form.useForm<CreateDpskPassphrasesFormFields>()
 
   const onClose = () => {
     setVisible(false)
-    manualSettingForm.resetFields()
   }
 
   const onManualSettingFormSave = async () => {
-    await manualSettingForm.validateFields()
-    const payload = transferFormFieldsToSaveData(manualSettingForm.getFieldsValue())
-    await createPassphrases({ params, payload }).unwrap()
+    await formInstance.validateFields()
+    const payload = transferFormFieldsToSaveData(formInstance.getFieldsValue(), editMode.isEdit)
+
+    if (editMode.isEdit) {
+      await updatePassphrases({
+        params: { ...params, passphraseId: editMode.passphraseId },
+        payload
+      }).unwrap()
+    } else {
+      await createPassphrases({ params, payload }).unwrap()
+    }
   }
 
   const onSave = async () => {
@@ -47,16 +65,19 @@ export default function DpskPassphraseDrawer (props: DpskPassphraseDrawerProps) 
 
   return (
     <Drawer
-      title={$t({ defaultMessage: 'Add Passphrases' })}
+      title={editMode.isEdit
+        ? $t({ defaultMessage: 'Edit Passphrases' })
+        : $t({ defaultMessage: 'Add Passphrases' })
+      }
       visible={visible}
       onClose={onClose}
       destroyOnClose={true}
-      children={<AddDpskPassphrasesForm form={manualSettingForm} />}
+      children={<AddDpskPassphrasesForm form={formInstance} editMode={editMode} />}
       footer={
         <Drawer.FormFooter
           showAddAnother={false}
           buttonLabel={({
-            save: $t({ defaultMessage: 'Add' })
+            save: editMode.isEdit ? $t({ defaultMessage: 'Save' }) : $t({ defaultMessage: 'Add' })
           })}
           onCancel={onClose}
           onSave={onSave}
@@ -68,11 +89,12 @@ export default function DpskPassphraseDrawer (props: DpskPassphraseDrawerProps) 
 }
 
 // eslint-disable-next-line max-len
-function transferFormFieldsToSaveData (fields: CreateDpskPassphrasesFormFields): DpskPassphrasesSaveData {
-  const { passphrase, expiration, ...rest } = fields
+function transferFormFieldsToSaveData (fields: CreateDpskPassphrasesFormFields, isEdit: boolean): DpskPassphrasesSaveData {
+  const { id, passphrase, expiration, ...rest } = fields
 
   return {
     ...rest,
+    id: isEdit ? id : undefined,
     passphrase: passphrase === '' ? null : passphrase,
     // eslint-disable-next-line max-len
     expirationDate: fields.expiration.mode === ExpirationMode.NEVER ? undefined : fields.expiration.date

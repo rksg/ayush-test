@@ -27,7 +27,7 @@ export default function PreviewApp (props:{
     <Form.Item
       label={<>
         {$t({ defaultMessage:
-        '-Actual UI may be different and is not under Ruckus Wireless responsibility' })}
+        '-Actual UI may be different and is not under Ruckus Networks responsibility' })}
       </>}/>
     <Form.Item children={
       <img src={props.appPhoto} alt='app description'/>

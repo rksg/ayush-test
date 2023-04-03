@@ -42,9 +42,9 @@ export default function Firewall (props: {
         {$t({ defaultMessage: 'Outbound SSH (TCP 22) from APs and Switches to:' })}
       </HelpSubtitle>
       <Typography.Paragraph>
-        <CopyableText color={'var(--acx-primary-black)'}>device.ruckus.cloud</CopyableText>
-        <CopyableText color={'var(--acx-primary-black)'}>device.eu.ruckus.cloud</CopyableText>
-        <CopyableText color={'var(--acx-primary-black)'}>device.asia.ruckus.cloud</CopyableText>
+        <CopyableText>device.ruckus.cloud</CopyableText>
+        <CopyableText>device.eu.ruckus.cloud</CopyableText>
+        <CopyableText>device.asia.ruckus.cloud</CopyableText>
       </Typography.Paragraph>
     </>
     }

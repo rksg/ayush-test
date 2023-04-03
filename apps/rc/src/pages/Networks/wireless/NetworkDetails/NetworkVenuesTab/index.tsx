@@ -157,7 +157,7 @@ export function NetworkVenuesTab () {
     // }
     const network = networkQuery.data
     const newNetworkVenue = generateDefaultNetworkVenue(row.id, (network && network?.id) ? network.id : '')
-    const isWPA3security = row.wlan && row.wlan.wlanSecurity === 'WPA3'
+    const isWPA3security = network?.wlan && network?.wlan.wlanSecurity === 'WPA3'
     if (triBandRadioFeatureFlag && isWPA3security) {
       newNetworkVenue.allApGroupsRadioTypes?.push(RadioTypeEnum._6_GHz)
     }
@@ -265,7 +265,8 @@ export function NetworkVenuesTab () {
       key: 'name',
       title: $t({ defaultMessage: 'Venue' }),
       dataIndex: 'name',
-      sorter: true
+      sorter: true,
+      fixed: 'left'
     },
     {
       key: 'city',
@@ -318,7 +319,7 @@ export function NetworkVenuesTab () {
       title: $t({ defaultMessage: 'VLAN' }),
       dataIndex: 'vlan',
       render: function (data, row) {
-        return transformVLAN(getCurrentVenue(row), networkQuery.data?.wlan, (e) => handleClickApGroups(row, e))
+        return transformVLAN(getCurrentVenue(row), networkQuery.data as NetworkSaveData, (e) => handleClickApGroups(row, e))
       }
     },
     {
@@ -327,7 +328,7 @@ export function NetworkVenuesTab () {
       dataIndex: 'aps',
       width: 80,
       render: function (data, row) {
-        return transformAps(getCurrentVenue(row), (e) => handleClickApGroups(row, e))
+        return transformAps(getCurrentVenue(row), networkQuery.data as NetworkSaveData, (e) => handleClickApGroups(row, e))
       }
     },
     {
@@ -336,7 +337,7 @@ export function NetworkVenuesTab () {
       dataIndex: 'radios',
       width: 140,
       render: function (data, row) {
-        return transformRadios(getCurrentVenue(row), (e) => handleClickApGroups(row, e))
+        return transformRadios(getCurrentVenue(row), networkQuery.data as NetworkSaveData, (e) => handleClickApGroups(row, e))
       }
     },
     {
@@ -442,6 +443,7 @@ export function NetworkVenuesTab () {
         <Alert message={$t(notificationMessage)} type='info' showIcon closable />
       }
       <Table
+        settingsId='network-venues-table'
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
         rowSelection={{

@@ -12,13 +12,15 @@ export default function AAAInstancesTable (){
     useQuery: useAaaNetworkInstancesQuery,
     defaultPayload: {
       fields: ['networkName', 'networkId', 'guestNetworkType', 'networkType'],
-      filters: {},
-      searchTargetFields: ['networkName'],
-      searchString: ''
+      filters: {}
     },
     sorter: {
       sortField: 'networkName',
       sortOrder: 'DESC'
+    },
+    search: {
+      searchTargetFields: ['networkName'],
+      searchString: ''
     }
   })
   const columns: TableProps<AAAPolicyNetwork>['columns'] = [
@@ -28,6 +30,7 @@ export default function AAAInstancesTable (){
       dataIndex: 'networkName',
       searchable: true,
       sorter: true,
+      fixed: 'left',
       render: function (_data, row) {
         return (
           <TenantLink
