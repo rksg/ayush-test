@@ -4,8 +4,9 @@ import { useNavigate, useParams }                    from 'react-router-dom'
 import { Tabs }         from '@acx-ui/components'
 import {
   ActivityTable,
-  columnState,
+  activityTableColumnState,
   EventTable,
+  eventTableColumnState,
   useActivityTableQuery,
   useEventsTableQuery
 } from '@acx-ui/rc/components'
@@ -15,7 +16,12 @@ import { useTenantLink } from '@acx-ui/react-router-dom'
 const Events = () => {
   const { serialNumber } = useParams()
   const tableQuery = useEventsTableQuery({ serialNumber: [serialNumber] })
-  return <EventTable tableQuery={tableQuery} filterables={['severity', 'entity_type']}/>
+  return <EventTable
+    settingsId='switch-event-table'
+    tableQuery={tableQuery}
+    filterables={['severity']}
+    columnState={{ defaultValue: { ...eventTableColumnState, product: false } }}
+  />
 }
 
 const Activities = () => {
@@ -23,9 +29,10 @@ const Activities = () => {
   const tableQuery = useActivityTableQuery({ entityType: 'SWITCH', entityId: serialNumber! })
 
   return <ActivityTable
+    settingsId='switch-activity-table'
     tableQuery={tableQuery}
     filterables={['status']}
-    columnState={columnState}
+    columnState={activityTableColumnState}
   />
 }
 

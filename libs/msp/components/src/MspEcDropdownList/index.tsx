@@ -8,12 +8,13 @@ import {
   useMspCustomerListDropdownQuery,
   useVarCustomerListDropdownQuery,
   useSupportCustomerListDropdownQuery,
-  useGetTenantDetailQuery
+  useGetTenantDetailQuery,
+  useDelegateToMspEcPath
 }  from '@acx-ui/rc/services'
-import { MspEc, TenantIdFromJwt, useTableQuery, VarCustomer } from '@acx-ui/rc/utils'
-import { getBasePath, Link, useParams  }                      from '@acx-ui/react-router-dom'
-import { useUserProfileContext }                              from '@acx-ui/user'
-import { AccountType }                                        from '@acx-ui/utils'
+import { MspEc, useTableQuery, VarCustomer } from '@acx-ui/rc/utils'
+import { getBasePath, Link, useParams  }     from '@acx-ui/react-router-dom'
+import { useUserProfileContext }             from '@acx-ui/user'
+import { AccountType, getJwtTokenPayload }   from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -34,6 +35,7 @@ export function MspEcDropdownList () {
 
   const params = useParams()
   const { data: tenantDetail } = useGetTenantDetailQuery({ params })
+  const { delegateToMspEcPath } = useDelegateToMspEcPath()
 
   // user profile for tenant from jwt token
   const { data: userProfile } = useUserProfileContext()
@@ -145,10 +147,11 @@ export function MspEcDropdownList () {
       searchable: true,
       disable: true,
       defaultSortOrder: 'ascend',
-      onCell: () => {
+      onCell: (data) => {
         return {
           onClick: () => {
             setVisible(false)
+            delegateToMspEcPath(data.id)
           }
         }
       },
@@ -167,8 +170,8 @@ export function MspEcDropdownList () {
     {
       title: $t({ defaultMessage: 'Tenant Id' }),
       dataIndex: 'id',
-      key: 'id'
-      // show: false
+      key: 'id',
+      show: false
     }
   ]
 
@@ -180,10 +183,11 @@ export function MspEcDropdownList () {
       searchable: true,
       disable: true,
       defaultSortOrder: 'ascend',
-      onCell: () => {
+      onCell: (data) => {
         return {
           onClick: () => {
             setVisible(false)
+            delegateToMspEcPath(data.tenantId)
           }
         }
       },
@@ -197,14 +201,14 @@ export function MspEcDropdownList () {
     {
       title: $t({ defaultMessage: 'Tenant Id' }),
       dataIndex: 'id',
-      key: 'id'
-      // show: false
+      key: 'id',
+      show: false
     }
   ]
 
   const tableQueryMspEc = useTableQuery({
     useQuery: useMspCustomerListDropdownQuery,
-    apiParams: { tenantId: TenantIdFromJwt() },
+    apiParams: { tenantId: getJwtTokenPayload().tenantId },
     defaultPayload: mspEcPayload,
     search: {
       searchTargetFields: mspEcPayload.searchTargetFields as string[]
@@ -214,7 +218,7 @@ export function MspEcDropdownList () {
 
   const tableQueryIntegrator = useTableQuery({
     useQuery: useMspCustomerListDropdownQuery,
-    apiParams: { tenantId: TenantIdFromJwt() },
+    apiParams: { tenantId: getJwtTokenPayload().tenantId },
     defaultPayload: integratorPayload,
     search: {
       searchTargetFields: integratorPayload.searchTargetFields as string[]
@@ -224,7 +228,7 @@ export function MspEcDropdownList () {
 
   const tableQueryVarRec = useTableQuery({
     useQuery: useVarCustomerListDropdownQuery,
-    apiParams: { tenantId: TenantIdFromJwt() },
+    apiParams: { tenantId: getJwtTokenPayload().tenantId },
     defaultPayload: varPayload,
     search: {
       searchTargetFields: varPayload.searchTargetFields as string[]
@@ -234,7 +238,7 @@ export function MspEcDropdownList () {
 
   const tableQuerySupportEc = useTableQuery({
     useQuery: useSupportCustomerListDropdownQuery,
-    apiParams: { tenantId: TenantIdFromJwt() },
+    apiParams: { tenantId: getJwtTokenPayload().tenantId },
     defaultPayload: supportEcPayload,
     search: {
       searchTargetFields: supportEcPayload.searchTargetFields as string[]
@@ -244,7 +248,7 @@ export function MspEcDropdownList () {
 
   const tableQuerySupport = useTableQuery({
     useQuery: useVarCustomerListDropdownQuery,
-    apiParams: { tenantId: TenantIdFromJwt() },
+    apiParams: { tenantId: getJwtTokenPayload().tenantId },
     defaultPayload: supportPayload,
     search: {
       searchTargetFields: supportPayload.searchTargetFields as string[]
@@ -261,7 +265,7 @@ export function MspEcDropdownList () {
 
       <Table
         columns={customerColumns}
-        dataSource={tableQueryMspEc.data?.data}
+        dataSource={tableQueryMspEc.data?.data.filter(mspEc => mspEc.id !== params.tenantId)}
         pagination={tableQueryMspEc.pagination}
         onChange={tableQueryMspEc.handleTableChange}
         onFilterChange={tableQueryMspEc.handleFilterChange}
@@ -275,7 +279,7 @@ export function MspEcDropdownList () {
 
       <Table
         columns={customerColumns}
-        dataSource={tableQueryIntegrator.data?.data}
+        dataSource={tableQueryIntegrator.data?.data.filter(mspEc => mspEc.id !== params.tenantId)}
         pagination={tableQueryIntegrator.pagination}
         onChange={tableQueryIntegrator.handleTableChange}
         onFilterChange={tableQueryIntegrator.handleFilterChange}
@@ -289,7 +293,7 @@ export function MspEcDropdownList () {
 
       <Table
         columns={supportColumns}
-        dataSource={tableQueryVarRec.data?.data}
+        dataSource={tableQueryVarRec.data?.data.filter(cus => cus.tenantId !== params.tenantId)}
         pagination={tableQueryVarRec.pagination}
         onChange={tableQueryVarRec.handleTableChange}
         onFilterChange={tableQueryVarRec.handleFilterChange}
@@ -303,7 +307,7 @@ export function MspEcDropdownList () {
 
       <Table
         columns={supportColumns}
-        dataSource={tableQuerySupport.data?.data}
+        dataSource={tableQuerySupport.data?.data.filter(cus => cus.tenantId !== params.tenantId)}
         pagination={tableQuerySupport.pagination}
         onChange={tableQuerySupport.handleTableChange}
         onFilterChange={tableQuerySupport.handleFilterChange}
@@ -317,7 +321,7 @@ export function MspEcDropdownList () {
 
       <Table
         columns={customerColumns}
-        dataSource={tableQuerySupportEc.data?.data}
+        dataSource={tableQuerySupportEc.data?.data.filter(mspEc => mspEc.id !== params.tenantId)}
         pagination={tableQuerySupportEc.pagination}
         onChange={tableQuerySupportEc.handleTableChange}
         onFilterChange={tableQuerySupportEc.handleFilterChange}

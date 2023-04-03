@@ -1,27 +1,30 @@
 
-import moment      from 'moment-timezone'
-import { useIntl } from 'react-intl'
+import { Divider, Menu } from 'antd'
+import moment            from 'moment-timezone'
+import { useIntl }       from 'react-intl'
 
 import {
   ConnectedClientsOverTime,
+  IncidentsDashboardv2,
   ClientExperience,
   SwitchesTrafficByVolume,
   TopAppsByTraffic,
-  TopSSIDsByTraffic,
   TopSwitchesByError,
   TopSwitchesByPoEUsage,
   TopSwitchesByTraffic,
   TopSwitchModels,
   TrafficByVolume,
-  DidYouKnow } from '@acx-ui/analytics/components'
+  DidYouKnow,
+  TopWiFiNetworks } from '@acx-ui/analytics/components'
 import {
+  Button,
+  Dropdown,
   GridRow,
   GridCol,
   PageHeader,
   RangePicker,
   ContentSwitcher,
-  ContentSwitcherProps,
-  Card
+  ContentSwitcherProps
 } from '@acx-ui/components'
 import { VenueFilter }      from '@acx-ui/main/components'
 import {
@@ -32,6 +35,7 @@ import {
   VenuesDashboardWidgetV2
 } from '@acx-ui/rc/components'
 import { TenantLink }                        from '@acx-ui/react-router-dom'
+import { filterByAccess }                    from '@acx-ui/user'
 import { useDateFilter, useDashboardFilter } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
@@ -54,6 +58,10 @@ export default function Dashboardv2 () {
     <>
       <DashboardPageHeader />
       <CommonDashboardWidgets />
+      <Divider dashed
+        style={{
+          borderColor: 'var(--acx-neutrals-30)',
+          margin: '20px 0px 5px 0px' }}/>
       <ContentSwitcher
         tabDetails={tabDetails}
         size='large'
@@ -65,6 +73,10 @@ export default function Dashboardv2 () {
           </UI.Wrapper>
         }
       />
+      <Divider dashed
+        style={{
+          borderColor: 'var(--acx-neutrals-30)',
+          margin: '20px 0px' }}/>
       <DashboardMapWidget />
     </>
   )
@@ -72,12 +84,39 @@ export default function Dashboardv2 () {
 
 function DashboardPageHeader () {
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
-
   const { $t } = useIntl()
+
+  const addMenu = <Menu
+    expandIcon={<UI.MenuExpandArrow />}
+    items={[{
+      key: 'add-venue',
+      label: <TenantLink to='venues/add'>{$t({ defaultMessage: 'Venue' })}</TenantLink>
+    }, {
+      key: 'add-wifi-network',
+      label: <TenantLink to='networks/wireless/add'>{
+        $t({ defaultMessage: 'Wi-Fi Network' })}
+      </TenantLink>
+    }, {
+      key: 'add-ap',
+      label: $t({ defaultMessage: 'Device' }),
+      // type: 'group',
+      children: [{
+        key: 'add-ap',
+        label: <TenantLink to='devices/wifi/add'>{$t({ defaultMessage: 'Wi-Fi AP' })}</TenantLink>
+      }, {
+        key: 'add-switch',
+        label: <TenantLink to='devices/switch/add'>{$t({ defaultMessage: 'Switch' })}</TenantLink>
+      }]
+    }]}
+  />
+
   return (
     <PageHeader
       title={$t({ defaultMessage: 'Dashboard' })}
-      extra={[
+      extra={filterByAccess([
+        <Dropdown overlay={addMenu} placement={'bottomRight'}>{() =>
+          <Button type='primary'>{ $t({ defaultMessage: 'Add...' }) }</Button>
+        }</Dropdown>,
         <VenueFilter key='hierarchy-filter'/>,
         <RangePicker
           key='range-picker'
@@ -86,7 +125,7 @@ function DashboardPageHeader () {
           showTimePicker
           selectionType={range}
         />
-      ]}
+      ])}
     />
   )
 }
@@ -102,7 +141,7 @@ function ApWidgets () {
         <ConnectedClientsOverTime filters={filters} vizType={'area'} />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <TopSSIDsByTraffic filters={filters}/>
+        <TopWiFiNetworks filters={filters}/>
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
         <TopAppsByTraffic filters={filters}/>
@@ -113,7 +152,7 @@ function ApWidgets () {
 
 function DashboardMapWidget () {
   return (
-    <GridRow style={{ marginTop: '20px' }}>
+    <GridRow>
       <GridCol col={{ span: 24 }} style={{ height: '428px' }}>
         <MapWidgetV2 />
       </GridCol>
@@ -155,8 +194,7 @@ function CommonDashboardWidgets () {
             <AlarmWidgetV2 />
           </GridCol>
           <GridCol col={{ span: 8 }} style={{ height: '200px' }}>
-            <Card title='Incidents'>
-            </Card>
+            <IncidentsDashboardv2 filters={filters} />
           </GridCol>
           <GridCol col={{ span: 8 }} style={{ height: '200px' }}>
             <ClientExperience filters={filters}/>

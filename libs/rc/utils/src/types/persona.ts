@@ -30,7 +30,14 @@ export interface Persona {
   ethernetPorts?: PersonaEthernetPort[],
   identityId?: string,
   createdAt?: string,
-  updatedAt?: string
+  updatedAt?: string,
+  switches?: PersonaSwitch[]
+}
+
+export interface PersonaSwitch {
+  macAddress: string,
+  portId: number,
+  personaId: string
 }
 
 export interface PersonaDevice {
@@ -40,7 +47,8 @@ export interface PersonaDevice {
   hasMacRegistered?: boolean,
   lastSeenAt?: string,
   createdAt?: string,
-  updatedAt?: string
+  updatedAt?: string,
+  identityId?: string
 }
 
 export interface PersonaEthernetPort {

@@ -33,7 +33,7 @@ let isModalShown = false
 // TODO: workaround for skipping general error dialog
 const ignoreEndpointList = [
   'addAp', 'updateAp', 'inviteDelegation', 'addRecipient', 'updateRecipient', 'getDnsServers',
-  'addEdge', 'clientInfo', 'getClientDetails', 'createNetworkSegmentationGroup'
+  'addEdge', 'clientInfo', 'getClientDetails', 'getPropertyConfigs', 'getDhcpByEdgeId'
 ]
 
 export const errorMessage = {
@@ -65,7 +65,7 @@ export const errorMessage = {
   CHECK_YOUR_CONNECTION: {
     title: defineMessage({ defaultMessage: 'Check Your Connection' }),
     content: defineMessage({
-      defaultMessage: 'Ruckus Cloud needs you to be online,<br></br>you appear to be offline.'
+      defaultMessage: 'RUCKUS One needs you to be online,<br></br>you appear to be offline.'
     })
   },
   COUNTRY_INVALID: {

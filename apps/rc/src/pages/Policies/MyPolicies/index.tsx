@@ -10,7 +10,7 @@ import {
   useGetApSnmpViewModelQuery,
   useGetEnhancedClientIsolationListQuery,
   useSyslogPolicyListQuery,
-  usePolicyListQuery
+  useMacRegListsQuery
 } from '@acx-ui/rc/services'
 import {
   getPolicyRoutePath,
@@ -91,6 +91,8 @@ export default function MyPolicies () {
 function useCardData (): CardDataProps[] {
   const params = useParams()
   const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
+  const macRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
+  const isEdgeEnabled = useIsSplitOn(Features.EDGES)
 
   return [
     {
@@ -121,13 +123,11 @@ function useCardData (): CardDataProps[] {
     {
       type: PolicyType.MAC_REGISTRATION_LIST,
       category: RadioCardCategory.WIFI,
-      totalCount: usePolicyListQuery({ // TODO should invoke self List API here when API is ready
-        // eslint-disable-next-line max-len
-        params, payload: { ...defaultPayload, filters: { type: [PolicyType.MAC_REGISTRATION_LIST] } }
-      }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      totalCount: useMacRegListsQuery({ params }, { skip: !macRegistrationEnabled }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST })),
-      disabled: true
+      disabled: !macRegistrationEnabled
     },
     {
       type: PolicyType.ROGUE_AP_DETECTION,
@@ -159,10 +159,18 @@ function useCardData (): CardDataProps[] {
       category: RadioCardCategory.WIFI,
       totalCount: useGetApSnmpViewModelQuery({
         params, payload: { ...defaultPayload }
-      }).data?.totalCount,
+      }, { skip: !supportApSnmp }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.LIST })),
       disabled: !supportApSnmp
+    },
+    {
+      type: PolicyType.TUNNEL_PROFILE,
+      category: RadioCardCategory.WIFI,
+      totalCount: 0,
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.LIST })),
+      disabled: !isEdgeEnabled
     }
   ]
 }

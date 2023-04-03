@@ -4,8 +4,7 @@ import { useState, useEffect, SetStateAction, useContext } from 'react'
 import { Row, Col, Form, Radio, Typography, RadioChangeEvent, Checkbox, Select, Input } from 'antd'
 import { CheckboxChangeEvent }                                                          from 'antd/lib/checkbox'
 
-import { Card, Tooltip } from '@acx-ui/components'
-// import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
+import { Card, Tooltip }                           from '@acx-ui/components'
 import { ICX_MODELS_MODULES, SwitchModelPortData } from '@acx-ui/rc/utils'
 import { getIntl }                                 from '@acx-ui/utils'
 
@@ -57,14 +56,9 @@ export function SelectModelStep (props: { editMode: boolean }) {
       untaggedPorts: []
     })
 
-  //const switchSupportIcx8200FF = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200)
-
   useEffect(() => {
     if(ICX_MODELS_MODULES){
-      const familiesData = Object.keys(ICX_MODELS_MODULES).filter(key=> {
-        return key !== 'ICX8200'
-        // return !switchSupportIcx8200FF && key !== 'ICX8200' //TODO
-      }).map(key => {
+      const familiesData = Object.keys(ICX_MODELS_MODULES).map(key => {
         return { label: `ICX-${key.split('ICX')[1]}`, value: key }
       })
       setFamilies(familiesData)
@@ -97,7 +91,15 @@ export function SelectModelStep (props: { editMode: boolean }) {
       setEnableSlot4(selectedEnable4.enable)
       checkIfModuleFixed(selectedFamily, selectedModel)
     }
-  }, [ICX_MODELS_MODULES, vlanSettingValues])
+
+    if(family){
+      setModel('')
+    }
+
+    if(family !=='' && model !== ''){
+      modelChangeAction(family, model)
+    }
+  }, [ICX_MODELS_MODULES, vlanSettingValues, family, model])
 
   const checkIfModuleFixed = (family: string, model: string) => {
     if (family === 'ICX7550') {
@@ -170,6 +172,7 @@ export function SelectModelStep (props: { editMode: boolean }) {
   }
 
   const onFamilyChange = (e: RadioChangeEvent) => {
+    setFamily(e.target.value)
     familyChangeAction(e.target.value)
   }
 
@@ -178,7 +181,6 @@ export function SelectModelStep (props: { editMode: boolean }) {
       form.resetFields(['model', 'enableSlot2', 'enableSlot3', 'enableSlot4'])
       setModuleSelectionEnable(false)
     }
-    setFamily(family)
     const index = family as keyof typeof ICX_MODELS_MODULES
     const modelsList = ICX_MODELS_MODULES[index]
 
@@ -189,6 +191,7 @@ export function SelectModelStep (props: { editMode: boolean }) {
   }
 
   const onModelChange = (e: RadioChangeEvent) => {
+    setModel(e.target.value)
     modelChangeAction(family, e.target.value)
   }
 
@@ -204,7 +207,6 @@ export function SelectModelStep (props: { editMode: boolean }) {
     }else{
       setModuleSelectionEnable(true)
     }
-    setModel(model)
     checkIfModuleFixed(family, model)
     getSlots(family, model)
     updateModelPortData(family, model)
@@ -229,9 +231,9 @@ export function SelectModelStep (props: { editMode: boolean }) {
   }
 
   const onModuleChange = () => {
-    getSlots(family, model)
+    getSlots(form.getFieldValue('family'), form.getFieldValue('model'))
     setSwitchFamilyModels({ ...switchFamilyModels, slots: [] })
-    updateModelPortData(family, model)
+    updateModelPortData(form.getFieldValue('family'), form.getFieldValue('model'))
   }
 
   const updateModelPortData = (selectedFamily: string, selectedModel: string) => {
@@ -247,7 +249,6 @@ export function SelectModelStep (props: { editMode: boolean }) {
     } else {
       const enable = form.getFieldValue(`enableSlot${slotNumber}`)
       let option = form.getFieldValue(`selectedOptionOfSlot${slotNumber}`)
-
       let optionList = optionListForSlot2
       switch (slotNumber) {
         case 3:
@@ -257,7 +258,6 @@ export function SelectModelStep (props: { editMode: boolean }) {
           optionList = optionListForSlot4
           break
       }
-
       if (!enable) {
         option = ''
       }
@@ -276,6 +276,7 @@ export function SelectModelStep (props: { editMode: boolean }) {
   const generateSlotData =
   (slotNumber: number, slotEnable: boolean, slotOptions: ModelsType[],
     slotOption: string, selectedFamily: string, selectedModel: string) => {
+
     if (slotEnable) {
       let totalPortNumber: string = '0'
       let slotPortInfo: string = ''
@@ -371,7 +372,7 @@ export function SelectModelStep (props: { editMode: boolean }) {
                 required={true}
                 initialValue={model}
                 children={<Radio.Group onChange={onModelChange}
-                  // defaultValue={model}
+                  defaultValue={model}
                 >
                   {models.map(({ label, value }) => (
                     <Radio key={value} value={value} disabled={editMode}>

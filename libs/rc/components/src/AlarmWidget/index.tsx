@@ -68,9 +68,10 @@ export function AlarmWidget () {
   const { $t } = useIntl()
 
   const onNavigate = (alarm: Alarm) => {
+    let switchId = alarm.switchMacAddress || alarm.serialNumber
     let path = alarm.entityType === EventTypeEnum.AP
       ? `wifi/${alarm.serialNumber}/details/overview`
-      : `switch/${alarm.switchMacAddress}/${alarm.serialNumber}/details/overview`
+      : `switch/${switchId}/${alarm.serialNumber}/details/overview`
 
     navigate({
       ...basePath,
@@ -153,13 +154,23 @@ export function AlarmWidgetV2 () {
   const { data } = overviewV2Query
   return (
     <Loader states={[overviewV2Query]}>
-      <Card title={$t({ defaultMessage: 'Alarms' })}>
+      <Card title={$t({ defaultMessage: 'Alarms' })}
+        onArrowClick={()=>{
+          const event = new CustomEvent('showAlarmDrawer',
+            { detail: { data: { name: 'all' } } })
+          window.dispatchEvent(event)
+        }}>
         <AutoSizer>
           {({ height, width }) => (
             (data && data.length > 0)
               ? <DonutChart
                 style={{ width, height }}
                 size={'medium'}
+                onClick={(e)=>{
+                  const event = new CustomEvent('showAlarmDrawer',
+                    { detail: { data: e.data } })
+                  window.dispatchEvent(event)
+                }}
                 data={data}/>
               : <NoActiveData text={$t({ defaultMessage: 'No active alarms' })}/>
           )}

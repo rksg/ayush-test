@@ -12,7 +12,7 @@ exports[`HistoricalClientsTable should render correctly 1`] = `
         Historical Clients
       </h4>
       <div
-        class="styledComponents__Wrapper-sc-1abm7iv-12 jjcNqJ"
+        class="styledComponents__Wrapper-sc-1abm7iv-12 fiibDB"
       >
         <div
           class="ant-pro-table"
@@ -68,7 +68,7 @@ exports[`HistoricalClientsTable should render correctly 1`] = `
                     class="ant-spin-container"
                   >
                     <div
-                      class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
+                      class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-left ant-table-has-fix-right"
                     >
                       <div
                         class="ant-table-container"
@@ -81,7 +81,9 @@ exports[`HistoricalClientsTable should render correctly 1`] = `
                             style="min-width: 100%; table-layout: auto;"
                           >
                             <colgroup>
-                              <col />
+                              <col
+                                style="width: 200px;"
+                              />
                               <col />
                               <col />
                               <col />
@@ -99,7 +101,8 @@ exports[`HistoricalClientsTable should render correctly 1`] = `
                               <tr>
                                 <th
                                   aria-sort="ascending"
-                                  class="ant-table-cell ant-table-column-sort ant-table-column-has-sorters"
+                                  class="ant-table-cell ant-table-column-sort ant-table-cell-fix-left ant-table-cell-fix-left-last ant-table-column-has-sorters"
+                                  style="position: sticky; left: 0px;"
                                   tabindex="0"
                                 >
                                   <div
@@ -679,10 +682,11 @@ exports[`HistoricalClientsTable should render correctly 1`] = `
                                 data-row-key="24:41:8c:c3:16:df"
                               >
                                 <td
-                                  class="ant-table-cell ant-table-column-sort"
+                                  class="ant-table-cell ant-table-column-sort ant-table-cell-fix-left ant-table-cell-fix-left-last"
+                                  style="position: sticky; left: 0px;"
                                 >
                                   <a
-                                    href="/t/tenant-id/users/wifi/clients/24:41:8c:c3:16:df/details/overview?clientStatus=historical&period=%7B%22startDate%22%3A%222022-11-09T08%3A16%3A07%2B00%3A00%22%2C%22endDate%22%3A%222022-11-10T08%3A16%3A07%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
+                                    href="/t/tenant-id/users/wifi/clients/24:41:8c:c3:16:df/details/overview?hostname=LP-YGUO1&clientStatus=historical&period=%7B%22startDate%22%3A%222022-11-09T08%3A16%3A07%2B00%3A00%22%2C%22endDate%22%3A%222022-11-10T08%3A16%3A07%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
                                   >
                                     LP-YGUO1
                                   </a>
@@ -736,10 +740,11 @@ exports[`HistoricalClientsTable should render correctly 1`] = `
                                 data-row-key="b2:db:24:a0:08:a9"
                               >
                                 <td
-                                  class="ant-table-cell ant-table-column-sort"
+                                  class="ant-table-cell ant-table-column-sort ant-table-cell-fix-left ant-table-cell-fix-left-last"
+                                  style="position: sticky; left: 0px;"
                                 >
                                   <a
-                                    href="/t/tenant-id/users/wifi/clients/b2:db:24:a0:08:a9/details/overview?clientStatus=historical&period=%7B%22startDate%22%3A%222022-11-02T04%3A04%3A22%2B00%3A00%22%2C%22endDate%22%3A%222022-11-03T04%3A04%3A22%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
+                                    href="/t/tenant-id/users/wifi/clients/b2:db:24:a0:08:a9/details/overview?hostname=false&clientStatus=historical&period=%7B%22startDate%22%3A%222022-11-02T04%3A04%3A22%2B00%3A00%22%2C%22endDate%22%3A%222022-11-03T04%3A04%3A22%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
                                   >
                                     --
                                   </a>

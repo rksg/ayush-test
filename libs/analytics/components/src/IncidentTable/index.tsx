@@ -10,7 +10,6 @@ import {
   severitySort,
   sortProp,
   Incident,
-  noDataSymbol,
   IncidentFilter,
   getRootCauseAndRecommendations,
   shortDescription,
@@ -19,6 +18,7 @@ import {
 import { Loader, TableProps, Drawer, Tooltip, Button } from '@acx-ui/components'
 import { DateFormatEnum, formatter }                   from '@acx-ui/formatter'
 import { TenantLink, useNavigateToPath }               from '@acx-ui/react-router-dom'
+import { noDataDisplay }                               from '@acx-ui/utils'
 
 import {
   useIncidentsListQuery,
@@ -178,7 +178,8 @@ export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
       width: 130,
       dataIndex: 'clientImpact',
       key: 'clientImpact',
-      sorter: { compare: sortProp('clientImpact', clientImpactSort) }
+      sorter: { compare: sortProp('clientImpact', clientImpactSort) },
+      sortDirections: ['descend', 'ascend', 'descend']
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Impacted Clients' })),
@@ -186,6 +187,7 @@ export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
       dataIndex: 'impactedClients',
       key: 'impactedClients',
       sorter: { compare: sortProp('impactedClients', clientImpactSort) },
+      sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center'
     },
     {
@@ -216,6 +218,7 @@ export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
   return (
     <Loader states={[queryResults]}>
       <UI.IncidentTableWrapper
+        settingsId='incident-table'
         type='tall'
         dataSource={data}
         columns={ColumnHeaders}
@@ -234,7 +237,7 @@ export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
         }}
         rowKey='id'
         showSorterTooltip={false}
-        columnEmptyText={noDataSymbol}
+        columnEmptyText={noDataDisplay}
         indentSize={6}
         onResetState={() => {
           setShowMuted(false)

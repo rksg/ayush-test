@@ -23,16 +23,13 @@ import { AccessStatus, CommonResult, DeviceRule } from '@acx-ui/rc/utils'
 import { useParams }                              from '@acx-ui/react-router-dom'
 import { filterByAccess }                         from '@acx-ui/user'
 
+import { AddModeProps, editModeProps } from '../AccessControlForm'
+
 import DeviceOSRuleContent, { DrawerFormItem } from './DeviceOSRuleContent'
 
 const { Option } = Select
 
 const { useWatch } = Form
-
-export interface editModeProps {
-  id: string,
-  isEdit: boolean
-}
 
 export interface DeviceOSRule {
   ruleName: string,
@@ -53,6 +50,7 @@ export interface DeviceOSDrawerProps {
     viewText: string
   },
   isOnlyViewMode?: boolean,
+  onlyAddMode?: AddModeProps,
   editMode?: editModeProps,
   setEditMode?: (editMode: editModeProps) => void
 }
@@ -60,6 +58,12 @@ export interface DeviceOSDrawerProps {
 export const GenDetailsColumn = (props: { row: DeviceOSRule }) => {
   const { $t } = useIntl()
   const { row } = props
+
+  if (row.access === AccessStatus.BLOCK) {
+    return <div>
+      {$t({ defaultMessage: 'All Traffic is blocked' })}
+    </div>
+  }
 
   const linkArray = []
   if (row.details.upLink >= 0) {
@@ -92,21 +96,26 @@ const AclGridCol = ({ children }: { children: ReactNode }) => {
 
 const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   const { $t } = useIntl()
-  const [visible, setVisible] = useState(false)
   const params = useParams()
   const {
     inputName = [],
     onlyViewMode = {} as { id: string, viewText: string },
     isOnlyViewMode = false,
+    onlyAddMode = { enable: false, visible: false } as AddModeProps,
     editMode = { id: '', isEdit: false } as editModeProps,
     setEditMode = () => {}
   } = props
+  const [visible, setVisible] = useState(onlyAddMode.enable ? onlyAddMode.visible : false)
+  const [localEditMode, setLocalEdiMode] = useState(
+    { id: '', isEdit: false } as editModeProps
+  )
   const [deviceOSDrawerVisible, setDeviceOSDrawerVisible] = useState(false)
   const [ruleDrawerEditMode, setRuleDrawerEditMode] = useState(false)
   const [deviceOSRuleList, setDeviceOSRuleList] = useState([] as DeviceOSRule[])
   const [deviceOSRule, setDeviceOSRule] = useState({} as DeviceOSRule)
   const [queryPolicyId, setQueryPolicyId] = useState('')
   const [requestId, setRequestId] = useState('')
+  const [skipFetch, setSkipFetch] = useState(true)
   const [contentForm] = Form.useForm()
   const [drawerForm] = Form.useForm()
 
@@ -146,7 +155,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     {
       params: { ...params, devicePolicyId: isOnlyViewMode ? onlyViewMode.id : devicePolicyId }
     },
-    { skip: !isOnlyViewMode && (devicePolicyId === '' || devicePolicyId === undefined) }
+    { skip: skipFetch }
   )
 
   const isViewMode = () => {
@@ -154,12 +163,16 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       return false
     }
 
-    if (editMode) {
-      return !editMode.isEdit
+    if (editMode.isEdit || localEditMode.isEdit) {
+      return false
     }
 
     return !_.isNil(devicePolicyInfo)
   }
+
+  useEffect(() => {
+    setSkipFetch(!isOnlyViewMode && (devicePolicyId === '' || devicePolicyId === undefined))
+  }, [isOnlyViewMode, devicePolicyId])
 
   useEffect(() => {
     if (editMode.isEdit && editMode.id !== '') {
@@ -169,7 +182,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   }, [editMode])
 
   useEffect(() => {
-    if (devicePolicyInfo && (isViewMode() || editMode.isEdit)) {
+    if (devicePolicyInfo && (isViewMode() || editMode.isEdit || localEditMode.isEdit)) {
       contentForm.setFieldValue('policyName', devicePolicyInfo.name)
       contentForm.setFieldValue('deviceDefaultAccess', devicePolicyInfo.defaultAccess)
       setDeviceOSRuleList([...devicePolicyInfo.rules.map((deviceRule: DeviceRule) => ({
@@ -185,6 +198,12 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       }))] as DeviceOSRule[])
     }
   }, [devicePolicyInfo, queryPolicyId])
+
+  useEffect(() => {
+    if (onlyAddMode.enable && onlyAddMode.visible) {
+      setVisible(onlyAddMode.visible)
+    }
+  }, [onlyAddMode])
 
   const basicColumns: TableProps<DeviceOSRule>['columns'] = [
     {
@@ -267,19 +286,27 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         id: '', isEdit: false
       })
     }
+    if (localEditMode.isEdit) {
+      setLocalEdiMode({
+        id: '', isEdit: false
+      })
+    }
   }
 
 
   const handleEditDetailsInfo = (rule: DeviceOSRule) => {
-    drawerForm.setFieldValue('details', rule.details)
-    drawerForm.setFieldValue('vlan', rule.details.vlan)
-    if (rule.details.upLink !== -1) {
-      drawerForm.setFieldValue('fromClient', true)
-      drawerForm.setFieldValue('fromClientValue', rule.details.upLink)
-    }
-    if (rule.details.downLink !== -1) {
-      drawerForm.setFieldValue('toClient', true)
-      drawerForm.setFieldValue('toClientValue', rule.details.downLink)
+    drawerForm.setFieldValue('access', rule.access)
+    if (rule.access !== AccessStatus.BLOCK) {
+      drawerForm.setFieldValue('details', rule.details)
+      drawerForm.setFieldValue('vlan', rule.details.vlan)
+      if (rule.details.upLink && rule.details.upLink !== -1) {
+        drawerForm.setFieldValue('fromClient', true)
+        drawerForm.setFieldValue('fromClientValue', rule.details.upLink)
+      }
+      if (rule.details.downLink && rule.details.downLink !== -1) {
+        drawerForm.setFieldValue('toClient', true)
+        drawerForm.setFieldValue('toClientValue', rule.details.downLink)
+      }
     }
   }
 
@@ -336,9 +363,11 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
           action: rule.access,
           deviceType: rule.deviceType,
           osVendor: rule.osVendor,
-          uploadRateLimit: rule.details.upLink >= 0 ? rule.details.upLink : null,
-          downloadRateLimit: rule.details.downLink >= 0 ? rule.details.downLink : null,
-          vlan: rule.details.vlan
+          uploadRateLimit: rule.access !== AccessStatus.BLOCK && rule.details.upLink >= 0
+            ? rule.details.upLink : null,
+          downloadRateLimit: rule.access !== AccessStatus.BLOCK && rule.details.downLink >= 0
+            ? rule.details.downLink : null,
+          vlan: rule.access !== AccessStatus.BLOCK ? rule.details.vlan : null
         }
       })],
       description: null
@@ -383,6 +412,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       drawerForm.setFieldValue('ruleName', editRow.ruleName)
       drawerForm.setFieldValue('deviceType', editRow.deviceType)
       drawerForm.setFieldValue('osVendor', editRow.osVendor)
+      drawerForm.setFieldValue('tempOsVendor', editRow.osVendor)
       handleEditDetailsInfo(editRow)
       clearSelection()
     }
@@ -407,6 +437,13 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       })
     }
   }] as { label: string, onClick: () => void }[]
+
+  const ruleValidator = () => {
+    if (!deviceOSRuleList.length) {
+      return Promise.reject($t({ defaultMessage: 'No rule were added yet' }))
+    }
+    return Promise.resolve()
+  }
 
   const content = <Form layout='horizontal' form={contentForm}>
     <DrawerFormItem
@@ -444,6 +481,9 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       label={$t({ defaultMessage: 'Rules ({number})' }, {
         number: deviceOSRuleList.length
       })}
+      rules={[
+        { validator: () => ruleValidator() }
+      ]}
     />
     <Table
       columns={basicColumns}
@@ -455,9 +495,13 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     />
   </Form>
 
-  return (
-    <>
-      { isOnlyViewMode ? <Button
+  const modelContent = () => {
+    if (onlyAddMode.enable) {
+      return null
+    }
+
+    if (isOnlyViewMode) {
+      return <Button
         type='link'
         size={'small'}
         onClick={() => {
@@ -466,51 +510,60 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         }
         }>
         {onlyViewMode.viewText}
-      </Button>: <GridRow style={{ width: '350px' }}>
-        <GridCol col={{ span: 12 }}>
-          <Form.Item
-            name={[...inputName, 'devicePolicyId']}
-            rules={[{
-              required: true
-            }, {
-              message: $t({ defaultMessage: 'Please select Device & OS profile' })
-            }]}
-            children={
-              <Select
-                style={{ width: '150px' }}
-                placeholder={$t({ defaultMessage: 'Select profile...' })}
-                onChange={(value) => {
-                  setQueryPolicyId(value)
-                }}
-                children={deviceSelectOptions}
-              />
-            }
-          />
-        </GridCol>
-        <AclGridCol>
-          <Button type='link'
-            disabled={!devicePolicyId}
-            onClick={() => {
-              if (devicePolicyId) {
-                setVisible(true)
-                setQueryPolicyId(devicePolicyId)
-              }
-            }
-            }>
-            {$t({ defaultMessage: 'View Details' })}
-          </Button>
-        </AclGridCol>
-        <AclGridCol>
-          <Button type='link'
-            onClick={() => {
+      </Button>
+    }
+
+    return <GridRow style={{ width: '350px' }}>
+      <GridCol col={{ span: 12 }}>
+        <Form.Item
+          name={[...inputName, 'devicePolicyId']}
+          rules={[{
+            required: true
+          }, {
+            message: $t({ defaultMessage: 'Please select Device & OS profile' })
+          }]}
+          children={
+            <Select
+              style={{ width: '150px' }}
+              placeholder={$t({ defaultMessage: 'Select profile...' })}
+              onChange={(value) => {
+                setQueryPolicyId(value)
+              }}
+              children={deviceSelectOptions}
+            />
+          }
+        />
+      </GridCol>
+      <AclGridCol>
+        <Button type='link'
+          disabled={!devicePolicyId}
+          onClick={() => {
+            if (devicePolicyId) {
               setVisible(true)
-              setQueryPolicyId('')
-              clearFieldsValue()
-            }}>
-            {$t({ defaultMessage: 'Add New' })}
-          </Button>
-        </AclGridCol>
-      </GridRow> }
+              setQueryPolicyId(devicePolicyId)
+              setLocalEdiMode({ id: devicePolicyId, isEdit: true })
+            }
+          }
+          }>
+          {$t({ defaultMessage: 'Edit Details' })}
+        </Button>
+      </AclGridCol>
+      <AclGridCol>
+        <Button type='link'
+          onClick={() => {
+            setVisible(true)
+            setQueryPolicyId('')
+            clearFieldsValue()
+          }}>
+          {$t({ defaultMessage: 'Add New' })}
+        </Button>
+      </AclGridCol>
+    </GridRow>
+  }
+
+  return (
+    <>
+      {modelContent()}
       <Drawer
         title={$t({ defaultMessage: 'Device & OS Access Settings' })}
         visible={visible}
@@ -526,7 +579,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
               try {
                 if (!isViewMode()) {
                   await contentForm.validateFields()
-                  await handleDevicePolicy(editMode.isEdit)
+                  await handleDevicePolicy(editMode.isEdit || localEditMode.isEdit)
                 }
                 handleDeviceOSDrawerClose()
               } catch (error) {

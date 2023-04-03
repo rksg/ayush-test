@@ -31,7 +31,8 @@ import { SwitchVlanUnion,
   SwitchPortViewModel,
   Vlan,
   Lag,
-  LAG_TYPE }                                                  from '@acx-ui/rc/utils'
+  LAG_TYPE,
+  sortPortFunction }                                                  from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 import { getIntl }   from '@acx-ui/utils'
 
@@ -43,20 +44,6 @@ interface SwitchLagProps {
   isEditMode: boolean
   editData: Lag[]
   setVisible: (visible: boolean) => void
-}
-
-export const sortPortFunction = (portIdA: { name: string, key: string },
-  portIdB: { name: string, key: string }) => {
-  const splitA = portIdA.key.split('/')
-  const valueA = calculatePortOrderValue(splitA[0], splitA[1], splitA[2])
-
-  const splitB = portIdB.key.split('/')
-  const valueB = calculatePortOrderValue(splitB[0], splitB[1], splitB[2])
-  return valueA - valueB
-}
-
-export const calculatePortOrderValue = (unitId: string, moduleId: string, portNumber: string) => {
-  return parseInt(unitId, 10) * 10000 + parseInt(moduleId, 10) * 100 + parseInt(portNumber, 10)
 }
 
 export const SwitchLagModal = (props: SwitchLagProps) => {
@@ -131,8 +118,9 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
         allPorts.map(port => port.portIdentifier), usedPortsId)
       let availablePorts = availablePortIds
         .concat(editDataPorts)
-        .map(portId => ({ name: portId, key: portId }))
+        .map(portId => ({ id: portId }))
         .sort(sortPortFunction)
+        .map(port => ({ name: port.id, key: port.id }))
       setAvailablePorts(availablePorts)
 
       const portTypeItem = _.uniqBy(allPorts.map(p => ({

@@ -20,6 +20,7 @@ export enum Features {
   CLIENT_TROUBLESHOOTING = 'acx-ui-client-troubleshooting-toggle',
   TIMELINE = 'acx-ui-timeline-toggle',
   NETWORK_SEGMENTATION='acx-ui-network-segmentation-toggle',
+  NETWORK_SEGMENTATION_SWITCH='switch-consumer-nsg-toggle',
   UNRELEASED='acx-ui-unreleased',
   SERVICE_VALIDATION = 'acx-ui-service-validation-toggle',
   DIRECTED_MULTICAST='wifi-consumer-directed-multicast-toggle',
@@ -32,5 +33,11 @@ export enum Features {
   AP_SNMP='wifi-consumer-ap-snmp-toggle',
   NEW_API='acx-ui-new-api',
   MAC_REGISTRATION = 'mac-registration-service-enabled',
-  PERSONA = 'persona-service-enabled'
+  PERSONA = 'persona-service-enabled',
+  DPSK_CLOUDPATH_FEATURE = 'acx-ui-dpsk-cloudpath-feature-enabled',
+  WISPR_ENCRYPT_MAC_IP = 'acx-ui-wispr-encrypt-mac-ip-toggle',
+  HEALTH_DRILLDOWN = 'acx-ui-health-drilldown-toggle',
+  PROPERTY_MANAGEMENT = 'property-management-enabled',
+  RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
+  POLICY_MANAGEMENT = 'policy-management-service-enabled'
 }

@@ -39,7 +39,8 @@ import {
   NetworkSaveData,
   NetworkVenue
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess }                                    from '@acx-ui/user'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
 
@@ -119,6 +120,7 @@ export function VenueNetworksTab () {
   })
 
   const params = useParams()
+  const navigate = useNavigate()
   const venueDetailsQuery = useVenueDetailsHeaderQuery({ params })
   const [updateNetworkVenue] = useUpdateNetworkVenueMutation()
 
@@ -148,6 +150,7 @@ export function VenueNetworksTab () {
   }, [tableQuery.data, venueDetailsQuery.data])
 
   const scheduleSlotIndexMap = useScheduleSlotIndexMap(tableData)
+  const linkToAddNetwork = useTenantLink('/networks/wireless/add')
 
   const activateNetwork = async (checked: boolean, row: Network) => {
     if (row.allApDisabled) {
@@ -192,6 +195,15 @@ export function VenueNetworksTab () {
   //   }
   // ]
 
+  const actions: TableProps<Network>['actions'] = [
+    {
+      label: $t({ defaultMessage: 'Add Network' }),
+      onClick: () => {
+        navigate(`${linkToAddNetwork.pathname}`)
+      }
+    }
+  ]
+
   const columns: TableProps<Network>['columns'] = [
     {
       key: 'name',
@@ -199,6 +211,7 @@ export function VenueNetworksTab () {
       dataIndex: 'name',
       sorter: true,
       defaultSortOrder: 'ascend',
+      fixed: 'left',
       render: function (data, row) {
         return (
           <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>{data}</TenantLink>
@@ -241,7 +254,7 @@ export function VenueNetworksTab () {
       dataIndex: 'vlan',
       width: 80,
       render: function (data, row) {
-        return transformVLAN(getCurrentVenue(row), row.deepNetwork?.wlan, (e) => handleClickApGroups(row, e))
+        return transformVLAN(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e))
       }
     },
     {
@@ -250,7 +263,7 @@ export function VenueNetworksTab () {
       dataIndex: 'aps',
       width: 80,
       render: function (data, row) {
-        return transformAps(getCurrentVenue(row), (e) => handleClickApGroups(row, e))
+        return transformAps(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e))
       }
     },
     {
@@ -259,7 +272,7 @@ export function VenueNetworksTab () {
       dataIndex: 'radios',
       width: 140,
       render: function (data, row) {
-        return transformRadios(getCurrentVenue(row), (e) => handleClickApGroups(row, e))
+        return transformRadios(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e))
       }
     },
     {
@@ -360,12 +373,10 @@ export function VenueNetworksTab () {
       { isLoading: false, isFetching: isAddNetworkUpdating },
       { isLoading: false, isFetching: isDeleteNetworkUpdating }
     ]}>
-      {/* <Row justify='end'> TODO:
-        <Button type='link'>{$t({ defaultMessage: 'Add Network' })}</Button>
-      </Row> */}
       <Table
+        settingsId='venue-networks-table'
         rowKey='id'
-        // actions={filterByAccess(actions)}  TODO: Waiting for API support
+        actions={filterByAccess(actions)}
         // rowSelection={{
         //   type: 'checkbox'
         // }}

@@ -19,7 +19,9 @@ import {
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
-import DeviceOSDrawer from '../AccessControlForm/DeviceOSDrawer'
+import { AddModeProps } from '../AccessControlForm/AccessControlForm'
+import DeviceOSDrawer   from '../AccessControlForm/DeviceOSDrawer'
+
 
 
 const defaultPayload = {
@@ -35,6 +37,9 @@ const defaultPayload = {
 const DevicePolicyComponent = () => {
   const { $t } = useIntl()
   const params = useParams()
+  const [addModeStatus, setAddModeStatus] = useState(
+    { enable: true, visible: false } as AddModeProps
+  )
 
   const [ delDevicePolicy ] = useDelDevicePolicyMutation()
 
@@ -101,6 +106,13 @@ const DevicePolicyComponent = () => {
     }
   }, [networkTableQuery.data, networkIds])
 
+  const actions = [{
+    label: $t({ defaultMessage: 'Add Device & OS Policy' }),
+    onClick: () => {
+      setAddModeStatus({ enable: true, visible: true })
+    }
+  }]
+
   const rowActions: TableProps<DevicePolicy>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
@@ -138,7 +150,11 @@ const DevicePolicyComponent = () => {
   ]
 
   return <Loader states={[tableQuery]}>
+    <DeviceOSDrawer
+      onlyAddMode={addModeStatus}
+    />
     <Table<DevicePolicy>
+      settingsId='policies-access-control-device-policy-table'
       columns={useColumns(networkFilterOptions, editMode, setEditMode)}
       enableApiFilter={true}
       dataSource={tableQuery.data?.data}
@@ -146,6 +162,7 @@ const DevicePolicyComponent = () => {
       onChange={tableQuery.handleTableChange}
       onFilterChange={tableQuery.handleFilterChange}
       rowKey='id'
+      actions={filterByAccess(actions)}
       rowActions={filterByAccess(rowActions)}
       rowSelection={{ type: 'radio' }}
     />
@@ -167,6 +184,7 @@ function useColumns (
       sorter: true,
       searchable: true,
       defaultSortOrder: 'ascend',
+      fixed: 'left',
       render: function (data, row) {
         return <DeviceOSDrawer
           editMode={row.id === editMode.id ? editMode : { id: '', isEdit: false }}
@@ -187,7 +205,8 @@ function useColumns (
       title: $t({ defaultMessage: 'Rules' }),
       dataIndex: 'rules',
       align: 'center',
-      sorter: true
+      sorter: true,
+      sortDirections: ['descend', 'ascend', 'descend']
     },
     {
       key: 'networkIds',
@@ -196,6 +215,7 @@ function useColumns (
       align: 'center',
       filterable: networkFilterOptions,
       sorter: true,
+      sortDirections: ['descend', 'ascend', 'descend'],
       render: (data, row) => row.networkIds?.length
     }
   ]

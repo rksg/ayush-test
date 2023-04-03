@@ -170,6 +170,16 @@ export default function NetworkForm (props:{
           minutesMapping[data.macCredentialsDurationUnit]
         }
       }
+      if(saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr
+        &&data.guestPortal.wisprPage?.customExternalProvider){
+        data.guestPortal = {
+          ...data.guestPortal,
+          wisprPage: {
+            ...data.guestPortal.wisprPage,
+            externalProviderName: data.guestPortal.wisprPage.providerName
+          }
+        }
+      }
     }
     return data
   }
@@ -391,11 +401,11 @@ export default function NetworkForm (props:{
             title={intl.$t(settingTitle, { type: saveState.type })}
             onFinish={async (data) => {
               if (saveState.type !== NetworkTypeEnum.CAPTIVEPORTAL) {
-                const radiusChanged = !_.isEqual(
+                const radiusChanged = (data?.authRadius || data?.accountingRadius)&&(!_.isEqual(
                   data?.authRadius,
                   // TODO: saveState?.authRadius would become null when user move back to settings, then radiusChanged will equal to true but there is no value in authRadius
                   saveState?.authRadius === null ? undefined : saveState?.authRadius
-                ) || !_.isEqual(data?.accountingRadius, saveState?.accountingRadius)
+                ) || !_.isEqual(data?.accountingRadius, saveState?.accountingRadius))
                 const radiusValidate = !data.cloudpathServerId && radiusChanged
                   ? await checkIpsValues(data) : false
                 const hasRadiusError = radiusValidate

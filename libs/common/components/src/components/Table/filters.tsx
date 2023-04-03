@@ -1,6 +1,8 @@
-import React from 'react'
-
-import { Select }      from 'antd'
+import { Select }     from 'antd'
+import {
+  BaseOptionType,
+  DefaultOptionType
+} from 'antd/lib/select'
 import { FilterValue } from 'antd/lib/table/interface'
 import { IntlShape }   from 'react-intl'
 
@@ -19,7 +21,7 @@ function hasChildrenColumn <RecordType> (
 }
 
 export function getFilteredData <RecordType> (
-  dataSource: readonly (RecordType|RecordWithChildren<RecordType>)[] | undefined,
+  dataSource: readonly (RecordType | RecordWithChildren<RecordType>)[] | undefined,
   filterValues: Filter,
   activeFilters: TableColumn<RecordType, 'text'>[],
   searchables: TableColumn<RecordType, 'text'>[],
@@ -35,8 +37,9 @@ export function getFilteredData <RecordType> (
     }
     if (searchValue && searchValue.length >= MIN_SEARCH_LENGTH) {
       return searchables.some(column => {
-        return (row[column.dataIndex as keyof RecordType] as unknown as string)
-          .toString()
+        const target = row[column.dataIndex as keyof RecordType]
+        return typeof target === 'string' && target
+          ?.toString()
           .toLowerCase()
           .includes(searchValue.toLowerCase())
       })
@@ -60,14 +63,15 @@ export function renderSearch <RecordType> (
   intl: IntlShape,
   searchables: TableColumn<RecordType, 'text'>[],
   searchValue: string,
-  setSearchValue: Function
+  setSearchValue: Function,
+  hasGroupBy?: Boolean
 ): React.ReactNode {
   return <UI.SearchInput
     onChange={e => setSearchValue(e.target.value)}
     placeholder={intl.$t({ defaultMessage: 'Search {searchables}' }, {
       searchables: searchables.map(column => column.title).join(', ')
     })}
-    style={{ width: 292 }}
+    style={{ width: hasGroupBy ? 200 : 292 }}
     value={searchValue}
     allowClear
   />
@@ -79,14 +83,13 @@ export function renderFilter <RecordType> (
   filterValues: Filter,
   setFilterValues: Function,
   enableApiFilter: boolean
-): React.ReactNode {
+) {
   const key = (column.filterKey || column.dataIndex) as keyof RecordType
   const addToFilter = (data: string[], value: string) => {
-    if (!data.includes(value)) {
+    if (typeof value !== 'undefined' && !data.includes(value)) {
       data.push(value)
     }
   }
-
   const options = Array.isArray(column.filterable)
     ? column.filterable
     : !enableApiFilter
@@ -118,15 +121,26 @@ export function renderFilter <RecordType> (
         setFilterValues({ ...filterValues, [key]: isValidValue ? filterValue : undefined })
       }
     }}
+    filterOption={filterOption}
     placeholder={column.title as string}
     showArrow
     allowClear
     style={{ width: 200 }}
   >
-    {options?.map(option =>
-      <Select.Option value={option.key} key={option.key} data-testid={`option-${option.key}`} >
-        {option.value}
-      </Select.Option>
+    {options?.map((option, index) =>
+      <Select.Option
+        value={option.key}
+        key={option.key ?? index}
+        data-testid={`option-${option.key}`}
+        children={option.value}
+      />
     )}
   </UI.FilterSelect>
+}
+
+export const filterOption = (
+  input: string,
+  option: DefaultOptionType | BaseOptionType | undefined
+) => {
+  return option?.children?.toLowerCase().includes(input.toLowerCase())
 }

@@ -1,5 +1,6 @@
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 
+import { Filter } from '@acx-ui/components'
 import {
   Activity,
   EventBase,
@@ -12,7 +13,10 @@ import {
   CommonUrlsInfo,
   TableResult,
   RequestPayload,
-  onSocketActivityChanged
+  onSocketActivityChanged,
+  downloadFile,
+  SEARCH,
+  SORTER
 } from '@acx-ui/rc/utils'
 import { baseTimelineApi } from '@acx-ui/store'
 
@@ -30,6 +34,19 @@ const metaFields = [
   'floorPlanName',
   'recipientName'
 ]
+
+export type EventsExportPayload = {
+  clientDateFormat: string
+  clientTimeZone: string
+  detailLevel: string
+  eventsPeriodForExport: {
+    fromTime: string
+    toTime: string
+  }
+  filters: Filter
+  isSupport: boolean
+  tenantId: string
+} & SEARCH & SORTER
 
 export const timelineApi = baseTimelineApi.injectEndpoints({
   endpoints: (build) => ({
@@ -76,8 +93,11 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
         return {
           data: {
             ...baseList,
-            data: baseListData.map((base) =>
-              ({ ...base, ...(metaListData.find(meta=>meta.id === base.id)) })) as Event[]
+            data: baseListData.map((base) => ({
+              ...base,
+              ...{ entity_type: base.entity_type.toUpperCase() },
+              ...(metaListData.find(meta=>meta.id === base.id))
+            })) as Event[]
           }
         }
       }
@@ -114,6 +134,24 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
           }
         }
       }
+    }),
+    downloadEventsCSV: build.mutation<Blob, EventsExportPayload>({
+      query: (payload) => {
+        const req = createHttpRequest(CommonUrlsInfo.downloadCSV,
+          { tenantId: payload.tenantId }
+        )
+        return {
+          ...req,
+          body: payload,
+          responseHandler: async (response) => {
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1]
+              : 'download.csv'
+            downloadFile(response, fileName)
+          }
+        }
+      }
     })
   })
 })
@@ -121,5 +159,6 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
 export const {
   useActivitiesQuery,
   useEventsQuery,
-  useAdminLogsQuery
+  useAdminLogsQuery,
+  useDownloadEventsCSVMutation
 } = timelineApi

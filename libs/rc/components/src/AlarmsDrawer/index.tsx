@@ -57,7 +57,8 @@ const defaultPayload: {
       'venueName',
       'apName',
       'switchName',
-      'sourceType'
+      'sourceType',
+      'switchMacAddress'
     ]
   }
 
@@ -66,6 +67,11 @@ export function AlarmsDrawer (props: AlarmsType) {
   const { data } = useGetAlarmCountQuery({ params })
   const { $t } = useIntl()
   const { visible, setVisible, serialNumber } = props
+
+  window.addEventListener('showAlarmDrawer',(function (e:CustomEvent){
+    setVisible(true)
+    setSeverity(e.detail.data.name)
+  }) as EventListener)
 
   const toggleForSwitch = useIsSplitOn(Features.DEVICES)
 
@@ -90,7 +96,8 @@ export function AlarmsDrawer (props: AlarmsType) {
     },
     pagination: {
       pageSize: 25
-    }
+    },
+    option: { skip: !visible }
   })
 
   useEffect(()=>{
@@ -134,8 +141,9 @@ export function AlarmsDrawer (props: AlarmsType) {
       }
       case EventTypeEnum.SWITCH: {
         if(toggleForSwitch){
+          const switchId = alarm.switchMacAddress || alarm.serialNumber
           return <TenantLink
-            to={`/devices/switch/${alarm.entityId}/${alarm.serialNumber}/details/timeline`}>
+            to={`/devices/switch/${switchId}/${alarm.serialNumber}/details/timeline`}>
             {alarm.switchName}
           </TenantLink>
         }else{

@@ -10,7 +10,15 @@ import AllRoutes from './AllRoutes'
 
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
-  useStreamActivityMessagesQuery: jest.fn()
+  useStreamActivityMessagesQuery: jest.fn(),
+  useGetMspEcProfileQuery: () => ({ data: {
+    msp_label: '',
+    name: '',
+    service_effective_date: '',
+    service_expiration_date: '',
+    is_active: 'false'
+  } }),
+  useGetPreferencesQuery: () => ({ data: {} })
 }))
 jest.mock('@acx-ui/main/components', () => ({
   ...jest.requireActual('@acx-ui/main/components'),
@@ -22,13 +30,14 @@ jest.mock('@acx-ui/main/components', () => ({
   FetchBot: () => <div data-testid='fetch-bot' />
 }))
 jest.mock('@acx-ui/rc/components', () => ({
-  CloudMessageBanner: () => <div data-testid='cloud-message-banner' />
+  CloudMessageBanner: () => <div data-testid='cloud-message-banner' />,
+  useUpdateGoogleMapRegion: () => { return { update: jest.fn() }}
 }))
 jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user'),
   useUserProfileContext: () => ({ data: { companyName: 'Mock company' } })
 }))
-jest.mock('./pages/Dashboard', () => () => {
+jest.mock('./pages/Dashboardv2', () => () => {
   return <div data-testid='dashboard' />
 })
 jest.mock('analytics/Routes', () => () => {

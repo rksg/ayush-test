@@ -19,7 +19,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
-import Layer3Drawer from '../AccessControlForm/Layer3Drawer'
+import { AddModeProps } from '../AccessControlForm/AccessControlForm'
+import Layer3Drawer     from '../AccessControlForm/Layer3Drawer'
 
 
 const defaultPayload = {
@@ -36,6 +37,9 @@ const defaultPayload = {
 const Layer3Component = () => {
   const { $t } = useIntl()
   const params = useParams()
+  const [addModeStatus, setAddModeStatus] = useState(
+    { enable: true, visible: false } as AddModeProps
+  )
 
   const [ delL3AclPolicy ] = useDelL3AclPolicyMutation()
 
@@ -101,6 +105,13 @@ const Layer3Component = () => {
     }
   }, [networkTableQuery.data, networkIds])
 
+  const actions = [{
+    label: $t({ defaultMessage: 'Add Layer 3 Policy' }),
+    onClick: () => {
+      setAddModeStatus({ enable: true, visible: true })
+    }
+  }]
+
   const rowActions: TableProps<L3AclPolicy>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
@@ -138,7 +149,11 @@ const Layer3Component = () => {
   ]
 
   return <Loader states={[tableQuery]}>
+    <Layer3Drawer
+      onlyAddMode={addModeStatus}
+    />
     <Table<L3AclPolicy>
+      settingsId='policies-access-control-layer3-table'
       columns={useColumns(networkFilterOptions, editMode, setEditMode)}
       enableApiFilter={true}
       dataSource={tableQuery.data?.data}
@@ -146,6 +161,7 @@ const Layer3Component = () => {
       onChange={tableQuery.handleTableChange}
       onFilterChange={tableQuery.handleFilterChange}
       rowKey='id'
+      actions={filterByAccess(actions)}
       rowActions={filterByAccess(rowActions)}
       rowSelection={{ type: 'radio' }}
     />
@@ -167,6 +183,7 @@ function useColumns (
       sorter: true,
       searchable: true,
       defaultSortOrder: 'ascend',
+      fixed: 'left',
       render: function (data, row) {
         return <Layer3Drawer
           editMode={row.id === editMode.id ? editMode : { id: '', isEdit: false }}
@@ -187,7 +204,8 @@ function useColumns (
       title: $t({ defaultMessage: 'Rules' }),
       dataIndex: 'rules',
       align: 'center',
-      sorter: true
+      sorter: true,
+      sortDirections: ['descend', 'ascend', 'descend']
     },
     {
       key: 'networkIds',
@@ -196,6 +214,7 @@ function useColumns (
       align: 'center',
       filterable: networkFilterOptions,
       sorter: true,
+      sortDirections: ['descend', 'ascend', 'descend'],
       render: (data, row) => row.networkIds?.length
     }
   ]

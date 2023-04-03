@@ -13,11 +13,12 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { DateFormatEnum, formatter }  from '@acx-ui/formatter'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   useInviteCustomerListQuery,
   useVarCustomerListQuery,
-  useAcceptRejectInvitationMutation
+  useAcceptRejectInvitationMutation,
+  useDelegateToMspEcPath
 } from '@acx-ui/rc/services'
 import {
   DelegationEntitlementRecord,
@@ -26,9 +27,9 @@ import {
   VarCustomer,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { getBasePath, Link, TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { RolesEnum }                                from '@acx-ui/types'
-import { hasRoles, useUserProfileContext }          from '@acx-ui/user'
+import { Link, TenantLink, useParams }     from '@acx-ui/react-router-dom'
+import { RolesEnum }                       from '@acx-ui/types'
+import { hasRoles, useUserProfileContext } from '@acx-ui/user'
 
 const transformApUtilization = (row: VarCustomer) => {
   if (row.entitlements) {
@@ -82,6 +83,7 @@ export function VarCustomers () {
   const { data: userProfile } = useUserProfileContext()
   const [ handleInvitation
   ] = useAcceptRejectInvitationMutation()
+  const { delegateToMspEcPath } = useDelegateToMspEcPath()
 
   const InvitationList = () => {
     const [inviteCount, setInviteCount] = useState(0)
@@ -130,12 +132,7 @@ export function VarCustomers () {
         dataIndex: 'tenantName',
         key: 'tenantName',
         sorter: true,
-        defaultSortOrder: 'ascend' as SortOrder,
-        render: function (data) {
-          return (
-            <TenantLink to={''}>{data}</TenantLink>
-          )
-        }
+        defaultSortOrder: 'ascend' as SortOrder
       },
       {
         title: $t({ defaultMessage: 'Account Email' }),
@@ -203,10 +200,14 @@ export function VarCustomers () {
       searchable: true,
       sorter: true,
       defaultSortOrder: 'ascend' as SortOrder,
+      onCell: (data) => {
+        return {
+          onClick: () => { delegateToMspEcPath(data.tenantId) }
+        }
+      },
       render: function (data, row, _, highlightFn) {
-        const to = `${getBasePath()}/t/${row.tenantId}`
         return (
-          <Link to={to}>{highlightFn(data as string)}</Link>
+          <Link to=''>{highlightFn(data as string)}</Link>
         )
       }
     },
@@ -304,7 +305,7 @@ export function VarCustomers () {
         title={title}
         extra={
           <TenantLink to='/dashboard' key='add'>
-            <Button>{$t({ defaultMessage: 'Manage my account' })}</Button>
+            <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
           </TenantLink>
         }
       />

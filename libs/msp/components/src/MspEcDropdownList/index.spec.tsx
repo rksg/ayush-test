@@ -80,19 +80,13 @@ const varList = {
     {
       entitlements: [],
       id: '2242a683a7594d7896385cfef1fe4442',
-      tenantId: '3061bd56e37445a8993ac834c01e2710',
+      tenantId: '30c86e37445a8993ac834c01e2710',
       tenantName: 'Eva Airways',
       tenantEmail: 'eva@mail.com'
     }
   ]
 }
 
-const tenantId = '3061bd56e37445a8993ac834c01e2710'
-
-jest.mock('@acx-ui/rc/utils', () => ({
-  ...jest.requireActual('@acx-ui/rc/utils'),
-  TenantIdFromJwt: () => ({ tenantId })
-}))
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom')
 }))

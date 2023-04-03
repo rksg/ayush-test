@@ -27,6 +27,7 @@ export function ClientIsolationInstancesTable () {
       dataIndex: 'venueName',
       sorter: true,
       searchable: true,
+      fixed: 'left',
       render: function (data, row) {
         return (
           <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{data}</TenantLink>

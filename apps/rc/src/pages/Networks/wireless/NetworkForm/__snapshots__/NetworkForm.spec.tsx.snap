@@ -1097,7 +1097,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                               </span>
                             </div>
                             <div
-                              class="styledComponents__Wrapper-sc-1abm7iv-12 iqWyRG"
+                              class="styledComponents__Wrapper-sc-1abm7iv-12 kskPjC"
                             >
                               <div
                                 class="ant-pro-table"
@@ -1111,38 +1111,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                                   >
                                     <div
                                       class="ant-pro-table-list-toolbar"
-                                    >
-                                      <div
-                                        class="ant-pro-table-list-toolbar-container"
-                                      >
-                                        <div
-                                          class="ant-pro-table-list-toolbar-left"
-                                        />
-                                        <div
-                                          class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
-                                        >
-                                          <div
-                                            class="ant-space-item"
-                                          >
-                                            <div
-                                              class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
-                                            >
-                                              <div
-                                                class="ant-space-item"
-                                              >
-                                                <div
-                                                  class="ant-pro-table-list-toolbar-setting-item"
-                                                >
-                                                  <svg
-                                                    data-testid="SettingsOutlined"
-                                                  />
-                                                </div>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
+                                    />
                                     <div
                                       class="ant-table-wrapper"
                                     >

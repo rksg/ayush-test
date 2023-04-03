@@ -39,7 +39,7 @@ function useColumns (
       key: 'name',
       dataIndex: 'name',
       sorter: true,
-      disable: true,
+      fixed: 'left',
       searchable: searchable,
       defaultSortOrder: 'ascend',
       render: function (data, row, _, highlightFn) {
@@ -98,6 +98,7 @@ function useColumns (
       key: 'aggregatedApStatus',
       dataIndex: 'aggregatedApStatus',
       sorter: true,
+      sortDirections: ['descend', 'ascend', 'descend'],
       render: function (data, row) {
         const count = row.aggregatedApStatus
           ? Object.values(row.aggregatedApStatus)
@@ -116,6 +117,7 @@ function useColumns (
       key: 'clients',
       dataIndex: 'clients',
       sorter: true,
+      sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center',
       render: function (data, row) {
         return (
@@ -131,11 +133,12 @@ function useColumns (
       key: 'switches',
       dataIndex: 'switches',
       sorter: true,
+      sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center',
       render: function (data, row) {
         return (
           <TenantLink
-            to={`/venues/${row.id}/venue-details/devices`}
+            to={`/venues/${row.id}/venue-details/devices/switch`}
             children={data ? data : 0}
           />
         )
@@ -146,11 +149,12 @@ function useColumns (
       key: 'switchClients',
       dataIndex: 'switchClients',
       sorter: true,
+      sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center',
       render: function (data, row) {
         return (
           <TenantLink
-            to={`/venues/${row.id}/venue-details/clients`}
+            to={`/venues/${row.id}/venue-details/clients/switch`}
             children={data ? data : 0}
           />
         )
@@ -266,6 +270,7 @@ export const VenueTable = (
       { isLoading: false, isFetching: isDeleteVenueUpdating }
     ]}>
       <Table
+        settingsId='venues-table'
         columns={columns}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}

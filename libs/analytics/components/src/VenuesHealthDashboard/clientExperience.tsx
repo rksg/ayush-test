@@ -4,11 +4,11 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { AnalyticsFilter }                                         from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, HistoricalCard, Loader, ProgressBarV2 } from '@acx-ui/components'
+import { useNavigateToPath }                                       from '@acx-ui/react-router-dom'
 
 import { HealthData, useHealthQuery } from './services'
 
 import { calcPercent } from './index'
-
 
 export function ClientExperience ({
   filters
@@ -57,9 +57,11 @@ export function ClientExperience ({
     }
   }
   const healthData = data && data.health.length ? getHealthData(data.health) : null
+  const onArrowClick = useNavigateToPath('/analytics/health/')
 
   return(<Loader states={[queryResults]}>
-    <HistoricalCard title={$t({ defaultMessage: 'Client Experience' })}>
+    <HistoricalCard title={$t({ defaultMessage: 'Client Experience' })}
+      onArrowClick={onArrowClick}>
       <AutoSizer>
         {({ height, width }) => (
           <div style={{ display: 'block', height, width }}>

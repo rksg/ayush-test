@@ -21,21 +21,27 @@ import {
 import {
   MspEcDropdownList
 } from '@acx-ui/msp/components'
-import { CloudMessageBanner }                                    from '@acx-ui/rc/components'
-import { isDelegationMode, TenantIdFromJwt }                     from '@acx-ui/rc/utils'
+import { CloudMessageBanner, useUpdateGoogleMapRegion }          from '@acx-ui/rc/components'
+import { useGetPreferencesQuery }                                from '@acx-ui/rc/services'
+import { isDelegationMode, TenantPreferenceSettings }            from '@acx-ui/rc/utils'
 import { getBasePath, Link, Outlet, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { useParams }                                             from '@acx-ui/react-router-dom'
 import { RolesEnum }                                             from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }                       from '@acx-ui/user'
+import { getJwtTokenPayload, PverName }                          from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
 import SearchBar         from './SearchBar'
 import * as UI           from './styledComponents'
 
-
+const getMapRegion = (data: TenantPreferenceSettings | undefined): string => {
+  return data?.global.mapRegion as string
+}
 
 function Layout () {
   const [supportStatus,setSupportStatus] = useState('')
+  const [isSkip, setSkipQuery] = useState(false)
+
   const { data: userProfile } = useUserProfileContext()
   const companyName = userProfile?.companyName
   const showHomeButton = isDelegationMode() || userProfile?.var
@@ -48,6 +54,19 @@ function Layout () {
   const [searchExpanded, setSearchExpanded] = useState<boolean>(searchFromUrl !== '')
   const [licenseExpanded, setLicenseExpanded] = useState<boolean>(false)
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
+
+  const { data } = useGetPreferencesQuery({ params }, { skip: isSkip })
+  const { update: updateGoogleMapRegion } = useUpdateGoogleMapRegion()
+  const isBackToRC = (PverName.ACX === getJwtTokenPayload().pver ||
+    PverName.ACX_HYBRID === getJwtTokenPayload().pver)
+
+  useEffect(() => {
+    if (data?.global) {
+      const currentMapRegion = getMapRegion(data)
+      updateGoogleMapRegion(currentMapRegion)
+      setSkipQuery(true)
+    }
+  }, [data])
 
   useEffect(() => {
     if (isGuestManager && params['*'] !== 'guestsManager') {
@@ -69,12 +88,20 @@ function Layout () {
       }
       leftHeaderContent={
         <UI.LeftHeaderWrapper>
-          { showHomeButton && <Link to={`${getBasePath()}/v/${TenantIdFromJwt()}`}>
-            <UI.Home>
-              <LayoutUI.Icon children={<HomeSolid />} />
-              {$t({ defaultMessage: 'Home' })}
-            </UI.Home>
-          </Link> }
+          { showHomeButton && isBackToRC ?
+            <a href={`/api/ui/v/${getJwtTokenPayload().tenantId}`}>
+              <UI.Home>
+                <LayoutUI.Icon children={<HomeSolid />} />
+                {$t({ defaultMessage: 'Home' })}
+              </UI.Home>
+            </a> :
+            <Link to={`${getBasePath()}/v/${getJwtTokenPayload().tenantId}`}>
+              <UI.Home>
+                <LayoutUI.Icon children={<HomeSolid />} />
+                {$t({ defaultMessage: 'Home' })}
+              </UI.Home>
+            </Link>
+          }
           <RegionButton/>
           <HeaderContext.Provider value={{
             searchExpanded, licenseExpanded, setSearchExpanded, setLicenseExpanded }}>
@@ -92,8 +119,11 @@ function Layout () {
         {isDelegationMode()
           ? <MspEcDropdownList/>
           : <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>}
-        <AlarmsButton/>
-        <ActivityButton/>
+        {!isGuestManager &&
+          <>
+            <AlarmsButton />
+            <ActivityButton />
+          </>}
         <FetchBot showFloatingButton={false} statusCallback={setSupportStatus}/>
         <HelpButton supportStatus={supportStatus}/>
         <UserButton/>

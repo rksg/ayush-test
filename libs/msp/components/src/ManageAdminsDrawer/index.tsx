@@ -165,7 +165,7 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
 
   const content =
     <Space direction='vertical'>
-      <Subtitle level={3}>
+      <Subtitle level={4}>
         { $t({ defaultMessage: 'Select customer\'s MSP administrators' }) }</Subtitle>
       <Loader states={[queryResults
       ]}>

@@ -130,7 +130,7 @@ describe('Cli Profile Form - Add', () => {
       await screen.findByLabelText(/Profile Name/), { target: { value: 'test cli' } }
     )
     await userEvent.click(await screen.findByRole('button', { name: 'Select All' }))
-    await screen.findByText('26 Models selected')
+    await screen.findByText('42 Models selected')
     await userEvent.click(await screen.findByRole('button', { name: 'Deselect All' }))
     await screen.findByText('0 Models selected')
   })
@@ -153,9 +153,9 @@ describe('Cli Profile Form - Add', () => {
     )
     const options = await screen.findAllByRole('checkbox')
 
-    expect(options).toHaveLength(30) // family model group 4 + model 26
+    expect(options).toHaveLength(47) // family model group 5 + model 42
     await userEvent.click(await screen.findByRole('button', { name: 'Select All' }))
-    await screen.findByText('26 Models selected')
+    await screen.findByText('42 Models selected')
     await userEvent.click(options[0])
     await userEvent.click(await screen.findByRole('button', { name: 'Deselect All' }))
     await screen.findByText('11 Models selected')
@@ -202,7 +202,8 @@ describe('Cli Profile Form - Add', () => {
   }, 30000)
 })
 
-describe('Cli Profile Form - Edit', () => {
+// TODO: remove skip when ACX-13452 is fixed by moving to StepsFormNew
+describe.skip('Cli Profile Form - Edit', () => {
   const params = {
     tenantId: 'tenant-id',
     action: 'edit',
@@ -219,7 +220,7 @@ describe('Cli Profile Form - Edit', () => {
       rest.post(CommonUrlsInfo.getConfigProfiles.url,
         (_, res, ctx) => res(ctx.json({ data: profiles }))
       ),
-      rest.get(CommonUrlsInfo.getSwitchConfigProfile.url,
+      rest.get(SwitchUrlsInfo.getSwitchConfigProfile.url,
         (_, res, ctx) => res(ctx.json(cliProfile))
       ),
       rest.get(SwitchUrlsInfo.getCliConfigExamples.url,

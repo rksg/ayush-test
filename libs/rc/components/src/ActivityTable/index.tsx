@@ -16,10 +16,9 @@ import {
   statusMapping,
   CommonUrlsInfo,
   TABLE_QUERY_LONG_POLLING_INTERVAL,
-  useTableQuery,
-  noDataDisplay
+  useTableQuery
 } from '@acx-ui/rc/utils'
-import { useDateFilter } from '@acx-ui/utils'
+import { useDateFilter, noDataDisplay } from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 
@@ -83,17 +82,22 @@ export function useActivityTableQuery (baseFilters: Record<string, string> = {})
 }
 
 interface ActivityTableProps {
+  settingsId?: string
   tableQuery: TableQuery<Activity, RequestPayload<unknown>, unknown>
   filterables?: boolean | string[]
   columnState?: TableProps<Activity>['columnState']
 }
 
 const ActivityTable = ({
-  tableQuery, filterables = true, columnState
+  settingsId,
+  tableQuery,
+  filterables = true,
+  columnState
 }: ActivityTableProps) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
-  const [current, setCurrent] = useState<string>()
+  const [current, setCurrent] = useState<Activity>()
+  useEffect(() => { setVisible(false) },[tableQuery.data?.data])
 
   const columns: TableProps<Activity>['columns'] = [
     {
@@ -102,13 +106,14 @@ const ActivityTable = ({
       dataIndex: 'startDatetime',
       defaultSortOrder: 'descend',
       sorter: true,
+      fixed: 'left',
       render: function (_, row) {
         return <Button
           type='link'
           size='small'
           onClick={()=>{
             setVisible(true)
-            setCurrent(row.requestId)
+            setCurrent(row)
           }}
         >{formatter(DateFormatEnum.DateTimeFormatWithSeconds)(row.startDatetime)}</Button>
       }
@@ -184,9 +189,10 @@ const ActivityTable = ({
 
   return <Loader states={[tableQuery]}>
     <Table
+      settingsId={settingsId}
       rowKey='startDatetime'
       columns={columns}
-      dataSource={tableQuery.data?.data}
+      dataSource={tableQuery.data?.data ?? []}
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
       onFilterChange={tableQuery.handleFilterChange}
@@ -197,10 +203,8 @@ const ActivityTable = ({
       title={defineMessage({ defaultMessage: 'Activity Details' })}
       visible={visible}
       onClose={()=>setVisible(false)}
-      data={getDrawerData(tableQuery.data?.data
-        .find(row => current && row.requestId === current)!)}
-      timeLine={tableQuery.data?.data
-        .find(row => current && row.requestId === current)?.steps}
+      data={getDrawerData(current)}
+      timeLine={current.steps}
     /> }
   </Loader>
 }

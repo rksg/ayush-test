@@ -38,7 +38,8 @@ import {
   useDisableMspEcSupportMutation,
   useMspAssignmentSummaryQuery,
   useMspAssignmentHistoryQuery,
-  useMspAdminListQuery
+  useMspAdminListQuery,
+  useMspCustomerListQuery
 } from '@acx-ui/rc/services'
 import {
   Address,
@@ -54,7 +55,8 @@ import {
   MspAssignmentSummary,
   MspEcDelegatedAdmins,
   MspIntegratorDelegated,
-  AssignActionEnum
+  AssignActionEnum,
+  useTableQuery
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -204,6 +206,22 @@ export function ManageCustomer () {
       useMspEcAdminListQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
   const { data: ecSupport } =
       useGetMspEcSupportQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
+  const { data: techPartners } = useTableQuery({
+    useQuery: useMspCustomerListQuery,
+    defaultPayload: {
+      filters: { tenantType: [AccountType.MSP_INTEGRATOR, AccountType.MSP_INSTALLER] },
+      fields: [
+        'id',
+        'name',
+        'tenantType'
+      ],
+      pageSize: 10000,
+      sortField: 'name',
+      sortOrder: 'ASC'
+    },
+    option: { skip: action !== 'edit' }
+  })
+
   const [
     enableMspEcSupport
   ] = useEnableMspEcSupportMutation()
@@ -277,6 +295,19 @@ export function ManageCustomer () {
       setAdministrator(selAdmins)
     }
   }, [delegatedAdmins, Administrators])
+
+  useEffect(() => {
+    if (techPartners?.data && mspEcTenantId) {
+      const assignedIntegrator = techPartners.data.filter(mspEc =>
+        mspEc.assignedMspEcList?.includes(mspEcTenantId)
+        && mspEc.tenantType === AccountType.MSP_INTEGRATOR)
+      const assignedInstaller = techPartners.data.filter(mspEc =>
+        mspEc.assignedMspEcList?.includes(mspEcTenantId)
+        && mspEc.tenantType === AccountType.MSP_INSTALLER)
+      setIntegrator(assignedIntegrator)
+      setInstaller(assignedInstaller)
+    }
+  }, [techPartners])
 
   const [sameCountry, setSameCountry] = useState(true)
   const addressValidator = async (value: string) => {
@@ -504,7 +535,7 @@ export function ManageCustomer () {
       return '--'
     return <>
       {mspAdmins.map(admin =>
-        <UI.AdminList>
+        <UI.AdminList key={admin.id}>
           {admin.email} ({intl.$t(roleDisplayText[admin.role])})
         </UI.AdminList>
       )}
@@ -660,7 +691,7 @@ export function ManageCustomer () {
 
   const WifiSubscription = () => {
     const wifiLicenses = availableLicense.filter(p => p.deviceType === 'MSP_WIFI')
-    let remainingDevices = 0
+    let remainingDevices = assignedWifiLicense
     wifiLicenses.forEach( (lic: MspAssignmentSummary) => {
       remainingDevices += lic.remainingDevices
     })
@@ -685,7 +716,7 @@ export function ManageCustomer () {
 
   const SwitchSubscription = () => {
     const switchLicenses = availableLicense.filter(p => p.deviceType === 'MSP_SWITCH')
-    let remainingDevices = 0
+    let remainingDevices = assignedSwitchLicense
     switchLicenses.forEach( (lic: MspAssignmentSummary) => {
       remainingDevices += lic.remainingDevices
     })
@@ -712,14 +743,14 @@ export function ManageCustomer () {
     return <>
       <div>
         <h4 style={{ display: 'inline-block', marginTop: '38px', marginRight: '25px' }}>
-          {intl.$t({ defaultMessage: 'Enable access to RUCKUS One support' })}</h4>
+          {intl.$t({ defaultMessage: 'Enable access to Ruckus Support' })}</h4>
         <Switch defaultChecked={ecSupportEnabled} onChange={ecSupportOnChange}/></div>
       <div><label>
-        {intl.$t({ defaultMessage: 'If checked, Ruckus support team is granted a temporary' +
+        {intl.$t({ defaultMessage: 'If checked, Ruckus Support team is granted a temporary' +
   ' administrator-level access for 21 days.' })}</label>
       </div>
       <label>
-        {intl.$t({ defaultMessage: 'Enable when requested by Ruckus support team.' })}</label>
+        {intl.$t({ defaultMessage: 'Enable when requested by Ruckus Support team.' })}</label>
     </>
   }
 
@@ -833,12 +864,18 @@ export function ManageCustomer () {
 
   const CustomerSubscription = () => {
     return <>
-      <h4>{intl.$t({ defaultMessage: 'Start service in' })}</h4>
+      <Subtitle level={3}>{intl.$t({ defaultMessage: 'Start service in' })}</Subtitle>
       <Form.Item
         name='trialMode'
         initialValue={true}
       >
-        <Radio.Group onChange={(e: RadioChangeEvent) => {setTrialSelected(e.target.value)}}>
+        <Radio.Group onChange={(e: RadioChangeEvent) => {
+          if (e.target.value) {
+            setSubscriptionStartDate(moment())
+            setSubscriptionEndDate(moment().add(30,'days'))
+          }
+          setTrialSelected(e.target.value)
+        }}>
           <Space direction='vertical'>
             <Radio
               value={true}

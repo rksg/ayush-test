@@ -2,13 +2,21 @@
 import {
   ExternalAntenna,
   GuestNetworkTypeEnum,
+  PropertyConfigs,
+  PropertyConfigStatus,
+  PropertyUnit,
+  PropertyUnitStatus,
   RadioEnum,
   RadioTypeEnum,
   WlanSecurityEnum,
   FacilityEnum,
   FlowLevelEnum,
   PriorityEnum,
-  ProtocolEnum
+  ProtocolEnum,
+  PersonaGroup,
+  NewTableResult,
+  NewTablePageable,
+  ResidentPortal
 } from '@acx-ui/rc/utils'
 
 export const successResponse = {
@@ -2745,6 +2753,84 @@ export const validChannelsData = {
       '221'
     ]
   }
+}
+
+const defaultPageable: NewTablePageable = {
+  offset: 0,
+  pageNumber: 0,
+  pageSize: 10,
+  paged: true,
+  sort: {
+    unsorted: true,
+    sorted: false,
+    empty: false
+  },
+  unpaged: false
+}
+
+export const mockEnabledPropertyConfig: PropertyConfigs = {
+  status: PropertyConfigStatus.ENABLED,
+  personaGroupId: 'persona-group-id-1'
+}
+
+export const mockResidentPortalProfileList: NewTableResult<ResidentPortal> = {
+  pageable: defaultPageable,
+  sort: defaultPageable.sort,
+  totalElements: 1,
+  totalPages: 1,
+  content: [
+    {
+      id: 'resident-portal-profile-id-1',
+      name: 'resident-portal-profile-name-1'
+    }
+  ]
+}
+
+// export const mockPropertyUnitList: NewTableResult<PropertyUnit> = {
+//   pageable: propertyPageable,
+//   sort: propertyPageable.sort,
+//   totalElements: 1,
+//   totalPages: 1,
+//   content: [
+//     {
+//       id: 'unit-id-1',
+//       name: 'unit-1',
+//       status: PropertyUnitStatus.ENABLED,
+//       dpsks: []
+//     }
+//   ]
+// }
+
+export const mockPersonaGroupWithoutNSG: PersonaGroup = {
+  id: 'persona-group-id-1',
+  name: 'Class A',
+  description: '',
+  macRegistrationPoolId: 'mac-id-1',
+  dpskPoolId: 'dpsk-pool-2',
+  propertyId: 'propertyId-100'
+}
+
+export const mockPropertyUnitList: NewTableResult<PropertyUnit> = {
+  pageable: defaultPageable,
+  sort: defaultPageable.sort,
+  totalElements: 1,
+  totalPages: 1,
+  content: [
+    {
+      id: 'unit-id-1',
+      name: 'unit-1',
+      status: PropertyUnitStatus.ENABLED,
+      dpsks: [],
+      personaId: 'persona-1',
+      vni: 0
+    }
+  ]
+}
+
+export const mockPropertyUnit: PropertyUnit = {
+  ...mockPropertyUnitList.content[0],
+  personaId: 'unit-persona-id-1',
+  guestPersonaId: 'guest-unit-persona-id-1'
 }
 
 export const venueSyslog = {

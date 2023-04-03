@@ -1,28 +1,76 @@
 /* eslint-disable max-len */
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
-import { act }   from 'react-dom/test-utils'
 
-import { useIsSplitOn }           from '@acx-ui/feature-toggle'
-import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider  }              from '@acx-ui/store'
+import { useIsSplitOn }                                     from '@acx-ui/feature-toggle'
+import { AdministrationUrlsInfo, TenantPreferenceSettings } from '@acx-ui/rc/utils'
+import { Provider  }                                        from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen,
-  fireEvent
+  waitFor
 } from '@acx-ui/test-utils'
+import { UseQueryResult } from '@acx-ui/types'
 
 import { fakePreference } from '../__tests__/fixtures'
 
 import  { MapRegionFormItem } from './'
 
 const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
-const mockedUpdatePreference = jest.fn()
 
 jest.mock('@acx-ui/config', () => ({
   get: jest.fn().mockReturnValue('fake-google-maps-key')
 }))
+
+jest.mock('antd', () => {
+  const components = jest.requireActual('antd')
+  const Select = ({
+    children,
+    showSearch, // remove and left unassigned to prevent warning
+    allowClear, // remove and left unassigned to prevent warning
+    optionFilterProp, // remove and left unassigned to prevent warning
+    ...props
+  }: React.PropsWithChildren<{ showSearch: boolean, allowClear:boolean, optionFilterProp: string, onChange?: (value: string) => void }>) => {
+    return (<select {...props} onChange={(e) => props.onChange?.(e.target.value)}>
+      {/* Additional <option> to ensure it is possible to reset value to empty */}
+      <option value={undefined}></option>
+      {children}
+    </select>)
+  }
+  Select.Option = 'option'
+  return { ...components, Select }
+})
+
+const mockedUpdatePreference = jest.fn()
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  countryCodes: [{
+    label: 'invalid',
+    value: ''
+  },{
+    label: 'Taiwan',
+    value: 'TW'
+  },{
+    label: 'United Kingdom',
+    value: 'GB'
+  },{
+    label: 'Singapore',
+    value: 'SG'
+  }],
+  usePreference: () => {
+    return {
+      data: { global: {
+        mapRegion: 'TW'
+      } },
+      currentMapRegion: 'TW',
+      update: mockedUpdatePreference,
+      getReqState: { isLoading: false, isFetching: false } as UseQueryResult<TenantPreferenceSettings>,
+      updateReqState: { isLoading: false } as UseQueryResult<TenantPreferenceSettings>
+    }
+  }
+}))
+
 
 describe('Map is not enabled', () => {
   beforeEach( () => {
@@ -57,26 +105,8 @@ describe('Map Region Selector', () => {
       rest.get(
         AdministrationUrlsInfo.getPreferences.url,
         (_req, res, ctx) => res(ctx.json(fakePreference))
-      ),
-      rest.put(
-        AdministrationUrlsInfo.updatePreferences.url,
-        (_req, res, ctx) => {
-          mockedUpdatePreference(_req.body)
-          return res(ctx.status(200))
-        }
       )
     )
-  })
-
-  it('should correctly render', async () => {
-    render(
-      <Provider>
-        <MapRegionFormItem />
-      </Provider>, {
-        route: { params }
-      })
-
-    expect(await screen.findByText('Taiwan')).toBeVisible()
   })
 
   it('should be able to clear selector input', async () => {
@@ -87,29 +117,14 @@ describe('Map Region Selector', () => {
         route: { params }
       })
 
-    await userEvent.click(await screen.findByText('Taiwan'))
+    await screen.findByText('Taiwan')
     const selector = await screen.findByRole('combobox')
-
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    act(() => {
-      userEvent.type(selector, 'r')
-    })
-
-    const clearIcon = await screen.findByLabelText('close-circle')
-
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    act(() => {
-      userEvent.click(clearIcon)
-      fireEvent.change(selector, { target: { value: '' } })
-      expect(mockedUpdatePreference).toBeCalledTimes(0)
-    })
-
-    expect(await screen.findByRole('combobox')).toHaveAttribute('value', '')
-    expect((await screen.findByTitle('Taiwan')).tagName).toBe('SPAN')
+    await userEvent.click(selector)
+    await userEvent.selectOptions(selector, 'invalid')
     expect(mockedUpdatePreference).toBeCalledTimes(0)
   })
 
-  it.skip('should be auto-searchable', async () => {
+  it('should be changable', async () => {
     render(
       <Provider>
         <MapRegionFormItem />
@@ -120,18 +135,10 @@ describe('Map Region Selector', () => {
     await screen.findByText('Taiwan')
     const selector = await screen.findByRole('combobox')
     await userEvent.click(selector)
-
-    await userEvent.type(selector, 'k')
-    await userEvent.type(selector, 'i')
-    await userEvent.type(selector, 'n')
-    await screen.findAllByRole('option')
-    fireEvent.mouseOver(await screen.findByTitle('United Kingdom'))
-
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      fireEvent.click(screen.getByText('United Kingdom'))
-      expect(await screen.findByTitle('United Kingdom')).toBeDefined()
-      expect(mockedUpdatePreference).toBeCalledWith({ global: { mapRegion: 'GB' } })
+    await userEvent.selectOptions(selector, 'United Kingdom')
+    await waitFor(async () => {
+      expect(mockedUpdatePreference).toBeCalled()
     })
   })
 })
+

@@ -106,14 +106,21 @@ const searches = [
     }
   },
   (searchString: string, $t: IntlShape['$t']) => {
-    const result = useEventsTableQuery({}, {
-      searchString,
-      searchTargetFields: eventDefaultSearch.searchTargetFields
-    }, pagination)
+    const result = useEventsTableQuery(
+      { entity_type: undefined },
+      { ...eventDefaultSearch, searchString },
+      pagination,
+      0 // no polling
+    )
     return {
       result,
       title: $t({ defaultMessage: 'Events' }),
-      component: <EventTable tableQuery={result} searchables={false} filterables={false} />
+      component: <EventTable
+        settingsId='timeline-event-table'
+        tableQuery={result}
+        searchables={false}
+        filterables={false}
+      />
     }
   },
   (searchString: string, $t: IntlShape['$t']) => {

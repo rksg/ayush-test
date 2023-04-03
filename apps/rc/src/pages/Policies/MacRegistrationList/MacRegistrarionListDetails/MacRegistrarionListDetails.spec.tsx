@@ -1,10 +1,17 @@
 import { rest } from 'msw'
 
-import { CommonUrlsInfo, MacRegListUrlsInfo }                    from '@acx-ui/rc/utils'
-import { Provider }                                              from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, MacRegListUrlsInfo, RulesManagementUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                    from '@acx-ui/store'
+import { mockServer, render, screen }                                  from '@acx-ui/test-utils'
 
 import MacRegistrationListDetails from './MacRegistrarionListDetails'
+
+const policySet = {
+  id: '6ef51aa0-55da-4dea-9936-c6b7c7b11164',
+  name: 'testPolicySet1',
+  description: 'for test'
+}
 
 const macRegList = {
   id: '373377b0cb6e46ea8982b1c80aabe1fa',
@@ -13,7 +20,9 @@ const macRegList = {
   enabled: true,
   expirationEnabled: false,
   name: 'Registration pool',
-  defaultAccess: 'ACCEPT'
+  defaultAccess: 'ACCEPT',
+  policySetId: policySet.id,
+  networkIds: ['test_network_id']
 }
 
 const networkList = {
@@ -52,6 +61,8 @@ const networkList = {
 }
 
 describe('MacRegistrationListDetails', () => {
+  jest.mocked(useIsSplitOn).mockReturnValue(true)
+
   beforeEach(() => {
     mockServer.use(
       rest.get(
@@ -61,11 +72,15 @@ describe('MacRegistrationListDetails', () => {
       rest.post(
         CommonUrlsInfo.getVMNetworksList.url,
         (req, res, ctx) => res(ctx.json(networkList))
+      ),
+      rest.get(
+        RulesManagementUrlsInfo.getAdaptivePolicySet.url,
+        (req, res, ctx) => res(ctx.json(policySet))
       )
     )
   })
 
-  it.skip('should render correctly', async () => {
+  it('should render correctly', async () => {
     const params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       policyId: '373377b0cb6e46ea8982b1c80aabe1fa',
@@ -77,7 +92,6 @@ describe('MacRegistrationListDetails', () => {
       route: { params, path: '/:tenantId/:policyId/:activeTab' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const names = await screen.findAllByText('Registration pool')
     expect(names[0]).toBeVisible()
     expect(names[1]).toBeVisible()
@@ -88,6 +102,8 @@ describe('MacRegistrationListDetails', () => {
     expect(await screen.findByText('Never expires')).toBeVisible()
     expect(await screen.findByText('Yes')).toBeVisible()
     expect(await screen.findByText('ACCEPT')).toBeVisible()
+
+    expect(await screen.findByText(networkList.data[0].name)).toBeVisible()
   })
 
   it('should not have active tab if it does not exist', async () => {
