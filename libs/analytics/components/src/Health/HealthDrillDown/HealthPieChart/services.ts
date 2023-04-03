@@ -35,7 +35,7 @@ export const pieChartQuery = (
         : `nodes: topNNodebyConnFailure(n: 6, stage: "${filter}") { key value name }
       wlans: topNSSIDbyConnFailure(n: 6, stage: "${filter}") { key value }`
     }
-    case 'timeToConnect': {
+    case 'ttc': {
       return apNode
         ? `wlans: topNSSIDbyAvgTTC(n: 6, stage: "${filter}") { key value }`
         : `nodes: topNNodebyAvgTTC(n: 6, stage: "${filter}") { key value name }
