@@ -55,7 +55,7 @@ export function CliStepSwitches () {
       setSelectedSwitches(selected as Map<React.Key, React.Key[]>[])
       form?.setFieldsValue({
         venueSwitches: selected,
-        applyLater: data?.applyLater
+        applyNow: !data?.applyLater
       })
     }
   }, [data])
@@ -113,7 +113,7 @@ export function CliStepSwitches () {
         children={<>
           <Form.Item
             noStyle
-            name='applyLater'
+            name='applyNow'
             valuePropName='checked'
             children={<Switch disabled={checkToggleDisabled(selectedSwitches)} />}
           />
@@ -199,7 +199,7 @@ export function CliStepSwitches () {
                       form?.setFieldValue('venueSwitches', venueSwitch)
 
                       if (checkToggleDisabled(venueSwitch)) {
-                        form?.setFieldValue('applyLater', false)
+                        form?.setFieldValue('applyNow', false)
                       }
                     }
                   }}
