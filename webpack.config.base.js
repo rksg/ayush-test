@@ -37,9 +37,6 @@ const modifyVars = require('./libs/common/components/src/theme/modify-vars')
         }
       }]
     })
-    config.output =  {
-      publicPath: '/assets/t',
-    }
 
     return config
   }
