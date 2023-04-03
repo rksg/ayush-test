@@ -406,7 +406,7 @@ export function TaggedPortsStep () {
                           data-disabled={getDisabledPorts(timeslot.value)}
                           style={{ width: '20px', height: '20px' }}
                         ></div>
-                        <p>{getPortLabel(i+1, 1)}</p>
+                        <p>{getPortLabel(i+1, 3)}</p>
                       </Tooltip>,
                       value: timeslot.value,
                       disabled: getDisabledPorts(timeslot.value)
