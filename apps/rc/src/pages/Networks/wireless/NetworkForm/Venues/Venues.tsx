@@ -9,7 +9,8 @@ import {
   Loader,
   StepsForm,
   Table,
-  TableProps
+  TableProps,
+  Tooltip
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
@@ -153,12 +154,24 @@ export function Venues () {
   const rowActions: TableProps<Venue>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Activate' }),
+      visible: (selectedRows) => {
+        const enabled = selectedRows.some((item)=>{
+          return item.mesh && item.mesh.enabled && data && data.enableDhcp
+        })
+        return !enabled
+      },
       onClick: (rows) => {
         handleActivateVenue(true, rows)
       }
     },
     {
       label: $t({ defaultMessage: 'Deactivate' }),
+      visible: (selectedRows) => {
+        const enabled = selectedRows.some((item)=>{
+          return item.mesh && item.mesh.enabled && data && data.enableDhcp
+        })
+        return !enabled
+      },
       onClick: (rows) => {
         handleActivateVenue(false, rows)
       }
@@ -269,14 +282,27 @@ export function Venues () {
       key: 'activated',
       title: $t({ defaultMessage: 'Activated' }),
       dataIndex: ['activated', 'isActivated'],
-      render: function (data, row) {
-        return <Switch
-          checked={Boolean(data)}
-          onClick={(checked, event) => {
-            event.stopPropagation()
-            handleActivateVenue(checked, [row])
-          }}
-        />
+      render: function (activated, row) {
+        let disabled = false
+        // eslint-disable-next-line max-len
+        let title = $t({ defaultMessage: 'You cannot activate the DHCP service on this venue because it already enabled mesh setting' })
+        if(data && data.enableDhcp && row.mesh && row.mesh.enabled){
+          disabled = true
+        }else{
+          title = ''
+        }
+        return <Tooltip
+          // eslint-disable-next-line max-len
+          title={title}
+          placement='bottom'><Switch
+            disabled={disabled}
+            checked={Boolean(activated)}
+            onClick={(checked, event) => {
+              event.stopPropagation()
+              handleActivateVenue(checked, [row])
+            }}
+          /></Tooltip>
+
       }
     },
     {
