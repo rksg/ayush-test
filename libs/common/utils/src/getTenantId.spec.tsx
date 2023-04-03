@@ -121,7 +121,13 @@ describe('other path', () => {
 
     expect(result.current).toEqual(undefined)
   })
-  it('return undefined', () => {
+  it('should return undefined', () => {
     expect(getTenantId('/')).toEqual(undefined)
+  })
+  it('should identify 1st parameter as tenant id', () => {
+    expect(getTenantId('/tid')).toEqual('tid')
+  })
+  it('should return tenant id when url starts with parameter followed by /', () => {
+    expect(getTenantId('/tid/')).toEqual('tid')
   })
 })
