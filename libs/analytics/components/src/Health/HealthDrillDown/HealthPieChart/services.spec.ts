@@ -49,7 +49,7 @@ describe('HealthPieChart services', () => {
     mockGraphqlQuery(dataApiURL, 'Network', { data: mockTtcResponse })
     const { status, data, error } = await store.dispatch(
       api.endpoints.pieChart.initiate({
-        ...payload, queryFilter: 'timeToConnect', queryType: 'timeToConnect'
+        ...payload, queryFilter: 'ttc', queryType: 'ttc'
       })
     )
     expect(status).toBe('fulfilled')
@@ -63,8 +63,8 @@ describe('HealthPieChart services', () => {
       api.endpoints.pieChart.initiate({
         ...payload,
         path: mockPathWithAp,
-        queryFilter: 'timeToConnect',
-        queryType: 'timeToConnect'
+        queryFilter: 'ttc',
+        queryType: 'ttc'
       })
     )
     expect(status).toBe('fulfilled')
