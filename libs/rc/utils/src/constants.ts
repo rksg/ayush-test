@@ -1095,6 +1095,11 @@ export const ICX_MODELS_INFORMATION: SwitchModelInfoMap = {
   }
 }
 
+export const VLAN_PREFIX = {
+  VLAN: 'VLAN-',
+  POOL: 'VLAN Pool: '
+}
+
 export const PORTAL_LIMIT_NUMBER = 256
 export const DHCP_LIMIT_NUMBER = 120
 export const VLAN_LIMIT_NUMBER = 64

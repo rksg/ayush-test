@@ -114,8 +114,8 @@ export const SummaryForm = () => {
           {$t({ defaultMessage: 'Wireless Networks' })}
         </UI.FieldTitle>
         <UI.FieldValue>
-          {networkNames?.map(item => (
-            <Row>
+          {networkNames?.map((item, index) => (
+            <Row key={`networkNames-${index}`}>
               {item}
             </Row>
           ))}
@@ -127,14 +127,12 @@ export const SummaryForm = () => {
     </Subtitle>
     <Form.Item>
       <DistributionSwitchTable type='form'
-        rowActions={undefined}
         dataSource={distributionSwitchInfos} /></Form.Item>
     <Subtitle level={4}>
       { $t({ defaultMessage: 'Access Switch' }) }
     </Subtitle>
     <Form.Item>
       <AccessSwitchTable type='form'
-        rowActions={undefined}
         dataSource={accessSwitchInfos}/></Form.Item>
   </>)
 }
