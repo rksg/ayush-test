@@ -28,9 +28,6 @@ const mockedUpdatePreference = jest.fn()
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
   supportedLangs: [{
-    label: 'invalid',
-    value: ''
-  },{
     label: 'English',
     value: 'en-US'
   },{

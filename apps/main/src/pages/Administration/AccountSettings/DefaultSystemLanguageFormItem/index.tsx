@@ -7,7 +7,6 @@ import { MessageMapping } from '../MessageMapping'
 
 const supportedLangs = [
   { label: 'English', value: 'en-US' }
-  // { label: 'Japanese', value: 'ja-JP' }
 ]
 
 const DefaultSystemLanguageFormItem = () => {
