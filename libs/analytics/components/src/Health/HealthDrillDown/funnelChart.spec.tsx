@@ -71,6 +71,7 @@ describe('Funnel Chart', () => {
       </Provider>
     )
     expect(await screen.findByText('802.11 Auth.: 21.05%(228 ms)')).toBeVisible()
+    expect(screen.queryByText('DHCP')).toBe(null)
   })
 })
 
