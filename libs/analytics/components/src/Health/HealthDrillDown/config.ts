@@ -15,7 +15,7 @@ export type Stages =
   | 'radiusFailure'
   | 'dhcpFailure'
   | null
-export type FunnelChartStages = { name: string; label: MessageDescriptor; value: number | null }[]
+export type FunnelChartStages = { name: string; label: MessageDescriptor; value: number | null, apiKey: string }[]
 export type DrilldownSelection = 'connectionFailure' | 'ttc' | null
 export type FunnelChartStage = {
   formattedPct: string;
@@ -24,6 +24,7 @@ export type FunnelChartStage = {
   name: string;
   label: MessageDescriptor;
   value: number | null;
+  apiKey: string;
 }
 export type EnhancedStage = FunnelChartStage & {
   valueLabel: string;
@@ -58,7 +59,8 @@ export const getFormattedToFunnel = (
       type === 'connectionFailure'
         ? defineMessage({ defaultMessage: '802.11 Auth. Failure' })
         : defineMessage({ defaultMessage: '802.11 Auth.' }),
-    value: authFailure
+    value: authFailure,
+    apiKey: 'auth'
   },
   {
     name: 'Association',
@@ -66,7 +68,8 @@ export const getFormattedToFunnel = (
       type === 'connectionFailure'
         ? defineMessage({ defaultMessage: 'Assoc. Failure' })
         : defineMessage({ defaultMessage: 'Association' }),
-    value: assoFailure
+    value: assoFailure,
+    apiKey: 'assoc'
   },
   {
     name: 'EAP',
@@ -74,7 +77,8 @@ export const getFormattedToFunnel = (
       type === 'connectionFailure'
         ? defineMessage({ defaultMessage: 'EAP Failure' })
         : defineMessage({ defaultMessage: 'EAP' }),
-    value: eapFailure
+    value: eapFailure,
+    apiKey: 'eap'
   },
   {
     name: 'Radius',
@@ -82,7 +86,8 @@ export const getFormattedToFunnel = (
       type === 'connectionFailure'
         ? defineMessage({ defaultMessage: 'RADIUS Failure' })
         : defineMessage({ defaultMessage: 'RADIUS' }),
-    value: radiusFailure
+    value: radiusFailure,
+    apiKey: 'radius'
   },
   {
     name: 'DHCP',
@@ -90,7 +95,8 @@ export const getFormattedToFunnel = (
       type === 'connectionFailure'
         ? defineMessage({ defaultMessage: 'DHCP Failure' })
         : defineMessage({ defaultMessage: 'DHCP' }),
-    value: dhcpFailure
+    value: dhcpFailure,
+    apiKey: 'dhcp'
   }
 ]
 
@@ -98,3 +104,11 @@ export const CONNECTIONFAILURE = 'connectionFailure'
 export const TTC = 'ttc'
 
 export const valueFormatter = (value: number) => formatter('durationFormat')(value)
+export const stageNameToCodeMap = {
+   authFailure: 'auth',
+   assoFailure: 'assoc',
+   eapFailure: 'eap',
+   radiusFailure: 'radius',
+   dhcpFailure: 'dhcp'
+}
+

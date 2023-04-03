@@ -52,7 +52,7 @@ export const api = dataApi.injectEndpoints({
     pieChart: build.query<ImpactedNodesAndWlans, RequestPayload>({
       query: payload => {
         const { path, queryType, queryFilter } = payload
-        const innerQuery = pieChartQuery(path, queryType, queryFilter.toLowerCase())
+        const innerQuery = pieChartQuery(path, queryType, queryFilter)
         return ({
           document: gql`
             query Network($path: [HierarchyNodeInput], $start: DateTime, $end: DateTime) {

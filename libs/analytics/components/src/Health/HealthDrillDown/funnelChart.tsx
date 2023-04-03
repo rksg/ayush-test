@@ -69,7 +69,7 @@ export function FunnelChart ({
 }) {
   const [parentNode, ref] = useGetNode()
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
-  const onClick = (width: number, name: Stages) => {
+  const onClick = (width: number, name: string) => {
     onSelectStage(width, name)
   }
   const enhancedStages: EnhancedStage[] = useMemo(() => {
@@ -111,7 +111,7 @@ export function FunnelChart ({
     })
     return endStages.map((stage) => ({
       ...stage,
-      onClick: () => onClick(stage.endPosition - stage.width / 2, stage.name as Stages)
+      onClick: () => onClick(stage.endPosition - stage.width / 2, stage.apiKey)
     }))
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stages, selectedStage, parentNode, windowWidth])
@@ -234,7 +234,7 @@ export const Labels = ({
           dir: i % 2 === 0,
           color: colors[i],
           onClick: () => (onClick as CallableFunction)(
-            stage.endPosition - stage.width / 2, stage.name
+            stage.endPosition - stage.width / 2, stage.apiKey
           ),
           labelRef: updateChildNodes
         } as unknown as LabelPinProps

@@ -13,7 +13,9 @@ import {
 import { formatter } from '@acx-ui/formatter'
 
 import { ImpactedNodesAndWlans, usePieChartQuery } from './services'
-import { DrilldownSelection, Stages } from '../config'
+import { DrilldownSelection, stageNameToCodeMap, Stages } from '../config'
+import { NetworkPath } from '@acx-ui/utils'
+import { isNull } from 'lodash'
 
 const transformData = (
   data: ImpactedNodesAndWlans | undefined,
@@ -41,11 +43,13 @@ const transformData = (
           name: node.key,
           color: colors[index]
         }))
+        .slice(0, 5)
         const wlans = data.network.hierarchyNode.wlans.map((node, index) => ({
           ...node,
           name: node.key,
           color: colors[index]
         }))
+        .slice(0, 5)
         return { nodes, wlans }
       }
       case 'ttc': {
@@ -54,11 +58,13 @@ const transformData = (
           name: node.key,
           color: colors[index]
         }))
+        .slice(0, 5)
         const wlans = data.network.hierarchyNode.wlans.map((node, index) => ({
           ...node,
           name: node.key,
           color: colors[index]
         }))
+        .slice(0, 5)
         return { nodes, wlans }
       }
       default:
@@ -66,6 +72,20 @@ const transformData = (
     }
   }
   return { nodes: [], wlans: [] }
+}
+
+function pieNodeMap (node: NetworkPath) {
+   const lastPath = node[node.length - 1]
+   const type = lastPath.type
+   switch (type) {
+      case 'zone':
+        return 'AP Group'
+      case 'ap':
+      case 'AP':
+        return 'AP'
+      default:
+        return 'Venue'
+   }
 }
 
 function getHealthPieChart (
@@ -79,6 +99,7 @@ function getHealthPieChart (
       data={data}
       style={{ height, width }}
       showLegend={false}
+      showLabel
       dataFormatter={dataFormatter}
     />
   )
@@ -99,36 +120,19 @@ export const HealthPieChart = ({
     end,
     path,
     queryType: queryType as string,
-    queryFilter: queryFilter as string
+    queryFilter: queryFilter!.toLowerCase(),
+  }, {
+    skip: isNull(queryFilter)
   })
 
   const { nodes, wlans } = transformData(queryResults.data, queryType)
   const venues = nodes.length > 1 ? 'Venues' : 'Venue'
-  const networks = wlans.length > 1 ? 'Networks' : 'Network'
+  const networks = pieNodeMap(path)
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
       label: $t({ defaultMessage: '{venues}' }, { venues }),
       value: 'nodes',
-      children: (
-        <Card
-          type='no-border'
-          title={$t(
-            { defaultMessage: 'Top {count} Impacted {venues}' },
-            { count: wlans.length, venues }
-          )}
-        >
-          <AutoSizer>
-            {({ height, width }) =>
-              getHealthPieChart(wlans, height, width, formatter('countFormat'))
-            }
-          </AutoSizer>
-        </Card>
-      )
-    },
-    {
-      label: $t({ defaultMessage: '{networks}' }, { networks }),
-      value: 'wlans',
       children: (
         <Card
           type='no-border'
@@ -140,11 +144,33 @@ export const HealthPieChart = ({
           <AutoSizer>
             {({ height, width }) =>
               getHealthPieChart(
+                nodes,
+                height,
+                width,
+                formatter('countFormat'))
+            }
+          </AutoSizer>
+        </Card>
+      )
+    },
+    {
+      label: $t({ defaultMessage: '{networks}' }, { networks: 'WLAN' }),
+      value: 'wlans',
+      children: (
+        <Card
+          type='no-border'
+          title={$t(
+            { defaultMessage: 'Top {count} Impacted {networks}' },
+            { count: wlans.length, networks: 'WLANs' }
+          )}
+        >
+          <AutoSizer>
+            {({ height, width }) =>
+              getHealthPieChart(
                 wlans,
                 height,
                 width,
-                formatter('durationFormat')
-              )
+                formatter('durationFormat'))
             }
           </AutoSizer>
         </Card>
