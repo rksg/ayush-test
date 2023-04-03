@@ -12,3 +12,4 @@ export function getBasePath () {
 export function useBasePath () {
   return useMemo(getBasePath, [])
 }
+

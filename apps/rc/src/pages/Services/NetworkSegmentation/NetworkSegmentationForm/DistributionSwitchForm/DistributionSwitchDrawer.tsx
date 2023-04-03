@@ -10,10 +10,10 @@ import {
   DistributionSwitch,
   DistributionSwitchSaveData,
   networkWifiIpRegExp,
-  subnetMaskIpRegExp,
   SwitchLite
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }                   from '@acx-ui/react-router-dom'
+import { getIntl, validationMessages } from '@acx-ui/utils'
 
 export function DistributionSwitchDrawer (props: {
   open: boolean;
@@ -37,11 +37,11 @@ export function DistributionSwitchDrawer (props: {
   const defaultRecord = { siteKeepAlive: '5', siteRetry: '3', siteName: edgeId }
 
   const [openModal, setOpenModal] = useState(false)
-  const [asList, setAsList] = useState<AccessSwitch[]>([])
 
   const [validateDistributionSwitchInfo] = useValidateDistributionSwitchInfoMutation()
 
   const dsId = Form.useWatch('id', form)
+  const asList = Form.useWatch('accessSwitches', form)
 
   const { availableAs } = useGetAccessSwitchesByDSQuery(
     { params: { tenantId, venueId, switchId: dsId } }, {
@@ -57,7 +57,7 @@ export function DistributionSwitchDrawer (props: {
 
   useEffect(() => {
     form.resetFields()
-    setAsList(editRecord?.accessSwitches || [])
+    form.setFieldValue('accessSwitches', editRecord?.accessSwitches || [])
   }, [form, open, editRecord])
 
   const handleFormFinish = (values: DistributionSwitch) => {
@@ -93,7 +93,7 @@ export function DistributionSwitchDrawer (props: {
         layout='vertical'
         initialValues={editRecord || defaultRecord}>
 
-        <Form.Item name='siteName' hidden />
+        <Form.Item name='siteName' hidden children={<Input />} />
         <Form.Item name='id'
           label={$t({ defaultMessage: 'Distribution Switch' })}
           rules={[{ required: true }]}
@@ -175,10 +175,15 @@ export function DistributionSwitchDrawer (props: {
           dataSource={asList}
           type='form'
           rowKey='id' />
+        <Form.Item rules={[{
+          required: true,
+          message: $t({ defaultMessage: 'Please select at least 1 access switch.' }) }]}
+        name='accessSwitches'
+        children={<Input type='hidden' />} />
       </Form>
       <SelectAccessSwitchModal visible={openModal}
         onSave={(newAsList) => {
-          setAsList(newAsList)
+          form.setFieldValue('accessSwitches', newAsList)
           setOpenModal(false)
         }}
         onCancel={() => setOpenModal(false)}
@@ -188,6 +193,8 @@ export function DistributionSwitchDrawer (props: {
     </Drawer>
   )
 }
+
+
 function SelectAccessSwitchModal ({
   visible, onSave, onCancel, selected, availableAs, switchId
 }: {
@@ -249,4 +256,14 @@ function SelectAccessSwitchModal ({
         onChange={handleChange}
         render={item => `${item.title} (${item.key})`} />
     </Modal>)
+}
+
+export function subnetMaskIpRegExp (value: string) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const re = new RegExp('^((128|192|224|240|248|252|254)\.0\.0\.0)|(255\.(((0|128|192|224|240|248|252|254)\.0\.0)|(255\.(((0|128|192|224|240|248|252|254)\.0)|255\.(0|128|192|224|240|248|252|254|255)))))$')
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.subnetMask))
+  }
+  return Promise.resolve()
 }
