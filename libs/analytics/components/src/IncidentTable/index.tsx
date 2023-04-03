@@ -251,6 +251,7 @@ export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
           />
         ]}
         rowClassName={(record) => record.isMuted ? 'table-row-muted' : 'table-row-normal'}
+        filterableWidth={175}
       />
       {drawerSelection &&
       <Drawer
