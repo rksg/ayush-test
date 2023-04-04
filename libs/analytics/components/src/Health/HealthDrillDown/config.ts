@@ -105,10 +105,10 @@ export const TTC = 'ttc'
 
 export const valueFormatter = (value: number) => formatter('durationFormat')(value)
 export const stageMapToName: Record<string, string> = {
-   'auth': 'AUTHENTICATION',
-   'assoc': 'ASSOCIATION',
+   'auth': 'Authentication',
+   'assoc': 'Association',
    'eap': 'EAP',
-   'radius': 'RADIUS',
+   'radius': 'Radius',
    'dhcp': 'DHCP'
 }
 

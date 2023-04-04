@@ -17,7 +17,7 @@ import { DrilldownSelection, Stages, stageMapToName } from '../config'
 import { NetworkPath } from '@acx-ui/utils'
 import { isNull } from 'lodash'
 import * as UI from './styledComponents'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 const transformData = (
   data: ImpactedNodesAndWlans | undefined,
@@ -139,8 +139,8 @@ export const HealthPieChart = ({
   const singularNetwork = pieNodeMap(path)
   const venueTitle = nodes.length > 1 ? singularNetwork + 's' : singularNetwork
   const wlansTitle = wlans.length > 1 ? 'WLANs' : 'WLAN'
-  let name = ''
-  useEffect(() => { name = queryFilter ? stageMapToName[queryFilter] : '' }, [queryFilter])
+  const [name, setName] = useState('')
+  useEffect(() => { setName(queryFilter ? stageMapToName[queryFilter] : '') }, [queryFilter])
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = []
   if (nodes.length > 1) {
