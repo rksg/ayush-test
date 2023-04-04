@@ -27,7 +27,8 @@ const AIOutlined = styled(AIOutlinedBase)`${LayoutUI.iconOutlinedOverride}`
 const AISolid = styled(AISolidBase)`${LayoutUI.iconOutlinedOverride}`
 const ServicesSolid = styled(ServicesSolidBase)`${LayoutUI.iconSolidOverride}`
 
-const config: LayoutProps['menuConfig']= [
+const config: LayoutProps['menuConfig'] = [
+  null,
   {
     uri: '/dashboard',
     label: 'Dashboard',

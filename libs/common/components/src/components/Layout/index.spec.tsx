@@ -1,5 +1,7 @@
 import '@testing-library/jest-dom'
 
+import userEvent from '@testing-library/user-event'
+
 import {
   SpeedIndicatorOutlined,
   SpeedIndicatorSolid
@@ -26,11 +28,12 @@ describe('Layout', () => {
   it('should render with custom tenant type correctly', async () => {
     const mspConfig = [
       {
-        path: '/dashboard',
-        name: 'Dashboard',
+        uri: '/dashboard',
+        label: 'Dashboard',
         tenantType: 'v' as TenantType,
         inactiveIcon: SpeedIndicatorOutlined,
-        activeIcon: SpeedIndicatorSolid
+        activeIcon: SpeedIndicatorSolid,
+        isActivePattern: ['/dashboard']
       }
     ]
     const { asFragment } = render(<Layout
@@ -38,7 +41,7 @@ describe('Layout', () => {
       leftHeaderContent={<div>Left header</div>}
       rightHeaderContent={<div>Right header</div>}
       content={<div>content</div>}
-    />, { route: true })
+    />, { route: { params: { tenantId: 't-id' }, wrapRoutes: false } })
     await screen.findByTestId('SpeedIndicatorOutlined')
     await screen.findByRole('menuitem', {
       name: (name, element) => name === 'Dashboard' &&
@@ -65,29 +68,13 @@ describe('Layout', () => {
       content={<div>content</div>}
     />, {
       route: {
+        wrapRoutes: false,
         path: '/t/:tenantId/:page',
         params: { tenantId: 't-id', page: 'dashboard' }
       }
     })
-    await screen.findByTestId('AIOutlined')
-    fireEvent.click(screen.getByTestId('AccountCircleOutlined'))
+    await userEvent.hover(screen.getByTestId('AccountCircleOutlined'))
+    await userEvent.click(await screen.findByRole('link', { name: 'Wireless Clients List' }))
     await screen.findByTestId('AccountCircleSolid')
-  })
-  it('should show tooltip when disabled', async () => {
-    const { asFragment } = render(<Layout
-      menuConfig={menuConfig}
-      leftHeaderContent={<div>Left header</div>}
-      rightHeaderContent={<div>Right header</div>}
-      content={<div>content</div>}
-    />, {
-      route: {
-        path: '/t/:tenantId/:page',
-        params: { tenantId: 't-id', page: 'dashboard' }
-      }
-    })
-    await screen.findByTestId('AIOutlined')
-    fireEvent.mouseOver(screen.getByTestId('AccountCircleOutlined'))
-    await screen.findByRole('tooltip', { hidden: true })
-    expect(asFragment()).toMatchSnapshot()
   })
 })

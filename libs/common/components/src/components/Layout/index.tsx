@@ -1,14 +1,13 @@
 import React, { useState } from 'react'
 
-import ProLayout                         from '@ant-design/pro-layout'
-import { Menu }                          from 'antd'
-import { ItemType as AntItemType }       from 'antd/lib/menu/hooks/useItems'
-import { get, has, snakeCase }           from 'lodash'
+import ProLayout                             from '@ant-design/pro-layout'
+import { Menu }                              from 'antd'
+import { ItemType as AntItemType }           from 'antd/lib/menu/hooks/useItems'
+import { get, has, snakeCase }               from 'lodash'
 import {
   MenuItemType as RcMenuItemType,
   SubMenuType as RcSubMenuType,
-  MenuItemGroupType as RcMenuItemGroupType,
-  MenuDividerType as RcMenuDividerType
+  MenuItemGroupType as RcMenuItemGroupType
 } from 'rc-menu/lib/interface'
 import { useIntl } from 'react-intl'
 
@@ -41,32 +40,16 @@ type MenuItemGroupType = Omit<RcMenuItemGroupType, 'children' | 'label'> & {
   label: string
   children?: ItemType[]
 }
-type MenuDividerType = RcMenuDividerType & {
-  dashed?: boolean;
-}
 
-type ItemType = MenuItemType | SubMenuType | MenuItemGroupType | MenuDividerType | null
+type ItemType = MenuItemType | SubMenuType | MenuItemGroupType | null
 
-
-export function isMenuItemType (value: ItemType): value is MenuItemType{
-  if(isSubMenuType(value)) return false
-  if(isMenuItemGroupType(value)) return false
-  if(isMenuDividerType(value)) return false
-  return true
-}
-
-export function isSubMenuType (value: ItemType): value is SubMenuType{
+export function isSubMenuType (value: ItemType): value is SubMenuType {
   if (has(value, 'children') && !has(value, 'type')) return true
   return false
 }
 
-export function isMenuItemGroupType (value: ItemType): value is MenuItemGroupType{
+export function isMenuItemGroupType (value: ItemType): value is MenuItemGroupType {
   if (has(value, 'type') && get(value, 'type') === 'group') return true
-  return false
-}
-
-export function isMenuDividerType (value: ItemType): value is MenuDividerType{
-  if (has(value, 'type') && get(value, 'type') === 'divider') return true
   return false
 }
 
@@ -97,27 +80,26 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
 
   const getMenuItem = (item: LayoutProps['menuConfig'][number], key: string): AntItemType => {
     if (item === null) return item
-    if(isMenuDividerType(item)) { return item }
 
     key = `${key}-${snakeCase(item.label)}`
 
-    if(isMenuItemGroupType(item)) { return {
-      ...item,
-      key: key,
-      label: get(item, 'label', ''),
-      children: item.children?.map(child => getMenuItem(child, key))
-    } }
-
-    const { uri, tenantType, activeIcon, inactiveIcon, isActivePattern, ...rest } = item!
-    const isActive = isActivePattern?.some(pattern => activeUri.startsWith(pattern))
-    const IconComponent = (isActive ? activeIcon : inactiveIcon || activeIcon )as React.FC
-    const content = <>
-      {IconComponent &&
-      (isActive
-        ? <UI.MenuIconSolid children={<IconComponent />} />
-        : <UI.MenuIconOutlined children={<IconComponent />} />)
+    if (isMenuItemGroupType(item)) {
+      return {
+        ...item,
+        key: key,
+        label: item.label,
+        children: item.children?.map(child => getMenuItem(child, key))
       }
-      {get(item, 'label', '')}
+    }
+
+    const { uri, tenantType, activeIcon, inactiveIcon, isActivePattern, ...rest } = item
+    const isActive = isActivePattern?.some(pattern => activeUri.startsWith(pattern))
+    const IconComponent = isActive ? activeIcon : (inactiveIcon ?? activeIcon)
+    const content = <>
+      {IconComponent && (isActive
+        ? <UI.MenuIconSolid children={<IconComponent />} />
+        : <UI.MenuIconOutlined children={<IconComponent />} />)}
+      {item.label}
     </>
     return {
       ...rest,
@@ -152,8 +134,7 @@ export function Layout ({
   const [collapsed, setCollapsed] = useState(false)
   const location = useLocation()
 
-  const dashboard = menuConfig
-    .find(item => ('uri' in item!) && item.uri=== '/dashboard')
+  const dashboard = menuConfig.find(item => get(item, 'uri') === '/dashboard')
 
   return <UI.Wrapper>
     <ProLayout
@@ -163,23 +144,16 @@ export function Layout ({
       fixSiderbar={true}
       location={location}
       menuContentRender={() => <SiderMenu menuConfig={menuConfig}/>}
-      menuHeaderRender={() =>
-        <TenantNavLink
-          to='/dashboard'
-          tenantType={
-            ((isMenuItemType(dashboard!) || isSubMenuType(dashboard!)) && dashboard.tenantType)
-            || 't'}
-        >
-          <Logo />
-        </TenantNavLink>
-      }
+      menuHeaderRender={() => <TenantNavLink
+        to='/dashboard'
+        tenantType={get(dashboard, 'tenantType', 't')}
+        children={<Logo />}
+      />}
       headerContentRender={() => leftHeaderContent && <UI.LeftHeaderContentWrapper>
         <UI.LogoDivider />
         {leftHeaderContent}
       </UI.LeftHeaderContentWrapper>}
-      rightContentRender={() => <UI.RightHeaderContentWrapper>
-        {rightHeaderContent}
-      </UI.RightHeaderContentWrapper>}
+      rightContentRender={() => <UI.RightHeaderContentWrapper children={rightHeaderContent} />}
       onCollapse={setCollapsed}
       collapsedButtonRender={(collapsed: boolean) => <>
         {collapsed ? <UI.ArrowCollapsed /> : <UI.Arrow />}
