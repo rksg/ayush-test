@@ -13,7 +13,7 @@ import {
 import { formatter } from '@acx-ui/formatter'
 
 import { ImpactedNodesAndWlans, usePieChartQuery } from './services'
-import { DrilldownSelection, stageNameToCodeMap, Stages } from '../config'
+import { DrilldownSelection, Stages } from '../config'
 import { NetworkPath } from '@acx-ui/utils'
 import { isNull } from 'lodash'
 
@@ -36,15 +36,17 @@ const transformData = (
 } => {
   if (data) {
     const colors = qualitativeColorSet()
+    let { wlans: rawWlans, nodes: rawNodes } = data.network.hierarchyNode
+    rawNodes = rawNodes ?? []
     switch (queryType) {
       case 'connectionFailure': {
-        const nodes = data.network.hierarchyNode.nodes.map((node, index) => ({
+        const nodes = rawNodes.map((node, index) => ({
           ...node,
           name: node.key,
           color: colors[index]
         }))
         .slice(0, 5)
-        const wlans = data.network.hierarchyNode.wlans.map((node, index) => ({
+        const wlans = rawWlans.map((node, index) => ({
           ...node,
           name: node.key,
           color: colors[index]
@@ -53,13 +55,13 @@ const transformData = (
         return { nodes, wlans }
       }
       case 'ttc': {
-        const nodes = data.network.hierarchyNode.nodes.map((node, index) => ({
+        const nodes = rawNodes.map((node, index) => ({
           ...node,
           name: node.key,
           color: colors[index]
         }))
         .slice(0, 5)
-        const wlans = data.network.hierarchyNode.wlans.map((node, index) => ({
+        const wlans = rawWlans.map((node, index) => ({
           ...node,
           name: node.key,
           color: colors[index]
@@ -98,9 +100,8 @@ function getHealthPieChart (
     <DonutChart
       data={data}
       style={{ height, width }}
-      showLegend={false}
-      showLabel
       dataFormatter={dataFormatter}
+      showLabel
     />
   )
 }
@@ -126,19 +127,20 @@ export const HealthPieChart = ({
   })
 
   const { nodes, wlans } = transformData(queryResults.data, queryType)
-  const venues = nodes.length > 1 ? 'Venues' : 'Venue'
-  const networks = pieNodeMap(path)
+  const network = pieNodeMap(path)
 
-  const tabDetails: ContentSwitcherProps['tabDetails'] = [
+  const tabDetails: ContentSwitcherProps['tabDetails'] = []
+  if (nodes.length > 1) {
+    tabDetails.push(
     {
-      label: $t({ defaultMessage: '{venues}' }, { venues }),
+      label: $t({ defaultMessage: '{network}' }, { network }),
       value: 'nodes',
       children: (
         <Card
           type='no-border'
           title={$t(
-            { defaultMessage: 'Top {count} Impacted {networks}' },
-            { count: nodes.length, networks }
+            { defaultMessage: 'Top {count} Impacted {network}' },
+            { count: nodes.length, network }
           )}
         >
           <AutoSizer>
@@ -152,7 +154,10 @@ export const HealthPieChart = ({
           </AutoSizer>
         </Card>
       )
-    },
+    })
+  }
+
+  tabDetails.push(
     {
       label: $t({ defaultMessage: '{networks}' }, { networks: 'WLAN' }),
       value: 'wlans',
@@ -175,8 +180,7 @@ export const HealthPieChart = ({
           </AutoSizer>
         </Card>
       )
-    }
-  ]
+    })
 
   return (
     <Loader states={[queryResults]}>

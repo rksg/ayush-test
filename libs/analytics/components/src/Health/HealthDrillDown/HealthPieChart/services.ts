@@ -16,7 +16,7 @@ export type RequestPayload = {
 export type ImpactedNodesAndWlans = {
   network: {
     hierarchyNode: {
-      nodes: Array<{ key: string, value: number, name: string | null }>,
+      nodes?: Array<{ key: string, value: number, name: string | null }>,
       wlans: Array<{ key: string, value: number }>
     }
   }

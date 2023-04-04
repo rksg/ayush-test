@@ -208,7 +208,8 @@ export function DonutChart ({
       ...commonFontStyle,
       fontSize: cssNumber('--acx-body-4-font-size'),
       lineHeight: cssNumber('--acx-body-4-line-height'),
-      fontWeight: cssNumber('--acx-body-font-weight')
+      fontWeight: cssNumber('--acx-body-font-weight'),
+      height: cssNumber('--acx-body-4-font-size')
     }
   }
 
