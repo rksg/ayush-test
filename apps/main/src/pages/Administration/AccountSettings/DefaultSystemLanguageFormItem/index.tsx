@@ -27,13 +27,13 @@ const DefaultSystemLanguageFormItem = () => {
   const isUpdatingPreference = updateReqState.isLoading
 
   const generateLangLabel = (val: string): string | undefined => {
-    let languageNames, currLangDisplay;
+    let languageNames, currLangDisplay
     const lang = (currentPreferredLang ?? 'en-US').slice(0, 2)
-    languageNames = new Intl.DisplayNames([val], { type: 'language' });
-    currLangDisplay = new Intl.DisplayNames([lang], { type: 'language' });
-    return ((lang !== val)?  $t({ defaultMessage: '{language} ({localLanguage})' },
-          { language: currLangDisplay.of(val), localLanguage: languageNames.of(val)})
-        : $t({ defaultMessage: '{language}' }, { language: currLangDisplay.of(val)}))
+    languageNames = new Intl.DisplayNames([val], { type: 'language' })
+    currLangDisplay = new Intl.DisplayNames([lang], { type: 'language' })
+    return ((lang !== val)? $t({ defaultMessage: '{language} ({localLanguage})' },
+      { language: currLangDisplay.of(val), localLanguage: languageNames.of(val) })
+      : $t({ defaultMessage: '{language}' }, { language: currLangDisplay.of(val) }))
   }
 
   const supportedLangs = [

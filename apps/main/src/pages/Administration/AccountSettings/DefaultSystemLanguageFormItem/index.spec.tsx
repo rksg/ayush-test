@@ -25,7 +25,7 @@ jest.mock('antd', () => {
       { label: `${localeLangName.of('ja')} (${languageNames.of('ja')})`, value: 'ja-JP' },
       { label: `${localeLangName.of('de')} (${languageNames.of('de')})`, value: 'de-DE' }
     ]
-    
+
     return (<select {...props} onChange={(e) => props.onChange?.(e.target.value)}>
       {supportedLangs.map(({ label, value }) =>
         (<Select.Option value={value} key={value} children={label}/>)
