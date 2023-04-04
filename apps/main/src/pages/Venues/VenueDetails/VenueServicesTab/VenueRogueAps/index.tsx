@@ -206,6 +206,7 @@ export function VenueRogueAps () {
         tableQuery
       ]}>
         <Table
+          settingsId='venue-rogue-aps-table'
           columns={getCols(useIntl())}
           dataSource={transformData(tableQuery?.data?.data || [])}
           pagination={tableQuery.pagination}

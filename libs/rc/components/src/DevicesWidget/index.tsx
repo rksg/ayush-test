@@ -9,6 +9,7 @@ import type { DonutChartData }           from '@acx-ui/components'
 import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
 import { ChartData }                     from '@acx-ui/rc/utils'
 import { TenantLink, useNavigateToPath } from '@acx-ui/react-router-dom'
+import { filterByAccess }                from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
@@ -72,12 +73,12 @@ export function DevicesWidgetv2 (props: {
         {({ height, width }) => (
           <UI.WidgetContainer style={{ height, width }}>
             <GridRow align={'middle'}>
-              <GridCol col={{ span: 9 }}>
+              <GridCol col={{ span: apTotalCount ? 9 : 12 }}>
                 { apTotalCount > 0
                   ? $t({ defaultMessage: 'Access Points' })
                   : $t({ defaultMessage: 'No Access Points' }) }
               </GridCol>
-              <GridCol col={{ span: 15 }}>
+              <GridCol col={{ span: apTotalCount ? 15 : 12 }}>
                 { apTotalCount > 0
                   ? <Space>
                     <StackedBarChart
@@ -89,27 +90,27 @@ export function DevicesWidgetv2 (props: {
                       data={apStackedData}
                       showLabels={false}
                       showTotal={false}
-                      total={apTotalCount || 0}
+                      total={apTotalCount}
                       barColors={getDeviceConnectionStatusColorsv2()} />
                     <TenantLink to={'/devices/wifi'}>
-                      {apTotalCount || 0}
+                      {apTotalCount}
                     </TenantLink>
                   </Space>
                   : <UI.LinkContainer style={{ height: height/2 - 30 }}>
-                    <TenantLink to={'/devices/wifi/add'}>
+                    {filterByAccess([<TenantLink to={'/devices/wifi/add'}>
                       {$t({ defaultMessage: 'Add Access Point' })}
-                    </TenantLink>
+                    </TenantLink>])}
                   </UI.LinkContainer>
                 }
               </GridCol>
             </GridRow>
             <GridRow align={'middle'}>
-              <GridCol col={{ span: 9 }}>
+              <GridCol col={{ span: switchTotalCount ? 9 : 12 }}>
                 { switchTotalCount > 0
                   ? $t({ defaultMessage: 'Switches' })
                   : $t({ defaultMessage: 'No Switches' }) }
               </GridCol>
-              <GridCol col={{ span: 15 }}>
+              <GridCol col={{ span: switchTotalCount ? 15 : 12 }}>
                 { switchTotalCount > 0
                   ? <Space>
                     <StackedBarChart
@@ -121,16 +122,16 @@ export function DevicesWidgetv2 (props: {
                       data={switchStackedData}
                       showLabels={false}
                       showTotal={false}
-                      total={switchTotalCount || 0}
+                      total={switchTotalCount}
                       barColors={getDeviceConnectionStatusColorsv2()} />
                     <TenantLink to={'/devices/switch'}>
-                      {switchTotalCount || 0}
+                      {switchTotalCount}
                     </TenantLink>
                   </Space>
                   : <UI.LinkContainer style={{ height: (height/2) - 30 }}>
-                    <TenantLink to={'/devices/switch/add'}>
+                    {filterByAccess([<TenantLink to={'/devices/switch/add'}>
                       {$t({ defaultMessage: 'Add Switch' })}
-                    </TenantLink>
+                    </TenantLink>])}
                   </UI.LinkContainer>
                 }
               </GridCol>

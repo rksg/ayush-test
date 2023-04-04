@@ -3,7 +3,11 @@ import { SelectProps } from 'antd/lib/select'
 
 import { useGetPersonaGroupListQuery } from '@acx-ui/rc/services'
 
-export function PersonaGroupSelect (props: SelectProps) {
+export function PersonaGroupSelect (props: {
+  filterProperty?: boolean,
+  whiteList?: string[],
+} & SelectProps) {
+  const { filterProperty, whiteList, ...customSelectProps } = props
 
   const personaGroupList = useGetPersonaGroupListQuery({
     payload: {
@@ -13,9 +17,13 @@ export function PersonaGroupSelect (props: SelectProps) {
 
   return (
     <Select
-      {...props}
+      {...customSelectProps}
       options={
         personaGroupList.data?.data
+          .filter(group =>
+            filterProperty
+              ? whiteList?.find(id => id === group.id) || !group.propertyId
+              : true)
           .map(group => ({ value: group.id, label: group.name }))
       }
     />

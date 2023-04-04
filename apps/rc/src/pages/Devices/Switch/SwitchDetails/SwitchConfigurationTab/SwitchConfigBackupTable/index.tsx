@@ -239,6 +239,7 @@ export function SwitchConfigBackupTable () {
   return <>
     <Loader states={[tableQuery]}>
       <Table
+        settingsId='switch-config-backup-table'
         rowKey='id'
         columns={columns}
         dataSource={tableData}

@@ -281,6 +281,7 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
       { isLoading: false, isFetching: isDeleteNetworkUpdating }
     ]}>
       <Table
+        settingsId='network-table'
         columns={getCols(intl)}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}

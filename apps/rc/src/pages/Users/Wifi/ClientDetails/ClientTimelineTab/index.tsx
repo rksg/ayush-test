@@ -18,7 +18,6 @@ const Events = () => {
     searchables={false}
     filterables={['severity']}
     omitColumns={['entity_type', 'product', 'source', 'macAddress']}
-    columnState={{ hidden: true }}
   />
 }
 

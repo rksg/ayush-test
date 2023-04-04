@@ -1,4 +1,6 @@
-export const healthWidgetFixture = {
+import { HierarchyNodeData } from '../services'
+
+export const healthWidgetFixture: HierarchyNodeData = {
   health: [
     {
       zoneId: '8d01a979dc964e6297e5cd5e3ae61994',
@@ -18,6 +20,11 @@ export const healthWidgetFixture = {
         null
       ],
       onlineApsSLA: [
+        null,
+        null
+      ],
+      apCapacityThreshold: null,
+      apCapacitySLA: [
         null,
         null
       ]
@@ -42,6 +49,11 @@ export const healthWidgetFixture = {
       onlineApsSLA: [
         12,
         12
+      ],
+      apCapacityThreshold: null,
+      apCapacitySLA: [
+        0,
+        0
       ]
     },
     {
@@ -64,6 +76,11 @@ export const healthWidgetFixture = {
       onlineApsSLA: [
         1,
         2
+      ],
+      apCapacityThreshold: null,
+      apCapacitySLA: [
+        null,
+        null
       ]
     },
     {
@@ -86,6 +103,11 @@ export const healthWidgetFixture = {
       onlineApsSLA: [
         3,
         3
+      ],
+      apCapacityThreshold: null,
+      apCapacitySLA: [
+        null,
+        null
       ]
     },
     {
@@ -107,6 +129,11 @@ export const healthWidgetFixture = {
       ],
       onlineApsSLA: [
         1,
+        1
+      ],
+      apCapacityThreshold: null,
+      apCapacitySLA: [
+        0,
         1
       ]
     },
@@ -130,6 +157,11 @@ export const healthWidgetFixture = {
       onlineApsSLA: [
         3,
         3
+      ],
+      apCapacityThreshold: null,
+      apCapacitySLA: [
+        null,
+        null
       ]
     },
     {
@@ -152,6 +184,11 @@ export const healthWidgetFixture = {
       onlineApsSLA: [
         1,
         1
+      ],
+      apCapacityThreshold: null,
+      apCapacitySLA: [
+        null,
+        null
       ]
     },
     {
@@ -174,6 +211,11 @@ export const healthWidgetFixture = {
       onlineApsSLA: [
         1,
         1
+      ],
+      apCapacityThreshold: null,
+      apCapacitySLA: [
+        null,
+        null
       ]
     },
     {
@@ -196,6 +238,11 @@ export const healthWidgetFixture = {
       onlineApsSLA: [
         0,
         88
+      ],
+      apCapacityThreshold: null,
+      apCapacitySLA: [
+        null,
+        null
       ]
     },
     {
@@ -218,6 +265,11 @@ export const healthWidgetFixture = {
       onlineApsSLA: [
         0,
         100
+      ],
+      apCapacityThreshold: null,
+      apCapacitySLA: [
+        null,
+        null
       ]
     },
     {
@@ -240,6 +292,11 @@ export const healthWidgetFixture = {
       onlineApsSLA: [
         5,
         5
+      ],
+      apCapacityThreshold: '100',
+      apCapacitySLA: [
+        3,
+        4
       ]
     },
     {
@@ -262,6 +319,11 @@ export const healthWidgetFixture = {
       onlineApsSLA: [
         1,
         1
+      ],
+      apCapacityThreshold: null,
+      apCapacitySLA: [
+        null,
+        null
       ]
     },
     {
@@ -284,6 +346,11 @@ export const healthWidgetFixture = {
       onlineApsSLA: [
         1,
         1
+      ],
+      apCapacityThreshold: null,
+      apCapacitySLA: [
+        null,
+        null
       ]
     },
     {
@@ -306,6 +373,11 @@ export const healthWidgetFixture = {
       onlineApsSLA: [
         0,
         1
+      ],
+      apCapacityThreshold: null,
+      apCapacitySLA: [
+        null,
+        null
       ]
     },
     {
@@ -328,6 +400,11 @@ export const healthWidgetFixture = {
       onlineApsSLA: [
         1,
         595
+      ],
+      apCapacityThreshold: null,
+      apCapacitySLA: [
+        null,
+        null
       ]
     },
     {
@@ -350,6 +427,11 @@ export const healthWidgetFixture = {
       onlineApsSLA: [
         1,
         2
+      ],
+      apCapacityThreshold: null,
+      apCapacitySLA: [
+        null,
+        null
       ]
     },
     {
@@ -372,6 +454,11 @@ export const healthWidgetFixture = {
       onlineApsSLA: [
         2,
         4
+      ],
+      apCapacityThreshold: '5',
+      apCapacitySLA: [
+        10,
+        10
       ]
     },
     {
@@ -394,6 +481,11 @@ export const healthWidgetFixture = {
       onlineApsSLA: [
         0,
         1
+      ],
+      apCapacityThreshold: null,
+      apCapacitySLA: [
+        null,
+        null
       ]
     },
     {
@@ -416,6 +508,11 @@ export const healthWidgetFixture = {
       onlineApsSLA: [
         1,
         1
+      ],
+      apCapacityThreshold: null,
+      apCapacitySLA: [
+        null,
+        null
       ]
     },
     {
@@ -438,6 +535,11 @@ export const healthWidgetFixture = {
       onlineApsSLA: [
         1,
         1
+      ],
+      apCapacityThreshold: null,
+      apCapacitySLA: [
+        null,
+        null
       ]
     },
     {
@@ -460,6 +562,11 @@ export const healthWidgetFixture = {
       onlineApsSLA: [
         3,
         4
+      ],
+      apCapacityThreshold: null,
+      apCapacitySLA: [
+        null,
+        null
       ]
     },
     {
@@ -482,10 +589,15 @@ export const healthWidgetFixture = {
       onlineApsSLA: [
         1,
         1
+      ],
+      apCapacityThreshold: '100',
+      apCapacitySLA: [
+        10,
+        30
       ]
     },
     {
-      zoneId: null,
+      zoneId: 'u0997ab63fa24670a961c95638d47ae6',
       zoneName: 'bdcPerformanceVenue2',
       timeToConnectSLA: [
         null,
@@ -504,10 +616,15 @@ export const healthWidgetFixture = {
       onlineApsSLA: [
         null,
         null
+      ],
+      apCapacityThreshold: null,
+      apCapacitySLA: [
+        null,
+        null
       ]
     },
     {
-      zoneId: null,
+      zoneId: 'g0997ab93fa24670a961c95636d47ae6',
       zoneName: 'My-Venue',
       timeToConnectSLA: [
         null,
@@ -526,6 +643,11 @@ export const healthWidgetFixture = {
       onlineApsSLA: [
         1,
         2
+      ],
+      apCapacityThreshold: null,
+      apCapacitySLA: [
+        null,
+        null
       ]
     }
   ]

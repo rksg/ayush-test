@@ -120,6 +120,7 @@ export default function SyslogTable () {
       />
       <Loader states={[tableQuery]}>
         <Table<SyslogPolicyListType>
+          settingsId='policies-syslog-table'
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
