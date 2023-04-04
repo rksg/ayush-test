@@ -25,16 +25,28 @@ const DefaultSystemLanguageFormItem = () => {
 
   const isLoadingPreference = getReqState.isLoading || getReqState.isFetching
   const isUpdatingPreference = updateReqState.isLoading
-  let languageNames
-  if (currentPreferredLang) {
-    languageNames = new Intl.DisplayNames([currentPreferredLang], { type: 'language' })
-  } else {
-    languageNames = new Intl.DisplayNames(['en'], { type: 'language' })
+
+  const generateLangLabel = (val: string): string => {
+    let languageNames, currLangDisplay
+    languageNames = new Intl.DisplayNames([val], { type: 'language' })
+    if (currentPreferredLang) {
+      currLangDisplay = new Intl.DisplayNames([currentPreferredLang.substr(0, 2)],
+        { type: 'language' })
+      if (currentPreferredLang.substr(0, 2) !== val) {
+        return `${currLangDisplay.of(val)} (${languageNames.of(val)})`
+      } else return `${currLangDisplay.of(val)}`
+    } else if ('en' !== val) {
+      languageNames = new Intl.DisplayNames(['en'], { type: 'language' }) // default lang is en
+      return `(${languageNames.of(val)})`
+    } else return ''
   }
 
   const supportedLangs = [
-    { label: `English (${languageNames.of('en')})`, value: 'en-US' }
-  ]
+    'en-US'
+  ].map(val => ({
+    label: `${generateLangLabel(val.substr(0, 2))}`,
+    value: val
+  }))
 
   return (
     <Row gutter={24}>
