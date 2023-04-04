@@ -19,6 +19,7 @@ import {
   TTC
 } from './config'
 import { FunnelChart }                                       from './funnelChart'
+import { ImpactedClientsTable }                              from './impactedClientTable'
 import { useTtcDrilldownQuery, useConnectionDrilldownQuery } from './services'
 import { Title }                                             from './styledComponents'
 
@@ -128,11 +129,15 @@ const HealthDrillDown = (props: {
       {selectedStage && (
         <>
           <Divider />
-          <GridCol col={{ span: 12 }} style={{ height: '210px' }}>
+          <GridCol col={{ span: 8 }} style={{ height: '300px' }}>
             PIE chart
           </GridCol>
-          <GridCol col={{ span: 12 }} style={{ height: '210px' }}>
-            Table
+          <GridCol col={{ span: 16 }}
+            style={{ height: '300px', overflow: 'auto' }}>
+            <ImpactedClientsTable filters={filters}
+              selectedStage={selectedStage}
+              drillDownSelection={drilldownSelection}
+            />
           </GridCol>
         </>
       )}

@@ -27,6 +27,20 @@ export interface TtcDrilldown {
     };
   };
 }
+export interface ImpactedClients {
+  network: {
+    hierarchyNode: {
+      impactedClients: ImpactedClient[];
+    };
+  };
+}
+export interface ImpactedClient {
+  mac: string
+  manufacturer: string
+  ssid: string
+  hostname: string
+  username: string
+}
 export interface RequestPayload {
   path: NetworkPath
   start: string
@@ -93,10 +107,40 @@ export const api = dataApi.injectEndpoints({
           granularity: 'all'
         }
       })
+    }),
+    impactedClients: build.query<
+      ImpactedClients,
+      RequestPayload & { field: string; topImpactedClientLimit: number; stage: string }
+    >({
+      query: (payload) => {
+        const impactedClientQuery = (type : string, stage : string) => {
+          return `impactedClients: ${type}(n: ${
+            payload.topImpactedClientLimit + 1
+          }, stage: "${stage}") {
+                mac
+                manufacturer
+                ssid
+                hostname
+                username
+              }`
+        }
+        return { document: gql`
+          query Network($path: [HierarchyNodeInput], $start: DateTime, $end: DateTime) {
+            network(start: $start, end: $end) {
+              hierarchyNode(path: $path) {
+                ${impactedClientQuery(payload.field, payload.stage)}
+                }
+            }
+          }
+        `,
+        variables: {
+          ...payload,
+          granularity: 'all'
+        }
+        }}
     })
   })
 })
 
-export const { useConnectionDrilldownQuery, useTtcDrilldownQuery } = api
-
+export const { useConnectionDrilldownQuery, useTtcDrilldownQuery, useImpactedClientsQuery } = api
 
