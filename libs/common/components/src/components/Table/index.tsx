@@ -62,6 +62,7 @@ export interface TableProps <RecordType>
     columns: TableColumn<RecordType, 'text'>[]
     actions?: Array<TableAction>
     rowActions?: Array<TableRowAction<RecordType>>
+    settingsId?: string
     columnState?: ColumnStateOption
     rowSelection?: (ProAntTableProps<RecordType, ParamsType>['rowSelection']
       & AntTableProps<RecordType>['rowSelection']
@@ -113,7 +114,7 @@ function useSelectedRowKeys <RecordType> (
 // following the same typing from antd
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Table <RecordType extends Record<string, any>> ({
-  type = 'tall', columnState, enableApiFilter, iconButton, onFilterChange, ...props
+  type = 'tall', columnState, enableApiFilter, iconButton, onFilterChange, settingsId, ...props
 }: TableProps<RecordType>) {
   const { dataSource } = props
   const rowKey = (props.rowKey ?? 'key')
@@ -169,7 +170,7 @@ function Table <RecordType extends Record<string, any>> ({
     }))
   }, [props.columns, type]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const columnsState = useColumnsState({ columns: baseColumns, columnState })
+  const columnsState = useColumnsState({ settingsId, columns: baseColumns, columnState })
   const {
     groupable,
     expandable,
@@ -177,7 +178,7 @@ function Table <RecordType extends Record<string, any>> ({
     isGroupByActive
   } = useGroupBy<RecordType>(baseColumns, allKeys, groupByValue, columnsState.value)
 
-  const setting: SettingOptionType | false = type === 'tall' && !columnState?.hidden ? {
+  const setting: SettingOptionType | false = type === 'tall' && settingsId ? {
     draggable: true,
     checkable: true,
     checkedReset: false,
