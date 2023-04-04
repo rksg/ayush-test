@@ -1,4 +1,4 @@
-import { useIsTierAllowed }                                     from '@acx-ui/feature-toggle'
+import { useIsSplitOn, useIsTierAllowed }                       from '@acx-ui/feature-toggle'
 import { networkHealthApiURL, Provider }                        from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitFor, fireEvent } from '@acx-ui/test-utils'
 import { RolesEnum }                                            from '@acx-ui/types'
@@ -207,6 +207,7 @@ test('should navigate to serviceValidation/networkHealth by NetworkHealthTestGua
 })
 test('should navigate to serviceValidation/videoCallQoe', () => {
   jest.mocked(useIsTierAllowed).mockReturnValue(true)
+  jest.mocked(useIsSplitOn).mockReturnValue(true)
   render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
       path: '/t/tenantId/serviceValidation/videoCallQoe',
