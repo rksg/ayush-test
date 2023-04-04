@@ -1,6 +1,10 @@
-import _      from 'lodash'
-import moment from 'moment-timezone'
+import _           from 'lodash'
+import moment      from 'moment-timezone'
+import { useIntl } from 'react-intl'
 
+import {
+  showActionModal
+} from '@acx-ui/components'
 import {
   AssignedEc,
   BaseUrl,
@@ -32,6 +36,31 @@ import {
 import { baseMspApi }                from '@acx-ui/store'
 import { UserUrlsInfo, UserProfile } from '@acx-ui/user'
 import { PverName }                  from '@acx-ui/utils'
+
+export function useCheckDelegateAdmin () {
+  const { $t } = useIntl()
+  const [getDelegatedAdmins] = useLazyGetMspEcDelegatedAdminsQuery()
+  const { delegateToMspEcPath } = useDelegateToMspEcPath()
+  const checkDelegateAdmin = async (ecTenantId: string, adminId: string) => {
+    try {
+      const admins = await getDelegatedAdmins({ params: { mspEcTenantId: ecTenantId } } ).unwrap()
+      const allowDelegate = admins.find( admin => admin.msp_admin_id === adminId )
+      if (allowDelegate) {
+        delegateToMspEcPath(ecTenantId)
+      } else {
+        showActionModal({
+          type: 'error',
+          title: $t({ defaultMessage: 'Error' }),
+          content:
+            $t({ defaultMessage: 'You are not authorized to manage this customer' })
+        })
+      }
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
+  }
+  return { checkDelegateAdmin }
+}
 
 export function useDelegateToMspEcPath () {
   const [getTenantPver] = useLazyGetUserProfilePverQuery()
@@ -618,6 +647,7 @@ export const {
   useUpdateCustomerMutation,
   useUpdateMspEcDelegatedAdminsMutation,
   useGetMspEcDelegatedAdminsQuery,
+  useLazyGetMspEcDelegatedAdminsQuery,
   useGetMspEcQuery,
   useGetAssignedMspEcToIntegratorQuery,
   useLazyGetAssignedMspEcToIntegratorQuery,
