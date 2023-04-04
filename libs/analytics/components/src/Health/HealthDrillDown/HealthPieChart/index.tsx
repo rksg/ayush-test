@@ -129,20 +129,22 @@ export const HealthPieChart = ({
 
   const { nodes, wlans } = transformData(queryResults.data, queryType)
   const network = pieNodeMap(path)
+  const nodesPlural = nodes.length > 1 ? 's' : ''
+  const wlansPlural = wlans.length > 1 ? 's' : ''
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = []
   if (nodes.length > 1) {
     tabDetails.push(
     {
-      label: $t({ defaultMessage: '{network}' }, { network }),
+      label: $t({ defaultMessage: '{network}{nodesPlural}' }, { network, nodesPlural }),
       value: 'nodes',
       children: (
        <UI.HealthPieChartWrapper>
         <Card
           type='no-border'
           title={$t(
-            { defaultMessage: 'Top {count} Impacted {network}' },
-            { count: nodes.length, network }
+            { defaultMessage: 'Top {count} Impacted {network}{nodesPlural}' },
+            { count: nodes.length, network, nodesPlural }
           )}
         >
           <AutoSizer>
@@ -162,15 +164,15 @@ export const HealthPieChart = ({
 
   tabDetails.push(
     {
-      label: $t({ defaultMessage: '{networks}' }, { networks: 'WLAN' }),
+      label: $t({ defaultMessage: '{wlans}{wlansPlural}' }, { wlans: 'WLAN', wlansPlural }),
       value: 'wlans',
       children: (
         <UI.HealthPieChartWrapper>
         <Card
           type='no-border'
           title={$t(
-            { defaultMessage: 'Top {count} Impacted {networks}' },
-            { count: wlans.length, networks: 'WLANs' }
+            { defaultMessage: 'Top {count} Impacted {networks}{wlansPlural}' },
+            { count: wlans.length, networks: 'WLAN', wlansPlural }
           )}
         >
           <AutoSizer>
