@@ -22,7 +22,7 @@ export const ClientCountChart = ({ chartRef, data }: TimeSeriesChartProps) => {
   const { $t } = intl
 
   const seriesMapping = [
-    { key: 'newClientCount', name: $t({ defaultMessage: 'New Client Association' }) },
+    { key: 'newClientCount', name: $t({ defaultMessage: 'New Client Associations' }) },
     { key: 'impactedClientCount', name: $t({ defaultMessage: 'Impacted Clients' }) },
     { key: 'connectedClientCount', name: $t({ defaultMessage: 'Connected Clients' }) }
   ]
