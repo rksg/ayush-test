@@ -38,13 +38,13 @@ export function ClientExperience ({
       const onlineApsPercent = calcPercent(onlineApsSLA)
       const apCapacityPercent = calcPercent(apCapacitySLA)
       connectionSuccessPercent.percent !== null &&
-       connectionSuccess.push(connectionSuccessPercent.percent)
+        connectionSuccess.push(connectionSuccessPercent.percent)
       timeToConnectPercent.percent !== null &&
-       timeToConnect.push(timeToConnectPercent.percent)
+        timeToConnect.push(timeToConnectPercent.percent)
       clientThroughputPercent.percent !== null &&
-       clientThroughput.push(clientThroughputPercent.percent)
+        clientThroughput.push(clientThroughputPercent.percent)
       onlineApsPercent.percent !== null &&
-       onlineAps.push(onlineApsPercent.percent)
+        onlineAps.push(onlineApsPercent.percent)
       apCapacityPercent.percent !== null &&
         apCapacity.push(apCapacityPercent.percent)
     })
@@ -64,8 +64,13 @@ export function ClientExperience ({
       onArrowClick={onArrowClick}>
       <AutoSizer>
         {({ height, width }) => (
-          <div style={{ display: 'block', height, width }}>
-            <GridRow style={{ marginBottom: '10px', marginTop: '10px' }}>
+          <div style={{
+            display: 'flex',
+            height,
+            width,
+            flexDirection: 'column',
+            justifyContent: 'space-around' }}>
+            <GridRow>
               <GridCol col={{ span: 12 }}>
                 {$t({ defaultMessage: 'Connection Success' })}
               </GridCol>
@@ -73,7 +78,7 @@ export function ClientExperience ({
                 <ProgressBarV2 percent={healthData?.connectionSuccess || 0 as number}/>
               </GridCol>
             </GridRow>
-            <GridRow style={{ marginBottom: '10px' }}>
+            <GridRow>
               <GridCol col={{ span: 12 }}>
                 {$t({ defaultMessage: 'Time To Connect' })}
               </GridCol>
@@ -81,7 +86,7 @@ export function ClientExperience ({
                 <ProgressBarV2 percent={healthData?.timeToConnect || 0 as number}/>
               </GridCol>
             </GridRow>
-            <GridRow style={{ marginBottom: '10px' }}>
+            <GridRow>
               <GridCol col={{ span: 12 }}>
                 {$t({ defaultMessage: 'Client Throughput' })}
               </GridCol>
@@ -89,7 +94,7 @@ export function ClientExperience ({
                 <ProgressBarV2 percent={healthData?.clientThroughput || 0 as number}/>
               </GridCol>
             </GridRow>
-            <GridRow style={{ marginBottom: '10px' }}>
+            <GridRow>
               <GridCol col={{ span: 12 }}>
                 {$t({ defaultMessage: 'Online APs' })}
               </GridCol>
@@ -97,7 +102,7 @@ export function ClientExperience ({
                 <ProgressBarV2 percent={healthData?.onlineAps || 0 as number}/>
               </GridCol>
             </GridRow>
-            <GridRow style={{ marginBottom: '10px' }}>
+            <GridRow>
               <GridCol col={{ span: 12 }}>
                 {$t({ defaultMessage: 'AP Capacity' })}
               </GridCol>
