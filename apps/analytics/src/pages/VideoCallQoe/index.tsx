@@ -2,7 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { PageHeader } from '@acx-ui/components'
 
-function VideoCallQoePage () {
+function VideoCallQoeListPage () {
   const { $t } = useIntl()
   return (
     <PageHeader
@@ -10,4 +10,4 @@ function VideoCallQoePage () {
     />
   )
 }
-export default VideoCallQoePage
+export default VideoCallQoeListPage
