@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import ProLayout                         from '@ant-design/pro-layout'
 import { Menu }                          from 'antd'
 import { ItemType as AntItemType }       from 'antd/lib/menu/hooks/useItems'
-import { get, has, uniqueId }            from 'lodash'
+import { get, has, snakeCase }           from 'lodash'
 import {
   MenuItemType as RcMenuItemType,
   SubMenuType as RcSubMenuType,
@@ -25,17 +25,20 @@ type SideNavProps = {
   isActivePattern?: string[]
 }
 
-type MenuItemType = Omit<RcMenuItemType, 'key'> & SideNavProps & {
+type MenuItemType = Omit<RcMenuItemType, 'key' | 'label'> & SideNavProps & {
+  label: string
   danger?: boolean
   icon?: React.ReactNode
   title?: string
 }
-type SubMenuType = Omit<RcSubMenuType, 'children'|'key'> & SideNavProps & {
+type SubMenuType = Omit<RcSubMenuType, 'children' | 'key' | 'label'> & SideNavProps & {
+  label: string
   icon?: React.ReactNode
   theme?: 'dark' | 'light'
   children: ItemType[]
 }
-type MenuItemGroupType = Omit<RcMenuItemGroupType, 'children'> & {
+type MenuItemGroupType = Omit<RcMenuItemGroupType, 'children' | 'label'> & {
+  label: string
   children?: ItemType[]
 }
 type MenuDividerType = RcMenuDividerType & {
@@ -78,14 +81,20 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
   const location = useLocation()
   const breakpoint = /\/t\/\w+/
   const activeUri = location.pathname.split(breakpoint)?.[1]
+  // needed for Chrome to ensure only single submenu opened
+  const [openKeys, setOpenKeys] = useState<string[]>([])
 
-  const getMenuItem = (item: LayoutProps['menuConfig'][number]): AntItemType => {
+  const getMenuItem = (item: LayoutProps['menuConfig'][number], key: string): AntItemType => {
+    if (item === null) return item
     if(isMenuDividerType(item)) { return item }
+
+    key = `${key}-${snakeCase(item.label)}`
+
     if(isMenuItemGroupType(item)) { return {
       ...item,
-      key: uniqueId(),
+      key: key,
       label: get(item, 'label', ''),
-      children: item.children?.map(getMenuItem)
+      children: item.children?.map(child => getMenuItem(child, key))
     } }
 
     const { uri, tenantType, activeIcon, inactiveIcon, isActivePattern, ...rest } = item!
@@ -102,19 +111,24 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
     return {
       ...rest,
       className: Boolean(isActive) ? 'menu-active' : 'menu-inactive',
-      key: uniqueId(),
+      key: key,
       label: uri
         ? <TenantNavLink to={uri} tenantType={tenantType}>{content}</TenantNavLink>
         : content,
       ...(isSubMenuType(item) && {
         popupClassName: item.children.some(child => get(child, 'type') === 'group')
           ? 'layout-group-horizontal' : '',
-        children: item.children.map(getMenuItem)
+        children: item.children.map(child => getMenuItem(child, key))
       })
     }
   }
 
-  return <Menu selectedKeys={[]} items={props.menuConfig.map(getMenuItem)}/>
+  return <Menu
+    selectedKeys={[]}
+    openKeys={openKeys}
+    items={props.menuConfig.map(item => getMenuItem(item, ''))}
+    onOpenChange={keys => setOpenKeys(keys.slice(-1))}
+  />
 }
 
 export function Layout ({
@@ -128,7 +142,7 @@ export function Layout ({
   const location = useLocation()
 
   const dashboard = menuConfig
-    .find(item=> ('uri' in item!) && item.uri=== '/dashboard')
+    .find(item => ('uri' in item!) && item.uri=== '/dashboard')
 
   return <UI.Wrapper>
     <ProLayout
