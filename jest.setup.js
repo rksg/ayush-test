@@ -27,6 +27,26 @@ jest.mock('socket.io-client', () => ({
   }))
 }))
 
+var localStorageMock = (function() {
+  var store = {}
+  return {
+    getItem: function(key) {
+      return store[key]
+    },
+    setItem: function(key, value) {
+      store[key] = value.toString()
+    },
+    clear: function() {
+      store = {}
+    },
+    removeItem: function(key) {
+      delete store[key]
+    }
+  }
+})()
+
+Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+
 beforeAll(() => {
   mockServer.listen()
   setUpIntl({
@@ -84,6 +104,7 @@ beforeEach(async () => {
   })
 })
 afterEach(() => {
+  localStorageMock.clear()
   mockServer.resetHandlers()
   Loader['instance']?.reset()
   mockInstances.clearAll()

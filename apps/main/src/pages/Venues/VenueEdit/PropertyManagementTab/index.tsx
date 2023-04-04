@@ -8,8 +8,10 @@ import { Button, Loader, StepsForm, StepsFormInstance } from '@acx-ui/components
 import { PersonaGroupSelect }                           from '@acx-ui/rc/components'
 import {
   useGetPropertyConfigsQuery,
+  useGetPropertyUnitListQuery,
   useGetResidentPortalListQuery,
   useGetVenueQuery,
+  useLazyGetPersonaGroupByIdQuery,
   usePatchPropertyConfigsMutation,
   useUpdatePropertyConfigsMutation
 } from '@acx-ui/rc/services'
@@ -17,6 +19,8 @@ import { PropertyConfigs, PropertyConfigStatus } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 // FIXME: move this component to common folder.
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { PersonaGroupLink } from '../../../../../../rc/src/pages/Users/Persona/LinkHelper'
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { PersonaGroupDrawer } from '../../../../../../rc/src/pages/Users/Persona/PersonaGroupDrawer'
 import { VenueEditContext }   from '../index'
@@ -47,18 +51,42 @@ export function PropertyManagementTab () {
   const formRef = useRef<StepsFormInstance<PropertyConfigs>>()
   const { editContextData, setEditContextData } = useContext(VenueEditContext)
   const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
-  const [isPropertyEnable, setIsPropertyEnable] = useState(false)
-  const [enableResidentPortal, setEnableResidentPortal] = useState(false)
   const [personaGroupVisible, setPersonaGroupVisible] = useState(false)
-  const { data: residentPortalList } = useGetResidentPortalListQuery({})
+  const [groupData, setGroupData] = useState<{ id?: string, name?: string }>()
+  const [selectedGroupId, setSelectedGroupId] = useState<string|undefined>()
+  const [getPersonaGroupById] = useLazyGetPersonaGroupByIdQuery()
+  const { data: unitQuery } = useGetPropertyUnitListQuery({
+    params: { venueId },
+    payload: {
+      page: 1,
+      pageSize: 10,
+      sortField: 'name',
+      sortOrder: 'ASC'
+    }
+  })
+  const hasUnits = (unitQuery?.totalCount ?? -1) > 0
+
+  const { data: residentPortalList } = useGetResidentPortalListQuery({
+    payload: { page: 1, pageSize: 10000, sortField: 'name', sortOrder: 'ASC' }
+  })
   const [updatePropertyConfigs] = useUpdatePropertyConfigsMutation()
   const [patchPropertyConfigs] = usePatchPropertyConfigsMutation()
 
   useEffect(() => {
-    if (propertyConfigsQuery.isLoading || !formRef.current) return
+    if (propertyConfigsQuery.isLoading || !formRef.current || !propertyConfigsQuery.data) return
     const enabled = propertyConfigsQuery.data?.status === PropertyConfigStatus.ENABLED
-    setIsPropertyEnable(enabled)
-    formRef?.current?.setFieldValue('isPropertyEnable', enabled)
+
+    formRef?.current.setFieldsValue(propertyConfigsQuery.data)
+    formRef?.current.setFieldValue('isPropertyEnable', enabled)
+
+    const groupId = propertyConfigsQuery.data?.personaGroupId
+    if (groupId) {
+      setSelectedGroupId(groupId)
+      getPersonaGroupById({ params: { groupId } })
+        .then(result => {
+          setGroupData({ id: groupId, name: result.data?.name })
+        })
+    }
   }, [propertyConfigsQuery.data, formRef])
 
   const onFormFinish = async (_: string, info: FormFinishInfo) => {
@@ -71,7 +99,7 @@ export function PropertyManagementTab () {
           payload: {
             ...info.values,
             venueName: venueData?.name ?? venueId,
-            status: isPropertyEnable
+            status: enableProperty
               ? PropertyConfigStatus.ENABLED
               : PropertyConfigStatus.DISABLED
           }
@@ -116,21 +144,17 @@ export function PropertyManagementTab () {
         buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
       >
         <StepsForm.StepForm
-          initialValues={{
-            ...defaultPropertyConfigs,
-            ...propertyConfigsQuery.data,
-            isPropertyEnable
-          }}
+          initialValues={defaultPropertyConfigs}
         >
           <StepsForm.FieldLabel width={'200px'}>
             {$t({ defaultMessage: 'Enable Property Management' })}
             <Form.Item
               name='isPropertyEnable'
               valuePropName={'checked'}
-              children={<Switch onChange={setIsPropertyEnable}/>}
+              children={<Switch />}
             />
           </StepsForm.FieldLabel>
-          {isPropertyEnable &&
+          {formRef?.current?.getFieldValue('isPropertyEnable') &&
             <Row gutter={20}>
               <Col span={8}>
                 <Form.Item
@@ -138,9 +162,21 @@ export function PropertyManagementTab () {
                   label={$t({ defaultMessage: 'Persona Group' })}
                   rules={[{ required: true }]}
                 >
-                  <PersonaGroupSelect />
+                  {formRef?.current?.getFieldValue('personaGroupId') && hasUnits
+                    ? <PersonaGroupLink
+                      personaGroupId={selectedGroupId}
+                      name={groupData?.name}
+                    />
+                    : <PersonaGroupSelect
+                      filterProperty
+                      whiteList={selectedGroupId ? [selectedGroupId] : []}
+                    />
+                  }
                 </Form.Item>
-                <Form.Item noStyle>
+                <Form.Item
+                  noStyle
+                  hidden={(!!formRef?.current?.getFieldValue('personaGroupId') && hasUnits)}
+                >
                   <Button
                     type={'link'}
                     size={'small'}
@@ -168,13 +204,10 @@ export function PropertyManagementTab () {
                     name={['unitConfig', 'residentPortalAllowed']}
                     rules={[{ required: true }]}
                     valuePropName={'checked'}
-                    children={<Switch
-                      checked={enableResidentPortal}
-                      onChange={setEnableResidentPortal}
-                    />}
+                    children={<Switch />}
                   />
                 </StepsForm.FieldLabel>
-                {enableResidentPortal &&
+                {formRef?.current?.getFieldValue(['unitConfig', 'residentPortalAllowed']) &&
                     <Form.Item
                       name='residentPortalId'
                       label={$t({ defaultMessage: 'Resident Portal profile' })}

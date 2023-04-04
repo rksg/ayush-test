@@ -26,7 +26,9 @@ import {
   useSupportMspCustomerListQuery,
   useGetMspLabelQuery,
   useIntegratorCustomerListQuery,
-  useGetTenantDetailsQuery
+  useGetTenantDetailsQuery,
+  useDelegateToMspEcPath,
+  useCheckDelegateAdmin
 } from '@acx-ui/rc/services'
 import {
   DelegationEntitlementRecord,
@@ -34,11 +36,10 @@ import {
   MspEc,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { getBasePath, Link, MspTenantLink, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
-import { RolesEnum }                                                                           from '@acx-ui/types'
-import { filterByAccess, useUserProfileContext }                                               from '@acx-ui/user'
-import { hasRoles }                                                                            from '@acx-ui/user'
-import { AccountType }                                                                         from '@acx-ui/utils'
+import { Link, MspTenantLink, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                              from '@acx-ui/types'
+import { filterByAccess, useUserProfileContext, hasRoles }                        from '@acx-ui/user'
+import { AccountType }                                                            from '@acx-ui/utils'
 
 const getStatus = (row: MspEc) => {
   const isTrial = row.accountType === 'TRIAL'
@@ -119,6 +120,8 @@ export function MspCustomers () {
   const [deactivateMspEc] = useDeactivateMspEcMutation()
   const [reactivateMspEc] = useReactivateMspEcMutation()
   const [deleteMspEc, { isLoading: isDeleteEcUpdating }] = useDeleteMspEcMutation()
+  const { delegateToMspEcPath } = useDelegateToMspEcPath()
+  const { checkDelegateAdmin } = useCheckDelegateAdmin()
 
   const onBoard = mspLabel?.msp_label
   const ecFilters = isPrimeAdmin
@@ -243,10 +246,18 @@ export function MspCustomers () {
       searchable: true,
       sorter: true,
       defaultSortOrder: 'ascend',
+      onCell: (data) => {
+        return (data.status === 'Active') ? {
+          onClick: () => {
+            userProfile?.support
+              ? delegateToMspEcPath(data.id)
+              : checkDelegateAdmin(data.id, userProfile.adminId)
+          }
+        } : {}
+      },
       render: function (data, row, _, highlightFn) {
-        const to = `${getBasePath()}/t/${row.id}`
         return (
-          (row.status === 'Active') ? <Link to={to}>{highlightFn(data as string)}</Link> : data
+          (row.status === 'Active') ? <Link to=''>{highlightFn(data as string)}</Link> : data
         )
       }
     },

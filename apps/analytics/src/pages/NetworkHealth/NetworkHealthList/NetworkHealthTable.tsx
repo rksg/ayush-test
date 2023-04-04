@@ -233,6 +233,7 @@ export function NetworkHealthTable () {
   return (
     <Loader states={[queryResults]}>
       <Table
+        settingsId='network-health-table'
         type='tall'
         columns={ColumnHeaders}
         dataSource={queryResults.data}
