@@ -13,10 +13,11 @@ import {
 import { formatter } from '@acx-ui/formatter'
 
 import { ImpactedNodesAndWlans, usePieChartQuery } from './services'
-import { DrilldownSelection, Stages } from '../config'
+import { DrilldownSelection, Stages, stageMapToName } from '../config'
 import { NetworkPath } from '@acx-ui/utils'
 import { isNull } from 'lodash'
 import * as UI from './styledComponents'
+import { useEffect } from 'react'
 
 const transformData = (
   data: ImpactedNodesAndWlans | undefined,
@@ -103,6 +104,13 @@ function getHealthPieChart (
       style={{ height, width }}
       dataFormatter={dataFormatter}
       showLabel
+      labelFormatter={(data) => {
+        const { name, value, percent } = data as { name: string, value: number, percent: number }
+        const formattedPercent = formatter('percentFormat')(percent / 100)
+        const formattedValue = dataFormatter(value)
+        const label = `${name}\n${formattedPercent} (${formattedValue})`
+        return label
+      }}
     />
   )
 }
@@ -112,7 +120,7 @@ export const HealthPieChart = ({
   queryFilter,
 }: {
   queryType: DrilldownSelection,
-  queryFilter: Stages
+  queryFilter: string
 }) => {
   const { $t } = useIntl()
   const analyticsFilter = useAnalyticsFilter()
@@ -131,6 +139,8 @@ export const HealthPieChart = ({
   const singularNetwork = pieNodeMap(path)
   const venueTitle = nodes.length > 1 ? singularNetwork + 's' : singularNetwork
   const wlansTitle = wlans.length > 1 ? 'WLANs' : 'WLAN'
+  let name = ''
+  useEffect(() => { name = queryFilter ? stageMapToName[queryFilter] : '' }, [queryFilter])
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = []
   if (nodes.length > 1) {
@@ -143,8 +153,8 @@ export const HealthPieChart = ({
         <Card
           type='no-border'
           title={$t(
-            { defaultMessage: 'Top {count} Impacted {venueTitle}' },
-            { count: nodes.length, venueTitle }
+            { defaultMessage: '{name} Top {count} Impacted {venueTitle}' },
+            { name, count: nodes.length, venueTitle }
           )}
         >
           <AutoSizer>
@@ -171,8 +181,8 @@ export const HealthPieChart = ({
         <Card
           type='no-border'
           title={$t(
-            { defaultMessage: 'Top {count} Impacted {wlansTitle}' },
-            { count: wlans.length, wlansTitle }
+            { defaultMessage: '{name} Top {count} Impacted {wlansTitle}' },
+            { name, count: wlans.length, wlansTitle }
           )}
         >
           <AutoSizer>

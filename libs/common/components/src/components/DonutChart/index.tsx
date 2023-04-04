@@ -63,6 +63,7 @@ export interface DonutChartProps extends DonutChartOptionalProps,
   dataFormatter?: (value: unknown) => string | null
   onClick?: (params: EventParams) => void
   style: EChartsReactProps['style'] & { width: number, height: number }
+  labelFormatter?: (params: unknown) => string
 }
 
 export const onChartClick = (onClick: DonutChartProps['onClick']) =>
@@ -210,6 +211,14 @@ export function DonutChart ({
       lineHeight: cssNumber('--acx-body-4-line-height'),
       fontWeight: cssNumber('--acx-body-font-weight'),
       height: cssNumber('--acx-body-4-font-size')
+    },
+    'labelFormatter': {
+      ...commonFontStyle,
+      fontSize: cssNumber('--acx-body-5-font-size'),
+      lineHeight: cssNumber('--acx-body-6-line-height'),
+      fontWeight: cssNumber('--acx-body-font-weight'),
+      height: cssNumber('--acx-body-5-font-size'),
+      edgeDistance: 10,
     }
   }
 
@@ -286,7 +295,8 @@ export function DonutChart ({
         avoidLabelOverlap: true,
         label: {
           show: props.showLabel,
-          ...styles.label
+          formatter: props.labelFormatter,
+          ...(props.labelFormatter ? styles.labelFormatter : styles.label)
         },
         tooltip: {
           ...tooltipOptions(),

@@ -109,6 +109,7 @@ export function FunnelChart ({
         endPosition
       }
     })
+    // endPosition is mutable, onclick will capture its final value instead of iterated map value.
     return endStages.map((stage) => ({
       ...stage,
       onClick: () => onClick(stage.endPosition - stage.width / 2, stage.apiKey)

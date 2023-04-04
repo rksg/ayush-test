@@ -104,11 +104,11 @@ export const CONNECTIONFAILURE = 'connectionFailure'
 export const TTC = 'ttc'
 
 export const valueFormatter = (value: number) => formatter('durationFormat')(value)
-export const stageNameToCodeMap = {
-   authFailure: 'auth',
-   assoFailure: 'assoc',
-   eapFailure: 'eap',
-   radiusFailure: 'radius',
-   dhcpFailure: 'dhcp'
+export const stageMapToName: Record<string, string> = {
+   'auth': 'AUTHENTICATION',
+   'assoc': 'ASSOCIATION',
+   'eap': 'EAP',
+   'radius': 'RADIUS',
+   'dhcp': 'DHCP'
 }
 
