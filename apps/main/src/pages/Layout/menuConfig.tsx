@@ -43,6 +43,7 @@ const PoliciesSolid = styled(PoliciesSolidBase)`${LayoutUI.iconSolidOverride}`
 export function useMenuConfig () {
   const { $t } = useIntl()
   const showSV = useIsSplitOn(Features.SERVICE_VALIDATION)
+  const showSVVCQ = useIsSplitOn(Features.SERVICE_VALIDATION_VIDEO_CALL_QOE)
   const earlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
   const isEdgeEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
   const isAdministrationEnabled = useIsSplitOn(Features.UNRELEASED) || earlyBetaEnabled
@@ -102,7 +103,8 @@ export function useMenuConfig () {
         },
         {
           path: '/serviceValidation/videoCallQoe',
-          name: $t({ defaultMessage: 'Video Call QoE' })
+          name: $t({ defaultMessage: 'Video Call QoE' }),
+          disabled: !showSVVCQ
         }
       ],
       disabled: !showSV
