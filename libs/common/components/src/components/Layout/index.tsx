@@ -77,10 +77,21 @@ export interface LayoutProps {
   content: React.ReactNode;
 }
 
+function useActiveUri () {
+  const { pathname } = useLocation()
+  const chunks = pathname.split('/')
+  for (const c in chunks) {
+    if (['v', 't'].includes(chunks[c])) {
+      // TODO
+      // update to "+ 1" once URL updated to "/tenant-id/v|t"
+      return '/' + chunks.slice(Number(c) + 2).join('/')
+    }
+  }
+  return pathname
+}
+
 function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
-  const location = useLocation()
-  const breakpoint = /\/t\/\w+/
-  const activeUri = location.pathname.split(breakpoint)?.[1]
+  const activeUri = useActiveUri()
   // needed for Chrome to ensure only single submenu opened
   const [openKeys, setOpenKeys] = useState<string[]>([])
 
@@ -98,7 +109,7 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
     } }
 
     const { uri, tenantType, activeIcon, inactiveIcon, isActivePattern, ...rest } = item!
-    const isActive = isActivePattern?.some(pattern => activeUri?.includes(pattern))
+    const isActive = isActivePattern?.some(pattern => activeUri.startsWith(pattern))
     const IconComponent = (isActive ? activeIcon : inactiveIcon || activeIcon )as React.FC
     const content = <>
       {IconComponent &&
