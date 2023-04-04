@@ -5,10 +5,6 @@ import { usePreference } from '@acx-ui/rc/components'
 
 import { MessageMapping } from '../MessageMapping'
 
-const supportedLangs = [
-  { label: 'English', value: 'en-US' }
-]
-
 const DefaultSystemLanguageFormItem = () => {
   const { $t } = useIntl()
   const {
@@ -29,6 +25,16 @@ const DefaultSystemLanguageFormItem = () => {
 
   const isLoadingPreference = getReqState.isLoading || getReqState.isFetching
   const isUpdatingPreference = updateReqState.isLoading
+  let languageNames
+  if (currentPreferredLang) {
+    languageNames = new Intl.DisplayNames([currentPreferredLang], { type: 'language' })
+  } else {
+    languageNames = new Intl.DisplayNames(['en'], { type: 'language' })
+  }
+
+  const supportedLangs = [
+    { label: `English (${languageNames.of('en')})`, value: 'en-US' }
+  ]
 
   return (
     <Row gutter={24}>

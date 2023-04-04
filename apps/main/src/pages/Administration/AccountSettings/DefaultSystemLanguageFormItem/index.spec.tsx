@@ -15,9 +15,16 @@ jest.mock('antd', () => {
     optionFilterProp, // remove and left unassigned to prevent warning
     ...props
   }: React.PropsWithChildren<{ showSearch: boolean, allowClear:boolean, optionFilterProp: string, onChange?: (value: string) => void }>) => {
+    const languageNames = new Intl.DisplayNames(['en'], { type: 'language' })
+    const supportedLangs = [
+      { label: `English (${languageNames.of('en')})`, value: 'en-US' },
+      { label: `Japanese (${languageNames.of('ja')})`, value: 'ja-JP' },
+      { label: `German (${languageNames.of('de')})`, value: 'de-DE' }
+    ]
     return (<select {...props} onChange={(e) => props.onChange?.(e.target.value)}>
-      <option value={undefined}></option>
-      {children}
+      {supportedLangs.map(({ label, value }) =>
+        (<Select.Option value={value} key={value} children={label}/>)
+      )}
     </select>)
   }
   Select.Option = 'option'
@@ -27,16 +34,6 @@ jest.mock('antd', () => {
 const mockedUpdatePreference = jest.fn()
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
-  supportedLangs: [{
-    label: 'English',
-    value: 'en-US'
-  },{
-    label: 'Japanese',
-    value: 'ja-JP'
-  },{
-    label: 'German',
-    value: 'de-DE'
-  }],
   usePreference: () => {
     return {
       data: { global: {
@@ -56,11 +53,11 @@ describe('Default System Language Selector', () => {
   it('should render correctly', async () => {
     render(
       <Provider>
-        <DefaultSystemLanguageFormItem />
+        <DefaultSystemLanguageFormItem/>
       </Provider>, {
         route: { params }
       })
 
-    await screen.findByText('English')
+    await screen.findByText('English (English)')
   })
 })
