@@ -26,25 +26,20 @@ const DefaultSystemLanguageFormItem = () => {
   const isLoadingPreference = getReqState.isLoading || getReqState.isFetching
   const isUpdatingPreference = updateReqState.isLoading
 
-  const generateLangLabel = (val: string): string => {
-    let languageNames, currLangDisplay
-    languageNames = new Intl.DisplayNames([val], { type: 'language' })
-    if (currentPreferredLang) {
-      currLangDisplay = new Intl.DisplayNames([currentPreferredLang.substr(0, 2)],
-        { type: 'language' })
-      if (currentPreferredLang.substr(0, 2) !== val) {
-        return `${currLangDisplay.of(val)} (${languageNames.of(val)})`
-      } else return `${currLangDisplay.of(val)}`
-    } else if ('en' !== val) {
-      languageNames = new Intl.DisplayNames(['en'], { type: 'language' }) // default lang is en
-      return `(${languageNames.of(val)})`
-    } else return ''
+  const generateLangLabel = (val: string): string | undefined => {
+    let languageNames, currLangDisplay;
+    const lang = (currentPreferredLang ?? 'en-US').slice(0, 2)
+    languageNames = new Intl.DisplayNames([val], { type: 'language' });
+    currLangDisplay = new Intl.DisplayNames([lang], { type: 'language' });
+    return ((lang !== val)?  $t({ defaultMessage: '{language} ({localLanguage})' },
+          { language: currLangDisplay.of(val), localLanguage: languageNames.of(val)})
+        : $t({ defaultMessage: '{language}' }, { language: currLangDisplay.of(val)}))
   }
 
   const supportedLangs = [
     'en-US'
   ].map(val => ({
-    label: `${generateLangLabel(val.substr(0, 2))}`,
+    label: generateLangLabel(val.slice(0, 2)),
     value: val
   }))
 

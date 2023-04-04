@@ -15,12 +15,17 @@ jest.mock('antd', () => {
     optionFilterProp, // remove and left unassigned to prevent warning
     ...props
   }: React.PropsWithChildren<{ showSearch: boolean, allowClear:boolean, optionFilterProp: string, onChange?: (value: string) => void }>) => {
-    const languageNames = new Intl.DisplayNames(['en'], { type: 'language' })
+    const currPrefLang = 'es'
+    let val = 'en'
+    const localeLangName = new Intl.DisplayNames([val], { type: 'language' })
+    const languageNames = new Intl.DisplayNames([currPrefLang], { type: 'language' })
     const supportedLangs = [
-      { label: `English (${languageNames.of('en')})`, value: 'en-US' },
-      { label: `Japanese (${languageNames.of('ja')})`, value: 'ja-JP' },
-      { label: `German (${languageNames.of('de')})`, value: 'de-DE' }
+      { label: `${localeLangName.of('en')} (${languageNames.of('en')})`, value: 'en-US' },
+      { label: `${languageNames.of('es')}`, value: 'es-ES' },
+      { label: `${localeLangName.of('ja')} (${languageNames.of('ja')})`, value: 'ja-JP' },
+      { label: `${localeLangName.of('de')} (${languageNames.of('de')})`, value: 'de-DE' }
     ]
+    
     return (<select {...props} onChange={(e) => props.onChange?.(e.target.value)}>
       {supportedLangs.map(({ label, value }) =>
         (<Select.Option value={value} key={value} children={label}/>)
@@ -58,6 +63,9 @@ describe('Default System Language Selector', () => {
         route: { params }
       })
 
-    await screen.findByText('English (English)')
+    await screen.findByText('English (inglés)')
+    await screen.findByText('español')
+    await screen.findByText('Japanese (japonés)')
+    await screen.findByText('German (alemán)')
   })
 })
