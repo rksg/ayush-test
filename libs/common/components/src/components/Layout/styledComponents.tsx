@@ -100,6 +100,7 @@ export const Wrapper = styled.div`
           font-size: var(--acx-headline-4-font-size);
           font-weight: var(--acx-headline-4-font-weight);
           margin: 0;
+          flex-shrink: 0;
           &:active { background: unset; }
           &-active {
             background-color: var(--acx-neutrals-70);
