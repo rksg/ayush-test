@@ -97,7 +97,7 @@ function DashboardPageHeader () {
         $t({ defaultMessage: 'Wi-Fi Network' })}
       </TenantLink>
     }, {
-      key: 'add-ap',
+      key: 'add-device',
       label: $t({ defaultMessage: 'Device' }),
       // type: 'group',
       children: [{
