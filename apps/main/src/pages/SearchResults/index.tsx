@@ -115,7 +115,12 @@ const searches = [
     return {
       result,
       title: $t({ defaultMessage: 'Events' }),
-      component: <EventTable tableQuery={result} searchables={false} filterables={false} />
+      component: <EventTable
+        settingsId='timeline-event-table'
+        tableQuery={result}
+        searchables={false}
+        filterables={false}
+      />
     }
   },
   (searchString: string, $t: IntlShape['$t']) => {

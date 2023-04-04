@@ -193,6 +193,7 @@ export default function VenuePoolTable (){
       isFetching: venueDHCPPools.isFetching
     }]}>
       <Table
+        settingsId='venue-dhcp-pool-table'
         columns={columns}
         dataSource={tableData}
         rowKey='id'

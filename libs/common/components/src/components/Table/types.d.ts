@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import React, { ReactNode } from 'react'
 
 import {
   ProSchema,
@@ -46,7 +46,7 @@ type AdditionalColumnType <RecordType, ValueType> = {
    * the table will show a multi select dropdown to filter the column
    * @default false
    */
-  filterable?: boolean | ({ key: string, value: string })[]
+  filterable?: boolean | ({ key: string, value: string, label?: React.ReactNode })[]
   /**
    * Set the key in filters of payload
    * It is useful when the dataIndex is different from the filter key
@@ -112,7 +112,6 @@ export type TableColumn<RecordType = unknown, ValueType = 'text'>
  */
 export type ColumnState = { [columnKey: string]: boolean }
 export type ColumnStateOption = {
-  hidden?: boolean
   defaultValue?: ColumnState
   // value?: ColumnState
   onChange?: (state: ColumnState) => void
