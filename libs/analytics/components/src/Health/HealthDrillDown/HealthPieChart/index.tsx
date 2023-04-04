@@ -129,7 +129,7 @@ export const HealthPieChart = ({
 
   const { nodes, wlans } = transformData(queryResults.data, queryType)
   const singularNetwork = pieNodeMap(path)
-  const venueTitle = nodes.length > 1 ? singularNetwork : singularNetwork + 's'
+  const venueTitle = nodes.length > 1 ? singularNetwork + 's' : singularNetwork
   const wlansTitle = wlans.length > 1 ? 'WLANs' : 'WLAN'
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = []
