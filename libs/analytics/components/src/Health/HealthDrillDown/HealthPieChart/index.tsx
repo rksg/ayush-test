@@ -16,6 +16,7 @@ import { ImpactedNodesAndWlans, usePieChartQuery } from './services'
 import { DrilldownSelection, Stages } from '../config'
 import { NetworkPath } from '@acx-ui/utils'
 import { isNull } from 'lodash'
+import * as UI from './styledComponents'
 
 const transformData = (
   data: ImpactedNodesAndWlans | undefined,
@@ -136,6 +137,7 @@ export const HealthPieChart = ({
       label: $t({ defaultMessage: '{network}' }, { network }),
       value: 'nodes',
       children: (
+       <UI.HealthPieChartWrapper>
         <Card
           type='no-border'
           title={$t(
@@ -153,6 +155,7 @@ export const HealthPieChart = ({
             }
           </AutoSizer>
         </Card>
+       </UI.HealthPieChartWrapper>
       )
     })
   }
@@ -162,6 +165,7 @@ export const HealthPieChart = ({
       label: $t({ defaultMessage: '{networks}' }, { networks: 'WLAN' }),
       value: 'wlans',
       children: (
+        <UI.HealthPieChartWrapper>
         <Card
           type='no-border'
           title={$t(
@@ -179,6 +183,7 @@ export const HealthPieChart = ({
             }
           </AutoSizer>
         </Card>
+        </UI.HealthPieChartWrapper>
       )
     })
 
