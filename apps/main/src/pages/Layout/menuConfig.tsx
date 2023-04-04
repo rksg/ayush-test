@@ -99,6 +99,10 @@ export function useMenuConfig () {
         {
           path: '/serviceValidation/networkHealth',
           name: $t({ defaultMessage: 'Network Health' })
+        },
+        {
+          path: '/serviceValidation/videoCallQoe',
+          name: $t({ defaultMessage: 'Video Call QoE' })
         }
       ],
       disabled: !showSV

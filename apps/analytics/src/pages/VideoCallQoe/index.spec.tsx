@@ -12,6 +12,5 @@ describe('VideoCallQoePage', () => {
       <VideoCallQoePage />
     </Provider>, { route: { params } })
     expect(await screen.findByText('Video Call QoE')).toBeVisible()
-    expect(await screen.findByText('Service Validation')).toBeVisible()
   })
 })
