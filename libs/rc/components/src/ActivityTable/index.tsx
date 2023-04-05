@@ -82,13 +82,17 @@ export function useActivityTableQuery (baseFilters: Record<string, string> = {})
 }
 
 interface ActivityTableProps {
+  settingsId?: string
   tableQuery: TableQuery<Activity, RequestPayload<unknown>, unknown>
   filterables?: boolean | string[]
   columnState?: TableProps<Activity>['columnState']
 }
 
 const ActivityTable = ({
-  tableQuery, filterables = true, columnState
+  settingsId,
+  tableQuery,
+  filterables = true,
+  columnState
 }: ActivityTableProps) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
@@ -102,6 +106,7 @@ const ActivityTable = ({
       dataIndex: 'startDatetime',
       defaultSortOrder: 'descend',
       sorter: true,
+      fixed: 'left',
       render: function (_, row) {
         return <Button
           type='link'
@@ -184,6 +189,7 @@ const ActivityTable = ({
 
   return <Loader states={[tableQuery]}>
     <Table
+      settingsId={settingsId}
       rowKey='startDatetime'
       columns={columns}
       dataSource={tableQuery.data?.data ?? []}

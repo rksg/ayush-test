@@ -1,5 +1,10 @@
-import moment from 'moment-timezone'
+import _           from 'lodash'
+import moment      from 'moment-timezone'
+import { useIntl } from 'react-intl'
 
+import {
+  showActionModal
+} from '@acx-ui/components'
 import {
   AssignedEc,
   BaseUrl,
@@ -28,14 +33,80 @@ import {
   downloadFile,
   ParentLogoUrl
 } from '@acx-ui/rc/utils'
-import { baseMspApi }  from '@acx-ui/store'
-import { getJwtToken } from '@acx-ui/utils'
+import { baseMspApi }                from '@acx-ui/store'
+import { UserUrlsInfo, UserProfile } from '@acx-ui/user'
+import { PverName }                  from '@acx-ui/utils'
+
+export function useCheckDelegateAdmin () {
+  const { $t } = useIntl()
+  const [getDelegatedAdmins] = useLazyGetMspEcDelegatedAdminsQuery()
+  const { delegateToMspEcPath } = useDelegateToMspEcPath()
+  const checkDelegateAdmin = async (ecTenantId: string, adminId: string) => {
+    try {
+      const admins = await getDelegatedAdmins({ params: { mspEcTenantId: ecTenantId } } ).unwrap()
+      const allowDelegate = admins.find( admin => admin.msp_admin_id === adminId )
+      if (allowDelegate) {
+        delegateToMspEcPath(ecTenantId)
+      } else {
+        showActionModal({
+          type: 'error',
+          title: $t({ defaultMessage: 'Error' }),
+          content:
+            $t({ defaultMessage: 'You are not authorized to manage this customer' })
+        })
+      }
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
+  }
+  return { checkDelegateAdmin }
+}
+
+export function useDelegateToMspEcPath () {
+  const [getTenantPver] = useLazyGetUserProfilePverQuery()
+  const delegateToMspEcPath = async (ecTenantId: string) => {
+    try {
+      const user = await getTenantPver({ params: { includeTenantId: ecTenantId } } ).unwrap()
+      window.location.href = (user?.pver === PverName.R1)
+        ? `/api/${encodeURIComponent('ui-beta')}/t/${ecTenantId}/dashboard`
+        : `/api/ui/t/${ecTenantId}/dashboard`
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
+  }
+  return { delegateToMspEcPath }
+}
 
 export const mspApi = baseMspApi.injectEndpoints({
   endpoints: (build) => ({
     mspCustomerList: build.query<TableResult<MspEc>, RequestPayload>({
       query: ({ params, payload }) => {
         const mspCustomerListReq = createHttpRequest(MspUrlsInfo.getMspCustomersList, params)
+        return {
+          ...mspCustomerListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'CreateMspEc',
+            'UpdateMspEc',
+            'Deactivate MspEc',
+            'Reactivate MspEc',
+            'Update MSP Admin list',
+            'assign MspEc List To delegate'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(mspApi.util.invalidateTags([{ type: 'Msp', id: 'LIST' }]))
+          })
+        })
+      }
+    }),
+    integratorCustomerList: build.query<TableResult<MspEc>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const mspCustomerListReq = createHttpRequest(MspUrlsInfo.getIntegratorCustomersList, params)
         return {
           ...mspCustomerListReq,
           body: payload
@@ -136,7 +207,17 @@ export const mspApi = baseMspApi.injectEndpoints({
           ...mspEntitlementListReq
         }
       },
-      providesTags: [{ type: 'Msp', id: 'LIST' }]
+      providesTags: [{ type: 'Msp', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'MSP license refresh flow'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(mspApi.util.invalidateTags([{ type: 'Msp', id: 'LIST' }]))
+          })
+        })
+      }
     }),
     mspEntitlementSummary: build.query<MspEntitlementSummary[], RequestPayload>({
       query: ({ params }) => {
@@ -146,7 +227,17 @@ export const mspApi = baseMspApi.injectEndpoints({
           ...mspEntitlementSummaryReq
         }
       },
-      providesTags: [{ type: 'Msp', id: 'LIST' }]
+      providesTags: [{ type: 'Msp', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'MSP license refresh flow'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(mspApi.util.invalidateTags([{ type: 'Msp', id: 'LIST' }]))
+          })
+        })
+      }
     }),
     mspAssignmentSummary: build.query<MspAssignmentSummary[], RequestPayload>({
       query: ({ params }) => {
@@ -456,9 +547,12 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     exportDeviceInventory: build.mutation<{ data: BlobPart }, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(MspUrlsInfo.exportMspEcDeviceInventory, {
-          ...params
-        })
+        const req = createHttpRequest(
+          MspUrlsInfo.exportMspEcDeviceInventory,
+          { ...params },
+          {},
+          true
+        )
         return {
           ...req,
           responseHandler: async (response) => {
@@ -471,9 +565,8 @@ export const mspApi = baseMspApi.injectEndpoints({
           },
           body: payload,
           headers: {
-            'Content-Type': 'application/json',
-            'accept': 'application/json,text/plain,*/*',
-            ...(getJwtToken() ? { Authorization: `Bearer ${getJwtToken()}` } : {})
+            ...req.headers,
+            Accept: 'application/json,text/plain,*/*'
           }
         }
       }
@@ -498,9 +591,12 @@ export const mspApi = baseMspApi.injectEndpoints({
               ? 'application/pdf'
               : ''
 
-        const licenseUsageRptReq =
-          createHttpRequest(MspUrlsInfo.getGenerateLicenseUsageRpt,
-            { ...params })
+        const licenseUsageRptReq = createHttpRequest(
+          MspUrlsInfo.getGenerateLicenseUsageRpt,
+          { ...params },
+          {},
+          true
+        )
         licenseUsageRptReq.url += '/' + payload
         return {
           ...licenseUsageRptReq,
@@ -511,8 +607,8 @@ export const mspApi = baseMspApi.injectEndpoints({
             return { status: response.status }
           },
           headers: {
-            'Content-Type': contentType,
-            ...(getJwtToken() ? { Authorization: `Bearer ${getJwtToken()}` } : {})
+            ..._.omit(licenseUsageRptReq.headers, 'Accept'),
+            'Content-Type': contentType
           }
         }
       }
@@ -527,11 +623,26 @@ export const mspApi = baseMspApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    getUserProfilePver: build.query<UserProfile, RequestPayload>({
+      query: ({ params }) => {
+        const CUSTOM_HEADER = {
+          'x-rks-tenantid': params?.includeTenantId
+        }
+        const req = createHttpRequest(
+          UserUrlsInfo.getUserProfile,
+          params, CUSTOM_HEADER, true
+        )
+        return {
+          ...req
+        }
+      }
     })
   })
 })
 export const {
   useMspCustomerListQuery,
+  useIntegratorCustomerListQuery,
   useDeleteMspEcMutation,
   useVarCustomerListQuery,
   useInviteCustomerListQuery,
@@ -556,6 +667,7 @@ export const {
   useUpdateCustomerMutation,
   useUpdateMspEcDelegatedAdminsMutation,
   useGetMspEcDelegatedAdminsQuery,
+  useLazyGetMspEcDelegatedAdminsQuery,
   useGetMspEcQuery,
   useGetAssignedMspEcToIntegratorQuery,
   useLazyGetAssignedMspEcToIntegratorQuery,
@@ -574,5 +686,6 @@ export const {
   useExportDeviceInventoryMutation,
   useAcceptRejectInvitationMutation,
   useGetGenerateLicenseUsageRptQuery,
-  useGetParentLogoUrlQuery
+  useGetParentLogoUrlQuery,
+  useLazyGetUserProfilePverQuery
 } = mspApi

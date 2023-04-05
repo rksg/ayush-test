@@ -154,13 +154,23 @@ export function AlarmWidgetV2 () {
   const { data } = overviewV2Query
   return (
     <Loader states={[overviewV2Query]}>
-      <Card title={$t({ defaultMessage: 'Alarms' })}>
+      <Card title={$t({ defaultMessage: 'Alarms' })}
+        onArrowClick={()=>{
+          const event = new CustomEvent('showAlarmDrawer',
+            { detail: { data: { name: 'all' } } })
+          window.dispatchEvent(event)
+        }}>
         <AutoSizer>
           {({ height, width }) => (
             (data && data.length > 0)
               ? <DonutChart
                 style={{ width, height }}
                 size={'medium'}
+                onClick={(e)=>{
+                  const event = new CustomEvent('showAlarmDrawer',
+                    { detail: { data: e.data } })
+                  window.dispatchEvent(event)
+                }}
                 data={data}/>
               : <NoActiveData text={$t({ defaultMessage: 'No active alarms' })}/>
           )}

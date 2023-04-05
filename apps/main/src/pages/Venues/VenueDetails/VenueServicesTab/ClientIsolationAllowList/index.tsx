@@ -28,6 +28,7 @@ export default function ClientIsolationAllowList () {
       dataIndex: 'name',
       key: 'name',
       sorter: true,
+      fixed: 'left',
       render: (data, row) => {
         return <TenantLink to={getPolicyDetailsLink({
           type: PolicyType.CLIENT_ISOLATION,
@@ -58,6 +59,7 @@ export default function ClientIsolationAllowList () {
   return (
     <Loader states={[tableQuery]}>
       <Table<ClientIsolationListUsageByVenue>
+        settingsId='venue-client-isolation-allow-list-table'
         columns={columns}
         dataSource={tableQuery.data?.data}
         onChange={tableQuery.handleTableChange}

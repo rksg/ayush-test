@@ -11,7 +11,10 @@ import { ClientTimelineTab } from '.'
 
 jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user'),
-  useUserProfileContext: () => ({ data: { detailLevel: 'it' } })
+  useUserProfileContext: () => ({ data: {
+    detailLevel: 'it',
+    dateFormat: 'mm/dd/yyyy'
+  } })
 }))
 
 jest.mock('./SessionTable', () => ({
@@ -36,7 +39,7 @@ describe('ClientTimelineTab', ()=>{
 
       }
     })
-    expect(await screen.findAllByText('730-11-60')).toHaveLength(2)
+    expect(await screen.findAllByText('730-11-60')).toHaveLength(1)
   })
 
   it('should render: Sessions', async () => {

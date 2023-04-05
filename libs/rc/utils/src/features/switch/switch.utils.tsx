@@ -360,6 +360,19 @@ export const getSwitchPortLabel = (switchModel: string, slotNumber: number) => {
   return modelInfo.portModuleSlots && modelInfo.portModuleSlots[slotNumber - 1].portLabel
 }
 
+export const sortPortFunction = (portIdA: { id: string },portIdB: { id: string }) => {
+  const splitA = portIdA.id.split('/')
+  const valueA = calculatePortOrderValue(splitA[0], splitA[1], splitA[2])
+
+  const splitB = portIdB.id.split('/')
+  const valueB = calculatePortOrderValue(splitB[0], splitB[1], splitB[2])
+  return valueA - valueB
+}
+
+export const calculatePortOrderValue = (unitId: string, moduleId: string, portNumber: string) => {
+  return parseInt(unitId, 10) * 10000 + parseInt(moduleId, 10) * 100 + parseInt(portNumber, 10)
+}
+
 export const isL3FunctionSupported = (switchType: string | undefined) => {
   if (!switchType) {
     return false

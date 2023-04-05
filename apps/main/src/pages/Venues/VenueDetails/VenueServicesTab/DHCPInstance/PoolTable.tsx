@@ -77,7 +77,8 @@ export default function VenuePoolTable (){
       key: 'name',
       title: $t({ defaultMessage: 'Pool Name' }),
       dataIndex: 'name',
-      sorter: true
+      sorter: true,
+      fixed: 'left'
     },
     {
       key: 'vlanId',
@@ -192,6 +193,7 @@ export default function VenuePoolTable (){
       isFetching: venueDHCPPools.isFetching
     }]}>
       <Table
+        settingsId='venue-dhcp-pool-table'
         columns={columns}
         dataSource={tableData}
         rowKey='id'

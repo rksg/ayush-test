@@ -38,6 +38,7 @@ export function ApNetworksTab () {
       dataIndex: 'name',
       sorter: true,
       defaultSortOrder: 'ascend',
+      fixed: 'left',
       render: function (data, row) {
         return <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>
           {data}
@@ -86,6 +87,7 @@ export function ApNetworksTab () {
   return (
     <Loader states={[tableQuery]}>
       <Table
+        settingsId='ap-networks-table'
         columns={columns}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}

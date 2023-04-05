@@ -27,8 +27,6 @@ export default function DHCPTable () {
   const tableQuery = useTableQuery({
     useQuery: useGetDHCPProfileListViewModelQuery,
     defaultPayload: {
-      searchString: '',
-      searchTargetFields: ['name'],
       filters: {},
       fields: [
         'id',
@@ -37,6 +35,10 @@ export default function DHCPTable () {
         'venueIds',
         'technology'
       ]
+    },
+    search: {
+      searchString: '',
+      searchTargetFields: ['name']
     }
   })
 
@@ -191,6 +193,7 @@ function useColumns () {
       sorter: true,
       searchable: true,
       defaultSortOrder: 'ascend',
+      fixed: 'left',
       render: function (data, row) {
         return (
           <TenantLink
@@ -216,7 +219,6 @@ function useColumns () {
           <Table<DHCPPool>
             type='compactBordered'
             style={{ width: 500 }}
-            columnState={{ hidden: true }}
             columns={poolColumns}
             dataSource={dhcpPools}
           />

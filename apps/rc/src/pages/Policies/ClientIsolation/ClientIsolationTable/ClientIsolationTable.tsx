@@ -104,6 +104,7 @@ export default function ClientIsolationTable () {
       />
       <Loader states={[tableQuery]}>
         <Table<ClientIsolationViewModel>
+          settingsId='policies-client-isolation-table'
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
@@ -145,6 +146,7 @@ function useColumns () {
       dataIndex: 'name',
       sorter: true,
       searchable: true,
+      fixed: 'left',
       render: function (data, row) {
         return (
           <TenantLink

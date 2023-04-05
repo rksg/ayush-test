@@ -72,6 +72,12 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/eventalarmapi/:tenantId/event/meta',
     newApi: true
   },
+  downloadCSV: {
+    method: 'post',
+    url: '/events/csvFiles',
+    oldUrl: '/api/eventalarmapi/:tenantId/event/export',
+    newApi: true
+  },
   clearAlarm: {
     // different method
     // method: 'PATCH',
@@ -92,6 +98,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/aps/query',
     oldUrl: '/api/viewmodel/:tenantId/aps',
     newApi: true
+  },
+  getApGroupsListByGroup: {
+    method: 'post',
+    url: '/api/viewmodel/:tenantId/aps/grouped'
   },
   getApGroupList: {
     method: 'get',
@@ -419,12 +429,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/transactions/:transactionId/configHistDetails',
     oldUrl: '/api/switch/tenant/:tenantId/venues/:venueId/' +
       'configurationHistory/detail/:transactionId',
-    newApi: true
-  },
-  getSwitchConfigProfile: {
-    method: 'get',
-    url: '/switchProfiles/:profileId',
-    oldUrl: '/api/switch/tenant/:tenantId/profile/:profileId',
     newApi: true
   },
   getPoliciesList: {
