@@ -124,7 +124,7 @@ describe('Funnel Chart', () => {
     render(<Labels parentNode={null} enhancedStages={[]} test-id='labels' />)
     expect(screen.queryByTestId('labels')).toBeNull()
   })
-  it('renders labels based on screen width ans label width', () => {
+  it('should render labels based on screen width and label width', async () => {
     const enhancedStages = [
       {
         idx: 1,
@@ -168,5 +168,6 @@ describe('Funnel Chart', () => {
         <Labels {...props} />
       </Provider>
     )
+    expect(await screen.findByText('test3: (0)')).toBeVisible()
   })
 })
