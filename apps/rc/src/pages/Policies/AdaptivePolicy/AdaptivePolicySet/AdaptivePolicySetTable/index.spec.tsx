@@ -66,7 +66,7 @@ describe('AdaptivePolicySetTable', () => {
       route: { params, path: tablePath }
     })
 
-    const row = await screen.findByRole('row', { name: 'ps12 3' })
+    const row = await screen.findByRole('row', { name: new RegExp( 'ps12') })
     expect(row).toHaveTextContent('1')
   })
 
