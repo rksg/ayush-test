@@ -225,28 +225,15 @@ export const RightHeaderContentWrapper = styled.div`
   }
 `
 
-const MenuIcon = styled.span`
+export const MenuIcon = styled.span`
   margin-right: 8px;
   color: var(--acx-primary-white) !important;
   > svg {
     vertical-align: middle;
     height: 20px;
     width: 20px;
-  }
-`
-export const MenuIconOutlined = styled(MenuIcon)`
-  > svg {
-    path {
-      stroke: var(--acx-primary-white);
-    }
-    circle {
-      stroke: var(--acx-primary-white);
-    }
-  }
-`
-export const MenuIconSolid = styled(MenuIcon)`
-  > svg {
-    stroke: var(--acx-neutrals-70);
+
+    .invert { color: var(--acx-primary-black); }
   }
 `
 

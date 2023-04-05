@@ -1,8 +1,6 @@
-import styled from 'styled-components/macro'
-
 import {
-  AIOutlined as AIOutlinedBase,
-  AISolid as AISolidBase,
+  AIOutlined,
+  AISolid,
   AccountCircleOutlined,
   AccountCircleSolid,
   AdminOutlined,
@@ -12,7 +10,7 @@ import {
   LineChartOutline,
   LineChartSolid,
   ServicesOutlined,
-  ServicesSolid as ServicesSolidBase,
+  ServicesSolid,
   SpeedIndicatorOutlined,
   SpeedIndicatorSolid,
   SwitchOutlined,
@@ -21,11 +19,6 @@ import {
 } from '@acx-ui/icons'
 
 import { LayoutProps } from '..'
-import { LayoutUI }    from '../styledComponents'
-
-const AIOutlined = styled(AIOutlinedBase)`${LayoutUI.iconOutlinedOverride}`
-const AISolid = styled(AISolidBase)`${LayoutUI.iconOutlinedOverride}`
-const ServicesSolid = styled(ServicesSolidBase)`${LayoutUI.iconSolidOverride}`
 
 const config: LayoutProps['menuConfig'] = [
   null,

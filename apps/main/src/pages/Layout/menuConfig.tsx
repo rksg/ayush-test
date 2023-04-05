@@ -1,11 +1,10 @@
 import { useIntl } from 'react-intl'
-import styled      from 'styled-components/macro'
 
-import { LayoutProps, LayoutUI }                    from '@acx-ui/components'
+import { LayoutProps }                              from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
-  AIOutlined as AIOutlinedBase,
-  AISolid as AISolidBase,
+  AIOutlined,
+  AISolid,
   AccountCircleOutlined,
   AccountCircleSolid,
   AdminOutlined,
@@ -15,7 +14,7 @@ import {
   LineChartOutline,
   LineChartSolid,
   ServicesOutlined,
-  ServicesSolid as ServicesSolidBase,
+  ServicesSolid,
   SmartEdgeOutlined,
   SmartEdgeSolid,
   SpeedIndicatorOutlined,
@@ -27,10 +26,6 @@ import {
 import { getServiceCatalogRoutePath, getServiceListRoutePath } from '@acx-ui/rc/utils'
 import { RolesEnum }                                           from '@acx-ui/types'
 import { hasRoles }                                            from '@acx-ui/user'
-
-const AIOutlined = styled(AIOutlinedBase)`${LayoutUI.iconOutlinedOverride}`
-const AISolid = styled(AISolidBase)`${LayoutUI.iconOutlinedOverride}`
-const ServicesSolid = styled(ServicesSolidBase)`${LayoutUI.iconSolidOverride}`
 
 export function useMenuConfig () {
   const { $t } = useIntl()

@@ -1,14 +1,13 @@
 import { useIntl } from 'react-intl'
-import styled      from 'styled-components/macro'
 
-import { LayoutProps, LayoutUI } from '@acx-ui/components'
+import { LayoutProps } from '@acx-ui/components'
 import {
   ConfigurationOutlined,
   ConfigurationSolid,
   DevicesOutlined,
   DevicesSolid,
-  MspSubscriptionOutlined as MspSubscriptionOutlinedBase,
-  MspSubscriptionSolid as MspSubscriptionSolidBase,
+  MspSubscriptionOutlined,
+  MspSubscriptionSolid,
   IntegratorsOutlined,
   IntegratorsSolid,
   UsersThreeOutlined,
@@ -18,10 +17,6 @@ import { TenantType }  from '@acx-ui/react-router-dom'
 import { RolesEnum }   from '@acx-ui/types'
 import { hasRoles }    from '@acx-ui/user'
 import { AccountType } from '@acx-ui/utils'
-
-const MspSubscriptionOutlined =
-  styled(MspSubscriptionOutlinedBase)`${LayoutUI.iconOutlinedOverride}`
-const MspSubscriptionSolid = styled(MspSubscriptionSolidBase)`${LayoutUI.iconSolidOverride}`
 
 export function useMenuConfig (tenantType: string) {
   const { $t } = useIntl()
@@ -38,6 +33,7 @@ export function useMenuConfig (tenantType: string) {
       label: $t({ defaultMessage: 'My Customers' }),
       inactiveIcon: UsersThreeOutlined,
       activeIcon: UsersThreeSolid,
+      isActivePattern: ['/dashboard'],
       children: [
         {
           uri: '/dashboard/mspCustomers',
@@ -51,7 +47,7 @@ export function useMenuConfig (tenantType: string) {
             ? $t({ defaultMessage: 'RUCKUS Customers' })
             : $t({ defaultMessage: 'VAR Customers' })
         }])
-      ].filter(Boolean)
+      ]
     },
     ...((isVar || isIntegrator || isSupport) ? [] : [{
       uri: '/integrators',

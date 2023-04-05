@@ -58,7 +58,7 @@ exports[`Layout should render correctly 1`] = `
                       href="/t/undefined/dashboard"
                     >
                       <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconSolid-sc-iwostn-7 bZgxDC OWPZI"
+                        class="styledComponents__MenuIcon-sc-iwostn-5 bgkWtN"
                       >
                         <svg
                           data-testid="SpeedIndicatorSolid"
@@ -85,10 +85,9 @@ exports[`Layout should render correctly 1`] = `
                       class="ant-menu-title-content"
                     >
                       <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
+                        class="styledComponents__MenuIcon-sc-iwostn-5 bgkWtN"
                       >
                         <svg
-                          class="menuConfig__AIOutlined-sc-t1ebvm-0 lboySK"
                           data-testid="AIOutlined"
                         />
                       </span>
@@ -113,7 +112,7 @@ exports[`Layout should render correctly 1`] = `
                       href="/t/undefined/venues"
                     >
                       <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
+                        class="styledComponents__MenuIcon-sc-iwostn-5 bgkWtN"
                       >
                         <svg
                           data-testid="LocationOutlined"
@@ -140,7 +139,7 @@ exports[`Layout should render correctly 1`] = `
                       class="ant-menu-title-content"
                     >
                       <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
+                        class="styledComponents__MenuIcon-sc-iwostn-5 bgkWtN"
                       >
                         <svg
                           data-testid="AccountCircleOutlined"
@@ -170,7 +169,7 @@ exports[`Layout should render correctly 1`] = `
                       class="ant-menu-title-content"
                     >
                       <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
+                        class="styledComponents__MenuIcon-sc-iwostn-5 bgkWtN"
                       >
                         <svg
                           data-testid="WiFi"
@@ -200,7 +199,7 @@ exports[`Layout should render correctly 1`] = `
                       class="ant-menu-title-content"
                     >
                       <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
+                        class="styledComponents__MenuIcon-sc-iwostn-5 bgkWtN"
                       >
                         <svg
                           data-testid="SwitchOutlined"
@@ -230,7 +229,7 @@ exports[`Layout should render correctly 1`] = `
                       class="ant-menu-title-content"
                     >
                       <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
+                        class="styledComponents__MenuIcon-sc-iwostn-5 bgkWtN"
                       >
                         <svg
                           data-testid="ServicesOutlined"
@@ -260,7 +259,7 @@ exports[`Layout should render correctly 1`] = `
                       class="ant-menu-title-content"
                     >
                       <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
+                        class="styledComponents__MenuIcon-sc-iwostn-5 bgkWtN"
                       >
                         <svg
                           data-testid="LineChartOutline"
@@ -290,7 +289,7 @@ exports[`Layout should render correctly 1`] = `
                       class="ant-menu-title-content"
                     >
                       <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
+                        class="styledComponents__MenuIcon-sc-iwostn-5 bgkWtN"
                       >
                         <svg
                           data-testid="AdminOutlined"
@@ -329,11 +328,11 @@ exports[`Layout should render correctly 1`] = `
                     class="ant-menu-title-content"
                   >
                     <svg
-                      class="styledComponents__Arrow-sc-iwostn-8 iueFBM"
+                      class="styledComponents__Arrow-sc-iwostn-6 bfzBym"
                       data-testid="ArrowChevronLeft"
                     />
                     <div
-                      class="styledComponents__CollapseText-sc-iwostn-10 keaIHZ ant-pro-menu-item-title"
+                      class="styledComponents__CollapseText-sc-iwostn-8 fvDRIg ant-pro-menu-item-title"
                     >
                       Collapse
                     </div>
@@ -373,7 +372,7 @@ exports[`Layout should render correctly 1`] = `
                     role="separator"
                   />
                   <span
-                    class="styledComponents__DropdownText-sc-iwostn-13 hwKuhP"
+                    class="styledComponents__DropdownText-sc-iwostn-11 iEmwpR"
                   >
                     <div
                       class="ant-space ant-space-horizontal ant-space-align-center"
@@ -472,7 +471,7 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
                       href="/v/undefined/dashboard"
                     >
                       <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconSolid-sc-iwostn-7 bZgxDC OWPZI"
+                        class="styledComponents__MenuIcon-sc-iwostn-5 bgkWtN"
                       >
                         <svg
                           data-testid="SpeedIndicatorSolid"
@@ -508,11 +507,11 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
                     class="ant-menu-title-content"
                   >
                     <svg
-                      class="styledComponents__Arrow-sc-iwostn-8 iueFBM"
+                      class="styledComponents__Arrow-sc-iwostn-6 bfzBym"
                       data-testid="ArrowChevronLeft"
                     />
                     <div
-                      class="styledComponents__CollapseText-sc-iwostn-10 keaIHZ ant-pro-menu-item-title"
+                      class="styledComponents__CollapseText-sc-iwostn-8 fvDRIg ant-pro-menu-item-title"
                     >
                       Collapse
                     </div>

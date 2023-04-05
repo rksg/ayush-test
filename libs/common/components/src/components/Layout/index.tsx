@@ -97,9 +97,7 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
       item.uri?.startsWith(activeUri)
     const IconComponent = isActive ? activeIcon ?? inactiveIcon : inactiveIcon
     const content = <>
-      {IconComponent && (isActive
-        ? <UI.MenuIconSolid children={<IconComponent />} />
-        : <UI.MenuIconOutlined children={<IconComponent />} />)}
+      {IconComponent && <UI.MenuIcon children={<IconComponent />} />}
       {item.label}
     </>
     return {
