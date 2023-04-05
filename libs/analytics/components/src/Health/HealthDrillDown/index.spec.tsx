@@ -89,7 +89,7 @@ describe('HealthDrillDown', () => {
       </Provider>
     )
     await userEvent.click(await screen.findByRole('Association'))
-    expect(await screen.findByText('PIE chartdd')).toBeVisible()
+    expect(await screen.findByText('PIE chart')).toBeVisible()
   })
   it('should close on close icon click', async () => {
     mockGraphqlQuery(dataApiURL, 'ConnectionDrilldown', { data: mockConnectionDrillDown })

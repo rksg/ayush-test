@@ -1,13 +1,13 @@
 import '@testing-library/jest-dom'
-import { cssStr }         from '@acx-ui/components'
-import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
 
-import {
-  getFormattedToFunnel,
-  valueFormatter
-} from './config'
-import { FunnelChart } from './funnelChart'
+import { defineMessage } from 'react-intl'
+
+import { cssStr }                    from '@acx-ui/components'
+import { Provider }                  from '@acx-ui/store'
+import { render, screen, fireEvent } from '@acx-ui/test-utils'
+
+import { getFormattedToFunnel, valueFormatter } from './config'
+import { FunnelChart, Labels }                  from './funnelChart'
 
 const stages = {
   authFailure: 228.46716757166308,
@@ -24,13 +24,19 @@ const colors = [
   cssStr('--acx-accents-blue-50')
 ]
 describe('Funnel Chart', () => {
+  beforeAll(() => {
+    Object.defineProperty(window, 'innerWidth', {
+      writable: true,
+      value: 1024
+    })
+  })
   it('should render ttc FunnelChart', async () => {
     render(
       <Provider>
         <FunnelChart
           valueLabel='Fail'
           height={140}
-          stages={getFormattedToFunnel('ttc',stages )}
+          stages={getFormattedToFunnel('ttc', stages)}
           colors={colors}
           selectedStage={'dhcpFailure'}
           onSelectStage={() => {}}
@@ -52,7 +58,7 @@ describe('Funnel Chart', () => {
         <FunnelChart
           valueLabel='Fail'
           height={140}
-          stages={getFormattedToFunnel('ttc',stages )}
+          stages={getFormattedToFunnel('ttc', stages)}
           colors={colors}
           selectedStage={null}
           onSelectStage={() => {}}
@@ -61,7 +67,6 @@ describe('Funnel Chart', () => {
       </Provider>
     )
     expect(onResize).toHaveBeenCalled()
-
   })
   it('should show No data for empty stages', async () => {
     render(
@@ -85,7 +90,7 @@ describe('Funnel Chart', () => {
         <FunnelChart
           valueLabel='Fail'
           height={140}
-          stages={getFormattedToFunnel('ttc',{ ...stages, dhcpFailure: null } )}
+          stages={getFormattedToFunnel('ttc', { ...stages, dhcpFailure: null })}
           colors={colors}
           selectedStage={null}
           onSelectStage={() => {}}
@@ -95,6 +100,73 @@ describe('Funnel Chart', () => {
     )
     expect(screen.queryByText('DHCP')).toBe(null)
   })
+
+  it('should update the windowWidth state when the window is resized', () => {
+    const mockResizeHandler = jest.fn()
+    window.addEventListener('resize', mockResizeHandler)
+    render(
+      <Provider>
+        <FunnelChart
+          valueLabel='Fail'
+          height={140}
+          stages={getFormattedToFunnel('ttc', { ...stages, dhcpFailure: null })}
+          colors={colors}
+          selectedStage={null}
+          onSelectStage={() => {}}
+          valueFormatter={valueFormatter}
+        />
+      </Provider>
+    )
+    fireEvent(window, new Event('resize'))
+    expect(mockResizeHandler).toHaveBeenCalledTimes(1)
+  })
+  it('should not render if parent is not ready', () => {
+    render(<Labels parentNode={null} enhancedStages={[]} test-id='labels' />)
+    expect(screen.queryByTestId('labels')).toBeNull()
+  })
+  it('renders labels based on screen width ans label width', () => {
+    const enhancedStages = [
+      {
+        idx: 1,
+        width: 899,
+        endPosition: 899,
+        valueFormatter,
+        label: defineMessage({ defaultMessage: 'test1' }),
+        formattedPct: '',
+        pct: 0,
+        name: '',
+        value: 0
+      },
+      {
+        idx: 2,
+        width: 45,
+        endPosition: 945,
+        valueFormatter,
+        label: defineMessage({ defaultMessage: 'test2' }),
+        formattedPct: '',
+        pct: 0,
+        name: '',
+        value: 0
+      },
+      {
+        idx: 3,
+        width: 1300,
+        endPosition: 1180,
+        valueFormatter,
+        label: defineMessage({ defaultMessage: 'test3' }),
+        formattedPct: '',
+        pct: 0,
+        name: '',
+        value: 0
+      }
+    ]
+    const parentNode = { offsetWidth: 1000 }
+    const colors = ['black', 'red', 'yellow']
+    const props = { enhancedStages, parentNode, parentHeight: 120, colors, onClick: jest.fn() }
+    render(
+      <Provider>
+        <Labels {...props} />
+      </Provider>
+    )
+  })
 })
-
-
