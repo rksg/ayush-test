@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
-import { cssStr }         from '@acx-ui/components'
-import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
+import { cssStr }                    from '@acx-ui/components'
+import { Provider }                  from '@acx-ui/store'
+import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
 import {
   getFormattedToFunnel,
@@ -72,6 +72,26 @@ describe('Funnel Chart', () => {
     )
     expect(await screen.findByText('802.11 Auth.: 21.05%(228 ms)')).toBeVisible()
     expect(screen.queryByText('DHCP')).toBe(null)
+  })
+  it('should handle onClick', async () => {
+    const onClick = jest.fn()
+    render(
+      <Provider>
+        <FunnelChart
+          valueLabel='Fail'
+          height={140}
+          stages={getFormattedToFunnel('ttc',stages )}
+          colors={colors}
+          selectedStage={'dhcpFailure'}
+          onSelectStage={onClick}
+          valueFormatter={valueFormatter}
+        />
+      </Provider>
+    )
+    const label = await screen.findByText('802.11 Auth.: 19.32%(228 ms)')
+    expect(label).toBeVisible()
+    fireEvent.click(label)
+    expect(onClick).toBeCalledWith(123.64800000000001, 'Authentication')
   })
 })
 
