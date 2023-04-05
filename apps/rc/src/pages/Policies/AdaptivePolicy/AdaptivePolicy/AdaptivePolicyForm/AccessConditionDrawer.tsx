@@ -96,8 +96,8 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
       return {
         criteriaType,
         when: data.when,
-        startTime: moment(data.start).format('hh:mm:ss'),
-        endTime: moment(data.end).format('hh:mm:ss')
+        startTime: moment(data.start).format('HH:mm:ss'),
+        endTime: moment(data.end).format('HH:mm:ss')
       }
     } else {
       return {
@@ -112,8 +112,8 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
       return {
         criteriaType: getCriteriaOptionByValue(evaluationRule.criteriaType),
         when: evaluationRule.when,
-        start: moment(evaluationRule.startTime, 'hh:mm:ss'),
-        end: moment(evaluationRule.endTime, 'hh:mm:ss')
+        start: moment(evaluationRule.startTime, 'HH:mm:ss'),
+        end: moment(evaluationRule.endTime, 'HH:mm:ss')
       }
     } else {
       return {

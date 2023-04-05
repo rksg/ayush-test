@@ -52,7 +52,7 @@ import { TenantLink } from '@acx-ui/react-router-dom'
 //   return columns
 // }
 
-export function AdaptivePolicyDetail () {
+export default function AdaptivePolicyDetail () {
   const { $t } = useIntl()
   const { policyId, templateId } = useParams()
   const { Paragraph } = Typography

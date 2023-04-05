@@ -38,3 +38,14 @@ export const groupList = {
   number: 0,
   empty: false
 }
+
+
+export const adaptivePolicyList = {
+  paging: {
+    totalCount: 0,
+    page: 1,
+    pageSize: 0,
+    pageCount: 0
+  },
+  content: []
+}

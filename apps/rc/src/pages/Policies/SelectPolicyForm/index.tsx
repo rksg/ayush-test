@@ -28,7 +28,8 @@ export default function SelectPolicyForm () {
   const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
   const isEdgeEnabled = useIsSplitOn(Features.EDGES)
   const macRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
-  const adaptivePolicy = useIsSplitOn(Features.POLICY_MANAGEMENT)
+  const attributeGropuEnabled = useIsSplitOn(Features.RADIUS_ATTRIBUTE_GROUP_CONFIG)
+  const adaptivePolicyEnabled = useIsSplitOn(Features.POLICY_MANAGEMENT)
 
   const navigateToCreatePolicy = async function (data: { policyType: PolicyType }) {
     const policyCreatePath = getPolicyRoutePath({
@@ -62,7 +63,7 @@ export default function SelectPolicyForm () {
     sets.push({ type: PolicyType.MAC_REGISTRATION_LIST, categories: [RadioCardCategory.WIFI] })
   }
 
-  if(adaptivePolicy) {
+  if(adaptivePolicyEnabled && attributeGropuEnabled) {
     sets.push({ type: PolicyType.ADAPTIVE_POLICY, categories: [RadioCardCategory.WIFI] })
   }
 

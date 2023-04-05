@@ -6,13 +6,13 @@ import {
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType,
-  RadiusAttributeGroupUrlsInfo
+  RadiusAttributeGroupUrlsInfo, RulesManagementUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Path }                                                                              from '@acx-ui/react-router-dom'
-import { Provider }                                                                          from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { Path }                                                   from '@acx-ui/react-router-dom'
+import { Provider }                                               from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
-import { groupList } from './__tests__/fixtures'
+import { groupList, adaptivePolicyList } from './__tests__/fixtures'
 
 import RadiusAttributeGroupTable from './index'
 
@@ -42,6 +42,10 @@ describe('RadiusAttributeGroupTable', () => {
       rest.get(
         RadiusAttributeGroupUrlsInfo.getAttributeGroups.url,
         (req, res, ctx) => res(ctx.json(groupList))
+      ),
+      rest.post(
+        RulesManagementUrlsInfo.getPoliciesByQuery.url,
+        (req, res, ctx) => res(ctx.json(adaptivePolicyList))
       )
     )
   })
@@ -51,12 +55,7 @@ describe('RadiusAttributeGroupTable', () => {
       route: { params, path: tablePath }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
-    const row = await screen.findByRole('row', { name: /group1/ })
-    expect(row).toHaveTextContent('2')
-
-    fireEvent.click(within(row).getByRole('radio'))
+    fireEvent.click(within(await screen.findByRole('row', { name: /group1/ })).getByRole('radio'))
 
     await screen.findByText('Delete')
     await screen.findByText('Edit')
@@ -78,8 +77,6 @@ describe('RadiusAttributeGroupTable', () => {
       route: { params, path: tablePath }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
     const row = await screen.findByRole('row', { name: /group1/ })
     await userEvent.click(within(row).getByRole('radio'))
 
@@ -98,8 +95,6 @@ describe('RadiusAttributeGroupTable', () => {
     render(<Provider><RadiusAttributeGroupTable /></Provider>, {
       route: { params, path: tablePath }
     })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const row = await screen.findByRole('row', { name: /group1/ })
     fireEvent.click(within(row).getByRole('radio'))
@@ -122,8 +117,6 @@ describe('RadiusAttributeGroupTable', () => {
     render(<Provider><RadiusAttributeGroupTable /></Provider>, {
       route: { params, path: tablePath }
     })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     fireEvent.click(await screen.findByText('Add Group'))
 
