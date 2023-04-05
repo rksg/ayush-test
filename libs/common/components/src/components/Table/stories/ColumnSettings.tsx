@@ -96,7 +96,7 @@ const basicData = [
   }
 ]
 
-export function ColumnSortAndShowHideTable () {
+export function ColumnSettings () {
   const columnState: TableProps<ColumnType>['columnState'] = {
     // eslint-disable-next-line no-console
     onChange: (state) => console.log(JSON.stringify(state, null, 2)),
@@ -119,10 +119,10 @@ export function ColumnSortAndShowHideTable () {
   }
   return (<>
     <p>Open Browser Debug Console to see updated state</p>
-    <Table {...props} />
+    <Table {...props} settingsId='storybook-table-column-settings'/>
 
     <br />
-    <h3>Hide the column state</h3>
-    <Table {...props} columnState={{ ...columnState, hidden: true }} />
+    <h3>No <code>settingsId</code> means no ability to configure columns</h3>
+    <Table {...props} columnState={{ ...columnState }} />
   </>)
 }
