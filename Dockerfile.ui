@@ -107,13 +107,12 @@ COPY tools/docker/nginx/nginx.conf \
 
 COPY --from=build /app/dist/apps ./
 RUN \
-  touch abc.html && \
   # Move all other apps into main
   ls | grep -v main | xargs mv -t main && \
   # Create structure to match deployment need
-  # mkdir -p api/ui && \
+  mkdir -p tenant/t && \
   # Move all files into it
-  mv -v main/* ./ && \
+  mv -v main/* tenant/t/. && \
   # Remove the main folder
   rm -rf main
 

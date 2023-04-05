@@ -23,10 +23,10 @@ module.exports = webpackConfigWithModuleFederation({
    * ]
    */
   remotes: [
-    ['rc', '/rc'],
-    ['analytics', '/analytics'],
-    ['msp', '/msp'],
-    ['reports', '/reports']
+    ['rc', '/tenant/t/rc'],
+    ['analytics', '/tenant/t/analytics'],
+    ['msp', '/tenant/t/msp'],
+    ['reports', '/tenant/t/reports']
   ]
 }, {
   devServer: {

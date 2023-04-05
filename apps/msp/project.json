@@ -10,7 +10,7 @@
         "compiler": "babel",
         "outputPath": "dist/apps/msp",
         "index": "apps/msp/src/index.html",
-        "baseHref": "/msp/",
+        "baseHref": "/",
         "main": "apps/msp/src/main.ts",
         "polyfills": "apps/msp/src/polyfills.ts",
         "tsConfig": "apps/msp/tsconfig.app.json",
