@@ -41,7 +41,6 @@ export default function AdaptivePolicySetTable () {
     { isLoading: isDeletePolicyUpdating }
   ] = useDeleteAdaptivePolicySetMutation()
 
-  // eslint-disable-next-line max-len
   const [getPrioritizedPolicies] = useLazyGetPrioritizedPoliciesQuery()
 
   const { data: macRegList } = useMacRegListsQuery({

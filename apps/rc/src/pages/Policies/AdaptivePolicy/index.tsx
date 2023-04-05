@@ -37,7 +37,7 @@ export default function AdaptivePolicyList (props: { tabKey: AdaptivePolicyTabKe
             link: getPolicyListRoutePath(true) }
         ]}
       title={tabsName[props.tabKey as keyof typeof tabs]}
-      footer={<AdaptivePolicyTabs />}
+      footer={<AdaptivePolicyTabs activeTab={props.tabKey}/>}
     />
     { Tab && <Tab /> }
   </>

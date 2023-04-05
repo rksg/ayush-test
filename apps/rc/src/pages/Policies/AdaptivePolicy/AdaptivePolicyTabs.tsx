@@ -11,13 +11,13 @@ import {
   PolicyOperation,
   PolicyType, useTableQuery
 } from '@acx-ui/rc/utils'
-import { Path, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { AdaptivePolicyTabKey } from './index'
 
-export default function AdaptivePolicyTabs () {
+export default function AdaptivePolicyTabs (props: { activeTab: AdaptivePolicyTabKey }) {
   const { $t } = useIntl()
-  const { activeTab } = useParams()
+  const { activeTab } = props
   const navigate = useNavigate()
 
   const attributeGroupTableQuery = useTableQuery({
