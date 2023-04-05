@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const HealthPieChartWrapper = styled.div`
   width: auto;

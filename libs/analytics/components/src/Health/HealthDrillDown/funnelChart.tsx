@@ -112,7 +112,7 @@ export function FunnelChart ({
     // endPosition is mutable, onclick will capture its final value instead of iterated map value.
     return endStages.map((stage) => ({
       ...stage,
-      onClick: () => onClick(stage.endPosition - stage.width / 2, stage.apiKey)
+      onClick: () => onClick(stage.endPosition - stage.width / 2, stage.name)
     }))
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stages, selectedStage, parentNode, windowWidth])
@@ -235,7 +235,7 @@ export const Labels = ({
           dir: i % 2 === 0,
           color: colors[i],
           onClick: () => (onClick as CallableFunction)(
-            stage.endPosition - stage.width / 2, stage.apiKey
+            stage.endPosition - stage.width / 2, stage.name
           ),
           labelRef: updateChildNodes
         } as unknown as LabelPinProps

@@ -13,6 +13,10 @@ import { Point }                                     from './styledComponents'
 
 import { HealthDrillDown } from '.'
 
+jest.mock('./HealthPieChart', () => ({
+  HealthPieChart: () => <div>PIE chart</div>
+}))
+
 describe('HealthDrillDown', () => {
   const filters = {
     startDate: '2022-01-01T00:00:00+08:00',

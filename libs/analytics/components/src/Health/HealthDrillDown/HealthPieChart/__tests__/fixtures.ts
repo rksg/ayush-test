@@ -84,6 +84,19 @@ export const mockTtcResponse = {
   }
 }
 
+export const mockOnlyWlansResponse = {
+  network: {
+    hierarchyNode: {
+      wlans: [
+        {
+          key: 'aaron-dot1x',
+          value: 1295.797373358349
+        }
+      ]
+    }
+  }
+}
+
 export const mockPathWithAp: NetworkPath = [
   {
     type: 'network',
