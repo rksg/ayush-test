@@ -123,8 +123,7 @@ export function useMenuConfig () {
           },
           {
             path: '/devices/switch',
-            name: $t({ defaultMessage: 'Switch' }),
-            disabled: true
+            name: $t({ defaultMessage: 'Switch' })
           },
           ...isEdgeEnabled ? [{
             path: '/devices/edge/list',
