@@ -6,7 +6,7 @@ import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 
 import { adaptivePolicy, prioritizedPolicies } from './__test__/fixtures'
-import { AdaptivePolicySetDetail }             from './AdaptivePolicySetDetail'
+import AdaptivePolicySetDetail                 from './AdaptivePolicySetDetail'
 
 describe('AdaptivePolicySetDetail', () => {
   beforeEach(() => {

@@ -5,7 +5,7 @@ import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { adpativePolicy, assignConditions } from './__test__/fixtures'
-import { AdaptivePolicyDetail }             from './AdaptivePolicyDetail'
+import AdaptivePolicyDetail                 from './AdaptivePolicyDetail'
 
 
 describe('AdaptivePolicyDetail', () => {
