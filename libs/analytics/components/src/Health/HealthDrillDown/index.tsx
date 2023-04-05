@@ -41,7 +41,7 @@ const HealthDrillDown = (props: {
     end: filters.endDate
   }
   const [selectedStage, setSelectedStage] = useState<Stages>(null)
-  const [xPos, setXpos] = useState<number | undefined>(undefined)
+  const [xPos, setXpos] = useState<number | null>(null)
   const setStage = (width: number, stage: Stages) => {
     setSelectedStage(stage)
     setXpos(width - 10)
@@ -112,7 +112,7 @@ const HealthDrillDown = (props: {
               onClick={() => {
                 setDrilldownSelection(null)
                 setSelectedStage(null)
-                setXpos(undefined)
+                setXpos(null)
               }}
             />
           </GridCol>
