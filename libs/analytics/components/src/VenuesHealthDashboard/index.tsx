@@ -123,6 +123,31 @@ export function VenuesHealthDashboard ({
       }
     },
     {
+      title: $t({ defaultMessage: 'AP Capacity' }),
+      dataIndex: 'apCapacityPercent',
+      key: 'apCapacityPercent',
+      align: 'center' as const,
+      render: (value: unknown, row)=>{
+        const [n,d] = row.apCapacitySLA
+        const threshold = Number(row.apCapacityThreshold ??
+          kpiConfig.apCapacity.histogram.initialThreshold) * 1000
+        const thresholdText = $t({ defaultMessage: '> {threshold}' },
+          { threshold: formatter('networkSpeedFormat')(threshold) })
+        if(row.apCapacityThreshold === null) return <span>-</span>
+        const tooltipText = $t({
+          defaultMessage: '{n} of {d} APs above {threshold}' },
+        { n: $t(intlFormats.countFormat, { value: n }),
+          d: $t(intlFormats.countFormat, { value: d }),
+          threshold: formatter('networkSpeedFormat')(threshold) })
+        return (<Tooltip title={tooltipText}>
+          <span data-tooltip={tooltipText}>{value as string}</span>
+          <UI.ThresholdText>
+            {thresholdText}
+          </UI.ThresholdText>
+        </Tooltip>)
+      }
+    },
+    {
       title: $t({ defaultMessage: 'Online APs' }),
       dataIndex: 'onlineApsPercent',
       key: 'onlineApsPercent',
@@ -150,12 +175,14 @@ export function VenuesHealthDashboard ({
         connectionSuccessSLA,
         timeToConnectSLA,
         clientThroughputSLA,
-        onlineApsSLA
+        onlineApsSLA,
+        apCapacitySLA
       } = row
       const connectionSuccessPercent = calcPercent(connectionSuccessSLA)
       const timeToConnectPercent = calcPercent(timeToConnectSLA)
       const clientThroughputPercent = calcPercent(clientThroughputSLA)
       const onlineApsPercent = calcPercent(onlineApsSLA)
+      const apCapacityPercent = calcPercent(apCapacitySLA)
       const clientExperience = calculateClientExp([
         connectionSuccessPercent.percent,
         timeToConnectPercent.percent,
@@ -166,6 +193,7 @@ export function VenuesHealthDashboard ({
         timeToConnectPercent: timeToConnectPercent.formatted,
         clientThroughputPercent: clientThroughputPercent.formatted,
         onlineApsPercent: onlineApsPercent.formatted,
+        apCapacityPercent: apCapacityPercent.formatted,
         clientExperience
       }
     }).filter(item => item.clientExperience !== null)

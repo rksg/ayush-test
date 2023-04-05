@@ -278,6 +278,12 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             class="ant-table-cell"
                                             style="text-align: center;"
                                           >
+                                            AP Capacity
+                                          </th>
+                                          <th
+                                            class="ant-table-cell"
+                                            style="text-align: center;"
+                                          >
                                             Online APs
                                           </th>
                                         </tr>
@@ -290,6 +296,15 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                           class="ant-table-measure-row"
                                           style="height: 0px; font-size: 0px;"
                                         >
+                                          <td
+                                            style="padding: 0px; border: 0px; height: 0px;"
+                                          >
+                                            <div
+                                              style="height: 0px; overflow: hidden;"
+                                            >
+                                               
+                                            </div>
+                                          </td>
                                           <td
                                             style="padding: 0px; border: 0px; height: 0px;"
                                           >
@@ -444,6 +459,23 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             class="ant-table-cell"
                                             style="text-align: center;"
                                           >
+                                            <span>
+                                              <span
+                                                data-tooltip="10 of 30 APs above 100 Mbps"
+                                              >
+                                                33%
+                                              </span>
+                                              <span
+                                                class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
+                                              >
+                                                &gt; 100 Mbps
+                                              </span>
+                                            </span>
+                                          </td>
+                                          <td
+                                            class="ant-table-cell"
+                                            style="text-align: center;"
+                                          >
                                             <span
                                               data-tooltip="1 of 1 APs online"
                                             >
@@ -543,6 +575,23 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                                 class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
                                               >
                                                 &gt; 10 Mbps
+                                              </span>
+                                            </span>
+                                          </td>
+                                          <td
+                                            class="ant-table-cell"
+                                            style="text-align: center;"
+                                          >
+                                            <span>
+                                              <span
+                                                data-tooltip="10 of 10 APs above 5 Mbps"
+                                              >
+                                                100%
+                                              </span>
+                                              <span
+                                                class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
+                                              >
+                                                &gt; 5 Mbps
                                               </span>
                                             </span>
                                           </td>
@@ -656,6 +705,14 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             class="ant-table-cell"
                                             style="text-align: center;"
                                           >
+                                            <span>
+                                              -
+                                            </span>
+                                          </td>
+                                          <td
+                                            class="ant-table-cell"
+                                            style="text-align: center;"
+                                          >
                                             <span
                                               data-tooltip="12 of 12 APs online"
                                             >
@@ -753,6 +810,14 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             class="ant-table-cell"
                                             style="text-align: center;"
                                           >
+                                            <span>
+                                              -
+                                            </span>
+                                          </td>
+                                          <td
+                                            class="ant-table-cell"
+                                            style="text-align: center;"
+                                          >
                                             <span
                                               data-tooltip="1 of 1 APs online"
                                             >
@@ -843,6 +908,23 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                                 class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
                                               >
                                                 &gt; 10 Mbps
+                                              </span>
+                                            </span>
+                                          </td>
+                                          <td
+                                            class="ant-table-cell"
+                                            style="text-align: center;"
+                                          >
+                                            <span>
+                                              <span
+                                                data-tooltip="3 of 4 APs above 100 Mbps"
+                                              >
+                                                75%
+                                              </span>
+                                              <span
+                                                class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
+                                              >
+                                                &gt; 100 Mbps
                                               </span>
                                             </span>
                                           </td>
