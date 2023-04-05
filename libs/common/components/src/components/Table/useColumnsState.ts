@@ -12,6 +12,7 @@ import type {
 export const settingsKey = 'acx-table-settings'
 
 export interface UseColumnsStateOptions <RecordType> {
+  settingsId?: string
   columns: TableColumn<RecordType>[]
   columnState?: ColumnStateOption
 }
@@ -26,9 +27,12 @@ export function useColumnsState <RecordType> (options: UseColumnsStateOptions<Re
   const onChange = useCallback((state: TableColumnState) => {
     const newState = Object.entries(state).every(([,col]) => col.disable || !col.show)
       ? initialState : state
+
+    options.settingsId && localStorage.setItem(options.settingsId, JSON.stringify(newState))
+
     columnState?.onChange?.(stateToUserState(newState))
     setState(newState)
-  }, [setState, columnState, initialState])
+  }, [setState, columnState, initialState, options.settingsId])
 
   const resetState = useCallback(
     () => onChange(defaultState),
@@ -43,10 +47,12 @@ export function useColumnsState <RecordType> (options: UseColumnsStateOptions<Re
 }
 
 function useDefaultAndInitialState <RecordType> ({
+  settingsId,
   columns,
   columnState
 }: UseColumnsStateOptions<RecordType>) {
   return useMemo(() => {
+
     const defaultState = columns.reduce<TableColumnState>((state, column, order) => {
       state[column.key] = {
         order,
@@ -70,8 +76,19 @@ function useDefaultAndInitialState <RecordType> ({
       )
     }
 
-    return { defaultState, initialState }
-  }, [columns, columnState])
+    const state = settingsId && localStorage.getItem(settingsId)
+      ? JSON.parse(localStorage.getItem(settingsId)!)
+      : undefined
+
+    if (settingsId && !state) {
+      localStorage.setItem(settingsId, JSON.stringify(initialState))
+    }
+
+    return {
+      defaultState,
+      initialState: state ?? initialState
+    }
+  }, [columns, columnState, settingsId])
 }
 
 function stateToUserState (states: TableColumnState): ColumnState {
