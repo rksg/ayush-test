@@ -7,13 +7,15 @@ import {
   mockServer,
   render,
   screen,
-  waitFor
+  waitFor,
+  renderHook
 } from '@acx-ui/test-utils'
 
 import {
   loadLocale,
   LocaleProvider,
   LocaleContext,
+  useLocaleContext,
   localeLoaders
 } from './locales'
 
@@ -251,5 +253,20 @@ describe('LocaleProvider', () => {
 
     const target = await waitFor(() => screen.findByText('Sprache'))
     expect(target).toBeVisible()
+  })
+})
+
+describe('useLocaleContext', () => {
+  it('returns locale', async () => {
+    const TestUseLocaleContext = () => {
+      const locale = useLocaleContext()
+      return <div>{locale.messages?.lang}</div>
+    }
+
+    render(<TestUseLocaleContext />, {
+      wrapper: (props) => <LocaleProvider lang='de-DE' {...props} />
+    })
+
+    expect(await screen.findByText('Sprache')).toBeVisible()
   })
 })

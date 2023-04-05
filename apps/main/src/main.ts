@@ -3,28 +3,20 @@ import '@acx-ui/theme'
 async function initialize () {
   const [
     React,
-    { Spin },
     { createRoot },
+    { SuspenseBoundary },
     config
   ] = await Promise.all([
     import('react'),
-    import('antd'),
     import('react-dom/client'),
+    import('@acx-ui/components'),
     import('@acx-ui/config')
   ])
 
   const container = document.getElementById('root')
   const root = createRoot(container!)
 
-  root.render(React.createElement(Spin, {
-    size: 'large',
-    style: {
-      position: 'absolute',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)'
-    }
-  }))
+  root.render(React.createElement(SuspenseBoundary.DefaultFallback, { absoluteCenter: true }))
 
   await config.initialize()
 

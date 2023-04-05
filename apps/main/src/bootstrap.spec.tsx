@@ -9,6 +9,7 @@ import * as bootstrap from './bootstrap'
 jest.mock('./AllRoutes', () => () => <div data-testid='all-routes' />)
 jest.mock('@acx-ui/theme', () => {}, { virtual: true })
 jest.mock('@acx-ui/components', () => ({
+  ...jest.requireActual('@acx-ui/components'),
   ConfigProvider: (props: { children: React.ReactNode }) => <div
     {...props}
     data-testid='config-provider'
@@ -19,7 +20,16 @@ jest.mock('@acx-ui/user', () => ({
   UserProfileProvider: (props: { children: React.ReactNode }) => <div
     {...props}
     data-testid='user-profile-provider'
-  />
+  />,
+  useUserProfileContext: () => ({ allowedOperations: ['some-operation'] })
+}))
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/user'),
+  UserProfileProvider: (props: { children: React.ReactNode }) => <div
+    {...props}
+    data-testid='user-profile-provider'
+  />,
+  useLocaleContext: () => ({ messages: ['some-message'] })
 }))
 
 
