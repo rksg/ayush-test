@@ -42,7 +42,7 @@ export default function AdaptivePolicySetTable () {
   ] = useDeleteAdaptivePolicySetMutation()
 
   // eslint-disable-next-line max-len
-  const [getPrioritizedPolicies, { isLoading: isGetPrioritizedPoliciesUpdating }] = useLazyGetPrioritizedPoliciesQuery()
+  const [getPrioritizedPolicies] = useLazyGetPrioritizedPoliciesQuery()
 
   const { data: macRegList } = useMacRegListsQuery({
     payload: { pageSize: 10000 }
@@ -174,7 +174,7 @@ export default function AdaptivePolicySetTable () {
   return (
     <Loader states={[
       tableQuery,
-      { isLoading: isGetPrioritizedPoliciesUpdating, isFetching: isDeletePolicyUpdating }
+      { isLoading: false, isFetching: isDeletePolicyUpdating }
     ]}>
       <Table
         columns={useColumns()}

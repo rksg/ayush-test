@@ -133,7 +133,7 @@ describe('AdaptivePolicySetForm', () => {
         RulesManagementUrlsInfo.updatePolicySet.url,
         (req, res, ctx) => res(ctx.json({}))
       ),
-      rest.post(
+      rest.put(
         RulesManagementUrlsInfo.assignPolicyPriority.url,
         (req, res, ctx) => res(ctx.json({}))
       ),

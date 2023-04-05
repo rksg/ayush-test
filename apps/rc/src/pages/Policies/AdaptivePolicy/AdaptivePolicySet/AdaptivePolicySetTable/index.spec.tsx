@@ -86,7 +86,7 @@ describe('AdaptivePolicySetTable', () => {
       route: { params, path: tablePath }
     })
 
-    const row = await screen.findByRole('row', { name: 'ps12 3' })
+    const row = await screen.findByRole('row', { name: new RegExp( 'ps12') })
     fireEvent.click(within(row).getByRole('radio'))
 
     const deleteButton = screen.getByRole('button', { name: /delete/i })
@@ -107,9 +107,8 @@ describe('AdaptivePolicySetTable', () => {
     render(<Provider><AdaptivePolicySetTable /></Provider>, {
       route: { params, path: tablePath }
     })
-    //
-    const row = await screen.findByRole('row', { name: 'ps12 3' })
-    // const row = await screen.findByRole('row', { name: new RegExp( 'ps12') })
+
+    const row = await screen.findByRole('row', { name: new RegExp( 'ps12') })
     fireEvent.click(within(row).getByRole('radio'))
 
     const editButton = screen.getByRole('button', { name: /Edit/i })
