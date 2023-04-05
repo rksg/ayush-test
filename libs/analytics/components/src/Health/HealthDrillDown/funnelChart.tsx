@@ -68,6 +68,7 @@ export function FunnelChart ({
   valueLabel: string;
 }) {
   const [parentNode, ref] = useGetNode()
+  const { $t } = useIntl()
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
   const onClick = (name: Stages) => {
     onSelectStage(name)
@@ -126,7 +127,7 @@ export function FunnelChart ({
       padding={chartPadding}
       ref={ref as unknown as React.RefObject<HTMLDivElement>}>
       {!enhancedStages.length ? (
-        <div>{'No data'}</div>
+        <div>{$t({ defaultMessage: 'No data' })}</div>
       ) : (
         [
           <StageList key={1}>
