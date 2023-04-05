@@ -188,6 +188,6 @@ describe('Funnel Chart', () => {
     const label = await screen.findByText('802.11 Auth.: 19.32%(228 ms)')
     expect(label).toBeVisible()
     fireEvent.click(label)
-    expect(onClick).toBeCalledWith(123.64800000000001, 'auth')
+    expect(onClick).toBeCalledWith(123.64800000000001, 'Authentication')
   })
 })
