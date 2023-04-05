@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import moment                     from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
+import { dateSort, defaultSort, sortProp }   from '@acx-ui/analytics/utils'
 import { Loader, Table, TableProps, Button } from '@acx-ui/components'
 import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
 import { useActivitiesQuery }                from '@acx-ui/rc/services'
@@ -105,7 +106,7 @@ const ActivityTable = ({
       title: $t({ defaultMessage: 'Date' }),
       dataIndex: 'startDatetime',
       defaultSortOrder: 'descend',
-      sorter: true,
+      sorter: { compare: sortProp('startDatetime', dateSort) },
       fixed: 'left',
       render: function (_, row) {
         return <Button
@@ -122,7 +123,7 @@ const ActivityTable = ({
       key: 'status',
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'status',
-      sorter: true,
+      sorter: { compare: sortProp('status', defaultSort) },
       render: function (_, row) {
         const msg = statusMapping[row.status as keyof typeof statusMapping]
         return $t(msg)
@@ -190,7 +191,7 @@ const ActivityTable = ({
   return <Loader states={[tableQuery]}>
     <Table
       settingsId={settingsId}
-      rowKey='startDatetime'
+      rowKey='requestId'
       columns={columns}
       dataSource={tableQuery.data?.data ?? []}
       pagination={tableQuery.pagination}
@@ -210,3 +211,10 @@ const ActivityTable = ({
 }
 
 export { ActivityTable }
+
+/*
+ problem occurs due to duplicate key?
+ for events, only happen when page listing increases to 100/page
+
+
+*/

@@ -102,7 +102,7 @@ const AdminLogTable = ({ tableQuery }: AdminLogTableProps) => {
 
   return <Loader states={[tableQuery]}>
     <Table
-      rowKey='id'
+      rowKey='tableKey'
       columns={columns}
       dataSource={tableQuery.data?.data ?? []}
       pagination={tableQuery.pagination}

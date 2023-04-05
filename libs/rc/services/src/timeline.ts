@@ -96,7 +96,8 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
             data: baseListData.map((base) => ({
               ...base,
               ...{ entity_type: base.entity_type.toUpperCase() },
-              ...(metaListData.find(meta=>meta.id === base.id))
+              ...(metaListData.find(meta=>meta.id === base.id)),
+              ...{ tableKey: base.event_datetime + base.id }
             })) as Event[]
           }
         }
@@ -129,7 +130,8 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
             data: baseListData.map((base) => ({
               ...base,
               ...{ entity_type: base.entity_type.toUpperCase() },
-              ...(metaListData.find(meta=>meta.id === base.id))
+              ...(metaListData.find(meta=>meta.id === base.id)),
+              ...{ tableKey: base.event_datetime + base.id }
             })) as AdminLog[]
           }
         }
