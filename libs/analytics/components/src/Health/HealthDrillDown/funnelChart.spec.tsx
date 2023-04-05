@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom'
-import { cssStr }         from '@acx-ui/components'
-import { Provider }       from '@acx-ui/store'
+import { cssStr }                    from '@acx-ui/components'
+import { Provider }                  from '@acx-ui/store'
 import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
 import {

@@ -81,7 +81,7 @@ export const Point = styled.div.attrs((props: { $xPos: number | null }) => props
   top: -10px;
   width: 20px;
   height: 20px;
-  ${props => `left: ${props.$xPos}px;`}
+  ${props => props.$xPos ? `left: ${props.$xPos}px;` : 'left: 50%;' }
 `
 
 export const Separator = styled.div`
