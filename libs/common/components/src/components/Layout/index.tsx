@@ -95,7 +95,7 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
     const { uri, tenantType, activeIcon, inactiveIcon, isActivePattern, ...rest } = item
     const isActive = isActivePattern?.some(pattern => activeUri.startsWith(pattern)) ||
       item.uri?.startsWith(activeUri)
-    const IconComponent = isActive ? activeIcon : (inactiveIcon ?? activeIcon)
+    const IconComponent = isActive ? activeIcon ?? inactiveIcon : inactiveIcon
     const content = <>
       {IconComponent && (isActive
         ? <UI.MenuIconSolid children={<IconComponent />} />

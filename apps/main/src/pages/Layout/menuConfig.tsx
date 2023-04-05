@@ -111,7 +111,7 @@ export function useMenuConfig () {
     },
     {
       label: $t({ defaultMessage: 'Wi-Fi' }),
-      activeIcon: WiFi,
+      inactiveIcon: WiFi,
       isActivePattern: [
         '/devices/wifi',
         '/reports/aps',
