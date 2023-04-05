@@ -34,6 +34,7 @@ export function GroupSelect<RecordType> ({
     }}
     key='select-group-by'
     data-testid='select-group-by'
+    style={{ width: 200 }}
   >
     {selectors.map((item) => <Select.Option
       key={item.key}
