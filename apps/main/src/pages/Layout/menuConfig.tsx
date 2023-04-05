@@ -10,18 +10,19 @@ import {
   AccountCircleSolid,
   AdminOutlined,
   AdminSolid,
-  DevicesOutlined,
-  DevicesSolid,
   LocationOutlined,
   LocationSolid,
   LineChartOutline,
   LineChartSolid,
-  NetworksOutlined,
-  NetworksSolid,
   ServicesOutlined,
   ServicesSolid as ServicesSolidBase,
+  SmartEdgeOutlined,
+  SmartEdgeSolid,
   SpeedIndicatorOutlined,
-  SpeedIndicatorSolid
+  SpeedIndicatorSolid,
+  SwitchOutlined,
+  SwitchSolid,
+  WiFi
 } from '@acx-ui/icons'
 import { getServiceCatalogRoutePath, getServiceListRoutePath } from '@acx-ui/rc/utils'
 import { RolesEnum }                                           from '@acx-ui/types'
@@ -36,6 +37,7 @@ export function useMenuConfig () {
   const showSV = useIsTierAllowed('ANLT-ADV')
 
   const earlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
+  const isEdgeEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
   const isSVEnabled = useIsSplitOn(Features.SERVICE_VALIDATION)
   const isUserEnabled = useIsSplitOn(Features.USERS)
   const isDeviceEnabled = useIsSplitOn(Features.DEVICES)
@@ -67,7 +69,7 @@ export function useMenuConfig () {
         { uri: '/analytics/incidents', label: $t({ defaultMessage: 'Incidents' }) },
         { uri: '/analytics/health', label: $t({ defaultMessage: 'Health' }) },
         ...((showSV && isSVEnabled) ? [{
-          uri: '/serviceValidation/networkHealth', label: $t({ defaultMessage: 'Netowrk Health' })
+          uri: '/serviceValidation/networkHealth', label: $t({ defaultMessage: 'Network Health' })
         }]:[])
       ]
     }]:[]),
@@ -90,6 +92,7 @@ export function useMenuConfig () {
       children: [
         {
           type: 'group' as const,
+          style: { width: 210 },
           label: $t({ defaultMessage: 'Wireless' }),
           children: [
             { uri: '/users/wifi/clients', label: $t({ defaultMessage: 'Wireless Clients List' }) },
@@ -108,8 +111,7 @@ export function useMenuConfig () {
     },
     {
       label: $t({ defaultMessage: 'Wi-Fi' }),
-      inactiveIcon: DevicesOutlined,
-      activeIcon: DevicesSolid,
+      activeIcon: WiFi,
       isActivePattern: [
         '/devices/wifi',
         '/reports/aps',
@@ -122,6 +124,7 @@ export function useMenuConfig () {
       children: [
         {
           type: 'group' as const,
+          style: { width: 225 },
           label: $t({ defaultMessage: 'Access Points' }),
           children: [
             { uri: '/devices/wifi', label: $t({ defaultMessage: 'Access Point List' }) } ,
@@ -143,8 +146,8 @@ export function useMenuConfig () {
     },
     {
       label: $t({ defaultMessage: 'Wired' }),
-      inactiveIcon: NetworksOutlined,
-      activeIcon: NetworksSolid,
+      inactiveIcon: SwitchOutlined,
+      activeIcon: SwitchSolid,
       isActivePattern: [
         '/devices/switch',
         '/reports/wired',
@@ -164,6 +167,7 @@ export function useMenuConfig () {
         },
         {
           type: 'group' as const,
+          style: { width: 260 },
           label: $t({ defaultMessage: 'Wired Network Profiles' }),
           children: [
             {
@@ -178,6 +182,13 @@ export function useMenuConfig () {
         }
       ]
     },
+    ...(isEdgeEnabled ? [{
+      uri: '/devices/edge/list',
+      label: $t({ defaultMessage: 'SmartEdge' }),
+      inactiveIcon: SmartEdgeOutlined,
+      activeIcon: SmartEdgeSolid,
+      isActivePattern: ['/devices/edge']
+    }] : []),
     {
       label: $t({ defaultMessage: 'Network Control' }),
       inactiveIcon: ServicesOutlined,
@@ -244,6 +255,7 @@ export function useMenuConfig () {
         },
         {
           type: 'group' as const,
+          style: { width: 270 },
           label: 'Account Management',
           children: [
             {

@@ -93,7 +93,8 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
     }
 
     const { uri, tenantType, activeIcon, inactiveIcon, isActivePattern, ...rest } = item
-    const isActive = isActivePattern?.some(pattern => activeUri.startsWith(pattern))
+    const isActive = isActivePattern?.some(pattern => activeUri.startsWith(pattern)) ||
+      item.uri?.startsWith(activeUri)
     const IconComponent = isActive ? activeIcon : (inactiveIcon ?? activeIcon)
     const content = <>
       {IconComponent && (isActive
@@ -103,7 +104,7 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
     </>
     return {
       ...rest,
-      className: Boolean(isActive) ? 'menu-active' : 'menu-inactive',
+      className: Boolean(isActive) ? 'menu-active' : undefined,
       key: key,
       label: uri
         ? <TenantNavLink to={uri} tenantType={tenantType}>{content}</TenantNavLink>

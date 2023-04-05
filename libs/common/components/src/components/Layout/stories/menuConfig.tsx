@@ -15,7 +15,7 @@ import {
   ServicesSolid as ServicesSolidBase,
   SpeedIndicatorOutlined,
   SpeedIndicatorSolid,
-  SwitchOutline,
+  SwitchOutlined,
   SwitchSolid,
   WiFi
 } from '@acx-ui/icons'
@@ -47,7 +47,7 @@ const config: LayoutProps['menuConfig'] = [
     children: [
       { uri: '/analytics/incidents', label: 'Incidents' },
       { uri: '/analytics/health', label: 'Health' },
-      { uri: '/serviceValidation/networkHealth', label: 'Netowrk Health' }
+      { uri: '/serviceValidation/networkHealth', label: 'Network Health' }
     ]
   },
   {
@@ -121,7 +121,7 @@ const config: LayoutProps['menuConfig'] = [
   },
   {
     label: 'Wired',
-    inactiveIcon: SwitchOutline,
+    inactiveIcon: SwitchOutlined,
     activeIcon: SwitchSolid,
     isActivePattern: [
       '/devices/switch',

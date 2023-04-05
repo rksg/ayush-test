@@ -15,34 +15,37 @@ import { LayoutUI } from './styledComponents'
 import { Layout } from '.'
 
 describe('Layout', () => {
+  const route = {
+    path: '/:tenantType/:tenantId/:page',
+    params: { tenantType: 't', tenantId: 't-id', page: 'dashboard' },
+    wrapRoutes: false
+  }
   it('should render correctly', async () => {
     const { asFragment } = render(<Layout
       menuConfig={menuConfig}
       leftHeaderContent={<LayoutUI.DropdownText>Left header</LayoutUI.DropdownText>}
       rightHeaderContent={<div>Right header</div>}
       content={<div>content</div>}
-    />, { route: true })
+    />, { route })
     await screen.findByTestId('AIOutlined')
     expect(asFragment()).toMatchSnapshot()
   })
   it('should render with custom tenant type correctly', async () => {
-    const mspConfig = [
-      {
-        uri: '/dashboard',
-        label: 'Dashboard',
-        tenantType: 'v' as TenantType,
-        inactiveIcon: SpeedIndicatorOutlined,
-        activeIcon: SpeedIndicatorSolid,
-        isActivePattern: ['/dashboard']
-      }
-    ]
+    const mspConfig = [{
+      uri: '/dashboard',
+      label: 'Dashboard',
+      tenantType: 'v' as TenantType,
+      inactiveIcon: SpeedIndicatorOutlined,
+      activeIcon: SpeedIndicatorSolid,
+      isActivePattern: ['/dashboard']
+    }]
     const { asFragment } = render(<Layout
       menuConfig={mspConfig}
       leftHeaderContent={<div>Left header</div>}
       rightHeaderContent={<div>Right header</div>}
       content={<div>content</div>}
-    />, { route: { params: { tenantId: 't-id' }, wrapRoutes: false } })
-    await screen.findByTestId('SpeedIndicatorOutlined')
+    />, { route: { ...route, params: { ...route.params, tenantType: 'v' } } })
+    await screen.findByTestId('SpeedIndicatorSolid')
     await screen.findByRole('menuitem', {
       name: (name, element) => name === 'Dashboard' &&
         (element as HTMLElement).hasAttribute('data-menu-id')
@@ -55,7 +58,7 @@ describe('Layout', () => {
       leftHeaderContent={<div>Left header</div>}
       rightHeaderContent={<div>Right header</div>}
       content={<div>content</div>}
-    />, { route: true })
+    />, { route })
     await screen.findByTestId('AIOutlined')
     fireEvent.click(screen.getByText('Collapse'))
     await screen.findByTestId('ArrowChevronRight')
@@ -66,13 +69,7 @@ describe('Layout', () => {
       leftHeaderContent={<div>Left header</div>}
       rightHeaderContent={<div>Right header</div>}
       content={<div>content</div>}
-    />, {
-      route: {
-        wrapRoutes: false,
-        path: '/t/:tenantId/:page',
-        params: { tenantId: 't-id', page: 'dashboard' }
-      }
-    })
+    />, { route })
     await userEvent.hover(screen.getByTestId('AccountCircleOutlined'))
     await userEvent.click(await screen.findByRole('link', { name: 'Wireless Clients List' }))
     await screen.findByTestId('AccountCircleSolid')

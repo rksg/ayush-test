@@ -138,8 +138,9 @@ export const Wrapper = styled.div`
         .ant-menu-submenu-title {
           color: transparent;
         }
+        .ant-menu-title-content { padding-left: 5px; }
         .ant-menu-item {
-          .ant-menu-title-content{
+          .ant-menu-title-content {
             color: transparent;
             a {
               display: inline-block;

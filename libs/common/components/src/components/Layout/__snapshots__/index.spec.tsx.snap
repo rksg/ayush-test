@@ -3,7 +3,7 @@
 exports[`Layout should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-iwostn-0 knbxWW"
+    class="styledComponents__Wrapper-sc-iwostn-0 iWczeF"
   >
     <div
       class="ant-design-pro ant-pro-basicLayout screen-md ant-pro-basicLayout-fix-siderbar ant-pro-basicLayout-side"
@@ -45,7 +45,7 @@ exports[`Layout should render correctly 1`] = `
                 tabindex="0"
               >
                 <li
-                  class="ant-menu-item ant-menu-item-only-child menu-inactive"
+                  class="ant-menu-item ant-menu-item-only-child menu-active"
                   data-menu-id="rc-menu-uuid-test--dashboard"
                   role="menuitem"
                   tabindex="-1"
@@ -58,10 +58,10 @@ exports[`Layout should render correctly 1`] = `
                       href="/t/undefined/dashboard"
                     >
                       <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
+                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconSolid-sc-iwostn-7 bZgxDC OWPZI"
                       >
                         <svg
-                          data-testid="SpeedIndicatorOutlined"
+                          data-testid="SpeedIndicatorSolid"
                         />
                       </span>
                       Dashboard
@@ -69,7 +69,7 @@ exports[`Layout should render correctly 1`] = `
                   </span>
                 </li>
                 <li
-                  class="ant-menu-submenu ant-menu-submenu-vertical menu-inactive"
+                  class="ant-menu-submenu ant-menu-submenu-vertical"
                   role="none"
                 >
                   <div
@@ -100,7 +100,7 @@ exports[`Layout should render correctly 1`] = `
                   </div>
                 </li>
                 <li
-                  class="ant-menu-item ant-menu-item-only-child menu-inactive"
+                  class="ant-menu-item ant-menu-item-only-child"
                   data-menu-id="rc-menu-uuid-test--venues"
                   role="menuitem"
                   tabindex="-1"
@@ -124,7 +124,7 @@ exports[`Layout should render correctly 1`] = `
                   </span>
                 </li>
                 <li
-                  class="ant-menu-submenu ant-menu-submenu-vertical menu-inactive"
+                  class="ant-menu-submenu ant-menu-submenu-vertical"
                   role="none"
                 >
                   <div
@@ -154,7 +154,7 @@ exports[`Layout should render correctly 1`] = `
                   </div>
                 </li>
                 <li
-                  class="ant-menu-submenu ant-menu-submenu-vertical menu-inactive"
+                  class="ant-menu-submenu ant-menu-submenu-vertical"
                   role="none"
                 >
                   <div
@@ -184,7 +184,7 @@ exports[`Layout should render correctly 1`] = `
                   </div>
                 </li>
                 <li
-                  class="ant-menu-submenu ant-menu-submenu-vertical menu-inactive"
+                  class="ant-menu-submenu ant-menu-submenu-vertical"
                   role="none"
                 >
                   <div
@@ -203,7 +203,7 @@ exports[`Layout should render correctly 1`] = `
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
                       >
                         <svg
-                          data-testid="SwitchOutline"
+                          data-testid="SwitchOutlined"
                         />
                       </span>
                       Wired
@@ -214,7 +214,7 @@ exports[`Layout should render correctly 1`] = `
                   </div>
                 </li>
                 <li
-                  class="ant-menu-submenu ant-menu-submenu-vertical menu-inactive"
+                  class="ant-menu-submenu ant-menu-submenu-vertical"
                   role="none"
                 >
                   <div
@@ -244,7 +244,7 @@ exports[`Layout should render correctly 1`] = `
                   </div>
                 </li>
                 <li
-                  class="ant-menu-submenu ant-menu-submenu-vertical menu-inactive"
+                  class="ant-menu-submenu ant-menu-submenu-vertical"
                   role="none"
                 >
                   <div
@@ -274,7 +274,7 @@ exports[`Layout should render correctly 1`] = `
                   </div>
                 </li>
                 <li
-                  class="ant-menu-submenu ant-menu-submenu-vertical menu-inactive"
+                  class="ant-menu-submenu ant-menu-submenu-vertical"
                   role="none"
                 >
                   <div
@@ -417,7 +417,7 @@ exports[`Layout should render correctly 1`] = `
 exports[`Layout should render with custom tenant type correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-iwostn-0 knbxWW"
+    class="styledComponents__Wrapper-sc-iwostn-0 iWczeF"
   >
     <div
       class="ant-design-pro ant-pro-basicLayout screen-md ant-pro-basicLayout-fix-siderbar ant-pro-basicLayout-side"
@@ -459,7 +459,7 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
                 tabindex="0"
               >
                 <li
-                  class="ant-menu-item ant-menu-item-only-child menu-inactive"
+                  class="ant-menu-item ant-menu-item-only-child menu-active"
                   data-menu-id="rc-menu-uuid-test--dashboard"
                   role="menuitem"
                   tabindex="-1"
@@ -472,10 +472,10 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
                       href="/v/undefined/dashboard"
                     >
                       <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
+                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconSolid-sc-iwostn-7 bZgxDC OWPZI"
                       >
                         <svg
-                          data-testid="SpeedIndicatorOutlined"
+                          data-testid="SpeedIndicatorSolid"
                         />
                       </span>
                       Dashboard
