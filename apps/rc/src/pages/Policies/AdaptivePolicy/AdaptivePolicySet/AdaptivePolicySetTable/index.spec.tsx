@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 
 import {
-  getPolicyDetailsLink, getPolicyRoutePath,
+  getPolicyDetailsLink, getPolicyRoutePath, MacRegListUrlsInfo,
   PolicyOperation,
   PolicyType,
   RulesManagementUrlsInfo
@@ -10,7 +10,7 @@ import { Path }                                                   from '@acx-ui/
 import { Provider }                                               from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
-import { policySetList, prioritizedPolicies, adaptivePolicyList } from './__test__/fixtures'
+import { policySetList, prioritizedPolicies, adaptivePolicyList, macList } from './__test__/fixtures'
 
 import AdaptivePolicySetTable from './index'
 
@@ -49,6 +49,14 @@ describe('AdaptivePolicySetTable', () => {
       rest.get(
         RulesManagementUrlsInfo.getPolicies.url,
         (req, res, ctx) => res(ctx.json(adaptivePolicyList))
+      ),
+      rest.get(
+        RulesManagementUrlsInfo.getPolicies.url,
+        (req, res, ctx) => res(ctx.json(adaptivePolicyList))
+      ),
+      rest.get(
+        MacRegListUrlsInfo.getMacRegistrationPools.url,
+        (req, res, ctx) => res(ctx.json(macList))
       )
     )
   })
@@ -99,8 +107,9 @@ describe('AdaptivePolicySetTable', () => {
     render(<Provider><AdaptivePolicySetTable /></Provider>, {
       route: { params, path: tablePath }
     })
-
+    //
     const row = await screen.findByRole('row', { name: 'ps12 3' })
+    // const row = await screen.findByRole('row', { name: new RegExp( 'ps12') })
     fireEvent.click(within(row).getByRole('radio'))
 
     const editButton = screen.getByRole('button', { name: /Edit/i })

@@ -1,3 +1,5 @@
+import { ExpirationType } from '@acx-ui/rc/utils'
+
 export const policySetList = {
   paging: { totalCount: 3, page: 1, pageSize: 3, pageCount: 1 },
   content: [
@@ -17,6 +19,60 @@ export const policySetList = {
       description: 'ps4'
     }
   ]
+}
+
+export const macList = {
+  content: [
+    {
+      id: 'efce7414-1c78-4312-ad5b-ae03f28dbc68',
+      name: 'Registration pool-1',
+      autoCleanup: true,
+      enabled: true,
+      expirationEnabled: false,
+      registrationCount: 5,
+      policySetId: 'policySet',
+      associationIds: [],
+      networkIds: ['a22e0192e090459ab04cdc161bf6285f']
+    },
+    {
+      id: 'efce7414-1c78-4312-ad5b-ae03f28dbc67',
+      name: 'Registration pool-2',
+      autoCleanup: true,
+      enabled: true,
+      expirationEnabled: true,
+      expirationDate: '2022-11-02T06:59:59Z',
+      registrationCount: 6,
+      expirationType: ExpirationType.SPECIFIED_DATE
+    },
+    {
+      id: 'efce7414-1c78-4312-ad5b-ae03f28dbc69',
+      name: 'Registration pool-3',
+      description: '',
+      autoCleanup: true,
+      enabled: true,
+      expirationEnabled: true,
+      expirationType: ExpirationType.DAYS_AFTER_TIME,
+      expirationOffset: 5,
+      registrationCount: 6
+    }
+  ],
+  pageable: {
+    sort: { unsorted: true, sorted: false, empty: true },
+    pageNumber: 0,
+    pageSize: 10,
+    offset: 0,
+    paged: true,
+    unpaged: false
+  },
+  totalPages: 1,
+  totalElements: 3,
+  last: true,
+  sort: { unsorted: true, sorted: false, empty: true },
+  numberOfElements: 3,
+  first: true,
+  size: 10,
+  number: 0,
+  empty: false
 }
 
 export const adaptivePolicyList = {
