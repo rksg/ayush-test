@@ -115,8 +115,13 @@ export function useMenuConfig () {
           label: $t({ defaultMessage: 'Persona Management' }),
           children: [
             {
-              uri: '/users/persona-management',
-              label: $t({ defaultMessage: 'Persona List' })
+              uri: '/users/persona-management/persona-group',
+              label: $t({ defaultMessage: 'Persona Group' })
+            },
+            {
+              uri: '/users/persona-management/persona',
+              isActivePattern: '/users/persona-management/persona($|/)',
+              label: $t({ defaultMessage: 'Persona' })
             }
           ]
         }] : [])
