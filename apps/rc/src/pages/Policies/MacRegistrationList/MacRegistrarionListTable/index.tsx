@@ -75,7 +75,7 @@ export default function MacRegistrationListsTable () {
       tableQuery.data?.data.forEach(macPools => {
         const { policySetId } = macPools
         if (policySetId) {
-          getAdaptivePolicySet({ params: { policyId: policySetId } })
+          getAdaptivePolicySet({ params: { policySetId } })
             .then(result => {
               // eslint-disable-next-line max-len
               setPolicySetMap(map => new Map(map.set(policySetId, result.data?.name ?? policySetId)))

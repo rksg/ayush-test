@@ -115,7 +115,7 @@ describe('MacRegistrationListForm', () => {
         (req, res, ctx) => res(ctx.json({}))
       ),
       rest.get(
-        RulesManagementUrlsInfo.getAdaptivePolicySets.url,
+        RulesManagementUrlsInfo.getPolicySets.url,
         (req, res, ctx) => res(ctx.json(policySetList))
       )
     )

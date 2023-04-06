@@ -6,16 +6,6 @@ const policyTemplateApiBaseUrl = '/policyTemplates'
 const paginationParams = '?size=:pageSize&page=:page&sort=:sort'
 
 export const RulesManagementUrlsInfo: { [key: string]: ApiInfo } = {
-  getAdaptivePolicySets: {
-    method: 'get',
-    newApi: true,
-    url: policySetApiBaseUrl + paginationParams
-  },
-  getAdaptivePolicySet: {
-    method: 'get',
-    newApi: true,
-    url: policySetApiBaseUrl + '/:policyId'
-  },
   getPolicyTemplateList: {
     method: 'get',
     newApi: true,

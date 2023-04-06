@@ -230,7 +230,6 @@ const AccessPolicyTable = (props: AccessPolicyTableProps) => {
             row: DraggableBodyRow
           }
         }}
-        columnState={{ hidden: true }}
       />
     </Loader>
   )

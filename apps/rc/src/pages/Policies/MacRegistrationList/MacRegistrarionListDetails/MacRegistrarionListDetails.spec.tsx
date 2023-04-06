@@ -74,7 +74,7 @@ describe('MacRegistrationListDetails', () => {
         (req, res, ctx) => res(ctx.json(networkList))
       ),
       rest.get(
-        RulesManagementUrlsInfo.getAdaptivePolicySet.url,
+        RulesManagementUrlsInfo.getPolicySet.url,
         (req, res, ctx) => res(ctx.json(policySet))
       )
     )

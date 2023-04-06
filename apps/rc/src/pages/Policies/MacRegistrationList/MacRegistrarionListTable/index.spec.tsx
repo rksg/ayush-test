@@ -92,7 +92,7 @@ describe('MacRegistrationListsTable', () => {
         (req, res, ctx) => res(ctx.json(list))
       ),
       rest.get(
-        RulesManagementUrlsInfo.getAdaptivePolicySet.url,
+        RulesManagementUrlsInfo.getPolicySet.url,
         (req, res, ctx) => res(ctx.json(policySet))
       ),
       rest.post(
