@@ -648,7 +648,7 @@ describe('RcRoutes: Policies', () => {
         wrapRoutes: false
       }
     })
-    expect(await screen.findByRole('heading', { level: 1, name: 'Radius Attribute Groups' })).toBeVisible()
+    expect(await screen.findByRole('heading', { level: 1, name: 'RADIUS Attribute Groups' })).toBeVisible()
   })
 
   test('should navigate to create MAC_REGISTRATION_LIST page', async () => {
