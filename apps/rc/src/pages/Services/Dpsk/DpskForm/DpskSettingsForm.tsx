@@ -187,7 +187,7 @@ function CloudpathFormItems () {
             </Radio.Group>
           }
         />
-        <Form.Item name='policySetId'
+        {/* <Form.Item name='policySetId'
           label={$t({ defaultMessage: 'Access Policy Set' })}
           rules={[{ required: true }]}
         >
@@ -197,7 +197,7 @@ function CloudpathFormItems () {
               {$t({ defaultMessage: 'Add Access Policy Set' })}
             </Button>
           </Space>
-        </Form.Item>
+        </Form.Item> */}
         <Form.Item name='policyDefaultAccess'
           label={$t({ defaultMessage: 'Default Access' })}
           initialValue={PolicyDefaultAccess.ACCEPT}
