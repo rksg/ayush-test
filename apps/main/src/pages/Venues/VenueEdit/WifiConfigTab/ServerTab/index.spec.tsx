@@ -51,10 +51,10 @@ describe('ServerTab', () => {
         SyslogUrls.getSyslogPolicyList.url,
         (_, res, ctx) => res(ctx.json(syslogServerProfiles))),
       rest.get(
-        getUrlForTest(CommonUrlsInfo.getVenueBonjourFencingPolicy),
+        getUrlForTest(CommonUrlsInfo.getVenueMdnsFencingPolicy),
         (_, res, ctx) => res(ctx.json({}))),
       rest.post(
-        getUrlForTest(CommonUrlsInfo.updateVenueBonjourFencingPolicy),
+        getUrlForTest(CommonUrlsInfo.updateVenueMdnsFencingPolicy),
         (_, res, ctx) => res(ctx.json({}))),
       rest.post(
         CommonUrlsInfo.getApsList.url,
