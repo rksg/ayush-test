@@ -21,19 +21,14 @@ type SideNavProps = {
   tenantType?: TenantType
   activeIcon?: React.FC
   inactiveIcon?: React.FC
-  isActivePattern?: string[]
+  isActivePattern?: string
 }
 
 type MenuItemType = Omit<RcMenuItemType, 'key' | 'label'> & SideNavProps & {
   label: string
-  danger?: boolean
-  icon?: React.ReactNode
-  title?: string
 }
 type SubMenuType = Omit<RcSubMenuType, 'children' | 'key' | 'label'> & SideNavProps & {
   label: string
-  icon?: React.ReactNode
-  theme?: 'dark' | 'light'
   children: ItemType[]
 }
 type MenuItemGroupType = Omit<RcMenuItemGroupType, 'children' | 'label'> & {
@@ -60,6 +55,8 @@ export interface LayoutProps {
   content: React.ReactNode;
 }
 
+export const IGNORE_ACTIVE_PATTERN = 'ignoreActivePattern'
+
 function useActiveUri () {
   const { pathname } = useLocation()
   const chunks = pathname.split('/')
@@ -78,6 +75,16 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
   // needed for Chrome to ensure only single submenu opened
   const [openKeys, setOpenKeys] = useState<string[]>([])
 
+  const getActivePatterns = (item: ItemType): (string | undefined)[] => {
+    if (isMenuItemGroupType(item) || isSubMenuType(item)) {
+      return item.children?.flatMap(item => getActivePatterns(item)) || []
+    }
+    if (item?.isActivePattern === IGNORE_ACTIVE_PATTERN) {
+      return []
+    }
+    return [item?.isActivePattern || item?.uri]
+  }
+
   const getMenuItem = (item: LayoutProps['menuConfig'][number], key: string): AntItemType => {
     if (item === null) return item
 
@@ -92,9 +99,11 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
       }
     }
 
-    const { uri, tenantType, activeIcon, inactiveIcon, isActivePattern, ...rest } = item
-    const isActive = isActivePattern?.some(pattern => activeUri.startsWith(pattern)) ||
-      item.uri?.startsWith(activeUri)
+    const { uri, tenantType, activeIcon, inactiveIcon, ...rest } = item
+    delete rest.isActivePattern
+
+    const activePatterns = getActivePatterns(item)
+    const isActive = activePatterns.some(pattern => activeUri.match(new RegExp(`^${pattern}`)))
     const IconComponent = isActive ? activeIcon ?? inactiveIcon : inactiveIcon
     const content = <>
       {IconComponent && <UI.MenuIcon children={<IconComponent />} />}

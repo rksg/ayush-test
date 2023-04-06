@@ -33,7 +33,6 @@ export function useMenuConfig (tenantType: string) {
       label: $t({ defaultMessage: 'My Customers' }),
       inactiveIcon: UsersThreeOutlined,
       activeIcon: UsersThreeSolid,
-      isActivePattern: ['/dashboard'],
       children: [
         {
           uri: '/dashboard/mspCustomers',
