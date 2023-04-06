@@ -70,16 +70,6 @@ export const Pin = styled.div<{ pinPosition : string, dir: string,color : string
     background: ${props => props.color};
   }
 `
-export const CustomTable = styled.div`
-.ant-pro-table {
-  .ant-table {
-    &-tbody > tr > td {
-      padding-top: 10px;
-      padding-bottom: 10px;
-    }
-  }
-}
-`
 export const TableHeading = styled.span`
   padding-bottom : 5px;
   font-size: 12px;
