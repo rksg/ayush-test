@@ -123,8 +123,7 @@ export function useMenuConfig () {
           },
           {
             path: '/devices/switch',
-            name: $t({ defaultMessage: 'Switch' }),
-            disabled: !useIsSplitOn(Features.DEVICES)
+            name: $t({ defaultMessage: 'Switch' })
           },
           ...isEdgeEnabled ? [{
             path: '/devices/edge/list',
@@ -184,8 +183,7 @@ export function useMenuConfig () {
         },
         {
           path: '/users/switch',
-          name: $t({ defaultMessage: 'Switch' }),
-          disabled: !useIsSplitOn(Features.USERS)
+          name: $t({ defaultMessage: 'Switch' })
         },
         ...(isPersonaEnabled && isMacRegistrationEnabled)
           ? [{

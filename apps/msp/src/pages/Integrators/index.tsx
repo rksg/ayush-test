@@ -75,7 +75,7 @@ export function Integrators () {
       defaultSortOrder: 'ascend' as SortOrder,
       onCell: (data) => {
         return {
-          onClick: () => { checkDelegateAdmin(data.id, userProfile.adminId) }
+          onClick: () => { checkDelegateAdmin(data.id, userProfile!.adminId) }
         }
       },
       render: function (data, row, _, highlightFn) {
