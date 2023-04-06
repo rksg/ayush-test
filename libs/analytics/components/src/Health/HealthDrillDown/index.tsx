@@ -111,8 +111,6 @@ const HealthDrillDown = (props: {
               style={{ cursor: 'pointer' }}
               onClick={() => {
                 setDrilldownSelection(null)
-                setSelectedStage(null)
-                setXpos(null)
               }}
             />
           </GridCol>

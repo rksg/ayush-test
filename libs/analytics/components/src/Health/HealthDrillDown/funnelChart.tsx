@@ -94,7 +94,7 @@ export function FunnelChart ({
         }
       })
     let endPosition = 0
-    const endStages = filteredStages.map((stage, i) => {
+    return filteredStages.map((stage, i) => {
       if (stage.width > minVisibleWidth) {
         stage.width = stage.pct * totalWidth
       }
@@ -107,13 +107,10 @@ export function FunnelChart ({
         isSelected: stage.name === selectedStage,
         idx: i,
         bgColor: colors[i],
-        endPosition
+        endPosition,
+        onClick: onClick.bind(null,endPosition - stage.width / 2, stage.name as Stages)
       }
     })
-    return endStages.map((stage) => ({
-      ...stage,
-      onClick: () => onClick(stage.endPosition - stage.width / 2, stage.name as Stages)
-    }))
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stages, selectedStage, parentNode, windowWidth])
   useLayoutEffect(() => {
