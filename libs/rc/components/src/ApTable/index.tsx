@@ -233,7 +233,8 @@ export function ApTable (props: ApTableProps) {
       dataIndex: 'switchName',
       render: (data, row : APExtended) => {
         return (
-          <TenantLink to={`/switches/${row.venueId}/details/overview`}>{data}</TenantLink>
+          // eslint-disable-next-line max-len
+          <TenantLink to={`/devices/switch/${row.switchId}/${row.switchSerialNumber}/details/overview`}>{data}</TenantLink>
         )
       }
     }, {
