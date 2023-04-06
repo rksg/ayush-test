@@ -33,9 +33,6 @@ export function useMenuConfig () {
 
   const earlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
   const isEdgeEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
-  const isSVEnabled = useIsSplitOn(Features.SERVICE_VALIDATION)
-  const isUserEnabled = useIsSplitOn(Features.USERS)
-  const isDeviceEnabled = useIsSplitOn(Features.DEVICES)
   const isServiceEnabled = useIsSplitOn(Features.SERVICES)
   const isPolicyEnabled = useIsSplitOn(Features.POLICIES)
   const isAdministrationEnabled = useIsSplitOn(Features.UNRELEASED) || earlyBetaEnabled
@@ -63,7 +60,7 @@ export function useMenuConfig () {
       children: [
         { uri: '/analytics/incidents', label: $t({ defaultMessage: 'Incidents' }) },
         { uri: '/analytics/health', label: $t({ defaultMessage: 'Health' }) },
-        ...((showSV && isSVEnabled) ? [{
+        ...(showSV ? [{
           uri: '/serviceValidation/networkHealth', label: $t({ defaultMessage: 'Network Health' })
         }]:[])
       ]
@@ -95,13 +92,13 @@ export function useMenuConfig () {
             { uri: '/reports/clients', label: $t({ defaultMessage: 'Wireless Clients Report' }) }
           ]
         },
-        ...(isUserEnabled ? [{
+        {
           type: 'group' as const,
           label: $t({ defaultMessage: 'Wired' }),
           children: [
             { uri: '/users/switch/clients', label: $t({ defaultMessage: 'Wired Clients List' }) }
           ]
-        }]:[])
+        }
       ]
     },
     {
@@ -153,10 +150,7 @@ export function useMenuConfig () {
           type: 'group' as const,
           label: $t({ defaultMessage: 'Switches' }),
           children: [
-            ...(isDeviceEnabled
-              ? [{ uri: '/devices/switch', label: $t({ defaultMessage: 'Switch List' }) }]
-              :[]
-            ),
+            { uri: '/devices/switch', label: $t({ defaultMessage: 'Switch List' }) },
             { uri: '/reports/wired', label: $t({ defaultMessage: 'Wired Report' }) }
           ]
         },
