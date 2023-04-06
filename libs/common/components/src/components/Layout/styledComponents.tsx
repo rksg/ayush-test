@@ -3,7 +3,7 @@ import {
   Divider as AntDivider,
   Space
 } from 'antd'
-import styled, { css } from 'styled-components/macro'
+import styled, { css, createGlobalStyle } from 'styled-components/macro'
 
 import { ArrowChevronLeft, ArrowChevronRight } from '@acx-ui/icons'
 
@@ -170,6 +170,94 @@ export const Wrapper = styled.div`
       background-color: var(--acx-primary-white);
     }
   }
+`
+
+export const MenuGlobalStyle = createGlobalStyle`
+  .ant-tooltip {
+    &.ant-menu-inline-collapsed-tooltip {
+      .ant-tooltip-inner {
+        font-family: var(--acx-accent-brand-font);
+        font-size: var(--acx-headline-4-font-size);
+        padding: 10px 14px 10px 10px;
+        .ant-pro-menu-item-title {
+          vertical-align: middle;
+        }
+      }
+    }
+  }
+
+  .ant-menu-vertical.ant-menu-sub,
+  .ant-menu-vertical-left.ant-menu-sub,
+  .ant-menu-vertical-right.ant-menu-sub {
+    min-width: 180px;
+  }
+
+  .ant-menu-submenu-popup {
+    &.layout-group-horizontal .ant-menu{
+      display: flex;
+    }
+    .ant-menu{
+      margin-left: -4px;
+      box-shadow: none;
+      border-radius: 0;
+      background-color: var(--acx-neutrals-70);
+      padding-top: 8px;
+      .ant-menu-item{
+        height: 40px;
+        margin: auto;
+        font-family: var(--acx-accent-brand-font);
+        line-height: var(--acx-headline-5-line-height);
+        font-size: var(--acx-headline-5-font-size);
+        font-weight: var(--acx-headline-5-font-weight);
+        padding: 8px 16px 16px;
+        &:active {
+          background: unset;
+        }
+        &.menu-active > .ant-menu-title-content a {
+          &, &:hover {
+            color: var(--acx-accents-orange-50);
+            font-weight: var(--acx-headline-4-font-weight-bold);
+          }
+        }
+        .ant-menu-title-content {
+          font-family: var(--acx-accent-brand-font);
+          font-size: var(--acx-headline-4-font-size);
+          line-height: var(--acx-headline-4-line-height);
+          font-weight: var(--acx-headline-4-font-weight);
+          color: var(--acx-neutrals-20);
+          a {
+            font-family: var(--acx-accent-brand-font);
+            font-size: var(--acx-headline-4-font-size);
+            line-height: var(--acx-headline-4-line-height);
+            font-weight: var(--acx-headline-4-font-weight);
+            color: var(--acx-neutrals-20);
+            &:hover {
+              color: var(--acx-neutrals-10);
+              font-weight: var(--acx-headline-4-font-weight-bold);
+            }
+          }
+        }
+        &-selected {
+          background-color: unset;
+        }
+      }
+      .ant-menu-item-group {
+        min-width: 180px;
+        margin-top: -8px; // cancel off 8px top padding of .ant-menu
+        &-title {
+          height: 28px;
+          font-family: var(--acx-neutral-brand-font);
+          font-size: var(--acx-subtitle-5-font-size);
+          line-height: var(--acx-subtitle-5-line-height);
+          font-weight: var(--acx-subtitle-5-font-weight);
+          color: var(--acx-neutrals-20);
+          opacity: 0.6;
+          padding: 8px 16px 4px;
+        }
+      }
+    }
+  }
+
 `
 
 export const Content = styled.div`

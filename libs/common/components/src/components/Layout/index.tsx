@@ -115,12 +115,15 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
     }
   }
 
-  return <Menu
-    selectedKeys={[]}
-    openKeys={openKeys}
-    items={props.menuConfig.map(item => getMenuItem(item, ''))}
-    onOpenChange={keys => setOpenKeys(keys.slice(-1))}
-  />
+  return <>
+    <UI.MenuGlobalStyle />
+    <Menu
+      selectedKeys={[]}
+      openKeys={openKeys}
+      items={props.menuConfig.map(item => getMenuItem(item, ''))}
+      onOpenChange={keys => setOpenKeys(keys.slice(-1))}
+    />
+  </>
 }
 
 export function Layout ({
