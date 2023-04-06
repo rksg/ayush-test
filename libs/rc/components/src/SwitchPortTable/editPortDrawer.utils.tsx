@@ -232,10 +232,10 @@ export const getPoeClass = (selectedPorts: SwitchPortViewModel[]) => {
     { label: defineMessage({ defaultMessage: '2 (802.3af 7.0 W)' }), value: 'TWO' },
     { label: defineMessage({ defaultMessage: '3 (802.3af 15.4 W)' }), value: 'THREE' },
     { label: defineMessage({ defaultMessage: '4 (802.3af 30 W)' }), value: 'FOUR' },
-    { label: defineMessage({ defaultMessage: '5 (802.3bf 45 W)' }), value: 'FIVE' },
-    { label: defineMessage({ defaultMessage: '6 (802.3bf 60 W)' }), value: 'SIX' },
-    { label: defineMessage({ defaultMessage: '7 (802.3bf 75 W)' }), value: 'SEVEN' },
-    { label: defineMessage({ defaultMessage: '8 (802.3bf 99 W)' }), value: 'EIGHT' }
+    { label: defineMessage({ defaultMessage: '5 (802.3bt 45 W)' }), value: 'FIVE' },
+    { label: defineMessage({ defaultMessage: '6 (802.3bt 60 W)' }), value: 'SIX' },
+    { label: defineMessage({ defaultMessage: '7 (802.3bt 75 W)' }), value: 'SEVEN' },
+    { label: defineMessage({ defaultMessage: '8 (802.3bt 99 W)' }), value: 'EIGHT' }
   ]
 
   let support5to8PoeClass = true
