@@ -37,7 +37,8 @@ export const api = dataApi.injectEndpoints({
                   name,
                   usage: poeUtilization,
                   usagePct: poeUtilizationPct,
-                  mac
+                  mac,
+                  serial
                 }
               }
             }

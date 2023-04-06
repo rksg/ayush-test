@@ -7,9 +7,9 @@ import { useIntl }             from 'react-intl'
 
 import { Button, Modal, Table, TableProps } from '@acx-ui/components'
 import { DeleteOutlinedIcon }               from '@acx-ui/icons'
-import { BonjourFencingWiredRule }          from '@acx-ui/rc/utils'
+import { MdnsFencingWiredRule }             from '@acx-ui/rc/utils'
 
-import { BonjourFencingServiceContext }         from '../../BonjourFencingServiceTable'
+import { MdnsFencingServiceContext }            from '../../MdnsFencingServiceTable'
 import { FencingRangeRadioGroup, FieldsetItem } from '../../utils'
 
 import { MacAddressesTags, TagData } from './MacAddressTags'
@@ -189,7 +189,7 @@ const DeviceMacAddressTable = (props: DeviceMacAddressTableProps) => {
 }
 
 
-interface WiredRulesTableEntry extends BonjourFencingWiredRule {
+interface WiredRulesTableEntry extends MdnsFencingWiredRule {
   rowId?: string
 }
 
@@ -221,7 +221,7 @@ const WiredRulesModal = (props: WiredRulesModalProps) => {
   const [usedMacAddrs, setUsedMacAddrs] = useState<string[]>([])
   const [usedClosestAps, setUsedClosedAps] = useState<string[]>()
   const [conflictMacAddes, setConflictMacAddes] = useState('')
-  const { venueAps } = useContext(BonjourFencingServiceContext)
+  const { venueAps } = useContext(MdnsFencingServiceContext)
 
   // reset form fields when modal is closed
   const prevOpenRef = useRef(false)
@@ -408,7 +408,7 @@ const WiredRulesTable = (props: WiredRulesTableProps) => {
     existedRules: [] as WiredRulesTableEntry[]
   })
 
-  const { venueAps } = useContext(BonjourFencingServiceContext)
+  const { venueAps } = useContext(MdnsFencingServiceContext)
 
   const handleAdd = () => {
     const existedRules = tableData
@@ -547,7 +547,7 @@ export const WiredConnectionFieldset = () => {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
 
-  const { currentService } = useContext(BonjourFencingServiceContext)
+  const { currentService } = useContext(MdnsFencingServiceContext)
 
   const [ tableData, setTableData ] = useState<WiredRulesTableEntry[]>([])
 

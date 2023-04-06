@@ -76,7 +76,7 @@ export function MspEcDropdownList () {
   const mspEcPayload = {
     searchString: '',
     filters: {
-      mspAdmins: [userProfile.adminId],
+      mspAdmins: [userProfile?.adminId],
       tenantType: [AccountType.MSP_EC] },
     fields: [
       'id',
@@ -107,7 +107,7 @@ export function MspEcDropdownList () {
   const integratorPayload = {
     searchString: '',
     filters: {
-      mspAdmins: [userProfile.adminId],
+      mspAdmins: [userProfile?.adminId],
       tenantType: [AccountType.MSP_INSTALLER, AccountType.MSP_INTEGRATOR] },
     fields: [
       'id',
