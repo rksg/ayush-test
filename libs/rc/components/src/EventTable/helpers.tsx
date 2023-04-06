@@ -104,7 +104,11 @@ export const getSource = (data: Event, highlightFn?: TableHighlightFnArgs) => {
 
 export const getDescription = (data: Event, highlightFn?: TableHighlightFnArgs) => {
   try {
-    let message = data.message && JSON.parse(data.message).message_template
+    let message = String(data.message && JSON.parse(data.message).message_template)
+      // escape ' by replacing with ''
+      .replaceAll("'", "''")
+      // escape < { by replacing with '<' or '{'
+      .replaceAll(/([<{])/g, "'$1'")
 
     const template = replaceStrings(message, data, (key) => `<entity>${key}</entity>`)
     const highlighted = (highlightFn
@@ -116,8 +120,7 @@ export const getDescription = (data: Event, highlightFn?: TableHighlightFnArgs) 
 
     return <FormatMessage
       id='events-description-template'
-      // escape ' by replacing with '' as it is special character of formatjs
-      defaultMessage={highlighted.replaceAll("'", "''")}
+      defaultMessage={highlighted}
       values={{
         entity: (chunks) => <EntityLink
           entityKey={String(chunks[0]) as keyof Event}

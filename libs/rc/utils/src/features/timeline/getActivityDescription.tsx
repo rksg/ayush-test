@@ -10,11 +10,15 @@ export const getActivityDescription = (
   descriptionTemplate: Activity['descriptionTemplate'],
   descriptionData: Activity['descriptionData']
 ) => {
+  descriptionTemplate = descriptionTemplate
+    // escape ' by replacing with ''
+    .replaceAll("'", "''")
+    // escape < { by replacing with '<' or '{'
+    .replaceAll(/([<{])/g, "'$1'")
   const values = Object.fromEntries((descriptionData||[])
     .map(({ name, value }) => [camelCase(name), value]))
   const template = replaceStrings(
-    // escape ',<,{} as they are special characters of formatjs
-    descriptionTemplate.replaceAll(/([<'{])/g, "'$1"),
+    descriptionTemplate,
     values,
     (key, values) => values[camelCase(String(key))]
       ? `<b>{${camelCase(String(key))}}</b>`
