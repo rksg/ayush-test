@@ -12,8 +12,8 @@ import {
   Loader
 } from '@acx-ui/components'
 import {
-  useGetUpgradePreferencesQuery,
-  useUpdateUpgradePreferencesMutation,
+  useGetSwitchUpgradePreferencesQuery,
+  useUpdateSwitchUpgradePreferencesMutation,
   useGetSwitchVenueVersionListQuery,
   useGetSwitchAvailableFirmwareListQuery,
   useGetSwitchCurrentVersionsQuery,
@@ -85,7 +85,7 @@ function useColumns (
       filterable: filterables ? filterables['version'] : false,
       filterMultiple: false,
       render: function (data, row) {
-        return row.switchFirmwareVersion?.id ?? '--'
+        return row.switchFirmwareVersion?.id.replace('_b392', '') ?? '--'
       }
     },
     {
@@ -163,8 +163,8 @@ export const VenueFirmwareTable = (
 
   const { data: preDownload } = useGetSwitchFirmwarePredownloadQuery({ params })
 
-  const [updateUpgradePreferences] = useUpdateUpgradePreferencesMutation()
-  const { data: preferencesData } = useGetUpgradePreferencesQuery({ params })
+  const [updateUpgradePreferences] = useUpdateSwitchUpgradePreferencesMutation()
+  const { data: preferencesData } = useGetSwitchUpgradePreferencesQuery({ params })
   const preferenceDays = preferencesData?.days?.map((day) => {
     return day.charAt(0).toUpperCase() + day.slice(1).toLowerCase()
   })
@@ -365,7 +365,7 @@ export function VenueFirmwareList () {
     selectFromResult ({ data }) {
       return {
         // eslint-disable-next-line max-len
-        versionFilterOptions: data?.currentVersions?.map(v=>({ key: v, value: v })) || true
+        versionFilterOptions: data?.currentVersions?.map(v=>({ key: v, value: v.replace('_b392', '') })) || true
       }
     }
   })

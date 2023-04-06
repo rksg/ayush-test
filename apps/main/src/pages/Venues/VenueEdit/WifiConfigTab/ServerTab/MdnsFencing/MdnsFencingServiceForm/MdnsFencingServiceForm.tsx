@@ -3,26 +3,26 @@ import { useContext } from 'react'
 import { Divider, Form, FormInstance, Input, Select } from 'antd'
 import { FormattedMessage, useIntl }                  from 'react-intl'
 
-import { Tooltip }                                                                 from '@acx-ui/components'
-import { BonjourFencingService, BridgeServiceEnum, mdnsProxyRuleTypeLabelMapping } from '@acx-ui/rc/utils'
+import { Tooltip }                                                              from '@acx-ui/components'
+import { MdnsFencingService, BridgeServiceEnum, mdnsProxyRuleTypeLabelMapping } from '@acx-ui/rc/utils'
 
-import { BonjourFencingServiceContext } from '../BonjourFencingServiceTable'
+import { MdnsFencingServiceContext } from '../MdnsFencingServiceTable'
 
 import { CustomMappingFieldset }      from './CustomMapping/CustomMappingFieldset'
 import { WiredConnectionFieldset }    from './WiredConnection/WiredConnectionFieldset'
 import { WirelessConnectionFieldset } from './WirelessConnection/WirelessConnectionFieldset'
 
 
-interface BonjourFencingServicesFormProps {
-  form: FormInstance<BonjourFencingService>
+interface MdnsFencingServicesFormProps {
+  form: FormInstance<MdnsFencingService>
 }
 
-export default function BonjourFencingServiceForm (props: BonjourFencingServicesFormProps) {
+export default function MdnsFencingServiceForm (props: MdnsFencingServicesFormProps) {
   const { $t } = useIntl()
   const { Option } = Select
   const { form } = props
 
-  const { currentServiceRef, otherServices } = useContext(BonjourFencingServiceContext)
+  const { currentServiceRef, otherServices } = useContext(MdnsFencingServiceContext)
 
   const serviceType = Form.useWatch('service', form)
 
