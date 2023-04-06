@@ -1,14 +1,14 @@
 import React from 'react'
 
-import { Form, Input, Col, Row, Select, Switch } from 'antd'
-import { useIntl }                               from 'react-intl'
+import { Form, Input, Col, Row, Select, Switch, Space } from 'antd'
+import { useIntl }                                      from 'react-intl'
 
-import { SelectionControl }                                       from '@acx-ui/components'
-import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
-import { ExpirationDateSelector }                                 from '@acx-ui/rc/components'
-import { useAdaptivePolicySetListQuery, useLazyMacRegListsQuery } from '@acx-ui/rc/services'
-import { checkObjectNotExists }                                   from '@acx-ui/rc/utils'
-import { useParams }                                              from '@acx-ui/react-router-dom'
+import { Button, SelectionControl }                                              from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                from '@acx-ui/feature-toggle'
+import { ExpirationDateSelector }                                                from '@acx-ui/rc/components'
+import { useAdaptivePolicySetListQuery, useLazyMacRegListsQuery }                from '@acx-ui/rc/services'
+import { checkObjectNotExists, getPolicyRoutePath, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                                                 from '@acx-ui/react-router-dom'
 
 export function MacRegistrationListSettingForm () {
   const { $t } = useIntl()
@@ -67,21 +67,32 @@ export function MacRegistrationListSettingForm () {
       </Col>
       {policyEnabled &&
         <Col span={24}>
-          <Form.Item>
-            <Form.Item name='policySetId'
-              label={$t({ defaultMessage: 'Access Policy Set' })}
-              valuePropName='value'
-              children={
-                <Select style={{ width: 200 }}
-                  allowClear
-                  placeholder={$t({ defaultMessage: 'Select...' })}
-                  options={
-                    policySetsData?.data
-                      .map(set => ({ value: set.id, label: set.name }))
-                  }
-                />
-              }
-            />
+          <Form.Item label={$t({ defaultMessage: 'Access Policy Set' })}>
+            <Space direction='horizontal'>
+              <Form.Item name='policySetId'
+                noStyle
+                valuePropName='value'
+                rules={[
+                  // eslint-disable-next-line max-len
+                  { required: true, message: $t({ defaultMessage: 'Please select Access Policy Set' }) }
+                ]}
+                children={
+                  <Select style={{ minWidth: 250 }}
+                    allowClear
+                    placeholder={$t({ defaultMessage: 'Select...' })}
+                    options={policySetsData?.data.map(set => ({ value: set.id, label: set.name }))}
+                  />
+                }
+              />
+              <Form.Item noStyle>
+                {/* eslint-disable-next-line max-len */}
+                <TenantLink to={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.CREATE })}>
+                  <Button type='link'>
+                    {$t({ defaultMessage: 'Add Access Policy Set' })}
+                  </Button>
+                </TenantLink>
+              </Form.Item>
+            </Space>
           </Form.Item>
         </Col>
       }

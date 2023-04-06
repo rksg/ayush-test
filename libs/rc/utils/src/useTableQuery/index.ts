@@ -302,22 +302,25 @@ export function transferToTableResult<T> (newResult: NewTableResult<T>): TableRe
   }
 }
 
-export function transferNewResToTableResult<T> (newResult: NewAPITableResult<T>): TableResult<T> {
+// eslint-disable-next-line max-len
+export function transferNewResToTableResult<T> (newResult: NewAPITableResult<T>, props?: { pageStartZero: boolean }): TableResult<T> {
+  const pageStartZero = props ? props.pageStartZero: false
   return {
     data: newResult.content,
-    page: newResult.paging? newResult.paging.page + 1 : 1,
+    // eslint-disable-next-line max-len
+    page: newResult.paging ? ( pageStartZero ? newResult.paging.page : newResult.paging.page + 1 ) : 1,
     totalCount: newResult.paging.totalCount
   }
 }
 
 // TODO updated 'page' number after service changed
-export function transferToTableResultPolicy<T> (newResult: NewAPITableResult<T>): TableResult<T> {
-  return {
-    data: newResult.content,
-    page: newResult.paging ? newResult.paging.page : 1,
-    totalCount: newResult.paging.totalCount
-  }
-}
+// export function transferToTableResultPolicy<T> (newResult: NewAPITableResult<T>): TableResult<T> {
+//   return {
+//     data: newResult.content,
+//     page: newResult.paging ? newResult.paging.page : 1,
+//     totalCount: newResult.paging.totalCount
+//   }
+// }
 
 export function transferToNewTablePaginationParams (payload: TableChangePayload | undefined) {
   const pagination = {

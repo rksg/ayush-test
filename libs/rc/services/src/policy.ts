@@ -62,9 +62,8 @@ import {
   RuleAttribute,
   AccessCondition,
   PrioritizedPolicy,
-  transferToTableResultPolicy,
   Assignment,
-  NewAPITableResult
+  NewAPITableResult, transferNewResToTableResult
 } from '@acx-ui/rc/utils'
 import { basePolicyApi } from '@acx-ui/store'
 
@@ -1539,7 +1538,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       transformResponse (result: NewAPITableResult<AdaptivePolicy>) {
-        return transferToTableResultPolicy<AdaptivePolicy>(result)
+        return transferNewResToTableResult<AdaptivePolicy>(result, { pageStartZero: true })
       },
       providesTags: [{ type: 'AdaptivePolicy', id: 'LIST' }]
     }),
@@ -1552,7 +1551,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       transformResponse (result: NewAPITableResult<AdaptivePolicy>) {
-        return transferToTableResultPolicy<AdaptivePolicy>(result)
+        return transferNewResToTableResult<AdaptivePolicy>(result, { pageStartZero: true })
       }
     }),
     getAdaptivePolicy: build.query<AdaptivePolicy, RequestPayload>({
@@ -1585,7 +1584,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       transformResponse (result: NewAPITableResult<RuleTemplate>) {
-        return transferToTableResultPolicy<RuleTemplate>(result)
+        return transferNewResToTableResult<RuleTemplate>(result, { pageStartZero: true })
       }
     }),
     getPolicyTemplateAttributesList: build.query<TableResult<RuleAttribute>, RequestPayload>({
@@ -1654,7 +1653,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       transformResponse (result: NewAPITableResult<AccessCondition>) {
-        return transferToTableResultPolicy<AccessCondition>(result)
+        return transferNewResToTableResult<AccessCondition>(result, { pageStartZero: true })
       },
       providesTags: [{ type: 'AdaptivePolicyCondition', id: 'LIST' }]
     }),
@@ -1680,7 +1679,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       transformResponse (result: NewAPITableResult<AdaptivePolicySet>) {
-        return transferToTableResultPolicy<AdaptivePolicySet>(result)
+        return transferNewResToTableResult<AdaptivePolicySet>(result, { pageStartZero: true })
       },
       providesTags: [{ type: 'AdaptivePolicySet', id: 'LIST' }]
     }),
@@ -1702,7 +1701,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       transformResponse (result: NewAPITableResult<AdaptivePolicySet>) {
-        return transferToTableResultPolicy<AdaptivePolicySet>(result)
+        return transferNewResToTableResult<AdaptivePolicySet>(result, { pageStartZero: true })
       }
     }),
     getAdaptivePolicySet: build.query<AdaptivePolicySet, RequestPayload>({
@@ -1753,7 +1752,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       transformResponse (result: NewAPITableResult<AdaptivePolicySet>) {
-        return transferToTableResultPolicy<AdaptivePolicySet>(result)
+        return transferNewResToTableResult<AdaptivePolicySet>(result, { pageStartZero: true })
       },
       providesTags: [{ type: 'AdaptivePrioritizedPolicy', id: 'DETAIL' }]
     }),
@@ -1777,7 +1776,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       transformResponse (result: NewAPITableResult<PrioritizedPolicy>) {
-        return transferToTableResultPolicy<PrioritizedPolicy>(result)
+        return transferNewResToTableResult<PrioritizedPolicy>(result, { pageStartZero: true })
       },
       providesTags: [{ type: 'AdaptivePrioritizedPolicy', id: 'LIST' }]
     })

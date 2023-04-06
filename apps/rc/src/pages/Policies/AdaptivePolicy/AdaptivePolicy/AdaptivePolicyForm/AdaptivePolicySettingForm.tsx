@@ -18,6 +18,7 @@ import {
   CriteriaOption,
   RadiusAttributeGroup
 } from '@acx-ui/rc/utils'
+import { filterByAccess } from '@acx-ui/user'
 
 import { AccessConditionDrawer }            from './AccessConditionDrawer'
 import { RadiusAttributeGroupSelectDrawer } from './RadiusAttributeGroupSelectDrawer'
@@ -146,7 +147,7 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
           type: 'confirm',
           customContent: {
             action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Attribute' }),
+            entityName: $t({ defaultMessage: 'Condition' }),
             entityValue: selectedRows[0].name
           },
           onOk: () => {
@@ -229,16 +230,16 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
                 rowKey='id'
                 columns={useColumns()}
                 dataSource={evaluationRules}
-                rowActions={rowActions}
+                rowActions={filterByAccess(rowActions)}
                 rowSelection={{ type: 'radio' }}
-                actions={[{
+                actions={filterByAccess([{
                   label: $t({ defaultMessage: 'Add' }),
                   onClick: () => {
                     setEditConditionMode(false)
                     setEditCondition(undefined)
                     setAccessConditionsVisible(true)
                   }
-                }]}
+                }])}
               />
             </>
           </Form.Item>

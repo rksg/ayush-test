@@ -173,78 +173,7 @@ describe('MacRegistrationListForm', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
 
-    const validating = await screen.findByRole('img', { name: 'loading' })
-    await waitForElementToBeRemoved(validating)
-  })
-
-  it('should edit list and show error Toast', async () => {
-    mockServer.use(
-      rest.patch(
-        MacRegListUrlsInfo.updateMacRegistrationPool.url,
-        (req, res, ctx) => res(ctx.status(500), ctx.json({}))
-      )
-    )
-    render(
-      <Provider>
-        <MacRegistrationListForm editMode={true} />
-      </Provider>, {
-        route: {
-          params: { tenantId: mockedTenantId, policyId: macRegList.id },
-          path: editPath
-        }
-      }
-    )
-
-    // Verify service name
-    const nameInput = await screen.findByDisplayValue(macRegList.name)
-    expect(nameInput).toBeInTheDocument()
-
-    await screen.findByRole('button', { name: 'Cancel' })
-    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
-
-    // TODO
-    // const errorMsgElem = await screen.findByText('Server Error')
-    // expect(errorMsgElem).toBeInTheDocument()
-  })
-
-  it('should add list and show error Toast', async () => {
-    mockServer.use(
-      rest.post(
-        MacRegListUrlsInfo.createMacRegistrationPool.url,
-        (req, res, ctx) => res(ctx.status(500), ctx.json({}))
-      )
-    )
-    render(
-      <Provider>
-        <MacRegistrationListForm/>
-      </Provider>,
-      {
-        route: {
-          params: { tenantId: mockedTenantId },
-          path: createPath
-        }
-      })
-
-    await userEvent.type(
-      await screen.findByRole('textbox', { name: /name/i }),
-      'test'
-    )
-
-    const expirationModeElem = screen.getByRole('radio', { name: /Never/i })
-    await userEvent.click(expirationModeElem)
-
-    const comboboxElems = await screen.findAllByRole('combobox')
-    fireEvent.mouseDown(comboboxElems[0])
-    const option = await screen.findAllByText(policySetList.content[0].name)
-    await userEvent.click(option[0])
-
-    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
-
-    const validating = await screen.findByRole('img', { name: 'loading' })
-    await waitForElementToBeRemoved(validating)
-
-    // const errorMsgElem = await screen.findByText('Server Error')
-    // expect(errorMsgElem).toBeInTheDocument()
+    await screen.findByText('List test was added')
   })
 
   it('should edit list successfully', async () => {

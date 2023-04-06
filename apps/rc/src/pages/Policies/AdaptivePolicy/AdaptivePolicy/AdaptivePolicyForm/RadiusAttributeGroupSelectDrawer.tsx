@@ -6,6 +6,7 @@ import {  useIntl }           from 'react-intl'
 import { Card, Descriptions, Drawer, Loader, Table, TableProps }    from '@acx-ui/components'
 import { useRadiusAttributeGroupListQuery }                         from '@acx-ui/rc/services'
 import { AttributeAssignment, RadiusAttributeGroup, useTableQuery } from '@acx-ui/rc/utils'
+import { filterByAccess }                                           from '@acx-ui/user'
 
 import { RadiusAttributeGroupFormDrawer } from './RadiusAttributeGroupFormDrawer'
 
@@ -115,16 +116,18 @@ export function RadiusAttributeGroupSelectDrawer (props: RadiusAttributeDrawerPr
             columns={useColumns()}
             dataSource={tableQuery.data?.data}
             showHeader={false}
-            rowSelection={{ type: 'radio', onChange: onSelectChange,
+            rowSelection={{
+              type: 'radio',
+              onChange: onSelectChange,
               selectedRowKeys: selectedRowKeys }}
             rowKey='id'
             type={'form'}
-            actions={[{
+            actions={filterByAccess([{
               label: $t({ defaultMessage: 'Add Group' }),
               onClick: () => {
                 setRadiusAttributeGroupFormDrawerVisible(true)
               }
-            }]}
+            }])}
           />
         </Loader>
       </Form.Item>

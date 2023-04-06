@@ -142,7 +142,7 @@ export default function AdaptivePolicySetTable () {
         type: 'confirm',
         customContent: {
           action: 'DELETE',
-          entityName: $t({ defaultMessage: 'policy set' }),
+          entityName: $t({ defaultMessage: 'Policy Set' }),
           entityValue: name
         },
         onOk: async () => {
