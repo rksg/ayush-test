@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                                     from '@acx-ui/rc/components'
 import {
   useAdaptivePolicyListQuery,
@@ -28,6 +29,8 @@ export default function AdaptivePolicySetTable () {
   const [prioritizedPoliciesMap, setPrioritizedPoliciesMap] = useState(new Map())
   const [assignedMacPoolList, setAssignedMacPoolList] = useState([] as string [])
 
+  const isMacRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
+
   const tableQuery = useTableQuery({
     useQuery: useAdaptivePolicySetListQuery,
     defaultPayload: {}
@@ -43,11 +46,13 @@ export default function AdaptivePolicySetTable () {
 
   const [getPrioritizedPolicies] = useLazyGetPrioritizedPoliciesQuery()
 
-  const { data: macRegList } = useMacRegListsQuery({
+  const { data: macRegList, isLoading: getMacListLoading } = useMacRegListsQuery({
     payload: { pageSize: 10000 }
-  })
+  }, { skip: !isMacRegistrationEnabled })
 
   useEffect(() => {
+    if(getMacListLoading)
+      return
     if(macRegList) {
       const policySets = macRegList.data.map(item => item.policySetId ?? '')
       setAssignedMacPoolList(Array.from(new Set(policySets)))

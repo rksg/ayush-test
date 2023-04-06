@@ -86,7 +86,9 @@ export function AdaptivePoliciesSelectDrawer (props: AdaptivePoliciesSelectDrawe
       const { id, policyType } = policy
       getConditionsPolicy({ params: { policyId: id, templateId: templateIds.get(policyType) } })
         .then(result => {
-          setConditionCountMap(map => new Map(map.set(id, result.data?.data.length ?? 0)))
+          if(result.data) {
+            setConditionCountMap(map => new Map(map.set(id, result.data?.data.length ?? 0)))
+          }
         })
     })
 
@@ -151,10 +153,7 @@ export function AdaptivePoliciesSelectDrawer (props: AdaptivePoliciesSelectDrawe
         align: 'center',
         render: (data, row) => {
           return <Switch
-            checked={
-              // selectedPolicies.findIndex(item => item === row.id) !== -1
-              selectedPolicies.has(row.id)
-            }
+            checked={selectedPolicies.has(row.id)}
             onChange={(checked) => onSelectChange(row, checked)}
           />
         }

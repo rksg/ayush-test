@@ -15,7 +15,7 @@ const tabs = {
 }
 
 const tabsName = {
-  radiusAttributeGroup: 'Radius Attribute Groups',
+  radiusAttributeGroup: 'RADIUS Attribute Groups',
   adaptivePolicy: 'Adaptive Policy',
   adaptivePolicySet: 'Adaptive Policy Sets'
 }

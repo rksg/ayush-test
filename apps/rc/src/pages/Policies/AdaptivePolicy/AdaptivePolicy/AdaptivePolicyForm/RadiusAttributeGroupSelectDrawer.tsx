@@ -56,6 +56,7 @@ export function RadiusAttributeGroupSelectDrawer (props: RadiusAttributeDrawerPr
   const { visible, setVisible, settingForm } = props
   const [selectedGroup, setSelectedGroup ] = useState({} as RadiusAttributeGroup)
   const [form] = Form.useForm()
+  const [selectedRowKeys, setSelectedRowKeys] = useState([])
 
   // eslint-disable-next-line max-len
   const [radiusAttributeGroupFormDrawerVisible, setRadiusAttributeGroupFormDrawerVisible] = useState(false)
@@ -66,7 +67,9 @@ export function RadiusAttributeGroupSelectDrawer (props: RadiusAttributeDrawerPr
   })
 
   const onClose = () => {
+    setSelectedRowKeys([])
     setVisible(false)
+    form.resetFields()
   }
 
   const onSelectChange = (keys: React.Key[], rows: RadiusAttributeGroup[]) => {
@@ -112,7 +115,8 @@ export function RadiusAttributeGroupSelectDrawer (props: RadiusAttributeDrawerPr
             columns={useColumns()}
             dataSource={tableQuery.data?.data}
             showHeader={false}
-            rowSelection={{ type: 'radio', onChange: onSelectChange }}
+            rowSelection={{ type: 'radio', onChange: onSelectChange,
+              selectedRowKeys: selectedRowKeys }}
             rowKey='id'
             type={'form'}
             actions={[{
