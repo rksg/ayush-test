@@ -110,9 +110,9 @@ RUN \
   # Move all other apps into main
   ls | grep -v main | xargs mv -t main && \
   # Create structure to match deployment need
-  mkdir -p resources/t && \
+  mkdir -p tenant/t && \
   # Move all files into it
-  mv -v main/* resources/t/. && \
+  mv -v main/* tenant/t/. && \
   # Remove the main folder
   rm -rf main
 
