@@ -1,3 +1,5 @@
+import userEvent from '@testing-library/user-event'
+
 import { healthApi }                   from '@acx-ui/analytics/services'
 import { AnalyticsFilter }             from '@acx-ui/analytics/utils'
 import { BrowserRouter as Router }     from '@acx-ui/react-router-dom'
@@ -78,7 +80,12 @@ describe('Kpi Section', () => {
       </HealthPageContext.Provider>
     </Provider></Router>)
 
-    await screen.findAllByTitle(/^Cannot save threshold at organisation level*/)
+    const button = await screen.findByRole('button', { name: 'Apply' })
+    expect(button).toBeDisabled()
+    // eslint-disable-next-line testing-library/no-node-access
+    await userEvent.hover(button.parentElement!)
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText(/Cannot save threshold at organisation level/)).toBeInTheDocument()
   }, 60000)
 
   it('should render disabled tooltip with no permissions', async () => {
@@ -125,8 +132,12 @@ describe('Kpi Section', () => {
         wrapRoutes: false
       }
     })
+    const button = await screen.findByRole('button', { name: 'Apply' })
+    expect(button).toBeDisabled()
+    // eslint-disable-next-line testing-library/no-node-access
+    await userEvent.hover(button.parentElement!)
     // eslint-disable-next-line max-len
-    await screen.findAllByTitle(/^You don't have permission to set threshold for selected network node./)
+    expect(await screen.findByText('You don\'t have permission to set threshold for selected network node.')).toBeInTheDocument()
   }, 60000)
 
   it('should render with smaller timewindow', async () => {
