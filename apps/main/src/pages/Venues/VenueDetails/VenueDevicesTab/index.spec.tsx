@@ -291,10 +291,6 @@ describe('VenueWifi', () => {
         (req, res, ctx) => res(ctx.json(venueDetailHeaderData))
       ),
       rest.post(
-        CommonUrlsInfo.getApsList.url,
-        (req, res, ctx) => res(ctx.json({ data: [] }))
-      ),
-      rest.post(
         CommonUrlsInfo.getMeshAps.url.replace('?mesh=true', ''),
         (req, res, ctx) => res(ctx.json(meshData))
       ),

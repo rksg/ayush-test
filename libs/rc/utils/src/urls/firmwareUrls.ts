@@ -19,10 +19,12 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getVenueVersionList: {
     // [New API] new uri not ready
+    // method: 'get',
+    // url: '/venues/apFirmwares/schedules' + venueVersionParams,
+    // oldUrl: '/api/tenant/:tenantId/wifi/upgrade/venue' + venueVersionParams,
+    // newApi: false
     method: 'get',
-    url: '/venues/apFirmwares/schedules' + venueVersionParams,
-    oldUrl: '/api/tenant/:tenantId/wifi/upgrade/venue' + venueVersionParams,
-    newApi: false
+    url: '/api/tenant/:tenantId/wifi/upgrade/venue' + venueVersionParams
   },
   getLatestFirmwareList: {
     // [New API] new uri not ready
@@ -33,10 +35,12 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getAvailableFirmwareList: {
     // [New API] new uri not ready
+    // method: 'get',
+    // url: '/apFirmwares',
+    // oldUrl: '/api/tenant/:tenantId/wifi/upgrade/version/release',
+    // newApi: false
     method: 'get',
-    url: '/apFirmwares',
-    oldUrl: '/api/tenant/:tenantId/wifi/upgrade/version/release',
-    newApi: false
+    url: '/api/tenant/:tenantId/wifi/upgrade/version/release'
   },
   getFirmwareVersionIdList: {
     // [New API] new uri not ready

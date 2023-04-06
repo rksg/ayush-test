@@ -72,7 +72,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
     getAvailableFirmwareList: build.query<FirmwareVersion[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(FirmwareUrlsInfo.getAvailableFirmwareList, params)
-        return enableNewApi(FirmwareUrlsInfo.getLatestFirmwareList) ?
+        return enableNewApi(FirmwareUrlsInfo.getAvailableFirmwareList) ?
           { ...req, body: { status: 'release' } } : { ...req }
       },
       providesTags: [{ type: 'Firmware', id: 'LIST' }]
