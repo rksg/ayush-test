@@ -33,7 +33,7 @@ export const Wrapper = styled.div`
               padding: 0 0 0 var(--acx-sidebar-left-space);
               width: var(--acx-sider-width);
               height: var(--acx-header-height);
-              margin-bottom: 13px;
+              margin-bottom: 17px;
               align-items: center;
               justify-content: left;
             }
