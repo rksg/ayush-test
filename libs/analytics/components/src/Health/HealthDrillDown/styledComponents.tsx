@@ -4,7 +4,7 @@ import { EnhancedStage } from './config'
 
 export const Title = styled.div`
   font-size: 14px;
-  font-weight: bold;
+  font-weight: var(--acx-body-font-weight-bold);
 `
 export const ChartContainer = styled.div<{ height : number, padding : number }>`
   padding: ${props => props.padding}px 0;
@@ -40,7 +40,7 @@ export const Label = styled.div<{ pinPosition : string, line: number }>`
   height: 30px;
   line-height: 30px;
   font-size: 12px;
-  font-weight: bold;
+  font-weight: var(--acx-body-font-weight-bold);
   ${props => `
     padding-${props.pinPosition}: 10px;
   `}
