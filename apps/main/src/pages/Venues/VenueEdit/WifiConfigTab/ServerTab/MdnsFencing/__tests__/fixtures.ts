@@ -1,5 +1,5 @@
 
-export const mockBonjourFencing = {
+export const mockMdnsFencing = {
   enabled: true,
   services: [
     {
