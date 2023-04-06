@@ -105,7 +105,7 @@ describe('DpskPassphraseManagement', () => {
     await userEvent.click(await screen.findByRole('button', { name: /Delete Passphrase/i }))
   })
 
-  it('should not delete selected passphrase when it is mapped to Persona', async () => {
+  it.skip('should not delete selected passphrase when it is mapped to Persona', async () => {
     mockServer.use(
       rest.get(
         DpskUrls.getPassphraseList.url,

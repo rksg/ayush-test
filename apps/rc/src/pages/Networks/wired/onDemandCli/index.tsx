@@ -7,6 +7,8 @@ import { useParams }                                              from '@acx-ui/
 import { useNavigate }                                            from '@acx-ui/react-router-dom'
 import { filterByAccess }                                         from '@acx-ui/user'
 
+import { Notification  } from './styledComponents'
+
 export function OnDemandCliTab () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
@@ -81,9 +83,20 @@ export function OnDemandCliTab () {
     <> <Loader states={[
       tableQuery
     ]}>
+      <Notification>
+        { // eslint-disable-next-line max-len
+          $t({ defaultMessage: 'Update the CLI templates to reflect the CLI changes in FastIron 09.0.10e release. After upgrading to FastIron 09.0.10e release, using CLI templates with deprecated commands would result in configuration failures. Refer to the ' })
+        }
+        <a target='_blank'
+          // eslint-disable-next-line max-len
+          href={'https://support.ruckuswireless.com/documents/4392-ruckus-icx-fastiron-09-0-10e-ga-release-notes'}
+          rel='noreferrer'> {$t({ defaultMessage: 'FastIron 09.0.10e release notes' })} </a>
+        {
+          $t({ defaultMessage: ' for a list of deprecated CLI commands.' })
+        }
+      </Notification>
       <Table
         columns={columns}
-        columnState={{ hidden: true }}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}

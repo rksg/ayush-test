@@ -148,12 +148,12 @@ export function MspEcDropdownList () {
       disable: true,
       defaultSortOrder: 'ascend',
       onCell: (data) => {
-        return {
+        return (data.status === 'Active') ? {
           onClick: () => {
             setVisible(false)
             delegateToMspEcPath(data.id)
           }
-        }
+        } : {}
       },
       render: function (data, row) {
         const to = `${getBasePath()}/${row.id}/t`
