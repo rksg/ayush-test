@@ -24,10 +24,11 @@ const mockedUserProfile = {
 }
 
 function TestUserProfile () {
-  const { data: userProfile } = useUserProfileContext()
-  return <div>
-    {userProfile?.fullName}
-  </div>
+  const { data: userProfile, allowedOperations } = useUserProfileContext()
+  return <>
+    <div>{userProfile?.fullName}</div>
+    <div>{JSON.stringify(allowedOperations)}</div>
+  </>
 }
 
 const route = { path: '/t/:tenantId', params: { tenantId } }
@@ -46,7 +47,8 @@ describe('UserProfileContext', () => {
         UserUrlsInfo.getUserProfile.url,
         (req, res, ctx) => res(ctx.json(mockedUserProfile))
       ),
-      rest.get(UserUrlsInfo.wifiAllowedOperations.url, (req, res, ctx) => res(ctx.json([]))),
+      rest.get(UserUrlsInfo.wifiAllowedOperations.url, (req, res, ctx) =>
+        res(ctx.json(['some-operation']))),
       rest.get(UserUrlsInfo.switchAllowedOperations.url, (req, res, ctx) => res(ctx.json([]))),
       rest.get(UserUrlsInfo.tenantAllowedOperations.url, (req, res, ctx) => res(ctx.json([]))),
       rest.get(UserUrlsInfo.venueAllowedOperations.url, (req, res, ctx) => res(ctx.json([]))),
@@ -59,6 +61,7 @@ describe('UserProfileContext', () => {
     render(<TestUserProfile />, { wrapper, route })
 
     expect(await screen.findByText('First Last')).toBeVisible()
+    expect(await screen.findByText('["some-operation"]')).toBeVisible()
   })
 
   it('should be able to recognize prime admin', async () => {

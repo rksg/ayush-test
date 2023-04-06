@@ -11,10 +11,10 @@ import { UserProfile }              from './types'
 import { setUserProfile, hasRoles } from './userProfile'
 
 export interface UserProfileContextProps {
-  data: UserProfile
+  data: UserProfile | undefined
+  allowedOperations: string[]
   hasRole: typeof hasRoles
   isPrimeAdmin: () => boolean
-  allowedOperations: string[]
 }
 
 const isPrimeAdmin = () => hasRoles(RolesEnum.PRIME_ADMIN)
@@ -31,12 +31,10 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
     skip: !Boolean(profile)
   })
 
-  if (!profile || !allowedOperations) return null
-
-  setUserProfile({ profile, allowedOperations })
+  if (allowedOperations) setUserProfile({ profile: profile!, allowedOperations })
 
   return <UserProfileContext.Provider
-    value={{ allowedOperations, data: profile, hasRole, isPrimeAdmin }}
+    value={{ data: profile, allowedOperations: allowedOperations || [], hasRole, isPrimeAdmin }}
     children={props.children}
   />
 }
