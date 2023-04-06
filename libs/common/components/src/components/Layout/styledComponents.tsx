@@ -85,9 +85,11 @@ export const Wrapper = styled.div`
             background-color: var(--acx-neutrals-70);
           }
           &.menu-active {
-            font-weight: var(--acx-headline-4-font-weight-bold);
             border-left: 2px solid var(--acx-accents-orange-50);
             background-color: var(--acx-neutrals-70);
+            .ant-menu-submenu-title {
+              font-weight: var(--acx-headline-4-font-weight-bold);
+            }
           }
         }
         .ant-menu-item {
@@ -193,16 +195,16 @@ export const MenuGlobalStyle = createGlobalStyle`
   }
 
   .ant-menu-submenu-popup {
-    &.layout-group-horizontal .ant-menu{
+    &.layout-group-horizontal .ant-menu {
       display: flex;
     }
-    .ant-menu{
+    .ant-menu {
       margin-left: -4px;
       box-shadow: none;
       border-radius: 0;
       background-color: var(--acx-neutrals-70);
       padding-top: 8px;
-      .ant-menu-item{
+      .ant-menu-item {
         height: 40px;
         margin: auto;
         font-family: var(--acx-accent-brand-font);
@@ -210,9 +212,7 @@ export const MenuGlobalStyle = createGlobalStyle`
         font-size: var(--acx-headline-5-font-size);
         font-weight: var(--acx-headline-5-font-weight);
         padding: 8px 16px 16px;
-        &:active {
-          background: unset;
-        }
+        &:active { background: unset; }
         &.menu-active > .ant-menu-title-content a {
           &, &:hover {
             color: var(--acx-accents-orange-50);
@@ -258,6 +258,19 @@ export const MenuGlobalStyle = createGlobalStyle`
     }
   }
 
+`
+
+export const MenuIcon = styled.span`
+  margin-right: 8px;
+  color: var(--acx-primary-white) !important;
+  > svg {
+    height: 20px;
+    width: 20px;
+    vertical-align: middle;
+    margin-top: -3px;
+
+    .invert { color: var(--acx-primary-black); }
+  }
 `
 
 export const Content = styled.div`
@@ -310,18 +323,6 @@ export const RightHeaderContentWrapper = styled.div`
     button[disabled] {
       background-color: var(--acx-neutrals-70);
     }
-  }
-`
-
-export const MenuIcon = styled.span`
-  margin-right: 8px;
-  color: var(--acx-primary-white) !important;
-  > svg {
-    vertical-align: middle;
-    height: 20px;
-    width: 20px;
-
-    .invert { color: var(--acx-primary-black); }
   }
 `
 
