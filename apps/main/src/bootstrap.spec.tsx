@@ -1,5 +1,7 @@
 import '@testing-library/jest-dom'
 
+import { createRoot } from 'react-dom/client'
+
 import { act, screen } from '@acx-ui/test-utils'
 
 import * as bootstrap from './bootstrap'
@@ -7,6 +9,7 @@ import * as bootstrap from './bootstrap'
 jest.mock('./AllRoutes', () => () => <div data-testid='all-routes' />)
 jest.mock('@acx-ui/theme', () => {}, { virtual: true })
 jest.mock('@acx-ui/components', () => ({
+  ...jest.requireActual('@acx-ui/components'),
   ConfigProvider: (props: { children: React.ReactNode }) => <div
     {...props}
     data-testid='config-provider'
@@ -17,17 +20,27 @@ jest.mock('@acx-ui/user', () => ({
   UserProfileProvider: (props: { children: React.ReactNode }) => <div
     {...props}
     data-testid='user-profile-provider'
-  />
+  />,
+  useUserProfileContext: () => ({ allowedOperations: ['some-operation'] })
+}))
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/user'),
+  UserProfileProvider: (props: { children: React.ReactNode }) => <div
+    {...props}
+    data-testid='user-profile-provider'
+  />,
+  useLocaleContext: () => ({ messages: ['some-message'] })
 }))
 
 
 describe('bootstrap.init', () => {
   it('renders correctly', async () => {
-    const root = document.createElement('div')
-    root.id = 'root'
-    document.body.appendChild(root)
+    const rootEl = document.createElement('div')
+    rootEl.id = 'root'
+    document.body.appendChild(rootEl)
+    const root = createRoot(rootEl)
 
-    await act(() => bootstrap.init())
+    await act(() => bootstrap.init(root))
     expect(screen.getByTestId('all-routes')).toBeVisible()
   })
 })

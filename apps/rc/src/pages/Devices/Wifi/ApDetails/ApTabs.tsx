@@ -41,13 +41,10 @@ function ApTabs (props:{ apDetail: ApDetailHeader }) {
         key='clients'
       />
       {/* Not supported for GA
-      <Tabs.TabPane
-        disabled={!releaseTag}
-        tab={<Tooltip title={$t(notAvailableMsg)}>
-          {$t({ defaultMessage: 'Services ({servicesCount})' }, { servicesCount: apDetail?.headers?.services || 0 })}
-        </Tooltip>}
+      isFFOn ? <Tabs.TabPane
+        tab={$t({ defaultMessage: 'Services ({servicesCount})' }, { servicesCount: apDetail?.headers?.services || 0 })}
         key='services'
-      /> */}
+      /> : null */}
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Timeline' })}
         key='timeline'
