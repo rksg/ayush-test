@@ -103,7 +103,7 @@ export function renderFilter <RecordType> (
         }
         addToFilter(data, datum[key] as unknown as string)
         return data
-      }, []).sort().map(v => ({ key: v, value: v }))
+      }, []).sort().map(v => ({ key: v, value: v, label: v }))
       : []
 
   return <UI.FilterSelect
@@ -133,15 +133,16 @@ export function renderFilter <RecordType> (
         value={option.key}
         key={option.key ?? index}
         data-testid={`option-${option.key}`}
-        children={option.value}
+        title={option.value}
+        children={option.label ?? option.value}
       />
     )}
   </UI.FilterSelect>
 }
 
-export const filterOption = (
+export function filterOption (
   input: string,
   option: DefaultOptionType | BaseOptionType | undefined
-) => {
-  return option?.children?.toLowerCase().includes(input.toLowerCase())
+) {
+  return option?.title?.toLowerCase().includes(input.toLowerCase())
 }
