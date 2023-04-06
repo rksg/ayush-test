@@ -126,7 +126,7 @@ export function MspCustomers () {
   const onBoard = mspLabel?.msp_label
   const ecFilters = isPrimeAdmin
     ? { tenantType: [AccountType.MSP_EC] }
-    : { mspAdmins: [userProfile.adminId], tenantType: [AccountType.MSP_EC] }
+    : { mspAdmins: [userProfile?.adminId], tenantType: [AccountType.MSP_EC] }
 
   const transformTechPartner = (id: string) => {
     const rec = techParnersData.find(e => e.id === id)
@@ -251,7 +251,7 @@ export function MspCustomers () {
           onClick: () => {
             userProfile?.support
               ? delegateToMspEcPath(data.id)
-              : checkDelegateAdmin(data.id, userProfile.adminId)
+              : checkDelegateAdmin(data.id, userProfile!.adminId)
           }
         } : {}
       },
