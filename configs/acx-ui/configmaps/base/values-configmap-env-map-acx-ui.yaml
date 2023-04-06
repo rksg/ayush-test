@@ -45,3 +45,7 @@ data:
       - configmap: configmap-acx-ui
         key: how.to.videos
         name: HOW_TO_VIDEOS
+      - configmap: configmap-acx-ui
+        key: new.api.domain.name
+        name: NEW_API_DOMAIN_NAME      
+      

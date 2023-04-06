@@ -12,6 +12,12 @@ import { AdminLogTable } from '.'
 
 const params = { tenantId: 'tenant-id' }
 
+const mockExportCsv = jest.fn()
+jest.mock('./useExportCsv', () => ({
+  ...jest.requireActual('./useExportCsv'),
+  useExportCsv: () => ({ exportCsv: mockExportCsv })
+}))
+
 describe('AdminLogTable', () => {
   const tableQuery = {
     data: { data: adminLogs.map(base =>
@@ -60,5 +66,14 @@ describe('AdminLogTable', () => {
     } as unknown as TableQuery<AdminLog, RequestPayload<unknown>, unknown>
     rerender(<Provider><AdminLogTable tableQuery={newTableQuery} /></Provider>)
     expect(screen.queryByText('Log Details')).toBeNull()
+  })
+
+  it('should download csv on click', async () => {
+    render(
+      <AdminLogTable tableQuery={tableQuery} />,
+      { route: { params }, wrapper: Provider }
+    )
+    await userEvent.click(screen.getByTestId('DownloadOutlined'))
+    expect(mockExportCsv).toBeCalled()
   })
 })

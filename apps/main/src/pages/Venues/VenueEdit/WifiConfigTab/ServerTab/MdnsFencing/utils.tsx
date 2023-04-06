@@ -4,12 +4,12 @@ import { Form, FormItemProps, Radio, Space } from 'antd'
 import { NamePath }                          from 'antd/lib/form/interface'
 import { defineMessage, useIntl }            from 'react-intl'
 
-import { BonjourFencingService } from '@acx-ui/rc/utils'
+import { MdnsFencingService } from '@acx-ui/rc/utils'
 
 import { FixedFieldet } from './styledComponents'
 
 
-export const updateRowId = (data: BonjourFencingService) => {
+export const updateRowId = (data: MdnsFencingService) => {
   const { service, customServiceName='' } = data
 
   const rowId = (service === 'OTHER')
@@ -19,7 +19,7 @@ export const updateRowId = (data: BonjourFencingService) => {
   return { ...data, rowId }
 }
 
-export const updateRowIds = (data: BonjourFencingService[]) => {
+export const updateRowIds = (data: MdnsFencingService[]) => {
   return data.map((d) => {
     return updateRowId(d)
   })
