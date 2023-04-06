@@ -11,6 +11,8 @@ import {
   useTenantLink,
   TenantNavLink
 }                          from '@acx-ui/react-router-dom'
+import { RolesEnum } from '@acx-ui/types'
+import { hasRoles }  from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
@@ -62,6 +64,9 @@ export function Layout ({
       }))
     }
   }))
+  const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
+  const indexPath = isGuestManager ? '/users/guestsManager' : '/dashboard'
+
   const menuRender = (item: MenuItem, dom: React.ReactNode) => {
     return <TenantNavLink to={item.uri!} tenantType={item.tenantType}>
       {({ isActive }) => {
@@ -91,8 +96,8 @@ export function Layout ({
       location={location}
       menuHeaderRender={() =>
         <TenantNavLink
-          to='/dashboard'
-          tenantType={routes.find(({ path })=> path === '/dashboard')?.tenantType || 't'}
+          to={indexPath}
+          tenantType={routes.find(({ path })=> path === indexPath)?.tenantType || 't'}
         >
           <Logo />
         </TenantNavLink>
