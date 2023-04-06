@@ -78,9 +78,6 @@ export const Wrapper = styled.div`
             margin: 0;
             &:active { background: unset; }
           }
-          &:last-child {
-            margin-top: auto;
-          }
           &-open {
             border-left: 2px solid var(--acx-neutrals-70);
             background-color: var(--acx-neutrals-70);
@@ -91,6 +88,9 @@ export const Wrapper = styled.div`
             .ant-menu-submenu-title {
               font-weight: var(--acx-headline-4-font-weight-bold);
             }
+          }
+          &:last-child {
+            margin-top: auto;
           }
         }
         .ant-menu-item {
@@ -119,6 +119,9 @@ export const Wrapper = styled.div`
           &.ant-pro-sider-collapsed-button {
             border: none;
             box-shadow: none;
+          }
+          &:last-child {
+            margin-top: auto;
           }
         }
         > div:first-child, .ant-layout-sider {
