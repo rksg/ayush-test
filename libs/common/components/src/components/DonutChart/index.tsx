@@ -216,9 +216,7 @@ export function DonutChart ({
       ...commonFontStyle,
       fontSize: cssNumber('--acx-body-5-font-size'),
       lineHeight: cssNumber('--acx-body-6-line-height'),
-      fontWeight: cssNumber('--acx-body-font-weight'),
-      height: cssNumber('--acx-body-5-font-size'),
-      edgeDistance: 10,
+      fontWeight: cssNumber('--acx-body-font-weight')
     }
   }
 
@@ -298,6 +296,7 @@ export function DonutChart ({
           formatter: props.labelFormatter,
           ...(props.labelFormatter ? styles.labelFormatter : styles.label)
         },
+        bottom: props.labelFormatter ? '20%' : 0,
         tooltip: {
           ...tooltipOptions(),
           show: !isEmpty,

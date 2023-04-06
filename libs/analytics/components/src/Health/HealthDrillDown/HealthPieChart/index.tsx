@@ -1,23 +1,23 @@
-import { isNull }             from 'lodash'
-import { IntlShape, useIntl } from 'react-intl'
-import AutoSizer              from 'react-virtualized-auto-sizer'
+import { isNull } from 'lodash';
+import { IntlShape, useIntl } from 'react-intl';
+import AutoSizer from 'react-virtualized-auto-sizer';
 
-import { AnalyticsFilter } from '@acx-ui/analytics/utils'
+import { AnalyticsFilter } from '@acx-ui/analytics/utils';
 import {
   Card,
   ContentSwitcher,
   ContentSwitcherProps,
   DonutChart,
   Loader,
-  qualitativeColorSet
-} from '@acx-ui/components'
-import { formatter }   from '@acx-ui/formatter'
-import { NetworkPath } from '@acx-ui/utils'
+  qualitativeColorSet,
+} from '@acx-ui/components';
+import { formatter } from '@acx-ui/formatter';
+import { NetworkPath } from '@acx-ui/utils';
 
-import { DrilldownSelection, stageMapToName } from '../config'
+import { DrilldownSelection, stageMapToName } from '../config';
 
-import { ImpactedNodesAndWlans, usePieChartQuery } from './services'
-import * as UI                                     from './styledComponents'
+import { ImpactedNodesAndWlans, usePieChartQuery } from './services';
+import * as UI from './styledComponents';
 
 const transformData = (
   data: ImpactedNodesAndWlans | undefined,
@@ -37,156 +37,173 @@ const transformData = (
   }[];
 } => {
   if (data) {
-    const colors = qualitativeColorSet()
-    let { wlans: rawWlans, nodes: rawNodes } = data.network.hierarchyNode
-    rawNodes = rawNodes ?? []
+    const colors = qualitativeColorSet();
+    let { wlans: rawWlans, nodes: rawNodes } = data.network.hierarchyNode;
+    rawNodes = rawNodes ?? [];
     switch (queryType) {
       case 'connectionFailure': {
         const nodes = rawNodes
           .map((node, index) => ({
             ...node,
             name: node.key,
-            color: colors[index]
+            color: colors[index],
           }))
-          .slice(0, 5)
+          .slice(0, 5);
         const wlans = rawWlans
           .map((node, index) => ({
             ...node,
             name: node.key,
-            color: colors[index]
+            color: colors[index],
           }))
-          .slice(0, 5)
-        return { nodes, wlans }
+          .slice(0, 5);
+        return { nodes, wlans };
       }
       case 'ttc': {
         const nodes = rawNodes
           .map((node, index) => ({
             ...node,
             name: node.key,
-            color: colors[index]
+            color: colors[index],
           }))
-          .slice(0, 5)
+          .slice(0, 5);
         const wlans = rawWlans
           .map((node, index) => ({
             ...node,
             name: node.key,
-            color: colors[index]
+            color: colors[index],
           }))
-          .slice(0, 5)
-        return { nodes, wlans }
+          .slice(0, 5);
+        return { nodes, wlans };
       }
     }
   }
-  return { nodes: [], wlans: [] }
-}
+  return { nodes: [], wlans: [] };
+};
 
-export function pieNodeMap (node: NetworkPath) {
-  const lastPath = node[node.length - 1]
-  const type = lastPath.type
+export function pieNodeMap(node: NetworkPath) {
+  const lastPath = node[node.length - 1];
+  const type = lastPath.type;
   switch (type) {
     case 'zone':
-      return 'AP Group'
+      return 'AP Group';
     case 'ap':
     case 'AP':
-      return 'AP'
+      return 'AP';
     default:
-      return 'Venue'
+      return 'Venue';
   }
 }
 
-function getHealthPieChart (
-  $t: IntlShape['$t'],
+function getHealthPieChart(
   data: { key: string; value: number; name: string; color: string }[],
-  dataFormatter: (value: unknown, tz?: string | undefined) => string,
-  name: string,
-  title: string
+  dataFormatter: (value: unknown, tz?: string | undefined) => string
 ) {
   return (
-    <UI.HealthPieChartWrapper>
-      <Card
-        type='no-border'
-        title={$t(
-          { defaultMessage: '{name} Top {count} Impacted {title}' },
-          { name, count: data.length, title }
-        )}
-      >
-        <AutoSizer>
-          {({ height, width }) => (
-            <DonutChart
-              data={data}
-              style={{ height, width }}
-              dataFormatter={dataFormatter}
-              showLabel
-              labelFormatter={(data) => {
-                const { name, value, percent } = data as {
-                  name: string;
-                  value: number;
-                  percent: number;
-                }
-                const formattedPercent = formatter('percentFormat')(
-                  percent / 100
-                )
-                const formattedValue = dataFormatter(value)
-                const label = `${name}\n${formattedPercent} (${formattedValue})`
-                return label
-              }}
-            />
-          )}
-        </AutoSizer>
-      </Card>
-    </UI.HealthPieChartWrapper>
-  )
+    <AutoSizer defaultHeight={150}>
+      {({ width, height }) => (
+        <DonutChart
+          data={data}
+          style={{ height, width }}
+          dataFormatter={dataFormatter}
+          showLabel
+          showTotal={false}
+          labelFormatter={(data) => {
+            const { name, value, percent } = data as {
+              name: string;
+              value: number;
+              percent: number;
+            };
+            const formattedPercent = formatter('percentFormat')(percent / 100);
+            const formattedValue = dataFormatter(value);
+            const label = `${name}\n${formattedPercent} (${formattedValue})`;
+            return label;
+          }}
+        />
+      )}
+    </AutoSizer>
+  );
 }
 
 export const HealthPieChart = ({
   filters,
   queryType,
-  queryFilter
+  queryFilter,
 }: {
-  filters: AnalyticsFilter,
+  filters: AnalyticsFilter;
   queryType: DrilldownSelection;
   queryFilter: string;
 }) => {
-  const { $t } = useIntl()
-  const { startDate: start, endDate: end, path } = filters
+  const { $t } = useIntl();
+  const { startDate: start, endDate: end, path } = filters;
   const queryResults = usePieChartQuery(
     {
       start,
       end,
       path,
       queryType: queryType as string,
-      queryFilter: stageMapToName[queryFilter!]
+      queryFilter: stageMapToName[queryFilter!],
     },
     {
-      skip: isNull(queryFilter)
+      skip: isNull(queryFilter),
     }
-  )
+  );
 
-  const { nodes, wlans } = transformData(queryResults.data, queryType)
-  const singularNetwork = pieNodeMap(path)
-  const venueTitle = nodes.length > 1 ? singularNetwork + 's' : singularNetwork
-  const wlansTitle = wlans.length > 1 ? 'WLANs' : 'WLAN'
-  const name = queryFilter!
+  const { nodes, wlans } = transformData(queryResults.data, queryType);
+  const singularNetwork = pieNodeMap(path);
+  const venueTitle = nodes.length > 1 ? singularNetwork + 's' : singularNetwork;
+  const wlansTitle = wlans.length > 1 ? 'WLANs' : 'WLAN';
+  const name = queryFilter!;
 
-  const tabDetails: ContentSwitcherProps['tabDetails'] = []
+  const tabDetails: ContentSwitcherProps['tabDetails'] = [];
 
   if (nodes.length > 1) {
     tabDetails.push({
       label: $t({ defaultMessage: '{venueTitle}' }, { venueTitle }),
       value: 'nodes',
-      children: getHealthPieChart($t, nodes, formatter('countFormat'), name, venueTitle)
-    })
+      children: getHealthPieChart(nodes, formatter('countFormat'),
+      ),
+    });
   }
 
   tabDetails.push({
     label: $t({ defaultMessage: '{wlansTitle}' }, { wlansTitle }),
     value: 'wlans',
-    children: getHealthPieChart($t, wlans, formatter('durationFormat'), name, wlansTitle)
-  })
+    children: getHealthPieChart(wlans, formatter('durationFormat'),
+    ),
+  });
 
   return (
     <Loader states={[queryResults]}>
-      <ContentSwitcher tabDetails={tabDetails} size='small' />
+      <UI.HealthPieChartWrapper>
+        <Card
+          type="no-border"
+          title={$t(
+            { defaultMessage: '{name} Top {count} Impacted {title}' },
+            { name, count: nodes.length, title: venueTitle }
+          )}
+        >
+        <div style={{ height: '100%' }}>
+          <AutoSizer>
+            {({ height, width }) => (
+              <div
+                style={{
+                  display: 'block',
+                  height,
+                  width,
+                  margin: '-38px 0 0 0',
+                }}
+              >
+                <ContentSwitcher
+                  tabDetails={tabDetails}
+                  align="right"
+                  size="small"
+                />
+              </div>
+            )}
+          </AutoSizer>
+        </div>
+        </Card>
+      </UI.HealthPieChartWrapper>
     </Loader>
-  )
-}
+  );
+};
