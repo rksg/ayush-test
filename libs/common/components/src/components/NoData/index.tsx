@@ -1,8 +1,6 @@
 import { useIntl }       from 'react-intl'
 import { CSSProperties } from 'styled-components'
 
-import { notAvailableMsg } from '@acx-ui/utils'
-
 import * as UI from './styledComponents'
 
 interface NoDataWrapperProps {
@@ -38,12 +36,5 @@ export function NoActiveContent ({ text }: NoDataWrapperProps) {
       <UI.TextWrapper><UI.GreenTickIcon /></UI.TextWrapper>
       <UI.NoDataTextWrapper>{text}</UI.NoDataTextWrapper>
     </>
-  )
-}
-
-export function NotAvailable () {
-  const { $t } = useIntl()
-  return (
-    <NoData text={$t(notAvailableMsg)}/>
   )
 }
