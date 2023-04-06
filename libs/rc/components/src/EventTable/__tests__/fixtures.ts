@@ -60,7 +60,10 @@ export const events = [{
   id: '3082c3547b674eb0b481842595090110',
   entity_id: 'FEK3204N013',
   message: '{ "message_template": "@@switchName Switch is deleted by the cloud controller." }'
-}]
+}].map(event => ({
+  ...event,
+  tableKey: event.event_datetime + event.id
+}))
 
 export const eventsMeta = [{
   venueName: 'Stable-client',
@@ -183,7 +186,10 @@ export const adminLogs = [{
   id: '2e0d0ce655904d3b8e1404064b117501',
   entity_id: '662b4f2c76a0428a9e7faaa64534d67a',
   message: '{ "message_template": "2 Venue’s firmware update has been triggered." }'
-}]
+}].map(event => ({
+  ...event,
+  tableKey: event.event_datetime + event.id
+}))
 
 export const adminLogsMeta = [{
   id: '2e0d0ce655904d3b8e1404064b1175d9',
