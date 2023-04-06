@@ -1,3 +1,5 @@
+import moment from 'moment-timezone'
+
 import {
   ExpirationDateEntity, ExpirationMode,
   ExpirationType,
@@ -23,7 +25,9 @@ describe('MacRegistrationListUtils parser', () => {
     expect(expiration.expirationEnabled).toBe(false)
 
     expiration = transferExpirationFormFieldsToData(mockedExpirationByDate)
-    expect(expiration.expirationDate).toBe('2022-12-01T23:59:59Z')
+    // eslint-disable-next-line max-len
+    const utcTimeStr = moment(mockedExpirationByDate.date + ' 23:59:59').utc()
+    expect(expiration.expirationDate).toStrictEqual(utcTimeStr)
     expect(expiration.expirationType).toBe(ExpirationType.SPECIFIED_DATE)
 
     expiration = transferExpirationFormFieldsToData(mockedExpirationAfterTime)

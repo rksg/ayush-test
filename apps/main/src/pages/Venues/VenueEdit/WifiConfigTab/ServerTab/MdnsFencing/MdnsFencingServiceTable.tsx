@@ -7,15 +7,15 @@ import { useParams } from 'react-router-dom'
 import { showActionModal, Table, TableProps, Tooltip } from '@acx-ui/components'
 import { useApListQuery }                              from '@acx-ui/rc/services'
 import {
-  BonjourFencingService,
-  BonjourFencingWiredRule,
-  BonjourFencingWirelessRule,
+  MdnsFencingService,
+  MdnsFencingWiredRule,
+  MdnsFencingWirelessRule,
   BridgeServiceEnum,
   mdnsProxyRuleTypeLabelMapping } from '@acx-ui/rc/utils'
 
-import { BonjourFencingContext } from './BonjourFencing'
-import BonjourFencingDrawer      from './BonjourFencingDrawer'
-import { updateRowId }           from './utils'
+import { MdnsFencingContext } from './MdnsFencing'
+import MdnsFencingDrawer      from './MdnsFencingDrawer'
+import { updateRowId }        from './utils'
 
 export interface apNameMacAddrMapping {
   name: string,
@@ -23,28 +23,29 @@ export interface apNameMacAddrMapping {
   serialNumber: string
 }
 
-export interface BonjourFencingServiceContextType {
-  currentService?: BonjourFencingService,
-  currentServiceRef: React.MutableRefObject<BonjourFencingService | undefined>,
-  otherServices: BonjourFencingService[],
+export interface MdnsFencingServiceContextType {
+  currentService?: MdnsFencingService,
+  currentServiceRef: React.MutableRefObject<MdnsFencingService | undefined>,
+  otherServices: MdnsFencingService[],
   venueAps: apNameMacAddrMapping[]
 }
 
-export const BonjourFencingServiceContext = createContext({} as BonjourFencingServiceContextType)
+export const MdnsFencingServiceContext = createContext({} as MdnsFencingServiceContextType)
 
-export function BonjourFencingServiceTable () {
+export function MdnsFencingServiceTable () {
   const { $t } = useIntl()
   const params = useParams()
-  const { bonjourFencingServices, setBonjourFencingServices } = useContext(BonjourFencingContext)
+  const { mdnsFencingServices, setMdnsFencingServices } = useContext(MdnsFencingContext)
 
   const [drawerVisible, setDrawerVisible] = useState(false)
-  const [drawerFormData, setDrawerFormData] = useState<BonjourFencingService>()
-  const [otherServices, setOtherServices] = useState<BonjourFencingService[]>([])
+  const [drawerFormData, setDrawerFormData] = useState<MdnsFencingService>()
+  const [otherServices, setOtherServices] = useState<MdnsFencingService[]>([])
+
   const [venueAps, setVenueAps] = useState<apNameMacAddrMapping[]>([])
-  const serviceRef = useRef<BonjourFencingService>()
+  const serviceRef = useRef<MdnsFencingService>()
 
 
-  const [drawerForm] = Form.useForm<BonjourFencingService>()
+  const [drawerForm] = Form.useForm<MdnsFencingService>()
 
   const apViewModelPayload = {
     entityType: 'apsList',
@@ -81,7 +82,7 @@ export function BonjourFencingServiceTable () {
       $t({ defaultMessage: 'Same AP' }) : $t({ defaultMessage: '1-hop AP neighbors' })
   }
 
-  const getWirelessRuleTooltip = (data: boolean, wirelessRule?: BonjourFencingWirelessRule) => {
+  const getWirelessRuleTooltip = (data: boolean, wirelessRule?: MdnsFencingWirelessRule) => {
     if (!data) {
       return $t({ defaultMessage: 'OFF' })
     }
@@ -100,7 +101,7 @@ export function BonjourFencingServiceTable () {
 
   const getWiredRulesTooltip = (
     data: boolean,
-    wiredRules?: BonjourFencingWiredRule[],
+    wiredRules?: MdnsFencingWiredRule[],
     maxShow = 25
   ) => {
     if (!data) {
@@ -150,7 +151,7 @@ export function BonjourFencingServiceTable () {
     return <Tooltip title={tooltipTitle}>{$t({ defaultMessage: 'ON' })}</Tooltip>
   }
 
-  const columns: TableProps<BonjourFencingService>['columns'] = [{
+  const columns: TableProps<MdnsFencingService>['columns'] = [{
     title: $t({ defaultMessage: 'Service' }),
     dataIndex: 'service',
     key: 'service',
@@ -189,9 +190,9 @@ export function BonjourFencingServiceTable () {
   }]
 
   const handleAddAction = () => {
-    serviceRef.current = {} as BonjourFencingService
-    setDrawerFormData({} as BonjourFencingService)
-    setOtherServices(bonjourFencingServices)
+    serviceRef.current = {} as MdnsFencingService
+    setDrawerFormData({} as MdnsFencingService)
+    setOtherServices(mdnsFencingServices)
     setDrawerVisible(true)
   }
 
@@ -203,9 +204,9 @@ export function BonjourFencingServiceTable () {
     }
   ]
 
-  const handleUpdateData = (data: BonjourFencingService) => {
-    const services = [ ...bonjourFencingServices ]
-    const targetIdx = services.findIndex((r: BonjourFencingService) => r.rowId === data.rowId)
+  const handleUpdateData = (data: MdnsFencingService) => {
+    const services = [ ...mdnsFencingServices ]
+    const targetIdx = services.findIndex((r: MdnsFencingService) => r.rowId === data.rowId)
 
     const newData = updateRowId(data)
 
@@ -216,7 +217,7 @@ export function BonjourFencingServiceTable () {
     }
 
     // Check the max number of "Other" service is 3.
-    const otherServices = services.filter((r: BonjourFencingService) => r.service === 'OTHER')
+    const otherServices = services.filter((r: MdnsFencingService) => r.service === 'OTHER')
     if (otherServices.length > 3) {
       showActionModal({
         type: 'error',
@@ -225,20 +226,20 @@ export function BonjourFencingServiceTable () {
             $t({ defaultMessage: 'The max entries with "Other" service is 3.' })
       })
     } else {
-      setBonjourFencingServices(services)
+      setMdnsFencingServices(services)
       setDrawerVisible(false)
       drawerForm.resetFields()
     }
   }
 
-  const rowActions: TableProps<(typeof bonjourFencingServices)[0]>['rowActions'] = [
+  const rowActions: TableProps<(typeof mdnsFencingServices)[0]>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedRows) => selectedRows.length === 1,
       disabled: drawerVisible,
       onClick: (selectedRows, clearSelection) => {
         const selectData = { ...selectedRows[0] }
-        const otherExistData = bonjourFencingServices.filter(s => s.rowId !== selectData.rowId)
+        const otherExistData = mdnsFencingServices.filter(s => s.rowId !== selectData.rowId)
 
         serviceRef.current = selectData
         setDrawerFormData(selectData)
@@ -252,22 +253,22 @@ export function BonjourFencingServiceTable () {
       disabled: drawerVisible,
       onClick: (selectedRows, clearSelection) => {
         const keys = selectedRows.map(row => row.rowId)
-        const newData = bonjourFencingServices.filter(r => keys.indexOf(r.rowId) === -1)
-        setBonjourFencingServices(newData)
+        const newData = mdnsFencingServices.filter(r => keys.indexOf(r.rowId) === -1)
+        setMdnsFencingServices(newData)
         clearSelection()
       }
     }
   ]
 
   return (
-    <BonjourFencingServiceContext.Provider
+    <MdnsFencingServiceContext.Provider
       value={{
         currentService: drawerFormData,
         currentServiceRef: serviceRef,
         otherServices: otherServices,
         venueAps: venueAps
       }}>
-      <BonjourFencingDrawer
+      <MdnsFencingDrawer
         form={drawerForm}
         visible={drawerVisible}
         setVisible={setDrawerVisible}
@@ -275,13 +276,13 @@ export function BonjourFencingServiceTable () {
       />
       <Table
         columns={columns}
-        dataSource={bonjourFencingServices}
+        dataSource={mdnsFencingServices}
         actions={actions}
         rowActions={rowActions}
         rowKey='rowId'
         rowSelection={{ type: 'checkbox' }}
       />
-    </BonjourFencingServiceContext.Provider>
+    </MdnsFencingServiceContext.Provider>
   )
 
 }
