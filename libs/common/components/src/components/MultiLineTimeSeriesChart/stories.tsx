@@ -26,7 +26,7 @@ export const getData = () => {
   return data as [TimeStamp, number][]
 }
 const seriesNames = [
-  ['New Clients', 'Impacted Clients', 'Connected Clients'],
+  ['New Client Associations', 'Impacted Clients', 'Connected Clients'],
   ['Total Failures', 'EAP Failures', 'EAP Attempts']
 ]
 export const getSeriesData = (index = 0) => {

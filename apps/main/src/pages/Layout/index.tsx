@@ -94,7 +94,7 @@ function Layout () {
       }
       leftHeaderContent={
         <UI.LeftHeaderWrapper>
-          { showHomeButton && isBackToRC ?
+          { showHomeButton && (isBackToRC ?
             <a href={`/api/ui/v/${getJwtTokenPayload().tenantId}`}>
               <UI.Home>
                 <LayoutUI.Icon children={<HomeSolid />} />
@@ -106,7 +106,7 @@ function Layout () {
                 <LayoutUI.Icon children={<HomeSolid />} />
                 {$t({ defaultMessage: 'Home' })}
               </UI.Home>
-            </Link>
+            </Link>)
           }
           <RegionButton/>
           <HeaderContext.Provider value={{

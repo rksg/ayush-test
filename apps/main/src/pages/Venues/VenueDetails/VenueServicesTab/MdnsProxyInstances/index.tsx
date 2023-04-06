@@ -136,6 +136,7 @@ export default function MdnsProxyInstances () {
       </UI.TableTitle>
       <Loader states={[tableQuery]}>
         <Table<MdnsProxyAp>
+          settingsId='venue-mdns-proxy-table'
           columns={columns}
           dataSource={tableQuery.data?.data}
           actions={filterByAccess([{

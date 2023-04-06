@@ -181,6 +181,7 @@ export function SwitchConfigHistoryTable (props: {
   return <>
     <Loader states={[tableQuery]}>
       <Table
+        settingsId='switch-config-history-table'
         rowKey={(record) => record.transactionId + record.configType}
         columns={getCols()}
         dataSource={tableQuery.data?.data ?? []}

@@ -18,6 +18,12 @@ const modifyVars = require('./libs/common/components/src/theme/modify-vars')
       ...additionalWebpackConfig
     })
 
+    if (process.env.NODE_ENV === 'production') {
+      config.devtool = 'hidden-source-map'
+      config.mode = 'production'
+      config.optimization.minimize = true
+    }
+
     config.module.rules = config.module.rules.map(rule => {
       // remove handling of less from existing rules
       if (!rule.test.toString().includes('.less')) return rule

@@ -11,8 +11,8 @@ import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/t
 import { ServerSettingContext }          from '..'
 import { EditContext, VenueEditContext } from '../../..'
 
-import { mockBonjourFencing } from './__tests__/fixtures'
-import { BonjourFencing }     from './BonjourFencing'
+import { mockMdnsFencing } from './__tests__/fixtures'
+import { MdnsFencing }     from './MdnsFencing'
 
 const params = {
   tenantId: 'tenant-id',
@@ -31,10 +31,10 @@ describe('Venue mDNS Fencing', () => {
     store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
       rest.get(
-        getUrlForTest(CommonUrlsInfo.getVenueBonjourFencingPolicy),
-        (_, res, ctx) => res(ctx.json(mockBonjourFencing))),
+        getUrlForTest(CommonUrlsInfo.getVenueMdnsFencingPolicy),
+        (_, res, ctx) => res(ctx.json(mockMdnsFencing))),
       rest.post(
-        getUrlForTest(CommonUrlsInfo.updateVenueBonjourFencingPolicy),
+        getUrlForTest(CommonUrlsInfo.updateVenueMdnsFencingPolicy),
         (_, res, ctx) => res(ctx.json({}))),
       rest.post(
         CommonUrlsInfo.getApsList.url,
@@ -51,7 +51,7 @@ describe('Venue mDNS Fencing', () => {
           editServerContextData,
           setEditServerContextData }}>
           <Form>
-            <BonjourFencing />
+            <MdnsFencing />
           </Form>
         </VenueEditContext.Provider>
       </Provider>, {
@@ -77,7 +77,7 @@ describe('Venue mDNS Fencing', () => {
           editServerContextData,
           setEditServerContextData }}>
           <Form>
-            <BonjourFencing />
+            <MdnsFencing />
           </Form>
         </VenueEditContext.Provider>
       </Provider>, {
@@ -86,14 +86,14 @@ describe('Venue mDNS Fencing', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
 
-    // BonjourFencingTable
+    // MdnsFencingTable
     await screen.findByText('Manage Fencing services')
 
     await userEvent.click(
       await screen.findByRole('button', { name: 'Add Service' })
     )
 
-    // BonjourFencingDrawer
+    // MdnsFencingDrawer
     await userEvent.click(await screen.findByRole('combobox', { name: 'Service' }))
     await userEvent.click(await screen.findByTitle('Airport Management'))
 
@@ -111,7 +111,7 @@ describe('Venue mDNS Fencing', () => {
           editServerContextData,
           setEditServerContextData }}>
           <Form>
-            <BonjourFencing />
+            <MdnsFencing />
           </Form>
         </VenueEditContext.Provider>
       </Provider>, {
@@ -120,14 +120,14 @@ describe('Venue mDNS Fencing', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
 
-    // BonjourFencingTable
+    // MdnsFencingTable
     await screen.findByText('Manage Fencing services')
 
     await userEvent.click(
       await screen.findByRole('button', { name: 'Add Service' })
     )
 
-    // BonjourFencingDrawer
+    // MdnsFencingDrawer
     await userEvent.click(await screen.findByRole('combobox', { name: 'Service' }))
     await userEvent.click(await screen.findByTitle('Airport Management'))
 
@@ -147,7 +147,7 @@ describe('Venue mDNS Fencing', () => {
           editServerContextData,
           setEditServerContextData }}>
           <Form>
-            <BonjourFencing />
+            <MdnsFencing />
           </Form>
         </VenueEditContext.Provider>
       </Provider>, {
@@ -156,14 +156,14 @@ describe('Venue mDNS Fencing', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
 
-    // BonjourFencingTable
+    // MdnsFencingTable
     await screen.findByText('Manage Fencing services')
 
     await userEvent.click(
       await screen.findByRole('button', { name: 'Add Service' })
     )
 
-    // BonjourFencingDrawer
+    // MdnsFencingDrawer
     await userEvent.click(await screen.findByRole('combobox', { name: 'Service' }))
     await userEvent.click(await screen.findByTitle('Airport Management'))
 
@@ -184,7 +184,7 @@ describe('Venue mDNS Fencing', () => {
           editServerContextData,
           setEditServerContextData }}>
           <Form>
-            <BonjourFencing />
+            <MdnsFencing />
           </Form>
         </VenueEditContext.Provider>
       </Provider>, {
@@ -193,14 +193,14 @@ describe('Venue mDNS Fencing', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
 
-    // BonjourFencingTable
+    // MdnsFencingTable
     await screen.findByText('Manage Fencing services')
 
     await userEvent.click(
       await screen.findByRole('button', { name: 'Add Service' })
     )
 
-    // BonjourFencingDrawer
+    // MdnsFencingDrawer
     await userEvent.click(await screen.findByRole('combobox', { name: 'Service' }))
     await userEvent.click(await screen.findByTitle('Airport Management'))
 
