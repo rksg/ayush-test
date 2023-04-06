@@ -62,7 +62,6 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
             </span>
             <div
               class="ant-space-item"
-              style="margin-right: 4px;"
             >
               <button
                 class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 ibsWZY"
@@ -72,20 +71,6 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
                   Delete
                 </span>
               </button>
-            </div>
-            <span
-              class="ant-space-item-split"
-              style="margin-right: 4px;"
-            >
-              <div
-                class="ant-divider ant-divider-vertical"
-                role="separator"
-              />
-            </span>
-            <div
-              class="ant-space-item"
-            >
-               
             </div>
           </div>
         </div>
