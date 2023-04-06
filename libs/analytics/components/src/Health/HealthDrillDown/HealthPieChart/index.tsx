@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { isNull }  from 'lodash'
 import { useIntl } from 'react-intl'
@@ -11,6 +11,7 @@ import {
   ContentSwitcherProps,
   DonutChart,
   Loader,
+  NoData,
   qualitativeColorSet
 } from '@acx-ui/components'
 import { formatter }   from '@acx-ui/formatter'
@@ -101,7 +102,8 @@ function getHealthPieChart (
   dataFormatter: (value: unknown, tz?: string | undefined) => string
 ) {
   return (
-    <AutoSizer defaultHeight={150}>
+    data.length > 0
+    ? <AutoSizer defaultHeight={150}>
       {({ width, height }) => (
         <DonutChart
           data={data}
@@ -123,6 +125,7 @@ function getHealthPieChart (
         />
       )}
     </AutoSizer>
+    : <NoData />
   )
 }
 
@@ -162,21 +165,21 @@ export const HealthPieChart = ({
     tabDetails.push({
       label: $t({ defaultMessage: '{venueTitle}' }, { venueTitle }),
       value: 'nodes',
-      children: getHealthPieChart(nodes, formatter('countFormat')
-      )
+      children: getHealthPieChart(nodes, formatter('countFormat'))
     })
   }
 
   tabDetails.push({
     label: $t({ defaultMessage: '{wlansTitle}' }, { wlansTitle }),
     value: 'wlans',
-    children: getHealthPieChart(wlans, formatter('durationFormat')
-    )
+    children: getHealthPieChart(wlans, formatter('durationFormat'))
   })
 
   const [chartKey, setChartKey] = useState('wlans')
   const count = chartKey === 'wlans' ? wlans.length : nodes.length
   const title = chartKey === 'wlans' ? wlansTitle : venueTitle
+
+  useEffect(() => { setChartKey('wlans') }, [tabDetails.length])
 
   return (
     <Loader states={[queryResults]}>
@@ -200,7 +203,9 @@ export const HealthPieChart = ({
                   }}
                 >
                   <ContentSwitcher
+                    key={queryFilter}
                     value={chartKey}
+                    defaultValue={'wlans'}
                     tabDetails={tabDetails}
                     align='right'
                     size='small'
