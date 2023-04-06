@@ -552,8 +552,8 @@ export function TopologyGraph (props:{ venueId?: string,
           {
             (showTopologyOn === ShowTopologyFloorplanOn.VENUE_OVERVIEW)
               ? <Empty description={$t({ defaultMessage: 'No devices added yet to this venue' })}>
-                <Row>
-                  { hasAccess() && <><Col span={12}>
+                { hasAccess() && <Row>
+                  <Col span={12}>
                     <TenantLink to='devices/wifi/add'>
                       {$t({ defaultMessage: 'Add Access Point' })}
                     </TenantLink>
@@ -563,8 +563,7 @@ export function TopologyGraph (props:{ venueId?: string,
                       {$t({ defaultMessage: 'Add Switch' })}
                     </TenantLink>
                   </Col>
-                  </>}
-                </Row>
+                </Row>}
               </Empty>
               : <Empty description={$t({ defaultMessage: 'This device not added to any venue' })} />
           }

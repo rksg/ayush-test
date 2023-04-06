@@ -247,15 +247,15 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
           </Typography.Title>
         </Col>
         <Col>
-          { !showRogueAp && <Space split={<Divider type='vertical' />}>
-            { hasAccess() && <><AddEditFloorplanModal
+          { hasAccess() && !showRogueAp && <Space split={<Divider type='vertical' />}>
+            <AddEditFloorplanModal
               buttonTitle={$t({ defaultMessage: 'Edit' })}
               onAddEditFloorPlan={onEditFloorPlanHandler}
               isEditMode={true}
               selectedFloorPlan={selectedFloorPlan}/>
             <Button key='deleteBtn' type='link' onClick={deleteHandler} >
               {$t({ defaultMessage: 'Delete' })}
-            </Button> </>}
+            </Button>
           </Space>
           }
         </Col>
