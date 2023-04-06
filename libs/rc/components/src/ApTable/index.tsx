@@ -233,7 +233,8 @@ export function ApTable (props: ApTableProps) {
       dataIndex: 'switchName',
       render: (data, row : APExtended) => {
         return (
-          <TenantLink to={`/switches/${row.venueId}/details/overview`}>{data}</TenantLink>
+          // eslint-disable-next-line max-len
+          <TenantLink to={`/devices/switch/${row.switchId}/${row.switchSerialNumber}/details/overview`}>{data}</TenantLink>
         )
       }
     }, {
@@ -305,7 +306,7 @@ export function ApTable (props: ApTableProps) {
       title: $t({ defaultMessage: 'PoE Port' }),
       dataIndex: 'poePort',
       show: false,
-      sorter: false,
+      sorter: true,
       render: (data, row : APExtended) => {
         if (!row.hasPoeStatus) {
           return <span></span>
