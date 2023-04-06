@@ -5,8 +5,6 @@ import {
   useLocation
 }         from 'react-router-dom'
 
-import { useBasePath } from './helpers'
-
 import type { Path, To } from 'react-router-dom'
 
 export type TenantType = 't' | 'v'
@@ -24,5 +22,5 @@ export function useTenantLink (to: To, tenantType: TenantType = 't') {
     search.set(name, value)
   }
   path.search = search.toString()
-  return resolvePath(path, `${useBasePath()}/${tenantId}/${tenantType}`)
+  return resolvePath(path, `/${tenantId}/${tenantType}`)
 }
