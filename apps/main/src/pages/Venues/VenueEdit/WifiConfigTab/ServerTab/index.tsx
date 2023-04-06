@@ -9,15 +9,15 @@ import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../../'
 
-import { ApSnmp }         from './ApSnmp'
-import { BonjourFencing } from './BonjourFencing/BonjourFencing'
-import { Syslog }         from './Syslog'
+import { ApSnmp }      from './ApSnmp'
+import { MdnsFencing } from './MdnsFencing/MdnsFencing'
+import { Syslog }      from './Syslog'
 
 export interface ServerSettingContext {
   updateSyslog: (() => void),
   discardSyslog: (() => void),
-  updateBonjourFencing: (() => void),
-  discardBonjourFencing: (() => void),
+  updateMdnsFencing: (() => void),
+  discardMdnsFencing: (() => void),
   updateVenueApSnmp: (() => void),
   discardVenueApSnmp: (() => void),
 }
@@ -34,7 +34,7 @@ export function ServerTab () {
     editServerContextData
   } = useContext(VenueEditContext)
 
-  const supportBonjourFencing = useIsSplitOn(Features.BONJOUR_FENCING)
+  const supportMdnsFencing = useIsSplitOn(Features.MDNS_FENCING)
   const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
 
   const items = [{
@@ -47,14 +47,14 @@ export function ServerTab () {
     </>
   }]
 
-  if (supportBonjourFencing) {
+  if (supportMdnsFencing) {
     items.push({
       title: $t({ defaultMessage: 'mDNS Fencing' }),
       content: <>
-        <StepsForm.SectionTitle id='bonjour-fencing'>
+        <StepsForm.SectionTitle id='mdns-fencing'>
           { $t({ defaultMessage: 'mDNS Fencing' }) }
         </StepsForm.SectionTitle>
-        <BonjourFencing />
+        <MdnsFencing />
       </>
     })
   }
@@ -75,7 +75,7 @@ export function ServerTab () {
   const handleUpdateSetting = async () => {
     try {
       await editServerContextData?.updateSyslog?.()
-      await editServerContextData?.updateBonjourFencing?.()
+      await editServerContextData?.updateMdnsFencing?.()
       await editServerContextData?.updateVenueApSnmp?.()
 
 
