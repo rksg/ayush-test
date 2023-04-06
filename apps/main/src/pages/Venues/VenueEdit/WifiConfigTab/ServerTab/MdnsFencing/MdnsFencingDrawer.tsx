@@ -20,9 +20,7 @@ export interface MdnsFencingDrawerProps {
 
 export default function MdnsFencingDrawer (props: MdnsFencingDrawerProps) {
   const { $t } = useIntl()
-  const { currentService={},
-    otherServices,
-    currentServiceRef } = useContext(MdnsFencingServiceContext)
+  const { currentService={}, currentServiceRef } = useContext(MdnsFencingServiceContext)
   const { visible, setVisible, onDataChanged, form } = props
 
   const isEditMode = !_.isEmpty(currentService)
