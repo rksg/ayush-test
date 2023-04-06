@@ -60,6 +60,12 @@ function Layout () {
   const isBackToRC = (PverName.ACX === getJwtTokenPayload().pver ||
     PverName.ACX_HYBRID === getJwtTokenPayload().pver)
 
+  const getIndexPath = () => {
+    return isGuestManager
+      ? `${getBasePath()}/v/${getJwtTokenPayload().tenantId}/users/guestsManager`
+      : `${getBasePath()}/v/${getJwtTokenPayload().tenantId}`
+  }
+
   useEffect(() => {
     if (data?.global) {
       const currentMapRegion = getMapRegion(data)
@@ -95,7 +101,7 @@ function Layout () {
                 {$t({ defaultMessage: 'Home' })}
               </UI.Home>
             </a> :
-            <Link to={`${getBasePath()}/v/${getJwtTokenPayload().tenantId}`}>
+            <Link to={getIndexPath()}>
               <UI.Home>
                 <LayoutUI.Icon children={<HomeSolid />} />
                 {$t({ defaultMessage: 'Home' })}

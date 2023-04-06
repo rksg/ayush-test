@@ -13,6 +13,8 @@ import { useIntl } from 'react-intl'
 
 import { Logo }                                   from '@acx-ui/icons'
 import { TenantType, useLocation, TenantNavLink } from '@acx-ui/react-router-dom'
+import { RolesEnum }                              from '@acx-ui/types'
+import { hasRoles }                               from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
@@ -145,6 +147,8 @@ export function Layout ({
   const [collapsed, setCollapsed] = useState(false)
   const location = useLocation()
 
+  const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
+  const indexPath = isGuestManager ? '/users/guestsManager' : '/dashboard'
   const dashboard = menuConfig.find(item => get(item, 'uri') === '/dashboard')
 
   return <UI.Wrapper>
@@ -156,7 +160,7 @@ export function Layout ({
       location={location}
       menuContentRender={() => <SiderMenu menuConfig={menuConfig}/>}
       menuHeaderRender={() => <TenantNavLink
-        to='/dashboard'
+        to={indexPath}
         tenantType={get(dashboard, 'tenantType', 't')}
         children={<Logo />}
       />}
