@@ -14,8 +14,8 @@ import {
   checkObjectNotExists,
   hasGraveAccentAndDollarSign,
   NetworkVenue } from '@acx-ui/rc/utils'
-import { useParams }                           from '@acx-ui/react-router-dom'
-import { notAvailableMsg, validationMessages } from '@acx-ui/utils'
+import { useParams }          from '@acx-ui/react-router-dom'
+import { validationMessages } from '@acx-ui/utils'
 
 import { networkTypesDescription, networkTypes } from '../contentsMap'
 import { NetworkDiagram }                        from '../NetworkDiagram/NetworkDiagram'
@@ -72,12 +72,6 @@ export function NetworkDetailForm () {
       .map(n => n.name)
 
     return checkObjectNotExists(list, value, intl.$t({ defaultMessage: 'Network' }))
-  }
-
-  const isNetworkTypeDisabled = (type: NetworkTypeEnum) => {
-    const targetType = types.find(t => t.type === type)
-
-    return targetType ? targetType.disabled : true
   }
 
   const ssidValidator = async (value: string) => {
@@ -216,15 +210,12 @@ export function NetworkDetailForm () {
             >
               <Radio.Group onChange={onChange}>
                 <Space direction='vertical'>
-                  {types.map(({ type, disabled }) => (
-                    <Radio key={type} value={type} disabled={disabled}>
-                      <Tooltip
-                        title={isNetworkTypeDisabled(type) ? intl.$t(notAvailableMsg) : ''}>
-                        {intl.$t(networkTypes[type])}
-                        <RadioDescription>
-                          {intl.$t(networkTypesDescription[type])}
-                        </RadioDescription>
-                      </Tooltip>
+                  {types.filter(type => !type.disabled).map(({ type }) => (
+                    <Radio key={type} value={type}>
+                      {intl.$t(networkTypes[type])}
+                      <RadioDescription>
+                        {intl.$t(networkTypesDescription[type])}
+                      </RadioDescription>
                     </Radio>
                   ))}
                 </Space>

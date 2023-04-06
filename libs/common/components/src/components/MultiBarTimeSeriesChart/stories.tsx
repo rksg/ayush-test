@@ -19,7 +19,7 @@ export const getData = () => {
   }
   return data as [TimeStamp, string, TimeStamp, number | null, string][]
 }
-const seriesNames = [['New Clients', 'Impacted Clients', 'Connected Clients']]
+const seriesNames = [['New Client Associations', 'Impacted Clients', 'Connected Clients']]
 export const getSeriesData = (index = 0) => {
   const series = []
   for (let i = 0; i < 3; i++) {

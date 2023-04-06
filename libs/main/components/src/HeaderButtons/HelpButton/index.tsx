@@ -3,15 +3,9 @@ import { useEffect, useState } from 'react'
 import { Menu, Dropdown } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { Tooltip }                 from '@acx-ui/components'
 import { LayoutUI }                from '@acx-ui/components'
 import { get }                     from '@acx-ui/config'
-import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleSolid } from '@acx-ui/icons'
-import { notAvailableMsg }         from '@acx-ui/utils'
-
-import { DisabledButton } from '../styledComponents'
-
 
 import Firewall          from './Firewall'
 import HelpPage          from './HelpPage'
@@ -48,8 +42,6 @@ const HelpButton = (props:HelpButtonProps) => {
   const privacy = get('PRIVACY')
   const supportedAPModels = get('SUPPORTED_AP_MODELS')
   const howToVideos = get('HOW_TO_VIDEOS')
-
-  const isHelpEnabled = useIsSplitOn(Features.HELP_SUPPORT)
 
   const menuHeaderDropdown = (
     <Menu selectedKeys={[]}
@@ -121,17 +113,14 @@ const HelpButton = (props:HelpButtonProps) => {
   )
 
   return (<ButtonWrapper>
-    <Dropdown disabled={!isHelpEnabled}
+    <Dropdown
       overlay={menuHeaderDropdown}
       trigger={['click']}
-      placement='bottomLeft'>
-      <Tooltip title={isHelpEnabled ? '' : $t(notAvailableMsg)}>
-        {isHelpEnabled ? <LayoutUI.ButtonSolid icon={<QuestionMarkCircleSolid />} /> :
-          <DisabledButton disabled icon={<QuestionMarkCircleSolid />} />}
-      </Tooltip>
-    </Dropdown>
-    <Firewall modalState={firewallModalState} setIsModalOpen={setFirewallModalOpen}/>
-    <HelpPage modalState={helpPageModalState} setIsModalOpen={setHelpPageModalOpen}/>
+      placement='bottomLeft'
+      children={<LayoutUI.ButtonSolid icon={<QuestionMarkCircleSolid />} />}
+    />
+    <Firewall modalState={firewallModalState} setIsModalOpen={setFirewallModalOpen} />
+    <HelpPage modalState={helpPageModalState} setIsModalOpen={setHelpPageModalOpen} />
   </ButtonWrapper>
   )
 }

@@ -8,7 +8,7 @@ import {
   BridgeServiceEnum,
   mdnsProxyRuleTypeLabelMapping
 } from '@acx-ui/rc/utils'
-import { render, renderHook, screen, within } from '@acx-ui/test-utils'
+import { render, renderHook, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import { MdnsProxyForwardingRulesTable } from '.'
 
@@ -242,7 +242,13 @@ describe('MdnsProxyForwardingRulesTable', () => {
     await userEvent.type(screen.getByRole('spinbutton', { name: /To VLAN/i }), '222')
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))
 
+    await waitFor(async () =>
+      expect(await screen.findByRole('button', { name: 'Add Rule' })).toBeDisabled()
+    )
+    const button = await screen.findByRole('button', { name: 'Add Rule' })
+    // eslint-disable-next-line testing-library/no-node-access
+    await userEvent.hover(button.parentElement!)
     // Verify the warning message of the rules maximum limit
-    expect(await screen.findByTitle('The rule has reached the limit (3).')).toBeInTheDocument()
+    expect(await screen.findByText('The rule has reached the limit (3).')).toBeInTheDocument()
   })
 })
