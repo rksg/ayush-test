@@ -1,7 +1,7 @@
-import { AnalyticsFilter }                                             from '@acx-ui/analytics/utils'
-import { dataApiURL, Provider, store }                                 from '@acx-ui/store'
-import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
-import { DateRange }                                                   from '@acx-ui/utils'
+import { AnalyticsFilter }                                                                 from '@acx-ui/analytics/utils'
+import { dataApiURL, Provider, store }                                                     from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved, fireEvent, cleanup } from '@acx-ui/test-utils'
+import { DateRange }                                                                       from '@acx-ui/utils'
 
 import { mockConnectionFailureResponse, mockTtcResponse, mockPathWithAp, mockOnlyWlansResponse } from './__tests__/fixtures'
 import { api }                                                                                   from './services'
@@ -10,7 +10,10 @@ import { HealthPieChart, pieNodeMap } from '.'
 
 
 describe('HealthPieChart', () => {
-  afterEach(() => store.dispatch(api.util.resetApiState()))
+  afterEach(() => {
+    store.dispatch(api.util.resetApiState())
+    cleanup()
+  })
 
   const filters: AnalyticsFilter = {
     startDate: '01-03-2023',
@@ -22,11 +25,15 @@ describe('HealthPieChart', () => {
   it('should render correctly for many connectionFailures', async () => {
     mockGraphqlQuery(dataApiURL, 'Network', { data: mockConnectionFailureResponse })
     const { asFragment } = render(
-      <div style={{ height: 200, width: 200 }}>
-        <HealthPieChart filters={filters} queryType='connectionFailure' queryFilter='auth' />,
-      </div>,
+      <Provider>
+        <div style={{ height: 200, width: 200 }}>
+          <HealthPieChart
+            filters={filters}
+            queryType='connectionFailure'
+            queryFilter='Authentication' />,
+        </div>
+      </Provider>,
       {
-        wrapper: Provider,
         route: {
           params: { tenantId: 'test' }
         }
@@ -41,11 +48,12 @@ describe('HealthPieChart', () => {
   it('should render correctly for single ttc failures', async () => {
     mockGraphqlQuery(dataApiURL, 'Network', { data: mockTtcResponse })
     const { asFragment } = render(
-      <div style={{ height: 200, width: 200 }}>
-        <HealthPieChart filters={filters} queryType='ttc' queryFilter='auth' />,
-      </div>,
+      <Provider>
+        <div style={{ height: 200, width: 200 }}>
+          <HealthPieChart filters={filters} queryType='ttc' queryFilter='Authentication' />,
+        </div>
+      </Provider>,
       {
-        wrapper: Provider,
         route: {
           params: { tenantId: 'test' }
         }
@@ -61,11 +69,12 @@ describe('HealthPieChart', () => {
     mockGraphqlQuery(dataApiURL, 'Network', { data: mockOnlyWlansResponse })
     const apFilters = { ...filters, path: mockPathWithAp }
     const { asFragment } = render(
-      <div style={{ height: 200, width: 200 }}>
-        <HealthPieChart filters={apFilters} queryType='ttc' queryFilter='auth' />,
-      </div>,
+      <Provider>
+        <div style={{ height: 200, width: 200 }}>
+          <HealthPieChart filters={apFilters} queryType='ttc' queryFilter='Authentication' />,
+        </div>
+      </Provider>,
       {
-        wrapper: Provider,
         route: {
           params: { tenantId: 'test' }
         }
@@ -75,6 +84,29 @@ describe('HealthPieChart', () => {
     fragment.querySelectorAll('div[_echarts_instance_]')
       .forEach((node: Element) => node.setAttribute('_echarts_instance_', 'ec_mock'))
     expect(fragment).toMatchSnapshot()
+  })
+
+  it('should handle chart switching', async () => {
+    mockGraphqlQuery(dataApiURL, 'Network', { data: mockConnectionFailureResponse })
+    render(
+      <Provider>
+        <div style={{ height: 200, width: 200 }}>
+          <HealthPieChart
+            filters={filters}
+            queryType='connectionFailure'
+            queryFilter='Authentication' />,
+        </div>
+      </Provider>,
+      {
+        route: {
+          params: { tenantId: 'test' }
+        }
+      })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    expect(await screen.findByText('Authentication Top 5 Impacted WLANs')).toBeVisible()
+    const venues = await screen.findByText('Venues')
+    fireEvent.click(venues)
+    expect(await screen.findByText('Authentication Top 5 Impacted Venues')).toBeVisible()
   })
 
   describe('pieNodeMap', () => {
