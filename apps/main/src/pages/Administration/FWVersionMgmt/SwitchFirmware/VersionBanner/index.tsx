@@ -28,7 +28,7 @@ export const VersionBanner = () => {
     <div>
       <UI.BannerVersion>
         <span>{$t({ defaultMessage: 'Latest Version:' })} </span>
-        <UI.BannerVersionName>{ firmware?.name }</UI.BannerVersionName>
+        <UI.BannerVersionName>{ firmware?.name.replace('_b392', '') }</UI.BannerVersionName>
       </UI.BannerVersion>
       <UI.BannerVersion>
         <span>{transform(firmware?.category, 'type')} </span>
