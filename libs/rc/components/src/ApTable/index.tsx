@@ -431,7 +431,8 @@ export function ApTable (props: ApTableProps) {
             setImportVisible(true)
           }
         }]) : []}
-        searchableWidth={200}
+        searchableWidth={420}
+        filterableWidth={150}
       />
       <ImportFileDrawer type='AP'
         title={$t({ defaultMessage: 'Import from file' })}
