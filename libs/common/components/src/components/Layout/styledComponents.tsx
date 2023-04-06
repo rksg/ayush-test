@@ -30,7 +30,7 @@ export const Wrapper = styled.div`
               a {
                 min-height: unset;
               }
-              padding: 0 0 0  var(--acx-sidebar-left-space);
+              padding: 0 0 0 var(--acx-sidebar-left-space);
               width: var(--acx-sider-width);
               height: var(--acx-header-height);
               margin-bottom: 13px;
@@ -63,6 +63,7 @@ export const Wrapper = styled.div`
           display: flex;
           flex-flow: column;
         }
+        .ant-menu-title-content { transition: all 0.2s !important; }
         .ant-menu-submenu {
           border-left: 2px solid transparent;
           .ant-menu-submenu-title {
@@ -137,10 +138,15 @@ export const Wrapper = styled.div`
           min-width: var(--acx-sider-collapsed-width) !important;
           width: var(--acx-sider-collapsed-width) !important;
         }
+        .ant-menu {
+          &.ant-menu-inline-collapsed {
+            width: unset;
+          }
+        }
         .ant-menu-submenu-title {
           color: transparent;
         }
-        .ant-menu-title-content { padding-left: 5px; }
+        .ant-menu-title-content { padding-left: 8px; }
         .ant-menu-item {
           .ant-menu-title-content {
             color: transparent;
@@ -175,16 +181,12 @@ export const Wrapper = styled.div`
 `
 
 export const MenuGlobalStyle = createGlobalStyle`
-  .ant-tooltip {
-    &.ant-menu-inline-collapsed-tooltip {
-      .ant-tooltip-inner {
-        font-family: var(--acx-accent-brand-font);
-        font-size: var(--acx-headline-4-font-size);
-        padding: 10px 14px 10px 10px;
-        .ant-pro-menu-item-title {
-          vertical-align: middle;
-        }
-      }
+  .ant-tooltip.ant-menu-inline-collapsed-tooltip {
+    .ant-tooltip-inner {
+      font-family: var(--acx-accent-brand-font);
+      font-size: var(--acx-headline-4-font-size);
+      padding: 10px 10px 10px 3px;
+      svg { display: none; }
     }
   }
 
@@ -317,13 +319,6 @@ export const RightHeaderContentWrapper = styled.div`
   align-items: center;
   gap: var(--acx-header-button-margin);
   height: 100%;
-
-  .ant-tooltip-disabled-compatible-wrapper {
-    display: flex !important;
-    button[disabled] {
-      background-color: var(--acx-neutrals-70);
-    }
-  }
 `
 
 const arrowStyle = css`
