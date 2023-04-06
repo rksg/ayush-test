@@ -8,8 +8,8 @@ import {
 } from 'antd'
 import { FormattedMessage } from 'react-intl'
 
-import { Button, GridCol, GridRow, SelectionControl, StepsForm, Subtitle, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
+import { GridCol, GridRow, SelectionControl, StepsForm, Subtitle, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
 import {
   ExpirationDateSelector
 } from '@acx-ui/rc/components'
@@ -187,7 +187,7 @@ function CloudpathFormItems () {
             </Radio.Group>
           }
         />
-        <Form.Item name='policySetId'
+        {/* <Form.Item name='policySetId'
           label={$t({ defaultMessage: 'Access Policy Set' })}
           rules={[{ required: true }]}
         >
@@ -197,7 +197,7 @@ function CloudpathFormItems () {
               {$t({ defaultMessage: 'Add Access Policy Set' })}
             </Button>
           </Space>
-        </Form.Item>
+        </Form.Item> */}
         <Form.Item name='policyDefaultAccess'
           label={$t({ defaultMessage: 'Default Access' })}
           initialValue={PolicyDefaultAccess.ACCEPT}
