@@ -16,6 +16,7 @@ export enum Features {
   NETWORK_SEGMENTATION_SWITCH='switch-consumer-nsg-toggle',
   UNRELEASED='acx-ui-unreleased',
   SERVICE_VALIDATION = 'acx-ui-service-validation-toggle',
+  SERVICE_VALIDATION_VIDEO_CALL_QOE = 'acx-ui-service-validation-videocallqoe-toggle',
   DIRECTED_MULTICAST='wifi-consumer-directed-multicast-toggle',
   HELP_SUPPORT='acx-ui-help-support',
   LICENSE_BANNER='acx-ui-license-banner',
@@ -32,5 +33,5 @@ export enum Features {
   HEALTH_DRILLDOWN = 'acx-ui-health-drilldown-toggle',
   PROPERTY_MANAGEMENT = 'property-management-enabled',
   RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
-  POLICY_MANAGEMENT = 'policy-management-service-enabled'
+  POLICY_MANAGEMENT = 'policy-management-service-enabled',
 }
