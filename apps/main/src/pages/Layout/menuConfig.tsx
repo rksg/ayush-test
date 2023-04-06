@@ -61,7 +61,8 @@ export function useMenuConfig () {
         { uri: '/analytics/incidents', label: $t({ defaultMessage: 'Incidents' }) },
         { uri: '/analytics/health', label: $t({ defaultMessage: 'Health' }) },
         ...(showSV ? [{
-          uri: '/serviceValidation/networkHealth', label: $t({ defaultMessage: 'Network Health' })
+          uri: '/serviceValidation/networkHealth',
+          label: $t({ defaultMessage: 'Service Validation' })
         }]:[])
       ]
     }]:[]),

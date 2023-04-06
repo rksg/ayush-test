@@ -40,7 +40,7 @@ const config: LayoutProps['menuConfig'] = [
     children: [
       { uri: '/analytics/incidents', label: 'Incidents' },
       { uri: '/analytics/health', label: 'Health' },
-      { uri: '/serviceValidation/networkHealth', label: 'Network Health' }
+      { uri: '/serviceValidation/networkHealth', label: 'Service Validation' }
     ]
   },
   {
