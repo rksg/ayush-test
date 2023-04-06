@@ -103,29 +103,29 @@ function getHealthPieChart (
 ) {
   return (
     data.length > 0
-    ? <AutoSizer defaultHeight={150}>
-      {({ width, height }) => (
-        <DonutChart
-          data={data}
-          style={{ height, width }}
-          dataFormatter={dataFormatter}
-          showLabel
-          showTotal={false}
-          labelFormatter={(data) => {
-            const { name, value, percent } = data as {
+      ? <AutoSizer defaultHeight={150}>
+        {({ width, height }) => (
+          <DonutChart
+            data={data}
+            style={{ height, width }}
+            dataFormatter={dataFormatter}
+            showLabel
+            showTotal={false}
+            labelFormatter={(data) => {
+              const { name, value, percent } = data as {
               name: string;
               value: number;
               percent: number;
             }
-            const formattedPercent = formatter('percentFormat')(percent / 100)
-            const formattedValue = dataFormatter(value)
-            const label = `${name}\n${formattedPercent} (${formattedValue})`
-            return label
-          }}
-        />
-      )}
-    </AutoSizer>
-    : <NoData />
+              const formattedPercent = formatter('percentFormat')(percent / 100)
+              const formattedValue = dataFormatter(value)
+              const label = `${name}\n${formattedPercent} (${formattedValue})`
+              return label
+            }}
+          />
+        )}
+      </AutoSizer>
+      : <NoData />
   )
 }
 
