@@ -1,5 +1,7 @@
+import { useState } from 'react'
+
 import { isNull } from 'lodash';
-import { IntlShape, useIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 import AutoSizer from 'react-virtualized-auto-sizer';
 
 import { AnalyticsFilter } from '@acx-ui/analytics/utils';
@@ -172,6 +174,10 @@ export const HealthPieChart = ({
     ),
   });
 
+  const [chartKey, setChartKey] = useState('wlans')
+  const count = chartKey == 'wlans' ? wlans.length : nodes.length
+  const title = chartKey == 'wlans' ? wlansTitle : venueTitle
+
   return (
     <Loader states={[queryResults]}>
       <UI.HealthPieChartWrapper>
@@ -179,7 +185,7 @@ export const HealthPieChart = ({
           type="no-border"
           title={$t(
             { defaultMessage: '{name} Top {count} Impacted {title}' },
-            { name, count: nodes.length, title: venueTitle }
+            { name, count, title }
           )}
         >
         <div style={{ height: '100%' }}>
@@ -194,9 +200,11 @@ export const HealthPieChart = ({
                 }}
               >
                 <ContentSwitcher
+                  value={chartKey}
                   tabDetails={tabDetails}
                   align="right"
                   size="small"
+                  onChange={key => setChartKey(key)}
                 />
               </div>
             )}
