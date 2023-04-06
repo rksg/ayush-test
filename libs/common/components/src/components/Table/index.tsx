@@ -405,6 +405,7 @@ function Table <RecordType extends Record<string, any>> ({
               groupable={groupable}
               setValue={setGroupByValue}
               value={groupByValue}
+              style={{ width: filterWidth }}
             />}
           </Space>
         </div>
