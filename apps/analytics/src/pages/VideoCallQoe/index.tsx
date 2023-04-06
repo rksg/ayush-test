@@ -4,7 +4,7 @@ import { PageHeader }             from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 function VideoCallQoeListPage () {
-  const isVideoCallQoeListPageEnabled = useIsSplitOn(Features.SERVICE_VALIDATION_VIDEO_CALL_QOE)
+  const isVideoCallQoeListPageEnabled = useIsSplitOn(Features.VIDEO_CALL_QOE)
   const { $t } = useIntl()
 
   if (!isVideoCallQoeListPageEnabled) {

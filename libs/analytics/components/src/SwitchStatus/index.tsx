@@ -2,10 +2,10 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { TimeSeriesChartData, getSeriesData, AnalyticsFilter }      from '@acx-ui/analytics/utils'
-import { calculateGranularity }                                     from '@acx-ui/analytics/utils'
-import { Loader, NoData, MultiBarTimeSeriesChart, GridCol, cssStr } from '@acx-ui/components'
-import { TimeStamp }                                                from '@acx-ui/types'
+import { TimeSeriesChartData, getSeriesData, AnalyticsFilter }                     from '@acx-ui/analytics/utils'
+import { calculateGranularity }                                                    from '@acx-ui/analytics/utils'
+import { Card, Loader, NoData, MultiBarTimeSeriesChart, GridCol, cssStr, Tooltip } from '@acx-ui/components'
+import { TimeStamp }                                                               from '@acx-ui/types'
 
 import { SwitchStatusTimeSeries, useSwitchStatusQuery } from './services'
 import * as UI                                          from './styledComponents'
@@ -69,7 +69,14 @@ export function SwitchStatusByTime ({ filters }: { filters: AnalyticsFilter }) {
     <Loader states={[queryResults]}>
       <UI.Wrapper>
         <UI.SwitchStatusHeader col={{ span: 16 }}>
-          {$t({ defaultMessage: 'Switch Status' })}
+          <Card.Title>
+            {$t({ defaultMessage: 'Switch Status' })}
+            <Tooltip
+              title={
+                $t({ defaultMessage: 'Historical data is slightly delayed, and not real-time' })}>
+              <UI.HistoricalIcon />
+            </Tooltip>
+          </Card.Title>
         </UI.SwitchStatusHeader>
         <UI.Status col={{ span: 4 }} style={{ height: '20px' }}>
           {$t({ defaultMessage: 'Total Uptime' })}

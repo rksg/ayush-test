@@ -1,7 +1,10 @@
 import styled from 'styled-components/macro'
 
-import { GridCol, GridRow } from '@acx-ui/components'
+import { GridCol, GridRow, HistoricalCard } from '@acx-ui/components'
 
+export const HistoricalIcon = styled(HistoricalCard.Icon)`
+  margin: 0px 0px -4px 4px;
+`
 export const SwitchStatusHeader = styled(GridCol)`
   font-family: var(--acx-accent-brand-font);
   font-size: var(--acx-headline-4-font-size);
