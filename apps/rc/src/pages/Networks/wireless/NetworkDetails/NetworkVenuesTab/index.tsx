@@ -443,6 +443,7 @@ export function NetworkVenuesTab () {
         <Alert message={$t(notificationMessage)} type='info' showIcon closable />
       }
       <Table
+        settingsId='network-venues-table'
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
         rowSelection={{

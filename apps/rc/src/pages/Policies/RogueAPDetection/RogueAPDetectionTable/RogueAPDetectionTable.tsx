@@ -156,6 +156,7 @@ export default function RogueAPDetectionTable () {
       />
       <Loader states={[tableQuery]}>
         <Table<EnhancedRoguePolicyType>
+          settingsId='policies-rogue-ap-detection-table'
           columns={useColumns(venueIds)}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
