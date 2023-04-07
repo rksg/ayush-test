@@ -56,14 +56,6 @@ import { ChangeScheduleDialog } from './ChangeScheduleDialog'
 import { RevertDialog }         from './RevertDialog'
 import { UpdateNowDialog }      from './UpdateNowDialog'
 
-type TablePaginationPosition =
-  | 'topLeft'
-  | 'topCenter'
-  | 'topRight'
-  | 'bottomLeft'
-  | 'bottomCenter'
-  | 'bottomRight'
-
 const transform = firmwareTypeTrans()
 
 function useColumns (
@@ -80,7 +72,7 @@ function useColumns (
       dataIndex: 'name',
       // sorter: true,
       sorter: { compare: sortProp('name', defaultSort) },
-      defaultSortOrder: 'ascend',
+      // defaultSortOrder: 'ascend',
       searchable: searchable,
       render: function (data, row) {
         return row.name
@@ -179,7 +171,6 @@ export const VenueFirmwareTable = (
   const [eolModels, setEolModels] = useState<string[]>([])
   const [changeUpgradeVersions, setChangeUpgradeVersions] = useState<FirmwareVersion[]>([])
   const [revertVersions, setRevertVersions] = useState<FirmwareVersion[]>([])
-  const pageBotton: TablePaginationPosition | 'none' = 'none'
 
   const [updateUpgradePreferences] = useUpdateUpgradePreferencesMutation()
   const { data: preferencesData } = useGetUpgradePreferencesQuery({ params })
@@ -525,8 +516,6 @@ export const VenueFirmwareTable = (
       <Table
         columns={columns}
         dataSource={tableData}
-        // eslint-disable-next-line max-len
-        pagination={{ pageSize: 10000, position: [pageBotton as TablePaginationPosition , pageBotton as TablePaginationPosition] }}
         onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
