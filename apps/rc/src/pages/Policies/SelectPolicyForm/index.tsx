@@ -1,16 +1,9 @@
 import { Form, Radio } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import {
-  GridCol,
-  GridRow,
-  PageHeader,
-  RadioCard,
-  StepsForm,
-  RadioCardCategory
-} from '@acx-ui/components'
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
-import { useGetApSnmpViewModelQuery } from '@acx-ui/rc/services'
+import { GridCol, GridRow, PageHeader, RadioCard, StepsForm, RadioCardCategory } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                from '@acx-ui/feature-toggle'
+import { useGetApSnmpViewModelQuery }                                            from '@acx-ui/rc/services'
 import {
   PolicyType,
   getPolicyListRoutePath,
