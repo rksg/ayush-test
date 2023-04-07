@@ -90,10 +90,11 @@ export function VarCustomers () {
 
     const onAcceptInvite = (row: VarCustomer) => {
       return <>
-        <Button onClick={() => handleReject(row)}>{$t({ defaultMessage: 'Reject' })}</Button>
         <Button onClick={() => handleAccept(row)}
           type='secondary'
-          style={{ marginLeft: 10 }}>{$t({ defaultMessage: 'Accept' })}</Button>
+        >{$t({ defaultMessage: 'Accept' })}</Button>
+        <Button onClick={() => handleReject(row)}
+          style={{ marginLeft: 10 }}>{$t({ defaultMessage: 'Reject' })}</Button>
       </>
     }
 
@@ -141,6 +142,7 @@ export function VarCustomers () {
         sorter: true
       },
       {
+        title: $t({ defaultMessage: 'Accept Invitation' }),
         dataIndex: 'acceptInvite',
         key: 'acceptInvite',
         width: 220,
