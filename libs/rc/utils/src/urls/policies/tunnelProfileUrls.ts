@@ -20,5 +20,15 @@ export const TunnelProfileUrls: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/tunnelServiceProfiles/:id',
     newApi: true
+  },
+  getTunnelProfile: {
+    method: 'get',
+    url: '/tunnelServiceProfiles/:id',
+    newApi: true
+  },
+  updateTunnelProfile: {
+    method: 'put',
+    url: '/tunnelServiceProfiles/:id',
+    newApi: true
   }
 }

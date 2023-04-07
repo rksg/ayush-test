@@ -128,7 +128,7 @@ export function ApTable (props: ApTableProps) {
   const apAction = useApActions()
   const releaseTag = useIsSplitOn(Features.DEVICES)
   const statusFilterOptions = seriesMappingAP().map(({ key, name, color }) => ({
-    key, value: <Badge color={color} text={name} />
+    key, value: name, label: <Badge color={color} text={name} />
   }))
   const tableData = tableQuery?.data?.data ?? []
   const linkToEditAp = useTenantLink('/devices/wifi/')
@@ -142,7 +142,7 @@ export function ApTable (props: ApTableProps) {
       channel60: false
     }
 
-    return [{
+    const columns: TableProps<APExtended | APExtendedGrouped>['columns'] = [{
       key: 'name',
       title: $t({ defaultMessage: 'AP Name' }),
       dataIndex: 'name',
@@ -233,7 +233,8 @@ export function ApTable (props: ApTableProps) {
       dataIndex: 'switchName',
       render: (data, row : APExtended) => {
         return (
-          <TenantLink to={`/switches/${row.venueId}/details/overview`}>{data}</TenantLink>
+          // eslint-disable-next-line max-len
+          <TenantLink to={`/devices/switch/${row.switchId}/${row.switchSerialNumber}/details/overview`}>{data}</TenantLink>
         )
       }
     }, {
@@ -241,7 +242,7 @@ export function ApTable (props: ApTableProps) {
       title: $t({ defaultMessage: 'Mesh Role' }),
       dataIndex: 'meshRole',
       sorter: true,
-      render: transformMeshRole
+      render: (data) => transformMeshRole(data as APMeshRole)
     }, {
       key: 'clients',
       title: $t({ defaultMessage: 'Clients' }),
@@ -264,19 +265,22 @@ export function ApTable (props: ApTableProps) {
       groupable: getGroupableConfig(params, apAction)?.deviceGroupNameGroupableOptions
     }, {
       key: 'rf-channels',
+      dataIndex: 'rf-channels',
       title: $t({ defaultMessage: 'RF Channels' }),
-      children: Object.entries(extraParams)
-        .map(([channel, visible]) => visible
-          ? {
-            key: channel,
-            dataIndex: channel,
-            title: <Table.SubTitle children={channelTitleMap[channel as keyof ApExtraParams]} />,
-            align: 'center',
-            ellipsis: true,
-            render: (data: never, row: { [x: string]: string | undefined }) =>
-              transformDisplayText(row[channel]) }
-          : null)
-        .filter(Boolean)
+      children: Object.entries(extraParams).reduce((acc, [channel, visible]) => {
+        if (!visible) return acc
+        const key = channel as keyof ApExtraParams
+        acc.push({
+          key: channel,
+          dataIndex: channel,
+          title: <Table.SubTitle children={channelTitleMap[key]} />,
+          align: 'center',
+          ellipsis: true,
+          render: (data, row) =>
+            transformDisplayText(row[key] as string)
+        })
+        return acc
+      }, [] as TableProps<APExtended | APExtendedGrouped>['columns'])
     // }, { TODO: Waiting for TAG feature support
       // key: 'tags',
       // title: $t({ defaultMessage: 'Tags' }),
@@ -302,7 +306,7 @@ export function ApTable (props: ApTableProps) {
       title: $t({ defaultMessage: 'PoE Port' }),
       dataIndex: 'poePort',
       show: false,
-      sorter: false,
+      sorter: true,
       render: (data, row : APExtended) => {
         if (!row.hasPoeStatus) {
           return <span></span>
@@ -317,7 +321,9 @@ export function ApTable (props: ApTableProps) {
           </span>
         )
       }
-    }] as TableProps<APExtended | APExtendedGrouped>['columns']
+    }]
+
+    return columns
   }, [$t, tableQuery.data?.extra])
 
   const isActionVisible = (
@@ -395,6 +401,7 @@ export function ApTable (props: ApTableProps) {
     <Loader states={[tableQuery]}>
       <Table<APExtended | APExtendedGrouped>
         {...props}
+        settingsId='ap-table'
         columns={columns}
         dataSource={tableData}
         rowKey='serialNumber'

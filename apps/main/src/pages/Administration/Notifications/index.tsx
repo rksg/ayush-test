@@ -160,7 +160,6 @@ export const NotificationsTable = () => {
       ]}>
         <Table
           columns={columns}
-          columnState={{ hidden: true }}
           dataSource={notificationList.data}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
