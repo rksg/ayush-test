@@ -458,28 +458,34 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
                 tabindex="0"
               >
                 <li
-                  class="ant-menu-item ant-menu-item-only-child menu-active"
-                  data-menu-id="rc-menu-uuid-test--dashboard"
-                  role="menuitem"
-                  tabindex="-1"
+                  class="ant-menu-submenu ant-menu-submenu-vertical"
+                  role="none"
                 >
-                  <span
-                    class="ant-menu-title-content"
+                  <div
+                    aria-controls="rc-menu-uuid-test--my_customers-popup"
+                    aria-expanded="false"
+                    aria-haspopup="true"
+                    class="ant-menu-submenu-title"
+                    data-menu-id="rc-menu-uuid-test--my_customers"
+                    role="menuitem"
+                    tabindex="-1"
                   >
-                    <a
-                      class=""
-                      href="/v/undefined/dashboard"
+                    <span
+                      class="ant-menu-title-content"
                     >
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-1 ccvYDe"
                       >
                         <svg
-                          data-testid="SpeedIndicatorSolid"
+                          data-testid="SpeedIndicatorOutlined"
                         />
                       </span>
-                      Dashboard
-                    </a>
-                  </span>
+                      My Customers
+                    </span>
+                    <i
+                      class="ant-menu-submenu-arrow"
+                    />
+                  </div>
                 </li>
               </ul>
               <div

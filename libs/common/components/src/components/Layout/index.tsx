@@ -79,7 +79,7 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
 
   const getActivePatterns = (item: ItemType): (string | undefined)[] => {
     if (isMenuItemGroupType(item) || isSubMenuType(item)) {
-      return item.children?.flatMap(item => getActivePatterns(item)) || []
+      return item.children!.flatMap(item => getActivePatterns(item))
     }
     if (item?.isActivePattern === IGNORE_ACTIVE_PATTERN) {
       return []
@@ -137,6 +137,19 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
   </>
 }
 
+function findDashboard (menuConfig: ItemType[]): ItemType | undefined {
+  let dashboard: ItemType | undefined
+  for (const item of menuConfig) {
+    if (isMenuItemGroupType(item) || isSubMenuType(item)) {
+      dashboard = findDashboard(item.children!)
+      return dashboard
+    }
+    dashboard = (item?.uri && item.uri.startsWith('/dashboard')) ? item : undefined
+    if (dashboard) break
+  }
+  return dashboard
+}
+
 export function Layout ({
   menuConfig,
   rightHeaderContent,
@@ -149,7 +162,7 @@ export function Layout ({
 
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const indexPath = isGuestManager ? '/users/guestsManager' : '/dashboard'
-  const dashboard = menuConfig.find(item => get(item, 'uri') === '/dashboard')
+  const dashboard = findDashboard(menuConfig)
 
   return <UI.Wrapper>
     <ProLayout
