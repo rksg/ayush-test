@@ -7,7 +7,7 @@ import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 import { Modal, showActionModal, Table, TableProps } from '@acx-ui/components'
 
 
-import { BonjourFencingServiceContext }     from '../../BonjourFencingServiceTable'
+import { MdnsFencingServiceContext }        from '../../MdnsFencingServiceTable'
 import { FieldsetItem, ProtocolRadioGroup } from '../../utils'
 
 interface CustomMappingTableEntry {
@@ -281,7 +281,7 @@ export const CustomMappingFieldset = () => {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
 
-  const { currentService } = useContext(BonjourFencingServiceContext)
+  const { currentService } = useContext(MdnsFencingServiceContext)
 
   const [ tableData, setTableData ] = useState<CustomMappingTableEntry[]>([])
 

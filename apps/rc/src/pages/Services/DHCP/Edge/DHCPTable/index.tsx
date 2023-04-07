@@ -189,6 +189,7 @@ const EdgeDhcpTable = () => {
         { isLoading: false, isFetching: isDeleteDhcpUpdating }
       ]}>
         <Table
+          settingsId='services-edge-dhcp-table'
           columns={columns}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}

@@ -412,6 +412,7 @@ export const ConnectedClientsTable = (props: {
           {$t({ defaultMessage: 'Connected Clients' })}
         </Subtitle>
         <Table<ClientList>
+          settingsId='connected-clients-table'
           columns={GetCols(useIntl(), showAllColumns)}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}

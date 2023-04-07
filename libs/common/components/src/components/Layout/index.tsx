@@ -11,9 +11,6 @@ import {
   useTenantLink,
   TenantNavLink
 }                          from '@acx-ui/react-router-dom'
-import { notAvailableMsg } from '@acx-ui/utils'
-
-import { Tooltip } from '../Tooltip'
 
 import * as UI from './styledComponents'
 
@@ -66,7 +63,7 @@ export function Layout ({
     }
   }))
   const menuRender = (item: MenuItem, dom: React.ReactNode) => {
-    const link = <TenantNavLink to={item.uri!} tenantType={item.tenantType}>
+    return <TenantNavLink to={item.uri!} tenantType={item.tenantType}>
       {({ isActive }) => {
         let icon: JSX.Element | undefined
         if (isActive) {
@@ -82,12 +79,6 @@ export function Layout ({
         </>
       }}
     </TenantNavLink>
-    return item.disabled
-      ? <Tooltip placement='right' title={$t(notAvailableMsg)}>
-        {/* workaround for showing tooltip when link disabled */}
-        <span>{link}</span>
-      </Tooltip>
-      : link
   }
 
   return <UI.Wrapper>

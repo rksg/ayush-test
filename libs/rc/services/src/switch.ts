@@ -248,6 +248,15 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'SwitchProfiles', id: 'LIST' }]
     }),
+    getSwitchConfigProfileDetail: build.query<ConfigurationProfile, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getSwitchConfigProfileDetail, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'SwitchProfiles', id: 'DETAIL' }]
+    }),
     getCliTemplates: build.query<TableResult<SwitchCliTemplateModel>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
@@ -1225,6 +1234,7 @@ export const {
   useGetCliConfigExamplesQuery,
   useAddAclMutation,
   useGetSwitchConfigProfileQuery,
+  useGetSwitchConfigProfileDetailQuery,
   useAddSwitchConfigProfileMutation,
   useUpdateSwitchConfigProfileMutation,
   useGetSwitchModelListQuery
