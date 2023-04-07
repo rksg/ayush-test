@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
@@ -7,12 +8,13 @@ import { SimpleListTooltip }                                     from '@acx-ui/r
 import {
   useDeleteRadiusAttributeGroupMutation,
   useLazyAdaptivePolicyListByQueryQuery,
-  useRadiusAttributeGroupListQuery
+  useRadiusAttributeGroupListByQueryQuery
 } from '@acx-ui/rc/services'
 import {
+  FILTER,
   getPolicyDetailsLink, getPolicyRoutePath,
   PolicyOperation,
-  PolicyType, RadiusAttributeGroup,
+  PolicyType, RadiusAttributeGroup, SEARCH,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
@@ -27,7 +29,8 @@ export default function RadiusAttributeGroupTable () {
     const [policyMap, setPolicyMap] = useState(new Map())
 
     const tableQuery = useTableQuery({
-      useQuery: useRadiusAttributeGroupListQuery,
+      useQuery: useRadiusAttributeGroupListByQueryQuery,
+      apiParams: { sort: 'name,ASC', excludeContent: 'false' },
       defaultPayload: {}
     })
 
@@ -152,12 +155,23 @@ export default function RadiusAttributeGroupTable () {
       return columns
     }
 
+    const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
+      let payload = { ...tableQuery.payload }
+      if(customSearch.searchString) {
+        payload = { ...payload, filters: { name: customSearch?.searchString ?? '' } }
+      } else{
+        payload = _.omit(payload, 'filters')
+      }
+      tableQuery.setPayload(payload)
+    }
+
     return (
       <Loader states={[
         tableQuery,
         { isLoading: false, isFetching: isDeleteMacGroupUpdating }
       ]}>
         <Table
+          enableApiFilter
           settingsId='radius-attribute-group-list-table'
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
@@ -165,6 +179,7 @@ export default function RadiusAttributeGroupTable () {
           onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
+          onFilterChange={handleFilterChange}
           rowSelection={{ type: 'radio' }}
           actions={filterByAccess([{
             label: $t({ defaultMessage: 'Add Group' }),

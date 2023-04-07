@@ -1404,9 +1404,12 @@ export const policyApi = basePolicyApi.injectEndpoints({
         const req = createHttpRequest(RadiusAttributeGroupUrlsInfo.getAttributeGroupsWithQuery, params)
         return {
           ...req,
-          body: payload
+          body: {
+            ...(payload as TableChangePayload), page: (payload as TableChangePayload).page - 1
+          }
         }
-      }
+      },
+      providesTags: [{ type: 'RadiusAttributeGroup', id: 'LIST' }]
     }),
     radiusAttributeList: build.query<TableResult<RadiusAttribute>, RequestPayload>({
       query: ({ params }) => {
@@ -1899,6 +1902,7 @@ export const {
   useLazyRadiusAttributeGroupListQuery,
   useUpdateRadiusAttributeGroupMutation,
   useAddRadiusAttributeGroupMutation,
+  useRadiusAttributeGroupListByQueryQuery,
   useLazyRadiusAttributeGroupListByQueryQuery,
   useLazyGetAdaptivePolicySetQuery,
   useLazyGetRadiusAttributeGroupQuery,

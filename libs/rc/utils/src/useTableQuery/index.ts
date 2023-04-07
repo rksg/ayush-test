@@ -122,7 +122,7 @@ export function useTableQuery <
   ResultType,
   Payload extends RequestPayload<unknown> = RequestPayload<unknown>,
   ResultExtra = unknown
-> (option: TABLE_QUERY<ResultType, Payload, ResultExtra>) {
+  > (option: TABLE_QUERY<ResultType, Payload, ResultExtra>) {
 
   const initialPagination = {
     ...DEFAULT_PAGINATION,
