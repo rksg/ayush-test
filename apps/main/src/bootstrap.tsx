@@ -1,14 +1,27 @@
 import React from 'react'
 
-import { createRoot }    from 'react-dom/client'
+import { Root }          from 'react-dom/client'
 import { addMiddleware } from 'redux-dynamic-middlewares'
 
-import { ConfigProvider, ConfigProviderProps } from '@acx-ui/components'
-import { get }                                 from '@acx-ui/config'
-import { BrowserRouter, useParams }            from '@acx-ui/react-router-dom'
-import { Provider }                            from '@acx-ui/store'
-import { UserProfileProvider, UserUrlsInfo }   from '@acx-ui/user'
-import { getTenantId, createHttpRequest, localeLoaders, LocaleProviderProps, LocaleContextType}      from '@acx-ui/utils'
+import {
+  ConfigProvider,
+  ConfigProviderProps,
+  Loader,
+  SuspenseBoundary
+} from '@acx-ui/components'
+import { get }           from '@acx-ui/config'
+import { BrowserRouter } from '@acx-ui/react-router-dom'
+import { Provider }      from '@acx-ui/store'
+import {
+  UserProfileProvider,
+  useUserProfileContext,
+  UserUrlsInfo
+} from '@acx-ui/user'
+import {
+  getTenantId,
+  createHttpRequest,
+  useLocaleContext
+} from '@acx-ui/utils'
 import { useYourPreferredLanguage }        from '@acx-ui/rc/services'
 
 import AllRoutes           from './AllRoutes'
@@ -40,6 +53,7 @@ export function loadMessages (locales: readonly string[]): string {
 
 export function renderPendoAnalyticsTag () {
   const script = document.createElement('script')
+  script.defer = true
   // @ts-ignore
   const key = get('PENDO_API_KEY')
   script.onerror = event => {
@@ -94,14 +108,26 @@ export async function pendoInitalization (): Promise<void> {
   }
 }
 
+function DataGuardLoader (props: React.PropsWithChildren) {
+  const locale = useLocaleContext()
+  const userProfile = useUserProfileContext()
+
+  return <Loader
+    fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
+    states={[{ isLoading:
+      !Boolean(locale.messages) ||
+      !Boolean(userProfile.allowedOperations.length)
+    }]}
+    children={props.children}
+  />
+}
+
 function PreferredLangConfigProvider (props: React.PropsWithChildren) {
   const lang = useYourPreferredLanguage()
   return <ConfigProvider lang={lang} {...props} />
 }
 
-export async function init () {
-  const container = document.getElementById('root')
-  const root = createRoot(container!)
+export async function init (root: Root) {
   const browserLang = loadMessages(navigator.languages)
   const queryParams = new URLSearchParams(window.location.search)
   const lang = (queryParams.get('lang') ?? browserLang) as ConfigProviderProps['lang']
@@ -120,9 +146,11 @@ export async function init () {
           <PreferredLangConfigProvider>
           <BrowserRouter>
             <UserProfileProvider>
-              <React.Suspense fallback={null}>
-                <AllRoutes />
-              </React.Suspense>
+              <DataGuardLoader>
+                <React.Suspense fallback={null}>
+                  <AllRoutes />
+                </React.Suspense>
+              </DataGuardLoader>
             </UserProfileProvider>
           </BrowserRouter>
           </PreferredLangConfigProvider>
