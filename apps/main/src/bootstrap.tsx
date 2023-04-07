@@ -5,10 +5,11 @@ import { addMiddleware } from 'redux-dynamic-middlewares'
 
 import { ConfigProvider, ConfigProviderProps } from '@acx-ui/components'
 import { get }                                 from '@acx-ui/config'
-import { BrowserRouter }                       from '@acx-ui/react-router-dom'
+import { BrowserRouter, useParams }            from '@acx-ui/react-router-dom'
 import { Provider }                            from '@acx-ui/store'
 import { UserProfileProvider, UserUrlsInfo }   from '@acx-ui/user'
-import { getTenantId, createHttpRequest }      from '@acx-ui/utils'
+import { getTenantId, createHttpRequest, localeLoaders, LocaleProviderProps, LocaleContextType}      from '@acx-ui/utils'
+import { useYourPreferredLanguage }        from '@acx-ui/rc/services'
 
 import AllRoutes           from './AllRoutes'
 import { errorMiddleware } from './errorMiddleware'
@@ -93,6 +94,11 @@ export async function pendoInitalization (): Promise<void> {
   }
 }
 
+function PreferredLangConfigProvider (props: React.PropsWithChildren) {
+  const lang = useYourPreferredLanguage()
+  return <ConfigProvider lang={lang} {...props} />
+}
+
 export async function init () {
   const container = document.getElementById('root')
   const root = createRoot(container!)
@@ -110,8 +116,8 @@ export async function init () {
 
   root.render(
     <React.StrictMode>
-      <ConfigProvider lang={lang}>
         <Provider>
+          <PreferredLangConfigProvider>
           <BrowserRouter>
             <UserProfileProvider>
               <React.Suspense fallback={null}>
@@ -119,8 +125,8 @@ export async function init () {
               </React.Suspense>
             </UserProfileProvider>
           </BrowserRouter>
+          </PreferredLangConfigProvider>
         </Provider>
-      </ConfigProvider>
     </React.StrictMode>
   )
 }
