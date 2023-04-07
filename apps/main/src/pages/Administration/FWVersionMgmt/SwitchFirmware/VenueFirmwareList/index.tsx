@@ -47,14 +47,6 @@ import * as UI               from '../../styledComponents'
 import { ChangeScheduleDialog } from './ChangeScheduleDialog'
 import { UpdateNowDialog }      from './UpdateNowDialog'
 
-type TablePaginationPosition =
-  | 'topLeft'
-  | 'topCenter'
-  | 'topRight'
-  | 'bottomLeft'
-  | 'bottomCenter'
-  | 'bottomRight'
-
 const transform = firmwareTypeTrans()
 
 function useColumns (
@@ -159,7 +151,6 @@ export const VenueFirmwareTable = (
   const [venues, setVenues] = useState<FirmwareSwitchVenue[]>([])
   const [upgradeVersions, setUpgradeVersions] = useState<FirmwareVersion[]>([])
   const [changeUpgradeVersions, setChangeUpgradeVersions] = useState<FirmwareVersion[]>([])
-  const pageBotton: TablePaginationPosition | 'none' = 'none'
 
   const { data: preDownload } = useGetSwitchFirmwarePredownloadQuery({ params })
 
@@ -311,8 +302,7 @@ export const VenueFirmwareTable = (
       <Table
         columns={columns}
         dataSource={tableQuery.data?.data}
-        // eslint-disable-next-line max-len
-        pagination={{ pageSize: 10000, position: [pageBotton as TablePaginationPosition , pageBotton as TablePaginationPosition] }}
+        pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
