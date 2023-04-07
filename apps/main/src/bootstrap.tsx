@@ -9,9 +9,10 @@ import {
   Loader,
   SuspenseBoundary
 } from '@acx-ui/components'
-import { get }           from '@acx-ui/config'
-import { BrowserRouter } from '@acx-ui/react-router-dom'
-import { Provider }      from '@acx-ui/store'
+import { get }                      from '@acx-ui/config'
+import { useYourPreferredLanguage } from '@acx-ui/rc/services'
+import { BrowserRouter }            from '@acx-ui/react-router-dom'
+import { Provider }                 from '@acx-ui/store'
 import {
   UserProfileProvider,
   useUserProfileContext,
@@ -22,7 +23,6 @@ import {
   createHttpRequest,
   useLocaleContext
 } from '@acx-ui/utils'
-import { useYourPreferredLanguage }        from '@acx-ui/rc/services'
 
 import AllRoutes           from './AllRoutes'
 import { errorMiddleware } from './errorMiddleware'
@@ -142,8 +142,8 @@ export async function init (root: Root) {
 
   root.render(
     <React.StrictMode>
-        <Provider>
-          <PreferredLangConfigProvider>
+      <Provider>
+        <PreferredLangConfigProvider>
           <BrowserRouter>
             <UserProfileProvider>
               <DataGuardLoader>
@@ -153,8 +153,8 @@ export async function init (root: Root) {
               </DataGuardLoader>
             </UserProfileProvider>
           </BrowserRouter>
-          </PreferredLangConfigProvider>
-        </Provider>
+        </PreferredLangConfigProvider>
+      </Provider>
     </React.StrictMode>
   )
 }
