@@ -22,7 +22,7 @@ describe('VenueTabs', () => {
     render(<Provider>
       <VenueTabs venueDetail={venueDetailHeaderData as unknown as VenueDetailHeader} />
     </Provider>, { route: { params } })
-    expect(screen.getAllByRole('tab')).toHaveLength(8)
+    expect(screen.getAllByRole('tab')).toHaveLength(6)
   })
 
   it('should handle tab changes', async () => {

@@ -25,7 +25,8 @@ import {
   baseTunnelProfileApi as tunnelProfileApi,
   dataApi,
   networkHealthApi,
-  userApi
+  userApi,
+  baseMsgTemplateApi as msgTemplateApi
 } from './baseApi'
 
 const isDev = process.env['NODE_ENV'] === 'development'
@@ -55,7 +56,8 @@ export const store = configureStore({
     [personaApi.reducerPath]: personaApi.reducer,
     [networkHealthApi.reducerPath]: networkHealthApi.reducer,
     [nsgApi.reducerPath]: nsgApi.reducer,
-    [tunnelProfileApi.reducerPath]: tunnelProfileApi.reducer
+    [tunnelProfileApi.reducerPath]: tunnelProfileApi.reducer,
+    [msgTemplateApi.reducerPath]: msgTemplateApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -87,7 +89,8 @@ export const store = configureStore({
       personaApi.middleware,
       networkHealthApi.middleware,
       nsgApi.middleware,
-      tunnelProfileApi.middleware
+      tunnelProfileApi.middleware,
+      msgTemplateApi.middleware
     ])
   },
 

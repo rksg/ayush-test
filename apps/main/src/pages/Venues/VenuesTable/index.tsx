@@ -270,6 +270,7 @@ export const VenueTable = (
       { isLoading: false, isFetching: isDeleteVenueUpdating }
     ]}>
       <Table
+        settingsId='venues-table'
         columns={columns}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
