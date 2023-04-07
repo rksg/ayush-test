@@ -73,8 +73,9 @@ export default function SelectPolicyForm () {
     })
   }
   if (isEdgeEnabled) {
-    // eslint-disable-next-line max-len
-    sets.push({ type: PolicyType.TUNNEL_PROFILE, categories: [RadioCardCategory.WIFI] })
+    sets.push({
+      type: PolicyType.TUNNEL_PROFILE, categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE]
+    })
   }
 
   if(macRegistrationEnabled) {
