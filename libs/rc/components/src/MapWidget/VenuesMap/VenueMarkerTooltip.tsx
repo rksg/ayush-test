@@ -3,9 +3,9 @@ import { defineMessage, useIntl } from 'react-intl'
 import { StackedBarChart }                 from '@acx-ui/components'
 import { Table }                           from '@acx-ui/components'
 import { getDeviceConnectionStatusColors } from '@acx-ui/components'
+import { VenueMarkerOptions }              from '@acx-ui/rc/utils'
 
-import * as UI                from './styledComponents'
-import { VenueMarkerOptions } from './VenueMarkerWithLabel'
+import * as UI from './styledComponents'
 
 import { NavigateProps } from './index'
 
