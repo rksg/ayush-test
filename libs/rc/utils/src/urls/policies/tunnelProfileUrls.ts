@@ -6,6 +6,21 @@ export const TunnelProfileUrls: { [key: string]: ApiInfo } = {
     url: '/tunnelServiceProfiles',
     newApi: true
   },
+  getTunnelProfileViewDataList: {
+    method: 'post',
+    url: '/tunnelServiceProfiles/query',
+    newApi: true
+  },
+  batchDeleteTunnelProfile: {
+    method: 'delete',
+    url: '/tunnelServiceProfiles',
+    newApi: true
+  },
+  deleteTunnelProfile: {
+    method: 'delete',
+    url: '/tunnelServiceProfiles/:id',
+    newApi: true
+  },
   getTunnelProfile: {
     method: 'get',
     url: '/tunnelServiceProfiles/:id',
