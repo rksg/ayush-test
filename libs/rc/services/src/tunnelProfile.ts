@@ -1,6 +1,6 @@
-import { CommonResult, RequestPayload, TunnelProfileUrls } from '@acx-ui/rc/utils'
-import { baseTunnelProfileApi }                            from '@acx-ui/store'
-import { createHttpRequest }                               from '@acx-ui/utils'
+import { CommonResult, RequestPayload, TableResult, TunnelProfile, TunnelProfileUrls, TunnelProfileViewData } from '@acx-ui/rc/utils'
+import { baseTunnelProfileApi }                                                                               from '@acx-ui/store'
+import { createHttpRequest }                                                                                  from '@acx-ui/utils'
 
 export const tunnelProfileApi = baseTunnelProfileApi.injectEndpoints({
   endpoints: (build) => ({
@@ -13,10 +13,60 @@ export const tunnelProfileApi = baseTunnelProfileApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'TunnelProfile', id: 'LIST' }]
+    }),
+    getTunnelProfileViewDataList: build.query<TableResult<TunnelProfileViewData>, RequestPayload>({
+      query: ({ payload, params }) => {
+        const req = createHttpRequest(TunnelProfileUrls.getTunnelProfileViewDataList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'TunnelProfile', id: 'LIST' }]
+    }),
+    deleteTunnelProfile: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        if(payload){ //delete multiple rows
+          const req = createHttpRequest(TunnelProfileUrls.batchDeleteTunnelProfile)
+          return {
+            ...req,
+            body: payload
+          }
+        }else{ //delete single row
+          const req = createHttpRequest(TunnelProfileUrls.deleteTunnelProfile, params)
+          return {
+            ...req
+          }
+        }
+      },
+      invalidatesTags: [{ type: 'TunnelProfile', id: 'LIST' }]
+    }),
+    getTunnelProfile: build.query<TunnelProfile, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(TunnelProfileUrls.getTunnelProfile, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'TunnelProfile', id: 'DETAIL' }]
+    }),
+    updateTunnelProfile: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(TunnelProfileUrls.updateTunnelProfile, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'TunnelProfile', id: 'LIST' }]
     })
   })
 })
 
 export const {
-  useCreateTunnelProfileMutation
+  useCreateTunnelProfileMutation,
+  useGetTunnelProfileViewDataListQuery,
+  useDeleteTunnelProfileMutation,
+  useGetTunnelProfileQuery,
+  useUpdateTunnelProfileMutation
 } = tunnelProfileApi
