@@ -3,6 +3,8 @@ import { useIntl } from 'react-intl'
 import { Button, Loader, PageHeader, SuspenseBoundary } from '@acx-ui/components'
 import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 
+import { VideoCallQoeTable } from '../VideoCallQoeTable'
+
 import { useVideoCallQoeTestsQuery } from './services'
 
 const { DefaultFallback: Spinner } = SuspenseBoundary
@@ -17,14 +19,14 @@ function VideoCallQoeListPage () {
   }
 
   return (
-    <PageHeader
-      title={$t({ defaultMessage: 'Video Call QoE' })}
+    <><PageHeader
+      title={$t({ defaultMessage: 'Video Call QoE\n' })}
       subTitle={<Loader states={[queryResults]} fallback={<Spinner size='small' />}>
         {$t({ defaultMessage: 'Total Test Calls:' })} {noOfTestCalls}
       </Loader>}
       extra={[
         <Button type='primary'>{$t({ defaultMessage: 'Create Test Call' })}</Button>
-      ]} />
+      ]} /><VideoCallQoeTable /></>
   )
 }
 export default VideoCallQoeListPage
