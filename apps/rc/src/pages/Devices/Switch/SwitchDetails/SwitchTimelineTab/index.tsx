@@ -17,6 +17,7 @@ const Events = () => {
   const { serialNumber } = useParams()
   const tableQuery = useEventsTableQuery({ serialNumber: [serialNumber] })
   return <EventTable
+    settingsId='switch-event-table'
     tableQuery={tableQuery}
     filterables={['severity']}
     columnState={{ defaultValue: { ...eventTableColumnState, product: false } }}
@@ -28,6 +29,7 @@ const Activities = () => {
   const tableQuery = useActivityTableQuery({ entityType: 'SWITCH', entityId: serialNumber! })
 
   return <ActivityTable
+    settingsId='switch-activity-table'
     tableQuery={tableQuery}
     filterables={['status']}
     columnState={activityTableColumnState}

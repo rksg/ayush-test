@@ -27,7 +27,8 @@ import {
   useGetMspLabelQuery,
   useIntegratorCustomerListQuery,
   useGetTenantDetailsQuery,
-  useDelegateToMspEcPath
+  useDelegateToMspEcPath,
+  useCheckDelegateAdmin
 } from '@acx-ui/rc/services'
 import {
   DelegationEntitlementRecord,
@@ -37,8 +38,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { Link, MspTenantLink, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                              from '@acx-ui/types'
-import { filterByAccess, useUserProfileContext }                                  from '@acx-ui/user'
-import { hasRoles }                                                               from '@acx-ui/user'
+import { filterByAccess, useUserProfileContext, hasRoles }                        from '@acx-ui/user'
 import { AccountType }                                                            from '@acx-ui/utils'
 
 const getStatus = (row: MspEc) => {
@@ -121,11 +121,12 @@ export function MspCustomers () {
   const [reactivateMspEc] = useReactivateMspEcMutation()
   const [deleteMspEc, { isLoading: isDeleteEcUpdating }] = useDeleteMspEcMutation()
   const { delegateToMspEcPath } = useDelegateToMspEcPath()
+  const { checkDelegateAdmin } = useCheckDelegateAdmin()
 
   const onBoard = mspLabel?.msp_label
   const ecFilters = isPrimeAdmin
     ? { tenantType: [AccountType.MSP_EC] }
-    : { mspAdmins: [userProfile.adminId], tenantType: [AccountType.MSP_EC] }
+    : { mspAdmins: [userProfile?.adminId], tenantType: [AccountType.MSP_EC] }
 
   const transformTechPartner = (id: string) => {
     const rec = techParnersData.find(e => e.id === id)
@@ -246,9 +247,13 @@ export function MspCustomers () {
       sorter: true,
       defaultSortOrder: 'ascend',
       onCell: (data) => {
-        return {
-          onClick: () => { delegateToMspEcPath(data.id) }
-        }
+        return (data.status === 'Active') ? {
+          onClick: () => {
+            userProfile?.support
+              ? delegateToMspEcPath(data.id)
+              : checkDelegateAdmin(data.id, userProfile!.adminId)
+          }
+        } : {}
       },
       render: function (data, row, _, highlightFn) {
         return (

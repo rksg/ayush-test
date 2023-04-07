@@ -24,19 +24,20 @@ function TrafficByVolumeWidget ({
   filters, vizType
 }: { filters : AnalyticsFilter , vizType: string }) {
   const { $t } = useIntl()
+
   const seriesMapping = [
     { key: 'totalTraffic_all', name: $t({ defaultMessage: 'All Bands' }) },
     { key: 'totalTraffic_24', name: formatter('radioFormat')('2.4') },
     { key: 'totalTraffic_5', name: formatter('radioFormat')('5') },
     { key: 'totalTraffic_6', name: formatter('radioFormat')('6') }
   ] as Array<{ key: Key, name: string }>
+
   const queryResults = useTrafficByVolumeQuery(filters, {
     selectFromResult: ({ data, ...rest }) => ({
-      data: getSeriesData(data!, vizType === 'area' ? seriesMapping.reverse() : seriesMapping),
+      data: getSeriesData(data!, vizType === 'area' ? seriesMapping.splice(1) : seriesMapping),
       ...rest
     })
   })
-  const stackColors = take(qualitativeColorSet(), 4).reverse()
 
   return (
     <Loader states={[queryResults]}>
@@ -47,8 +48,9 @@ function TrafficByVolumeWidget ({
               vizType === 'area' ?
                 <StackedAreaChart
                   style={{ width, height }}
-                  stackColors={stackColors}
+                  stackColors={take(qualitativeColorSet(), 3)}
                   data={queryResults.data}
+                  tooltipTotalTitle={$t({ defaultMessage: 'Total Traffic' })}
                   dataFormatter={formatter('bytesFormat')}
                 /> :
                 <MultiLineTimeSeriesChart
