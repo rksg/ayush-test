@@ -21,11 +21,9 @@ export const Card = styled(AntCard)<{ $cardType: RadioCardType }>`
     ?'cursor: pointer;':''}
 
   ${props => props.$cardType === 'disabled'
-    ? `
-      opacity : 50%;
+    ? `opacity : 50%;
       background-color: var(--acx-neutrals-15);
-    `
-    : ''}
+    `: ''}
 
   :has(.ant-radio-checked) {
     border-radius: 4px;
@@ -36,7 +34,6 @@ export const Card = styled(AntCard)<{ $cardType: RadioCardType }>`
   .ant-card-body {
     padding: 16px 12px 12px 12px;
   }
-  
 `
 
 export const Button = styled(DefaultButton)`
