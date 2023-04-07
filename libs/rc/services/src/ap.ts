@@ -76,6 +76,7 @@ export const apApi = baseApApi.injectEndpoints({
             'UpdateAp',
             'DeleteAp',
             'DeleteAps',
+            'AddApGroup',
             'AddApGroupLegacy'
           ]
           onActivityMessageReceived(msg, activities, () => {
