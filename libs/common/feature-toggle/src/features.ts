@@ -32,5 +32,6 @@ export enum Features {
   HEALTH_DRILLDOWN = 'acx-ui-health-drilldown-toggle',
   PROPERTY_MANAGEMENT = 'property-management-enabled',
   RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
-  POLICY_MANAGEMENT = 'policy-management-service-enabled'
+  POLICY_MANAGEMENT = 'policy-management-service-enabled',
+  WIFI_EDA_GATEWAY = 'wifi-api-gateway-eda-toggle'
 }
