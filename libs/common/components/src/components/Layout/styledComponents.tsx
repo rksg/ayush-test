@@ -254,7 +254,7 @@ export const MenuGlobalStyle = createGlobalStyle`
           font-family: var(--acx-neutral-brand-font);
           font-size: var(--acx-subtitle-5-font-size);
           line-height: var(--acx-subtitle-5-line-height);
-          font-weight: var(--acx-subtitle-5-font-weight);
+          font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
           color: var(--acx-neutrals-20);
           opacity: 0.6;
           padding: 8px 16px 4px;
