@@ -18,7 +18,7 @@ import {
   WiFi
 } from '@acx-ui/icons'
 
-import { LayoutProps, IGNORE_ACTIVE_PATTERN } from '..'
+import { LayoutProps, IsActiveCheck } from '..'
 
 const config: LayoutProps['menuConfig'] = [
   null,
@@ -73,7 +73,7 @@ const config: LayoutProps['menuConfig'] = [
           {
             uri: '/reports/clients',
             label: 'Wireless Clients Report',
-            isActivePattern: IGNORE_ACTIVE_PATTERN
+            isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
           }
         ]
       },
@@ -104,12 +104,12 @@ const config: LayoutProps['menuConfig'] = [
           {
             uri: '/reports/aps',
             label: 'AP Report',
-            isActivePattern: IGNORE_ACTIVE_PATTERN
+            isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
           },
           {
             uri: '/reports/airtime',
             label: 'Airtime Utilization Report',
-            isActivePattern: IGNORE_ACTIVE_PATTERN
+            isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
           }
         ]
       },
@@ -124,17 +124,17 @@ const config: LayoutProps['menuConfig'] = [
           {
             uri: '/reports/wlans',
             label: 'WLANs Report',
-            isActivePattern: IGNORE_ACTIVE_PATTERN
+            isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
           },
           {
             uri: '/reports/applications',
             label: 'Applications Report',
-            isActivePattern: IGNORE_ACTIVE_PATTERN
+            isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
           },
           {
             uri: '/reports/wireless',
             label: 'Wireless Report',
-            isActivePattern: IGNORE_ACTIVE_PATTERN
+            isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
           }
         ]
       }
@@ -156,7 +156,7 @@ const config: LayoutProps['menuConfig'] = [
           {
             uri: '/reports/wired',
             label: 'Wired Report',
-            isActivePattern: IGNORE_ACTIVE_PATTERN
+            isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
           }
         ]
       },
@@ -183,7 +183,7 @@ const config: LayoutProps['menuConfig'] = [
     children: [
       {
         uri: '/services/list',
-        isActivePattern: '(?=/services/)((?!catalog).)*$',
+        isActiveCheck: new RegExp('^(?=/services/)((?!catalog).)*$'),
         label: 'My Services'
       },
       {

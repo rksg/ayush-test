@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { LayoutProps, IGNORE_ACTIVE_PATTERN }       from '@acx-ui/components'
+import { LayoutProps, IsActiveCheck }               from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   AIOutlined,
@@ -95,7 +95,7 @@ export function useMenuConfig () {
             {
               uri: '/reports/clients',
               label: $t({ defaultMessage: 'Wireless Clients Report' }),
-              isActivePattern: IGNORE_ACTIVE_PATTERN
+              isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
             }
           ]
         },
@@ -119,7 +119,7 @@ export function useMenuConfig () {
             },
             {
               uri: '/users/persona-management/persona',
-              isActivePattern: '/users/persona-management/persona($|/)',
+              isActiveCheck: new RegExp('^/users/persona-management/persona($|/)'),
               label: $t({ defaultMessage: 'Persona' })
             }
           ]
@@ -141,12 +141,12 @@ export function useMenuConfig () {
             {
               uri: '/reports/aps',
               label: $t({ defaultMessage: 'AP Report' }),
-              isActivePattern: IGNORE_ACTIVE_PATTERN
+              isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
             },
             {
               uri: '/reports/airtime',
               label: $t({ defaultMessage: 'Airtime Utilization Report' }),
-              isActivePattern: IGNORE_ACTIVE_PATTERN
+              isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
             }
           ]
         },
@@ -161,17 +161,17 @@ export function useMenuConfig () {
             {
               uri: '/reports/wlans',
               label: $t({ defaultMessage: 'WLANs Report' }),
-              isActivePattern: IGNORE_ACTIVE_PATTERN
+              isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
             },
             {
               uri: '/reports/applications',
               label: $t({ defaultMessage: 'Applications Report' }),
-              isActivePattern: IGNORE_ACTIVE_PATTERN
+              isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
             },
             {
               uri: '/reports/wireless',
               label: $t({ defaultMessage: 'Wireless Report' }),
-              isActivePattern: IGNORE_ACTIVE_PATTERN
+              isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
             }
           ]
         }
@@ -193,7 +193,7 @@ export function useMenuConfig () {
             {
               uri: '/reports/wired',
               label: $t({ defaultMessage: 'Wired Report' }),
-              isActivePattern: IGNORE_ACTIVE_PATTERN
+              isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
             }
           ]
         },
@@ -215,7 +215,7 @@ export function useMenuConfig () {
     },
     ...(isEdgeEnabled ? [{
       uri: '/devices/edge/list',
-      isActivePattern: '/devices/edge',
+      isActiveCheck: new RegExp('^/devices/edge'),
       label: $t({ defaultMessage: 'SmartEdge' }),
       inactiveIcon: SmartEdgeOutlined,
       activeIcon: SmartEdgeSolid
@@ -228,7 +228,7 @@ export function useMenuConfig () {
         ...(isServiceEnabled ? [
           {
             uri: getServiceListRoutePath(true),
-            isActivePattern: '(?=/services/)((?!catalog).)*$',
+            isActiveCheck: new RegExp('^(?=/services/)((?!catalog).)*$'),
             label: $t({ defaultMessage: 'My Services' })
           },
           {
