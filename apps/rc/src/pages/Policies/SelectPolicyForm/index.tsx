@@ -21,6 +21,12 @@ import { Path, useNavigate, useParams, useTenantLink } from '@acx-ui/react-route
 
 import { policyTypeDescMapping, policyTypeLabelMapping } from '../contentsMap'
 
+interface policyOption {
+  type: PolicyType,
+  categories: RadioCardCategory[],
+  disabled?: boolean
+}
+
 export default function SelectPolicyForm () {
   const { $t } = useIntl()
   const params = useParams()
@@ -49,13 +55,13 @@ export default function SelectPolicyForm () {
     })
   }
 
-  const sets = [
-    { type: PolicyType.ACCESS_CONTROL, categories: [RadioCardCategory.WIFI], disabled: false },
-    { type: PolicyType.VLAN_POOL, categories: [RadioCardCategory.WIFI], disabled: false },
-    { type: PolicyType.ROGUE_AP_DETECTION, categories: [RadioCardCategory.WIFI], disabled: false },
-    { type: PolicyType.AAA, categories: [RadioCardCategory.WIFI], disabled: false },
-    { type: PolicyType.SYSLOG, categories: [RadioCardCategory.WIFI], disabled: false },
-    { type: PolicyType.CLIENT_ISOLATION, categories: [RadioCardCategory.WIFI], disabled: false }
+  const sets : policyOption[] = [
+    { type: PolicyType.ACCESS_CONTROL, categories: [RadioCardCategory.WIFI] },
+    { type: PolicyType.VLAN_POOL, categories: [RadioCardCategory.WIFI] },
+    { type: PolicyType.ROGUE_AP_DETECTION, categories: [RadioCardCategory.WIFI] },
+    { type: PolicyType.AAA, categories: [RadioCardCategory.WIFI] },
+    { type: PolicyType.SYSLOG, categories: [RadioCardCategory.WIFI] },
+    { type: PolicyType.CLIENT_ISOLATION, categories: [RadioCardCategory.WIFI] }
   ]
 
   if (supportApSnmp) {
@@ -63,17 +69,17 @@ export default function SelectPolicyForm () {
     sets.push({
       type: PolicyType.SNMP_AGENT,
       categories: [RadioCardCategory.WIFI],
-      disabled: (ApSnmpPolicyTotalCount === 64)
+      disabled: (ApSnmpPolicyTotalCount >= 64)
     })
   }
   if (isEdgeEnabled) {
     // eslint-disable-next-line max-len
-    sets.push({ type: PolicyType.TUNNEL_PROFILE, categories: [RadioCardCategory.WIFI], disabled: false })
+    sets.push({ type: PolicyType.TUNNEL_PROFILE, categories: [RadioCardCategory.WIFI] })
   }
 
   if(macRegistrationEnabled) {
     // eslint-disable-next-line max-len
-    sets.push({ type: PolicyType.MAC_REGISTRATION_LIST, categories: [RadioCardCategory.WIFI], disabled: false })
+    sets.push({ type: PolicyType.MAC_REGISTRATION_LIST, categories: [RadioCardCategory.WIFI] })
   }
 
   return (
