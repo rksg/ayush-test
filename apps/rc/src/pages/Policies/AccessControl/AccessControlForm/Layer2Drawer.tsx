@@ -508,7 +508,6 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
           dataSource={macAddressList}
           rowKey='macAddress'
           actions={filterByAccess(actions)}
-          columnState={{ hidden: true }}
         />
       </Form.Item>
     </Form>

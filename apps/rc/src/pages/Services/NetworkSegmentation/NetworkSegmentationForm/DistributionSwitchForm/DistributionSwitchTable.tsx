@@ -6,12 +6,7 @@ import { Table, TableProps }  from '@acx-ui/components'
 import { DistributionSwitch } from '@acx-ui/rc/utils'
 
 
-export function DistributionSwitchTable (props: {
-  rowActions?: TableProps<DistributionSwitch>['rowActions'];
-  rowSelection?: TableProps<DistributionSwitch>['rowSelection'];
-  type?: TableProps<DistributionSwitch>['type'];
-  dataSource: DistributionSwitch[];
-}) {
+export function DistributionSwitchTable (props: Omit<TableProps<DistributionSwitch>, 'columns'>) {
   const { $t } = useIntl()
 
   const columns: TableProps<DistributionSwitch>['columns'] = React.useMemo(() => {

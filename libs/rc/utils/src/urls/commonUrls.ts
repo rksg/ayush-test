@@ -72,6 +72,12 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/eventalarmapi/:tenantId/event/meta',
     newApi: true
   },
+  downloadCSV: {
+    method: 'post',
+    url: '/events/csvFiles',
+    oldUrl: '/api/eventalarmapi/:tenantId/event/export',
+    newApi: true
+  },
   clearAlarm: {
     // different method
     // method: 'PATCH',
@@ -425,12 +431,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
       'configurationHistory/detail/:transactionId',
     newApi: true
   },
-  getSwitchConfigProfile: {
-    method: 'get',
-    url: '/switchProfiles/:profileId',
-    oldUrl: '/api/switch/tenant/:tenantId/profile/:profileId',
-    newApi: true
-  },
   getPoliciesList: {
     method: 'post',
     url: '/policyProfiles',
@@ -506,16 +506,18 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/viewmodel/tenant/:tenantId/venue/:venueId/topology',
     newApi: true
   },
-  getVenueBonjourFencingPolicy: {
+  getVenueMdnsFencingPolicy: {
     method: 'get',
-    url: '/venues/:venueId/bonjourFencingSettings',
-    oldUrl: '/api/venues/:venueId/bonjourFencingSettings',
+    //url: '/venues/:venueId/bonjourFencingSettings',
+    url: '/venues/:venueId/mDnsFencingSettings',
+    oldUrl: '/api/venues/:venueId/mDnsFencingSettings ',
     newApi: true
   },
-  updateVenueBonjourFencingPolicy: {
+  updateVenueMdnsFencingPolicy: {
     method: 'put',
-    url: '/venues/:venueId/bonjourFencingSettings',
-    oldUrl: '/api/venues/:venueId/bonjourFencingSettings',
+    //url: '/venues/:venueId/bonjourFencingSettings',
+    url: '/venues/:venueId/mDnsFencingSettings',
+    oldUrl: '/api/venues/:venueId/mDnsFencingSettings ',
     newApi: true
   }
 }

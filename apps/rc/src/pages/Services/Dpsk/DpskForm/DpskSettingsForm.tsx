@@ -1,14 +1,15 @@
 import {
   Form,
   Input,
-  Col,
-  Row,
   Select,
-  InputNumber
+  InputNumber,
+  Radio,
+  Space
 } from 'antd'
-import { FormattedMessage, useIntl } from 'react-intl'
+import { FormattedMessage } from 'react-intl'
 
-import { StepsForm, Subtitle, Tooltip } from '@acx-ui/components'
+import { GridCol, GridRow, SelectionControl, StepsForm, Subtitle, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
 import {
   ExpirationDateSelector
 } from '@acx-ui/rc/components'
@@ -17,21 +18,29 @@ import {
   PassphraseFormatEnum,
   transformDpskNetwork,
   DpskNetworkType,
-  checkObjectNotExists
+  checkObjectNotExists,
+  PolicyDefaultAccess,
+  DeviceNumberType
 } from '@acx-ui/rc/utils'
+import { getIntl } from '@acx-ui/utils'
 
+import { MAX_DEVICES_PER_PASSPHRASE } from '../constants'
 import {
+  defaultAccessLabelMapping,
   passphraseFormatDescription
 } from '../contentsMap'
+import { unlimitedNumberOfDeviceLabel } from '../DpskDetail/contentsMap'
 
+import { FieldSpace } from './styledComponents'
 
 export default function DpskSettingsForm () {
-  const intl = useIntl()
+  const intl = getIntl()
   const form = Form.useFormInstance()
   const passphraseFormat = Form.useWatch<PassphraseFormatEnum>('passphraseFormat', form)
   const id = Form.useWatch<string>('id', form)
   const { Option } = Select
   const [ dpskList ] = useLazyGetDpskListQuery()
+  const isCloudpathEnabled = useIsSplitOn(Features.DPSK_CLOUDPATH_FEATURE)
 
   const nameValidator = async (value: string) => {
     const list = (await dpskList({}).unwrap()).data
@@ -44,9 +53,9 @@ export default function DpskSettingsForm () {
     <Option key={key}>{transformDpskNetwork(intl, DpskNetworkType.FORMAT, key)}</Option>
   ))
 
-  return (
-    <Row>
-      <Col span={8}>
+  return (<>
+    <GridRow>
+      <GridCol col={{ span: 6 }}>
         <StepsForm.Title>{intl.$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
         <Form.Item name='id' noStyle>
           <Input type='hidden' />
@@ -121,7 +130,93 @@ export default function DpskSettingsForm () {
           inputName={'expiration'}
           label={intl.$t({ defaultMessage: 'Expiration' })}
         />
-      </Col>
-    </Row>
+      </GridCol>
+    </GridRow>
+    {isCloudpathEnabled && <CloudpathFormItems />}
+  </>)
+}
+
+function CloudpathFormItems () {
+  const { $t } = getIntl()
+  const form = Form.useFormInstance()
+  const deviceNumberType = Form.useWatch('deviceNumberType', form)
+
+  return (
+    <GridRow>
+      <GridCol col={{ span: 8 }}>
+        <Form.Item
+          label={$t({ defaultMessage: 'Devices allowed per passphrase' })}
+          rules={[{ required: true }]}
+          name='deviceNumberType'
+          children={
+            <Radio.Group>
+              <Space size={'middle'} direction='vertical'>
+                <Radio value={DeviceNumberType.UNLIMITED}>
+                  {$t(unlimitedNumberOfDeviceLabel)}
+                </Radio>
+                <FieldSpace>
+                  <Radio value={DeviceNumberType.LIMITED}>
+                    {$t({ defaultMessage: 'Limited to...' })}
+                  </Radio>
+                  {deviceNumberType === DeviceNumberType.LIMITED &&
+                    <Form.Item
+                      name='deviceCountLimit'
+                      initialValue={1}
+                      rules={[
+                        {
+                          required: true,
+                          // eslint-disable-next-line max-len
+                          message: $t({ defaultMessage: 'Please enter Devices allowed per passphrase' })
+                        },
+                        {
+                          type: 'number',
+                          min: 1,
+                          max: MAX_DEVICES_PER_PASSPHRASE,
+                          message: $t(
+                            // eslint-disable-next-line max-len
+                            { defaultMessage: 'Number of Devices allowed per passphrase must be between 1 and {max}' },
+                            { max: MAX_DEVICES_PER_PASSPHRASE }
+                          )
+                        }
+                      ]}
+                      children={<InputNumber />}
+                    />
+                  }
+                </FieldSpace>
+              </Space>
+            </Radio.Group>
+          }
+        />
+        {/* <Form.Item name='policySetId'
+          label={$t({ defaultMessage: 'Access Policy Set' })}
+          rules={[{ required: true }]}
+        >
+          <Space direction='horizontal'>
+            <Select style={{ minWidth: 250 }} placeholder={$t({ defaultMessage: 'Select...' })}/>
+            <Button type='link'>
+              {$t({ defaultMessage: 'Add Access Policy Set' })}
+            </Button>
+          </Space>
+        </Form.Item> */}
+        <Form.Item name='policyDefaultAccess'
+          label={$t({ defaultMessage: 'Default Access' })}
+          initialValue={PolicyDefaultAccess.ACCEPT}
+          rules={[{ required: true }]}
+        >
+          <SelectionControl
+            options={[
+              {
+                value: PolicyDefaultAccess.ACCEPT,
+                label: $t(defaultAccessLabelMapping[PolicyDefaultAccess.ACCEPT])
+              },
+              {
+                value: PolicyDefaultAccess.REJECT,
+                label: $t(defaultAccessLabelMapping[PolicyDefaultAccess.REJECT])
+              }
+            ]}
+          />
+        </Form.Item>
+      </GridCol>
+    </GridRow>
   )
 }

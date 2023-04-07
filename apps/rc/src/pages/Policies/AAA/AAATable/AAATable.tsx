@@ -28,7 +28,9 @@ export default function AAATable () {
   const tableQuery = useTableQuery({
     useQuery: useGetAAAPolicyViewModelListQuery,
     defaultPayload: {
-      filters: {},
+      filters: {}
+    },
+    search: {
       searchString: '',
       searchTargetFields: ['name']
     }
@@ -92,6 +94,7 @@ export default function AAATable () {
       />
       <Loader states={[tableQuery]}>
         <Table<AAAViewModalType>
+          settingsId='policies-aaa-table'
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}

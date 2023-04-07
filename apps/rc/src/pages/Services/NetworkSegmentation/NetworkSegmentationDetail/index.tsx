@@ -1,8 +1,13 @@
 import { Space, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
 
-import { Button, Card, GridCol, GridRow, Loader, PageHeader, Tabs }                                                     from '@acx-ui/components'
-import { useGetEdgeDhcpServiceQuery, useGetEdgeListQuery, useGetNetworkSegmentationGroupByIdQuery, useVenuesListQuery } from '@acx-ui/rc/services'
+import { Button, Card, GridCol, GridRow, Loader, PageHeader, Tabs } from '@acx-ui/components'
+import {
+  useGetEdgeDhcpServiceQuery,
+  useGetEdgeListQuery,
+  useGetNetworkSegmentationGroupByIdQuery,
+  useVenuesListQuery
+} from '@acx-ui/rc/services'
 import {
   getServiceDetailsLink,
   getServiceListRoutePath,
@@ -11,8 +16,9 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useParams } from '@acx-ui/react-router-dom'
 
+import { AccessSwitchTable } from '../NetworkSegmentationForm/AccessSwitchForm/AccessSwitchTable'
+
 import * as UI                   from './styledComponents'
-import { AccessSwitchesTable }   from './Table/AccessSwitchesTable'
 import { ApsTable }              from './Table/ApsTable'
 import { AssignedSegmentsTable } from './Table/AssignedSegmentsTable'
 import { DistSwitchesTable }     from './Table/DistSwitchesTable'
@@ -52,7 +58,7 @@ const NetworkSegmentationDetail = () => {
     accessSwitches: {
       title: $t({ defaultMessage: 'Access Switches ({num})' },
         { num: nsgData?.accessSwitchInfos.length }),
-      content: <AccessSwitchesTable
+      content: <AccessSwitchTable
         dataSource={nsgData?.accessSwitchInfos}
         distributionSwitchInfos={nsgData?.distributionSwitchInfos} />
     },
