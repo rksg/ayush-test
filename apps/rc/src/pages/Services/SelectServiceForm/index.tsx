@@ -27,6 +27,7 @@ export default function SelectServiceForm () {
   const myServicesPath: Path = useTenantLink(getServiceListRoutePath(true))
   const tenantBasePath: Path = useTenantLink('')
   const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
+  const propertyManagementEnabled = useIsSplitOn(Features.PROPERTY_MANAGEMENT)
   const isEdgesEnable = useIsSplitOn(Features.EDGES)
 
   const navigateToCreateService = async function (data: { serviceType: ServiceType }) {
@@ -74,6 +75,11 @@ export default function SelectServiceForm () {
           type: ServiceType.WEBAUTH_SWITCH,
           categories: [RadioCardCategory.SWITCH],
           disabled: !networkSegmentationEnabled
+        },
+        {
+          type: ServiceType.RESIDENT_PORTAL,
+          categories: [RadioCardCategory.WIFI],
+          disabled: !propertyManagementEnabled
         }
       ]
     }

@@ -16,7 +16,8 @@ export const serviceTypeLabelMapping: Record<ServiceType, MessageDescriptor> = {
   [ServiceType.DPSK]: defineMessage({ defaultMessage: 'DPSK' }),
   [ServiceType.NETWORK_SEGMENTATION]: defineMessage({ defaultMessage: 'Network Segmentation' }),
   [ServiceType.WEBAUTH_SWITCH]: defineMessage(
-    { defaultMessage: 'Network Segmentation Auth Page for Switch' })
+    { defaultMessage: 'Network Segmentation Auth Page for Switch' }),
+  [ServiceType.RESIDENT_PORTAL]: defineMessage({defaultMessage: 'Resident Portal'})
 }
 export const serviceTypeDescMapping: Record<ServiceType, MessageDescriptor> = {
   // eslint-disable-next-line max-len
@@ -32,7 +33,8 @@ export const serviceTypeDescMapping: Record<ServiceType, MessageDescriptor> = {
   [ServiceType.NETWORK_SEGMENTATION]: defineMessage(
     { defaultMessage: 'Controls network traffic by different segments' }),
   [ServiceType.WEBAUTH_SWITCH]: defineMessage(
-    { defaultMessage: 'Templates of Network Segmentation Auth Page for Switch' })
+    { defaultMessage: 'Templates of Network Segmentation Auth Page for Switch' }),
+  [ServiceType.RESIDENT_PORTAL]: defineMessage({defaultMessage: 'Resident portal for property management'})
 }
 export const serviceStatusLabelMapping: Record<ServiceStatus, MessageDescriptor> = {
   [ServiceStatus.UP]: defineMessage({ defaultMessage: 'Up' }),

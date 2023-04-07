@@ -10,7 +10,8 @@ import {
   useGetNetworkSegmentationStatsListQuery,
   useGetEnhancedPortalProfileListQuery,
   useGetEnhancedWifiCallingServiceListQuery,
-  useWebAuthTemplateListQuery
+  useWebAuthTemplateListQuery,
+  useGetResidentPortalListQuery
 } from '@acx-ui/rc/services'
 import {
   getSelectServiceRoutePath,
@@ -32,6 +33,7 @@ export default function MyServices () {
   const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const isEdgeDhcpEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
+  const propertyManagementEnabled = useIsSplitOn(Features.PROPERTY_MANAGEMENT)
 
   const services = [
     {
@@ -91,7 +93,13 @@ export default function MyServices () {
         skip: !networkSegmentationEnabled || !networkSegmentationSwitchEnabled
       }),
       disabled: !networkSegmentationEnabled || !networkSegmentationSwitchEnabled
-    }
+    },
+    {
+      type: ServiceType.RESIDENT_PORTAL,
+      categories: [RadioCardCategory.WIFI],
+      tableQuery: useGetResidentPortalListQuery({ params, payload: { filters: {} } }),
+      disabled: !propertyManagementEnabled
+    },
   ]
 
 

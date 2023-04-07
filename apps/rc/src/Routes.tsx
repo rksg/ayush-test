@@ -108,6 +108,9 @@ import SwitchClientList           from './pages/Users/Switch/ClientList'
 import WifiClientDetails          from './pages/Users/Wifi/ClientDetails'
 import WifiClientList             from './pages/Users/Wifi/ClientList'
 import GuestManagerPage           from './pages/Users/Wifi/GuestManagerPage'
+import ResidentPortalTable from './pages/Services/ResidentPortal/ResidentPortalTable/ResidentPortalTable'
+import ResidentPortalForm from './pages/Services/ResidentPortal/ResidentPortalForm/ResidentPortalForm'
+import ResidentPortalDetail from './pages/Services/ResidentPortal/ResidentPortalDetail/ResidentPortalDetail'
 
 export default function RcRoutes () {
   const routes = rootRoutes(
@@ -369,6 +372,23 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.EDIT })}
         element={<EditDhcp />}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.RESIDENT_PORTAL, oper: ServiceOperation.LIST })}
+        element={<ResidentPortalTable />}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.RESIDENT_PORTAL, oper: ServiceOperation.DETAIL })}
+        element={<ResidentPortalDetail />}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.RESIDENT_PORTAL, oper: ServiceOperation.CREATE })}
+        element={<ResidentPortalForm />}
+      />
+      {/* TODO: Verify Resident Portal Edit */}
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.RESIDENT_PORTAL, oper: ServiceOperation.CREATE })}
+        element={<ResidentPortalForm editMode={true} />}
       />
     </Route>
   )
