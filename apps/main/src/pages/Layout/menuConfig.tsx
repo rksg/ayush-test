@@ -82,7 +82,6 @@ export function useMenuConfig () {
       children: [
         {
           type: 'group' as const,
-          style: { width: 210 },
           label: $t({ defaultMessage: 'Wireless' }),
           children: [
             {
@@ -133,7 +132,6 @@ export function useMenuConfig () {
       children: [
         {
           type: 'group' as const,
-          style: { width: 225 },
           label: $t({ defaultMessage: 'Access Points' }),
           children: [
             {
@@ -201,7 +199,6 @@ export function useMenuConfig () {
         },
         {
           type: 'group' as const,
-          style: { width: 260 },
           label: $t({ defaultMessage: 'Wired Network Profiles' }),
           children: [
             {
@@ -278,7 +275,6 @@ export function useMenuConfig () {
         },
         {
           type: 'group' as const,
-          style: { width: 270 },
           label: 'Account Management',
           children: [
             {

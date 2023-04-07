@@ -116,7 +116,10 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
       className: Boolean(isActive) ? 'menu-active' : undefined,
       key: key,
       label: uri
-        ? <TenantNavLink to={uri} tenantType={tenantType}>{content}</TenantNavLink>
+        ? <TenantNavLink
+          to={uri}
+          tenantType={tenantType}
+          data-label={item.label}>{content}</TenantNavLink>
         : content,
       ...(isSubMenuType(item) && {
         popupClassName: item.children.some(child => get(child, 'type') === 'group')
