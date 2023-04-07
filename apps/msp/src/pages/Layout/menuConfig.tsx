@@ -1,14 +1,13 @@
 import { useIntl } from 'react-intl'
-import styled      from 'styled-components/macro'
 
-import { LayoutProps, LayoutUI, genPlaceholder } from '@acx-ui/components'
+import { LayoutProps } from '@acx-ui/components'
 import {
   ConfigurationOutlined,
   ConfigurationSolid,
   DevicesOutlined,
   DevicesSolid,
-  MspSubscriptionOutlined as MspSubscriptionOutlinedBase,
-  MspSubscriptionSolid as MspSubscriptionSolidBase,
+  MspSubscriptionOutlined,
+  MspSubscriptionSolid,
   IntegratorsOutlined,
   IntegratorsSolid,
   UsersThreeOutlined,
@@ -18,10 +17,6 @@ import { TenantType }  from '@acx-ui/react-router-dom'
 import { RolesEnum }   from '@acx-ui/types'
 import { hasRoles }    from '@acx-ui/user'
 import { AccountType } from '@acx-ui/utils'
-
-const MspSubscriptionOutlined =
-  styled(MspSubscriptionOutlinedBase)`${LayoutUI.iconOutlinedOverride}`
-const MspSubscriptionSolid = styled(MspSubscriptionSolidBase)`${LayoutUI.iconSolidOverride}`
 
 export function useMenuConfig (tenantType: string) {
   const { $t } = useIntl()
@@ -35,53 +30,52 @@ export function useMenuConfig (tenantType: string) {
 
   const config: LayoutProps['menuConfig'] = [
     {
-      path: '/dashboard',
-      name: $t({ defaultMessage: 'My Customers' }),
-      tenantType: 'v',
+      label: $t({ defaultMessage: 'My Customers' }),
       inactiveIcon: UsersThreeOutlined,
       activeIcon: UsersThreeSolid,
-      routes: [
+      children: [
         {
-          path: '/dashboard/mspCustomers',
-          name: $t({ defaultMessage: 'MSP Customers' })
+          uri: '/dashboard/mspCustomers',
+          tenantType: 'v' as TenantType,
+          label: $t({ defaultMessage: 'MSP Customers' })
         },
         ...((isNonVarMSP || isIntegrator) ? [] : [{
-          path: '/dashboard/varCustomers',
-          name: isSupport ? $t({ defaultMessage: 'RUCKUS Customers' })
+          uri: '/dashboard/varCustomers',
+          tenantType: 'v' as TenantType,
+          label: isSupport
+            ? $t({ defaultMessage: 'RUCKUS Customers' })
             : $t({ defaultMessage: 'VAR Customers' })
         }])
       ]
     },
     ...((isVar || isIntegrator || isSupport) ? [] : [{
-      path: '/integrators',
-      name: $t({ defaultMessage: 'Tech Partners' }),
+      uri: '/integrators',
+      label: $t({ defaultMessage: '3rd Party' }),
       tenantType: 'v' as TenantType,
       inactiveIcon: IntegratorsOutlined,
       activeIcon: IntegratorsSolid
     }]),
     ...(isSupport ? [] : [{
-      path: '/deviceInventory',
-      name: $t({ defaultMessage: 'Device Inventory' }),
+      uri: '/deviceInventory',
+      label: $t({ defaultMessage: 'Device Inventory' }),
       tenantType: 'v' as TenantType,
       inactiveIcon: DevicesOutlined,
       activeIcon: DevicesSolid
     }]),
-    ...((isIntegrator || isSupport) ? [] : [{
-      path: '/mspLicenses',
-      name: $t({ defaultMessage: 'Subscriptions' }),
+    ...((isIntegrator || isSupport)? [] : [{
+      uri: '/mspLicenses',
+      label: $t({ defaultMessage: 'Subscriptions' }),
       tenantType: 'v' as TenantType,
       inactiveIcon: MspSubscriptionOutlined,
       activeIcon: MspSubscriptionSolid
     }]),
-    genPlaceholder(),
     ...((!isPrimeAdmin || isIntegrator || isSupport) ? [] : [{
-      path: '/portalSetting',
-      name: $t({ defaultMessage: 'Settings' }),
+      uri: '/portalSetting',
+      label: $t({ defaultMessage: 'Settings' }),
       tenantType: 'v' as TenantType,
       inactiveIcon: ConfigurationOutlined,
       activeIcon: ConfigurationSolid
     }])
   ]
-
   return config
 }

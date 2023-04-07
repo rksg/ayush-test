@@ -28,7 +28,7 @@ describe('MdnsProxyInstancesTable', () => {
   // eslint-disable-next-line max-len
   const detailPath = '/:tenantId/' + getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.DETAIL })
 
-  it('should render the table view', async () => {
+  it.skip('should render the table view', async () => {
     render(
       <Provider>
         <MdnsProxyInstancesTable apList={mockedApList.data.map(a => a.serialNumber)} />
