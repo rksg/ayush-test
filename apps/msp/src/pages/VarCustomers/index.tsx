@@ -174,7 +174,7 @@ export function VarCustomers () {
       return (
         <Loader states={[tableQuery]}>
           <Table
-            settingsId='var-customers-table'
+            settingsId='var-invitation-table'
             columns={columnsPendingInvitation}
             dataSource={tableQuery.data?.data}
             pagination={tableQuery.pagination}
@@ -289,7 +289,7 @@ export function VarCustomers () {
     return (
       <Loader states={[tableQuery]}>
         <Table
-          settingsId='var-invitation-table'
+          settingsId='var-customers-table'
           columns={customerColumns}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
