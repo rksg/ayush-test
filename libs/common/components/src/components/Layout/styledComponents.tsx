@@ -88,9 +88,8 @@ export const Wrapper = styled.div`
               font-weight: var(--acx-headline-4-font-weight-bold);
             }
           }
-          &:last-child {
-            margin-top: auto;
-          }
+          &:last-child { margin-top: auto; }
+          &:only-child { margin-top: unset; }
         }
         .ant-menu-item {
           height: 48px;
