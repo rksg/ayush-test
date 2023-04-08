@@ -85,7 +85,6 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
     if (selectedRows && selectedRows.length > 0) {
       selectedRows.forEach((element:MspAdministrator) => {
         const role = selectedRoles.find(row => row.id === element.id)?.role ?? element.role
-        element.role = role as RolesEnum
         payload.push ({
           msp_admin_id: element.id,
           msp_admin_role: role
