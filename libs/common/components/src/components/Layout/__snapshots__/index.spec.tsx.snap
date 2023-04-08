@@ -264,7 +264,7 @@ exports[`Layout should render correctly 1`] = `
                         class="styledComponents__MenuIcon-sc-iwostn-1 ccvYDe"
                       >
                         <svg
-                          data-testid="LineChartOutline"
+                          data-testid="BulbOutlined"
                         />
                       </span>
                       Business Insights

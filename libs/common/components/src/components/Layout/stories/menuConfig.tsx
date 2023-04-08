@@ -5,10 +5,10 @@ import {
   AccountCircleSolid,
   AdminOutlined,
   AdminSolid,
+  BulbOutlined,
+  BulbSolid,
   LocationOutlined,
   LocationSolid,
-  LineChartOutline,
-  LineChartSolid,
   ServicesOutlined,
   ServicesSolid,
   SpeedIndicatorOutlined,
@@ -198,8 +198,8 @@ const config: LayoutProps['menuConfig'] = [
   },
   {
     label: 'Business Insights',
-    inactiveIcon: LineChartOutline,
-    activeIcon: LineChartSolid,
+    inactiveIcon: BulbOutlined,
+    activeIcon: BulbSolid,
     children: [
       {
         uri: '/dataStudio',

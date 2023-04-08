@@ -9,10 +9,10 @@ import {
   AccountCircleSolid,
   AdminOutlined,
   AdminSolid,
+  BulbOutlined,
+  BulbSolid,
   LocationOutlined,
   LocationSolid,
-  LineChartOutline,
-  LineChartSolid,
   ServicesOutlined,
   ServicesSolid,
   SmartEdgeOutlined,
@@ -243,8 +243,8 @@ export function useMenuConfig () {
     },
     {
       label: $t({ defaultMessage: 'Business Insights' }),
-      inactiveIcon: LineChartOutline,
-      activeIcon: LineChartSolid,
+      inactiveIcon: BulbOutlined,
+      activeIcon: BulbSolid,
       children: [
         { uri: '/dataStudio', label: $t({ defaultMessage: 'Data Studio' }) },
         { uri: '/reports', label: $t({ defaultMessage: 'Reports' }) }
