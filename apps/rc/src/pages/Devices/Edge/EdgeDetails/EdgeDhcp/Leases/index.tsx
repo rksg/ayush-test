@@ -1,53 +1,106 @@
-import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps } from '@acx-ui/components'
-import { EdgeDhcpLease }             from '@acx-ui/rc/utils'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
+
+import { Loader, Table, TableProps }                                        from '@acx-ui/components'
+import { useGetDhcpHostStatsQuery, useGetDhcpByEdgeIdQuery }                from '@acx-ui/rc/services'
+import { DhcpHostStats, EdgeDhcpHostStatus, RequestPayload, useTableQuery } from '@acx-ui/rc/utils'
+
 
 const Leases = () => {
 
   const { $t } = useIntl()
+  const { serialNumber } = useParams()
 
-  const columns: TableProps<EdgeDhcpLease>['columns'] = [
+  const getDhcpHostStatsPayload = {
+    filters: { edgeId: [serialNumber] },
+    sortField: 'name',
+    sortOrder: 'ASC'
+  }
+  const hostTableQuery = useTableQuery<DhcpHostStats, RequestPayload<unknown>, unknown>({
+    useQuery: useGetDhcpHostStatsQuery,
+    defaultPayload: getDhcpHostStatsPayload
+  })
+
+  const { dhcpPoolOptions } = useGetDhcpByEdgeIdQuery(
+    { params: { edgeId: serialNumber } },
+    {
+      skip: !!!serialNumber,
+      selectFromResult: ({ data }) => ({
+        dhcpPoolOptions: data?.dhcpPools.map(pool => ({
+          key: pool.poolName,
+          value: pool.poolName
+        }))
+      })
+    }
+  )
+
+  const statusOptions = [
+    {
+      key: EdgeDhcpHostStatus.ONLINE,
+      value: $t({ defaultMessage: 'Online' })
+    },
+    {
+      key: EdgeDhcpHostStatus.OFFLINE,
+      value: $t({ defaultMessage: 'Offline' })
+    }
+  ]
+
+  const columns: TableProps<DhcpHostStats>['columns'] = [
     {
       title: $t({ defaultMessage: 'Hostname' }),
-      key: 'name',
-      dataIndex: 'name',
+      key: 'hostName',
+      dataIndex: 'hostName',
       sorter: true,
-      defaultSortOrder: 'ascend'
+      defaultSortOrder: 'ascend',
+      searchable: true
     },
     {
       title: $t({ defaultMessage: 'IP Address' }),
-      key: 'ip',
-      dataIndex: 'ip'
+      key: 'hostIpAddr',
+      dataIndex: 'hostIpAddr',
+      searchable: true
     },
     {
       title: $t({ defaultMessage: 'DHCP Pool' }),
-      key: 'dhcpPool',
-      dataIndex: 'dhcpPool'
+      key: 'dhcpPoolName',
+      dataIndex: 'dhcpPoolName',
+      filterable: dhcpPoolOptions
     },
     {
       title: $t({ defaultMessage: 'MAC Address' }),
-      key: 'mac',
-      dataIndex: 'mac'
+      key: 'hostMac',
+      dataIndex: 'hostMac',
+      searchable: true
     },
     {
       title: $t({ defaultMessage: 'Status' }),
-      key: 'status',
-      dataIndex: 'status'
+      key: 'hostStatus',
+      dataIndex: 'hostStatus',
+      filterable: statusOptions,
+      render: (data) => {
+        return data === EdgeDhcpHostStatus.ONLINE ?
+          $t({ defaultMessage: 'Online' }) :
+          $t({ defaultMessage: 'Offline' })
+      }
     },
     {
       title: $t({ defaultMessage: 'Lease expires in...' }),
-      key: 'expires',
-      dataIndex: 'expires'
+      key: 'hostExpireDate',
+      dataIndex: 'hostExpireDate'
     }
   ]
 
   return (
-    <Loader>
+    <Loader states={[hostTableQuery]}>
       <Table
         settingsId='edge-dhcp-leases-table'
         columns={columns}
-        dataSource={[] as EdgeDhcpLease[]}
+        dataSource={hostTableQuery?.data?.data}
+        pagination={hostTableQuery.pagination}
+        onChange={hostTableQuery.handleTableChange}
+        onFilterChange={hostTableQuery.handleFilterChange}
+        enableApiFilter
       />
     </Loader>
   )

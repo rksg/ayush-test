@@ -1,6 +1,7 @@
 import {
   CommonResult,
   createHttpRequest,
+  DhcpHostStats,
   DhcpPoolStats,
   DhcpStats,
   EdgeDhcpSetting,
@@ -108,6 +109,16 @@ export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'EdgeDhcp', id: 'LIST' }]
+    }),
+    getDhcpHostStats: build.query<TableResult<DhcpHostStats>, RequestPayload>({
+      query: ({ payload, params }) => {
+        const req = createHttpRequest(EdgeDhcpUrls.getDhcpHostStats, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'EdgeDhcp', id: 'LIST' }]
     })
   })
 })
@@ -121,5 +132,6 @@ export const {
   useGetEdgeDhcpListQuery,
   useGetDhcpByEdgeIdQuery,
   useGetDhcpPoolStatsQuery,
-  useGetDhcpStatsQuery
+  useGetDhcpStatsQuery,
+  useGetDhcpHostStatsQuery
 } = edgeDhcpApi
