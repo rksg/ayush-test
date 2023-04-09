@@ -210,7 +210,7 @@ describe('AdaptivePolicyForm', () => {
     fireEvent.click(within(row).getByRole('radio'))
     await userEvent.click(screen.getByText('Delete'))
     await screen.findByText('Delete "' + assignConditions.content[2].templateAttribute.name + '"?')
-    await userEvent.click(screen.getByText('Delete Attribute'))
+    await userEvent.click(screen.getByText('Delete Condition'))
 
     await userEvent.click(screen.getByText('Apply'))
 

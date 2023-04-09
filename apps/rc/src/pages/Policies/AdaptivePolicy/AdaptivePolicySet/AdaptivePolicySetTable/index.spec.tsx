@@ -94,7 +94,7 @@ describe('AdaptivePolicySetTable', () => {
 
     await screen.findByText('Delete "ps12"?')
 
-    const deleteListButton = screen.getByRole('button', { name: 'Delete policy set' })
+    const deleteListButton = screen.getByRole('button', { name: 'Delete Policy Set' })
     await waitFor(() => expect(deleteListButton).toBeEnabled())
     fireEvent.click(deleteListButton)
 
