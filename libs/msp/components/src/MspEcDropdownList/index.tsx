@@ -310,6 +310,7 @@ export function MspEcDropdownList () {
     return <Loader states={[tableQueryMspEc]}>
 
       <Table
+        settingsId='msp-ec-dropdown-table'
         columns={customerColumns}
         dataSource={tableQueryMspEc.data?.data.filter(mspEc => mspEc.id !== params.tenantId)}
         pagination={tableQueryMspEc.pagination}
@@ -324,6 +325,7 @@ export function MspEcDropdownList () {
     return <Loader states={[tableQueryIntegratorMspEc]}>
 
       <Table
+        settingsId='integrator-mspec-dropdown-table'
         columns={customerColumns}
         dataSource={tableQueryIntegratorMspEc.data?.data.filter(mspEc =>
           mspEc.id !== params.tenantId)}
@@ -339,6 +341,7 @@ export function MspEcDropdownList () {
     return <Loader states={[tableQueryIntegrator]}>
 
       <Table
+        settingsId='integrator-dropdown-table'
         columns={customerColumns}
         dataSource={tableQueryIntegrator.data?.data.filter(mspEc => mspEc.id !== params.tenantId)}
         pagination={tableQueryIntegrator.pagination}
@@ -353,6 +356,7 @@ export function MspEcDropdownList () {
     return <Loader states={[tableQueryVarRec]}>
 
       <Table
+        settingsId='var-dropdown-table'
         columns={supportColumns}
         dataSource={tableQueryVarRec.data?.data.filter(cus => cus.tenantId !== params.tenantId)}
         pagination={tableQueryVarRec.pagination}
@@ -381,6 +385,7 @@ export function MspEcDropdownList () {
     return <Loader states={[tableQuerySupportEc]}>
 
       <Table
+        settingsId='support-ec-dropdown-table'
         columns={customerColumns}
         dataSource={tableQuerySupportEc.data?.data.filter(mspEc => mspEc.id !== params.tenantId)}
         pagination={tableQuerySupportEc.pagination}
