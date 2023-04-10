@@ -5,7 +5,7 @@ import { EdgeDhcpUrls, EdgeUrlsInfo, getServiceDetailsLink, ServiceOperation, Se
 import { Provider }                                                                         from '@acx-ui/store'
 import { mockServer, render, screen }                                                       from '@acx-ui/test-utils'
 
-import { mockedDhcpStatsData, mockedEdgeDhcpData, mockedEdgeList } from './__tests__/fixtures'
+import { mockedDhcpStatsData, mockedEdgeDhcpData, mockedEdgeList, mockEdgeDhcpHostStats } from './__tests__/fixtures'
 
 import EdgeDhcpTab from '.'
 
@@ -37,6 +37,10 @@ describe('Venue Edge Dhcp Instance', () => {
       rest.get(
         EdgeDhcpUrls.getDhcpByEdgeId.url,
         (req, res, ctx) => res(ctx.json(mockedEdgeDhcpData))
+      ),
+      rest.post(
+        EdgeDhcpUrls.getDhcpHostStats.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeDhcpHostStats))
       )
     )
   })

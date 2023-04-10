@@ -1,9 +1,10 @@
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { ContentSwitcher, ContentSwitcherProps, GridCol, GridRow, Loader }    from '@acx-ui/components'
-import { EdgeDhcpLeaseTable, EdgeDhcpPoolTable }                              from '@acx-ui/rc/components'
-import { useGetDhcpByEdgeIdQuery, useGetDhcpStatsQuery, useGetEdgeListQuery } from '@acx-ui/rc/services'
+import { ContentSwitcher, ContentSwitcherProps, GridCol, GridRow, Loader }                              from '@acx-ui/components'
+import { EdgeDhcpLeaseTable, EdgeDhcpPoolTable }                                                        from '@acx-ui/rc/components'
+import { useGetDhcpByEdgeIdQuery, useGetDhcpHostStatsQuery, useGetDhcpStatsQuery, useGetEdgeListQuery } from '@acx-ui/rc/services'
+import { EdgeDhcpHostStatus }                                                                           from '@acx-ui/rc/utils'
 
 import { EdgeDhcpBasicInfo } from './BasicInfo'
 
@@ -48,6 +49,12 @@ const EdgeDhcpTab = () => {
       })
     }
   )
+  const getDhcpHostStatsPayload = {
+    filters: { edgeId: [edgeData?.serialNumber], hostStatus: [EdgeDhcpHostStatus.ONLINE] },
+    sortField: 'name',
+    sortOrder: 'ASC'
+  }
+  const { data: dhcpHostStats } = useGetDhcpHostStatsQuery({ payload: getDhcpHostStatsPayload })
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
@@ -62,7 +69,7 @@ const EdgeDhcpTab = () => {
     },
     {
       label: $t({ defaultMessage: 'Leases ({count} online)' },
-        { count: 0 }),
+        { count: dhcpHostStats?.totalCount || 0 }),
       value: 'leases',
       children: (
         <GridCol col={{ span: 24 }}>
