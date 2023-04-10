@@ -54,7 +54,9 @@ export default function SelectPolicyForm () {
     sets.push({ type: PolicyType.SNMP_AGENT, categories: [RadioCardCategory.WIFI] })
   }
   if (isEdgeEnabled) {
-    sets.push({ type: PolicyType.TUNNEL_PROFILE, categories: [RadioCardCategory.WIFI] })
+    sets.push({
+      type: PolicyType.TUNNEL_PROFILE, categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE]
+    })
   }
 
   if(macRegistrationEnabled) {

@@ -75,7 +75,7 @@ export function Integrators () {
       defaultSortOrder: 'ascend' as SortOrder,
       onCell: (data) => {
         return {
-          onClick: () => { checkDelegateAdmin(data.id, userProfile.adminId) }
+          onClick: () => { checkDelegateAdmin(data.id, userProfile!.adminId) }
         }
       },
       render: function (data, row, _, highlightFn) {
@@ -208,6 +208,7 @@ export function Integrators () {
         tableQuery,
         { isLoading: false, isFetching: isDeleteEcUpdating }]}>
         <Table
+          settingsId='msp-integrators-table'
           columns={columns}
           rowActions={filterByAccess(rowActions)}
           dataSource={tableQuery.data?.data}

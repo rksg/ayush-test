@@ -3,11 +3,11 @@ import * as React from 'react'
 import { Wrapper, Status } from '@googlemaps/react-wrapper'
 
 import { get }                        from '@acx-ui/config'
+import { VenueMarkerOptions }         from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
-import GMap                   from './GMap'
-import { FilterStateChange }  from './VenueFilterControlBox'
-import { VenueMarkerOptions } from './VenueMarkerWithLabel'
+import GMap                  from './GMap'
+import { FilterStateChange } from './VenueFilterControlBox'
 
 export interface GoogleMapProps {
   data: VenueMarkerOptions[]
@@ -66,7 +66,6 @@ function VenuesMap ({ cluster, data, enableVenueFilter }: GoogleMapProps) {
   return (
     <Wrapper
       apiKey={get('GOOGLE_MAPS_KEY')}
-      version='3.49' // Fixing the version to avoid unnecessary bugs from new versions of API
       libraries={['places']}
       language={'en'}
       render={render}
