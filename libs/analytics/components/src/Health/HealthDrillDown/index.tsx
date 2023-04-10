@@ -14,13 +14,13 @@ import {
   getFormattedToFunnel,
   DrilldownSelection,
   CONNECTIONFAILURE,
-  valueFormatter,
   TTC
+
 } from './config'
 import { FunnelChart }                                       from './funnelChart'
 import { HealthPieChart }                                    from './healthPieChart'
 import { useTtcDrilldownQuery, useConnectionDrilldownQuery } from './services'
-import { Point, Separator, Title }                           from './styledComponents'
+import { Point, Separator, Title, DrillDownRow }             from './styledComponents'
 
 const HealthDrillDown = (props: {
   filters: AnalyticsFilter;
@@ -101,7 +101,7 @@ const HealthDrillDown = (props: {
   const funnelChartData =
     drilldownSelection === CONNECTIONFAILURE ? connectionFailureResults : ttcResults
   return drilldownSelection ? (
-    <GridRow style={{ marginTop: 25 }}>
+    <DrillDownRow>
       <GridCol col={{ span: 24 }}>
         <GridRow>
           <GridCol col={{ span: 12 }}>
@@ -110,11 +110,7 @@ const HealthDrillDown = (props: {
           <GridCol col={{ span: 12 }} style={{ alignItems: 'end' }}>
             <CloseSymbol
               style={{ cursor: 'pointer' }}
-              onClick={() => {
-                setDrilldownSelection(null)
-                setSelectedStage(null)
-                setXpos(null)
-              }}
+              onClick={() => setDrilldownSelection(null)}
             />
           </GridCol>
         </GridRow>
@@ -128,9 +124,9 @@ const HealthDrillDown = (props: {
             colors={colors}
             selectedStage={selectedStage}
             onSelectStage={setStage}
-            valueFormatter={
-              drilldownSelection === CONNECTIONFAILURE ? formatter('countFormat') : valueFormatter
-            }
+            valueFormatter={formatter(
+              drilldownSelection === CONNECTIONFAILURE ? 'countFormat' : 'durationFormat'
+            )}
           />
         </Loader>
       </GridCol>
@@ -150,7 +146,7 @@ const HealthDrillDown = (props: {
           </GridCol>
         </>
       )}
-    </GridRow>
+    </DrillDownRow>
   ) : null
 }
 export { HealthDrillDown }

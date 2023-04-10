@@ -3,11 +3,15 @@ import '@testing-library/jest-dom'
 import { defineMessage } from 'react-intl'
 
 import { cssStr }                    from '@acx-ui/components'
+import { formatter }                 from '@acx-ui/formatter'
 import { Provider }                  from '@acx-ui/store'
 import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
-import { getFormattedToFunnel, valueFormatter } from './config'
-import { FunnelChart, Labels }                  from './funnelChart'
+import { getFormattedToFunnel } from './config'
+import { FunnelChart, Labels }  from './funnelChart'
+
+export const valueFormatter = (value: number) => formatter('durationFormat')(value)
+
 
 const stages = {
   authFailure: 228.46716757166308,
@@ -82,7 +86,7 @@ describe('Funnel Chart', () => {
         />
       </Provider>
     )
-    expect(await screen.findByText('No data')).toBeVisible()
+    expect(await screen.findByText('No data to display')).toBeVisible()
   })
   it('should not render Label for an empty stage', async () => {
     render(

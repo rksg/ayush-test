@@ -2,8 +2,6 @@ import { MouseEventHandler } from 'react'
 
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
-import { formatter } from '@acx-ui/formatter'
-
 export const titleConfig = {
   connectionFailure: defineMessage({ defaultMessage: 'Connection Failures' }),
   ttc: defineMessage({ defaultMessage: 'Average Time To Connect' })
@@ -26,7 +24,7 @@ export type FunnelChartStage = {
   pct: number;
   width: number;
   name: string;
-  label: MessageDescriptor;
+  label: MessageDescriptor | string;
   value: number | null;
 }
 export type EnhancedStage = FunnelChartStage & {
@@ -101,7 +99,6 @@ export const getFormattedToFunnel = (
 export const CONNECTIONFAILURE = 'connectionFailure'
 export const TTC = 'ttc'
 
-export const valueFormatter = (value: number) => formatter('durationFormat')(value)
 export const stageMapToName: Record<string, string> = {
   Authentication: 'auth',
   Association: 'assoc',
