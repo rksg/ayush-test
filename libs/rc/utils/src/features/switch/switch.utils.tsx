@@ -176,13 +176,13 @@ export const transformSwitchUnitStatus = (switchStatusEnum: SwitchStatusEnum, co
     case SwitchStatusEnum.OPERATIONAL:
       if (configReady && syncedSwitchConfig) {
         if (suspendingDeployTime && suspendingDeployTime.length > 0) {
-          return $t({ defaultMessage: 'Operational - applying configuration' })
+          return $t({ defaultMessage: 'Applying configuration' })
         }
         return $t({ defaultMessage: 'Operational' })
       } else if (!syncedSwitchConfig) {
         return $t({ defaultMessage: 'Synchronizing data' })
       } else {
-        return $t({ defaultMessage: 'Operational - Synchronizing' })
+        return $t({ defaultMessage: 'Synchronizing' })
       }
     case SwitchStatusEnum.DISCONNECTED:
       return $t({ defaultMessage: 'Disconnected from cloud' })
