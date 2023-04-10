@@ -7,27 +7,27 @@ import { useParams }              from 'react-router-dom'
 
 import { Loader, showActionModal, StepsForm } from '@acx-ui/components'
 import {
-  useGetVenueBonjourFencingQuery,
-  useUpdateVenueBonjourFencingMutation
+  useGetVenueMdnsFencingQuery,
+  useUpdateVenueMdnsFencingMutation
 } from '@acx-ui/rc/services'
-import { BonjourFencingService, VenueBonjourFencingPolicy } from '@acx-ui/rc/utils'
+import { MdnsFencingService, VenueMdnsFencingPolicy } from '@acx-ui/rc/utils'
 
 import { VenueEditContext } from '../../..'
 
-import { BonjourFencingServiceTable } from './BonjourFencingServiceTable'
-import { updateRowIds }               from './utils'
+import { MdnsFencingServiceTable } from './MdnsFencingServiceTable'
+import { updateRowIds }            from './utils'
 
-export interface BonjourFencingContextType {
-  bonjourFencingServices: BonjourFencingService[],
-  setBonjourFencingServices: (bonjourFencingServices: BonjourFencingService[]) => void,
-  setEnableBonjourFencing: (enable: boolean) => void
+export interface MdnsFencingContextType {
+  mdnsFencingServices: MdnsFencingService[],
+  setMdnsFencingServices: (mdnsFencingServices: MdnsFencingService[]) => void,
+  setEnableMdnsFencing: (enable: boolean) => void
 }
 
-export const BonjourFencingContext = createContext({} as BonjourFencingContextType)
+export const MdnsFencingContext = createContext({} as MdnsFencingContextType)
 
 
 
-export function BonjourFencing () {
+export function MdnsFencing () {
   const { $t } = useIntl()
   const { venueId } = useParams()
 
@@ -38,18 +38,18 @@ export function BonjourFencing () {
     setEditServerContextData
   } = useContext(VenueEditContext)
 
-  const getVenueBonjourFencing = useGetVenueBonjourFencingQuery({ params: { venueId } })
-  const [updateVenueBonjourFencing,
-    { isLoading: isUpdatingVenueBonjourFencing }] = useUpdateVenueBonjourFencingMutation()
+  const getVenueMdnsFencing = useGetVenueMdnsFencingQuery({ params: { venueId } })
+  const [updateVenueMdnsFencing,
+    { isLoading: isUpdatingVenueMdnsFencing }] = useUpdateVenueMdnsFencingMutation()
 
-  const [enableBonjourFencing, setEnableBonjourFencing] = useState(false)
-  const [bonjourFencingServices, setBonjourFencingServices]= useState([] as BonjourFencingService[])
+  const [enableMdnsFencing, setEnableMdnsFencing] = useState(false)
+  const [mdnsFencingServices, setMdnsFencingServices]= useState([] as MdnsFencingService[])
   const isUserSetting = useRef(false)
-  const [ initData, setInitData ] = useState<VenueBonjourFencingPolicy>()
+  const [initData, setInitData] = useState<VenueMdnsFencingPolicy>()
 
-  const onInit = (data?: VenueBonjourFencingPolicy, needToSetInitData=false) => {
+  const onInit = (data?: VenueMdnsFencingPolicy, needToSetInitData=false) => {
     const { enabled=false, services = [] } = data || {}
-    setEnableBonjourFencing(enabled)
+    setEnableMdnsFencing(enabled)
     const newData = updateRowIds(services).sort((a, b) => {
       const serviceA = a.service
       const serviceB = b.service
@@ -59,7 +59,7 @@ export function BonjourFencing () {
 
       return 0
     })
-    setBonjourFencingServices(newData)
+    setMdnsFencingServices(newData)
 
     if (needToSetInitData) {
       setInitData({
@@ -70,35 +70,34 @@ export function BonjourFencing () {
 
   }
 
-
   useEffect(() => {
-    const { data: venueBonjourFencing, isLoading } = getVenueBonjourFencing || {}
-    if (isLoading === false && venueBonjourFencing) {
-      onInit(venueBonjourFencing, true)
+    const { data: venueMdnsFencing, isLoading } = getVenueMdnsFencing || {}
+    if (isLoading === false && venueMdnsFencing) {
+      onInit(venueMdnsFencing, true)
     }
-  }, [getVenueBonjourFencing])
+  }, [getVenueMdnsFencing])
 
   useEffect(() => {
     if (isUserSetting.current) {
-      onBonjourFencingDataChanged()
+      onMdnsFencingDataChanged()
     }
-  }, [enableBonjourFencing, bonjourFencingServices])
+  }, [enableMdnsFencing, mdnsFencingServices])
 
   const handleEnableChanged = (checked: boolean) => {
     isUserSetting.current = true
-    setEnableBonjourFencing(checked)
+    setEnableMdnsFencing(checked)
   }
 
-  const handleServicesChanged = (data: BonjourFencingService[]) => {
+  const handleServicesChanged = (data: MdnsFencingService[]) => {
     isUserSetting.current = true
-    setBonjourFencingServices(data)
+    setMdnsFencingServices(data)
   }
 
-  const updateBonjourFencingSettings = async () => {
+  const updateMdnsFencingSettings = async () => {
 
     try {
 
-      if (enableBonjourFencing === true && bonjourFencingServices.length === 0) {
+      if (enableMdnsFencing === true && mdnsFencingServices.length === 0) {
         showActionModal({
           type: 'error',
           content:
@@ -107,7 +106,7 @@ export function BonjourFencing () {
                 'You must have at least one mDNS Fencing Service when the Use mDNS Fencing Service button is Enabled' })
         })
 
-        await discardBonjourFencingSettings()
+        await discardMdnsFencingSettings()
         return
       }
 
@@ -121,18 +120,18 @@ export function BonjourFencing () {
 
       isUserSetting.current = false
 
-      const newServices = bonjourFencingServices.map((service) => {
+      const newServices = mdnsFencingServices.map((service) => {
         if (!service.wiredRules) service.wiredRules = []
         if (!service.customStrings) service.customStrings = []
         return _.omit(service, ['rowId'])
       })
 
       const payload = {
-        enabled: enableBonjourFencing,
+        enabled: enableMdnsFencing,
         services: newServices
       }
 
-      await updateVenueBonjourFencing({
+      await updateVenueMdnsFencing({
         params: { venueId },
         payload
       }).unwrap()
@@ -142,7 +141,7 @@ export function BonjourFencing () {
     }
   }
 
-  const discardBonjourFencingSettings = async () => {
+  const discardMdnsFencingSettings = async () => {
     setEditContextData && setEditContextData({
       ...editContextData,
       unsavedTabKey: 'servers',
@@ -155,7 +154,7 @@ export function BonjourFencing () {
     isUserSetting.current = false
   }
 
-  const onBonjourFencingDataChanged = () => {
+  const onMdnsFencingDataChanged = () => {
 
     setEditContextData && setEditContextData({
       ...editContextData,
@@ -166,22 +165,22 @@ export function BonjourFencing () {
 
     setEditServerContextData && setEditServerContextData({
       ...editServerContextData,
-      updateBonjourFencing: () => updateBonjourFencingSettings(),
-      discardBonjourFencing: () => discardBonjourFencingSettings()
+      updateMdnsFencing: () => updateMdnsFencingSettings(),
+      discardMdnsFencing: () => discardMdnsFencingSettings()
     })
 
   }
 
   return (
     <Loader states={[{
-      isLoading: getVenueBonjourFencing.isLoading,
-      isFetching: isUpdatingVenueBonjourFencing
+      isLoading: getVenueMdnsFencing.isLoading,
+      isFetching: isUpdatingVenueMdnsFencing
     }]}>
-      <BonjourFencingContext.Provider
+      <MdnsFencingContext.Provider
         value={{
-          bonjourFencingServices,
-          setBonjourFencingServices: handleServicesChanged,
-          setEnableBonjourFencing }}>
+          mdnsFencingServices: mdnsFencingServices,
+          setMdnsFencingServices: handleServicesChanged,
+          setEnableMdnsFencing: setEnableMdnsFencing }}>
         <Row>
           <Col span={5}>
             <StepsForm.FieldLabel width='200px'>
@@ -190,7 +189,7 @@ export function BonjourFencing () {
                 valuePropName='checked'
                 children={
                   <Switch
-                    checked={enableBonjourFencing}
+                    checked={enableMdnsFencing}
                     onClick={(checked) => {
                       handleEnableChanged(checked)
                     }}
@@ -200,19 +199,19 @@ export function BonjourFencing () {
             </StepsForm.FieldLabel>
           </Col>
         </Row>
-        {enableBonjourFencing &&
+        {enableMdnsFencing &&
           <Row>
             <Col flex='650px' >
               <Form.Item required
                 label={$t({ defaultMessage: 'Manage Fencing services' })}
                 children={
-                  <BonjourFencingServiceTable />
+                  <MdnsFencingServiceTable />
                 }
               />
             </Col>
           </Row>
         }
-      </BonjourFencingContext.Provider>
+      </MdnsFencingContext.Provider>
     </Loader>
   )
 }

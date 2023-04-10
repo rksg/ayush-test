@@ -12,8 +12,8 @@ import {
   Loader
 } from '@acx-ui/components'
 import {
-  useGetUpgradePreferencesQuery,
-  useUpdateUpgradePreferencesMutation,
+  useGetSwitchUpgradePreferencesQuery,
+  useUpdateSwitchUpgradePreferencesMutation,
   useGetSwitchVenueVersionListQuery,
   useGetSwitchAvailableFirmwareListQuery,
   useGetSwitchCurrentVersionsQuery,
@@ -47,14 +47,6 @@ import * as UI               from '../../styledComponents'
 import { ChangeScheduleDialog } from './ChangeScheduleDialog'
 import { UpdateNowDialog }      from './UpdateNowDialog'
 
-type TablePaginationPosition =
-  | 'topLeft'
-  | 'topCenter'
-  | 'topRight'
-  | 'bottomLeft'
-  | 'bottomCenter'
-  | 'bottomRight'
-
 const transform = firmwareTypeTrans()
 
 function useColumns (
@@ -85,7 +77,7 @@ function useColumns (
       filterable: filterables ? filterables['version'] : false,
       filterMultiple: false,
       render: function (data, row) {
-        return row.switchFirmwareVersion?.id ?? '--'
+        return row.switchFirmwareVersion?.id.replace('_b392', '') ?? '--'
       }
     },
     {
@@ -159,12 +151,11 @@ export const VenueFirmwareTable = (
   const [venues, setVenues] = useState<FirmwareSwitchVenue[]>([])
   const [upgradeVersions, setUpgradeVersions] = useState<FirmwareVersion[]>([])
   const [changeUpgradeVersions, setChangeUpgradeVersions] = useState<FirmwareVersion[]>([])
-  const pageBotton: TablePaginationPosition | 'none' = 'none'
 
   const { data: preDownload } = useGetSwitchFirmwarePredownloadQuery({ params })
 
-  const [updateUpgradePreferences] = useUpdateUpgradePreferencesMutation()
-  const { data: preferencesData } = useGetUpgradePreferencesQuery({ params })
+  const [updateUpgradePreferences] = useUpdateSwitchUpgradePreferencesMutation()
+  const { data: preferencesData } = useGetSwitchUpgradePreferencesQuery({ params })
   const preferenceDays = preferencesData?.days?.map((day) => {
     return day.charAt(0).toUpperCase() + day.slice(1).toLowerCase()
   })
@@ -311,8 +302,7 @@ export const VenueFirmwareTable = (
       <Table
         columns={columns}
         dataSource={tableQuery.data?.data}
-        // eslint-disable-next-line max-len
-        pagination={{ pageSize: 10000, position: [pageBotton as TablePaginationPosition , pageBotton as TablePaginationPosition] }}
+        pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
@@ -365,7 +355,7 @@ export function VenueFirmwareList () {
     selectFromResult ({ data }) {
       return {
         // eslint-disable-next-line max-len
-        versionFilterOptions: data?.currentVersions?.map(v=>({ key: v, value: v })) || true
+        versionFilterOptions: data?.currentVersions?.map(v=>({ key: v, value: v.replace('_b392', '') })) || true
       }
     }
   })

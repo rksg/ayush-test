@@ -73,21 +73,4 @@ describe('Layout', () => {
     fireEvent.click(screen.getByTestId('AccountCircleOutlined'))
     await screen.findByTestId('AccountCircleSolid')
   })
-  it('should show tooltip when disabled', async () => {
-    const { asFragment } = render(<Layout
-      menuConfig={menuConfig}
-      leftHeaderContent={<div>Left header</div>}
-      rightHeaderContent={<div>Right header</div>}
-      content={<div>content</div>}
-    />, {
-      route: {
-        path: '/t/:tenantId/:page',
-        params: { tenantId: 't-id', page: 'dashboard' }
-      }
-    })
-    await screen.findByTestId('AIOutlined')
-    fireEvent.mouseOver(screen.getByTestId('AccountCircleOutlined'))
-    await screen.findByRole('tooltip', { hidden: true })
-    expect(asFragment()).toMatchSnapshot()
-  })
 })

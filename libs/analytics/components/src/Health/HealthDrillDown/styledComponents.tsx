@@ -1,10 +1,12 @@
 import styled from 'styled-components/macro'
 
+import { GridRow } from '@acx-ui/components'
+
 import { EnhancedStage } from './config'
 
 export const Title = styled.div`
   font-size: 14px;
-  font-weight: bold;
+  font-weight: var(--acx-body-font-weight-bold);
 `
 export const ChartContainer = styled.div<{ height : number, padding : number }>`
   padding: ${props => props.padding}px 0;
@@ -40,7 +42,7 @@ export const Label = styled.div<{ pinPosition : string, line: number }>`
   height: 30px;
   line-height: 30px;
   font-size: 12px;
-  font-weight: bold;
+  font-weight: var(--acx-body-font-weight-bold);
   ${props => `
     padding-${props.pinPosition}: 10px;
   `}
@@ -69,6 +71,16 @@ export const Pin = styled.div<{ pinPosition : string, dir: string,color : string
     border-radius: 2.5px;
     background: ${props => props.color};
   }
+`
+
+export const DrillDownRow = styled(GridRow)`
+  margin-top: 25px;
+  margin-left: 0px !important;
+  margin-right: 0px !important;
+  border-radius: 8px;
+  padding: 12px 16px;
+  border: 1px solid var(--acx-neutrals-20);
+  box-shadow: 0px 2px 4px rgba(51, 51, 51, 0.08);
 `
 
 export const Point = styled.div.attrs((props: { $xPos: number | null }) => props)`

@@ -16,7 +16,7 @@ import Kpis                          from './Kpi'
 import * as UI                       from './styledComponents'
 import { SummaryBoxes }              from './SummaryBoxes'
 
-const HealthPage = (props: { filters?: AnalyticsFilter; path?: string }) => {
+const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
   const { $t } = useIntl()
   const { filters: widgetFilters } = props
   const params = useParams()
@@ -25,8 +25,7 @@ const HealthPage = (props: { filters?: AnalyticsFilter; path?: string }) => {
   const basePath = useTenantLink(props.path ?? '/analytics/health/tab/')
   const { filters } = useAnalyticsFilter()
   const healthPageFilters = widgetFilters ? widgetFilters : filters
-  const [drilldownSelection, setDrilldownSelection] =
-    useState<DrilldownSelection>(null)
+  const [drilldownSelection, setDrilldownSelection] = useState<DrilldownSelection>(null)
 
   const onTabChange = (tab: string) =>
     navigate({
@@ -72,10 +71,7 @@ const HealthPage = (props: { filters?: AnalyticsFilter; path?: string }) => {
             </UI.ThresholdTitle>
           </GridCol>
           <GridCol col={{ span: 24 }}>
-            <Kpis
-              tab={selectedTab as CategoryTab}
-              filters={healthPageFilters}
-            />
+            <Kpis tab={selectedTab as CategoryTab} filters={healthPageFilters}/>
           </GridCol>
         </HealthPageContextProvider>
       </GridRow>

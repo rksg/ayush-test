@@ -32,12 +32,9 @@ function NetworkTabs () {
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Venues ({venuesCount})' }, { venuesCount })}
         key='venues' />
-      {/* <Tabs.TabPane
-        disabled
-        tab={<Tooltip title={$t(notAvailableMsg)}>
-          {$t({ defaultMessage: 'Services ({servicesCount})' }, { servicesCount })}
-        </Tooltip>}
-        key='services' /> */}
+      {/* isFFOn ? <Tabs.TabPane
+        tab={$t({ defaultMessage: 'Services ({servicesCount})' }, { servicesCount })}
+        key='services' /> : null */}
       <Tabs.TabPane tab={$t({ defaultMessage: 'Timeline' })} key='timeline' />
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Incidents' })}
