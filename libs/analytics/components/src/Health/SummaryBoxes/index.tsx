@@ -7,7 +7,7 @@ import { useIsSplitOn, Features }   from '@acx-ui/feature-toggle'
 import { formatter, intlFormats }   from '@acx-ui/formatter'
 import { noDataDisplay }            from '@acx-ui/utils'
 
-import { DrilldownSelection } from '..'
+import { DrilldownSelection } from '../HealthDrillDown/config'
 
 import { useSummaryQuery }                        from './services'
 import { Wrapper, Statistic, UpArrow, DownArrow } from './styledComponents'
