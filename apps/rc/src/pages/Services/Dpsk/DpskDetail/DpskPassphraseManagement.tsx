@@ -147,6 +147,12 @@ export default function DpskPassphraseManagement () {
         }
         return transformAdvancedDpskExpirationText(intl, { expirationType: null })
       }
+    },
+    {
+      key: 'revocationReason',
+      title: $t({ defaultMessage: 'Revocation Reason' }),
+      dataIndex: 'revocationReason',
+      show: isCloudpathEnabled
     }
   ]
 
@@ -169,8 +175,7 @@ export default function DpskPassphraseManagement () {
             params,
             payload: {
               ids: selectedRows.map(p => p.id),
-              updateState: 'REVOKE',
-              revocationReason
+              changes: { revocationReason }
             }
           })
           clearSelection()
@@ -185,7 +190,7 @@ export default function DpskPassphraseManagement () {
           params,
           payload: {
             ids: selectedRows.map(p => p.id),
-            updateState: 'UNREVOKE'
+            changes: { revocationReason: null }
           }
         }).then(clearSelection)
       }
