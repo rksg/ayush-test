@@ -13,7 +13,8 @@ import * as UI                           from './styledComponents'
 
 export const ALLOW_LIST_MAX_COUNT = 64
 
-export default function ClientIsolationSettingsForm () {
+export default function ClientIsolationSettingsForm (props: { editMode: boolean }) {
+  const { editMode } = props
   const { $t } = useIntl()
   const form = Form.useFormInstance()
   const params = useParams()
@@ -91,6 +92,7 @@ export default function ClientIsolationSettingsForm () {
             ]}
           >
             <ClientIsolationAllowListTable
+              showIpAddress={!editMode}
               allowList={allowlist}
               setAllowList={handleSetAllowList}
             />

@@ -8,7 +8,7 @@ import {
   ClientList
 } from '@acx-ui/rc/utils'
 
-export type SimpleClientRecord = Pick<ClientList, 'clientMac'>
+export type SimpleClientRecord = Pick<ClientList, 'clientMac' | 'ipAddress'>
 
 export interface SelectConnectedClientsDrawerProps {
   incomingClientsMac?: string[];
@@ -27,7 +27,7 @@ export function SelectConnectedClientsDrawer (props: SelectConnectedClientsDrawe
   }
 
   const onSave = async () => {
-    addClients(selectedClients.map(c => ({ clientMac: c.clientMac })))
+    addClients(selectedClients.map(c => ({ clientMac: c.clientMac, ipAddress: c.ipAddress })))
 
     onClose()
   }

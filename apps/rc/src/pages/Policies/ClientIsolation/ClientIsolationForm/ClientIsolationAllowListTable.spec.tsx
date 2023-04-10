@@ -29,7 +29,11 @@ describe('ClientIsolationAllowListTable', () => {
 
       return (
         <Provider>
-          <ClientIsolationAllowListTable allowList={list} setAllowList={setList} />
+          <ClientIsolationAllowListTable
+            allowList={list}
+            setAllowList={setList}
+            showIpAddress={false}
+          />
         </Provider>
       )
     }
@@ -73,7 +77,11 @@ describe('ClientIsolationAllowListTable', () => {
 
       return (
         <Provider>
-          <ClientIsolationAllowListTable allowList={list} setAllowList={setList} />
+          <ClientIsolationAllowListTable
+            allowList={list}
+            setAllowList={setList}
+            showIpAddress={false}
+          />
         </Provider>
       )
     }
@@ -109,7 +117,11 @@ describe('ClientIsolationAllowListTable', () => {
 
       return (
         <Provider>
-          <ClientIsolationAllowListTable allowList={list} setAllowList={setList} />
+          <ClientIsolationAllowListTable
+            allowList={list}
+            setAllowList={setList}
+            showIpAddress={false}
+          />
         </Provider>
       )
     }
