@@ -4024,111 +4024,111 @@
     "defaultMessage": "JP-SNMP Agent"
   },
   "+DU2Ww": {
-    "defaultMessage": "<p>RADIUS timeouts are most likely to be resolved by investigating the RADIUS server health directly, typically by focusing on load or service availability metrics and logs:</p> <ol> <li>Is the RADIUS server reliable and reachable (by ping from the AP or RUCKUS One)?</li> <li>Is the RADIUS server experiencing high load?</li> <li>Is the RADIUS hardware infrastructure (CPU, Memory, IO) over-loaded or otherwise suffering a service outage?</li> <li>Do the RADIUS logs indicate unusual failures messages or reasons?</li> <li>Is the wireless link showing symptoms of congestion (high airtime utilization or interference)?</li> </ol>"
+    "defaultMessage": "JP-<p>RADIUS timeouts are most likely to be resolved by investigating the RADIUS server health directly, typically by focusing on load or service availability metrics and logs:</p> <ol> <li>Is the RADIUS server reliable and reachable (by ping from the AP or RUCKUS One)?</li> <li>Is the RADIUS server experiencing high load?</li> <li>Is the RADIUS hardware infrastructure (CPU, Memory, IO) over-loaded or otherwise suffering a service outage?</li> <li>Do the RADIUS logs indicate unusual failures messages or reasons?</li> <li>Is the wireless link showing symptoms of congestion (high airtime utilization or interference)?</li> </ol>"
   },
   "46B5V9": {
-    "defaultMessage": "Note: Changing the passphrase will be applied to disconnected APs only once they are reconnected to RUCKUS One"
+    "defaultMessage": "JP-Note: Changing the passphrase will be applied to disconnected APs only once they are reconnected to RUCKUS One"
   },
   "AVN9fZ": {
-    "defaultMessage": "Default Template - No Portal URL"
+    "defaultMessage": "JP-Default Template - No Portal URL"
   },
   "BJpCcw": {
-    "defaultMessage": "Guest Passphrase Reset"
+    "defaultMessage": "JP-Guest Passphrase Reset"
   },
   "BjliYB": {
-    "defaultMessage": "Default Template"
+    "defaultMessage": "JP-Default Template"
   },
   "EP5d+i": {
-    "defaultMessage": "<p>To remediate the problems identified above, follow the corresponding recommended actions:</p> <ol> <li>Ensure that PSE - PoE switch or PoE injector capacity and cumulative power requirements of all APs for full operation are appropriately matched.</li> <li>(Typical) Check the connectivity to the AP gateway and latency to RUCKUS One. In rare cases it might indicate configuration corruption.</li> <li>(Typical) Check the connectivity to the AP gateway and latency to RUCKUS One. Download time out is the main cause.</li> <li>RUCKUS One can reboot the AP for multiple reasons. There could be an mishandled exception or catastrophic failure in a process, causing RUCKUS One to reboot the AP. In these cases, an alarm is raised. Use RUCKUS One alarm message, Alarm code: 302 and attribute field to understand and isolate this issue further.</li> </ol>"
+    "defaultMessage": "JP-<p>To remediate the problems identified above, follow the corresponding recommended actions:</p> <ol> <li>Ensure that PSE - PoE switch or PoE injector capacity and cumulative power requirements of all APs for full operation are appropriately matched.</li> <li>(Typical) Check the connectivity to the AP gateway and latency to RUCKUS One. In rare cases it might indicate configuration corruption.</li> <li>(Typical) Check the connectivity to the AP gateway and latency to RUCKUS One. Download time out is the main cause.</li> <li>RUCKUS One can reboot the AP for multiple reasons. There could be an mishandled exception or catastrophic failure in a process, causing RUCKUS One to reboot the AP. In these cases, an alarm is raised. Use RUCKUS One alarm message, Alarm code: 302 and attribute field to understand and isolate this issue further.</li> </ol>"
   },
   "F88EfP": {
-    "defaultMessage": "<p>To remediate the problems identified above, follow the corresponding recommended actions:</p> <ol> <li>Test network connection between AP and RUCKUS One.</li> <li>Ensure that there is clear communication on all required ports.</li> <li>Test WAN connection health to ensure there is a route from AP to RUCKUS One and there is no or acceptable packet loss.</li> <li>Ensure that AP certificate is valid. Work with Ruckus customer support to identify and resolve this condition.</li> </ol>"
+    "defaultMessage": "JP-<p>To remediate the problems identified above, follow the corresponding recommended actions:</p> <ol> <li>Test network connection between AP and RUCKUS One.</li> <li>Ensure that there is clear communication on all required ports.</li> <li>Test WAN connection health to ensure there is a route from AP to RUCKUS One and there is no or acceptable packet loss.</li> <li>Ensure that AP certificate is valid. Work with Ruckus customer support to identify and resolve this condition.</li> </ol>"
   },
   "GT/UvO": {
-    "defaultMessage": "AP-to-RUCKUS One Latency"
+    "defaultMessage": "JP-AP-to-RUCKUS One Latency"
   },
   "GTEAEN": {
-    "defaultMessage": "Access Reset"
+    "defaultMessage": "JP-Access Reset"
   },
   "JVb1sa": {
-    "defaultMessage": "<p>This issue is caused by a DoS protection feature, which can be enabled/disabled in RUCKUS One. If the behavior is having an undesirable impact on valid clients, the feature can be disabled or optimized to make the prevention logic more conservative.</p>"
+    "defaultMessage": "JP-<p>This issue is caused by a DoS protection feature, which can be enabled/disabled in RUCKUS One. If the behavior is having an undesirable impact on valid clients, the feature can be disabled or optimized to make the prevention logic more conservative.</p>"
   },
   "M/LHFN": {
-    "defaultMessage": "5 (802.3bt 45 W)"
+    "defaultMessage": "JP-5 (802.3bt 45 W)"
   },
   "Nq5WRc": {
-    "defaultMessage": "If checked, Ruckus Support team is granted a temporary administrator-level access for 21 days. Enable when requested by Ruckus Support team."
+    "defaultMessage": "JP-If checked, Ruckus Support team is granted a temporary administrator-level access for 21 days. Enable when requested by Ruckus Support team."
   },
   "OEgJTT": {
-    "defaultMessage": "7 (802.3bt 75 W)"
+    "defaultMessage": "JP-7 (802.3bt 75 W)"
   },
   "PvLzOc": {
-    "defaultMessage": "The time-series graph on the left displays the percentage of APs that have AP-to-RUCKUS One control plane latency which meets the configured SLA. The bar chart on the right captures the distribution of the latency across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page."
+    "defaultMessage": "JP-The time-series graph on the left displays the percentage of APs that have AP-to-RUCKUS One control plane latency which meets the configured SLA. The bar chart on the right captures the distribution of the latency across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page."
   },
   "PzcfBR": {
-    "defaultMessage": "<p>For each group of reasons, corresponding recommendations are below:</p> <ol> <li>Turn off unused features - AVC, Wi-Fi Calling, Mesh, URL Filtering, Rogue client etc.</li> <li>Check the rate and volume of data requested through public API calls.</li> <li>Consider removing unnecessary events or reducing the duration of event storage.</li> <li>Check the rate and volume of user login requests.</li> <li>Address any alarms related to AP or switch connection status.</li> </ol> <p>Generally memory and I/O intensive process are transient. If a sustained high memory usage is observed, please work with RUCKUS customer team.</p>"
+    "defaultMessage": "JP-<p>For each group of reasons, corresponding recommendations are below:</p> <ol> <li>Turn off unused features - AVC, Wi-Fi Calling, Mesh, URL Filtering, Rogue client etc.</li> <li>Check the rate and volume of data requested through public API calls.</li> <li>Consider removing unnecessary events or reducing the duration of event storage.</li> <li>Check the rate and volume of user login requests.</li> <li>Address any alarms related to AP or switch connection status.</li> </ol> <p>Generally memory and I/O intensive process are transient. If a sustained high memory usage is observed, please work with RUCKUS customer team.</p>"
   },
   "QN9BCR": {
-    "defaultMessage": "Passphrase Reset"
+    "defaultMessage": "JP-Passphrase Reset"
   },
   "Qk9gWn": {
-    "defaultMessage": "Passphrase of a special recovery network which is activated on AP once it loses connection with RUCKUS One."
+    "defaultMessage": "JP-Passphrase of a special recovery network which is activated on AP once it loses connection with RUCKUS One."
   },
   "Ul/ZlK": {
-    "defaultMessage": "6 (802.3bt 60 W)"
+    "defaultMessage": "JP-6 (802.3bt 60 W)"
   },
   "W/KQKM": {
-    "defaultMessage": "8 (802.3bt 99 W)"
+    "defaultMessage": "JP-8 (802.3bt 99 W)"
   },
   "XMHoeq": {
-    "defaultMessage": "SNR threshold above which detected Rogue APs will be reported in RUCKUS One. Available range is 0-100."
+    "defaultMessage": "JP-SNR threshold above which detected Rogue APs will be reported in RUCKUS One. Available range is 0-100."
   },
   "Yresoo": {
-    "defaultMessage": "Incidents (24 hours)"
+    "defaultMessage": "JP-Incidents (24 hours)"
   },
   "ZSgonJ": {
-    "defaultMessage": "AP-RUCKUS One connection uptime measures the percentage of time the AP radios are fully available for client service. The time-series graph on the left displays the percentage of AP-RUCKUS One connection uptime samples across time that meets the configured SLA. The bar chart on the right displays the distribution of AP service uptime across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page."
+    "defaultMessage": "JP-AP-RUCKUS One connection uptime measures the percentage of time the AP radios are fully available for client service. The time-series graph on the left displays the percentage of AP-RUCKUS One connection uptime samples across time that meets the configured SLA. The bar chart on the right displays the distribution of AP service uptime across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page."
   },
   "dchIAD": {
-    "defaultMessage": "Current Subscription Tier: <b>{tier}</b>"
+    "defaultMessage": "JP-Current Subscription Tier: <b>{tier}</b>"
   },
   "em+L/F": {
-    "defaultMessage": "<p>In many cases with RADIUS failure, each client device or RADIUS server behaves differently, which causes a variety of unique failure symptoms. If the problem is affecting many users or lasting for a long time, it may be helpful to validate the end-to-end RADIUS setup and network performance:</p> <ol> <li>Check the RADIUS server and RUCKUS One settings to identify matching configurations (IP address, port, and shared secret).</li> <li>Check for RADIUS reachability by RUCKUS One/AP (network reliability issues, like congestion, drops, flapping links, etc).</li> <li>Check for recent changes in the RADIUS infrastructure that may be leading to issues.</li> <li>Check RADIUS performance metrics to ensure it has sufficient capacity and is not overloaded.</li> <li>Check the wireless link for high congestion, retries/errors, or other unreliability issues.</li> </ol>"
+    "defaultMessage": "JP-<p>In many cases with RADIUS failure, each client device or RADIUS server behaves differently, which causes a variety of unique failure symptoms. If the problem is affecting many users or lasting for a long time, it may be helpful to validate the end-to-end RADIUS setup and network performance:</p> <ol> <li>Check the RADIUS server and RUCKUS One settings to identify matching configurations (IP address, port, and shared secret).</li> <li>Check for RADIUS reachability by RUCKUS One/AP (network reliability issues, like congestion, drops, flapping links, etc).</li> <li>Check for recent changes in the RADIUS infrastructure that may be leading to issues.</li> <li>Check RADIUS performance metrics to ensure it has sufficient capacity and is not overloaded.</li> <li>Check the wireless link for high congestion, retries/errors, or other unreliability issues.</li> </ol>"
   },
   "fG1Tcr": {
-    "defaultMessage": "High AP-RUCKUS One connection failures in {scope}."
+    "defaultMessage": "JP-High AP-RUCKUS One connection failures in {scope}."
   },
   "k5+MA8": {
-    "defaultMessage": "This network is restricted to authorized users only. Violators may be subjected to legal prosecution. Acitvity on this network is monitored and may be used as evidence in a court of law. © {year} CommScope, Inc. All Rights Reserved."
+    "defaultMessage": "JP-This network is restricted to authorized users only. Violators may be subjected to legal prosecution. Acitvity on this network is monitored and may be used as evidence in a court of law. © {year} CommScope, Inc. All Rights Reserved."
   },
   "kOJCG1": {
-    "defaultMessage": "Online APs measures the percentage of APs which are online and connected to RUCKUS One.{br}{br}The time-series graph on the left displays the Online AP percentage across time. The bar chart on the right captures the daily Online AP percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page."
+    "defaultMessage": "JP-Online APs measures the percentage of APs which are online and connected to RUCKUS One.{br}{br}The time-series graph on the left displays the Online AP percentage across time. The bar chart on the right captures the daily Online AP percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page."
   },
   "m5dvz6": {
-    "defaultMessage": "Create MAC address lists to enable device access to wired or wireless networks"
+    "defaultMessage": "JP-Create MAC address lists to enable device access to wired or wireless networks"
   },
   "nRqzsD": {
-    "defaultMessage": "High AP-RUCKUS One connection failures in {scope}"
+    "defaultMessage": "JP-High AP-RUCKUS One connection failures in {scope}"
   },
   "qaDy1D": {
-    "defaultMessage": "<p>To fix this issue, it may be necessary to check the RADIUS server availability as well as the link between RUCKUS One/AP and the RADIUS server.</p> <p>If all services are up and functional, double-check the RADIUS configuration on RUCKUS One/AP.</p>"
+    "defaultMessage": "JP-<p>To fix this issue, it may be necessary to check the RADIUS server availability as well as the link between RUCKUS One/AP and the RADIUS server.</p> <p>If all services are up and functional, double-check the RADIUS configuration on RUCKUS One/AP.</p>"
   },
   "rz7Xgm": {
-    "defaultMessage": "<p>System has detected high number of AP-RUCKUS One connection failures. This can occur due to following reasons:</p> <ol> <li>Intermittent or permanent loss of connectivity between AP and RUCKUS One. Losing consecutive heartbeat/keepalive messages from the AP will result in AP-RUCKUS One connection failures.</li> <li>Improperly configured Firewall or NAT device or a network switch can cause the AP-RUCKUS One communication failure.</li> <li>Lack of reachability from AP to RUCKUS One over a WAN connection or cloud would cause APs to disconnect from RUCKUS One.</li> <li>In rare cases, AP certificate is invalid which forces RUCKUS One to deny the incoming connection from the AP.</li> </ol>"
+    "defaultMessage": "JP-<p>System has detected high number of AP-RUCKUS One connection failures. This can occur due to following reasons:</p> <ol> <li>Intermittent or permanent loss of connectivity between AP and RUCKUS One. Losing consecutive heartbeat/keepalive messages from the AP will result in AP-RUCKUS One connection failures.</li> <li>Improperly configured Firewall or NAT device or a network switch can cause the AP-RUCKUS One communication failure.</li> <li>Lack of reachability from AP to RUCKUS One over a WAN connection or cloud would cause APs to disconnect from RUCKUS One.</li> <li>In rare cases, AP certificate is invalid which forces RUCKUS One to deny the incoming connection from the AP.</li> </ol>"
   },
   "sEEn1v": {
-    "defaultMessage": "RUCKUS One needs you to be online,<br></br>you appear to be offline."
+    "defaultMessage": "JP-RUCKUS One needs you to be online,<br></br>you appear to be offline."
   },
   "sKNlN3": {
-    "defaultMessage": "AP-RUCKUS One Connection Uptime"
+    "defaultMessage": "JP-AP-RUCKUS One Connection Uptime"
   },
   "snQr7I": {
-    "defaultMessage": "<p>The RADIUS authentication exchange is failing because of a timeout waiting for a response from the RADIUS server. This is typically caused by the following reasons:</p> <ol> <li>The RADIUS server is offline.</li> <li>The RADIUS server is unreachable by RUCKUS One/AP (network reliability issues, like congestion, drops, flapping links, etc).</li> <li>The RADIUS server is overloaded and unable to reply.</li> <li>The wireless link is experiencing high congestion, retries/errors, or other unreliability issues.</li> </ol>"
+    "defaultMessage": "JP-<p>The RADIUS authentication exchange is failing because of a timeout waiting for a response from the RADIUS server. This is typically caused by the following reasons:</p> <ol> <li>The RADIUS server is offline.</li> <li>The RADIUS server is unreachable by RUCKUS One/AP (network reliability issues, like congestion, drops, flapping links, etc).</li> <li>The RADIUS server is overloaded and unable to reply.</li> <li>The wireless link is experiencing high congestion, retries/errors, or other unreliability issues.</li> </ol>"
   },
   "tILniP": {
-    "defaultMessage": "Port Assignment"
+    "defaultMessage": "JP-Port Assignment"
   },
   "y4bnZr": {
-    "defaultMessage": "<p>The RADIUS server is offline or unreachable from RUCKUS One/AP (message from RUCKUS One/AP to RADIUS is failing), which is often caused by:</p> <ol> <li>AP/SZ misconfiguration (Bad IP, bad port).</li> <li>The RADIUS server is offline.</li> <li>The RADIUS server is unreachable on the network (e.g. network path or routing issues).</li> </ol>"
+    "defaultMessage": "JP-<p>The RADIUS server is offline or unreachable from RUCKUS One/AP (message from RUCKUS One/AP to RADIUS is failing), which is often caused by:</p> <ol> <li>AP/SZ misconfiguration (Bad IP, bad port).</li> <li>The RADIUS server is offline.</li> <li>The RADIUS server is unreachable on the network (e.g. network path or routing issues).</li> </ol>"
   }
 }
