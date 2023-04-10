@@ -15,6 +15,7 @@ import { ApTable, CsvSize, ImportFileDrawer } from '@acx-ui/rc/components'
 import {
   useApGroupsListQuery,
   useImportApMutation,
+  useImportApOldMutation,
   useLazyImportResultQuery,
   useVenuesListQuery
 } from '@acx-ui/rc/services'
@@ -60,20 +61,40 @@ export default function ApsTable () {
   )
 
   const [ isImportResultLoading, setIsImportResultLoading ] = useState(false)
+  const [ importAps, importApsResult ] = useImportApOldMutation()
   const [ importCsv ] = useImportApMutation()
   const [ importQuery ] = useLazyImportResultQuery()
   const [ importResult, setImportResult ] = useState<ImportErrorRes>({} as ImportErrorRes)
 
   const apGpsFlag = useIsSplitOn(Features.AP_GPS)
+  const wifiEdaFlag = useIsSplitOn(Features.WIFI_EDA_GATEWAY)
   const importTemplateLink = apGpsFlag ?
     'assets/templates/aps_import_template_with_gps.csv' :
     'assets/templates/aps_import_template.csv'
 
   useEffect(()=>{
-    if (importResult.fileErrorsCount === 0) {
+    if (wifiEdaFlag) {
+      return
+    }
+
+    setIsImportResultLoading(false)
+    if (importApsResult.isSuccess) {
+      setImportVisible(false)
+    } else if (importApsResult.isError && importApsResult?.error &&
+      'data' in importApsResult.error) {
+      setImportResult(importApsResult?.error.data as ImportErrorRes)
+    }
+  },[importApsResult])
+
+  useEffect(()=>{
+    if (!wifiEdaFlag) {
+      return
+    }
+
+    setIsImportResultLoading(false)
+    if ( importResult.fileErrorsCount === 0 ) {
       setImportVisible(false)
     }
-    setIsImportResultLoading(false)
   },[importResult])
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
@@ -129,13 +150,17 @@ export default function ApsTable () {
         importError={{ data: importResult } as FetchBaseQueryError}
         importRequest={(formData) => {
           setIsImportResultLoading(true)
-          importCsv({ params: { tenantId }, payload: formData,
-            callback: async (response: CommonResult) => {
-              const result = await importQuery(
-                { payload: { requestId: response.requestId } }, true)
-                .unwrap()
-              setImportResult(result)
-            } }).unwrap()
+          if (wifiEdaFlag) {
+            importCsv({ params: { tenantId }, payload: formData,
+              callback: async (response: CommonResult) => {
+                const result = await importQuery(
+                  { payload: { requestId: response.requestId } }, true)
+                  .unwrap()
+                setImportResult(result)
+              } }).unwrap()
+          } else {
+            importAps({ params: { tenantId }, payload: formData })
+          }
         }}
         onClose={() => setImportVisible(false)}/>
     </>

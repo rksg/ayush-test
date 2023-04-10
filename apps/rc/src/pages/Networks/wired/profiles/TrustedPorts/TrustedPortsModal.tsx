@@ -29,8 +29,8 @@ export function TrustedPortsModal (props: {
     form.resetFields()
     if (open && editRecord) {
       form.setFieldsValue(editRecord)
-      const family = editRecord.model.split('/')[0]
-      const model = editRecord.model.split('/')[1]
+      const family = editRecord.model.split('-')[0]
+      const model = editRecord.model.split('-')[1]
       setVlanSettingValues({
         family,
         model,
