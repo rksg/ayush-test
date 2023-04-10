@@ -64,9 +64,7 @@ function useActiveUri () {
   const chunks = pathname.split('/')
   for (const c in chunks) {
     if (['v', 't'].includes(chunks[c])) {
-      // TODO
-      // update to "+ 1" once URL updated to "/tenant-id/v|t"
-      return '/' + chunks.slice(Number(c) + 2).join('/')
+      return '/' + chunks.slice(Number(c) + 1).join('/')
     }
   }
   return pathname
