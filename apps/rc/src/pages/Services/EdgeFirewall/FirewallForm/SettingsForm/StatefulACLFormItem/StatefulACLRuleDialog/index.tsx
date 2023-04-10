@@ -1,15 +1,16 @@
 import { ReactElement, useEffect } from 'react'
 
-import { QuestionCircleOutlined }                                      from '@ant-design/icons'
-import { Form, Input, Space, Modal, Radio, Select, Row, Col, Tooltip } from 'antd'
-import TextArea                                                        from 'antd/lib/input/TextArea'
-import { IntlShape, useIntl }                                          from 'react-intl'
+import { QuestionCircleOutlined }                               from '@ant-design/icons'
+import { Form, Input, Modal, Radio, Select, Row, Col, Tooltip } from 'antd'
+import TextArea                                                 from 'antd/lib/input/TextArea'
+import { IntlShape, useIntl }                                   from 'react-intl'
+import styled                                                   from 'styled-components'
 
 import { cssStr, Drawer, Fieldset }                                 from '@acx-ui/components'
 import { SpaceWrapper }                                             from '@acx-ui/rc/components'
 import { AddressType, AccessAction, ProtocolType, StatefulAclRule } from '@acx-ui/rc/utils'
 
-import { StyledFlagFilled } from './styledComponents'
+import { StyledFlagFilled, ModalStyles } from './styledComponents'
 
 export const getProtocolTypeString = ($t: IntlShape['$t'], type: ProtocolType) => {
   switch (type) {
@@ -119,8 +120,15 @@ export interface StatefulACLRuleDialogProps {
   onSubmit: (newData: StatefulAclRule, isEdit: boolean) => void
 }
 
-export const StatefulACLRuleDialog = (props: StatefulACLRuleDialogProps) => {
-  const { visible, setVisible, editMode, editData, onSubmit } = props
+export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) => {
+  const {
+    className,
+    visible,
+    setVisible,
+    editMode,
+    editData,
+    onSubmit
+  } = props
   const { $t } = useIntl()
   const [form] = Form.useForm()
   const protocolTypes = getProtocolTypes($t)
@@ -141,7 +149,7 @@ export const StatefulACLRuleDialog = (props: StatefulACLRuleDialogProps) => {
     <Drawer.FormFooter
       buttonLabel={({
         addAnother: $t({ defaultMessage: 'Add another rule' }),
-        save: $t({ defaultMessage: 'Apply' })
+        save: $t({ defaultMessage: 'Add' })
       })}
       showAddAnother={!editMode}
       onCancel={handleClose}
@@ -167,6 +175,7 @@ export const StatefulACLRuleDialog = (props: StatefulACLRuleDialogProps) => {
 
   return (
     <Modal
+      className={className + ' modal-long'}
       title={editMode ?
         $t({ defaultMessage: 'Edit ACL Rule' }) :
         $t({ defaultMessage: 'Add ACL Rule' })}
@@ -203,7 +212,7 @@ export const StatefulACLRuleDialog = (props: StatefulACLRuleDialogProps) => {
           <Radio.Group buttonStyle='solid'>
             {accessActs.map(({ label, value, color }) => {
               return <Radio.Button value={value}>
-                <SpaceWrapper>
+                <SpaceWrapper full>
                   <StyledFlagFilled color={color} />
                   {label}
                   {value === AccessAction.INSPECT &&
@@ -260,10 +269,11 @@ export const StatefulACLRuleDialog = (props: StatefulACLRuleDialogProps) => {
           label={$t({ defaultMessage: 'Source' })}
           switchStyle={{ display: 'none' }}
           checked={true}
+          style={{ marginBottom: cssStr('--acx-content-vertical-space') }}
         >
           <Form.Item name='sourceAddressType'>
-            <Radio.Group>
-              <Space direction='vertical'>
+            <Radio.Group style={{ width: '100%' }}>
+              <SpaceWrapper full direction='vertical' size='large'>
                 {addressTypes.map(({ label, value }) => {
                   let inputContainer: ReactElement | undefined
 
@@ -277,18 +287,25 @@ export const StatefulACLRuleDialog = (props: StatefulACLRuleDialogProps) => {
                       >
                         {({ getFieldValue }) => {
                           const sourceAddressType = getFieldValue('sourceAddressType')
-                          return sourceAddressType === AddressType.SUBNET_ADDRESS && <>
-                            <Form.Item
-                              name='sourceAddress'
-                            >
-                              <Input placeholder='Network address' />
-                            </Form.Item>
-                            <Form.Item
-                              name='sourceAddressMask'
-                            >
-                              <Input placeholder='Mask' />
-                            </Form.Item>
-                          </>
+                          return sourceAddressType === AddressType.SUBNET_ADDRESS &&
+                          <Row>
+                            <Col span={12}>
+                              <Form.Item
+                                name='sourceAddress'
+                                noStyle
+                              >
+                                <Input placeholder='Network address' />
+                              </Form.Item>
+                            </Col>
+                            <Col span={12}>
+                              <Form.Item
+                                name='sourceAddressMask'
+                                noStyle
+                              >
+                                <Input placeholder='Mask' />
+                              </Form.Item>
+                            </Col>
+                          </Row>
                         }}
                       </Form.Item>
                       break
@@ -317,12 +334,12 @@ export const StatefulACLRuleDialog = (props: StatefulACLRuleDialogProps) => {
                     <Col span={8}>
                       <Radio value={value}>{label}</Radio>
                     </Col>
-                    <Col span={15}>
+                    <Col span={16}>
                       {inputContainer}
                     </Col>
                   </Row>
                 })}
-              </Space>
+              </SpaceWrapper>
             </Radio.Group>
           </Form.Item>
 
@@ -340,8 +357,8 @@ export const StatefulACLRuleDialog = (props: StatefulACLRuleDialogProps) => {
           checked={true}
         >
           <Form.Item name='destinationAddressType'>
-            <Radio.Group>
-              <Space direction='vertical'>
+            <Radio.Group style={{ width: '100%' }}>
+              <SpaceWrapper full direction='vertical' size='large'>
                 {addressTypes.map(({ label, value }) => {
                   let inputContainer: ReactElement | undefined
 
@@ -356,19 +373,25 @@ export const StatefulACLRuleDialog = (props: StatefulACLRuleDialogProps) => {
                       >
                         {({ getFieldValue }) => {
                           const destinationAddressType = getFieldValue('destinationAddressType')
-                          return destinationAddressType === AddressType.SUBNET_ADDRESS && <>
-                            <Form.Item
-                              name='destinationAddress'
-                            >
-                              <Input placeholder='Network address' />
-                            </Form.Item>
-                            <Form.Item
-                              name='destinationAddressMask'
-                            >
-                              <Input placeholder='Mask' />
-                            </Form.Item>
-
-                          </>
+                          return destinationAddressType === AddressType.SUBNET_ADDRESS &&
+                          <Row>
+                            <Col span={12}>
+                              <Form.Item
+                                name='destinationAddress'
+                                noStyle
+                              >
+                                <Input placeholder='Network address' />
+                              </Form.Item>
+                            </Col>
+                            <Col span={12}>
+                              <Form.Item
+                                name='destinationAddressMask'
+                                noStyle
+                              >
+                                <Input placeholder='Mask' />
+                              </Form.Item>
+                            </Col>
+                          </Row>
                         }}
                       </Form.Item>
                       break
@@ -398,12 +421,12 @@ export const StatefulACLRuleDialog = (props: StatefulACLRuleDialogProps) => {
                     <Col span={8}>
                       <Radio value={value}>{label}</Radio>
                     </Col>
-                    <Col span={15}>
+                    <Col span={16}>
                       {inputContainer}
                     </Col>
                   </Row>
                 })}
-              </Space>
+              </SpaceWrapper>
             </Radio.Group>
           </Form.Item>
 
@@ -417,4 +440,4 @@ export const StatefulACLRuleDialog = (props: StatefulACLRuleDialogProps) => {
       </Form>
     </Modal>
   )
-}
+})`${ModalStyles}`

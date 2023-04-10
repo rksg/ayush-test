@@ -48,7 +48,7 @@ const RecoveryPassphraseFormItem = styled((props:RecoveryPassphraseFormItemProps
             tooltip={$t(MessageMapping.recovery_passphrase_tooltip)}
           >
             {hasPassphrase ? (
-              <SpaceWrapper justifycontent='flex-start'>
+              <SpaceWrapper full justifycontent='flex-start'>
                 <Form.Item
                   noStyle
                 >

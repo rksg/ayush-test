@@ -71,7 +71,7 @@ export const EdgeUpTimeWidget = () => {
             </Space>
           }
           extra={
-            <SpaceWrapper>
+            <SpaceWrapper full>
               <Typography.Title level={5}>
                 {$t({ defaultMessage: 'Total Uptime:' })}
               </Typography.Title>

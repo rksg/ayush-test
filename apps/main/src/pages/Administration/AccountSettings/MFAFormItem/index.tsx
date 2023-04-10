@@ -81,7 +81,7 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
           </Checkbox>
         </Form.Item>
 
-        <SpaceWrapper className='descriptionsWrapper'>
+        <SpaceWrapper full className='descriptionsWrapper'>
           <List
             split={false}
             size='small'
@@ -114,7 +114,7 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
               maxLength={64}
               value={recoveryCodes?.join('\n')}
             />
-            <SpaceWrapper justifycontent='flex-end'>
+            <SpaceWrapper full justifycontent='flex-end'>
               <Typography.Link onClick={handleClickCopyCodes}>
                 {$t({ defaultMessage: 'Copy Codes' })}
               </Typography.Link>

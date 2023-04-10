@@ -148,14 +148,23 @@ export const DDoSRateLimitConfigDrawer = (props: DDoSRateLimitConfigDrawerProps)
     onClose()
   }
 
+  const handleCancel = () => {
+    const newData = form.getFieldValue('rules') ?? []
+
+    if (newData.length === 0)
+      parentForm.setFieldValue('ddosRateLimitingEnabled', false)
+    onClose()
+  }
+
   useEffect(() => {
     form.setFieldValue('rules', ddosRateLimitingRules)
   }, [form, ddosRateLimitingRules])
 
   const footer = [
     <Drawer.FormFooter
+      key='ddosDrawer'
       buttonLabel={{ save: $t({ defaultMessage: 'Apply' }) }}
-      onCancel={onClose}
+      onCancel={handleCancel}
       onSave={async () => form.submit()}
     />
   ]
@@ -164,10 +173,9 @@ export const DDoSRateLimitConfigDrawer = (props: DDoSRateLimitConfigDrawerProps)
     <Drawer
       title={$t({ defaultMessage: 'DDoS Rate-limiting Settings' })}
       visible={visible}
-      onClose={onClose}
       footer={footer}
       destroyOnClose
-      width={'60%'}
+      width='30%'
     >
       <Form
         form={form}
@@ -177,6 +185,7 @@ export const DDoSRateLimitConfigDrawer = (props: DDoSRateLimitConfigDrawerProps)
         <Space
           direction='vertical'
           size={cssNumber('--acx-content-vertical-space')}
+          style={{ width: '100%' }}
         >
           <Form.Item
             shouldUpdate={(prevValues, currentValues) => {

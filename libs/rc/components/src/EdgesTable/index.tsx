@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
@@ -21,7 +23,10 @@ export interface EdgesTableQueryProps
 
 interface EdgesTableProps extends Omit<TableProps<EdgeStatus>, 'columns'> {
   tableQuery?: EdgesTableQueryProps;
-  filterColumns?: string[];  // use column key to filter them out
+  // use column key to filter them out,
+  // notice that this is only applied on defaultColumns
+  filterColumns?: string[];
+  columns?: TableProps<EdgeStatus>['columns']
 }
 
 export const defaultEdgeTablePayload = {
@@ -44,7 +49,26 @@ export const defaultEdgeTablePayload = {
   sortOrder: 'ASC'
 }
 
+// "name",
+// "deviceStatus",
+// "serialNumber",
+// "ip",
+// "venueId",
+// "venueName",
+// "firewallId",
+// "firewallName",
+// "softDeleted",
+// "edgeGroupId",
+// "tags",
+// "firmwareVersion"
+
 export const EdgesTable = (props: EdgesTableProps) => {
+  const {
+    tableQuery: customTableQuery,
+    columns,
+    filterColumns,
+    ...otherProps
+  } = props
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('')
@@ -52,13 +76,13 @@ export const EdgesTable = (props: EdgesTableProps) => {
   const tableQuery = useTableQuery({
     useQuery: useGetEdgeListQuery,
     defaultPayload: defaultEdgeTablePayload,
-    ...props.tableQuery
+    ...customTableQuery
   })
 
   const [deleteEdge, { isLoading: isDeleteEdgeUpdating }] = useDeleteEdgeMutation()
   const [sendOtp] = useSendOtpMutation()
 
-  const columns: TableProps<EdgeStatus>['columns'] = [
+  const defaultColumns: TableProps<EdgeStatus>['columns'] = useMemo(() => ([
     {
       title: $t({ defaultMessage: 'SmartEdge' }),
       tooltip: $t({ defaultMessage: 'SmartEdge' }),
@@ -144,11 +168,11 @@ export const EdgesTable = (props: EdgesTableProps) => {
       sorter: true,
       show: false
     }
-  ]
+  ]), [$t])
 
-  if (props.filterColumns) {
-    props.filterColumns.forEach((columnTofilter) => {
-      _.remove(columns, { key: columnTofilter })
+  if (filterColumns) {
+    filterColumns.forEach((columnTofilter) => {
+      _.remove(defaultColumns, { key: columnTofilter })
     })
   }
 
@@ -209,13 +233,13 @@ export const EdgesTable = (props: EdgesTableProps) => {
       { isLoading: false, isFetching: isDeleteEdgeUpdating }
     ]}>
       <Table
-        {...props}
-        columns={columns}
+        rowActions={filterByAccess(rowActions)}
+        {...otherProps}
+        columns={columns ?? defaultColumns}
         dataSource={tableQuery?.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='serialNumber'
-        rowActions={filterByAccess(rowActions)}
       />
     </Loader>
   )

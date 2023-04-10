@@ -42,7 +42,9 @@ import {
   downloadFile,
   NewAPITableResult,
   transferNewResToTableResult,
-  MdnsProxyViewModel
+  MdnsProxyViewModel,
+  EdgeFirewallUrls,
+  EdgeFirewallSetting
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -714,8 +716,33 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getEdgeFirewallList: build.query<EdgeFirewallSetting, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(EdgeFirewallUrls.getEdgeFirewallList, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'EdgeFirewall', id: 'LIST' }]
+    }),
+    getEdgeFirewall: build.query<EdgeFirewallSetting, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(EdgeFirewallUrls.getEdgeFirewall, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    addEdgeFirewall: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeFirewallUrls.addEdgeFirewall, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
-
   })
 })
 
@@ -767,5 +794,8 @@ export const {
   useDeletePortalMutation,
   useUpdatePortalMutation,
   useUploadURLMutation,
-  useGetDHCPProfileListViewModelQuery
+  useGetDHCPProfileListViewModelQuery,
+  useAddEdgeFirewallMutation,
+  useGetEdgeFirewallListQuery,
+  useGetEdgeFirewallQuery
 } = serviceApi

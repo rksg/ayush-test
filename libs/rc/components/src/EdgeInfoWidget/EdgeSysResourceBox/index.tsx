@@ -6,7 +6,8 @@ import { Tooltip, GridCol, GridRow, Loader } from '@acx-ui/components'
 import { formatter }                         from '@acx-ui/formatter'
 import { EdgeResourceUtilizationEnum }       from '@acx-ui/rc/utils'
 
-import { SpaceWrapper } from '../../SpaceWrapper/index'
+// import { SpaceWrapper } from '../../SpaceWrapper/index'
+import { WrapperStyles } from './styledComponents'
 
 export interface EdgeStateCardProps {
     isLoading: boolean,
@@ -42,43 +43,17 @@ export const EdgeSysResourceBox = styled((props: EdgeStateCardProps) => {
 
   return (
     <Loader states={[{ isLoading }]}>
-      <SpaceWrapper className={className}>
-        <GridRow>
-          <GridCol col={{ span: 24 }} >
-            <Tooltip title={$t({ defaultMessage: '{freeValue} free' }, { freeValue })}>
-              <AntStatistic
-                title={statisticTitle}
-                value={chartValue}
-                suffix={$t({ defaultMessage: '({usedPercentage}%)' }, { usedPercentage })}
-              />
-            </Tooltip>
-          </GridCol>
-        </GridRow>
-      </SpaceWrapper>
+      <GridRow className={className}>
+        <GridCol col={{ span: 24 }} >
+          <Tooltip title={$t({ defaultMessage: '{freeValue} free' }, { freeValue })}>
+            <AntStatistic
+              title={statisticTitle}
+              value={chartValue}
+              suffix={$t({ defaultMessage: '({usedPercentage}%)' }, { usedPercentage })}
+            />
+          </Tooltip>
+        </GridCol>
+      </GridRow>
     </Loader>
   )
-})`
-  .ant-statistic {
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-  }
-  .ant-statistic-title {
-    color: var(--acx-primary-black);
-    font-family: var(--acx-neutral-brand-font);
-    font-size: var(--acx-subtitle-4-font-size);
-    line-height: var(--acx-subtitle-4-line-height);
-    font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
-    white-space: pre-line;
-  }
-  .ant-statistic-content {
-    color: var(--acx-primary-black);
-    .ant-statistic-content-value {
-      font-size: 32px;
-      font-weight: var(--acx-body-font-weight-bold);
-    }
-    .ant-statistic-content-suffix {
-      font-size: var(--acx-body-2-font-size);
-    }
-  }
-`
+})`${WrapperStyles}`

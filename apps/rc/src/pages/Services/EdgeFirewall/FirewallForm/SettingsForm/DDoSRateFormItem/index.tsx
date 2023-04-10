@@ -7,9 +7,8 @@ import { DDoSRateLimitConfigDrawer } from './DDoSRateLimitConfigDrawer'
 
 export const DDoSRateFormItem = () => {
   const { $t } = useIntl()
-  const form = Form.useFormInstance()
   const [drawerVisible, setDrawerVisible] = useState<boolean>(false)
-  const ddosRateLimitingEnabled = Form.useWatch('ddosRateLimitingEnabled', form)
+  // const ddosRateLimitingRules = Form.useWatch('ddosRateLimitingRules', form)
 
   const onChangeDDoSLimit = (checked: boolean) => {
     setDrawerVisible(checked)
@@ -18,15 +17,19 @@ export const DDoSRateFormItem = () => {
   return (
     <>
       <Row>
-        <Col span={12}>
+        <Col span={6}>
           <Typography.Text>
             {$t({ defaultMessage: 'DDoS Rate-limiting' })}
           </Typography.Text>
         </Col>
+
         <Col span={6}>
           <Form.Item
             name='ddosRateLimitingEnabled'
+            label={$t({ defaultMessage: 'DDoS Rate-limiting' })}
             valuePropName='checked'
+            noStyle
+            initialValue={false}
           >
             <Switch
               aria-label='ddos'
@@ -35,18 +38,22 @@ export const DDoSRateFormItem = () => {
               unCheckedChildren={$t({ defaultMessage: 'OFF' })}
             />
           </Form.Item>
-        </Col>
 
-        {ddosRateLimitingEnabled &&
-        <Col span={6}>
-          <Button
-            type='link'
-            onClick={() => onChangeDDoSLimit(true)}
+          <Form.Item
+            noStyle
+            shouldUpdate={(prevValues, currentValues) =>
+              prevValues.ddosRateLimitingEnabled !== currentValues.ddosRateLimitingEnabled}
           >
-            { $t({ defaultMessage: 'Change' }) }
-          </Button>
+            {({ getFieldValue }) => {
+              return getFieldValue('ddosRateLimitingEnabled') && <Button
+                type='link'
+                onClick={() => onChangeDDoSLimit(true)}
+              >
+                { $t({ defaultMessage: 'Change' }) }
+              </Button>
+            }}
+          </Form.Item>
         </Col>
-        }
       </Row>
 
       <DDoSRateLimitConfigDrawer

@@ -34,12 +34,14 @@ const StatefulACLTable = (props: StatefulACLTableProps) => {
     {
       title: $t({ defaultMessage: 'ACL Name' }),
       key: 'name',
-      dataIndex: 'name'
+      dataIndex: 'name',
+      width: 80
     },
     {
       title: $t({ defaultMessage: 'Description' }),
       key: 'description',
-      dataIndex: 'description'
+      dataIndex: 'description',
+      width: 150
     },
     {
       title: $t({ defaultMessage: 'Direction' }),
@@ -88,16 +90,10 @@ const StatefulACLTable = (props: StatefulACLTableProps) => {
 
 export const StatefulACLFormItem = () => {
   const { $t } = useIntl()
-  const [tableVisible, setTableVisible] = useState<boolean>(false)
-
-
-  function onChangeStatefulACL (checked: boolean) {
-    setTableVisible(checked)
-  }
 
   return <>
     <Row>
-      <Col span={12}>
+      <Col span={6}>
         <Typography.Text>
           {$t({ defaultMessage: 'Stateful ACL' })}
         </Typography.Text>
@@ -106,10 +102,10 @@ export const StatefulACLFormItem = () => {
         <Form.Item
           name='statefulACLEnabled'
           valuePropName='checked'
+          initialValue={false}
         >
           <Switch
             aria-label='acl'
-            onChange={onChangeStatefulACL}
             checkedChildren={$t({ defaultMessage: 'ON' })}
             unCheckedChildren={$t({ defaultMessage: 'OFF' })}
           />
@@ -117,18 +113,26 @@ export const StatefulACLFormItem = () => {
       </Col>
     </Row>
 
-    {tableVisible &&
     <Row>
       <Col span={24}>
         <Form.Item
-          name='statefulAcls'
-          valuePropName='data'
-          initialValue={defaultStatefulACLs}
+          noStyle
+          shouldUpdate={(prevValues, currentValues) => {
+            return prevValues.statefulACLEnabled !== currentValues.statefulACLEnabled
+          }}
         >
-          <StatefulACLTable />
+          {({ getFieldValue }) => {
+            const isEnabled = getFieldValue('statefulACLEnabled')
+            return isEnabled && <Form.Item
+              name='statefulAcls'
+              valuePropName='data'
+              initialValue={defaultStatefulACLs}
+            >
+              <StatefulACLTable />
+            </Form.Item>
+          }}
         </Form.Item>
       </Col>
     </Row>
-    }
   </>
 }

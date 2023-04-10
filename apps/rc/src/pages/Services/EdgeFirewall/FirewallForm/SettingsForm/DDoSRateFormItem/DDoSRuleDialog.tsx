@@ -1,10 +1,14 @@
 import { useEffect } from 'react'
 
 import { Form, InputNumber, Modal, Select } from 'antd'
+import _                                    from 'lodash'
 import { IntlShape, useIntl }               from 'react-intl'
+import styled                               from 'styled-components'
 
 import { Drawer }                               from '@acx-ui/components'
 import { DdosAttackType, DdosRateLimitingRule } from '@acx-ui/rc/utils'
+
+import { ModalStyles } from './styledComponents'
 
 export const getDDoSAttackTypeString = ($t: IntlShape['$t'], type: DdosAttackType) => {
   switch (type) {
@@ -43,10 +47,11 @@ export interface DDoSRuleDialogProps {
   onSubmit: (newData: DdosRateLimitingRule, isEdit: boolean) => void
 }
 
-export const DDoSRuleDialog = (props: DDoSRuleDialogProps) => {
-  const { visible, setVisible, editMode, editData, onSubmit } = props
+export const DDoSRuleDialog = styled((props: DDoSRuleDialogProps) => {
+  const { className, visible, setVisible, editMode, editData, onSubmit } = props
   const { $t } = useIntl()
   const [form] = Form.useForm()
+  const drawerForm = Form.useFormInstance()
   const attackTypes = getDDoSAttackTypes($t)
 
   const handleSubmit = () => {
@@ -59,11 +64,22 @@ export const DDoSRuleDialog = (props: DDoSRuleDialogProps) => {
     setVisible(false)
   }
 
+  const isCreatedRuleType = (type: DdosAttackType) => {
+    const existingRules = drawerForm.getFieldValue('rules') ?? []
+    const isAllSelected = _.findIndex(existingRules, { ddosAttackType: DdosAttackType.ALL }) !== -1
+
+    return isAllSelected
+      ? isAllSelected
+      : type === DdosAttackType.ALL
+        ? existingRules.length
+        : _.findIndex(existingRules, { ddosAttackType: type }) !== -1
+  }
+
   const footer = [
     <Drawer.FormFooter
       buttonLabel={({
         addAnother: $t({ defaultMessage: 'Add another rule' }),
-        save: $t({ defaultMessage: 'Apply' })
+        save: $t({ defaultMessage: 'Add' })
       })}
       showAddAnother={!editMode}
       onCancel={handleClose}
@@ -87,6 +103,7 @@ export const DDoSRuleDialog = (props: DDoSRuleDialogProps) => {
 
   return (
     <Modal
+      className={className}
       title={editMode ?
         $t({ defaultMessage: 'Edit DDoS Rule' }) :
         $t({ defaultMessage: 'Add DDoS Rule' })}
@@ -106,11 +123,22 @@ export const DDoSRuleDialog = (props: DDoSRuleDialogProps) => {
           rules={[{ required: true }]}
         >
           <Select
-            options={attackTypes}
             placeholder={$t({ defaultMessage: 'DDoS Attack Type' })}
-          />
-        </Form.Item>
+          >
+            {attackTypes.map(({ label, value }) => {
+              const disabled = isCreatedRuleType(value)
 
+              return <Select.Option
+                key={value}
+                value={value}
+                disabled={disabled}
+                title={disabled ? $t({ defaultMessage: 'this rule is already created.' }) : label}
+              >
+                {label}
+              </Select.Option>
+            })}
+          </Select>
+        </Form.Item>
         <Form.Item
           label={$t({ defaultMessage: 'Rate-limit Value' })}
           // eslint-disable-next-line max-len
@@ -126,4 +154,4 @@ export const DDoSRuleDialog = (props: DDoSRuleDialogProps) => {
       </Form>
     </Modal>
   )
-}
+})`${ModalStyles}`

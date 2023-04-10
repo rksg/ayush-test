@@ -776,6 +776,17 @@
         display: none;
       }
     }
+
+    &.modal-long {
+      height: calc(100vh - 100px - 24px);
+      & .ant-modal-content {
+        height: 100%;
+        & .ant-modal-body {
+          overflow-y: auto;
+          height: calc(100% - 68px - 56px);
+        }
+      }
+    }
   }
 
   .ant-menu-submenu-popup {
@@ -845,6 +856,10 @@
         color: var(--acx-accents-blue-60);
       }
     }
+  }
+
+  .ant-switch-inner {
+    color: var(--acx-primary-black);
   }
 }
 

@@ -14,7 +14,8 @@ import { getIntl }                                                              
 import { FirewallForm }                                 from '../../..'
 import { StatefulACLRuleDialog, getAccessActionString } from '../StatefulACLRuleDialog'
 
-import { DragIcon, DragIconWrapper } from './styledComponents'
+import { InboundDefaultRules, OutboundDefaultRules } from './defaultRules'
+import { DragIcon, DragIconWrapper }                 from './styledComponents'
 
 interface StatefulACLRulesTableProps {
   data?: StatefulAclRule[]
@@ -37,16 +38,20 @@ const getRuleSrcDstString = (rowData: StatefulAclRule, isSource: boolean) => {
         { ip: rowData[isSource ? 'sourceAddress' : 'destinationAddress'] })
 
     case AddressType.SUBNET_ADDRESS:
-      return <Row>
-        <Typography.Text>
-          {$t({ defaultMessage: 'Subnet: {subnet}' },
-            { subnet: rowData[isSource ? 'sourceAddress' : 'destinationAddress'] })}
-        </Typography.Text>
-        <Typography.Text>
-          {$t({ defaultMessage: 'Mask: {mask}' },
-            { mask: rowData[isSource ? 'sourceAddressMask' : 'destinationAddressMask'] })}
-        </Typography.Text>
-      </Row>
+      return <>
+        <Row>
+          <Typography.Text>
+            {$t({ defaultMessage: 'Subnet: {subnet}' },
+              { subnet: rowData[isSource ? 'sourceAddress' : 'destinationAddress'] })}
+          </Typography.Text>
+        </Row>
+        <Row>
+          <Typography.Text>
+            {$t({ defaultMessage: 'Mask: {mask}' },
+              { mask: rowData[isSource ? 'sourceAddressMask' : 'destinationAddressMask'] })}
+          </Typography.Text>
+        </Row>
+      </>
     default:
       return ''
   }
@@ -91,15 +96,30 @@ const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
     form.setFieldValue('rules', currentData)
   }
 
+  const isDefaultRule = useCallback((rule: StatefulAclRule) => {
+    const rulesAmount = formData.rules.length
+
+    // inbound: last rule is the default rule
+    // outbound: default rules are No.1 - No.3 and the last one.
+    if (rule.priority === rulesAmount) {
+      return true
+    } else {
+      return formData.direction === ACLDirection.INBOUND ? false : Number(rule.priority) <= 3
+    }
+  }, [formData])
+
   const onSortEnd = useCallback(
     ({ oldIndex, newIndex }: { oldIndex: number; newIndex: number }) => {
       if (oldIndex !== newIndex) {
-        let tempDataSource = data ? [...data] : []
-        let movingItem = tempDataSource[oldIndex]
-        tempDataSource.splice(oldIndex, 1)
-        tempDataSource = [...tempDataSource.slice(0, newIndex),
-          ...[movingItem], ...tempDataSource.slice(newIndex, tempDataSource.length)]
-        tempDataSource.sort((a, b) => Number(b.priority) - Number(a.priority))
+        let tempDataSource = _.cloneDeep(data ?? [])
+        let movingItem = tempDataSource.splice(oldIndex, 1)
+        tempDataSource.splice(newIndex, 0, movingItem[0])
+
+        // re-assign priority
+        tempDataSource.forEach((item, index) => {
+          item.priority = index + 1
+        })
+
         form.setFieldValue('rules', tempDataSource)
       }
     }, [data, form])
@@ -116,26 +136,18 @@ const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
 
   const ACLDraggableTableRow = useMemo(() =>
     (props: ACLDraggableTableRowProps) => {
-      const { className, style, ...restProps } = props
+      if (!data) return null
 
-      const index = data?.findIndex(
+      const { className, style, ...restProps } = props
+      const index = data.findIndex(
         (x) => (x.priority ?? '') === restProps['data-row-key']
       )
+      const isDefault = isDefaultRule(data[index] as StatefulAclRule)
 
-      return <SortableItem index={index ?? 0} {...restProps} />
-    }, [data])
-
-  const isDefaultRule = (rule: StatefulAclRule) => {
-    const rulesAmount = formData.rules.length
-
-    // inbound: last rule is the default rule
-    // outbound: default rules are No.1 - No.3 and the last one.
-    if (rule.priority === rulesAmount) {
-      return true
-    } else {
-      return formData.direction === ACLDirection.INBOUND ? false : Number(rule.priority) <= 3
-    }
-  }
+      return isDefault
+        ? <tr {...props}/>
+        : <SortableItem index={index} {...restProps} />
+    }, [data, isDefaultRule])
 
   const DragHandle = SortableHandle(() => <DragIcon />)
 
@@ -149,7 +161,8 @@ const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
     {
       title: $t({ defaultMessage: 'Description' }),
       key: 'description',
-      dataIndex: 'description'
+      dataIndex: 'description',
+      width: 150
     },
     {
       title: $t({ defaultMessage: 'Access' }),
@@ -195,11 +208,12 @@ const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
       key: 'sort',
       width: 60,
       render: (data, row) => {
+        const isDisabled = isDefaultRule(row)
         return <DragIconWrapper
-          disabled={isDefaultRule(row)}
+          disabled={isDisabled}
           data-testid={`${row.priority}_Icon`}
         >
-          <DragHandle />
+          {isDisabled ? <DragIcon /> : <DragHandle />}
         </DragIconWrapper>
       }
     }
@@ -262,7 +276,8 @@ const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
           renderCell: (checked, record, index, originNode) => {
             const isDefault = isDefaultRule(record)
             return isDefault ? '': originNode
-          }
+          },
+          getCheckboxProps: (record) => ({ disabled: isDefaultRule(record) })
         }}
         actions={actions}
         components={{
@@ -397,22 +412,28 @@ export const StatefulACLConfigDrawer = (props: StatefulACLConfigDrawerProps) => 
         <Space
           direction='vertical'
           size={cssNumber('--acx-content-vertical-space')}
+          style={{ width: '100%' }}
         >
           <Form.Item
             shouldUpdate={(prevValues, currentValues) => {
               return prevValues.rules !== currentValues.rules
+                || prevValues.direction !== currentValues.direction
             }}
           >
             {({ getFieldValue }) => {
               const rules = getFieldValue('rules')
+              const direction = getFieldValue('direction')
 
               return <Form.Item
                 name='rules'
                 label={$t({ defaultMessage: 'Rules({ruleCount})' },
                   { ruleCount: rules?.length ?? 0 })}
-                rules={[{ required: true }]}
                 valuePropName='data'
-                initialValue={[] as StatefulAclRule[]}
+                initialValue={
+                  direction === ACLDirection.INBOUND
+                    ? InboundDefaultRules
+                    : OutboundDefaultRules
+                }
               >
                 <StatefulACLRulesTable />
               </Form.Item>
