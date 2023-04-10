@@ -8,12 +8,12 @@ import {
 } from 'antd'
 import { FormattedMessage } from 'react-intl'
 
-import { Button, GridCol, GridRow, SelectionControl, StepsForm, Subtitle, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
+import { GridCol, GridRow, SelectionControl, StepsForm, Subtitle, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
 import {
   ExpirationDateSelector
 } from '@acx-ui/rc/components'
-import { useLazyGetDpskListQuery } from '@acx-ui/rc/services'
+import { useAdaptivePolicySetListQuery, useLazyGetDpskListQuery } from '@acx-ui/rc/services'
 import {
   PassphraseFormatEnum,
   transformDpskNetwork,
@@ -140,6 +140,19 @@ function CloudpathFormItems () {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
   const deviceNumberType = Form.useWatch('deviceNumberType', form)
+  const isPolicyManagementEnabled = useIsSplitOn(Features.POLICY_MANAGEMENT)
+
+  const { policySetOptions } = useAdaptivePolicySetListQuery(
+    { payload: { page: 1, pageSize: '2147483647' } },
+    {
+      skip: !isPolicyManagementEnabled,
+      selectFromResult ({ data }) {
+        return {
+          policySetOptions: data?.data.map(set => ({ value: set.id, label: set.name }))
+        }
+      }
+    }
+  )
 
   return (
     <GridRow>
@@ -187,17 +200,18 @@ function CloudpathFormItems () {
             </Radio.Group>
           }
         />
-        <Form.Item name='policySetId'
-          label={$t({ defaultMessage: 'Access Policy Set' })}
-          rules={[{ required: true }]}
-        >
-          <Space direction='horizontal'>
-            <Select style={{ minWidth: 250 }} placeholder={$t({ defaultMessage: 'Select...' })}/>
-            <Button type='link'>
-              {$t({ defaultMessage: 'Add Access Policy Set' })}
-            </Button>
-          </Space>
-        </Form.Item>
+        {isPolicyManagementEnabled &&
+          <Form.Item
+            name='policySetId'
+            label={$t({ defaultMessage: 'Access Policy Set' })}
+            rules={[{ required: true }]}
+          >
+            <Select style={{ width: 200 }}
+              placeholder={$t({ defaultMessage: 'Select...' })}
+              options={policySetOptions}
+            />
+          </Form.Item>
+        }
         <Form.Item name='policyDefaultAccess'
           label={$t({ defaultMessage: 'Default Access' })}
           initialValue={PolicyDefaultAccess.ACCEPT}
