@@ -127,9 +127,14 @@ export const transformToRulesForPayload = (
   avcCategoryList: AvcCategory[]
 ) => {
   return applicationsRuleList.map(rule => {
-    // eslint-disable-next-line max-len
-    const catAppConfig = transformCatAppConfigForPayload(rule, categoryAppMap, avcCategoryList)
-    const userAppConfig = transformUserAppConfigForPayload(rule)
+    let appConfig = {}
+    if (isSystemDefinedRule(rule)) {
+      appConfig = transformCatAppConfigForPayload(rule, categoryAppMap, avcCategoryList)
+    } else if (isUserDefinedRule(rule)) {
+      appConfig = transformUserAppConfigForPayload(rule)
+    }
+
+    const aclConfig = transformAccessControlForPayload(rule)
 
     let ruleId = {} as { id: string }
     if (rule.id) {
@@ -138,9 +143,8 @@ export const transformToRulesForPayload = (
 
     return {
       ...ruleId,
-      ...rule.ruleSettings,
-      ...catAppConfig,
-      ...userAppConfig,
+      ...appConfig,
+      ...aclConfig,
       accessControl: rule.accessControl.toUpperCase(),
       name: rule.ruleName,
       priority: rule.priority,
@@ -158,54 +162,76 @@ function transformCatAppConfigForPayload (
     applicationId: number, applicationName: string, category: string, categoryId: number
   }
 
-  if (rule.ruleType === ApplicationRuleType.SIGNATURE
-    && rule.ruleSettings.appNameSystemDefined
-  ) {
-    const [catName, appName] = rule.ruleSettings.appNameSystemDefined.split('_')
-    let catAppMapping: { catId: number, appId: number }
+  const [catName, appName] = rule.ruleSettings.appNameSystemDefined!.split('_')
+  let catAppMapping: { catId: number, appId: number }
 
-    if (appName === 'All') {
-      const targetCategory = avcCategoryList.find(category => category.catName === catName)
-      catAppMapping = {
-        appId: 0,
-        catId: targetCategory!.catId
-      }
-    } else {
-      catAppMapping = categoryAppMap[appName]
+  if (appName === 'All') {
+    const targetCategory = avcCategoryList.find(category => category.catName === catName)
+    catAppMapping = {
+      appId: 0,
+      catId: targetCategory!.catId
     }
-    catAppConfig.applicationId = catAppMapping.appId
-    catAppConfig.applicationName = appName
-    catAppConfig.categoryId = catAppMapping.catId
-    catAppConfig.category = catName
+  } else {
+    catAppMapping = categoryAppMap[appName]
   }
+  catAppConfig.applicationId = catAppMapping.appId
+  catAppConfig.applicationName = appName
+  catAppConfig.categoryId = catAppMapping.catId
+  catAppConfig.category = catName
 
   return catAppConfig
 }
 
 function transformUserAppConfigForPayload (rule: ApplicationsRule) {
-  let userAppConfig = {} as {
+  let userAppConfig = {
+    applicationName: rule.ruleSettings.appNameUserDefined,
+    destinationPort: rule.ruleSettings.destinationPort,
+    protocol: rule.ruleSettings.protocol,
+    portMapping: rule.ruleSettings.portMappingOnly
+      ? ApplicationPortMappingType.PORT_ONLY
+      : ApplicationPortMappingType.IP_WITH_PORT
+  } as {
     portMapping?: string, destinationIp?: string, netmask?: string,
     destinationPort: number, protocol: string, applicationName: string
   }
-  if (rule.ruleSettings.appNameUserDefined
-    && rule.ruleSettings.destinationPort
-    && rule.ruleSettings.protocol) {
-    userAppConfig.applicationName = rule.ruleSettings.appNameUserDefined
-    userAppConfig.portMapping = rule.ruleSettings.portMappingOnly
-      ? ApplicationPortMappingType.PORT_ONLY
-      : ApplicationPortMappingType.IP_WITH_PORT
-    if (!rule.ruleSettings.portMappingOnly) {
-      userAppConfig.destinationIp = rule.ruleSettings.destinationIp
-      userAppConfig.netmask = rule.ruleSettings.netmask
-    }
-    userAppConfig.destinationPort = rule.ruleSettings.destinationPort
-  }
 
-  if (rule.accessControl.toUpperCase() !== ApplicationAclType.RATE_LIMIT) {
-    delete rule.ruleSettings.uplink
-    delete rule.ruleSettings.downlink
-    delete rule.ruleSettings.appNameSystemDefined
+  if (!rule.ruleSettings.portMappingOnly) {
+    userAppConfig.destinationIp = rule.ruleSettings.destinationIp
+    userAppConfig.netmask = rule.ruleSettings.netmask
   }
 
   return userAppConfig
+}
+
+function isSystemDefinedRule (rule: ApplicationsRule) {
+  return rule.ruleType === ApplicationRuleType.SIGNATURE && rule.ruleSettings.appNameSystemDefined
+}
+
+function isUserDefinedRule (rule: ApplicationsRule) {
+  return rule.ruleSettings.appNameUserDefined &&
+    rule.ruleSettings.destinationPort &&
+    rule.ruleSettings.protocol
+}
+
+interface AppAccessControlPayload {
+  uplink?: number,
+  downlink?: number,
+  markingPriority?: string,
+  upLinkMarkingType?: string,
+  downLinkMarkingType?: string,
+}
+
+function transformAccessControlForPayload (rule: ApplicationsRule) {
+  let config: AppAccessControlPayload = {}
+
+  if (rule.accessControl === ApplicationAclType.RATE_LIMIT) {
+    config.uplink = rule.ruleSettings.uplink
+    config.downlink = rule.ruleSettings.downlink
+  } else if (rule.accessControl === ApplicationAclType.QOS) {
+    config.downLinkMarkingType = rule.ruleSettings.downLinkMarkingType
+    config.upLinkMarkingType = rule.ruleSettings.upLinkMarkingType
+    config.markingPriority = rule.ruleSettings.markingPriority
+  }
+
+  return config
 }
