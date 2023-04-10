@@ -3,7 +3,7 @@
 exports[`HealthPieChart should render correctly for many connectionFailures 1`] = `
 <DocumentFragment>
   <div
-    style="height: 200px; width: 200px;"
+    style="height: 300px; width: 300px;"
   >
     <div
       class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
@@ -11,262 +11,225 @@ exports[`HealthPieChart should render correctly for many connectionFailures 1`] 
       <div
         class="sc-jSMfEi fMLTAv"
       >
+        <span
+          class="sc-gKXOVf JkdVW"
+        >
+          <b>
+            Authentication
+          </b>
+           Top 5 Impacted WLANs
+        </span>
         <div
-          class="styledComponents__Wrapper-sc-13w5wfx-4 edzPbE"
-          type="no-border"
+          style="height: 100%;"
         >
           <div
-            class="ant-card"
+            style="overflow: visible; height: 0px; width: 0px;"
           >
             <div
-              class="ant-card-head"
+              style="height: 800px; width: 1280px;"
             >
               <div
-                class="ant-card-head-wrapper"
+                style="text-align: center;"
               >
                 <div
-                  class="ant-card-head-title"
+                  class="styledComponents__Wrapper-sc-c4vpsp-0 eBLcPR"
                 >
                   <div
-                    class="ant-space ant-space-horizontal ant-space-align-center"
+                    class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
                   >
-                    <div
-                      class="ant-space-item"
+                    <label
+                      class="ant-radio-button-wrapper"
                     >
-                      <div
-                        class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                      <span
+                        class="ant-radio-button"
                       >
-                        Authentication Top 5 Impacted WLANs
-                      </div>
-                    </div>
+                        <input
+                          class="ant-radio-button-input"
+                          type="radio"
+                          value="nodes"
+                        />
+                        <span
+                          class="ant-radio-button-inner"
+                        />
+                      </span>
+                      <span>
+                        Venues
+                      </span>
+                    </label>
+                    <label
+                      class="ant-radio-button-wrapper ant-radio-button-wrapper-checked"
+                    >
+                      <span
+                        class="ant-radio-button ant-radio-button-checked"
+                      >
+                        <input
+                          checked=""
+                          class="ant-radio-button-input"
+                          type="radio"
+                          value="wlans"
+                        />
+                        <span
+                          class="ant-radio-button-inner"
+                        />
+                      </span>
+                      <span>
+                        WLANs
+                      </span>
+                    </label>
                   </div>
                 </div>
-                <div
-                  class="ant-card-extra"
-                >
-                  <div
-                    class="ant-space ant-space-horizontal ant-space-align-center"
-                  />
-                </div>
               </div>
-            </div>
-            <div
-              class="ant-card-body"
-            >
               <div
-                style="height: 100%;"
+                style="overflow: visible; height: 0px; width: 0px;"
               >
                 <div
-                  style="overflow: visible; height: 0px; width: 0px;"
+                  class="ant-space ant-space-vertical"
                 >
                   <div
-                    style="display: block; height: 800px; width: 1280px; margin: -38px 0px 0px 0px;"
+                    class="ant-space-item"
                   >
                     <div
-                      style="text-align: right;"
+                      _echarts_instance_="ec_mock"
+                      class="echarts-for-react "
+                      size-sensor-id="1"
+                      style="height: 800px; width: 1280px; position: relative;"
                     >
                       <div
-                        class="styledComponents__Wrapper-sc-c4vpsp-0 eBLcPR"
+                        style="position: relative; overflow: hidden; width: 1280px; height: 800px;"
                       >
-                        <div
-                          class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
+                        <svg
+                          baseProfile="full"
+                          height="800"
+                          style="position:absolute;left:0;top:0;user-select:none"
+                          version="1.1"
+                          width="1280"
+                          xmlns="http://www.w3.org/2000/svg"
+                          xmlns:xlink="http://www.w3.org/1999/xlink"
                         >
-                          <label
-                            class="ant-radio-button-wrapper"
-                          >
-                            <span
-                              class="ant-radio-button"
-                            >
-                              <input
-                                class="ant-radio-button-input"
-                                type="radio"
-                                value="nodes"
-                              />
-                              <span
-                                class="ant-radio-button-inner"
-                              />
-                            </span>
-                            <span>
-                              Venues
-                            </span>
-                          </label>
-                          <label
-                            class="ant-radio-button-wrapper ant-radio-button-wrapper-checked"
-                          >
-                            <span
-                              class="ant-radio-button ant-radio-button-checked"
-                            >
-                              <input
-                                checked=""
-                                class="ant-radio-button-input"
-                                type="radio"
-                                value="wlans"
-                              />
-                              <span
-                                class="ant-radio-button-inner"
-                              />
-                            </span>
-                            <span>
-                              WLANs
-                            </span>
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-                    <div
-                      style="overflow: visible; height: 0px; width: 0px;"
-                    >
-                      <div
-                        class="ant-space ant-space-vertical"
-                      >
-                        <div
-                          class="ant-space-item"
-                        >
-                          <div
-                            _echarts_instance_="ec_mock"
-                            class="echarts-for-react "
-                            size-sensor-id="1"
-                            style="height: 800px; width: 1280px; position: relative;"
-                          >
-                            <div
-                              style="position: relative; overflow: hidden; width: 1280px; height: 800px;"
-                            >
-                              <svg
-                                baseProfile="full"
-                                height="800"
-                                style="position:absolute;left:0;top:0;user-select:none"
-                                version="1.1"
-                                width="1280"
-                                xmlns="http://www.w3.org/2000/svg"
-                                xmlns:xlink="http://www.w3.org/1999/xlink"
-                              >
-                                <rect
-                                  fill="none"
-                                  fill-opacity="1"
-                                  height="800"
-                                  id="0"
-                                  width="1280"
-                                  x="0"
-                                  y="0"
-                                />
-                                <g>
-                                  <path
-                                    d="M876.1945 239.3011L885.6574 236.0679L890.6574 236.0679"
-                                    fill="none"
-                                    stroke="#66B1E8"
-                                  />
-                                  <path
-                                    d="M609.8204 567.7687L608.6113 577.6954L603.6113 577.6954"
-                                    fill="none"
-                                    stroke="#EC7100"
-                                  />
-                                  <path
-                                    d="M391.5646 344.0836L381.6113 345.0485L376.6113 345.0485"
-                                    fill="none"
-                                    stroke="#F9C34B"
-                                  />
-                                  <path
-                                    d="M473.4514 134.0922L466.7788 126.6439L461.7788 126.6439"
-                                    fill="none"
-                                    stroke="#61C46E"
-                                  />
-                                  <path
-                                    d="M594.4671 74.5883L592.6429 64.7561L587.6429 64.7561"
-                                    fill="none"
-                                    stroke="#F095FF"
-                                  />
-                                  <path
-                                    d="M640 70.4A249.6 249.6 0 0 1 792.7295 517.418L761.4004 476.922A198.4 198.4 0 0 0 640 121.6Z"
-                                    fill="#66B1E8"
-                                    stroke="#FFFFFF"
-                                    stroke-linejoin="round"
-                                  />
-                                  <path
-                                    d="M792.7295 517.418A249.6 249.6 0 0 1 444.3461 474.9829L484.4802 443.1916A198.4 198.4 0 0 0 761.4004 476.922Z"
-                                    fill="#EC7100"
-                                    stroke="#FFFFFF"
-                                    stroke-linejoin="round"
-                                  />
-                                  <path
-                                    d="M444.3461 474.9829A249.6 249.6 0 0 1 418.2205 205.4835L463.7137 228.9741A198.4 198.4 0 0 0 484.4802 443.1916Z"
-                                    fill="#F9C34B"
-                                    stroke="#FFFFFF"
-                                    stroke-linejoin="round"
-                                  />
-                                  <path
-                                    d="M418.2205 205.4835A249.6 249.6 0 0 1 550.4623 87.0125L568.829 134.8048A198.4 198.4 0 0 0 463.7137 228.9741Z"
-                                    fill="#61C46E"
-                                    stroke="#FFFFFF"
-                                    stroke-linejoin="round"
-                                  />
-                                  <path
-                                    d="M550.4623 87.0125A249.6 249.6 0 0 1 640 70.4L640 121.6A198.4 198.4 0 0 0 568.829 134.8048Z"
-                                    fill="#F095FF"
-                                    stroke="#FFFFFF"
-                                    stroke-linejoin="round"
-                                  />
-                                  <path
-                                    d="M-5 -5l10 0l0 10l-10 0Z"
-                                    fill="rgb(0,0,0)"
-                                    fill-opacity="0"
-                                    stroke="#ccc"
-                                    stroke-width="0"
-                                    transform="translate(640 400)"
-                                  />
-                                  <path
-                                    d="M0 0l0 0l0 0l0 0Z"
-                                    fill="none"
-                                    transform="translate(640 400)"
-                                  />
-                                </g>
-                              </svg>
-                            </div>
-                            <div
-                              class=""
+                          <rect
+                            fill="none"
+                            fill-opacity="1"
+                            height="800"
+                            id="0"
+                            width="1280"
+                            x="0"
+                            y="0"
+                          />
+                          <g>
+                            <path
+                              d="M876.1945 239.3011L885.6574 236.0679L890.6574 236.0679"
+                              fill="none"
+                              stroke="#66B1E8"
                             />
-                            <object
-                              class="size-sensor-object"
-                              data="about:blank"
-                              style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
-                              tabindex="-1"
-                              type="text/html"
+                            <path
+                              d="M609.8204 567.7687L608.6113 577.6954L603.6113 577.6954"
+                              fill="none"
+                              stroke="#EC7100"
                             />
-                          </div>
-                        </div>
+                            <path
+                              d="M391.5646 344.0836L381.6113 345.0485L376.6113 345.0485"
+                              fill="none"
+                              stroke="#F9C34B"
+                            />
+                            <path
+                              d="M473.4514 134.0922L466.7788 126.6439L461.7788 126.6439"
+                              fill="none"
+                              stroke="#61C46E"
+                            />
+                            <path
+                              d="M594.4671 74.5883L592.6429 64.7561L587.6429 64.7561"
+                              fill="none"
+                              stroke="#F095FF"
+                            />
+                            <path
+                              d="M640 70.4A249.6 249.6 0 0 1 792.7295 517.418L761.4004 476.922A198.4 198.4 0 0 0 640 121.6Z"
+                              fill="#66B1E8"
+                              stroke="#FFFFFF"
+                              stroke-linejoin="round"
+                            />
+                            <path
+                              d="M792.7295 517.418A249.6 249.6 0 0 1 444.3461 474.9829L484.4802 443.1916A198.4 198.4 0 0 0 761.4004 476.922Z"
+                              fill="#EC7100"
+                              stroke="#FFFFFF"
+                              stroke-linejoin="round"
+                            />
+                            <path
+                              d="M444.3461 474.9829A249.6 249.6 0 0 1 418.2205 205.4835L463.7137 228.9741A198.4 198.4 0 0 0 484.4802 443.1916Z"
+                              fill="#F9C34B"
+                              stroke="#FFFFFF"
+                              stroke-linejoin="round"
+                            />
+                            <path
+                              d="M418.2205 205.4835A249.6 249.6 0 0 1 550.4623 87.0125L568.829 134.8048A198.4 198.4 0 0 0 463.7137 228.9741Z"
+                              fill="#61C46E"
+                              stroke="#FFFFFF"
+                              stroke-linejoin="round"
+                            />
+                            <path
+                              d="M550.4623 87.0125A249.6 249.6 0 0 1 640 70.4L640 121.6A198.4 198.4 0 0 0 568.829 134.8048Z"
+                              fill="#F095FF"
+                              stroke="#FFFFFF"
+                              stroke-linejoin="round"
+                            />
+                            <path
+                              d="M-5 -5l10 0l0 10l-10 0Z"
+                              fill="rgb(0,0,0)"
+                              fill-opacity="0"
+                              stroke="#ccc"
+                              stroke-width="0"
+                              transform="translate(640 400)"
+                            />
+                            <path
+                              d="M0 0l0 0l0 0l0 0Z"
+                              fill="none"
+                              transform="translate(640 400)"
+                            />
+                          </g>
+                        </svg>
                       </div>
-                    </div>
-                    <div
-                      class="resize-triggers"
-                    >
                       <div
-                        class="expand-trigger"
-                      >
-                        <div
-                          style="width: 1281px; height: 801px;"
-                        />
-                      </div>
-                      <div
-                        class="contract-trigger"
+                        class=""
+                      />
+                      <object
+                        class="size-sensor-object"
+                        data="about:blank"
+                        style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                        tabindex="-1"
+                        type="text/html"
                       />
                     </div>
                   </div>
                 </div>
+              </div>
+              <div
+                class="resize-triggers"
+              >
                 <div
-                  class="resize-triggers"
+                  class="expand-trigger"
                 >
                   <div
-                    class="expand-trigger"
-                  >
-                    <div
-                      style="width: 1281px; height: 801px;"
-                    />
-                  </div>
-                  <div
-                    class="contract-trigger"
+                    style="width: 1281px; height: 801px;"
                   />
                 </div>
+                <div
+                  class="contract-trigger"
+                />
               </div>
             </div>
+          </div>
+          <div
+            class="resize-triggers"
+          >
+            <div
+              class="expand-trigger"
+            >
+              <div
+                style="width: 1281px; height: 801px;"
+              />
+            </div>
+            <div
+              class="contract-trigger"
+            />
           </div>
         </div>
       </div>
@@ -279,7 +242,7 @@ exports[`HealthPieChart should render correctly for many connectionFailures 1`] 
 exports[`HealthPieChart should render correctly for missing nodes data 1`] = `
 <DocumentFragment>
   <div
-    style="height: 200px; width: 200px;"
+    style="height: 300px; width: 300px;"
   >
     <div
       class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
@@ -287,199 +250,162 @@ exports[`HealthPieChart should render correctly for missing nodes data 1`] = `
       <div
         class="sc-jSMfEi fMLTAv"
       >
+        <span
+          class="sc-gKXOVf JkdVW"
+        >
+          <b>
+            Authentication
+          </b>
+           Top 1 Impacted WLAN
+        </span>
         <div
-          class="styledComponents__Wrapper-sc-13w5wfx-4 edzPbE"
-          type="no-border"
+          style="height: 100%;"
         >
           <div
-            class="ant-card"
+            style="overflow: visible; height: 0px; width: 0px;"
           >
             <div
-              class="ant-card-head"
+              style="height: 800px; width: 1280px;"
             >
               <div
-                class="ant-card-head-wrapper"
+                style="text-align: center;"
               >
                 <div
-                  class="ant-card-head-title"
+                  class="styledComponents__Wrapper-sc-c4vpsp-0 eBLcPR"
                 >
                   <div
-                    class="ant-space ant-space-horizontal ant-space-align-center"
+                    class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
                   >
-                    <div
-                      class="ant-space-item"
+                    <label
+                      class="ant-radio-button-wrapper ant-radio-button-wrapper-checked"
                     >
-                      <div
-                        class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                      <span
+                        class="ant-radio-button ant-radio-button-checked"
                       >
-                        Authentication Top 1 Impacted WLAN
-                      </div>
-                    </div>
+                        <input
+                          checked=""
+                          class="ant-radio-button-input"
+                          type="radio"
+                          value="wlans"
+                        />
+                        <span
+                          class="ant-radio-button-inner"
+                        />
+                      </span>
+                      <span>
+                        WLAN
+                      </span>
+                    </label>
                   </div>
                 </div>
-                <div
-                  class="ant-card-extra"
-                >
-                  <div
-                    class="ant-space ant-space-horizontal ant-space-align-center"
-                  />
-                </div>
               </div>
-            </div>
-            <div
-              class="ant-card-body"
-            >
               <div
-                style="height: 100%;"
+                style="overflow: visible; height: 0px; width: 0px;"
               >
                 <div
-                  style="overflow: visible; height: 0px; width: 0px;"
+                  class="ant-space ant-space-vertical"
                 >
                   <div
-                    style="display: block; height: 800px; width: 1280px; margin: -38px 0px 0px 0px;"
+                    class="ant-space-item"
                   >
                     <div
-                      style="text-align: right;"
+                      _echarts_instance_="ec_mock"
+                      class="echarts-for-react "
+                      size-sensor-id="3"
+                      style="height: 800px; width: 1280px; position: relative;"
                     >
                       <div
-                        class="styledComponents__Wrapper-sc-c4vpsp-0 eBLcPR"
+                        style="position: relative; overflow: hidden; width: 1280px; height: 800px;"
                       >
-                        <div
-                          class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
+                        <svg
+                          baseProfile="full"
+                          height="800"
+                          style="position:absolute;left:0;top:0;user-select:none"
+                          version="1.1"
+                          width="1280"
+                          xmlns="http://www.w3.org/2000/svg"
+                          xmlns:xlink="http://www.w3.org/1999/xlink"
                         >
-                          <label
-                            class="ant-radio-button-wrapper ant-radio-button-wrapper-checked"
-                          >
-                            <span
-                              class="ant-radio-button ant-radio-button-checked"
-                            >
-                              <input
-                                checked=""
-                                class="ant-radio-button-input"
-                                type="radio"
-                                value="wlans"
-                              />
-                              <span
-                                class="ant-radio-button-inner"
-                              />
-                            </span>
-                            <span>
-                              WLAN
-                            </span>
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-                    <div
-                      style="overflow: visible; height: 0px; width: 0px;"
-                    >
-                      <div
-                        class="ant-space ant-space-vertical"
-                      >
-                        <div
-                          class="ant-space-item"
-                        >
-                          <div
-                            _echarts_instance_="ec_mock"
-                            class="echarts-for-react "
-                            size-sensor-id="3"
-                            style="height: 800px; width: 1280px; position: relative;"
-                          >
-                            <div
-                              style="position: relative; overflow: hidden; width: 1280px; height: 800px;"
-                            >
-                              <svg
-                                baseProfile="full"
-                                height="800"
-                                style="position:absolute;left:0;top:0;user-select:none"
-                                version="1.1"
-                                width="1280"
-                                xmlns="http://www.w3.org/2000/svg"
-                                xmlns:xlink="http://www.w3.org/1999/xlink"
-                              >
-                                <rect
-                                  fill="none"
-                                  fill-opacity="1"
-                                  height="800"
-                                  id="0"
-                                  width="1280"
-                                  x="0"
-                                  y="0"
-                                />
-                                <g>
-                                  <path
-                                    d="M640 569.6L640 579.6L645 579.6"
-                                    fill="none"
-                                    stroke="#66B1E8"
-                                  />
-                                  <path
-                                    d="M640 70.4A249.6 249.6 0 1 1 639.975 70.4M640 121.6A198.4 198.4 0 1 0 640.0198 121.6Z"
-                                    fill="#66B1E8"
-                                    stroke="#FFFFFF"
-                                    stroke-linejoin="round"
-                                  />
-                                  <path
-                                    d="M-5 -5l10 0l0 10l-10 0Z"
-                                    fill="rgb(0,0,0)"
-                                    fill-opacity="0"
-                                    stroke="#ccc"
-                                    stroke-width="0"
-                                    transform="translate(640 400)"
-                                  />
-                                  <path
-                                    d="M0 0l0 0l0 0l0 0Z"
-                                    fill="none"
-                                    transform="translate(640 400)"
-                                  />
-                                </g>
-                              </svg>
-                            </div>
-                            <div
-                              class=""
+                          <rect
+                            fill="none"
+                            fill-opacity="1"
+                            height="800"
+                            id="0"
+                            width="1280"
+                            x="0"
+                            y="0"
+                          />
+                          <g>
+                            <path
+                              d="M640 569.6L640 579.6L645 579.6"
+                              fill="none"
+                              stroke="#66B1E8"
                             />
-                            <object
-                              class="size-sensor-object"
-                              data="about:blank"
-                              style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
-                              tabindex="-1"
-                              type="text/html"
+                            <path
+                              d="M640 70.4A249.6 249.6 0 1 1 639.975 70.4M640 121.6A198.4 198.4 0 1 0 640.0198 121.6Z"
+                              fill="#66B1E8"
+                              stroke="#FFFFFF"
+                              stroke-linejoin="round"
                             />
-                          </div>
-                        </div>
+                            <path
+                              d="M-5 -5l10 0l0 10l-10 0Z"
+                              fill="rgb(0,0,0)"
+                              fill-opacity="0"
+                              stroke="#ccc"
+                              stroke-width="0"
+                              transform="translate(640 400)"
+                            />
+                            <path
+                              d="M0 0l0 0l0 0l0 0Z"
+                              fill="none"
+                              transform="translate(640 400)"
+                            />
+                          </g>
+                        </svg>
                       </div>
-                    </div>
-                    <div
-                      class="resize-triggers"
-                    >
                       <div
-                        class="expand-trigger"
-                      >
-                        <div
-                          style="width: 1281px; height: 801px;"
-                        />
-                      </div>
-                      <div
-                        class="contract-trigger"
+                        class=""
+                      />
+                      <object
+                        class="size-sensor-object"
+                        data="about:blank"
+                        style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                        tabindex="-1"
+                        type="text/html"
                       />
                     </div>
                   </div>
                 </div>
+              </div>
+              <div
+                class="resize-triggers"
+              >
                 <div
-                  class="resize-triggers"
+                  class="expand-trigger"
                 >
                   <div
-                    class="expand-trigger"
-                  >
-                    <div
-                      style="width: 1281px; height: 801px;"
-                    />
-                  </div>
-                  <div
-                    class="contract-trigger"
+                    style="width: 1281px; height: 801px;"
                   />
                 </div>
+                <div
+                  class="contract-trigger"
+                />
               </div>
             </div>
+          </div>
+          <div
+            class="resize-triggers"
+          >
+            <div
+              class="expand-trigger"
+            >
+              <div
+                style="width: 1281px; height: 801px;"
+              />
+            </div>
+            <div
+              class="contract-trigger"
+            />
           </div>
         </div>
       </div>
@@ -492,7 +418,7 @@ exports[`HealthPieChart should render correctly for missing nodes data 1`] = `
 exports[`HealthPieChart should render correctly for single ttc failures 1`] = `
 <DocumentFragment>
   <div
-    style="height: 200px; width: 200px;"
+    style="height: 300px; width: 300px;"
   >
     <div
       class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
@@ -500,199 +426,162 @@ exports[`HealthPieChart should render correctly for single ttc failures 1`] = `
       <div
         class="sc-jSMfEi fMLTAv"
       >
+        <span
+          class="sc-gKXOVf JkdVW"
+        >
+          <b>
+            Authentication
+          </b>
+           Top 1 Impacted WLAN
+        </span>
         <div
-          class="styledComponents__Wrapper-sc-13w5wfx-4 edzPbE"
-          type="no-border"
+          style="height: 100%;"
         >
           <div
-            class="ant-card"
+            style="overflow: visible; height: 0px; width: 0px;"
           >
             <div
-              class="ant-card-head"
+              style="height: 800px; width: 1280px;"
             >
               <div
-                class="ant-card-head-wrapper"
+                style="text-align: center;"
               >
                 <div
-                  class="ant-card-head-title"
+                  class="styledComponents__Wrapper-sc-c4vpsp-0 eBLcPR"
                 >
                   <div
-                    class="ant-space ant-space-horizontal ant-space-align-center"
+                    class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
                   >
-                    <div
-                      class="ant-space-item"
+                    <label
+                      class="ant-radio-button-wrapper ant-radio-button-wrapper-checked"
                     >
-                      <div
-                        class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                      <span
+                        class="ant-radio-button ant-radio-button-checked"
                       >
-                        Authentication Top 1 Impacted WLAN
-                      </div>
-                    </div>
+                        <input
+                          checked=""
+                          class="ant-radio-button-input"
+                          type="radio"
+                          value="wlans"
+                        />
+                        <span
+                          class="ant-radio-button-inner"
+                        />
+                      </span>
+                      <span>
+                        WLAN
+                      </span>
+                    </label>
                   </div>
                 </div>
-                <div
-                  class="ant-card-extra"
-                >
-                  <div
-                    class="ant-space ant-space-horizontal ant-space-align-center"
-                  />
-                </div>
               </div>
-            </div>
-            <div
-              class="ant-card-body"
-            >
               <div
-                style="height: 100%;"
+                style="overflow: visible; height: 0px; width: 0px;"
               >
                 <div
-                  style="overflow: visible; height: 0px; width: 0px;"
+                  class="ant-space ant-space-vertical"
                 >
                   <div
-                    style="display: block; height: 800px; width: 1280px; margin: -38px 0px 0px 0px;"
+                    class="ant-space-item"
                   >
                     <div
-                      style="text-align: right;"
+                      _echarts_instance_="ec_mock"
+                      class="echarts-for-react "
+                      size-sensor-id="2"
+                      style="height: 800px; width: 1280px; position: relative;"
                     >
                       <div
-                        class="styledComponents__Wrapper-sc-c4vpsp-0 eBLcPR"
+                        style="position: relative; overflow: hidden; width: 1280px; height: 800px;"
                       >
-                        <div
-                          class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
+                        <svg
+                          baseProfile="full"
+                          height="800"
+                          style="position:absolute;left:0;top:0;user-select:none"
+                          version="1.1"
+                          width="1280"
+                          xmlns="http://www.w3.org/2000/svg"
+                          xmlns:xlink="http://www.w3.org/1999/xlink"
                         >
-                          <label
-                            class="ant-radio-button-wrapper ant-radio-button-wrapper-checked"
-                          >
-                            <span
-                              class="ant-radio-button ant-radio-button-checked"
-                            >
-                              <input
-                                checked=""
-                                class="ant-radio-button-input"
-                                type="radio"
-                                value="wlans"
-                              />
-                              <span
-                                class="ant-radio-button-inner"
-                              />
-                            </span>
-                            <span>
-                              WLAN
-                            </span>
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-                    <div
-                      style="overflow: visible; height: 0px; width: 0px;"
-                    >
-                      <div
-                        class="ant-space ant-space-vertical"
-                      >
-                        <div
-                          class="ant-space-item"
-                        >
-                          <div
-                            _echarts_instance_="ec_mock"
-                            class="echarts-for-react "
-                            size-sensor-id="2"
-                            style="height: 800px; width: 1280px; position: relative;"
-                          >
-                            <div
-                              style="position: relative; overflow: hidden; width: 1280px; height: 800px;"
-                            >
-                              <svg
-                                baseProfile="full"
-                                height="800"
-                                style="position:absolute;left:0;top:0;user-select:none"
-                                version="1.1"
-                                width="1280"
-                                xmlns="http://www.w3.org/2000/svg"
-                                xmlns:xlink="http://www.w3.org/1999/xlink"
-                              >
-                                <rect
-                                  fill="none"
-                                  fill-opacity="1"
-                                  height="800"
-                                  id="0"
-                                  width="1280"
-                                  x="0"
-                                  y="0"
-                                />
-                                <g>
-                                  <path
-                                    d="M640 569.6L640 579.6L645 579.6"
-                                    fill="none"
-                                    stroke="#66B1E8"
-                                  />
-                                  <path
-                                    d="M640 70.4A249.6 249.6 0 1 1 639.975 70.4M640 121.6A198.4 198.4 0 1 0 640.0198 121.6Z"
-                                    fill="#66B1E8"
-                                    stroke="#FFFFFF"
-                                    stroke-linejoin="round"
-                                  />
-                                  <path
-                                    d="M-5 -5l10 0l0 10l-10 0Z"
-                                    fill="rgb(0,0,0)"
-                                    fill-opacity="0"
-                                    stroke="#ccc"
-                                    stroke-width="0"
-                                    transform="translate(640 400)"
-                                  />
-                                  <path
-                                    d="M0 0l0 0l0 0l0 0Z"
-                                    fill="none"
-                                    transform="translate(640 400)"
-                                  />
-                                </g>
-                              </svg>
-                            </div>
-                            <div
-                              class=""
+                          <rect
+                            fill="none"
+                            fill-opacity="1"
+                            height="800"
+                            id="0"
+                            width="1280"
+                            x="0"
+                            y="0"
+                          />
+                          <g>
+                            <path
+                              d="M640 569.6L640 579.6L645 579.6"
+                              fill="none"
+                              stroke="#66B1E8"
                             />
-                            <object
-                              class="size-sensor-object"
-                              data="about:blank"
-                              style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
-                              tabindex="-1"
-                              type="text/html"
+                            <path
+                              d="M640 70.4A249.6 249.6 0 1 1 639.975 70.4M640 121.6A198.4 198.4 0 1 0 640.0198 121.6Z"
+                              fill="#66B1E8"
+                              stroke="#FFFFFF"
+                              stroke-linejoin="round"
                             />
-                          </div>
-                        </div>
+                            <path
+                              d="M-5 -5l10 0l0 10l-10 0Z"
+                              fill="rgb(0,0,0)"
+                              fill-opacity="0"
+                              stroke="#ccc"
+                              stroke-width="0"
+                              transform="translate(640 400)"
+                            />
+                            <path
+                              d="M0 0l0 0l0 0l0 0Z"
+                              fill="none"
+                              transform="translate(640 400)"
+                            />
+                          </g>
+                        </svg>
                       </div>
-                    </div>
-                    <div
-                      class="resize-triggers"
-                    >
                       <div
-                        class="expand-trigger"
-                      >
-                        <div
-                          style="width: 1281px; height: 801px;"
-                        />
-                      </div>
-                      <div
-                        class="contract-trigger"
+                        class=""
+                      />
+                      <object
+                        class="size-sensor-object"
+                        data="about:blank"
+                        style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                        tabindex="-1"
+                        type="text/html"
                       />
                     </div>
                   </div>
                 </div>
+              </div>
+              <div
+                class="resize-triggers"
+              >
                 <div
-                  class="resize-triggers"
+                  class="expand-trigger"
                 >
                   <div
-                    class="expand-trigger"
-                  >
-                    <div
-                      style="width: 1281px; height: 801px;"
-                    />
-                  </div>
-                  <div
-                    class="contract-trigger"
+                    style="width: 1281px; height: 801px;"
                   />
                 </div>
+                <div
+                  class="contract-trigger"
+                />
               </div>
             </div>
+          </div>
+          <div
+            class="resize-triggers"
+          >
+            <div
+              class="expand-trigger"
+            >
+              <div
+                style="width: 1281px; height: 801px;"
+              />
+            </div>
+            <div
+              class="contract-trigger"
+            />
           </div>
         </div>
       </div>

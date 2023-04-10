@@ -26,7 +26,7 @@ describe('HealthPieChart', () => {
     mockGraphqlQuery(dataApiURL, 'Network', { data: mockConnectionFailureResponse })
     const { asFragment } = render(
       <Provider>
-        <div style={{ height: 200, width: 200 }}>
+        <div style={{ height: 300, width: 300 }}>
           <HealthPieChart
             filters={filters}
             queryType='connectionFailure'
@@ -49,7 +49,7 @@ describe('HealthPieChart', () => {
     mockGraphqlQuery(dataApiURL, 'Network', { data: mockTtcResponse })
     const { asFragment } = render(
       <Provider>
-        <div style={{ height: 200, width: 200 }}>
+        <div style={{ height: 300, width: 300 }}>
           <HealthPieChart filters={filters} queryType='ttc' queryFilter='Authentication' />,
         </div>
       </Provider>,
@@ -70,7 +70,7 @@ describe('HealthPieChart', () => {
     const apFilters = { ...filters, path: mockPathWithAp }
     const { asFragment } = render(
       <Provider>
-        <div style={{ height: 200, width: 200 }}>
+        <div style={{ height: 300, width: 300 }}>
           <HealthPieChart filters={apFilters} queryType='ttc' queryFilter='Authentication' />,
         </div>
       </Provider>,
@@ -90,7 +90,7 @@ describe('HealthPieChart', () => {
     mockGraphqlQuery(dataApiURL, 'Network', { data: mockConnectionFailureResponse })
     render(
       <Provider>
-        <div style={{ height: 200, width: 200 }}>
+        <div style={{ height: 300, width: 300 }}>
           <HealthPieChart
             filters={filters}
             queryType='connectionFailure'
@@ -103,10 +103,11 @@ describe('HealthPieChart', () => {
         }
       })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    expect(await screen.findByText('Authentication Top 5 Impacted WLANs')).toBeVisible()
+    expect(await screen.findByText('Authentication')).toBeVisible()
+    expect(await screen.findByText('Top 5 Impacted WLANs')).toBeVisible()
     const venues = await screen.findByText('Venues')
     fireEvent.click(venues)
-    expect(await screen.findByText('Authentication Top 5 Impacted Venues')).toBeVisible()
+    expect(await screen.findByText('Top 5 Impacted Venues')).toBeVisible()
   })
 
   describe('pieNodeMap', () => {

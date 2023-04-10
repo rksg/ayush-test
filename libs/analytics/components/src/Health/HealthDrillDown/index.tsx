@@ -139,7 +139,7 @@ const HealthDrillDown = (props: {
           <GridCol col={{ span: 24 }} style={{ height: '5px' }}>
             <Separator><Point $xPos={xPos}/></Separator>
           </GridCol>
-          <GridCol col={{ span: 12 }} style={{ height: '210px' }}>
+          <GridCol col={{ span: 12 }} style={{ height: '300px' }}>
             <HealthPieChart
               filters={filters}
               queryType={drilldownSelection}

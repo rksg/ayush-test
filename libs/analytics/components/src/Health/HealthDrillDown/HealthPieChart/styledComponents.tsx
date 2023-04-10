@@ -7,3 +7,9 @@ export const HealthPieChartWrapper = styled.div`
     height: 100%
   }
 `
+
+export const PieChartTitle = styled.span`
+  text-align: left;
+  font-size: 12px;
+`
+

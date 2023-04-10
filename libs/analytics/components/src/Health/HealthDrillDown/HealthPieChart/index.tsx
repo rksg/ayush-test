@@ -6,7 +6,6 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { AnalyticsFilter } from '@acx-ui/analytics/utils'
 import {
-  Card,
   ContentSwitcher,
   ContentSwitcherProps,
   DonutChart,
@@ -184,38 +183,32 @@ export const HealthPieChart = ({
   return (
     <Loader states={[queryResults]}>
       <UI.HealthPieChartWrapper>
-        <Card
-          type='no-border'
-          title={$t(
-            { defaultMessage: '{name} Top {count} Impacted {title}' },
-            { name, count, title }
-          )}
-        >
-          <div style={{ height: '100%' }}>
-            <AutoSizer>
-              {({ height, width }) => (
-                <div
-                  style={{
-                    display: 'block',
-                    height,
-                    width,
-                    margin: '-38px 0 0 0'
-                  }}
-                >
-                  <ContentSwitcher
-                    key={queryFilter}
-                    value={chartKey}
-                    defaultValue={'wlans'}
-                    tabDetails={tabDetails}
-                    align='right'
-                    size='small'
-                    onChange={key => setChartKey(key)}
-                  />
-                </div>
-              )}
-            </AutoSizer>
-          </div>
-        </Card>
+        <UI.PieChartTitle>
+          <b>{$t({ defaultMessage: '{name}' }, { name })}</b>{' '}
+          {$t({ defaultMessage: 'Top {count} Impacted {title}' }, { count, title })}
+        </UI.PieChartTitle>
+        <div style={{ height: '100%' }}>
+          <AutoSizer>
+            {({ height, width }) => (
+              <div
+                style={{
+                  height,
+                  width
+                }}
+              >
+                <ContentSwitcher
+                  key={queryFilter}
+                  value={chartKey}
+                  defaultValue={'wlans'}
+                  tabDetails={tabDetails}
+                  align='center'
+                  size='small'
+                  onChange={key => setChartKey(key)}
+                />
+              </div>
+            )}
+          </AutoSizer>
+        </div>
       </UI.HealthPieChartWrapper>
     </Loader>
   )
