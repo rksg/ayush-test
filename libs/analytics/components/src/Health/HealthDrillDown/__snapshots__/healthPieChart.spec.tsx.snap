@@ -9,10 +9,10 @@ exports[`HealthPieChart should render correctly for many connectionFailures 1`] 
       class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
     >
       <div
-        class="sc-jSMfEi fMLTAv"
+        class="styledComponents__HealthPieChartWrapper-sc-1iwj7vu-8 ZiWtU"
       >
         <span
-          class="sc-gKXOVf JkdVW"
+          class="styledComponents__PieChartTitle-sc-1iwj7vu-9 hxfZdo"
         >
           <b>
             Authentication
@@ -248,10 +248,10 @@ exports[`HealthPieChart should render correctly for missing nodes data 1`] = `
       class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
     >
       <div
-        class="sc-jSMfEi fMLTAv"
+        class="styledComponents__HealthPieChartWrapper-sc-1iwj7vu-8 ZiWtU"
       >
         <span
-          class="sc-gKXOVf JkdVW"
+          class="styledComponents__PieChartTitle-sc-1iwj7vu-9 hxfZdo"
         >
           <b>
             Authentication
@@ -424,10 +424,10 @@ exports[`HealthPieChart should render correctly for single ttc failures 1`] = `
       class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
     >
       <div
-        class="sc-jSMfEi fMLTAv"
+        class="styledComponents__HealthPieChartWrapper-sc-1iwj7vu-8 ZiWtU"
       >
         <span
-          class="sc-gKXOVf JkdVW"
+          class="styledComponents__PieChartTitle-sc-1iwj7vu-9 hxfZdo"
         >
           <b>
             Authentication

@@ -4,9 +4,9 @@ import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved, fireEvent,
 import { DateRange }                                                                       from '@acx-ui/utils'
 
 import { mockConnectionFailureResponse, mockTtcResponse, mockPathWithAp, mockOnlyWlansResponse } from './__tests__/fixtures'
+import { HealthPieChart, pieNodeMap }                                                            from './healthPieChart'
 import { api }                                                                                   from './services'
 
-import { HealthPieChart, pieNodeMap } from '.'
 
 
 describe('HealthPieChart', () => {

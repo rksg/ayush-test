@@ -18,7 +18,7 @@ import {
   TTC
 } from './config'
 import { FunnelChart }                                       from './funnelChart'
-import { HealthPieChart }                                    from './HealthPieChart'
+import { HealthPieChart }                                    from './healthPieChart'
 import { useTtcDrilldownQuery, useConnectionDrilldownQuery } from './services'
 import { Point, Separator, Title }                           from './styledComponents'
 

@@ -16,8 +16,7 @@ import {
 import { formatter }   from '@acx-ui/formatter'
 import { NetworkPath } from '@acx-ui/utils'
 
-import { DrilldownSelection, stageMapToName } from '../config'
-
+import { DrilldownSelection, stageMapToName }      from './config'
 import { ImpactedNodesAndWlans, usePieChartQuery } from './services'
 import * as UI                                     from './styledComponents'
 
