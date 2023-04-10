@@ -16,9 +16,18 @@ import {
   prepareAntdValidateMessages,
   onIntlError
 } from '@acx-ui/utils'
+import { SerializedError }     from '@reduxjs/toolkit'
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
+
+interface QueryState {
+  isLoading: boolean;
+  error?: Error | SerializedError | FetchBaseQueryError;
+  isFetching?: boolean;
+}
 
 export type ConfigProviderProps = Omit<AntConfigProviderProps, 'locale'> & {
-  lang?: LocaleProviderProps['lang']
+  lang?: LocaleProviderProps['lang'];
+  states?: QueryState[];
 }
 
 function AntConfigProviders (props: ConfigProviderProps) {

@@ -27,8 +27,8 @@ import {
   Entitlement,
   NewEntitlementSummary
 } from '@acx-ui/rc/utils'
-import { baseAdministrationApi }      from '@acx-ui/store'
-import { LangKey, getTenantId } from '@acx-ui/utils'
+import { baseAdministrationApi } from '@acx-ui/store'
+import { LangKey, getTenantId }  from '@acx-ui/utils'
 
 export const administrationApi = baseAdministrationApi.injectEndpoints({
   endpoints: (build) => ({

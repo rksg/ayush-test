@@ -109,8 +109,14 @@ export async function pendoInitalization (): Promise<void> {
 
 function PreferredLangConfigProvider (props: React.PropsWithChildren) {
   const lang = useYourPreferredLanguage()
-  loadMessages([lang])
-  return <ConfigProvider lang={lang} {...props} />
+  const locale = useLocaleContext()
+  return <ConfigProvider
+    lang={lang}
+    {...props}
+    states={[{ isLoading:
+        !Boolean(locale.messages)
+    }]}
+  />
 }
 
 function DataGuardLoader (props: React.PropsWithChildren) {
