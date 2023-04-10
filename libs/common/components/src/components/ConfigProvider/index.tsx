@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { SerializedError }                        from '@reduxjs/toolkit'
+import { FetchBaseQueryError }                    from '@reduxjs/toolkit/query/react'
 import { ConfigProvider as AntConfigProvider }    from 'antd'
 import {
   default as AntProConfigProvider,
@@ -16,8 +18,6 @@ import {
   prepareAntdValidateMessages,
   onIntlError
 } from '@acx-ui/utils'
-import { SerializedError }     from '@reduxjs/toolkit'
-import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 
 interface QueryState {
   isLoading: boolean;
