@@ -28,7 +28,7 @@ import {
   NewEntitlementSummary
 } from '@acx-ui/rc/utils'
 import { baseAdministrationApi }      from '@acx-ui/store'
-import { localeLoaders, getTenantId } from '@acx-ui/utils'
+import { LangKey, getTenantId } from '@acx-ui/utils'
 
 export const administrationApi = baseAdministrationApi.injectEndpoints({
   endpoints: (build) => ({
@@ -520,14 +520,11 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
   })
 })
 
-const allowedLang = Object.keys(localeLoaders)
-type Key = keyof typeof localeLoaders
-
-export function useYourPreferredLanguage (): Key {
+export function useYourPreferredLanguage (): LangKey {
   const tenantId = getTenantId()
   const { data } = useGetPreferencesQuery({ tenantId })
-  const lang = data?.global.preferredLanguage as Key
-  return allowedLang.includes(lang) ? lang : 'en-US'
+  const lang = data?.global.preferredLanguage as LangKey
+  return lang
 }
 
 const transformAdministratorList = (data: Administrator[]) => {

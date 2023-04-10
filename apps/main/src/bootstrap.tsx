@@ -109,6 +109,7 @@ export async function pendoInitalization (): Promise<void> {
 
 function PreferredLangConfigProvider (props: React.PropsWithChildren) {
   const lang = useYourPreferredLanguage()
+  loadMessages([lang])
   return <ConfigProvider lang={lang} {...props} />
 }
 

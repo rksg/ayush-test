@@ -1,7 +1,8 @@
 import { Col, Select, Form, Row, Typography } from 'antd'
 import { useIntl }                            from 'react-intl'
 
-import { usePreference } from '@acx-ui/rc/components'
+import { usePreference }       from '@acx-ui/rc/components'
+import { loadLocale, LangKey } from '@acx-ui/utils'
 
 import { MessageMapping } from '../MessageMapping'
 
@@ -23,6 +24,12 @@ const DefaultSystemLanguageFormItem = () => {
     updatePreferences({ newData: payload })
   }
 
+  const handleNewPreferredLangChnge = (langCode: string) => {
+    const lang = langCode as LangKey
+    loadLocale(lang)
+  }
+
+
   const isLoadingPreference = getReqState.isLoading || getReqState.isFetching
   const isUpdatingPreference = updateReqState.isLoading
 
@@ -38,7 +45,8 @@ const DefaultSystemLanguageFormItem = () => {
   }
 
   const supportedLangs = [
-    'en-US'
+    'en-US',
+    'es-ES'
   ].map(val => ({
     label: generateLangLabel(val.slice(0, 2)),
     value: val
@@ -52,7 +60,10 @@ const DefaultSystemLanguageFormItem = () => {
         >
           <Select
             value={currentPreferredLang}
-            onChange={handlePreferredLangChange}
+            onChange={async (value) => {
+              await handlePreferredLangChange(value)
+              await handleNewPreferredLangChnge(value)
+            }}
             showSearch
             allowClear
             optionFilterProp='children'
