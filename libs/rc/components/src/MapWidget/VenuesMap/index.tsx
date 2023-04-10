@@ -13,6 +13,8 @@ export interface GoogleMapProps {
   data: VenueMarkerOptions[]
   cluster?: boolean,
   enableVenueFilter?: boolean
+  language?: string;
+  region?: string;
 }
 
 export interface NavigateProps {
@@ -20,7 +22,7 @@ export interface NavigateProps {
   path?: string
 }
 
-function VenuesMap ({ cluster, data, enableVenueFilter }: GoogleMapProps) {
+function VenuesMap ({ cluster, data, enableVenueFilter, region }: GoogleMapProps) {
 
   const [venues, setVenues] = React.useState<VenueMarkerOptions[]>([])
   const basePath = useTenantLink('/')
@@ -69,6 +71,7 @@ function VenuesMap ({ cluster, data, enableVenueFilter }: GoogleMapProps) {
       version='3.49' // Fixing the version to avoid unnecessary bugs from new versions of API
       libraries={['places']}
       language={'en'}
+      region={region}
       render={render}
     >
       <GMap

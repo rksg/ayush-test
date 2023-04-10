@@ -21,9 +21,8 @@ import {
 import {
   MspEcDropdownList
 } from '@acx-ui/msp/components'
-import { CloudMessageBanner, useUpdateGoogleMapRegion }          from '@acx-ui/rc/components'
-import { useGetPreferencesQuery }                                from '@acx-ui/rc/services'
-import { isDelegationMode, TenantPreferenceSettings }            from '@acx-ui/rc/utils'
+import { CloudMessageBanner }                                    from '@acx-ui/rc/components'
+import { isDelegationMode }                                      from '@acx-ui/rc/utils'
 import { getBasePath, Link, Outlet, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { useParams }                                             from '@acx-ui/react-router-dom'
 import { RolesEnum }                                             from '@acx-ui/types'
@@ -34,14 +33,8 @@ import { useMenuConfig } from './menuConfig'
 import SearchBar         from './SearchBar'
 import * as UI           from './styledComponents'
 
-const getMapRegion = (data: TenantPreferenceSettings | undefined): string => {
-  return data?.global.mapRegion as string
-}
-
 function Layout () {
   const [supportStatus,setSupportStatus] = useState('')
-  const [isSkip, setSkipQuery] = useState(false)
-
   const { data: userProfile } = useUserProfileContext()
   const companyName = userProfile?.companyName
   const showHomeButton = isDelegationMode() || userProfile?.var
@@ -55,8 +48,6 @@ function Layout () {
   const [licenseExpanded, setLicenseExpanded] = useState<boolean>(false)
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
 
-  const { data } = useGetPreferencesQuery({ params }, { skip: isSkip })
-  const { update: updateGoogleMapRegion } = useUpdateGoogleMapRegion()
   const isBackToRC = (PverName.ACX === getJwtTokenPayload().pver ||
     PverName.ACX_HYBRID === getJwtTokenPayload().pver)
 
@@ -65,14 +56,6 @@ function Layout () {
       ? `${getBasePath()}/v/${getJwtTokenPayload().tenantId}/users/guestsManager`
       : `${getBasePath()}/v/${getJwtTokenPayload().tenantId}`
   }
-
-  useEffect(() => {
-    if (data?.global) {
-      const currentMapRegion = getMapRegion(data)
-      updateGoogleMapRegion(currentMapRegion)
-      setSkipQuery(true)
-    }
-  }, [data])
 
   useEffect(() => {
     if (isGuestManager && params['*'] !== 'guestsManager') {
