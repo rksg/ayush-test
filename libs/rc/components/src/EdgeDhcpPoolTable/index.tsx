@@ -1,3 +1,4 @@
+
 import { useEffect } from 'react'
 
 import { Progress } from 'antd'
@@ -17,20 +18,26 @@ export const EdgeDhcpPoolTable = (props: EdgeDhcpPoolTableProps) => {
   const { $t } = useIntl()
 
   const getDhcpPoolStatsPayload = {
-    filters: { edgeIds: [props.edgeId] },
+    filters: { edgeId: [props.edgeId] },
     sortField: 'name',
     sortOrder: 'ASC'
   }
-
-  console.log(!!!props.edgeId, props.edgeId)
-
   const localQuery = useTableQuery<DhcpPoolStats, RequestPayload<unknown>, unknown>({
     useQuery: useGetDhcpPoolStatsQuery,
     defaultPayload: getDhcpPoolStatsPayload,
     option: { skip: !!!props.edgeId }
   })
-
   const tableQuery = props.tableQuery || localQuery
+
+  useEffect(() => {
+    if(props.edgeId) {
+      localQuery.setPayload({
+        ...localQuery.payload,
+        filters: { edgeId: [props.edgeId] }
+      })
+    }
+  }, [props.edgeId, localQuery])
+
 
   const columns: TableProps<DhcpPoolStats>['columns'] = [
     {
