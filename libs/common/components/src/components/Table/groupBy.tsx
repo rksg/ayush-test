@@ -11,12 +11,13 @@ import { TableProps } from '.'
 import type { TableColumnState } from './types'
 
 export function GroupSelect<RecordType> ({
-  $t, value, setValue, groupable
+  $t, value, setValue, groupable, style
 }: {
   $t: IntlShape['$t'],
   value: string | undefined,
   setValue: (val: string | undefined) => void,
-  groupable: TableProps<RecordType>['columns']
+  groupable: TableProps<RecordType>['columns'],
+  style?: React.CSSProperties
 }) {
   const selectors = groupable
     .filter(cols => Boolean(cols.groupable))
@@ -34,6 +35,7 @@ export function GroupSelect<RecordType> ({
     }}
     key='select-group-by'
     data-testid='select-group-by'
+    style={style}
   >
     {selectors.map((item) => <Select.Option
       key={item.key}
