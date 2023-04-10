@@ -6,6 +6,8 @@ import { useIntl }        from 'react-intl'
 import { LayoutUI }                from '@acx-ui/components'
 import { get }                     from '@acx-ui/config'
 import { QuestionMarkCircleSolid } from '@acx-ui/icons'
+import { RolesEnum }               from '@acx-ui/types'
+import { hasRoles }                from '@acx-ui/user'
 
 import Firewall          from './Firewall'
 import HelpPage          from './HelpPage'
@@ -22,6 +24,7 @@ const HelpButton = (props:HelpButtonProps) => {
   const [firewallModalState, setFirewallModalOpen] = useState(false)
   const [helpPageModalState, setHelpPageModalOpen] = useState(false)
   const [isChatDisabled, setIsChatDisabled] = useState(true)
+  const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
 
   useEffect(()=>{
     switch (supportStatus) {
@@ -95,10 +98,10 @@ const HelpButton = (props:HelpButtonProps) => {
         key: 'models',
         label: $t({ defaultMessage: 'Supported Device Models' })
       },
-      {
+      ...(!isGuestManager ? [{
         key: 'firewallACL',
         label: $t({ defaultMessage: 'Firewall ACL Inputs' })
-      },
+      }] : []),
       { type: 'divider' },
       {
         key: 'openCases',

@@ -48,6 +48,8 @@ export interface NewDpskPassphrase {
   email?: string;
   phoneNumber?: string;
   identityId?: string; // PersonaGroup id - This DPSK had bound with PersonaGroup
+  revocationDate?: string;
+  revocationReason?: string;
 }
 
 export interface CreateDpskPassphrasesFormFields {
