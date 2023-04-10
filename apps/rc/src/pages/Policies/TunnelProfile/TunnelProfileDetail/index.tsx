@@ -16,7 +16,7 @@ const TunnelProfileDetail = () => {
   const params = useParams()
 
   const getTunnelProfilePayload = {
-    filters: { id: [params.poliicyId] }
+    filters: { id: [params.policyId] }
   }
   const { tunnelProfileData, isLoading } = useGetTunnelProfileViewDataListQuery(
     { payload: getTunnelProfilePayload },
@@ -29,10 +29,10 @@ const TunnelProfileDetail = () => {
   )
 
   const infoFields = [
-    {
-      title: $t({ defaultMessage: 'Tags' }),
-      content: () => (tunnelProfileData.tags)
-    },
+    // {
+    //   title: $t({ defaultMessage: 'Tags' }),
+    //   content: () => (tunnelProfileData.tags)
+    // },
     {
       title: $t({ defaultMessage: 'Gateway Path MTU Mode' }),
       content: () => (
