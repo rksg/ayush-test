@@ -1,7 +1,7 @@
+import { VenueMarkerOptions }        from '@acx-ui/rc/utils'
 import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
 import { VenueMarkerTooltip } from './VenueMarkerTooltip'
-import { VenueMarkerOptions } from './VenueMarkerWithLabel'
 
 const withCounts = {
   apsCount: 1234,

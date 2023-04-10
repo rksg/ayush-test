@@ -7,6 +7,7 @@ import { ContentSwitcher, ContentSwitcherProps, Drawer, Descriptions }          
 import { useApLanPortsQuery, useGetApRadioCustomizationQuery, useGetVenueQuery, useGetVenueSettingsQuery } from '@acx-ui/rc/services'
 import { ApDetails, ApLanPort, ApRadio, ApVenueStatusEnum, ApViewModel, DeviceGps, gpsToFixed }            from '@acx-ui/rc/utils'
 import { TenantLink }                                                                                      from '@acx-ui/react-router-dom'
+import { useUserProfileContext }                                                                           from '@acx-ui/user'
 
 import { useApContext } from '../../ApContext'
 
@@ -23,6 +24,7 @@ interface ApDetailsDrawerProps {
 
 export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const { $t } = useIntl()
+  const { data: userProfile } = useUserProfileContext()
   const { tenantId, serialNumber } = useApContext()
   const { visible, setVisible, currentAP, apDetails } = props
   const { APSystem, cellularInfo: currentCellularInfo } = currentAP?.apStatusData || {}
@@ -98,6 +100,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
       <Divider/>
       <Descriptions labelWidthPercent={50}>
         {
+          (userProfile?.support || userProfile?.var || userProfile?.dogfood) &&
           venueSettings?.apPassword &&
           <Descriptions.Item
             label={$t({ defaultMessage: 'Admin Password' })}
