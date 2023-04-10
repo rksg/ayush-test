@@ -4,9 +4,9 @@ import { AnalyticsFilter } from '@acx-ui/analytics/utils'
 import { useApContext } from '../ApContext'
 
 export function ApAnalyticsTab () {
-  const { serialNumber, apMac, venueName } = useApContext()
+  const { serialNumber, apMac } = useApContext()
   const filter = {
-    path: [{ type: 'zone', name: venueName }, { type: 'AP', name: apMac }]
+    path: [{ type: 'AP', name: apMac }]
   } as AnalyticsFilter
   return <AnalyticsTabs
     incidentFilter={filter}
