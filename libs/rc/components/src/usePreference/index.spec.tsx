@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
-import { rest } from 'msw'
-import { act }  from 'react-dom/test-utils'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
+import { act }   from 'react-dom/test-utils'
 
 import { useIsSplitOn }           from '@acx-ui/feature-toggle'
 import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
@@ -8,8 +9,8 @@ import { Provider  }              from '@acx-ui/store'
 import {
   mockServer,
   renderHook,
-  fireEvent,
-  waitFor
+  waitFor,
+  screen
 } from '@acx-ui/test-utils'
 
 import { fakePreference } from './fixtures'
@@ -17,9 +18,14 @@ import { fakePreference } from './fixtures'
 import { usePreference } from '.'
 
 const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
-
+const mockedUsedNavigate = jest.fn()
 jest.mock('@acx-ui/config', () => ({
   get: jest.fn().mockReturnValue('fake-google-maps-key')
+}))
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
 }))
 
 const mockedUpdateReqFn = jest.fn()
@@ -48,6 +54,7 @@ describe('usePreference', () => {
       )
     )
   })
+
 
   it('should be able to update deep field', async () => {
     mockServer.use(
@@ -122,14 +129,10 @@ describe('usePreference', () => {
 
     rerender()
 
-    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
-    const scripts = document.getElementsByTagName('script')
-    await waitFor(() => {
-      expect(scripts[0].src).toBe('https://maps.googleapis.com/maps/api/js?key=fake-google-maps-key&region=GB&libraries=places&language=en')//.toContain('&region=GB')
-    })
-
-    fireEvent.load(scripts[0])
-    fireEvent.error(scripts[0])
+    await screen.findByRole('dialog')
+    await screen.findByText(/We need to refresh page to activate map region./)
+    await userEvent.click(await screen.findByRole('button', { name: 'OK' }))
+    expect(mockedUsedNavigate).toBeCalledWith(0)
   })
 
   it('should invoke on success when request succeed', async () => {

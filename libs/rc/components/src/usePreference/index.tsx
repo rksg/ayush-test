@@ -4,7 +4,7 @@ import { useIntl } from 'react-intl'
 import { showActionModal }                                      from '@acx-ui/components'
 import { useGetPreferencesQuery, useUpdatePreferenceMutation }  from '@acx-ui/rc/services'
 import { COUNTRY_CODE, TenantPreferenceSettings, CommonResult } from '@acx-ui/rc/utils'
-import { useParams }                                            from '@acx-ui/react-router-dom'
+import { useNavigate, useParams }                               from '@acx-ui/react-router-dom'
 
 export const getMapRegion = (data: TenantPreferenceSettings | undefined): string => {
   return data?.global.mapRegion as string
@@ -24,6 +24,7 @@ export interface updatePreferenceProps {
 export const usePreference = () => {
   const { $t } = useIntl()
   const params = useParams()
+  const navigate = useNavigate()
   const { data, ...getReqState } = useGetPreferencesQuery({ params })
   const [ updatePreference, updateReqState] = useUpdatePreferenceMutation()
   const currentMapRegion = getMapRegion(data)
@@ -55,7 +56,7 @@ export const usePreference = () => {
               type: 'primary',
               key: 'ok',
               handler: () => {
-                window.location.reload()
+                navigate(0)
               },
               closeAfterAction: true
             }]
