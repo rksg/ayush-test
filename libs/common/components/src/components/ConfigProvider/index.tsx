@@ -1,7 +1,5 @@
 import React from 'react'
 
-import { SerializedError }                        from '@reduxjs/toolkit'
-import { FetchBaseQueryError }                    from '@reduxjs/toolkit/query/react'
 import { ConfigProvider as AntConfigProvider }    from 'antd'
 import {
   default as AntProConfigProvider,
@@ -19,15 +17,8 @@ import {
   onIntlError
 } from '@acx-ui/utils'
 
-interface QueryState {
-  isLoading: boolean;
-  error?: Error | SerializedError | FetchBaseQueryError;
-  isFetching?: boolean;
-}
-
 export type ConfigProviderProps = Omit<AntConfigProviderProps, 'locale'> & {
-  lang?: LocaleProviderProps['lang'];
-  states?: QueryState[];
+  lang?: LocaleProviderProps['lang']
 }
 
 function AntConfigProviders (props: ConfigProviderProps) {
