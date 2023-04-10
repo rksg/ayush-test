@@ -14,6 +14,7 @@ import {
   SearchFullOutlined
 } from '@acx-ui/icons'
 import { FloorplanContext, FloorPlanDto, FloorPlanFormDto, getImageFitPercentage, NetworkDevice, NetworkDeviceType, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
+import { hasAccess }                                                                                                                         from '@acx-ui/user'
 import { loadImageWithJWT }                                                                                                                  from '@acx-ui/utils'
 
 import AddEditFloorplanModal from '../FloorPlanModal'
@@ -246,7 +247,7 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
           </Typography.Title>
         </Col>
         <Col>
-          { !showRogueAp && <Space split={<Divider type='vertical' />}>
+          { hasAccess() && !showRogueAp && <Space split={<Divider type='vertical' />}>
             <AddEditFloorplanModal
               buttonTitle={$t({ defaultMessage: 'Edit' })}
               onAddEditFloorPlan={onEditFloorPlanHandler}

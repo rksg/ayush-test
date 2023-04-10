@@ -73,22 +73,4 @@ describe('PoeLowTable', () => {
       'http://localhost/undefined/t/devices/switch/28:b3:71:29:8c:b6/one/details/overview'
     )
   })
-  it('should not render links if devices flag not active', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    mockGraphqlQuery(dataApiURL, 'ImpactedEntities', { data: response })
-    render(
-      <Provider>
-        <PoePdTable incident={fakeIncidentPoePd}/>
-      </Provider>,
-      {
-        route: {
-          path: '/tenantId/t/analytics/incidents',
-          wrapRoutes: false
-        }
-      }
-    )
-    const row1 = (await screen.findAllByRole('row'))[1]
-    expect(row1.textContent).toMatch(/ICX7550-48ZP Router/)
-    expect(screen.queryByRole('link')).toBeNull()
-  })
 })

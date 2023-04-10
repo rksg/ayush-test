@@ -73,7 +73,7 @@ export function AccessSwitchForm () {
       rules={[{
         validator: (_, asList) => {
           if (!asList || asList.length === 0) {
-            Promise.resolve()
+            return Promise.resolve()
           }
           const checkFn = (as: AccessSwitch) =>
             as.vlanId && as.uplinkInfo?.uplinkId && as.webAuthPageType

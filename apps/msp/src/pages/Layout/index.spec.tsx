@@ -140,7 +140,7 @@ describe('Layout', () => {
     await waitFor(async () => {
       expect(await screen.findByText('My Customers')).toBeVisible()
     })
-    expect(screen.queryByRole('menuitem', { name: 'Tech Partners' })).toBeNull()
+    expect(screen.queryByRole('menuitem', { name: '3rd Party' })).toBeNull()
     expect(screen.queryByRole('menuitem', { name: 'Device Inventory' })).toBeNull()
     expect(screen.queryByRole('menuitem', { name: 'Subscriptions' })).toBeNull()
     expect(screen.queryByRole('menuitem', { name: 'Settings' })).toBeNull()
@@ -157,7 +157,7 @@ describe('Layout', () => {
     await waitFor(async () => {
       expect(await screen.findByText('My Customers')).toBeVisible()
     })
-    expect(screen.queryByRole('menuitem', { name: 'Tech Partners' })).toBeNull()
+    expect(screen.queryByRole('menuitem', { name: '3rd Party' })).toBeNull()
     expect(screen.getByRole('menuitem', { name: 'Device Inventory' })).toBeVisible()
     expect(screen.getByRole('menuitem', { name: 'Subscriptions' })).toBeVisible()
     expect(screen.getByRole('menuitem', { name: 'Settings' })).toBeVisible()
@@ -174,7 +174,7 @@ describe('Layout', () => {
     await waitFor(async () => {
       expect(await screen.findByText('My Customers')).toBeVisible()
     })
-    expect(screen.getByRole('menuitem', { name: 'Tech Partners' })).toBeVisible()
+    expect(screen.getByRole('menuitem', { name: '3rd Party' })).toBeVisible()
     expect(screen.getByRole('menuitem', { name: 'Device Inventory' })).toBeVisible()
     expect(screen.getByRole('menuitem', { name: 'Subscriptions' })).toBeVisible()
     expect(screen.getByRole('menuitem', { name: 'Settings' })).toBeVisible()

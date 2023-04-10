@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SuspenseBoundary renders default fallback in center 1`] = `
+<DocumentFragment>
+  <span
+    aria-label="loader"
+    class="SuspenseBoundary__SpinWrapper-sc-l6mvnr-0 giriLP"
+    role="img"
+  >
+    <div
+      aria-busy="true"
+      aria-live="polite"
+      class="ant-spin ant-spin-lg ant-spin-spinning"
+    >
+      <span
+        class="ant-spin-dot ant-spin-dot-spin"
+      >
+        <i
+          class="ant-spin-dot-item"
+        />
+        <i
+          class="ant-spin-dot-item"
+        />
+        <i
+          class="ant-spin-dot-item"
+        />
+        <i
+          class="ant-spin-dot-item"
+        />
+      </span>
+    </div>
+  </span>
+</DocumentFragment>
+`;
