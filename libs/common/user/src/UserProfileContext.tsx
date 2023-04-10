@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react'
 
-import { RolesEnum }   from '@acx-ui/types'
-import { useTenantId } from '@acx-ui/utils'
+import { RolesEnum }                     from '@acx-ui/types'
+import { useTenantId, useLocaleContext } from '@acx-ui/utils'
 
 import {
   useAllowedOperationsQuery,
@@ -11,10 +11,10 @@ import { UserProfile }              from './types'
 import { setUserProfile, hasRoles } from './userProfile'
 
 export interface UserProfileContextProps {
-  data: UserProfile
+  data: UserProfile | undefined
+  allowedOperations: string[]
   hasRole: typeof hasRoles
   isPrimeAdmin: () => boolean
-  allowedOperations: string[]
 }
 
 const isPrimeAdmin = () => hasRoles(RolesEnum.PRIME_ADMIN)
@@ -25,18 +25,21 @@ export const UserProfileContext = createContext<UserProfileContextProps>({} as U
 export const useUserProfileContext = () => useContext(UserProfileContext)
 
 export function UserProfileProvider (props: React.PropsWithChildren) {
+  const locale = useLocaleContext()
+
   const tenantId = useTenantId()
-  const { data: profile } = useGetUserProfileQuery({ params: { tenantId } })
+  const { data: profile } = useGetUserProfileQuery({ params: { tenantId } }, {
+    // 401 will show error on UI, so locale needs to be loaded first
+    skip: !Boolean(locale.messages)
+  })
   const { data: allowedOperations } = useAllowedOperationsQuery(tenantId!, {
     skip: !Boolean(profile)
   })
 
-  if (!profile || !allowedOperations) return null
-
-  setUserProfile({ profile, allowedOperations })
+  if (allowedOperations) setUserProfile({ profile: profile!, allowedOperations })
 
   return <UserProfileContext.Provider
-    value={{ allowedOperations, data: profile, hasRole, isPrimeAdmin }}
+    value={{ data: profile, allowedOperations: allowedOperations || [], hasRole, isPrimeAdmin }}
     children={props.children}
   />
 }

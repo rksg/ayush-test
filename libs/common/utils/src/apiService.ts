@@ -38,6 +38,11 @@ export const isIntEnv = () => {
   return window.location.hostname.includes('intalto.ruckuswireless.com')
 }
 
+export const isProdEnv = () => {
+  //prod: ruckus.cloud, asia.ruckus.cloud, eu.ruckus.cloud
+  return window.location.hostname.includes('ruckus.cloud')
+}
+
 export const createHttpRequest = (
   apiInfo: ApiInfo,
   paramValues?: Params<string>,
@@ -88,8 +93,9 @@ export const getFilters = (params: Params) => {
 
 export const enableNewApi = function (apiInfo: ApiInfo) {
   const hasOldUrl = !_.isEmpty(apiInfo?.oldUrl)
-  if(apiInfo.newApi) {
-    return !hasOldUrl || isDev() || isQA() || isScale() || isLocalHost() || isIntEnv()
+  if (apiInfo.newApi) {
+    return !hasOldUrl || isDev() || isQA() || isScale() ||
+      isLocalHost() || isIntEnv() || isProdEnv()
   } else {
     return false
   }

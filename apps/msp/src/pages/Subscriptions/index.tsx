@@ -243,6 +243,7 @@ export function Subscriptions () {
     return (
       <Loader states={[queryResults]}>
         <Table
+          settingsId='msp-subscription-table'
           columns={columns}
           actions={actions}
           dataSource={subscriptionData}

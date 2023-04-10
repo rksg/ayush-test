@@ -29,7 +29,7 @@ export function Loader ({ style, ...props }: LoaderProps) {
 
   const fallback = <UI.FallbackWrapper
     $isFetching={isFetching}
-    children={props.fallback || <SuspenseBoundary.DefaultFallback size='large' />} />
+    children={props.fallback || <SuspenseBoundary.DefaultFallback />} />
 
   const errorFallback = props.errorFallback
     ? <UI.FallbackWrapper children={props.errorFallback} />

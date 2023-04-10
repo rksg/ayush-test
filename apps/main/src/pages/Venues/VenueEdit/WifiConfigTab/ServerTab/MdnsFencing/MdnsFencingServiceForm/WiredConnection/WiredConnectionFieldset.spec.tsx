@@ -3,17 +3,17 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
-import { BonjourFencingService }  from '@acx-ui/rc/utils'
+import { MdnsFencingService }     from '@acx-ui/rc/utils'
 import { render, screen, within } from '@acx-ui/test-utils'
 
-import { BonjourFencingServiceContext } from '../../BonjourFencingServiceTable'
+import { MdnsFencingServiceContext } from '../../MdnsFencingServiceTable'
 
 import { WiredConnectionFieldset } from './WiredConnectionFieldset'
 
 
 describe('WiredConnectionFieldset Component', () => {
-  const serviceRef = { current: {} } as React.MutableRefObject<BonjourFencingService | undefined>
-  const otherServices = [] as BonjourFencingService[]
+  const serviceRef = { current: {} } as React.MutableRefObject<MdnsFencingService | undefined>
+  const otherServices = [] as MdnsFencingService[]
 
   const venueAps = [
     { name: 'ap1', apMac: '11:11:11:11:11:11', serialNumber: '111111111111' },
@@ -22,7 +22,7 @@ describe('WiredConnectionFieldset Component', () => {
 
   it ('should render correctly', async () => {
     render(
-      <BonjourFencingServiceContext.Provider
+      <MdnsFencingServiceContext.Provider
         value={{
           currentServiceRef: serviceRef,
           otherServices: otherServices,
@@ -31,7 +31,7 @@ describe('WiredConnectionFieldset Component', () => {
         <Form>
           <WiredConnectionFieldset />
         </Form>
-      </BonjourFencingServiceContext.Provider>
+      </MdnsFencingServiceContext.Provider>
     )
 
     await userEvent.click(await screen.findByRole('switch', { name: 'Wired Connection' }))
@@ -48,7 +48,7 @@ describe('WiredConnectionFieldset Component', () => {
 
   it ('should add/delete entry correctly', async () => {
     render(
-      <BonjourFencingServiceContext.Provider
+      <MdnsFencingServiceContext.Provider
         value={{
           currentServiceRef: serviceRef,
           otherServices: otherServices,
@@ -57,7 +57,7 @@ describe('WiredConnectionFieldset Component', () => {
         <Form>
           <WiredConnectionFieldset />
         </Form>
-      </BonjourFencingServiceContext.Provider>
+      </MdnsFencingServiceContext.Provider>
     )
 
     await userEvent.click(await screen.findByRole('switch', { name: 'Wired Connection' }))
@@ -105,7 +105,7 @@ describe('WiredConnectionFieldset Component', () => {
 
   it ('should check the adding/deleting MAC address is correct', async () => {
     render(
-      <BonjourFencingServiceContext.Provider
+      <MdnsFencingServiceContext.Provider
         value={{
           currentServiceRef: serviceRef,
           otherServices: otherServices,
@@ -114,7 +114,7 @@ describe('WiredConnectionFieldset Component', () => {
         <Form>
           <WiredConnectionFieldset />
         </Form>
-      </BonjourFencingServiceContext.Provider>
+      </MdnsFencingServiceContext.Provider>
     )
 
     await userEvent.click(await screen.findByRole('switch', { name: 'Wired Connection' }))
@@ -191,7 +191,7 @@ describe('WiredConnectionFieldset Component', () => {
 
   it ('should edited entry correctly', async () => {
     render(
-      <BonjourFencingServiceContext.Provider
+      <MdnsFencingServiceContext.Provider
         value={{
           currentServiceRef: serviceRef,
           otherServices: otherServices,
@@ -200,7 +200,7 @@ describe('WiredConnectionFieldset Component', () => {
         <Form>
           <WiredConnectionFieldset />
         </Form>
-      </BonjourFencingServiceContext.Provider>
+      </MdnsFencingServiceContext.Provider>
     )
 
     await userEvent.click(await screen.findByRole('switch', { name: 'Wired Connection' }))

@@ -19,7 +19,7 @@ import {
 import {
   useDeleteMspEcMutation,
   useMspCustomerListQuery,
-  useDelegateToMspEcPath
+  useCheckDelegateAdmin
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -27,8 +27,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { Link, TenantLink, MspTenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                   from '@acx-ui/types'
-import { filterByAccess }                                              from '@acx-ui/user'
-import { hasRoles }                                                    from '@acx-ui/user'
+import { filterByAccess, useUserProfileContext, hasRoles }             from '@acx-ui/user'
 import {
   AccountType
 } from '@acx-ui/utils'
@@ -63,7 +62,8 @@ export function Integrators () {
   const [modalVisible, setModalVisible] = useState(false)
   const [tenantId, setTenantId] = useState('')
   const [tenantType, setTenantType] = useState('')
-  const { delegateToMspEcPath } = useDelegateToMspEcPath()
+  const { data: userProfile } = useUserProfileContext()
+  const { checkDelegateAdmin } = useCheckDelegateAdmin()
 
   const columns: TableProps<MspEc>['columns'] = [
     {
@@ -75,7 +75,7 @@ export function Integrators () {
       defaultSortOrder: 'ascend' as SortOrder,
       onCell: (data) => {
         return {
-          onClick: () => { delegateToMspEcPath(data.id) }
+          onClick: () => { checkDelegateAdmin(data.id, userProfile!.adminId) }
         }
       },
       render: function (data, row, _, highlightFn) {
@@ -208,6 +208,7 @@ export function Integrators () {
         tableQuery,
         { isLoading: false, isFetching: isDeleteEcUpdating }]}>
         <Table
+          settingsId='msp-integrators-table'
           columns={columns}
           rowActions={filterByAccess(rowActions)}
           dataSource={tableQuery.data?.data}

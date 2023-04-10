@@ -62,6 +62,7 @@ export interface TableProps <RecordType>
     columns: TableColumn<RecordType, 'text'>[]
     actions?: Array<TableAction>
     rowActions?: Array<TableRowAction<RecordType>>
+    settingsId?: string
     columnState?: ColumnStateOption
     rowSelection?: (ProAntTableProps<RecordType, ParamsType>['rowSelection']
       & AntTableProps<RecordType>['rowSelection']
@@ -76,7 +77,9 @@ export interface TableProps <RecordType>
       search: { searchString?: string, searchTargetFields?: string[] },
       groupBy?: string | undefined
     ) => void
-    iconButton?: IconButtonProps
+    iconButton?: IconButtonProps,
+    filterableWidth?: number,
+    searchableWidth?: number
   }
 
 export interface TableHighlightFnArgs {
@@ -113,9 +116,9 @@ function useSelectedRowKeys <RecordType> (
 // following the same typing from antd
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Table <RecordType extends Record<string, any>> ({
-  type = 'tall', columnState, enableApiFilter, iconButton, onFilterChange, ...props
+  type = 'tall', columnState, enableApiFilter, iconButton, onFilterChange, settingsId, ...props
 }: TableProps<RecordType>) {
-  const { dataSource } = props
+  const { dataSource, filterableWidth, searchableWidth } = props
   const rowKey = (props.rowKey ?? 'key')
   const intl = useIntl()
   const { $t } = intl
@@ -128,6 +131,8 @@ function Table <RecordType extends Record<string, any>> ({
   const updateSearch = _.debounce(() => {
     onFilter.current?.(filterValues, { searchString: searchValue }, groupByValue)
   }, 1000)
+  const filterWidth = filterableWidth || 200
+  const searchWidth = searchableWidth || 292
 
   useEffect(() => {
     onFilter.current = onFilterChange
@@ -169,7 +174,7 @@ function Table <RecordType extends Record<string, any>> ({
     }))
   }, [props.columns, type]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const columnsState = useColumnsState({ columns: baseColumns, columnState })
+  const columnsState = useColumnsState({ settingsId, columns: baseColumns, columnState })
   const {
     groupable,
     expandable,
@@ -177,7 +182,7 @@ function Table <RecordType extends Record<string, any>> ({
     isGroupByActive
   } = useGroupBy<RecordType>(baseColumns, allKeys, groupByValue, columnsState.value)
 
-  const setting: SettingOptionType | false = type === 'tall' && !columnState?.hidden ? {
+  const setting: SettingOptionType | false = type === 'tall' && settingsId ? {
     draggable: true,
     checkable: true,
     checkedReset: false,
@@ -388,17 +393,19 @@ function Table <RecordType extends Record<string, any>> ({
           <Space size={12}>
             {Boolean(searchables.length) &&
               renderSearch<RecordType>(
-                intl, searchables, searchValue, setSearchValue, Boolean(groupable.length)
+                intl, searchables, searchValue, setSearchValue, searchWidth
               )}
             {filterables.map((column, i) =>
               renderFilter<RecordType>(
-                column, i, dataSource, filterValues, setFilterValues, !!enableApiFilter)
+                column, i, dataSource, filterValues,
+                setFilterValues, !!enableApiFilter, filterWidth)
             )}
             {Boolean(groupable.length) && <GroupSelect<RecordType>
               $t={$t}
               groupable={groupable}
               setValue={setGroupByValue}
               value={groupByValue}
+              style={{ width: filterWidth }}
             />}
           </Space>
         </div>
