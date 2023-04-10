@@ -5,6 +5,7 @@ import { addMiddleware } from 'redux-dynamic-middlewares'
 
 import {
   ConfigProvider,
+  ConfigProviderProps,
   Loader,
   SuspenseBoundary
 } from '@acx-ui/components'
@@ -32,6 +33,8 @@ import '@acx-ui/theme'
 const supportedLocales = {
   'en-US': 'en-US',
   'en': 'en-US',
+  'es': 'es-ES',
+  'es-ES': 'es-ES',
   'de-DE': 'de-DE',
   'de': 'de-DE',
   'ja-JP': 'ja-JP',
@@ -108,15 +111,12 @@ export async function pendoInitalization (): Promise<void> {
 }
 
 function PreferredLangConfigProvider (props: React.PropsWithChildren) {
-  const lang = useYourPreferredLanguage()
-  const locale = useLocaleContext()
-  return <ConfigProvider
-    lang={lang}
-    {...props}
-    states={[{ isLoading:
-        !Boolean(locale.messages)
-    }]}
-  />
+  const userLang = useYourPreferredLanguage() // user preference
+  const browserLang = loadMessages(navigator.languages) // browser detection
+  const queryParams = new URLSearchParams(window.location.search) // url query params
+  const lang = (userLang?? queryParams.get('lang') ?? browserLang) as ConfigProviderProps['lang']
+
+  return <ConfigProvider lang={lang} {...props} />
 }
 
 function DataGuardLoader (props: React.PropsWithChildren) {
@@ -134,12 +134,6 @@ function DataGuardLoader (props: React.PropsWithChildren) {
 }
 
 export async function init (root: Root) {
-  // TODO: this code is temporarily commented out, will be needing this when
-  // we add the browser detection dialog box
-  // const browserLang = loadMessages(navigator.languages)
-  // const queryParams = new URLSearchParams(window.location.search)
-  // const lang = (queryParams.get('lang') ?? browserLang) as ConfigProviderProps['lang']
-
   // Pendo initialization
   // @ts-ignore
   if ( get('DISABLE_PENDO') === 'false' ) {
