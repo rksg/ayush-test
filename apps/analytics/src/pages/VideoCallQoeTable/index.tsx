@@ -1,4 +1,3 @@
-import React from 'react'
 
 import { startCase, toLower } from 'lodash'
 import { useIntl }            from 'react-intl'
@@ -11,10 +10,8 @@ import { TenantLink }                            from '@acx-ui/react-router-dom'
 
 import { useVideoCallQoeTestsQuery } from '../VideoCallQoe/services'
 
-import {
-  videoCallQoEErrorMessage, VideoCallQoEErrorsType
-}                                      from './errorMessageMapping'
-import * as UI from './styledComponents'
+import { messageMapping } from './errorMessageMapping'
+import * as UI            from './styledComponents'
 
 
 export function VideoCallQoeTable () {
@@ -90,11 +87,11 @@ export function VideoCallQoeTable () {
       key: 'status',
       render: (value: unknown, row: unknown) => {
         const formattedStatus = startCase(toLower(value as string))
-        const { invalidReason } = row as Meeting
-        const errorMapping = $t(videoCallQoEErrorMessage[invalidReason])
         return (formattedStatus !== 'Invalid' ? formattedStatus :
           (<Tooltip placement='top'
-            title={errorMapping}>
+            title={$t(messageMapping[
+            (row as Meeting).invalidReason as keyof typeof messageMapping
+            ])}>
             <UI.WithDottedUnderline>{formattedStatus}</UI.WithDottedUnderline>
           </Tooltip>))
       },
