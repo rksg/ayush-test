@@ -205,7 +205,7 @@ export function ApSnmp () {
         initialValues={stateOfApSnmpSettings}>
         <Row style={{ backgroundColor: '#F2F2F2', marginBottom: '10px' }} align='middle'>
           <Col span={3}>
-            <p style={{ paddingLeft: '10px', marginBottom: '0px' }}>Cutsom  settings</p>
+            <p style={{ paddingLeft: '10px', marginBottom: '0px' }}>Custom  settings</p>
           </Col>
           <Col span={3}>
             {stateOfUseVenueSettings ? <Button
