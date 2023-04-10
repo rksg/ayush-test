@@ -65,8 +65,8 @@ function Layout () {
 
   const getIndexPath = () => {
     return isGuestManager
-      ? `/v/${getJwtTokenPayload().tenantId}/users/guestsManager`
-      : `/v/${getJwtTokenPayload().tenantId}`
+      ? `/${getJwtTokenPayload().tenantId}/v/users/guestsManager`
+      : `/${getJwtTokenPayload().tenantId}/v`
   }
 
   useEffect(() => {
