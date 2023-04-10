@@ -27,9 +27,7 @@ export const Wrapper = styled.div`
           overflow: visible !important;
           .ant-layout-sider-children {
             .ant-pro-sider-logo {
-              a {
-                min-height: unset;
-              }
+              a { min-height: unset; }
               padding: 0 0 0 var(--acx-sidebar-left-space);
               width: var(--acx-sider-width);
               height: var(--acx-header-height);
@@ -76,6 +74,7 @@ export const Wrapper = styled.div`
             padding-left: var(--acx-sidebar-left-space) !important;
             padding-right: 0;
             margin: 0;
+            &:hover { cursor: default; }
             &:active { background: unset; }
           }
           &-open {
@@ -89,9 +88,8 @@ export const Wrapper = styled.div`
               font-weight: var(--acx-headline-4-font-weight-bold);
             }
           }
-          &:last-child {
-            margin-top: auto;
-          }
+          &:last-child { margin-top: auto; }
+          &:only-child { margin-top: unset; }
         }
         .ant-menu-item {
           height: 48px;
@@ -142,9 +140,7 @@ export const Wrapper = styled.div`
           width: var(--acx-sider-collapsed-width) !important;
         }
         .ant-menu {
-          &.ant-menu-inline-collapsed {
-            width: unset;
-          }
+          &.ant-menu-inline-collapsed { width: unset; }
         }
         .ant-menu-submenu-title {
           color: transparent;
@@ -236,15 +232,25 @@ export const MenuGlobalStyle = createGlobalStyle`
             line-height: var(--acx-headline-4-line-height);
             font-weight: var(--acx-headline-4-font-weight);
             color: var(--acx-neutrals-20);
-            &:hover {
+            // https://css-tricks.com/bold-on-hover-without-the-layout-shift/
+            display: inline-flex;
+            flex-direction: column;
+            &:after {
+              content: attr(data-label);
+              height: 0;
+              visibility: hidden;
+              overflow: hidden;
+              user-select: none;
+              pointer-events: none;
+              @media speech { display: none; }
+            }
+            &:after, &:hover {
               color: var(--acx-neutrals-10);
               font-weight: var(--acx-headline-4-font-weight-bold);
             }
           }
         }
-        &-selected {
-          background-color: unset;
-        }
+        &-selected { background-color: unset; }
       }
       .ant-menu-item-group {
         min-width: 180px;
@@ -254,7 +260,7 @@ export const MenuGlobalStyle = createGlobalStyle`
           font-family: var(--acx-neutral-brand-font);
           font-size: var(--acx-subtitle-5-font-size);
           line-height: var(--acx-subtitle-5-line-height);
-          font-weight: var(--acx-subtitle-5-font-weight);
+          font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
           color: var(--acx-neutrals-20);
           opacity: 0.6;
           padding: 8px 16px 4px;
