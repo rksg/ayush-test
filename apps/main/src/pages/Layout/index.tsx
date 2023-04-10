@@ -24,7 +24,7 @@ import {
 import { CloudMessageBanner, useUpdateGoogleMapRegion }          from '@acx-ui/rc/components'
 import { useGetPreferencesQuery }                                from '@acx-ui/rc/services'
 import { isDelegationMode, TenantPreferenceSettings }            from '@acx-ui/rc/utils'
-import { getBasePath, Link, Outlet, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { Link, Outlet, useNavigate, useTenantLink }              from '@acx-ui/react-router-dom'
 import { useParams }                                             from '@acx-ui/react-router-dom'
 import { RolesEnum }                                             from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }                       from '@acx-ui/user'
@@ -95,7 +95,7 @@ function Layout () {
                 {$t({ defaultMessage: 'Home' })}
               </UI.Home>
             </a> :
-            <Link to={`${getBasePath()}/${getJwtTokenPayload().tenantId}/v`}>
+            <Link to={`/${getJwtTokenPayload().tenantId}/v`}>
               <UI.Home>
                 <LayoutUI.Icon children={<HomeSolid />} />
                 {$t({ defaultMessage: 'Home' })}

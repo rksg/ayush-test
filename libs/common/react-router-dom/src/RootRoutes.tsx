@@ -6,7 +6,6 @@ import {
   Route
 } from 'react-router-dom'
 
-import { getBasePath } from './helpers'
 
 import type { RoutesProps } from 'react-router-dom'
 
