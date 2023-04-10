@@ -111,7 +111,7 @@ export function ClientsTable (props: {
       key: 'switchName',
       title: intl.$t({ defaultMessage: 'Switch' }),
       dataIndex: 'switchName',
-      sorter: false,
+      sorter: true,
       show: !params.switchId,
       searchable: searchable,
       filterKey: 'switchId',

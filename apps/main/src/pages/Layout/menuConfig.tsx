@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { LayoutProps, IGNORE_ACTIVE_PATTERN }       from '@acx-ui/components'
+import { LayoutProps, IsActiveCheck }               from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   AIOutlined,
@@ -9,10 +9,10 @@ import {
   AccountCircleSolid,
   AdminOutlined,
   AdminSolid,
+  BulbOutlined,
+  BulbSolid,
   LocationOutlined,
   LocationSolid,
-  LineChartOutline,
-  LineChartSolid,
   ServicesOutlined,
   ServicesSolid,
   SmartEdgeOutlined,
@@ -82,7 +82,6 @@ export function useMenuConfig () {
       children: [
         {
           type: 'group' as const,
-          style: { width: 210 },
           label: $t({ defaultMessage: 'Wireless' }),
           children: [
             {
@@ -96,7 +95,7 @@ export function useMenuConfig () {
             {
               uri: '/reports/clients',
               label: $t({ defaultMessage: 'Wireless Clients Report' }),
-              isActivePattern: IGNORE_ACTIVE_PATTERN
+              isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
             }
           ]
         },
@@ -115,8 +114,13 @@ export function useMenuConfig () {
           label: $t({ defaultMessage: 'Persona Management' }),
           children: [
             {
-              uri: '/users/persona-management',
-              label: $t({ defaultMessage: 'Persona List' })
+              uri: '/users/persona-management/persona-group',
+              label: $t({ defaultMessage: 'Persona Group' })
+            },
+            {
+              uri: '/users/persona-management/persona',
+              isActiveCheck: new RegExp('^/users/persona-management/persona($|/)'),
+              label: $t({ defaultMessage: 'Persona' })
             }
           ]
         }] : [])
@@ -128,7 +132,6 @@ export function useMenuConfig () {
       children: [
         {
           type: 'group' as const,
-          style: { width: 225 },
           label: $t({ defaultMessage: 'Access Points' }),
           children: [
             {
@@ -138,12 +141,12 @@ export function useMenuConfig () {
             {
               uri: '/reports/aps',
               label: $t({ defaultMessage: 'AP Report' }),
-              isActivePattern: IGNORE_ACTIVE_PATTERN
+              isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
             },
             {
               uri: '/reports/airtime',
               label: $t({ defaultMessage: 'Airtime Utilization Report' }),
-              isActivePattern: IGNORE_ACTIVE_PATTERN
+              isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
             }
           ]
         },
@@ -158,17 +161,17 @@ export function useMenuConfig () {
             {
               uri: '/reports/wlans',
               label: $t({ defaultMessage: 'WLANs Report' }),
-              isActivePattern: IGNORE_ACTIVE_PATTERN
+              isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
             },
             {
               uri: '/reports/applications',
               label: $t({ defaultMessage: 'Applications Report' }),
-              isActivePattern: IGNORE_ACTIVE_PATTERN
+              isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
             },
             {
               uri: '/reports/wireless',
               label: $t({ defaultMessage: 'Wireless Report' }),
-              isActivePattern: IGNORE_ACTIVE_PATTERN
+              isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
             }
           ]
         }
@@ -190,13 +193,12 @@ export function useMenuConfig () {
             {
               uri: '/reports/wired',
               label: $t({ defaultMessage: 'Wired Report' }),
-              isActivePattern: IGNORE_ACTIVE_PATTERN
+              isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
             }
           ]
         },
         {
           type: 'group' as const,
-          style: { width: 260 },
           label: $t({ defaultMessage: 'Wired Network Profiles' }),
           children: [
             {
@@ -213,7 +215,7 @@ export function useMenuConfig () {
     },
     ...(isEdgeEnabled ? [{
       uri: '/devices/edge/list',
-      isActivePattern: '/devices/edge',
+      isActiveCheck: new RegExp('^/devices/edge'),
       label: $t({ defaultMessage: 'SmartEdge' }),
       inactiveIcon: SmartEdgeOutlined,
       activeIcon: SmartEdgeSolid
@@ -226,7 +228,7 @@ export function useMenuConfig () {
         ...(isServiceEnabled ? [
           {
             uri: getServiceListRoutePath(true),
-            isActivePattern: '(?=/services/)((?!catalog).)*$',
+            isActiveCheck: new RegExp('^(?=/services/)((?!catalog).)*$'),
             label: $t({ defaultMessage: 'My Services' })
           },
           {
@@ -241,8 +243,8 @@ export function useMenuConfig () {
     },
     {
       label: $t({ defaultMessage: 'Business Insights' }),
-      inactiveIcon: LineChartOutline,
-      activeIcon: LineChartSolid,
+      inactiveIcon: BulbOutlined,
+      activeIcon: BulbSolid,
       children: [
         { uri: '/dataStudio', label: $t({ defaultMessage: 'Data Studio' }) },
         { uri: '/reports', label: $t({ defaultMessage: 'Reports' }) }
@@ -273,7 +275,6 @@ export function useMenuConfig () {
         },
         {
           type: 'group' as const,
-          style: { width: 270 },
           label: 'Account Management',
           children: [
             {

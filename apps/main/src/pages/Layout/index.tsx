@@ -27,7 +27,7 @@ import { getBasePath, Link, Outlet, useNavigate, useTenantLink } from '@acx-ui/r
 import { useParams }                                             from '@acx-ui/react-router-dom'
 import { RolesEnum }                                             from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }                       from '@acx-ui/user'
-import { getJwtTokenPayload, PverName }                          from '@acx-ui/utils'
+import { AccountType, getJwtTokenPayload, PverName }             from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
 import SearchBar         from './SearchBar'
@@ -37,7 +37,10 @@ function Layout () {
   const [supportStatus,setSupportStatus] = useState('')
   const { data: userProfile } = useUserProfileContext()
   const companyName = userProfile?.companyName
-  const showHomeButton = isDelegationMode() || userProfile?.var
+  const tenantType = getJwtTokenPayload().tenantType
+  const showHomeButton =
+    isDelegationMode() || userProfile?.var || tenantType === AccountType.MSP_NON_VAR ||
+    tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
   const { $t } = useIntl()
   const basePath = useTenantLink('/users/guestsManager')
   const navigate = useNavigate()

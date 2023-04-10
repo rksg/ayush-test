@@ -49,3 +49,14 @@ export enum EdgeDhcpServiceStatusEnum {
   POOR = 'Poor',
   UNKNOWN = 'Unknown'
 }
+
+export enum LeaseTimeUnit {
+  DAYS = 'DAYS',
+  HOURS = 'HOURS',
+  MINUTES = 'MINUTES'
+}
+
+export enum EdgeDhcpHostStatus {
+  ONLINE = 'ONLINE',
+  OFFLINE = 'OFFLINE'
+}

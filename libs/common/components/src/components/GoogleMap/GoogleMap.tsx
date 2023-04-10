@@ -31,7 +31,6 @@ export const GoogleMap = ({
 
   return <Wrapper
     apiKey={get('GOOGLE_MAPS_KEY')}
-    version='3.49'
     libraries={libraries}
     {...loaderOpts}
     render={(status) => {
