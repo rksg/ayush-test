@@ -14,7 +14,8 @@ export function GoogleMapWithPreference (props: MapProps) {
 
   return (
     <Loader states={[getReqState, updateReqState]}>
-      {isLoading === false &&
+      { // due to GoogleMap js script cannot be reloaded with different loader configs
+        isLoading === false &&
         <GoogleMap
           loaderOpts={{
             language: 'en',

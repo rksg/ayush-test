@@ -102,7 +102,7 @@ describe('usePreference', () => {
     })
   })
 
-  it('should update google map script correctly', async () => {
+  it('should trigger page reload', async () => {
     const { result, rerender } = renderHook(
       () => usePreference(),
       { wrapper: getWrapper(), route: { params } }

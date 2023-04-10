@@ -8,12 +8,6 @@ import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/t
 
 import { GoogleMapWithPreference } from './'
 
-const fakePreference = {
-  global: {
-    mapRegion: 'TW'
-  }
-}
-
 jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
   GoogleMap: ({ loaderOpts }:{ loaderOpts?: {
@@ -32,7 +26,11 @@ describe('load Google map with preference', () => {
     mockServer.use(
       rest.get(
         AdministrationUrlsInfo.getPreferences.url,
-        (_req, res, ctx) => res(ctx.json(fakePreference))
+        (_req, res, ctx) => res(ctx.json({
+          global: {
+            mapRegion: 'TW'
+          }
+        }))
       )
     )
   })
