@@ -36,7 +36,7 @@ export const EdgeDhcpPoolTable = (props: EdgeDhcpPoolTableProps) => {
         filters: { edgeId: [props.edgeId] }
       })
     }
-  }, [props.edgeId, localQuery])
+  }, [props.edgeId])
 
 
   const columns: TableProps<DhcpPoolStats>['columns'] = [
@@ -93,7 +93,7 @@ export const EdgeDhcpPoolTable = (props: EdgeDhcpPoolTableProps) => {
       <Table
         settingsId='edge-dhcp-pools-table'
         columns={columns}
-        dataSource={localQuery.data?.data}
+        dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='id'
