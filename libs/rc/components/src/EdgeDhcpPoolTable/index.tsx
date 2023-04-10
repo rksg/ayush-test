@@ -18,7 +18,7 @@ export const EdgeDhcpPoolTable = (props: EdgeDhcpPoolTableProps) => {
   const { $t } = useIntl()
 
   const getDhcpPoolStatsPayload = {
-    filters: { edgeId: [props.edgeId] },
+    filters: { edgeIds: [props.edgeId] },
     sortField: 'name',
     sortOrder: 'ASC'
   }
@@ -33,7 +33,7 @@ export const EdgeDhcpPoolTable = (props: EdgeDhcpPoolTableProps) => {
     if(props.edgeId) {
       localQuery.setPayload({
         ...localQuery.payload,
-        filters: { edgeId: [props.edgeId] }
+        filters: { edgeIds: [props.edgeId] }
       })
     }
   }, [props.edgeId])
