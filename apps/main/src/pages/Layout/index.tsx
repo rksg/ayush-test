@@ -21,14 +21,14 @@ import {
 import {
   MspEcDropdownList
 } from '@acx-ui/msp/components'
-import { CloudMessageBanner, useUpdateGoogleMapRegion }          from '@acx-ui/rc/components'
-import { useGetPreferencesQuery }                                from '@acx-ui/rc/services'
-import { isDelegationMode, TenantPreferenceSettings }            from '@acx-ui/rc/utils'
-import { Link, Outlet, useNavigate, useTenantLink }              from '@acx-ui/react-router-dom'
-import { useParams }                                             from '@acx-ui/react-router-dom'
-import { RolesEnum }                                             from '@acx-ui/types'
-import { hasRoles, useUserProfileContext }                       from '@acx-ui/user'
-import { AccountType, getJwtTokenPayload, PverName }             from '@acx-ui/utils'
+import { CloudMessageBanner, useUpdateGoogleMapRegion } from '@acx-ui/rc/components'
+import { useGetPreferencesQuery }                       from '@acx-ui/rc/services'
+import { isDelegationMode, TenantPreferenceSettings }   from '@acx-ui/rc/utils'
+import { Link, Outlet, useNavigate, useTenantLink }     from '@acx-ui/react-router-dom'
+import { useParams }                                    from '@acx-ui/react-router-dom'
+import { RolesEnum }                                    from '@acx-ui/types'
+import { hasRoles, useUserProfileContext }              from '@acx-ui/user'
+import { AccountType, getJwtTokenPayload, PverName }    from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
 import SearchBar         from './SearchBar'
