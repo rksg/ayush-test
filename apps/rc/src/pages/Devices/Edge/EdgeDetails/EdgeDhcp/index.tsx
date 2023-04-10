@@ -4,10 +4,19 @@ import { Form, Space, Switch }    from 'antd'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { showActionModal, Tabs }                                     from '@acx-ui/components'
-import { useGetDhcpPoolStatsQuery, usePatchEdgeDhcpServiceMutation } from '@acx-ui/rc/services'
-import { DhcpPoolStats, RequestPayload, useTableQuery }              from '@acx-ui/rc/utils'
-import { useTenantLink }                                             from '@acx-ui/react-router-dom'
+import { showActionModal, Tabs }    from '@acx-ui/components'
+import {
+  useGetDhcpHostStatsQuery,
+  useGetDhcpPoolStatsQuery,
+  usePatchEdgeDhcpServiceMutation
+} from '@acx-ui/rc/services'
+import {
+  DhcpPoolStats,
+  EdgeDhcpHostStatus,
+  RequestPayload,
+  useTableQuery
+} from '@acx-ui/rc/utils'
+import { useTenantLink } from '@acx-ui/react-router-dom'
 
 import Leases           from './Leases'
 import ManageDhcpDrawer from './ManageDhcpDrawer'
@@ -36,22 +45,32 @@ const EdgeDhcp = () => {
     sortField: 'name',
     sortOrder: 'ASC'
   }
-  const tableQuery = useTableQuery<DhcpPoolStats, RequestPayload<unknown>, unknown>({
+  const poolTableQuery = useTableQuery<DhcpPoolStats, RequestPayload<unknown>, unknown>({
     useQuery: useGetDhcpPoolStatsQuery,
     defaultPayload: getDhcpPoolStatsPayload
   })
 
+  const getDhcpHostStatsPayload = {
+    filters: { edgeId: [serialNumber], hostStatus: [EdgeDhcpHostStatus.ONLINE] },
+    sortField: 'name',
+    sortOrder: 'ASC'
+  }
+  const { data: dhcpHostStats } = useGetDhcpHostStatsQuery({ payload: getDhcpHostStatsPayload })
+
   useEffect(() => {
-    setIsDhcpServiceActive((tableQuery.data?.totalCount || 0) > 0)
-  }, [tableQuery.data?.totalCount])
+    setIsDhcpServiceActive((poolTableQuery.data?.totalCount || 0) > 0)
+  }, [poolTableQuery.data?.totalCount])
 
   const tabs = {
     pools: {
       title: $t({ defaultMessage: 'Pools' }),
-      content: <Pools tableQuery={tableQuery} />
+      content: <Pools tableQuery={poolTableQuery} />
     },
     leases: {
-      title: $t({ defaultMessage: 'Leases ( {count} online )' }, { count: 0 }),
+      title: $t(
+        { defaultMessage: 'Leases ( {count} online )' },
+        { count: dhcpHostStats?.totalCount || 0 }
+      ),
       content: <Leases />
     }
   }
@@ -65,9 +84,9 @@ const EdgeDhcp = () => {
         title: $t({ defaultMessage: 'Deactive DHCP Service' }),
         content: $t({ defaultMessage: 'Are you sure you want to deactive DHCP service?' }),
         onOk: () => {
-          if((tableQuery.data?.totalCount || 0) > 0) {
-            const params = { id: tableQuery.data?.data[0].dhcpId }
-            const edgeIds = tableQuery.data?.data[0].edgeIds || []
+          if((poolTableQuery.data?.totalCount || 0) > 0) {
+            const params = { id: poolTableQuery.data?.data[0].dhcpId }
+            const edgeIds = poolTableQuery.data?.data[0].edgeIds || []
             const payload = {
               edgeIds: [
                 ...edgeIds.filter(id => id !== serialNumber)
@@ -109,7 +128,7 @@ const EdgeDhcp = () => {
       <ManageDhcpDrawer
         visible={drawerVisible}
         setVisible={setDrawerVisible}
-        inUseService={tableQuery.data?.data[0]?.dhcpId}
+        inUseService={poolTableQuery.data?.data[0]?.dhcpId}
       />
       <Tabs
         onChange={onTabChange}

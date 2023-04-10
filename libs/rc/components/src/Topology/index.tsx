@@ -15,6 +15,7 @@ import { CloudSolid, MagnifyingGlassMinusOutlined, MagnifyingGlassPlusOutlined, 
 import { useGetTopologyQuery }                                                                                                                                                                                                        from '@acx-ui/rc/services'
 import { ConnectionStates, ConnectionStatus, DeviceStates, DeviceStatus, DeviceTypes, GraphData, Link, Node, ShowTopologyFloorplanOn, UINode }                                                                                        from '@acx-ui/rc/utils'
 import { TenantLink }                                                                                                                                                                                                                 from '@acx-ui/react-router-dom'
+import { hasAccess }                                                                                                                                                                                                                  from '@acx-ui/user'
 
 import LinkTooltip      from './LinkTooltip'
 import NodeTooltip      from './NodeTooltip'
@@ -551,7 +552,7 @@ export function TopologyGraph (props:{ venueId?: string,
           {
             (showTopologyOn === ShowTopologyFloorplanOn.VENUE_OVERVIEW)
               ? <Empty description={$t({ defaultMessage: 'No devices added yet to this venue' })}>
-                <Row>
+                { hasAccess() && <Row>
                   <Col span={12}>
                     <TenantLink to='devices/wifi/add'>
                       {$t({ defaultMessage: 'Add Access Point' })}
@@ -562,7 +563,7 @@ export function TopologyGraph (props:{ venueId?: string,
                       {$t({ defaultMessage: 'Add Switch' })}
                     </TenantLink>
                   </Col>
-                </Row>
+                </Row>}
               </Empty>
               : <Empty description={$t({ defaultMessage: 'This device not added to any venue' })} />
           }

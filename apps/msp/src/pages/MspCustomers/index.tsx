@@ -525,6 +525,7 @@ export function MspCustomers () {
         tableQuery,
         { isLoading: false, isFetching: isDeleteEcUpdating }]}>
         <Table
+          settingsId='msp-customers-table'
           columns={columns}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
@@ -552,6 +553,7 @@ export function MspCustomers () {
         tableQuery,
         { isLoading: false }]}>
         <Table
+          settingsId='integrator-customers-table'
           columns={columns}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
@@ -577,6 +579,7 @@ export function MspCustomers () {
         tableQuery,
         { isLoading: false }]}>
         <Table
+          settingsId='support-ec-table'
           columns={columns}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}

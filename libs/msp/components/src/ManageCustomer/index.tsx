@@ -295,9 +295,17 @@ export function ManageCustomer () {
 
   useEffect(() => {
     if (delegatedAdmins && Administrators) {
+      let selDelegateAdmins: MspAdministrator[] = []
       const admins = delegatedAdmins?.map((admin: MspEcDelegatedAdmins)=> admin.msp_admin_id)
       const selAdmins = Administrators.filter(rec => admins.includes(rec.id))
-      setAdministrator(selAdmins)
+      selAdmins.forEach((element:MspAdministrator) => {
+        const role =
+        delegatedAdmins.find(row => row.msp_admin_id=== element.id)?.msp_admin_role ?? element.role
+        const rec = { ...element }
+        rec.role = role as RolesEnum
+        selDelegateAdmins.push(rec)
+      })
+      setAdministrator(selDelegateAdmins)
     }
   }, [delegatedAdmins, Administrators])
 
