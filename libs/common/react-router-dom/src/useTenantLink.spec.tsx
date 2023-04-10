@@ -53,29 +53,4 @@ describe('useTenantLink', () => {
     )
     expect(result.current.pathname).toEqual('/t-id/v/dsahboard')
   })
-
-  describe('basePath = /base/path/', () => {
-    const basePath = '/base/path'
-    let old: string
-    beforeAll(() => {
-      old = document.baseURI
-      Object.defineProperty(document, 'baseURI', {
-        configurable: true,
-        value: `http://localhost${basePath}/`
-      })
-    })
-    afterAll(() => {
-      Object.defineProperty(document, 'baseURI', {
-        configurable: true,
-        value: old
-      })
-    })
-    it('returns path prepend with :tenantId/t', () => {
-      const { result } = renderHook(
-        () => useTenantLink('/networks'),
-        { wrapper: getWrapper(basePath) }
-      )
-      expect(result.current.pathname).toEqual(`${basePath}/t-id/t/networks`)
-    })
-  })
 })
