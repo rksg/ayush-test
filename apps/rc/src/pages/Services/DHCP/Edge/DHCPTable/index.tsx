@@ -46,6 +46,7 @@ const EdgeDhcpTable = () => {
       sorter: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
+      searchable: true,
       render: function (data, row) {
         return (
           <TenantLink
@@ -190,13 +191,15 @@ const EdgeDhcpTable = () => {
       ]}>
         <Table
           settingsId='services-edge-dhcp-table'
+          rowKey='id'
           columns={columns}
+          rowSelection={{ type: 'checkbox' }}
+          rowActions={filterByAccess(rowActions)}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
-          rowKey='id'
-          rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'checkbox' }}
+          onFilterChange={tableQuery.handleFilterChange}
+          enableApiFilter
         />
       </Loader>
     </>
