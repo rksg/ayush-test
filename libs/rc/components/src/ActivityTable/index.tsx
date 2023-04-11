@@ -211,10 +211,3 @@ const ActivityTable = ({
 }
 
 export { ActivityTable }
-
-/*
- problem occurs due to duplicate key?
- for events, only happen when page listing increases to 100/page
-
-
-*/
