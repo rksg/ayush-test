@@ -286,7 +286,7 @@ export function SwitchTable (props : SwitchTableProps) {
       return !!notOperational || !!invalid || !!hasStack
     },
     onClick: (selectedRows) => {
-      navigate(`stack/${selectedRows?.[0]?.venueId}/${selectedRows.map(row => row.serialNumber).join('_')}/add`, { replace: false })
+      navigate(`${linkToEditSwitch.pathname}/stack/${selectedRows?.[0]?.venueId}/${selectedRows.map(row => row.serialNumber).join('_')}/add`)
     }
   }, {
     label: $t({ defaultMessage: 'Delete' }),
