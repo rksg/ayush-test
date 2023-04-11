@@ -1,11 +1,12 @@
 import { uniqueId }               from 'lodash'
 import { useIntl, defineMessage } from 'react-intl'
 
-import { AnalyticsFilter, sortProp, defaultSort } from '@acx-ui/analytics/utils'
+import { AnalyticsFilter, sortProp, defaultSort, aggregateDataBy } from '@acx-ui/analytics/utils'
 import {
   Loader,
   Table,
-  TableProps
+  TableProps,
+  Tooltip
 } from '@acx-ui/components'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
@@ -49,11 +50,16 @@ export const ImpactedClientsTable = ({
       selectFromResult: (result) => {
         const { data, ...rest } = result
         return {
-          data: data?.network?.hierarchyNode?.impactedClients?.map?.(
-            (impactedClient: ImpactedClient) => {
-              return { ...impactedClient, id: uniqueId() }
-            }
-          ),
+          data:
+            data?.network?.hierarchyNode?.impactedClients &&
+            aggregateDataBy<ImpactedClient>('mac')(
+              data?.network?.hierarchyNode?.impactedClients
+            ).map?.(
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              (impactedClient: any) => {
+                return { ...impactedClient, id: uniqueId() }
+              }
+            ),
           ...rest
         }
       }
@@ -65,7 +71,7 @@ export const ImpactedClientsTable = ({
       dataIndex: 'mac',
       key: 'mac',
       render: (_, { mac }) => (
-        <TenantLink to={`users/wifi/clients/${mac?.toLowerCase()}/details/overview`}>
+        <TenantLink to={`users/wifi/clients/${mac?.[0]?.toLowerCase()}/details/overview`}>
           {mac}
         </TenantLink>
       ),
@@ -75,12 +81,26 @@ export const ImpactedClientsTable = ({
       title: $t({ defaultMessage: 'Manufacturer' }),
       dataIndex: 'manufacturer',
       key: 'manufacturer',
+      render: function (_, { manufacturer }) {
+        return (
+          <Tooltip placement='bottom' title={manufacturer}>
+            {manufacturer?.[0]}{manufacturer.length > 1 ? ` (${manufacturer.length})` : ''}
+          </Tooltip>
+        )
+      },
       sorter: { compare: sortProp('manufacturer', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'SSID' }),
       dataIndex: 'ssid',
       key: 'ssid',
+      render: function (_, { ssid }) {
+        return (
+          <Tooltip placement='bottom' title={ssid}>
+            {ssid?.[0]}{ssid.length > 1 ? ` (${ssid.length})` : ''}
+          </Tooltip>
+        )
+      },
       sorter: { compare: sortProp('ssid', defaultSort) }
     },
     {
@@ -92,6 +112,13 @@ export const ImpactedClientsTable = ({
         defaultMessage:
           'The username may only be known if the user has successfully passed authentication'
       }),
+      render: function (_, { username }) {
+        return (
+          <Tooltip placement='bottom' title={username}>
+            {username?.[0]}{username.length > 1 ? ` (${username.length})` : ''}
+          </Tooltip>
+        )
+      },
       sorter: { compare: sortProp('username', defaultSort) }
     },
     {
@@ -103,6 +130,13 @@ export const ImpactedClientsTable = ({
           // eslint-disable-next-line max-len
           'The hostname may only be known if the user has successfully obtained an IP address from DHCP'
       }),
+      render: function (_, { hostname }) {
+        return (
+          <Tooltip placement='bottom' title={hostname}>
+            {hostname?.[0]}{hostname.length > 1 ? ` (${hostname.length})` : ''}
+          </Tooltip>
+        )
+      },
       sorter: { compare: sortProp('hostname', defaultSort) }
     }
   ]

@@ -16,15 +16,6 @@ export type Stages =
   | 'radiusFailure'
   | 'dhcpFailure'
   | null
-export const stageNameMap = {
-  Authentication: defineMessage({
-    defaultMessage: 'Authentication {count} Impacted Clients'
-  }),
-  Association: defineMessage({ defaultMessage: 'Association {count} Impacted Clients' }),
-  EAP: defineMessage({ defaultMessage: 'EAP {count} Impacted Clients' }),
-  Radius: defineMessage({ defaultMessage: 'RADIUS {count} Impacted Clients' }),
-  DHCP: defineMessage({ defaultMessage: 'DHCP {count} Impacted Clients' })
-}
 export type FunnelChartStages = { name: string; label: MessageDescriptor; value: number | null }[]
 export type DrilldownSelection = 'connectionFailure' | 'ttc' | null
 export type FunnelChartStage = {

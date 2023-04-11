@@ -71,6 +71,6 @@ export const Pin = styled.div<{ pinPosition : string, dir: string,color : string
   }
 `
 export const TableHeading = styled.span`
-  padding-bottom : 5px;
+  padding-bottom : 10px;
   font-size: 12px;
 `

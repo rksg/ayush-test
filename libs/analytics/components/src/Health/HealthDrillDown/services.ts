@@ -36,10 +36,10 @@ export interface ImpactedClients {
 }
 export interface ImpactedClient {
   mac: string
-  manufacturer: string
-  ssid: string
-  hostname: string
-  username: string
+  manufacturer: string | string[]
+  ssid: string | string[]
+  hostname: string | string[]
+  username: string | string[]
 }
 export interface RequestPayload {
   path: NetworkPath
