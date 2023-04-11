@@ -91,6 +91,10 @@ const AdminLogTable = ({ tableQuery }: AdminLogTableProps) => {
       value: valueFrom(adminLogTypeMapping, data.entity_type)
     },
     {
+      title: defineMessage({ defaultMessage: 'IP Address' }),
+      value: valueFrom(adminLogTypeMapping, data.ipAddress)
+    },
+    {
       title: defineMessage({ defaultMessage: 'Source' }),
       value: getSource(data)
     },
