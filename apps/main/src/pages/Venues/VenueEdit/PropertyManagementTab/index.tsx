@@ -107,6 +107,8 @@ export function PropertyManagementTab () {
           payload: {
             ...info.values,
             venueName: venueData?.name ?? venueId,
+            description: venueData?.description,
+            address: venueData?.address,
             status: enableProperty
               ? PropertyConfigStatus.ENABLED
               : PropertyConfigStatus.DISABLED
