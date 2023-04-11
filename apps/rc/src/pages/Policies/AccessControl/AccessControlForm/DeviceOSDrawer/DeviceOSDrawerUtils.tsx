@@ -22,6 +22,10 @@ const deviceOsVendorMap: Record<string, string[]> = {
   [DeviceTypeEnum.WdsDevice]: [OsVendorEnum.All, OsVendorEnum.TelnetCpe]
 }
 
+export const getDeviceOsVendorMap = () => {
+  return Object.assign({}, deviceOsVendorMap)
+}
+
 export const getOsVendorOptions = (deviceType: DeviceTypeEnum) => {
   let OsVendorArray = []
   switch (deviceType) {
@@ -68,7 +72,7 @@ export const getDeviceTypeOptions = () => {
   return [...Object.keys(DeviceTypeEnum)]
 }
 
-export const deviceOsVendorMappingTable = (deviceOSRuleList: DeviceOSRule[]) => {
+export const deviceOsVendorMappingTable = (deviceOsVendorMap: Record<string, string[]>, deviceOSRuleList: DeviceOSRule[]) => {
   deviceOSRuleList.forEach(rule => {
     const { deviceType, osVendor } = rule
     if (osVendor === OsVendorEnum.All) {
