@@ -204,10 +204,10 @@ export function ApSnmp () {
         layout='horizontal'
         initialValues={stateOfApSnmpSettings}>
         <Row style={{ backgroundColor: '#F2F2F2', marginBottom: '10px' }} align='middle'>
-          <Col span={3}>
+          <Col span={8}>
             <p style={{ paddingLeft: '10px', marginBottom: '0px' }}>Cutsom  settings</p>
           </Col>
-          <Col span={3}>
+          <Col span={8}>
             {stateOfUseVenueSettings ? <Button
               data-testid='use-venue-true'
               type='link'
