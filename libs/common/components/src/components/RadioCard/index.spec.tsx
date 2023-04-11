@@ -87,6 +87,7 @@ describe('RadioCard', () => {
   describe('type = disabled', () => {
     it('should render', async () => {
       render(<RadioCard
+        type='disabled'
         value='value'
         title='title'
         description='description'
@@ -99,6 +100,7 @@ describe('RadioCard', () => {
     it('should handle onClick', async () => {
       const onClick = jest.fn()
       render(<RadioCard
+        type='disabled'
         value='value'
         title='title'
         description='description'
