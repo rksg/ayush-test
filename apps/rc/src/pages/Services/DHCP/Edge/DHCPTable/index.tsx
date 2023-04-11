@@ -34,7 +34,10 @@ const EdgeDhcpTable = () => {
   }
   const tableQuery = useTableQuery({
     useQuery: useGetDhcpStatsQuery,
-    defaultPayload: getDhcpStatsPayload
+    defaultPayload: getDhcpStatsPayload,
+    search: {
+      searchTargetFields: ['serviceName']
+    }
   })
   const edgeOptionsDefaultPayload = {
     fields: ['name', 'serialNumber'],
