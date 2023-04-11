@@ -180,9 +180,9 @@ export const transformSwitchUnitStatus = (switchStatusEnum: SwitchStatusEnum, co
         }
         return $t({ defaultMessage: 'Operational' })
       } else if (!syncedSwitchConfig) {
-        return $t({ defaultMessage: 'Synchronizing' })
+        return $t({ defaultMessage: 'Synchronizing data' })
       } else {
-        return $t({ defaultMessage: 'Operational - Synchronizing' })
+        return $t({ defaultMessage: 'Synchronizing' })
       }
     case SwitchStatusEnum.DISCONNECTED:
       return $t({ defaultMessage: 'Disconnected from cloud' })
