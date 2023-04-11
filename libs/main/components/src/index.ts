@@ -1,4 +1,4 @@
-export { ReactComponent as Logo } from '../../assets/logo.svg'
+export { ReactComponent as Logo } from '../../assets/Logo.svg'
 
 export * from './HeaderButtons'
 export * from './VenueFilter'
