@@ -72,7 +72,10 @@ export const getDeviceTypeOptions = () => {
   return [...Object.keys(DeviceTypeEnum)]
 }
 
-export const deviceOsVendorMappingTable = (deviceOsVendorMap: Record<string, string[]>, deviceOSRuleList: DeviceOSRule[]) => {
+export const deviceOsVendorMappingTable = (
+  deviceOsVendorMap: Record<string, string[]>,
+  deviceOSRuleList: DeviceOSRule[]
+) => {
   deviceOSRuleList.forEach(rule => {
     const { deviceType, osVendor } = rule
     if (osVendor === OsVendorEnum.All) {
