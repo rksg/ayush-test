@@ -12,6 +12,7 @@ import {
   HelpButton,
   UserButton,
   LicenseBanner,
+  Logo,
   HeaderContext,
   RegionButton
 } from '@acx-ui/main/components'
@@ -61,6 +62,7 @@ function Layout () {
 
   return (
     <LayoutComponent
+      logo={<Logo />}
       menuConfig={useMenuConfig(tenantType)}
       content={
         <>

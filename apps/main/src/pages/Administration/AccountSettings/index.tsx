@@ -1,5 +1,4 @@
 import { Form, Divider } from 'antd'
-import { useParams }     from 'react-router-dom'
 import styled            from 'styled-components/macro'
 
 import { Loader }           from '@acx-ui/components'
@@ -12,6 +11,7 @@ import {
   useUserProfileContext,
   useGetMfaTenantDetailsQuery
 } from '@acx-ui/user'
+import { useTenantId } from '@acx-ui/utils'
 
 import { AccessSupportFormItem }         from './AccessSupportFormItem'
 import { DefaultSystemLanguageFormItem } from './DefaultSystemLanguageFormItem'
@@ -25,7 +25,7 @@ interface AccountSettingsProps {
 }
 const AccountSettings = (props : AccountSettingsProps) => {
   const { className } = props
-  const params = useParams()
+  const params = { tenantId: useTenantId() }
   const {
     data: userProfileData,
     isPrimeAdmin

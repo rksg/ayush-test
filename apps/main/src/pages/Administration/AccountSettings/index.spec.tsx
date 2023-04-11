@@ -22,7 +22,10 @@ import {
 
 import AccountSettings from './'
 
-const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  useTenantId: () => 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+}))
 
 jest.mock('./AccessSupportFormItem', () => ({
   AccessSupportFormItem: () => <div data-testid={'rc-AccessSupportFormItem'} title='AccessSupportFormItem' />
@@ -83,9 +86,8 @@ describe('Account Settings', () => {
         >
           <AccountSettings />
         </UserProfileContext.Provider>
-      </Provider>, {
-        route: { params }
-      })
+      </Provider>
+    )
 
 
     expect((await screen.findAllByTestId(/rc-.*/)).length).toBe(5)
@@ -103,9 +105,8 @@ describe('Account Settings', () => {
         >
           <AccountSettings />
         </UserProfileContext.Provider>
-      </Provider>, {
-        route: { params }
-      })
+      </Provider>
+    )
 
     expect(screen.queryByTestId('rc-MapRegionFormItem')).not.toBeInTheDocument()
     expect((await screen.findAllByRole('separator')).length).toBe(3)
@@ -129,9 +130,8 @@ describe('Account Settings', () => {
         >
           <AccountSettings />
         </UserProfileContext.Provider>
-      </Provider>, {
-        route: { params }
-      })
+      </Provider>
+    )
 
     await screen.findByTestId('rc-MapRegionFormItem')
     expect(screen.queryByTestId('rc-AccessSupportFormItem')).not.toBeInTheDocument()
@@ -149,9 +149,8 @@ describe('Account Settings', () => {
         >
           <AccountSettings />
         </UserProfileContext.Provider>
-      </Provider>, {
-        route: { params }
-      })
+      </Provider>
+    )
 
     await screen.findByTestId('rc-MapRegionFormItem')
     expect(screen.queryByTestId('rc-MFAFormItem')).not.toBeInTheDocument()

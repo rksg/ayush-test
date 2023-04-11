@@ -30,9 +30,7 @@ exports[`Layout should render correctly 1`] = `
                 class=""
                 href="/t/undefined/dashboard"
               >
-                <svg
-                  data-testid="Logo"
-                />
+                <div />
               </a>
             </div>
             <div
@@ -445,9 +443,7 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
                 class=""
                 href="/v/undefined/dashboard"
               >
-                <svg
-                  data-testid="Logo"
-                />
+                <div />
               </a>
             </div>
             <div

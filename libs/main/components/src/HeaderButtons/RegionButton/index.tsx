@@ -15,8 +15,8 @@ import {
   useGetMspEcProfileQuery
 } from '@acx-ui/rc/services'
 import { MSPUtils }                           from '@acx-ui/rc/utils'
-import { useParams }                          from '@acx-ui/react-router-dom'
 import { RegionValue, useUserProfileContext } from '@acx-ui/user'
+import { useTenantId }                        from '@acx-ui/utils'
 
 
 import * as UI from '../styledComponents'
@@ -24,7 +24,7 @@ import * as UI from '../styledComponents'
 const mspUtils = MSPUtils()
 
 export default function RegionButton () {
-  const params = useParams()
+  const params = { tenantId: useTenantId() }
 
   const { data: userProfile } = useUserProfileContext()
   const { data: mspEcProfileData } = useGetMspEcProfileQuery({ params })

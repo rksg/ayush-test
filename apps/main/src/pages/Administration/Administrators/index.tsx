@@ -3,15 +3,15 @@ import {
   useGetMspEcProfileQuery
 } from '@acx-ui/rc/services'
 import { MSPUtils, TenantType }  from '@acx-ui/rc/utils'
-import { useParams }             from '@acx-ui/react-router-dom'
 import { useUserProfileContext } from '@acx-ui/user'
+import { useTenantId }           from '@acx-ui/utils'
 
 import AdministratorsTable from './AdministratorsTable'
 import DelegationsTable    from './DelegationsTable'
 import * as UI             from './styledComponents'
 
 const Administrators = () => {
-  const params = useParams()
+  const params = { tenantId: useTenantId() }
   const mspUtils = MSPUtils()
   const { data: userProfileData, isPrimeAdmin } = useUserProfileContext()
 

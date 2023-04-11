@@ -11,7 +11,6 @@ import {
 } from 'rc-menu/lib/interface'
 import { useIntl } from 'react-intl'
 
-import { Logo }                                   from '@acx-ui/icons'
 import { TenantType, useLocation, TenantNavLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                              from '@acx-ui/types'
 import { hasRoles }                               from '@acx-ui/user'
@@ -56,6 +55,7 @@ export function isMenuItemGroupType (value: ItemType): value is MenuItemGroupTyp
 }
 
 export interface LayoutProps {
+  logo: React.ReactNode;
   menuConfig: ItemType[];
   rightHeaderContent: React.ReactNode;
   leftHeaderContent?: React.ReactNode;
@@ -162,6 +162,7 @@ function findDashboard (menuConfig: ItemType[]): ItemType | undefined {
 }
 
 export function Layout ({
+  logo,
   menuConfig,
   rightHeaderContent,
   leftHeaderContent,
@@ -186,7 +187,7 @@ export function Layout ({
       menuHeaderRender={() => <TenantNavLink
         to={indexPath}
         tenantType={get(dashboard, 'tenantType', 't')}
-        children={<Logo />}
+        children={logo}
       />}
       headerContentRender={() => leftHeaderContent && <UI.LeftHeaderContentWrapper>
         <UI.LogoDivider />

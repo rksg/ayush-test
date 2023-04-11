@@ -22,6 +22,7 @@ describe('Layout', () => {
   }
   it('should render correctly', async () => {
     const { asFragment } = render(<Layout
+      logo={<div />}
       menuConfig={menuConfig}
       leftHeaderContent={<LayoutUI.DropdownText>Left header</LayoutUI.DropdownText>}
       rightHeaderContent={<div>Right header</div>}
@@ -44,6 +45,7 @@ describe('Layout', () => {
       ]
     }]
     const { asFragment } = render(<Layout
+      logo={<div />}
       menuConfig={mspConfig}
       leftHeaderContent={<div>Left header</div>}
       rightHeaderContent={<div>Right header</div>}
@@ -54,6 +56,7 @@ describe('Layout', () => {
   })
   it('should collapsed', async () => {
     render(<Layout
+      logo={<div />}
       menuConfig={menuConfig}
       leftHeaderContent={<div>Left header</div>}
       rightHeaderContent={<div>Right header</div>}
@@ -65,6 +68,7 @@ describe('Layout', () => {
   })
   it('should render corresponding icons', async () => {
     render(<Layout
+      logo={<div />}
       menuConfig={menuConfig}
       leftHeaderContent={<div>Left header</div>}
       rightHeaderContent={<div>Right header</div>}
