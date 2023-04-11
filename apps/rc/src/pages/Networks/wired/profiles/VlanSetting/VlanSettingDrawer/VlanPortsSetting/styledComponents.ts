@@ -1,5 +1,7 @@
 import styled from 'styled-components/macro'
 
+import { TagsOutline, TagsSolid } from '@acx-ui/icons'
+
 export const GroupListLayout = styled('div')`
   display: flex;
   flex-direction: column;
@@ -11,7 +13,7 @@ export const GroupListLayout = styled('div')`
     width: 100%
   }
 
-  label {
+  label.ant-radio-wrapper-in-form-item {
     display: flex;
     width: 100%;
     margin: 4px 0;
@@ -19,9 +21,15 @@ export const GroupListLayout = styled('div')`
     font-size: var(--acx-body-4-font-size);
     color: var(--acx-primary-black);
   }
-  
-  label:has(.ant-radio-checked) {
-    background: var(--acx-accents-orange-20)
+
+  label.ant-radio-wrapper-checked {
+    display: flex;
+    width: 100%;
+    margin: 4px 0;
+    padding: 2px;
+    font-size: var(--acx-body-4-font-size);
+    color: var(--acx-primary-black);
+    background: var(--acx-accents-orange-20);
   }
 
   .ant-card{
@@ -148,4 +156,25 @@ export const Module = styled.div`
     width: 20px;
     height: 20px;
   }
+`
+
+export const TagsOutlineIcon = styled(TagsOutline)`
+  width: 12px;
+  height: 14px;
+  path {
+    fill: var(--acx-primary-white);
+  }
+  position: absolute;
+`
+
+export const TagsSolidIcon = styled(TagsSolid)`
+  width: 12px;
+  height: 14px;
+  path {
+    fill: var(--acx-primary-white);
+  }
+  position: absolute;
+`
+export const PortSpan = styled.span`
+  padding-left: 15px;
 `

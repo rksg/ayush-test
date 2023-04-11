@@ -7,7 +7,8 @@ import _                                 from 'lodash'
 import { useIntl }                       from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
-import { Button, Loader }  from '@acx-ui/components'
+import { Button, Loader }            from '@acx-ui/components'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   useGetTroubleshootingQuery,
   useGetVlanListBySwitchLevelQuery,
@@ -16,12 +17,10 @@ import {
   useSwitchPortlistQuery
 } from '@acx-ui/rc/services'
 import {
+  sortPortFunction,
   TroubleshootingMacAddressOptionsEnum,
   TroubleshootingType
 } from '@acx-ui/rc/utils'
-import { formatter } from '@acx-ui/utils'
-
-
 
 export function SwitchMacAddressForm () {
   const { $t } = useIntl()
@@ -58,9 +57,12 @@ export function SwitchMacAddressForm () {
 
   useEffect(() => {
     if (!portList.isLoading) {
-      setPortOptions(portList?.data?.data?.map(item => ({
-        label: item.portIdentifier, value: item.portIdentifier
-      })) ?? [])
+      setPortOptions(portList?.data?.data?.map(port => ({ id: port.portIdentifier }))
+        .sort(sortPortFunction)
+        .map(item => ({
+          label: item.id, value: item.id
+        }))
+      ?? [])
     }
   }, [portList])
 
@@ -209,7 +211,6 @@ export function SwitchMacAddressForm () {
 
   const onClear = async () => {
     setIsLoading(true)
-    setIsValid(false)
     await getTroubleshootingClean({
       params: troubleshootingParams
     })
@@ -341,7 +342,7 @@ export function SwitchMacAddressForm () {
           <Form.Item
             label={$t({ defaultMessage: 'Last synced at' })}
             children={
-              formatter('dateTimeFormatWithSeconds')(lasySyncTime)}
+              formatter(DateFormatEnum.DateTimeFormatWithSeconds)(lasySyncTime)}
           />}
 
         <Form.Item wrapperCol={{ offset: 0, span: 16 }}

@@ -1,44 +1,60 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
+import { defaultNetworkPayload }                      from '@acx-ui/rc/components'
 import {
   useDelL3AclPolicyMutation,
   useGetAccessControlProfileListQuery,
-  useL3AclPolicyListQuery
+  useGetEnhancedL3AclProfileListQuery,
+  useNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
-  L2AclPolicy,
+  AclOptionType,
   L3AclPolicy,
-  PolicyType,
+  Network,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
-import Layer3Drawer from '../AccessControlForm/Layer3Drawer'
+import { AddModeProps } from '../AccessControlForm/AccessControlForm'
+import Layer3Drawer     from '../AccessControlForm/Layer3Drawer'
 
 
 const defaultPayload = {
-  searchString: '',
-  filters: {
-    type: [PolicyType.LAYER_3_POLICY]
-  },
   fields: [
     'id',
     'name',
     'description',
-    'rulesCount',
-    'networksCount'
-  ]
+    'rules',
+    'networkIds'
+  ],
+  page: 1
 }
 
 const Layer3Component = () => {
   const { $t } = useIntl()
   const params = useParams()
+  const [addModeStatus, setAddModeStatus] = useState(
+    { enable: true, visible: false } as AddModeProps
+  )
 
   const [ delL3AclPolicy ] = useDelL3AclPolicyMutation()
+
+  const [networkFilterOptions, setNetworkFilterOptions] = useState([] as AclOptionType[])
+  const [networkIds, setNetworkIds] = useState([] as string[])
+
+  const networkTableQuery = useTableQuery<Network>({
+    useQuery: useNetworkListQuery,
+    defaultPayload: {
+      ...defaultNetworkPayload,
+      filters: {
+        id: [...networkIds]
+      }
+    }
+  })
 
   const { data: accessControlList } = useGetAccessControlProfileListQuery({
     params: params
@@ -55,15 +71,52 @@ const Layer3Component = () => {
   })
 
   const tableQuery = useTableQuery({
-    useQuery: useL3AclPolicyListQuery,
+    useQuery: useGetEnhancedL3AclProfileListQuery,
     defaultPayload
   })
+
+  useEffect(() => {
+    if (tableQuery.data) {
+      let unionNetworkIds = [] as string[]
+      tableQuery.data.data.map(layer3Policy => {
+        if (layer3Policy.networkIds) {
+          unionNetworkIds.push(...layer3Policy.networkIds)
+        }
+      })
+      setNetworkIds([...new Set(unionNetworkIds)])
+
+      networkTableQuery.setPayload({
+        ...defaultPayload,
+        filters: {
+          id: [...networkIds]
+        }
+      })
+    }
+  }, [tableQuery.data])
+
+  useEffect(() => {
+    if (networkTableQuery.data && networkIds.length) {
+      setNetworkFilterOptions(
+        [...networkTableQuery.data.data.map(
+          (network) => {
+            return { key: network.id, value: network.name }
+          })]
+      )
+    }
+  }, [networkTableQuery.data, networkIds])
+
+  const actions = [{
+    label: $t({ defaultMessage: 'Add Layer 3 Policy' }),
+    onClick: () => {
+      setAddModeStatus({ enable: true, visible: true })
+    }
+  }]
 
   const rowActions: TableProps<L3AclPolicy>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ name, id, networksCount }], clearSelection) => {
-        if (networksCount !== 0 || accessControlList?.includes(id)) {
+      onClick: ([{ name, id, networkIds }], clearSelection) => {
+        if (networkIds?.length !== 0 || accessControlList?.includes(id)) {
           showActionModal({
             type: 'error',
             content: $t({
@@ -96,32 +149,41 @@ const Layer3Component = () => {
   ]
 
   return <Loader states={[tableQuery]}>
+    <Layer3Drawer
+      onlyAddMode={addModeStatus}
+    />
     <Table<L3AclPolicy>
-      columns={useColumns(editMode, setEditMode)}
+      settingsId='policies-access-control-layer3-table'
+      columns={useColumns(networkFilterOptions, editMode, setEditMode)}
+      enableApiFilter={true}
       dataSource={tableQuery.data?.data}
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
+      onFilterChange={tableQuery.handleFilterChange}
       rowKey='id'
+      actions={filterByAccess(actions)}
       rowActions={filterByAccess(rowActions)}
       rowSelection={{ type: 'radio' }}
     />
   </Loader>
 }
 
-function useColumns (editMode: { id: string, isEdit: boolean }, setEditMode: (editMode: {
-  id: string, isEdit: boolean
-}) => void) {
+function useColumns (
+  networkFilterOptions: AclOptionType[],
+  editMode: { id: string, isEdit: boolean },
+  setEditMode: (editMode: { id: string, isEdit: boolean }
+  ) => void) {
   const { $t } = useIntl()
 
-  const columns: TableProps<L2AclPolicy>['columns'] = [
+  const columns: TableProps<L3AclPolicy>['columns'] = [
     {
       key: 'name',
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
-      align: 'left',
       sorter: true,
       searchable: true,
       defaultSortOrder: 'ascend',
+      fixed: 'left',
       render: function (data, row) {
         return <Layer3Drawer
           editMode={row.id === editMode.id ? editMode : { id: '', isEdit: false }}
@@ -135,22 +197,25 @@ function useColumns (editMode: { id: string, isEdit: boolean }, setEditMode: (ed
       key: 'description',
       title: $t({ defaultMessage: 'Description' }),
       dataIndex: 'description',
-      align: 'left',
       sorter: true
     },
     {
-      key: 'rulesCount',
+      key: 'rules',
       title: $t({ defaultMessage: 'Rules' }),
-      dataIndex: 'rulesCount',
+      dataIndex: 'rules',
       align: 'center',
-      sorter: true
+      sorter: true,
+      sortDirections: ['descend', 'ascend', 'descend']
     },
     {
-      key: 'networksCount',
+      key: 'networkIds',
       title: $t({ defaultMessage: 'Networks' }),
-      dataIndex: 'networksCount',
+      dataIndex: 'networkIds',
       align: 'center',
-      sorter: true
+      filterable: networkFilterOptions,
+      sorter: true,
+      sortDirections: ['descend', 'ascend', 'descend'],
+      render: (data, row) => row.networkIds?.length
     }
   ]
 

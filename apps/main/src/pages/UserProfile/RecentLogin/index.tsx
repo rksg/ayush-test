@@ -1,20 +1,11 @@
 import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps  }              from '@acx-ui/components'
+import { DateFormatEnum, formatter }               from '@acx-ui/formatter'
 import { useAdminLogsQuery }                       from '@acx-ui/rc/services'
 import { AdminLog, CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
-import { formatter }                               from '@acx-ui/utils'
 
-export interface EventList {
-  adminName: string;
-  entity_id: string;
-  entity_type: string;
-  id: string;
-  message: string;
-  raw_event: string;
-  severity: string;
-  event_datetime: string;
-}
+export type EventList = AdminLog
 
 export function RecentLogin (props: { userEmail: string }) {
   const { $t } = useIntl()
@@ -60,7 +51,7 @@ export function RecentLogin (props: { userEmail: string }) {
       dataIndex: 'event_datetime',
       key: 'date',
       render: function (_, row) {
-        return formatter('dateTimeFormatWithSeconds')(row.event_datetime)
+        return formatter(DateFormatEnum.DateTimeFormatWithSeconds)(row.event_datetime)
       }
     }
   ]

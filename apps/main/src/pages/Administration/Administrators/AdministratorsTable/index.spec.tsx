@@ -5,6 +5,7 @@ import { rest }  from 'msw'
 import { AdministrationUrlsInfo, MspUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                            from '@acx-ui/store'
 import {
+  fireEvent,
   mockServer,
   render,
   screen,
@@ -16,6 +17,32 @@ import { UserProfileContext, UserProfileContextProps, setUserProfile } from '@ac
 import { fakeUserProfile, fakedAdminLsit, fakeNonPrimeAdminUserProfile } from '../__tests__/fixtures'
 
 import AdministratorsTable from './index'
+
+jest.mock('./AddAdministratorDialog', () => ({
+  ...jest.requireActual('./AddAdministratorDialog'),
+  __esModule: true,
+  default: ({ visible, setVisible }: { visible: boolean, setVisible: (open:boolean) => void }) => {
+    return visible ?
+      <div data-testid='mocked-AddAdministratorDialog'>
+        Add New Administrator
+        <button onClick={() => setVisible}>Cancel</button>
+      </div>
+      : ''
+  }
+}))
+
+jest.mock('./EditAdministratorDialog', () => ({
+  ...jest.requireActual('./EditAdministratorDialog'),
+  __esModule: true,
+  default: ({ visible, setVisible }: { visible: boolean, setVisible: (open:boolean) => void }) => {
+    return visible ?
+      <div data-testid='mocked-EditAdministratorDialog'>
+        Edit Administrator
+        <button onClick={() => setVisible}>Cancel</button>
+      </div>
+      : ''
+  }
+}))
 
 const isPrimeAdmin : () => boolean = jest.fn().mockReturnValue(true)
 const userProfileContextValues = {
@@ -86,7 +113,9 @@ describe('Administrators table without prime-admin itself', () => {
 
     const row = await screen.findByRole('row', { name: /abc.cheng@email.com/i })
     await userEvent.click(within(row).getByRole('checkbox'))
-    expect(screen.queryByRole('button', { name: 'Delete' })).toBeNull()
+    await waitFor(() => {
+      expect(screen.queryByRole('button', { name: 'Delete' })).toBeNull()
+    })
   })
 })
 
@@ -147,17 +176,15 @@ describe('Administrators Table', () => {
     expect(rows.length).toBe(3)
     expect(await screen.findByRole('button', { name: 'Add Administrator' })).toBeInTheDocument()
     await userEvent.click(await screen.findByRole('button', { name: 'Add Administrator' }))
-    await waitFor(async () => {
-      expect(await screen.findByText('Add New Administrator')).toBeInTheDocument()
-    })
+    expect(await screen.findByText('Add New Administrator')).toBeInTheDocument()
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     const row = await screen.findByRole('row', { name: /abc.cheng@email.com/i })
     await userEvent.click(within(row).getByRole('checkbox'))
     await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
-    await waitFor(async () => {
-      expect(await screen.findByText('Edit Administrator')).toBeInTheDocument()
-    })
-    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+    expect(await screen.findByText('Edit Administrator')).toBeInTheDocument()
+    const cancelBtn = within(screen.getByTestId('mocked-EditAdministratorDialog'))
+      .getByRole('button', { name: 'Cancel' })
+    fireEvent.click(cancelBtn)
   })
 
   it('should hide edit button when multiple selected', async () => {
@@ -175,10 +202,13 @@ describe('Administrators Table', () => {
       </Provider>, {
         route: { params }
       })
+
     const row = await screen.findByRole('row', { name: /abc.cheng@email.com/i })
-    await userEvent.click(within(row).getByRole('checkbox'))
+    fireEvent.click(within(row).getByRole('checkbox'))
+    expect(within(row).getByRole('checkbox')).toBeChecked()
     const row2 = await screen.findByRole('row', { name: /erp.cheng@email.com/i })
-    await userEvent.click(within(row2).getByRole('checkbox'))
+    fireEvent.click(within(row2).getByRole('checkbox'))
+    expect(within(row2).getByRole('checkbox')).toBeChecked()
     expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
   })
 
@@ -201,7 +231,11 @@ describe('Administrators Table', () => {
     await userEvent.click(within(row).getByRole('checkbox'))
     await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
     await screen.findByText('Delete " "?')
-    await userEvent.click(screen.getByRole('button', { name: 'Delete Administrators' }))
+    const submitBtn = screen.getByRole('button', { name: 'Delete Administrators' })
+    await userEvent.click(submitBtn)
+    await waitFor(() => {
+      expect(submitBtn).not.toBeVisible()
+    })
   })
 
   it('should delete selected row(multiple)', async () => {
@@ -226,7 +260,11 @@ describe('Administrators Table', () => {
     await userEvent.click(within(row2).getByRole('checkbox'))
     await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
     await screen.findByText('Delete "2 Administrators"?')
-    await userEvent.click(screen.getByRole('button', { name: 'Delete Administrators' }))
+    const submitBtn = screen.getByRole('button', { name: 'Delete Administrators' })
+    fireEvent.click(submitBtn)
+    await waitFor(() => {
+      expect(submitBtn).not.toBeVisible()
+    })
   })
 
   it('should prime admin not be able to edit/delete himself/herself', async () => {
@@ -271,5 +309,45 @@ describe('Administrators Table', () => {
     const row = await screen.findByRole('row', { name: /abc.cheng@email.com/i })
     expect(within(row).queryByRole('checkbox')).toBeNull()
     expect(within(row).queryByRole('radio')).toBeNull()
+  })
+
+  it('should display blank when role is not valid', async () => {
+    const newFakedAdminLsit = [...fakedAdminLsit]
+    newFakedAdminLsit.push({
+      id: 'invalid_role_id',
+      email: 'invalidRole@email.com',
+      role: 'ROLE',
+      delegateToAllECs: false,
+      detailLevel: 'debug'
+    })
+
+    mockServer.use(
+      rest.get(
+        AdministrationUrlsInfo.getAdministrators.url,
+        (req, res, ctx) => res(ctx.json(newFakedAdminLsit))
+      )
+    )
+
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={{
+            data: fakeNonPrimeAdminUserProfile,
+            isPrimeAdmin
+          } as UserProfileContextProps}
+        >
+          <AdministratorsTable
+            currentUserMail='erp.cheng@email.com'
+            isPrimeAdminUser={false}
+            isMspEc={false}
+          />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    const row = await screen.findByRole('row', { name: /invalidRole@email.com/i })
+    const tableCells = within(row).getAllByRole('cell')
+    expect((tableCells[tableCells.length - 1] as HTMLElement).textContent).toBe('')
   })
 })

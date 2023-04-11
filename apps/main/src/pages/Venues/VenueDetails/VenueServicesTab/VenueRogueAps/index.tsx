@@ -85,7 +85,8 @@ export function VenueRogueAps () {
         key: 'rogueMac',
         title: intl.$t({ defaultMessage: 'BSSID' }),
         dataIndex: 'rogueMac',
-        searchable: true
+        searchable: true,
+        fixed: 'left'
       },
       {
         key: 'category',
@@ -205,6 +206,7 @@ export function VenueRogueAps () {
         tableQuery
       ]}>
         <Table
+          settingsId='venue-rogue-aps-table'
           columns={getCols(useIntl())}
           dataSource={transformData(tableQuery?.data?.data || [])}
           pagination={tableQuery.pagination}

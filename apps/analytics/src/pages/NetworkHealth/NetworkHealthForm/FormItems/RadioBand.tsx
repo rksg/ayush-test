@@ -7,7 +7,7 @@ import {
   Tooltip,
   useStepFormContext
 } from '@acx-ui/components'
-import { formatter } from '@acx-ui/utils'
+import { formatter } from '@acx-ui/formatter'
 
 import {
   Band,

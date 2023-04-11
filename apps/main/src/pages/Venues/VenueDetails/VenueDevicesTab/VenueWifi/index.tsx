@@ -119,26 +119,15 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       key: 'apUpRssi',
       title: intl.$t({ defaultMessage: 'Signal' }),
       dataIndex: 'apUpRssi',
-      sorter: true,
-      width: 5,
+      sorter: false,
+      width: 160,
       render: function (data, row) {
         if(row.meshRole !== APMeshRole.RAP && row.meshRole !== APMeshRole.EMAP){
           return (
-            <div><SignalDownIcon />{data}</div>
-          )
-        }
-        return
-      }
-    },
-    {
-      key: 'apDownRssi',
-      dataIndex: 'apDownRssi',
-      sorter: true,
-      width: 50,
-      render: function (data, row) {
-        if(row.meshRole !== APMeshRole.RAP && row.meshRole !== APMeshRole.EMAP){
-          return (
-            <span><SignalUpIcon />{data}</span>
+            <div>
+              <span style={{ paddingRight: '30px' }}><SignalDownIcon />{data}</span>
+              <span><SignalUpIcon />{row.apDownRssi}</span>
+            </div>
           )
         }
         return
@@ -302,6 +291,7 @@ export function VenueMeshApsTable () {
       tableQuery
     ]}>
       <Table
+        settingsId='venue-mesh-aps-table'
         columns={getCols(useIntl())}
         dataSource={transformData(tableQuery?.data?.data || [])}
         pagination={tableQuery.pagination}

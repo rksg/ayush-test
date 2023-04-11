@@ -1,8 +1,7 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-
 import {
   CommonResult,
   createHttpRequest,
+  DhcpHostStats,
   DhcpPoolStats,
   DhcpStats,
   EdgeDhcpSetting,
@@ -11,14 +10,7 @@ import {
   RequestPayload,
   TableResult
 } from '@acx-ui/rc/utils'
-
-export const baseEdgeDhcpApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  reducerPath: 'edgeDhcpApi',
-  tagTypes: ['EdgeDhcp'],
-  refetchOnMountOrArgChange: true,
-  endpoints: () => ({ })
-})
+import { baseEdgeDhcpApi } from '@acx-ui/store'
 
 export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
   endpoints: (build) => ({
@@ -117,6 +109,16 @@ export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'EdgeDhcp', id: 'LIST' }]
+    }),
+    getDhcpHostStats: build.query<TableResult<DhcpHostStats>, RequestPayload>({
+      query: ({ payload, params }) => {
+        const req = createHttpRequest(EdgeDhcpUrls.getDhcpHostStats, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'EdgeDhcp', id: 'LIST' }]
     })
   })
 })
@@ -130,5 +132,6 @@ export const {
   useGetEdgeDhcpListQuery,
   useGetDhcpByEdgeIdQuery,
   useGetDhcpPoolStatsQuery,
-  useGetDhcpStatsQuery
+  useGetDhcpStatsQuery,
+  useGetDhcpHostStatsQuery
 } = edgeDhcpApi

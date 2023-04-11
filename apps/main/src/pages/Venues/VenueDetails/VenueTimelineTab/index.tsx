@@ -1,83 +1,31 @@
-import React, { useEffect } from 'react'
-
 import { defineMessage, useIntl, MessageDescriptor } from 'react-intl'
 import { useNavigate, useParams }                    from 'react-router-dom'
 
-import { Tabs }            from '@acx-ui/components'
+import { Tabs }         from '@acx-ui/components'
 import {
-  EventTable,
-  eventDefaultPayload,
-  eventDefaultSearch,
-  eventDefaultSorter,
-  useEventTableFilter,
   ActivityTable,
-  activityDefaultSorter,
-  activityDefaultPayload,
-  useActivityTableFilter
+  EventTable,
+  useActivityTableQuery,
+  useEventsTableQuery
 } from '@acx-ui/rc/components'
-import { useActivitiesQuery, useEventsQuery } from '@acx-ui/rc/services'
-import {
-  Event,
-  usePollingTableQuery,
-  TimelineTypes,
-  TABLE_QUERY_LONG_POLLING_INTERVAL,
-  Activity
-} from '@acx-ui/rc/utils'
-import { useTenantLink }         from '@acx-ui/react-router-dom'
-import { useUserProfileContext } from '@acx-ui/user'
+import { TimelineTypes } from '@acx-ui/rc/utils'
+import { useTenantLink } from '@acx-ui/react-router-dom'
 
 const Events = () => {
-  const { venueId } = useParams()
-  const { fromTime, toTime } = useEventTableFilter()
-  const { data: userProfileData } = useUserProfileContext()
-  const currentUserDetailLevel = userProfileData?.detailLevel
-
-  useEffect(()=>{
-    tableQuery.setPayload({
-      ...tableQuery.payload,
-      filters: { ...eventDefaultPayload.filters, venueId: [ venueId ], fromTime, toTime },
-      detailLevel: currentUserDetailLevel
-    })
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fromTime, toTime, venueId, currentUserDetailLevel])
-  const tableQuery = usePollingTableQuery<Event>({
-    useQuery: useEventsQuery,
-    defaultPayload: {
-      ...eventDefaultPayload,
-      filters: { ...eventDefaultPayload.filters, venueId: [ venueId ], fromTime, toTime }
-    },
-    sorter: eventDefaultSorter,
-    search: eventDefaultSearch,
-    option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
-  })
-  return <EventTable tableQuery={tableQuery}/>
+  return <EventTable
+    settingsId='venue-event-table'
+    tableQuery={useEventsTableQuery({ venueId: [useParams().venueId] })}
+  />
 }
 
 const Activities = () => {
   const { venueId } = useParams()
-  const { fromTime, toTime } = useActivityTableFilter()
-  const { data: userProfileData } = useUserProfileContext()
-  const currentUserDetailLevel = userProfileData?.detailLevel
+  const tableQuery = useActivityTableQuery({ entityType: 'VENUE', entityId: venueId! })
 
-  useEffect(()=>{
-    tableQuery.setPayload({
-      ...tableQuery.payload,
-      filters: {
-        fromTime,
-        toTime,
-        entityType: 'VENUE',
-        entityId: venueId
-      },
-      detailLevel: currentUserDetailLevel
-    })
-  }, [fromTime, toTime, currentUserDetailLevel])
-  const tableQuery = usePollingTableQuery<Activity>({
-    useQuery: useActivitiesQuery,
-    defaultPayload: activityDefaultPayload,
-    sorter: activityDefaultSorter,
-    option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
-  })
-  return <ActivityTable tableQuery={tableQuery} filterables={['status', 'product']}/>
+  return <ActivityTable
+    tableQuery={tableQuery}
+    filterables={['status', 'product']}
+  />
 }
 
 const tabs : {

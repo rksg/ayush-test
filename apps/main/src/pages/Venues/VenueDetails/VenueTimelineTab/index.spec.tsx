@@ -9,6 +9,14 @@ import { activities, events, eventsMeta } from './__tests__/fixtures'
 
 import { VenueTimelineTab } from '.'
 
+jest.mock('@acx-ui/user', () => ({
+  ...jest.requireActual('@acx-ui/user'),
+  useUserProfileContext: () => ({ data: {
+    detailLevel: 'it',
+    dateFormat: 'mm/dd/yyyy'
+  } })
+}))
+
 describe('VenueTimelineTab', () => {
   it('should render', async () => {
     mockRestApiQuery(CommonUrlsInfo.getActivityList.url, 'post', activities)

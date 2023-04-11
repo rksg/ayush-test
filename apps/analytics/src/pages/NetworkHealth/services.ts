@@ -7,9 +7,9 @@ import moment            from 'moment-timezone'
 import { ValidatorRule } from 'rc-field-form/lib/interface'
 import { useIntl }       from 'react-intl'
 
-import { networkHealthApi }                          from '@acx-ui/analytics/services'
 import { showToast, TableProps, useStepFormContext } from '@acx-ui/components'
 import { useParams }                                 from '@acx-ui/react-router-dom'
+import { networkHealthApi }                          from '@acx-ui/store'
 import { TABLE_DEFAULT_PAGE_SIZE }                   from '@acx-ui/utils'
 
 import { authMethodsByClientType }     from './authMethods'
@@ -226,6 +226,7 @@ export const {
         variables,
         document: fetchServiceGuardSpec
       }),
+      providesTags: [{ type: 'NetworkHealth', id: 'DETAILS' }],
       transformResponse: (result: { serviceGuardSpec: NetworkHealthSpec }) =>
         result.serviceGuardSpec
     }),
@@ -249,7 +250,7 @@ export const {
       }
     }),
     networkHealthTestResults: build.query<
-    NetworkHealthTestResults,
+      NetworkHealthTestResults,
       { testId: NetworkHealthTest['id']; offset: number; limit: number }
     >({
       query: (variables) => ({ variables, document: fetchServiceGuardTestResults }),
@@ -432,7 +433,10 @@ const {
           }
         }`
       }),
-      invalidatesTags: [{ type: 'NetworkHealth', id: 'LIST' }],
+      invalidatesTags: [
+        { type: 'NetworkHealth', id: 'LIST' },
+        { type: 'NetworkHealth', id: 'DETAILS' }
+      ],
       transformResponse: (response: { updateServiceGuardSpec: CreateUpdateCloneMutationResult }) =>
         response.updateServiceGuardSpec
     }),

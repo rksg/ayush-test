@@ -1,16 +1,18 @@
 import { useIntl } from 'react-intl'
 
-import { Loader, Table } from '@acx-ui/components'
+import { Table, TableProps }  from '@acx-ui/components'
+import { DistributionSwitch } from '@acx-ui/rc/utils'
 
-export const DistSwitchesTable = () => {
+export const DistSwitchesTable = (props: Omit<TableProps<DistributionSwitch>, 'columns'>) => {
 
   const { $t } = useIntl()
 
-  const columns = [
+  const columns: TableProps<DistributionSwitch>['columns'] = [
     {
       title: $t({ defaultMessage: 'Dist. Switch' }),
       key: 'name',
-      dataIndex: 'name'
+      dataIndex: 'name',
+      fixed: 'left'
     },
     {
       title: $t({ defaultMessage: 'Model' }),
@@ -19,27 +21,28 @@ export const DistSwitchesTable = () => {
     },
     {
       title: $t({ defaultMessage: 'MAC Address' }),
-      key: 'mac',
-      dataIndex: 'mac'
+      key: 'id',
+      dataIndex: 'id'
     },
     {
       title: $t({ defaultMessage: 'Access Switches' }),
-      key: 'switches',
-      dataIndex: 'switches'
+      key: 'accessSwitches',
+      dataIndex: 'accessSwitches',
+      render: (data, row) => {
+        return row.accessSwitches?.map(as => `${as.name}`).join(', ')
+      }
     },
     {
       title: $t({ defaultMessage: 'VLAN Range' }),
-      key: 'vlanRange',
-      dataIndex: 'vlanRange'
+      key: 'vlans',
+      dataIndex: 'vlans'
     }
   ]
 
   return (
-    <Loader>
-      <Table
-        columns={columns}
-        rowKey='serialNumber'
-      />
-    </Loader>
+    <Table {...props}
+      columns={columns}
+      rowKey='id'
+    />
   )
 }

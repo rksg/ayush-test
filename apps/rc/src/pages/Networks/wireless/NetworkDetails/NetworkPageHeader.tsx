@@ -1,4 +1,4 @@
-import moment      from 'moment'
+import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, RangePicker }                    from '@acx-ui/components'
@@ -22,8 +22,9 @@ function NetworkPageHeader ({
   const navigate = useNavigate()
   const location = useLocation()
   const basePath = useTenantLink('/networks/wireless')
-  const { networkId } = useParams()
+  const { networkId, activeTab } = useParams()
   const { $t } = useIntl()
+  const enableTimeFilter = () => !['aps', 'venues'].includes(activeTab as string)
   return (
     <PageHeader
       title={network.data?.name || ''}
@@ -40,13 +41,15 @@ function NetworkPageHeader ({
             />
           ]
           : [],
-        <RangePicker
-          key='date-filter'
-          selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
-          onDateApply={setDateFilter as CallableFunction}
-          showTimePicker
-          selectionType={range}
-        />,
+        enableTimeFilter()
+          ? <RangePicker
+            key='date-filter'
+            selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
+            onDateApply={setDateFilter as CallableFunction}
+            showTimePicker
+            selectionType={range}
+          />
+          : <></>,
         <Button
           type='primary'
           onClick={() =>

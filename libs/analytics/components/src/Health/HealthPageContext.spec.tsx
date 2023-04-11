@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 
-import moment from 'moment'
+import moment from 'moment-timezone'
 
 import { BrowserRouter as Router } from '@acx-ui/react-router-dom'
 import { act, renderHook }         from '@acx-ui/test-utils'

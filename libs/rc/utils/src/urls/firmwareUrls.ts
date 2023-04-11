@@ -8,10 +8,18 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/upgrade/tenant/:tenantId/preference'
   },
+  getSwitchUpgradePreferences: {
+    method: 'get',
+    url: '/api/upgrade/tenant/:tenantId/switchPreference'
+  },
   updateUpgradePreferences: {
     // [New API] private api
     method: 'put',
     url: '/api/upgrade/tenant/:tenantId/preference'
+  },
+  updateSwitchUpgradePreferences: {
+    method: 'put',
+    url: '/api/upgrade/tenant/:tenantId/switchPreference'
   },
   getVenueVersionList: {
     // [New API] private api
@@ -94,6 +102,14 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     // [New API] private api
     method: 'get',
     url: '/api/upgrade/tenant/:tenantId/invalid-time'
+  },
+  getSwitchFirmwarePredownload: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/switch/upgrade/preDownload'
+  },
+  updateSwitchFirmwarePredownload: {
+    method: 'put',
+    url: '/api/switch/tenant/:tenantId/switch/upgrade/preDownload'
   },
   getPreferences: {
     method: 'get',

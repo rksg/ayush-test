@@ -51,6 +51,7 @@ export default function DHCPInstancesTable (){
       title: $t({ defaultMessage: 'Venue Name' }),
       dataIndex: 'venue',
       sorter: true,
+      fixed: 'left',
       render: function (_data, row) {
         return (
           <TenantLink
@@ -81,7 +82,7 @@ export default function DHCPInstancesTable (){
       render: function (data, row) {
         return (
           <TenantLink
-            to={`/venues/${row.id}/venue-details/devices`}
+            to={`/venues/${row.id}/venue-details/devices/switch`}
             children={data ? data : 0}
           />
         )
@@ -94,7 +95,10 @@ export default function DHCPInstancesTable (){
       render: function (_data, row) {
         const venueIDIndex = _.find(dhcpProfile?.usage, dhcp => dhcp.venueId===row.id)
         if(venueIDIndex) {
-          return (100-((venueIDIndex?.usedIpCount/venueIDIndex?.totalIpCount)*100)).toFixed(2)+'%'
+          if(venueIDIndex?.totalIpCount===0 && venueIDIndex?.usedIpCount===0){
+            return ''
+          }
+          return (100-((venueIDIndex?.usedIpCount/venueIDIndex?.totalIpCount)*100)).toFixed(2) + '%'
         }else{
           return ''
         }

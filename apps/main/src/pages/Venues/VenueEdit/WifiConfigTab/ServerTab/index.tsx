@@ -9,14 +9,17 @@ import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../../'
 
-import { BonjourFencing } from './BonjourFencing/BonjourFencing'
-import { Syslog }         from './Syslog'
+import { ApSnmp }      from './ApSnmp'
+import { MdnsFencing } from './MdnsFencing/MdnsFencing'
+import { Syslog }      from './Syslog'
 
 export interface ServerSettingContext {
   updateSyslog: (() => void),
   discardSyslog: (() => void),
-  updateBonjourFencing: (() => void),
-  discardBonjourFencing: (() => void)
+  updateMdnsFencing: (() => void),
+  discardMdnsFencing: (() => void),
+  updateVenueApSnmp: (() => void),
+  discardVenueApSnmp: (() => void),
 }
 
 export function ServerTab () {
@@ -31,8 +34,8 @@ export function ServerTab () {
     editServerContextData
   } = useContext(VenueEditContext)
 
-  const supportBonjourFencing = useIsSplitOn(Features.BONJOUR_FENCING)
-  //const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
+  const supportMdnsFencing = useIsSplitOn(Features.MDNS_FENCING)
+  const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
 
   const items = [{
     title: $t({ defaultMessage: 'Syslog Server' }),
@@ -44,18 +47,18 @@ export function ServerTab () {
     </>
   }]
 
-  if (supportBonjourFencing) {
+  if (supportMdnsFencing) {
     items.push({
-      title: $t({ defaultMessage: 'Bonjour Fencing' }),
+      title: $t({ defaultMessage: 'mDNS Fencing' }),
       content: <>
-        <StepsForm.SectionTitle id='bonjour-fencing'>
-          { $t({ defaultMessage: 'Bonjour Fencing' }) }
+        <StepsForm.SectionTitle id='mdns-fencing'>
+          { $t({ defaultMessage: 'mDNS Fencing' }) }
         </StepsForm.SectionTitle>
-        <BonjourFencing />
+        <MdnsFencing />
       </>
     })
   }
-  /*
+
   if (supportApSnmp) {
     items.push({
       title: $t({ defaultMessage: 'AP SNMP' }),
@@ -63,16 +66,18 @@ export function ServerTab () {
         <StepsForm.SectionTitle id='ap-snmp'>
           { $t({ defaultMessage: 'AP SNMP' }) }
         </StepsForm.SectionTitle>
-        <div>AP SNMP</div>
+        <ApSnmp/>
       </>
     })
   }
-  */
+
 
   const handleUpdateSetting = async () => {
     try {
       await editServerContextData?.updateSyslog?.()
-      await editServerContextData?.updateBonjourFencing?.()
+      await editServerContextData?.updateMdnsFencing?.()
+      await editServerContextData?.updateVenueApSnmp?.()
+
 
       setEditContextData({
         ...editContextData,

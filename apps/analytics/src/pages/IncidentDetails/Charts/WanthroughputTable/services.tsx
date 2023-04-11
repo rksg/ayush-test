@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request'
 
-import { dataApi }  from '@acx-ui/analytics/services'
 import { Incident } from '@acx-ui/analytics/utils'
+import { dataApi }  from '@acx-ui/store'
 
 export interface Response {
   incident: {

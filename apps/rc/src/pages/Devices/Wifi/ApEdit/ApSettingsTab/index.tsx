@@ -2,14 +2,15 @@ import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs, Tooltip }                          from '@acx-ui/components'
-import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }             from '@acx-ui/icons'
-import { useNavigate, useParams, useTenantLink }  from '@acx-ui/react-router-dom'
-import { directedMulticastInfo, notAvailableMsg } from '@acx-ui/utils'
+import { Tabs, Tooltip }                         from '@acx-ui/components'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }            from '@acx-ui/icons'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { directedMulticastInfo }                 from '@acx-ui/utils'
 
 import { ApEditContext } from '../index'
 
+import { ApSnmp }            from './ApSnmpTab'
 import { DirectedMulticast } from './DirectedMulticast'
 import { IpSettings }        from './General/IpSettings'
 import { LanPorts }          from './LanPorts'
@@ -27,6 +28,7 @@ export function ApSettingsTab () {
   const isServicesEnabled = useIsSplitOn(Features.SERVICES)
   const supportDirectedMulticast = useIsSplitOn(Features.DIRECTED_MULTICAST)
   const supportStaticIpSettings = useIsSplitOn(Features.AP_STATIC_IP)
+  const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
 
   const onTabChange = (tab: string) => {
     setEditContextData && setEditContextData({
@@ -49,7 +51,8 @@ export function ApSettingsTab () {
       radio: $t({ defaultMessage: 'Radio' }),
       lanPort: $t({ defaultMessage: 'LAN Port' }),
       proxy: $t({ defaultMessage: 'mDNS Proxy' }),
-      multicast: $t({ defaultMessage: 'Directed Multicast' })
+      multicast: $t({ defaultMessage: 'Directed Multicast' }),
+      snmp: $t({ defaultMessage: 'AP SNMP' })
     }
 
     const title = tabTitle[tabkey as keyof typeof tabTitle]
@@ -75,15 +78,16 @@ export function ApSettingsTab () {
       <TabPane tab={tabTitleMap('lanPort')} key='lanPort'>
         <LanPorts />
       </TabPane>
-      <TabPane disabled={!isServicesEnabled}
-        tab={
-          <Tooltip title={isServicesEnabled ? '' : $t(notAvailableMsg)}>
-            {tabTitleMap('proxy')}
-          </Tooltip>
-        }
-        key='proxy'>
-        <MdnsProxyTab />
-      </TabPane>
+      {isServicesEnabled ? <TabPane
+        tab={tabTitleMap('proxy')}
+        key='proxy'
+        children={<MdnsProxyTab />}
+      /> : null}
+      {supportApSnmp &&
+        <TabPane tab={tabTitleMap('snmp')} key='snmp'>
+          <ApSnmp />
+        </TabPane>
+      }
       {supportDirectedMulticast &&
         <TabPane tab={<>
           {tabTitleMap('multicast')}

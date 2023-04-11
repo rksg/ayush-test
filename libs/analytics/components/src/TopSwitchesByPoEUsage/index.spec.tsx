@@ -1,8 +1,7 @@
-import { dataApiURL }                                      from '@acx-ui/analytics/services'
 import { AnalyticsFilter }                                 from '@acx-ui/analytics/utils'
 import { EventParams }                                     from '@acx-ui/components'
 import { BrowserRouter, Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { Provider, store }                                 from '@acx-ui/store'
+import { dataApiURL, Provider, store }                     from '@acx-ui/store'
 import { render, renderHook, screen }                      from '@acx-ui/test-utils'
 import { mockGraphqlQuery }                                from '@acx-ui/test-utils'
 import { DateRange }                                       from '@acx-ui/utils'
@@ -57,7 +56,7 @@ describe('TopSwitchesByPoEUsageWidget', () => {
       data: topSwitchesByPoEUsageResponse
     })
     const { asFragment } =render(wrapper)
-    await screen.findByText('Top 5 Switches by PoE Usage')
+    await screen.findByText('Top Switches by PoE Usage')
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
   })
   it('should render error', async () => {

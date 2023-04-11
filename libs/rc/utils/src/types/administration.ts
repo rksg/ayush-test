@@ -76,6 +76,12 @@ export interface Administrator {
   fullName?: string;
 }
 
+export interface TenantMspEc {
+  parentMspId?: string;
+  serviceEffectiveDate: string;
+  serviceExpirationDate: string;
+}
+
 export interface TenantDetails {
   createdDate: string;
   entitlementId: string;
@@ -83,7 +89,7 @@ export interface TenantDetails {
   id: string;
   isActivated: boolean;
   maintenanceState: boolean;
-  mspEc?: boolean;
+  mspEc?: TenantMspEc;
   name: string;
   ruckusUser: boolean;
   status: string;
@@ -165,22 +171,6 @@ export interface NotificationRecipientResponse {
   endpoints: NotificationEndpoint[];
   createdDate: string;
   updatedDate: string;
-}
-
-// FIXME: might be removed because of Tenant.roleDsc is UI used only
-export const GetRoleStr = ( role: RolesEnum ) => {
-  switch (role) {
-    case RolesEnum.PRIME_ADMIN:
-      return 'Prime Admin'
-    case RolesEnum.ADMINISTRATOR:
-      return 'Administrator'
-    case RolesEnum.GUEST_MANAGER:
-      return 'Guest Manager'
-    case RolesEnum.READ_ONLY:
-      return 'Read Only'
-    default:
-      return 'Unknown'
-  }
 }
 
 export const getRoles = () => {

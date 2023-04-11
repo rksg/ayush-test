@@ -1,8 +1,7 @@
-import moment from 'moment'
+import moment from 'moment-timezone'
 
-import { dataApiURL }                                                   from '@acx-ui/analytics/services'
 import { fakeIncident }                                                 from '@acx-ui/analytics/utils'
-import { Provider, store }                                              from '@acx-ui/store'
+import { dataApiURL, Provider, store }                                  from '@acx-ui/store'
 import { act, fireEvent, mockGraphqlQuery, render, renderHook, screen } from '@acx-ui/test-utils'
 
 import { ImpactedAP, impactedApi, ImpactedClient } from './services'
@@ -139,10 +138,10 @@ describe('IncidentAttributes', () => {
     render(<Provider>
       <IncidentAttributes incident={incident} visibleFields={attributeList} />
     </Provider>)
-    const clientImpactTrigger = (await screen.findAllByText('-'))[0]
+    const clientImpactTrigger = (await screen.findAllByText('--'))[0]
     fireEvent.click(clientImpactTrigger) // trigger onOpen
     expect(screen.queryByRole('img', { name: 'loader' })).toBeNull()
-    const apImpactTrigger = (await screen.findAllByText('-'))[1]
+    const apImpactTrigger = (await screen.findAllByText('--'))[1]
     fireEvent.click(apImpactTrigger) // trigger onOpen
     expect(screen.queryByRole('img', { name: 'loader' })).toBeNull()
   })

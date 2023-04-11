@@ -3,7 +3,7 @@ import { identity }      from 'lodash'
 import moment            from 'moment-timezone'
 import { defineMessage } from 'react-intl'
 
-import { formatter } from '@acx-ui/utils'
+import { formatter } from '@acx-ui/formatter'
 
 const pillSuffix = {
   success: defineMessage({ defaultMessage: 'success' }),
@@ -240,7 +240,7 @@ export const kpiConfig = {
     }
   },
   apServiceUptime: {
-    text: defineMessage({ defaultMessage: 'AP-RUCKUS Cloud Connection Uptime' }),
+    text: defineMessage({ defaultMessage: 'AP-RUCKUS One Connection Uptime' }),
     timeseries: {
       apiMetric: 'apUptimeCountAndApCount',
       minGranularity: 'PT3M'
@@ -263,12 +263,12 @@ export const kpiConfig = {
       ],
       thresholdFormatter: formatter('percentFormat'),
       pillSuffix: pillSuffix.meetGoal,
-      tooltip: defineMessage({ defaultMessage: 'AP-RUCKUS Cloud connection uptime measures the percentage of time the AP radios are fully available for client service.\n\nThe time-series graph on the left displays the percentage of AP-RUCKUS Cloud connection uptime samples across time that meets the configured SLA. The bar chart on the right displays the distribution of AP service uptime across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+      tooltip: defineMessage({ defaultMessage: 'AP-RUCKUS One connection uptime measures the percentage of time the AP radios are fully available for client service.\n\nThe time-series graph on the left displays the percentage of AP-RUCKUS One connection uptime samples across time that meets the configured SLA. The bar chart on the right displays the distribution of AP service uptime across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
       //thresholdFormat: x => formatter('percentFormat')(x)
     }
   },
   apToSZLatency: {
-    text: defineMessage({ defaultMessage: 'AP-to-RUCKUS Cloud Latency' }),
+    text: defineMessage({ defaultMessage: 'AP-to-RUCKUS One Latency' }),
     timeseries: {
       apiMetric: 'apSzLatencyCountAndAPCount',
       minGranularity: 'PT3M'
@@ -291,7 +291,7 @@ export const kpiConfig = {
       ],
       thresholdFormatter: null,
       pillSuffix: pillSuffix.meetGoal,
-      tooltip: defineMessage({ defaultMessage: 'The time-series graph on the left displays the percentage of APs that have AP-to-SZ control plane latency which meets the configured SLA. The bar chart on the right captures the distribution of the latency across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+      tooltip: defineMessage({ defaultMessage: 'The time-series graph on the left displays the percentage of APs that have AP-to-RUCKUS One control plane latency which meets the configured SLA. The bar chart on the right captures the distribution of the latency across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
     }
   },
   switchPoeUtilization: {
@@ -335,7 +335,7 @@ export const kpiConfig = {
       thresholdDesc: [],
       pillSuffix: '',
       thresholdFormatter: null,
-      tooltip: defineMessage({ defaultMessage: 'Online APs measures the percentage of APs which are online and connected to Smart Zone.{br}{br}The time-series graph on the left displays the Online AP percentage across time. The bar chart on the right captures the daily Online AP percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+      tooltip: defineMessage({ defaultMessage: 'Online APs measures the percentage of APs which are online and connected to RUCKUS One.{br}{br}The time-series graph on the left displays the Online AP percentage across time. The bar chart on the right captures the daily Online AP percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
     }
   }
 }

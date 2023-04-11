@@ -781,11 +781,15 @@ export const hostapprovalData = {
 export const cloudPathDataNone = {
   authRadiusPolicyProfileId: '55843a3c84ae47d5bb077236917a448a',
   accountingRadiusPolicyProfileId: '55843a3c84ae47d5bb077236917a448cd',
+  enableAccountingProxy: true,
+  enableAuthProxy: true,
   accountingRadius: {
     name: 'acc1',
     id: '22',
-    type: 'ACCOUNTING'
-
+    type: 'ACCOUNTING',
+    primary: {
+      sharedSecret: 'xxxxxxxxx'
+    }
   },
   authRadius: {
     name: 'auth1',

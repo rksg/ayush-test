@@ -1,8 +1,7 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-
 import {
   CommonResult,
   CurrentVersions,
+  PreDownload,
   TableResult,
   UpgradePreferences,
   FirmwareUrlsInfo,
@@ -12,14 +11,7 @@ import {
   createHttpRequest,
   RequestPayload
 } from '@acx-ui/rc/utils'
-
-export const baseFirmwareApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  reducerPath: 'firmwareApi',
-  tagTypes: ['Firmware', 'SwitchFirmware'],
-  refetchOnMountOrArgChange: true,
-  endpoints: () => ({ })
-})
+import { baseFirmwareApi } from '@acx-ui/store'
 
 export const firmwareApi = baseFirmwareApi.injectEndpoints({
   endpoints: (build) => ({
@@ -32,6 +24,15 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       },
       providesTags: [{ type: 'Firmware', id: 'PREFERENCES' }]
     }),
+    getSwitchUpgradePreferences: build.query<UpgradePreferences, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getSwitchUpgradePreferences, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Firmware', id: 'SWITCH_PREFERENCES' }]
+    }),
     updateUpgradePreferences: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(FirmwareUrlsInfo.updateUpgradePreferences, params)
@@ -42,13 +43,25 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Firmware', id: 'PREFERENCES' }]
     }),
+    updateSwitchUpgradePreferences: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.updateSwitchUpgradePreferences, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Firmware', id: 'SWITCH_PREFERENCES' }]
+    }),
     getVenueVersionList: build.query<TableResult<FirmwareVenue>, RequestPayload>({
       query: ({ params, payload }) => {
-        const queryString = payload as { searchString: string }
+        // eslint-disable-next-line max-len
+        const queryString = payload as { searchString: string, filters: { version: [], type: string[] } }
         const req = createHttpRequest(FirmwareUrlsInfo.getVenueVersionList, {
           ...params,
-          version: '',
-          type: '',
+          version: queryString.filters?.version ? queryString.filters.version.join(',') : '',
+          // eslint-disable-next-line max-len
+          type: queryString.filters?.type ? queryString.filters.type.map(t => t.toLowerCase()).join(',') : '',
           search: queryString.searchString ?? ''
         })
         return{
@@ -163,13 +176,28 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
     }),
     getSwitchVenueVersionList: build.query<TableResult<FirmwareSwitchVenue>, RequestPayload>({
       query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const queryString = payload as { searchString: string, filters: { version: [], type: string[] } }
+        let typeString = ''
+        if (queryString.filters?.type && queryString.filters.type.join(',') === 'Release') {
+          typeString = 'RECOMMENDED'
+        }
+        // eslint-disable-next-line max-len
+        if (queryString.filters?.type && queryString.filters.type.join(',') === 'Beta') {
+          typeString = 'BETA'
+        }
         const venueListReq = createHttpRequest(FirmwareUrlsInfo.getSwitchVenueVersionList, params)
         return {
           ...venueListReq,
-          body: payload
+          body: {
+            firmwareType: typeString,
+            // eslint-disable-next-line max-len
+            firmwareVersion: queryString.filters?.version ? queryString.filters.version.join(',') : '',
+            search: queryString.searchString ?? '',
+            updateAvailable: ''
+          }
         }
       },
-      // transformResponse (result: NewTableResult<FirmwareSwitchVenue>) {
       transformResponse (result: { upgradeVenueViewList: FirmwareSwitchVenue[] }) {
         return {
           data: result.upgradeVenueViewList,
@@ -177,9 +205,6 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
           totalCount: result.upgradeVenueViewList.length
         } as TableResult<FirmwareSwitchVenue>
       },
-      // transformResponse: (result: { upgradeVenueViewList: FirmwareSwitchVenue[] }) => {
-      //   return result.upgradeVenueViewList
-      // },
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
@@ -200,6 +225,26 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
+    }),
+    getSwitchFirmwarePredownload: build.query<PreDownload, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getSwitchFirmwarePredownload, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'SwitchFirmware', id: 'PREDOWNLOAD' }]
+    }),
+    updateSwitchFirmwarePredownload: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.updateSwitchFirmwarePredownload, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      // eslint-disable-next-line max-len
+      invalidatesTags: [{ type: 'SwitchFirmware', id: 'LIST' }, { type: 'SwitchFirmware', id: 'PREDOWNLOAD' }]
     })
   })
 })
@@ -207,6 +252,8 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
 export const {
   useGetUpgradePreferencesQuery,
   useUpdateUpgradePreferencesMutation,
+  useGetSwitchUpgradePreferencesQuery,
+  useUpdateSwitchUpgradePreferencesMutation,
   useGetVenueVersionListQuery,
   useGetLatestFirmwareListQuery,
   useGetAvailableFirmwareListQuery,
@@ -220,5 +267,7 @@ export const {
   useGetSwitchFirmwareVersionIdListQuery,
   useGetSwitchVenueVersionListQuery,
   useGetSwitchAvailableFirmwareListQuery,
-  useGetSwitchCurrentVersionsQuery
+  useGetSwitchCurrentVersionsQuery,
+  useGetSwitchFirmwarePredownloadQuery,
+  useUpdateSwitchFirmwarePredownloadMutation
 } = firmwareApi

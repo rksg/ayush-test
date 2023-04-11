@@ -2,13 +2,13 @@ import { defineMessage }                       from '@formatjs/intl'
 import { upperFirst, without }                 from 'lodash'
 import { FormattedMessage, MessageDescriptor } from 'react-intl'
 
-import { ConnectionEventPopover }      from '@acx-ui/analytics/components'
-import { mapCodeToReason }             from '@acx-ui/analytics/utils'
-import { TableProps, cssStr, Tooltip } from '@acx-ui/components'
-import type { TableColumn }            from '@acx-ui/components'
-import { TenantLink }                  from '@acx-ui/react-router-dom'
-import { getIntl, formatter }          from '@acx-ui/utils'
-import { NetworkPath }                 from '@acx-ui/utils'
+import { ConnectionEventPopover }              from '@acx-ui/analytics/components'
+import { mapCodeToReason }                     from '@acx-ui/analytics/utils'
+import { TableProps, cssStr, Tooltip }         from '@acx-ui/components'
+import type { TableColumn }                    from '@acx-ui/components'
+import { formatter }                           from '@acx-ui/formatter'
+import { TenantLink }                          from '@acx-ui/react-router-dom'
+import { getIntl, NetworkPath, noDataDisplay } from '@acx-ui/utils'
 
 import * as contents from '../../contents'
 import {
@@ -143,6 +143,7 @@ export const getTableColumns = ({
       dataIndex: key,
       key: key,
       align: 'center',
+      disable: true,
       width: 100,
       render: function (_, row: TestResultByAP, index: number) {
         const failure = getClientFailureInfo(row)[key]
@@ -221,6 +222,7 @@ export const getTableColumns = ({
       dataIndex: 'apName',
       key: 'apName',
       width: 150,
+      fixed: 'left',
       render: function (text, row) {
         const { apMac } = row
         return (
@@ -251,8 +253,8 @@ export const getTableColumns = ({
     columns.push(
       {
         title: $t(defineMessage({ defaultMessage: 'Station AP Name' })),
-        dataIndex: 'stationAp',
-        key: 'stationAp',
+        dataIndex: 'stationApName',
+        key: 'stationApName',
         width: 150,
         render: function (_, row) {
           const { stationAp } = row
@@ -261,30 +263,30 @@ export const getTableColumns = ({
               to={`devices/wifi/${stationAp?.mac}/details/overview`}
               title={$t(stationAPDetailsText)}
             >{stationAp?.name}</TenantLink>
-          ) : '-'
+          ) : noDataDisplay
         }
       },
       {
         title: $t(defineMessage({ defaultMessage: 'Station AP MAC' })),
-        dataIndex: 'stationAp',
-        key: 'stationAp',
+        dataIndex: 'stationApMac',
+        key: 'stationApMac',
         width: 150,
         render: function (_, row) {
           const { stationAp } = row
-          return stationAp?.mac ?? '-'
+          return stationAp?.mac ?? noDataDisplay
         }
       },
       {
         title: $t(defineMessage({ defaultMessage: 'Station AP SNR' })),
-        dataIndex: 'stationAp',
-        key: 'stationAp',
+        dataIndex: 'stationApSnr',
+        key: 'stationApSnr',
         align: 'center',
         width: 150,
         render: function (_, row, index) {
           const { stationAp } = row
           return (
             <span key={`${stationAp?.snr}-${index}`}>
-              {formatter('decibelFormat')(stationAp?.snr || '-')}
+              {formatter('decibelFormat')(stationAp?.snr || noDataDisplay)}
             </span>
           )
         }

@@ -1,5 +1,4 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   CommonUrlsInfo,
   DHCPUrls,
@@ -53,21 +52,23 @@ import {
   VenueDirectedMulticast,
   VenueLoadBalancing,
   TopologyData,
-  VenueBonjourFencingPolicy
+  VenueMdnsFencingPolicy,
+  PropertyConfigs,
+  PropertyUrlsInfo,
+  PropertyUnit,
+  ResidentPortal,
+  NewTableResult,
+  transferToTableResult,
+  downloadFile,
+  RequestFormData,
+  createNewTableHttpRequest,
+  TableChangePayload
 } from '@acx-ui/rc/utils'
-import { formatter, getJwtToken } from '@acx-ui/utils'
+import { baseVenueApi } from '@acx-ui/store'
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
 }
-
-export const baseVenueApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  reducerPath: 'venueApi',
-  tagTypes: ['Venue', 'Device', 'VenueFloorPlan', 'AAA', 'ExternalAntenna', 'VenueRadio'],
-  refetchOnMountOrArgChange: true,
-  endpoints: () => ({})
-})
 
 export const venueApi = baseVenueApi.injectEndpoints({
   endpoints: (build) => ({
@@ -135,13 +136,6 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...req,
           body: payload
         }
-      },
-      transformResponse (result: { data: Venue[] }) {
-        result.data.map(venue => {
-          venue.switches = venue.switches ? venue.switches : 0
-          return venue
-        })
-        return result
       }
     }),
     updateVenue: build.mutation<VenueExtended, RequestPayload>({
@@ -292,10 +286,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return {
           ...req,
           headers: {
-            'accept': 'application/json, text/plain, */*',
-            'x-rks-tenantid': params?.tenantId,
-            'content-type': 'application/json; charset=UTF-8',
-            ...(getJwtToken() ? { Authorization: `Bearer ${getJwtToken()}` } : {})
+            ...req.headers,
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json; charset=UTF-8'
           },
           body: payload
         }
@@ -335,7 +328,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'Update Switch Position',
             'UpdateApPosition',
-            'UpdateCloudpathServerPosition'], () => {
+            'UpdateCloudpathServerPosition',
+            'DeleteFloorPlan'], () => {
             api.dispatch(venueApi.util.invalidateTags([{ type: 'VenueFloorPlan', id: 'DEVICE' }]))
           })
         })
@@ -452,14 +446,6 @@ export const venueApi = baseVenueApi.injectEndpoints({
     venueSwitchSetting: build.query<VenueSwitchConfiguration, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(CommonUrlsInfo.getVenueSwitchSetting, params)
-        return{
-          ...req
-        }
-      }
-    }),
-    switchConfigProfile: build.query<ConfigurationProfile, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getSwitchConfigProfile, params)
         return{
           ...req
         }
@@ -845,7 +831,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return {
           data: res.response.list ? res.response.list.map(item => ({
             ...item,
-            startTime: formatter('dateTimeFormatWithSeconds')(item.startTime),
+            startTime: formatter(DateFormatEnum.DateTimeFormatWithSeconds)(item.startTime),
             configType: (item.configType as unknown as string[])
               .map(type => transformConfigType(type)).join(', '),
             dispatchStatus: transformConfigStatus(item.dispatchStatus)
@@ -905,34 +891,219 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return result?.data[0] as TopologyData
       }
     }),
-    getVenueBonjourFencing: build.query<VenueBonjourFencingPolicy, RequestPayload>({
+    getVenueMdnsFencing: build.query<VenueMdnsFencingPolicy, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getVenueBonjourFencingPolicy, params)
+        const req = createHttpRequest(CommonUrlsInfo.getVenueMdnsFencingPolicy, params)
         return{
           ...req
         }
       },
-      providesTags: [{ type: 'Venue', id: 'BONJOUR_FENCING' }],
+      providesTags: [{ type: 'Venue', id: 'MDNS_FENCING' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'UpdateVenueBonjourFencing'
           ]
           onActivityMessageReceived(msg, activities, () => {
-            api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'BONJOUR_FENCING' }]))
+            api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'MDNS_FENCING' }]))
           })
         })
       }
     }),
-    updateVenueBonjourFencing: build.mutation<VenueBonjourFencingPolicy, RequestPayload>({
+    updateVenueMdnsFencing: build.mutation<VenueMdnsFencingPolicy, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.updateVenueBonjourFencingPolicy, params)
+        const req = createHttpRequest(CommonUrlsInfo.updateVenueMdnsFencingPolicy, params)
         return{
           ...req,
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Venue', id: 'BONJOUR_FENCING' }]
+      invalidatesTags: [{ type: 'Venue', id: 'MDNS_FENCING' }]
+    }),
+    getPropertyConfigs: build.query<PropertyConfigs, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          PropertyUrlsInfo.getPropertyConfigs,
+          params,
+          { Accept: 'application/hal+json' }
+        )
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'PropertyConfigs', id: 'ID' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'ENABLE_PROPERTY',
+            'DISABLE_PROPERTY'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(venueApi.util.invalidateTags([{ type: 'PropertyConfigs', id: 'ID' }]))
+          })
+        })
+      }
+    }),
+    updatePropertyConfigs: build.mutation<PropertyConfigs, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.updatePropertyConfigs, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'PropertyConfigs', id: 'ID' }]
+    }),
+    patchPropertyConfigs: build.mutation<PropertyConfigs, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          PropertyUrlsInfo.patchPropertyConfigs,
+          params,
+          { 'Content-Type': 'application/json-patch+json' })
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'PropertyConfigs', id: 'ID' }]
+    }),
+    addPropertyUnit: build.mutation<PropertyUnit, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.addPropertyUnit, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
+    }),
+    importPropertyUnits: build.mutation<{}, RequestFormData>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.importPropertyUnits, params, {
+          'Content-Type': undefined,
+          'Accept': undefined
+        })
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'PropertyUnit' }]
+    }),
+
+    // eslint-disable-next-line max-len
+    getPropertyUnitById: build.query<PropertyUnit, RequestPayload<{ venueId: string, unitId: string }>>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(PropertyUrlsInfo.getUnitById, params, { Accept: 'application/hal+json' })
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'PropertyUnit', id: 'ID' }]
+    }),
+    getPropertyUnitList: build.query<TableResult<PropertyUnit>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          PropertyUrlsInfo.getPropertyUnitList,
+          params,
+          { Accept: 'application/hal+json' }
+        )
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      transformResponse (result: NewTableResult<PropertyUnit>) {
+        return transferToTableResult<PropertyUnit>(result)
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'ADD_UNIT',
+            'UPDATE_UNIT',
+            'DELETE_UNITS'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(venueApi.util.invalidateTags([
+              { type: 'PropertyUnit', id: 'LIST' },
+              { type: 'PropertyUnit', id: 'ID' }
+            ]))
+          })
+        })
+      },
+      providesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
+    }),
+    downloadPropertyUnits: build.query<Blob, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.exportPropertyUnits, {
+          ...params
+        },{
+          Accept: 'text/csv'
+        })
+
+        return {
+          ...req,
+          body: payload,
+          responseHandler: async (response) => {
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1]
+              : 'PropertyUnits.csv'
+            downloadFile(response, fileName)
+          }
+        }
+      }
+    }),
+    updatePropertyUnit: build.mutation<PropertyUnit, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.updatePropertyUnit, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
+    }),
+    deletePropertyUnits: build.mutation<PropertyUnit, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.deletePropertyUnits, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
+    }),
+    getResidentPortalList: build.query<TableResult<ResidentPortal>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createNewTableHttpRequest({
+          apiInfo: PropertyUrlsInfo.getResidentPortalList,
+          params,
+          payload: payload as TableChangePayload
+        })
+        return {
+          ...req
+        }
+      },
+      transformResponse (result: NewTableResult<ResidentPortal>) {
+        return transferToTableResult<ResidentPortal>(result)
+      },
+      providesTags: [{ type: 'ResidentPortal', id: 'LIST' }]
+    }),
+    getVenueWithSetProperty: build.query<string[], string[]>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const result: string[] = []
+        for(let venueId of arg) {
+          const urlInfo = createHttpRequest(PropertyUrlsInfo.getPropertyConfigs, { venueId })
+          urlInfo.headers['Accept'] = '*/*'
+          const fetchResult = await fetchWithBQ(urlInfo)
+          if(!fetchResult.error) {
+            result.push(venueId)
+          }
+        }
+        return { data: result }
+      }
     })
   })
 })
@@ -988,7 +1159,6 @@ export const {
   useConfigProfilesQuery,
   useVenueSwitchSettingQuery,
   useUpdateVenueSwitchSettingMutation,
-  useSwitchConfigProfileQuery,
   useVenueDHCPProfileQuery,
   useVenueDHCPPoolsQuery,
   useVenuesLeasesListQuery,
@@ -1017,6 +1187,20 @@ export const {
   useGetVenueLoadBalancingQuery,
   useUpdateVenueLoadBalancingMutation,
   useGetTopologyQuery,
-  useGetVenueBonjourFencingQuery,
-  useUpdateVenueBonjourFencingMutation
+  useGetVenueMdnsFencingQuery,
+  useUpdateVenueMdnsFencingMutation,
+  useGetPropertyConfigsQuery,
+  useUpdatePropertyConfigsMutation,
+  usePatchPropertyConfigsMutation,
+  useAddPropertyUnitMutation,
+
+  useGetPropertyUnitByIdQuery,
+  useLazyGetPropertyUnitByIdQuery,
+  useGetPropertyUnitListQuery,
+  useUpdatePropertyUnitMutation,
+  useDeletePropertyUnitsMutation,
+  useGetResidentPortalListQuery,
+  useImportPropertyUnitsMutation,
+  useLazyDownloadPropertyUnitsQuery,
+  useGetVenueWithSetPropertyQuery
 } = venueApi

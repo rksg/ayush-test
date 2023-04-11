@@ -47,7 +47,9 @@ const historicalPayload = {
     'serialNumber', 'networkId', 'disconnectTime', 'ssid', 'osType',
     'sessionDuration', 'venueName', 'apName', 'bssid'],
   sortField: 'event_datetime',
-  searchTargetFields: ['clientMac']
+  searchTargetFields: ['clientMac'],
+  page: 1,
+  pageSize: 1
 }
 
 export function ClientOverviewTab () {
@@ -100,7 +102,8 @@ export function ClientOverviewTab () {
 
   useEffect(() => {
     const serialNumber = clientDetails?.apSerialNumber || clientDetails?.serialNumber
-    if (serialNumber) {
+    const isApNotExists = clientDetails.isApExists === false
+    if (serialNumber && !isApNotExists) {
       const checkTribandAp = async () => {
         const apDetails = await getAp({
           params: { tenantId, serialNumber }
@@ -138,7 +141,7 @@ export function ClientOverviewTab () {
     }
     getClientData()
   }, [filters, isTribandAp])
-  // TODO: Remove background: '#F7F7F7' and Add Top 10 Applications Component
+
   return <GridRow>
     <GridCol col={{ span: 18 }}>
       <GridRow>

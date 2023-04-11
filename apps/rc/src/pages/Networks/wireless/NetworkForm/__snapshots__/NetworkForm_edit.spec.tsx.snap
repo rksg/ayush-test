@@ -82,7 +82,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
               class="ant-steps ant-steps-vertical ant-steps-dot"
             >
               <div
-                class="ant-steps-item ant-steps-item-process ant-steps-item-active"
+                class="ant-steps-item ant-steps-item-process ant-steps-item-active ant-steps-item-disabled"
               >
                 <div
                   class="ant-steps-item-container"
@@ -113,12 +113,10 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                 </div>
               </div>
               <div
-                class="ant-steps-item ant-steps-item-wait"
+                class="ant-steps-item ant-steps-item-wait ant-steps-item-disabled"
               >
                 <div
                   class="ant-steps-item-container"
-                  role="button"
-                  tabindex="0"
                 >
                   <div
                     class="ant-steps-item-tail"
@@ -146,12 +144,10 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                 </div>
               </div>
               <div
-                class="ant-steps-item ant-steps-item-wait"
+                class="ant-steps-item ant-steps-item-wait ant-steps-item-disabled"
               >
                 <div
                   class="ant-steps-item-container"
-                  role="button"
-                  tabindex="0"
                 >
                   <div
                     class="ant-steps-item-tail"
@@ -179,12 +175,10 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                 </div>
               </div>
               <div
-                class="ant-steps-item ant-steps-item-wait"
+                class="ant-steps-item ant-steps-item-wait ant-steps-item-disabled"
               >
                 <div
                   class="ant-steps-item-container"
-                  role="button"
-                  tabindex="0"
                 >
                   <div
                     class="ant-steps-item-tail"
@@ -2461,6 +2455,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                             >
                               <span
                                 aria-label="loader"
+                                class="SuspenseBoundary__SpinWrapper-sc-l6mvnr-0"
                                 role="img"
                               >
                                 <div

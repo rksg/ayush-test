@@ -1,15 +1,30 @@
 import React from 'react'
 
-import { createRoot } from 'react-dom/client'
+import { Root }          from 'react-dom/client'
+import { addMiddleware } from 'redux-dynamic-middlewares'
 
-import { ConfigProvider, ConfigProviderProps } from '@acx-ui/components'
-import { get }                                 from '@acx-ui/config'
-import { BrowserRouter }                       from '@acx-ui/react-router-dom'
-import { Provider }                            from '@acx-ui/store'
-import { UserProfileProvider, UserUrlsInfo }   from '@acx-ui/user'
-import { getTenantId, createHttpRequest }      from '@acx-ui/utils'
+import {
+  ConfigProvider,
+  ConfigProviderProps,
+  Loader,
+  SuspenseBoundary
+} from '@acx-ui/components'
+import { get }           from '@acx-ui/config'
+import { BrowserRouter } from '@acx-ui/react-router-dom'
+import { Provider }      from '@acx-ui/store'
+import {
+  UserProfileProvider,
+  useUserProfileContext,
+  UserUrlsInfo
+} from '@acx-ui/user'
+import {
+  getTenantId,
+  createHttpRequest,
+  useLocaleContext
+} from '@acx-ui/utils'
 
-import AllRoutes from './AllRoutes'
+import AllRoutes           from './AllRoutes'
+import { errorMiddleware } from './errorMiddleware'
 
 import '@acx-ui/theme'
 
@@ -37,6 +52,7 @@ export function loadMessages (locales: readonly string[]): string {
 
 export function renderPendoAnalyticsTag () {
   const script = document.createElement('script')
+  script.defer = true
   // @ts-ignore
   const key = get('PENDO_API_KEY')
   script.onerror = event => {
@@ -91,9 +107,21 @@ export async function pendoInitalization (): Promise<void> {
   }
 }
 
-export async function init () {
-  const container = document.getElementById('root')
-  const root = createRoot(container!)
+function DataGuardLoader (props: React.PropsWithChildren) {
+  const locale = useLocaleContext()
+  const userProfile = useUserProfileContext()
+
+  return <Loader
+    fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
+    states={[{ isLoading:
+      !Boolean(locale.messages) ||
+      !Boolean(userProfile.allowedOperations.length)
+    }]}
+    children={props.children}
+  />
+}
+
+export async function init (root: Root) {
   const browserLang = loadMessages(navigator.languages)
   const queryParams = new URLSearchParams(window.location.search)
   const lang = (queryParams.get('lang') ?? browserLang) as ConfigProviderProps['lang']
@@ -104,19 +132,23 @@ export async function init () {
     renderPendoAnalyticsTag()
   }
 
+  addMiddleware(errorMiddleware)
+
   root.render(
     <React.StrictMode>
-      <ConfigProvider lang={lang}>
-        <Provider>
-          <BrowserRouter>
+      <Provider>
+        <BrowserRouter>
+          <ConfigProvider lang={lang}>
             <UserProfileProvider>
-              <React.Suspense fallback={null}>
-                <AllRoutes />
-              </React.Suspense>
+              <DataGuardLoader>
+                <React.Suspense fallback={null}>
+                  <AllRoutes />
+                </React.Suspense>
+              </DataGuardLoader>
             </UserProfileProvider>
-          </BrowserRouter>
-        </Provider>
-      </ConfigProvider>
+          </ConfigProvider>
+        </BrowserRouter>
+      </Provider>
     </React.StrictMode>
   )
 }

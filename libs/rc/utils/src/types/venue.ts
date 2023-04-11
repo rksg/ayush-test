@@ -236,6 +236,7 @@ export interface Address {
   longitude?: number
   notes?: string
   timezone?: string
+  countryCode?: string
 }
 
 export interface MeshOptions {
@@ -768,33 +769,33 @@ export enum DeviceTypes {
 	Cloud='Cloud'
 }
 
-export interface BonjourFencingWirelessRule {
+export interface MdnsFencingWirelessRule {
   fencingRange: string//'SAME_AP' | 'ONE_HOP_AP'
 }
 
-export interface BonjourFencingWiredRule {
+export interface MdnsFencingWiredRule {
   name: string,
   fencingRange: string, //'SAME_AP' | 'ONE_HOP_AP',
   closestApMac: string,
   deviceMacAddresses: string[]
 }
 
-export interface BonjourFencingService {
+export interface MdnsFencingService {
   service: string,
   customServiceName?: string,
   description: string,
   wirelessEnabled: boolean,
-  wirelessRule?: BonjourFencingWirelessRule,
+  wirelessRule?: MdnsFencingWirelessRule,
   wiredEnabled: boolean,
-  wiredRules?: BonjourFencingWiredRule[],
+  wiredRules?: MdnsFencingWiredRule[],
   customMappingEnabled: boolean,
   customStrings?: string[],
   rowId?: string
 }
 
-export interface VenueBonjourFencingPolicy {
+export interface VenueMdnsFencingPolicy {
   enabled: boolean,
-  services?: BonjourFencingService[]
+  services?: MdnsFencingService[]
 }
 
 export enum ShowTopologyFloorplanOn {

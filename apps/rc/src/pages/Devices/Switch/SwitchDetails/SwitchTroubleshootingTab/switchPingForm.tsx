@@ -6,14 +6,14 @@ import _                         from 'lodash'
 import { useIntl }               from 'react-intl'
 import { useParams }             from 'react-router-dom'
 
-import { Button, Loader, Tooltip } from '@acx-ui/components'
+import { Button, Loader, Tooltip }   from '@acx-ui/components'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { useGetTroubleshootingQuery,
   useLazyGetTroubleshootingCleanQuery,
   usePingMutation }                             from '@acx-ui/rc/services'
 import { targetHostRegExp,
   TroubleshootingType,
   WifiTroubleshootingMessages } from '@acx-ui/rc/utils'
-import { formatter } from '@acx-ui/utils'
 
 export function SwitchPingForm () {
   const { $t } = useIntl()
@@ -63,6 +63,9 @@ export function SwitchPingForm () {
 
       if (response.latestResultResponseTime) {
         setIsValid(true)
+      }
+      if (!response.pingIp) {
+        setIsValid(false)
       }
     }
 
@@ -140,7 +143,7 @@ export function SwitchPingForm () {
           <Form.Item
             label={$t({ defaultMessage: 'Last synced at' })}
             children={
-              formatter('dateTimeFormatWithSeconds')(lasySyncTime)}
+              formatter(DateFormatEnum.DateTimeFormatWithSeconds)(lasySyncTime)}
           />}
 
         <Form.Item wrapperCol={{ offset: 0, span: 16 }}

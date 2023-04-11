@@ -37,20 +37,17 @@ import {
   CommonResult,
   Layer3ProtocolType,
   portRegExp,
-  serverIpAddressRegExp,
+  networkWifiIpRegExp,
   subnetMaskIpRegExp
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
 import { layer3ProtocolLabelMapping } from '../../contentsMap'
 
+import { AddModeProps, editModeProps } from './AccessControlForm'
+
 const { useWatch } = Form
 const { Option } = Select
-
-export interface editModeProps {
-  id: string,
-  isEdit: boolean
-}
 
 export interface Layer3DrawerProps {
   inputName?: string[],
@@ -59,6 +56,7 @@ export interface Layer3DrawerProps {
     viewText: string
   },
   isOnlyViewMode?: boolean,
+  onlyAddMode?: AddModeProps,
   editMode?: editModeProps,
   setEditMode?: (editMode: editModeProps) => void
 }
@@ -66,7 +64,7 @@ export interface Layer3DrawerProps {
 interface Layer3NetworkCol {
   type: string,
   subnet?: string,
-  mask?: string,
+  ipMask?: string,
   ip?: string,
   port: string,
   enableIpSubnet?: boolean
@@ -123,14 +121,14 @@ const DEFAULT_LAYER3_RULES = [
     source: {
       type: 'Any',
       subnet: '',
-      mask: '',
+      ipMask: '',
       ip: '',
       port: ''
     },
     destination: {
       type: 'Any',
       subnet: '',
-      mask: '',
+      ipMask: '',
       ip: '',
       port: '67'
     }
@@ -143,14 +141,14 @@ const DEFAULT_LAYER3_RULES = [
     source: {
       type: 'Any',
       subnet: '',
-      mask: '',
+      ipMask: '',
       ip: '',
       port: ''
     },
     destination: {
       type: 'Any',
       subnet: '',
-      mask: '',
+      ipMask: '',
       ip: '',
       port: '53'
     }
@@ -164,10 +162,14 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     inputName = [],
     onlyViewMode = {} as { id: string, viewText: string },
     isOnlyViewMode = false,
+    onlyAddMode = { enable: false, visible: false } as AddModeProps,
     editMode = { id: '', isEdit: false } as editModeProps,
     setEditMode = () => {}
   } = props
-  const [visible, setVisible] = useState(false)
+  const [visible, setVisible] = useState(onlyAddMode.enable ? onlyAddMode.visible : false)
+  const [localEditMode, setLocalEdiMode] = useState(
+    { id: '', isEdit: false } as editModeProps
+  )
   const form = Form.useFormInstance()
   const [ruleDrawerVisible, setRuleDrawerVisible] = useState(false)
   const [ruleDrawerEditMode, setRuleDrawerEditMode] = useState(false)
@@ -176,17 +178,21 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
   const [queryPolicyId, setQueryPolicyId] = useState('')
   const [queryPolicyName, setQueryPolicyName] = useState('')
   const [requestId, setRequestId] = useState('')
+  const [sourceValue, setSourceValue] = useState(1)
+  const [destValue, setDestValue] = useState(1)
+  const [skipFetch, setSkipFetch] = useState(true)
   const [contentForm] = Form.useForm()
   const [drawerForm] = Form.useForm()
 
   const AnyText = $t({ defaultMessage: 'Any' })
+  const RuleSource =[RuleSourceType.ANY, RuleSourceType.SUBNET, RuleSourceType.IP]
 
   const [
     accessStatus,
     policyName,
     l3AclPolicyId
   ] = [
-    useWatch<string>('layer3Access', contentForm),
+    useWatch<string>('layer3DefaultAccess', contentForm),
     useWatch<string>('policyName', contentForm),
     useWatch<string>([...inputName, 'l3AclPolicyId'])
   ]
@@ -213,11 +219,12 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     }
   })
 
+
   const { data: layer3PolicyInfo } = useGetL3AclPolicyQuery(
     {
       params: { ...params, l3AclPolicyId: isOnlyViewMode ? onlyViewMode.id : l3AclPolicyId }
     },
-    { skip: !isOnlyViewMode && (l3AclPolicyId === '' || l3AclPolicyId === undefined) }
+    { skip: skipFetch }
   )
 
   const isViewMode = () => {
@@ -225,12 +232,16 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       return false
     }
 
-    if (editMode) {
-      return !editMode.isEdit
+    if (editMode.isEdit || localEditMode.isEdit) {
+      return false
     }
 
     return !_.isNil(layer3PolicyInfo)
   }
+
+  useEffect(() => {
+    setSkipFetch(!isOnlyViewMode && (l3AclPolicyId === '' || l3AclPolicyId === undefined))
+  }, [isOnlyViewMode, l3AclPolicyId])
 
   useEffect(() => {
     if (editMode.isEdit && editMode.id !== '') {
@@ -240,17 +251,19 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
   }, [editMode])
 
   useEffect(() => {
-    if (layer3PolicyInfo) {
+    if (layer3PolicyInfo && (isViewMode() || editMode.isEdit || localEditMode.isEdit)) {
       contentForm.setFieldValue('policyName', layer3PolicyInfo.name)
-      contentForm.setFieldValue('layer3Access', layer3PolicyInfo.defaultAccess)
-      setLayer3RuleList([...layer3PolicyInfo.l3Rules.map(l3Rule => ({
-        access: l3Rule.access,
-        description: l3Rule.description,
-        priority: l3Rule.priority,
-        protocol: l3Rule.protocol as Layer3ProtocolType ?? Layer3ProtocolType.ANYPROTOCOL,
-        source: { ...l3Rule.source },
-        destination: { ...l3Rule.destination }
-      }))] as Layer3Rule[])
+      contentForm.setFieldValue('layer3DefaultAccess', layer3PolicyInfo.defaultAccess)
+      setLayer3RuleList([...layer3PolicyInfo.l3Rules.map(l3Rule => {
+        return {
+          access: l3Rule.access,
+          description: l3Rule.description,
+          priority: l3Rule.priority,
+          protocol: l3Rule.protocol as Layer3ProtocolType ?? Layer3ProtocolType.ANYPROTOCOL,
+          source: { ...l3Rule.source },
+          destination: { ...l3Rule.destination }
+        }
+      }).sort((a, b) => a.priority - b.priority)] as Layer3Rule[])
     }
   }, [layer3PolicyInfo, queryPolicyId])
 
@@ -259,7 +272,9 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     if (requestId && queryPolicyName) {
       layer3SelectOptions.map(option => {
         if (option.props.children === queryPolicyName) {
-          form.setFieldValue([...inputName, 'l3AclPolicyId'], option.key)
+          if (!onlyAddMode.enable) {
+            form.setFieldValue([...inputName, 'l3AclPolicyId'], option.key)
+          }
           setQueryPolicyId(option.key as string)
           setQueryPolicyName('')
           setRequestId('')
@@ -267,6 +282,12 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       })
     }
   }, [layer3SelectOptions, requestId, policyName])
+
+  useEffect(() => {
+    if (onlyAddMode.enable && onlyAddMode.visible) {
+      setVisible(onlyAddMode.visible)
+    }
+  }, [onlyAddMode])
 
   const DragHandle = SortableHandle(() =>
     <Drag style={{ cursor: 'grab', color: '#6e6e6e' }} />
@@ -325,19 +346,19 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     }
   ]
 
-  const [sourceValue, setSourceValue] = useState(1)
-  const [destValue, setDestValue] = useState(1)
-
-  const RuleSource =[RuleSourceType.ANY, RuleSourceType.SUBNET, RuleSourceType.IP]
-
   const NetworkColumnComponent = (props: { network: Layer3NetworkCol }) => {
     const { network } = props
 
-    let ipString = network.type ?? RuleSourceType.ANY
-    if (network && network.type === RuleSourceType.SUBNET) {
-      ipString = `${network.subnet}/${network.mask}`
+    let ipString = RuleSourceType.ANY as string
+    if (network.type === RuleSourceType.SUBNET) {
+      ipString = `${network.subnet}/${network.ipMask}`
     }
-    if (network && network.type === RuleSourceType.IP) {
+    if (network.type === RuleSourceType.IP) {
+      ipString = `${network.ip}`
+    }
+    if (network.ipMask) {
+      ipString = `${network.ip}/${network.ipMask}`
+    } else if (network.ip) {
       ipString = `${network.ip}`
     }
 
@@ -370,8 +391,8 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
 
   const clearFieldsValue = () => {
     contentForm.setFieldValue('policyName', undefined)
-    contentForm.setFieldValue('layer3Access', undefined)
-    setLayer3RuleList([])
+    contentForm.setFieldValue('layer3DefaultAccess', undefined)
+    setLayer3RuleList(DEFAULT_LAYER3_RULES)
   }
 
   const handleLayer3DrawerClose = () => {
@@ -383,10 +404,39 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         id: '', isEdit: false
       })
     }
+    if (localEditMode.isEdit) {
+      setLocalEdiMode({
+        id: '', isEdit: false
+      })
+    }
   }
 
   const handleLayer3Rule = () => {
     setRuleDrawerEditMode(false)
+
+    let sourceIpSettings = {} as { subnet: string, ipMask: string, ip: string }
+    if (drawerForm.getFieldValue('sourceType')
+      && drawerForm.getFieldValue('sourceType') !== AnyText) {
+      sourceIpSettings = {
+        subnet: drawerForm.getFieldValue('sourceNetworkAddress') ?? '',
+        ipMask: drawerForm.getFieldValue('sourceMask') ?? '',
+        ip: drawerForm.getFieldValue('sourceMask') !== undefined
+          ? drawerForm.getFieldValue('sourceNetworkAddress')
+          : drawerForm.getFieldValue('sourceIp')
+      }
+    }
+
+    let destIpSettings = {} as { subnet: string, ipMask: string, ip: string }
+    if (drawerForm.getFieldValue('destType')
+      && drawerForm.getFieldValue('destType') !== AnyText) {
+      destIpSettings = {
+        subnet: drawerForm.getFieldValue('destNetworkAddress') ?? '',
+        ipMask: drawerForm.getFieldValue('destMask') ?? '',
+        ip: drawerForm.getFieldValue('destMask') !== undefined
+          ? drawerForm.getFieldValue('destNetworkAddress')
+          : drawerForm.getFieldValue('destIp')
+      }
+    }
 
     const ruleObject = {
       description: drawerForm.getFieldValue('description') ?? '',
@@ -394,17 +444,15 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       protocol: drawerForm.getFieldValue('protocol'),
       source: {
         type: drawerForm.getFieldValue('sourceType') ?? AnyText,
-        subnet: drawerForm.getFieldValue('sourceNetworkAddress') ?? '',
-        mask: drawerForm.getFieldValue('sourceMask') ?? '',
-        ip: drawerForm.getFieldValue('sourceIp') ?? '',
-        port: drawerForm.getFieldValue('sourcePort') ?? ''
+        ...sourceIpSettings,
+        port: drawerForm.getFieldValue('sourcePort') ?? '',
+        enableIpSubnet: drawerForm.getFieldValue('sourceMask') !== undefined
       },
       destination: {
         type: drawerForm.getFieldValue('destType') ?? AnyText,
-        subnet: drawerForm.getFieldValue('destNetworkAddress') ?? '',
-        mask: drawerForm.getFieldValue('destMask') ?? '',
-        ip: drawerForm.getFieldValue('destIp') ?? '',
-        port: drawerForm.getFieldValue('destPort') ?? ''
+        ...destIpSettings,
+        port: drawerForm.getFieldValue('destPort') ?? '',
+        enableIpSubnet: drawerForm.getFieldValue('destMask') !== undefined
       }
     }
     if (ruleDrawerEditMode && layer3Rule.hasOwnProperty('priority')) {
@@ -430,6 +478,14 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     onClick: handleAddAction
   }] : []
 
+  const isEmptyValues = (value: string | boolean | undefined): boolean => {
+    return (
+      value === undefined ||
+      value === null ||
+      (typeof value === 'string' && value.trim().length === 0)
+    )
+  }
+
   const convertToPayload = (policyId?: string) => {
     let id = {}
     if (policyId) {
@@ -439,11 +495,13 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       name: policyName,
       defaultAccess: accessStatus,
       l3Rules: [...layer3RuleList.map(rule => {
+        rule.source.enableIpSubnet = rule.source.ipMask !== ''
+        rule.destination.enableIpSubnet = rule.destination.ipMask !== ''
         return {
           priority: rule.priority,
           access: rule.access,
-          source: { ..._.omitBy(rule.source, _.isEmpty) },
-          destination: { ..._.omitBy(rule.destination, _.isEmpty) },
+          source: { ..._.omitBy(rule.source, isEmptyValues) },
+          destination: { ..._.omitBy(rule.destination, isEmptyValues) },
           description: rule.description,
           protocol: rule.protocol !== Layer3ProtocolType.ANYPROTOCOL ? rule.protocol : null
         }
@@ -487,15 +545,35 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     drawerForm.setFieldValue('access', ruleObj.access)
     drawerForm.setFieldValue('protocol', ruleObj.protocol)
     drawerForm.setFieldValue('source', ruleObj.source)
-    drawerForm.setFieldValue(['sourceNetworkAddress'], ruleObj.source.subnet)
-    drawerForm.setFieldValue(['sourceMask'], ruleObj.source.mask)
-    drawerForm.setFieldValue(['sourceIp'], ruleObj.source.ip)
+    let sourceValue = 1
+    if (ruleObj.source.ipMask) {
+      drawerForm.setFieldValue(['sourceNetworkAddress'], ruleObj.source.ip)
+      drawerForm.setFieldValue(['sourceMask'], ruleObj.source.ipMask)
+      sourceValue = 2
+    } else if (ruleObj.source.ip) {
+      drawerForm.setFieldValue(
+        ['sourceIp'], ruleObj.source.ip
+      )
+      sourceValue = 3
+    }
+    setSourceValue(sourceValue)
+
     drawerForm.setFieldValue(['sourcePort'], ruleObj.source.port)
     drawerForm.setFieldValue('destination', ruleObj.destination)
-    drawerForm.setFieldValue(['destinationNetworkAddress'], ruleObj.destination.subnet)
-    drawerForm.setFieldValue(['destinationMask'], ruleObj.destination.mask)
-    drawerForm.setFieldValue(['destinationIp'], ruleObj.destination.ip)
-    drawerForm.setFieldValue(['destinationPort'], ruleObj.destination.port)
+    let destValue = 1
+    if (ruleObj.destination.ipMask) {
+      drawerForm.setFieldValue(['destNetworkAddress'], ruleObj.destination.ip)
+      drawerForm.setFieldValue(['destMask'], ruleObj.destination.ipMask)
+      destValue = 2
+    } else if (ruleObj.destination.ip) {
+      drawerForm.setFieldValue(
+        ['destIp'], ruleObj.destination.ip
+      )
+      destValue = 3
+    }
+    setDestValue(destValue)
+
+    drawerForm.setFieldValue(['destPort'], ruleObj.destination.port)
   }
 
   const rowActions: TableProps<Layer3Rule>['rowActions'] = isViewMode() ? [] : [{
@@ -660,7 +738,6 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       actions={filterByAccess(actions)}
       rowActions={filterByAccess(rowActions)}
       rowSelection={{ type: 'radio' }}
-      columnState={{ hidden: true }}
       components={{
         body: {
           wrapper: DraggableContainer,
@@ -724,7 +801,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
                   name='sourceNetworkAddress'
                   rules={[
                     { required: true },
-                    { validator: (_, value) => serverIpAddressRegExp(value) }
+                    { validator: (_, value) => networkWifiIpRegExp(value) }
                   ]}
                 >
                   <Input placeholder={$t({ defaultMessage: 'Source Network Address' })}/>
@@ -751,7 +828,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
               name='sourceIp'
               rules={[
                 { required: true },
-                { validator: (_, value) => serverIpAddressRegExp(value) }
+                { validator: (_, value) => networkWifiIpRegExp(value) }
               ]}
             >
               <Input placeholder={$t({ defaultMessage: 'Source Ip' })}/>
@@ -805,7 +882,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
                       required: true,
                       message: $t({ defaultMessage: 'You must specify subnet network' })
                     },
-                    { validator: (_, value) => serverIpAddressRegExp(value) }
+                    { validator: (_, value) => networkWifiIpRegExp(value) }
                   ]}
                 >
                   <Input placeholder={$t({ defaultMessage: 'Destination Network Address' })}/>
@@ -837,7 +914,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
                 { required: true, message: $t({
                   defaultMessage: 'You must specify IP Address'
                 }) },
-                { validator: (_, value) => serverIpAddressRegExp(value) }
+                { validator: (_, value) => networkWifiIpRegExp(value) }
               ]}
             >
               <Input placeholder={$t({ defaultMessage: 'Destination Ip' })}/>
@@ -861,9 +938,13 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     </Fieldset>
   </Form>
 
-  return (
-    <>
-      { isOnlyViewMode ? <Button
+  const modelContent = () => {
+    if (onlyAddMode.enable) {
+      return null
+    }
+
+    if (isOnlyViewMode) {
+      return <Button
         type='link'
         size={'small'}
         onClick={() => {
@@ -872,49 +953,59 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         }
         }>
         {onlyViewMode.viewText}
-      </Button>: <GridRow style={{ width: '350px' }}>
-        <GridCol col={{ span: 12 }}>
-          <Form.Item
-            name={[...inputName, 'l3AclPolicyId']}
-            rules={[{
-              required: true
-            }, {
-              message: $t({ defaultMessage: 'Please select Layer 3 profile' })
-            }]}
-            children={
-              <Select
-                placeholder={$t({ defaultMessage: 'Select profile...' })}
-                onChange={(value) => {
-                  setQueryPolicyId(value)
-                }}
-                children={layer3SelectOptions}
-              />
-            }
-          />
-        </GridCol>
-        <AclGridCol>
-          <Button type='link'
-            disabled={!l3AclPolicyId}
-            onClick={() => {
-              if (l3AclPolicyId) {
-                setVisible(true)
-                setQueryPolicyId(l3AclPolicyId)
-              }
-            }
-            }>
-            {$t({ defaultMessage: 'View Details' })}
-          </Button>
-        </AclGridCol>
-        <AclGridCol>
-          <Button type='link'
-            onClick={() => {
+      </Button>
+    }
+
+    return <GridRow style={{ width: '350px' }}>
+      <GridCol col={{ span: 12 }}>
+        <Form.Item
+          name={[...inputName, 'l3AclPolicyId']}
+          rules={[{
+            required: true
+          }, {
+            message: $t({ defaultMessage: 'Please select Layer 3 profile' })
+          }]}
+          children={
+            <Select
+              style={{ width: '150px' }}
+              placeholder={$t({ defaultMessage: 'Select profile...' })}
+              onChange={(value) => {
+                setQueryPolicyId(value)
+              }}
+              children={layer3SelectOptions}
+            />
+          }
+        />
+      </GridCol>
+      <AclGridCol>
+        <Button type='link'
+          disabled={!l3AclPolicyId}
+          onClick={() => {
+            if (l3AclPolicyId) {
               setVisible(true)
-              setQueryPolicyId('')
-            }}>
-            {$t({ defaultMessage: 'Add New' })}
-          </Button>
-        </AclGridCol>
-      </GridRow> }
+              setQueryPolicyId(l3AclPolicyId)
+              setLocalEdiMode({ id: l3AclPolicyId, isEdit: true })
+            }
+          }
+          }>
+          {$t({ defaultMessage: 'Edit Details' })}
+        </Button>
+      </AclGridCol>
+      <AclGridCol>
+        <Button type='link'
+          onClick={() => {
+            setVisible(true)
+            setQueryPolicyId('')
+          }}>
+          {$t({ defaultMessage: 'Add New' })}
+        </Button>
+      </AclGridCol>
+    </GridRow>
+  }
+
+  return (
+    <>
+      {modelContent()}
       <Drawer
         title={$t({ defaultMessage: 'Layer 3 Settings' })}
         visible={visible}
@@ -931,7 +1022,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
               try {
                 await contentForm.validateFields()
                 if (!isViewMode()) {
-                  await handleL3AclPolicy(editMode.isEdit)
+                  await handleL3AclPolicy(editMode.isEdit || localEditMode.isEdit)
                 }
                 handleLayer3DrawerClose()
               } catch (error) {

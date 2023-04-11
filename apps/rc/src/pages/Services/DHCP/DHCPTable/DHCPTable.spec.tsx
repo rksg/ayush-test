@@ -3,10 +3,9 @@ import { rest }  from 'msw'
 import { Path }  from 'react-router-dom'
 
 import {
-  CommonUrlsInfo,
+  DHCPUrls,
   getServiceDetailsLink,
   getServiceRoutePath,
-  MdnsProxyUrls,
   ServiceOperation,
   ServiceType
 } from '@acx-ui/rc/utils'
@@ -22,15 +21,15 @@ import {
 import DHCPTable from './DHCPTable'
 
 const mockTableResult = {
-  totalCount: 3,
-  page: 1,
+  totalCount: 1,
   data: [{
     id: 'cc080e33-26a7-4d34-870f-b7f312fcfccb',
     name: 'My DHCP 1',
-    type: 'DHCP (Wi-Fi)',
-    scope: '5'
+    dhcpPools: [],
+    venueIds: []
   }]
 }
+
 
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
@@ -56,7 +55,7 @@ describe('DHCPTable', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getServicesList.url,
+        DHCPUrls.getDHCPProfilesViewModel.url,
         (req, res, ctx) => res(ctx.json(mockTableResult))
       )
     )
@@ -76,13 +75,13 @@ describe('DHCPTable', () => {
     expect(await screen.findByRole('row', { name: new RegExp(targetServiceName) })).toBeVisible()
   })
 
-  // TODO
-  xit('should delete selected row', async () => {
+
+  it('should delete selected row', async () => {
     const deleteFn = jest.fn()
 
     mockServer.use(
       rest.delete(
-        MdnsProxyUrls.deleteMdnsProxy.url,
+        DHCPUrls.deleteDHCPProfile.url,
         (req, res, ctx) => {
           deleteFn(req.body)
           return res(ctx.json({ requestId: '12345' }))

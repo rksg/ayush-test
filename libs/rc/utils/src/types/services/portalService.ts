@@ -1,5 +1,6 @@
 import { RcFile } from 'antd/lib/upload'
 
+import { FILTER }  from '../../useTableQuery'
 import { Network } from '../network'
 
 export interface Portal{
@@ -21,12 +22,12 @@ export interface Demo{
   bgImage: string
   logo?: string
   logoRatio?: number
-  welcomeText: string
+  welcomeText: string | undefined
   welcomeSize: number
   welcomeColor: string
   photo?: string
   photoRatio?: number
-  secondaryText: string
+  secondaryText: string | undefined
   secondarySize?: number
   secondaryColor?: string
   buttonColor?:string
@@ -81,4 +82,16 @@ export interface PortalDetailInstances{
   abandonmentRate: number,
   clients: number,
   clientsPortal: number
+}
+
+export interface PortalTablePayload{
+  defaultPageSize: number,
+  total: number,
+  page: number,
+  pageSize: number,
+  searchString?: string,
+  searchTargetFields?: string[],
+  sortField: string,
+  sortOrder: string,
+  filters: FILTER,
 }

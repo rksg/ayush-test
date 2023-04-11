@@ -12,7 +12,7 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Drawer, Table, TableProps } from '@acx-ui/components'
+import { Drawer, showActionModal, Table, TableProps } from '@acx-ui/components'
 import {
   SwitchModel,
   SwitchModelPortData,
@@ -165,15 +165,25 @@ function VlanSettingForm (props: VlanSettingFormProps) {
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows, clearSelection) => {
-        setRuleList(
-          ruleList?.filter((option: { model: string }) => {
-            return !selectedRows
-              .map((r) => r.model)
-              .includes(option.model)
-          })
-        )
-        setSelected(undefined)
-        clearSelection()
+        showActionModal({
+          type: 'confirm',
+          customContent: {
+            action: 'DELETE',
+            entityName: $t({ defaultMessage: 'Model' }),
+            entityValue: selectedRows[0].model
+          },
+          onOk: () => {
+            setRuleList(
+              ruleList?.filter((option: { model: string }) => {
+                return !selectedRows
+                  .map((r) => r.model)
+                  .includes(option.model)
+              })
+            )
+            setSelected(undefined)
+            clearSelection()
+          }
+        })
       }
     }
   ]
@@ -181,8 +191,10 @@ function VlanSettingForm (props: VlanSettingFormProps) {
   const onIGMPChange = (value: string) => {
     if(value === 'active' || value === 'passive'){
       setMulticastVersionDisabled(false)
+      form.setFieldValue('multicastVersion', 2)
     }else{
       setMulticastVersionDisabled(true)
+      form.resetFields(['multicastVersion'])
     }
   }
 

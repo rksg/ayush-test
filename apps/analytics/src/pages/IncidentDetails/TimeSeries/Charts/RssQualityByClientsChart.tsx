@@ -7,7 +7,8 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { getSeriesData }                  from '@acx-ui/analytics/utils'
 import { Card, cssStr, StackedAreaChart } from '@acx-ui/components'
-import { formatter, getIntl }             from '@acx-ui/utils'
+import { formatter }                      from '@acx-ui/formatter'
+import {  getIntl }                       from '@acx-ui/utils'
 
 import type { TimeSeriesChartProps } from '../types'
 

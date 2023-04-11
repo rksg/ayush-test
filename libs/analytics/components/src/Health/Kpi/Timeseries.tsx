@@ -7,8 +7,9 @@ import AutoSizer    from 'react-virtualized-auto-sizer'
 import { KPITimeseriesResponse, healthApi }         from '@acx-ui/analytics/services'
 import { AnalyticsFilter, kpiConfig }               from '@acx-ui/analytics/utils'
 import { Loader, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
+import { formatter }                                from '@acx-ui/formatter'
 import type { TimeStamp, TimeStampRange }           from '@acx-ui/types'
-import { formatter }                                from '@acx-ui/utils'
+import { noDataDisplay }                            from '@acx-ui/utils'
 
 const transformResponse = ({ data, time }: KPITimeseriesResponse) => data
   .map((datum, index) => ([
@@ -19,7 +20,7 @@ const transformResponse = ({ data, time }: KPITimeseriesResponse) => data
   ])) as [TimeStamp, number][]
 
 export const formatYDataPoint = (data: number | unknown) =>
-  data !== null ? formatter('percentFormat')(data) : '-'
+  data !== null ? formatter('percentFormat')(data) : noDataDisplay
 
 function KpiTimeseries ({
   filters,

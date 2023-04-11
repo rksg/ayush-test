@@ -12,7 +12,7 @@ import {
   ContentSwitcher,
   ContentSwitcherProps
 } from '@acx-ui/components'
-import { formatter, intlFormats } from '@acx-ui/utils'
+import { formatter, intlFormats } from '@acx-ui/formatter'
 
 import { useTopApplicationsByTrafficQuery, TopApplicationByTrafficData } from './services'
 import { TrafficPercent }                                                from './styledComponents'
@@ -97,7 +97,7 @@ export function TopApplicationsByTraffic ({
 
   return (
     <Loader states={[queryResults]}>
-      <HistoricalCard title={$t({ defaultMessage: 'Top 5 Applications by Traffic' })}>
+      <HistoricalCard title={$t({ defaultMessage: 'Top Applications by Traffic' })}>
         <AutoSizer>
           {({ height, width }) => (
             <div style={{ display: 'block', height, width }}>

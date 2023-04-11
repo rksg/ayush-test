@@ -1,7 +1,6 @@
 /* eslint-disable testing-library/no-node-access */
-import { dataApiURL }                       from '@acx-ui/analytics/services'
 import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
-import { Provider, store }                  from '@acx-ui/store'
+import { dataApiURL, Provider, store }      from '@acx-ui/store'
 import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
 import { DateRange }                        from '@acx-ui/utils'
 
@@ -71,7 +70,7 @@ describe('TopSSIDsByClientWidget', () => {
     })
     const { asFragment } = render(<Provider><TopSSIDsByClient filters={filters}/></Provider>,
       { route: true })
-    await screen.findByText('Top 5 SSIDs by Clients')
+    await screen.findByText('Top SSIDs by Clients')
     const tableHeaders = asFragment().querySelector('div > table > thead')
     expect(tableHeaders).toMatchSnapshot('tableHeaders')
     const tableRows = extractRows(asFragment())

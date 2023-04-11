@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request'
 
-import { dataApi }         from '@acx-ui/analytics/services'
-import { AnalyticsFilter } from '@acx-ui/analytics/utils'
+import { AnalyticsFilter, calculateGranularity } from '@acx-ui/analytics/utils'
+import { dataApi }                               from '@acx-ui/store'
 
 export type ConnectedClientsOverTimeData = {
   uniqueUsers_all: number[]
@@ -51,7 +51,7 @@ export const api = dataApi.injectEndpoints({
           path: payload.path,
           start: payload.startDate,
           end: payload.endDate,
-          granularity: 'PT15M',
+          granularity: calculateGranularity(payload.startDate, payload.endDate, 'PT15M'),
           filter: payload.filter
         }
       }),

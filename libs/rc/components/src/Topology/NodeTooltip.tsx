@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom'
 
-import { useApListQuery, useSwitchDetailHeaderQuery }     from '@acx-ui/rc/services'
-import { APExtended, DeviceTypes, Node, SwitchViewModel } from '@acx-ui/rc/utils'
+import { useApViewModelQuery, useSwitchDetailHeaderQuery } from '@acx-ui/rc/services'
+import { ApViewModel, DeviceTypes, Node, SwitchViewModel } from '@acx-ui/rc/utils'
 
 import { APDetailsCard }     from './APDetailsCard'
 import { SwitchDetailsCard } from './SwitchDetailsCard'
@@ -42,12 +42,12 @@ tooltipNode: Node,
       'uplink',
       'apStatusData',
       'apStatusData.cellularInfo',
-      'healthStatus'
+      'healthStatus',
+      'clients'
     ]
   }
 
-  // const defaultSwitchPayload
-  const { data: apList, isLoading: apLoading } = useApListQuery({ params,
+  const { data: apList, isLoading: apLoading } = useApViewModelQuery({ params,
     payload: { ...defaultApPayload,
       filters: {
         serialNumber: [
@@ -60,7 +60,7 @@ tooltipNode: Node,
   })
 
   const { data: switchDetail, isLoading: switchLoading } =
-    useSwitchDetailHeaderQuery({ params: { ...params, switchId: tooltipNode.mac } },
+    useSwitchDetailHeaderQuery({ params: { ...params, switchId: tooltipNode.id } },
       { skip: skipSwitchCall(tooltipNode?.type as DeviceTypes) })
 
 
@@ -91,7 +91,7 @@ tooltipNode: Node,
           switchDetail={switchDetail as SwitchViewModel}
           isLoading={switchLoading}/>
         : <APDetailsCard
-          apDetail={apList?.data[0] as APExtended}
+          apDetail={apList as ApViewModel}
           isLoading={apLoading}/>
     }
   </div>

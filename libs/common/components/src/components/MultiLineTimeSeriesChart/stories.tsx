@@ -6,8 +6,8 @@ import { connect }          from 'echarts'
 import ReactECharts         from 'echarts-for-react'
 
 import { TimeSeriesChartData, incidentSeverities } from '@acx-ui/analytics/utils'
+import { formatter }                               from '@acx-ui/formatter'
 import { TimeStamp, TimeStampRange }               from '@acx-ui/types'
-import { formatter }                               from '@acx-ui/utils'
 
 import { cssStr } from '../../theme/helper'
 import { Button } from '../Button'
@@ -26,7 +26,7 @@ export const getData = () => {
   return data as [TimeStamp, number][]
 }
 const seriesNames = [
-  ['New Clients', 'Impacted Clients', 'Connected Clients'],
+  ['New Client Associations', 'Impacted Clients', 'Connected Clients'],
   ['Total Failures', 'EAP Failures', 'EAP Attempts']
 ]
 export const getSeriesData = (index = 0) => {

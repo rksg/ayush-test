@@ -32,6 +32,7 @@ export function ChangeSlotDialog (props: ChangeSlotDialogProps) {
   const [disabledDays, setDisabledDays] = useState(false)
   const [valueTimes, setValueTimes] = useState<string[]>([])
   const [disabledTimes, setDisabledTimes] = useState(false)
+  const [disableSave, setDisableSave] = useState(true)
 
   useEffect(() => {
     if (days) {
@@ -57,9 +58,14 @@ export function ChangeSlotDialog (props: ChangeSlotDialogProps) {
         setDisabledDays(false)
       }
       setValueDays(newValue)
+      if (newValue.length === 0 || valueTimes.length ===0) {
+        setDisableSave(true)
+      } else {
+        setDisableSave(false)
+      }
     },
-    placeholder: 'Select Item...',
-    maxTagCount: 0
+    placeholder: 'Select Item...'
+    // maxTagCount: 1
   }
 
   // eslint-disable-next-line max-len
@@ -77,9 +83,14 @@ export function ChangeSlotDialog (props: ChangeSlotDialogProps) {
         setDisabledTimes(false)
       }
       setValueTimes(newValue)
+      if (valueDays.length === 0 || newValue.length ===0) {
+        setDisableSave(true)
+      } else {
+        setDisableSave(false)
+      }
     },
-    placeholder: 'Select Item...',
-    maxTagCount: 0
+    placeholder: 'Select Item...'
+    // maxTagCount: 1
   }
 
   const triggerSubmit = () => {
@@ -100,14 +111,15 @@ export function ChangeSlotDialog (props: ChangeSlotDialogProps) {
     <Modal
       title='Change preferred update slot'
       visible={visible}
-      width={400}
+      width={440}
       okText={$t({ defaultMessage: 'Save' })}
       onOk={triggerSubmit}
       onCancel={onModalCancel}
+      okButtonProps={{ disabled: disableSave }}
     >
       <UI.FieldGroup>
         <label>
-          <div>Preferred day(s):</div>
+          <div style={{ fontWeight: 600 }}>Preferred day(s):</div>
           <div>Select up to 3 days</div>
         </label>
         <Space direction='vertical' style={{ width: '100%' }}>
@@ -116,7 +128,7 @@ export function ChangeSlotDialog (props: ChangeSlotDialogProps) {
       </UI.FieldGroup>
       <UI.FieldGroup>
         <label>
-          <div>Preferred Time Slot:</div>
+          <div style={{ fontWeight: 600 }}>Preferred Time Slot:</div>
           <div>Select up to 3 slots</div>
         </label>
         <Space direction='vertical' style={{ width: '100%' }}>

@@ -66,7 +66,7 @@ export function URLProtocolRegExp (value: string) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len
   const re = new RegExp('^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/){1}[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$')
-  const IpV4RegExp = new RegExp('^(http:\\/\\/|https:\\/\\/)(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(%[\p{N}\p{L}]+)?$')
+  const IpV4RegExp = new RegExp('^(http:\\/\\/|https:\\/\\/)(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(%[\\p{N}\\p{L}]+)?(:[0-9]{1,5})?(\\/.*)?$')
   if (value!=='' && !re.test(value) && !IpV4RegExp.test(value)) {
     return Promise.reject($t(validationMessages.validateURL))
   }
@@ -229,7 +229,7 @@ export function excludeSpaceExclamationRegExp (value: string) {
 
 export function portRegExp (value: string) {
   const { $t } = getIntl()
-  const re = new RegExp(/^([0-9]|[1-9][0-9]{1,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$/)
+  const re = new RegExp(/^([1-9]|[1-9][0-9]{1,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$/)
   if (value!=='' && !re.test(value)) {
     return Promise.reject($t(validationMessages.portRegExp))
   }
@@ -277,6 +277,24 @@ export function subnetMaskIpRegExp (value: string) {
     return Promise.reject($t(validationMessages.subnetMask))
   }
   return Promise.resolve()
+}
+
+export function validateNetworkBaseIp (value: string, subnetMask: string) {
+  if (!value || !subnetMask) {
+    return Promise.resolve()
+  }
+  const { $t } = getIntl()
+  const getSubnetInfo = (ipAddress: string, subnetMask: string) => {
+    return new Netmask(ipAddress + '/' + subnetMask)
+  }
+
+  const subnetInfo = getSubnetInfo(value, subnetMask)
+
+  if (!subnetInfo || subnetInfo.base === value) {
+    return Promise.resolve()
+  }
+
+  return Promise.reject($t(validationMessages.isNotSubnetIp))
 }
 
 export function checkVlanMember (value: string) {

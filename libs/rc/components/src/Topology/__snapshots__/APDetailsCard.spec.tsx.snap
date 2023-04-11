@@ -255,66 +255,6 @@ exports[`Topology AP Card should render correctly 1`] = `
                                   </span>
                                 </label>
                               </div>
-                              <div
-                                class="sc-jqUVSM cfFONd"
-                              >
-                                <label>
-                                  <h5
-                                    class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                                  >
-                                    2.4 GHz
-                                  </h5>
-                                </label>
-                                <span>
-                                  0
-                                </span>
-                                <span>
-                                  20
-                                </span>
-                                <span>
-                                  max
-                                </span>
-                              </div>
-                              <div
-                                class="sc-jqUVSM cfFONd"
-                              >
-                                <label>
-                                  <h5
-                                    class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                                  >
-                                    5 GHz
-                                  </h5>
-                                </label>
-                                <span>
-                                  0
-                                </span>
-                                <span>
-                                  80
-                                </span>
-                                <span>
-                                  max
-                                </span>
-                              </div>
-                              <div
-                                class="sc-jqUVSM cfFONd"
-                              >
-                                <label>
-                                  <h5
-                                    class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                                  >
-                                    5 GHz
-                                  </h5>
-                                </label>
-                                <span>
-                                  0
-                                </span>
-                                <span>
-                                  80
-                                </span>
-                                <span>
-                                  max
-                                </span>
-                              </div>
                             </div>
                           </div>
                         </span>
@@ -362,7 +302,7 @@ exports[`Topology AP Card should render correctly 1`] = `
                         <span
                           class="ant-descriptions-item-content"
                         >
-                          Feb 07 2023 08:31
+                          02/07/2023 08:31
                         </span>
                       </div>
                     </td>

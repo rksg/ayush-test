@@ -7,7 +7,7 @@ import { CallbackDataParams }                      from 'echarts/types/dist/shar
 import { renderToString }                          from 'react-dom/server'
 
 import type { BarChartData } from '@acx-ui/analytics/utils'
-import { formatter }         from '@acx-ui/utils'
+import { formatter }         from '@acx-ui/formatter'
 
 import { cssNumber, cssStr } from '../../theme/helper'
 import { Card }              from '../Card'
@@ -124,14 +124,14 @@ const clickHandler = (params: EventParams) => {
 storiesOf('BarChart', module)
   .addDecorator(withKnobs)
   .add('Single Series - Default', () =>
-    wrapInsideCard('Top 5 Switches',
+    wrapInsideCard('Top Switches',
       <BarChart
         style={{ width: '100%', height: '100%' }}
         data={data()}
         onClick={clickHandler}
       />))
   .add('Single Series - Custom formatter', () =>
-    wrapInsideCard('Top 5 Switches by PoE Usage',
+    wrapInsideCard('Top Switches by PoE Usage',
       <BarChart
         style={{ width: '100%', height: '100%' }}
         data={data()}
@@ -140,7 +140,7 @@ storiesOf('BarChart', module)
         labelRichStyle={getSwitchUsageRichStyle()}
       />))
   .add('Multi Series', () =>
-    wrapInsideCard('Top 5 Switches by Traffic',
+    wrapInsideCard('Top Switches by Traffic',
       <BarChart
         style={{ width: '100%', height: '100%' }}
         data={data(true)}
@@ -151,7 +151,7 @@ storiesOf('BarChart', module)
         onClick={clickHandler}
       />))
   .add('With Knobs', () =>
-    wrapInsideCard('Top 5 Switches by PoE Usage',
+    wrapInsideCard('Top Switches by PoE Usage',
       <BarChart
         style={{ width: '100%', height: '100%' }}
         data={object('data', data())}

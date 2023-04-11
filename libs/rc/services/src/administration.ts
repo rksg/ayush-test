@@ -1,5 +1,3 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-
 import {
   CommonResult,
   createHttpRequest,
@@ -25,19 +23,11 @@ import {
   RadiusClientConfigUrlsInfo,
   RadiusServerSetting,
   TenantDetails,
-  GetRoleStr,
   EntitlementSummary,
   Entitlement,
   NewEntitlementSummary
 } from '@acx-ui/rc/utils'
-
-export const baseAdministrationApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  reducerPath: 'administrationApi',
-  tagTypes: ['Administration', 'License', 'RadiusClientConfig'],
-  refetchOnMountOrArgChange: true,
-  endpoints: () => ({ })
-})
+import { baseAdministrationApi } from '@acx-ui/store'
 
 export const administrationApi = baseAdministrationApi.injectEndpoints({
   endpoints: (build) => ({
@@ -444,6 +434,17 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'License', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'Refresh License'
+          ], () => {
+            api.dispatch(administrationApi.util.invalidateTags([
+              { type: 'License', id: 'LIST' }
+            ]))
+          })
+        })
+      },
       transformResponse: (response) => {
         return AdministrationUrlsInfo.getEntitlementSummary.newApi ?
           (response as NewEntitlementSummary).summary : response as EntitlementSummary[]
@@ -456,11 +457,31 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'License', id: 'LIST' }]
+      providesTags: [{ type: 'License', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'Refresh License'
+          ], () => {
+            api.dispatch(administrationApi.util.invalidateTags([
+              { type: 'License', id: 'LIST' }
+            ]))
+          })
+        })
+      }
     }),
     refreshEntitlements: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(AdministrationUrlsInfo.refreshLicensesData, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'License', id: 'LIST' }]
+    }),
+    internalRefreshEntitlements: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.internalRefreshLicensesData, params)
         return {
           ...req
         }
@@ -503,8 +524,6 @@ const transformAdministratorList = (data: Administrator[]) => {
     item.name = (item.name && item.name !== 'first') ? item.name : ''
     item.lastName = (item.lastName && item.lastName !== 'last') ? item.lastName : ''
     item.fullName = item.name + ' ' + item.lastName
-    // FIXME: might be removed because of Tenant.roleDsc is UI used only
-    item.roleDsc = GetRoleStr(item.role)
 
     return item
   })
@@ -541,6 +560,7 @@ export const {
   useGetEntitlementSummaryQuery,
   useGetEntitlementsListQuery,
   useRefreshEntitlementsMutation,
+  useInternalRefreshEntitlementsMutation,
   useGetRadiusClientConfigQuery,
   useUpdateRadiusClientConfigMutation,
   useGetRadiusServerSettingQuery

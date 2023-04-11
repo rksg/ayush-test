@@ -18,10 +18,12 @@ export default function ServiceCatalog () {
   const { $t } = useIntl()
   const earlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
   const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
+  const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const isEdgeDhcpEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
 
   const sets = [
     {
+      key: 'connectivity',
       title: defineMessage({ defaultMessage: 'Connectivity' }),
       items: [
         { type: ServiceType.DHCP, categories: [RadioCardCategory.WIFI] },
@@ -33,12 +35,13 @@ export default function ServiceCatalog () {
         { type: ServiceType.DPSK, categories: [RadioCardCategory.WIFI] },
         {
           type: ServiceType.NETWORK_SEGMENTATION,
-          categories: [RadioCardCategory.WIFI],
+          categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
           disabled: !networkSegmentationEnabled
         }
       ]
     },
     {
+      key: 'application',
       title: defineMessage({ defaultMessage: 'Application' }),
       items: [
         { type: ServiceType.MDNS_PROXY, categories: [RadioCardCategory.WIFI] },
@@ -46,13 +49,14 @@ export default function ServiceCatalog () {
       ]
     },
     {
+      key: 'guests',
       title: defineMessage({ defaultMessage: 'Guests & Residents' }),
       items: [
         { type: ServiceType.PORTAL, categories: [RadioCardCategory.WIFI] },
         {
           type: ServiceType.WEBAUTH_SWITCH,
           categories: [RadioCardCategory.SWITCH],
-          disabled: !networkSegmentationEnabled
+          disabled: !networkSegmentationEnabled || !networkSegmentationSwitchEnabled
         }
       ]
     }
@@ -62,7 +66,7 @@ export default function ServiceCatalog () {
     <>
       <PageHeader title={$t({ defaultMessage: 'Service Catalog' })} />
       {sets.map(set =>
-        <UI.CategoryContainer>
+        <UI.CategoryContainer key={set.key}>
           <Typography.Title level={3}>
             { $t(set.title) }
           </Typography.Title>

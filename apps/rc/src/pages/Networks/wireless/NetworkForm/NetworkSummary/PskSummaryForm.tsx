@@ -3,6 +3,8 @@ import React from 'react'
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useMacRegListsQuery }    from '@acx-ui/rc/services'
 import {
   AaaServerTypeEnum,
   NetworkSaveData,
@@ -17,6 +19,12 @@ export function PskSummaryForm (props: {
 }) {
   const { $t } = useIntl()
   const { summaryData } = props
+
+  const macRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
+  const { data: macRegListOption } = useMacRegListsQuery({
+    payload: { pageSize: 10000 }
+  }, { skip: !macRegistrationEnabled })
+
   return (
     <>
       {summaryData.wlan?.wlanSecurity !== WlanSecurityEnum.WPA3 &&
@@ -73,7 +81,7 @@ export function PskSummaryForm (props: {
         label={$t({ defaultMessage: 'Use MAC Auth:' })}
         children={summaryData.wlan?.macAddressAuthentication?
           $t({ defaultMessage: 'Enabled' }) : $t({ defaultMessage: 'Disabled' })} />
-      {summaryData.wlan?.macAddressAuthentication &&
+      {summaryData.wlan?.macAddressAuthentication && !summaryData.wlan?.macRegistrationListId &&
         <React.Fragment>
           <Form.Item
             label={$t({ defaultMessage: 'MAC Address Format:' })}
@@ -91,6 +99,15 @@ export function PskSummaryForm (props: {
             </>
           }
         </React.Fragment>
+      }
+      {summaryData.wlan?.macAddressAuthentication && summaryData.wlan?.macRegistrationListId &&
+      <Form.Item
+        label={$t({ defaultMessage: 'Mac registration list:' })}
+        children={
+          `${macRegListOption?.data.find(
+            regList => regList.id === summaryData.wlan?.macRegistrationListId
+          )?.name}`
+        }/>
       }
     </>
 

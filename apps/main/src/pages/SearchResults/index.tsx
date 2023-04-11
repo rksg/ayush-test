@@ -8,7 +8,6 @@ import {
   NetworkTable,
   defaultNetworkPayload,
   EventTable,
-  eventDefaultPayload,
   SwitchTable,
   defaultSwitchPayload,
   defaultClientPayload,
@@ -16,12 +15,12 @@ import {
   defaultSwitchClientPayload,
   ClientsTable as SwitchClientTable,
   eventDefaultSearch,
+  useEventsTableQuery,
   defaultHistoricalClientPayload,
   GlobalSearchHistoricalClientsTable
 } from '@acx-ui/rc/components'
 import {
   useApListQuery,
-  useEventsQuery,
   useNetworkListQuery,
   useVenuesListQuery,
   useSwitchListQuery,
@@ -36,7 +35,6 @@ import {
   Venue,
   AP,
   ApExtraParams,
-  Event,
   SwitchRow,
   ClientList,
   SwitchClient,
@@ -108,26 +106,21 @@ const searches = [
     }
   },
   (searchString: string, $t: IntlShape['$t']) => {
-    const result = useTableQuery<Event>({
-      useQuery: useEventsQuery,
-      defaultPayload: {
-        ...eventDefaultPayload,
-        filters: {}
-      },
+    const result = useEventsTableQuery(
+      { entity_type: undefined },
+      { ...eventDefaultSearch, searchString },
       pagination,
-      search: {
-        searchString,
-        searchTargetFields: eventDefaultSearch.searchTargetFields
-      },
-      sorter: {
-        sortField: 'event_datetime',
-        sortOrder: 'DESC'
-      }
-    })
+      0 // no polling
+    )
     return {
       result,
       title: $t({ defaultMessage: 'Events' }),
-      component: <EventTable tableQuery={result} searchables={false} filterables={false} />
+      component: <EventTable
+        settingsId='timeline-event-table'
+        tableQuery={result}
+        searchables={false}
+        filterables={false}
+      />
     }
   },
   (searchString: string, $t: IntlShape['$t']) => {
@@ -152,8 +145,11 @@ const searches = [
     const result = useTableQuery<ClientList, RequestPayload<unknown>, unknown>({
       useQuery: useGetClientListQuery,
       defaultPayload: {
-        ...defaultClientPayload,
-        searchString
+        ...defaultClientPayload
+      },
+      search: {
+        searchString,
+        searchTargetFields: defaultClientPayload.searchTargetFields
       },
       pagination
     })
@@ -183,8 +179,11 @@ const searches = [
     const result = useTableQuery<SwitchClient, RequestPayload<unknown>, unknown>({
       useQuery: useGetSwitchClientListQuery,
       defaultPayload: {
-        ...defaultSwitchClientPayload,
-        searchString
+        ...defaultSwitchClientPayload
+      },
+      search: {
+        searchString,
+        searchTargetFields: defaultSwitchClientPayload.searchTargetFields
       },
       pagination
     })

@@ -1,14 +1,15 @@
 import { useCallback, useState } from 'react'
 
-import { Form, Modal }            from 'antd'
+import { Form }                   from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
 import { useNavigate }            from 'react-router-dom'
 
-import { noDataSymbol, sortProp, defaultSort, dateSort }         from '@acx-ui/analytics/utils'
-import { Loader, TableProps, Table, showActionModal, showToast } from '@acx-ui/components'
-import { TenantLink, useTenantLink }                             from '@acx-ui/react-router-dom'
-import { useUserProfileContext }                                 from '@acx-ui/user'
-import { formatter }                                             from '@acx-ui/utils'
+import { sortProp, defaultSort, dateSort }                              from '@acx-ui/analytics/utils'
+import { Loader, TableProps, Table, showActionModal, showToast, Modal } from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                    from '@acx-ui/formatter'
+import { TenantLink, useTenantLink }                                    from '@acx-ui/react-router-dom'
+import { useUserProfileContext }                                        from '@acx-ui/user'
+import { noDataDisplay }                                                from '@acx-ui/utils'
 
 import * as contents      from '../contents'
 import { TestName }       from '../NetworkHealthForm/FormItems'
@@ -167,6 +168,7 @@ export function NetworkHealthTable () {
       dataIndex: 'name',
       sorter: { compare: sortProp('name', defaultSort) },
       searchable: true,
+      fixed: 'left',
       render: (value, row, _, highlightFn) => {
         const highlightedValue = highlightFn(String(value))
         return row.latestTest?.summary.apsTestedCount
@@ -198,6 +200,7 @@ export function NetworkHealthTable () {
       dataIndex: 'apsCount',
       render: (value) => value,
       sorter: { compare: sortProp('apsCount', defaultSort) },
+      sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center'
     },
     {
@@ -205,8 +208,8 @@ export function NetworkHealthTable () {
       title: $t(defineMessage({ defaultMessage: 'Last Run' })),
       dataIndex: ['latestTest', 'createdAt'],
       render: (_, row) => row.latestTest?.createdAt
-        ? formatter('dateTimeFormatWithSeconds')(row.latestTest?.createdAt)
-        : noDataSymbol,
+        ? formatter(DateFormatEnum.DateTimeFormatWithSeconds)(row.latestTest?.createdAt)
+        : noDataDisplay,
       sorter: { compare: sortProp('latestTest.createdAt', dateSort) }
     },
     {
@@ -215,6 +218,7 @@ export function NetworkHealthTable () {
       dataIndex: ['latestTest', 'summary', 'apsTestedCount'],
       render: (_, row) => formatApsUnderTest(row.latestTest?.summary),
       sorter: { compare: sortProp('latestTest.summary.apsTestedCount', defaultSort) },
+      sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center'
     },
     {
@@ -229,6 +233,7 @@ export function NetworkHealthTable () {
   return (
     <Loader states={[queryResults]}>
       <Table
+        settingsId='network-health-table'
         type='tall'
         columns={ColumnHeaders}
         dataSource={queryResults.data}
@@ -236,7 +241,7 @@ export function NetworkHealthTable () {
         rowActions={rowActions}
         rowKey='id'
         showSorterTooltip={false}
-        columnEmptyText={noDataSymbol}
+        columnEmptyText={noDataDisplay}
       />
       {cloneModal}
     </Loader>

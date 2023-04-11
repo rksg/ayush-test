@@ -9,6 +9,14 @@ import { events, eventsMeta } from './__tests__/fixtures'
 
 import { ClientTimelineTab } from '.'
 
+jest.mock('@acx-ui/user', () => ({
+  ...jest.requireActual('@acx-ui/user'),
+  useUserProfileContext: () => ({ data: {
+    detailLevel: 'it',
+    dateFormat: 'mm/dd/yyyy'
+  } })
+}))
+
 jest.mock('./SessionTable', () => ({
   SessionTable: () =>
     <div data-testid={'rc-SessionTable'} title='SessionTable' />
@@ -23,18 +31,20 @@ describe('ClientTimelineTab', ()=>{
     )
   })
   it('should render: Events', async () => {
-    render(<Provider><ClientTimelineTab /></Provider>, {
+    render(<ClientTimelineTab />, {
+      wrapper: Provider,
       route: {
         params: { tenantId: 't1', clientId: 'clientId' },
         path: '/t/:tenantId/users/wifi/clients/:clientId/details/timeline/'
 
       }
     })
-    expect(await screen.findAllByText('730-11-60')).toHaveLength(2)
+    expect(await screen.findAllByText('730-11-60')).toHaveLength(1)
   })
 
   it('should render: Sessions', async () => {
-    render(<Provider><ClientTimelineTab /></Provider>, {
+    render(<ClientTimelineTab />, {
+      wrapper: Provider,
       route: {
         params: {
           tenantId: 't1',

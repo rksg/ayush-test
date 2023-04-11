@@ -1,9 +1,11 @@
 import React, { useCallback } from 'react'
 
 import { range as timepickerRange } from 'lodash'
+import { useIntl }                  from 'react-intl'
 
-import { CaretDownSolid }             from '@acx-ui/icons'
-import { dateTimeFormats, DateRange } from '@acx-ui/utils'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { CaretDownSolid }            from '@acx-ui/icons'
+import { DateRange }                 from '@acx-ui/utils'
 
 import { Button } from '../Button'
 
@@ -26,7 +28,6 @@ type DisabledTimes = {
   disabledMinutes?: (hour: number) => number[],
   disabledSeconds?: (hour: number, minute: number) => number[]
 }
-const { dateFormat, dateTimeFormat } = dateTimeFormats
 
 const timePickerConfig = [
   { id: 1, range: 'startDate', value: 'hour', format: 'HH', offset: 6, hasColon: true },
@@ -36,7 +37,7 @@ const timePickerConfig = [
 ]
 
 const getCustomisedDate = (date: Moment | null, showTimePicker?: boolean) =>
-  showTimePicker ? date?.format(dateTimeFormat) : date?.format(dateFormat)
+  formatter(showTimePicker?DateFormatEnum.DateTimeFormat: DateFormatEnum.DateFormat)(date)
 
 const defaultselectionForDisabledDates = {
   disabledHours: () => [],
@@ -50,6 +51,7 @@ export const DatePickerFooter = ({
   setIsCalendarOpen,
   onDateApply
 }: DatePickerFooterProps) => {
+  const { $t } = useIntl()
   const onButtonClick = (type: string) => {
     if (type === 'cancel') {
       setRange(defaultValue)
@@ -117,7 +119,7 @@ export const DatePickerFooter = ({
         </UI.SelectedRange>
         <UI.Buttons>
           <Button onClick={() => onButtonClick('cancel')} size={'small'}>
-            Cancel
+            {$t({ defaultMessage: 'Cancel' })}
           </Button>
           <Button
             type={'secondary'}
@@ -129,7 +131,7 @@ export const DatePickerFooter = ({
               range.startDate.isSame(range.endDate)
             }
           >
-            Apply
+            {$t({ defaultMessage: 'Apply' })}
           </Button>
         </UI.Buttons>
       </UI.RangeApplyRow>

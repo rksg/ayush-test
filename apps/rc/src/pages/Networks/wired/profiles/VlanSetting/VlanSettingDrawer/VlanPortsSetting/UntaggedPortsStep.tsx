@@ -9,9 +9,9 @@ import {
 import { Row, Col, Form, Typography, Checkbox, Input } from 'antd'
 import _                                               from 'lodash'
 
-import { Card, Tooltip }             from '@acx-ui/components'
-import { SwitchSlot2 as SwitchSlot } from '@acx-ui/rc/utils'
-import { getIntl }                   from '@acx-ui/utils'
+import { Card, Tooltip }                                 from '@acx-ui/components'
+import { SwitchSlot2 as SwitchSlot, getSwitchPortLabel } from '@acx-ui/rc/utils'
+import { getIntl }                                       from '@acx-ui/utils'
 
 import * as UI          from './styledComponents'
 import VlanPortsContext from './VlanPortsContext'
@@ -194,128 +194,49 @@ export function UntaggedPortsStep () {
     }
 
   const getDisabledPorts = (timeslot: string) => {
-    const vlanSelectedPorts = vlanList ? vlanList.map(item => item.switchFamilyModels
-      ?.filter(obj => obj.model === vlanSettingValues.switchFamilyModels?.model)) : []
-    const portExists = vlanSelectedPorts.map(item => item?.map(
-      obj => { return obj.untaggedPorts?.includes(timeslot)}))[0]
+    const taggedPorts =
+      vlanSettingValues.switchFamilyModels?.taggedPorts?.toString().split(',') || []
 
-    const disabledPorts = (vlanSettingValues.switchFamilyModels?.taggedPorts &&
-    vlanSettingValues.switchFamilyModels?.taggedPorts.includes(timeslot))
-    || (portExists && portExists[0]) || false
+    const disabledPorts = taggedPorts.includes(timeslot) || false
     return disabledPorts
   }
 
-  //TODO
-  // const getTooltip = (slotNumber: number, portStr: string) => {
-  // const speedNoData = 'link down or no traffic'
-  // let tooltipText = ''
-  // if (!vlanSettingValues.switchFamilyModels?.untaggedPorts.includes(portStr)) {
-  //   const isUnTaggedVlanValid = port.unTaggedVlan !== '' && port.unTaggedVlan !== undefined
-  //   let UntaggedVlanText
-  //   let taggedVlanText = ''
+  const getTooltip = (timeslot: string) => {
+    const taggedPorts =
+    vlanSettingValues.switchFamilyModels?.taggedPorts?.toString().split(',') || []
 
-  //   if (isUnTaggedVlanValid) {
-  //     UntaggedVlanText =
-  //     '<span style="font-family:\'ruckus\';font-size:14px;">&#xe08f; </span>' + port.unTaggedVlan
-  //   } else {
-  //     UntaggedVlanText =
-  //     '<span style="font-family:\'ruckus\';font-size:14px;">&#xe08f; </span>' + '--'
-  //   }
+    const vlanSelectedPorts = vlanList ? vlanList.map(item => item.switchFamilyModels
+      ?.filter(obj => obj.model === vlanSettingValues.switchFamilyModels?.model)) : []
 
-  //   if (port.vlanIds !== '' && port.vlanIds !== undefined) {
-  //     let vlanIdsArray = port.vlanIds.split(' ')
+    const untaggedPortExists = vlanSelectedPorts.map(item => item?.map(
+      obj => { return obj.untaggedPorts?.split(',').includes(timeslot) }))[0]
 
-  //     if (isUnTaggedVlanValid) {
-  //       let taggedVlan = '--'
-  //       if (vlanIdsArray.length > 1) {
-  //         vlanIdsArray = _.remove(vlanIdsArray, n => n !== port.unTaggedVlan)
-  //         vlanIdsArray.sort((a, b) => Number(a) - Number(b))
-  //         // CMS-779 PLM feedback: Show up to 15 vlans in tooltip. If more than 15 VLANs, truncate and add an ellipsis
-  //         const ellipsis = (vlanIdsArray.length > 15) ? '...' : ''
-  //         const showVlanIdArray = (vlanIdsArray.length > 15) ? vlanIdsArray.slice(0, 15) : vlanIdsArray
-  //         taggedVlan = showVlanIdArray.join(', ').concat(ellipsis)
-  //       }
+    const taggedPortExists = vlanSelectedPorts.map(item => item?.map(
+      obj => { return obj.taggedPorts?.split(',').includes(timeslot) }))[0]
 
-  //       taggedVlanText = '<span style="font-family:\'ruckus\';font-size:14px;">  &#xe08e; </span>' + taggedVlan
-  //     } else {
-  //       taggedVlanText = '<span style="font-family:\'ruckus\';font-size:14px;">  &#xe08e; </span>' + vlanIdsArray.join(', ')
-  //     }
-  //   }
+    const filteredModel = vlanList ? vlanList.filter(model => model.switchFamilyModels?.some(
+      switchModel => switchModel.model === vlanSettingValues.switchFamilyModels?.model)) : []
 
-  //   const poeUsed = Math.round(port.poeUsed / 1000)
-  //   const poeTotal = Math.round(port.poeTotal / 1000)
+    if(taggedPorts.includes(timeslot)){
+      return <div>{$t({ defaultMessage: 'Port set as tagged' })}</div>
+    }else{
+      return <div>
+        <div>{$t({ defaultMessage: 'Networks on this port:' })}</div>
+        <div><UI.TagsOutlineIcon /><UI.PortSpan>
+          {untaggedPortExists && untaggedPortExists[0] ?
+            filteredModel[0].vlanId : '-'}</UI.PortSpan></div>
+        <div><UI.TagsSolidIcon /><UI.PortSpan>
+          {taggedPortExists && taggedPortExists[0] ?
+            filteredModel[0].vlanId : '-'}</UI.PortSpan></div>
+      </div>
+    }
+  }
 
-  //   // TODO
-  //   // tooltipText =
-  //   //   `<span class="label d-inline-block">Port: </span>` +
-  //   //   `<span class="value d-inline-block">${port.portIdentifier}</span><br/>` +
-  //   //   `<div class="d-flex">` +
-  //   //   `<span class="label d-inline-block">Name: </span>` +
-  //   //   `<span class="value d-inline-block">${port.name === '' ? '--' : port.name}</span></div>` +
-  //   //   `<div class="d-flex">` +
-  //   //   `<div class="label d-inline-block">VLAN: </div>` +
-  //   //   `<span class="value d-inline-block">` +
-  //   //   `${UntaggedVlanText === '' ? '--' : UntaggedVlanText}<br/>` +
-  //   //   `${taggedVlanText === '' ? '--' : taggedVlanText}</span></div>` +
-  //   //   `<span class="label mb-1 d-inline-block">Port Speed: </span>` +
-  //   //   `<span class="value d-inline-block">${port.portSpeed === speedNoData ? '--' : port.portSpeed}</span><br/>` +
-  //   //   `<span class="label mb-1 d-inline-block">Port State: </span>` +
-  //   //   `<span class="value d-inline-block">${port.status}</span><br/>` +
-  //   //   `<div class="d-flex">` +
-  //   //   `<span class="label d-inline-block">Connected Device: </span>` +
-  //   //   `<span class="value d-inline-block">${port.neighborName || port.neighborMacAddress || '--'}</span></div>` +
-  //   //   `<span class="label mb-1 d-inline-block">PoE Usage: </span>` +
-  //   //   `<span class="value d-inline-block">${poeUsed} W/ ${poeTotal} W</span><br/>` +
-  //   //   `<span class="label mb d-inline-block">(Consumed/Allocated)</span><br/>` +
-  //   //   `<span class="label mb-1 d-inline-block">PoE Device Type: </span>` +
-  //   //   `<span class="value d-inline-block">${port.poeType === '' ? '--' : port.poeType}</span><br/>`;
-
-  // } else {
-
-  //   if (!(this.clickAction !== port.portTagged && port.portTagged)) {
-  //     const unitNumber = _.isEmpty(port.unitNumber) ? '1/' : port.unitNumber + '/'
-  //     const portStr = unitNumber + slotNumber + '/' + port.portNumber // ex:1/1/1
-  //     let untaggedVlanMsg = '-'
-  //     let taggedVlansMsg = '-'
-  //     if (this.modelVlanPortStatus && this.modelVlanPortStatus[portStr]) {
-  //       untaggedVlanMsg = this.getUntaggedVlanMessage(this.modelVlanPortStatus, portStr)
-  //       taggedVlansMsg = this.getTaggedVlanMessage(this.modelVlanPortStatus, portStr)
-  //     }
-  //     tooltipText = `<div class="col">Networks on this port:</div>
-  //                    <div class="col align-icon">
-  //                      <span class="icon-untag" style="font-size:18px;"></span>
-  //                      <span>${untaggedVlanMsg}</span>
-  //                    </div>
-  //                    <div class="col align-icon">
-  //                      <span class="icon-tag" style="font-size:18px;"></span>
-  //                      <span>${taggedVlansMsg}</span>
-  //                    </div>`
-  //   } else if (port.portTagged == PortTaggedEnum.LAG) {
-  //     tooltipText = this.LAG_MEMBER_PORT_DISABLE_TOOLTIP
-  //   } else {
-  //     tooltipText = `<span class="col">Port set as ${port.portTagged.toLowerCase()}</span>`
-  //   }
-  //   }
-  //   return tooltipText
-  // }
-
-  // TODO: for switch
-  // const getPortIcon(port: { usedInUplink: boolean; usedInFormingStack: any; poeUsed: any }) {
-  //     if (this.deviceStatus === SwitchStatusEnum.DISCONNECTED) {
-  //       return '';
-  //     }
-  //     if (port.usedInUplink) {
-  //       return 'UpLink';
-  //     }
-  //     if (this.isSwitchStack && port.usedInFormingStack) {
-  //       return 'Stack';
-  //     }
-  //     if (port.poeUsed) {
-  //       return 'PoeUsed';
-  //     }
-  //     return '';
-  //   }
-  //const isUntaggedByOtherVlan = (portStr: string) => {}
+  const getPortLabel = (port: number, slot: number) => {
+    const model = vlanSettingValues.switchFamilyModels?.model || ''
+    const portLabel = getSwitchPortLabel(model, slot) + port.toString()
+    return portLabel
+  }
 
   return (
     <>
@@ -355,7 +276,7 @@ export function UntaggedPortsStep () {
                     value={selectedItems1}
                     options={portsModule1.map((timeslot, i) => ({
                       label: <Tooltip
-                        title={''}
+                        title={getTooltip(timeslot.value)}
                       >
                         <div
                           id={`untagged_module1_${i}`}
@@ -364,15 +285,8 @@ export function UntaggedPortsStep () {
                           data-disabled={getDisabledPorts(timeslot.value)}
                           style={{ width: '20px', height: '20px' }}
                         >
-                          {
-                            /* TODO for switch
-                            <UI.LighteningIcon />
-                            <UI.StackingIcon />
-                            <UI.RuckusUploadIcon />
-                            */
-                          }
                         </div>
-                        <p>{i+1}</p>
+                        <p>{getPortLabel(i+1, 1)}</p>
                       </Tooltip>,
                       value: timeslot.value,
                       disabled: getDisabledPorts(timeslot.value)
@@ -403,7 +317,7 @@ export function UntaggedPortsStep () {
                         value={selectedItems2}
                         options={portsModule2.map((timeslot, i) => ({
                           label: <Tooltip
-                            title={timeslot.value}
+                            title={getTooltip(timeslot.value)}
                           >
                             <div
                               id={`untagged_module2_${i}`}
@@ -412,7 +326,7 @@ export function UntaggedPortsStep () {
                               data-disabled={getDisabledPorts(timeslot.value)}
                               style={{ width: '20px', height: '20px' }}
                             ></div>
-                            <p>{i+1}</p>
+                            <p>{getPortLabel(i+1, 2)}</p>
                           </Tooltip>,
                           value: timeslot.value,
                           disabled: getDisabledPorts(timeslot.value)
@@ -444,7 +358,7 @@ export function UntaggedPortsStep () {
                     value={selectedItems3}
                     options={portsModule3.map((timeslot, i) => ({
                       label: <Tooltip
-                        title={''}
+                        title={getTooltip(timeslot.value)}
                       >
                         <div
                           id={`untagged_module3_${i}`}
@@ -453,7 +367,7 @@ export function UntaggedPortsStep () {
                           data-disabled={getDisabledPorts(timeslot.value)}
                           style={{ width: '20px', height: '20px' }}
                         ></div>
-                        <p>{i+1}</p>
+                        <p>{getPortLabel(i+1, 3)}</p>
                       </Tooltip>,
                       value: timeslot.value,
                       disabled: getDisabledPorts(timeslot.value)

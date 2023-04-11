@@ -1,5 +1,3 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-
 import {
   PersonaUrls,
   createHttpRequest,
@@ -15,14 +13,7 @@ import {
   downloadFile,
   RequestFormData
 } from '@acx-ui/rc/utils'
-
-export const basePersonaApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  tagTypes: ['PersonaGroup', 'Persona'],
-  reducerPath: 'personaGroupApi',
-  refetchOnMountOrArgChange: true,
-  endpoints: () => ({ })
-})
+import { basePersonaApi } from '@acx-ui/store'
 
 export const personaApi = basePersonaApi.injectEndpoints({
   endpoints: build => ({
@@ -161,7 +152,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
       },
       providesTags: [{ type: 'Persona', id: 'LIST' }]
     }),
-    getPersonaById: build.query<Persona, RequestPayload>({
+    getPersonaById: build.query<Persona, RequestPayload<{ groupId: string, id: string }>>({
       query: ({ params }) => {
         const req = createHttpRequest(PersonaUrls.getPersonaById, params)
         return {
@@ -295,6 +286,7 @@ export const {
 export const {
   useAddPersonaMutation,
   useGetPersonaByIdQuery,
+  useLazyGetPersonaByIdQuery,
   useSearchPersonaListQuery,
   useLazySearchPersonaListQuery,
   useUpdatePersonaMutation,

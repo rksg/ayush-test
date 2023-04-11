@@ -1,29 +1,30 @@
 import { useEffect } from 'react'
 
 import { Typography } from 'antd'
-import moment         from 'moment'
+import moment         from 'moment-timezone'
 import { useIntl }    from 'react-intl'
 
-import { cssStr, Subtitle }                from '@acx-ui/components'
-import { Table, TableProps, Loader }       from '@acx-ui/components'
-import { useGetHistoricalClientListQuery } from '@acx-ui/rc/services'
+import { cssStr, Subtitle, Table, TableProps, Loader } from '@acx-ui/components'
+import { formatter, DateFormatEnum }                   from '@acx-ui/formatter'
+import { useGetHistoricalClientListQuery }             from '@acx-ui/rc/services'
 import {
   Client,
   RequestPayload,
   TableQuery,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                             from '@acx-ui/react-router-dom'
-import { encodeParameter, DateFilter, DateRange, formatter } from '@acx-ui/utils'
+import { TenantLink, useParams }                  from '@acx-ui/react-router-dom'
+import { encodeParameter, DateFilter, DateRange } from '@acx-ui/utils'
 
 function getCols (intl: ReturnType<typeof useIntl>) {
-  const dateTimeFormatter = formatter('dateTimeFormat')
+  const dateTimeFormatter = formatter(DateFormatEnum.DateTimeFormat)
   const columns: TableProps<Client>['columns'] = [{
     key: 'hostname',
     title: intl.$t({ defaultMessage: 'Hostname' }),
     dataIndex: 'hostname',
     sorter: true,
     defaultSortOrder: 'ascend',
+    fixed: 'left',
     render: (data, { disconnectTime, clientMac }) => {
       const period = encodeParameter<DateFilter>({
         startDate: moment((disconnectTime as number) * 1000).subtract(24, 'hours').format(),
@@ -32,7 +33,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       })
       /* eslint-disable max-len */
       return <TenantLink
-        to={`/users/wifi/clients/${clientMac}/details/overview?clientStatus=historical&period=${period}`}
+        to={`/users/wifi/clients/${clientMac}/details/overview?hostname=${data}&clientStatus=historical&period=${period}`}
       >
         {data ? data : '--'}
       </TenantLink>
@@ -111,9 +112,8 @@ const defaultFilters = {
 }
 
 export function HistoricalClientsTable
-({ searchString, setHistoricalClientCount, id } :
-  { searchString: string, setHistoricalClientCount: (historicalClientCount: number) => void,
-    id: string
+({ searchString, setHistoricalClientCount } :
+  { searchString: string, setHistoricalClientCount: (historicalClientCount: number) => void
   }) {
   const { $t } = useIntl()
   const params = useParams()
@@ -138,7 +138,7 @@ export function HistoricalClientsTable
     }, [tableQuery])
 
     return (
-      <div id={id}>
+      <div>
         <Loader states={[
           tableQuery
         ]}>
@@ -146,8 +146,10 @@ export function HistoricalClientsTable
             {$t({ defaultMessage: 'Historical Clients' })}
           </Subtitle>
           <Table
+            settingsId='historical-clients-table'
             columns={getCols(useIntl())}
             dataSource={tableQuery.data?.data}
+            pagination={tableQuery.pagination}
             onChange={tableQuery.handleTableChange}
             rowKey='clientMac'
           />
@@ -176,6 +178,7 @@ export const GlobalSearchHistoricalClientsTable = (props: {
   const tableQuery = props.tableQuery
   return (
     <Table
+      settingsId='historical-clients-table'
       columns={getCols(useIntl())}
       dataSource={tableQuery?.data?.data}
       onChange={tableQuery?.handleTableChange}

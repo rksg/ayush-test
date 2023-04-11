@@ -40,8 +40,10 @@ export interface DHCPPool {
   vlanId: number;
   dhcpOptions: DHCPOption[];
   activated?: boolean;
+  startAddress: string;
+  endAddress: string;
+  networkAddress: string;
 }
-
 export interface DHCPOption{
   optId: string;
   id: number;
@@ -56,7 +58,9 @@ export interface CreateDHCPFormFields {
 }
 export interface DHCPSaveData extends CreateDHCPFormFields {
   id?: string;
+  name?: string;
   usage: DHCPUsage[];
+  venueIds?: string[];
 }
 export interface DHCPUsage {
   venueId: string;

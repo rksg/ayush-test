@@ -1,7 +1,6 @@
 /* eslint-disable testing-library/no-node-access */
-import { dataApiURL }                                  from '@acx-ui/analytics/services'
 import { AnalyticsFilter }                             from '@acx-ui/analytics/utils'
-import { Provider, store }                             from '@acx-ui/store'
+import { dataApiURL, Provider, store }                 from '@acx-ui/store'
 import { fireEvent, render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
 import { DateRange }                                   from '@acx-ui/utils'
 
@@ -74,7 +73,7 @@ describe('TopApplicationsByTrafficWidget', () => {
     })
     const { asFragment } = render( <Provider> <TopApplicationsByTraffic
       filters={filters}/></Provider>)
-    await screen.findByText('Top 5 Applications by Traffic')
+    await screen.findByText('Top Applications by Traffic')
     const contentSwitcher = asFragment()
       .querySelector('div.ant-card-body > div > div:nth-child(1) > div')
     expect(contentSwitcher).toMatchSnapshot('contentSwitcher')

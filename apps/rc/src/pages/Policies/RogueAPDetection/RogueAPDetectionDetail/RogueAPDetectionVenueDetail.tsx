@@ -39,6 +39,7 @@ const RogueAPDetectionVenueDetail = () => {
       key: 'name',
       searchable: true,
       sorter: true,
+      fixed: 'left',
       render: (_, row, __, highlightFn) => {
         return <TenantLink to={`/venues/${row.id}/venue-details/overview`}>
           {highlightFn(row.name)}
@@ -49,7 +50,14 @@ const RogueAPDetectionVenueDetail = () => {
       title: $t({ defaultMessage: 'Address' }),
       dataIndex: 'city',
       sorter: true,
-      key: 'city'
+      key: 'city',
+      render: (data, row) => {
+        let trimCity = row.city?.trim()
+        if (trimCity && trimCity[0] === ',') {
+          trimCity.replace(',', '')
+        }
+        return [row.country, trimCity].join(',')
+      }
     },
     {
       title: $t({ defaultMessage: 'Rogue APs' }),

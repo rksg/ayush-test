@@ -16,36 +16,54 @@ import {
   Subtitle
 } from '@acx-ui/components'
 import {
-  useCreateWebAuthTemplateMutation,
   useGetWebAuthTemplateQuery,
+  useCreateWebAuthTemplateMutation,
   useUpdateWebAuthTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   getServiceListRoutePath,
+  LocationExtended,
+  redirectPreviousPage,
   WebAuthTemplate
 } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
 export const defaultTemplateData = {
-  webAuthPasswordLabel: defineMessage({ defaultMessage: 'DPSK Password' }),
-  webAuthCustomTitle: defineMessage({
-    defaultMessage: 'Enter your Password below and press the button' }),
-  webAuthCustomTop: defineMessage({
-    defaultMessage: 'Welcome to Ruckus Networks Web Authentication Homepage' }),
-  webAuthCustomLoginButton: defineMessage({ defaultMessage: 'Login' }),
-  webAuthCustomBottom: defineMessage({
-    defaultMessage: `This network is restricted to authorized users only.
-    Violators may be subjected to legal prosecution.
-    Acitvity on this network is monitored and may be used as evidence in a court of law.
-    Copyright 2022 Ruckus Networks` })
+  webAuthCustomTop: {
+    label: defineMessage({ defaultMessage: 'Header' }),
+    defaultMessage:
+      defineMessage({ defaultMessage: 'Welcome to Ruckus Networks Web Authentication Homepage' })
+  },
+  webAuthCustomTitle: {
+    label: defineMessage({ defaultMessage: 'Title' }),
+    defaultMessage:
+      defineMessage({ defaultMessage: 'Enter your Password below and press the button' })
+  },
+  webAuthPasswordLabel: {
+    label: defineMessage({ defaultMessage: 'Password Label' }),
+    defaultMessage: defineMessage({ defaultMessage: 'DPSK Password' })
+  },
+  webAuthCustomLoginButton: {
+    label: defineMessage({ defaultMessage: 'Button' }),
+    defaultMessage: defineMessage({ defaultMessage: 'Login' })
+  },
+  webAuthCustomBottom: {
+    label: defineMessage({ defaultMessage: 'Footer' }),
+    defaultMessage:
+      defineMessage({ defaultMessage: `This network is restricted to authorized users only.
+      Violators may be subjected to legal prosecution.
+      Acitvity on this network is monitored and may be used as evidence in a court of law.
+      \u00A9 {year} CommScope, Inc. All Rights Reserved.` })
+  }
 }
 
 export default function NetworkSegAuthForm ({ editMode = false }: { editMode?: boolean } ) {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
+  const location = useLocation()
   const linkToServices = useTenantLink(getServiceListRoutePath(true))
 
   const [createWebAuthTemplate] = useCreateWebAuthTemplateMutation()
@@ -54,6 +72,8 @@ export default function NetworkSegAuthForm ({ editMode = false }: { editMode?: b
 
   const formRef = useRef<StepsFormInstance<WebAuthTemplate>>()
 
+  const previousPath = (location as LocationExtended)?.state?.from?.pathname
+
   useEffect(() => {
     formRef.current?.resetFields()
     if (data && editMode) {
@@ -61,15 +81,15 @@ export default function NetworkSegAuthForm ({ editMode = false }: { editMode?: b
     }
   }, [data, editMode])
 
-  const saveData = async (data: WebAuthTemplate) => {
+  const saveData = async (value: WebAuthTemplate) => {
     try {
       if (editMode) {
-        await updateWebAuthTemplate({ params, payload: data }).unwrap()
+        await updateWebAuthTemplate({ params, payload: value }).unwrap()
       } else {
-        await createWebAuthTemplate({ params, payload: _.omit(data, 'id') }).unwrap()
+        await createWebAuthTemplate({ params, payload: _.omit(value, 'id') }).unwrap()
       }
 
-      navigate(linkToServices, { replace: true })
+      redirectPreviousPage(navigate, previousPath, linkToServices)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -84,7 +104,9 @@ export default function NetworkSegAuthForm ({ editMode = false }: { editMode?: b
           <Form.Item name={name} children={<Input.TextArea autoSize />} />
           <Button type='link'
             onClick={()=>{
-              formRef?.current?.setFieldValue(name, $t(defaultTemplateData[name]))
+              formRef?.current?.setFieldValue(name, $t(defaultTemplateData[name].defaultMessage, {
+                year: new Date().getFullYear()
+              }))
             }}>
             {$t({ defaultMessage: 'Reset to default' })}
           </Button>
@@ -105,7 +127,7 @@ export default function NetworkSegAuthForm ({ editMode = false }: { editMode?: b
       <StepsForm<WebAuthTemplate>
         formRef={formRef}
         editMode={editMode}
-        onCancel={() => navigate(linkToServices)}
+        onCancel={() => redirectPreviousPage(navigate, previousPath, linkToServices)}
         onFinish={saveData}
       >
         <StepsForm.StepForm
@@ -126,16 +148,14 @@ export default function NetworkSegAuthForm ({ editMode = false }: { editMode?: b
           </Form.Item> */}
           <Subtitle level={4}>
             {$t({ defaultMessage: 'Auth Page Details' })}</Subtitle>
-          <WebAuthFormItem name='webAuthCustomTop'
-            label={$t({ defaultMessage: 'Header' })} />
-          <WebAuthFormItem name='webAuthCustomTitle'
-            label={$t({ defaultMessage: 'Title' })} />
-          <WebAuthFormItem name='webAuthPasswordLabel'
-            label={$t({ defaultMessage: 'Password Label' })} />
-          <WebAuthFormItem name='webAuthCustomLoginButton'
-            label={$t({ defaultMessage: 'Button Text' })} />
-          <WebAuthFormItem name='webAuthCustomBottom'
-            label={$t({ defaultMessage: 'Footer' })} />
+          {
+            (Object.keys(defaultTemplateData) as (keyof typeof defaultTemplateData)[])
+              .map(name=>{
+                const item = defaultTemplateData[name]
+                return (<WebAuthFormItem name={name}
+                  label={$t(item.label)} />)
+              })
+          }
         </StepsForm.StepForm>
       </StepsForm>
     </>

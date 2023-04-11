@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 
+import { Tooltip } from 'antd'
 import * as _      from 'lodash'
 import { useIntl } from 'react-intl'
 
@@ -11,13 +12,14 @@ import {
   Loader
 } from '@acx-ui/components'
 import {
-  useGetUpgradePreferencesQuery,
-  useUpdateUpgradePreferencesMutation,
+  useGetSwitchUpgradePreferencesQuery,
+  useUpdateSwitchUpgradePreferencesMutation,
   useGetSwitchVenueVersionListQuery,
   useGetSwitchAvailableFirmwareListQuery,
-  useGetSwitchFirmwareVersionIdListQuery,
+  useGetSwitchCurrentVersionsQuery,
   useSkipSwitchUpgradeSchedulesMutation,
-  useUpdateSwitchVenueSchedulesMutation
+  useUpdateSwitchVenueSchedulesMutation,
+  useGetSwitchFirmwarePredownloadQuery
 } from '@acx-ui/rc/services'
 import {
   UpgradePreferences,
@@ -27,15 +29,20 @@ import {
   TableQuery,
   RequestPayload,
   firmwareTypeTrans,
-  useTableQuery
+  useTableQuery,
+  sortProp,
+  defaultSort
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
 import {
   getNextScheduleTpl,
+  getSwitchNextScheduleTplTooltip,
+  isSwitchNextScheduleTooltipDisabled,
   toUserDate
 } from '../../FirmwareUtils'
 import { PreferencesDialog } from '../../PreferencesDialog'
+import * as UI               from '../../styledComponents'
 
 import { ChangeScheduleDialog } from './ChangeScheduleDialog'
 import { UpdateNowDialog }      from './UpdateNowDialog'
@@ -53,32 +60,34 @@ function useColumns (
       title: intl.$t({ defaultMessage: 'Venue Name' }),
       key: 'name',
       dataIndex: 'name',
-      sorter: true,
+      // sorter: true,
+      sorter: { compare: sortProp('name', defaultSort) },
       searchable: searchable,
-      defaultSortOrder: 'ascend',
-      width: 120,
+      // defaultSortOrder: 'ascend',
       render: function (data, row) {
         return row.name
       }
     },
     {
       title: intl.$t({ defaultMessage: 'Current Firmware' }),
-      key: 'switchFirmwareVersion.id',
-      dataIndex: 'switchFirmwareVersion.id',
-      sorter: true,
+      key: 'version',
+      dataIndex: 'version',
+      // sorter: true,
+      sorter: { compare: sortProp('switchFirmwareVersion.id', defaultSort) },
       filterable: filterables ? filterables['version'] : false,
-      width: 120,
+      filterMultiple: false,
       render: function (data, row) {
-        return row.switchFirmwareVersion?.id ?? '--'
+        return row.switchFirmwareVersion?.id.replace('_b392', '') ?? '--'
       }
     },
     {
       title: intl.$t({ defaultMessage: 'Firmware Type' }),
-      key: 'switchFirmwareVersion.category',
-      dataIndex: 'switchFirmwareVersion.category',
-      sorter: true,
+      key: 'type',
+      dataIndex: 'type',
+      // sorter: true,
+      sorter: { compare: sortProp('switchFirmwareVersion.category', defaultSort) },
       filterable: filterables ? filterables['type'] : false,
-      width: 120,
+      filterMultiple: false,
       render: function (data, row) {
         return transform(row.switchFirmwareVersion?.category, 'type') ?? '--'
       }
@@ -87,8 +96,7 @@ function useColumns (
       title: intl.$t({ defaultMessage: 'Last Update' }),
       key: 'lastUpdate',
       dataIndex: 'lastUpdate',
-      sorter: true,
-      width: 120,
+      sorter: false,
       render: function (data, row) {
         return row.lastScheduleUpdateTime ? toUserDate(row.lastScheduleUpdateTime) : '--'
       }
@@ -97,10 +105,16 @@ function useColumns (
       title: intl.$t({ defaultMessage: 'Next Update Schedule' }),
       key: 'nextSchedule',
       dataIndex: 'nextSchedule',
-      sorter: true,
-      width: 120,
+      sorter: false,
       render: function (data, row) {
-        return getNextScheduleTpl(intl, row)
+        // return getNextScheduleTpl(intl, row)
+        return (!isSwitchNextScheduleTooltipDisabled(row)
+          ? getNextScheduleTpl(intl, row)
+          // eslint-disable-next-line max-len
+          : <Tooltip title={<UI.ScheduleTooltipText>{getSwitchNextScheduleTplTooltip(row)}</UI.ScheduleTooltipText>} placement='bottom'>
+            <UI.ScheduleText>{getNextScheduleTpl(intl, row)}</UI.ScheduleText>
+          </Tooltip>
+        )
       }
     }
   ]
@@ -110,27 +124,6 @@ function useColumns (
 
 export const useDefaultVenuePayload = (): RequestPayload => {
   return {
-    // fields: [
-    //   'check-all',
-    //   'name',
-    //   'description',
-    //   'city',
-    //   'country',
-    //   'networks',
-    //   'aggregatedApStatus',
-    //   'switches',
-    //   'switchClients',
-    //   'clients',
-    //   'cog',
-    //   'latitude',
-    //   'longitude',
-    //   'status',
-    //   'id'
-    // ],
-    // searchTargetFields: ['name', 'description'],
-    // filters: {},
-    // sortField: 'name',
-    // sortOrder: 'ASC'
     firmwareType: '',
     firmwareVersion: '',
     search: '',
@@ -159,8 +152,10 @@ export const VenueFirmwareTable = (
   const [upgradeVersions, setUpgradeVersions] = useState<FirmwareVersion[]>([])
   const [changeUpgradeVersions, setChangeUpgradeVersions] = useState<FirmwareVersion[]>([])
 
-  const [updateUpgradePreferences] = useUpdateUpgradePreferencesMutation()
-  const { data: preferencesData } = useGetUpgradePreferencesQuery({ params })
+  const { data: preDownload } = useGetSwitchFirmwarePredownloadQuery({ params })
+
+  const [updateUpgradePreferences] = useUpdateSwitchUpgradePreferencesMutation()
+  const { data: preferencesData } = useGetSwitchUpgradePreferencesQuery({ params })
   const preferenceDays = preferencesData?.days?.map((day) => {
     return day.charAt(0).toUpperCase() + day.slice(1).toLowerCase()
   })
@@ -307,7 +302,6 @@ export const VenueFirmwareTable = (
       <Table
         columns={columns}
         dataSource={tableQuery.data?.data}
-        // dataSource={tableData}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
@@ -339,6 +333,8 @@ export const VenueFirmwareTable = (
         data={preferences}
         onCancel={handleModalCancel}
         onSubmit={handleModalSubmit}
+        isSwitch={true}
+        preDownload={preDownload?.preDownload}
       />
     </Loader>
   )
@@ -355,11 +351,11 @@ export function VenueFirmwareList () {
     }
   })
 
-  const { versionFilterOptions } = useGetSwitchFirmwareVersionIdListQuery({ params: useParams() }, {
+  const { versionFilterOptions } = useGetSwitchCurrentVersionsQuery({ params: useParams() }, {
     selectFromResult ({ data }) {
       return {
         // eslint-disable-next-line max-len
-        versionFilterOptions: data?.map(v=>({ key: v.id, value: v.id })) || true
+        versionFilterOptions: data?.currentVersions?.map(v=>({ key: v, value: v.replace('_b392', '') })) || true
       }
     }
   })

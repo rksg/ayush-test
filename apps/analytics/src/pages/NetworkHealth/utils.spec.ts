@@ -154,7 +154,7 @@ describe('formatApsUnderTest', () => {
   })
   it('should return correct value - no data test', ()=>{
     const result = formatApsUnderTest(undefined)
-    expect(result).toEqual('-')
+    expect(result).toEqual('--')
   })
 })
 
@@ -177,7 +177,7 @@ describe('formatLastResult', () => {
   })
   it('should return correct value - no data test', ()=>{
     const result = formatLastResult(undefined)
-    expect(result).toEqual('-')
+    expect(result).toEqual('--')
   })
 })
 
@@ -201,7 +201,7 @@ describe('formatTestType', () => {
     const node = screen.getByText('Scheduled (in 5 days)')
     expect(node).toBeVisible()
     userEvent.hover(node)
-    expect(await screen.findByText('Mar 06 2023 00:00')).toBeInTheDocument()
+    expect(await screen.findByText('03/06/2023 00:00')).toBeInTheDocument()
     jest.useRealTimers()
   })
 })

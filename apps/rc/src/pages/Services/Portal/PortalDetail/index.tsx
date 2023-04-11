@@ -1,16 +1,15 @@
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { PageHeader, Button, DisabledButton, GridRow, Loader, GridCol } from '@acx-ui/components'
-import { ClockOutlined }                                                from '@acx-ui/icons'
-import { useGetPortalProfileDetailQuery }                               from '@acx-ui/rc/services'
+import { PageHeader, Button, GridRow, Loader, GridCol } from '@acx-ui/components'
+import { useGetPortalProfileDetailQuery }               from '@acx-ui/rc/services'
 import {
   Demo,
   getServiceDetailsLink,
   getServiceRoutePath,
   ServiceOperation,
   ServiceType
-}                                                         from '@acx-ui/rc/utils'
+} from '@acx-ui/rc/utils'
 import { TenantLink }     from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
@@ -28,14 +27,11 @@ export default function PortalServiceDetail () {
         title={queryResults.data?.serviceName||''}
         breadcrumb={[
           {
-            text: $t({ defaultMessage: 'Services' }),
+            text: $t({ defaultMessage: 'Portal Services' }),
             link: getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.LIST })
           }
         ]}
         extra={filterByAccess([
-          <DisabledButton key={'last24'} icon={<ClockOutlined />}>
-            {$t({ defaultMessage: 'Last 24 hours' })}
-          </DisabledButton>,
           <TenantLink
             to={getServiceDetailsLink({
               type: ServiceType.PORTAL,

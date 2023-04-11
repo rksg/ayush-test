@@ -1,0 +1,201 @@
+/* eslint-disable max-len */
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
+
+import { StepsFormNew } from '@acx-ui/components'
+import {
+  EdgeDhcpUrls,
+  EdgeUrlsInfo
+} from '@acx-ui/rc/utils'
+import { Provider } from '@acx-ui/store'
+import {
+  mockServer,
+  render,
+  screen,
+  waitFor,
+  within
+} from '@acx-ui/test-utils'
+
+import {
+  mockEdgeData,
+  mockEdgeDhcpDataList
+} from '../../__tests__/fixtures'
+
+import { SmartEdgeForm } from './'
+
+type MockSelectProps = React.PropsWithChildren<{
+  onChange?: (value: string) => void
+  options?: Array<{ label: string, value: unknown }>
+  loading?: boolean
+}>
+jest.mock('antd', () => {
+  const components = jest.requireActual('antd')
+  const Select = ({ loading, children, onChange, options, ...props }: MockSelectProps) => (
+    <select {...props} onChange={(e) => onChange?.(e.target.value)} value=''>
+      {/* Additional <option> to ensure it is possible to reset value to empty */}
+      {children ? <><option value={''}></option>{children}</> : null}
+      {options?.map((option, index) => (
+        <option key={`option-${index}`} value={option.value as string}>{option.label}</option>
+      ))}
+    </select>
+  )
+  Select.Option = 'option'
+  return { ...components, Select }
+})
+
+const mockedFinishFn = jest.fn()
+
+const createNsgPath = '/:tenantId/services/networkSegmentation/create'
+
+describe('SmartEdgeForm', () => {
+  let params: { tenantId: string, serviceId: string }
+  beforeEach(() => {
+    params = {
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      serviceId: 'testServiceId'
+    }
+
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeList.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeData))
+      ),
+      rest.post(
+        EdgeDhcpUrls.addDhcpService.url,
+        (req, res, ctx) => res(ctx.status(202))
+      ),
+      rest.get(
+        EdgeDhcpUrls.getDhcpByEdgeId.url,
+        (req, res, ctx) => res(ctx.status(404))
+      ),
+      rest.get(
+        EdgeDhcpUrls.getDhcpList.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeDhcpDataList))
+      ),
+      rest.patch(
+        EdgeDhcpUrls.patchDhcpService.url,
+        (req, res, ctx) => res(ctx.status(202))
+      )
+    )
+  })
+
+  it('Add DHCP service', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <StepsFormNew><SmartEdgeForm /></StepsFormNew>
+      </Provider>, {
+        route: { params, path: createNsgPath }
+      })
+
+    await user.selectOptions(
+      await screen.findByRole('combobox', { name: 'SmartEdge' }),
+      await screen.findByRole('option', { name: 'Smart Edge 1' })
+    )
+    await user.click(await screen.findByRole('button', { name: 'Add' }))
+
+    const dhcpServiceNameInput = await screen.findByRole('textbox', { name: 'Service Name' })
+    await user.type(dhcpServiceNameInput, 'myTest')
+    await user.click(await screen.findByRole('button', { name: 'Add DHCP Pool' }))
+
+    const poolNameInput = await screen.findByRole('textbox', { name: 'Pool Name' })
+    const subnetMaskInput = await screen.findByRole('textbox', { name: 'Subnet Mask' })
+    const startIpInput = await screen.findByRole('textbox', { name: 'Start IP Address' })
+    const endIpInput = await screen.findByRole('textbox', { name: 'End IP Address' })
+    const gatewayInput = await screen.findByRole('textbox', { name: 'Gateway' })
+    await user.type(poolNameInput, 'Pool1')
+    await user.type(subnetMaskInput, '255.255.255.0')
+    await user.type(startIpInput, '1.1.1.1')
+    await user.type(endIpInput, '1.1.1.5')
+    await user.type(gatewayInput, '1.2.3.4')
+    const addDhcpPoolDrawer = screen.getAllByRole('dialog')[1]
+    await user.click(within(addDhcpPoolDrawer).getByRole('button', { name: 'Add' }))
+    const addDhcpModal = screen.getAllByRole('dialog')[0]
+    await user.click(within(addDhcpModal).getByRole('button', { name: 'Add' }))
+  })
+
+  it('Add DHCP pool', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <StepsFormNew><SmartEdgeForm /></StepsFormNew>
+      </Provider>, {
+        route: { params, path: createNsgPath }
+      })
+
+    await user.selectOptions(
+      await screen.findByRole('combobox', { name: 'SmartEdge' }),
+      await screen.findByRole('option', { name: 'Smart Edge 1' })
+    )
+    const dhcpSelect = await screen.findByRole('combobox', { name: 'DHCP Service' })
+    await waitFor(() => expect(dhcpSelect).not.toBeDisabled())
+    await user.selectOptions(
+      dhcpSelect,
+      await screen.findByRole('option', { name: 'TestDhcp-1' })
+    )
+    user.click(await screen.findByRole('button', { name: 'Select Pool' }))
+
+    await user.click(await screen.findByRole('button', { name: 'Add DHCP Pool' }))
+    const poolNameInput = await screen.findByRole('textbox', { name: 'Pool Name' })
+    const subnetMaskInput = await screen.findByRole('textbox', { name: 'Subnet Mask' })
+    const startIpInput = await screen.findByRole('textbox', { name: 'Start IP Address' })
+    const endIpInput = await screen.findByRole('textbox', { name: 'End IP Address' })
+    const gatewayInput = await screen.findByRole('textbox', { name: 'Gateway' })
+    await user.type(poolNameInput, 'Pool1')
+    await user.type(subnetMaskInput, '255.255.255.0')
+    await user.type(startIpInput, '1.1.1.1')
+    await user.type(endIpInput, '1.1.1.5')
+    await user.type(gatewayInput, '1.2.3.4')
+    const addDhcpPoolDrawer = screen.getAllByRole('dialog')[1]
+    await user.click(within(addDhcpPoolDrawer).getByRole('button', { name: 'Add' }))
+  })
+
+  it('Step2 - Smart edge success', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <StepsFormNew onFinish={mockedFinishFn}>
+          <StepsFormNew.StepForm>
+            <SmartEdgeForm />
+          </StepsFormNew.StepForm>
+        </StepsFormNew>
+      </Provider>,
+      { route: { params, path: createNsgPath } })
+    await user.selectOptions(
+      await screen.findByRole('combobox', { name: 'SmartEdge' }),
+      await screen.findByRole('option', { name: 'Smart Edge 1' })
+    )
+    const segmentsInput = await screen.findByRole('spinbutton', { name: 'Number of Segments' })
+    await user.type(segmentsInput, '10')
+    const devicesInput = await screen.findByRole('spinbutton', { name: 'Number of devices per Segment' })
+    await user.type(devicesInput, '10')
+    const dhcpSelect = await screen.findByRole('combobox', { name: 'DHCP Service' })
+    await waitFor(() => expect(dhcpSelect).not.toBeDisabled())
+    await user.selectOptions(
+      dhcpSelect,
+      await screen.findByRole('option', { name: 'TestDhcp-1' })
+    )
+    await user.click(await screen.findByRole('button', { name: 'Select Pool' }))
+    await user.click(await screen.findByText('PoolTest1'))
+    await user.click(await screen.findByRole('button', { name: 'Select' }))
+    await user.click(await screen.findByRole('button', { name: 'Finish' }))
+  })
+
+  it('Step2 - Smart edge will be block by mandatory validation', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <StepsFormNew onFinish={mockedFinishFn}>
+          <StepsFormNew.StepForm>
+            <SmartEdgeForm />
+          </StepsFormNew.StepForm>
+        </StepsFormNew>
+      </Provider>,
+      { route: { params, path: createNsgPath } })
+    await user.click(await screen.findByRole('button', { name: 'Finish' }))
+    await screen.findByText('Please enter SmartEdge')
+    await screen.findByText('Please enter Number of Segments')
+    await screen.findByText('Please enter Number of devices per Segment')
+    await screen.findByText('Please enter DHCP Service')
+  })
+})

@@ -1,35 +1,51 @@
-import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs } from '@acx-ui/components'
+import { Tabs }                   from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 import ApFirmware     from './ApFirmware'
+import EdgeFirmware   from './EdgeFirmware'
 import SwitchFirmware from './SwitchFirmware'
 
 const FWVersionMgmt = () => {
   const { $t } = useIntl()
+  const isEdgeEnabled = useIsSplitOn(Features.EDGES)
 
-  const [currentTab, setCurrentTab] = useState('apFirmware')
-
-  const onTabChange = (tab: string) => {
-    setCurrentTab(tab)
+  const tabs = {
+    apFirmware: {
+      title: $t({ defaultMessage: 'AP Firmware' }),
+      content: <ApFirmware />,
+      visible: true
+    },
+    switchFirmware: {
+      title: $t({ defaultMessage: 'Switch Firmware' }),
+      content: <SwitchFirmware />,
+      visible: true
+    },
+    edgeFirmware: {
+      title: $t({ defaultMessage: 'Edge Firmware' }),
+      content: <EdgeFirmware />,
+      visible: isEdgeEnabled
+    }
   }
 
-  return <>
-    <Tabs onChange={onTabChange}
-      activeKey={currentTab}
-      type='third'>
-      <Tabs.TabPane tab={$t({ defaultMessage: 'AP Firmware' })} key='apFirmware' />
-      <Tabs.TabPane tab={$t({ defaultMessage: 'Switch Firmware' })} key='switchFirmware' />
+  return (
+    <Tabs
+      defaultActiveKey='apFirmware'
+      type='card'
+    >
+      {
+        Object.entries(tabs).map((item) =>
+          item[1].visible &&
+          <Tabs.TabPane
+            key={item[0]}
+            tab={item[1].title}
+            children={item[1].content}
+          />)
+      }
     </Tabs>
-    <div style={{ display: currentTab === 'apFirmware' ? 'block' : 'none' }}>
-      <ApFirmware />
-    </div>
-    <div style={{ display: currentTab === 'switchFirmware' ? 'block' : 'none' }}>
-      <SwitchFirmware />
-    </div>
-  </>
+  )
 }
 
 export default FWVersionMgmt

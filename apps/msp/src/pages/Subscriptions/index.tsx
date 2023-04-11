@@ -1,8 +1,7 @@
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Row }     from 'antd'
-import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import {
@@ -15,6 +14,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { get }                       from '@acx-ui/config'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   SubscriptionUsageReportDialog
 } from '@acx-ui/msp/components'
@@ -24,7 +25,6 @@ import {
   useRefreshMspEntitlementMutation
 } from '@acx-ui/rc/services'
 import {
-  DateFormatEnum,
   EntitlementUtil,
   MspEntitlement
 } from '@acx-ui/rc/utils'
@@ -74,7 +74,8 @@ export function Subscriptions () {
       dataIndex: 'effectiveDate',
       key: 'effectiveDate',
       render: function (_, row) {
-        return moment(row.effectiveDate).format(DateFormatEnum.UserDateFormat)
+        const effectiveDate = new Date(Date.parse(row.effectiveDate))
+        return formatter(DateFormatEnum.DateFormat)(effectiveDate)
       }
     },
     {
@@ -82,7 +83,8 @@ export function Subscriptions () {
       dataIndex: 'expirationDate',
       key: 'expirationDate',
       render: function (_, row) {
-        return moment(row.expirationDate).format(DateFormatEnum.UserDateFormat)
+        const expirationDate = new Date(Date.parse(row.expirationDate))
+        return formatter(DateFormatEnum.DateFormat)(expirationDate)
       }
     },
     {
@@ -90,8 +92,8 @@ export function Subscriptions () {
       dataIndex: 'timeLeft',
       key: 'timeLeft',
       render: function (_, row) {
-        const remaingDays = EntitlementUtil.timeLeftInDays(row.expirationDate)
-        return EntitlementUtil.timeLeftValues(remaingDays)
+        const remainingDays = EntitlementUtil.timeLeftInDays(row.expirationDate)
+        return EntitlementUtil.timeLeftValues(remainingDays)
       }
     },
     {
@@ -112,7 +114,8 @@ export function Subscriptions () {
     {
       label: $t({ defaultMessage: 'Manage Subscriptions' }),
       onClick: () => {
-        window.open('https://support.ruckuswireless.com/cloud_subscriptions', '_blank')
+        const licenseUrl = get('MANAGE_LICENSES')
+        window.open(licenseUrl, '_blank')
       }
     },
     {
@@ -133,28 +136,30 @@ export function Subscriptions () {
         ...rest
       })
     })
-    if (queryResults.data) {
-      const wifiData = queryResults.data?.filter(n => n.deviceType === 'MSP_WIFI')
-      let wifiQuantity = 0
-      let wifiUsed = 0
-      wifiData.forEach(summary => {
-        wifiQuantity += summary.quantity + summary.remainingDevices
-        wifiUsed += summary.quantity
-        setTotalWifiCount(wifiQuantity)
-        setUsedWifiCount(wifiUsed)
-      })
-    }
-    if (queryResults.data) {
-      const switchData = queryResults.data?.filter(n => n.deviceType === 'MSP_SWITCH')
-      let switchQuantity = 0
-      let switchUsed = 0
-      switchData.forEach(summary => {
-        switchQuantity += summary.quantity + summary.remainingDevices
-        switchUsed += summary.quantity
-        setTotalSwitchCount(switchQuantity)
-        setUsedSwitchCount(switchUsed)
-      })
-    }
+    useEffect(() => {
+      if (queryResults.data) {
+        const wifiData = queryResults.data?.filter(n => n.deviceType === 'MSP_WIFI')
+        let wifiQuantity = 0
+        let wifiUsed = 0
+        wifiData.forEach(summary => {
+          wifiQuantity += summary.quantity + summary.remainingDevices
+          wifiUsed += summary.quantity
+          setTotalWifiCount(wifiQuantity)
+          setUsedWifiCount(wifiUsed)
+        })
+      }
+      if (queryResults.data) {
+        const switchData = queryResults.data?.filter(n => n.deviceType === 'MSP_SWITCH')
+        let switchQuantity = 0
+        let switchUsed = 0
+        switchData.forEach(summary => {
+          switchQuantity += summary.quantity + summary.remainingDevices
+          switchUsed += summary.quantity
+          setTotalSwitchCount(switchQuantity)
+          setUsedSwitchCount(switchUsed)
+        })
+      }
+    })
 
     const barColors = [
       cssStr('--acx-accents-blue-50'),
@@ -238,6 +243,7 @@ export function Subscriptions () {
     return (
       <Loader states={[queryResults]}>
         <Table
+          settingsId='msp-subscription-table'
           columns={columns}
           actions={actions}
           dataSource={subscriptionData}
@@ -257,7 +263,7 @@ export function Subscriptions () {
         title={$t({ defaultMessage: 'MSP Subscriptions' })}
         extra={
           <TenantLink to='/dashboard'>
-            <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
+            <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
           </TenantLink>
         }
       />

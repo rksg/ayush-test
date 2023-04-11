@@ -13,6 +13,12 @@ export const WifiCallingUrls: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/wificallingserviceprofiles',
     newApi: true
   },
+  getEnhancedWifiCallingList: {
+    method: 'post',
+    url: '/enhancedWifiCallingProfiles/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedWifiCallingProfiles/query',
+    newApi: true
+  },
   addWifiCalling: {
     method: 'post',
     url: '/wifiCallingServiceProfiles',

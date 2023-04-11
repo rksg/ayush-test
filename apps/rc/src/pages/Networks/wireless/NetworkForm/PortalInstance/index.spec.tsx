@@ -22,11 +22,14 @@ describe('Portal Instance Page', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.get(
-        PortalUrlsInfo.getPortalProfileList.url,
-        (req, res, ctx) => res(ctx.json({ content: portalList }))
+        PortalUrlsInfo.getPortalProfileList.url
+          .replace('?pageSize=:pageSize&page=:page&sort=:sort', ''),
+        (req, res, ctx) => res(ctx.json({ content: portalList,
+          paging: { page: 1, pageSize: 10, totalCount: 1 } }))
       ),
       rest.post(
-        PortalUrlsInfo.getPortalProfileList.url,
+        PortalUrlsInfo.getPortalProfileList.url
+          .replace('?pageSize=:pageSize&page=:page&sort=:sort', ''),
         (req, res, ctx) => res(ctx.json({ }))
       ),
       rest.get(PortalUrlsInfo.getPortalLang.url,
@@ -38,7 +41,8 @@ describe('Portal Instance Page', () => {
   })
 
   it('should render instance page', async () => {
-    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+    const params = { networkId: 'UNKNOWN-NETWORK-ID',
+      tenantId: 'tenant-id' }
     render(<Provider><NetworkFormContext.Provider value={{
       editMode: false, cloneMode: false, data: { guestPortal:
         { enableSmsLogin: true, socialIdentities: {} }, portalServiceProfileId: '2' }

@@ -1,17 +1,19 @@
 
+import { useEffect } from 'react'
+
 import { Col, Form, Input, Row, Select } from 'antd'
 import { FormattedMessage, useIntl }     from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
-import { Alert, StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
-import { CheckMarkCircleSolid }                          from '@acx-ui/icons'
-import { useVenuesListQuery }                            from '@acx-ui/rc/services'
+import { Alert, StepsForm, Tooltip, useStepFormContext }                                   from '@acx-ui/components'
+import { useGetPropertyConfigsQuery, useGetVenueWithSetPropertyQuery, useVenuesListQuery } from '@acx-ui/rc/services'
 
-import { NetworkSegmentationGroupForm } from '..'
-import { useWatch }                     from '../../useWatch'
-import * as UI                          from '../styledComponents'
+import { NetworkSegmentationGroupFormData } from '..'
+import { useWatch }                         from '../../useWatch'
+import * as UI                              from '../styledComponents'
 
-import { VenueTable } from './VenueTable'
+import { PersonaGroupTable }  from './PersonaGroupTable'
+import { AlertCheckMarkIcon } from './styledComponents'
 
 interface GeneralSettingsFormProps {
   editMode?: boolean
@@ -28,7 +30,7 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
 
   const { $t } = useIntl()
   const { tenantId } = useParams()
-  const { form } = useStepFormContext<NetworkSegmentationGroupForm>()
+  const { form } = useStepFormContext<NetworkSegmentationGroupFormData>()
   const venueId = useWatch('venueId', form)
   const { venueOptions, isLoading: isVenueOptionsLoading } = useVenuesListQuery(
     { params: { tenantId: tenantId }, payload: venueOptionsDefaultPayload }, {
@@ -39,10 +41,46 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
         }
       }
     })
+  const { personaGroupId } = useGetPropertyConfigsQuery(
+    { params: { venueId } },
+    {
+      skip: !!!venueId,
+      selectFromResult: ({ data }) => {
+        return {
+          personaGroupId: data?.personaGroupId
+        }
+      }
+    }
+  )
+
+  const { filteredVenueOptions } = useGetVenueWithSetPropertyQuery(
+    venueOptions?.map(option => option.value) || [],
+    {
+      skip: !!!venueOptions,
+      selectFromResult: ({ data }) => {
+        return {
+          filteredVenueOptions: venueOptions?.filter(option => data?.includes(option.value))
+        }
+      }
+    }
+  )
+
+  useEffect(() => {
+    if(personaGroupId) {
+      form.setFieldValue('personaGroupId', personaGroupId)
+    }
+  }, [personaGroupId])
 
   const onVenueChange = (value: string) => {
     const venueItem = venueOptions?.find(item => item.value === value)
     form.setFieldValue('venueName', venueItem?.label)
+    form.setFieldValue('edgeId', null)
+    form.setFieldValue('edgeId', null)
+    form.setFieldValue('edgeName', null)
+    form.setFieldValue('dhcpId', null)
+    form.setFieldValue('dhcpName', null)
+    form.setFieldValue('poolId', null)
+    form.setFieldValue('poolName', null)
   }
 
   const warningMsg = <FormattedMessage
@@ -56,9 +94,8 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
       '<icon></icon>Already had an SmartEdge deployed in the venue where you want to apply'}
 
     values={{
-      p: (...chunks) => <p>{chunks}</p>,
       br: () => <br />,
-      icon: () => <CheckMarkCircleSolid style={{ color: 'green' }}/>
+      icon: () => <AlertCheckMarkIcon />
     }}
   />
 
@@ -120,10 +157,8 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
               <Select
                 loading={isVenueOptionsLoading}
                 onChange={onVenueChange}
-                options={[
-                  { label: $t({ defaultMessage: 'Select...' }), value: null },
-                  ...(venueOptions || [])
-                ]}
+                placeholder={$t({ defaultMessage: 'Select...' })}
+                options={filteredVenueOptions}
                 disabled={props.editMode}
               />
             }
@@ -131,13 +166,11 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
         </Col>
       </Row>
       {
-        venueId && (
-          <Row gutter={20}>
-            <Col span={10}>
-              <VenueTable />
-            </Col>
-          </Row>
-        )
+        personaGroupId && <Row gutter={20}>
+          <Col span={10}>
+            <PersonaGroupTable personaGroupId={personaGroupId} />
+          </Col>
+        </Row>
       }
     </>
   )

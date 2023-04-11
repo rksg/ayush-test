@@ -1,9 +1,16 @@
 export const mockedPortalList = {
   content: [
     {
+      serviceName: 'My Portal 111',
+      id: '78f92fbf80334e8b83cddd3210db4921',
+      content: {
+        displayLangCode: 'en'
+      }
+    },
+    {
       serviceName: 'PortalConfigServiceProfile1',
       id: '78f92fbf80334e8b83cddd3210db4920',
-      networkCount: 12,
+      networkIds: ['1', '2', '3'],
       content: {
         displayLangCode: 'en',
         poweredImg: 'test',
@@ -24,7 +31,7 @@ export const mockedPortalList = {
     {
       serviceName: 'My Portal 1',
       id: '78f92fbf80334e8b83cddd3210db4921',
-      networkCount: 5,
+      networkIds: ['1', '2', '3'],
       content: {
         displayLangCode: 'en'
       }
@@ -32,17 +39,29 @@ export const mockedPortalList = {
     {
       serviceName: 'Hotel ABC',
       id: '78f92fbf80334e8b83cddd3210db4922',
-      networkCount: 7,
+      networkIds: ['1', '2', '3', '4'],
       content: {
         displayLangCode: 'en'
       }
     }
   ],
-  totalElements: 3,
-  totalPages: 1,
-  pageable: {
-    pageNumber: 0,
-    pageSize: 10
-  },
-  sort: []
+  paging: { page: 1, pageSize: 10, totalCount: 1 }
+}
+export const networksResponse = {
+  fields: ['name', 'id'],
+  totalCount: 0,
+  page: 1,
+  data: [{
+    name: 'test1',
+    id: '1'
+  },{
+    name: 'test2',
+    id: '2'
+  },{
+    name: 'test3',
+    id: '3'
+  },{
+    name: 'test4',
+    id: '4'
+  }]
 }

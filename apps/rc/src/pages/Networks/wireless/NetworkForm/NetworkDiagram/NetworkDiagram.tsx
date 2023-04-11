@@ -3,15 +3,13 @@ import { useContext, useState } from 'react'
 import { Row, Col, Space } from 'antd'
 import { useIntl }         from 'react-intl'
 
-import { Button }                from '@acx-ui/components'
-import { useCloudpathListQuery } from '@acx-ui/rc/services'
+import { Button }   from '@acx-ui/components'
 import {
   CloudpathDeploymentTypeEnum,
   CloudpathServer,
   GuestNetworkTypeEnum,
   NetworkTypeEnum
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
 
 import AaaCloudpathCloudDiagram      from '../../../../../assets/images/network-wizard-diagrams/aaa-cloudpath-cloud-deployment.png'
 import AaaCloudpathOnPremDiagram     from '../../../../../assets/images/network-wizard-diagrams/aaa-cloudpath-on-prem-deployment.png'
@@ -46,6 +44,7 @@ interface DiagramProps {
 interface DefaultDiagramProps extends DiagramProps {
 }
 interface DpskDiagramProps extends DiagramProps {
+  isCloudpathEnabled?: boolean
 }
 
 interface OpenDiagramProps extends DiagramProps {
@@ -90,13 +89,13 @@ function getDiagram (props: NetworkDiagramProps) {
   let diagram = null
   switch (props.type) {
     case NetworkTypeEnum.DPSK:
-      diagram = DpskDiagram
+      diagram = getDPSKDiagram(props)
       break
     case NetworkTypeEnum.PSK:
       diagram = getPSKDiagram(props)
       break
     case NetworkTypeEnum.OPEN:
-      diagram = OpenDiagram
+      diagram = getOpenDiagram(props)
       break
     case NetworkTypeEnum.AAA:
       diagram = getAAADiagram(props)
@@ -117,10 +116,15 @@ function getDiagram (props: NetworkDiagramProps) {
   return diagram
 }
 
+function getDPSKDiagram (props:DpskDiagramProps){
+  return props?.isCloudpathEnabled?DpskCloudpathCloudDiagram:DpskDiagram
+}
 function getPSKDiagram (props: PskDiagramProps) {
   return props?.enableMACAuth ? AaaDiagram : PskDiagram
 }
-
+function getOpenDiagram (props: PskDiagramProps) {
+  return props?.enableMACAuth ? getAAADiagram(props) : OpenDiagram
+}
 function getAAADiagram (props: AaaDiagramProps) {
   if (props.showButtons) {
     const enableAuthProxyService = props.enableAuthProxy && props.enableAaaAuthBtn
@@ -143,7 +147,10 @@ function getCaptivePortalDiagram (props: CaptivePortalDiagramProps) {
     [GuestNetworkTypeEnum.Cloudpath]: isCloudDeployment ?
       CaptiveCloudpathCloudDiagram : CaptiveCloudpathOnPremDiagram
   }
-  return CaptivePortalDiagramMap[type] || ClickThroughDiagram
+  if(type === GuestNetworkTypeEnum.Cloudpath){
+    return getAAADiagram(props)
+  }
+  else return CaptivePortalDiagramMap[type] || ClickThroughDiagram
 }
 
 export function NetworkDiagram (props: NetworkDiagramProps) {
@@ -152,21 +159,13 @@ export function NetworkDiagram (props: NetworkDiagramProps) {
   const [enableAaaAuthBtn, setEnableAaaAuthBtn] = useState(true)
   const title = data?.type ? $t(networkTypes[data?.type]) : undefined
 
-  const showButtons = data?.enableAuthProxy !== !!data?.enableAccountingProxy
-  && data?.enableAccountingService && !data?.isCloudpathEnabled
-  const { selected } = useCloudpathListQuery({ params: useParams() }, {
-    selectFromResult ({ data: cloudData }) {
-      return {
-        selected: cloudData?.find((item: CloudpathServer) => item.id === data?.cloudpathServerId)
-      }
-    }
-  })
-
+  const showButtons = !!data?.enableAuthProxy !== !!data?.enableAccountingProxy
+  && data?.enableAccountingService
   const enableMACAuth = data?.wlan?.macAddressAuthentication
 
   const diagram = getDiagram({
     ...data,
-    ...{ showButtons, enableAaaAuthBtn, cloudpathType: selected?.deploymentType, enableMACAuth },
+    ...{ showButtons, enableAaaAuthBtn, cloudpathType: undefined, enableMACAuth },
     ...props
   })
 

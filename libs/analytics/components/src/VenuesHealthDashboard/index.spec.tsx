@@ -1,7 +1,6 @@
 /* eslint-disable testing-library/no-node-access */
-import { dataApiURL }                       from '@acx-ui/analytics/services'
 import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
-import { Provider, store }                  from '@acx-ui/store'
+import { dataApiURL, Provider, store }      from '@acx-ui/store'
 import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
 import { DateRange }                        from '@acx-ui/utils'
 
@@ -45,7 +44,7 @@ describe('HealthWidget', () => {
     </Provider>, {
       route: { params, path: '/:tenantId/venues' }
     })
-    await screen.findByText('Top 5 Venues/Services with poor experience')
+    await screen.findByText('Top Venues with poor experience')
     expect(asFragment()).toMatchSnapshot('NoData')
   })
 
@@ -57,7 +56,7 @@ describe('HealthWidget', () => {
       filters={filters}/></Provider>, {
       route: { params, path: '/:tenantId/venues' }
     })
-    await screen.findByText('Top 5 Venues/Services with poor experience')
+    await screen.findByText('Top Venues with poor experience')
     expect(asFragment()).toMatchSnapshot()
   })
 })

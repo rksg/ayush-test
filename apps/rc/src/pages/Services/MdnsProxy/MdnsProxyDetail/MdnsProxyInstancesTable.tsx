@@ -2,10 +2,10 @@
 import { useIntl } from 'react-intl'
 
 import { Card, Table, TableProps } from '@acx-ui/components'
-import { useApListQuery }          from '@acx-ui/rc/services'
-import { AP, useTableQuery }       from '@acx-ui/rc/utils'
-import { TenantLink }              from '@acx-ui/react-router-dom'
-// import { formatter }               from '@acx-ui/utils'
+// import { formatter }               from '@acx-ui/formatter'
+import { useApListQuery }    from '@acx-ui/rc/services'
+import { AP, useTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink }        from '@acx-ui/react-router-dom'
 
 interface MdnsProxyInstancesTableProps {
   apList: string[] | null
@@ -30,6 +30,7 @@ export function MdnsProxyInstancesTable (props: MdnsProxyInstancesTableProps) {
       dataIndex: 'name',
       key: 'name',
       sorter: true,
+      fixed: 'left',
       render: (data, row) => {
         // eslint-disable-next-line max-len
         return <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>{data}</TenantLink>

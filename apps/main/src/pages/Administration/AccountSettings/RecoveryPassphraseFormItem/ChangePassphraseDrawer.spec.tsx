@@ -118,6 +118,7 @@ describe('Recovery Network Passphrase Drawer', () => {
   })
 
   it('should display toast notification when submit failed', async () => {
+    const spyConsole = jest.spyOn(console, 'log')
     mockServer.use(
       rest.put(
         AdministrationUrlsInfo.updateRecoveryPassphrase.url,
@@ -141,8 +142,10 @@ describe('Recovery Network Passphrase Drawer', () => {
     await userEvent.clear(inputElem)
     await userEvent.type(inputElem, '1236')
     fireEvent.click(await screen.findByRole('button', { name: 'Change' }))
-    // TODO
-    // expect(await screen.findByText('Server Error')).toBeVisible()
+    // FIXME: might need to fix when general error handler behavior changed.
+    await waitFor(() => {
+      expect(spyConsole).toBeCalled()
+    })
   })
 
   it('should correctly render when data is empty string', async () => {

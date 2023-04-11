@@ -18,8 +18,8 @@ import {
   ServiceType,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                                    from '@acx-ui/user'
+import { TenantLink, useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess }                                                 from '@acx-ui/user'
 
 const getNetworkSegmentationPayload = {
   fields: [
@@ -51,6 +51,7 @@ const NetworkSegmentationTable = () => {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
+  const location = useLocation()
   const basePath = useTenantLink('')
   const tableQuery = useTableQuery({
     useQuery: useGetNetworkSegmentationStatsListQuery,
@@ -87,6 +88,7 @@ const NetworkSegmentationTable = () => {
       dataIndex: 'name',
       sorter: true,
       defaultSortOrder: 'ascend',
+      fixed: 'left',
       render: (data, row) => {
         return (
           <TenantLink
@@ -176,7 +178,7 @@ const NetworkSegmentationTable = () => {
             oper: ServiceOperation.EDIT,
             serviceId: selectedRows[0].id!
           })}`
-        })
+        }, { state: { from: location } })
       }
     },
     {
@@ -212,8 +214,11 @@ const NetworkSegmentationTable = () => {
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
         extra={filterByAccess([
-          // eslint-disable-next-line max-len
-          <TenantLink to={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION, oper: ServiceOperation.CREATE })}>
+          <TenantLink state={{ from: location }}
+            to={getServiceRoutePath({
+              type: ServiceType.NETWORK_SEGMENTATION,
+              oper: ServiceOperation.CREATE
+            })}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Network Segmenation' })}</Button>
           </TenantLink>
         ])}
@@ -223,6 +228,7 @@ const NetworkSegmentationTable = () => {
         { isLoading: false, isFetching: isNetworkSegmentationGroupDeleting }
       ]}>
         <Table
+          settingsId='services-network-segmentation-table'
           columns={columns}
           dataSource={tableQuery?.data?.data}
           pagination={tableQuery.pagination}

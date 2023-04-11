@@ -11,11 +11,16 @@ export default function AAAInstancesTable (){
   const tableQuery = useTableQuery({
     useQuery: useAaaNetworkInstancesQuery,
     defaultPayload: {
-      fields: ['networkName', 'networkId', 'guestNetworkType', 'networkType']
+      fields: ['networkName', 'networkId', 'guestNetworkType', 'networkType'],
+      filters: {}
     },
     sorter: {
       sortField: 'networkName',
       sortOrder: 'DESC'
+    },
+    search: {
+      searchTargetFields: ['networkName'],
+      searchString: ''
     }
   })
   const columns: TableProps<AAAPolicyNetwork>['columns'] = [
@@ -23,7 +28,9 @@ export default function AAAInstancesTable (){
       key: 'NetworkName',
       title: $t({ defaultMessage: 'Network Name' }),
       dataIndex: 'networkName',
+      searchable: true,
       sorter: true,
+      fixed: 'left',
       render: function (_data, row) {
         return (
           <TenantLink
@@ -51,7 +58,6 @@ export default function AAAInstancesTable (){
       }
     }
   ]
-
   return (
     <Loader states={[tableQuery]}>
       <Card title={$t({ defaultMessage: 'Instances ({count})' },
@@ -62,6 +68,7 @@ export default function AAAInstancesTable (){
           onChange={tableQuery.handleTableChange}
           dataSource={tableQuery.data?.data}
           rowKey='id'
+          onFilterChange={tableQuery.handleFilterChange}
         />
       </Card>
     </Loader>

@@ -1,23 +1,19 @@
+import { useIntl } from 'react-intl'
 
-import { useIntl }     from 'react-intl'
-import { useNavigate } from 'react-router-dom'
+import { PageHeader }                                from '@acx-ui/components'
+import { useCreateNetworkSegmentationGroupMutation } from '@acx-ui/rc/services'
 
-import { PageHeader, StepsFormNew, useStepFormContext } from '@acx-ui/components'
-import { useCreateNetworkSegmentationGroupMutation }    from '@acx-ui/rc/services'
-import { useTenantLink }                                from '@acx-ui/react-router-dom'
-
-import { NetworkSegmentationGroupForm } from '../NetworkSegmentationForm'
-import { GeneralSettingsForm }          from '../NetworkSegmentationForm/GeneralSettingsForm'
-import { SmartEdgeForm }                from '../NetworkSegmentationForm/SmartEdgeForm'
-import { SummaryForm }                  from '../NetworkSegmentationForm/SummaryForm'
-import { WirelessNetworkForm }          from '../NetworkSegmentationForm/WirelessNetworkForm'
+import { NetworkSegmentationForm } from '../NetworkSegmentationForm'
+import { AccessSwitchForm }        from '../NetworkSegmentationForm/AccessSwitchForm'
+import { DistributionSwitchForm }  from '../NetworkSegmentationForm/DistributionSwitchForm'
+import { GeneralSettingsForm }     from '../NetworkSegmentationForm/GeneralSettingsForm'
+import { SmartEdgeForm }           from '../NetworkSegmentationForm/SmartEdgeForm'
+import { SummaryForm }             from '../NetworkSegmentationForm/SummaryForm'
+import { WirelessNetworkForm }     from '../NetworkSegmentationForm/WirelessNetworkForm'
 
 const AddNetworkSegmentation = () => {
 
   const { $t } = useIntl()
-  const navigate = useNavigate()
-  const linkToServices = useTenantLink('/services')
-  const { form } = useStepFormContext<NetworkSegmentationGroupForm>()
   const [createNetworkSegmentationGroup] = useCreateNetworkSegmentationGroupMutation()
 
   const steps = [
@@ -34,34 +30,18 @@ const AddNetworkSegmentation = () => {
       content: <WirelessNetworkForm />
     },
     {
+      title: $t({ defaultMessage: 'Dist. Switch' }),
+      content: <DistributionSwitchForm />
+    },
+    {
+      title: $t({ defaultMessage: 'Access Switch' }),
+      content: <AccessSwitchForm />
+    },
+    {
       title: $t({ defaultMessage: 'Summary' }),
       content: <SummaryForm />
     }
   ]
-
-  const handleFinish = async (formData: NetworkSegmentationGroupForm) => {
-    const payload = {
-      name: formData.name,
-      vxlanTunnelProfileId: formData.vxlanTunnelProfileId,
-      venueInfos: [{
-        venueId: formData.venueId
-      }],
-      edgeInfos: [{
-        edgeId: formData.edgeId,
-        segments: formData.segments,
-        devices: formData.devices,
-        dhcpInfoId: formData.dhcpId,
-        dhcpPoolId: formData.poolId
-      }],
-      networkIds: formData.networkIds
-    }
-    try{
-      await createNetworkSegmentationGroup({ payload }).unwrap()
-      navigate(linkToServices, { replace: true })
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
-    }
-  }
 
   return (
     <>
@@ -71,32 +51,13 @@ const AddNetworkSegmentation = () => {
           { text: $t({ defaultMessage: 'Services' }), link: '/services' }
         ]}
       />
-      <StepsFormNew
-        form={form}
-        onCancel={() => navigate(linkToServices)}
-        onFinish={handleFinish}
+      <NetworkSegmentationForm
+        steps={steps}
         initialValues={{
-          // Refactoring note:
-          // Not sure if it make sense to have it as null,
-          // setting it null end up causing warning on shouldn't use null for Select.
-          // Will retain from its `defaultValue` usage,
-          // so it remain the same as what was implemented
-          venueId: null as unknown as NetworkSegmentationGroupForm['venueId'],
-          // eslint-disable-next-line max-len
-          vxlanTunnelProfileId: null as unknown as NetworkSegmentationGroupForm['vxlanTunnelProfileId']
+          vxlanTunnelProfileId: ''
         }}
-      >
-        {
-          steps.map((item, index) =>
-            <StepsFormNew.StepForm
-              key={`step-${index}`}
-              name={index.toString()}
-              title={item.title}
-            >
-              {item.content}
-            </StepsFormNew.StepForm>)
-        }
-      </StepsFormNew>
+        onFinish={createNetworkSegmentationGroup}
+      />
     </>
   )
 }

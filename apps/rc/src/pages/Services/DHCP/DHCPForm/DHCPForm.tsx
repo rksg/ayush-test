@@ -36,8 +36,8 @@ export default function DHCPForm (props: DHCPFormProps) {
   const formRef = useRef<StepsFormInstance<DHCPSaveData>>()
 
   const navigate = useNavigate()
-  const linkToServices = useTenantLink('/services')
-
+  const tablePath = getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.LIST })
+  const linkToServices = useTenantLink(tablePath)
   const {
     data,
     isFetching,
@@ -80,7 +80,11 @@ export default function DHCPForm (props: DHCPFormProps) {
     _.each(data.dhcpPools, (pool, index) => {
       pool.leaseTimeMinutes = 0
       pool.leaseTimeHours = 0
-      if(pool.leaseUnit) pool[pool.leaseUnit] = pool.leaseTime
+      if(pool.leaseTime&&pool.leaseTime>=60){
+        pool.leaseTimeHours=Math.floor(pool.leaseTime/60)
+        pool.leaseTimeMinutes=pool.leaseTime%60
+      }
+      else if(pool.leaseUnit) pool[pool.leaseUnit] = pool.leaseTime
       data.dhcpPools[index] = _.omit(pool, 'leaseUnit', 'leaseTime')
     })
   }
@@ -92,10 +96,7 @@ export default function DHCPForm (props: DHCPFormProps) {
         title={editMode ? $t({ defaultMessage: 'Edit DHCP Service' }) :
           $t({ defaultMessage: 'Add DHCP for Wi-Fi Service' })}
         breadcrumb={[
-          {
-            text: $t({ defaultMessage: 'Services' }),
-            link: getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.LIST })
-          }
+          { text: $t({ defaultMessage: 'DHCP Services' }), link: tablePath }
         ]}
       />
       <Loader states={[{ isLoading: isLoading || isFormSubmitting, isFetching: isFetching }]}>

@@ -12,7 +12,8 @@ import {
   useDelL2AclPolicyMutation,
   useDelL3AclPolicyMutation,
   useDelAppPolicyMutation,
-  useDelDevicePolicyMutation
+  useDelDevicePolicyMutation,
+  useDeleteApSnmpPolicyMutation
 } from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink,
@@ -117,7 +118,12 @@ export default function PoliciesTable () {
     [PolicyType.LAYER_2_POLICY]: useDelL2AclPolicyMutation(),
     [PolicyType.LAYER_3_POLICY]: useDelL3AclPolicyMutation(),
     [PolicyType.APPLICATION_POLICY]: useDelAppPolicyMutation(),
-    [PolicyType.DEVICE_POLICY]: useDelDevicePolicyMutation()
+    [PolicyType.DEVICE_POLICY]: useDelDevicePolicyMutation(),
+    [PolicyType.SNMP_AGENT]: useDeleteApSnmpPolicyMutation(),
+    [PolicyType.ADAPTIVE_POLICY]: [],
+    [PolicyType.ADAPTIVE_POLICY_SET]: [],
+    [PolicyType.RADIUS_ATTRIBUTE_GROUP]: [],
+    [PolicyType.TUNNEL_PROFILE]: []
   }
 
   const tableQuery = useTableQuery({

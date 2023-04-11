@@ -1,13 +1,14 @@
 import { createContext, useEffect, useRef, useState } from 'react'
 
-import { Form, Modal }  from 'antd'
+import { Form }         from 'antd'
 import { FormInstance } from 'antd/es/form/Form'
 import { isEmpty }      from 'lodash'
 import { useParams }    from 'react-router-dom'
 
-import { Button }                                            from '@acx-ui/components'
+import { Button, Modal }                                     from '@acx-ui/components'
 import { useGetUploadURLMutation }                           from '@acx-ui/rc/services'
 import { FloorPlanDto, FloorPlanFormDto, UploadUrlResponse } from '@acx-ui/rc/utils'
+import { hasAccess }                                         from '@acx-ui/user'
 import { getIntl, loadImageWithJWT }                         from '@acx-ui/utils'
 
 import FloorPlanForm from '../FloorPlanForm'
@@ -134,12 +135,12 @@ export default function AddEditFloorplanModal ({ onAddEditFloorPlan,
   return (
     <ModalContext.Provider value={{ clearOldFile: !open }}>
       <Form.Provider>
-        <Button data-testid='AddEditLinks'
+        { hasAccess() && <Button data-testid='AddEditLinks'
           size={isEditMode ? 'middle' : 'small'}
           type='link'
           onClick={showUserModal}>
           { buttonTitle }
-        </Button>
+        </Button>}
         <Modal
           width={480}
           title={!isEditMode ? $t({ defaultMessage: 'Add Floor Plan' })

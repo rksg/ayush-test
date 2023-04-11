@@ -1,6 +1,5 @@
-import { dataApiURL }                       from '@acx-ui/analytics/services'
 import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
-import { Provider, store }                  from '@acx-ui/store'
+import { dataApiURL, Provider, store }      from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 import { DateRange }                        from '@acx-ui/utils'
 
@@ -36,7 +35,7 @@ describe('TopSwitchModelsWidget', () => {
       data: topSwitchModelsResponse
     })
     const { asFragment } = render( <Provider> <TopSwitchModels filters={filters}/></Provider>)
-    await screen.findByText('Top 5 Switch Models')
+    await screen.findByText('Top Switch Models')
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     // eslint-disable-next-line testing-library/no-node-access

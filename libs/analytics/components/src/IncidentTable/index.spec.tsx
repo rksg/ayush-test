@@ -2,10 +2,9 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
-import { dataApiURL }              from '@acx-ui/analytics/services'
-import { IncidentFilter }          from '@acx-ui/analytics/utils'
-import { BrowserRouter as Router } from '@acx-ui/react-router-dom'
-import { Provider, store }         from '@acx-ui/store'
+import { IncidentFilter }              from '@acx-ui/analytics/utils'
+import { BrowserRouter as Router }     from '@acx-ui/react-router-dom'
+import { dataApiURL, Provider, store } from '@acx-ui/store'
 import {
   mockGraphqlQuery,
   render, screen,
@@ -195,6 +194,7 @@ describe('IncidentTable', () => {
     { name: 'Duration', count: 1 },
     { name: 'Description', count: 1 },
     { name: 'Category', count: 2 },
+    { name: 'Sub-Category', count: 2 },
     { name: 'Client Impact', count: 1 },
     { name: 'Impacted Clients', count: 1 },
     { name: 'Scope', count: 1 }
@@ -257,8 +257,7 @@ describe('IncidentTable', () => {
   })
 
   const hiddenColumnHeaders = [
-    'Type',
-    'Sub-Category'
+    'Type'
   ]
 
   it('should expand hidden columns', async () => {

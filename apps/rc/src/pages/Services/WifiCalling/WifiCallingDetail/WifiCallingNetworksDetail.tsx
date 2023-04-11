@@ -27,7 +27,9 @@ const WifiCallingNetworksDetail = () => {
     {
       title: $t({ defaultMessage: 'Network Name' }),
       dataIndex: 'name',
-      key: 'name'
+      searchable: true,
+      key: 'name',
+      fixed: 'left'
     },
     {
       title: $t({ defaultMessage: 'Type' }),
@@ -76,6 +78,8 @@ const WifiCallingNetworksDetail = () => {
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
+          onFilterChange={tableQuery.handleFilterChange}
+          enableApiFilter={true}
           rowKey='id'
         />
       </div>

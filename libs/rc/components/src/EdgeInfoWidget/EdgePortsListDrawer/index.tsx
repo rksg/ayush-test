@@ -4,9 +4,9 @@ import {
   Button, Drawer, Table,
   TableProps
 } from '@acx-ui/components'
+import { formatter }                             from '@acx-ui/formatter'
 import { EdgePortStatus }                        from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { formatter }                             from '@acx-ui/utils'
 
 
 const EdgePortsTable = ({ data }: { data: EdgePortStatus[] }) => {

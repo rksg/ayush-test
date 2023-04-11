@@ -15,11 +15,10 @@ import { useGetWifiCallingServiceListQuery } from '@acx-ui/rc/services'
 
 import { WifiCallingSettingContext } from './ServicesForm'
 
-
 export function WifiCallingSettingModal () {
   const form = Form.useFormInstance()
-  const params = useParams()
   const { $t } = useIntl()
+  const params = useParams()
   const { wifiCallingSettingList, setWifiCallingSettingList }= useContext(WifiCallingSettingContext)
   const { data } = useGetWifiCallingServiceListQuery({
     params: params

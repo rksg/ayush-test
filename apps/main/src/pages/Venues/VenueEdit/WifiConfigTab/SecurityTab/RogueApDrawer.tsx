@@ -82,7 +82,6 @@ const RogueApDrawer = (props: {
         columns={basicColumns}
         dataSource={data?.rules}
         rowKey='name'
-        columnState={{ hidden: true }}
       />
     </Form.Item>
   </Form>
@@ -98,6 +97,7 @@ const RogueApDrawer = (props: {
     footer={
       <Drawer.FormFooter
         showAddAnother={false}
+        showSaveButton={false}
         onCancel={handleRogueApDrawerClose}
         onSave={async () => {
           try {

@@ -1,6 +1,6 @@
-import { dataApiURL, healthApi }            from '@acx-ui/analytics/services'
+import { healthApi }                        from '@acx-ui/analytics/services'
 import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
-import { Provider, store }                  from '@acx-ui/store'
+import { dataApiURL, Provider, store }      from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 import { TimeStampRange }                   from '@acx-ui/types'
 import { DateRange }                        from '@acx-ui/utils'
@@ -91,7 +91,7 @@ describe('Kpi timeseries', () => {
     expect(await screen.findByText('No data to display')).toBeVisible()
   })
   it('should format y value for timeseries', async () => {
-    expect(formatYDataPoint(null)).toStrictEqual('-')
+    expect(formatYDataPoint(null)).toStrictEqual('--')
     expect(formatYDataPoint(0.1)).toStrictEqual('10%')
   })
 })

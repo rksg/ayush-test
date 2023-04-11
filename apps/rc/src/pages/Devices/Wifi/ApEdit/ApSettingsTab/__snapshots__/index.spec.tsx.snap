@@ -63,16 +63,27 @@ exports[`ApSettingsTab should render correctly 1`] = `
           >
             <div
               aria-controls="rc-tabs-test-panel-proxy"
-              aria-disabled="false"
               aria-selected="false"
               class="ant-tabs-tab-btn"
               id="rc-tabs-test-tab-proxy"
               role="tab"
               tabindex="0"
             >
-              <span>
-                mDNS Proxy
-              </span>
+              mDNS Proxy
+            </div>
+          </div>
+          <div
+            class="ant-tabs-tab"
+          >
+            <div
+              aria-controls="rc-tabs-test-panel-snmp"
+              aria-selected="false"
+              class="ant-tabs-tab-btn"
+              id="rc-tabs-test-tab-snmp"
+              role="tab"
+              tabindex="0"
+            >
+              AP SNMP
             </div>
           </div>
           <div
@@ -156,6 +167,7 @@ exports[`ApSettingsTab should render correctly 1`] = `
             >
               <span
                 aria-label="loader"
+                class="SuspenseBoundary__SpinWrapper-sc-l6mvnr-0"
                 role="img"
               >
                 <div
@@ -207,6 +219,15 @@ exports[`ApSettingsTab should render correctly 1`] = `
           aria-labelledby="rc-tabs-test-tab-proxy"
           class="ant-tabs-tabpane"
           id="rc-tabs-test-panel-proxy"
+          role="tabpanel"
+          style="display: none;"
+          tabindex="-1"
+        />
+        <div
+          aria-hidden="true"
+          aria-labelledby="rc-tabs-test-tab-snmp"
+          class="ant-tabs-tabpane"
+          id="rc-tabs-test-panel-snmp"
           role="tabpanel"
           style="display: none;"
           tabindex="-1"

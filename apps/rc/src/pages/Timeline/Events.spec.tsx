@@ -9,6 +9,14 @@ import { Events }             from './Events'
 
 const params = { tenantId: 'tenant-id' }
 
+jest.mock('@acx-ui/user', () => ({
+  ...jest.requireActual('@acx-ui/user'),
+  useUserProfileContext: () => ({ data: {
+    detailLevel: 'it',
+    dateFormat: 'mm/dd/yyyy'
+  } })
+}))
+
 describe('Events', () => {
   beforeEach(() => {
     mockRestApiQuery(CommonUrlsInfo.getEventList.url, 'post', events)
@@ -16,12 +24,7 @@ describe('Events', () => {
   })
 
   it('should render activity list', async () => {
-    render(
-      <Provider>
-        <Events />
-      </Provider>,
-      { route: { params } }
-    )
+    render(<Events />, { route: { params }, wrapper: Provider })
     await screen.findByRole('row', {
       name: /AP 730-11-60 RF operating channel was changed from channel 7 to channel 9./
     })

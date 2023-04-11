@@ -1,5 +1,5 @@
-import { QueryReturnValue }                                                   from '@reduxjs/toolkit/dist/query/baseQueryTypes'
-import { createApi, fetchBaseQuery, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
+import { QueryReturnValue }                        from '@reduxjs/toolkit/dist/query/baseQueryTypes'
+import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
 
 import {
   CommonUrlsInfo,
@@ -20,18 +20,11 @@ import {
   WifiUrlsInfo,
   ExternalProviders
 } from '@acx-ui/rc/utils'
+import { baseNetworkApi } from '@acx-ui/store'
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
 }
-
-export const baseNetworkApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  reducerPath: 'networkApi',
-  tagTypes: ['Network', 'Venue'],
-  refetchOnMountOrArgChange: true,
-  endpoints: () => ({ })
-})
 
 export const networkApi = baseNetworkApi.injectEndpoints({
   endpoints: (build) => ({
@@ -234,24 +227,28 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         const venueNetworkListQuery = await fetchWithBQ(venueNetworkListInfo)
         const networkList = venueNetworkListQuery.data as TableResult<Network>
 
-        const venueNetworkApGroupInfo = {
-          ...createHttpRequest(CommonUrlsInfo.venueNetworkApGroup, arg.params),
-          body: networkList.data.map(item => ({
-            networkId: item.id,
-            ssids: [item.ssid],
-            venueId: arg.params?.venueId
-          }))
-        }
-        const venueNetworkApGroupQuery = await fetchWithBQ(venueNetworkApGroupInfo)
-        const venueNetworkApGroupList =
-              venueNetworkApGroupQuery.data as { response: NetworkVenue[] }
+        let venueNetworkApGroupList = {} as { response: NetworkVenue[] }
+        let networkDeepListList = {} as { response: NetworkDetail[] }
 
-        const networkDeepListInfo = {
-          ...createHttpRequest(CommonUrlsInfo.getNetworkDeepList, arg.params),
-          body: networkList.data.map(item => item.id)
+        if (networkList && networkList.data.length > 0) {
+          const venueNetworkApGroupInfo = {
+            ...createHttpRequest(CommonUrlsInfo.venueNetworkApGroup, arg.params),
+            body: networkList.data.map(item => ({
+              networkId: item.id,
+              ssids: [item.ssid],
+              venueId: arg.params?.venueId
+            }))
+          }
+          const venueNetworkApGroupQuery = await fetchWithBQ(venueNetworkApGroupInfo)
+          venueNetworkApGroupList = venueNetworkApGroupQuery.data as { response: NetworkVenue[] }
+
+          const networkDeepListInfo = {
+            ...createHttpRequest(CommonUrlsInfo.getNetworkDeepList, arg.params),
+            body: networkList.data.map(item => item.id)
+          }
+          const networkDeepListQuery = await fetchWithBQ(networkDeepListInfo)
+          networkDeepListList = networkDeepListQuery.data as { response: NetworkDetail[] }
         }
-        const networkDeepListQuery = await fetchWithBQ(networkDeepListInfo)
-        const networkDeepListList = networkDeepListQuery.data as { response: NetworkDetail[] }
 
         const aggregatedList = aggregatedVenueNetworksData(
           networkList, venueNetworkApGroupList, networkDeepListList)
@@ -267,6 +264,17 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         const dashboardOverviewReq = createHttpRequest(CommonUrlsInfo.getDashboardOverview, params)
         return {
           ...dashboardOverviewReq
+        }
+      },
+      providesTags: [{ type: 'Network', id: 'Overview' }]
+    }),
+    dashboardV2Overview: build.query<Dashboard, RequestPayload>({
+      query: ({ params, payload }) => {
+        const dashboardOverviewReq
+          = createHttpRequest(CommonUrlsInfo.getDashboardV2Overview, params)
+        return {
+          ...dashboardOverviewReq,
+          body: payload
         }
       },
       providesTags: [{ type: 'Network', id: 'Overview' }]
@@ -393,7 +401,10 @@ export const {
   useApNetworkListQuery,
   useVenueNetworkListQuery,
   useDashboardOverviewQuery,
+  useDashboardV2OverviewQuery,
   useValidateRadiusQuery,
   useLazyValidateRadiusQuery,
   useExternalProvidersQuery
 } = networkApi
+
+export { baseNetworkApi }

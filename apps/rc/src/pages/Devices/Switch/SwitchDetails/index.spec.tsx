@@ -49,7 +49,7 @@ describe('SwitchDetails', () => {
       route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab' }
     })
 
-    expect(screen.getAllByRole('tab')).toHaveLength(11)
+    expect(screen.getAllByRole('tab')).toHaveLength(10)
   })
 
   it('should navigate to incidents tab correctly', async () => {
@@ -80,19 +80,6 @@ describe('SwitchDetails', () => {
       .toEqual('Troubleshooting')
   })
 
-  it('should navigate to reports tab correctly', async () => {
-    const params = {
-      tenantId: 'tenant-id',
-      switchId: 'switchId',
-      serialNumber: 'serialNumber',
-      activeTab: 'reports'
-    }
-    render(<Provider><SwitchDetails /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab' }
-    })
-    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
-      .toEqual('Reports')
-  })
 
   it('should navigate to clients tab correctly', async () => {
     const params = {

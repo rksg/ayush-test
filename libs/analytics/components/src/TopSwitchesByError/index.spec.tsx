@@ -1,8 +1,7 @@
 import '@testing-library/jest-dom'
 
-import { dataApiURL }                       from '@acx-ui/analytics/services'
 import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
-import { Provider, store }                  from '@acx-ui/store'
+import { dataApiURL, Provider, store }      from '@acx-ui/store'
 import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
 import { DateRange }                        from '@acx-ui/utils'
 
@@ -57,7 +56,7 @@ describe('TopSwitchesByErrorWidget', () => {
         <TopSwitchesByError filters={filters}/>
       </Provider>, { route: { params } })
 
-    expect(await screen.findByText('Top 5 Switches by Error')).toBeVisible()
+    expect(await screen.findByText('Top Switches by Error')).toBeVisible()
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('div[class="ant-pro-table"]')).not.toBeNull()
   })

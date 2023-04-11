@@ -10,6 +10,7 @@ import { VenueLed,
 import { useParams } from '@acx-ui/react-router-dom'
 import { getIntl }   from '@acx-ui/utils'
 
+import { PropertyManagementTab }    from './PropertyManagementTab'
 import { SwitchConfigTab }          from './SwitchConfigTab'
 import { VenueDetailsTab }          from './VenueDetailsTab'
 import VenueEditPageHeader          from './VenueEditPageHeader'
@@ -21,7 +22,8 @@ import { ServerSettingContext }     from './WifiConfigTab/ServerTab'
 const tabs = {
   details: VenueDetailsTab,
   wifi: WifiConfigTab,
-  switch: SwitchConfigTab
+  switch: SwitchConfigTab,
+  property: PropertyManagementTab
 }
 
 export interface EditContext {
@@ -168,7 +170,8 @@ function processWifiTab (
       break
     case 'servers':
       editServerContextData?.updateSyslog?.()
-      editServerContextData?.updateBonjourFencing?.()
+      editServerContextData?.updateMdnsFencing?.()
+      editServerContextData?.updateVenueApSnmp?.()
       break
   }
 }
@@ -211,7 +214,7 @@ export function showUnsavedModal (
         })
       } else if(editContextData?.unsavedTabKey === 'servers'){
         editServerContextData?.discardSyslog?.()
-        editServerContextData?.discardBonjourFencing?.()
+        editServerContextData?.discardMdnsFencing?.()
         setEditContextData({
           ...editContextData,
           isDirty: false,

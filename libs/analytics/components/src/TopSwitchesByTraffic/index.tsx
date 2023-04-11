@@ -22,8 +22,8 @@ import {
   TooltipWrapper,
   EventParams
 }                                     from '@acx-ui/components'
+import { formatter }                                          from '@acx-ui/formatter'
 import { NavigateFunction, Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { formatter }                                          from '@acx-ui/utils'
 
 import { useTopSwitchesByTrafficQuery } from './services'
 
@@ -62,11 +62,12 @@ export const tooltipFormatter = (params: TooltipComponentFormatterCallbackParams
 
 export const onClick = (navigate: NavigateFunction, basePath: Path) => {
   return (params: EventParams) => {
-    const mac = params.componentType ==='series' && Array.isArray(params.value) && params.value[1]
+    const serial = params.componentType ==='series' && Array.isArray(params.value)
+      && params.value[4]
     navigate({
       ...basePath,
       // TODO: Actual path to be updated later
-      pathname: `${basePath.pathname}/${mac}`
+      pathname: `${basePath.pathname}/${serial}/${serial}/details/overview`
     })
   }
 }
@@ -75,7 +76,7 @@ export { TopSwitchesByTrafficWidget as TopSwitchesByTraffic }
 
 function TopSwitchesByTrafficWidget ({ filters }: { filters : AnalyticsFilter }) {
   const { $t } = useIntl()
-  const basePath = useTenantLink('/switch/')
+  const basePath = useTenantLink('/devices/switch/')
   const navigate = useNavigate()
 
   const queryResults = useTopSwitchesByTrafficQuery(filters,
@@ -90,7 +91,7 @@ function TopSwitchesByTrafficWidget ({ filters }: { filters : AnalyticsFilter })
 
   return (
     <Loader states={[queryResults]}>
-      <HistoricalCard title={$t({ defaultMessage: 'Top 5 Switches by Traffic' })}>
+      <HistoricalCard title={$t({ defaultMessage: 'Top Switches by Traffic' })}>
         <AutoSizer>
           {({ height, width }) => (
             data && data.source?.length

@@ -221,6 +221,7 @@ export function DeviceInventory () {
     return (
       <Loader states={[tableQuery]}>
         <Table
+          settingsId='device-inventory-table'
           columns={columns}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
@@ -239,7 +240,7 @@ export function DeviceInventory () {
         title={$t({ defaultMessage: 'Device Inventory' })}
         extra={
           <TenantLink to='/dashboard'>
-            <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
+            <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
           </TenantLink>
         }
       />

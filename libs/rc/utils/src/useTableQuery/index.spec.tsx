@@ -12,7 +12,9 @@ import {
   transferToTableResult,
   TableChangePayload,
   NewTableResult,
-  NewTablePageable
+  NewTablePageable,
+  NewAPITableResult,
+  transferNewResToTableResult
 }                       from '.'
 
 describe('useTableQuery', ()=>{
@@ -121,7 +123,18 @@ describe('useTableQuery', ()=>{
       }))
       expect(result.current.payload).not
         .toContain({ searchTargetFields: ['searchTarget1', 'searchTarget2'], searchString: '' })
+
+      await act(async () => {
+        result.current.handleFilterChange({}, {}, 'groupBy')
+      })
+      expect(result.current.payload).toEqual(expect.objectContaining({
+        filters: defaultPayload.filters
+      }))
+      expect(result.current.payload).toEqual(expect.objectContaining({
+        groupBy: 'groupBy'
+      }))
     })
+
     it('should handleTableChange', async () => {
       const { result } = renderHook(
         () => useTableQuery({ useQuery: useTestQuery, defaultPayload: {} }),
@@ -203,6 +216,16 @@ describe('useTableQuery', ()=>{
       pageable: { pageNumber: 1 } as NewTablePageable
     } as NewTableResult<TestData>
     expect(transferToTableResult(data)).toEqual({
+      data: [{ name: 'name' }], page: 2, totalCount: 1 })
+  })
+
+  it('transferNewResToTableResult should return correct value', () => {
+    interface TestData { name: string }
+    const data = {
+      paging: { page: 1, pageSize: 10, totalCount: 1 },
+      content: [{ name: 'name' }]
+    } as NewAPITableResult<TestData>
+    expect(transferNewResToTableResult(data)).toEqual({
       data: [{ name: 'name' }], page: 2, totalCount: 1 })
   })
 })

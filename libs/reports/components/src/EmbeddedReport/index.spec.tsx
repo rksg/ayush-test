@@ -2,24 +2,17 @@ import { rest } from 'msw'
 
 import {  ReportUrlsInfo, reportsApi }        from '@acx-ui/reports/services'
 import type { GuestToken, DashboardMetadata } from '@acx-ui/reports/services'
-import { Provider }                           from '@acx-ui/store'
-import { store }                              from '@acx-ui/store'
-import { render }                             from '@acx-ui/test-utils'
-import { mockServer }                         from '@acx-ui/test-utils'
+import { Provider, store }                    from '@acx-ui/store'
+import { render, mockServer }                 from '@acx-ui/test-utils'
+import { NetworkPath }                        from '@acx-ui/utils'
 
 import { ReportType, reportTypeDataStudioMapping } from '../mapping/reportsMapping'
 
-import { EmbeddedReport } from '.'
+import { EmbeddedReport, convertDateTimeToSqlFormat, getSupersetRlsClause } from '.'
 
 const mockEmbedDashboard = jest.fn()
 jest.mock('@superset-ui/embedded-sdk', () => ({
   embedDashboard: () => mockEmbedDashboard
-}))
-jest.mock('@acx-ui/analytics/components', () => ({
-  getSupersetRlsClause: () => ({
-    networkClause: 'network clause',
-    radioBandClause: 'radio band clause'
-  })
 }))
 
 const guestTokenReponse = {
@@ -38,17 +31,24 @@ const getEmbeddedReponse = {
   }
 } as DashboardMetadata
 
+describe('convertDateTimeToSqlFormat', () => {
+  it('should convert date to sqlDateTimeFormat', () => {
+    expect(convertDateTimeToSqlFormat('2022-12-16T08:05:00+05:30'))
+      .toEqual('2022-12-16 02:35:00')
+  })
+})
+
 describe('EmbeddedDashboard', () => {
   const oldEnv = process.env
   beforeEach(() => {
     mockServer.use(
       rest.post(
         ReportUrlsInfo.getEmbeddedDashboardMeta.url,
-        (req, res, ctx) => res(ctx.json(getEmbeddedReponse))
+        (_, res, ctx) => res(ctx.json(getEmbeddedReponse))
       ),
       rest.post(
         ReportUrlsInfo.getEmbeddedReportToken.url,
-        (req, res, ctx) => res(ctx.json(guestTokenReponse))
+        (_, res, ctx) => res(ctx.json(guestTokenReponse))
       )
     )
   })
@@ -61,7 +61,7 @@ describe('EmbeddedDashboard', () => {
   it('should render the dashboard', async () => {
     rest.post(
       ReportUrlsInfo.getEmbeddedDashboardMeta.url,
-      (req, res, ctx) => res(ctx.json(getEmbeddedReponse))
+      (_, res, ctx) => res(ctx.json(getEmbeddedReponse))
     )
     render(<Provider>
       <EmbeddedReport
@@ -80,7 +80,7 @@ describe('EmbeddedDashboard', () => {
   it('should render the dashboard rls clause', async () => {
     rest.post(
       ReportUrlsInfo.getEmbeddedDashboardMeta.url,
-      (req, res, ctx) => res(ctx.json(getEmbeddedReponse))
+      (_, res, ctx) => res(ctx.json(getEmbeddedReponse))
     )
     render(<Provider>
       <EmbeddedReport
@@ -89,3 +89,67 @@ describe('EmbeddedDashboard', () => {
     </Provider>, { route: { params } })
   })
 })
+
+describe('getSupersetRlsClause',()=>{
+  it('should return RLS clause based network filters',()=>{
+    const paths:NetworkPath[] = [
+      [{
+        type: 'network',
+        name: 'Network'
+      }, {
+        type: 'switchGroup',
+        name: 'Switch-Venue'
+      }, {
+        type: 'switch',
+        name: 'C0:C5:20:AA:33:2D'
+      }],
+      [{
+        type: 'network',
+        name: 'Network'
+      }, {
+        type: 'switchGroup',
+        name: 'Switch-Venue'
+      }, {
+        type: 'switch',
+        name: 'C0:C5:20:B2:11:59'
+      }],
+      [{
+        type: 'network',
+        name: 'Network'
+      }, {
+        type: 'switchGroup',
+        name: 'Switch-Venue1'
+      }],
+      [{
+        type: 'network',
+        name: 'Network'
+      }, {
+        type: 'zone',
+        name: 'Sindhuja-Venue'
+      }],
+      [{
+        type: 'network',
+        name: 'Network'
+      }, {
+        type: 'zone',
+        name: 'Sonali'
+      }, {
+        type: 'AP',
+        name: '00:0C:29:1E:9F:E4'
+      }],
+      [{
+        type: 'network',
+        name: 'Network'
+      }, {
+        type: 'zone',
+        name: 'Sonali'
+      }, {
+        type: 'AP',
+        name: '38:FF:36:13:DB:D0'
+      }]
+    ]
+    const rlsClause = getSupersetRlsClause(paths,['6','2.4'])
+    expect(rlsClause).toMatchSnapshot()
+  })
+})
+

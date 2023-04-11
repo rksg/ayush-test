@@ -38,7 +38,9 @@ export function SwitchOverviewVLANs () {
       key: 'vlanId',
       title: $t({ defaultMessage: 'VLAN #' }),
       dataIndex: 'vlanId',
+      defaultSortOrder: 'ascend',
       sorter: true,
+      fixed: 'left',
       render: (data, row) =>
         <Button
           type='link'

@@ -1,92 +1,41 @@
-import { useEffect } from 'react'
-
+import { omit }                                      from 'lodash'
 import { defineMessage, useIntl, MessageDescriptor } from 'react-intl'
 import { useNavigate, useParams }                    from 'react-router-dom'
 
-import { Tabs } from '@acx-ui/components'
+import { Tabs }      from '@acx-ui/components'
 import {
-  EventTable,
-  eventDefaultPayload,
-  eventDefaultSearch,
-  eventDefaultSorter,
-  useEventTableFilter,
   ActivityTable,
-  activityDefaultSorter,
-  activityDefaultPayload,
-  useActivityTableFilter,
-  columnState
+  activityTableColumnState,
+  EventTable,
+  eventTableColumnState,
+  useActivityTableQuery,
+  useEventsTableQuery,
+  eventTypeMapping
 } from '@acx-ui/rc/components'
-import { useActivitiesQuery, useEventsQuery } from '@acx-ui/rc/services'
-import {
-  Event,
-  usePollingTableQuery,
-  TimelineTypes,
-  TABLE_QUERY_LONG_POLLING_INTERVAL,
-  Activity
-} from '@acx-ui/rc/utils'
-import { useTenantLink }         from '@acx-ui/react-router-dom'
-import { useUserProfileContext } from '@acx-ui/user'
+import { TimelineTypes } from '@acx-ui/rc/utils'
+import { useTenantLink } from '@acx-ui/react-router-dom'
 
 const Events = () => {
   const { networkId } = useParams()
-  const { fromTime, toTime } = useEventTableFilter()
-  const { data: userProfileData } = useUserProfileContext()
-  const currentUserDetailLevel = userProfileData?.detailLevel
-
-  useEffect(()=>{
-    tableQuery.setPayload({
-      ...tableQuery.payload,
-      filters: {
-        ...eventDefaultPayload.filters,
-        networkId: [ networkId ],
-        fromTime,
-        toTime
-      },
-      detailLevel: currentUserDetailLevel
-    })
-  }, [fromTime, toTime, currentUserDetailLevel])
-  const tableQuery = usePollingTableQuery<Event>({
-    useQuery: useEventsQuery,
-    defaultPayload: {
-      ...eventDefaultPayload,
-      filters: { ...eventDefaultPayload.filters, networkId: [ networkId ] }
-    },
-    sorter: eventDefaultSorter,
-    search: eventDefaultSearch,
-    option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL },
-    detailLevel: currentUserDetailLevel
-  })
-  return <EventTable tableQuery={tableQuery} filterables={['severity', 'entity_type']}/>
+  const tableQuery = useEventsTableQuery({ networkId: [networkId] })
+  return <EventTable
+    settingsId='network-event-table'
+    tableQuery={tableQuery}
+    filterables={['severity', 'entity_type']}
+    eventTypeMap={omit(eventTypeMapping, 'SWITCH')}
+    columnState={{ defaultValue: { ...eventTableColumnState, product: false } }}
+  />
 }
 
 const Activities = () => {
   const { networkId } = useParams()
-  const { fromTime, toTime } = useActivityTableFilter()
-  const { data: userProfileData } = useUserProfileContext()
-  const currentUserDetailLevel = userProfileData?.detailLevel
+  const tableQuery = useActivityTableQuery({ entityType: 'NETWORK', entityId: networkId! })
 
-  useEffect(()=>{
-    tableQuery.setPayload({
-      ...tableQuery.payload,
-      filters: {
-        fromTime,
-        toTime,
-        entityType: 'NETWORK',
-        entityId: networkId
-      },
-      detailLevel: currentUserDetailLevel
-    })
-  }, [fromTime, toTime, currentUserDetailLevel])
-  const tableQuery = usePollingTableQuery<Activity>({
-    useQuery: useActivitiesQuery,
-    defaultPayload: activityDefaultPayload,
-    sorter: activityDefaultSorter,
-    option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
-  })
   return <ActivityTable
+    settingsId='network-activity-table'
     tableQuery={tableQuery}
     filterables={['status']}
-    columnState={columnState}
+    columnState={activityTableColumnState}
   />
 }
 

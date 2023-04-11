@@ -8,7 +8,8 @@ import {
   dateAxisFormatter,
   timeSeriesTooltipFormatter,
   getDeviceConnectionStatusColors,
-  getTimeSeriesSymbol
+  getTimeSeriesSymbol,
+  getDeviceConnectionStatusColorsv2
 } from './helper'
 
 import type { TooltipFormatterParams } from './helper'
@@ -71,11 +72,11 @@ describe('getTimeSeriesSymbol', () => {
       key: 'series1',
       name: 'series1',
       data: [
-        ['2022-04-07T09:15:00.000Z', '-'],
-        ['2022-04-07T09:30:00.000Z', '-'],
+        ['2022-04-07T09:15:00.000Z', '--'],
+        ['2022-04-07T09:30:00.000Z', '--'],
         ['2022-04-07T09:45:00.000Z', 3],
-        ['2022-04-07T10:00:00.000Z', '-'],
-        ['2022-04-07T10:15:00.000Z', '-']
+        ['2022-04-07T10:00:00.000Z', '--'],
+        ['2022-04-07T10:15:00.000Z', '--']
       ] as TimeSeriesChartData['data']
     }]
     expect(
@@ -161,5 +162,16 @@ describe('getDeviceConnectionStatusColors', () => {
         '#ACAEB0',
         '#F9C34B',
         '#ED1C24'])
+  })
+})
+
+describe('getDeviceConnectionStatusColorsv2', () => {
+  it('should return the correct color for the device status', ()=>{
+    expect(getDeviceConnectionStatusColorsv2())
+      .toStrictEqual([
+        '#23AB36',
+        '#F9C34B',
+        '#ED1C24',
+        '#ACAEB0'])
   })
 })

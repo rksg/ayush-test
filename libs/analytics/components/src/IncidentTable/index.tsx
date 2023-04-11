@@ -10,15 +10,15 @@ import {
   severitySort,
   sortProp,
   Incident,
-  noDataSymbol,
   IncidentFilter,
   getRootCauseAndRecommendations,
   shortDescription,
   formattedPath
 } from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Drawer, Tooltip, Button } from '@acx-ui/components'
+import { DateFormatEnum, formatter }                   from '@acx-ui/formatter'
 import { TenantLink, useNavigateToPath }               from '@acx-ui/react-router-dom'
-import { formatter }                                   from '@acx-ui/utils'
+import { noDataDisplay }                               from '@acx-ui/utils'
 
 import {
   useIncidentsListQuery,
@@ -70,7 +70,7 @@ const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incid
 
 const DateLink = ({ value }: { value: IncidentTableRow }) => {
   return <TenantLink to={`/analytics/incidents/${value.id}`}>
-    {formatter('dateTimeFormat')(value.endTime)}
+    {formatter(DateFormatEnum.DateTimeFormat)(value.endTime)}
   </TenantLink>
 }
 
@@ -171,14 +171,15 @@ export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
       dataIndex: 'subCategory',
       key: 'subCategory',
       sorter: { compare: sortProp('subCategory', defaultSort) },
-      show: false
+      filterable: true
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Client Impact' })),
       width: 130,
       dataIndex: 'clientImpact',
       key: 'clientImpact',
-      sorter: { compare: sortProp('clientImpact', clientImpactSort) }
+      sorter: { compare: sortProp('clientImpact', clientImpactSort) },
+      sortDirections: ['descend', 'ascend', 'descend']
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Impacted Clients' })),
@@ -186,6 +187,7 @@ export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
       dataIndex: 'impactedClients',
       key: 'impactedClients',
       sorter: { compare: sortProp('impactedClients', clientImpactSort) },
+      sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center'
     },
     {
@@ -216,6 +218,7 @@ export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
   return (
     <Loader states={[queryResults]}>
       <UI.IncidentTableWrapper
+        settingsId='incident-table'
         type='tall'
         dataSource={data}
         columns={ColumnHeaders}
@@ -234,7 +237,7 @@ export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
         }}
         rowKey='id'
         showSorterTooltip={false}
-        columnEmptyText={noDataSymbol}
+        columnEmptyText={noDataDisplay}
         indentSize={6}
         onResetState={() => {
           setShowMuted(false)
@@ -248,6 +251,8 @@ export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
           />
         ]}
         rowClassName={(record) => record.isMuted ? 'table-row-muted' : 'table-row-normal'}
+        filterableWidth={155}
+        searchableWidth={240}
       />
       {drawerSelection &&
       <Drawer

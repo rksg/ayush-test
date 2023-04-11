@@ -2,7 +2,7 @@ import _                                               from 'lodash'
 import { defineMessage, IntlShape, MessageDescriptor } from 'react-intl'
 
 import { mapCodeToReason, Incident } from '@acx-ui/analytics/utils'
-import { formatter }                 from '@acx-ui/utils'
+import { formatter }                 from '@acx-ui/formatter'
 
 import { apRebootReasonMap }      from './apRebootReasonMap'
 import { NetworkImpactChartData } from './services'

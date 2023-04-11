@@ -1,0 +1,23 @@
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+
+export const basePolicyApi = createApi({
+  baseQuery: fetchBaseQuery(),
+  reducerPath: 'policyApi',
+  tagTypes: [
+    'Policy',
+    'MacRegistrationPool',
+    'MacRegistration',
+    'ClientIsolation',
+    'Syslog',
+    'SnmpAgent',
+    'VLANPool',
+    'AAA',
+    'AccessControl',
+    'RogueAp',
+    'RadiusAttributeGroup',
+    'RadiusAttribute',
+    'AdaptivePolicySet'
+  ],
+  refetchOnMountOrArgChange: true,
+  endpoints: () => ({ })
+})

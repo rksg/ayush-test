@@ -1,27 +1,21 @@
 import _                        from 'lodash'
 import { generatePath, Params } from 'react-router-dom'
 
-import { getTenantId } from './getTenantId'
-import { getJwtToken } from './jwtToken'
+import { get } from '@acx-ui/config'
+
+import { getTenantId }                       from './getTenantId'
+import { getJwtTokenPayload, getJwtHeaders } from './jwtToken'
 
 export interface ApiInfo {
   url: string;
   method: string;
   newApi?: boolean;
   oldUrl?: string;
-}
-
-export const TenantIdFromJwt = () => {
-  const jwtToken = getJwtToken()
-  const tenantIdFromJwt = getTenantIdFromJwt(jwtToken as string)
-
-  return tenantIdFromJwt
+  oldMethod?: string;
 }
 
 export const isDelegationMode = () => {
-  const jwtToken = getJwtToken()
-
-  return (getTenantIdFromJwt(jwtToken as string) !== getTenantId())
+  return (getJwtTokenPayload().tenantId !== getTenantId())
 }
 
 export const isLocalHost = () => {
@@ -29,63 +23,49 @@ export const isLocalHost = () => {
 }
 
 export const isDev = () => {
-  return window.location.hostname === 'dev.ruckus.cloud'
+  return window.location.hostname.includes('devalto.ruckuswireless.com')
+}
+
+export const isQA = () => {
+  return window.location.hostname.includes('qaalto.ruckuswireless.com')
+}
+
+export const isScale = () => {
+  return window.location.hostname.includes('scalealto.ruckuswireless.com')
 }
 
 export const isIntEnv = () => {
-  return window.location.hostname === 'int.ruckus.cloud'
+  return window.location.hostname.includes('intalto.ruckuswireless.com')
 }
 
-const getTenantIdFromJwt = (jwt: string) => {
-  if (jwt) {
-    let tokens = jwt.split('.')
-
-    if (tokens.length >= 2) {
-      const jwtRuckus = JSON.parse(atob(tokens[1]))
-      if (jwtRuckus && jwtRuckus.tenantId) {
-        return jwtRuckus.tenantId
-      }
-    }
-  }
-  return getTenantId()
+export const isProdEnv = () => {
+  //prod: ruckus.cloud, asia.ruckus.cloud, eu.ruckus.cloud
+  return window.location.hostname.includes('ruckus.cloud')
 }
 
 export const createHttpRequest = (
   apiInfo: ApiInfo,
   paramValues?: Params<string>,
   customHeaders?: Record<string, unknown>,
-  ignoreHeader?: boolean
+  ignoreDelegation?: boolean
 ) => {
-  let defaultHeaders = {
+  const headers = {
     'Content-Type': 'application/json',
-    'Accept': 'application/json'
+    'Accept': 'application/json',
+    ...customHeaders,
+    ...getJwtHeaders({ ignoreDelegation })
   }
-  const tokenHeader = {
-    Authorization: ''
-  }
-
-  const jwtToken = getJwtToken()
-  const tenantId = getTenantId()
-  if (jwtToken !== null) {
-    const tenantIdFromJwt = getTenantIdFromJwt(jwtToken as string)
-    const extraHeader = {
-      'x-rks-tenantid': tenantId
-    }
-    tokenHeader.Authorization = `Bearer ${jwtToken}`
-    defaultHeaders = (ignoreHeader || tenantIdFromJwt === tenantId)
-      ? { ...tokenHeader, ...defaultHeaders }
-      : { ...tokenHeader, ...defaultHeaders, ...extraHeader }
-  }
-  const headers = { ...defaultHeaders, ...customHeaders }
+  const newApiHostName = window.location.origin.replace(
+    window.location.hostname, get('NEW_API_DOMAIN_NAME'))
   const domain = (enableNewApi(apiInfo) && !isLocalHost()) ?
-    window.location.origin.replace('//', '//api.') :
-    window.location.origin
+    newApiHostName : window.location.origin
   const url = enableNewApi(apiInfo) ? generatePath(`${apiInfo.url}`, paramValues) :
     generatePath(`${apiInfo.oldUrl || apiInfo.url}`, paramValues)
+  const method = enableNewApi(apiInfo) ? apiInfo.method : (apiInfo.oldMethod || apiInfo.method)
   return {
     headers,
     credentials: 'include' as RequestCredentials,
-    method: apiInfo.method,
+    method: method,
     url: `${domain}${url}`
   }
 }
@@ -113,8 +93,9 @@ export const getFilters = (params: Params) => {
 
 export const enableNewApi = function (apiInfo: ApiInfo) {
   const hasOldUrl = !_.isEmpty(apiInfo?.oldUrl)
-  if(apiInfo.newApi) {
-    return !hasOldUrl || isDev() || isLocalHost() || isIntEnv()
+  if (apiInfo.newApi) {
+    return !hasOldUrl || isDev() || isQA() || isScale() ||
+      isLocalHost() || isIntEnv() || isProdEnv()
   } else {
     return false
   }

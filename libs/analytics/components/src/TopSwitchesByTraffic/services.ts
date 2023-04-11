@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request'
 
-import { dataApi }         from '@acx-ui/analytics/services'
 import { AnalyticsFilter } from '@acx-ui/analytics/utils'
+import { dataApi }         from '@acx-ui/store'
 
 export type SwitchesByTrafficData = {
   name: string
@@ -37,7 +37,8 @@ export const api = dataApi.injectEndpoints({
                   name,
                   mac,
                   Received: totalTraffic(direction: "rx"),
-                  Transmitted: totalTraffic(direction: "tx")
+                  Transmitted: totalTraffic(direction: "tx"),
+                  serial
                 }
               }
             }

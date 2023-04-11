@@ -48,7 +48,6 @@ export interface TABLE_QUERY <
   search?: SEARCH
   rowKey?: string
   option?: UseQueryOptions
-  detailLevel?: string
 }
 export type PAGINATION = {
   page: number,
@@ -85,6 +84,7 @@ export interface SEARCH {
 }
 
 export interface FILTER extends Record<string, FilterValue | null> {}
+export type GROUPBY = string | null
 
 const transferSorter = (order:string) => {
   return order === 'ascend' ? SORTER_ABBR.ascend : SORTER_ABBR.descend
@@ -96,7 +96,7 @@ export interface TableQuery<ResultType, Payload, ResultExtra>
   sorter: SORTER,
   search: SEARCH,
   handleTableChange: TableProps<ResultType>['onChange'],
-  handleFilterChange: (filters: FILTER, search: SEARCH) => void
+  handleFilterChange: (filters: FILTER, search: SEARCH, groupBy?: GROUPBY) => void
   payload: Payload,
   setPayload: React.Dispatch<React.SetStateAction<Payload>>,
 }
@@ -171,7 +171,7 @@ export function useTableQuery <
     handlePagination(api.data)
   }, [api.data])
 
-  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
+  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH, groupBy? : GROUPBY) => {
     const { searchString, searchTargetFields, filters, ...rest } = payload
     const toBeRemovedFilter = _.isEmpty(customFilters)
       ? filterKeys
@@ -185,7 +185,8 @@ export function useTableQuery <
       filters: {
         ..._.omit({ ...filters as Object, ...customFilters }, toBeRemovedFilter),
         ..._.pick(initialPayload.filters, toBeRemovedFilter)
-      }
+      },
+      groupBy
     } as unknown as Payload)
     setSearch(toBeSearch)
     setFilterKeys([...new Set([ ...filterKeys, ...Object.keys(customFilters) ])]
@@ -208,8 +209,8 @@ export function useTableQuery <
     } as SORTER
 
     const paginationDetail = {
-      page: customPagination.current,
-      pageSize: customPagination.pageSize
+      page: customPagination.current ?? payload.page,
+      pageSize: customPagination.pageSize ?? payload.pageSize
     } as PAGINATION
 
     const tableProps = { ...sorterDetail, ...paginationDetail }
@@ -218,7 +219,6 @@ export function useTableQuery <
     setPagination({ ...pagination, ...paginationDetail })
     setPayload({ ...payload, ...tableProps })
   }
-
   return {
     pagination: { ...pagination, current: pagination.page },
     sorter,
@@ -263,7 +263,14 @@ export interface NewTableResult<T> {
   content: T[]
   pageable: NewTablePageable
 }
-
+export interface NewAPITableResult<T>{
+  content: T[]
+  paging: {
+    page: number,
+    pageSize: number,
+    totalCount: number
+  }
+}
 interface CreateNewTableHttpRequestProps {
   apiInfo: ApiInfo
   params?: Params<string>
@@ -280,6 +287,14 @@ export function transferToTableResult<T> (newResult: NewTableResult<T>): TableRe
     data: newResult.content,
     page: newResult.pageable ? newResult.pageable.pageNumber + 1 : 1,
     totalCount: newResult.totalElements
+  }
+}
+
+export function transferNewResToTableResult<T> (newResult: NewAPITableResult<T>): TableResult<T> {
+  return {
+    data: newResult.content,
+    page: newResult.paging? newResult.paging.page + 1 : 1,
+    totalCount: newResult.paging.totalCount
   }
 }
 

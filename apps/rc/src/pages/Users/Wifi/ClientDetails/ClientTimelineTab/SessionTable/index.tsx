@@ -2,12 +2,11 @@ import { useMemo } from 'react'
 
 import { useIntl, defineMessage } from 'react-intl'
 
-import {
-  AnalyticsFilter
-} from '@acx-ui/analytics/utils'
+import { AnalyticsFilter }           from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Table } from '@acx-ui/components'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { TenantLink, useParams }     from '@acx-ui/react-router-dom'
-import { formatter, useDateFilter }  from '@acx-ui/utils'
+import { useDateFilter }             from '@acx-ui/utils'
 
 import {
   Session,
@@ -32,14 +31,14 @@ export function SessionTable () {
       title: $t(defineMessage({ defaultMessage: 'Start Time' })),
       dataIndex: 'firstConnection',
       key: 'firstConnection',
-      render: (data) => formatter('dateTimeFormat')(data),
+      render: (data) => formatter(DateFormatEnum.DateTimeFormat)(data),
       sorter: false
     },
     {
       title: $t(defineMessage({ defaultMessage: 'End Time' })),
       dataIndex: 'disconnectTime',
       key: 'disconnectTime',
-      render: (data) => formatter('dateTimeFormat')(data),
+      render: (data) => formatter(DateFormatEnum.DateTimeFormat)(data),
       sorter: false
     },
     {
@@ -91,7 +90,6 @@ export function SessionTable () {
         dataSource={data}
         columns={ColumnHeaders}
         rowKey={(record)=> record.firstConnection + record.disconnectTime}
-        columnState={{ hidden: true }}
       />
     </Loader>
   )

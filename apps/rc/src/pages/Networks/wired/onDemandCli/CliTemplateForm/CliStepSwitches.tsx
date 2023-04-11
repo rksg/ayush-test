@@ -19,7 +19,7 @@ export function CliStepSwitches () {
 
   const { data: venues } = useGetVenuesQuery({
     params: { tenantId }, payload: {
-      fields: ['name', 'switches', 'id'],
+      fields: ['name', 'switches', 'id'], // TODO: add 'operationalSwitches' for new api
       sortField: 'name',
       sortOrder: 'ASC'
     }
@@ -55,14 +55,14 @@ export function CliStepSwitches () {
       setSelectedSwitches(selected as Map<React.Key, React.Key[]>[])
       form?.setFieldsValue({
         venueSwitches: selected,
-        applyLater: data?.applyLater
+        applyNow: !data?.applyLater
       })
     }
   }, [data])
 
   useEffect(() => {
     if (venues?.data) {
-      const switches = venues?.data.filter((v) => v.switches)
+      const switches = venues?.data.filter((v) => v.switches) // operationalSwitches
         .map((v) => ({ id: v.id })) as CliTemplateVenueSwitches[]
       setVenueSwitches(switches)
     }
@@ -113,7 +113,7 @@ export function CliStepSwitches () {
         children={<>
           <Form.Item
             noStyle
-            name='applyLater'
+            name='applyNow'
             valuePropName='checked'
             children={<Switch disabled={checkToggleDisabled(selectedSwitches)} />}
           />
@@ -166,7 +166,8 @@ export function CliStepSwitches () {
                   <Checkbox />
                 </Form.Item> */}
                 <Space>{v?.name}</Space>
-                <Space>{v?.switches}{$t({ defaultMessage: 'Switches' })}</Space>
+                {/* v?.operationalSwitches ?? 0 */}
+                <Space>{v?.switches ?? 0}{$t({ defaultMessage: 'Switches' })}</Space>
               </Space>}
               collapsible={v?.switches ? 'header' : 'disabled'}
               key={v?.id}
@@ -198,7 +199,7 @@ export function CliStepSwitches () {
                       form?.setFieldValue('venueSwitches', venueSwitch)
 
                       if (checkToggleDisabled(venueSwitch)) {
-                        form?.setFieldValue('applyLater', false)
+                        form?.setFieldValue('applyNow', false)
                       }
                     }
                   }}

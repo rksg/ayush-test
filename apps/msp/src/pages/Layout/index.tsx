@@ -4,6 +4,7 @@ import {
   Layout as LayoutComponent,
   LayoutUI
 } from '@acx-ui/components'
+import { SplitProvider } from '@acx-ui/feature-toggle'
 import {
   ActivityButton,
   AlarmsButton,
@@ -18,8 +19,9 @@ import { CloudMessageBanner } from '@acx-ui/rc/components'
 import {
   useGetTenantDetailQuery
 } from '@acx-ui/rc/services'
-import { Outlet, useParams }     from '@acx-ui/react-router-dom'
-import { useUserProfileContext } from '@acx-ui/user'
+import { Outlet, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { RolesEnum }                                     from '@acx-ui/types'
+import { hasRoles, useUserProfileContext }               from '@acx-ui/user'
 
 import { useMenuConfig }     from './menuConfig'
 import { LeftHeaderWrapper } from './styledComponents'
@@ -28,11 +30,24 @@ function Layout () {
   const { tenantId } = useParams()
   const [tenantType, setTenantType] = useState('')
   const [supportStatus,setSupportStatus] = useState('')
+  const basePath = useTenantLink('/users/guestsManager')
+  const navigate = useNavigate()
+  const params = useParams()
 
   const { data } = useGetTenantDetailQuery({ params: { tenantId } })
   const { data: userProfile } = useUserProfileContext()
   const companyName = userProfile?.companyName
   const [licenseExpanded, setLicenseExpanded] = useState<boolean>(false)
+  const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
+
+  useEffect(() => {
+    if (isGuestManager && params['*'] !== 'guestsManager') {
+      navigate({
+        ...basePath,
+        pathname: `${basePath.pathname}`
+      })
+    }
+  }, [isGuestManager, params['*']])
 
   useEffect(() => {
     if (data && userProfile) {
@@ -62,8 +77,11 @@ function Layout () {
       }
       rightHeaderContent={<>
         <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>
-        <AlarmsButton/>
-        <ActivityButton/>
+        {!isGuestManager &&
+          <>
+            <AlarmsButton />
+            <ActivityButton />
+          </>}
         <FetchBot showFloatingButton={false} statusCallback={setSupportStatus}/>
         <HelpButton supportStatus={supportStatus}/>
         <UserButton/>
@@ -71,4 +89,11 @@ function Layout () {
     />
   )
 }
-export default Layout
+
+function LayoutWithSplitProvider () {
+  return <SplitProvider>
+    <Layout />
+  </SplitProvider>
+}
+
+export default LayoutWithSplitProvider

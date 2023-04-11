@@ -10,8 +10,8 @@ import { isEmpty, sumBy } from 'lodash'
 import { useIntl }        from 'react-intl'
 
 import { TimeSeriesChartData } from '@acx-ui/analytics/utils'
+import { formatter }           from '@acx-ui/formatter'
 import type { TimeStampRange } from '@acx-ui/types'
-import { formatter }           from '@acx-ui/utils'
 
 import {
   gridOptions,
@@ -151,8 +151,8 @@ export function StackedAreaChart <
       smooth: true,
       step: type === 'step' ? 'start' : false,
       symbol: 'none',
-      lineStyle: { width: 0 },
-      areaStyle: { opacity: 1 }
+      lineStyle: { width: 1 },
+      areaStyle: { opacity: 0.5 }
     })),
     toolbox: {
       feature: {

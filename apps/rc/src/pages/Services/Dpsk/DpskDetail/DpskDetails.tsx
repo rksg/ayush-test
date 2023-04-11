@@ -1,9 +1,8 @@
 import { useIntl }         from 'react-intl'
 import { Path, useParams } from 'react-router-dom'
 
-import { Button, DisabledButton, PageHeader, Tabs } from '@acx-ui/components'
-import { ClockOutlined }                            from '@acx-ui/icons'
-import { useGetDpskQuery }                          from '@acx-ui/rc/services'
+import { Button, PageHeader, Tabs } from '@acx-ui/components'
+import { useGetDpskQuery }          from '@acx-ui/rc/services'
 import {
   ServiceType,
   DpskDetailsTabKey,
@@ -62,9 +61,6 @@ export default function DpskDetails () {
           }
         ]}
         extra={filterByAccess([
-          <DisabledButton key={'date-filter'} icon={<ClockOutlined />}>
-            {$t({ defaultMessage: 'Last 24 hours' })}
-          </DisabledButton>,
           <TenantLink
             to={getServiceDetailsLink({
               type: ServiceType.DPSK,

@@ -1,4 +1,4 @@
-import { LeaseTimeUnit } from '@acx-ui/rc/utils'
+import { AccessSwitch, DistributionSwitch, LeaseTimeUnit } from '@acx-ui/rc/utils'
 
 export const mockVenueData = {
   fields: ['name', 'id'],
@@ -209,5 +209,160 @@ export const mockNsgData = {
       dhcpPoolId: '1'
     }
   ],
+  networkIds: ['1', '2'],
+  distributionSwitchInfos: [
+    {
+      id: 'c8:03:f5:3a:95:c6',
+      siteName: '964fe8920291194e208b6d22370c2cc82c',
+      loopbackInterfaceId: '12',
+      loopbackInterfaceIp: '1.2.3.4',
+      loopbackInterfaceSubnetMask: '255.255.255.0',
+      vlans: '23',
+      siteKeepAlive: '5',
+      siteRetry: '3'
+    }
+  ],
+  accessSwitchInfos: [
+    {
+      id: 'c0:c5:20:aa:35:fd',
+      templateId: '723250a97f3a4c3780e70c83c5b095ba',
+      webAuthPageType: 'TEMPLATE',
+      vlanId: '111',
+      webAuthPasswordLabel: 'password-Ken-0209',
+      webAuthCustomTitle: 'title-Ken-0209',
+      webAuthCustomTop: 'top-Ken-0209',
+      webAuthCustomLoginButton: 'login-Ken-0209',
+      webAuthCustomBottom: 'bottom-Ken-0209'
+    }
+  ]
+}
+
+export const mockNsgSwitchInfoData: {
+  distributionSwitches: DistributionSwitch[],
+  accessSwitches: AccessSwitch[]
+} = {
+  distributionSwitches: [{
+    id: 'c8:03:f5:3a:95:c6',
+    siteName: '964fe8920291194e208b6d22370c2cc82c',
+    siteIp: '10.206.78.150',
+    vlans: '23',
+    siteKeepAlive: '5',
+    siteRetry: '3',
+    loopbackInterfaceId: '12',
+    loopbackInterfaceIp: '1.2.3.4',
+    loopbackInterfaceSubnetMask: '255.255.255.0',
+    forwardingProfile: '2',
+    siteConnection: 'Disconnected',
+    siteActive: '10.206.78.150',
+    dispatchMessage: '[SUCCESS]',
+    model: 'ICX7550-48P',
+    name: 'FMN4221R00H---DS---3',
+    familyId: 'ICX7550',
+    firmwareVersion: 'GZR09010f_b40.bin'
+  }],
+  accessSwitches: [{
+    id: 'c0:c5:20:aa:35:fd',
+    vlanId: 111,
+    webAuthPageType: 'TEMPLATE',
+    templateId: '723250a97f3a4c3780e70c83c5b095ba',
+    webAuthPasswordLabel: 'password-Ken-0209',
+    webAuthCustomTitle: 'title-Ken-0209',
+    webAuthCustomTop: 'top-Ken-0209',
+    webAuthCustomLoginButton: 'login-Ken-0209',
+    webAuthCustomBottom: 'bottom-Ken-0209',
+    uplinkInfo: {
+      uplinkType: 'PORT',
+      uplinkId: '1/1/1'
+    },
+    distributionSwitchId: 'c8:03:f5:3a:95:c6',
+    dispatchMessage: '[SUCCESS]',
+    model: 'ICX7150-C12P',
+    name: 'FEK3224R09N---AS---3',
+    familyId: 'ICX7150',
+    firmwareVersion: 'SPR09010f_b32.bin'
+  }]
+}
+
+export const webAuthList = [{
+  id: '723250a97f3a4c3780e70c83c5b095ba',
+  name: 'Template-Ken-0209',
+  webAuthPasswordLabel: 'password-Ken-0209',
+  webAuthCustomTitle: 'title-Ken-0209',
+  webAuthCustomTop: 'top-Ken-0209',
+  webAuthCustomLoginButton: 'login-Ken-0209',
+  webAuthCustomBottom: 'bottom-Ken-0209'
+}]
+
+export const switchPortList = [{
+  portIdentifier: '1/1/1',
+  lagId: '0'
+}, {
+  portIdentifier: '1/1/2',
+  lagId: '0'
+}, {
+  portIdentifier: '1/1/3',
+  lagId: '1'
+}]
+
+export const switchLagList = [
+  {
+    id: 'b343a5a0f88d4a878a070aadc5363538',
+    lagId: 1,
+    name: 'test-lag',
+    ports: ['1/1/3'],
+    realRemove: true,
+    switchId: 'c0:c5:20:aa:35:fd',
+    taggedVlans: [ '2', '3'],
+    type: 'static',
+    untaggedVlan: '1'
+  }
+]
+
+export const switchVlanUnion = {
+  switchDefaultVlan: [
+    {
+      switchId: 'c0:c5:20:aa:35:fd',
+      vlanConfigName: 'DEFAULT-VLAN',
+      profileLevel: false,
+      defaultVlan: true,
+      vlanId: 1
+    }
+  ],
+  switchVlan: [
+    {
+      switchId: 'c0:c5:20:aa:35:fd',
+      profileLevel: false,
+      defaultVlan: false,
+      vlanId: 2
+    },
+    {
+      switchId: 'c0:c5:20:aa:35:fd',
+      profileLevel: false,
+      defaultVlan: false,
+      vlanId: 3
+    },
+    {
+      switchId: 'c0:c5:20:aa:35:fd',
+      profileLevel: false,
+      defaultVlan: false,
+      vlanId: 4
+    }
+  ]
+}
+
+export const mockPropertyConfigs = {
+  personaGroupId: 'testPersonaId'
+}
+
+export const mockPersonaGroup = {
+  id: 'testPersonaId',
+  name: 'TestPersona',
+  personaCount: 2,
+  dpskPoolId: 'testDpskId'
+}
+
+export const mockDpsk = {
+  id: 'testDpskId',
+  name: 'TestDpsk',
   networkIds: ['1', '2']
 }

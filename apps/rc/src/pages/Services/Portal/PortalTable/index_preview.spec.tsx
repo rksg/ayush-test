@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import {
+  CommonUrlsInfo,
   getServiceRoutePath,
   PortalUrlsInfo,
   ServiceOperation,
@@ -15,7 +16,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { mockedPortalList } from './__tests__/fixtures'
+import { mockedPortalList, networksResponse } from './__tests__/fixtures'
 
 import PortalTable from '.'
 
@@ -34,7 +35,8 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 
 describe('PortalTable', () => {
   const params = {
-    tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+    tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+    imageId: 'imageId'
   }
 
   // eslint-disable-next-line max-len
@@ -42,15 +44,24 @@ describe('PortalTable', () => {
 
   beforeEach(async () => {
     mockServer.use(
-      rest.get(
-        PortalUrlsInfo.getPortalProfileList.url,
+      rest.post(
+        PortalUrlsInfo.getEnhancedPortalProfileList.url,
         (req, res, ctx) => res(ctx.json({ ...mockedPortalList }))
       ),
       rest.get(PortalUrlsInfo.getPortalLang.url,
         (_, res, ctx) => {
           return res(ctx.json({ acceptTermsLink: 'terms & conditions',
             acceptTermsMsg: 'I accept the', accept: 'accept' }))
-        })
+        }),
+      rest.post(CommonUrlsInfo.getVMNetworksList.url, (_, res, ctx) =>
+        res(ctx.json(networksResponse))
+      ),
+      rest.get(
+        `${window.location.origin}/api/file/tenant/:tenantId/:imageId/url`,
+        (req, res, ctx) => {
+          return res(ctx.json({ signedUrl: 'url' }))
+        }
+      )
     )
   })
 

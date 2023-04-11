@@ -4,7 +4,7 @@ import { TooltipComponentFormatterCallbackParams } from 'echarts'
 import ReactECharts                                from 'echarts-for-react'
 import { renderToString }                          from 'react-dom/server'
 
-import { formatter } from '@acx-ui/utils'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
 import { cssStr }     from '../../theme/helper'
 import {
@@ -144,7 +144,8 @@ export const tooltipFormatter = (params: TooltipComponentFormatterCallbackParams
     ? params[0].data : params.data) as [number]
   return renderToString(
     <TooltipWrapper>
-      <time dateTime={new Date(time).toJSON()}>{formatter('dateTimeFormat')(time) as string}</time>
+      <time dateTime={new Date(time).toJSON()}>{
+        formatter(DateFormatEnum.DateTimeFormat)(time) as string}</time>
     </TooltipWrapper>
   )
 }

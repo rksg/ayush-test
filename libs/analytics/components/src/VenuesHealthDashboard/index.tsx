@@ -9,16 +9,20 @@ import {
   Table,
   TableProps,
   ProgressBar,
-  ContentSwitcher,
-  ContentSwitcherProps,
   NoData,
   Tooltip
 } from '@acx-ui/components'
-import { TenantLink, useNavigateToPath }           from '@acx-ui/react-router-dom'
-import { intlFormats, formatter, notAvailableMsg } from '@acx-ui/utils'
+import { intlFormats, formatter }        from '@acx-ui/formatter'
+import { TenantLink, useNavigateToPath } from '@acx-ui/react-router-dom'
+import { noDataDisplay }                 from '@acx-ui/utils'
 
 import { useHealthQuery, HealthData } from './services'
 import * as UI                        from './styledComponents'
+
+export const calcPercent = ([val, sum]:(number | null)[]) => {
+  const percent = val !== null && sum ? val / sum : null
+  return { percent, formatted: formatter('percentFormatRound')(percent) }
+}
 
 export function VenuesHealthDashboard ({
   filters
@@ -79,7 +83,7 @@ export function VenuesHealthDashboard ({
           kpiConfig.timeToConnect.histogram.initialThreshold
         const thresholdText = $t({ defaultMessage: '< {threshold}' },
           { threshold: formatter('durationFormat')(threshold) })
-        if(row.timeToConnectThreshold === null) return <span>-</span>
+        if(row.timeToConnectThreshold === null) return <span>{noDataDisplay}</span>
         const tooltipText=$t({
           defaultMessage: '{n} of {d} connections under {threshold}' },
         { n: $t(intlFormats.countFormat, { value: n }),
@@ -104,9 +108,34 @@ export function VenuesHealthDashboard ({
           kpiConfig.clientThroughput.histogram.initialThreshold
         const thresholdText = $t({ defaultMessage: '> {threshold}' },
           { threshold: formatter('networkSpeedFormat')(threshold) })
-        if(row.clientThroughputThreshold === null) return <span>-</span>
+        if(row.clientThroughputThreshold === null) return <span>{noDataDisplay}</span>
         const tooltipText = $t({
           defaultMessage: '{n} of {d} sessions above {threshold}' },
+        { n: $t(intlFormats.countFormat, { value: n }),
+          d: $t(intlFormats.countFormat, { value: d }),
+          threshold: formatter('networkSpeedFormat')(threshold) })
+        return (<Tooltip title={tooltipText}>
+          <span data-tooltip={tooltipText}>{value as string}</span>
+          <UI.ThresholdText>
+            {thresholdText}
+          </UI.ThresholdText>
+        </Tooltip>)
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'AP Capacity' }),
+      dataIndex: 'apCapacityPercent',
+      key: 'apCapacityPercent',
+      align: 'center' as const,
+      render: (value: unknown, row)=>{
+        const [n,d] = row.apCapacitySLA
+        const threshold = Number(row.apCapacityThreshold ??
+          kpiConfig.apCapacity.histogram.initialThreshold) * 1000
+        const thresholdText = $t({ defaultMessage: '> {threshold}' },
+          { threshold: formatter('networkSpeedFormat')(threshold) })
+        if(row.apCapacityThreshold === null) return <span>-</span>
+        const tooltipText = $t({
+          defaultMessage: '{n} of {d} APs above {threshold}' },
         { n: $t(intlFormats.countFormat, { value: n }),
           d: $t(intlFormats.countFormat, { value: d }),
           threshold: formatter('networkSpeedFormat')(threshold) })
@@ -134,10 +163,6 @@ export function VenuesHealthDashboard ({
       }
     }
   ]
-  const calcPercent = ([val, sum]:(number | null)[]) => {
-    const percent = val !== null && sum ? val / sum : null
-    return { percent, formatted: formatter('percentFormatRound')(percent) }
-  }
 
   const calculateClientExp = (slas:(number|null)[]) => {
     const arr = slas.filter(sla => sla !== null)
@@ -150,12 +175,14 @@ export function VenuesHealthDashboard ({
         connectionSuccessSLA,
         timeToConnectSLA,
         clientThroughputSLA,
-        onlineApsSLA
+        onlineApsSLA,
+        apCapacitySLA
       } = row
       const connectionSuccessPercent = calcPercent(connectionSuccessSLA)
       const timeToConnectPercent = calcPercent(timeToConnectSLA)
       const clientThroughputPercent = calcPercent(clientThroughputSLA)
       const onlineApsPercent = calcPercent(onlineApsSLA)
+      const apCapacityPercent = calcPercent(apCapacitySLA)
       const clientExperience = calculateClientExp([
         connectionSuccessPercent.percent,
         timeToConnectPercent.percent,
@@ -166,11 +193,12 @@ export function VenuesHealthDashboard ({
         timeToConnectPercent: timeToConnectPercent.formatted,
         clientThroughputPercent: clientThroughputPercent.formatted,
         onlineApsPercent: onlineApsPercent.formatted,
+        apCapacityPercent: apCapacityPercent.formatted,
         clientExperience
       }
-    }).filter(item=>item.clientExperience!==null)
-      .sort((a,b)=>(a.clientExperience as number) - (b.clientExperience as number))
-      .slice(0,5)
+    }).filter(item => item.clientExperience !== null)
+      .sort((a, b) => (a.clientExperience as number) - (b.clientExperience as number))
+      .slice(0, 6)
   }
 
   const healthData = data && data.health.length ? getHealthData(data.health) : null
@@ -186,36 +214,18 @@ export function VenuesHealthDashboard ({
     </UI.Wrapper>
     : <NoData/>
 
-  const tabDetails:ContentSwitcherProps['tabDetails']=[
-    {
-      label: $t({ defaultMessage: 'Venue' }),
-      children: clientExpTab,
-      value: 'clientExp'
-    },
-    {
-      label: <Tooltip title={$t(notAvailableMsg)}>
-        {$t({ defaultMessage: 'Service' })}
-      </Tooltip>,
-      children: <>
-        {$t({ defaultMessage: 'Coming Soon' })}
-      </>,
-      value: 'services',
-      disabled: true
-    }
-  ]
-
   const onArrowClick = useNavigateToPath('/analytics/health/')
   return (
     <Loader states={[queryResults]}>
       <HistoricalCard
         title={$t({ defaultMessage: 'Client Experience' })}
-        subTitle={$t({ defaultMessage: 'Top 5 Venues/Services with poor experience' })}
+        subTitle={$t({ defaultMessage: 'Top Venues with poor experience' })}
         onArrowClick={onArrowClick}
       >
         <AutoSizer>
           {({ height, width }) => (
             <div style={{ display: 'block', height, width }}>
-              <ContentSwitcher tabDetails={tabDetails} size='small' />
+              {clientExpTab}
             </div>)}
         </AutoSizer>
       </HistoricalCard>

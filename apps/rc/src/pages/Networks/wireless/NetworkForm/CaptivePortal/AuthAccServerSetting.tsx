@@ -50,6 +50,11 @@ export function AuthAccServerSetting () {
       form.setFieldValue(['guestPortal','wisprPage','accountingRadius'], accountingRadius)
     }
   },[accountingRadius])
+  useEffect(()=>{
+    if(data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.Cloudpath){
+      form.setFieldsValue(data)
+    }
+  },[data])
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
       <div>
@@ -73,7 +78,8 @@ export function AuthAccServerSetting () {
       <div>
         <Subtitle level={3}>{$t({ defaultMessage: 'Accounting Service' })}</Subtitle>
         <Form.Item name='enableAccountingService' valuePropName='checked'>
-          <Switch />
+          <Switch onChange={
+            (checked)=>onChange(checked, 'enableAccountingService')}/>
         </Form.Item>
         {enableAccountingService &&
         <>

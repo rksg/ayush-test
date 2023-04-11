@@ -1,14 +1,16 @@
-import {  Loader }                   from '@acx-ui/components'
-import { useDashboardOverviewQuery } from '@acx-ui/rc/services'
-import {  useParams }                from '@acx-ui/react-router-dom'
+import {  Loader }                                                from '@acx-ui/components'
+import { useDashboardOverviewQuery, useDashboardV2OverviewQuery } from '@acx-ui/rc/services'
+import {  useParams }                                             from '@acx-ui/react-router-dom'
+import { useDashboardFilter, NetworkNodePath }                    from '@acx-ui/utils'
 
 import {
   getApDonutChartData,
   getEdgeDonutChartData,
-  getSwitchDonutChartData
+  getSwitchDonutChartData,
+  getApStackedBarChartData,
+  getSwitchStackedBarChartData
 } from '../DevicesWidget/helper'
-import { DevicesWidget } from '../DevicesWidget/index'
-
+import { DevicesWidget, DevicesWidgetv2 } from '../DevicesWidget/index'
 
 export function DevicesDashboardWidget () {
   const queryResults = useDashboardOverviewQuery({
@@ -30,6 +32,43 @@ export function DevicesDashboardWidget () {
         apData={queryResults.data.apData}
         switchData={queryResults.data.switchData}
         edgeData={queryResults.data.edgeData}
+        enableArrowClick
+      />
+    </Loader>
+  )
+}
+
+export function DevicesDashboardWidgetV2 () {
+  const { filters } = useDashboardFilter()
+  const { filter: { networkNodes } } = filters
+  const venueIds = networkNodes?.map((networkNode: NetworkNodePath) => networkNode[0].name)
+
+  const queryResults = useDashboardV2OverviewQuery({
+    params: useParams(),
+    payload: {
+      filters: {
+        venueIds
+      }
+    }
+  },{
+    selectFromResult: ({ data, ...rest }) => ({
+      data: {
+        apStackedData: getApStackedBarChartData(data?.summary?.aps?.summary),
+        switchStackedData: getSwitchStackedBarChartData(data),
+        apTotalCount: data?.aps?.totalCount,
+        switchTotalCount: data?.switches?.totalCount
+      },
+      ...rest
+    })
+  })
+
+  return (
+    <Loader states={[queryResults]}>
+      <DevicesWidgetv2
+        apStackedData={queryResults.data.apStackedData}
+        switchStackedData={queryResults.data.switchStackedData}
+        apTotalCount={queryResults.data.apTotalCount || 0}
+        switchTotalCount={queryResults.data.switchTotalCount || 0}
         enableArrowClick
       />
     </Loader>

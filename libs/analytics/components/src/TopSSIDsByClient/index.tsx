@@ -9,8 +9,8 @@ import {
   Table,
   NoData,
   SparklineChart } from '@acx-ui/components'
+import { formatter, intlFormats } from '@acx-ui/formatter'
 import { TenantLink }             from '@acx-ui/react-router-dom'
-import { formatter, intlFormats } from '@acx-ui/utils'
 
 import { useTopSSIDsByClientQuery, TopSSIDsByClient } from './services'
 import { TrafficPercent }                             from './styledComponents'
@@ -93,7 +93,7 @@ function TopSSIDsByClientWidget ({
 
   return (
     <Loader states={[queryResults]}>
-      <HistoricalCard title={$t({ defaultMessage: 'Top 5 SSIDs by Clients' })}>
+      <HistoricalCard title={$t({ defaultMessage: 'Top SSIDs by Clients' })}>
         <AutoSizer>
           {({ height, width }) => (
             <div style={{ display: 'block', height, width, paddingTop: '20px' }}>

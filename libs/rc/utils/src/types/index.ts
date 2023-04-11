@@ -38,6 +38,9 @@ export * from './firmware'
 export * from './timeline'
 export * from './persona'
 export * from './radiusClientConfig'
+export * from './msgTemplate'
+export * from './property'
+export * from './googleMaps'
 
 export interface CommonResult {
   requestId: string
@@ -111,6 +114,7 @@ export interface Venue {
   allApDisabled: boolean
   // aps ??
   switches?: number
+  operationalSwitches?: number
   // switchClients ??
   // radios ??
   // scheduling ??
@@ -379,8 +383,10 @@ export interface DnsProxyContextType {
 export interface WifiCallingSetting {
   id: string,
   serviceName: string,
-  description: string | undefined,
+  description?: string | undefined,
   qosPriority: QosPriorityEnum,
+  tenantId?: string,
+  name?: string,
   epdgs?: EPDG[],
   networkIds?: string[]
 }
