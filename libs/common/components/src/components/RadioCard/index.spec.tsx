@@ -107,7 +107,7 @@ describe('RadioCard', () => {
         onClick={onClick}
       />)
       fireEvent.click(await screen.findByText('title'))
-      expect(onClick).toBeCalledTimes(1)
+      expect(onClick).not.toBeCalled()
     })
   })
 })
