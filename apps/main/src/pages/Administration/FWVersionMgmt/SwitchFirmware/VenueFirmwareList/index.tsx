@@ -28,7 +28,6 @@ import {
   UpdateScheduleRequest,
   TableQuery,
   RequestPayload,
-  firmwareTypeTrans,
   useTableQuery,
   sortProp,
   defaultSort
@@ -46,8 +45,6 @@ import * as UI               from '../../styledComponents'
 
 import { ChangeScheduleDialog } from './ChangeScheduleDialog'
 import { UpdateNowDialog }      from './UpdateNowDialog'
-
-const transform = firmwareTypeTrans()
 
 function useColumns (
   searchable?: boolean,

@@ -2,7 +2,6 @@ import { Divider, Space } from 'antd'
 import { useIntl }        from 'react-intl'
 import { useParams }      from 'react-router-dom'
 
-import { cssStr }                       from '@acx-ui/components'
 import { DateFormatEnum, formatter }    from '@acx-ui/formatter'
 import {
   useGetSwitchLatestFirmwareListQuery
