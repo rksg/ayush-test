@@ -14,6 +14,7 @@ export function MacRegistrationListSettingForm () {
   const { $t } = useIntl()
   const [ macRegList ] = useLazyMacRegListsQuery()
   const { policyId } = useParams()
+  const policySetId = Form.useWatch('policySetId')
 
   const policyEnabled = useIsSplitOn(Features.POLICY_MANAGEMENT)
 
@@ -54,27 +55,26 @@ export function MacRegistrationListSettingForm () {
           label={$t({ defaultMessage: 'Automatically clean expired entries' })}>
           <Switch/>
         </Form.Item>
-        <Form.Item name='defaultAccess'
-          label={$t({ defaultMessage: 'Default Access' })}
-          initialValue='ACCEPT'
-          rules={[{ required: true }]}
-        >
-          <SelectionControl
-            options={[{ value: 'ACCEPT', label: $t({ defaultMessage: 'ACCEPT' }) },
-              { value: 'REJECT', label: $t({ defaultMessage: 'REJECT' }) }]}
-          />
-        </Form.Item>
       </Col>
       {policyEnabled &&
         <Col span={24}>
+          {policySetId &&
+          <Form.Item name='defaultAccess'
+            label={$t({ defaultMessage: 'Default Access' })}
+            initialValue='ACCEPT'>
+            <SelectionControl
+              options={[{ value: 'ACCEPT', label: $t({ defaultMessage: 'ACCEPT' }) },
+                { value: 'REJECT', label: $t({ defaultMessage: 'REJECT' }) }]}
+            />
+          </Form.Item>
+          }
           <Form.Item label={$t({ defaultMessage: 'Access Policy Set' })}>
             <Space direction='horizontal'>
               <Form.Item name='policySetId'
                 noStyle
                 valuePropName='value'
                 rules={[
-                  // eslint-disable-next-line max-len
-                  { required: true, message: $t({ defaultMessage: 'Please select Access Policy Set' }) }
+                  { message: $t({ defaultMessage: 'Please select Access Policy Set' }) }
                 ]}
                 children={
                   <Select style={{ minWidth: 250 }}

@@ -118,16 +118,21 @@ export default function MacRegistrationListsTable () {
       {
         title: $t({ defaultMessage: 'Default Access' }),
         key: 'defaultAccess',
-        dataIndex: 'defaultAccess'
+        dataIndex: 'defaultAccess',
+        show: policyEnabled,
+        render: function (data:ReactNode, row:MacRegistrationPool) {
+          return row.policySetId ? row.defaultAccess: ''
+        }
       },
-      ...(policyEnabled) ? [{
+      {
         title: $t({ defaultMessage: 'Access Policy Set' }),
         key: 'policySet',
         dataIndex: 'policySet',
+        show: policyEnabled,
         render: function (data:ReactNode, row:MacRegistrationPool) {
           return row.policySetId ? policySetMap.get(row.policySetId) : ''
         }
-      }]: [],
+      },
       {
         title: $t({ defaultMessage: 'MAC Addresses' }),
         key: 'registrationCount',
@@ -192,8 +197,7 @@ export default function MacRegistrationListsTable () {
         customContent: {
           action: 'DELETE',
           entityName: $t({ defaultMessage: 'List' }),
-          entityValue: name,
-          confirmationText: 'Delete'
+          entityValue: name
         },
         onOk: () => {
           deleteMacRegList({ params: { policyId: id } })
