@@ -53,10 +53,11 @@ export const transformToApplicationRule = (
         && rule.protocol
         && rule.netmask) {
         userDefined.destinationPort = rule.destinationPort
-        userDefined.destinationIp = rule.destinationIp
         userDefined.netmask = rule.netmask
         userDefined.protocol = rule.protocol
       }
+
+      userDefined.destinationIp = rule.destinationIp!
     }
 
     let rateLimitObject = {} as { uplink?: number, downlink?: number }
