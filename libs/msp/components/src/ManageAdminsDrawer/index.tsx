@@ -82,14 +82,18 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
 
   const handleSave = () => {
     let payload: MspEcDelegatedAdmins[] = []
+    let returnRows: MspAdministrator[] = []
     if (selectedRows && selectedRows.length > 0) {
       selectedRows.forEach((element:MspAdministrator) => {
         const role = selectedRoles.find(row => row.id === element.id)?.role ?? element.role
         payload.push ({
           msp_admin_id: element.id,
           msp_admin_role: role
-        }
-        )})
+        })
+        const rowEntry = { ...element }
+        rowEntry.role = role as RolesEnum
+        returnRows.push(rowEntry)
+      })
     } else {
       return
     }
@@ -101,7 +105,7 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
           resetFields()
         })
     } else {
-      setSelected(selectedRows)
+      setSelected(returnRows)
     }
     setVisible(false)
   }
