@@ -200,6 +200,7 @@ export default function AdaptivePolicySetTable () {
       { isLoading: false, isFetching: isDeletePolicyUpdating }
     ]}>
       <Table
+        settingsId='adaptive-policy-set-list-table'
         columns={useColumns()}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}

@@ -158,6 +158,7 @@ export default function RadiusAttributeGroupTable () {
         { isLoading: false, isFetching: isDeleteMacGroupUpdating }
       ]}>
         <Table
+          settingsId='radius-attribute-group-list-table'
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}

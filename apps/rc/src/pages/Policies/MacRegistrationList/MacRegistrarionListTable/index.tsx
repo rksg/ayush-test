@@ -38,7 +38,6 @@ export default function MacRegistrationListsTable () {
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
   const [policySetMap, setPolicySetMap] = useState(new Map())
-  // const [venuesMap, setVenuesMap] = useState(new Map())
   const [networkVenuesMap, setNetworkVenuesMap] = useState(new Map())
   const params = useParams()
 
@@ -238,7 +237,8 @@ export default function MacRegistrationListsTable () {
         tableQuery,
         { isLoading: false, isFetching: isDeleteMacRegListUpdating }
       ]}>
-        <Table
+        <Table<MacRegistrationPool>
+          settingsId='mac-reg-list-table'
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
