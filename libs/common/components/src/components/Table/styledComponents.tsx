@@ -31,7 +31,7 @@ export const SearchInput = styled(Input).attrs({ prefix: <SearchOutlined /> })`
   ${({ value }) => value ? 'border-color: var(--acx-primary-black) !important;' : ''}
 `
 
-export const FilterSelect = styled(Select).attrs({ style: { width: 200 } })`
+export const FilterSelect = styled(Select)`
   ${({ value }) => value
     ? `.ant-select-selector {
       background-color: var(--acx-accents-orange-10) !important;
@@ -351,8 +351,10 @@ export const Header = styled.div`
   display: flex;
   justify-content: space-between;
 `
-export const HeaderRight = styled.div`
-  text-align: right;
+
+export const HeaderComps = styled.div`
+  display: flex;
+  gap: 12px;
 `
 
 export const Wrapper = styled.div<StyledTable>`

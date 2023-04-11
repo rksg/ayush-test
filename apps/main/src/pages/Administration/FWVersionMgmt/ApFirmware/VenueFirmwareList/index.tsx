@@ -56,14 +56,6 @@ import { ChangeScheduleDialog } from './ChangeScheduleDialog'
 import { RevertDialog }         from './RevertDialog'
 import { UpdateNowDialog }      from './UpdateNowDialog'
 
-type TablePaginationPosition =
-  | 'topLeft'
-  | 'topCenter'
-  | 'topRight'
-  | 'bottomLeft'
-  | 'bottomCenter'
-  | 'bottomRight'
-
 const transform = firmwareTypeTrans()
 
 function useColumns (
@@ -80,8 +72,8 @@ function useColumns (
       dataIndex: 'name',
       // sorter: true,
       sorter: { compare: sortProp('name', defaultSort) },
-      searchable: searchable,
       // defaultSortOrder: 'ascend',
+      searchable: searchable,
       render: function (data, row) {
         return row.name
       }
@@ -131,6 +123,7 @@ function useColumns (
       dataIndex: 'nextSchedule',
       // sorter: false,
       sorter: { compare: sortProp('nextSchedules[0].startDateTime', dateSort) },
+      defaultSortOrder: 'ascend',
       render: function (data, row) {
         return (!isNextScheduleTooltipDisabled(row)
           ? getApNextScheduleTpl(intl, row)
@@ -178,7 +171,6 @@ export const VenueFirmwareTable = (
   const [eolModels, setEolModels] = useState<string[]>([])
   const [changeUpgradeVersions, setChangeUpgradeVersions] = useState<FirmwareVersion[]>([])
   const [revertVersions, setRevertVersions] = useState<FirmwareVersion[]>([])
-  const pageBotton: TablePaginationPosition | 'none' = 'none'
 
   const [updateUpgradePreferences] = useUpdateUpgradePreferencesMutation()
   const { data: preferencesData } = useGetUpgradePreferencesQuery({ params })
@@ -252,7 +244,7 @@ export const VenueFirmwareTable = (
     visible: (selectedRows) => {
       let eolAp = false
       let allEolFwlatest = true
-      for (let v of venues) {
+      for (let v of selectedRows) {
         if (v['eolApFirmwares']) {
           eolAp = true
           if (allEolFwlatest) {
@@ -312,7 +304,7 @@ export const VenueFirmwareTable = (
       let eolName = ''
       let latestEolVersion = ''
       let eolModels: string[] = []
-      for (let v of venues) {
+      for (let v of selectedRows) {
         if (v['eolApFirmwares']) {
           eolAp = true
           eolName = v['eolApFirmwares'][0].name
@@ -523,10 +515,7 @@ export const VenueFirmwareTable = (
     ]}>
       <Table
         columns={columns}
-        columnState={{ hidden: true }}
         dataSource={tableData}
-        // eslint-disable-next-line max-len
-        pagination={{ pageSize: 10000, position: [pageBotton as TablePaginationPosition , pageBotton as TablePaginationPosition] }}
         onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}

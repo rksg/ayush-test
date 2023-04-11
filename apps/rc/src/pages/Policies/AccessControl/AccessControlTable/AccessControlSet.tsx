@@ -144,6 +144,7 @@ const AccessControlSet = () => {
 
   return <Loader states={[tableQuery]}>
     <Table<EnhancedAccessControlInfoType>
+      settingsId='policies-access-control-set-table'
       enableApiFilter={true}
       columns={useColumns(networkFilterOptions)}
       dataSource={tableQuery?.data?.data}

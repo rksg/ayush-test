@@ -55,6 +55,7 @@ exports[`AP List Table should render table 1`] = `
     >
       <span
         aria-label="loader"
+        class="SuspenseBoundary__SpinWrapper-sc-l6mvnr-0"
         role="img"
       >
         <div

@@ -212,6 +212,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
     ]}>
       <Table
         {...props}
+        settingsId='edges-table'
         columns={columns}
         dataSource={tableQuery?.data?.data}
         pagination={tableQuery.pagination}

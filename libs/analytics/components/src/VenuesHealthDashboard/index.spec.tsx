@@ -44,7 +44,7 @@ describe('HealthWidget', () => {
     </Provider>, {
       route: { params, path: '/:tenantId/venues' }
     })
-    await screen.findByText('Top 5 Venues/Services with poor experience')
+    await screen.findByText('Top Venues with poor experience')
     expect(asFragment()).toMatchSnapshot('NoData')
   })
 
@@ -56,7 +56,7 @@ describe('HealthWidget', () => {
       filters={filters}/></Provider>, {
       route: { params, path: '/:tenantId/venues' }
     })
-    await screen.findByText('Top 5 Venues/Services with poor experience')
+    await screen.findByText('Top Venues with poor experience')
     expect(asFragment()).toMatchSnapshot()
   })
 })

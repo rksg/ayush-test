@@ -171,7 +171,7 @@ export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
       dataIndex: 'subCategory',
       key: 'subCategory',
       sorter: { compare: sortProp('subCategory', defaultSort) },
-      show: false
+      filterable: true
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Client Impact' })),
@@ -218,6 +218,7 @@ export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
   return (
     <Loader states={[queryResults]}>
       <UI.IncidentTableWrapper
+        settingsId='incident-table'
         type='tall'
         dataSource={data}
         columns={ColumnHeaders}
@@ -250,6 +251,8 @@ export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
           />
         ]}
         rowClassName={(record) => record.isMuted ? 'table-row-muted' : 'table-row-normal'}
+        filterableWidth={155}
+        searchableWidth={240}
       />
       {drawerSelection &&
       <Drawer

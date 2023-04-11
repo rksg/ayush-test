@@ -51,8 +51,8 @@ function useColumns (
     },
     {
       title: $t({ defaultMessage: 'Address' }),
-      key: 'city',
-      dataIndex: 'city',
+      key: 'country',
+      dataIndex: 'country',
       sorter: true,
       filterable: filterables ? filterables['city'] : false,
       width: 120,
@@ -270,6 +270,7 @@ export const VenueTable = (
       { isLoading: false, isFetching: isDeleteVenueUpdating }
     ]}>
       <Table
+        settingsId='venues-table'
         columns={columns}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}

@@ -13,7 +13,10 @@ import {
   FlowLevelEnum,
   PriorityEnum,
   ProtocolEnum,
-  PersonaGroup, NewTableResult, NewTablePageable
+  PersonaGroup,
+  NewTableResult,
+  NewTablePageable,
+  ResidentPortal
 } from '@acx-ui/rc/utils'
 
 export const successResponse = {
@@ -2773,6 +2776,19 @@ export const mockEnabledNoNSGPropertyConfig: PropertyConfigs = {
 export const mockEnabledNSGPropertyConfig: PropertyConfigs = {
   status: PropertyConfigStatus.ENABLED,
   personaGroupId: 'persona-group-id-NSG'
+}
+
+export const mockResidentPortalProfileList: NewTableResult<ResidentPortal> = {
+  pageable: defaultPageable,
+  sort: defaultPageable.sort,
+  totalElements: 1,
+  totalPages: 1,
+  content: [
+    {
+      id: 'resident-portal-profile-id-1',
+      name: 'resident-portal-profile-name-1'
+    }
+  ]
 }
 
 // export const mockPropertyUnitList: NewTableResult<PropertyUnit> = {

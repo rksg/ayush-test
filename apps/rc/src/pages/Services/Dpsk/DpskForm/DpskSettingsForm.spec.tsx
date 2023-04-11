@@ -2,13 +2,14 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { NewDpskBaseUrl }                         from '@acx-ui/rc/utils'
-import { Provider }                               from '@acx-ui/store'
-import { mockServer, render, renderHook, screen } from '@acx-ui/test-utils'
+import { useIsSplitOn }                            from '@acx-ui/feature-toggle'
+import { NewDpskBaseUrl, RulesManagementUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                from '@acx-ui/store'
+import { mockServer, render, renderHook, screen }  from '@acx-ui/test-utils'
 
-import { mockedDpskList, mockedGetFormData } from './__tests__/fixtures'
-import DpskSettingsForm                      from './DpskSettingsForm'
-import { transferSaveDataToFormFields }      from './parser'
+import { mockedDpskList, mockedGetFormData, mockedPolicySet } from './__tests__/fixtures'
+import DpskSettingsForm                                       from './DpskSettingsForm'
+import { transferSaveDataToFormFields }                       from './parser'
 
 describe('DpskSettingsForm', () => {
   beforeEach(() => {
@@ -20,7 +21,7 @@ describe('DpskSettingsForm', () => {
     )
   })
 
-  it('should render the form with the giving data', async ()=> {
+  it('should render the form with the giving data', async () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
       return form
@@ -41,7 +42,7 @@ describe('DpskSettingsForm', () => {
     expect(expirationModeRadio).toBeChecked()
   })
 
-  it('should validate the service name', async ()=> {
+  it('should validate the service name', async () => {
     render(
       <Provider>
         <Form><DpskSettingsForm /></Form>
@@ -53,5 +54,28 @@ describe('DpskSettingsForm', () => {
 
     const errorMessageElem = await screen.findByRole('alert')
     expect(errorMessageElem.textContent).toBe('DPSK service with that name already exists')
+  })
+
+  it('should render the cloudpath form items', async () => {
+    mockServer.use(
+      rest.get(
+        RulesManagementUrlsInfo.getAdaptivePolicySets.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json({ ...mockedPolicySet }))
+      )
+    )
+
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    render(
+      <Provider>
+        <Form><DpskSettingsForm /></Form>
+      </Provider>
+    )
+
+    expect(await screen.findByRole('radio', { name: /ACCEPT/ })).toBeVisible()
+    expect(await screen.findByRole('radio', { name: /Unlimited/ })).toBeVisible()
+
+    await userEvent.click(await screen.findByRole('combobox', { name: /Access Policy Set/ }))
+    expect(await screen.findByText(mockedPolicySet.content[0].name)).toBeInTheDocument()
   })
 })

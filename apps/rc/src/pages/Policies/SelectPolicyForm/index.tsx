@@ -27,6 +27,7 @@ export default function SelectPolicyForm () {
   const tenantBasePath: Path = useTenantLink('')
   const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
   const isEdgeEnabled = useIsSplitOn(Features.EDGES)
+  const macRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
 
   const navigateToCreatePolicy = async function (data: { policyType: PolicyType }) {
     const policyCreatePath = getPolicyRoutePath({
@@ -53,7 +54,13 @@ export default function SelectPolicyForm () {
     sets.push({ type: PolicyType.SNMP_AGENT, categories: [RadioCardCategory.WIFI] })
   }
   if (isEdgeEnabled) {
-    sets.push({ type: PolicyType.TUNNEL_PROFILE, categories: [RadioCardCategory.WIFI] })
+    sets.push({
+      type: PolicyType.TUNNEL_PROFILE, categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE]
+    })
+  }
+
+  if(macRegistrationEnabled) {
+    sets.push({ type: PolicyType.MAC_REGISTRATION_LIST, categories: [RadioCardCategory.WIFI] })
   }
 
   return (

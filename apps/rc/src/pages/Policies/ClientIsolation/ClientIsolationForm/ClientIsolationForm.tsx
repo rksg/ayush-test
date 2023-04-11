@@ -70,8 +70,8 @@ export default function ClientIsolationForm (props: ClientIsolationFormProps) {
     <>
       <PageHeader
         title={editMode
-          ? $t({ defaultMessage: 'Edit Client Isolation Pofile' })
-          : $t({ defaultMessage: 'Add Client Isolation Pofile' })
+          ? $t({ defaultMessage: 'Edit Client Isolation Profile' })
+          : $t({ defaultMessage: 'Add Client Isolation Profile' })
         }
         breadcrumb={[
           // eslint-disable-next-line max-len

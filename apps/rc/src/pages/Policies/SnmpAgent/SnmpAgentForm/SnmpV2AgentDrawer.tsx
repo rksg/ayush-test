@@ -11,18 +11,18 @@ import PrivilegeForm, { HasReadPrivilegeEnabled, HasTrapPrivilegeEnabled } from 
 
 type SnmpV2AgentDrawerProps = {
   visible: boolean,
-  setVisible: (visible: boolean) => void,
   isEditMode: boolean,
-  data: SnmpV2Agent,
+  curData: SnmpV2Agent,
   othersData: SnmpV2Agent[],
   onDataChanged: (d: SnmpV2Agent) => void
+  onCancel: () => void
 }
 
 const SnmpV2AgentDrawer = (props: SnmpV2AgentDrawerProps) => {
   const { $t } = useIntl()
   const [form] = Form.useForm()
 
-  const { visible, setVisible, isEditMode, data, othersData=[], onDataChanged } = props
+  const { visible, isEditMode, curData, othersData=[], onDataChanged } = props
   const usedCommunityName = othersData.map(d => d.communityName)
   const hasOtherReadPrivilegeEnabled = HasReadPrivilegeEnabled(othersData)
   const hasOtherTrapPrivilegeEnabled = HasTrapPrivilegeEnabled(othersData)
@@ -35,17 +35,14 @@ const SnmpV2AgentDrawer = (props: SnmpV2AgentDrawerProps) => {
     ? $t({ defaultMessage: 'Apply' })
     : $t({ defaultMessage: 'Add' })
 
-  const onClose = () => {
-    setVisible(false)
-    form.resetFields()
-  }
+
 
   useEffect(() => {
-    if (data) {
-      form.setFieldsValue(data)
+    if (curData) {
+      form.setFieldsValue(curData)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [curData])
 
   const content = <Form layout='vertical'
     form={form}
@@ -94,14 +91,22 @@ const SnmpV2AgentDrawer = (props: SnmpV2AgentDrawerProps) => {
       hasOtherTrapPrivilegeEnabled={hasOtherTrapPrivilegeEnabled} />
   </Form>
 
+  // reset form fields when drawer is closed
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      form.resetFields()
+    }
+  }
+
   return (
     <Drawer
       title={title}
       visible={visible}
-      onClose={onClose}
+      onClose={props.onCancel}
       children={content}
       destroyOnClose={true}
       width={'500px'}
+      afterVisibleChange={handleOpenChange}
       footer={
         <Drawer.FormFooter
           showAddAnother={!isEditMode}
@@ -109,7 +114,7 @@ const SnmpV2AgentDrawer = (props: SnmpV2AgentDrawerProps) => {
             addAnother: $t({ defaultMessage: 'Add another SNMPv2 agent' }),
             save: saveButtonText
           })}
-          onCancel={onClose}
+          onCancel={props.onCancel}
           onSave={async (addAnotherRuleChecked: boolean) => {
             try {
               const valid = await form.validateFields()
@@ -124,7 +129,7 @@ const SnmpV2AgentDrawer = (props: SnmpV2AgentDrawerProps) => {
                     && (trapPrivilege || hasOtherTrapPrivilegeEnabled)
 
                   if (!addAnotherRuleChecked || allPrivilegeEnabled) {
-                    onClose()
+                    props.onCancel()
                   } else {
                     form.resetFields()
                   }
@@ -136,10 +141,8 @@ const SnmpV2AgentDrawer = (props: SnmpV2AgentDrawerProps) => {
           }}
         />
       }
-
     />
   )
 }
-
 
 export default SnmpV2AgentDrawer

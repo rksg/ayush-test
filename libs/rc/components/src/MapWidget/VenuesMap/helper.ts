@@ -2,17 +2,17 @@
 import _                 from 'lodash'
 import { defineMessage } from 'react-intl'
 
-import { cssStr }          from '@acx-ui/components'
+import { cssStr }      from '@acx-ui/components'
 import {
   ChartData,
   Dashboard,
   ApVenueStatusEnum,
   SwitchStatusEnum,
-  EdgeStatusSeverityEnum } from '@acx-ui/rc/utils'
+  EdgeStatusSeverityEnum,
+  VenueMarkerOptions } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
-import * as UI                from './styledComponents'
-import { VenueMarkerOptions } from './VenueMarkerWithLabel'
+import * as UI from './styledComponents'
 
 const apStatusMap = {
   [ApVenueStatusEnum.REQUIRES_ATTENTION]: defineMessage({

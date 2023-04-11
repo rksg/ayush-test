@@ -2,37 +2,30 @@ import { Dropdown, Menu, MenuProps, Space } from 'antd'
 import moment                               from 'moment-timezone'
 import { useIntl }                          from 'react-intl'
 
-import { Button, DisabledButton, PageHeader, RangePicker }       from '@acx-ui/components'
-import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
-import { ArrowExpand, ClockOutlined }                            from '@acx-ui/icons'
+import { Button, PageHeader, RangePicker }                       from '@acx-ui/components'
+import { ArrowExpand }                                           from '@acx-ui/icons'
 import { useDisconnectClientMutation, useGetClientDetailsQuery } from '@acx-ui/rc/services'
-import { ClientStatusEnum }                                      from '@acx-ui/rc/utils'
+import { ClientStatusEnum, ClientUrlsInfo }                      from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useParams,
   useSearchParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { filterByAccess }                                        from '@acx-ui/user'
-import { DateFilter, DateRange, encodeParameter, useDateFilter } from '@acx-ui/utils'
+import { filterByAccess }                                                      from '@acx-ui/user'
+import { DateFilter, DateRange, enableNewApi, encodeParameter, useDateFilter } from '@acx-ui/utils'
 
 import ClientDetailTabs from './ClientDetailTabs'
 
 function DatePicker () {
-  const { $t } = useIntl()
-  const enableAnalytics = useIsSplitOn(Features.CLIENT_TROUBLESHOOTING)
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
 
-  return enableAnalytics
-    ? <RangePicker
-      selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
-      onDateApply={setDateFilter as CallableFunction}
-      showTimePicker
-      selectionType={range}
-    />
-    : <DisabledButton icon={<ClockOutlined />}>
-      {$t({ defaultMessage: 'Last 24 Hours' })}
-    </DisabledButton>
+  return <RangePicker
+    selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
+    onDateApply={setDateFilter as CallableFunction}
+    showTimePicker
+    selectionType={range}
+  />
 }
 
 
@@ -55,10 +48,15 @@ function ClientDetailPageHeader () {
       // case 'download-information':
       //   break
       case 'disconnect-client':
-        const clientData = [{
-          clientMac: clientId,
-          apMac: clentDetails?.apMac
-        }]
+        const clientData = enableNewApi(ClientUrlsInfo.disconnectClient)
+          ? [{
+            clientMac: clientId,
+            serialNumber: clentDetails?.apSerialNumber
+          }]
+          : [{
+            clientMac: clientId,
+            apMac: clentDetails?.apMac
+          }]
         disconnectClient({ params: { tenantId }, payload: clientData }).then(()=>{
           const period = encodeParameter<DateFilter>({
             startDate: moment().subtract(24, 'hours').format(),
@@ -91,7 +89,8 @@ function ClientDetailPageHeader () {
       // },
         {
           label: $t({ defaultMessage: 'Disconnect Client' }),
-          disabled: !clentDetails?.apMac,
+          disabled: enableNewApi(ClientUrlsInfo.disconnectClient) ?
+            !clentDetails?.apSerialNumber : !clentDetails?.apMac,
           key: 'disconnect-client'
         }]}
     />
