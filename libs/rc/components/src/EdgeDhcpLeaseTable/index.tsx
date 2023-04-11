@@ -15,8 +15,9 @@ export const EdgeDhcpLeaseTable = (props: EdgeDhcpLeaseTableProps) => {
 
   const getDhcpHostStatsPayload = {
     filters: { edgeId: [props.edgeId] },
-    sortField: 'name',
-    sortOrder: 'ASC'
+    sortField: 'hostName',
+    sortOrder: 'ASC',
+    searchTargetFields: ['hostName', 'hostIpAddr', 'hostMac']
   }
   const hostTableQuery = useTableQuery<DhcpHostStats, RequestPayload<unknown>, unknown>({
     useQuery: useGetDhcpHostStatsQuery,
