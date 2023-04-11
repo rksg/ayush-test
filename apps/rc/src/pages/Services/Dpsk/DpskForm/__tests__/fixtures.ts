@@ -75,10 +75,10 @@ export const mockedPolicySet = {
       description: 'aps2',
       _links: {
         self: {
-          href: 'https://api.devalto.ruckuswireless.com/'
+          href: 'https://api.dev.ruckus.cloud/'
         },
         policies: {
-          href: 'https://api.devalto.ruckuswireless.com/policySets'
+          href: 'https://api.dev.ruckus.cloud/policySets'
         }
       }
     },
@@ -88,10 +88,10 @@ export const mockedPolicySet = {
       description: 'aps3',
       _links: {
         self: {
-          href: 'https://api.devalto.ruckuswireless.com/'
+          href: 'https://api.dev.ruckus.cloud/'
         },
         policies: {
-          href: 'https://api.devalto.ruckuswireless.com/policySets/'
+          href: 'https://api.dev.ruckus.cloud/policySets/'
         }
       }
     }

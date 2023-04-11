@@ -6,5 +6,5 @@ data:
   captive.portal.domain.name: "int.ruckus.cloud"
   google.maps.key: "AIzaSyB39cAm6pQ7R8xRtcJNDWUxLjWPKGT_jHQ"
   split.io.key: "54426nn43sd814m9drt1lg1jeupgr06jd9st"
-  new.api.domain.name: "api.intalto.ruckuswireless.com"
+  new.api.domain.name: "api.int.ruckus.cloud"
 
