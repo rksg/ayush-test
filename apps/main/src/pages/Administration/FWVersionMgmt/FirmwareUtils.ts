@@ -10,7 +10,8 @@ import {
   FirmwareVenueVersion,
   FirmwareType,
   Schedule,
-  EdgeFirmwareVersion
+  EdgeFirmwareVersion,
+  LatestEdgeFirmwareVersion
 } from '@acx-ui/rc/utils'
 
 export const expirationTimeUnits: Record<string, string> = {
@@ -49,14 +50,30 @@ export const AVAILABLE_SLOTS: Array<{ value: string, label: string }> = [
 export const SCHEDULE_START_TIME_FORMAT = 'dddd, MMM. DD, hh A'
 export const SCHEDULE_END_TIME_FORMAT = 'hh A'
 
-export const compareVersions = (a: String, b: String): number => {
-  let v1 = (a || '').split('.')
-  let v2 = (b || '').split('.')
+export const compareVersions = (a?: string, b?: string): number => {
+  const v1 = (a || '').split('.')
+  const v2 = (b || '').split('.')
   for (let i = 0; i < Math.min(v1.length, v2.length); i++) {
-    let res = Number(v1[i]) - Number(v2[i])
+    const res = Number(v1[i]) - Number(v2[i])
     if (res !== 0) {
       return res
     }
+  }
+  return 0
+}
+
+export const compareSwitchVersion = (a: string, b: string): number => {
+  const switchVersionReg = /^(?:[A-Z]{3,})?(?<major>\d{4,})(?<minor>[a-z]*)(?:_b(?<build>\d+))?$/
+  const group1 = a.match(switchVersionReg)?.groups
+  const group2 = b.match(switchVersionReg)?.groups
+  if (group1 && group2) {
+    let res = 0
+    const keys = ['major', 'minor', 'build']
+    keys.every(key=>{
+      res = group1[key].localeCompare(group2[key], 'en-u-kn-true') // sort by charCode and numeric
+      return res === 0 // false to break every loop
+    })
+    return res
   }
   return 0
 }
@@ -76,6 +93,15 @@ function getApFieldInVersions<T extends keyof FirmwareVenueVersion> (venue: Firm
 
   const apVersion = venue.versions.filter(typeIsApFunc)
   return apVersion.length > 0 ? apVersion[0][fieldName] : undefined
+}
+
+type FirmwareVersionType = FirmwareVersion | FirmwareVenueVersion | LatestEdgeFirmwareVersion
+
+const categoryIsReleaseFunc = ((lv: FirmwareVersionType) =>
+  lv.category === FirmwareCategory.RECOMMENDED || lv.category === FirmwareCategory.CRITICAL)
+
+export function getReleaseFirmware<T extends FirmwareVersionType> (firmwareVersions: T[] = []):T[] {
+  return firmwareVersions.filter(categoryIsReleaseFunc)
 }
 
 const transform = firmwareTypeTrans()

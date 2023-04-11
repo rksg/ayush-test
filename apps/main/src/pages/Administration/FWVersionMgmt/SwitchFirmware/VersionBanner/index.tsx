@@ -6,13 +6,11 @@ import {
   useGetSwitchLatestFirmwareListQuery
 } from '@acx-ui/rc/services'
 import {
-  firmwareTypeTrans,
-  FirmwareVersion,
-  FirmwareVenueVersion,
-  FirmwareCategory
+  firmwareTypeTrans
 } from '@acx-ui/rc/utils'
 
-import * as UI from '../../styledComponents'
+import { getReleaseFirmware } from '../../FirmwareUtils'
+import * as UI                from '../../styledComponents'
 
 const transform = firmwareTypeTrans()
 
@@ -43,10 +41,3 @@ export const VersionBanner = () => {
 }
 
 export default VersionBanner
-
-const categoryIsReleaseFunc = ((lv : FirmwareVersion | FirmwareVenueVersion) =>
-  lv.category === FirmwareCategory.RECOMMENDED || lv.category === FirmwareCategory.CRITICAL)
-
-function getReleaseFirmware (firmwareVersions: FirmwareVersion[] = []): FirmwareVersion[] {
-  return firmwareVersions.filter(categoryIsReleaseFunc)
-}

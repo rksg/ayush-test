@@ -237,7 +237,6 @@ export const VenueFirmwareTable = (
     }
   }
 
-  const tableData = tableQuery.data as readonly FirmwareVenue[] | undefined
   const columns = useColumns(searchable, filterables)
 
   const rowActions: TableProps<FirmwareVenue>['rowActions'] = [{
@@ -515,7 +514,7 @@ export const VenueFirmwareTable = (
     ]}>
       <Table
         columns={columns}
-        dataSource={tableData}
+        dataSource={tableQuery.data?.data}
         onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}

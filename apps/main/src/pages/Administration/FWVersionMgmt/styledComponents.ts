@@ -104,3 +104,16 @@ export const FieldGroup = styled.div`
   grid-template-columns: [column-1] 150px [column-2] auto;
   margin-bottom: 10px;
 `
+export const TabWithHint = styled.span`
+  display: flex;
+  align-items: center;
+  svg {
+    height: 18px;
+    width: 18px;
+    margin-left: 5px;
+    path {
+      stroke: var(--acx-primary-white);
+      fill: var(--acx-accents-orange-50);
+    }
+  }
+`
