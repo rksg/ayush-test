@@ -86,6 +86,6 @@ describe('ExpirationDateSelector', () => {
     await screen.findByDisplayValue('2022-11-25')
     const values = formRef.current.getFieldValue(mockedInputName)
 
-    expect(values.date).toBe('2022-11-25')
+    expect(values.date).toBe('2022-11-25T00:00:00.000Z')
   })
 })
