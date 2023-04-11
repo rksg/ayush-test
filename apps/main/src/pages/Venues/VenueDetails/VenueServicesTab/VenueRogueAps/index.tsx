@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react';
 
 import { Badge }   from 'antd'
 import { useIntl } from 'react-intl'
@@ -62,6 +62,7 @@ const handleCategoryColor = (status: RogueDeviceCategory) => {
 }
 
 export function VenueRogueAps () {
+  const [columnName, setColumnName] = useState('lastUpdTime')
   const leftFillZero = (num: number) => num.toString().padStart(2, '0')
   const formatDate = (date: Date) => {
     return (
@@ -87,7 +88,12 @@ export function VenueRogueAps () {
         dataIndex: 'rogueMac',
         sorter: true,
         searchable: true,
-        fixed: 'left'
+        fixed: 'left',
+        render: (data, row) => {
+          return <span onClick={() => setColumnName('rogueMac')}>
+            {row.rogueMac}
+          </span>
+        }
       },
       {
         key: 'category',
@@ -96,7 +102,7 @@ export function VenueRogueAps () {
         // filterable: true, // TODO: change to search or provide static list
         sorter: true,
         render: (data, row) => {
-          return <span>
+          return <span onClick={() => setColumnName('category')}>
             <Badge
               color={handleCategoryColor(row.category as RogueDeviceCategory)}
               text={row.category}
@@ -108,25 +114,46 @@ export function VenueRogueAps () {
         key: 'classificationPolicyName',
         title: intl.$t({ defaultMessage: 'Classification Rule' }),
         dataIndex: 'classificationPolicyName',
-        sorter: true
+        sorter: true,
+        render: (data, row) => {
+          return <span onClick={() => setColumnName('classificationPolicyName')}>
+            {row.classificationPolicyName}
+          </span>
+        }
       },
       {
         key: 'ssid',
         title: intl.$t({ defaultMessage: 'SSID' }),
         dataIndex: 'ssid',
-        sorter: true
+        sorter: true,
+        render: (data, row) => {
+          return <span onClick={() => setColumnName('ssid')}>
+            {row.ssid}
+          </span>
+        }
       },
       {
         key: 'channel',
         title: intl.$t({ defaultMessage: 'Channel' }),
         dataIndex: 'channel',
-        sorter: true
+        sortDirections: ['descend', 'ascend', 'descend'],
+        sorter: true,
+        render: (data, row) => {
+          return <span onClick={() => setColumnName('channel')}>
+            {row.channel}
+          </span>
+        }
       },
       {
         key: 'band',
         title: intl.$t({ defaultMessage: 'Band' }),
         sorter: true,
-        dataIndex: 'band'
+        dataIndex: 'band',
+        render: (data, row) => {
+          return <span onClick={() => setColumnName('band')}>
+            {row.band}
+          </span>
+        }
       },
       {
         key: 'closestAp_snr',
@@ -153,6 +180,7 @@ export function VenueRogueAps () {
         title: intl.$t({ defaultMessage: 'Detecting APs' }),
         dataIndex: 'detectingAps',
         sorter: true,
+        sortDirections: ['descend', 'ascend', 'descend'],
         align: 'center',
         render: (data, row) => {
           return row.detectingAps.length
@@ -197,7 +225,7 @@ export function VenueRogueAps () {
       useQuery: useGetOldVenueRogueApQuery,
       defaultPayload,
       sorter: {
-        sortField: 'lastUpdTime',
+        sortField: columnName,
         sortOrder: 'DESC'
       }
     })
