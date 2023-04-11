@@ -85,6 +85,7 @@ export function VenueRogueAps () {
         key: 'rogueMac',
         title: intl.$t({ defaultMessage: 'BSSID' }),
         dataIndex: 'rogueMac',
+        sorter: true,
         searchable: true,
         fixed: 'left'
       },
@@ -105,7 +106,7 @@ export function VenueRogueAps () {
       },
       {
         key: 'classificationPolicyName',
-        title: intl.$t({ defaultMessage: 'Classification Profile' }),
+        title: intl.$t({ defaultMessage: 'Classification Rule' }),
         dataIndex: 'classificationPolicyName',
         sorter: true
       },
@@ -124,6 +125,7 @@ export function VenueRogueAps () {
       {
         key: 'band',
         title: intl.$t({ defaultMessage: 'Band' }),
+        sorter: true,
         dataIndex: 'band'
       },
       {
@@ -141,14 +143,14 @@ export function VenueRogueAps () {
       },
       {
         key: 'closestAp_apName',
-        title: intl.$t({ defaultMessage: 'Closest Ap' }),
+        title: intl.$t({ defaultMessage: 'Closest AP' }),
         dataIndex: 'closestAp_apName',
         // filterable: true, // TODO: change to search or provide static list
         sorter: true
       },
       {
         key: 'detectingAps',
-        title: intl.$t({ defaultMessage: 'Detecting AP' }),
+        title: intl.$t({ defaultMessage: 'Detecting APs' }),
         dataIndex: 'detectingAps',
         sorter: true,
         align: 'center',
@@ -170,7 +172,6 @@ export function VenueRogueAps () {
         key: 'locatable',
         title: intl.$t({ defaultMessage: 'Locate Rogue' }),
         dataIndex: 'locatable',
-        sorter: true,
         render: (data, row) => {
           return row.locatable
             ? <VenueMarkerRed />
