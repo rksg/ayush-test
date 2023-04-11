@@ -13,7 +13,7 @@ import { Point }                                     from './styledComponents'
 
 import { HealthDrillDown } from '.'
 
-jest.mock('./HealthPieChart', () => ({
+jest.mock('./healthPieChart', () => ({
   HealthPieChart: () => <div>PIE chart</div>
 }))
 
