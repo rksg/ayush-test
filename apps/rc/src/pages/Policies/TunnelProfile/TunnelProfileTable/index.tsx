@@ -26,7 +26,10 @@ const TunnelProfileTable = () => {
   const basePath: Path = useTenantLink('')
   const tableQuery = useTableQuery({
     useQuery: useGetTunnelProfileViewDataListQuery,
-    defaultPayload: defaultTunnelProfileTablePayload
+    defaultPayload: defaultTunnelProfileTablePayload,
+    search: {
+      searchTargetFields: ['name']
+    }
   })
   const { nsgOptions } = useGetNetworkSegmentationStatsListQuery({
     payload: {
