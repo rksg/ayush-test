@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { MspUrlsInfo }                                                      from '@acx-ui/rc/utils'
+import { AdministrationUrlsInfo, MspUrlsInfo }                              from '@acx-ui/rc/utils'
 import { Provider }                                                         from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 import { UserUrlsInfo }                                                     from '@acx-ui/user'
@@ -101,8 +101,15 @@ describe('ManageCustomer', () => {
       rest.get(
         UserUrlsInfo.getUserProfile.url,
         (req, res, ctx) => res(ctx.json(userProfile))
+      ),
+      rest.get(
+        AdministrationUrlsInfo.getPreferences.url,
+        (_req, res, ctx) => res(ctx.json({ global: {
+          mapRegion: 'TW'
+        } }))
       )
     )
+
     params = {
       tenantId: '3061bd56e37445a8993ac834c01e2710',
       mspEcTenantId: '1576b79db6b549f3b1f3a7177d7d4ca5'
