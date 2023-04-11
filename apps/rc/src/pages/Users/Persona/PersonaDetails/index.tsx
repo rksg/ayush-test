@@ -173,7 +173,7 @@ function PersonaDetails () {
     { label: $t({ defaultMessage: 'Assigned AP' }),
       value:
         personaDetailsQuery.data?.ethernetPorts?.length !== 0
-          ? personaDetailsQuery.data?.ethernetPorts?.map(port => port.name)
+          ? [...new Set(personaDetailsQuery.data?.ethernetPorts?.map(port => port.name))].join(', ')
           : undefined
     },
     { label: $t({ defaultMessage: 'Ethernet Ports Assigned' }),
