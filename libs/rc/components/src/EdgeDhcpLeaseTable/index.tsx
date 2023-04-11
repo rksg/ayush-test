@@ -1,31 +1,34 @@
 
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps }                                        from '@acx-ui/components'
-import { useGetDhcpHostStatsQuery, useGetDhcpByEdgeIdQuery }                from '@acx-ui/rc/services'
+import { useGetDhcpByEdgeIdQuery, useGetDhcpHostStatsQuery }                from '@acx-ui/rc/services'
 import { DhcpHostStats, EdgeDhcpHostStatus, RequestPayload, useTableQuery } from '@acx-ui/rc/utils'
 
+interface EdgeDhcpLeaseTableProps {
+  edgeId?: string
+}
 
-const Leases = () => {
+export const EdgeDhcpLeaseTable = (props: EdgeDhcpLeaseTableProps) => {
 
   const { $t } = useIntl()
-  const { serialNumber } = useParams()
 
   const getDhcpHostStatsPayload = {
-    filters: { edgeId: [serialNumber] },
-    sortField: 'name',
-    sortOrder: 'ASC'
+    filters: { edgeId: [props.edgeId] },
+    sortField: 'hostName',
+    sortOrder: 'ASC',
+    searchTargetFields: ['hostName', 'hostIpAddr', 'hostMac']
   }
   const hostTableQuery = useTableQuery<DhcpHostStats, RequestPayload<unknown>, unknown>({
     useQuery: useGetDhcpHostStatsQuery,
-    defaultPayload: getDhcpHostStatsPayload
+    defaultPayload: getDhcpHostStatsPayload,
+    option: { skip: !!!props.edgeId }
   })
 
   const { dhcpPoolOptions } = useGetDhcpByEdgeIdQuery(
-    { params: { edgeId: serialNumber } },
+    { params: { edgeId: props.edgeId } },
     {
-      skip: !!!serialNumber,
+      skip: !!!props.edgeId,
       selectFromResult: ({ data }) => ({
         dhcpPoolOptions: data?.dhcpPools.map(pool => ({
           key: pool.poolName,
@@ -105,5 +108,3 @@ const Leases = () => {
     </Loader>
   )
 }
-
-export default Leases
