@@ -29,8 +29,8 @@ import {
   UnitPersonaConfig,
   VenueLanPorts
 } from '@acx-ui/rc/utils'
-import { useParams }          from '@acx-ui/react-router-dom'
-import { validationMessages } from '@acx-ui/utils'
+import { useParams }                         from '@acx-ui/react-router-dom'
+import { noDataDisplay, validationMessages } from '@acx-ui/utils'
 
 
 function AccessPointLanPortSelector (props: { venueId: string }) {
@@ -91,6 +91,7 @@ function AccessPointLanPortSelector (props: { venueId: string }) {
         name={'accessAp'}
         children={
           <Select
+            allowClear
             placeholder={$t({ defaultMessage: 'Select...' })}
             onChange={(selected) => {
               form.setFieldValue('ports', [])
@@ -103,7 +104,7 @@ function AccessPointLanPortSelector (props: { venueId: string }) {
         name={'ports'}
         label={$t(
           { defaultMessage: 'Select LAN Ports for ({model})' },
-          { model: selectedModel?.model ?? 'null' }
+          { model: selectedModel?.model ?? noDataDisplay }
         )}
       >
         {selectedModel.lanPorts &&
@@ -169,7 +170,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   }, [propertyConfigsQuery.data])
 
   useEffect(() => {
-    if (visible && unitId && venueId) {
+    if (visible && unitId && venueId && personaGroupId) {
       form.resetFields()
       // console.log('Get Unit by id ', unitId)
       getUnitById({ params: { venueId, unitId } })
@@ -211,7 +212,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
             form.setFieldValue('apName', apName)
             form.setFieldValue('accessAp', accessAp)
             form.setFieldValue('ports', ports?.map(i => i.toString()))
-            form.setFieldValue('vxlan', vni)
+            form.setFieldValue('vxlan', vni ?? noDataDisplay)
           } else {
             form.setFieldValue(['unitPersona', 'vlan'], vlan)
           }
@@ -445,6 +446,9 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
             <Form.Item
               name={['resident', 'name']}
               label={$t({ defaultMessage: 'Resident Name' })}
+              rules={[
+                { required: true }
+              ]}
               children={<Input />}
             />
             <Form.Item

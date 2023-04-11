@@ -2765,9 +2765,14 @@ const defaultPageable: NewTablePageable = {
   unpaged: false
 }
 
-export const mockEnabledPropertyConfig: PropertyConfigs = {
+export const mockEnabledNoNSGPropertyConfig: PropertyConfigs = {
   status: PropertyConfigStatus.ENABLED,
-  personaGroupId: 'persona-group-id-1'
+  personaGroupId: 'persona-group-id-noNSG'
+}
+
+export const mockEnabledNSGPropertyConfig: PropertyConfigs = {
+  status: PropertyConfigStatus.ENABLED,
+  personaGroupId: 'persona-group-id-NSG'
 }
 
 // export const mockPropertyUnitList: NewTableResult<PropertyUnit> = {
@@ -2789,6 +2794,16 @@ export const mockPersonaGroupWithoutNSG: PersonaGroup = {
   id: 'persona-group-id-1',
   name: 'Class A',
   description: '',
+  macRegistrationPoolId: 'mac-id-1',
+  dpskPoolId: 'dpsk-pool-2',
+  propertyId: 'propertyId-100'
+}
+
+export const mockPersonaGroupWithNSG: PersonaGroup = {
+  id: 'persona-group-id-1',
+  name: 'Class A',
+  description: '',
+  nsgId: 'nsg-id-1',
   macRegistrationPoolId: 'mac-id-1',
   dpskPoolId: 'dpsk-pool-2',
   propertyId: 'propertyId-100'
