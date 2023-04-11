@@ -1,6 +1,4 @@
-import { errorMessage, showErrorModal } from 'apps/main/src/errorMiddleware'
-import _                                from 'lodash'
-import { FormattedMessage, useIntl }    from 'react-intl'
+import { useIntl } from 'react-intl'
 
 import {
   Button,
@@ -109,19 +107,13 @@ export const ConvertNonVARMSPButton = () => {
         showActionModal({
           type: 'info',
           title,
-          content: msg,
-          okText: $t({ defaultMessage: 'OK' })
+          content: msg
         })
       } else {
-        const errMessage = errorMessage.SERVER_ERROR
-        showErrorModal({
-          title: $t(errMessage.title),
-          content: <FormattedMessage
-            {...errMessage.content}
-            values={{ br: () => <br /> }}
-          />,
+        showActionModal({
           type: 'error',
-          errors: respData
+          title: $t({ defaultMessage: 'Server Error' }),
+          content: $t({ defaultMessage: 'An internal error has occurred. Please contact support.' })
         })
       }
     } finally {
