@@ -84,6 +84,7 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
   useEffect(() => {
     if (applicationsRule.ruleSettings) {
       setCategory(applicationsRule.ruleSettings.category ?? '')
+      drawerForm.setFieldValue('portMappingOnly', !applicationsRule.ruleSettings.destinationIp)
     }
   }, [applicationsRule.ruleSettings])
 
