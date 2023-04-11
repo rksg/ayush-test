@@ -40,6 +40,7 @@ export * from './persona'
 export * from './radiusClientConfig'
 export * from './msgTemplate'
 export * from './property'
+export * from './googleMaps'
 
 export interface CommonResult {
   requestId: string

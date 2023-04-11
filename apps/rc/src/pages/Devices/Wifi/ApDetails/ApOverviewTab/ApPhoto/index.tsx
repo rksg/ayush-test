@@ -19,7 +19,7 @@ import { StyledSpace, RoundIconDiv, PhotoDiv, ArrowsOutIcon, PhotoIcon, DotsDiv 
 
 export function ApPhoto () {
   const [imageUrl, setImageUrl] = useState('')
-  const [defaultImageUrl, setDefaultImageUrl] = useState('')
+  const [defaultImageUrl, setDefaultImageUrl] = useState(PlaceHolder)
   const [tempUrl, setTempUrl] = useState('')
   const [visible, setVisible] = useState(false)
   const [drawerVisible, setDrawerVisible] = useState(false)

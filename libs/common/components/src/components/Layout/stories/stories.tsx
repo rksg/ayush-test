@@ -1,6 +1,6 @@
-import { storiesOf }     from '@storybook/react'
-import { Space, Badge }  from 'antd'
-import { BrowserRouter } from 'react-router-dom'
+import { storiesOf }    from '@storybook/react'
+import { Space, Badge } from 'antd'
+import { HashRouter }   from 'react-router-dom'
 
 import {
   WorldSolid,
@@ -22,7 +22,7 @@ import menuConfig from './menuConfig'
 storiesOf('Layout', module).add('Basic', () => (
   // fix for storybook only
   <div style={{ margin: '-16px' }}>
-    <BrowserRouter>
+    <HashRouter>
       <Layout
         menuConfig={menuConfig}
         leftHeaderContent={
@@ -53,6 +53,6 @@ storiesOf('Layout', module).add('Basic', () => (
           </Space>
         }
       />
-    </BrowserRouter>
+    </HashRouter>
   </div>
 ))

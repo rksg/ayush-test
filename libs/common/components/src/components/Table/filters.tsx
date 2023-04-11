@@ -64,14 +64,14 @@ export function renderSearch <RecordType> (
   searchables: TableColumn<RecordType, 'text'>[],
   searchValue: string,
   setSearchValue: Function,
-  hasGroupBy?: Boolean
+  width: number
 ): React.ReactNode {
   return <UI.SearchInput
     onChange={e => setSearchValue(e.target.value)}
     placeholder={intl.$t({ defaultMessage: 'Search {searchables}' }, {
       searchables: searchables.map(column => column.title).join(', ')
     })}
-    style={{ width: hasGroupBy ? 200 : 292 }}
+    style={{ width }}
     value={searchValue}
     allowClear
   />
@@ -82,7 +82,8 @@ export function renderFilter <RecordType> (
   dataSource: readonly RecordType[] | undefined,
   filterValues: Filter,
   setFilterValues: Function,
-  enableApiFilter: boolean
+  enableApiFilter: boolean,
+  width: number
 ) {
   const key = (column.filterKey || column.dataIndex) as keyof RecordType
   const addToFilter = (data: string[], value: string) => {
@@ -102,7 +103,7 @@ export function renderFilter <RecordType> (
         }
         addToFilter(data, datum[key] as unknown as string)
         return data
-      }, []).sort().map(v => ({ key: v, value: v }))
+      }, []).sort().map(v => ({ key: v, value: v, label: v }))
       : []
 
   return <UI.FilterSelect
@@ -125,22 +126,23 @@ export function renderFilter <RecordType> (
     placeholder={column.title as string}
     showArrow
     allowClear
-    style={{ width: 200 }}
+    style={{ width }}
   >
     {options?.map((option, index) =>
       <Select.Option
         value={option.key}
         key={option.key ?? index}
         data-testid={`option-${option.key}`}
-        children={option.value}
+        title={option.value}
+        children={option.label ?? option.value}
       />
     )}
   </UI.FilterSelect>
 }
 
-export const filterOption = (
+export function filterOption (
   input: string,
   option: DefaultOptionType | BaseOptionType | undefined
-) => {
-  return option?.children?.toLowerCase().includes(input.toLowerCase())
+) {
+  return option?.title?.toLowerCase().includes(input.toLowerCase())
 }
