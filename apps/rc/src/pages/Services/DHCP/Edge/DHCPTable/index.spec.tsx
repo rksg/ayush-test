@@ -1,10 +1,17 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeDhcpUrls, getServiceDetailsLink, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
-import { Provider }                                                                                from '@acx-ui/store'
-import { mockServer, render, screen, within }                                                      from '@acx-ui/test-utils'
+import {
+  EdgeDhcpUrls,
+  EdgeUrlsInfo,
+  getServiceDetailsLink,
+  getServiceRoutePath,
+  ServiceOperation, ServiceType
+} from '@acx-ui/rc/utils'
+import { Provider }                           from '@acx-ui/store'
+import { mockServer, render, screen, within } from '@acx-ui/test-utils'
 
+import { mockEdgeList }      from '../../../../Devices/Edge/__tests__/fixtures'
 import { mockDhcpStatsData } from '../__tests__/fixtures'
 
 import DHCPTable from '.'
@@ -38,6 +45,10 @@ describe('EdgeDhcpTable', () => {
       rest.delete(
         EdgeDhcpUrls.bulkDeleteDhcpServices.url,
         (req, res, ctx) => res(ctx.status(202))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeList.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeList))
       )
     )
   })
