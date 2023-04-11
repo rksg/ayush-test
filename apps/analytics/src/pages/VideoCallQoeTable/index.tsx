@@ -7,6 +7,7 @@ import { Table, TableProps, Tooltip, TrendPill } from '@acx-ui/components'
 import { Loader, showToast }                     from '@acx-ui/components'
 import { DateFormatEnum, formatter }             from '@acx-ui/formatter'
 import { TenantLink }                            from '@acx-ui/react-router-dom'
+import { TimeStamp }                             from '@acx-ui/types'
 
 import { useVideoCallQoeTestsQuery } from '../VideoCallQoe/services'
 
@@ -19,7 +20,7 @@ export function VideoCallQoeTable () {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const queryResults = useVideoCallQoeTestsQuery(null)
   const allCallQoeTests = queryResults.data?.getAllCallQoeTests
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   type Meeting = {
     id: number,
     name: string
@@ -29,10 +30,12 @@ export function VideoCallQoeTable () {
     joinUrl: string,
     participantCount: number,
     mos: number,
-    createdTime: string,
-    startTime: string
+    createdTime: TimeStamp,
+    startTime: TimeStamp,
+    endTime: TimeStamp
   }
-  const meetingList: any[] = []
+
+  const meetingList: Meeting[] = []
   allCallQoeTests?.forEach((qoeTest)=> {
     const { name, meetings } = qoeTest
     meetings.forEach(meeting => {
@@ -45,11 +48,13 @@ export function VideoCallQoeTable () {
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
       key: 'name',
-      render: (value: unknown) => (
-        <TenantLink to={'/devices'}>
-          {value as string}
-        </TenantLink>
-      ),
+      render: (value: unknown,{ id }:{ id:number }) => {
+        return(
+          <TenantLink to={`/serviceValidation/videoCallQoe/${id}`}>
+            {value as string}
+          </TenantLink>
+        )
+      },
       sorter: { compare: sortProp('name', defaultSort) },
       searchable: true
     },
