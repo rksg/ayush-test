@@ -1,5 +1,6 @@
 import { rest } from 'msw'
 
+import { useIsSplitOn }     from '@acx-ui/feature-toggle'
 import {
   getPolicyDetailsLink, getPolicyRoutePath, MacRegListUrlsInfo,
   PolicyOperation,
@@ -37,6 +38,7 @@ describe('AdaptivePolicySetTable', () => {
   const tablePath = '/:tenantId/' + getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.LIST })
 
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
       rest.get(
         RulesManagementUrlsInfo.getPolicySets.url,

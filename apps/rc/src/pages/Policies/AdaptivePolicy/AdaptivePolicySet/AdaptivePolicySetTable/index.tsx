@@ -27,7 +27,7 @@ export default function AdaptivePolicySetTable () {
   const tenantBasePath: Path = useTenantLink('')
 
   const [prioritizedPoliciesMap, setPrioritizedPoliciesMap] = useState(new Map())
-  const [assignedMacPoolList, setAssignedMacPoolList] = useState([] as string [])
+  const [assignedMacPools, setAssignedMacPools] = useState(new Map())
 
   const isMacRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
 
@@ -54,8 +54,16 @@ export default function AdaptivePolicySetTable () {
     if(getMacListLoading)
       return
     if(macRegList) {
-      const policySets = macRegList.data.map(item => item.policySetId ?? '')
-      setAssignedMacPoolList(Array.from(new Set(policySets)))
+      const poolsMap = new Map()
+      macRegList.data.forEach(item => {
+        const setId = item.policySetId
+        if(poolsMap.has(setId)) {
+          poolsMap.set(setId, poolsMap.get(setId).concat(item.name))
+        }else {
+          poolsMap.set(setId, Array.of(item.name))
+        }
+      })
+      setAssignedMacPools(poolsMap)
     }
   }, [macRegList])
 
@@ -112,6 +120,17 @@ export default function AdaptivePolicySetTable () {
           return policies.length === 0 ? '0' :
             <SimpleListTooltip items={policies} displayText={policies.length}/>
         }
+      },
+      {
+        title: $t({ defaultMessage: 'Scope' }),
+        key: 'scope',
+        dataIndex: 'scope',
+        align: 'center',
+        render: (_, row) => {
+          const pools: string [] = assignedMacPools.get(row.id) ?? []
+          return pools.length === 0 ? '0' :
+            <SimpleListTooltip items={pools} displayText={pools.length}/>
+        }
       }
     ]
     return columns
@@ -135,7 +154,7 @@ export default function AdaptivePolicySetTable () {
     label: $t({ defaultMessage: 'Delete' }),
     disabled: (([selectedItem]) =>
       (selectedItem && selectedItem.id)
-        ? assignedMacPoolList.findIndex(item => item === selectedItem.id) !== -1 : false
+        ? assignedMacPools.has(selectedItem.id) : false
     ),
     onClick: ([{ name, id }], clearSelection) => {
       showActionModal({
