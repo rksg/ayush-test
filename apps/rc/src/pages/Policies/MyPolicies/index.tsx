@@ -180,8 +180,9 @@ function useCardData (): CardDataProps[] {
     },
     {
       type: PolicyType.ADAPTIVE_POLICY,
-      category: RadioCardCategory.WIFI,
-      totalCount: useAdaptivePolicyListQuery({ params, payload: {} }).data?.totalCount,
+      categories: [RadioCardCategory.WIFI],
+      // eslint-disable-next-line max-len
+      totalCount: useAdaptivePolicyListQuery({ params, payload: {} }, { skip: !adaptivePolicyEnabled || !attributeGroupEnabled }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST })),
       disabled: !adaptivePolicyEnabled || !attributeGroupEnabled
