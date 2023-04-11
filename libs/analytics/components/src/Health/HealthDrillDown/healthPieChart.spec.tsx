@@ -10,10 +10,10 @@ import { api }                                                                  
 
 
 describe('HealthPieChart', () => {
-  afterEach(() => {
-    store.dispatch(api.util.resetApiState())
-    cleanup()
-  })
+
+  beforeEach(() => store.dispatch(api.util.resetApiState()))
+
+  afterEach(() => cleanup())
 
   const filters: AnalyticsFilter = {
     startDate: '01-03-2023',
