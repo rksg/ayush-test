@@ -2,6 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { Button, Loader, PageHeader, SuspenseBoundary } from '@acx-ui/components'
 import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
+import { TenantLink }                                   from '@acx-ui/react-router-dom'
 
 import { useVideoCallQoeTestsQuery } from './services'
 
@@ -12,9 +13,9 @@ function VideoCallQoeListPage () {
   const queryResults = useVideoCallQoeTestsQuery(null)
   const noOfTestCalls = queryResults.data?.getAllCallQoeTests.length
 
-  if (!useIsSplitOn(Features.VIDEO_CALL_QOE)) {
-    return <span>{ $t({ defaultMessage: 'Video Call QoE is not enabled' }) }</span>
-  }
+  // if (!useIsSplitOn(Features.VIDEO_CALL_QOE)) {
+  //   return <span>{ $t({ defaultMessage: 'Video Call QoE is not enabled' }) }</span>
+  // }
 
   return (
     <PageHeader
@@ -23,7 +24,10 @@ function VideoCallQoeListPage () {
         {$t({ defaultMessage: 'Total Test Calls:' })} {noOfTestCalls}
       </Loader>}
       extra={[
-        <Button type='primary'>{$t({ defaultMessage: 'Create Test Call' })}</Button>
+        <TenantLink to='/serviceValidation/videoCallQoe/add'>
+          <Button type='primary'>{$t({ defaultMessage: 'Create Test Call' })}</Button>
+        </TenantLink>
+
       ]} />
   )
 }

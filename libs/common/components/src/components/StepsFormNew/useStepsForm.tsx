@@ -172,7 +172,7 @@ function useStepsFormNew <T> ({
     />,
     // TODO:
     // - handle disable when validation not passed
-    submit: formConfig.current < steps.length - 1
+    submit: labels.submit.length === 0? null: formConfig.current < steps.length - 1
       ? <Button
         type='secondary'
         loading={loading}

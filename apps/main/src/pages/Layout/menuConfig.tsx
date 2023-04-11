@@ -104,7 +104,6 @@ export function useMenuConfig () {
         {
           path: '/serviceValidation/videoCallQoe',
           name: $t({ defaultMessage: 'Video Call QoE' }),
-          disabled: !showVideoCallQoe
         }
       ],
       disabled: !showSV
