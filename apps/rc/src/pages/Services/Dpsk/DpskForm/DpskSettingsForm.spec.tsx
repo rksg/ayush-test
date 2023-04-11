@@ -59,7 +59,7 @@ describe('DpskSettingsForm', () => {
   it('should render the cloudpath form items', async () => {
     mockServer.use(
       rest.get(
-        RulesManagementUrlsInfo.getAdaptivePolicySets.url.split('?')[0],
+        RulesManagementUrlsInfo.getPolicySets.url.split('?')[0],
         (req, res, ctx) => res(ctx.json({ ...mockedPolicySet }))
       )
     )
