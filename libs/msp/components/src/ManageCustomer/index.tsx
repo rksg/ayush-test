@@ -17,7 +17,6 @@ import { useIntl } from 'react-intl'
 
 import {
   Button,
-  // GoogleMap,
   PageHeader,
   showToast,
   StepsForm,

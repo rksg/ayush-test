@@ -17,7 +17,6 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import {
-  // GoogleMap,
   PageHeader,
   StepsForm,
   StepsFormInstance,
