@@ -56,7 +56,7 @@ export function ApGroupForm () {
   const [apsOption, setApsOption] = useState([] as TransferItem[])
 
   const { data: apGroupData, isLoading: isApGroupDataLoading } =
-  useGetApGroupQuery({ params: { tenantId, apGroupId } }, { skip: action === 'add' })
+  useGetApGroupQuery({ params: { tenantId, apGroupId } }, { skip: !isEditMode })
 
   const apGroupsListPayload = {
     searchString: '',
@@ -157,7 +157,7 @@ export function ApGroupForm () {
 
   return <>
     <PageHeader
-      title={action === 'add' ? $t({ defaultMessage: 'Add AP Group' }) :
+      title={!isEditMode ? $t({ defaultMessage: 'Add AP Group' }) :
         $t({ defaultMessage: 'Edit AP Group' })}
       breadcrumb={[
         { text: $t({ defaultMessage: 'Access Points' }), link: '/devices/wifi' }
@@ -171,7 +171,7 @@ export function ApGroupForm () {
         pathname: `${basePath.pathname}/wifi`
       })}
       buttonLabel={{
-        submit: action === 'add' ? $t({ defaultMessage: 'Add' }) : $t({ defaultMessage: 'Apply' })
+        submit: !isEditMode ? $t({ defaultMessage: 'Add' }) : $t({ defaultMessage: 'Apply' })
       }}
     >
       <StepsForm.StepForm>
@@ -193,7 +193,7 @@ export function ApGroupForm () {
                 ]}
                 validateFirst
                 hasFeedback
-                children={<Input />}
+                children={<Input disabled={apGroupData?.isDefault} />}
               />
               <Form.Item
                 name='venueId'

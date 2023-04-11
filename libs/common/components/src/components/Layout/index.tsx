@@ -18,12 +18,17 @@ import { hasRoles }                               from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
+export enum IsActiveCheck {
+  STARTS_WITH_URI = 'STARTS_WITH_URI',
+  IGNORE_ACTIVE_CHECK = 'IGNORE_ACTIVE_CHECK'
+}
+
 type SideNavProps = {
   uri?: string
   tenantType?: TenantType
   activeIcon?: React.FC
   inactiveIcon?: React.FC
-  isActivePattern?: string
+  isActiveCheck?: IsActiveCheck | RegExp
 }
 
 type MenuItemType = Omit<RcMenuItemType, 'key' | 'label'> & SideNavProps & {
@@ -57,8 +62,6 @@ export interface LayoutProps {
   content: React.ReactNode;
 }
 
-export const IGNORE_ACTIVE_PATTERN = 'ignoreActivePattern'
-
 function useActiveUri () {
   const { pathname } = useLocation()
   const chunks = pathname.split('/')
@@ -77,14 +80,19 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
   // needed for Chrome to ensure only single submenu opened
   const [openKeys, setOpenKeys] = useState<string[]>([])
 
-  const getActivePatterns = (item: ItemType): (string | undefined)[] => {
+  const getActivePatterns = (item: ItemType): RegExp[] => {
     if (isMenuItemGroupType(item) || isSubMenuType(item)) {
-      return item.children?.flatMap(item => getActivePatterns(item)) || []
+      return item.children!.flatMap(item => getActivePatterns(item))
     }
-    if (item?.isActivePattern === IGNORE_ACTIVE_PATTERN) {
-      return []
+    const isActiveCheck = item?.isActiveCheck || IsActiveCheck.STARTS_WITH_URI
+    switch (isActiveCheck) {
+      case IsActiveCheck.STARTS_WITH_URI:
+        return [new RegExp(`^${item?.uri}`)]
+      case IsActiveCheck.IGNORE_ACTIVE_CHECK:
+        return []
+      default:
+        return [isActiveCheck]
     }
-    return [item?.isActivePattern || item?.uri]
   }
 
   const getMenuItem = (item: LayoutProps['menuConfig'][number], key: string): AntItemType => {
@@ -102,10 +110,10 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
     }
 
     const { uri, tenantType, activeIcon, inactiveIcon, ...rest } = item
-    delete rest.isActivePattern
+    delete rest.isActiveCheck
 
     const activePatterns = getActivePatterns(item)
-    const isActive = activePatterns.some(pattern => activeUri.match(new RegExp(`^${pattern}`)))
+    const isActive = activePatterns.some(pattern => activeUri.match(pattern))
     const IconComponent = isActive ? activeIcon ?? inactiveIcon : inactiveIcon
     const content = <>
       {IconComponent && <UI.MenuIcon children={<IconComponent />} />}
@@ -116,7 +124,10 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
       className: Boolean(isActive) ? 'menu-active' : undefined,
       key: key,
       label: uri
-        ? <TenantNavLink to={uri} tenantType={tenantType}>{content}</TenantNavLink>
+        ? <TenantNavLink
+          to={uri}
+          tenantType={tenantType}
+          data-label={item.label}>{content}</TenantNavLink>
         : content,
       ...(isSubMenuType(item) && {
         popupClassName: item.children.some(child => get(child, 'type') === 'group')
@@ -137,6 +148,19 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
   </>
 }
 
+function findDashboard (menuConfig: ItemType[]): ItemType | undefined {
+  let dashboard: ItemType | undefined
+  for (const item of menuConfig) {
+    if (isMenuItemGroupType(item) || isSubMenuType(item)) {
+      dashboard = findDashboard(item.children!)
+      return dashboard
+    }
+    dashboard = (item?.uri && item.uri.startsWith('/dashboard')) ? item : undefined
+    if (dashboard) break
+  }
+  return dashboard
+}
+
 export function Layout ({
   menuConfig,
   rightHeaderContent,
@@ -149,7 +173,7 @@ export function Layout ({
 
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const indexPath = isGuestManager ? '/users/guestsManager' : '/dashboard'
-  const dashboard = menuConfig.find(item => get(item, 'uri') === '/dashboard')
+  const dashboard = findDashboard(menuConfig)
 
   return <UI.Wrapper>
     <ProLayout
