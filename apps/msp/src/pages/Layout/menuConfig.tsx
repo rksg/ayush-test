@@ -50,7 +50,7 @@ export function useMenuConfig (tenantType: string) {
     },
     ...((isVar || isIntegrator || isSupport) ? [] : [{
       uri: '/integrators',
-      label: $t({ defaultMessage: '3rd Party' }),
+      label: $t({ defaultMessage: 'Tech Partners' }),
       tenantType: 'v' as TenantType,
       inactiveIcon: IntegratorsOutlined,
       activeIcon: IntegratorsSolid
