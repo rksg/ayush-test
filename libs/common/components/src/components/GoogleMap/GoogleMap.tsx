@@ -16,17 +16,23 @@ export interface MapProps extends google.maps.MapOptions {
   onIdle?: (map: google.maps.Map) => void;
   children?: React.ReactNode;
   libraries: WrapperProps['libraries']
+  loaderOpts?: {
+    language?: string;
+    region?: string;
+  }
 }
 
 export const GoogleMap = ({
   libraries,
+  loaderOpts,
   ...props
 }: MapProps) => {
   const { $t } = useIntl()
+
   return <Wrapper
     apiKey={get('GOOGLE_MAPS_KEY')}
-    language={'en'}
     libraries={libraries}
+    {...loaderOpts}
     render={(status) => {
       switch (status) {
         case Status.LOADING: return <Loader />
@@ -47,7 +53,7 @@ const Map: React.FC<Omit<MapProps, 'libraries'>> = ({
   const mapRef = useRef<google.maps.Map>()
 
   useEffect(() => {
-    if (!ref.current) return
+    if (!ref.current || !google.maps.Map) return
     mapRef.current = new google.maps.Map(ref.current)
   }, [ref])
 
