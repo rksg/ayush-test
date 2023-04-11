@@ -72,6 +72,8 @@ export { usePreference, countryCodes } from './usePreference'
 export { useUpdateGoogleMapRegion } from './usePreference/useUpdateGoogleMapRegion'
 export type { updatePreferenceProps } from './usePreference'
 export { TunnelProfileForm } from './TunnelProfileForm'
+export { EdgeDhcpPoolTable } from './EdgeDhcpPoolTable'
+export { EdgeDhcpLeaseTable } from './EdgeDhcpLeaseTable'
 
 export * from './services'
 export * from './EdgeStatisticWidget'
