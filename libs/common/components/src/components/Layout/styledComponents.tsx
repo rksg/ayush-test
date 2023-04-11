@@ -3,7 +3,7 @@ import {
   Divider as AntDivider,
   Space
 } from 'antd'
-import styled, { css } from 'styled-components/macro'
+import styled, { css, createGlobalStyle } from 'styled-components/macro'
 
 import { ArrowChevronLeft, ArrowChevronRight } from '@acx-ui/icons'
 
@@ -27,13 +27,11 @@ export const Wrapper = styled.div`
           overflow: visible !important;
           .ant-layout-sider-children {
             .ant-pro-sider-logo {
-              a {
-                min-height: unset;
-              }
-              padding: 0 0 0  var(--acx-sidebar-left-space);
+              a { min-height: unset; }
+              padding: 0 0 0 var(--acx-sidebar-left-space);
               width: var(--acx-sider-width);
               height: var(--acx-header-height);
-              margin-bottom: 13px;
+              margin-bottom: 17px;
               align-items: center;
               justify-content: left;
             }
@@ -57,89 +55,72 @@ export const Wrapper = styled.div`
             border-top-left-radius: 20px;
           }
         }
-        .ant-menu-title-content {
-          a {
-            display: block;
-            color: var(--acx-primary-white);
-          }
+        .ant-menu {
+          border: 0px;
+          height: 100%;
+          display: flex;
+          flex-flow: column;
         }
+        .ant-menu-title-content { transition: all 0.2s !important; }
         .ant-menu-submenu {
+          border-left: 2px solid transparent;
           .ant-menu-submenu-title {
+            height: 48px;
+            line-height: 48px;
+            color: var(--acx-primary-white);
             font-family: var(--acx-accent-brand-font);
             font-size: var(--acx-headline-4-font-size);
             font-weight: var(--acx-headline-4-font-weight);
-            border-left: 2px solid transparent;
             padding-left: var(--acx-sidebar-left-space) !important;
             padding-right: 0;
-            .ant-pro-menu-item {
-              transition: opacity 0.2s ease-in-out;
-            }
-          }
-          &-selected {
-            background-color: transparent;
-            .ant-menu-submenu-title {
-              font-weight: var(--acx-headline-4-font-weight-bold);
-              border-left-color: var(--acx-accents-orange-50);
-              background-color: var(--acx-neutrals-70);
-            }
+            margin: 0;
+            &:hover { cursor: default; }
+            &:active { background: unset; }
           }
           &-open {
-            background-color: var(--acx-neutrals-80);
+            border-left: 2px solid var(--acx-neutrals-70);
+            background-color: var(--acx-neutrals-70);
           }
-          .ant-menu-sub {
-            background-color: var(--acx-neutrals-80);
-            padding-bottom: 4px;
-            .ant-menu-item {
-              height: 32px;
-              margin: auto;
-              display: flex;
-              align-items: center;
-              background-color: var(--acx-neutrals-80);
-              border-left-color: transparent;
-              padding-left: calc(var(--acx-sidebar-left-space) + 2px) !important;
-              padding-right: 0;
-              font-size: var(--acx-headline-5-font-size);
-              font-weight: var(--acx-headline-5-font-weight);
-              opacity: 60%;
-              &-selected {
-                opacity: 100%;
-                font-weight: var(--acx-headline-5-font-weight-semi-bold);
-              }
+          &.menu-active {
+            border-left: 2px solid var(--acx-accents-orange-50);
+            background-color: var(--acx-neutrals-70);
+            .ant-menu-submenu-title {
+              font-weight: var(--acx-headline-4-font-weight-bold);
             }
           }
+          &:last-child { margin-top: auto; }
+          &:only-child { margin-top: unset; }
         }
         .ant-menu-item {
+          height: 48px;
+          line-height: 48px;
           border-left: 2px solid transparent;
           padding-left: var(--acx-sidebar-left-space) !important;
           padding-right: 0;
           font-family: var(--acx-accent-brand-font);
           font-size: var(--acx-headline-4-font-size);
           font-weight: var(--acx-headline-4-font-weight);
-          line-height: 38px;
-          &-disabled {
-            .ant-pro-menu-item-title {
-              color: var(--acx-primary-white);
-              opacity: 0.35;
-            }
-          }
-          &-selected {
-            font-weight: var(--acx-headline-4-font-weight-bold);
-            border-left-color: var(--acx-accents-orange-50);
+          margin: 0;
+          flex-shrink: 0;
+          &:active { background: unset; }
+          &-active {
+            background-color: var(--acx-neutrals-70);
           }
           .ant-menu-title-content {
-            .ant-pro-menu-item-title {
-              transition: opacity 0.2s ease-in-out;
-              vertical-align: middle;
-            }
+            a { color: var(--acx-primary-white); }
+          }
+          &.menu-active {
+            font-weight: var(--acx-headline-4-font-weight-bold);
+            border-left: 2px solid var(--acx-accents-orange-50);
+            background-color: var(--acx-neutrals-70);
           }
           &.ant-pro-sider-collapsed-button {
             border: none;
             box-shadow: none;
           }
-        }
-        .ant-menu-item[data-menu-id$="/placeholder"] {
-          pointer-events: none;
-          height: 10px;
+          &:last-child {
+            margin-top: auto;
+          }
         }
         > div:first-child, .ant-layout-sider {
           flex: 0 0 var(--acx-sider-width) !important;
@@ -158,24 +139,22 @@ export const Wrapper = styled.div`
           min-width: var(--acx-sider-collapsed-width) !important;
           width: var(--acx-sider-collapsed-width) !important;
         }
-        .ant-menu-submenu {
-          &-open {
-            background-color: unset;
-          }
-          &-title {
-            .ant-pro-menu-item {
-              opacity: 0;
-            }
-          }
+        .ant-menu {
+          &.ant-menu-inline-collapsed { width: unset; }
         }
+        .ant-menu-submenu-title {
+          color: transparent;
+        }
+        .ant-menu-title-content { padding-left: 8px; }
         .ant-menu-item {
-          .ant-pro-menu-item-title {
-            opacity: 0;
-          }
-        }
-        .ant-menu-submenu-popup {
-          .ant-menu-sub {
-            background-color: var(--acx-neutrals-80);
+          .ant-menu-title-content {
+            color: transparent;
+            a {
+              display: inline-block;
+              overflow: hidden;
+              white-space: nowrap;
+              color: transparent;
+            }
           }
         }
       }
@@ -197,6 +176,111 @@ export const Wrapper = styled.div`
       margin: 0;
       background-color: var(--acx-primary-white);
     }
+  }
+`
+
+export const MenuGlobalStyle = createGlobalStyle`
+  .ant-tooltip.ant-menu-inline-collapsed-tooltip {
+    .ant-tooltip-inner {
+      font-family: var(--acx-accent-brand-font);
+      font-size: var(--acx-headline-4-font-size);
+      padding: 10px 10px 10px 3px;
+      svg { display: none; }
+    }
+  }
+
+  .ant-menu-vertical.ant-menu-sub,
+  .ant-menu-vertical-left.ant-menu-sub,
+  .ant-menu-vertical-right.ant-menu-sub {
+    min-width: 180px;
+  }
+
+  .ant-menu-submenu-popup {
+    &.layout-group-horizontal .ant-menu {
+      display: flex;
+    }
+    .ant-menu {
+      margin-left: -4px;
+      box-shadow: none;
+      border-radius: 0;
+      background-color: var(--acx-neutrals-70);
+      padding-top: 8px;
+      .ant-menu-item {
+        height: 40px;
+        margin: auto;
+        font-family: var(--acx-accent-brand-font);
+        line-height: var(--acx-headline-5-line-height);
+        font-size: var(--acx-headline-5-font-size);
+        font-weight: var(--acx-headline-5-font-weight);
+        padding: 8px 16px 16px;
+        &:active { background: unset; }
+        &.menu-active > .ant-menu-title-content a {
+          &, &:hover {
+            color: var(--acx-accents-orange-50);
+            font-weight: var(--acx-headline-4-font-weight-bold);
+          }
+        }
+        .ant-menu-title-content {
+          font-family: var(--acx-accent-brand-font);
+          font-size: var(--acx-headline-4-font-size);
+          line-height: var(--acx-headline-4-line-height);
+          font-weight: var(--acx-headline-4-font-weight);
+          color: var(--acx-neutrals-20);
+          a {
+            font-family: var(--acx-accent-brand-font);
+            font-size: var(--acx-headline-4-font-size);
+            line-height: var(--acx-headline-4-line-height);
+            font-weight: var(--acx-headline-4-font-weight);
+            color: var(--acx-neutrals-20);
+            // https://css-tricks.com/bold-on-hover-without-the-layout-shift/
+            display: inline-flex;
+            flex-direction: column;
+            &:after {
+              content: attr(data-label);
+              height: 0;
+              visibility: hidden;
+              overflow: hidden;
+              user-select: none;
+              pointer-events: none;
+              @media speech { display: none; }
+            }
+            &:after, &:hover {
+              color: var(--acx-neutrals-10);
+              font-weight: var(--acx-headline-4-font-weight-bold);
+            }
+          }
+        }
+        &-selected { background-color: unset; }
+      }
+      .ant-menu-item-group {
+        min-width: 180px;
+        margin-top: -8px; // cancel off 8px top padding of .ant-menu
+        &-title {
+          height: 28px;
+          font-family: var(--acx-neutral-brand-font);
+          font-size: var(--acx-subtitle-5-font-size);
+          line-height: var(--acx-subtitle-5-line-height);
+          font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
+          color: var(--acx-neutrals-20);
+          opacity: 0.6;
+          padding: 8px 16px 4px;
+        }
+      }
+    }
+  }
+
+`
+
+export const MenuIcon = styled.span`
+  margin-right: 8px;
+  color: var(--acx-primary-white) !important;
+  > svg {
+    height: 20px;
+    width: 20px;
+    vertical-align: middle;
+    margin-top: -3px;
+
+    .invert { color: var(--acx-primary-black); }
   }
 `
 
@@ -244,38 +328,6 @@ export const RightHeaderContentWrapper = styled.div`
   align-items: center;
   gap: var(--acx-header-button-margin);
   height: 100%;
-
-  .ant-tooltip-disabled-compatible-wrapper {
-    display: flex !important;
-    button[disabled] {
-      background-color: var(--acx-neutrals-70);
-    }
-  }
-`
-
-const MenuIcon = styled.span`
-  margin-right: 8px;
-  color: var(--acx-primary-white) !important;
-  > svg {
-    vertical-align: middle;
-    height: 20px;
-    width: 20px;
-  }
-`
-export const MenuIconOutlined = styled(MenuIcon)`
-  > svg {
-    path {
-      stroke: var(--acx-primary-white);
-    }
-    circle {
-      stroke: var(--acx-primary-white);
-    }
-  }
-`
-export const MenuIconSolid = styled(MenuIcon)`
-  > svg {
-    stroke: var(--acx-neutrals-70);
-  }
 `
 
 const arrowStyle = css`

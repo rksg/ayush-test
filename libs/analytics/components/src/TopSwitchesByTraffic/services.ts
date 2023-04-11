@@ -37,7 +37,8 @@ export const api = dataApi.injectEndpoints({
                   name,
                   mac,
                   Received: totalTraffic(direction: "rx"),
-                  Transmitted: totalTraffic(direction: "tx")
+                  Transmitted: totalTraffic(direction: "tx"),
+                  serial
                 }
               }
             }

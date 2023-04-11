@@ -2,12 +2,13 @@ import { useState } from 'react'
 
 import {
   Form,
+  Input,
   Typography
 } from 'antd'
 import { useIntl } from 'react-intl'
 
 import {
-  StepsForm,
+  StepsFormNew,
   TableProps,
   useStepFormContext
 } from '@acx-ui/components'
@@ -25,7 +26,7 @@ export function AccessSwitchForm () {
   const { form } = useStepFormContext<NetworkSegmentationGroupFormData>()
 
   const [open, setOpen] = useState(false)
-  const [selected, setSelected] = useState<AccessSwitch[]>()
+  const [selected, setSelected] = useState<AccessSwitch[]>([])
 
   const accessSwitchInfos = useWatch('accessSwitchInfos', form)
   const venueId = useWatch('venueId', form)
@@ -35,7 +36,7 @@ export function AccessSwitchForm () {
   }
 
   const onSave = (values: Partial<AccessSwitch>) => {
-    if (!selected || !accessSwitchInfos) return
+    if (!accessSwitchInfos) return
 
     const newList = accessSwitchInfos.map(as => {
       const isSelected = selected.map(item => item.id).includes(as.id)
@@ -44,7 +45,7 @@ export function AccessSwitchForm () {
       }
       return as
     })
-    setSelected(undefined)
+    setSelected([])
     setOpen(false)
 
     form.setFieldValue('accessSwitchInfos', newList)
@@ -61,16 +62,19 @@ export function AccessSwitchForm () {
   ]
 
   return (<>
-    <StepsForm.Title>{$t({ defaultMessage: 'Access Switch Settings' })}</StepsForm.Title>
+    <StepsFormNew.Title>{$t({ defaultMessage: 'Access Switch Settings' })}</StepsFormNew.Title>
     <Typography.Paragraph>
       {$t({ defaultMessage: 'Set the configuration on these access switches:' })}
     </Typography.Paragraph>
     <AccessSwitchTable rowActions={rowActions}
-      rowSelection={{ type: 'radio', selectedRowKeys: selected? selected.map(as=>as.id) : [] }}
+      rowSelection={{ type: 'checkbox', selectedRowKeys: selected.map(as=>as.id) }}
       dataSource={accessSwitchInfos} />
     <Form.Item name='accessSwitchInfos'
       rules={[{
         validator: (_, asList) => {
+          if (!asList || asList.length === 0) {
+            return Promise.resolve()
+          }
           const checkFn = (as: AccessSwitch) =>
             as.vlanId && as.uplinkInfo?.uplinkId && as.webAuthPageType
           return asList.every(checkFn) ? Promise.resolve() :
@@ -78,7 +82,7 @@ export function AccessSwitchForm () {
             'Please fill out the configuration for all of the access switches.' })))
         }
       }]}
-    />
+      children={<Input type='hidden'/>} />
     <AccessSwitchDrawer
       open={open}
       editRecords={selected}

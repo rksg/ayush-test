@@ -59,7 +59,7 @@ const handleStatusColor = (status: DeviceConnectionStatus) => {
 
 export const defaultSwitchPayload = {
   searchString: '',
-  searchTargetFields: ['name', 'model', 'switchMac', 'ipAddress'],
+  searchTargetFields: ['name', 'model', 'switchMac', 'ipAddress', 'serialNumber'],
   fields: [
     'check-all','name','deviceStatus','model','activeSerial','switchMac','ipAddress','venueName','uptime',
     'clientCount','cog','id','serialNumber','isStack','formStacking','venueId','switchName','configReady',
@@ -170,7 +170,8 @@ export function SwitchTable (props : SwitchTableProps) {
       title: $t({ defaultMessage: 'Serial Number' }),
       dataIndex: 'activeSerial',
       sorter: true,
-      show: !!showAllColumns
+      show: !!showAllColumns,
+      searchable: searchable
     }, {
       key: 'switchMac',
       title: $t({ defaultMessage: 'MAC Address' }),
@@ -300,6 +301,7 @@ export function SwitchTable (props : SwitchTableProps) {
   return <Loader states={[tableQuery]}>
     <Table<SwitchRow>
       {...props}
+      settingsId='switch-table'
       columns={columns}
       dataSource={tableData}
       pagination={tableQuery.pagination}

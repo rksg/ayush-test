@@ -6,9 +6,10 @@ import { Drawer, LayoutUI, Loader, Table, TableProps } from '@acx-ui/components'
 import { CaretDownSolid }                              from '@acx-ui/icons'
 import {
   useMspCustomerListDropdownQuery,
+  useIntegratorCustomerListDropdownQuery,
   useVarCustomerListDropdownQuery,
   useSupportCustomerListDropdownQuery,
-  useGetTenantDetailQuery,
+  useGetTenantDetailsQuery,
   useDelegateToMspEcPath
 }  from '@acx-ui/rc/services'
 import { MspEc, useTableQuery, VarCustomer } from '@acx-ui/rc/utils'
@@ -24,6 +25,7 @@ enum DelegationType {
   SUPPORT_REC = 'SUPPORT_REC',
   SUPPORT_MSP_EC = 'SUPPORT_MSP_EC',
   MSP_INTEGRATOR = 'MSP_INTEGRATOR',
+  INTEGRATER_MSPEC = 'INTEGRATER_MSPEC'
 }
 
 export function MspEcDropdownList () {
@@ -34,7 +36,7 @@ export function MspEcDropdownList () {
   const [delegationType, setDelegationType] = useState('')
 
   const params = useParams()
-  const { data: tenantDetail } = useGetTenantDetailQuery({ params })
+  const { data: tenantDetail } = useGetTenantDetailsQuery({ params })
   const { delegateToMspEcPath } = useDelegateToMspEcPath()
 
   // user profile for tenant from jwt token
@@ -56,8 +58,13 @@ export function MspEcDropdownList () {
       else
         setDelegationType(DelegationType.SUPPORT_REC)
     } else {
-      if (tenantType === AccountType.MSP_EC)
-        setDelegationType(DelegationType.MSP_EC)
+      if (tenantType === AccountType.MSP_EC) {
+        if (getJwtTokenPayload().tenantType === AccountType.MSP_INTEGRATOR ||
+            getJwtTokenPayload().tenantType === AccountType.MSP_INSTALLER)
+          setDelegationType(DelegationType.INTEGRATER_MSPEC)
+        else
+          setDelegationType(DelegationType.MSP_EC)
+      }
       else if ( tenantType === AccountType.MSP_INSTALLER ||
                 tenantType === AccountType.MSP_INTEGRATOR)
         setDelegationType(DelegationType.MSP_INTEGRATOR)
@@ -69,8 +76,24 @@ export function MspEcDropdownList () {
   const mspEcPayload = {
     searchString: '',
     filters: {
-      mspAdmins: [userProfile.adminId],
+      mspAdmins: [userProfile?.adminId],
       tenantType: [AccountType.MSP_EC] },
+    fields: [
+      'id',
+      'name',
+      'tenantType',
+      'status',
+      'streetAddress'
+    ],
+    searchTargetFields: ['name']
+  }
+
+  const integratorMspEcPayload = {
+    searchString: '',
+    filters: {
+      // mspAdmins: [userProfile.adminId],
+      mspTenantId: [''],
+      tenantType: [AccountType.MSP_INSTALLER, AccountType.MSP_INTEGRATOR] },
     fields: [
       'id',
       'name',
@@ -84,7 +107,7 @@ export function MspEcDropdownList () {
   const integratorPayload = {
     searchString: '',
     filters: {
-      mspAdmins: [userProfile.adminId],
+      mspAdmins: [userProfile?.adminId],
       tenantType: [AccountType.MSP_INSTALLER, AccountType.MSP_INTEGRATOR] },
     fields: [
       'id',
@@ -148,12 +171,12 @@ export function MspEcDropdownList () {
       disable: true,
       defaultSortOrder: 'ascend',
       onCell: (data) => {
-        return {
+        return (data.status === 'Active') ? {
           onClick: () => {
             setVisible(false)
             delegateToMspEcPath(data.id)
           }
-        }
+        } : {}
       },
       render: function (data, row) {
         const to = `${getBasePath()}/t/${row.id}`
@@ -216,6 +239,29 @@ export function MspEcDropdownList () {
     option: { skip: delegationType !== DelegationType.MSP_EC }
   })
 
+  const tableQueryIntegratorMspEc = useTableQuery({
+    useQuery: useIntegratorCustomerListDropdownQuery,
+    apiParams: { tenantId: getJwtTokenPayload().tenantId },
+    defaultPayload: integratorMspEcPayload,
+    search: {
+      searchTargetFields: integratorMspEcPayload.searchTargetFields as string[]
+    },
+    option: { skip: delegationType !== DelegationType.INTEGRATER_MSPEC }
+  })
+
+  useEffect(()=>{
+    if (tenantDetail?.mspEc?.parentMspId) {
+      tableQueryIntegratorMspEc.setPayload({
+        ...tableQueryIntegratorMspEc.payload,
+        filters: {
+          // mspAdmins: [userProfile.adminId],
+          ...{ mspTenantId: [ tenantDetail?.mspEc?.parentMspId ] },
+          tenantType: [AccountType.MSP_INSTALLER, AccountType.MSP_INTEGRATOR]
+        }
+      })
+    }
+  },[tenantDetail])
+
   const tableQueryIntegrator = useTableQuery({
     useQuery: useMspCustomerListDropdownQuery,
     apiParams: { tenantId: getJwtTokenPayload().tenantId },
@@ -264,6 +310,7 @@ export function MspEcDropdownList () {
     return <Loader states={[tableQueryMspEc]}>
 
       <Table
+        settingsId='msp-ec-dropdown-table'
         columns={customerColumns}
         dataSource={tableQueryMspEc.data?.data.filter(mspEc => mspEc.id !== params.tenantId)}
         pagination={tableQueryMspEc.pagination}
@@ -274,10 +321,27 @@ export function MspEcDropdownList () {
     </Loader>
   }
 
+  const ContentIntegratorMspEc = () => {
+    return <Loader states={[tableQueryIntegratorMspEc]}>
+
+      <Table
+        settingsId='integrator-mspec-dropdown-table'
+        columns={customerColumns}
+        dataSource={tableQueryIntegratorMspEc.data?.data.filter(mspEc =>
+          mspEc.id !== params.tenantId)}
+        pagination={tableQueryIntegratorMspEc.pagination}
+        onChange={tableQueryIntegratorMspEc.handleTableChange}
+        onFilterChange={tableQueryIntegratorMspEc.handleFilterChange}
+        rowKey='id'
+      />
+    </Loader>
+  }
+
   const ContentIntegrator = () => {
     return <Loader states={[tableQueryIntegrator]}>
 
       <Table
+        settingsId='integrator-dropdown-table'
         columns={customerColumns}
         dataSource={tableQueryIntegrator.data?.data.filter(mspEc => mspEc.id !== params.tenantId)}
         pagination={tableQueryIntegrator.pagination}
@@ -292,6 +356,7 @@ export function MspEcDropdownList () {
     return <Loader states={[tableQueryVarRec]}>
 
       <Table
+        settingsId='var-dropdown-table'
         columns={supportColumns}
         dataSource={tableQueryVarRec.data?.data.filter(cus => cus.tenantId !== params.tenantId)}
         pagination={tableQueryVarRec.pagination}
@@ -320,6 +385,7 @@ export function MspEcDropdownList () {
     return <Loader states={[tableQuerySupportEc]}>
 
       <Table
+        settingsId='support-ec-dropdown-table'
         columns={customerColumns}
         dataSource={tableQuerySupportEc.data?.data.filter(mspEc => mspEc.id !== params.tenantId)}
         pagination={tableQuerySupportEc.pagination}
@@ -342,6 +408,8 @@ export function MspEcDropdownList () {
     contentx = ContentVar()
   } else if (delegationType === DelegationType.MSP_INTEGRATOR) {
     contentx = ContentIntegrator()
+  } else if (delegationType === DelegationType.INTEGRATER_MSPEC) {
+    contentx = ContentIntegratorMspEc()
   }
 
   return (

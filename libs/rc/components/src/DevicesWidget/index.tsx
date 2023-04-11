@@ -9,6 +9,7 @@ import type { DonutChartData }           from '@acx-ui/components'
 import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
 import { ChartData }                     from '@acx-ui/rc/utils'
 import { TenantLink, useNavigateToPath } from '@acx-ui/react-router-dom'
+import { filterByAccess }                from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
@@ -96,9 +97,9 @@ export function DevicesWidgetv2 (props: {
                     </TenantLink>
                   </Space>
                   : <UI.LinkContainer style={{ height: height/2 - 30 }}>
-                    <TenantLink to={'/devices/wifi/add'}>
+                    {filterByAccess([<TenantLink to={'/devices/wifi/add'}>
                       {$t({ defaultMessage: 'Add Access Point' })}
-                    </TenantLink>
+                    </TenantLink>])}
                   </UI.LinkContainer>
                 }
               </GridCol>
@@ -128,9 +129,9 @@ export function DevicesWidgetv2 (props: {
                     </TenantLink>
                   </Space>
                   : <UI.LinkContainer style={{ height: (height/2) - 30 }}>
-                    <TenantLink to={'/devices/switch/add'}>
+                    {filterByAccess([<TenantLink to={'/devices/switch/add'}>
                       {$t({ defaultMessage: 'Add Switch' })}
-                    </TenantLink>
+                    </TenantLink>])}
                   </UI.LinkContainer>
                 }
               </GridCol>
