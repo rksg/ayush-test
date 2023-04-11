@@ -697,7 +697,7 @@ export interface Node {
     symbolOffset?: Array<number>;
 	status?: DeviceStatus;
 	label?: string;
-	cloudport?: string;
+	cloudPort?: string;
 }
 
 export interface UINode {
