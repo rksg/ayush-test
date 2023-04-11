@@ -10,6 +10,7 @@ import React, {
 import { get }                        from 'lodash'
 import { MessageDescriptor, useIntl } from 'react-intl'
 
+import { NoData }    from '@acx-ui/components'
 import { formatter } from '@acx-ui/formatter'
 
 
@@ -68,7 +69,6 @@ export function FunnelChart ({
   valueLabel: string;
 }) {
   const [parentNode, ref] = useGetNode()
-  const { $t } = useIntl()
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
   const onClick = (name: Stages) => {
     onSelectStage(name)
@@ -127,12 +127,12 @@ export function FunnelChart ({
       padding={chartPadding}
       ref={ref as unknown as React.RefObject<HTMLDivElement>}>
       {!enhancedStages.length ? (
-        <div>{$t({ defaultMessage: 'No data' })}</div>
+        <NoData/>
       ) : (
         [
           <StageList key={1}>
             {enhancedStages.map((stage) => (
-              <Stage role={stage.name} {...stage} />
+              <Stage role={stage.name} {...stage} label={stage.name}/>
             ))}
           </StageList>,
           <Labels

@@ -1,5 +1,7 @@
 import styled from 'styled-components/macro'
 
+import { GridRow } from '@acx-ui/components'
+
 import { EnhancedStage } from './config'
 
 export const Title = styled.div`
@@ -73,4 +75,13 @@ export const Pin = styled.div<{ pinPosition : string, dir: string,color : string
 export const TableHeading = styled.span`
   padding-bottom : 10px;
   font-size: 12px;
+  `
+export const DrillDownRow = styled(GridRow)`
+  margin-top: 25px;
+  margin-left: 0px !important;
+  margin-right: 0px !important;
+  border-radius: 8px;
+  padding: 12px 16px;
+  border: 1px solid var(--acx-neutrals-20);
+  box-shadow: 0px 2px 4px rgba(51, 51, 51, 0.08);
 `

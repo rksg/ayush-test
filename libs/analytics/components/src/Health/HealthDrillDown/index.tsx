@@ -15,13 +15,13 @@ import {
   getFormattedToFunnel,
   DrilldownSelection,
   CONNECTIONFAILURE,
-  valueFormatter,
   TTC
+
 } from './config'
 import { FunnelChart }                                       from './funnelChart'
 import { ImpactedClientsTable }                              from './impactedClientTable'
 import { useTtcDrilldownQuery, useConnectionDrilldownQuery } from './services'
-import { Title }                                             from './styledComponents'
+import { Title, DrillDownRow }                               from './styledComponents'
 
 const HealthDrillDown = (props: {
   filters: AnalyticsFilter;
@@ -97,7 +97,7 @@ const HealthDrillDown = (props: {
   const funnelChartData =
     drilldownSelection === CONNECTIONFAILURE ? connectionFailureResults : ttcResults
   return drilldownSelection ? (
-    <GridRow style={{ marginTop: 25 }}>
+    <DrillDownRow>
       <GridCol col={{ span: 24 }}>
         <GridRow>
           <GridCol col={{ span: 12 }}>
@@ -120,9 +120,9 @@ const HealthDrillDown = (props: {
             colors={colors}
             selectedStage={selectedStage}
             onSelectStage={(stage: Stages) => setSelectedStage(stage)}
-            valueFormatter={
-              drilldownSelection === CONNECTIONFAILURE ? formatter('countFormat') : valueFormatter
-            }
+            valueFormatter={formatter(
+              drilldownSelection === CONNECTIONFAILURE ? 'countFormat' : 'durationFormat'
+            )}
           />
         </Loader>
       </GridCol>
@@ -141,7 +141,7 @@ const HealthDrillDown = (props: {
           </GridCol>
         </>
       )}
-    </GridRow>
+    </DrillDownRow>
   ) : null
 }
 export { HealthDrillDown }
