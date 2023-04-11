@@ -317,7 +317,7 @@ export function StackForm () {
     }
   }
 
-  const handleEditSwitchStack = async () => {
+  const handleEditSwitchStack = async (values: Switch) => {
     if (readOnly) {
       navigate({
         ...basePath,
@@ -325,23 +325,6 @@ export function StackForm () {
       })
       return
     }
-
-    const values = formRef.current?.getFieldsValue([
-      'id',
-      'description',
-      'enableStack',
-      'firmwareVersion',
-      'igmpSnooping',
-      'initialVlanId',
-      'isPrimaryDeleted',
-      'jumboMode',
-      'name',
-      'sendedHostname',
-      'softDeleted',
-      'spanningTreePriority',
-      'trustPorts',
-      'venueId'
-    ])
 
     try {
       let payload = {
