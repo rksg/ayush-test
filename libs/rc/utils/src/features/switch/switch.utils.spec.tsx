@@ -216,7 +216,7 @@ describe('switch.utils', () => {
 
   describe('Test getSwitchStatusString function', () => {
     it('should Synchronizing correctly', async () => {
-      expect(getSwitchStatusString(switchRow)).toBe('Operational - Synchronizing')
+      expect(getSwitchStatusString(switchRow)).toBe('Synchronizing')
     })
 
     it('should Warning correctly', async () => {
@@ -227,7 +227,7 @@ describe('switch.utils', () => {
         syncedSwitchConfig: true,
         operationalWarning: true
       }
-      expect(getSwitchStatusString(data)).toBe('Operational - Warning - Syncing')
+      expect(getSwitchStatusString(data)).toBe('Synchronizing')
     })
   })
 
