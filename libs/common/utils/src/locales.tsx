@@ -7,7 +7,7 @@ import { setUpIntl } from './intlUtil'
 
 type Message = string | NestedMessages
 type NestedMessages = { [key: string]: Message }
-type Messages = Locale & Record<string, string>
+export type Messages = Locale & Record<string, string>
 
 function flattenMessages (nestedMessages: NestedMessages, prefix = ''): Record<string, string> {
   return Object.keys(nestedMessages).reduce((messages, key) => {

@@ -10,6 +10,7 @@ import {
   SuspenseBoundary
 } from '@acx-ui/components'
 import { get }                      from '@acx-ui/config'
+import { usePreference }            from '@acx-ui/rc/components'
 import { useYourPreferredLanguage } from '@acx-ui/rc/services'
 import { BrowserRouter }            from '@acx-ui/react-router-dom'
 import { Provider }                 from '@acx-ui/store'
@@ -120,14 +121,14 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
 }
 
 function DataGuardLoader (props: React.PropsWithChildren) {
+  const { currentPreferredLang } = usePreference()
   const locale = useLocaleContext()
   const userProfile = useUserProfileContext()
 
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
-    states={[{ isLoading:
-      !Boolean(locale.messages) ||
-      !Boolean(userProfile.allowedOperations.length)
+    states={[{ isLoading: !Boolean(locale.messages) ||
+        !Boolean(userProfile.allowedOperations.length)
     }]}
     children={props.children}
   />

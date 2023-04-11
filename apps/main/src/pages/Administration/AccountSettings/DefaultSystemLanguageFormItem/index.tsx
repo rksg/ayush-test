@@ -1,8 +1,10 @@
+import { useEffect, useState } from 'react'
+
 import { Col, Select, Form, Row, Typography } from 'antd'
 import { useIntl }                            from 'react-intl'
 
-import { usePreference }       from '@acx-ui/rc/components'
-import { loadLocale, LangKey } from '@acx-ui/utils'
+import { usePreference }                                              from '@acx-ui/rc/components'
+import { loadLocale, LangKey, setUpIntl, useLocaleContext, Messages } from '@acx-ui/utils'
 
 import { MessageMapping } from '../MessageMapping'
 
@@ -16,19 +18,19 @@ const DefaultSystemLanguageFormItem = () => {
     updateReqState
   } = usePreference()
 
+  const locale = useLocaleContext()
+  const [lang, setLang] = useState(locale?.lang ?? 'en-US')
+  const [messages, setMessages] = useState<Messages>()
+
   const handlePreferredLangChange = (langCode: string) => {
     if (!langCode) return
     const payload = {
       global: { ...preferenceData?.global, preferredLanguage: langCode }
     }
     updatePreferences({ newData: payload })
+    const code = langCode as LangKey
+    locale.setLang(code)
   }
-
-  const handleNewPreferredLangChnge = (langCode: string) => {
-    const lang = langCode as LangKey
-    loadLocale(lang)
-  }
-
 
   const isLoadingPreference = getReqState.isLoading || getReqState.isFetching
   const isUpdatingPreference = updateReqState.isLoading
@@ -52,6 +54,18 @@ const DefaultSystemLanguageFormItem = () => {
     value: val
   }))
 
+  useEffect(() => {
+    loadLocale(lang).then((messages) => {
+      setUpIntl({
+        locale: lang,
+        messages: messages
+      })
+      setLang(lang)
+      setMessages(() => messages)
+    })
+  }, [lang])
+
+
   return (
     <Row gutter={24}>
       <Col span={10}>
@@ -60,10 +74,7 @@ const DefaultSystemLanguageFormItem = () => {
         >
           <Select
             value={currentPreferredLang}
-            onChange={async (value) => {
-              await handlePreferredLangChange(value)
-              await handleNewPreferredLangChnge(value)
-            }}
+            onChange={handlePreferredLangChange}
             showSearch
             allowClear
             optionFilterProp='children'
