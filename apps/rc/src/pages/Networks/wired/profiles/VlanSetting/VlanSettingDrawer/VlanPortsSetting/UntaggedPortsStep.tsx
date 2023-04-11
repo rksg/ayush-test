@@ -194,15 +194,10 @@ export function UntaggedPortsStep () {
     }
 
   const getDisabledPorts = (timeslot: string) => {
-    const vlanSelectedPorts = vlanList ? vlanList.map(item => item.switchFamilyModels
-      ?.filter(obj => obj.model === vlanSettingValues.switchFamilyModels?.model)) : []
-    const portExists = vlanSelectedPorts.map(item => item?.map(
-      obj => { return obj.untaggedPorts?.includes(timeslot)}))[0]
-
     const taggedPorts =
       vlanSettingValues.switchFamilyModels?.taggedPorts?.toString().split(',') || []
 
-    const disabledPorts = taggedPorts.includes(timeslot) || (portExists && portExists[0]) || false
+    const disabledPorts = taggedPorts.includes(timeslot) || false
     return disabledPorts
   }
 
@@ -214,10 +209,10 @@ export function UntaggedPortsStep () {
       ?.filter(obj => obj.model === vlanSettingValues.switchFamilyModels?.model)) : []
 
     const untaggedPortExists = vlanSelectedPorts.map(item => item?.map(
-      obj => { return obj.untaggedPorts?.includes(timeslot) }))[0]
+      obj => { return obj.untaggedPorts?.split(',').includes(timeslot) }))[0]
 
     const taggedPortExists = vlanSelectedPorts.map(item => item?.map(
-      obj => { return obj.taggedPorts?.includes(timeslot) }))[0]
+      obj => { return obj.taggedPorts?.split(',').includes(timeslot) }))[0]
 
     const filteredModel = vlanList ? vlanList.filter(model => model.switchFamilyModels?.some(
       switchModel => switchModel.model === vlanSettingValues.switchFamilyModels?.model)) : []
