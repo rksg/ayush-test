@@ -532,7 +532,21 @@ export default function NetworkForm (props:{
             name='venues'
             title={intl.$t({ defaultMessage: 'Venues' })}
             onFinish={async (data) => {
-              const settingSaveData = transferVenuesToSave(data, saveState)
+              let venueData = data
+              if (cloneMode) {
+                venueData = {
+                  venues: data.venues.map((v: { apGroups: { id?: string }[] }) => {
+                    if (v.apGroups) {
+                      v.apGroups.map((ag: { id?: string }) => {
+                        delete ag.id
+                        return ag
+                      })
+                    }
+                    return v
+                  })
+                }
+              }
+              const settingSaveData = transferVenuesToSave(venueData, saveState)
               updateSaveData(settingSaveData)
               return true
             }}

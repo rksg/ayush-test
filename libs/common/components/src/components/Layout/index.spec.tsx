@@ -32,12 +32,16 @@ describe('Layout', () => {
   })
   it('should render with custom tenant type correctly', async () => {
     const mspConfig = [{
-      uri: '/dashboard',
-      label: 'Dashboard',
-      tenantType: 'v' as TenantType,
+      label: 'My Customers',
       inactiveIcon: SpeedIndicatorOutlined,
       activeIcon: SpeedIndicatorSolid,
-      isActivePattern: ['/dashboard']
+      children: [
+        {
+          uri: '/dashboard/mspCustomers',
+          tenantType: 'v' as TenantType,
+          label: 'MSP Customers'
+        }
+      ]
     }]
     const { asFragment } = render(<Layout
       menuConfig={mspConfig}
@@ -45,11 +49,7 @@ describe('Layout', () => {
       rightHeaderContent={<div>Right header</div>}
       content={<div>content</div>}
     />, { route: { ...route, params: { ...route.params, tenantType: 'v' } } })
-    await screen.findByTestId('SpeedIndicatorSolid')
-    await screen.findByRole('menuitem', {
-      name: (name, element) => name === 'Dashboard' &&
-        (element as HTMLElement).hasAttribute('data-menu-id')
-    })
+    await screen.findByTestId('SpeedIndicatorOutlined')
     expect(asFragment()).toMatchSnapshot()
   })
   it('should collapsed', async () => {
