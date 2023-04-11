@@ -41,8 +41,8 @@ export function TopologyGraph (props:{ venueId?: string,
   const graphRef = useRef<SVGSVGElement>(null)
   const params = useParams()
 
-  const graph = new dagreD3.graphlib.Graph()
-    .setGraph({}) as any
+  const graph = new dagreD3.graphlib.Graph({ multigraph: true })
+    .setGraph({ }) as any
 
   const _venueId = params.venueId || venueId
 
@@ -82,7 +82,8 @@ export function TopologyGraph (props:{ venueId?: string,
 
       const { edges, nodes } = topologyGraphData as GraphData
 
-      const uiEdges: Link[] = Array.from(edges)
+      const uiEdges: Link[] = edges.map(
+        (edge, idx) => { return { ...edge, id: 'edge_'+idx } as Link })
 
       // Add nodes to the graph.
 
@@ -138,6 +139,14 @@ export function TopologyGraph (props:{ venueId?: string,
         return
       })
 
+      // if 2 switches are interconnected with 2 edges then it needs to
+      // find if any / both nodes connected to cloud. For this purpose we are using
+      // cloudPort check
+      uiNodes.forEach(node => {
+        if(node.config?.cloudPort)
+          rootNodes.push(node)
+      })
+
       // if no root node available then remove cloud node
       if (!rootNodes?.length) {
         const cloudNodeIndex = uiNodes?.findIndex((node) => node.id === 'cloud_id')
@@ -172,10 +181,11 @@ export function TopologyGraph (props:{ venueId?: string,
         graph.setEdge(edge.from, edge.to, {
           // curveBumpY, curveMonotoneY, curveStepBefore
           curve: d3.curveMonotoneY,
+          lineInterpolate: 'basis',
           SVGAnimatedAngle: true,
           angle: 15,
           style: `fill:transparent;
-          stroke:${getPathColor(edge.connectionStatus as ConnectionStatus)}` })
+          stroke:${getPathColor(edge.connectionStatus as ConnectionStatus)}` }, edge.id)
       })
 
       const render = new dagreD3.render()
