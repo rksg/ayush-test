@@ -35,7 +35,7 @@ function PersonaDetails () {
   const { $t } = useIntl()
   const propertyEnabled = useIsSplitOn(Features.PROPERTY_MANAGEMENT)
   const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
-  const { personaGroupId, personaId } = useParams()
+  const { tenantId, personaGroupId, personaId } = useParams()
   const [personaGroupData, setPersonaGroupData] = useState<PersonaGroup>()
   const [macPoolData, setMacPoolData] = useState({} as { id?: string, name?: string } | undefined)
   const [dpskPoolData, setDpskPoolData] = useState({} as { id?: string, name?: string } | undefined)
@@ -89,7 +89,7 @@ function PersonaDetails () {
 
     if (personaGroupData.nsgId && networkSegmentationEnabled) {
       let name: string | undefined
-      getNsgById({ params: { serviceId: personaGroupData.nsgId } })
+      getNsgById({ params: { tenantId, serviceId: personaGroupData.nsgId } })
         .then(result => name = result.data?.name)
         .finally(() => setNsgData({ id: personaGroupData.nsgId, name }))
     }
