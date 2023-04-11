@@ -1,13 +1,15 @@
 
+import { SortOrder }          from 'antd/lib/table/interface'
 import { startCase, toLower } from 'lodash'
 import { useIntl }            from 'react-intl'
 
-import { defaultSort, dateSort, sortProp }       from '@acx-ui/analytics/utils'
-import { Table, TableProps, Tooltip, TrendPill } from '@acx-ui/components'
-import { Loader, showToast }                     from '@acx-ui/components'
-import { DateFormatEnum, formatter }             from '@acx-ui/formatter'
-import { TenantLink }                            from '@acx-ui/react-router-dom'
-import { TimeStamp }                             from '@acx-ui/types'
+import { defaultSort, dateSort, sortProp }                        from '@acx-ui/analytics/utils'
+import { Table, TableProps, Tooltip, TrendPill, showActionModal } from '@acx-ui/components'
+import { Loader }                                                 from '@acx-ui/components'
+import { DateFormatEnum, formatter }                              from '@acx-ui/formatter'
+import { TenantLink }                                             from '@acx-ui/react-router-dom'
+import { TimeStamp }                                              from '@acx-ui/types'
+import { TABLE_DEFAULT_PAGE_SIZE }                                from '@acx-ui/utils'
 
 import { useVideoCallQoeTestsQuery } from '../VideoCallQoe/services'
 
@@ -43,29 +45,33 @@ export function VideoCallQoeTable () {
     })
   })
 
-  const columnHeaders = [
+  const columnHeaders: TableProps<Meeting>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
       key: 'name',
-      render: (value: unknown,{ id }:{ id:number }) => {
-        return(
-          <TenantLink to={`/serviceValidation/videoCallQoe/${id}`}>
+      render: (value: unknown, row: unknown) => {
+        const formattedStatus = startCase(toLower(value as string))
+        const meetingId = (row as Meeting).id
+        // TODO implement url text based on Ended or Not Started Call
+        const urlTxt = formattedStatus === 'Ended' ? `${meetingId}` : `${meetingId}`
+        return (
+          <TenantLink to={`/serviceValidation/videoCallQoe/${urlTxt}`}>
             {value as string}
           </TenantLink>
         )
       },
-      sorter: { compare: sortProp('name', defaultSort) },
-      searchable: true
+      sorter: { compare: sortProp('name', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Created Time' }),
       dataIndex: 'createdTime',
       key: 'createdTime',
+      defaultSortOrder: 'descend' as SortOrder,
       render: (value: unknown) =>
         formatter(DateFormatEnum.DateTimeFormatWithSeconds)(value as string),
       sorter: { compare: sortProp('createdTime', dateSort) },
-      searchable: true
+      align: 'center'
     },
     {
       title: $t({ defaultMessage: 'Start Time' }),
@@ -75,7 +81,7 @@ export function VideoCallQoeTable () {
         return value ? formatter(DateFormatEnum.DateTimeFormatWithSeconds)(value as string) : '-'
       },
       sorter: { compare: sortProp('startTime', dateSort) },
-      searchable: true
+      align: 'center'
     },
     {
       title: $t({ defaultMessage: 'Participants' }),
@@ -84,7 +90,8 @@ export function VideoCallQoeTable () {
       render: (value: unknown) => {
         return value ? (value as string) : '-'
       },
-      sorter: { compare: sortProp('participantCount', defaultSort) }
+      sorter: { compare: sortProp('participantCount', defaultSort) },
+      align: 'center'
     },
     {
       title: $t({ defaultMessage: 'Status' }),
@@ -101,7 +108,7 @@ export function VideoCallQoeTable () {
           </Tooltip>))
       },
       sorter: { compare: sortProp('status', defaultSort) },
-      searchable: true
+      align: 'center'
     },
     {
       title: $t({ defaultMessage: 'QoE' }),
@@ -110,20 +117,30 @@ export function VideoCallQoeTable () {
       render: (value: unknown) => {
         const mos = value as number
         const isValidMos = mos ? true : false
-        return isValidMos ? (mos > 4 ? <TrendPill value='Good' trend='positive' /> :
+        return isValidMos ? (mos >= 4 ? <TrendPill value='Good' trend='positive' /> :
           <TrendPill value='Bad' trend='negative' />) : '-'
       },
-      sorter: { compare: sortProp('mos', defaultSort) }
+      sorter: { compare: sortProp('mos', defaultSort) },
+      align: 'center'
     }
   ]
 
   const actions: TableProps<(typeof meetingList)[0]>['rowActions'] = [
     {
-      label: 'Delete',
-      onClick: (selectedRows) => showToast({
-        type: 'info',
-        content: `Delete ${selectedRows.length} item(s)`
-      })
+      label: $t({ defaultMessage: 'Delete' }),
+      onClick: (rows) => {
+        showActionModal({
+          type: 'confirm',
+          customContent: {
+            action: 'DELETE',
+            entityName: $t({ defaultMessage: 'Test Call(s)' }),
+            entityValue: rows.length === 1 ? rows[0].name : undefined,
+            numOfEntities: rows.length,
+            confirmationText: shouldShowConfirmation(rows) ? 'Delete' : undefined
+          },
+          onOk: () => { }
+        })
+      }
     }
   ]
 
@@ -133,8 +150,17 @@ export function VideoCallQoeTable () {
         columns={columnHeaders}
         dataSource={meetingList}
         rowActions={actions}
-        rowSelection={{ defaultSelectedRowKeys: [] }}
+        rowKey='id'
+        rowSelection={{ type: 'checkbox' }}
+        pagination={{
+          pageSize: TABLE_DEFAULT_PAGE_SIZE,
+          defaultPageSize: TABLE_DEFAULT_PAGE_SIZE
+        }}
       />
     </Loader>
   )
+}
+
+function shouldShowConfirmation (rows: unknown[]) {
+  return rows.length > 0
 }
