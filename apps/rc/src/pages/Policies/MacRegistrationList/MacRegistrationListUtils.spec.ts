@@ -10,6 +10,11 @@ import { transferDataToExpirationFormFields, transferExpirationFormFieldsToData 
 
 
 describe('MacRegistrationListUtils parser', () => {
+  const timezone = 'UTC'
+
+  beforeEach(() => {
+    moment.tz.setDefault(timezone)
+  })
 
   it('should transfer expirationForm fields to data', () => {
     const mockedExpirationNever: ExpirationDateEntity = new ExpirationDateEntity()
@@ -25,9 +30,8 @@ describe('MacRegistrationListUtils parser', () => {
     expect(expiration.expirationEnabled).toBe(false)
 
     expiration = transferExpirationFormFieldsToData(mockedExpirationByDate)
-    // eslint-disable-next-line max-len
-    const utcTimeStr = moment(mockedExpirationByDate.date + ' 23:59:59').utc()
-    expect(expiration.expirationDate).toStrictEqual(utcTimeStr)
+
+    expect(moment('2022-12-01T23:59:59').isSame(expiration.expirationDate)).toBe(true)
     expect(expiration.expirationType).toBe(ExpirationType.SPECIFIED_DATE)
 
     expiration = transferExpirationFormFieldsToData(mockedExpirationAfterTime)
@@ -51,7 +55,7 @@ describe('MacRegistrationListUtils parser', () => {
     const mockedExpirationByDate: Partial<MacRegistrationPool> = {
       expirationEnabled: true,
       expirationType: ExpirationType.SPECIFIED_DATE,
-      expirationDate: '2022-12-01'
+      expirationDate: '2022-12-01T23:59:59Z'
     }
 
     const mockedExpirationAfterTime: Partial<MacRegistrationPool> = {
@@ -67,7 +71,8 @@ describe('MacRegistrationListUtils parser', () => {
     // eslint-disable-next-line max-len
     expiration = transferDataToExpirationFormFields({ ...mockedBasicSaveData, ...mockedExpirationByDate })
     expect(expiration.expiration.mode).toBe(ExpirationMode.BY_DATE)
-    expect(expiration.expiration.date).toBe(mockedExpirationByDate.expirationDate)
+    // eslint-disable-next-line max-len
+    expect(expiration.expiration.date).toBe(moment('2022-12-01').startOf('d').format('YYYY-MM-DDTHH:mm:ssZ'))
 
     // eslint-disable-next-line max-len
     expiration = transferDataToExpirationFormFields({ ...mockedBasicSaveData, ...mockedExpirationAfterTime })
