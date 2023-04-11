@@ -129,11 +129,11 @@ const HealthDrillDown = (props: {
       {selectedStage && (
         <>
           <Divider />
-          <GridCol col={{ span: 8 }} style={{ height: '300px' }}>
+          <GridCol col={{ span: 8 }} style={{ height: '310px' }}>
             PIE chart
           </GridCol>
           <GridCol col={{ span: 16 }}
-            style={{ height: '300px', overflow: 'auto' }}>
+            style={{ height: '310px', overflow: 'auto' }}>
             <ImpactedClientsTable filters={filters}
               selectedStage={selectedStage}
               drillDownSelection={drilldownSelection}

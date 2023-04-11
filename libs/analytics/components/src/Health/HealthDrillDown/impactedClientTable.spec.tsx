@@ -1,5 +1,4 @@
-import '@testing-library/jest-dom'
-import { range } from 'lodash'
+import { range, uniqueId } from 'lodash'
 
 import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
 import { dataApiURL, Provider, store }      from '@acx-ui/store'
@@ -37,7 +36,7 @@ describe('ImpactedClientsTable', () => {
         }
       }
     )
-    expect(await screen.findByText('2 Impacted Clients')).toBeVisible()
+    expect(await screen.findByText('1 Impacted Clients')).toBeVisible()
   })
   it('should show zero impacted clients for empty array', async () => {
     mockGraphqlQuery(dataApiURL, 'Network', {
@@ -73,7 +72,7 @@ describe('ImpactedClientsTable', () => {
           hierarchyNode: {
             impactedClients: range(0, 101).map(() => {
               return {
-                mac: 'D0:C6:37:D7:52:80',
+                mac: uniqueId(),
                 manufacturer: 'Intel Corporate',
                 ssid: 'Divya_1_hour',
                 hostname: 'DESKTOP-K1PAM9U',

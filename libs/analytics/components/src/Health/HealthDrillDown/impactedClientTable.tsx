@@ -55,8 +55,7 @@ export const ImpactedClientsTable = ({
             aggregateDataBy<ImpactedClient>('mac')(
               data?.network?.hierarchyNode?.impactedClients
             ).map?.(
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              (impactedClient: any) => {
+              (impactedClient) => {
                 return { ...impactedClient, id: uniqueId() }
               }
             ),
@@ -83,7 +82,7 @@ export const ImpactedClientsTable = ({
       key: 'manufacturer',
       render: function (_, { manufacturer }) {
         return (
-          <Tooltip placement='bottom' title={manufacturer}>
+          <Tooltip placement='bottom' title={(manufacturer as string[]).join('\r\n')}>
             {manufacturer?.[0]}{manufacturer.length > 1 ? ` (${manufacturer.length})` : ''}
           </Tooltip>
         )
@@ -96,7 +95,7 @@ export const ImpactedClientsTable = ({
       key: 'ssid',
       render: function (_, { ssid }) {
         return (
-          <Tooltip placement='bottom' title={ssid}>
+          <Tooltip placement='bottom' title={(ssid as string[]).join('\r\n')}>
             {ssid?.[0]}{ssid.length > 1 ? ` (${ssid.length})` : ''}
           </Tooltip>
         )
@@ -114,7 +113,7 @@ export const ImpactedClientsTable = ({
       }),
       render: function (_, { username }) {
         return (
-          <Tooltip placement='bottom' title={username}>
+          <Tooltip placement='bottom' title={(username as string[]).join('\r\n')}>
             {username?.[0]}{username.length > 1 ? ` (${username.length})` : ''}
           </Tooltip>
         )
@@ -132,7 +131,7 @@ export const ImpactedClientsTable = ({
       }),
       render: function (_, { hostname }) {
         return (
-          <Tooltip placement='bottom' title={hostname}>
+          <Tooltip placement='bottom' title={(hostname as string[]).join('\r\n')}>
             {hostname?.[0]}{hostname.length > 1 ? ` (${hostname.length})` : ''}
           </Tooltip>
         )
@@ -147,10 +146,15 @@ export const ImpactedClientsTable = ({
   return (
     <Loader states={[queryResults]}>
       <TableHeading>
-        <b>{selectedStage}{' '}</b>
+        <b>{selectedStage} </b>
         {$t(defineMessage({ defaultMessage: '{count} Impacted Clients' }), { count: totalCount })}
       </TableHeading>
-      <Table columns={columns} dataSource={queryResults.data} rowKey='id' type='compactBordered' />
+      <Table
+        columns={columns}
+        dataSource={queryResults.data as ImpactedClient[]}
+        rowKey='id'
+        type='compactBordered'
+      />
     </Loader>
   )
 }

@@ -35,7 +35,7 @@ export interface ImpactedClients {
   };
 }
 export interface ImpactedClient {
-  mac: string
+  mac: string | string[]
   manufacturer: string | string[]
   ssid: string | string[]
   hostname: string | string[]
