@@ -28,7 +28,7 @@ import { getBasePath, Link, Outlet, useNavigate, useTenantLink } from '@acx-ui/r
 import { useParams }                                             from '@acx-ui/react-router-dom'
 import { RolesEnum }                                             from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }                       from '@acx-ui/user'
-import { getJwtTokenPayload, PverName }                          from '@acx-ui/utils'
+import { AccountType, getJwtTokenPayload, PverName }             from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
 import SearchBar         from './SearchBar'
@@ -44,7 +44,10 @@ function Layout () {
 
   const { data: userProfile } = useUserProfileContext()
   const companyName = userProfile?.companyName
-  const showHomeButton = isDelegationMode() || userProfile?.var
+  const tenantType = getJwtTokenPayload().tenantType
+  const showHomeButton =
+    isDelegationMode() || userProfile?.var || tenantType === AccountType.MSP_NON_VAR ||
+    tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
   const { $t } = useIntl()
   const basePath = useTenantLink('/users/guestsManager')
   const navigate = useNavigate()
@@ -59,6 +62,12 @@ function Layout () {
   const { update: updateGoogleMapRegion } = useUpdateGoogleMapRegion()
   const isBackToRC = (PverName.ACX === getJwtTokenPayload().pver ||
     PverName.ACX_HYBRID === getJwtTokenPayload().pver)
+
+  const getIndexPath = () => {
+    return isGuestManager
+      ? `${getBasePath()}/v/${getJwtTokenPayload().tenantId}/users/guestsManager`
+      : `${getBasePath()}/v/${getJwtTokenPayload().tenantId}`
+  }
 
   useEffect(() => {
     if (data?.global) {
@@ -95,7 +104,7 @@ function Layout () {
                 {$t({ defaultMessage: 'Home' })}
               </UI.Home>
             </a> :
-            <Link to={`${getBasePath()}/v/${getJwtTokenPayload().tenantId}`}>
+            <Link to={getIndexPath()}>
               <UI.Home>
                 <LayoutUI.Icon children={<HomeSolid />} />
                 {$t({ defaultMessage: 'Home' })}

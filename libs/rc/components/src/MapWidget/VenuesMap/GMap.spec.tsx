@@ -1,10 +1,10 @@
 import { initialize }      from '@googlemaps/jest-mocks'
 import { MarkerClusterer } from '@googlemaps/markerclusterer'
 
-import { render } from '@acx-ui/test-utils'
+import { VenueMarkerOptions } from '@acx-ui/rc/utils'
+import { render }             from '@acx-ui/test-utils'
 
-import GMap                   from './GMap'
-import { VenueMarkerOptions } from './VenueMarkerWithLabel'
+import GMap from './GMap'
 
 export  const common = {
   venueId: '7ae27179b7b84de89eb7e56d9b15943d',
@@ -41,6 +41,7 @@ describe('GMap', () => {
     google.maps.Marker.prototype.getVisible = jest.fn().mockReturnValue(true)
     google.maps.Marker.prototype.getPosition = jest.fn()
     google.maps.Marker.prototype.addListener = jest.fn()
+    google.maps.Marker.prototype.set = jest.fn()
     google.maps.Marker.prototype.setMap = jest.fn().mockImplementation(() => map)
     google.maps.Marker.prototype.getMap = jest.fn().mockImplementation(() => map)
     MarkerClusterer.prototype.getMap = jest.fn().mockImplementation(() => map)

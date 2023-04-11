@@ -53,6 +53,14 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
     })
 
   useEffect(() => {
+    if(family){
+      setModel('')
+    }
+
+    if(family !=='' && model !== ''){
+      modelChangeAction(family, model)
+    }
+
     if(ICX_MODELS_MODULES){
       const familiesData = Object.keys(ICX_MODELS_MODULES).map(key => {
         return { label: `ICX-${key.split('ICX')[1]}`, value: key }
@@ -73,8 +81,7 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
         enableSlot4: selectedEnable4.enable,
         selectedOptionOfSlot2: selectedEnable2.option,
         selectedOptionOfSlot3: selectedEnable3.option,
-        selectedOptionOfSlot4: selectedEnable4.option,
-        switchFamilyModels: editRecord
+        selectedOptionOfSlot4: selectedEnable4.option
       })
       setFamily(selectedFamily)
       setModel(selectedModel)
@@ -85,14 +92,6 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
       setEnableSlot4(selectedEnable4.enable)
       checkIfModuleFixed(selectedFamily, selectedModel)
       setTrustedPorts(editRecord)
-    }
-
-    if(family){
-      setModel('')
-    }
-
-    if(family !=='' && model !== ''){
-      modelChangeAction(family, model)
     }
   }, [ICX_MODELS_MODULES, editRecord, family, model])
 
@@ -307,19 +306,21 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
       const tmpModelPortData = { ...trustedPorts }
       if (slotIndex === -1) {
         tmpModelPortData.slots.push(slotData)
+        tmpModelPortData.model = form.getFieldValue('family') + '-' + form.getFieldValue('model')
+        form.setFieldValue('switchFamilyModels', tmpModelPortData)
       } else {
-        if(trustedPorts.slots){
+        if(trustedPorts.slots[slotIndex].portStatus !== undefined){
           tmpModelPortData.slots[slotIndex] = slotData
+          if(tmpModelPortData.slots && tmpModelPortData.slots.length > 0){
+            tmpModelPortData.slots = tmpModelPortData.slots && tmpModelPortData.slots.sort(
+              function (a: { slotNumber: number }, b: { slotNumber: number }) {
+                return a.slotNumber > b.slotNumber ? 1 : -1
+              })
+          }
+          tmpModelPortData.model = form.getFieldValue('family') + '-' + form.getFieldValue('model')
+          form.setFieldValue('switchFamilyModels', tmpModelPortData)
         }
       }
-      tmpModelPortData.slots = tmpModelPortData.slots && tmpModelPortData.slots.sort(
-        function (a: { slotNumber: number }, b: { slotNumber: number }) {
-          return a.slotNumber > b.slotNumber ? 1 : -1
-        })
-      tmpModelPortData.model = family + '-' + selectedModel
-      setTrustedPorts(tmpModelPortData)
-
-      form.setFieldValue('switchFamilyModels', tmpModelPortData)
     }
   }
 
