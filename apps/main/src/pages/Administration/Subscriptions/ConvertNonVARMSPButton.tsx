@@ -32,7 +32,7 @@ export const ConvertNonVARMSPButton = () => {
   const navigate = useNavigate()
 
   const { data: tenantInfo } = useGetTenantDetailsQuery({ params })
-  const { data: delegationInfo } = useGetDelegationsQuery({ params })
+  const { data: delegationInfo, isLoading } = useGetDelegationsQuery({ params })
   const [getUserSettings] = useLazyGetAllUserSettingsQuery()
   const [convertNonVarToMsp] = useConvertNonVARToMSPMutation()
   const [saveUserSettings] = useSaveUserSettingsMutation()
@@ -143,8 +143,11 @@ export const ConvertNonVARMSPButton = () => {
   }
 
   const canConvert = tenantInfo?.tenantType && tenantInfo?.tenantType !== TenantType.MSP_NON_VAR
+                      && isLoading === false
 
-  return canConvert ? <Button size='middle' onClick={handleCheckMspLicensesClick}>
-    {$t({ defaultMessage: 'Go to MSP Subscriptions' })}
-  </Button> : null
+  return canConvert
+    ? <Button size='middle' onClick={handleCheckMspLicensesClick}>
+      {$t({ defaultMessage: 'Go to MSP Subscriptions' })}
+    </Button>
+    : null
 }

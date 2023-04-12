@@ -42,7 +42,7 @@ const fakeTenantDetails = {
   tenantType: 'REC'
 }
 
-export const fakeDelegationList = [
+const fakeDelegationList = [
   {
     id: 'ffc2146b0f9041fa85caec2537a57d09',
     createdDate: '2023-02-13T11:51:07.793+00:00',
@@ -131,6 +131,9 @@ describe('Convert NonVAR MSP Button', () => {
     })
 
     expect(mockedUsedNavigate).toHaveBeenCalledWith(`/v/${params.tenantId}/customers`, { replace: true })
+    await waitFor(() => {
+      expect(screen.queryAllByRole('dialog').length).toBe(0)
+    })
   })
 
   it('should submit with merged data', async () => {
@@ -175,6 +178,9 @@ describe('Convert NonVAR MSP Button', () => {
       })
     })
     expect(mockedUsedNavigate).toHaveBeenCalledWith(`/v/${params.tenantId}/customers`, { replace: true })
+    await waitFor(() => {
+      expect(screen.queryAllByRole('dialog').length).toBe(0)
+    })
   })
 
   it('should blocked when account is delegated to others', async () => {
@@ -201,14 +207,12 @@ describe('Convert NonVAR MSP Button', () => {
     })
     const btn = await screen.findByRole('button', { name: 'Go to MSP Subscriptions' })
     fireEvent.click(btn)
-    await waitFor(async () => {
-      expect(await screen.findByText('Operation not allowed')).toBeVisible()
-    })
+    await screen.findByText('Operation not allowed')
     // eslint-disable-next-line testing-library/no-node-access
     const targetDialog = screen.getByText('Operation not allowed').closest('.ant-modal-root') as HTMLDivElement
     fireEvent.click(await within(targetDialog).findByRole('button', { name: 'OK' }))
-    await waitFor(async () => {
-      expect(targetDialog).not.toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.queryAllByRole('dialog').length).toBe(0)
     })
   })
 
@@ -245,7 +249,7 @@ describe('Convert NonVAR MSP Button', () => {
     const targetDialog = screen.getByText('No MSP Licenses Detected').closest('.ant-modal-root') as HTMLDivElement
     fireEvent.click(await within(targetDialog).findByRole('button', { name: 'OK' }))
     await waitFor(() => {
-      expect(targetDialog).not.toBeVisible()
+      expect(screen.queryAllByRole('dialog').length).toBe(0)
     })
   })
 
@@ -282,7 +286,7 @@ describe('Convert NonVAR MSP Button', () => {
     const targetDialog = screen.getByText('Server Error').closest('.ant-modal-root') as HTMLDivElement
     fireEvent.click(await within(targetDialog).findByRole('button', { name: 'OK' }))
     await waitFor(() => {
-      expect(targetDialog).not.toBeVisible()
+      expect(screen.queryAllByRole('dialog').length).toBe(0)
     })
   })
 
