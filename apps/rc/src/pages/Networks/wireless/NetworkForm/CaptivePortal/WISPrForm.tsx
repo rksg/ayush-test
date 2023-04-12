@@ -8,9 +8,9 @@ import {
   Input,
   InputRef
 } from 'antd'
-import _                             from 'lodash'
-import { FormattedMessage, useIntl } from 'react-intl'
-import { useParams }                 from 'react-router-dom'
+import _             from 'lodash'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
 import { Button, GridCol, GridRow, StepsForm, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
@@ -29,7 +29,7 @@ import { AuthAccServerSetting } from './AuthAccServerSetting'
 import { AuthAccServerSummary } from './AuthAccServerSummary'
 import { DhcpCheckbox }         from './DhcpCheckbox'
 import { RedirectUrlInput }     from './RedirectUrlInput'
-
+import { WalledGardenTextArea } from './SharedComponent/WalledGardenTextArea'
 
 
 
@@ -365,6 +365,7 @@ export function WISPrForm () {
           }
         />}
         <DhcpCheckbox />
+        <WalledGardenTextArea enableDefaultWalledGarden={false} />
         {!regionOption && isOtherProvider &&<AuthAccServerSetting/>}
         {regionOption && region && <AuthAccServerSummary summaryData={region as Regions}/>}
         {!(editMode) && <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />}
