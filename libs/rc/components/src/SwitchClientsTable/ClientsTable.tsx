@@ -157,7 +157,7 @@ export function ClientsTable (props: {
           onChange={tableQuery.handleTableChange}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
-          rowKey='clientMac'
+          rowKey='id'
         />
       </Loader>
     </div>
