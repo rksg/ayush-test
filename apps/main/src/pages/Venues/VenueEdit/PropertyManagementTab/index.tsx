@@ -5,8 +5,8 @@ import { Col, Form, Row, Select, Switch } from 'antd'
 import { FormFinishInfo }                 from 'rc-field-form/lib/FormContext'
 import { useIntl }                        from 'react-intl'
 
-import { Button, Loader, StepsForm, StepsFormInstance } from '@acx-ui/components'
-import { PersonaGroupSelect }                           from '@acx-ui/rc/components'
+import { Button, Loader, StepsForm, StepsFormInstance, Tabs } from '@acx-ui/components'
+import { PersonaGroupSelect, TemplateSelector }               from '@acx-ui/rc/components'
 import {
   useGetPropertyConfigsQuery,
   useGetPropertyUnitListQuery,
@@ -14,6 +14,7 @@ import {
   useGetVenueQuery,
   useLazyGetPersonaGroupByIdQuery,
   usePatchPropertyConfigsMutation,
+  usePutRegistrationByIdMutation,
   useUpdatePropertyConfigsMutation
 } from '@acx-ui/rc/services'
 import { PropertyConfigs, PropertyConfigStatus } from '@acx-ui/rc/utils'
@@ -37,10 +38,28 @@ const defaultPropertyConfigs: PropertyConfigs = {
     guestAllowed: false,
     residentPortalAllowed: false
   },
-  communicationConfiguration: {
+  communicationConfig: {
+    type: 'communicationConfig',
     sendEmail: false,
     sendSms: false
   }
+}
+
+const templateScopeIds = {
+  email: [
+    '648269aa-23c7-41da-baa4-811e92d89ed1',
+    '45b68446-c970-4ade-9d64-5ee71f5555d9',
+    'b9139125-5c15-469c-a5a8-43c2b3fd6151',
+    'e0220126-6e6c-4e10-88ba-42713bddd2a1',
+    '56256b0c-d7a0-4957-8e43-d03ecb073e9a'
+  ],
+  sms: [
+    '2baa7cc6-f036-462a-a531-fefb9e531d27',
+    'c4a8d5bd-ae48-42d9-b86c-0641942a0ae3',
+    '88553d8d-c2bc-4bc8-90b5-cda6b0ff2fb4',
+    '6eb696cd-fd12-4c20-930d-65550a1e3eca',
+    'd1d41a63-da64-43bf-bde1-f524d920cfbe'
+  ]
 }
 
 export function PropertyManagementTab () {
@@ -55,6 +74,7 @@ export function PropertyManagementTab () {
   const [personaGroupVisible, setPersonaGroupVisible] = useState(false)
   const [groupData, setGroupData] = useState<{ id?: string, name?: string }>()
   const [selectedGroupId, setSelectedGroupId] = useState<string|undefined>()
+  const [updateRegistration, registrationResult] = usePutRegistrationByIdMutation()
   const [getPersonaGroupById] = useLazyGetPersonaGroupByIdQuery()
   const { data: unitQuery } = useGetPropertyUnitListQuery({
     params: { venueId },
@@ -97,11 +117,37 @@ export function PropertyManagementTab () {
     }
   }, [propertyConfigsQuery.data, formRef])
 
+  const registerMessageTemplates = async () => {
+    const registerPromises = [...templateScopeIds.email, ...templateScopeIds.sms]
+      .map(scopeId => {
+        let selectedOption = formRef?.current?.getFieldValue(scopeId)
+
+        if(selectedOption && selectedOption.value !== '') {
+          return updateRegistration({
+            params: {
+              templateScopeId: scopeId,
+              registrationId: venueId
+            },
+            payload: {
+              id: scopeId,
+              templateId: selectedOption.value,
+              usageLocalizationKey: 'venue.property.management'
+            }
+          })
+        } else {
+          return Promise.resolve()
+        }
+      })
+
+    await Promise.all(registerPromises)
+  }
+
   const onFormFinish = async (_: string, info: FormFinishInfo) => {
     const enableProperty = info.values.isPropertyEnable
 
     try {
       if (enableProperty) {
+        await registerMessageTemplates()
         await updatePropertyConfigs({
           params: { venueId },
           payload: {
@@ -141,7 +187,10 @@ export function PropertyManagementTab () {
 
   return (
     <Loader
-      states={[{ ...propertyConfigsQuery, error: undefined }]}
+      states={[
+        { ...propertyConfigsQuery, error: undefined },
+        { isLoading: false, isFetching: registrationResult.isLoading }
+      ]}
     >
       <StepsForm
         formRef={formRef}
@@ -226,6 +275,62 @@ export function PropertyManagementTab () {
                         .map(r => ({ value: r.id, label: r.name })) ?? []}/>}
                     />
                 }
+
+                <Form.Item
+                  hidden
+                  name={['communicationConfig', 'type']}
+                />
+                <StepsForm.FieldLabel width={'190px'}>
+                  {$t({ defaultMessage: 'Enable email notification' })}
+                  <Form.Item
+                    name={['communicationConfig', 'sendEmail']}
+                    rules={[{ required: true }]}
+                    valuePropName={'checked'}
+                    children={<Switch />}
+                  />
+                </StepsForm.FieldLabel>
+                <StepsForm.FieldLabel width={'190px'}>
+                  {$t({ defaultMessage: 'Enable sms notification' })}
+                  <Form.Item
+                    name={['communicationConfig', 'sendSms']}
+                    rules={[{ required: true }]}
+                    valuePropName={'checked'}
+                    children={<Switch />}
+                  />
+                </StepsForm.FieldLabel>
+
+                <Tabs
+                  defaultActiveKey={'email'}
+                >
+                  <Tabs.TabPane
+                    forceRender
+                    key={'email'}
+                    tab={$t({ defaultMessage: 'Email' })}
+                    children={templateScopeIds.email.map(id =>
+                      venueId &&
+                      <TemplateSelector
+                        key={id}
+                        formItemProps={{ name: id }}
+                        scopeId={id}
+                        registrationId={venueId}
+                      />)
+                    }
+                  />
+                  <Tabs.TabPane
+                    forceRender
+                    key={'sms'}
+                    tab={$t({ defaultMessage: 'SMS' })}
+                    children={templateScopeIds.sms.map(id =>
+                      venueId &&
+                      <TemplateSelector
+                        key={id}
+                        formItemProps={{ name: id }}
+                        scopeId={id}
+                        registrationId={venueId}
+                      />)
+                    }
+                  />
+                </Tabs>
               </Col>
             </Row>
           }

@@ -22,11 +22,22 @@ export interface PropertyConfigs {
     useMaxUnitCount: boolean,
     maxUnitCount: number
   },
-  communicationConfiguration?: {
+  communicationConfig?: {
+    type: string,
     sendEmail: boolean,
     sendSms: boolean,
     unitAssignmentTemplateId?: string,
-    passphraseChangeTemplateId?: string
+    passphraseChangeTemplateId?: string,
+    unitAssignmentHtmlRegId?: string,
+    unitAssignmentTextRegId?: string,
+    unitPassphraseChangeHtmlRegId?: string,
+    unitPassphraseChangeTextRegId?: string,
+    guestPassphraseChangeHtmlRegId?: string,
+    guestPassphraseChangeTextRegId?: string,
+    portalAccessResetHtmlRegId?: string,
+    portalAccessResetTextRegId?: string,
+    portAssignmentHtmlRegId?: string
+    portAssignmentTextRegId?: string
   },
 }
 
