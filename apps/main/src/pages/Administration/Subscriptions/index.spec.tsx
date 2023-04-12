@@ -135,6 +135,7 @@ describe('Subscriptions', () => {
 
     await screen.findByRole('columnheader', { name: 'Device Count' })
     const data = await screen.findAllByRole('row')
+    // because it is default sorted by "timeleft" in descending order
     const cells = await within(data[data.length - 1] as HTMLTableRowElement).findAllByRole('cell')
     expect((cells[0] as HTMLTableCellElement).innerHTML).toBe('')
   })
