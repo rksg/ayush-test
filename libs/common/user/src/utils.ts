@@ -23,7 +23,6 @@ export const setDeepUserSettings = (
   return newSettings
 }
 
-export const getProductKey = (path: UserSettingsValuePath): string | undefined => {
-  const pathArray = path.split(USER_SETTINGS_SEP_CHAR)
-  return pathArray.length === 0 ? undefined : pathArray[0]
+export const getProductKey = (path: UserSettingsValuePath): string => {
+  return path.split(USER_SETTINGS_SEP_CHAR)[0]
 }
