@@ -102,7 +102,7 @@ describe('usePreference', () => {
     })
   })
 
-  it('should trigger page reload', async () => {
+  it('should popup confirm dialog', async () => {
     const { result, rerender } = renderHook(
       () => usePreference(),
       { wrapper: getWrapper(), route: { params } }
@@ -130,9 +130,22 @@ describe('usePreference', () => {
     rerender()
 
     await screen.findByRole('dialog')
-    await screen.findByText(/We need to refresh page to activate map region./)
+    await screen.findByText(/Are you sure you what to change Map Region/)
     await userEvent.click(await screen.findByRole('button', { name: 'OK' }))
-    expect(mockedUsedNavigate).toBeCalledWith(0)
+    await waitFor(() => {
+      expect(mockedUpdateReqFn).toBeCalledWith({
+        global: {
+          mapRegion: 'GB'
+        }
+      })
+    })
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toBeCalledWith(0)
+    })
+
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).toBeNull()
+    })
   })
 
   it('should invoke on success when request succeed', async () => {
@@ -155,8 +168,12 @@ describe('usePreference', () => {
       })
     })
 
+    await userEvent.click(await screen.findByRole('button', { name: 'OK' }))
     await waitFor(() => {
       expect(mockedOnSuccessFn).toHaveBeenCalled()
+    })
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).toBeNull()
     })
   })
 
@@ -180,20 +197,17 @@ describe('usePreference', () => {
 
     await act(async () => {
       result.current.update({
-        newData: { global: { mapRegion: 'JR' } }
-      })
-    })
-
-    expect(result.current.currentMapRegion).toBe('TW')
-    await act(async () => {
-      result.current.update({
         newData: { global: { mapRegion: 'GB' } },
         onError: mockedOnErrorFn
       })
     })
 
+    await userEvent.click(await screen.findByRole('button', { name: 'OK' }))
     await waitFor(() => {
       expect(mockedOnErrorFn).toBeCalled()
+    })
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).toBeNull()
     })
   })
 })

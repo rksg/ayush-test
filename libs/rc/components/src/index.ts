@@ -69,7 +69,6 @@ export { PersonaGroupSelect } from './PersonaGroupSelect'
 export { TemplateSelector } from './TemplateSelector'
 export { SelectConnectedClientsTable, OSIconContainer } from './SelectConnectedClientsTable'
 export { usePreference, countryCodes } from './usePreference'
-export { useUpdateGoogleMapRegion } from './usePreference/useUpdateGoogleMapRegion'
 export type { updatePreferenceProps } from './usePreference'
 export { GoogleMapWithPreference } from './GoogleMapWithPreference'
 

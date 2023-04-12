@@ -30,44 +30,51 @@ export const usePreference = () => {
   const currentMapRegion = getMapRegion(data)
   const currentPreferredLang = data?.global.preferredLanguage as string
 
-  const update = async (props: updatePreferenceProps) => {
+  const innerUpdate = async (props: updatePreferenceProps) => {
     const { newData, onSuccess, onError } = props
-
     const payload = _.merge({}, data, newData)
 
     try {
       const res = await updatePreference({ params, payload }).unwrap()
       if (onSuccess)
         onSuccess(res)
-
-      // FIXME: need to confirm refresh behavior with UX
-      // limitation due to known issue on GoogleMap js-api-loader:
-      //   https://github.com/googlemaps/js-api-loader/issues/210
-      if (newData.global?.mapRegion) {
-        showActionModal({
-          type: 'confirm',
-          title: $t({ defaultMessage: 'Information' }),
-          content: $t({ defaultMessage: `We need to refresh page to activate map region.
-           Thank you for your understanding` }),
-          customContent: {
-            action: 'CUSTOM_BUTTONS',
-            buttons: [{
-              text: $t({ defaultMessage: 'OK' }),
-              type: 'primary',
-              key: 'ok',
-              handler: () => {
-                navigate(0)
-              },
-              closeAfterAction: true
-            }]
-          }
-        })
-      }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
 
       if (onError)
         onError(error)
+    }
+  }
+
+  const update = async (props: updatePreferenceProps) => {
+    const { newData } = props
+
+    // update map region
+    if (newData.global?.mapRegion) {
+      // limitation due to known issue on GoogleMap js-api-loader:
+      //   https://github.com/googlemaps/js-api-loader/issues/210
+      showActionModal({
+        type: 'confirm',
+        title: $t({ defaultMessage: 'Confirm' }),
+        content: $t({
+          defaultMessage: `Changing Map Region will affect all users in this account.{br}
+                            Are you sure you what to change Map Region?`
+        }, {
+          br: <br/>
+        }),
+        onOk: async () => {
+          await innerUpdate({
+            ...props,
+            onSuccess: (res) => {
+              if (props.onSuccess)
+                props.onSuccess(res)
+
+              navigate(0)
+            } })
+        }
+      })
+    } else {
+      await innerUpdate(props)
     }
   }
 
