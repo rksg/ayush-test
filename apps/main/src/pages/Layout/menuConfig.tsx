@@ -35,7 +35,6 @@ export function useMenuConfig () {
   const isEdgeEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
   const isServiceEnabled = useIsSplitOn(Features.SERVICES)
   const isPolicyEnabled = useIsSplitOn(Features.POLICIES)
-  const isAdministrationEnabled = useIsSplitOn(Features.UNRELEASED) || earlyBetaEnabled
   const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
   const isPersonaEnabled = useIsSplitOn(Features.PERSONA)
   const isMacRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
@@ -250,7 +249,7 @@ export function useMenuConfig () {
         { uri: '/reports', label: $t({ defaultMessage: 'Reports' }) }
       ]
     },
-    ...(isAdministrationEnabled ? [{
+    {
       label: $t({ defaultMessage: 'Administration' }),
       inactiveIcon: AdminOutlined,
       activeIcon: AdminSolid,
@@ -304,7 +303,7 @@ export function useMenuConfig () {
           ]
         }
       ]
-    }] : [])
+    }
   ]
   if (isGuestManager) { return [] }
   return config
