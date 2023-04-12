@@ -84,4 +84,30 @@ describe('RadioCard', () => {
       expect(onClick).toBeCalledTimes(1)
     })
   })
+  describe('type = disabled', () => {
+    it('should render', async () => {
+      render(<RadioCard
+        type='disabled'
+        value='value'
+        title='title'
+        description='description'
+        categories={[Category.WIFI, Category.SWITCH, Category.EDGE]}
+      />)
+      await screen.findByText('title')
+      await screen.findByText('description')
+      await screen.findByText('Wi-Fi')
+    })
+    it('should handle onClick', async () => {
+      const onClick = jest.fn()
+      render(<RadioCard
+        type='disabled'
+        value='value'
+        title='title'
+        description='description'
+        onClick={onClick}
+      />)
+      fireEvent.click(await screen.findByText('title'))
+      expect(onClick).not.toBeCalled()
+    })
+  })
 })
