@@ -40,15 +40,14 @@ function Layout () {
   const tenantId = useTenantId()
   const params = useParams()
 
+  const logo = useLogo(tenantId)
+
   const { data: userProfile } = useUserProfileContext()
   const companyName = userProfile?.companyName
   const tenantType = getJwtTokenPayload().tenantType
   const showHomeButton =
     isDelegationMode() || userProfile?.var || tenantType === AccountType.MSP_NON_VAR ||
     tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
-
-  const logo = useLogo(tenantId)
-
   const isBackToRC = (PverName.ACX === getJwtTokenPayload().pver ||
     PverName.ACX_HYBRID === getJwtTokenPayload().pver)
 
@@ -59,7 +58,6 @@ function Layout () {
       ? `${getBasePath()}/v/${getJwtTokenPayload().tenantId}/users/guestsManager`
       : `${getBasePath()}/v/${getJwtTokenPayload().tenantId}`
   }
-
   useEffect(() => {
     if (isGuestManager && params['*'] !== 'guestsManager') {
       navigate({
