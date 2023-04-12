@@ -56,9 +56,10 @@ describe('edit switch/stack form', () => {
       route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/edit' }
     })
 
-    const addButton = await screen.findByRole('button', { name: /add rule/i })
-    fireEvent.click(addButton)
-    expect(await screen.findByText(/add route/i)).toBeVisible()
+    const addButton = await screen.findAllByRole('button', { name: /add route/i })
+    fireEvent.click(addButton[0])
+    const drawer = await screen.findByRole('dialog')
+    expect(await within(drawer).findByText(/add route/i)).toBeVisible()
   })
 
   it('should render edit static route page correctly', async () => {
