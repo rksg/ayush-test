@@ -20,6 +20,7 @@ export default function ServiceCatalog () {
   const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const isEdgeDhcpEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
+  const propertyManagementEnabled = useIsSplitOn(Features.PROPERTY_MANAGEMENT)
 
   const sets = [
     {
@@ -57,6 +58,11 @@ export default function ServiceCatalog () {
           type: ServiceType.WEBAUTH_SWITCH,
           categories: [RadioCardCategory.SWITCH],
           disabled: !networkSegmentationEnabled || !networkSegmentationSwitchEnabled
+        },
+        {
+          type: ServiceType.RESIDENT_PORTAL,
+          categories: [RadioCardCategory.WIFI],
+          disabled: !propertyManagementEnabled
         }
       ]
     }
