@@ -140,7 +140,9 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
           checked={fromClient}
           onChange={() => {
             drawerForm.setFieldValue('fromClient', !fromClient)
+            drawerForm.setFieldValue('fromClientValue', 200)
             setFromClient(!fromClient)
+            setFromClientValue(200)
           }}>
           {$t({ defaultMessage: 'From Client:' })}
         </Checkbox>
@@ -166,7 +168,9 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
           checked={toClient}
           onChange={() => {
             drawerForm.setFieldValue('toClient', !toClient)
+            drawerForm.setFieldValue('toClientValue', 200)
             setToClient(!toClient)
+            setToClientValue(200)
           }}>
           {$t({ defaultMessage: 'To Client:' })}
         </Checkbox>
