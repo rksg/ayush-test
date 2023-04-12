@@ -100,6 +100,19 @@ export interface PropertyUnitFormFields extends PropertyUnit {
 }
 
 export interface ResidentPortal {
-  id: string,
-  name: string
+  id?: string,
+  name: string,
+  uiConfiguration?: uiConfiguration
+}
+
+interface uiConfiguration {
+  type: "uiConfiguration",
+  text: {
+    type: "text",
+    title: string,
+    subTitle: string,
+    loginText: string,
+    announcements: string,
+    helpText: string
+  }
 }

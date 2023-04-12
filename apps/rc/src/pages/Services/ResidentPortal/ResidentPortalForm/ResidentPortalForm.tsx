@@ -9,79 +9,84 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { useCreateDpskMutation, useGetDpskQuery, useUpdateDpskMutation } from '@acx-ui/rc/services'
+import { useAddResidentPortalMutation, useGetResidentPortalQuery, useUpdateResidentPortalMutation } from '@acx-ui/rc/services'
 import {
   ServiceType,
   getServiceRoutePath,
   ServiceOperation,
-  DpskSaveData,
-  DeviceNumberType
+  ResidentPortal
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
+import ResidentPortalSettingsForm from './ResidentPortalSettingsForm'
+import { CreateResidentPortalFormFields, transferFormFieldsToSaveData, transferSaveDataToFormFields } from './formParsing'
 
 interface ResidentPortalFormProps {
-  editMode?: boolean,
-  modalMode?: boolean,
-  modalCallBack?: (result?: DpskSaveData) => void
+  editMode?: boolean
 }
 
 export default function ResidentPortalForm (props: ResidentPortalFormProps) {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  // eslint-disable-next-line max-len
-  const linkToServices = useTenantLink(getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST }))
+  const linkToServices = useTenantLink(
+    getServiceRoutePath({ type: ServiceType.RESIDENT_PORTAL, oper: ServiceOperation.LIST }))
   const params = useParams()
-  const { editMode = false, modalMode = false, modalCallBack } = props
+  const { editMode = false } = props
 
-//   const [ createDpsk ] = useCreateDpskMutation()
-//   const [ updateDpsk ] = useUpdateDpskMutation()
-//   const {
-//     data: dataFromServer,
-//     isLoading,
-//     isFetching
-//   } = useGetDpskQuery({ params }, { skip: !editMode })
-//   const formRef = useRef<StepsFormInstance<CreateDpskFormFields>>()
-//   const initialValues: Partial<CreateDpskFormFields> = {
-//     passphraseFormat: PassphraseFormatEnum.MOST_SECURED,
-//     passphraseLength: 18,
-//     deviceNumberType: DeviceNumberType.UNLIMITED
-//   }
-    // TODO: these are just for stubbing the page -- remove them
-    const isLoading = true
-    const isFetching = true
+  const [ addResidentPortal ] = useAddResidentPortalMutation()
+  const [ updateResidentPortal ] = useUpdateResidentPortalMutation()
 
-//   useEffect(() => {
-//     if (dataFromServer && editMode) {
-//       formRef.current?.setFieldsValue(transferSaveDataToFormFields(dataFromServer))
-//     }
-//   }, [dataFromServer, editMode])
+  const {
+    data: originalPortalData,
+    isLoading,
+    isFetching
+  } = useGetResidentPortalQuery({ params }, { skip: !editMode })
 
-//   const saveData = async (data: CreateDpskFormFields) => {
-//     const dpskSaveData = transferFormFieldsToSaveData(data)
-//     let result: DpskSaveData
+  const formRef = useRef<StepsFormInstance<CreateResidentPortalFormFields>>()
 
-//     try {
-//       if (editMode) {
-//         result = await updateDpsk({ params, payload: _.omit(dpskSaveData, 'id') }).unwrap()
-//       } else {
-//         result = await createDpsk({ payload: dpskSaveData }).unwrap()
-//       }
+  const initialValues: Partial<CreateResidentPortalFormFields> = {
+    textTitle: $t({defaultMessage: 'Resident Portal'}),
+    textLogin: $t({defaultMessage: 'Welcome to Your Portal'})
+  }
 
-//       modalMode ? modalCallBack?.(result) : navigate(linkToServices, { replace: true })
-//     } catch (error) {
-//       console.log(error) // eslint-disable-line no-console
-//     }
-//   }
+  useEffect(() => {
+    if (originalPortalData && editMode) {
+      formRef.current?.setFieldsValue(transferSaveDataToFormFields(originalPortalData))
+    }
+  }, [originalPortalData, editMode])
+
+  const saveData = async (data: CreateResidentPortalFormFields) => {
+    
+    const residentPortalSaveData = transferFormFieldsToSaveData(data)
+
+    let result: ResidentPortal
+
+    try {
+
+      const portalConfiguration = new Blob([JSON.stringify(residentPortalSaveData)], {type: 'application/json'})
+      const formData = new FormData()
+
+      if (editMode) {        
+        formData.append('changes', portalConfiguration, '')
+        result = await updateResidentPortal({ params, payload: formData}).unwrap()
+      } else {
+        formData.append('portal', portalConfiguration, '')
+        result = await addResidentPortal({ payload: formData }).unwrap()
+      }
+
+      navigate(linkToServices, {replace: true})
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
+  }
 
   return (
     <>
-      {!modalMode && <PageHeader
+      <PageHeader
         title={editMode
-            // TODO: verify labels with Mockups
           ? $t({ defaultMessage: 'Edit Resident Portal' })
           : $t({ defaultMessage: 'Add Resident Portal' })
         }
@@ -91,22 +96,22 @@ export default function ResidentPortalForm (props: ResidentPortalFormProps) {
             link: getServiceRoutePath({ type: ServiceType.RESIDENT_PORTAL, oper: ServiceOperation.LIST })
           }
         ]}
-      />}
+      />
       <Loader states={[{ isLoading, isFetching }]}>
-        {/* <StepsForm<CreateDpskFormFields>
+        <StepsForm<CreateResidentPortalFormFields>
           formRef={formRef}
-          onCancel={() => modalMode ? modalCallBack?.() : navigate(linkToServices)}
+          onCancel={() => navigate(linkToServices)}
           onFinish={saveData}
         >
-          <StepsForm.StepForm<CreateDpskFormFields>
+          <StepsForm.StepForm<CreateResidentPortalFormFields>
             name='details'
             title={$t({ defaultMessage: 'Settings' })}
             initialValues={initialValues}
-            preserve={modalMode ? false : true}
+            preserve={true}
           >
-            <DpskSettingsForm />
+            <ResidentPortalSettingsForm />
           </StepsForm.StepForm>
-        </StepsForm> */}
+        </StepsForm>
       </Loader>
     </>
   )

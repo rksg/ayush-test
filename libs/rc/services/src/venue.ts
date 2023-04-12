@@ -1091,6 +1091,41 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       providesTags: [{ type: 'ResidentPortal', id: 'LIST' }]
     }),
+    addResidentPortal: build.mutation<ResidentPortal, RequestFormData>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.addResidentPortal, params,
+          {'Content-Type': undefined, 'Accept':'*/*'})
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'ResidentPortal', id: 'LIST' }]
+    }),
+    getResidentPortal: build.query<ResidentPortal, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          PropertyUrlsInfo.getResidentPortal, 
+          params,
+          { Accept: 'application/hal+json' })
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'ResidentPortal', id: 'ID' }]
+    }),
+    updateResidentPortal: build.mutation<ResidentPortal, RequestFormData>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.patchResidentPortal, params,
+          {'Content-Type': undefined, 'Accept':'*/*'})
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'ResidentPortal', id: 'LIST' }]
+    }),
+
     getVenueWithSetProperty: build.query<string[], string[]>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const result: string[] = []
@@ -1200,6 +1235,11 @@ export const {
   useUpdatePropertyUnitMutation,
   useDeletePropertyUnitsMutation,
   useGetResidentPortalListQuery,
+  useLazyGetResidentPortalListQuery,
+  useAddResidentPortalMutation,
+  useGetResidentPortalQuery,
+  useUpdateResidentPortalMutation,
+
   useImportPropertyUnitsMutation,
   useLazyDownloadPropertyUnitsQuery,
   useGetVenueWithSetPropertyQuery

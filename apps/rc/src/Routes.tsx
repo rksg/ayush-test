@@ -385,9 +385,8 @@ function ServiceRoutes () {
         path={getServiceRoutePath({ type: ServiceType.RESIDENT_PORTAL, oper: ServiceOperation.CREATE })}
         element={<ResidentPortalForm />}
       />
-      {/* TODO: Verify Resident Portal Edit */}
       <Route
-        path={getServiceRoutePath({ type: ServiceType.RESIDENT_PORTAL, oper: ServiceOperation.CREATE })}
+        path={getServiceRoutePath({ type: ServiceType.RESIDENT_PORTAL, oper: ServiceOperation.EDIT })}
         element={<ResidentPortalForm editMode={true} />}
       />
     </Route>

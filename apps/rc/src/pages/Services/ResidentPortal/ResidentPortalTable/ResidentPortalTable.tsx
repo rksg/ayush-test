@@ -33,43 +33,43 @@ export default function ResidentPortalTable () {
 
   const tableQuery = useTableQuery({ useQuery: useGetResidentPortalListQuery, defaultPayload: {} })
 
-//   const rowActions: TableProps<DpskSaveData>['rowActions'] = [
-//     {
-//       label: intl.$t({ defaultMessage: 'Delete' }),
-//       visible: ([selectedRow]) => selectedRow && !selectedRow.identityId,
-//       onClick: ([{ id, name }], clearSelection) => {
-//         showActionModal({
-//           type: 'confirm',
-//           customContent: {
-//             action: 'DELETE',
-//             entityName: intl.$t({ defaultMessage: 'DPSK Service' }),
-//             entityValue: name
-//           },
-//           onOk: async () => {
-//             try {
-//               await deleteDpsk({ params: { serviceId: id } }).unwrap()
-//               clearSelection()
-//             } catch (error) {
-//               console.log(error) // eslint-disable-line no-console
-//             }
-//           }
-//         })
-//       }
-//     },
-//     {
-//       label: intl.$t({ defaultMessage: 'Edit' }),
-//       onClick: ([{ id }]) => {
-//         navigate({
-//           ...tenantBasePath,
-//           pathname: `${tenantBasePath.pathname}/` + getServiceDetailsLink({
-//             type: ServiceType.DPSK,
-//             oper: ServiceOperation.EDIT,
-//             serviceId: id!
-//           })
-//         })
-//       }
-//     }
-//   ]
+  const rowActions: TableProps<ResidentPortal>['rowActions'] = [
+    // {
+    //   label: intl.$t({ defaultMessage: 'Delete' }),
+    //   visible: ([selectedRow]) => selectedRow && !selectedRow.identityId,
+    //   onClick: ([{ id, name }], clearSelection) => {
+    //     showActionModal({
+    //       type: 'confirm',
+    //       customContent: {
+    //         action: 'DELETE',
+    //         entityName: intl.$t({ defaultMessage: 'DPSK Service' }),
+    //         entityValue: name
+    //       },
+    //       onOk: async () => {
+    //         try {
+    //           await deleteDpsk({ params: { serviceId: id } }).unwrap()
+    //           clearSelection()
+    //         } catch (error) {
+    //           console.log(error) // eslint-disable-line no-console
+    //         }
+    //       }
+    //     })
+    //   }
+    // },
+    {
+      label: intl.$t({ defaultMessage: 'Edit' }),
+      onClick: ([{ id }]) => {
+        navigate({
+          ...tenantBasePath,
+          pathname: `${tenantBasePath.pathname}/` + getServiceDetailsLink({
+            type: ServiceType.RESIDENT_PORTAL,
+            oper: ServiceOperation.EDIT,
+            serviceId: id!
+          })
+        })
+      }
+    }
+  ]
 
   const columns: TableProps<ResidentPortal>['columns'] = [
     {
@@ -180,7 +180,7 @@ export default function ResidentPortalTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          // rowActions={filterByAccess(rowActions)}
+          rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
         />
       </Loader>

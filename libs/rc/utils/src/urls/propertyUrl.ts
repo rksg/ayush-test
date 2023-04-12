@@ -12,7 +12,10 @@ type PropertyUrlType =
   'getPropertyUnitList' |
   'updatePropertyUnit' |
   'deletePropertyUnits' |
-  'getResidentPortalList'
+  'getResidentPortalList' |
+  'addResidentPortal' |
+  'getResidentPortal' |
+  'patchResidentPortal'
 
 const paginationParams = '?size=:pageSize&page=:page&sort=:sort'
 
@@ -71,5 +74,20 @@ export const PropertyUrlsInfo: { [key in PropertyUrlType]: ApiInfo } = {
     method: 'get',
     newApi: true,
     url: `/residentPortals${paginationParams}`
+  },
+  addResidentPortal: {
+    method: 'post',
+    newApi: true,
+    url: '/residentPortals'
+  },
+  getResidentPortal: {
+    method: 'get',
+    newApi: true,
+    url: '/residentPortals/:serviceId'
+  },
+  patchResidentPortal: {
+    method: 'PATCH',
+    newApi: true,
+    url: '/residentPortals/:serviceId'
   }
 }
