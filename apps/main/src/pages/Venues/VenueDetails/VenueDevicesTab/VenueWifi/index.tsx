@@ -120,7 +120,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       title: intl.$t({ defaultMessage: 'Signal' }),
       dataIndex: 'apUpRssi',
       sorter: false,
-      width: 100,
+      width: 160,
       render: function (data, row) {
         if(row.meshRole !== APMeshRole.RAP && row.meshRole !== APMeshRole.EMAP){
           return (

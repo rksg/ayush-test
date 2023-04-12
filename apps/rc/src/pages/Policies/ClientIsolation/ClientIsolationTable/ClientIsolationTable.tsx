@@ -98,7 +98,7 @@ export default function ClientIsolationTable () {
         extra={filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.CREATE })}>
-            <Button type='primary'>{$t({ defaultMessage: 'Add Client Isolation Pofile' })}</Button>
+            <Button type='primary'>{$t({ defaultMessage: 'Add Client Isolation Profile' })}</Button>
           </TenantLink>
         ])}
       />
