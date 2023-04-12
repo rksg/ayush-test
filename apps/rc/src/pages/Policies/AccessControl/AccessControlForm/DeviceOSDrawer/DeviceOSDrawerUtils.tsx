@@ -99,8 +99,19 @@ export const isDeviceOSEnabled = (
   deviceOSMappingTable: { [key: string]: string[] },
   editOsVendor: string
 ) => {
-  if (deviceOSMappingTable[deviceType].length === 0) return true
+  if (editOsVendor) {
+    if (editOsVendor === 'All') return false
+    if (option === 'All' && editOsVendor !== 'All') return false
+  }
+
+  if (option === 'All') {
+    const originDeviceOsMapping = getDeviceOsVendorMap()
+    const originLength = originDeviceOsMapping[deviceType].filter(device => device !== 'All').length
+    const optionLength = deviceOSMappingTable[deviceType].filter(device => device !== 'All').length
+    if (originLength !== optionLength) return true
+  }
   if (option === editOsVendor) return false
+  if (deviceOSMappingTable[deviceType].length === 0) return true
   return deviceOSMappingTable[deviceType]
     .findIndex(vendor => vendor === option) === -1
 }
