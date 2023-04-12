@@ -2,40 +2,26 @@
 import { SortOrder }          from 'antd/lib/table/interface'
 import { startCase, toLower } from 'lodash'
 import { useIntl }            from 'react-intl'
+import { defineMessage }      from 'react-intl'
 
 import { defaultSort, dateSort, sortProp }                        from '@acx-ui/analytics/utils'
 import { Table, TableProps, Tooltip, TrendPill, showActionModal } from '@acx-ui/components'
 import { Loader }                                                 from '@acx-ui/components'
 import { DateFormatEnum, formatter }                              from '@acx-ui/formatter'
 import { TenantLink }                                             from '@acx-ui/react-router-dom'
-import { TimeStamp }                                              from '@acx-ui/types'
 import { TABLE_DEFAULT_PAGE_SIZE }                                from '@acx-ui/utils'
 
 import { useVideoCallQoeTestsQuery } from '../VideoCallQoe/services'
 
 import { messageMapping } from './errorMessageMapping'
 import * as UI            from './styledComponents'
+import { Meeting }        from './types'
 
 
 export function VideoCallQoeTable () {
   const { $t } = useIntl()
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const queryResults = useVideoCallQoeTestsQuery(null)
+  const queryResults = useVideoCallQoeTestsQuery({})
   const allCallQoeTests = queryResults.data?.getAllCallQoeTests
-
-  type Meeting = {
-    id: number,
-    name: string
-    zoomMeetingId: number,
-    status: string,
-    invalidReason: string,
-    joinUrl: string,
-    participantCount: number,
-    mos: number,
-    createdTime: TimeStamp,
-    startTime: TimeStamp
-  }
-
   const meetingList: Meeting[] = []
   allCallQoeTests?.forEach((qoeTest)=> {
     const { name, meetings } = qoeTest
@@ -44,21 +30,29 @@ export function VideoCallQoeTable () {
     })
   })
 
+  const statusMapping = {
+    NOT_STARTED: defineMessage({ defaultMessage: 'Not Started' }),
+    STARTED: defineMessage({ defaultMessage: 'Started' }),
+    ENDED: defineMessage({ defaultMessage: 'Ended' }),
+    INVALID: defineMessage({ defaultMessage: 'Invalid' })
+  }
+
   const columnHeaders: TableProps<Meeting>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
       key: 'name',
+      searchable: true,
       render: (value: unknown, row: unknown) => {
-        const formattedStatus = startCase(toLower(value as string))
+        const formattedStatus = startCase(toLower((row as Meeting).status as string))
         const meetingId = (row as Meeting).id
         // TODO implement url text based on Ended or Not Started Call
         const urlTxt = formattedStatus === 'Ended' ? `${meetingId}` : `${meetingId}`
-        return (
+        return ['Ended', 'Not Started'].includes(formattedStatus) ?
           <TenantLink to={`/serviceValidation/videoCallQoe/${urlTxt}`}>
             {value as string}
           </TenantLink>
-        )
+          : value as string
       },
       sorter: { compare: sortProp('name', defaultSort) }
     },
@@ -107,7 +101,9 @@ export function VideoCallQoeTable () {
           </Tooltip>))
       },
       sorter: { compare: sortProp('status', defaultSort) },
-      align: 'center'
+      align: 'center',
+      filterable: Object.entries(statusMapping)
+        .map(([key, value])=>({ key, value: $t(value) }))
     },
     {
       title: $t({ defaultMessage: 'QoE' }),
