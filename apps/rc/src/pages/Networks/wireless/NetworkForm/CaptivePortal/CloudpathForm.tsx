@@ -20,6 +20,8 @@ import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
 import { AuthAccServerSetting } from './AuthAccServerSetting'
+import { WalledGardenTextArea } from './SharedComponent/WalledGardenTextArea'
+
 export function CloudpathForm () {
   const {
     data,
