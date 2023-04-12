@@ -17,7 +17,8 @@ import {
   StepsFormInstance,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
+import { GoogleMapWithPreference } from '@acx-ui/rc/components'
 import {
   useApListQuery,
   useAddApMutation,
@@ -652,7 +653,7 @@ function CoordinatesModal (props: {
         />
       </Form.Item>
       {isMapEnabled ?
-        <GoogleMap
+        <GoogleMapWithPreference
           libraries={['places']}
           mapTypeControl={false}
           streetViewControl={false}
@@ -665,7 +666,7 @@ function CoordinatesModal (props: {
             draggable={true}
             onDragEnd={onDragEndMaker}
           />}
-        </GoogleMap>
+        </GoogleMapWithPreference>
         :
         <GoogleMap.NotEnabled />
       }

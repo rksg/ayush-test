@@ -21,30 +21,26 @@ import {
 import {
   MspEcDropdownList
 } from '@acx-ui/msp/components'
-import { CloudMessageBanner, useUpdateGoogleMapRegion }          from '@acx-ui/rc/components'
-import { useGetPreferencesQuery }                                from '@acx-ui/rc/services'
-import { isDelegationMode, TenantPreferenceSettings }            from '@acx-ui/rc/utils'
+import { CloudMessageBanner }                                    from '@acx-ui/rc/components'
+import { isDelegationMode }                                      from '@acx-ui/rc/utils'
 import { getBasePath, Link, Outlet, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { useParams }                                             from '@acx-ui/react-router-dom'
 import { RolesEnum }                                             from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }                       from '@acx-ui/user'
-import { getJwtTokenPayload, PverName }                          from '@acx-ui/utils'
+import { AccountType, getJwtTokenPayload, PverName }             from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
 import SearchBar         from './SearchBar'
 import * as UI           from './styledComponents'
 
-const getMapRegion = (data: TenantPreferenceSettings | undefined): string => {
-  return data?.global.mapRegion as string
-}
-
 function Layout () {
   const [supportStatus,setSupportStatus] = useState('')
-  const [isSkip, setSkipQuery] = useState(false)
-
   const { data: userProfile } = useUserProfileContext()
   const companyName = userProfile?.companyName
-  const showHomeButton = isDelegationMode() || userProfile?.var
+  const tenantType = getJwtTokenPayload().tenantType
+  const showHomeButton =
+    isDelegationMode() || userProfile?.var || tenantType === AccountType.MSP_NON_VAR ||
+    tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
   const { $t } = useIntl()
   const basePath = useTenantLink('/users/guestsManager')
   const navigate = useNavigate()
@@ -55,18 +51,14 @@ function Layout () {
   const [licenseExpanded, setLicenseExpanded] = useState<boolean>(false)
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
 
-  const { data } = useGetPreferencesQuery({ params }, { skip: isSkip })
-  const { update: updateGoogleMapRegion } = useUpdateGoogleMapRegion()
   const isBackToRC = (PverName.ACX === getJwtTokenPayload().pver ||
     PverName.ACX_HYBRID === getJwtTokenPayload().pver)
 
-  useEffect(() => {
-    if (data?.global) {
-      const currentMapRegion = getMapRegion(data)
-      updateGoogleMapRegion(currentMapRegion)
-      setSkipQuery(true)
-    }
-  }, [data])
+  const getIndexPath = () => {
+    return isGuestManager
+      ? `${getBasePath()}/v/${getJwtTokenPayload().tenantId}/users/guestsManager`
+      : `${getBasePath()}/v/${getJwtTokenPayload().tenantId}`
+  }
 
   useEffect(() => {
     if (isGuestManager && params['*'] !== 'guestsManager') {
@@ -95,7 +87,7 @@ function Layout () {
                 {$t({ defaultMessage: 'Home' })}
               </UI.Home>
             </a> :
-            <Link to={`${getBasePath()}/v/${getJwtTokenPayload().tenantId}`}>
+            <Link to={getIndexPath()}>
               <UI.Home>
                 <LayoutUI.Icon children={<HomeSolid />} />
                 {$t({ defaultMessage: 'Home' })}

@@ -67,6 +67,9 @@ import SyslogDetailView           from './pages/Policies/Syslog/SyslogDetail/Sys
 import SyslogForm                 from './pages/Policies/Syslog/SyslogForm/SyslogForm'
 import SyslogTable                from './pages/Policies/Syslog/SyslogTable/SyslogTable'
 import AddTunnelProfile           from './pages/Policies/TunnelProfile/AddTunnelProfile'
+import EditTunnelProfile          from './pages/Policies/TunnelProfile/EditTunnelProfile'
+import TunnelProfileDetail        from './pages/Policies/TunnelProfile/TunnelProfileDetail'
+import TunnelProfileTable         from './pages/Policies/TunnelProfile/TunnelProfileTable'
 import VLANPoolDetail             from './pages/Policies/VLANPool/VLANPoolDetail'
 import VLANPoolForm               from './pages/Policies/VLANPool/VLANPoolForm/VLANPoolForm'
 import VLANPoolTable              from './pages/Policies/VLANPool/VLANPoolTable/VLANPoolTable'
@@ -581,6 +584,18 @@ function PolicyRoutes () {
       <Route
         path={getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.CREATE })}
         element={<AddTunnelProfile />}
+      />
+      <Route
+        path={getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.LIST })}
+        element={<TunnelProfileTable />}
+      />
+      <Route
+        path={getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.DETAIL })}
+        element={<TunnelProfileDetail />}
+      />
+      <Route
+        path={getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.EDIT })}
+        element={<EditTunnelProfile />}
       />
     </Route>
   )

@@ -55,7 +55,7 @@ export default function SelectServiceForm () {
         { type: ServiceType.DPSK, categories: [RadioCardCategory.WIFI] },
         {
           type: ServiceType.NETWORK_SEGMENTATION,
-          categories: [RadioCardCategory.WIFI],
+          categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
           disabled: !networkSegmentationEnabled
         }
       ]
