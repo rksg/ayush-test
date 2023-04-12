@@ -10,7 +10,8 @@ import {
   useGetApSnmpViewModelQuery,
   useGetEnhancedClientIsolationListQuery,
   useSyslogPolicyListQuery,
-  useMacRegListsQuery
+  useMacRegListsQuery,
+  useGetTunnelProfileViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
   getPolicyRoutePath,
@@ -167,7 +168,9 @@ function useCardData (): CardDataProps[] {
     {
       type: PolicyType.TUNNEL_PROFILE,
       categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
-      totalCount: 0,
+      totalCount: useGetTunnelProfileViewDataListQuery({
+        params, payload: { ...defaultPayload }
+      }, { skip: !isEdgeEnabled }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.LIST })),
       disabled: !isEdgeEnabled
