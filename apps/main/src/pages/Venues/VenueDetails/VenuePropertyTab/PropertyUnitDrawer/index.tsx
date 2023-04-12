@@ -172,7 +172,6 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   useEffect(() => {
     if (visible && unitId && venueId && personaGroupId) {
       form.resetFields()
-      // console.log('Get Unit by id ', unitId)
       getUnitById({ params: { venueId, unitId } })
         .then(result => {
           if (result.data) {
@@ -202,7 +201,6 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
       .then(([personaResult, guestResult]) => {
         form.setFieldsValue(data ?? {})
         if (personaResult?.data) {
-          // console.log('Persona :: ', personaResult?.data)
           const { vlan, dpskPassphrase, ethernetPorts, vni } = personaResult.data as Persona
           if (withNsg) {
             const apName = ethernetPorts?.[0]?.name
@@ -221,7 +219,6 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
 
         if (guestResult?.data) {
           const { vlan, dpskPassphrase } = guestResult.data
-          // console.log('Guest Persona :: ', guestResult?.data)
           if (!withNsg) {
             form.setFieldValue('enableGuestVlan', personaResult?.data?.vlan !== vlan)
             // if no timeout would not render exactly
