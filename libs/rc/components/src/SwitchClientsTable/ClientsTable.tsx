@@ -80,17 +80,17 @@ export function ClientsTable (props: {
     }, {
       key: 'clientType',
       title: intl.$t({ defaultMessage: 'Device Type' }),
-      dataIndex: 'clientType',
+      dataIndex: 'deviceType',
       sorter: true,
       searchable: searchable,
-      render: (data) => {
-        switch(data){
+      render: (data, row) => {
+        switch(row.clientType){
           case SWITCH_CLIENT_TYPE.AP:
             return 'AP'
           case SWITCH_CLIENT_TYPE.ROUTER:
             return 'Router'
           default:
-            return data || '--'
+            return row.clientType || '--'
         }
       }
     }, {
