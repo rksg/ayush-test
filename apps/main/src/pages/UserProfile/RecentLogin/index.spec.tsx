@@ -1,5 +1,4 @@
 import { rest } from 'msw'
-import _ from 'lodash'
 
 import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
 import { Provider }           from '@acx-ui/store'
