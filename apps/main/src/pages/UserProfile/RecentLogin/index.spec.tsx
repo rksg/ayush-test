@@ -1,4 +1,5 @@
 import { rest } from 'msw'
+import _ from 'lodash'
 
 import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
 import { Provider }           from '@acx-ui/store'
@@ -20,15 +21,17 @@ const events = {
       adminName: 'msp eleu1658',
       entity_type: 'ADMIN',
       event_datetime: '2023-01-16T20:55:20Z',
+      ipAddress: '',
       id: '2e0d0ce655904d3b8e1404064b1175d1',
       entity_id: '662b4f2c76a0428a9e7faaa64534d67a',
-      message: '{ "message_template": "Admin msp eleu1658, msp.eleu1658@mail.com logged into the cloud controller." }'
+      message: '{ "message_template": "Admin msp eleu1658, msp.eleu1658@mail.com logged out the cloud controller." }'
     },
     {
       severity: 'Info',
       adminName: 'msp eleu1658',
       entity_type: 'ADMIN',
       event_datetime: '2023-01-16T17:22:47Z',
+      ipAddress: '134.242.133.1',
       id: '2e0d0ce655904d3b8e1404064b1175d4',
       entity_id: '662b4f2c76a0428a9e7faaa64534d67a',
       message: '{ "message_template": "Admin msp eleu1658, msp.eleu1658@mail.com logged into the cloud controller." }'
@@ -57,6 +60,7 @@ const events = {
     'severity',
     'entity_type',
     'entity_id',
+    'ipAddress',
     'message',
     'apMac',
     'clientMac',
@@ -123,6 +127,6 @@ describe('Recent login table', () => {
     expect(tbody).toBeVisible()
 
     const rows = await screen.findAllByRole('row')
-    expect(rows).toHaveLength(3)
+    expect(rows).toHaveLength(2)
   })
 })
