@@ -277,6 +277,14 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     advancedCustomization.applicationPolicyId = null
   }
 
+  if (!get(data, 'wlan.advancedCustomization.l2AclPolicyId')) {
+    advancedCustomization.l2AclPolicyId = null
+  }
+
+  if (!get(data, 'wlan.advancedCustomization.l3AclPolicyId')) {
+    advancedCustomization.l3AclPolicyId = null
+  }
+
   if (!get(data, 'accessControlProfileEnable')) {
     advancedCustomization.accessControlProfileId = null
     advancedCustomization.accessControlEnable = false
