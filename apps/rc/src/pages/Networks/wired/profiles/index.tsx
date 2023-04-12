@@ -33,7 +33,7 @@ export function ProfilesTab () {
     key: 'venueCount',
     title: $t({ defaultMessage: 'Venues' }),
     dataIndex: 'venueCount',
-    sorter: false, // API does not seem to be working
+    sorter: true,
     render: function (data, row) {
       if (row.venues) {
         return <Tooltip

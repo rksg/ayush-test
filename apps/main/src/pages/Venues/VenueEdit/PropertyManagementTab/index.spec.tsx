@@ -21,8 +21,8 @@ import {
   mockPersonaGroupList,
   replacePagination
 } from '../../../../../../rc/src/pages/Users/Persona/__tests__/fixtures'
-import { mockEnabledPropertyConfig, mockPropertyUnitList, mockResidentPortalProfileList } from '../../__tests__/fixtures'
-import { VenueEditContext }                                                               from '../index'
+import { mockEnabledNoNSGPropertyConfig, mockPropertyUnitList, mockResidentPortalProfileList } from '../../__tests__/fixtures'
+import { VenueEditContext }                                                                    from '../index'
 
 import { PropertyManagementTab } from './index'
 
@@ -50,7 +50,7 @@ describe('Property Config Tab', () => {
         PropertyUrlsInfo.getPropertyConfigs.url,
         (req, res, ctx) => {
           if (req.params.venueId === enabledParams.venueId) {
-            return res(ctx.json(mockEnabledPropertyConfig))
+            return res(ctx.json(mockEnabledNoNSGPropertyConfig))
           } else {
             return res(ctx.status(404))
           }
