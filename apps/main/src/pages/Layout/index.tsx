@@ -21,9 +21,8 @@ import {
 import {
   MspEcDropdownList
 } from '@acx-ui/msp/components'
-import { CloudMessageBanner, useUpdateGoogleMapRegion }           from '@acx-ui/rc/components'
-import { useGetPreferencesQuery }                                 from '@acx-ui/rc/services'
-import { isDelegationMode, TenantPreferenceSettings }             from '@acx-ui/rc/utils'
+import { CloudMessageBanner }                                     from '@acx-ui/rc/components'
+import { isDelegationMode }                                       from '@acx-ui/rc/utils'
 import { getBasePath, Link, Outlet, useNavigate, useTenantLink }  from '@acx-ui/react-router-dom'
 import { useParams }                                              from '@acx-ui/react-router-dom'
 import { RolesEnum }                                              from '@acx-ui/types'
@@ -34,10 +33,6 @@ import { useMenuConfig } from './menuConfig'
 import SearchBar         from './SearchBar'
 import * as UI           from './styledComponents'
 import { useLogo }       from './useLogo'
-
-const getMapRegion = (data: TenantPreferenceSettings | undefined): string => {
-  return data?.global.mapRegion as string
-}
 
 function Layout () {
   const { $t } = useIntl()
@@ -54,16 +49,8 @@ function Layout () {
 
   const logo = useLogo(tenantId)
 
-  const { data: preferences } = useGetPreferencesQuery({ params: { tenantId } })
-  const { update: updateGoogleMapRegion } = useUpdateGoogleMapRegion()
   const isBackToRC = (PverName.ACX === getJwtTokenPayload().pver ||
     PverName.ACX_HYBRID === getJwtTokenPayload().pver)
-  useEffect(() => {
-    if (preferences?.global) {
-      const currentMapRegion = getMapRegion(preferences)
-      updateGoogleMapRegion(currentMapRegion)
-    }
-  }, [preferences])
 
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const basePath = useTenantLink('/users/guestsManager')
@@ -72,6 +59,7 @@ function Layout () {
       ? `${getBasePath()}/v/${getJwtTokenPayload().tenantId}/users/guestsManager`
       : `${getBasePath()}/v/${getJwtTokenPayload().tenantId}`
   }
+
   useEffect(() => {
     if (isGuestManager && params['*'] !== 'guestsManager') {
       navigate({
