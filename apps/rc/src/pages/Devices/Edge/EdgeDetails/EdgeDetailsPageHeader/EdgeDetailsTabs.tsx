@@ -2,10 +2,9 @@
 import { useIntl } from 'react-intl'
 
 import { Tabs }                                  from '@acx-ui/components'
-import { EdgeStatusEnum, EdgeStatus }            from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-const EdgeDetailsTabs = (props:{ currentEdge: EdgeStatus }) => {
+const EdgeDetailsTabs = () => {
   const { $t } = useIntl()
   const params = useParams()
   const basePath = useTenantLink(`/devices/edge/${params.serialNumber}/edge-details`)
@@ -18,15 +17,15 @@ const EdgeDetailsTabs = (props:{ currentEdge: EdgeStatus }) => {
     })
   }
 
-  const { currentEdge } = props
-  const currentEdgeOperational = (currentEdge?.deviceStatus === EdgeStatusEnum.OPERATIONAL)
+  // const { currentEdge } = props
+  // const currentEdgeOperational = (currentEdge?.deviceStatus === EdgeStatusEnum.OPERATIONAL)
 
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
       <Tabs.TabPane tab={$t({ defaultMessage: 'Overview' })} key='overview' />
-      { currentEdgeOperational &&
+      {/* { currentEdgeOperational &&
         <Tabs.TabPane tab={$t({ defaultMessage: 'Troubleshooting' })}
-          key='troubleshooting' />}
+          key='troubleshooting' />} */}
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Services ({servicesCount})' }, { servicesCount: 0 })} // TODO: API support
         key='services'

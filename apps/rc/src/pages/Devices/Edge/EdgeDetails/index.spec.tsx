@@ -50,18 +50,19 @@ describe('EdgeDetails', () => {
     expect(tab.getAttribute('aria-selected')).toBe('true')
   })
 
-  it('should display troubleshooting tab correctly', async () => {
-    params['activeTab'] = 'troubleshooting'
+  // Troubleshooting TBD
+  // it('should display troubleshooting tab correctly', async () => {
+  //   params['activeTab'] = 'troubleshooting'
 
-    render(<Provider>
-      <EdgeDetails />
-    </Provider>, {
-      route: { params, path: '/:tenantId/devices/edge/:serialNumber/details/:activeTab' }
-    })
+  //   render(<Provider>
+  //     <EdgeDetails />
+  //   </Provider>, {
+  //     route: { params, path: '/:tenantId/devices/edge/:serialNumber/details/:activeTab' }
+  //   })
 
-    const tab = await screen.findByRole('tab', { name: 'Troubleshooting' })
-    expect(tab.getAttribute('aria-selected')).toBe('true')
-  })
+  //   const tab = await screen.findByRole('tab', { name: 'Troubleshooting' })
+  //   expect(tab.getAttribute('aria-selected')).toBe('true')
+  // })
 
   it('should display service tab correctly', async () => {
     params['activeTab'] = 'services'

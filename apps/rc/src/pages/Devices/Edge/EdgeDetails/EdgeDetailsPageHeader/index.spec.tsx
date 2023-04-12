@@ -4,17 +4,17 @@ import { rest }  from 'msw'
 
 import * as CommonComponent from '@acx-ui/components'
 import { EdgeUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider  }        from '@acx-ui/store'
+import { Provider }         from '@acx-ui/store'
 import {
-  render,
-  screen,
   fireEvent,
   mockServer,
-  waitFor
+  render,
+  screen,
+  waitFor,
+  within
 } from '@acx-ui/test-utils'
 
-
-import { mockEdgeData as currentEdge } from '../../__tests__/fixtures'
+import { mockEdgeList } from '../../__tests__/fixtures'
 
 import { EdgeDetailsPageHeader } from '.'
 
@@ -26,6 +26,7 @@ jest.mock('react-router-dom', () => ({
 }))
 
 describe('Edge Detail Page Header', () => {
+  const currentEdge = mockEdgeList.data[0]
   let params: { tenantId: string, serialNumber: string } =
   { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac', serialNumber: currentEdge.serialNumber }
 
@@ -33,11 +34,19 @@ describe('Edge Detail Page Header', () => {
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.getEdgeList.url,
-        (req, res, ctx) => res(ctx.json({ data: [currentEdge] }))
+        (req, res, ctx) => res(ctx.json(mockEdgeList))
       ),
       rest.delete(
         EdgeUrlsInfo.deleteEdge.url,
-        (req, res, ctx) => res(ctx.status(200))
+        (req, res, ctx) => res(ctx.status(202))
+      ),
+      rest.post(
+        EdgeUrlsInfo.reboot.url,
+        (req, res, ctx) => res(ctx.status(202))
+      ),
+      rest.post(
+        EdgeUrlsInfo.factoryReset.url,
+        (req, res, ctx) => res(ctx.status(202))
       )
     )
   })
@@ -84,10 +93,48 @@ describe('Edge Detail Page Header', () => {
     await userEvent.click(deleteBtn)
 
     await screen.findByText(`Delete "${currentEdge.name}"?`)
-    await userEvent.click(screen.getByRole('button', { name: 'Delete Edge' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Delete SmartEdge' }))
     await waitFor(() => {
       expect(mockedUsedNavigate).toHaveBeenCalledWith(`/t/${params.tenantId}/devices/edge/list`)
     })
+  })
+
+  it('should reboot edge correctly', async () => {
+    render(
+      <Provider>
+        <EdgeDetailsPageHeader />
+      </Provider>, {
+        route: { params }
+      })
+
+    const dropdownBtn = screen.getByRole('button', { name: 'More Actions' })
+    await userEvent.click(dropdownBtn)
+
+    const rebootBtn = await screen.findByRole('menuitem', { name: 'Reboot' })
+    await userEvent.click(rebootBtn)
+
+    const rebootDialog = await screen.findByRole('dialog')
+    await within(rebootDialog).findByText(`Reboot "${currentEdge.name}"?`)
+    await userEvent.click(within(rebootDialog).getByRole('button', { name: 'Reboot' }))
+  })
+
+  it('should factory rest edge correctly', async () => {
+    render(
+      <Provider>
+        <EdgeDetailsPageHeader />
+      </Provider>, {
+        route: { params }
+      })
+
+    const dropdownBtn = screen.getByRole('button', { name: 'More Actions' })
+    await userEvent.click(dropdownBtn)
+
+    const resetBtn = await screen.findByRole('menuitem', { name: 'Factory Reset' })
+    await userEvent.click(resetBtn)
+
+    const resetDialog = await screen.findByRole('dialog')
+    await within(resetDialog).findByText(`Factory reset "${currentEdge.name}"?`)
+    await userEvent.click(within(resetDialog).getByRole('button', { name: 'Reset' }))
   })
 
   it('should do nothing if serialNumber in URL is "undefined"', async () => {
