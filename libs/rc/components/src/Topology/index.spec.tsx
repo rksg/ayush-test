@@ -135,7 +135,8 @@ const graphData = {
           serial: 'D0D5408E5E02',
           id: 'D0:D5:40:8E:5E:02',
           states: DeviceStates.Regular,
-          childCount: 1
+          childCount: 1,
+          cloudPort: '1/2/1'
         },
         {
           type: DeviceTypes.Switch,
