@@ -17,10 +17,96 @@ export interface Response {
       participantCount:number,
       mos:number,
       createdTime: TimeStamp,
-      startTime: TimeStamp,
-      endTime: TimeStamp
+      startTime: TimeStamp
     } []
   } []
+}
+
+export interface DetailedResponse {
+  getAllCallQoeTests : {
+    id: number,
+    name: string,
+    meetings:
+    {
+      id:number,
+      zoomMeetingId: number,
+      status: string,
+      invalidReason: string,
+      joinUrl:string,
+      participantCount:number,
+      mos:number,
+      createdTime: TimeStamp,
+      startTime: TimeStamp,
+      endTime: TimeStamp
+      participants: Participants[]
+    } []
+  } []
+}
+
+export interface Participants{
+  id: number
+  userName: string
+  hostname: string
+  networkType: string
+  macAddress: string
+  device: string
+  ipAddress: string
+  joinTime: TimeStamp
+  leaveTime: TimeStamp
+  leaveReason: string
+  apDetails: {
+    system: string | null
+    domains: string | null
+    zone: string | null
+    apGroup: string | null
+    apName: string | null
+    apMac: string | null
+    ssid: string | null
+    radio: string | null
+  } | null
+  wifiMetrics: {
+    rss: number
+    snr: number
+    avgTxMCS: number
+    throughput: number
+  } | null
+  callMetrics: {
+    date_time: TimeStamp
+    jitter: {
+      audio: {
+        rx: number | null
+        tx: number | null
+      }
+      video: {
+        tx: number | null
+        rx: number | null
+      }
+    }
+    latency: {
+      audio: {
+        rx: number | null
+        tx: number | null
+      }
+      video: {
+        tx: number | null
+        rx: number | null
+      }
+    }
+    packet_loss: {
+      audio: {
+        rx: number | null
+        tx: number | null
+      }
+      video: {
+        tx: number | null
+        rx: number | null
+      }
+    }
+    video_frame_rate: {
+      rx: number | null
+      tx: number | null
+    }
+  }[]
 }
 
 export const api = videoCallQoeApi.injectEndpoints({
@@ -41,8 +127,7 @@ export const api = videoCallQoeApi.injectEndpoints({
                 participantCount,
                 mos,
                 createdTime,
-                startTime,
-                endTime
+                startTime
               }
             }
           }
@@ -57,19 +142,84 @@ export const api = videoCallQoeApi.injectEndpoints({
         document: gql`
         query CallQoeTests($testId: Int!, $status: String){
             getAllCallQoeTests(id: $testId, status: $status) {
-              id,
-              name,
+              id
+              name
               meetings {
-                id,
-                zoomMeetingId,
-                status,
-                invalidReason,
-                joinUrl,
-                participantCount,
-                mos,
-                createdTime,
-                startTime,
+                id
+                zoomMeetingId
+                status
+                invalidReason
+                joinUrl
+                participantCount
+                mos
+                createdTime
+                startTime
                 endTime
+                participants {
+                  id
+                  userName
+                  hostname
+                  networkType
+                  macAddress
+                  device
+                  ipAddress
+                  joinTime
+                  leaveTime
+                  leaveReason
+                  apDetails {
+                    system
+                    domains
+                    zone
+                    apGroup
+                    apName
+                    apMac
+                    ssid
+                    radio
+                  }
+                  wifiMetrics {
+                    rss
+                    snr
+                    avgTxMCS
+                    throughput
+                  }
+                  callMetrics {
+                    date_time
+                    jitter {
+                      audio {
+                        rx
+                        tx
+                      }
+                      video {
+                        tx
+                        rx
+                      }
+                    }
+                    latency {
+                      audio {
+                        rx
+                        tx
+                      }
+                      video {
+                        tx
+                        rx
+                      }
+                    }
+                    packet_loss {
+                      audio {
+                        rx
+                        tx
+                      }
+                      video {
+                        tx
+                        rx
+                      }
+                    }
+                    video_frame_rate {
+                      rx
+                      tx
+                    }
+                  }
+                }
               }
             }
           }
@@ -79,7 +229,7 @@ export const api = videoCallQoeApi.injectEndpoints({
           status: payload.status
         }
       }),
-      transformResponse: (response: Response) => {
+      transformResponse: (response: DetailedResponse) => {
         return response
       }
     })

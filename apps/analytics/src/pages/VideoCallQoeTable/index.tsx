@@ -33,8 +33,7 @@ export function VideoCallQoeTable () {
     participantCount: number,
     mos: number,
     createdTime: TimeStamp,
-    startTime: TimeStamp,
-    endTime: TimeStamp
+    startTime: TimeStamp
   }
 
   const meetingList: Meeting[] = []
