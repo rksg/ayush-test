@@ -115,11 +115,10 @@ describe('Convert NonVAR MSP Button', () => {
     })
     const btn = await screen.findByRole('button', { name: 'Go to MSP Subscriptions' })
     fireEvent.click(btn)
-    const checkingDialog = await screen.findByText('Checking MSP Licenses')
+    await screen.findByText('Checking MSP Licenses')
     await waitFor(async () => {
       expect(await screen.findByText('MSP Licenses Detected')).toBeVisible()
     })
-    await waitForElementToBeRemoved(checkingDialog)
     fireEvent.click(await screen.findByRole('button', { name: 'Take me to the MSP dashboard' }))
     await waitFor(() => {
       expect(mockedSaveFn).toBeCalledWith({
@@ -131,9 +130,7 @@ describe('Convert NonVAR MSP Button', () => {
     })
 
     expect(mockedUsedNavigate).toHaveBeenCalledWith(`/v/${params.tenantId}/customers`, { replace: true })
-    await waitFor(() => {
-      expect(screen.queryAllByRole('dialog').length).toBe(0)
-    })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('dialog'))
   })
 
   it('should submit with merged data', async () => {
@@ -159,11 +156,10 @@ describe('Convert NonVAR MSP Button', () => {
     })
     const btn = await screen.findByRole('button', { name: 'Go to MSP Subscriptions' })
     fireEvent.click(btn)
-    const checkingDialog = await screen.findByText('Checking MSP Licenses')
+    await screen.findByText('Checking MSP Licenses')
     await waitFor(async () => {
       expect(await screen.findByText('MSP Licenses Detected')).toBeVisible()
     })
-    await waitForElementToBeRemoved(checkingDialog)
     fireEvent.click(await screen.findByRole('button', { name: 'Take me to the MSP dashboard' }))
     await waitFor(() => {
       expect(mockedSaveFn).toBeCalledWith({
@@ -178,9 +174,7 @@ describe('Convert NonVAR MSP Button', () => {
       })
     })
     expect(mockedUsedNavigate).toHaveBeenCalledWith(`/v/${params.tenantId}/customers`, { replace: true })
-    await waitFor(() => {
-      expect(screen.queryAllByRole('dialog').length).toBe(0)
-    })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('dialog'))
   })
 
   it('should blocked when account is delegated to others', async () => {
@@ -211,9 +205,7 @@ describe('Convert NonVAR MSP Button', () => {
     // eslint-disable-next-line testing-library/no-node-access
     const targetDialog = screen.getByText('Operation not allowed').closest('.ant-modal-root') as HTMLDivElement
     fireEvent.click(await within(targetDialog).findByRole('button', { name: 'OK' }))
-    await waitFor(() => {
-      expect(screen.queryAllByRole('dialog').length).toBe(0)
-    })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('dialog'))
   })
 
   it('should handle no MSP licenses detected', async () => {
@@ -240,17 +232,14 @@ describe('Convert NonVAR MSP Button', () => {
     })
     const btn = await screen.findByRole('button', { name: 'Go to MSP Subscriptions' })
     fireEvent.click(btn)
-    const checkingDialog = await screen.findByText('Checking MSP Licenses')
+    await screen.findByText('Checking MSP Licenses')
     await waitFor(async () => {
       expect(await screen.findByText('No MSP Licenses Detected')).toBeVisible()
     })
-    await waitForElementToBeRemoved(checkingDialog)
     // eslint-disable-next-line testing-library/no-node-access
     const targetDialog = screen.getByText('No MSP Licenses Detected').closest('.ant-modal-root') as HTMLDivElement
     fireEvent.click(await within(targetDialog).findByRole('button', { name: 'OK' }))
-    await waitFor(() => {
-      expect(screen.queryAllByRole('dialog').length).toBe(0)
-    })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('dialog'))
   })
 
   it('should handle convert failed error', async () => {
@@ -277,17 +266,14 @@ describe('Convert NonVAR MSP Button', () => {
     })
     const btn = await screen.findByRole('button', { name: 'Go to MSP Subscriptions' })
     fireEvent.click(btn)
-    const checkingDialog = await screen.findByText('Checking MSP Licenses')
+    await screen.findByText('Checking MSP Licenses')
     await waitFor(async () => {
       expect(await screen.findByText('Server Error')).toBeVisible()
     })
-    await waitForElementToBeRemoved(checkingDialog)
     // eslint-disable-next-line testing-library/no-node-access
     const targetDialog = screen.getByText('Server Error').closest('.ant-modal-root') as HTMLDivElement
     fireEvent.click(await within(targetDialog).findByRole('button', { name: 'OK' }))
-    await waitFor(() => {
-      expect(screen.queryAllByRole('dialog').length).toBe(0)
-    })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('dialog'))
   })
 
   it('should render empty when tenant type is MSP_NON_VAR', async () => {
