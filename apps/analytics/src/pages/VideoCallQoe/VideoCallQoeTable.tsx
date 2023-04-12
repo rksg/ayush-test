@@ -13,6 +13,7 @@ import { TABLE_DEFAULT_PAGE_SIZE }                                from '@acx-ui/
 
 import { useVideoCallQoeTestsQuery } from '../VideoCallQoe/services'
 
+import * as MeetingType   from './constants'
 import { messageMapping } from './errorMessageMapping'
 import * as UI            from './styledComponents'
 import { Meeting }        from './types'
@@ -47,8 +48,10 @@ export function VideoCallQoeTable () {
         const formattedStatus = startCase(toLower((row as Meeting).status as string))
         const meetingId = (row as Meeting).id
         // TODO implement url text based on Ended or Not Started Call
-        const urlTxt = formattedStatus === 'Ended' ? `${meetingId}` : `${meetingId}`
-        return ['Ended', 'Not Started'].includes(formattedStatus) ?
+        const urlTxt = [MeetingType.ENDED, MeetingType.NOT_STARTED]
+          .includes(formattedStatus) ? `${meetingId}` : `${meetingId}`
+        return [MeetingType.ENDED, MeetingType.NOT_STARTED, MeetingType.STARTED]
+          .includes(formattedStatus) ?
           <TenantLink to={`/serviceValidation/videoCallQoe/${urlTxt}`}>
             {value as string}
           </TenantLink>
@@ -92,7 +95,7 @@ export function VideoCallQoeTable () {
       key: 'status',
       render: (value: unknown, row: unknown) => {
         const formattedStatus = startCase(toLower(value as string))
-        return (formattedStatus !== 'Invalid' ? formattedStatus :
+        return (formattedStatus !== MeetingType.INVALID ? formattedStatus :
           (<Tooltip placement='top'
             title={$t(messageMapping[
             (row as Meeting).invalidReason as keyof typeof messageMapping
