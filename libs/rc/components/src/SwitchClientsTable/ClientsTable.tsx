@@ -13,11 +13,11 @@ import { useParams, TenantLink } from '@acx-ui/react-router-dom'
 
 export const defaultSwitchClientPayload = {
   searchString: '',
-  searchTargetFields: ['clientMac', 'clientDesc', 'clientType', 'venueName',
-    'switchName', 'vlanName'],
+  searchTargetFields: ['clientName', 'clientMac', 'clientDesc', 'clientType',
+    'venueName', 'switchName', 'vlanName'],
   fields: ['switchId','clientVlan','venueId','switchSerialNumber','clientMac',
-    'clientName','clientDesc','clientType','switchPort','vlanName',
-    'switchName', 'venueName' ,'cog','id'],
+    'clientName','clientDesc','clientType','deviceType','switchPort','vlanName',
+    'switchName', 'venueName' ,'cog','id','switchPortFormatted'],
   sortField: 'clientMac',
   sortOrder: 'DESC',
   filters: {}
@@ -126,19 +126,19 @@ export function ClientsTable (props: {
     }, {
       key: 'switchPort',
       title: intl.$t({ defaultMessage: 'Port' }),
-      dataIndex: 'switchPort',
-      sorter: true
+      dataIndex: 'switchPortFormatted',
+      sorter: true,
+      render: (data, row) => row['switchPort']
     }, {
       key: 'vlanName',
       title: intl.$t({ defaultMessage: 'VLAN' }),
-      dataIndex: 'vlanName',
+      dataIndex: 'clientVlan',
       sorter: true,
       align: 'center',
       searchable: searchable,
       render: (data, row) => {
-        return data === 'DEFAULT-VLAN'
-          ? `${row.clientVlan} (${intl.$t({ defaultMessage: 'Default VLAN' })})`
-          : (row.clientVlan ?? '--')
+        return row.vlanName === 'DEFAULT-VLAN'
+          ? `${data} (${intl.$t({ defaultMessage: 'Default VLAN' })})` : (data ?? '--')
       }
     }]
     return columns
