@@ -189,10 +189,8 @@ export function Layout ({
         tenantType={get(dashboard, 'tenantType', 't')}
         children={logo}
       />}
-      headerContentRender={() => leftHeaderContent && <UI.LeftHeaderContentWrapper>
-        <UI.LogoDivider />
-        {leftHeaderContent}
-      </UI.LeftHeaderContentWrapper>}
+      headerContentRender={() => leftHeaderContent &&
+        <UI.LeftHeaderContentWrapper children={leftHeaderContent} />}
       rightContentRender={() => <UI.RightHeaderContentWrapper children={rightHeaderContent} />}
       onCollapse={setCollapsed}
       collapsedButtonRender={(collapsed: boolean) => <>

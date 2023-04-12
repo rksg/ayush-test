@@ -27,13 +27,22 @@ export const Wrapper = styled.div`
           overflow: visible !important;
           .ant-layout-sider-children {
             .ant-pro-sider-logo {
-              a { min-height: unset; }
               padding: 0 0 0 var(--acx-sidebar-left-space);
               width: var(--acx-sider-width);
               height: var(--acx-header-height);
               margin-bottom: 17px;
               align-items: center;
               justify-content: left;
+              a {
+                min-height: unset;
+                svg, img {
+                  display: inline-block;
+                  vertical-align: middle;
+                  width: 165px;
+                  height: 40px;
+                  object-fit: contain;
+                }
+              }
             }
             .ant-menu-submenu-arrow {
               display: none;
@@ -310,14 +319,9 @@ export const LeftHeaderContentWrapper = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
+  margin-left: var(--acx-header-item-margin);
   gap: var(--acx-header-item-margin);
   height: 100%;
-`
-export const LogoDivider = styled(AntDivider).attrs({ type: 'vertical' })`
-  border-right: 1px solid var(--acx-neutrals-70);
-  height: 32px;
-  top: 0;
-  margin: 0;
 `
 
 export const RightHeaderContentWrapper = styled.div`
@@ -397,7 +401,10 @@ export const LayoutUI = {
       }
     }
   `,
-  Divider: styled(LogoDivider)`
+  Divider: styled(AntDivider).attrs({ type: 'vertical' })`
+    border-right: 1px solid var(--acx-neutrals-70);
+    height: 32px;
+    top: 0;
     margin: 0 var(--acx-header-divider-margin) 0
       calc(var(--acx-header-divider-margin) - 1px);
   `,

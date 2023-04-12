@@ -11,7 +11,6 @@ import {
 
 export const Home = styled(LayoutUI.DropdownText)`
   color: var(--acx-primary-white);
-  margin-right:10px;
 `
 
 export const SearchBar = styled.div`
@@ -77,11 +76,6 @@ export const Close = styled(Button)`
       stroke: var(--acx-primary-white);
     }
   }
-`
-
-export const LeftHeaderWrapper = styled.div`
-  display: flex;
-  align-items: center;
 `
 
 export const RegionWrapper = styled.div`

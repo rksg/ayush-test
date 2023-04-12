@@ -211,6 +211,3 @@ export const RedCancelCircle = styled(CancelCircleSolid)`
     fill: var(--acx-semantics-red-50);
   }
 `
-export const RegionBtnWrapper = styled.div`
-  padding: 0px 10px 0px 10px;
-`

@@ -18,9 +18,6 @@ import { MSPUtils }                           from '@acx-ui/rc/utils'
 import { RegionValue, useUserProfileContext } from '@acx-ui/user'
 import { useTenantId }                        from '@acx-ui/utils'
 
-
-import * as UI from '../styledComponents'
-
 const mspUtils = MSPUtils()
 
 export default function RegionButton () {
@@ -71,11 +68,11 @@ export default function RegionButton () {
     }
   />
 
-  return <UI.RegionBtnWrapper> {regionEnable &&
-  <Dropdown overlay={regionMenu}>{(selectedKeys) => <LayoutUI.DropdownText>
-    <LayoutUI.Icon children={<WorldSolid />} />
-    {selectedKeys}
-    <LayoutUI.Icon children={<ArrowExpand />} />
-  </LayoutUI.DropdownText>}</Dropdown>}
-  </UI.RegionBtnWrapper>
+  return regionEnable
+    ? <Dropdown overlay={regionMenu}>{(selectedKeys) => <LayoutUI.DropdownText>
+      <LayoutUI.Icon children={<WorldSolid />} />
+      {selectedKeys}
+      <LayoutUI.Icon children={<ArrowExpand />} />
+    </LayoutUI.DropdownText>}</Dropdown>
+    : null
 }

@@ -97,29 +97,27 @@ function Layout () {
           <Outlet />
         </>
       }
-      leftHeaderContent={
-        <UI.LeftHeaderWrapper>
-          { showHomeButton && (isBackToRC ?
-            <a href={`/api/ui/v/${getJwtTokenPayload().tenantId}`}>
-              <UI.Home>
-                <LayoutUI.Icon children={<HomeSolid />} />
-                {$t({ defaultMessage: 'Home' })}
-              </UI.Home>
-            </a> :
-            <Link to={getIndexPath()}>
-              <UI.Home>
-                <LayoutUI.Icon children={<HomeSolid />} />
-                {$t({ defaultMessage: 'Home' })}
-              </UI.Home>
-            </Link>)
-          }
-          <RegionButton/>
-          <HeaderContext.Provider value={{
-            searchExpanded, licenseExpanded, setSearchExpanded, setLicenseExpanded }}>
-            <LicenseBanner/>
-          </HeaderContext.Provider>
-        </UI.LeftHeaderWrapper>
-      }
+      leftHeaderContent={<>
+        { showHomeButton && (isBackToRC ?
+          <a href={`/api/ui/v/${getJwtTokenPayload().tenantId}`}>
+            <UI.Home>
+              <LayoutUI.Icon children={<HomeSolid />} />
+              {$t({ defaultMessage: 'Home' })}
+            </UI.Home>
+          </a> :
+          <Link to={getIndexPath()}>
+            <UI.Home>
+              <LayoutUI.Icon children={<HomeSolid />} />
+              {$t({ defaultMessage: 'Home' })}
+            </UI.Home>
+          </Link>)
+        }
+        <RegionButton/>
+        <HeaderContext.Provider value={{
+          searchExpanded, licenseExpanded, setSearchExpanded, setLicenseExpanded }}>
+          <LicenseBanner/>
+        </HeaderContext.Provider>
+      </>}
 
       rightHeaderContent={<>
         <HeaderContext.Provider value={{
