@@ -1,19 +1,22 @@
+import React, { useEffect, useState } from 'react'
+
 import { Col, Form, Row, Space, Typography } from 'antd'
 import { useIntl }                           from 'react-intl'
 import { useParams }                         from 'react-router-dom'
 
-import { Button, Card, Loader, PageHeader } from '@acx-ui/components'
+import { Button, Card, Loader, PageHeader, Table, TableProps }                                      from '@acx-ui/components'
+import { SimpleListTooltip }                                                                        from '@acx-ui/rc/components'
 import {
-  useAdaptivePolicyListByQueryQuery,
-  useGetRadiusAttributeGroupQuery
+  useAdaptivePolicyListByQueryQuery, useAdaptivePolicySetListQuery,
+  useGetRadiusAttributeGroupQuery, useLazyGetPrioritizedPoliciesQuery, usePolicyTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
+  AdaptivePolicy,
   AttributeAssignment,
   getPolicyDetailsLink, getPolicyListRoutePath,
   getPolicyRoutePath,
   PolicyOperation,
-  PolicyType
-} from '@acx-ui/rc/utils'
+  PolicyType } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
 
@@ -22,13 +25,46 @@ export default function RadiusAttributeGroupDetail () {
   const { policyId } = useParams()
   const { data, isFetching, isLoading } = useGetRadiusAttributeGroupQuery({ params: { policyId } })
   const { Paragraph } = Typography
+  const [policySetPoliciesMap, setPolicySetPoliciesMap] = useState(new Map())
 
   // eslint-disable-next-line max-len
-  const { data: policyListData } = useAdaptivePolicyListByQueryQuery({ params: { policyId, excludeContent: 'true' }, payload: {
+  const { data: policyListData, isLoading: getPolicyListDataLoading } = useAdaptivePolicyListByQueryQuery({ params: { policyId, excludeContent: 'false' }, payload: {
     fields: [ 'name' ],
     page: 0, pageSize: 2000,
     filters: { onMatchResponse: policyId }
   } })
+
+  // eslint-disable-next-line max-len
+  const { data: adaptivePolicySetList } = useAdaptivePolicySetListQuery({ payload: { page: '1', pageSize: '2147483647' } })
+
+  const [getPrioritizedPolicies] = useLazyGetPrioritizedPoliciesQuery()
+
+  // eslint-disable-next-line max-len
+  const { templateList } = usePolicyTemplateListQuery({ payload: { page: '1', pageSize: '2147483647' } }, {
+    selectFromResult ({ data }) {
+      const templateIds = new Map()
+      data?.data.forEach( template => {
+        templateIds.set(template.ruleType, template.id)
+      })
+      return {
+        templateList: templateIds
+      }
+    }
+  })
+
+  useEffect(() => {
+    if(adaptivePolicySetList) {
+      adaptivePolicySetList.data.forEach(policySet => {
+        getPrioritizedPolicies({ params: { policySetId: policySet.id } })
+          .then(result => {
+            if (result.data) {
+              const policies : string []= result.data.data.map(p => p.policyId)
+              setPolicySetPoliciesMap(map => new Map(map.set(policySet.name, policies)))
+            }
+          })
+      })
+    }
+  }, [adaptivePolicySetList])
 
   const getAttributes = function (attributes: Partial<AttributeAssignment> [] | undefined) {
     return attributes?.map((attribute) => {
@@ -41,6 +77,42 @@ export default function RadiusAttributeGroupDetail () {
         </Col>
       )
     }) ?? []
+  }
+
+  function useColumns () {
+    const { $t } = useIntl()
+    const columns: TableProps<AdaptivePolicy>['columns'] = [
+      {
+        key: 'name',
+        title: $t({ defaultMessage: 'Access Policy Name' }),
+        dataIndex: 'name',
+        render: function (data, row) {
+          return (
+            <TenantLink
+              // eslint-disable-next-line max-len
+              to={`/policies/adaptivePolicy/${templateList.get(row.policyType)}/${row.id}/detail`}>{data}</TenantLink>
+          )
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Access Policy Set Membership' }),
+        key: 'policySetMemberShip',
+        dataIndex: 'policySetMemberShip',
+        align: 'center',
+        render: (_, row) => {
+          const policySets = [] as string []
+          policySetPoliciesMap.forEach((value, key) => {
+            if(value.find((item: string) => item === row.id)){
+              policySets.push(key)
+            }
+          })
+          return policySets.length === 0 ? '0' :
+            <SimpleListTooltip items={policySets} displayText={policySets.length} />
+        }
+      }
+    ]
+
+    return columns
   }
 
   return (
@@ -94,6 +166,20 @@ export default function RadiusAttributeGroupDetail () {
             </Form>
           </Loader>
         </Card>
+        <Loader states={[
+          { isLoading: getPolicyListDataLoading }
+        ]}>
+          <Card title={$t({ defaultMessage: 'Instance ({size})' },
+            { size: policyListData?.totalCount })}>
+            <div style={{ width: '100%' }}>
+              <Table
+                rowKey='id'
+                columns={useColumns()}
+                dataSource={policyListData?.data}
+              />
+            </div>
+          </Card>
+        </Loader>
       </Space>
     </>
   )

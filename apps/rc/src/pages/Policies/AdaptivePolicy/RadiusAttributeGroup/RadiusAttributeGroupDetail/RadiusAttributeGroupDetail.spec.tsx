@@ -10,8 +10,8 @@ import {
 import { Provider }                                              from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { mockGroup, policyList }  from './__tests__/fixtures'
-import RadiusAttributeGroupDetail from './RadiusAttributeGroupDetail'
+import { mockGroup, policyList, policySetList, prioritizedPolicies, templateList } from './__tests__/fixtures'
+import RadiusAttributeGroupDetail                                                  from './RadiusAttributeGroupDetail'
 
 describe('RadiusAttributeGroupDetail', () => {
   const params = {
@@ -27,6 +27,18 @@ describe('RadiusAttributeGroupDetail', () => {
       rest.post(
         RulesManagementUrlsInfo.getPoliciesByQuery.url,
         (req, res, ctx) => res(ctx.json(policyList))
+      ),
+      rest.get(
+        RulesManagementUrlsInfo.getPolicySets.url,
+        (req, res, ctx) => res(ctx.json(policySetList))
+      ),
+      rest.get(
+        RulesManagementUrlsInfo.getPrioritizedPolicies.url,
+        (req, res, ctx) => res(ctx.json(prioritizedPolicies))
+      ),
+      rest.get(
+        RulesManagementUrlsInfo.getPolicyTemplateList.url,
+        (req, res, ctx) => res(ctx.json(templateList))
       )
     )
   })
@@ -43,14 +55,13 @@ describe('RadiusAttributeGroupDetail', () => {
     const names = await screen.findAllByText(mockGroup.name)
     expect(names[0]).toBeVisible()
     expect(names[1]).toBeVisible()
-    // eslint-disable-next-line max-len
-    expect(await screen.findByText(mockGroup.attributeAssignments[0].attributeName)).toBeVisible()
-    // eslint-disable-next-line max-len
-    expect(await screen.findByText(mockGroup.attributeAssignments[0].attributeValue)).toBeVisible()
-    // eslint-disable-next-line max-len
-    expect(await screen.findByText(mockGroup.attributeAssignments[1].attributeName)).toBeVisible()
-    // eslint-disable-next-line max-len
-    expect(await screen.findByText(mockGroup.attributeAssignments[1].attributeValue)).toBeVisible()
+
+    await screen.findByText(mockGroup.attributeAssignments[0].attributeName)
+    await screen.findByText(mockGroup.attributeAssignments[0].attributeValue)
+    await screen.findByText(mockGroup.attributeAssignments[1].attributeName)
+    await screen.findByText(mockGroup.attributeAssignments[1].attributeValue)
+    await screen.findByText('Instance (' + policyList.content.length + ')')
+    await screen.findByRole('row', { name: /ap2 3/i })
   })
 
   it('should navigate to edit page', async () => {
@@ -63,9 +74,6 @@ describe('RadiusAttributeGroupDetail', () => {
     render(<Provider><RadiusAttributeGroupDetail /></Provider>, {
       route: { params, path }
     })
-
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-
 
     expect(await screen.findByRole('link', { name: 'Configure' })).toHaveAttribute('href', editLink)
   })
