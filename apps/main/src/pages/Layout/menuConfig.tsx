@@ -57,23 +57,35 @@ export function useMenuConfig () {
       activeIcon: AISolid,
       children: [
         {
-          uri: '/analytics/incidents',
-          label: $t({ defaultMessage: 'Incidents' })
+          type: 'group' as const,
+          label: $t({ defaultMessage: 'AI Analytics' }),
+          children: [
+            {
+              uri: '/analytics/incidents',
+              label: $t({ defaultMessage: 'Incidents' })
+            }
+          ]
         },
         {
-          uri: '/analytics/health',
-          label: $t({ defaultMessage: 'Health' })
-        },
-        ...(showSV ? [{
-          uri: '/serviceValidation/networkHealth',
-          label: $t({ defaultMessage: 'Service Validation' })
-        }] : []),
-        ...(showVideoCallQoe ? [{
-          uri: '/serviceValidation/videoCallQoe',
-          label: $t({ defaultMessage: 'Video Call QoE' })
-        }] : [])
+          type: 'group' as const,
+          label: $t({ defaultMessage: 'Network Assurance' }),
+          children: [
+            {
+              uri: '/analytics/health',
+              label: $t({ defaultMessage: 'Health' })
+            },
+            ...(showSV ? [{
+              uri: '/serviceValidation/networkHealth',
+              label: $t({ defaultMessage: 'Service Validation' })
+            }] : []),
+            ...(true ? [{
+              uri: '/serviceValidation/videoCallQoe',
+              label: $t({ defaultMessage: 'Video Call QoE' })
+            }] : [])
+          ]
+        }
       ]
-    }] : []),
+    }]: []),
     {
       uri: '/venues',
       label: $t({ defaultMessage: 'Venues' }),
