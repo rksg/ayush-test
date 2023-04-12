@@ -219,7 +219,7 @@ export function useMenuConfig () {
       inactiveIcon: SmartEdgeOutlined,
       activeIcon: SmartEdgeSolid
     }] : []),
-    {
+    ...(isServiceEnabled || isPolicyEnabled ? [{
       label: $t({ defaultMessage: 'Network Control' }),
       inactiveIcon: ServicesOutlined,
       activeIcon: ServicesSolid,
@@ -239,7 +239,7 @@ export function useMenuConfig () {
           ? [{ uri: '/policies', label: $t({ defaultMessage: 'Policies & Profiles' }) }]
           : [])
       ]
-    },
+    }] : []),
     {
       label: $t({ defaultMessage: 'Business Insights' }),
       inactiveIcon: BulbOutlined,
