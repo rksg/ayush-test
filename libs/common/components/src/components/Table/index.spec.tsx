@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import userEvent from '@testing-library/user-event'
 
+import { DownloadOutlined }                                                                 from '@acx-ui/icons'
 import { render, fireEvent, screen, within, mockDOMSize, findTBody, waitFor, cleanup, act } from '@acx-ui/test-utils'
 
 import { columns as filteredColumns, data as filteredData } from './stories/FilteredTable'
@@ -401,6 +402,7 @@ describe('Table component', () => {
   it('calls onResetState', async () => {
     const reset = jest.fn()
     render(<Table
+      settingsId='test-settings-id'
       columns={testColumns}
       dataSource={testData}
       extraSettings={[<div>setting element</div>]}
@@ -602,6 +604,15 @@ describe('Table component', () => {
     expect(rowActions[1].onClick).not.toBeCalled()
     fireEvent.click(deleteButton)
     expect(rowActions[1].onClick).toBeCalled()
+  })
+
+  it('should render icon button', () => {
+    render(<Table
+      columns={testColumns}
+      dataSource={testData}
+      iconButton={{ icon: <DownloadOutlined /> }}
+    />)
+    expect(screen.getByTestId('DownloadOutlined')).toBeVisible()
   })
 
   describe('search & filter', () => {
@@ -885,8 +896,8 @@ describe('Table component', () => {
     }
 
 
-    it('hide the columnSort', async () => {
-      render(<Table {...props} columnState={{ ...columnState, hidden: true }} />)
+    it('hide the columnSort by default', async () => {
+      render(<Table {...props} />)
 
       const listToolbar = await screen.findByRole('generic', {
         name: (name, element) => {
@@ -903,8 +914,8 @@ describe('Table component', () => {
       expect(listToolBarItem).toBeNull()
     })
 
-    it('show the columnSort by default', async () => {
-      render(<Table {...props} columnState={{ ...columnState }} />)
+    it('show the columnSort when settingsId given', async () => {
+      render(<Table {...props} settingsId='settings-id' />)
 
       const listToolbar = await screen.findByRole('generic', {
         name: (name, element) => {

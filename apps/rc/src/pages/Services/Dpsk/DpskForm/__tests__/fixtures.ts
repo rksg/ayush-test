@@ -60,3 +60,40 @@ export const mockedDpskList = {
   },
   sort: []
 }
+
+export const mockedPolicySet = {
+  paging: {
+    totalCount: 2,
+    page: 1,
+    pageSize: 2,
+    pageCount: 1
+  },
+  content: [
+    {
+      id: 'd1647c14-79fd-4f58-a048-5559aa8ecf66',
+      name: 'aps2',
+      description: 'aps2',
+      _links: {
+        self: {
+          href: 'https://api.devalto.ruckuswireless.com/'
+        },
+        policies: {
+          href: 'https://api.devalto.ruckuswireless.com/policySets'
+        }
+      }
+    },
+    {
+      id: '8839b91d-c55c-4672-bf75-9aa54779d105',
+      name: 'aps3',
+      description: 'aps3',
+      _links: {
+        self: {
+          href: 'https://api.devalto.ruckuswireless.com/'
+        },
+        policies: {
+          href: 'https://api.devalto.ruckuswireless.com/policySets/'
+        }
+      }
+    }
+  ]
+}

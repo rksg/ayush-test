@@ -105,7 +105,7 @@ export function SwitchConfigHistoryTable (props: {
       dataIndex: 'configType',
       filterable: configTypeFilterOptions,
       filterMultiple: false,
-      sorter: false
+      sorter: !isVenueLevel
     }, {
       key: 'numberOfSwitches',
       title: $t({ defaultMessage: '# of Switches' }),
@@ -115,7 +115,7 @@ export function SwitchConfigHistoryTable (props: {
       key: 'dispatchStatus',
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'dispatchStatus',
-      sorter: false,
+      sorter: !isVenueLevel,
       render: (data, row) => isVenueLevel ? getStatusBar(row) : data
     }]
 
@@ -181,6 +181,7 @@ export function SwitchConfigHistoryTable (props: {
   return <>
     <Loader states={[tableQuery]}>
       <Table
+        settingsId='switch-config-history-table'
         rowKey={(record) => record.transactionId + record.configType}
         columns={getCols()}
         dataSource={tableQuery.data?.data ?? []}

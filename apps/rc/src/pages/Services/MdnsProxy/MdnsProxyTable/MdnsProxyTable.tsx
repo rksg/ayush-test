@@ -174,9 +174,9 @@ function useColumns () {
       render: function (data, row) {
         if (!row.venueIds || row.venueIds.length === 0) return 0
 
-        // eslint-disable-next-line max-len
-        const tooltipItems = venueNameMap.filter(v => row.venueIds!.includes(v.key)).map(v => v.value)
-        return <SimpleListTooltip items={tooltipItems} displayText={row.venueIds.length} />
+        const venueIds = [...new Set(row.venueIds)]
+        const tooltipItems = venueNameMap.filter(v => venueIds!.includes(v.key)).map(v => v.value)
+        return <SimpleListTooltip items={tooltipItems} displayText={venueIds.length} />
       }
     }
   ]

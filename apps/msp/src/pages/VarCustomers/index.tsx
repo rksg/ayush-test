@@ -13,11 +13,12 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { DateFormatEnum, formatter }  from '@acx-ui/formatter'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   useInviteCustomerListQuery,
   useVarCustomerListQuery,
-  useAcceptRejectInvitationMutation
+  useAcceptRejectInvitationMutation,
+  useDelegateToMspEcPath
 } from '@acx-ui/rc/services'
 import {
   DelegationEntitlementRecord,
@@ -26,9 +27,9 @@ import {
   VarCustomer,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { getBasePath, Link, TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { RolesEnum }                                from '@acx-ui/types'
-import { hasRoles, useUserProfileContext }          from '@acx-ui/user'
+import { Link, TenantLink, useParams }     from '@acx-ui/react-router-dom'
+import { RolesEnum }                       from '@acx-ui/types'
+import { hasRoles, useUserProfileContext } from '@acx-ui/user'
 
 const transformApUtilization = (row: VarCustomer) => {
   if (row.entitlements) {
@@ -82,16 +83,18 @@ export function VarCustomers () {
   const { data: userProfile } = useUserProfileContext()
   const [ handleInvitation
   ] = useAcceptRejectInvitationMutation()
+  const { delegateToMspEcPath } = useDelegateToMspEcPath()
 
   const InvitationList = () => {
     const [inviteCount, setInviteCount] = useState(0)
 
     const onAcceptInvite = (row: VarCustomer) => {
       return <>
-        <Button onClick={() => handleReject(row)}>{$t({ defaultMessage: 'Reject' })}</Button>
         <Button onClick={() => handleAccept(row)}
           type='secondary'
-          style={{ marginLeft: 10 }}>{$t({ defaultMessage: 'Accept' })}</Button>
+        >{$t({ defaultMessage: 'Accept' })}</Button>
+        <Button onClick={() => handleReject(row)}
+          style={{ marginLeft: 10 }}>{$t({ defaultMessage: 'Reject' })}</Button>
       </>
     }
 
@@ -130,12 +133,7 @@ export function VarCustomers () {
         dataIndex: 'tenantName',
         key: 'tenantName',
         sorter: true,
-        defaultSortOrder: 'ascend' as SortOrder,
-        render: function (data) {
-          return (
-            <TenantLink to={''}>{data}</TenantLink>
-          )
-        }
+        defaultSortOrder: 'ascend' as SortOrder
       },
       {
         title: $t({ defaultMessage: 'Account Email' }),
@@ -144,6 +142,7 @@ export function VarCustomers () {
         sorter: true
       },
       {
+        title: $t({ defaultMessage: 'Accept Invitation' }),
         dataIndex: 'acceptInvite',
         key: 'acceptInvite',
         width: 220,
@@ -175,6 +174,7 @@ export function VarCustomers () {
       return (
         <Loader states={[tableQuery]}>
           <Table
+            settingsId='var-invitation-table'
             columns={columnsPendingInvitation}
             dataSource={tableQuery.data?.data}
             pagination={tableQuery.pagination}
@@ -203,10 +203,14 @@ export function VarCustomers () {
       searchable: true,
       sorter: true,
       defaultSortOrder: 'ascend' as SortOrder,
+      onCell: (data) => {
+        return {
+          onClick: () => { delegateToMspEcPath(data.tenantId) }
+        }
+      },
       render: function (data, row, _, highlightFn) {
-        const to = `${getBasePath()}/t/${row.tenantId}`
         return (
-          <Link to={to}>{highlightFn(data as string)}</Link>
+          <Link to=''>{highlightFn(data as string)}</Link>
         )
       }
     },
@@ -285,6 +289,7 @@ export function VarCustomers () {
     return (
       <Loader states={[tableQuery]}>
         <Table
+          settingsId='var-customers-table'
           columns={customerColumns}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}

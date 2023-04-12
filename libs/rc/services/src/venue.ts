@@ -52,7 +52,7 @@ import {
   VenueDirectedMulticast,
   VenueLoadBalancing,
   TopologyData,
-  VenueBonjourFencingPolicy,
+  VenueMdnsFencingPolicy,
   PropertyConfigs,
   PropertyUrlsInfo,
   PropertyUnit,
@@ -60,10 +60,11 @@ import {
   NewTableResult,
   transferToTableResult,
   downloadFile,
-  RequestFormData
+  RequestFormData,
+  createNewTableHttpRequest,
+  TableChangePayload
 } from '@acx-ui/rc/utils'
 import { baseVenueApi } from '@acx-ui/store'
-import { getJwtToken }  from '@acx-ui/utils'
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
@@ -285,10 +286,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return {
           ...req,
           headers: {
-            'accept': 'application/json, text/plain, */*',
-            'x-rks-tenantid': params?.tenantId,
-            'content-type': 'application/json; charset=UTF-8',
-            ...(getJwtToken() ? { Authorization: `Bearer ${getJwtToken()}` } : {})
+            ...req.headers,
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json; charset=UTF-8'
           },
           body: payload
         }
@@ -446,14 +446,6 @@ export const venueApi = baseVenueApi.injectEndpoints({
     venueSwitchSetting: build.query<VenueSwitchConfiguration, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(CommonUrlsInfo.getVenueSwitchSetting, params)
-        return{
-          ...req
-        }
-      }
-    }),
-    switchConfigProfile: build.query<ConfigurationProfile, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getSwitchConfigProfile, params)
         return{
           ...req
         }
@@ -899,34 +891,34 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return result?.data[0] as TopologyData
       }
     }),
-    getVenueBonjourFencing: build.query<VenueBonjourFencingPolicy, RequestPayload>({
+    getVenueMdnsFencing: build.query<VenueMdnsFencingPolicy, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getVenueBonjourFencingPolicy, params)
+        const req = createHttpRequest(CommonUrlsInfo.getVenueMdnsFencingPolicy, params)
         return{
           ...req
         }
       },
-      providesTags: [{ type: 'Venue', id: 'BONJOUR_FENCING' }],
+      providesTags: [{ type: 'Venue', id: 'MDNS_FENCING' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'UpdateVenueBonjourFencing'
           ]
           onActivityMessageReceived(msg, activities, () => {
-            api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'BONJOUR_FENCING' }]))
+            api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'MDNS_FENCING' }]))
           })
         })
       }
     }),
-    updateVenueBonjourFencing: build.mutation<VenueBonjourFencingPolicy, RequestPayload>({
+    updateVenueMdnsFencing: build.mutation<VenueMdnsFencingPolicy, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.updateVenueBonjourFencingPolicy, params)
+        const req = createHttpRequest(CommonUrlsInfo.updateVenueMdnsFencingPolicy, params)
         return{
           ...req,
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Venue', id: 'BONJOUR_FENCING' }]
+      invalidatesTags: [{ type: 'Venue', id: 'MDNS_FENCING' }]
     }),
     getPropertyConfigs: build.query<PropertyConfigs, RequestPayload>({
       query: ({ params }) => {
@@ -943,8 +935,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            'Enable Property',
-            'Disable Property'
+            'ENABLE_PROPERTY',
+            'DISABLE_PROPERTY'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(venueApi.util.invalidateTags([{ type: 'PropertyConfigs', id: 'ID' }]))
@@ -1028,9 +1020,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            'Adding unit',
-            'Updating unit',
-            'Deleting units'
+            'ADD_UNIT',
+            'UPDATE_UNIT',
+            'DELETE_UNITS'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(venueApi.util.invalidateTags([
@@ -1084,8 +1076,12 @@ export const venueApi = baseVenueApi.injectEndpoints({
       invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
     }),
     getResidentPortalList: build.query<TableResult<ResidentPortal>, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(PropertyUrlsInfo.getResidentPortalList, params)
+      query: ({ params, payload }) => {
+        const req = createNewTableHttpRequest({
+          apiInfo: PropertyUrlsInfo.getResidentPortalList,
+          params,
+          payload: payload as TableChangePayload
+        })
         return {
           ...req
         }
@@ -1163,7 +1159,6 @@ export const {
   useConfigProfilesQuery,
   useVenueSwitchSettingQuery,
   useUpdateVenueSwitchSettingMutation,
-  useSwitchConfigProfileQuery,
   useVenueDHCPProfileQuery,
   useVenueDHCPPoolsQuery,
   useVenuesLeasesListQuery,
@@ -1192,8 +1187,8 @@ export const {
   useGetVenueLoadBalancingQuery,
   useUpdateVenueLoadBalancingMutation,
   useGetTopologyQuery,
-  useGetVenueBonjourFencingQuery,
-  useUpdateVenueBonjourFencingMutation,
+  useGetVenueMdnsFencingQuery,
+  useUpdateVenueMdnsFencingMutation,
   useGetPropertyConfigsQuery,
   useUpdatePropertyConfigsMutation,
   usePatchPropertyConfigsMutation,

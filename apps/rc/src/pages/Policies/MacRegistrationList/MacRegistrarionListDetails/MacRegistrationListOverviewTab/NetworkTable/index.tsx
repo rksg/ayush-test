@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import { useIntl } from 'react-intl'
 
@@ -14,9 +14,6 @@ import {
 import { useTableQuery, Network, NetworkTypeEnum, NetworkType } from '@acx-ui/rc/utils'
 import { TenantLink }                                           from '@acx-ui/react-router-dom'
 
-
-const disabledType = [NetworkTypeEnum.DPSK, NetworkTypeEnum.CAPTIVEPORTAL]
-
 function useColumns () {
   const { $t } = useIntl()
   const columns: TableProps<Network>['columns'] = [
@@ -25,15 +22,12 @@ function useColumns () {
       title: $t({ defaultMessage: 'Network Name' }),
       dataIndex: 'name',
       defaultSortOrder: 'ascend',
+      sorter: true,
       render: function (data, row) {
-        if (disabledType.indexOf(row.nwSubType as NetworkTypeEnum) > -1) {
-          return data
-        } else {
-          return (
-            <TenantLink
-              to={`/networks/wireless/${row.id}/network-details/overview`}>{data}</TenantLink>
-          )
-        }
+        return (
+          <TenantLink
+            to={`/networks/wireless/${row.id}/network-details/overview`}>{data}</TenantLink>
+        )
       }
     },
     {
@@ -49,7 +43,6 @@ function useColumns () {
       key: 'venues',
       title: $t({ defaultMessage: 'Venues' }),
       dataIndex: ['venues', 'count'],
-      align: 'left',
       render: function (count) {
         return count
       }
@@ -60,18 +53,35 @@ function useColumns () {
 }
 
 const defaultPayload = {
-  fields: [],
-  filters: {},
-  sortField: 'name',
-  sortOrder: 'ASC'
+  searchString: '',
+  fields: [
+    'name',
+    'nwSubType',
+    'venues',
+    'id'
+  ]
 }
 
-export function NetworkTable () {
+export function NetworkTable (props: { networkIds?: string[] }) {
   const { $t } = useIntl()
+  const { networkIds } = props
+
+  useEffect(() => {
+    const payload = {
+      ...defaultPayload,
+      filters: { id: networkIds && networkIds?.length > 0 ? networkIds : [''] }
+    }
+    networkTableQuery.setPayload(payload)
+  }, [networkIds])
+
   const networkTableQuery = useTableQuery({
     useQuery: useNetworkListQuery,
-    defaultPayload
+    defaultPayload: {
+      ...defaultPayload,
+      filters: { id: networkIds && networkIds?.length > 0 ? networkIds : [''] }
+    }
   })
+
   return (
     <Loader states={[
       networkTableQuery,
@@ -84,6 +94,8 @@ export function NetworkTable () {
             rowKey='id'
             columns={useColumns()}
             dataSource={networkTableQuery.data?.data}
+            pagination={networkTableQuery.pagination}
+            onChange={networkTableQuery.handleTableChange}
           />
         </div>
       </Card>

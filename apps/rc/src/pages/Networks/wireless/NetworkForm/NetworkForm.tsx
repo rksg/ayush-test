@@ -401,11 +401,11 @@ export default function NetworkForm (props:{
             title={intl.$t(settingTitle, { type: saveState.type })}
             onFinish={async (data) => {
               if (saveState.type !== NetworkTypeEnum.CAPTIVEPORTAL) {
-                const radiusChanged = !_.isEqual(
+                const radiusChanged = (data?.authRadius || data?.accountingRadius)&&(!_.isEqual(
                   data?.authRadius,
                   // TODO: saveState?.authRadius would become null when user move back to settings, then radiusChanged will equal to true but there is no value in authRadius
                   saveState?.authRadius === null ? undefined : saveState?.authRadius
-                ) || !_.isEqual(data?.accountingRadius, saveState?.accountingRadius)
+                ) || !_.isEqual(data?.accountingRadius, saveState?.accountingRadius))
                 const radiusValidate = !data.cloudpathServerId && radiusChanged
                   ? await checkIpsValues(data) : false
                 const hasRadiusError = radiusValidate
@@ -532,7 +532,21 @@ export default function NetworkForm (props:{
             name='venues'
             title={intl.$t({ defaultMessage: 'Venues' })}
             onFinish={async (data) => {
-              const settingSaveData = transferVenuesToSave(data, saveState)
+              let venueData = data
+              if (cloneMode) {
+                venueData = {
+                  venues: data.venues.map((v: { apGroups: { id?: string }[] }) => {
+                    if (v.apGroups) {
+                      v.apGroups.map((ag: { id?: string }) => {
+                        delete ag.id
+                        return ag
+                      })
+                    }
+                    return v
+                  })
+                }
+              }
+              const settingSaveData = transferVenuesToSave(venueData, saveState)
               updateSaveData(settingSaveData)
               return true
             }}

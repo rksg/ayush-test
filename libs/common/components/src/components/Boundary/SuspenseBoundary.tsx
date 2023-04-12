@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react'
 
-import { Spin } from 'antd'
+import { Spin }        from 'antd'
+import styled, { css } from 'styled-components/macro'
 
 import { ErrorBoundary } from './ErrorBoundary'
 
@@ -10,7 +11,7 @@ export type SuspenseBoundaryProps = React.PropsWithChildren<{
 }>
 
 export function SuspenseBoundary (props: SuspenseBoundaryProps) {
-  const fallback = props.fallback || <SuspenseBoundary.DefaultFallback size='large' />
+  const fallback = props.fallback || <SuspenseBoundary.DefaultFallback />
 
   return (
     <ErrorBoundary fallback={props.errorFallback}>
@@ -22,10 +23,28 @@ export function SuspenseBoundary (props: SuspenseBoundaryProps) {
   )
 }
 
-SuspenseBoundary.DefaultFallback = function DefaultSuspenseFallback (props: {
-  size: 'small' | 'default' | 'large'
-}) {
-  return <span role='img' aria-label='loader'>
-    <Spin size={props.size} />
-  </span>
+export const SpinWrapper = styled.span<{ $absoluteCenter: boolean }>`
+  ${props => props.$absoluteCenter ? css`
+    position: absolute;
+    top: 50vh;
+    left: 50vw;
+    transform: translate(-50%, -50%);
+  ` : ''}
+`
+
+type DefaultFallbackProps = {
+  size?: 'small' | 'default' | 'large',
+  absoluteCenter?: boolean
+}
+
+SuspenseBoundary.DefaultFallback = function DefaultSuspenseFallback (
+  { absoluteCenter = false, size = 'large' }: DefaultFallbackProps
+) {
+  return <SpinWrapper
+    role='img'
+    aria-label='loader'
+    $absoluteCenter={absoluteCenter}
+  >
+    <Spin size={size} />
+  </SpinWrapper>
 }

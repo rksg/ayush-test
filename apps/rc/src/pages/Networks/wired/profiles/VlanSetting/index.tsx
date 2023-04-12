@@ -1,6 +1,7 @@
 import { useContext, useState, useEffect } from 'react'
 
 import { Row, Col, Form, Input } from 'antd'
+import _                         from 'lodash'
 
 import { showActionModal, Table, TableProps, StepsForm, Tooltip } from '@acx-ui/components'
 import {
@@ -123,10 +124,10 @@ export function VlanSetting () {
 
     data.switchFamilyModels = sfm
     setVlanTable([...filterData, data])
-    if(defaultVlan){
-      form.setFieldValue('vlans', [...filterData, data, defaultVlan])
-    }else{
+    if(_.isEmpty(defaultVlan)){
       form.setFieldValue('vlans', [...filterData, data])
+    }else{
+      form.setFieldValue('vlans', [...filterData, data, defaultVlan])
     }
     setDrawerEditMode(false)
     setDrawerFormRule(undefined)
@@ -168,10 +169,10 @@ export function VlanSetting () {
                 .includes(option.vlanId)
             })
             setVlanTable(vlanRows)
-            if(defaultVlan){
-              form.setFieldValue('vlans', [...vlanRows, defaultVlan])
-            }else{
+            if(_.isEmpty(defaultVlan)){
               form.setFieldValue('vlans', [...vlanRows])
+            } else {
+              form.setFieldValue('vlans', [...vlanRows, defaultVlan])
             }
             setDrawerEditMode(false)
             clearSelection()

@@ -176,13 +176,13 @@ export const transformSwitchUnitStatus = (switchStatusEnum: SwitchStatusEnum, co
     case SwitchStatusEnum.OPERATIONAL:
       if (configReady && syncedSwitchConfig) {
         if (suspendingDeployTime && suspendingDeployTime.length > 0) {
-          return $t({ defaultMessage: 'Operational - applying configuration' })
+          return $t({ defaultMessage: 'Applying configuration' })
         }
         return $t({ defaultMessage: 'Operational' })
       } else if (!syncedSwitchConfig) {
         return $t({ defaultMessage: 'Synchronizing data' })
       } else {
-        return $t({ defaultMessage: 'Operational - Synchronizing' })
+        return $t({ defaultMessage: 'Synchronizing' })
       }
     case SwitchStatusEnum.DISCONNECTED:
       return $t({ defaultMessage: 'Disconnected from cloud' })
@@ -243,7 +243,7 @@ export const transformSwitchStatus = (switchStatusEnum: SwitchStatusEnum, config
     case SwitchStatusEnum.OPERATIONAL:
       if (configReady && syncedSwitchConfig) {
         if (suspendingDeployTime && suspendingDeployTime.length > 0) {
-          message = $t({ defaultMessage: 'Operational - applying configuration' })
+          message = $t({ defaultMessage: 'Applying configuration' })
         } else {
           message = $t({ defaultMessage: 'Operational' })
           isOperational = true
@@ -251,7 +251,7 @@ export const transformSwitchStatus = (switchStatusEnum: SwitchStatusEnum, config
       } else if (!syncedSwitchConfig) {
         message = $t({ defaultMessage: 'Synchronizing data' })
       } else {
-        message = $t({ defaultMessage: 'Operational - Synchronizing' })
+        message = $t({ defaultMessage: 'Synchronizing' })
       }
       deviceStatus = DeviceConnectionStatus.CONNECTED
       break
@@ -278,7 +278,7 @@ export const getSwitchStatusString = (row: SwitchRow) => {
   let switchStatus = ( isStrictOperational && row.operationalWarning === true) ?
     $t({ defaultMessage: '{statusMessage} - Warning' }, { statusMessage: status.message }) : status.message
 
-  return isSync ? $t({ defaultMessage: '{switchStatus} - Syncing' }, { switchStatus }) : switchStatus
+  return isSync ? $t({ defaultMessage: 'Synchronizing' }) : switchStatus
 }
 
 export const getSwitchName = (row: SwitchRow) => {
@@ -358,6 +358,19 @@ export const getSwitchPortLabel = (switchModel: string, slotNumber: number) => {
   }
 
   return modelInfo.portModuleSlots && modelInfo.portModuleSlots[slotNumber - 1].portLabel
+}
+
+export const sortPortFunction = (portIdA: { id: string },portIdB: { id: string }) => {
+  const splitA = portIdA.id.split('/')
+  const valueA = calculatePortOrderValue(splitA[0], splitA[1], splitA[2])
+
+  const splitB = portIdB.id.split('/')
+  const valueB = calculatePortOrderValue(splitB[0], splitB[1], splitB[2])
+  return valueA - valueB
+}
+
+export const calculatePortOrderValue = (unitId: string, moduleId: string, portNumber: string) => {
+  return parseInt(unitId, 10) * 10000 + parseInt(moduleId, 10) * 100 + parseInt(portNumber, 10)
 }
 
 export const isL3FunctionSupported = (switchType: string | undefined) => {

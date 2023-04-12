@@ -29,6 +29,7 @@ export enum DpskNetworkType {
 }
 
 export const EXPIRATION_DATE_FORMAT = 'YYYY-MM-DD'
+export const EXPIRATION_TIME_FORMAT = EXPIRATION_DATE_FORMAT + ' hh:mm A'
 
 const passphraseFormatLabel: Record<PassphraseFormatEnum, MessageDescriptor> = {
   [PassphraseFormatEnum.MOST_SECURED]: defineMessage({ defaultMessage: 'Most Secured' }),

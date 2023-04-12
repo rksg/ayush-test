@@ -73,7 +73,7 @@ const adminLogsDefaultFilters = {
 
 function useQueryFilter () {
   const { startDate, endDate } = useDateFilter()
-  const detailLevel = useUserProfileContext().data.detailLevel
+  const detailLevel = useUserProfileContext().data?.detailLevel
   return {
     detailLevel,
     skip: !Boolean(detailLevel),
