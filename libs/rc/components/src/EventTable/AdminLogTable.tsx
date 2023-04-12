@@ -92,7 +92,7 @@ const AdminLogTable = ({ tableQuery }: AdminLogTableProps) => {
     },
     {
       title: defineMessage({ defaultMessage: 'IP Address' }),
-      value: valueFrom(adminLogTypeMapping, data.ipAddress)
+      value: data.ipAddress
     },
     {
       title: defineMessage({ defaultMessage: 'Source' }),

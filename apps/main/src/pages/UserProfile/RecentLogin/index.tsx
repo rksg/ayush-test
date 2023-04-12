@@ -25,7 +25,8 @@ export function RecentLogin (props: { userEmail: string }) {
         'entity_id',
         'message',
         'adminName',
-        'id'
+        'id',
+        'ipAddress'
       ],
       searchString: 'logged',
       filters: {
