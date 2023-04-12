@@ -74,10 +74,6 @@ export function WISPrForm () {
       if(data.guestPortal?.redirectUrl){
         form.setFieldValue('redirectCheckbox',true)
       }
-      if(data.guestPortal?.walledGardens){
-        form.setFieldValue('walledGardensString',
-          data.guestPortal?.walledGardens.toString().replace(/,/g, '\n'))
-      }
       let pName = data.guestPortal?.wisprPage?.externalProviderName
       if(data.guestPortal?.wisprPage?.customExternalProvider){
         form.setFieldValue(['guestPortal','wisprPage','providerName'], pName)
@@ -369,53 +365,6 @@ export function WISPrForm () {
           }
         />}
         <DhcpCheckbox />
-        <Form.Item
-          name={['walledGardensString']}
-          rules={[
-            { validator: (_, value) => walledGardensRegExp(value.toString()) }
-          ]}
-          initialValue={[]}
-          label={<>{$t({ defaultMessage: 'Walled Garden' })}
-            <Tooltip.Question
-              placement='bottom'
-              title={<FormattedMessage
-                values={{ br: (chunks) => <>{chunks}<br /></> }}
-                /* eslint-disable max-len */
-                defaultMessage={`
-                  Unauthenticated users will be allowed to access these destinations(i.e., without redirection to captive portal).<br></br><br></br>
-                  Each destination should be entered in a new line. Accepted formats for destinations are:<br></br><br></br>
-                  - IP address(e.g. 10.11.12.13)<br></br>
-                  - IP address range(e.g. 10.11.12.13-10.11.12.15)<br></br>
-                  - CIDR(e.g. 10.11.12.13/28)<br></br>
-                  - IP address and mask(e.g. 10.11.12.13 255.255.255.0)<br></br>
-                  - Website FQDN(e.g. www.ruckus.com)<br></br>
-                  - Website FQDN with a wildcard(e.g. *.amazon.com; *.com)
-                `}
-                /* eslint-enable */
-              />}
-            />
-          </>}
-          children={
-            <Input.TextArea rows={15}
-              style={{ resize: 'none' }}
-              onChange={(e)=>{
-                const values = e.target.value.split('\n')
-                const walledGardens = [] as string[]
-                values.map(value=>{
-                  if(value.trim())walledGardens.push(value)
-                })
-                form.setFieldValue(['guestPortal','walledGardens'],walledGardens)}}
-              placeholder={$t({ defaultMessage: 'Enter permitted walled '+
-              'garden destinations and IP subnets, a new line for each '+
-              'entry. Hover over the question mark for help with this field.' })}
-            />
-          }
-        />
-        <Form.Item
-          hidden
-          initialValue={[]}
-          name={['guestPortal','walledGardens']}
-        />
         {!regionOption && isOtherProvider &&<AuthAccServerSetting/>}
         {regionOption && region && <AuthAccServerSummary summaryData={region as Regions}/>}
         {!(editMode) && <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />}
