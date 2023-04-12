@@ -1,5 +1,6 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 
+import { FetchBaseQueryError }            from '@reduxjs/toolkit/dist/query/react'
 import { Col, Form, Row, Select, Switch } from 'antd'
 import { FormFinishInfo }                 from 'rc-field-form/lib/FormContext'
 import { useIntl }                        from 'react-intl'
@@ -74,9 +75,16 @@ export function PropertyManagementTab () {
 
   useEffect(() => {
     if (propertyConfigsQuery.isLoading || !formRef.current || !propertyConfigsQuery.data) return
-    const enabled = propertyConfigsQuery.data?.status === PropertyConfigStatus.ENABLED
+    let enabled
 
-    formRef?.current.setFieldsValue(propertyConfigsQuery.data)
+    // If the user disable the Property, it will get 404 for this venue.
+    // Therefore, we need to assign to `false` manually to prevent cache issue.
+    if ((propertyConfigsQuery?.error as FetchBaseQueryError)?.status === 404) {
+      enabled = false
+    } else {
+      enabled = propertyConfigsQuery.data?.status === PropertyConfigStatus.ENABLED
+      formRef?.current.setFieldsValue(propertyConfigsQuery.data)
+    }
     formRef?.current.setFieldValue('isPropertyEnable', enabled)
 
     const groupId = propertyConfigsQuery.data?.personaGroupId
@@ -99,6 +107,8 @@ export function PropertyManagementTab () {
           payload: {
             ...info.values,
             venueName: venueData?.name ?? venueId,
+            description: venueData?.description,
+            address: venueData?.address,
             status: enableProperty
               ? PropertyConfigStatus.ENABLED
               : PropertyConfigStatus.DISABLED
