@@ -53,6 +53,14 @@ export function RecentLogin (props: { userEmail: string }) {
       render: function (_, row) {
         return formatter(DateFormatEnum.DateTimeFormatWithSeconds)(row.event_datetime)
       }
+    },
+    {
+      title: $t({ defaultMessage: 'IP Address' }),
+      dataIndex: 'ipAddress',
+      key: 'ipAddress',
+      render: function (_, row) {
+        return (row.ipAddress)
+      }
     }
   ]
 
