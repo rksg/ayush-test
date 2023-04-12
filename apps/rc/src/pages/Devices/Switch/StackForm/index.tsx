@@ -200,7 +200,9 @@ export function StackForm () {
               model: `${item.model === undefined ? getSwitchModel(item.id) : item.model}
                 ${_.get(switchDetail, 'activeSerial') === item.id ? '(Active)' : ''}`,
               active: _.get(switchDetail, 'activeSerial') === item.id,
-              disabled: _.get(switchDetail, 'activeSerial') === item.id || !!switchDetail.cliApplied
+              disabled: _.get(switchDetail, 'activeSerial') === item.id ||
+                !!switchDetail.cliApplied ||
+                switchDetail.deviceStatus === SwitchStatusEnum.OPERATIONAL
             }
           })
 
