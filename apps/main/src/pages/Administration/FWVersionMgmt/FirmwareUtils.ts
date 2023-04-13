@@ -205,7 +205,7 @@ export const isSwitchNextScheduleTooltipDisabled = (venue: FirmwareSwitchVenue) 
 export const getSwitchNextScheduleTplTooltip = (venue: FirmwareSwitchVenue): string | undefined => {
   if (venue.nextSchedule) {
     // eslint-disable-next-line max-len
-    return venue.nextSchedule.version?.name + ' (' + transform(venue.nextSchedule.version?.category as FirmwareCategory) + ')'
+    return venue.nextSchedule.version?.name
   }
   return ''
 }

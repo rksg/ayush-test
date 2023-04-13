@@ -169,7 +169,8 @@ export interface FirmwareSwitchVenue {
 }
 
 export interface CurrentVersions {
-  currentVersions: string[]
+  currentVersions: string[];
+  currentVersionsAboveTen: string[]
 }
 
 export interface PreDownload {
