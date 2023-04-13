@@ -20,7 +20,7 @@ import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
 import { AuthAccServerSetting } from './AuthAccServerSetting'
-import { WalledGardenTextArea } from './SharedComponent/WalledGardenTextArea'
+import { WalledGardenTextArea } from './SharedComponent/WalledGarden/WalledGardenTextArea'
 
 export function CloudpathForm () {
   const {
@@ -103,6 +103,7 @@ export function CloudpathForm () {
             }
           />
         </Form.Item>
+        <WalledGardenTextArea enableDefaultWalledGarden={true}/>
         <AuthAccServerSetting/>
         {!(editMode) && <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />}
       </GridCol>

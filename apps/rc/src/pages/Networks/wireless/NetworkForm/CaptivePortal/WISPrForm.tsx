@@ -29,7 +29,7 @@ import { AuthAccServerSetting } from './AuthAccServerSetting'
 import { AuthAccServerSummary } from './AuthAccServerSummary'
 import { DhcpCheckbox }         from './DhcpCheckbox'
 import { RedirectUrlInput }     from './RedirectUrlInput'
-import { WalledGardenTextArea } from './SharedComponent/WalledGardenTextArea'
+import { WalledGardenTextArea } from './SharedComponent/WalledGarden/WalledGardenTextArea'
 
 
 
