@@ -156,8 +156,8 @@ export const isRouter = (switchType: SWITCH_TYPE) => {
   return switchType === SWITCH_TYPE.ROUTER
 }
 
-export const transformSwitchUnitStatus = (switchStatusEnum: SwitchStatusEnum, configReady = true,
-  syncedSwitchConfig = true, suspendingDeployTime = '') => {
+export const transformSwitchUnitStatus = (switchStatusEnum: SwitchStatusEnum, configReady = false,
+  syncedSwitchConfig = false, suspendingDeployTime = '') => {
   const { $t } = getIntl()
   switch (switchStatusEnum) {
     case SwitchStatusEnum.NEVER_CONTACTED_CLOUD:
@@ -193,8 +193,8 @@ export const transformSwitchUnitStatus = (switchStatusEnum: SwitchStatusEnum, co
   }
 }
 
-export const transformSwitchStatus = (switchStatusEnum: SwitchStatusEnum, configReady = true,
-  syncedSwitchConfig = true, suspendingDeployTime = '') => {
+export const transformSwitchStatus = (switchStatusEnum: SwitchStatusEnum, configReady = false,
+  syncedSwitchConfig = false, suspendingDeployTime = '') => {
   const { $t } = getIntl()
   let message = ''
   let deviceStatus = DeviceConnectionStatus.INITIAL
