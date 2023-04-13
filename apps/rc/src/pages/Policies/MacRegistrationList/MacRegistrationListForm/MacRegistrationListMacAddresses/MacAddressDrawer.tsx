@@ -18,7 +18,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { toLocalDateString, toUTCExpireDate } from '../../MacRegistrationListUtils'
+import { toExpireEndDate, toLocalDateString } from '../../MacRegistrationListUtils'
 
 interface MacAddressDrawerProps {
   visible: boolean
@@ -87,7 +87,7 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
         username: data.username?.length === 0 ? null : data.username,
         email: data.email?.length === 0 ? null : data.email,
         expirationDate: data.expiration?.mode === ExpirationMode.NEVER ? null :
-          toUTCExpireDate(data.expiration?.date)
+          toExpireEndDate(data.expiration?.date)
       }
       if (isEdit) {
         await editMacRegistration(

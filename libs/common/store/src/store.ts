@@ -97,7 +97,7 @@ export const store = configureStore({
     ])
   },
 
-  devTools: !isDev
+  devTools: isDev
 })
 
 export type AppState = ReturnType<typeof store.getState>
