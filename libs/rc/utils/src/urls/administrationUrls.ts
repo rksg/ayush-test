@@ -182,6 +182,11 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     oldMethod: 'post',
     oldUrl: '/api/tenant/:tenantId/entitlement/internal-refresh',
     newApi: false
+  },
+  convertNonVARToMSP: {
+    method: 'post',
+    url: '/api/mspservice/mspNonVAR/:tenantId',
+    newApi: true
   }
   // acceptRejectInvitation: {
   //   method: 'put',

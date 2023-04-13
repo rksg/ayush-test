@@ -10,7 +10,8 @@ import {
   MfaOtpMethod,
   PlmMessageBanner,
   UserSettings,
-  UserProfile
+  UserProfile,
+  UserSettingsUIModel
 } from './types'
 
 export const UserUrlsInfo = {
@@ -37,6 +38,10 @@ export const UserUrlsInfo = {
   getAllUserSettings: {
     method: 'get',
     url: '/api/tenant/:tenantId/admin-settings/ui'
+  },
+  saveUserSettings: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/admin-settings/ui/:productKey'
   },
   wifiAllowedOperations: {
     method: 'get',
@@ -103,6 +108,8 @@ export const UserUrlsInfo = {
 export const {
   useAllowedOperationsQuery,
   useGetAllUserSettingsQuery,
+  useLazyGetAllUserSettingsQuery,
+  useSaveUserSettingsMutation,
   useGetCloudVersionQuery,
   useGetUserProfileQuery,
   useLazyGetUserProfileQuery,
@@ -120,15 +127,21 @@ export const {
   useDisableMFAMethodMutation
 } = userApi.injectEndpoints({
   endpoints: (build) => ({
-    getAllUserSettings: build.query<UserSettings, RequestPayload>({
+    getAllUserSettings: build.query<UserSettingsUIModel, RequestPayload>({
       query: ({ params }) => createHttpRequest(UserUrlsInfo.getAllUserSettings, params),
       transformResponse (userSettings: UserSettings) {
-        let result:{ [key: string]: string } = {}
+        let result:UserSettingsUIModel = {}
         Object.keys(userSettings).forEach((key: string) => {
           result[key] = JSON.parse(userSettings[key])
         })
         return result
       }
+    }),
+    saveUserSettings: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => ({
+        ...createHttpRequest(UserUrlsInfo.saveUserSettings, params),
+        body: payload
+      })
     }),
     getCloudVersion: build.query<CloudVersion, RequestPayload>({
       query: ({ params }) => createHttpRequest(UserUrlsInfo.getCloudVersion, params)
