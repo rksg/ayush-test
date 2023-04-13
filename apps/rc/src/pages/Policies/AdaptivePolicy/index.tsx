@@ -15,15 +15,17 @@ export enum AdaptivePolicyTabKey {
 }
 
 const tabs: Record<AdaptivePolicyTabKey, () => JSX.Element> = {
-  radiusAttributeGroup: RadiusAttributeGroupTable,
-  adaptivePolicy: AdaptivePolicyTable,
-  adaptivePolicySet: AdaptivePolicySetTable
+  [AdaptivePolicyTabKey.RADIUS_ATTRIBUTE_GROUP]: RadiusAttributeGroupTable,
+  [AdaptivePolicyTabKey.ADAPTIVE_POLICY]: AdaptivePolicyTable,
+  [AdaptivePolicyTabKey.ADAPTIVE_POLICY_SET]: AdaptivePolicySetTable
 }
 
 const tabsName: Record<AdaptivePolicyTabKey, MessageDescriptor> = {
-  radiusAttributeGroup: defineMessage({ defaultMessage: 'RADIUS Attribute Groups' }),
-  adaptivePolicy: defineMessage({ defaultMessage: 'Adaptive Policy' }),
-  adaptivePolicySet: defineMessage({ defaultMessage: 'Adaptive Policy Sets' })
+  // eslint-disable-next-line max-len
+  [AdaptivePolicyTabKey.RADIUS_ATTRIBUTE_GROUP]: defineMessage({ defaultMessage: 'RADIUS Attribute Groups' }),
+  [AdaptivePolicyTabKey.ADAPTIVE_POLICY]: defineMessage({ defaultMessage: 'Adaptive Policy' }),
+  // eslint-disable-next-line max-len
+  [AdaptivePolicyTabKey.ADAPTIVE_POLICY_SET]: defineMessage({ defaultMessage: 'Adaptive Policy Sets' })
 }
 
 export default function AdaptivePolicyList (props: { tabKey: AdaptivePolicyTabKey }) {
