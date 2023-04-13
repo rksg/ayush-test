@@ -28,8 +28,8 @@ import {
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
-import * as UI                     from './styledComponent'
-import { SubscriptionUtilization } from './SubscriptionUtilization'
+import * as UI                from './styledComponent'
+import { SubscriptionHeader } from './SubscriptionHeader'
 
 const subscriptionTypeFilterOpts = ($t: IntlShape['$t']) => [
   { key: '', value: $t({ defaultMessage: 'All Subscriptions' }) },
@@ -221,7 +221,7 @@ const SubscriptionTable = () => {
 const Subscriptions = () => {
   return (
     <UI.FullWidthSpace size='large' direction='vertical'>
-      <SubscriptionUtilization />
+      <SubscriptionHeader />
       <SubscriptionTable />
     </UI.FullWidthSpace>
   )

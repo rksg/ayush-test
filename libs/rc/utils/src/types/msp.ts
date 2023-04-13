@@ -415,4 +415,3 @@ export interface MspLogoFile {
 export interface ParentLogoUrl {
   logo_url: string
 }
-
