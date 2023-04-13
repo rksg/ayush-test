@@ -1,4 +1,4 @@
-import { useIntl } from 'react-intl'
+import { MessageDescriptor, defineMessage, useIntl } from 'react-intl'
 
 import { PageHeader }             from '@acx-ui/components'
 import { getPolicyListRoutePath } from '@acx-ui/rc/utils'
@@ -8,27 +8,27 @@ import AdaptivePolicySetTable    from './AdaptivePolicySet/AdaptivePolicySetTabl
 import AdaptivePolicyTabs        from './AdaptivePolicyTabs'
 import RadiusAttributeGroupTable from './RadiusAttributeGroup/RadiusAttributeGroupTable'
 
-const tabs = {
-  radiusAttributeGroup: RadiusAttributeGroupTable,
-  adaptivePolicy: AdaptivePolicyTable,
-  adaptivePolicySet: AdaptivePolicySetTable
-}
-
-const tabsName = {
-  radiusAttributeGroup: 'RADIUS Attribute Groups',
-  adaptivePolicy: 'Adaptive Policy',
-  adaptivePolicySet: 'Adaptive Policy Sets'
-}
-
 export enum AdaptivePolicyTabKey {
   ADAPTIVE_POLICY = 'adaptivePolicy',
   ADAPTIVE_POLICY_SET = 'adaptivePolicySet',
   RADIUS_ATTRIBUTE_GROUP = 'radiusAttributeGroup'
 }
 
+const tabs: Record<AdaptivePolicyTabKey, () => JSX.Element> = {
+  radiusAttributeGroup: RadiusAttributeGroupTable,
+  adaptivePolicy: AdaptivePolicyTable,
+  adaptivePolicySet: AdaptivePolicySetTable
+}
+
+const tabsName: Record<AdaptivePolicyTabKey, MessageDescriptor> = {
+  radiusAttributeGroup: defineMessage({ defaultMessage: 'RADIUS Attribute Groups' }),
+  adaptivePolicy: defineMessage({ defaultMessage: 'Adaptive Policy' }),
+  adaptivePolicySet: defineMessage({ defaultMessage: 'Adaptive Policy Sets' })
+}
+
 export default function AdaptivePolicyList (props: { tabKey: AdaptivePolicyTabKey }) {
   const { $t } = useIntl()
-  const Tab = tabs[props.tabKey as keyof typeof tabs]
+  const Tab = tabs[props.tabKey]
   return <>
     <PageHeader
       breadcrumb={
@@ -36,7 +36,7 @@ export default function AdaptivePolicyList (props: { tabKey: AdaptivePolicyTabKe
           { text: $t({ defaultMessage: 'Policies & Profiles' }),
             link: getPolicyListRoutePath(true) }
         ]}
-      title={tabsName[props.tabKey as keyof typeof tabs]}
+      title={$t(tabsName[props.tabKey])}
       footer={<AdaptivePolicyTabs activeTab={props.tabKey}/>}
     />
     { Tab && <Tab /> }
