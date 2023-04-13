@@ -114,18 +114,14 @@ export function FunnelChart ({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stages, selectedStage, parentNode, windowWidth])
 
-  useEffect(()=> {
+  const selectedStageWidth = enhancedStages.find((enhancedStage) => enhancedStage.isSelected)?.width
+  useEffect(() => {
     const selected = enhancedStages.find(
       (enhancedStage) => enhancedStage.isSelected
     )
-    onSelectStage(
-      selected?.endPosition! - selected?.width! / 2,
-      selectedStage
-    )
+    onSelectStage(selected?.endPosition! - selected?.width! / 2, selectedStage)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[selectedStage, enhancedStages.find(
-    (enhancedStage) => enhancedStage.isSelected
-  )?.width])
+  }, [selectedStage, selectedStageWidth])
 
   useLayoutEffect(() => {
     const handler = function resizeHandler () {
