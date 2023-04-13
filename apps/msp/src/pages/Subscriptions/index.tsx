@@ -1,8 +1,8 @@
 
 import { useEffect, useState } from 'react'
 
-import { Row }     from 'antd'
-import { useIntl } from 'react-intl'
+import { Row, Space } from 'antd'
+import { useIntl }    from 'react-intl'
 
 import {
   Button,
@@ -25,10 +25,15 @@ import {
   useRefreshMspEntitlementMutation
 } from '@acx-ui/rc/services'
 import {
+  dateSort,
+  defaultSort,
   EntitlementUtil,
-  MspEntitlement
+  MspEntitlement,
+  sortProp
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+
+import * as UI from './styledComponent'
 
 export function Subscriptions () {
   const { $t } = useIntl()
@@ -65,6 +70,7 @@ export function Subscriptions () {
       title: $t({ defaultMessage: 'Device Count' }),
       dataIndex: 'quantity',
       key: 'quantity',
+      sorter: { compare: sortProp('quantity', defaultSort) },
       render: function (_, row) {
         return row.quantity
       }
@@ -73,6 +79,7 @@ export function Subscriptions () {
       title: $t({ defaultMessage: 'Starting Date' }),
       dataIndex: 'effectiveDate',
       key: 'effectiveDate',
+      sorter: { compare: sortProp('effectiveDate', dateSort) },
       render: function (_, row) {
         const effectiveDate = new Date(Date.parse(row.effectiveDate))
         return formatter(DateFormatEnum.DateFormat)(effectiveDate)
@@ -82,6 +89,7 @@ export function Subscriptions () {
       title: $t({ defaultMessage: 'Expiration Date' }),
       dataIndex: 'expirationDate',
       key: 'expirationDate',
+      sorter: { compare: sortProp('expirationDate', dateSort) },
       render: function (_, row) {
         const expirationDate = new Date(Date.parse(row.expirationDate))
         return formatter(DateFormatEnum.DateFormat)(expirationDate)
@@ -89,11 +97,19 @@ export function Subscriptions () {
     },
     {
       title: $t({ defaultMessage: 'Time left' }),
-      dataIndex: 'timeLeft',
+      dataIndex: 'expirationDate',
+      // key needs to be unique
       key: 'timeLeft',
+      sorter: { compare: sortProp('expirationDate', dateSort) },
+      defaultSortOrder: 'ascend',
       render: function (_, row) {
         const remainingDays = EntitlementUtil.timeLeftInDays(row.expirationDate)
-        return EntitlementUtil.timeLeftValues(remainingDays)
+        const TimeLeftWrapper = remainingDays < 0
+          ? UI.Expired
+          : (remainingDays <= 60 ? UI.Warning : Space)
+        return <TimeLeftWrapper>{
+          EntitlementUtil.timeLeftValues(remainingDays)
+        }</TimeLeftWrapper>
       }
     },
     {

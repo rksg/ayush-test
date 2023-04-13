@@ -9,13 +9,12 @@ import { useNavigate, useParams, useTenantLink }                          from '
 import { Header } from '../Header'
 
 import ConnectedClientsOverTime      from './ConnectedClientsOverTime'
+import { HealthDrillDown }           from './HealthDrillDown'
+import { DrilldownSelection }        from './HealthDrillDown/config'
 import { HealthPageContextProvider } from './HealthPageContext'
 import Kpis                          from './Kpi'
 import * as UI                       from './styledComponents'
 import { SummaryBoxes }              from './SummaryBoxes'
-
-
-export type DrilldownSelection = 'connectionFailure' | 'ttc' | 'none'
 
 const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
   const { $t } = useIntl()
@@ -26,7 +25,7 @@ const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
   const basePath = useTenantLink(props.path ?? '/analytics/health/tab/')
   const { filters } = useAnalyticsFilter()
   const healthPageFilters = widgetFilters ? widgetFilters : filters
-  const [drilldownSelection, setDrilldownSelection] = useState<DrilldownSelection>('none')
+  const [drilldownSelection, setDrilldownSelection] = useState<DrilldownSelection>(null)
 
   const onTabChange = (tab: string) =>
     navigate({
@@ -46,6 +45,11 @@ const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
         <GridCol col={{ span: 24 }} style={{ minHeight: '105px' }}>
           <SummaryBoxes
             filters={healthPageFilters}
+            drilldownSelection={drilldownSelection}
+            setDrilldownSelection={setDrilldownSelection}
+          />
+          <HealthDrillDown
+            filters={filters}
             drilldownSelection={drilldownSelection}
             setDrilldownSelection={setDrilldownSelection}
           />

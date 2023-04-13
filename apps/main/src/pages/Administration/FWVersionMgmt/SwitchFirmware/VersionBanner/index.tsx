@@ -1,5 +1,6 @@
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { Divider, Space } from 'antd'
+import { useIntl }        from 'react-intl'
+import { useParams }      from 'react-router-dom'
 
 import { DateFormatEnum, formatter }    from '@acx-ui/formatter'
 import {
@@ -12,7 +13,7 @@ import {
   FirmwareCategory
 } from '@acx-ui/rc/utils'
 
-import * as UI from '../../styledComponents'
+import * as UI from './styledComponents'
 
 const transform = firmwareTypeTrans()
 
@@ -21,24 +22,39 @@ export const VersionBanner = () => {
   const params = useParams()
   const { data: latestReleaseVersions } = useGetSwitchLatestFirmwareListQuery({ params })
   const versions = getReleaseFirmware(latestReleaseVersions)
-  const firmware = versions[0]
+  const firmware = versions.filter(v => v.id.startsWith('090'))[0]
+  const rodanFirmware = versions.filter(v => v.id.startsWith('100'))[0]
 
-  if (!firmware) return null
-  return (
-    <div>
-      <UI.BannerVersion>
-        <span>{$t({ defaultMessage: 'Latest Version:' })} </span>
-        <UI.BannerVersionName>{ firmware?.name.replace('_b392', '') }</UI.BannerVersionName>
-      </UI.BannerVersion>
-      <UI.BannerVersion>
-        <span>{transform(firmware?.category, 'type')} </span>
-        <span>({transform(firmware?.category, 'subType')})</span>
-        <span> - </span>
-        <UI.BannerVersionName>
+
+  const getFirmwareInformation = function (firmware: FirmwareVersion, models: string) {
+    return (<UI.FwContainer>
+      <div>
+        <span>{$t({ defaultMessage: 'For ICX Models ({models}):' }, { models })} </span>
+        <UI.VersionName>{firmware?.name.replace('_b392', '')}</UI.VersionName>
+      </div>
+      <div>
+        <UI.TypeSpace split={<Divider type='vertical' />}>
+          <div>
+            <span>{transform(firmware?.category, 'type')} </span>
+            <span>({transform(firmware?.category, 'subType')})</span>
+          </div>
           {formatter(DateFormatEnum.DateFormat)(firmware?.createdDate)}
-        </UI.BannerVersionName>
-      </UI.BannerVersion>
-    </div>
+        </UI.TypeSpace>
+      </div>
+    </UI.FwContainer>)
+  }
+
+  if (!firmware && !rodanFirmware) return null
+  return (
+    <UI.BannerVersion>
+      <UI.LatestVersion>
+        {$t({ defaultMessage: 'Latest Version' })}
+      </UI.LatestVersion>
+      <Space split={<Divider type='vertical' style={{ height: '40px' }} />}>
+        {rodanFirmware && getFirmwareInformation(rodanFirmware, '8200')}
+        {firmware && getFirmwareInformation(firmware, '7150-7850')}
+      </Space>
+    </UI.BannerVersion>
   )
 }
 
