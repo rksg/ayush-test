@@ -29,6 +29,7 @@ const defaultPayload = {
 
 function AccessControlTabs () {
   const { $t } = useIntl()
+  const paddingStyle = { paddingTop: '8px' }
 
   const [currentTab, setCurrentTab] = useState('accessControlSet')
 
@@ -48,30 +49,35 @@ function AccessControlTabs () {
           aclCount: tableQuery?.data?.totalCount
         })}
         key='accessControlSet'
+        style={paddingStyle}
       >
         <AccessControlSet />
       </Tabs.TabPane>
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Layer 2' })}
         key='layer2'
+        style={paddingStyle}
       >
         <Layer2Component />
       </Tabs.TabPane>
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Layer 3' })}
         key='layer3'
+        style={paddingStyle}
       >
         <Layer3Component />
       </Tabs.TabPane>
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Device & OS' })}
         key='device'
+        style={paddingStyle}
       >
         <DevicePolicyComponent />
       </Tabs.TabPane>
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Applications' })}
         key='application'
+        style={paddingStyle}
       >
         <ApplicationPolicyComponent />
       </Tabs.TabPane>
