@@ -390,9 +390,6 @@
   "0Azlrb": {
     "defaultMessage": "Manage"
   },
-  "0B0Q6h": {
-    "defaultMessage": "Latest Version: {count}"
-  },
   "0BOSOm": {
     "defaultMessage": "Executive Authorization"
   },
@@ -506,9 +503,6 @@
   },
   "0ceRGX": {
     "defaultMessage": "<p>PoE power has been denied due to power exhaustion or because another high priority device is plugged in.</p>"
-  },
-  "0en4ku": {
-    "defaultMessage": "Top 5 Venues/Services with poor experience"
   },
   "0f8FB9": {
     "defaultMessage": "RF Channel"
@@ -792,9 +786,6 @@
   "2IpPHN": {
     "defaultMessage": "HpPrinter"
   },
-  "2JkWDn": {
-    "defaultMessage": "Policies & Profiles > MAC Registration Lists"
-  },
   "2JqYTl": {
     "defaultMessage": "SNR:"
   },
@@ -848,9 +839,6 @@
   },
   "2YvVc+": {
     "defaultMessage": "Destination Ip"
-  },
-  "2b+kk6": {
-    "defaultMessage": "Ruckus DHCP Service:"
   },
   "2bCYZp": {
     "defaultMessage": "<p>Users are failing to successfully connect at the authentication stage. This connection failure issue is comprised of multiple failure types and reasons, making it difficult to pin down the exact cause.</p>"
@@ -1045,9 +1033,6 @@
   "3aP0WP": {
     "defaultMessage": "EC support enabled"
   },
-  "3bNuBq": {
-    "defaultMessage": "AP-to-RUCKUS Cloud Latency"
-  },
   "3cb3/Z": {
     "defaultMessage": "Disable this channel"
   },
@@ -1087,9 +1072,6 @@
   },
   "3wmuyF": {
     "defaultMessage": "Administrator"
-  },
-  "3xUeLs": {
-    "defaultMessage": "Passphrase of a special recovery network which is activated on AP once it loses connection with Ruckus Cloud."
   },
   "3yd70F": {
     "defaultMessage": "Overload"
@@ -1192,9 +1174,6 @@
   },
   "4RbqN8": {
     "defaultMessage": "No venues activating this network. Use the ON/OFF switches in the list to select the activating venues"
-  },
-  "4UQZDl": {
-    "defaultMessage": "This network is restricted to authorized users only. Violators may be subjected to legal prosecution. Acitvity on this network is monitored and may be used as evidence in a court of law. Copyright 2022 Ruckus Networks"
   },
   "4VPIXt": {
     "defaultMessage": "Alarms"
@@ -1316,9 +1295,6 @@
   },
   "59KJDJ": {
     "defaultMessage": "Additional member detected"
-  },
-  "59zDV7": {
-    "defaultMessage": "File format must be csv"
   },
   "5BjHqz": {
     "defaultMessage": "BoseSpeakers"
@@ -1958,9 +1934,6 @@
   "8N9wG+": {
     "defaultMessage": "Recipients"
   },
-  "8O9cAb": {
-    "defaultMessage": "Last 24 hours"
-  },
   "8Ou4hT": {
     "defaultMessage": "Reset Zoom"
   },
@@ -2311,9 +2284,6 @@
   "A0B9Tm": {
     "defaultMessage": "SSID may contain between 2 and 32 characters (32 Bytes when using UTF-8 non-Latin characters)"
   },
-  "A0VON+": {
-    "defaultMessage": "Add Client Isolation Pofile"
-  },
   "A37YUP": {
     "defaultMessage": "{value, select, true {Enabled} other {Disabled}}"
   },
@@ -2383,9 +2353,6 @@
   "AN1aoL": {
     "defaultMessage": "Users connect through a 3rd party captive portal, authenticated by a AAA server",
     "description": "Description for 3rd Party Captive Portal(WISPr)"
-  },
-  "APcLKh": {
-    "defaultMessage": "<p>The RADIUS server is offline or unreachable from RUCKUS Cloud/AP (message from RUCKUS Cloud/AP to RADIUS is failing), which is often caused by:</p> <ol> <li>AP/SZ misconfiguration (Bad IP, bad port).</li> <li>The RADIUS server is offline.</li> <li>The RADIUS server is unreachable on the network (e.g. network path or routing issues).</li> </ol>"
   },
   "AQNV9V": {
     "defaultMessage": "Create a web authentication guest portal for end user connectivity"
@@ -2569,9 +2536,6 @@
   },
   "BC6Ixx": {
     "defaultMessage": "Mac Credentials Duration"
-  },
-  "BCBdiT": {
-    "defaultMessage": "<p>This issue is caused by a DoS protection feature, which can be enabled/disabled in the RUCKUS UI. If the behavior is having an undesirable impact on valid clients, the feature can be disabled or optimized to make the prevention logic more conservative.</p>"
   },
   "BCabYi": {
     "defaultMessage": "Select AP..."
@@ -2759,9 +2723,6 @@
   "C5VhoH": {
     "defaultMessage": "Secondary SIM"
   },
-  "C7++8+": {
-    "defaultMessage": "Bonjour Fencing"
-  },
   "C7HRVW": {
     "defaultMessage": "Firmware Version Management"
   },
@@ -2879,17 +2840,11 @@
   "CfHBI+": {
     "defaultMessage": "{offset} {offset, plural, one {day} other {days}}"
   },
-  "CgEpzt": {
-    "defaultMessage": "Selected channels will be available for radio broadcasting in this venue. Hover to see overlapping channels"
-  },
   "CgnWQX": {
     "defaultMessage": "Value must between 2-14400 minutes or 1-240 hours or 1-10 days"
   },
   "CkGdGi": {
     "defaultMessage": "EAPOL Failure"
-  },
-  "Clmz5o": {
-    "defaultMessage": "Top 5 Switches by Error"
   },
   "CncOaw": {
     "defaultMessage": "OS Vender"
@@ -2973,9 +2928,6 @@
   },
   "DNDXNi": {
     "defaultMessage": "Edit ePDG"
-  },
-  "DNSfqE": {
-    "defaultMessage": "High AP-RUCKUS Cloud connection failures in {scope}"
   },
   "DS6N1h": {
     "defaultMessage": "Switch {model}"
@@ -3079,9 +3031,6 @@
   },
   "E3P4fR": {
     "defaultMessage": "Managed"
-  },
-  "E3oB+t": {
-    "defaultMessage": "Browser"
   },
   "E5jCMU": {
     "defaultMessage": "DPSK Service"
@@ -3319,9 +3268,6 @@
   },
   "FP524C": {
     "defaultMessage": "Walled Garden"
-  },
-  "FP6EPW": {
-    "defaultMessage": "Add Access Policy Set"
   },
   "FRPQBr": {
     "defaultMessage": "Default Access"
@@ -3625,9 +3571,6 @@
   "H33wp/": {
     "defaultMessage": "{module1}"
   },
-  "H3GhAy": {
-    "defaultMessage": "Ruckus recommends that the ICX switch obtain an IP address from a DHCP server for connecting to the cloud."
-  },
   "H3WzvD": {
     "defaultMessage": "Sefl Sign In"
   },
@@ -3673,9 +3616,6 @@
   },
   "HIfh8Z": {
     "defaultMessage": "Since a LAG can contain only ports of one type, changing the port type will clear the list of selected ports"
-  },
-  "HIumJI": {
-    "defaultMessage": "Once the ICX switch is connected to the Ruckus Cloud:"
   },
   "HJ5lFe": {
     "defaultMessage": "Blink LEDs"
@@ -3778,9 +3718,6 @@
   },
   "Hpv4PA": {
     "defaultMessage": "Excellent"
-  },
-  "HsFqgS": {
-    "defaultMessage": "<p>To remediate the problems identified above, follow the corresponding recommended actions:</p> <ol> <li>Test network connection between AP and RUCKUS Cloud.</li> <li>Ensure that there is clear communication on all required ports.</li> <li>Test WAN connection health to ensure there is a route from AP to RUCKUS Cloud and there is no or acceptable packet loss.</li> <li>Ensure that AP certificate is valid. Work with Ruckus customer support to identify and resolve this condition.</li> </ol>"
   },
   "Hui74f": {
     "defaultMessage": "Event Type"
@@ -4110,9 +4047,6 @@
   "JNRYDN": {
     "defaultMessage": "<p>Clients are failing 802.11r roaming due to a mismatch in the mobility domain ID (MDID) in the 802.11r connection request.</p>"
   },
-  "JO7FEp": {
-    "defaultMessage": "Enable access to Ruckus support"
-  },
   "JOnNBb": {
     "defaultMessage": "Supported formats: PNG, JPEG, GIF, SVG"
   },
@@ -4145,9 +4079,6 @@
   },
   "JYvQwT": {
     "defaultMessage": "Schedule Automatically"
-  },
-  "JaJoAk": {
-    "defaultMessage": "Button Text"
   },
   "Jb4Prv": {
     "defaultMessage": "Last Update"
@@ -4406,9 +4337,6 @@
   "KzGiQS": {
     "defaultMessage": "Are you sure you want to send OTP?"
   },
-  "KzcTy4": {
-    "defaultMessage": "Memory Utilization"
-  },
   "Kzit+3": {
     "defaultMessage": "Select Application..."
   },
@@ -4543,17 +4471,11 @@
   "Ldk2g+": {
     "defaultMessage": "Local Users"
   },
-  "Lel568": {
-    "defaultMessage": "Note: Changing the passphrase will be applied to disconnected APs only once they are reconnected to Ruckus Cloud"
-  },
   "LezilD": {
     "defaultMessage": "Primary DHCP Server"
   },
   "Lh3lfh": {
     "defaultMessage": "Spanning tree protocol"
-  },
-  "LiHQih": {
-    "defaultMessage": "Coming Soon"
   },
   "LigL01": {
     "defaultMessage": "No Email address defined for this guest"
@@ -4709,9 +4631,6 @@
   },
   "MSVkpj": {
     "defaultMessage": "Portal Service"
-  },
-  "MUmf9z": {
-    "defaultMessage": "Top 5 Switches by Traffic"
   },
   "MUzcWQ": {
     "defaultMessage": "MAC Address: {apMac} {br}Model: {apModel} {br}Firmware: {apFirmware}"
@@ -4987,9 +4906,6 @@
   "Ng2n8x": {
     "defaultMessage": "You may enter numbers between 0 and 65535. Start value must be lower than end value"
   },
-  "NiknHk": {
-    "defaultMessage": "For switches with existing configuration, \"manager registrar\" should be present in the running configuration of the switch. Use the manager registrar-query-restart command on the switch CLI to initiate cloud discovery followed by a manager reset command to establish a connection with the Cloud."
-  },
   "NjOuUO": {
     "defaultMessage": "Classification Rules"
   },
@@ -5253,12 +5169,6 @@
   "P/GTu2": {
     "defaultMessage": "Enable 2.4 GHz band:"
   },
-  "P/HKNp": {
-    "defaultMessage": "Select customer accounts to assign to this integrator:"
-  },
-  "P/OesI": {
-    "defaultMessage": "SNR threshold above which detected Rogue APs will be reported in Ruckus Cloud. Available range is 0-100."
-  },
   "P/gg9W": {
     "defaultMessage": "Analytics subscription will expire in {daysText} days"
   },
@@ -5484,12 +5394,6 @@
   "QF20FV": {
     "defaultMessage": "query-end-time"
   },
-  "QH7XOz": {
-    "defaultMessage": "New Clients"
-  },
-  "QHkYgo": {
-    "defaultMessage": "Please select one channels"
-  },
   "QHkbkO": {
     "defaultMessage": "Primary Server"
   },
@@ -5622,9 +5526,6 @@
   "R/6nsx": {
     "defaultMessage": "Subscription"
   },
-  "R/TEyR": {
-    "defaultMessage": "Edit Client Isolation Pofile"
-  },
   "R66tOc": {
     "defaultMessage": "{title}:"
   },
@@ -5731,9 +5632,6 @@
   "Rih+Vn": {
     "defaultMessage": "Failed to \"{buttonLabel}\""
   },
-  "RkTgwV": {
-    "defaultMessage": "Top 5 SSIDs by Clients"
-  },
   "RlKUNk": {
     "defaultMessage": "No IP Addresses"
   },
@@ -5818,9 +5716,6 @@
   "S33j4r": {
     "defaultMessage": "Services ({servicesCount})"
   },
-  "S3VrmZ": {
-    "defaultMessage": "<p>The RADIUS authentication exchange is failing because of a timeout waiting for a response from the RADIUS server. This is typically caused by the following reasons:</p> <ol> <li>The RADIUS server is offline.</li> <li>The RADIUS server is unreachable by RUCKUS Cloud/APAP (network reliability issues, like congestion, drops, flapping links, etc).</li> <li>The RADIUS server is overloaded and unable to reply.</li> <li>The wireless link is experiencing high congestion, retries/errors, or other unreliability issues.</li> </ol>"
-  },
   "S3XVto": {
     "defaultMessage": "Activity Details"
   },
@@ -5898,9 +5793,6 @@
   },
   "ScFzUg": {
     "defaultMessage": "Venue Name"
-  },
-  "ScuJdg": {
-    "defaultMessage": "There are two options to connect the Ruckus Switch to the Cloud:"
   },
   "Se22H1": {
     "defaultMessage": "Please enter a valid IP address",
@@ -6123,9 +6015,6 @@
   "TcwMs6": {
     "defaultMessage": "Instances"
   },
-  "TeMinD": {
-    "defaultMessage": "Enable when requested by Ruckus support team."
-  },
   "Tf5z2y": {
     "defaultMessage": "- It is recommended to use logos with transparent background"
   },
@@ -6137,9 +6026,6 @@
   },
   "Tffbyh": {
     "defaultMessage": "Guest Pass - Forgot password"
-  },
-  "Tflm+8": {
-    "defaultMessage": "<p>In many cases with RADIUS failure, each client device or RADIUS server behaves differently, which causes a variety of unique failure symptoms. If the problem is affecting many users or lasting for a long time, it may be helpful to validate the end-to-end RADIUS setup and network performance:</p> <ol> <li>Check the RADIUS server and RUCKUS Cloud settings to identify matching configurations (IP address, port, and shared secret).</li> <li>Check for RADIUS reachability by RUCKUS Cloud/APAP (network reliability issues, like congestion, drops, flapping links, etc).</li> <li>Check for recent changes in the RADIUS infrastructure that may be leading to issues.</li> <li>Check RADIUS performance metrics to ensure it has sufficient capacity and is not overloaded.</li> <li>Check the wireless link for high congestion, retries/errors, or other unreliability issues.</li> </ol>"
   },
   "Tgyxau": {
     "defaultMessage": "Application Category"
@@ -6401,9 +6287,6 @@
   "VAQEd/": {
     "defaultMessage": "Duplex Speed"
   },
-  "VFny+X": {
-    "defaultMessage": "Not available in this Beta version"
-  },
   "VHqVJz": {
     "defaultMessage": "This is the period during which clients, having been disconnected from the network, will be allowed to reconnect without needing to re-authenticate with the portal"
   },
@@ -6427,9 +6310,6 @@
   },
   "VLdSEe": {
     "defaultMessage": "Resend Invitation Email"
-  },
-  "VMaSrX": {
-    "defaultMessage": "Ruckus' privacy policy"
   },
   "VMyje5": {
     "defaultMessage": "Format options: <br></br><br></br> Most secured - all printable ASCII characters can be used <br></br><br></br> Keyboard friendly - only letters and numbers will be used <br></br><br></br> Numbers only - only numbers will be used"
@@ -6581,9 +6461,6 @@
   },
   "W2vkco": {
     "defaultMessage": "<span><b>{formattedValue}</b></span>"
-  },
-  "W3G6Mz": {
-    "defaultMessage": "You are deleting one or more offline APs. When these offline devices come back online their configuration will be factory reset and they will be removed from Ruckus Cloud."
   },
   "W4Niio": {
     "defaultMessage": "Captive Portal URL:"
@@ -6765,9 +6642,6 @@
   },
   "X5kWen": {
     "defaultMessage": "Admin Status"
-  },
-  "X6brn+": {
-    "defaultMessage": "Connecting the switch to Cloud"
   },
   "X72sXx": {
     "defaultMessage": "Unicast"
@@ -6954,9 +6828,6 @@
   },
   "Y7v8BE": {
     "defaultMessage": "{offset} {offset, plural, one {week} other {weeks}}"
-  },
-  "Y9h/3r": {
-    "defaultMessage": "No active incidents"
   },
   "YDMrKK": {
     "defaultMessage": "Users"
@@ -7290,9 +7161,6 @@
   "ZsywtZ": {
     "defaultMessage": "RSTP"
   },
-  "Zv+Udm": {
-    "defaultMessage": "Never expires (Same as list)"
-  },
   "ZvJmlk": {
     "defaultMessage": "WAN Interface"
   },
@@ -7386,9 +7254,6 @@
   "aGIX0S": {
     "defaultMessage": "Stack ID"
   },
-  "aGcBcc": {
-    "defaultMessage": "Enable access to RUCKUS One support"
-  },
   "aGe0Fo": {
     "defaultMessage": "Search for connected and historical clients..."
   },
@@ -7422,9 +7287,6 @@
   },
   "aTpeqQ": {
     "defaultMessage": "High memory utilization detected in {scope}"
-  },
-  "aVCJC1": {
-    "defaultMessage": "Use Bonjour Fencing Service"
   },
   "aVqg31": {
     "defaultMessage": "day"
@@ -7534,9 +7396,6 @@
   },
   "b/lDnE": {
     "defaultMessage": "Default ({vlanId}) VLAN settings"
-  },
-  "b/ooI9": {
-    "defaultMessage": "Ruckus AP"
   },
   "b0jgtl": {
     "defaultMessage": "IP Address: {ip} | MAC Address: {mac}"
@@ -7724,9 +7583,6 @@
   "bx18Wp": {
     "defaultMessage": "Module 2"
   },
-  "bxUpvY": {
-    "defaultMessage": "If DHCP is used to connect to the Ruckus Cloud, the ICX switch automatically creates default VLAN 1 and router Interface VE1 with the IP addresses obtained from the DHCP server."
-  },
   "bxgmlW": {
     "defaultMessage": "Errors ({dispatchFailedReasonCount})"
   },
@@ -7762,9 +7618,6 @@
   },
   "c54Xnz": {
     "defaultMessage": "You must specify subnet network"
-  },
-  "c7MDhc": {
-    "defaultMessage": "Directed MC/BC Threshold must be between 0 and 128"
   },
   "c8MmZr": {
     "defaultMessage": "Please configure facebook"
@@ -7905,9 +7758,6 @@
   "clWB9j": {
     "defaultMessage": "To Client:"
   },
-  "clZ3Y9": {
-    "defaultMessage": "Top 5 Switch Models"
-  },
   "cmEYig": {
     "defaultMessage": "Manage Components"
   },
@@ -8000,9 +7850,6 @@
   "dB3B1Y": {
     "defaultMessage": "802.11 Association Request"
   },
-  "dBAHMo": {
-    "defaultMessage": "Needs Config"
-  },
   "dD+1Py": {
     "defaultMessage": "Transmitted Traffic"
   },
@@ -8067,9 +7914,6 @@
   },
   "dPVFvi": {
     "defaultMessage": "Total Score:"
-  },
-  "dQIolC": {
-    "defaultMessage": "MAC Registration (TBD)"
   },
   "dQKcaA": {
     "defaultMessage": "<p>Client authentication is failing because of a timeout in the authentication exchange with the client. This is commonly caused by the following reasons:</p> <ol> <li>EAP Request timeout waiting for client EAP Response.</li> <li>4-way handshake timeout waiting for the client response.</li> </ol>"
@@ -8409,9 +8253,6 @@
   "fDINOd": {
     "defaultMessage": "Admin Activity"
   },
-  "fE6tHT": {
-    "defaultMessage": "If checked, Ruckus support team is granted a temporary administrator-level access for 21 days. Enable when requested by Ruckus support team."
-  },
   "fEE7ng": {
     "defaultMessage": "{showSeverity, selectordinal, one {2 } other {}}Transient Issue"
   },
@@ -8497,9 +8338,6 @@
   "fZx8yp": {
     "defaultMessage": "Schedule for Network \"{NetworkName}\" in Venue \"{VenueName}\""
   },
-  "faDss4": {
-    "defaultMessage": "<p>To fix this issue, it may be necessary to check the RADIUS server availability as well as the link between RUCKUS Cloud/AP and the RADIUS server.</p> <p>If all services are up and functional, double-check the RADIUS configuration on RUCKUS Cloud/AP.</p>"
-  },
   "fcFq3u": {
     "defaultMessage": "Wired"
   },
@@ -8529,9 +8367,6 @@
   },
   "fl4mzV": {
     "defaultMessage": "Admin Distance"
-  },
-  "flQnlz": {
-    "defaultMessage": "Applying Configuration"
   },
   "fm/xyQ": {
     "defaultMessage": "Authentication Failures"
@@ -8704,9 +8539,6 @@
     "defaultMessage": "Cannot contain Exclamation mark(!), double quotes and space",
     "description": "Validation - Cannot contain Exclamation mark(!), double quotes and space"
   },
-  "gmXCZq": {
-    "defaultMessage": "Top 5 Switches by PoE Usage"
-  },
   "gn/Z1y": {
     "defaultMessage": "Invalid Group Key Cipher"
   },
@@ -8727,9 +8559,6 @@
   },
   "gtT/qH": {
     "defaultMessage": "Activate or deactivate the network for <b>multiple adjacent time-slots</b> by dragging your mouse over them"
-  },
-  "gy+Hn1": {
-    "defaultMessage": "Add AAA (802.1x) Server"
   },
   "gzml2A": {
     "defaultMessage": "Last Run"
@@ -8924,9 +8753,6 @@
   },
   "huCHmk": {
     "defaultMessage": "Steps"
-  },
-  "hvHylk": {
-    "defaultMessage": "The time-series graph on the left displays the percentage of APs that have AP-to-SZ control plane latency which meets the configured SLA. The bar chart on the right captures the distribution of the latency across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page."
   },
   "hvqFXC": {
     "defaultMessage": "Create Persona Group"
@@ -9150,9 +8976,6 @@
   "j4IJDc": {
     "defaultMessage": "XeroxPrinter"
   },
-  "j4J3By": {
-    "defaultMessage": "Telnet inside encrypted NATS session. Configuration changes made via CLI session may take up to 5 minutes to get updated on Ruckus Cloud interface."
-  },
   "j52BhR": {
     "defaultMessage": "Unknown reason"
   },
@@ -9295,9 +9118,6 @@
   },
   "k0CmIL": {
     "defaultMessage": "Trigger Sync"
-  },
-  "k0l5OD": {
-    "defaultMessage": "Please choose Access Policy Set"
   },
   "k1Qd05": {
     "defaultMessage": "dddd[,] HH:mm"
@@ -9443,9 +9263,6 @@
   },
   "kamE/c": {
     "defaultMessage": "None [Network modified or deleted]"
-  },
-  "kaxley": {
-    "defaultMessage": "AP-RUCKUS Cloud connection uptime measures the percentage of time the AP radios are fully available for client service. The time-series graph on the left displays the percentage of AP-RUCKUS Cloud connection uptime samples across time that meets the configured SLA. The bar chart on the right displays the distribution of AP service uptime across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page."
   },
   "kbMnL8": {
     "defaultMessage": "Use Venue Settings"
@@ -9598,9 +9415,6 @@
   "lClVci": {
     "defaultMessage": "SmartEdge Details"
   },
-  "lDhmdb": {
-    "defaultMessage": "Selected channels will be available for radio broadcasting in this AP. Hover to see overlapping channels"
-  },
   "lF9uO1": {
     "defaultMessage": "Mobile Phone Already Registered"
   },
@@ -9681,9 +9495,6 @@
   },
   "ldkPLs": {
     "defaultMessage": "The received information violates the Mesh Configuration policy configured in the mesh STA profile"
-  },
-  "leCm3C": {
-    "defaultMessage": "<p>RADIUS timeouts are most likely to be resolved by investigating the RADIUS server health directly, typically by focusing on load or service availability metrics and logs:</p> <ol> <li>Is the RADIUS server reliable and reachable (by ping from the AP or RUCKUS Cloud)?</li> <li>Is the RADIUS server experiencing high load?</li> <li>Is the RADIUS hardware infrastructure (CPU, Memory, IO) over-loaded or otherwise suffering a service outage?</li> <li>Do the RADIUS logs indicate unusual failures messages or reasons?</li> <li>Is the wireless link showing symptoms of congestion (high airtime utilization or interference)?</li> </ol>"
   },
   "leSWPl": {
     "defaultMessage": "Please enter a valid DHCP relay agent",
@@ -9831,9 +9642,6 @@
     "defaultMessage": "{name}<br></br><space><b>{formattedValue}</b></space>",
     "description": "DonutChart: default tooltip format for donut chart"
   },
-  "mKu5SY": {
-    "defaultMessage": "If checked, Ruckus support team is granted a temporary administrator-level access for 21 days."
-  },
   "mMBc1K": {
     "defaultMessage": "<p>This incident can be caused due to the following reasons:</p> <ol> <li>An incorrect static channel configuration in Zone/AP Group may lead to APs in overlapping channels.</li> <li>High number of rogue APs in the RF environment may cause APs to select overlapping channels.</li> <li>In 5 GHz band, APs might select overlapping channels to avoid channels with DFS events.</li> </ol>"
   },
@@ -9884,9 +9692,6 @@
   },
   "ma918+": {
     "defaultMessage": "Add DHCP Option"
-  },
-  "mgHLcZ": {
-    "defaultMessage": "<p>System has detected high number of AP-RUCKUS Cloud connection failures. This can occur due to following reasons:</p> <ol> <li>Intermittent or permanent loss of connectivity between AP and RUCKUS Cloud. Losing consecutive heartbeat/keepalive messages from the AP will result in AP-RUCKUS Cloud connection failures.</li> <li>Improperly configured Firewall or NAT device or a network switch can cause the AP-RUCKUS Cloud communication failure.</li> <li>Lack of reachability from AP to RUCKUS Cloud over a WAN connection or cloud would cause APs to disconnect from RUCKUS Cloud.</li> <li>In rare cases, AP certificate is invalid which forces RUCKUS Cloud to deny the incoming connection from the AP.</li> </ol>"
   },
   "mjyHeP": {
     "defaultMessage": "Pools"
@@ -9948,9 +9753,6 @@
   },
   "n409Kz": {
     "defaultMessage": "Guest Expires"
-  },
-  "n5IQs6": {
-    "defaultMessage": "Switches must be kept on 09.0.10e release for Cloud version 21.11. No manual upgrade to a later ICX firmware should be performed unless directed by Ruckus support. When a new cloud version becomes available, any required change in switch firmware will be handled by the Cloud automatically."
   },
   "n6+fBA": {
     "defaultMessage": "Firmware Update - Writing To Flash"
@@ -10036,9 +9838,6 @@
   },
   "nQQuYp": {
     "defaultMessage": "Facebook Login > Settings > Client OAuth Settings > Valid OAuth redirect URIs"
-  },
-  "nSSwf0": {
-    "defaultMessage": "AP-RUCKUS Cloud Connection Uptime"
   },
   "nTta5l": {
     "defaultMessage": "DHCP Server"
@@ -10221,9 +10020,6 @@
   "oHumRY": {
     "defaultMessage": "Run Revert"
   },
-  "oI/W7b": {
-    "defaultMessage": "Factory-default ICX switches and ICX switches with pre-existing configuration use different methods to connect to the RUCKUS Cloud."
-  },
   "oI8Hht": {
     "defaultMessage": "Allow AP wired clients"
   },
@@ -10244,9 +10040,6 @@
   },
   "oPJrJz": {
     "defaultMessage": "{day}"
-  },
-  "oPb4H4": {
-    "defaultMessage": "The email address belongs to a user of another Ruckus Cloud tenant. You may add this user as a 3rd party administrator."
   },
   "oRTFjo": {
     "defaultMessage": "NextHop IP address is invalid.",
@@ -10288,9 +10081,6 @@
   },
   "odXlk8": {
     "defaultMessage": "Log in"
-  },
-  "odvPZY": {
-    "defaultMessage": "Always redirect to authenticate user"
   },
   "oir8uG": {
     "defaultMessage": "Firmware Update - Validating Image"
@@ -10520,9 +10310,6 @@
   "pq900d": {
     "defaultMessage": "<p>Client connection attempts are failing because the device is attempting to use a previously expired authentication key management (AKM) credential. This issue should be a transient problem in the network and should self-correct.</p>"
   },
-  "pq9qPz": {
-    "defaultMessage": "-Actual UI may be different and is not under Ruckus Wireless responsibility"
-  },
   "pqKz+h": {
     "defaultMessage": "Slow"
   },
@@ -10543,9 +10330,6 @@
   },
   "pvdwRv": {
     "defaultMessage": "To support DHCP snooping and/or ARP inspection, please select the trusted ports for each switch model you deploy"
-  },
-  "pxJSs0": {
-    "defaultMessage": "AP-RUCKUS Cloud Disconnections"
   },
   "pxrNYp": {
     "defaultMessage": "RSS Quality by Clients"
@@ -10922,9 +10706,6 @@
   "rsSUP3": {
     "defaultMessage": "Port"
   },
-  "rsToNV": {
-    "defaultMessage": "Top 5 Applications by Traffic"
-  },
   "rtUW4z": {
     "defaultMessage": "Default (All)"
   },
@@ -11059,14 +10840,8 @@
   "saF1bZ": {
     "defaultMessage": "Disassoc Flood"
   },
-  "savb5K": {
-    "defaultMessage": "Top 5 SSIDs by Traffic"
-  },
   "sb6MY9": {
     "defaultMessage": "Subnet Allocation Option"
-  },
-  "scOgc1": {
-    "defaultMessage": "Disconnected From Cloud"
   },
   "sdBBCZ": {
     "defaultMessage": "Ad Hoc"
@@ -11294,9 +11069,6 @@
   "taS9eS": {
     "defaultMessage": "The IP addresses you entered conflict with existing authentication server configuration in another network. Please change the IP address."
   },
-  "tba7nY": {
-    "defaultMessage": "<p>For each group of reasons, corresponding recommendations are below:</p> <ol> <li>Turn off unused features - AVC, Wi-Fi Calling, Mesh, URL Filtering, Rogue client etc.</li> <li>Check the rate and volume of data requested through public API calls.</li> <li>Consider removing unnecessary events or reducing the duration of event storage.</li> <li>Check the rate and volume of user login requests.</li> <li>Address any alarms related to AP or switch connection status.</li> </ol> <p>Generally memory and I/O intensive process are transient. If a sustained high memory usage is observed, please work with Ruckus customer team.</p>"
-  },
   "tbk7Lg": {
     "defaultMessage": "Pool Range:"
   },
@@ -11464,9 +11236,6 @@
   "uWddQs": {
     "defaultMessage": "OFF now"
   },
-  "uWx1Qp": {
-    "defaultMessage": "High AP-RUCKUS Cloud connection failures in {scope}."
-  },
   "uZFxCb": {
     "defaultMessage": "Port Config"
   },
@@ -11475,9 +11244,6 @@
   },
   "uat4D3": {
     "defaultMessage": "Identify clients using Wi-Fi calling and provide enhanced QoS"
-  },
-  "ub++Ab": {
-    "defaultMessage": "Enable Ruckus DHCP service"
   },
   "ubGrOj": {
     "defaultMessage": "Passphrase Expiration:"
@@ -11719,9 +11485,6 @@
   },
   "vmHFSQ": {
     "defaultMessage": "Outdoor APs"
-  },
-  "vmMRxR": {
-    "defaultMessage": "Ruckus Cloud needs you to be online,<br></br>you appear to be offline."
   },
   "vmmned": {
     "defaultMessage": "Add Network Segmentation Auth page for Switch"
@@ -12279,9 +12042,6 @@
   "yRL7VQ": {
     "defaultMessage": "RSRP"
   },
-  "yS/Q9f": {
-    "defaultMessage": "Ruckus Cloud assigns a username and password to the switch once it is managed by the Ruckus Cloud. Even if the switch is disconnected from the cloud, the switch username and password remain the same. The password can be obtained from the Ruckus Cloud GUI under the Venue’s ‘Switch Settings’."
-  },
   "yUc0h7": {
     "defaultMessage": "Custom Service Name"
   },
@@ -12290,9 +12050,6 @@
   },
   "yV5oYe": {
     "defaultMessage": "Policies"
-  },
-  "yVl6Yb": {
-    "defaultMessage": "Copy this password to your vendor's configuration, to allow it to connect to Ruckus Cloud"
   },
   "yWXO5H": {
     "defaultMessage": "All Health Levels"
@@ -12450,9 +12207,6 @@
   "zK+27r": {
     "defaultMessage": "Pass"
   },
-  "zK1Tuz": {
-    "defaultMessage": "<p>To remediate the problems identified above, follow the corresponding recommended actions:</p> <ol> <li>Ensure that PSE - PoE switch or PoE injector capacity and cumulative power requirements of all APs for full operation are appropriately matched.</li> <li>(Typical) Check the connectivity to the AP gateway and latency to RUCKUS Cloud. In rare cases it might indicate configuration corruption.</li> <li>(Typical) Check the connectivity to the AP gateway and latency to RUCKUS Cloud. Download time out is the main cause.</li> <li>RUCKUS Cloud can reboot the AP for multiple reasons. There could be an mishandled exception or catastrophic failure in a process, causing RUCKUS Cloud to reboot the AP. In these cases, an alarm is raised. Use RUCKUS Cloud alarm message, Alarm code: 302 and attribute field to understand and isolate this issue further.</li> </ol>"
-  },
   "zKrbuH": {
     "defaultMessage": "<p>This event is a normal function of network load distribution and should not be a concern unless it persists in the network as a source of connection failures. A single incident of this type should not be a concern.</p>"
   },
@@ -12473,9 +12227,6 @@
   },
   "zOcFMw": {
     "defaultMessage": "Are you sure you want to start using Subscription?"
-  },
-  "zPWjZY": {
-    "defaultMessage": "Behavior"
   },
   "zQLEfz": {
     "defaultMessage": "Format"
@@ -12500,9 +12251,6 @@
   },
   "zVDTeY": {
     "defaultMessage": "At least one DHCP pool with VLAN ID equals \"1\" must be configured for \"Hierarchical\" type of DHCP."
-  },
-  "zVT/xZ": {
-    "defaultMessage": "Never Contacted Cloud"
   },
   "zVg++A": {
     "defaultMessage": "TCP"
@@ -12633,9 +12381,6 @@
   "3EQpjG": {
     "defaultMessage": "{value0} of user traffic went through 15% of APs last week."
   },
-  "3irsXe": {
-    "defaultMessage": "You must have at least one Bonjour Fencing Service when the Use Bonjour Fencing Service button is Enabled"
-  },
   "47/Gn5": {
     "defaultMessage": "Portal Services"
   },
@@ -12656,10 +12401,6 @@
   },
   "5Q0yS2": {
     "defaultMessage": "Services & Policies"
-  },
-  "5VRxmo": {
-    "defaultMessage": "This value should be lower than or equal to ${max}",
-    "description": "Validation - max checks"
   },
   "5XQlJ0": {
     "defaultMessage": "Loopback Interface"
@@ -12706,10 +12447,6 @@
   "A2xWsL": {
     "defaultMessage": "Please fill the Primary DNS IP field first"
   },
-  "Ai35sH": {
-    "defaultMessage": "Field must be at least ${min} characters",
-    "description": "Validation - string min checks"
-  },
   "AxmUFe": {
     "defaultMessage": "Adaptive Policy Set (In progress)"
   },
@@ -12746,10 +12483,6 @@
   "GgLKp5": {
     "defaultMessage": "Use Radius Server"
   },
-  "H8vcwt": {
-    "defaultMessage": "Field must be between ${min} and ${max} characters",
-    "description": "Validation - string range checks"
-  },
   "Hc0dIr": {
     "defaultMessage": "This agent is currently activated on venues. Deleting it will deactivate the agent for those venues/ APs. Are you sure you want to delete it?"
   },
@@ -12773,9 +12506,6 @@
   },
   "JUMvz8": {
     "defaultMessage": "Only 1 rogue AP classification profile can be active at any venue at any time."
-  },
-  "JW5gsz": {
-    "defaultMessage": "Edit Radius (802.1x) Server"
   },
   "JZLN65": {
     "defaultMessage": "Add Tech Partner"
@@ -12861,10 +12591,6 @@
   "T7pTaH": {
     "defaultMessage": "Lookback Interface ID"
   },
-  "TMkf9H": {
-    "defaultMessage": "Field must be exactly ${len} characters",
-    "description": "Validation - string len checks"
-  },
   "TedOVF": {
     "defaultMessage": "Wi-Fi country code is used to indicate the available channels and power levels for use by access points at a venue. In most use cases the Wi-Fi country code is identical to the venue's location and need not be modified. If needed, you may select an alternate country code that is appropriate for your location."
   },
@@ -12879,9 +12605,6 @@
   },
   "UwLEGJ": {
     "defaultMessage": "Add RADIUS Attributes Group"
-  },
-  "VV1mq/": {
-    "defaultMessage": "Manage my account"
   },
   "VX2yLr": {
     "defaultMessage": "Configure {name}"
@@ -12931,9 +12654,6 @@
   "ZdMpcr": {
     "defaultMessage": "The User name already exists"
   },
-  "a5fcyA": {
-    "defaultMessage": "Current Subscription Tier"
-  },
   "aD4PoH": {
     "defaultMessage": "Most trafficked WLAN (user traffic) last week was {label0}, accounting for {value0} of user traffic."
   },
@@ -12948,9 +12668,6 @@
   },
   "bBFx2O": {
     "defaultMessage": "{value} ({count} AP Groups)"
-  },
-  "baiIjR": {
-    "defaultMessage": "Add Radius (802.1x) Server"
   },
   "c+tfw2": {
     "defaultMessage": "DHCP Services"
@@ -13003,10 +12720,6 @@
   "hxH+A7": {
     "defaultMessage": "Provides external notification to network administrators"
   },
-  "i0ize7": {
-    "defaultMessage": "This value should be between ${min} and ${max}",
-    "description": "Validation - range checks"
-  },
   "iR7f5o": {
     "defaultMessage": "Top 3 applications in terms of users last week were {label0}, {label1} and {label2}."
   },
@@ -13037,10 +12750,6 @@
   "lCLigi": {
     "defaultMessage": "Add or Replace (Single)"
   },
-  "lIYNeU": {
-    "defaultMessage": "Field exceeds ${max} characters",
-    "description": "Validation - string max checks"
-  },
   "lIfUfd": {
     "defaultMessage": "Busiest WLAN in terms of users last week was {label0}, accounting for {value0} of total users."
   },
@@ -13059,10 +12768,6 @@
   },
   "nrEPlE": {
     "defaultMessage": "Radius Attribute group (TBD)"
-  },
-  "okaZrw": {
-    "defaultMessage": "This value should be higher than or equal to ${min}",
-    "description": "Validation - min checks"
   },
   "p1l9V0": {
     "defaultMessage": "You have already entered this MAC address for this service type."
@@ -13088,9 +12793,6 @@
   "vhkjzO": {
     "defaultMessage": "The average session duration last week was {value0}."
   },
-  "waTgEK": {
-    "defaultMessage": "Online APs measures the percentage of APs which are online and connected to RUCKUS Cloud.{br}{br}The time-series graph on the left displays the Online AP percentage across time. The bar chart on the right captures the daily Online AP percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page."
-  },
   "wcgl+F": {
     "defaultMessage": "Add SNMPv3 Agent"
   },
@@ -13103,22 +12805,704 @@
   "xvA/HS": {
     "defaultMessage": "Select ..."
   },
-  "y6Biuc": {
-    "defaultMessage": "Select SNMP Agent..."
-  },
   "yKV+K5": {
     "defaultMessage": "Add another SNMPv2 agent"
   },
   "zI5cW9": {
     "defaultMessage": "AP SNMP"
   },
-  "zN6A2k": {
-    "defaultMessage": "Please add at least 1 distribution switch."
-  },
   "zWEtjK": {
     "defaultMessage": "Authentication Mode"
   },
   "ztKb10": {
     "defaultMessage": "Edit SNMPv2 Agent"
+  },
+  "+DU2Ww": {
+    "defaultMessage": "<p>RADIUS timeouts are most likely to be resolved by investigating the RADIUS server health directly, typically by focusing on load or service availability metrics and logs:</p> <ol> <li>Is the RADIUS server reliable and reachable (by ping from the AP or RUCKUS One)?</li> <li>Is the RADIUS server experiencing high load?</li> <li>Is the RADIUS hardware infrastructure (CPU, Memory, IO) over-loaded or otherwise suffering a service outage?</li> <li>Do the RADIUS logs indicate unusual failures messages or reasons?</li> <li>Is the wireless link showing symptoms of congestion (high airtime utilization or interference)?</li> </ol>"
+  },
+  "+NUewJ": {
+    "defaultMessage": "Vlan ID"
+  },
+  "+SDMR3": {
+    "defaultMessage": "Property"
+  },
+  "+XdaOf": {
+    "defaultMessage": "Switch List"
+  },
+  "+wBCUn": {
+    "defaultMessage": "Enable when requested by Ruckus Support team."
+  },
+  "/XBdf2": {
+    "defaultMessage": "There are two options to connect the RUCKUS Switch to RUCKUS One:"
+  },
+  "/y0RQ7": {
+    "defaultMessage": "Applications Report"
+  },
+  "01V3Zm": {
+    "defaultMessage": "View Portal"
+  },
+  "0OFsfZ": {
+    "defaultMessage": "Resident's Phone Number"
+  },
+  "0Tgxlg": {
+    "defaultMessage": "Switches must be kept on 09.0.10e release for RUCKUS One. No manual upgrade to a later ICX firmware should be performed unless directed by Ruckus Support. When a new cloud version becomes available, any required change in switch firmware will be handled by RUCKUS One automatically."
+  },
+  "0f70ix": {
+    "defaultMessage": "Group By..."
+  },
+  "0hGFjE": {
+    "defaultMessage": "Top Switches by PoE Usage"
+  },
+  "0mlhK8": {
+    "defaultMessage": "No Access Points"
+  },
+  "11a1pp": {
+    "defaultMessage": "Edit Custom String"
+  },
+  "19vHLE": {
+    "defaultMessage": "Enable access to Ruckus Support"
+  },
+  "1XtATF": {
+    "defaultMessage": "for a list of deprecated CLI commands."
+  },
+  "1c52QN": {
+    "defaultMessage": "Upper 5 GHz - Outdoor AP channel selection"
+  },
+  "2KqmOh": {
+    "defaultMessage": "By Traffic"
+  },
+  "2WxdWJ": {
+    "defaultMessage": "Wi-Fi Networks"
+  },
+  "2fcjwx": {
+    "defaultMessage": "Wi-Fi Network"
+  },
+  "2ua4jk": {
+    "defaultMessage": "Resident Phone"
+  },
+  "3734cY": {
+    "defaultMessage": "Please select one channel"
+  },
+  "3bvgBf": {
+    "defaultMessage": "Business Insights"
+  },
+  "41QEq5": {
+    "defaultMessage": "Add Unit"
+  },
+  "46B5V9": {
+    "defaultMessage": "Note: Changing the passphrase will be applied to disconnected APs only once they are reconnected to RUCKUS One"
+  },
+  "47TIjq": {
+    "defaultMessage": "Access Point List"
+  },
+  "5f/UGX": {
+    "defaultMessage": "AI Assurance"
+  },
+  "5oXwZ2": {
+    "defaultMessage": "AP-RUCKUS One Disconnections"
+  },
+  "6WeH/M": {
+    "defaultMessage": "Port set as tagged"
+  },
+  "6WodH+": {
+    "defaultMessage": "Current Edge Firmware"
+  },
+  "6w14SV": {
+    "defaultMessage": "Template Preview Unavailable"
+  },
+  "6x1k6I": {
+    "defaultMessage": "You cannot activate the DHCP service on this venue because it already enabled mesh setting"
+  },
+  "7LTqfV": {
+    "defaultMessage": "Contact Email Address"
+  },
+  "7Q1NMo": {
+    "defaultMessage": "The email address belongs to a user of another RUCKUS One tenant. You may add this user as a 3rd party administrator."
+  },
+  "81GBoI": {
+    "defaultMessage": "RUCKUS DHCP Service:"
+  },
+  "90rdoz": {
+    "defaultMessage": "Gateway Path MTU Mode"
+  },
+  "9A3rkR": {
+    "defaultMessage": "Wi-Fi AP"
+  },
+  "9Hh1Vv": {
+    "defaultMessage": "No Wired Clients"
+  },
+  "9nEbIT": {
+    "defaultMessage": "{time} (Same as list)"
+  },
+  "A2fHI3": {
+    "defaultMessage": "Edit Details"
+  },
+  "A6KJTt": {
+    "defaultMessage": "Selected channels will be available for radio broadcasting in this {context}. Hover to see overlapping channels"
+  },
+  "AAUl3v": {
+    "defaultMessage": "Same as pool ({value})"
+  },
+  "AKmi5f": {
+    "defaultMessage": "Directed MC/BC Threshold must be between 0 and 5"
+  },
+  "ARlBNI": {
+    "defaultMessage": "Ruckus Networks’ privacy policy"
+  },
+  "AVN9fZ": {
+    "defaultMessage": "Default Template - No Portal URL"
+  },
+  "AeCgAI": {
+    "defaultMessage": "Unit {names} was deleted"
+  },
+  "AetNAD": {
+    "defaultMessage": "Browse"
+  },
+  "BFzzDJ": {
+    "defaultMessage": "Lower 5 GHz - Channel selection"
+  },
+  "BJpCcw": {
+    "defaultMessage": "Guest Passphrase Reset"
+  },
+  "BR0nJT": {
+    "defaultMessage": "Edit Passphrase"
+  },
+  "BRRiuc": {
+    "defaultMessage": "Add AAA Server"
+  },
+  "BV5JhC": {
+    "defaultMessage": "Enable the encryption for users’ MAC and IP addresses"
+  },
+  "Bg+4Vs": {
+    "defaultMessage": "You must have at least one mDNS Fencing Service when the Use mDNS Fencing Service button is Enabled"
+  },
+  "BjliYB": {
+    "defaultMessage": "Default Template"
+  },
+  "CkgNpC": {
+    "defaultMessage": "Devices allowed per passphrase"
+  },
+  "D6UU7g": {
+    "defaultMessage": "Add Network"
+  },
+  "DMwMA9": {
+    "defaultMessage": "Contact Phone Number"
+  },
+  "DVzb5k": {
+    "defaultMessage": "Please check Ethernet MTU on AP, Tunnel MTU gets applied only if its less than Ethernet MTU"
+  },
+  "DfNEjc": {
+    "defaultMessage": "Access Period"
+  },
+  "DxrJDu": {
+    "defaultMessage": "Encryption for Users’ MAC and IP addresses:"
+  },
+  "EEPbJE": {
+    "defaultMessage": "5 GHz - Channel selection"
+  },
+  "EP5d+i": {
+    "defaultMessage": "<p>To remediate the problems identified above, follow the corresponding recommended actions:</p> <ol> <li>Ensure that PSE - PoE switch or PoE injector capacity and cumulative power requirements of all APs for full operation are appropriately matched.</li> <li>(Typical) Check the connectivity to the AP gateway and latency to RUCKUS One. In rare cases it might indicate configuration corruption.</li> <li>(Typical) Check the connectivity to the AP gateway and latency to RUCKUS One. Download time out is the main cause.</li> <li>RUCKUS One can reboot the AP for multiple reasons. There could be an mishandled exception or catastrophic failure in a process, causing RUCKUS One to reboot the AP. In these cases, an alarm is raised. Use RUCKUS One alarm message, Alarm code: 302 and attribute field to understand and isolate this issue further.</li> </ol>"
+  },
+  "EZDuyO": {
+    "defaultMessage": "If enabled, the firmware will be downloaded to the switch in the background before the scheduled upgrade time, leading to a shorter update time"
+  },
+  "EmdO8F": {
+    "defaultMessage": "Top Switches by Traffic"
+  },
+  "F3aY/c": {
+    "defaultMessage": "Airtime Utilization Report"
+  },
+  "F7WEbt": {
+    "defaultMessage": "Resident Email"
+  },
+  "F88EfP": {
+    "defaultMessage": "<p>To remediate the problems identified above, follow the corresponding recommended actions:</p> <ol> <li>Test network connection between AP and RUCKUS One.</li> <li>Ensure that there is clear communication on all required ports.</li> <li>Test WAN connection health to ensure there is a route from AP to RUCKUS One and there is no or acceptable packet loss.</li> <li>Ensure that AP certificate is valid. Work with Ruckus customer support to identify and resolve this condition.</li> </ol>"
+  },
+  "FK3W8m": {
+    "defaultMessage": "File format must be {acceptTypes}"
+  },
+  "FSKVpF": {
+    "defaultMessage": "If DHCP is used to connect to RUCKUS One, the ICX switch automatically creates default VLAN 1 and router Interface VE1 with the IP addresses obtained from the DHCP server."
+  },
+  "FgqJyk": {
+    "defaultMessage": "Wired Report"
+  },
+  "FhKI5k": {
+    "defaultMessage": "Tunnel Profile ({count})"
+  },
+  "FlgZwc": {
+    "defaultMessage": "Type the reason to revoke"
+  },
+  "FrXOIi": {
+    "defaultMessage": "Import Units From File"
+  },
+  "Fz+7iC": {
+    "defaultMessage": "Force Fragmentation"
+  },
+  "GT/UvO": {
+    "defaultMessage": "AP-to-RUCKUS One Latency"
+  },
+  "GTEAEN": {
+    "defaultMessage": "Access Reset"
+  },
+  "GV191N": {
+    "defaultMessage": "6 GHz - Channel selection"
+  },
+  "GeH82N": {
+    "defaultMessage": "Image Download Using USB"
+  },
+  "GmNNKS": {
+    "defaultMessage": "No Trusted Ports selected"
+  },
+  "GqU+R0": {
+    "defaultMessage": "Add Client Isolation Profile"
+  },
+  "HJikvH": {
+    "defaultMessage": "Guest DPSK Passphrase"
+  },
+  "I328Ej": {
+    "defaultMessage": "-Actual UI may be different and is not under Ruckus Networks responsibility"
+  },
+  "IFcSiZ": {
+    "defaultMessage": "Top SSIDs by Traffic"
+  },
+  "IN9Bzr": {
+    "defaultMessage": "Top Venues with poor experience"
+  },
+  "IkjWrm": {
+    "defaultMessage": "{accessPeriod} {accessPeriod, plural, one {Day} other {Days}}"
+  },
+  "IpCjHj": {
+    "defaultMessage": "Select LAN Ports for ({model})"
+  },
+  "J3yis2": {
+    "defaultMessage": "mDNS Fencing"
+  },
+  "J9yRk3": {
+    "defaultMessage": "Lower 5 GHz - Outdoor AP channel selection"
+  },
+  "JVb1sa": {
+    "defaultMessage": "<p>This issue is caused by a DoS protection feature, which can be enabled/disabled in RUCKUS One. If the behavior is having an undesirable impact on valid clients, the feature can be disabled or optimized to make the prevention logic more conservative.</p>"
+  },
+  "JiTJbv": {
+    "defaultMessage": "Administrative Logs"
+  },
+  "JiU1FC": {
+    "defaultMessage": "This value should be higher than or equal to $'{min}'",
+    "description": "Validation - min checks"
+  },
+  "JviZS9": {
+    "defaultMessage": "No rule were added yet"
+  },
+  "KKbtCz": {
+    "defaultMessage": "5 GHz - Indoor AP channel selection"
+  },
+  "LW8TBO": {
+    "defaultMessage": "Edit Client Isolation Profile"
+  },
+  "M/LHFN": {
+    "defaultMessage": "5 (802.3bt 45 W)"
+  },
+  "MnyheQ": {
+    "defaultMessage": "Network Control"
+  },
+  "NPrV5k": {
+    "defaultMessage": "All Traffic is blocked"
+  },
+  "NcX5fw": {
+    "defaultMessage": "Please enter Devices allowed per passphrase"
+  },
+  "NlaFTo": {
+    "defaultMessage": "Wi-Fi Networks List"
+  },
+  "Nq5WRc": {
+    "defaultMessage": "If checked, Ruckus Support team is granted a temporary administrator-level access for 21 days. Enable when requested by Ruckus Support team."
+  },
+  "OEgJTT": {
+    "defaultMessage": "7 (802.3bt 75 W)"
+  },
+  "OHiAZJ": {
+    "defaultMessage": "Add Device & OS Policy"
+  },
+  "OTAs3L": {
+    "defaultMessage": "Enter phone number"
+  },
+  "OZLfhb": {
+    "defaultMessage": "Top Switches by Error"
+  },
+  "OfmST8": {
+    "defaultMessage": "Accept Invitation"
+  },
+  "Os6Njc": {
+    "defaultMessage": "Top SSIDs by Clients"
+  },
+  "PlNp9D": {
+    "defaultMessage": "Needs config"
+  },
+  "PvLzOc": {
+    "defaultMessage": "The time-series graph on the left displays the percentage of APs that have AP-to-RUCKUS One control plane latency which meets the configured SLA. The bar chart on the right captures the distribution of the latency across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page."
+  },
+  "PzcfBR": {
+    "defaultMessage": "<p>For each group of reasons, corresponding recommendations are below:</p> <ol> <li>Turn off unused features - AVC, Wi-Fi Calling, Mesh, URL Filtering, Rogue client etc.</li> <li>Check the rate and volume of data requested through public API calls.</li> <li>Consider removing unnecessary events or reducing the duration of event storage.</li> <li>Check the rate and volume of user login requests.</li> <li>Address any alarms related to AP or switch connection status.</li> </ol> <p>Generally memory and I/O intensive process are transient. If a sustained high memory usage is observed, please work with RUCKUS customer team.</p>"
+  },
+  "QN9BCR": {
+    "defaultMessage": "Passphrase Reset"
+  },
+  "Qk9gWn": {
+    "defaultMessage": "Passphrase of a special recovery network which is activated on AP once it loses connection with RUCKUS One."
+  },
+  "QwVgiG": {
+    "defaultMessage": "RUCKUS AP"
+  },
+  "RLGOaG": {
+    "defaultMessage": "Edit Wired Connection"
+  },
+  "ROsqjE": {
+    "defaultMessage": "Enable RUCKUS DHCP service"
+  },
+  "RYDVYo": {
+    "defaultMessage": "This value should be lower than or equal to $'{max}'",
+    "description": "Validation - max checks"
+  },
+  "RmvR2O": {
+    "defaultMessage": "Add Member to Stack"
+  },
+  "SKymsU": {
+    "defaultMessage": "SNMP agent is required when AP SNMP is enabled"
+  },
+  "SXiJtr": {
+    "defaultMessage": "For switches with existing configuration, \"manager registrar\" should be present in the running configuration of the switch. Use the manager registrar-query-restart command on the switch CLI to initiate cloud discovery followed by a manager connect command to establish a connection with RUCKUS One."
+  },
+  "SgD/LM": {
+    "defaultMessage": "Value must be between 1 and 60 days"
+  },
+  "SnTmGx": {
+    "defaultMessage": "Please enter User Name"
+  },
+  "TnPUbf": {
+    "defaultMessage": "Property Management"
+  },
+  "UFi7Zl": {
+    "defaultMessage": "Please enter Community Name"
+  },
+  "UIyC4h": {
+    "defaultMessage": "Top Switch Models"
+  },
+  "UUTJFZ": {
+    "defaultMessage": "Template preview unavailable..."
+  },
+  "UgsZNw": {
+    "defaultMessage": "Manage My Account"
+  },
+  "UhGYBo": {
+    "defaultMessage": "Latest Version: {version}"
+  },
+  "Ul/ZlK": {
+    "defaultMessage": "6 (802.3bt 60 W)"
+  },
+  "V1oWDs": {
+    "defaultMessage": "Upper 5 GHz - Indoor AP channel selection"
+  },
+  "V2cNPd": {
+    "defaultMessage": "Loading Templates..."
+  },
+  "V5arjT": {
+    "defaultMessage": "Limited to..."
+  },
+  "VpjrlV": {
+    "defaultMessage": "Update the CLI templates to reflect the CLI changes in FastIron 09.0.10e release. After upgrading to FastIron 09.0.10e release, using CLI templates with deprecated commands would result in configuration failures. Refer to the"
+  },
+  "VzWlUJ": {
+    "defaultMessage": "Property Units ({unitCount})"
+  },
+  "W/KQKM": {
+    "defaultMessage": "8 (802.3bt 99 W)"
+  },
+  "W1S2fs": {
+    "defaultMessage": "Passphrases"
+  },
+  "WHa0VT": {
+    "defaultMessage": "Field must be at least $'{min}' characters",
+    "description": "Validation - string min checks"
+  },
+  "X7utX9": {
+    "defaultMessage": "Port set as untagged"
+  },
+  "XBk/Qf": {
+    "defaultMessage": "Resident Portal profile"
+  },
+  "XMHoeq": {
+    "defaultMessage": "SNR threshold above which detected Rogue APs will be reported in RUCKUS One. Available range is 0-100."
+  },
+  "XjYGWh": {
+    "defaultMessage": "Edit Radius Server"
+  },
+  "Y9Jv+w": {
+    "defaultMessage": "You are not authorized to manage this customer"
+  },
+  "YlnROA": {
+    "defaultMessage": "Please select at least 1 access switch."
+  },
+  "Yresoo": {
+    "defaultMessage": "Incidents (24 hours)"
+  },
+  "Z1At62": {
+    "defaultMessage": "WLANs Report"
+  },
+  "ZSgonJ": {
+    "defaultMessage": "AP-RUCKUS One connection uptime measures the percentage of time the AP radios are fully available for client service. The time-series graph on the left displays the percentage of AP-RUCKUS One connection uptime samples across time that meets the configured SLA. The bar chart on the right displays the distribution of AP service uptime across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page."
+  },
+  "ZpYMNh": {
+    "defaultMessage": "Top Applications by Traffic"
+  },
+  "a3R8Tr": {
+    "defaultMessage": "Lower 5 GHz - Indoor AP channel selection"
+  },
+  "aAN3V3": {
+    "defaultMessage": "Field exceeds $'{max}' characters",
+    "description": "Validation - string max checks"
+  },
+  "bj8hvd": {
+    "defaultMessage": "Wired Network Profiles"
+  },
+  "c3VJQo": {
+    "defaultMessage": "Device"
+  },
+  "cKVRUR": {
+    "defaultMessage": "Select AP"
+  },
+  "cRfQDl": {
+    "defaultMessage": "Pre-download the firmware:"
+  },
+  "cSQ5xB": {
+    "defaultMessage": "Add Layer 3 Policy"
+  },
+  "ciVIJP": {
+    "defaultMessage": "FastIron 09.0.10e release notes"
+  },
+  "d9mJSf": {
+    "defaultMessage": "Connecting the switch to RUCKUS One"
+  },
+  "dJpSA/": {
+    "defaultMessage": "Once the ICX switch is connected to RUCKUS One:"
+  },
+  "dQHufZ": {
+    "defaultMessage": "No Wi-Fi Clients"
+  },
+  "dchIAD": {
+    "defaultMessage": "Current Subscription Tier: <b>{tier}</b>"
+  },
+  "dg/OFq": {
+    "defaultMessage": "Enable Guest DPSK for Units"
+  },
+  "e8145i": {
+    "defaultMessage": "{n} of {d} APs above {threshold}"
+  },
+  "eePOXy": {
+    "defaultMessage": "Ruckus Networks recommends that the ICX switch obtain an IP address from a DHCP server for connecting to RUCKUS One."
+  },
+  "elnaZe": {
+    "defaultMessage": "Suspend"
+  },
+  "em+L/F": {
+    "defaultMessage": "<p>In many cases with RADIUS failure, each client device or RADIUS server behaves differently, which causes a variety of unique failure symptoms. If the problem is affecting many users or lasting for a long time, it may be helpful to validate the end-to-end RADIUS setup and network performance:</p> <ol> <li>Check the RADIUS server and RUCKUS One settings to identify matching configurations (IP address, port, and shared secret).</li> <li>Check for RADIUS reachability by RUCKUS One/AP (network reliability issues, like congestion, drops, flapping links, etc).</li> <li>Check for recent changes in the RADIUS infrastructure that may be leading to issues.</li> <li>Check RADIUS performance metrics to ensure it has sufficient capacity and is not overloaded.</li> <li>Check the wireless link for high congestion, retries/errors, or other unreliability issues.</li> </ol>"
+  },
+  "eq6Qut": {
+    "defaultMessage": "Wireless Report"
+  },
+  "f+FnlZ": {
+    "defaultMessage": "Spanning Tree Priority"
+  },
+  "fG1Tcr": {
+    "defaultMessage": "High AP-RUCKUS One connection failures in {scope}."
+  },
+  "fNXaus": {
+    "defaultMessage": "{language} ({localLanguage})"
+  },
+  "gcagTt": {
+    "defaultMessage": "Add Member"
+  },
+  "ggzux0": {
+    "defaultMessage": "Top Wi-Fi Networks"
+  },
+  "ghx88B": {
+    "defaultMessage": "If checked, Ruckus Support team is granted a temporary administrator-level access for 21 days."
+  },
+  "hJRm3z": {
+    "defaultMessage": "Add Tunnel Profile"
+  },
+  "iF4E7I": {
+    "defaultMessage": "Resident Name"
+  },
+  "iS0vZo": {
+    "defaultMessage": "Total Clients"
+  },
+  "jJeev0": {
+    "defaultMessage": "Upper 5 GHz - Channel selection"
+  },
+  "jMu15Y": {
+    "defaultMessage": "Edge Firmware"
+  },
+  "k5+MA8": {
+    "defaultMessage": "This network is restricted to authorized users only. Violators may be subjected to legal prosecution. Acitvity on this network is monitored and may be used as evidence in a court of law. © {year} CommScope, Inc. All Rights Reserved."
+  },
+  "kAbtyH": {
+    "defaultMessage": "Separate VLAN for guests"
+  },
+  "kL8ytN": {
+    "defaultMessage": "Switch Serial Number"
+  },
+  "kOJCG1": {
+    "defaultMessage": "Online APs measures the percentage of APs which are online and connected to RUCKUS One.{br}{br}The time-series graph on the left displays the Online AP percentage across time. The bar chart on the right captures the daily Online AP percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page."
+  },
+  "kZY3oz": {
+    "defaultMessage": "New Client Associations"
+  },
+  "kubPyY": {
+    "defaultMessage": "2.4 GHz - Channel selection"
+  },
+  "lPPDkT": {
+    "defaultMessage": "Enable Resident Portal"
+  },
+  "lfIk1B": {
+    "defaultMessage": "Add..."
+  },
+  "m5dvz6": {
+    "defaultMessage": "Create MAC address lists to enable device access to wired or wireless networks"
+  },
+  "mED+bj": {
+    "defaultMessage": "Add Wired Connection"
+  },
+  "mqVXh0": {
+    "defaultMessage": "This value should be between $'{min}' and $'{max}'",
+    "description": "Validation - range checks"
+  },
+  "mxEP7r": {
+    "defaultMessage": "Select customer accounts to assign to this tech partner:"
+  },
+  "n4DOF2": {
+    "defaultMessage": "Add Application Policy"
+  },
+  "nRqzsD": {
+    "defaultMessage": "High AP-RUCKUS One connection failures in {scope}"
+  },
+  "nV+dmx": {
+    "defaultMessage": "Add Layer 2 Policy"
+  },
+  "nyO1Sh": {
+    "defaultMessage": "Wireless Clients List"
+  },
+  "oOJED8": {
+    "defaultMessage": "Edit Passphrases"
+  },
+  "pM5sFW": {
+    "defaultMessage": "Select Template..."
+  },
+  "pMO5h9": {
+    "defaultMessage": "Please enter SmartEdge"
+  },
+  "pNHFZW": {
+    "defaultMessage": "Manage Customers Assigned"
+  },
+  "prSNS0": {
+    "defaultMessage": "By Clients"
+  },
+  "qaDy1D": {
+    "defaultMessage": "<p>To fix this issue, it may be necessary to check the RADIUS server availability as well as the link between RUCKUS One/AP and the RADIUS server.</p> <p>If all services are up and functional, double-check the RADIUS configuration on RUCKUS One/AP.</p>"
+  },
+  "qci724": {
+    "defaultMessage": "No reported incidents"
+  },
+  "rVrS4p": {
+    "defaultMessage": "Field must be between $'{min}' and $'{max}' characters",
+    "description": "Validation - string range checks"
+  },
+  "raWFbW": {
+    "defaultMessage": "Wireless Clients Report"
+  },
+  "rgvalp": {
+    "defaultMessage": "Number of Devices allowed per passphrase must be between 1 and {max}"
+  },
+  "rrvtYI": {
+    "defaultMessage": "Use mDNS Fencing Service"
+  },
+  "rz7Xgm": {
+    "defaultMessage": "<p>System has detected high number of AP-RUCKUS One connection failures. This can occur due to following reasons:</p> <ol> <li>Intermittent or permanent loss of connectivity between AP and RUCKUS One. Losing consecutive heartbeat/keepalive messages from the AP will result in AP-RUCKUS One connection failures.</li> <li>Improperly configured Firewall or NAT device or a network switch can cause the AP-RUCKUS One communication failure.</li> <li>Lack of reachability from AP to RUCKUS One over a WAN connection or cloud would cause APs to disconnect from RUCKUS One.</li> <li>In rare cases, AP certificate is invalid which forces RUCKUS One to deny the incoming connection from the AP.</li> </ol>"
+  },
+  "s/5/h7": {
+    "defaultMessage": "Resident's Email"
+  },
+  "sEEn1v": {
+    "defaultMessage": "RUCKUS One needs you to be online,<br></br>you appear to be offline."
+  },
+  "sJCq9u": {
+    "defaultMessage": "Networks on this port:"
+  },
+  "sKNlN3": {
+    "defaultMessage": "AP-RUCKUS One Connection Uptime"
+  },
+  "snQr7I": {
+    "defaultMessage": "<p>The RADIUS authentication exchange is failing because of a timeout waiting for a response from the RADIUS server. This is typically caused by the following reasons:</p> <ol> <li>The RADIUS server is offline.</li> <li>The RADIUS server is unreachable by RUCKUS One/AP (network reliability issues, like congestion, drops, flapping links, etc).</li> <li>The RADIUS server is overloaded and unable to reply.</li> <li>The wireless link is experiencing high congestion, retries/errors, or other unreliability issues.</li> </ol>"
+  },
+  "tILniP": {
+    "defaultMessage": "Port Assignment"
+  },
+  "tNRL7p": {
+    "defaultMessage": "Factory-default ICX switches and ICX switches with pre-existing configuration use different methods to connect to RUCKUS One."
+  },
+  "tWytGP": {
+    "defaultMessage": "Wired Clients List"
+  },
+  "tsheA+": {
+    "defaultMessage": "Revoke \"{count, plural, one {{entityValue}} other {{count} {formattedEntityName}} }\"?"
+  },
+  "tyLXxq": {
+    "defaultMessage": "VxLAN"
+  },
+  "uEro4L": {
+    "defaultMessage": "Unit Name"
+  },
+  "ub7oum": {
+    "defaultMessage": "Telnet inside encrypted NATS session. Configuration changes made via CLI session may take up to 5 minutes to get updated on RUCKUS One interface."
+  },
+  "v6Q7OV": {
+    "defaultMessage": "Edit Tunnel Profile"
+  },
+  "vHBkkv": {
+    "defaultMessage": "Switch Ports"
+  },
+  "vqJrx6": {
+    "defaultMessage": "Enable Property Management"
+  },
+  "wMvBCW": {
+    "defaultMessage": "You are deleting one or more offline APs. When these offline devices come back online their configuration will be factory reset and they will be removed from RUCKUS One."
+  },
+  "xaEpsP": {
+    "defaultMessage": "AP Report"
+  },
+  "xhw/tf": {
+    "defaultMessage": "Edit Unit"
+  },
+  "y4bnZr": {
+    "defaultMessage": "<p>The RADIUS server is offline or unreachable from RUCKUS One/AP (message from RUCKUS One/AP to RADIUS is failing), which is often caused by:</p> <ol> <li>AP/SZ misconfiguration (Bad IP, bad port).</li> <li>The RADIUS server is offline.</li> <li>The RADIUS server is unreachable on the network (e.g. network path or routing issues).</li> </ol>"
+  },
+  "yNX1LQ": {
+    "defaultMessage": "Revocation Reason"
+  },
+  "yXvApH": {
+    "defaultMessage": "Copy this password to your vendor's configuration, to allow it to connect to RUCKUS One"
+  },
+  "yfb8F1": {
+    "defaultMessage": "Day(s)"
+  },
+  "z70IRn": {
+    "defaultMessage": "RUCKUS One assigns a username and password to the switch once it is managed by RUCKUS One. Even if the switch is disconnected from the cloud, the switch username and password remain the same. The password can be obtained from RUCKUS One GUI under the Venue’s ‘Switch Settings’."
+  },
+  "zMSnGf": {
+    "defaultMessage": "Field must be exactly $'{len}' characters",
+    "description": "Validation - string len checks"
+  },
+  "zYdEJH": {
+    "defaultMessage": "5 GHz - Outdoor AP channel selection"
   }
 }
