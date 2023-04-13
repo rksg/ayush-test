@@ -271,13 +271,15 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     }),
     dashboardV2Overview: build.query<Dashboard, RequestPayload>({
       query: ({ params, payload }) => {
-        const dashboardOverviewReq
-          = enableNewApi(CommonUrlsInfo.getDashboardV2Overview) ?
-            createHttpRequest(CommonUrlsInfo.getDashboardV2Overview, params) :
-            createHttpRequest(CommonUrlsInfo.getDashboardOverview)
-        return {
-          ...dashboardOverviewReq,
-          body: payload
+        if(enableNewApi(CommonUrlsInfo.getDashboardV2Overview)) {
+          return {
+            ...createHttpRequest(CommonUrlsInfo.getDashboardV2Overview, params),
+            body: payload
+          }
+        } else {
+          return {
+            ...createHttpRequest(CommonUrlsInfo.getDashboardOverview, params)
+          }
         }
       },
       providesTags: [{ type: 'Network', id: 'Overview' }]
