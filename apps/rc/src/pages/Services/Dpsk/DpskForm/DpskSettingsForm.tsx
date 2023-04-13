@@ -204,7 +204,7 @@ function CloudpathFormItems () {
           <Form.Item
             name='policySetId'
             label={$t({ defaultMessage: 'Access Policy Set' })}
-            rules={[{ required: true }]}
+            rules={[{ required: false }]}
           >
             <Select style={{ width: 200 }}
               placeholder={$t({ defaultMessage: 'Select...' })}
