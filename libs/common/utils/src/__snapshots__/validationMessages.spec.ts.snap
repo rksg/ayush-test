@@ -6,15 +6,15 @@ Object {
   "result": Object {
     "current": Object {
       "number": Object {
-        "max": "5VRxmo",
-        "min": "okaZrw",
-        "range": "i0ize7",
+        "max": "This value should be lower than or equal to \${max}",
+        "min": "This value should be higher than or equal to \${min}",
+        "range": "This value should be between \${min} and \${max}",
       },
       "string": Object {
-        "len": "TMkf9H",
-        "max": "lIYNeU",
-        "min": "Ai35sH",
-        "range": "H8vcwt",
+        "len": "Field must be exactly \${len} characters",
+        "max": "Field exceeds \${max} characters",
+        "min": "Field must be at least \${min} characters",
+        "range": "Field must be between \${min} and \${max} characters",
       },
       "whitespace": "Spaces are not allowed",
     },

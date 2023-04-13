@@ -292,7 +292,6 @@ export function Venues () {
           title = ''
         }
         return <Tooltip
-          // eslint-disable-next-line max-len
           title={title}
           placement='bottom'><Switch
             disabled={disabled}
