@@ -586,6 +586,83 @@ describe('ApplicationDrawer Component', () => {
 
   })
 
+  it('Render ApplicationDrawer component successfully for qos content', async () => {
+    mockServer.use(rest.post(
+      AccessControlUrls.getAppPolicyList.url,
+      (_, res, ctx) => res(
+        ctx.json(queryApplication)
+      )
+    ), rest.post(
+      AccessControlUrls.addAppPolicy.url,
+      (_, res, ctx) => res(
+        ctx.json(applicationResponse)
+      )
+    ), rest.get(
+      AccessControlUrls.getAvcCategory.url,
+      (_, res, ctx) => res(
+        ctx.json(avcCat)
+      )
+    ), rest.get(
+      AccessControlUrls.getAvcApp.url,
+      (_, res, ctx) => res(
+        ctx.json(avcApp)
+      )
+    ))
+
+    render(
+      <Provider>
+        <Form>
+          <ApplicationDrawer />
+        </Form>
+      </Provider>, {
+        route: {
+          params: { tenantId: 'tenantId1', requestId: 'requestId1' }
+        }
+      }
+    )
+
+    await userEvent.click(screen.getByText('Add New'))
+
+    await screen.findByText(/application access settings/i)
+
+    await userEvent.type(screen.getByRole('textbox', {
+      name: /policy name:/i
+    }), 'app1')
+
+    await userEvent.click(screen.getByText('Add'))
+
+    await screen.findByText(/add application rule/i)
+
+    await userEvent.click(await screen.findByText(/qos/i))
+
+    await screen.findByRole('option', { name: 'DSCP' })
+
+    await userEvent.selectOptions(
+      screen.getAllByRole('combobox')[3],
+      screen.getByRole('option', { name: 'DSCP' })
+    )
+
+    await userEvent.click(screen.getByText(/qos/i))
+
+    await screen.findByRole('option', { name: 'BOTH' })
+
+    await userEvent.selectOptions(
+      screen.getAllByRole('combobox')[3],
+      screen.getByRole('option', { name: 'BOTH' })
+    )
+
+    await screen.findAllByRole('option', { name: 'VOICE' })
+
+    await userEvent.selectOptions(
+      screen.getAllByRole('combobox')[4],
+      screen.getAllByRole('option', { name: 'VOICE' })[0]
+    )
+
+    await userEvent.selectOptions(
+      screen.getAllByRole('combobox')[5],
+      screen.getAllByRole('option', { name: 'VOICE' })[1]
+    )
+  })
 
   it('Render ApplicationDrawer component in viewMode successfully', async () => {
     mockServer.use(rest.post(
