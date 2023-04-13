@@ -489,6 +489,15 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'License', id: 'LIST' }]
     }),
+    convertNonVARToMSP: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.convertNonVARToMSP, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     // TODO: backend is not support activity message now, and will add if function be completed.
     UpdateRadiusClientConfig: build.mutation<ClientConfig, RequestPayload>({
       query: ({ payload }) => {
@@ -569,6 +578,7 @@ export const {
   useGetEntitlementsListQuery,
   useRefreshEntitlementsMutation,
   useInternalRefreshEntitlementsMutation,
+  useConvertNonVARToMSPMutation,
   useGetRadiusClientConfigQuery,
   useUpdateRadiusClientConfigMutation,
   useGetRadiusServerSettingQuery

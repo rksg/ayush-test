@@ -17,7 +17,6 @@ import { useIntl } from 'react-intl'
 
 import {
   Button,
-  GoogleMap,
   PageHeader,
   showToast,
   StepsForm,
@@ -27,6 +26,7 @@ import {
 import { useIsSplitOn, Features }    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { SearchOutlined }            from '@acx-ui/icons'
+import { GoogleMapWithPreference }   from '@acx-ui/rc/components'
 import {
   useAddCustomerMutation,
   useMspEcAdminListQuery,
@@ -1139,7 +1139,7 @@ export function ManageCustomer () {
             />
           </Form.Item >
           <Form.Item hidden>
-            <GoogleMap libraries={['places']} />
+            <GoogleMapWithPreference libraries={['places']} />
           </Form.Item>
 
           <MspAdminsForm></MspAdminsForm>
@@ -1194,7 +1194,7 @@ export function ManageCustomer () {
               />
             </Form.Item >
             <Form.Item hidden>
-              <GoogleMap libraries={['places']} />
+              <GoogleMapWithPreference libraries={['places']} />
             </Form.Item>
 
             <MspAdminsForm></MspAdminsForm>

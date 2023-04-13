@@ -81,7 +81,47 @@ describe('Wired - VlanSetting', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
   })
 
-  it.skip('should handle edit VLAN correctly', async () => {
+  it('should handle edit VLAN correctly', async () => {
+    const params = {
+      tenantId: 'tenant-id'
+    }
+
+    render(
+      <Provider>
+        <ConfigurationProfileFormContext.Provider value={{
+          ...configureProfileContextValues,
+          editMode: true,
+          currentData: {
+            ...currentData,
+            vlans
+          }
+        }}>
+          <Form>
+            <VlanSetting />
+          </Form>
+        </ConfigurationProfileFormContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/networks/wired/profiles/add' }
+      })
+
+    await screen.findByRole('heading', { level: 3, name: /VLANs/ })
+
+    const row = await screen.findByRole('row', { name: /vlan-02/i })
+    fireEvent.click(await within(row).findByRole('radio'))
+    fireEvent.click(await screen.findByRole('button', { name: /Edit/i }))
+
+    // const drawer = await screen.findByRole('dialog')
+    const IGMPSnooping = await screen.findByLabelText('IGMP Snooping')
+    fireEvent.mouseDown(IGMPSnooping)
+    fireEvent.click(await screen.findByText('Active'))
+    fireEvent.mouseDown(IGMPSnooping)
+    fireEvent.click(await screen.findByText('Passive'))
+    fireEvent.mouseDown(IGMPSnooping)
+    fireEvent.click(await screen.findByLabelText('NONE'))
+    fireEvent.click(await screen.findByRole('button', { name: /Save/i }))
+  })
+
+  it('should handle edit VLAN ports correctly', async () => {
     const params = {
       tenantId: 'tenant-id'
     }
@@ -111,13 +151,25 @@ describe('Wired - VlanSetting', () => {
     fireEvent.click(await screen.findByRole('button', { name: /Edit/i }))
 
     const drawer = await screen.findByRole('dialog')
-    const row2 = await screen.findByRole('row', { name: /ICX7550-24P/i })
+    const row2 = await within(drawer).findByRole('row', { name: /ICX7550-24P/i })
     fireEvent.click(await within(row2).findByRole('radio'))
     fireEvent.click(await within(drawer).findByRole('button', { name: /Edit/i }))
 
     const dialog = await screen.findByTestId('vlanSettingModal')
     await userEvent.click(await within(dialog).findByRole('button', { name: 'Next' }))
+
+    await userEvent.click(await within(dialog).findByTestId('untagged_module1_1'))
+    await userEvent.click(await within(dialog).findByTestId('untagged_module1_2'))
+    await userEvent.click(await within(dialog).findByTestId('untagged_module1_3'))
+    await userEvent.click(await within(dialog).findByTestId('untagged_module1_4'))
+    await userEvent.click(await within(dialog).findByTestId('untagged_module1_5'))
     await userEvent.click(await within(dialog).findByRole('button', { name: 'Next' }))
+
+    await userEvent.click(await within(dialog).findByTestId('tagged_module1_6'))
+    await userEvent.click(await within(dialog).findByTestId('tagged_module1_7'))
+    await userEvent.click(await within(dialog).findByTestId('tagged_module1_8'))
+    await userEvent.click(await within(dialog).findByTestId('tagged_module1_9'))
+    await userEvent.click(await within(dialog).findByTestId('tagged_module1_10'))
     await userEvent.click(await within(dialog).findByRole('button', { name: 'Finish' }))
     await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
   })
@@ -189,6 +241,7 @@ describe('Wired - VlanSetting', () => {
     const row2 = await screen.findByRole('row', { name: /ICX7550-24P/i })
     fireEvent.click(await within(row2).findByRole('radio'))
     fireEvent.click(await within(drawer).findByRole('button', { name: /Delete/i }))
+    fireEvent.click(await screen.findByRole('button', { name: /Delete Model/i }))
   })
 
   it('should handle edit Default VLAN settings correctly', async () => {
@@ -244,7 +297,7 @@ describe('Wired - AclSetting', () => {
     Modal.destroyAll()
   })
 
-  it('should handle add VLAN correctly', async () => {
+  it('should handle add ACL correctly', async () => {
     const params = {
       tenantId: 'tenant-id'
     }
