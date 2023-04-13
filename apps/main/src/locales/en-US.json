@@ -1484,10 +1484,6 @@
   "5QYdPU": {
     "defaultMessage": "Start Time"
   },
-  "5VRxmo": {
-    "defaultMessage": "This value should be lower than or equal to ${max}",
-    "description": "Validation - max checks"
-  },
   "5WJxZ/": {
     "defaultMessage": "APs not assigned to any group"
   },
@@ -2675,10 +2671,6 @@
   },
   "Ai+g6T": {
     "defaultMessage": "Add New Venue"
-  },
-  "Ai35sH": {
-    "defaultMessage": "Field must be at least ${min} characters",
-    "description": "Validation - string min checks"
   },
   "Aj2K7/": {
     "defaultMessage": "Primary DNS"
@@ -3975,10 +3967,6 @@
   "H7QJsZ": {
     "defaultMessage": "No WPA/RSN IE in Assoc Req"
   },
-  "H8vcwt": {
-    "defaultMessage": "Field must be between ${min} and ${max} characters",
-    "description": "Validation - string range checks"
-  },
   "H8wOLa": {
     "defaultMessage": "No Authentication"
   },
@@ -4560,6 +4548,10 @@
   },
   "JiTJbv": {
     "defaultMessage": "Administrative Logs"
+  },
+  "JiU1FC": {
+    "defaultMessage": "This value should be higher than or equal to $'{min}'",
+    "description": "Validation - min checks"
   },
   "JjEhAQ": {
     "defaultMessage": "Add AP Group"
@@ -6172,6 +6164,10 @@
   "RVDzQz": {
     "defaultMessage": "Edit ACL"
   },
+  "RYDVYo": {
+    "defaultMessage": "This value should be lower than or equal to $'{max}'",
+    "description": "Validation - max checks"
+  },
   "RYNsqQ": {
     "defaultMessage": "Keepalive Time"
   },
@@ -6587,10 +6583,6 @@
   },
   "TMXzZs": {
     "defaultMessage": "List {name} was added"
-  },
-  "TMkf9H": {
-    "defaultMessage": "Field must be exactly ${len} characters",
-    "description": "Validation - string len checks"
   },
   "TNy171": {
     "defaultMessage": "There are no APs to run the test"
@@ -7197,6 +7189,10 @@
   },
   "WGDxJ8": {
     "defaultMessage": "Standalone switch"
+  },
+  "WHa0VT": {
+    "defaultMessage": "Field must be at least $'{min}' characters",
+    "description": "Validation - string min checks"
   },
   "WIdA6/": {
     "defaultMessage": "The time-series graph on the left displays the percentage of client sessions with average RSS that has met the configured SLA. The bar chart on the right captures the distribution of the RSS. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page."
@@ -7983,6 +7979,10 @@
   },
   "a81isK": {
     "defaultMessage": "Do not proceed unless the switch has minimum FW version running or is manually upgraded."
+  },
+  "aAN3V3": {
+    "defaultMessage": "Field exceeds $'{max}' characters",
+    "description": "Validation - string max checks"
   },
   "aAX86Y": {
     "defaultMessage": "Option ID"
@@ -9683,10 +9683,6 @@
     "defaultMessage": "Minimal value is {value}",
     "description": "Validation - min value checks"
   },
-  "i0ize7": {
-    "defaultMessage": "This value should be between ${min} and ${max}",
-    "description": "Validation - range checks"
-  },
   "i16dQa": {
     "defaultMessage": "DHCP_DONE"
   },
@@ -10380,10 +10376,6 @@
   "lINtN6": {
     "defaultMessage": "August"
   },
-  "lIYNeU": {
-    "defaultMessage": "Field exceeds ${max} characters",
-    "description": "Validation - string max checks"
-  },
   "lIfUfd": {
     "defaultMessage": "Busiest WLAN in terms of users last week was {label0}, accounting for {value0} of total users."
   },
@@ -10691,6 +10683,10 @@
   },
   "mqTGdC": {
     "defaultMessage": "Ports"
+  },
+  "mqVXh0": {
+    "defaultMessage": "This value should be between $'{min}' and $'{max}'",
+    "description": "Validation - range checks"
   },
   "mqiM99": {
     "defaultMessage": "Once this aggregated connection time limit has been reached the client will be disconnected"
@@ -11099,10 +11095,6 @@
   },
   "ojxMGa": {
     "defaultMessage": "In Setup Phase"
-  },
-  "okaZrw": {
-    "defaultMessage": "This value should be higher than or equal to ${min}",
-    "description": "Validation - min checks"
   },
   "olQyA1": {
     "defaultMessage": "Secondary DNS"
@@ -11667,6 +11659,10 @@
   },
   "rV0gjK": {
     "defaultMessage": "{count} Impacted {count, plural, one {Client} other {Clients}}"
+  },
+  "rVrS4p": {
+    "defaultMessage": "Field must be between $'{min}' and $'{max}' characters",
+    "description": "Validation - string range checks"
   },
   "rXdlYz": {
     "defaultMessage": "Persona Group"
@@ -13375,6 +13371,10 @@
   },
   "zLM75r": {
     "defaultMessage": "No AP Clients"
+  },
+  "zMSnGf": {
+    "defaultMessage": "Field must be exactly $'{len}' characters",
+    "description": "Validation - string len checks"
   },
   "zNBU+2": {
     "defaultMessage": "Import Logo"

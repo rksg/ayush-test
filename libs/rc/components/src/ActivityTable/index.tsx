@@ -190,7 +190,7 @@ const ActivityTable = ({
   return <Loader states={[tableQuery]}>
     <Table
       settingsId={settingsId}
-      rowKey='startDatetime'
+      rowKey='requestId'
       columns={columns}
       dataSource={tableQuery.data?.data ?? []}
       pagination={tableQuery.pagination}

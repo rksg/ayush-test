@@ -7,32 +7,17 @@ import { DhcpPoolStats, EdgeDhcpUrls, RequestPayload, useTableQuery } from '@acx
 import { Provider }                                                   from '@acx-ui/store'
 import { mockServer, render, renderHook, screen, waitFor }            from '@acx-ui/test-utils'
 
-import { mockDhcpPoolStatsData } from '../../../../../Services/DHCP/Edge/__tests__/fixtures'
+import { mockDhcpPoolStatsData } from './__tests__/fixtures'
 
-import Pools from '.'
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'), // use actual for all non-hook parts
-  useParams: () => ({
-    tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
-  })
-}))
+import { EdgeDhcpPoolTable } from '.'
 
 const wrapper = ({ children }: { children: ReactElement }) => (
   <Provider>{children}</Provider>
 )
 
-describe('Edge DHCP - Pools tab', () => {
+describe('EdgeDhcpPoolTable', () => {
 
-  let params: { tenantId: string, serialNumber: string, activeTab?: string, activeSubTab?: string }
   beforeEach(() => {
-    params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      serialNumber: '000000000000',
-      activeTab: 'dhcp',
-      activeSubTab: 'pools'
-    }
-
     mockServer.use(
       rest.post(
         EdgeDhcpUrls.getDhcpPoolStats.url,
@@ -41,7 +26,7 @@ describe('Edge DHCP - Pools tab', () => {
     )
   })
 
-  it('Should render Pools tab successfully', async () => {
+  it('Should render EdgeDhcpPoolTable with table query props successfully', async () => {
     const { result } = renderHook(
       () => useTableQuery<DhcpPoolStats, RequestPayload<unknown>, unknown>({
         useQuery: useGetDhcpPoolStatsQuery,
@@ -52,13 +37,17 @@ describe('Edge DHCP - Pools tab', () => {
     await waitFor(() => expect(result.current.isLoading).toBeFalsy())
     render(
       <Provider>
-        <Pools tableQuery={result.current} />
-      </Provider>, {
-        route: {
-          params,
-          path: '/:tenantId/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
-        }
-      })
+        <EdgeDhcpPoolTable tableQuery={result.current} />
+      </Provider>)
+    const row = await screen.findAllByRole('row', { name: /TestPool/i })
+    expect(row.length).toBe(3)
+  })
+
+  it('Should render EdgeDhcpPoolTable with edgeId props successfully', async () => {
+    render(
+      <Provider>
+        <EdgeDhcpPoolTable edgeId='testId' />
+      </Provider>)
     const row = await screen.findAllByRole('row', { name: /TestPool/i })
     expect(row.length).toBe(3)
   })
