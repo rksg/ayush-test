@@ -104,24 +104,33 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getEdgePortStatusList: {
-    // [New API] no mapping found
     method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/edges/:serialNumber/ports'
+    url: '/edges/:serialNumber/ports',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/edges/:serialNumber/ports',
+    newApi: true
   },
   getLatestEdgeFirmware: {
     method: 'get',
-    url: '/api/edges/upgrade/version/latest'
+    url: '/edges/upgrade/version/latest',
+    oldUrl: '/api/edges/upgrade/version/latest',
+    newApi: true
   },
   getVenueEdgeFirmwareList: {
     method: 'get',
-    url: '/api/edges/upgrade/venue'
+    url: '/edges/upgrade/venue',
+    oldUrl: '/api/edges/upgrade/venue',
+    newApi: true
   },
   getAvailableEdgeFirmwareVersions: {
     method: 'get',
-    url: '/api/edges/upgrade/version'
+    url: '/edges/upgrade/version',
+    oldUrl: '/api/edges/upgrade/version',
+    newApi: true
   },
   updateEdgeFirmware: {
     method: 'post',
-    url: '/api/edges/upgrade/updateNow'
+    url: '/edges/upgrade/updateNow',
+    oldUrl: '/api/edges/upgrade/updateNow',
+    newApi: true
   }
 }

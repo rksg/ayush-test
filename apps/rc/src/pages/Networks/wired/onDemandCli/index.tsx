@@ -28,8 +28,8 @@ export function OnDemandCliTab () {
   },{
     key: 'switches',
     title: $t({ defaultMessage: 'Switches' }),
-    dataIndex: 'switches',
-    sorter: false, // API does not seem to be working
+    dataIndex: 'switchCount',
+    sorter: true,
     render: function (data, row) {
       let switchArray: string[] = []
       row.venueSwitches?.forEach(venue => {

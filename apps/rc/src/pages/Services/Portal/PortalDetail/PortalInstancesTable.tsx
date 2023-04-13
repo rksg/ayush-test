@@ -22,7 +22,7 @@ export default function PortalInstancesTable (){
       }
     },
     search: {
-      searchTargetFields: ['name', 'captiveType'],
+      searchTargetFields: ['name'],
       searchString: ''
     }
   })
@@ -58,7 +58,6 @@ export default function PortalInstancesTable (){
       key: 'Type',
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'nwSubType',
-      searchable: true,
       render: (data: unknown, row) => <NetworkType
         networkType={data as NetworkTypeEnum}
         row={row}
