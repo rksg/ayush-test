@@ -10,6 +10,7 @@ import Administrators    from './Administrators'
 import FWVersionMgmt     from './FWVersionMgmt'
 import LocalRadiusServer from './LocalRadiusServer'
 import Notifications     from './Notifications'
+import OnpremMigration   from './OnpremMigration'
 import Subscriptions     from './Subscriptions'
 
 
@@ -19,6 +20,7 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
   const basePath = useTenantLink('/administration')
   const navigate = useNavigate()
   const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
+  const isCloudMoteEnabled = useIsSplitOn(Features.CLOUDMOTE_SERVICE)
 
   const onTabChange = (tab: string) => {
     navigate({
@@ -37,6 +39,9 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
       { hasAdministratorTab &&
       ( <Tabs.TabPane tab={$t({ defaultMessage: 'Administrators' })} key='administrators' /> )
       }
+      { isCloudMoteEnabled &&
+        <Tabs.TabPane tab={$t({ defaultMessage: 'ZD Migration' })} key='onpremMigration' />
+      }
       <Tabs.TabPane tab={$t({ defaultMessage: 'Notifications' })} key='notifications' />
       <Tabs.TabPane tab={$t({ defaultMessage: 'Subscriptions' })} key='subscriptions' />
       <Tabs.TabPane
@@ -53,6 +58,7 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
 const tabPanes = {
   accountSettings: AccountSettings,
   administrators: Administrators,
+  onpremMigration: OnpremMigration,
   notifications: Notifications,
   subscriptions: Subscriptions,
   fwVersionMgmt: FWVersionMgmt,
