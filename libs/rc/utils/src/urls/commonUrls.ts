@@ -10,7 +10,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getNetworksDetailHeader: {
-    // 404 Not Found
+    // [New API] Path variable not match
     // method: 'get',
     // url: '/networks/:networkId/headerDetails',
     // oldUrl: '/api/viewmodel/:tenantId/network/:networkId/detailheader',
@@ -79,13 +79,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   clearAlarm: {
-    // different method
-    // method: 'PATCH',
-    // url: '/alarms/:alarmId',
-    // oldUrl: '/api/eventalarmapi/:tenantId/alarm/clear/:alarmId',
-    // newApi: true
     method: 'delete',
-    url: '/api/eventalarmapi/:tenantId/alarm/clear/:alarmId'
+    url: '/alarms/:alarmId',
+    oldUrl: '/api/eventalarmapi/:tenantId/alarm/clear/:alarmId',
+    newApi: true
   },
   clearAllAlarm: {
     method: 'delete',
@@ -212,7 +209,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getVenueCityList: {
-    // 404 Not Found
+    // [New API] 404 Not Found
     // method: 'post',
     // url: '/venues/citylist/query',
     // oldUrl: '/api/viewmodel/:tenantId/venue/citylist',
@@ -233,12 +230,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getMeshAps: {
-    // method: 'post',
-    // url: '/aps/query?mesh=true',
-    // oldUrl: '/api/viewmodel/:tenantId/aps/mesh',
-    // newApi: false
     method: 'post',
-    url: '/api/viewmodel/:tenantId/aps/mesh'
+    url: '/aps/query?mesh=true',
+    oldUrl: '/api/viewmodel/:tenantId/aps/mesh',
+    newApi: true
   },
   getService: {
     // no use
@@ -341,21 +336,27 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getVenueNetworkList: {
-    // Path variable not match
-    // method: 'post',
-    // url: '/venues/:venueId/networks/query',
-    // oldUrl: '/api/viewmodel/tenant/:tenantId/venue/:venueId/networks',
-    // newApi: true
     method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/networks'
+    url: '/venues/:venueId/networks/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/venue/:venueId/networks',
+    newApi: true
   },
   venueNetworkApGroup: {
-    // [New API] private api
+    // [New API] request not support list
+    // method: 'post',
+    // url: '/networkActivations/query',
+    // oldUrl: '/api/tenant/:tenantId/wifi/venue/network-ap-group',
+    // newApi: false
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/venue/network-ap-group'
   },
   getNetworkDeepList: {
-    // [New API] private api
+    // [New API] request not support list
+    // method: 'get',
+    // url: '/networks/:networkId',
+    // oldMethod: 'post',
+    // oldUrl: '/api/tenant/:tenantId/wifi/network/get/deep',
+    // newApi: false
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/network/get/deep'
   },
@@ -438,13 +439,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getApDetailHeader: {
-    // 404 Not Found
-    // method: 'get',
-    // url: '/aps/:serialNumber/headerDetails',
-    // oldUrl: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/detailheader',
-    // newApi: true
     method: 'get',
-    url: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/detailheader'
+    url: '/aps/:serialNumber/headerDetails',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/detailheader',
+    newApi: true
   },
   getClientSessionHistory: {
     method: 'post',
@@ -465,13 +463,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getGuestsList: {
-    // 404 Not Found
-    // method: 'post',
-    // url: '/guestUsers/query',
-    // oldUrl: '/api/viewmodel/tenant/:tenantId/guests',
-    // newApi: true
     method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/guests'
+    url: '/guestUsers/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/guests',
+    newApi: true
   },
   addGuestPass: {
     method: 'post',
@@ -480,13 +475,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getApNetworkList: {
-    // 500 Internal Server Error
-    // method: 'post',
-    // url: '/aps/:serialNumber/networks/query',
-    // oldUrl: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/networks',
-    // newApi: true
     method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/networks'
+    url: '/aps/:serialNumber/networks/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/networks',
+    newApi: true
   },
   getExternalProviders: {
     method: 'get',
