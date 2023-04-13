@@ -20,13 +20,16 @@ import {
   EntitlementUtil,
   Entitlement,
   EntitlementDeviceType,
-  AdministrationUrlsInfo
+  AdministrationUrlsInfo,
+  sortProp,
+  defaultSort,
+  dateSort
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
-import * as UI                     from './styledComponent'
-import { SubscriptionUtilization } from './SubscriptionUtilization'
+import * as UI                from './styledComponent'
+import { SubscriptionHeader } from './SubscriptionHeader'
 
 const subscriptionTypeFilterOpts = ($t: IntlShape['$t']) => [
   { key: '', value: $t({ defaultMessage: 'All Subscriptions' }) },
@@ -110,6 +113,7 @@ const SubscriptionTable = () => {
       title: $t({ defaultMessage: 'Device Count' }),
       dataIndex: 'quantity',
       key: 'quantity',
+      sorter: { compare: sortProp('quantity', defaultSort) },
       render: function (_, row) {
         return row.quantity
       }
@@ -118,6 +122,7 @@ const SubscriptionTable = () => {
       title: $t({ defaultMessage: 'Starting Date' }),
       dataIndex: 'effectiveDate',
       key: 'effectiveDate',
+      sorter: { compare: sortProp('effectiveDate', dateSort) },
       render: function (_, row) {
         return formatter(DateFormatEnum.DateFormat)(row.effectiveDate)
       }
@@ -126,14 +131,18 @@ const SubscriptionTable = () => {
       title: $t({ defaultMessage: 'Expiration Date' }),
       dataIndex: 'expirationDate',
       key: 'expirationDate',
+      sorter: { compare: sortProp('expirationDate', dateSort) },
       render: function (_, row) {
         return formatter(DateFormatEnum.DateFormat)(row.expirationDate)
       }
     },
     {
       title: $t({ defaultMessage: 'Time left' }),
-      dataIndex: 'timeLeft',
+      dataIndex: 'expirationDate',
+      // key needs to be unique
       key: 'timeLeft',
+      sorter: { compare: sortProp('expirationDate', dateSort) },
+      defaultSortOrder: 'ascend',
       render: function (_, row) {
         const remainingDays = EntitlementUtil.timeLeftInDays(row.expirationDate)
         const TimeLeftWrapper = remainingDays < 0
@@ -212,7 +221,7 @@ const SubscriptionTable = () => {
 const Subscriptions = () => {
   return (
     <UI.FullWidthSpace size='large' direction='vertical'>
-      <SubscriptionUtilization />
+      <SubscriptionHeader />
       <SubscriptionTable />
     </UI.FullWidthSpace>
   )

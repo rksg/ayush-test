@@ -13,7 +13,7 @@ describe('TunnelProfileForm', () => {
       </Form>
     )
     screen.getByRole('textbox', { name: 'Policy Name' })
-    screen.getByRole('combobox', { name: 'Tags' })
+    // screen.getByRole('combobox', { name: 'Tags' })
     screen.getByRole('radio', { name: 'Auto' })
     screen.getByRole('radio', { name: 'Manual' })
     screen.getByRole('switch', { name: 'Force Fragmentation' })

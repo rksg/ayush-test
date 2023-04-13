@@ -42,7 +42,7 @@ type LabelsProps = {
   onClick: CallableFunction;
 }
 
-export function useGetNode () {
+function useGetNode () {
   const [node, setNode] = useState<HTMLElement | null>(null)
   const ref = useCallback((node: HTMLElement) => {
     if (node !== null) {
@@ -238,12 +238,11 @@ export const Labels = ({
     <>
       {enhancedStages.map((stage, i) => {
         const dir = i % 2 === 0
-        const top = !dir ? chartPadding - 30 : parentHeight - 40
         const labelProps = {
           ...stage,
           ...labelPositions[i],
-          top,
-          dir: i % 2 === 0,
+          top: !dir ? chartPadding - 30 : parentHeight - 40,
+          dir,
           color: colors[i],
           onClick: () => (onClick as CallableFunction)(
             stage.endPosition - stage.width / 2, stage.name

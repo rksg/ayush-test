@@ -39,12 +39,38 @@ export const ApDetailsSettings = (props: ApDetailsSettingsProps) => {
           displayEnabled(radioSetting?.enable24G)
         }
       />
+      {radioSetting?.enable50G !== undefined &&
       <Descriptions.Item
         label={'5 GHz'}
         children={
           displayEnabled(radioSetting?.enable50G)
         }
       />
+      }
+      {radioSetting?.enable6G !== undefined &&
+      <Descriptions.Item
+        label={'6 GHz'}
+        children={
+          displayEnabled(radioSetting?.enable6G)
+        }
+      />
+      }
+      {radioSetting?.enableLower5G !== undefined &&
+      <Descriptions.Item
+        label={'Lower 5 GHz'}
+        children={
+          displayEnabled(radioSetting?.enableLower5G)
+        }
+      />
+      }
+      {radioSetting?.enableUpper5G !== undefined &&
+      <Descriptions.Item
+        label={'Upper 5 GHz'}
+        children={
+          displayEnabled(radioSetting?.enableUpper5G)
+        }
+      />
+      }
     </Descriptions>
     <Divider/>
     <Descriptions labelWidthPercent={50}>

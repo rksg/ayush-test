@@ -20,7 +20,8 @@ import {
 import { useParams }          from '@acx-ui/react-router-dom'
 import { getJwtTokenPayload } from '@acx-ui/utils'
 
-import * as UI from './styledComponent'
+import { ConvertNonVARMSPButton } from './ConvertNonVARMSPButton'
+import * as UI                    from './styledComponent'
 
 interface SubscriptionUtilizationWidgetProps {
   deviceType: EntitlementDeviceType;
@@ -103,7 +104,7 @@ const subscriptionUtilizationTransformer = (
   return result
 }
 
-export const SubscriptionUtilization = () => {
+export const SubscriptionHeader = () => {
   const { $t } = useIntl()
   const params = useParams()
 
@@ -117,27 +118,31 @@ export const SubscriptionUtilization = () => {
     subscriptionDeviceTypeList,
     queryResults.data ?? [])
 
+
   return (
     <Loader states={[queryResults]}>
       <UI.FullWidthSpace direction='vertical'>
-        <Subtitle level={4}>
-          <Row>
-            <Col style={{
-              width: '75%'
-            }}>{$t({ defaultMessage: 'Subscription Utilization' })}</Col>
-            <Col style={{
-              width: '25%'
-            }}>
-              <FormattedMessage
-                defaultMessage='Current Subscription Tier: <b>{tier}</b>'
-                values={{
-                  tier: getJwtTokenPayload().acx_account_tier,
-                  b: (chunk) => <b>{chunk}</b>
-                }}
-              />
-            </Col>
-          </Row>
-        </Subtitle>
+        <Row>
+          <Col span={12}>
+            <Subtitle level={4}>
+              {$t({ defaultMessage: 'Subscription Utilization' })}
+            </Subtitle>
+          </Col>
+          <Col span={12}>
+            <SpaceWrapper justifycontent='flex-end' size='large'>
+              <Typography.Text>
+                <FormattedMessage
+                  defaultMessage='Current Subscription Tier: <b>{tier}</b>'
+                  values={{
+                    tier: getJwtTokenPayload().acx_account_tier,
+                    b: (chunk) => <b>{chunk}</b>
+                  }}
+                />
+              </Typography.Text>
+              <ConvertNonVARMSPButton />
+            </SpaceWrapper>
+          </Col>
+        </Row>
         <UI.FullWidthSpace size='large'>
           {
             subscriptionDeviceTypeList.map((item) => {
