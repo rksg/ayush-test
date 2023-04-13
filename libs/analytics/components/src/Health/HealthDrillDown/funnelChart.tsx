@@ -13,7 +13,6 @@ import { MessageDescriptor, useIntl } from 'react-intl'
 import { NoData }    from '@acx-ui/components'
 import { formatter } from '@acx-ui/formatter'
 
-
 import { Stages, FunnelChartStages, EnhancedStage }     from './config'
 import { ChartContainer, Stage, Label, Pin, StageList } from './styledComponents'
 const minVisibleWidth = 10
@@ -70,9 +69,9 @@ export function FunnelChart ({
 }) {
   const [parentNode, ref] = useGetNode()
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
-  const onClick = (width: number, name: Stages) => {
-    onSelectStage(width, name)
-  }
+  const onClick = useCallback((stage: EnhancedStage | undefined) => {
+    onSelectStage(stage?.endPosition! - stage?.width! / 2, stage?.name)
+  }, [onSelectStage])
   const enhancedStages: EnhancedStage[] = useMemo(() => {
     if (!parentNode) return []
     const parentWidth = (parentNode as HTMLElement).offsetWidth
@@ -108,7 +107,7 @@ export function FunnelChart ({
         idx: i,
         bgColor: colors[i],
         endPosition,
-        onClick: onClick.bind(null,endPosition - stage.width / 2, stage.name as Stages)
+        onClick: onClick.bind(null, stage as EnhancedStage)
       }
     })
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -118,8 +117,8 @@ export function FunnelChart ({
     const selected = enhancedStages.find(
       (enhancedStage) => enhancedStage.isSelected
     )
-    onSelectStage(selected?.endPosition! - selected?.width! / 2, selectedStage)
-  }, [enhancedStages, onSelectStage, selectedStage])
+    onClick(selected)
+  }, [enhancedStages, onClick, selectedStage])
 
   useLayoutEffect(() => {
     const handler = function resizeHandler () {
