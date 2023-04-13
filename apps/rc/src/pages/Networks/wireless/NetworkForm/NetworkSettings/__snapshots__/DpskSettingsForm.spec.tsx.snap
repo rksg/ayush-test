@@ -185,7 +185,7 @@ exports[`DpskSettingsForm should render DPSK form successfully 1`] = `
                                   />
                                 </span>
                                 <span>
-                                  Use Radius Server
+                                  Use RADIUS Server
                                 </span>
                               </label>
                             </div>
