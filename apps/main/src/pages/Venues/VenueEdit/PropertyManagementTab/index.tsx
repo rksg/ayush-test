@@ -5,8 +5,8 @@ import { Col, Form, Row, Select, Switch } from 'antd'
 import { FormFinishInfo }                 from 'rc-field-form/lib/FormContext'
 import { useIntl }                        from 'react-intl'
 
-import { Button, Loader, StepsForm, StepsFormInstance, Tabs } from '@acx-ui/components'
-import { PersonaGroupSelect, TemplateSelector }               from '@acx-ui/rc/components'
+import { Button, Loader, StepsForm, StepsFormInstance, Tabs, Subtitle } from '@acx-ui/components'
+import { PersonaGroupSelect, TemplateSelector }                         from '@acx-ui/rc/components'
 import {
   useGetPropertyConfigsQuery,
   useGetPropertyUnitListQuery,
@@ -131,7 +131,9 @@ export function PropertyManagementTab () {
             payload: {
               id: scopeId,
               templateId: selectedOption.value,
-              usageLocalizationKey: 'venue.property.management'
+              usageLocalizationKey: 'venue.property.management',
+              usageDescriptionFieldOne: venueData?.name ?? venueId,
+              usageDescriptionFieldTwo: venueId
             }
           })
         } else {
@@ -144,8 +146,6 @@ export function PropertyManagementTab () {
 
   const onFormFinish = async (_: string, info: FormFinishInfo) => {
     const enableProperty = info.values.isPropertyEnable
-    // eslint-disable-next-line max-len
-    const venueUUID = `${venueId?.substring(0, 8)}-${venueId?.substring(8, 12)}-${venueId?.substring(12, 16)}-${venueId?.substring(16, 20)}-${venueId?.substring(20)}`
 
     try {
       if (enableProperty) {
@@ -159,20 +159,7 @@ export function PropertyManagementTab () {
             address: venueData?.address,
             status: enableProperty
               ? PropertyConfigStatus.ENABLED
-              : PropertyConfigStatus.DISABLED,
-            communicationConfig: {
-              ...info.values.communicationConfig,
-              unitAssignmentHtmlRegId: venueUUID,
-              unitAssignmentTextRegId: venueUUID,
-              unitPassphraseChangeHtmlRegId: venueUUID,
-              unitPassphraseChangeTextRegId: venueUUID,
-              guestPassphraseChangeHtmlRegId: venueUUID,
-              guestPassphraseChangeTextRegId: venueUUID,
-              portalAccessResetHtmlRegId: venueUUID,
-              portalAccessResetTextRegId: venueUUID,
-              portAssignmentHtmlRegId: venueUUID,
-              portAssignmentTextRegId: venueUUID
-            }
+              : PropertyConfigStatus.DISABLED
           }
         }).unwrap()
       } else {
@@ -295,8 +282,11 @@ export function PropertyManagementTab () {
                   hidden
                   name={['communicationConfig', 'type']}
                 />
+                <Subtitle level={4}>
+                  {$t({ defaultMessage: 'Communication Templates' })}
+                </Subtitle>
                 <StepsForm.FieldLabel width={'190px'}>
-                  {$t({ defaultMessage: 'Enable email notification' })}
+                  {$t({ defaultMessage: 'Enable Email Notification' })}
                   <Form.Item
                     name={['communicationConfig', 'sendEmail']}
                     rules={[{ required: true }]}
@@ -305,7 +295,7 @@ export function PropertyManagementTab () {
                   />
                 </StepsForm.FieldLabel>
                 <StepsForm.FieldLabel width={'190px'}>
-                  {$t({ defaultMessage: 'Enable sms notification' })}
+                  {$t({ defaultMessage: 'Enable SMS Notification' })}
                   <Form.Item
                     name={['communicationConfig', 'sendSms']}
                     rules={[{ required: true }]}
