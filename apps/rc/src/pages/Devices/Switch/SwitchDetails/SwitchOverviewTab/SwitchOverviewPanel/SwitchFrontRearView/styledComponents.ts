@@ -62,6 +62,11 @@ export const SwitchFrontRearViewWrapper = styled.div`
   min-height: 115px;
 `
 
+export const RearSlotWrapper = styled.div`
+  display: grid;
+  align-items: end;
+`
+
 export const UnitWrapper = styled.div`
   display: flex;
   padding-top: 10px;

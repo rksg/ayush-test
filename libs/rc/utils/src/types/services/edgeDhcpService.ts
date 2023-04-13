@@ -73,5 +73,6 @@ export interface DhcpHostStats {
   hostMac: string
   hostStatus: string
   hostExpireDate: Date
+  hostRemainingTime: number
   edgeId: string
 }
