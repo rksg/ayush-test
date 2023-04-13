@@ -40,6 +40,16 @@ describe('getDescription', () => {
 
     expect(container).toHaveTextContent('--')
   })
+
+  it('handles keyword of formatjs', async () => {
+    const { container } = render(<>{getDescription({
+      ...event,
+      // eslint-disable-next-line @typescript-eslint/quotes
+      message: `{ "message_template": "<%%severity> '%%severity' {%%severity}" }`
+    })}</>, { route: true })
+
+    expect(container).toHaveTextContent("<Info> 'Info' {Info}")
+  })
 })
 
 describe('valueFrom', () => {
