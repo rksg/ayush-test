@@ -4,7 +4,7 @@ require('@testing-library/jest-dom')
 const { registerTsProject } = require('nx/src/utils/register')
 const cleanupRegisteredPaths = registerTsProject('.', 'tsconfig.base.json')
 
-const { mockServer, mockDOMSize, mockLightTheme } = require('@acx-ui/test-utils')
+const { mockServer, mockDOMSize, mockLightTheme, mockReactXarrow } = require('@acx-ui/test-utils')
 const config = require('@acx-ui/config')
 const { setUpIntl } = require('@acx-ui/utils')
 const { mockInstances } = require('@googlemaps/jest-mocks')
@@ -169,3 +169,5 @@ jest.mock('@acx-ui/icons', ()=> {
 HTMLCanvasElement.prototype.getContext = () => null
 
 jest.setTimeout(20000)
+
+mockReactXarrow()

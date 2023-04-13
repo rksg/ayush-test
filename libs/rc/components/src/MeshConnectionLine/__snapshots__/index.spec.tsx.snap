@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MeshConnectionLine should render Mesh connection line 1`] = `
+<DocumentFragment>
+  <span />
+</DocumentFragment>
+`;
