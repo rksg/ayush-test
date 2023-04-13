@@ -6,7 +6,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="sc-kgflAQ LhKtk"
+      class="sc-fLlhyt edFKlx"
     >
       <div
         class="ant-row ant-row-space-between"
@@ -81,10 +81,10 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
         style="margin: 0px;"
       />
       <div
-        class="sc-ksZaOG gSmPoq"
+        class="sc-hAZoDl bAUJJB"
       >
         <div
-          class="sc-hAZoDl bxWDbB"
+          class="sc-fnykZs gFEddm"
           data-testid="image-container"
         >
           <div
@@ -99,7 +99,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
           />
         </div>
         <div
-          class="sc-fnykZs bCqkvW"
+          class="sc-fEOsli nrlvP"
         >
           <div
             class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
@@ -140,7 +140,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
       </div>
       <div
         alignbottom="0"
-        class="ant-space ant-space-vertical sc-fEOsli doEjoS"
+        class="ant-space ant-space-vertical sc-bjUoiL khVJOP"
       >
         <div
           class="ant-space-item"
@@ -232,13 +232,13 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
         class="ant-row"
       >
         <div
-          class="ant-space ant-space-horizontal ant-space-align-center sc-iqcoie kSttUA"
+          class="ant-space ant-space-horizontal ant-space-align-center sc-crXcEl kVxLL"
         >
           <div
             class="ant-space-item"
           >
             <button
-              class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 ibsWZY sc-crXcEl mnPNK"
+              class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 ibsWZY sc-evZas hQpdCy"
               data-testid="galleryIcon"
               type="button"
             >
@@ -252,18 +252,18 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
           class="ant-col ant-col-23"
         >
           <div
-            class="ant-space ant-space-horizontal ant-space-align-center sc-jqUVSM gwtIPG"
+            class="ant-space ant-space-horizontal ant-space-align-center sc-kDDrLX dyDNDl"
           >
             <div
               class="ant-space-item"
               style="margin-right: 4px;"
             >
               <div
-                class="sc-breuTD guCzVb"
+                class="sc-ksZaOG edtJxk"
               >
                 <div
                   active="1"
-                  class="ant-card-grid sc-kDDrLX lovraM"
+                  class="ant-card-grid sc-iqcoie hLhYrV"
                   data-testid="thumbnailBg"
                 >
                   <div
@@ -273,7 +273,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
                        
                       <div>
                         <div
-                          class="sc-jSMfEi dSrpFV device-container context-Album"
+                          class="sc-jSMfEi UOWfN device-container context-Album"
                           draggable="true"
                           style="top: calc(9.839357%); left: calc(65.20548%); opacity: 1;"
                         >
@@ -283,11 +283,19 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
                           >
                              
                           </div>
+                          <div
+                            class="sc-papXJ dOYSmh"
+                            id="ap-302002015732"
+                          >
+                            <svg
+                              data-testid="APMeshRoleMesh"
+                            />
+                          </div>
                         </div>
                       </div>
                       <div>
                         <div
-                          class="sc-jSMfEi dSrpFV device-container context-Album"
+                          class="sc-jSMfEi UOWfN device-container context-Album"
                           draggable="true"
                           style="top: calc(7.056452%); left: calc(52.739727%); opacity: 1;"
                         >
@@ -296,6 +304,14 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
                             style="align-items: center; display: flex; justify-content: center; cursor: pointer;"
                           >
                              
+                          </div>
+                          <div
+                            class="sc-papXJ dOYSmh"
+                            id="ap-FEK3224R72N"
+                          >
+                            <svg
+                              data-testid="APMeshRoleMesh"
+                            />
                           </div>
                         </div>
                       </div>
@@ -309,7 +325,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="sc-evZas dnlhpG"
+                  class="sc-breuTD QFAjJ"
                 >
                   TEST_2
                 </div>
@@ -319,11 +335,11 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
               class="ant-space-item"
             >
               <div
-                class="sc-breuTD guCzVb"
+                class="sc-ksZaOG edtJxk"
               >
                 <div
                   active="0"
-                  class="ant-card-grid sc-kDDrLX ihhOgl"
+                  class="ant-card-grid sc-iqcoie IvfqM"
                   data-testid="thumbnailBg"
                 >
                   <div
@@ -341,7 +357,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="sc-evZas kIStNM"
+                  class="sc-breuTD ckvOwr"
                 >
                   dscx
                 </div>
@@ -351,14 +367,14 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
         </div>
       </div>
       <div
-        class="ant-space ant-space-horizontal ant-space-align-center sc-dIouRR gPFCCk"
+        class="ant-space ant-space-horizontal ant-space-align-center sc-hHLeRK bQHTDj"
       >
         <div
           class="ant-space-item"
           style="margin-right: 24px;"
         >
           <button
-            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY sc-dmRaPn sc-bBrHrO blmqKR bGulZy"
+            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY sc-kgflAQ sc-ivTmOn hDMeUr fIhEvG"
             type="button"
           >
             <svg
@@ -416,7 +432,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="sc-kgflAQ LhKtk"
+      class="sc-fLlhyt edFKlx"
     >
       <div
         class="ant-row"
@@ -472,7 +488,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
                   TEST_2
                 </div>
                 <div
-                  class="sc-papXJ iBkRgT"
+                  class="sc-jqUVSM dKdNIi"
                 >
                   <div
                     data-testid="dropContainer"
@@ -482,7 +498,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
                      
                     <div>
                       <div
-                        class="sc-jSMfEi dSrpFV device-container gallery"
+                        class="sc-jSMfEi UOWfN device-container gallery"
                         draggable="true"
                         style="top: calc(9.839357%); left: calc(65.20548%); opacity: 1;"
                       >
@@ -495,11 +511,19 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
                           />
                            
                         </div>
+                        <div
+                          class="sc-papXJ dOYSmh"
+                          id="ap-302002015732"
+                        >
+                          <svg
+                            data-testid="APMeshRoleMesh"
+                          />
+                        </div>
                       </div>
                     </div>
                     <div>
                       <div
-                        class="sc-jSMfEi dSrpFV device-container gallery"
+                        class="sc-jSMfEi UOWfN device-container gallery"
                         draggable="true"
                         style="top: calc(7.056452%); left: calc(52.739727%); opacity: 1;"
                       >
@@ -511,6 +535,14 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
                             data-testid="DeviceOutlined"
                           />
                            
+                        </div>
+                        <div
+                          class="sc-papXJ dOYSmh"
+                          id="ap-FEK3224R72N"
+                        >
+                          <svg
+                            data-testid="APMeshRoleMesh"
+                          />
                         </div>
                       </div>
                     </div>
@@ -576,7 +608,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
                   dscx
                 </div>
                 <div
-                  class="sc-papXJ iBkRgT"
+                  class="sc-jqUVSM dKdNIi"
                 >
                   <div
                     data-testid="dropContainer"
@@ -598,14 +630,14 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
         </div>
       </div>
       <div
-        class="ant-space ant-space-horizontal ant-space-align-center sc-dIouRR gPFCCk"
+        class="ant-space ant-space-horizontal ant-space-align-center sc-hHLeRK bQHTDj"
       >
         <div
           class="ant-space-item"
           style="margin-right: 24px;"
         >
           <button
-            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY sc-dmRaPn sc-bBrHrO blmqKR bGulZy"
+            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY sc-kgflAQ sc-ivTmOn hDMeUr fIhEvG"
             type="button"
           >
             <svg
