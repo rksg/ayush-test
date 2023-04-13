@@ -118,7 +118,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Edge', id: 'DETAIL' }]
+      providesTags: [{ type: 'Edge', id: 'DETAIL' }, { type: 'Edge', id: 'DNS' }]
     }),
     updateDnsServers: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -127,7 +127,8 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'DNS' }]
     }),
     getPortConfig: build.query<EdgePortConfig, RequestPayload>({
       query: ({ params }) => {
@@ -136,7 +137,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Edge', id: 'DETAIL_PORTS' }]
+      providesTags: [{ type: 'Edge', id: 'DETAIL' }]
     }),
     updatePortConfig: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -164,7 +165,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           totalCount: response.totalCount
         }
       },
-      providesTags: [{ type: 'Edge', id: 'DETAIL_SUB_INTERFACE' }]
+      providesTags: [{ type: 'Edge', id: 'DETAIL' }, { type: 'Edge', id: 'SUB_INTERFACE' }]
     }),
     addSubInterfaces: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -174,7 +175,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Edge', id: 'DETAIL_SUB_INTERFACE' }]
+      invalidatesTags: [{ type: 'Edge', id: 'SUB_INTERFACE' }]
     }),
     updateSubInterfaces: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -184,7 +185,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Edge', id: 'DETAIL_SUB_INTERFACE' }]
+      invalidatesTags: [{ type: 'Edge', id: 'SUB_INTERFACE' }]
     }),
     deleteSubInterfaces: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -193,7 +194,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Edge', id: 'DETAIL_SUB_INTERFACE' }]
+      invalidatesTags: [{ type: 'Edge', id: 'SUB_INTERFACE' }]
     }),
     getStaticRoutes: build.query<EdgeStaticRouteConfig, RequestPayload>({
       query: ({ params }) => {
@@ -202,7 +203,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Edge', id: 'DETAIL_ROUTES' }]
+      providesTags: [{ type: 'Edge', id: 'DETAIL' }, { type: 'Edge', id: 'ROUTES' }]
     }),
     updateStaticRoutes: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -212,7 +213,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Edge', id: 'DETAIL_ROUTES' }]
+      invalidatesTags: [{ type: 'Edge', id: 'ROUTES' }]
     }),
     getEdgePortsStatusList: build.query<EdgePortStatus[], RequestPayload>({
       query: ({ payload, params }) => {
@@ -232,7 +233,8 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         return {
           ...req
         }
-      }
+      },
+      providesTags: [{ type: 'Edge', id: 'FIRMWARE_LIST' }]
     }),
     getVenueEdgeFirmwareList: build.query<EdgeVenueFirmware[], RequestPayload>({
       query: () => {
@@ -270,6 +272,18 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Edge', id: 'FIRMWARE_LIST' }]
+    }),
+    rebootEdge: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(EdgeUrlsInfo.reboot, params)
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'LIST' }, { type: 'Edge', id: 'DETAIL' }]
+    }),
+    factoryResetEdge: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(EdgeUrlsInfo.factoryReset, params)
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'LIST' }, { type: 'Edge', id: 'DETAIL' }]
     })
   })
 })
@@ -297,5 +311,7 @@ export const {
   useGetAvailableEdgeFirmwareVersionsQuery,
   useGetVenueEdgeFirmwareListQuery,
   useUpdateEdgeFirmwareMutation,
-  useGetLatestEdgeFirmwareQuery
+  useGetLatestEdgeFirmwareQuery,
+  useRebootEdgeMutation,
+  useFactoryResetEdgeMutation
 } = edgeApi
