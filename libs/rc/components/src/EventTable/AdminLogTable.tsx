@@ -6,6 +6,7 @@ import { Loader, Table, TableProps, Button }    from '@acx-ui/components'
 import { DateFormatEnum, formatter }            from '@acx-ui/formatter'
 import { DownloadOutlined }                     from '@acx-ui/icons'
 import { AdminLog, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
+import { noDataDisplay }                        from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 
@@ -89,6 +90,10 @@ const AdminLogTable = ({ tableQuery }: AdminLogTableProps) => {
     {
       title: defineMessage({ defaultMessage: 'Event Type' }),
       value: valueFrom(adminLogTypeMapping, data.entity_type)
+    },
+    {
+      title: defineMessage({ defaultMessage: 'IP Address' }),
+      value: data.ipAddress?? noDataDisplay
     },
     {
       title: defineMessage({ defaultMessage: 'Source' }),
