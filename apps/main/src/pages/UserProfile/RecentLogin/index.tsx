@@ -59,7 +59,10 @@ export function RecentLogin (props: { userEmail: string }) {
     {
       title: $t({ defaultMessage: 'IP Address' }),
       dataIndex: 'ipAddress',
-      key: 'ipAddress'?? noDataDisplay
+      key: 'ipAddress',
+      render: function (_, row) {
+        return (row.ipAddress?? noDataDisplay)
+      }
     }
   ]
 
