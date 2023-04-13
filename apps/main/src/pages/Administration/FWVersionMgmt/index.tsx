@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs }                   from '@acx-ui/components'
+import { Tabs, Tooltip }          from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { InformationSolid }       from '@acx-ui/icons'
 import {
@@ -65,7 +65,7 @@ const FWVersionMgmt = () => {
   const tabs = {
     apFirmware: {
       title: <UI.TabWithHint>{$t({ defaultMessage: 'AP Firmware' })}
-        {isApFirmwareAvailable && <InformationSolid
+        {isApFirmwareAvailable && <Tooltip children={<InformationSolid />}
           title={$t({ defaultMessage: 'There are new AP firmware versions available' })} />}
       </UI.TabWithHint>,
       content: <ApFirmware />,
@@ -73,7 +73,7 @@ const FWVersionMgmt = () => {
     },
     switchFirmware: {
       title: <UI.TabWithHint>{$t({ defaultMessage: 'Switch Firmware' })}
-        {isSwitchFirmwareAvailable && <InformationSolid
+        {isSwitchFirmwareAvailable && <Tooltip children={<InformationSolid />}
           title={$t({ defaultMessage: 'There are new Switch firmware versions available' })} />}
       </UI.TabWithHint>,
       content: <SwitchFirmware />,
@@ -81,7 +81,7 @@ const FWVersionMgmt = () => {
     },
     edgeFirmware: {
       title: <UI.TabWithHint>{$t({ defaultMessage: 'Edge Firmware' })}
-        {isEdgeFirmwareAvailable && <InformationSolid
+        {isEdgeFirmwareAvailable && <Tooltip children={<InformationSolid />}
           title={$t({ defaultMessage: 'There are new Edge firmware versions available' })} />}
       </UI.TabWithHint>,
       content: <EdgeFirmware />,
