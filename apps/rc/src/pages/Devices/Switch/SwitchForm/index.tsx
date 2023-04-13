@@ -142,7 +142,7 @@ export function SwitchForm () {
   const handleSwitchList = async () => {
     const payload = {
       ...switchListPayload,
-      searchString: switchModel,
+      searchString: switchModel.split('-')[0],
       filters: { isStack: [true], venueId: [venueId] }
     }
     const memberList =
