@@ -143,6 +143,11 @@ export const switchVenue = {
         name: '09010e_b392',
         category: 'RECOMMENDED'
       },
+      switchFirmwareVersionAboveTen: {
+        id: '10010_b176',
+        name: '10010_b176',
+        category: 'RECOMMENDED'
+      },
       availableVersions: [
         {
           id: '09010f_b401',
@@ -159,6 +164,11 @@ export const switchVenue = {
       switchFirmwareVersion: {
         id: '09010e_b392',
         name: '09010e_b392',
+        category: 'RECOMMENDED'
+      },
+      switchFirmwareVersionAboveTen: {
+        id: '10010_b176',
+        name: '10010_b176',
         category: 'RECOMMENDED'
       },
       availableVersions: [
@@ -210,5 +220,8 @@ export const switchCurrentVersions = {
   currentVersions: [
     '09010e_b392',
     '09010e_b399'
+  ],
+  currentVersionsAboveTen: [
+    '10010_b176'
   ]
 }

@@ -9,9 +9,9 @@ import {
 
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
-import { AclTypeEnum }    from './constants'
-import { IpUtilsService } from './ipUtilsService'
-import { Acl, Vlan }      from './types'
+import { AclTypeEnum }                from './constants'
+import { IpUtilsService }             from './ipUtilsService'
+import { Acl, AclExtendedRule, Vlan } from './types'
 
 const Netmask = require('netmask').Netmask
 
@@ -760,6 +760,14 @@ export function checkAclName (aclName: string, aclType: string) {
     }
     return Promise.resolve()
   }
+}
+
+export function validateAclRuleSequence (sequence: number, currrentRecords: AclExtendedRule[]) {
+  const { $t } = getIntl()
+  if (currrentRecords.some(item => item.sequence === sequence)) {
+    return Promise.reject($t(validationMessages.aclRuleSequenceInvalid))
+  }
+  return Promise.resolve()
 }
 
 export function validateDuplicateAclName (aclName: string, aclList: Acl[]) {
