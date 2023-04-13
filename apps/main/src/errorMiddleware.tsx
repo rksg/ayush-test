@@ -139,7 +139,7 @@ export const getErrorContent = (action: ErrorAction) => {
     type,
     errors,
     callback,
-    needLogout: false
+    needLogout
   }
 }
 
