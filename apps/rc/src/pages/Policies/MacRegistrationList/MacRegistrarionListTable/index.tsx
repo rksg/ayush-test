@@ -190,6 +190,12 @@ export default function MacRegistrationListsTable () {
       (selectedItem && selectedItem.associationIds && selectedItem.networkIds)
         ? selectedItem.associationIds.length > 0 || selectedItem.networkIds.length > 0: false
     ),
+    tooltip: (([selectedItem]) =>
+      (selectedItem && selectedItem.associationIds && selectedItem.networkIds)
+        ? (selectedItem.associationIds.length > 0 || selectedItem.networkIds.length > 0 ?
+          // eslint-disable-next-line max-len
+          $t({ defaultMessage: 'This list is in use by one or more Networks and one or more Personas.' }) : undefined ) : undefined
+    ),
     onClick: ([{ name, id }], clearSelection) => {
       showActionModal({
         type: 'confirm',
