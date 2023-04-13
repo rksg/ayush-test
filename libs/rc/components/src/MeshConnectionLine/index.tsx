@@ -33,8 +33,8 @@ export default function MeshConnectionLine (props: MeshConnectionLineProps) {
       showHead={false}
       curveness={0}
       lineColor={getColorForLine(lineInfo)}
-      startAnchor='bottom'
-      endAnchor='bottom'
+      startAnchor={{ position: 'bottom', offset: { y: -5 } }}
+      endAnchor={{ position: 'bottom', offset: { y: -5 } }}
       strokeWidth={clickedComponentKey === componentKey ? 4 : 2}
       labels={clickedComponentKey === componentKey
         ? <MeshConnectionInfo data={lineInfo} onVisibleChange={onVisibleChange} />

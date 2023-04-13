@@ -302,5 +302,8 @@ export { ReactComponent as APMeshSignalExcellent } from './icons/APMeshSignalExc
 export { ReactComponent as APMeshSignalGood } from './icons/APMeshSignalGood.svg'
 export { ReactComponent as APMeshSignalLow } from './icons/APMeshSignalLow.svg'
 export { ReactComponent as APMeshSignalPoor } from './icons/APMeshSignalPoor.svg'
+export { ReactComponent as APMeshRoleEthernet } from './icons/APMeshRoleEthernet.svg'
+export { ReactComponent as APMeshRoleMesh } from './icons/APMeshRoleMesh.svg'
+export { ReactComponent as APMeshRoleRoot } from './icons/APMeshRoleRoot.svg'
 
 export * from './styledComponents'
