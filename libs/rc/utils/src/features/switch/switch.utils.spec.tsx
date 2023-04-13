@@ -16,7 +16,8 @@ import {
   transformSwitchUnitStatus,
   isRouter,
   isEmpty,
-  getSwitchPortLabel
+  getSwitchPortLabel,
+  sortPortFunction
 } from '.'
 
 const switchRow ={
@@ -81,6 +82,13 @@ describe('switch.utils', () => {
     })
   })
 
+  describe('Test sortPortFunction function', () => {
+    it('should render correctly', async () => {
+      expect([{ id: '1/1/10' }, { id: '1/1/2' }].sort(sortPortFunction))
+        .toStrictEqual([{ id: '1/1/2' }, { id: '1/1/10' }])
+    })
+  })
+
   describe('Test transformSwitchUnitStatus function', () => {
     it('should render correctly', async () => {
       expect(transformSwitchUnitStatus(SwitchStatusEnum.NEVER_CONTACTED_CLOUD)).toEqual('Never contacted cloud')
@@ -94,13 +102,13 @@ describe('switch.utils', () => {
       expect(transformSwitchUnitStatus(SwitchStatusEnum.FIRMWARE_UPD_FAIL)).toEqual('Firmware Updating')
       expect(transformSwitchUnitStatus(SwitchStatusEnum.APPLYING_FIRMWARE)).toEqual('Firmware Updating')
       expect(transformSwitchUnitStatus(SwitchStatusEnum.OPERATIONAL, true, true, '1 minute'))
-        .toEqual('Operational - applying configuration')
+        .toEqual('Applying configuration')
       expect(transformSwitchUnitStatus(SwitchStatusEnum.OPERATIONAL, true, true))
         .toEqual('Operational')
       expect(transformSwitchUnitStatus(SwitchStatusEnum.OPERATIONAL, true, false))
         .toEqual('Synchronizing data')
       expect(transformSwitchUnitStatus(SwitchStatusEnum.OPERATIONAL, false, true))
-        .toEqual('Operational - Synchronizing')
+        .toEqual('Synchronizing')
       expect(transformSwitchUnitStatus(SwitchStatusEnum.DISCONNECTED))
         .toEqual('Disconnected from cloud')
       expect(transformSwitchUnitStatus(SwitchStatusEnum.STACK_MEMBER_NEVER_CONTACTED))
@@ -163,7 +171,7 @@ describe('switch.utils', () => {
         isOperational: false
       })
       expect(transformSwitchStatus(SwitchStatusEnum.OPERATIONAL, true, true, '1 minute')).toStrictEqual({
-        message: 'Operational - applying configuration',
+        message: 'Applying configuration',
         deviceStatus: DeviceConnectionStatus.CONNECTED,
         isOperational: false
       })
@@ -178,7 +186,7 @@ describe('switch.utils', () => {
         isOperational: false
       })
       expect(transformSwitchStatus(SwitchStatusEnum.OPERATIONAL, false, true)).toStrictEqual({
-        message: 'Operational - Synchronizing',
+        message: 'Synchronizing',
         deviceStatus: DeviceConnectionStatus.CONNECTED,
         isOperational: false
       })
@@ -208,7 +216,7 @@ describe('switch.utils', () => {
 
   describe('Test getSwitchStatusString function', () => {
     it('should Synchronizing correctly', async () => {
-      expect(getSwitchStatusString(switchRow)).toBe('Operational - Synchronizing')
+      expect(getSwitchStatusString(switchRow)).toBe('Synchronizing')
     })
 
     it('should Warning correctly', async () => {
@@ -219,7 +227,7 @@ describe('switch.utils', () => {
         syncedSwitchConfig: true,
         operationalWarning: true
       }
-      expect(getSwitchStatusString(data)).toBe('Operational - Warning - Syncing')
+      expect(getSwitchStatusString(data)).toBe('Synchronizing')
     })
   })
 

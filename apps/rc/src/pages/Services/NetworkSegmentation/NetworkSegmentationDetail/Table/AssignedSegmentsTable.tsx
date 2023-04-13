@@ -10,7 +10,8 @@ export const AssignedSegmentsTable = () => {
     {
       title: $t({ defaultMessage: 'Segment #' }),
       key: 'segments',
-      dataIndex: 'segments'
+      dataIndex: 'segments',
+      fixed: 'left' as const
     },
     {
       title: $t({ defaultMessage: 'Persona' }),

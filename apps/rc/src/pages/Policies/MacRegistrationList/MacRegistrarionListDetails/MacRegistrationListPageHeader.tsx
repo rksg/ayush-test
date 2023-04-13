@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 import { Button, PageHeader }    from '@acx-ui/components'
 import { useGetMacRegListQuery } from '@acx-ui/rc/services'
 import {
-  getPolicyDetailsLink,
+  getPolicyDetailsLink, getPolicyListRoutePath,
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType
@@ -24,7 +24,9 @@ function MacRegistrationListPageHeader () {
     <PageHeader
       title={macRegistrationListQuery.data?.name || ''}
       breadcrumb={[
-        { text: $t({ defaultMessage: 'Policies & Profiles > MAC Registration Lists' }),
+        // eslint-disable-next-line max-len
+        { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) },
+        { text: $t({ defaultMessage: 'MAC Registration Lists' }),
           // eslint-disable-next-line max-len
           link: getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST }) }
       ]}

@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { StepsForm }                             from '@acx-ui/components'
+import { useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, WifiUrlsInfo }          from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent } from '@acx-ui/test-utils'
@@ -60,6 +61,7 @@ describe('CaptiveNetworkForm-WISPr', () => {
   const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', action: 'edit' }
 
   it('should test WISPr network successfully', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<Provider><NetworkFormContext.Provider
       value={{
         editMode: true, cloneMode: true, data: wisprDataWPA2
@@ -108,9 +110,11 @@ describe('CaptiveNetworkForm-WISPr', () => {
     fireEvent.change(redirectUrlInput, { target: { value: 'https://www.commscope.com/ruckus/' } })
     await userEvent.click(await screen.findByRole('checkbox', { name: /Redirect users to/ }))
     await userEvent.click(await screen.findByRole('checkbox',
-      { name: /Enable Ruckus DHCP service/ }))
+      { name: /Enable RUCKUS DHCP service/ }))
     await userEvent.click(await screen.findByRole('checkbox',
       { name: /Enable MAC auth bypass/ }))
+    await userEvent.click(await screen.findByRole('checkbox',
+      { name: /Enable the encryption for users’ MAC and IP addresses/ }))
     // await userEvent.click(await screen.findByText('More details'))
   })
 })

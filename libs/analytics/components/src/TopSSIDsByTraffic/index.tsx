@@ -93,7 +93,7 @@ function TopSSIDsByTrafficWidget ({
 
   return (
     <Loader states={[queryResults]}>
-      <HistoricalCard title={$t({ defaultMessage: 'Top 5 SSIDs by Traffic' })}>
+      <HistoricalCard title={$t({ defaultMessage: 'Top SSIDs by Traffic' })}>
         <AutoSizer>
           {({ height, width }) => (
             <div style={{ display: 'block', height, width, paddingTop: '20px' }}>

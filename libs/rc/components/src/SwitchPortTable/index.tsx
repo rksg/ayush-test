@@ -26,7 +26,7 @@ import { SwitchLagDrawer } from '../SwitchLagDrawer'
 import { EditPortDrawer } from './editPortDrawer'
 import * as UI            from './styledComponents'
 
-const STACK_PORT_FIELD = 'SwitchPortStackingPortField'
+const STACK_PORT_FIELD = 'usedInFormingStack'
 
 export function SwitchPortTable ({ isVenueLevel }: {
   isVenueLevel: boolean
@@ -98,6 +98,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
     searchable: true,
     sorter: true,
     defaultSortOrder: 'ascend',
+    fixed: 'left',
     render: (data, row) => row['portIdentifier']
   }, {
     key: 'name',
@@ -252,13 +253,13 @@ export function SwitchPortTable ({ isVenueLevel }: {
     dataIndex: 'egressAclName',
     sorter: true,
     show: false
-  },
-  {
-    key: 'tags',
-    title: $t({ defaultMessage: 'Tags' }),
-    dataIndex: 'tags',
-    sorter: true
   }
+  // { TODO: Waiting for TAG feature support
+  //   key: 'tags',
+  //   title: $t({ defaultMessage: 'Tags' }),
+  //   dataIndex: 'tags',
+  //   sorter: true
+  // }
   ]
 
   const getColumns = () => columns.filter(
@@ -278,6 +279,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
 
   return <Loader states={[tableQuery]}>
     <Table
+      settingsId='switch-port-table'
       columns={getColumns()}
       dataSource={transformData(tableQuery.data?.data)}
       pagination={tableQuery.pagination}

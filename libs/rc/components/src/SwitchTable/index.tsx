@@ -59,7 +59,7 @@ const handleStatusColor = (status: DeviceConnectionStatus) => {
 
 export const defaultSwitchPayload = {
   searchString: '',
-  searchTargetFields: ['name', 'model', 'switchMac', 'ipAddress'],
+  searchTargetFields: ['name', 'model', 'switchMac', 'ipAddress', 'serialNumber'],
   fields: [
     'check-all','name','deviceStatus','model','activeSerial','switchMac','ipAddress','venueName','uptime',
     'clientCount','cog','id','serialNumber','isStack','formStacking','venueId','switchName','configReady',
@@ -67,13 +67,16 @@ export const defaultSwitchPayload = {
   ]
 }
 
-export function SwitchTable (props : {
+interface SwitchTableProps
+  extends Omit<TableProps<SwitchRow>, 'columns'> {
   showAllColumns?: boolean,
   tableQuery?: TableQuery<SwitchRow, RequestPayload<unknown>, unknown>
   searchable?: boolean
   enableActions?: boolean
   filterableKeys?: { [key: string]: ColumnType['filterable'] }
-}) {
+}
+
+export function SwitchTable (props : SwitchTableProps) {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
@@ -130,7 +133,7 @@ export function SwitchTable (props : {
       dataIndex: 'name',
       sorter: true,
       defaultSortOrder: 'ascend',
-      disable: true,
+      fixed: 'left',
       searchable: searchable,
       filterKey: 'isStack',
       filterMultiple: false,
@@ -151,6 +154,7 @@ export function SwitchTable (props : {
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'deviceStatus',
       sorter: true,
+      fixed: 'left',
       filterMultiple: false,
       filterable: filterableKeys ? statusFilterOptions : false,
       render: (data, row) => <SwitchStatus row={row}/>
@@ -166,7 +170,8 @@ export function SwitchTable (props : {
       title: $t({ defaultMessage: 'Serial Number' }),
       dataIndex: 'activeSerial',
       sorter: true,
-      show: !!showAllColumns
+      show: !!showAllColumns,
+      searchable: searchable
     }, {
       key: 'switchMac',
       title: $t({ defaultMessage: 'MAC Address' }),
@@ -205,7 +210,9 @@ export function SwitchTable (props : {
       key: 'clientCount',
       title: $t({ defaultMessage: 'Clients' }),
       dataIndex: 'clientCount',
+      align: 'center',
       sorter: true,
+      sortDirections: ['descend', 'ascend', 'descend'],
       render: (data, row) => (
         <TenantLink to={`/devices/switch/${row.id || row.serialNumber}/${row.serialNumber}/details/clients`}>
           {data ? data : ((row.unitStatus === undefined) ? 0 : '')}
@@ -218,7 +225,7 @@ export function SwitchTable (props : {
       //   dataIndex: 'tags'
       // }
     ] as TableProps<SwitchRow>['columns']
-  }, [$t])
+  }, [$t, filterableKeys])
 
   const isActionVisible = (
     selectedRows: SwitchRow[],
@@ -279,7 +286,7 @@ export function SwitchTable (props : {
       return !!notOperational || !!invalid || !!hasStack
     },
     onClick: (selectedRows) => {
-      navigate(`stack/${selectedRows?.[0]?.venueId}/${selectedRows.map(row => row.serialNumber).join('_')}/add`, { replace: false })
+      navigate(`${linkToEditSwitch.pathname}/stack/${selectedRows?.[0]?.venueId}/${selectedRows.map(row => row.serialNumber).join('_')}/add`)
     }
   }, {
     label: $t({ defaultMessage: 'Delete' }),
@@ -293,6 +300,8 @@ export function SwitchTable (props : {
 
   return <Loader states={[tableQuery]}>
     <Table<SwitchRow>
+      {...props}
+      settingsId='switch-table'
       columns={columns}
       dataSource={tableData}
       pagination={tableQuery.pagination}

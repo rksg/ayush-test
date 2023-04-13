@@ -71,7 +71,7 @@ describe('RssQualityByClientsChart', () => {
     it('format values', () => {
       expect(format(totals, 7/79, undefined, 1)).toEqual('8.86% (7 clients)')
       expect(format(totals, 1/100, undefined, 3)).toEqual('1% (1 client)')
-      expect(format(totals, null, undefined, 1)).toEqual('- (0 clients)')
+      expect(format(totals, null, undefined, 1)).toEqual('-- (0 clients)')
     })
   })
 })

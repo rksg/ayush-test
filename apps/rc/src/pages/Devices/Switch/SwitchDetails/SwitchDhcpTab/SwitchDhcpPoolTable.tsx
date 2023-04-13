@@ -68,12 +68,12 @@ export function SwitchDhcpPoolTable () {
       key: 'subnetAddress',
       title: $t({ defaultMessage: 'Address Pool' }),
       dataIndex: 'subnetAddress',
-      sorter: false
+      sorter: true
     }, {
       key: 'subnetMask',
       title: $t({ defaultMessage: 'Subnet Mask' }),
       dataIndex: 'subnetMask',
-      sorter: false
+      sorter: true
     }, {
       key: 'leaseDays',
       title: $t({ defaultMessage: 'Lease Time' }),
@@ -142,10 +142,7 @@ export function SwitchDhcpPoolTable () {
         rowActions={filterByAccess(rowActions)}
         rowSelection={{
           type: 'checkbox',
-          selectedRowKeys: selected ? [selected]:[],
-          onChange: (keys: React.Key[]) => {
-            setSelected(keys[0] as string)
-          }
+          selectedRowKeys: selected ? [selected]:[]
         }} />
       <AddPoolDrawer
         visible={drawerVisible}

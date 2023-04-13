@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { Form, Typography } from 'antd'
 import { useIntl }          from 'react-intl'
@@ -28,12 +28,15 @@ const SnmpAgentV3Table = (props: SnmpAgentV3TableProps) => {
   const { data } = props
   const form = Form.useFormInstance()
 
-  const [ drawerVisible, setDrawerVisible] = useState(false)
-  const [ isEdit, setIsEdit ] = useState(false)
-  const [ editData, setEidtData ] = useState<SnmpV3Agent>(initSnmpV3Agent)
-  const [ editIdx, setEditIdx ] = useState(-1)
-  const [ othersData, setOthersData ] = useState<SnmpV3Agent[]>([])
   const [ tableData, setTableData ] = useState<SnmpV3Agent[]>([])
+  const [ drawerState, setDrawerState ] = useState({
+    visible: false,
+    isEditMode: false,
+    curData: initSnmpV3Agent,
+    othersData: [] as SnmpV3Agent[]
+  })
+  const drawerVisible = drawerState.visible
+  const editIdxRef = useRef(-1)
 
   useEffect(() => {
     if (data) {
@@ -86,15 +89,20 @@ const SnmpAgentV3Table = (props: SnmpAgentV3TableProps) => {
       visible: (selectedRows) => selectedRows.length === 1,
       disabled: drawerVisible,
       onClick: (selectedRows, clearSelection) => {
-        const selectedData = selectedRows[0]
+        const selectedData = { ...selectedRows[0] }
         const idx = tableData.findIndex(r => r.userName === selectedData.userName)
         const others = tableData.filter(r => r.userName !== selectedData.userName)
 
-        setEidtData(selectedData)
-        setEditIdx(idx)
-        setOthersData(others)
-        setIsEdit(true)
-        setDrawerVisible(true)
+        editIdxRef.current = idx
+
+        setDrawerState({
+          ...drawerState,
+          isEditMode: true,
+          curData: selectedData,
+          othersData: others,
+          visible: true
+        })
+
         clearSelection()
       }
     },
@@ -113,11 +121,15 @@ const SnmpAgentV3Table = (props: SnmpAgentV3TableProps) => {
   ]
 
   const handleAddAction = () => {
-    setEidtData(initSnmpV3Agent)
-    setEditIdx(-1)
-    setOthersData(tableData)
-    setIsEdit(false)
-    setDrawerVisible(true)
+    editIdxRef.current = -1
+
+    setDrawerState({
+      ...drawerState,
+      isEditMode: false,
+      curData: initSnmpV3Agent,
+      othersData: tableData,
+      visible: true
+    })
   }
 
   const actions = [
@@ -130,6 +142,7 @@ const SnmpAgentV3Table = (props: SnmpAgentV3TableProps) => {
 
   const handleSnmpV3AgentUpdate = (changedData: SnmpV3Agent) => {
     const newData = [ ...tableData ]
+    const editIdx = editIdxRef.current
 
     if (editIdx === -1) {
       newData.push(changedData)
@@ -138,21 +151,28 @@ const SnmpAgentV3Table = (props: SnmpAgentV3TableProps) => {
     }
 
     setTableData(newData)
-    setOthersData(newData)
 
+    setDrawerState({
+      ...drawerState,
+      othersData: newData
+    })
     // update form data
     form.setFieldValue('snmpV3Agents', newData)
+  }
+
+  const handleDrawerCancel = () => {
+    setDrawerState({
+      ...drawerState,
+      visible: false
+    })
   }
 
   return (
     <>
       <SnmpV3AgentDrawer
-        visible={drawerVisible}
-        setVisible={setDrawerVisible}
-        isEditMode={isEdit}
-        data={editData}
-        othersData={othersData}
+        {...drawerState}
         onDataChanged={handleSnmpV3AgentUpdate}
+        onCancel={handleDrawerCancel}
       />
       <Typography.Title level={4}>{$t({ defaultMessage: 'SNMPv3 Agent' })}</Typography.Title>
       <Table

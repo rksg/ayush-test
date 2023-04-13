@@ -23,6 +23,7 @@ export function ConnectedClientsOverTime ({
   filters, vizType
 }: { filters : AnalyticsFilter , vizType: string }) {
   const { $t } = useIntl()
+
   const seriesMapping = [
     { key: 'uniqueUsers_all', name: $t({ defaultMessage: 'All Bands' }) },
     { key: 'uniqueUsers_24', name: formatter('radioFormat')('2.4') },
@@ -30,12 +31,10 @@ export function ConnectedClientsOverTime ({
     { key: 'uniqueUsers_6', name: formatter('radioFormat')('6') }
   ] as Array<{ key: Key, name: string }>
 
-  const stackColors = take(qualitativeColorSet(), 4).reverse()
-
   const queryResults = useConnectedClientsOverTimeQuery(filters, {
     selectFromResult: ({ data, ...rest }) => ({
       ...rest,
-      data: getSeriesData(data!, vizType === 'area' ? seriesMapping.reverse() : seriesMapping)
+      data: getSeriesData(data!, vizType === 'area' ? seriesMapping.splice(1) : seriesMapping)
     })
   })
 
@@ -47,9 +46,10 @@ export function ConnectedClientsOverTime ({
             queryResults.data.length ?
               vizType === 'area' ?
                 <StackedAreaChart
-                  stackColors={stackColors}
+                  stackColors={take(qualitativeColorSet(), 3)}
                   style={{ width, height }}
                   data={queryResults.data}
+                  tooltipTotalTitle={$t({ defaultMessage: 'Total Clients' })}
                 /> :
                 <MultiLineTimeSeriesChart
                   style={{ width, height }}

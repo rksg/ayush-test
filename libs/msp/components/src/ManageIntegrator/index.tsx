@@ -17,15 +17,15 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import {
-  GoogleMap,
   PageHeader,
   StepsForm,
   StepsFormInstance,
   Subtitle
 } from '@acx-ui/components'
-import { useIsSplitOn, Features }    from '@acx-ui/feature-toggle'
-import { formatter, DateFormatEnum } from '@acx-ui/formatter'
-import { SearchOutlined }            from '@acx-ui/icons'
+import { useIsSplitOn, Features }        from '@acx-ui/feature-toggle'
+import { formatter, DateFormatEnum }     from '@acx-ui/formatter'
+import { SearchOutlined }                from '@acx-ui/icons'
+import { GoogleMapWithPreference }       from '@acx-ui/rc/components'
 import {
   useAddCustomerMutation,
   useMspEcAdminListQuery,
@@ -34,7 +34,9 @@ import {
   useMspAssignmentSummaryQuery,
   useMspAssignmentHistoryQuery,
   useMspAdminListQuery,
-  useGetMspEcDelegatedAdminsQuery
+  useGetMspEcDelegatedAdminsQuery,
+  useMspCustomerListQuery,
+  useGetAssignedMspEcToIntegratorQuery
 } from '@acx-ui/rc/services'
 import {
   Address,
@@ -49,7 +51,10 @@ import {
   MspAssignmentHistory,
   MspAssignmentSummary,
   MspEcDelegatedAdmins,
-  AssignActionEnum
+  AssignActionEnum,
+  useTableQuery,
+  EntitlementDeviceType,
+  EntitlementDeviceSubType
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -157,7 +162,8 @@ export function ManageIntegrator () {
 
   const [mspAdmins, setAdministrator] = useState([] as MspAdministrator[])
   const [mspEcAdmins, setMspEcAdmins] = useState([] as MspAdministrator[])
-  const [availableLicense, setAvailableLicense] = useState([] as MspAssignmentSummary[])
+  const [availableWifiLicense, setAvailableWifiLicense] = useState(0)
+  const [availableSwitchLicense, setAvailableSwitchLicense] = useState(0)
   const [assignedLicense, setAssignedLicense] = useState([] as MspAssignmentHistory[])
   const [customDate, setCustomeDate] = useState(true)
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
@@ -189,23 +195,39 @@ export function ManageIntegrator () {
       useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
   const { data: ecAdministrators } =
       useMspEcAdminListQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
+  const ecList = useTableQuery({
+    useQuery: useMspCustomerListQuery,
+    defaultPayload: {
+      searchString: '',
+      filters: { tenantType: [AccountType.MSP_EC] },
+      fields: [ 'id', 'name' ]
+    },
+    option: { skip: action !== 'edit' }
+  })
+  const assignedEcs =
+  useGetAssignedMspEcToIntegratorQuery(
+    { params: { mspIntegratorId: mspEcTenantId, mspIntegratorType: tenantType } },
+    { skip: action !== 'edit' })
 
   useEffect(() => {
     if (licenseSummary) {
       checkAvailableLicense(licenseSummary)
     }
 
-    if (isEditMode && data && licenseAssignment) {
+    if (licenseSummary && isEditMode && data && licenseAssignment) {
       if (ecAdministrators) {
         setMspEcAdmins(ecAdministrators)
       }
 
       const assigned = licenseAssignment.filter(en => en.mspEcTenantId === mspEcTenantId)
       setAssignedLicense(assigned)
-      const wifi = assigned.filter(en => en.deviceType === 'MSP_WIFI' && en.status === 'VALID')
+      const wifi = assigned.filter(en =>
+        en.deviceType === EntitlementDeviceType.MSP_WIFI && en.status === 'VALID')
       const wLic = wifi.length > 0 ? wifi[0].quantity : 0
-      const sw = assigned.filter(en => en.deviceType === 'MSP_SWITCH' && en.status === 'VALID')
-      const sLic = sw.length > 0 ? sw[0].quantity : 0
+      const sw = assigned.filter(en =>
+        en.deviceType === EntitlementDeviceType.MSP_SWITCH && en.status === 'VALID')
+      const sLic = sw.length > 0 ? sw.reduce((acc, cur) => cur.quantity + acc, 0) : 0
+      checkAvailableLicense(licenseSummary, wLic, sLic)
 
       formRef.current?.setFieldsValue({
         name: data?.name,
@@ -242,11 +264,27 @@ export function ManageIntegrator () {
 
   useEffect(() => {
     if (delegatedAdmins && Administrators) {
+      let selDelegateAdmins: MspAdministrator[] = []
       const admins = delegatedAdmins?.map((admin: MspEcDelegatedAdmins)=> admin.msp_admin_id)
       const selAdmins = Administrators.filter(rec => admins.includes(rec.id))
-      setAdministrator(selAdmins)
+      selAdmins.forEach((element:MspAdministrator) => {
+        const role =
+        delegatedAdmins.find(row => row.msp_admin_id=== element.id)?.msp_admin_role ?? element.role
+        const rec = { ...element }
+        rec.role = role as RolesEnum
+        selDelegateAdmins.push(rec)
+      })
+      setAdministrator(selDelegateAdmins)
     }
   }, [delegatedAdmins, Administrators])
+
+  useEffect(() => {
+    if (ecList.data?.data && isEditMode) {
+      setSelectedEcs(tenantType === AccountType.MSP_INTEGRATOR
+        ? ecList.data.data.filter(mspEc => mspEc.integrator === mspEcTenantId)
+        : ecList.data.data.filter(mspEc => mspEc.installer === mspEcTenantId))
+    }
+  }, [ecList.data])
 
   const [sameCountry, setSameCountry] = useState(true)
   const addressValidator = async (value: string) => {
@@ -338,7 +376,7 @@ export function ManageIntegrator () {
           quantity: quantityWifi,
           action: AssignActionEnum.ADD,
           isTrial: false,
-          deviceType: 'MSP_WIFI'
+          deviceType: EntitlementDeviceType.MSP_WIFI
         })
       }
       if (_.isString(ecFormData.switchLicense)) {
@@ -347,7 +385,7 @@ export function ManageIntegrator () {
           quantity: quantitySwitch,
           action: AssignActionEnum.ADD,
           isTrial: false,
-          deviceType: 'MSP_SWITCH'
+          deviceType: EntitlementDeviceType.MSP_SWITCH
         })
       }
       if (licAssignment.length > 0) {
@@ -381,7 +419,7 @@ export function ManageIntegrator () {
       // handle license assignments
       const licAssignment = []
       if (_.isString(ecFormData.wifiLicense)) {
-        const wifiAssignId = getAssignmentId('MSP_WIFI')
+        const wifiAssignId = getAssignmentId(EntitlementDeviceType.MSP_WIFI)
         const quantityWifi = parseInt(ecFormData.wifiLicense, 10)
         const actionWifi = wifiAssignId === 0 ? AssignActionEnum.ADD : AssignActionEnum.MODIFY
         licAssignment.push({
@@ -389,19 +427,19 @@ export function ManageIntegrator () {
           assignmentId: wifiAssignId,
           action: actionWifi,
           isTrial: false,
-          deviceType: 'MSP_WIFI'
+          deviceType: EntitlementDeviceType.MSP_WIFI
         })
       }
       if (_.isString(ecFormData.switchLicense)) {
-        const switchAssignId = getAssignmentId('MSP_SWITCH')
+        const switchAssignId = getAssignmentId(EntitlementDeviceType.MSP_SWITCH)
         const quantitySwitch = parseInt(ecFormData.switchLicense, 10)
         const actionSwitch = switchAssignId === 0 ? AssignActionEnum.ADD : AssignActionEnum.MODIFY
         licAssignment.push({
           quantity: quantitySwitch,
           assignmentId: switchAssignId,
           action: actionSwitch,
-          deviceSubtype: 'ICX',
-          deviceType: 'MSP_SWITCH'
+          deviceSubtype: EntitlementDeviceSubType.ICX,
+          deviceType: EntitlementDeviceType.MSP_SWITCH
         })
       }
 
@@ -434,7 +472,7 @@ export function ManageIntegrator () {
       return '--'
     return <>
       {mspAdmins.map(admin =>
-        <UI.AdminList>
+        <UI.AdminList key={admin.id}>
           {admin.email} ({intl.$t(roleDisplayText[admin.role])})
         </UI.AdminList>
       )}
@@ -446,11 +484,25 @@ export function ManageIntegrator () {
       return '--'
     return <>
       {selectedEcs.map(ec =>
-        <UI.AdminList>
+        <UI.AdminList key={ec.id}>
           {ec.name}
         </UI.AdminList>
       )}
     </>
+  }
+
+  const displayAccessPeriod = () => {
+    if(assignedEcs?.data?.expiry_date) {
+      const numOfDays = moment(assignedEcs.data.expiry_date).diff(moment(Date()), 'days')
+      return intl.$t(
+        { defaultMessage:
+          '{accessPeriod} {accessPeriod, plural, one {Day} other {Days}}' },
+        { accessPeriod: numOfDays }
+      )
+    } else if (assignedEcs?.data?.delegation_type) {
+      return intl.$t({ defaultMessage: 'Unlimited' })
+    }
+    return '--'
   }
 
   const displayCustomerAdmins = () => {
@@ -482,9 +534,24 @@ export function ManageIntegrator () {
     </div>
   }
 
-  const checkAvailableLicense = (entitlements: MspAssignmentSummary[]) => {
-    const available = entitlements.filter(p => p.remainingDevices > 0)
-    setAvailableLicense(available)
+  const checkAvailableLicense =
+  (entitlements: MspAssignmentSummary[], wLic?: number, swLic?: number) => {
+    const wifiLicenses = entitlements.filter(p =>
+      p.remainingDevices > 0 && p.deviceType === EntitlementDeviceType.MSP_WIFI)
+    let remainingWifi = 0
+    wifiLicenses.forEach( (lic: MspAssignmentSummary) => {
+      remainingWifi += lic.remainingDevices
+    })
+    wLic ? setAvailableWifiLicense(remainingWifi+wLic) : setAvailableWifiLicense(remainingWifi)
+
+    const switchLicenses = entitlements.filter(p =>
+      p.remainingDevices > 0 && p.deviceType === EntitlementDeviceType.MSP_SWITCH)
+    let remainingSwitch = 0
+    switchLicenses.forEach( (lic: MspAssignmentSummary) => {
+      remainingSwitch += lic.remainingDevices
+    })
+    swLic ? setAvailableSwitchLicense(remainingSwitch+swLic)
+      : setAvailableSwitchLicense(remainingSwitch)
   }
 
   const getAssignmentId = (deviceType: string) => {
@@ -514,7 +581,7 @@ export function ManageIntegrator () {
       </UI.FieldLabelAdmins>
       <UI.FieldLabelAdmins width='275px'>
         <label>{intl.$t({ defaultMessage: 'Access Period' })}</label>
-        <Form.Item children={<div>Unlimited</div>} />
+        <Form.Item children={<div>{displayAccessPeriod()}</div>} />
       </UI.FieldLabelAdmins>
     </>
   }
@@ -605,6 +672,9 @@ export function ManageIntegrator () {
   const AssignEcForm = () => {
     const onChange = (e: RadioChangeEvent) => {
       setUnlimitSelected(e.target.value)
+      if (e.target.value) {
+        selectedAssignEc([])
+      }
     }
 
     const content =
@@ -656,15 +726,6 @@ export function ManageIntegrator () {
           }
         />
       </UI.FieldLabelAdmins>
-
-      {/* <Subtitle level={4}>
-        { intl.$t({ defaultMessage: 'Select customer accounts to assign to this integrator:' }) }
-      </Subtitle>
-      <Form.Item
-        name='mspEcList'
-      >
-        <CustomerTable />
-      </Form.Item> */}
     </>
     return (
       <div>{content}</div>
@@ -717,11 +778,6 @@ export function ManageIntegrator () {
   }
 
   const WifiSubscription = () => {
-    const wifiLicenses = availableLicense.filter(p => p.deviceType === 'MSP_WIFI')
-    let remainingDevices = 0
-    wifiLicenses.forEach( (lic: MspAssignmentSummary) => {
-      remainingDevices += lic.remainingDevices
-    })
     return <div >
       <UI.FieldLabelSubs width='275px'>
         <label>{intl.$t({ defaultMessage: 'WiFi Subscription' })}</label>
@@ -731,22 +787,17 @@ export function ManageIntegrator () {
           initialValue={0}
           rules={[
             { required: true },
-            { validator: (_, value) => fieldValidator(value, remainingDevices) }
+            { validator: (_, value) => fieldValidator(value, availableWifiLicense) }
           ]}
           children={<Input type='number'/>}
           style={{ paddingRight: '20px' }}
         />
-        <label>devices out of {remainingDevices} available</label>
+        <label>devices out of {availableWifiLicense} available</label>
       </UI.FieldLabelSubs>
     </div>
   }
 
   const SwitchSubscription = () => {
-    const switchLicenses = availableLicense.filter(p => p.deviceType === 'MSP_SWITCH')
-    let remainingDevices = 0
-    switchLicenses.forEach( (lic: MspAssignmentSummary) => {
-      remainingDevices += lic.remainingDevices
-    })
     return <div >
       <UI.FieldLabelSubs width='275px'>
         <label>{intl.$t({ defaultMessage: 'Switch Subscription' })}</label>
@@ -756,12 +807,12 @@ export function ManageIntegrator () {
           initialValue={0}
           rules={[
             { required: true },
-            { validator: (_, value) => fieldValidator(value, remainingDevices) }
+            { validator: (_, value) => fieldValidator(value, availableSwitchLicense) }
           ]}
           children={<Input type='number'/>}
           style={{ paddingRight: '20px' }}
         />
-        <label>devices out of {remainingDevices} available</label>
+        <label>devices out of {availableSwitchLicense} available</label>
       </UI.FieldLabelSubs>
     </div>
   }
@@ -848,6 +899,10 @@ export function ManageIntegrator () {
         buttonLabel={{ submit: isEditMode ?
           intl.$t({ defaultMessage: 'Save' }):
           intl.$t({ defaultMessage: 'Add Tech Partner' }) }}
+        onCurrentChange={() => {
+          setDrawerAdminVisible(false)
+          setDrawerAssignedEcVisible(false)
+        }}
       >
         {isEditMode && <StepsForm.StepForm>
           <Subtitle level={3}>
@@ -884,7 +939,7 @@ export function ManageIntegrator () {
             />
           </Form.Item >
           <Form.Item hidden>
-            <GoogleMap libraries={['places']} />
+            <GoogleMapWithPreference libraries={['places']} />
           </Form.Item>
 
           <MspAdminsForm />
@@ -940,7 +995,7 @@ export function ManageIntegrator () {
               />
             </Form.Item >
             <Form.Item hidden>
-              <GoogleMap libraries={['places']} />
+              <GoogleMapWithPreference libraries={['places']} />
             </Form.Item>
             <MspAdminsForm />
             <CustomerAdminsForm />

@@ -23,10 +23,16 @@ export enum EdgeResourceUtilizationEnum {
 export enum EdgeStatusEnum {
   NEVER_CONTACTED_CLOUD = '1_01_NeverContactedCloud',
   INITIALIZING = '1_07_Initializing',
+  OFFLINE = '1_09_Offline',
   NEEDS_CONFIG = '1_10_NeedsConfig',
   OPERATIONAL = '2_00_Operational',
+  APPLYING_FIRMWARE = '2_01_ApplyingFirmware',
   APPLYING_CONFIGURATION = '2_02_ApplyingConfiguration',
-  DISCONNECTED_FROM_CLOUD = '3_04_DisconnectedFromCloud'
+  FIRMWARE_UPDATE_FAILED = '3_02_FirmwareUpdateFailed',
+  CONFIGURATION_UPDATE_FAILED = '3_03_ConfigurationUpdateFailed',
+  DISCONNECTED_FROM_CLOUD = '3_04_DisconnectedFromCloud',
+  REBOOTING = '4_01_Rebooting',
+  HEARTBEAT_LOST = '4_04_HeartbeatLost'
 }
 
 export enum EdgeStatusSeverityEnum {
@@ -42,4 +48,15 @@ export enum EdgeDhcpServiceStatusEnum {
   REQUIRES_ATTENTION = 'Requires Attention',
   POOR = 'Poor',
   UNKNOWN = 'Unknown'
+}
+
+export enum LeaseTimeUnit {
+  DAYS = 'DAYS',
+  HOURS = 'HOURS',
+  MINUTES = 'MINUTES'
+}
+
+export enum EdgeDhcpHostStatus {
+  ONLINE = 'ONLINE',
+  OFFLINE = 'OFFLINE'
 }

@@ -138,10 +138,10 @@ describe('IncidentAttributes', () => {
     render(<Provider>
       <IncidentAttributes incident={incident} visibleFields={attributeList} />
     </Provider>)
-    const clientImpactTrigger = (await screen.findAllByText('-'))[0]
+    const clientImpactTrigger = (await screen.findAllByText('--'))[0]
     fireEvent.click(clientImpactTrigger) // trigger onOpen
     expect(screen.queryByRole('img', { name: 'loader' })).toBeNull()
-    const apImpactTrigger = (await screen.findAllByText('-'))[1]
+    const apImpactTrigger = (await screen.findAllByText('--'))[1]
     fireEvent.click(apImpactTrigger) // trigger onOpen
     expect(screen.queryByRole('img', { name: 'loader' })).toBeNull()
   })

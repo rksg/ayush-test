@@ -7,6 +7,7 @@ import { KPITimeseriesResponse, healthApi } from '@acx-ui/analytics/services'
 import { AnalyticsFilter, kpiConfig }       from '@acx-ui/analytics/utils'
 import { Loader, VerticalBarChart, NoData } from '@acx-ui/components'
 import { formatter }                        from '@acx-ui/formatter'
+import { noDataDisplay }                    from '@acx-ui/utils'
 
 const barChartText = {
   title: defineMessage({ defaultMessage: 'last 7 days' })
@@ -22,7 +23,7 @@ const transformBarChartResponse = ({ data, time }: KPITimeseriesResponse) => {
 }
 
 export const formatYDataPoint = (data: number | unknown) =>
-  data !== null ? formatter('percentFormat')(data as number / 100) : '-'
+  data !== null ? formatter('percentFormat')(data as number / 100) : noDataDisplay
 
 function BarChart ({
   filters,

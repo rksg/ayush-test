@@ -364,7 +364,7 @@ describe('Add administrator dialog component', () => {
     await userEvent.click(await screen.findByText( 'Administrator' ))
     await userEvent.click(await screen.findByText('Send Invitation'))
     await waitFor(async () => {
-      expect(await screen.findByText(/The email address belongs to a user of another Ruckus Cloud tenant./i)).toBeVisible()
+      expect(await screen.findByText(/The email address belongs to a user of another RUCKUS One tenant./i)).toBeVisible()
     })
   })
 

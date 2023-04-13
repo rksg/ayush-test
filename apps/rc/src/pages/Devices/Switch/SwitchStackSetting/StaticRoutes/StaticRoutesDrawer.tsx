@@ -50,7 +50,7 @@ const StaticRoutesDrawer = (props: StaticRoutesDrawerProps) => {
 
   const updateIp = () => {
     const destinationIp = formRef.getFieldValue('destinationIp')
-    if(!RegExp(IP_SUBNET_VALIDATION_PATTERN).test(destinationIp)) {
+    if(destinationIp && !RegExp(IP_SUBNET_VALIDATION_PATTERN).test(destinationIp)) {
       const ipAddress = destinationIp.split('/')[0]
       const mask = parseInt(destinationIp.split('/')[1], 10)
       const ipCalcService = new IpCalculatorUtilsService()

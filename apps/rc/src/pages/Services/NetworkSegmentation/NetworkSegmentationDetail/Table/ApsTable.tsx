@@ -10,7 +10,8 @@ export const ApsTable = () => {
     {
       title: $t({ defaultMessage: 'AP Name' }),
       key: 'name',
-      dataIndex: 'name'
+      dataIndex: 'name',
+      fixed: 'left' as const
     },
     {
       title: $t({ defaultMessage: 'Model' }),

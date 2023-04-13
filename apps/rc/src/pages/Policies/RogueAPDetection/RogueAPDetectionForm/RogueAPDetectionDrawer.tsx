@@ -209,8 +209,8 @@ const RogueAPDetectionDrawer = (props: RogueAPDetectionDrawerProps) => {
               .filter(e => isEditMode ? (e.type !== type) : true)
               .filter(e => ![
                 RogueRuleType.CUSTOM_MAC_OUI_RULE,
-                RogueRuleType.LOW_SNR_RULE,
-                RogueRuleType.SSID_RULE
+                RogueRuleType.CUSTOM_SNR_RULE,
+                RogueRuleType.CUSTOM_SSID_RULE
               ].includes(e.type))
               .findIndex(e => e.type === value) !== -1) {
               return Promise.reject(

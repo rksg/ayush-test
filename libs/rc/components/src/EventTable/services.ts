@@ -50,7 +50,8 @@ const defaultPayload = {
     'floorPlanName',
     'recipientName',
     'transactionId',
-    'name'
+    'name',
+    'ipAddress'
   ]
 }
 
@@ -73,7 +74,7 @@ const adminLogsDefaultFilters = {
 
 function useQueryFilter () {
   const { startDate, endDate } = useDateFilter()
-  const detailLevel = useUserProfileContext().data.detailLevel
+  const detailLevel = useUserProfileContext().data?.detailLevel
   return {
     detailLevel,
     skip: !Boolean(detailLevel),

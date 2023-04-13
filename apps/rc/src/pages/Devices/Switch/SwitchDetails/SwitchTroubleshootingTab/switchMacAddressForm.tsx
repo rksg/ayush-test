@@ -17,6 +17,7 @@ import {
   useSwitchPortlistQuery
 } from '@acx-ui/rc/services'
 import {
+  sortPortFunction,
   TroubleshootingMacAddressOptionsEnum,
   TroubleshootingType
 } from '@acx-ui/rc/utils'
@@ -56,9 +57,12 @@ export function SwitchMacAddressForm () {
 
   useEffect(() => {
     if (!portList.isLoading) {
-      setPortOptions(portList?.data?.data?.map(item => ({
-        label: item.portIdentifier, value: item.portIdentifier
-      })) ?? [])
+      setPortOptions(portList?.data?.data?.map(port => ({ id: port.portIdentifier }))
+        .sort(sortPortFunction)
+        .map(item => ({
+          label: item.id, value: item.id
+        }))
+      ?? [])
     }
   }, [portList])
 
@@ -207,7 +211,6 @@ export function SwitchMacAddressForm () {
 
   const onClear = async () => {
     setIsLoading(true)
-    setIsValid(false)
     await getTroubleshootingClean({
       params: troubleshootingParams
     })

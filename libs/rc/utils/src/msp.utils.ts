@@ -18,6 +18,7 @@ const devicesCountMap = {
   ap: defineMessage({ defaultMessage: '{count} {count, plural, one {AP} other {APs}}' })
 }
 
+export const MSP_USER_SETTING = 'COMMON$MSP'
 export class EntitlementUtil {
   public static getMspDeviceTypeText (deviceType: EntitlementDeviceType): string {
     switch (deviceType) {

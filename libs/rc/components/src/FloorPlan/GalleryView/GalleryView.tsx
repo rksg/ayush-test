@@ -37,7 +37,7 @@ export default function GalleryView (props: {
   }
 
   return (
-    <Row gutter={[16, 20]}>
+    <Row gutter={[16, 20]} style={{ marginLeft: '0px', marginRight: '0px', paddingBottom: '8px' }}>
       { floorPlans?.map((floorPlan, index) => <Col key={index} span={span}>
         <GalleryCard
           setCoordinates={setCoordinates}
@@ -142,7 +142,10 @@ function GalleryCard (props: {
   }
 
 
-  return <Card title={floorPlan?.name}>
+  return <Card>
+    <Card.Title>
+      { floorPlan?.name }
+    </Card.Title>
     <UI.StyledImageWrapper
       onClick={() => onFloorplanImageClick(floorPlan)}>
       <div ref={drop}

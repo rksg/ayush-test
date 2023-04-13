@@ -17,13 +17,13 @@ describe('getSeriesTotal',() => {
       key: 'series1',
       name: 'Series 1',
       data: [
-        [1603929600000, 1], [1604016000000, '-'], [1604102400000, 5]
+        [1603929600000, 1], [1604016000000, '--'], [1604102400000, 5]
       ]
     }, {
       key: 'series2',
       name: 'Series 2',
       data: [
-        [1603929600000, 2], [1604016000000, '-'], [1604102400000, 6]
+        [1603929600000, 2], [1604016000000, '--'], [1604102400000, 6]
       ]
     }] as TimeSeriesChartData[]
     expect(getSeriesTotal(series, 'Total')).toEqual({

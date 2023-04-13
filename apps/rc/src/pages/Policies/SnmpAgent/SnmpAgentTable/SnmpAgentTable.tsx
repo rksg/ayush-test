@@ -19,6 +19,7 @@ import { filterByAccess }            from '@acx-ui/user'
 const defaultPayload = {
   searchString: '',
   fields: [ 'id', 'name', 'v2Agents', 'v3Agents', 'venues', 'aps', 'tags' ],
+  searchTargetFields: ['name', 'v2Agents.name', 'v3Agents.name', 'venues.name', 'aps.name'],
   sortField: 'name',
   sortOrder: 'ASC',
   page: 1,
@@ -66,7 +67,10 @@ export default function SnmpAgentTable () {
 
   const tableQuery = useTableQuery({
     useQuery: useGetApSnmpViewModelQuery,
-    defaultPayload
+    defaultPayload,
+    search: {
+      searchTargetFields: defaultPayload.searchTargetFields as string[]
+    }
   })
 
   const [ deleteFn ] = useDeleteApSnmpPolicyMutation()
@@ -121,14 +125,14 @@ export default function SnmpAgentTable () {
         title={
           $t(
             { defaultMessage: 'SNMP Agent {count}' },
-            { count: (tableQuery.data)? `(${tableQuery.data.totalCount})` : '' }
+            { count: (list)? `(${list.totalCount})` : '' }
           )
         }
         breadcrumb={[
           // eslint-disable-next-line max-len
           { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) }
         ]}
-        extra={((tableQuery?.data?.totalCount as number) < 64) && filterByAccess([
+        extra={((list?.totalCount as number) < 64) && filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.CREATE })} key='add'>
             <Button type='primary'>

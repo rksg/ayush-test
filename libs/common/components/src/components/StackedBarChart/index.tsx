@@ -50,6 +50,7 @@ interface StackedBarOptionalProps {
   showTooltip: boolean
   setBarColor?: object
   axisLabelWidth?: number
+  total?: number
 }
 
 const defaultProps: StackedBarOptionalProps = {
@@ -73,13 +74,17 @@ export interface StackedBarChartProps
     onAxisLabelClick?: (name: string) => void
   }
 
-const computeChartData = ({ category, series }: ChartData) => {
+const computeChartData = ({ category, series }: ChartData, isPercent:boolean) => {
   const values = _(series)
-  const sum = values.sumBy('value')
+  const total = values.sumBy('value')
   const firstIndex = values.findIndex(v => v.value !== 0)
   return series.map(({ name, value }, index) => {
+    let seriesValue = value
+    if(isPercent){
+      seriesValue = value/total
+    }
     const data = {
-      value: [value, category, name, sum] as Dimensions,
+      value: [seriesValue, category, name, total] as Dimensions,
       itemStyle: { borderRadius: [0] }
     }
     if (firstIndex === index) {
@@ -90,7 +95,8 @@ const computeChartData = ({ category, series }: ChartData) => {
 }
 
 const massageData = (
-  data: ChartData[], showTotal: boolean, barWidth: number): RegisteredSeriesOption['bar'][] => {
+  data: ChartData[], showTotal: boolean, barWidth: number, isPercent:boolean)
+  : RegisteredSeriesOption['bar'][] => {
   const seriesCommonConfig: RegisteredSeriesOption['bar'] = {
     type: 'bar',
     cursor: 'default',
@@ -109,7 +115,7 @@ const massageData = (
   }
 
   return _(data)
-    .map(computeChartData)
+    .map(chartData=>computeChartData(chartData,isPercent))
     .flatMap(items => items)
     .groupBy('value.2') // name
     .toPairs()
@@ -148,15 +154,24 @@ const massageData = (
 
 export const tooltipFormatter = (
   dataFormatter?: ((value: unknown) => string | null),
-  format?: MessageDescriptor
+  format?: MessageDescriptor,
+  total?: number
 ) => (
   parameters: TooltipComponentFormatterCallbackParams
 ) => {
   const intl = getIntl()
   const param = parameters as TooltipFormatterParams
   const value = param.value as string[]
-  const name = param.seriesName
-  const formattedValue = dataFormatter ? dataFormatter(value[0]) : value[0]
+  /*
+  Below replace method is required to remove weightage mentioned in between angle brackets `<` `>`
+  Like: <2> Operational, <1> Requires Attention
+  */
+  const name = param.seriesName?.replace(/<\d+>/,'')
+  let toolTipValue = value[0]
+  if(total){
+    toolTipValue = (Number(value[0]) * total).toString()
+  }
+  const formattedValue = dataFormatter ? dataFormatter(toolTipValue) : toolTipValue
   const tooltipFormat = format ?? defineMessage({
     defaultMessage: '{name}<br></br><space><b>{formattedValue}</b></space>',
     description: 'StackedBarChart: default tooltip format for stacked bar chart'
@@ -196,7 +211,6 @@ export function StackedBarChart <TChartData extends ChartData = ChartData> ({
 
   useOnAxisLabelClick(eChartsRef, onAxisLabelClick)
   const triggerAxisLabelEvent : boolean = typeof onAxisLabelClick === 'function'
-
   let option: EChartsOption = {
     animation,
     silent: !showTooltip,
@@ -240,10 +254,11 @@ export function StackedBarChart <TChartData extends ChartData = ChartData> ({
       position: 'top',
       formatter: tooltipFormatter(
         dataFormatter,
-        props.tooltipFormat),
+        props.tooltipFormat,
+        props.total),
       show: showTooltip
     },
-    series: massageData(data, showTotal, barWidth)
+    series: massageData(data, showTotal, barWidth, !!props.total)
   }
   return (
     <ReactECharts

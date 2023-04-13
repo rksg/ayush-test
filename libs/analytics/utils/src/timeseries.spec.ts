@@ -3,7 +3,7 @@ import type { TimeStamp } from '@acx-ui/types'
 import { getSeriesData, checkNoData } from './index'
 
 const seriesMapping = [
-  { key: 'newClientCount', name: 'New Clients' },
+  { key: 'newClientCount', name: 'New Client Associations' },
   { key: 'impactedClientCount', name: 'Impacted Clients' },
   { key: 'connectedClientCount', name: 'Connected Clients' }
 ] as Array<{ key: string, name: string }>
@@ -40,7 +40,7 @@ describe('getSeriesData', () => {
       .toEqual([
         {
           key: 'newClientCount',
-          name: 'New Clients',
+          name: 'New Client Associations',
           data: sample.time.map((t,index)=>[t, 1+index])
         },
         {
@@ -62,7 +62,7 @@ describe('getSeriesData', () => {
       newClientCount: expected
     }
     const result = getSeriesData(nullDataPointSample, seriesMapping)
-      .find(d => d.name === 'New Clients')!
+      .find(d => d.name === 'New Client Associations')!
       .data
       .map(v => v[1])
     expect(result).toEqual(expected)

@@ -150,7 +150,7 @@ export const LayoutView = styled(AntLayout)<{ $type: string | null }>`
   overflow-y:auto;
 `
 export const LayoutViewContent = styled(AntLayout)<{ isbg: string | null }>`
-  ${props=>props.isbg === 'true'?css`opacity:0.8;`:css`opacity:1;`}
+  ${props=>props.isbg === 'true'?css`opacity:0.93;`:css`opacity:1;`}
   padding-top:3px;
   width:425px;
   max-width:600px;

@@ -1,13 +1,16 @@
+import { omit }                                      from 'lodash'
 import { defineMessage, useIntl, MessageDescriptor } from 'react-intl'
 import { useNavigate }                               from 'react-router-dom'
 
-import { Tabs }         from '@acx-ui/components'
+import { Tabs }      from '@acx-ui/components'
 import {
   ActivityTable,
-  columnState,
+  activityTableColumnState,
   EventTable,
+  eventTableColumnState,
   useActivityTableQuery,
-  useEventsTableQuery
+  useEventsTableQuery,
+  eventTypeMapping
 } from '@acx-ui/rc/components'
 import { TimelineTypes } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
@@ -17,7 +20,13 @@ import { useApContext } from '../ApContext'
 const Events = () => {
   const { serialNumber } = useApContext()
   const tableQuery = useEventsTableQuery({ serialNumber: [serialNumber] })
-  return <EventTable tableQuery={tableQuery} filterables={['severity', 'entity_type']}/>
+  return <EventTable
+    settingsId='ap-event-table'
+    tableQuery={tableQuery}
+    filterables={['severity', 'entity_type']}
+    eventTypeMap={omit(eventTypeMapping, 'SWITCH')}
+    columnState={{ defaultValue: { ...eventTableColumnState, product: false } }}
+  />
 }
 
 const Activities = () => {
@@ -25,9 +34,10 @@ const Activities = () => {
   const tableQuery = useActivityTableQuery({ entityType: 'AP', entityId: serialNumber! })
 
   return <ActivityTable
+    settingsId='ap-activity-table'
     tableQuery={tableQuery}
     filterables={['status']}
-    columnState={columnState}
+    columnState={activityTableColumnState}
   />
 }
 

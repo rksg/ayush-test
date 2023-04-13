@@ -147,6 +147,7 @@ export interface LocaleContextType {
 }
 
 export const LocaleContext = createContext<LocaleContextType>(null as unknown as LocaleContextType)
+export const useLocaleContext = () => useContext(LocaleContext)
 
 export interface LocaleProviderProps {
   /** @default 'en-US' */

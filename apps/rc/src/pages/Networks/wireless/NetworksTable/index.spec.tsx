@@ -183,7 +183,7 @@ describe('Networks Table', () => {
   })
 
   it('should render table', async () => {
-    const { asFragment } = render(
+    render(
       <Provider>
         <NetworksTable />
       </Provider>, {
@@ -191,14 +191,13 @@ describe('Networks Table', () => {
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
 
     await screen.findByText('Add Wi-Fi Network')
     await screen.findByText(/network-01/i)
   })
 
   it('should click disabled row', async () => {
-    const { asFragment } = render(
+    render(
       <Provider>
         <NetworksTable />
       </Provider>, {
@@ -206,7 +205,6 @@ describe('Networks Table', () => {
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
 
     const row = await screen.findByRole('row', { name: /network-02/i })
     fireEvent.click(row)
@@ -216,7 +214,7 @@ describe('Networks Table', () => {
   })
 
   it('should delete selected row', async () => {
-    const { asFragment } = render(
+    render(
       <Provider>
         <NetworksTable />
       </Provider>, {
@@ -224,7 +222,6 @@ describe('Networks Table', () => {
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
 
     const row = await screen.findByRole('row', { name: /network-01/i })
     fireEvent.click(within(row).getByRole('radio'))

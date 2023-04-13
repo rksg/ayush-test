@@ -1,6 +1,6 @@
-import { storiesOf }     from '@storybook/react'
-import { Space, Badge }  from 'antd'
-import { BrowserRouter } from 'react-router-dom'
+import { storiesOf }    from '@storybook/react'
+import { Space, Badge } from 'antd'
+import { HashRouter }   from 'react-router-dom'
 
 import {
   WorldSolid,
@@ -11,19 +11,21 @@ import {
   SearchOutlined
 } from '@acx-ui/icons'
 
-import { Layout }               from '..'
-import { Card }                 from '../../Card'
-import { Dropdown }             from '../../Dropdown'
-import { regionMenu, helpMenu } from '../../Dropdown/stories'
-import { LayoutUI }             from '../styledComponents'
+import { Layout }                 from '..'
+import { ReactComponent as Logo } from '../../../../../../main/assets/Logo.svg'
+import { Card }                   from '../../Card'
+import { Dropdown }               from '../../Dropdown'
+import { regionMenu, helpMenu }   from '../../Dropdown/stories'
+import { LayoutUI }               from '../styledComponents'
 
 import menuConfig from './menuConfig'
 
 storiesOf('Layout', module).add('Basic', () => (
   // fix for storybook only
   <div style={{ margin: '-16px' }}>
-    <BrowserRouter>
+    <HashRouter>
       <Layout
+        logo={<Logo />}
         menuConfig={menuConfig}
         leftHeaderContent={
           <Dropdown overlay={regionMenu}>{(selectedKeys) =>
@@ -53,6 +55,6 @@ storiesOf('Layout', module).add('Basic', () => (
           </Space>
         }
       />
-    </BrowserRouter>
+    </HashRouter>
   </div>
 ))

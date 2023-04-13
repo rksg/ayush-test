@@ -2,7 +2,7 @@ import { ApiInfo } from '../../apiService'
 
 
 export const ApSnmpUrls: { [key: string]: ApiInfo } = {
-  deleteApSnmpProfile: {
+  deleteApSnmpPolicy: {
     method: 'delete',
     url: '/apSnmpAgentProfiles/:policyId',
     oldUrl: '/api/apSnmpAgentProfiles/:policyId',
@@ -20,7 +20,7 @@ export const ApSnmpUrls: { [key: string]: ApiInfo } = {
     oldUrl: '/api/apSnmpAgentProfiles',
     newApi: true
   },
-  getApUsageByApSnmpProfile: { // detail
+  getApUsageByApSnmpPolicy: { // detail
     method: 'post',
     url: '/apSnmpAgentProfiles/:policyId/aps/query',
     oldUrl: '/api/apSnmpAgentProfiles/:policyId/aps/query',

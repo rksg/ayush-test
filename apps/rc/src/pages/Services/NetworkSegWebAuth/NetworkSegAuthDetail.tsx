@@ -63,7 +63,8 @@ export default function NetworkSegAuthDetail () {
       key: 'as',
       title: $t({ defaultMessage: 'Access Switches' }),
       dataIndex: 'as',
-      sorter: true
+      sorter: true,
+      fixed: 'left' as const
     }, {
       key: 'model',
       title: $t({ defaultMessage: 'Model' }),
@@ -105,7 +106,7 @@ export default function NetworkSegAuthDetail () {
           </TenantLink>
         ])}
       />
-      <Card>
+      <Card type='solid-bg'>
         <NetworkSegAuthSummary data={data} />
       </Card>
       <br /><br />

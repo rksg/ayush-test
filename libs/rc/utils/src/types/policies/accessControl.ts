@@ -92,10 +92,14 @@ export interface L3Rule {
   description: string,
   destination: {
     enableIpSubnet: boolean,
+    subnet?: string,
+    ip?: string,
     port: string
   },
   priority: number,
   source: {
+    subnet?: string,
+    ip?: string,
     enableIpSubnet: boolean
   },
   protocol?: string
@@ -115,7 +119,12 @@ export interface AppRule {
   id: string,
   name: string,
   priority: number,
-  ruleType: string
+  ruleType: string,
+  uplink?: number,
+  downlink?: number,
+  upLinkMarkingType?: string,
+  markingPriority?: string,
+  downLinkMarkingType? : string
 }
 
 export interface AvcCategory {

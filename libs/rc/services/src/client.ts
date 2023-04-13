@@ -25,7 +25,6 @@ import {
   RequestFormData, enableNewApi
 } from '@acx-ui/rc/utils'
 import { baseClientApi } from '@acx-ui/store'
-import { getJwtToken }   from '@acx-ui/utils'
 
 export const clientApi = baseClientApi.injectEndpoints({
   endpoints: (build) => ({
@@ -144,9 +143,8 @@ export const clientApi = baseClientApi.injectEndpoints({
           },
           body: payload,
           headers: {
-            'Content-Type': 'application/json',
-            'accept': 'application/json,text/plain,*/*',
-            ...(getJwtToken() ? { Authorization: `Bearer ${getJwtToken()}` } : {})
+            ...req.headers,
+            Accept: 'application/json,text/plain,*/*'
           }
         }
       }

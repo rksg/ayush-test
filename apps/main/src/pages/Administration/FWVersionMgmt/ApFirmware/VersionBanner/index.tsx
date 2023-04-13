@@ -23,6 +23,7 @@ export const VersionBanner = () => {
   const versions = getReleaseFirmware(latestReleaseVersions)
   const firmware = versions[0]
 
+  if (!firmware) return null
   return (
     <div>
       <UI.BannerVersion>

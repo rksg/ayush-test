@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request'
 
-import { AnalyticsFilter } from '@acx-ui/analytics/utils'
-import { dataApi }         from '@acx-ui/store'
+import { AnalyticsFilter, calculateGranularity } from '@acx-ui/analytics/utils'
+import { dataApi }                               from '@acx-ui/store'
 
 export type TrafficByVolumeData = {
   time: string[]
@@ -51,7 +51,7 @@ export const api = dataApi.injectEndpoints({
           path: payload.path,
           start: payload.startDate,
           end: payload.endDate,
-          granularity: 'PT15M',
+          granularity: calculateGranularity(payload.startDate, payload.endDate, 'PT15M'),
           filter: payload.filter
         }
       }),

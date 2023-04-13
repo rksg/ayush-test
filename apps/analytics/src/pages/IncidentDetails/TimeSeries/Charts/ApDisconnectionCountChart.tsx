@@ -35,7 +35,7 @@ export const ApDisconnectionCountChart = (
   const chartResults = getSeriesData(
     apDisconnectionCountChart as Record<string, TimeSeriesDataType[]>, seriesMapping)
 
-  return <Card title={$t({ defaultMessage: 'AP-RUCKUS Cloud Disconnections' })} type='no-border'>
+  return <Card title={$t({ defaultMessage: 'AP-RUCKUS One Disconnections' })} type='no-border'>
     <AutoSizer>
       {({ height, width }) => (
         chartResults.length ?

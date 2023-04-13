@@ -120,6 +120,7 @@ export default function SyslogTable () {
       />
       <Loader states={[tableQuery]}>
         <Table<SyslogPolicyListType>
+          settingsId='policies-syslog-table'
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
@@ -162,6 +163,7 @@ function useColumns () {
       sorter: true,
       searchable: true,
       defaultSortOrder: 'ascend',
+      fixed: 'left',
       render: function (data, row) {
         return (
           <TenantLink

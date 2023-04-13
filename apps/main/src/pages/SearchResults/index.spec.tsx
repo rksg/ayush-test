@@ -17,7 +17,10 @@ import SearchResults from '.'
 
 jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user'),
-  useUserProfileContext: () => ({ data: { detailLevel: 'it' } })
+  useUserProfileContext: () => ({ data: {
+    detailLevel: 'it',
+    dateFormat: 'mm/dd/yyyy'
+  } })
 }))
 
 const params = { searchVal: 'test%3F', tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }

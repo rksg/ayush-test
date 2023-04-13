@@ -1,8 +1,7 @@
 import { AnalyticsFilter }                                             from '@acx-ui/analytics/utils'
-import { noDataDisplay }                                               from '@acx-ui/rc/utils'
 import { dataApiURL, Provider }                                        from '@acx-ui/store'
 import { mockGraphqlQuery, render, waitForElementToBeRemoved, screen } from '@acx-ui/test-utils'
-import { DateRange }                                                   from '@acx-ui/utils'
+import { DateRange, noDataDisplay }                                    from '@acx-ui/utils'
 
 import { ClientHealth, durations } from './ClientHealth'
 

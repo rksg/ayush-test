@@ -25,7 +25,8 @@ const AccessControlNetworksDetail = (props: { data: AccessControlInfoType | unde
       dataIndex: 'name',
       align: 'left',
       searchable: true,
-      key: 'name'
+      key: 'name',
+      fixed: 'left'
     },
     {
       title: $t({ defaultMessage: 'Type' }),

@@ -1,5 +1,4 @@
 import { Form, Divider } from 'antd'
-import { useParams }     from 'react-router-dom'
 import styled            from 'styled-components/macro'
 
 import { Loader }           from '@acx-ui/components'
@@ -12,6 +11,7 @@ import {
   useUserProfileContext,
   useGetMfaTenantDetailsQuery
 } from '@acx-ui/user'
+import { useTenantId } from '@acx-ui/utils'
 
 import { AccessSupportFormItem }         from './AccessSupportFormItem'
 import { DefaultSystemLanguageFormItem } from './DefaultSystemLanguageFormItem'
@@ -25,7 +25,7 @@ interface AccountSettingsProps {
 }
 const AccountSettings = (props : AccountSettingsProps) => {
   const { className } = props
-  const params = useParams()
+  const params = { tenantId: useTenantId() }
   const {
     data: userProfileData,
     isPrimeAdmin
@@ -37,10 +37,9 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const mspEcProfileData = useGetMspEcProfileQuery({ params })
 
   const canMSPDelegation = isDelegationMode() === false
-  let isMspEc = mspUtils.isMspEc(mspEcProfileData.data)
-  if (userProfileData?.varTenantId && canMSPDelegation === false) {
-    isMspEc = false
-  }
+  const hasMSPEcLabel = mspUtils.isMspEc(mspEcProfileData.data)
+  // has msp-ec label AND non-delegationMode
+  const isMspEc = hasMSPEcLabel && userProfileData?.varTenantId && canMSPDelegation === true
 
   const isPrimeAdminUser = isPrimeAdmin()
   const showRksSupport = isMspEc === false
@@ -58,21 +57,25 @@ const AccountSettings = (props : AccountSettingsProps) => {
       >
         <RecoveryPassphraseFormItem recoveryPassphraseData={recoveryPassphraseData?.data} />
 
-        <Divider />
-
-        <DefaultSystemLanguageFormItem />
+        { isPrimeAdminUser && (
+          <>
+            <Divider />
+            <DefaultSystemLanguageFormItem />
+          </>
+        )}
 
         { isPrimeAdminUser && (
           <>
             <Divider />
             <MapRegionFormItem />
-          </>)}
+          </>
+        )}
 
         { showRksSupport && (
           <>
             <Divider />
             <AccessSupportFormItem
-              isMspEc={isMspEc}
+              hasMSPEcLabel={hasMSPEcLabel}
               canMSPDelegation={canMSPDelegation}
             />
           </>

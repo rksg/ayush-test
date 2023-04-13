@@ -1,9 +1,11 @@
 import { FormInstance } from 'antd'
 
 import {
+  ApplicationAclType,
   ApplicationPortMappingType,
   ApplicationRuleType,
-  appPolicyInfoType
+  appPolicyInfoType,
+  AvcCategory
 } from '@acx-ui/rc/utils'
 
 import { ApplicationsRule } from './index'
@@ -26,16 +28,16 @@ export const updateFormWithEditRow = (drawerForm: FormInstance, editRow: Applica
   drawerForm.setFieldValue('uplink', editRow.ruleSettings.uplink ? editRow.ruleSettings.uplink / 1000 : undefined)
   // eslint-disable-next-line max-len
   drawerForm.setFieldValue('downlink', editRow.ruleSettings.downlink ? editRow.ruleSettings.downlink / 1000 : undefined)
-  drawerForm.setFieldValue(['uplinkMarking', 'value'], editRow.ruleSettings.upLinkMarkingType)
-  drawerForm.setFieldValue(['downlinkMarking', 'value'], editRow.ruleSettings.downLinkMarkingType)
-  drawerForm.setFieldValue(['uplinkMarking', 'strategy'], editRow.ruleSettings.markingPriority)
+  drawerForm.setFieldValue(['uplinkMarking', 'value'], editRow.ruleSettings.markingPriority)
+  drawerForm.setFieldValue(['downlinkPriority', 'value'], editRow.ruleSettings.downLinkMarkingType)
+  drawerForm.setFieldValue(['uplinkMarking', 'strategy'], editRow.ruleSettings.upLinkMarkingType)
 }
 
 export const transformToApplicationRule = (
   drawerForm: FormInstance,
   appPolicyInfo: appPolicyInfoType
 ) => {
-  return appPolicyInfo.rules.map(rule => {
+  return appPolicyInfo.rules.map((rule, ruleId) => {
     let systemDefined = {} as { [key: string]: string | number }
     let userDefined = {} as { [key: string]: string | number }
     if (rule.ruleType === ApplicationRuleType.SIGNATURE) {
@@ -46,18 +48,36 @@ export const transformToApplicationRule = (
       userDefined.appNameUserDefined = rule.applicationName
 
       if (rule.portMapping === ApplicationPortMappingType.IP_WITH_PORT
-        && rule.destinationPort
         && rule.destinationIp
         && rule.protocol
         && rule.netmask) {
-        userDefined.destinationPort = rule.destinationPort
-        userDefined.destinationIp = rule.destinationIp
         userDefined.netmask = rule.netmask
         userDefined.protocol = rule.protocol
       }
+
+      userDefined.destinationPort = rule.destinationPort!
+      userDefined.destinationIp = rule.destinationIp!
     }
+
+    let rateLimitObject = {} as { uplink?: number, downlink?: number }
+    if (rule.accessControl === ApplicationAclType.RATE_LIMIT) {
+      rateLimitObject.uplink = rule.uplink
+      rateLimitObject.downlink = rule.downlink
+    }
+
+    let qosObject = {} as {
+      upLinkMarkingType: string | undefined,
+      markingPriority: string | undefined,
+      downLinkMarkingType: string | undefined
+    }
+    if (rule.accessControl === ApplicationAclType.QOS) {
+      qosObject.upLinkMarkingType = rule.upLinkMarkingType
+      qosObject.markingPriority = rule.markingPriority
+      qosObject.downLinkMarkingType = rule.downLinkMarkingType
+    }
+
     return {
-      priority: rule.priority,
+      priority: ruleId + 1,
       id: rule.id,
       ruleName: rule.name,
       ruleType: rule.ruleType,
@@ -67,6 +87,8 @@ export const transformToApplicationRule = (
       ruleSettings: {
         ...systemDefined,
         ...userDefined,
+        ...rateLimitObject,
+        ...qosObject,
         ruleType: rule.ruleType
       }
     }
@@ -92,60 +114,124 @@ export const genRuleObject = (drawerForm: FormInstance) => {
       protocol: drawerForm.getFieldValue('protocol'),
       uplink: drawerForm.getFieldValue('uplink') * 1000,
       downlink: drawerForm.getFieldValue('downlink') * 1000,
-      upLinkMarkingType: drawerForm.getFieldValue(['uplinkMarking', 'value']),
-      markingPriority: drawerForm.getFieldValue(['uplinkMarking', 'strategy']),
-      downLinkMarkingType: drawerForm.getFieldValue(['downlinkMarking', 'value'])
+      upLinkMarkingType: drawerForm.getFieldValue(['uplinkMarking', 'strategy']),
+      markingPriority: drawerForm.getFieldValue(['uplinkMarking', 'value']),
+      downLinkMarkingType: drawerForm.getFieldValue(['downlinkPriority', 'value'])
     }
   }
 }
 
 export const transformToRulesForPayload = (
   applicationsRuleList: ApplicationsRule[],
-  categoryAppMappingObject: {
-    [key: string]: { catId: number, appId: number }
-  }
+  categoryAppMap: { [key: string]: { catId: number, appId: number } },
+  avcCategoryList: AvcCategory[]
 ) => {
   return applicationsRuleList.map(rule => {
-    let catAppConfig = {} as {
-      applicationId: number, applicationName: string, category: string, categoryId: number
-    }
-    if (rule.ruleType === ApplicationRuleType.SIGNATURE
-      && rule.ruleSettings.appNameSystemDefined
-      && rule.ruleSettings.appCategory
-    ) {
-      const [catName, appName] = rule.ruleSettings.appNameSystemDefined.split('_')
-      const catAppMapping = categoryAppMappingObject[appName]
-      catAppConfig.applicationId = catAppMapping.appId
-      catAppConfig.applicationName = appName
-      catAppConfig.categoryId = catAppMapping.catId
-      catAppConfig.category = catName
+    let appConfig = {}
+    if (isSystemDefinedRule(rule)) {
+      appConfig = transformCatAppConfigForPayload(rule, categoryAppMap, avcCategoryList)
+    } else if (isUserDefinedRule(rule)) {
+      appConfig = transformUserAppConfigForPayload(rule)
     }
 
-    let userAppConfig = {} as {
-      portMapping?: string, destinationIp?: string, netmask?: string,
-      destinationPort: number, protocol: string, applicationName: string
-    }
-    if (rule.ruleSettings.appNameUserDefined
-      && rule.ruleSettings.destinationPort
-      && rule.ruleSettings.protocol) {
-      userAppConfig.applicationName = rule.ruleSettings.appNameUserDefined
-      userAppConfig.portMapping = rule.ruleSettings.portMappingOnly
-        ? ApplicationPortMappingType.PORT_ONLY
-        : ApplicationPortMappingType.IP_WITH_PORT
-      if (!rule.ruleSettings.portMappingOnly) {
-        userAppConfig.destinationIp = rule.ruleSettings.destinationIp
-        userAppConfig.netmask = rule.ruleSettings.netmask
-      }
-      userAppConfig.destinationPort = rule.ruleSettings.destinationPort
+    const aclConfig = transformAccessControlForPayload(rule)
+
+    let ruleId = {} as { id: string }
+    if (rule.id) {
+      ruleId.id = rule.id
     }
 
     return {
-      ...catAppConfig,
-      ...userAppConfig,
+      ...ruleId,
+      ...appConfig,
+      ...aclConfig,
       accessControl: rule.accessControl.toUpperCase(),
       name: rule.ruleName,
       priority: rule.priority,
       ruleType: rule.ruleType
     }
   })
+}
+
+function transformCatAppConfigForPayload (
+  rule: ApplicationsRule,
+  categoryAppMap: { [key: string]: { catId: number, appId: number } },
+  avcCategoryList: AvcCategory[]
+) {
+  let catAppConfig = {} as {
+    applicationId: number, applicationName: string, category: string, categoryId: number
+  }
+
+  const [catName, appName] = rule.ruleSettings.appNameSystemDefined!.split('_')
+  let catAppMapping: { catId: number, appId: number }
+
+  if (appName === 'All') {
+    const targetCategory = avcCategoryList.find(category => category.catName === catName)
+    catAppMapping = {
+      appId: 0,
+      catId: targetCategory!.catId
+    }
+  } else {
+    catAppMapping = categoryAppMap[appName]
+  }
+  catAppConfig.applicationId = catAppMapping.appId
+  catAppConfig.applicationName = appName
+  catAppConfig.categoryId = catAppMapping.catId
+  catAppConfig.category = catName
+
+  return catAppConfig
+}
+
+function transformUserAppConfigForPayload (rule: ApplicationsRule) {
+  let userAppConfig = {
+    applicationName: rule.ruleSettings.appNameUserDefined,
+    destinationPort: rule.ruleSettings.destinationPort,
+    protocol: rule.ruleSettings.protocol,
+    portMapping: rule.ruleSettings.portMappingOnly
+      ? ApplicationPortMappingType.PORT_ONLY
+      : ApplicationPortMappingType.IP_WITH_PORT
+  } as {
+    portMapping?: string, destinationIp?: string, netmask?: string,
+    destinationPort: number, protocol: string, applicationName: string
+  }
+
+  if (!rule.ruleSettings.portMappingOnly) {
+    userAppConfig.destinationIp = rule.ruleSettings.destinationIp
+    userAppConfig.netmask = rule.ruleSettings.netmask
+  }
+
+  return userAppConfig
+}
+
+function isSystemDefinedRule (rule: ApplicationsRule) {
+  return rule.ruleType === ApplicationRuleType.SIGNATURE && rule.ruleSettings.appNameSystemDefined
+}
+
+function isUserDefinedRule (rule: ApplicationsRule) {
+  return rule.ruleSettings.appNameUserDefined &&
+    rule.ruleSettings.destinationPort &&
+    rule.ruleSettings.protocol
+}
+
+interface AppAccessControlPayload {
+  uplink?: number,
+  downlink?: number,
+  markingPriority?: string,
+  upLinkMarkingType?: string,
+  downLinkMarkingType?: string,
+}
+
+function transformAccessControlForPayload (rule: ApplicationsRule) {
+  let config: AppAccessControlPayload = {}
+
+  if (rule.accessControl === ApplicationAclType.RATE_LIMIT) {
+    config.uplink = rule.ruleSettings.uplink
+    config.downlink = rule.ruleSettings.downlink
+  } else if (rule.accessControl === ApplicationAclType.QOS) {
+    config.downLinkMarkingType = rule.ruleSettings.downLinkMarkingType
+    config.upLinkMarkingType = rule.ruleSettings.upLinkMarkingType
+    config.markingPriority = rule.ruleSettings.markingPriority
+  }
+
+  return config
 }

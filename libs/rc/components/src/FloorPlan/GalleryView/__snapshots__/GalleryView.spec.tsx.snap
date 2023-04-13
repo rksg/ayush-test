@@ -4,14 +4,14 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
 <DocumentFragment>
   <div
     class="ant-row"
-    style="margin: -10px -8px -10px -8px;"
+    style="margin: -10px 0px -10px 0px; padding-bottom: 8px;"
   >
     <div
       class="ant-col ant-col-8"
       style="padding: 10px 8px 10px 8px;"
     >
       <div
-        class="styledComponents__Wrapper-sc-13w5wfx-4 lfySov"
+        class="styledComponents__Wrapper-sc-13w5wfx-4 lhrXqm"
         type="default"
       >
         <div
@@ -34,9 +34,7 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
                   >
                     <div
                       class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
-                    >
-                      TEST_2
-                    </div>
+                    />
                   </div>
                 </div>
               </div>
@@ -52,6 +50,11 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
           <div
             class="ant-card-body"
           >
+            <div
+              class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+            >
+              TEST_2
+            </div>
             <div
               class="sc-papXJ iBkRgT"
             >
@@ -112,7 +115,7 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
       style="padding: 10px 8px 10px 8px;"
     >
       <div
-        class="styledComponents__Wrapper-sc-13w5wfx-4 lfySov"
+        class="styledComponents__Wrapper-sc-13w5wfx-4 lhrXqm"
         type="default"
       >
         <div
@@ -135,9 +138,7 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
                   >
                     <div
                       class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
-                    >
-                      dscx
-                    </div>
+                    />
                   </div>
                 </div>
               </div>
@@ -153,6 +154,11 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
           <div
             class="ant-card-body"
           >
+            <div
+              class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+            >
+              dscx
+            </div>
             <div
               class="sc-papXJ iBkRgT"
             >
@@ -179,7 +185,7 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
       style="padding: 10px 8px 10px 8px;"
     >
       <div
-        class="styledComponents__Wrapper-sc-13w5wfx-4 lfySov"
+        class="styledComponents__Wrapper-sc-13w5wfx-4 lhrXqm"
         type="default"
       >
         <div
@@ -202,9 +208,7 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
                   >
                     <div
                       class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
-                    >
-                      dscx
-                    </div>
+                    />
                   </div>
                 </div>
               </div>
@@ -220,6 +224,11 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
           <div
             class="ant-card-body"
           >
+            <div
+              class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+            >
+              dscx
+            </div>
             <div
               class="sc-papXJ iBkRgT"
             >
@@ -246,7 +255,7 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
       style="padding: 10px 8px 10px 8px;"
     >
       <div
-        class="styledComponents__Wrapper-sc-13w5wfx-4 lfySov"
+        class="styledComponents__Wrapper-sc-13w5wfx-4 lhrXqm"
         type="default"
       >
         <div
@@ -269,9 +278,7 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
                   >
                     <div
                       class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
-                    >
-                      dscx
-                    </div>
+                    />
                   </div>
                 </div>
               </div>
@@ -287,6 +294,11 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
           <div
             class="ant-card-body"
           >
+            <div
+              class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+            >
+              dscx
+            </div>
             <div
               class="sc-papXJ iBkRgT"
             >
@@ -313,7 +325,7 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
       style="padding: 10px 8px 10px 8px;"
     >
       <div
-        class="styledComponents__Wrapper-sc-13w5wfx-4 lfySov"
+        class="styledComponents__Wrapper-sc-13w5wfx-4 lhrXqm"
         type="default"
       >
         <div
@@ -336,9 +348,7 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
                   >
                     <div
                       class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
-                    >
-                      dscx
-                    </div>
+                    />
                   </div>
                 </div>
               </div>
@@ -354,6 +364,11 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
           <div
             class="ant-card-body"
           >
+            <div
+              class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+            >
+              dscx
+            </div>
             <div
               class="sc-papXJ iBkRgT"
             >

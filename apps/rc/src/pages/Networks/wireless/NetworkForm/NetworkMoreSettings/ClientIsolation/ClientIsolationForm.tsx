@@ -1,15 +1,9 @@
 import { useContext } from 'react'
 
-import {
-  Form,
-  Select,
-  Switch
-} from 'antd'
-import { useIntl } from 'react-intl'
+import { Form, Select, Switch } from 'antd'
+import { useIntl }              from 'react-intl'
 
-import { Tooltip }                from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { notAvailableMsg }        from '@acx-ui/utils'
 
 import NetworkFormContext from '../../NetworkFormContext'
 import * as UI            from '../styledComponents'
@@ -78,17 +72,15 @@ export default function ClientIsolationForm () {
           initialValue={false}
           children={<Switch />} />
       </UI.FieldLabel>
-      <Tooltip {...(isPoliciesEnabled ? {} : { title: $t(notAvailableMsg) })}>
-        <UI.FieldLabel width='230px'>
-          {$t({ defaultMessage: 'Client Isolation Allowlist by Venue:' })}
-          <Form.Item
-            name={['wlan','advancedCustomization', 'clientIsolationAllowlistEnabled']}
-            style={{ marginBottom: '10px' }}
-            valuePropName='checked'
-            initialValue={clientIsolationAllowlistEnabledInitValue}
-            children={<Switch disabled={!isPoliciesEnabled} />} />
-        </UI.FieldLabel>
-      </Tooltip>
+      {isPoliciesEnabled ? <UI.FieldLabel width='230px'>
+        {$t({ defaultMessage: 'Client Isolation Allowlist by Venue:' })}
+        <Form.Item
+          name={['wlan','advancedCustomization', 'clientIsolationAllowlistEnabled']}
+          style={{ marginBottom: '10px' }}
+          valuePropName='checked'
+          initialValue={clientIsolationAllowlistEnabledInitValue}
+          children={<Switch />} />
+      </UI.FieldLabel> : null}
       {clientIsolationAllowlistEnabled && isPoliciesEnabled &&
         <ClientIsolationAllowListEditor networkVenues={data?.venues}/>
       }

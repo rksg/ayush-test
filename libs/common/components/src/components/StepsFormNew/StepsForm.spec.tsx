@@ -452,7 +452,7 @@ describe('StepsForm.FieldSummary', () => {
 
     expect((await screen.findByRole('generic', {
       name: (_, el) => el.nodeName === 'SPAN'
-    })).textContent).toEqual('-')
+    })).textContent).toEqual('--')
   })
 
   it('renders given value', () => {

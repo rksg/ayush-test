@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 
+import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import {
@@ -68,8 +69,9 @@ export default function CliTemplateForm () {
     try {
       await updateCliTemplate({
         params, payload: {
-          ...data,
+          ..._.omit(data, 'applyNow'),
           id: params.templateId,
+          applyLater: !data.applyNow,
           venueSwitches: transformVenueSwitches(
             data.venueSwitches as unknown as Map<string, string[]>[]
           )
@@ -85,7 +87,8 @@ export default function CliTemplateForm () {
     try {
       await addCliTemplate({
         params, payload: {
-          ...data,
+          ..._.omit(data, 'applyNow'),
+          applyLater: !data.applyNow,
           venueSwitches: transformVenueSwitches(
             data.venueSwitches as unknown as Map<string, string[]>[]
           )

@@ -17,8 +17,8 @@ export const Cascader = styled(AntCascader)`
   }
   .ant-cascader-menu {
     overflow: auto;
-    height: auto;
-    max-height: 228px;
+    height: 215px;
+    max-height: 100%;
   }
   .ant-select-selection-overflow-item-rest > .ant-select-selection-item {
     border: none;

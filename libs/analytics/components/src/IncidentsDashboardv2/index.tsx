@@ -3,12 +3,14 @@ import AutoSizer                  from 'react-virtualized-auto-sizer'
 
 import { incidentSeverities, IncidentFilter }                                       from '@acx-ui/analytics/utils'
 import { HistoricalCard, Loader, NoActiveData, DonutChart, DonutChartData, cssStr } from '@acx-ui/components'
+import { useNavigateToPath }                                                        from '@acx-ui/react-router-dom'
 
 import { useIncidentsBySeverityDashboardv2Query } from './services'
 import * as UI                                    from './styledComponents'
 
 export function IncidentsDashboardv2 ({ filters }: { filters: IncidentFilter }) {
   const { $t } = useIntl()
+  const onArrowClick = useNavigateToPath('/analytics/incidents/')
 
   const response = useIncidentsBySeverityDashboardv2Query(filters)
   const { data: severities } = response
@@ -32,11 +34,12 @@ export function IncidentsDashboardv2 ({ filters }: { filters: IncidentFilter }) 
   }
 
   return <Loader states={[response]}>
-    <HistoricalCard title={$t(defineMessage({ defaultMessage: 'Incidents' }))}>
+    <HistoricalCard title={$t(defineMessage({ defaultMessage: 'Incidents' }))}
+      onArrowClick={onArrowClick}>
       <AutoSizer>
         {({ width, height }) => (
           noData
-            ? <NoActiveData text={$t({ defaultMessage: 'No active incidents' })} />
+            ? <NoActiveData text={$t({ defaultMessage: 'No reported incidents' })} />
             : <UI.Container style={{ width, height }}>
               <DonutChart
                 style={{ width, height }}
@@ -44,7 +47,7 @@ export function IncidentsDashboardv2 ({ filters }: { filters: IncidentFilter }) 
                 showLabel={false}
                 showTotal={true}
                 showLegend={false}
-                size={'small'}
+                size={'medium'}
               />
             </UI.Container>
         )}

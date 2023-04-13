@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   CommonUrlsInfo,
   DpskUrls,
@@ -24,7 +25,8 @@ import {
   mockedDpsk,
   mockedDpskPassphraseList,
   mockedTenantId,
-  mockedServiceId
+  mockedServiceId,
+  mockedCloudpathDpsk
 } from './__tests__/fixtures'
 import DpskDetails from './DpskDetails'
 
@@ -45,20 +47,22 @@ describe('DpskDetails', () => {
   // eslint-disable-next-line max-len
   const detailPath = '/:tenantId/' + getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.DETAIL })
 
-  mockServer.use(
-    rest.post(
-      CommonUrlsInfo.getVMNetworksList.url,
-      (req, res, ctx) => res(ctx.json(mockedNetworks))
-    ),
-    rest.get(
-      DpskUrls.getDpsk.url,
-      (req, res, ctx) => res(ctx.json(mockedDpsk))
-    ),
-    rest.get(
-      DpskUrls.getPassphraseList.url,
-      (req, res, ctx) => res(ctx.json(mockedDpskPassphraseList))
+  beforeEach(() => {
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getVMNetworksList.url,
+        (req, res, ctx) => res(ctx.json(mockedNetworks))
+      ),
+      rest.get(
+        DpskUrls.getDpsk.url,
+        (req, res, ctx) => res(ctx.json(mockedDpsk))
+      ),
+      rest.get(
+        DpskUrls.getPassphraseList.url,
+        (req, res, ctx) => res(ctx.json(mockedDpskPassphraseList))
+      )
     )
-  )
+  })
 
   it('should render the Passphrase Management tab', async () => {
     const passphraseTabParams = {
@@ -120,5 +124,29 @@ describe('DpskDetails', () => {
 
     // eslint-disable-next-line max-len
     expect(await screen.findByRole('link', { name: 'Configure' })).toHaveAttribute('href', editLink)
+  })
+
+  it('should render the overview page with cloudpath settings', async () => {
+    mockServer.use(
+      rest.get(
+        DpskUrls.getDpsk.url,
+        (req, res, ctx) => res(ctx.json({ ...mockedCloudpathDpsk }))
+      )
+    )
+
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    render(
+      <Provider>
+        <DpskDetails />
+      </Provider>, {
+        route: {
+          params: paramsForOverviewTab,
+          path: detailPath
+        }
+      }
+    )
+
+    expect(await screen.findByText('ACCEPT')).toBeVisible()
   })
 })

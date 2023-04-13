@@ -34,12 +34,12 @@ exports[`Incidents Page render when feature toggle is disabled 1`] = `
                 <span
                   class="ant-statistic-content-value"
                 >
-                  -
+                  --
                 </span>
                 <span
                   class="ant-statistic-content-suffix"
                 >
-                  /-
+                  /--
                 </span>
               </div>
             </div>
@@ -71,12 +71,12 @@ exports[`Incidents Page render when feature toggle is disabled 1`] = `
                 <span
                   class="ant-statistic-content-value"
                 >
-                  -
+                  --
                 </span>
                 <span
                   class="ant-statistic-content-suffix"
                 >
-                  /-
+                  /--
                 </span>
               </div>
             </div>
@@ -108,7 +108,7 @@ exports[`Incidents Page render when feature toggle is disabled 1`] = `
                 <span
                   class="ant-statistic-content-value"
                 >
-                  -
+                  --
                 </span>
               </div>
             </div>
@@ -140,7 +140,7 @@ exports[`Incidents Page render when feature toggle is disabled 1`] = `
                 <span
                   class="ant-statistic-content-value"
                 >
-                  -
+                  --
                 </span>
               </div>
             </div>
@@ -354,12 +354,12 @@ exports[`Incidents Page should show - when no data 1`] = `
                 <span
                   class="ant-statistic-content-value"
                 >
-                  -
+                  --
                 </span>
                 <span
                   class="ant-statistic-content-suffix"
                 >
-                  /-
+                  /--
                 </span>
               </div>
             </div>
@@ -395,12 +395,12 @@ exports[`Incidents Page should show - when no data 1`] = `
                 <span
                   class="ant-statistic-content-value"
                 >
-                  -
+                  --
                 </span>
                 <span
                   class="ant-statistic-content-suffix"
                 >
-                  /-
+                  /--
                 </span>
               </div>
             </div>
@@ -436,7 +436,7 @@ exports[`Incidents Page should show - when no data 1`] = `
                 <span
                   class="ant-statistic-content-value"
                 >
-                  -
+                  --
                 </span>
               </div>
             </div>
@@ -472,7 +472,7 @@ exports[`Incidents Page should show - when no data 1`] = `
                 <span
                   class="ant-statistic-content-value"
                 >
-                  -
+                  --
                 </span>
               </div>
             </div>

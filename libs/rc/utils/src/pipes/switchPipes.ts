@@ -117,12 +117,12 @@ export const transformConfigBackupStatus = (data: ConfigurationBackup) => {
   }
   if (restoreMap[restoreStatus]) {
     text = restoreMap[restoreStatus]
-    if (restoreStatus === ConfigurationBackupStatus.FAILED) {
+    if (restoreStatus === ConfigurationBackupStatus.FAILED && failureReason) {
       text += ` (${failureReason})`
     }
   } else {
     text = backupMap[status]
-    if (status === ConfigurationBackupStatus.FAILED) {
+    if (status === ConfigurationBackupStatus.FAILED && failureReason) {
       text += ` (${failureReason})`
     }
   }

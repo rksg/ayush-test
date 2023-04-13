@@ -243,7 +243,7 @@ export function SwitchStackSetting
       </Form.Item>
 
       <Form.Item
-        label={$t({ defaultMessage: 'Select Profile' })}
+        label={$t({ defaultMessage: 'Spanning Tree Priority' })}
         name={'spanningTreePriority'}
         initialValue={''}
         children={<Select

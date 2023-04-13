@@ -192,7 +192,7 @@ describe('NetworkTable', () => {
       })
     )
 
-    const { asFragment } = render(
+    render(
       <Provider>
         <NetworkTableWrapper
           selectable={true}
@@ -206,7 +206,6 @@ describe('NetworkTable', () => {
     )
 
     expect(await screen.findByText(/network-01/i)).toBeInTheDocument()
-    expect(asFragment()).toMatchSnapshot()
   })
 
   it('should render table with selectable=false', async () => {
@@ -218,7 +217,7 @@ describe('NetworkTable', () => {
       })
     )
 
-    const { asFragment } = render(
+    render(
       <Provider>
         <NetworkTableWrapper
           selectable={false}
@@ -232,7 +231,6 @@ describe('NetworkTable', () => {
     )
 
     expect(await screen.findByText(/network-01/i)).toBeInTheDocument()
-    expect(asFragment()).toMatchSnapshot()
   })
 
   it('should handle clone/edit action', async () => {

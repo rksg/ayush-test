@@ -170,7 +170,7 @@ function processWifiTab (
       break
     case 'servers':
       editServerContextData?.updateSyslog?.()
-      editServerContextData?.updateBonjourFencing?.()
+      editServerContextData?.updateMdnsFencing?.()
       editServerContextData?.updateVenueApSnmp?.()
       break
   }
@@ -214,7 +214,7 @@ export function showUnsavedModal (
         })
       } else if(editContextData?.unsavedTabKey === 'servers'){
         editServerContextData?.discardSyslog?.()
-        editServerContextData?.discardBonjourFencing?.()
+        editServerContextData?.discardMdnsFencing?.()
         setEditContextData({
           ...editContextData,
           isDirty: false,

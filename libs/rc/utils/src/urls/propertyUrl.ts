@@ -5,12 +5,16 @@ type PropertyUrlType =
   'updatePropertyConfigs' |
   'patchPropertyConfigs' |
   'addPropertyUnit' |
+  'importPropertyUnits' |
+  'exportPropertyUnits' |
 
   'getUnitById' |
   'getPropertyUnitList' |
   'updatePropertyUnit' |
   'deletePropertyUnits' |
   'getResidentPortalList'
+
+const paginationParams = '?size=:pageSize&page=:page&sort=:sort'
 
 export const PropertyUrlsInfo: { [key in PropertyUrlType]: ApiInfo } = {
   getPropertyConfigs: {
@@ -33,8 +37,16 @@ export const PropertyUrlsInfo: { [key in PropertyUrlType]: ApiInfo } = {
     newApi: true,
     url: '/venues/:venueId/units'
   },
-
-  // TODO: Not integration test
+  importPropertyUnits: {
+    method: 'post',
+    newApi: true,
+    url: '/venues/:venueId/units'
+  },
+  exportPropertyUnits: {
+    method: 'post',
+    newApi: true,
+    url: '/venues/:venueId/units/query'
+  },
   getUnitById: {
     method: 'get',
     newApi: true,
@@ -58,6 +70,6 @@ export const PropertyUrlsInfo: { [key in PropertyUrlType]: ApiInfo } = {
   getResidentPortalList: {
     method: 'get',
     newApi: true,
-    url: '/residentPortals'
+    url: `/residentPortals${paginationParams}`
   }
 }

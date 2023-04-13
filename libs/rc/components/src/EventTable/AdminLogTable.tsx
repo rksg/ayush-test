@@ -4,12 +4,15 @@ import { defineMessage, useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps, Button }    from '@acx-ui/components'
 import { DateFormatEnum, formatter }            from '@acx-ui/formatter'
+import { DownloadOutlined }                     from '@acx-ui/icons'
 import { AdminLog, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
+import { noDataDisplay }                        from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 
 import { filtersFrom, getDescription, getSource, valueFrom } from './helpers'
 import { adminLogTypeMapping, severityMapping }              from './mapping'
+import { useExportCsv }                                      from './useExportCsv'
 
 interface AdminLogTableProps {
   tableQuery: TableQuery<AdminLog, RequestPayload<unknown>, unknown>
@@ -19,6 +22,8 @@ const AdminLogTable = ({ tableQuery }: AdminLogTableProps) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const [current, setCurrent] = useState<AdminLog>()
+  const { exportCsv, disabled } = useExportCsv<AdminLog>(tableQuery)
+
   useEffect(() => { setVisible(false) },[tableQuery.data?.data])
 
   const columns: TableProps<AdminLog>['columns'] = [
@@ -28,6 +33,7 @@ const AdminLogTable = ({ tableQuery }: AdminLogTableProps) => {
       dataIndex: 'event_datetime',
       defaultSortOrder: 'descend',
       sorter: true,
+      fixed: 'left',
       render: function (_, row) {
         return <Button
           type='link'
@@ -86,6 +92,10 @@ const AdminLogTable = ({ tableQuery }: AdminLogTableProps) => {
       value: valueFrom(adminLogTypeMapping, data.entity_type)
     },
     {
+      title: defineMessage({ defaultMessage: 'IP Address' }),
+      value: data.ipAddress?? noDataDisplay
+    },
+    {
       title: defineMessage({ defaultMessage: 'Source' }),
       value: getSource(data)
     },
@@ -97,13 +107,14 @@ const AdminLogTable = ({ tableQuery }: AdminLogTableProps) => {
 
   return <Loader states={[tableQuery]}>
     <Table
-      rowKey='id'
+      rowKey='tableKey'
       columns={columns}
       dataSource={tableQuery.data?.data ?? []}
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
       onFilterChange={tableQuery.handleFilterChange}
       enableApiFilter={true}
+      iconButton={{ icon: <DownloadOutlined />, disabled, onClick: exportCsv }}
     />
     {visible && <TimelineDrawer
       title={defineMessage({ defaultMessage: 'Log Details' })}

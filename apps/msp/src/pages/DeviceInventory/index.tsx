@@ -221,6 +221,7 @@ export function DeviceInventory () {
     return (
       <Loader states={[tableQuery]}>
         <Table
+          settingsId='device-inventory-table'
           columns={columns}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}

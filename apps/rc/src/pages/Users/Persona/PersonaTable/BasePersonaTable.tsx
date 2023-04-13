@@ -1,27 +1,34 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, showActionModal, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
 import { CsvSize, ImportFileDrawer, PersonaGroupSelect }                      from '@acx-ui/rc/components'
 import {
   useSearchPersonaListQuery,
   useGetPersonaGroupListQuery,
   useLazyDownloadPersonasQuery,
   useImportPersonasMutation,
-  useDeletePersonasMutation
+  useDeletePersonasMutation,
+  useLazyGetPropertyUnitByIdQuery,
+  useGetPersonaGroupByIdQuery
 } from '@acx-ui/rc/services'
 import { FILTER, Persona, PersonaGroup, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
 import { filterByAccess }                                       from '@acx-ui/user'
 
-import { PersonaDetailsLink, PersonaGroupLink } from '../LinkHelper'
-import { PersonaDrawer }                        from '../PersonaDrawer'
+import { PersonaDetailsLink, PersonaGroupLink, PropertyUnitLink } from '../LinkHelper'
+import { PersonaDrawer }                                          from '../PersonaDrawer'
 
 
 
-function useColumns (props: PersonaTableColProps) {
+function useColumns (
+  props: PersonaTableColProps,
+  unitPool: Map<string, string>,
+  venueId: string
+) {
   const { $t } = useIntl()
 
   const personaGroupList = useGetPersonaGroupListQuery({
@@ -66,13 +73,21 @@ function useColumns (props: PersonaTableColProps) {
       align: 'center',
       ...props.deviceCount
     },
-    {
-      key: 'unit',
-      dataIndex: 'unit',
-      title: $t({ defaultMessage: 'Unit' })
-      // TODO: integrate with Property API to get Unit name
-      // ...props.unit
-    },
+    ...(props.identityId?.disable)
+      ? []
+      : [{
+        key: 'identityId',
+        dataIndex: 'identityId',
+        title: $t({ defaultMessage: 'Unit' }),
+        render: (_, row) =>
+          <PropertyUnitLink
+            venueId={venueId}
+            unitId={row.identityId}
+            name={unitPool.get(row.identityId ?? '')}
+          />
+        ,
+        ...props.identityId
+      } as TableColumn<Persona>],
     {
       key: 'groupId',
       dataIndex: 'group',
@@ -96,9 +111,10 @@ function useColumns (props: PersonaTableColProps) {
       key: 'assignedAp',
       dataIndex: 'assignedAp',
       title: $t({ defaultMessage: 'Assigned AP' }),
-      // render: (_, row) => {
+      render: (_, row) => {
       // TODO: fetch AP info by MacAddress?
-      // },
+        return row?.ethernetPorts?.[0]?.name
+      },
       ...props.ethernetPorts
     },
     {
@@ -122,7 +138,7 @@ function useColumns (props: PersonaTableColProps) {
 }
 
 interface PersonaTableCol extends
-  Pick<TableColumn<Persona>, 'filterable' | 'searchable' | 'show'> {}
+  Pick<TableColumn<Persona>, 'filterable' | 'searchable' | 'show' | 'disable'> {}
 
 type PersonaTableColProps = {
   [key in keyof Persona]?: PersonaTableCol
@@ -135,7 +151,10 @@ export function BasePersonaTable (props: PersonaTableProps) {
   const { $t } = useIntl()
   const { colProps } = props
   const { personaGroupId } = useParams()
-  const columns = useColumns(colProps)
+  const propertyEnabled = useIsSplitOn(Features.PROPERTY_MANAGEMENT)
+  const [venueId, setVenueId] = useState('')
+  const [unitPool, setUnitPool] = useState(new Map())
+  const columns = useColumns(colProps, unitPool, venueId)
   const [uploadCsvDrawerVisible, setUploadCsvDrawerVisible] = useState(false)
   const [drawerState, setDrawerState] = useState({
     isEdit: false,
@@ -145,6 +164,8 @@ export function BasePersonaTable (props: PersonaTableProps) {
   const [downloadCsv] = useLazyDownloadPersonasQuery()
   const [uploadCsv, uploadCsvResult] = useImportPersonasMutation()
   const [deletePersonas, { isLoading: isDeletePersonasUpdating }] = useDeletePersonasMutation()
+  const personaGroupQuery = useGetPersonaGroupByIdQuery({ params: { groupId: personaGroupId } })
+  const [getUnitById] = useLazyGetPropertyUnitByIdQuery()
 
   const personaListQuery = useTableQuery({
     useQuery: useSearchPersonaListQuery,
@@ -153,6 +174,29 @@ export function BasePersonaTable (props: PersonaTableProps) {
       groupId: personaGroupId
     }
   })
+
+  useEffect(() => {
+    if (!propertyEnabled || personaListQuery.isLoading || personaGroupQuery.isLoading) return
+    const venueId = personaGroupQuery.data?.propertyId
+    if (!venueId) return
+
+    const pool = new Map()
+
+    personaListQuery.data?.data.forEach(persona => {
+      if (persona.identityId) {
+        const unitId = persona.identityId
+        getUnitById({ params: { venueId, unitId } })
+          .then(result => {
+            if (result.data) {
+              pool.set(unitId, result.data.name)
+            }
+          })
+      }
+    })
+
+    setVenueId(venueId)
+    setUnitPool(pool)
+  }, [personaListQuery.data, personaGroupQuery.data])
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   // const toastDetailErrorMessage = (error: any) => {

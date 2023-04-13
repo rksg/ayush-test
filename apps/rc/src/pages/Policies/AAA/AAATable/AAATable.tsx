@@ -28,7 +28,9 @@ export default function AAATable () {
   const tableQuery = useTableQuery({
     useQuery: useGetAAAPolicyViewModelListQuery,
     defaultPayload: {
-      filters: {},
+      filters: {}
+    },
+    search: {
       searchString: '',
       searchTargetFields: ['name']
     }
@@ -70,7 +72,7 @@ export default function AAATable () {
       <PageHeader
         title={
           $t({
-            defaultMessage: 'Radius Server ({count})'
+            defaultMessage: 'RADIUS Server ({count})'
           },
           {
             count: tableQuery.data?.totalCount
@@ -86,12 +88,13 @@ export default function AAATable () {
             <Button type='primary'
               disabled={tableQuery.data?.totalCount
                 ? tableQuery.data?.totalCount >= AAA_LIMIT_NUMBER
-                : false} >{$t({ defaultMessage: 'Add Radius Server' })}</Button>
+                : false} >{$t({ defaultMessage: 'Add RADIUS Server' })}</Button>
           </TenantLink>
         ])}
       />
       <Loader states={[tableQuery]}>
         <Table<AAAViewModalType>
+          settingsId='policies-aaa-table'
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
@@ -133,6 +136,7 @@ function useColumns () {
       sorter: true,
       searchable: true,
       defaultSortOrder: 'ascend',
+      fixed: 'left',
       render: function (data, row) {
         return (
           <TenantLink
@@ -148,7 +152,7 @@ function useColumns () {
     },
     {
       key: 'type',
-      title: $t({ defaultMessage: 'Radius Type' }),
+      title: $t({ defaultMessage: 'RADIUS Type' }),
       dataIndex: 'type',
       sorter: true,
       render: (data) =>{

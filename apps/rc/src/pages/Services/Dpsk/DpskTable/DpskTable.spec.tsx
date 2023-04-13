@@ -18,8 +18,8 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { mockedDpskList } from './__tests__/fixtures'
-import DpskTable          from './DpskTable'
+import { mockedDpskList, mockedDpskListWithPersona } from './__tests__/fixtures'
+import DpskTable                                     from './DpskTable'
 
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
@@ -99,6 +99,29 @@ describe('DpskTable', () => {
     await waitFor(() => {
       expect(deleteFn).toHaveBeenCalled()
     })
+  })
+
+  it('should not delete the selected row when it is mapped to Persona', async () => {
+    mockServer.use(
+      rest.get(
+        DpskUrls.getDpskList.url,
+        (req, res, ctx) => res(ctx.json({ ...mockedDpskListWithPersona }))
+      )
+    )
+
+    render(
+      <Provider>
+        <DpskTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+
+    const targetDpsk = mockedDpskListWithPersona.content[0]
+    const row = await screen.findByRole('row', { name: new RegExp(targetDpsk.name) })
+    await userEvent.click(within(row).getByRole('radio'))
+
+    expect(screen.queryByRole('button', { name: /Delete/ })).toBeNull()
   })
 
   it('should navigate to the Edit view', async () => {

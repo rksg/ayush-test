@@ -2,11 +2,11 @@ import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs, Tooltip }                          from '@acx-ui/components'
-import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }             from '@acx-ui/icons'
-import { useNavigate, useParams, useTenantLink }  from '@acx-ui/react-router-dom'
-import { directedMulticastInfo, notAvailableMsg } from '@acx-ui/utils'
+import { Tabs, Tooltip }                         from '@acx-ui/components'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }            from '@acx-ui/icons'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { directedMulticastInfo }                 from '@acx-ui/utils'
 
 import { ApEditContext } from '../index'
 
@@ -78,15 +78,11 @@ export function ApSettingsTab () {
       <TabPane tab={tabTitleMap('lanPort')} key='lanPort'>
         <LanPorts />
       </TabPane>
-      <TabPane disabled={!isServicesEnabled}
-        tab={
-          <Tooltip title={isServicesEnabled ? '' : $t(notAvailableMsg)}>
-            {tabTitleMap('proxy')}
-          </Tooltip>
-        }
-        key='proxy'>
-        <MdnsProxyTab />
-      </TabPane>
+      {isServicesEnabled ? <TabPane
+        tab={tabTitleMap('proxy')}
+        key='proxy'
+        children={<MdnsProxyTab />}
+      /> : null}
       {supportApSnmp &&
         <TabPane tab={tabTitleMap('snmp')} key='snmp'>
           <ApSnmp />

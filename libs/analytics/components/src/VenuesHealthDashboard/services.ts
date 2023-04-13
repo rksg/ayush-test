@@ -8,15 +8,19 @@ export type HierarchyNodeData = {
   health: HealthData[]
 }
 
+type SLA = [number, number] | [null, null]
+
 export type HealthData = {
     zoneId: string
     zoneName: string
-    timeToConnectSLA: [number, number]
-    timeToConnectThreshold: string
-    clientThroughputSLA: [number, number]
-    clientThroughputThreshold: string
-    connectionSuccessSLA: [number, number]
-    onlineApsSLA: [number, number]
+    timeToConnectSLA: SLA
+    timeToConnectThreshold: string | null
+    clientThroughputSLA: SLA
+    clientThroughputThreshold: string | null
+    connectionSuccessSLA: SLA
+    onlineApsSLA: SLA
+    apCapacitySLA: SLA
+    apCapacityThreshold: string| null
 }
 
 interface Response <T> {
@@ -49,6 +53,8 @@ export const api = dataApi.injectEndpoints({
                     clientThroughputThreshold
                     connectionSuccessSLA
                     onlineApsSLA
+                    apCapacitySLA
+                    apCapacityThreshold
                 }
               }
             }

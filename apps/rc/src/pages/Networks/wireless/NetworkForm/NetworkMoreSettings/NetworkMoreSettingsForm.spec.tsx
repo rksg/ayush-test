@@ -1,10 +1,10 @@
 import '@testing-library/jest-dom'
 
-
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, NetworkSaveData }    from '@acx-ui/rc/utils'
 import { Provider }                           from '@acx-ui/store'
 import { mockServer, within, render, screen } from '@acx-ui/test-utils'
@@ -22,7 +22,6 @@ const mockWlanData = {
 
 describe('NetworkMoreSettingsForm', () => {
   beforeEach(() => {
-
     const devicePolicyResponse = [{
       data: [{
         id: 'e3ea3749907f4feb95e9b46fe69aae0b',
@@ -94,6 +93,7 @@ describe('NetworkMoreSettingsForm', () => {
   })
 
   it('after click Client Isolation', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
     render(
       <Provider>

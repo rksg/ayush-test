@@ -400,7 +400,7 @@ export function FloorPlan () {
                   networkDevicesVisibility={networkDevicesVisibility}
                   showRogueAp={showRogueAp}/>
               }
-              { unplacedDevicesCount && <UI.StyledSpace size={24}>
+              { !!unplacedDevicesCount && <UI.StyledSpace size={24}>
                 { venueRogueApData?.enabled && <UI.RogueApButton key='rogueApBtn'
                   size='small'
                   type='link'
@@ -409,7 +409,7 @@ export function FloorPlan () {
                   {showRogueAp ? $t({ defaultMessage: 'Hide Rogue APs' })
                     : $t({ defaultMessage: 'View Rogue APs' })}
                 </UI.RogueApButton> }
-                <AddEditFloorplanModal
+                { hasAccess() && <><AddEditFloorplanModal
                   buttonTitle={$t({ defaultMessage: '+ Add Floor Plan' })}
                   onAddEditFloorPlan={onAddEditFloorPlan}
                   isEditMode={false}/>
@@ -426,7 +426,7 @@ export function FloorPlan () {
                     {$t({ defaultMessage: 'Unplaced Devices ({unplacedDevicesCount})' },
                       { unplacedDevicesCount })}
                   </Button>
-                </Dropdown>
+                </Dropdown> </>}
               </UI.StyledSpace>
               }
             </UI.FloorPlanContainer>
@@ -443,10 +443,11 @@ export function FloorPlan () {
               })}
             </Space>}>
           </Empty>
-          <AddEditFloorplanModal
+          { hasAccess() && <AddEditFloorplanModal
             buttonTitle={$t({ defaultMessage: 'Add Floor Plan' })}
             onAddEditFloorPlan={onAddEditFloorPlan}
             isEditMode={false}/>
+          }
         </UI.EpmtyFloorplanContainer>
       }
     </Loader>

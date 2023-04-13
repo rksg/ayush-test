@@ -50,7 +50,7 @@ function open_localhost(tab) {
   }
 
   if (tab.url.indexOf('ruckus') === -1) {
-    console.log('Not a ruckus cloud URL. Do not open new tab');
+    console.log('Not a RUCKUS One URL. Do not open new tab');
     return;
   }
 

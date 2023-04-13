@@ -35,7 +35,7 @@ const PortalSettingForm = (props:{
             rules={[
               { required: true },
               { min: 2 },
-              { max: 32 },
+              { max: 255 },
               { validator: (_, value) => nameValidator(value) },
               { validator: (_, value) => hasGraveAccentAndDollarSign(value) }
             ]}

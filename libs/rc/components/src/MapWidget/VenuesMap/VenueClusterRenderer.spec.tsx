@@ -9,7 +9,6 @@ import VenueClusterRenderer,
 { generateClusterInfoContent,
   renderItemForList,
   VenueClusterTooltipData } from './VenueClusterRenderer'
-import VenueMarkerWithLabel from './VenueMarkerWithLabel'
 
 const series=[
   {
@@ -50,6 +49,7 @@ const venueMarker = {
 describe('VenueClusterRenderer', () => {
   beforeAll(() => {
     initialize()
+    google.maps.Marker.prototype.set = jest.fn()
   })
 
   beforeEach(() => {
@@ -64,9 +64,13 @@ describe('VenueClusterRenderer', () => {
     })
     const spyRender = jest.spyOn(result.current, 'render')
 
+    const marker1 = new google.maps.Marker()
+    marker1.get = jest.fn().mockImplementation(() => (venueMarker))
+    const marker2 = new google.maps.Marker()
+    marker2.get = jest.fn().mockImplementation(() => (venueMarker))
+
     const markers: google.maps.Marker[] = [
-      new google.maps.Marker(),
-      new google.maps.Marker()
+      marker1, marker2
     ]
 
     const markerClusterer = new MarkerClusterer({
@@ -95,54 +99,48 @@ describe('VenueClusterRenderer', () => {
     expect(spyRender).toHaveBeenCalled()
   })
 
-  it('should match with snapshot for venue cluster tooltip',()=>{
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const markerSpy:any = jest.fn()
-    google.maps.Marker = markerSpy
-    const markers = Array.from(Array(15).keys()).map(index=>{
-      return new VenueMarkerWithLabel({
-        labelContent: ''
-      },{ ...venueMarker,
+  it('should match with snapshot for venue cluster tooltip',() => {
+    const markers = Array.from(Array(15).keys()).map(index => {
+      const marker = new google.maps.Marker()
+      marker.get = jest.fn().mockImplementation(() => ({
+        ...venueMarker,
         venueId: `venueId#${index+1}`,name: `Venue #${index+1}`,
-        status: index % 2 === 0 ? ApVenueStatusEnum.TRANSIENT_ISSUE : venueMarker.status })
+        status: index % 2 === 0 ? ApVenueStatusEnum.TRANSIENT_ISSUE : venueMarker.status
+      }))
+      return marker
     })
-
     const clusterInfoWindow = new google.maps.InfoWindow({})
-    const infoDiv=generateClusterInfoContent(markers,clusterInfoWindow)
+    const infoDiv = generateClusterInfoContent(markers, clusterInfoWindow)
     expect(infoDiv).toMatchSnapshot()
-    expect(markerSpy).toBeCalled()
   })
   it('should match with snapshot for venue cluster tooltip for more than 20 venues',()=>{
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const markerSpy:any = jest.fn()
-    google.maps.Marker = markerSpy
-    const markers = Array.from(Array(25).keys()).map(index=>{
-      return new VenueMarkerWithLabel({
-        labelContent: ''
-      },{ ...venueMarker,
+    const markers = Array.from(Array(25).keys()).map(index => {
+      const marker = new google.maps.Marker()
+      marker.get = jest.fn().mockImplementation(() => ({
+        ...venueMarker,
         venueId: `venueId#${index+1}`,name: `Venue #${index+1}`,
-        status: index % 2 === 0 ? ApVenueStatusEnum.REQUIRES_ATTENTION : venueMarker.status })
+        status: index % 2 === 0 ? ApVenueStatusEnum.REQUIRES_ATTENTION : venueMarker.status
+      }))
+      return marker
     })
 
     const clusterInfoWindow = new google.maps.InfoWindow({})
     const infoDiv=generateClusterInfoContent(markers,clusterInfoWindow)
     expect(infoDiv).toMatchSnapshot()
-    expect(markerSpy).toBeCalled()
   })
   it('should match with snapshot for venue cluster tooltip without pagination',()=>{
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const markerSpy:any = jest.fn()
-    google.maps.Marker = markerSpy
-    const markers = Array.from(Array(3).keys()).map(index=>{
-      return new VenueMarkerWithLabel({
-        labelContent: ''
-      },{ ...venueMarker,venueId: `venueId#${index+1}`,name: `Venue #${index+1}` })
+    const markers = Array.from(Array(3).keys()).map(index => {
+      const marker = new google.maps.Marker()
+      marker.get = jest.fn().mockImplementation(() => ({
+        ...venueMarker,
+        venueId: `venueId#${index+1}`,name: `Venue #${index+1}`
+      }))
+      return marker
     })
 
     const clusterInfoWindow = new google.maps.InfoWindow({})
     const infoDiv=generateClusterInfoContent(markers,clusterInfoWindow)
     expect(infoDiv).toMatchSnapshot()
-    expect(markerSpy).toBeCalled()
   })
   it('should match with snapshot for renderItemForList',()=>{
     const item: VenueClusterTooltipData = {

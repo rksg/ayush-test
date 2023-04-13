@@ -54,6 +54,7 @@ export function ClientsTable (props: {
       title: intl.$t({ defaultMessage: 'Hostname' }),
       dataIndex: 'clientName',
       sorter: true,
+      fixed: 'left',
       render: (data, row) => {
         return <TenantLink to={`users/switch/clients/${row.id}`}>{data || '--'}</TenantLink>
       }
@@ -110,7 +111,7 @@ export function ClientsTable (props: {
       key: 'switchName',
       title: intl.$t({ defaultMessage: 'Switch' }),
       dataIndex: 'switchName',
-      sorter: false,
+      sorter: true,
       show: !params.switchId,
       searchable: searchable,
       filterKey: 'switchId',
@@ -149,6 +150,7 @@ export function ClientsTable (props: {
         tableQuery
       ]}>
         <Table
+          settingsId='switch-clients-table'
           columns={getCols(useIntl())}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}

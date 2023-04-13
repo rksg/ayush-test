@@ -52,7 +52,7 @@ export function DhcpCheckbox () {
         name='enableDhcp'
         valuePropName='checked'
         initialValue={false}
-        children={<Checkbox disabled={meshEnable}>{intl.$t({ defaultMessage: 'Enable Ruckus DHCP service' })}</Checkbox>}
+        children={<Checkbox disabled={meshEnable}>{intl.$t({ defaultMessage: 'Enable RUCKUS DHCP service' })}</Checkbox>}
       />
       <Tooltip title={meshEnable ?
         guestDhcpDisableToolTipText :

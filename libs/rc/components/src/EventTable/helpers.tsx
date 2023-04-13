@@ -2,16 +2,17 @@ import _                                       from 'lodash'
 import { FormattedMessage, MessageDescriptor } from 'react-intl'
 
 import { Table, TableHighlightFnArgs, Tooltip } from '@acx-ui/components'
-import { noDataDisplay, Event, replaceStrings } from '@acx-ui/rc/utils'
+import { Event, replaceStrings }                from '@acx-ui/rc/utils'
 import { TenantLink, generatePath }             from '@acx-ui/react-router-dom'
-import { getIntl }                              from '@acx-ui/utils'
+import { getIntl, noDataDisplay }               from '@acx-ui/utils'
 
 import { typeMapping } from './mapping'
 import * as UI         from './styledComponents'
 
 type EntityType = typeof entityTypes[number]
 type EntityExistsKey = `is${Capitalize<EntityType>}Exists`
-const entityTypes = ['ap', 'client', 'network', 'switch', 'venue'] as const
+const entityTypes = ['ap', 'client', 'network', 'switch', 'venue', 'transaction'] as const
+const configurationUpdate = 'Configuration Update' as const
 
 export function EntityLink ({ entityKey, data, highlightFn = val => val }: {
   entityKey: keyof Event, data: Event, highlightFn?: TableHighlightFnArgs
@@ -39,15 +40,19 @@ export function EntityLink ({ entityKey, data, highlightFn = val => val }: {
     venue: {
       path: 'venues/:venueId/venue-details/overview',
       params: ['venueId']
+    },
+    transaction: {
+      path: 'devices/switch/:switchMac/:serialNumber/details/configuration/history',
+      params: ['switchMac', 'serialNumber']
     }
   }
 
   const [entity] = _.kebabCase(entityKey).split('-') as [EntityType]
-  const name = <>{highlightFn(String(data[entityKey] || noDataDisplay))}</>
+  const name = <>{highlightFn(String(data[entityKey] || extraHandle(entity)))}</>
 
   if (!entityTypes.includes(entity)) return name
 
-  const existKey = `is${_.capitalize(entity)}Exists` as EntityExistsKey
+  const existKey = `is${_.capitalize(identifyExistKey(entity))}Exists` as EntityExistsKey
   const exists = data[existKey as keyof typeof data]
 
   if (!exists) return <Tooltip
@@ -99,7 +104,11 @@ export const getSource = (data: Event, highlightFn?: TableHighlightFnArgs) => {
 
 export const getDescription = (data: Event, highlightFn?: TableHighlightFnArgs) => {
   try {
-    let message = data.message && JSON.parse(data.message).message_template
+    let message = String(data.message && JSON.parse(data.message).message_template)
+      // escape ' by replacing with ''
+      .replaceAll("'", "''")
+      // escape < { by replacing with '<' or '{'
+      .replaceAll(/([<{])/g, "'$1'")
 
     const template = replaceStrings(message, data, (key) => `<entity>${key}</entity>`)
     const highlighted = (highlightFn
@@ -111,8 +120,7 @@ export const getDescription = (data: Event, highlightFn?: TableHighlightFnArgs) 
 
     return <FormatMessage
       id='events-description-template'
-      // escape ' by replacing with '' as it is special character of formatjs
-      defaultMessage={highlighted.replaceAll("'", "''")}
+      defaultMessage={highlighted}
       values={{
         entity: (chunks) => <EntityLink
           entityKey={String(chunks[0]) as keyof Event}
@@ -125,4 +133,12 @@ export const getDescription = (data: Event, highlightFn?: TableHighlightFnArgs) 
   } catch {
     return noDataDisplay
   }
+}
+
+const extraHandle = (entityType: EntityType) => {
+  return 'transaction' === entityType ? configurationUpdate : noDataDisplay
+}
+
+const identifyExistKey = (entityType: EntityType) => {
+  return 'transaction' === entityType ? 'switch' : entityType
 }

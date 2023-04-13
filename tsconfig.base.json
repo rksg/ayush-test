@@ -11,7 +11,7 @@
     "resolveJsonModule": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2017", "dom", "dom.iterable", "ES2021.String"],
+    "lib": ["es2017", "dom", "dom.iterable", "ES2021.String", "ES2022.Array"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",

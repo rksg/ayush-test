@@ -90,7 +90,7 @@ export function SwitchClientDetails () {
       title: $t({ defaultMessage: 'Device Type' }),
       value: data?.clientType === SWITCH_CLIENT_TYPE.AP ?
         (data?.isRuckusAP ?
-          $t({ defaultMessage: 'Ruckus AP' }) :
+          $t({ defaultMessage: 'RUCKUS AP' }) :
           $t({ defaultMessage: 'AP' })) :
         (data?.clientType === SWITCH_CLIENT_TYPE.ROUTER ?
           <span>{$t({ defaultMessage: 'Router' })}</span> :

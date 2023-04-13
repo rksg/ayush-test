@@ -121,7 +121,7 @@ describe('Integrators', () => {
     fireEvent.click(deleteButton)
 
     await screen.findByText('Delete "integrator 168"?')
-    const deleteEcButton = screen.getByRole('button', { name: 'Delete Integrator' })
+    const deleteEcButton = screen.getByRole('button', { name: 'Delete Tech Partner' })
     userEvent.type(screen.getByRole('textbox',
       { name: 'Type the word "Delete" to confirm:' }), 'Delete')
     await waitFor(() =>

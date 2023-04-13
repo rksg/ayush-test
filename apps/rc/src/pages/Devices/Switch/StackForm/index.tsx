@@ -200,7 +200,7 @@ export function StackForm () {
               model: `${item.model === undefined ? getSwitchModel(item.id) : item.model}
                 ${_.get(switchDetail, 'activeSerial') === item.id ? '(Active)' : ''}`,
               active: _.get(switchDetail, 'activeSerial') === item.id,
-              disabled: true
+              disabled: _.get(switchDetail, 'activeSerial') === item.id || !!switchDetail.cliApplied
             }
           })
 
@@ -317,7 +317,7 @@ export function StackForm () {
     }
   }
 
-  const handleEditSwitchStack = async () => {
+  const handleEditSwitchStack = async (values: Switch) => {
     if (readOnly) {
       navigate({
         ...basePath,
@@ -325,23 +325,6 @@ export function StackForm () {
       })
       return
     }
-
-    const values = formRef.current?.getFieldsValue([
-      'id',
-      'description',
-      'enableStack',
-      'firmwareVersion',
-      'igmpSnooping',
-      'initialVlanId',
-      'isPrimaryDeleted',
-      'jumboMode',
-      'name',
-      'sendedHostname',
-      'softDeleted',
-      'spanningTreePriority',
-      'trustPorts',
-      'venueId'
-    ])
 
     try {
       let payload = {
@@ -449,7 +432,7 @@ export function StackForm () {
       dataIndex: 'sort',
       key: 'sort',
       width: 60,
-      show: editMode && !deviceOnline,
+      show: editMode,
       render: (data, row) => {
         return activeRow !== row.key &&
           <div data-testid={`${row.key}_Icon`} style={{ textAlign: 'center' }}>

@@ -1,9 +1,6 @@
 import { useCallback, useRef } from 'react'
 
 import { ButtonProps as AntButtonProps, TooltipProps } from 'antd'
-import { useIntl }                                     from 'react-intl'
-
-import { notAvailableMsg } from '@acx-ui/utils'
 
 import { Tooltip } from '../Tooltip'
 
@@ -37,24 +34,24 @@ export function Button ({ type = 'default', ...props }: ButtonProps) {
 }
 
 
-export function DisabledButton (
-  props: ButtonProps & {
-    tooltipPlacement?: TooltipProps['placement'],
-    title?: TooltipProps['title']
-  }
-) {
-  // workaround for showing tooltip when button disabled
-  // ref: https://github.com/react-component/tooltip/issues/18
-  const notAvailMsg = useIntl().$t(notAvailableMsg)
-  const { tooltipPlacement, ...buttonProps } = props
+export function DisabledButton (props: ButtonProps & {
+  tooltipPlacement?: TooltipProps['placement']
+  title?: TooltipProps['title']
+}) {
+  const { tooltipPlacement, title, ...buttonProps } = props
   const button = <span style={{ cursor: 'not-allowed' }}>
-    <Button {...buttonProps} disabled style={{ ...props.style, pointerEvents: 'none' }}/>
+    <Button
+      disabled
+      {...buttonProps}
+      style={{ ...props.style, pointerEvents: 'none' }}
+    />
   </span>
-  return props.title !== ''
-    ? <Tooltip
-      placement={tooltipPlacement || 'top'}
-      title={props.title || notAvailMsg}>
-      {button}
-    </Tooltip>
-    : button
+
+  if (!title) return button
+
+  return <Tooltip
+    placement={tooltipPlacement || 'top'}
+    title={title}
+    children={button}
+  />
 }

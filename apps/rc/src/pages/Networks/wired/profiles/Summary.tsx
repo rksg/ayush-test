@@ -63,7 +63,8 @@ export function Summary () {
         <Form.Item
           label={$t({ defaultMessage: 'VLANs:' })}
           children={(currentData.vlans && currentData.vlans.length > 0 &&
-            currentData.vlans.map((item) => { return item.vlanId }).join(', ')) ||
+            currentData.vlans.filter(item => item.vlanName !== 'DEFAULT-VLAN')
+              .map((item) => { return item.vlanId }).join(', ')) ||
             $t({ defaultMessage: 'None' })}
         />
         <Form.Item

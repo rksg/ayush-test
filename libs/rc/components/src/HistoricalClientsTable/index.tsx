@@ -24,6 +24,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
     dataIndex: 'hostname',
     sorter: true,
     defaultSortOrder: 'ascend',
+    fixed: 'left',
     render: (data, { disconnectTime, clientMac }) => {
       const period = encodeParameter<DateFilter>({
         startDate: moment((disconnectTime as number) * 1000).subtract(24, 'hours').format(),
@@ -145,6 +146,7 @@ export function HistoricalClientsTable
             {$t({ defaultMessage: 'Historical Clients' })}
           </Subtitle>
           <Table
+            settingsId='historical-clients-table'
             columns={getCols(useIntl())}
             dataSource={tableQuery.data?.data}
             pagination={tableQuery.pagination}
@@ -176,6 +178,7 @@ export const GlobalSearchHistoricalClientsTable = (props: {
   const tableQuery = props.tableQuery
   return (
     <Table
+      settingsId='historical-clients-table'
       columns={getCols(useIntl())}
       dataSource={tableQuery?.data?.data}
       onChange={tableQuery?.handleTableChange}

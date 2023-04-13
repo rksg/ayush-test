@@ -147,7 +147,6 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
       }
       <Table
         columns={columns}
-        columnState={{ hidden: readonly }}
         dataSource={rules}
         rowKey='id'
         actions={readonly ? [] : filterByAccess(actions)}

@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 
-import { APExtended, ApVenueStatusEnum, CelluarInfo } from '@acx-ui/rc/utils'
-import { render }                                     from '@acx-ui/test-utils'
+import { ApVenueStatusEnum, ApViewModel, CelluarInfo } from '@acx-ui/rc/utils'
+import { render }                                      from '@acx-ui/test-utils'
 
 import { APDetailsCard } from './APDetailsCard'
 
@@ -75,7 +75,7 @@ const apDetail = {
 describe('Topology AP Card', () => {
   it('should render correctly', async () => {
     const { asFragment } = render(<APDetailsCard
-      apDetail={apDetail as APExtended}
+      apDetail={apDetail as ApViewModel}
       isLoading={false}
     />)
 

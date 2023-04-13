@@ -382,7 +382,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                 class="ant-form-item-control-input-content"
               >
                 <div
-                  class="styledComponents__Wrapper-sc-1abm7iv-12 QuVDX"
+                  class="styledComponents__Wrapper-sc-1abm7iv-12 kskPjC"
                 >
                   <div
                     class="ant-space ant-space-horizontal ant-space-align-center"
@@ -413,38 +413,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                       >
                         <div
                           class="ant-pro-table-list-toolbar"
-                        >
-                          <div
-                            class="ant-pro-table-list-toolbar-container"
-                          >
-                            <div
-                              class="ant-pro-table-list-toolbar-left"
-                            />
-                            <div
-                              class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
-                            >
-                              <div
-                                class="ant-space-item"
-                              >
-                                <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
-                                >
-                                  <div
-                                    class="ant-space-item"
-                                  >
-                                    <div
-                                      class="ant-pro-table-list-toolbar-setting-item"
-                                    >
-                                      <svg
-                                        data-testid="SettingsOutlined"
-                                      />
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
+                        />
                         <div
                           class="ant-table-wrapper"
                         >
@@ -991,7 +960,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                 class="ant-form-item-control-input-content"
               >
                 <div
-                  class="styledComponents__Wrapper-sc-1abm7iv-12 QuVDX"
+                  class="styledComponents__Wrapper-sc-1abm7iv-12 kskPjC"
                 >
                   <div
                     class="ant-space ant-space-horizontal ant-space-align-center"
@@ -1022,38 +991,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                       >
                         <div
                           class="ant-pro-table-list-toolbar"
-                        >
-                          <div
-                            class="ant-pro-table-list-toolbar-container"
-                          >
-                            <div
-                              class="ant-pro-table-list-toolbar-left"
-                            />
-                            <div
-                              class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
-                            >
-                              <div
-                                class="ant-space-item"
-                              >
-                                <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
-                                >
-                                  <div
-                                    class="ant-space-item"
-                                  >
-                                    <div
-                                      class="ant-pro-table-list-toolbar-setting-item"
-                                    >
-                                      <svg
-                                        data-testid="SettingsOutlined"
-                                      />
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
+                        />
                         <div
                           class="ant-table-wrapper"
                         >

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import React                   from 'react'
 
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import { Menu, MenuProps }     from 'antd'
@@ -14,6 +15,7 @@ import { ApTable, CsvSize, ImportFileDrawer } from '@acx-ui/rc/components'
 import {
   useApGroupsListQuery,
   useImportApMutation,
+  useImportApOldMutation,
   useLazyImportResultQuery,
   useVenuesListQuery
 } from '@acx-ui/rc/services'
@@ -25,45 +27,74 @@ export default function ApsTable () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const [ importVisible, setImportVisible ] = useState(false)
-
-  const { venueFilterOptions } = useVenuesListQuery({ params: { tenantId }, payload: {
-    fields: ['name', 'country', 'latitude', 'longitude', 'id'],
-    pageSize: 10000,
-    sortField: 'name',
-    sortOrder: 'ASC'
-  } }, {
-    selectFromResult: ({ data }) => ({
-      venueFilterOptions: data?.data.map(v=>({ key: v.id, value: v.name })) || true
+  const { venueFilterOptions } = useVenuesListQuery(
+    {
+      params: { tenantId },
+      payload: {
+        fields: ['name', 'country', 'latitude', 'longitude', 'id'],
+        pageSize: 10000,
+        sortField: 'name',
+        sortOrder: 'ASC'
+      }
+    },
+    {
+      selectFromResult: ({ data }) => ({
+        venueFilterOptions: data?.data.map(v=>({ key: v.id, value: v.name })) || true
+      })
     })
-  })
-
-  const { apgroupFilterOptions } = useApGroupsListQuery({ params: { tenantId }, payload: {
-    fields: ['name', 'venueId', 'clients', 'networks', 'venueName', 'id'],
-    pageSize: 10000,
-    sortField: 'name',
-    sortOrder: 'ASC',
-    filters: { isDefault: [false] }
-  } }, {
-    selectFromResult: ({ data }) => ({
-      apgroupFilterOptions: data?.data.map(v=>({ key: v.id, value: v.name })) || true
-    })
-  })
+  const { apgroupFilterOptions } = useApGroupsListQuery(
+    {
+      params: { tenantId },
+      payload: {
+        fields: ['name', 'venueId', 'clients', 'networks', 'venueName', 'id'],
+        pageSize: 10000,
+        sortField: 'name',
+        sortOrder: 'ASC',
+        filters: { isDefault: [false] }
+      }
+    },
+    {
+      selectFromResult: ({ data }) => ({
+        apgroupFilterOptions: data?.data.map((v) => ({ key: v.id, value: v.name })) || true
+      })
+    }
+  )
 
   const [ isImportResultLoading, setIsImportResultLoading ] = useState(false)
+  const [ importAps, importApsResult ] = useImportApOldMutation()
   const [ importCsv ] = useImportApMutation()
   const [ importQuery ] = useLazyImportResultQuery()
   const [ importResult, setImportResult ] = useState<ImportErrorRes>({} as ImportErrorRes)
 
   const apGpsFlag = useIsSplitOn(Features.AP_GPS)
+  const wifiEdaFlag = useIsSplitOn(Features.WIFI_EDA_GATEWAY)
   const importTemplateLink = apGpsFlag ?
     'assets/templates/aps_import_template_with_gps.csv' :
     'assets/templates/aps_import_template.csv'
 
   useEffect(()=>{
-    if (importResult.fileErrorsCount === 0) {
+    if (wifiEdaFlag) {
+      return
+    }
+
+    setIsImportResultLoading(false)
+    if (importApsResult.isSuccess) {
+      setImportVisible(false)
+    } else if (importApsResult.isError && importApsResult?.error &&
+      'data' in importApsResult.error) {
+      setImportResult(importApsResult?.error.data as ImportErrorRes)
+    }
+  },[importApsResult])
+
+  useEffect(()=>{
+    if (!wifiEdaFlag) {
+      return
+    }
+
+    setIsImportResultLoading(false)
+    if ( importResult.fileErrorsCount === 0 ) {
       setImportVisible(false)
     }
-    setIsImportResultLoading(false)
   },[importResult])
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
@@ -107,7 +138,8 @@ export default function ApsTable () {
           type: 'checkbox'
         }}
       />
-      <ImportFileDrawer type='AP'
+      <ImportFileDrawer
+        type='AP'
         title={$t({ defaultMessage: 'Import from file' })}
         maxSize={CsvSize['5MB']}
         maxEntries={512}
@@ -118,15 +150,19 @@ export default function ApsTable () {
         importError={{ data: importResult } as FetchBaseQueryError}
         importRequest={(formData) => {
           setIsImportResultLoading(true)
-          importCsv({ params: { tenantId }, payload: formData,
-            callback: async (response: CommonResult) => {
-              const result = await importQuery(
-                { payload: { requestId: response.requestId } }, true)
-                .unwrap()
-              setImportResult(result)
-            } }).unwrap()
+          if (wifiEdaFlag) {
+            importCsv({ params: { tenantId }, payload: formData,
+              callback: async (response: CommonResult) => {
+                const result = await importQuery(
+                  { payload: { requestId: response.requestId } }, true)
+                  .unwrap()
+                setImportResult(result)
+              } }).unwrap()
+          } else {
+            importAps({ params: { tenantId }, payload: formData })
+          }
         }}
-        onClose={()=>setImportVisible(false)}/>
+        onClose={() => setImportVisible(false)}/>
     </>
   )
 }

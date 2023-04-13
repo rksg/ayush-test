@@ -1,7 +1,7 @@
 import { createApi }               from '@reduxjs/toolkit/query/react'
 import { graphqlRequestBaseQuery } from '@rtk-query/graphql-request-base-query'
 
-import { getJwtToken } from '@acx-ui/utils'
+import { getJwtHeaders } from '@acx-ui/utils'
 
 export const dataApiURL = `${window.location.origin}/api/a4rc/api/rsa-data-api/graphql/analytics`
 
@@ -10,7 +10,11 @@ export const dataApiURL = `${window.location.origin}/api/a4rc/api/rsa-data-api/g
 export const dataApi = createApi({
   baseQuery: graphqlRequestBaseQuery({
     url: dataApiURL,
-    ...(getJwtToken() ? { requestHeaders: { Authorization: `Bearer ${getJwtToken()}` } } : {})
+    prepareHeaders: (headers) => {
+      Object.entries(getJwtHeaders())
+        .forEach(([header, value]) => headers.set(header, value))
+      return headers
+    }
   }),
   reducerPath: 'analytics-data-api',
   refetchOnMountOrArgChange: true,

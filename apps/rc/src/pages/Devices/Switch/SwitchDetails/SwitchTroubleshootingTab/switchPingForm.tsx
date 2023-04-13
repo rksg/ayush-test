@@ -64,6 +64,9 @@ export function SwitchPingForm () {
       if (response.latestResultResponseTime) {
         setIsValid(true)
       }
+      if (!response.pingIp) {
+        setIsValid(false)
+      }
     }
 
   }, [getTroubleshooting, getTroubleshooting.data])

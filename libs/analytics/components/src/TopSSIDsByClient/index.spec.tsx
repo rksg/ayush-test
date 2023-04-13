@@ -70,7 +70,7 @@ describe('TopSSIDsByClientWidget', () => {
     })
     const { asFragment } = render(<Provider><TopSSIDsByClient filters={filters}/></Provider>,
       { route: true })
-    await screen.findByText('Top 5 SSIDs by Clients')
+    await screen.findByText('Top SSIDs by Clients')
     const tableHeaders = asFragment().querySelector('div > table > thead')
     expect(tableHeaders).toMatchSnapshot('tableHeaders')
     const tableRows = extractRows(asFragment())

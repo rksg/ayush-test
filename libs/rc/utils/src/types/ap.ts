@@ -91,7 +91,9 @@ export interface APExtended extends AP {
   networks?: {
     count?: number
   },
-  name?: string
+  name?: string,
+  switchSerialNumber?: string,
+  switchId?: string
 }
 
 export interface CelluarInfo {
@@ -332,7 +334,10 @@ export interface ApLanPort {
 
 export interface ApRadio {
   enable24G: boolean,
-  enable50G: boolean,
+  enable50G?: boolean,
+  enable6G?: boolean,
+  enableLower5G?: boolean,
+  enableUpper5G?: boolean,
   useVenueSettings: boolean
 }
 
@@ -398,6 +403,24 @@ export interface ApDirectedMulticast {
   networkEnabled: boolean
 }
 
+
+export interface APExtendedGrouped extends APExtended {
+  networks: {
+    count: number
+    names: string[]
+  }
+  members: number
+  incidents: number
+  deviceGroupId: string
+  deviceGroupName: string
+  deviceStatus: string
+  model: string
+  clients: number
+  name?: string
+  aps: APExtended[],
+  children?: APExtended[],
+  id?: number | string
+}
 export type ImportErrorRes = {
   errors: {
     code: number

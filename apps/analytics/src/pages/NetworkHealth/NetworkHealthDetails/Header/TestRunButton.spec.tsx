@@ -35,6 +35,6 @@ describe('ReRunButton', () => {
       wrapper: Provider,
       route: { params: { tenantId: 't-id', testId: '1' } }
     })
-    expect(await screen.findByText('-')).toBeVisible()
+    expect(await screen.findByText('--')).toBeVisible()
   })
 })

@@ -30,6 +30,7 @@ export function MdnsProxyInstancesTable (props: MdnsProxyInstancesTableProps) {
       dataIndex: 'name',
       key: 'name',
       sorter: true,
+      fixed: 'left',
       render: (data, row) => {
         // eslint-disable-next-line max-len
         return <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>{data}</TenantLink>

@@ -144,6 +144,8 @@ export interface TraceRouteSwitch {
 }
 
 export interface VeViewModel {
+  ingressAclName?: string
+  egressAclName?: string
   name?: string
   dhcpRelayAgent?: string
   defaultVlan: boolean
@@ -723,6 +725,7 @@ export interface CliConfiguration {
   name?: string
   cli?: string
   reload?: boolean
+  applyNow?: boolean
   applyLater?: boolean
   venueSwitches?: CliTemplateVenueSwitches[]
   variables?: CliTemplateVariable[]
