@@ -2,10 +2,10 @@ import _               from 'lodash'
 import { useIntl }     from 'react-intl'
 import { useNavigate } from 'react-router-dom'
 
-import { PageHeader, StepsFormNew, useStepFormContext } from '@acx-ui/components'
-import { useAddEdgeFirewallMutation }                   from '@acx-ui/rc/services'
-import { ACLDirection, StatefulAcl }                    from '@acx-ui/rc/utils'
-import { useTenantLink }                                from '@acx-ui/react-router-dom'
+import { PageHeader, StepsFormNew, useStepFormContext }                                  from '@acx-ui/components'
+import { useAddEdgeFirewallMutation }                                                    from '@acx-ui/rc/services'
+import { ACLDirection, getServiceRoutePath, ServiceOperation, ServiceType, StatefulAcl } from '@acx-ui/rc/utils'
+import { useTenantLink }                                                                 from '@acx-ui/react-router-dom'
 
 import { FirewallForm, FirewallFormEdge }            from '../FirewallForm'
 import { ScopeForm }                                 from '../FirewallForm/ScopeForm'
@@ -14,10 +14,12 @@ import { InboundDefaultRules, OutboundDefaultRules } from '../FirewallForm/Setti
 import { SummaryForm }                               from '../FirewallForm/SummaryForm'
 
 const AddFirewall = () => {
-
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const linkToServices = useTenantLink('/services')
+  const linkToServiceList = useTenantLink(getServiceRoutePath({
+    type: ServiceType.EDGE_FIREWALL,
+    oper: ServiceOperation.LIST
+  }))
   const { form } = useStepFormContext<FirewallForm>()
   const [addEdgeFirewall] = useAddEdgeFirewallMutation()
 
@@ -59,6 +61,7 @@ const AddFirewall = () => {
       filterCustomACLRules(payload.statefulAcls ?? [])
 
       await addEdgeFirewall({ payload }).unwrap()
+      navigate(linkToServiceList, { replace: true })
     } catch(err) {
       // eslint-disable-next-line no-console
       console.log(err)
@@ -75,7 +78,7 @@ const AddFirewall = () => {
       />
       <StepsFormNew
         form={form}
-        onCancel={() => navigate(linkToServices)}
+        onCancel={() => navigate(linkToServiceList)}
         onFinish={handleFinish}
         initialValues={{
           ddosRateLimitingRules: []

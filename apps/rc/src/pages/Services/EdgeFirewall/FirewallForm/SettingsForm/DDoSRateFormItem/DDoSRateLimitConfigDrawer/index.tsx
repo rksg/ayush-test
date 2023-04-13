@@ -8,9 +8,8 @@ import { cssNumber, Drawer, showActionModal, Table, TableProps, useStepFormConte
 import { DdosRateLimitingRule }                                                      from '@acx-ui/rc/utils'
 import { filterByAccess }                                                            from '@acx-ui/user'
 
-import { FirewallForm } from '../..'
-
-import { DDoSRuleDialog } from './DDoSRuleDialog'
+import { FirewallForm }   from '../../..'
+import { DDoSRuleDialog } from '../DDoSRuleDialog'
 
 interface DDoDRateLimitRulesTableProps {
   data?: DdosRateLimitingRule[]
@@ -153,6 +152,7 @@ export const DDoSRateLimitConfigDrawer = (props: DDoSRateLimitConfigDrawerProps)
 
     if (newData.length === 0)
       parentForm.setFieldValue('ddosRateLimitingEnabled', false)
+
     onClose()
   }
 

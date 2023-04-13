@@ -8,7 +8,7 @@ import styled                               from 'styled-components'
 import { Drawer }                               from '@acx-ui/components'
 import { DdosAttackType, DdosRateLimitingRule } from '@acx-ui/rc/utils'
 
-import { ModalStyles } from './styledComponents'
+import { ModalStyles } from '../styledComponents'
 
 export const getDDoSAttackTypeString = ($t: IntlShape['$t'], type: DdosAttackType) => {
   switch (type) {
@@ -98,8 +98,6 @@ export const DDoSRuleDialog = styled((props: DDoSRuleDialogProps) => {
       form.setFieldsValue(editData)
     }
   }, [form, editMode, visible, editData])
-
-  // const disableSubmitBtn = false
 
   return (
     <Modal

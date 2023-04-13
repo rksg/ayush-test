@@ -100,7 +100,7 @@ export const StatefulACLFormItem = () => {
       </Col>
       <Col span={6}>
         <Form.Item
-          name='statefulACLEnabled'
+          name='statefulAclEnabled'
           valuePropName='checked'
           initialValue={false}
         >
@@ -118,11 +118,11 @@ export const StatefulACLFormItem = () => {
         <Form.Item
           noStyle
           shouldUpdate={(prevValues, currentValues) => {
-            return prevValues.statefulACLEnabled !== currentValues.statefulACLEnabled
+            return prevValues.statefulAclEnabled !== currentValues.statefulAclEnabled
           }}
         >
           {({ getFieldValue }) => {
-            const isEnabled = getFieldValue('statefulACLEnabled')
+            const isEnabled = getFieldValue('statefulAclEnabled')
             return isEnabled && <Form.Item
               name='statefulAcls'
               valuePropName='data'

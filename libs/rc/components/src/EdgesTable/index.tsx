@@ -49,19 +49,6 @@ export const defaultEdgeTablePayload = {
   sortOrder: 'ASC'
 }
 
-// "name",
-// "deviceStatus",
-// "serialNumber",
-// "ip",
-// "venueId",
-// "venueName",
-// "firewallId",
-// "firewallName",
-// "softDeleted",
-// "edgeGroupId",
-// "tags",
-// "firmwareVersion"
-
 export const EdgesTable = (props: EdgesTableProps) => {
   const {
     tableQuery: customTableQuery,

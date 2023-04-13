@@ -94,7 +94,7 @@ export const getAddressTypeString = ($t: IntlShape['$t'], type: AddressType) => 
     case AddressType.ANY_IP_ADDRESS:
       return $t({ defaultMessage: 'Any IP Address' })
     case AddressType.SUBNET_ADDRESS:
-      return $t({ defaultMessage: 'Subnet IP Address' })
+      return $t({ defaultMessage: 'Subnet Address' })
     case AddressType.IP_ADDRESS:
       return $t({ defaultMessage: 'IP Address' })
     default:
@@ -211,7 +211,7 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
         >
           <Radio.Group buttonStyle='solid'>
             {accessActs.map(({ label, value, color }) => {
-              return <Radio.Button value={value}>
+              return <Radio.Button key={value} value={value}>
                 <SpaceWrapper full>
                   <StyledFlagFilled color={color} />
                   {label}
@@ -330,7 +330,7 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
                     default:
                   }
 
-                  return <Row justify='space-between'>
+                  return <Row key={`srcAddressType_${value}`} justify='space-between'>
                     <Col span={8}>
                       <Radio value={value}>{label}</Radio>
                     </Col>
@@ -417,7 +417,7 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
                     default:
                   }
 
-                  return <Row justify='space-between'>
+                  return <Row key={`desAddressType_${value}`} justify='space-between'>
                     <Col span={8}>
                       <Radio value={value}>{label}</Radio>
                     </Col>

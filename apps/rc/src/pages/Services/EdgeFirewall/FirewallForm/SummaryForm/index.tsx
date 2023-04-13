@@ -20,7 +20,7 @@ export const SummaryForm = styled(({ className }: { className?: string }) => {
   const activatedEdges = formValues.selectedEdges
   const ddosLimitEnabled = formValues.ddosRateLimitingEnabled
   const ddosRulesCount = formValues.ddosRateLimitingRules.length
-  const statefulACLEnabled = formValues.statefulAclEnabled
+  const statefulAclEnabled = formValues.statefulAclEnabled
   const statefulACLRulesCount = formValues.statefulAcls
 
   return (
@@ -64,10 +64,10 @@ export const SummaryForm = styled(({ className }: { className?: string }) => {
             label={$t({ defaultMessage: 'Stateful ACL' })}
           >
             {
-              statefulACLEnabled
-                ? $t({ defaultMessage: '{statefulACLEnabled} ({statefulACLRulesCount} ACL)' },
+              statefulAclEnabled
+                ? $t({ defaultMessage: '{statefulAclEnabled} ({statefulACLRulesCount} ACL)' },
                   {
-                    statefulACLEnabled: <FormattedMessage defaultMessage='ON' />,
+                    statefulAclEnabled: <FormattedMessage defaultMessage='ON' />,
                     statefulACLRulesCount
                   })
                 : $t({ defaultMessage: 'OFF' })
