@@ -145,7 +145,11 @@ export default function HelpPage (props: {
           }}
           type='link'
           size='small'>
-          {$t({ defaultMessage: 'RUCKUS One User Guide' })}
+          { isMSPUserType ?
+            $t({ defaultMessage: 'RUCKUS One MSP Guide' })
+            :
+            $t({ defaultMessage: 'RUCKUS One User Guide' })
+          }
         </Button>
       </p>}
 
