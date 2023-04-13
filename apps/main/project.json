@@ -19,7 +19,8 @@
           "apps/main/src/env.json",
           "apps/main/src/assets",
           "apps/main/src/locales",
-          "apps/main/src/robots.txt"
+          "apps/main/src/robots.txt",
+          { "glob": "**/*", "input": "libs/main/assets/", "output": "./assets/" }
         ],
         "styles": [],
         "scripts": [],

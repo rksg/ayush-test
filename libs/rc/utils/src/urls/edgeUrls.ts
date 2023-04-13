@@ -132,5 +132,13 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/edges/upgrade/updateNow',
     oldUrl: '/api/edges/upgrade/updateNow',
     newApi: true
+  },
+  reboot: {
+    method: 'post',
+    url: '/edges/:serialNumber/reboot'
+  },
+  factoryReset: {
+    method: 'post',
+    url: '/edges/:serialNumber/configReset'
   }
 }

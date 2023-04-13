@@ -158,6 +158,7 @@ export interface FirmwareSwitchVenue {
   id: string;
   name: string;
   preDownload: boolean;
+  switchFirmwareVersionAboveTen: switchVersion;
   switchFirmwareVersion: switchVersion;
   updatedAdvice: VenueUpdateAdvice;
   availableVersions: switchVersion[];
