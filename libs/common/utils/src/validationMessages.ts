@@ -359,6 +359,10 @@ export const validationMessages = {
     defaultMessage: 'The ACL name already exists',
     description: 'Validation - The ACL name already exists'
   }),
+  aclRuleSequenceInvalid: defineMessage({
+    defaultMessage: 'The Sequence already exists',
+    description: 'Validation - The Sequence already exists'
+  }),
   vlanNameInvalid: defineMessage({
     defaultMessage: 'Enter a valid number between 1 and 4095, except 4087, 4090-4094',
     description: 'Validation - validate vlan name'
