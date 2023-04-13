@@ -27,19 +27,20 @@ export const Wrapper = styled.div`
           overflow: visible !important;
           .ant-layout-sider-children {
             .ant-pro-sider-logo {
-              padding: 0 0 0 var(--acx-sidebar-left-space);
+              padding: 0;
               width: var(--acx-sider-width);
               height: var(--acx-header-height);
               margin-bottom: 17px;
               align-items: center;
               justify-content: left;
               a {
-                min-height: unset;
+                width: 100%;
+                height: 100%;
                 svg, img {
                   display: inline-block;
                   vertical-align: middle;
-                  width: 165px;
-                  height: 40px;
+                  width: 100%;
+                  height: 100%;
                   object-fit: contain;
                 }
               }
