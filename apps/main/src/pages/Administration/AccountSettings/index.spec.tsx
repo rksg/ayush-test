@@ -124,9 +124,7 @@ describe('Account Settings', () => {
         >
           <AccountSettings />
         </UserProfileContext.Provider>
-      </Provider>, {
-        route: { params }
-      })
+      </Provider>)
 
     expect(screen.queryByTestId('rc-DefaultSystemLanguageFormItem')).not.toBeInTheDocument()
     expect((await screen.findAllByRole('separator')).length).toBe(2)
