@@ -36,7 +36,7 @@ export interface EventBase {
   adminName?: string
   entity_id: string
   entity_type: string
-  ipAddress: string
+  ipAddress?: string
   event_datetime: string
   id: string
   macAddress: string
