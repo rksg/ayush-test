@@ -144,6 +144,8 @@ export function PropertyManagementTab () {
 
   const onFormFinish = async (_: string, info: FormFinishInfo) => {
     const enableProperty = info.values.isPropertyEnable
+    // eslint-disable-next-line max-len
+    const venueUUID = `${venueId?.substring(0, 8)}-${venueId?.substring(8, 12)}-${venueId?.substring(12, 16)}-${venueId?.substring(16, 20)}-${venueId?.substring(20)}`
 
     try {
       if (enableProperty) {
@@ -157,7 +159,20 @@ export function PropertyManagementTab () {
             address: venueData?.address,
             status: enableProperty
               ? PropertyConfigStatus.ENABLED
-              : PropertyConfigStatus.DISABLED
+              : PropertyConfigStatus.DISABLED,
+            communicationConfig: {
+              ...info.values.communicationConfig,
+              unitAssignmentHtmlRegId: venueUUID,
+              unitAssignmentTextRegId: venueUUID,
+              unitPassphraseChangeHtmlRegId: venueUUID,
+              unitPassphraseChangeTextRegId: venueUUID,
+              guestPassphraseChangeHtmlRegId: venueUUID,
+              guestPassphraseChangeTextRegId: venueUUID,
+              portalAccessResetHtmlRegId: venueUUID,
+              portalAccessResetTextRegId: venueUUID,
+              portAssignmentHtmlRegId: venueUUID,
+              portAssignmentTextRegId: venueUUID
+            }
           }
         }).unwrap()
       } else {
