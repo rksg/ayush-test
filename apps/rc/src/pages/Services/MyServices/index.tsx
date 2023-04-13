@@ -68,6 +68,16 @@ export default function MyServices () {
       disabled: !networkSegmentationEnabled
     },
     {
+      type: ServiceType.FIREWALL,
+      categories: [RadioCardCategory.EDGE],
+      tableQuery: useGetNetworkSegmentationStatsListQuery({
+        params, payload: { ...defaultPayload }
+      },{
+        skip: !networkSegmentationEnabled
+      }),
+      disabled: !networkSegmentationEnabled
+    },
+    {
       type: ServiceType.DPSK,
       categories: [RadioCardCategory.WIFI],
       tableQuery: useGetDpskListQuery({})
