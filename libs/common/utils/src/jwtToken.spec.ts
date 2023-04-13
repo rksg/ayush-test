@@ -6,13 +6,12 @@ describe('getJwtTokenPayload', () => {
   })
 
   it('returns token with default values when JWT not available', () => {
-    const originalUrl = window.location.href
-    const url = 'http://dummy.com/api/ui/some-tenant-id/t/dashboard/reports'
+    const { href, pathname } = window.location
+    const url = 'http://dummy.com/some-tenant-id/t/dashboard/reports'
     Object.defineProperty(window, 'location', {
       writable: true,
-      value: { href: url, pathname: url }
+      value: { href: url, pathname: '/some-tenant-id/t/dashboard/reports' }
     })
-
     const token = {
       acx_account_tier: 'Platinum',
       acx_account_vertical: 'Default',
@@ -24,7 +23,7 @@ describe('getJwtTokenPayload', () => {
 
     Object.defineProperty(window, 'location', {
       writable: true,
-      value: { href: originalUrl, pathname: originalUrl }
+      value: { href, pathname }
     })
   })
 
@@ -78,20 +77,20 @@ describe('getJwtHeaders', () => {
     })
 
     it('returns Authorization header', () => {
-      const url = 'http://dummy.com/api/ui/some-tenant-id/t/dashboard'
+      const url = 'http://dummy.com/some-tenant-id/t/dashboard'
       Object.defineProperty(window, 'location', {
         writable: true,
-        value: { href: url, pathname: url }
+        value: { href: url, pathname: '/some-tenant-id/t/dashboard' }
       })
 
       expect(getJwtHeaders()).toEqual({ Authorization: `Bearer ${jwtToken}` })
     })
 
     it('returns x-rks-tenantid header if delegation mode', () => {
-      const url = 'http://dummy.com/api/ui/another-other-tenant/t/dashboard'
+      const url = 'http://dummy.com/another-other-tenant/t/dashboard'
       Object.defineProperty(window, 'location', {
         writable: true,
-        value: { href: url, pathname: url }
+        value: { href: url, pathname: '/another-other-tenant/t/dashboard' }
       })
 
       expect(getJwtHeaders()).toEqual({
@@ -117,11 +116,11 @@ describe('loadImageWithJWT', () => {
       status: 200,
       json: () => Promise.resolve({ signedUrl: 'https://example.com/image.png' })
     }))
-    const originalUrl = window.location.href
-    const url = 'http://dummy.com/api/ui/some-tenant-id/t/dashboard'
+    const { href, pathname } = window.location
+    const url = 'http://dummy.com/some-tenant-id/t/dashboard'
     Object.defineProperty(window, 'location', {
       writable: true,
-      value: { href: url, pathname: url }
+      value: { href: url, pathname: '/some-tenant-id/t/dashboard' }
     })
 
     const token = {
@@ -148,7 +147,7 @@ describe('loadImageWithJWT', () => {
 
     Object.defineProperty(window, 'location', {
       writable: true,
-      value: { href: originalUrl, pathname: originalUrl }
+      value: { href, pathname }
     })
   })
 

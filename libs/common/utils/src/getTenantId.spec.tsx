@@ -96,38 +96,22 @@ describe('tenant type v', () => {
 })
 
 describe('other path', () => {
-  const initPath = '/someType/others-tenant'
-  const { location } = window
+  const data = [
+    { path: '', tenantId: undefined },
+    { path: '/', tenantId: undefined },
+    { path: '/api/ui-beta/t/123', tenantId: '123' },
+    { path: '/t/123', tenantId: '123' },
+    { path: '/v/123', tenantId: '123' },
+    { path: '/api/ui-beta/v/123', tenantId: '123' },
+    { path: '/123/t', tenantId: '123' },
+    { path: '/123/t/', tenantId: '123' },
+    { path: '/123/v', tenantId: '123' },
+    { path: '/123/v/', tenantId: '123' },
+    { path: '/123/t/other-path', tenantId: '123' },
+    { path: '/123/v/other/path', tenantId: '123' }
+  ]
 
-  beforeEach(() => {
-    Object.defineProperty(window, 'location', {
-      writable: true,
-      value: {
-        ...location,
-        pathname: initPath
-      }
-    })
-  })
-
-  it('return URL tenantId by window.location', () => {
-    expect(getTenantId()).toEqual(undefined)
-  })
-
-  it('other path', () => {
-    const { result } = renderHook(
-      () => useTenantId(),
-      { wrapper: getWrapper(initPath, '/another/path') }
-    )
-
-    expect(result.current).toEqual(undefined)
-  })
-  it('should return undefined', () => {
-    expect(getTenantId('/')).toEqual(undefined)
-  })
-  it('should identify 1st parameter as tenant id', () => {
-    expect(getTenantId('/tid')).toEqual('tid')
-  })
-  it('should return tenant id when url starts with parameter followed by /', () => {
-    expect(getTenantId('/tid/')).toEqual('tid')
+  it('should return correct tenant id', () => {
+    data.forEach(({ path, tenantId }) => expect(getTenantId(path)).toEqual(tenantId))
   })
 })
