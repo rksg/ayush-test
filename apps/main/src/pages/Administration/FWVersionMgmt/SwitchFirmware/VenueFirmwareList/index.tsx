@@ -28,7 +28,6 @@ import {
   UpdateScheduleRequest,
   TableQuery,
   RequestPayload,
-  firmwareTypeTrans,
   useTableQuery,
   sortProp,
   defaultSort
@@ -47,8 +46,6 @@ import * as UI               from '../../styledComponents'
 import { ChangeScheduleDialog } from './ChangeScheduleDialog'
 import { UpdateNowDialog }      from './UpdateNowDialog'
 
-const transform = firmwareTypeTrans()
-
 function useColumns (
   searchable?: boolean,
   filterables?: { [key: string]: ColumnType['filterable'] }
@@ -57,7 +54,7 @@ function useColumns (
 
   const columns: TableProps<FirmwareSwitchVenue>['columns'] = [
     {
-      title: intl.$t({ defaultMessage: 'Venue Name' }),
+      title: intl.$t({ defaultMessage: 'Venue' }),
       key: 'name',
       dataIndex: 'name',
       // sorter: true,
@@ -81,18 +78,6 @@ function useColumns (
       }
     },
     {
-      title: intl.$t({ defaultMessage: 'Firmware Type' }),
-      key: 'type',
-      dataIndex: 'type',
-      // sorter: true,
-      sorter: { compare: sortProp('switchFirmwareVersion.category', defaultSort) },
-      filterable: filterables ? filterables['type'] : false,
-      filterMultiple: false,
-      render: function (data, row) {
-        return transform(row.switchFirmwareVersion?.category, 'type') ?? '--'
-      }
-    },
-    {
       title: intl.$t({ defaultMessage: 'Last Update' }),
       key: 'lastUpdate',
       dataIndex: 'lastUpdate',
@@ -102,7 +87,7 @@ function useColumns (
       }
     },
     {
-      title: intl.$t({ defaultMessage: 'Next Update Schedule' }),
+      title: intl.$t({ defaultMessage: 'Scheduling' }),
       key: 'nextSchedule',
       dataIndex: 'nextSchedule',
       sorter: false,
@@ -353,9 +338,10 @@ export function VenueFirmwareList () {
 
   const { versionFilterOptions } = useGetSwitchCurrentVersionsQuery({ params: useParams() }, {
     selectFromResult ({ data }) {
+      const versionList = data?.currentVersions.concat(data?.currentVersionsAboveTen)
       return {
         // eslint-disable-next-line max-len
-        versionFilterOptions: data?.currentVersions?.map(v=>({ key: v, value: v.replace('_b392', '') })) || true
+        versionFilterOptions: versionList?.map(v=>({ key: v, value: v.replace('_b392', '') })) || true
       }
     }
   })
