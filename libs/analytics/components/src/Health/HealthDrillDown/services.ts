@@ -134,8 +134,7 @@ export const api = dataApi.injectEndpoints({
           }
         `,
         variables: {
-          ...payload,
-          granularity: 'all'
+          ...payload
         }
         }}
     })

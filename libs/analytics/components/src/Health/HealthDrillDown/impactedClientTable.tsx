@@ -1,4 +1,3 @@
-import { uniqueId }               from 'lodash'
 import { useIntl, defineMessage } from 'react-intl'
 
 import { AnalyticsFilter, sortProp, defaultSort, aggregateDataBy } from '@acx-ui/analytics/utils'
@@ -56,7 +55,7 @@ export const ImpactedClientsTable = ({
               data?.network?.hierarchyNode?.impactedClients
             ).map?.(
               (impactedClient) => {
-                return { ...impactedClient, id: uniqueId() }
+                return { ...impactedClient, id: impactedClient?.mac?.[0] }
               }
             ),
           ...rest
