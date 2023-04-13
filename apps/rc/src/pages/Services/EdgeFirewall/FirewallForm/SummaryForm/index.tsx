@@ -4,6 +4,7 @@ import styled                                         from 'styled-components'
 
 import { Descriptions, StepsForm, useStepFormContext, Subtitle } from '@acx-ui/components'
 import { SpaceWrapper }                                          from '@acx-ui/rc/components'
+import { StatefulAcl }                                           from '@acx-ui/rc/utils'
 
 import { FirewallForm } from '..'
 
@@ -21,7 +22,9 @@ export const SummaryForm = styled(({ className }: { className?: string }) => {
   const ddosLimitEnabled = formValues.ddosRateLimitingEnabled
   const ddosRulesCount = formValues.ddosRateLimitingRules.length
   const statefulAclEnabled = formValues.statefulAclEnabled
-  const statefulACLRulesCount = formValues.statefulAcls
+  const statefulACLRulesCount = formValues.statefulAcls.length
+  // const statefulACLRulesCount = formValues.statefulAcls.reduce(
+  // (acc: number, item: StatefulAcl) => (acc + item.rules.length), 0)
 
   return (
     <Row gutter={[10, 30]} className={className}>

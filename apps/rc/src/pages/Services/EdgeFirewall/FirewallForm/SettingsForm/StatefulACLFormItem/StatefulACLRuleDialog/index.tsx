@@ -179,7 +179,7 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
       title={editMode ?
         $t({ defaultMessage: 'Edit ACL Rule' }) :
         $t({ defaultMessage: 'Add ACL Rule' })}
-      width='30%'
+      width='35%'
       visible={visible}
       footer={footer}
       onCancel={handleClose}

@@ -48,8 +48,13 @@ const AddFirewall = () => {
         OutboundDefaultRules.forEach((outboundRule) => {
           _.remove(acl.rules, _.pick(outboundRule, ['priority', 'accessAction', 'protocolType']))
         })
-      }
 
+        // the 1-3 rules are default rules
+        _.remove(acl.rules, (o) => Number(o?.priority) <= 3)
+
+        // one of the default rule is always the last rule
+        acl.rules.pop()
+      }
     })
   }
 

@@ -155,7 +155,6 @@ describe('SettingsForm', () => {
     expect(await screen.findByText('Stateful ACL Settings')).toBeVisible()
 
     // add stateful ACL rule
-    // await type(within(drawer).getByRole('textbox', { name: 'Stateful ACL Name' }), '')
     await click(await within(drawer).findByText('Add Rule'))
     const dialogs = screen.queryAllByRole('dialog')
     const dialog = dialogs.filter(elem => elem.classList.contains('ant-modal'))[0]
@@ -169,6 +168,8 @@ describe('SettingsForm', () => {
     await click(await within(src).findByRole('radio', { name: 'Subnet Address' }))
     await type(within(src).getByPlaceholderText('Network address'), '1.1.1.1')
     await type(within(src).getByPlaceholderText('Mask'), '255.255.255.255')
+    const destination = await screen.findByRole('group', { name: 'Destination' })
+    await click(await within(destination).findByRole('radio', { name: 'Any IP Address' }))
     await click(within(dialog).getByRole('button', { name: 'Add' }))
     await click(await within(drawer).findByRole('row', { name: /UDP/ }))
     await click(within(drawer).getByRole('button', { name: 'Add' }))
@@ -183,50 +184,48 @@ describe('SettingsForm', () => {
     // activate by button in action column
     const row = await screen.findByRole('row', { name: /Smart Edge 3/i })
     await click(within(row).getByRole('switch'))
-    console.log('to Step 3')
 
     // Navigate to Step 3
     await click(actions.getByRole('button', { name: 'Next' }))
     expect(await body.findByRole('heading', { name: 'Summary' })).toBeVisible()
 
-    // const ddosResult = await screen.findByText(/DDoS Rate-limiting/)
-    // // eslint-disable-next-line testing-library/no-node-access
-    // expect((ddosResult.parentNode as HTMLDivElement).textContent)
-    //   .toBe('DDoS Rate-limitingOFF')
+    const ddosResult = await screen.findByText(/DDoS Rate-limiting/)
+    // eslint-disable-next-line testing-library/no-node-access
+    expect((ddosResult.parentNode as HTMLDivElement).textContent)
+      .toBe('DDoS Rate-limitingOFF')
 
     const aclResult = await screen.findByText(/Stateful ACL/)
     // eslint-disable-next-line testing-library/no-node-access
     expect((aclResult.parentNode as HTMLDivElement).textContent)
-      .toBe('Stateful ACLON(1 ACL)')
+      .toBe('Stateful ACLON (2 ACL)')
 
     expect(screen.getByText('SmartEdge (1)')).not.toBeNull()
-    expect(screen.getByText('Smart Edge 2')).not.toBeNull()
+    expect(screen.getByText('Smart Edge 3')).not.toBeNull()
 
     await click(actions.getByRole('button', { name: 'Finish' }))
     await waitFor(() => {
       expect(mockedAddFn).toBeCalledWith({
         serviceName: 'Test 2',
-        edgeIds: ['0000000002'],
+        edgeIds: ['0000000003'],
         ddosRateLimitingEnabled: false,
         ddosRateLimitingRules: [],
         statefulAclEnabled: true,
         statefulAcls: [{
-          name: 'Outbound_ACL',
-          description: '',
+          name: 'Inbound ACL',
+          direction: 'INBOUND',
+          rules: []
+        },{
+          name: 'Outbound ACL',
           direction: 'OUTBOUND',
           rules: [
             {
-              description: '',
               accessAction: 'BLOCK',
               protocolType: ProtocolType.UDP,
               sourceAddressType: AddressType.SUBNET_ADDRESS,
               sourceAddress: '1.1.1.1',
               sourceAddressMask: '255.255.255.255',
-              sourcePort: '',
               destinationAddressType: AddressType.ANY_IP_ADDRESS,
-              destinationAddress: '',
-              destinationAddressMask: '',
-              destinationPort: ''
+              priority: 4
             }]
         }]
       })
