@@ -8,7 +8,7 @@ import {
   Loader,
   showActionModal
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
 import { useGetResidentPortalListQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -28,8 +28,8 @@ export default function ResidentPortalTable () {
   const intl = useIntl()
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
-//   const [ deleteDpsk ] = useDeleteDpskMutation()
-//   const isCloudpathEnabled = useIsSplitOn(Features.DPSK_CLOUDPATH_FEATURE)
+  //   const [ deleteDpsk ] = useDeleteDpskMutation()
+  //   const isCloudpathEnabled = useIsSplitOn(Features.DPSK_CLOUDPATH_FEATURE)
 
   const tableQuery = useTableQuery({ useQuery: useGetResidentPortalListQuery, defaultPayload: {} })
 
@@ -93,68 +93,68 @@ export default function ResidentPortalTable () {
       }
     }
   ]
-//     {
-//       key: 'passphraseFormat',
-//       title: intl.$t({ defaultMessage: 'Passphrase Format' }),
-//       dataIndex: 'passphraseFormat',
-//       sorter: true,
-//       render: function (data) {
-//         return transformDpskNetwork(
-//           intl,
-//           DpskNetworkType.FORMAT,
-//           data as string
-//         )
-//       }
-//     },
-//     {
-//       key: 'passphraseLength',
-//       title: intl.$t({ defaultMessage: 'Passphrase Length' }),
-//       dataIndex: 'passphraseLength',
-//       align: 'center'
-//     },
-//     {
-//       key: 'expirationType',
-//       title: intl.$t({ defaultMessage: 'Passphrase Expiration' }),
-//       dataIndex: 'expirationType',
-//       render: function (data, row) {
-//         return transformAdvancedDpskExpirationText(
-//           intl,
-//           {
-//             expirationType: row.expirationType,
-//             expirationDate: row.expirationDate,
-//             expirationOffset: row.expirationOffset
-//           }
-//         )
-//       }
-//     },
-//     {
-//       key: 'networkIds',
-//       title: intl.$t({ defaultMessage: 'Networks' }),
-//       dataIndex: 'networkIds',
-//       align: 'center',
-//       render: function (data) {
-//         return data ? (data as Array<string>).length : 0
-//       }
-//     },
-//     {
-//       key: 'deviceCountLimit',
-//       title: intl.$t({ defaultMessage: 'Devices allowed per passphrase' }),
-//       dataIndex: 'deviceCountLimit',
-//       show: isCloudpathEnabled,
-//       render: function (data, row) {
-//         return displayDeviceCountLimit(row.deviceCountLimit)
-//       }
-//     },
-//     {
-//       key: 'policyDefaultAccess',
-//       title: intl.$t({ defaultMessage: 'Default Access' }),
-//       dataIndex: 'policyDefaultAccess',
-//       show: isCloudpathEnabled,
-//       render: function (data, row) {
-//         return displayDefaultAccess(row.policyDefaultAccess)
-//       }
-//     }
-//   ]
+  //     {
+  //       key: 'passphraseFormat',
+  //       title: intl.$t({ defaultMessage: 'Passphrase Format' }),
+  //       dataIndex: 'passphraseFormat',
+  //       sorter: true,
+  //       render: function (data) {
+  //         return transformDpskNetwork(
+  //           intl,
+  //           DpskNetworkType.FORMAT,
+  //           data as string
+  //         )
+  //       }
+  //     },
+  //     {
+  //       key: 'passphraseLength',
+  //       title: intl.$t({ defaultMessage: 'Passphrase Length' }),
+  //       dataIndex: 'passphraseLength',
+  //       align: 'center'
+  //     },
+  //     {
+  //       key: 'expirationType',
+  //       title: intl.$t({ defaultMessage: 'Passphrase Expiration' }),
+  //       dataIndex: 'expirationType',
+  //       render: function (data, row) {
+  //         return transformAdvancedDpskExpirationText(
+  //           intl,
+  //           {
+  //             expirationType: row.expirationType,
+  //             expirationDate: row.expirationDate,
+  //             expirationOffset: row.expirationOffset
+  //           }
+  //         )
+  //       }
+  //     },
+  //     {
+  //       key: 'networkIds',
+  //       title: intl.$t({ defaultMessage: 'Networks' }),
+  //       dataIndex: 'networkIds',
+  //       align: 'center',
+  //       render: function (data) {
+  //         return data ? (data as Array<string>).length : 0
+  //       }
+  //     },
+  //     {
+  //       key: 'deviceCountLimit',
+  //       title: intl.$t({ defaultMessage: 'Devices allowed per passphrase' }),
+  //       dataIndex: 'deviceCountLimit',
+  //       show: isCloudpathEnabled,
+  //       render: function (data, row) {
+  //         return displayDeviceCountLimit(row.deviceCountLimit)
+  //       }
+  //     },
+  //     {
+  //       key: 'policyDefaultAccess',
+  //       title: intl.$t({ defaultMessage: 'Default Access' }),
+  //       dataIndex: 'policyDefaultAccess',
+  //       show: isCloudpathEnabled,
+  //       render: function (data, row) {
+  //         return displayDefaultAccess(row.policyDefaultAccess)
+  //       }
+  //     }
+  //   ]
 
   return (
     <>

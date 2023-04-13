@@ -97,6 +97,9 @@ import NetworkSegAuthTable        from './pages/Services/NetworkSegWebAuth/Netwo
 import PortalServiceDetail        from './pages/Services/Portal/PortalDetail'
 import PortalForm                 from './pages/Services/Portal/PortalForm/PortalForm'
 import PortalTable                from './pages/Services/Portal/PortalTable'
+import ResidentPortalDetail       from './pages/Services/ResidentPortal/ResidentPortalDetail/ResidentPortalDetail'
+import ResidentPortalForm         from './pages/Services/ResidentPortal/ResidentPortalForm/ResidentPortalForm'
+import ResidentPortalTable        from './pages/Services/ResidentPortal/ResidentPortalTable/ResidentPortalTable'
 import SelectServiceForm          from './pages/Services/SelectServiceForm'
 import ServiceCatalog             from './pages/Services/ServiceCatalog'
 import WifiCallingDetailView      from './pages/Services/WifiCalling/WifiCallingDetail/WifiCallingDetailView'
@@ -111,9 +114,6 @@ import SwitchClientList           from './pages/Users/Switch/ClientList'
 import WifiClientDetails          from './pages/Users/Wifi/ClientDetails'
 import WifiClientList             from './pages/Users/Wifi/ClientList'
 import GuestManagerPage           from './pages/Users/Wifi/GuestManagerPage'
-import ResidentPortalTable from './pages/Services/ResidentPortal/ResidentPortalTable/ResidentPortalTable'
-import ResidentPortalForm from './pages/Services/ResidentPortal/ResidentPortalForm/ResidentPortalForm'
-import ResidentPortalDetail from './pages/Services/ResidentPortal/ResidentPortalDetail/ResidentPortalDetail'
 
 export default function RcRoutes () {
   const routes = rootRoutes(

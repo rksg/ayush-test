@@ -1,4 +1,4 @@
-import { ResidentPortal } from "@acx-ui/rc/utils"
+import { ResidentPortal } from '@acx-ui/rc/utils'
 
 
 export interface CreateResidentPortalFormFields {
@@ -10,15 +10,15 @@ export interface CreateResidentPortalFormFields {
   textAnnouncements: string;
   textHelp: string;
 }
-  
-export function transferSaveDataToFormFields(data: ResidentPortal): CreateResidentPortalFormFields {
+
+export function transferSaveDataToFormFields (data: ResidentPortal): CreateResidentPortalFormFields {
   const uiConfiguration = data.uiConfiguration && data.uiConfiguration.text ? {
     textTitle: data.uiConfiguration.text.title ? data.uiConfiguration.text.title : '',
     textSubtitle: data.uiConfiguration.text.subTitle ? data.uiConfiguration.text.subTitle : '',
     textLogin: data.uiConfiguration.text.loginText ? data.uiConfiguration.text.loginText : '',
-    textAnnouncements: data.uiConfiguration.text.announcements ? 
+    textAnnouncements: data.uiConfiguration.text.announcements ?
       data.uiConfiguration.text.announcements : '',
-    textHelp: data.uiConfiguration.text.helpText ? data.uiConfiguration.text.helpText : '',
+    textHelp: data.uiConfiguration.text.helpText ? data.uiConfiguration.text.helpText : ''
   } : {
     textTitle: '',
     textSubtitle: '',
@@ -37,9 +37,9 @@ export function transferFormFieldsToSaveData (data: CreateResidentPortalFormFiel
   return {
     name: data.serviceName,
     uiConfiguration: {
-      type: "uiConfiguration",
+      type: 'uiConfiguration',
       text: {
-        type:"text",
+        type: 'text',
         title: data.textTitle,
         subTitle: data.textSubtitle,
         loginText: data.textLogin,

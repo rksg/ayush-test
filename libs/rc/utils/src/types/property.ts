@@ -106,9 +106,9 @@ export interface ResidentPortal {
 }
 
 interface uiConfiguration {
-  type: "uiConfiguration",
+  type: 'uiConfiguration',
   text: {
-    type: "text",
+    type?: 'text',
     title: string,
     subTitle: string,
     loginText: string,

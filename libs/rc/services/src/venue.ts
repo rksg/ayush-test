@@ -1094,7 +1094,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     addResidentPortal: build.mutation<ResidentPortal, RequestFormData>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(PropertyUrlsInfo.addResidentPortal, params,
-          {'Content-Type': undefined, 'Accept':'*/*'})
+          { 'Content-Type': undefined, 'Accept': '*/*' })
         return {
           ...req,
           body: payload
@@ -1105,7 +1105,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     getResidentPortal: build.query<ResidentPortal, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
-          PropertyUrlsInfo.getResidentPortal, 
+          PropertyUrlsInfo.getResidentPortal,
           params,
           { Accept: 'application/hal+json' })
         return {
@@ -1117,7 +1117,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     updateResidentPortal: build.mutation<ResidentPortal, RequestFormData>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(PropertyUrlsInfo.patchResidentPortal, params,
-          {'Content-Type': undefined, 'Accept':'*/*'})
+          { 'Content-Type': undefined, 'Accept': '*/*' })
         return {
           ...req,
           body: payload

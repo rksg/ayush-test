@@ -22,34 +22,34 @@ export default function ResidentPortalDetail () {
   const { tenantId, activeTab, serviceId } = useParams()
   const { $t } = useIntl()
   const navigate = useNavigate()
-//   const { data } = useGetDpskQuery({ params: { tenantId, serviceId } })
+  //   const { data } = useGetDpskQuery({ params: { tenantId, serviceId } })
 
-//   const tabsPathMapping: Record<DpskDetailsTabKey, Path> = {
-//     [DpskDetailsTabKey.OVERVIEW]: useTenantLink(getServiceDetailsLink({
-//       type: ServiceType.DPSK,
-//       oper: ServiceOperation.DETAIL,
-//       serviceId: serviceId!,
-//       activeTab: DpskDetailsTabKey.OVERVIEW
-//     })),
-//     [DpskDetailsTabKey.PASSPHRASE_MGMT]: useTenantLink(getServiceDetailsLink({
-//       type: ServiceType.DPSK,
-//       oper: ServiceOperation.DETAIL,
-//       serviceId: serviceId!,
-//       activeTab: DpskDetailsTabKey.PASSPHRASE_MGMT
-//     }))
-//   }
+  //   const tabsPathMapping: Record<DpskDetailsTabKey, Path> = {
+  //     [DpskDetailsTabKey.OVERVIEW]: useTenantLink(getServiceDetailsLink({
+  //       type: ServiceType.DPSK,
+  //       oper: ServiceOperation.DETAIL,
+  //       serviceId: serviceId!,
+  //       activeTab: DpskDetailsTabKey.OVERVIEW
+  //     })),
+  //     [DpskDetailsTabKey.PASSPHRASE_MGMT]: useTenantLink(getServiceDetailsLink({
+  //       type: ServiceType.DPSK,
+  //       oper: ServiceOperation.DETAIL,
+  //       serviceId: serviceId!,
+  //       activeTab: DpskDetailsTabKey.PASSPHRASE_MGMT
+  //     }))
+  //   }
 
-//   const onTabChange = (tab: string) => {
-//     navigate(tabsPathMapping[tab as DpskDetailsTabKey])
-//   }
+  //   const onTabChange = (tab: string) => {
+  //     navigate(tabsPathMapping[tab as DpskDetailsTabKey])
+  //   }
 
-//   const getTabComp = (activeTab: DpskDetailsTabKey) => {
-//     if (activeTab === DpskDetailsTabKey.OVERVIEW) {
-//       return <DpskOverview data={data} />
-//     }
+  //   const getTabComp = (activeTab: DpskDetailsTabKey) => {
+  //     if (activeTab === DpskDetailsTabKey.OVERVIEW) {
+  //       return <DpskOverview data={data} />
+  //     }
 
-//     return <DpskPassphraseManagement />
-//   }
+  //     return <DpskPassphraseManagement />
+  //   }
 
   return (
     <>

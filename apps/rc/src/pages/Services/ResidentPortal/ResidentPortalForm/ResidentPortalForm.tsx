@@ -21,8 +21,9 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import ResidentPortalSettingsForm from './ResidentPortalSettingsForm'
+
 import { CreateResidentPortalFormFields, transferFormFieldsToSaveData, transferSaveDataToFormFields } from './formParsing'
+import ResidentPortalSettingsForm                                                                     from './ResidentPortalSettingsForm'
 
 interface ResidentPortalFormProps {
   editMode?: boolean
@@ -48,8 +49,8 @@ export default function ResidentPortalForm (props: ResidentPortalFormProps) {
   const formRef = useRef<StepsFormInstance<CreateResidentPortalFormFields>>()
 
   const initialValues: Partial<CreateResidentPortalFormFields> = {
-    textTitle: $t({defaultMessage: 'Resident Portal'}),
-    textLogin: $t({defaultMessage: 'Welcome to Your Portal'})
+    textTitle: $t({ defaultMessage: 'Resident Portal' }),
+    textLogin: $t({ defaultMessage: 'Welcome to Your Portal' })
   }
 
   useEffect(() => {
@@ -59,25 +60,25 @@ export default function ResidentPortalForm (props: ResidentPortalFormProps) {
   }, [originalPortalData, editMode])
 
   const saveData = async (data: CreateResidentPortalFormFields) => {
-    
+
     const residentPortalSaveData = transferFormFieldsToSaveData(data)
 
     let result: ResidentPortal
 
     try {
 
-      const portalConfiguration = new Blob([JSON.stringify(residentPortalSaveData)], {type: 'application/json'})
+      const portalConfiguration = new Blob([JSON.stringify(residentPortalSaveData)], { type: 'application/json' })
       const formData = new FormData()
 
-      if (editMode) {        
+      if (editMode) {
         formData.append('changes', portalConfiguration, '')
-        result = await updateResidentPortal({ params, payload: formData}).unwrap()
+        result = await updateResidentPortal({ params, payload: formData }).unwrap()
       } else {
         formData.append('portal', portalConfiguration, '')
         result = await addResidentPortal({ payload: formData }).unwrap()
       }
 
-      navigate(linkToServices, {replace: true})
+      navigate(linkToServices, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
