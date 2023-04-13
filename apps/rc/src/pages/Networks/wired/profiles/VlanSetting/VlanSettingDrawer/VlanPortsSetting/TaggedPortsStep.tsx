@@ -244,25 +244,40 @@ export function TaggedPortsStep () {
       ?.filter(obj => obj.model === vlanSettingValues.switchFamilyModels?.model)) : []
 
     const untaggedPortExists = vlanSelectedPorts.map(item => item?.map(
-      obj => { return obj.untaggedPorts?.split(',').includes(timeslot) }))[0]
+      obj => { return obj.untaggedPorts?.split(',').includes(timeslot) }))
+      .some(item => item?.some(element => element === true))
 
     const taggedPortExists = vlanSelectedPorts.map(item => item?.map(
-      obj => { return obj.taggedPorts?.split(',').includes(timeslot) }))[0]
+      obj => { return obj.taggedPorts?.split(',').includes(timeslot) }))
+      .some(item => item?.some(element => element === true))
 
-    const filteredModel = vlanList ? vlanList.filter(model => model.switchFamilyModels?.some(
-      switchModel => switchModel.model === vlanSettingValues.switchFamilyModels?.model)) : []
+    const untaggedModel = vlanList ?
+      vlanList.filter(item => item.switchFamilyModels?.some(
+        switchModel => switchModel.model === vlanSettingValues.switchFamilyModels?.model &&
+        switchModel.untaggedPorts?.split(',').includes(timeslot))) : []
+
+    const taggedModel = vlanList ?
+      vlanList.filter(item => item.switchFamilyModels?.some(
+        switchModel => switchModel.model === vlanSettingValues.switchFamilyModels?.model &&
+        switchModel.taggedPorts?.split(',').includes(timeslot))) : []
 
     if(untaggedPorts.includes(timeslot)){
       return <div>{$t({ defaultMessage: 'Port set as untagged' })}</div>
     }else{
       return <div>
         <div>{$t({ defaultMessage: 'Networks on this port:' })}</div>
-        <div><UI.TagsOutlineIcon /><UI.PortSpan>
-          {untaggedPortExists && untaggedPortExists[0] ?
-            filteredModel[0].vlanId : '-'}</UI.PortSpan></div>
-        <div><UI.TagsSolidIcon /><UI.PortSpan>
-          {taggedPortExists && taggedPortExists[0] ?
-            filteredModel[0].vlanId : '-'}</UI.PortSpan></div>
+        <div>
+          <UI.TagsOutlineIcon />
+          <UI.PortSpan>
+            {untaggedPortExists && untaggedModel[0] ? untaggedModel[0].vlanId : '-'}
+          </UI.PortSpan>
+        </div>
+        <div>
+          <UI.TagsSolidIcon />
+          <UI.PortSpan>
+            {taggedPortExists && taggedModel[0] ? taggedModel[0].vlanId : '-'}
+          </UI.PortSpan>
+        </div>
       </div>
     }
   }

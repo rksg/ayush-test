@@ -197,12 +197,13 @@ export function UntaggedPortsStep () {
     const vlanSelectedPorts = vlanList ? vlanList.map(item => item.switchFamilyModels
       ?.filter(obj => obj.model === vlanSettingValues.switchFamilyModels?.model)) : []
     const portExists = vlanSelectedPorts.map(item => item?.map(
-      obj => { return obj.untaggedPorts?.includes(timeslot)}))[0]
+      obj => { return obj.untaggedPorts?.split(',').includes(timeslot)}))
+      .some(item => item?.some(element => element === true))
 
     const taggedPorts =
       vlanSettingValues.switchFamilyModels?.taggedPorts?.toString().split(',') || []
 
-    const disabledPorts = taggedPorts.includes(timeslot) || (portExists && portExists[0]) || false
+    const disabledPorts = taggedPorts.includes(timeslot) || portExists || false
     return disabledPorts
   }
 
@@ -214,25 +215,39 @@ export function UntaggedPortsStep () {
       ?.filter(obj => obj.model === vlanSettingValues.switchFamilyModels?.model)) : []
 
     const untaggedPortExists = vlanSelectedPorts.map(item => item?.map(
-      obj => { return obj.untaggedPorts?.split(',').includes(timeslot) }))[0]
+      obj => { return obj.untaggedPorts?.split(',').includes(timeslot) }))
+      .some(item => item?.some(element => element === true))
 
     const taggedPortExists = vlanSelectedPorts.map(item => item?.map(
-      obj => { return obj.taggedPorts?.split(',').includes(timeslot) }))[0]
+      obj => { return obj.taggedPorts?.split(',').includes(timeslot) }))
+      .some(item => item?.some(element => element === true))
 
-    const filteredModel = vlanList ? vlanList.filter(model => model.switchFamilyModels?.some(
-      switchModel => switchModel.model === vlanSettingValues.switchFamilyModels?.model)) : []
+    const untaggedModel = vlanList ?
+      vlanList.filter(item => item.switchFamilyModels?.some(
+        switchModel => switchModel.model === vlanSettingValues.switchFamilyModels?.model &&
+        switchModel.untaggedPorts?.split(',').includes(timeslot))) : []
+
+    const taggedModel = vlanList ?
+      vlanList.filter(item => item.switchFamilyModels?.some(
+        switchModel => switchModel.model === vlanSettingValues.switchFamilyModels?.model &&
+        switchModel.taggedPorts?.split(',').includes(timeslot))) : []
 
     if(taggedPorts.includes(timeslot)){
       return <div>{$t({ defaultMessage: 'Port set as tagged' })}</div>
     }else{
       return <div>
         <div>{$t({ defaultMessage: 'Networks on this port:' })}</div>
-        <div><UI.TagsOutlineIcon /><UI.PortSpan>
-          {untaggedPortExists && untaggedPortExists[0] ?
-            filteredModel[0].vlanId : '-'}</UI.PortSpan></div>
-        <div><UI.TagsSolidIcon /><UI.PortSpan>
-          {taggedPortExists && taggedPortExists[0] ?
-            filteredModel[0].vlanId : '-'}</UI.PortSpan></div>
+        <div>
+          <UI.TagsOutlineIcon />
+          <UI.PortSpan>
+            {untaggedPortExists && untaggedModel[0] ? untaggedModel[0].vlanId : '-'}
+          </UI.PortSpan></div>
+        <div>
+          <UI.TagsSolidIcon />
+          <UI.PortSpan>
+            {taggedPortExists && taggedModel[0] ? taggedModel[0].vlanId : '-'}
+          </UI.PortSpan>
+        </div>
       </div>
     }
   }
