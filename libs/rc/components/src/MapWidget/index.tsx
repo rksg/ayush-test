@@ -6,6 +6,8 @@ import { useDashboardOverviewQuery, useDashboardV2OverviewQuery } from '@acx-ui/
 import { useParams }                                              from '@acx-ui/react-router-dom'
 import { useDashboardFilter, NetworkNodePath }                    from '@acx-ui/utils'
 
+import { usePreference } from '../usePreference'
+
 import VenuesMap             from './VenuesMap'
 import { massageVenuesData } from './VenuesMap/helper'
 
@@ -31,11 +33,25 @@ function ActualMap () {
   const queryResults = useDashboardOverviewQuery({
     params: useParams()
   })
+  const {
+    currentMapRegion,
+    getReqState,
+    updateReqState
+  } = usePreference()
 
   const data = useMemo(() => massageVenuesData(queryResults.data), [queryResults])
+  const isLoading = getReqState.isLoading || getReqState.isFetching || updateReqState.isLoading
+
   return (
     <Loader states={[queryResults]}>
-      <VenuesMap cluster={true} data={data} enableVenueFilter={true} />
+      { // due to GoogleMap js script cannot be reloaded with different loader configs
+        isLoading === false &&
+        <VenuesMap
+          cluster={true}
+          data={data}
+          enableVenueFilter={true}
+          region={currentMapRegion} />
+      }
     </Loader>
   )
 }
@@ -54,10 +70,26 @@ function ActualMapV2 () {
     }
   })
 
+  const {
+    currentMapRegion,
+    getReqState,
+    updateReqState
+  } = usePreference()
+
   const data = useMemo(() => massageVenuesData(queryResults.data), [queryResults])
+  const isLoading = getReqState.isLoading || getReqState.isFetching || updateReqState.isLoading
+
   return (
-    <Loader states={[queryResults]}>
-      <VenuesMap cluster={true} data={data} enableVenueFilter={true} />
+    <Loader states={[queryResults, getReqState, updateReqState]}>
+      { // due to GoogleMap js script cannot be reloaded with different loader configs
+        isLoading === false &&
+        <VenuesMap
+          cluster={true}
+          data={data}
+          enableVenueFilter={true}
+          region={currentMapRegion}
+        />
+      }
     </Loader>
   )
 }

@@ -21,26 +21,26 @@ import {
 import {
   MspEcDropdownList
 } from '@acx-ui/msp/components'
-import { CloudMessageBanner, useUpdateGoogleMapRegion } from '@acx-ui/rc/components'
-import { useGetPreferencesQuery }                       from '@acx-ui/rc/services'
-import { isDelegationMode, TenantPreferenceSettings }   from '@acx-ui/rc/utils'
-import { Link, Outlet, useNavigate, useTenantLink }     from '@acx-ui/react-router-dom'
-import { useParams }                                    from '@acx-ui/react-router-dom'
-import { RolesEnum }                                    from '@acx-ui/types'
-import { hasRoles, useUserProfileContext }              from '@acx-ui/user'
-import { AccountType, getJwtTokenPayload, PverName }    from '@acx-ui/utils'
+import { CloudMessageBanner }                                     from '@acx-ui/rc/components'
+import { isDelegationMode }                                       from '@acx-ui/rc/utils'
+import { Link, Outlet, useNavigate, useTenantLink }               from '@acx-ui/react-router-dom'
+import { useParams }                                              from '@acx-ui/react-router-dom'
+import { RolesEnum }                                              from '@acx-ui/types'
+import { hasRoles, useUserProfileContext }                        from '@acx-ui/user'
+import { AccountType, getJwtTokenPayload, PverName, useTenantId } from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
 import SearchBar         from './SearchBar'
 import * as UI           from './styledComponents'
-
-const getMapRegion = (data: TenantPreferenceSettings | undefined): string => {
-  return data?.global.mapRegion as string
-}
+import { useLogo }       from './useLogo'
 
 function Layout () {
-  const [supportStatus,setSupportStatus] = useState('')
-  const [isSkip, setSkipQuery] = useState(false)
+  const { $t } = useIntl()
+  const navigate = useNavigate()
+  const tenantId = useTenantId()
+  const params = useParams()
+
+  const logo = useLogo(tenantId)
 
   const { data: userProfile } = useUserProfileContext()
   const companyName = userProfile?.companyName
@@ -48,35 +48,16 @@ function Layout () {
   const showHomeButton =
     isDelegationMode() || userProfile?.var || tenantType === AccountType.MSP_NON_VAR ||
     tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
-  const { $t } = useIntl()
-  const basePath = useTenantLink('/users/guestsManager')
-  const navigate = useNavigate()
-  const params = useParams()
-  const searchFromUrl = params.searchVal || ''
-
-  const [searchExpanded, setSearchExpanded] = useState<boolean>(searchFromUrl !== '')
-  const [licenseExpanded, setLicenseExpanded] = useState<boolean>(false)
-  const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
-
-  const { data } = useGetPreferencesQuery({ params }, { skip: isSkip })
-  const { update: updateGoogleMapRegion } = useUpdateGoogleMapRegion()
   const isBackToRC = (PverName.ACX === getJwtTokenPayload().pver ||
     PverName.ACX_HYBRID === getJwtTokenPayload().pver)
 
+  const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
+  const basePath = useTenantLink('/users/guestsManager')
   const getIndexPath = () => {
     return isGuestManager
       ? `/${getJwtTokenPayload().tenantId}/v/users/guestsManager`
       : `/${getJwtTokenPayload().tenantId}/v`
   }
-
-  useEffect(() => {
-    if (data?.global) {
-      const currentMapRegion = getMapRegion(data)
-      updateGoogleMapRegion(currentMapRegion)
-      setSkipQuery(true)
-    }
-  }, [data])
-
   useEffect(() => {
     if (isGuestManager && params['*'] !== 'guestsManager') {
       navigate({
@@ -86,8 +67,15 @@ function Layout () {
     }
   }, [isGuestManager, params['*']])
 
+  const searchFromUrl = params.searchVal || ''
+  const [searchExpanded, setSearchExpanded] = useState<boolean>(searchFromUrl !== '')
+  const [licenseExpanded, setLicenseExpanded] = useState<boolean>(false)
+
+  const [supportStatus, setSupportStatus] = useState('')
+
   return (
     <LayoutComponent
+      logo={logo}
       menuConfig={useMenuConfig()}
       content={
         <>
@@ -95,29 +83,27 @@ function Layout () {
           <Outlet />
         </>
       }
-      leftHeaderContent={
-        <UI.LeftHeaderWrapper>
-          { showHomeButton && (isBackToRC ?
-            <a href={`/api/ui/v/${getJwtTokenPayload().tenantId}`}>
-              <UI.Home>
-                <LayoutUI.Icon children={<HomeSolid />} />
-                {$t({ defaultMessage: 'Home' })}
-              </UI.Home>
-            </a> :
-            <Link to={getIndexPath()}>
-              <UI.Home>
-                <LayoutUI.Icon children={<HomeSolid />} />
-                {$t({ defaultMessage: 'Home' })}
-              </UI.Home>
-            </Link>)
-          }
-          <RegionButton/>
-          <HeaderContext.Provider value={{
-            searchExpanded, licenseExpanded, setSearchExpanded, setLicenseExpanded }}>
-            <LicenseBanner/>
-          </HeaderContext.Provider>
-        </UI.LeftHeaderWrapper>
-      }
+      leftHeaderContent={<>
+        { showHomeButton && (isBackToRC ?
+          <a href={`/api/ui/v/${getJwtTokenPayload().tenantId}`}>
+            <UI.Home>
+              <LayoutUI.Icon children={<HomeSolid />} />
+              {$t({ defaultMessage: 'Home' })}
+            </UI.Home>
+          </a> :
+          <Link to={getIndexPath()}>
+            <UI.Home>
+              <LayoutUI.Icon children={<HomeSolid />} />
+              {$t({ defaultMessage: 'Home' })}
+            </UI.Home>
+          </Link>)
+        }
+        <RegionButton/>
+        <HeaderContext.Provider value={{
+          searchExpanded, licenseExpanded, setSearchExpanded, setLicenseExpanded }}>
+          <LicenseBanner/>
+        </HeaderContext.Provider>
+      </>}
 
       rightHeaderContent={<>
         <HeaderContext.Provider value={{

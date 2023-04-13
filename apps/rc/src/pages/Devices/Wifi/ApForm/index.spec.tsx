@@ -3,10 +3,10 @@ import userEvent      from '@testing-library/user-event'
 import { Modal }      from 'antd'
 import { rest }       from 'msw'
 
-import { useIsSplitOn }                 from '@acx-ui/feature-toggle'
-import { apApi, venueApi }              from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }              from '@acx-ui/store'
+import { useIsSplitOn }                                         from '@acx-ui/feature-toggle'
+import { apApi, venueApi }                                      from '@acx-ui/rc/services'
+import { AdministrationUrlsInfo, CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                      from '@acx-ui/store'
 import {
   act,
   mockServer,
@@ -110,7 +110,13 @@ describe('AP Form - Add', () => {
       rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
         (_, res, ctx) => res(ctx.json(apDetailsList[0]))),
       rest.get(WifiUrlsInfo.getAp.url.split(':serialNumber')[0],
-        (_, res, ctx) => res(ctx.json(apDetailsList)))
+        (_, res, ctx) => res(ctx.json(apDetailsList))),
+      rest.get(
+        AdministrationUrlsInfo.getPreferences.url,
+        (_req, res, ctx) => res(ctx.json({ global: {
+          mapRegion: 'TW'
+        } }))
+      )
     )
   })
   afterEach(() => {

@@ -1,15 +1,19 @@
 import { useIntl } from 'react-intl'
 
 import { Tabs }                    from '@acx-ui/components'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import { PolicyType, ServiceType } from '@acx-ui/rc/utils'
 
 
 import ClientIsolationAllowList from './ClientIsolationAllowList'
 import DHCPInstance             from './DHCPInstance'
+import EdgeDhcpTab              from './DHCPInstance/Edge'
 import MdnsProxyInstances       from './MdnsProxyInstances'
 import { VenueRogueAps }        from './VenueRogueAps'
 
 export function VenueServicesTab () {
+
+  const isEdgeEnabled = useIsSplitOn(Features.EDGES)
   const { $t } = useIntl()
 
   return (
@@ -21,7 +25,13 @@ export function VenueServicesTab () {
             key={'wifi'}>
             <DHCPInstance/>
           </Tabs.TabPane>
-
+          {
+            isEdgeEnabled &&
+              <Tabs.TabPane tab={$t({ defaultMessage: 'SmartEdge' })}
+                key={'smartEdge'}>
+                <EdgeDhcpTab/>
+              </Tabs.TabPane>
+          }
         </Tabs>
       </Tabs.TabPane>
       <Tabs.TabPane tab={$t({ defaultMessage: 'mDNS Proxy' })} key={ServiceType.MDNS_PROXY}>

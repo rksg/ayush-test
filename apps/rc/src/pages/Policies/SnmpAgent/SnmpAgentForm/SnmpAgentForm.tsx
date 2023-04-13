@@ -3,10 +3,10 @@ import { useEffect, useRef, useState } from 'react'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { PageHeader, showActionModal, StepsForm, StepsFormInstance }                          from '@acx-ui/components'
-import { useAddApSnmpPolicyMutation, useGetApSnmpPolicyQuery, useUpdateApSnmpPolicyMutation } from '@acx-ui/rc/services'
-import { ApSnmpPolicy, getPolicyListRoutePath }                                               from '@acx-ui/rc/utils'
-import { useTenantLink }                                                                      from '@acx-ui/react-router-dom'
+import { PageHeader, showActionModal, StepsForm, StepsFormInstance }                             from '@acx-ui/components'
+import { useAddApSnmpPolicyMutation, useGetApSnmpPolicyQuery, useUpdateApSnmpPolicyMutation }    from '@acx-ui/rc/services'
+import { ApSnmpPolicy, getPolicyListRoutePath, getPolicyRoutePath, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
+import { useTenantLink }                                                                         from '@acx-ui/react-router-dom'
 
 import SnmpAgentSettingForm from './SnmpAgentSettingForm'
 
@@ -18,7 +18,9 @@ type SnmpAgentFormProps = {
 const SnmpAgentForm = (props: SnmpAgentFormProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const linkToPolicies = useTenantLink(getPolicyListRoutePath())
+  const tablePath = getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.LIST })
+  const linkToPolicies = useTenantLink(tablePath)
+
   const params = useParams()
 
   const { editMode } = props

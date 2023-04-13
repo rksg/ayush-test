@@ -4,7 +4,8 @@ import { Form, Space, Switch }    from 'antd'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { showActionModal, Tabs }    from '@acx-ui/components'
+import { showActionModal, Tabs }                 from '@acx-ui/components'
+import { EdgeDhcpLeaseTable, EdgeDhcpPoolTable } from '@acx-ui/rc/components'
 import {
   useGetDhcpHostStatsQuery,
   useGetDhcpPoolStatsQuery,
@@ -18,9 +19,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 
-import Leases           from './Leases'
 import ManageDhcpDrawer from './ManageDhcpDrawer'
-import Pools            from './Pools'
 import * as UI          from './styledComponents'
 
 const EdgeDhcp = () => {
@@ -64,14 +63,14 @@ const EdgeDhcp = () => {
   const tabs = {
     pools: {
       title: $t({ defaultMessage: 'Pools' }),
-      content: <Pools tableQuery={poolTableQuery} />
+      content: <EdgeDhcpPoolTable tableQuery={poolTableQuery} />
     },
     leases: {
       title: $t(
         { defaultMessage: 'Leases ( {count} online )' },
         { count: dhcpHostStats?.totalCount || 0 }
       ),
-      content: <Leases />
+      content: <EdgeDhcpLeaseTable edgeId={serialNumber} />
     }
   }
 

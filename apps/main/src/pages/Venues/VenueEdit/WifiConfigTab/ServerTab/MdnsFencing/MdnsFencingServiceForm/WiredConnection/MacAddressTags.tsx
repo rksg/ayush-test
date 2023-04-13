@@ -1,16 +1,27 @@
 import { CSSProperties, useEffect, useRef, useState } from 'react'
 
 import { Input, InputRef, Space, Tag, Tooltip } from 'antd'
-import _                                        from 'lodash'
+import { includes }                             from 'lodash'
 import { useIntl }                              from 'react-intl'
+import { v4 as uuidv4 }                         from 'uuid'
 
 import { Plus } from '@acx-ui/icons'
 
+import { ConvertToStandardMacAddress, IsValidMacAddress } from '../../utils'
+
 export interface TagData {
+  id: string,
   value: string,
   isInValid?: boolean,
   isUsed?: boolean,
   isUsedOtherRules?: boolean
+}
+
+export enum MacErrorTypeEnum {
+  None,
+  Format,
+  IsCurrentRuleUsed,
+  IsOtherRulesUsed
 }
 
 interface MacAddressesTagsProps {
@@ -18,26 +29,60 @@ interface MacAddressesTagsProps {
   usedMacAddrs?: string[],
   otherUsedMacAddrs?: string[]
   tags: TagData[],
-  tagsChanged: (data: TagData[]) => void
+  tagsChanged: (data: TagData[]) => void,
+  tagInputChanged: (value: string | boolean) => void,
+  confirmFunction: React.MutableRefObject<Function | undefined>
 }
 
-enum MacErrorTypeEnum {
-  None,
-  Format,
-  IsCurrentRuleUsed,
-  IsOtherRulesUsed
+const tagWidth = '140px'
+const borderRadius = '20px'
+
+const tagInputStyle: CSSProperties = {
+  width: tagWidth,
+  verticalAlign: 'top',
+  borderRadius
+}
+
+const tagPlusStyle: CSSProperties = {
+  width: tagWidth,
+  borderRadius
+}
+
+const tagStyle: CSSProperties = {
+  width: tagWidth,
+  userSelect: 'none',
+  borderRadius,
+  backgroundColor: 'black'
+}
+
+const tagFailStyle: CSSProperties = {
+  width: tagWidth,
+  userSelect: 'none',
+  borderRadius,
+  backgroundColor: 'red'
 }
 
 export const MacAddressesTags = (props: MacAddressesTagsProps) => {
   const { $t } = useIntl()
 
-  const { maxNumOfTags, usedMacAddrs=[], otherUsedMacAddrs=[], tags=[], tagsChanged } = props
+  const { maxNumOfTags,
+    usedMacAddrs=[],
+    otherUsedMacAddrs=[],
+    tags=[],
+    tagsChanged,
+    tagInputChanged,
+    confirmFunction
+  } = props
 
   const [inputVisible, setInputVisible] = useState(false)
   const [inputValue, setInputValue] = useState('')
   const [macErrorType, setMacErrorType] = useState(MacErrorTypeEnum.None)
   const inputRef = useRef<InputRef>(null)
   const editInputRef = useRef<InputRef>(null)
+
+  useEffect(() => {
+    confirmFunction.current = handleInputConfirm
+  }, [])
 
   useEffect(() => {
     if (tags.length === 0) {
@@ -55,10 +100,9 @@ export const MacAddressesTags = (props: MacAddressesTagsProps) => {
     editInputRef.current?.focus()
   }, [inputValue])
 
-
-  const handleClose = (removedTag: TagData) => {
+  const handleDelete = (removedTag: TagData) => {
     const { isInValid = false, isUsed = false, isUsedOtherRules = false } = removedTag
-    const newTags = tags.filter((tag) => tag.value !== removedTag.value)
+    const newTags = tags.filter((tag) => tag.id !== removedTag.id)
     tagsChanged(newTags)
 
     if (isInValid && macErrorType === MacErrorTypeEnum.Format) {
@@ -75,45 +119,22 @@ export const MacAddressesTags = (props: MacAddressesTagsProps) => {
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value)
+    const value = e.target.value
+    setInputValue(value)
+
+    tagInputChanged(value)
   }
 
-  const convertToStandardMacAddress = (macAddress: string): string => {
-    let result = macAddress.toUpperCase()
-
-    if (_.includes(macAddress, '-')) {
-      result = result.replace(/-/g, ':')
-    } else if (_.includes(macAddress, '.') || !_.includes(macAddress, ':')) {
-      result = result.replace(/\./g, '')
-      const len = result.length
-      const ret = []
-      for (let i = 0; i < len; i += 2) {
-        ret.push(result.substring(i, i+2))
-      }
-      result = ret.join(':')
-    }
-
-    return result
-  }
-
-  const isValidMacAddress = (macAddress: string) => {
-
-    const regex = (_.includes(macAddress, ':') || _.includes(macAddress, '-'))
-      ? /^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$/
-      : (_.includes(macAddress, '.'))
-        ? /^([0-9A-F]{4}[.]){2}([0-9A-F]{4})$/
-        : /^([0-9A-F]{12})$/
-
-    return regex.test(macAddress.toUpperCase())
-  }
-
-  const createTagData = (inputVaue: string) => {
-    const isValid = isValidMacAddress(inputVaue)
-    const newTagValue = isValid? convertToStandardMacAddress(inputValue) : inputVaue
-    const isUsed = isValid && _.includes(usedMacAddrs, newTagValue)
-    const isUsedOtherRules = isValid && _.includes(otherUsedMacAddrs, newTagValue)
+  const createTagData = (inputValue: string) => {
+    const isValid = IsValidMacAddress(inputValue)
+    const newTagValue = isValid? ConvertToStandardMacAddress(inputValue) : inputValue
+    const tagValues = tags.map(tag => tag.value)
+    const isUsed = isValid &&
+       (includes(usedMacAddrs, newTagValue) || includes(tagValues, newTagValue))
+    const isUsedOtherRules = isValid && includes(otherUsedMacAddrs, newTagValue)
 
     return {
+      id: uuidv4(),
       value: newTagValue,
       isInValid: !isValid,
       isUsed,
@@ -124,54 +145,24 @@ export const MacAddressesTags = (props: MacAddressesTagsProps) => {
   const handleInputConfirm = () => {
     if (inputValue) {
       const newTag = createTagData(inputValue)
-      const tagValues = tags.map(tag => tag.value)
 
-      if (!_.includes(tagValues, newTag.value)) {
-        const newData = [...tags, newTag]
-        tagsChanged(newData)
+      const newData = [...tags, newTag]
+      tagsChanged(newData)
 
-        const { isInValid, isUsed, isUsedOtherRules } = newTag
-        if (isInValid) {
-          setMacErrorType(MacErrorTypeEnum.Format)
-        } else if (isUsed) {
-          setMacErrorType(MacErrorTypeEnum.IsCurrentRuleUsed)
-        } else if (isUsedOtherRules) {
-          setMacErrorType(MacErrorTypeEnum.IsOtherRulesUsed)
-        } else {
-          setMacErrorType(MacErrorTypeEnum.None)
-        }
+      const { isInValid, isUsed, isUsedOtherRules } = newTag
+      if (isInValid) {
+        setMacErrorType(MacErrorTypeEnum.Format)
+      } else if (isUsed) {
+        setMacErrorType(MacErrorTypeEnum.IsCurrentRuleUsed)
+      } else if (isUsedOtherRules) {
+        setMacErrorType(MacErrorTypeEnum.IsOtherRulesUsed)
+      } else {
+        setMacErrorType(MacErrorTypeEnum.None)
       }
     }
     setInputVisible(false)
     setInputValue('')
-  }
-
-  const tagWidth = '140px'
-  const borderRadius = '20px'
-
-  const tagInputStyle: CSSProperties = {
-    width: tagWidth,
-    verticalAlign: 'top',
-    borderRadius
-  }
-
-  const tagPlusStyle: CSSProperties = {
-    width: tagWidth,
-    borderRadius
-  }
-
-  const tagStyle: CSSProperties = {
-    width: tagWidth,
-    userSelect: 'none',
-    borderRadius,
-    backgroundColor: 'black'
-  }
-
-  const tagFailStyle: CSSProperties = {
-    width: tagWidth,
-    userSelect: 'none',
-    borderRadius,
-    backgroundColor: 'red'
+    tagInputChanged(false)
   }
 
   const InputTag =(inputVisible ? (
@@ -212,7 +203,7 @@ export const MacAddressesTags = (props: MacAddressesTagsProps) => {
                 color='white'
                 style={(tag.isInValid || tag.isUsed || tag.isUsedOtherRules)
                   ? tagFailStyle : tagStyle}
-                onClose={() => handleClose(tag)}
+                onClose={() => handleDelete(tag)}
               >
                 <span>
                   {isLongTag ? `${tagValue.slice(0, 20)}...` : tagValue}
