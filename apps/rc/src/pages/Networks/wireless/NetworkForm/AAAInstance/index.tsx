@@ -53,7 +53,7 @@ const AAAInstance = (props:{
                 aaaData?.filter(d => d.id === value)[0])
             }}
             options={[
-              { label: $t({ defaultMessage: 'Select Radius' }), value: '' },
+              { label: $t({ defaultMessage: 'Select RADIUS' }), value: '' },
               ...aaaList
             ]}
           />}

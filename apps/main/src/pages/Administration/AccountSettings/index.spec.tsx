@@ -108,7 +108,27 @@ describe('Account Settings', () => {
       })
 
     expect(screen.queryByTestId('rc-MapRegionFormItem')).not.toBeInTheDocument()
-    expect((await screen.findAllByRole('separator')).length).toBe(3)
+    expect((await screen.findAllByRole('separator')).length).toBe(2)
+  })
+
+  it('should not display language selector', async () => {
+    const fakeNotAdminUser = _.cloneDeep(fakeUserProfile)
+    fakeNotAdminUser.roles = []
+    const notPrimeAdminUser: () => boolean = jest.fn().mockReturnValue(false)
+
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={{ data: fakeNotAdminUser, isPrimeAdmin: notPrimeAdminUser } as UserProfileContextProps}
+        >
+          <AccountSettings />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.queryByTestId('rc-DefaultSystemLanguageFormItem')).not.toBeInTheDocument()
+    expect((await screen.findAllByRole('separator')).length).toBe(2)
   })
 
   it('should not display access support checkbox', async () => {
