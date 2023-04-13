@@ -98,6 +98,7 @@ export function SwitchForm () {
   const [deviceOnline, setDeviceOnline] = useState(false)
   const [isSupportStack, setIsSupportStack] = useState(true)
   const [isOnlyFirmware, setIsOnlyFirmware] = useState(false)
+  const [isRodanModel, setIsRodanModel] = useState(false)
   const [serialNumber, setSerialNumber] = useState('')
   const [readOnly, setReadOnly] = useState(false)
   const [disableIpSetting, setDisableIpSetting] = useState(false)
@@ -265,6 +266,14 @@ export function SwitchForm () {
     }
   }
 
+  const setFirmwareType = function (value: string) {
+    const isRodan = getSwitchModel(value)?.includes('8200')
+    if (isRodan) {
+      formRef.current?.setFieldValue('specifiedType', FIRMWARE.ROUTER)
+    }
+    setIsRodanModel(isRodan || false)
+  }
+
   const serialNumberRegExp = function (value: string) {
     const modelNotSupportStack = ['ICX7150-C08P', 'ICX7150-C08PT']
     // Only 7150-C08P/C08PT are Switch Only.
@@ -282,6 +291,7 @@ export function SwitchForm () {
       setIsSupportStack(!(modelNotSupportStack.indexOf(model) > -1))
       setIsOnlyFirmware(!!modelOnlyFirmware.find(item => model?.indexOf(item) > -1))
       setSerialNumber(value)
+      setFirmwareType(value)
     }
     return Promise.resolve()
   }
@@ -473,7 +483,7 @@ export function SwitchForm () {
                     </>}
                     hidden={editMode}
                   >
-                    <Select disabled={isOnlyFirmware}>
+                    <Select disabled={isOnlyFirmware || isRodanModel}>
                       <Option value={FIRMWARE.AUTO}>
                         {$t({ defaultMessage: 'Factory default' })}
                       </Option>
