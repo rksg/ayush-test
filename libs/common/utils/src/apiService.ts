@@ -38,6 +38,10 @@ export const isIntEnv = () => {
   return window.location.hostname.includes('intalto.ruckuswireless.com')
 }
 
+export const isStage = () => {
+  return window.location.hostname.includes('opsalto.ruckuswireless.com')
+}
+
 export const isProdEnv = () => {
   //prod: ruckus.cloud, asia.ruckus.cloud, eu.ruckus.cloud
   return window.location.hostname.includes('ruckus.cloud')
@@ -95,7 +99,7 @@ export const enableNewApi = function (apiInfo: ApiInfo) {
   const hasOldUrl = !_.isEmpty(apiInfo?.oldUrl)
   if (apiInfo.newApi) {
     return !hasOldUrl || isDev() || isQA() || isScale() ||
-      isLocalHost() || isIntEnv() || isProdEnv()
+      isLocalHost() || isIntEnv() || isStage() || isProdEnv()
   } else {
     return false
   }
