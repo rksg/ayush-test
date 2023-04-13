@@ -8,9 +8,9 @@ import { DateRange }                                    from '@acx-ui/utils'
 
 import { api as incidentApi } from '../IncidentTable/services'
 
-import { networkHierarchy }  from './__tests__/fixtures'
-import { api, Child }        from './services'
-import { NonSelectableItem } from './styledComponents'
+import { networkFilterResult } from './__tests__/fixtures'
+import { api, Child }          from './services'
+import { NonSelectableItem }   from './styledComponents'
 
 import { NetworkFilter, onApply, displayRender, getNetworkFilterData } from './index'
 
@@ -157,7 +157,7 @@ describe('Network Filter', () => {
   })
   it('should render loader', () => {
     mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
-      data: { network: { hierarchyNode: networkHierarchy } }
+      data: { network: { hierarchyNode: networkFilterResult } }
     })
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
@@ -181,7 +181,7 @@ describe('Network Filter', () => {
   })
   it('should select network node', async () => {
     mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
-      data: { network: { hierarchyNode: networkHierarchy } }
+      data: { network: { hierarchyNode: networkFilterResult } }
     })
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
@@ -201,7 +201,7 @@ describe('Network Filter', () => {
   })
   it('should select network node and bands', async () => {
     mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
-      data: { network: { hierarchyNode: networkHierarchy } }
+      data: { network: { hierarchyNode: networkFilterResult } }
     })
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
@@ -262,7 +262,7 @@ describe('Network Filter', () => {
 
   it('should list only venues having APs', async () => {
     mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
-      data: { network: { hierarchyNode: networkHierarchy } }
+      data: { network: { hierarchyNode: networkFilterResult } }
     })
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
@@ -280,7 +280,7 @@ describe('Network Filter', () => {
 
   it('should list only venues having Switches', async () => {
     mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
-      data: { network: { hierarchyNode: networkHierarchy } }
+      data: { network: { hierarchyNode: networkFilterResult } }
     })
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
@@ -298,7 +298,7 @@ describe('Network Filter', () => {
 
   it('should select network node and bands with onApplyFn', async () => {
     mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
-      data: { network: { hierarchyNode: networkHierarchy } }
+      data: { network: { hierarchyNode: networkFilterResult } }
     })
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
@@ -325,7 +325,7 @@ describe('Network Filter', () => {
   })
   it('should search node', async () => {
     mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
-      data: { network: { hierarchyNode: networkHierarchy } }
+      data: { network: { hierarchyNode: networkFilterResult } }
     })
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
@@ -372,7 +372,7 @@ describe('Network Filter with incident severity', () => {
   })
   it('should render network filter with severity', async () => {
     mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
-      data: { network: { hierarchyNode: networkHierarchy } }
+      data: { network: { hierarchyNode: networkFilterResult } }
     })
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
@@ -417,7 +417,7 @@ describe('Network Filter with incident severity', () => {
             aps: [],
             switches: []
           },
-          ...networkHierarchy
+          ...networkFilterResult
         }
       }
     })
@@ -446,7 +446,7 @@ describe('Network Filter with incident severity', () => {
             aps: [],
             switches: []
           },
-          ...networkHierarchy
+          ...networkFilterResult
         }
       }
     })

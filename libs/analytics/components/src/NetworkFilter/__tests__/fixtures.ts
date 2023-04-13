@@ -1,6 +1,7 @@
+/* eslint-disable max-len */
 import { defaultNetworkPath } from '@acx-ui/analytics/utils'
 
-export const networkHierarchy = {
+export const networkFilterResult = {
   children: [{
     id: 'id1',
     type: 'zone',
@@ -39,6 +40,28 @@ export const networkHierarchy = {
     switches: [{ name: 'switch3', mac: 'switch-mac3' }]
   }
   ],
+  name: 'Network',
+  type: 'network',
+  path: defaultNetworkPath
+}
+
+export const recentNetworkFilterResult = {
+  children: [{
+    id: 'id1',
+    type: 'zone',
+    name: 'venue1',
+    path: [...defaultNetworkPath, { type: 'zone', name: 'venue1' }],
+    aps: [
+      { name: 'ap', mac: 'ap-mac', model: 'E510', firmware: '6.2.1.103.2538', serial: '431802006000' }
+    ]
+  },
+  {
+    id: 'id2',
+    type: 'zone',
+    name: 'venue2',
+    path: [...defaultNetworkPath, { type: 'zone', name: 'venue2' }],
+    aps: [{ name: 'ap2', mac: 'ap-mac2', model: 'E510', firmware: '6.2.1.103.2538', serial: '431802006001' }]
+  }],
   name: 'Network',
   type: 'network',
   path: defaultNetworkPath

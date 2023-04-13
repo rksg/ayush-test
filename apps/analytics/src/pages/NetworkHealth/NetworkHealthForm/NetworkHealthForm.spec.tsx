@@ -83,7 +83,7 @@ describe('NetworkHealthForm', () => {
     store.dispatch(dataApi.util.resetApiState())
     store.dispatch(networkApi.util.resetApiState())
     store.dispatch(api.util.resetApiState())
-    mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', { data: mockNetworkHierarchy })
+    mockGraphqlQuery(dataApiURL, 'RecentNetworkHierarchy', { data: mockNetworkHierarchy })
   })
 
   it('works correctly for create flow', async () => {

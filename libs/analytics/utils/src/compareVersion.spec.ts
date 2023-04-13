@@ -1,0 +1,63 @@
+import { meetVersionRequirements, compareVersion } from './compareVersion'
+
+describe('meetVersionRequirements', () => {
+  it('checks minimum version correctly', () => {
+    expect(meetVersionRequirements('1.0.0', '1.0.0')).toBe(true)
+    expect(meetVersionRequirements('1.0.0', '1.1.1')).toBe(true)
+    expect(meetVersionRequirements(null, '1.0.0')).toBe(true)
+
+    expect(meetVersionRequirements(undefined, '1.0.0')).toBe(false)
+    expect(meetVersionRequirements('1.0.0', null)).toBe(false)
+    expect(meetVersionRequirements('1.0.0', '0.9.9')).toBe(false)
+  })
+})
+
+describe('compareVersion', () => {
+  it('compares versions correctly', () => {
+    expect(compareVersion('1', '1')).toBe(0)
+    expect(compareVersion('1', '1.0')).toBe(0)
+    expect(compareVersion('1', '1.0.0')).toBe(0)
+    expect(compareVersion('1', '1.0.0.0')).toBe(0)
+    expect(compareVersion('1', '1')).toBe(0)
+    expect(compareVersion('1.0', '1')).toBe(0)
+    expect(compareVersion('1.0.0', '1')).toBe(0)
+    expect(compareVersion('1.0.0.0', '1')).toBe(0)
+
+    expect(compareVersion('1', '2')).toBe(-1)
+    expect(compareVersion('1.0', '2')).toBe(-1)
+    expect(compareVersion('1.0.0', '2')).toBe(-1)
+    expect(compareVersion('1.0.0.0', '2')).toBe(-1)
+    expect(compareVersion('1', '1.1')).toBe(-1)
+    expect(compareVersion('1.0', '1.1')).toBe(-1)
+    expect(compareVersion('1.0.0', '1.1')).toBe(-1)
+    expect(compareVersion('1.0.0.0', '1.1')).toBe(-1)
+    expect(compareVersion('1', '1.0.1')).toBe(-1)
+    expect(compareVersion('1.0', '1.0.1')).toBe(-1)
+    expect(compareVersion('1.0.0', '1.0.1')).toBe(-1)
+    expect(compareVersion('1.0.0.0', '1.0.1')).toBe(-1)
+    expect(compareVersion('1', '1.0.0.1')).toBe(-1)
+    expect(compareVersion('1.0', '1.0.0.1')).toBe(-1)
+    expect(compareVersion('1.0.0', '1.0.0.1')).toBe(-1)
+    expect(compareVersion('1.0.0.0', '1.0.0.1')).toBe(-1)
+
+    expect(compareVersion('2', '1')).toBe(1)
+    expect(compareVersion('2', '1.0')).toBe(1)
+    expect(compareVersion('2', '1.0.0')).toBe(1)
+    expect(compareVersion('2', '1.0.0.0')).toBe(1)
+    expect(compareVersion('1.1', '1')).toBe(1)
+    expect(compareVersion('1.1', '1.0')).toBe(1)
+    expect(compareVersion('1.1', '1.0.0')).toBe(1)
+    expect(compareVersion('1.1', '1.0.0.0')).toBe(1)
+    expect(compareVersion('1.0.1', '1')).toBe(1)
+    expect(compareVersion('1.0.1', '1.0')).toBe(1)
+    expect(compareVersion('1.0.1', '1.0.0')).toBe(1)
+    expect(compareVersion('1.0.1', '1.0.0.0')).toBe(1)
+    expect(compareVersion('1.0.0.1', '1')).toBe(1)
+    expect(compareVersion('1.0.0.1', '1.0')).toBe(1)
+    expect(compareVersion('1.0.0.1', '1.0.0')).toBe(1)
+    expect(compareVersion('1.0.0.1', '1.0.0.0')).toBe(1)
+
+    expect(compareVersion('6.0.0.0.3066', '7')).toBe(-1)
+    expect(compareVersion('6.0.0.0.3066', '6.0.0.0.3067')).toBe(-1)
+  })
+})

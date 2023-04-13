@@ -1,6 +1,7 @@
 export { aggregateDataBy } from './aggregateDataBy'
 export * from './analyticsFilter'
 export * from './barchart'
+export * from './compareVersion'
 export * from './constants'
 export * from './calculateGranularity'
 export * from './fakeIncident'

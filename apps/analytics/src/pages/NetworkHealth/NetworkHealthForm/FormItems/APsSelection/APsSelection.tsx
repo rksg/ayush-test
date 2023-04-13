@@ -6,16 +6,19 @@ import _                                            from 'lodash'
 import moment                                       from 'moment-timezone'
 import { FormattedMessage, defineMessage, useIntl } from 'react-intl'
 
-import { getNetworkFilterData, useNetworkFilterQuery } from '@acx-ui/analytics/components'
-import { Loader, StepsFormNew }                        from '@acx-ui/components'
-import { APListNode, DateRange }                       from '@acx-ui/utils'
+import { getNetworkFilterData, useRecentNetworkFilterQuery, HierarchyNodeChild } from '@acx-ui/analytics/components'
+import { meetVersionRequirements }                                               from '@acx-ui/analytics/utils'
+import { Loader, StepsFormNew, useStepFormContext }                              from '@acx-ui/components'
+import { APListNode, DateRange }                                                 from '@acx-ui/utils'
 
-import { isAPListNodes, isNetworkNodes } from '../../../types'
+import { deviceRequirements }                                          from '../../../contents'
+import { isAPListNodes, isNetworkNodes, ClientType as ClientTypeEnum } from '../../../types'
+import { ClientType }                                                  from '../ClientType'
 
 import { APsSelectionInput } from './APsSelectionInput'
 
-import type { NetworkNodes, NetworkPaths } from '../../../types'
-import type { NamePath }                   from 'antd/lib/form/interface'
+import type { NetworkHealthFormDto, NetworkNodes, NetworkPaths } from '../../../types'
+import type { NamePath }                                         from 'antd/lib/form/interface'
 
 const name = ['configs', 0, 'networkPaths', 'networkNodes'] as const
 const label = defineMessage({ defaultMessage: 'APs Selection' })
@@ -27,13 +30,32 @@ function useNetworkHierarchy () {
     range: DateRange.last24Hours
   }), [])
 
-  return useNetworkFilterQuery(filter)
+  return useRecentNetworkFilterQuery(filter)
+}
+
+function filterAPwithDeviceRequirements (data: HierarchyNodeChild[], clientType: ClientTypeEnum ) {
+  const { requiredAPFirmware, excludedTargetAPs } = deviceRequirements[clientType]
+  return data.map(({ aps, ...rest }) => ({
+    ...rest,
+    aps: aps?.filter(ap => ap.serial)
+      .filter(ap => {
+        if (excludedTargetAPs.find(a =>
+          _.get(a, 'model') === ap.model &&
+            !meetVersionRequirements(_.get(a, 'requiredAPFirmware'), ap.firmware)
+        )) return false
+        return meetVersionRequirements(requiredAPFirmware, ap.firmware)
+      })
+  }))
 }
 
 export function APsSelection () {
   const { $t } = useIntl()
+  const { form } = useStepFormContext<NetworkHealthFormDto>()
   const response = useNetworkHierarchy()
-  const options = getNetworkFilterData(response.data ?? [], {}, 'ap', false)
+  const options = getNetworkFilterData(
+    filterAPwithDeviceRequirements(response.data ?? [], form.getFieldValue(ClientType.fieldName)),
+    {}, 'ap', false
+  )
 
   return <Loader states={[response]} style={{ height: 'auto', minHeight: 346 }}>
     <Form.Item
