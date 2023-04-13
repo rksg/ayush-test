@@ -42,7 +42,7 @@ type LabelsProps = {
   onClick: CallableFunction;
 }
 
-export function useGetNode () {
+function useGetNode () {
   const [node, setNode] = useState<HTMLElement | null>(null)
   const ref = useCallback((node: HTMLElement) => {
     if (node !== null) {
