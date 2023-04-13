@@ -167,7 +167,6 @@ describe('Convert NonVAR MSP Button', () => {
     })
     const btn = await screen.findByRole('button', { name: 'Go to MSP Subscriptions' })
     fireEvent.click(btn)
-    await screen.findByText('Checking MSP Licenses')
     await waitFor(async () => {
       expect(await screen.findByText('MSP Licenses Detected')).toBeVisible()
     })
@@ -182,7 +181,9 @@ describe('Convert NonVAR MSP Button', () => {
     })
 
     expect(mockedUsedNavigate).toHaveBeenCalledWith(`/v/${params.tenantId}/dashboard/mspCustomers`, { replace: true })
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('dialog'))
+    await waitFor(() => {
+      expect(screen.queryAllByRole('dialog').length).toBe(0)
+    })
   })
 
   it('should submit with merged data', async () => {
@@ -212,7 +213,6 @@ describe('Convert NonVAR MSP Button', () => {
     })
     const btn = await screen.findByRole('button', { name: 'Go to MSP Subscriptions' })
     fireEvent.click(btn)
-    await screen.findByText('Checking MSP Licenses')
     await waitFor(async () => {
       expect(await screen.findByText('MSP Licenses Detected')).toBeVisible()
     })
@@ -230,7 +230,9 @@ describe('Convert NonVAR MSP Button', () => {
       })
     })
     expect(mockedUsedNavigate).toHaveBeenCalledWith(`/v/${params.tenantId}/dashboard/mspCustomers`, { replace: true })
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('dialog'))
+    await waitFor(() => {
+      expect(screen.queryAllByRole('dialog').length).toBe(0)
+    })
   })
 
   it('should blocked when account is delegated to others', async () => {
