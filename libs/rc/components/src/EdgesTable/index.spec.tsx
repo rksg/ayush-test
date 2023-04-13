@@ -43,6 +43,10 @@ describe('Edge Table', () => {
       rest.patch(
         EdgeUrlsInfo.sendOtp.url,
         (req, res, ctx) => res(ctx.status(202))
+      ),
+      rest.post(
+        EdgeUrlsInfo.reboot.url,
+        (req, res, ctx) => res(ctx.status(202))
       )
     )
   })
@@ -127,7 +131,7 @@ describe('Edge Table', () => {
     await user.click(within(row).getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Delete' }))
     await screen.findByText('Delete "Smart Edge 2"?')
-    await user.click(screen.getByRole('button', { name: 'Delete Edges' }))
+    await user.click(screen.getByRole('button', { name: 'Delete SmartEdges' }))
   })
 
   it('should send OTP sucessfully', async () => {
@@ -171,7 +175,23 @@ describe('Edge Table', () => {
     await user.click(within(row2).getByRole('checkbox'))
     await user.click(within(row3).getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Delete' }))
-    await screen.findByText('Delete "2 Edges"?')
-    await user.click(screen.getByRole('button', { name: 'Delete Edges' }))
+    await screen.findByText('Delete "2 SmartEdges"?')
+    await user.click(screen.getByRole('button', { name: 'Delete SmartEdges' }))
+  })
+
+  it('should reboot the selected SmartEdge', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <EdgesTable rowSelection={{ type: 'checkbox' }}/>
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/edge/list' }
+      })
+    const row5 = await screen.findByRole('row', { name: /Smart Edge 5/i })
+    await user.click(within(row5).getByRole('checkbox'))
+    await user.click(screen.getByRole('button', { name: 'Reboot' }))
+    const rebootDialg = await screen.findByRole('dialog')
+    await within(rebootDialg).findByText('Reboot "Smart Edge 5"?')
+    await user.click(within(rebootDialg).getByRole('button', { name: 'Reboot' }))
   })
 })
