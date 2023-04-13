@@ -3,7 +3,7 @@
 exports[`Layout should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-iwostn-0 eTZYFJ"
+    class="styledComponents__Wrapper-sc-iwostn-0 dngobH"
   >
     <div
       class="ant-design-pro ant-pro-basicLayout screen-md ant-pro-basicLayout-fix-siderbar ant-pro-basicLayout-side"
@@ -39,79 +39,60 @@ exports[`Layout should render correctly 1`] = `
               style="flex: 1; overflow-y: auto; overflow-x: hidden;"
             >
               <ul
-                class="ant-menu ant-menu-root ant-menu-inline ant-menu-dark ant-pro-sider-menu"
+                class="ant-menu ant-menu-root ant-menu-vertical ant-menu-light"
                 data-menu-list="true"
                 role="menu"
-                style="width: 100%;"
                 tabindex="0"
               >
                 <li
-                  class="ant-menu-item ant-menu-item-only-child"
+                  class="ant-menu-item ant-menu-item-only-child menu-active"
+                  data-menu-id="rc-menu-uuid-test--dashboard"
                   role="menuitem"
-                  style="padding-left: 16px;"
                   tabindex="-1"
-                  title="Dashboard"
                 >
                   <span
                     class="ant-menu-title-content"
                   >
                     <a
                       class=""
+                      data-label="Dashboard"
                       href="/t/undefined/dashboard"
                     >
                       <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
+                        class="styledComponents__MenuIcon-sc-iwostn-1 ccvYDe"
                       >
                         <svg
-                          data-testid="SpeedIndicatorOutlined"
+                          data-testid="SpeedIndicatorSolid"
                         />
                       </span>
-                      <span
-                        class="ant-pro-menu-item"
-                      >
-                        <span
-                          class="ant-pro-menu-item-title"
-                        >
-                          Dashboard
-                        </span>
-                      </span>
+                      Dashboard
                     </a>
                   </span>
                 </li>
                 <li
-                  class="ant-menu-submenu ant-menu-submenu-inline"
+                  class="ant-menu-submenu ant-menu-submenu-vertical"
                   role="none"
                 >
                   <div
+                    aria-controls="rc-menu-uuid-test--ai_assurance-popup"
                     aria-expanded="false"
                     aria-haspopup="true"
                     class="ant-menu-submenu-title"
+                    data-menu-id="rc-menu-uuid-test--ai_assurance"
                     role="menuitem"
-                    style="padding-left: 16px;"
                     tabindex="-1"
                   >
                     <span
                       class="ant-menu-title-content"
                     >
-                      <a
-                        class=""
-                        href="/t/undefined/analytics"
+                      <span
+                        class="styledComponents__MenuIcon-sc-iwostn-1 ccvYDe"
                       >
-                        <span
-                          class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
-                        >
-                          <svg
-                            class="menuConfig__AIOutlined-sc-t1ebvm-0 lboySK"
-                            data-testid="AIOutlined"
-                          />
-                        </span>
-                        <span
-                          class="ant-pro-menu-item"
-                          title="AI Analytics"
-                        >
-                          AI Analytics
-                        </span>
-                      </a>
+                        <svg
+                          data-testid="AIOutlined"
+                        />
+                      </span>
+                      AI Assurance
                     </span>
                     <i
                       class="ant-menu-submenu-arrow"
@@ -120,391 +101,208 @@ exports[`Layout should render correctly 1`] = `
                 </li>
                 <li
                   class="ant-menu-item ant-menu-item-only-child"
+                  data-menu-id="rc-menu-uuid-test--venues"
                   role="menuitem"
-                  style="padding-left: 16px;"
                   tabindex="-1"
-                  title="Timeline"
                 >
                   <span
                     class="ant-menu-title-content"
                   >
                     <a
                       class=""
-                      href="/t/undefined/timeline"
-                    >
-                      <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
-                      >
-                        <svg
-                          data-testid="CalendarDateOutlined"
-                        />
-                      </span>
-                      <span
-                        class="ant-pro-menu-item"
-                      >
-                        <span
-                          class="ant-pro-menu-item-title"
-                        >
-                          Timeline
-                        </span>
-                      </span>
-                    </a>
-                  </span>
-                </li>
-                <li
-                  class="ant-menu-submenu ant-menu-submenu-inline"
-                  role="none"
-                >
-                  <div
-                    aria-expanded="false"
-                    aria-haspopup="true"
-                    class="ant-menu-submenu-title"
-                    role="menuitem"
-                    style="padding-left: 16px;"
-                    tabindex="-1"
-                  >
-                    <span
-                      class="ant-menu-title-content"
-                    >
-                      <a
-                        class=""
-                        href="/t/undefined/servicevalidation"
-                      >
-                        <span
-                          class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
-                        >
-                          <svg
-                            data-testid="ServiceValidationOutlined"
-                          />
-                        </span>
-                        <span
-                          class="ant-pro-menu-item"
-                          title="Service Validation"
-                        >
-                          Service Validation
-                        </span>
-                      </a>
-                    </span>
-                    <i
-                      class="ant-menu-submenu-arrow"
-                    />
-                  </div>
-                </li>
-                <li
-                  class="ant-menu-item ant-menu-item-only-child"
-                  role="menuitem"
-                  style="padding-left: 16px;"
-                  tabindex="-1"
-                  title="Reports"
-                >
-                  <span
-                    class="ant-menu-title-content"
-                  >
-                    <a
-                      class=""
-                      href="/t/undefined/reports"
-                    >
-                      <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
-                      >
-                        <svg
-                          data-testid="ReportsOutlined"
-                        />
-                      </span>
-                      <span
-                        class="ant-pro-menu-item"
-                      >
-                        <span
-                          class="ant-pro-menu-item-title"
-                        >
-                          Reports
-                        </span>
-                      </span>
-                    </a>
-                  </span>
-                </li>
-                <li
-                  class="ant-menu-item ant-menu-item-only-child"
-                  role="menuitem"
-                  style="padding-left: 16px;"
-                  tabindex="-1"
-                  title=" "
-                >
-                  <span
-                    class="ant-menu-title-content"
-                  >
-                    <a
-                      class=""
-                      href="/t/undefined/1/placeholder"
-                    >
-                      <span
-                        class="ant-pro-menu-item"
-                      >
-                        <span
-                          class="ant-pro-menu-item-title"
-                        >
-                           
-                        </span>
-                      </span>
-                    </a>
-                  </span>
-                </li>
-                <li
-                  class="ant-menu-item ant-menu-item-only-child"
-                  role="menuitem"
-                  style="padding-left: 16px;"
-                  tabindex="-1"
-                  title="Venues"
-                >
-                  <span
-                    class="ant-menu-title-content"
-                  >
-                    <a
-                      class=""
+                      data-label="Venues"
                       href="/t/undefined/venues"
                     >
                       <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
+                        class="styledComponents__MenuIcon-sc-iwostn-1 ccvYDe"
                       >
                         <svg
                           data-testid="LocationOutlined"
                         />
                       </span>
-                      <span
-                        class="ant-pro-menu-item"
-                      >
-                        <span
-                          class="ant-pro-menu-item-title"
-                        >
-                          Venues
-                        </span>
-                      </span>
+                      Venues
                     </a>
                   </span>
                 </li>
                 <li
-                  class="ant-menu-item ant-menu-item-only-child"
-                  role="menuitem"
-                  style="padding-left: 16px;"
-                  tabindex="-1"
-                  title="Device Inventory"
+                  class="ant-menu-submenu ant-menu-submenu-vertical"
+                  role="none"
                 >
-                  <span
-                    class="ant-menu-title-content"
+                  <div
+                    aria-controls="rc-menu-uuid-test--clients-popup"
+                    aria-expanded="false"
+                    aria-haspopup="true"
+                    class="ant-menu-submenu-title"
+                    data-menu-id="rc-menu-uuid-test--clients"
+                    role="menuitem"
+                    tabindex="-1"
                   >
-                    <a
-                      class=""
-                      href="/t/undefined/devices"
+                    <span
+                      class="ant-menu-title-content"
                     >
                       <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
-                      >
-                        <svg
-                          data-testid="DevicesOutlined"
-                        />
-                      </span>
-                      <span
-                        class="ant-pro-menu-item"
-                      >
-                        <span
-                          class="ant-pro-menu-item-title"
-                        >
-                          Device Inventory
-                        </span>
-                      </span>
-                    </a>
-                  </span>
-                </li>
-                <li
-                  class="ant-menu-item ant-menu-item-only-child"
-                  role="menuitem"
-                  style="padding-left: 16px;"
-                  tabindex="-1"
-                  title="Networks"
-                >
-                  <span
-                    class="ant-menu-title-content"
-                  >
-                    <a
-                      class=""
-                      href="/t/undefined/networks"
-                    >
-                      <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
-                      >
-                        <svg
-                          data-testid="NetworksOutlined"
-                        />
-                      </span>
-                      <span
-                        class="ant-pro-menu-item"
-                      >
-                        <span
-                          class="ant-pro-menu-item-title"
-                        >
-                          Networks
-                        </span>
-                      </span>
-                    </a>
-                  </span>
-                </li>
-                <li
-                  class="ant-menu-item ant-menu-item-only-child"
-                  role="menuitem"
-                  style="padding-left: 16px;"
-                  tabindex="-1"
-                  title="Services"
-                >
-                  <span
-                    class="ant-menu-title-content"
-                  >
-                    <a
-                      class=""
-                      href="/t/undefined/services"
-                    >
-                      <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
-                      >
-                        <svg
-                          data-testid="ServicesOutlined"
-                        />
-                      </span>
-                      <span
-                        class="ant-pro-menu-item"
-                      >
-                        <span
-                          class="ant-pro-menu-item-title"
-                        >
-                          Services
-                        </span>
-                      </span>
-                    </a>
-                  </span>
-                </li>
-                <li
-                  class="ant-menu-item ant-menu-item-only-child"
-                  role="menuitem"
-                  style="padding-left: 16px;"
-                  tabindex="-1"
-                  title="Policies"
-                >
-                  <span
-                    class="ant-menu-title-content"
-                  >
-                    <a
-                      class=""
-                      href="/t/undefined/policies"
-                    >
-                      <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
-                      >
-                        <svg
-                          data-testid="PoliciesOutlined"
-                        />
-                      </span>
-                      <span
-                        class="ant-pro-menu-item"
-                      >
-                        <span
-                          class="ant-pro-menu-item-title"
-                        >
-                          Policies
-                        </span>
-                      </span>
-                    </a>
-                  </span>
-                </li>
-                <li
-                  aria-disabled="true"
-                  class="ant-menu-item ant-menu-item-disabled ant-menu-item-only-child"
-                  role="menuitem"
-                  style="padding-left: 16px;"
-                  title="Users"
-                >
-                  <span
-                    class="ant-menu-title-content"
-                  >
-                    <a
-                      class=""
-                      href="/t/undefined/users"
-                    >
-                      <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
+                        class="styledComponents__MenuIcon-sc-iwostn-1 ccvYDe"
                       >
                         <svg
                           data-testid="AccountCircleOutlined"
                         />
                       </span>
-                      <span
-                        class="ant-pro-menu-item"
-                      >
-                        <span
-                          class="ant-pro-menu-item-title"
-                        >
-                          Users
-                        </span>
-                      </span>
-                    </a>
-                  </span>
+                      Clients
+                    </span>
+                    <i
+                      class="ant-menu-submenu-arrow"
+                    />
+                  </div>
                 </li>
                 <li
-                  class="ant-menu-item ant-menu-item-only-child"
-                  role="menuitem"
-                  style="padding-left: 16px;"
-                  tabindex="-1"
-                  title=" "
+                  class="ant-menu-submenu ant-menu-submenu-vertical"
+                  role="none"
                 >
-                  <span
-                    class="ant-menu-title-content"
+                  <div
+                    aria-controls="rc-menu-uuid-test--wi_fi-popup"
+                    aria-expanded="false"
+                    aria-haspopup="true"
+                    class="ant-menu-submenu-title"
+                    data-menu-id="rc-menu-uuid-test--wi_fi"
+                    role="menuitem"
+                    tabindex="-1"
                   >
-                    <a
-                      class=""
-                      href="/t/undefined/2/placeholder"
+                    <span
+                      class="ant-menu-title-content"
                     >
                       <span
-                        class="ant-pro-menu-item"
+                        class="styledComponents__MenuIcon-sc-iwostn-1 ccvYDe"
                       >
-                        <span
-                          class="ant-pro-menu-item-title"
-                        >
-                           
-                        </span>
+                        <svg
+                          data-testid="WiFi"
+                        />
                       </span>
-                    </a>
-                  </span>
+                      Wi-Fi
+                    </span>
+                    <i
+                      class="ant-menu-submenu-arrow"
+                    />
+                  </div>
                 </li>
                 <li
-                  class="ant-menu-item ant-menu-item-only-child"
-                  role="menuitem"
-                  style="padding-left: 16px;"
-                  tabindex="-1"
-                  title="Administration"
+                  class="ant-menu-submenu ant-menu-submenu-vertical"
+                  role="none"
                 >
-                  <span
-                    class="ant-menu-title-content"
+                  <div
+                    aria-controls="rc-menu-uuid-test--wired-popup"
+                    aria-expanded="false"
+                    aria-haspopup="true"
+                    class="ant-menu-submenu-title"
+                    data-menu-id="rc-menu-uuid-test--wired"
+                    role="menuitem"
+                    tabindex="-1"
                   >
-                    <a
-                      class=""
-                      href="/t/undefined/administration"
+                    <span
+                      class="ant-menu-title-content"
                     >
                       <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
+                        class="styledComponents__MenuIcon-sc-iwostn-1 ccvYDe"
+                      >
+                        <svg
+                          data-testid="SwitchOutlined"
+                        />
+                      </span>
+                      Wired
+                    </span>
+                    <i
+                      class="ant-menu-submenu-arrow"
+                    />
+                  </div>
+                </li>
+                <li
+                  class="ant-menu-submenu ant-menu-submenu-vertical"
+                  role="none"
+                >
+                  <div
+                    aria-controls="rc-menu-uuid-test--network_control-popup"
+                    aria-expanded="false"
+                    aria-haspopup="true"
+                    class="ant-menu-submenu-title"
+                    data-menu-id="rc-menu-uuid-test--network_control"
+                    role="menuitem"
+                    tabindex="-1"
+                  >
+                    <span
+                      class="ant-menu-title-content"
+                    >
+                      <span
+                        class="styledComponents__MenuIcon-sc-iwostn-1 ccvYDe"
+                      >
+                        <svg
+                          data-testid="ServicesOutlined"
+                        />
+                      </span>
+                      Network Control
+                    </span>
+                    <i
+                      class="ant-menu-submenu-arrow"
+                    />
+                  </div>
+                </li>
+                <li
+                  class="ant-menu-submenu ant-menu-submenu-vertical"
+                  role="none"
+                >
+                  <div
+                    aria-controls="rc-menu-uuid-test--business_insights-popup"
+                    aria-expanded="false"
+                    aria-haspopup="true"
+                    class="ant-menu-submenu-title"
+                    data-menu-id="rc-menu-uuid-test--business_insights"
+                    role="menuitem"
+                    tabindex="-1"
+                  >
+                    <span
+                      class="ant-menu-title-content"
+                    >
+                      <span
+                        class="styledComponents__MenuIcon-sc-iwostn-1 ccvYDe"
+                      >
+                        <svg
+                          data-testid="BulbOutlined"
+                        />
+                      </span>
+                      Business Insights
+                    </span>
+                    <i
+                      class="ant-menu-submenu-arrow"
+                    />
+                  </div>
+                </li>
+                <li
+                  class="ant-menu-submenu ant-menu-submenu-vertical"
+                  role="none"
+                >
+                  <div
+                    aria-controls="rc-menu-uuid-test--administration-popup"
+                    aria-expanded="false"
+                    aria-haspopup="true"
+                    class="ant-menu-submenu-title"
+                    data-menu-id="rc-menu-uuid-test--administration"
+                    role="menuitem"
+                    tabindex="-1"
+                  >
+                    <span
+                      class="ant-menu-title-content"
+                    >
+                      <span
+                        class="styledComponents__MenuIcon-sc-iwostn-1 ccvYDe"
                       >
                         <svg
                           data-testid="AdminOutlined"
                         />
                       </span>
-                      <span
-                        class="ant-pro-menu-item"
-                      >
-                        <span
-                          class="ant-pro-menu-item-title"
-                        >
-                          Administration
-                        </span>
-                      </span>
-                    </a>
-                  </span>
+                      Administration
+                    </span>
+                    <i
+                      class="ant-menu-submenu-arrow"
+                    />
+                  </div>
                 </li>
               </ul>
               <div
@@ -532,11 +330,11 @@ exports[`Layout should render correctly 1`] = `
                     class="ant-menu-title-content"
                   >
                     <svg
-                      class="styledComponents__Arrow-sc-iwostn-8 iueFBM"
+                      class="styledComponents__Arrow-sc-iwostn-6 bfzBym"
                       data-testid="ArrowChevronLeft"
                     />
                     <div
-                      class="styledComponents__CollapseText-sc-iwostn-10 keaIHZ ant-pro-menu-item-title"
+                      class="styledComponents__CollapseText-sc-iwostn-8 fvDRIg ant-pro-menu-item-title"
                     >
                       Collapse
                     </div>
@@ -569,14 +367,14 @@ exports[`Layout should render correctly 1`] = `
                 style="flex: 1;"
               >
                 <div
-                  class="styledComponents__LeftHeaderContentWrapper-sc-iwostn-2 bUJFbQ"
+                  class="styledComponents__LeftHeaderContentWrapper-sc-iwostn-3 dMzeox"
                 >
                   <div
-                    class="ant-divider ant-divider-vertical styledComponents__LogoDivider-sc-iwostn-3 gZTkFG"
+                    class="ant-divider ant-divider-vertical styledComponents__LogoDivider-sc-iwostn-4 ccpxFp"
                     role="separator"
                   />
                   <span
-                    class="styledComponents__DropdownText-sc-iwostn-13 hwKuhP"
+                    class="styledComponents__DropdownText-sc-iwostn-11 iEmwpR"
                   >
                     <div
                       class="ant-space ant-space-horizontal ant-space-align-center"
@@ -591,7 +389,7 @@ exports[`Layout should render correctly 1`] = `
                 </div>
               </div>
               <div
-                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-4 RNNyT"
+                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-5 cuwgTU"
               >
                 <div>
                   Right header
@@ -603,7 +401,7 @@ exports[`Layout should render correctly 1`] = `
             class="ant-layout-content ant-pro-basicLayout-content ant-pro-basicLayout-has-header"
           >
             <div
-              class="styledComponents__Content-sc-iwostn-1 haxZGN"
+              class="styledComponents__Content-sc-iwostn-2 gvCMCe"
             >
               <div>
                 content
@@ -620,7 +418,7 @@ exports[`Layout should render correctly 1`] = `
 exports[`Layout should render with custom tenant type correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-iwostn-0 eTZYFJ"
+    class="styledComponents__Wrapper-sc-iwostn-0 dngobH"
   >
     <div
       class="ant-design-pro ant-pro-basicLayout screen-md ant-pro-basicLayout-fix-siderbar ant-pro-basicLayout-side"
@@ -656,45 +454,40 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
               style="flex: 1; overflow-y: auto; overflow-x: hidden;"
             >
               <ul
-                class="ant-menu ant-menu-root ant-menu-inline ant-menu-dark ant-pro-sider-menu"
+                class="ant-menu ant-menu-root ant-menu-vertical ant-menu-light"
                 data-menu-list="true"
                 role="menu"
-                style="width: 100%;"
                 tabindex="0"
               >
                 <li
-                  class="ant-menu-item ant-menu-item-only-child"
-                  data-menu-id="rc-menu-uuid-test-/v/undefined/dashboard"
-                  role="menuitem"
-                  style="padding-left: 16px;"
-                  tabindex="-1"
-                  title="Dashboard"
+                  class="ant-menu-submenu ant-menu-submenu-vertical"
+                  role="none"
                 >
-                  <span
-                    class="ant-menu-title-content"
+                  <div
+                    aria-controls="rc-menu-uuid-test--my_customers-popup"
+                    aria-expanded="false"
+                    aria-haspopup="true"
+                    class="ant-menu-submenu-title"
+                    data-menu-id="rc-menu-uuid-test--my_customers"
+                    role="menuitem"
+                    tabindex="-1"
                   >
-                    <a
-                      class=""
-                      href="/v/undefined/dashboard"
+                    <span
+                      class="ant-menu-title-content"
                     >
                       <span
-                        class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
+                        class="styledComponents__MenuIcon-sc-iwostn-1 ccvYDe"
                       >
                         <svg
                           data-testid="SpeedIndicatorOutlined"
                         />
                       </span>
-                      <span
-                        class="ant-pro-menu-item"
-                      >
-                        <span
-                          class="ant-pro-menu-item-title"
-                        >
-                          Dashboard
-                        </span>
-                      </span>
-                    </a>
-                  </span>
+                      My Customers
+                    </span>
+                    <i
+                      class="ant-menu-submenu-arrow"
+                    />
+                  </div>
                 </li>
               </ul>
               <div
@@ -722,11 +515,11 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
                     class="ant-menu-title-content"
                   >
                     <svg
-                      class="styledComponents__Arrow-sc-iwostn-8 iueFBM"
+                      class="styledComponents__Arrow-sc-iwostn-6 bfzBym"
                       data-testid="ArrowChevronLeft"
                     />
                     <div
-                      class="styledComponents__CollapseText-sc-iwostn-10 keaIHZ ant-pro-menu-item-title"
+                      class="styledComponents__CollapseText-sc-iwostn-8 fvDRIg ant-pro-menu-item-title"
                     >
                       Collapse
                     </div>
@@ -759,10 +552,10 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
                 style="flex: 1;"
               >
                 <div
-                  class="styledComponents__LeftHeaderContentWrapper-sc-iwostn-2 bUJFbQ"
+                  class="styledComponents__LeftHeaderContentWrapper-sc-iwostn-3 dMzeox"
                 >
                   <div
-                    class="ant-divider ant-divider-vertical styledComponents__LogoDivider-sc-iwostn-3 gZTkFG"
+                    class="ant-divider ant-divider-vertical styledComponents__LogoDivider-sc-iwostn-4 ccpxFp"
                     role="separator"
                   />
                   <div>
@@ -771,7 +564,7 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
                 </div>
               </div>
               <div
-                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-4 RNNyT"
+                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-5 cuwgTU"
               >
                 <div>
                   Right header
@@ -783,7 +576,7 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
             class="ant-layout-content ant-pro-basicLayout-content ant-pro-basicLayout-has-header"
           >
             <div
-              class="styledComponents__Content-sc-iwostn-1 haxZGN"
+              class="styledComponents__Content-sc-iwostn-2 gvCMCe"
             >
               <div>
                 content

@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react'
 
-import { RolesEnum }   from '@acx-ui/types'
-import { useTenantId } from '@acx-ui/utils'
+import { RolesEnum }                     from '@acx-ui/types'
+import { useTenantId, useLocaleContext } from '@acx-ui/utils'
 
 import {
   useAllowedOperationsQuery,
@@ -25,8 +25,13 @@ export const UserProfileContext = createContext<UserProfileContextProps>({} as U
 export const useUserProfileContext = () => useContext(UserProfileContext)
 
 export function UserProfileProvider (props: React.PropsWithChildren) {
+  const locale = useLocaleContext()
+
   const tenantId = useTenantId()
-  const { data: profile } = useGetUserProfileQuery({ params: { tenantId } })
+  const { data: profile } = useGetUserProfileQuery({ params: { tenantId } }, {
+    // 401 will show error on UI, so locale needs to be loaded first
+    skip: !Boolean(locale.messages)
+  })
   const { data: allowedOperations } = useAllowedOperationsQuery(tenantId!, {
     skip: !Boolean(profile)
   })

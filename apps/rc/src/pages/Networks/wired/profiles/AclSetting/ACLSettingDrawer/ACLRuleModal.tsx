@@ -6,17 +6,16 @@ import { useIntl }                                                   from 'react
 import { Modal }                from '@acx-ui/components'
 import {
   AclExtendedRule,
-  AclStandardRule,
   validateSwitchStaticRouteIp
 } from '@acx-ui/rc/utils'
 
 export function ACLRuleModal (props: {
   open: boolean,
   aclType: string,
-  onSave?:(values: AclStandardRule | AclExtendedRule)=>void,
+  onSave?:(values: AclExtendedRule)=>void,
   onCancel?: ()=>void,
-  editRecord?: AclStandardRule | AclExtendedRule
-  currrentRecords?: AclStandardRule[] | AclExtendedRule[]
+  editRecord?: AclExtendedRule
+  currrentRecords?: AclExtendedRule[]
 }) {
   const { Option } = Select
   const { $t } = useIntl()
@@ -30,6 +29,8 @@ export function ACLRuleModal (props: {
     setSourceSpecific(false)
     setDestinationSpecific(false)
     if (props.open && props.editRecord) {
+      setSourceSpecific(props.editRecord.source === 'specific')
+      setDestinationSpecific(props.editRecord.destination === 'specific')
       form.setFieldsValue(props.editRecord)
     }
   }, [form, props.open, props.editRecord])
