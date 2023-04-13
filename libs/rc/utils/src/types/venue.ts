@@ -318,7 +318,7 @@ export interface VenueSwitchConfiguration {
 export interface AclRule {
 	id: string,
 	source: string,
-	destination: string,
+	destination?: string,
 	sequence: number
 	action: 'permit' | 'deny',
 	protocol: 'ip' | 'tcp' | 'udp'
