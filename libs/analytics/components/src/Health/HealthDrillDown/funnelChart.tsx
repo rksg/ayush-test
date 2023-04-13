@@ -222,12 +222,11 @@ export const Labels = ({
     <>
       {enhancedStages.map((stage, i) => {
         const dir = i % 2 === 0
-        const top = !dir ? chartPadding - 30 : parentHeight - 40
         const labelProps = {
           ...stage,
           ...labelPositions[i],
-          top,
-          dir: i % 2 === 0,
+          top: !dir ? chartPadding - 30 : parentHeight - 40,
+          dir,
           color: colors[i],
           onClick: (onClick as Function).bind(null, stage.name),
           labelRef: updateChildNodes
