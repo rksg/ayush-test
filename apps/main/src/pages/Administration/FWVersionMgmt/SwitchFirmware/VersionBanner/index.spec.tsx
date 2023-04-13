@@ -1,6 +1,7 @@
 import { rest } from 'msw'
 
 import {
+  FirmwareCategory,
   FirmwareUrlsInfo
 } from '@acx-ui/rc/utils'
 import {
@@ -8,25 +9,36 @@ import {
 } from '@acx-ui/store'
 import {
   mockServer,
-  render
+  render,
+  screen
 } from '@acx-ui/test-utils'
 
 
 import {
   switchVenue,
-  preference,
   switchRelease
 } from '../../__tests__/fixtures'
 
 import VersionBanner from '.'
 
-// eslint-disable-next-line max-len
-const lastestFirmware = [{ id: '09010e_b397',name: '09010e_b397',category: 'RECOMMENDED',createdDate: '2023-02-07T16:31:10.245+00:00' }]
+const lastestFirmware = [
+  {
+    id: '09010e_b397', name: '09010e_b397',
+    category: FirmwareCategory.RECOMMENDED, createdDate: '2023-02-07T16:31:10.245+00:00'
+  },
+  {
+    id: '10010_b176', name: '10010_b176',
+    category: FirmwareCategory.RECOMMENDED, createdDate: '2023-02-07T16:31:10.245+00:00'
+  }]
 
-describe('Firmware Venues Table', () => {
+describe('Switch Firmware Banner', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
     mockServer.use(
+      rest.get(
+        FirmwareUrlsInfo.getSwitchLatestFirmwareList.url,
+        (req, res, ctx) => res(ctx.json(lastestFirmware))
+      ),
       rest.post(
         FirmwareUrlsInfo.getSwitchVenueVersionList.url,
         (req, res, ctx) => res(ctx.json(switchVenue))
@@ -34,14 +46,6 @@ describe('Firmware Venues Table', () => {
       rest.get(
         FirmwareUrlsInfo.getSwitchAvailableFirmwareList.url,
         (req, res, ctx) => res(ctx.json(switchRelease))
-      ),
-      rest.get(
-        FirmwareUrlsInfo.getUpgradePreferences.url,
-        (req, res, ctx) => res(ctx.json(preference))
-      ),
-      rest.get(
-        FirmwareUrlsInfo.getSwitchLatestFirmwareList.url,
-        (req, res, ctx) => res(ctx.json(lastestFirmware))
       )
     )
     params = {
@@ -49,13 +53,13 @@ describe('Firmware Venues Table', () => {
     }
   })
 
-  it('should render table', async () => {
+  it('should render banner', async () => {
     render(
       <Provider>
         <VersionBanner />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
       })
+    await screen.findByText('10010_b176')
   })
-
 })
