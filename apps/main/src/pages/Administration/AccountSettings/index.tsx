@@ -57,15 +57,19 @@ const AccountSettings = (props : AccountSettingsProps) => {
       >
         <RecoveryPassphraseFormItem recoveryPassphraseData={recoveryPassphraseData?.data} />
 
-        <Divider />
-
-        <DefaultSystemLanguageFormItem />
+        { isPrimeAdminUser && (
+          <>
+            <Divider />
+            <DefaultSystemLanguageFormItem />
+          </>
+        )}
 
         { isPrimeAdminUser && (
           <>
             <Divider />
             <MapRegionFormItem />
-          </>)}
+          </>
+        )}
 
         { showRksSupport && (
           <>
