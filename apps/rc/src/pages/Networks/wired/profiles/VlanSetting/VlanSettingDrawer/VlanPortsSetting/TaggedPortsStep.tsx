@@ -240,17 +240,6 @@ export function TaggedPortsStep () {
     const untaggedPorts =
     vlanSettingValues.switchFamilyModels?.untaggedPorts?.toString().split(',') || []
 
-    const vlanSelectedPorts = vlanList ? vlanList.map(item => item.switchFamilyModels
-      ?.filter(obj => obj.model === vlanSettingValues.switchFamilyModels?.model)) : []
-
-    const untaggedPortExists = vlanSelectedPorts.map(item => item?.map(
-      obj => { return obj.untaggedPorts?.split(',').includes(timeslot) }))
-      .some(item => item?.some(element => element === true))
-
-    const taggedPortExists = vlanSelectedPorts.map(item => item?.map(
-      obj => { return obj.taggedPorts?.split(',').includes(timeslot) }))
-      .some(item => item?.some(element => element === true))
-
     const untaggedModel = vlanList ?
       vlanList.filter(item => item.switchFamilyModels?.some(
         switchModel => switchModel.model === vlanSettingValues.switchFamilyModels?.model &&
@@ -269,13 +258,13 @@ export function TaggedPortsStep () {
         <div>
           <UI.TagsOutlineIcon />
           <UI.PortSpan>
-            {untaggedPortExists && untaggedModel[0] ? untaggedModel[0].vlanId : '-'}
+            {untaggedModel[0] ? untaggedModel[0].vlanId : '-'}
           </UI.PortSpan>
         </div>
         <div>
           <UI.TagsSolidIcon />
           <UI.PortSpan>
-            {taggedPortExists && taggedModel[0] ? taggedModel[0].vlanId : '-'}
+            {taggedModel.length > 0 ? taggedModel.map(item => item.vlanId).join(',') : '-'}
           </UI.PortSpan>
         </div>
       </div>
