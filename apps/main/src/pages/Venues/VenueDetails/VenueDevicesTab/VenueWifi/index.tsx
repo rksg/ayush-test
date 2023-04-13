@@ -125,8 +125,8 @@ function getCols (intl: ReturnType<typeof useIntl>) {
         if(row.meshRole !== APMeshRole.RAP && row.meshRole !== APMeshRole.EMAP){
           return (
             <div>
-              <span style={{ paddingRight: '30px' }}><SignalDownIcon />{data}</span>
-              <span><SignalUpIcon />{row.apDownRssi}</span>
+              {data && <span style={{ paddingRight: '30px' }}><SignalDownIcon />{data}</span>}
+              {row.apDownRssi && <span><SignalUpIcon />{row.apDownRssi}</span>}
             </div>
           )
         }
@@ -165,7 +165,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
           return <Tooltip title={
             getNamesTooltip(row.clients, intl)}>{ row.clients.count || 0}</Tooltip>
         }else{
-          return row.clients
+          return row.clients || 0
         }
       }
     },
@@ -173,7 +173,10 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       key: 'hops',
       title: intl.$t({ defaultMessage: 'Hop Count' }),
       dataIndex: 'hops',
-      align: 'center'
+      align: 'center',
+      render: function (data) {
+        return data || 0
+      }
     }
   ]
   return columns

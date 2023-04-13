@@ -9,6 +9,7 @@ import { ApSnmpPolicy, getPolicyListRoutePath, getPolicyRoutePath, PolicyOperati
 import { useTenantLink }                                                                         from '@acx-ui/react-router-dom'
 
 import SnmpAgentSettingForm from './SnmpAgentSettingForm'
+import * as UI              from './styledComponents'
 
 
 type SnmpAgentFormProps = {
@@ -104,12 +105,12 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
         onCancel={handleCancel}
         onFinish={async (data) => { return handleSaveApSnmpAgentPolicy(data) }}
       >
-        <StepsForm.StepForm
+        <UI.OverwriteStepsForm
           name='settings'
           title={$t({ defaultMessage: 'SNMP Agent Settings' })}
         >
           <SnmpAgentSettingForm editMode={editMode} saveState={saveState} />
-        </StepsForm.StepForm>
+        </UI.OverwriteStepsForm>
       </StepsForm>
     </>
   )
