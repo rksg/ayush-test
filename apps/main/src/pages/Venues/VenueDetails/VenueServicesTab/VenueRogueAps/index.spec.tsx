@@ -311,7 +311,7 @@ describe('RogueVenueTable', () => {
       name: /category/i
     })).toBeTruthy()
     expect(screen.getByRole('columnheader', {
-      name: /classification profile/i
+      name: /classification rule/i
     })).toBeTruthy()
     expect(screen.getByRole('columnheader', {
       name: /channel/i
@@ -326,7 +326,7 @@ describe('RogueVenueTable', () => {
       name: /closest ap/i
     })).toBeTruthy()
     expect(screen.getByRole('columnheader', {
-      name: /detecting ap/i
+      name: /detecting aps/i
     })).toBeTruthy()
     expect(screen.getByRole('columnheader', {
       name: /last seen/i
