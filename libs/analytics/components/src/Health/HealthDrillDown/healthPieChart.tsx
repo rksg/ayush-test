@@ -93,8 +93,7 @@ function getHealthPieChart (
             }
               const formattedPercent = formatter('percentFormat')(percent / 100)
               const formattedValue = dataFormatter(value)
-              const label = `${name}\n${formattedPercent} (${formattedValue})`
-              return label
+              return `${name}\n${formattedPercent} (${formattedValue})`
             }}
           />
         )}
