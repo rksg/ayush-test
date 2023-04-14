@@ -20,9 +20,12 @@ import {
 import { TenantLink }     from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
+import { AdaptivePolicyFormDrawer }     from './AdaptivePolicyFormDrawer'
+import { AdaptivePoliciesSelectDrawer } from './AdaptivePolicySelectDrawer'
+
 type AccessPolicyTableProps = {
   editMode: boolean
-  setAdaptivePoliciesSelectDrawerVisible: (visible: boolean) => void
+  // setAdaptivePoliciesSelectDrawerVisible: (visible: boolean) => void
   accessPolicies: AdaptivePolicy []
   setAccessPolicies: (accessPolicies: AdaptivePolicy [] ) => void
 }
@@ -30,12 +33,16 @@ type AccessPolicyTableProps = {
 const AccessPolicyTable = (props: AccessPolicyTableProps) => {
   const { $t } = useIntl()
   // eslint-disable-next-line max-len
-  const { editMode, setAdaptivePoliciesSelectDrawerVisible, accessPolicies, setAccessPolicies } = props
+  const { editMode, accessPolicies, setAccessPolicies } = props
   const { policyId } = useParams()
 
   const [conditionCountMap, setConditionCountMap] = useState(new Map())
   const [templateIdMap, setTemplateIdMap] = useState(new Map())
   const [policySetPoliciesMap, setPolicySetPoliciesMap] = useState(new Map())
+
+  const [adaptivePolicyDrawerVisible, setAdaptivePolicyDrawerVisible] = useState(false)
+  // eslint-disable-next-line max-len
+  const [adaptivePoliciesSelectDrawerVisible, setAdaptivePoliciesSelectDrawerVisible] = useState(false)
 
   const [getConditionsPolicy] = useLazyGetConditionsInPolicyQuery()
 
@@ -91,7 +98,7 @@ const AccessPolicyTable = (props: AccessPolicyTableProps) => {
     accessPolicies.forEach(policy => {
       const id = policy.id
       // eslint-disable-next-line max-len
-      getConditionsPolicy({ params: { policyId: policy.id, templateId: templateIdMap.get(policy.policyType) } })
+      getConditionsPolicy({ params: { policyId: id, templateId: templateIdMap.get(policy.policyType) } })
         .then(result => {
           setConditionCountMap(map => new Map(map.set(id, result.data?.data.length ?? 0)))
         })
@@ -230,6 +237,16 @@ const AccessPolicyTable = (props: AccessPolicyTableProps) => {
             row: DraggableBodyRow
           }
         }}
+      />
+      <AdaptivePoliciesSelectDrawer
+        visible={adaptivePoliciesSelectDrawerVisible}
+        setVisible={setAdaptivePoliciesSelectDrawerVisible}
+        setAdaptivePolicyDrawerVisible={setAdaptivePolicyDrawerVisible}
+        accessPolicies={accessPolicies}
+        setAccessPolicies={setAccessPolicies}/>
+      <AdaptivePolicyFormDrawer
+        visible={adaptivePolicyDrawerVisible}
+        setVisible={setAdaptivePolicyDrawerVisible}
       />
     </Loader>
   )

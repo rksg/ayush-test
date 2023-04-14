@@ -39,6 +39,13 @@ export const groupList = {
   empty: false
 }
 
+export const groupListByPost = {
+  totalCount: 1,
+  page: 1,
+  pageSize: 10,
+  data: groupList.content
+}
+
 
 export const adaptivePolicyList = {
   paging: {

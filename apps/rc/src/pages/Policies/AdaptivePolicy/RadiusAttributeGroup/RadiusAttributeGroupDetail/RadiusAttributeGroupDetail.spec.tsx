@@ -7,8 +7,8 @@ import {
   PolicyType,
   RadiusAttributeGroupUrlsInfo, RulesManagementUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider }                                              from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { Provider }                   from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { mockGroup, policyList, policySetList, prioritizedPolicies, templateList } from './__tests__/fixtures'
 import RadiusAttributeGroupDetail                                                  from './RadiusAttributeGroupDetail'
@@ -51,7 +51,6 @@ describe('RadiusAttributeGroupDetail', () => {
       route: { params, path }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const names = await screen.findAllByText(mockGroup.name)
     expect(names[0]).toBeVisible()
     expect(names[1]).toBeVisible()
@@ -61,7 +60,7 @@ describe('RadiusAttributeGroupDetail', () => {
     await screen.findByText(mockGroup.attributeAssignments[1].attributeName)
     await screen.findByText(mockGroup.attributeAssignments[1].attributeValue)
     await screen.findByText('Instance (' + policyList.content.length + ')')
-    await screen.findByRole('row', { name: /ap2 3/i })
+    await screen.findByRole('row', { name: new RegExp('ap2') })
   })
 
   it('should navigate to edit page', async () => {

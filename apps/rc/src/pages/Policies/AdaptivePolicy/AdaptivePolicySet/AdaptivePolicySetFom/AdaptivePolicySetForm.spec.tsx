@@ -158,12 +158,6 @@ describe('AdaptivePolicySetForm', () => {
 
     await userEvent.click(await screen.findByText('Select Policies'))
 
-    // unselect policy
-    // eslint-disable-next-line max-len
-    const rows = await screen.findAllByRole('row', { name: new RegExp(adaptivePolicyList.content[0].name) })
-    fireEvent.click(within(rows[1]).getByRole('switch'))
-
-    // select policy
     // eslint-disable-next-line max-len
     const row = await screen.findByRole('row', { name: new RegExp(adaptivePolicyList.content[1].name) })
     fireEvent.click(within(row).getByRole('switch'))

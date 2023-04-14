@@ -1,5 +1,3 @@
-import React, { useState } from 'react'
-
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 import { useParams }   from 'react-router-dom'
@@ -13,9 +11,7 @@ import {
   checkObjectNotExists
 } from '@acx-ui/rc/utils'
 
-import AccessPolicyTable                from './AccessPolicyTable'
-import { AdaptivePolicyFormDrawer }     from './AdaptivePolicyFormDrawer'
-import { AdaptivePoliciesSelectDrawer } from './AdaptivePolicySelectDrawer'
+import AccessPolicyTable from './AccessPolicyTable'
 
 interface AdaptivePolicySetSettingFormProps {
   editMode?: boolean
@@ -27,9 +23,6 @@ export function AdaptivePolicySetSettingForm (props: AdaptivePolicySetSettingFor
   const { $t } = useIntl()
   const { policyId } = useParams()
   const { editMode = false, accessPolicies, setAccessPolicies } = props
-
-  const [adaptivePolicyDrawerVisible, setAdaptivePolicyDrawerVisible] = useState(false)
-  const [adaptivePoliciesSelectDrawer, setAdaptivePoliciesSelectDrawerVisible] = useState(false)
 
   const [getPolicySetList] = useLazyAdaptivePolicySetLisByQueryQuery()
 
@@ -49,56 +42,43 @@ export function AdaptivePolicySetSettingForm (props: AdaptivePolicySetSettingFor
   }
 
   return (
-    <>
-      <GridRow>
-        <GridCol col={{ span: 10 }}>
-          <Form.Item name='name'
-            label={$t({ defaultMessage: 'Policy Name' })}
-            rules={[
-              { required: true },
-              { validator: (_, value) => nameValidator(value) }
-            ]}
-            validateFirst
-            hasFeedback
-            children={<Input/>}
+    <GridRow>
+      <GridCol col={{ span: 10 }}>
+        <Form.Item name='name'
+          label={$t({ defaultMessage: 'Policy Name' })}
+          rules={[
+            { required: true },
+            { validator: (_, value) => nameValidator(value) }
+          ]}
+          validateFirst
+          hasFeedback
+          children={<Input/>}
+        />
+      </GridCol>
+      <GridCol col={{ span: 24 }}>
+        <Form.Item initialValue={[] as AdaptivePolicy []}
+          name='accessPolicies'
+          label={$t({ defaultMessage: 'Select Access Policies' })}
+          rules={[
+            { validator: async () => {
+              return new Promise<void>((resolve, reject) => {
+                if (accessPolicies.length === 0) {
+                  return reject(
+                    $t({ defaultMessage: 'Please select Access Policies' })
+                  )
+                }
+                return resolve()
+              })
+            } }
+          ]}
+        >
+          <AccessPolicyTable
+            editMode={editMode}
+            accessPolicies={accessPolicies}
+            setAccessPolicies={setAccessPolicies}
           />
-        </GridCol>
-        <GridCol col={{ span: 24 }}>
-          <Form.Item initialValue={[] as AdaptivePolicy []}
-            name='accessPolicies'
-            label={$t({ defaultMessage: 'Select Access Policies' })}
-            rules={[
-              { validator: async () => {
-                return new Promise<void>((resolve, reject) => {
-                  if (accessPolicies.length === 0) {
-                    return reject(
-                      $t({ defaultMessage: 'Please select Access Policies' })
-                    )
-                  }
-                  return resolve()
-                })
-              } }
-            ]}
-          >
-            <AccessPolicyTable
-              editMode={editMode}
-              setAdaptivePoliciesSelectDrawerVisible={setAdaptivePoliciesSelectDrawerVisible}
-              accessPolicies={accessPolicies}
-              setAccessPolicies={setAccessPolicies}
-            />
-          </Form.Item>
-        </GridCol>
-      </GridRow>
-      <AdaptivePoliciesSelectDrawer
-        visible={adaptivePoliciesSelectDrawer}
-        setVisible={setAdaptivePoliciesSelectDrawerVisible}
-        setAdaptivePolicyDrawerVisible={setAdaptivePolicyDrawerVisible}
-        accessPolicies={accessPolicies}
-        setAccessPolicies={setAccessPolicies}/>
-      <AdaptivePolicyFormDrawer
-        visible={adaptivePolicyDrawerVisible}
-        setVisible={setAdaptivePolicyDrawerVisible}
-      />
-    </>
+        </Form.Item>
+      </GridCol>
+    </GridRow>
   )
 }

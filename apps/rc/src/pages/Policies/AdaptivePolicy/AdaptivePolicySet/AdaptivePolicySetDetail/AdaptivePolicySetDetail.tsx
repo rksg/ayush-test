@@ -13,38 +13,8 @@ import {
   PolicyOperation,
   PolicyType
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
-
-// TODO: need to update after integrate with network
-// export interface NetworkTable {
-//   id: string,
-//   name: string,
-//   type: string,
-//   venues: number
-// }
-//
-// function useColumns () {
-//   const { $t } = useIntl()
-//   const columns: TableProps<NetworkTable>['columns'] = [
-//     {
-//       key: 'name',
-//       title: $t({ defaultMessage: 'Network Name' }),
-//       dataIndex: 'name',
-//       defaultSortOrder: 'ascend'
-//     },
-//     {
-//       title: $t({ defaultMessage: 'Type' }),
-//       key: 'type',
-//       dataIndex: 'type'
-//     },
-//     {
-//       key: 'venues',
-//       title: $t({ defaultMessage: 'Venues' }),
-//       dataIndex: 'venues'
-//     }
-//   ]
-//   return columns
-// }
+import { TenantLink }     from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 export default function AdaptivePolicySetDetail () {
   const { $t } = useIntl()
@@ -68,9 +38,8 @@ export default function AdaptivePolicySetDetail () {
             // eslint-disable-next-line max-len
             link: getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.LIST }) }
         ]}
-        extra={[
+        extra={filterByAccess([
           <TenantLink
-            key='edit'
             to={
               getPolicyDetailsLink({
                 type: PolicyType.ADAPTIVE_POLICY_SET,
@@ -81,7 +50,7 @@ export default function AdaptivePolicySetDetail () {
           >
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <Space direction={'vertical'}>
         <Card>
@@ -104,17 +73,6 @@ export default function AdaptivePolicySetDetail () {
             </Form>
           </Loader>
         </Card>
-        {/* TODO: need to update after integrate with network*/}
-        {/*<Card title={$t({ defaultMessage: 'Instance ({size})' },*/}
-        {/*  { size: 0 })}>*/}
-        {/*  <div style={{ width: '100%' }}>*/}
-        {/*    <Table*/}
-        {/*      rowKey='id'*/}
-        {/*      columns={useColumns()}*/}
-        {/*      dataSource={[] as NetworkTable []}*/}
-        {/*    />*/}
-        {/*  </div>*/}
-        {/*</Card>*/}
       </Space>
     </>
   )

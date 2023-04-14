@@ -110,14 +110,13 @@ describe('AdaptivePolicyTable', () => {
     })
 
     const row = await screen.findByRole('row', { name: 'test1 RADIUS 0 0' })
-    // const row = await screen.findByRole('row', { name: 'dpsk1 DPSK 1 0' })
     fireEvent.click(within(row).getByRole('radio'))
 
     const editButton = screen.getByRole('button', { name: /Edit/i })
     fireEvent.click(editButton)
   })
 
-  it('should negative add policy', async () => {
+  it('should navigate add policy', async () => {
     render(<Provider><AdaptivePolicyTable /></Provider>, {
       route: { params, path: tablePath }
     })

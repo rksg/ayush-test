@@ -128,7 +128,7 @@ describe('AdaptivePolicySetTable', () => {
     })
   })
 
-  it('should negative add policy', async () => {
+  it('should navigate add policy', async () => {
     render(<Provider><AdaptivePolicySetTable /></Provider>, {
       route: { params, path: tablePath }
     })

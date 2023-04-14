@@ -143,7 +143,6 @@ export default function AdaptivePolicyTable () {
   }
 
   const rowActions: TableProps<AdaptivePolicy>['rowActions'] = [{
-    visible: (selectedRows) => selectedRows.length === 1,
     label: $t({ defaultMessage: 'Edit' }),
     onClick: (selectedRows) => {
       navigate({

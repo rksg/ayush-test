@@ -44,7 +44,7 @@ export interface AccessCondition {
 }
 
 export interface CriteriaFormData {
-  criteriaType: string,
+  attributeType: string,
   attributeValue: string,
   when: string,
   start: string,

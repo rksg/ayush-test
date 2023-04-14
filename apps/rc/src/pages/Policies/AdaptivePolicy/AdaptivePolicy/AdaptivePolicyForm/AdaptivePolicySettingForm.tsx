@@ -80,10 +80,7 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
       {
         key: 'name',
         title: $t({ defaultMessage: 'Condition Type' }),
-        dataIndex: 'name',
-        render: function (data, row) {
-          return row.name
-        }
+        dataIndex: 'name'
       },
       {
         title: $t({ defaultMessage: 'Condition Value' }),
@@ -131,7 +128,6 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
 
   const rowActions: TableProps<AccessCondition>['rowActions'] = [
     {
-      visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows, clearSelection) => {
         setEditConditionMode(true)

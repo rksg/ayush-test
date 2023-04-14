@@ -12,7 +12,7 @@ import { Path }                                                   from '@acx-ui/
 import { Provider }                                               from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
-import { groupList, adaptivePolicyList } from './__tests__/fixtures'
+import { groupList, adaptivePolicyList, groupListByPost } from './__tests__/fixtures'
 
 import RadiusAttributeGroupTable from './index'
 
@@ -46,6 +46,10 @@ describe('RadiusAttributeGroupTable', () => {
       rest.post(
         RulesManagementUrlsInfo.getPoliciesByQuery.url,
         (req, res, ctx) => res(ctx.json(adaptivePolicyList))
+      ),
+      rest.post(
+        RadiusAttributeGroupUrlsInfo.getAttributeGroupsWithQuery.url,
+        (req, res, ctx) => res(ctx.json(groupListByPost))
       )
     )
   })

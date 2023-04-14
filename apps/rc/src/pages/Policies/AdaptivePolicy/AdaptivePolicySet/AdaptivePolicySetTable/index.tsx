@@ -60,7 +60,7 @@ export default function AdaptivePolicySetTable () {
         if(poolsMap.has(setId)) {
           poolsMap.set(setId, poolsMap.get(setId).concat(item.name))
         }else {
-          poolsMap.set(setId, Array.of(item.name))
+          poolsMap.set(setId, [item.name])
         }
       })
       setAssignedMacPools(poolsMap)
@@ -112,10 +112,10 @@ export default function AdaptivePolicySetTable () {
         dataIndex: 'policyCount',
         align: 'center',
         render: (_, row) => {
-          const pList: string [] = prioritizedPoliciesMap.get(row.id) ?? []
-          const policies: string [] = pList.map((item:string) => {
+          // eslint-disable-next-line max-len
+          const policies: string [] = prioritizedPoliciesMap.has(row.id) ? prioritizedPoliciesMap.get(row.id).map((item:string) => {
             return policyList?.data.find(p => p.id === item)?.name ?? ''
-          })
+          }) : []
 
           return policies.length === 0 ? '0' :
             <SimpleListTooltip items={policies} displayText={policies.length}/>
@@ -137,7 +137,6 @@ export default function AdaptivePolicySetTable () {
   }
 
   const rowActions: TableProps<AdaptivePolicySet>['rowActions'] = [{
-    visible: (selectedRows) => selectedRows.length === 1,
     label: $t({ defaultMessage: 'Edit' }),
     onClick: (selectedRows) => {
       navigate({

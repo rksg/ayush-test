@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 
-import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
@@ -156,12 +155,7 @@ export default function RadiusAttributeGroupTable () {
     }
 
     const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
-      let payload = { ...tableQuery.payload }
-      if(customSearch.searchString) {
-        payload = { ...payload, filters: { name: customSearch?.searchString ?? '' } }
-      } else{
-        payload = _.omit(payload, 'filters')
-      }
+      const payload = { ...tableQuery.payload, filters: { name: customSearch?.searchString ?? '' } }
       tableQuery.setPayload(payload)
     }
 

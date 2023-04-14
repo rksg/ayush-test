@@ -12,11 +12,12 @@ import {
 } from '@acx-ui/rc/services'
 import {
   AdaptivePolicy,
-  AttributeAssignment,
+  AttributeAssignment, getAdaptivePolicyDetailLink,
   getPolicyDetailsLink, getPolicyListRoutePath,
   getPolicyRoutePath,
   PolicyOperation,
-  PolicyType } from '@acx-ui/rc/utils'
+  PolicyType
+} from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
 
@@ -27,12 +28,12 @@ export default function RadiusAttributeGroupDetail () {
   const { Paragraph } = Typography
   const [policySetPoliciesMap, setPolicySetPoliciesMap] = useState(new Map())
 
-  // eslint-disable-next-line max-len
-  const { data: policyListData, isLoading: getPolicyListDataLoading } = useAdaptivePolicyListByQueryQuery({ params: { policyId, excludeContent: 'false' }, payload: {
-    fields: [ 'name' ],
-    page: 0, pageSize: 2000,
-    filters: { onMatchResponse: policyId }
-  } })
+  const { data: policyListData, isLoading: getPolicyListDataLoading } =
+    useAdaptivePolicyListByQueryQuery({ params: { policyId, excludeContent: 'false' }, payload: {
+      fields: [ 'name' ],
+      page: 0, pageSize: 2000,
+      filters: { onMatchResponse: policyId }
+    } })
 
   // eslint-disable-next-line max-len
   const { data: adaptivePolicySetList } = useAdaptivePolicySetListQuery({ payload: { page: '1', pageSize: '2147483647' } })
@@ -53,17 +54,16 @@ export default function RadiusAttributeGroupDetail () {
   })
 
   useEffect(() => {
-    if(adaptivePolicySetList) {
-      adaptivePolicySetList.data.forEach(policySet => {
-        getPrioritizedPolicies({ params: { policySetId: policySet.id } })
-          .then(result => {
-            if (result.data) {
-              const policies : string []= result.data.data.map(p => p.policyId)
-              setPolicySetPoliciesMap(map => new Map(map.set(policySet.name, policies)))
-            }
-          })
-      })
-    }
+    if(!adaptivePolicySetList) return
+    adaptivePolicySetList.data.forEach(policySet => {
+      getPrioritizedPolicies({ params: { policySetId: policySet.id } })
+        .then(result => {
+          if (result.data) {
+            const policies : string []= result.data.data.map(p => p.policyId)
+            setPolicySetPoliciesMap(map => new Map(map.set(policySet.name, policies)))
+          }
+        })
+    })
   }, [adaptivePolicySetList])
 
   const getAttributes = function (attributes: Partial<AttributeAssignment> [] | undefined) {
@@ -89,8 +89,11 @@ export default function RadiusAttributeGroupDetail () {
         render: function (data, row) {
           return (
             <TenantLink
-              // eslint-disable-next-line max-len
-              to={`/policies/adaptivePolicy/${templateList.get(row.policyType)}/${row.id}/detail`}>{data}</TenantLink>
+              to={getAdaptivePolicyDetailLink({
+                oper: PolicyOperation.DETAIL,
+                policyId: row.id!,
+                templateId: templateList.get(row.policyType) ?? ''
+              })}>{data}</TenantLink>
           )
         }
       },

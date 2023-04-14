@@ -32,7 +32,7 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
   const [resetField, setResetField] = useState(false)
   const [attributes, setAttributes] = useState([] as RuleAttribute [])
   const conditionId = Form.useWatch('conditionId', form)
-  const criteriaType = Form.useWatch('criteriaType', form)
+  const attributeType = Form.useWatch('attributeType', form)
 
   const [attributeList, { isLoading } ] = useLazyGetPolicyTemplateAttributesListQuery()
 
@@ -91,7 +91,7 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
   }
 
   const toEvaluationRuleData = (data: CriteriaFormData) => {
-    const criteriaType = CriteriaOption[data.criteriaType as keyof typeof CriteriaOption]
+    const criteriaType = CriteriaOption[data.attributeType as keyof typeof CriteriaOption]
     if(criteriaType === CriteriaOption.DATE_RANGE) {
       return {
         criteriaType,
@@ -110,14 +110,14 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
   const toEvaluationRuleForm = (evaluationRule: EvaluationRule) => {
     if(evaluationRule.criteriaType === CriteriaOption.DATE_RANGE) {
       return {
-        criteriaType: getCriteriaOptionByValue(evaluationRule.criteriaType),
+        attributeType: getCriteriaOptionByValue(evaluationRule.criteriaType),
         when: evaluationRule.when,
         start: moment(evaluationRule.startTime, 'HH:mm:ss'),
         end: moment(evaluationRule.endTime, 'HH:mm:ss')
       }
     } else {
       return {
-        criteriaType: getCriteriaOptionByValue(evaluationRule.criteriaType),
+        attributeType: getCriteriaOptionByValue(evaluationRule.criteriaType),
         attributeValue: evaluationRule.regexStringCriteria
       }
     }
@@ -138,7 +138,7 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
       <Form layout='vertical' form={form} onFinish={onSubmit}>
         <Form.Item name='conditionId' hidden children={<Input />}/>
         <Form.Item name='name' hidden children={<Input />}/>
-        <Form.Item name='criteriaType' hidden children={<Input />}/>
+        <Form.Item name='attributeType' hidden children={<Input />}/>
         <Form.Item name='templateAttributeId'
           label={$t({ defaultMessage: 'Condition Type' })}
           rules={[
@@ -155,7 +155,7 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
                 form.setFieldsValue({
                   templateAttributeId: attr.id,
                   name: attr.name,
-                  criteriaType: attr.attributeType
+                  attributeType: attr.attributeType
                 })
               }
             }}
@@ -163,7 +163,7 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
           </Select>
         </Form.Item>
         {
-          criteriaType !== 'DATE_RANGE' ?
+          attributeType !== 'DATE_RANGE' ?
             <Form.Item label={$t({ defaultMessage: 'Condition Value' })}
               name='attributeValue'
               rules={[{ required: true }]}

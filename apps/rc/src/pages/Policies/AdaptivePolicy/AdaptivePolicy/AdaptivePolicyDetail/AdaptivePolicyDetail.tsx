@@ -15,42 +15,8 @@ import {
   PolicyOperation,
   PolicyType
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
-
-// TODO: need to update after integrate with network*/}
-// function useColumns () {
-//   const { $t } = useIntl()
-//   const columns: TableProps<VenueTable>['columns'] = [
-//     {
-//       key: 'name',
-//       title: $t({ defaultMessage: 'Venue Name' }),
-//       dataIndex: 'name',
-//       defaultSortOrder: 'ascend'
-//       // render: function (data, row) {
-//       // if (disabledType.indexOf(row.nwSubType as NetworkTypeEnum) > -1) {
-//       //   return data
-//       // } else {
-//       //   return (
-//       //     <TenantLink
-//       //       to={`/networks/wireless/${row.id}/network-details/overview`}>{data}</TenantLink>
-//       //   )
-//       // }
-//       // }
-//     },
-//     {
-//       title: $t({ defaultMessage: 'Contained Policies' }),
-//       key: 'polices',
-//       dataIndex: 'polices'
-//     },
-//     {
-//       key: 'scopes',
-//       title: $t({ defaultMessage: 'Scope' }),
-//       dataIndex: 'scopes'
-//     }
-//   ]
-//
-//   return columns
-// }
+import { TenantLink }     from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 export default function AdaptivePolicyDetail () {
   const { $t } = useIntl()
@@ -94,20 +60,18 @@ export default function AdaptivePolicyDetail () {
             // eslint-disable-next-line max-len
             link: getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST }) }
         ]}
-        extra={[
+        extra={filterByAccess([
           <TenantLink
-            key='edit'
             to={
               getAdaptivePolicyDetailLink({
                 oper: PolicyOperation.EDIT,
                 policyId: policyId!,
                 templateId: templateId!
               })
-            }
-          >
+            }>
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <Space direction={'vertical'}>
         <Card>
@@ -136,17 +100,6 @@ export default function AdaptivePolicyDetail () {
             </Form>
           </Loader>
         </Card>
-        {/*TODO: need to update after integrate with network*/}
-        {/*<Card title={$t({ defaultMessage: 'Instance ({size})' },*/}
-        {/*  { size: 0 })}>*/}
-        {/*  <div style={{ width: '100%' }}>*/}
-        {/*    <Table*/}
-        {/*      rowKey='id'*/}
-        {/*      columns={useColumns()}*/}
-        {/*      dataSource={[] as VenueTable []}*/}
-        {/*    />*/}
-        {/*  </div>*/}
-        {/*</Card>*/}
       </Space>
     </>
   )

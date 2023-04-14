@@ -122,7 +122,7 @@ export function useTableQuery <
   ResultType,
   Payload extends RequestPayload<unknown> = RequestPayload<unknown>,
   ResultExtra = unknown
-  > (option: TABLE_QUERY<ResultType, Payload, ResultExtra>) {
+> (option: TABLE_QUERY<ResultType, Payload, ResultExtra>) {
 
   const initialPagination = {
     ...DEFAULT_PAGINATION,
@@ -273,16 +273,6 @@ export interface NewAPITableResult<T>{
   }
 }
 
-// export interface NewTableResultPolicy<T> {
-//   content: T[]
-//   paging: {
-//     totalCount: number,
-//     page: number,
-//     pageSize: number,
-//     pageCount: number
-//   }
-// }
-
 interface CreateNewTableHttpRequestProps {
   apiInfo: ApiInfo
   params?: Params<string>
@@ -312,15 +302,6 @@ export function transferNewResToTableResult<T> (newResult: NewAPITableResult<T>,
     totalCount: newResult.paging.totalCount
   }
 }
-
-// TODO updated 'page' number after service changed
-// export function transferToTableResultPolicy<T> (newResult: NewAPITableResult<T>): TableResult<T> {
-//   return {
-//     data: newResult.content,
-//     page: newResult.paging ? newResult.paging.page : 1,
-//     totalCount: newResult.paging.totalCount
-//   }
-// }
 
 export function transferToNewTablePaginationParams (payload: TableChangePayload | undefined) {
   const pagination = {
