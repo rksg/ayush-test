@@ -4,24 +4,58 @@ import React from 'react'
 import { fireEvent, waitForElementToBeRemoved, within } from '@testing-library/react'
 import { rest }                                         from 'msw'
 
-import {
-  AdministrationUrlsInfo, TenantType
-
-} from '@acx-ui/rc/utils'
-import { Provider } from '@acx-ui/store'
+import { AdministrationUrlsInfo, MspUrlsInfo, TenantType } from '@acx-ui/rc/utils'
+import { Provider }                                        from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen,
   waitFor
 } from '@acx-ui/test-utils'
-import { UserUrlsInfo } from '@acx-ui/user'
+import { DetailLevel, setUserProfile, UserProfile, UserProfileContext, UserProfileContextProps, UserUrlsInfo } from '@acx-ui/user'
 
 import { ConvertNonVARMSPButton } from './ConvertNonVARMSPButton'
 
 const params = {
   tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 }
+
+const fakeNonMspEcProfile = {
+  msp_label: '',
+  name: '',
+  service_effective_date: '',
+  service_expiration_date: '',
+  is_active: 'false'
+}
+
+const fakeUserProfile = {
+  region: '[NA]',
+  allowedRegions: [
+    {
+      name: 'US',
+      description: 'United States of America',
+      link: 'https://devalto.ruckuswireless.com',
+      current: true
+    }
+  ],
+  externalId: '0032h00000LUqcoAAD',
+  pver: 'acx-hybrid',
+  companyName: 'Dog Company 1551',
+  firstName: 'FisrtName 1551',
+  lastName: 'LastName 1551',
+  username: 'dog1551@email.com',
+  role: 'PRIME_ADMIN',
+  roles: ['PRIME_ADMIN'],
+  detailLevel: DetailLevel.DEBUGGING,
+  dateFormat: 'mm/dd/yyyy',
+  email: 'dog1551@email.com',
+  var: false,
+  tenantId: '8c36a0a9ab9d4806b060e112205add6f',
+  varTenantId: '8c36a0a9ab9d4806b060e112205add6f',
+  adminId: '4159559db15c4027903d9c3d4bdb8a7e',
+  support: false,
+  dogfood: false
+} as UserProfile
 
 const fakeTenantDetails = {
   id: 'ee87b5336d5d483faeda5b6aa2cbed6f',
@@ -56,7 +90,12 @@ const fakeDelegationList = [
   }
 ]
 
-
+const fakeDogfoodUser = { ...fakeUserProfile, dogfood: true }
+const fakeSupportUser = { ...fakeUserProfile, support: true }
+const fakeVARUser = { ...fakeUserProfile, var: true }
+const fakeMspEcProfile = { ...fakeNonMspEcProfile, msp_label: 'msp_user' }
+const isPrimeAdmin: () => boolean = jest.fn().mockReturnValue(true)
+const mockedMSPEcProfileFn = jest.fn()
 const mockedTenantFn = jest.fn()
 const mockedSaveFn = jest.fn()
 const mockedUsedNavigate = jest.fn()
@@ -69,7 +108,16 @@ describe('Convert NonVAR MSP Button', () => {
   beforeEach(() => {
     mockedTenantFn.mockReset()
 
+    setUserProfile({ profile: fakeUserProfile, allowedOperations: [] })
+
     mockServer.use(
+      rest.get(
+        MspUrlsInfo.getMspEcProfile.url,
+        (req, res, ctx) => {
+          mockedMSPEcProfileFn()
+          return res(ctx.json(fakeNonMspEcProfile))
+        }
+      ),
       rest.get(
         AdministrationUrlsInfo.getTenantDetails.url,
         (req, res, ctx) => {
@@ -105,7 +153,11 @@ describe('Convert NonVAR MSP Button', () => {
   it('should correctly work', async () => {
     render(
       <Provider>
-        <ConvertNonVARMSPButton />
+        <UserProfileContext.Provider
+          value={{ data: fakeUserProfile, isPrimeAdmin } as UserProfileContextProps}
+        >
+          <ConvertNonVARMSPButton />
+        </UserProfileContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -115,7 +167,6 @@ describe('Convert NonVAR MSP Button', () => {
     })
     const btn = await screen.findByRole('button', { name: 'Go to MSP Subscriptions' })
     fireEvent.click(btn)
-    await screen.findByText('Checking MSP Licenses')
     await waitFor(async () => {
       expect(await screen.findByText('MSP Licenses Detected')).toBeVisible()
     })
@@ -129,8 +180,10 @@ describe('Convert NonVAR MSP Button', () => {
       })
     })
 
-    expect(mockedUsedNavigate).toHaveBeenCalledWith(`/v/${params.tenantId}/customers`, { replace: true })
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('dialog'))
+    expect(mockedUsedNavigate).toHaveBeenCalledWith(`/v/${params.tenantId}/dashboard/mspCustomers`, { replace: true })
+    await waitFor(() => {
+      expect(screen.queryAllByRole('dialog').length).toBe(0)
+    })
   })
 
   it('should submit with merged data', async () => {
@@ -146,7 +199,11 @@ describe('Convert NonVAR MSP Button', () => {
 
     render(
       <Provider>
-        <ConvertNonVARMSPButton />
+        <UserProfileContext.Provider
+          value={{ data: fakeUserProfile, isPrimeAdmin } as UserProfileContextProps}
+        >
+          <ConvertNonVARMSPButton />
+        </UserProfileContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -156,7 +213,6 @@ describe('Convert NonVAR MSP Button', () => {
     })
     const btn = await screen.findByRole('button', { name: 'Go to MSP Subscriptions' })
     fireEvent.click(btn)
-    await screen.findByText('Checking MSP Licenses')
     await waitFor(async () => {
       expect(await screen.findByText('MSP Licenses Detected')).toBeVisible()
     })
@@ -173,8 +229,10 @@ describe('Convert NonVAR MSP Button', () => {
         }
       })
     })
-    expect(mockedUsedNavigate).toHaveBeenCalledWith(`/v/${params.tenantId}/customers`, { replace: true })
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('dialog'))
+    expect(mockedUsedNavigate).toHaveBeenCalledWith(`/v/${params.tenantId}/dashboard/mspCustomers`, { replace: true })
+    await waitFor(() => {
+      expect(screen.queryAllByRole('dialog').length).toBe(0)
+    })
   })
 
   it('should blocked when account is delegated to others', async () => {
@@ -191,7 +249,11 @@ describe('Convert NonVAR MSP Button', () => {
 
     render(
       <Provider>
-        <ConvertNonVARMSPButton />
+        <UserProfileContext.Provider
+          value={{ data: fakeUserProfile, isPrimeAdmin } as UserProfileContextProps}
+        >
+          <ConvertNonVARMSPButton />
+        </UserProfileContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -222,7 +284,11 @@ describe('Convert NonVAR MSP Button', () => {
 
     render(
       <Provider>
-        <ConvertNonVARMSPButton />
+        <UserProfileContext.Provider
+          value={{ data: fakeUserProfile, isPrimeAdmin } as UserProfileContextProps}
+        >
+          <ConvertNonVARMSPButton />
+        </UserProfileContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -256,7 +322,11 @@ describe('Convert NonVAR MSP Button', () => {
 
     render(
       <Provider>
-        <ConvertNonVARMSPButton />
+        <UserProfileContext.Provider
+          value={{ data: fakeUserProfile, isPrimeAdmin } as UserProfileContextProps}
+        >
+          <ConvertNonVARMSPButton />
+        </UserProfileContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -276,30 +346,118 @@ describe('Convert NonVAR MSP Button', () => {
     await waitForElementToBeRemoved(() => screen.queryAllByRole('dialog'))
   })
 
-  it('should render empty when tenant type is MSP_NON_VAR', async () => {
-    const fakeNonVARMSPTenantDetails = { ...fakeTenantDetails }
-    fakeNonVARMSPTenantDetails.tenantType = TenantType.MSP_NON_VAR
-    let mockedFn = jest.fn()
-    mockServer.use(
-      rest.get(
-        AdministrationUrlsInfo.getTenantDetails.url,
-        (req, res, ctx) => {
-          mockedFn()
-          return res(ctx.json(fakeNonVARMSPTenantDetails))
-        }
-      )
-    )
+  describe('Should not render convert nonVAR MSP button', () => {
+    it('when it is MSP EC user', async () => {
+      let mockedmspFn = jest.fn()
+      mockServer.use(
+        rest.get(
+          MspUrlsInfo.getMspEcProfile.url,
+          (req, res, ctx) => {
+            mockedmspFn()
+            return res(ctx.json(fakeMspEcProfile))
+          }
+        ))
 
-    render(
-      <Provider>
-        <ConvertNonVARMSPButton />
-      </Provider>, {
-        route: { params }
+      render(
+        <Provider>
+          <UserProfileContext.Provider
+            value={{ data: fakeUserProfile, isPrimeAdmin } as UserProfileContextProps}
+          >
+            <ConvertNonVARMSPButton />
+          </UserProfileContext.Provider>
+        </Provider>, {
+          route: { params }
+        })
+
+      await waitFor(() => {
+        expect(mockedmspFn).toBeCalled()
       })
-
-    await waitFor(() => {
-      expect(mockedFn).toBeCalled()
+      expect(screen.queryByRole('button', { name: 'Go to MSP Subscriptions' })).not.toBeInTheDocument()
     })
-    expect(screen.queryByRole('button', { name: 'Go to MSP Subscriptions' })).not.toBeInTheDocument()
+
+    it('when user is VAR', async () => {
+      render(
+        <Provider>
+          <UserProfileContext.Provider
+            value={{ data: fakeVARUser, isPrimeAdmin } as UserProfileContextProps}
+          >
+            <ConvertNonVARMSPButton />
+          </UserProfileContext.Provider>
+        </Provider>, {
+          route: { params }
+        })
+
+      await waitFor(() => {
+        expect(mockedMSPEcProfileFn).toBeCalled()
+      })
+      expect(screen.queryByRole('button', { name: 'Go to MSP Subscriptions' })).not.toBeInTheDocument()
+    })
+
+    it('when it is dogfood user', async () => {
+      render(
+        <Provider>
+          <UserProfileContext.Provider
+            value={{ data: fakeDogfoodUser, isPrimeAdmin } as UserProfileContextProps}
+          >
+            <ConvertNonVARMSPButton />
+          </UserProfileContext.Provider>
+        </Provider>, {
+          route: { params }
+        })
+
+      await waitFor(() => {
+        expect(mockedMSPEcProfileFn).toBeCalled()
+      })
+      expect(screen.queryByRole('button', { name: 'Go to MSP Subscriptions' })).not.toBeInTheDocument()
+    })
+
+    it('when it is support user', async () => {
+      render(
+        <Provider>
+          <UserProfileContext.Provider
+            value={{ data: fakeSupportUser, isPrimeAdmin } as UserProfileContextProps}
+          >
+            <ConvertNonVARMSPButton />
+          </UserProfileContext.Provider>
+        </Provider>, {
+          route: { params }
+        })
+
+      await waitFor(() => {
+        expect(mockedMSPEcProfileFn).toBeCalled()
+      })
+      expect(screen.queryByRole('button', { name: 'Go to MSP Subscriptions' })).not.toBeInTheDocument()
+    })
+
+    it('when tenant type is MSP_NON_VAR', async () => {
+      const fakeNonVARMSPTenantDetails = { ...fakeTenantDetails }
+      fakeNonVARMSPTenantDetails.tenantType = TenantType.MSP_NON_VAR
+      let mockedFn = jest.fn()
+      mockServer.use(
+        rest.get(
+          AdministrationUrlsInfo.getTenantDetails.url,
+          (req, res, ctx) => {
+            mockedFn()
+            return res(ctx.json(fakeNonVARMSPTenantDetails))
+          }
+        )
+      )
+
+      render(
+        <Provider>
+          <UserProfileContext.Provider
+            value={{ data: fakeUserProfile, isPrimeAdmin } as UserProfileContextProps}
+          >
+            <ConvertNonVARMSPButton />
+          </UserProfileContext.Provider>
+        </Provider>, {
+          route: { params }
+        })
+
+      await waitFor(() => {
+        expect(mockedFn).toBeCalled()
+      })
+      expect(screen.queryByRole('button', { name: 'Go to MSP Subscriptions' })).not.toBeInTheDocument()
+    })
   })
 })

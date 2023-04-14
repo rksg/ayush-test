@@ -3,10 +3,10 @@ import { useIntl } from 'react-intl'
 import { DateFormatEnum, formatter }     from '@acx-ui/formatter'
 import { useGetLatestEdgeFirmwareQuery } from '@acx-ui/rc/services'
 import {
-  FirmwareCategory,
-  firmwareTypeTrans,
-  LatestEdgeFirmwareVersion
+  firmwareTypeTrans
 } from '@acx-ui/rc/utils'
+
+import { getReleaseFirmware } from '../../FirmwareUtils'
 
 import * as UI from './styledComponents'
 
@@ -39,11 +39,3 @@ export const VersionBanner = () => {
 }
 
 export default VersionBanner
-
-const categoryIsReleaseFunc = ((lv : LatestEdgeFirmwareVersion) =>
-  lv.category === FirmwareCategory.RECOMMENDED || lv.category === FirmwareCategory.CRITICAL)
-
-function getReleaseFirmware (firmwareVersions: LatestEdgeFirmwareVersion[] = [])
-: LatestEdgeFirmwareVersion[] {
-  return firmwareVersions.filter(categoryIsReleaseFunc)
-}

@@ -25,7 +25,8 @@ import {
   transformQosPriorityType,
   QosPriorityEnum,
   VenueExtended,
-  Guest
+  Guest,
+  GuestNetworkTypeEnum
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { getIntl }               from '@acx-ui/utils'
@@ -46,7 +47,7 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
   const { tenantId } = useParams()
   const [client, setClient] = useState({} as ClientExtended)
   const [networkType, setNetworkType] = useState('')
-
+  const [guestType, setGuestType] = useState<GuestNetworkTypeEnum>()
   const [getAp] = useLazyGetApQuery()
   const [getVenue] = useLazyGetVenueQuery()
   const [getNetwork] = useLazyGetNetworkQuery()
@@ -125,6 +126,7 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
       const setData = (apData: ApDeep, venueData: VenueExtended, networkData: NetworkSaveData | null
       ) => {
         setNetworkType(networkData?.type || '')
+        setGuestType(networkData?.guestPortal?.guestNetworkType)
         setClient({
           ...clientDetails,
           hasSwitch: false, // TODO: this.userProfileService.isSwitchEnabled(profile);
@@ -161,7 +163,9 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
           <ClientDetails client={client} />,
           <OperationalData client={client} />,
           <Connection client={client} />,
-          (networkType === 'guest' &&
+          (networkType === 'guest' && (guestType === GuestNetworkTypeEnum.GuestPass ||
+            guestType === GuestNetworkTypeEnum.HostApproval ||
+            guestType === GuestNetworkTypeEnum.SelfSignIn) &&
             <GuestDetails guestDetail={guestDetail} clientMac={clientMac}/>),
           (networkType === 'dpsk' && <DpskPassphraseDetails />),
           <WiFiCallingDetails client={client} />
