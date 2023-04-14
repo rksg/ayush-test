@@ -36,7 +36,7 @@ describe('ImpactedClientsTable', () => {
         }
       }
     )
-    expect(await screen.findByText('1 Impacted Clients')).toBeVisible()
+    expect(await screen.findByText('1 Impacted Client')).toBeVisible()
   })
   it('should show zero impacted clients for empty array', async () => {
     mockGraphqlQuery(dataApiURL, 'Network', {

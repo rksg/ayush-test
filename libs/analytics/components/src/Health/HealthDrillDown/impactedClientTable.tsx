@@ -146,7 +146,10 @@ export const ImpactedClientsTable = ({
     <Loader states={[queryResults]}>
       <TableHeading>
         <b>{selectedStage} </b>
-        {$t(defineMessage({ defaultMessage: '{count} Impacted Clients' }), { count: totalCount })}
+        {$t(defineMessage({ defaultMessage: `{count} Impacted {count, plural,
+          one {Client}
+          other {Clients}
+        }` }), { count: totalCount })}
       </TableHeading>
       <Table
         columns={columns}
