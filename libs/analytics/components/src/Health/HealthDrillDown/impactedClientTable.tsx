@@ -70,6 +70,12 @@ export const ImpactedClientsTable = ({
       }
     }
   )
+  const renderMultiValue = (allValues: string[]) => {
+    const values = allValues.filter(v => v)
+    return <Tooltip placement='bottom' title={(values as string[]).join('\r\n')}>
+      {values?.[0]}{values.length > 1 ? ` (${values.length})` : ''}
+    </Tooltip>
+  }
   const columns: TableProps<ImpactedClient>['columns'] = [
     {
       title: $t({ defaultMessage: 'Client MAC' }),
@@ -86,26 +92,14 @@ export const ImpactedClientsTable = ({
       title: $t({ defaultMessage: 'Manufacturer' }),
       dataIndex: 'manufacturer',
       key: 'manufacturer',
-      render: function (_, { manufacturer }) {
-        return (
-          <Tooltip placement='bottom' title={(manufacturer as string[]).join('\r\n')}>
-            {manufacturer?.[0]}{manufacturer.length > 1 ? ` (${manufacturer.length})` : ''}
-          </Tooltip>
-        )
-      },
+      render: (_, { manufacturer }) => renderMultiValue(manufacturer as string[]),
       sorter: { compare: sortProp('manufacturer', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'SSID' }),
       dataIndex: 'ssid',
       key: 'ssid',
-      render: function (_, { ssid }) {
-        return (
-          <Tooltip placement='bottom' title={(ssid as string[]).join('\r\n')}>
-            {ssid?.[0]}{ssid.length > 1 ? ` (${ssid.length})` : ''}
-          </Tooltip>
-        )
-      },
+      render: (_, { ssid }) => renderMultiValue(ssid as string[]),
       sorter: { compare: sortProp('ssid', defaultSort) }
     },
     {
@@ -117,13 +111,7 @@ export const ImpactedClientsTable = ({
         defaultMessage:
           'The username may only be known if the user has successfully passed authentication'
       }),
-      render: function (_, { username }) {
-        return (
-          <Tooltip placement='bottom' title={(username as string[]).join('\r\n')}>
-            {username?.[0]}{username.length > 1 ? ` (${username.length})` : ''}
-          </Tooltip>
-        )
-      },
+      render: (_, { username }) => renderMultiValue(username as string[]),
       sorter: { compare: sortProp('username', defaultSort) }
     },
     {
@@ -135,13 +123,7 @@ export const ImpactedClientsTable = ({
           // eslint-disable-next-line max-len
           'The hostname may only be known if the user has successfully obtained an IP address from DHCP'
       }),
-      render: function (_, { hostname }) {
-        return (
-          <Tooltip placement='bottom' title={(hostname as string[]).join('\r\n')}>
-            {hostname?.[0]}{hostname.length > 1 ? ` (${hostname.length})` : ''}
-          </Tooltip>
-        )
-      },
+      render: (_, { hostname }) => renderMultiValue(hostname as string[]),
       sorter: { compare: sortProp('hostname', defaultSort) }
     }
   ]
