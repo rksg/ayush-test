@@ -32,6 +32,7 @@ const switchRow ={
   venueId: '5c05180d54d84e609a4d653a3a8332d1',
   venueName: 'My-Venue',
   configReady: false,
+  syncedSwitchConfig: true,
   syncDataEndTime: '',
   cliApplied: false,
   formStacking: false,
