@@ -254,3 +254,20 @@ describe('Donut Chart - x-large', () => {
     expect(screen.getByText('Requires Attention')).toBeVisible()
   })
 })
+
+
+describe('Donut Chart - labelFormatter', () => {
+  const labelFormatter = jest.fn(() => 'test')
+  const { asFragment } = render(<DonutChart
+    style={{ width: 238, height: 176 }}
+    data={data}
+    size='small'
+    title='Some Title'
+    value='100'
+    legend='name-value'
+    labelFormatter={labelFormatter}
+    showLegend={true}
+    showTotal={false}/>)
+  expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+  expect(screen.getByText('Requires Attention - 35')).toBeVisible()
+})
