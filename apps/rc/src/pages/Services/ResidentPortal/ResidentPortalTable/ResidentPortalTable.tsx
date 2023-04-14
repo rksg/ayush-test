@@ -8,8 +8,7 @@ import {
   Loader,
   showActionModal
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
-import { useGetResidentPortalListQuery } from '@acx-ui/rc/services'
+import { useDeleteResidentPortalsMutation, useGetQueriableResidentPortalsQuery, useGetResidentPortalListQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
   ServiceOperation,
@@ -22,40 +21,50 @@ import {
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                               from '@acx-ui/user'
 
-// import { displayDefaultAccess, displayDeviceCountLimit } from '../utils'
-
 export default function ResidentPortalTable () {
   const intl = useIntl()
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
-  //   const [ deleteDpsk ] = useDeleteDpskMutation()
-  //   const isCloudpathEnabled = useIsSplitOn(Features.DPSK_CLOUDPATH_FEATURE)
+    const [ deleteResidentPortals ] = useDeleteResidentPortalsMutation()
 
-  const tableQuery = useTableQuery({ useQuery: useGetResidentPortalListQuery, defaultPayload: {} })
+  // const tableQuery = useTableQuery({ useQuery: useGetResidentPortalListQuery, defaultPayload: {} })
+  const tableQuery = useTableQuery({
+    useQuery: useGetQueriableResidentPortalsQuery,
+    defaultPayload: {
+      filters: {},
+      fields: ['id']
+    },
+    search: {
+      searchString: '',
+      searchTargetFields: ['name']
+    }
+  })
 
   const rowActions: TableProps<ResidentPortal>['rowActions'] = [
-    // {
-    //   label: intl.$t({ defaultMessage: 'Delete' }),
-    //   visible: ([selectedRow]) => selectedRow && !selectedRow.identityId,
-    //   onClick: ([{ id, name }], clearSelection) => {
-    //     showActionModal({
-    //       type: 'confirm',
-    //       customContent: {
-    //         action: 'DELETE',
-    //         entityName: intl.$t({ defaultMessage: 'DPSK Service' }),
-    //         entityValue: name
-    //       },
-    //       onOk: async () => {
-    //         try {
-    //           await deleteDpsk({ params: { serviceId: id } }).unwrap()
-    //           clearSelection()
-    //         } catch (error) {
-    //           console.log(error) // eslint-disable-line no-console
-    //         }
-    //       }
-    //     })
-    //   }
-    // },
+    {
+      // TODO: update this to not allow deletion when portal is in use????
+      label: intl.$t({ defaultMessage: 'Delete' }),
+      // TODO: visible: ([selectedRow]) => selectedRow && !selectedRow.identityId,
+      onClick: ([{ id, name }], clearSelection) => {
+        showActionModal({
+          type: 'confirm',
+          customContent: {
+            // TODO: add confirmation text? "Any Venues using this portal will revert to the default" ???
+            action: 'DELETE',
+            entityName: intl.$t({ defaultMessage: 'Resident Portal' }),
+            entityValue: name
+          },
+          onOk: async () => {
+            try {
+              await deleteResidentPortals({ payload: [id] }).unwrap()
+              clearSelection()
+            } catch (error) {
+              console.log(error) // eslint-disable-line no-console
+            }
+          }
+        })
+      }
+    },
     {
       label: intl.$t({ defaultMessage: 'Edit' }),
       onClick: ([{ id }]) => {
@@ -91,71 +100,21 @@ export default function ResidentPortalTable () {
           </TenantLink>
         )
       }
+    },
+    {
+      key: 'title',
+      title: intl.$t({ defaultMessage: 'Title' }),
+      dataIndex: ['uiConfiguration','text','title'],
+      // align: 'center'
+    },
+    {
+      key: 'subtitle',
+      title: intl.$t({ defaultMessage: 'Subtitle' }),
+      dataIndex: ['uiConfiguration','text','subTitle'],
+      // align: 'center'
     }
   ]
-  //     {
-  //       key: 'passphraseFormat',
-  //       title: intl.$t({ defaultMessage: 'Passphrase Format' }),
-  //       dataIndex: 'passphraseFormat',
-  //       sorter: true,
-  //       render: function (data) {
-  //         return transformDpskNetwork(
-  //           intl,
-  //           DpskNetworkType.FORMAT,
-  //           data as string
-  //         )
-  //       }
-  //     },
-  //     {
-  //       key: 'passphraseLength',
-  //       title: intl.$t({ defaultMessage: 'Passphrase Length' }),
-  //       dataIndex: 'passphraseLength',
-  //       align: 'center'
-  //     },
-  //     {
-  //       key: 'expirationType',
-  //       title: intl.$t({ defaultMessage: 'Passphrase Expiration' }),
-  //       dataIndex: 'expirationType',
-  //       render: function (data, row) {
-  //         return transformAdvancedDpskExpirationText(
-  //           intl,
-  //           {
-  //             expirationType: row.expirationType,
-  //             expirationDate: row.expirationDate,
-  //             expirationOffset: row.expirationOffset
-  //           }
-  //         )
-  //       }
-  //     },
-  //     {
-  //       key: 'networkIds',
-  //       title: intl.$t({ defaultMessage: 'Networks' }),
-  //       dataIndex: 'networkIds',
-  //       align: 'center',
-  //       render: function (data) {
-  //         return data ? (data as Array<string>).length : 0
-  //       }
-  //     },
-  //     {
-  //       key: 'deviceCountLimit',
-  //       title: intl.$t({ defaultMessage: 'Devices allowed per passphrase' }),
-  //       dataIndex: 'deviceCountLimit',
-  //       show: isCloudpathEnabled,
-  //       render: function (data, row) {
-  //         return displayDeviceCountLimit(row.deviceCountLimit)
-  //       }
-  //     },
-  //     {
-  //       key: 'policyDefaultAccess',
-  //       title: intl.$t({ defaultMessage: 'Default Access' }),
-  //       dataIndex: 'policyDefaultAccess',
-  //       show: isCloudpathEnabled,
-  //       render: function (data, row) {
-  //         return displayDefaultAccess(row.policyDefaultAccess)
-  //       }
-  //     }
-  //   ]
-
+  
   return (
     <>
       <PageHeader

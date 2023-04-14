@@ -1091,6 +1091,21 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       providesTags: [{ type: 'ResidentPortal', id: 'LIST' }]
     }),
+    getQueriableResidentPortals: build.query<TableResult<ResidentPortal>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.getResidentPortalsQuery, params,
+          { 'Accept': '*/*' })
+        
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      transformResponse (result: NewTableResult<ResidentPortal>) {
+        return transferToTableResult<ResidentPortal>(result)
+      },
+      providesTags: [{ type: 'ResidentPortal', id: 'LIST' }]
+    }),
     addResidentPortal: build.mutation<ResidentPortal, RequestFormData>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(PropertyUrlsInfo.addResidentPortal, params,
@@ -1118,6 +1133,16 @@ export const venueApi = baseVenueApi.injectEndpoints({
       query: ({ params, payload }) => {
         const req = createHttpRequest(PropertyUrlsInfo.patchResidentPortal, params,
           { 'Content-Type': undefined, 'Accept': '*/*' })
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'ResidentPortal', id: 'LIST' }]
+    }),
+    deleteResidentPortals: build.mutation<ResidentPortal, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.deleteResidentPortals, params)
         return {
           ...req,
           body: payload
@@ -1234,11 +1259,14 @@ export const {
   useGetPropertyUnitListQuery,
   useUpdatePropertyUnitMutation,
   useDeletePropertyUnitsMutation,
+
   useGetResidentPortalListQuery,
+  useGetQueriableResidentPortalsQuery,
   useLazyGetResidentPortalListQuery,
   useAddResidentPortalMutation,
   useGetResidentPortalQuery,
   useUpdateResidentPortalMutation,
+  useDeleteResidentPortalsMutation,
 
   useImportPropertyUnitsMutation,
   useLazyDownloadPropertyUnitsQuery,
