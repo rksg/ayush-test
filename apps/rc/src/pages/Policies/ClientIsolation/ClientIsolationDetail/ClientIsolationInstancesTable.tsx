@@ -37,13 +37,15 @@ export function ClientIsolationInstancesTable () {
     {
       title: $t({ defaultMessage: 'Address' }),
       dataIndex: 'address',
-      key: 'address'
+      key: 'address',
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'Networks' }),
       dataIndex: 'networkCount',
       key: 'networkCount',
       align: 'center',
+      sorter: true,
       render: (data, row) => {
         return data
           ? <SimpleListTooltip items={row.networkNames} displayText={row.networkCount} />
