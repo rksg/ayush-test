@@ -17,6 +17,13 @@ import {
 import { useImpactedClientsQuery, ImpactedClient } from './services'
 import { TableHeading }                            from './styledComponents'
 
+const stageNameToCodeMap: Record<string, string> = {
+  Authentication: 'auth',
+  Association: 'assoc',
+  EAP: 'eap',
+  Radius: 'radius',
+  DHCP: 'dhcp'
+}
 
 export const ImpactedClientsTable = ({
   filters,
@@ -42,7 +49,7 @@ export const ImpactedClientsTable = ({
     {
       ...payload,
       field: field,
-      stage: selectedStage?.toLowerCase() as string,
+      stage: (selectedStage && stageNameToCodeMap[selectedStage]) as string,
       topImpactedClientLimit: topImpactedClientLimit
     },
     {
