@@ -14,7 +14,7 @@ import {
   DrilldownSelection,
   topImpactedClientLimit
 } from './config'
-import { useHealthImpactedClientsQuery, ImpactedClient, RequestPayload } from './services'
+import { useHealthImpactedClientsQuery, ImpactedClient } from './services'
 import { TableHeading }                                  from './styledComponents'
 
 const stageNameToCodeMap: Record<string, string> = {
@@ -43,7 +43,7 @@ export const ImpactedClientsTable = ({
     path: filters.path,
     start: filters.startDate,
     end: filters.endDate
-  } as unknown as RequestPayload
+  }
   const field = fieldMap?.[drillDownSelection as keyof typeof fieldMap]
   const queryResults = useHealthImpactedClientsQuery(
     {

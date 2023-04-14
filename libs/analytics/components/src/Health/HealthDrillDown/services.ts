@@ -47,6 +47,12 @@ export interface RequestPayload {
   path: NetworkPath
   start: string
   end: string
+}
+
+export interface PieChartPayload {
+  path: NetworkPath
+  start: string
+  end: string
   queryType: string
   queryFilter: string
 }
@@ -175,7 +181,7 @@ export const api = dataApi.injectEndpoints({
         }}
     }),
 
-    pieChart: build.query<ImpactedNodesAndWlans, RequestPayload>({
+    pieChart: build.query<ImpactedNodesAndWlans, PieChartPayload>({
       query: payload => {
         const { path, queryType, queryFilter } = payload
         const innerQuery = pieChartQuery(path, queryType, queryFilter)

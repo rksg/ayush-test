@@ -20,7 +20,7 @@ import {
 import { FunnelChart }                                       from './funnelChart'
 import { HealthPieChart }                                    from './healthPieChart'
 import { ImpactedClientsTable }                              from './impactedClientTable'
-import { useTtcDrilldownQuery, useConnectionDrilldownQuery, RequestPayload } from './services'
+import { useTtcDrilldownQuery, useConnectionDrilldownQuery } from './services'
 import { Point, Separator, Title, DrillDownRow }             from './styledComponents'
 
 const HealthDrillDown = (props: {
@@ -41,7 +41,7 @@ const HealthDrillDown = (props: {
     path: filters.path,
     start: filters.startDate,
     end: filters.endDate
-  } as unknown as RequestPayload
+  }
   const [selectedStage, setSelectedStage] = useState<Stages>(null)
   const [xPos, setXpos] = useState<number | null>(null)
   const setStage = (width: number, stage: Stages) => {
