@@ -236,7 +236,9 @@ export function PropertyManagementTab () {
         isEdit={false}
         visible={personaGroupVisible}
         onClose={(result) => {
-          formRef?.current?.setFieldValue('personaGroupId', result?.id)
+          if (result) {
+            formRef?.current?.setFieldValue('personaGroupId', result?.id)
+          }
           setPersonaGroupVisible(false)
         }}
       />

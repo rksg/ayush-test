@@ -85,7 +85,7 @@ export function PersonaGroupDrawer (props: PersonaGroupDrawerProps) {
           : $t({ defaultMessage: 'Add' })
       }}
       onSave={onSave}
-      onCancel={onClose}
+      onCancel={() => onClose()}
     />)
 
   return (
