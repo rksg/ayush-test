@@ -134,7 +134,7 @@ export const HealthPieChart = ({
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = []
 
-  if (nodes.length > 1) {
+  if (nodes.length > 0) {
     tabDetails.push({
       label: $t({ defaultMessage: '{venueTitle}' }, { venueTitle }),
       value: 'nodes',
