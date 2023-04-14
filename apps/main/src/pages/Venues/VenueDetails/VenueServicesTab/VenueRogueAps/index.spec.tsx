@@ -1,8 +1,9 @@
 import React from 'react'
 
-import { act }  from '@testing-library/react'
-import { Form } from 'antd'
-import { rest } from 'msw'
+import { act }   from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
+import { rest }  from 'msw'
 
 import { venueApi } from '@acx-ui/rc/services'
 import {
@@ -345,5 +346,8 @@ describe('RogueVenueTable', () => {
     screen.getByText(/^30/i)
     screen.getByText(/^25/i)
     screen.getByText(/^15/i)
+
+    await userEvent.click(await screen.findByTestId('VenueMarkerRed'))
+    await userEvent.click(await screen.findByText('Cancel'))
   })
 })

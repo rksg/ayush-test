@@ -94,22 +94,22 @@ const ApLocateDetail = (props: { row: RogueOldApResponseType }) => {
       >
         <Descriptions>
           <Descriptions.Item
-            label='Rogue MAC Address'
+            label={$t({ defaultMessage: 'Rogue MAC Address' })}
             children={row.rogueMac}
           />
           <Descriptions.Item
-            label='Category'
+            label={$t({ defaultMessage: 'Category' })}
             children={<Badge
               color={handleCategoryColor(row.category as RogueDeviceCategory)}
               text={row.category}
             />}
           />
           <Descriptions.Item
-            label='Classification Policy'
+            label={$t({ defaultMessage: 'Classification Policy' })}
             children={row.classificationPolicyName}
           />
           <Descriptions.Item
-            label='SSID'
+            label={$t({ defaultMessage: 'SSID' })}
             children={row.ssid}
           />
         </Descriptions>
