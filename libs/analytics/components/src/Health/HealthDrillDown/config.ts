@@ -6,6 +6,7 @@ export const titleConfig = {
   connectionFailure: defineMessage({ defaultMessage: 'Connection Failures' }),
   ttc: defineMessage({ defaultMessage: 'Average Time To Connect' })
 }
+export const topImpactedClientLimit = 100
 export type Stages =
   | 'authFailure'
   | 'assoFailure'

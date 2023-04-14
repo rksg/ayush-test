@@ -35,6 +35,29 @@ export const mockTtcDrillDown = {
     }
   }
 }
+export const mockImpactedClient = {
+  network: {
+    hierarchyNode: {
+      impactedClients: [
+        {
+          mac: 'D0:C6:37:D7:52:80',
+          manufacturer: 'Intel Corporate',
+          ssid: 'Divya_1_hour',
+          hostname: 'DESKTOP-K1PAM9U',
+          username: 'DPSK_User_8709'
+        },
+        {
+          mac: 'D0:C6:37:D7:52:80',
+          manufacturer: 'Intel Corporate',
+          ssid: 'Divya_tomorrow',
+          hostname: 'DESKTOP-K1PAM9U',
+          username: 'DPSK_User_8709'
+        }
+      ]
+    }
+  }
+}
+
 
 export const mockConnectionFailureResponse = {
   network: {
