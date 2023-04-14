@@ -88,7 +88,7 @@ function useColumns (
       title: intl.$t({ defaultMessage: 'Last Update' }),
       key: 'lastUpdate',
       dataIndex: 'lastUpdate',
-      sorter: false,
+      sorter: { compare: sortProp('lastScheduleUpdateTime', defaultSort) },
       render: function (data, row) {
         return row.lastScheduleUpdateTime ? toUserDate(row.lastScheduleUpdateTime) : '--'
       }
@@ -97,7 +97,7 @@ function useColumns (
       title: intl.$t({ defaultMessage: 'Scheduling' }),
       key: 'nextSchedule',
       dataIndex: 'nextSchedule',
-      sorter: false,
+      sorter: { compare: sortProp('nextSchedule.timeSlot.startDateTime', defaultSort) },
       render: function (data, row) {
         // return getNextScheduleTpl(intl, row)
         return (!isSwitchNextScheduleTooltipDisabled(row)
