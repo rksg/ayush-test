@@ -68,7 +68,7 @@ describe('Connection drill down api', () => {
 
     mockGraphqlQuery(dataApiURL, 'Network', { data: mockImpactedClient })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.impactedClients.initiate(impactedClientPayload)
+      api.endpoints.healthImpactedClients.initiate(impactedClientPayload)
     )
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(mockImpactedClient)
@@ -80,7 +80,7 @@ describe('Connection drill down api', () => {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.impactedClients.initiate(impactedClientPayload)
+      api.endpoints.healthImpactedClients.initiate(impactedClientPayload)
     )
     expect(status).toBe('rejected')
     expect(data).toBe(undefined)

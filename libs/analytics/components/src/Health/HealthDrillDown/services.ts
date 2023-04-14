@@ -108,7 +108,7 @@ export const api = dataApi.injectEndpoints({
         }
       })
     }),
-    impactedClients: build.query<
+    healthImpactedClients: build.query<
       ImpactedClients,
       RequestPayload & { field: string; topImpactedClientLimit: number; stage: string }
     >({
@@ -139,5 +139,9 @@ export const api = dataApi.injectEndpoints({
   })
 })
 
-export const { useConnectionDrilldownQuery, useTtcDrilldownQuery, useImpactedClientsQuery } = api
+export const {
+  useConnectionDrilldownQuery,
+  useTtcDrilldownQuery,
+  useHealthImpactedClientsQuery
+} = api
 
