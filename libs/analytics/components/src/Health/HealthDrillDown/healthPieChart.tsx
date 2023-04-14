@@ -20,29 +20,24 @@ import { DrilldownSelection, stageNameToCodeMap }      from './config'
 import { ImpactedNodesAndWlans, usePieChartQuery } from './services'
 import * as UI                                     from './styledComponents'
 
+type PieChartData = {
+        key: string,
+        value: number,
+        name: string,
+        color: string,
+}
+
+
 const transformData = (
-  data: ImpactedNodesAndWlans | undefined,
-  queryType: DrilldownSelection
+  data: ImpactedNodesAndWlans | undefined
 ): {
-  nodes: {
-    key: string;
-    value: number;
-    name: string;
-    color: string;
-  }[];
-  wlans: {
-    key: string;
-    value: number;
-    name: string;
-    color: string;
-  }[];
+  nodes: PieChartData[];
+  wlans: PieChartData[];
 } => {
   if (data) {
     const colors = qualitativeColorSet()
     let { wlans: rawWlans, nodes: rawNodes } = data.network.hierarchyNode
     rawNodes = rawNodes ?? []
-    switch (queryType) {
-      case 'connectionFailure': {
         const nodes = rawNodes
           .map((node, index) => ({
             ...node,
@@ -58,25 +53,6 @@ const transformData = (
           }))
           .slice(0, 5)
         return { nodes, wlans }
-      }
-      case 'ttc': {
-        const nodes = rawNodes
-          .map((node, index) => ({
-            ...node,
-            name: node.key,
-            color: colors[index]
-          }))
-          .slice(0, 5)
-        const wlans = rawWlans
-          .map((node, index) => ({
-            ...node,
-            name: node.key,
-            color: colors[index]
-          }))
-          .slice(0, 5)
-        return { nodes, wlans }
-      }
-    }
   }
   return { nodes: [], wlans: [] }
 }
@@ -151,7 +127,7 @@ export const HealthPieChart = ({
     }
   )
 
-  const { nodes, wlans } = transformData(queryResults.data, queryType)
+  const { nodes, wlans } = transformData(queryResults.data)
   const singularNetwork = pieNodeMap(path)
   const venueTitle = nodes.length > 1 ? singularNetwork + 's' : singularNetwork
   const wlansTitle = wlans.length > 1 ? 'WLANs' : 'WLAN'
