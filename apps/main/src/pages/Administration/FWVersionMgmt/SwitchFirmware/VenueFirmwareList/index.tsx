@@ -78,7 +78,7 @@ function useColumns (
         if (row.switchFirmwareVersion.id) {
           versionList.push(row.switchFirmwareVersion.id.replace('_b392', ''))
         }
-        if (row.switchFirmwareVersionAboveTen.id) {
+        if (row.switchFirmwareVersionAboveTen?.id) {
           versionList.push(row.switchFirmwareVersionAboveTen.id)
         }
         return versionList.length > 0 ? versionList.join(' ,') : '--'
@@ -349,7 +349,8 @@ export function VenueFirmwareList () {
 
   const { versionFilterOptions } = useGetSwitchCurrentVersionsQuery({ params: useParams() }, {
     selectFromResult ({ data }) {
-      const versionList = data?.currentVersions.concat(data?.currentVersionsAboveTen)
+      const versionList = data?.currentVersionsAboveTen ?
+        data?.currentVersions.concat(data?.currentVersionsAboveTen) : data?.currentVersions
       return {
         // eslint-disable-next-line max-len
         versionFilterOptions: versionList?.map(v=>({ key: v, value: v.replace('_b392', '') })) || true
