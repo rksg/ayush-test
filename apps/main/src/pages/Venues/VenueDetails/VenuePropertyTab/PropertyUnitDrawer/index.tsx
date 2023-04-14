@@ -74,6 +74,13 @@ function AccessPointLanPortSelector (props: { venueId: string }) {
 
   const onSelectApChange = (macAddress: string) => {
     const selectedAp = apOptions?.find(ap => ap.value === macAddress)
+
+    if (!selectedAp) {
+      // When the ap can not match any device, clean the state to prevent the data inconsistency.
+      form.setFieldValue('accessAp', undefined)
+      form.setFieldValue('ports', undefined)
+    }
+
     const lanPort = venueLanPorts
       ?.find(lan => lan.model === selectedAp?.model) ?? {} as VenueLanPorts
     setSelectedModel(lanPort)
