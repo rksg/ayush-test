@@ -209,7 +209,11 @@ function Table <RecordType extends Record<string, any>> ({
 
   const [selectedRowKeys, setSelectedRowKeys] = useSelectedRowKeys(props.rowSelection)
   const getSelectedRows = useCallback((selectedRowKeys: Key[]) => {
-    return props.dataSource?.filter(item => {
+
+    const dataSource = (!isGroupByActive ?
+      props.dataSource : props.dataSource?.flatMap(item => item.children)) as RecordType[]
+
+    return dataSource?.filter((item: RecordType) => {
       return selectedRowKeys.includes(typeof rowKey === 'function' ?
         rowKey(item) : item[rowKey] as unknown as Key)
     }) ?? []
