@@ -15,6 +15,11 @@ import {
   UserProfileProvider
 } from './UserProfileContext'
 
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  useLocaleContext: () => ({ messages: { 'en-US': { lang: 'Language' } } })
+}))
+
 const tenantId = 'a27e3eb0bd164e01ae731da8d976d3b1'
 
 const mockedUserProfile = {

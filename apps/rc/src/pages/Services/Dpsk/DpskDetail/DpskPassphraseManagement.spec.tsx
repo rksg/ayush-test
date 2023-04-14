@@ -236,14 +236,14 @@ describe('DpskPassphraseManagement', () => {
     const [ revokeFn, unrevokeFn ] = [ jest.fn(), jest.fn() ]
 
     mockServer.use(
-      rest.post(
+      rest.patch(
         DpskUrls.revokePassphrases.url,
         (req, res, ctx) => {
-          const body = req.body as { ids: string[], updateState: string, revocationReason?: string }
+          const body = req.body as { ids: string[], changes: { revocationReason: string | null } }
 
-          if (body.updateState === 'REVOKE') {
+          if (body.changes.revocationReason) {
             revokeFn(body)
-          } else if (body.updateState === 'UNREVOKE') {
+          } else {
             unrevokeFn(body)
           }
 
@@ -279,8 +279,7 @@ describe('DpskPassphraseManagement', () => {
     await waitFor(() => {
       expect(revokeFn).toHaveBeenCalledWith({
         ids: [targetRecord.id],
-        revocationReason: '1234',
-        updateState: 'REVOKE'
+        changes: { revocationReason: '1234' }
       })
     })
 
@@ -289,7 +288,7 @@ describe('DpskPassphraseManagement', () => {
     await waitFor(() => {
       expect(unrevokeFn).toHaveBeenCalledWith({
         ids: [targetRecord.id],
-        updateState: 'UNREVOKE'
+        changes: { revocationReason: null }
       })
     })
   })

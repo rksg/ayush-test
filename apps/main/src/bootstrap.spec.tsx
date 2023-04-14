@@ -24,12 +24,12 @@ jest.mock('@acx-ui/user', () => ({
   useUserProfileContext: () => ({ allowedOperations: ['some-operation'] })
 }))
 jest.mock('@acx-ui/utils', () => ({
-  ...jest.requireActual('@acx-ui/user'),
+  ...jest.requireActual('@acx-ui/utils'),
   UserProfileProvider: (props: { children: React.ReactNode }) => <div
     {...props}
     data-testid='user-profile-provider'
   />,
-  useLocaleContext: () => ({ messages: ['some-message'] })
+  useLocaleContext: () => ({ messages: { 'en-US': { lang: 'Language' } } })
 }))
 
 

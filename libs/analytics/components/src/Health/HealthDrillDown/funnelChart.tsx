@@ -42,7 +42,7 @@ type LabelsProps = {
   onClick: CallableFunction;
 }
 
-export function useGetNode () {
+function useGetNode () {
   const [node, setNode] = useState<HTMLElement | null>(null)
   const ref = useCallback((node: HTMLElement) => {
     if (node !== null) {
@@ -70,7 +70,7 @@ export function FunnelChart ({
 }) {
   const [parentNode, ref] = useGetNode()
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
-  const onClick = (width: number, name: string) => {
+  const onClick = (width: number, name: Stages) => {
     onSelectStage(width, name)
   }
   const enhancedStages: EnhancedStage[] = useMemo(() => {
@@ -94,7 +94,7 @@ export function FunnelChart ({
         }
       })
     let endPosition = 0
-    const endStages = filteredStages.map((stage, i) => {
+    return filteredStages.map((stage, i) => {
       if (stage.width > minVisibleWidth) {
         stage.width = stage.pct * totalWidth
       }
@@ -107,16 +107,22 @@ export function FunnelChart ({
         isSelected: stage.name === selectedStage,
         idx: i,
         bgColor: colors[i],
-        endPosition
+        endPosition,
+        onClick: onClick.bind(null,endPosition - stage.width / 2, stage.name as Stages)
       }
     })
-    // endPosition is mutable, onclick will capture its final value instead of iterated map value.
-    return endStages.map((stage) => ({
-      ...stage,
-      onClick: () => onClick(stage.endPosition - stage.width / 2, stage.name)
-    }))
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stages, selectedStage, parentNode, windowWidth])
+
+  const selectedStageWidth = enhancedStages.find((enhancedStage) => enhancedStage.isSelected)?.width
+  useEffect(() => {
+    const selected = enhancedStages.find(
+      (enhancedStage) => enhancedStage.isSelected
+    )
+    onSelectStage(selected?.endPosition! - selected?.width! / 2, selectedStage)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedStage, selectedStageWidth])
+
   useLayoutEffect(() => {
     const handler = function resizeHandler () {
       setWindowWidth(window.innerWidth)
@@ -228,19 +234,18 @@ export const Labels = ({
     <>
       {enhancedStages.map((stage, i) => {
         const dir = i % 2 === 0
-        const top = !dir ? chartPadding - 30 : parentHeight - 40
         const labelProps = {
           ...stage,
           ...labelPositions[i],
-          top,
-          dir: i % 2 === 0,
+          top: !dir ? chartPadding - 30 : parentHeight - 40,
+          dir,
           color: colors[i],
           onClick: () => (onClick as CallableFunction)(
             stage.endPosition - stage.width / 2, stage.name
           ),
           labelRef: updateChildNodes
         } as unknown as LabelPinProps
-        return <LabelWithPin {...labelProps} />
+        return <LabelWithPin {...labelProps} key={i}/>
       })}
     </>
   )

@@ -220,7 +220,7 @@ export function SwitchInfoWidget (props:{
                 </UI.Wrapper>
                 <UI.Wrapper style={{ marginTop: '5px' }}>
                   <UI.LargeText>
-                    {poeUsage?.used}w/{poeUsage?.total}w
+                    {poeUsage?.used}W/{poeUsage?.total}W
                     <Typography.Title level={3}>
                     ({poeUsage?.percentage})
                     </Typography.Title>

@@ -23,7 +23,6 @@
     "@ant-design/pro-layout": "6.38.9",
     "@ant-design/pro-table": "2.76.4",
     "@googlemaps/markerclusterer": "2.0.15",
-    "@googlemaps/markerwithlabel": "2.0.14",
     "@googlemaps/react-wrapper": "1.1.34",
     "@googlemaps/typescript-guards": "2.0.3",
     "@reduxjs/toolkit": "1.8.4",

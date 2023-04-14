@@ -1,17 +1,43 @@
 
+import { useEffect } from 'react'
+
 import { Progress } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import { Loader, Table, TableProps }                 from '@acx-ui/components'
-import { DhcpPoolStats, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
+import { Loader, Table, TableProps }                                from '@acx-ui/components'
+import { useGetDhcpPoolStatsQuery }                                 from '@acx-ui/rc/services'
+import { DhcpPoolStats, RequestPayload, TableQuery, useTableQuery } from '@acx-ui/rc/utils'
 
-interface PoolsProps {
-  tableQuery: TableQuery<DhcpPoolStats, RequestPayload<unknown>, unknown>
+interface EdgeDhcpPoolTableProps {
+  edgeId?: string
+  tableQuery?: TableQuery<DhcpPoolStats, RequestPayload<unknown>, unknown>
 }
 
-const Pools = ({ tableQuery }: PoolsProps) => {
+export const EdgeDhcpPoolTable = (props: EdgeDhcpPoolTableProps) => {
 
   const { $t } = useIntl()
+
+  const getDhcpPoolStatsPayload = {
+    filters: { edgeIds: [props.edgeId] },
+    sortField: 'name',
+    sortOrder: 'ASC'
+  }
+  const localQuery = useTableQuery<DhcpPoolStats, RequestPayload<unknown>, unknown>({
+    useQuery: useGetDhcpPoolStatsQuery,
+    defaultPayload: getDhcpPoolStatsPayload,
+    option: { skip: !!!props.edgeId }
+  })
+  const tableQuery = props.tableQuery || localQuery
+
+  useEffect(() => {
+    if(props.edgeId) {
+      localQuery.setPayload({
+        ...localQuery.payload,
+        filters: { edgeIds: [props.edgeId] }
+      })
+    }
+  }, [props.edgeId])
+
 
   const columns: TableProps<DhcpPoolStats>['columns'] = [
     {
@@ -67,7 +93,7 @@ const Pools = ({ tableQuery }: PoolsProps) => {
       <Table
         settingsId='edge-dhcp-pools-table'
         columns={columns}
-        dataSource={tableQuery?.data?.data}
+        dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='id'
@@ -75,5 +101,3 @@ const Pools = ({ tableQuery }: PoolsProps) => {
     </Loader>
   )
 }
-
-export default Pools

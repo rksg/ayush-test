@@ -17,7 +17,6 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import {
-  GoogleMap,
   PageHeader,
   StepsForm,
   StepsFormInstance,
@@ -26,6 +25,7 @@ import {
 import { useIsSplitOn, Features }        from '@acx-ui/feature-toggle'
 import { formatter, DateFormatEnum }     from '@acx-ui/formatter'
 import { SearchOutlined }                from '@acx-ui/icons'
+import { GoogleMapWithPreference }       from '@acx-ui/rc/components'
 import {
   useAddCustomerMutation,
   useMspEcAdminListQuery,
@@ -264,9 +264,17 @@ export function ManageIntegrator () {
 
   useEffect(() => {
     if (delegatedAdmins && Administrators) {
+      let selDelegateAdmins: MspAdministrator[] = []
       const admins = delegatedAdmins?.map((admin: MspEcDelegatedAdmins)=> admin.msp_admin_id)
       const selAdmins = Administrators.filter(rec => admins.includes(rec.id))
-      setAdministrator(selAdmins)
+      selAdmins.forEach((element:MspAdministrator) => {
+        const role =
+        delegatedAdmins.find(row => row.msp_admin_id=== element.id)?.msp_admin_role ?? element.role
+        const rec = { ...element }
+        rec.role = role as RolesEnum
+        selDelegateAdmins.push(rec)
+      })
+      setAdministrator(selDelegateAdmins)
     }
   }, [delegatedAdmins, Administrators])
 
@@ -931,7 +939,7 @@ export function ManageIntegrator () {
             />
           </Form.Item >
           <Form.Item hidden>
-            <GoogleMap libraries={['places']} />
+            <GoogleMapWithPreference libraries={['places']} />
           </Form.Item>
 
           <MspAdminsForm />
@@ -987,7 +995,7 @@ export function ManageIntegrator () {
               />
             </Form.Item >
             <Form.Item hidden>
-              <GoogleMap libraries={['places']} />
+              <GoogleMapWithPreference libraries={['places']} />
             </Form.Item>
             <MspAdminsForm />
             <CustomerAdminsForm />

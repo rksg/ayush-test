@@ -16,7 +16,7 @@ import Kpis                          from './Kpi'
 import * as UI                       from './styledComponents'
 import { SummaryBoxes }              from './SummaryBoxes'
 
-const HealthPage = (props: { filters?: AnalyticsFilter, path?: string }) => {
+const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
   const { $t } = useIntl()
   const { filters: widgetFilters } = props
   const params = useParams()

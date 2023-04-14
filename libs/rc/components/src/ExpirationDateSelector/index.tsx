@@ -48,7 +48,7 @@ function ExpirationDatePickerWrapper (props: DatePickerProps) {
     <DatePicker
       disabledDate={disabledDate}
       {...props}
-      value={props.value ? moment(props.value, EXPIRATION_DATE_FORMAT) : null}
+      value={props.value ? moment(props.value) : null}
     />
   )
 }
@@ -83,7 +83,7 @@ export function ExpirationDateSelector (props: ExpirationDateSelectorProps) {
   const expirationMode = Form.useWatch<ExpirationMode>([inputName, 'mode'])
 
   const normalizeDate = (value: StoreValue) => {
-    return value && value.format(EXPIRATION_DATE_FORMAT)
+    return value && value.startOf('day').toISOString()
   }
 
   const onModeChange = (e: RadioChangeEvent) => {

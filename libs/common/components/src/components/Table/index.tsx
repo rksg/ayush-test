@@ -77,7 +77,9 @@ export interface TableProps <RecordType>
       search: { searchString?: string, searchTargetFields?: string[] },
       groupBy?: string | undefined
     ) => void
-    iconButton?: IconButtonProps
+    iconButton?: IconButtonProps,
+    filterableWidth?: number,
+    searchableWidth?: number
   }
 
 export interface TableHighlightFnArgs {
@@ -116,7 +118,7 @@ function useSelectedRowKeys <RecordType> (
 function Table <RecordType extends Record<string, any>> ({
   type = 'tall', columnState, enableApiFilter, iconButton, onFilterChange, settingsId, ...props
 }: TableProps<RecordType>) {
-  const { dataSource } = props
+  const { dataSource, filterableWidth, searchableWidth } = props
   const rowKey = (props.rowKey ?? 'key')
   const intl = useIntl()
   const { $t } = intl
@@ -129,6 +131,8 @@ function Table <RecordType extends Record<string, any>> ({
   const updateSearch = _.debounce(() => {
     onFilter.current?.(filterValues, { searchString: searchValue }, groupByValue)
   }, 1000)
+  const filterWidth = filterableWidth || 200
+  const searchWidth = searchableWidth || 292
 
   useEffect(() => {
     onFilter.current = onFilterChange
@@ -389,17 +393,19 @@ function Table <RecordType extends Record<string, any>> ({
           <Space size={12}>
             {Boolean(searchables.length) &&
               renderSearch<RecordType>(
-                intl, searchables, searchValue, setSearchValue, Boolean(groupable.length)
+                intl, searchables, searchValue, setSearchValue, searchWidth
               )}
             {filterables.map((column, i) =>
               renderFilter<RecordType>(
-                column, i, dataSource, filterValues, setFilterValues, !!enableApiFilter)
+                column, i, dataSource, filterValues,
+                setFilterValues, !!enableApiFilter, filterWidth)
             )}
             {Boolean(groupable.length) && <GroupSelect<RecordType>
               $t={$t}
               groupable={groupable}
               setValue={setGroupByValue}
               value={groupByValue}
+              style={{ width: filterWidth }}
             />}
           </Space>
         </div>

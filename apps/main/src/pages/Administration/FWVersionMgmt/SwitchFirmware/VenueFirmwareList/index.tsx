@@ -28,7 +28,6 @@ import {
   UpdateScheduleRequest,
   TableQuery,
   RequestPayload,
-  firmwareTypeTrans,
   useTableQuery,
   sortProp,
   defaultSort
@@ -47,8 +46,6 @@ import * as UI               from '../../styledComponents'
 import { ChangeScheduleDialog } from './ChangeScheduleDialog'
 import { UpdateNowDialog }      from './UpdateNowDialog'
 
-const transform = firmwareTypeTrans()
-
 function useColumns (
   searchable?: boolean,
   filterables?: { [key: string]: ColumnType['filterable'] }
@@ -57,7 +54,7 @@ function useColumns (
 
   const columns: TableProps<FirmwareSwitchVenue>['columns'] = [
     {
-      title: intl.$t({ defaultMessage: 'Venue Name' }),
+      title: intl.$t({ defaultMessage: 'Venue' }),
       key: 'name',
       dataIndex: 'name',
       // sorter: true,
@@ -77,19 +74,14 @@ function useColumns (
       filterable: filterables ? filterables['version'] : false,
       filterMultiple: false,
       render: function (data, row) {
-        return row.switchFirmwareVersion?.id.replace('_b392', '') ?? '--'
-      }
-    },
-    {
-      title: intl.$t({ defaultMessage: 'Firmware Type' }),
-      key: 'type',
-      dataIndex: 'type',
-      // sorter: true,
-      sorter: { compare: sortProp('switchFirmwareVersion.category', defaultSort) },
-      filterable: filterables ? filterables['type'] : false,
-      filterMultiple: false,
-      render: function (data, row) {
-        return transform(row.switchFirmwareVersion?.category, 'type') ?? '--'
+        let versionList = []
+        if (row.switchFirmwareVersion.id) {
+          versionList.push(row.switchFirmwareVersion.id.replace('_b392', ''))
+        }
+        if (row.switchFirmwareVersionAboveTen?.id) {
+          versionList.push(row.switchFirmwareVersionAboveTen.id)
+        }
+        return versionList.length > 0 ? versionList.join(' ,') : '--'
       }
     },
     {
@@ -102,7 +94,7 @@ function useColumns (
       }
     },
     {
-      title: intl.$t({ defaultMessage: 'Next Update Schedule' }),
+      title: intl.$t({ defaultMessage: 'Scheduling' }),
       key: 'nextSchedule',
       dataIndex: 'nextSchedule',
       sorter: false,
@@ -229,7 +221,9 @@ export const VenueFirmwareTable = (
       let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
       selectedRows.forEach((row: FirmwareSwitchVenue) => {
         const version = row.switchFirmwareVersion?.id
-        _.remove(filterVersions, (v: FirmwareVersion) => v.id === version)
+        const rodanVersion = row.switchFirmwareVersionAboveTen?.id
+        _.remove(filterVersions, (v: FirmwareVersion) => (
+          v.id === version || v.id === rodanVersion))
       })
       setUpgradeVersions(filterVersions)
       setUpdateModelVisible(true)
@@ -256,7 +250,9 @@ export const VenueFirmwareTable = (
       let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
       selectedRows.forEach((row: FirmwareSwitchVenue) => {
         const version = row.switchFirmwareVersion?.id
-        _.remove(filterVersions, (v: FirmwareVersion) => v.id === version)
+        const rodanVersion = row.switchFirmwareVersionAboveTen?.id
+        _.remove(filterVersions, (v: FirmwareVersion) => (
+          v.id === version || v.id === rodanVersion))
       })
       setChangeUpgradeVersions(filterVersions)
       setChangeScheduleModelVisible(true)
@@ -353,9 +349,11 @@ export function VenueFirmwareList () {
 
   const { versionFilterOptions } = useGetSwitchCurrentVersionsQuery({ params: useParams() }, {
     selectFromResult ({ data }) {
+      const versionList = data?.currentVersionsAboveTen ?
+        data?.currentVersions.concat(data?.currentVersionsAboveTen) : data?.currentVersions
       return {
         // eslint-disable-next-line max-len
-        versionFilterOptions: data?.currentVersions?.map(v=>({ key: v, value: v.replace('_b392', '') })) || true
+        versionFilterOptions: versionList?.map(v=>({ key: v, value: v.replace('_b392', '') })) || true
       }
     }
   })

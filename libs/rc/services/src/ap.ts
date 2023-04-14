@@ -76,6 +76,7 @@ export const apApi = baseApApi.injectEndpoints({
             'UpdateAp',
             'DeleteAp',
             'DeleteAps',
+            'AddApGroup',
             'AddApGroupLegacy'
           ]
           onActivityMessageReceived(msg, activities, () => {
@@ -134,6 +135,19 @@ export const apApi = baseApApi.injectEndpoints({
     addAp: build.mutation<ApDeep, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.addAp, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
+    }),
+    importApOld: build.mutation<ImportErrorRes, RequestFormData>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.addAp, params, {
+          'Content-Type': undefined,
+          'Accept': '*/*'
+        })
         return {
           ...req,
           body: payload
@@ -626,6 +640,7 @@ export const {
   useRebootApMutation,
   useBlinkLedApMutation,
   useFactoryResetApMutation,
+  useImportApOldMutation,
   useImportApMutation,
   useLazyImportResultQuery,
   useLazyGetDhcpApQuery,

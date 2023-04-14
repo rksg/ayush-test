@@ -2,14 +2,14 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                           from '@acx-ui/feature-toggle'
-import { NewDpskBaseUrl }                         from '@acx-ui/rc/utils'
-import { Provider }                               from '@acx-ui/store'
-import { mockServer, render, renderHook, screen } from '@acx-ui/test-utils'
+import { useIsSplitOn }                            from '@acx-ui/feature-toggle'
+import { NewDpskBaseUrl, RulesManagementUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                from '@acx-ui/store'
+import { mockServer, render, renderHook, screen }  from '@acx-ui/test-utils'
 
-import { mockedDpskList, mockedGetFormData } from './__tests__/fixtures'
-import DpskSettingsForm                      from './DpskSettingsForm'
-import { transferSaveDataToFormFields }      from './parser'
+import { mockedDpskList, mockedGetFormData, mockedPolicySet } from './__tests__/fixtures'
+import DpskSettingsForm                                       from './DpskSettingsForm'
+import { transferSaveDataToFormFields }                       from './parser'
 
 describe('DpskSettingsForm', () => {
   beforeEach(() => {
@@ -57,6 +57,13 @@ describe('DpskSettingsForm', () => {
   })
 
   it('should render the cloudpath form items', async () => {
+    mockServer.use(
+      rest.get(
+        RulesManagementUrlsInfo.getAdaptivePolicySets.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json({ ...mockedPolicySet }))
+      )
+    )
+
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     render(
@@ -67,5 +74,8 @@ describe('DpskSettingsForm', () => {
 
     expect(await screen.findByRole('radio', { name: /ACCEPT/ })).toBeVisible()
     expect(await screen.findByRole('radio', { name: /Unlimited/ })).toBeVisible()
+
+    await userEvent.click(await screen.findByRole('combobox', { name: /Access Policy Set/ }))
+    expect(await screen.findByText(mockedPolicySet.content[0].name)).toBeInTheDocument()
   })
 })

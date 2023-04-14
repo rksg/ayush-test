@@ -110,7 +110,9 @@ const HealthDrillDown = (props: {
           <GridCol col={{ span: 12 }} style={{ alignItems: 'end' }}>
             <CloseSymbol
               style={{ cursor: 'pointer' }}
-              onClick={() => setDrilldownSelection(null)}
+              onClick={() => {
+                setDrilldownSelection(null)
+              }}
             />
           </GridCol>
         </GridRow>

@@ -1,5 +1,5 @@
-import { Col, Form, Input, InputNumber, Radio, Row, Select, Space, Switch } from 'antd'
-import { useIntl }                                                          from 'react-intl'
+import { Col, Form, Input, InputNumber, Radio, Row, Space, Switch } from 'antd'
+import { useIntl }                                                  from 'react-intl'
 
 import { StepsForm }   from '@acx-ui/components'
 import { MtuTypeEnum } from '@acx-ui/rc/utils'
@@ -25,13 +25,13 @@ export const TunnelProfileForm = () => {
           children={<Input />}
         />
       </Col>
-      <Col span={14}>
+      {/* <Col span={14}>
         <Form.Item
           name='tag'
           label={$t({ defaultMessage: 'Tags' })}
           children={<Select mode='tags' />}
         />
-      </Col>
+      </Col> */}
       <Col span={24}>
         <Form.Item
           name='mtuType'

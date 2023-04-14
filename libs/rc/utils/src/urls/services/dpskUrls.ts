@@ -92,9 +92,9 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
     newApi: true
   },
   revokePassphrases: {
-    method: 'post',
-    url: NewDpskPassphraseBaseUrl + '/revocation',
-    oldUrl: DpskPassphraseBaseUrl + '/revocation',
+    method: 'PATCH',
+    url: NewDpskPassphraseBaseUrl,
+    oldUrl: DpskPassphraseBaseUrl,
     newApi: true
   }
 }
