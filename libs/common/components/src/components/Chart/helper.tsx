@@ -5,11 +5,11 @@ import {
   RegisteredSeriesOption,
   TooltipComponentOption
 }                                                   from 'echarts'
-import { CallbackDataParams, InsideDataZoomOption } from 'echarts/types/dist/shared'
-import { FormatXMLElementFn }                       from 'intl-messageformat'
-import moment                                       from 'moment-timezone'
-import { renderToString }                           from 'react-dom/server'
-import { RawIntlProvider, FormattedMessage }        from 'react-intl'
+import { InsideDataZoomOption }              from 'echarts/types/dist/shared'
+import { FormatXMLElementFn }                from 'intl-messageformat'
+import moment                                from 'moment-timezone'
+import { renderToString }                    from 'react-dom/server'
+import { RawIntlProvider, FormattedMessage } from 'react-intl'
 
 import { TimeSeriesChartData }       from '@acx-ui/analytics/utils'
 import { formatter, DateFormatEnum } from '@acx-ui/formatter'
@@ -249,17 +249,12 @@ export const timeSeriesTooltipFormatter = (
   )
 }
 
-export const getTimeSeriesSymbol = (data: TimeSeriesChartData[]) =>
-  (_: TimeSeriesChartData['data'], params: CallbackDataParams) => {
-    const series = data[params.seriesIndex!].data
-    if( params.dataIndex - 1 > 0
-        && typeof series[(params.dataIndex - 1) as number ][1] !== 'number'
-        && params.dataIndex + 1 < series.length
-        && typeof series[params.dataIndex + 1][1] !== 'number'){
-      return 'circle'
-    }
-    return 'none'
-  }
+export const handleSingleBinData = (data: [TimeStamp, number|null][]) =>
+  data.map(([timeStamp, value ], index) => (value === null &&
+      ( (index - 1 > 0 && data[index - 1][1] !== null) ||
+        (index + 1 < data.length && data[index + 1][1] !== null)))
+    ? [timeStamp, 0]
+    : [timeStamp, value ])
 
 export type EventParams = {
   // The component name clicked,
