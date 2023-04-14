@@ -138,13 +138,13 @@ const HealthDrillDown = (props: {
           <GridCol col={{ span: 24 }} style={{ height: '15px' }}>
             <Separator><Point $xPos={xPos}/></Separator>
           </GridCol>
-          <GridCol col={{ span: 12 }} style={{ height: '300px' }}>
+          <GridCol col={{ span: 8 }} style={{ height: '300px' }}>
             <HealthPieChart
               filters={filters}
               queryType={drilldownSelection}
               queryFilter={selectedStage}/>
           </GridCol>
-          <GridCol col={{ span: 12 }} style={{ height: '300px', overflow: 'auto' }}>
+          <GridCol col={{ span: 16 }} style={{ height: '300px', overflow: 'auto' }}>
             <ImpactedClientsTable filters={filters}
               selectedStage={selectedStage}
               drillDownSelection={drilldownSelection}
