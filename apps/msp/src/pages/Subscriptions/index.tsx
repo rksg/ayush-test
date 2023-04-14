@@ -101,7 +101,8 @@ export function Subscriptions () {
       // key needs to be unique
       key: 'timeLeft',
       sorter: { compare: sortProp('expirationDate', dateSort) },
-      defaultSortOrder: 'ascend',
+      // active license should be first
+      defaultSortOrder: 'descend',
       render: function (_, row) {
         const remainingDays = EntitlementUtil.timeLeftInDays(row.expirationDate)
         const TimeLeftWrapper = remainingDays < 0
