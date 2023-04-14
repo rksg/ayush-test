@@ -50,7 +50,7 @@ describe('ACLSettingDrawer', () => {
 
     render(<Provider>
       <ACLSettingDrawer
-        editMode={drawerVisible.current.visible}
+        editMode={drawerVisible.current.editMode}
         visible={drawerVisible.current.visible}
         setVisible={drawerVisible.current.setVisible}
         rule={drawerVisible.current.drawerFormRule}
@@ -81,7 +81,7 @@ describe('ACLSettingDrawer', () => {
 
     render(<Provider>
       <ACLSettingDrawer
-        editMode={drawerVisible.current.visible}
+        editMode={drawerVisible.current.editMode}
         visible={drawerVisible.current.visible}
         setVisible={drawerVisible.current.setVisible}
         rule={drawerVisible.current.drawerFormRule}
@@ -122,7 +122,7 @@ describe('ACLSettingDrawer', () => {
 
     fireEvent.click(await within(dialog[1]).findByRole('button', { name: 'OK' }))
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Save' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Add' }))
   })
 
   it('should render protocol option correctly', async () => {
@@ -138,7 +138,7 @@ describe('ACLSettingDrawer', () => {
 
     render(<Provider>
       <ACLSettingDrawer
-        editMode={drawerVisible.current.visible}
+        editMode={drawerVisible.current.editMode}
         visible={drawerVisible.current.visible}
         setVisible={drawerVisible.current.setVisible}
         rule={drawerVisible.current.drawerFormRule}
@@ -163,7 +163,7 @@ describe('ACLSettingDrawer', () => {
 
     fireEvent.click(await within(dialog[1]).findByRole('button', { name: 'OK' }))
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Save' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Add' }))
     drawerVisible.current.setVisible(false)
   })
 
@@ -179,7 +179,7 @@ describe('ACLSettingDrawer', () => {
 
     render(<Provider>
       <ACLSettingDrawer
-        editMode={drawerVisible.current.visible}
+        editMode={drawerVisible.current.editMode}
         visible={drawerVisible.current.visible}
         setVisible={drawerVisible.current.setVisible}
         rule={drawerVisible.current.drawerFormRule}
@@ -203,6 +203,6 @@ describe('ACLSettingDrawer', () => {
     fireEvent.click(await within(row).findByRole('radio'))
     fireEvent.click(await screen.findByRole('button', { name: 'Delete' }) )
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Save' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Add' }))
   })
 })
