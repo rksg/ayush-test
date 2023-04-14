@@ -57,7 +57,7 @@ const rogueAps = {
       ],
       numberOfDetectingAps: 1,
       lastUpdTime: '1669709461',
-      locatable: false
+      locatable: true
     },
     {
       rogueMac: '58:FB:96:01:B6:4C',

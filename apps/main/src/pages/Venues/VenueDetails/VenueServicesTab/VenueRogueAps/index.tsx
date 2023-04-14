@@ -7,12 +7,13 @@ import { deviceCategoryColors, Loader, Table, TableProps } from '@acx-ui/compone
 import {
   SignalBad,
   SignalExcellent,
-  SignalGood, SignalPoor,
-  VenueMarkerGrey,
-  VenueMarkerRed
+  SignalGood,
+  SignalPoor
 } from '@acx-ui/icons'
 import { useGetOldVenueRogueApQuery }                                 from '@acx-ui/rc/services'
 import { RogueDeviceCategory, RogueOldApResponseType, useTableQuery } from '@acx-ui/rc/utils'
+
+import ApLocateDetail from './ApLocateDetail'
 
 const defaultPayload = {
   url: '/api/viewmodel/tenant/{tenantId}/venue/{venueId}/rogue/ap',
@@ -57,7 +58,7 @@ const renderSignal = (snr: number) => {
   return <SignalBad height={21} />
 }
 
-const handleCategoryColor = (status: RogueDeviceCategory) => {
+export const handleCategoryColor = (status: RogueDeviceCategory) => {
   return `var(${deviceCategoryColors[status]})`
 }
 
@@ -201,9 +202,7 @@ export function VenueRogueAps () {
         title: intl.$t({ defaultMessage: 'Locate Rogue' }),
         dataIndex: 'locatable',
         render: (data, row) => {
-          return row.locatable
-            ? <VenueMarkerRed />
-            : <VenueMarkerGrey />
+          return <ApLocateDetail row={row} />
         }
       }
     ]
