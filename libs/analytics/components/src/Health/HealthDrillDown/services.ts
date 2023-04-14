@@ -133,9 +133,7 @@ export const api = dataApi.injectEndpoints({
             }
           }
         `,
-        variables: {
-          ...payload
-        }
+        variables: payload
         }}
     })
   })
