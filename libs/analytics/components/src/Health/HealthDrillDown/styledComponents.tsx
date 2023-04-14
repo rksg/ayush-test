@@ -72,7 +72,10 @@ export const Pin = styled.div<{ pinPosition : string, dir: string,color : string
     background: ${props => props.color};
   }
 `
-
+export const TableHeading = styled.span`
+  padding-bottom : 10px;
+  font-size: 12px;
+`
 export const DrillDownRow = styled(GridRow)`
   margin-top: 25px;
   margin-left: 0px !important;
@@ -82,7 +85,6 @@ export const DrillDownRow = styled(GridRow)`
   border: 1px solid var(--acx-neutrals-20);
   box-shadow: 0px 2px 4px rgba(51, 51, 51, 0.08);
 `
-
 export const Point = styled.div.attrs((props: { $xPos: number | null }) => props)`
   background: var(--acx-primary-white);
   border:  1px solid var(--acx-neutrals-30);
@@ -95,9 +97,7 @@ export const Point = styled.div.attrs((props: { $xPos: number | null }) => props
   height: 20px;
   ${props => props.$xPos ? `left: ${props.$xPos}px;` : 'left: 50%;' }
 `
-
 export const Separator = styled.div`
   border-top:  1px solid var(--acx-neutrals-30);
   margin: 10px 0px;
 `
-

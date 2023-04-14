@@ -18,6 +18,7 @@ import {
 
 } from './config'
 import { FunnelChart }                                       from './funnelChart'
+import { ImpactedClientsTable }                              from './impactedClientTable'
 import { useTtcDrilldownQuery, useConnectionDrilldownQuery } from './services'
 import { Point, Separator, Title, DrillDownRow }             from './styledComponents'
 
@@ -133,14 +134,17 @@ const HealthDrillDown = (props: {
       </GridCol>
       {selectedStage && (
         <>
-          <GridCol col={{ span: 24 }} style={{ height: '5px' }}>
+          <GridCol col={{ span: 24 }} style={{ height: '15px' }}>
             <Separator><Point $xPos={xPos}/></Separator>
           </GridCol>
-          <GridCol col={{ span: 12 }} style={{ height: '210px' }}>
+          <GridCol col={{ span: 8 }} style={{ height: '210px' }}>
             PIE chart
           </GridCol>
-          <GridCol col={{ span: 12 }} style={{ height: '210px' }}>
-            Table
+          <GridCol col={{ span: 16 }} style={{ height: '330px', overflow: 'auto' }}>
+            <ImpactedClientsTable filters={filters}
+              selectedStage={selectedStage}
+              drillDownSelection={drilldownSelection}
+            />
           </GridCol>
         </>
       )}
