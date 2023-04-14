@@ -70,7 +70,7 @@ export function ACLRuleModal (props: {
             { required: true },
             { validator: (_, value) => {
               if(props.editRecord?.sequence !== value && props.currrentRecords) {
-                return validateAclRuleSequence(value, props.currrentRecords) 
+                return validateAclRuleSequence(value, props.currrentRecords)
               }else {
                 return Promise.resolve()
               }
