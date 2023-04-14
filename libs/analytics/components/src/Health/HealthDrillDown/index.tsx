@@ -134,7 +134,7 @@ const HealthDrillDown = (props: {
       </GridCol>
       {selectedStage && (
         <>
-          <GridCol col={{ span: 24 }} style={{ height: '5px' }}>
+          <GridCol col={{ span: 24 }} style={{ height: '15px' }}>
             <Separator><Point $xPos={xPos}/></Separator>
           </GridCol>
           <GridCol col={{ span: 8 }} style={{ height: '210px' }}>
