@@ -19,7 +19,8 @@ import {
 import {
   switchVenue,
   preference,
-  switchRelease
+  switchRelease,
+  switchCurrentVersions
 } from '../../__tests__/fixtures'
 
 import { VenueFirmwareList } from '.'
@@ -38,8 +39,22 @@ describe('Firmware Venues Table', () => {
         (req, res, ctx) => res(ctx.json(switchRelease))
       ),
       rest.get(
-        FirmwareUrlsInfo.getUpgradePreferences.url,
+        FirmwareUrlsInfo.getSwitchUpgradePreferences.url,
         (req, res, ctx) => res(ctx.json(preference))
+      ),
+      rest.get(
+        FirmwareUrlsInfo.getSwitchFirmwarePredownload.url,
+        (req, res, ctx) => res(ctx.json({
+          preDownload: false
+        }))
+      ),
+      rest.get(
+        FirmwareUrlsInfo.getSwitchCurrentVersions.url,
+        (req, res, ctx) => res(ctx.json(switchCurrentVersions))
+      ),
+      rest.post(
+        FirmwareUrlsInfo.updateSwitchVenueSchedules.url,
+        (req, res, ctx) => res(ctx.json({ requestId: 'requestId' }))
       )
     )
     params = {

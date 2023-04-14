@@ -74,7 +74,14 @@ function useColumns (
       filterable: filterables ? filterables['version'] : false,
       filterMultiple: false,
       render: function (data, row) {
-        return row.switchFirmwareVersion?.id.replace('_b392', '') ?? '--'
+        let versionList = []
+        if (row.switchFirmwareVersion.id) {
+          versionList.push(row.switchFirmwareVersion.id.replace('_b392', ''))
+        }
+        if (row.switchFirmwareVersionAboveTen?.id) {
+          versionList.push(row.switchFirmwareVersionAboveTen.id)
+        }
+        return versionList.length > 0 ? versionList.join(' ,') : '--'
       }
     },
     {
@@ -214,7 +221,9 @@ export const VenueFirmwareTable = (
       let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
       selectedRows.forEach((row: FirmwareSwitchVenue) => {
         const version = row.switchFirmwareVersion?.id
-        _.remove(filterVersions, (v: FirmwareVersion) => v.id === version)
+        const rodanVersion = row.switchFirmwareVersionAboveTen?.id
+        _.remove(filterVersions, (v: FirmwareVersion) => (
+          v.id === version || v.id === rodanVersion))
       })
       setUpgradeVersions(filterVersions)
       setUpdateModelVisible(true)
@@ -241,7 +250,9 @@ export const VenueFirmwareTable = (
       let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
       selectedRows.forEach((row: FirmwareSwitchVenue) => {
         const version = row.switchFirmwareVersion?.id
-        _.remove(filterVersions, (v: FirmwareVersion) => v.id === version)
+        const rodanVersion = row.switchFirmwareVersionAboveTen?.id
+        _.remove(filterVersions, (v: FirmwareVersion) => (
+          v.id === version || v.id === rodanVersion))
       })
       setChangeUpgradeVersions(filterVersions)
       setChangeScheduleModelVisible(true)
@@ -338,7 +349,8 @@ export function VenueFirmwareList () {
 
   const { versionFilterOptions } = useGetSwitchCurrentVersionsQuery({ params: useParams() }, {
     selectFromResult ({ data }) {
-      const versionList = data?.currentVersions.concat(data?.currentVersionsAboveTen)
+      const versionList = data?.currentVersionsAboveTen ?
+        data?.currentVersions.concat(data?.currentVersionsAboveTen) : data?.currentVersions
       return {
         // eslint-disable-next-line max-len
         versionFilterOptions: versionList?.map(v=>({ key: v, value: v.replace('_b392', '') })) || true
