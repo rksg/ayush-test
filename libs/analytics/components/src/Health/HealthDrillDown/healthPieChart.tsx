@@ -16,7 +16,7 @@ import {
 import { formatter }   from '@acx-ui/formatter'
 import { NetworkPath } from '@acx-ui/utils'
 
-import { DrilldownSelection, stageMapToName }      from './config'
+import { DrilldownSelection, stageNameToCodeMap }      from './config'
 import { ImpactedNodesAndWlans, usePieChartQuery } from './services'
 import * as UI                                     from './styledComponents'
 
@@ -144,7 +144,7 @@ export const HealthPieChart = ({
       end,
       path,
       queryType: queryType as string,
-      queryFilter: stageMapToName[queryFilter!]
+      queryFilter: stageNameToCodeMap[queryFilter!]
     },
     {
       skip: isNull(queryFilter)

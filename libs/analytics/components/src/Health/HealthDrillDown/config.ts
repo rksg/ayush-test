@@ -100,7 +100,7 @@ export const getFormattedToFunnel = (
 export const CONNECTIONFAILURE = 'connectionFailure'
 export const TTC = 'ttc'
 
-export const stageMapToName: Record<string, string> = {
+export const stageNameToCodeMap: Record<string, string> = {
   Authentication: 'auth',
   Association: 'assoc',
   EAP: 'eap',

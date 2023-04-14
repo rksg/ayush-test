@@ -12,18 +12,11 @@ import { TenantLink } from '@acx-ui/react-router-dom'
 import {
   Stages,
   DrilldownSelection,
-  topImpactedClientLimit
+  topImpactedClientLimit,
+  stageNameToCodeMap
 } from './config'
 import { useHealthImpactedClientsQuery, ImpactedClient } from './services'
 import { TableHeading }                                  from './styledComponents'
-
-const stageNameToCodeMap: Record<string, string> = {
-  Authentication: 'auth',
-  Association: 'assoc',
-  EAP: 'eap',
-  Radius: 'radius',
-  DHCP: 'dhcp'
-}
 
 export const ImpactedClientsTable = ({
   filters,
@@ -142,7 +135,7 @@ export const ImpactedClientsTable = ({
       </TableHeading>
       <Table
         columns={columns}
-        dataSource={queryResults.data as unknown as ImpactedClient[]}
+        dataSource={queryResults.data as ImpactedClient[]}
         rowKey='id'
         type='compactBordered'
       />
