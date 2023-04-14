@@ -21,7 +21,7 @@ import {
   APExtended,
   emailRegExp,
   Persona,
-  PersonaEthernetPort,
+  PersonaEthernetPort, phoneRegExp,
   PropertyDpskType,
   PropertyUnit,
   PropertyUnitFormFields,
@@ -211,21 +211,20 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
             form.setFieldValue('accessAp', accessAp)
             form.setFieldValue('ports', ports?.map(i => i.toString()))
             form.setFieldValue('vxlan', vni ?? noDataDisplay)
-          } else {
-            form.setFieldValue(['unitPersona', 'vlan'], vlan)
           }
+
+          form.setFieldValue(['unitPersona', 'vlan'], vlan)
           form.setFieldValue(['unitPersona', 'dpskPassphrase'], dpskPassphrase)
         }
 
         if (guestResult?.data) {
           const { vlan, dpskPassphrase } = guestResult.data
-          if (!withNsg) {
-            form.setFieldValue('enableGuestVlan', personaResult?.data?.vlan !== vlan)
-            // if no timeout would not render exactly
-            setTimeout(() => {
-              form.setFieldValue(['guestPersona', 'vlan'], vlan)
-            }, 10)
-          }
+
+          form.setFieldValue('enableGuestVlan', personaResult?.data?.vlan !== vlan)
+          // if no timeout would not render exactly
+          setTimeout(() => {
+            form.setFieldValue(['guestPersona', 'vlan'], vlan)
+          }, 10)
           form.setFieldValue(['guestPersona', 'dpskPassphrase'], dpskPassphrase)
         }
       })
@@ -340,46 +339,6 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
     }
   }
 
-  const withoutNsgForm = <>
-    <Form.Item label={$t({ defaultMessage: 'VLAN' })}>
-      <Form.Item
-        noStyle
-        name={['unitPersona', 'vlan']}
-        rules={[{
-          type: 'number',
-          min: 1,
-          max: 4094,
-          message: $t(validationMessages.vlanRange)
-        }]}
-      >
-        <InputNumber />
-      </Form.Item>
-    </Form.Item>
-
-    <StepsForm.FieldLabel width={'160px'}>
-      {$t({ defaultMessage: 'Separate VLAN for guests' })}
-      <Form.Item
-        style={{ marginBottom: '10px' }}
-        name={'enableGuestVlan'}
-        valuePropName={'checked'}
-        children={<Switch />}
-      />
-    </StepsForm.FieldLabel>
-    {enableGuestVlan &&
-        <Form.Item
-          name={['guestPersona', 'vlan']}
-          rules={[{
-            type: 'number',
-            min: 1,
-            max: 4094,
-            message: $t(validationMessages.vlanRange)
-          }]}
-        >
-          <InputNumber />
-        </Form.Item>
-    }
-  </>
-
   const withNsgForm = (<>
     {isEdit &&
       <Form.Item
@@ -437,8 +396,45 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
               label={$t({ defaultMessage: 'Guest DPSK Passphrase' })}
               children={<Input />}
             />
+            <Form.Item label={$t({ defaultMessage: 'VLAN' })}>
+              <Form.Item
+                noStyle
+                name={['unitPersona', 'vlan']}
+                rules={[{
+                  type: 'number',
+                  min: 1,
+                  max: 4094,
+                  message: $t(validationMessages.vlanRange)
+                }]}
+              >
+                <InputNumber />
+              </Form.Item>
+            </Form.Item>
 
-            {withNsg ? withNsgForm : withoutNsgForm}
+            <StepsForm.FieldLabel width={'160px'}>
+              {$t({ defaultMessage: 'Separate VLAN for guests' })}
+              <Form.Item
+                style={{ marginBottom: '10px' }}
+                name={'enableGuestVlan'}
+                valuePropName={'checked'}
+                children={<Switch />}
+              />
+            </StepsForm.FieldLabel>
+            {enableGuestVlan &&
+              <Form.Item
+                name={['guestPersona', 'vlan']}
+                rules={[{
+                  type: 'number',
+                  min: 1,
+                  max: 4094,
+                  message: $t(validationMessages.vlanRange)
+                }]}
+              >
+                <InputNumber />
+              </Form.Item>
+            }
+
+            {withNsg && withNsgForm}
 
             <Form.Item
               name={['resident', 'name']}
@@ -457,6 +453,9 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
             <Form.Item
               name={['resident', 'phoneNumber']}
               label={$t({ defaultMessage: 'Resident\'s Phone Number' })}
+              rules={[
+                { validator: (_, value) => phoneRegExp(value) }
+              ]}
               children={<Input />}
             />
           </Form>
