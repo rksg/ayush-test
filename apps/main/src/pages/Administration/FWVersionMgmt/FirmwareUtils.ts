@@ -64,8 +64,8 @@ export const compareVersions = (a?: string, b?: string): number => {
 
 export const compareSwitchVersion = (a: string, b: string): number => {
   const switchVersionReg = /^(?:[A-Z]{3,})?(?<major>\d{4,})(?<minor>[a-z]*)(?:_b(?<build>\d+))?$/
-  const group1 = a.match(switchVersionReg)?.groups
-  const group2 = b.match(switchVersionReg)?.groups
+  const group1 = a?.match(switchVersionReg)?.groups
+  const group2 = b?.match(switchVersionReg)?.groups
   if (group1 && group2) {
     let res = 0
     const keys = ['major', 'minor', 'build']
