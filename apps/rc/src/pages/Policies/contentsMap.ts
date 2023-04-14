@@ -16,7 +16,7 @@ import {
 } from '@acx-ui/rc/utils'
 
 export const policyTypeLabelMapping: Record<PolicyType, MessageDescriptor> = {
-  [PolicyType.AAA]: defineMessage({ defaultMessage: 'Radius Server' }),
+  [PolicyType.AAA]: defineMessage({ defaultMessage: 'RADIUS Server' }),
   [PolicyType.ACCESS_CONTROL]: defineMessage({ defaultMessage: 'Access Control' }),
   [PolicyType.CLIENT_ISOLATION]: defineMessage({ defaultMessage: 'Client Isolation' }),
   [PolicyType.ROGUE_AP_DETECTION]: defineMessage({ defaultMessage: 'Rogue AP Detection' }),
@@ -30,7 +30,7 @@ export const policyTypeLabelMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.SNMP_AGENT]: defineMessage({ defaultMessage: 'SNMP Agent' }),
   [PolicyType.ADAPTIVE_POLICY]: defineMessage({ defaultMessage: 'Adaptive Policy (TBD)' }),
   // eslint-disable-next-line max-len
-  [PolicyType.RADIUS_ATTRIBUTE_GROUP]: defineMessage({ defaultMessage: 'Radius Attribute group (TBD)' }),
+  [PolicyType.RADIUS_ATTRIBUTE_GROUP]: defineMessage({ defaultMessage: 'RADIUS Attribute group (TBD)' }),
   // eslint-disable-next-line max-len
   [PolicyType.ADAPTIVE_POLICY_SET]: defineMessage({ defaultMessage: 'Adaptive Policy Set(TBD)' }),
   [PolicyType.TUNNEL_PROFILE]: defineMessage({ defaultMessage: 'Tunnel Profile' })
@@ -51,7 +51,7 @@ export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.ADAPTIVE_POLICY]: defineMessage({ defaultMessage: 'Adaptive Policy (TBD)' }),
   [PolicyType.ADAPTIVE_POLICY_SET]: defineMessage({ defaultMessage: 'Adaptive Policy Set(TBD)' }),
   // eslint-disable-next-line max-len
-  [PolicyType.RADIUS_ATTRIBUTE_GROUP]: defineMessage({ defaultMessage: 'Radius Attribute group (TBD)' }),
+  [PolicyType.RADIUS_ATTRIBUTE_GROUP]: defineMessage({ defaultMessage: 'RADIUS Attribute group (TBD)' }),
   [PolicyType.TUNNEL_PROFILE]: defineMessage({ defaultMessage: 'Provides IP address to end devices' })
 }
 export const policyTechnologyLabelMapping: Record<PolicyTechnology, MessageDescriptor> = {
