@@ -17,7 +17,7 @@ exports[`HealthPieChart should render correctly for many connectionFailures 1`] 
           <b>
             Authentication
           </b>
-           Top 5 Impacted WLANs
+           Top 5 Impacted Venues / WLANs
         </span>
         <div
           style="height: 100%;"
@@ -432,7 +432,7 @@ exports[`HealthPieChart should render correctly for single ttc failures 1`] = `
           <b>
             Authentication
           </b>
-           Top 1 Impacted WLAN
+           Top 1 Impacted Venue / WLAN
         </span>
         <div
           style="height: 100%;"

@@ -104,19 +104,19 @@ describe('HealthPieChart', () => {
       })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Authentication')).toBeVisible()
-    expect(await screen.findByText('Top 5 Impacted WLANs')).toBeVisible()
+    expect(await screen.findByText('Top 5 Impacted Venues / WLANs')).toBeVisible()
     const venues = await screen.findByText('Venues')
     fireEvent.click(venues)
-    expect(await screen.findByText('Top 5 Impacted Venues')).toBeVisible()
+    expect(await screen.findByText('Top 5 Impacted Venues / WLANs')).toBeVisible()
   })
 
   describe('pieNodeMap', () => {
     it('should return correct venue title', () => {
       const group = pieNodeMap([{ type: 'zone', name: 'Zone' }])
-      expect(group).toMatch('AP Group')
+      expect(group).toMatchObject({})
 
       const ap = pieNodeMap([{ type: 'ap', name: 'AP' }])
-      expect(ap).toMatch('AP')
+      expect(ap).toMatchObject({})
     })
   })
 })

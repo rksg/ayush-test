@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import { isNull }  from 'lodash'
-import { useIntl } from 'react-intl'
-import AutoSizer   from 'react-virtualized-auto-sizer'
+import { isNull }                 from 'lodash'
+import { useIntl, defineMessage } from 'react-intl'
+import AutoSizer                  from 'react-virtualized-auto-sizer'
 
 import { AnalyticsFilter } from '@acx-ui/analytics/utils'
 import {
@@ -16,7 +16,7 @@ import {
 import { formatter }   from '@acx-ui/formatter'
 import { NetworkPath } from '@acx-ui/utils'
 
-import { DrilldownSelection, stageNameToCodeMap }      from './config'
+import { DrilldownSelection, stageNameToCodeMap }  from './config'
 import { ImpactedNodesAndWlans, usePieChartQuery } from './services'
 import * as UI                                     from './styledComponents'
 
@@ -38,21 +38,21 @@ const transformData = (
     const colors = qualitativeColorSet()
     let { wlans: rawWlans, nodes: rawNodes } = data.network.hierarchyNode
     rawNodes = rawNodes ?? []
-        const nodes = rawNodes
-          .map((node, index) => ({
-            ...node,
-            name: node.key,
-            color: colors[index]
-          }))
-          .slice(0, 5)
-        const wlans = rawWlans
-          .map((node, index) => ({
-            ...node,
-            name: node.key,
-            color: colors[index]
-          }))
-          .slice(0, 5)
-        return { nodes, wlans }
+    const nodes = rawNodes
+      .map((node, index) => ({
+        ...node,
+        name: node.key,
+        color: colors[index]
+      }))
+      .slice(0, 5)
+    const wlans = rawWlans
+      .map((node, index) => ({
+        ...node,
+        name: node.key,
+        color: colors[index]
+      }))
+      .slice(0, 5)
+    return { nodes, wlans }
   }
   return { nodes: [], wlans: [] }
 }
@@ -62,13 +62,29 @@ export function pieNodeMap (node: NetworkPath) {
   const type = lastPath.type
   switch (type) {
     case 'zone':
-      return 'AP Group'
+      return defineMessage({ defaultMessage: `{ count, plural,
+        one {AP Group}
+        other {AP Groups}
+      }` })
     case 'ap':
     case 'AP':
-      return 'AP'
+      return defineMessage({ defaultMessage: `{ count, plural,
+        one {AP}
+        other {APs}
+      }` })
     default:
-      return 'Venue'
+      return defineMessage({ defaultMessage: `{ count, plural,
+        one {Venue}
+        other {Venues}
+      }` })
   }
+}
+
+function pieWlanMap () {
+  return defineMessage({ defaultMessage: ` { count, plural,
+    one {WLAN}
+    other {WLANs}
+  }` })
 }
 
 function getHealthPieChart (
@@ -127,30 +143,33 @@ export const HealthPieChart = ({
   )
 
   const { nodes, wlans } = transformData(queryResults.data)
-  const singularNetwork = pieNodeMap(path)
-  const venueTitle = nodes.length > 1 ? singularNetwork + 's' : singularNetwork
-  const wlansTitle = wlans.length > 1 ? 'WLANs' : 'WLAN'
+  const venueTitle = $t(pieNodeMap(path), { count: nodes.length })
+  const wlansTitle = $t(pieWlanMap(), { count: wlans.length })
   const name = queryFilter!
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = []
 
   if (nodes.length > 0) {
     tabDetails.push({
-      label: $t({ defaultMessage: '{venueTitle}' }, { venueTitle }),
+      label: venueTitle,
       value: 'nodes',
       children: getHealthPieChart(nodes, formatter('countFormat'))
     })
   }
 
   tabDetails.push({
-    label: $t({ defaultMessage: '{wlansTitle}' }, { wlansTitle }),
+    label: wlansTitle,
     value: 'wlans',
     children: getHealthPieChart(wlans, formatter('durationFormat'))
   })
 
   const [chartKey, setChartKey] = useState('wlans')
   const count = chartKey === 'wlans' ? wlans.length : nodes.length
-  const title = chartKey === 'wlans' ? wlansTitle : venueTitle
+  const lastPath = filters.path[filters.path.length - 1]
+  const title = (lastPath.type == 'ap' || lastPath.type == 'AP')
+    ? wlansTitle
+    : venueTitle + ' / ' + wlansTitle
+
 
   useEffect(() => { setChartKey('wlans') }, [tabDetails.length])
 
