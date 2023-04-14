@@ -34,7 +34,7 @@ const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
     })
   return (
     <>
-      { !widgetFilters &&
+      {!widgetFilters &&
       <Header
         title={$t({ defaultMessage: 'Health' })}
         shouldQuerySwitch={false}
@@ -58,14 +58,14 @@ const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
           <GridCol col={{ span: 24 }} style={{ height: '210px' }}>
             <ConnectedClientsOverTime filters={healthPageFilters} />
           </GridCol>
-          <GridCol col={{ span: 16 }} >
+          <GridCol col={{ span: 16 }}>
             <UI.TabTitle activeKey={selectedTab} onChange={onTabChange}>
               {categoryTabs.map(({ value, label }) => (
                 <Tabs.TabPane tab={$t(label)} key={value} />
               ))}
             </UI.TabTitle>
           </GridCol>
-          <GridCol col={{ span: 8 }} >
+          <GridCol col={{ span: 8 }}>
             <UI.ThresholdTitle>
               {$t({ defaultMessage: 'Customized SLA Threshold' })}
             </UI.ThresholdTitle>
