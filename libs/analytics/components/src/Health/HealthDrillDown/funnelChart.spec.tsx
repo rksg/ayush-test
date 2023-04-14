@@ -174,4 +174,24 @@ describe('Funnel Chart', () => {
     )
     expect(await screen.findByText('test3: (0)')).toBeVisible()
   })
+  it('should handle onClick', async () => {
+    const onClick = jest.fn()
+    render(
+      <Provider>
+        <FunnelChart
+          valueLabel='Fail'
+          height={140}
+          stages={getFormattedToFunnel('ttc',stages )}
+          colors={colors}
+          selectedStage={'dhcpFailure'}
+          onSelectStage={onClick}
+          valueFormatter={valueFormatter}
+        />
+      </Provider>
+    )
+    const label = await screen.findByText('802.11 Auth.: 19.32%(228 ms)')
+    expect(label).toBeVisible()
+    fireEvent.click(label)
+    expect(onClick).toBeCalledWith(123.64800000000001, 'Authentication')
+  })
 })

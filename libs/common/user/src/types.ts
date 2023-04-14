@@ -18,6 +18,15 @@ export enum MFAMethod {
   SMS = 'SMS',
 }
 
+export type UserSettingsValuePath = string
+export interface UserSettingValue {
+  [key: string]: unknown;
+}
+
+export interface UserSettingsUIModel {
+  [key: string]: UserSettingValue
+}
+
 export interface UserSettings {
   [key: string]: string
 }

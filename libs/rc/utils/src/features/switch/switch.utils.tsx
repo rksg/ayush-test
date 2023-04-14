@@ -156,8 +156,8 @@ export const isRouter = (switchType: SWITCH_TYPE) => {
   return switchType === SWITCH_TYPE.ROUTER
 }
 
-export const transformSwitchUnitStatus = (switchStatusEnum: SwitchStatusEnum, configReady = true,
-  syncedSwitchConfig = true, suspendingDeployTime = '') => {
+export const transformSwitchUnitStatus = (switchStatusEnum: SwitchStatusEnum, configReady = false,
+  syncedSwitchConfig = false, suspendingDeployTime = '') => {
   const { $t } = getIntl()
   switch (switchStatusEnum) {
     case SwitchStatusEnum.NEVER_CONTACTED_CLOUD:
@@ -176,13 +176,13 @@ export const transformSwitchUnitStatus = (switchStatusEnum: SwitchStatusEnum, co
     case SwitchStatusEnum.OPERATIONAL:
       if (configReady && syncedSwitchConfig) {
         if (suspendingDeployTime && suspendingDeployTime.length > 0) {
-          return $t({ defaultMessage: 'Operational - applying configuration' })
+          return $t({ defaultMessage: 'Applying configuration' })
         }
         return $t({ defaultMessage: 'Operational' })
       } else if (!syncedSwitchConfig) {
         return $t({ defaultMessage: 'Synchronizing data' })
       } else {
-        return $t({ defaultMessage: 'Operational - Synchronizing' })
+        return $t({ defaultMessage: 'Synchronizing' })
       }
     case SwitchStatusEnum.DISCONNECTED:
       return $t({ defaultMessage: 'Disconnected from cloud' })
@@ -193,8 +193,8 @@ export const transformSwitchUnitStatus = (switchStatusEnum: SwitchStatusEnum, co
   }
 }
 
-export const transformSwitchStatus = (switchStatusEnum: SwitchStatusEnum, configReady = true,
-  syncedSwitchConfig = true, suspendingDeployTime = '') => {
+export const transformSwitchStatus = (switchStatusEnum: SwitchStatusEnum, configReady = false,
+  syncedSwitchConfig = false, suspendingDeployTime = '') => {
   const { $t } = getIntl()
   let message = ''
   let deviceStatus = DeviceConnectionStatus.INITIAL
@@ -243,7 +243,7 @@ export const transformSwitchStatus = (switchStatusEnum: SwitchStatusEnum, config
     case SwitchStatusEnum.OPERATIONAL:
       if (configReady && syncedSwitchConfig) {
         if (suspendingDeployTime && suspendingDeployTime.length > 0) {
-          message = $t({ defaultMessage: 'Operational - applying configuration' })
+          message = $t({ defaultMessage: 'Applying configuration' })
         } else {
           message = $t({ defaultMessage: 'Operational' })
           isOperational = true
@@ -251,7 +251,7 @@ export const transformSwitchStatus = (switchStatusEnum: SwitchStatusEnum, config
       } else if (!syncedSwitchConfig) {
         message = $t({ defaultMessage: 'Synchronizing data' })
       } else {
-        message = $t({ defaultMessage: 'Operational - Synchronizing' })
+        message = $t({ defaultMessage: 'Synchronizing' })
       }
       deviceStatus = DeviceConnectionStatus.CONNECTED
       break
@@ -278,7 +278,7 @@ export const getSwitchStatusString = (row: SwitchRow) => {
   let switchStatus = ( isStrictOperational && row.operationalWarning === true) ?
     $t({ defaultMessage: '{statusMessage} - Warning' }, { statusMessage: status.message }) : status.message
 
-  return isSync ? $t({ defaultMessage: '{switchStatus} - Syncing' }, { switchStatus }) : switchStatus
+  return isSync ? $t({ defaultMessage: 'Synchronizing' }) : switchStatus
 }
 
 export const getSwitchName = (row: SwitchRow) => {

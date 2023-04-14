@@ -1,6 +1,5 @@
 import { useState } from 'react'
 
-import { Divider } from 'antd'
 import { isNull }  from 'lodash'
 import { useIntl } from 'react-intl'
 
@@ -21,7 +20,7 @@ import {
 import { FunnelChart }                                       from './funnelChart'
 import { ImpactedClientsTable }                              from './impactedClientTable'
 import { useTtcDrilldownQuery, useConnectionDrilldownQuery } from './services'
-import { Title, DrillDownRow }                               from './styledComponents'
+import { Point, Separator, Title, DrillDownRow }             from './styledComponents'
 
 const HealthDrillDown = (props: {
   filters: AnalyticsFilter;
@@ -43,6 +42,11 @@ const HealthDrillDown = (props: {
     end: filters.endDate
   }
   const [selectedStage, setSelectedStage] = useState<Stages>(null)
+  const [xPos, setXpos] = useState<number | null>(null)
+  const setStage = (width: number, stage: Stages) => {
+    setSelectedStage(stage)
+    setXpos(width - 10)
+  }
   const connectionFailureResults = useConnectionDrilldownQuery(payload, {
     selectFromResult: (result) => {
       const { data, ...rest } = result
@@ -106,7 +110,9 @@ const HealthDrillDown = (props: {
           <GridCol col={{ span: 12 }} style={{ alignItems: 'end' }}>
             <CloseSymbol
               style={{ cursor: 'pointer' }}
-              onClick={() => setDrilldownSelection(null)}
+              onClick={() => {
+                setDrilldownSelection(null)
+              }}
             />
           </GridCol>
         </GridRow>
@@ -119,7 +125,7 @@ const HealthDrillDown = (props: {
             })}
             colors={colors}
             selectedStage={selectedStage}
-            onSelectStage={(stage: Stages) => setSelectedStage(stage)}
+            onSelectStage={setStage}
             valueFormatter={formatter(
               drilldownSelection === CONNECTIONFAILURE ? 'countFormat' : 'durationFormat'
             )}
@@ -128,12 +134,13 @@ const HealthDrillDown = (props: {
       </GridCol>
       {selectedStage && (
         <>
-          <Divider />
-          <GridCol col={{ span: 8 }} style={{ height: '310px' }}>
+          <GridCol col={{ span: 24 }} style={{ height: '5px' }}>
+            <Separator><Point $xPos={xPos}/></Separator>
+          </GridCol>
+          <GridCol col={{ span: 8 }} style={{ height: '210px' }}>
             PIE chart
           </GridCol>
-          <GridCol col={{ span: 16 }}
-            style={{ height: '310px', overflow: 'auto' }}>
+          <GridCol col={{ span: 16 }} style={{ height: '310px', overflow: 'auto' }}>
             <ImpactedClientsTable filters={filters}
               selectedStage={selectedStage}
               drillDownSelection={drilldownSelection}

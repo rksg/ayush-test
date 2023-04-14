@@ -127,7 +127,6 @@ export function VenuePropertyTab () {
   }, [queryUnitList.isLoading, groupId])
 
   useEffect(() => {
-    // console.log('I have persona :: ', personaMap)
     const apMacs: string[] = []
     const switchMacs: string[] = []
 
