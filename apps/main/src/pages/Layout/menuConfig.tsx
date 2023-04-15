@@ -156,7 +156,7 @@ export function useMenuConfig () {
             },
             {
               uri: '/reports/aps',
-              label: $t({ defaultMessage: 'AP Report' }),
+              label: $t({ defaultMessage: 'Access Point Report' }),
               isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
             },
             {
