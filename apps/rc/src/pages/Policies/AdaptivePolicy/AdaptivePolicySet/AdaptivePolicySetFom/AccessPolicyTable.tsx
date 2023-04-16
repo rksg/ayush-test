@@ -25,7 +25,6 @@ import { AdaptivePoliciesSelectDrawer } from './AdaptivePolicySelectDrawer'
 
 type AccessPolicyTableProps = {
   editMode: boolean
-  // setAdaptivePoliciesSelectDrawerVisible: (visible: boolean) => void
   accessPolicies: AdaptivePolicy []
   setAccessPolicies: (accessPolicies: AdaptivePolicy [] ) => void
 }
