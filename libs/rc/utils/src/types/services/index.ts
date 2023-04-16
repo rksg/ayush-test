@@ -5,7 +5,7 @@ export * from './wifiCallingService'
 export * from './networkSegmentationService'
 export * from './mdnsProxyService'
 export * from './portalService'
-
+export * from './edgeFirewall'
 
 export enum AccessEnum {
   ALLOW = 'Allow',
