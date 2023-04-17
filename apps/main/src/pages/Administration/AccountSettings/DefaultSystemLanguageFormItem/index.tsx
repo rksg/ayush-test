@@ -9,6 +9,7 @@ import { loadLocale, LangKey, setUpIntl, useLocaleContext, Messages } from '@acx
 import { MessageMapping } from '../MessageMapping'
 
 const DefaultSystemLanguageFormItem = () => {
+  const isDev = window.location.hostname === 'localhost'
   const { $t } = useIntl()
   const {
     data: preferenceData,
@@ -46,14 +47,20 @@ const DefaultSystemLanguageFormItem = () => {
     })
   }
 
-  const supportedLangs = [
-    'en-US',
-    'es-ES',
-    'ja-JP'
-  ].map(val => ({
-    label: generateLangLabel(val.slice(0, 2)),
-    value: val
-  }))
+  let supportedLangs = []
+  if (isDev) {
+    // This is temporary conditional check for Dev env for QA testing
+    // Once we get actual translated language bundles we should clean this up
+    supportedLangs = [ 'en-US', 'es-ES', 'ja-JP'].map(val => ({
+      label: generateLangLabel(val.slice(0, 2)),
+      value: val
+    }))
+  } else {
+    supportedLangs = ['en-US'].map(val => ({
+      label: generateLangLabel(val.slice(0, 2)),
+      value: val
+    }))
+  }
 
   useEffect(() => {
     loadLocale(lang).then((messages) => {
@@ -64,8 +71,7 @@ const DefaultSystemLanguageFormItem = () => {
       setLang(lang)
       setMessages(() => messages)
     })
-  }, [lang])
-
+  }, [lang, messages])
 
   return (
     <Row gutter={24}>
