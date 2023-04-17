@@ -22,7 +22,10 @@ export const EdgeDhcpLeaseTable = (props: EdgeDhcpLeaseTableProps) => {
   const hostTableQuery = useTableQuery<DhcpHostStats, RequestPayload<unknown>, unknown>({
     useQuery: useGetDhcpHostStatsQuery,
     defaultPayload: getDhcpHostStatsPayload,
-    option: { skip: !!!props.edgeId }
+    option: { skip: !!!props.edgeId },
+    search: {
+      searchTargetFields: ['hostName', 'hostIpAddr', 'hostMac']
+    }
   })
 
   const { dhcpPoolOptions } = useGetDhcpByEdgeIdQuery(
@@ -89,8 +92,19 @@ export const EdgeDhcpLeaseTable = (props: EdgeDhcpLeaseTableProps) => {
     },
     {
       title: $t({ defaultMessage: 'Lease expires in...' }),
-      key: 'hostExpireDate',
-      dataIndex: 'hostExpireDate'
+      key: 'hostRemainingTime',
+      dataIndex: 'hostRemainingTime',
+      render: (data) => {
+        const days = data && data > 0 ? Math.floor(data as number/86400) : 0
+        const lessThanADaySec = data && data > 0 ? Math.floor(data as number%86400) : 0
+        return $t(
+          { defaultMessage: '{days, plural, =0 {} one {# Day} other {# Days}} {time}' },
+          {
+            days,
+            time: new Date(lessThanADaySec * 1000).toISOString().slice(11, 19)
+          }
+        )
+      }
     }
   ]
 

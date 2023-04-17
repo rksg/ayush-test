@@ -60,6 +60,7 @@ export { VenuesDashboardWidget, VenuesDashboardWidgetV2 } from './VenuesDashboar
 export { WifiSignal } from './WifiSignal'
 export { AlarmsDrawer } from './AlarmsDrawer'
 export { ApSelector } from './ApSelector'
+export { ApFloorplan } from './ApFloorplan'
 export { CloudMessageBanner } from './CloudMessageBanner'
 export { SwitchCliSession } from './SwitchCliSession'
 export { SwitchClientsTable } from './SwitchClientsTable'

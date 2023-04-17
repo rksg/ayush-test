@@ -5,10 +5,10 @@ import Tooltip     from 'antd/es/tooltip'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Button, Descriptions, Drawer, showActionModal }                                                                                                                                                                               from '@acx-ui/components'
-import { useAcknowledgeSwitchMutation, useDeleteStackMemberMutation, useLazySwitchFrontViewQuery, useLazySwitchRearViewQuery }                                                                                                         from '@acx-ui/rc/services'
-import { getPoeUsage, getSwitchModel, getSwitchModelInfo, getSwitchPortLabel, isEmpty, StackMember, SwitchFrontView, SwitchModelInfo, SwitchRearViewUISlot, SwitchSlot, SwitchStatusEnum, SwitchViewModel, transformSwitchUnitStatus } from '@acx-ui/rc/utils'
-import { useParams }                                                                                                                                                                                                                   from '@acx-ui/react-router-dom'
+import { Button, Descriptions, Drawer, showActionModal }                                                                                                                                                           from '@acx-ui/components'
+import { useAcknowledgeSwitchMutation, useDeleteStackMemberMutation, useLazySwitchFrontViewQuery, useLazySwitchRearViewQuery }                                                                                     from '@acx-ui/rc/services'
+import { getPoeUsage, getSwitchModel, getSwitchPortLabel, isEmpty, StackMember, SwitchFrontView, SwitchModelInfo, SwitchRearViewUISlot, SwitchSlot, SwitchStatusEnum, SwitchViewModel, transformSwitchUnitStatus } from '@acx-ui/rc/utils'
+import { useParams }                                                                                                                                                                                               from '@acx-ui/react-router-dom'
 
 import { SwitchDetailsContext } from '../../..'
 
@@ -109,6 +109,10 @@ export function Unit (props:{
     }]
   } as SwitchFrontView)
   const [ rearView, setRearView ] = useState(null as unknown as SwitchRearViewUISlot)
+  const [ switchSlots, setSwitchSlots ] = useState({
+    fanSlots: 0,
+    powerSlots: 0
+  })
 
   const [ switchFrontView ] = useLazySwitchFrontViewQuery()
   const [ switchRearView ] = useLazySwitchRearViewQuery()
@@ -130,11 +134,9 @@ export function Unit (props:{
     }
   }, [member])
 
-
   const getUnitSwitchModel = (switchMember: StackMember) => {
     return !isEmpty(switchMember.model) ? switchMember.model : getSwitchModel(switchMember.serialNumber)
   }
-  const model = getUnitSwitchModel(member) as string
 
   const getSwitchPortDetail = async (switchMac: string, serialNumber: string, unitId: string) => {
     const { data: portStatus } = await switchFrontView({ params: { tenantId, switchId: switchMac || serialNumber, unitId } })
@@ -156,15 +158,15 @@ export function Unit (props:{
     })
     setPortView(tmpPortView as SwitchFrontView)
 
-    // handle rear view data
-    const fanRearStatus = _.isEmpty(rearStatus?.fanStatus) ? [] : rearStatus?.fanStatus
-    const powerRearStatus = _.isEmpty(rearStatus?.powerStatus) ? [] : rearStatus?.powerStatus
-    const switchModelInfo = getSwitchModelInfo(model)
+    // Handle rear view data: The backend is not sort by slotNumber, so we need to sort it.
+    const fanRearStatus = _.isEmpty(rearStatus?.fanStatus) ? [] : rearStatus?.fanStatus?.slice().sort((a, b) => a.slotNumber - b.slotNumber)
+    const powerRearStatus = _.isEmpty(rearStatus?.powerStatus) ? [] : rearStatus?.powerStatus?.slice().sort((a, b) => a.slotNumber - b.slotNumber)
+    const switchModelInfo = {
+      fanSlots: fanRearStatus?.length || 0,
+      powerSlots: powerRearStatus?.length || 0
+    }
+    setSwitchSlots(switchModelInfo)
     const slotsCount = Math.max(switchModelInfo?.powerSlots as number, switchModelInfo?.fanSlots as number)
-
-    // The backend is not sort by slotNumber, so we need to sort it.
-    fanRearStatus?.slice().sort((a, b) => a.slotNumber - b.slotNumber)
-    powerRearStatus?.slice().sort((a, b) => a.slotNumber - b.slotNumber)
 
     const tmpRearView = {
       slots: []
@@ -395,10 +397,12 @@ export function Unit (props:{
         : <>
           {
             rearView && rearView.slots.map((slot, index) => (
-              <RearView key={index}
-                slot={slot}
-                switchModelInfo={getSwitchModelInfo(model) as SwitchModelInfo}
-              />
+              <UI.RearSlotWrapper>
+                <RearView key={index}
+                  slot={slot}
+                  switchModelInfo={switchSlots as SwitchModelInfo}
+                />
+              </UI.RearSlotWrapper>
             ))
           }
         </>
