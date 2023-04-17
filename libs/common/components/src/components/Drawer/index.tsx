@@ -43,9 +43,7 @@ export const Drawer = (props: DrawerProps) => {
       {...rest}
       title={<Header {...headerProps}/>}
       placement='right'
-      mask={true}
-      maskStyle={{ background: 'none' }}
-      maskClosable={true}
+      mask={false}
       width={props.width || '336px'}
       closeIcon={<CloseSymbol />}
     />
