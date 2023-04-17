@@ -75,7 +75,7 @@ function useColumns (
       filterMultiple: false,
       render: function (data, row) {
         let versionList = []
-        if (row.switchFirmwareVersion.id) {
+        if (row.switchFirmwareVersion?.id) {
           versionList.push(row.switchFirmwareVersion.id.replace('_b392', ''))
         }
         if (row.switchFirmwareVersionAboveTen?.id) {
