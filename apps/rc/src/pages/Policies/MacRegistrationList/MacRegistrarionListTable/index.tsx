@@ -38,7 +38,6 @@ export default function MacRegistrationListsTable () {
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
   const [policySetMap, setPolicySetMap] = useState(new Map())
-  // const [venuesMap, setVenuesMap] = useState(new Map())
   const [networkVenuesMap, setNetworkVenuesMap] = useState(new Map())
   const params = useParams()
 
@@ -75,7 +74,7 @@ export default function MacRegistrationListsTable () {
       tableQuery.data?.data.forEach(macPools => {
         const { policySetId } = macPools
         if (policySetId) {
-          getAdaptivePolicySet({ params: { policyId: policySetId } })
+          getAdaptivePolicySet({ params: { policySetId } })
             .then(result => {
               // eslint-disable-next-line max-len
               setPolicySetMap(map => new Map(map.set(policySetId, result.data?.name ?? policySetId)))
@@ -118,16 +117,21 @@ export default function MacRegistrationListsTable () {
       {
         title: $t({ defaultMessage: 'Default Access' }),
         key: 'defaultAccess',
-        dataIndex: 'defaultAccess'
+        dataIndex: 'defaultAccess',
+        show: policyEnabled,
+        render: function (data:ReactNode, row:MacRegistrationPool) {
+          return row.policySetId ? row.defaultAccess: ''
+        }
       },
-      ...(policyEnabled) ? [{
+      {
         title: $t({ defaultMessage: 'Access Policy Set' }),
         key: 'policySet',
         dataIndex: 'policySet',
+        show: policyEnabled,
         render: function (data:ReactNode, row:MacRegistrationPool) {
           return row.policySetId ? policySetMap.get(row.policySetId) : ''
         }
-      }]: [],
+      },
       {
         title: $t({ defaultMessage: 'MAC Addresses' }),
         key: 'registrationCount',
@@ -186,14 +190,19 @@ export default function MacRegistrationListsTable () {
       (selectedItem && selectedItem.associationIds && selectedItem.networkIds)
         ? selectedItem.associationIds.length > 0 || selectedItem.networkIds.length > 0: false
     ),
+    tooltip: (([selectedItem]) =>
+      (selectedItem && selectedItem.associationIds && selectedItem.networkIds)
+        ? (selectedItem.associationIds.length > 0 || selectedItem.networkIds.length > 0 ?
+          // eslint-disable-next-line max-len
+          $t({ defaultMessage: 'This list is in use by one or more Networks and one or more Personas.' }) : undefined ) : undefined
+    ),
     onClick: ([{ name, id }], clearSelection) => {
       showActionModal({
         type: 'confirm',
         customContent: {
           action: 'DELETE',
           entityName: $t({ defaultMessage: 'List' }),
-          entityValue: name,
-          confirmationText: 'Delete'
+          entityValue: name
         },
         onOk: () => {
           deleteMacRegList({ params: { policyId: id } })
@@ -234,7 +243,8 @@ export default function MacRegistrationListsTable () {
         tableQuery,
         { isLoading: false, isFetching: isDeleteMacRegListUpdating }
       ]}>
-        <Table
+        <Table<MacRegistrationPool>
+          settingsId='mac-reg-list-table'
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}

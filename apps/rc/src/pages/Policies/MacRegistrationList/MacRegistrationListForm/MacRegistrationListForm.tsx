@@ -4,6 +4,7 @@ import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
 import { Loader, PageHeader, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
 import {
   useAddMacRegListMutation,
   useGetMacRegListQuery,
@@ -43,15 +44,22 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
   const [addMacRegList] = useAddMacRegListMutation()
   const [updateMacRegList, { isLoading: isUpdating }] = useUpdateMacRegListMutation()
 
+  const policyEnabled = useIsSplitOn(Features.POLICY_MANAGEMENT)
+
   useEffect(() => {
     if (data && editMode) {
       formRef.current?.setFieldsValue({
         name: data.name,
         autoCleanup: data.autoCleanup,
-        ...transferDataToExpirationFormFields(data),
-        defaultAccess: data.defaultAccess,
-        policySetId: data.policySetId
+        ...transferDataToExpirationFormFields(data)
       })
+
+      if(policyEnabled) {
+        formRef.current?.setFieldsValue({
+          defaultAccess: data.defaultAccess,
+          policySetId: data.policySetId
+        })
+      }
     }
   }, [data, editMode])
 
@@ -61,7 +69,7 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
         name: data.name,
         autoCleanup: data.autoCleanup,
         ...transferExpirationFormFieldsToData(data.expiration),
-        defaultAccess: data.defaultAccess,
+        defaultAccess: data.defaultAccess ?? 'ACCEPT',
         policySetId: data.policySetId
       }
       const result = await addMacRegList({ payload: saveData }).unwrap() as MacRegistrationPool
@@ -86,8 +94,8 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
         name: data.name,
         ...transferExpirationFormFieldsToData(data.expiration),
         autoCleanup: data.autoCleanup,
-        defaultAccess: data.defaultAccess,
-        policySetId: data.policySetId
+        defaultAccess: data.defaultAccess ?? 'ACCEPT',
+        policySetId: data.policySetId ?? null
       }
       await updateMacRegList({
         params: { policyId },
