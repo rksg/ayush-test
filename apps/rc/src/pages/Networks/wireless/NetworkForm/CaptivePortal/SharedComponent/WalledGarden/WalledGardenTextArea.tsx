@@ -8,12 +8,14 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button }                     from '@acx-ui/components'
-import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
-import { walledGardensRegExp }        from '@acx-ui/rc/utils'
+import { Button }                                    from '@acx-ui/components'
+import { QuestionMarkCircleOutlined }                from '@acx-ui/icons'
+import { walledGardensRegExp, GuestNetworkTypeEnum } from '@acx-ui/rc/utils'
 
 import { defaultWalledGarden } from './DefaultWalledGarden'
 
+// TODO: remove this flag and use feature toggle
+const toggleFlag = false
 
 enum WallGardenAction {
   Clear,
@@ -32,6 +34,15 @@ interface WalledGardenFieldsValue {
 interface WalledGardenState {
   action: WallGardenAction,
   fieldsValue: WalledGardenFieldsValue
+}
+
+const exemptionList = [
+  GuestNetworkTypeEnum.WISPr,
+  GuestNetworkTypeEnum.Cloudpath
+]
+
+function isExemption (key: GuestNetworkTypeEnum) : boolean {
+  return exemptionList.includes(key)
 }
 
 const statesCollection = {
@@ -66,7 +77,7 @@ const statesCollection = {
 }
 
 /* eslint-disable max-len */
-export function WalledGardenTextArea ({ enableDefaultWalledGarden }: { enableDefaultWalledGarden: Boolean }) {
+export function WalledGardenTextArea ({ key, enableDefaultWalledGarden }: { key: GuestNetworkTypeEnum, enableDefaultWalledGarden: boolean }) {
 
   const { $t } = useIntl()
   const form = Form.useFormInstance()
@@ -112,6 +123,13 @@ export function WalledGardenTextArea ({ enableDefaultWalledGarden }: { enableDef
     }
   },[])
 
+  // if one condition is true, then go render it.
+  const isRenderNeed = [toggleFlag, isExemption(key)].some(Boolean)
+
+  if (!isRenderNeed) {
+    return null
+  }
+
   return (<>
     <Form.Item
       name={['walledGardensString']}
@@ -119,19 +137,24 @@ export function WalledGardenTextArea ({ enableDefaultWalledGarden }: { enableDef
         { validator: (_, value) => walledGardensRegExp(value.toString()) }
       ]}
       label={<>{$t({ defaultMessage: 'Walled Garden' })}
-        <Tooltip title={$t({
-          defaultMessage: 'Unauthenticated users will be allowed '
-                    + 'to access these destinations(i.e., without redirection to captive ' +
-                    'portal).'
-        }) + '\n' +
-                $t({ defaultMessage: 'Each destination should be entered in a new line.' }) + '\n' +
-                $t({ defaultMessage: 'Accepted formats for destinations are:' }) + '\n\n' +
-                $t({ defaultMessage: '-IP address(e.g. 10.11.12.13)' }) + '\n\n' +
-                $t({ defaultMessage: '-IP address range(e.g. 10.11.12.13-10.11.12.15)' }) + '\n\n' +
-                $t({ defaultMessage: '-CIDR(e.g. 10.11.12.13/28)' }) + '\n\n' +
-                $t({ defaultMessage: '-IP address and mask(e.g. 10.11.12.13 255.255.255.0)' }) + '\n\n' +
-                $t({ defaultMessage: '-Website FQDN(e.g. www.ruckus.com)' }) + '\n\n' +
-                $t({ defaultMessage: '-Website FQDN with a wildcard(e.g. *.amazon.com; *.com)' }) + '\n'}
+        <Tooltip title={
+          `${$t({ defaultMessage: 'Unauthenticated users will be allowed to access these destinations(i.e., without redirection to captive portal).' })}
+           ${$t({ defaultMessage: 'Each destination should be entered in a new line.' })}
+
+           ${$t({ defaultMessage: 'Accepted formats for destinations are:' })}
+
+           ${$t({ defaultMessage: '-IP address(e.g. 10.11.12.13)' })}
+
+           ${$t({ defaultMessage: '-IP address range(e.g. 10.11.12.13-10.11.12.15)' })}
+
+           ${$t({ defaultMessage: '-CIDR(e.g. 10.11.12.13/28)' })}
+
+           ${$t({ defaultMessage: '-IP address and mask(e.g. 10.11.12.13 255.255.255.0)' })}
+
+           ${$t({ defaultMessage: '-Website FQDN(e.g. www.ruckus.com)' })}
+
+           ${$t({ defaultMessage: '-Website FQDN with a wildcard(e.g. *.amazon.com; *.com)' })}`
+        }
         placement='bottom'>
           <QuestionMarkCircleOutlined />
         </Tooltip>
@@ -171,9 +194,8 @@ export function WalledGardenTextArea ({ enableDefaultWalledGarden }: { enableDef
           }
           }
           placeholder={$t({
-            defaultMessage: 'Enter permitted walled ' +
-                        'garden destinations and IP subnets, a new line for each ' +
-                        'entry. Hover over the question mark for help with this field.'
+            defaultMessage:
+            'Enter permitted walled garden destinations and IP subnets, a new line for each entry. Hover over the question mark for help with this field.'
           })}
         />
       }

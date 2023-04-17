@@ -26,13 +26,13 @@ import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 import * as UI                     from '../styledComponents'
 
-import { DhcpCheckbox }     from './DhcpCheckbox'
-import FacebookSetting      from './FacebookSetting'
-import GoogleSetting        from './GoogleSetting'
-import LinkedInSetting      from './LinkedInSetting'
-import { RedirectUrlInput } from './RedirectUrlInput'
-import TwitterSetting       from './TwitterSetting'
-
+import { DhcpCheckbox }         from './DhcpCheckbox'
+import FacebookSetting          from './FacebookSetting'
+import GoogleSetting            from './GoogleSetting'
+import LinkedInSetting          from './LinkedInSetting'
+import { RedirectUrlInput }     from './RedirectUrlInput'
+import { WalledGardenTextArea } from './SharedComponent/WalledGarden/WalledGardenTextArea'
+import TwitterSetting           from './TwitterSetting'
 
 export function SelfSignInForm () {
   const {
@@ -336,6 +336,9 @@ export function SelfSignInForm () {
           </Space>
         </Form.Item>}
         <DhcpCheckbox />
+        <WalledGardenTextArea
+          key={GuestNetworkTypeEnum.SelfSignIn}
+          enableDefaultWalledGarden={false} />
         {!(editMode) && <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />}
       </GridCol>
       <GridCol col={{ span: 12 }}>

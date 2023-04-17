@@ -12,8 +12,9 @@ import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
-import { DhcpCheckbox }     from './DhcpCheckbox'
-import { RedirectUrlInput } from './RedirectUrlInput'
+import { DhcpCheckbox }         from './DhcpCheckbox'
+import { RedirectUrlInput }     from './RedirectUrlInput'
+import { WalledGardenTextArea } from './SharedComponent/WalledGarden/WalledGardenTextArea'
 
 export function OnboardingForm () {
   const {
@@ -37,6 +38,9 @@ export function OnboardingForm () {
         <StepsForm.Title>{intl.$t({ defaultMessage: 'Onboarding' })}</StepsForm.Title>
         <RedirectUrlInput />
         <DhcpCheckbox />
+        <WalledGardenTextArea
+          key={GuestNetworkTypeEnum.ClickThrough}
+          enableDefaultWalledGarden={false} />
         {!(editMode) && <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />}
       </GridCol>
       <GridCol col={{ span: 14 }}>
