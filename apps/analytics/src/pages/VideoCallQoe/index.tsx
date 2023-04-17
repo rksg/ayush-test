@@ -3,9 +3,9 @@ import { useIntl } from 'react-intl'
 import { Button, Loader, PageHeader, SuspenseBoundary } from '@acx-ui/components'
 import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 
-import { VideoCallQoeTable } from '../VideoCallQoeTable'
-
 import { useVideoCallQoeTestsQuery } from './services'
+import { VideoCallQoeTable }         from './VideoCallQoeTable'
+
 
 const { DefaultFallback: Spinner } = SuspenseBoundary
 
@@ -14,7 +14,7 @@ function VideoCallQoeListPage () {
   const queryResults = useVideoCallQoeTestsQuery(null)
   const noOfTestCalls = queryResults.data?.getAllCallQoeTests.length
 
-  if (!useIsSplitOn(Features.VIDEO_CALL_QOE)) {
+  if (useIsSplitOn(Features.VIDEO_CALL_QOE)) {
     return <span>{ $t({ defaultMessage: 'Video Call QoE is not enabled' }) }</span>
   }
 
