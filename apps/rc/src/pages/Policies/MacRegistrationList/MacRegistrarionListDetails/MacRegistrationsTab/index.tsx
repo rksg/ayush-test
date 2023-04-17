@@ -122,7 +122,7 @@ export function MacRegistrationsTab () {
     {
       title: $t({ defaultMessage: 'Status' }),
       key: 'status',
-      dataIndex: 'status',
+      dataIndex: 'revoked',
       sorter: true,
       render: function (data, row) {
         if (row.revoked) {

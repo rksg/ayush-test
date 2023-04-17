@@ -111,7 +111,6 @@ export default function MacRegistrationListsTable () {
         title: $t({ defaultMessage: 'List Expiration' }),
         key: 'listExpiration',
         dataIndex: 'listExpiration',
-        sorter: true,
         render: function (data, row) {
           return returnExpirationString(row)
         }
@@ -125,7 +124,7 @@ export default function MacRegistrationListsTable () {
       ...(policyEnabled) ? [{
         title: $t({ defaultMessage: 'Access Policy Set' }),
         key: 'policySet',
-        dataIndex: 'policySet',
+        dataIndex: 'policySetId',
         sorter: true,
         render: function (data:ReactNode, row:MacRegistrationPool) {
           return row.policySetId ? policySetMap.get(row.policySetId) : ''
@@ -136,7 +135,6 @@ export default function MacRegistrationListsTable () {
         key: 'registrationCount',
         dataIndex: 'registrationCount',
         align: 'center',
-        sorter: true,
         render: function (data, row) {
           return (
             <TenantLink
@@ -155,7 +153,6 @@ export default function MacRegistrationListsTable () {
         key: 'venueCount',
         dataIndex: 'venueCount',
         align: 'center',
-        sorter: true,
         render: function (data, row) {
           if(networkVenuesMap.size > 0) {
             // eslint-disable-next-line max-len
