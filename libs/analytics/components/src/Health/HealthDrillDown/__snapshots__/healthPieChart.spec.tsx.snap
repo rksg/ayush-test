@@ -268,128 +268,100 @@ exports[`HealthPieChart should render correctly for missing nodes data 1`] = `
               style="height: 800px; width: 1280px;"
             >
               <div
-                style="text-align: center;"
+                class="styledComponents__SinglePieChartWrapper-sc-1iwj7vu-12 fOAQux"
               >
                 <div
-                  class="styledComponents__Wrapper-sc-c4vpsp-0 eBLcPR"
+                  style="overflow: visible; height: 0px; width: 0px;"
                 >
                   <div
-                    class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
-                  >
-                    <label
-                      class="ant-radio-button-wrapper ant-radio-button-wrapper-checked"
-                    >
-                      <span
-                        class="ant-radio-button ant-radio-button-checked"
-                      >
-                        <input
-                          checked=""
-                          class="ant-radio-button-input"
-                          type="radio"
-                          value="wlans"
-                        />
-                        <span
-                          class="ant-radio-button-inner"
-                        />
-                      </span>
-                      <span>
-                        WLAN
-                      </span>
-                    </label>
-                  </div>
-                </div>
-              </div>
-              <div
-                style="overflow: visible; height: 0px; width: 0px;"
-              >
-                <div
-                  class="ant-space ant-space-vertical"
-                >
-                  <div
-                    class="ant-space-item"
+                    class="ant-space ant-space-vertical"
                   >
                     <div
-                      _echarts_instance_="ec_mock"
-                      class="echarts-for-react "
-                      size-sensor-id="3"
-                      style="height: 800px; width: 1280px; position: relative;"
+                      class="ant-space-item"
                     >
                       <div
-                        style="position: relative; overflow: hidden; width: 1280px; height: 800px;"
+                        _echarts_instance_="ec_mock"
+                        class="echarts-for-react "
+                        size-sensor-id="3"
+                        style="height: 752px; width: 1280px; position: relative;"
                       >
-                        <svg
-                          baseProfile="full"
-                          height="800"
-                          style="position:absolute;left:0;top:0;user-select:none"
-                          version="1.1"
-                          width="1280"
-                          xmlns="http://www.w3.org/2000/svg"
-                          xmlns:xlink="http://www.w3.org/1999/xlink"
+                        <div
+                          style="position: relative; overflow: hidden; width: 1280px; height: 800px;"
                         >
-                          <rect
-                            fill="none"
-                            fill-opacity="1"
+                          <svg
+                            baseProfile="full"
                             height="800"
-                            id="0"
+                            style="position:absolute;left:0;top:0;user-select:none"
+                            version="1.1"
                             width="1280"
-                            x="0"
-                            y="0"
-                          />
-                          <g>
-                            <path
-                              d="M640 569.6L640 579.6L645 579.6"
+                            xmlns="http://www.w3.org/2000/svg"
+                            xmlns:xlink="http://www.w3.org/1999/xlink"
+                          >
+                            <rect
                               fill="none"
-                              stroke="#66B1E8"
+                              fill-opacity="1"
+                              height="800"
+                              id="0"
+                              width="1280"
+                              x="0"
+                              y="0"
                             />
-                            <path
-                              d="M640 70.4A249.6 249.6 0 1 1 639.975 70.4M640 121.6A198.4 198.4 0 1 0 640.0198 121.6Z"
-                              fill="#66B1E8"
-                              stroke="#FFFFFF"
-                              stroke-linejoin="round"
-                            />
-                            <path
-                              d="M-5 -5l10 0l0 10l-10 0Z"
-                              fill="rgb(0,0,0)"
-                              fill-opacity="0"
-                              stroke="#ccc"
-                              stroke-width="0"
-                              transform="translate(640 400)"
-                            />
-                            <path
-                              d="M0 0l0 0l0 0l0 0Z"
-                              fill="none"
-                              transform="translate(640 400)"
-                            />
-                          </g>
-                        </svg>
+                            <g>
+                              <path
+                                d="M640 569.6L640 579.6L645 579.6"
+                                fill="none"
+                                stroke="#66B1E8"
+                              />
+                              <path
+                                d="M640 70.4A249.6 249.6 0 1 1 639.975 70.4M640 121.6A198.4 198.4 0 1 0 640.0198 121.6Z"
+                                fill="#66B1E8"
+                                stroke="#FFFFFF"
+                                stroke-linejoin="round"
+                              />
+                              <path
+                                d="M-5 -5l10 0l0 10l-10 0Z"
+                                fill="rgb(0,0,0)"
+                                fill-opacity="0"
+                                stroke="#ccc"
+                                stroke-width="0"
+                                transform="translate(640 400)"
+                              />
+                              <path
+                                d="M0 0l0 0l0 0l0 0Z"
+                                fill="none"
+                                transform="translate(640 400)"
+                              />
+                            </g>
+                          </svg>
+                        </div>
+                        <div
+                          class=""
+                        />
+                        <object
+                          class="size-sensor-object"
+                          data="about:blank"
+                          style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                          tabindex="-1"
+                          type="text/html"
+                        />
                       </div>
-                      <div
-                        class=""
-                      />
-                      <object
-                        class="size-sensor-object"
-                        data="about:blank"
-                        style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
-                        tabindex="-1"
-                        type="text/html"
-                      />
                     </div>
                   </div>
                 </div>
-              </div>
-              <div
-                class="resize-triggers"
-              >
                 <div
-                  class="expand-trigger"
+                  class="resize-triggers"
                 >
                   <div
-                    style="width: 1281px; height: 801px;"
+                    class="expand-trigger"
+                  >
+                    <div
+                      style="width: 1281px; height: 801px;"
+                    />
+                  </div>
+                  <div
+                    class="contract-trigger"
                   />
                 </div>
-                <div
-                  class="contract-trigger"
-                />
               </div>
             </div>
           </div>

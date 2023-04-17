@@ -113,3 +113,8 @@ export const PieChartTitle = styled.span`
   text-align: left;
   font-size: 12px;
 `
+
+export const SinglePieChartWrapper = styled.div`
+  padding-top: 48px;
+  height: 100%;
+`

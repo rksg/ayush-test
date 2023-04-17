@@ -187,15 +187,20 @@ export const HealthPieChart = ({
                   width
                 }}
               >
-                <ContentSwitcher
-                  key={queryFilter}
-                  value={chartKey}
-                  defaultValue={'wlans'}
-                  tabDetails={tabDetails}
-                  align='center'
-                  size='small'
-                  onChange={key => setChartKey(key)}
-                />
+                {(tabDetails.length == 2)
+                  ? <ContentSwitcher
+                    key={queryFilter}
+                    value={chartKey}
+                    defaultValue={'wlans'}
+                    tabDetails={tabDetails}
+                    align='center'
+                    size='small'
+                    onChange={key => setChartKey(key)}
+                  />
+                  : <UI.SinglePieChartWrapper>
+                    {tabDetails[0].children}
+                    </UI.SinglePieChartWrapper>
+                }
               </div>
             )}
           </AutoSizer>
