@@ -25,11 +25,12 @@ import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
-import { AuthAccServerSetting } from './AuthAccServerSetting'
-import { AuthAccServerSummary } from './AuthAccServerSummary'
-import { DhcpCheckbox }         from './DhcpCheckbox'
-import { RedirectUrlInput }     from './RedirectUrlInput'
-import { WalledGardenTextArea } from './SharedComponent/WalledGarden/WalledGardenTextArea'
+import { AuthAccServerSetting }                  from './AuthAccServerSetting'
+import { AuthAccServerSummary }                  from './AuthAccServerSummary'
+import { DhcpCheckbox }                          from './DhcpCheckbox'
+import { RedirectUrlInput }                      from './RedirectUrlInput'
+import { BypassCaptiveNetworkAssistantCheckbox } from './SharedComponent/BypassCNA/BypassCaptiveNetworkAssistantCheckbox'
+import { WalledGardenTextArea }                  from './SharedComponent/WalledGarden/WalledGardenTextArea'
 
 
 
@@ -365,6 +366,8 @@ export function WISPrForm () {
           }
         />}
         <DhcpCheckbox />
+        <BypassCaptiveNetworkAssistantCheckbox
+          guestNetworkTypeEnum={GuestNetworkTypeEnum.WISPr} />
         <WalledGardenTextArea
           guestNetworkTypeEnum={GuestNetworkTypeEnum.WISPr}
           enableDefaultWalledGarden={false} />

@@ -16,10 +16,11 @@ import { NetworkDiagram }            from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext            from '../NetworkFormContext'
 import { NetworkMoreSettingsForm }   from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
-import { DhcpCheckbox }         from './DhcpCheckbox'
-import { DomainsInput }         from './DomainsInput'
-import { RedirectUrlInput }     from './RedirectUrlInput'
-import { WalledGardenTextArea } from './SharedComponent/WalledGarden/WalledGardenTextArea'
+import { DhcpCheckbox }                          from './DhcpCheckbox'
+import { DomainsInput }                          from './DomainsInput'
+import { RedirectUrlInput }                      from './RedirectUrlInput'
+import { BypassCaptiveNetworkAssistantCheckbox } from './SharedComponent/BypassCNA/BypassCaptiveNetworkAssistantCheckbox'
+import { WalledGardenTextArea }                  from './SharedComponent/WalledGarden/WalledGardenTextArea'
 
 
 export function HostApprovalForm () {
@@ -90,6 +91,8 @@ export function HostApprovalForm () {
         />
         <RedirectUrlInput/>
         <DhcpCheckbox />
+        <BypassCaptiveNetworkAssistantCheckbox
+          guestNetworkTypeEnum={GuestNetworkTypeEnum.HostApproval} />
         <WalledGardenTextArea
           guestNetworkTypeEnum={GuestNetworkTypeEnum.HostApproval}
           enableDefaultWalledGarden={false} />

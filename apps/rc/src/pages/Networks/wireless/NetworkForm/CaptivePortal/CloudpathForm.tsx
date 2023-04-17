@@ -19,8 +19,9 @@ import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
-import { AuthAccServerSetting } from './AuthAccServerSetting'
-import { WalledGardenTextArea } from './SharedComponent/WalledGarden/WalledGardenTextArea'
+import { AuthAccServerSetting }                  from './AuthAccServerSetting'
+import { BypassCaptiveNetworkAssistantCheckbox } from './SharedComponent/BypassCNA/BypassCaptiveNetworkAssistantCheckbox'
+import { WalledGardenTextArea }                  from './SharedComponent/WalledGarden/WalledGardenTextArea'
 
 export function CloudpathForm () {
   const {
@@ -86,19 +87,8 @@ export function CloudpathForm () {
             <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} />
           </Tooltip>
         </Form.Item>
-        <Form.Item>
-          <Form.Item
-            name={['wlan', 'bypassCNA']}
-            noStyle
-            valuePropName='checked'
-            initialValue={false}
-            children={
-              <Checkbox>
-                {$t({ defaultMessage: 'Use Bypass Captive Network Assistant' })}
-              </Checkbox>
-            }
-          />
-        </Form.Item>
+        <BypassCaptiveNetworkAssistantCheckbox
+          guestNetworkTypeEnum={GuestNetworkTypeEnum.Cloudpath} />
         <WalledGardenTextArea
           guestNetworkTypeEnum={GuestNetworkTypeEnum.Cloudpath}
           enableDefaultWalledGarden={true} />
