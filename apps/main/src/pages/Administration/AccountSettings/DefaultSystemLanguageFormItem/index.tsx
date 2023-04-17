@@ -9,7 +9,8 @@ import { loadLocale, LangKey, setUpIntl, useLocaleContext, Messages } from '@acx
 import { MessageMapping } from '../MessageMapping'
 
 const DefaultSystemLanguageFormItem = () => {
-  const isDev = window.location.hostname === 'localhost'
+  const isDev = (window.location.hostname === 'localhost' || 
+                  window.location.hostname === 'devalto.ruckuswireless.com')
   const { $t } = useIntl()
   const {
     data: preferenceData,
