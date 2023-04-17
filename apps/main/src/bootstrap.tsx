@@ -120,7 +120,7 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
 }
 
 function DataGuardLoader (props: React.PropsWithChildren) {
-  const defaultLang = useYourDefaultLanguage()
+  const defaultLang = useYourDefaultLanguage()?? 'en-US'
   const locale = useLocaleContext()
   locale.setLang(defaultLang)
   const userProfile = useUserProfileContext()
