@@ -27,29 +27,23 @@ export default function ResidentPortalTable () {
   const tenantBasePath: Path = useTenantLink('')
     const [ deleteResidentPortals ] = useDeleteResidentPortalsMutation()
 
-  // const tableQuery = useTableQuery({ useQuery: useGetResidentPortalListQuery, defaultPayload: {} })
   const tableQuery = useTableQuery({
     useQuery: useGetQueriableResidentPortalsQuery,
     defaultPayload: {
       filters: {},
       fields: ['id']
     },
-    search: {
-      searchString: '',
-      searchTargetFields: ['name']
-    }
   })
 
   const rowActions: TableProps<ResidentPortal>['rowActions'] = [
     {
       // TODO: update this to not allow deletion when portal is in use????
       label: intl.$t({ defaultMessage: 'Delete' }),
-      // TODO: visible: ([selectedRow]) => selectedRow && !selectedRow.identityId,
+      // TODO: visible: ([selectedRow]) => selectedRow && !selectedRow.identityId, -- don't be visible if portal is in use
       onClick: ([{ id, name }], clearSelection) => {
         showActionModal({
           type: 'confirm',
           customContent: {
-            // TODO: add confirmation text? "Any Venues using this portal will revert to the default" ???
             action: 'DELETE',
             entityName: intl.$t({ defaultMessage: 'Resident Portal' }),
             entityValue: name
@@ -104,14 +98,12 @@ export default function ResidentPortalTable () {
     {
       key: 'title',
       title: intl.$t({ defaultMessage: 'Title' }),
-      dataIndex: ['uiConfiguration','text','title'],
-      // align: 'center'
+      dataIndex: ['uiConfiguration','text','title']
     },
     {
       key: 'subtitle',
       title: intl.$t({ defaultMessage: 'Subtitle' }),
-      dataIndex: ['uiConfiguration','text','subTitle'],
-      // align: 'center'
+      dataIndex: ['uiConfiguration','text','subTitle']
     }
   ]
   
@@ -127,7 +119,6 @@ export default function ResidentPortalTable () {
         extra={filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getServiceRoutePath({ type: ServiceType.RESIDENT_PORTAL, oper: ServiceOperation.CREATE })}>
-            {/* TODO: verify Table language is correct */}
             <Button type='primary'>{intl.$t({ defaultMessage: 'Add Resdient Portal' })}</Button>
           </TenantLink>
         ])}
