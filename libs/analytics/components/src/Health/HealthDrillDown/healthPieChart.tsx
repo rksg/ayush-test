@@ -187,7 +187,7 @@ export const HealthPieChart = ({
                   width
                 }}
               >
-                {(tabDetails.length == 2)
+                {(tabDetails.length === 2)
                   ? <ContentSwitcher
                     key={queryFilter}
                     value={chartKey}
@@ -199,7 +199,7 @@ export const HealthPieChart = ({
                   />
                   : <UI.SinglePieChartWrapper>
                     {tabDetails[0].children}
-                    </UI.SinglePieChartWrapper>
+                  </UI.SinglePieChartWrapper>
                 }
               </div>
             )}
