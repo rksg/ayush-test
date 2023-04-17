@@ -21,12 +21,11 @@ import { ImpactedNodesAndWlans, usePieChartQuery } from './services'
 import * as UI                                     from './styledComponents'
 
 type PieChartData = {
-        key: string,
-        value: number,
-        name: string,
-        color: string,
+  key: string
+  value: number
+  name: string
+  color: string
 }
-
 
 const transformData = (
   data: ImpactedNodesAndWlans | undefined
