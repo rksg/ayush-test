@@ -214,7 +214,7 @@ function Table <RecordType extends Record<string, any>> ({
       props.dataSource : props.dataSource?.flatMap(item => item.children)) as RecordType[]
 
     return dataSource?.filter((item: RecordType) => {
-      return selectedRowKeys.includes(typeof rowKey === 'function' ?
+      return item && selectedRowKeys.includes(typeof rowKey === 'function' ?
         rowKey(item) : item[rowKey] as unknown as Key)
     }) ?? []
   }, [props.dataSource, rowKey])
