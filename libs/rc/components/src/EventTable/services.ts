@@ -1,7 +1,5 @@
 import { useEffect } from 'react'
 
-import moment from 'moment-timezone'
-
 import { useAdminLogsQuery, useEventsQuery } from '@acx-ui/rc/services'
 import {
   Event,
@@ -73,13 +71,12 @@ const adminLogsDefaultFilters = {
 }
 
 function useQueryFilter () {
-  const { startDate, endDate } = useDateFilter()
+  const { dateFilter } = useDateFilter()
   const detailLevel = useUserProfileContext().data?.detailLevel
   return {
     detailLevel,
     skip: !Boolean(detailLevel),
-    fromTime: moment(startDate).utc().format(),
-    toTime: moment(endDate).utc().format()
+    dateFilter
   }
 }
 
@@ -89,8 +86,8 @@ export function useEventsTableQuery (
   pagination?: Record<string, unknown>,
   pollingInterval = TABLE_QUERY_LONG_POLLING_INTERVAL
 ) {
-  const { detailLevel, skip, fromTime, toTime } = useQueryFilter()
-  const filters = { ...baseFilters, fromTime, toTime }
+  const { detailLevel, skip, dateFilter } = useQueryFilter()
+  const filters = { ...baseFilters, dateFilter }
 
   const tableQuery = usePollingTableQuery<Event>({
     useQuery: useEventsQuery,
@@ -105,20 +102,19 @@ export function useEventsTableQuery (
     option: { skip, pollingInterval }
   })
 
-  useEffect(()=>{
+  useEffect(() => {
     tableQuery.setPayload({
       ...tableQuery.payload,
       detailLevel,
       filters: { ...(tableQuery.payload.filters as object), ...filters }
     })
-  }, [fromTime, toTime, detailLevel])
+  }, [dateFilter, detailLevel])
 
   return tableQuery
 }
 
 export function useAdminLogsTableQuery () {
-  const { detailLevel, skip, fromTime, toTime } = useQueryFilter()
-  const filters = { fromTime, toTime }
+  const { detailLevel, skip, dateFilter } = useQueryFilter()
   const pollingInterval = TABLE_QUERY_LONG_POLLING_INTERVAL
 
   const tableQuery = usePollingTableQuery<AdminLog>({
@@ -126,20 +122,20 @@ export function useAdminLogsTableQuery () {
     defaultPayload: {
       ...defaultPayload,
       detailLevel,
-      filters: { ...adminLogsDefaultFilters, ...filters }
+      filters: { ...adminLogsDefaultFilters, dateFilter }
     },
     sorter: defaultSorter,
     search: { searchTargetFields: ['entity_id', 'message'] },
     option: { skip, pollingInterval }
   })
 
-  useEffect(()=>{
+  useEffect(() => {
     tableQuery.setPayload({
       ...tableQuery.payload,
       detailLevel,
-      filters: { ...(tableQuery.payload.filters as object), ...filters }
+      filters: { ...(tableQuery.payload.filters as object), dateFilter }
     })
-  }, [fromTime, toTime, detailLevel])
+  }, [dateFilter, detailLevel])
 
   return tableQuery
 }

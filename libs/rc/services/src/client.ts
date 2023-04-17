@@ -26,6 +26,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { baseClientApi } from '@acx-ui/store'
 
+import { latestTimeFilter } from './utils'
+
 export const clientApi = baseClientApi.injectEndpoints({
   endpoints: (build) => ({
     getClientList: build.query<TableResult<ClientList>, RequestPayload>({
@@ -73,16 +75,10 @@ export const clientApi = baseClientApi.injectEndpoints({
       }
     }),
     getGuestsList: build.query<TableResult<Guest>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(
-          CommonUrlsInfo.getGuestsList,
-          params
-        )
-        return {
-          ...req,
-          body: payload
-        }
-      },
+      query: ({ params, payload }) => ({
+        ...createHttpRequest(CommonUrlsInfo.getGuestsList, params),
+        body: latestTimeFilter(payload)
+      }),
       providesTags: [{ type: 'Guest', id: 'LIST' }],
       keepUnusedDataFor: 0,
       async onCacheEntryAdded (requestArgs, api) {
@@ -209,13 +205,10 @@ export const clientApi = baseClientApi.injectEndpoints({
       providesTags: [{ type: 'HistoricalClient', id: 'LIST' }]
     }),
     getHistoricalStatisticsReports: build.query<ClientStatistic, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getHistoricalStatisticsReportsV2, params)
-        return {
-          ...req,
-          body: payload
-        }
-      }
+      query: ({ params, payload }) => ({
+        ...createHttpRequest(CommonUrlsInfo.getHistoricalStatisticsReportsV2, params),
+        body: latestTimeFilter(payload)
+      })
     }),
     addGuestPass: build.mutation<Guest, RequestPayload>({
       query: ({ params, payload }) => {
