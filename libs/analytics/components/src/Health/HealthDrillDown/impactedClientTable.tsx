@@ -11,6 +11,7 @@ import { TenantLink } from '@acx-ui/react-router-dom'
 
 import {
   Stages,
+  stageLabels,
   DrilldownSelection,
   topImpactedClientLimit,
   stageNameToCodeMap
@@ -127,7 +128,7 @@ export const ImpactedClientsTable = ({
   return (
     <Loader states={[queryResults]}>
       <TableHeading>
-        <b>{selectedStage} </b>
+        <b>{selectedStage && $t(stageLabels[selectedStage])} </b>
         {$t(defineMessage({ defaultMessage: `{count} Impacted {count, plural,
           one {Client}
           other {Clients}
