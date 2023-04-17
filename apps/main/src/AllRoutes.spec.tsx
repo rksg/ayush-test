@@ -37,7 +37,7 @@ jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user'),
   useUserProfileContext: () => ({ data: { companyName: 'Mock company' } })
 }))
-jest.mock('./pages/Dashboard', () => () => {
+jest.mock('./pages/Dashboardv2', () => () => {
   return <div data-testid='dashboard' />
 })
 jest.mock('analytics/Routes', () => () => {
@@ -208,10 +208,8 @@ describe('AllRoutes', () => {
       }
     })
 
-    const analytics = await screen.findByRole('menuitem', { name: 'AI Analytics' })
-    const serviceValidation = await screen.findByRole('menuitem', { name: 'Service Validation' })
-    expect(analytics).toBeVisible()
-    expect(serviceValidation).toBeVisible()
+    const menuItem = await screen.findByRole('menuitem', { name: 'AI Assurance' })
+    expect(menuItem).toBeVisible()
 
     setUserProfile({
       allowedOperations: [],
@@ -225,7 +223,6 @@ describe('AllRoutes', () => {
 
     await screen.findAllByRole('menuitem')
 
-    expect(analytics).not.toBeInTheDocument()
-    expect(serviceValidation).not.toBeInTheDocument()
+    expect(menuItem).not.toBeInTheDocument()
   })
 })

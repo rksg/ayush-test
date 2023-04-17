@@ -84,6 +84,7 @@ export interface SEARCH {
 }
 
 export interface FILTER extends Record<string, FilterValue | null> {}
+export type GROUPBY = string | null
 
 const transferSorter = (order:string) => {
   return order === 'ascend' ? SORTER_ABBR.ascend : SORTER_ABBR.descend
@@ -95,7 +96,7 @@ export interface TableQuery<ResultType, Payload, ResultExtra>
   sorter: SORTER,
   search: SEARCH,
   handleTableChange: TableProps<ResultType>['onChange'],
-  handleFilterChange: (filters: FILTER, search: SEARCH) => void
+  handleFilterChange: (filters: FILTER, search: SEARCH, groupBy?: GROUPBY) => void
   payload: Payload,
   setPayload: React.Dispatch<React.SetStateAction<Payload>>,
 }
@@ -170,7 +171,7 @@ export function useTableQuery <
     handlePagination(api.data)
   }, [api.data])
 
-  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
+  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH, groupBy? : GROUPBY) => {
     const { searchString, searchTargetFields, filters, ...rest } = payload
     const toBeRemovedFilter = _.isEmpty(customFilters)
       ? filterKeys
@@ -184,7 +185,8 @@ export function useTableQuery <
       filters: {
         ..._.omit({ ...filters as Object, ...customFilters }, toBeRemovedFilter),
         ..._.pick(initialPayload.filters, toBeRemovedFilter)
-      }
+      },
+      groupBy
     } as unknown as Payload)
     setSearch(toBeSearch)
     setFilterKeys([...new Set([ ...filterKeys, ...Object.keys(customFilters) ])]
@@ -217,7 +219,6 @@ export function useTableQuery <
     setPagination({ ...pagination, ...paginationDetail })
     setPayload({ ...payload, ...tableProps })
   }
-
   return {
     pagination: { ...pagination, current: pagination.page },
     sorter,

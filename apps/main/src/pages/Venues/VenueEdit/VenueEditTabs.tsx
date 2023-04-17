@@ -2,7 +2,7 @@ import { useContext, useEffect, useRef } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs, Tooltip }                          from '@acx-ui/components'
+import { Tabs }                                   from '@acx-ui/components'
 import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import type { LocationExtended }                  from '@acx-ui/rc/utils'
 import {
@@ -12,7 +12,6 @@ import {
   useTenantLink,
   UNSAFE_NavigationContext as NavigationContext
 } from '@acx-ui/react-router-dom'
-import { notAvailableMsg } from '@acx-ui/utils'
 
 import { VenueEditContext, EditContext, showUnsavedModal } from './index'
 
@@ -23,7 +22,8 @@ function VenueEditTabs () {
   const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
-  const enablePersona = useIsSplitOn(Features.PERSONA)
+  const enableMacRegistration = useIsSplitOn(Features.MAC_REGISTRATION)
+  const enablePersona = useIsSplitOn(Features.PERSONA) && enableMacRegistration
   const enablePropertyManagement = useIsSplitOn(Features.PROPERTY_MANAGEMENT) && enablePersona
   const basePath = useTenantLink(`/venues/${params.venueId}/edit/`)
   const {
@@ -89,15 +89,11 @@ function VenueEditTabs () {
         key='switch'
         tab={intl.$t({ defaultMessage: 'Switch Configuration' })}
       />
-      <Tabs.TabPane
-        disabled={!enablePropertyManagement}
-        tab={enablePropertyManagement
-          ? intl.$t({ defaultMessage: 'Property Management' })
-          : <Tooltip title={intl.$t(notAvailableMsg)}>
-            {intl.$t({ defaultMessage: 'Property Management' })}
-          </Tooltip>}
-        key='property'
-      />
+      {enablePropertyManagement &&
+        <Tabs.TabPane
+          tab={intl.$t({ defaultMessage: 'Property Management' })}
+          key='property'
+        />}
     </Tabs>
   )
 }

@@ -9,6 +9,7 @@ import { AnalyticsFilter, kpiConfig }               from '@acx-ui/analytics/util
 import { Loader, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
 import { formatter }                                from '@acx-ui/formatter'
 import type { TimeStamp, TimeStampRange }           from '@acx-ui/types'
+import { noDataDisplay }                            from '@acx-ui/utils'
 
 const transformResponse = ({ data, time }: KPITimeseriesResponse) => data
   .map((datum, index) => ([
@@ -19,7 +20,7 @@ const transformResponse = ({ data, time }: KPITimeseriesResponse) => data
   ])) as [TimeStamp, number][]
 
 export const formatYDataPoint = (data: number | unknown) =>
-  data !== null ? formatter('percentFormat')(data) : '-'
+  data !== null ? formatter('percentFormat')(data) : noDataDisplay
 
 function KpiTimeseries ({
   filters,

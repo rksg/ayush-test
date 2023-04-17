@@ -69,8 +69,8 @@ const StaticRoutes = (props: { readOnly: boolean }) => {
   }
 
   const toolBarRender = () => [
-    <Button type='link' onClick={() => openDrawer()}>
-      {$t({ defaultMessage: 'Add Rule' })}
+    <Button type='link' onClick={() => openDrawer()} data-testid='addRouteButton'>
+      {$t({ defaultMessage: 'Add Route' })}
     </Button>
   ]
 

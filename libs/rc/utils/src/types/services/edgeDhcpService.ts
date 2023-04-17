@@ -1,3 +1,5 @@
+import { LeaseTimeUnit } from '../../models'
+
 export interface EdgeDhcpSetting {
     id: string;
     serviceName: string;
@@ -11,12 +13,6 @@ export interface EdgeDhcpSetting {
     dhcpPools: EdgeDhcpPool[];
     hosts: EdgeDhcpHost[];
     edgeIds: string[];
-}
-
-export enum LeaseTimeUnit {
-    DAYS = 'DAYS',
-    HOURS = 'HOURS',
-    MINUTES = 'MINUTES'
 }
 
 export interface EdgeDhcpPool {
@@ -48,15 +44,6 @@ export interface DhcpPoolStats {
   activated: string
 }
 
-export interface EdgeDhcpLease {
-  name: string
-  ip: string
-  dhcpPool: string
-  mac: string
-  status: string
-  expires: string
-}
-
 export interface DhcpStats {
   tenantId: string
   id: string
@@ -78,4 +65,14 @@ export interface DhcpStats {
   successfulAllocations?: number
   remainingIps?: number
   droppedPackets?: number
+}
+
+export interface DhcpHostStats {
+  dhcpPoolName: string
+  hostIpAddr: string
+  hostMac: string
+  hostStatus: string
+  hostExpireDate: Date
+  hostRemainingTime: number
+  edgeId: string
 }

@@ -29,7 +29,7 @@ describe('StatusBlock', () => {
     { field: 'avgPingTime', values: [0, 900], configured: ConfigStatusEnum.Configured,
       results: ['Average Ping Time', '900 ms'] },
     { field: 'avgPingTime', values: [900, 0], configured: ConfigStatusEnum.Configured,
-      results: ['Average Ping Time', '-'] },
+      results: ['Average Ping Time', '--'] },
     { field: 'avgPingTime', values: [900, 0], configured: ConfigStatusEnum.NA,
       results: ['Average Ping Time', 'N/A'] },
     { field: 'avgPingTime', values: [undefined, 900], configured: ConfigStatusEnum.Configured,
@@ -45,7 +45,7 @@ describe('StatusBlock', () => {
     { field: 'avgUpload', values: [0, 1000000], configured: ConfigStatusEnum.Configured,
       results: ['Average Upload', '1 Gbps'] },
     { field: 'avgUpload', values: [1000000, 0], configured: ConfigStatusEnum.Configured,
-      results: ['Average Upload', '-'] },
+      results: ['Average Upload', '--'] },
     { field: 'avgUpload', values: [1000000, 0], configured: ConfigStatusEnum.NA,
       results: ['Average Upload', 'N/A'] },
     { field: 'avgUpload', values: [undefined, 1000000], configured: ConfigStatusEnum.Configured,
@@ -61,7 +61,7 @@ describe('StatusBlock', () => {
     { field: 'avgDownload', values: [0, 2000], configured: ConfigStatusEnum.Configured,
       results: ['Average Download', '2 Mbps'] },
     { field: 'avgDownload', values: [2000, 0], configured: ConfigStatusEnum.Configured,
-      results: ['Average Download', '-'] },
+      results: ['Average Download', '--'] },
     { field: 'avgDownload', values: [2000, 0], configured: ConfigStatusEnum.NA,
       results: ['Average Download', 'N/A'] },
     { field: 'avgDownload', values: [undefined, 2000], configured: ConfigStatusEnum.Configured,
@@ -71,13 +71,13 @@ describe('StatusBlock', () => {
     { field: 'passedApsPercent',
       values: [undefined, undefined],
       configured: ConfigStatusEnum.NoData,
-      results: [ 'Test Result', '-'] },
+      results: [ 'Test Result', '--'] },
     { field: 'avgPingTime', values: [undefined, undefined], configured: ConfigStatusEnum.NoData,
-      results: ['Average Ping Time', '-'] },
+      results: ['Average Ping Time', '--'] },
     { field: 'avgUpload', values: [undefined, undefined], configured: ConfigStatusEnum.NoData,
-      results: ['Average Upload', '-'] },
+      results: ['Average Upload', '--'] },
     { field: 'avgDownload', values: [undefined, undefined], configured: ConfigStatusEnum.NoData,
-      results: ['Average Download', '-'] }
+      results: ['Average Download', '--'] }
   ] as (StatusBlockProps & { results: string[] })[]
 
   samples.forEach(({ results, ...rest }, index) => {

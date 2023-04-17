@@ -4,7 +4,7 @@ import { Form, Select, Switch, Row, Button, Col } from 'antd'
 import { isEqual }                                from 'lodash'
 import { useIntl }                                from 'react-intl'
 
-import { Loader, StepsForm, showToast, StepsFormInstance } from '@acx-ui/components'
+import { Loader, StepsForm, showToast, StepsFormInstance, showActionModal } from '@acx-ui/components'
 import {
   useGetApQuery,
   useGetApSnmpPolicyListQuery,
@@ -86,7 +86,7 @@ export function ApSnmp () {
           await getVenueApSnmpSettings(
             { params: { tenantId, venueId: RetrievedApDetails?.venueId } }, true).unwrap()
         )
-        setStateOfApSnmpSettings(settingsInDatabase)
+        setStateOfApSnmpSettings({ ...defaultApSnmpSettings, ...settingsInDatabase })
         setStateVenueOfApSnmpSettings(venueApSnmpSetting)
         setStateOfEnableApSnmp(settingsInDatabase.enableApSnmp)
         setStateOfUseVenueSettings(settingsInDatabase.useVenueSettings)
@@ -132,11 +132,19 @@ export function ApSnmp () {
 
   const sendApSnmpSetting = async () => {
 
-    const payload : ApSnmpSettings
+    const payload
     = {
-      ...stateOfApSnmpSettings,
       ...formRef.current?.getFieldsValue(),
       useVenueSettings: stateOfUseVenueSettings
+    }
+
+    // Condition guard, if user didn't change anything, don't send API
+    if (payload.enableApSnmp === true && payload.apSnmpAgentProfileId === '') {
+      showActionModal({
+        type: 'error',
+        content: $t({ defaultMessage: 'SNMP agent is required when AP SNMP is enabled' })
+      })
+      return
     }
 
     try {
@@ -170,6 +178,8 @@ export function ApSnmp () {
   const customize = async () => {
     setStateOfUseVenueSettings(false)
     formRef?.current?.setFieldsValue(stateOfApSnmpSettings)
+    // Even though the form is been set again, but it won't trigger rendering, so we need to trigger it manually
+    setStateOfEnableApSnmp(stateOfApSnmpSettings.enableApSnmp)
   }
 
 
@@ -194,10 +204,12 @@ export function ApSnmp () {
         layout='horizontal'
         initialValues={stateOfApSnmpSettings}>
         <Row style={{ backgroundColor: '#F2F2F2', marginBottom: '10px' }} align='middle'>
-          <Col span={3}>
-            <p style={{ paddingLeft: '10px', marginBottom: '0px' }}>Cutsom  settings</p>
+          <Col span={8}>
+            <p style={{ paddingLeft: '10px', marginBottom: '0px' }}>
+              {$t({ defaultMessage: 'Custom  settings' })}
+            </p>
           </Col>
-          <Col span={3}>
+          <Col span={8}>
             {stateOfUseVenueSettings ? <Button
               data-testid='use-venue-true'
               type='link'
@@ -234,33 +246,32 @@ export function ApSnmp () {
           {stateOfEnableApSnmp &&
         <Col data-testid='hidden-block' span={12}>
           <Row align='middle'>
-            <Col span={10}>
-              <Form.Item name='apSnmpAgentProfileId'
-                label='SNMP Agent'
-                style={{ marginBottom: '0px' }}>
-                <Select
-                  data-testid='snmp-select'
-                  disabled={stateOfUseVenueSettings}
-                  options={[
-                    { label: $t({ defaultMessage: 'Select...' }), value: '' },
-                    ...RetrievedApSnmpAgentList?.data?.map(
-                      item => ({ label: item.policyName, value: item.id })
-                    ) ?? []
-                  ]}
-                  style={{ width: '200px' }}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <TenantLink
-                to={getPolicyRoutePath({
-                  type: PolicyType.SNMP_AGENT,
-                  oper: PolicyOperation.CREATE
-                })}
-              >
-                {$t({ defaultMessage: 'Add' })}
-              </TenantLink>
-            </Col>
+            <Form.Item name='apSnmpAgentProfileId'
+              label='SNMP Agent'
+              style={{ marginBottom: '0px' }}>
+              <Select
+                data-testid='snmp-select'
+                disabled={stateOfUseVenueSettings}
+                options={[
+                  { label: $t({ defaultMessage: 'Select...' }), value: '' },
+                  ...RetrievedApSnmpAgentList?.data?.map(
+                    item => ({ label: item.policyName, value: item.id })
+                  ) ?? []
+                ]}
+                style={{ width: '200px' }}
+              />
+            </Form.Item>
+            {((RetrievedApSnmpAgentList?.data?.length as number) < 64) &&
+                <TenantLink
+                  to={getPolicyRoutePath({
+                    type: PolicyType.SNMP_AGENT,
+                    oper: PolicyOperation.CREATE
+                  })}
+                  style={{ marginLeft: '20px' }}
+                >
+                  {$t({ defaultMessage: 'Add' })}
+                </TenantLink>
+            }
           </Row>
         </Col>
           }

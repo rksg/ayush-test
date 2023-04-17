@@ -53,6 +53,14 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
     })
 
   useEffect(() => {
+    if(family){
+      setModel('')
+    }
+
+    if(family !=='' && model !== ''){
+      modelChangeAction(family, model)
+    }
+
     if(ICX_MODELS_MODULES){
       const familiesData = Object.keys(ICX_MODELS_MODULES).map(key => {
         return { label: `ICX-${key.split('ICX')[1]}`, value: key }
@@ -73,8 +81,7 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
         enableSlot4: selectedEnable4.enable,
         selectedOptionOfSlot2: selectedEnable2.option,
         selectedOptionOfSlot3: selectedEnable3.option,
-        selectedOptionOfSlot4: selectedEnable4.option,
-        switchFamilyModels: editRecord
+        selectedOptionOfSlot4: selectedEnable4.option
       })
       setFamily(selectedFamily)
       setModel(selectedModel)
@@ -86,7 +93,7 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
       checkIfModuleFixed(selectedFamily, selectedModel)
       setTrustedPorts(editRecord)
     }
-  }, [ICX_MODELS_MODULES, editRecord])
+  }, [ICX_MODELS_MODULES, editRecord, family, model])
 
   const checkIfModuleFixed = (family: string, model: string) => {
     if (family === 'ICX7550') {
@@ -159,6 +166,7 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
   }
 
   const onFamilyChange = (e: RadioChangeEvent) => {
+    setFamily(e.target.value)
     familyChangeAction(e.target.value)
   }
 
@@ -167,7 +175,6 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
       form.resetFields(['model', 'enableSlot2', 'enableSlot3', 'enableSlot4'])
       setModuleSelectionEnable(false)
     }
-    setFamily(family)
     const index = family as keyof typeof ICX_MODELS_MODULES
     const modelsList = ICX_MODELS_MODULES[index]
 
@@ -178,6 +185,7 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
   }
 
   const onModelChange = (e: RadioChangeEvent) => {
+    setModel(e.target.value)
     modelChangeAction(family, e.target.value)
   }
 
@@ -190,8 +198,9 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
       setModuleSelectionEnable(true)
       setModule2SelectionEnable(true)
       setModule3SelectionEnable(true)
+    }else{
+      setModuleSelectionEnable(true)
     }
-    setModel(model)
     checkIfModuleFixed(family, model)
     getSlots(family, model)
     setTrustedPorts({ ...trustedPorts, slots: [] })
@@ -213,12 +222,13 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
         form.setFieldValue('selectedOptionOfSlot4', optionListForSlot4[0]?.value)
         break
     }
+    onModuleChange()
   }
 
   const onModuleChange = () => {
-    getSlots(family, model)
+    getSlots(form.getFieldValue('family'), form.getFieldValue('model'))
     setTrustedPorts({ ...trustedPorts, slots: [] })
-    updateModelPortData(family, model)
+    updateModelPortData(form.getFieldValue('family'), form.getFieldValue('model'))
   }
 
   const updateModelPortData = (selectedFamily: string, selectedModel: string) => {
@@ -234,7 +244,6 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
     } else {
       const enable = form.getFieldValue(`enableSlot${slotNumber}`)
       let option = form.getFieldValue(`selectedOptionOfSlot${slotNumber}`)
-
       let optionList = optionListForSlot2
       switch (slotNumber) {
         case 3:
@@ -297,19 +306,21 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
       const tmpModelPortData = { ...trustedPorts }
       if (slotIndex === -1) {
         tmpModelPortData.slots.push(slotData)
+        tmpModelPortData.model = form.getFieldValue('family') + '-' + form.getFieldValue('model')
+        form.setFieldValue('switchFamilyModels', tmpModelPortData)
       } else {
-        if(trustedPorts.slots){
+        if(trustedPorts.slots[slotIndex].portStatus !== undefined){
           tmpModelPortData.slots[slotIndex] = slotData
+          if(tmpModelPortData.slots && tmpModelPortData.slots.length > 0){
+            tmpModelPortData.slots = tmpModelPortData.slots && tmpModelPortData.slots.sort(
+              function (a: { slotNumber: number }, b: { slotNumber: number }) {
+                return a.slotNumber > b.slotNumber ? 1 : -1
+              })
+          }
+          tmpModelPortData.model = form.getFieldValue('family') + '-' + form.getFieldValue('model')
+          form.setFieldValue('switchFamilyModels', tmpModelPortData)
         }
       }
-      tmpModelPortData.slots = tmpModelPortData.slots && tmpModelPortData.slots.sort(
-        function (a: { slotNumber: number }, b: { slotNumber: number }) {
-          return a.slotNumber > b.slotNumber ? 1 : -1
-        })
-      tmpModelPortData.model = family + '-' + selectedModel
-      setTrustedPorts(tmpModelPortData)
-
-      form.setFieldValue('switchFamilyModels', tmpModelPortData)
     }
   }
 

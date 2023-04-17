@@ -208,7 +208,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                               <h2
                                 class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                               >
-                                -
+                                --
                               </h2>
                             </div>
                           </div>
@@ -1271,7 +1271,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                               <h2
                                 class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                               >
-                                -
+                                --
                               </h2>
                             </div>
                           </div>
@@ -2507,7 +2507,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                               <h2
                                 class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                               >
-                                -
+                                --
                               </h2>
                             </div>
                           </div>
@@ -3217,225 +3217,6 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                 >
                   <div
                     class="ant-space-item"
-                    style="margin-right: 8px;"
-                  >
-                    <h4
-                      class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                    >
-                      Guest Details
-                    </h4>
-                    <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
-                    >
-                      <div
-                        class="ant-descriptions-view"
-                      >
-                        <table>
-                          <tbody>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Guest Name
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    --
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Mobile Phone
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    --
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Email
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    --
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Notes
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    --
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Guest Created
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    12/13/2022 15:20
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Guest Expires
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    12/13/2022 15:20
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Max no. of clients
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    --
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Other devices
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    --
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-space-item"
-                  >
-                    <div
-                      class="ant-divider ant-divider-horizontal"
-                      role="separator"
-                    />
-                  </div>
-                </div>
-                <div
-                  class="ant-space ant-space-horizontal ant-space-align-center"
-                  style="display: block;"
-                >
-                  <div
-                    class="ant-space-item"
                   >
                     <h4
                       class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
@@ -3789,7 +3570,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                               <h2
                                 class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                               >
-                                -
+                                --
                               </h2>
                             </div>
                           </div>
@@ -4852,7 +4633,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                               <h2
                                 class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                               >
-                                -
+                                --
                               </h2>
                             </div>
                           </div>
@@ -5911,7 +5692,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                               <h2
                                 class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                               >
-                                -
+                                --
                               </h2>
                             </div>
                           </div>
@@ -7264,7 +7045,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client w
                               <h2
                                 class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                               >
-                                -
+                                --
                               </h2>
                             </div>
                           </div>
@@ -8589,7 +8370,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render dpsk cli
                               <h2
                                 class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                               >
-                                -
+                                --
                               </h2>
                             </div>
                           </div>
@@ -10114,7 +9895,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                               <h2
                                 class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                               >
-                                -
+                                --
                               </h2>
                             </div>
                           </div>
@@ -11114,225 +10895,6 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                 >
                   <div
                     class="ant-space-item"
-                    style="margin-right: 8px;"
-                  >
-                    <h4
-                      class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                    >
-                      Guest Details
-                    </h4>
-                    <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
-                    >
-                      <div
-                        class="ant-descriptions-view"
-                      >
-                        <table>
-                          <tbody>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Guest Name
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    --
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Mobile Phone
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    --
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Email
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    --
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Notes
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    --
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Guest Created
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    12/13/2022 15:20
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Guest Expires
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    12/13/2022 15:20
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Max no. of clients
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    --
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Other devices
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    --
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-space-item"
-                  >
-                    <div
-                      class="ant-divider ant-divider-horizontal"
-                      role="separator"
-                    />
-                  </div>
-                </div>
-                <div
-                  class="ant-space ant-space-horizontal ant-space-align-center"
-                  style="display: block;"
-                >
-                  <div
-                    class="ant-space-item"
                   >
                     <h4
                       class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
@@ -11686,7 +11248,7 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                               <h2
                                 class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                               >
-                                -
+                                --
                               </h2>
                             </div>
                           </div>
@@ -13039,7 +12601,7 @@ exports[`ClientOverviewTab OverviewWidget should render correctly when search pa
                               <h2
                                 class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                               >
-                                -
+                                --
                               </h2>
                             </div>
                           </div>
@@ -14102,7 +13664,7 @@ exports[`ClientOverviewTab OverviewWidget should render historical client info c
                               <h2
                                 class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                               >
-                                -
+                                --
                               </h2>
                             </div>
                           </div>

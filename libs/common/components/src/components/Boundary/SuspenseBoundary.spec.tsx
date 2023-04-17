@@ -29,4 +29,8 @@ describe('SuspenseBoundary', () => {
     const element = await waitFor(() => screen.findByText('Lazy Component'))
     expect(element).toBeVisible()
   })
+  it('renders default fallback in center', async () => {
+    const { asFragment } = render(<SuspenseBoundary.DefaultFallback absoluteCenter />)
+    expect(asFragment()).toMatchSnapshot()
+  })
 })

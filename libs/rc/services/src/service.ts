@@ -42,7 +42,8 @@ import {
   downloadFile,
   NewAPITableResult,
   transferNewResToTableResult,
-  MdnsProxyViewModel
+  MdnsProxyViewModel,
+  PortalTablePayload
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -51,7 +52,6 @@ import {
   AccessControlProfile
 } from '@acx-ui/rc/utils'
 import { baseServiceApi } from '@acx-ui/store'
-import { getJwtToken }    from '@acx-ui/utils'
 
 const defaultNewTablePaginationParams: TableChangePayload = {
   sortField: 'name',
@@ -448,10 +448,37 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       providesTags: [{ type: 'Service', id: 'DETAIL' }, { type: 'WifiCalling', id: 'DETAIL' }]
     }),
-    getWifiCallingServiceList: build.query<TableResult<WifiCallingSetting>, RequestPayload>({
-      query: ({ params, payload }) => {
+    getWifiCallingServiceList: build.query<WifiCallingSetting[], RequestPayload>({
+      query: ({ params }) => {
         const wifiCallingServiceListReq = createHttpRequest(
           WifiCallingUrls.getWifiCallingList, params
+        )
+        return {
+          ...wifiCallingServiceListReq
+        }
+      },
+      providesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'AddWiFiCallingServiceProfile',
+            'UpdateWiFiCallingServiceProfile',
+            'DeleteWifiCallingServiceProfile',
+            'DeleteWiFiCallingServiceProfile'
+          ], () => {
+            api.dispatch(serviceApi.util.invalidateTags([
+              { type: 'Service', id: 'LIST' },
+              { type: 'WifiCalling', id: 'LIST' }
+            ]))
+          })
+        })
+      }
+    }),
+    // eslint-disable-next-line max-len
+    getEnhancedWifiCallingServiceList: build.query<TableResult<WifiCallingSetting>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const wifiCallingServiceListReq = createHttpRequest(
+          WifiCallingUrls.getEnhancedWifiCallingList, params
         )
         return {
           ...wifiCallingServiceListReq,
@@ -462,10 +489,10 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'AddWiFiCallingProfile',
-            'UpdateWiFiCallingProfile',
-            'DeleteWiFiCallingProfile',
-            'DeleteWiFiCallingProfiles'
+            'AddWiFiCallingServiceProfile',
+            'UpdateWiFiCallingServiceProfile',
+            'DeleteWifiCallingServiceProfile',
+            'DeleteWiFiCallingServiceProfile'
           ], () => {
             api.dispatch(serviceApi.util.invalidateTags([
               { type: 'Service', id: 'LIST' },
@@ -566,7 +593,16 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
     }),
-    // eslint-disable-next-line max-len
+    updateDpskPassphrases: build.mutation<CommonResult, RequestPayload<DpskPassphrasesSaveData>>({
+      query: ({ params, payload }) => {
+        const createDpskPassphrasesReq = createHttpRequest(DpskUrls.updatePassphrase, params)
+        return {
+          ...createDpskPassphrasesReq,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
+    }),
     dpskPassphraseList: build.query<TableResult<NewDpskPassphrase>, RequestPayload>({
       query: ({ params, payload }) => {
         const getDpskPassphraseListReq = createNewTableHttpRequest({
@@ -584,9 +620,29 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       providesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
     }),
+    getDpskPassphrase: build.query<NewDpskPassphrase, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(DpskUrls.getPassphrase, params)
+
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'DpskPassphrase', id: 'DETAIL' }]
+    }),
     deleteDpskPassphraseList: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(DpskUrls.deletePassphrase, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
+    }),
+    revokeDpskPassphraseList: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(DpskUrls.revokePassphrases, params)
         return {
           ...req,
           body: payload
@@ -609,11 +665,16 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     // eslint-disable-next-line max-len
     downloadPassphrases: build.mutation<Blob, RequestPayload<{ timezone: string, dateFormat: string }>>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(DpskUrls.exportPassphrases, {
-          ...params,
-          timezone: payload?.timezone ?? 'UTC',
-          dateFormat: payload?.dateFormat ?? 'dd/MM/yyyy HH:mm'
-        })
+        const req = createHttpRequest(
+          DpskUrls.exportPassphrases,
+          {
+            ...params,
+            timezone: payload?.timezone ?? 'UTC',
+            dateFormat: payload?.dateFormat ?? 'dd/MM/yyyy HH:mm'
+          },
+          {},
+          true
+        )
 
         return {
           ...req,
@@ -625,9 +686,9 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             downloadFile(response, fileName)
           },
           headers: {
+            ...req.headers,
             'Content-Type': 'text/csv',
-            'Accept': 'text/csv',
-            ...(getJwtToken() ? { Authorization: `Bearer ${getJwtToken()}` } : {})
+            'Accept': 'text/csv'
           }
         }
       }
@@ -658,6 +719,33 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       transformResponse (result: NewAPITableResult<Portal>) {
         return transferNewResToTableResult<Portal>(result)
       },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'Add Portal Service Profile',
+            'Update Portal Service Profile',
+            'Delete Portal Service Profile',
+            'Delete Portal Service Profiles'
+          ], () => {
+            api.dispatch(serviceApi.util.invalidateTags([{ type: 'Portal', id: 'LIST' }]))
+          })
+        })
+      }
+    }),
+    getEnhancedPortalProfileList: build.query<TableResult<Portal>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PortalUrlsInfo.getEnhancedPortalProfileList,
+          params)
+
+        return {
+          ...req,
+          body: _.omit(payload as PortalTablePayload, ['defaultPageSize', 'total'])
+        }
+      },
+      transformResponse (result: NewAPITableResult<Portal>) {
+        return transferNewResToTableResult<Portal>(result)
+      },
+      providesTags: [{ type: 'Service', id: 'LIST' },{ type: 'Portal', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
@@ -716,6 +804,7 @@ export const {
   useDeleteWifiCallingServiceMutation,
   useGetWifiCallingServiceQuery,
   useGetWifiCallingServiceListQuery,
+  useGetEnhancedWifiCallingServiceListQuery,
   useCreateWifiCallingServiceMutation,
   useUpdateWifiCallingServiceMutation,
   useCreateDpskMutation,
@@ -726,8 +815,11 @@ export const {
   useLazyGetDpskListQuery,
   useDeleteDpskMutation,
   useDpskPassphraseListQuery,
+  useGetDpskPassphraseQuery,
   useCreateDpskPassphrasesMutation,
+  useUpdateDpskPassphrasesMutation,
   useDeleteDpskPassphraseListMutation,
+  useRevokeDpskPassphraseListMutation,
   useUploadPassphrasesMutation,
   useDownloadPassphrasesMutation,
   useGetPortalQuery,
@@ -739,5 +831,6 @@ export const {
   useDeletePortalMutation,
   useUpdatePortalMutation,
   useUploadURLMutation,
-  useGetDHCPProfileListViewModelQuery
+  useGetDHCPProfileListViewModelQuery,
+  useGetEnhancedPortalProfileListQuery
 } = serviceApi

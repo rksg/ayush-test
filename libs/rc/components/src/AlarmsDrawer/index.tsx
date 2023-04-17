@@ -68,6 +68,11 @@ export function AlarmsDrawer (props: AlarmsType) {
   const { $t } = useIntl()
   const { visible, setVisible, serialNumber } = props
 
+  window.addEventListener('showAlarmDrawer',(function (e:CustomEvent){
+    setVisible(true)
+    setSeverity(e.detail.data.name)
+  }) as EventListener)
+
   const toggleForSwitch = useIsSplitOn(Features.DEVICES)
 
   const [severity, setSeverity] = useState('all')
@@ -91,7 +96,8 @@ export function AlarmsDrawer (props: AlarmsType) {
     },
     pagination: {
       pageSize: 25
-    }
+    },
+    option: { skip: !visible }
   })
 
   useEffect(()=>{

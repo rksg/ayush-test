@@ -4,7 +4,7 @@ import { Form, Select, Space, Switch } from 'antd'
 import { isEqual }                     from 'lodash'
 import { useIntl }                     from 'react-intl'
 
-import { Loader, StepsForm, showToast }  from '@acx-ui/components'
+import { Loader, StepsForm, showToast, showActionModal } from '@acx-ui/components'
 import {
   useGetApSnmpPolicyListQuery,
   useGetVenueApSnmpSettingsQuery,
@@ -96,7 +96,18 @@ export function ApSnmp () {
   }
 
   const updateVenueApSnmpSetting = async (data?: VenueApSnmpSettings) => {
+
     try {
+
+      // Condition guard, if user didn't change anything, don't send API
+      if (data?.enableApSnmp === true && data?.apSnmpAgentProfileId === '') {
+        showActionModal({
+          type: 'error',
+          content: $t({ defaultMessage: 'SNMP agent is required when AP SNMP is enabled' })
+        })
+        return
+      }
+
       setEditContextData && setEditContextData({
         ...editContextData,
         unsavedTabKey: 'servers',
@@ -104,7 +115,10 @@ export function ApSnmp () {
         isDirty: false,
         hasError: false
       })
-      const payload = data
+
+      /* eslint-disable max-len */
+      const payload = data?.enableApSnmp === true ? { ...data } : { enableApSnmp: data?.enableApSnmp }
+
       if (payload) {
         await updateApSnmpSettings({ params: { venueId } , payload }).unwrap()
       }
@@ -143,7 +157,7 @@ export function ApSnmp () {
           data-testid='snmp-select'
           defaultValue={RetrievedVenueApSnmpAgentProfileId}
           options={[
-            { label: $t({ defaultMessage: 'Select SNMP Agent...' }), value: '' },
+            { label: $t({ defaultMessage: 'Select...' }), value: '' },
             ...RetrievedVenueApSnmpAgentOptions
           ]}
           onChange={(id => {
@@ -151,15 +165,15 @@ export function ApSnmp () {
           })}
           style={{ width: '200px' }}
         />
-        <TenantLink
+        {((RetrievedVenueApSnmpAgentList?.data?.length as number) < 64) && <TenantLink
           to={getPolicyRoutePath({
             type: PolicyType.SNMP_AGENT,
             oper: PolicyOperation.CREATE
           })}
           style={{ marginLeft: '20px' }}
         >
-          {$t({ defaultMessage: 'Add SNMP Agent' })}
-        </TenantLink>
+          {$t({ defaultMessage: 'Add' })}
+        </TenantLink>}
       </Form.Item>}
     </Space>
   </Loader>)

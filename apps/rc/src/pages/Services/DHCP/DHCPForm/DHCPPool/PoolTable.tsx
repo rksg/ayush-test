@@ -59,7 +59,8 @@ export function PoolTable (props:{
       key: 'name',
       title: $t({ defaultMessage: 'Pool Name' }),
       dataIndex: 'name',
-      sorter: true
+      sorter: true,
+      fixed: 'left'
     },
     {
       key: 'subnetAddress',

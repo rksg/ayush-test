@@ -71,6 +71,7 @@ const payload = {
 export const genUpdatedTemplate = (guestDetails: any, langDictionary: any) => {
   const userName = guestDetails.name
   const ssid = guestDetails.wifiNetwork
+  const year = new Date().getFullYear()
 
   return `
   <div style="max-width: 600px;margin:0 auto;">
@@ -156,7 +157,7 @@ export const genUpdatedTemplate = (guestDetails: any, langDictionary: any) => {
             <div style="font-family:Open Sans, Helvetica, Arial, sans-serif;font-size:12px;line-height:1;text-align:left;color:#565758;">
               <div class="footer-bg" style="height:40px;">
                 <div style="font-size: 8px;text-align:center;line-height:10px;padding-top:16px;color:#808284;">
-                  © 2022 Ruckus Wireless, Inc., a CommScope Company, 350 West Java Dr. Sunnyvale, CA 94089 USA
+                  &copy; ${year} CommScope, Inc. All Rights Reserved.
                 </div>
               </div>
             </div>

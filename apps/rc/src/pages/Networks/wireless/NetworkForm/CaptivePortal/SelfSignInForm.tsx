@@ -241,7 +241,7 @@ export function SelfSignInForm () {
             <a href='https://support.ruckuswireless.com/ruckus-cloud-privacy-policy'
               target='_blank'
               rel='noreferrer'>
-              {$t({ defaultMessage: 'Ruckus\' privacy policy' })}</a>
+              {$t({ defaultMessage: 'Ruckus Networks’ privacy policy' })}</a>
           </>}
         >
         </Form.Item>

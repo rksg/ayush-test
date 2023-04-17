@@ -32,6 +32,7 @@ export default function VLANPoolInstancesTable (){
       dataIndex: 'venueName',
       searchable: true,
       sorter: true,
+      fixed: 'left',
       render: (name, row) =>
         (<TenantLink to={`venues/${row.venueId}/venue-details/overview`}>{name}</TenantLink>)
 

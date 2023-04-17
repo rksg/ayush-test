@@ -81,7 +81,8 @@ export const mockedSummary =
       tempLicense: false,
       quantity: 70,
       deviceCount: 2,
-      remainingDevices: 20 },
+      remainingDevices: 20
+    },
     {
       deviceSubType: null,
       deviceType: 'UNKOWNTYPE',
@@ -89,5 +90,13 @@ export const mockedSummary =
       quantity: 50,
       deviceCount: 0,
       remainingDevices: 25
+    },
+    {
+      deviceSubType: null,
+      deviceType: 'LTE',
+      tempLicense: false,
+      quantity: 0,
+      deviceCount: 0,
+      remainingDevices: 0
     }
   ]

@@ -41,6 +41,15 @@ export const TextNumber = styled.div`
   }
 `
 
+export const DetailsPassword = styled.span`
+  .ant-input-password {
+    padding: 0px;
+    input { 
+      font-size: var(--acx-body-4-font-size);
+    }
+  }
+`
+
 export const NoOnlineInfo = styled.div`
   text-align: center;
   color: var(--acx-neutrals-50);

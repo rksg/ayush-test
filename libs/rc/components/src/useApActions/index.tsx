@@ -10,6 +10,7 @@ import { cssStr, showActionModal, showToast } from '@acx-ui/components'
 import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import {
   useBlinkLedApMutation,
+  useDeleteApGroupsMutation,
   useDeleteApMutation,
   useDeleteSoloApMutation,
   useDownloadApLogMutation,
@@ -21,6 +22,7 @@ import {
   AP,
   ApDeviceStatusEnum,
   ApDhcpRoleEnum,
+  APExtended,
   CommonResult,
   CountdownNode,
   DhcpApInfo
@@ -40,7 +42,7 @@ export function useApActions () {
   const [ deleteAp ] = useDeleteApMutation()
   const [ deleteSoloAp ] = useDeleteSoloApMutation()
   const [ blinkLedAp ] = useBlinkLedApMutation()
-  // const [ deleteApGroups ] = useDeleteApGroupsMutation()
+  const [ deleteApGroups ] = useDeleteApGroupsMutation()
 
   const deleteSoloFlag = useIsSplitOn(Features.DELETE_SOLO)
 
@@ -119,25 +121,22 @@ export function useApActions () {
     showDeleteAps(apList.data, tenantId, callBack)
   }
 
-  // ACX-25402: Waiting for integration with group by table
-  // const showDeleteApGroups = async (rows: any[],
-  //   tenantId?: string, callBack?: () => void) => {
-  //   showActionModal({
-  //     type: 'confirm',
-  //     customContent: {
-  //       action: 'DELETE',
-  //       entityName: rows.length === 1 ?
-  //         $t({ defaultMessage: 'AP Group' }) : $t({ defaultMessage: 'AP Groups' }),
-  //       entityValue: rows.length === 1 ? rows[0].name : undefined,
-  //       numOfEntities: rows.length
-  //     },
-  //     onOk: () => {
-  //       const apGroupIdList = rows.map(item => item.id)
-  //       deleteApGroups({ params: { tenantId }, payload: apGroupIdList })
-  //         .then(callBack)
-  //     }
-  //   })
-  // }
+  const showDeleteApGroups = async (row: APExtended,
+    tenantId?: string, callBack?: () => void) => {
+    showActionModal({
+      type: 'confirm',
+      customContent: {
+        action: 'DELETE',
+        entityName: $t({ defaultMessage: 'AP Group' }),
+        entityValue: row.deviceGroupName,
+        numOfEntities: 1
+      },
+      onOk: () => {
+        deleteApGroups({ params: { tenantId }, payload: [row.deviceGroupId] })
+          .then(callBack)
+      }
+    })
+  }
 
   const showDeleteAps = async ( rows: AP[], tenantId?: string, callBack?: ()=>void ) => {
     const dhcpAps = await getDhcpAp({
@@ -183,7 +182,7 @@ export function useApActions () {
   return {
     showDeleteAp,
     showDeleteAps,
-    // showDeleteApGroups,
+    showDeleteApGroups,
     showDownloadApLog,
     showRebootAp,
     showBlinkLedAp
@@ -260,7 +259,7 @@ const genDeleteModal = (
     {hideConfirmation && <Form.Item>{$t({ defaultMessage: `
       You are deleting one or more offline APs.
       When these offline devices come back online
-      their configuration will be factory reset and they will be removed from Ruckus Cloud.`
+      their configuration will be factory reset and they will be removed from RUCKUS One.`
     })}</Form.Item >}
 
     {!showResetFirmwareOption && !hideConfirmation && <Form.Item>{$t({

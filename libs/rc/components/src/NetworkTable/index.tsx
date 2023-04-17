@@ -1,11 +1,9 @@
-import { ReactNode } from 'react'
-
 import { useIntl, FormattedMessage } from 'react-intl'
 import { useNavigate, useParams }    from 'react-router-dom'
 
-import { showActionModal, Loader, TableProps, Tooltip, Table  } from '@acx-ui/components'
-import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
-import { useDeleteNetworkMutation, useLazyVenuesListQuery }     from '@acx-ui/rc/services'
+import { showActionModal, Loader, TableProps, Table  }      from '@acx-ui/components'
+import { Features, useIsSplitOn }                           from '@acx-ui/feature-toggle'
+import { useDeleteNetworkMutation, useLazyVenuesListQuery } from '@acx-ui/rc/services'
 import {
   NetworkTypeEnum,
   Network,
@@ -17,19 +15,19 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }            from '@acx-ui/user'
-import { getIntl, notAvailableMsg }  from '@acx-ui/utils'
+import { getIntl }                   from '@acx-ui/utils'
 
 
 const disabledType: NetworkTypeEnum[] = []
 
-function getCols (intl: ReturnType<typeof useIntl>, isServicesEnabled: boolean) {
+function getCols (intl: ReturnType<typeof useIntl>) {
   const columns: TableProps<Network>['columns'] = [
     {
       key: 'name',
       title: intl.$t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
       sorter: true,
-      disable: true,
+      fixed: 'left',
       defaultSortOrder: 'ascend',
       render: function (data, row) {
         if(disabledType.indexOf(row.nwSubType as NetworkTypeEnum) > -1){
@@ -67,6 +65,7 @@ function getCols (intl: ReturnType<typeof useIntl>, isServicesEnabled: boolean) 
       title: intl.$t({ defaultMessage: 'Venues' }),
       dataIndex: ['venues', 'count'],
       sorter: true,
+      sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center',
       render: function (count, row) {
         if(disabledType.indexOf(row.nwSubType as NetworkTypeEnum) > -1){
@@ -86,6 +85,7 @@ function getCols (intl: ReturnType<typeof useIntl>, isServicesEnabled: boolean) 
       title: intl.$t({ defaultMessage: 'APs' }),
       dataIndex: 'aps',
       sorter: true,
+      sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center',
       render: function (data, row) {
         if(disabledType.indexOf(row.nwSubType as NetworkTypeEnum) > -1){
@@ -101,17 +101,17 @@ function getCols (intl: ReturnType<typeof useIntl>, isServicesEnabled: boolean) 
       key: 'clients',
       title: intl.$t({ defaultMessage: 'Clients' }),
       dataIndex: 'clients',
-      sorter: false,
+      sorter: false, // API does not seem to be working
       align: 'center'
     },
-    {
-      key: 'services',
-      title: intl.$t({ defaultMessage: 'Services' }),
-      dataIndex: 'services',
-      sorter: true,
-      align: 'center',
-      show: isServicesEnabled
-    },
+    // { TODO: Wait for Services
+    //   key: 'services',
+    //   title: intl.$t({ defaultMessage: 'Services' }),
+    //   dataIndex: 'services',
+    //   sorter: true,
+    //   align: 'center',
+    //   show: isServicesEnabled
+    // },
     {
       key: 'vlan',
       title: intl.$t({ defaultMessage: 'VLAN' }),
@@ -166,18 +166,11 @@ export const defaultNetworkPayload = {
   ]
 }
 
-const rowSelection = (intl: ReturnType<typeof useIntl>) => {
+const rowSelection = () => {
   const params = {
     getCheckboxProps: (record: Network) => ({
       disabled: disabledType.indexOf(record.nwSubType as NetworkTypeEnum) > -1
-    }),
-    renderCell (checked: boolean, record: Network, index: number, node: ReactNode) {
-      if (disabledType.indexOf(record.nwSubType as NetworkTypeEnum) > -1) {
-        return <Tooltip
-          title={intl.$t(notAvailableMsg)}>{node}</Tooltip>
-      }
-      return node
-    }
+    })
   }
   return params
 }
@@ -279,13 +272,14 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
       { isLoading: false, isFetching: isDeleteNetworkUpdating }
     ]}>
       <Table
-        columns={getCols(intl, isServicesEnabled)}
+        settingsId='network-table'
+        columns={getCols(intl)}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={selectable ? { type: 'radio', ...rowSelection(intl) } : undefined}
+        rowSelection={selectable ? { type: 'radio', ...rowSelection() } : undefined}
       />
     </Loader>
   )

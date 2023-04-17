@@ -234,7 +234,6 @@ export const currentAP = {
   tags: '',
   deviceGroupName: '',
   deviceModelType: '',
-  password: 'admin!234',
   isMeshEnable: true,
   uptime: '1 day, 1 hour',
   channel24: {

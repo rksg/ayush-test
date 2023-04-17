@@ -27,8 +27,6 @@ export default function DHCPTable () {
   const tableQuery = useTableQuery({
     useQuery: useGetDHCPProfileListViewModelQuery,
     defaultPayload: {
-      searchString: '',
-      searchTargetFields: ['name'],
       filters: {},
       fields: [
         'id',
@@ -37,12 +35,21 @@ export default function DHCPTable () {
         'venueIds',
         'technology'
       ]
+    },
+    search: {
+      searchString: '',
+      searchTargetFields: ['name']
     }
   })
 
   const rowActions: TableProps<DHCPSaveData>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
+      visible: (selectedRows) => {
+        return !selectedRows.some((row)=>{
+          return row.venueIds && row.venueIds.length>0
+        })
+      },
       onClick: ([{ id, name }], clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -59,6 +66,11 @@ export default function DHCPTable () {
     },
     {
       label: $t({ defaultMessage: 'Edit' }),
+      visible: (selectedRows) => {
+        return !selectedRows.some((row)=>{
+          return row.venueIds && row.venueIds.length>0
+        })
+      },
       onClick: ([{ id }]) => {
         navigate({
           ...tenantBasePath,
@@ -181,6 +193,7 @@ function useColumns () {
       sorter: true,
       searchable: true,
       defaultSortOrder: 'ascend',
+      fixed: 'left',
       render: function (data, row) {
         return (
           <TenantLink
@@ -206,7 +219,6 @@ function useColumns () {
           <Table<DHCPPool>
             type='compactBordered'
             style={{ width: 500 }}
-            columnState={{ hidden: true }}
             columns={poolColumns}
             dataSource={dhcpPools}
           />

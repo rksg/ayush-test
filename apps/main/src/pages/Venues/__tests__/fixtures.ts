@@ -13,7 +13,10 @@ import {
   FlowLevelEnum,
   PriorityEnum,
   ProtocolEnum,
-  PersonaGroup, NewTableResult, NewTablePageable
+  PersonaGroup,
+  NewTableResult,
+  NewTablePageable,
+  ResidentPortal
 } from '@acx-ui/rc/utils'
 
 export const successResponse = {
@@ -2765,9 +2768,27 @@ const defaultPageable: NewTablePageable = {
   unpaged: false
 }
 
-export const mockEnabledPropertyConfig: PropertyConfigs = {
+export const mockEnabledNoNSGPropertyConfig: PropertyConfigs = {
   status: PropertyConfigStatus.ENABLED,
-  personaGroupId: 'persona-group-id-1'
+  personaGroupId: 'persona-group-id-noNSG'
+}
+
+export const mockEnabledNSGPropertyConfig: PropertyConfigs = {
+  status: PropertyConfigStatus.ENABLED,
+  personaGroupId: 'persona-group-id-NSG'
+}
+
+export const mockResidentPortalProfileList: NewTableResult<ResidentPortal> = {
+  pageable: defaultPageable,
+  sort: defaultPageable.sort,
+  totalElements: 1,
+  totalPages: 1,
+  content: [
+    {
+      id: 'resident-portal-profile-id-1',
+      name: 'resident-portal-profile-name-1'
+    }
+  ]
 }
 
 // export const mockPropertyUnitList: NewTableResult<PropertyUnit> = {
@@ -2789,6 +2810,16 @@ export const mockPersonaGroupWithoutNSG: PersonaGroup = {
   id: 'persona-group-id-1',
   name: 'Class A',
   description: '',
+  macRegistrationPoolId: 'mac-id-1',
+  dpskPoolId: 'dpsk-pool-2',
+  propertyId: 'propertyId-100'
+}
+
+export const mockPersonaGroupWithNSG: PersonaGroup = {
+  id: 'persona-group-id-1',
+  name: 'Class A',
+  description: '',
+  nsgId: 'nsg-id-1',
   macRegistrationPoolId: 'mac-id-1',
   dpskPoolId: 'dpsk-pool-2',
   propertyId: 'propertyId-100'

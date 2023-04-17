@@ -8,6 +8,7 @@ import { Card, GridCol, GridRow }   from '@acx-ui/components'
 import { useGetPortalLangMutation } from '@acx-ui/rc/services'
 import { Demo, PortalLanguageEnum } from '@acx-ui/rc/utils'
 import { useParams }                from '@acx-ui/react-router-dom'
+import { loadImageWithJWT }         from '@acx-ui/utils'
 
 import Photo              from '../../../../assets/images/portal-demo/PortalPhoto.svg'
 import Powered            from '../../../../assets/images/portal-demo/PoweredLogo.svg'
@@ -19,21 +20,28 @@ export default function PortalOverview (props: { demoValue: Demo }) {
   const { $t } = useIntl()
   const { demoValue } = props
   const params = useParams()
-  const prefix = '/api/file/tenant/'+params.tenantId+'/'
-  const newDemo = { ...demoValue, poweredImg: demoValue.poweredImg?
-    (prefix+demoValue.poweredImg):Powered,
-  logo: demoValue.logo?(prefix+demoValue.logo):Logo,
-  photo: demoValue.photo?(prefix+demoValue.photo): Photo,
-  bgImage: demoValue.bgImage?(prefix+demoValue.bgImage):'' }
-
+  const [newDemo, setNewDemo]=useState({} as Demo)
+  const getDemo = async ()=>{
+    const newDemoValue = { ...demoValue, poweredImg: demoValue.poweredImg?
+      await loadImageWithJWT(demoValue.poweredImg):Powered,
+    logo: demoValue.logo?await loadImageWithJWT(demoValue.logo):Logo,
+    photo: demoValue.photo?await loadImageWithJWT(demoValue.photo): Photo,
+    bgImage: demoValue.bgImage?await loadImageWithJWT(demoValue.bgImage):'' }
+    setNewDemo(newDemoValue)
+  }
   const [getPortalLang] = useGetPortalLangMutation()
   const [portalLang, setPortalLang]=useState({} as { [key:string]:string })
   useEffect(()=>{
-    getPortalLang({ params: { ...params, messageName:
-    newDemo.displayLangCode+'.json' } }).unwrap().then((res)=>{
-      setPortalLang(res)
-    })
-  }, [])
+    if(newDemo.displayLangCode){
+      getPortalLang({ params: { ...params, messageName:
+      newDemo.displayLangCode+'.json' } }).unwrap().then((res)=>{
+        setPortalLang(res)
+      })
+    }
+  }, [newDemo.displayLangCode])
+  useEffect(()=>{
+    getDemo()
+  },[])
   return (
     <Card>
       <GridRow>

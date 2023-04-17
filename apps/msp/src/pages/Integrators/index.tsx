@@ -18,16 +18,16 @@ import {
 } from '@acx-ui/msp/components'
 import {
   useDeleteMspEcMutation,
-  useMspCustomerListQuery
+  useMspCustomerListQuery,
+  useCheckDelegateAdmin
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
   MspEc
 } from '@acx-ui/rc/utils'
-import { getBasePath, Link, TenantLink, MspTenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { RolesEnum }                                                                from '@acx-ui/types'
-import { filterByAccess }                                                           from '@acx-ui/user'
-import { hasRoles }                                                                 from '@acx-ui/user'
+import { Link, TenantLink, MspTenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                   from '@acx-ui/types'
+import { filterByAccess, useUserProfileContext, hasRoles }             from '@acx-ui/user'
 import {
   AccountType
 } from '@acx-ui/utils'
@@ -62,6 +62,8 @@ export function Integrators () {
   const [modalVisible, setModalVisible] = useState(false)
   const [tenantId, setTenantId] = useState('')
   const [tenantType, setTenantType] = useState('')
+  const { data: userProfile } = useUserProfileContext()
+  const { checkDelegateAdmin } = useCheckDelegateAdmin()
 
   const columns: TableProps<MspEc>['columns'] = [
     {
@@ -71,10 +73,14 @@ export function Integrators () {
       sorter: true,
       searchable: true,
       defaultSortOrder: 'ascend' as SortOrder,
+      onCell: (data) => {
+        return {
+          onClick: () => { checkDelegateAdmin(data.id, userProfile!.adminId) }
+        }
+      },
       render: function (data, row, _, highlightFn) {
-        const to = `${getBasePath()}/t/${row.id}`
         return (
-          <Link to={to}>{highlightFn(data as string)}</Link>
+          <Link to=''>{highlightFn(data as string)}</Link>
         )
       }
     },
@@ -95,12 +101,12 @@ export function Integrators () {
       key: 'mspAdminCount',
       sorter: true,
       onCell: (data) => {
-        return {
+        return (isPrimeAdmin || isAdmin) ? {
           onClick: () => {
             setTenantId(data.id)
             setDrawerAdminVisible(true)
           }
-        }
+        } : {}
       },
       render: function (data) {
         return (
@@ -115,13 +121,13 @@ export function Integrators () {
       key: 'assignedMspEcList',
       sorter: true,
       onCell: (data) => {
-        return {
+        return (isPrimeAdmin || isAdmin) ? {
           onClick: () => {
             setTenantId(data.id)
             setTenantType(data.tenantType)
             if (!drawerEcVisible) setDrawerEcVisible(true)
           }
-        }
+        } : {}
       },
       render: function (data, row) {
         return (isPrimeAdmin || isAdmin)
@@ -186,7 +192,7 @@ export function Integrators () {
             type: 'confirm',
             customContent: {
               action: 'DELETE',
-              entityName: $t({ defaultMessage: 'Integrator' }),
+              entityName: $t({ defaultMessage: 'Tech Partner' }),
               entityValue: name,
               confirmationText: $t({ defaultMessage: 'Delete' })
             },
@@ -202,6 +208,7 @@ export function Integrators () {
         tableQuery,
         { isLoading: false, isFetching: isDeleteEcUpdating }]}>
         <Table
+          settingsId='msp-integrators-table'
           columns={columns}
           rowActions={filterByAccess(rowActions)}
           dataSource={tableQuery.data?.data}

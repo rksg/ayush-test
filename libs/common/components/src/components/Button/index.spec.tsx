@@ -1,8 +1,8 @@
 import '@testing-library/jest-dom'
 
-import { render, screen } from '@testing-library/react'
-import userEvent          from '@testing-library/user-event'
-import { IntlProvider }   from 'react-intl'
+import userEvent from '@testing-library/user-event'
+
+import { render, screen } from '@acx-ui/test-utils'
 
 import { Button, DisabledButton } from '.'
 
@@ -26,13 +26,19 @@ describe('Button', () => {
 describe('DisabledButton', () => {
   it('should render disabled button with tooltip', async () => {
     const { asFragment } = render(
-      <IntlProvider locale='en'>
-        <DisabledButton>Button</DisabledButton>
-      </IntlProvider>)
+      <DisabledButton title='Not available'>Button</DisabledButton>
+    )
     await userEvent.hover(screen.getAllByText((_, element) => {
       return element!.tagName.toLowerCase() === 'span'
     })[0])
     await screen.findByRole('tooltip', { hidden: true })
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('should render disabled button without', async () => {
+    const { asFragment } = render(<DisabledButton>Button</DisabledButton>)
+    await userEvent.hover(screen.getAllByText((_, element) => {
+      return element!.tagName.toLowerCase() === 'span'
+    })[0])
     expect(asFragment()).toMatchSnapshot()
   })
 })

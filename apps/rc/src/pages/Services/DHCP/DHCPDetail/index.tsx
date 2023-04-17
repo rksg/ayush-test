@@ -1,16 +1,20 @@
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { PageHeader, GridRow, GridCol, DisabledButton, Button, Tabs } from '@acx-ui/components'
-import { ClockOutlined }                                              from '@acx-ui/icons'
-import { useGetDHCPProfileQuery }                                     from '@acx-ui/rc/services'
+import { PageHeader, GridRow, GridCol, Button, Tabs } from '@acx-ui/components'
+import {
+  useGetDHCPProfileQuery,
+  useVenuesListQuery
+} from '@acx-ui/rc/services'
 import {
   getServiceDetailsLink,
   getServiceRoutePath,
   ServiceOperation,
   ServiceType
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { DHCPUsage }      from '@acx-ui/rc/utils'
+import { TenantLink }     from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 import { PoolTable } from '../DHCPForm/DHCPPool/PoolTable'
 
@@ -23,6 +27,12 @@ export default function DHCPServiceDetail () {
   const params = useParams()
 
   const { data } = useGetDHCPProfileQuery({ params })
+  const venuesList = useVenuesListQuery({ params, payload: {
+    fields: ['name', 'id'],
+    filters: {
+      id: data?.usage?.map((usage:DHCPUsage)=>usage.venueId)||['none']
+    }
+  } })
 
   return (
     <>
@@ -34,18 +44,17 @@ export default function DHCPServiceDetail () {
             link: getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.LIST })
           }
         ]}
-        extra={[
-          <DisabledButton key={'date-filter'} icon={<ClockOutlined />}>
-            {$t({ defaultMessage: 'Last 24 hours' })}
-          </DisabledButton>,
+        extra={filterByAccess([
           <TenantLink to={getServiceDetailsLink({
             type: ServiceType.DHCP,
             oper: ServiceOperation.EDIT,
             serviceId: params.serviceId!
           })}>
-            <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
+            <Button key='configure'
+              disabled={venuesList.data && venuesList.data.data.length>0}
+              type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <Tabs defaultActiveKey={'OVERVIEW'}>
         <Tabs.TabPane key={'OVERVIEW'} tab={$t({ defaultMessage: 'Overview' })}>

@@ -5,9 +5,10 @@ import { replace }               from 'lodash'
 import _                         from 'lodash'
 import { useIntl }               from 'react-intl'
 
-import { Drawer }                                                               from '@acx-ui/components'
-import { SwitchViewModel, noDataDisplay, getSwitchModel, getStackMemberStatus } from '@acx-ui/rc/utils'
-import { TenantLink }                                                           from '@acx-ui/react-router-dom'
+import { Drawer }                                                from '@acx-ui/components'
+import { SwitchViewModel, getSwitchModel, getStackMemberStatus } from '@acx-ui/rc/utils'
+import { TenantLink }                                            from '@acx-ui/react-router-dom'
+import { noDataDisplay }                                         from '@acx-ui/utils'
 
 export interface DrawerProps {
   visible: boolean

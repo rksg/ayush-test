@@ -1,11 +1,18 @@
 
-import { within } from '@testing-library/react'
-import userEvent  from '@testing-library/user-event'
-import { rest }   from 'msw'
+import { waitFor, within } from '@testing-library/react'
+import userEvent           from '@testing-library/user-event'
+import { rest }            from 'msw'
 
-import { CommonUrlsInfo, MacRegListUrlsInfo, NewDpskBaseUrl, NewPersonaBaseUrl, PropertyUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                                                from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved }                                   from '@acx-ui/test-utils'
+import {
+  CommonUrlsInfo,
+  MacRegListUrlsInfo,
+  NewDpskBaseUrl,
+  NewPersonaBaseUrl,
+  PersonaUrls,
+  PropertyUrlsInfo
+} from '@acx-ui/rc/utils'
+import { Provider }                                              from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import {
@@ -14,8 +21,8 @@ import {
   mockPersonaGroupList,
   replacePagination
 } from '../../../../../../rc/src/pages/Users/Persona/__tests__/fixtures'
-import { mockEnabledPropertyConfig } from '../../__tests__/fixtures'
-import { VenueEditContext }          from '../index'
+import { mockEnabledNoNSGPropertyConfig, mockPropertyUnitList, mockResidentPortalProfileList } from '../../__tests__/fixtures'
+import { VenueEditContext }                                                                    from '../index'
 
 import { PropertyManagementTab } from './index'
 
@@ -32,16 +39,18 @@ describe('Property Config Tab', () => {
   const disabledParams = { tenantId, venueId: '206f35d341834d48a526eed6f3afbf99' }
 
   const setEditContextDataFn = jest.fn()
+  const saveConfigFn = jest.fn()
 
   beforeEach(async () => {
     setEditContextDataFn.mockClear()
+    saveConfigFn.mockClear()
 
     mockServer.use(
       rest.get(
         PropertyUrlsInfo.getPropertyConfigs.url,
         (req, res, ctx) => {
           if (req.params.venueId === enabledParams.venueId) {
-            return res(ctx.json(mockEnabledPropertyConfig))
+            return res(ctx.json(mockEnabledNoNSGPropertyConfig))
           } else {
             return res(ctx.status(404))
           }
@@ -49,7 +58,10 @@ describe('Property Config Tab', () => {
       ),
       rest.put(
         PropertyUrlsInfo.updatePropertyConfigs.url,
-        (req, res, ctx) => res(ctx.json({}))
+        (req, res, ctx) => {
+          saveConfigFn()
+          return res(ctx.json({}))
+        }
       ),
       rest.patch(
         PropertyUrlsInfo.patchPropertyConfigs.url,
@@ -60,8 +72,8 @@ describe('Property Config Tab', () => {
         (req, res, ctx) => res(ctx.json({ data: 'venue-id' }))
       ),
       rest.get(
-        PropertyUrlsInfo.getResidentPortalList.url,
-        (req, res, ctx) => res(ctx.json({ content: [] }))
+        replacePagination(PropertyUrlsInfo.getResidentPortalList.url),
+        (req, res, ctx) => res(ctx.json(mockResidentPortalProfileList))
       ),
       rest.get(
         NewPersonaBaseUrl,
@@ -74,6 +86,14 @@ describe('Property Config Tab', () => {
       rest.get(
         NewDpskBaseUrl,
         (req, res, ctx) => res(ctx.json(mockDpskList))
+      ),
+      rest.post(
+        PropertyUrlsInfo.getPropertyUnitList.url,
+        (_, res, ctx) => res(ctx.json(mockPropertyUnitList))
+      ),
+      rest.get(
+        PersonaUrls.getPersonaGroupById.url,
+        (_, res, ctx) => res(ctx.json(mockPersonaGroupList.content[0]))
       )
     )
   })
@@ -162,14 +182,10 @@ describe('Property Config Tab', () => {
     await userEvent.click(cancelBtn)
     expect(screen.queryByRole('dialog')).toBeNull()
 
-    // Change any field to trigger setEditContextData function
-    const residentSwitch = await screen.findByLabelText('Enable Resident Portal')
-
-    await userEvent.click(residentSwitch)
-    expect(setEditContextDataFn).toBeCalled()
-
     // Trigger save form
     const formSaveBtn = await screen.findByRole('button', { name: /save/i })
     await userEvent.click(formSaveBtn)
+
+    await waitFor(() => expect(saveConfigFn).toHaveBeenCalled())
   })
 })

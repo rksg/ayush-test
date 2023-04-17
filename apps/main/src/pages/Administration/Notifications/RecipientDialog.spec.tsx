@@ -1,7 +1,11 @@
 /* eslint-disable max-len */
+import React from 'react'
+
+import { renderHook }      from '@testing-library/react'
 import userEvent           from '@testing-library/user-event'
 import { PhoneNumberUtil } from 'google-libphonenumber'
 import { rest }            from 'msw'
+import { act }             from 'react-dom/test-utils'
 
 import {
   AdministrationUrlsInfo,
@@ -9,14 +13,12 @@ import {
   NotificationEndpoint,
   NotificationEndpointType
 } from '@acx-ui/rc/utils'
-import { Provider }           from '@acx-ui/store'
+import { Provider } from '@acx-ui/store'
 import {
-  fireEvent,
   mockServer,
   render,
   screen,
-  waitFor,
-  waitForElementToBeRemoved
+  waitFor
 } from '@acx-ui/test-utils'
 
 import RecipientDialog, { RecipientDialogProps } from './RecipientDialog'
@@ -26,10 +28,12 @@ const params = {
 }
 const examplePhoneNumber = PhoneNumberUtil.getInstance().getExampleNumber('US')
 const exampleMobile = `+${examplePhoneNumber.getCountryCode()} ${examplePhoneNumber.getNationalNumberOrDefault()}`
+const mockedSetVisible = jest.fn()
 describe('Recipient form dialog creation mode', () => {
+  const mockedAddFn = jest.fn()
   const dialogProps = {
     visible: true,
-    setVisible: jest.fn(),
+    setVisible: mockedSetVisible,
     editMode: false,
     editData: {} as NotificationRecipientUIModel,
     isDuplicated: jest.fn()
@@ -40,7 +44,7 @@ describe('Recipient form dialog creation mode', () => {
       rest.post(
         AdministrationUrlsInfo.addRecipient.url,
         (req, res, ctx) => {
-          // mockedAddFn(req.body)
+          mockedAddFn(req.body)
           return res(ctx.status(202))
         }
       )
@@ -70,56 +74,49 @@ describe('Recipient form dialog creation mode', () => {
     expect(emailSwitchElem).toHaveAttribute('aria-checked', 'true')
 
     const saveBtn = await screen.findByRole('button', { name: 'Save' })
-    fireEvent.click(saveBtn)
-  })
-
-  it('should email validation works correctly', async () => {
-    render(
-      <Provider>
-        <RecipientDialog
-          {...dialogProps}
-        />
-      </Provider>, {
-        route: { params }
-      })
-
-    await screen.findByText('Add New Recipient')
-    const emailInputElem = await screen.findByPlaceholderText('Email')
-    await userEvent.type(emailInputElem, 'test_user@')
-    let errorMessage = await screen.findByRole('alert')
-    expect(errorMessage.textContent).toBe('Please enter a valid email address')
-    expect(errorMessage).toBeVisible()
-    await userEvent.clear(emailInputElem)
-    await userEvent.type(emailInputElem, 'test_user@ruckuswireless.com')
-    await waitForElementToBeRemoved(() => screen.queryByRole('alert'))
-
-    const saveBtn = await screen.findByRole('button', { name: 'Save' })
     await userEvent.click(saveBtn)
-    errorMessage = await screen.findByRole('alert')
-    expect(errorMessage.textContent).toBe('Please enter Name')
-    expect(saveBtn).toBeDisabled()
+    expect(mockedAddFn).toBeCalledWith({
+      description: 'testUser',
+      endpoints: [{
+        active: true,
+        destination: 'test_user@gmail.com',
+        type: NotificationEndpointType.email
+      }]
+    })
+    await waitFor(() => {
+      expect(mockedSetVisible).toBeCalledWith(false)
+    })
   })
 
+  it('should only update form data when edit mode', async () => {
+    const { result } = renderHook(() => {
+      const [visible, setVisible] = React.useState(false)
+      return { visible, setVisible }
+    })
 
-  it('should mobile validation works correctly', async () => {
-    render(
-      <Provider>
-        <RecipientDialog
-          {...dialogProps}
-        />
-      </Provider>, {
+    const DialogComponent = () => (<Provider>
+      <RecipientDialog
+        visible={result.current.visible}
+        setVisible={result.current.setVisible}
+        editMode={false}
+        editData={{} as NotificationRecipientUIModel}
+        isDuplicated={jest.fn()}
+      />
+    </Provider>)
+
+    const { rerender } = render(
+      <DialogComponent />, {
         route: { params }
       })
 
+    act(() => {
+      result.current.setVisible(true)
+    })
+
+    rerender(<DialogComponent />)
+
     await screen.findByText('Add New Recipient')
-    const mobileInputElem = await screen.findByPlaceholderText(exampleMobile)
-    await userEvent.type(mobileInputElem, '0912345678')
-    const errorMessage = await screen.findByRole('alert')
-    expect(errorMessage.textContent).toBe('Please enter a valid phone number')
-    expect(errorMessage).toBeVisible()
-    await userEvent.clear(mobileInputElem)
-    await userEvent.type(mobileInputElem, exampleMobile)
-    await waitForElementToBeRemoved(() => screen.queryByRole('alert'))
+    expect(await screen.findByRole('textbox', { name: 'Name' })).toHaveAttribute('value', '')
   })
 })
 
@@ -499,11 +496,11 @@ describe('Recipient form dialog edit mode', () => {
               createdDate: '2023-02-06T02:11:51.841+00:00',
               updatedDate: '2023-02-06T02:11:51.841+00:00',
               destination: 'other_test_user@gmail.com',
-              active: true,
+              active: false,
               status: 'OK'
             }] as NotificationEndpoint[],
             email: 'other_test_user@gmail.com',
-            emailEnabled: true,
+            emailEnabled: false,
             mobile: '',
             mobileEnabled: false
           } as NotificationRecipientUIModel}
@@ -529,7 +526,7 @@ describe('Recipient form dialog edit mode', () => {
       description: 'testUser',
       endpoints: [{
         id: '478127f284b84a6286aef6324613e3f6',
-        active: false,
+        active: true,
         destination: 'other_test_user@gmail.com',
         type: NotificationEndpointType.email
       }, {

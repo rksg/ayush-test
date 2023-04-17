@@ -3,7 +3,7 @@ import styled                                 from 'styled-components/macro'
 
 import { Button as DefaultButton } from '../Button'
 
-export type RadioCardType = 'default' | 'radio' | 'button'
+export type RadioCardType = 'default' | 'radio' | 'button' | 'disabled'
 
 export const Card = styled(AntCard)<{ $cardType: RadioCardType }>`
   position: relative;
@@ -19,6 +19,11 @@ export const Card = styled(AntCard)<{ $cardType: RadioCardType }>`
 
   ${props => props.$cardType === 'default'
     ?'cursor: pointer;':''}
+
+  ${props => props.$cardType === 'disabled'
+    ? `opacity : 50%;
+      background-color: var(--acx-neutrals-15);
+    `: ''}
 
   :has(.ant-radio-checked) {
     border-radius: 4px;
@@ -102,7 +107,7 @@ export const Category = styled.div<{ color: string }>`
 
 export const Description = styled.div`
   color: var(--acx-neutrals-60);
-  font-size: var(--acx-body-5-font-size);
+  font-size: var(--acx-body-4-font-size);
   line-height: var(--acx-body-5-line-height);
   padding-bottom: 30px;
 `

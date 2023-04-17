@@ -51,7 +51,7 @@ export function TopAppsByTraffic ({
 
   return (
     <Loader states={[queryResults]}>
-      <HistoricalCard title={$t({ defaultMessage: 'Top 5 Applications by Traffic' })}>
+      <HistoricalCard title={$t({ defaultMessage: 'Top Applications by Traffic' })}>
         <AutoSizer>
           {({ height, width }) => (
             isDataAvailable ?

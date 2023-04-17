@@ -2,6 +2,14 @@ import styled from 'styled-components/macro'
 
 import { Button, Modal } from '@acx-ui/components'
 
+export const PreDownloadLabel = styled.label`
+  font-size: 15px;
+  font-weight: 600;
+  font-family: Arial Bold, Arial, sans-serif;
+  margin: 15px 0px;
+  display: block;
+`
+
 export const ScheduleTooltipText = styled.span`
   font-size: 12px;
 `
@@ -47,6 +55,7 @@ export const Section = styled.div`
 `
 
 export const PreferencesSection = styled.div`
+  margin-top: 8px;
   background-color: #e3e4e5;
 `
 
@@ -85,11 +94,26 @@ export const ChangeButton = styled(Button)`
   position: absolute;
   top: 40px;
   right: 12px;
+  margin: 8px;
   width: 50px !important;
+  font-size: 12px;
 `
 
 export const FieldGroup = styled.div`
   display: grid;
   grid-template-columns: [column-1] 150px [column-2] auto;
   margin-bottom: 10px;
+`
+export const TabWithHint = styled.span`
+  display: flex;
+  align-items: center;
+  svg {
+    height: 18px;
+    width: 18px;
+    margin-left: 5px;
+    path {
+      stroke: var(--acx-primary-white);
+      fill: var(--acx-accents-orange-50);
+    }
+  }
 `

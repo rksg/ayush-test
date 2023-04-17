@@ -123,7 +123,18 @@ describe('useTableQuery', ()=>{
       }))
       expect(result.current.payload).not
         .toContain({ searchTargetFields: ['searchTarget1', 'searchTarget2'], searchString: '' })
+
+      await act(async () => {
+        result.current.handleFilterChange({}, {}, 'groupBy')
+      })
+      expect(result.current.payload).toEqual(expect.objectContaining({
+        filters: defaultPayload.filters
+      }))
+      expect(result.current.payload).toEqual(expect.objectContaining({
+        groupBy: 'groupBy'
+      }))
     })
+
     it('should handleTableChange', async () => {
       const { result } = renderHook(
         () => useTableQuery({ useQuery: useTestQuery, defaultPayload: {} }),

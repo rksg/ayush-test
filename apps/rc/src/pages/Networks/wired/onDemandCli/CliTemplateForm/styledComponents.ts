@@ -165,3 +165,7 @@ export const Collapse = styled(AntCollapse)`
     }
   }
 `
+
+export const ToggleWrapper = styled('div')`
+  margin-bottom: 10px;
+`

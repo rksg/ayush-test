@@ -140,15 +140,10 @@ describe('Layout', () => {
     await waitFor(async () => {
       expect(await screen.findByText('My Customers')).toBeVisible()
     })
-
-    expect(screen.getByRole('menuitem', { name: 'Tech Partners' }))
-      .toHaveAttribute('aria-disabled', 'true')
-    expect(screen.getByRole('menuitem', { name: 'Device Inventory' }))
-      .toHaveAttribute('aria-disabled', 'true')
-    expect(screen.getByRole('menuitem', { name: 'Subscriptions' }))
-      .toHaveAttribute('aria-disabled', 'true')
-    expect(screen.getByRole('menuitem', { name: 'Settings' }))
-      .toHaveAttribute('aria-disabled', 'true')
+    expect(screen.queryByRole('menuitem', { name: 'Tech Partners' })).toBeNull()
+    expect(screen.queryByRole('menuitem', { name: 'Device Inventory' })).toBeNull()
+    expect(screen.queryByRole('menuitem', { name: 'Subscriptions' })).toBeNull()
+    expect(screen.queryByRole('menuitem', { name: 'Settings' })).toBeNull()
   })
   it('should render layout correctly for non-support', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
@@ -162,14 +157,10 @@ describe('Layout', () => {
     await waitFor(async () => {
       expect(await screen.findByText('My Customers')).toBeVisible()
     })
-    expect(screen.getByRole('menuitem', { name: 'Tech Partners' }))
-      .toHaveAttribute('aria-disabled', 'true')
-    expect(screen.getByRole('menuitem', { name: 'Device Inventory' }))
-      .toHaveAttribute('aria-disabled', 'false')
-    expect(screen.getByRole('menuitem', { name: 'Subscriptions' }))
-      .toHaveAttribute('aria-disabled', 'false')
-    expect(screen.getByRole('menuitem', { name: 'Settings' }))
-      .toHaveAttribute('aria-disabled', 'false')
+    expect(screen.queryByRole('menuitem', { name: 'Tech Partners' })).toBeNull()
+    expect(screen.getByRole('menuitem', { name: 'Device Inventory' })).toBeVisible()
+    expect(screen.getByRole('menuitem', { name: 'Subscriptions' })).toBeVisible()
+    expect(screen.getByRole('menuitem', { name: 'Settings' })).toBeVisible()
   })
   it('should render correctly if no data', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
@@ -183,13 +174,27 @@ describe('Layout', () => {
     await waitFor(async () => {
       expect(await screen.findByText('My Customers')).toBeVisible()
     })
-    expect(screen.getByRole('menuitem', { name: 'Tech Partners' }))
-      .toHaveAttribute('aria-disabled', 'false')
-    expect(screen.getByRole('menuitem', { name: 'Device Inventory' }))
-      .toHaveAttribute('aria-disabled', 'false')
-    expect(screen.getByRole('menuitem', { name: 'Subscriptions' }))
-      .toHaveAttribute('aria-disabled', 'false')
-    expect(screen.getByRole('menuitem', { name: 'Settings' }))
-      .toHaveAttribute('aria-disabled', 'false')
+    expect(screen.getByRole('menuitem', { name: 'Tech Partners' })).toBeVisible()
+    expect(screen.getByRole('menuitem', { name: 'Device Inventory' })).toBeVisible()
+    expect(screen.getByRole('menuitem', { name: 'Subscriptions' })).toBeVisible()
+    expect(screen.getByRole('menuitem', { name: 'Settings' })).toBeVisible()
+  })
+  it('should navigate correctly if guest manager', async () => {
+    user.hasRoles = jest.fn().mockImplementation(() => {
+      return true
+    })
+    render(
+      <Provider>
+        <Layout />
+      </Provider>, { route: { params } })
+
+    await waitFor(async () => {
+      expect(await screen.findByText('My Customers')).toBeVisible()
+    })
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: `/t/${params.tenantId}/users/guestsManager`,
+      hash: '',
+      search: ''
+    })
   })
 })

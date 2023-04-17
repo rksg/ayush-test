@@ -7,7 +7,7 @@ import { AnalyticsFilter }                              from '@acx-ui/analytics/
 import { cssStr, cssNumber, Loader, Tooltip, BarChart } from '@acx-ui/components'
 import { formatter, DateFormatEnum }                    from '@acx-ui/formatter'
 import { WarningTriangleOutlined }                      from '@acx-ui/icons'
-import { noDataDisplay }                                from '@acx-ui/rc/utils'
+import { noDataDisplay }                                from '@acx-ui/utils'
 
 import { LabelledQuality }                                       from './config'
 import { ClientInfoData, ConnectionQuality, useClientInfoQuery } from './services'

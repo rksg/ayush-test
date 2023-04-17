@@ -23,6 +23,7 @@ export interface EnvironmentConfig {
   PRIVACY: string
   SUPPORTED_AP_MODELS: string
   HOW_TO_VIDEOS: string
+  NEW_API_DOMAIN_NAME: string
 }
 
 const config: { value?: EnvironmentConfig } = {}

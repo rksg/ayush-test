@@ -37,7 +37,7 @@ export function ViewConfigurationModal (props:{
         actions.restore(data, tableClearSelection)
         break
       case 'Download':
-        actions.download(data.id)
+        actions.download(data)
         break
       case 'Delete':
         handleCancel()

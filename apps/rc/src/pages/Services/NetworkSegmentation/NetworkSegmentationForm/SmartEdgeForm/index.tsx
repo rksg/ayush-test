@@ -8,8 +8,8 @@ import { Button, StepsForm, Tooltip, useStepFormContext }                       
 import { useGetDhcpByEdgeIdQuery, useGetEdgeDhcpListQuery, useGetEdgeListQuery } from '@acx-ui/rc/services'
 import { EdgeDhcpPool }                                                          from '@acx-ui/rc/utils'
 
-import { NetworkSegmentationGroupForm } from '..'
-import { useWatch }                     from '../../useWatch'
+import { NetworkSegmentationGroupFormData } from '..'
+import { useWatch }                         from '../../useWatch'
 
 import { DhcpPoolTable }        from './DhcpPoolTable'
 import { DhcpServiceModal }     from './DhcpServiceModal'
@@ -26,7 +26,7 @@ export const SmartEdgeForm = () => {
 
   const { $t } = useIntl()
   const params = useParams()
-  const { form } = useStepFormContext<NetworkSegmentationGroupForm>()
+  const { form } = useStepFormContext<NetworkSegmentationGroupFormData>()
   const venueId = useWatch('venueId', form)
   const edgeId = useWatch('edgeId', form)
   const dhcpId = useWatch('dhcpId', form)
@@ -75,14 +75,18 @@ export const SmartEdgeForm = () => {
     })
 
   useEffect(() => {
-    if(!isGetDhcpByEdgeIdFetching) {
-      if(!dhcpId) {
-        form.setFieldValue('dhcpId', (!!!edgeId || isGetDhcpByEdgeIdFail) ?
-          null :
-          currentEdgeDhcp?.id)
+    if(isGetDhcpByEdgeIdFetching) return
+    if(!dhcpId) {
+      if(!!!edgeId || isGetDhcpByEdgeIdFail) {
+        form.setFieldValue('dhcpId', null)
+        form.setFieldValue('dhcpName', null)
+      } else {
+        form.setFieldValue('dhcpId', currentEdgeDhcp?.id)
+        form.setFieldValue('dhcpName', currentEdgeDhcp?.serviceName)
       }
-      setShouldDhcpDisabled(!isGetDhcpByEdgeIdFail)
     }
+    setShouldDhcpDisabled(!isGetDhcpByEdgeIdFail)
+
   }, [
     currentEdgeDhcp,
     isGetDhcpByEdgeIdFail,
@@ -147,13 +151,16 @@ export const SmartEdgeForm = () => {
                 />
               </>
             }
-            rules={[{ required: true }]}
+            rules={[{
+              required: true,
+              message: $t({ defaultMessage: 'Please enter SmartEdge' })
+            }]}
             children={
               <Select
                 loading={isEdgeOptionsLoading}
                 onChange={onEdgeChange}
                 options={[
-                  { label: $t({ defaultMessage: 'Select...' }), value: null },
+                  { label: $t({ defaultMessage: 'Select...' }), value: '' },
                   ...(edgeOptions || [])
                 ]}
               />

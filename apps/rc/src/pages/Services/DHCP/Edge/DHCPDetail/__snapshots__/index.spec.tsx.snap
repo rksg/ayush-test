@@ -355,7 +355,7 @@ exports[`EdgeDhcpDetail Should render EdgeDhcpDetail successfully 1`] = `
                   Instances (0)
                 </h2>
                 <div
-                  class="styledComponents__Wrapper-sc-1abm7iv-12 iqWyRG"
+                  class="styledComponents__Wrapper-sc-1abm7iv-12 kskPjC"
                 >
                   <div
                     class="ant-pro-table"
@@ -369,38 +369,7 @@ exports[`EdgeDhcpDetail Should render EdgeDhcpDetail successfully 1`] = `
                       >
                         <div
                           class="ant-pro-table-list-toolbar"
-                        >
-                          <div
-                            class="ant-pro-table-list-toolbar-container"
-                          >
-                            <div
-                              class="ant-pro-table-list-toolbar-left"
-                            />
-                            <div
-                              class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
-                            >
-                              <div
-                                class="ant-space-item"
-                              >
-                                <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
-                                >
-                                  <div
-                                    class="ant-space-item"
-                                  >
-                                    <div
-                                      class="ant-pro-table-list-toolbar-setting-item"
-                                    >
-                                      <svg
-                                        data-testid="SettingsOutlined"
-                                      />
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
+                        />
                         <div
                           class="ant-table-wrapper"
                         >
@@ -411,7 +380,7 @@ exports[`EdgeDhcpDetail Should render EdgeDhcpDetail successfully 1`] = `
                               class="ant-spin-container"
                             >
                               <div
-                                class="ant-table ant-table-middle ant-table-empty ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
+                                class="ant-table ant-table-middle ant-table-empty ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-left ant-table-has-fix-right"
                               >
                                 <div
                                   class="ant-table-container"
@@ -427,7 +396,9 @@ exports[`EdgeDhcpDetail Should render EdgeDhcpDetail successfully 1`] = `
                                         <col
                                           class="ant-table-selection-col"
                                         />
-                                        <col />
+                                        <col
+                                          style="width: 200px;"
+                                        />
                                         <col />
                                         <col />
                                         <col />
@@ -442,7 +413,8 @@ exports[`EdgeDhcpDetail Should render EdgeDhcpDetail successfully 1`] = `
                                       >
                                         <tr>
                                           <th
-                                            class="ant-table-cell ant-table-selection-column react-resizable"
+                                            class="ant-table-cell ant-table-selection-column ant-table-cell-fix-left react-resizable"
+                                            style="position: sticky; left: 0px;"
                                           >
                                             <div
                                               class="styledComponents__ResizableHover-sc-1abm7iv-8"
@@ -474,7 +446,8 @@ exports[`EdgeDhcpDetail Should render EdgeDhcpDetail successfully 1`] = `
                                           </th>
                                           <th
                                             aria-sort="ascending"
-                                            class="ant-table-cell ant-table-column-sort ant-table-column-has-sorters react-resizable"
+                                            class="ant-table-cell ant-table-column-sort ant-table-cell-fix-left ant-table-cell-fix-left-last ant-table-column-has-sorters react-resizable"
+                                            style="position: sticky; left: 0px;"
                                             tabindex="0"
                                           >
                                             <div

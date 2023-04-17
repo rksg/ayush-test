@@ -42,7 +42,7 @@ export const NetworkHistory = forwardRef<
   let seriesMapping = [
     {
       key: 'newClientCount',
-      name: $t({ defaultMessage: 'New Clients' })
+      name: $t({ defaultMessage: 'New Client Associations' })
     },
     {
       key: 'connectedClientCount',

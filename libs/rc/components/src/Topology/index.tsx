@@ -15,6 +15,7 @@ import { CloudSolid, MagnifyingGlassMinusOutlined, MagnifyingGlassPlusOutlined, 
 import { useGetTopologyQuery }                                                                                                                                                                                                        from '@acx-ui/rc/services'
 import { ConnectionStates, ConnectionStatus, DeviceStates, DeviceStatus, DeviceTypes, GraphData, Link, Node, ShowTopologyFloorplanOn, UINode }                                                                                        from '@acx-ui/rc/utils'
 import { TenantLink }                                                                                                                                                                                                                 from '@acx-ui/react-router-dom'
+import { hasAccess }                                                                                                                                                                                                                  from '@acx-ui/user'
 
 import LinkTooltip      from './LinkTooltip'
 import NodeTooltip      from './NodeTooltip'
@@ -40,8 +41,8 @@ export function TopologyGraph (props:{ venueId?: string,
   const graphRef = useRef<SVGSVGElement>(null)
   const params = useParams()
 
-  const graph = new dagreD3.graphlib.Graph()
-    .setGraph({}) as any
+  const graph = new dagreD3.graphlib.Graph({ multigraph: true })
+    .setGraph({ }) as any
 
   const _venueId = params.venueId || venueId
 
@@ -81,7 +82,8 @@ export function TopologyGraph (props:{ venueId?: string,
 
       const { edges, nodes } = topologyGraphData as GraphData
 
-      const uiEdges: Link[] = Object.assign([], edges)
+      const uiEdges: Link[] = edges.map(
+        (edge, idx) => { return { ...edge, id: 'edge_'+idx } as Link })
 
       // Add nodes to the graph.
 
@@ -137,6 +139,21 @@ export function TopologyGraph (props:{ venueId?: string,
         return
       })
 
+      // if 2 switches are interconnected with 2 edges then it needs to
+      // find if any / both nodes connected to cloud. For this purpose we are using
+      // cloudPort check
+      uiNodes.forEach(node => {
+        if(node.config?.cloudPort)
+          rootNodes.push(node)
+      })
+
+      // if no root node available then remove cloud node
+      if (!rootNodes?.length) {
+        const cloudNodeIndex = uiNodes?.findIndex((node) => node.id === 'cloud_id')
+        if (cloudNodeIndex > -1)
+          uiNodes.splice(cloudNodeIndex,1)
+      }
+
       rootNodes.forEach(node => {
         const rootEdge: Link = {
           source: 'cloud_id',
@@ -164,10 +181,11 @@ export function TopologyGraph (props:{ venueId?: string,
         graph.setEdge(edge.from, edge.to, {
           // curveBumpY, curveMonotoneY, curveStepBefore
           curve: d3.curveMonotoneY,
+          lineInterpolate: 'basis',
           SVGAnimatedAngle: true,
           angle: 15,
           style: `fill:transparent;
-          stroke:${getPathColor(edge.connectionStatus as ConnectionStatus)}` })
+          stroke:${getPathColor(edge.connectionStatus as ConnectionStatus)}` }, edge.id)
       })
 
       const render = new dagreD3.render()
@@ -190,12 +208,18 @@ export function TopologyGraph (props:{ venueId?: string,
 
       render(svgGroup, graph)
 
-      select(graphRef.current).selectAll('g.node rect').remove()
+      select(graphRef.current)
+        .selectAll('g.node rect')
+        .attr('width', 32)
+        .attr('height', 32)
+        .attr('x', -16)
+        .attr('y', -24)
 
       select(graphRef.current).selectAll('g.node')
         .data(uiNodes)
         .attr('data-testid', 'topologyNode')
         .append('foreignObject')
+        .attr('pointer-events', 'none')
         .attr('width', 32)
         .attr('height', 32)
         .attr('x', -16)
@@ -352,8 +376,8 @@ export function TopologyGraph (props:{ venueId?: string,
     const debouncedHandleMouseEnter = debounce(function (node, d, self){
       setShowDeviceTooltip(true)
       setTooltipNode(node.config)
-      setTooltipPosition({ x: d?.layerX
-        , y: d?.layerY - 50 })
+      setTooltipPosition({ x: d?.layerX + 30
+        , y: d?.layerY })
       lowVisibleAll()
       if (selectedNode) {
         (selectedNode as SVGGElement).style.opacity = '1'
@@ -439,7 +463,8 @@ export function TopologyGraph (props:{ venueId?: string,
     const allnodes = svg.selectAll('g.node')
     // this is selected / searched node
     const selectedNode = allnodes.nodes().filter((node: any) =>{
-      return (node.__data__.config.mac === deviceMac) && node.__data__.id !== 'cloud_id'
+      return ((node.__data__.config.mac)?.toLowerCase() === deviceMac?.toLowerCase())
+      && node.__data__.id !== 'cloud_id'
     })
 
     return selectedNode && selectedNode[0]
@@ -503,6 +528,17 @@ export function TopologyGraph (props:{ venueId?: string,
                 hoverNode(getSelectedNode(option.item.mac as string))
               }}
               allowClear={true}
+              onSearch={
+                (inputValue) => {
+                  if (inputValue === '') {
+                    highlightPath(undefined)
+                    hoverNode(undefined)
+                    highlightAll()
+                    return false
+                  }
+                  return
+                }
+              }
               onClear={() => {
                 highlightPath(undefined)
                 hoverNode(undefined)
@@ -526,7 +562,7 @@ export function TopologyGraph (props:{ venueId?: string,
           {
             (showTopologyOn === ShowTopologyFloorplanOn.VENUE_OVERVIEW)
               ? <Empty description={$t({ defaultMessage: 'No devices added yet to this venue' })}>
-                <Row>
+                { hasAccess() && <Row>
                   <Col span={12}>
                     <TenantLink to='devices/wifi/add'>
                       {$t({ defaultMessage: 'Add Access Point' })}
@@ -537,7 +573,7 @@ export function TopologyGraph (props:{ venueId?: string,
                       {$t({ defaultMessage: 'Add Switch' })}
                     </TenantLink>
                   </Col>
-                </Row>
+                </Row>}
               </Empty>
               : <Empty description={$t({ defaultMessage: 'This device not added to any venue' })} />
           }

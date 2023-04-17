@@ -2,8 +2,8 @@ import { Badge }                                     from 'antd'
 import _                                             from 'lodash'
 import { MessageDescriptor, defineMessage, useIntl } from 'react-intl'
 
-import { noDataSymbol }    from '@acx-ui/analytics/utils'
 import { Tooltip, cssStr } from '@acx-ui/components'
+import { noDataDisplay }   from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -63,7 +63,7 @@ export const Score = ({ details }: { details: ReturnType<typeof getExecutionSect
       const value = _.get(details, key)
       const ScoreText = <span key={`score-text-${key}`}>
         <UI.ScoreValue>
-          { configured === ConfigStatusEnum.NoData ? noDataSymbol : value || 0}
+          { configured === ConfigStatusEnum.NoData ? noDataDisplay : value || 0}
         </UI.ScoreValue>
         <UI.ScoreText>{$t(item.text)}</UI.ScoreText>
       </span>

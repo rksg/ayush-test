@@ -5,6 +5,7 @@ import { rest }  from 'msw'
 import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }               from '@acx-ui/store'
 import {
+  fireEvent,
   mockServer,
   render,
   screen,
@@ -69,6 +70,8 @@ describe('administrators delegation list', () => {
     await waitFor(async () => {
       expect(await screen.findByRole('dialog')).toBeInTheDocument()
     })
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
   })
 
   it('should render correctly', async () => {
@@ -88,8 +91,9 @@ describe('administrators delegation list', () => {
       expect(await screen.findByText('Cancel invitation?')).toBeVisible()
     })
 
-    await userEvent.click(await within(screen.getByRole('dialog'))
-      .findByRole('button', { name: /Cancel Invitation/i }))
+    const okBtn = await within(screen.getByRole('dialog'))
+      .findByRole('button', { name: /Cancel Invitation/i })
+    await userEvent.click(okBtn)
 
     await waitFor(async () => {
       expect(await within(screen.getByRole('table'))
@@ -97,6 +101,9 @@ describe('administrators delegation list', () => {
     })
 
     expect(mockedRevokeFn).toBeCalled()
+    await waitFor(async () => {
+      expect(okBtn).not.toBeVisible()
+    })
 
     // TODO: test accessible after received message via socketio
     // await waitFor(async () => {
@@ -132,6 +139,13 @@ describe('administrators delegation list', () => {
     await userEvent.click(await screen.findByRole('button', { name: /Revoke access/i }))
     await waitFor(async () => {
       expect(await screen.findByText(/Are you sure you want to revoke access of partner/i)).toBeVisible()
+    })
+
+    const okBtn = await within(screen.getByRole('dialog'))
+      .findByRole('button', { name: /revoke access/i })
+    await userEvent.click(okBtn)
+    await waitFor(async () => {
+      expect(okBtn).not.toBeVisible()
     })
   })
 

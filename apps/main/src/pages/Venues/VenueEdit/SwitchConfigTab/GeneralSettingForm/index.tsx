@@ -96,8 +96,8 @@ export function GeneralSettingForm () {
         profileId: data.profileId ?? [],
         dns: data.dns ?? [],
         syslogEnabled: data?.syslogEnabled ?? false,
-        syslogPrimaryServer: data?.syslogPrimaryServer,
-        syslogSecondaryServer: data?.syslogSecondaryServer
+        syslogPrimaryServer: data?.syslogPrimaryServer || '',
+        syslogSecondaryServer: data?.syslogSecondaryServer || ''
       })
       formRef?.current?.setFieldsValue({
         dns: data.dns ?? []
@@ -108,22 +108,21 @@ export function GeneralSettingForm () {
   useEffect(() => {
     const errors = formRef?.current?.getFieldsError()?.map(item => item?.errors)
     const { data } = venueSwitchSetting
+    const oldData = {
+      profileId: data?.profileId ?? [],
+      dns: data?.dns ?? [],
+      syslogEnabled: data?.syslogEnabled ?? false,
+      syslogPrimaryServer: data?.syslogPrimaryServer || '',
+      syslogSecondaryServer: data?.syslogSecondaryServer || ''
+    }
 
     setEditContextData({
       ...editContextData,
       tabKey: activeSubTab,
       tabTitle: $t({ defaultMessage: 'General' }),
-      newData: {
-        ...formData
-      },
-      oldData: {
-        profileId: data?.profileId ?? [],
-        dns: data?.dns ?? [],
-        syslogEnabled: data?.syslogEnabled ?? false,
-        syslogPrimaryServer: data?.syslogPrimaryServer,
-        syslogSecondaryServer: data?.syslogSecondaryServer
-      },
-      isDirty: editContextData?.oldData ? !isEqual(editContextData?.oldData, formData) : false,
+      newData: formData,
+      oldData,
+      isDirty: oldData ? !isEqual(oldData, formData) : false,
       hasError: errors ? errors.flat()?.length > 0 : false,
       setData: setFormData,
       updateChanges: handleUpdate

@@ -2,7 +2,6 @@ import { Space, List } from 'antd'
 import { useIntl }     from 'react-intl'
 
 import { GridRow, GridCol }                   from '@acx-ui/components'
-import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import { CaretRightList, SearchResultNoData } from '@acx-ui/icons'
 import { TenantLink }                         from '@acx-ui/react-router-dom'
 
@@ -11,45 +10,14 @@ import * as UI from './styledComponents'
 const useLinkData = () => {
   const { $t } = useIntl()
   const linkData = [
-    {
-      title: 'Venues',
-      to: '/venues'
-    },
-    {
-      title: 'Networks',
-      to: '/networks'
-    }
+    { title: 'Venues', to: '/venues' },
+    { title: 'Networks', to: '/networks' },
+    { title: 'APs', to: '/devices/wifi' },
+    { title: 'Switches', to: '/devices/switch' },
+    { title: 'Wi-Fi Clients', to: '/users/wifi/clients' },
+    { title: 'Switch Clients', to: '/users/switch/clients' },
+    { title: 'Dashboard', to: '/dashboard' }
   ]
-  // feature toggles to be handled
-  const devicesToggle = useIsSplitOn(Features.DEVICES)
-  if (devicesToggle) {
-    linkData.push({
-      title: 'APs',
-      to: '/devices/wifi'
-    })
-    linkData.push({
-      title: 'Switches',
-      to: '/devices/switch'
-    })
-  }
-
-  const usersToggle = useIsSplitOn(Features.USERS)
-  if (usersToggle) {
-    linkData.push({
-      title: 'Wi-Fi Clients',
-      to: '/users/wifi/clients'
-    })
-    linkData.push({
-      title: 'Switch Clients',
-      to: '/users/switch/clients'
-    })
-  }
-
-  // last key is dashboard
-  linkData.push({
-    title: 'Dashboard',
-    to: '/dashboard'
-  })
 
   const data = linkData.map(val => <TenantLink to={val.to}>
     {$t({ defaultMessage: '{title}' }, { title: val.title })}

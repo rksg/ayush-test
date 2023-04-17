@@ -208,7 +208,7 @@ export function CliStepConfiguration () {
 
         {isTemplate && <Form.Item
           noStyle
-          children={<Space style={{ marginBottom: '10px' }}>
+          children={<UI.ToggleWrapper>
             <Form.Item
               noStyle
               name='reload'
@@ -218,12 +218,12 @@ export function CliStepConfiguration () {
             <Typography.Text style={{ fontSize: '12px' }}>
               {$t({ defaultMessage: 'Reboot the Switches after applying config' })}
             </Typography.Text>
-          </Space>}
+          </UI.ToggleWrapper>}
         />}
 
         {!isTemplate && <Form.Item
           noStyle
-          children={<Space style={{ marginBottom: '10px' }}>
+          children={<UI.ToggleWrapper>
             <Form.Item
               noStyle
               name='overwrite'
@@ -233,7 +233,7 @@ export function CliStepConfiguration () {
             <Typography.Text style={{ fontSize: '12px' }}>
               {$t({ defaultMessage: 'Override existing switch configuration' })}
             </Typography.Text>
-          </Space>}
+          </UI.ToggleWrapper>}
         />}
 
         <Form.Item

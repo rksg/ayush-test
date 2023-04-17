@@ -22,9 +22,12 @@ import {
   baseSwitchApi as switchApi,
   baseTimelineApi as timelineApi,
   baseVenueApi as venueApi,
+  baseTunnelProfileApi as tunnelProfileApi,
   dataApi,
   networkHealthApi,
-  userApi
+  userApi,
+  baseMsgTemplateApi as msgTemplateApi,
+  videoCallQoeApi
 } from './baseApi'
 
 const isDev = process.env['NODE_ENV'] === 'development'
@@ -53,7 +56,10 @@ export const store = configureStore({
     [edgeDhcpApi.reducerPath]: edgeDhcpApi.reducer,
     [personaApi.reducerPath]: personaApi.reducer,
     [networkHealthApi.reducerPath]: networkHealthApi.reducer,
-    [nsgApi.reducerPath]: nsgApi.reducer
+    [nsgApi.reducerPath]: nsgApi.reducer,
+    [tunnelProfileApi.reducerPath]: tunnelProfileApi.reducer,
+    [msgTemplateApi.reducerPath]: msgTemplateApi.reducer,
+    [videoCallQoeApi.reducerPath]: videoCallQoeApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -84,11 +90,14 @@ export const store = configureStore({
       edgeDhcpApi.middleware,
       personaApi.middleware,
       networkHealthApi.middleware,
-      nsgApi.middleware
+      nsgApi.middleware,
+      tunnelProfileApi.middleware,
+      msgTemplateApi.middleware,
+      videoCallQoeApi.middleware
     ])
   },
 
-  devTools: !isDev
+  devTools: isDev
 })
 
 export type AppState = ReturnType<typeof store.getState>

@@ -148,6 +148,7 @@ const Layer2Component = () => {
       onlyAddMode={addModeStatus}
     />
     <Table<L2AclPolicy>
+      settingsId='policies-access-control-layer2-table'
       columns={useColumns(networkFilterOptions, editMode, setEditMode)}
       enableApiFilter={true}
       dataSource={tableQuery.data?.data}
@@ -178,6 +179,7 @@ function useColumns (
       sorter: true,
       searchable: true,
       defaultSortOrder: 'ascend',
+      fixed: 'left',
       render: function (data, row) {
         return <Layer2Drawer
           editMode={row.id === editMode.id ? editMode : { id: '', isEdit: false }}
@@ -198,7 +200,8 @@ function useColumns (
       title: $t({ defaultMessage: 'MAC Addresses' }),
       dataIndex: 'macAddress',
       align: 'center',
-      sorter: true
+      sorter: true,
+      sortDirections: ['descend', 'ascend', 'descend']
     },
     {
       key: 'networkIds',
@@ -207,6 +210,7 @@ function useColumns (
       filterable: networkFilterOptions,
       align: 'center',
       sorter: true,
+      sortDirections: ['descend', 'ascend', 'descend'],
       render: (data, row) => row.networkIds?.length
     }
   ]

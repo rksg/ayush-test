@@ -4,12 +4,12 @@ import { Col, Form, FormInstance, Input, Radio, RadioChangeEvent, Row, Space } f
 import { useForm }                                                             from 'antd/lib/form/Form'
 import { useIntl }                                                             from 'react-intl'
 
-import { noDataSymbol }                                               from '@acx-ui/analytics/utils'
 import { Button, Modal }                                              from '@acx-ui/components'
 import { DeleteOutlinedIcon }                                         from '@acx-ui/icons'
 import { SelectConnectedClientsTable }                                from '@acx-ui/rc/components'
 import { useLazyGetMacRegListQuery, useLazyGetPersonaGroupByIdQuery } from '@acx-ui/rc/services'
 import { ClientList, MacAddressFilterRegExp, MacRegistrationPool }    from '@acx-ui/rc/utils'
+import { noDataDisplay }                                              from '@acx-ui/utils'
 
 import { PersonaDeviceItem } from './PersonaDevicesForm'
 
@@ -36,7 +36,7 @@ export function PersonaDevicesImportDialog (props: DevicesImportDialogProps) {
   const [macRegistrationPool, setMacRegistrationPool] = useState<MacRegistrationPool>()
   const { visible, onSubmit, onCancel, personaGroupId, selectedMacAddress } = props
   const subTitle = `The devices will be added to MAC Registration List
-  (${macRegistrationPool?.name ?? noDataSymbol}) which is associated with this persona`
+  (${macRegistrationPool?.name ?? noDataDisplay}) which is associated with this persona`
 
   useEffect(() => {
     if (!personaGroupId) return

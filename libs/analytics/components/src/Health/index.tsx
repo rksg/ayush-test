@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import { AnalyticsFilter, useAnalyticsFilter, categoryTabs, CategoryTab } from '@acx-ui/analytics/utils'
@@ -7,6 +9,8 @@ import { useNavigate, useParams, useTenantLink }                          from '
 import { Header } from '../Header'
 
 import ConnectedClientsOverTime      from './ConnectedClientsOverTime'
+import { HealthDrillDown }           from './HealthDrillDown'
+import { DrilldownSelection }        from './HealthDrillDown/config'
 import { HealthPageContextProvider } from './HealthPageContext'
 import Kpis                          from './Kpi'
 import * as UI                       from './styledComponents'
@@ -21,6 +25,7 @@ const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
   const basePath = useTenantLink(props.path ?? '/analytics/health/tab/')
   const { filters } = useAnalyticsFilter()
   const healthPageFilters = widgetFilters ? widgetFilters : filters
+  const [drilldownSelection, setDrilldownSelection] = useState<DrilldownSelection>(null)
 
   const onTabChange = (tab: string) =>
     navigate({
@@ -29,7 +34,7 @@ const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
     })
   return (
     <>
-      { !widgetFilters &&
+      {!widgetFilters &&
       <Header
         title={$t({ defaultMessage: 'Health' })}
         shouldQuerySwitch={false}
@@ -38,20 +43,29 @@ const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
       }
       <GridRow>
         <GridCol col={{ span: 24 }} style={{ minHeight: '105px' }}>
-          <SummaryBoxes filters={healthPageFilters} />
+          <SummaryBoxes
+            filters={healthPageFilters}
+            drilldownSelection={drilldownSelection}
+            setDrilldownSelection={setDrilldownSelection}
+          />
+          <HealthDrillDown
+            filters={filters}
+            drilldownSelection={drilldownSelection}
+            setDrilldownSelection={setDrilldownSelection}
+          />
         </GridCol>
         <HealthPageContextProvider>
           <GridCol col={{ span: 24 }} style={{ height: '210px' }}>
             <ConnectedClientsOverTime filters={healthPageFilters} />
           </GridCol>
-          <GridCol col={{ span: 16 }} >
+          <GridCol col={{ span: 16 }}>
             <UI.TabTitle activeKey={selectedTab} onChange={onTabChange}>
               {categoryTabs.map(({ value, label }) => (
                 <Tabs.TabPane tab={$t(label)} key={value} />
               ))}
             </UI.TabTitle>
           </GridCol>
-          <GridCol col={{ span: 8 }} >
+          <GridCol col={{ span: 8 }}>
             <UI.ThresholdTitle>
               {$t({ defaultMessage: 'Customized SLA Threshold' })}
             </UI.ThresholdTitle>

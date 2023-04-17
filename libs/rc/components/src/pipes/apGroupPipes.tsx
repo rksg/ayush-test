@@ -1,9 +1,9 @@
 import React from 'react'
 
 import { ClockCircleOutlined } from '@ant-design/icons'
-import { Tooltip }             from 'antd'
+import _                       from 'lodash'
 
-import { Button } from '@acx-ui/components'
+import { Button, Tooltip } from '@acx-ui/components'
 import {
   NetworkSaveData,
   NetworkVenue,
@@ -14,15 +14,72 @@ import {
   getVlanString,
   vlanContents,
   RadioEnum,
-  RadioTypeEnum
+  RadioTypeEnum,
+  VLAN_PREFIX
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
 /* eslint-disable max-len */
+const getRadioDescription = (radioTypes: RadioTypeEnum[]) => {
+  if (radioTypes.length === 3) {
+    return 'All'
+  } else if (radioTypes.length === 2) {
+    return radioTypes.join('/ ')
+  } else {
+    return radioTypes[0]
+  }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const getVlanDescription = (apGroup: any, network: NetworkSaveData) =>{
+  let vlanPrefix = VLAN_PREFIX.VLAN
+  let fieldToDisplay = 'vlanId'
+  let fieldToCompare = 'vlanId'
+  let defaultValue = network.wlan?.vlanId || ''
+
+  if (apGroup.vlanPoolId) {
+    vlanPrefix = VLAN_PREFIX.POOL
+    fieldToDisplay = 'vlanPoolName'
+    fieldToCompare = 'vlanPoolId'
+  }
+
+  if (network?.wlan?.advancedCustomization?.vlanPool) {
+    defaultValue = network?.wlan?.advancedCustomization.vlanPool.id || ''
+  }
+
+  const status = apGroup[fieldToCompare] === defaultValue ? 'Default' : 'Custom'
+  return `${vlanPrefix}${apGroup[fieldToDisplay]} (${status})`
+}
+
+const apGroupTooltip = (type: string, venue: NetworkVenue, network: NetworkSaveData) => {
+  let name: JSX.Element[] = []
+  let radio: JSX.Element[] = []
+  let vlan: JSX.Element[] = []
+
+  if (venue && network && network.venues && network.venues.length > 0) {
+    // if allApgroups is defined and false and more than one apgroup is selected, then display the tooltip
+    if (venue.isAllApGroups !== undefined && !venue.isAllApGroups && venue.apGroups && venue.apGroups.length > 1) {
+      venue.apGroups.forEach(apGroup => {
+        name.push(<tr><td>{!apGroup.apGroupName && apGroup.isDefault ? 'Unassigned APs' : apGroup.apGroupName}</td></tr>)
+        radio.push(<tr><td>{!apGroup.apGroupName && apGroup.isDefault ? 'Unassigned APs' :
+          apGroup.apGroupName}: </td><td>{apGroup.radioTypes && getRadioDescription(apGroup.radioTypes)}</td></tr>)
+        vlan.push(<tr><td style={{ minWidth: '80px' }}>{!apGroup.apGroupName && apGroup.isDefault ? 'Unassigned APs' :
+          apGroup.apGroupName}: </td><td style={{ minWidth: '150px' }}>{getVlanDescription(apGroup, network)}</td></tr>)
+      })
+    }
+  }
+  if(type === 'radio'){
+    return _.isEmpty(radio) ? '' : <table>{radio}</table>
+  }else if(type === 'vlan'){
+    return _.isEmpty(vlan) ? '' : <table>{vlan}</table>
+  }else{
+    return _.isEmpty(name) ? '' : <table>{name}</table>
+  }
+}
 
 export const transformVLAN = (
   currentVenue?: NetworkVenue,
-  wlan?: NetworkSaveData['wlan'],
+  network?: NetworkSaveData,
   callback?: React.MouseEventHandler<HTMLElement>
 ): JSX.Element => {
   const { $t } = getIntl()
@@ -31,30 +88,40 @@ export const transformVLAN = (
   if (!currentVenue) return <></>
 
   if (!currentVenue.isAllApGroups && Array.isArray(currentVenue.apGroups) && currentVenue.apGroups.length > 1) {
-    return button($t({ defaultMessage: 'Per AP Group' }))
+    return <Tooltip title={(network && apGroupTooltip('vlan', currentVenue, network)) || $t({ defaultMessage: 'Per AP Group' })}>{button($t({ defaultMessage: 'Per AP Group' }))}</Tooltip>
   }
 
   if (!currentVenue.isAllApGroups && currentVenue?.apGroups?.length === 1) {
     const firstApGroup = currentVenue.apGroups[0]
     const isVlanPool = firstApGroup?.vlanPoolId !== undefined
     if (isVlanPool) {
-      return button($t(vlanContents.vlanPool, {
+      return <Tooltip title={$t(vlanContents.vlanPool, {
         poolName: firstApGroup.vlanPoolName,
         isCustom: true
-      }))
+      })}>{button($t(vlanContents.vlanPool, {
+          poolName: firstApGroup.vlanPoolName,
+          isCustom: true
+        }))}</Tooltip>
     }
 
-    return button($t(vlanContents.vlan, {
+    return <Tooltip title={$t(vlanContents.vlan, {
       id: firstApGroup?.vlanId?.toString() ?? '1',
       isCustom: true
-    }))
+    })}>{button($t(vlanContents.vlan, {
+        id: firstApGroup?.vlanId?.toString() ?? '1',
+        isCustom: true
+      }))}</Tooltip>
   }
 
-  const vlan = getVlanString(wlan?.advancedCustomization?.vlanPool, wlan?.vlanId)
-  return button(vlan.vlanText)
+  const vlan = getVlanString(network?.wlan?.advancedCustomization?.vlanPool, network?.wlan?.vlanId)
+  return <Tooltip title={vlan.vlanText}>{button(vlan.vlanText)}</Tooltip>
 }
 
-export const transformAps = (currentVenue?: NetworkVenue, callback?: React.MouseEventHandler<HTMLElement>) => {
+export const transformAps = (
+  currentVenue?: NetworkVenue,
+  network?: NetworkSaveData,
+  callback?: React.MouseEventHandler<HTMLElement>
+) => {
   const { $t } = getIntl()
   let result = ''
   if (!currentVenue) return <></>
@@ -69,7 +136,7 @@ export const transformAps = (currentVenue?: NetworkVenue, callback?: React.Mouse
       other {{count} AP Groups}
     }` }, { count: currentVenue.apGroups.length, apGroupName: apGroupName })
   }
-  return <Button type='link' onClick={callback}>{result}</Button>
+  return <Tooltip title={(network && apGroupTooltip('aps', currentVenue, network)) || result}><Button type='link' onClick={callback}>{result}</Button></Tooltip>
 }
 
 const _getRadioString = (deprecatedRadio: RadioEnum, radioTypes?: RadioTypeEnum[]) => {
@@ -85,7 +152,11 @@ const _getRadioString = (deprecatedRadio: RadioEnum, radioTypes?: RadioTypeEnum[
   }
 }
 
-export const transformRadios = (currentVenue?: NetworkVenue, callback?: React.MouseEventHandler<HTMLElement>) => {
+export const transformRadios = (
+  currentVenue?: NetworkVenue,
+  network?: NetworkSaveData,
+  callback?: React.MouseEventHandler<HTMLElement>
+) => {
   const { $t } = getIntl()
   let result = ''
   if (!currentVenue) return <></>
@@ -100,7 +171,7 @@ export const transformRadios = (currentVenue?: NetworkVenue, callback?: React.Mo
       result = $t({ defaultMessage: 'Per AP Group' })
     }
   }
-  return <Button type='link' onClick={callback}>{result}</Button>
+  return <Tooltip title={(network && apGroupTooltip('radio', currentVenue, network)) || result}><Button type='link' onClick={callback}>{result}</Button></Tooltip>
 }
 
 export const transformScheduling = (currentVenue?: NetworkVenue, currentTimeIdx?: ISlotIndex, callback?: React.MouseEventHandler<HTMLElement>) => {

@@ -78,7 +78,7 @@ describe('WifiCallingTable', () => {
         (req, res, ctx) => res(ctx.json(mockTableResult))
       ),
       rest.post(
-        WifiCallingUrls.getWifiCallingList.url,
+        WifiCallingUrls.getEnhancedWifiCallingList.url,
         (req, res, ctx) => res(ctx.json(mockTableResult))
       )
     )

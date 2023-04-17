@@ -108,6 +108,7 @@ function ACLSettingForm (props: ACLSettingFormProps) {
   useEffect(() => {
     if(rule){
       form.setFieldsValue(rule)
+      setAclType(rule.aclType)
       setRuleList(rule.aclRules as AclStandardRule[] | AclExtendedRule[])
     }
   }, [form, rule])
@@ -165,15 +166,19 @@ function ACLSettingForm (props: ACLSettingFormProps) {
       : [])
   ]
 
-  const rowActions: TableProps<
-    AclStandardRule | AclExtendedRule
-  >['rowActions'] = [
+  const rowActions: TableProps<AclExtendedRule>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
         setSelected({
           ...selectedRows[0],
-          source: selectedRows[0].source === 'any' ? 'any' : 'specific'
+          source: selectedRows[0].source === 'any' ? 'any' : 'specific',
+          specificSrcNetwork: selectedRows[0].source === 'any' ? '' : selectedRows[0].source,
+          ...(aclType === 'extended' &&
+            { destination: selectedRows[0].destination === 'any' ? 'any' : 'specific',
+              specificDestNetwork: selectedRows[0].destination === 'any' ?
+                '' : selectedRows[0].destination
+            })
         })
         setOpenModal(true)
       }
@@ -197,12 +202,14 @@ function ACLSettingForm (props: ACLSettingFormProps) {
     const newList = ruleList || []
     if (values.source === 'specific') {
       values.source = values.specificSrcNetwork
-      values.specificSrcNetwork = ''
     }
+    values.specificSrcNetwork = ''
+
     if (values.destination === 'specific') {
       values.destination = values.specificDestNetwork
-      values.specificDestNetwork = ''
     }
+    values.specificDestNetwork = ''
+
     if (!selected) {
       // Add
       setRuleList([...ruleList, values])
@@ -225,8 +232,10 @@ function ACLSettingForm (props: ACLSettingFormProps) {
   const onAclTypeChange = (e: RadioChangeEvent) => {
     if (e.target.value === 'standard') {
       setRuleList([defaultStandardRuleList])
+      form.setFieldValue('aclRules', [defaultStandardRuleList])
     } else {
       setRuleList([defaultExtendedRuleList])
+      form.setFieldValue('aclRules', [defaultExtendedRuleList])
     }
     setAclType(e.target.value)
     form.validateFields()
@@ -259,14 +268,14 @@ function ACLSettingForm (props: ACLSettingFormProps) {
               validateDuplicateAclName(value, aclsTable.filter(item => item.aclRules === value)) :
               validateDuplicateAclName(value, aclsTable) }
           ]}
-          children={<Input style={{ width: '400px' }} />}
+          children={<Input style={{ width: '400px' }} disabled={editMode}/>}
         />
         <Form.Item
           name='aclType'
           label={$t({ defaultMessage: 'Type' })}
           initialValue={'standard'}
           children={
-            <Radio.Group onChange={onAclTypeChange}>
+            <Radio.Group onChange={onAclTypeChange} disabled={editMode}>
               <Radio value={'standard'} data-testid='aclStandard'>
                 {$t({ defaultMessage: 'Standard' })}
               </Radio>

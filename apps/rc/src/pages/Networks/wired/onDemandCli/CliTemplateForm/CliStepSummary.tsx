@@ -62,7 +62,7 @@ export function CliStepSummary (props: {
             } />
           <Descriptions.Item
             label={$t({ defaultMessage: 'Apply the CLI template after adding it' })}
-            children={data?.applyLater
+            children={data?.applyNow
               ? $t({ defaultMessage: 'ON' })
               : $t({ defaultMessage: 'OFF' })
             } />

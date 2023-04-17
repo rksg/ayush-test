@@ -56,7 +56,7 @@ describe('TopSwitchesByPoEUsageWidget', () => {
       data: topSwitchesByPoEUsageResponse
     })
     const { asFragment } =render(wrapper)
-    await screen.findByText('Top 5 Switches by PoE Usage')
+    await screen.findByText('Top Switches by PoE Usage')
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
   })
   it('should render error', async () => {

@@ -22,15 +22,16 @@ export function SwitchesTrafficByVolume ({
   filters, vizType
 } : { filters : AnalyticsFilter, vizType: string }) {
   const { $t } = useIntl()
+
   const seriesMapping = [
     { key: 'switchTotalTraffic', name: $t({ defaultMessage: 'Total' }) },
     { key: 'switchTotalTraffic_tx', name: $t({ defaultMessage: 'Tx' }) },
     { key: 'switchTotalTraffic_rx', name: $t({ defaultMessage: 'Rx' }) }
   ] as Array<{ key: Key, name: string }>
-  const stackColors = take(qualitativeColorSet(), 3).reverse()
+
   const queryResults = useSwitchesTrafficByVolumeQuery(filters, {
     selectFromResult: ({ data, ...rest }) => ({
-      data: getSeriesData(data!, vizType === 'area' ? seriesMapping.reverse() : seriesMapping),
+      data: getSeriesData(data!, vizType === 'area' ? seriesMapping.splice(1) : seriesMapping),
       ...rest
     })
   })
@@ -43,8 +44,9 @@ export function SwitchesTrafficByVolume ({
               vizType === 'area' ?
                 <StackedAreaChart
                   style={{ width, height }}
-                  stackColors={stackColors}
+                  stackColors={take(qualitativeColorSet(), 2)}
                   data={queryResults.data}
+                  tooltipTotalTitle={$t({ defaultMessage: 'Total Traffic' })}
                   dataFormatter={formatter('bytesFormat')}
                 /> :
                 <MultiLineTimeSeriesChart

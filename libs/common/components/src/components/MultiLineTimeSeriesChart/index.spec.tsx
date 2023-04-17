@@ -55,7 +55,7 @@ describe('MultiLineTimeSeriesChart', () => {
       data={getSeriesData()}
       disableLegend
     />)
-    expect(screen.queryByText('New Clients')).toBeNull()
+    expect(screen.queryByText('New Client Associations')).toBeNull()
   })
 
   it('should render custom legend format', () => {
@@ -63,7 +63,7 @@ describe('MultiLineTimeSeriesChart', () => {
       data={getSeriesData()}
       legendFormatter='test: {name}'
     />)
-    expect(screen.queryByText('test: New Clients')).toBeVisible()
+    expect(screen.queryByText('test: New Client Associations')).toBeVisible()
   })
 
   it('should not show series if show is false', () => {

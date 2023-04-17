@@ -156,6 +156,7 @@ export default function RogueAPDetectionTable () {
       />
       <Loader states={[tableQuery]}>
         <Table<EnhancedRoguePolicyType>
+          settingsId='policies-rogue-ap-detection-table'
           columns={useColumns(venueIds)}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
@@ -212,6 +213,7 @@ function useColumns (venueIds: string[]) {
       sorter: true,
       searchable: true,
       defaultSortOrder: 'ascend',
+      fixed: 'left',
       render: function (data, row) {
         return (
           <TenantLink

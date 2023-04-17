@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { DatePicker, Form, Radio, RadioChangeEvent, Space, Typography } from 'antd'
 import { useForm }                                                      from 'antd/lib/form/Form'
+import dayjs                                                            from 'dayjs'
 import { useIntl }                                                      from 'react-intl'
 
 import {
@@ -14,10 +15,12 @@ import {
 import {
   getSwitchVersionLabel
 } from '../../FirmwareUtils'
+import { PreDownload } from '../../PreDownload'
 
 import * as UI from './styledComponents'
 
 import type { DatePickerProps  } from 'antd'
+import type { RangePickerProps } from 'antd/es/date-picker'
 
 export interface ChangeScheduleDialogProps {
   visible: boolean,
@@ -35,6 +38,7 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
   const [selectedDate, setSelectedDate] = useState('')
   const [selectedTime, setSelectedTime] = useState<string>('')
   const [disableSave, setDisableSave] = useState(false)
+  const [checked, setChecked] = useState(false)
 
   useEffect(() => {
     if (!selectedVersion) {
@@ -44,8 +48,25 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
     }
   }, [selectedVersion])
 
+  useEffect(() => {
+    if (data) {
+      if (data.length === 1 && data[0].preDownload) {
+        setChecked(data[0].preDownload)
+      } else {
+        setChecked(false)
+      }
+    }
+  }, [data])
+
   const handleChange = (value: RadioChangeEvent) => {
     setSelectedVersion(value.target.value)
+  }
+
+  const startDate = dayjs().endOf('day')
+  const endDate = startDate.add(21, 'day')
+  const disabledDate: RangePickerProps['disabledDate'] = (current) => {
+  // Can not select days before today and today
+    return current && (current < startDate || current > endDate)
   }
 
   const onChange: DatePickerProps['onChange'] = (date, dateString) => {
@@ -60,7 +81,7 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
     return {
       date: selectedDate,
       time: selectedTime,
-      preDownload: false,
+      preDownload: checked,
       venueIds: data ? (data as FirmwareSwitchVenue[]).map((d: FirmwareSwitchVenue) => d.id) : null,
       switchVersion: selectedVersion
     }
@@ -117,7 +138,11 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
           <UI.TitleActive>Selected time will apply to each venue according to own time-zone</UI.TitleActive>}
         <UI.DateContainer>
           <label>Update date:</label>
-          <DatePicker onChange={onChange} />
+          <DatePicker
+            showToday={false}
+            disabledDate={disabledDate}
+            onChange={onChange}
+          />
         </UI.DateContainer>
         { selectedDate ?
           <UI.DateContainer>
@@ -136,6 +161,10 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
           </UI.DateContainer>
           : null
         }
+        <PreDownload
+          checked={checked}
+          setChecked={setChecked}
+        />
       </Form>
     </UI.ScheduleModal>
   )

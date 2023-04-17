@@ -24,7 +24,11 @@ import {
   useReactivateMspEcMutation,
   useMspCustomerListQuery,
   useSupportMspCustomerListQuery,
-  useGetMspLabelQuery
+  useGetMspLabelQuery,
+  useIntegratorCustomerListQuery,
+  useGetTenantDetailsQuery,
+  useDelegateToMspEcPath,
+  useCheckDelegateAdmin
 } from '@acx-ui/rc/services'
 import {
   DelegationEntitlementRecord,
@@ -32,11 +36,10 @@ import {
   MspEc,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { getBasePath, Link, MspTenantLink, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
-import { RolesEnum }                                                                           from '@acx-ui/types'
-import { filterByAccess, useUserProfileContext }                                               from '@acx-ui/user'
-import { hasRoles }                                                                            from '@acx-ui/user'
-import { AccountType }                                                                         from '@acx-ui/utils'
+import { Link, MspTenantLink, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                              from '@acx-ui/types'
+import { filterByAccess, useUserProfileContext, hasRoles }                        from '@acx-ui/user'
+import { AccountType }                                                            from '@acx-ui/utils'
 
 const getStatus = (row: MspEc) => {
   const isTrial = row.accountType === 'TRIAL'
@@ -117,16 +120,32 @@ export function MspCustomers () {
   const [deactivateMspEc] = useDeactivateMspEcMutation()
   const [reactivateMspEc] = useReactivateMspEcMutation()
   const [deleteMspEc, { isLoading: isDeleteEcUpdating }] = useDeleteMspEcMutation()
+  const { delegateToMspEcPath } = useDelegateToMspEcPath()
+  const { checkDelegateAdmin } = useCheckDelegateAdmin()
 
   const onBoard = mspLabel?.msp_label
   const ecFilters = isPrimeAdmin
-    ? { tenantType: ['MSP_EC'] }
-    : { mspAdmins: [userProfile.adminId], tenantType: ['MSP_EC'] }
+    ? { tenantType: [AccountType.MSP_EC] }
+    : { mspAdmins: [userProfile?.adminId], tenantType: [AccountType.MSP_EC] }
 
   const transformTechPartner = (id: string) => {
     const rec = techParnersData.find(e => e.id === id)
     return rec?.name ? rec.name : id
   }
+
+  const transformAdminCount = (data: MspEc) => {
+    if (data?.mspInstallerAdminCount)
+      return data.mspInstallerAdminCount
+    else if (data?.mspIntegratorAdminCount)
+      return data.mspIntegratorAdminCount
+    return data.mspAdminCount
+  }
+
+  const tenantDetailsData = useGetTenantDetailsQuery({ params })
+  const isIntegrator =
+    (tenantDetailsData.data?.tenantType === AccountType.MSP_INSTALLER ||
+     tenantDetailsData.data?.tenantType === AccountType.MSP_INTEGRATOR)
+  const parentTenantid = tenantDetailsData.data?.mspEc?.parentMspId
 
   const { data: techPartners } = useTableQuery({
     useQuery: useMspCustomerListQuery,
@@ -169,6 +188,32 @@ export function MspCustomers () {
     searchTargetFields: ['name']
   }
 
+  const integratorPayload = {
+    searchString: '',
+    filters: {
+      mspTenantId: [parentTenantid],
+      tenantType: [AccountType.MSP_INSTALLER, AccountType.MSP_INTEGRATOR]
+    },
+    fields: [
+      'check-all',
+      'id',
+      'name',
+      'tenantType',
+      'status',
+      'alarmCount',
+      'mspAdminCount',
+      'mspEcAdminCount',
+      'mspInstallerAdminCount',
+      'mspIntegratorAdminCount',
+      'creationDate',
+      'expirationDate',
+      'wifiLicense',
+      'switchLicens',
+      'streetAddress'
+    ],
+    searchTargetFields: ['name']
+  }
+
   const supportPayload = {
     searchString: '',
     fields: [
@@ -201,10 +246,18 @@ export function MspCustomers () {
       searchable: true,
       sorter: true,
       defaultSortOrder: 'ascend',
+      onCell: (data) => {
+        return (data.status === 'Active') ? {
+          onClick: () => {
+            userProfile?.support
+              ? delegateToMspEcPath(data.id)
+              : checkDelegateAdmin(data.id, userProfile!.adminId)
+          }
+        } : {}
+      },
       render: function (data, row, _, highlightFn) {
-        const to = `${getBasePath()}/t/${row.id}`
         return (
-          (row.status === 'Active') ? <Link to={to}>{highlightFn(data as string)}</Link> : data
+          (row.status === 'Active') ? <Link to=''>{highlightFn(data as string)}</Link> : data
         )
       }
     },
@@ -230,17 +283,17 @@ export function MspCustomers () {
       key: 'mspAdminCount',
       sorter: true,
       onCell: (data) => {
-        return {
+        return (isPrimeAdmin || isAdmin) && !userProfile?.support ? {
           onClick: () => {
             setTenantId(data.id)
             setDrawerAdminVisible(true)
           }
-        }
+        } : {}
       },
-      render: function (data) {
+      render: function (data, row) {
         return (
           (isPrimeAdmin || isAdmin) && !userProfile?.support
-            ? <Link to=''>{data}</Link> : data
+            ? <Link to=''>{transformAdminCount(row)}</Link> : transformAdminCount(row)
         )
       }
     },
@@ -252,50 +305,48 @@ export function MspCustomers () {
       sorter: true,
       show: false
     },
-    {
+    ...(isIntegrator || userProfile?.support ? [] : [{
       title: $t({ defaultMessage: 'Integrator' }),
       dataIndex: 'integrator',
       key: 'integrator',
-      show: !userProfile?.support,
-      onCell: (data) => {
-        return {
+      onCell: (data: MspEc) => {
+        return (isPrimeAdmin || isAdmin) ? {
           onClick: () => {
             setTenantId(data.id)
             setTenantType(AccountType.MSP_INTEGRATOR)
             setDrawerIntegratorVisible(true)
           }
-        }
+        } : {}
       },
-      render: function (data, row) {
+      render: function (data: React.ReactNode, row: MspEc) {
         const val = row?.integrator ? transformTechPartner(row.integrator) : '--'
         return (
-          (isPrimeAdmin || isAdmin) && !userProfile?.support
+          (isPrimeAdmin || isAdmin)
             ? <Link to=''>{val}</Link> : val
         )
       }
-    },
-    {
+    }]),
+    ...(isIntegrator || userProfile?.support ? [] : [{
       title: $t({ defaultMessage: 'Installer' }),
       dataIndex: 'installer',
       key: 'installer',
-      show: !userProfile?.support,
-      onCell: (data) => {
-        return {
+      onCell: (data: MspEc) => {
+        return (isPrimeAdmin || isAdmin) ? {
           onClick: () => {
             setTenantId(data.id)
             setTenantType(AccountType.MSP_INSTALLER)
             setDrawerIntegratorVisible(true)
           }
-        }
+        } : {}
       },
-      render: function (data, row) {
+      render: function (data: React.ReactNode, row: MspEc) {
         const val = row?.installer ? transformTechPartner(row.installer) : '--'
         return (
-          (isPrimeAdmin || isAdmin) && !userProfile?.support
+          (isPrimeAdmin || isAdmin)
             ? <Link to=''>{val}</Link> : val
         )
       }
-    },
+    }]),
     {
       title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
       dataIndex: 'wifiLicenses',
@@ -474,6 +525,7 @@ export function MspCustomers () {
         tableQuery,
         { isLoading: false, isFetching: isDeleteEcUpdating }]}>
         <Table
+          settingsId='msp-customers-table'
           columns={columns}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
@@ -482,6 +534,32 @@ export function MspCustomers () {
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
+        />
+      </Loader>
+    )
+  }
+
+  const IntegratorTable = () => {
+    const tableQuery = useTableQuery({
+      useQuery: useIntegratorCustomerListQuery,
+      defaultPayload: integratorPayload,
+      search: {
+        searchTargetFields: integratorPayload.searchTargetFields as string[]
+      }
+    })
+
+    return (
+      <Loader states={[
+        tableQuery,
+        { isLoading: false }]}>
+        <Table
+          settingsId='integrator-customers-table'
+          columns={columns}
+          dataSource={tableQuery.data?.data}
+          pagination={tableQuery.pagination}
+          onChange={tableQuery.handleTableChange}
+          onFilterChange={tableQuery.handleFilterChange}
+          rowKey='id'
         />
       </Loader>
     )
@@ -501,6 +579,7 @@ export function MspCustomers () {
         tableQuery,
         { isLoading: false }]}>
         <Table
+          settingsId='support-ec-table'
           columns={columns}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
@@ -532,7 +611,8 @@ export function MspCustomers () {
           ]}
       />
       {userProfile?.support && <SupportEcTable />}
-      {!userProfile?.support && <MspEcTable />}
+      {!userProfile?.support && !isIntegrator && <MspEcTable />}
+      {!userProfile?.support && isIntegrator && <IntegratorTable />}
       <ResendInviteModal
         visible={modalVisible}
         setVisible={setModalVisible}

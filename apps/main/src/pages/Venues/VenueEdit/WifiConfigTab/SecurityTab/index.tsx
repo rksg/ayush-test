@@ -43,6 +43,14 @@ export function SecurityTab () {
   const navigate = useNavigate()
   const basePath = useTenantLink('/venues/')
 
+  const DEFAULT_POLICY_ID = 'c1fe63007a5d4a71858d487d066eee6d'
+  const DEFAULT_PROFILE_NAME = 'Default profile'
+
+  const DEFAULT_OPTIONS = [{
+    id: DEFAULT_POLICY_ID,
+    name: DEFAULT_PROFILE_NAME
+  }]
+
   const formRef = useRef<StepsFormInstance>()
   const {
     previousPath,
@@ -64,6 +72,14 @@ export function SecurityTab () {
 
   const { selectOptions, selected } = useGetRoguePolicyListQuery({ params },{
     selectFromResult ({ data }) {
+      if (data?.length === 0) {
+        return {
+          selectOptions: DEFAULT_OPTIONS.map(item => <Option key={item.id}>{item.name}</Option>),
+          selected: DEFAULT_OPTIONS.find((item) =>
+            item.id === DEFAULT_POLICY_ID
+          )
+        }
+      }
       return {
         selectOptions: data?.map(item => <Option key={item.id}>{item.name}</Option>) ?? [],
         selected: data?.find((item) => item.id === formRef.current?.getFieldValue('roguePolicyId'))
@@ -75,7 +91,7 @@ export function SecurityTab () {
     if (selectOptions.length > 0) {
       if (_.isEmpty(formRef.current?.getFieldValue('roguePolicyId'))){
         // eslint-disable-next-line max-len
-        const defaultProfile = selectOptions.find(option => option.props.children === 'Default profile')
+        const defaultProfile = selectOptions.find(option => option.props.children === DEFAULT_PROFILE_NAME)
         formRef.current?.setFieldValue('roguePolicyId', defaultProfile?.key)
       }
     }

@@ -13,11 +13,11 @@ import { useParams, TenantLink } from '@acx-ui/react-router-dom'
 
 export const defaultSwitchClientPayload = {
   searchString: '',
-  searchTargetFields: ['clientMac', 'clientDesc', 'clientType', 'venueName',
-    'switchName', 'vlanName'],
+  searchTargetFields: ['clientName', 'clientMac', 'clientDesc', 'clientType',
+    'venueName', 'switchName', 'vlanName'],
   fields: ['switchId','clientVlan','venueId','switchSerialNumber','clientMac',
-    'clientName','clientDesc','clientType','switchPort','vlanName',
-    'switchName', 'venueName' ,'cog','id'],
+    'clientName','clientDesc','clientType','deviceType','switchPort','vlanName',
+    'switchName', 'venueName' ,'cog','id','switchPortFormatted'],
   sortField: 'clientMac',
   sortOrder: 'DESC',
   filters: {}
@@ -54,6 +54,7 @@ export function ClientsTable (props: {
       title: intl.$t({ defaultMessage: 'Hostname' }),
       dataIndex: 'clientName',
       sorter: true,
+      fixed: 'left',
       render: (data, row) => {
         return <TenantLink to={`users/switch/clients/${row.id}`}>{data || '--'}</TenantLink>
       }
@@ -79,17 +80,17 @@ export function ClientsTable (props: {
     }, {
       key: 'clientType',
       title: intl.$t({ defaultMessage: 'Device Type' }),
-      dataIndex: 'clientType',
+      dataIndex: 'deviceType',
       sorter: true,
       searchable: searchable,
-      render: (data) => {
-        switch(data){
+      render: (data, row) => {
+        switch(row.clientType){
           case SWITCH_CLIENT_TYPE.AP:
             return 'AP'
           case SWITCH_CLIENT_TYPE.ROUTER:
             return 'Router'
           default:
-            return data || '--'
+            return row.clientType || '--'
         }
       }
     }, {
@@ -110,7 +111,7 @@ export function ClientsTable (props: {
       key: 'switchName',
       title: intl.$t({ defaultMessage: 'Switch' }),
       dataIndex: 'switchName',
-      sorter: false,
+      sorter: true,
       show: !params.switchId,
       searchable: searchable,
       filterKey: 'switchId',
@@ -125,19 +126,19 @@ export function ClientsTable (props: {
     }, {
       key: 'switchPort',
       title: intl.$t({ defaultMessage: 'Port' }),
-      dataIndex: 'switchPort',
-      sorter: true
+      dataIndex: 'switchPortFormatted',
+      sorter: true,
+      render: (data, row) => row['switchPort']
     }, {
       key: 'vlanName',
       title: intl.$t({ defaultMessage: 'VLAN' }),
-      dataIndex: 'vlanName',
+      dataIndex: 'clientVlan',
       sorter: true,
       align: 'center',
       searchable: searchable,
       render: (data, row) => {
-        return data === 'DEFAULT-VLAN'
-          ? `${row.clientVlan} (${intl.$t({ defaultMessage: 'Default VLAN' })})`
-          : (row.clientVlan ?? '--')
+        return row.vlanName === 'DEFAULT-VLAN'
+          ? `${data} (${intl.$t({ defaultMessage: 'Default VLAN' })})` : (data ?? '--')
       }
     }]
     return columns
@@ -149,13 +150,14 @@ export function ClientsTable (props: {
         tableQuery
       ]}>
         <Table
+          settingsId='switch-clients-table'
           columns={getCols(useIntl())}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
-          rowKey='clientMac'
+          rowKey='id'
         />
       </Loader>
     </div>

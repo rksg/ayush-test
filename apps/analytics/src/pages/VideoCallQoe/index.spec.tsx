@@ -1,17 +1,25 @@
+import { useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { Provider }       from '@acx-ui/store'
 import { screen, render } from '@acx-ui/test-utils'
 
-import VideoCallQoePage from '.'
+import VideoCallQoeListPage from '.'
 
-describe('VideoCallQoePage', () => {
+describe('VideoCallQoeListPage', () => {
   const params = {
     tenantId: 'tenant-id'
   }
   it('should render page header', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<Provider>
-      <VideoCallQoePage />
+      <VideoCallQoeListPage />
     </Provider>, { route: { params } })
     expect(await screen.findByText('Video Call QoE')).toBeVisible()
-    expect(await screen.findByText('Service Validation')).toBeVisible()
+  })
+  it('should not render page if feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(<Provider>
+      <VideoCallQoeListPage />
+    </Provider>, { route: { params } })
+    expect(await screen.findByText('Video Call QoE is not enabled')).toBeInTheDocument()
   })
 })

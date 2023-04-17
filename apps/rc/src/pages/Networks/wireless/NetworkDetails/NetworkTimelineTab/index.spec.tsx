@@ -11,7 +11,10 @@ import { NetworkTimelineTab } from '.'
 
 jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user'),
-  useUserProfileContext: () => ({ data: { detailLevel: 'it' } })
+  useUserProfileContext: () => ({ data: {
+    detailLevel: 'it',
+    dateFormat: 'mm/dd/yyyy'
+  } })
 }))
 
 describe('NetworkTimelineTab', ()=>{

@@ -3,15 +3,11 @@ import { useEffect, useState } from 'react'
 import { Menu, Dropdown } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { Tooltip }                 from '@acx-ui/components'
 import { LayoutUI }                from '@acx-ui/components'
 import { get }                     from '@acx-ui/config'
-import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleSolid } from '@acx-ui/icons'
-import { notAvailableMsg }         from '@acx-ui/utils'
-
-import { DisabledButton } from '../styledComponents'
-
+import { RolesEnum }               from '@acx-ui/types'
+import { hasRoles }                from '@acx-ui/user'
 
 import Firewall          from './Firewall'
 import HelpPage          from './HelpPage'
@@ -28,6 +24,7 @@ const HelpButton = (props:HelpButtonProps) => {
   const [firewallModalState, setFirewallModalOpen] = useState(false)
   const [helpPageModalState, setHelpPageModalOpen] = useState(false)
   const [isChatDisabled, setIsChatDisabled] = useState(true)
+  const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
 
   useEffect(()=>{
     switch (supportStatus) {
@@ -48,8 +45,6 @@ const HelpButton = (props:HelpButtonProps) => {
   const privacy = get('PRIVACY')
   const supportedAPModels = get('SUPPORTED_AP_MODELS')
   const howToVideos = get('HOW_TO_VIDEOS')
-
-  const isHelpEnabled = useIsSplitOn(Features.HELP_SUPPORT)
 
   const menuHeaderDropdown = (
     <Menu selectedKeys={[]}
@@ -103,10 +98,10 @@ const HelpButton = (props:HelpButtonProps) => {
         key: 'models',
         label: $t({ defaultMessage: 'Supported Device Models' })
       },
-      {
+      ...(!isGuestManager ? [{
         key: 'firewallACL',
         label: $t({ defaultMessage: 'Firewall ACL Inputs' })
-      },
+      }] : []),
       { type: 'divider' },
       {
         key: 'openCases',
@@ -121,17 +116,14 @@ const HelpButton = (props:HelpButtonProps) => {
   )
 
   return (<ButtonWrapper>
-    <Dropdown disabled={!isHelpEnabled}
+    <Dropdown
       overlay={menuHeaderDropdown}
       trigger={['click']}
-      placement='bottomLeft'>
-      <Tooltip title={isHelpEnabled ? '' : $t(notAvailableMsg)}>
-        {isHelpEnabled ? <LayoutUI.ButtonSolid icon={<QuestionMarkCircleSolid />} /> :
-          <DisabledButton disabled icon={<QuestionMarkCircleSolid />} />}
-      </Tooltip>
-    </Dropdown>
-    <Firewall modalState={firewallModalState} setIsModalOpen={setFirewallModalOpen}/>
-    <HelpPage modalState={helpPageModalState} setIsModalOpen={setHelpPageModalOpen}/>
+      placement='bottomLeft'
+      children={<LayoutUI.ButtonSolid icon={<QuestionMarkCircleSolid />} />}
+    />
+    <Firewall modalState={firewallModalState} setIsModalOpen={setFirewallModalOpen} />
+    <HelpPage modalState={helpPageModalState} setIsModalOpen={setHelpPageModalOpen} />
   </ButtonWrapper>
   )
 }

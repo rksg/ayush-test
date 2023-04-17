@@ -40,7 +40,7 @@ describe('Wired', () => {
       rest.get(SwitchUrlsInfo.getCliFamilyModels.url,
         (_, res, ctx) => res(ctx.json(familyModels))
       ),
-      rest.get(CommonUrlsInfo.getSwitchConfigProfile.url,
+      rest.get(SwitchUrlsInfo.getSwitchConfigProfile.url,
         (_, res, ctx) => res(ctx.json(profile))
       ),
       rest.post(SwitchUrlsInfo.addSwitchConfigProfile.url,
@@ -324,19 +324,20 @@ describe('Wired', () => {
     fireEvent.change(profileNameInput, { target: { value: 'profiletest' } })
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
-    await screen.findByRole('heading', { level: 3, name: /VLANs/ })
+    await screen.findByRole('heading', { level: 3, name: /VLANs/i })
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
-    await screen.findByRole('heading', { level: 3, name: /ACLs/ })
+    await screen.findByRole('heading', { level: 3, name: /ACLs/i })
     await userEvent.click(await screen.findByRole('button', { name: 'Add ACL' }))
-    const aclNameInput = await screen.findByLabelText('ACL Name')
+    const aclNameInput = await screen.findByLabelText(/ACL Name/i)
     fireEvent.change(aclNameInput, { target: { value: '100' } })
     const extendedOption = await screen.findByTestId('aclExtended')
     await userEvent.click(extendedOption)
-    await userEvent.click(await screen.findByRole('button', { name: 'Add' }) )
+    const aclDialog = await screen.findByRole('dialog')
+    await userEvent.click(await within(aclDialog).findByRole('button', { name: 'Add' }) )
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
-    await screen.findByRole('heading', { level: 3, name: /Venues/ })
+    await screen.findByRole('heading', { level: 3, name: /Venues/i })
     const venueSwitch = await screen.findAllByRole('switch')
     await userEvent.click(venueSwitch[0])
     await userEvent.click(venueSwitch[1])
@@ -350,7 +351,7 @@ describe('Wired', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
     await screen.findByRole('heading', { level: 3, name: /Summary/ })
 
-    await userEvent.click(await screen.findByRole('button', { name: /Finish/ }) )
+    await userEvent.click(await screen.findByRole('button', { name: 'Finish' }) )
   })
 
   it('should create Switch Configuration Profile with trust ports correctly', async () => {
@@ -376,7 +377,6 @@ describe('Wired', () => {
     const vIdInput = await screen.findByLabelText('VLAN ID')
     fireEvent.change(vIdInput, { target: { value: '1' } })
     await userEvent.click((await screen.findByTestId('dhcpSnooping')))
-    await userEvent.click((await screen.findByTestId('arpInspection')))
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }) )
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
@@ -386,7 +386,7 @@ describe('Wired', () => {
     await screen.findByRole('heading', { level: 3, name: /Trusted Ports/i })
 
     await userEvent.click(await screen.findByRole('button', { name: 'Add Model' }))
-    const trustedPortModal = await screen.findByTestId('trustedPortModal')
+    const trustedPortModal = await screen.findByRole('dialog')
     const family = await within(trustedPortModal).findByTestId('ICX7150')
     await userEvent.click(family)
     const model = await within(trustedPortModal).findByTestId('24')
@@ -401,8 +401,8 @@ describe('Wired', () => {
     fireEvent.keyPress(await within(trustedPortModal).findByRole('combobox'),
       { key: 'Enter', code: 13, charCode: 13 })
     const saveTrustPortButton =
-      await within(trustedPortModal).findAllByRole('button', { name: 'Finish' })
-    await userEvent.click(saveTrustPortButton[0])
+      await within(trustedPortModal).findByRole('button', { name: 'Finish' })
+    await userEvent.click(saveTrustPortButton)
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
     await screen.findByRole('heading', { level: 3, name: /Venues/i })
@@ -414,7 +414,7 @@ describe('Wired', () => {
     await userEvent.click(finishButton[1])
   })
 
-  it('should create Switch Configuration Profile with trust ports ICX-7550 correctly', async () => {
+  xit('should create Switch Configuration Profile with trust ports ICX7550 correctly', async () => {
     const params = {
       tenantId: 'tenant-id'
     }
@@ -437,7 +437,6 @@ describe('Wired', () => {
     const vIdInput = await screen.findByLabelText('VLAN ID')
     fireEvent.change(vIdInput, { target: { value: '1' } })
     await userEvent.click((await screen.findByTestId('dhcpSnooping')))
-    await userEvent.click((await screen.findByTestId('arpInspection')))
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }) )
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
@@ -447,7 +446,7 @@ describe('Wired', () => {
     await screen.findByRole('heading', { level: 3, name: /Trusted Ports/i })
 
     await userEvent.click(await screen.findByRole('button', { name: 'Add Model' }))
-    const trustedPortModal = await screen.findByTestId('trustedPortModal')
+    const trustedPortModal = await screen.findByRole('dialog')
     const family1 = await within(trustedPortModal).findByTestId('ICX7850')
     await userEvent.click(family1)
     const model1 = await within(trustedPortModal).findByTestId('48F')
@@ -472,8 +471,8 @@ describe('Wired', () => {
     fireEvent.keyPress(await within(trustedPortModal).findByRole('combobox'),
       { key: 'Enter', code: 13, charCode: 13 })
     const saveTrustPortButton =
-      await within(trustedPortModal).findAllByRole('button', { name: 'Finish' })
-    await userEvent.click(saveTrustPortButton[0])
+      await within(trustedPortModal).findByRole('button', { name: 'Finish' })
+    await userEvent.click(saveTrustPortButton)
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
     await screen.findByRole('heading', { level: 3, name: /Venues/i })

@@ -11,10 +11,10 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { get }                    from '@acx-ui/config'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { SearchOutlined }         from '@acx-ui/icons'
-import { countryCodes }           from '@acx-ui/rc/components'
+import { get }                                   from '@acx-ui/config'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
+import { SearchOutlined }                        from '@acx-ui/icons'
+import { countryCodes, GoogleMapWithPreference } from '@acx-ui/rc/components'
 import {
   useAddVenueMutation,
   useLazyVenuesListQuery,
@@ -261,7 +261,6 @@ export function VenuesForm () {
       const formData = { ...values }
       formData.address = countryCode ? { ...address, countryCode } : address
       await updateVenue({ params, payload: formData }).unwrap()
-      navigate(linkToVenues, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -348,7 +347,7 @@ export function VenuesForm () {
                   />
                 </Form.Item>
                 {isMapEnabled ?
-                  <GoogleMap
+                  <GoogleMapWithPreference
                     libraries={['places']}
                     mapTypeControl={false}
                     streetViewControl={false}
@@ -357,7 +356,7 @@ export function VenuesForm () {
                     center={center}
                   >
                     {marker && <GoogleMapMarker position={marker} />}
-                  </GoogleMap>
+                  </GoogleMapWithPreference>
                   :
                   <GoogleMap.NotEnabled />
                 }

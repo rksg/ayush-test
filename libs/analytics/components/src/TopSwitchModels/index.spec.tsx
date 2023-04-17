@@ -35,7 +35,7 @@ describe('TopSwitchModelsWidget', () => {
       data: topSwitchModelsResponse
     })
     const { asFragment } = render( <Provider> <TopSwitchModels filters={filters}/></Provider>)
-    await screen.findByText('Top 5 Switch Models')
+    await screen.findByText('Top Switch Models')
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     // eslint-disable-next-line testing-library/no-node-access

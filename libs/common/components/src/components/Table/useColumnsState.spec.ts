@@ -15,6 +15,10 @@ describe('useColumnsState', () => {
     { key: 'col5', dataIndex: 'col5', show: true }
   ] as TableColumn<unknown>[]
 
+  beforeEach(() => {
+    jest.restoreAllMocks()
+  })
+
   it('returns expected value when columnState not given', () => {
     const options: Options = { columns: [
       ...columns.slice(0,1),
@@ -159,5 +163,50 @@ describe('useColumnsState', () => {
       col5: false,
       col4: true
     })
+  })
+
+  it('stores default state in localStorage when id given', () => {
+    const getItem = jest.spyOn(localStorage, 'getItem').mockReturnValue(null)
+    const setItem = jest.spyOn(localStorage, 'setItem').mockImplementation(() => {})
+
+    const settingsId = 'settings-id'
+    const options: Options = { settingsId, columns: [
+      ...columns.slice(0,1),
+      ...columns.slice(2,5)
+    ] }
+    const expected = {
+      col1: { order: 0, fixed: 'left', show: true, disable: true },
+      col3: { order: 1, fixed: undefined, show: true, disable: true },
+      col4: { order: 2, fixed: undefined, show: false, disable: false },
+      col5: { order: 3, fixed: undefined, show: true, disable: false }
+    }
+    const { result } = renderHook(useColumnsState, { initialProps: options })
+    expect(result.current.value).toEqual(expected)
+
+    expect(getItem).toHaveBeenCalledWith(settingsId)
+    expect(setItem).toHaveBeenCalledWith(settingsId, JSON.stringify(expected))
+  })
+
+  it('takes state in localStorage when available', () => {
+    const settingsId = 'settings-id'
+    const options: Options = { settingsId, columns: [
+      ...columns.slice(0,1),
+      ...columns.slice(2,5)
+    ] }
+    const expected = {
+      col1: { order: 0, fixed: 'left', show: true, disable: true },
+      col3: { order: 1, fixed: undefined, show: true, disable: true },
+      col4: { order: 2, fixed: undefined, show: false, disable: false },
+      col5: { order: 3, fixed: undefined, show: true, disable: false }
+    }
+
+    const getItem = jest.spyOn(localStorage, 'getItem').mockReturnValue(JSON.stringify(expected))
+    const setItem = jest.spyOn(localStorage, 'setItem').mockImplementation(() => {})
+
+    const { result } = renderHook(useColumnsState, { initialProps: options })
+    expect(result.current.value).toEqual(expected)
+
+    expect(getItem).toHaveBeenCalledWith(settingsId)
+    expect(setItem).not.toHaveBeenCalled()
   })
 })

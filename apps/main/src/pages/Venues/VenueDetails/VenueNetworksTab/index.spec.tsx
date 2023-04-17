@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 import '@testing-library/jest-dom'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { networkApi }                   from '@acx-ui/rc/services'
@@ -34,6 +35,12 @@ const params = {
   tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
   venueId: '3b2ffa31093f41648ed38ed122510029'
 }
+
+const mockedUsedNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
+}))
 
 describe('VenueNetworksTab', () => {
   beforeEach(() => {
@@ -69,6 +76,15 @@ describe('VenueNetworksTab', () => {
     const row = await screen.findByRole('row', { name: /test_1/i })
     expect(row).toHaveTextContent('Pre-Shared Key (PSK) - WPA2')
     expect(row).toHaveTextContent('VLAN-1 (Default)')
+  })
+
+  it('should clicks add network correctly', async () => {
+    render(<Provider><VenueNetworksTab /></Provider>, {
+      route: { params, path: '/:tenantId/venues/:venueId/venue-details/networks' }
+    })
+
+    expect(await screen.findByText('Add Network')).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: 'Add Network' }))
   })
 
   it('activate Network', async () => {

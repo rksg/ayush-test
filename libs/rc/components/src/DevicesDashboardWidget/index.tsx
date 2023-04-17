@@ -6,9 +6,11 @@ import { useDashboardFilter, NetworkNodePath }                    from '@acx-ui/
 import {
   getApDonutChartData,
   getEdgeDonutChartData,
-  getSwitchDonutChartData
+  getSwitchDonutChartData,
+  getApStackedBarChartData,
+  getSwitchStackedBarChartData
 } from '../DevicesWidget/helper'
-import { DevicesWidget } from '../DevicesWidget/index'
+import { DevicesWidget, DevicesWidgetv2 } from '../DevicesWidget/index'
 
 export function DevicesDashboardWidget () {
   const queryResults = useDashboardOverviewQuery({
@@ -51,9 +53,10 @@ export function DevicesDashboardWidgetV2 () {
   },{
     selectFromResult: ({ data, ...rest }) => ({
       data: {
-        apData: getApDonutChartData(data?.summary?.aps?.summary),
-        switchData: getSwitchDonutChartData(data),
-        edgeData: getEdgeDonutChartData(data?.summary?.edges)
+        apStackedData: getApStackedBarChartData(data?.summary?.aps?.summary),
+        switchStackedData: getSwitchStackedBarChartData(data),
+        apTotalCount: data?.aps?.totalCount,
+        switchTotalCount: data?.switches?.totalCount
       },
       ...rest
     })
@@ -61,10 +64,11 @@ export function DevicesDashboardWidgetV2 () {
 
   return (
     <Loader states={[queryResults]}>
-      <DevicesWidget
-        apData={queryResults.data.apData}
-        switchData={queryResults.data.switchData}
-        edgeData={queryResults.data.edgeData}
+      <DevicesWidgetv2
+        apStackedData={queryResults.data.apStackedData}
+        switchStackedData={queryResults.data.switchStackedData}
+        apTotalCount={queryResults.data.apTotalCount || 0}
+        switchTotalCount={queryResults.data.switchTotalCount || 0}
         enableArrowClick
       />
     </Loader>

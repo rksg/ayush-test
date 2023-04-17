@@ -21,7 +21,9 @@ import {
 import { filterByAccess } from '@acx-ui/user'
 import { useDateFilter }  from '@acx-ui/utils'
 
-import SwitchTabs from './SwitchTabs'
+import AddStackMember from './AddStackMember'
+import SwitchTabs     from './SwitchTabs'
+
 
 import { SwitchDetailsContext } from '.'
 
@@ -29,7 +31,8 @@ enum MoreActions {
 SYNC_DATA = 'SYNC_DATA',
 REBOOT = 'REBOOT',
 CLI_SESSION = 'CLI_SESSION',
-DELETE = 'DELETE'
+DELETE = 'DELETE',
+ADD_MEMBER = 'ADD_MEMBER'
 }
 
 
@@ -53,6 +56,7 @@ function SwitchPageHeader () {
   const [isSyncing, setIsSyncing] = useState(false)
   const [syncDataEndTime, setSyncDataEndTime] = useState('')
   const [cliModalState, setCliModalOpen] = useState(false)
+  const [addStackMemberOpen, setAddStackMemberOpen] = useState(false)
 
   const isOperational = switchDetailHeader?.deviceStatus === SwitchStatusEnum.OPERATIONAL
   const isStack = switchDetailHeader?.isStack || false
@@ -74,6 +78,9 @@ function SwitchPageHeader () {
       case MoreActions.SYNC_DATA:
         switchAction.doSyncData(switchId || '', tenantId || '', handleSyncData)
         setIsSyncing(true)
+        break
+      case MoreActions.ADD_MEMBER:
+        setAddStackMemberOpen(true)
         break
     }
   }
@@ -163,6 +170,12 @@ function SwitchPageHeader () {
           <Menu.Divider />
         </>
       }
+      {isStack &&
+      <Menu.Item
+        key={MoreActions.ADD_MEMBER}>
+        {$t({ defaultMessage: 'Add Member' })}
+      </Menu.Item>
+      }
       <Menu.Item
         key={MoreActions.DELETE}>
         <Tooltip placement='bottomRight' title={syncDataEndTime}>
@@ -221,6 +234,7 @@ function SwitchPageHeader () {
         jwtToken={jwtToken.data?.access_token || ''}
         switchName={switchDetailHeader?.name || switchDetailHeader?.switchName || switchDetailHeader?.serialNumber || ''}
       />
+      <AddStackMember visible={addStackMemberOpen} setVisible={setAddStackMemberOpen} />
     </>
   )
 }

@@ -232,7 +232,7 @@ describe('SnmpAgentForm', () => {
 
     // Policy name can't empty
     await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
-    await screen.findByText('Please enter Policy Name')
+    await screen.findByText('Please enter Profile Name')
 
     // Policy name can't be duplicate
     const inputElem = await screen.findByRole('textbox')

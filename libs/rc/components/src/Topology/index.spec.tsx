@@ -1,10 +1,10 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { venueApi }                                                                      from '@acx-ui/rc/services'
-import { CommonUrlsInfo, ConnectionStates, ConnectionStatus, DeviceStates, DeviceTypes } from '@acx-ui/rc/utils'
-import { Provider, store }                                                               from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved }              from '@acx-ui/test-utils'
+import { venueApi }                                                                                               from '@acx-ui/rc/services'
+import { CommonUrlsInfo, ConnectionStates, ConnectionStatus, DeviceStates, DeviceTypes, ShowTopologyFloorplanOn } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                        from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved }                                       from '@acx-ui/test-utils'
 
 import { TopologyGraph } from '.'
 
@@ -135,7 +135,8 @@ const graphData = {
           serial: 'D0D5408E5E02',
           id: 'D0:D5:40:8E:5E:02',
           states: DeviceStates.Regular,
-          childCount: 1
+          childCount: 1,
+          cloudPort: '1/2/1'
         },
         {
           type: DeviceTypes.Switch,
@@ -218,7 +219,7 @@ const graphData = {
           childCount: 0
         },
         {
-          type: 'any-device',
+          type: 'any-device' as DeviceTypes,
           category: 'Ap',
           name: 'Ap008',
           mac: '5C:DF:89:2A:AF:10',
@@ -313,7 +314,7 @@ describe('Topology', () => {
     )
 
     const { asFragment } = await render(<Provider>
-      <TopologyGraph /></Provider>,{
+      <TopologyGraph showTopologyOn={ShowTopologyFloorplanOn.VENUE_OVERVIEW}/></Provider>,{
       route: { params }
     })
 
@@ -409,7 +410,7 @@ describe('Topology', () => {
         type: DeviceTypes.Ap,
         category: 'Ap',
         name: 'ApName',
-        mac: '',
+        mac: '5C:DF:89:2A:AF:06' + i,
         serial: '534689211603',
         id: '5C:DF:89:2A:AF:06' + i,
         states: DeviceStates.Regular,
@@ -425,7 +426,7 @@ describe('Topology', () => {
       )
     )
     const { asFragment } = await render(<Provider>
-      <TopologyGraph /></Provider>,{
+      <TopologyGraph showTopologyOn={ShowTopologyFloorplanOn.VENUE_OVERVIEW} /></Provider>,{
       route: { params }
     })
 
@@ -434,5 +435,38 @@ describe('Topology', () => {
     expect(ApDevices.length).toBe(105)
 
     expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('should render topology on AP overview', async () => {
+    const params = {
+      tenantId: 'fe892a451d7a486bbb3aee929d2dfcd1',
+      venueId: '7231da344778480d88f37f0cca1c534f'
+    }
+    mockServer.use(
+      rest.get(
+        CommonUrlsInfo.getTopology.url,
+        (req, res, ctx) => {
+          return res(ctx.json(graphData))
+        }
+      )
+    )
+
+    const { asFragment } = await render(<Provider>
+      <TopologyGraph
+        showTopologyOn={ShowTopologyFloorplanOn.AP_OVERVIEW}
+        venueId={params.venueId}
+        deviceMac='5C:DF:89:2A:AF:01' /></Provider>,{
+      route: { params }
+    })
+
+    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+
+    await screen.findByTestId('topologyGraph')
+
+    await screen.findAllByTestId('AccessPointWifi')
+
+    expect(asFragment()).toMatchSnapshot()
+
   })
 })

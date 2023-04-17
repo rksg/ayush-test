@@ -88,10 +88,11 @@ export const dataZoomOptions = (data: TimeSeriesChartData[]) => [{
   type: 'inside',
   filterMode: 'none' as InsideDataZoomOption['filterMode'],
   zoomLock: true,
-  minValueSpan: Math.max(...data.map(datum =>
-    moment.duration(moment(datum.data[1][0])
+  minValueSpan: Math.max(...data.map(datum => datum.data.length > 1
+    ? moment.duration(moment(datum.data[1][0])
       .diff(moment(datum.data[0][0])))
       .asMilliseconds()
+    : 0
   ))
 }]
 
@@ -299,6 +300,13 @@ export const getDeviceConnectionStatusColors = () => [
   cssStr(deviceStatusColors.initial), // Setup Phase
   cssStr(deviceStatusColors.alerting), // Transient Issue
   cssStr(deviceStatusColors.disconnected) // Requires Attention
+]
+
+export const getDeviceConnectionStatusColorsv2 = () => [
+  cssStr(deviceStatusColors.connected), // Operational
+  cssStr(deviceStatusColors.alerting), // Transient Issue
+  cssStr(deviceStatusColors.disconnected), // Requires Attention
+  cssStr(deviceStatusColors.initial) // Setup Phase
 ]
 
 export const deviceCategoryColors = {

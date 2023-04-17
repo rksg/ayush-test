@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
@@ -22,14 +23,16 @@ describe('AAAServers', () => {
       rest.get(SwitchUrlsInfo.getAaaSetting.url, (req, res, ctx) => res(ctx.json(mockAaaSetting))),
       rest.post(SwitchUrlsInfo.getAaaServerList.url, (req, res, ctx) => res(ctx.json(emptyList)))
     )
-    const { asFragment } = render(<Provider><AAAServers /></Provider>, { route: { params } })
+    render(<Provider><AAAServers /></Provider>, { route: { params } })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     await waitFor(async () => {
       (await screen.findAllByRole('columnheader', { name: /name/ })).forEach(header => {
         expect(header).toHaveClass('react-resizable')
       })
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect(
+      screen.getByText('You must have at least one RADIUS or TACACS+ server set-up in order to enable authorization or accounting')
+    ).toBeVisible()
   })
 
   it('should render RADIUS list correctly and add data', async () => {
@@ -86,7 +89,7 @@ describe('AAAServers', () => {
         res(ctx.json({}))
       )
     )
-    const { asFragment } = render(
+    render(
       <Provider>
         <AAAServers />
       </Provider>,
@@ -109,7 +112,6 @@ describe('AAAServers', () => {
     await userEvent.click(editButton)
     const saveButton = screen.getByRole('button', { name: /save/i })
     await userEvent.click(saveButton)
-    expect(asFragment()).toMatchSnapshot()
   })
 
   it('should render RADIUS list correctly and delete data', async () => {

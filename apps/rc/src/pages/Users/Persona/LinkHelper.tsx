@@ -93,3 +93,16 @@ export function NetworkSegmentationLink (props: { nsgId?: string, name?: string 
       : <></>
   )
 }
+
+export function PropertyUnitLink (props: { venueId?: string, unitId?: string, name?: string }) {
+  const { venueId, unitId, name } = props
+  return (
+    (venueId && unitId)
+      ? <TenantLink
+        to={`venues/${venueId}/venue-details/units`}
+      >
+        {name ?? unitId}
+      </TenantLink>
+      : <></>
+  )
+}

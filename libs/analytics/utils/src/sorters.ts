@@ -1,9 +1,7 @@
 import _      from 'lodash'
 import moment from 'moment-timezone'
 
-import { getIntl } from '@acx-ui/utils'
-
-import { noDataSymbol } from '../src/constants'
+import { getIntl, noDataDisplay } from '@acx-ui/utils'
 
 type SortResult = -1 | 0 | 1
 
@@ -25,8 +23,8 @@ export function dateSort (a: unknown, b: unknown): SortResult {
 }
 
 export function clientImpactSort (a: unknown, b: unknown): SortResult {
-  let c = (a === noDataSymbol) ? -1 : parseFloat(a as string)
-  let d = (b === noDataSymbol) ? -1 : parseFloat(b as string)
+  let c = (a === noDataDisplay) ? -1 : parseFloat(a as string)
+  let d = (b === noDataDisplay) ? -1 : parseFloat(b as string)
   if (isNaN(c)) c = -2
   if (isNaN(d)) d = -2
   if (c > d) return 1

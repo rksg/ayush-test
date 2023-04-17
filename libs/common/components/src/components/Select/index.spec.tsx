@@ -15,6 +15,7 @@ describe('Select', () => {
   const CustomCascader: React.FC<CascaderProps> = (props: CascaderProps) => (
     <Select {...props} />
   )
+  const entityName = Select.defaultProps.entityName
 
   it('renders empty list & placeholder', async () => {
     const placeholder = 'test cascader'
@@ -24,6 +25,7 @@ describe('Select', () => {
       placeholder={placeholder}
       multiple={false}
       onApply={onApplyMock}
+      entityName={entityName}
     />)
 
     expect(screen.getByText(placeholder)).toBeVisible()
@@ -63,6 +65,7 @@ describe('Select', () => {
         options={options}
         onApply={onApplyMock}
         multiple={false}
+        entityName={entityName}
       />)
 
     fireEvent.mouseDown(await screen.findByRole('combobox'))
@@ -83,6 +86,63 @@ describe('Select', () => {
 
   })
 
+  it('renders single select, triggers onApply, with visibleChange', async () => {
+    const options: Option[] = [
+      {
+        value: 'n1',
+        label: 'SSID 1'
+      },
+      {
+        value: 'n2',
+        label: 'SSID 2'
+      },
+      {
+        value: 'n3',
+        label: 'SSID 3'
+      },
+      {
+        value: 'n4',
+        label: 'SSID 4'
+      },
+      {
+        value: 'n5',
+        label: 'n5',
+        ignoreSelection: true
+      }
+    ]
+
+    const onApplyMock = jest.fn()
+    const onVisibleChange = jest.fn()
+    render(
+      <CustomCascader
+        options={options}
+        onApply={onApplyMock}
+        onDropdownVisibleChange={onVisibleChange}
+        multiple={false}
+        entityName={entityName}
+      />)
+
+    fireEvent.mouseDown(await screen.findByRole('combobox'))
+    const allOptions = screen.getAllByRole('menuitemcheckbox')
+    expect(allOptions).toHaveLength(options.length)
+    expect(onVisibleChange).toBeCalledWith(true)
+
+    fireEvent.click(allOptions[0])
+    expect(onApplyMock).toBeCalledTimes(1)
+    expect(onApplyMock).toHaveBeenCalledWith(['n1'])
+    expect(onVisibleChange).toHaveBeenLastCalledWith(false)
+
+    fireEvent.mouseDown(await screen.findByRole('combobox'))
+    fireEvent.click(allOptions[1])
+    expect(onApplyMock).toBeCalledTimes(2)
+    expect(onVisibleChange).toBeCalledWith(true)
+
+    fireEvent.mouseDown(await screen.findByRole('combobox'))
+    fireEvent.click(allOptions[4])
+    expect(onApplyMock).toBeCalledTimes(2)
+    expect(onVisibleChange).toHaveBeenLastCalledWith(false)
+
+  })
   it('renders simple list, triggers onApply with multi-select', async () => {
     const options: Option[] = [
       {
@@ -109,6 +169,7 @@ describe('Select', () => {
         options={options}
         onApply={onApplyMock}
         multiple={true}
+        entityName={entityName}
       />)
 
     await userEvent.click(await screen.findByRole('combobox'))
@@ -148,6 +209,7 @@ describe('Select', () => {
         options={options}
         onApply={onApplyMock}
         showRadioBand={true}
+        entityName={entityName}
       />)
     await userEvent.click(await screen.findByRole('combobox'))
     const allOptions = screen.getAllByRole('menuitemcheckbox')
@@ -195,6 +257,7 @@ describe('Select', () => {
         defaultRadioBand={['5']}
         isRadioBandDisabled={true}
         radioBandDisabledReason={'Disabled for test case.'}
+        entityName={entityName}
       />)
     await userEvent.click(await screen.findByRole('combobox'))
     expect(asFragment()).toMatchSnapshot()
@@ -219,6 +282,7 @@ describe('Select', () => {
         onApply={onApplyMock}
         options={options}
         multiple
+        entityName={entityName}
       />)
     await userEvent.click(await screen.findByRole('combobox'))
     const allOptions = screen.getAllByRole('menuitemcheckbox')
@@ -259,6 +323,7 @@ describe('Select', () => {
         multiple={false}
         allowClear={true}
         onClear={onClearMock}
+        entityName={entityName}
       />
     )
 
@@ -312,6 +377,7 @@ describe('Select', () => {
         multiple={true}
         allowClear={true}
         onClear={onClearMock}
+        entityName={entityName}
       />
     )
 

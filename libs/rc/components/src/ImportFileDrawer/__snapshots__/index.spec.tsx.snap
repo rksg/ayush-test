@@ -77,7 +77,7 @@ exports[`Import CSV Drawer should render correctly 1`] = `
                     type="button"
                   >
                     <span>
-                      Browser
+                      Browse
                     </span>
                   </button>
                 </div>

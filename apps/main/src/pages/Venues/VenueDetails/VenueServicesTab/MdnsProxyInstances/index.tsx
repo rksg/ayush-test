@@ -63,6 +63,7 @@ export default function MdnsProxyInstances () {
       dataIndex: 'apName',
       key: 'apName',
       sorter: true,
+      fixed: 'left',
       render: (data, row) => {
         // eslint-disable-next-line max-len
         return <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>{data}</TenantLink>
@@ -135,6 +136,7 @@ export default function MdnsProxyInstances () {
       </UI.TableTitle>
       <Loader states={[tableQuery]}>
         <Table<MdnsProxyAp>
+          settingsId='venue-mdns-proxy-table'
           columns={columns}
           dataSource={tableQuery.data?.data}
           actions={filterByAccess([{

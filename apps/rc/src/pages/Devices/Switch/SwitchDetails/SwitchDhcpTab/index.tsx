@@ -9,8 +9,10 @@ import {
   useUpdateDhcpServerStateMutation
 } from '@acx-ui/rc/services'
 import {
+  defaultSort,
   IP_ADDRESS_TYPE,
   isOperationalSwitch,
+  sortProp,
   SwitchDhcpLease
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
@@ -53,12 +55,12 @@ export function SwitchDhcpTab () {
         content: $t({ defaultMessage: `
           This switch can no longer act as a DHCP client once DHCP server is enabled.` }),
         onOk: () => {
-          updateDhcpServerState({ params: { tenantId, switchId }, payload: { status: checked } })
+          updateDhcpServerState({ params: { tenantId, switchId }, payload: { state: checked } })
         }
       })
       return
     } else {
-      updateDhcpServerState({ params: { tenantId, switchId }, payload: { status: checked } })
+      updateDhcpServerState({ params: { tenantId, switchId }, payload: { state: checked } })
     }
   }
 
@@ -102,22 +104,23 @@ export function SwitchDhcpLeaseTable () {
       key: 'clientId',
       title: $t({ defaultMessage: 'Client ID' }),
       dataIndex: 'clientId',
-      sorter: false
+      sorter: { compare: sortProp('clientId', defaultSort) },
+      defaultSortOrder: 'ascend'
     }, {
       key: 'clientIp',
       title: $t({ defaultMessage: 'Client IP' }),
       dataIndex: 'clientIp',
-      sorter: false
+      sorter: { compare: sortProp('clientIp', defaultSort) }
     }, {
       key: 'leaseExpiration',
       title: $t({ defaultMessage: 'Lease Expiration' }),
       dataIndex: 'leaseExpiration',
-      sorter: false
+      sorter: { compare: sortProp('leaseExpiration', defaultSort) }
     }, {
       key: 'leaseType',
       title: $t({ defaultMessage: 'Lease Type' }),
       dataIndex: 'leaseType',
-      sorter: false
+      sorter: { compare: sortProp('leaseType', defaultSort) }
     }
   ]
 

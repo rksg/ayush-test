@@ -1,13 +1,14 @@
 /* eslint-disable max-len */
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
+import { rest } from 'msw'
 
 import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }               from '@acx-ui/store'
 import {
+  fireEvent,
   mockServer,
   render,
   screen,
+  waitFor,
   within
 } from '@acx-ui/test-utils'
 
@@ -79,8 +80,9 @@ describe('Notification List', () => {
         route: { params }
       })
     const row = await screen.findByRole('row', { name: /testUser 1/i })
-    await userEvent.click(within(row).getByRole('checkbox'))
-    await userEvent.click(screen.getByRole('button', { name: 'Edit' }))
+    fireEvent.click(within(row).getByRole('checkbox'))
+    fireEvent.click(screen.getByRole('button', { name: 'Edit' }))
+    expect(await screen.findByTestId('rc-RecipientDialog')).toBeVisible()
   })
 
   it('should trigger add button', async () => {
@@ -91,7 +93,8 @@ describe('Notification List', () => {
         route: { params }
       })
 
-    await userEvent.click(screen.getByRole('button', { name: 'Add Recipient' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Add Recipient' }))
+    expect(await screen.findByTestId('rc-RecipientDialog')).toBeVisible()
   })
 
   it('edit button will remove when select above 1 row', async () => {
@@ -102,8 +105,8 @@ describe('Notification List', () => {
         route: { params }
       })
     const row = await screen.findAllByRole('row', { name: /testUser/i })
-    await userEvent.click(within(row[0]).getByRole('checkbox'))
-    await userEvent.click(within(row[1]).getByRole('checkbox'))
+    fireEvent.click(within(row[0]).getByRole('checkbox'))
+    fireEvent.click(within(row[1]).getByRole('checkbox'))
     expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
   })
 
@@ -115,10 +118,14 @@ describe('Notification List', () => {
         route: { params }
       })
     const row = await screen.findByRole('row', { name: /testUser 1/i })
-    await userEvent.click(within(row).getByRole('checkbox'))
-    await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
+    fireEvent.click(within(row).getByRole('checkbox'))
+    fireEvent.click(screen.getByRole('button', { name: 'Delete' }))
     await screen.findByText('Delete "testUser 1"?')
-    await userEvent.click(screen.getByRole('button', { name: 'Delete Recipients' }))
+    const okBtn = screen.getByRole('button', { name: 'Delete Recipients' })
+    fireEvent.click(okBtn)
+    await waitFor(() => {
+      expect(okBtn).not.toBeVisible()
+    })
   })
 
   it('should delete selected row(multiple)', async () => {
@@ -131,11 +138,15 @@ describe('Notification List', () => {
 
     const row1 = await screen.findByRole('row', { name: /testUser 1/i })
     const row2 = await screen.findByRole('row', { name: /testUser 2/i })
-    await userEvent.click(within(row1).getByRole('checkbox'))
-    await userEvent.click(within(row2).getByRole('checkbox'))
-    await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
+    fireEvent.click(within(row1).getByRole('checkbox'))
+    fireEvent.click(within(row2).getByRole('checkbox'))
+    fireEvent.click(screen.getByRole('button', { name: 'Delete' }))
     await screen.findByText('Delete "2 Recipients"?')
-    await userEvent.click(screen.getByRole('button', { name: 'Delete Recipients' }))
+    const okBtn = screen.getByRole('button', { name: 'Delete Recipients' })
+    fireEvent.click(okBtn)
+    await waitFor(() => {
+      expect(okBtn).not.toBeVisible()
+    })
   })
 
   it('should check duplicate endpoint correctly', async () => {

@@ -36,6 +36,7 @@ export interface EventBase {
   adminName?: string
   entity_id: string
   entity_type: string
+  ipAddress?: string
   event_datetime: string
   id: string
   macAddress: string
@@ -65,25 +66,13 @@ export interface EventMeta {
   switchMac?: string
   switchName: string
   venueName: string
+  tableKey?: string
 }
 
 export type Event = EventBase & EventMeta
 
-export interface AdminLogBase {
-  adminName: string
-  entity_id: string
-  entity_type: string
-  event_datetime: string
-  id: string
-  message: string
-  raw_event: string
-  severity: string
-}
+export type AdminLogBase = EventBase
 
-export interface AdminLogMeta {
-  id: AdminLogBase['id']
-  isApExists: boolean
-  isSwitchExists: boolean
-}
+export type AdminLogMeta = EventMeta
 
 export type AdminLog = AdminLogBase & AdminLogMeta

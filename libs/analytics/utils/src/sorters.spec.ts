@@ -1,4 +1,4 @@
-import { noDataSymbol } from '../src/constants'
+import { noDataDisplay } from '@acx-ui/utils'
 
 import {
   defaultSort,
@@ -108,18 +108,18 @@ describe('clientImpactSort', () => {
     expect(clientImpactSort(b, a)).toBe(1)
   })
 
-  it('should return negative when a has noDataSymbol', () => {
-    const noDataA = clientImpactSort(noDataSymbol, b)
+  it('should return negative when a has noDataDisplay', () => {
+    const noDataA = clientImpactSort(noDataDisplay, b)
     expect(noDataA).toBe(-1)
   })
 
-  it('should return positive when b has noDataSymbol', () => {
-    const noDataB = clientImpactSort(a, noDataSymbol)
+  it('should return positive when b has noDataDisplay', () => {
+    const noDataB = clientImpactSort(a, noDataDisplay)
     expect(noDataB).toBe(1)
   })
 
-  it('should return 0 when noDataSymbol on both', () => {
-    const noData = clientImpactSort(noDataSymbol, noDataSymbol)
+  it('should return 0 when noDataDisplay on both', () => {
+    const noData = clientImpactSort(noDataDisplay, noDataDisplay)
     expect(noData).toBe(0)
   })
 
@@ -143,18 +143,18 @@ describe('severitySort', () => {
     expect(reverseGreater).toBe(1)
   })
 
-  it('should return 0 with noDataSymbol on a', () => {
-    const noDataA = severitySort(noDataSymbol, b)
+  it('should return 0 with noDataDisplay on a', () => {
+    const noDataA = severitySort(noDataDisplay, b)
     expect(noDataA).toBe(0)
   })
 
-  it('should return 0 with noDataSymbol on b', () => {
-    const noDataB = severitySort(a, noDataSymbol)
+  it('should return 0 with noDataDisplay on b', () => {
+    const noDataB = severitySort(a, noDataDisplay)
     expect(noDataB).toBe(0)
   })
 
-  it('should return 0 on noDataSymbol on both', () => {
-    const noDataBoth = severitySort(noDataSymbol, noDataSymbol)
+  it('should return 0 on noDataDisplay on both', () => {
+    const noDataBoth = severitySort(noDataDisplay, noDataDisplay)
     expect(noDataBoth).toBe(0)
   })
 

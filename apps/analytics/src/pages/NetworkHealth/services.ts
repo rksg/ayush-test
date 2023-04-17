@@ -226,6 +226,7 @@ export const {
         variables,
         document: fetchServiceGuardSpec
       }),
+      providesTags: [{ type: 'NetworkHealth', id: 'DETAILS' }],
       transformResponse: (result: { serviceGuardSpec: NetworkHealthSpec }) =>
         result.serviceGuardSpec
     }),
@@ -249,7 +250,7 @@ export const {
       }
     }),
     networkHealthTestResults: build.query<
-    NetworkHealthTestResults,
+      NetworkHealthTestResults,
       { testId: NetworkHealthTest['id']; offset: number; limit: number }
     >({
       query: (variables) => ({ variables, document: fetchServiceGuardTestResults }),
@@ -432,7 +433,10 @@ const {
           }
         }`
       }),
-      invalidatesTags: [{ type: 'NetworkHealth', id: 'LIST' }],
+      invalidatesTags: [
+        { type: 'NetworkHealth', id: 'LIST' },
+        { type: 'NetworkHealth', id: 'DETAILS' }
+      ],
       transformResponse: (response: { updateServiceGuardSpec: CreateUpdateCloneMutationResult }) =>
         response.updateServiceGuardSpec
     }),

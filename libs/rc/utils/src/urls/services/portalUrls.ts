@@ -43,5 +43,10 @@ export const PortalUrlsInfo: { [key: string]: ApiInfo } = {
     // [New API] no mapping found
     method: 'get',
     url: '/g/ui/tenant/:tenantId/locales/:messageName'
+  },
+  getEnhancedPortalProfileList: {
+    method: 'post',
+    url: '/portalServiceProfiles/query',
+    newApi: true
   }
 }

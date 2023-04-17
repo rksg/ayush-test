@@ -33,7 +33,10 @@ import {
   TableQuery,
   RequestPayload,
   firmwareTypeTrans,
-  useTableQuery
+  useTableQuery,
+  sortProp,
+  defaultSort,
+  dateSort
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
@@ -53,14 +56,6 @@ import { ChangeScheduleDialog } from './ChangeScheduleDialog'
 import { RevertDialog }         from './RevertDialog'
 import { UpdateNowDialog }      from './UpdateNowDialog'
 
-type TablePaginationPosition =
-  | 'topLeft'
-  | 'topCenter'
-  | 'topRight'
-  | 'bottomLeft'
-  | 'bottomCenter'
-  | 'bottomRight'
-
 const transform = firmwareTypeTrans()
 
 function useColumns (
@@ -72,12 +67,13 @@ function useColumns (
 
   const columns: TableProps<FirmwareVenue>['columns'] = [
     {
-      title: intl.$t({ defaultMessage: 'Venue Name' }),
+      title: intl.$t({ defaultMessage: 'Venue' }),
       key: 'name',
       dataIndex: 'name',
-      sorter: true,
+      // sorter: true,
+      sorter: { compare: sortProp('name', defaultSort) },
+      // defaultSortOrder: 'ascend',
       searchable: searchable,
-      defaultSortOrder: 'ascend',
       render: function (data, row) {
         return row.name
       }
@@ -86,7 +82,8 @@ function useColumns (
       title: intl.$t({ defaultMessage: 'Current AP Firmware' }),
       key: 'version',
       dataIndex: 'version',
-      sorter: true,
+      // sorter: true,
+      sorter: { compare: sortProp('versions[0].version', defaultSort) },
       filterable: filterables ? filterables['version'] : false,
       filterMultiple: false,
       render: function (data, row) {
@@ -97,7 +94,8 @@ function useColumns (
       title: intl.$t({ defaultMessage: 'Firmware Type' }),
       key: 'type',
       dataIndex: 'type',
-      sorter: true,
+      // sorter: true,
+      sorter: { compare: sortProp('versions[0].category', defaultSort) },
       filterable: filterables ? filterables['type'] : false,
       filterMultiple: false,
       render: function (data, row) {
@@ -112,7 +110,8 @@ function useColumns (
       title: intl.$t({ defaultMessage: 'Last Update' }),
       key: 'lastUpdate',
       dataIndex: 'lastUpdate',
-      sorter: false,
+      // sorter: false,
+      sorter: { compare: sortProp('lastScheduleUpdate', dateSort) },
       render: function (data, row) {
         if (!row.lastScheduleUpdate) return '--'
         return toUserDate(row.lastScheduleUpdate)
@@ -122,9 +121,10 @@ function useColumns (
       title: intl.$t({ defaultMessage: 'Next Update Schedule' }),
       key: 'nextSchedule',
       dataIndex: 'nextSchedule',
-      sorter: false,
+      // sorter: false,
+      sorter: { compare: sortProp('nextSchedules[0].startDateTime', dateSort) },
+      defaultSortOrder: 'ascend',
       render: function (data, row) {
-        // return getApNextScheduleTpl(intl, row)
         return (!isNextScheduleTooltipDisabled(row)
           ? getApNextScheduleTpl(intl, row)
           // eslint-disable-next-line max-len
@@ -171,7 +171,6 @@ export const VenueFirmwareTable = (
   const [eolModels, setEolModels] = useState<string[]>([])
   const [changeUpgradeVersions, setChangeUpgradeVersions] = useState<FirmwareVersion[]>([])
   const [revertVersions, setRevertVersions] = useState<FirmwareVersion[]>([])
-  const pageBotton: TablePaginationPosition | 'none' = 'none'
 
   const [updateUpgradePreferences] = useUpdateUpgradePreferencesMutation()
   const { data: preferencesData } = useGetUpgradePreferencesQuery({ params })
@@ -238,14 +237,13 @@ export const VenueFirmwareTable = (
     }
   }
 
-  const tableData = tableQuery.data as readonly FirmwareVenue[] | undefined
   const columns = useColumns(searchable, filterables)
 
   const rowActions: TableProps<FirmwareVenue>['rowActions'] = [{
     visible: (selectedRows) => {
       let eolAp = false
       let allEolFwlatest = true
-      for (let v of venues) {
+      for (let v of selectedRows) {
         if (v['eolApFirmwares']) {
           eolAp = true
           if (allEolFwlatest) {
@@ -305,7 +303,7 @@ export const VenueFirmwareTable = (
       let eolName = ''
       let latestEolVersion = ''
       let eolModels: string[] = []
-      for (let v of venues) {
+      for (let v of selectedRows) {
         if (v['eolApFirmwares']) {
           eolAp = true
           eolName = v['eolApFirmwares'][0].name
@@ -516,9 +514,7 @@ export const VenueFirmwareTable = (
     ]}>
       <Table
         columns={columns}
-        dataSource={tableData}
-        // eslint-disable-next-line max-len
-        pagination={{ pageSize: 10000, position: [pageBotton as TablePaginationPosition , pageBotton as TablePaginationPosition] }}
+        dataSource={tableQuery.data?.data}
         onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}

@@ -31,7 +31,7 @@ exports[`TopSSIDsByTrafficWidget should render for empty data: NoData 1`] = `
                   <div
                     class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
                   >
-                    Top 5 SSIDs by Traffic
+                    Top SSIDs by Traffic
                   </div>
                 </div>
                 <div

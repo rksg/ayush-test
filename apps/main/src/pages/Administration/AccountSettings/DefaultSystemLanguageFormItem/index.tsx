@@ -1,14 +1,49 @@
 import { Col, Select, Form, Row, Typography } from 'antd'
 import { useIntl }                            from 'react-intl'
 
-import { MessageMapping } from '../MessageMapping'
+import { usePreference } from '@acx-ui/rc/components'
 
-const supportedLangs = [{ label: 'English', value: 'en' }]
+import { MessageMapping } from '../MessageMapping'
 
 const DefaultSystemLanguageFormItem = () => {
   const { $t } = useIntl()
+  const {
+    data: preferenceData,
+    currentPreferredLang,
+    update: updatePreferences,
+    getReqState,
+    updateReqState
+  } = usePreference()
 
-  // TODO: wait for UX design on this feature, currently only support "en"
+  const handlePreferredLangChange = (langCode: string) => {
+    if (!langCode) return
+    const payload = {
+      global: { ...preferenceData?.global, preferredLanguage: langCode }
+    }
+    updatePreferences({ newData: payload })
+  }
+
+  const isLoadingPreference = getReqState.isLoading || getReqState.isFetching
+  const isUpdatingPreference = updateReqState.isLoading
+
+  const generateLangLabel = (val: string): string | undefined => {
+    const lang = (currentPreferredLang ?? 'en-US').slice(0, 2)
+    const languageNames = new Intl.DisplayNames([val], { type: 'language' })
+    const currLangDisplay = new Intl.DisplayNames([lang], { type: 'language' })
+    if (lang === val) return currLangDisplay.of(val)
+    return $t({ defaultMessage: '{language} ({localLanguage})' }, {
+      language: currLangDisplay.of(val),
+      localLanguage: languageNames.of(val)
+    })
+  }
+
+  const supportedLangs = [
+    'en-US'
+  ].map(val => ({
+    label: generateLangLabel(val.slice(0, 2)),
+    value: val
+  }))
+
   return (
     <Row gutter={24}>
       <Col span={10}>
@@ -16,9 +51,18 @@ const DefaultSystemLanguageFormItem = () => {
           label={$t({ defaultMessage: 'Default System Language' })}
         >
           <Select
-            value={supportedLangs[0].value}
-            options={supportedLangs}
-          />
+            value={currentPreferredLang}
+            onChange={handlePreferredLangChange}
+            showSearch
+            allowClear
+            optionFilterProp='children'
+            disabled={isUpdatingPreference || isLoadingPreference}
+          >
+            {supportedLangs.map(({ label, value }) =>
+              (<Select.Option value={value} key={value} children={label}/>)
+            )}
+          </Select>
+
         </Form.Item>
         <Typography.Paragraph className='description greyText'>
           {

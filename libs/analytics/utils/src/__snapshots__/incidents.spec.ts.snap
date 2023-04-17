@@ -20,10 +20,10 @@ Object {
 
 exports[`impactValues handles clientCount = 0 1`] = `
 Object {
-  "clientImpactCountFormatted": "-",
-  "clientImpactDescription": "-",
-  "clientImpactRatio": "-",
-  "clientImpactRatioFormatted": "-",
+  "clientImpactCountFormatted": "--",
+  "clientImpactDescription": "--",
+  "clientImpactRatio": "--",
+  "clientImpactRatioFormatted": "--",
 }
 `;
 
@@ -38,19 +38,19 @@ Object {
 
 exports[`impactValues handles when incident has no client impact 1`] = `
 Object {
-  "clientImpactCountFormatted": "-",
-  "clientImpactDescription": "-",
-  "clientImpactRatio": "-",
-  "clientImpactRatioFormatted": "-",
+  "clientImpactCountFormatted": "--",
+  "clientImpactDescription": "--",
+  "clientImpactRatio": "--",
+  "clientImpactRatioFormatted": "--",
 }
 `;
 
 exports[`impactValues handles when incident has no client impact but has clinet count 1`] = `
 Object {
-  "clientImpactCountFormatted": "-",
-  "clientImpactDescription": "-",
-  "clientImpactRatio": "-",
-  "clientImpactRatioFormatted": "-",
+  "clientImpactCountFormatted": "--",
+  "clientImpactDescription": "--",
+  "clientImpactRatio": "--",
+  "clientImpactRatioFormatted": "--",
 }
 `;
 

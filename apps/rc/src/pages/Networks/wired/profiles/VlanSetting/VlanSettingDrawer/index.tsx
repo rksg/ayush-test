@@ -191,8 +191,10 @@ function VlanSettingForm (props: VlanSettingFormProps) {
   const onIGMPChange = (value: string) => {
     if(value === 'active' || value === 'passive'){
       setMulticastVersionDisabled(false)
+      form.setFieldValue('multicastVersion', 2)
     }else{
       setMulticastVersionDisabled(true)
+      form.resetFields(['multicastVersion'])
     }
   }
 

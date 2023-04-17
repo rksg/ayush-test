@@ -1,0 +1,643 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TopAppsByTrafficWidget should render Tabs: clientContent 1`] = `
+<svg
+  baseProfile="full"
+  height="800"
+  style="position:absolute;left:0;top:0;user-select:none"
+  version="1.1"
+  width="1280"
+  xmlns="http://www.w3.org/2000/svg"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+>
+  <rect
+    fill="none"
+    fill-opacity="1"
+    height="800"
+    id="0"
+    width="1280"
+    x="0"
+    y="0"
+  />
+  <g>
+    <path
+      d="M384 72A328 328 0 1 1 384 728L384 632A232 232 0 0 0 384 168Z"
+      fill="#66B1E8"
+      stroke="#FFFFFF"
+      stroke-linejoin="round"
+      stroke-width="2"
+    />
+    <path
+      d="M384 728A328 328 0 0 1 72.0535 501.3576L163.3549 471.6919A232 232 0 0 0 384 632Z"
+      fill="#EC7100"
+      stroke="#FFFFFF"
+      stroke-linejoin="round"
+      stroke-width="2"
+    />
+    <path
+      d="M72.0535 501.3576A328 328 0 0 1 72.0535 298.6424L163.3549 328.3081A232 232 0 0 0 163.3549 471.6919Z"
+      fill="#F9C34B"
+      stroke="#FFFFFF"
+      stroke-linejoin="round"
+      stroke-width="2"
+    />
+    <path
+      d="M72.0535 298.6424A328 328 0 0 1 191.2064 134.6424L247.6338 212.3081A232 232 0 0 0 163.3549 328.3081Z"
+      fill="#61C46E"
+      stroke="#FFFFFF"
+      stroke-linejoin="round"
+      stroke-width="2"
+    />
+    <path
+      d="M191.2064 134.6424A328 328 0 0 1 384 72L384 168A232 232 0 0 0 247.6338 212.3081Z"
+      fill="#F095FF"
+      stroke="#FFFFFF"
+      stroke-linejoin="round"
+      stroke-width="2"
+    />
+    <path
+      d="M-5 -5l39 0l0 154l-39 0Z"
+      fill="rgb(0,0,0)"
+      fill-opacity="0"
+      stroke="#ccc"
+      stroke-width="0"
+      transform="translate(709 328)"
+    />
+    <path
+      d="M8 4A4 4 0 1 1 8 3.9996"
+      fill="#66B1E8"
+      stroke="#FFFFFF"
+      stroke-linecap="butt"
+      stroke-linejoin="round"
+      stroke-miterlimit="10"
+      stroke-width="0"
+      transform="translate(709 332)"
+    />
+    <path
+      d="M13 -4l11 0l0 16l-11 0Z"
+      fill="none"
+      transform="translate(709 332)"
+    />
+    <text
+      dominant-baseline="central"
+      fill="#333333"
+      style="font-size:10px;font-family:'Open Sans', sans-serif;"
+      text-anchor="start"
+      transform="translate(709 332)"
+      x="13"
+      y="4"
+    >
+      760_SV_WPA2
+    </text>
+    <path
+      d="M8 4A4 4 0 1 1 8 3.9996"
+      fill="#EC7100"
+      stroke="#FFFFFF"
+      stroke-linecap="butt"
+      stroke-linejoin="round"
+      stroke-miterlimit="10"
+      stroke-width="0"
+      transform="translate(709 364)"
+    />
+    <path
+      d="M13 -4l4 0l0 16l-4 0Z"
+      fill="none"
+      transform="translate(709 364)"
+    />
+    <text
+      dominant-baseline="central"
+      fill="#333333"
+      style="font-size:10px;font-family:'Open Sans', sans-serif;"
+      text-anchor="start"
+      transform="translate(709 364)"
+      x="13"
+      y="4"
+    >
+      MESH
+    </text>
+    <path
+      d="M8 4A4 4 0 1 1 8 3.9996"
+      fill="#F9C34B"
+      stroke="#FFFFFF"
+      stroke-linecap="butt"
+      stroke-linejoin="round"
+      stroke-miterlimit="10"
+      stroke-width="0"
+      transform="translate(709 396)"
+    />
+    <path
+      d="M13 -4l16 0l0 16l-16 0Z"
+      fill="none"
+      transform="translate(709 396)"
+    />
+    <text
+      dominant-baseline="central"
+      fill="#333333"
+      style="font-size:10px;font-family:'Open Sans', sans-serif;"
+      text-anchor="start"
+      transform="translate(709 396)"
+      x="13"
+      y="4"
+    >
+      CIOT_APs-WPA2_SV
+    </text>
+    <path
+      d="M8 4A4 4 0 1 1 8 3.9996"
+      fill="#61C46E"
+      stroke="#FFFFFF"
+      stroke-linecap="butt"
+      stroke-linejoin="round"
+      stroke-miterlimit="10"
+      stroke-width="0"
+      transform="translate(709 428)"
+    />
+    <path
+      d="M13 -4l3 0l0 16l-3 0Z"
+      fill="none"
+      transform="translate(709 428)"
+    />
+    <text
+      dominant-baseline="central"
+      fill="#333333"
+      style="font-size:10px;font-family:'Open Sans', sans-serif;"
+      text-anchor="start"
+      transform="translate(709 428)"
+      x="13"
+      y="4"
+    >
+      DEV
+    </text>
+    <path
+      d="M8 4A4 4 0 1 1 8 3.9996"
+      fill="#F095FF"
+      stroke="#FFFFFF"
+      stroke-linecap="butt"
+      stroke-linejoin="round"
+      stroke-miterlimit="10"
+      stroke-width="0"
+      transform="translate(709 460)"
+    />
+    <path
+      d="M13 -4l14 0l0 16l-14 0Z"
+      fill="none"
+      transform="translate(709 460)"
+    />
+    <text
+      dominant-baseline="central"
+      fill="#333333"
+      style="font-size:10px;font-family:'Open Sans', sans-serif;"
+      text-anchor="start"
+      transform="translate(709 460)"
+      x="13"
+      y="4"
+    >
+      Roaming_test_D
+    </text>
+    <path
+      d="M-5 -5l10 0l0 10l-10 0Z"
+      fill="rgb(0,0,0)"
+      fill-opacity="0"
+      stroke="#ccc"
+      stroke-width="0"
+      transform="translate(363.4 400)"
+    />
+    <path
+      d="M0 0l0 0l0 0l0 0Z"
+      fill="none"
+      transform="translate(363.4 400)"
+    />
+  </g>
+</svg>
+`;
+
+exports[`TopAppsByTrafficWidget should render Tabs: contentSwitcher 1`] = `
+<div
+  style="text-align: right;"
+>
+  <div
+    class="styledComponents__Wrapper-sc-c4vpsp-0 eBLcPR"
+  >
+    <div
+      class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
+    >
+      <label
+        class="ant-radio-button-wrapper ant-radio-button-wrapper-checked"
+      >
+        <span
+          class="ant-radio-button ant-radio-button-checked"
+        >
+          <input
+            checked=""
+            class="ant-radio-button-input"
+            type="radio"
+            value="traffic"
+          />
+          <span
+            class="ant-radio-button-inner"
+          />
+        </span>
+        <span>
+          By Traffic
+        </span>
+      </label>
+      <label
+        class="ant-radio-button-wrapper"
+      >
+        <span
+          class="ant-radio-button"
+        >
+          <input
+            class="ant-radio-button-input"
+            type="radio"
+            value="clients"
+          />
+          <span
+            class="ant-radio-button-inner"
+          />
+        </span>
+        <span>
+          By Clients
+        </span>
+      </label>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`TopAppsByTrafficWidget should render Tabs: trafficContent 1`] = `
+<svg
+  baseProfile="full"
+  height="800"
+  style="position:absolute;left:0;top:0;user-select:none"
+  version="1.1"
+  width="1280"
+  xmlns="http://www.w3.org/2000/svg"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+>
+  <rect
+    fill="none"
+    fill-opacity="1"
+    height="800"
+    id="0"
+    width="1280"
+    x="0"
+    y="0"
+  />
+  <g>
+    <path
+      d="M384 72A328 328 0 0 1 410.1511 726.9558L402.4971 631.2614A232 232 0 0 0 384 168Z"
+      fill="#66B1E8"
+      stroke="#FFFFFF"
+      stroke-linejoin="round"
+      stroke-width="2"
+    />
+    <path
+      d="M410.1511 726.9558A328 328 0 0 1 80.3351 276.0176L169.2127 312.3051A232 232 0 0 0 402.4971 631.2614Z"
+      fill="#EC7100"
+      stroke="#FFFFFF"
+      stroke-linejoin="round"
+      stroke-width="2"
+    />
+    <path
+      d="M80.3351 276.0175A328 328 0 0 1 306.1204 81.3799L328.9144 174.6346A232 232 0 0 0 169.2127 312.3051Z"
+      fill="#F9C34B"
+      stroke="#FFFFFF"
+      stroke-linejoin="round"
+      stroke-width="2"
+    />
+    <path
+      d="M306.1204 81.3799A328 328 0 0 1 384 72L384 168A232 232 0 0 0 328.9144 174.6346Z"
+      fill="#61C46E"
+      stroke="#FFFFFF"
+      stroke-linejoin="round"
+      stroke-width="2"
+    />
+    <path
+      d="M384 72L384 168Z"
+      fill="#F095FF"
+      stroke="#FFFFFF"
+      stroke-linejoin="round"
+      stroke-width="2"
+    />
+    <path
+      d="M-5 -5l39 0l0 154l-39 0Z"
+      fill="rgb(0,0,0)"
+      fill-opacity="0"
+      stroke="#ccc"
+      stroke-width="0"
+      transform="translate(709 328)"
+    />
+    <path
+      d="M8 4A4 4 0 1 1 8 3.9996"
+      fill="#66B1E8"
+      stroke="#FFFFFF"
+      stroke-linecap="butt"
+      stroke-linejoin="round"
+      stroke-miterlimit="10"
+      stroke-width="0"
+      transform="translate(709 332)"
+    />
+    <path
+      d="M13 -4l4 0l0 16l-4 0Z"
+      fill="none"
+      transform="translate(709 332)"
+    />
+    <text
+      dominant-baseline="central"
+      fill="#333333"
+      style="font-size:10px;font-family:'Open Sans', sans-serif;"
+      text-anchor="start"
+      transform="translate(709 332)"
+      x="13"
+      y="4"
+    >
+      MESH
+    </text>
+    <path
+      d="M8 4A4 4 0 1 1 8 3.9996"
+      fill="#EC7100"
+      stroke="#FFFFFF"
+      stroke-linecap="butt"
+      stroke-linejoin="round"
+      stroke-miterlimit="10"
+      stroke-width="0"
+      transform="translate(709 364)"
+    />
+    <path
+      d="M13 -4l4 0l0 16l-4 0Z"
+      fill="none"
+      transform="translate(709 364)"
+    />
+    <text
+      dominant-baseline="central"
+      fill="#333333"
+      style="font-size:10px;font-family:'Open Sans', sans-serif;"
+      text-anchor="start"
+      transform="translate(709 364)"
+      x="13"
+      y="4"
+    >
+      dot1
+    </text>
+    <path
+      d="M8 4A4 4 0 1 1 8 3.9996"
+      fill="#F9C34B"
+      stroke="#FFFFFF"
+      stroke-linecap="butt"
+      stroke-linejoin="round"
+      stroke-miterlimit="10"
+      stroke-width="0"
+      transform="translate(709 396)"
+    />
+    <path
+      d="M13 -4l14 0l0 16l-14 0Z"
+      fill="none"
+      transform="translate(709 396)"
+    />
+    <text
+      dominant-baseline="central"
+      fill="#333333"
+      style="font-size:10px;font-family:'Open Sans', sans-serif;"
+      text-anchor="start"
+      transform="translate(709 396)"
+      x="13"
+      y="4"
+    >
+      Roaming_test_D
+    </text>
+    <path
+      d="M8 4A4 4 0 1 1 8 3.9996"
+      fill="#61C46E"
+      stroke="#FFFFFF"
+      stroke-linecap="butt"
+      stroke-linejoin="round"
+      stroke-miterlimit="10"
+      stroke-width="0"
+      transform="translate(709 428)"
+    />
+    <path
+      d="M13 -4l11 0l0 16l-11 0Z"
+      fill="none"
+      transform="translate(709 428)"
+    />
+    <text
+      dominant-baseline="central"
+      fill="#333333"
+      style="font-size:10px;font-family:'Open Sans', sans-serif;"
+      text-anchor="start"
+      transform="translate(709 428)"
+      x="13"
+      y="4"
+    >
+      760_SV_WPA2
+    </text>
+    <path
+      d="M8 4A4 4 0 1 1 8 3.9996"
+      fill="#F095FF"
+      stroke="#FFFFFF"
+      stroke-linecap="butt"
+      stroke-linejoin="round"
+      stroke-miterlimit="10"
+      stroke-width="0"
+      transform="translate(709 460)"
+    />
+    <path
+      d="M13 -4l16 0l0 16l-16 0Z"
+      fill="none"
+      transform="translate(709 460)"
+    />
+    <text
+      dominant-baseline="central"
+      fill="#333333"
+      style="font-size:10px;font-family:'Open Sans', sans-serif;"
+      text-anchor="start"
+      transform="translate(709 460)"
+      x="13"
+      y="4"
+    >
+      CIOT_APs-WPA2_SV
+    </text>
+    <path
+      d="M-5 -5l10 0l0 10l-10 0Z"
+      fill="rgb(0,0,0)"
+      fill-opacity="0"
+      stroke="#ccc"
+      stroke-width="0"
+      transform="translate(363.4 400)"
+    />
+    <path
+      d="M0 0l0 0l0 0l0 0Z"
+      fill="none"
+      transform="translate(363.4 400)"
+    />
+  </g>
+</svg>
+`;
+
+exports[`TopAppsByTrafficWidget should render for empty data: NoData 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+  >
+    <div
+      class="styledComponents__Wrapper-sc-13w5wfx-4 lfySov"
+      type="default"
+    >
+      <div
+        class="ant-card"
+      >
+        <div
+          class="ant-card-head"
+        >
+          <div
+            class="ant-card-head-wrapper"
+          >
+            <div
+              class="ant-card-head-title"
+            >
+              <div
+                class="ant-space ant-space-horizontal ant-space-align-center"
+              >
+                <div
+                  class="ant-space-item"
+                  style="margin-right: 4px;"
+                >
+                  <div
+                    class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                  >
+                    Top Wi-Fi Networks
+                  </div>
+                </div>
+                <div
+                  class="ant-space-item"
+                >
+                  <svg
+                    class="styledComponents__HistoricalOutlinedIcon-sc-13w5wfx-2 dGmXEJ"
+                    data-testid="HistoricalOutlined"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-card-extra"
+            >
+              <div
+                class="ant-space ant-space-horizontal ant-space-align-center"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-card-body"
+        >
+          <div
+            style="overflow: visible; height: 0px; width: 0px;"
+          >
+            <div
+              style="display: block; height: 800px; width: 1280px; margin: -38px 0px 0px 0px;"
+            >
+              <div
+                style="text-align: right;"
+              >
+                <div
+                  class="styledComponents__Wrapper-sc-c4vpsp-0 eBLcPR"
+                >
+                  <div
+                    class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
+                  >
+                    <label
+                      class="ant-radio-button-wrapper ant-radio-button-wrapper-checked"
+                    >
+                      <span
+                        class="ant-radio-button ant-radio-button-checked"
+                      >
+                        <input
+                          checked=""
+                          class="ant-radio-button-input"
+                          type="radio"
+                          value="traffic"
+                        />
+                        <span
+                          class="ant-radio-button-inner"
+                        />
+                      </span>
+                      <span>
+                        By Traffic
+                      </span>
+                    </label>
+                    <label
+                      class="ant-radio-button-wrapper"
+                    >
+                      <span
+                        class="ant-radio-button"
+                      >
+                        <input
+                          class="ant-radio-button-input"
+                          type="radio"
+                          value="clients"
+                        />
+                        <span
+                          class="ant-radio-button-inner"
+                        />
+                      </span>
+                      <span>
+                        By Clients
+                      </span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div
+                style="overflow: visible; height: 0px; width: 0px;"
+              >
+                <div
+                  class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                  style="margin: 38px 0px 0px 0px;"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
+                  >
+                    <div
+                      class="ant-space-item"
+                    >
+                      No data to display
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="resize-triggers"
+              >
+                <div
+                  class="expand-trigger"
+                >
+                  <div
+                    style="width: 1281px; height: 801px;"
+                  />
+                </div>
+                <div
+                  class="contract-trigger"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="resize-triggers"
+          >
+            <div
+              class="expand-trigger"
+            >
+              <div
+                style="width: 1281px; height: 801px;"
+              />
+            </div>
+            <div
+              class="contract-trigger"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
