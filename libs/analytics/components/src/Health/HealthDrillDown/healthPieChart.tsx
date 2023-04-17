@@ -27,6 +27,18 @@ type PieChartData = {
   color: string
 }
 
+function getTop5PieChartData (nodeData: Omit<PieChartData, 'color' | 'name'>[])
+: PieChartData[] {
+  const colors = qualitativeColorSet()
+  return nodeData
+    .map((val, index) => ({
+      ...val,
+      name: val.key,
+      color: colors[index]
+    }))
+    .slice(0, 5)
+}
+
 const transformData = (
   data: ImpactedNodesAndWlans | undefined
 ): {
@@ -34,23 +46,10 @@ const transformData = (
   wlans: PieChartData[];
 } => {
   if (data) {
-    const colors = qualitativeColorSet()
     let { wlans: rawWlans, nodes: rawNodes } = data.network.hierarchyNode
     rawNodes = rawNodes ?? []
-    const nodes = rawNodes
-      .map((node, index) => ({
-        ...node,
-        name: node.key,
-        color: colors[index]
-      }))
-      .slice(0, 5)
-    const wlans = rawWlans
-      .map((node, index) => ({
-        ...node,
-        name: node.key,
-        color: colors[index]
-      }))
-      .slice(0, 5)
+    const nodes = getTop5PieChartData(rawNodes)
+    const wlans = getTop5PieChartData(rawWlans)
     return { nodes, wlans }
   }
   return { nodes: [], wlans: [] }
@@ -165,7 +164,7 @@ export const HealthPieChart = ({
   const [chartKey, setChartKey] = useState('wlans')
   const count = chartKey === 'wlans' ? wlans.length : nodes.length
   const lastPath = filters.path[filters.path.length - 1]
-  const title = (lastPath.type == 'ap' || lastPath.type == 'AP')
+  const title = (lastPath.type === 'ap' || lastPath.type === 'AP')
     ? wlansTitle
     : venueTitle + ' / ' + wlansTitle
 
