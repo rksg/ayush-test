@@ -16,6 +16,7 @@ export enum Features {
   NETWORK_SEGMENTATION_SWITCH='switch-consumer-nsg-toggle',
   UNRELEASED='acx-ui-unreleased',
   SERVICE_VALIDATION = 'acx-ui-service-validation-toggle',
+  VIDEO_CALL_QOE = 'acx-ui-video-call-qoe-toggle',
   DIRECTED_MULTICAST='wifi-consumer-directed-multicast-toggle',
   HELP_SUPPORT='acx-ui-help-support',
   LICENSE_BANNER='acx-ui-license-banner',
