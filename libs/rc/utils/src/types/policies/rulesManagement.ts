@@ -15,7 +15,7 @@ export interface AdaptivePolicy {
 
 export interface PrioritizedPolicy {
   policyId: string,
-  priority?: number
+  priority: number
 }
 
 export interface RuleTemplate {

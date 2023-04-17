@@ -88,15 +88,16 @@ export default function H (props: AdaptivePolicySetFormProps) {
         const { data: newPolicies } = await getPrioritizedPolicies(
           { params: { policySetId: policyId } })
         if (newPolicies) {
-          const prioritizedPolicies = newPolicies.data
+          // eslint-disable-next-line max-len
+          const prioritizedPolicies = Array.from(newPolicies.data?? []).sort((p1, p2) => p1.priority - p2.priority)
           for (let i = 0; i < accessPolicies.length; i++) {
             const id = accessPolicies[i].id
-            const index = prioritizedPolicies.findIndex(p => p.policyId === id)
-            if(i !== index) {
-              await addPrioritizedPolicy({
+            if(i >= prioritizedPolicies.length || id !== prioritizedPolicies[i].policyId) {
+              const payload = {
                 params: { policySetId: policyId, policyId: id },
                 payload: { policyId: id, priority: i }
-              })
+              }
+              await addPrioritizedPolicy(payload)
             }
           }
         }

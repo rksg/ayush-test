@@ -82,14 +82,14 @@ const AccessPolicyTable = (props: AccessPolicyTableProps) => {
     })
     setTemplateIdMap(templateIds)
 
-
     const accessPolicy: AdaptivePolicy[] = []
-    prioritizedPoliciesData?.data.forEach(item => {
-      const policy = adaptivePolicyListTableQuery.data?.data.find(p => p.id === item.policyId)
-      if(policy) {
-        accessPolicy.push(policy)
-      }
-    })
+    Array.from(prioritizedPoliciesData?.data ?? []).sort((p1, p2) => p1.priority - p2.priority)
+      .forEach(item => {
+        const policy = adaptivePolicyListTableQuery.data?.data.find(p => p.id === item.policyId)
+        if(policy) {
+          accessPolicy.push(policy)
+        }
+      })
     setAccessPolicies(accessPolicy)
   }, [adaptivePolicyListTableQuery.data, prioritizedPoliciesData?.data, templateListData])
 
@@ -201,6 +201,7 @@ const AccessPolicyTable = (props: AccessPolicyTableProps) => {
       useDragHandle
       disableAutoscroll
       onSortEnd={({ oldIndex, newIndex }: { oldIndex: number; newIndex: number }) => {
+        if(oldIndex === newIndex) return
         const dragAndDropItems = [...accessPolicies] as AdaptivePolicy[]
         [dragAndDropItems[oldIndex], dragAndDropItems[newIndex]] =
           [dragAndDropItems[newIndex], dragAndDropItems[oldIndex]]
