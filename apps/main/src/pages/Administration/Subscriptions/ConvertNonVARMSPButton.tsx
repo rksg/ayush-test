@@ -23,7 +23,7 @@ import {
   TenantDetails,
   Delegation
 } from '@acx-ui/rc/utils'
-import { useNavigate, useParams } from '@acx-ui/react-router-dom'
+import { getBasePath, useNavigate, useParams } from '@acx-ui/react-router-dom'
 import {
   getProductKey,
   getUserSettingsByPath,
@@ -108,7 +108,8 @@ export const ConvertNonVARMSPButton = () => {
             console.log(error)
           }
 
-          navigate(`/v/${params.tenantId}/dashboard/mspCustomers`, { replace: true })
+          navigate(`${getBasePath()}/v/${params.tenantId}/dashboard/mspCustomers`,
+            { replace: true })
         }
       })
     } catch (error) {
