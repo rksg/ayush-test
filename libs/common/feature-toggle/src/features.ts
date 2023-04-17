@@ -35,5 +35,6 @@ export enum Features {
   RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
   POLICY_MANAGEMENT = 'policy-management-service-enabled',
   WIFI_EDA_GATEWAY = 'wifi-api-gateway-eda-toggle',
-  CLOUDMOTE_SERVICE = 'cloudmote-service-enabled'
+  CLOUDMOTE_SERVICE = 'cloudmote-service-enabled',
+  RADIUS_ATTRIBUTE_GROUP_CONFIG = 'radius-attrib-group-service-enabled'
 }
