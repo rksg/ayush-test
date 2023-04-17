@@ -44,7 +44,7 @@ export function VenueServicesTab () {
         <ClientIsolationAllowList />
       </Tabs.TabPane>
       <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Rogue Aps' })}
+        tab={$t({ defaultMessage: 'Rogue APs' })}
         key={PolicyType.ROGUE_AP_DETECTION}
       >
         <VenueRogueAps />
