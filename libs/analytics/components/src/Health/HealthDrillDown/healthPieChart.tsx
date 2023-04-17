@@ -16,9 +16,9 @@ import {
 import { formatter }   from '@acx-ui/formatter'
 import { NetworkPath } from '@acx-ui/utils'
 
-import { DrilldownSelection, stageNameToCodeMap }  from './config'
-import { ImpactedNodesAndWlans, usePieChartQuery } from './services'
-import * as UI                                     from './styledComponents'
+import { stageLabels, DrilldownSelection, stageNameToCodeMap } from './config'
+import { ImpactedNodesAndWlans, usePieChartQuery }             from './services'
+import * as UI                                                 from './styledComponents'
 
 type PieChartData = {
   key: string
@@ -47,8 +47,7 @@ const transformData = (
 } => {
   if (data) {
     let { wlans: rawWlans, nodes: rawNodes } = data.network.hierarchyNode
-    rawNodes = rawNodes ?? []
-    const nodes = getTop5PieChartData(rawNodes)
+    const nodes = rawNodes ? getTop5PieChartData(rawNodes) : []
     const wlans = getTop5PieChartData(rawWlans)
     return { nodes, wlans }
   }
@@ -175,7 +174,7 @@ export const HealthPieChart = ({
     <Loader states={[queryResults]}>
       <UI.HealthPieChartWrapper>
         <UI.PieChartTitle>
-          <b>{$t({ defaultMessage: '{name}' }, { name })}</b>{' '}
+          <b>{$t(stageLabels[name])}</b>{' '}
           {$t({ defaultMessage: 'Top {count} Impacted {title}' }, { count, title })}
         </UI.PieChartTitle>
         <div style={{ height: '100%' }}>

@@ -108,3 +108,10 @@ export const stageNameToCodeMap: Record<string, string> = {
   DHCP: 'dhcp'
 }
 
+export const stageLabels: Record<string, MessageDescriptor> = {
+  Authentication: defineMessage({ defaultMessage: 'Authentication' }),
+  Association: defineMessage({ defaultMessage: 'Association' }),
+  EAP: defineMessage({ defaultMessage: 'EAP' }),
+  Radius: defineMessage({ defaultMessage: 'Radius' }),
+  DHCP: defineMessage({ defaultMessage: 'DHCP' })
+}
