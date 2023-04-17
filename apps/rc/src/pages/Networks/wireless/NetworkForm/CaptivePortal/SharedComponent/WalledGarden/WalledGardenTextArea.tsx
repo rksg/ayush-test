@@ -53,42 +53,50 @@ function isExemption (guestNetworkTypeEnum: GuestNetworkTypeEnum) : boolean {
   return exemptionList.includes(guestNetworkTypeEnum)
 }
 
-const statesCollection = {
-  initialState: {
-    action: WallGardenAction.Clear,
-    fieldsValue: {
-      walledGardensString: '',
-      guestPortal: {
-        walledGardens: []
-      }
-    }
-  },
-  useDefaultState: {
-    action: WallGardenAction.UseDefault,
-    fieldsValue: {
-      walledGardensString: defaultWalledGarden.join('\n'),
-      guestPortal: {
-        walledGardens: defaultWalledGarden
-      }
-    }
-  },
-  // TODO: implement this logic, check if the database has walled garden
-  useExistState: {
-    action: WallGardenAction.UseExist,
-    fieldsValue: {
-      walledGardensString: defaultWalledGarden.join('\n'),
-      guestPortal: {
-        walledGardens: defaultWalledGarden
-      }
-    }
-  }
-}
+
 
 /* eslint-disable max-len */
-
 export function WalledGardenTextArea (props: WalledGardenProps) {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
+
+  const {
+    data: networkFromContextData,
+    editMode,
+    cloneMode
+  } = useContext(NetworkFormContext)
+
+  const existWalledGarden : string[] | undefined = networkFromContextData?.guestPortal?.walledGardens
+
+  const statesCollection = {
+    initialState: {
+      action: WallGardenAction.Clear,
+      fieldsValue: {
+        walledGardensString: '',
+        guestPortal: {
+          walledGardens: []
+        }
+      }
+    },
+    useDefaultState: {
+      action: WallGardenAction.UseDefault,
+      fieldsValue: {
+        walledGardensString: defaultWalledGarden.join('\n'),
+        guestPortal: {
+          walledGardens: defaultWalledGarden
+        }
+      }
+    },
+    useExistState: {
+      action: WallGardenAction.UseExist,
+      fieldsValue: {
+        walledGardensString: existWalledGarden ? existWalledGarden.join('\n') : '',
+        guestPortal: {
+          walledGardens: existWalledGarden ? existWalledGarden : []
+        }
+      }
+    }
+  }
 
   const { guestNetworkTypeEnum, enableDefaultWalledGarden } = props
 
@@ -118,9 +126,7 @@ export function WalledGardenTextArea (props: WalledGardenProps) {
 
   // Effect to control the textarea since it won't reset when user click back and change protal type
   useEffect(() => {
-    // TODO: implement this logic, check if the database has walled garden
-    const isDatabaseHasWalledGarden = false
-    if (isDatabaseHasWalledGarden) {
+    if (editMode || cloneMode) {
       dispatch(statesCollection.useExistState)
       return
     }
