@@ -112,6 +112,6 @@ export const stageLabels: Record<string, MessageDescriptor> = {
   Authentication: defineMessage({ defaultMessage: 'Authentication' }),
   Association: defineMessage({ defaultMessage: 'Association' }),
   EAP: defineMessage({ defaultMessage: 'EAP' }),
-  Radius: defineMessage({ defaultMessage: 'Radius' }),
+  Radius: defineMessage({ defaultMessage: 'RADIUS' }),
   DHCP: defineMessage({ defaultMessage: 'DHCP' })
 }
