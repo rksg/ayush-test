@@ -16,10 +16,6 @@ import NetworkFormContext from '../../../NetworkFormContext'
 
 import { defaultWalledGarden } from './DefaultWalledGarden'
 
-
-// TODO: remove this flag and use feature toggle
-const toggleFlag = false
-
 enum WallGardenAction {
   Clear,
   UseDefault,
@@ -59,6 +55,10 @@ function isExemption (guestNetworkTypeEnum: GuestNetworkTypeEnum) : boolean {
 export function WalledGardenTextArea (props: WalledGardenProps) {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
+
+  // TODO: remove this flag and use feature toggle
+  const toggleFlag = false
+  // const toggleFlag = useIsSplitOn(Features.WIFI_EDA_BYPASS_CNA_TOGGLE)
 
   const {
     data: networkFromContextData,

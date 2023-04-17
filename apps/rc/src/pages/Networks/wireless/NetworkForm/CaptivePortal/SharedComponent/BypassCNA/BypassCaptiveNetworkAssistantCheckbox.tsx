@@ -7,12 +7,10 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import { GuestNetworkTypeEnum }       from '@acx-ui/rc/utils'
 
-
-// TODO: remove this flag and use feature toggle
-const toggleFlag = false
 
 interface BypassCNAProps {
   guestNetworkTypeEnum: GuestNetworkTypeEnum
@@ -31,8 +29,12 @@ export function BypassCaptiveNetworkAssistantCheckbox (props: BypassCNAProps) {
   const { $t } = useIntl()
   const { guestNetworkTypeEnum } = props
 
+  // TODO: remove this flag and use feature toggle
+  const featureToggle = false
+  // const featureToggle = useIsSplitOn(Features.WIFI_EDA_BYPASS_CNA_TOGGLE)
+
   // if one condition is true, then go render it.
-  const isRenderNeed = [toggleFlag, isExemption(guestNetworkTypeEnum)].some(Boolean)
+  const isRenderNeed = [featureToggle, isExemption(guestNetworkTypeEnum)].some(Boolean)
 
   // TODO unblock after develope.
   if (!isRenderNeed) {
