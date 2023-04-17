@@ -38,3 +38,21 @@ export const groupList = {
   number: 0,
   empty: false
 }
+
+export const groupListByPost = {
+  totalCount: 1,
+  page: 1,
+  pageSize: 10,
+  data: groupList.content
+}
+
+
+export const adaptivePolicyList = {
+  paging: {
+    totalCount: 0,
+    page: 1,
+    pageSize: 0,
+    pageCount: 0
+  },
+  content: []
+}
