@@ -12,7 +12,12 @@ jest.spyOn(global.Date, 'now').mockImplementation(
 )
 
 describe('dateUtil', () => {
-  beforeAll(() => resetRanges())
+  const now = new Date('2022-01-01T00:00:00.000Z').getTime()
+  beforeEach(() => {
+    jest.spyOn(Date, 'now').mockReturnValue(now)
+    resetRanges()
+  })
+  afterEach(() => jest.restoreAllMocks())
 
   describe('dateRangeForLast', () => {
     it('Should return date range for the given input', () => {
@@ -24,14 +29,19 @@ describe('dateUtil', () => {
 
   describe('getDateRangeFilter', () => {
     it('should return correct range input', () => {
-      const dateFilter = getDateRangeFilter(
-        DateRange.last24Hours
-      )
-
-      expect(dateFilter).toMatchObject({
-        range: DateRange.last24Hours,
+      const range = DateRange.last24Hours
+      expect(getDateRangeFilter(range)).toMatchObject({
+        range,
         endDate: '2022-01-01T00:00:00+00:00',
         startDate: '2021-12-31T00:00:00+00:00'
+      })
+
+      jest.mocked(Date.now).mockReturnValue(now + 5 * 60 * 1000)
+
+      expect(getDateRangeFilter(range)).toMatchObject({
+        range,
+        endDate: '2022-01-01T00:05:00+00:00',
+        startDate: '2021-12-31T00:05:00+00:00'
       })
     })
     it('corrects range input to default one', () => {

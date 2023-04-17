@@ -10,6 +10,12 @@ export enum DateRange {
   allTime = 'All Time'
 }
 
+export type DateRangeFilter = {
+  startDate: string
+  endDate: string
+  range: DateRange
+}
+
 type Ranges = Record<string, [moment.Moment, moment.Moment]>
 let ranges = defaultRanges()
 
@@ -19,7 +25,9 @@ export function getDateRangeFilter (
   range: DateRange,
   start?: string,
   end?: string
-) {
+): DateRangeFilter {
+  resetRanges() // reset so it takes latest value
+
   const [startDate, endDate] =
     range === DateRange.custom && start && end
       ? [start, end]
@@ -43,8 +51,8 @@ export function defaultRanges (subRange?: DateRange[]) {
       moment().seconds(0)
     ],
     [DateRange.allTime]: [
-      moment(undefined),
-      moment(undefined)
+      moment(),
+      moment()
     ]
   }
   if (subRange) {
