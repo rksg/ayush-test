@@ -79,9 +79,9 @@ const MacRegistrationListComponent = (props: MacRegistrationListComponentProps) 
       type={ModalType.ModalStepsForm}
       children={<MacRegistrationListForm
         modalMode
-        modalCallBack={(name) => {
+        modalCallBack={(macRegPool) => {
           setMacModalVisible(false)
-          setMacName(name!)
+          setMacName(macRegPool?.name!)
         }}
       />}
       onCancel={() => setMacModalVisible(false)}
