@@ -9,7 +9,8 @@ import {
   Loader,
   showActionModal,
   Table,
-  TableProps
+  TableProps,
+  Tooltip
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
@@ -241,9 +242,16 @@ export function NetworkVenuesTab () {
     return networkVenues
   }
 
+  const activation = (selectedRows:Venue[]) => {
+    const enabled = selectedRows.some((item)=>{
+      return item.mesh && item.mesh.enabled && networkQuery.data && networkQuery.data.enableDhcp
+    })
+    return !enabled
+  }
   const rowActions: TableProps<Venue>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Activate' }),
+      visible: activation,
       onClick: (rows, clearSelection) => {
         const network = networkQuery.data
         const networkVenues = activateSelected(network?.venues || [], rows)
@@ -252,6 +260,7 @@ export function NetworkVenuesTab () {
     },
     {
       label: $t({ defaultMessage: 'Deactivate' }),
+      visible: activation,
       onClick: (rows, clearSelection) => {
         const network = networkQuery.data
         const networkVenues = deActivateSelected(network?.venues || [], rows)
@@ -305,13 +314,26 @@ export function NetworkVenuesTab () {
       dataIndex: ['activated', 'isActivated'],
       align: 'center',
       render: function (data, row) {
-        return <Switch
-          checked={Boolean(data)}
-          onClick={(checked, event) => {
-            activateNetwork(checked, row)
-            event.stopPropagation()
-          }}
-        />
+        let disabled = false
+        // eslint-disable-next-line max-len
+        let title = $t({ defaultMessage: 'You cannot activate the DHCP service on this venue because it already enabled mesh setting' })
+        if(networkQuery.data && networkQuery.data.enableDhcp && row.mesh && row.mesh.enabled){
+          disabled = true
+        }else{
+          title = ''
+        }
+        return <Tooltip
+          title={title}
+          placement='bottom'>
+          <Switch
+            checked={Boolean(data)}
+            disabled={disabled}
+            onClick={(checked, event) => {
+              activateNetwork(checked, row)
+              event.stopPropagation()
+            }}
+          />
+        </Tooltip>
       }
     },
     {

@@ -6,7 +6,14 @@ import { CommonUrlsInfo, Persona, PersonaUrls, PropertyUrlsInfo } from '@acx-ui/
 import { Provider }                                               from '@acx-ui/store'
 import { mockServer, render, screen }                             from '@acx-ui/test-utils'
 
-import { mockPersonaGroupWithoutNSG, mockEnabledPropertyConfig, mockPropertyUnit, venueLanPorts } from '../../../__tests__/fixtures'
+import {
+  mockPersonaGroupWithoutNSG,
+  mockPropertyUnit,
+  venueLanPorts,
+  mockEnabledNoNSGPropertyConfig,
+  mockEnabledNSGPropertyConfig,
+  mockPersonaGroupWithNSG
+} from '../../../__tests__/fixtures'
 
 import { PropertyUnitDrawer } from './index'
 
@@ -14,7 +21,9 @@ import { PropertyUnitDrawer } from './index'
 const closeFn = jest.fn()
 const params = {
   tenantId: '15a04f095a8f4a96acaf17e921e8a6df',
-  venueId: 'f892848466d047798430de7ac234e940'
+  venueId: 'has-nsg-venue-id',
+  nsgVenueId: 'has-nsg-venue-id',
+  noNsgVenueId: 'no-nsg-venue-id'
 }
 const unitId = 'c59f537f-2257-4fa6-934b-69f787e686fb'
 
@@ -23,7 +32,12 @@ const mockPersona: Persona = {
   name: 'persona-name-1',
   groupId: 'persona-group-id-1',
   dpskGuid: 'dpsk-guid-1',
-  dpskPassphrase: 'dpsk-passphrase'
+  dpskPassphrase: 'dpsk-passphrase',
+  ethernetPorts: [{
+    portIndex: 1,
+    personaId: 'persona-id-1',
+    macAddress: 'ap-mac-address'
+  }]
 }
 
 
@@ -34,7 +48,11 @@ describe('Property Unit Drawer', () => {
     mockServer.use(
       rest.get(
         PropertyUrlsInfo.getPropertyConfigs.url,
-        (_, res, ctx) => res(ctx.json(mockEnabledPropertyConfig))
+        (req, res, ctx) => {
+          return res(ctx.json(req.params.venueId === params.noNsgVenueId
+            ? mockEnabledNoNSGPropertyConfig
+            : mockEnabledNSGPropertyConfig))
+        }
       ),
       rest.post(
         PropertyUrlsInfo.addPropertyUnit.url,
@@ -50,7 +68,11 @@ describe('Property Unit Drawer', () => {
       ),
       rest.get(
         PersonaUrls.getPersonaGroupById.url,
-        (_, res, ctx) => res(ctx.json(mockPersonaGroupWithoutNSG))
+        (req, res, ctx) => {
+          return res(ctx.json(req.params.groupId === 'persona-group-id-noNSG'
+            ? mockPersonaGroupWithoutNSG
+            : mockPersonaGroupWithNSG))
+        }
       ),
       rest.get(
         CommonUrlsInfo.getVenueLanPorts.url,
@@ -59,81 +81,78 @@ describe('Property Unit Drawer', () => {
       rest.get(
         PersonaUrls.getPersonaById.url,
         (_, res, ctx) => res(ctx.json(mockPersona))
+      ),
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))
       )
     )
   })
 
-  it('should render add drawer without NSG', async () => {
-    render(
-      <Provider>
-        <PropertyUnitDrawer visible isEdit={false} onClose={closeFn} venueId={params.venueId}/>
-      </Provider>, { route: { params } }
-    )
+  it('should render simple drawer', async () => {
+    render(<Provider>
+      <PropertyUnitDrawer isEdit={false} visible onClose={closeFn} venueId={params.noNsgVenueId}/>
+    </Provider>)
 
-    // Type unit name
-    const nameField = await screen.findByLabelText(/Unit Name/i)
-    await userEvent.type(nameField, 'New Unit Name')
+    await screen.findByText('Unit Name')
+    await screen.findByText('VLAN')
+    await screen.findByText('Resident Name')
+  })
 
-    // Trigger creation
+  it('should add no nsg drawer', async () => {
+    render(<Provider>
+      <PropertyUnitDrawer isEdit={false} visible onClose={closeFn} venueId={params.noNsgVenueId}/>
+    </Provider>)
+
+    await screen.findByText('VLAN')
+
+    const nameField = await screen.findByLabelText(/unit name/i)
+    await userEvent.type(nameField, 'new unit name test')
+
+    const residentField = await screen.findByLabelText(/resident name/i)
+    await userEvent.type(residentField, 'new resident name test')
+
     const addBtn = await screen.findByRole('button', { name: /add/i })
     await userEvent.click(addBtn)
 
-    await waitFor(() => expect(closeFn).toHaveBeenCalled())
+    await waitFor(expect(closeFn).toHaveBeenCalled)
   })
 
-  it('should render add drawer with NSG', async () => {
-    render(
-      <Provider>
-        <PropertyUnitDrawer visible isEdit={false} onClose={closeFn} venueId={params.venueId}/>
-      </Provider>, { route: { params } }
-    )
-    // Type unit name
-    const nameField = await screen.findByLabelText(/Unit Name/i)
-    await userEvent.type(nameField, 'New Unit Name')
+  it('should edit no nsg drawer', async () => {
+    render(<Provider>
+      <PropertyUnitDrawer
+        isEdit
+        visible
+        unitId={unitId}
+        onClose={closeFn}
+        venueId={params.noNsgVenueId}
+      />
+    </Provider>)
 
-    // TODO: add more action to cover code
-    // const apSelector = await screen.findByRole('combobox', { name: /select ap/i })
-
-    // await userEvent.click(apSelector)
-    // const h320 = await screen.findByRole('option', { name: 'H320' })
-    // await userEvent.click(h320)
-
-    // Trigger creation
-    const addBtn = await screen.findByRole('button', { name: /add/i })
-    await userEvent.click(addBtn)
-
-    await waitFor(() => expect(closeFn).toHaveBeenCalled())
-  })
-
-  it('should render edit drawer without NSG', async () => {
-    render(
-      <Provider>
-        <PropertyUnitDrawer
-          venueId={params.venueId}
-          unitId={unitId}
-          visible
-          isEdit
-          onClose={closeFn}
-        />
-      </Provider>, { route: { params } })
-    // TODO: expect data
+    await screen.findByLabelText(/unit name/i)
+    await screen.findByText('Separate VLAN for guests')
 
     const saveBtn = await screen.findByRole('button', { name: /save/i })
     await userEvent.click(saveBtn)
 
-    await waitFor(() => expect(closeFn).toHaveBeenCalled())
+    await waitFor(expect(closeFn).toHaveBeenCalled)
   })
 
-  // FIXME: not sure is it correct test case
-  it('should render clean drawer while closing', async () => {
-    render(
-      <Provider>
-        <PropertyUnitDrawer
-          visible={false}
-          isEdit={false}
-          onClose={closeFn}
-          venueId={params.venueId}
-        />
-      </Provider>, { route: { params } })
+  it('should edit nsg drawer', async () => {
+    render(<Provider>
+      <PropertyUnitDrawer
+        isEdit
+        visible
+        unitId={unitId}
+        onClose={closeFn}
+        venueId={params.nsgVenueId}
+      />
+    </Provider>)
+
+    await screen.findByText('Select AP')
+    await screen.findByLabelText(/vxlan/i)
+
+    const saveBtn = await screen.findByRole('button', { name: /save/i })
+    await userEvent.click(saveBtn)
   })
 })

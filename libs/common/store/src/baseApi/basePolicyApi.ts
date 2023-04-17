@@ -16,7 +16,10 @@ export const basePolicyApi = createApi({
     'RogueAp',
     'RadiusAttributeGroup',
     'RadiusAttribute',
-    'AdaptivePolicySet'
+    'AdaptivePolicy',
+    'AdaptivePolicySet',
+    'AdaptivePrioritizedPolicy',
+    'AdaptivePolicyCondition'
   ],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
