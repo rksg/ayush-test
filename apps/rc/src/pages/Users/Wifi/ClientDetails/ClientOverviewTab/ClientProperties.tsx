@@ -97,8 +97,8 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
       const getGuestData = async () => {
         const list = (await getGuestsList({ params: { tenantId: tenantId }, payload }, true)
           .unwrap()).data || []
-        if (list.length === 1) {
-          setGuestDetail(list[0])
+        if (list.length > 0) {
+          setGuestDetail(list.filter(item => item.networkId === clientDetails.networkId)[0])
         }
       }
 
@@ -175,7 +175,9 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
         obj = [
           <ClientDetails client={client} />,
           <LastSession client={client} />,
-          (networkType === 'guest' &&
+          (networkType === 'guest' && (guestType === GuestNetworkTypeEnum.GuestPass ||
+            guestType === GuestNetworkTypeEnum.HostApproval ||
+            guestType === GuestNetworkTypeEnum.SelfSignIn) &&
             <GuestDetails guestDetail={guestDetail} clientMac={clientMac}/>),
           (networkType === 'dpsk' && <DpskPassphraseDetails />),
           <WiFiCallingDetails client={client} />
