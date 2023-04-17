@@ -415,8 +415,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     setRuleDrawerEditMode(false)
 
     let sourceIpSettings = {} as { subnet: string, ipMask: string, ip: string }
-    if (drawerForm.getFieldValue('sourceType')
-      && drawerForm.getFieldValue('sourceType') !== AnyText) {
+    if (drawerForm.getFieldValue('sourceType') !== AnyText) {
       sourceIpSettings = {
         subnet: drawerForm.getFieldValue('sourceNetworkAddress') ?? '',
         ipMask: drawerForm.getFieldValue('sourceMask') ?? '',
@@ -427,8 +426,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     }
 
     let destIpSettings = {} as { subnet: string, ipMask: string, ip: string }
-    if (drawerForm.getFieldValue('destType')
-      && drawerForm.getFieldValue('destType') !== AnyText) {
+    if (drawerForm.getFieldValue('destType') !== AnyText) {
       destIpSettings = {
         subnet: drawerForm.getFieldValue('destNetworkAddress') ?? '',
         ipMask: drawerForm.getFieldValue('destMask') ?? '',
