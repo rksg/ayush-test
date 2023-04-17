@@ -35,21 +35,28 @@ export function BypassCaptiveNetworkAssistantCheckbox (props: BypassCNAProps) {
   const isRenderNeed = [toggleFlag, isExemption(guestNetworkTypeEnum)].some(Boolean)
 
   // TODO unblock after develope.
-  // if (!isRenderNeed) {
-  //   return null
-  // }
+  if (!isRenderNeed) {
+    return null
+  }
 
-  return (<Form.Item>
-    <Form.Item
-      name={['wlan', 'bypassCNA']}
-      noStyle
-      valuePropName='checked'
-      initialValue={false}
-      children={
-        <Checkbox>
-          {$t({ defaultMessage: 'Use Bypass Captive Network Assistant' })}
-        </Checkbox>
-      }
-    />
-  </Form.Item>)
+  /* eslint-disable max-len */
+  return (
+    <Form.Item>
+      <Form.Item
+        name={['wlan', 'bypassCNA']}
+        noStyle
+        valuePropName='checked'
+        initialValue={false}
+        children={
+          <Checkbox>
+            {$t({ defaultMessage: 'Use Bypass Captive Network Assistant' })}
+          </Checkbox>
+        }
+      />
+      <Tooltip title={$t({ defaultMessage: 'When bypass CNA is enabled, devices that have already been authenticated, are not redirected for authentication when reconnecting the onboarding network.' })}
+        placement='bottom'>
+        <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} />
+      </Tooltip>
+    </Form.Item>
+  )
 }
