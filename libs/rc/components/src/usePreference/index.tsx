@@ -28,7 +28,7 @@ export const usePreference = () => {
   const { data, ...getReqState } = useGetPreferencesQuery({ params })
   const [ updatePreference, updateReqState] = useUpdatePreferenceMutation()
   const currentMapRegion = getMapRegion(data)
-  const currentPreferredLang = data?.global.preferredLanguage as string
+  const currentDefaultLang = data?.global.defaultLanguage as string
 
   const update = async (props: updatePreferenceProps) => {
     const { newData, onSuccess, onError } = props
@@ -75,7 +75,7 @@ export const usePreference = () => {
     currentMapRegion,
     getReqState,
     updateReqState,
-    currentPreferredLang,
+    currentDefaultLang,
     data,
     update,
     updatePreference

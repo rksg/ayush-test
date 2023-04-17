@@ -529,10 +529,10 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
   })
 })
 
-export function useYourPreferredLanguage (): LangKey {
+export function useYourDefaultLanguage (): LangKey {
   const tenantId = getTenantId()
   const { data } = useGetPreferencesQuery({ tenantId })
-  const lang = data?.global.preferredLanguage as LangKey
+  const lang = data?.global.defaultLanguage as LangKey
   return lang
 }
 

@@ -12,7 +12,7 @@ const DefaultSystemLanguageFormItem = () => {
   const { $t } = useIntl()
   const {
     data: preferenceData,
-    currentPreferredLang,
+    currentDefaultLang,
     update: updatePreferences,
     getReqState,
     updateReqState
@@ -22,10 +22,10 @@ const DefaultSystemLanguageFormItem = () => {
   const [lang, setLang] = useState(locale?.lang ?? 'en-US')
   const [messages, setMessages] = useState<Messages>()
 
-  const handlePreferredLangChange = (langCode: string) => {
+  const handleDefaultLangChange = (langCode: string) => {
     if (!langCode) return
     const payload = {
-      global: { ...preferenceData?.global, preferredLanguage: langCode }
+      global: { ...preferenceData?.global, defaultLanguage: langCode }
     }
     updatePreferences({ newData: payload })
     const code = langCode as LangKey
@@ -36,7 +36,7 @@ const DefaultSystemLanguageFormItem = () => {
   const isUpdatingPreference = updateReqState.isLoading
 
   const generateLangLabel = (val: string): string | undefined => {
-    const lang = (currentPreferredLang ?? 'en-US').slice(0, 2)
+    const lang = (currentDefaultLang ?? 'en-US').slice(0, 2)
     const languageNames = new Intl.DisplayNames([val], { type: 'language' })
     const currLangDisplay = new Intl.DisplayNames([lang], { type: 'language' })
     if (lang === val) return currLangDisplay.of(val)
@@ -48,7 +48,8 @@ const DefaultSystemLanguageFormItem = () => {
 
   const supportedLangs = [
     'en-US',
-    'es-ES'
+    'es-ES',
+    'ja-JP'
   ].map(val => ({
     label: generateLangLabel(val.slice(0, 2)),
     value: val
@@ -73,8 +74,8 @@ const DefaultSystemLanguageFormItem = () => {
           label={$t({ defaultMessage: 'Default System Language' })}
         >
           <Select
-            value={currentPreferredLang}
-            onChange={handlePreferredLangChange}
+            value={currentDefaultLang}
+            onChange={handleDefaultLangChange}
             showSearch
             allowClear
             optionFilterProp='children'

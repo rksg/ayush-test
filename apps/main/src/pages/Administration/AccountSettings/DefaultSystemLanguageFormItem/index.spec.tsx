@@ -42,9 +42,9 @@ jest.mock('@acx-ui/rc/components', () => ({
   usePreference: () => {
     return {
       data: { global: {
-        preferredLanguage: 'en-US'
+        defaultLanguage: 'en-US'
       } },
-      currentPreferredLang: 'en-US',
+      currentDefaultLang: 'en-US',
       update: mockedUpdatePreference,
       getReqState: { isLoading: false, isFetching: false } as UseQueryResult<TenantPreferenceSettings>,
       updateReqState: { isLoading: false } as UseQueryResult<TenantPreferenceSettings>

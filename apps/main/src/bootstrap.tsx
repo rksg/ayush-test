@@ -9,11 +9,10 @@ import {
   Loader,
   SuspenseBoundary
 } from '@acx-ui/components'
-import { get }                      from '@acx-ui/config'
-import { usePreference }            from '@acx-ui/rc/components'
-import { useYourPreferredLanguage } from '@acx-ui/rc/services'
-import { BrowserRouter }            from '@acx-ui/react-router-dom'
-import { Provider }                 from '@acx-ui/store'
+import { get }                    from '@acx-ui/config'
+import { useYourDefaultLanguage } from '@acx-ui/rc/services'
+import { BrowserRouter }          from '@acx-ui/react-router-dom'
+import { Provider }               from '@acx-ui/store'
 import {
   UserProfileProvider,
   useUserProfileContext,
@@ -112,23 +111,25 @@ export async function pendoInitalization (): Promise<void> {
 }
 
 function PreferredLangConfigProvider (props: React.PropsWithChildren) {
-  const userLang = useYourPreferredLanguage() // user preference
+  const defaultLang = useYourDefaultLanguage() // tenant level preference
   const browserLang = loadMessages(navigator.languages) // browser detection
   const queryParams = new URLSearchParams(window.location.search) // url query params
-  const lang = (userLang?? queryParams.get('lang') ?? browserLang) as ConfigProviderProps['lang']
+  const lang = (defaultLang?? queryParams.get('lang') ?? browserLang) as ConfigProviderProps['lang']
 
   return <ConfigProvider lang={lang} {...props} />
 }
 
 function DataGuardLoader (props: React.PropsWithChildren) {
-  const { currentPreferredLang } = usePreference()
+  const defaultLang = useYourDefaultLanguage()
   const locale = useLocaleContext()
+  locale.setLang(defaultLang)
   const userProfile = useUserProfileContext()
 
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
-    states={[{ isLoading: !Boolean(locale.messages) ||
-        !Boolean(userProfile.allowedOperations.length)
+    states={[{ isLoading:
+      !Boolean(locale.messages) ||
+      !Boolean(userProfile.allowedOperations.length)
     }]}
     children={props.children}
   />

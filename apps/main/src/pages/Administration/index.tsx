@@ -72,7 +72,7 @@ export default function Administration () {
   const isEnable = useIsSplitOn(Features.UNRELEASED) || isEdgeEarlyBetaEnabled
   const { data: userProfileData } = useUserProfileContext()
 
-  if (!isEnable) {
+  if (isEnable) {
     return <span>{ $t({ defaultMessage: 'Administration is not enabled' }) }</span>
   }
 
