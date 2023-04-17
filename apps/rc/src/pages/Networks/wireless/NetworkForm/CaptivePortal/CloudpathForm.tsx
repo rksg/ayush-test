@@ -34,10 +34,6 @@ export function CloudpathForm () {
   useEffect(()=>{
     if((editMode || cloneMode) && data){
       form.setFieldsValue({ ...data })
-      if(data.guestPortal?.walledGardens){
-        form.setFieldValue('walledGardensString',
-          data.guestPortal?.walledGardens.toString().replace(/,/g, '\n'))
-      }
       form.setFieldValue('enableAccountingService', data.enableAccountingService)
       if(data.accountingRadius){
         form.setFieldValue('accountingRadiusId',
