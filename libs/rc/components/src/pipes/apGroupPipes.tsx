@@ -47,7 +47,7 @@ const getVlanDescription = (apGroup: any, network: NetworkSaveData) =>{
     defaultValue = network?.wlan?.advancedCustomization.vlanPool.id || ''
   }
 
-  const status = apGroup[fieldToCompare] === undefined ? 'Default' : (apGroup[fieldToCompare] === defaultValue ? 'Default' : 'Custom')
+  const status = apGroup[fieldToCompare] === undefined || apGroup[fieldToCompare] === defaultValue ? 'Default' : 'Custom'
   return `${vlanPrefix}${apGroup[fieldToDisplay] ? apGroup[fieldToDisplay] : defaultValue} (${status})`
 }
 
