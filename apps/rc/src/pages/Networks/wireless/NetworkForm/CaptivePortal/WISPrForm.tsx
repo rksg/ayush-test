@@ -365,7 +365,7 @@ export function WISPrForm () {
           }
         />}
         <DhcpCheckbox />
-        <WalledGardenTextArea key={GuestNetworkTypeEnum.WISPr} enableDefaultWalledGarden={false} />
+        <WalledGardenTextArea guestNetworkTypeEnum={GuestNetworkTypeEnum.WISPr} enableDefaultWalledGarden={false} />
         {!regionOption && isOtherProvider &&<AuthAccServerSetting/>}
         {regionOption && region && <AuthAccServerSummary summaryData={region as Regions}/>}
         {!(editMode) && <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />}

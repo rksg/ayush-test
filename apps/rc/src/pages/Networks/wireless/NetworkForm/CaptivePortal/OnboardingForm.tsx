@@ -39,7 +39,7 @@ export function OnboardingForm () {
         <RedirectUrlInput />
         <DhcpCheckbox />
         <WalledGardenTextArea
-          key={GuestNetworkTypeEnum.ClickThrough}
+          guestNetworkTypeEnum={GuestNetworkTypeEnum.ClickThrough}
           enableDefaultWalledGarden={false} />
         {!(editMode) && <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />}
       </GridCol>

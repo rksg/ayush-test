@@ -91,7 +91,7 @@ export function HostApprovalForm () {
         <RedirectUrlInput/>
         <DhcpCheckbox />
         <WalledGardenTextArea
-          key={GuestNetworkTypeEnum.HostApproval}
+          guestNetworkTypeEnum={GuestNetworkTypeEnum.HostApproval}
           enableDefaultWalledGarden={false} />
         {!(editMode) && <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />}
       </GridCol>

@@ -337,7 +337,7 @@ export function SelfSignInForm () {
         </Form.Item>}
         <DhcpCheckbox />
         <WalledGardenTextArea
-          key={GuestNetworkTypeEnum.SelfSignIn}
+          guestNetworkTypeEnum={GuestNetworkTypeEnum.SelfSignIn}
           enableDefaultWalledGarden={false} />
         {!(editMode) && <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />}
       </GridCol>

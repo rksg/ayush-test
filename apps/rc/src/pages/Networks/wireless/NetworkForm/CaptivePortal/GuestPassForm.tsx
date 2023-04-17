@@ -40,7 +40,7 @@ export function GuestPassForm () {
         <RedirectUrlInput></RedirectUrlInput>
         <DhcpCheckbox />
         <WalledGardenTextArea
-          key={GuestNetworkTypeEnum.GuestPass}
+          guestNetworkTypeEnum={GuestNetworkTypeEnum.GuestPass}
           enableDefaultWalledGarden={false} />
         {!(editMode) && <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />}
       </GridCol>

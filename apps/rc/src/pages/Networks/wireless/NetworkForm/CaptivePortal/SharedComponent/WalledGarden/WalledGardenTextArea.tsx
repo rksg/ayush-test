@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from 'react'
+import { useContext, useEffect, useReducer } from 'react'
 
 import {
   Form,
@@ -12,7 +12,10 @@ import { Button }                                    from '@acx-ui/components'
 import { QuestionMarkCircleOutlined }                from '@acx-ui/icons'
 import { walledGardensRegExp, GuestNetworkTypeEnum } from '@acx-ui/rc/utils'
 
+import NetworkFormContext from '../../../NetworkFormContext'
+
 import { defaultWalledGarden } from './DefaultWalledGarden'
+
 
 // TODO: remove this flag and use feature toggle
 const toggleFlag = false
@@ -22,6 +25,11 @@ enum WallGardenAction {
   UseDefault,
   Customize,
   UseExist
+}
+
+interface WalledGardenProps {
+  guestNetworkTypeEnum: GuestNetworkTypeEnum,
+  enableDefaultWalledGarden: boolean
 }
 
 interface WalledGardenFieldsValue {
@@ -41,8 +49,8 @@ const exemptionList = [
   GuestNetworkTypeEnum.Cloudpath
 ]
 
-function isExemption (key: GuestNetworkTypeEnum) : boolean {
-  return exemptionList.includes(key)
+function isExemption (guestNetworkTypeEnum: GuestNetworkTypeEnum) : boolean {
+  return exemptionList.includes(guestNetworkTypeEnum)
 }
 
 const statesCollection = {
@@ -77,10 +85,12 @@ const statesCollection = {
 }
 
 /* eslint-disable max-len */
-export function WalledGardenTextArea ({ key, enableDefaultWalledGarden }: { key: GuestNetworkTypeEnum, enableDefaultWalledGarden: boolean }) {
 
+export function WalledGardenTextArea (props: WalledGardenProps) {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
+
+  const { guestNetworkTypeEnum, enableDefaultWalledGarden } = props
 
   function actionRunnder (currentState: WalledGardenState, IncomingState: WalledGardenState) {
     switch (IncomingState.action) {
@@ -103,7 +113,8 @@ export function WalledGardenTextArea ({ key, enableDefaultWalledGarden }: { key:
     }
   }
 
-  const [wallGardenOption, dispatch] = useReducer(actionRunnder, statesCollection.initialState)
+  // eslint-disable-next-line no-unused-vars
+  const [_, dispatch] = useReducer(actionRunnder, statesCollection.initialState)
 
   // Effect to control the textarea since it won't reset when user click back and change protal type
   useEffect(() => {
@@ -124,7 +135,7 @@ export function WalledGardenTextArea ({ key, enableDefaultWalledGarden }: { key:
   },[])
 
   // if one condition is true, then go render it.
-  const isRenderNeed = [toggleFlag, isExemption(key)].some(Boolean)
+  const isRenderNeed = [toggleFlag, isExemption(guestNetworkTypeEnum)].some(Boolean)
 
   if (!isRenderNeed) {
     return null

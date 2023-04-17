@@ -104,7 +104,7 @@ export function CloudpathForm () {
           />
         </Form.Item>
         <WalledGardenTextArea
-          key={GuestNetworkTypeEnum.Cloudpath}
+          guestNetworkTypeEnum={GuestNetworkTypeEnum.Cloudpath}
           enableDefaultWalledGarden={true} />
         <AuthAccServerSetting/>
         {!(editMode) && <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />}
