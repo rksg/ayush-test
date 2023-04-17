@@ -43,9 +43,14 @@ const EdgePortsTable = ({ data }: { data: EdgePortStatus[] }) => {
       dataIndex: 'type'
     },
     {
-      title: $t({ defaultMessage: 'Connected Device' }),
+      title: $t({ defaultMessage: 'Interface MAC' }),
       key: 'mac',
       dataIndex: 'mac'
+    },
+    {
+      title: $t({ defaultMessage: 'IP Address' }),
+      key: 'ip',
+      dataIndex: 'ip'
     },
     {
       title: $t({ defaultMessage: 'Speed' }),
@@ -54,11 +59,6 @@ const EdgePortsTable = ({ data }: { data: EdgePortStatus[] }) => {
       render: (data, row) => {
         return formatter('networkSpeedFormat')(row.speedKbps)
       }
-    },
-    {
-      title: $t({ defaultMessage: 'Duplex Speed' }),
-      key: 'duplex',
-      dataIndex: 'duplex'
     }
   ]
 
