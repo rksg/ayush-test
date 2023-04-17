@@ -845,7 +845,7 @@ export const groupByColumns: TableProps<APExtendedGroupedResponse | APExtended>[
   }
 ]
 
-export function GroupTable (props) {
+export function GroupTable (props: TableProps<APExtended | APExtendedGroupedResponse>) {
   const [ grouping, setGrouping ] = React.useState<string | undefined>('')
   const sources: Record<string, APExtendedGroupedResponse[]> = {
     deviceGroupName: cleanResponse(apGroupResponse),
