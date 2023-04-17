@@ -10,7 +10,8 @@ import {
   useGetNetworkSegmentationStatsListQuery,
   useGetEnhancedPortalProfileListQuery,
   useGetEnhancedWifiCallingServiceListQuery,
-  useWebAuthTemplateListQuery
+  useWebAuthTemplateListQuery,
+  useGetEdgeFirewallListQuery
 } from '@acx-ui/rc/services'
 import {
   getSelectServiceRoutePath,
@@ -31,6 +32,7 @@ export default function MyServices () {
   const earlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
   const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
+  const edgeFirewallEnabled = useIsSplitOn(Features.EDGES)
   const isEdgeDhcpEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
 
   const services = [
@@ -66,6 +68,16 @@ export default function MyServices () {
         skip: !networkSegmentationEnabled
       }),
       disabled: !networkSegmentationEnabled
+    },
+    {
+      type: ServiceType.EDGE_FIREWALL,
+      categories: [RadioCardCategory.EDGE],
+      tableQuery: useGetEdgeFirewallListQuery({
+        params, payload: { ...defaultPayload }
+      },{
+        skip: !edgeFirewallEnabled
+      }),
+      disabled: !edgeFirewallEnabled
     },
     {
       type: ServiceType.DPSK,

@@ -6,25 +6,24 @@ import { Descriptions, StepsForm, useStepFormContext, Subtitle } from '@acx-ui/c
 import { SpaceWrapper }                                          from '@acx-ui/rc/components'
 import { StatefulAcl }                                           from '@acx-ui/rc/utils'
 
-import { FirewallForm } from '..'
+import { FirewallFormModel, filterCustomACLRules } from '..'
 
 import { Styles } from './styledComponents'
 
 
 export const SummaryForm = styled(({ className }: { className?: string }) => {
   const { $t } = useIntl()
-  const { form } = useStepFormContext<FirewallForm>()
+  const { form } = useStepFormContext<FirewallFormModel>()
   const formValues = form.getFieldsValue(true)
 
-  const activatedEdgeIds = formValues.selectedEdges
-  const edgeAmount = activatedEdgeIds.length
-  const activatedEdges = formValues.selectedEdges
+  const activatedEdges = formValues.selectedEdges ?? []
+  const edgeAmount = activatedEdges.length
   const ddosLimitEnabled = formValues.ddosRateLimitingEnabled
   const ddosRulesCount = formValues.ddosRateLimitingRules.length
   const statefulAclEnabled = formValues.statefulAclEnabled
-  const statefulACLRulesCount = formValues.statefulAcls.length
-  // const statefulACLRulesCount = formValues.statefulAcls.reduce(
-  // (acc: number, item: StatefulAcl) => (acc + item.rules.length), 0)
+  const customACLRules = filterCustomACLRules(formValues.statefulAcls ?? [])
+  const statefulACLRulesCount = customACLRules.reduce(
+    (acc: number, item: StatefulAcl) => (acc + item.rules.length), 0)
 
   return (
     <Row gutter={[10, 30]} className={className}>

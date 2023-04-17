@@ -8,8 +8,8 @@ import { cssNumber, Drawer, showActionModal, Table, TableProps, useStepFormConte
 import { DdosRateLimitingRule }                                                      from '@acx-ui/rc/utils'
 import { filterByAccess }                                                            from '@acx-ui/user'
 
-import { FirewallForm }   from '../../..'
-import { DDoSRuleDialog } from '../DDoSRuleDialog'
+import { FirewallFormModel }                       from '../../..'
+import { DDoSRuleDialog, getDDoSAttackTypeString } from '../DDoSRuleDialog'
 
 interface DDoDRateLimitRulesTableProps {
   data?: DdosRateLimitingRule[]
@@ -45,7 +45,10 @@ const DDoDRateLimitRulesTable = (props: DDoDRateLimitRulesTableProps) => {
       title: $t({ defaultMessage: 'DDoS Attack Type' }),
       key: 'ddosAttackType',
       dataIndex: 'ddosAttackType',
-      defaultSortOrder: 'ascend'
+      defaultSortOrder: 'ascend',
+      render: (_, row) => {
+        return getDDoSAttackTypeString($t, row.ddosAttackType)
+      }
     },
     {
       title: $t({ defaultMessage: 'Rate-limit Value' }),
@@ -78,7 +81,7 @@ const DDoDRateLimitRulesTable = (props: DDoDRateLimitRulesTableProps) => {
           onOk: () => {
             const currentData = ([] as DdosRateLimitingRule[]).concat(form.getFieldValue('rules'))
             rows.forEach((item) => {
-              currentData.splice(_.findIndex(currentData, item.ddosAttackType), 1)
+              _.remove(currentData, item)
             })
 
             form.setFieldValue('rules', currentData)
@@ -128,13 +131,13 @@ interface DDoSRateLimitConfigDrawerProps {
   className?: string;
   visible: boolean;
   setVisible: (visible: boolean) => void;
+  data?: DdosRateLimitingRule[]
 }
 
 export const DDoSRateLimitConfigDrawer = (props: DDoSRateLimitConfigDrawerProps) => {
-  const { visible, setVisible } = props
+  const { visible, setVisible, data } = props
   const { $t } = useIntl()
-  const { form: parentForm } = useStepFormContext<FirewallForm>()
-  const ddosRateLimitingRules = Form.useWatch('ddosRateLimitingRules', parentForm)
+  const { form: parentForm } = useStepFormContext<FirewallFormModel>()
   const [form] = Form.useForm()
 
   const onClose = () => {
@@ -157,12 +160,13 @@ export const DDoSRateLimitConfigDrawer = (props: DDoSRateLimitConfigDrawerProps)
   }
 
   useEffect(() => {
-    form.setFieldValue('rules', ddosRateLimitingRules)
-  }, [form, ddosRateLimitingRules])
+    if (visible && data)
+      form.setFieldValue('rules', data)
+  }, [form, data, visible])
 
   const footer = [
     <Drawer.FormFooter
-      key='ddosDrawer'
+      key='ddosDrawerActs'
       buttonLabel={{ save: $t({ defaultMessage: 'Apply' }) }}
       onCancel={handleCancel}
       onSave={async () => form.submit()}

@@ -3,7 +3,7 @@ import { ApiInfo } from '../../apiService'
 export const EdgeFirewallUrls: { [key: string]: ApiInfo } = {
   getEdgeFirewall: {
     method: 'get',
-    url: '/edgeFirewallServices/:firewallId',
+    url: '/edgeFirewallServices/:serviceId',
     newApi: true
   },
   getEdgeFirewallList: {
@@ -18,17 +18,17 @@ export const EdgeFirewallUrls: { [key: string]: ApiInfo } = {
   },
   updateEdgeFirewall: {
     method: 'put',
-    url: '/wifiCallingServiceProfiles/:firewallId',
+    url: '/wifiCallingServiceProfiles/:serviceId',
     newApi: true
   },
   updateEdgeFirewallPartial: {
     method: 'PTACH',
-    url: '/edgeFirewallServices/:firewallId',
+    url: '/edgeFirewallServices/:serviceId',
     newApi: true
   },
   deleteEdgeFirewall: {
     method: 'delete',
-    url: '/edgeFirewallServices/:firewallId',
+    url: '/edgeFirewallServices/:serviceId',
     newApi: true
   },
   deleteEdgeFirewalls: {

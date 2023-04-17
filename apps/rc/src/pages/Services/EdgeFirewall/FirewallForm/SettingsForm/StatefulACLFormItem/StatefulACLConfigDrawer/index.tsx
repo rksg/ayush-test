@@ -6,24 +6,17 @@ import _                                                                        
 import { IntlShape, useIntl }                                                                               from 'react-intl'
 import { SortableContainer, SortableElement, SortableHandle, SortableElementProps, SortableContainerProps } from 'react-sortable-hoc'
 
-import { cssNumber, Drawer, showActionModal, Table, TableProps, useStepFormContext } from '@acx-ui/components'
-import { ACLDirection, AddressType, StatefulAcl, StatefulAclRule }                   from '@acx-ui/rc/utils'
-import { filterByAccess }                                                            from '@acx-ui/user'
-import { getIntl }                                                                   from '@acx-ui/utils'
+import { cssNumber, Drawer, showActionModal, Table, TableProps, useStepFormContext }                                                    from '@acx-ui/components'
+import { ACLDirection, AddressType, getAccessActionString, getACLDirectionString, getProtocolTypeString, StatefulAcl, StatefulAclRule } from '@acx-ui/rc/utils'
+import { filterByAccess }                                                                                                               from '@acx-ui/user'
+import { getIntl }                                                                                                                      from '@acx-ui/utils'
 
-import { FirewallForm }                                 from '../../..'
-import { StatefulACLRuleDialog, getAccessActionString } from '../StatefulACLRuleDialog'
+import { FirewallFormModel }     from '../../..'
+import { StatefulACLRuleDialog } from '../StatefulACLRuleDialog'
 
 import { InboundDefaultRules, OutboundDefaultRules } from './defaultRules'
 import { DragIcon, DragIconWrapper }                 from './styledComponents'
 
-interface StatefulACLRulesTableProps {
-  data?: StatefulAclRule[]
-}
-
-interface ACLDraggableTableRowProps extends RowProps {
-  'data-row-key': string;
-}
 const getRuleSrcDstString = (rowData: StatefulAclRule, isSource: boolean) => {
   const intl = getIntl()
   const { $t } = intl
@@ -62,6 +55,13 @@ const SortableItem = SortableElement((props: SortableElementProps) => <tr {...pr
 // @ts-ignore
 const SortContainer = SortableContainer((props: SortableContainerProps) => <tbody {...props} />)
 
+interface StatefulACLRulesTableProps {
+  data?: StatefulAclRule[]
+}
+
+interface ACLDraggableTableRowProps extends RowProps {
+  'data-row-key': string;
+}
 const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
   const { $t } = useIntl()
   const { data } = props
@@ -77,11 +77,10 @@ const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
 
   const handleStatefulACLRuleSubmit = (newData: StatefulAclRule, isEdit: boolean) => {
     const currentData = ([] as StatefulAclRule[]).concat(form.getFieldValue('rules'))
-
     if (isEdit) {
       const targetIdx = _.findIndex(currentData, { priority: newData.priority })
       if (targetIdx > -1)
-        currentData[targetIdx] = newData
+        currentData[targetIdx] = _.merge(currentData[targetIdx], newData)
     } else {
       const lastItem = currentData.pop()
       if (!lastItem) return
@@ -201,7 +200,10 @@ const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
     {
       title: $t({ defaultMessage: 'Protocol' }),
       key: 'protocolType',
-      dataIndex: 'protocolType'
+      dataIndex: 'protocolType',
+      render: (_, row) => {
+        return getProtocolTypeString($t, row.protocolType)
+      }
     },
     {
       dataIndex: 'sort',
@@ -302,17 +304,6 @@ const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
   )
 }
 
-export const getACLDirectionString = ($t: IntlShape['$t'], type: ACLDirection) => {
-  switch (type) {
-    case ACLDirection.INBOUND:
-      return $t({ defaultMessage: 'Inbound' })
-    case ACLDirection.OUTBOUND:
-      return $t({ defaultMessage: 'Outbound' })
-    default:
-      return ''
-  }
-}
-
 export const getACLDirections = ($t: IntlShape['$t'])
   : Array<{ label: string, value: ACLDirection }> => {
   return Object.keys(ACLDirection)
@@ -333,7 +324,7 @@ export const StatefulACLConfigDrawer = (props: StatefulACLConfigDrawerProps) => 
   const { visible, setVisible, editData } = props
   const { $t } = useIntl()
   const aclDirectionList = getACLDirections($t)
-  const { form: parentForm } = useStepFormContext<FirewallForm>()
+  const { form: parentForm } = useStepFormContext<FirewallFormModel>()
   const [form] = Form.useForm()
 
   const onClose = () => {
@@ -344,7 +335,7 @@ export const StatefulACLConfigDrawer = (props: StatefulACLConfigDrawerProps) => 
     const newData = form.getFieldsValue()
 
     // new data should be update into "statefulAcls" by its direction
-    const wholeOriginData = parentForm.getFieldValue('statefulAcls')
+    const wholeOriginData = ([] as StatefulAcl[]).concat(parentForm.getFieldValue('statefulAcls'))
     const targetIndex = _.findIndex(wholeOriginData, { direction: editData.direction })
     wholeOriginData[targetIndex] = newData
     parentForm.setFieldValue('statefulAcls', wholeOriginData)
@@ -352,12 +343,14 @@ export const StatefulACLConfigDrawer = (props: StatefulACLConfigDrawerProps) => 
   }
 
   useEffect(() => {
-    if (visible)
+    if (visible) {
       form.setFieldsValue(editData)
+    }
   }, [form, editData, visible])
 
   const footer = [
     <Drawer.FormFooter
+      key='statefulACLDrawerActs'
       buttonLabel={{ save: $t({ defaultMessage: 'Add' }) }}
       onCancel={onClose}
       onSave={async () => form.submit()}
@@ -381,13 +374,14 @@ export const StatefulACLConfigDrawer = (props: StatefulACLConfigDrawerProps) => 
         <Form.Item
           name='name'
           label={$t({ defaultMessage: 'Stateful ACL Name' })}
-          rules={[{ required: true }]}
+          rules={[{ required: true }, { max: 255 }]}
         >
           <Input />
         </Form.Item>
         <Form.Item
           name='description'
           label={$t({ defaultMessage: 'Description' })}
+          rules={[{ max: 255 }]}
         >
           <TextArea
             rows={3}

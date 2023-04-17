@@ -778,14 +778,32 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       }
     }),
-    getEdgeFirewallList: build.query<EdgeFirewallSetting, RequestPayload>({
+    getEdgeFirewallList: build.query<TableResult<EdgeFirewallSetting>, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(EdgeFirewallUrls.getEdgeFirewallList, params)
         return {
           ...req
         }
       },
-      providesTags: [{ type: 'EdgeFirewall', id: 'LIST' }]
+      providesTags: [{ type: 'EdgeFirewall', id: 'LIST' }],
+      transformResponse: (result: NewAPITableResult<EdgeFirewallSetting>) => {
+        return transferNewResToTableResult<EdgeFirewallSetting>(result)
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'AddEdgeFirewallServiceProfile',
+            'UpdateEdgeFirewallServiceProfile',
+            'DeleteEdgeFirewallServiceProfile',
+            'DeleteEdgeFirewallServiceProfile'
+          ], () => {
+            api.dispatch(serviceApi.util.invalidateTags([
+              { type: 'Service', id: 'LIST' },
+              { type: 'EdgeFirewall', id: 'LIST' }
+            ]))
+          })
+        })
+      }
     }),
     getEdgeFirewall: build.query<EdgeFirewallSetting, RequestPayload>({
       query: ({ params }) => {
@@ -793,7 +811,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         return {
           ...req
         }
-      }
+      },
+      providesTags: [{ type: 'EdgeFirewall', id: 'DETAIL' }]
     }),
     addEdgeFirewall: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -802,7 +821,18 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'EdgeFirewall', id: 'LIST' }]
+    }),
+    updateEdgeFirewall: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeFirewallUrls.updateEdgeFirewall, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'EdgeFirewall', id: 'LIST' }]
     })
   })
 })
@@ -861,6 +891,7 @@ export const {
   useGetDHCPProfileListViewModelQuery,
   useGetEnhancedPortalProfileListQuery,
   useAddEdgeFirewallMutation,
+  useUpdateEdgeFirewallMutation,
   useGetEdgeFirewallListQuery,
   useGetEdgeFirewallQuery
 } = serviceApi

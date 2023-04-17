@@ -3,32 +3,36 @@ import { useState } from 'react'
 import { Col, Form, Row, Switch, Typography } from 'antd'
 import { useIntl }                            from 'react-intl'
 
-import { Table, TableProps }         from '@acx-ui/components'
-import { ACLDirection, StatefulAcl } from '@acx-ui/rc/utils'
-import { filterByAccess }            from '@acx-ui/user'
+import { Table, TableProps }                                from '@acx-ui/components'
+import { ACLDirection, getACLDirectionString, StatefulAcl } from '@acx-ui/rc/utils'
+import { filterByAccess }                                   from '@acx-ui/user'
 
-import { StatefulACLConfigDrawer, getACLDirectionString } from './StatefulACLConfigDrawer'
-import { InboundDefaultRules, OutboundDefaultRules }      from './StatefulACLConfigDrawer/defaultRules'
+import { StatefulACLConfigDrawer }                   from './StatefulACLConfigDrawer'
+import { InboundDefaultRules, OutboundDefaultRules } from './StatefulACLConfigDrawer/defaultRules'
 
 interface StatefulACLTableProps {
   data?: StatefulAcl[]
 }
 
-const defaultStatefulACLs = [{
+export const defaultInboundStatefulACLs = {
   name: 'Inbound ACL',
   direction: ACLDirection.INBOUND,
   rules: [...InboundDefaultRules]
-},{
+}
+export const defaultOutboundStatefulACLs = {
   name: 'Outbound ACL',
   direction: ACLDirection.OUTBOUND,
   rules: [...OutboundDefaultRules]
-}]
+}
+export const defaultStatefulACLs = [
+  { ...defaultInboundStatefulACLs },
+  { ...defaultOutboundStatefulACLs }
+]
 const StatefulACLTable = (props: StatefulACLTableProps) => {
   const { data } = props
   const { $t } = useIntl()
   const [drawerVisible, setDrawerVisible] = useState<boolean>(false)
   const [editData, setEditData] = useState<StatefulAcl>({} as StatefulAcl)
-
 
   const columns: TableProps<StatefulAcl>['columns'] = [
     {

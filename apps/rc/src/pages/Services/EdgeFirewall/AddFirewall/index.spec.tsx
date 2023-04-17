@@ -1,5 +1,4 @@
 import userEvent from '@testing-library/user-event'
-import _         from 'lodash'
 import { rest }  from 'msw'
 
 import { AddressType, EdgeFirewallUrls, EdgeUrlsInfo, ProtocolType } from '@acx-ui/rc/utils'
@@ -7,6 +6,7 @@ import {
   Provider
 } from '@acx-ui/store'
 import {
+  cleanup,
   mockServer,
   render,
   screen,
@@ -31,9 +31,15 @@ jest.mock('antd', () => {
   const Select = ({
     children,
     showSearch, // remove and left unassigned to prevent warning
+    mode,
     ...props
-  }: React.PropsWithChildren<{ showSearch: boolean, onChange?: (value: string) => void }>) => {
-    return (<select {...props} onChange={(e) => props.onChange?.(e.target.value)}>
+  }: React.PropsWithChildren<{
+    showSearch: boolean,
+    mode: string,
+    onChange?: (value: string) => void }>) => {
+    return (<select {...props}
+      multiple={mode==='tags' || mode==='multiple'}
+      onChange={(e) => props.onChange?.(e.target.value)}>
       {/* Additional <option> to ensure it is possible to reset value to empty */}
       <option value={undefined}></option>
       {children}
@@ -45,8 +51,10 @@ jest.mock('antd', () => {
 })
 
 const mockedAddFn = jest.fn()
-describe('SettingsForm', () => {
+describe('Add edge firewall service', () => {
   beforeEach(() => {
+    mockedAddFn.mockReset()
+
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.getEdgeList.url,
@@ -81,7 +89,8 @@ describe('SettingsForm', () => {
     expect(await screen.findByText('DDoS Rate-limiting Settings')).toBeVisible()
 
     // add ddos rule
-    await click(within(drawer).getByRole('button', { name: 'Add Rule' }))
+    const addRuleBtn = within(drawer).getByRole('button', { name: 'Add Rule' })
+    await click(addRuleBtn)
     await screen.findByText('Add DDoS Rule')
     const dialogs = screen.queryAllByRole('dialog')
     const dialog = dialogs.filter(elem => elem.classList.contains('ant-modal'))[0]
@@ -91,7 +100,20 @@ describe('SettingsForm', () => {
       'ICMP')
     await type(within(dialog).getByRole('spinbutton'), '6')
     await click(within(dialog).getByRole('button', { name: 'Add' }))
-    await click(await within(drawer).findByRole('row', { name: /ICMP/ }))
+    await within(drawer).findByRole('row', { name: /ICMP/ })
+
+    // add another rule
+    await click(addRuleBtn)
+    await click(await within(dialog).findByRole('combobox', { name: 'DDoS Attack Type' }))
+    const opts = await within(dialog).findAllByRole('option')
+    const icmp = opts.filter(o => o.textContent === 'ICMP')
+    expect(icmp[0]).toBeDisabled()
+    await selectOptions(
+      await within(dialog).findByRole('combobox', { name: 'DDoS Attack Type' }),
+      'DNS Response')
+    await type(within(dialog).getByRole('spinbutton'), '2')
+    await click(within(dialog).getByRole('button', { name: 'Add' }))
+    await within(drawer).findByRole('row', { name: /DNS Response/ })
     await click(within(drawer).getByRole('button', { name: 'Apply' }))
 
     // Navigate to Step 2
@@ -112,7 +134,7 @@ describe('SettingsForm', () => {
     const ddosResult = await screen.findByText(/DDoS Rate-limiting/)
     // eslint-disable-next-line testing-library/no-node-access
     expect((ddosResult.parentNode as HTMLDivElement).textContent)
-      .toBe('DDoS Rate-limitingON (1 Rule)')
+      .toBe('DDoS Rate-limitingON (2 Rules)')
 
     expect(screen.getByText('SmartEdge (1)')).not.toBeNull()
     expect(screen.getByText('Smart Edge 2')).not.toBeNull()
@@ -126,11 +148,16 @@ describe('SettingsForm', () => {
         ddosRateLimitingRules: [{
           ddosAttackType: 'ICMP',
           rateLimiting: 6
+        }, {
+          ddosAttackType: 'DNS_RESPONSE',
+          rateLimiting: 2
         }],
         statefulAclEnabled: false,
         statefulAcls: []
       })
     })
+
+    cleanup()
   })
 
   it('should correctly create with stateful ACL rule', async () => {
@@ -148,6 +175,8 @@ describe('SettingsForm', () => {
     // Step 1
     await type(body.getByRole('textbox', { name: 'Service Name' }), 'Test 2')
     await click(body.getByRole('switch', { name: 'acl' }))
+
+    // edit outbound ACL
     const outboundRow = await body.findByRole('row', { name: /Outbound ACL/i })
     await click(within(outboundRow).getByRole('checkbox'))
     await click(body.getByRole('button', { name: 'Edit' }))
@@ -167,9 +196,10 @@ describe('SettingsForm', () => {
     const src = await screen.findByRole('group', { name: 'Source' })
     await click(await within(src).findByRole('radio', { name: 'Subnet Address' }))
     await type(within(src).getByPlaceholderText('Network address'), '1.1.1.1')
-    await type(within(src).getByPlaceholderText('Mask'), '255.255.255.255')
+    await type(within(src).getByPlaceholderText('Mask'), '255.255.255.254')
     const destination = await screen.findByRole('group', { name: 'Destination' })
     await click(await within(destination).findByRole('radio', { name: 'Any IP Address' }))
+    await type(within(destination).getByRole('textbox', { name: 'Port' }), '2-10')
     await click(within(dialog).getByRole('button', { name: 'Add' }))
     await click(await within(drawer).findByRole('row', { name: /UDP/ }))
     await click(within(drawer).getByRole('button', { name: 'Add' }))
@@ -182,8 +212,11 @@ describe('SettingsForm', () => {
     const rows = await screen.findAllByRole('row', { name: /Smart Edge/i })
     expect(rows.length).toBe(5)
     // activate by button in action column
-    const row = await screen.findByRole('row', { name: /Smart Edge 3/i })
-    await click(within(row).getByRole('switch'))
+    await click(
+      within(await screen.findByRole('row', { name: /Smart Edge 3/i })).getByRole('checkbox'))
+    await click(
+      within(await screen.findByRole('row', { name: /Smart Edge 4/i })).getByRole('checkbox'))
+    await click(await screen.findByRole('button', { name: 'Activate' }))
 
     // Navigate to Step 3
     await click(actions.getByRole('button', { name: 'Next' }))
@@ -197,16 +230,17 @@ describe('SettingsForm', () => {
     const aclResult = await screen.findByText(/Stateful ACL/)
     // eslint-disable-next-line testing-library/no-node-access
     expect((aclResult.parentNode as HTMLDivElement).textContent)
-      .toBe('Stateful ACLON (2 ACL)')
+      .toBe('Stateful ACLON (1 ACL)')
 
-    expect(screen.getByText('SmartEdge (1)')).not.toBeNull()
+    expect(screen.getByText('SmartEdge (2)')).not.toBeNull()
     expect(screen.getByText('Smart Edge 3')).not.toBeNull()
+    expect(screen.getByText('Smart Edge 4')).not.toBeNull()
 
     await click(actions.getByRole('button', { name: 'Finish' }))
     await waitFor(() => {
       expect(mockedAddFn).toBeCalledWith({
         serviceName: 'Test 2',
-        edgeIds: ['0000000003'],
+        edgeIds: ['0000000003', '0000000004'],
         ddosRateLimitingEnabled: false,
         ddosRateLimitingRules: [],
         statefulAclEnabled: true,
@@ -223,9 +257,9 @@ describe('SettingsForm', () => {
               protocolType: ProtocolType.UDP,
               sourceAddressType: AddressType.SUBNET_ADDRESS,
               sourceAddress: '1.1.1.1',
-              sourceAddressMask: '255.255.255.255',
+              sourceAddressMask: '255.255.255.254',
               destinationAddressType: AddressType.ANY_IP_ADDRESS,
-              priority: 4
+              destinationPort: '2-10'
             }]
         }]
       })

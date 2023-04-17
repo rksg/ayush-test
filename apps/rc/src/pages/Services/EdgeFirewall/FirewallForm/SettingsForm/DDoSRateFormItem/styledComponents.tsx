@@ -1,4 +1,10 @@
-import { css } from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
+
+export const StyledWrapper = styled.div`
+  .ddosRateLimitingRulesFormItem .ant-form-item-control-input {
+    min-height: 0;
+  }
+`
 
 export const ModalStyles = css`
   .ant-modal-footer {

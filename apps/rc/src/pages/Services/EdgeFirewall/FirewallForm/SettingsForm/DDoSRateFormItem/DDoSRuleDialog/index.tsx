@@ -55,13 +55,20 @@ export const DDoSRuleDialog = styled((props: DDoSRuleDialogProps) => {
   const attackTypes = getDDoSAttackTypes($t)
 
   const handleSubmit = () => {
-    const data = form.getFieldsValue(true)
+    const data = form.getFieldsValue()
+    const addAnotherRuleChecked = form.getFieldValue('addAnotherRuleChecked')
     onSubmit(data, editMode)
-    form.resetFields()
+
+    if (addAnotherRuleChecked) {
+      form.resetFields()
+    } else {
+      handleClose()
+    }
   }
 
   const handleClose = () => {
     setVisible(false)
+    form.resetFields()
   }
 
   const isCreatedRuleType = (type: DdosAttackType) => {
@@ -77,6 +84,7 @@ export const DDoSRuleDialog = styled((props: DDoSRuleDialogProps) => {
 
   const footer = [
     <Drawer.FormFooter
+      key='ddosDialogFooter'
       buttonLabel={({
         addAnother: $t({ defaultMessage: 'Add another rule' }),
         save: $t({ defaultMessage: 'Add' })
@@ -84,11 +92,8 @@ export const DDoSRuleDialog = styled((props: DDoSRuleDialogProps) => {
       showAddAnother={!editMode}
       onCancel={handleClose}
       onSave={async (addAnotherRuleChecked: boolean) => {
+        form.setFieldValue('addAnotherRuleChecked', addAnotherRuleChecked)
         form.submit()
-
-        if (!addAnotherRuleChecked) {
-          handleClose()
-        }
       }}
     />
   ]
@@ -142,7 +147,13 @@ export const DDoSRuleDialog = styled((props: DDoSRuleDialogProps) => {
           // eslint-disable-next-line max-len
           tooltip={$t({ defaultMessage: 'A value of 100 kbps for ICMP Attack means ICMP traffic beyond 100kbps will be dropped.' })}
         >
-          <Form.Item name='rateLimiting' noStyle>
+          <Form.Item name='rateLimiting'
+            noStyle
+            rules={[
+              { required: true },
+              { type: 'number', min: 0, max: 100 }
+            ]}
+          >
             <InputNumber min={0} max={100} />
           </Form.Item>
           <span className='ant-form-text' style={{ marginLeft: 8 }}>

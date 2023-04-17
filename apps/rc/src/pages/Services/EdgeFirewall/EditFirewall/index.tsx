@@ -1,23 +1,25 @@
 import { useIntl } from 'react-intl'
 
-import { PageHeader }                                         from '@acx-ui/components'
-import { useAddEdgeFirewallMutation }                         from '@acx-ui/rc/services'
-import { getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                         from '@acx-ui/react-router-dom'
+import { Loader, PageHeader }                                     from '@acx-ui/components'
+import { useGetEdgeFirewallQuery, useUpdateEdgeFirewallMutation } from '@acx-ui/rc/services'
+import { getServiceRoutePath, ServiceOperation, ServiceType }     from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                  from '@acx-ui/react-router-dom'
 
 import FirewallForm, { filterCustomACLRules, FirewallFormEdge, FirewallFormModel, processFirewallACLPayload } from '../FirewallForm'
 import { ScopeForm }                                                                                          from '../FirewallForm/ScopeForm'
 import { SettingsForm }                                                                                       from '../FirewallForm/SettingsForm'
-import { SummaryForm }                                                                                        from '../FirewallForm/SummaryForm'
 
-const AddFirewall = () => {
+const EditFirewall = () => {
   const { $t } = useIntl()
+  const params = useParams()
   const navigate = useNavigate()
   const linkToServiceList = useTenantLink(getServiceRoutePath({
     type: ServiceType.EDGE_FIREWALL,
     oper: ServiceOperation.LIST
   }))
-  const [addEdgeFirewall] = useAddEdgeFirewallMutation()
+
+  const { data, isLoading } = useGetEdgeFirewallQuery({ params })
+  const [updateEdgeFirewall] = useUpdateEdgeFirewallMutation()
 
   const steps = [
     {
@@ -27,10 +29,6 @@ const AddFirewall = () => {
     {
       title: $t({ defaultMessage: 'Scope' }),
       content: <ScopeForm />
-    },
-    {
-      title: $t({ defaultMessage: 'Summary' }),
-      content: <SummaryForm />
     }
   ]
 
@@ -39,7 +37,6 @@ const AddFirewall = () => {
       let statefulAcls = formData.statefulAclEnabled ? formData.statefulAcls : []
       statefulAcls = filterCustomACLRules(statefulAcls ?? [])
       processFirewallACLPayload(statefulAcls)
-
       const payload = {
         serviceName: formData.serviceName,
         tags: formData.tags,
@@ -50,7 +47,7 @@ const AddFirewall = () => {
         statefulAcls: statefulAcls
       }
 
-      await addEdgeFirewall({ payload }).unwrap()
+      await updateEdgeFirewall({ params, payload }).unwrap()
       navigate(linkToServiceList, { replace: true })
     } catch(err) {
       // eslint-disable-next-line no-console
@@ -61,17 +58,21 @@ const AddFirewall = () => {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Add Firewall Service' })}
+        title={$t({ defaultMessage: 'Edit Firewall Service' })}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Services' }), link: '/services' }
         ]}
       />
-      <FirewallForm
-        steps={steps}
-        onFinish={handleFinish}
-      />
+      <Loader states={[{ isLoading: isLoading }]}>
+        <FirewallForm
+          steps={steps}
+          onFinish={handleFinish}
+          editMode
+          editData={data}
+        />
+      </Loader>
     </>
   )
 }
 
-export default AddFirewall
+export default EditFirewall

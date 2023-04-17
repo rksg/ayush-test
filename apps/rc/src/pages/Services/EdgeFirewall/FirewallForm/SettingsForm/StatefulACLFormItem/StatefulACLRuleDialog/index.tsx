@@ -1,41 +1,27 @@
 import { ReactElement, useEffect } from 'react'
 
-import { QuestionCircleOutlined }                               from '@ant-design/icons'
-import { Form, Input, Modal, Radio, Select, Row, Col, Tooltip } from 'antd'
-import TextArea                                                 from 'antd/lib/input/TextArea'
-import { IntlShape, useIntl }                                   from 'react-intl'
-import styled                                                   from 'styled-components'
+import { QuestionCircleOutlined }                                            from '@ant-design/icons'
+import { Form, Input, Modal, Radio, Select, Row, Col, Tooltip, InputNumber } from 'antd'
+import TextArea                                                              from 'antd/lib/input/TextArea'
+import { IntlShape, useIntl }                                                from 'react-intl'
+import styled                                                                from 'styled-components'
 
-import { cssStr, Drawer, Fieldset }                                 from '@acx-ui/components'
-import { SpaceWrapper }                                             from '@acx-ui/rc/components'
-import { AddressType, AccessAction, ProtocolType, StatefulAclRule } from '@acx-ui/rc/utils'
+import { cssStr, Drawer, Fieldset } from '@acx-ui/components'
+import { SpaceWrapper }             from '@acx-ui/rc/components'
+import {
+  AddressType,
+  AccessAction,
+  ProtocolType,
+  StatefulAclRule,
+  subnetMaskIpRegExp,
+  getProtocolTypeString,
+  getAccessActionString,
+  getAddressTypeString,
+  ACLDirection
+} from '@acx-ui/rc/utils'
+import { getIntl, validationMessages } from '@acx-ui/utils'
 
 import { StyledFlagFilled, ModalStyles } from './styledComponents'
-
-export const getProtocolTypeString = ($t: IntlShape['$t'], type: ProtocolType) => {
-  switch (type) {
-    case ProtocolType.ANY:
-      return $t({ defaultMessage: 'ANY' })
-    case ProtocolType.TCP:
-      return $t({ defaultMessage: 'TCP' })
-    case ProtocolType.UDP:
-      return $t({ defaultMessage: 'UDP' })
-    case ProtocolType.ICMP:
-      return $t({ defaultMessage: 'ICMP' })
-    case ProtocolType.IGMP:
-      return $t({ defaultMessage: 'IGMP' })
-    case ProtocolType.ESP:
-      return $t({ defaultMessage: 'ESP' })
-    case ProtocolType.AH:
-      return $t({ defaultMessage: 'AH' })
-    case ProtocolType.SCTP:
-      return $t({ defaultMessage: 'SCTP' })
-    case ProtocolType.CUSTOM:
-      return $t({ defaultMessage: 'Custom' })
-    default:
-      return ''
-  }
-}
 
 export const getProtocolTypes = ($t: IntlShape['$t'])
   : Array<{ label: string, value: ProtocolType }> => {
@@ -62,20 +48,6 @@ const getAccessActionColor = (type: AccessAction) => {
   }
 }
 
-// inbound will not have "inspect"
-export const getAccessActionString = ($t: IntlShape['$t'], type: AccessAction) => {
-  switch (type) {
-    case AccessAction.ALLOW:
-      return $t({ defaultMessage: 'Allow' })
-    case AccessAction.BLOCK:
-      return $t({ defaultMessage: 'Block' })
-    case AccessAction.INSPECT:
-      return $t({ defaultMessage: 'Inspect' })
-    default:
-      return ''
-  }
-}
-
 export const getAccessActions = ($t: IntlShape['$t'])
   : Array<{ label: string, value: AccessAction, color?: string }> => {
   return Object.keys(AccessAction)
@@ -89,19 +61,6 @@ export const getAccessActions = ($t: IntlShape['$t'])
     })
 }
 
-export const getAddressTypeString = ($t: IntlShape['$t'], type: AddressType) => {
-  switch (type) {
-    case AddressType.ANY_IP_ADDRESS:
-      return $t({ defaultMessage: 'Any IP Address' })
-    case AddressType.SUBNET_ADDRESS:
-      return $t({ defaultMessage: 'Subnet Address' })
-    case AddressType.IP_ADDRESS:
-      return $t({ defaultMessage: 'IP Address' })
-    default:
-      return ''
-  }
-}
-
 export const getAddressTypes = ($t: IntlShape['$t'])
   : Array<{ label: string, value: AddressType }> => {
   return Object.keys(AddressType)
@@ -110,6 +69,41 @@ export const getAddressTypes = ($t: IntlShape['$t'])
       value: key as AddressType
     }))
 }
+
+export function portRangeCheck (value: string) {
+  if (!value) return Promise.resolve()
+
+  const { $t } = getIntl()
+  const splitChar = '-'
+  const rangeArray = value.split(splitChar)
+  if (rangeArray.length === 1)
+    return Promise.reject($t({ defaultMessage: 'Range should be splitted by -' }))
+
+  const start = Number(rangeArray[0])
+  const end = Number(rangeArray[1])
+  if (isNaN(start) || isNaN(end) || start >= end) {
+    return Promise.reject($t(validationMessages.invalid))
+  }
+
+  return Promise.resolve()
+}
+
+export function portNumberOrRangeCheck (value: string) {
+  if (!value) return Promise.resolve()
+  const isRange = value.indexOf('-') !== -1
+  if (isRange) {
+    return portRangeCheck(value)
+  } else {
+    const portNum = Number(value)
+    const { $t } = getIntl()
+    if (isNaN(portNum) || portNum < 1 || portNum > 65535) {
+      return Promise.reject($t({ defaultMessage: 'Invalid port number' }))
+    } else {
+      return Promise.resolve()
+    }
+  }
+}
+
 
 export interface StatefulACLRuleDialogProps {
   className?: string;
@@ -130,23 +124,36 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
     onSubmit
   } = props
   const { $t } = useIntl()
+  const drawerForm = Form.useFormInstance()
   const [form] = Form.useForm()
   const protocolTypes = getProtocolTypes($t)
-  const accessActs = getAccessActions($t)
   const addressTypes = getAddressTypes($t)
+  const direction = Form.useWatch('direction', drawerForm)
+  const accessActs = getAccessActions($t).filter(
+    (o) => direction === ACLDirection.OUTBOUND
+            || (direction === ACLDirection.INBOUND && o.value !== AccessAction.INSPECT))
 
   const handleSubmit = async () => {
-    const data = form.getFieldsValue(true)
-    onSubmit(data as StatefulAclRule, editMode)
-    form.resetFields()
+    const data = form.getFieldsValue()
+    const addAnotherRuleChecked = form.getFieldValue('addAnotherRuleChecked')
+    const priority = form.getFieldValue('priority')
+    onSubmit({ ...data, priority } as StatefulAclRule, editMode)
+
+    if (addAnotherRuleChecked) {
+      form.resetFields()
+    } else {
+      handleClose()
+    }
   }
 
   const handleClose = () => {
     setVisible(false)
+    form.resetFields()
   }
 
   const footer = [
     <Drawer.FormFooter
+      key='aclDialogFooter'
       buttonLabel={({
         addAnother: $t({ defaultMessage: 'Add another rule' }),
         save: $t({ defaultMessage: 'Add' })
@@ -154,24 +161,17 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
       showAddAnother={!editMode}
       onCancel={handleClose}
       onSave={async (addAnotherRuleChecked: boolean) => {
+        form.setFieldValue('addAnotherRuleChecked', addAnotherRuleChecked)
         form.submit()
-
-        if (!addAnotherRuleChecked) {
-          handleClose()
-        }
       }}
     />
   ]
-
-  const handleProtocolTypeChange = () => {}
 
   useEffect(() => {
     if (editMode && visible) {
       form.setFieldsValue(editData)
     }
   }, [editMode, visible])
-
-  // const disableSubmitBtn = false
 
   return (
     <Modal
@@ -184,19 +184,17 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
       footer={footer}
       onCancel={handleClose}
       maskClosable={false}
-      // okButtonProps={{
-      //   disabled: disabledOkButton
-      // }}
     >
       <Form
         form={form}
         layout='vertical'
         onFinish={handleSubmit}
-        style={{ height: '100%', overflowY: 'auto' }}
+        style={{ height: '100%' }}
       >
         <Form.Item
           name='description'
           label={$t({ defaultMessage: 'Description' })}
+          rules={[{ max: 255 }]}
         >
           <TextArea
             rows={3}
@@ -208,6 +206,10 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
         <Form.Item
           name='accessAction'
           label={$t({ defaultMessage: 'Access Action' })}
+          rules={[{
+            required: true,
+            message: $t({ defaultMessage: 'Please select access action' })
+          }]}
         >
           <Radio.Group buttonStyle='solid'>
             {accessActs.map(({ label, value, color }) => {
@@ -235,10 +237,9 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
         <Form.Item
           name='protocolType'
           label={$t({ defaultMessage: 'Protocol Type' })}
+          rules={[{ required: true }]}
         >
-          <Select
-            onChange={handleProtocolTypeChange}
-          >
+          <Select>
             {protocolTypes.map(({ label, value }) =>
               (<Select.Option value={value} key={value} children={label} />)
             )}
@@ -258,8 +259,9 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
               ? <Form.Item
                 name='protocolValue'
                 label={$t({ defaultMessage: 'Protocol Value' })}
+                rules={[{ type: 'number', min: 1, max: 255 }]}
               >
-                <Input placeholder='1-255' />
+                <InputNumber placeholder='1-255' />
               </Form.Item>
               : ''
           }}
@@ -271,7 +273,10 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
           checked={true}
           style={{ marginBottom: cssStr('--acx-content-vertical-space') }}
         >
-          <Form.Item name='sourceAddressType'>
+          <Form.Item
+            name='sourceAddressType'
+            rules={[{ required: true }]}
+          >
             <Radio.Group style={{ width: '100%' }}>
               <SpaceWrapper full direction='vertical' size='large'>
                 {addressTypes.map(({ label, value }) => {
@@ -293,16 +298,21 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
                               <Form.Item
                                 name='sourceAddress'
                                 noStyle
+                                rules={[{ required: true }]}
                               >
-                                <Input placeholder='Network address' />
+                                <Input placeholder={$t({ defaultMessage: 'Network address' })} />
                               </Form.Item>
                             </Col>
                             <Col span={12}>
                               <Form.Item
                                 name='sourceAddressMask'
                                 noStyle
+                                rules={[
+                                  { required: true },
+                                  { validator: (_, value) => subnetMaskIpRegExp(value) }
+                                ]}
                               >
-                                <Input placeholder='Mask' />
+                                <Input placeholder={$t({ defaultMessage: 'Mask' })} />
                               </Form.Item>
                             </Col>
                           </Row>
@@ -321,8 +331,9 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
                           return sourceAddressType === AddressType.IP_ADDRESS &&
                             <Form.Item
                               name='sourceAddress'
+                              rules={[{ required: true }]}
                             >
-                              <Input />
+                              <Input placeholder={$t({ defaultMessage: 'IP Address' })}/>
                             </Form.Item>
                         }}
                       </Form.Item>
@@ -346,6 +357,11 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
           <Form.Item
             name='sourcePort'
             label={$t({ defaultMessage: 'Port' })}
+            rules={[
+              {
+                validator: (_, value) => portNumberOrRangeCheck(value)
+              }
+            ]}
           >
             <Input placeholder='Enter a port number or range (x-xxxx)' />
           </Form.Item>
@@ -356,7 +372,10 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
           switchStyle={{ display: 'none' }}
           checked={true}
         >
-          <Form.Item name='destinationAddressType'>
+          <Form.Item
+            name='destinationAddressType'
+            rules={[{ required: true }]}
+          >
             <Radio.Group style={{ width: '100%' }}>
               <SpaceWrapper full direction='vertical' size='large'>
                 {addressTypes.map(({ label, value }) => {
@@ -379,16 +398,21 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
                               <Form.Item
                                 name='destinationAddress'
                                 noStyle
+                                rules={[{ required: true }]}
                               >
-                                <Input placeholder='Network address' />
+                                <Input placeholder={$t({ defaultMessage: 'Network address' })} />
                               </Form.Item>
                             </Col>
                             <Col span={12}>
                               <Form.Item
                                 name='destinationAddressMask'
                                 noStyle
+                                rules={[
+                                  { required: true },
+                                  { validator: (_, value) => subnetMaskIpRegExp(value) }
+                                ]}
                               >
-                                <Input placeholder='Mask' />
+                                <Input placeholder={$t({ defaultMessage: 'Mask' })} />
                               </Form.Item>
                             </Col>
                           </Row>
@@ -408,8 +432,9 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
                           return destinationAddressType === AddressType.IP_ADDRESS &&
                           <Form.Item
                             name='destinationAddress'
+                            rules={[{ required: true }]}
                           >
-                            <Input />
+                            <Input placeholder={$t({ defaultMessage: 'IP Address' })} />
                           </Form.Item>
                         }}
                       </Form.Item>
@@ -433,6 +458,11 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
           <Form.Item
             name='destinationPort'
             label={$t({ defaultMessage: 'Port' })}
+            rules={[
+              {
+                validator: (_, value) => portNumberOrRangeCheck(value)
+              }
+            ]}
           >
             <Input placeholder='Enter a port number or range (x-xxxx)' />
           </Form.Item>

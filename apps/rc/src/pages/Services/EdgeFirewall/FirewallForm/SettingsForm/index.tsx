@@ -7,13 +7,9 @@ import { SpaceWrapper }        from '@acx-ui/rc/components'
 import { DDoSRateFormItem }    from './DDoSRateFormItem'
 import { StatefulACLFormItem } from './StatefulACLFormItem'
 import { Wrapper }             from './styledComponents'
-// interface SettingsFormProps {
-//   editMode?: boolean
-// }
 
 export const SettingsForm = () => {
   const { $t } = useIntl()
-
 
   return (
     <Wrapper>
@@ -28,8 +24,7 @@ export const SettingsForm = () => {
             label={$t({ defaultMessage: 'Service Name' })}
             rules={[
               { required: true },
-              { min: 2 },
-              { max: 32 }
+              { min: 2, max: 32 }
             ]}
             validateFirst
             hasFeedback
