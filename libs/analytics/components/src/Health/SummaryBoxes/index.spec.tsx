@@ -53,7 +53,7 @@ describe('Incidents Page', () => {
   })
   it('should match snapshot', async () => {
     mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeSummary })
-    const drilldownSelection = 'none'
+    const drilldownSelection = null
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     const { asFragment } = render(
       <Router><Provider><SummaryBoxes
@@ -67,7 +67,7 @@ describe('Incidents Page', () => {
   })
   it('should show - when no data', async () => {
     mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeEmptySummary })
-    const drilldownSelection = 'none'
+    const drilldownSelection = null
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     const { asFragment } = render(
       <Router><Provider><SummaryBoxes filters={filters}
@@ -81,7 +81,7 @@ describe('Incidents Page', () => {
 
   it('render when feature toggle is disabled', async () => {
     mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeEmptySummary })
-    const drilldownSelection = 'none'
+    const drilldownSelection = null
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     const { asFragment } = render(
       <Router><Provider><SummaryBoxes filters={filters}
@@ -96,7 +96,7 @@ describe('Incidents Page', () => {
   describe('toggle stats', () => {
     it('should handle toggle stats', async () => {
       mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeSummary })
-      let drilldownSelection: DrilldownSelection = 'none'
+      let drilldownSelection: DrilldownSelection = null
       const setDrilldownSelection = jest.fn(
         (val: typeof drilldownSelection) => drilldownSelection = val
       )
@@ -131,7 +131,7 @@ describe('Incidents Page', () => {
 
     it('should handle toggle ttc', async () => {
       mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeSummary })
-      let drilldownSelection: DrilldownSelection = 'none'
+      let drilldownSelection: DrilldownSelection = null
       const setDrilldownSelection = jest.fn(
         (val: typeof drilldownSelection) => drilldownSelection = val
       )

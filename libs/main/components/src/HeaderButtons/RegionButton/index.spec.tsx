@@ -19,6 +19,11 @@ import {
 
 import RegionButton from './index'
 
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  useTenantId: () => '8c36a0a9ab9d4806b060e112205add6f'
+}))
+
 const mspUserData = {
   msp_label: '',
   name: '',
@@ -68,16 +73,9 @@ const userProfileContextValues = {
   isPrimeAdmin
 } as UserProfileContextProps
 
-
-
-
 describe('Region Button Component', () => {
   jest.mocked(useIsSplitOn).mockReturnValue(true)
-  let params: { tenantId: string }
   beforeEach(async () => {
-    params = {
-      tenantId: '8c36a0a9ab9d4806b060e112205add6f'
-    }
     mockServer.use(
       rest.get(
         MspUrlsInfo.getMspEcProfile.url,
@@ -93,9 +91,8 @@ describe('Region Button Component', () => {
           value={userProfileContextValues}>
           <RegionButton/>
         </UserProfileContext.Provider>
-      </Provider>, {
-        route: { params, path: '/:tenantId/dashboard' }
-      })
+      </Provider>
+    )
 
     await userEvent.click(await screen.findByText('US'))
     await userEvent.click(await screen.findByRole('menuitem', { name: 'US' }))
@@ -108,12 +105,10 @@ describe('Region Button Component', () => {
           value={userProfileContextValues}>
           <RegionButton/>
         </UserProfileContext.Provider>
-      </Provider>, {
-        route: { params, path: '/:tenantId/dashboard' }
-      })
+      </Provider>
+    )
 
     await userEvent.click(await screen.findByText('US'))
     await userEvent.click(await screen.findByRole('menuitem', { name: 'Asia' }))
   })
-
 })

@@ -154,7 +154,7 @@ export const EventTable = ({
   return <Loader states={[tableQuery]}>
     <Table
       settingsId={settingsId}
-      rowKey='id'
+      rowKey='tableKey'
       columns={columns.filter(({ key })=>!(omitColumns && omitColumns.includes(key)))}
       columnState={columnState || { defaultValue: defaultColumnState }}
       dataSource={tableQuery.data?.data ?? []}

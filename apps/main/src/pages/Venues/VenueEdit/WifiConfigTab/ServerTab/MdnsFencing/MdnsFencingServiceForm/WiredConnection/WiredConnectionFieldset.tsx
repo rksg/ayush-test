@@ -35,6 +35,9 @@ const DeviceMacAddressModal = (props: DeviceMacAddressModalProps) => {
   const { visible, setVisible, handleUpdate, maxAllowLen, usedMacAddrs, otherUsedMacAddrs } = props
   const [disabledAddBtn, setDisableAddBtn] = useState(true)
   const [tags, setTags] = useState<TagData[]>([])
+  const tagConfirmFuncRef = useRef<Function>()
+  const tagInputValueRef = useRef<string | boolean>(false)
+  const clickAddButton = useRef<boolean>(false)
 
   const handleTagsChanged = (newtags: TagData[]) => {
     const tagsLen = newtags.length
@@ -48,6 +51,19 @@ const DeviceMacAddressModal = (props: DeviceMacAddressModalProps) => {
 
     setDisableAddBtn(hasAnyError)
     setTags(newtags)
+
+    if (clickAddButton.current === true && !hasAnyError) {
+      clickAddButton.current = false
+      handleOK()
+    }
+  }
+
+  const handleTagInputChanged = (value: string | boolean) => {
+    tagInputValueRef.current = value
+
+    if (tags.length === 0 && value !== false) {
+      setDisableAddBtn(value === '')
+    }
   }
 
   const content = <Form
@@ -66,24 +82,35 @@ const DeviceMacAddressModal = (props: DeviceMacAddressModalProps) => {
           otherUsedMacAddrs={otherUsedMacAddrs}
           tags={tags}
           tagsChanged={handleTagsChanged}
+          tagInputChanged={handleTagInputChanged}
+          confirmFunction={tagConfirmFuncRef}
         />
       }
     />
   </Form>
 
-  const handleOK = () => {
-    const data = tags.map(tag => ({ deviceMacAddresses: tag.value }))
-    handleUpdate(data)
-    // reset tags
+  const resetTempSettings = () => {
     setTags([])
     setDisableAddBtn(true)
+    tagInputValueRef.current = false
+    clickAddButton.current = false
+  }
+
+  const handleOK = () => {
+    if (tagInputValueRef.current !== false) {
+      clickAddButton.current = true
+      tagConfirmFuncRef.current?.()
+    } else {
+      const data = tags.map(tag => ({ deviceMacAddresses: tag.value }))
+      handleUpdate(data)
+      resetTempSettings()
+    }
   }
 
   const handleCancel = () => {
     setVisible(false)
     // reset tags
-    setTags([])
-    setDisableAddBtn(true)
+    resetTempSettings()
   }
 
   return (<Modal

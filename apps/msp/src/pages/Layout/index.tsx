@@ -12,6 +12,7 @@ import {
   HelpButton,
   UserButton,
   LicenseBanner,
+  Logo,
   HeaderContext,
   RegionButton
 } from '@acx-ui/main/components'
@@ -23,8 +24,7 @@ import { Outlet, useParams, useNavigate, useTenantLink } from '@acx-ui/react-rou
 import { RolesEnum }                                     from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }               from '@acx-ui/user'
 
-import { useMenuConfig }     from './menuConfig'
-import { LeftHeaderWrapper } from './styledComponents'
+import { useMenuConfig } from './menuConfig'
 
 function Layout () {
   const { tenantId } = useParams()
@@ -61,6 +61,7 @@ function Layout () {
 
   return (
     <LayoutComponent
+      logo={<Logo />}
       menuConfig={useMenuConfig(tenantType)}
       content={
         <>
@@ -68,13 +69,12 @@ function Layout () {
           <Outlet />
         </>
       }
-      leftHeaderContent={<LeftHeaderWrapper>
+      leftHeaderContent={<>
         <RegionButton/>
         <HeaderContext.Provider value={{ licenseExpanded, setLicenseExpanded }}>
           <LicenseBanner isMSPUser={true}/>
         </HeaderContext.Provider>
-      </LeftHeaderWrapper>
-      }
+      </>}
       rightHeaderContent={<>
         <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>
         {!isGuestManager &&
