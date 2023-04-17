@@ -55,9 +55,9 @@ const FWVersionMgmt = () => {
       const latest09 = getReleaseFirmware(latestSwitchReleaseVersions)[0] // 09010f_b5
       const latest10 = getReleaseFirmware(latestSwitchReleaseVersions)[1] // 10010e
       const hasOutdated09 = latest09 && switchVenueVersionList.data.some(fv=>
-        compareSwitchVersion(latest09.id, fv.switchFirmwareVersion.id))
+        compareSwitchVersion(latest09.id, fv.switchFirmwareVersion?.id))
       const hasOutdated10 = latest10 && switchVenueVersionList.data.some(fv=>
-        compareSwitchVersion(latest10.id, fv.switchFirmwareVersionAboveTen.id))
+        compareSwitchVersion(latest10.id, fv.switchFirmwareVersionAboveTen?.id))
       setIsSwitchFirmwareAvailable(hasOutdated09 || hasOutdated10)
     }
   }, [latestSwitchReleaseVersions, switchVenueVersionList])
