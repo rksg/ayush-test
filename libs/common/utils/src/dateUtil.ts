@@ -61,6 +61,28 @@ export function defaultRanges (subRange?: DateRange[]) {
   return defaultRange
 }
 
+export function computeRangeFilter <
+  Filter extends object & { dateFilter?: DateRangeFilter }
+> (
+  payload: Filter,
+  names = ['startDate', 'endDate']
+) {
+  const { dateFilter, ...body } = payload
+  if (!dateFilter) return body
+
+  const { startDate, endDate } = getDateRangeFilter(
+    dateFilter.range,
+    dateFilter.startDate,
+    dateFilter.endDate
+  )
+
+  return {
+    ...body,
+    [names[0]]: moment(startDate).utc().format(),
+    [names[1]]: moment(endDate).utc().format()
+  }
+}
+
 export function dateRangeForLast (
   duration: number,
   durationType: string

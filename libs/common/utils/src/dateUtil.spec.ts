@@ -3,7 +3,8 @@ import {
   dateRangeForLast,
   getDateRangeFilter,
   resetRanges,
-  getCurrentDate
+  getCurrentDate,
+  computeRangeFilter
 } from './dateUtil'
 
 
@@ -58,6 +59,31 @@ describe('dateUtil', () => {
       expect(getCurrentDate('YYYYMMDDHHMMSS').toString()).toEqual(
         '20220101000100'
       )
+    })
+  })
+
+  describe('computeRangeFilter', () => {
+    const filters = {
+      abc: 'def',
+      dateFilter: {
+        range: DateRange.last24Hours,
+        startDate: '--',
+        endDate: '--'
+      }
+    }
+    it('compute date filter', () => {
+      expect(computeRangeFilter(filters)).toMatchObject({
+        abc: 'def',
+        startDate: '2021-12-31T00:00:00Z',
+        endDate: '2022-01-01T00:00:00Z'
+      })
+    })
+    it('allow customize field name', () => {
+      expect(computeRangeFilter(filters, ['fromTime', 'toTime'])).toMatchObject({
+        abc: 'def',
+        fromTime: '2021-12-31T00:00:00Z',
+        toTime: '2022-01-01T00:00:00Z'
+      })
     })
   })
 })
