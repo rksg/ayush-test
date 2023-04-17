@@ -59,7 +59,7 @@ const RogueAPDetectionDetailView = () => {
           <RogueAPDetectionDetailContent />
         </GridCol>
         <GridCol col={{ span: 24 }}>
-          { filtersId.length && <RogueAPDetectionVenueDetail /> }
+          { filtersId.length !== 0 && <RogueAPDetectionVenueDetail /> }
         </GridCol>
       </GridRow>
     </RogueAPDetailContext.Provider>

@@ -28,7 +28,9 @@ import WifiCallingSettingForm from './WifiCallingSettingForm'
 const WifiCallingForm = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const linkToServices = useTenantLink('/services')
+  const linkToServices = useTenantLink(getServiceRoutePath({
+    type: ServiceType.WIFI_CALLING, oper: ServiceOperation.LIST
+  }))
   const params = useParams()
 
   const serviceName = ''
