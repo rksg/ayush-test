@@ -67,7 +67,8 @@ export function VideoCallQoeTable () {
       render: (value: unknown) =>
         formatter(DateFormatEnum.DateTimeFormatWithSeconds)(value as string),
       sorter: { compare: sortProp('createdTime', dateSort) },
-      align: 'center'
+      align: 'center',
+      width: 160
     },
     {
       title: $t({ defaultMessage: 'Start Time' }),
@@ -77,7 +78,8 @@ export function VideoCallQoeTable () {
         return value ? formatter(DateFormatEnum.DateTimeFormatWithSeconds)(value as string) : '-'
       },
       sorter: { compare: sortProp('startTime', dateSort) },
-      align: 'center'
+      align: 'center',
+      width: 160
     },
     {
       title: $t({ defaultMessage: 'Participants' }),
@@ -87,7 +89,8 @@ export function VideoCallQoeTable () {
         return value ? (value as string) : '-'
       },
       sorter: { compare: sortProp('participantCount', defaultSort) },
-      align: 'center'
+      align: 'center',
+      width: 85
     },
     {
       title: $t({ defaultMessage: 'Status' }),
@@ -105,6 +108,7 @@ export function VideoCallQoeTable () {
       },
       sorter: { compare: sortProp('status', defaultSort) },
       align: 'center',
+      width: 75,
       filterable: Object.entries(statusMapping)
         .map(([key, value])=>({ key, value: $t(value) }))
     },
@@ -119,7 +123,8 @@ export function VideoCallQoeTable () {
           <TrendPill value='Bad' trend='negative' />) : '-'
       },
       sorter: { compare: sortProp('mos', defaultSort) },
-      align: 'center'
+      align: 'center',
+      width: 50
     }
   ]
 

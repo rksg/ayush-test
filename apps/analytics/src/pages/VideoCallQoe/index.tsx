@@ -3,9 +3,9 @@ import { useIntl } from 'react-intl'
 import { Button, Loader, PageHeader, SuspenseBoundary } from '@acx-ui/components'
 import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 
-import { VideoCallQoeTable } from '../VideoCallQoeTable'
-
 import { useVideoCallQoeTestsQuery } from './services'
+import { VideoCallQoeTable }         from './VideoCallQoeTable'
+
 
 const { DefaultFallback: Spinner } = SuspenseBoundary
 
