@@ -548,6 +548,7 @@ const transformAdministratorList = (data: Administrator[]) => {
 
 export const {
   useGetTenantDetailsQuery,
+  useLazyGetTenantDetailsQuery,
   useGetAccountDetailsQuery,
   useGetRecoveryPassphraseQuery,
   useUpdateRecoveryPassphraseMutation,
@@ -563,6 +564,7 @@ export const {
   useDeleteAdminMutation,
   useDeleteAdminsMutation,
   useGetDelegationsQuery,
+  useLazyGetDelegationsQuery,
   useGetMspEcDelegationsQuery,
   useRevokeInvitationMutation,
   useInviteDelegationMutation,

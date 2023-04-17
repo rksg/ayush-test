@@ -7,7 +7,7 @@ import {
   VersionHistory
 } from '@acx-ui/rc/utils'
 
-import { compareVersions, getApVersion, getVersionLabel } from './FirmwareUtils'
+import { compareVersions, compareSwitchVersion, getApVersion, getVersionLabel } from './FirmwareUtils'
 
 
 describe('FirmwareUtils parser', () => {
@@ -18,6 +18,11 @@ describe('FirmwareUtils parser', () => {
     expect(compareVersions(mockedBVersion, mockedAVersion) > 0).toBe(true)
   })
 
+  it('should compare switch versions', () => {
+    expect(compareSwitchVersion('09010e', '09010f_b5') < 0).toBe(true)
+    expect(compareSwitchVersion('09010e_b5', '09010e_b392') < 0).toBe(true)
+    expect(compareSwitchVersion('', '') === 0).toBe(true)
+  })
 
   it('should get AP version', () => {
     const mockedFirmwareVenue = {
