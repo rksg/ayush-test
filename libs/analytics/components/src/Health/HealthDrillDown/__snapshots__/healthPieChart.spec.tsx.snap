@@ -111,72 +111,190 @@ exports[`HealthPieChart should render correctly for many connectionFailures 1`] 
                       />
                       <g>
                         <path
-                          d="M876.1945 239.3011L885.6574 236.0679L890.6574 236.0679"
-                          fill="none"
-                          stroke="#66B1E8"
-                        />
-                        <path
-                          d="M609.8204 567.7687L608.6113 577.6954L603.6113 577.6954"
-                          fill="none"
-                          stroke="#EC7100"
-                        />
-                        <path
-                          d="M391.5646 344.0836L381.6113 345.0485L376.6113 345.0485"
-                          fill="none"
-                          stroke="#F9C34B"
-                        />
-                        <path
-                          d="M473.4514 134.0922L466.7788 126.6439L461.7788 126.6439"
-                          fill="none"
-                          stroke="#61C46E"
-                        />
-                        <path
-                          d="M594.4671 74.5883L592.6429 64.7561L587.6429 64.7561"
-                          fill="none"
-                          stroke="#F095FF"
-                        />
-                        <path
-                          d="M640 70.4A249.6 249.6 0 0 1 792.7295 517.418L761.4004 476.922A198.4 198.4 0 0 0 640 121.6Z"
+                          d="M384 72A328 328 0 0 1 584.7022 659.4275L525.9601 583.4975A232 232 0 0 0 384 168Z"
                           fill="#66B1E8"
                           stroke="#FFFFFF"
                           stroke-linejoin="round"
+                          stroke-width="2"
                         />
                         <path
-                          d="M792.7295 517.418A249.6 249.6 0 0 1 444.3461 474.9829L484.4802 443.1916A198.4 198.4 0 0 0 761.4004 476.922Z"
+                          d="M584.7022 659.4275A328 328 0 0 1 126.8907 603.6635L202.1422 544.0547A232 232 0 0 0 525.9601 583.4975Z"
                           fill="#EC7100"
                           stroke="#FFFFFF"
                           stroke-linejoin="round"
+                          stroke-width="2"
                         />
                         <path
-                          d="M444.3461 474.9829A249.6 249.6 0 0 1 418.2205 205.4835L463.7137 228.9741A198.4 198.4 0 0 0 484.4802 443.1916Z"
+                          d="M126.8907 603.6635A328 328 0 0 1 92.559 249.5136L177.8588 293.5584A232 232 0 0 0 202.1422 544.0547Z"
                           fill="#F9C34B"
                           stroke="#FFFFFF"
                           stroke-linejoin="round"
+                          stroke-width="2"
                         />
                         <path
-                          d="M418.2205 205.4835A249.6 249.6 0 0 1 550.4623 87.0125L568.829 134.8048A198.4 198.4 0 0 0 463.7137 228.9741Z"
+                          d="M92.559 249.5136A328 328 0 0 1 266.3383 93.8306L300.7759 183.4411A232 232 0 0 0 177.8588 293.5584Z"
                           fill="#61C46E"
                           stroke="#FFFFFF"
                           stroke-linejoin="round"
+                          stroke-width="2"
                         />
                         <path
-                          d="M550.4623 87.0125A249.6 249.6 0 0 1 640 70.4L640 121.6A198.4 198.4 0 0 0 568.829 134.8048Z"
+                          d="M266.3383 93.8306A328 328 0 0 1 384 72L384 168A232 232 0 0 0 300.7759 183.4411Z"
                           fill="#F095FF"
                           stroke="#FFFFFF"
                           stroke-linejoin="round"
+                          stroke-width="2"
                         />
+                        <path
+                          d="M-5 -5l40 0l0 154l-40 0Z"
+                          fill="rgb(0,0,0)"
+                          fill-opacity="0"
+                          stroke="#ccc"
+                          stroke-width="0"
+                          transform="translate(709 328)"
+                        />
+                        <path
+                          d="M8 4A4 4 0 1 1 8 3.9996"
+                          fill="#66B1E8"
+                          stroke="#FFFFFF"
+                          stroke-linecap="butt"
+                          stroke-linejoin="round"
+                          stroke-miterlimit="10"
+                          stroke-width="0"
+                          transform="translate(709 332)"
+                        />
+                        <path
+                          d="M13 -4l14 0l0 16l-14 0Z"
+                          fill="none"
+                          transform="translate(709 332)"
+                        />
+                        <text
+                          dominant-baseline="central"
+                          fill="#333333"
+                          style="font-size:10px;font-family:'Open Sans', sans-serif;"
+                          text-anchor="start"
+                          transform="translate(709 332)"
+                          x="13"
+                          y="4"
+                        >
+                          HD_OTA_WPA3_6E
+                        </text>
+                        <path
+                          d="M8 4A4 4 0 1 1 8 3.9996"
+                          fill="#EC7100"
+                          stroke="#FFFFFF"
+                          stroke-linecap="butt"
+                          stroke-linejoin="round"
+                          stroke-miterlimit="10"
+                          stroke-width="0"
+                          transform="translate(709 364)"
+                        />
+                        <path
+                          d="M13 -4l7 0l0 16l-7 0Z"
+                          fill="none"
+                          transform="translate(709 364)"
+                        />
+                        <text
+                          dominant-baseline="central"
+                          fill="#333333"
+                          style="font-size:10px;font-family:'Open Sans', sans-serif;"
+                          text-anchor="start"
+                          transform="translate(709 364)"
+                          x="13"
+                          y="4"
+                        >
+                          DENSITY
+                        </text>
+                        <path
+                          d="M8 4A4 4 0 1 1 8 3.9996"
+                          fill="#F9C34B"
+                          stroke="#FFFFFF"
+                          stroke-linecap="butt"
+                          stroke-linejoin="round"
+                          stroke-miterlimit="10"
+                          stroke-width="0"
+                          transform="translate(709 396)"
+                        />
+                        <path
+                          d="M13 -4l17 0l0 16l-17 0Z"
+                          fill="none"
+                          transform="translate(709 396)"
+                        />
+                        <text
+                          dominant-baseline="central"
+                          fill="#333333"
+                          style="font-size:10px;font-family:'Open Sans', sans-serif;"
+                          text-anchor="start"
+                          transform="translate(709 396)"
+                          x="13"
+                          y="4"
+                        >
+                          DENSITY-COMMSCOPE
+                        </text>
+                        <path
+                          d="M8 4A4 4 0 1 1 8 3.9996"
+                          fill="#61C46E"
+                          stroke="#FFFFFF"
+                          stroke-linecap="butt"
+                          stroke-linejoin="round"
+                          stroke-miterlimit="10"
+                          stroke-width="0"
+                          transform="translate(709 428)"
+                        />
+                        <path
+                          d="M13 -4l13 0l0 16l-13 0Z"
+                          fill="none"
+                          transform="translate(709 428)"
+                        />
+                        <text
+                          dominant-baseline="central"
+                          fill="#333333"
+                          style="font-size:10px;font-family:'Open Sans', sans-serif;"
+                          text-anchor="start"
+                          transform="translate(709 428)"
+                          x="13"
+                          y="4"
+                        >
+                          DENSITY-GUEST
+                        </text>
+                        <path
+                          d="M8 4A4 4 0 1 1 8 3.9996"
+                          fill="#F095FF"
+                          stroke="#FFFFFF"
+                          stroke-linecap="butt"
+                          stroke-linejoin="round"
+                          stroke-miterlimit="10"
+                          stroke-width="0"
+                          transform="translate(709 460)"
+                        />
+                        <path
+                          d="M13 -4l5 0l0 16l-5 0Z"
+                          fill="none"
+                          transform="translate(709 460)"
+                        />
+                        <text
+                          dominant-baseline="central"
+                          fill="#333333"
+                          style="font-size:10px;font-family:'Open Sans', sans-serif;"
+                          text-anchor="start"
+                          transform="translate(709 460)"
+                          x="13"
+                          y="4"
+                        >
+                          aaron
+                        </text>
                         <path
                           d="M-5 -5l10 0l0 10l-10 0Z"
                           fill="rgb(0,0,0)"
                           fill-opacity="0"
                           stroke="#ccc"
                           stroke-width="0"
-                          transform="translate(640 400)"
+                          transform="translate(363.4 400)"
                         />
                         <path
                           d="M0 0l0 0l0 0l0 0Z"
                           fill="none"
-                          transform="translate(640 400)"
+                          transform="translate(363.4 400)"
                         />
                       </g>
                     </svg>
@@ -280,28 +398,58 @@ exports[`HealthPieChart should render correctly for missing nodes data 1`] = `
                         />
                         <g>
                           <path
-                            d="M640 569.6L640 579.6L645 579.6"
-                            fill="none"
-                            stroke="#66B1E8"
-                          />
-                          <path
-                            d="M640 70.4A249.6 249.6 0 1 1 639.975 70.4M640 121.6A198.4 198.4 0 1 0 640.0198 121.6Z"
+                            d="M384 72A328 328 0 1 1 383.9672 72M384 168A232 232 0 1 0 384.0232 168Z"
                             fill="#66B1E8"
                             stroke="#FFFFFF"
                             stroke-linejoin="round"
+                            stroke-width="2"
                           />
+                          <path
+                            d="M-5 -5l34 0l0 26l-34 0Z"
+                            fill="rgb(0,0,0)"
+                            fill-opacity="0"
+                            stroke="#ccc"
+                            stroke-width="0"
+                            transform="translate(709 392)"
+                          />
+                          <path
+                            d="M8 4A4 4 0 1 1 8 3.9996"
+                            fill="#66B1E8"
+                            stroke="#FFFFFF"
+                            stroke-linecap="butt"
+                            stroke-linejoin="round"
+                            stroke-miterlimit="10"
+                            stroke-width="0"
+                            transform="translate(709 396)"
+                          />
+                          <path
+                            d="M13 -4l11 0l0 16l-11 0Z"
+                            fill="none"
+                            transform="translate(709 396)"
+                          />
+                          <text
+                            dominant-baseline="central"
+                            fill="#333333"
+                            style="font-size:10px;font-family:'Open Sans', sans-serif;"
+                            text-anchor="start"
+                            transform="translate(709 396)"
+                            x="13"
+                            y="4"
+                          >
+                            aaron-dot1x
+                          </text>
                           <path
                             d="M-5 -5l10 0l0 10l-10 0Z"
                             fill="rgb(0,0,0)"
                             fill-opacity="0"
                             stroke="#ccc"
                             stroke-width="0"
-                            transform="translate(640 400)"
+                            transform="translate(363.4 400)"
                           />
                           <path
                             d="M0 0l0 0l0 0l0 0Z"
                             fill="none"
-                            transform="translate(640 400)"
+                            transform="translate(363.4 400)"
                           />
                         </g>
                       </svg>
@@ -454,28 +602,58 @@ exports[`HealthPieChart should render correctly for single ttc failures 1`] = `
                       />
                       <g>
                         <path
-                          d="M640 569.6L640 579.6L645 579.6"
-                          fill="none"
-                          stroke="#66B1E8"
-                        />
-                        <path
-                          d="M640 70.4A249.6 249.6 0 1 1 639.975 70.4M640 121.6A198.4 198.4 0 1 0 640.0198 121.6Z"
+                          d="M384 72A328 328 0 1 1 383.9672 72M384 168A232 232 0 1 0 384.0232 168Z"
                           fill="#66B1E8"
                           stroke="#FFFFFF"
                           stroke-linejoin="round"
+                          stroke-width="2"
                         />
+                        <path
+                          d="M-5 -5l34 0l0 26l-34 0Z"
+                          fill="rgb(0,0,0)"
+                          fill-opacity="0"
+                          stroke="#ccc"
+                          stroke-width="0"
+                          transform="translate(709 392)"
+                        />
+                        <path
+                          d="M8 4A4 4 0 1 1 8 3.9996"
+                          fill="#66B1E8"
+                          stroke="#FFFFFF"
+                          stroke-linecap="butt"
+                          stroke-linejoin="round"
+                          stroke-miterlimit="10"
+                          stroke-width="0"
+                          transform="translate(709 396)"
+                        />
+                        <path
+                          d="M13 -4l11 0l0 16l-11 0Z"
+                          fill="none"
+                          transform="translate(709 396)"
+                        />
+                        <text
+                          dominant-baseline="central"
+                          fill="#333333"
+                          style="font-size:10px;font-family:'Open Sans', sans-serif;"
+                          text-anchor="start"
+                          transform="translate(709 396)"
+                          x="13"
+                          y="4"
+                        >
+                          aaron-dot1x
+                        </text>
                         <path
                           d="M-5 -5l10 0l0 10l-10 0Z"
                           fill="rgb(0,0,0)"
                           fill-opacity="0"
                           stroke="#ccc"
                           stroke-width="0"
-                          transform="translate(640 400)"
+                          transform="translate(363.4 400)"
                         />
                         <path
                           d="M0 0l0 0l0 0l0 0Z"
                           fill="none"
-                          transform="translate(640 400)"
+                          transform="translate(363.4 400)"
                         />
                       </g>
                     </svg>

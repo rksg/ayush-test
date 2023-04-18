@@ -210,12 +210,6 @@ export function DonutChart ({
       fontSize: cssNumber('--acx-body-4-font-size'),
       lineHeight: cssNumber('--acx-body-4-line-height'),
       fontWeight: cssNumber('--acx-body-font-weight')
-    },
-    'labelFormatter': {
-      ...commonFontStyle,
-      fontSize: cssNumber('--acx-body-5-font-size'),
-      lineHeight: cssNumber('--acx-body-6-line-height'),
-      fontWeight: cssNumber('--acx-body-font-weight')
     }
   }
 
@@ -292,10 +286,8 @@ export function DonutChart ({
         avoidLabelOverlap: true,
         label: {
           show: props.showLabel,
-          formatter: props.labelFormatter,
-          ...(props.labelFormatter ? styles.labelFormatter : styles.label)
+          ...styles.label
         },
-        bottom: props.labelFormatter ? '20%' : 0,
         tooltip: {
           ...tooltipOptions(),
           show: !isEmpty,

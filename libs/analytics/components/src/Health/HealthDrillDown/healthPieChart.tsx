@@ -88,30 +88,30 @@ function pieWlanMap () {
   }` })
 }
 
+export const tooltipFormatter = (
+  total: number,
+  dataFormatter: (value: unknown, tz?: string | undefined) => string
+) => (value: unknown) =>
+  `${formatter('percentFormat')(value as number / total)}(${dataFormatter(value)})`
+
 function getHealthPieChart (
   data: { key: string; value: number; name: string; color: string }[],
   dataFormatter: (value: unknown, tz?: string | undefined) => string
 ) {
+  const tops = data.slice(0, topCount)
+  const total = tops.reduce((total, { value }) => value + total, 0)
   return (
     data.length > 0
       ? <AutoSizer defaultHeight={150}>
         {({ width, height }) => (
           <DonutChart
-            data={data.slice(0, topCount)}
+            data={tops}
             style={{ height, width }}
-            dataFormatter={dataFormatter}
-            showLabel
+            legend='name'
+            size={'x-large'}
+            showLegend
             showTotal={false}
-            labelFormatter={(data) => {
-              const { name, value, percent } = data as {
-              name: string;
-              value: number;
-              percent: number;
-            }
-              const formattedPercent = formatter('percentFormat')(percent / 100)
-              const formattedValue = dataFormatter(value)
-              return `${name}\n${formattedPercent} (${formattedValue})`
-            }}
+            dataFormatter={tooltipFormatter(total, dataFormatter)}
           />
         )}
       </AutoSizer>

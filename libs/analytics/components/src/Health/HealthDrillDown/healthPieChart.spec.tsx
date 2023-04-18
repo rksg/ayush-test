@@ -5,7 +5,7 @@ import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved, fireEvent,
 import { DateRange }                                                                       from '@acx-ui/utils'
 
 import { mockConnectionFailureResponse, mockTtcResponse, mockPathWithAp, mockOnlyWlansResponse } from './__tests__/fixtures'
-import { HealthPieChart, pieNodeMap }                                                            from './healthPieChart'
+import { HealthPieChart, pieNodeMap, tooltipFormatter }                                          from './healthPieChart'
 import { api }                                                                                   from './services'
 
 describe('HealthPieChart', () => {
@@ -123,6 +123,11 @@ describe('HealthPieChart', () => {
     expect(await screen.findByText('5 Impacted Venues')).toBeVisible()
   })
 
+  describe('tooltipFormatter', () => {
+    it('returns formatted values and percentage', () => {
+      expect(tooltipFormatter(50, formatter('durationFormat'))(25)).toEqual('50%(25 ms)')
+    })
+  })
   describe('pieNodeMap', () => {
     it('should return correct venue title', () => {
       const group = pieNodeMap([{ type: 'zone', name: 'Zone' }])
