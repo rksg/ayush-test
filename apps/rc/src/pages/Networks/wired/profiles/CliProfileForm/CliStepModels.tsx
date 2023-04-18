@@ -1,16 +1,14 @@
-import { useContext, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 import { Col, Checkbox, Form, Input, Row, Space, Typography } from 'antd'
 import _                                                      from 'lodash'
 import { useIntl }                                            from 'react-intl'
 
-import { Button, cssStr, StepsForm }                  from '@acx-ui/components'
-import { useGetProfilesQuery }                        from '@acx-ui/rc/services'
-import { checkObjectNotExists, whitespaceOnlyRegExp } from '@acx-ui/rc/utils'
-import { ICX_MODELS_MODULES }                         from '@acx-ui/rc/utils'
-import { useParams }                                  from '@acx-ui/react-router-dom'
-
-import CliTemplateFormContext from '../../onDemandCli/CliTemplateForm/CliTemplateFormContext'
+import { Button, cssStr, StepsForm, useStepFormContext } from '@acx-ui/components'
+import { useGetProfilesQuery }                           from '@acx-ui/rc/services'
+import { checkObjectNotExists, whitespaceOnlyRegExp }    from '@acx-ui/rc/utils'
+import { ICX_MODELS_MODULES }                            from '@acx-ui/rc/utils'
+import { useParams }                                     from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
@@ -39,9 +37,8 @@ const profilesPayload = {
 export function CliStepModels () {
   const { $t } = useIntl()
   const params = useParams()
-  const form = Form.useFormInstance()
 
-  const { editMode, data, setApplyModels } = useContext(CliTemplateFormContext)
+  const { form, editMode } = useStepFormContext()
   const { data: profiles } = useGetProfilesQuery({ params, payload: profilesPayload })
 
   const [count, setCount] = useState(0)
@@ -59,15 +56,8 @@ export function CliStepModels () {
     const allFamily = Object.keys(icxModels)
     form.setFieldValue('selectedFamily', allFamily)
     setFilteredModelFamily(allFamily)
-    setApplyModels?.(data?.models ?? [])
+    setCount(form.getFieldValue('models')?.length)
   }, [])
-
-  useEffect(() => {
-    if (editMode && data) {
-      form?.setFieldsValue(data)
-      setApplyModels?.(data?.models ?? [])
-    }
-  }, [data])
 
   const onModelFamilyChange = (checkedValues: CheckboxValueType[]) => {
     setFilteredModelFamily(checkedValues)
@@ -84,7 +74,6 @@ export function CliStepModels () {
     const updateSelected = _.uniq(selectedModels)
 
     form.setFieldValue('models', updateSelected)
-    setApplyModels?.(updateSelected as string[])
     setCount(updateSelected.length)
   }
 
@@ -178,8 +167,7 @@ export function CliStepModels () {
           noStyle
           name='models'
           children={<UI.FamilyModelsGroup
-            onChange={(values) => {
-              setApplyModels?.(values as string[])
+            onChange={() => {
               setCount(form.getFieldValue('models')?.length)
             }}>
             {
