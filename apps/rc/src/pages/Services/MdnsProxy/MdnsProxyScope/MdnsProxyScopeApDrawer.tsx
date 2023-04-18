@@ -152,6 +152,7 @@ export function MdnsProxyScopeApDrawer (props: MdnsProxyScopeApDrawerProps) {
       title: $t({ defaultMessage: 'Clients' }),
       dataIndex: 'clients',
       key: 'clients',
+      sorter: true,
       render: function (data) {
         return data ? data : 0
       }

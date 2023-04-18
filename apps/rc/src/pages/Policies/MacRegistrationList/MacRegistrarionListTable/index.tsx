@@ -119,6 +119,7 @@ export default function MacRegistrationListsTable () {
         key: 'defaultAccess',
         dataIndex: 'defaultAccess',
         show: policyEnabled,
+        sorter: true,
         render: function (data:ReactNode, row:MacRegistrationPool) {
           return row.policySetId ? row.defaultAccess: ''
         }
@@ -126,8 +127,9 @@ export default function MacRegistrationListsTable () {
       {
         title: $t({ defaultMessage: 'Access Policy Set' }),
         key: 'policySet',
-        dataIndex: 'policySet',
+        dataIndex: 'policySetId',
         show: policyEnabled,
+        sorter: true,
         render: function (data:ReactNode, row:MacRegistrationPool) {
           return row.policySetId ? policySetMap.get(row.policySetId) : ''
         }

@@ -163,13 +163,15 @@ function useColumns () {
     {
       key: 'description',
       title: $t({ defaultMessage: 'Description' }),
-      dataIndex: 'description'
+      dataIndex: 'description',
+      sorter: true
     },
     {
       key: 'clientEntries',
       title: $t({ defaultMessage: 'Client Entries' }),
       dataIndex: 'clientEntries',
       align: 'center',
+      sorter: true,
       render: function (data) {
         return data
           ? <SimpleListTooltip
@@ -187,6 +189,7 @@ function useColumns () {
       align: 'center',
       filterKey: 'venueIds',
       filterable: venueNameMap,
+      sorter: true,
       render: function (data, row) {
         if (!row.venueIds || row.venueIds.length === 0) return 0
 
