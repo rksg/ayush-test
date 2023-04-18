@@ -12,7 +12,7 @@ const DefaultSystemLanguageFormItem = () => {
   const {
     data: preferenceData,
     currentDefaultLang,
-    update: updatePreferences,
+    updatePartial: updatePreferences,
     getReqState,
     updateReqState
   } = usePreference()
@@ -21,7 +21,7 @@ const DefaultSystemLanguageFormItem = () => {
   const handleDefaultLangChange = async (langCode: string) => {
     if (!langCode) return
     const payload = {
-      global: { ...preferenceData?.global, defaultLanguage: langCode }
+      global: { defaultLanguage: langCode }
     }
     await updatePreferences({ newData: payload })
     const code = langCode as LangKey
