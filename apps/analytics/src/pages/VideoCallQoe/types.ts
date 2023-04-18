@@ -3,6 +3,7 @@ import { TimeStamp } from '@acx-ui/types'
 
 type Meeting = {
   id: number
+  name: string
   zoomMeetingId: number
   status: string
   invalidReason: string
@@ -28,3 +29,4 @@ export interface CreateVideoCallQoeTestResponse {
     name: string
     meetings: Meeting[]
 }
+

@@ -6,6 +6,8 @@ import { Features, useIsSplitOn }                        from '@acx-ui/feature-t
 import { TenantLink }                                    from '@acx-ui/react-router-dom'
 
 import { useVideoCallQoeTestsQuery } from './services'
+import { VideoCallQoeTable }         from './VideoCallQoeTable'
+
 
 const { DefaultFallback: Spinner } = SuspenseBoundary
 
@@ -23,28 +25,31 @@ function VideoCallQoeListPage () {
 
 
   return (
-    <PageHeader
-      title={$t({ defaultMessage: 'Video Call QoE' })}
-      subTitle={<Loader states={[queryResults]} fallback={<Spinner size='small' />}>
-        {$t({ defaultMessage: 'Total Test Calls:' })} {noOfTestCalls}
-      </Loader>}
-      extra={[
-        isNotStartedCall ?
-          <TenantLink to='/serviceValidation/videoCallQoe/add'>
-            <Button type='primary'>{$t({ defaultMessage: 'Create Test Call' })}</Button>
-          </TenantLink>
-          :
-          <Tooltip
-            placement='left'
-            key='disableCallButton'
-            trigger='hover'
-            title={$t({ defaultMessage: 'There is already a test call in-process.' })}
-          >
-            <Button type='primary' disabled>
-              {$t({ defaultMessage: 'Create Test Call' })}
-            </Button>
-          </Tooltip>
-      ]} />
+    <>
+      <PageHeader
+        title={$t({ defaultMessage: 'Video Call QoE' })}
+        subTitle={<Loader states={[queryResults]} fallback={<Spinner size='small' />}>
+          {$t({ defaultMessage: 'Total Test Calls:' })} {noOfTestCalls}
+        </Loader>}
+        extra={[
+          isNotStartedCall ?
+            <TenantLink to='/serviceValidation/videoCallQoe/add'>
+              <Button type='primary'>{$t({ defaultMessage: 'Create Test Call' })}</Button>
+            </TenantLink>
+            :
+            <Tooltip
+              placement='left'
+              key='disableCallButton'
+              trigger='hover'
+              title={$t({ defaultMessage: 'There is already a test call in-process.' })}
+            >
+              <Button type='primary' disabled>
+                {$t({ defaultMessage: 'Create Test Call' })}
+              </Button>
+            </Tooltip>
+        ]} />
+      <VideoCallQoeTable />
+    </>
   )
 }
 export default VideoCallQoeListPage
