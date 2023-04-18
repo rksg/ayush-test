@@ -71,7 +71,7 @@ export function FunnelChart ({
   const [parentNode, ref] = useGetNode()
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
   const onClick = (width: number, name: Stages) => {
-    onSelectStage(width, name)
+    onSelectStage(width, name === selectedStage ? null : name)
   }
   const enhancedStages: EnhancedStage[] = useMemo(() => {
     if (!parentNode) return []
