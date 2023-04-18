@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom'
 
 import { Loader, Table, TableProps, Button }                                  from '@acx-ui/components'
 import { useGetSwitchStaticRoutesQuery, useDeleteSwitchStaticRoutesMutation } from '@acx-ui/rc/services'
-import { StaticRoute }                                                        from '@acx-ui/rc/utils'
+import { defaultSort, sortProp, StaticRoute } from "@acx-ui/rc/utils";
 import { filterByAccess }                                                     from '@acx-ui/user'
 
 import StaticRoutesDrawer from './StaticRoutesDrawer'
@@ -32,17 +32,20 @@ const StaticRoutes = (props: { readOnly: boolean }) => {
     },{
       title: $t({ defaultMessage: 'Destination IP' }),
       key: 'destinationIp',
-      dataIndex: 'destinationIp'
+      dataIndex: 'destinationIp',
+      sorter: { compare: sortProp('destinationIp', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Next Hop' }),
       key: 'nextHop',
-      dataIndex: 'nextHop'
+      dataIndex: 'nextHop',
+      sorter: { compare: sortProp('nextHop', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Admin Distance' }),
       key: 'adminDistance',
-      dataIndex: 'adminDistance'
+      dataIndex: 'adminDistance',
+      sorter: { compare: sortProp('adminDistance', defaultSort) }
     }
   ]
 
