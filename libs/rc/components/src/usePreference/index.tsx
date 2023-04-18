@@ -46,11 +46,11 @@ export const usePreference = () => {
     }
   }
 
-  const update = async (props: updatePreferenceProps) => {
+  const updatePartial = async (props: updatePreferenceProps) => {
     const { newData } = props
 
-    // update map region
-    if (newData.global?.mapRegion) {
+    // only handle update on "mapRegion" field
+    if (newData.global?.mapRegion && newData.global?.mapRegion !== data?.global?.mapRegion) {
       // limitation due to known issue on GoogleMap js-api-loader:
       //   https://github.com/googlemaps/js-api-loader/issues/210
       showActionModal({
@@ -84,7 +84,7 @@ export const usePreference = () => {
     updateReqState,
     currentPreferredLang,
     data,
-    update,
-    updatePreference
+    updatePartial,
+    update: updatePreference
   }
 }
