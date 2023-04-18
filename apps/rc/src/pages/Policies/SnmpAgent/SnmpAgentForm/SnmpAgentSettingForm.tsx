@@ -18,13 +18,11 @@ type SnmpAgentSettingFormProps = {
 
 const SnmpAgentSettingForm = (props: SnmpAgentSettingFormProps) => {
   const { $t } = useIntl()
-  //const { editMode, saveState } = props
   const { saveState } = props
   const { snmpV2Agents, snmpV3Agents } = saveState || {}
 
 
   const params = useParams()
-  //const form = Form.useFormInstance()
   const [ getApSnmpPolicyList ] = useLazyGetApSnmpPolicyListQuery()
 
   const nameValidator = async (value: string) => {
@@ -57,7 +55,6 @@ const SnmpAgentSettingForm = (props: SnmpAgentSettingFormProps) => {
       </GridRow>
       <GridRow >
         <GridCol col={{ span: 14 }}>
-          <StepsForm.Title>{$t({ defaultMessage: 'SNMP Agent Settings' })}</StepsForm.Title>
           <Form.Item name='snmpV2Agents'>
             <SnmpAgentV2Table data={snmpV2Agents} />
           </Form.Item>
