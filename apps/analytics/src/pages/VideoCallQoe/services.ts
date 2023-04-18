@@ -1,8 +1,13 @@
-import { gql } from 'graphql-request'
+import { useCallback } from 'react'
+
+import { gql }           from 'graphql-request'
+import { ValidatorRule } from 'rc-field-form/lib/interface'
+import { useIntl }       from 'react-intl'
 
 import { videoCallQoeApi } from '@acx-ui/store'
 import { TimeStamp }       from '@acx-ui/types'
 
+import { messageMapping }                 from './contents'
 import { CreateVideoCallQoeTestResponse } from './types'
 
 export interface Response {
@@ -48,6 +53,7 @@ export const api = videoCallQoeApi.injectEndpoints({
           }
           `
       }),
+      providesTags: [{ type: 'VideoCallQoe', id: 'LIST' }],
       transformResponse: (response: Response) => {
         return response
       }
@@ -67,11 +73,10 @@ export const api = videoCallQoeApi.injectEndpoints({
           }
         }`
       }),
-      //invalidatesTags: [{ type: 'NetworkHealth', id: 'LIST' }],
-      transformResponse: (response: { createCallQoeTest: CreateVideoCallQoeTestResponse }) => {
-        console.log('### Response: ', response)
-        return response.createCallQoeTest
-      }
+      invalidatesTags: [{ type: 'VideoCallQoe', id: 'LIST' }],
+      transformResponse: (response: { createCallQoeTest: CreateVideoCallQoeTestResponse }) =>
+        response.createCallQoeTest
+
 
     }),
     deleteCallQoeTest: build.mutation<boolean, { id: number }>({
@@ -82,31 +87,31 @@ export const api = videoCallQoeApi.injectEndpoints({
           deleteCallQoeTest(id: $id)
         }`
       }),
-      //invalidatesTags: [{ type: 'NetworkHealth', id: 'LIST' }],
-      transformResponse: (response: { deleteCallQoeTest : boolean }) => {
-        console.log('### Response: ', response)
-        return response.deleteCallQoeTest
-      }
-
+      invalidatesTags: [{ type: 'VideoCallQoe', id: 'LIST' }],
+      transformResponse: (response: { deleteCallQoeTest : boolean }) => response.deleteCallQoeTest
     })
   })
 })
 
 export const {
   useVideoCallQoeTestsQuery,
+  useLazyVideoCallQoeTestsQuery,
   useCreateCallQoeTestMutation,
   useDeleteCallQoeTestMutation
 } = api
 
 
-/**
+export function useDuplicateNameValidator (initialName?: string) {
+  const { $t } = useIntl()
+  const [submit] = useLazyVideoCallQoeTestsQuery()
+  const validator: ValidatorRule['validator'] = useCallback(async (rule, value: string) => {
+    if (initialName === value) return
 
- mutation ($id : Int!)
-  {
-    deleteCallQoeTest(id: $id)
-  }
+    const videoCallQoeTests = await submit({}).unwrap()
+    const testNames = videoCallQoeTests.getAllCallQoeTests.map(test => test.name)
+    if (!testNames.includes(value)) return
 
-  {
-  "deleteCallQoeTest": true,
+    throw new Error($t(messageMapping.DUPLICATE_NAME_NOT_ALLOWED))
+  }, [$t, submit, initialName])
+  return validator
 }
- */
