@@ -2,9 +2,28 @@ import { useIntl } from 'react-intl'
 
 import { Loader, Table } from '@acx-ui/components'
 
-export const ApsTable = () => {
+import {
+  APExtended,  
+  RequestPayload,
+  TableQuery,
+} from "@acx-ui/rc/utils";
+
+export const defaultApPayload = {
+  fields: [
+    'name', 'model', 'apMac', 'apStatusData.lanPortStatus.port'
+  ]
+}
+
+export interface ApTableProps {
+  tableQuery?: TableQuery<APExtended, RequestPayload<unknown>, unknown>
+}
+
+export const ApsTable = (props: ApTableProps) => {
 
   const { $t } = useIntl()
+  
+  const apListTableQuery = props.tableQuery
+  const tableData = apListTableQuery?.data?.data ?? []
 
   const columns = [
     {
@@ -20,8 +39,8 @@ export const ApsTable = () => {
     },
     {
       title: $t({ defaultMessage: 'MAC Address' }),
-      key: 'mac',
-      dataIndex: 'mac'
+      key: 'apMac',
+      dataIndex: 'apMac'
     },
     {
       title: $t({ defaultMessage: 'Available Ports' }),
@@ -35,6 +54,7 @@ export const ApsTable = () => {
       <Table
         columns={columns}
         rowKey='serialNumber'
+        dataSource={tableData}
       />
     </Loader>
   )
