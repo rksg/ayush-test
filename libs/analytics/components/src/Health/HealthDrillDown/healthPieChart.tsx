@@ -61,9 +61,7 @@ const transformData = (
 }
 
 export function pieNodeMap (node: NetworkPath) {
-  const lastPath = node[node.length - 1]
-  const type = lastPath.type
-  switch (type) {
+  switch (node[node.length - 1].type) {
     case 'zone':
       return defineMessage({ defaultMessage: `{ count, plural,
         one {AP Group}
@@ -141,27 +139,21 @@ export const HealthPieChart = ({
       queryFilter: stageNameToCodeMap[selectedStage]
     }
   )
-
   const { nodes, wlans } = transformData(queryResults.data)
   const venueTitle = $t(pieNodeMap(path), { count: nodes.length })
   const wlansTitle = $t(pieWlanMap(), { count: wlans.length })
-
-  const tabDetails: ContentSwitcherProps['tabDetails'] = []
-
+  const tabDetails: ContentSwitcherProps['tabDetails'] = [{
+    label: wlansTitle,
+    value: 'wlans',
+    children: getHealthPieChart(wlans, formatter('durationFormat'))
+  }]
   if (nodes.length > 0) {
-    tabDetails.push({
+    tabDetails.unshift({
       label: venueTitle,
       value: 'nodes',
       children: getHealthPieChart(nodes, formatter('countFormat'))
     })
   }
-
-  tabDetails.push({
-    label: wlansTitle,
-    value: 'wlans',
-    children: getHealthPieChart(wlans, formatter('durationFormat'))
-  })
-
   const [chartKey, setChartKey] = useState('wlans')
   const count = showTopResult($t, chartKey === 'wlans' ? wlans.length : nodes.length, topCount)
   const title = chartKey === 'wlans' ? wlansTitle : venueTitle
@@ -178,12 +170,7 @@ export const HealthPieChart = ({
         <div style={{ height: '100%' }}>
           <AutoSizer>
             {({ height, width }) => (
-              <div
-                style={{
-                  height,
-                  width
-                }}
-              >
+              <div style={{ height, width }}>
                 {(tabDetails.length === 2)
                   ? <ContentSwitcher
                     key={selectedStage}
