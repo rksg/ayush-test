@@ -1,8 +1,9 @@
 import React from 'react'
 
-import { act }  from '@testing-library/react'
-import { Form } from 'antd'
-import { rest } from 'msw'
+import { act }   from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
+import { rest }  from 'msw'
 
 import { venueApi } from '@acx-ui/rc/services'
 import {
@@ -57,7 +58,7 @@ const rogueAps = {
       ],
       numberOfDetectingAps: 1,
       lastUpdTime: '1669709461',
-      locatable: false
+      locatable: true
     },
     {
       rogueMac: '58:FB:96:01:B6:4C',
@@ -311,7 +312,7 @@ describe('RogueVenueTable', () => {
       name: /category/i
     })).toBeTruthy()
     expect(screen.getByRole('columnheader', {
-      name: /classification profile/i
+      name: /classification rule/i
     })).toBeTruthy()
     expect(screen.getByRole('columnheader', {
       name: /channel/i
@@ -326,7 +327,7 @@ describe('RogueVenueTable', () => {
       name: /closest ap/i
     })).toBeTruthy()
     expect(screen.getByRole('columnheader', {
-      name: /detecting ap/i
+      name: /detecting aps/i
     })).toBeTruthy()
     expect(screen.getByRole('columnheader', {
       name: /last seen/i
@@ -345,5 +346,8 @@ describe('RogueVenueTable', () => {
     screen.getByText(/^30/i)
     screen.getByText(/^25/i)
     screen.getByText(/^15/i)
+
+    await userEvent.click(await screen.findByTestId('VenueMarkerRed'))
+    await userEvent.click(await screen.findByText('Cancel'))
   })
 })

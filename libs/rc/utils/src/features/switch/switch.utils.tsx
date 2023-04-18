@@ -129,7 +129,7 @@ export const ICX_MODELS_MODULES = {
     '24FX': [['16X1/10G'], ['8X1/10/25G']],
     '24F': [['24X1G'], ['4X1/10/25G']],
     '48F': [['48X1G'], ['4X1/10/25G']],
-    'C08ZP': [['4X100M/1/2.5/5/10G'], ['2X1/10/25G']],
+    'C08ZP': [['8X100M/1/2.5/5/10G'], ['2X1/10/25G']],
     'C08PT': [['8X10/100/1000Mbps'], ['2X1G']],
     'C08PDC': [['8X10/100/1000Mbps'], ['2X1G']]
   }
@@ -193,8 +193,8 @@ export const transformSwitchUnitStatus = (switchStatusEnum: SwitchStatusEnum, co
   }
 }
 
-export const transformSwitchStatus = (switchStatusEnum: SwitchStatusEnum, configReady = true,
-  syncedSwitchConfig = true, suspendingDeployTime = '') => {
+export const transformSwitchStatus = (switchStatusEnum: SwitchStatusEnum, configReady = false,
+  syncedSwitchConfig = false, suspendingDeployTime = '') => {
   const { $t } = getIntl()
   let message = ''
   let deviceStatus = DeviceConnectionStatus.INITIAL

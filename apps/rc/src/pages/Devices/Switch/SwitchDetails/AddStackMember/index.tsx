@@ -84,6 +84,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
   const stackSwitches = stackList?.split('_') ?? []
   const isStackSwitches = stackSwitches?.length > 0
   const [rowKey, setRowKey] = useState(1)
+  const [maxMembers, setMaxMembers] = useState(12)
 
   const [updateSwitch] = useUpdateSwitchMutation()
   const { data: switchDetail } =
@@ -155,8 +156,10 @@ function AddMemberForm (props: DefaultVlanFormProps) {
   ]
 
   useEffect(() => {
-
-  }, [form])
+    if(switchDetail?.stackMembers){
+      setMaxMembers(12 - switchDetail?.stackMembers.length)
+    }
+  }, [form, switchDetail])
 
   const validatorSwitchModel = (serialNumber: string) => {
     const re = new RegExp(SWITCH_SERIAL_PATTERN)
@@ -247,12 +250,11 @@ function AddMemberForm (props: DefaultVlanFormProps) {
           dataSource={tableData}
           type='form'
         />
-        {tableData.length < 12 && (
+        {tableData.length < maxMembers && (
           <Button
             onClick={handleAddRow}
             type='link'
             size='small'
-            disabled={tableData.length >= 12}
           >
             {$t({ defaultMessage: 'Add another member' })}
           </Button>

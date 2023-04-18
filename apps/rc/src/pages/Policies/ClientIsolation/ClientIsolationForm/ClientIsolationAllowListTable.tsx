@@ -2,9 +2,9 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { showActionModal, Table, TableProps } from '@acx-ui/components'
+import { showActionModal, Table, TableProps }    from '@acx-ui/components'
 import {
-  ClientIsolationClient
+  ClientIsolationClient, defaultSort, sortProp
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
@@ -106,12 +106,14 @@ export function ClientIsolationAllowListTable (props: ClientIsolationAllowListTa
     {
       title: $t({ defaultMessage: 'MAC Address' }),
       dataIndex: 'mac',
-      key: 'mac'
+      key: 'mac',
+      sorter: { compare: sortProp('mac', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Description' }),
       dataIndex: 'description',
-      key: 'description'
+      key: 'description',
+      sorter: { compare: sortProp('description', defaultSort) }
     }
   ]
 

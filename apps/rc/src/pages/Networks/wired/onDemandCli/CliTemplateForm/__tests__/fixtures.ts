@@ -1,8 +1,8 @@
 export const venues = [
-  { id: 'a98653366d2240b9ae370e48fab3a9a1', name: 'My-Venue', switches: 2, operationalSwitches: 1 },
-  { id: 'f8da55210928402fa5a470642d80de53', name: 'test1', switches: 0, operationalSwitches: 0 },
-  { id: '952a2f97316f43928ee0e16e669a6d4d', name: 'test2', switches: 0, operationalSwitches: 0 },
-  { id: '9417693931ab409ca41ecf9b36f516be', name: 'test3', switches: 1, operationalSwitches: 0 }
+  { id: 'a98653366d2240b9ae370e48fab3a9a1', name: 'My-Venue', operationalSwitches: 2 },
+  { id: 'f8da55210928402fa5a470642d80de53', name: 'test1', operationalSwitches: 0 },
+  { id: '952a2f97316f43928ee0e16e669a6d4d', name: 'test2', operationalSwitches: 0 },
+  { id: '9417693931ab409ca41ecf9b36f516be', name: 'test3', operationalSwitches: 1 }
 ]
 
 export const templates = [{

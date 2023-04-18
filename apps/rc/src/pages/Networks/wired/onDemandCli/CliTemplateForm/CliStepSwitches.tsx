@@ -18,7 +18,8 @@ export function CliStepSwitches () {
 
   const { data: venues } = useGetVenuesQuery({
     params: { tenantId }, payload: {
-      fields: ['name', 'switches', 'id', 'operationalSwitches'],
+      fields: ['name', 'id', 'operationalSwitches'],
+      pageSize: 9999,
       sortField: 'name',
       sortOrder: 'ASC'
     }
