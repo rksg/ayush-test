@@ -43,7 +43,8 @@ import {
   NewAPITableResult,
   transferNewResToTableResult,
   MdnsProxyViewModel,
-  PortalTablePayload
+  PortalTablePayload,
+  IpUtilsService
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -230,6 +231,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             pool.leaseTime = pool.leaseTimeHours
           }
 
+          // eslint-disable-next-line max-len
+          pool.numberOfHosts = IpUtilsService.countIpRangeSize(pool.startIpAddress, pool.endIpAddress)
         })
         return dhcpProfile
       },

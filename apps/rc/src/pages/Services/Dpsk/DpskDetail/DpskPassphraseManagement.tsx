@@ -101,7 +101,7 @@ export default function DpskPassphraseManagement () {
       key: 'numberOfDevices',
       title: $t({ defaultMessage: 'No. of Devices' }),
       dataIndex: 'numberOfDevices',
-      sorter: false,
+      sorter: true,
       render: function (data) {
         return data ? data : $t(unlimitedNumberOfDeviceLabel)
       }
@@ -152,19 +152,22 @@ export default function DpskPassphraseManagement () {
       key: 'revocationReason',
       title: $t({ defaultMessage: 'Revocation Reason' }),
       dataIndex: 'revocationReason',
-      show: isCloudpathEnabled
+      show: isCloudpathEnabled,
+      sorter: true
     },
     {
       key: 'email',
       title: $t({ defaultMessage: 'Contact Email Address' }),
       dataIndex: 'email',
-      show: isCloudpathEnabled
+      show: isCloudpathEnabled,
+      sorter: true
     },
     {
       key: 'phoneNumber',
       title: $t({ defaultMessage: 'Contact Phone Number' }),
       dataIndex: 'phoneNumber',
-      show: isCloudpathEnabled
+      show: isCloudpathEnabled,
+      sorter: true
     }
   ]
 
