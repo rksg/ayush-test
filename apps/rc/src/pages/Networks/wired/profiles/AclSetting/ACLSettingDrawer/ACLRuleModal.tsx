@@ -68,8 +68,14 @@ export function ACLRuleModal (props: {
           label={$t({ defaultMessage: 'Sequence' })}
           rules={[
             { required: true },
-            { validator: (_, value) => props.currrentRecords &&
-              validateAclRuleSequence(value, props.currrentRecords) }
+            { validator: (_, value) => {
+              if(props.editRecord?.sequence !== value && props.currrentRecords) {
+                return validateAclRuleSequence(value, props.currrentRecords)
+              }else {
+                return Promise.resolve()
+              }
+            }
+            }
           ]}
           children={
             <InputNumber

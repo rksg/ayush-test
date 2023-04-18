@@ -3,10 +3,16 @@ import { useContext, useEffect, useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { showActionModal, Table, TableProps }                     from '@acx-ui/components'
-import { useGetWifiCallingServiceQuery }                          from '@acx-ui/rc/services'
-import { EPDG, WifiCallingActionPayload, WifiCallingActionTypes } from '@acx-ui/rc/utils'
-import { filterByAccess }                                         from '@acx-ui/user'
+import { showActionModal, Table, TableProps } from '@acx-ui/components'
+import { useGetWifiCallingServiceQuery }      from '@acx-ui/rc/services'
+import {
+  defaultSort,
+  EPDG,
+  sortProp,
+  WifiCallingActionPayload,
+  WifiCallingActionTypes
+} from '@acx-ui/rc/utils'
+import { filterByAccess } from '@acx-ui/user'
 
 import WifiCallingFormContext from '../WifiCallingFormContext'
 
@@ -32,12 +38,14 @@ const EpdgTable = (props: { edit?: boolean }) => {
     {
       title: $t({ defaultMessage: 'Domain' }),
       dataIndex: 'domain',
-      key: 'domain'
+      key: 'domain',
+      sorter: { compare: sortProp('domain', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'IP Address' }),
       dataIndex: 'ip',
-      key: 'ip'
+      key: 'ip',
+      sorter: { compare: sortProp('ip', defaultSort) }
     }
   ]
 
