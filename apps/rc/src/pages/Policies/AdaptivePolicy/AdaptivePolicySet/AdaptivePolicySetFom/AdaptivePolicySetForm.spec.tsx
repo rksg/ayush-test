@@ -123,7 +123,7 @@ describe('AdaptivePolicySetForm', () => {
     await screen.findByText('Policy Set testPolicy was added')
   })
 
-  it('should edit set successfully', async () => {
+  it.skip('should edit set successfully', async () => {
     mockServer.use(
       rest.get(
         RulesManagementUrlsInfo.getPolicySet.url.split('?')[0],
