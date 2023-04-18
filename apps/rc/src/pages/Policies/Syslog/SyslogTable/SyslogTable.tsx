@@ -181,6 +181,7 @@ function useColumns () {
       key: 'primaryServer',
       title: $t({ defaultMessage: 'Primary Server' }),
       dataIndex: 'primaryServer',
+      sorter: true,
       render: function (data, row) {
         return row.primaryServer ?? '--'
       }
@@ -189,14 +190,16 @@ function useColumns () {
       key: 'secondaryServer',
       title: $t({ defaultMessage: 'Secondary Server' }),
       dataIndex: 'secondaryServer',
+      sorter: true,
       render: function (data, row) {
-        return row.secondaryServer ?? '--'
+        return row.secondaryServer && row.secondaryServer.length > 0 ? row.secondaryServer : '--'
       }
     },
     {
       key: 'facility',
       title: $t({ defaultMessage: 'Event Facility' }),
       dataIndex: 'facility',
+      sorter: true,
       render: function (data, row) {
         return row.facility ? $t(facilityLabelMapping[row.facility as FacilityEnum]) : '--'
       }
@@ -205,6 +208,7 @@ function useColumns () {
       key: 'flowLevel',
       title: $t({ defaultMessage: 'Send Logs' }),
       dataIndex: 'flowLevel',
+      sorter: true,
       render: function (data, row) {
         return row.flowLevel ? $t(flowLevelLabelMapping[row.flowLevel as FlowLevelEnum]) : '--'
       }
@@ -214,6 +218,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Venues' }),
       dataIndex: 'venueIds',
       filterable: venueNameMap,
+      sorter: true,
       render: function (data, row) {
         return row.venueIds?.length ?? '--'
       }
