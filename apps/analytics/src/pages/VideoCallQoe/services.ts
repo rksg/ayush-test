@@ -61,7 +61,7 @@ export const api = videoCallQoeApi.injectEndpoints({
     createCallQoeTest: build.mutation<CreateVideoCallQoeTestResponse, { name: string }>({
       query: (variables) => ({
         variables,
-        document: gql`mutation ($name: String!) {
+        document: gql`mutation CreateVideoCallQoeTest ($name: String!) {
           createCallQoeTest (name: $name)
           { 
             id,
@@ -76,13 +76,11 @@ export const api = videoCallQoeApi.injectEndpoints({
       invalidatesTags: [{ type: 'VideoCallQoe', id: 'LIST' }],
       transformResponse: (response: { createCallQoeTest: CreateVideoCallQoeTestResponse }) =>
         response.createCallQoeTest
-
-
     }),
     deleteCallQoeTest: build.mutation<boolean, { id: number }>({
       query: (variables) => ({
         variables,
-        document: gql`mutation ($id : Int!)
+        document: gql`mutation DeleteVideoCallQoeTest ($id : Int!)
         {
           deleteCallQoeTest(id: $id)
         }`
@@ -99,7 +97,6 @@ export const {
   useCreateCallQoeTestMutation,
   useDeleteCallQoeTestMutation
 } = api
-
 
 export function useDuplicateNameValidator (initialName?: string) {
   const { $t } = useIntl()
