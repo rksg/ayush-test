@@ -93,7 +93,6 @@ const EdgeDhcp = () => {
             }
             updateEdgeDhcpService({ params, payload })
           }
-
         }
       })
     }
