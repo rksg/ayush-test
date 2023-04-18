@@ -6,6 +6,8 @@ import { showActionModal, StepsForm, Table, TableProps } from '@acx-ui/component
 import {
   Acl,
   AclRule,
+  defaultSort,
+  sortProp,
   transformTitleCase
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
@@ -56,11 +58,13 @@ export function AclSetting () {
   const aclsColumns: TableProps<Acl>['columns']= [{
     title: $t({ defaultMessage: 'ACL Name' }),
     dataIndex: 'name',
-    key: 'name'
+    key: 'name',
+    sorter: { compare: sortProp('name', defaultSort) }
   }, {
     title: $t({ defaultMessage: 'ACL Type' }),
     dataIndex: 'aclType',
     key: 'aclType',
+    sorter: { compare: sortProp('aclType', defaultSort) },
     render: (data) => transformTitleCase(data as string)
   }]
 

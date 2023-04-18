@@ -3,10 +3,11 @@ import { useEffect, useState } from 'react'
 import { Form, Input, InputNumber, Radio, RadioChangeEvent, Select } from 'antd'
 import { useIntl }                                                   from 'react-intl'
 
-import { Modal }                from '@acx-ui/components'
+import { Modal }            from '@acx-ui/components'
 import {
   AclExtendedRule,
-  validateSwitchStaticRouteIp
+  validateSwitchStaticRouteIp,
+  validateAclRuleSequence
 } from '@acx-ui/rc/utils'
 
 export function ACLRuleModal (props: {
@@ -66,7 +67,15 @@ export function ACLRuleModal (props: {
         <Form.Item name='sequence'
           label={$t({ defaultMessage: 'Sequence' })}
           rules={[
-            { required: true }
+            { required: true },
+            { validator: (_, value) => {
+              if(props.editRecord?.sequence !== value && props.currrentRecords) {
+                return validateAclRuleSequence(value, props.currrentRecords)
+              }else {
+                return Promise.resolve()
+              }
+            }
+            }
           ]}
           children={
             <InputNumber
