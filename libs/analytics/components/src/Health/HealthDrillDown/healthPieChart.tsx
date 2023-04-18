@@ -16,9 +16,16 @@ import {
 import { formatter }   from '@acx-ui/formatter'
 import { NetworkPath } from '@acx-ui/utils'
 
-import { stageLabels, DrilldownSelection, stageNameToCodeMap } from './config'
-import { ImpactedNodesAndWlans, usePieChartQuery }             from './services'
-import * as UI                                                 from './styledComponents'
+import {
+  stageLabels,
+  DrilldownSelection,
+  stageNameToCodeMap,
+  showTopResult
+} from './config'
+import { ImpactedNodesAndWlans, usePieChartQuery } from './services'
+import * as UI                                     from './styledComponents'
+
+const topCount = 5
 
 type PieChartData = {
   key: string
@@ -27,7 +34,7 @@ type PieChartData = {
   color: string
 }
 
-function getTop5PieChartData (nodeData: Omit<PieChartData, 'color' | 'name'>[])
+function getTopPieChartData (nodeData: Omit<PieChartData, 'color' | 'name'>[])
 : PieChartData[] {
   const colors = qualitativeColorSet()
   return nodeData
@@ -36,7 +43,6 @@ function getTop5PieChartData (nodeData: Omit<PieChartData, 'color' | 'name'>[])
       name: val.key,
       color: colors[index]
     }))
-    .slice(0, 5)
 }
 
 const transformData = (
@@ -47,8 +53,8 @@ const transformData = (
 } => {
   if (data) {
     let { wlans: rawWlans, nodes: rawNodes } = data.network.hierarchyNode
-    const nodes = rawNodes ? getTop5PieChartData(rawNodes) : []
-    const wlans = getTop5PieChartData(rawWlans)
+    const nodes = rawNodes ? getTopPieChartData(rawNodes) : []
+    const wlans = getTopPieChartData(rawWlans)
     return { nodes, wlans }
   }
   return { nodes: [], wlans: [] }
@@ -93,7 +99,7 @@ function getHealthPieChart (
       ? <AutoSizer defaultHeight={150}>
         {({ width, height }) => (
           <DonutChart
-            data={data}
+            data={data.slice(0, topCount)}
             style={{ height, width }}
             dataFormatter={dataFormatter}
             showLabel
@@ -161,12 +167,11 @@ export const HealthPieChart = ({
   })
 
   const [chartKey, setChartKey] = useState('wlans')
-  const count = chartKey === 'wlans' ? wlans.length : nodes.length
+  const count = showTopResult($t, chartKey === 'wlans' ? wlans.length : nodes.length, topCount)
   const lastPath = filters.path[filters.path.length - 1]
   const title = (lastPath.type === 'ap' || lastPath.type === 'AP')
     ? wlansTitle
     : venueTitle + ' / ' + wlansTitle
-
 
   useEffect(() => { setChartKey('wlans') }, [tabDetails.length])
 
@@ -175,7 +180,7 @@ export const HealthPieChart = ({
       <UI.HealthPieChartWrapper>
         <UI.PieChartTitle>
           <b>{$t(stageLabels[name])}</b>{' '}
-          {$t({ defaultMessage: 'Top {count} Impacted {title}' }, { count, title })}
+          {$t({ defaultMessage: '{count} Impacted {title}' }, { count, title })}
         </UI.PieChartTitle>
         <div style={{ height: '100%' }}>
           <AutoSizer>

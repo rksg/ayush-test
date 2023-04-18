@@ -256,7 +256,7 @@ exports[`HealthPieChart should render correctly for missing nodes data 1`] = `
           <b>
             Authentication
           </b>
-           Top 1 Impacted WLAN
+           1 Impacted WLAN
         </span>
         <div
           style="height: 100%;"
@@ -404,7 +404,7 @@ exports[`HealthPieChart should render correctly for single ttc failures 1`] = `
           <b>
             Authentication
           </b>
-           Top 1 Impacted Venue / WLAN
+           1 Impacted Venue / WLAN
         </span>
         <div
           style="height: 100%;"

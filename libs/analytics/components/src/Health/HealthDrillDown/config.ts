@@ -1,6 +1,6 @@
 import { MouseEventHandler } from 'react'
 
-import { defineMessage, MessageDescriptor } from 'react-intl'
+import { defineMessage, IntlShape, MessageDescriptor } from 'react-intl'
 
 export const titleConfig = {
   connectionFailure: defineMessage({ defaultMessage: 'Connection Failures' }),
@@ -115,3 +115,7 @@ export const stageLabels: Record<string, MessageDescriptor> = {
   Radius: defineMessage({ defaultMessage: 'RADIUS' }),
   DHCP: defineMessage({ defaultMessage: 'DHCP' })
 }
+
+export const showTopResult = ($t: IntlShape['$t'], count: number, limit: number) => count > limit
+  ? $t({ defaultMessage: 'Top {limit}' }, { limit })
+  : count

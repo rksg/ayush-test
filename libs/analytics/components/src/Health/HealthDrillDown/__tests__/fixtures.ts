@@ -86,11 +86,6 @@ export const mockConnectionFailureResponse = {
           key: 'Fong@Home',
           value: 60,
           name: null
-        },
-        {
-          key: '23A-IND-BNG-D23-Keshav-Home',
-          value: 25,
-          name: null
         }
       ],
       wlans: [

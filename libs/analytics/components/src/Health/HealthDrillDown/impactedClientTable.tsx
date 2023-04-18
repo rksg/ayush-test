@@ -1,4 +1,4 @@
-import { useIntl, defineMessage } from 'react-intl'
+import { useIntl } from 'react-intl'
 
 import { AnalyticsFilter, sortProp, defaultSort, aggregateDataBy } from '@acx-ui/analytics/utils'
 import {
@@ -12,6 +12,7 @@ import { TenantLink } from '@acx-ui/react-router-dom'
 import {
   Stages,
   stageLabels,
+  showTopResult,
   DrilldownSelection,
   topImpactedClientLimit,
   stageNameToCodeMap
@@ -121,18 +122,15 @@ export const ImpactedClientsTable = ({
       sorter: { compare: sortProp('hostname', defaultSort) }
     }
   ]
-  const totalCount =
-    queryResults?.data?.length && topImpactedClientLimit < queryResults?.data?.length
-      ? `${$t(defineMessage({ defaultMessage: 'Top' }))} ${topImpactedClientLimit}`
-      : queryResults?.data?.length
+  const totalCount = queryResults?.data?.length ?? 0
   return (
     <Loader states={[queryResults]}>
       <TableHeading>
         <b>{selectedStage && $t(stageLabels[selectedStage])} </b>
-        {$t(defineMessage({ defaultMessage: `{count} Impacted {count, plural,
+        {$t({ defaultMessage: `{count} Impacted {totalCount, plural,
           one {Client}
           other {Clients}
-        }` }), { count: totalCount })}
+        }` }, { count: showTopResult($t, totalCount, topImpactedClientLimit), totalCount })}
       </TableHeading>
       <Table
         columns={columns}

@@ -107,7 +107,7 @@ describe('HealthPieChart', () => {
     expect(await screen.findByText('Top 5 Impacted Venues / WLANs')).toBeVisible()
     const venues = await screen.findByText('Venues')
     fireEvent.click(venues)
-    expect(await screen.findByText('Top 5 Impacted Venues / WLANs')).toBeVisible()
+    expect(await screen.findByText('5 Impacted Venues / WLANs')).toBeVisible()
   })
 
   describe('pieNodeMap', () => {
