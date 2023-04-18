@@ -164,10 +164,7 @@ export const HealthPieChart = ({
 
   const [chartKey, setChartKey] = useState('wlans')
   const count = showTopResult($t, chartKey === 'wlans' ? wlans.length : nodes.length, topCount)
-  const lastPath = filters.path[filters.path.length - 1]
-  const title = (lastPath.type === 'ap' || lastPath.type === 'AP')
-    ? wlansTitle
-    : venueTitle + ' / ' + wlansTitle
+  const title = chartKey === 'wlans' ? wlansTitle : venueTitle
 
   useEffect(() => { setChartKey('wlans') }, [tabDetails.length])
 
