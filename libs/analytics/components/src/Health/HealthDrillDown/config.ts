@@ -8,12 +8,11 @@ export const titleConfig = {
 }
 export const topImpactedClientLimit = 100
 export type Stages =
-  | 'authFailure'
-  | 'assoFailure'
-  | 'eapFailure'
-  | 'radiusFailure'
-  | 'dhcpFailure'
-  | null
+  | 'Authentication'
+  | 'Association'
+  | 'EAP'
+  | 'Radius'
+  | 'DHCP'
 export type FunnelChartStages = {
     name: string;
     label: MessageDescriptor;

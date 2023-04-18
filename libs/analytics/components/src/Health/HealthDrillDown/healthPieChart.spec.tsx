@@ -30,7 +30,7 @@ describe('HealthPieChart', () => {
           <HealthPieChart
             filters={filters}
             queryType='connectionFailure'
-            queryFilter='Authentication' />,
+            selectedStage='Authentication' />,
         </div>
       </Provider>,
       {
@@ -50,7 +50,7 @@ describe('HealthPieChart', () => {
     const { asFragment } = render(
       <Provider>
         <div style={{ height: 300, width: 300 }}>
-          <HealthPieChart filters={filters} queryType='ttc' queryFilter='Authentication' />,
+          <HealthPieChart filters={filters} queryType='ttc' selectedStage='Authentication' />,
         </div>
       </Provider>,
       {
@@ -71,7 +71,7 @@ describe('HealthPieChart', () => {
     const { asFragment } = render(
       <Provider>
         <div style={{ height: 300, width: 300 }}>
-          <HealthPieChart filters={apFilters} queryType='ttc' queryFilter='Authentication' />,
+          <HealthPieChart filters={apFilters} queryType='ttc' selectedStage='Authentication' />,
         </div>
       </Provider>,
       {
@@ -94,7 +94,7 @@ describe('HealthPieChart', () => {
           <HealthPieChart
             filters={filters}
             queryType='connectionFailure'
-            queryFilter='Authentication' />,
+            selectedStage='Authentication' />,
         </div>
       </Provider>,
       {

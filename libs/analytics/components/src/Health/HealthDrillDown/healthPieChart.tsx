@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 
-import { isNull }                 from 'lodash'
 import { useIntl, defineMessage } from 'react-intl'
 import AutoSizer                  from 'react-virtualized-auto-sizer'
 
@@ -17,6 +16,7 @@ import { formatter }   from '@acx-ui/formatter'
 import { NetworkPath } from '@acx-ui/utils'
 
 import {
+  Stages,
   stageLabels,
   DrilldownSelection,
   stageNameToCodeMap,
@@ -124,11 +124,11 @@ function getHealthPieChart (
 export const HealthPieChart = ({
   filters,
   queryType,
-  queryFilter
+  selectedStage
 }: {
   filters: AnalyticsFilter;
   queryType: DrilldownSelection;
-  queryFilter: string;
+  selectedStage: Stages;
 }) => {
   const { $t } = useIntl()
   const { startDate: start, endDate: end, path } = filters
@@ -138,17 +138,13 @@ export const HealthPieChart = ({
       end,
       path,
       queryType: queryType as string,
-      queryFilter: stageNameToCodeMap[queryFilter!]
-    },
-    {
-      skip: isNull(queryFilter)
+      queryFilter: stageNameToCodeMap[selectedStage]
     }
   )
 
   const { nodes, wlans } = transformData(queryResults.data)
   const venueTitle = $t(pieNodeMap(path), { count: nodes.length })
   const wlansTitle = $t(pieWlanMap(), { count: wlans.length })
-  const name = queryFilter!
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = []
 
@@ -179,7 +175,7 @@ export const HealthPieChart = ({
     <Loader states={[queryResults]}>
       <UI.HealthPieChartWrapper>
         <UI.PieChartTitle>
-          <b>{$t(stageLabels[name])}</b>{' '}
+          <b>{$t(stageLabels[selectedStage])}</b>{' '}
           {$t({ defaultMessage: '{count} Impacted {title}' }, { count, title })}
         </UI.PieChartTitle>
         <div style={{ height: '100%' }}>
@@ -193,7 +189,7 @@ export const HealthPieChart = ({
               >
                 {(tabDetails.length === 2)
                   ? <ContentSwitcher
-                    key={queryFilter}
+                    key={selectedStage}
                     value={chartKey}
                     defaultValue={'wlans'}
                     tabDetails={tabDetails}

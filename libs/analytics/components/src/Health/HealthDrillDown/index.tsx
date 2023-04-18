@@ -42,7 +42,7 @@ const HealthDrillDown = (props: {
     start: filters.startDate,
     end: filters.endDate
   }
-  const [selectedStage, setSelectedStage] = useState<Stages>(null)
+  const [selectedStage, setSelectedStage] = useState<Stages | null>(null)
   const [xPos, setXpos] = useState<number | null>(null)
   const setStage = (width: number, stage: Stages) => {
     setSelectedStage(stage)
@@ -142,7 +142,7 @@ const HealthDrillDown = (props: {
             <HealthPieChart
               filters={filters}
               queryType={drilldownSelection}
-              queryFilter={selectedStage}/>
+              selectedStage={selectedStage}/>
           </GridCol>
           <GridCol col={{ span: 16 }} style={{ height: '330px', overflow: 'auto' }}>
             <ImpactedClientsTable filters={filters}

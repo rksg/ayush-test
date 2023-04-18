@@ -63,7 +63,7 @@ export function FunnelChart ({
   stages: FunnelChartStages;
   height: number;
   colors: string[];
-  selectedStage: Stages;
+  selectedStage: Stages | null;
   onSelectStage: CallableFunction;
   valueFormatter: CallableFunction;
   valueLabel: string;
