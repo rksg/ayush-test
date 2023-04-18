@@ -4,8 +4,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { EdgeDhcpPool }   from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
+import { defaultSort, EdgeDhcpPool, sortProp } from '@acx-ui/rc/utils'
+import { filterByAccess }                      from '@acx-ui/user'
 
 export function PoolTable (props:{
   data: EdgeDhcpPool[]
@@ -38,31 +38,31 @@ export function PoolTable (props:{
       key: 'poolName',
       title: $t({ defaultMessage: 'Pool Name' }),
       dataIndex: 'poolName',
-      sorter: true
+      sorter: { compare: sortProp('poolName', defaultSort) }
     },
     {
       key: 'subnetMask',
       title: $t({ defaultMessage: 'Subnet Mask' }),
       dataIndex: 'subnetMask',
-      sorter: true
+      sorter: { compare: sortProp('subnetMask', defaultSort) }
     },
     {
       key: 'poolStartIp',
       title: $t({ defaultMessage: 'Pool Start IP' }),
       dataIndex: 'poolStartIp',
-      sorter: true
+      sorter: { compare: sortProp('poolStartIp', defaultSort) }
     },
     {
       key: 'poolEndIp',
       title: $t({ defaultMessage: 'Pool End IP' }),
       dataIndex: 'poolEndIp',
-      sorter: true
+      sorter: { compare: sortProp('poolEndIp', defaultSort) }
     },
     {
       key: 'gatewayIp',
       title: $t({ defaultMessage: 'Gateway' }),
       dataIndex: 'gatewayIp',
-      sorter: true
+      sorter: { compare: sortProp('gatewayIp', defaultSort) }
     }
   ]
   let actions = [{
