@@ -192,7 +192,8 @@ export const formats = {
   txFormat: (value: keyof typeof txpowerMapping) =>
     (txpowerMapping[value] ? txpowerMapping[value] : value),
   numberWithCommas: (number: number) =>
-    number?.toLocaleString('en-US', { maximumFractionDigits: 0 })
+    number?.toLocaleString('en-US', { maximumFractionDigits: 0 }),
+  fps: (value: number) => `${value} fps`
 } as const
 
 const enabledFormat: MessageDescriptor = defineMessage({
