@@ -122,11 +122,13 @@ function getHealthPieChart (
 export const HealthPieChart = ({
   filters,
   queryType,
-  selectedStage
+  selectedStage,
+  valueFormatter
 }: {
-  filters: AnalyticsFilter;
-  queryType: DrilldownSelection;
-  selectedStage: Stages;
+  filters: AnalyticsFilter
+  queryType: DrilldownSelection
+  selectedStage: Stages
+  valueFormatter: (value: unknown, tz?: string | undefined) => string
 }) => {
   const { $t } = useIntl()
   const { startDate: start, endDate: end, path } = filters
@@ -145,13 +147,13 @@ export const HealthPieChart = ({
   const tabDetails: ContentSwitcherProps['tabDetails'] = [{
     label: wlansTitle,
     value: 'wlans',
-    children: getHealthPieChart(wlans, formatter('durationFormat'))
+    children: getHealthPieChart(wlans, valueFormatter)
   }]
   if (nodes.length > 0) {
     tabDetails.unshift({
       label: venueTitle,
       value: 'nodes',
-      children: getHealthPieChart(nodes, formatter('countFormat'))
+      children: getHealthPieChart(nodes, valueFormatter)
     })
   }
   const [chartKey, setChartKey] = useState('wlans')

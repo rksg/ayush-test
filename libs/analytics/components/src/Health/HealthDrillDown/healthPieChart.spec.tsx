@@ -1,4 +1,5 @@
 import { AnalyticsFilter }                                                                 from '@acx-ui/analytics/utils'
+import { formatter }                                                                       from '@acx-ui/formatter'
 import { dataApiURL, Provider, store }                                                     from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved, fireEvent, cleanup } from '@acx-ui/test-utils'
 import { DateRange }                                                                       from '@acx-ui/utils'
@@ -6,8 +7,6 @@ import { DateRange }                                                            
 import { mockConnectionFailureResponse, mockTtcResponse, mockPathWithAp, mockOnlyWlansResponse } from './__tests__/fixtures'
 import { HealthPieChart, pieNodeMap }                                                            from './healthPieChart'
 import { api }                                                                                   from './services'
-
-
 
 describe('HealthPieChart', () => {
 
@@ -30,7 +29,9 @@ describe('HealthPieChart', () => {
           <HealthPieChart
             filters={filters}
             queryType='connectionFailure'
-            selectedStage='Authentication' />,
+            selectedStage='Authentication'
+            valueFormatter={formatter('durationFormat')}
+          />,
         </div>
       </Provider>,
       {
@@ -50,7 +51,12 @@ describe('HealthPieChart', () => {
     const { asFragment } = render(
       <Provider>
         <div style={{ height: 300, width: 300 }}>
-          <HealthPieChart filters={filters} queryType='ttc' selectedStage='Authentication' />,
+          <HealthPieChart
+            filters={filters}
+            queryType='ttc'
+            selectedStage='Authentication'
+            valueFormatter={formatter('countFormat')}
+          />,
         </div>
       </Provider>,
       {
@@ -71,7 +77,12 @@ describe('HealthPieChart', () => {
     const { asFragment } = render(
       <Provider>
         <div style={{ height: 300, width: 300 }}>
-          <HealthPieChart filters={apFilters} queryType='ttc' selectedStage='Authentication' />,
+          <HealthPieChart
+            filters={apFilters}
+            queryType='ttc'
+            selectedStage='Authentication'
+            valueFormatter={formatter('countFormat')}
+          />,
         </div>
       </Provider>,
       {
@@ -94,7 +105,9 @@ describe('HealthPieChart', () => {
           <HealthPieChart
             filters={filters}
             queryType='connectionFailure'
-            selectedStage='Authentication' />,
+            selectedStage='Authentication'
+            valueFormatter={formatter('countFormat')}
+          />,
         </div>
       </Provider>,
       {

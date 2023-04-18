@@ -99,8 +99,9 @@ const HealthDrillDown = (props: {
     },
     skip: !Boolean(drilldownSelection === TTC)
   })
-  const funnelChartData =
-    drilldownSelection === CONNECTIONFAILURE ? connectionFailureResults : ttcResults
+  const isConnectionFailure = drilldownSelection === CONNECTIONFAILURE
+  const funnelChartData = isConnectionFailure ? connectionFailureResults : ttcResults
+  const format = formatter(isConnectionFailure ? 'countFormat' : 'durationFormat')
   return drilldownSelection ? (
     <DrillDownRow>
       <GridCol col={{ span: 24 }}>
@@ -127,9 +128,7 @@ const HealthDrillDown = (props: {
             colors={colors}
             selectedStage={selectedStage}
             onSelectStage={setStage}
-            valueFormatter={formatter(
-              drilldownSelection === CONNECTIONFAILURE ? 'countFormat' : 'durationFormat'
-            )}
+            valueFormatter={format}
           />
         </Loader>
       </GridCol>
@@ -142,7 +141,9 @@ const HealthDrillDown = (props: {
             <HealthPieChart
               filters={filters}
               queryType={drilldownSelection}
-              selectedStage={selectedStage}/>
+              selectedStage={selectedStage}
+              valueFormatter={format}
+            />
           </GridCol>
           <GridCol col={{ span: 16 }} style={{ height: '330px', overflow: 'auto' }}>
             <ImpactedClientsTable filters={filters}
