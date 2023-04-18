@@ -30,31 +30,31 @@ describe('AdaptivePolicySetForm', () => {
   beforeEach(() => {
     mockServer.use(
       rest.post(
-        RulesManagementUrlsInfo.getPolicySetsByQuery.url,
+        RulesManagementUrlsInfo.getPolicySetsByQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(policySetList))
       ),
       rest.get(
-        RulesManagementUrlsInfo.getConditionsInPolicy.url,
+        RulesManagementUrlsInfo.getConditionsInPolicy.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(assignConditions))
       ),
       rest.get(
-        RulesManagementUrlsInfo.getPolicyTemplateList.url,
+        RulesManagementUrlsInfo.getPolicyTemplateList.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(templateList))
       ),
       rest.get(
-        RulesManagementUrlsInfo.getPolicies.url,
+        RulesManagementUrlsInfo.getPolicies.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(adaptivePolicyList))
       ),
       rest.get(
-        RadiusAttributeGroupUrlsInfo.getAttributeGroups.url,
+        RadiusAttributeGroupUrlsInfo.getAttributeGroups.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(groupList))
       ),
       rest.get(
-        RulesManagementUrlsInfo.getPolicySets.url,
+        RulesManagementUrlsInfo.getPolicySets.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(policySetList))
       ),
       rest.get(
-        RulesManagementUrlsInfo.getPrioritizedPolicies.url,
+        RulesManagementUrlsInfo.getPrioritizedPolicies.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(prioritizedPolicies))
       )
     )
@@ -126,7 +126,7 @@ describe('AdaptivePolicySetForm', () => {
   it('should edit set successfully', async () => {
     mockServer.use(
       rest.get(
-        RulesManagementUrlsInfo.getPolicySet.url,
+        RulesManagementUrlsInfo.getPolicySet.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(editPolicySet))
       ),
       rest.patch(
