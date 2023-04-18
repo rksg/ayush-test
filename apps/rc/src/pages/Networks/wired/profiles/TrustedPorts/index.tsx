@@ -3,7 +3,7 @@ import { useState, useContext, useEffect } from 'react'
 import { Row, Col, Form, Input, Typography } from 'antd'
 import _                                     from 'lodash'
 
-import { showActionModal, StepsForm, Table, TableProps, Button }                     from '@acx-ui/components'
+import { showActionModal, StepsForm, Table, TableProps, Button } from '@acx-ui/components'
 import {
   defaultSort,
   sortProp,
@@ -11,9 +11,9 @@ import {
   SwitchModel,
   TrustedPort,
   TrustedPortTypeEnum
-} from "@acx-ui/rc/utils";
-import { filterByAccess }                                                            from '@acx-ui/user'
-import { getIntl }                                                                   from '@acx-ui/utils'
+} from '@acx-ui/rc/utils'
+import { filterByAccess } from '@acx-ui/user'
+import { getIntl }        from '@acx-ui/utils'
 
 import { ConfigurationProfileFormContext } from '../ConfigurationProfileFormContext'
 
