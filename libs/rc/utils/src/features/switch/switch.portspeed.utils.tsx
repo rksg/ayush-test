@@ -609,7 +609,7 @@ const ICX_MODELS_PORTSPEED: Record<string, MODELS_PORTSPEED | MODELS_PORTSPEED[]
     {
       start: '1/1/1', end: '1/1/24',
       capacity: ['NONE', 'AUTO', 'ONE_HUNDRED_M_FULL',
-        'ONE_HUNDRED_M_HALF', 'ONE_G_FULL', 'ONE_G_FULL_MASTER', 'ONE_G_FULL_SLAVE',
+        'ONE_G_FULL', 'ONE_G_FULL_MASTER', 'ONE_G_FULL_SLAVE',
         'TWO_POINT_FIVE_G_FULL', 'TWO_POINT_FIVE_G_FULL_MASTER', 'TWO_POINT_FIVE_G_FULL_SLAVE']
     }, {
       start: '1/2/1', end: '1/2/4',
@@ -625,7 +625,7 @@ const ICX_MODELS_PORTSPEED: Record<string, MODELS_PORTSPEED | MODELS_PORTSPEED[]
     }, {
       start: '1/1/33', end: '1/1/48',
       capacity: ['NONE', 'AUTO', 'TEN_M_FULL', 'TEN_M_HALF', 'ONE_HUNDRED_M_FULL',
-        'ONE_HUNDRED_M_HALF', 'ONE_G_FULL', 'ONE_G_FULL_MASTER', 'ONE_G_FULL_SLAVE',
+        'ONE_G_FULL', 'ONE_G_FULL_MASTER', 'ONE_G_FULL_SLAVE',
         'TWO_POINT_FIVE_G_FULL', 'TWO_POINT_FIVE_G_FULL_MASTER', 'TWO_POINT_FIVE_G_FULL_SLAVE']
     }, {
       start: '1/2/1', end: '1/2/4',
@@ -667,7 +667,7 @@ const ICX_MODELS_PORTSPEED: Record<string, MODELS_PORTSPEED | MODELS_PORTSPEED[]
     {
       start: '1/1/1', end: '1/1/4',
       capacity: ['NONE', 'AUTO', 'ONE_HUNDRED_M_FULL',
-        'ONE_HUNDRED_M_HALF', 'ONE_G_FULL', 'ONE_G_FULL_MASTER', 'ONE_G_FULL_SLAVE',
+        'ONE_G_FULL', 'ONE_G_FULL_MASTER', 'ONE_G_FULL_SLAVE',
         'TWO_POINT_FIVE_G_FULL', 'TWO_POINT_FIVE_G_FULL_MASTER', 'TWO_POINT_FIVE_G_FULL_SLAVE']
     }, {
       start: '1/1/5', end: '1/1/8',
