@@ -127,7 +127,7 @@ const EdgeDhcp = () => {
       <ManageDhcpDrawer
         visible={drawerVisible}
         setVisible={setDrawerVisible}
-        inUseService={poolTableQuery.data?.data[0]?.dhcpId}
+        inUseService={poolTableQuery.data?.data[0]?.dhcpId || null}
       />
       <Tabs
         onChange={onTabChange}

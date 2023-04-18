@@ -366,3 +366,24 @@ export const mockDpsk = {
   name: 'TestDpsk',
   networkIds: ['1', '2']
 }
+
+export const mockApList = {
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      name: 'mock-ap',
+      apMac: '18:7C:0B:10:29:50',
+      serialNumber: '125488555569',
+      venueId: 'mock_venue_1',
+      model: 'R510'
+    },
+    {
+      name: 'mock-ap2',
+      apMac: '18:7C:0B:10:29:51',
+      serialNumber: '150000000761',
+      venueId: 'mock_venue_1',
+      model: 'R760'
+    }
+  ]
+}
