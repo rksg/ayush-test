@@ -167,27 +167,21 @@ export const HealthPieChart = ({
           <b>{$t(stageLabels[selectedStage])}</b>{' '}
           {$t({ defaultMessage: '{count} Impacted {title}' }, { count, title })}
         </UI.PieChartTitle>
-        <div style={{ height: '100%' }}>
-          <AutoSizer>
-            {({ height, width }) => (
-              <div style={{ height, width }}>
-                {(tabDetails.length === 2)
-                  ? <ContentSwitcher
-                    key={selectedStage}
-                    value={chartKey}
-                    defaultValue={'wlans'}
-                    tabDetails={tabDetails}
-                    align='center'
-                    size='small'
-                    onChange={key => setChartKey(key)}
-                  />
-                  : <UI.SinglePieChartWrapper>
-                    {tabDetails[0].children}
-                  </UI.SinglePieChartWrapper>
-                }
-              </div>
-            )}
-          </AutoSizer>
+        <div style={{ height: 260 }}>
+          {(tabDetails.length === 2)
+            ? <ContentSwitcher
+              key={selectedStage}
+              value={chartKey}
+              defaultValue={'wlans'}
+              tabDetails={tabDetails}
+              align='center'
+              size='small'
+              onChange={key => setChartKey(key)}
+            />
+            : <UI.SinglePieChartWrapper>
+              {tabDetails[0].children}
+            </UI.SinglePieChartWrapper>
+          }
         </div>
       </UI.HealthPieChartWrapper>
     </Loader>

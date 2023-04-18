@@ -109,12 +109,13 @@ export const HealthPieChartWrapper = styled.div`
   }
 `
 
-export const PieChartTitle = styled.span`
+export const PieChartTitle = styled.div`
   text-align: left;
   font-size: 12px;
+  padding-bottom: 10px;
 `
 
 export const SinglePieChartWrapper = styled.div`
-  padding-top: 48px;
+  margin-top: 48px;
   height: 100%;
 `
