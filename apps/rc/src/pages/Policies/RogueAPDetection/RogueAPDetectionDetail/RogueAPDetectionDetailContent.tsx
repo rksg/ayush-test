@@ -1,8 +1,8 @@
 import React, { useContext, useEffect } from 'react'
 
-import { Row, Typography } from 'antd'
-import { useIntl }         from 'react-intl'
-import { useParams }       from 'react-router-dom'
+import { Typography } from 'antd'
+import { useIntl }    from 'react-intl'
+import { useParams }  from 'react-router-dom'
 
 import { Card, GridCol, GridRow } from '@acx-ui/components'
 import { useRoguePolicyQuery }    from '@acx-ui/rc/services'
@@ -27,41 +27,33 @@ const RogueAPDetectionDetailContent = () => {
     }
   }, [data])
 
-  if (data) {
-    return <Card>
-      <GridRow>
-        {/* TODO: temporarily hidden until tags column has been supported */}
-        {/*<GridCol col={{ span: 4 }}>*/}
-        {/*  <Card.Title>*/}
-        {/*    {$t({ defaultMessage: 'Tags' })}*/}
-        {/*  </Card.Title>*/}
-        {/*  <Paragraph>*/}
-        {/*    <FormattedList type='conjunction' value={[]} />*/}
-        {/*  </Paragraph>*/}
-        {/*</GridCol>*/}
+  return <Card>
+    { data && <GridRow>
+      {/* TODO: temporarily hidden until tags column has been supported */}
+      {/*<GridCol col={{ span: 4 }}>*/}
+      {/*  <Card.Title>*/}
+      {/*    {$t({ defaultMessage: 'Tags' })}*/}
+      {/*  </Card.Title>*/}
+      {/*  <Paragraph>*/}
+      {/*    <FormattedList type='conjunction' value={[]} />*/}
+      {/*  </Paragraph>*/}
+      {/*</GridCol>*/}
 
-        <GridCol col={{ span: 4 }}>
-          <Card.Title>
-            {$t({ defaultMessage: 'Description' })}
-          </Card.Title>
-          <Paragraph>{data.description}</Paragraph>
-        </GridCol>
+      <GridCol col={{ span: 4 }}>
+        <Card.Title>
+          {$t({ defaultMessage: 'Description' })}
+        </Card.Title>
+        <Paragraph>{data.description}</Paragraph>
+      </GridCol>
 
-        <GridCol col={{ span: 4 }}>
-          <Card.Title>
-            {$t({ defaultMessage: 'Classification Rules' })}
-          </Card.Title>
-          <Paragraph>{data.rules.length}</Paragraph>
-        </GridCol>
-      </GridRow>
-    </Card>
-  } else {
-    return <Card>
-      <Row gutter={24} justify='space-evenly' style={{ width: '100%' }}>
-        <div data-testid='target'>{$t({ defaultMessage: 'Detail content Error' })}</div>
-      </Row>
-    </Card>
-  }
+      <GridCol col={{ span: 4 }}>
+        <Card.Title>
+          {$t({ defaultMessage: 'Classification Rules' })}
+        </Card.Title>
+        <Paragraph>{data.rules.length}</Paragraph>
+      </GridCol>
+    </GridRow> }
+  </Card>
 }
 
 export default RogueAPDetectionDetailContent

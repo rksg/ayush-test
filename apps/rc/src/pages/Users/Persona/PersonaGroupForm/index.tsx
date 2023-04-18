@@ -187,10 +187,14 @@ export function PersonaGroupForm (props: {
         type={ModalType.ModalStepsForm}
         children={<MacRegistrationListForm
           modalMode
-          modalCallBack={onMacModalClose}
+          modalCallBack={(result) => {
+            form.setFieldValue('macRegistrationPoolId', result?.id)
+            onMacModalClose()
+          }}
         />}
         onCancel={onMacModalClose}
         width={1200}
+        destroyOnClose={true}
       />
     </Form>
   )
