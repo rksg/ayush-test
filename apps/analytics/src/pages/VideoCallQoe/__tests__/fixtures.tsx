@@ -1,8 +1,3 @@
-
-import { Form } from 'antd'
-
-import { render, screen, within, renderHook } from '@acx-ui/test-utils'
-
 export const getAllCallQoeTests = {
   getAllCallQoeTests: [
     {
@@ -58,14 +53,4 @@ export const getAllCallQoeTests = {
     }
   ],
   noData: []
-}
-
-export const withinField = () => within(screen.getByTestId('field'))
-
-export const renderFormHook = () => {
-  const { result: { current: form } } = renderHook(() => {
-    const [form] = Form.useForm()
-    return form
-  })
-  return { form, formRender: render(<Form form={form} data-testid='form' />) }
 }

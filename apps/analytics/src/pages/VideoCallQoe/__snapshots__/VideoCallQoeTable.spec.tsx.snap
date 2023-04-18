@@ -204,7 +204,7 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
                               style="width: 85px;"
                             />
                             <col
-                              style="width: 75px;"
+                              style="width: 85px;"
                             />
                             <col
                               style="width: 50px;"
@@ -977,7 +977,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
                               style="width: 85px;"
                             />
                             <col
-                              style="width: 75px;"
+                              style="width: 85px;"
                             />
                             <col
                               style="width: 50px;"
