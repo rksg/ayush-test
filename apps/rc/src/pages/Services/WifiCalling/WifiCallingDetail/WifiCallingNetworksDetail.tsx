@@ -29,12 +29,14 @@ const WifiCallingNetworksDetail = () => {
       dataIndex: 'name',
       searchable: true,
       key: 'name',
-      fixed: 'left'
+      fixed: 'left',
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'nwSubType',
       key: 'nwSubType',
+      sorter: true,
       render: (data, row) => {
         return $t(networkTypes[row.nwSubType as NetworkTypeEnum])
       }
@@ -43,6 +45,7 @@ const WifiCallingNetworksDetail = () => {
       title: $t({ defaultMessage: 'Venues' }),
       dataIndex: 'venues',
       key: 'venues',
+      sorter: true,
       renderText: (row) => row.count
     }
   ]

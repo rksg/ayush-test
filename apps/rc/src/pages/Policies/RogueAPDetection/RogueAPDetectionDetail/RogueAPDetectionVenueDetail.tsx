@@ -63,6 +63,7 @@ const RogueAPDetectionVenueDetail = () => {
       title: $t({ defaultMessage: 'Rogue APs' }),
       dataIndex: 'rogueAps',
       key: 'rogueAps',
+      sorter: true,
       render: (data, row) => {
         return row.rogueAps ?? 0
       }

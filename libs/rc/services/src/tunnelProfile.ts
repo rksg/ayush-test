@@ -1,6 +1,6 @@
-import { CommonResult, RequestPayload, TableResult, TunnelProfile, TunnelProfileUrls, TunnelProfileViewData } from '@acx-ui/rc/utils'
-import { baseTunnelProfileApi }                                                                               from '@acx-ui/store'
-import { createHttpRequest }                                                                                  from '@acx-ui/utils'
+import { CommonResult, onActivityMessageReceived, onSocketActivityChanged, RequestPayload, TableResult, TunnelProfile, TunnelProfileUrls, TunnelProfileViewData } from '@acx-ui/rc/utils'
+import { baseTunnelProfileApi }                                                                                                                                   from '@acx-ui/store'
+import { createHttpRequest }                                                                                                                                      from '@acx-ui/utils'
 
 export const tunnelProfileApi = baseTunnelProfileApi.injectEndpoints({
   endpoints: (build) => ({
@@ -22,7 +22,23 @@ export const tunnelProfileApi = baseTunnelProfileApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'TunnelProfile', id: 'LIST' }]
+      providesTags: [{ type: 'TunnelProfile', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'AddTunnelServiceProfile',
+            'UpdateTunnelServiceProfile',
+            'DeleteTunnelServiceProfile'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(
+              tunnelProfileApi.util.invalidateTags([
+                { type: 'TunnelProfile', id: 'LIST' }
+              ])
+            )
+          })
+        })
+      }
     }),
     deleteTunnelProfile: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {

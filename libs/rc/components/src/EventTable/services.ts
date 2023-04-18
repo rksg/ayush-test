@@ -50,7 +50,9 @@ const defaultPayload = {
     'floorPlanName',
     'recipientName',
     'transactionId',
-    'name'
+    'name',
+    'ipAddress',
+    'detailedDescription'
   ]
 }
 

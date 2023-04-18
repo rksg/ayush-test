@@ -26,7 +26,10 @@ const TunnelProfileTable = () => {
   const basePath: Path = useTenantLink('')
   const tableQuery = useTableQuery({
     useQuery: useGetTunnelProfileViewDataListQuery,
-    defaultPayload: defaultTunnelProfileTablePayload
+    defaultPayload: defaultTunnelProfileTablePayload,
+    search: {
+      searchTargetFields: ['name']
+    }
   })
   const { nsgOptions } = useGetNetworkSegmentationStatsListQuery({
     payload: {
@@ -106,6 +109,7 @@ const TunnelProfileTable = () => {
       dataIndex: 'networkSegmentIds',
       align: 'center',
       filterable: nsgOptions,
+      sorter: true,
       render: (data, row) => row.networkSegmentIds?.length
     },
     {
@@ -114,17 +118,18 @@ const TunnelProfileTable = () => {
       dataIndex: 'networkIds',
       align: 'center',
       filterable: networkOptions,
-      render: (data, row) => row.networkIds?.length
-    },
-    {
-      title: $t({ defaultMessage: 'Tags' }),
-      key: 'tags',
-      dataIndex: 'tags',
       sorter: true,
-      render: (data) => {
-        return `${data}`
-      }
+      render: (data, row) => row.networkIds?.length
     }
+    // {
+    //   title: $t({ defaultMessage: 'Tags' }),
+    //   key: 'tags',
+    //   dataIndex: 'tags',
+    //   sorter: true,
+    //   render: (data) => {
+    //     return `${data}`
+    //   }
+    // }
   ]
 
   const rowActions: TableProps<TunnelProfileViewData>['rowActions'] = [

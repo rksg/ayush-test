@@ -42,7 +42,7 @@ export const transferExpirationFormFieldsToData = (data: ExpirationDateEntity) =
   } else if (data.mode === ExpirationMode.BY_DATE) {
     expiration = {
       expirationType: ExpirationType.SPECIFIED_DATE,
-      expirationDate: toUTCExpireDate(data.date ?? ''),
+      expirationDate: toExpireEndDate(data.date),
       expirationEnabled: true
     }
   } else {
@@ -55,16 +55,16 @@ export const transferExpirationFormFieldsToData = (data: ExpirationDateEntity) =
   return expiration
 }
 
+export const toExpireEndDate = (value?: string) => {
+  return value ? moment.utc(value).add(23,'h').add(59,'m').add(59,'s') : ''
+}
+
 export const toDateTimeString = (value?: string) => {
   return value ? moment.utc(value).local().format('MM/DD/YYYY hh:mm A') : ''
 }
 
-export const toUTCExpireDate = (date: string) => {
-  return moment(date + ' 23:59:59').utc()
-}
-
 export const toLocalDateString = (date: string) => {
-  return moment.utc(date).local().format('YYYY-MM-DD')
+  return moment.utc(date).subtract(23,'h').subtract(59,'m').subtract(59,'s').local().format()
 }
 
 export const transferDataToExpirationFormFields = (data: MacRegistrationPool) => {

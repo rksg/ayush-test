@@ -60,6 +60,7 @@ export { VenuesDashboardWidget, VenuesDashboardWidgetV2 } from './VenuesDashboar
 export { WifiSignal } from './WifiSignal'
 export { AlarmsDrawer } from './AlarmsDrawer'
 export { ApSelector } from './ApSelector'
+export { ApFloorplan } from './ApFloorplan'
 export { CloudMessageBanner } from './CloudMessageBanner'
 export { SwitchCliSession } from './SwitchCliSession'
 export { SwitchClientsTable } from './SwitchClientsTable'
@@ -71,7 +72,11 @@ export { SelectConnectedClientsTable, OSIconContainer } from './SelectConnectedC
 export { usePreference, countryCodes } from './usePreference'
 export { useUpdateGoogleMapRegion } from './usePreference/useUpdateGoogleMapRegion'
 export type { updatePreferenceProps } from './usePreference'
+export { GoogleMapWithPreference } from './GoogleMapWithPreference'
+
 export { TunnelProfileForm } from './TunnelProfileForm'
+export { EdgeDhcpPoolTable } from './EdgeDhcpPoolTable'
+export { EdgeDhcpLeaseTable } from './EdgeDhcpLeaseTable'
 
 export * from './services'
 export * from './EdgeStatisticWidget'

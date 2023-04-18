@@ -36,7 +36,6 @@ export function useMenuConfig () {
   const isEdgeEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
   const isServiceEnabled = useIsSplitOn(Features.SERVICES)
   const isPolicyEnabled = useIsSplitOn(Features.POLICIES)
-  const isAdministrationEnabled = useIsSplitOn(Features.UNRELEASED) || earlyBetaEnabled
   const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
   const isPersonaEnabled = useIsSplitOn(Features.PERSONA)
   const isMacRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
@@ -57,23 +56,35 @@ export function useMenuConfig () {
       activeIcon: AISolid,
       children: [
         {
-          uri: '/analytics/incidents',
-          label: $t({ defaultMessage: 'Incidents' })
+          type: 'group' as const,
+          label: $t({ defaultMessage: 'AI Analytics' }),
+          children: [
+            {
+              uri: '/analytics/incidents',
+              label: $t({ defaultMessage: 'Incidents' })
+            }
+          ]
         },
         {
-          uri: '/analytics/health',
-          label: $t({ defaultMessage: 'Health' })
-        },
-        ...(showSV ? [{
-          uri: '/serviceValidation/networkHealth',
-          label: $t({ defaultMessage: 'Service Validation' })
-        }] : []),
-        ...(showVideoCallQoe ? [{
-          uri: '/serviceValidation/videoCallQoe',
-          label: $t({ defaultMessage: 'Video Call QoE' })
-        }] : [])
+          type: 'group' as const,
+          label: $t({ defaultMessage: 'Network Assurance' }),
+          children: [
+            {
+              uri: '/analytics/health',
+              label: $t({ defaultMessage: 'Health' })
+            },
+            ...(showSV ? [{
+              uri: '/serviceValidation/networkHealth',
+              label: $t({ defaultMessage: 'Service Validation' })
+            }] : []),
+            ...(showVideoCallQoe ? [{
+              uri: '/serviceValidation/videoCallQoe',
+              label: $t({ defaultMessage: 'Video Call QoE' })
+            }] : [])
+          ]
+        }
       ]
-    }] : []),
+    }]: []),
     {
       uri: '/venues',
       label: $t({ defaultMessage: 'Venues' }),
@@ -145,7 +156,7 @@ export function useMenuConfig () {
             },
             {
               uri: '/reports/aps',
-              label: $t({ defaultMessage: 'AP Report' }),
+              label: $t({ defaultMessage: 'Access Point Report' }),
               isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
             },
             {
@@ -225,7 +236,7 @@ export function useMenuConfig () {
       inactiveIcon: SmartEdgeOutlined,
       activeIcon: SmartEdgeSolid
     }] : []),
-    {
+    ...(isServiceEnabled || isPolicyEnabled ? [{
       label: $t({ defaultMessage: 'Network Control' }),
       inactiveIcon: ServicesOutlined,
       activeIcon: ServicesSolid,
@@ -245,7 +256,7 @@ export function useMenuConfig () {
           ? [{ uri: '/policies', label: $t({ defaultMessage: 'Policies & Profiles' }) }]
           : [])
       ]
-    },
+    }] : []),
     {
       label: $t({ defaultMessage: 'Business Insights' }),
       inactiveIcon: BulbOutlined,
@@ -255,7 +266,7 @@ export function useMenuConfig () {
         { uri: '/reports', label: $t({ defaultMessage: 'Reports' }) }
       ]
     },
-    ...(isAdministrationEnabled ? [{
+    {
       label: $t({ defaultMessage: 'Administration' }),
       inactiveIcon: AdminOutlined,
       activeIcon: AdminSolid,
@@ -309,7 +320,7 @@ export function useMenuConfig () {
           ]
         }
       ]
-    }] : [])
+    }
   ]
   if (isGuestManager) { return [] }
   return config

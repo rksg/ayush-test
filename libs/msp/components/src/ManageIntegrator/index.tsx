@@ -17,7 +17,6 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import {
-  GoogleMap,
   PageHeader,
   StepsForm,
   StepsFormInstance,
@@ -26,6 +25,7 @@ import {
 import { useIsSplitOn, Features }        from '@acx-ui/feature-toggle'
 import { formatter, DateFormatEnum }     from '@acx-ui/formatter'
 import { SearchOutlined }                from '@acx-ui/icons'
+import { GoogleMapWithPreference }       from '@acx-ui/rc/components'
 import {
   useAddCustomerMutation,
   useMspEcAdminListQuery,
@@ -939,7 +939,7 @@ export function ManageIntegrator () {
             />
           </Form.Item >
           <Form.Item hidden>
-            <GoogleMap libraries={['places']} />
+            <GoogleMapWithPreference libraries={['places']} />
           </Form.Item>
 
           <MspAdminsForm />
@@ -995,7 +995,7 @@ export function ManageIntegrator () {
               />
             </Form.Item >
             <Form.Item hidden>
-              <GoogleMap libraries={['places']} />
+              <GoogleMapWithPreference libraries={['places']} />
             </Form.Item>
             <MspAdminsForm />
             <CustomerAdminsForm />
