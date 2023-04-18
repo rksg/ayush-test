@@ -926,7 +926,7 @@ describe('RcRoutes: Timeline', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.CREATE }),
+        path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.CREATE }),
         wrapRoutes: false
       }
     })
@@ -939,7 +939,7 @@ describe('RcRoutes: Timeline', () => {
     path = path.replace(':templateId', 'templateId').replace(':policyId', 'policyId')
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + path,
+        path: '/tenantId/t/' + path,
         wrapRoutes: false
       }
     })
@@ -952,7 +952,7 @@ describe('RcRoutes: Timeline', () => {
     path = path.replace(':templateId', 'templateId').replace(':policyId', 'policyId')
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + path,
+        path: '/tenantId/t/' + path,
         wrapRoutes: false
       }
     })
@@ -963,7 +963,7 @@ describe('RcRoutes: Timeline', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST }),
+        path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST }),
         wrapRoutes: false
       }
     })
@@ -974,7 +974,7 @@ describe('RcRoutes: Timeline', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.CREATE }),
+        path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.CREATE }),
         wrapRoutes: false
       }
     })
@@ -987,7 +987,7 @@ describe('RcRoutes: Timeline', () => {
     path = path.replace(':policyId', 'policyId')
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + path,
+        path: '/tenantId/t/' + path,
         wrapRoutes: false
       }
     })
@@ -1000,7 +1000,7 @@ describe('RcRoutes: Timeline', () => {
     path = path.replace(':policyId', 'policyId')
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + path,
+        path: '/tenantId/t/' + path,
         wrapRoutes: false
       }
     })
@@ -1011,7 +1011,7 @@ describe('RcRoutes: Timeline', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.LIST }),
+        path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.LIST }),
         wrapRoutes: false
       }
     })
