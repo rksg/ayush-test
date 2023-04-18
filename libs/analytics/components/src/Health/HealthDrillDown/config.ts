@@ -99,7 +99,7 @@ export const getFormattedToFunnel = (
 export const CONNECTIONFAILURE = 'connectionFailure'
 export const TTC = 'ttc'
 
-export const stageNameToCodeMap: Record<string, string> = {
+export const stageNameToCodeMap: Record<Stages, string> = {
   Authentication: 'auth',
   Association: 'assoc',
   EAP: 'eap',
@@ -107,7 +107,7 @@ export const stageNameToCodeMap: Record<string, string> = {
   DHCP: 'dhcp'
 }
 
-export const stageLabels: Record<string, MessageDescriptor> = {
+export const stageLabels: Record<Stages, MessageDescriptor> = {
   Authentication: defineMessage({ defaultMessage: 'Authentication' }),
   Association: defineMessage({ defaultMessage: 'Association' }),
   EAP: defineMessage({ defaultMessage: 'EAP' }),
