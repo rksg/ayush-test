@@ -1,36 +1,32 @@
-import { Form }                   from 'antd'
-import { defineMessage, useIntl } from 'react-intl'
+import { Form }                                     from 'antd'
+import { FormattedMessage, defineMessage, useIntl } from 'react-intl'
 
 import * as UI from '../styledComponents'
 
-const label = defineMessage({ defaultMessage: 'Disclaimer' })
 
 export function Disclaimer () {
   const { $t } = useIntl()
-
-  //Please take note that participation in this Zoom test call is entirely voluntary, and by doing so, you are agreeing to share information with Zoom Video Communications, Inc. Please refer to Zoom privacy statement for more details https://explore.zoom.us/trust/privacy.
+  const disc = defineMessage({
+    // eslint-disable-next-line max-len
+    defaultMessage: 'Please take note that participation in this Zoom test call is entirely voluntary, and by doing so, you are agreeing to share information with Zoom Video Communications, Inc. Please refer to {link} for more details.'
+  })
   return <Form.Item
     name='disclaimer'
-    label={$t(label)}
     children={
-      <UI.LabelContainer>
-        {$t(defineMessage(
-          {
-            defaultMessage: 'Please take note that participation in this Zoom'+
-            ' test call is entirely voluntary, and by doing so, you are agreeing'+
-            ' to share information with Zoom Video Communications, Inc. Please refer to Zoom'+
-            ' privacy statement for more details '
-          }
-        ))
-        }
-        <a
-          className='link'
-          target='_blank'
-          href='https://explore.zoom.us/trust/privacy'
-          rel='noreferrer'>
-          https://explore.zoom.us/trust/privacy
-        </a>
-      </UI.LabelContainer>
+      <UI.DisclaimerContainer>
+        <FormattedMessage
+          {...disc}
+          values={{
+            link: <a
+              className='link'
+              target='_blank'
+              href='https://explore.zoom.us/trust/privacy'
+              rel='noreferrer'>
+              {$t({ defaultMessage: 'Zoom privacy statement' })}
+            </a>
+          }}
+        />
+      </UI.DisclaimerContainer>
     }
   />
 }

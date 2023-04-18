@@ -4,8 +4,7 @@ import { Form, Space }            from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 import { FormattedMessage }       from 'react-intl'
 
-import { Button }           from '@acx-ui/components'
-import { InformationSolid } from '@acx-ui/icons'
+import { Button } from '@acx-ui/components'
 
 import { LinkButton } from '../styledComponents'
 
@@ -22,12 +21,12 @@ export function TestLink ({ link }:{ link: string }) {
   const linkDescription = <FormattedMessage
     defaultMessage={`
     <highlight>
-    The meeting is accessible by the URL above. Copy and share the URL with other participants. 
+    The meeting is accessible by clicking the URL above. Copy and share the URL 
+    with other participants.
     </highlight>
   `}
     values={{
       highlight: (chunks) => <Space align='start'>
-        <InformationSolid />
         {chunks}
       </Space>
     }}

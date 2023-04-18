@@ -9,7 +9,7 @@ import { useNavigateToPath }        from '@acx-ui/react-router-dom'
 import { useCreateCallQoeTestMutation, useDeleteCallQoeTestMutation } from '../services'
 
 import { VideoCallQoeFormCreate }  from './VideoCallQoeFormCreate'
-import { VideoCallQoeFormSummary } from './VideoCallQoeFormSummary'
+import { VideoCallQoeFormDetails } from './VideoCallQoeFormDetails'
 
 export function VideoCallQoeForm () {
   const { $t } = useIntl()
@@ -30,28 +30,26 @@ export function VideoCallQoeForm () {
       onFinish={async (values: { name: string }) => {
         const response = await submit(values).unwrap()
         setLink(response?.meetings[0]?.joinUrl)
+        // TODO: To be deleted.
         setId(response?.id)
-
-        // await deleteCallQoeTest({ id: 28 }).unwrap()
-        //console.log('## Response received:', response)
       }}
       //onCancel={navigateToList}
       onCancel={async () => {
         console.log('Deleting test id: ', id)
-        await deleteCallQoeTest({ id }).unwrap()
-        //await deleteCallQoeTest({ id: 61 }).unwrap()
+        //await deleteCallQoeTest({ id }).unwrap()
+        await deleteCallQoeTest({ id: 78 }).unwrap()
         navigateToList()
       }
       }
       buttonLabel={{
         submit: link ? '': $t({ defaultMessage: 'Add' }),
-        cancel: link? $t({ defaultMessage: 'Back' }) :$t({ defaultMessage: 'Cancel' })
+        cancel: link? $t({ defaultMessage: 'Done' }) :$t({ defaultMessage: 'Cancel' })
       }}
     >
       {
         <StepsFormNew.StepForm
           children={link?
-            <VideoCallQoeFormSummary link={link}/>
+            <VideoCallQoeFormDetails link={link}/>
             :
             <VideoCallQoeFormCreate />
           }/>
