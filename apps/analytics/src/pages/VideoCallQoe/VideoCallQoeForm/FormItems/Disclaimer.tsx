@@ -23,8 +23,12 @@ export function Disclaimer () {
           }
         ))
         }
-        <a href='https://explore.zoom.us/trust/privacy'>
-            https://explore.zoom.us/trust/privacy.
+        <a
+          className='link'
+          target='_blank'
+          href='https://explore.zoom.us/trust/privacy'
+          rel='noreferrer'>
+          https://explore.zoom.us/trust/privacy
         </a>
       </UI.LabelContainer>
     }
