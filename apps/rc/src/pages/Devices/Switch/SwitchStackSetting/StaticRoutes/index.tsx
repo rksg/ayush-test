@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom'
 
 import { Loader, Table, TableProps, Button }                                  from '@acx-ui/components'
 import { useGetSwitchStaticRoutesQuery, useDeleteSwitchStaticRoutesMutation } from '@acx-ui/rc/services'
-import { defaultSort, sortProp, StaticRoute } from "@acx-ui/rc/utils";
+import { defaultSort, sortProp, StaticRoute }                                 from '@acx-ui/rc/utils'
 import { filterByAccess }                                                     from '@acx-ui/user'
 
 import StaticRoutesDrawer from './StaticRoutesDrawer'
