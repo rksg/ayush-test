@@ -3,15 +3,14 @@ import { defineMessage, useIntl } from 'react-intl'
 
 import { StepsFormNew } from '@acx-ui/components'
 
-//import { useDuplicateNameValidator } from '../../services'
+import { useDuplicateNameValidator } from '../../services'
 
 const name = 'name' as const
 const label = defineMessage({ defaultMessage: 'Test Name' })
 
 export function TestName () {
   const { $t } = useIntl()
-  //const { editMode, initialValues } = useStepFormContext<{ name: string }>()
-  //const duplicateNameValidator = useDuplicateNameValidator(editMode, initialValues?.name)
+  const duplicateNameValidator = useDuplicateNameValidator('')
 
   return <Form.Item
     hasFeedback
@@ -19,8 +18,8 @@ export function TestName () {
     name={name}
     label={$t(label)}
     rules={[
-      { required: true }
-      // { validator: duplicateNameValidator }
+      { required: true },
+      { validator: duplicateNameValidator }
     ]}
     children={<Input />}
   />
