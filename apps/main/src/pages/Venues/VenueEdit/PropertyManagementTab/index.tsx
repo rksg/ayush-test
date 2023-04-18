@@ -235,7 +235,12 @@ export function PropertyManagementTab () {
       <PersonaGroupDrawer
         isEdit={false}
         visible={personaGroupVisible}
-        onClose={() => setPersonaGroupVisible(false)}
+        onClose={(result) => {
+          if (result) {
+            formRef?.current?.setFieldValue('personaGroupId', result?.id)
+          }
+          setPersonaGroupVisible(false)
+        }}
       />
     </Loader>
   )

@@ -14,7 +14,9 @@ import {
   MacRegistrationPoolFormFields,
   getPolicyRoutePath,
   PolicyType,
-  PolicyOperation, getPolicyListRoutePath
+  PolicyOperation,
+  getPolicyListRoutePath,
+  MacRegistrationPool
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -26,7 +28,7 @@ import { MacRegistrationListSettingForm } from './MacRegistrationListSetting/Mac
 interface MacRegistrationListFormProps {
   editMode?: boolean,
   modalMode?: boolean,
-  modalCallBack?: (name?: string) => void
+  modalCallBack?: (saveData?: MacRegistrationPool) => void
 }
 
 export default function MacRegistrationListForm (props: MacRegistrationListFormProps) {
@@ -70,7 +72,7 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
         defaultAccess: data.defaultAccess ?? 'ACCEPT',
         policySetId: data.policySetId
       }
-      await addMacRegList({ payload: saveData }).unwrap()
+      const result = await addMacRegList({ payload: saveData }).unwrap() as MacRegistrationPool
 
       showToast({
         type: 'success',
@@ -80,7 +82,7 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
         )
       })
 
-      modalMode ? modalCallBack?.(data.name) : navigate(linkToList, { replace: true })
+      modalMode ? modalCallBack?.(result) : navigate(linkToList, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
