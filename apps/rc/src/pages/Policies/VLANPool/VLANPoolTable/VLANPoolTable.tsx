@@ -159,6 +159,7 @@ function useColumns () {
       key: 'vlanMembers',
       title: $t({ defaultMessage: 'VLANs' }),
       dataIndex: 'vlanMembers',
+      sorter: true,
       render: (data) =>{
         return data?.toString()
       }
@@ -168,6 +169,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Venues' }),
       dataIndex: 'venueIds',
       filterable: venueNameMap,
+      sorter: true,
       render: (data, row) =>{
         if (!row.venueIds || row.venueIds.length === 0) return 0
         const venueIds = row.venueIds

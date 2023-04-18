@@ -177,6 +177,7 @@ function useColumns () {
       dataIndex: 'networkIds',
       align: 'center',
       filterable: networkNameMap,
+      sorter: true,
       render: (data, row) =>{
         if (!row.networkIds || row.networkIds.length === 0) return 0
         const networkIds = row.networkIds
