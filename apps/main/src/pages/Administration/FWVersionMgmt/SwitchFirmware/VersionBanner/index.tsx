@@ -2,6 +2,7 @@ import { Divider, Space } from 'antd'
 import { useIntl }        from 'react-intl'
 import { useParams }      from 'react-router-dom'
 
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }    from '@acx-ui/formatter'
 import {
   useGetSwitchLatestFirmwareListQuery
@@ -14,7 +15,6 @@ import {
 import { getReleaseFirmware } from '../../FirmwareUtils'
 
 import * as UI from './styledComponents'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 const transform = firmwareTypeTrans()
 
