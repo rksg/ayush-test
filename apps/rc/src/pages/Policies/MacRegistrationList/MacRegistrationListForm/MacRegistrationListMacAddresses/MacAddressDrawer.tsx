@@ -7,7 +7,7 @@ import { useIntl }     from 'react-intl'
 import { Drawer, showToast }         from '@acx-ui/components'
 import { ExpirationDateSelector }    from '@acx-ui/rc/components'
 import {
-  useAddMacRegistrationMutation, useLazyMacRegistrationsQuery,
+  useAddMacRegistrationMutation, useLazySearchMacRegistrationsQuery,
   useUpdateMacRegistrationMutation
 } from '@acx-ui/rc/services'
 import {
@@ -36,16 +36,22 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
   const [addMacRegistration] = useAddMacRegistrationMutation()
   const [editMacRegistration] = useUpdateMacRegistrationMutation()
   const { policyId } = useParams()
-  const [ macReg ] = useLazyMacRegistrationsQuery()
+  const [ macReg ] = useLazySearchMacRegistrationsQuery()
 
   const macAddressValidator = async (macAddress: string) => {
     const list = (await macReg({
       params: { policyId },
       payload: {
-        page: '1',
-        pageSize: '10000',
+        page: 1, pageSize: 10,
         sortField: 'macAddress',
-        sortOrder: 'ASC'
+        dataOption: 'all',
+        searchCriteriaList: [
+          {
+            filterKey: 'macAddress',
+            operation: 'eq',
+            value: macAddress
+          }
+        ]
       }
     }).unwrap()).data
       .filter(n => n.id !== editData?.id)

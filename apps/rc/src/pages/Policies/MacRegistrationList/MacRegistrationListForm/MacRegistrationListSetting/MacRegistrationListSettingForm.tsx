@@ -3,16 +3,19 @@ import React from 'react'
 import { Form, Input, Col, Row, Select, Switch, Space } from 'antd'
 import { useIntl }                                      from 'react-intl'
 
-import { Button, SelectionControl }                                              from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                from '@acx-ui/feature-toggle'
-import { ExpirationDateSelector }                                                from '@acx-ui/rc/components'
-import { useAdaptivePolicySetListQuery, useLazyMacRegListsQuery }                from '@acx-ui/rc/services'
+import { Button, SelectionControl } from '@acx-ui/components'
+import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
+import { ExpirationDateSelector }   from '@acx-ui/rc/components'
+import {
+  useAdaptivePolicySetListQuery,
+  useLazySearchMacRegListsQuery
+} from '@acx-ui/rc/services'
 import { checkObjectNotExists, getPolicyRoutePath, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                                                 from '@acx-ui/react-router-dom'
 
 export function MacRegistrationListSettingForm () {
   const { $t } = useIntl()
-  const [ macRegList ] = useLazyMacRegListsQuery()
+  const [ macRegList ] = useLazySearchMacRegListsQuery()
   const { policyId } = useParams()
   const policySetId = Form.useWatch('policySetId')
 
@@ -24,8 +27,17 @@ export function MacRegistrationListSettingForm () {
   const nameValidator = async (value: string) => {
     const list = (await macRegList({
       params: { policyId },
-      page: '1',
-      pageSize: '10000'
+      payload: {
+        page: 1, pageSize: 10,
+        dataOption: 'all',
+        searchCriteriaList: [
+          {
+            filterKey: 'name',
+            operation: 'eq',
+            value: value
+          }
+        ]
+      }
     }).unwrap()).data.filter(n => n.id !== policyId)
       .map(n => ({ name: n.name }))
     // eslint-disable-next-line max-len

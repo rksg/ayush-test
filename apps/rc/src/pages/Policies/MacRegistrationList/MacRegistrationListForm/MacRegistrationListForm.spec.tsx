@@ -103,7 +103,7 @@ describe('MacRegistrationListForm', () => {
 
     mockServer.use(
       rest.get(
-        MacRegListUrlsInfo.getMacRegistrationPools.url,
+        MacRegListUrlsInfo.getMacRegistrationPools.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(list))
       ),
       rest.get(
@@ -115,8 +115,12 @@ describe('MacRegistrationListForm', () => {
         (req, res, ctx) => res(ctx.json({}))
       ),
       rest.get(
-        RulesManagementUrlsInfo.getPolicySets.url,
+        RulesManagementUrlsInfo.getPolicySets.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(policySetList))
+      ),
+      rest.post(
+        MacRegListUrlsInfo.searchMacRegistrationPools.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(list))
       )
     )
   })

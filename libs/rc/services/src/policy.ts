@@ -803,6 +803,23 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'MacRegistrationPool', id: 'LIST' }]
     }),
+    searchMacRegLists: build.query<TableResult<MacRegistrationPool>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const poolsReq = createNewTableHttpRequest({
+          apiInfo: MacRegListUrlsInfo.searchMacRegistrationPools,
+          params,
+          payload: payload as TableChangePayload
+        })
+        return {
+          ...poolsReq,
+          body: payload
+        }
+      },
+      transformResponse (result: NewTableResult<MacRegistrationPool>) {
+        return transferToTableResult<MacRegistrationPool>(result)
+      },
+      providesTags: [{ type: 'MacRegistrationPool', id: 'LIST' }]
+    }),
     macRegistrations: build.query<TableResult<MacRegistration>, RequestPayload>({
       query: ({ params, payload }) => {
         const poolsReq = createNewTableHttpRequest({
@@ -812,6 +829,23 @@ export const policyApi = basePolicyApi.injectEndpoints({
         })
         return {
           ...poolsReq
+        }
+      },
+      transformResponse (result: NewTableResult<MacRegistration>) {
+        return transferToTableResult<MacRegistration>(result)
+      },
+      providesTags: [{ type: 'MacRegistration', id: 'LIST' }]
+    }),
+    searchMacRegistrations: build.query<TableResult<MacRegistration>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const poolsReq = createNewTableHttpRequest({
+          apiInfo: MacRegListUrlsInfo.searchMacRegistrations,
+          params,
+          payload: payload as TableChangePayload
+        })
+        return {
+          ...poolsReq,
+          body: payload
         }
       },
       transformResponse (result: NewTableResult<MacRegistration>) {
@@ -1084,7 +1118,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     uploadMacRegistration: build.mutation<{}, RequestFormData>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(MacRegListUrlsInfo.addMacRegistration, params, {
+        const req = createHttpRequest(MacRegListUrlsInfo.uploadMacRegistration, params, {
           'Content-Type': undefined,
           'Accept': '*/*'
         })
@@ -1792,9 +1826,13 @@ export const policyApi = basePolicyApi.injectEndpoints({
 export const {
   usePolicyListQuery,
   useMacRegListsQuery,
+  useSearchMacRegListsQuery,
+  useLazySearchMacRegListsQuery,
   useDeleteMacRegListMutation,
   useGetMacRegListQuery,
   useMacRegistrationsQuery,
+  useSearchMacRegistrationsQuery,
+  useLazySearchMacRegistrationsQuery,
   useDeleteMacRegistrationMutation,
   useAddMacRegistrationMutation,
   useUpdateMacRegistrationMutation,
