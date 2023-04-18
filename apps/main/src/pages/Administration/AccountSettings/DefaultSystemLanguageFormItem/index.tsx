@@ -10,7 +10,6 @@ const DefaultSystemLanguageFormItem = () => {
                   window.location.hostname === 'devalto.ruckuswireless.com')
   const { $t } = useIntl()
   const {
-    data: preferenceData,
     currentDefaultLang,
     updatePartial: updatePreferences,
     getReqState,
