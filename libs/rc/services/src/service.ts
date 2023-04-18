@@ -651,7 +651,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
+      // eslint-disable-next-line max-len
+      invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }, { type: 'DpskPassphrase', id: 'DETAIL' }]
     }),
     uploadPassphrases: build.mutation<{}, RequestFormData>({
       query: ({ params, payload }) => {
