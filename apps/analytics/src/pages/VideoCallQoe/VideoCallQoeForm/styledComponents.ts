@@ -1,15 +1,48 @@
-import { Col } from 'antd'
-import styled  from 'styled-components/macro'
+import { Button } from 'antd'
+import { Form }   from 'antd'
+import styled     from 'styled-components/macro'
 
-export const AtCol = styled(Col)`
-  text-align: center;
+export const NotificationBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 20px;
+  gap: 4px;
+  background: #FEF6ED;
+  border-radius: 8px;
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-body-4-font-weight);
   font-size: var(--acx-body-4-font-size);
-  font-weight: var(--acx-body-5-font-weight);
+  line-height: var(--acx-body-4-line-height);
+  color: var(--acx-primary-black);
 `
 
-export const LabelContainer = styled.div`
-  margin-left: 23px;
-  display: grid;
-  font-size: var(--acx-body-4-font-size);
-  font-weight: var(--acx-body-5-font-weight);
+
+export const LinkButton = styled(Button)`
+  border-color: var(--acx-neutrals-50) !important;
+  border: 1px solid;
+  text-align: start;
+  padding: 2px 12px;
+  width: 528px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  &:hover {
+    color: var(--acx-accents-blue-50) !important;
+  }
+`
+export const OverwriteFormItem = styled(Form.Item)`
+  .ant-form-item-label > label {
+    line-height: var(--acx-subtitle-4-line-height);
+    font-size: var(--acx-subtitle-4-font-size);
+    font-family: var(--acx-neutral-brand-font);
+    font-weight: var(--acx-subtitle-4-font-weight);
+    color: var(--acx-primary-black);
+  }
+`
+
+export const DisclaimerContainer = styled.div`
+  font-size: var(--acx-body-3-font-size);
+  line-height: var(--acx-body-3-line-height);
+  font-weight: var(--acx-subtitle-6-font-weight);
 `
