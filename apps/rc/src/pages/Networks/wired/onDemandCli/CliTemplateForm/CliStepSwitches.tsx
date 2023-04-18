@@ -25,8 +25,7 @@ export function CliStepSwitches () {
   })
 
   const [venueSwitches, setVenueSwitches] = useState([] as CliTemplateVenueSwitches[])
-  const [selectedSwitches, setSelectedSwitches]
-    = useState(null as unknown as Map<React.Key, React.Key[]>[])
+  const [selectedSwitches, setSelectedSwitches] = useState([] as Map<React.Key, React.Key[]>[])
   const [getSwitchList] = useLazyGetSwitchListQuery()
   const [applySwitches, setApplySwitches] = useState({} as Record<string, ApplySwitch[]>)
 
