@@ -82,7 +82,7 @@ describe('usePreference', () => {
     })
 
     await act(async () => {
-      result.current.update({
+      result.current.updatePartial({
         newData: {
           global: { other: { field: 'test' } }
         }
@@ -113,7 +113,7 @@ describe('usePreference', () => {
     })
 
     await act(async () => {
-      result.current.update({
+      result.current.updatePartial({
         newData: {
           global: { mapRegion: 'GB' }
         }
@@ -160,7 +160,7 @@ describe('usePreference', () => {
     })
 
     await act(async () => {
-      result.current.update({
+      result.current.updatePartial({
         newData: {
           global: { mapRegion: 'GB' }
         },
@@ -196,7 +196,7 @@ describe('usePreference', () => {
     })
 
     await act(async () => {
-      result.current.update({
+      result.current.updatePartial({
         newData: { global: { mapRegion: 'GB' } },
         onError: mockedOnErrorFn
       })
