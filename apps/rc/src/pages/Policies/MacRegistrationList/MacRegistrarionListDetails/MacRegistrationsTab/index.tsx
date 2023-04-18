@@ -122,7 +122,8 @@ export function MacRegistrationsTab () {
     {
       title: $t({ defaultMessage: 'Status' }),
       key: 'status',
-      dataIndex: 'status',
+      dataIndex: 'revoked',
+      sorter: true,
       render: function (data, row) {
         if (row.revoked) {
           return $t({ defaultMessage: 'Revoked' })
@@ -143,12 +144,14 @@ export function MacRegistrationsTab () {
     {
       title: $t({ defaultMessage: 'E-Mail' }),
       key: 'email',
-      dataIndex: 'email'
+      dataIndex: 'email',
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'Registration Date' }),
       key: 'registrationDate',
-      dataIndex: 'registrationDate',
+      dataIndex: 'createdDate',
+      sorter: true,
       render: function (data, row) {
         return toDateTimeString(row.createdDate)
       }

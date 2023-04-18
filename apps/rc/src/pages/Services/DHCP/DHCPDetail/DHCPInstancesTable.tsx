@@ -63,6 +63,7 @@ export default function DHCPInstancesTable (){
       key: 'APs',
       title: $t({ defaultMessage: 'APs' }),
       dataIndex: 'aggregatedApStatus',
+      sorter: true,
       render: function (data, row) {
         const count = row.aggregatedApStatus
           ? Object.values(row.aggregatedApStatus)
@@ -79,6 +80,7 @@ export default function DHCPInstancesTable (){
       title: $t({ defaultMessage: 'Switches' }),
       key: 'switches',
       dataIndex: 'switches',
+      sorter: true,
       render: function (data, row) {
         return (
           <TenantLink
@@ -107,7 +109,7 @@ export default function DHCPInstancesTable (){
   ]
 
   return (
-    <Loader states={[{ isLoading: tableQuery.isLoading||tableQuery.isFetching }]}>
+    <Loader states={[tableQuery]}>
       <Card title={$t({ defaultMessage: 'Instances ({count})' },
         { count: tableQuery.data?.totalCount||0 })}>
         <Table
