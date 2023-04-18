@@ -21,6 +21,7 @@ export type ErrorAction = {
   payload: {
     data?: ErrorDetailsProps
     originalStatus?: number
+    status?: number
   }
 }
 
@@ -80,7 +81,9 @@ export const errorMessage = {
 
 export const getErrorContent = (action: ErrorAction) => {
   const { $t } = getIntl()
-  const status = action.meta.baseQueryMeta?.response?.status || action.payload?.originalStatus
+  const status = action.meta.baseQueryMeta?.response?.status
+   || action.payload?.originalStatus
+   || action.payload?.status
 
   let errorMsg = {} as ErrorMessageType
   let type: ActionModalType = 'error'
