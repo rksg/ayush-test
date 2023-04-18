@@ -168,10 +168,10 @@ storiesOf('MultiLineTimeSeriesChart', module)
     }]}
     markerLines={[{
       threshold: 1600,
-      lineStyle: { opacity: 0.9, color: cssStr(incidentSeverities.P1.color) }
+      lineStyle: { color: cssStr(incidentSeverities.P1.color) }
     },{
       threshold: 600,
-      lineStyle: { opacity: 0.9, color: cssStr(incidentSeverities.P3.color) }
+      lineStyle: { color: cssStr(incidentSeverities.P3.color) }
     }]}
     // eslint-disable-next-line no-console
     onMarkAreaClick={(data) => { console.log(data) }}

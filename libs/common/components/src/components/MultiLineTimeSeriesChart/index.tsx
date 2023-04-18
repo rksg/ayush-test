@@ -260,6 +260,9 @@ export function MultiLineTimeSeriesChart <
           markLine: props.markerLines ? {
             symbol: 'none',
             animation: false,
+            emphasis: {
+              disabled: true
+            },
             data: props.markerLines?.map(line => (
               { yAxis: line.threshold,
                 lineStyle: line.lineStyle }
