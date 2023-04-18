@@ -109,6 +109,7 @@ const TunnelProfileTable = () => {
       dataIndex: 'networkSegmentIds',
       align: 'center',
       filterable: nsgOptions,
+      sorter: true,
       render: (data, row) => row.networkSegmentIds?.length
     },
     {
@@ -117,6 +118,7 @@ const TunnelProfileTable = () => {
       dataIndex: 'networkIds',
       align: 'center',
       filterable: networkOptions,
+      sorter: true,
       render: (data, row) => row.networkIds?.length
     }
     // {

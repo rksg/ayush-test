@@ -13,6 +13,7 @@ export type Session = {
   firstConnection: string
   disconnectTime: string
   sessionDuration: string
+  sessionDurationInt: number
   rxBytes: number
   txBytes: number
   traffic: number
@@ -59,8 +60,12 @@ export const api = dataApi.injectEndpoints({
           granularity: calculateGranularity(payload.startDate, payload.endDate)
         }
       }),
-      transformResponse: (response: Response<Session>) =>
-        response.client.sessions
+      transformResponse: (response: Response<Session>) => {
+        return response.client.sessions.map(session => {
+          session.sessionDurationInt = parseInt(session.sessionDuration, 10)
+          return session
+        })
+      }
     })
   })
 })
