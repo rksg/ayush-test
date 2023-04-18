@@ -1,12 +1,11 @@
 import { useIntl } from 'react-intl'
 
 import { Loader, Table } from '@acx-ui/components'
-
 import {
-  APExtended,  
+  APExtended,
   RequestPayload,
-  TableQuery,
-} from "@acx-ui/rc/utils";
+  TableQuery
+} from '@acx-ui/rc/utils'
 
 export const defaultApPayload = {
   fields: [
@@ -21,7 +20,7 @@ export interface ApTableProps {
 export const ApsTable = (props: ApTableProps) => {
 
   const { $t } = useIntl()
-  
+
   const apListTableQuery = props.tableQuery
   const tableData = apListTableQuery?.data?.data ?? []
 

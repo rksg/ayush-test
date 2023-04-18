@@ -1,6 +1,7 @@
+import { useEffect } from 'react'
+
 import { Space, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
-import { useEffect} from "react";
 
 import { Button, Card, GridCol, GridRow, Loader, PageHeader, Tabs } from '@acx-ui/components'
 import {
@@ -21,10 +22,10 @@ import { TenantLink, useLocation, useParams } from '@acx-ui/react-router-dom'
 
 import { AccessSwitchTable } from '../NetworkSegmentationForm/AccessSwitchForm/AccessSwitchTable'
 
-import * as UI                   from './styledComponents'
-import { ApsTable, defaultApPayload }              from './Table/ApsTable'
-import { AssignedSegmentsTable } from './Table/AssignedSegmentsTable'
-import { DistSwitchesTable }     from './Table/DistSwitchesTable'
+import * as UI                        from './styledComponents'
+import { ApsTable, defaultApPayload } from './Table/ApsTable'
+import { AssignedSegmentsTable }      from './Table/AssignedSegmentsTable'
+import { DistSwitchesTable }          from './Table/DistSwitchesTable'
 
 const venueOptionsDefaultPayload = {
   fields: ['name', 'id'],
@@ -52,14 +53,14 @@ const NetworkSegmentationDetail = () => {
     useQuery: useApListQuery,
     defaultPayload: {
       ...defaultApPayload
-    },option:{skip:!nsgData}
+    },option: { skip: !nsgData }
   })
 
   useEffect(() => {
     apListTableQuery.setPayload(
       {
         ...defaultApPayload,
-        filters:{venueId:[nsgData?.venueInfos[0]?.venueId??""]}
+        filters: { venueId: [nsgData?.venueInfos[0]?.venueId??''] }
       }
     )
   }, [nsgData])
@@ -67,7 +68,7 @@ const NetworkSegmentationDetail = () => {
   const tabs = {
     aps: {
       title: $t({ defaultMessage: 'APs ({num}})' },
-      { num: apListTableQuery?.data?.data?.length??0 }),
+        { num: apListTableQuery?.data?.data?.length??0 }),
       content: <ApsTable tableQuery={apListTableQuery}/>
     },
     distSwitches: {
