@@ -1,3 +1,5 @@
+import { useCallback, useEffect, useState } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import {
@@ -7,32 +9,44 @@ import {
 } from '@acx-ui/components'
 import {
   useConvertNonVARToMSPMutation,
-  useGetDelegationsQuery,
-  useGetTenantDetailsQuery
+  useGetMspEcProfileQuery,
+  useLazyGetTenantDetailsQuery,
+  useLazyGetDelegationsQuery
 } from '@acx-ui/rc/services'
 import {
   CatchErrorDetails,
   CommonErrorsResult,
   MspUserSettingType,
   MSP_USER_SETTING,
-  TenantType
+  TenantType,
+  MSPUtils,
+  TenantDetails,
+  Delegation
 } from '@acx-ui/rc/utils'
-import { useNavigate, useParams } from '@acx-ui/react-router-dom'
+import { getBasePath, useNavigate, useParams } from '@acx-ui/react-router-dom'
 import {
   getProductKey,
   getUserSettingsByPath,
   setDeepUserSettings,
   useLazyGetAllUserSettingsQuery,
-  useSaveUserSettingsMutation
+  useSaveUserSettingsMutation,
+  useUserProfileContext
 } from '@acx-ui/user'
+
+
 
 export const ConvertNonVARMSPButton = () => {
   const { $t } = useIntl()
+
   const params = useParams()
   const navigate = useNavigate()
+  const userProfileCtx = useUserProfileContext()
+  const [tenantInfo, setTenantInfo] = useState<TenantDetails>({} as TenantDetails)
+  const [delegationInfo, setDelegationInfo] = useState<Delegation[]>([] as Delegation[])
 
-  const { data: tenantInfo } = useGetTenantDetailsQuery({ params })
-  const { data: delegationInfo, isLoading } = useGetDelegationsQuery({ params })
+  const { data: mspEcProfileData, isLoading: isLoadingMSPEC } = useGetMspEcProfileQuery({ params })
+  const [getTenantInfo] = useLazyGetTenantDetailsQuery()
+  const [getDelegationInfo]= useLazyGetDelegationsQuery()
   const [getUserSettings] = useLazyGetAllUserSettingsQuery()
   const [convertNonVarToMsp] = useConvertNonVARToMSPMutation()
   const [saveUserSettings] = useSaveUserSettingsMutation()
@@ -94,7 +108,8 @@ export const ConvertNonVARMSPButton = () => {
             console.log(error)
           }
 
-          navigate(`/v/${params.tenantId}/customers`, { replace: true })
+          navigate(`${getBasePath()}/v/${params.tenantId}/dashboard/mspCustomers`,
+            { replace: true })
         }
       })
     } catch (error) {
@@ -142,10 +157,48 @@ export const ConvertNonVARMSPButton = () => {
     }
   }
 
-  const canConvert = tenantInfo?.tenantType && tenantInfo?.tenantType !== TenantType.MSP_NON_VAR
-                      && isLoading === false
+  const canInitCheck = useCallback(() => {
+    const user = userProfileCtx.data
+    if (!user) return false
 
-  return canConvert
+    const mspUtils = MSPUtils()
+    const isPrimeAdminUser = userProfileCtx.isPrimeAdmin()
+    const isMspEc = mspUtils.isMspEc(mspEcProfileData)
+    const isVAR = user.var
+    const isDogfood = user.dogfood
+    const isSupport = user.support
+
+    return isPrimeAdminUser
+              && !isVAR
+              && !isMspEc
+              && !isDogfood
+              && !isSupport
+  }, [mspEcProfileData, userProfileCtx])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const tenantData = await getTenantInfo({ params }).unwrap()
+        const delegations = await getDelegationInfo({ params }).unwrap()
+        setTenantInfo(tenantData)
+        setDelegationInfo(delegations)
+      } catch(err) {
+        // eslint-disable-next-line no-console
+        console.log(err)
+      }
+    }
+
+    const canInit = canInitCheck()
+    if (canInit)
+      fetchData()
+  }, [params, getTenantInfo, getDelegationInfo, canInitCheck])
+
+  const canInit = canInitCheck()
+  const displayConvertBtn = canInit && tenantInfo.tenantType
+                              && tenantInfo.tenantType !== TenantType.MSP_NON_VAR
+                              && !isLoadingMSPEC
+
+  return displayConvertBtn
     ? <Button size='middle' onClick={handleCheckMspLicensesClick}>
       {$t({ defaultMessage: 'Go to MSP Subscriptions' })}
     </Button>

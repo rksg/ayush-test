@@ -17,7 +17,7 @@ import NetworkHealthDetails                               from './pages/NetworkH
 import NetworkHealthForm                                  from './pages/NetworkHealth/NetworkHealthForm'
 import { NetworkHealthSpecGuard, NetworkHealthTestGuard } from './pages/NetworkHealth/NetworkHealthGuard'
 import NetworkHealthList                                  from './pages/NetworkHealth/NetworkHealthList'
-import VideoCallQoePage                                   from './pages/VideoCallQoe'
+import VideoCallQoeListPage                               from './pages/VideoCallQoe'
 
 export default function AnalyticsRoutes () {
   const { $t } = useIntl()
@@ -61,7 +61,7 @@ export default function AnalyticsRoutes () {
             />
           </Route>
         </Route>
-        <Route path='videoCallQoe' element={<VideoCallQoePage />} />
+        <Route path='videoCallQoe' element={<VideoCallQoeListPage />} />
       </Route>}
     </Route>
   )

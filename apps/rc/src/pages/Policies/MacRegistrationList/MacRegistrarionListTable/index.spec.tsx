@@ -92,7 +92,7 @@ describe('MacRegistrationListsTable', () => {
         (req, res, ctx) => res(ctx.json(list))
       ),
       rest.get(
-        RulesManagementUrlsInfo.getAdaptivePolicySet.url,
+        RulesManagementUrlsInfo.getPolicySet.url,
         (req, res, ctx) => res(ctx.json(policySet))
       ),
       rest.post(
@@ -145,9 +145,6 @@ describe('MacRegistrationListsTable', () => {
     fireEvent.click(screen.getByRole('button', { name: /delete/i }))
 
     await screen.findByText('Delete "Registration pool-2"?')
-
-    fireEvent.change(screen.getByRole('textbox', { name: /type the word "delete" to confirm:/i }),
-      { target: { value: 'Delete' } })
 
     const deleteListButton = screen.getByRole('button', { name: 'Delete List' })
     await waitFor(() => expect(deleteListButton).toBeEnabled())
