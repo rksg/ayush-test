@@ -1,13 +1,10 @@
-import { useEffect, useState } from 'react'
-
 import { Col, Select, Form, Row, Typography } from 'antd'
 import { useIntl }                            from 'react-intl'
 
-import { usePreference }                                              from '@acx-ui/rc/components'
-import { loadLocale, LangKey, setUpIntl, useLocaleContext, Messages } from '@acx-ui/utils'
+import { usePreference }             from '@acx-ui/rc/components'
+import { LangKey, useLocaleContext } from '@acx-ui/utils'
 
 import { MessageMapping } from '../MessageMapping'
-
 const DefaultSystemLanguageFormItem = () => {
   const isDev = (window.location.hostname === 'localhost' ||
                   window.location.hostname === 'devalto.ruckuswireless.com')
@@ -21,15 +18,12 @@ const DefaultSystemLanguageFormItem = () => {
   } = usePreference()
 
   const locale = useLocaleContext()
-  const [lang, setLang] = useState(locale?.lang ?? 'en-US')
-  const [messages, setMessages] = useState<Messages>()
-
-  const handleDefaultLangChange = (langCode: string) => {
+  const handleDefaultLangChange = async (langCode: string) => {
     if (!langCode) return
     const payload = {
       global: { ...preferenceData?.global, defaultLanguage: langCode }
     }
-    updatePreferences({ newData: payload })
+    await updatePreferences({ newData: payload })
     const code = langCode as LangKey
     locale.setLang(code)
   }
@@ -62,17 +56,6 @@ const DefaultSystemLanguageFormItem = () => {
       value: val
     }))
   }
-
-  useEffect(() => {
-    loadLocale(lang).then((messages) => {
-      setUpIntl({
-        locale: lang,
-        messages: messages
-      })
-      setLang(lang)
-      setMessages(() => messages)
-    })
-  }, [lang, messages])
 
   return (
     <Row gutter={24}>
