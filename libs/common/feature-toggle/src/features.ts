@@ -36,5 +36,6 @@ export enum Features {
   POLICY_MANAGEMENT = 'policy-management-service-enabled',
   WIFI_EDA_GATEWAY = 'wifi-api-gateway-eda-toggle',
   CLOUDMOTE_SERVICE = 'cloudmote-service-enabled',
-  RADIUS_ATTRIBUTE_GROUP_CONFIG = 'radius-attrib-group-service-enabled'
+  RADIUS_ATTRIBUTE_GROUP_CONFIG = 'radius-attrib-group-service-enabled',
+  EXPORT_DEVICE = 'viewmodel-export-device-inventory'
 }
