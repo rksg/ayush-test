@@ -55,6 +55,13 @@ const SortableItem = SortableElement((props: SortableElementProps) => <tr {...pr
 // @ts-ignore
 const SortContainer = SortableContainer((props: SortableContainerProps) => <tbody {...props} />)
 
+const adjustPriority = (data: StatefulAclRule[]) => {
+  // re-assign priority
+  data.forEach((item, index) => {
+    item.priority = index + 1
+  })
+}
+
 interface StatefulACLRulesTableProps {
   data?: StatefulAclRule[]
 }
@@ -115,9 +122,7 @@ const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
         tempDataSource.splice(newIndex, 0, movingItem[0])
 
         // re-assign priority
-        tempDataSource.forEach((item, index) => {
-          item.priority = index + 1
-        })
+        adjustPriority(tempDataSource)
 
         form.setFieldValue('rules', tempDataSource)
       }
@@ -238,15 +243,21 @@ const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
           type: 'confirm',
           customContent: {
             action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Rules' }),
+            entityName: $t(
+              { defaultMessage: '{count, plural, one {Rule} other {Rules}}' },
+              { count: rows.length }
+            ),
             entityValue: rows.length === 1 ? rows[0].priority+'' : undefined,
             numOfEntities: rows.length
           },
           onOk: () => {
             const currentData = ([] as StatefulAclRule[]).concat(form.getFieldValue('rules'))
             rows.forEach((item) => {
-              currentData.splice(_.findIndex(currentData, item.priority), 1)
+              _.remove(currentData, { priority: item.priority })
             })
+
+            // re-assign priority
+            adjustPriority(currentData)
 
             form.setFieldValue('rules', currentData)
           }
@@ -418,19 +429,21 @@ export const StatefulACLConfigDrawer = (props: StatefulACLConfigDrawerProps) => 
               const rules = getFieldValue('rules')
               const direction = getFieldValue('direction')
 
-              return <Form.Item
-                name='rules'
-                label={$t({ defaultMessage: 'Rules({ruleCount})' },
-                  { ruleCount: rules?.length ?? 0 })}
-                valuePropName='data'
-                initialValue={
-                  direction === ACLDirection.INBOUND
-                    ? InboundDefaultRules
-                    : OutboundDefaultRules
-                }
-              >
-                <StatefulACLRulesTable />
-              </Form.Item>
+              return direction
+                ? <Form.Item
+                  name='rules'
+                  label={$t({ defaultMessage: 'Rules({ruleCount})' },
+                    { ruleCount: rules?.length ?? 0 })}
+                  valuePropName='data'
+                  initialValue={
+                    direction === ACLDirection.INBOUND
+                      ? InboundDefaultRules
+                      : OutboundDefaultRules
+                  }
+                >
+                  <StatefulACLRulesTable />
+                </Form.Item>
+                : null
             }}
           </Form.Item>
         </Space>

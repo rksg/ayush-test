@@ -43,7 +43,7 @@ const AddFirewall = () => {
       const payload = {
         serviceName: formData.serviceName,
         tags: formData.tags,
-        edgeIds: formData.selectedEdges?.map((edge: FirewallFormEdge) => edge.serialNumber),
+        edgeIds: formData.selectedEdges?.map((edge: FirewallFormEdge) => edge.serialNumber) ?? [],
         ddosRateLimitingEnabled: formData.ddosRateLimitingEnabled,
         ddosRateLimitingRules: formData.ddosRateLimitingRules,
         statefulAclEnabled: formData.statefulAclEnabled,

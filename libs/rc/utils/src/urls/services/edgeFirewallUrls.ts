@@ -18,7 +18,7 @@ export const EdgeFirewallUrls: { [key: string]: ApiInfo } = {
   },
   updateEdgeFirewall: {
     method: 'put',
-    url: '/wifiCallingServiceProfiles/:serviceId',
+    url: '/edgeFirewallServices/:serviceId',
     newApi: true
   },
   updateEdgeFirewallPartial: {

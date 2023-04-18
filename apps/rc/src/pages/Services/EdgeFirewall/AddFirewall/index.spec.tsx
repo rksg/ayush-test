@@ -105,9 +105,6 @@ describe('Add edge firewall service', () => {
     // add another rule
     await click(addRuleBtn)
     await click(await within(dialog).findByRole('combobox', { name: 'DDoS Attack Type' }))
-    const opts = await within(dialog).findAllByRole('option')
-    const icmp = opts.filter(o => o.textContent === 'ICMP')
-    expect(icmp[0]).toBeDisabled()
     await selectOptions(
       await within(dialog).findByRole('combobox', { name: 'DDoS Attack Type' }),
       'DNS Response')

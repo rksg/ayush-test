@@ -74,8 +74,13 @@ const DDoDRateLimitRulesTable = (props: DDoDRateLimitRulesTableProps) => {
           type: 'confirm',
           customContent: {
             action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Rules' }),
-            entityValue: rows.length === 1 ? rows[0].ddosAttackType : undefined,
+            entityName: $t(
+              { defaultMessage: '{count, plural, one {Rule} other {Rules}}' },
+              { count: rows.length }
+            ),
+            entityValue: rows.length === 1
+              ? getDDoSAttackTypeString($t, rows[0].ddosAttackType)
+              : undefined,
             numOfEntities: rows.length
           },
           onOk: () => {
