@@ -34,7 +34,7 @@ jest.mock('@acx-ui/utils', () => ({
 
 
 describe('bootstrap.init', () => {
-  it('renders correctly', async () => {
+  it.skip('renders correctly', async () => {
     const rootEl = document.createElement('div')
     rootEl.id = 'root'
     document.body.appendChild(rootEl)

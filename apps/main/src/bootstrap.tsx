@@ -21,7 +21,8 @@ import {
 import {
   getTenantId,
   createHttpRequest,
-  useLocaleContext
+  useLocaleContext,
+  LangKey
 } from '@acx-ui/utils'
 
 import AllRoutes           from './AllRoutes'
@@ -114,15 +115,26 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
   const defaultLang = useYourDefaultLanguage() // tenant level preference
   const browserLang = loadMessages(navigator.languages) // browser detection
   const queryParams = new URLSearchParams(window.location.search) // url query params
-  const lang = (defaultLang?? queryParams.get('lang') ?? browserLang) as ConfigProviderProps['lang']
-
-  return <ConfigProvider lang={lang} {...props} />
+  const userProfile = useUserProfileContext()
+  if (defaultLang) {
+    const lang = ((defaultLang??
+      queryParams.get('lang')??
+      browserLang) as ConfigProviderProps['lang']) as LangKey
+    return <ConfigProvider lang={lang} {...props} />
+  } else {
+    return <Loader
+      fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
+      states={[{ isLoading:
+          !Boolean(defaultLang) ||
+          !Boolean(userProfile.allowedOperations.length)
+      }]}
+      children={props.children}
+    />
+  }
 }
 
 function DataGuardLoader (props: React.PropsWithChildren) {
-  const defaultLang = useYourDefaultLanguage()?? 'en-US'
   const locale = useLocaleContext()
-  locale.setLang(defaultLang)
   const userProfile = useUserProfileContext()
 
   return <Loader
