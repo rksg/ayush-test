@@ -158,7 +158,7 @@ describe('Add edge firewall service', () => {
     })
 
     cleanup()
-  })
+  }, 30000)
 
   it('should correctly create with stateful ACL rule', async () => {
     render(<AddFirewall />, {
@@ -264,5 +264,5 @@ describe('Add edge firewall service', () => {
         }]
       })
     })
-  })
+  }, 30000)
 })

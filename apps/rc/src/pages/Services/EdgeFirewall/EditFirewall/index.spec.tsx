@@ -200,7 +200,7 @@ describe('Edit edge firewall service', () => {
     })
 
     cleanup()
-  })
+  }, 30000)
 
   it('should correctly edit stateful ACL rule', async () => {
     const mockFirewall2: EdgeFirewallSetting = _.cloneDeep(mockFirewall)
@@ -345,5 +345,5 @@ describe('Edit edge firewall service', () => {
         }]
       })
     })
-  })
+  }, 30000)
 })

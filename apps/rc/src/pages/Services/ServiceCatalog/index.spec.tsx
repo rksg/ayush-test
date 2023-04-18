@@ -25,6 +25,7 @@ describe('ServiceCatalog', () => {
     expect(await screen.findByText('mDNS Proxy')).toBeVisible()
 
     expect(screen.queryByText('Network Segmentation')).toBeNull()
+    expect(screen.queryByText('Firewall')).toBeNull()
   })
 
   it('should render service catalog with feature flag ON', async () => {
@@ -37,5 +38,6 @@ describe('ServiceCatalog', () => {
     )
 
     expect(await screen.findByText('Network Segmentation')).toBeVisible()
+    expect(await screen.findByText('Firewall')).toBeVisible()
   })
 })

@@ -1,4 +1,5 @@
 import { Typography }             from 'antd'
+import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { GridCol, GridRow, PageHeader } from '@acx-ui/components'
@@ -76,24 +77,30 @@ export default function ServiceCatalog () {
   return (
     <>
       <PageHeader title={$t({ defaultMessage: 'Service Catalog' })} />
-      {sets.map(set =>
-        <UI.CategoryContainer key={set.key}>
-          <Typography.Title level={3}>
-            { $t(set.title) }
-          </Typography.Title>
-          <GridRow>
-            {set.items.map(item => item.disabled
-              ? null
-              : <GridCol col={{ span: 6 }}>
-                <ServiceCard
-                  key={item.type}
-                  serviceType={item.type}
-                  categories={item.categories}
-                  type={'button'}
-                />
-              </GridCol>)}
-          </GridRow>
-        </UI.CategoryContainer>
+      {sets.map(set => {
+        const isAllDisabled = _.findIndex(set.items,
+          (o) => o.disabled === undefined || o.disabled === false ) === -1
+
+        return isAllDisabled
+          ? null
+          : <UI.CategoryContainer key={set.key}>
+            <Typography.Title level={3}>
+              { $t(set.title) }
+            </Typography.Title>
+            <GridRow>
+              {set.items.map(item => item.disabled
+                ? null
+                : <GridCol col={{ span: 6 }}>
+                  <ServiceCard
+                    key={item.type}
+                    serviceType={item.type}
+                    categories={item.categories}
+                    type={'button'}
+                  />
+                </GridCol>)}
+            </GridRow>
+          </UI.CategoryContainer>
+      }
       )}
     </>
   )
