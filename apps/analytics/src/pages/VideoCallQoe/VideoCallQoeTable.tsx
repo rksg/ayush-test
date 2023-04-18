@@ -18,7 +18,6 @@ import { messageMapping } from './errorMessageMapping'
 import * as UI            from './styledComponents'
 import { Meeting }        from './types'
 
-
 export function VideoCallQoeTable () {
   const { $t } = useIntl()
   const queryResults = useVideoCallQoeTestsQuery({})
@@ -108,7 +107,7 @@ export function VideoCallQoeTable () {
       },
       sorter: { compare: sortProp('status', defaultSort) },
       align: 'center',
-      width: 75,
+      width: 85,
       filterable: Object.entries(statusMapping)
         .map(([key, value])=>({ key, value: $t(value) }))
     },
