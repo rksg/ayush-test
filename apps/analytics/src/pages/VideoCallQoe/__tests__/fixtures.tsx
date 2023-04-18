@@ -50,7 +50,7 @@ export const getAllCallQoeTests = {
           invalidReason: null,
           joinUrl: 'https://zoom.us/j/98908385463?pwd=bkErOUIxc0tPSVJVYWlJVWI5bWJtZz09',
           participantCount: 2,
-          mos: 4.3,
+          mos: 3.3,
           createdTime: '2023-04-11T04:39:28.000Z',
           startTime: '2023-04-11T04:40:20.000Z'
         }

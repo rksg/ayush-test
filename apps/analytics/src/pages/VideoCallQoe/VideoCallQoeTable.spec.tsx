@@ -1,3 +1,5 @@
+import userEvent from '@testing-library/user-event'
+
 import { useIsSplitOn }              from '@acx-ui/feature-toggle'
 import { videoCallQoeURL, Provider } from '@acx-ui/store'
 import {
@@ -27,6 +29,8 @@ describe('VideoCallQoe Table', () => {
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    const checkbox = await screen.findAllByRole('checkbox')
+    await userEvent.click(checkbox[0])
     expect(asFragment()).toMatchSnapshot()
   })
 

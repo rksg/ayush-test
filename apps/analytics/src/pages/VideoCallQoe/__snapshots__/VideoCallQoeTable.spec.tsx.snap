@@ -863,13 +863,14 @@ exports[`VideoCallQoe Table should render table 1`] = `
                         style="width: 0px;"
                       >
                         <input
-                          aria-activedescendant="undefined_list_0"
+                          aria-activedescendant="rc_select_TEST_OR_SSR_list_0"
                           aria-autocomplete="list"
-                          aria-controls="undefined_list"
+                          aria-controls="rc_select_TEST_OR_SSR_list"
                           aria-haspopup="listbox"
-                          aria-owns="undefined_list"
+                          aria-owns="rc_select_TEST_OR_SSR_list"
                           autocomplete="off"
                           class="ant-select-selection-search-input"
+                          id="rc_select_TEST_OR_SSR"
                           readonly=""
                           role="combobox"
                           style="opacity: 0;"
@@ -990,8 +991,11 @@ exports[`VideoCallQoe Table should render table 1`] = `
                           >
                             <tr>
                               <th
-                                class="ant-table-cell ant-table-selection-column"
+                                class="ant-table-cell ant-table-selection-column react-resizable"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 <div
                                   class="ant-table-selection"
                                 >
@@ -1012,11 +1016,17 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                     </span>
                                   </label>
                                 </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -1072,13 +1082,19 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
                                 aria-sort="descending"
-                                class="ant-table-cell ant-table-column-sort ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-sort ant-table-column-has-sorters react-resizable"
                                 style="text-align: center;"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -1134,12 +1150,18 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 style="text-align: center;"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -1195,12 +1217,18 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 style="text-align: center;"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -1256,12 +1284,18 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 style="text-align: center;"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -1317,12 +1351,18 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 style="text-align: center;"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -1378,11 +1418,21 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
                                 style="position: sticky; right: 0px;"
-                              />
+                              >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
+                              </th>
                             </tr>
                           </thead>
                           <tbody
@@ -1596,10 +1646,10 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 style="text-align: center;"
                               >
                                 <span
-                                  class="styledComponents__Pill-sc-j61ge1-0 NKxEo"
-                                  type="positive"
+                                  class="styledComponents__Pill-sc-j61ge1-0 chVxOo"
+                                  type="negative"
                                 >
-                                  Good
+                                  Bad
                                 </span>
                               </td>
                               <td

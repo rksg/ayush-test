@@ -128,24 +128,7 @@ export function VideoCallQoeTable () {
     }
   ]
 
-  const actions: TableProps<(typeof meetingList)[0]>['rowActions'] = [
-    {
-      label: $t({ defaultMessage: 'Delete' }),
-      onClick: (rows) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Test Call(s)' }),
-            entityValue: rows.length === 1 ? rows[0].name : undefined,
-            numOfEntities: rows.length,
-            confirmationText: shouldShowConfirmation(rows) ? 'Delete' : undefined
-          },
-          onOk: () => { }
-        })
-      }
-    }
-  ]
+  const actions: TableProps<(typeof meetingList)[0]>['rowActions'] = []
 
   return (
     <Loader states={[queryResults]}>
@@ -162,8 +145,4 @@ export function VideoCallQoeTable () {
       />
     </Loader>
   )
-}
-
-function shouldShowConfirmation (rows: unknown[]) {
-  return rows.length > 0
 }
