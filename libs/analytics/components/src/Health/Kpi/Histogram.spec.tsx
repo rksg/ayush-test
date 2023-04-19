@@ -180,7 +180,7 @@ describe('Threshold Histogram chart', () => {
 
     mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
       data: {
-        timeToConnect: {
+        saveThreshold: {
           success: true
         }
       }
@@ -210,8 +210,39 @@ describe('Threshold Histogram chart', () => {
     })
 
     mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
+      data: {
+        saveThreshold: false
+      }
+    })
+    render(
+      <Provider>
+        <Histogram
+          filters={filters}
+          kpi={'timeToConnect'}
+          threshold={thresholdMap['timeToConnect']}
+          thresholds={thresholdMap}
+          setKpiThreshold={setKpiThreshold}
+          mutationAllowed={true}
+          isNetwork={false}
+        />
+      </Provider>
+    )
+    const applyBtn = await screen.findByRole('button', { name: 'Apply' })
+    expect(applyBtn).toBeDefined()
+    fireEvent.click(applyBtn)
+    const errorMsgs = await screen.findByText('Error setting threshold, please try again later.')
+    expect(errorMsgs).toBeInTheDocument()
+  })
+
+
+  it('should render failure toast setKpiThreshold on network error', async () => {
+    mockGraphqlQuery(dataApiURL, 'histogramKPI', {
+      data: { network: { histogram: { data: [0, 2, 3, 20, 3, 0,20,20,2000] } } }
+    })
+
+    mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
       data: undefined,
-      error: new Error('network failed')
+      error: new Error('Unexpected network error')
     })
     render(
       <Provider>
