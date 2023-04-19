@@ -235,6 +235,12 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/viewmodel/:tenantId/aps/mesh',
     newApi: true
   },
+  downloadApsCSV: {
+    method: 'post',
+    url: '/aps/inventories/query/csvFiles',
+    oldUrl: '/aps/inventories/query/csvFiles',
+    newApi: true
+  },
   getService: {
     // no use
     method: 'get',
