@@ -101,3 +101,21 @@ export const Separator = styled.div`
   border-top:  1px solid var(--acx-neutrals-30);
   margin: 10px 0px;
 `
+
+export const HealthPieChartWrapper = styled.div`
+  height: 100%;
+  .ant-card-body {
+    height: 100%
+  }
+`
+
+export const PieChartTitle = styled.div`
+  text-align: left;
+  font-size: 12px;
+  padding-bottom: 10px;
+`
+
+export const SinglePieChartWrapper = styled.div`
+  margin-top: 48px;
+  height: 100%;
+`
