@@ -10,7 +10,7 @@ const label = defineMessage({ defaultMessage: 'Test Name' })
 
 export function TestName () {
   const { $t } = useIntl()
-  const duplicateNameValidator = useDuplicateNameValidator('')
+  const duplicateNameValidator = useDuplicateNameValidator()
 
   return <Form.Item
     hasFeedback
