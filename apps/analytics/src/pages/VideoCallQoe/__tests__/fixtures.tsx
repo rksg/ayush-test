@@ -72,22 +72,22 @@ export const getAllCallQoeTests = {
   noData: []
 }
 
-export const getAllCallQoeTestsResponse = {
+export const getAllCallQoeTestsWithNotStarted = {
   getAllCallQoeTests:
   [
     {
-      id: 6,
-      name: 'testname',
+      id: 90,
+      name: 'test 1.4',
       meetings: [
         {
-          id: 6,
-          zoomMeetingId: '92334125972',
-          status: 'INVALID',
-          invalidReason: 'ZOOM_CALL_NO_PARTICIPANT_ON_WIFI',
-          joinUrl: 'https://zoom.us/j/92334125972?pwd=dG1iNFZNa2dNNW9veHpGNVpKV2FlZz09',
-          participantCount: 0,
+          id: 90,
+          zoomMeetingId: '94194732704',
+          status: 'NOT_STARTED',
+          invalidReason: null,
+          joinUrl: 'https://zoom.us/j/94194732704?pwd=QmNPMC9qaVViMGZwTjErZmpJdGM5QT09',
+          participantCount: null,
           mos: null,
-          createdTime: '2022-11-10T11:18:05.000Z',
+          createdTime: '2023-04-19T10:29:00.000Z',
           startTime: null
         }
       ]

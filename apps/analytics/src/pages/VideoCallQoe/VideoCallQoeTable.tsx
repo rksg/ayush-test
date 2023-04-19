@@ -26,7 +26,7 @@ export function VideoCallQoeTable () {
   allCallQoeTests?.forEach((qoeTest)=> {
     const { name, meetings } = qoeTest
     meetings.forEach(meeting => {
-      meetingList.push( { name, ...meeting } )
+      meetingList.push( { ...meeting, name } )
     })
   })
 
