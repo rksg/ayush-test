@@ -134,12 +134,14 @@ export default function DpskTable () {
       key: 'passphraseLength',
       title: intl.$t({ defaultMessage: 'Passphrase Length' }),
       dataIndex: 'passphraseLength',
-      align: 'center'
+      align: 'center',
+      sorter: true
     },
     {
       key: 'expirationType',
       title: intl.$t({ defaultMessage: 'Passphrase Expiration' }),
       dataIndex: 'expirationType',
+      sorter: true,
       render: function (data, row) {
         return transformAdvancedDpskExpirationText(
           intl,
@@ -165,6 +167,7 @@ export default function DpskTable () {
       title: intl.$t({ defaultMessage: 'Devices allowed per passphrase' }),
       dataIndex: 'deviceCountLimit',
       show: isCloudpathEnabled,
+      sorter: true,
       render: function (data, row) {
         return displayDeviceCountLimit(row.deviceCountLimit)
       }
@@ -174,6 +177,7 @@ export default function DpskTable () {
       title: intl.$t({ defaultMessage: 'Default Access' }),
       dataIndex: 'policyDefaultAccess',
       show: isCloudpathEnabled,
+      sorter: true,
       render: function (data, row) {
         return displayDefaultAccess(row.policyDefaultAccess)
       }

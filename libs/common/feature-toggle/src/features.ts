@@ -16,6 +16,7 @@ export enum Features {
   NETWORK_SEGMENTATION_SWITCH='switch-consumer-nsg-toggle',
   UNRELEASED='acx-ui-unreleased',
   SERVICE_VALIDATION = 'acx-ui-service-validation-toggle',
+  VIDEO_CALL_QOE = 'acx-ui-video-call-qoe-toggle',
   DIRECTED_MULTICAST='wifi-consumer-directed-multicast-toggle',
   HELP_SUPPORT='acx-ui-help-support',
   LICENSE_BANNER='acx-ui-license-banner',
@@ -33,5 +34,9 @@ export enum Features {
   PROPERTY_MANAGEMENT = 'property-management-enabled',
   RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
   POLICY_MANAGEMENT = 'policy-management-service-enabled',
-  WIFI_EDA_GATEWAY = 'wifi-api-gateway-eda-toggle'
+  WIFI_EDA_GATEWAY = 'wifi-api-gateway-eda-toggle',
+  CLOUDMOTE_SERVICE = 'cloudmote-service-enabled',
+  RADIUS_ATTRIBUTE_GROUP_CONFIG = 'radius-attrib-group-service-enabled',
+  SWITCH_RODAN_FIRMWARE = 'switch-consumer-collect-config-toggle',
+  EXPORT_DEVICE = 'viewmodel-export-device-inventory'
 }

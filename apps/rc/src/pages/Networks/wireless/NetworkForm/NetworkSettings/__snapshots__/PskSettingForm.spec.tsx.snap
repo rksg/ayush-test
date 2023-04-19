@@ -843,9 +843,9 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
                         >
                           <label
                             class=""
-                            title="Use Radius Server:"
+                            title="Use RADIUS Server:"
                           >
-                            Use Radius Server:
+                            Use RADIUS Server:
                           </label>
                         </div>
                         <div

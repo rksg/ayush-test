@@ -122,7 +122,7 @@ export function useTableQuery <
   ResultType,
   Payload extends RequestPayload<unknown> = RequestPayload<unknown>,
   ResultExtra = unknown
-> (option: TABLE_QUERY<ResultType, Payload, ResultExtra>) {
+  > (option: TABLE_QUERY<ResultType, Payload, ResultExtra>) {
 
   const initialPagination = {
     ...DEFAULT_PAGINATION,
@@ -268,9 +268,11 @@ export interface NewAPITableResult<T>{
   paging: {
     page: number,
     pageSize: number,
-    totalCount: number
+    totalCount: number,
+    pageCount?: number
   }
 }
+
 interface CreateNewTableHttpRequestProps {
   apiInfo: ApiInfo
   params?: Params<string>
@@ -290,10 +292,13 @@ export function transferToTableResult<T> (newResult: NewTableResult<T>): TableRe
   }
 }
 
-export function transferNewResToTableResult<T> (newResult: NewAPITableResult<T>): TableResult<T> {
+// eslint-disable-next-line max-len
+export function transferNewResToTableResult<T> (newResult: NewAPITableResult<T>, props?: { pageStartZero: boolean }): TableResult<T> {
+  const pageStartZero = props ? props.pageStartZero: false
   return {
     data: newResult.content,
-    page: newResult.paging? newResult.paging.page + 1 : 1,
+    // eslint-disable-next-line max-len
+    page: newResult.paging ? ( pageStartZero ? newResult.paging.page : newResult.paging.page + 1 ) : 1,
     totalCount: newResult.paging.totalCount
   }
 }
