@@ -235,10 +235,10 @@ function ClientDetails ({ client }: { client: ClientExtended }) {
         label={$t({ defaultMessage: 'Username' })}
         children={client?.username || client?.userId || '--'}
       />
-      <Descriptions.Item // TODO
+      {/* <Descriptions.Item // TODO: Tags
         label={$t({ defaultMessage: 'Tags' })}
         children={'--'}
-      />
+      /> */}
     </Descriptions>
   </>
 }

@@ -154,6 +154,20 @@ export default function DpskPassphraseManagement () {
       dataIndex: 'revocationReason',
       show: isCloudpathEnabled,
       sorter: true
+    },
+    {
+      key: 'email',
+      title: $t({ defaultMessage: 'Contact Email Address' }),
+      dataIndex: 'email',
+      show: isCloudpathEnabled,
+      sorter: true
+    },
+    {
+      key: 'phoneNumber',
+      title: $t({ defaultMessage: 'Contact Phone Number' }),
+      dataIndex: 'phoneNumber',
+      show: isCloudpathEnabled,
+      sorter: true
     }
   ]
 
