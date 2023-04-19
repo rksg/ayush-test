@@ -169,7 +169,7 @@ export const HealthPieChart = ({
           <b>{$t(stageLabels[selectedStage])}</b>{' '}
           {$t({ defaultMessage: '{count} Impacted {title}' }, { count, title })}
         </UI.PieChartTitle>
-        <div style={{ height: 260 }}>
+        <div style={{ height: 260, minWidth: 430 }}>
           {(tabDetails.length === 2)
             ? <ContentSwitcher
               key={selectedStage}
