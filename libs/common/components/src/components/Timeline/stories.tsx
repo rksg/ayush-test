@@ -28,7 +28,7 @@ export const sample = [
     startDatetime: '2022-12-20T09:55:03Z',
     endDatetime: '2022-12-20T09:55:04Z',
     description: 'AddVenue',
-    error: '"{\"requestId\":\"80aad204-e5a7-4466-b010-04d81c333f27\",\"errors\":[\"{\\\"code\\\":\\\"WIFI-10130\\\",\\\"message\\\":\\\"AP serial-number already registered\\\"}\"]}"',
+    error: '"{\"requestId\":\"1\",\"errors\":[\"{\\\"code\\"}\"]}"',
     children: <div style={{ border: '1px solid black' }}>
       { new Array(3).fill(0).map((_, i) => <p key={i}>More content</p>) }
     </div>

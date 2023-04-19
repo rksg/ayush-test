@@ -70,7 +70,7 @@ const Timeline = (props: TimelineProps) => {
   const currentStep = props.items.findIndex(({ endDatetime }) => endDatetime === undefined)
 
   const newData = props.items.map((i, index) => {
-    if (index <= currentStep || currentStep < 0 || i.status == 'SUCCESS') {
+    if (index <= currentStep || currentStep < 0 || i.status === 'SUCCESS') {
       return i
     } else {
       return {
