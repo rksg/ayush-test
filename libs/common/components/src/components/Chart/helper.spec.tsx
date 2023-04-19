@@ -45,6 +45,7 @@ describe('dateAxisFormatter', () => {
         day: '{MMM} {dd}',
         hour: '{HH}:{mm}',
         month: '{MMM}',
+        second: '',
         year: '{yyyy}'
       })
   })
