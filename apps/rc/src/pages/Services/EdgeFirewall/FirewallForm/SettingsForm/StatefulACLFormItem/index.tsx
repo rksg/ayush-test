@@ -107,6 +107,7 @@ export const StatefulACLFormItem = () => {
           name='statefulAclEnabled'
           valuePropName='checked'
           initialValue={false}
+          noStyle
         >
           <Switch
             aria-label='acl'
@@ -131,6 +132,7 @@ export const StatefulACLFormItem = () => {
               name='statefulAcls'
               valuePropName='data'
               initialValue={defaultStatefulACLs}
+              noStyle
             >
               <StatefulACLTable />
             </Form.Item>

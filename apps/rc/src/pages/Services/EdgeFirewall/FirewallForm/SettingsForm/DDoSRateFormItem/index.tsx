@@ -28,7 +28,6 @@ export const DDoSRateFormItem = () => {
         <Col span={6}>
           <Form.Item
             name='ddosRateLimitingEnabled'
-            label={$t({ defaultMessage: 'DDoS Rate-limiting' })}
             valuePropName='checked'
             noStyle
             initialValue={false}
@@ -50,6 +49,7 @@ export const DDoSRateFormItem = () => {
               return getFieldValue('ddosRateLimitingEnabled') && <Button
                 type='link'
                 onClick={() => onChangeDDoSLimit(true)}
+                className='changeBtn'
               >
                 { $t({ defaultMessage: 'Change' }) }
               </Button>

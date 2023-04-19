@@ -4,6 +4,10 @@ export const StyledWrapper = styled.div`
   .ddosRateLimitingRulesFormItem .ant-form-item-control-input {
     min-height: 0;
   }
+
+  .changeBtn.ant-btn-link {
+    height: auto;
+  }
 `
 
 export const ModalStyles = css`
