@@ -1,13 +1,12 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState, useMemo } from 'react'
 
-import { connect }  from 'echarts'
-import ReactECharts from 'echarts-for-react'
-import moment       from 'moment-timezone'
+import { connect }   from 'echarts'
+import ReactECharts  from 'echarts-for-react'
+import { find }      from 'lodash'
+import moment        from 'moment-timezone'
+import { useParams } from 'react-router-dom'
 
-import {
-  KpiThresholdType,
-  healthApi
-} from '@acx-ui/analytics/services'
+import { KpiThresholdType, healthApi } from '@acx-ui/analytics/services'
 import {
   CategoryTab,
   kpisForTab,
@@ -15,6 +14,8 @@ import {
   kpiConfig
 } from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Loader } from '@acx-ui/components'
+import { useApListQuery }           from '@acx-ui/rc/services'
+import { NetworkPath }              from '@acx-ui/utils'
 
 import { HealthPageContext } from '../HealthPageContext'
 
@@ -30,58 +31,112 @@ export const defaultThreshold: KpiThresholdType = {
   apCapacity: kpiConfig.apCapacity.histogram.initialThreshold,
   apServiceUptime: kpiConfig.apServiceUptime.histogram.initialThreshold,
   apToSZLatency: kpiConfig.apToSZLatency.histogram.initialThreshold,
-  switchPoeUtilization: kpiConfig.switchPoeUtilization.histogram.initialThreshold
+  switchPoeUtilization:
+    kpiConfig.switchPoeUtilization.histogram.initialThreshold
 }
 
-export default function KpiSections (props: { tab: CategoryTab, filters: AnalyticsFilter }) {
+export default function KpiSections (props: {
+  tab: CategoryTab;
+  filters: AnalyticsFilter;
+}) {
   const { tab, filters } = props
   const { kpis } = kpisForTab[tab]
-  const { useGetKpiThresholdsQuery, useFetchThresholdPermissionQuery } = healthApi
-  const thresholdKeys = Object.keys(defaultThreshold) as (keyof KpiThresholdType)[]
-  const customThresholdQuery = useGetKpiThresholdsQuery({ ...filters, kpis: thresholdKeys })
+  const { useGetKpiThresholdsQuery, useFetchThresholdPermissionQuery } =
+    healthApi
+  const params = useParams()
+  const thresholdKeys = Object.keys(
+    defaultThreshold
+  ) as (keyof KpiThresholdType)[]
+  const isApInPath = find(
+    filters.path,
+    ({ type }) => type === 'ap' || type === 'AP'
+  )
+  const apName = filters.path[filters.path.length - 1].name
+
+  const apList = useApListQuery(
+    {
+      params: { tenantId: params.tenantId },
+      payload: {
+        fields: ['venueId'],
+        searchTargetFields: ['apMac', 'serialNumber', 'apName'],
+        searchString: apName
+      }
+    },
+    {
+      skip: !isApInPath,
+      selectFromResult: ({ data, ...rest }) => ({
+        data: data?.data,
+        ...rest
+      })
+    }
+  )
+  const apData = apList.data
+  const finalPath = useMemo(() => {
+    if (isApInPath && apList && apData) {
+      const { venueId } = apData[0] as unknown as { venueId: string }
+      return [{ type: 'zone', name: venueId }, ...filters.path] as NetworkPath
+    }
+    return filters.path
+  }, [isApInPath, apData])
+
+  const customThresholdQuery = useGetKpiThresholdsQuery({
+    ...filters,
+    path: finalPath,
+    kpis: thresholdKeys
+  })
   const { data, fulfilledTimeStamp } = customThresholdQuery
   const thresholds = thresholdKeys.reduce((kpis, kpi) => {
     kpis[kpi] = data?.[`${kpi}Threshold`]?.value ?? defaultThreshold[kpi]
     return kpis
   }, {} as KpiThresholdType)
-  const thresholdPermissionQuery = useFetchThresholdPermissionQuery({ path: filters.path })
-  const mutationAllowed = Boolean(thresholdPermissionQuery.data?.mutationAllowed)
-  return <Loader states={[customThresholdQuery, thresholdPermissionQuery]}>
-    {fulfilledTimeStamp && <KpiSection
-      key={fulfilledTimeStamp} // forcing component to rerender on newly received thresholds
-      kpis={kpis}
-      thresholds={thresholds}
-      mutationAllowed={mutationAllowed}
-      filters={filters}
-    />}
-  </Loader>
+  const thresholdPermissionQuery = useFetchThresholdPermissionQuery({
+    path: finalPath
+  })
+  const mutationAllowed = Boolean(
+    thresholdPermissionQuery.data?.mutationAllowed
+  )
+  return (
+    <Loader states={[customThresholdQuery, thresholdPermissionQuery]}>
+      {fulfilledTimeStamp && (
+        <KpiSection
+          key={fulfilledTimeStamp} // forcing component to rerender on newly received thresholds
+          kpis={kpis}
+          thresholds={thresholds}
+          mutationAllowed={mutationAllowed}
+          filters={{ ...filters, path: finalPath }}
+        />
+      )}
+    </Loader>
+  )
 }
 
 function KpiSection (props: {
-  kpis: string[]
-  thresholds: KpiThresholdType
-  mutationAllowed: boolean
-  filters : AnalyticsFilter
+  kpis: string[];
+  thresholds: KpiThresholdType;
+  mutationAllowed: boolean;
+  filters: AnalyticsFilter;
 }) {
   const { kpis, filters, thresholds } = props
   const { timeWindow, setTimeWindow } = useContext(HealthPageContext)
   const isNetwork = filters.path.length === 1
-  const [ kpiThreshold, setKpiThreshold ] = useState<KpiThresholdType>(thresholds)
+  const [kpiThreshold, setKpiThreshold] =
+    useState<KpiThresholdType>(thresholds)
   const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
       const instance = chart.getEchartsInstance()
       instance.group = 'timeSeriesGroup'
     }
   }
-  const defaultZoom = (
+  const defaultZoom =
     moment(filters.startDate).isSame(timeWindow[0]) &&
     moment(filters.endDate).isSame(timeWindow[1])
-  )
-  useEffect(() => { connect('timeSeriesGroup') }, [])
+  useEffect(() => {
+    connect('timeSeriesGroup')
+  }, [])
   return (
     <>
       {kpis.map((kpi) => (
-        <GridRow key={kpi+defaultZoom} $divider>
+        <GridRow key={kpi + defaultZoom} $divider>
           <GridCol col={{ span: 16 }}>
             <GridRow style={{ height: '160px' }}>
               <GridCol col={{ span: 5 }}>
@@ -99,7 +154,9 @@ function KpiSection (props: {
                   threshold={kpiThreshold[kpi as keyof KpiThresholdType]}
                   chartRef={connectChart}
                   setTimeWindow={setTimeWindow}
-                  {...(defaultZoom ? { timeWindow: undefined } : { timeWindow })}
+                  {...(defaultZoom
+                    ? { timeWindow: undefined }
+                    : { timeWindow })}
                 />
               </GridCol>
             </GridRow>
