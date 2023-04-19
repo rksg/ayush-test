@@ -76,7 +76,6 @@ export function AdaptivePoliciesSelectDrawer (props: AdaptivePoliciesSelectDrawe
       return
 
     const templateIds = new Map()
-
     templateList?.data.forEach( template => {
       templateIds.set(template.ruleType, template.id)
     })
@@ -92,12 +91,13 @@ export function AdaptivePoliciesSelectDrawer (props: AdaptivePoliciesSelectDrawe
         })
     })
 
-    if(accessPolicies) {
+    if(accessPolicies && selectedPolicies.size === 0) {
       setSelectedPolicies(new Map(accessPolicies.map(item => [item.id, item])))
     }
   }, [adaptivePolicyListTableQuery.data, templateList?.data, visible])
 
   const onClose = () => {
+    setSelectedPolicies(new Map())
     setVisible(false)
   }
 
