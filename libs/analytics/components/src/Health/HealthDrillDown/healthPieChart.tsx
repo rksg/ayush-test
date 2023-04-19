@@ -160,7 +160,7 @@ export const HealthPieChart = ({
   const count = showTopResult($t, chartKey === 'wlans' ? wlans.length : nodes.length, topCount)
   const title = chartKey === 'wlans' ? wlansTitle : venueTitle
 
-  useEffect(() => { setChartKey('wlans') }, [tabDetails.length])
+  useEffect(() => { setChartKey(tabDetails.length === 2 ? 'nodes' : 'wlans') }, [tabDetails.length])
 
   return (
     <Loader states={[queryResults]}>
