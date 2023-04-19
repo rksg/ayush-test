@@ -5,10 +5,10 @@ import { dataApi }                               from '@acx-ui/store'
 
 export type TrafficByVolumeData = {
   time: string[]
-  totalTraffic_all: number[]
-  totalTraffic_6: number[]
-  totalTraffic_5: number[]
-  totalTraffic_24: number[]
+  userTraffic_all: number[]
+  userTraffic_6: number[]
+  userTraffic_5: number[]
+  userTraffic_24: number[]
 }
 
 interface Response <TimeSeriesData> {
@@ -38,10 +38,10 @@ export const api = dataApi.injectEndpoints({
               hierarchyNode(path: $path) {
                 timeSeries(granularity: $granularity) {
                   time
-                  totalTraffic_all: totalTraffic
-                  totalTraffic_6: totalTraffic(band: "6")
-                  totalTraffic_5: totalTraffic(band: "5")
-                  totalTraffic_24: totalTraffic(band: "2.4")
+                  userTraffic_all: totalTraffic(type: "user")
+                  userTraffic_6: totalTraffic(band: "6", type: "user")
+                  userTraffic_5: totalTraffic(band: "5", type: "user")
+                  userTraffic_24: totalTraffic(band: "2.4", type: "user")
                 }
               }
             }
