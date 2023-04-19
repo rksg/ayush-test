@@ -34,6 +34,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Type' }),
       key: 'nwSubType',
       dataIndex: 'nwSubType',
+      sorter: true,
       render: (data: unknown, row) => <NetworkType
         networkType={data as NetworkTypeEnum}
         row={row}
@@ -43,6 +44,7 @@ function useColumns () {
       key: 'venues',
       title: $t({ defaultMessage: 'Venues' }),
       dataIndex: ['venues', 'count'],
+      sorter: true,
       render: function (count) {
         return count
       }

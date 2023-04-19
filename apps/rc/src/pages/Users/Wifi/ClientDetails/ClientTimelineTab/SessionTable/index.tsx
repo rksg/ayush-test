@@ -5,6 +5,7 @@ import { useIntl, defineMessage } from 'react-intl'
 import { AnalyticsFilter }           from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Table } from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { defaultSort, sortProp }     from '@acx-ui/rc/utils'
 import { TenantLink, useParams }     from '@acx-ui/react-router-dom'
 import { useDateFilter }             from '@acx-ui/utils'
 
@@ -32,35 +33,35 @@ export function SessionTable () {
       dataIndex: 'firstConnection',
       key: 'firstConnection',
       render: (data) => formatter(DateFormatEnum.DateTimeFormat)(data),
-      sorter: false
+      sorter: { compare: sortProp('firstConnection', defaultSort) }
     },
     {
       title: $t(defineMessage({ defaultMessage: 'End Time' })),
       dataIndex: 'disconnectTime',
       key: 'disconnectTime',
       render: (data) => formatter(DateFormatEnum.DateTimeFormat)(data),
-      sorter: false
+      sorter: { compare: sortProp('disconnectTime', defaultSort) }
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Duration' })),
       dataIndex: 'sessionDuration',
       key: 'sessionDuration',
       render: (data) => formatter('durationFormat')(data),
-      sorter: false
+      sorter: { compare: sortProp('sessionDurationInt', defaultSort) }
     },
     {
       title: $t(defineMessage({ defaultMessage: 'To Client' })),
       dataIndex: 'txBytes',
       key: 'txBytes',
       render: (data) => formatter('bytesFormat')(data),
-      sorter: false
+      sorter: { compare: sortProp('txBytes', defaultSort) }
     },
     {
       title: $t(defineMessage({ defaultMessage: 'From Client' })),
       dataIndex: 'rxBytes',
       key: 'rxBytes',
       render: (data) => formatter('bytesFormat')(data),
-      sorter: false
+      sorter: { compare: sortProp('rxBytes', defaultSort) }
     },
     {
       title: $t(defineMessage({ defaultMessage: 'AP Name' })),
@@ -70,7 +71,7 @@ export function SessionTable () {
         // eslint-disable-next-line max-len
         return <TenantLink to={`/devices/wifi/${row.apSerial}/details/overview`}>{data}</TenantLink>
       },
-      sorter: false,
+      sorter: { compare: sortProp('apName', defaultSort) },
       searchable: true
     },
     {
