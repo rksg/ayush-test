@@ -24,8 +24,10 @@ import {
 } from '@acx-ui/rc/services'
 import {
   ApplicationAclType,
-  ApplicationRuleType, AvcCategory,
-  CommonResult
+  AvcCategory,
+  CommonResult,
+  defaultSort,
+  sortProp
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
@@ -64,6 +66,7 @@ export interface ApplicationsRule {
   ruleName: string,
   ruleType: string,
   applications: string,
+  application: string,
   accessControl: string,
   details: string,
   ruleSettings: {
@@ -328,12 +331,14 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     {
       title: $t({ defaultMessage: 'Rule Name' }),
       dataIndex: 'ruleName',
-      key: 'ruleName'
+      key: 'ruleName',
+      sorter: { compare: sortProp('ruleName', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Rule Type' }),
       dataIndex: 'ruleType',
       key: 'ruleType',
+      sorter: { compare: sortProp('ruleType', defaultSort) },
       render: (data, row) => {
         return _.startCase(row.ruleType)
       }
@@ -342,17 +347,13 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       title: $t({ defaultMessage: 'Application' }),
       dataIndex: 'application',
       key: 'application',
-      render: (data, row) => {
-        if (row.ruleSettings.ruleType === ApplicationRuleType.USER_DEFINED) {
-          return row.ruleSettings.appNameUserDefined
-        }
-        return row.ruleSettings?.appNameSystemDefined?.replace('_', ' > ')
-      }
+      sorter: { compare: sortProp('application', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Access Control' }),
       dataIndex: 'accessControl',
       key: 'accessControl',
+      sorter: { compare: sortProp('accessControl', defaultSort) },
       render: (data, row) => {
         return _.startCase(row.accessControl)
       }
