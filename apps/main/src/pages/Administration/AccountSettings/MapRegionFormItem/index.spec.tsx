@@ -64,7 +64,7 @@ jest.mock('@acx-ui/rc/components', () => ({
         mapRegion: 'TW'
       } },
       currentMapRegion: 'TW',
-      update: mockedUpdatePreference,
+      updatePartial: mockedUpdatePreference,
       getReqState: { isLoading: false, isFetching: false } as UseQueryResult<TenantPreferenceSettings>,
       updateReqState: { isLoading: false } as UseQueryResult<TenantPreferenceSettings>
     }
