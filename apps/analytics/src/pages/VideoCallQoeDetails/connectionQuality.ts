@@ -68,15 +68,15 @@ export const takeWorseQuality = (qualities: string[]) => {
 }
 
 export const getConnectionQuality = (wifiMetrics:{
-    rss: number
-    snr: number
-    avgTxMCS: number
-    throughput: number
+    rss: number | null
+    snr: number | null
+    avgTxMCS: number | null
+    throughput: number | null
   } | null) => {
   if(!wifiMetrics){
     return null
   }
-  const qualities = Object.entries<number>(wifiMetrics).map(([key,value])=>
+  const qualities = Object.entries<number|null>(wifiMetrics).map(([key,value])=>
     getConnectionQualityFor(key,value)).filter(q => q !== null)
   return takeWorseQuality(qualities as string[])
 }

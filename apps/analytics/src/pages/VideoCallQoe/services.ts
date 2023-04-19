@@ -137,10 +137,10 @@ export const api = videoCallQoeApi.injectEndpoints({
         return response
       }
     }),
-    videoCallQoeTestDetail: build.query({
+    videoCallQoeTestDetails: build.query({
       query: (payload) => ({
         document: gql`
-        query CallQoeTests($testId: Int!, $status: String){
+        query CallQoeTestDetails($testId: Int!, $status: String){
             getAllCallQoeTests(id: $testId, status: $status) {
               id
               name
@@ -236,4 +236,4 @@ export const api = videoCallQoeApi.injectEndpoints({
   })
 })
 
-export const { useVideoCallQoeTestsQuery, useVideoCallQoeTestDetailQuery } = api
+export const { useVideoCallQoeTestsQuery, useVideoCallQoeTestDetailsQuery } = api

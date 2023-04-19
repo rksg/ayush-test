@@ -5,7 +5,7 @@ import { Loader, PageHeader, Table, TableProps, TrendPill, TrendType, cssStr } f
 import { DateFormatEnum, formatter }                                           from '@acx-ui/formatter'
 import { TenantLink, useParams }                                               from '@acx-ui/react-router-dom'
 
-import { Participants, useVideoCallQoeTestDetailQuery } from '../VideoCallQoe/services'
+import { Participants, useVideoCallQoeTestDetailsQuery } from '../VideoCallQoe/services'
 
 import { getConnectionQuality } from './connectionQuality'
 import { BigTrendPill }         from './styledComponents'
@@ -14,7 +14,7 @@ import { BigTrendPill }         from './styledComponents'
 export function VideoCallQoeDetails (){
   const { $t } = useIntl()
   const { testId } = useParams()
-  const queryResults = useVideoCallQoeTestDetailQuery({ testId: Number(testId),status: 'ENDED' })
+  const queryResults = useVideoCallQoeTestDetailsQuery({ testId: Number(testId),status: 'ENDED' })
   const callQoeDetails = queryResults.data?.getAllCallQoeTests.at(0)
   const currentMeeting = callQoeDetails?.meetings.at(0)
   const participants = currentMeeting?.participants
@@ -108,7 +108,6 @@ export function VideoCallQoeDetails (){
           avgTxMCS: number
           throughput: number
         } | null
-        // eslint-disable-next-line no-console
         const connectionQuality = getConnectionQuality(wifiMetrics)
         if(connectionQuality){
           let [trend,quality] = ['none','Average']
@@ -124,9 +123,8 @@ export function VideoCallQoeDetails (){
     }
   ]
   const getPill = (mos:number)=>{
-    const isValidMos = mos ? true : false
-    return isValidMos ? (mos >= 4 ? <BigTrendPill value='Good' trend='positive' /> :
-      <BigTrendPill value='Bad' trend='negative' />) : '-'
+    return mos >= 4 ? <BigTrendPill value='Good' trend='positive' /> :
+      <BigTrendPill value='Bad' trend='negative' />
   }
   return (
     <Loader states={[queryResults]}>
