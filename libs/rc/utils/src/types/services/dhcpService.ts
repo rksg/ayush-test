@@ -43,6 +43,7 @@ export interface DHCPPool {
   startAddress: string;
   endAddress: string;
   networkAddress: string;
+  numberOfHosts?: number;
 }
 export interface DHCPOption{
   optId: string;

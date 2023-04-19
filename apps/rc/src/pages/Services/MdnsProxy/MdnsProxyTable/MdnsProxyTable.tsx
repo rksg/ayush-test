@@ -168,6 +168,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Forwarding Rules' }),
       dataIndex: 'rules',
       align: 'center',
+      sorter: true,
       render: function (data) {
         const rules = data as MdnsProxyForwardingRule[]
         return (rules && rules.length > 0
@@ -187,6 +188,7 @@ function useColumns () {
       align: 'center',
       filterKey: 'venueIds',
       filterable: venueNameMap,
+      sorter: true,
       render: function (data, row) {
         if (!row.venueIds || row.venueIds.length === 0) return 0
 

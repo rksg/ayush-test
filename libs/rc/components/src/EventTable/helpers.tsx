@@ -104,7 +104,11 @@ export const getSource = (data: Event, highlightFn?: TableHighlightFnArgs) => {
 
 export const getDescription = (data: Event, highlightFn?: TableHighlightFnArgs) => {
   try {
-    let message = data.message && JSON.parse(data.message).message_template
+    let message = String(data.message && JSON.parse(data.message).message_template)
+      // escape ' by replacing with ''
+      .replaceAll("'", "''")
+      // escape < { by replacing with '<' or '{'
+      .replaceAll(/([<{])/g, "'$1'")
 
     const template = replaceStrings(message, data, (key) => `<entity>${key}</entity>`)
     const highlighted = (highlightFn
@@ -116,13 +120,39 @@ export const getDescription = (data: Event, highlightFn?: TableHighlightFnArgs) 
 
     return <FormatMessage
       id='events-description-template'
-      // escape ' by replacing with '' as it is special character of formatjs
-      defaultMessage={highlighted.replaceAll("'", "''")}
+      defaultMessage={highlighted}
       values={{
         entity: (chunks) => <EntityLink
           entityKey={String(chunks[0]) as keyof Event}
           data={data}
           highlightFn={highlightFn}
+        />,
+        b: (chunks) => <Table.Highlighter>{chunks}</Table.Highlighter>
+      }}
+    />
+  } catch {
+    return noDataDisplay
+  }
+}
+
+export const getDetail = (data: Event) => {
+  try {
+    // eslint-disable-next-line max-len
+    let detailedDescription = data.detailedDescription && JSON.parse(data.detailedDescription).message_template
+    const template = replaceStrings(detailedDescription, data, (key) => `<entity>${key}</entity>`)
+    if (!template) return noDataDisplay
+
+    // rename to prevent it being parse by extraction process
+    const FormatMessage = FormattedMessage
+
+    return <FormatMessage
+      id='events-detailedDescription-template'
+      // escape ' by replacing with '' as it is special character of formatjs
+      defaultMessage={template.replaceAll("'", "''")}
+      values={{
+        entity: (chunks) => <EntityLink
+          entityKey={String(chunks[0]) as keyof Event}
+          data={data}
         />,
         b: (chunks) => <Table.Highlighter>{chunks}</Table.Highlighter>
       }}

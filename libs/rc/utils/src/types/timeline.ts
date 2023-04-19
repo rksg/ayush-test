@@ -36,10 +36,12 @@ export interface EventBase {
   adminName?: string
   entity_id: string
   entity_type: string
+  ipAddress?: string
   event_datetime: string
   id: string
   macAddress: string
   message: string
+  detailedDescription?: string
   name: string
   product: string
   radio: string
@@ -65,6 +67,7 @@ export interface EventMeta {
   switchMac?: string
   switchName: string
   venueName: string
+  tableKey?: string
 }
 
 export type Event = EventBase & EventMeta

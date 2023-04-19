@@ -4,19 +4,19 @@ import { startCase, toLower } from 'lodash'
 import { useIntl }            from 'react-intl'
 import { defineMessage }      from 'react-intl'
 
-import { defaultSort, dateSort, sortProp }                        from '@acx-ui/analytics/utils'
-import { Table, TableProps, Tooltip, TrendPill, showActionModal } from '@acx-ui/components'
-import { Loader }                                                 from '@acx-ui/components'
-import { DateFormatEnum, formatter }                              from '@acx-ui/formatter'
-import { TenantLink }                                             from '@acx-ui/react-router-dom'
-import { TABLE_DEFAULT_PAGE_SIZE }                                from '@acx-ui/utils'
+import { defaultSort, dateSort, sortProp }       from '@acx-ui/analytics/utils'
+import { Table, TableProps, Tooltip, TrendPill } from '@acx-ui/components'
+import { Loader }                                from '@acx-ui/components'
+import { DateFormatEnum, formatter }             from '@acx-ui/formatter'
+import { TenantLink }                            from '@acx-ui/react-router-dom'
+import { TABLE_DEFAULT_PAGE_SIZE }               from '@acx-ui/utils'
 
 import { useVideoCallQoeTestsQuery } from '../VideoCallQoe/services'
 
+import * as MeetingType   from './constants'
 import { messageMapping } from './errorMessageMapping'
 import * as UI            from './styledComponents'
 import { Meeting }        from './types'
-
 
 export function VideoCallQoeTable () {
   const { $t } = useIntl()
@@ -47,8 +47,10 @@ export function VideoCallQoeTable () {
         const formattedStatus = startCase(toLower((row as Meeting).status as string))
         const meetingId = (row as Meeting).id
         // TODO implement url text based on Ended or Not Started Call
-        const urlTxt = formattedStatus === 'Ended' ? `${meetingId}` : `${meetingId}`
-        return ['Ended', 'Not Started'].includes(formattedStatus) ?
+        const urlTxt = [MeetingType.ENDED, MeetingType.NOT_STARTED]
+          .includes(formattedStatus) ? `${meetingId}` : `${meetingId}`
+        return [MeetingType.ENDED, MeetingType.NOT_STARTED, MeetingType.STARTED]
+          .includes(formattedStatus) ?
           <TenantLink to={`/serviceValidation/videoCallQoe/${urlTxt}`}>
             {value as string}
           </TenantLink>
@@ -64,7 +66,8 @@ export function VideoCallQoeTable () {
       render: (value: unknown) =>
         formatter(DateFormatEnum.DateTimeFormatWithSeconds)(value as string),
       sorter: { compare: sortProp('createdTime', dateSort) },
-      align: 'center'
+      align: 'center',
+      width: 160
     },
     {
       title: $t({ defaultMessage: 'Start Time' }),
@@ -74,7 +77,8 @@ export function VideoCallQoeTable () {
         return value ? formatter(DateFormatEnum.DateTimeFormatWithSeconds)(value as string) : '-'
       },
       sorter: { compare: sortProp('startTime', dateSort) },
-      align: 'center'
+      align: 'center',
+      width: 160
     },
     {
       title: $t({ defaultMessage: 'Participants' }),
@@ -84,7 +88,8 @@ export function VideoCallQoeTable () {
         return value ? (value as string) : '-'
       },
       sorter: { compare: sortProp('participantCount', defaultSort) },
-      align: 'center'
+      align: 'center',
+      width: 85
     },
     {
       title: $t({ defaultMessage: 'Status' }),
@@ -92,7 +97,7 @@ export function VideoCallQoeTable () {
       key: 'status',
       render: (value: unknown, row: unknown) => {
         const formattedStatus = startCase(toLower(value as string))
-        return (formattedStatus !== 'Invalid' ? formattedStatus :
+        return (formattedStatus !== MeetingType.INVALID ? formattedStatus :
           (<Tooltip placement='top'
             title={$t(messageMapping[
             (row as Meeting).invalidReason as keyof typeof messageMapping
@@ -102,6 +107,7 @@ export function VideoCallQoeTable () {
       },
       sorter: { compare: sortProp('status', defaultSort) },
       align: 'center',
+      width: 85,
       filterable: Object.entries(statusMapping)
         .map(([key, value])=>({ key, value: $t(value) }))
     },
@@ -116,28 +122,12 @@ export function VideoCallQoeTable () {
           <TrendPill value='Bad' trend='negative' />) : '-'
       },
       sorter: { compare: sortProp('mos', defaultSort) },
-      align: 'center'
+      align: 'center',
+      width: 50
     }
   ]
 
-  const actions: TableProps<(typeof meetingList)[0]>['rowActions'] = [
-    {
-      label: $t({ defaultMessage: 'Delete' }),
-      onClick: (rows) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Test Call(s)' }),
-            entityValue: rows.length === 1 ? rows[0].name : undefined,
-            numOfEntities: rows.length,
-            confirmationText: shouldShowConfirmation(rows) ? 'Delete' : undefined
-          },
-          onOk: () => { }
-        })
-      }
-    }
-  ]
+  const actions: TableProps<(typeof meetingList)[0]>['rowActions'] = []
 
   return (
     <Loader states={[queryResults]}>
@@ -154,8 +144,4 @@ export function VideoCallQoeTable () {
       />
     </Loader>
   )
-}
-
-function shouldShowConfirmation (rows: unknown[]) {
-  return rows.length > 0
 }
