@@ -89,7 +89,6 @@ export const Wrapper = styled.div`
             &:active { background: unset; }
           }
           &-open {
-            border-left: 2px solid var(--acx-neutrals-70);
             background-color: var(--acx-neutrals-70);
           }
           &.menu-active {
@@ -159,6 +158,7 @@ export const Wrapper = styled.div`
             .ant-menu-item {
               height: 40px;
               width: 100%;
+              border-left: unset;
               margin: auto;
               font-family: var(--acx-accent-brand-font);
               line-height: var(--acx-headline-5-line-height);
@@ -173,6 +173,7 @@ export const Wrapper = styled.div`
                 }
               }
               .ant-menu-title-content {
+                padding-left: unset;
                 font-family: var(--acx-accent-brand-font);
                 font-size: var(--acx-headline-4-font-size);
                 line-height: var(--acx-headline-4-line-height);
