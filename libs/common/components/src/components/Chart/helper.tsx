@@ -62,7 +62,7 @@ export const gridOptions = ({
   yAxisOffset = 0
 } = {}) => ({
   left: yAxisOffset,
-  right: 0,
+  right: '1%', // To ensure last point selection is visible
   bottom: hasXAxisName ? 16 + xAxisOffset : 0,
   top: disableLegend ? 6 : '15%',
   containLabel: true
@@ -182,7 +182,8 @@ export const dateAxisFormatter = () => {
     year: convertDateTimeFormat('YYYY'),
     month: convertDateTimeFormat('MMM'),
     day: convertDateTimeFormat('MMM DD'),
-    hour: convertDateTimeFormat('HH:mm')
+    hour: convertDateTimeFormat('HH:mm'),
+    second: '' // Disable showing seconds
   }
 }
 

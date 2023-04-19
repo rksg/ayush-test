@@ -263,6 +263,9 @@ export function MultiLineTimeSeriesChart <
             emphasis: {
               disabled: true
             },
+            label: {
+              show: false
+            },
             data: props.markerLines?.map(line => (
               { yAxis: line.threshold,
                 lineStyle: line.lineStyle }
