@@ -3,7 +3,7 @@
 exports[`Timeline should render 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1to6ymf-0 jaxwsf"
+    class="styledComponents__Wrapper-sc-1to6ymf-0 cqsmCa"
   >
     <div
       class="ant-descriptions"
@@ -62,9 +62,6 @@ exports[`Timeline should render 1`] = `
           --
         </div>
       </li>
-      <div
-        class="styledComponents__Dash-sc-1to6ymf-12 grKSiV"
-      />
       <li
         class="ant-timeline-item"
       >
@@ -86,7 +83,7 @@ exports[`Timeline should render 1`] = `
           >
             --
             <div
-              class="styledComponents__ContentWrapper-sc-1to6ymf-2 hCoMWG"
+              class="styledComponents__ContentWrapper-sc-1to6ymf-2 caChNg"
             >
               <div
                 class="styledComponents__WithExpanderWrapper-sc-1to6ymf-6 jSjuUQ"
@@ -103,8 +100,79 @@ exports[`Timeline should render 1`] = `
                   </div>
                   <div
                     class="styledComponents__DescriptionWrapper-sc-1to6ymf-5 zACBC"
+                    style="padding-bottom: 0px;"
                   >
                     AddVenue
+                  </div>
+                </div>
+                <div
+                  class="styledComponents__ExpanderWrapper-sc-1to6ymf-7 fhkogC"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>
+      <li
+        class="ant-timeline-item"
+      >
+        <div
+          class="ant-timeline-item-tail"
+        />
+        <div
+          class="ant-timeline-item-head ant-timeline-item-head-custom ant-timeline-item-head-blue"
+        >
+          <div
+            class="styledComponents__Step-sc-1to6ymf-4 gBXlKK"
+          />
+        </div>
+        <div
+          class="ant-timeline-item-content"
+        >
+          --
+        </div>
+      </li>
+      <li
+        class="ant-timeline-item"
+      >
+        <div
+          class="ant-timeline-item-tail"
+        />
+        <div
+          class="ant-timeline-item-head ant-timeline-item-head-custom ant-timeline-item-head-blue"
+        >
+          <div
+            class="styledComponents__Step-sc-1to6ymf-4 gBXlKK"
+          />
+        </div>
+        <div
+          class="ant-timeline-item-content"
+        >
+          <div
+            class="styledComponents__ItemWrapper-sc-1to6ymf-1 gsdtQA"
+          >
+            --
+            <div
+              class="styledComponents__ContentWrapper-sc-1to6ymf-2 caChNg"
+            >
+              <div
+                class="styledComponents__WithExpanderWrapper-sc-1to6ymf-6 jSjuUQ"
+              >
+                <div>
+                  <div
+                    class="styledComponents__StatusWrapper-sc-1to6ymf-3 bOwEFv"
+                  >
+                    <svg
+                      class="styledComponents__InProgressIcon-sc-1to6ymf-11 kXLEWK"
+                      data-testid="InProgress"
+                    />
+                    In progress
+                  </div>
+                  <div
+                    class="styledComponents__DescriptionWrapper-sc-1to6ymf-5 zACBC"
+                    style="padding-bottom: 0px;"
+                  >
+                    UpdateSwitchPosition
                   </div>
                 </div>
                 <div
@@ -131,88 +199,9 @@ exports[`Timeline should render 1`] = `
         <div
           class="ant-timeline-item-content"
         >
-          12/20/2022 04:27:30
-        </div>
-      </li>
-      <div
-        class="styledComponents__Dash-sc-1to6ymf-12 grKSiV"
-      />
-      <li
-        class="ant-timeline-item"
-      >
-        <div
-          class="ant-timeline-item-tail"
-        />
-        <div
-          class="ant-timeline-item-head ant-timeline-item-head-custom ant-timeline-item-head-blue"
-        >
-          <div
-            class="styledComponents__Step-sc-1to6ymf-4 gBXlKK"
-          />
-        </div>
-        <div
-          class="ant-timeline-item-content"
-        >
-          <div
-            class="styledComponents__ItemWrapper-sc-1to6ymf-1 gsdtQA"
-          >
-            --
-            <div
-              class="styledComponents__ContentWrapper-sc-1to6ymf-2 hCoMWG"
-            >
-              <div
-                class="styledComponents__WithExpanderWrapper-sc-1to6ymf-6 jSjuUQ"
-              >
-                <div>
-                  <div
-                    class="styledComponents__StatusWrapper-sc-1to6ymf-3 bOwEFv"
-                  >
-                    <svg
-                      class="styledComponents__InProgressIcon-sc-1to6ymf-11 kXLEWK"
-                      data-testid="InProgress"
-                    />
-                    In progress
-                  </div>
-                  <div
-                    class="styledComponents__DescriptionWrapper-sc-1to6ymf-5 zACBC"
-                  >
-                    UpdateSwitchPosition
-                  </div>
-                </div>
-                <div
-                  class="styledComponents__ExpanderWrapper-sc-1to6ymf-7 fhkogC"
-                >
-                  <svg
-                    data-testid="PlusSquareSolid"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </li>
-      <li
-        class="ant-timeline-item"
-      >
-        <div
-          class="ant-timeline-item-tail"
-        />
-        <div
-          class="ant-timeline-item-head ant-timeline-item-head-custom ant-timeline-item-head-blue"
-        >
-          <div
-            class="styledComponents__Step-sc-1to6ymf-4 kiDmfG"
-          />
-        </div>
-        <div
-          class="ant-timeline-item-content"
-        >
           12/20/2022 09:55:03
         </div>
       </li>
-      <div
-        class="styledComponents__Dash-sc-1to6ymf-12 grKSiV"
-      />
       <li
         class="ant-timeline-item"
       >
@@ -234,7 +223,7 @@ exports[`Timeline should render 1`] = `
           >
             12/20/2022 09:55:04
             <div
-              class="styledComponents__ContentWrapper-sc-1to6ymf-2 hCoMWG"
+              class="styledComponents__ContentWrapper-sc-1to6ymf-2 caChNg"
             >
               <div
                 class="styledComponents__WithExpanderWrapper-sc-1to6ymf-6 jSjuUQ"
@@ -251,6 +240,7 @@ exports[`Timeline should render 1`] = `
                   </div>
                   <div
                     class="styledComponents__DescriptionWrapper-sc-1to6ymf-5 zACBC"
+                    style="padding-bottom: 0px;"
                   >
                     AddVenue
                   </div>
@@ -273,18 +263,15 @@ exports[`Timeline should render 1`] = `
           class="ant-timeline-item-head ant-timeline-item-head-custom ant-timeline-item-head-blue"
         >
           <div
-            class="styledComponents__Step-sc-1to6ymf-4 kiDmfG"
+            class="styledComponents__Step-sc-1to6ymf-4 gBXlKK"
           />
         </div>
         <div
           class="ant-timeline-item-content"
         >
-          12/20/2022 09:55:03
+          --
         </div>
       </li>
-      <div
-        class="styledComponents__Dash-sc-1to6ymf-12 grKSiV"
-      />
       <li
         class="ant-timeline-item ant-timeline-item-last"
       >
@@ -306,7 +293,7 @@ exports[`Timeline should render 1`] = `
           >
             12/20/2022 09:55:04
             <div
-              class="styledComponents__ContentWrapper-sc-1to6ymf-2 hCoMWG"
+              class="styledComponents__ContentWrapper-sc-1to6ymf-2 caChNg"
             >
               <div
                 class="styledComponents__WithExpanderWrapper-sc-1to6ymf-6 jSjuUQ"
@@ -323,6 +310,7 @@ exports[`Timeline should render 1`] = `
                   </div>
                   <div
                     class="styledComponents__DescriptionWrapper-sc-1to6ymf-5 zACBC"
+                    style="padding-bottom: 10px;"
                   >
                     AddVenue
                   </div>
