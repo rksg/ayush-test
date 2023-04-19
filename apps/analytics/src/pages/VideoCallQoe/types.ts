@@ -14,7 +14,7 @@ export type Meeting = {
   startTime: TimeStamp
 }
 
-type VideoCallQoeTest = {
+export type VideoCallQoeTest = {
   id: number
   name: string
   meetings: Meeting[]
@@ -24,9 +24,4 @@ export interface Response {
   getAllCallQoeTests : VideoCallQoeTest []
 }
 
-export interface CreateVideoCallQoeTestResponse {
-    id: number,
-    name: string
-    meetings: Meeting[]
-}
 
