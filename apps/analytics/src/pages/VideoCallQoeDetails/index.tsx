@@ -156,7 +156,6 @@ export function VideoCallQoeDetails (){
     const videoRx: (number | null)[] = []
     const audioTx: (number | null)[] = []
     const audioRx: (number | null)[] = []
-    // Participants['callMetrics'][0]
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data?.forEach((metric: Record<string, any> ) => {
       const dateTime = new Date(metric.date_time).valueOf()
@@ -180,8 +179,15 @@ export function VideoCallQoeDetails (){
       finaldit.time = time
       finaldit.videoTx = videoTx
       finaldit.videoRx = videoRx
+      let videoSeriesMapping: { key: string; name: string }[] = []
+      seriesMapping.map(metric => {
+        if(metric.key === 'videoTx' || metric.key === 'videoRx') {
+          videoSeriesMapping.push(metric)
+        }
+        return videoSeriesMapping
+      })
       const chartResults = getSeriesData(
-        finaldit as Record<string, TimeSeriesDataType[]>, seriesMapping.splice(0,2))
+        finaldit as Record<string, TimeSeriesDataType[]>, videoSeriesMapping)
       return chartResults
     }
     else {
@@ -201,6 +207,13 @@ export function VideoCallQoeDetails (){
         finaldit as Record<string, TimeSeriesDataType[]>, seriesMapping)
       return chartResults
     }
+  }
+
+  const getParticipantName = (callQoeDetails: DetailedResponse['getAllCallQoeTests'][0],
+    participantNumber: number) => {
+    let participantName =
+    callQoeDetails.meetings.at(0)?.participants.at(participantNumber)?.userName
+    return participantName
   }
 
   return (
@@ -234,12 +247,12 @@ export function VideoCallQoeDetails (){
       {callQoeDetails &&
       <Card title={$t({ defaultMessage: 'Zoom Call Statistics' })} type='no-border'>
         <GridRow>
-          <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
+          <GridCol col={{ span: 11 }} style={{ height: '280px' }}>
+            <>{getParticipantName(callQoeDetails,0)}</>
             <Title>{$t({ defaultMessage: 'Jitter' })}</Title>
             <AutoSizer>
               {({ height, width }) => (
-                // call helper function
-                callQoeDetails.meetings[0].participants[0].callMetrics.length ?
+                getSeries(callQoeDetails, 'jitter', 0).length ?
                   <MultiLineTimeSeriesChart
                     style={{ width: width, height }}
                     data={getSeries(callQoeDetails, 'jitter', 0)}
@@ -250,11 +263,11 @@ export function VideoCallQoeDetails (){
             </AutoSizer>
           </GridCol>
           <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
+            <>{getParticipantName(callQoeDetails,1)}</>
             <Title></Title>
             <AutoSizer>
               {({ height, width }) => (
-                // call helper function
-                callQoeDetails.meetings[0].participants[0].callMetrics.length ?
+                getSeries(callQoeDetails, 'jitter', 1).length ?
                   <MultiLineTimeSeriesChart
                     style={{ width: width, height }}
                     data={getSeries(callQoeDetails, 'jitter', 1)}
@@ -268,8 +281,7 @@ export function VideoCallQoeDetails (){
             <Title>{$t({ defaultMessage: 'Latency' })}</Title>
             <AutoSizer>
               {({ height, width }) => (
-                // call helper function
-                callQoeDetails.meetings[0].participants[0].callMetrics.length ?
+                getSeries(callQoeDetails, 'latency', 0).length ?
                   <MultiLineTimeSeriesChart
                     style={{ width: width, height }}
                     data={getSeries(callQoeDetails, 'latency', 0)}
@@ -283,8 +295,7 @@ export function VideoCallQoeDetails (){
             <Title></Title>
             <AutoSizer>
               {({ height, width }) => (
-                // call helper function
-                callQoeDetails.meetings[0].participants[0].callMetrics.length ?
+                getSeries(callQoeDetails, 'latency', 1).length ?
                   <MultiLineTimeSeriesChart
                     style={{ width: width, height }}
                     data={getSeries(callQoeDetails, 'latency', 1)}
@@ -298,8 +309,7 @@ export function VideoCallQoeDetails (){
             <Title>{$t({ defaultMessage: 'Packet Loss' })}</Title>
             <AutoSizer>
               {({ height, width }) => (
-                // call helper function
-                callQoeDetails.meetings[0].participants[0].callMetrics.length ?
+                getSeries(callQoeDetails, 'packet_loss', 0).length ?
                   <MultiLineTimeSeriesChart
                     style={{ width: width, height }}
                     data={getSeries(callQoeDetails, 'packet_loss', 0)}
@@ -313,8 +323,7 @@ export function VideoCallQoeDetails (){
             <Title></Title>
             <AutoSizer>
               {({ height, width }) => (
-                // call helper function
-                callQoeDetails.meetings[0].participants[0].callMetrics.length ?
+                getSeries(callQoeDetails, 'packet_loss', 1).length ?
                   <MultiLineTimeSeriesChart
                     style={{ width: width, height }}
                     data={getSeries(callQoeDetails, 'packet_loss', 1)}
@@ -328,8 +337,7 @@ export function VideoCallQoeDetails (){
             <Title>{$t({ defaultMessage: 'Video Frame Rate' })}</Title>
             <AutoSizer>
               {({ height, width }) => (
-                // call helper function
-                callQoeDetails.meetings[0].participants[0].callMetrics.length ?
+                getSeries(callQoeDetails, 'video_frame_rate', 0, true).length ?
                   <MultiLineTimeSeriesChart
                     style={{ width: width, height }}
                     data={getSeries(callQoeDetails, 'video_frame_rate', 0, true)}
@@ -343,8 +351,7 @@ export function VideoCallQoeDetails (){
             <Title></Title>
             <AutoSizer>
               {({ height, width }) => (
-                // call helper function
-                callQoeDetails.meetings[0].participants[0].callMetrics.length ?
+                getSeries(callQoeDetails, 'video_frame_rate', 1, true).length ?
                   <MultiLineTimeSeriesChart
                     style={{ width: width, height }}
                     data={getSeries(callQoeDetails, 'video_frame_rate', 1, true)}

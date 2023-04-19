@@ -14,7 +14,7 @@ function VideoCallQoeListPage () {
   const queryResults = useVideoCallQoeTestsQuery(null)
   const noOfTestCalls = queryResults.data?.getAllCallQoeTests.length
 
-  if (useIsSplitOn(Features.VIDEO_CALL_QOE)) {
+  if (!useIsSplitOn(Features.VIDEO_CALL_QOE)) {
     return <span>{ $t({ defaultMessage: 'Video Call QoE is not enabled' }) }</span>
   }
 
