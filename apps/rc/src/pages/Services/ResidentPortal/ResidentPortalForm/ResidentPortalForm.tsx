@@ -14,7 +14,8 @@ import {
   ServiceType,
   getServiceRoutePath,
   ServiceOperation,
-  ResidentPortal
+  ResidentPortal,
+  getServiceListRoutePath
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -92,6 +93,7 @@ export default function ResidentPortalForm (props: ResidentPortalFormProps) {
           : $t({ defaultMessage: 'Add Resident Portal' })
         }
         breadcrumb={[
+          { text: $t({ defaultMessage: 'Services' }), link: getServiceListRoutePath(true) },
           {
             text: $t({ defaultMessage: 'Resident Portals' }),
             link: getServiceRoutePath({ type: ServiceType.RESIDENT_PORTAL, oper: ServiceOperation.LIST })

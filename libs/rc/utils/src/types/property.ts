@@ -125,5 +125,11 @@ interface uiConfiguration {
     loginText: string,
     announcements: string,
     helpText: string
+  },
+  color?: {
+    mainColor: string,
+    accentColor: string,
+    separatorColor: string,
+    textColor: string
   }
 }

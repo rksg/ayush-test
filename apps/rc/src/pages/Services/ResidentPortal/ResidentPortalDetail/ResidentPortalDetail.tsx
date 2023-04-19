@@ -1,96 +1,171 @@
 import { useIntl }         from 'react-intl'
-import { Path, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 
-import { Button, DisabledButton, PageHeader, Tabs } from '@acx-ui/components'
-import { ClockOutlined }                            from '@acx-ui/icons'
-import { useGetDpskQuery }                          from '@acx-ui/rc/services'
+import { Avatar, Space, Typography } from 'antd'
+import { Button, Card, GridCol, GridRow, Loader, PageHeader, Table, TableProps } from '@acx-ui/components'
+import { useGetResidentPortalQuery }                          from '@acx-ui/rc/services'
 import {
   ServiceType,
-  DpskDetailsTabKey,
   getServiceDetailsLink,
   ServiceOperation,
-  getServiceRoutePath
+  getServiceRoutePath,
+  getServiceListRoutePath
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink, useNavigate } from '@acx-ui/react-router-dom'
 import { filterByAccess }                         from '@acx-ui/user'
-
-// import { dpskTabNameMapping }   from './contentsMap'
-// import DpskOverview             from './DpskOverview'
-// import DpskPassphraseManagement from './DpskPassphraseManagement'
+import ColorBoxIcon from './ColorBoxIcon';
+import { useMemo } from 'react'
+import ResidentPortalVenuesTable from './ResidentPortalVenuesTable'
 
 export default function ResidentPortalDetail () {
-  const { tenantId, activeTab, serviceId } = useParams()
+  const params = useParams()
   const { $t } = useIntl()
   const navigate = useNavigate()
-  //   const { data } = useGetDpskQuery({ params: { tenantId, serviceId } })
+  const { data: residentPortalData, isLoading } = useGetResidentPortalQuery({ params })
 
-  //   const tabsPathMapping: Record<DpskDetailsTabKey, Path> = {
-  //     [DpskDetailsTabKey.OVERVIEW]: useTenantLink(getServiceDetailsLink({
-  //       type: ServiceType.DPSK,
-  //       oper: ServiceOperation.DETAIL,
-  //       serviceId: serviceId!,
-  //       activeTab: DpskDetailsTabKey.OVERVIEW
-  //     })),
-  //     [DpskDetailsTabKey.PASSPHRASE_MGMT]: useTenantLink(getServiceDetailsLink({
-  //       type: ServiceType.DPSK,
-  //       oper: ServiceOperation.DETAIL,
-  //       serviceId: serviceId!,
-  //       activeTab: DpskDetailsTabKey.PASSPHRASE_MGMT
-  //     }))
-  //   }
+  const { mainColor, accentColor, separatorColor, textColor } = useMemo(() => {
+    // Default Ruckus colors 
+    // -- keep this up to date with the default colors used in the resident portal UI
+    let colors = {
+      mainColor: '#101820',
+      accentColor: '#E57200',
+      separatorColor: '#D9D9D6',
+      textColor: '#54585A'
+    }
 
-  //   const onTabChange = (tab: string) => {
-  //     navigate(tabsPathMapping[tab as DpskDetailsTabKey])
-  //   }
+    if (residentPortalData 
+      && residentPortalData.uiConfiguration 
+      && residentPortalData.uiConfiguration.color) {
+        const customColors = residentPortalData.uiConfiguration.color
 
-  //   const getTabComp = (activeTab: DpskDetailsTabKey) => {
-  //     if (activeTab === DpskDetailsTabKey.OVERVIEW) {
-  //       return <DpskOverview data={data} />
-  //     }
+        colors.mainColor = customColors.mainColor ? customColors.mainColor : colors.mainColor
+        colors.accentColor = customColors.accentColor ? customColors.accentColor : colors.accentColor
+        colors.separatorColor = customColors.separatorColor ? customColors.separatorColor : colors.separatorColor
+        colors.textColor = customColors.textColor ? customColors.textColor : colors.textColor
+    }
 
-  //     return <DpskPassphraseManagement />
-  //   }
+    return colors
+
+  }, [residentPortalData])
 
   return (
     <>
       <PageHeader
-        // title={data?.name}
-        title='Resident Portal Name'
+        title={residentPortalData?.name}
         breadcrumb={[
+          { text: $t({ defaultMessage: 'Services' }), link: getServiceListRoutePath(true) },
           {
-            // TODO: is this breadcrumb right?
             text: $t({ defaultMessage: 'Resident Portals' }),
-            link: getServiceRoutePath({ type: ServiceType.RESIDENT_PORTAL, oper: ServiceOperation.LIST })
+            link: getServiceRoutePath({
+              type: ServiceType.RESIDENT_PORTAL,
+              oper: ServiceOperation.LIST
+            })
           }
         ]}
-        // extra={filterByAccess([
-        //   <DisabledButton key={'date-filter'} icon={<ClockOutlined />}>
-        //     {$t({ defaultMessage: 'Last 24 hours' })}
-        //   </DisabledButton>,
-        //   <TenantLink
-        //     to={getServiceDetailsLink({
-        //       type: ServiceType.DPSK,
-        //       oper: ServiceOperation.EDIT,
-        //       serviceId: serviceId!
-        //     })}
-        //   >
-        //     <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
-        //   </TenantLink>
-        // ])}
-        // footer={
-        //   <Tabs onChange={onTabChange} activeKey={activeTab}>
-        //     <Tabs.TabPane
-        //       tab={$t(dpskTabNameMapping[DpskDetailsTabKey.OVERVIEW])}
-        //       key={DpskDetailsTabKey.OVERVIEW}
-        //     />
-        //     <Tabs.TabPane
-        //       tab={$t(dpskTabNameMapping[DpskDetailsTabKey.PASSPHRASE_MGMT])}
-        //       key={DpskDetailsTabKey.PASSPHRASE_MGMT}
-        //     />
-        //   </Tabs>
-        // }
+        extra={filterByAccess([
+          // eslint-disable-next-line max-len
+          <TenantLink to={getServiceDetailsLink({
+            type: ServiceType.RESIDENT_PORTAL,
+            oper: ServiceOperation.EDIT,
+            serviceId: params.serviceId!
+          })}>
+            <Button type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
+          </TenantLink>
+        ])}
       />
-      {/* { getTabComp(activeTab as DpskDetailsTabKey) } */}
+      <Loader states={[
+        { isFetching: isLoading, isLoading: false }
+      ]}>
+        {/* <Space direction='vertical' size={30}> */}
+        <GridRow>
+          <GridCol col={{ span: 24 }}>
+            <Card>
+            {/* <UI.InfoMargin> */}
+              <GridRow>
+                <GridCol col={{ span: 6 }}>
+                  {/* <Space direction='vertical' size={10}> */}
+                    <Card.Title>
+                      {$t({ defaultMessage: 'Title' })}
+                    </Card.Title>
+                    <Typography.Paragraph>
+                      {/* TODO: Error Handling */}
+                      {residentPortalData?.uiConfiguration?.text.title}
+                    </Typography.Paragraph>
+                  {/* </Space> */}
+                </GridCol>
+                <GridCol col={{ span: 6 }}>
+                  {/* <Space direction='vertical' size={10}> */}
+                    <Card.Title>
+                      {$t({ defaultMessage: 'Subtitle' })}
+                    </Card.Title>
+                    <Typography.Paragraph>
+                      {/* TODO: Error Handling */}
+                      {residentPortalData?.uiConfiguration?.text.subTitle}
+                    </Typography.Paragraph>
+                  {/* </Space> */}
+                </GridCol>
+                <GridCol col={{ span: 6 }}>
+                  {/* <Space direction='vertical' size={10}> */}
+                    <Card.Title>
+                      {$t({ defaultMessage: 'Login Text' })}
+                    </Card.Title>
+                    <Typography.Paragraph>
+                      {/* TODO: Error Handling */}
+                      {residentPortalData?.uiConfiguration?.text.loginText}
+                    </Typography.Paragraph>
+                  {/* </Space> */}
+                </GridCol>
+              </GridRow>
+              <GridRow>
+                <GridCol col={{ span: 6 }}>
+                  {/* <Space direction='vertical' size={10}> */}
+                    <Card.Title>
+                      {$t({ defaultMessage: 'Annoucements' })}
+                    </Card.Title>
+                    <Typography.Paragraph>
+                      {/* TODO: Error Handling */}
+                      {residentPortalData?.uiConfiguration?.text.announcements}
+                    </Typography.Paragraph>
+                  {/* </Space> */}
+                </GridCol>
+                <GridCol col={{ span: 6 }}>
+                  {/* <Space direction='vertical' size={10}> */}
+                    <Card.Title>
+                      {$t({ defaultMessage: 'Help Text' })}
+                    </Card.Title>
+                    <Typography.Paragraph>
+                      {/* TODO: Error Handling */}
+                      {residentPortalData?.uiConfiguration?.text.helpText}
+                    </Typography.Paragraph>
+                  {/* </Space> */}
+                </GridCol>
+              </GridRow>
+              <GridRow>
+                <GridCol col={{ span: 6 }}>
+                    <Card.Title>
+                      {$t({ defaultMessage: 'Color Scheme' })}
+                    </Card.Title>
+                    <Typography.Paragraph>
+                      <Space>
+                        <ColorBoxIcon style={{color: mainColor}} />
+                        <ColorBoxIcon style={{color: accentColor}} />
+                        <ColorBoxIcon style={{color: separatorColor}} />
+                        <ColorBoxIcon style={{color: textColor}} />
+                      </Space>
+                    </Typography.Paragraph>
+                  {/* </Space> */}
+                </GridCol>
+              </GridRow>
+            {/* </UI.InfoMargin> */}
+          </Card>
+        </GridCol>
+        <GridCol col={{ span: 24 }}>
+          <Card>
+            <ResidentPortalVenuesTable />
+          </Card>
+      </GridCol>
+      </GridRow>      
+      </Loader>
     </>
   )
 }

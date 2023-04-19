@@ -28,6 +28,7 @@ export function transferSaveDataToFormFields (data: ResidentPortal): CreateResid
   }
 
   return {
+    id: data.id,
     serviceName: data.name,
     ...uiConfiguration
   }

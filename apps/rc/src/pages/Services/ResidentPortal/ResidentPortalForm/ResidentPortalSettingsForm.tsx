@@ -36,7 +36,7 @@ export default function ResidentPortalSettingsForm () {
         rules={[
           { required: true },
           { min: 2 },
-          { max: 32 },
+          { max: 52 },
           { validator: (_, value) => nameValidator(value) }
         ]}
         validateFirst
@@ -52,7 +52,7 @@ export default function ResidentPortalSettingsForm () {
         rules={[
           { required: false },
           { min: 2 },
-          { max: 32 }
+          { max: 52 }
         ]}
         validateFirst
         hasFeedback
@@ -64,7 +64,7 @@ export default function ResidentPortalSettingsForm () {
         rules={[
           { required: false },
           { min: 2 },
-          { max: 32 }
+          { max: 52 }
         ]}
         validateFirst
         hasFeedback
@@ -76,7 +76,7 @@ export default function ResidentPortalSettingsForm () {
         rules={[
           { required: false },
           { min: 2 },
-          { max: 32 }
+          { max: 52 }
         ]}
         validateFirst
         hasFeedback
