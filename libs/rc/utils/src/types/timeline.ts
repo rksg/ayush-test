@@ -41,6 +41,7 @@ export interface EventBase {
   id: string
   macAddress: string
   message: string
+  detailedDescription?: string
   name: string
   product: string
   radio: string
