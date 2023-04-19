@@ -50,7 +50,9 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
   useEffect(() => {
     if (availableVersions && availableVersions[0]) {
       let firstIndex = availableVersions.findIndex(isRecommanded)
-      setSelectedVersion(availableVersions[firstIndex].name)
+      if (firstIndex > -1) {
+        setSelectedVersion(availableVersions[firstIndex].name)
+      }
     }
   }, [availableVersions])
 
