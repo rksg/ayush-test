@@ -63,7 +63,7 @@ export function FunnelChart ({
   stages: FunnelChartStages;
   height: number;
   colors: string[];
-  selectedStage: Stages;
+  selectedStage: Stages | null;
   onSelectStage: CallableFunction;
   valueFormatter: CallableFunction;
   valueLabel: string;
@@ -71,7 +71,7 @@ export function FunnelChart ({
   const [parentNode, ref] = useGetNode()
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
   const onClick = (width: number, name: Stages) => {
-    onSelectStage(width, name)
+    onSelectStage(width, name === selectedStage ? null : name)
   }
   const enhancedStages: EnhancedStage[] = useMemo(() => {
     if (!parentNode) return []
@@ -245,7 +245,7 @@ export const Labels = ({
           ),
           labelRef: updateChildNodes
         } as unknown as LabelPinProps
-        return <LabelWithPin {...labelProps} />
+        return <LabelWithPin {...labelProps} key={i}/>
       })}
     </>
   )

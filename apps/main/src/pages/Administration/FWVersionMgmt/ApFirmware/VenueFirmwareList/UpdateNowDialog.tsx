@@ -96,9 +96,10 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
 
   const createRequest = (): UpdateNowRequest[] => {
     let version
-    if (selectMode === VersionsSelectMode.Radio) {
+    if (selectMode === VersionsSelectMode.Radio && versionOptions.length > 0) {
       version = versionOptions[0].id
-    } else {
+    }
+    if (selectMode === VersionsSelectMode.Dropdown) {
       version = selectedVersion
     }
     const venuesData = data as FirmwareVenue[]
