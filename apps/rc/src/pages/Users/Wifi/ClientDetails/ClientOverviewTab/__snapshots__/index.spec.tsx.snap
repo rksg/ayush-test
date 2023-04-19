@@ -317,7 +317,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                                           fill="#ADCFFA"
                                         />
                                         <path
-                                          d="M15 149L1213.112 149A4 4 0 0 1 1217.112 153L1217.112 157A4 4 0 0 1 1213.112 161L15 161L15 149"
+                                          d="M15 149L1225.4 149A4 4 0 0 1 1229.4 153L1229.4 157A4 4 0 0 1 1225.4 161L15 161L15 149"
                                           fill="#5496EA"
                                         />
                                         <path
@@ -346,19 +346,19 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                                         <path
                                           d="M0 -8l6 0l0 16l-6 0Z"
                                           fill="none"
-                                          transform="translate(1222.112 155)"
+                                          transform="translate(1234.4 155)"
                                         />
                                         <path
                                           d="M0 -0.5l6 0l0 1l-6 0Z"
                                           fill="none"
-                                          transform="translate(1222.112 155)"
+                                          transform="translate(1234.4 155)"
                                         />
                                         <text
                                           dominant-baseline="central"
                                           fill="#333333"
                                           style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
                                           text-anchor="start"
-                                          transform="translate(1222.112 155)"
+                                          transform="translate(1234.4 155)"
                                         >
                                           1.44GB
                                         </text>
@@ -1380,7 +1380,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                           fill="#ADCFFA"
                                         />
                                         <path
-                                          d="M15 149L1213.112 149A4 4 0 0 1 1217.112 153L1217.112 157A4 4 0 0 1 1213.112 161L15 161L15 149"
+                                          d="M15 149L1225.4 149A4 4 0 0 1 1229.4 153L1229.4 157A4 4 0 0 1 1225.4 161L15 161L15 149"
                                           fill="#5496EA"
                                         />
                                         <path
@@ -1409,19 +1409,19 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                         <path
                                           d="M0 -8l6 0l0 16l-6 0Z"
                                           fill="none"
-                                          transform="translate(1222.112 155)"
+                                          transform="translate(1234.4 155)"
                                         />
                                         <path
                                           d="M0 -0.5l6 0l0 1l-6 0Z"
                                           fill="none"
-                                          transform="translate(1222.112 155)"
+                                          transform="translate(1234.4 155)"
                                         />
                                         <text
                                           dominant-baseline="central"
                                           fill="#333333"
                                           style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
                                           text-anchor="start"
-                                          transform="translate(1222.112 155)"
+                                          transform="translate(1234.4 155)"
                                         >
                                           1.44GB
                                         </text>
@@ -2616,7 +2616,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                           fill="#ADCFFA"
                                         />
                                         <path
-                                          d="M15 149L1213.112 149A4 4 0 0 1 1217.112 153L1217.112 157A4 4 0 0 1 1213.112 161L15 161L15 149"
+                                          d="M15 149L1225.4 149A4 4 0 0 1 1229.4 153L1229.4 157A4 4 0 0 1 1225.4 161L15 161L15 149"
                                           fill="#5496EA"
                                         />
                                         <path
@@ -2645,19 +2645,19 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                         <path
                                           d="M0 -8l6 0l0 16l-6 0Z"
                                           fill="none"
-                                          transform="translate(1222.112 155)"
+                                          transform="translate(1234.4 155)"
                                         />
                                         <path
                                           d="M0 -0.5l6 0l0 1l-6 0Z"
                                           fill="none"
-                                          transform="translate(1222.112 155)"
+                                          transform="translate(1234.4 155)"
                                         />
                                         <text
                                           dominant-baseline="central"
                                           fill="#333333"
                                           style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
                                           text-anchor="start"
-                                          transform="translate(1222.112 155)"
+                                          transform="translate(1234.4 155)"
                                         >
                                           1.44GB
                                         </text>
@@ -3679,7 +3679,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                           fill="#ADCFFA"
                                         />
                                         <path
-                                          d="M15 149L1213.112 149A4 4 0 0 1 1217.112 153L1217.112 157A4 4 0 0 1 1213.112 161L15 161L15 149"
+                                          d="M15 149L1225.4 149A4 4 0 0 1 1229.4 153L1229.4 157A4 4 0 0 1 1225.4 161L15 161L15 149"
                                           fill="#5496EA"
                                         />
                                         <path
@@ -3708,19 +3708,19 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                         <path
                                           d="M0 -8l6 0l0 16l-6 0Z"
                                           fill="none"
-                                          transform="translate(1222.112 155)"
+                                          transform="translate(1234.4 155)"
                                         />
                                         <path
                                           d="M0 -0.5l6 0l0 1l-6 0Z"
                                           fill="none"
-                                          transform="translate(1222.112 155)"
+                                          transform="translate(1234.4 155)"
                                         />
                                         <text
                                           dominant-baseline="central"
                                           fill="#333333"
                                           style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
                                           text-anchor="start"
-                                          transform="translate(1222.112 155)"
+                                          transform="translate(1234.4 155)"
                                         >
                                           1.44GB
                                         </text>
@@ -4742,7 +4742,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                           fill="#ADCFFA"
                                         />
                                         <path
-                                          d="M15 149L1213.112 149A4 4 0 0 1 1217.112 153L1217.112 157A4 4 0 0 1 1213.112 161L15 161L15 149"
+                                          d="M15 149L1225.4 149A4 4 0 0 1 1229.4 153L1229.4 157A4 4 0 0 1 1225.4 161L15 161L15 149"
                                           fill="#5496EA"
                                         />
                                         <path
@@ -4771,19 +4771,19 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                         <path
                                           d="M0 -8l6 0l0 16l-6 0Z"
                                           fill="none"
-                                          transform="translate(1222.112 155)"
+                                          transform="translate(1234.4 155)"
                                         />
                                         <path
                                           d="M0 -0.5l6 0l0 1l-6 0Z"
                                           fill="none"
-                                          transform="translate(1222.112 155)"
+                                          transform="translate(1234.4 155)"
                                         />
                                         <text
                                           dominant-baseline="central"
                                           fill="#333333"
                                           style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
                                           text-anchor="start"
-                                          transform="translate(1222.112 155)"
+                                          transform="translate(1234.4 155)"
                                         >
                                           1.44GB
                                         </text>
@@ -5801,7 +5801,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                                           fill="#ADCFFA"
                                         />
                                         <path
-                                          d="M15 149L1213.112 149A4 4 0 0 1 1217.112 153L1217.112 157A4 4 0 0 1 1213.112 161L15 161L15 149"
+                                          d="M15 149L1225.4 149A4 4 0 0 1 1229.4 153L1229.4 157A4 4 0 0 1 1225.4 161L15 161L15 149"
                                           fill="#5496EA"
                                         />
                                         <path
@@ -5830,19 +5830,19 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                                         <path
                                           d="M0 -8l6 0l0 16l-6 0Z"
                                           fill="none"
-                                          transform="translate(1222.112 155)"
+                                          transform="translate(1234.4 155)"
                                         />
                                         <path
                                           d="M0 -0.5l6 0l0 1l-6 0Z"
                                           fill="none"
-                                          transform="translate(1222.112 155)"
+                                          transform="translate(1234.4 155)"
                                         />
                                         <text
                                           dominant-baseline="central"
                                           fill="#333333"
                                           style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
                                           text-anchor="start"
-                                          transform="translate(1222.112 155)"
+                                          transform="translate(1234.4 155)"
                                         >
                                           1.44GB
                                         </text>
@@ -7154,7 +7154,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client w
                                           fill="#ADCFFA"
                                         />
                                         <path
-                                          d="M15 149L1213.112 149A4 4 0 0 1 1217.112 153L1217.112 157A4 4 0 0 1 1213.112 161L15 161L15 149"
+                                          d="M15 149L1225.4 149A4 4 0 0 1 1229.4 153L1229.4 157A4 4 0 0 1 1225.4 161L15 161L15 149"
                                           fill="#5496EA"
                                         />
                                         <path
@@ -7183,19 +7183,19 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client w
                                         <path
                                           d="M0 -8l6 0l0 16l-6 0Z"
                                           fill="none"
-                                          transform="translate(1222.112 155)"
+                                          transform="translate(1234.4 155)"
                                         />
                                         <path
                                           d="M0 -0.5l6 0l0 1l-6 0Z"
                                           fill="none"
-                                          transform="translate(1222.112 155)"
+                                          transform="translate(1234.4 155)"
                                         />
                                         <text
                                           dominant-baseline="central"
                                           fill="#333333"
                                           style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
                                           text-anchor="start"
-                                          transform="translate(1222.112 155)"
+                                          transform="translate(1234.4 155)"
                                         >
                                           1.44GB
                                         </text>
@@ -8479,7 +8479,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render dpsk cli
                                           fill="#ADCFFA"
                                         />
                                         <path
-                                          d="M15 149L1213.112 149A4 4 0 0 1 1217.112 153L1217.112 157A4 4 0 0 1 1213.112 161L15 161L15 149"
+                                          d="M15 149L1225.4 149A4 4 0 0 1 1229.4 153L1229.4 157A4 4 0 0 1 1225.4 161L15 161L15 149"
                                           fill="#5496EA"
                                         />
                                         <path
@@ -8508,19 +8508,19 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render dpsk cli
                                         <path
                                           d="M0 -8l6 0l0 16l-6 0Z"
                                           fill="none"
-                                          transform="translate(1222.112 155)"
+                                          transform="translate(1234.4 155)"
                                         />
                                         <path
                                           d="M0 -0.5l6 0l0 1l-6 0Z"
                                           fill="none"
-                                          transform="translate(1222.112 155)"
+                                          transform="translate(1234.4 155)"
                                         />
                                         <text
                                           dominant-baseline="central"
                                           fill="#333333"
                                           style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
                                           text-anchor="start"
-                                          transform="translate(1222.112 155)"
+                                          transform="translate(1234.4 155)"
                                         >
                                           1.44GB
                                         </text>
@@ -10004,7 +10004,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                           fill="#ADCFFA"
                                         />
                                         <path
-                                          d="M15 149L1213.112 149A4 4 0 0 1 1217.112 153L1217.112 157A4 4 0 0 1 1213.112 161L15 161L15 149"
+                                          d="M15 149L1225.4 149A4 4 0 0 1 1229.4 153L1229.4 157A4 4 0 0 1 1225.4 161L15 161L15 149"
                                           fill="#5496EA"
                                         />
                                         <path
@@ -10033,19 +10033,19 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                         <path
                                           d="M0 -8l6 0l0 16l-6 0Z"
                                           fill="none"
-                                          transform="translate(1222.112 155)"
+                                          transform="translate(1234.4 155)"
                                         />
                                         <path
                                           d="M0 -0.5l6 0l0 1l-6 0Z"
                                           fill="none"
-                                          transform="translate(1222.112 155)"
+                                          transform="translate(1234.4 155)"
                                         />
                                         <text
                                           dominant-baseline="central"
                                           fill="#333333"
                                           style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
                                           text-anchor="start"
-                                          transform="translate(1222.112 155)"
+                                          transform="translate(1234.4 155)"
                                         >
                                           1.44GB
                                         </text>
@@ -11357,7 +11357,7 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                                           fill="#ADCFFA"
                                         />
                                         <path
-                                          d="M15 149L1213.112 149A4 4 0 0 1 1217.112 153L1217.112 157A4 4 0 0 1 1213.112 161L15 161L15 149"
+                                          d="M15 149L1225.4 149A4 4 0 0 1 1229.4 153L1229.4 157A4 4 0 0 1 1225.4 161L15 161L15 149"
                                           fill="#5496EA"
                                         />
                                         <path
@@ -11386,19 +11386,19 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                                         <path
                                           d="M0 -8l6 0l0 16l-6 0Z"
                                           fill="none"
-                                          transform="translate(1222.112 155)"
+                                          transform="translate(1234.4 155)"
                                         />
                                         <path
                                           d="M0 -0.5l6 0l0 1l-6 0Z"
                                           fill="none"
-                                          transform="translate(1222.112 155)"
+                                          transform="translate(1234.4 155)"
                                         />
                                         <text
                                           dominant-baseline="central"
                                           fill="#333333"
                                           style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
                                           text-anchor="start"
-                                          transform="translate(1222.112 155)"
+                                          transform="translate(1234.4 155)"
                                         >
                                           1.44GB
                                         </text>
@@ -12710,7 +12710,7 @@ exports[`ClientOverviewTab OverviewWidget should render correctly when search pa
                                           fill="#ADCFFA"
                                         />
                                         <path
-                                          d="M15 149L1213.112 149A4 4 0 0 1 1217.112 153L1217.112 157A4 4 0 0 1 1213.112 161L15 161L15 149"
+                                          d="M15 149L1225.4 149A4 4 0 0 1 1229.4 153L1229.4 157A4 4 0 0 1 1225.4 161L15 161L15 149"
                                           fill="#5496EA"
                                         />
                                         <path
@@ -12739,19 +12739,19 @@ exports[`ClientOverviewTab OverviewWidget should render correctly when search pa
                                         <path
                                           d="M0 -8l6 0l0 16l-6 0Z"
                                           fill="none"
-                                          transform="translate(1222.112 155)"
+                                          transform="translate(1234.4 155)"
                                         />
                                         <path
                                           d="M0 -0.5l6 0l0 1l-6 0Z"
                                           fill="none"
-                                          transform="translate(1222.112 155)"
+                                          transform="translate(1234.4 155)"
                                         />
                                         <text
                                           dominant-baseline="central"
                                           fill="#333333"
                                           style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
                                           text-anchor="start"
-                                          transform="translate(1222.112 155)"
+                                          transform="translate(1234.4 155)"
                                         >
                                           1.44GB
                                         </text>
@@ -13773,7 +13773,7 @@ exports[`ClientOverviewTab OverviewWidget should render historical client info c
                                           fill="#ADCFFA"
                                         />
                                         <path
-                                          d="M15 149L1213.112 149A4 4 0 0 1 1217.112 153L1217.112 157A4 4 0 0 1 1213.112 161L15 161L15 149"
+                                          d="M15 149L1225.4 149A4 4 0 0 1 1229.4 153L1229.4 157A4 4 0 0 1 1225.4 161L15 161L15 149"
                                           fill="#5496EA"
                                         />
                                         <path
@@ -13802,19 +13802,19 @@ exports[`ClientOverviewTab OverviewWidget should render historical client info c
                                         <path
                                           d="M0 -8l6 0l0 16l-6 0Z"
                                           fill="none"
-                                          transform="translate(1222.112 155)"
+                                          transform="translate(1234.4 155)"
                                         />
                                         <path
                                           d="M0 -0.5l6 0l0 1l-6 0Z"
                                           fill="none"
-                                          transform="translate(1222.112 155)"
+                                          transform="translate(1234.4 155)"
                                         />
                                         <text
                                           dominant-baseline="central"
                                           fill="#333333"
                                           style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
                                           text-anchor="start"
-                                          transform="translate(1222.112 155)"
+                                          transform="translate(1234.4 155)"
                                         >
                                           1.44GB
                                         </text>

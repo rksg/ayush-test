@@ -59,10 +59,11 @@ export const gridOptions = ({
   disableLegend = false,
   hasXAxisName = false,
   xAxisOffset = 0,
-  yAxisOffset = 0
+  yAxisOffset = 0,
+  rightGridOffset = 0
 } = {}) => ({
   left: yAxisOffset,
-  right: '1%', // To ensure last point selection is visible
+  right: rightGridOffset,
   bottom: hasXAxisName ? 16 + xAxisOffset : 0,
   top: disableLegend ? 6 : '15%',
   containLabel: true
