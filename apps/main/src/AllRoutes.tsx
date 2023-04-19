@@ -78,14 +78,9 @@ function AllRoutes () {
         <Route path='*' element={<MspRoutes />}/>
       </Route>
       {/* redirect old urls to dashboard */}
-      <Route path='t/:tenantId/*' element={<TenantNavigate replace to='dashboard' />} />
       <Route
         path='/api/ui-beta/t/:tenantId/*'
         element={<TenantNavigate replace to='dashboard' />}
-      />
-      <Route
-        path='v/:tenantId/*'
-        element={<TenantNavigate replace to='dashboard' tenantType='v' />}
       />
       <Route
         path='/api/ui-beta/v/:tenantId/*'

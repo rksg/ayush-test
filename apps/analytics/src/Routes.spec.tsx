@@ -210,7 +210,7 @@ test('should navigate to serviceValidation/videoCallQoe', () => {
   jest.mocked(useIsSplitOn).mockReturnValue(true)
   render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
-      path: '/t/tenantId/serviceValidation/videoCallQoe',
+      path: '/tenantId/t/serviceValidation/videoCallQoe',
       wrapRoutes: false
     }
   })

@@ -16,7 +16,7 @@ const getWrapper = (initialEntries: string, appendedPath: string = '') =>
   )
 
 describe('useTenantId', () => {
-  const tenantId = 'tenant-id'
+  const tenantId = '8b9e8338c81d404e986c1d651ca7fed0'
   const initPath = `/${tenantId}/t`
 
   beforeEach(() => {
@@ -29,7 +29,7 @@ describe('useTenantId', () => {
     })})
 
   it('return URL tenantId by window.location', () => {
-    expect(getTenantId()).toEqual('tenant-id')
+    expect(getTenantId()).toEqual(tenantId)
   })
 
   it('tenant type t', () => {
@@ -37,7 +37,7 @@ describe('useTenantId', () => {
       () => useTenantId(),
       { wrapper: getWrapper(initPath) }
     )
-    expect(result.current).toEqual('tenant-id')
+    expect(result.current).toEqual(tenantId)
   })
 
   it('other path', () => {
@@ -46,21 +46,12 @@ describe('useTenantId', () => {
       { wrapper: getWrapper(initPath, '/another/path') }
     )
 
-    expect(result.current).toEqual('tenant-id')
-  })
-
-  it('path does not prefix with /t or /v', () => {
-    const { result } = renderHook(
-      () => useTenantId(),
-      { wrapper: getWrapper(`/${tenantId}/r`) }
-    )
-
-    expect(result.current).toEqual(undefined)
+    expect(result.current).toEqual('8b9e8338c81d404e986c1d651ca7fed0')
   })
 })
 
 describe('tenant type v', () => {
-  const initPath = '/v-tenant/v'
+  const initPath = '/8b9e8338c81d404e986c1d651ca7fed0/v'
   const { location } = window
 
   beforeEach(() => {
@@ -74,7 +65,7 @@ describe('tenant type v', () => {
   })
 
   it('return URL tenantId by window.location', () => {
-    expect(getTenantId()).toEqual('v-tenant')
+    expect(getTenantId()).toEqual('8b9e8338c81d404e986c1d651ca7fed0')
   })
 
   it('tenant type v', () => {
@@ -82,7 +73,7 @@ describe('tenant type v', () => {
       () => useTenantId(),
       { wrapper: getWrapper(initPath) }
     )
-    expect(result.current).toEqual('v-tenant')
+    expect(result.current).toEqual('8b9e8338c81d404e986c1d651ca7fed0')
   })
 
   it('other path', () => {
@@ -91,24 +82,25 @@ describe('tenant type v', () => {
       { wrapper: getWrapper(initPath, '/another/path') }
     )
 
-    expect(result.current).toEqual('v-tenant')
+    expect(result.current).toEqual('8b9e8338c81d404e986c1d651ca7fed0')
   })
 })
 
 describe('other path', () => {
+  const tenantId = '8b9e8338c81d404e986c1d651ca7fed0'
   const data = [
     { path: '', tenantId: undefined },
     { path: '/', tenantId: undefined },
-    { path: '/api/ui-beta/t/123', tenantId: '123' },
-    { path: '/t/123', tenantId: '123' },
-    { path: '/v/123', tenantId: '123' },
-    { path: '/api/ui-beta/v/123', tenantId: '123' },
-    { path: '/123/t', tenantId: '123' },
-    { path: '/123/t/', tenantId: '123' },
-    { path: '/123/v', tenantId: '123' },
-    { path: '/123/v/', tenantId: '123' },
-    { path: '/123/t/other-path', tenantId: '123' },
-    { path: '/123/v/other/path', tenantId: '123' }
+    { path: `/api/ui-beta/t/${tenantId}`, tenantId },
+    { path: `/t/${tenantId}`, tenantId },
+    { path: `/v/${tenantId}`, tenantId },
+    { path: `/api/ui-beta/v/${tenantId}`, tenantId },
+    { path: `/${tenantId}/t`, tenantId },
+    { path: `/${tenantId}/t/`, tenantId },
+    { path: `/${tenantId}/v`, tenantId },
+    { path: `/${tenantId}/v/`, tenantId },
+    { path: `/${tenantId}/t/other-path`, tenantId },
+    { path: `/${tenantId}/v/other/path`, tenantId }
   ]
 
   it('should return correct tenant id', () => {

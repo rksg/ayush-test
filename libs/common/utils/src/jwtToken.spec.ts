@@ -7,17 +7,17 @@ describe('getJwtTokenPayload', () => {
 
   it('returns token with default values when JWT not available', () => {
     const { href, pathname } = window.location
-    const url = 'http://dummy.com/some-tenant-id/t/dashboard/reports'
+    const url = 'http://dummy.com/8b9e8338c81d404e986c1d651ca7fed0/t/dashboard/reports'
     Object.defineProperty(window, 'location', {
       writable: true,
-      value: { href: url, pathname: '/some-tenant-id/t/dashboard/reports' }
+      value: { href: url, pathname: '/8b9e8338c81d404e986c1d651ca7fed0/t/dashboard/reports' }
     })
     const token = {
       acx_account_tier: 'Platinum',
       acx_account_vertical: 'Default',
       tenantType: 'REC',
       isBetaFlag: false,
-      tenantId: 'some-tenant-id'
+      tenantId: '8b9e8338c81d404e986c1d651ca7fed0'
     }
     expect(getJwtTokenPayload()).toEqual(token)
 
@@ -59,7 +59,7 @@ describe('getJwtHeaders', () => {
       acx_account_vertical: 'Default',
       tenantType: 'REC',
       isBetaFlag: false,
-      tenantId: 'some-tenant-id'
+      tenantId: '8b9e8338c81d404e986c1d651ca7fed0'
     }
     const jwtToken = `xxx.${window.btoa(JSON.stringify(token))}.xxx`
     const originalUrl = window.location.href
@@ -77,25 +77,25 @@ describe('getJwtHeaders', () => {
     })
 
     it('returns Authorization header', () => {
-      const url = 'http://dummy.com/some-tenant-id/t/dashboard'
+      const url = 'http://dummy.com/8b9e8338c81d404e986c1d651ca7fed0/t/dashboard'
       Object.defineProperty(window, 'location', {
         writable: true,
-        value: { href: url, pathname: '/some-tenant-id/t/dashboard' }
+        value: { href: url, pathname: '/8b9e8338c81d404e986c1d651ca7fed0/t/dashboard' }
       })
 
       expect(getJwtHeaders()).toEqual({ Authorization: `Bearer ${jwtToken}` })
     })
 
     it('returns x-rks-tenantid header if delegation mode', () => {
-      const url = 'http://dummy.com/another-other-tenant/t/dashboard'
+      const url = 'http://dummy.com/8b9e8338c81d404e986c1d651ca7fed1/t/dashboard'
       Object.defineProperty(window, 'location', {
         writable: true,
-        value: { href: url, pathname: '/another-other-tenant/t/dashboard' }
+        value: { href: url, pathname: '/8b9e8338c81d404e986c1d651ca7fed1/t/dashboard' }
       })
 
       expect(getJwtHeaders()).toEqual({
         'Authorization': `Bearer ${jwtToken}`,
-        'x-rks-tenantid': 'another-other-tenant'
+        'x-rks-tenantid': '8b9e8338c81d404e986c1d651ca7fed1'
       })
     })
   })
@@ -117,10 +117,10 @@ describe('loadImageWithJWT', () => {
       json: () => Promise.resolve({ signedUrl: 'https://example.com/image.png' })
     }))
     const { href, pathname } = window.location
-    const url = 'http://dummy.com/some-tenant-id/t/dashboard'
+    const url = 'http://dummy.com/8b9e8338c81d404e986c1d651ca7fed0/t/dashboard'
     Object.defineProperty(window, 'location', {
       writable: true,
-      value: { href: url, pathname: '/some-tenant-id/t/dashboard' }
+      value: { href: url, pathname: '/8b9e8338c81d404e986c1d651ca7fed0/t/dashboard' }
     })
 
     const token = {
@@ -128,18 +128,18 @@ describe('loadImageWithJWT', () => {
       acx_account_vertical: 'Default',
       tenantType: 'REC',
       isBetaFlag: false,
-      tenantId: 'some-tenant-id'
+      tenantId: '8b9e8338c81d404e986c1d651ca7fed0'
     }
     const jwtToken = `xxx.${window.btoa(JSON.stringify(token))}.xxx`
     sessionStorage.setItem('jwt', jwtToken)
 
     const result = await loadImageWithJWT('123')
     expect(global.fetch).toHaveBeenCalledWith(
-      '/api/file/tenant/some-tenant-id/123/url',
+      '/api/file/tenant/8b9e8338c81d404e986c1d651ca7fed0/123/url',
       expect.objectContaining({
         headers: {
           // eslint-disable-next-line max-len
-          Authorization: 'Bearer xxx.eyJhY3hfYWNjb3VudF90aWVyIjoiR29sZCIsImFjeF9hY2NvdW50X3ZlcnRpY2FsIjoiRGVmYXVsdCIsInRlbmFudFR5cGUiOiJSRUMiLCJpc0JldGFGbGFnIjpmYWxzZSwidGVuYW50SWQiOiJzb21lLXRlbmFudC1pZCJ9.xxx',
+          Authorization: 'Bearer xxx.eyJhY3hfYWNjb3VudF90aWVyIjoiR29sZCIsImFjeF9hY2NvdW50X3ZlcnRpY2FsIjoiRGVmYXVsdCIsInRlbmFudFR5cGUiOiJSRUMiLCJpc0JldGFGbGFnIjpmYWxzZSwidGVuYW50SWQiOiI4YjllODMzOGM4MWQ0MDRlOTg2YzFkNjUxY2E3ZmVkMCJ9.xxx',
           mode: 'no-cors'
         }
       }))
