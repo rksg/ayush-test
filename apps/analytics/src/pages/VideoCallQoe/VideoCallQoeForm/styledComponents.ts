@@ -42,7 +42,8 @@ export const OverwriteFormItem = styled(Form.Item)`
 `
 
 export const DisclaimerContainer = styled.div`
-  font-size: var(--acx-body-3-font-size);
-  line-height: var(--acx-body-3-line-height);
-  font-weight: var(--acx-subtitle-6-font-weight);
+  font-family: var(--acx-neutral-brand-font);
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  font-weight: var(--acx-body-font-weight);
 `
