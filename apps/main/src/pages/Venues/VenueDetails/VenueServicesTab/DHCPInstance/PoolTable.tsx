@@ -12,22 +12,11 @@ import {
   useVenueDHCPPoolsQuery,
   useActivateDHCPPoolMutation,
   useDeactivateDHCPPoolMutation } from '@acx-ui/rc/services'
-import { VenueDHCPPoolInst } from '@acx-ui/rc/utils'
-import { hasAccess }         from '@acx-ui/user'
+import { IpUtilsService, VenueDHCPPoolInst } from '@acx-ui/rc/utils'
+import { hasAccess }                         from '@acx-ui/user'
 
 import { ReadonlySwitch } from './styledComponents'
 
-export const countIpRangeSize = (startIpAddress: string, endIpAddress: string): number =>{
-  const convertIpToLong = (ipAddress: string): number => {
-    const ipArray = ipAddress.split('.').map(ip => parseInt(ip, 10))
-    return ipArray[0] * 16777216 + ipArray[1] * 65536 + ipArray[2] * 256 + ipArray[3]
-  }
-
-  const startLong = convertIpToLong(startIpAddress)
-  const endLong = convertIpToLong(endIpAddress)
-
-  return endLong - startLong + 1
-}
 export default function VenuePoolTable (){
   const params = useParams()
   const { $t } = useIntl()
@@ -128,7 +117,8 @@ export default function VenuePoolTable (){
       key: 'PoolSize',
       title: $t({ defaultMessage: 'Pool Size' }),
       dataIndex: 'startIpAddress',
-      render: (_data, rowData)=> countIpRangeSize(rowData.startIpAddress, rowData.endIpAddress)
+      render: (_data, rowData)=>
+        IpUtilsService.countIpRangeSize(rowData.startIpAddress, rowData.endIpAddress)
     },
     {
       key: 'usedIpCount',

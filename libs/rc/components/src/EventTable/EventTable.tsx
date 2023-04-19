@@ -9,7 +9,7 @@ import { Event, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 
-import { filtersFrom, getDescription, getSource, valueFrom } from './helpers'
+import { filtersFrom, getDescription, getDetail, getSource, valueFrom } from './helpers'
 import {
   severityMapping,
   eventTypeMapping,
@@ -148,6 +148,10 @@ export const EventTable = ({
     {
       title: defineMessage({ defaultMessage: 'Description' }),
       value: getDescription(data)
+    },
+    {
+      title: defineMessage({ defaultMessage: 'Detail' }),
+      value: getDetail(data)
     }
   ]
 
