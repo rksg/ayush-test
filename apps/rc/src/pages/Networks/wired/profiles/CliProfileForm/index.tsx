@@ -121,6 +121,9 @@ export default function CliProfileForm () {
         <StepsFormNew
           form={form}
           editMode={editMode}
+          initialValues={{
+            venues: cliProfile?.venues
+          }}
           onCancel={() => navigate(linkToNetworks)}
           onFinish={editMode ? handleEditCliProfile : handleAddCliProfile}
         >

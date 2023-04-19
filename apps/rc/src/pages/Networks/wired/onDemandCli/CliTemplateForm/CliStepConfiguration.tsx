@@ -144,7 +144,7 @@ export function CliStepConfiguration () {
   }, [])
 
   useEffect(() => {
-    if (initVariableList) {
+    if (initVariableList && codeMirrorInstance) {
       const validation = validateCLI(codeMirrorEl, variableList, cliDefaultString)
       form?.setFieldsValue({
         variables: variableList,
@@ -154,8 +154,10 @@ export function CliStepConfiguration () {
   }, [variableList])
 
   useEffect(() => {
-    const validation = validateCLI(codeMirrorEl, variableList, cliDefaultString)
-    form?.setFieldsValue({ cliValid: validation })
+    if (codeMirrorInstance) {
+      const validation = validateCLI(codeMirrorEl, variableList, cliDefaultString)
+      form?.setFieldsValue({ cliValid: validation })
+    }
   }, [cli])
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {

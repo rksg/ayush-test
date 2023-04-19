@@ -21,7 +21,7 @@ export function CliStepVenues () {
   const { $t } = useIntl()
   const params = useParams()
 
-  const { form } = useStepFormContext()
+  const { form, initialValues } = useStepFormContext()
   const data = (form?.getFieldsValue(true) as CliConfiguration)
   const { data: cliFamilyModels } = useGetCliFamilyModelsQuery({ params })
   const [selectedRows, setSelectedRows] = useState<React.Key[]>([])
@@ -88,7 +88,8 @@ export function CliStepVenues () {
         ?.map(m => m.model)
 
       const isModelOverlap =
-        (!selectedVenues?.includes(venue.id) && !data?.venues?.includes(venue.id))
+        (!selectedVenues?.includes(venue.id)
+        && !(initialValues as CliConfiguration)?.venues?.includes(venue.id))
         && _.intersection(models, venueApplyModels)?.length > 0
 
       return {
