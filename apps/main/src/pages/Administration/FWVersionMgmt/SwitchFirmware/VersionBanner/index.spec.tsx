@@ -60,6 +60,6 @@ describe('Switch Firmware Banner', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
       })
-    await screen.findByText('10010_b176')
+    await screen.findByText('09010e_b397')
   })
 })

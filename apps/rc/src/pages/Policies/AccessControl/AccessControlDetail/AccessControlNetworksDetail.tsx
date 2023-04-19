@@ -26,13 +26,15 @@ const AccessControlNetworksDetail = (props: { data: AccessControlInfoType | unde
       align: 'left',
       searchable: true,
       key: 'name',
-      fixed: 'left'
+      fixed: 'left',
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'nwSubType',
       align: 'left',
       key: 'nwSubType',
+      sorter: true,
       render: (data, row) => {
         return $t(networkTypes[row.nwSubType as NetworkTypeEnum])
       }
@@ -42,6 +44,7 @@ const AccessControlNetworksDetail = (props: { data: AccessControlInfoType | unde
       dataIndex: 'venues',
       align: 'center',
       key: 'venues',
+      sorter: true,
       renderText: (row) => row.count
     }
   ]

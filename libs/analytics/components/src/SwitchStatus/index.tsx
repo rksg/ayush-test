@@ -78,16 +78,16 @@ export function SwitchStatusByTime ({ filters }: { filters: AnalyticsFilter }) {
             </Tooltip>
           </Card.Title>
         </UI.SwitchStatusHeader>
-        <UI.Status col={{ span: 4 }} style={{ height: '20px' }}>
+        <UI.Status col={{ span: 8 }} style={{ height: '20px' }}>
           {$t({ defaultMessage: 'Total Uptime' })}
           {': '}
           <UI.Duration>{milliSecondsToHm(queryResults?.switchTotalUptime || 0)}</UI.Duration>
         </UI.Status>
-        <UI.Status col={{ span: 4 }}>
+        {/* <UI.Status col={{ span: 4 }}>
           {$t({ defaultMessage: 'Total Downtime' })}
           {': '}
           <UI.Duration>{milliSecondsToHm(queryResults?.switchTotalDowntime || 0)}</UI.Duration>
-        </UI.Status>
+        </UI.Status> */}
         <GridCol col={{ span: 24 }} style={{ height: '50px' }}>
           <AutoSizer>
             {({ height, width }) =>

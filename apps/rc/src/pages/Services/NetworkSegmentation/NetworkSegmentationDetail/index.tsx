@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+
 import { Space, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
 
@@ -6,22 +8,24 @@ import {
   useGetEdgeDhcpServiceQuery,
   useGetEdgeListQuery,
   useGetNetworkSegmentationGroupByIdQuery,
-  useVenuesListQuery
+  useVenuesListQuery,
+  useApListQuery
 } from '@acx-ui/rc/services'
 import {
+  APExtended,
   getServiceDetailsLink,
   getServiceListRoutePath,
-  getServiceRoutePath,
-  ServiceOperation, ServiceType
+  getServiceRoutePath, RequestPayload,
+  ServiceOperation, ServiceType, useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useParams } from '@acx-ui/react-router-dom'
 
 import { AccessSwitchTable } from '../NetworkSegmentationForm/AccessSwitchForm/AccessSwitchTable'
 
-import * as UI                   from './styledComponents'
-import { ApsTable }              from './Table/ApsTable'
-import { AssignedSegmentsTable } from './Table/AssignedSegmentsTable'
-import { DistSwitchesTable }     from './Table/DistSwitchesTable'
+import * as UI                        from './styledComponents'
+import { ApsTable, defaultApPayload } from './Table/ApsTable'
+import { AssignedSegmentsTable }      from './Table/AssignedSegmentsTable'
+import { DistSwitchesTable }          from './Table/DistSwitchesTable'
 
 const venueOptionsDefaultPayload = {
   fields: ['name', 'id'],
@@ -45,10 +49,27 @@ const NetworkSegmentationDetail = () => {
 
   const { data: nsgData, isLoading } = useGetNetworkSegmentationGroupByIdQuery({ params })
 
+  const apListTableQuery = useTableQuery<APExtended, RequestPayload<unknown>, unknown>({
+    useQuery: useApListQuery,
+    defaultPayload: {
+      ...defaultApPayload
+    },option: { skip: !nsgData }
+  })
+
+  useEffect(() => {
+    apListTableQuery.setPayload(
+      {
+        ...defaultApPayload,
+        filters: { venueId: [nsgData?.venueInfos[0]?.venueId??''] }
+      }
+    )
+  }, [nsgData])
+
   const tabs = {
     aps: {
-      title: $t({ defaultMessage: 'APs (0)' }),
-      content: <ApsTable />
+      title: $t({ defaultMessage: 'APs ({num}})' },
+        { num: apListTableQuery?.data?.data?.length??0 }),
+      content: <ApsTable tableQuery={apListTableQuery}/>
     },
     distSwitches: {
       title: $t({ defaultMessage: 'Dist. Switches ({num})' },
