@@ -5,7 +5,7 @@ import { CommonUrlsInfo, EdgeDhcpUrls, EdgeUrlsInfo, getServiceRoutePath, Networ
 import { Provider }                                                                                                                from '@acx-ui/store'
 import { mockServer, render, screen }                                                                                              from '@acx-ui/test-utils'
 
-import { mockEdgeData, mockEdgeDhcpDataList, mockNsgData, mockNsgStatsList, mockNsgSwitchInfoData, mockVenueData } from '../__tests__/fixtures'
+import { mockEdgeData, mockEdgeDhcpDataList, mockNsgData, mockNsgStatsList, mockNsgSwitchInfoData, mockVenueData, mockApList } from '../__tests__/fixtures'
 
 import NetworkSegmentationDetail from '.'
 
@@ -26,6 +26,10 @@ describe('NsgDetail', () => {
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
         (req, res, ctx) => res(ctx.json(mockVenueData))
+      ),
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (req, res, ctx) => res(ctx.json(mockApList))
       ),
       rest.post(
         EdgeUrlsInfo.getEdgeList.url,
@@ -68,6 +72,10 @@ describe('NsgDetail', () => {
       </Provider>, {
         route: { params, path: detailPath }
       })
+
+    const rows = await screen.findAllByRole('row', { name: /mock-ap/i })
+    expect(rows.length).toBe(2)
+
     await user.click(await screen.findByRole('tab', { name: /Dist. Switches/i }))
     await user.click(await screen.findByRole('tab', { name: /Access Switches/i }))
     await user.click(await screen.findByRole('tab', { name: /Assigned Segments/i }))
