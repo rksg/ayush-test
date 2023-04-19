@@ -1,8 +1,13 @@
+import { useRef } from 'react'
+
 import { Divider }                    from 'antd'
+import { TextAreaRef }                from 'antd/lib/input/TextArea'
 import { MessageDescriptor, useIntl } from 'react-intl'
 
 import { Drawer, Descriptions, Timeline, TimelineItem } from '@acx-ui/components'
 import { noDataDisplay }                                from '@acx-ui/utils'
+
+import * as UI from './styledComponents'
 
 export interface DrawerProps {
   title: MessageDescriptor
@@ -16,6 +21,37 @@ export interface DrawerProps {
 
 export const TimelineDrawer = (props: DrawerProps) => {
   const { $t } = useIntl()
+  const inputEl = useRef<TextAreaRef>(null)
+
+  const copyText = (error: string) => {
+    navigator.clipboard.writeText(JSON.stringify(JSON.parse(error), null, 2))
+    inputEl.current?.resizableTextArea?.textArea.select()
+  }
+
+  const activityErrorDetails = props.timeLine?.map(i => {
+    if (i.status !== 'FAIL' || !i.error) {
+      return i
+    }
+    const parsedError = JSON.parse(i.error!)
+
+    return {
+      ...i,
+      children: <>
+        <UI.FailureTextArea
+          ref={inputEl}
+          rows={20}
+          readOnly={true}
+          value={JSON.stringify(parsedError, null, 2)}
+        />
+        <UI.CopyButton
+          style={{ paddingLeft: 170 }}
+          type='link'
+          onClick={() => copyText(i.error!)}
+        >{$t({ defaultMessage: 'Copy to clipboard' })}</UI.CopyButton>
+      </>
+    }
+  })
+
   return <Drawer
     title={$t(props.title)}
     visible={props.visible}
@@ -32,7 +68,7 @@ export const TimelineDrawer = (props: DrawerProps) => {
       }</Descriptions>
       {props.timeLine && props.timeLine.length > 0 && <>
         <Divider/>
-        <Timeline items={props.timeLine}/>
+        <Timeline items={activityErrorDetails ?? []}/>
       </>}
     </>}
   />

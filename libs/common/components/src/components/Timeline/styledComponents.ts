@@ -21,31 +21,27 @@ const getStatusColor = (status: TimelineStatus) => {
 }
 
 export const Wrapper = styled.div`
-  .ant-timeline-item {
-    padding: 0px;
+  .ant-timeline-item:nth-child(odd)  {
+    padding-bottom: 7px;
   }
-  .ant-timeline-item:nth-child(3n+3) {
-    padding-top: 6px;
+  .ant-timeline-item:nth-child(even) {
     padding-bottom: 16px;
   }
   .ant-timeline-item-tail {
-    display: none;
     height: 100%;
     top: 5px;
-    border: solid 1px var(--acx-accents-orange-50);
+    color: var(--acx-accents-orange-50);
   }
   .ant-timeline-item-content {
-    margin-left: 0;
     font-size: var(--acx-body-5-font-size);
     line-height: var(--acx-body-5-line-height);
   }
   .ant-timeline-item-head-custom {
-    display: none;
     background: transparent;
     top: 3px;
   }
   .ant-descriptions-item-container {
-    padding-bottom: 15px;
+    padding-bottom: 26px;
   }
   .ant-descriptions-item-content {
     font-size: var(--acx-body-4-font-size);
@@ -67,7 +63,7 @@ export const ItemWrapper = styled.div`
 `
 
 export const ContentWrapper = styled.div`
-  margin: -34px 4px 0px 30px;
+  margin: -27px 4px 0px 30px;
 `
 
 export const StatusWrapper = styled.div<{ status: TimelineStatus }>`

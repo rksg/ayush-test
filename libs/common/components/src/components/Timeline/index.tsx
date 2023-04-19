@@ -19,8 +19,7 @@ import {
   SuccessIcon,
   FailIcon,
   PendingsIcon,
-  InProgressIcon,
-  Dash
+  InProgressIcon
 } from './styledComponents'
 
 interface StatusIconProps { status: TimelineStatus}
@@ -58,6 +57,7 @@ export interface TimelineItem {
   endDatetime: string,
   description: string,
   children?: React.ReactElement
+  error?: string
 }
 
 interface TimelineProps {
@@ -78,12 +78,12 @@ const Timeline = (props: TimelineProps) => {
       {props.items.map((item, index)=>[
         <AntTimeline.Item
           key={`timeline-start-${index}`}
-          dot={<Step $state={item.startDatetime ? 'previous' : 'future'} />}>
+          dot={<Step $state={
+            item.startDatetime ? item.endDatetime ? 'previous' : 'current' : 'future'} />}>
           {item.startDatetime
             ? formatter(DateFormatEnum.DateTimeFormatWithSeconds)(item.startDatetime)
             : '--'}
         </AntTimeline.Item>,
-        <Dash/>,
         <AntTimeline.Item
           key={`timeline-end-${index}`}
           dot={<Step $state={item.endDatetime ? 'previous' : 'future'} />}>
@@ -95,13 +95,15 @@ const Timeline = (props: TimelineProps) => {
               <WithExpanderWrapper>
                 <div>
                   <StatusComp status={item.status}/>
-                  <DescriptionWrapper>{item.description}</DescriptionWrapper>
+                  <DescriptionWrapper
+                    style={{ paddingBottom: item.status === 'FAIL' ? 10 : 0 }}
+                  >{item.description}</DescriptionWrapper>
                 </div>
                 <ExpanderWrapper onClick={()=> {
                   const key = `${item.startDatetime}-${item.endDatetime}`
                   setExpand({ ...expand, [key]: !expand[key] })
                 }}>
-                  {item.children
+                  {item.status === 'FAIL' && item.error
                     ? expand[`${item.startDatetime}-${item.endDatetime}`]
                       ? <MinusSquareSolid/> : <PlusSquareSolid/>
                     : null}
