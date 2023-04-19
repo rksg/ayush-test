@@ -44,18 +44,23 @@ jest.mock('antd', () => {
 
 const mockedSetFieldValue = jest.fn()
 const { click, type, selectOptions } = userEvent
-const { result: stepFormRef } = renderHook(() => {
-  const [ form ] = Form.useForm()
-  jest.spyOn(form, 'setFieldValue').mockImplementation(mockedSetFieldValue)
-  return form
-})
-const { result: visibleRef } = renderHook(() => {
-  const [ visible, setVisible ] = useState(true)
-  return { visible, setVisible }
-})
 
 describe('DDos rate limit config drawer', () => {
+  beforeEach(() => {
+    mockedSetFieldValue.mockReset()
+  })
+
   it('should correctly render', async () => {
+    const { result: stepFormRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      jest.spyOn(form, 'setFieldValue').mockImplementation(mockedSetFieldValue)
+      return form
+    })
+    const { result: visibleRef } = renderHook(() => {
+      const [ visible, setVisible ] = useState(true)
+      return { visible, setVisible }
+    })
+
     render(
       <Provider>
         <StepsFormNew
@@ -113,5 +118,51 @@ describe('DDos rate limit config drawer', () => {
       ddosAttackType: 'DNS_RESPONSE',
       rateLimiting: 2
     }])
+  })
+
+  it('should reset data when click cancel', async () => {
+    const { result: stepFormRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      jest.spyOn(form, 'setFieldValue').mockImplementation(mockedSetFieldValue)
+      return form
+    })
+    const { result: visibleRef } = renderHook(() => {
+      const [ visible, setVisible ] = useState(true)
+      return { visible, setVisible }
+    })
+
+    render(
+      <Provider>
+        <StepsFormNew
+          form={stepFormRef.current}
+        >
+          <DDoSRateLimitConfigDrawer
+            visible={visibleRef.current.visible}
+            setVisible={visibleRef.current.setVisible}
+          />
+        </StepsFormNew>
+      </Provider>)
+
+    expect(await screen.findByText('DDoS Rate-limiting Settings')).toBeVisible()
+    const drawer = screen.getByRole('dialog')
+
+    // add ddos rule
+    const addRuleBtn = screen.getByRole('button', { name: 'Add Rule' })
+    await click(addRuleBtn)
+    await screen.findByText('Add DDoS Rule')
+    const dialogs = screen.queryAllByRole('dialog')
+    const dialog = dialogs.filter(elem => elem.classList.contains('ant-modal'))[0]
+
+    await selectOptions(
+      await within(dialog).findByRole('combobox', { name: 'DDoS Attack Type' }),
+      'ICMP')
+    await type(within(dialog).getByRole('spinbutton'), '6')
+    await click(within(dialog).getByRole('button', { name: 'Add' }))
+    await within(drawer).findByRole('row', { name: /ICMP/ })
+
+    // submit
+    await click(within(drawer).getByRole('button', { name: 'Cancel' }))
+
+    expect(mockedSetFieldValue).toBeCalledWith('ddosRateLimitingEnabled', false)
   })
 })

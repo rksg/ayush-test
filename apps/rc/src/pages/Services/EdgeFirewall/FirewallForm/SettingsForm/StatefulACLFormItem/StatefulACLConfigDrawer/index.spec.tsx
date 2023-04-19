@@ -45,12 +45,12 @@ jest.mock('antd', () => {
   return { ...components, Select }
 })
 
-const mockedInboundStatefulAcl = {
+const mockedEmptyInbound = {
   name: 'Inbound ACL',
   description: '',
   direction: 'INBOUND'
 } as StatefulAcl
-const mockedOutboundStatefulAcl = {
+const mockedEmptyOutbound = {
   name: 'Outbound ACL',
   description: '',
   direction: 'OUTBOUND'
@@ -66,6 +66,7 @@ describe('Stateful ACL config drawer', () => {
   it('should correctly render', async () => {
     const { result: stepFormRef } = renderHook(() => {
       const [ form ] = Form.useForm()
+      // this is used as mocked statefulAcls data in step form context
       form.setFieldValue('statefulAcls', defaultStatefulACLs)
       jest.spyOn(form, 'setFieldValue').mockImplementation(mockedSetFieldValue)
       return form
@@ -83,7 +84,7 @@ describe('Stateful ACL config drawer', () => {
           <StatefulACLConfigDrawer
             visible={visibleRef.current.visible}
             setVisible={visibleRef.current.setVisible}
-            editData={mockedInboundStatefulAcl}
+            editData={mockedEmptyInbound}
           />
         </StepsFormNew>
       </Provider>)
@@ -154,6 +155,7 @@ describe('Stateful ACL config drawer', () => {
   it('should correctly handle delete', async () => {
     const { result: stepFormRef } = renderHook(() => {
       const [ form ] = Form.useForm()
+      // this is used as mocked statefulAcls data in step form context
       form.setFieldValue('statefulAcls', defaultStatefulACLs)
       jest.spyOn(form, 'setFieldValue').mockImplementation(mockedSetFieldValue)
       return form
@@ -171,7 +173,7 @@ describe('Stateful ACL config drawer', () => {
           <StatefulACLConfigDrawer
             visible={visibleRef.current.visible}
             setVisible={visibleRef.current.setVisible}
-            editData={mockedOutboundStatefulAcl}
+            editData={mockedEmptyOutbound}
           />
         </StepsFormNew>
       </Provider>)
@@ -194,7 +196,10 @@ describe('Stateful ACL config drawer', () => {
     await type(within(src).getByPlaceholderText('Network address'), '1.2.3.4')
     await type(within(src).getByPlaceholderText('Mask'), '255.255.0.0')
     let destination = await screen.findByRole('group', { name: 'Destination' })
-    await click(await within(destination).findByRole('radio', { name: 'Any IP Address' }))
+    await click(await within(destination).findByRole('radio', { name: 'Subnet Address' }))
+    await type(within(destination).getByPlaceholderText('Network address'), '10.12.3.4')
+    await type(within(destination).getByPlaceholderText('Mask'), '255.255.255.0')
+    // await click(await within(destination).findByRole('radio', { name: 'Any IP Address' }))
     await click(await within(dialog).findByRole('checkbox', { name: 'Add another rule' }))
     await click(within(dialog).getByRole('button', { name: 'Add' }))
 
@@ -270,7 +275,9 @@ describe('Stateful ACL config drawer', () => {
         sourceAddress: '1.2.3.4',
         sourceAddressMask: '255.255.0.0',
         sourcePort: undefined,
-        destinationAddressType: 'ANY_IP_ADDRESS',
+        destinationAddressType: 'SUBNET_ADDRESS',
+        destinationAddress: '10.12.3.4',
+        destinationAddressMask: '255.255.255.0',
         destinationPort: undefined
       }, {
         priority: 5,

@@ -1,6 +1,6 @@
 import { IntlShape } from 'react-intl'
 
-import { AccessAction, ACLDirection, AddressType, ProtocolType } from '../../types'
+import { AccessAction, ACLDirection, AddressType, ProtocolType } from '../../models/EdgeFirewallEnum'
 
 export const getACLDirectionString = ($t: IntlShape['$t'], type: ACLDirection) => {
   switch (type) {

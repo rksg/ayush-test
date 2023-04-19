@@ -132,6 +132,8 @@ const FirewallEdgesTable = (props: { data?: string[] }) => {
       label: $t({ defaultMessage: 'Activate' }),
       onClick: (selectedRows) => {
         let newSelected = _.unionBy(selectedEdges, selectedRows, 'serialNumber')
+        newSelected = newSelected.map(item =>
+          ({ name: item.name, serialNumber: item.serialNumber }))
         updateSelectedEdges(newSelected)
       }
     },

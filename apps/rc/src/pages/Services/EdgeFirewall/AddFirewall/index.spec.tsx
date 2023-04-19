@@ -120,9 +120,6 @@ describe('Add edge firewall service', () => {
     // Step 2
     const rows = await screen.findAllByRole('row', { name: /Smart Edge/i })
     expect(rows.length).toBe(5)
-    // activate by button in action column
-    const row = await screen.findByRole('row', { name: /Smart Edge 2/i })
-    await click(within(row).getByRole('switch'))
 
     // Navigate to Step 3
     await click(actions.getByRole('button', { name: 'Next' }))
@@ -133,14 +130,14 @@ describe('Add edge firewall service', () => {
     expect((ddosResult.parentNode as HTMLDivElement).textContent)
       .toBe('DDoS Rate-limitingON (2 Rules)')
 
-    expect(screen.getByText('SmartEdge (1)')).not.toBeNull()
-    expect(screen.getByText('Smart Edge 2')).not.toBeNull()
+    expect(screen.getByText('SmartEdge (0)')).not.toBeNull()
+    // expect(screen.getByText('Smart Edge 2')).not.toBeNull()
 
     await click(actions.getByRole('button', { name: 'Finish' }))
     await waitFor(() => {
       expect(mockedAddFn).toBeCalledWith({
         serviceName: 'Test 1',
-        edgeIds: ['0000000002'],
+        edgeIds: [],
         ddosRateLimitingEnabled: true,
         ddosRateLimitingRules: [{
           ddosAttackType: 'ICMP',

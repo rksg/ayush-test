@@ -1,9 +1,9 @@
 export const mockFirewall = {
-  id: 'mock-id',//615bf69d-1661-4a14-9bc7-f7d7b7bc769c
+  id: 'mock-id',
   tenantId: 't-id',
   serviceName: 'test',
   tags: [],
-  edgeIds: ['0000000002'],
+  edgeIds: [],
   ddosRateLimitingEnabled: false,
   ddosRateLimitingRules: null,
   statefulAclEnabled: true,

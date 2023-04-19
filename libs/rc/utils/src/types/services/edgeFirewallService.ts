@@ -1,3 +1,11 @@
+import {
+  AccessAction,
+  ACLDirection,
+  AddressType,
+  DdosAttackType,
+  ProtocolType
+} from '../../models/EdgeFirewallEnum'
+
 export interface EdgeFirewallSetting {
   id: string;
   serviceName: string;
@@ -9,24 +17,10 @@ export interface EdgeFirewallSetting {
   statefulAcls: StatefulAcl[];
 }
 
-export enum DdosAttackType {
-  ALL = 'ALL',
-  ICMP = 'ICMP',
-  TCP_SYN = 'TCP_SYN',
-  IP_FRAGMENT = 'IP_FRAGMENT',
-  DNS_RESPONSE = 'DNS_RESPONSE',
-  NTP_REFLECTION = 'NTP_REFLECTION'
-}
-
 export interface DdosRateLimitingRule {
   // ddosAttackType is unique
   ddosAttackType: DdosAttackType;
   rateLimiting: number;
-}
-
-export enum ACLDirection {
-  OUTBOUND = 'OUTBOUND',
-  INBOUND = 'INBOUND'
 }
 
 export interface StatefulAcl {
@@ -34,30 +28,6 @@ export interface StatefulAcl {
   description?: string;
   direction: ACLDirection;
   rules: StatefulAclRule[];
-}
-
-export enum AccessAction {
-  ALLOW = 'ALLOW',
-  BLOCK = 'BLOCK',
-  INSPECT = 'INSPECT'
-}
-
-export enum ProtocolType {
-  ANY = 'ANY',
-  ICMP = 'ICMP',
-  IGMP = 'IGMP',
-  TCP = 'TCP',
-  UDP = 'UDP',
-  ESP = 'ESP',
-  AH = 'AH',
-  SCTP = 'SCTP',
-  CUSTOM = 'CUSTOM'
-}
-
-export enum AddressType {
-  ANY_IP_ADDRESS = 'ANY_IP_ADDRESS',
-  SUBNET_ADDRESS = 'SUBNET_ADDRESS',
-  IP_ADDRESS = 'IP_ADDRESS'
 }
 
 export interface StatefulAclRule {

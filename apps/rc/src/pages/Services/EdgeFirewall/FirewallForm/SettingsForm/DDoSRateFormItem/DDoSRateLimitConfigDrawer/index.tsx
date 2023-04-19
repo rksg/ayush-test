@@ -156,9 +156,9 @@ export const DDoSRateLimitConfigDrawer = (props: DDoSRateLimitConfigDrawerProps)
   }
 
   const handleCancel = () => {
-    const newData = form.getFieldValue('rules') ?? []
+    const oriData = parentForm.getFieldValue('ddosRateLimitingRules') ?? []
 
-    if (newData.length === 0)
+    if (oriData.length === 0)
       parentForm.setFieldValue('ddosRateLimitingEnabled', false)
 
     onClose()

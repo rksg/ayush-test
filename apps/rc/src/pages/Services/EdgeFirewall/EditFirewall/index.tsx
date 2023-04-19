@@ -35,7 +35,7 @@ const EditFirewall = () => {
   const handleFinish = async (formData: FirewallFormModel) => {
     try {
       let statefulAcls = formData.statefulAclEnabled ? formData.statefulAcls : []
-      statefulAcls = filterCustomACLRules(statefulAcls ?? [])
+      statefulAcls = filterCustomACLRules(statefulAcls)
       processFirewallACLPayload(statefulAcls)
       const payload = {
         serviceName: formData.serviceName,
