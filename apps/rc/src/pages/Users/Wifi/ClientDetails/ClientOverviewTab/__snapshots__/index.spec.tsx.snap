@@ -688,29 +688,6 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                                 </div>
                               </td>
                             </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Tags
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    --
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
                           </tbody>
                         </table>
                       </div>
@@ -1742,29 +1719,6 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                     class="ant-descriptions-item-label"
                                   >
                                     Username
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    --
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Tags
                                   </span>
                                   <span
                                     class="ant-descriptions-item-content"
@@ -2987,29 +2941,6 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                 </div>
                               </td>
                             </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Tags
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    --
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
                           </tbody>
                         </table>
                       </div>
@@ -4041,29 +3972,6 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                     class="ant-descriptions-item-label"
                                   >
                                     Username
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    --
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Tags
                                   </span>
                                   <span
                                     class="ant-descriptions-item-content"
@@ -5113,29 +5021,6 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                 </div>
                               </td>
                             </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Tags
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    --
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
                           </tbody>
                         </table>
                       </div>
@@ -6168,29 +6053,6 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                                     class="ant-descriptions-item-content"
                                   >
                                     24418cc316df
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Tags
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    --
                                   </span>
                                 </div>
                               </td>
@@ -7509,29 +7371,6 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client w
                                 </div>
                               </td>
                             </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Tags
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    --
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
                           </tbody>
                         </table>
                       </div>
@@ -8846,29 +8685,6 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render dpsk cli
                                     class="ant-descriptions-item-content"
                                   >
                                     24418cc316df
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Tags
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    --
                                   </span>
                                 </div>
                               </td>
@@ -10375,29 +10191,6 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                 </div>
                               </td>
                             </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Tags
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    --
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
                           </tbody>
                         </table>
                       </div>
@@ -11724,29 +11517,6 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                                     class="ant-descriptions-item-content"
                                   >
                                     24418cc316df
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Tags
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    --
                                   </span>
                                 </div>
                               </td>
@@ -13081,29 +12851,6 @@ exports[`ClientOverviewTab OverviewWidget should render correctly when search pa
                                 </div>
                               </td>
                             </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Tags
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    --
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
                           </tbody>
                         </table>
                       </div>
@@ -14135,29 +13882,6 @@ exports[`ClientOverviewTab OverviewWidget should render historical client info c
                                     class="ant-descriptions-item-label"
                                   >
                                     Username
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    --
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Tags
                                   </span>
                                   <span
                                     class="ant-descriptions-item-content"
