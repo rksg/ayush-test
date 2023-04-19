@@ -8,8 +8,8 @@ import { useNavigateToPath }        from '@acx-ui/react-router-dom'
 
 import { useCreateCallQoeTestMutation, useDeleteCallQoeTestMutation } from '../services'
 
-import { VideoCallQoeFormCreate }  from './VideoCallQoeFormCreate'
-import { VideoCallQoeFormDetails } from './VideoCallQoeFormDetails'
+import { VideoCallQoeCreateForm }  from './VideoCallQoeCreateForm'
+import { VideoCallQoeDetailsForm } from './VideoCallQoeDetailsForm'
 
 export function VideoCallQoeForm () {
   const { $t } = useIntl()
@@ -49,9 +49,9 @@ export function VideoCallQoeForm () {
       {
         <StepsFormNew.StepForm
           children={link?
-            <VideoCallQoeFormDetails link={link}/>
+            <VideoCallQoeDetailsForm link={link}/>
             :
-            <VideoCallQoeFormCreate />
+            <VideoCallQoeCreateForm />
           }/>
       }
 

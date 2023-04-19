@@ -1,7 +1,7 @@
 import { TimeStamp } from '@acx-ui/types'
 
 
-type Meeting = {
+export type Meeting = {
   id: number
   name: string
   zoomMeetingId: number

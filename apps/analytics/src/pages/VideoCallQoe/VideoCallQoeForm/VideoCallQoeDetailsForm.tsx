@@ -7,7 +7,7 @@ import {
 
 import * as FormItems from './FormItems'
 
-export function VideoCallQoeFormDetails ({ link }: { link: string }) {
+export function VideoCallQoeDetailsForm ({ link }: { link: string }) {
   const { $t } = useIntl()
   return <>
     <Subtitle level={4}>
