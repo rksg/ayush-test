@@ -79,7 +79,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
         'lagId', 'syncedSwitchConfig', 'ingressAclName', 'egressAclName', 'usedInFormingStack',
         'id', 'poeType', 'signalIn', 'signalOut', 'lagName', 'opticsType',
         'broadcastIn', 'broadcastOut', 'multicastIn', 'multicastOut', 'inErr', 'outErr',
-        'crcErr', 'inDiscard', 'usedInFormingStack'
+        'crcErr', 'inDiscard', 'usedInFormingStack', 'mediaType'
       ]
     },
     search: {
