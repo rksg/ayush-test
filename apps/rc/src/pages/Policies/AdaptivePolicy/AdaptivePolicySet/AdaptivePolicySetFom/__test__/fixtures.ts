@@ -110,7 +110,7 @@ export const prioritizedPolicies = {
 }
 
 export const assignConditions = {
-  paging: { totalCount: 1, page: 1, pageSize: 1, pageCount: 1 },
+  paging: { totalCount: 2, page: 1, pageSize: 10, pageCount: 1 },
   content: [
     {
       id: 'a81bb403-d5e6-4c2b-a525-3bfbabebb48c',

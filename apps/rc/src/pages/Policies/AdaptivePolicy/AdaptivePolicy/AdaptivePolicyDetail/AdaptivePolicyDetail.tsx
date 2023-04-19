@@ -1,11 +1,15 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Col, Form, Row, Space, Typography } from 'antd'
 import { useIntl }                           from 'react-intl'
 import { useParams }                         from 'react-router-dom'
 
-import { Button, Card, Loader, PageHeader }                         from '@acx-ui/components'
-import { useGetAdaptivePolicyQuery, useGetConditionsInPolicyQuery } from '@acx-ui/rc/services'
+import { Button, Card, Loader, PageHeader } from '@acx-ui/components'
+import {
+  useGetAdaptivePolicyQuery,
+  useGetConditionsInPolicyQuery,
+  useLazyGetRadiusAttributeGroupQuery
+} from '@acx-ui/rc/services'
 import {
   AccessCondition,
   CriteriaOption,
@@ -22,6 +26,7 @@ export default function AdaptivePolicyDetail () {
   const { $t } = useIntl()
   const { policyId, templateId } = useParams()
   const { Paragraph } = Typography
+  const [attributeGroupName, seAttributeGroupName] = useState('' as string)
 
   // eslint-disable-next-line max-len
   const { data: policyData, isLoading: isGetAdaptivePolicyLoading }= useGetAdaptivePolicyQuery({ params: { templateId, policyId } })
@@ -30,6 +35,17 @@ export default function AdaptivePolicyDetail () {
   const { data: conditionsData, isLoading: isGetConditionsLoading } = useGetConditionsInPolicyQuery({
     payload: { page: '1', pageSize: '2147483647' },
     params: { policyId, templateId } })
+
+  const [getAttributeGroup] = useLazyGetRadiusAttributeGroupQuery()
+
+  useEffect(() => {
+    if(!policyData) return
+    getAttributeGroup({ params: { policyId: policyData.onMatchResponse } }).then(result => {
+      if (result.data) {
+        seAttributeGroupName(result.data.name)
+      }
+    })
+  }, [policyData])
 
   const getConditions = function (conditions : AccessCondition [] | undefined) {
     return conditions?.map(((condition) => {
@@ -96,6 +112,13 @@ export default function AdaptivePolicyDetail () {
                   <Paragraph>{$t({ defaultMessage: 'Access Conditions' })}</Paragraph>
                 </Col>
                 {getConditions(conditionsData?.data)}
+              </Row>
+              <Row>
+                <Col span={6}>
+                  <Form.Item label={$t({ defaultMessage: 'RADIUS Attributes Group' })}>
+                    {attributeGroupName}
+                  </Form.Item>
+                </Col>
               </Row>
             </Form>
           </Loader>
