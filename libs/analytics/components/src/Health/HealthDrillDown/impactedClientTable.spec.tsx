@@ -26,7 +26,7 @@ describe('ImpactedClientsTable', () => {
         <ImpactedClientsTable
           filters={filters}
           drillDownSelection='connectionFailure'
-          selectedStage='assoFailure'
+          selectedStage='Association'
         />
       </Provider>,
       {
@@ -53,7 +53,7 @@ describe('ImpactedClientsTable', () => {
         <ImpactedClientsTable
           filters={filters}
           drillDownSelection='connectionFailure'
-          selectedStage='assoFailure'
+          selectedStage='Association'
         />
       </Provider>,
       {
@@ -88,7 +88,7 @@ describe('ImpactedClientsTable', () => {
         <ImpactedClientsTable
           filters={filters}
           drillDownSelection='connectionFailure'
-          selectedStage='assoFailure'
+          selectedStage='Association'
         />
       </Provider>,
       {

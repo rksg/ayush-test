@@ -13,7 +13,7 @@ import { EdgeDhcpPool, EdgeDhcpSetting }                            from '@acx-u
 interface ManageDhcpDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
-  inUseService: string | undefined
+  inUseService: string | null
 }
 
 const ManageDhcpDrawer = (props: ManageDhcpDrawerProps) => {
@@ -44,9 +44,7 @@ const ManageDhcpDrawer = (props: ManageDhcpDrawerProps) => {
   const [patchEdgeDhcpService] = usePatchEdgeDhcpServiceMutation()
 
   useEffect(() => {
-    if(props.inUseService) {
-      form.setFieldValue('dhcpId', props.inUseService)
-    }
+    form.setFieldValue('dhcpId', props.inUseService)
   }, [props.inUseService])
 
   const columns: TableProps<EdgeDhcpPool>['columns'] = [
