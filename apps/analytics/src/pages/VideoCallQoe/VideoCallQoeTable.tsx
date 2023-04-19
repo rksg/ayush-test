@@ -14,7 +14,7 @@ import { TABLE_DEFAULT_PAGE_SIZE }               from '@acx-ui/utils'
 import { useVideoCallQoeTestsQuery } from '../VideoCallQoe/services'
 
 import * as MeetingType   from './constants'
-import { messageMapping } from './errorMessageMapping'
+import { messageMapping } from './contents'
 import * as UI            from './styledComponents'
 import { Meeting }        from './types'
 
