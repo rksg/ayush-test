@@ -6,7 +6,10 @@ import { find }      from 'lodash'
 import moment        from 'moment-timezone'
 import { useParams } from 'react-router-dom'
 
-import { KpiThresholdType, healthApi } from '@acx-ui/analytics/services'
+import {
+  KpiThresholdType,
+  healthApi
+} from '@acx-ui/analytics/services'
 import {
   CategoryTab,
   kpisForTab,
@@ -30,22 +33,15 @@ export const defaultThreshold: KpiThresholdType = {
   apCapacity: kpiConfig.apCapacity.histogram.initialThreshold,
   apServiceUptime: kpiConfig.apServiceUptime.histogram.initialThreshold,
   apToSZLatency: kpiConfig.apToSZLatency.histogram.initialThreshold,
-  switchPoeUtilization:
-    kpiConfig.switchPoeUtilization.histogram.initialThreshold
+  switchPoeUtilization: kpiConfig.switchPoeUtilization.histogram.initialThreshold
 }
 
-export default function KpiSections (props: {
-  tab: CategoryTab;
-  filters: AnalyticsFilter;
-}) {
+export default function KpiSections (props: { tab: CategoryTab, filters: AnalyticsFilter }) {
   const { tab, filters } = props
   const { kpis } = kpisForTab[tab]
-  const { useGetKpiThresholdsQuery, useFetchThresholdPermissionQuery } =
-    healthApi
+  const { useGetKpiThresholdsQuery, useFetchThresholdPermissionQuery } = healthApi
+  const thresholdKeys = Object.keys(defaultThreshold) as (keyof KpiThresholdType)[]
   const params = useParams()
-  const thresholdKeys = Object.keys(
-    defaultThreshold
-  ) as (keyof KpiThresholdType)[]
   const isApInPath = find(
     filters.path,
     ({ type }) => type === 'ap' || type === 'AP'
@@ -83,66 +79,52 @@ export default function KpiSections (props: {
       return copy
     }
     return filters.path
-  }, [isApInPath, apData])
-
+  }, [isApInPath, apData, apList, filters.path])
   const customThresholdQuery = useGetKpiThresholdsQuery({
-    ...filters,
-    path: finalPath,
-    kpis: thresholdKeys
-  })
+    ...filters, path: finalPath, kpis: thresholdKeys })
   const { data, fulfilledTimeStamp } = customThresholdQuery
   const thresholds = thresholdKeys.reduce((kpis, kpi) => {
     kpis[kpi] = data?.[`${kpi}Threshold`]?.value ?? defaultThreshold[kpi]
     return kpis
   }, {} as KpiThresholdType)
-  const thresholdPermissionQuery = useFetchThresholdPermissionQuery({
-    path: finalPath
-  })
-  const mutationAllowed = Boolean(
-    thresholdPermissionQuery.data?.mutationAllowed
-  )
-  return (
-    <Loader states={[customThresholdQuery, thresholdPermissionQuery]}>
-      {fulfilledTimeStamp && (
-        <KpiSection
-          key={fulfilledTimeStamp} // forcing component to rerender on newly received thresholds
-          kpis={kpis}
-          thresholds={thresholds}
-          mutationAllowed={mutationAllowed}
-          filters={{ ...filters, path: finalPath }}
-        />
-      )}
-    </Loader>
-  )
+  const thresholdPermissionQuery = useFetchThresholdPermissionQuery({ path: finalPath })
+  const mutationAllowed = Boolean(thresholdPermissionQuery.data?.mutationAllowed)
+  return <Loader states={[customThresholdQuery, thresholdPermissionQuery]}>
+    {fulfilledTimeStamp && <KpiSection
+      key={fulfilledTimeStamp} // forcing component to rerender on newly received thresholds
+      kpis={kpis}
+      thresholds={thresholds}
+      mutationAllowed={mutationAllowed}
+      filters={{ ...filters, path: finalPath }}
+    />}
+  </Loader>
 }
 
 function KpiSection (props: {
-  kpis: string[];
-  thresholds: KpiThresholdType;
-  mutationAllowed: boolean;
-  filters: AnalyticsFilter;
+  kpis: string[]
+  thresholds: KpiThresholdType
+  mutationAllowed: boolean
+  filters : AnalyticsFilter
 }) {
   const { kpis, filters, thresholds } = props
   const { timeWindow, setTimeWindow } = useContext(HealthPageContext)
   const isNetwork = filters.path.length === 1
-  const [kpiThreshold, setKpiThreshold] =
-    useState<KpiThresholdType>(thresholds)
+  const [ kpiThreshold, setKpiThreshold ] = useState<KpiThresholdType>(thresholds)
   const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
       const instance = chart.getEchartsInstance()
       instance.group = 'timeSeriesGroup'
     }
   }
-  const defaultZoom =
+  const defaultZoom = (
     moment(filters.startDate).isSame(timeWindow[0]) &&
     moment(filters.endDate).isSame(timeWindow[1])
-  useEffect(() => {
-    connect('timeSeriesGroup')
-  }, [])
+  )
+  useEffect(() => { connect('timeSeriesGroup') }, [])
   return (
     <>
       {kpis.map((kpi) => (
-        <GridRow key={kpi + defaultZoom} $divider>
+        <GridRow key={kpi+defaultZoom} $divider>
           <GridCol col={{ span: 16 }}>
             <GridRow style={{ height: '160px' }}>
               <GridCol col={{ span: 5 }}>
@@ -160,9 +142,7 @@ function KpiSection (props: {
                   threshold={kpiThreshold[kpi as keyof KpiThresholdType]}
                   chartRef={connectChart}
                   setTimeWindow={setTimeWindow}
-                  {...(defaultZoom
-                    ? { timeWindow: undefined }
-                    : { timeWindow })}
+                  {...(defaultZoom ? { timeWindow: undefined } : { timeWindow })}
                 />
               </GridCol>
             </GridRow>

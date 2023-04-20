@@ -26,6 +26,7 @@ describe('Kpi Section', () => {
   beforeAll(() => mockServer.listen())
   beforeEach(() => {
     store.dispatch(healthApi.util.resetApiState())
+    mockServer.restoreHandlers()
   })
 
   afterEach(() => {
