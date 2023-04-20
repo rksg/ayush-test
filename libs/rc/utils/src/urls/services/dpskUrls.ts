@@ -35,6 +35,12 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
     oldUrl: DpskBaseUrl + paginationParams,
     newApi: true
   },
+  getEnhancedDpskList: {
+    method: 'post',
+    url: NewDpskBaseUrl + '/query',
+    oldUrl: DpskBaseUrl + '/query',
+    newApi: true
+  },
   addDpsk: {
     method: 'post',
     url: NewDpskBaseUrl,
@@ -53,10 +59,10 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
     oldUrl: DpskBaseUrlWithId,
     newApi: true
   },
-  getPassphraseList: {
-    method: 'get',
-    url: NewDpskPassphraseBaseUrl + paginationParams,
-    oldUrl: DpskPassphraseBaseUrl + paginationParams,
+  getEnhancedPassphraseList: {
+    method: 'post',
+    url: NewDpskPassphraseBaseUrl + '/query',
+    oldUrl: DpskPassphraseBaseUrl + '/query',
     newApi: true
   },
   getPassphrase: {
