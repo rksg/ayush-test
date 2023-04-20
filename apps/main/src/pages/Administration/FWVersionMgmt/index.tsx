@@ -13,6 +13,8 @@ import {
 } from '@acx-ui/rc/services'
 import { useParams } from '@acx-ui/react-router-dom'
 
+import ApplicationPolicyMgmt from '../ApplicationPolicyMgmt'
+
 import ApFirmware      from './ApFirmware'
 import EdgeFirmware    from './EdgeFirmware'
 import {
@@ -38,7 +40,7 @@ const FWVersionMgmt = () => {
   const [isSwitchFirmwareAvailable, setIsSwitchFirmwareAvailable] = useState(false)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isEdgeFirmwareAvailable, setIsEdgeFirmwareAvailable] = useState(false) // TODO: GetDpFirmwareUpgradeAvailable API
-
+  const [isAPPLibraryAvailable, setIsAPPLibraryAvailable] = useState(true)
   useEffect(()=>{
     if (latestReleaseVersions && venueVersionList) {
       // As long as one of the venues' version smaller than the latest release version, it would be the available
@@ -51,6 +53,7 @@ const FWVersionMgmt = () => {
   }, [latestReleaseVersions, venueVersionList])
 
   useEffect(()=>{
+    setIsAPPLibraryAvailable(true)
     if (latestSwitchReleaseVersions && switchVenueVersionList) {
       const latest09 = getReleaseFirmware(latestSwitchReleaseVersions)[0] // 09010f_b5
       const latest10 = getReleaseFirmware(latestSwitchReleaseVersions)[1] // 10010e
@@ -86,6 +89,14 @@ const FWVersionMgmt = () => {
       </UI.TabWithHint>,
       content: <EdgeFirmware />,
       visible: isEdgeEnabled
+    },
+    appLibrary: {
+      title: <UI.TabWithHint>{$t({ defaultMessage: 'Application Library' })}
+        {isAPPLibraryAvailable && <Tooltip children={<InformationSolid />}
+          title={$t({ defaultMessage: 'There are new Application update available' })} />}
+      </UI.TabWithHint>,
+      content: <ApplicationPolicyMgmt />,
+      visible: true
     }
   }
 

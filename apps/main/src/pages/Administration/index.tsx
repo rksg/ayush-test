@@ -46,7 +46,7 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
       <Tabs.TabPane tab={$t({ defaultMessage: 'Notifications' })} key='notifications' />
       <Tabs.TabPane tab={$t({ defaultMessage: 'Subscriptions' })} key='subscriptions' />
       <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Firmware Version Management' })}
+        tab={$t({ defaultMessage: 'Version Management' })}
         key='fwVersionMgmt'
       />
       { isRadiusClientEnabled &&
