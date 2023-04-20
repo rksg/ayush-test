@@ -1,16 +1,18 @@
-import { Typography } from 'antd'
-import { useIntl }    from 'react-intl'
-import AutoSizer      from 'react-virtualized-auto-sizer'
+import { useIntl } from 'react-intl'
+import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { TimeSeriesDataType, getSeriesData }                                                                                             from '@acx-ui/analytics/utils'
-import { Card, GridCol, GridRow, Loader, MultiLineTimeSeriesChart, NoData, PageHeader, Table, TableProps, TrendPill, TrendType, cssStr } from '@acx-ui/components'
-import { DateFormatEnum, formatter }                                                                                                     from '@acx-ui/formatter'
-import { TenantLink, useParams }                                                                                                         from '@acx-ui/react-router-dom'
+import { TimeSeriesDataType, getSeriesData } from '@acx-ui/analytics/utils'
+import { Card, GridCol, GridRow,
+  Loader, MultiLineTimeSeriesChart,
+  NoData, PageHeader, Table,
+  TableProps, TrendPill, TrendType } from '@acx-ui/components'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { TenantLink, useParams }     from '@acx-ui/react-router-dom'
 
 import { DetailedResponse, Participants, useVideoCallQoeTestDetailQuery } from '../VideoCallQoe/services'
 
 import { getConnectionQuality } from './connectionQuality'
-import { BigTrendPill, Title }  from './styledComponents'
+import * as UI                  from './styledComponents'
 
 
 export function VideoCallQoeDetails (){
@@ -127,8 +129,8 @@ export function VideoCallQoeDetails (){
   ]
   const getPill = (mos:number)=>{
     const isValidMos = mos ? true : false
-    return isValidMos ? (mos >= 4 ? <BigTrendPill value='Good' trend='positive' /> :
-      <BigTrendPill value='Bad' trend='negative' />) : '-'
+    return isValidMos ? (mos >= 4 ? <UI.BigTrendPill value='Good' trend='positive' /> :
+      <UI.BigTrendPill value='Bad' trend='negative' />) : '-'
   }
 
   const seriesMapping = [{
@@ -221,148 +223,175 @@ export function VideoCallQoeDetails (){
       {callQoeDetails && currentMeeting && <>
         <PageHeader
           title={callQoeDetails.name}
-          subTitle={`Start Time: ${formatter(DateFormatEnum.DateTimeFormatWithSeconds)
-          (currentMeeting.startTime)}` +
-        ` | End Time: ${formatter(DateFormatEnum.DateTimeFormatWithSeconds)
-        (currentMeeting.endTime)}` +
-    ` | Duration: ${formatter('durationFormat')
-    (new Date(currentMeeting.endTime).getTime()
-    - new Date(currentMeeting.startTime).getTime())}`
+          subTitle={
+            `Start Time:
+            ${formatter(DateFormatEnum.DateTimeFormatWithSeconds)(currentMeeting.startTime)}` +
+            ` | End Time:
+            ${formatter(DateFormatEnum.DateTimeFormatWithSeconds)(currentMeeting.endTime)}` +
+            ` | Duration:
+            ${formatter('durationFormat')(new Date(currentMeeting.endTime).getTime()
+              - new Date(currentMeeting.startTime).getTime())}`
           }
           extra={[
-            <>{$t({ defaultMessage: 'Video Call QOE' })}</>,
+            <>{$t({ defaultMessage: 'Video Call QoE' })}</>,
             <>{getPill(currentMeeting.mos)}</>
           ]} />
-        <Typography.Text style={{
-          fontSize: cssStr('--acx-body-2-font-size'),
-          fontWeight: cssStr('--acx-body-font-weight-bold'),
-          fontFamily: cssStr('--acx-accent-brand-font'),
-          lineHeight: cssStr('--acx-body-3-line-height')
-        }}>{$t({ defaultMessage: 'Participant Details' })}</Typography.Text>
+        <UI.ReportSectionTitle>
+          {$t({ defaultMessage: 'Participant Details' })}
+        </UI.ReportSectionTitle>
         <Table
           columns={columnHeaders}
           dataSource={participants}
         />
       </>}
       {callQoeDetails &&
-      <Card title={$t({ defaultMessage: 'Zoom Call Statistics' })} type='no-border'>
-        <GridRow>
-          <GridCol col={{ span: 11 }} style={{ height: '280px' }}>
-            <>{getParticipantName(callQoeDetails,0)}</>
-            <Title>{$t({ defaultMessage: 'Jitter' })}</Title>
-            <AutoSizer>
-              {({ height, width }) => (
-                getSeries(callQoeDetails, 'jitter', 0).length ?
-                  <MultiLineTimeSeriesChart
-                    style={{ width: width, height }}
-                    data={getSeries(callQoeDetails, 'jitter', 0)}
-                    dataFormatter={formatter('durationFormat')}
-                  />
-                  : <NoData/>
-              )}
-            </AutoSizer>
-          </GridCol>
-          <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-            <>{getParticipantName(callQoeDetails,1)}</>
-            <Title></Title>
-            <AutoSizer>
-              {({ height, width }) => (
-                getSeries(callQoeDetails, 'jitter', 1).length ?
-                  <MultiLineTimeSeriesChart
-                    style={{ width: width, height }}
-                    data={getSeries(callQoeDetails, 'jitter', 1)}
-                    dataFormatter={formatter('durationFormat')}
-                  />
-                  : <NoData/>
-              )}
-            </AutoSizer>
-          </GridCol>
-          <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-            <Title>{$t({ defaultMessage: 'Latency' })}</Title>
-            <AutoSizer>
-              {({ height, width }) => (
-                getSeries(callQoeDetails, 'latency', 0).length ?
-                  <MultiLineTimeSeriesChart
-                    style={{ width: width, height }}
-                    data={getSeries(callQoeDetails, 'latency', 0)}
-                    dataFormatter={formatter('durationFormat')}
-                  />
-                  : <NoData/>
-              )}
-            </AutoSizer>
-          </GridCol>
-          <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-            <Title></Title>
-            <AutoSizer>
-              {({ height, width }) => (
-                getSeries(callQoeDetails, 'latency', 1).length ?
-                  <MultiLineTimeSeriesChart
-                    style={{ width: width, height }}
-                    data={getSeries(callQoeDetails, 'latency', 1)}
-                    dataFormatter={formatter('durationFormat')}
-                  />
-                  : <NoData/>
-              )}
-            </AutoSizer>
-          </GridCol>
-          <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-            <Title>{$t({ defaultMessage: 'Packet Loss' })}</Title>
-            <AutoSizer>
-              {({ height, width }) => (
-                getSeries(callQoeDetails, 'packet_loss', 0).length ?
-                  <MultiLineTimeSeriesChart
-                    style={{ width: width, height }}
-                    data={getSeries(callQoeDetails, 'packet_loss', 0)}
-                    dataFormatter={formatter('percentFormat')}
-                  />
-                  : <NoData/>
-              )}
-            </AutoSizer>
-          </GridCol>
-          <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-            <Title></Title>
-            <AutoSizer>
-              {({ height, width }) => (
-                getSeries(callQoeDetails, 'packet_loss', 1).length ?
-                  <MultiLineTimeSeriesChart
-                    style={{ width: width, height }}
-                    data={getSeries(callQoeDetails, 'packet_loss', 1)}
-                    dataFormatter={formatter('percentFormat')}
-                  />
-                  : <NoData/>
-              )}
-            </AutoSizer>
-          </GridCol>
-          <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-            <Title>{$t({ defaultMessage: 'Video Frame Rate' })}</Title>
-            <AutoSizer>
-              {({ height, width }) => (
-                getSeries(callQoeDetails, 'video_frame_rate', 0, true).length ?
-                  <MultiLineTimeSeriesChart
-                    style={{ width: width, height }}
-                    data={getSeries(callQoeDetails, 'video_frame_rate', 0, true)}
-                    dataFormatter={formatter('fps')}
-                  />
-                  : <NoData/>
-              )}
-            </AutoSizer>
-          </GridCol>
-          <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-            <Title></Title>
-            <AutoSizer>
-              {({ height, width }) => (
-                getSeries(callQoeDetails, 'video_frame_rate', 1, true).length ?
-                  <MultiLineTimeSeriesChart
-                    style={{ width: width, height }}
-                    data={getSeries(callQoeDetails, 'video_frame_rate', 1, true)}
-                    dataFormatter={formatter('fps')}
-                  />
-                  : <NoData/>
-              )}
-            </AutoSizer>
-          </GridCol>
-        </GridRow>
-      </Card>
+        <UI.CharsContainer>
+          <UI.ReportSectionTitle style={{ padding: '10px 0px' }}>
+            {$t({ defaultMessage: 'Zoom Call Statistics' })}
+          </UI.ReportSectionTitle>
+          <GridRow>
+            <GridCol col={{ span: 12 }}>
+              <UI.Label>Participant 1: </UI.Label>
+              <UI.Value>{getParticipantName(callQoeDetails,0)}</UI.Value>
+            </GridCol>
+            <GridCol col={{ span: 12 }}>
+              <UI.Label>Participant 2: </UI.Label>
+              <UI.Value>{getParticipantName(callQoeDetails,1)}</UI.Value>
+            </GridCol>
+            <GridCol col={{ span: 24 }}>
+              <Card.Title>{$t({ defaultMessage: 'Jitter' })}</Card.Title>
+            </GridCol>
+            <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
+              <Card>
+                <AutoSizer>
+                  {({ height, width }) => (
+                    getSeries(callQoeDetails, 'jitter', 0).length ?
+                      <MultiLineTimeSeriesChart
+                        style={{ width: width, height }}
+                        data={getSeries(callQoeDetails, 'jitter', 0)}
+                        dataFormatter={formatter('durationFormat')}
+                      />
+                      : <NoData/>
+                  )}
+                </AutoSizer>
+              </Card>
+            </GridCol>
+            <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
+              <Card>
+                <AutoSizer>
+                  {({ height, width }) => (
+                    getSeries(callQoeDetails, 'jitter', 1).length ?
+                      <MultiLineTimeSeriesChart
+                        style={{ width: width, height }}
+                        data={getSeries(callQoeDetails, 'jitter', 1)}
+                        dataFormatter={formatter('durationFormat')}
+                      />
+                      : <NoData/>
+                  )}
+                </AutoSizer>
+              </Card>
+            </GridCol>
+            <GridCol col={{ span: 24 }}>
+              <Card.Title>{$t({ defaultMessage: 'Latency' })}</Card.Title>
+            </GridCol>
+            <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
+              <Card>
+                <AutoSizer>
+                  {({ height, width }) => (
+                    getSeries(callQoeDetails, 'latency', 0).length ?
+                      <MultiLineTimeSeriesChart
+                        style={{ width: width, height }}
+                        data={getSeries(callQoeDetails, 'latency', 0)}
+                        dataFormatter={formatter('durationFormat')}
+                      />
+                      : <NoData/>
+                  )}
+                </AutoSizer>
+              </Card>
+            </GridCol>
+            <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
+              <Card>
+                <AutoSizer>
+                  {({ height, width }) => (
+                    getSeries(callQoeDetails, 'latency', 1).length ?
+                      <MultiLineTimeSeriesChart
+                        style={{ width: width, height }}
+                        data={getSeries(callQoeDetails, 'latency', 1)}
+                        dataFormatter={formatter('durationFormat')}
+                      />
+                      : <NoData/>
+                  )}
+                </AutoSizer>
+              </Card>
+            </GridCol>
+            <GridCol col={{ span: 24 }}>
+              <Card.Title>{$t({ defaultMessage: 'Packet Loss' })}</Card.Title>
+            </GridCol>
+            <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
+              <Card>
+                <AutoSizer>
+                  {({ height, width }) => (
+                    getSeries(callQoeDetails, 'packet_loss', 0).length ?
+                      <MultiLineTimeSeriesChart
+                        style={{ width: width, height }}
+                        data={getSeries(callQoeDetails, 'packet_loss', 0)}
+                        dataFormatter={formatter('percentFormat')}
+                      />
+                      : <NoData/>
+                  )}
+                </AutoSizer>
+              </Card>
+            </GridCol>
+            <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
+              <Card>
+                <AutoSizer>
+                  {({ height, width }) => (
+                    getSeries(callQoeDetails, 'packet_loss', 1).length ?
+                      <MultiLineTimeSeriesChart
+                        style={{ width: width, height }}
+                        data={getSeries(callQoeDetails, 'packet_loss', 1)}
+                        dataFormatter={formatter('percentFormat')}
+                      />
+                      : <NoData/>
+                  )}
+                </AutoSizer>
+              </Card>
+            </GridCol>
+            <GridCol col={{ span: 24 }}>
+              <Card.Title>{$t({ defaultMessage: 'Video Frame Rate' })}</Card.Title>
+            </GridCol>
+            <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
+              <Card>
+                <AutoSizer>
+                  {({ height, width }) => (
+                    getSeries(callQoeDetails, 'video_frame_rate', 0, true).length ?
+                      <MultiLineTimeSeriesChart
+                        style={{ width: width, height }}
+                        data={getSeries(callQoeDetails, 'video_frame_rate', 0, true)}
+                        dataFormatter={formatter('fps')}
+                      />
+                      : <NoData/>
+                  )}
+                </AutoSizer>
+              </Card>
+            </GridCol>
+            <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
+              <Card>
+                <AutoSizer>
+                  {({ height, width }) => (
+                    getSeries(callQoeDetails, 'video_frame_rate', 1, true).length ?
+                      <MultiLineTimeSeriesChart
+                        style={{ width: width, height }}
+                        data={getSeries(callQoeDetails, 'video_frame_rate', 1, true)}
+                        dataFormatter={formatter('fps')}
+                      />
+                      : <NoData/>
+                  )}
+                </AutoSizer>
+              </Card>
+            </GridCol>
+          </GridRow>
+        </UI.CharsContainer>
       }
     </Loader>
   )
