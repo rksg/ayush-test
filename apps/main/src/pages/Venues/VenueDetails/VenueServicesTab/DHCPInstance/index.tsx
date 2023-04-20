@@ -62,7 +62,7 @@ const DHCPInstance = () => {
   return (
     <GridRow>
       <GridCol col={{ span: 24 }}>
-        {venueDHCPProfile?.id&&<BasicInfo venueId={venueDHCPProfile?.id}/>}
+        <BasicInfo venueId={venueDHCPProfile?.id}/>
       </GridCol>
       {venueDHCPProfile?.enabled && <ContentSwitcher tabDetails={tabDetails} size='large' />}
     </GridRow>

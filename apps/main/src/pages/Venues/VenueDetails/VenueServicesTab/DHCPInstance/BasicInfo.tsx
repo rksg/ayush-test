@@ -22,7 +22,7 @@ interface DHCPFormRefType {
   resetForm: Function,
 }
 export default function BasicInfo (props:{
-  venueId: string
+  venueId?: string
 }) {
   type LocationState = {
     showConfig?: boolean
