@@ -69,7 +69,7 @@ const Timeline = (props: TimelineProps) => {
   const [ expand, setExpand ] = useState<Record<string, boolean>>({})
   const currentStep = props.items.findIndex(({ endDatetime }) => endDatetime === undefined)
 
-  const newData = props.items.map((i, index) => {
+  const modifiedProps = props.items.map((i, index) => {
     if (index <= currentStep || currentStep < 0 || i.status === 'SUCCESS') {
       return i
     } else {
@@ -87,7 +87,7 @@ const Timeline = (props: TimelineProps) => {
       </Descriptions.Item>
     </Descriptions>
     <AntTimeline>
-      {newData.map((item, index)=>[
+      {modifiedProps.map((item, index)=>[
         <AntTimeline.Item
           key={`timeline-start-${index}`}
           dot={<Step $state={
@@ -108,7 +108,7 @@ const Timeline = (props: TimelineProps) => {
                 <div>
                   <StatusComp status={item.status}/>
                   <DescriptionWrapper
-                    style={{ paddingBottom: item.status === 'FAIL' ? 10 : 0 }}
+                    style={{ paddingBottom: item.status === 'FAIL' && item.error ? 10 : 0 }}
                   >{item.description}</DescriptionWrapper>
                 </div>
                 <ExpanderWrapper onClick={()=> {
