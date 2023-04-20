@@ -13,7 +13,7 @@ import { RadiusAttributeGroupFormDrawer } from './RadiusAttributeGroupFormDrawer
 interface RadiusAttributeDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
-  settingForm: FormInstance
+  settingForm?: FormInstance
 }
 
 function useColumns () {
@@ -83,7 +83,7 @@ export function RadiusAttributeGroupSelectDrawer (props: RadiusAttributeDrawerPr
   }
 
   const onSubmit = () => {
-    settingForm.setFieldValue('attributeGroupId', selectedGroup.id)
+    settingForm?.setFieldValue('attributeGroupId', selectedGroup.id)
     onClose()
   }
 

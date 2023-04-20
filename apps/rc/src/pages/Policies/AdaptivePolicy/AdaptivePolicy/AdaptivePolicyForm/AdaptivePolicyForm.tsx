@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -21,7 +21,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 
-import { AdaptivePolicySettingForm } from './AdaptivePolicySettingForm'
+import { AdaptivePolicyAdvancedSetting } from './AdaptivePolicyAdvancedSetting'
+import { AdaptivePolicySettingForm }     from './AdaptivePolicySettingForm'
 
 interface AdaptivePolicyFormProps {
   editMode?: boolean,
@@ -50,7 +51,10 @@ export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
     params: { policyId, templateId } }, { skip: !editMode })
 
   const [isUpdating, setIsUpdating] = useState(false)
-
+  const [attributeGroupVisible, setAttributeGroupVisible] = useState(false)
+  const [accessConditionsVisible, setAccessConditionsVisible] = useState(false)
+  const [editConditionMode, setEditConditionMode] = useState(false)
+  const [editCondition, setEditCondition] = useState<AccessCondition>()
 
   useEffect(() => {
     if(data && editMode) {
@@ -192,7 +196,21 @@ export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
             isLoading: isGetPolicyLoading || isGetConditionsLoading,
             isFetching: isUpdating
           }]}>
-            <AdaptivePolicySettingForm editMode={editMode} drawerMode={drawerMode}/>
+            <AdaptivePolicySettingForm editMode={editMode}
+              drawerMode={drawerMode}
+              setAttributeGroupVisible={setAttributeGroupVisible}
+              setAccessConditionsVisible={setAccessConditionsVisible}
+              setEditCondition={setEditCondition}
+              setEditConditionMode={setEditConditionMode}/>
+            <AdaptivePolicyAdvancedSetting
+              accessConditionDrawerVisible={accessConditionsVisible}
+              setAccessConditionDrawerVisible={setAccessConditionsVisible}
+              isConditionEdit={editConditionMode}
+              editCondition={editCondition}
+              radiusAttributeDrawerVisible={attributeGroupVisible}
+              setRadiusAttributeDrawerVisible={setAttributeGroupVisible}
+              settingForm={formRef.current}
+            />
           </Loader>
         </StepsForm.StepForm>
       </StepsForm>
