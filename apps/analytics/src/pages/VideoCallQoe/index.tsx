@@ -41,7 +41,7 @@ function VideoCallQoeListPage () {
               placement='left'
               key='disableCallButton'
               trigger='hover'
-              title={$t({ defaultMessage: 'There is already a test call in-process.' })}
+              title={$t({ defaultMessage: 'There is already a test call which is not started.' })}
             >
               <Button type='primary' disabled>
                 {$t({ defaultMessage: 'Create Test Call' })}
