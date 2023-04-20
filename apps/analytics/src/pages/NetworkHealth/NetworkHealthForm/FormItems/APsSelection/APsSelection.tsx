@@ -11,11 +11,11 @@ import { meetVersionRequirements }                                              
 import { Loader, StepsFormNew, useStepFormContext }                              from '@acx-ui/components'
 import { APListNode, DateRange }                                                 from '@acx-ui/utils'
 
-import { deviceRequirements }                                          from '../../../contents'
 import { isAPListNodes, isNetworkNodes, ClientType as ClientTypeEnum } from '../../../types'
 import { ClientType }                                                  from '../ClientType'
 
-import { APsSelectionInput } from './APsSelectionInput'
+import { APsSelectionInput }  from './APsSelectionInput'
+import { deviceRequirements } from './deviceRequirements'
 
 import type { NetworkHealthFormDto, NetworkNodes, NetworkPaths } from '../../../types'
 import type { NamePath }                                         from 'antd/lib/form/interface'
