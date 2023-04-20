@@ -48,12 +48,14 @@ export function GenerateNewPasswordModal (props: {
 
   const saveModal = (async () => {
     try {
-      const payload = form.getFieldValue('outputInterface')
+      const payload = {
+        action: 'regenerate',
+        deliveryMethods: form.getFieldValue('outputInterface')
+      }
       const params = {
         tenantId: props.tenantId,
         guestId: props.guestDetail.id
       }
-      payload.append('action', 'regenerate')
       await generateGuestPassword({ params, payload }).unwrap()
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .then((data: any) => {
