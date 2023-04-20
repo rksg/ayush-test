@@ -318,7 +318,7 @@ describe('DpskPassphraseManagement', () => {
       }
     )
 
-    const targetRecord = mockedDpskPassphraseList.content[0]
+    const targetRecord = mockedDpskPassphraseList.data[0]
     const targetRow = await screen.findByRole('row', { name: new RegExp(targetRecord.username) })
 
     await userEvent.click(within(targetRow).getByRole('checkbox'))
@@ -378,7 +378,7 @@ describe('DpskPassphraseManagement', () => {
       }
     )
 
-    const targetRecord = mockedDpskPassphraseList.content[0]
+    const targetRecord = mockedDpskPassphraseList.data[0]
     const targetRow = await screen.findByRole('row', { name: new RegExp(targetRecord.username) })
 
     await userEvent.click(within(targetRow).getByRole('checkbox'))
