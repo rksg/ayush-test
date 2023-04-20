@@ -249,12 +249,22 @@ export const timeSeriesTooltipFormatter = (
   )
 }
 
-export const handleSingleBinData = (data: [TimeStamp, number|null][]) =>
-  data.map(([timeStamp, value ], index) => (value === null &&
-      ( (index - 1 > 0 && data[index - 1][1] !== null) ||
-        (index + 1 < data.length && data[index + 1][1] !== null)))
-    ? [timeStamp, 0]
-    : [timeStamp, value ])
+export const handleSingleBinData = (data: [TimeStamp, number|null][]) => {
+  let formatted = [ ...data ]
+  for(let i = 0; i< data.length; i++){
+    if(data[i] !== null &&
+      (i === 0 || (i - 1 > 0 && data[i - 1][1] === null)) &&
+      (i >= data.length -1 || (i + 1 < data.length && data[i + 1][1] === null))
+    ){
+      if(i - 1 > 0) {
+        formatted[i-1] = [formatted[i-1][0], 0]
+      }
+      if(i + 1 < data.length) {
+        formatted[i+1] = [formatted[i+1][0], 0]
+      }
+    }
+  }
+}
 
 export type EventParams = {
   // The component name clicked,
