@@ -10,7 +10,9 @@ import {
   screen,
   waitForElementToBeRemoved
 }                    from '@acx-ui/test-utils'
-import { DateRange } from '@acx-ui/utils'
+import { RolesEnum }                      from '@acx-ui/types'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
+import { DateRange }                      from '@acx-ui/utils'
 
 import { expectedIncidentDashboardData } from './__tests__/fixtures'
 import { api }                           from './services'
@@ -42,8 +44,26 @@ describe('IncidentDashboardv2', () => {
         </Provider>
       </BrowserRouter>)
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    expect(screen.queryByTestId('ArrowChevronRight')).toBeValid()
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+  })
+  it('should hide arrow button when role is READ_ONLY', async () => {
+    setUserProfile({
+      allowedOperations: [],
+      profile: { ...getUserProfile().profile, roles: [RolesEnum.READ_ONLY] }
+    })
+    mockGraphqlQuery(dataApiURL, 'IncidentsDashboardWidget', {
+      data: { network: { hierarchyNode: expectedIncidentDashboardData } }
+    })
+    render(
+      <BrowserRouter>
+        <Provider>
+          <IncidentsDashboardv2 filters={filters} />
+        </Provider>
+      </BrowserRouter>)
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    expect(screen.queryByTestId('ArrowChevronRight')).toBeNull()
   })
   it('should render loader', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentsDashboardWidget', {
