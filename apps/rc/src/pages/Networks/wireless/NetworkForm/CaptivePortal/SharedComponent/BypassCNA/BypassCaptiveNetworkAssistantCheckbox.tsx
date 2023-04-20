@@ -1,4 +1,4 @@
-import { useContext, useEffect, useReducer } from 'react'
+import { useState, useContext, useEffect } from 'react'
 
 import {
   Form,
@@ -11,8 +11,9 @@ import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import { GuestNetworkTypeEnum }       from '@acx-ui/rc/utils'
 
+import NetworkFormContext from '../../../NetworkFormContext'
 
-interface BypassCNAProps {
+export interface BypassCNAProps {
   guestNetworkTypeEnum: GuestNetworkTypeEnum
 }
 
@@ -28,29 +29,41 @@ export function BypassCaptiveNetworkAssistantCheckbox (props: BypassCNAProps) {
 
   const { $t } = useIntl()
   const { guestNetworkTypeEnum } = props
+  const [stateOfByPassCNA, setStateOfByPassCNA] = useState(false)
 
-  // TODO: remove this flag and use feature toggle
-  const featureToggle = false
-  // const featureToggle = useIsSplitOn(Features.WIFI_EDA_BYPASS_CNA_TOGGLE)
+  const {
+    data: networkFromContextData,
+    editMode,
+    cloneMode
+  } = useContext(NetworkFormContext)
+
+
+  useEffect(() => {
+    if (editMode || cloneMode) {
+      setStateOfByPassCNA(networkFromContextData?.wlan?.bypassCNA || false)
+      return
+    }
+  },[])
+
+  const featureToggle = useIsSplitOn(Features.WIFI_EDA_BYPASS_CNA_TOGGLE)
 
   // if one condition is true, then go render it.
   const isRenderNeed = [featureToggle, isExemption(guestNetworkTypeEnum)].some(Boolean)
 
-  // TODO unblock after develope.
   if (!isRenderNeed) {
     return null
   }
 
   /* eslint-disable max-len */
   return (
-    <Form.Item>
+    <Form.Item data-testid='bypasscna-fullblock'>
       <Form.Item
         name={['wlan', 'bypassCNA']}
         noStyle
         valuePropName='checked'
-        initialValue={false}
+        initialValue={stateOfByPassCNA}
         children={
-          <Checkbox>
+          <Checkbox data-testid='bypasscna-checkbox'>
             {$t({ defaultMessage: 'Use Bypass Captive Network Assistant' })}
           </Checkbox>
         }
