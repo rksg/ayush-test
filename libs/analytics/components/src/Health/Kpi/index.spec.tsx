@@ -27,7 +27,7 @@ describe('Kpi Section', () => {
     store.dispatch(healthApi.util.resetApiState())
   })
 
-  afterEach(() =>  cleanup())
+  afterEach(() => cleanup())
 
   const sampleTS = {
     time: [
