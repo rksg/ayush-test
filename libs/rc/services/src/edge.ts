@@ -29,8 +29,8 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           ...req,
           body: payload
         }
-      },
-      invalidatesTags: [{ type: 'Edge', id: 'LIST' }]
+      }
+      // invalidatesTags: [{ type: 'Edge', id: 'LIST' }]
     }),
     getEdge: build.query<EdgeGeneralSetting, RequestPayload>({
       query: ({ params }) => {

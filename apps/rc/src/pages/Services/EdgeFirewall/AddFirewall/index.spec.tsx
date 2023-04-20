@@ -131,7 +131,6 @@ describe('Add edge firewall service', () => {
       .toBe('DDoS Rate-limitingON (2 Rules)')
 
     expect(screen.getByText('SmartEdge (0)')).not.toBeNull()
-    // expect(screen.getByText('Smart Edge 2')).not.toBeNull()
 
     await click(actions.getByRole('button', { name: 'Finish' }))
     await waitFor(() => {

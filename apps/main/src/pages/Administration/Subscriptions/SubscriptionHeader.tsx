@@ -129,7 +129,7 @@ export const SubscriptionHeader = () => {
             </Subtitle>
           </Col>
           <Col span={12}>
-            <SpaceWrapper justifycontent='flex-end' size='large'>
+            <SpaceWrapper full justifycontent='flex-end' size='large'>
               <Typography.Text>
                 <FormattedMessage
                   defaultMessage='Current Subscription Tier: <b>{tier}</b>'

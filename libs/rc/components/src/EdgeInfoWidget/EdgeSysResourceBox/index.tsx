@@ -6,7 +6,6 @@ import { Tooltip, GridCol, GridRow, Loader } from '@acx-ui/components'
 import { formatter }                         from '@acx-ui/formatter'
 import { EdgeResourceUtilizationEnum }       from '@acx-ui/rc/utils'
 
-// import { SpaceWrapper } from '../../SpaceWrapper/index'
 import { WrapperStyles } from './styledComponents'
 
 export interface EdgeStateCardProps {

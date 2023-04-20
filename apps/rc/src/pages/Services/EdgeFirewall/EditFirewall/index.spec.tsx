@@ -163,7 +163,7 @@ describe('Edit edge firewall service', () => {
       expect(mockedUpdateFn).toBeCalledWith({
         serviceName: 'test123',
         edgeIds: [],
-        tags: [],
+        // tags: [],
         ddosRateLimitingEnabled: true,
         ddosRateLimitingRules: [{
           ddosAttackType: 'ICMP',
@@ -287,16 +287,11 @@ describe('Edit edge firewall service', () => {
     // Step 2
     const rows = await body.findAllByRole('row', { name: /Smart Edge/i })
     expect(rows.length).toBe(5)
-    await click(
-      within(await body.findByRole('row', { name: /Smart Edge 1/i })).getByRole('checkbox'))
-    await click(
-      within(await body.findByRole('row', { name: /Smart Edge 3/i })).getByRole('checkbox'))
     // eslint-disable-next-line max-len
     expect(within(await body.findByRole('row', { name: /Smart Edge 2/i })).getByRole('switch')).toBeChecked()
-    await click(await body.findByRole('button', { name: 'Deactivate' }))
     await click(
-      within(await body.findByRole('row', { name: /Smart Edge 3/i })).getByRole('checkbox'))
-    await click(await body.findByRole('button', { name: 'Activate' }))
+      within(await body.findByRole('row', { name: /Smart Edge 2/i })).getByRole('checkbox'))
+    await click(await body.findByRole('button', { name: 'Deactivate' }))
 
 
     await click(actions.getByRole('button', { name: 'Finish' }))
@@ -304,8 +299,8 @@ describe('Edit edge firewall service', () => {
     await waitFor(() => {
       expect(mockedUpdateFn).toBeCalledWith({
         serviceName: 'test',
-        edgeIds: ['0000000002', '0000000001'],
-        tags: [],
+        edgeIds: ['0000000003'],
+        // tags: [],
         ddosRateLimitingEnabled: true,
         ddosRateLimitingRules: [{
           ddosAttackType: 'ICMP',
@@ -348,71 +343,4 @@ describe('Edit edge firewall service', () => {
     })
     cleanup()
   }, 30000)
-/*
-  it('should correctly disable statefulACL', async () => {
-    const mockFirewall3: EdgeFirewallSetting = _.cloneDeep(mockFirewall)
-    mockFirewall3.edgeIds = []
-    mockFirewall3.ddosRateLimitingEnabled = true
-    mockFirewall3.ddosRateLimitingRules = [{
-      ddosAttackType: DdosAttackType.ICMP,
-      rateLimiting: 12
-    }]
-
-    const mockedGetFn3 = jest.fn()
-    mockServer.use(
-      rest.get(
-        EdgeFirewallUrls.getEdgeFirewall.url,
-        (req, res, ctx) => {
-          mockedGetFn3()
-          return res(ctx.json(mockFirewall3))
-        }
-      )
-    )
-
-    render(<EditFirewall />, {
-      wrapper: Provider,
-      route: { params: { tenantId: 't-id', serviceId: 'mock-id' } }
-    })
-
-    const form = within(await screen.findByTestId('steps-form'))
-    const body = within(form.getByTestId('steps-form-body'))
-    const actions = within(form.getByTestId('steps-form-actions'))
-
-    expect(await body.findByRole('heading', { name: 'Settings' })).toBeVisible()
-    await waitFor(() => {
-      expect(mockedGetFn3).toBeCalled()
-    })
-    // Step 1
-    await waitFor(() => {
-      expect(body.getByRole('textbox', { name: 'Service Name' })).toHaveAttribute('value', 'test')
-    })
-    expect(body.getByRole('switch', { name: 'acl' })).toBeChecked()
-    // disable stateful ACL
-    await click(body.getByRole('switch', { name: 'acl' }))
-    expect(body.getByRole('switch', { name: 'acl' })).not.toBeChecked()
-
-    // Navigate to Step 2
-    await click(actions.getByRole('button', { name: 'Next' }))
-    expect(await body.findByRole('heading', { name: 'Scope' })).toBeVisible()
-
-    await click(actions.getByRole('button', { name: 'Finish' }))
-
-    await waitFor(() => {
-      expect(mockedUpdateFn).toBeCalledWith({
-        serviceName: 'test',
-        edgeIds: [],
-        tags: [],
-        ddosRateLimitingEnabled: true,
-        ddosRateLimitingRules: [{
-          ddosAttackType: 'ICMP',
-          rateLimiting: 12
-        }],
-        statefulAclEnabled: false,
-        statefulAcls: []
-      })
-    })
-
-    cleanup()
-  }, 30000)
-  */
 })

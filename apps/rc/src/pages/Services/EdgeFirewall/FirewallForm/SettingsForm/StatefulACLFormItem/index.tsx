@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-import { Col, Form, Row, Switch, Typography } from 'antd'
-import { useIntl }                            from 'react-intl'
+import { Col, Form, Row, Space, Switch, Typography } from 'antd'
+import { useIntl }                                   from 'react-intl'
 
 import { Table, TableProps }                                from '@acx-ui/components'
 import { ACLDirection, getACLDirectionString, StatefulAcl } from '@acx-ui/rc/utils'
@@ -9,10 +9,6 @@ import { filterByAccess }                                   from '@acx-ui/user'
 
 import { StatefulACLConfigDrawer }                   from './StatefulACLConfigDrawer'
 import { InboundDefaultRules, OutboundDefaultRules } from './StatefulACLConfigDrawer/defaultRules'
-
-interface StatefulACLTableProps {
-  data?: StatefulAcl[]
-}
 
 export const defaultInboundStatefulACLs = {
   name: 'Inbound ACL',
@@ -28,6 +24,10 @@ export const defaultStatefulACLs = [
   { ...defaultInboundStatefulACLs },
   { ...defaultOutboundStatefulACLs }
 ]
+
+interface StatefulACLTableProps {
+  data?: StatefulAcl[]
+}
 const StatefulACLTable = (props: StatefulACLTableProps) => {
   const { data } = props
   const { $t } = useIntl()
@@ -98,9 +98,11 @@ export const StatefulACLFormItem = () => {
   return <>
     <Row>
       <Col span={6}>
-        <Typography.Text>
-          {$t({ defaultMessage: 'Stateful ACL' })}
-        </Typography.Text>
+        <Space>
+          <Typography.Text>
+            {$t({ defaultMessage: 'Stateful ACL' })}
+          </Typography.Text>
+        </Space>
       </Col>
       <Col span={6}>
         <Form.Item

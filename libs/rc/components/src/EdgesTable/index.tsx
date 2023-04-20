@@ -26,6 +26,7 @@ interface EdgesTableProps extends Omit<TableProps<EdgeStatus>, 'columns'> {
   // use column key to filter them out,
   // notice that this is only applied on defaultColumns
   filterColumns?: string[];
+  // custom column is optional
   columns?: TableProps<EdgeStatus>['columns']
 }
 
@@ -251,7 +252,6 @@ export const EdgesTable = (props: EdgesTableProps) => {
       }
     }
   ]
-
   return (
     <Loader states={[
       tableQuery,
@@ -259,8 +259,8 @@ export const EdgesTable = (props: EdgesTableProps) => {
     ]}>
       <Table
         rowActions={filterByAccess(rowActions)}
-        {...otherProps}
         settingsId='edges-table'
+        {...otherProps}
         columns={columns ?? defaultColumns}
         dataSource={tableQuery?.data?.data}
         pagination={tableQuery.pagination}

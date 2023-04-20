@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
-import { renderHook, within } from '@testing-library/react'
-import userEvent              from '@testing-library/user-event'
-import { Form }               from 'antd'
-import { rest }               from 'msw'
+import { act, renderHook, waitFor, within } from '@testing-library/react'
+import userEvent                            from '@testing-library/user-event'
+import { Form }                             from 'antd'
+import { rest }                             from 'msw'
 
 import { StepsFormNew } from '@acx-ui/components'
 import { EdgeUrlsInfo } from '@acx-ui/rc/utils'
@@ -44,7 +44,7 @@ describe('Scope Form', () => {
     )
   })
 
-  it('should correctly render', async () => {
+  it('should correctly activate', async () => {
     const { result: stepFormRef } = renderHook(() => {
       const [ form ] = Form.useForm()
       jest.spyOn(form, 'setFieldValue').mockImplementation(mockedSetFieldValue)
@@ -69,16 +69,108 @@ describe('Scope Form', () => {
     await click(
       within(await screen.findByRole('row', { name: /Smart Edge 3/i })).getByRole('checkbox'))
     await click(await screen.findByRole('button', { name: 'Activate' }))
-    await click(
-      within(await screen.findByRole('row', { name: /Smart Edge 3/i })).getByRole('checkbox'))
-    await click(await screen.findByRole('button', { name: 'Deactivate' }))
-    await click(
-      within(await screen.findByRole('row', { name: /Smart Edge 2/i })).getByRole('switch'))
-    // eslint-disable-next-line max-len
-    expect(within(await screen.findByRole('row', { name: /Smart Edge 2/i })).getByRole('switch')).toBeChecked()
 
     expect(mockedSetFieldValue).toBeCalledWith('selectedEdges', [
-      { name: 'Smart Edge 3', serialNumber: '0000000003' },
-      { name: 'Smart Edge 2', serialNumber: '0000000002' }])
+      { name: 'Smart Edge 1', serialNumber: '0000000001' },
+      { name: 'Smart Edge 3', serialNumber: '0000000003' }
+    ])
+  })
+
+  it('should correctly activate by switcher', async () => {
+    const { result: stepFormRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      jest.spyOn(form, 'setFieldValue').mockImplementation(mockedSetFieldValue)
+      return form
+    })
+
+    render(
+      <Provider>
+        <StepsFormNew
+          form={stepFormRef.current}
+        >
+          <ScopeForm />
+        </StepsFormNew>
+      </Provider>, { route: { params: { tenantId: 't-id' } } })
+
+    expect(await screen.findByText('Scope')).toBeVisible()
+    const rows = await screen.findAllByRole('row', { name: /Smart Edge/i })
+    expect(rows.length).toBe(5)
+
+    await click(
+      within(await screen.findByRole('row', { name: /Smart Edge 2/i })).getByRole('switch'))
+
+    expect(mockedSetFieldValue).toBeCalledWith('selectedEdges', [
+      { name: 'Smart Edge 2', serialNumber: '0000000002' }
+    ])
+  })
+
+  it('should correctly deactivate', async () => {
+    const { result: stepFormRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      form.setFieldValue('selectedEdges', [
+        { name: 'Smart Edge 1', serialNumber: '0000000001' },
+        { name: 'Smart Edge 3', serialNumber: '0000000003' }
+      ])
+
+      jest.spyOn(form, 'setFieldValue').mockImplementation(mockedSetFieldValue)
+      return form
+    })
+
+    render(
+      <Provider>
+        <StepsFormNew
+          form={stepFormRef.current}
+        >
+          <ScopeForm />
+        </StepsFormNew>
+      </Provider>, { route: { params: { tenantId: 't-id' } } })
+
+    expect(await screen.findByText('Scope')).toBeVisible()
+    const rows = await screen.findAllByRole('row', { name: /Smart Edge/i })
+    expect(rows.length).toBe(5)
+
+    expect(within(await screen.findByRole('row', { name: /Smart Edge 1/i })).getByRole('switch')).toBeChecked()
+    expect(within(await screen.findByRole('row', { name: /Smart Edge 3/i })).getByRole('switch')).toBeChecked()
+    await click(
+      within(await screen.findByRole('row', { name: /Smart Edge 1/i })).getByRole('checkbox'))
+    await click(await screen.findByRole('button', { name: 'Deactivate' }))
+
+    expect(mockedSetFieldValue).toBeCalledWith('selectedEdges', [
+      { name: 'Smart Edge 3', serialNumber: '0000000003' }
+    ])
+  })
+
+  it('should correctly deactivate by switch', async () => {
+    const { result: stepFormRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      form.setFieldValue('selectedEdges', [
+        { name: 'Smart Edge 1', serialNumber: '0000000001' },
+        { name: 'Smart Edge 3', serialNumber: '0000000003' }
+      ])
+
+      jest.spyOn(form, 'setFieldValue').mockImplementation(mockedSetFieldValue)
+      return form
+    })
+
+    render(
+      <Provider>
+        <StepsFormNew
+          form={stepFormRef.current}
+        >
+          <ScopeForm />
+        </StepsFormNew>
+      </Provider>, { route: { params: { tenantId: 't-id' } } })
+
+    expect(await screen.findByText('Scope')).toBeVisible()
+    const rows = await screen.findAllByRole('row', { name: /Smart Edge/i })
+    expect(rows.length).toBe(5)
+
+    const switchBtn = within(await screen.findByRole('row', { name: /Smart Edge 1/i })).getByRole('switch')
+    expect(switchBtn).toBeChecked()
+    await click(switchBtn)
+
+    expect(mockedSetFieldValue).toBeCalledWith('selectedEdges', [
+      { name: 'Smart Edge 3', serialNumber: '0000000003' }
+    ])
   })
 })

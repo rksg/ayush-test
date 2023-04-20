@@ -1,5 +1,5 @@
-import { Col, Form, Input, Row, Select } from 'antd'
-import { useIntl }                       from 'react-intl'
+import { Col, Form, Input, Row } from 'antd'
+import { useIntl }               from 'react-intl'
 
 import { StepsForm, Subtitle } from '@acx-ui/components'
 import { SpaceWrapper }        from '@acx-ui/rc/components'
@@ -30,15 +30,17 @@ export const SettingsForm = () => {
             hasFeedback
             children={<Input />}
           />
+          {/*
           <Form.Item
             name='tags'
             label={$t({ defaultMessage: 'Tags' })}
             children={<Select mode='tags' />}
           />
+          */}
         </Col>
       </Row>
       <Row>
-        <SpaceWrapper full direction='vertical' size='large'>
+        <SpaceWrapper full direction='vertical' size='middle'>
           <Subtitle level={5}>
             { $t({ defaultMessage: 'Set Firewall Settings' }) }
           </Subtitle>

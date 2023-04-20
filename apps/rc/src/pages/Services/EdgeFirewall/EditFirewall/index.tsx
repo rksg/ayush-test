@@ -34,12 +34,12 @@ const EditFirewall = () => {
 
   const handleFinish = async (formData: FirewallFormModel) => {
     try {
-      let statefulAcls = formData.statefulAclEnabled ? formData.statefulAcls : []
+      let statefulAcls = formData.statefulAcls
       statefulAcls = filterCustomACLRules(statefulAcls)
       processFirewallACLPayload(statefulAcls)
       const payload = {
         serviceName: formData.serviceName,
-        tags: formData.tags,
+        // tags: formData.tags,
         edgeIds: formData.selectedEdges?.map((edge: FirewallFormEdge) => edge.serialNumber) ?? [],
         ddosRateLimitingEnabled: formData.ddosRateLimitingEnabled,
         ddosRateLimitingRules: formData.ddosRateLimitingRules,

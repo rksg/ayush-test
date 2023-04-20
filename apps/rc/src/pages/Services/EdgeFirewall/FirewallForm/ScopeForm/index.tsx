@@ -1,6 +1,4 @@
-import { useMemo, useState } from 'react'
-import { useEffect }         from 'react'
-import { useCallback }       from 'react'
+import { useMemo } from 'react'
 
 import { Col, Form, Row, Switch, Typography } from 'antd'
 import _                                      from 'lodash'
@@ -9,51 +7,16 @@ import { useIntl }                            from 'react-intl'
 import { StepsForm, TableProps, useStepFormContext } from '@acx-ui/components'
 import { formatter }                                 from '@acx-ui/formatter'
 import { EdgesTable }                                from '@acx-ui/rc/components'
-import { useLazyGetEdgeListQuery }                   from '@acx-ui/rc/services'
 import { EdgeStatus }                                from '@acx-ui/rc/utils'
-import { useParams }                                 from '@acx-ui/react-router-dom'
 
 import { FirewallFormEdge, FirewallFormModel } from '..'
 
-const FirewallEdgesTable = (props: { data?: string[] }) => {
-  const { data: edgeIds } = props
+const FirewallEdgesTable = (props: { data?: FirewallFormEdge[] }) => {
+  const { data: selectedEdges = [] } = props
   const { $t } = useIntl()
-  const params = useParams()
   const { form } = useStepFormContext<FirewallFormModel>()
-  const [selectedEdges, setSelectedEdges] = useState<FirewallFormEdge[]>([])
-  const [getEdgeList] = useLazyGetEdgeListQuery()
-
-  const fetchEdgesByIds = useCallback(
-    async (edgeIds: string[] | undefined, cb: (edges: FirewallFormEdge[]) => void) => {
-      if (!edgeIds || edgeIds.length === 0) return
-
-      try {
-        const edgeOptionsDefaultPayload = {
-          fields: ['name', 'serialNumber'],
-          sortField: 'name',
-          filters: { serialNumber: edgeIds },
-          sortOrder: 'ASC'
-        }
-
-        const { data } = await getEdgeList(
-          { params, payload: edgeOptionsDefaultPayload }
-        ).unwrap()
-
-        cb(data.map(item =>
-          ({ name: item.name, serialNumber: item.serialNumber })))
-      } catch {
-        cb([] as FirewallFormEdge[])
-      }
-    }, [params, getEdgeList])
-
-  useEffect(() => {
-    fetchEdgesByIds(edgeIds, (edges: FirewallFormEdge[]) => {
-      setSelectedEdges(edges)
-    })
-  }, [edgeIds, fetchEdgesByIds])
 
   const updateSelectedEdges = (selected: FirewallFormEdge[]) => {
-    setSelectedEdges(selected)
     form.setFieldValue('selectedEdges', selected)
   }
 
@@ -63,7 +26,10 @@ const FirewallEdgesTable = (props: { data?: string[] }) => {
     return <Switch
       aria-label={`activate-btn-${row.serialNumber}`}
       checked={activated !== -1}
-      onChange={(checked: boolean) => {
+      onChange={(checked: boolean, e: React.MouseEvent<HTMLButtonElement>) => {
+        // prevent checkbox change
+        e.stopPropagation()
+
         let newSelected
         if (checked) {
           newSelected = _.unionBy(selectedEdges,
@@ -87,7 +53,8 @@ const FirewallEdgesTable = (props: { data?: string[] }) => {
       tooltip: $t({ defaultMessage: 'SmartEdge' }),
       key: 'name',
       dataIndex: 'name',
-      defaultSortOrder: 'ascend'
+      defaultSortOrder: 'ascend',
+      fixed: 'left'
     },
     {
       title: $t({ defaultMessage: 'Venue' }),
@@ -130,27 +97,29 @@ const FirewallEdgesTable = (props: { data?: string[] }) => {
   const rowActions: TableProps<EdgeStatus>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Activate' }),
-      onClick: (selectedRows) => {
+      onClick: (selectedRows, clearSelection) => {
         let newSelected = _.unionBy(selectedEdges, selectedRows, 'serialNumber')
         newSelected = newSelected.map(item =>
           ({ name: item.name, serialNumber: item.serialNumber }))
         updateSelectedEdges(newSelected)
+        clearSelection()
       }
     },
     {
       label: $t({ defaultMessage: 'Deactivate' }),
-      onClick: (selectedRows) => {
+      onClick: (selectedRows, clearSelection) => {
         let newSelected = _.cloneDeep(selectedEdges)
         _.remove(newSelected,
           (o) => _.findIndex(selectedRows, { serialNumber: o.serialNumber }) !== -1)
-
         updateSelectedEdges(newSelected)
+        clearSelection()
       }
     }
   ]
 
   return (
     <EdgesTable
+      settingsId='edgefirewall-edge-table'
       columns={columns}
       rowSelection={{ type: 'checkbox' }}
       rowActions={rowActions}
@@ -177,10 +146,9 @@ export const ScopeForm = () => {
       <Row >
         <Col span={24}>
           <Form.Item
-            name='edgeIds'
+            name='selectedEdges'
             valuePropName='data'
             noStyle
-            initialValue={[]}
           >
             <FirewallEdgesTable />
           </Form.Item>

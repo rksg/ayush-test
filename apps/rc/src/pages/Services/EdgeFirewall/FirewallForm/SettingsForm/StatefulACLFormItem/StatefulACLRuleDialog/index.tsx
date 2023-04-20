@@ -3,6 +3,7 @@ import { ReactElement, useEffect } from 'react'
 import { QuestionCircleOutlined }                                            from '@ant-design/icons'
 import { Form, Input, Modal, Radio, Select, Row, Col, Tooltip, InputNumber } from 'antd'
 import TextArea                                                              from 'antd/lib/input/TextArea'
+import classNames                                                            from 'classnames'
 import { IntlShape, useIntl }                                                from 'react-intl'
 import styled                                                                from 'styled-components'
 
@@ -175,7 +176,7 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
 
   return (
     <Modal
-      className={className + ' modal-long'}
+      className={classNames(className, 'modal-long')}
       title={editMode ?
         $t({ defaultMessage: 'Edit ACL Rule' }) :
         $t({ defaultMessage: 'Add ACL Rule' })}
