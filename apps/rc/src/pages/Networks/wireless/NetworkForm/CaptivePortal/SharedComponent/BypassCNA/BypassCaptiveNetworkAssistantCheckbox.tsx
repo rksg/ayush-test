@@ -28,8 +28,8 @@ function isExemption (guestNetworkTypeEnum: GuestNetworkTypeEnum) : boolean {
 export function BypassCaptiveNetworkAssistantCheckbox (props: BypassCNAProps) {
 
   const { $t } = useIntl()
+  const form = Form.useFormInstance()
   const { guestNetworkTypeEnum } = props
-  const [stateOfByPassCNA, setStateOfByPassCNA] = useState(false)
 
   const {
     data: networkFromContextData,
@@ -40,8 +40,11 @@ export function BypassCaptiveNetworkAssistantCheckbox (props: BypassCNAProps) {
 
   useEffect(() => {
     if (editMode || cloneMode) {
-      setStateOfByPassCNA(networkFromContextData?.wlan?.bypassCNA || false)
+      form.setFieldValue(['wlan', 'bypassCNA'], networkFromContextData?.wlan?.bypassCNA)
       return
+    }
+    else {
+      form.setFieldValue(['wlan', 'bypassCNA'], false)
     }
   },[])
 
@@ -61,9 +64,12 @@ export function BypassCaptiveNetworkAssistantCheckbox (props: BypassCNAProps) {
         name={['wlan', 'bypassCNA']}
         noStyle
         valuePropName='checked'
-        initialValue={stateOfByPassCNA}
         children={
-          <Checkbox data-testid='bypasscna-checkbox'>
+          <Checkbox
+            data-testid='bypasscna-checkbox'
+            onChange={(e)=> {
+              form.setFieldValue(['wlan', 'bypassCNA'], e.target.checked)
+            }}>
             {$t({ defaultMessage: 'Use Bypass Captive Network Assistant' })}
           </Checkbox>
         }

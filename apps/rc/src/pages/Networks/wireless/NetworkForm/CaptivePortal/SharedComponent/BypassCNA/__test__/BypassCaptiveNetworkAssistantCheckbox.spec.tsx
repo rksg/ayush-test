@@ -1,9 +1,9 @@
 
-import { StepsForm }               from '@acx-ui/components'
-import { useIsSplitOn }            from '@acx-ui/feature-toggle'
-import { GuestNetworkTypeEnum }    from '@acx-ui/rc/utils'
-import { Provider }                from '@acx-ui/store'
-import { render, screen, cleanup } from '@acx-ui/test-utils'
+import { StepsForm }                          from '@acx-ui/components'
+import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
+import { GuestNetworkTypeEnum }               from '@acx-ui/rc/utils'
+import { Provider }                           from '@acx-ui/store'
+import { render, screen, cleanup, fireEvent } from '@acx-ui/test-utils'
 
 import NetworkFormContext                                        from '../../../../NetworkFormContext'
 import { BypassCaptiveNetworkAssistantCheckbox, BypassCNAProps } from '../BypassCaptiveNetworkAssistantCheckbox'
@@ -43,11 +43,20 @@ describe('BypassCaptiveNetworkAssistantCheckbox Unit Test', () => {
         cleanup()
       })
     })
+    it('Check that the BypassCaptiveNetworkAssistantCheckbox is work as expected', () => {
+      MockNetworkType.forEach((network) => {
+        render(BypassCaptiveNetworkAssistantCheckboxNormalTestCase(network))
+        const checkbox = screen.getByTestId('bypasscna-checkbox') as HTMLInputElement
+        fireEvent.click(checkbox)
+        expect(checkbox.checked).toEqual(true)
+        cleanup()
+      })
+    })
     describe('Check that WalledGardenTextArea render correctly under Edit/Clone mode', () => {
       it('Test case Edit mode match with exist record', () => {
         MockNetworkType.forEach((network)=> {
           render(BypassCaptiveNetworkAssistantCheckboxEditModeTestCase(network!!))
-          const checkbox = screen.getByTestId('bypasscna-fullblock') as HTMLInputElement
+          const checkbox = screen.getByTestId('bypasscna-checkbox') as HTMLInputElement
           expect(checkbox.checked).toEqual(MockNetworkSetting.wlan?.bypassCNA)
           cleanup()
         })
@@ -56,7 +65,7 @@ describe('BypassCaptiveNetworkAssistantCheckbox Unit Test', () => {
       it('Test case Clone mode match with exist record', () => {
         MockNetworkType.forEach((network) => {
           render(BypassCaptiveNetworkAssistantCheckboxCloneModeTestCase(network!!))
-          const checkbox = screen.getByTestId('bypasscna-fullblock') as HTMLInputElement
+          const checkbox = screen.getByTestId('bypasscna-checkbox') as HTMLInputElement
           expect(checkbox.checked).toEqual(MockNetworkSetting.wlan?.bypassCNA)
           cleanup()
         })
