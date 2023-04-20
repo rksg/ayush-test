@@ -48,7 +48,7 @@ function isExemption (guestNetworkTypeEnum: GuestNetworkTypeEnum) : boolean {
   return exemptionList.includes(guestNetworkTypeEnum)
 }
 
-describe('WalledGardenTextArea rendering tests', () => {
+describe('WalledGardenTextArea Unit Test', () => {
   describe('Test under feature toggle enabled', () => {
     beforeEach(() => {
     // jest.spyOn(React, 'useState').mockImplementation(() => [true, jest.fn()])
