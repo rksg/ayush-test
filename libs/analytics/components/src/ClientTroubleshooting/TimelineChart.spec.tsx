@@ -5,7 +5,8 @@ import ReactECharts             from 'echarts-for-react'
 import moment                   from 'moment-timezone'
 
 import { cleanup, render, fireEvent, renderHook, act, waitFor, screen } from '@acx-ui/test-utils'
-import { TimeStampRange }                                               from '@acx-ui/types'
+import { RolesEnum, TimeStampRange }                                    from '@acx-ui/types'
+import { getUserProfile, setUserProfile }                               from '@acx-ui/user'
 
 import { qualityDataObj, incidentDataObj, roamingDataObj, connectionEvents }                           from './__tests__/fixtures'
 import { Event, LabelledQuality, IncidentDetails, RoamingTimeSeriesData, ClientTroubleShootingConfig } from './config'
@@ -256,6 +257,26 @@ describe('TimelineChartComponent', () => {
       renderHook(() => useDotClick(eChartsRef, onDotClick, popoverRef, navigate, basePath))
       expect(mockOnFn).toBeCalledTimes(1)
       expect(onDotClick).toBeCalledTimes(0)
+      expect(navigate).toBeCalledTimes(1)
+    })
+    it('should not call navigate for incidents when role is READ_ONLY', () => {
+      setUserProfile({
+        allowedOperations: [],
+        profile: { ...getUserProfile().profile, roles: [RolesEnum.READ_ONLY] }
+      })
+      const params = {
+        componentSubType: 'custom',
+        seriesName: 'incidents',
+        data: [1234, 'all', 1234, { id: '1234' }]
+      }
+      const { eChartsRef, mockOnFn } = testHelpers(params)
+      const onDotClick = jest.fn()
+      const popoverRef = undefined as unknown as RefObject<HTMLDivElement>
+      const navigate = jest.fn()
+      renderHook(() => useDotClick(eChartsRef, onDotClick, popoverRef, navigate, basePath))
+      expect(mockOnFn).toBeCalledTimes(1)
+      expect(onDotClick).toBeCalledTimes(0)
+      expect(navigate).toBeCalledTimes(0)
     })
     it('should not handle onClick for other element', () => {
       const testParams = {
