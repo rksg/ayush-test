@@ -8,8 +8,8 @@ import {
   RadiusAttributeGroupUrlsInfo,
   RulesManagementUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider }                                      from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, within } from '@acx-ui/test-utils'
+import { Provider }                                                                 from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import {
   adaptivePolicyList,
@@ -30,31 +30,31 @@ describe('AdaptivePolicySetForm', () => {
   beforeEach(() => {
     mockServer.use(
       rest.post(
-        RulesManagementUrlsInfo.getPolicySetsByQuery.url,
+        RulesManagementUrlsInfo.getPolicySetsByQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(policySetList))
       ),
       rest.get(
-        RulesManagementUrlsInfo.getConditionsInPolicy.url,
+        RulesManagementUrlsInfo.getConditionsInPolicy.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(assignConditions))
       ),
       rest.get(
-        RulesManagementUrlsInfo.getPolicyTemplateList.url,
+        RulesManagementUrlsInfo.getPolicyTemplateList.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(templateList))
       ),
       rest.get(
-        RulesManagementUrlsInfo.getPolicies.url,
+        RulesManagementUrlsInfo.getPolicies.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(adaptivePolicyList))
       ),
       rest.get(
-        RadiusAttributeGroupUrlsInfo.getAttributeGroups.url,
+        RadiusAttributeGroupUrlsInfo.getAttributeGroups.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(groupList))
       ),
       rest.get(
-        RulesManagementUrlsInfo.getPolicySets.url,
+        RulesManagementUrlsInfo.getPolicySets.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(policySetList))
       ),
       rest.get(
-        RulesManagementUrlsInfo.getPrioritizedPolicies.url,
+        RulesManagementUrlsInfo.getPrioritizedPolicies.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(prioritizedPolicies))
       )
     )
@@ -120,6 +120,10 @@ describe('AdaptivePolicySetForm', () => {
     await screen.findByRole('row', { name: new RegExp( '1 ' + adaptivePolicyList.content[0].name) })
 
     await userEvent.click(screen.getByText('Apply'))
+
+    const validating = await screen.findByRole('img', { name: 'loading' })
+    await waitForElementToBeRemoved(validating)
+
     await screen.findByText('Policy Set testPolicy was added')
   })
 
@@ -169,6 +173,10 @@ describe('AdaptivePolicySetForm', () => {
     await screen.findByRole('row', { name: new RegExp( '2 ' + adaptivePolicyList.content[1].name) })
 
     await userEvent.click(screen.getByText('Apply'))
+
+    const validating = await screen.findByRole('img', { name: 'loading' })
+    await waitForElementToBeRemoved(validating)
+
     await screen.findByText('Policy Set aps1 was updated')
   })
 

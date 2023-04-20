@@ -145,7 +145,7 @@ export function MacRegistrationsTab () {
           // eslint-disable-next-line max-len
           return row.expirationDate < new Date().toISOString() ? $t({ defaultMessage: 'Expired' }) : $t({ defaultMessage: 'Active' })
         }
-        return $t({ defaultMessage: 'Same as List' })
+        return $t({ defaultMessage: 'Active' })
       }
     },
     {
@@ -174,7 +174,7 @@ export function MacRegistrationsTab () {
       sorter: true,
       render: function (data, row) {
         return row.expirationDate ? toDateTimeString(row.expirationDate) :
-          returnExpirationString(macRegistrationListQuery.data ?? {} as MacRegistrationPool)
+          $t({ defaultMessage: 'Never Expire' })
       }
     }
   ]
