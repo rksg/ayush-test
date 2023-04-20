@@ -61,6 +61,14 @@ export const sampleFail = [
     children: <div style={{ border: '1px solid black' }}>
       { new Array(5).fill(0).map((_, i) => <p key={i}>More content</p>) }
     </div>
+  },
+  {
+    status: 'INPROGRESS',
+    startDatetime: '2022-12-20T08:04:00Z',
+    description: 'UpdateSwitchPosition',
+    children: <div style={{ border: '1px solid black' }}>
+      { new Array(5).fill(0).map((_, i) => <p key={i}>More content</p>) }
+    </div>
   }
 ] as TimelineItem[]
 
