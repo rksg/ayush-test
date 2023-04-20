@@ -70,6 +70,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const list = listQuery.data as TableResult<SwitchRow>
         const stackMembers:{ [index:string]: StackMember[] } = {}
         const stacks: string[] = []
+        if(!list) return { error: listQuery.error as FetchBaseQueryError }
         list.data.forEach(async (item:SwitchRow) => {
           if(item.isStack || item.formStacking){
             stacks.push(item.serialNumber)
@@ -85,9 +86,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
 
         const aggregatedList = aggregatedSwitchListData(list, stackMembers)
 
-        return listQuery.data
-          ? { data: aggregatedList }
-          : { error: listQuery.error as FetchBaseQueryError }
+        return { data: aggregatedList }
       },
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'Switch', id: 'LIST' }],

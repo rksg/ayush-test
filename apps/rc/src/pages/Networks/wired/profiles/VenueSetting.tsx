@@ -118,6 +118,7 @@ export function VenueSetting () {
       title: $t({ defaultMessage: 'Switches' }),
       dataIndex: 'switches',
       align: 'center',
+      sorter: true,
       render: function (data) { return data ? data : 0 }
     },
     {

@@ -114,6 +114,7 @@ export interface AppRule {
   accessControl: string,
   applicationId: number,
   applicationName: string,
+  application: string,
   category: string,
   categoryId: number,
   id: string,
