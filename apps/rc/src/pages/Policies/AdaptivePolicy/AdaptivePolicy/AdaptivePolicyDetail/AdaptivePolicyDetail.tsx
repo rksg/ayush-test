@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import { Col, Form, Row, Space, Typography } from 'antd'
+import moment                                from 'moment'
 import { useIntl }                           from 'react-intl'
 import { useParams }                         from 'react-router-dom'
 
@@ -52,7 +53,7 @@ export default function AdaptivePolicyDetail () {
       // eslint-disable-next-line max-len
       const criteria = condition.evaluationRule.criteriaType === CriteriaOption.DATE_RANGE ?
         // eslint-disable-next-line max-len
-        `${condition.evaluationRule?.when} ${condition.evaluationRule?.startTime} - ${condition.evaluationRule?.endTime}`
+        `${condition.evaluationRule?.when} ${moment(condition.evaluationRule.startTime, 'HH:mm:ss').format('h:mm a')} - ${moment(condition.evaluationRule.endTime, 'HH:mm:ss').format('h:mm a')}`
         : condition.evaluationRule.regexStringCriteria
       return (
         <Col span={6} key={condition.id}>

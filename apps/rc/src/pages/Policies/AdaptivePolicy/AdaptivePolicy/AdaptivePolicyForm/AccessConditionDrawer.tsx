@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 
-import { Form, FormInstance, Input, Select, TimePicker } from 'antd'
-import moment                                            from 'moment'
-import { useIntl }                                       from 'react-intl'
+import { Form, FormInstance, Input, Radio, Select, Space, TimePicker } from 'antd'
+import moment                                                          from 'moment'
+import { useIntl }                                                     from 'react-intl'
 
 import { Drawer, Loader }                              from '@acx-ui/components'
 import { useLazyGetPolicyTemplateAttributesListQuery } from '@acx-ui/rc/services'
@@ -99,8 +99,8 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
       return {
         criteriaType,
         when: data.when,
-        startTime: moment(data.start).format('HH:mm:ss'),
-        endTime: moment(data.end).format('HH:mm:ss')
+        startTime: moment(data.start).format('HH:mm'),
+        endTime: moment(data.end).format('HH:mm')
       }
     } else {
       return {
@@ -115,8 +115,8 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
       return {
         attributeType: getCriteriaOptionByValue(evaluationRule.criteriaType),
         when: evaluationRule.when,
-        start: moment(evaluationRule.startTime, 'HH:mm:ss'),
-        end: moment(evaluationRule.endTime, 'HH:mm:ss')
+        start: moment(evaluationRule.startTime, 'HH:mm'),
+        end: moment(evaluationRule.endTime, 'HH:mm')
       }
     } else {
       return {
@@ -174,24 +174,40 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
             : <>
               <Form.Item label={$t({ defaultMessage: 'When' })}
                 name='when'
-                rules={[{ required: true }]}
+                rules={[{ required: true, message: $t({ defaultMessage: 'Please select When' }) }]}
                 children={
-                  <Select
-                    options={[
-                      { label: $t({ defaultMessage: 'All' }), value: 'All' },
-                      { label: $t({ defaultMessage: 'Weekend' }), value: 'Weekend' },
-                      { label: $t({ defaultMessage: 'Weekdays' }), value: 'Weekdays' }
-                    ]}
-                  />
+                  <Radio.Group>
+                    <Space direction='vertical'>
+                      <Radio value={'Weekend'}>
+                        {$t({ defaultMessage: 'Weekend (Sat & Sun)' })}
+                      </Radio>
+                      <Radio value={'Weekdays'}>
+                        {$t({ defaultMessage: 'Weekdays (Mon-Fri)' })}
+                      </Radio>
+                      <Radio value={'All'}>
+                        {$t({ defaultMessage: 'All Days' })}
+                      </Radio>
+                    </Space>
+                  </Radio.Group>
                 }/>
-              <Form.Item label={$t({ defaultMessage: 'Start' })}
-                name='start'
-                rules={[{ required: true }]}
-                children={<TimePicker/>}/>
-              <Form.Item label={$t({ defaultMessage: 'End' })}
-                name='end'
-                rules={[{ required: true }]}
-                children={<TimePicker/>}/>
+              <Form.Item label={$t({ defaultMessage: 'Hours' })}>
+                <Space direction='horizontal'>
+                  <Form.Item
+                    name='start'
+                    rules={[{ required: true, message:
+                        $t({ defaultMessage: 'Please enter From' }) }]}
+                    children={<TimePicker
+                      format='h:mm a'
+                      placeholder={$t({ defaultMessage: 'From...' })}/>}/>
+                  <Form.Item
+                    name='end'
+                    rules={[{ required: true, message:
+                        $t({ defaultMessage: 'Please enter To' }) }]}
+                    children={<TimePicker
+                      format='h:mm a'
+                      placeholder={$t({ defaultMessage: 'To...' })}/>}/>
+                </Space>
+              </Form.Item>
             </>
         }
       </Form>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import { Form, Input, Radio, Space } from 'antd'
+import moment                        from 'moment'
 import { useIntl }                   from 'react-intl'
 import { useParams }                 from 'react-router-dom'
 
@@ -84,8 +85,9 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
         dataIndex: 'conditionValue',
         render: function (data, row) {
           if(row.evaluationRule.criteriaType === CriteriaOption.DATE_RANGE) {
-            // eslint-disable-next-line max-len
-            return `${row.evaluationRule?.when} ${row.evaluationRule?.startTime} - ${row.evaluationRule?.endTime}`
+            return `${row.evaluationRule?.when}
+            ${moment(row.evaluationRule.startTime, 'HH:mm:ss').format('h:mm a')} -
+            ${moment(row.evaluationRule.endTime, 'HH:mm:ss').format('h:mm a')}`
           } else {
             return row.evaluationRule.regexStringCriteria
           }
