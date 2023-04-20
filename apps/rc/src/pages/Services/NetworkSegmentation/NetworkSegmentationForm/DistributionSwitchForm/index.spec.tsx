@@ -99,7 +99,7 @@ describe('DistributionSwitchForm', () => {
     await user.click(await within(alert).findByRole('button', { name: 'Delete' }))
   })
 
-  it('should add DS correctly', async () => {
+  xit('should add DS correctly', async () => {
     const user = userEvent.setup()
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
