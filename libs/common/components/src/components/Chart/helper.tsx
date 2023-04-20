@@ -264,6 +264,7 @@ export const handleSingleBinData = (data: [TimeStamp, number|null][]) => {
       }
     }
   }
+  return formatted
 }
 
 export type EventParams = {
