@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-import { Col, Form, Row, Space, Switch, Typography } from 'antd'
-import { useIntl }                                   from 'react-intl'
+import { Col, Form, Row, Switch, Typography } from 'antd'
+import { useIntl }                            from 'react-intl'
 
 import { Table, TableProps }                                from '@acx-ui/components'
 import { ACLDirection, getACLDirectionString, StatefulAcl } from '@acx-ui/rc/utils'
@@ -98,11 +98,9 @@ export const StatefulACLFormItem = () => {
   return <>
     <Row>
       <Col span={6}>
-        <Space>
-          <Typography.Text>
-            {$t({ defaultMessage: 'Stateful ACL' })}
-          </Typography.Text>
-        </Space>
+        <Typography.Text>
+          {$t({ defaultMessage: 'Stateful ACL' })}
+        </Typography.Text>
       </Col>
       <Col span={6}>
         <Form.Item

@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
-import { act, renderHook, waitFor, within } from '@testing-library/react'
-import userEvent                            from '@testing-library/user-event'
-import { Form }                             from 'antd'
-import { rest }                             from 'msw'
+import { renderHook, within } from '@testing-library/react'
+import userEvent              from '@testing-library/user-event'
+import { Form }               from 'antd'
+import { rest }               from 'msw'
 
 import { StepsFormNew } from '@acx-ui/components'
 import { EdgeUrlsInfo } from '@acx-ui/rc/utils'
