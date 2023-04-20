@@ -359,14 +359,11 @@ export const StatefulACLConfigDrawer = (props: StatefulACLConfigDrawerProps) => 
     }
   }, [form, editData, visible])
 
-  const footer = [
-    <Drawer.FormFooter
-      key='statefulACLDrawerActs'
-      buttonLabel={{ save: $t({ defaultMessage: 'Add' }) }}
-      onCancel={onClose}
-      onSave={async () => form.submit()}
-    />
-  ]
+  const footer = <Drawer.FormFooter
+    buttonLabel={{ save: $t({ defaultMessage: 'Add' }) }}
+    onCancel={onClose}
+    onSave={async () => form.submit()}
+  />
 
   return (
     <Drawer

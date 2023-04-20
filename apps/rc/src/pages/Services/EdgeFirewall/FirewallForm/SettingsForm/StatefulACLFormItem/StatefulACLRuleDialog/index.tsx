@@ -152,21 +152,18 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
     form.resetFields()
   }
 
-  const footer = [
-    <Drawer.FormFooter
-      key='aclDialogFooter'
-      buttonLabel={({
-        addAnother: $t({ defaultMessage: 'Add another rule' }),
-        save: $t({ defaultMessage: 'Add' })
-      })}
-      showAddAnother={!editMode}
-      onCancel={handleClose}
-      onSave={async (addAnotherRuleChecked: boolean) => {
-        form.setFieldValue('addAnotherRuleChecked', addAnotherRuleChecked)
-        form.submit()
-      }}
-    />
-  ]
+  const footer = <Drawer.FormFooter
+    buttonLabel={({
+      addAnother: $t({ defaultMessage: 'Add another rule' }),
+      save: $t({ defaultMessage: 'Add' })
+    })}
+    showAddAnother={!editMode}
+    onCancel={handleClose}
+    onSave={async (addAnotherRuleChecked: boolean) => {
+      form.setFieldValue('addAnotherRuleChecked', addAnotherRuleChecked)
+      form.submit()
+    }}
+  />
 
   useEffect(() => {
     if (editMode && visible) {

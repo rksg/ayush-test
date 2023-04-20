@@ -82,21 +82,18 @@ export const DDoSRuleDialog = styled((props: DDoSRuleDialogProps) => {
         : _.findIndex(existingRules, { ddosAttackType: type }) !== -1
   }
 
-  const footer = [
-    <Drawer.FormFooter
-      key='ddosDialogFooter'
-      buttonLabel={({
-        addAnother: $t({ defaultMessage: 'Add another rule' }),
-        save: $t({ defaultMessage: 'Add' })
-      })}
-      showAddAnother={!editMode}
-      onCancel={handleClose}
-      onSave={async (addAnotherRuleChecked: boolean) => {
-        form.setFieldValue('addAnotherRuleChecked', addAnotherRuleChecked)
-        form.submit()
-      }}
-    />
-  ]
+  const footer = <Drawer.FormFooter
+    buttonLabel={({
+      addAnother: $t({ defaultMessage: 'Add another rule' }),
+      save: $t({ defaultMessage: 'Add' })
+    })}
+    showAddAnother={!editMode}
+    onCancel={handleClose}
+    onSave={async (addAnotherRuleChecked: boolean) => {
+      form.setFieldValue('addAnotherRuleChecked', addAnotherRuleChecked)
+      form.submit()
+    }}
+  />
 
   useEffect(() => {
     if (editMode && visible) {

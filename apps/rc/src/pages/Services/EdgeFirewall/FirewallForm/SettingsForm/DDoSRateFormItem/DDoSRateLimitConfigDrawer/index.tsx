@@ -169,14 +169,11 @@ export const DDoSRateLimitConfigDrawer = (props: DDoSRateLimitConfigDrawerProps)
       form.setFieldValue('rules', data)
   }, [form, data, visible])
 
-  const footer = [
-    <Drawer.FormFooter
-      key='ddosDrawerActs'
-      buttonLabel={{ save: $t({ defaultMessage: 'Apply' }) }}
-      onCancel={handleCancel}
-      onSave={async () => form.submit()}
-    />
-  ]
+  const footer = <Drawer.FormFooter
+    buttonLabel={{ save: $t({ defaultMessage: 'Apply' }) }}
+    onCancel={handleCancel}
+    onSave={async () => form.submit()}
+  />
 
   return (
     <Drawer

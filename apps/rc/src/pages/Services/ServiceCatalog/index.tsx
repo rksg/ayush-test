@@ -90,7 +90,7 @@ export default function ServiceCatalog () {
             <GridRow>
               {set.items.map(item => item.disabled
                 ? null
-                : <GridCol col={{ span: 6 }}>
+                : <GridCol key={item.type} col={{ span: 6 }}>
                   <ServiceCard
                     key={item.type}
                     serviceType={item.type}
