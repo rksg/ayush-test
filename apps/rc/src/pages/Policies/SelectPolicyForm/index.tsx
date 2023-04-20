@@ -35,6 +35,8 @@ export default function SelectPolicyForm () {
       fields: ['id']
     }
   }).data?.totalCount || 0
+  const attributeGropuEnabled = useIsSplitOn(Features.RADIUS_ATTRIBUTE_GROUP_CONFIG)
+  const adaptivePolicyEnabled = useIsSplitOn(Features.POLICY_MANAGEMENT)
 
   const navigateToCreatePolicy = async function (data: { policyType: PolicyType }) {
     const policyCreatePath = getPolicyRoutePath({
@@ -74,6 +76,10 @@ export default function SelectPolicyForm () {
   if(macRegistrationEnabled) {
     // eslint-disable-next-line max-len
     sets.push({ type: PolicyType.MAC_REGISTRATION_LIST, categories: [RadioCardCategory.WIFI] })
+  }
+
+  if(adaptivePolicyEnabled && attributeGropuEnabled) {
+    sets.push({ type: PolicyType.ADAPTIVE_POLICY, categories: [RadioCardCategory.WIFI] })
   }
 
   return (

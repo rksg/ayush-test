@@ -8,9 +8,8 @@ import { MessageMapping } from '../MessageMapping'
 const DefaultSystemLanguageFormItem = () => {
   const { $t } = useIntl()
   const {
-    data: preferenceData,
     currentPreferredLang,
-    update: updatePreferences,
+    updatePartial: updatePreferences,
     getReqState,
     updateReqState
   } = usePreference()
@@ -18,7 +17,7 @@ const DefaultSystemLanguageFormItem = () => {
   const handlePreferredLangChange = (langCode: string) => {
     if (!langCode) return
     const payload = {
-      global: { ...preferenceData?.global, preferredLanguage: langCode }
+      global: { preferredLanguage: langCode }
     }
     updatePreferences({ newData: payload })
   }

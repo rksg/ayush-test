@@ -973,6 +973,21 @@ describe('Table component', () => {
       fireEvent.click(editBtns[0])
     })
 
+    it('should trigger action on child row', async () => {
+      const onAction = jest.fn()
+      render(<GroupTable rowActions={[{ label: 'Delete', onClick: onAction }]} />)
+      const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
+      expect(filters.length).toBe(4)
+      const groupBySelector = filters[3]
+      fireEvent.mouseDown(groupBySelector)
+      await waitFor(async () =>
+        expect(await screen.findByTestId('option-deviceGroupName')).toBeInTheDocument())
+      fireEvent.click(await screen.findByTestId('option-deviceGroupName'))
+      fireEvent.click((await screen.findAllByRole('checkbox'))[1])
+      fireEvent.click((await screen.findAllByRole('button', { name: 'Delete' }))[0])
+      expect(onAction.mock.calls[0][0][0].apMac).toEqual('34:20:E3:19:79:F0')
+    })
+
     it('should support groupBy, search and filter', async () => {
       jest.useFakeTimers()
       render(<GroupTable />)
