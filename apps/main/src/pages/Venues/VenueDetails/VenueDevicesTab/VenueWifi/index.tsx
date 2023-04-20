@@ -182,28 +182,6 @@ function getCols (intl: ReturnType<typeof useIntl>) {
   return columns
 }
 
-const defaultPayload = {
-  fields: [
-    'clients',
-    'serialNumber',
-    'apDownRssis',
-    'downlink',
-    'IP',
-    'apUpRssi',
-    'apMac',
-    'venueName',
-    'meshRole',
-    'uplink',
-    'venueId',
-    'name',
-    'apUpMac',
-    'apRssis',
-    'model',
-    'hops',
-    'cog'
-  ]
-}
-
 function transformData (data: APMesh[]) {
   return data.map((item: APMesh) => {
     const newItem = { ...item }
@@ -284,6 +262,30 @@ export function VenueWifi () {
 }
 
 export function VenueMeshApsTable () {
+  const params = useParams()
+  const defaultPayload = {
+    fields: [
+      'clients',
+      'serialNumber',
+      'apDownRssis',
+      'downlink',
+      'IP',
+      'apUpRssi',
+      'apMac',
+      'venueName',
+      'meshRole',
+      'uplink',
+      'venueId',
+      'name',
+      'apUpMac',
+      'apRssis',
+      'model',
+      'hops',
+      'cog'
+    ],
+    filters: { venueId: [params.venueId] }
+  }
+
   const tableQuery = useTableQuery({
     useQuery: useMeshApsQuery,
     defaultPayload
