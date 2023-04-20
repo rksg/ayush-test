@@ -15,7 +15,6 @@ import {
 } from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Loader } from '@acx-ui/components'
 import { useApListQuery }           from '@acx-ui/rc/services'
-import { NetworkPath }              from '@acx-ui/utils'
 
 import { HealthPageContext } from '../HealthPageContext'
 
@@ -74,7 +73,14 @@ export default function KpiSections (props: {
   const finalPath = useMemo(() => {
     if (isApInPath && apList && apData) {
       const { venueId } = apData[0] as unknown as { venueId: string }
-      return [{ type: 'zone', name: venueId }, ...filters.path] as NetworkPath
+      const venuePath = { type: 'zone' as 'zone', name: venueId }
+      const copy = [...filters.path]
+      if (filters.path.length === 1) {
+        copy.unshift(venuePath)
+        return copy
+      }
+      copy.splice(filters.path.length - 1, 0, venuePath)
+      return copy
     }
     return filters.path
   }, [isApInPath, apData])

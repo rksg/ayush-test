@@ -1,4 +1,5 @@
 import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { healthApi }                   from '@acx-ui/analytics/services'
 import { AnalyticsFilter }             from '@acx-ui/analytics/utils'
@@ -9,9 +10,10 @@ import {
   cleanup,
   mockGraphqlMutation,
   mockGraphqlQuery,
-  mockRestApiQuery,
+  mockServer,
   render,
-  screen
+  screen,
+  waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 import { TimeStampRange }                                  from '@acx-ui/types'
 import { DateRange, NetworkPath, fixedEncodeURIComponent } from '@acx-ui/utils'
@@ -21,11 +23,19 @@ import { HealthPageContext } from '../HealthPageContext'
 import KpiSection from '.'
 
 describe('Kpi Section', () => {
+  beforeAll(() => mockServer.listen())
   beforeEach(() => {
     store.dispatch(healthApi.util.resetApiState())
   })
 
-  afterEach(() => cleanup())
+  afterEach(() => {
+    mockServer.resetHandlers()
+    cleanup()
+  })
+
+  afterAll(() => {
+    mockServer.close()
+  })
 
   const sampleTS = {
     time: [
@@ -110,14 +120,14 @@ describe('Kpi Section', () => {
     })
     mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
       data: {
-        timeToConnect: {
+        saveThreshold: {
           success: true
         }
       }
     })
 
     const path =
-      [{ type: 'network', name: 'Network' }, { type: 'zoneName', name: 'testAp' }] as NetworkPath
+      [{ type: 'network', name: 'Network' }, { type: 'zoneName', name: 'z1' }] as NetworkPath
     const period = fixedEncodeURIComponent(JSON.stringify(filters))
     const analyticsNetworkFilter = fixedEncodeURIComponent(JSON.stringify({
       path,
@@ -143,10 +153,13 @@ describe('Kpi Section', () => {
     expect(await screen.findByText('You don\'t have permission to set threshold for selected network node.')).toBeInTheDocument()
   }, 60000)
 
-  it('should render valid threshold apply for ap path', async () => {
-    mockRestApiQuery(CommonUrlsInfo.getApsList.url, 'post', {
-      data: [{ venueId: 'testVenueId' }]
-    })
+  it('should render valid threshold apply for single ap path', async () => {
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json({ data: [{ venueId: 'testVenueId' }] }))
+      )
+    )
 
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
       data: { network: { histogram: { data: [0, 2, 2, 3, 3, 0] } } }
@@ -166,14 +179,13 @@ describe('Kpi Section', () => {
     })
     mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
       data: {
-        SaveThreshold: {
+        saveThreshold: {
           success: true
         }
       }
     })
 
-    const path =
-      [{ type: 'network', name: 'Network' }, { type: 'ap', name: 'testAp' }] as NetworkPath
+    const path = [{ type: 'ap', name: 'z1' }] as NetworkPath
     const period = fixedEncodeURIComponent(JSON.stringify(filters))
     const analyticsNetworkFilter = fixedEncodeURIComponent(JSON.stringify({
       path,
@@ -186,13 +198,74 @@ describe('Kpi Section', () => {
       </HealthPageContext.Provider>
     </Provider>, {
       route: {
-        // eslint-disable-next-line max-len
-        path: `/tenantId/analytics/health?period=${period}&analyticsNetworkFilter=${analyticsNetworkFilter}`,
+        path: '/:tenantId',
+        params: { tenantId: 'testTenant' },
+        search: `period=${period}&analyticsNetworkFilter=${analyticsNetworkFilter}`,
         wrapRoutes: false
       }
     })
-    const button = await screen.findByRole('button', { name: 'Apply' })
-    expect(button).not.toBeDisabled()
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const buttons = await screen.findAllByRole('button', { name: 'Apply' })
+    expect(buttons).toHaveLength(4)
+    expect(buttons[0]).not.toBeDisabled()
+  }, 60000)
+
+  it('should render valid threshold apply for ap path', async () => {
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json({ data: [{ venueId: 'testVenueId' }] }))
+      )
+    )
+
+    mockGraphqlQuery(dataApiURL, 'histogramKPI', {
+      data: { network: { histogram: { data: [0, 2, 2, 3, 3, 0] } } }
+    })
+    mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
+      data: { network: { timeSeries: sampleTS } }
+    })
+    mockGraphqlQuery(dataApiURL, 'KPI', {
+      data: {
+        mutationAllowed: true
+      }
+    })
+    mockGraphqlQuery(dataApiURL, 'GetKpiThresholds', {
+      data: {
+        timeToConnectThreshold: { value: 30000 }
+      }
+    })
+    mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
+      data: {
+        saveThreshold: {
+          success: true
+        }
+      }
+    })
+
+    const path =
+      [{ type: 'network', name: 'Network' }, { type: 'ap', name: 'z1' }] as NetworkPath
+    const period = fixedEncodeURIComponent(JSON.stringify(filters))
+    const analyticsNetworkFilter = fixedEncodeURIComponent(JSON.stringify({
+      path,
+      raw: []
+    }))
+
+    render(<Provider>
+      <HealthPageContext.Provider value={healthContext}>
+        <KpiSection tab={'overview'} filters={{ ...filters, path: path }} />
+      </HealthPageContext.Provider>
+    </Provider>, {
+      route: {
+        path: '/:tenantId',
+        params: { tenantId: 'testTenant' },
+        search: `period=${period}&analyticsNetworkFilter=${analyticsNetworkFilter}`,
+        wrapRoutes: false
+      }
+    })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const buttons = await screen.findAllByRole('button', { name: 'Apply' })
+    expect(buttons).toHaveLength(4)
+    expect(buttons[0]).not.toBeDisabled()
   }, 60000)
 
   it('should render with smaller timewindow', async () => {
