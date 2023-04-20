@@ -23,20 +23,11 @@ import { HealthPageContext } from '../HealthPageContext'
 import KpiSection from '.'
 
 describe('Kpi Section', () => {
-  beforeAll(() => mockServer.listen())
   beforeEach(() => {
     store.dispatch(healthApi.util.resetApiState())
-    mockServer.restoreHandlers()
   })
 
-  afterEach(() => {
-    mockServer.resetHandlers()
-    cleanup()
-  })
-
-  afterAll(() => {
-    mockServer.close()
-  })
+  afterEach(() =>  cleanup())
 
   const sampleTS = {
     time: [
