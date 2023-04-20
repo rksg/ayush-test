@@ -1,6 +1,7 @@
-import { RolesEnum } from '@acx-ui/types'
+import { render, screen } from '@acx-ui/test-utils'
+import { RolesEnum }      from '@acx-ui/types'
 
-import { filterByAccess, getUserProfile, hasAccess, hasRoles, setUserProfile } from './userProfile'
+import { filterByAccess, getUserProfile, hasAccess, hasRoles, setUserProfile, WrapIfAccessible } from './userProfile'
 
 function setRole (role: RolesEnum) {
   const profile = getUserProfile()
@@ -82,5 +83,30 @@ describe('filterByAccess', () => {
 
     setRole(RolesEnum.READ_ONLY)
     expect(filterByAccess(items)).toHaveLength(1)
+  })
+})
+
+describe('WrapIfAccessible', () => {
+  it('should wrap if user has access', () => {
+    render(
+      <WrapIfAccessible wrapper={children =>
+        <div data-testid='wrapper'>{children}</div>
+      }>
+        <div>Test</div>
+      </WrapIfAccessible>
+    )
+    expect(screen.getByTestId('wrapper')).toBeVisible()
+  })
+
+  it('should not wrap if user does not have access', () => {
+    setRole(RolesEnum.READ_ONLY)
+    render(
+      <WrapIfAccessible wrapper={children =>
+        <div data-testid='wrapper'>{children}</div>
+      }>
+        <div>Test</div>
+      </WrapIfAccessible>
+    )
+    expect(screen.queryByTestId('wrapper')).toBeNull()
   })
 })

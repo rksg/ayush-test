@@ -49,7 +49,8 @@ const defaultPayload = {
     'recipientName',
     'transactionId',
     'name',
-    'ipAddress'
+    'ipAddress',
+    'detailedDescription'
   ]
 }
 

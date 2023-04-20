@@ -37,6 +37,7 @@ import {
 } from '@acx-ui/components'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import type { TimeStampRange }        from '@acx-ui/types'
+import { hasAccess }                  from '@acx-ui/user'
 
 import {
   eventColorByCategory,
@@ -189,7 +190,10 @@ export const useDotClick = (
         }))
       }
 
-      if (params.componentSubType === 'custom' && typedParams.seriesName === 'incidents') {
+      if (hasAccess() &&
+        params.componentSubType === 'custom' &&
+        typedParams.seriesName === 'incidents'
+      ) {
         const typedIncidentParam = (params as { data: [number, string, number, IncidentDetails] })
         const { id } = typedIncidentParam.data[3]
         navigate(`${basePath}/analytics/incidents/${id}`)
@@ -527,7 +531,9 @@ export function TimelineChart ({
   }, [option, sharedChartName])
 
   return (
-    <UI.ChartWrapper $selected={mapping[0].series === INCIDENTS}>
+    <UI.ChartWrapper
+      $selected={mapping[0].series === INCIDENTS}
+      $hasAccess={hasAccess()} >
       <ReactECharts
         {...{
           ...props,

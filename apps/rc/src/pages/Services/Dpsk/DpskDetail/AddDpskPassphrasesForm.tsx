@@ -316,6 +316,7 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
             <Input placeholder={$t({ defaultMessage: 'Enter phone number' })} />
           }
         />
+        <Form.Item name='revocationReason' hidden={true}/>
       </>}
     </Form>
   )
