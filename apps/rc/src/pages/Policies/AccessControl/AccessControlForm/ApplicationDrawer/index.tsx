@@ -31,6 +31,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
+import { showUnsavedConfirmModal }     from '../AccessControlComponent'
 import { AddModeProps, editModeProps } from '../AccessControlForm'
 
 import {
@@ -627,7 +628,10 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         title={$t({ defaultMessage: 'Application Access Settings' })}
         visible={visible}
         zIndex={10}
-        onClose={handleApplicationsDrawerClose}
+        onClose={() => !isViewMode()
+          ? showUnsavedConfirmModal(handleApplicationsDrawerClose)
+          : handleApplicationsDrawerClose()
+        }
         destroyOnClose={true}
         children={content}
         footer={
