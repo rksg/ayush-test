@@ -9,6 +9,7 @@ import {
 import { useIntl } from 'react-intl'
 
 import { Button }                                    from '@acx-ui/components'
+import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }                from '@acx-ui/icons'
 import { walledGardensRegExp, GuestNetworkTypeEnum } from '@acx-ui/rc/utils'
 
@@ -23,7 +24,7 @@ enum WallGardenAction {
   UseExist
 }
 
-interface WalledGardenProps {
+export interface WalledGardenProps {
   guestNetworkTypeEnum: GuestNetworkTypeEnum,
   enableDefaultWalledGarden: boolean
 }
@@ -56,9 +57,23 @@ export function WalledGardenTextArea (props: WalledGardenProps) {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
 
-  // TODO: remove this flag and use feature toggle
-  const toggleFlag = false
-  // const toggleFlag = useIsSplitOn(Features.WIFI_EDA_BYPASS_CNA_TOGGLE)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // const [toggleFlag, setToggleFlag] = useState(useIsSplitOn(Features.WIFI_EDA_BYPASS_CNA_TOGGLE))
+  const toggleFlag = useIsSplitOn(Features.WIFI_EDA_BYPASS_CNA_TOGGLE)
+
+
+  const { guestNetworkTypeEnum, enableDefaultWalledGarden } = props
+
+  /**
+   * the reanson why we set condition isExemption() is because
+   * Walled Garden setting was existed before this requirement.
+   * But only existed in WISPr and Cloudpath.
+   * So we have make sure that in WISPr and Cloudpath,
+   * walled garden setting is shown even Feature toggle is disabled
+   */
+
+  // if one condition is true, then go render it.
+  const isRenderNeed = [toggleFlag, isExemption(guestNetworkTypeEnum)].some(Boolean)
 
   const {
     data: networkFromContextData,
@@ -98,7 +113,7 @@ export function WalledGardenTextArea (props: WalledGardenProps) {
     }
   }
 
-  const { guestNetworkTypeEnum, enableDefaultWalledGarden } = props
+
 
   function actionRunnder (currentState: WalledGardenState, IncomingState: WalledGardenState) {
     switch (IncomingState.action) {
@@ -140,15 +155,13 @@ export function WalledGardenTextArea (props: WalledGardenProps) {
     }
   },[])
 
-  // if one condition is true, then go render it.
-  const isRenderNeed = [toggleFlag, isExemption(guestNetworkTypeEnum)].some(Boolean)
-
   if (!isRenderNeed) {
     return null
   }
 
   return (<>
     <Form.Item
+      data-testid='walled-garden-fullblock'
       name={['walledGardensString']}
       rules={[
         { validator: (_, value) => walledGardensRegExp(value.toString()) }
@@ -176,25 +189,24 @@ export function WalledGardenTextArea (props: WalledGardenProps) {
           <QuestionMarkCircleOutlined />
         </Tooltip>
         {enableDefaultWalledGarden &&
-        <Button onClick={() => {
-          dispatch(statesCollection.useDefaultState)
-        }}
-        style={{ marginLeft: 90, marginRight: 10 }}
-        type='link'>
+        <Button onClick={() => dispatch(statesCollection.useDefaultState)}
+          data-testid='walled-garden-default-button'
+          style={{ marginLeft: 90, marginRight: 10 }}
+          type='link'>
           {$t({ defaultMessage: 'Reset to default' })}
         </Button>
         }
         <Space />
-        <Button onClick={() => {
-          dispatch(statesCollection.initialState)
-        }}
-        style={enableDefaultWalledGarden? {} : { marginLeft: 90, marginRight: 10 }}
-        type='link'>
+        <Button onClick={() => dispatch(statesCollection.initialState)}
+          style={enableDefaultWalledGarden? {} : { marginLeft: 90, marginRight: 10 }}
+          data-testid='walled-garden-clear-button'
+          type='link'>
           {$t({ defaultMessage: 'Clear' })}
         </Button>
       </>}
       children={
         <Input.TextArea rows={15}
+          data-testid='walled-garden-showed-textarea'
           style={{ resize: 'none' }}
           onChange={(e)=>{
             const rawWalledGardenText = e.target.value
@@ -219,7 +231,11 @@ export function WalledGardenTextArea (props: WalledGardenProps) {
     />
     <Form.Item
       hidden
+      data-testid='walled-garden-hidden-item'
       name={['guestPortal','walledGardens']}
+      children={
+        <Input.TextArea data-testid='walled-garden-hidden-textarea'/>
+      }
     />
   </>)
 }
