@@ -64,7 +64,7 @@ describe('ClientIsolationForm', () => {
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
-      rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
+      rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(mockedVenues))),
       rest.get(ClientIsolationUrls.getClientIsolationList.url,
         (_, res, ctx) => res(ctx.json(mockedClientIsolationList)))
