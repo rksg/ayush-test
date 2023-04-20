@@ -3,10 +3,17 @@ import { useState, useContext, useEffect } from 'react'
 import { Row, Col, Form, Input, Typography } from 'antd'
 import _                                     from 'lodash'
 
-import { showActionModal, StepsForm, Table, TableProps, Button }                     from '@acx-ui/components'
-import { SwitchConfigurationProfile, SwitchModel, TrustedPort, TrustedPortTypeEnum } from '@acx-ui/rc/utils'
-import { filterByAccess }                                                            from '@acx-ui/user'
-import { getIntl }                                                                   from '@acx-ui/utils'
+import { showActionModal, StepsForm, Table, TableProps, Button } from '@acx-ui/components'
+import {
+  defaultSort,
+  sortProp,
+  SwitchConfigurationProfile,
+  SwitchModel,
+  TrustedPort,
+  TrustedPortTypeEnum
+} from '@acx-ui/rc/utils'
+import { filterByAccess } from '@acx-ui/user'
+import { getIntl }        from '@acx-ui/utils'
 
 import { ConfigurationProfileFormContext } from '../ConfigurationProfileFormContext'
 
@@ -63,11 +70,13 @@ export function TrustedPorts () {
   const trustedPortsColumns: TableProps<TrustedPort>['columns']= [{
     title: $t({ defaultMessage: 'Model' }),
     dataIndex: 'model',
-    key: 'model'
+    key: 'model',
+    sorter: { compare: sortProp('model', defaultSort) }
   }, {
     title: $t({ defaultMessage: 'Trusted' }),
     dataIndex: 'trustPorts',
     key: 'trustPorts',
+    sorter: { compare: sortProp('trustPorts', defaultSort) },
     render: (data, row) => {
       if(data?.toString() === ''){
         return <Button type='link'

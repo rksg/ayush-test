@@ -296,7 +296,7 @@ export const GuestsTable = (props: { dateFilter: GuestDateFilter }) => {
       key: 'guestStatus',
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'guestStatus',
-      sorter: false,
+      sorter: true,
       render: function (data) {
         return data === GuestStatusEnum.EXPIRED ?
           <span style={{ color: cssStr('--acx-semantics-red-50') }}>{data}</span> : data

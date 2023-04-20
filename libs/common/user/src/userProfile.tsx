@@ -43,6 +43,15 @@ export function filterByAccess <Item> (items?: Item[]) {
   return items?.filter(item => hasAccess((item as { key?: string }).key))
 }
 
+export function WrapIfAccessible ({ id, wrapper, children }: {
+  id: string,
+  wrapper: (children: React.ReactElement) => React.ReactElement,
+  children: React.ReactElement
+}) {
+  return hasAccess(id) ? wrapper(children) : children
+}
+WrapIfAccessible.defaultProps = { id: undefined }
+
 export function hasRoles (roles: string | string[]) {
   const { profile } = getUserProfile()
 

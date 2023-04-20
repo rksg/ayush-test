@@ -3,21 +3,20 @@ import { Form, Select } from 'antd'
 import { useIntl }      from 'react-intl'
 import { useParams }    from 'react-router-dom'
 
-import { Table, TableProps }                                        from '@acx-ui/components'
-import { useGetClientIsolationListQuery, useNetworkVenueListQuery } from '@acx-ui/rc/services'
-import { ClientIsolationVenue, NetworkVenue }                       from '@acx-ui/rc/utils'
+import { Table, TableProps, Tooltip }                         from '@acx-ui/components'
+import { useGetClientIsolationListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
+import { ClientIsolationVenue, NetworkVenue }                 from '@acx-ui/rc/utils'
 
 
 const { useWatch } = Form
 
-const defaultNetworkVenueListPayload = {
-  fields: [
-    'name',
-    'id'
-  ],
+const defaultVenueListPayload = {
+  fields: ['name', 'id', 'dhcp.enabled'],
   page: 1,
   pageSize: 10000
 }
+
+const clientIsolationVenuesFieldName = ['wlan','advancedCustomization', 'clientIsolationVenues']
 
 interface ClientIsolationAllowListEditorProps {
   networkVenues?: NetworkVenue[]
@@ -30,11 +29,12 @@ export default function ClientIsolationAllowListEditor (props: ClientIsolationAl
   const { networkVenues } = props
   const form = Form.useFormInstance()
 
-  // eslint-disable-next-line max-len
-  const clientIsolationVenues = useWatch<ClientIsolationVenue[]>(['wlan','advancedCustomization', 'clientIsolationVenues'])
+  const clientIsolationVenues = useWatch<ClientIsolationVenue[]>(clientIsolationVenuesFieldName)
   const clientIsolationVenuesInitValue = networkVenues
-    // eslint-disable-next-line max-len
-    ? networkVenues.map(nv => ({ venueId: nv.venueId, clientIsolationAllowlistId: nv.clientIsolationAllowlistId }))
+    ? networkVenues.map(nv => ({
+      venueId: nv.venueId,
+      clientIsolationAllowlistId: nv.clientIsolationAllowlistId
+    }))
     : []
 
   const setAllowList = (venueId: string, policyId: string) => {
@@ -45,7 +45,7 @@ export default function ClientIsolationAllowListEditor (props: ClientIsolationAl
 
     if (!clientIsolationVenues || clientIsolationVenues.length === 0) {
       // eslint-disable-next-line max-len
-      form.setFieldValue(['wlan','advancedCustomization', 'clientIsolationVenues'], [clientIsolationVenue])
+      form.setFieldValue(clientIsolationVenuesFieldName, [clientIsolationVenue])
       return
     }
 
@@ -58,12 +58,17 @@ export default function ClientIsolationAllowListEditor (props: ClientIsolationAl
     }
 
     // eslint-disable-next-line max-len
-    form.setFieldValue(['wlan','advancedCustomization', 'clientIsolationVenues'], clientIsolationVenues)
+    form.setFieldValue(clientIsolationVenuesFieldName, clientIsolationVenues)
   }
 
-  const venueListForNameMap = useNetworkVenueListQuery({
-    params: { networkId: 'UNKNOWN-NETWORK-ID', ...params },
-    payload: defaultNetworkVenueListPayload
+  const venuesList = useVenuesListQuery({
+    params,
+    payload: {
+      ...defaultVenueListPayload,
+      filters: {
+        id: networkVenues?.map(nv => nv.venueId) ?? []
+      }
+    }
   })
 
   const { policyOptions } = useGetClientIsolationListQuery({ params },{
@@ -81,7 +86,7 @@ export default function ClientIsolationAllowListEditor (props: ClientIsolationAl
       dataIndex: 'name',
       defaultSortOrder: 'ascend',
       render: function (data, row) {
-        const target = venueListForNameMap.data?.data.find(venue => venue.id === row.venueId)
+        const target = venuesList.data?.data.find(venue => venue.id === row.venueId)
         return target?.name
       }
     },
@@ -90,18 +95,27 @@ export default function ClientIsolationAllowListEditor (props: ClientIsolationAl
       key: 'clientIsolationAllowlistId',
       dataIndex: 'clientIsolationAllowlistId',
       render: function (data, row) {
-        const target = clientIsolationVenuesInitValue.find(c => c.venueId === row.venueId)
+        const initValue = clientIsolationVenuesInitValue.find(c => c.venueId === row.venueId)
+        const correspondingVenue = venuesList.data?.data.find(venue => venue.id === row.venueId)
+        const isVenueDhcpEnabled = correspondingVenue?.dhcp?.enabled ?? false
 
         return (
-          <Select
-            defaultValue={target?.clientIsolationAllowlistId ?? null}
-            onChange={(value: string) => setAllowList(row.venueId!, value)}
-            options={[
-              { label: $t({ defaultMessage: 'Not active...' }), value: null },
-              ...policyOptions
-            ]}
-          >
-          </Select>
+          <Tooltip title={isVenueDhcpEnabled
+            // eslint-disable-next-line max-len
+            ? $t({ defaultMessage: 'Client isolation allowlist cannot be applied when DHCP is enabled' })
+            : null
+          }>
+            <Select
+              defaultValue={initValue?.clientIsolationAllowlistId ?? null}
+              onChange={(value: string) => setAllowList(row.venueId!, value)}
+              disabled={!correspondingVenue || isVenueDhcpEnabled}
+              options={[
+                { label: $t({ defaultMessage: 'Not active...' }), value: null, title: null },
+                ...policyOptions
+              ]}
+            >
+            </Select>
+          </Tooltip>
         )
       }
     }
@@ -109,7 +123,7 @@ export default function ClientIsolationAllowListEditor (props: ClientIsolationAl
 
   return (
     <Form.Item
-      name={['wlan','advancedCustomization', 'clientIsolationVenues']}
+      name={clientIsolationVenuesFieldName}
       initialValue={clientIsolationVenuesInitValue}
     >
       <Table<NetworkVenue>
