@@ -1,0 +1,78 @@
+import { useIntl } from 'react-intl'
+
+import { Loader, PageHeader }                                     from '@acx-ui/components'
+import { useGetEdgeFirewallQuery, useUpdateEdgeFirewallMutation } from '@acx-ui/rc/services'
+import { getServiceRoutePath, ServiceOperation, ServiceType }     from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                  from '@acx-ui/react-router-dom'
+
+import FirewallForm, { filterCustomACLRules, FirewallFormEdge, FirewallFormModel, processFirewallACLPayload } from '../FirewallForm'
+import { ScopeForm }                                                                                          from '../FirewallForm/ScopeForm'
+import { SettingsForm }                                                                                       from '../FirewallForm/SettingsForm'
+
+const EditFirewall = () => {
+  const { $t } = useIntl()
+  const params = useParams()
+  const navigate = useNavigate()
+  const linkToServiceList = useTenantLink(getServiceRoutePath({
+    type: ServiceType.EDGE_FIREWALL,
+    oper: ServiceOperation.LIST
+  }))
+
+  const { data, isLoading } = useGetEdgeFirewallQuery({ params })
+  const [updateEdgeFirewall] = useUpdateEdgeFirewallMutation()
+
+  const steps = [
+    {
+      title: $t({ defaultMessage: 'Settings' }),
+      content: <SettingsForm />
+    },
+    {
+      title: $t({ defaultMessage: 'Scope' }),
+      content: <ScopeForm />
+    }
+  ]
+
+  const handleFinish = async (formData: FirewallFormModel) => {
+    try {
+      let statefulAcls = formData.statefulAcls
+      statefulAcls = filterCustomACLRules(statefulAcls)
+      processFirewallACLPayload(statefulAcls)
+      const payload = {
+        serviceName: formData.serviceName,
+        // tags: formData.tags,
+        edgeIds: formData.selectedEdges?.map((edge: FirewallFormEdge) => edge.serialNumber) ?? [],
+        ddosRateLimitingEnabled: formData.ddosRateLimitingEnabled,
+        ddosRateLimitingRules: formData.ddosRateLimitingRules,
+        statefulAclEnabled: formData.statefulAclEnabled,
+        statefulAcls: statefulAcls
+      }
+
+      await updateEdgeFirewall({ params, payload }).unwrap()
+      navigate(linkToServiceList, { replace: true })
+    } catch(err) {
+      // eslint-disable-next-line no-console
+      console.log(err)
+    }
+  }
+
+  return (
+    <>
+      <PageHeader
+        title={$t({ defaultMessage: 'Edit Firewall Service' })}
+        breadcrumb={[
+          { text: $t({ defaultMessage: 'Services' }), link: '/services' }
+        ]}
+      />
+      <Loader states={[{ isLoading: isLoading }]}>
+        <FirewallForm
+          steps={steps}
+          onFinish={handleFinish}
+          editMode
+          editData={data}
+        />
+      </Loader>
+    </>
+  )
+}
+
+export default EditFirewall
