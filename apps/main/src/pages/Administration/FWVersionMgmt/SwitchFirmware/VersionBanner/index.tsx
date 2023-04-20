@@ -2,16 +2,17 @@ import { Divider, Space } from 'antd'
 import { useIntl }        from 'react-intl'
 import { useParams }      from 'react-router-dom'
 
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }    from '@acx-ui/formatter'
 import {
   useGetSwitchLatestFirmwareListQuery
 } from '@acx-ui/rc/services'
 import {
-  firmwareTypeTrans,
   FirmwareVersion,
-  FirmwareVenueVersion,
-  FirmwareCategory
+  firmwareTypeTrans
 } from '@acx-ui/rc/utils'
+
+import { getReleaseFirmware } from '../../FirmwareUtils'
 
 import * as UI from './styledComponents'
 
@@ -24,6 +25,7 @@ export const VersionBanner = () => {
   const versions = getReleaseFirmware(latestReleaseVersions)
   const firmware = versions.filter(v => v.id.startsWith('090'))[0]
   const rodanFirmware = versions.filter(v => v.id.startsWith('100'))[0]
+  const enableSwitchRodanFirmware = useIsSplitOn(Features.SWITCH_RODAN_FIRMWARE)
 
 
   const getFirmwareInformation = function (firmware: FirmwareVersion, models: string) {
@@ -51,7 +53,8 @@ export const VersionBanner = () => {
         {$t({ defaultMessage: 'Latest Version' })}
       </UI.LatestVersion>
       <Space split={<Divider type='vertical' style={{ height: '40px' }} />}>
-        {rodanFirmware && getFirmwareInformation(rodanFirmware, '8200')}
+        {enableSwitchRodanFirmware && rodanFirmware &&
+          getFirmwareInformation(rodanFirmware, '8200')}
         {firmware && getFirmwareInformation(firmware, '7150-7850')}
       </Space>
     </UI.BannerVersion>
@@ -59,10 +62,3 @@ export const VersionBanner = () => {
 }
 
 export default VersionBanner
-
-const categoryIsReleaseFunc = ((lv : FirmwareVersion | FirmwareVenueVersion) =>
-  lv.category === FirmwareCategory.RECOMMENDED || lv.category === FirmwareCategory.CRITICAL)
-
-function getReleaseFirmware (firmwareVersions: FirmwareVersion[] = []): FirmwareVersion[] {
-  return firmwareVersions.filter(categoryIsReleaseFunc)
-}

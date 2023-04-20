@@ -63,15 +63,15 @@ export function FunnelChart ({
   stages: FunnelChartStages;
   height: number;
   colors: string[];
-  selectedStage: Stages;
+  selectedStage: Stages | null;
   onSelectStage: CallableFunction;
   valueFormatter: CallableFunction;
   valueLabel: string;
 }) {
   const [parentNode, ref] = useGetNode()
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
-  const onClick = (name: Stages) => {
-    onSelectStage(name)
+  const onClick = (width: number, name: Stages) => {
+    onSelectStage(width, name === selectedStage ? null : name)
   }
   const enhancedStages: EnhancedStage[] = useMemo(() => {
     if (!parentNode) return []
@@ -95,22 +95,34 @@ export function FunnelChart ({
       })
     let endPosition = 0
     return filteredStages.map((stage, i) => {
-      if (stage.width > minVisibleWidth) stage.width = stage.pct * totalWidth
+      if (stage.width > minVisibleWidth) {
+        stage.width = stage.pct * totalWidth
+      }
       endPosition += stage.width
       return {
         ...stage,
         valueLabel,
         valueFormatter,
-        onClick: onClick.bind(null, stage.name as Stages),
         key: stage.name,
         isSelected: stage.name === selectedStage,
         idx: i,
         bgColor: colors[i],
-        endPosition
+        endPosition,
+        onClick: onClick.bind(null,endPosition - stage.width / 2, stage.name as Stages)
       }
     })
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stages, selectedStage, parentNode, windowWidth])
+
+  const selectedStageWidth = enhancedStages.find((enhancedStage) => enhancedStage.isSelected)?.width
+  useEffect(() => {
+    const selected = enhancedStages.find(
+      (enhancedStage) => enhancedStage.isSelected
+    )
+    onSelectStage(selected?.endPosition! - selected?.width! / 2, selectedStage)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedStage, selectedStageWidth])
+
   useLayoutEffect(() => {
     const handler = function resizeHandler () {
       setWindowWidth(window.innerWidth)
@@ -228,10 +240,12 @@ export const Labels = ({
           top: !dir ? chartPadding - 30 : parentHeight - 40,
           dir,
           color: colors[i],
-          onClick: (onClick as Function).bind(null, stage.name),
+          onClick: () => (onClick as CallableFunction)(
+            stage.endPosition - stage.width / 2, stage.name
+          ),
           labelRef: updateChildNodes
         } as unknown as LabelPinProps
-        return <LabelWithPin {...labelProps} />
+        return <LabelWithPin {...labelProps} key={i}/>
       })}
     </>
   )

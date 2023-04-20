@@ -90,6 +90,7 @@ const SubscriptionTable = () => {
         (isEdgeEnabled && o.key === EntitlementDeviceType.EDGE)
         || o.key !== EntitlementDeviceType.EDGE
       ),
+      sorter: { compare: sortProp('deviceType', defaultSort) },
       render: function (_, row) {
         return EntitlementUtil.getDeviceTypeText($t, row.deviceType)
       }
@@ -98,6 +99,7 @@ const SubscriptionTable = () => {
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'deviceSubType',
       key: 'deviceSubType',
+      sorter: { compare: sortProp('deviceSubType', defaultSort) },
       render: function (_, row) {
         if (row.tempLicense === true) {
           return EntitlementUtil.tempLicenseToString(true)
@@ -142,7 +144,8 @@ const SubscriptionTable = () => {
       // key needs to be unique
       key: 'timeLeft',
       sorter: { compare: sortProp('expirationDate', dateSort) },
-      defaultSortOrder: 'ascend',
+      // active license should be first
+      defaultSortOrder: 'descend',
       render: function (_, row) {
         const remainingDays = EntitlementUtil.timeLeftInDays(row.expirationDate)
         const TimeLeftWrapper = remainingDays < 0
@@ -160,8 +163,9 @@ const SubscriptionTable = () => {
       filterMultiple: false,
       filterValueNullable: true,
       filterable: statusTypeFilterOpts($t),
+      sorter: { compare: sortProp('status', defaultSort) },
       render: function (_, row) {
-        return row.status === 'valid'
+        return row.status === 'active'
           ? $t({ defaultMessage: 'Active' })
           : $t({ defaultMessage: 'Expired' })
       }
@@ -196,7 +200,7 @@ const SubscriptionTable = () => {
 
   const GetStatus = (expirationDate: string) => {
     const isValid = moment(expirationDate).isAfter(Date.now())
-    return isValid ? 'valid' : 'invalid'
+    return isValid ? 'active' : 'expired'
   }
 
   const subscriptionData = queryResults.data?.map(response => {

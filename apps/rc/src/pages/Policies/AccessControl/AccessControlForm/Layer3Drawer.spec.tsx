@@ -300,7 +300,7 @@ describe('Layer3Drawer Component', () => {
 
   })
 
-  it.skip('Render Layer3Drawer component with subnet option successfully', async () => {
+  it('Render Layer3Drawer component with subnet option successfully', async () => {
     mockServer.use(rest.post(
       AccessControlUrls.addL3AclPolicy.url,
       (_, res, ctx) => res(
@@ -339,7 +339,7 @@ describe('Layer3Drawer Component', () => {
     await userEvent.click(screen.getByText('IP: 1.2.3.4/255.255.0.0'))
 
     await userEvent.click(screen.getByRole('button', {
-      name: /edit/i
+      name: 'Edit'
     }))
 
     await userEvent.click(screen.getAllByText('Cancel')[1])
@@ -347,7 +347,7 @@ describe('Layer3Drawer Component', () => {
     await userEvent.click(screen.getByText('IP: 1.2.3.4/255.255.0.0'))
 
     await userEvent.click(screen.getByRole('button', {
-      name: /edit/i
+      name: 'Edit'
     }))
 
     await screen.findByText(/edit layer 3 rule/i)

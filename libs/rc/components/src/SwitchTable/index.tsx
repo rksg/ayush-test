@@ -27,7 +27,8 @@ import {
   TableQuery,
   RequestPayload,
   SwitchStatusEnum,
-  isStrictOperationalSwitch
+  isStrictOperationalSwitch,
+  transformSwitchUnitStatus
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                    from '@acx-ui/user'
@@ -42,10 +43,11 @@ export const SwitchStatus = (
 ) => {
   if(row){
     const switchStatus = transformSwitchStatus(row.deviceStatus, row.configReady, row.syncedSwitchConfig, row.suspendingDeployTime)
+    const switchStatusString = row.isFirstLevel ? getSwitchStatusString(row) : transformSwitchUnitStatus(row.deviceStatus, row.configReady, row.syncedSwitchConfig)
     return (
       <span>
         <Badge color={handleStatusColor(switchStatus.deviceStatus)}
-          text={showText ? getSwitchStatusString(row) : ''}
+          text={showText ? switchStatusString : ''}
         />
       </span>
     )
@@ -352,8 +354,13 @@ export function SwitchTable (props : SwitchTableProps) {
       visible={importVisible}
       isLoading={importResult.isLoading}
       importError={importResult.error as FetchBaseQueryError}
-      importRequest={(formData) => {
-        importCsv({ params, payload: formData })
+      importRequest={async (formData) => {
+        await importCsv({ params, payload: formData }
+        ).unwrap().then(() => {
+          setImportVisible(false)
+        }).catch((error) => {
+          console.log(error) // eslint-disable-line no-console
+        })
       }}
       onClose={() => setImportVisible(false)}
     />

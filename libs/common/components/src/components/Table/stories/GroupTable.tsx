@@ -845,7 +845,7 @@ export const groupByColumns: TableProps<APExtendedGroupedResponse | APExtended>[
   }
 ]
 
-export function GroupTable () {
+export function GroupTable (props: TableProps<APExtended | APExtendedGroupedResponse>) {
   const [ grouping, setGrouping ] = React.useState<string | undefined>('')
   const sources: Record<string, APExtendedGroupedResponse[]> = {
     deviceGroupName: cleanResponse(apGroupResponse),
@@ -855,6 +855,7 @@ export function GroupTable () {
   return <>
     with groupby:
     <Table<APExtendedGroupedResponse | APExtended>
+      {...props}
       columns={groupByColumns}
       dataSource={sources[grouping || ''] || flatData.map((row, i) => ({ ...row, id: i }))}
       rowKey='id' // need to set unique entry per record to ensure proper behaviour

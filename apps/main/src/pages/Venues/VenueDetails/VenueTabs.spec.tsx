@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom'
+import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { VenueDetailHeader }                  from '@acx-ui/rc/utils'
 import { Provider }                           from '@acx-ui/store'
 import { render, screen, waitFor, fireEvent } from '@acx-ui/test-utils'
@@ -36,5 +37,13 @@ describe('VenueTabs', () => {
       hash: '',
       search: ''
     })
+  })
+
+  it('should render service tab', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider>
+      <VenueTabs venueDetail={venueDetailHeaderData as unknown as VenueDetailHeader} />
+    </Provider>, { route: { params } })
+    await screen.findByText('Services')
   })
 })

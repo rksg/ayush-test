@@ -22,6 +22,10 @@ const deviceOsVendorMap: Record<string, string[]> = {
   [DeviceTypeEnum.WdsDevice]: [OsVendorEnum.All, OsVendorEnum.TelnetCpe]
 }
 
+export const getDeviceOsVendorMap = () => {
+  return Object.assign({}, deviceOsVendorMap)
+}
+
 export const getOsVendorOptions = (deviceType: DeviceTypeEnum) => {
   let OsVendorArray = []
   switch (deviceType) {
@@ -68,7 +72,10 @@ export const getDeviceTypeOptions = () => {
   return [...Object.keys(DeviceTypeEnum)]
 }
 
-export const deviceOsVendorMappingTable = (deviceOSRuleList: DeviceOSRule[]) => {
+export const deviceOsVendorMappingTable = (
+  deviceOsVendorMap: Record<string, string[]>,
+  deviceOSRuleList: DeviceOSRule[]
+) => {
   deviceOSRuleList.forEach(rule => {
     const { deviceType, osVendor } = rule
     if (osVendor === OsVendorEnum.All) {
@@ -92,8 +99,19 @@ export const isDeviceOSEnabled = (
   deviceOSMappingTable: { [key: string]: string[] },
   editOsVendor: string
 ) => {
-  if (deviceOSMappingTable[deviceType].length === 0) return true
+  if (editOsVendor) {
+    if (editOsVendor === 'All') return false
+    if (option === 'All' && editOsVendor !== 'All') return false
+  }
+
+  if (option === 'All') {
+    const originDeviceOsMapping = getDeviceOsVendorMap()
+    const originLength = originDeviceOsMapping[deviceType].filter(device => device !== 'All').length
+    const optionLength = deviceOSMappingTable[deviceType].filter(device => device !== 'All').length
+    if (originLength !== optionLength) return true
+  }
   if (option === editOsVendor) return false
+  if (deviceOSMappingTable[deviceType].length === 0) return true
   return deviceOSMappingTable[deviceType]
     .findIndex(vendor => vendor === option) === -1
 }
