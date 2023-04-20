@@ -70,16 +70,6 @@ export function MacRegistrationListSettingForm () {
       </Col>
       {policyEnabled &&
         <Col span={24}>
-          {policySetId &&
-          <Form.Item name='defaultAccess'
-            label={$t({ defaultMessage: 'Default Access' })}
-            initialValue='ACCEPT'>
-            <SelectionControl
-              options={[{ value: 'ACCEPT', label: $t({ defaultMessage: 'ACCEPT' }) },
-                { value: 'REJECT', label: $t({ defaultMessage: 'REJECT' }) }]}
-            />
-          </Form.Item>
-          }
           <Form.Item label={$t({ defaultMessage: 'Access Policy Set' })}>
             <Space direction='horizontal'>
               <Form.Item name='policySetId'
@@ -106,6 +96,16 @@ export function MacRegistrationListSettingForm () {
               </Form.Item>
             </Space>
           </Form.Item>
+          {policySetId &&
+            <Form.Item name='defaultAccess'
+              label={$t({ defaultMessage: 'Default Access' })}
+              initialValue='ACCEPT'>
+              <SelectionControl
+                options={[{ value: 'ACCEPT', label: $t({ defaultMessage: 'ACCEPT' }) },
+                  { value: 'REJECT', label: $t({ defaultMessage: 'REJECT' }) }]}
+              />
+            </Form.Item>
+          }
         </Col>
       }
     </Row>
