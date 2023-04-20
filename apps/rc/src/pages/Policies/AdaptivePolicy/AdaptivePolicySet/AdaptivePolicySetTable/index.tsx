@@ -8,7 +8,7 @@ import { SimpleListTooltip }                                     from '@acx-ui/r
 import {
   useAdaptivePolicyListQuery,
   useAdaptivePolicySetListQuery,
-  useDeleteAdaptivePolicySetMutation,
+  useDeleteAdaptivePolicySetMutation, useGetDpskListQuery,
   useLazyGetPrioritizedPoliciesQuery, useMacRegListsQuery
 } from '@acx-ui/rc/services'
 import {
@@ -28,8 +28,10 @@ export default function AdaptivePolicySetTable () {
 
   const [prioritizedPoliciesMap, setPrioritizedPoliciesMap] = useState(new Map())
   const [assignedMacPools, setAssignedMacPools] = useState(new Map())
+  const [assignedDpsks, setAssignedDpsks] = useState(new Map())
 
   const isMacRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
+  const isCloudpathEnabled = useIsSplitOn(Features.DPSK_CLOUDPATH_FEATURE)
 
   const tableQuery = useTableQuery({
     useQuery: useAdaptivePolicySetListQuery,
@@ -50,6 +52,10 @@ export default function AdaptivePolicySetTable () {
     payload: { pageSize: 10000 }
   }, { skip: !isMacRegistrationEnabled })
 
+  const { data: dpskList, isLoading: getDpsksLoading } = useGetDpskListQuery({
+    payload: { pageSize: 10000 }
+  }, { skip: !isCloudpathEnabled })
+
   useEffect(() => {
     if(getMacListLoading)
       return
@@ -58,7 +64,7 @@ export default function AdaptivePolicySetTable () {
       macRegList.data.forEach(item => {
         const setId = item.policySetId
         if(poolsMap.has(setId)) {
-          poolsMap.set(setId, poolsMap.get(setId).concat(item.name))
+          poolsMap.set(setId, [ ...poolsMap.get(setId), item.name])
         }else {
           poolsMap.set(setId, [item.name])
         }
@@ -66,6 +72,23 @@ export default function AdaptivePolicySetTable () {
       setAssignedMacPools(poolsMap)
     }
   }, [macRegList])
+
+  useEffect(() => {
+    if(getDpsksLoading)
+      return
+    if(dpskList) {
+      const dpsksMap = new Map()
+      dpskList.data.forEach(item => {
+        const { policySetId } = item
+        if(dpsksMap.has(policySetId)) {
+          dpsksMap.set(policySetId, [ ...dpsksMap.get(policySetId), item.name])
+        }else {
+          dpsksMap.set(policySetId, [item.name])
+        }
+      })
+      setAssignedDpsks(dpsksMap)
+    }
+  }, [dpskList])
 
   useEffect(() => {
     if (tableQuery.isLoading)
@@ -127,9 +150,18 @@ export default function AdaptivePolicySetTable () {
         dataIndex: 'scope',
         align: 'center',
         render: (_, row) => {
+          let items = [] as string []
           const pools: string [] = assignedMacPools.get(row.id) ?? []
-          return pools.length === 0 ? '0' :
-            <SimpleListTooltip items={pools} displayText={pools.length}/>
+          const dpsks: string [] = assignedDpsks.get(row.id) ?? []
+          if(dpsks.length > 0) {
+            items = [...items, `DPSK Pools (${dpsks.length})`, ...dpsks]
+          }
+          if(pools.length > 0){
+            items = [...items, `Mac Registration Lists (${pools.length})`, ...pools]
+          }
+          const totalCount = pools.length + dpsks.length
+          return totalCount === 0 ? '0' :
+            <SimpleListTooltip items={items} displayText={totalCount}/>
         }
       }
     ]
