@@ -21,7 +21,7 @@ import { CsvSize, ImportFileDrawer } from '@acx-ui/rc/components'
 import {
   useDeleteDpskPassphraseListMutation,
   useDownloadPassphrasesMutation,
-  useDpskPassphraseListQuery,
+  useGetEnhancedDpskPassphraseListQuery,
   useRevokeDpskPassphraseListMutation,
   useUploadPassphrasesMutation
 } from '@acx-ui/rc/services'
@@ -46,6 +46,20 @@ interface UploadPassphrasesFormFields {
   usernamePrefix: string
 }
 
+const defaultPayload = {
+  filters: {}
+}
+
+const defaultSearch = {
+  searchTargetFields: ['username'],
+  searchString: ''
+}
+
+const defaultSorter = {
+  sortField: 'createdDate',
+  sortOrder: 'DESC'
+}
+
 export default function DpskPassphraseManagement () {
   const intl = useIntl()
   const { $t } = intl
@@ -64,12 +78,10 @@ export default function DpskPassphraseManagement () {
   const isCloudpathEnabled = useIsSplitOn(Features.DPSK_CLOUDPATH_FEATURE)
 
   const tableQuery = useTableQuery({
-    useQuery: useDpskPassphraseListQuery,
-    sorter: {
-      sortField: 'createdDate',
-      sortOrder: 'desc'
-    },
-    defaultPayload: {}
+    useQuery: useGetEnhancedDpskPassphraseListQuery,
+    sorter: defaultSorter,
+    defaultPayload,
+    search: defaultSearch
   })
 
   const downloadPassphrases = () => {
@@ -95,15 +107,16 @@ export default function DpskPassphraseManagement () {
       title: $t({ defaultMessage: 'User Name' }),
       dataIndex: 'username',
       sorter: true,
-      ellipsis: true
+      ellipsis: true,
+      searchable: true
     },
     {
       key: 'numberOfDevices',
       title: $t({ defaultMessage: 'No. of Devices' }),
       dataIndex: 'numberOfDevices',
-      sorter: false,
+      sorter: true,
       render: function (data) {
-        return data ? data : $t(unlimitedNumberOfDeviceLabel)
+        return (data && data !== -1) ? data : $t(unlimitedNumberOfDeviceLabel)
       }
     },
     {
@@ -152,7 +165,22 @@ export default function DpskPassphraseManagement () {
       key: 'revocationReason',
       title: $t({ defaultMessage: 'Revocation Reason' }),
       dataIndex: 'revocationReason',
-      show: isCloudpathEnabled
+      show: isCloudpathEnabled,
+      sorter: true
+    },
+    {
+      key: 'email',
+      title: $t({ defaultMessage: 'Contact Email Address' }),
+      dataIndex: 'email',
+      show: isCloudpathEnabled,
+      sorter: true
+    },
+    {
+      key: 'phoneNumber',
+      title: $t({ defaultMessage: 'Contact Phone Number' }),
+      dataIndex: 'phoneNumber',
+      show: isCloudpathEnabled,
+      sorter: true
     }
   ]
 
@@ -303,6 +331,8 @@ export default function DpskPassphraseManagement () {
         rowActions={filterByAccess(rowActions)}
         rowSelection={{ type: 'checkbox' }}
         rowKey='id'
+        onFilterChange={tableQuery.handleFilterChange}
+        enableApiFilter={true}
       />
     </Loader>
   </>)

@@ -334,7 +334,10 @@ export interface ApLanPort {
 
 export interface ApRadio {
   enable24G: boolean,
-  enable50G: boolean,
+  enable50G?: boolean,
+  enable6G?: boolean,
+  enableLower5G?: boolean,
+  enableUpper5G?: boolean,
   useVenueSettings: boolean
 }
 

@@ -22,7 +22,7 @@ export default function PortalInstancesTable (){
       }
     },
     search: {
-      searchTargetFields: ['name', 'captiveType'],
+      searchTargetFields: ['name'],
       searchString: ''
     }
   })
@@ -58,7 +58,7 @@ export default function PortalInstancesTable (){
       key: 'Type',
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'nwSubType',
-      searchable: true,
+      sorter: true,
       render: (data: unknown, row) => <NetworkType
         networkType={data as NetworkTypeEnum}
         row={row}
@@ -69,6 +69,7 @@ export default function PortalInstancesTable (){
       title: $t({ defaultMessage: 'Venues' }),
       dataIndex: ['venues', 'count'],
       align: 'center',
+      sorter: true,
       render: function (_data, row) {
         return <TenantLink
           to={`/networks/wireless/${row.id}/network-details/venues`}
@@ -80,7 +81,8 @@ export default function PortalInstancesTable (){
       key: 'clients',
       title: $t({ defaultMessage: 'Number of Clients' }),
       align: 'center',
-      dataIndex: 'clients'
+      dataIndex: 'clients',
+      sorter: true
     }
   ]
   return (

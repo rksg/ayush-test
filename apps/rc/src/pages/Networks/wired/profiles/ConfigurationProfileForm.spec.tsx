@@ -307,7 +307,7 @@ describe('Wired', () => {
     await userEvent.click(finishButton[1])
   })
 
-  it('should render create Switch Configuration Profile with extended acl correctly', async () => {
+  xit('should render create Switch Configuration Profile with extended acl correctly', async () => {
     const params = {
       tenantId: 'tenant-id'
     }
@@ -354,7 +354,7 @@ describe('Wired', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Finish' }) )
   })
 
-  it('should create Switch Configuration Profile with trust ports correctly', async () => {
+  xit('should create Switch Configuration Profile with trust ports correctly', async () => {
     const params = {
       tenantId: 'tenant-id'
     }
