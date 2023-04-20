@@ -37,6 +37,7 @@ const typePathMapping: Record<ServiceType, string> = {
   [ServiceType.PORTAL]: 'portal',
   [ServiceType.DHCP]: 'dhcp',
   [ServiceType.EDGE_DHCP]: 'edgeDhcp',
+  [ServiceType.EDGE_FIREWALL]: 'edgeFirewall',
   [ServiceType.WIFI_CALLING]: 'wifiCalling',
   [ServiceType.MDNS_PROXY]: 'mdnsProxy',
   [ServiceType.DPSK]: 'dpsk',
