@@ -74,6 +74,7 @@ export interface VenueDHCPProfile {
   enabled: boolean,
   dhcpServiceAps: DHCPProfileAps[],
   wanPortSelectionMode: string,
+  id: string
 }
 
 export interface DHCPProfileAps {
