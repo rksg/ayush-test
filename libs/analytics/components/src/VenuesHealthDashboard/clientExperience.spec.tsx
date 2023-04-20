@@ -2,6 +2,8 @@
 import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
 import { dataApiURL, Provider, store }      from '@acx-ui/store'
 import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
+import { RolesEnum }                        from '@acx-ui/types'
+import { getUserProfile, setUserProfile }   from '@acx-ui/user'
 import { DateRange }                        from '@acx-ui/utils'
 
 import { healthWidgetFixture } from './__tests__/fixtures'
@@ -43,7 +45,21 @@ describe('Client Experience', () => {
     await screen.findByText('Connection Success')
     expect(asFragment()).toMatchSnapshot()
   })
-
+  it('should hide arrow button when role is READ_ONLY', async () => {
+    setUserProfile({
+      allowedOperations: [],
+      profile: { ...getUserProfile().profile, roles: [RolesEnum.READ_ONLY] }
+    })
+    mockGraphqlQuery(dataApiURL, 'HealthWidget', {
+      data: { network: { hierarchyNode: healthWidgetFixture } }
+    })
+    render( <Provider> <ClientExperience
+      filters={filters}/></Provider>, {
+      route: { params, path: '/:tenantId/venues' }
+    })
+    await screen.findByText('Connection Success')
+    expect(screen.queryByTestId('ArrowChevronRight')).toBeNull()
+  })
   it('should render for empty data', async () => {
     mockGraphqlQuery(dataApiURL, 'HealthWidget', {
       data: { network: { hierarchyNode: {

@@ -313,7 +313,7 @@ export function ApTable (props: ApTableProps) {
       title: $t({ defaultMessage: 'PoE Port' }),
       dataIndex: 'poePort',
       show: false,
-      sorter: true,
+      sorter: false,
       render: (data, row : APExtended) => {
         if (!row.hasPoeStatus) {
           return <span></span>

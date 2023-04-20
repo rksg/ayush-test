@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import { ApTable }   from '@acx-ui/rc/components'
 import { useParams } from '@acx-ui/react-router-dom'
+import { hasAccess } from '@acx-ui/user'
 
 import { NetworkIncidentsTab } from './NetworkIncidentsTab'
 import { NetworkOverviewTab }  from './NetworkOverviewTab'
@@ -15,7 +16,7 @@ const tabs = {
   venues: NetworkVenuesTab,
   services: NetworkServicesTab,
   timeline: NetworkTimelineTab,
-  incidents: NetworkIncidentsTab
+  incidents: () => hasAccess() ? <NetworkIncidentsTab/> : null
 }
 
 export default function NetworkDetails () {
@@ -29,6 +30,6 @@ export default function NetworkDetails () {
     </>
     : <>
       <NetworkPageHeader />
-      <Tab />
+      { Tab && <Tab /> }
     </>
 }
