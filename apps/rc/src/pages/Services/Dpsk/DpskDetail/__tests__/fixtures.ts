@@ -108,6 +108,23 @@ export const mockedDpskPassphrase = {
   expirationDate: '2022-12-08T08:39:00'
 }
 
+export const mockedDpskPassphraseDevices = [
+  {
+    mac: 'AD:2C:3B:1D:4D:4E',
+    isOnline: null,
+    lastConnected: null,
+    lastConnectedNetwork: null,
+    devicePassphrase: 'a%sdfa@gw342r3f'
+  },
+  {
+    mac: 'AD:2C:3B:1D:4D:5E',
+    isOnline: null,
+    lastConnected: null,
+    lastConnectedNetwork: null,
+    devicePassphrase: 'a%sdfa@gw332r3f'
+  }
+]
+
 export const mockedNetworks = {
   fields: [
     'clients',

@@ -43,7 +43,8 @@ import {
   NewAPITableResult,
   transferNewResToTableResult,
   MdnsProxyViewModel,
-  PortalTablePayload
+  PortalTablePayload,
+  DPSKDeviceInfo
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -650,6 +651,43 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
     }),
+    getDpskPassphraseDevices: build.query<DPSKDeviceInfo[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(DpskUrls.getPassphraseDevices, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'DpskPassphrase', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+          ], () => {
+            api.dispatch(serviceApi.util.invalidateTags( [{ type: 'DpskPassphrase', id: 'LIST' }]))
+          })
+        })
+      }
+    }),
+    updateDpskPassphraseDevices: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(DpskUrls.updatePassphraseDevices, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
+    }),
+    deleteDpskPassphraseDevices: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(DpskUrls.deletePassphraseDevices, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
+    }),
     uploadPassphrases: build.mutation<{}, RequestFormData>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(DpskUrls.uploadPassphrases, params, {
@@ -820,6 +858,9 @@ export const {
   useUpdateDpskPassphrasesMutation,
   useDeleteDpskPassphraseListMutation,
   useRevokeDpskPassphraseListMutation,
+  useGetDpskPassphraseDevicesQuery,
+  useUpdateDpskPassphraseDevicesMutation,
+  useDeleteDpskPassphraseDevicesMutation,
   useUploadPassphrasesMutation,
   useDownloadPassphrasesMutation,
   useGetPortalQuery,
