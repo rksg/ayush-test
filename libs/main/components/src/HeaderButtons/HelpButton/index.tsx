@@ -14,11 +14,12 @@ import HelpPage          from './HelpPage'
 import { ButtonWrapper } from './styledComponents'
 
 export interface HelpButtonProps{
-  supportStatus?: string
+  supportStatus?: string,
+  setIsShown: (b: boolean | null) => void
 }
 
 const HelpButton = (props:HelpButtonProps) => {
-  const { supportStatus } = props
+  const { supportStatus, setIsShown } = props
   const { $t } = useIntl()
 
   const [firewallModalState, setFirewallModalOpen] = useState(false)
@@ -115,7 +116,7 @@ const HelpButton = (props:HelpButtonProps) => {
     />
   )
 
-  return (<ButtonWrapper>
+  return (<ButtonWrapper onClick={() => setIsShown(null)}>
     <Dropdown
       overlay={menuHeaderDropdown}
       trigger={['click']}

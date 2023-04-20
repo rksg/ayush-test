@@ -33,10 +33,16 @@ const defaultPayload: {
   ]
 }
 
-export default function ActivityButton () {
+interface ActivityButtonProps {
+  isShown: boolean,
+  setIsShown: (b: boolean | null) => void
+}
+
+export default function ActivityButton (props: ActivityButtonProps) {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/timeline')
+  const { isShown, setIsShown } = props
   const [status, setStatus] = useState('all')
   const [detail, setDetail] = useState<Activity>()
   const [detailModal, setDetailModalOpen] = useState<boolean>()
@@ -65,6 +71,10 @@ export default function ActivityButton () {
       }
     })
   }, [status])
+
+  useEffect(() => {
+    setActivityModalOpen(isShown)
+  }, [isShown])
 
   const activityList = <>
     <UI.FilterRow>
@@ -176,6 +186,7 @@ export default function ActivityButton () {
       offset={[-3, 0]}
       children={<LayoutUI.ButtonSolid icon={<ClockCircleFilled />}
         onClick={()=>{
+          setIsShown(false)
           setActivityModalOpen(true)
         }}/>}
     />
