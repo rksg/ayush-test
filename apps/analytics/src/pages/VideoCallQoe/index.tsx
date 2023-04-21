@@ -19,14 +19,17 @@ function VideoCallQoeListPage () {
   }
 
   return (
-    <><PageHeader
-      title={$t({ defaultMessage: 'Video Call QoE\n' })}
-      subTitle={<Loader states={[queryResults]} fallback={<Spinner size='small' />}>
-        {$t({ defaultMessage: 'Total Test Calls:' })} {noOfTestCalls}
-      </Loader>}
-      extra={[
-        <Button type='primary'>{$t({ defaultMessage: 'Create Test Call' })}</Button>
-      ]} /><VideoCallQoeTable /></>
+    <>
+      <PageHeader
+        title={$t({ defaultMessage: 'Video Call QoE' })}
+        subTitle={<Loader states={[queryResults]} fallback={<Spinner size='small' />}>
+          {$t({ defaultMessage: 'Total Test Calls:' })} {noOfTestCalls}
+        </Loader>}
+        extra={[
+          <Button type='primary'>{$t({ defaultMessage: 'Create Test Call' })}</Button>
+        ]} />
+      <VideoCallQoeTable />
+    </>
   )
 }
 export default VideoCallQoeListPage

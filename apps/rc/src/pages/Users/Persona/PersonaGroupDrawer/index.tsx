@@ -15,7 +15,7 @@ import { PersonaGroupForm } from '../PersonaGroupForm'
 interface PersonaGroupDrawerProps {
   isEdit: boolean,
   visible: boolean,
-  onClose: () => void,
+  onClose: (result?: PersonaGroup) => void,
   data?: PersonaGroup
 }
 
@@ -28,7 +28,7 @@ export function PersonaGroupDrawer (props: PersonaGroupDrawerProps) {
 
   const onFinish = async (contextData: PersonaGroup) => {
     try {
-      isEdit
+      const result = isEdit
         ? await handleEditPersonaGroup(contextData)
         : await handleAddPersonaGroup(contextData)
 
@@ -41,7 +41,7 @@ export function PersonaGroupDrawer (props: PersonaGroupDrawerProps) {
         )
       })
 
-      onClose()
+      onClose(result)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -85,7 +85,7 @@ export function PersonaGroupDrawer (props: PersonaGroupDrawerProps) {
           : $t({ defaultMessage: 'Add' })
       }}
       onSave={onSave}
-      onCancel={onClose}
+      onCancel={() => onClose()}
     />)
 
   return (
@@ -98,7 +98,7 @@ export function PersonaGroupDrawer (props: PersonaGroupDrawerProps) {
       }
       width={'400px'}
       visible={visible}
-      onClose={onClose}
+      onClose={() => onClose()}
       children={
         <PersonaGroupForm
           form={form}

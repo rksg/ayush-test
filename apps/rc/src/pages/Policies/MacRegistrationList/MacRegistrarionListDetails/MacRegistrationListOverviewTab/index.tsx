@@ -29,7 +29,7 @@ export function MacRegistrationListOverviewTab () {
 
   useEffect(() => {
     if(policyEnabled && data?.policySetId) {
-      getAdaptivePolicySet({ params: { policyId: data.policySetId } })
+      getAdaptivePolicySet({ params: { policySetId: data.policySetId } })
         .then(result => {
           if (result.data) {
             setPolicySetName(result.data.name)
@@ -69,21 +69,23 @@ export function MacRegistrationListOverviewTab () {
                     $t({ defaultMessage: 'No' })}</Paragraph>
                 </Form.Item>
               </Col>
-              <Col span={6}>
-                <Form.Item
-                  label={$t({ defaultMessage: 'Default Access' })}
-                >
-                  <Paragraph>{data?.defaultAccess ?? ''}</Paragraph>
-                </Form.Item>
-              </Col>
               {policyEnabled &&
-                <Col span={6}>
-                  <Form.Item
-                    label={$t({ defaultMessage: 'Access Policy Set' })}
-                  >
-                    <Paragraph>{policySetName}</Paragraph>
-                  </Form.Item>
-                </Col>
+                <>
+                  <Col span={6}>
+                    <Form.Item
+                      label={$t({ defaultMessage: 'Default Access' })}
+                    >
+                      <Paragraph>{data?.policySetId ? data?.defaultAccess : ''}</Paragraph>
+                    </Form.Item>
+                  </Col>
+                  <Col span={6}>
+                    <Form.Item
+                      label={$t({ defaultMessage: 'Access Policy Set' })}
+                    >
+                      <Paragraph>{policySetName}</Paragraph>
+                    </Form.Item>
+                  </Col>
+                </>
               }
             </Row>
           </Form>
