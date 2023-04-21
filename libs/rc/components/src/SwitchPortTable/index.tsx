@@ -142,16 +142,20 @@ export function SwitchPortTable ({ isVenueLevel }: {
   }, {
     key: 'poeUsed',
     title: $t({ defaultMessage: 'PoE Usage' }),
-    dataIndex: 'poeUsed',
+    dataIndex: 'poeUsage',
     sorter: true,
     render: (data, row) => {
-      if (row.poeEnabled === false) {
-        return 'off'
+      if (!data) {
+        if (row.poeEnabled === false) {
+          return 'off'
+        }
+        const poeTotal = (row.poeTotal) ? Math.round(row.poeTotal / 1000) : 0
+        const poeUsed = (row.poeUsed) ? Math.round(row.poeUsed / 1000) : 0
+        const poePercentage = (!poeUsed || !poeTotal) ? 0 : Math.round(poeUsed / poeTotal * 100)
+        return `${poeUsed}/${poeTotal}W (${poePercentage}%)`
+      } else {
+        return data
       }
-      const poeTotal = (row.poeTotal) ? Math.round(row.poeTotal / 1000) : 0
-      const poeUsed = (row.poeUsed) ? Math.round(row.poeUsed / 1000) : 0
-      const poePercentage = (!poeUsed || !poeTotal) ? 0 : Math.round(poeUsed / poeTotal * 100)
-      return `${poeUsed}/${poeTotal}W (${poePercentage}%)`
     }
   }, {
     key: 'vlanIds',
