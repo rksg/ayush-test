@@ -21,8 +21,8 @@ import AddEditFloorplanModal from '../FloorPlanModal'
 import NetworkDevices        from '../NetworkDevices'
 
 import { ApMeshTopologyContextProvider } from './ApMeshTopologyContext'
-import * as UI                   from './styledComponents'
-import Thumbnail                 from './Thumbnail'
+import * as UI                           from './styledComponents'
+import Thumbnail                         from './Thumbnail'
 
 
 export enum ImageMode {

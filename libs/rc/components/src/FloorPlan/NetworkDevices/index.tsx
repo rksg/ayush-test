@@ -2,7 +2,7 @@ import { FloorplanContext, FloorPlanDto, NetworkDeviceType, TypeWiseNetworkDevic
 
 
 import { NetworkDeviceMarker } from './NetworkDeviceMarker'
-import { ApMeshConnections } from './useApMeshDevice'
+import { ApMeshConnections }   from './useApMeshDevice'
 
 
 export default function NetworkDevices ({

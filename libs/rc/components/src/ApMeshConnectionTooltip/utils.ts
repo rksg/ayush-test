@@ -1,5 +1,6 @@
 import { ApMeshLink, SignalStrengthLevel } from '@acx-ui/rc/utils'
-import { snrColorMap, snrIconMap }         from './contents'
+
+import { snrColorMap, snrIconMap } from './contents'
 
 export function getSNRColor (snr: number): string {
   return snrColorMap[getSignalStrengthLevel(snr)]
