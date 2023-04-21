@@ -70,6 +70,7 @@ export const Wrapper = styled.div`
           height: 100%;
           display: flex;
           flex-flow: column;
+          transition: unset;
         }
         .ant-menu-title-content { transition: all 0.2s !important; }
         .ant-menu-submenu {
@@ -88,7 +89,6 @@ export const Wrapper = styled.div`
             &:active { background: unset; }
           }
           &-open {
-            border-left: 2px solid var(--acx-neutrals-70);
             background-color: var(--acx-neutrals-70);
           }
           &.menu-active {
@@ -138,6 +138,88 @@ export const Wrapper = styled.div`
           min-width: var(--acx-sider-width) !important;
           width: var(--acx-sider-width) !important;
           transition: all 0.2s !important;
+        }
+        .ant-menu-submenu-popup { visibility: hidden; }
+        .ant-menu-submenu-open .ant-menu-submenu-popup {
+          height: auto;
+          border-left: unset;
+          visibility: visible;
+          transition: visibility 1s;
+          &.layout-group-horizontal .ant-menu {
+            display: flex;
+            flex-flow: row;
+          }
+          .ant-menu {
+            margin-left: -4px;
+            box-shadow: none;
+            border-radius: 0;
+            background-color: var(--acx-neutrals-70);
+            padding-top: 8px;
+            .ant-menu-item {
+              height: 40px;
+              width: 100%;
+              border-left: unset;
+              margin: auto;
+              font-family: var(--acx-accent-brand-font);
+              line-height: var(--acx-headline-5-line-height);
+              font-size: var(--acx-headline-5-font-size);
+              font-weight: var(--acx-headline-5-font-weight);
+              padding: 8px 16px 16px !important;
+              &:active { background: unset; }
+              &.menu-active > .ant-menu-title-content a {
+                &, &:hover {
+                  color: var(--acx-accents-orange-50);
+                  font-weight: var(--acx-headline-4-font-weight-bold);
+                }
+              }
+              .ant-menu-title-content {
+                padding-left: unset;
+                font-family: var(--acx-accent-brand-font);
+                font-size: var(--acx-headline-4-font-size);
+                line-height: var(--acx-headline-4-line-height);
+                font-weight: var(--acx-headline-4-font-weight);
+                color: var(--acx-neutrals-20);
+                a {
+                  font-family: var(--acx-accent-brand-font);
+                  font-size: var(--acx-headline-4-font-size);
+                  line-height: var(--acx-headline-4-line-height);
+                  font-weight: var(--acx-headline-4-font-weight);
+                  color: var(--acx-neutrals-20);
+                  // https://css-tricks.com/bold-on-hover-without-the-layout-shift/
+                  display: inline-flex;
+                  flex-direction: column;
+                  &:after {
+                    content: attr(data-label);
+                    height: 0;
+                    visibility: hidden;
+                    overflow: hidden;
+                    user-select: none;
+                    pointer-events: none;
+                    @media speech { display: none; }
+                  }
+                  &:after, &:hover {
+                    color: var(--acx-neutrals-10);
+                    font-weight: var(--acx-headline-4-font-weight-bold);
+                  }
+                }
+              }
+              &-selected { background-color: unset; }
+            }
+            .ant-menu-item-group {
+              min-width: 180px;
+              margin-top: -8px; // cancel off 8px top padding of .ant-menu
+              &-title {
+                height: 28px;
+                font-family: var(--acx-neutral-brand-font);
+                font-size: var(--acx-subtitle-5-font-size);
+                line-height: var(--acx-subtitle-5-line-height);
+                font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
+                color: var(--acx-neutrals-20);
+                opacity: 0.6;
+                padding: 8px 16px 4px;
+              }
+            }
+          }
         }
       }
     }
@@ -204,81 +286,6 @@ export const MenuGlobalStyle = createGlobalStyle`
   .ant-menu-vertical-right.ant-menu-sub {
     min-width: 180px;
   }
-
-  .ant-menu-submenu-popup {
-    &.layout-group-horizontal .ant-menu {
-      display: flex;
-    }
-    .ant-menu {
-      margin-left: -4px;
-      box-shadow: none;
-      border-radius: 0;
-      background-color: var(--acx-neutrals-70);
-      padding-top: 8px;
-      .ant-menu-item {
-        height: 40px;
-        margin: auto;
-        font-family: var(--acx-accent-brand-font);
-        line-height: var(--acx-headline-5-line-height);
-        font-size: var(--acx-headline-5-font-size);
-        font-weight: var(--acx-headline-5-font-weight);
-        padding: 8px 16px 16px;
-        &:active { background: unset; }
-        &.menu-active > .ant-menu-title-content a {
-          &, &:hover {
-            color: var(--acx-accents-orange-50);
-            font-weight: var(--acx-headline-4-font-weight-bold);
-          }
-        }
-        .ant-menu-title-content {
-          font-family: var(--acx-accent-brand-font);
-          font-size: var(--acx-headline-4-font-size);
-          line-height: var(--acx-headline-4-line-height);
-          font-weight: var(--acx-headline-4-font-weight);
-          color: var(--acx-neutrals-20);
-          a {
-            font-family: var(--acx-accent-brand-font);
-            font-size: var(--acx-headline-4-font-size);
-            line-height: var(--acx-headline-4-line-height);
-            font-weight: var(--acx-headline-4-font-weight);
-            color: var(--acx-neutrals-20);
-            // https://css-tricks.com/bold-on-hover-without-the-layout-shift/
-            display: inline-flex;
-            flex-direction: column;
-            &:after {
-              content: attr(data-label);
-              height: 0;
-              visibility: hidden;
-              overflow: hidden;
-              user-select: none;
-              pointer-events: none;
-              @media speech { display: none; }
-            }
-            &:after, &:hover {
-              color: var(--acx-neutrals-10);
-              font-weight: var(--acx-headline-4-font-weight-bold);
-            }
-          }
-        }
-        &-selected { background-color: unset; }
-      }
-      .ant-menu-item-group {
-        min-width: 180px;
-        margin-top: -8px; // cancel off 8px top padding of .ant-menu
-        &-title {
-          height: 28px;
-          font-family: var(--acx-neutral-brand-font);
-          font-size: var(--acx-subtitle-5-font-size);
-          line-height: var(--acx-subtitle-5-line-height);
-          font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
-          color: var(--acx-neutrals-20);
-          opacity: 0.6;
-          padding: 8px 16px 4px;
-        }
-      }
-    }
-  }
-
 `
 
 export const MenuIcon = styled.span`

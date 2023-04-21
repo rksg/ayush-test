@@ -103,7 +103,7 @@ export function ClientsTable (props: {
       filterKey: 'venueId',
       filterable: filterableKeys ? filterableKeys['venueId'] : false,
       render: (data, row) => {
-        const name = data ? data.toString().toUpperCase() : '--'
+        const name = data ? data : '--'
         // eslint-disable-next-line max-len
         return <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{name}</TenantLink>
       }
@@ -117,7 +117,7 @@ export function ClientsTable (props: {
       filterKey: 'switchId',
       filterable: filterableKeys ? filterableKeys['switchId'] : false,
       render: (data, row) => {
-        const name = data ? data.toString().toUpperCase() : '--'
+        const name = data ? data : '--'
         const link = `/devices/switch/${row.switchId}/${row.switchSerialNumber}/details/overview`
         return (row.switchId && data) ?
           <TenantLink to={link}>{name}</TenantLink> :

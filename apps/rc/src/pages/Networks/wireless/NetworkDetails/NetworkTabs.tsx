@@ -3,6 +3,7 @@ import { useIntl } from 'react-intl'
 import { Tabs }                                  from '@acx-ui/components'
 import { useNetworkDetailHeaderQuery }           from '@acx-ui/rc/services'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { hasAccess }                             from '@acx-ui/user'
 
 function NetworkTabs () {
   const { $t } = useIntl()
@@ -36,10 +37,10 @@ function NetworkTabs () {
         tab={$t({ defaultMessage: 'Services ({servicesCount})' }, { servicesCount })}
         key='services' /> : null */}
       <Tabs.TabPane tab={$t({ defaultMessage: 'Timeline' })} key='timeline' />
-      <Tabs.TabPane
+      { hasAccess() && <Tabs.TabPane
         tab={$t({ defaultMessage: 'Incidents' })}
         key='incidents'
-      />
+      /> }
     </Tabs>
   )
 }
