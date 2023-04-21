@@ -1,6 +1,6 @@
-import { useIntl } from 'react-intl'
+// import { useIntl } from 'react-intl'
 
-export const EdgeTroubleshooting = () => {
-  const { $t } = useIntl()
-  return <>{$t({ defaultMessage: 'Troubleshooting' })}</>
-}
+// export const EdgeTroubleshooting = () => {
+//   const { $t } = useIntl()
+//   return <>{$t({ defaultMessage: 'Troubleshooting' })}</>
+// }

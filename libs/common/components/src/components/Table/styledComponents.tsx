@@ -31,7 +31,7 @@ export const SearchInput = styled(Input).attrs({ prefix: <SearchOutlined /> })`
   ${({ value }) => value ? 'border-color: var(--acx-primary-black) !important;' : ''}
 `
 
-export const FilterSelect = styled(Select).attrs({ style: { width: 200 } })`
+export const FilterSelect = styled(Select)`
   ${({ value }) => value
     ? `.ant-select-selector {
       background-color: var(--acx-accents-orange-10) !important;

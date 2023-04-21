@@ -200,6 +200,7 @@ export function AccessSwitchDrawer (props: {
     const values: AccessSwitchSaveData = form.getFieldsValue(true)
     try {
       if (!isMultipleEdit) {  //TODO: multi check
+        await form.validateFields()
         await validateAccessSwitchInfo({
           params: { tenantId, venueId },
           payload: values
@@ -249,7 +250,9 @@ export function AccessSwitchDrawer (props: {
             <Checkbox onChange={(e)=>setUplinkInfoOverwrite(e.target.checked)}></Checkbox>}
           <span>{$t({ defaultMessage: 'Uplink Port' })}</span>
         </>}>
-          <Form.Item name={['uplinkInfo', 'uplinkType']} rules={[{ required: true }]} noStyle>
+          <Form.Item name={['uplinkInfo', 'uplinkType']}
+            rules={[{ required: !isMultipleEdit }]}
+            noStyle>
             <Radio.Group onChange={uplinkTypeChangeHandler}
               disabled={!uplinkInfoOverwrite}>
               <Space direction='vertical'>

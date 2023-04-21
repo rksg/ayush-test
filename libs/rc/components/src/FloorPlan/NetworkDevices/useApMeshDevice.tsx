@@ -14,16 +14,13 @@ import * as UI           from './styledComponent'
 import { getDeviceName } from './utils'
 
 
-
-
-
-
-
 const ApMeshTooltipDetailMap: Record<APMeshRole, MessageDescriptor> = {
   [APMeshRole.RAP]: defineMessage({ defaultMessage: `Linked directly to {downlinkCount, plural,
-    =0 {0 mesh AP} one {# mesh AP} other {# mesh APs}} {downlinkUnplacedCount, plural, =0 {} other {(# unplaced)}}` }),
-  [APMeshRole.MAP]: defineMessage({ defaultMessage: `Linked to Root AP "{rootApName}" {isRootApUnplaced, select,
-    true {(unplaced)} other {}} {hops, plural, =0 {} one {({hops} Hop)} other {({hops} Hops)}}` }),
+    =0 {0 mesh AP} one {# mesh AP} other {# mesh APs}}
+    {downlinkUnplacedCount, plural, =0 {} other {(# unplaced)}}` }),
+  [APMeshRole.MAP]: defineMessage({ defaultMessage: `Linked to Root AP "{rootApName}"
+    {isRootApUnplaced, select, true {(unplaced)} other {}}
+    {hops, plural, =0 {} one {({hops} Hop)} other {({hops} Hops)}}` }),
   [APMeshRole.EMAP]: defineMessage({ defaultMessage: 'Linked to Root AP "{rootApName}"' }),
   [APMeshRole.DISABLED]: defineMessage({ defaultMessage: 'Disabled' })
 }
@@ -37,8 +34,11 @@ const ApMeshRoleIconMap: Record<APMeshRole, React.FunctionComponent> = {
 
 export function useApMeshDevice (device?: NetworkDevice) {
   const { isApMeshTopologyEnabled, meshDeviceList } = useContext(ApMeshTopologyContext)
+  // eslint-disable-next-line max-len
   const isApMeshEnabled = isApMeshTopologyEnabled && device?.networkDeviceType === NetworkDeviceType.ap
-  const apMeshData: ApMeshTopologyDevice | undefined = meshDeviceList?.find(ap => ap.serialNumber === device?.serialNumber)
+  const apMeshData: ApMeshTopologyDevice | undefined = meshDeviceList?.find(
+    ap => ap.serialNumber === device?.serialNumber
+  )
   const { $t } = useIntl()
 
   const getApMeshRoleConnectionDetail = (apMeshData: ApMeshTopologyDevice) => {

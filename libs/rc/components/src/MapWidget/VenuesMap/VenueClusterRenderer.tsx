@@ -18,7 +18,6 @@ import {
   VenueClusterTooltip,
   CloseIcon } from './styledComponents'
 import { VenueMarkerTooltip } from './VenueMarkerTooltip'
-import VenueMarkerWithLabel   from './VenueMarkerWithLabel'
 
 import { NavigateProps } from '.'
 
@@ -52,19 +51,19 @@ export const generateClusterInfoContent = (markers: google.maps.Marker[],
   let data: VenueClusterTooltipData[] = []
 
   const sortedMarkers = Array.from(markers).sort((a,b) => {
-    const { venueMarker: dataA } = a as VenueMarkerWithLabel
-    const { venueMarker: dataB } = b as VenueMarkerWithLabel
+    const dataA = a.get('venueMarker')
+    const dataB = b.get('venueMarker')
     return getVenueSeverityByStatus(dataA.status as string)
       - getVenueSeverityByStatus(dataB.status as string)
   })
 
   data = sortedMarkers.map((marker)=>{
-    const { venueMarker } = marker as VenueMarkerWithLabel
+    const venueMarker = marker.get('venueMarker')
     return {
       icon: <Icon component={getVenueInfoMarkerIcon(venueMarker.status as string)}/>,
       title: venueMarker.name as string,
       popoverContent: <VenueMarkerTooltip
-        venueMarker={(marker as VenueMarkerWithLabel).venueMarker}
+        venueMarker={venueMarker}
         needPadding={false}
         onNavigate={onNavigate}
       />
@@ -117,7 +116,7 @@ export default class VenueClusterRenderer implements Renderer {
     { count, position, markers }: Cluster
   ): google.maps.Marker {
     const statuses = markers?.map((marker: google.maps.Marker) =>
-      (marker as VenueMarkerWithLabel)?.venueMarker?.status)
+      marker?.get('venueMarker').status)
     const clusterColor = getMarkerColor(statuses)
     const scaledSize = new google.maps.Size(42, 42, 'px')
     const clusterInfoWindow = new google.maps.InfoWindow({

@@ -292,6 +292,17 @@ export const mspApi = baseMspApi.injectEndpoints({
       },
       providesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
+    integratorCustomerListDropdown: build.query<TableResult<MspEc>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const integratorCustomerListReq =
+        createHttpRequest(MspUrlsInfo.getIntegratorCustomersList, params, {}, true)
+        return {
+          ...integratorCustomerListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
     getTenantDetail: build.query<TenantDetail, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(
@@ -655,6 +666,7 @@ export const {
   useMspCustomerListDropdownQuery,
   useVarCustomerListDropdownQuery,
   useSupportCustomerListDropdownQuery,
+  useIntegratorCustomerListDropdownQuery,
   useGetTenantDetailQuery,
   useSupportMspCustomerListQuery,
   useGetMspProfileQuery,

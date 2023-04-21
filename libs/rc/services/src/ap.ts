@@ -1,6 +1,7 @@
 import _          from 'lodash'
 import { Params } from 'react-router-dom'
 
+import { Filter }                    from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   ApExtraParams,
@@ -39,9 +40,17 @@ import {
   LanPortStatusProperties,
   ApDirectedMulticast,
   APNetworkSettings,
-  APExtendedGrouped
+  APExtendedGrouped,
+  downloadFile,
+  SEARCH,
+  SORTER
 } from '@acx-ui/rc/utils'
 import { baseApApi } from '@acx-ui/store'
+
+export type ApsExportPayload = {
+  filters: Filter
+  tenantId: string
+} & SEARCH & SORTER
 
 export const apApi = baseApApi.injectEndpoints({
   endpoints: (build) => ({
@@ -76,6 +85,7 @@ export const apApi = baseApApi.injectEndpoints({
             'UpdateAp',
             'DeleteAp',
             'DeleteAps',
+            'AddApGroup',
             'AddApGroupLegacy'
           ]
           onActivityMessageReceived(msg, activities, () => {
@@ -134,6 +144,19 @@ export const apApi = baseApApi.injectEndpoints({
     addAp: build.mutation<ApDeep, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.addAp, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
+    }),
+    importApOld: build.mutation<ImportErrorRes, RequestFormData>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.addAp, params, {
+          'Content-Type': undefined,
+          'Accept': '*/*'
+        })
         return {
           ...req,
           body: payload
@@ -593,9 +616,25 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'NETWORK_SETTINGS' }]
+    }),
+    downloadApsCSV: build.mutation<Blob, ApsExportPayload>({
+      query: (payload) => {
+        const req = createHttpRequest(CommonUrlsInfo.downloadApsCSV,
+          { tenantId: payload.tenantId }
+        )
+        return {
+          ...req,
+          body: payload,
+          responseHandler: async (response) => {
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1]
+              : 'download.csv'
+            downloadFile(response, fileName)
+          }
+        }
+      }
     })
-
-
   })
 })
 
@@ -626,6 +665,7 @@ export const {
   useRebootApMutation,
   useBlinkLedApMutation,
   useFactoryResetApMutation,
+  useImportApOldMutation,
   useImportApMutation,
   useLazyImportResultQuery,
   useLazyGetDhcpApQuery,
@@ -653,7 +693,8 @@ export const {
   useResetApNetworkSettingsMutation,
   useDeleteApGroupsMutation,
   useUpdateApGroupMutation,
-  useGetApGroupQuery
+  useGetApGroupQuery,
+  useDownloadApsCSVMutation
 } = apApi
 
 

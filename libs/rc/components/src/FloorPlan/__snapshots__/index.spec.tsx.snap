@@ -109,6 +109,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
             >
               <span
                 aria-label="loader"
+                class="SuspenseBoundary__SpinWrapper-sc-l6mvnr-0"
                 role="img"
               >
                 <div
@@ -394,6 +395,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
         </div>
         <div
           class="ant-space-item"
+          style="margin-right: 24px;"
         >
           <button
             class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY ant-dropdown-trigger"
@@ -403,6 +405,11 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
               Unplaced Devices (1)
             </span>
           </button>
+        </div>
+        <div
+          class="ant-space-item"
+        >
+           
         </div>
       </div>
     </div>
@@ -641,6 +648,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
         </div>
         <div
           class="ant-space-item"
+          style="margin-right: 24px;"
         >
           <button
             class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY ant-dropdown-trigger"
@@ -651,6 +659,11 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
               Unplaced Devices (1)
             </span>
           </button>
+        </div>
+        <div
+          class="ant-space-item"
+        >
+           
         </div>
       </div>
     </div>

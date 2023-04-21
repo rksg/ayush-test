@@ -37,12 +37,14 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
     {
       title: $t({ defaultMessage: 'Network Name' }),
       dataIndex: 'name',
-      key: 'name'
+      key: 'name',
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'nwSubType',
       key: 'nwSubType',
+      sorter: true,
       render: (data, row) => {
         return $t(networkTypes[row.nwSubType as NetworkTypeEnum])
       }
@@ -51,6 +53,7 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
       title: $t({ defaultMessage: 'Venues' }),
       dataIndex: 'venues',
       key: 'venues',
+      sorter: true,
       render: (data, row) => {
         return row.venues.count
       }

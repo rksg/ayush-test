@@ -2,7 +2,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, Loader, PageHeader, showActionModal, Table, TableProps }                                                               from '@acx-ui/components'
-import { useDeleteEdgeDhcpServicesMutation, useGetDhcpStatsQuery }                                                                      from '@acx-ui/rc/services'
+import { useDeleteEdgeDhcpServicesMutation, useGetDhcpStatsQuery, useGetEdgeListQuery }                                                 from '@acx-ui/rc/services'
 import { DhcpStats, getServiceDetailsLink, getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType, useTableQuery } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink }                                                                                       from '@acx-ui/react-router-dom'
 import { filterByAccess }                                                                                                               from '@acx-ui/user'
@@ -28,14 +28,32 @@ const EdgeDhcpTable = () => {
       'tags'
     ],
     filters: {},
+    sortField: 'serviceName',
+    sortOrder: 'ASC',
+    searchTargetFields: ['serviceName']
+  }
+  const tableQuery = useTableQuery({
+    useQuery: useGetDhcpStatsQuery,
+    defaultPayload: getDhcpStatsPayload,
+    search: {
+      searchTargetFields: ['serviceName']
+    }
+  })
+  const edgeOptionsDefaultPayload = {
+    fields: ['name', 'serialNumber'],
+    pageSize: 10000,
     sortField: 'name',
     sortOrder: 'ASC'
   }
-
-  const tableQuery = useTableQuery({
-    useQuery: useGetDhcpStatsQuery,
-    defaultPayload: getDhcpStatsPayload
-  })
+  const { edgeOptions } = useGetEdgeListQuery(
+    { payload: edgeOptionsDefaultPayload },
+    {
+      selectFromResult: ({ data }) => {
+        return {
+          edgeOptions: data?.data.map(item => ({ value: item.name, key: item.serialNumber }))
+        }
+      }
+    })
   const [deleteDhcp, { isLoading: isDeleteDhcpUpdating }] = useDeleteEdgeDhcpServicesMutation()
 
   const columns: TableProps<DhcpStats>['columns'] = [
@@ -46,6 +64,7 @@ const EdgeDhcpTable = () => {
       sorter: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
+      searchable: true,
       render: function (data, row) {
         return (
           <TenantLink
@@ -63,24 +82,30 @@ const EdgeDhcpTable = () => {
       title: $t({ defaultMessage: 'DHCP Pools' }),
       align: 'center',
       key: 'dhcpPoolNum',
-      dataIndex: 'dhcpPoolNum'
+      dataIndex: 'dhcpPoolNum',
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'SmartEdges' }),
       align: 'center',
       key: 'edgeNum',
-      dataIndex: 'edgeNum'
+      dataIndex: 'edgeNum',
+      filterable: edgeOptions,
+      filterKey: 'edgeIds',
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'Venues' }),
       align: 'center',
       key: 'venueNum',
-      dataIndex: 'venueNum'
+      dataIndex: 'venueNum',
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'Health' }),
       key: 'health',
       dataIndex: 'health',
+      sorter: true,
       render (data, row) {
         return <EdgeDhcpServiceStatusLight data={row.health} />
       }
@@ -90,6 +115,7 @@ const EdgeDhcpTable = () => {
       align: 'center',
       key: 'updateAvailable',
       dataIndex: 'updateAvailable',
+      sorter: true,
       render (data, row) {
         return row.updateAvailable ? $t({ defaultMessage: 'Yes' }) : $t({ defaultMessage: 'No' })
       }
@@ -98,12 +124,14 @@ const EdgeDhcpTable = () => {
       title: $t({ defaultMessage: 'Service Version' }),
       align: 'center',
       key: 'serviceVersion',
-      dataIndex: 'serviceVersion'
+      dataIndex: 'serviceVersion',
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'Tags' }),
       key: 'tags',
       dataIndex: 'tags',
+      sorter: true,
       render (data, row) {
         return row.tags?.join(',')
       }
@@ -190,13 +218,15 @@ const EdgeDhcpTable = () => {
       ]}>
         <Table
           settingsId='services-edge-dhcp-table'
+          rowKey='id'
           columns={columns}
+          rowSelection={{ type: 'checkbox' }}
+          rowActions={filterByAccess(rowActions)}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
-          rowKey='id'
-          rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'checkbox' }}
+          onFilterChange={tableQuery.handleFilterChange}
+          enableApiFilter
         />
       </Loader>
     </>

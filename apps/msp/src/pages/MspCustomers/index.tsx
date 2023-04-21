@@ -126,7 +126,7 @@ export function MspCustomers () {
   const onBoard = mspLabel?.msp_label
   const ecFilters = isPrimeAdmin
     ? { tenantType: [AccountType.MSP_EC] }
-    : { mspAdmins: [userProfile.adminId], tenantType: [AccountType.MSP_EC] }
+    : { mspAdmins: [userProfile?.adminId], tenantType: [AccountType.MSP_EC] }
 
   const transformTechPartner = (id: string) => {
     const rec = techParnersData.find(e => e.id === id)
@@ -251,7 +251,7 @@ export function MspCustomers () {
           onClick: () => {
             userProfile?.support
               ? delegateToMspEcPath(data.id)
-              : checkDelegateAdmin(data.id, userProfile.adminId)
+              : checkDelegateAdmin(data.id, userProfile!.adminId)
           }
         } : {}
       },
@@ -525,6 +525,7 @@ export function MspCustomers () {
         tableQuery,
         { isLoading: false, isFetching: isDeleteEcUpdating }]}>
         <Table
+          settingsId='msp-customers-table'
           columns={columns}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
@@ -552,6 +553,7 @@ export function MspCustomers () {
         tableQuery,
         { isLoading: false }]}>
         <Table
+          settingsId='integrator-customers-table'
           columns={columns}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
@@ -577,6 +579,7 @@ export function MspCustomers () {
         tableQuery,
         { isLoading: false }]}>
         <Table
+          settingsId='support-ec-table'
           columns={columns}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}

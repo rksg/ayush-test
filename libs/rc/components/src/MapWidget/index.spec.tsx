@@ -1,7 +1,9 @@
-import { useIsSplitOn }                                                from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo }                                              from '@acx-ui/rc/utils'
-import { Provider }                                                    from '@acx-ui/store'
-import { render, screen, mockRestApiQuery, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { rest } from 'msw'
+
+import { useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
+import { AdministrationUrlsInfo, CommonUrlsInfo }                                  from '@acx-ui/rc/utils'
+import { Provider }                                                                from '@acx-ui/store'
+import { render, screen, mockRestApiQuery, waitForElementToBeRemoved, mockServer } from '@acx-ui/test-utils'
 
 import { MapWidget, MapWidgetV2 } from '.'
 
@@ -30,6 +32,15 @@ jest.mock('@acx-ui/utils', () => ({
 describe('Map', () => {
   beforeEach(() => {
     mockRestApiQuery(CommonUrlsInfo.getDashboardOverview.url, 'get', {})
+
+    mockServer.use(
+      rest.get(
+        AdministrationUrlsInfo.getPreferences.url,
+        (_req, res, ctx) => res(ctx.json({ global: {
+          mapRegion: 'TW'
+        } }))
+      )
+    )
   })
   it('should not render map if feature flag is off', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
@@ -54,6 +65,14 @@ describe('Map', () => {
 describe('Map v2', () => {
   beforeEach(() => {
     mockRestApiQuery(CommonUrlsInfo.getDashboardV2Overview.url, 'post', {})
+    mockServer.use(
+      rest.get(
+        AdministrationUrlsInfo.getPreferences.url,
+        (_req, res, ctx) => res(ctx.json({ global: {
+          mapRegion: 'TW'
+        } }))
+      )
+    )
   })
   it('should not render map if feature flag is off', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)

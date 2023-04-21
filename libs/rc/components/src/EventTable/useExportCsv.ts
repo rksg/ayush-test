@@ -15,15 +15,15 @@ export function useExportCsv<T> (
   const [ downloadCsv ] = useDownloadEventsCSVMutation()
 
   const payload = {
-    clientDateFormat: userProfileData.dateFormat.replace('mm', 'MM'),
+    clientDateFormat: userProfileData!.dateFormat.replace('mm', 'MM'),
     clientTimeZone: moment.tz.guess(),
-    detailLevel: userProfileData.detailLevel,
+    detailLevel: userProfileData!.detailLevel,
     eventsPeriodForExport: {
       fromTime: moment.utc(startDate).format('YYYY-MM-DDTHH:mm:ss[Z]'),
       toTime: moment.utc(endDate).format('YYYY-MM-DDTHH:mm:ss[Z]')
     },
     filters: _.omit(tableQuery?.payload?.filters as Filter, ['fromTime', 'toTime']),
-    isSupport: userProfileData.support,
+    isSupport: userProfileData!.support,
     searchString: tableQuery.payload?.searchString as string,
     searchTargetFields: tableQuery.payload?.searchTargetFields as string[],
     sortField: tableQuery.sorter?.sortField,

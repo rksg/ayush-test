@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom'
 
 import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import { useGetApMeshTopologyQuery, useMeshApsQuery } from '@acx-ui/rc/services'
-import { APMesh, APMeshRole, ApMeshLink, Uplink }     from '@acx-ui/rc/utils'
+import { APMesh, APMeshRole, ApMeshLink }             from '@acx-ui/rc/utils'
 
 export interface ApMeshTopologyDevice {
   serialNumber: string
@@ -38,9 +38,6 @@ export function ApMeshTopologyContextProvider (props: ApMeshTopologyContextProvi
   const params = useParams<{ tenantId: string, venueId: string }>()
   const isApMeshTopologyFFOn = useIsSplitOn(Features.AP_MESH_TOPOLOGY)
 
-  if (!isApMeshTopologyFFOn) return children
-
-
   const apMeshListPayload = {
     fields: ['name', 'serialNumber', 'apMac', 'downlink', 'apDownRssis', 'uplink', 'apUpRssi',
       'meshRole', 'hops', 'apRssis', 'xPercent', 'yPercent', 'floorplanId'],
@@ -54,24 +51,29 @@ export function ApMeshTopologyContextProvider (props: ApMeshTopologyContextProvi
       return {
         apMeshTopologyDeviceList: data && flatApMeshList(data.data)
       }
-    }
+    },
+    skip: !isApMeshTopologyFFOn
   })
 
-  const { data: apMeshTopologyData } = useGetApMeshTopologyQuery({ params })
+  const { data: apMeshTopologyData } = useGetApMeshTopologyQuery({ params }, {
+    skip: !isApMeshTopologyFFOn
+  })
 
   const {
     meshDeviceList,
     meshLinkList
   } = filterByFloorplan(apMeshTopologyDeviceList, apMeshTopologyData?.edges, floorplanId)
 
-  return <ApMeshTopologyContext.Provider
-    value={{
-      isApMeshTopologyEnabled,
-      meshDeviceList,
-      meshLinkList
-    }}
-    children={children}
-  />
+  return isApMeshTopologyFFOn
+    ? <ApMeshTopologyContext.Provider
+      value={{
+        isApMeshTopologyEnabled,
+        meshDeviceList,
+        meshLinkList
+      }}
+      children={children}
+    />
+    : children
 }
 
 function flatApMeshList (apMeshList: APMesh[]): ApMeshTopologyDevice[] {
@@ -114,20 +116,20 @@ function filterByFloorplan (
 ): Pick<ApMeshTopologyContextProps, 'meshDeviceList' | 'meshLinkList'> {
 
   let filteredMeshDeviceList: ApMeshTopologyDevice[]
-  if (!incomingMeshDeviceList) {
-    filteredMeshDeviceList = []
-  } else {
+  if (incomingMeshDeviceList) {
     filteredMeshDeviceList = incomingMeshDeviceList.filter(ap => ap.floorplanId === floorplanId)
+  } else {
+    filteredMeshDeviceList = []
   }
 
   let filteredMeshLinkList: ApMeshLink[]
-  if (!incomingMeshLinkList) {
-    filteredMeshLinkList = []
-  } else {
+  if (incomingMeshLinkList) {
     filteredMeshLinkList = incomingMeshLinkList.filter((apMeshLink: ApMeshLink) => {
       return filteredMeshDeviceList.find(m => m.serialNumber === apMeshLink.from) &&
         filteredMeshDeviceList.find(m => m.serialNumber === apMeshLink.to)
     })
+  } else {
+    filteredMeshLinkList = []
   }
 
   return {

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import { Modal as AntModal, Form, Input, Space } from 'antd'
+import moment                                    from 'moment-timezone'
 import { RawIntlProvider, useIntl }              from 'react-intl'
 
 import {
@@ -20,12 +21,12 @@ import { CsvSize, ImportFileDrawer } from '@acx-ui/rc/components'
 import {
   useDeleteDpskPassphraseListMutation,
   useDownloadPassphrasesMutation,
-  useDpskPassphraseListQuery,
+  useGetEnhancedDpskPassphraseListQuery,
   useRevokeDpskPassphraseListMutation,
   useUploadPassphrasesMutation
 } from '@acx-ui/rc/services'
 import {
-  ExpirationType,
+  EXPIRATION_TIME_FORMAT,
   NetworkTypeEnum,
   NewDpskPassphrase,
   transformAdvancedDpskExpirationText,
@@ -43,6 +44,20 @@ import DpskPassphraseDrawer, { DpskPassphraseEditMode } from './DpskPassphraseDr
 
 interface UploadPassphrasesFormFields {
   usernamePrefix: string
+}
+
+const defaultPayload = {
+  filters: {}
+}
+
+const defaultSearch = {
+  searchTargetFields: ['username'],
+  searchString: ''
+}
+
+const defaultSorter = {
+  sortField: 'createdDate',
+  sortOrder: 'DESC'
 }
 
 export default function DpskPassphraseManagement () {
@@ -63,12 +78,10 @@ export default function DpskPassphraseManagement () {
   const isCloudpathEnabled = useIsSplitOn(Features.DPSK_CLOUDPATH_FEATURE)
 
   const tableQuery = useTableQuery({
-    useQuery: useDpskPassphraseListQuery,
-    sorter: {
-      sortField: 'createdDate',
-      sortOrder: 'desc'
-    },
-    defaultPayload: {}
+    useQuery: useGetEnhancedDpskPassphraseListQuery,
+    sorter: defaultSorter,
+    defaultPayload,
+    search: defaultSearch
   })
 
   const downloadPassphrases = () => {
@@ -94,15 +107,16 @@ export default function DpskPassphraseManagement () {
       title: $t({ defaultMessage: 'User Name' }),
       dataIndex: 'username',
       sorter: true,
-      ellipsis: true
+      ellipsis: true,
+      searchable: true
     },
     {
       key: 'numberOfDevices',
       title: $t({ defaultMessage: 'No. of Devices' }),
       dataIndex: 'numberOfDevices',
-      sorter: false,
+      sorter: true,
       render: function (data) {
-        return data ? data : $t(unlimitedNumberOfDeviceLabel)
+        return (data && data !== -1) ? data : $t(unlimitedNumberOfDeviceLabel)
       }
     },
     {
@@ -142,13 +156,31 @@ export default function DpskPassphraseManagement () {
       sorter: true,
       render: function (data) {
         if (data) {
-          return transformAdvancedDpskExpirationText(intl, {
-            expirationType: ExpirationType.SPECIFIED_DATE,
-            expirationDate: data as string
-          })
+          return moment(data as string).format(EXPIRATION_TIME_FORMAT)
         }
         return transformAdvancedDpskExpirationText(intl, { expirationType: null })
       }
+    },
+    {
+      key: 'revocationReason',
+      title: $t({ defaultMessage: 'Revocation Reason' }),
+      dataIndex: 'revocationReason',
+      show: isCloudpathEnabled,
+      sorter: true
+    },
+    {
+      key: 'email',
+      title: $t({ defaultMessage: 'Contact Email Address' }),
+      dataIndex: 'email',
+      show: isCloudpathEnabled,
+      sorter: true
+    },
+    {
+      key: 'phoneNumber',
+      title: $t({ defaultMessage: 'Contact Phone Number' }),
+      dataIndex: 'phoneNumber',
+      show: isCloudpathEnabled,
+      sorter: true
     }
   ]
 
@@ -171,8 +203,7 @@ export default function DpskPassphraseManagement () {
             params,
             payload: {
               ids: selectedRows.map(p => p.id),
-              updateState: 'REVOKE',
-              revocationReason
+              changes: { revocationReason }
             }
           })
           clearSelection()
@@ -187,7 +218,7 @@ export default function DpskPassphraseManagement () {
           params,
           payload: {
             ids: selectedRows.map(p => p.id),
-            updateState: 'UNREVOKE'
+            changes: { revocationReason: null }
           }
         }).then(clearSelection)
       }
@@ -300,6 +331,8 @@ export default function DpskPassphraseManagement () {
         rowActions={filterByAccess(rowActions)}
         rowSelection={{ type: 'checkbox' }}
         rowKey='id'
+        onFilterChange={tableQuery.handleFilterChange}
+        enableApiFilter={true}
       />
     </Loader>
   </>)

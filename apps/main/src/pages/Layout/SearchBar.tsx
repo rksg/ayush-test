@@ -2,24 +2,15 @@ import React, { useContext, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import {
-  LayoutUI
-}                        from '@acx-ui/components'
-import { Tooltip }                from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import {
-  SearchOutlined,
-  Close
-}                          from '@acx-ui/icons'
-import { HeaderContext }                                       from '@acx-ui/main/components'
-import { useNavigate, useParams, useTenantLink , useLocation } from '@acx-ui/react-router-dom'
-import { notAvailableMsg, fixedEncodeURIComponent }            from '@acx-ui/utils'
+import { LayoutUI }                                           from '@acx-ui/components'
+import { SearchOutlined, Close }                              from '@acx-ui/icons'
+import { HeaderContext }                                      from '@acx-ui/main/components'
+import { useNavigate, useParams, useTenantLink, useLocation } from '@acx-ui/react-router-dom'
+import { fixedEncodeURIComponent }                            from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
 function SearchBar () {
-  const enableSearch = useIsSplitOn(Features.GLOBAL_SEARCH)
-  const notAvailableTitle = useIntl().$t(notAvailableMsg)
   const placeholder = useIntl().$t({ defaultMessage: 'What are you looking for?' })
   const params = useParams()
   const { pathname, key } = useLocation()
@@ -60,46 +51,34 @@ function SearchBar () {
 
   const onKeyDown = (event: React.KeyboardEvent) => event.key === 'Enter' && handleSearch()
 
-  return (enableSearch
-    ? showSearchBar
-      ? <UI.SearchBar>
-        <UI.SearchSolid shape='circle' icon={<SearchOutlined />}/>
-        <UI.Input
-          autoFocus
-          value={searchText}
-          onChange={({ target: { value } }) => setSearchText(value)}
-          onKeyDown={onKeyDown}
-          data-testid='search-input'
-          placeholder={placeholder}
-        />
-        <UI.SendSearch onClick={handleSearch} data-testid='search-send'/>
-        <UI.Divider />
-        <UI.Close
-          shape='circle'
-          icon={<Close />}
-          onClick={closeSearch}
-          data-testid='search-close'
-        />
-      </UI.SearchBar>
-      : <LayoutUI.ButtonOutlined
-        shape='circle'
-        icon={<SearchOutlined />}
-        onClick={
-          () => {
-            setShowSearchBar && setShowSearchBar(true)
-            setLicenseExpanded(false)
-          }
-        }
-        data-testid='search-button'
+  return showSearchBar
+    ? <UI.SearchBar>
+      <UI.SearchSolid shape='circle' icon={<SearchOutlined />}/>
+      <UI.Input
+        autoFocus
+        value={searchText}
+        onChange={({ target: { value } }) => setSearchText(value)}
+        onKeyDown={onKeyDown}
+        data-testid='search-input'
+        placeholder={placeholder}
       />
-    : <Tooltip title={notAvailableTitle}>
-      <LayoutUI.ButtonOutlined
-        disabled
+      <UI.SendSearch onClick={handleSearch} data-testid='search-send'/>
+      <UI.Divider />
+      <UI.Close
         shape='circle'
-        icon={<SearchOutlined />}
-        data-testid='search-button'
+        icon={<Close />}
+        onClick={closeSearch}
+        data-testid='search-close'
       />
-    </Tooltip>
-  )
+    </UI.SearchBar>
+    : <LayoutUI.ButtonOutlined
+      shape='circle'
+      icon={<SearchOutlined />}
+      onClick={() => {
+        setShowSearchBar && setShowSearchBar(true)
+        setLicenseExpanded(false)
+      }}
+      data-testid='search-button'
+    />
 }
 export default SearchBar

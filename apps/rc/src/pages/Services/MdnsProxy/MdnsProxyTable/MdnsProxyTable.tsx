@@ -1,4 +1,3 @@
-import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
@@ -20,9 +19,7 @@ import {
   getServiceListRoutePath,
   getServiceRoutePath,
   MdnsProxyViewModel,
-  MdnsProxyForwardingRule,
-  FILTER,
-  SEARCH
+  MdnsProxyForwardingRule
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                          from '@acx-ui/user'
@@ -77,19 +74,6 @@ export default function MdnsProxyTable () {
     }
   ]
 
-  const handleFilterChange = (filters: FILTER, search: SEARCH) => {
-    const currentPayload = tableQuery.payload
-    // eslint-disable-next-line max-len
-    if (currentPayload.searchString === search.searchString && _.isEqual(currentPayload.filters, filters)) {
-      return
-    }
-    tableQuery.setPayload({
-      ...currentPayload,
-      searchString: search.searchString ?? '',
-      filters
-    })
-  }
-
   return (
     <>
       <PageHeader
@@ -115,7 +99,7 @@ export default function MdnsProxyTable () {
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
-          onFilterChange={handleFilterChange}
+          onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />
       </Loader>
@@ -168,6 +152,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Forwarding Rules' }),
       dataIndex: 'rules',
       align: 'center',
+      sorter: true,
       render: function (data) {
         const rules = data as MdnsProxyForwardingRule[]
         return (rules && rules.length > 0
@@ -187,12 +172,13 @@ function useColumns () {
       align: 'center',
       filterKey: 'venueIds',
       filterable: venueNameMap,
+      sorter: true,
       render: function (data, row) {
         if (!row.venueIds || row.venueIds.length === 0) return 0
 
-        // eslint-disable-next-line max-len
-        const tooltipItems = venueNameMap.filter(v => row.venueIds!.includes(v.key)).map(v => v.value)
-        return <SimpleListTooltip items={tooltipItems} displayText={row.venueIds.length} />
+        const venueIds = [...new Set(row.venueIds)]
+        const tooltipItems = venueNameMap.filter(v => venueIds!.includes(v.key)).map(v => v.value)
+        return <SimpleListTooltip items={tooltipItems} displayText={venueIds.length} />
       }
     }
   ]

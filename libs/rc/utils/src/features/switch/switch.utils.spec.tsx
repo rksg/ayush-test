@@ -32,6 +32,7 @@ const switchRow ={
   venueId: '5c05180d54d84e609a4d653a3a8332d1',
   venueName: 'My-Venue',
   configReady: false,
+  syncedSwitchConfig: true,
   syncDataEndTime: '',
   cliApplied: false,
   formStacking: false,
@@ -102,13 +103,13 @@ describe('switch.utils', () => {
       expect(transformSwitchUnitStatus(SwitchStatusEnum.FIRMWARE_UPD_FAIL)).toEqual('Firmware Updating')
       expect(transformSwitchUnitStatus(SwitchStatusEnum.APPLYING_FIRMWARE)).toEqual('Firmware Updating')
       expect(transformSwitchUnitStatus(SwitchStatusEnum.OPERATIONAL, true, true, '1 minute'))
-        .toEqual('Operational - applying configuration')
+        .toEqual('Applying configuration')
       expect(transformSwitchUnitStatus(SwitchStatusEnum.OPERATIONAL, true, true))
         .toEqual('Operational')
       expect(transformSwitchUnitStatus(SwitchStatusEnum.OPERATIONAL, true, false))
         .toEqual('Synchronizing data')
       expect(transformSwitchUnitStatus(SwitchStatusEnum.OPERATIONAL, false, true))
-        .toEqual('Operational - Synchronizing')
+        .toEqual('Synchronizing')
       expect(transformSwitchUnitStatus(SwitchStatusEnum.DISCONNECTED))
         .toEqual('Disconnected from cloud')
       expect(transformSwitchUnitStatus(SwitchStatusEnum.STACK_MEMBER_NEVER_CONTACTED))
@@ -171,7 +172,7 @@ describe('switch.utils', () => {
         isOperational: false
       })
       expect(transformSwitchStatus(SwitchStatusEnum.OPERATIONAL, true, true, '1 minute')).toStrictEqual({
-        message: 'Operational - applying configuration',
+        message: 'Applying configuration',
         deviceStatus: DeviceConnectionStatus.CONNECTED,
         isOperational: false
       })
@@ -186,7 +187,7 @@ describe('switch.utils', () => {
         isOperational: false
       })
       expect(transformSwitchStatus(SwitchStatusEnum.OPERATIONAL, false, true)).toStrictEqual({
-        message: 'Operational - Synchronizing',
+        message: 'Synchronizing',
         deviceStatus: DeviceConnectionStatus.CONNECTED,
         isOperational: false
       })
@@ -216,7 +217,7 @@ describe('switch.utils', () => {
 
   describe('Test getSwitchStatusString function', () => {
     it('should Synchronizing correctly', async () => {
-      expect(getSwitchStatusString(switchRow)).toBe('Operational - Synchronizing')
+      expect(getSwitchStatusString(switchRow)).toBe('Synchronizing')
     })
 
     it('should Warning correctly', async () => {
@@ -227,7 +228,7 @@ describe('switch.utils', () => {
         syncedSwitchConfig: true,
         operationalWarning: true
       }
-      expect(getSwitchStatusString(data)).toBe('Operational - Warning - Syncing')
+      expect(getSwitchStatusString(data)).toBe('Synchronizing')
     })
   })
 

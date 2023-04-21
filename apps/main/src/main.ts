@@ -1,10 +1,27 @@
+import '@acx-ui/theme'
 
 async function initialize () {
-  const config = await import('@acx-ui/config')
+  const [
+    React,
+    { createRoot },
+    { SuspenseBoundary },
+    config
+  ] = await Promise.all([
+    import('react'),
+    import('react-dom/client'),
+    import('@acx-ui/components'),
+    import('@acx-ui/config')
+  ])
+
+  const container = document.getElementById('root')
+  const root = createRoot(container!)
+
+  root.render(React.createElement(SuspenseBoundary.DefaultFallback, { absoluteCenter: true }))
+
   await config.initialize()
 
   const bootstrap = await import('./bootstrap')
-  await bootstrap.init()
+  await bootstrap.init(root)
 }
 
 initialize()

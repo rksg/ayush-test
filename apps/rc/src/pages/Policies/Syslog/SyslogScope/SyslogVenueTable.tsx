@@ -68,13 +68,15 @@ const SyslogVenueTable = () => {
     {
       title: $t({ defaultMessage: 'Venue' }),
       dataIndex: 'name',
-      key: 'name'
+      key: 'name',
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'APs' }),
       dataIndex: 'aggregatedApStatus',
       key: 'aggregatedApStatus',
       align: 'center',
+      sorter: true,
       render: (data, row) => {
         return Object.values(row.aggregatedApStatus ?? {}).reduce((a, b) => a + b, 0)
       }
@@ -84,6 +86,7 @@ const SyslogVenueTable = () => {
       dataIndex: 'syslogServer',
       key: 'syslogServer',
       align: 'center',
+      sorter: true,
       render: (data, row) => {
         if (row.syslogServer?.enabled) {
           return <div>

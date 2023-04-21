@@ -1,10 +1,13 @@
 import {
   CommonResult,
   createHttpRequest,
+  DhcpHostStats,
   DhcpPoolStats,
   DhcpStats,
   EdgeDhcpSetting,
   EdgeDhcpUrls,
+  onActivityMessageReceived,
+  onSocketActivityChanged,
   PaginationQueryResult,
   RequestPayload,
   TableResult
@@ -40,8 +43,9 @@ export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
           ...req,
           body: payload
         }
-      },
-      invalidatesTags: [{ type: 'EdgeDhcp', id: 'LIST' }, { type: 'EdgeDhcp', id: 'DETAIL' }]
+      }
+      // If get data before the viewmodel has been written, it will get the wrong data.
+      // invalidatesTags: [{ type: 'EdgeDhcp', id: 'LIST' }, { type: 'EdgeDhcp', id: 'DETAIL' }]
     }),
     deleteEdgeDhcpServices: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -97,11 +101,43 @@ export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'EdgeDhcp', id: 'LIST' }]
+      providesTags: [{ type: 'EdgeDhcp', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Update DHCP'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeDhcpApi.util.invalidateTags([{ type: 'EdgeDhcp', id: 'LIST' }]))
+          })
+        })
+      }
     }),
     getDhcpStats: build.query<TableResult<DhcpStats>, RequestPayload>({
       query: ({ payload, params }) => {
         const req = createHttpRequest(EdgeDhcpUrls.getDhcpStats, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'EdgeDhcp', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Add DHCP',
+            'Update DHCP',
+            'Delete DHCP'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeDhcpApi.util.invalidateTags([{ type: 'EdgeDhcp', id: 'LIST' }]))
+          })
+        })
+      }
+    }),
+    getDhcpHostStats: build.query<TableResult<DhcpHostStats>, RequestPayload>({
+      query: ({ payload, params }) => {
+        const req = createHttpRequest(EdgeDhcpUrls.getDhcpHostStats, params)
         return {
           ...req,
           body: payload
@@ -121,5 +157,6 @@ export const {
   useGetEdgeDhcpListQuery,
   useGetDhcpByEdgeIdQuery,
   useGetDhcpPoolStatsQuery,
-  useGetDhcpStatsQuery
+  useGetDhcpStatsQuery,
+  useGetDhcpHostStatsQuery
 } = edgeDhcpApi

@@ -147,22 +147,3 @@ describe('Search Bar (feature enabled)', () => {
     )
   })
 })
-describe('Search Bar (feature disabled)', () => {
-
-  beforeEach(() => {
-    mockedUsedNavigate.mockClear()
-  })
-  it('should trigger search on send click', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(<Provider>
-      <SearchBarMock />
-    </Provider>, {
-      route: {
-        path: '/t/:tenantId/dashboard',
-        params: { tenantId: 't1' }
-      }
-    })
-    const searchBtn = await screen.findByTestId('search-button')
-    expect(searchBtn).toBeDisabled()
-  })
-})
