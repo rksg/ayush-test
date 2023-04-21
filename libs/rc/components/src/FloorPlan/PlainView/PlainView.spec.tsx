@@ -5,18 +5,39 @@ import { DndProvider }  from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { act }          from 'react-dom/test-utils'
 
-import { ApDeviceStatusEnum, FloorPlanDto, getImageFitPercentage, NetworkDevice, NetworkDeviceType, SwitchStatusEnum, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                                            from '@acx-ui/store'
-import { render, screen, fireEvent, waitFor, mockServer }                                                                                      from '@acx-ui/test-utils'
+import { useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { ApDeviceStatusEnum,
+  ApMeshLink,
+  CommonUrlsInfo,
+  FloorPlanDto,
+  getImageFitPercentage,
+  NetworkDevice,
+  NetworkDeviceType,
+  SwitchStatusEnum,
+  TypeWiseNetworkDevices
+} from '@acx-ui/rc/utils'
+import { Provider }                                       from '@acx-ui/store'
+import { render, screen, fireEvent, waitFor, mockServer } from '@acx-ui/test-utils'
 
 import { NetworkDeviceContext } from '..'
 import UnplacedDevice           from '../UnplacedDevices/UnplacedDevice'
 
+import {
+  mockedApMeshTopologyData,
+  mockedMeshFloorPlans,
+  mockedMeshAps,
+  mockedMeshNetworkDevices
+} from './__tests__/fixtures'
 import PlainView, { setUpdatedLocation } from './PlainView'
 import Thumbnail                         from './Thumbnail'
 
 
-
+jest.mock('../../ApMeshConnection', () => ({
+  ...jest.requireActual('../../ApMeshConnection'),
+  default: (props: { linkInfo: ApMeshLink }) => {
+    return <div data-testid={props.linkInfo.to}></div>
+  }
+}))
 
 const list: FloorPlanDto[] = [
   {
@@ -465,5 +486,58 @@ describe('Floor Plan Plain View', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
+  it('should render correctly Plain View with AP Mesh Topology enabled', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getMeshAps.url.replace('?mesh=true', ''),
+        (req, res, ctx) => res(ctx.json({ ...mockedMeshAps }))
+      ),
+      rest.get(
+        CommonUrlsInfo.getApMeshTopology.url,
+        (req, res, ctx) => {
+          return res(ctx.json({ ...mockedApMeshTopologyData }))
+        }
+      )
+    )
+
+    const targetFloorPlan = mockedMeshFloorPlans[0]
+    const targetMeshLink = mockedApMeshTopologyData.data[0].edges[0]
+
+    render(<Provider><DndProvider backend={HTML5Backend}>
+      <PlainView floorPlans={mockedMeshFloorPlans}
+        toggleGalleryView={() => {}}
+        defaultFloorPlan={targetFloorPlan}
+        deleteFloorPlan={jest.fn()}
+        onAddEditFloorPlan={jest.fn()}
+        networkDevices={mockedMeshNetworkDevices}
+        networkDevicesVisibility={networkDeviceType}
+        setCoordinates={jest.fn()}/>
+    </DndProvider></Provider>, {
+      route: {
+        params: { tenantId: '__Tenant__', venueId: '__Venue__' },
+        path: '/:tenantId/:venueId'
+      }
+    })
+
+    await waitFor(() => {
+      expect(screen.queryAllByTestId('floorPlanImage')[0]).toHaveAttribute('src',
+        imageObj['01acff37331949c686d40b5a00822ec2-001.jpeg'].signedUrl
+      )
+    })
+
+    await fireEvent.load(screen.getByRole('img', { name: targetFloorPlan.name }))
+
+    expect(await screen.findByTestId('APMeshRoleRoot')).toBeVisible()
+    expect(await screen.findByTestId('APMeshRoleMesh')).toBeVisible()
+    expect(await screen.findByTestId(targetMeshLink.to)).toBeInTheDocument()
+
+    await fireEvent.click(await screen.findByRole('switch'))
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('APMeshRoleRoot')).toBeNull()
+    })
+  })
 })
 

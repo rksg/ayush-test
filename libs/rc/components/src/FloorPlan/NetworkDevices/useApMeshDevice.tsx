@@ -13,23 +13,22 @@ import { ApMeshTopologyDevice, ApMeshTopologyContext } from '../PlainView/ApMesh
 import * as UI           from './styledComponent'
 import { getDeviceName } from './utils'
 
+type APMeshRoleWithoutDisabled = Exclude<APMeshRole, 'DISABLED'>
 
-const ApMeshTooltipDetailMap: Record<APMeshRole, MessageDescriptor> = {
+const ApMeshTooltipDetailMap: Record<APMeshRoleWithoutDisabled, MessageDescriptor> = {
   [APMeshRole.RAP]: defineMessage({ defaultMessage: `Linked directly to {downlinkCount, plural,
     =0 {0 mesh AP} one {# mesh AP} other {# mesh APs}}
     {downlinkUnplacedCount, plural, =0 {} other {(# unplaced)}}` }),
   [APMeshRole.MAP]: defineMessage({ defaultMessage: `Linked to Root AP "{rootApName}"
     {isRootApUnplaced, select, true {(unplaced)} other {}}
     {hops, plural, =0 {} one {({hops} Hop)} other {({hops} Hops)}}` }),
-  [APMeshRole.EMAP]: defineMessage({ defaultMessage: 'Linked to Root AP "{rootApName}"' }),
-  [APMeshRole.DISABLED]: defineMessage({ defaultMessage: 'Disabled' })
+  [APMeshRole.EMAP]: defineMessage({ defaultMessage: 'Linked to Root AP "{rootApName}"' })
 }
 
-const ApMeshRoleIconMap: Record<APMeshRole, React.FunctionComponent> = {
+const ApMeshRoleIconMap: Record<APMeshRoleWithoutDisabled, React.FunctionComponent> = {
   [APMeshRole.RAP]: APMeshRoleRoot,
   [APMeshRole.MAP]: APMeshRoleMesh,
-  [APMeshRole.EMAP]: APMeshRoleEthernet,
-  [APMeshRole.DISABLED]: () => <span></span>
+  [APMeshRole.EMAP]: APMeshRoleEthernet
 }
 
 export function useApMeshDevice (device?: NetworkDevice) {
@@ -44,7 +43,7 @@ export function useApMeshDevice (device?: NetworkDevice) {
   const getApMeshRoleConnectionDetail = (apMeshData: ApMeshTopologyDevice) => {
     const meshRole = apMeshData.meshRole
 
-    return $t(ApMeshTooltipDetailMap[meshRole], {
+    return $t(ApMeshTooltipDetailMap[meshRole as APMeshRoleWithoutDisabled], {
       downlinkCount: apMeshData.downlinkCount ?? 0,
       downlinkUnplacedCount: apMeshData.downlinkUnplacedCount ?? 0,
       rootApName: apMeshData.rootApName,
@@ -56,13 +55,11 @@ export function useApMeshDevice (device?: NetworkDevice) {
   const getApMeshRoleTooltip = () => {
     if (!apMeshData) return getDeviceName(device)
 
-    const meshRole = apMeshData.meshRole
-
     return (
       <Space direction='vertical'>
         <Space style={{ color: '#C4C4C4' }}>
           <span>{device?.name}</span>
-          <span>({getMeshRole(meshRole)})</span>
+          <span>({getMeshRole(apMeshData.meshRole)})</span>
         </Space>
         <span style={{ color: '#FFFFFF' }}>{getApMeshRoleConnectionDetail(apMeshData)}</span>
       </Space>
@@ -78,7 +75,7 @@ export function useApMeshDevice (device?: NetworkDevice) {
   const getApMeshRoleIcon = () => {
     if (!apMeshData) return null
 
-    const RoleIcon = ApMeshRoleIconMap[apMeshData.meshRole]
+    const RoleIcon = ApMeshRoleIconMap[apMeshData.meshRole as APMeshRoleWithoutDisabled]
     return (
       <UI.MeshApRoleIconContainer id={getDeviceContainerId()}>
         <RoleIcon />
