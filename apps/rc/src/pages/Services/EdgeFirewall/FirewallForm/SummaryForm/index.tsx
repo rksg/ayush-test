@@ -4,7 +4,6 @@ import styled                                         from 'styled-components'
 
 import { Descriptions, StepsForm, useStepFormContext, Subtitle } from '@acx-ui/components'
 import { SpaceWrapper }                                          from '@acx-ui/rc/components'
-import { StatefulAcl }                                           from '@acx-ui/rc/utils'
 
 import { FirewallFormModel, filterCustomACLRules } from '..'
 

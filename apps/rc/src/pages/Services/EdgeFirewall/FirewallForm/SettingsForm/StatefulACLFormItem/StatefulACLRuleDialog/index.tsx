@@ -20,7 +20,7 @@ import {
   getAddressTypeString,
   ACLDirection
 } from '@acx-ui/rc/utils'
-import { getIntl, validationMessages } from '@acx-ui/utils'
+import { getIntl } from '@acx-ui/utils'
 
 import { StyledFlagFilled, ModalStyles } from './styledComponents'
 
