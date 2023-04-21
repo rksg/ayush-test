@@ -3,8 +3,9 @@ import { useState } from 'react'
 import Xarrow from 'react-xarrows'
 
 import { ApMeshLink } from '@acx-ui/rc/utils'
-import { getColorForLine } from '../ApMeshConnectionTooltip/utils'
+
 import ApMeshConnectionTooltip from '../ApMeshConnectionTooltip'
+import { getColorForLine }     from '../ApMeshConnectionTooltip/utils'
 
 export interface ApMeshConnectionProps {
   linkInfo: ApMeshLink

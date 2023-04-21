@@ -1,13 +1,23 @@
 import { useContext } from 'react'
-import { ApMeshTopologyDevice, ApMeshTopologyContext } from '../PlainView/ApMeshTopologyContext'
-import { APMeshRole, NetworkDevice, NetworkDeviceType } from '@acx-ui/rc/utils'
-import { getDeviceName } from './utils'
-import { Space } from 'antd'
-import { getMeshRole } from '../../Topology/utils'
-import * as UI from './styledComponent'
-import { APMeshRoleEthernet, APMeshRoleMesh, APMeshRoleRoot } from '@acx-ui/icons'
-import ApMeshConnection, { genApMeshConnectionId } from '../../ApMeshConnection'
+
+import { Space }                                     from 'antd'
 import { MessageDescriptor, defineMessage, useIntl } from 'react-intl'
+
+import { APMeshRoleEthernet, APMeshRoleMesh, APMeshRoleRoot } from '@acx-ui/icons'
+import { APMeshRole, NetworkDevice, NetworkDeviceType }       from '@acx-ui/rc/utils'
+
+import ApMeshConnection, { genApMeshConnectionId }     from '../../ApMeshConnection'
+import { getMeshRole }                                 from '../../Topology/utils'
+import { ApMeshTopologyDevice, ApMeshTopologyContext } from '../PlainView/ApMeshTopologyContext'
+
+import * as UI           from './styledComponent'
+import { getDeviceName } from './utils'
+
+
+
+
+
+
 
 const ApMeshTooltipDetailMap: Record<APMeshRole, MessageDescriptor> = {
   [APMeshRole.RAP]: defineMessage({ defaultMessage: `Linked directly to {downlinkCount, plural,

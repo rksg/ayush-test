@@ -1,8 +1,8 @@
 import { useContext, useRef } from 'react'
 
 import { Badge, Tooltip } from 'antd'
-import { isEmpty }               from 'lodash'
-import { useDrag }               from 'react-dnd'
+import { isEmpty }        from 'lodash'
+import { useDrag }        from 'react-dnd'
 
 import { deviceCategoryColors } from '@acx-ui/components'
 import {
@@ -10,13 +10,13 @@ import {
   SignalUp
 } from '@acx-ui/icons'
 import { FloorplanContext, NetworkDevice, NetworkDeviceType, RogueApInfo } from '@acx-ui/rc/utils'
-import { getIntl }                                                                 from '@acx-ui/utils'
+import { getIntl }                                                         from '@acx-ui/utils'
 
-import { NetworkDeviceContext }      from '..'
+import { NetworkDeviceContext } from '..'
 
-import * as UI                                                       from './styledComponent'
+import * as UI                                                                      from './styledComponent'
+import { useApMeshDevice }                                                          from './useApMeshDevice'
 import { calculateApColor, calculateDeviceColor, getDeviceName, getSnrDisplayInfo } from './utils'
-import { useApMeshDevice } from './useApMeshDevice'
 
 
 

@@ -1,9 +1,11 @@
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { useGetApMeshTopologyQuery, useMeshApsQuery } from '@acx-ui/rc/services'
-import { APMesh, APMeshRole, ApMeshLink, Uplink } from '@acx-ui/rc/utils'
 import { createContext } from 'react'
+
+import _             from 'lodash'
 import { useParams } from 'react-router-dom'
-import _ from 'lodash'
+
+import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
+import { useGetApMeshTopologyQuery, useMeshApsQuery } from '@acx-ui/rc/services'
+import { APMesh, APMeshRole, ApMeshLink, Uplink }     from '@acx-ui/rc/utils'
 
 export interface ApMeshTopologyDevice {
   serialNumber: string
@@ -33,7 +35,7 @@ export interface ApMeshTopologyContextProviderProps {
 
 export function ApMeshTopologyContextProvider (props: ApMeshTopologyContextProviderProps ) {
   const { children, isApMeshTopologyEnabled, floorplanId } = props
-  const params = useParams<{tenantId: string, venueId: string}>()
+  const params = useParams<{ tenantId: string, venueId: string }>()
   const isApMeshTopologyFFOn = useIsSplitOn(Features.AP_MESH_TOPOLOGY)
 
   if (!isApMeshTopologyFFOn) return children

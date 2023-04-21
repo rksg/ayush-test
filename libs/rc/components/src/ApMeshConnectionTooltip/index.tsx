@@ -3,9 +3,9 @@ import { useIntl }        from 'react-intl'
 
 import { APMeshRole, ApMeshLink } from '@acx-ui/rc/utils'
 
-import { apMeshRoleLabelMap }       from './contents'
-import * as UI                      from './styledComponents'
-import { getSNRColor, getSNRIcon }  from './utils'
+import { apMeshRoleLabelMap }      from './contents'
+import * as UI                     from './styledComponents'
+import { getSNRColor, getSNRIcon } from './utils'
 
 export interface ApMeshConnectionTooltipProps {
   data: ApMeshLink
