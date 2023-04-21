@@ -78,13 +78,11 @@ export const OneTimePassword = styled((props: OneTimePasswordProps) => {
     setVerifyModalVisible(false)
   }
 
-  const footer = [
-    <Drawer.FormFooter
-      buttonLabel={{ save: $t({ defaultMessage: 'Verify' }) }}
-      onCancel={onClose}
-      onSave={async () => form.submit()}
-    />
-  ]
+  const footer = <Drawer.FormFooter
+    buttonLabel={{ save: $t({ defaultMessage: 'Verify' }) }}
+    onCancel={onClose}
+    onSave={async () => form.submit()}
+  />
 
   return (
     <>

@@ -253,7 +253,16 @@ const pools = [
   }
 ]
 
-
+export const mockVenueData = {
+  fields: ['id', 'mesh'],
+  totalCount: 3,
+  page: 1,
+  data: [
+    { id: 'mock_venue_1', mesh: {} },
+    { id: 'mock_venue_2', mesh: {} },
+    { id: 'mock_venue_3', mesh: {} }
+  ]
+}
 export const successResponse = { requestId: 'request-id' }
 
 const handlers:Array<RestHandler> = [
@@ -280,6 +289,9 @@ const handlers:Array<RestHandler> = [
   ),
   rest.delete(DHCPUrls.deactivateVenueDHCPPool.url,(_,res,ctx) =>
     res(ctx.json(successResponse))
+  ),
+  rest.post(CommonUrlsInfo.getVenuesList.url,(_,res,ctx) =>
+    res(ctx.json(mockVenueData))
   ),
   rest.post(DHCPUrls.updateVenueDHCPProfile.url,(_,res,ctx) =>
     res(ctx.json(successResponse))

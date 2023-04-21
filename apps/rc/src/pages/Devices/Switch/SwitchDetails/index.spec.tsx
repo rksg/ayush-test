@@ -6,6 +6,8 @@ import { apApi }                                        from '@acx-ui/rc/service
 import { CommonUrlsInfo, SwitchUrlsInfo }               from '@acx-ui/rc/utils'
 import { Provider, store }                              from '@acx-ui/store'
 import { mockRestApiQuery, mockServer, render, screen } from '@acx-ui/test-utils'
+import { RolesEnum }                                    from '@acx-ui/types'
+import { getUserProfile, setUserProfile }               from '@acx-ui/user'
 
 import { switchDetailData } from './__tests__/fixtures'
 import { activities }       from './SwitchTimelineTab/__tests__/fixtures'
@@ -80,7 +82,6 @@ describe('SwitchDetails', () => {
       .toEqual('Troubleshooting')
   })
 
-
   it('should navigate to clients tab correctly', async () => {
     const params = {
       tenantId: 'tenant-id',
@@ -152,6 +153,7 @@ describe('SwitchDetails', () => {
     expect(screen.getAllByRole('tab').filter(x => x.getAttribute('aria-selected') === 'true'))
       .toHaveLength(0)
   })
+
   it('should go to edit page', async () => {
     const params = {
       tenantId: 'tenant-id',
@@ -164,5 +166,22 @@ describe('SwitchDetails', () => {
     })
 
     await userEvent.click(await screen.findByRole('button', { name: 'Configure' }))
+  })
+
+  it('should hide incidents when role is READ_ONLY', async () => {
+    setUserProfile({
+      allowedOperations: [],
+      profile: { ...getUserProfile().profile, roles: [RolesEnum.READ_ONLY] }
+    })
+    const params = {
+      tenantId: 'tenant-id',
+      switchId: 'switchId',
+      serialNumber: 'serialNumber',
+      activeTab: 'incidents'
+    }
+    render(<Provider><SwitchDetails /></Provider>, {
+      route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab' }
+    })
+    expect(screen.queryByTestId('rc-SwitchIncidentsTab')).toBeNull()
   })
 })
