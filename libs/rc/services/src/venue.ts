@@ -326,7 +326,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'Update Switch Position',
+            'UpdateSwitchPosition',
             'UpdateApPosition',
             'UpdateCloudpathServerPosition',
             'DeleteFloorPlan'], () => {

@@ -28,7 +28,9 @@ export default function SelectServiceForm () {
   const tenantBasePath: Path = useTenantLink('')
   const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
   const propertyManagementEnabled = useIsSplitOn(Features.PROPERTY_MANAGEMENT)
-  const isEdgesEnable = useIsSplitOn(Features.EDGES)
+  const earlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
+  const isEdgeDhcpEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
+  const isEdgeFirewallEnabled = useIsSplitOn(Features.EDGES)
 
   const navigateToCreateService = async function (data: { serviceType: ServiceType }) {
     const serviceCreatePath = getServiceRoutePath({
@@ -50,13 +52,22 @@ export default function SelectServiceForm () {
         {
           type: ServiceType.EDGE_DHCP,
           categories: [RadioCardCategory.EDGE],
-          disabled: !isEdgesEnable
+          disabled: !isEdgeDhcpEnabled
         },
         { type: ServiceType.DPSK, categories: [RadioCardCategory.WIFI] },
         {
           type: ServiceType.NETWORK_SEGMENTATION,
           categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
           disabled: !networkSegmentationEnabled
+        }
+      ]
+    },
+    {
+      title: defineMessage({ defaultMessage: 'Security' }),
+      items: [
+        { type: ServiceType.EDGE_FIREWALL,
+          categories: [RadioCardCategory.EDGE],
+          disabled: !isEdgeFirewallEnabled
         }
       ]
     },

@@ -88,6 +88,8 @@ import EditDhcp                   from './pages/Services/DHCP/Edge/EditDHCP'
 import DpskDetails                from './pages/Services/Dpsk/DpskDetail/DpskDetails'
 import DpskForm                   from './pages/Services/Dpsk/DpskForm/DpskForm'
 import DpskTable                  from './pages/Services/Dpsk/DpskTable/DpskTable'
+import AddFirewall                from './pages/Services/EdgeFirewall/AddFirewall'
+import EditFirewall               from './pages/Services/EdgeFirewall/EditFirewall'
 import MdnsProxyDetail            from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
 import MdnsProxyForm              from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
 import MdnsProxyTable             from './pages/Services/MdnsProxy/MdnsProxyTable/MdnsProxyTable'
@@ -396,6 +398,15 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.RESIDENT_PORTAL, oper: ServiceOperation.EDIT })}
         element={<ResidentPortalForm editMode={true} />}
+
+        path={getServiceRoutePath({
+          type: ServiceType.EDGE_FIREWALL, oper: ServiceOperation.CREATE })}
+        element={<AddFirewall />}
+      />
+      <Route
+        path={getServiceRoutePath({
+          type: ServiceType.EDGE_FIREWALL, oper: ServiceOperation.EDIT })}
+        element={<EditFirewall />}
       />
     </Route>
   )

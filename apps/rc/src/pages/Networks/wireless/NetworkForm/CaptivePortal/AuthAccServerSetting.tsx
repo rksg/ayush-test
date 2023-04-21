@@ -5,6 +5,7 @@ import {
   Form,
   Switch
 } from 'antd'
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Subtitle, Tooltip }          from '@acx-ui/components'
@@ -21,7 +22,11 @@ export function AuthAccServerSetting () {
   const { data, setData } = useContext(NetworkFormContext)
 
   const onChange = (value: boolean, fieldName: string) => {
-    setData && setData({ ...data, [fieldName]: value })
+    if(!value){
+      form.setFieldValue(['guestPortal','wisprPage','accountingRadius'], undefined)
+    }
+    setData && setData({ ...(!value?_.omit(data, 'guestPortal.wisprPage.accountingRadius'):data),
+      [fieldName]: value })
   }
   const proxyServiceTooltip = <Tooltip
     placement='bottom'

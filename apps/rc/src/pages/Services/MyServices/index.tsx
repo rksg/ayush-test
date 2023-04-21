@@ -38,16 +38,13 @@ export default function MyServices () {
   const services = [
     {
       type: ServiceType.MDNS_PROXY,
-      categories: [RadioCardCategory.WIFI],
-      tableQuery: useGetEnhancedMdnsProxyListQuery({
-        params, payload: defaultPayload
-      })
+      category: RadioCardCategory.WIFI,
+      tableQuery: useGetEnhancedMdnsProxyListQuery({ params, payload: defaultPayload })
     },
     {
       type: ServiceType.DHCP,
-      categories: [RadioCardCategory.WIFI],
-      tableQuery: useGetDHCPProfileListViewModelQuery({ params,
-        payload: { ...defaultPayload } })
+      category: RadioCardCategory.WIFI,
+      tableQuery: useGetDHCPProfileListViewModelQuery({ params, payload: defaultPayload })
     },
     {
       type: ServiceType.EDGE_DHCP,

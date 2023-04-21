@@ -113,6 +113,7 @@ export enum ServiceType {
   PORTAL = 'Portal',
   DHCP = 'DHCP (Wi-Fi)',
   EDGE_DHCP = 'DHCP (Edge)',
+  EDGE_FIREWALL = 'Firewall (Edge)',
   WIFI_CALLING = 'Wi-Fi Calling',
   MDNS_PROXY = 'mDNS Proxy',
   DPSK = 'DPSK',

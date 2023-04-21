@@ -1,4 +1,5 @@
 import { Typography }             from 'antd'
+import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { GridCol, GridRow, PageHeader } from '@acx-ui/components'
@@ -21,6 +22,7 @@ export default function ServiceCatalog () {
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const isEdgeDhcpEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
   const propertyManagementEnabled = useIsSplitOn(Features.PROPERTY_MANAGEMENT)
+  const isEdgeFirewallEnabled = useIsSplitOn(Features.EDGES)
 
   const sets = [
     {
@@ -38,6 +40,16 @@ export default function ServiceCatalog () {
           type: ServiceType.NETWORK_SEGMENTATION,
           categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
           disabled: !networkSegmentationEnabled
+        }
+      ]
+    },
+    {
+      key: 'security',
+      title: defineMessage({ defaultMessage: 'Security' }),
+      items: [
+        { type: ServiceType.EDGE_FIREWALL,
+          categories: [RadioCardCategory.EDGE],
+          disabled: !isEdgeFirewallEnabled
         }
       ]
     },
@@ -71,24 +83,30 @@ export default function ServiceCatalog () {
   return (
     <>
       <PageHeader title={$t({ defaultMessage: 'Service Catalog' })} />
-      {sets.map(set =>
-        <UI.CategoryContainer key={set.key}>
-          <Typography.Title level={3}>
-            { $t(set.title) }
-          </Typography.Title>
-          <GridRow>
-            {set.items.map(item => item.disabled
-              ? null
-              : <GridCol col={{ span: 6 }}>
-                <ServiceCard
-                  key={item.type}
-                  serviceType={item.type}
-                  categories={item.categories}
-                  type={'button'}
-                />
-              </GridCol>)}
-          </GridRow>
-        </UI.CategoryContainer>
+      {sets.map(set => {
+        const isAllDisabled = _.findIndex(set.items,
+          (o) => o.disabled === undefined || o.disabled === false ) === -1
+
+        return isAllDisabled
+          ? null
+          : <UI.CategoryContainer key={set.key}>
+            <Typography.Title level={3}>
+              { $t(set.title) }
+            </Typography.Title>
+            <GridRow>
+              {set.items.map(item => item.disabled
+                ? null
+                : <GridCol key={item.type} col={{ span: 6 }}>
+                  <ServiceCard
+                    key={item.type}
+                    serviceType={item.type}
+                    categories={item.categories}
+                    type={'button'}
+                  />
+                </GridCol>)}
+            </GridRow>
+          </UI.CategoryContainer>
+      }
       )}
     </>
   )

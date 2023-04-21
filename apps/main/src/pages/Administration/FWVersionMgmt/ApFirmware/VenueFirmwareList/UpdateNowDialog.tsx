@@ -48,7 +48,9 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
   useEffect(() => {
     if (availableVersions && availableVersions[0]) {
       let firstIndex = availableVersions.findIndex(isRecommanded)
-      setSelectedVersion(availableVersions[firstIndex].name)
+      if (firstIndex > -1) {
+        setSelectedVersion(availableVersions[firstIndex].name)
+      }
     }
   }, [availableVersions])
 
@@ -96,9 +98,10 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
 
   const createRequest = (): UpdateNowRequest[] => {
     let version
-    if (selectMode === VersionsSelectMode.Radio) {
+    if (selectMode === VersionsSelectMode.Radio && versionOptions.length > 0) {
       version = versionOptions[0].id
-    } else {
+    }
+    if (selectMode === VersionsSelectMode.Dropdown) {
       version = selectedVersion
     }
     const venuesData = data as FirmwareVenue[]
