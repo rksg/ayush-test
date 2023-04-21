@@ -22,7 +22,8 @@ import {
   transformAdvancedDpskExpirationText,
   DpskDetailsTabKey,
   getServiceListRoutePath,
-  PassphraseFormatEnum
+  PassphraseFormatEnum,
+  sortProp, defaultSort
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                               from '@acx-ui/user'
@@ -119,7 +120,7 @@ export default function DpskTable () {
       key: 'passphraseFormat',
       title: intl.$t({ defaultMessage: 'Passphrase Format' }),
       dataIndex: 'passphraseFormat',
-      sorter: true,
+      sorter: { compare: sortProp('passphraseFormat', defaultSort) },
       filterKey: 'passphraseFormat',
       filterable: passphraseFormatOptions,
       render: function (data) {

@@ -18,7 +18,8 @@ import {
   getServiceRoutePath,
   Network,
   AclOptionType,
-  WifiCallingSetting, QosPriorityEnum
+  WifiCallingSetting, QosPriorityEnum,
+  sortProp, arraySizeSort
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                          from '@acx-ui/user'
@@ -207,8 +208,7 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
       key: 'ePDGs',
       title: $t({ defaultMessage: 'ePDG' }),
       dataIndex: 'ePDGs',
-      sorter: true,
-      sortDirections: ['descend', 'ascend', 'descend'],
+      sorter: { compare: sortProp('epdgs', arraySizeSort) },
       align: 'center',
       render: (data, row) => row.epdgs?.length
     },
