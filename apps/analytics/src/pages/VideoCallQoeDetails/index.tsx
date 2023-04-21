@@ -163,8 +163,8 @@ export function VideoCallQoeDetails (){
     const audioRx: (number | null)[] = []
 
     data?.forEach((metric: Participants['callMetrics'][0] ) => {
-      const dateTime = new Date(metric.date_time).valueOf()
-      time.push(dateTime)
+      time.push(new Date(metric.date_time).valueOf())
+
       if(isVideoFrameRate) {
         videoTx.push(metric.video_frame_rate.tx)
         videoRx.push(metric.video_frame_rate.rx)
@@ -175,16 +175,14 @@ export function VideoCallQoeDetails (){
         audioRx.push(metric[metricName].audio.tx)
       }
     })
+
     if(isVideoFrameRate){
-      let finaldit = {
-        time: time,
-        videoTx: videoTx,
-        videoRx: videoRx
+      const finaldit = {
+        time,
+        videoTx,
+        videoRx
       }
-      finaldit.time = time
-      finaldit.videoTx = videoTx
-      finaldit.videoRx = videoRx
-      let videoSeriesMapping: { key: string; name: string }[] = []
+      const videoSeriesMapping: { key: string; name: string }[] = []
       seriesMapping.map(metric => {
         if(metric.key === 'videoTx' || metric.key === 'videoRx') {
           videoSeriesMapping.push(metric)
@@ -196,30 +194,23 @@ export function VideoCallQoeDetails (){
       return chartResults
     }
     else {
-      let finaldit = {
-        time: time,
-        videoTx: videoTx,
-        videoRx: videoRx,
-        audioTx: audioTx,
-        audioRx: audioRx
+      const finaldit = {
+        time,
+        videoTx,
+        videoRx,
+        audioTx,
+        audioRx
       }
-      finaldit.time = time
-      finaldit.videoTx = videoTx
-      finaldit.videoRx = videoRx
-      finaldit.audioRx = audioRx
-      finaldit.audioTx = audioTx
       const chartResults = getSeriesData(
         finaldit as Record<string, TimeSeriesDataType[]>, seriesMapping)
       return chartResults
     }
   }
 
-  const getParticipantName = (callQoeDetails: DetailedResponse['getAllCallQoeTests'][0],
-    participantNumber: number) => {
-    let participantName =
+  const getParticipantName = (
+    callQoeDetails: DetailedResponse['getAllCallQoeTests'][0],
+    participantNumber: number) =>
     callQoeDetails.meetings.at(0)?.participants.at(participantNumber)?.userName
-    return participantName
-  }
 
   return (
     <Loader states={[queryResults]}>
