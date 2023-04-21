@@ -3,9 +3,9 @@ import { createContext } from 'react'
 import _             from 'lodash'
 import { useParams } from 'react-router-dom'
 
-import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
-import { useGetApMeshTopologyQuery, useMeshApsQuery } from '@acx-ui/rc/services'
-import { APMesh, APMeshRole, ApMeshLink }             from '@acx-ui/rc/utils'
+import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
+import { useGetApMeshTopologyQuery, useGetFloorPlanMeshApsQuery } from '@acx-ui/rc/services'
+import { FloorPlanMeshAP, APMeshRole, ApMeshLink }                from '@acx-ui/rc/utils'
 
 export interface ApMeshTopologyDevice {
   serialNumber: string
@@ -46,7 +46,8 @@ export function ApMeshTopologyContextProvider (props: ApMeshTopologyContextProvi
       venueId: [params.venueId]
     }
   }
-  const { apMeshTopologyDeviceList } = useMeshApsQuery({ params, payload: apMeshListPayload }, {
+  // eslint-disable-next-line max-len
+  const { apMeshTopologyDeviceList } = useGetFloorPlanMeshApsQuery({ params, payload: apMeshListPayload }, {
     selectFromResult ({ data }) {
       return {
         apMeshTopologyDeviceList: data && flatApMeshList(data.data)
@@ -76,7 +77,7 @@ export function ApMeshTopologyContextProvider (props: ApMeshTopologyContextProvi
     : children
 }
 
-function flatApMeshList (apMeshList: APMesh[]): ApMeshTopologyDevice[] {
+function flatApMeshList (apMeshList: FloorPlanMeshAP[]): ApMeshTopologyDevice[] {
   const newList: ApMeshTopologyDevice[] = []
 
   apMeshList.forEach(apMesh => convertToMeshTopologyDevice(apMesh, null, newList))
@@ -85,8 +86,8 @@ function flatApMeshList (apMeshList: APMesh[]): ApMeshTopologyDevice[] {
 }
 
 function convertToMeshTopologyDevice (
-  apMesh: APMesh,
-  rootApMesh: APMesh | null,
+  apMesh: FloorPlanMeshAP,
+  rootApMesh: FloorPlanMeshAP | null,
   result: ApMeshTopologyDevice[]
 ) {
   result.push({
@@ -105,7 +106,7 @@ function convertToMeshTopologyDevice (
   }
 }
 
-function isApUnplaced (apMesh: APMesh): boolean {
+function isApUnplaced (apMesh: FloorPlanMeshAP): boolean {
   return _.isUndefined(apMesh.floorplanId)
 }
 

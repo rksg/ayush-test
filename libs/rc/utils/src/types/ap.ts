@@ -248,6 +248,8 @@ export interface APMesh {
   type?: number,
   upMac?: string,
   downlinkCount?: number,
+}
+export interface FloorPlanMeshAP extends APMesh {
   floorplanId?: string;
 }
 export interface Uplink{

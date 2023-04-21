@@ -63,7 +63,8 @@ import {
   RequestFormData,
   createNewTableHttpRequest,
   TableChangePayload,
-  ApMeshTopologyData
+  ApMeshTopologyData,
+  FloorPlanMeshAP
 } from '@acx-ui/rc/utils'
 import { baseVenueApi } from '@acx-ui/store'
 
@@ -213,6 +214,16 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Device', id: 'MESH' }]
+    }),
+    getFloorPlanMeshAps: build.query<TableResult<FloorPlanMeshAP>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const venueMeshReq = createHttpRequest(CommonUrlsInfo.getMeshAps, params)
+        return {
+          ...venueMeshReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Device', id: 'MESH' }, { type: 'VenueFloorPlan', id: 'DEVICE' }]
     }),
     deleteVenue: build.mutation<Venue, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1137,6 +1148,7 @@ export const {
   useUpdateVenueMeshMutation,
   useUpdateVenueCellularSettingsMutation,
   useMeshApsQuery,
+  useGetFloorPlanMeshApsQuery,
   useDeleteVenueMutation,
   useGetNetworkApGroupsQuery,
   useGetFloorPlanQuery,
