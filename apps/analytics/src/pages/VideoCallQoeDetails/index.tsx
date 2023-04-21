@@ -150,26 +150,29 @@ export function VideoCallQoeDetails (){
     name: $t({ defaultMessage: 'Audio Rx' })
   }]
 
-  const getSeries = (callQoeDetails: DetailedResponse['getAllCallQoeTests'][0],
-    metricName: string, participantNumber: number, isVideoFrameRate = false) => {
+  const getSeries = (
+    callQoeDetails: DetailedResponse['getAllCallQoeTests'][0],
+    metricName: Exclude<keyof Participants['callMetrics'][0], 'date_time'>,
+    participantNumber: number, isVideoFrameRate = false
+  ) => {
     const data = callQoeDetails.meetings.at(0)?.participants.at(participantNumber)?.callMetrics
     const time: number[] = []
     const videoTx: (number | null)[] = []
     const videoRx: (number | null)[] = []
     const audioTx: (number | null)[] = []
     const audioRx: (number | null)[] = []
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    data?.forEach((metric: Record<string, any> ) => {
+
+    data?.forEach((metric: Participants['callMetrics'][0] ) => {
       const dateTime = new Date(metric.date_time).valueOf()
       time.push(dateTime)
       if(isVideoFrameRate) {
-        videoTx.push(metric[metricName].tx)
-        videoRx.push(metric[metricName].rx)
-      } else {
-        videoTx.push(metric[metricName].video?.tx)
-        videoRx.push(metric[metricName].video?.rx)
-        audioTx.push(metric[metricName].audio?.tx)
-        audioRx.push(metric[metricName].audio?.tx)
+        videoTx.push(metric.video_frame_rate.tx)
+        videoRx.push(metric.video_frame_rate.rx)
+      } else if (metricName !== 'video_frame_rate') {
+        videoTx.push(metric[metricName].video.tx)
+        videoRx.push(metric[metricName].video.rx)
+        audioTx.push(metric[metricName].audio.tx)
+        audioRx.push(metric[metricName].audio.tx)
       }
     })
     if(isVideoFrameRate){
@@ -261,7 +264,7 @@ export function VideoCallQoeDetails (){
             <GridCol col={{ span: 24 }}>
               <Card.Title>{$t({ defaultMessage: 'Jitter' })}</Card.Title>
             </GridCol>
-            <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
+            <GridCol col={{ span: 12 }} style={{ height: '200px' }}>
               <Card>
                 <AutoSizer>
                   {({ height, width }) => (
@@ -276,7 +279,7 @@ export function VideoCallQoeDetails (){
                 </AutoSizer>
               </Card>
             </GridCol>
-            <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
+            <GridCol col={{ span: 12 }} style={{ height: '200px' }}>
               <Card>
                 <AutoSizer>
                   {({ height, width }) => (
@@ -294,7 +297,7 @@ export function VideoCallQoeDetails (){
             <GridCol col={{ span: 24 }}>
               <Card.Title>{$t({ defaultMessage: 'Latency' })}</Card.Title>
             </GridCol>
-            <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
+            <GridCol col={{ span: 12 }} style={{ height: '200px' }}>
               <Card>
                 <AutoSizer>
                   {({ height, width }) => (
@@ -309,7 +312,7 @@ export function VideoCallQoeDetails (){
                 </AutoSizer>
               </Card>
             </GridCol>
-            <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
+            <GridCol col={{ span: 12 }} style={{ height: '200px' }}>
               <Card>
                 <AutoSizer>
                   {({ height, width }) => (
@@ -327,7 +330,7 @@ export function VideoCallQoeDetails (){
             <GridCol col={{ span: 24 }}>
               <Card.Title>{$t({ defaultMessage: 'Packet Loss' })}</Card.Title>
             </GridCol>
-            <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
+            <GridCol col={{ span: 12 }} style={{ height: '200px' }}>
               <Card>
                 <AutoSizer>
                   {({ height, width }) => (
@@ -342,7 +345,7 @@ export function VideoCallQoeDetails (){
                 </AutoSizer>
               </Card>
             </GridCol>
-            <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
+            <GridCol col={{ span: 12 }} style={{ height: '200px' }}>
               <Card>
                 <AutoSizer>
                   {({ height, width }) => (
@@ -360,7 +363,7 @@ export function VideoCallQoeDetails (){
             <GridCol col={{ span: 24 }}>
               <Card.Title>{$t({ defaultMessage: 'Video Frame Rate' })}</Card.Title>
             </GridCol>
-            <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
+            <GridCol col={{ span: 12 }} style={{ height: '200px' }}>
               <Card>
                 <AutoSizer>
                   {({ height, width }) => (
@@ -375,7 +378,7 @@ export function VideoCallQoeDetails (){
                 </AutoSizer>
               </Card>
             </GridCol>
-            <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
+            <GridCol col={{ span: 12 }} style={{ height: '200px' }}>
               <Card>
                 <AutoSizer>
                   {({ height, width }) => (
