@@ -13,10 +13,11 @@ const EditFirewall = () => {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const linkToServiceList = useTenantLink(getServiceRoutePath({
+  const firewallListRoute = getServiceRoutePath({
     type: ServiceType.EDGE_FIREWALL,
     oper: ServiceOperation.LIST
-  }))
+  })
+  const linkToServiceList = useTenantLink(firewallListRoute)
 
   const { data, isLoading } = useGetEdgeFirewallQuery({ params })
   const [updateEdgeFirewall] = useUpdateEdgeFirewallMutation()
@@ -60,7 +61,7 @@ const EditFirewall = () => {
       <PageHeader
         title={$t({ defaultMessage: 'Edit Firewall Service' })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Services' }), link: '/services' }
+          { text: $t({ defaultMessage: 'Firewall' }), link: firewallListRoute }
         ]}
       />
       <Loader states={[{ isLoading: isLoading }]}>
