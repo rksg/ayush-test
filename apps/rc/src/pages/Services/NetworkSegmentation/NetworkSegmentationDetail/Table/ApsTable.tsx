@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { Loader, Table } from '@acx-ui/components'
+import { Loader, Table, TableProps } from '@acx-ui/components'
 import {
   APExtended,
   RequestPayload,
@@ -9,11 +9,11 @@ import {
 
 export const defaultApPayload = {
   fields: [
-    'name', 'model', 'apMac', 'apStatusData.lanPortStatus.port'
+    'name', 'model', 'apMac', 'apStatusData.lanPortStatus'
   ]
 }
 
-export interface ApTableProps {
+export interface ApTableProps extends Omit<TableProps<APExtended>, 'columns'> {
   tableQuery?: TableQuery<APExtended, RequestPayload<unknown>, unknown>
 }
 
@@ -24,7 +24,7 @@ export const ApsTable = (props: ApTableProps) => {
   const apListTableQuery = props.tableQuery
   const tableData = apListTableQuery?.data?.data ?? []
 
-  const columns = [
+  const columns : TableProps<APExtended>['columns'] = [
     {
       title: $t({ defaultMessage: 'AP Name' }),
       key: 'name',
@@ -44,7 +44,10 @@ export const ApsTable = (props: ApTableProps) => {
     {
       title: $t({ defaultMessage: 'Available Ports' }),
       key: 'ports',
-      dataIndex: 'ports'
+      dataIndex: 'apStatusData.lanPortStatus',
+      render: (node, row) => {
+        return row?.apStatusData?.lanPortStatus?.length
+      }
     }
   ]
 
