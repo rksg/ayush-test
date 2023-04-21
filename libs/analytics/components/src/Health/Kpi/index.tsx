@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from 'react'
 
-import { connect }   from 'echarts'
-import ReactECharts  from 'echarts-for-react'
-import moment        from 'moment-timezone'
+import { connect }  from 'echarts'
+import ReactECharts from 'echarts-for-react'
+import moment       from 'moment-timezone'
 
 import {
   KpiThresholdType,
@@ -18,10 +18,10 @@ import { GridCol, GridRow, Loader } from '@acx-ui/components'
 
 import { HealthPageContext } from '../HealthPageContext'
 
-import BarChart      from './BarChart'
-import Histogram     from './Histogram'
-import HealthPill    from './Pill'
-import KpiTimeseries from './Timeseries'
+import BarChart               from './BarChart'
+import Histogram              from './Histogram'
+import HealthPill             from './Pill'
+import KpiTimeseries          from './Timeseries'
 import { useInjectVenuePath } from './useInjectVenuePath'
 
 export const defaultThreshold: KpiThresholdType = {

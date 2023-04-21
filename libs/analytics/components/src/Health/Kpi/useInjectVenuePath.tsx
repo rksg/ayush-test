@@ -3,7 +3,7 @@ import {  useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 
 import { AnalyticsFilter } from '@acx-ui/analytics/utils'
-import { useApListQuery }           from '@acx-ui/rc/services'
+import { useApListQuery }  from '@acx-ui/rc/services'
 
 export function useInjectVenuePath (filters: AnalyticsFilter) {
   const { tenantId } = useParams()
@@ -36,6 +36,6 @@ export function useInjectVenuePath (filters: AnalyticsFilter) {
       return copy
     }
     return filters.path
-  }, [isApInPath, apList, apList.data, filters.path])
+  }, [isApInPath, apList, filters.path])
 }
 

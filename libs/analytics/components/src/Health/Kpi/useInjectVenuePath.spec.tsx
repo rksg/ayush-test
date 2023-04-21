@@ -1,10 +1,11 @@
-import { rest} from 'msw'
+import { rest } from 'msw'
 
-import { CommonUrlsInfo }              from '@acx-ui/rc/utils'
+import { AnalyticsFilter }                 from '@acx-ui/analytics/utils'
+import { CommonUrlsInfo }                  from '@acx-ui/rc/utils'
+import { Provider }                        from '@acx-ui/store'
 import { mockServer, renderHook, waitFor } from '@acx-ui/test-utils'
+
 import { useInjectVenuePath } from './useInjectVenuePath'
-import { AnalyticsFilter } from '@acx-ui/analytics/utils'
-import { Provider } from '@acx-ui/store'
 
 describe('useInjectVenuePath', () => {
   it('should return injected venueId on apPath', async () => {
