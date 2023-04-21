@@ -5,7 +5,7 @@ import { DndProvider }  from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { act }          from 'react-dom/test-utils'
 
-import { useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { ApDeviceStatusEnum,
   ApMeshLink,
   CommonUrlsInfo,
