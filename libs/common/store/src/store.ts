@@ -27,7 +27,8 @@ import {
   networkHealthApi,
   userApi,
   baseMsgTemplateApi as msgTemplateApi,
-  videoCallQoeApi
+  videoCallQoeApi,
+  baseEdgeFirewallApi as edgeFirewallApi
 } from './baseApi'
 
 const isDev = process.env['NODE_ENV'] === 'development'
@@ -59,7 +60,8 @@ export const store = configureStore({
     [nsgApi.reducerPath]: nsgApi.reducer,
     [tunnelProfileApi.reducerPath]: tunnelProfileApi.reducer,
     [msgTemplateApi.reducerPath]: msgTemplateApi.reducer,
-    [videoCallQoeApi.reducerPath]: videoCallQoeApi.reducer
+    [videoCallQoeApi.reducerPath]: videoCallQoeApi.reducer,
+    [edgeFirewallApi.reducerPath]: edgeFirewallApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -93,7 +95,8 @@ export const store = configureStore({
       nsgApi.middleware,
       tunnelProfileApi.middleware,
       msgTemplateApi.middleware,
-      videoCallQoeApi.middleware
+      videoCallQoeApi.middleware,
+      edgeFirewallApi.middleware
     ])
   },
 
