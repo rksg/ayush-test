@@ -104,7 +104,7 @@ export default function BasicInfo (props:{
     }
     return payload
   }
-  const meshEnable = venuesList.data?.data?.[0].mesh?.enabled
+  const meshEnable = venuesList.data?.data?.[0]?.mesh?.enabled
   return <>
     <Card type='solid-bg'>
       <GridRow justify='space-between'>
