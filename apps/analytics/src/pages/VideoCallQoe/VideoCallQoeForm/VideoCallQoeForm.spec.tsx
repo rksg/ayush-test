@@ -42,7 +42,7 @@ describe('VideoCallQoeForm', () => {
       data: getAllCallQoeTests
     })
 
-    expect(await screen.findByRole('heading', { name: /create test/i })).toBeVisible()
+    expect(await screen.findByRole('heading', { name: /create test call/i })).toBeVisible()
 
     // Step 1
     await type(await screen.findByRole('textbox', {

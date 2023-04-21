@@ -23,7 +23,7 @@ export function VideoCallQoeForm () {
   const [ submit ] = useCreateCallQoeTestMutation()
 
   return <>
-    <PageHeader title={$t({ defaultMessage: 'Create Test' })} breadcrumb={breadcrumb} />
+    <PageHeader title={$t({ defaultMessage: 'Create Test Call' })} breadcrumb={breadcrumb} />
     <StepsFormNew
       onFinish={async (values: { name: string }) => {
         const response = await submit(values).unwrap()
