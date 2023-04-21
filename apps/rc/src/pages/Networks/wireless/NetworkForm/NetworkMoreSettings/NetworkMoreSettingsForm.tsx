@@ -140,10 +140,11 @@ export function MoreSettingsForm (props: {
   const form = Form.useFormInstance()
   const wlanData = (editMode) ? props.wlanData : form.getFieldsValue()
 
-  const usePortalDefaultVLANId = (data?.enableDhcp||enableDhcp) &&
+  const isPortalDefaultVLANId = (data?.enableDhcp||enableDhcp) &&
     data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&
     data.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.Cloudpath
-  if(usePortalDefaultVLANId){
+  if(isPortalDefaultVLANId){
+    delete data?.wlan?.vlanId
     form.setFieldValue(['wlan', 'vlanId'], 3000)
   }
   const isNetworkWPASecured = wlanData?.wlan?.wlanSecurity ? [
@@ -214,7 +215,7 @@ export function MoreSettingsForm (props: {
                   message: $t(validationMessages.vlanRange)
                 }]}
               style={{ marginBottom: '15px' }}
-              children={<InputNumber style={{ width: '80px' }} disabled={usePortalDefaultVLANId}/>}
+              children={<InputNumber style={{ width: '80px' }} disabled={isPortalDefaultVLANId}/>}
             />
 
             {showDynamicWlan &&
