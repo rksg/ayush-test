@@ -171,12 +171,12 @@ export function VideoCallQoeDetails (){
         videoTx.push(metric[metricName].video.tx)
         videoRx.push(metric[metricName].video.rx)
         audioTx.push(metric[metricName].audio.tx)
-        audioRx.push(metric[metricName].audio.tx)
+        audioRx.push(metric[metricName].audio.rx)
       }
     })
 
     if(isVideoFrameRate){
-      const finaldit = {
+      const data = {
         time,
         videoTx,
         videoRx
@@ -189,11 +189,11 @@ export function VideoCallQoeDetails (){
         return videoSeriesMapping
       })
       const chartResults = getSeriesData(
-        finaldit as Record<string, TimeSeriesDataType[]>, videoSeriesMapping)
+        data as Record<string, TimeSeriesDataType[]>, videoSeriesMapping)
       return chartResults
     }
     else {
-      const finaldit = {
+      const data = {
         time,
         videoTx,
         videoRx,
@@ -201,7 +201,7 @@ export function VideoCallQoeDetails (){
         audioRx
       }
       const chartResults = getSeriesData(
-        finaldit as Record<string, TimeSeriesDataType[]>, seriesMapping)
+        data as Record<string, TimeSeriesDataType[]>, seriesMapping)
       return chartResults
     }
   }
@@ -328,7 +328,7 @@ export function VideoCallQoeDetails (){
                       <MultiLineTimeSeriesChart
                         style={{ width: width, height }}
                         data={getSeries(callQoeDetails, 'packet_loss', 0)}
-                        dataFormatter={formatter('percentFormat')}
+                        dataFormatter={formatter('percent')}
                       />
                       : <NoData/>
                   )}
@@ -343,7 +343,7 @@ export function VideoCallQoeDetails (){
                       <MultiLineTimeSeriesChart
                         style={{ width: width, height }}
                         data={getSeries(callQoeDetails, 'packet_loss', 1)}
-                        dataFormatter={formatter('percentFormat')}
+                        dataFormatter={formatter('percent')}
                       />
                       : <NoData/>
                   )}
@@ -361,7 +361,7 @@ export function VideoCallQoeDetails (){
                       <MultiLineTimeSeriesChart
                         style={{ width: width, height }}
                         data={getSeries(callQoeDetails, 'video_frame_rate', 0, true)}
-                        dataFormatter={formatter('fps')}
+                        dataFormatter={formatter('fpsFormat')}
                       />
                       : <NoData/>
                   )}
@@ -376,7 +376,7 @@ export function VideoCallQoeDetails (){
                       <MultiLineTimeSeriesChart
                         style={{ width: width, height }}
                         data={getSeries(callQoeDetails, 'video_frame_rate', 1, true)}
-                        dataFormatter={formatter('fps')}
+                        dataFormatter={formatter('fpsFormat')}
                       />
                       : <NoData/>
                   )}
