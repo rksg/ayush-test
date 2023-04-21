@@ -104,6 +104,11 @@ export default function ResidentPortalTable () {
       key: 'subtitle',
       title: intl.$t({ defaultMessage: 'Subtitle' }),
       dataIndex: ['uiConfiguration','text','subTitle']
+    },
+    {
+      key: 'Assigned Venues', // TODO: fix name
+      title: intl.$t({ defaultMessage: 'Assigned Venues' }),
+      dataIndex: ['venueCount']
     }
   ]
   

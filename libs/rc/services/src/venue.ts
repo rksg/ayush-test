@@ -944,6 +944,21 @@ export const venueApi = baseVenueApi.injectEndpoints({
         })
       }
     }),
+    getQueriablePropertyConfigs: build.query<TableResult<PropertyConfigs>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.getPropertyConfigsQuery, params,
+          { Accept: 'application/hal+json' })
+        
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      transformResponse (result: NewTableResult<PropertyConfigs>) {
+        return transferToTableResult<PropertyConfigs>(result)
+      },
+      providesTags: [{ type: 'PropertyConfigs', id: 'LIST' }]
+    }),
     updatePropertyConfigs: build.mutation<PropertyConfigs, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(PropertyUrlsInfo.updatePropertyConfigs, params)
@@ -1249,7 +1264,9 @@ export const {
   useGetTopologyQuery,
   useGetVenueMdnsFencingQuery,
   useUpdateVenueMdnsFencingMutation,
+
   useGetPropertyConfigsQuery,
+  useGetQueriablePropertyConfigsQuery,
   useUpdatePropertyConfigsMutation,
   usePatchPropertyConfigsMutation,
   useAddPropertyUnitMutation,

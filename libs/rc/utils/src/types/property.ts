@@ -15,6 +15,8 @@ export interface PropertyConfigs {
   status: PropertyConfigStatus,
   personaGroupId?: string,
   residentPortalId?: string,
+  venueId?: string,
+  venueName?: string,
   unitConfig?: {
     type: string,
     guestAllowed: boolean
@@ -113,6 +115,7 @@ export interface PropertyUnitFormFields extends PropertyUnit {
 export interface ResidentPortal {
   id?: string,
   name: string,
+  venueCount?: number,
   uiConfiguration?: uiConfiguration
 }
 

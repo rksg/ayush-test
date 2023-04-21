@@ -2,6 +2,7 @@ import { ApiInfo } from '../apiService'
 
 type PropertyUrlType =
   'getPropertyConfigs' |
+  'getPropertyConfigsQuery' |
   'updatePropertyConfigs' |
   'patchPropertyConfigs' |
   'addPropertyUnit' |
@@ -26,6 +27,11 @@ export const PropertyUrlsInfo: { [key in PropertyUrlType]: ApiInfo } = {
     method: 'get',
     newApi: true,
     url: '/venues/:venueId/propertyConfigs'
+  },
+  getPropertyConfigsQuery: {
+    method: 'post',
+    newApi: true,
+    url: '/venues/propertyConfigs/query'
   },
   updatePropertyConfigs: {
     method: 'put',
