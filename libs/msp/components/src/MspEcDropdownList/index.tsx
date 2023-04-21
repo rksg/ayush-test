@@ -54,7 +54,7 @@ export function MspEcDropdownList () {
   function UpdateDelegationType (tenantType?: string, support?: boolean) {
     if (support === true) {
       if (tenantType === AccountType.MSP_EC
-        || tenantType === AccountType.MSP_INTEGRATOR
+        || tenantType === AccountType.MSP_INSTALLER
         || tenantType === AccountType.MSP_INTEGRATOR)
         setDelegationType(DelegationType.SUPPORT_MSP_EC)
       else
