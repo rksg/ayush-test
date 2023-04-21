@@ -54,11 +54,7 @@ function Layout () {
 
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const basePath = useTenantLink('/users/guestsManager')
-  const getIndexPath = () => {
-    return isGuestManager
-      ? `${getBasePath()}/v/${getJwtTokenPayload().tenantId}/users/guestsManager`
-      : `${getBasePath()}/v/${getJwtTokenPayload().tenantId}`
-  }
+
   useEffect(() => {
     if (isGuestManager && params['*'] !== 'guestsManager') {
       navigate({
@@ -92,7 +88,7 @@ function Layout () {
               {$t({ defaultMessage: 'Home' })}
             </UI.Home>
           </a> :
-          <Link to={getIndexPath()}>
+          <Link to={`${getBasePath()}/v/${getJwtTokenPayload().tenantId}`}>
             <UI.Home>
               <LayoutUI.Icon children={<HomeSolid />} />
               {$t({ defaultMessage: 'Home' })}

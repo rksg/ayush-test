@@ -209,6 +209,15 @@ export function excludeExclamationRegExp (value: string) {
   return Promise.resolve()
 }
 
+export function excludeExclamationLeadTrailSpaceRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp(/^(?:(?!")[\s\S])*?(?<!\s)$/)
+  if (value!=='' && !re.test(value)) {
+    return Promise.reject($t(validationMessages.excludeExclamationRegExp))
+  }
+  return Promise.resolve()
+}
+
 export function excludeQuoteRegExp (value: string) {
   const { $t } = getIntl()
   const re = new RegExp(/^(?:(?!").)*$/)
