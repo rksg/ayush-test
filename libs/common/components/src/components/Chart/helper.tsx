@@ -252,7 +252,7 @@ export const timeSeriesTooltipFormatter = (
 export const handleSingleBinData = (data: [TimeStamp, number|null][]) => {
   let formatted = [ ...data ]
   for(let i = 0; i< data.length; i++){
-    if(data[i] !== null &&
+    if(data[i][1] !== null &&
       (i === 0 || (i - 1 > 0 && data[i - 1][1] === null)) &&
       (i >= data.length -1 || (i + 1 < data.length && data[i + 1][1] === null))
     ){
