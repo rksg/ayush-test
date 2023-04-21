@@ -627,6 +627,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       <Drawer
         title={$t({ defaultMessage: 'Application Access Settings' })}
         visible={visible}
+        mask={true}
         zIndex={10}
         onClose={() => !isViewMode()
           ? showUnsavedConfirmModal(handleApplicationsDrawerClose)

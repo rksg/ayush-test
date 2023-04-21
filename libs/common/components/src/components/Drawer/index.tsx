@@ -36,7 +36,7 @@ const Header = (props: DrawerHeaderProps) => {
 }
 
 export const Drawer = (props: DrawerProps) => {
-  const { title, icon, subTitle, onBackClick, mask = true, ...rest } = props
+  const { title, icon, subTitle, onBackClick, mask = false, ...rest } = props
   const headerProps = { title, icon, subTitle, onBackClick }
   return (
     <UI.Drawer
@@ -45,7 +45,7 @@ export const Drawer = (props: DrawerProps) => {
       placement='right'
       mask={mask}
       maskStyle={{ background: 'none' }}
-      maskClosable={true}
+      maskClosable={mask}
       width={props.width || '336px'}
       closeIcon={<CloseSymbol />}
     />

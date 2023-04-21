@@ -1010,6 +1010,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       <Drawer
         title={$t({ defaultMessage: 'Layer 3 Settings' })}
         visible={visible}
+        mask={true}
         zIndex={10}
         onClose={() => !isViewMode()
           ? showUnsavedConfirmModal(handleLayer3DrawerClose)
