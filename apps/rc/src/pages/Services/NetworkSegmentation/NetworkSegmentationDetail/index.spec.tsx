@@ -3,7 +3,7 @@ import { rest }  from 'msw'
 
 import { CommonUrlsInfo, EdgeDhcpUrls, EdgeUrlsInfo, getServiceRoutePath, NetworkSegmentationUrls, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
 import { Provider }                                                                                                                from '@acx-ui/store'
-import { mockServer, render, screen }                                                                                              from '@acx-ui/test-utils'
+import { mockServer, render, screen, within }                                                                                      from '@acx-ui/test-utils'
 
 import { mockEdgeData, mockEdgeDhcpDataList, mockNsgData, mockNsgStatsList, mockNsgSwitchInfoData, mockVenueData, mockApList } from '../__tests__/fixtures'
 
@@ -75,7 +75,8 @@ describe('NsgDetail', () => {
 
     const rows = await screen.findAllByRole('row', { name: /mock-ap/i })
     expect(rows.length).toBe(2)
-
+    const cells = await within(rows[0] as HTMLTableRowElement).findAllByRole('cell')
+    expect((cells[3] as HTMLTableCellElement).innerHTML).toBe('3')
     await user.click(await screen.findByRole('tab', { name: /Dist. Switches/i }))
     await user.click(await screen.findByRole('tab', { name: /Access Switches/i }))
     await user.click(await screen.findByRole('tab', { name: /Assigned Segments/i }))

@@ -1,5 +1,3 @@
-import { CallbackDataParams } from 'echarts/types/dist/shared'
-
 import { TimeSeriesChartData } from '@acx-ui/analytics/utils'
 import { TimeStamp }           from '@acx-ui/types'
 
@@ -8,7 +6,7 @@ import {
   dateAxisFormatter,
   timeSeriesTooltipFormatter,
   getDeviceConnectionStatusColors,
-  getTimeSeriesSymbol,
+  handleSingleBinData,
   getDeviceConnectionStatusColorsv2
 } from './helper'
 
@@ -51,38 +49,44 @@ describe('dateAxisFormatter', () => {
   })
 })
 
-describe('getTimeSeriesSymbol', () => {
-  it('should return none for symbol', () => {
-    const series = [{
-      key: 'series1',
-      name: 'series1',
-      data: [
-        ['2022-04-07T09:15:00.000Z', 1],
-        ['2022-04-07T09:30:00.000Z', 2],
-        ['2022-04-07T09:45:00.000Z', 3],
-        ['2022-04-07T10:00:00.000Z', 4],
-        ['2022-04-07T10:15:00.000Z', 5]
-      ] as TimeSeriesChartData['data']
-    }]
-    expect(
-      getTimeSeriesSymbol(series)([], { seriesIndex: 0, dataIndex: 2 } as CallbackDataParams)
-    ).toEqual('none')
-  })
-  it('should return circle for symbol when single data point', () => {
-    const series = [{
-      key: 'series1',
-      name: 'series1',
-      data: [
-        ['2022-04-07T09:15:00.000Z', '--'],
-        ['2022-04-07T09:30:00.000Z', '--'],
-        ['2022-04-07T09:45:00.000Z', 3],
-        ['2022-04-07T10:00:00.000Z', '--'],
-        ['2022-04-07T10:15:00.000Z', '--']
-      ] as TimeSeriesChartData['data']
-    }]
-    expect(
-      getTimeSeriesSymbol(series)([], { seriesIndex: 0, dataIndex: 2 } as CallbackDataParams)
-    ).toEqual('circle')
+describe('handleSingleBinData', () => {
+  it('should replace the null data before/after single bin data to be 0', () => {
+    const data = [
+      ['2022-04-07T09:00:00.000Z', 10],
+      ['2022-04-07T09:15:00.000Z', null],
+      ['2022-04-07T09:30:00.000Z', null],
+      ['2022-04-07T09:45:00.000Z', 10],
+      ['2022-04-07T10:00:00.000Z', null],
+      ['2022-04-07T10:15:00.000Z', 10],
+      ['2022-04-07T10:30:00.000Z', 10],
+      ['2022-04-07T10:45:00.000Z', null],
+      ['2022-04-07T11:00:00.000Z', 10],
+      ['2022-04-07T11:15:00.000Z', 10],
+      ['2022-04-07T11:30:00.000Z', null],
+      ['2022-04-07T11:45:00.000Z', null],
+      ['2022-04-07T12:00:00.000Z', null],
+      ['2022-04-07T12:15:00.000Z', null],
+      ['2022-04-07T12:30:00.000Z', 10],
+      ['2022-04-07T12:45:00.000Z', 10]
+    ] as TimeSeriesChartData['data']
+    expect(handleSingleBinData(data)).toEqual([
+      ['2022-04-07T09:00:00.000Z', 10],
+      ['2022-04-07T09:15:00.000Z', 0],
+      ['2022-04-07T09:30:00.000Z', 0],
+      ['2022-04-07T09:45:00.000Z', 10],
+      ['2022-04-07T10:00:00.000Z', 0],
+      ['2022-04-07T10:15:00.000Z', 10],
+      ['2022-04-07T10:30:00.000Z', 10],
+      ['2022-04-07T10:45:00.000Z', null],
+      ['2022-04-07T11:00:00.000Z', 10],
+      ['2022-04-07T11:15:00.000Z', 10],
+      ['2022-04-07T11:30:00.000Z', null],
+      ['2022-04-07T11:45:00.000Z', null],
+      ['2022-04-07T12:00:00.000Z', null],
+      ['2022-04-07T12:15:00.000Z', null],
+      ['2022-04-07T12:30:00.000Z', 10],
+      ['2022-04-07T12:45:00.000Z', 10]
+    ])
   })
 })
 

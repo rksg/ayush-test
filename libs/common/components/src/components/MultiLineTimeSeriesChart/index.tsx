@@ -27,7 +27,7 @@ import {
   dateAxisFormatter,
   tooltipOptions,
   timeSeriesTooltipFormatter,
-  getTimeSeriesSymbol,
+  handleSingleBinData,
   ChartFormatterFn,
   qualitativeColorSet
 }                       from '../Chart/helper'
@@ -231,10 +231,10 @@ export function MultiLineTimeSeriesChart <
       .filter(datum=> datum.show !== false )
       .map((datum, i) => ({
         name: datum[legendProp] as unknown as string,
-        data: datum.data as [TimeStamp, number][],
+        data: handleSingleBinData(datum.data) as [TimeStamp, number][],
         type: 'line',
         smooth: true,
-        symbol: getTimeSeriesSymbol(data),
+        symbol: 'none',
         z: 1,
         zlevel: 1,
         lineStyle: { width: 1.2 },
