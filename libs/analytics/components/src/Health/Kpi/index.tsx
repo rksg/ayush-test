@@ -1,10 +1,8 @@
-import { useContext, useEffect, useState, useMemo } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { connect }   from 'echarts'
 import ReactECharts  from 'echarts-for-react'
-import { find }      from 'lodash'
 import moment        from 'moment-timezone'
-import { useParams } from 'react-router-dom'
 
 import {
   KpiThresholdType,
@@ -17,7 +15,6 @@ import {
   kpiConfig
 } from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Loader } from '@acx-ui/components'
-import { useApListQuery }           from '@acx-ui/rc/services'
 
 import { HealthPageContext } from '../HealthPageContext'
 
@@ -25,6 +22,7 @@ import BarChart      from './BarChart'
 import Histogram     from './Histogram'
 import HealthPill    from './Pill'
 import KpiTimeseries from './Timeseries'
+import { useInjectVenuePath } from './useInjectVenuePath'
 
 export const defaultThreshold: KpiThresholdType = {
   timeToConnect: kpiConfig.timeToConnect.histogram.initialThreshold,
@@ -36,50 +34,13 @@ export const defaultThreshold: KpiThresholdType = {
   switchPoeUtilization: kpiConfig.switchPoeUtilization.histogram.initialThreshold
 }
 
+
 export default function KpiSections (props: { tab: CategoryTab, filters: AnalyticsFilter }) {
   const { tab, filters } = props
   const { kpis } = kpisForTab[tab]
   const { useGetKpiThresholdsQuery, useFetchThresholdPermissionQuery } = healthApi
   const thresholdKeys = Object.keys(defaultThreshold) as (keyof KpiThresholdType)[]
-  const params = useParams()
-  const isApInPath = find(
-    filters.path,
-    ({ type }) => type === 'ap' || type === 'AP'
-  )
-  const apName = filters.path[filters.path.length - 1].name
-
-  const apList = useApListQuery(
-    {
-      params: { tenantId: params.tenantId },
-      payload: {
-        fields: ['venueId'],
-        searchTargetFields: ['apMac', 'serialNumber', 'apName'],
-        searchString: apName
-      }
-    },
-    {
-      skip: !isApInPath,
-      selectFromResult: ({ data, ...rest }) => ({
-        data: data?.data,
-        ...rest
-      })
-    }
-  )
-  const apData = apList.data
-  const finalPath = useMemo(() => {
-    if (isApInPath && apList && apData) {
-      const { venueId } = apData[0] as unknown as { venueId: string }
-      const venuePath = { type: 'zone' as 'zone', name: venueId }
-      const copy = [...filters.path]
-      if (filters.path.length === 1) {
-        copy.unshift(venuePath)
-        return copy
-      }
-      copy.splice(filters.path.length - 1, 0, venuePath)
-      return copy
-    }
-    return filters.path
-  }, [isApInPath, apData, apList, filters.path])
+  const finalPath = useInjectVenuePath(filters)
   const customThresholdQuery = useGetKpiThresholdsQuery({
     ...filters, path: finalPath, kpis: thresholdKeys })
   const { data, fulfilledTimeStamp } = customThresholdQuery

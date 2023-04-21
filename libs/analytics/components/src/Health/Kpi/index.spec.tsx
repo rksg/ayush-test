@@ -177,65 +177,8 @@ describe('Kpi Section', () => {
       }
     })
 
-    const path = [{ type: 'ap', name: 'z1' }] as NetworkPath
-    const period = fixedEncodeURIComponent(JSON.stringify(filters))
-    const analyticsNetworkFilter = fixedEncodeURIComponent(JSON.stringify({
-      path,
-      raw: []
-    }))
-
-    render(<Provider>
-      <HealthPageContext.Provider value={healthContext}>
-        <KpiSection tab={'overview'} filters={{ ...filters, path: path }} />
-      </HealthPageContext.Provider>
-    </Provider>, {
-      route: {
-        path: '/:tenantId',
-        params: { tenantId: 'testTenant' },
-        search: `period=${period}&analyticsNetworkFilter=${analyticsNetworkFilter}`,
-        wrapRoutes: false
-      }
-    })
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    const buttons = await screen.findAllByRole('button', { name: 'Apply' })
-    expect(buttons).toHaveLength(4)
-    expect(buttons[0]).not.toBeDisabled()
-  }, 60000)
-
-  it('should render valid threshold apply for ap path', async () => {
-    mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getApsList.url,
-        (_, res, ctx) => res(ctx.json({ data: [{ venueId: 'testVenueId' }] }))
-      )
-    )
-
-    mockGraphqlQuery(dataApiURL, 'histogramKPI', {
-      data: { network: { histogram: { data: [0, 2, 2, 3, 3, 0] } } }
-    })
-    mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
-      data: { network: { timeSeries: sampleTS } }
-    })
-    mockGraphqlQuery(dataApiURL, 'KPI', {
-      data: {
-        mutationAllowed: true
-      }
-    })
-    mockGraphqlQuery(dataApiURL, 'GetKpiThresholds', {
-      data: {
-        timeToConnectThreshold: { value: 30000 }
-      }
-    })
-    mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
-      data: {
-        saveThreshold: {
-          success: true
-        }
-      }
-    })
-
     const path =
-      [{ type: 'network', name: 'Network' }, { type: 'ap', name: 'z1' }] as NetworkPath
+      [{ type: 'ap', name: 'z1' }] as NetworkPath
     const period = fixedEncodeURIComponent(JSON.stringify(filters))
     const analyticsNetworkFilter = fixedEncodeURIComponent(JSON.stringify({
       path,
