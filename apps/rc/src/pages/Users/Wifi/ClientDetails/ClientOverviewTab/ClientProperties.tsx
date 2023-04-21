@@ -98,7 +98,8 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
         const list = (await getGuestsList({ params: { tenantId: tenantId }, payload }, true)
           .unwrap()).data || []
         if (list.length > 0) {
-          setGuestDetail(list.filter(item => item.networkId === clientDetails.networkId)[0])
+          setGuestDetail(list.filter(item => (item.networkId === clientDetails.networkId
+            &&item.name===clientDetails.username))[0])
         }
       }
 

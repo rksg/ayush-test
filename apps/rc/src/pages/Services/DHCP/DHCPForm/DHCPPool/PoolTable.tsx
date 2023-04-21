@@ -52,7 +52,7 @@ export function PoolTable (props:{
     },
     {
       key: 'subnetAddress',
-      title: $t({ defaultMessage: 'IP Address' }),
+      title: $t({ defaultMessage: 'Subnet Address' }),
       dataIndex: 'subnetAddress',
       sorter: { compare: sortProp('subnetAddress', defaultSort) }
     },
