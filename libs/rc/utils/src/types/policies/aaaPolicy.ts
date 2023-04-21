@@ -32,9 +32,9 @@ export interface AAAViewModalType {
 }
 export enum AAAPurposeEnum{
   ALL = 'All (Default)',
-  AUTHENTICATION = 'Authentication Radius Server',
+  AUTHENTICATION = 'Authentication RADIUS Server',
   AUTHORIZATION = 'Authorization',
-  ACCOUNTING = 'Accounting Radius Server'
+  ACCOUNTING = 'Accounting RADIUS Server'
 }
 export interface AAAPolicyNetwork {
   networkId: string,

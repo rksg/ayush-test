@@ -21,7 +21,7 @@ import { mockFirewall } from '../__tests__/fixtures'
 import EditFirewall from './'
 
 
-const { click, type, selectOptions } = userEvent
+const { click, type, selectOptions, clear } = userEvent
 
 const mockedNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
@@ -139,6 +139,7 @@ describe('Edit edge firewall service', () => {
     await selectOptions(
       await within(dialog).findByRole('combobox', { name: 'DDoS Attack Type' }),
       'ICMP')
+    await clear(within(dialog).getByRole('spinbutton'))
     await type(within(dialog).getByRole('spinbutton'), '6')
     await click(within(dialog).getByRole('button', { name: 'Add' }))
     const icmpRow = await within(drawer).findByRole('row', { name: /ICMP/ })
