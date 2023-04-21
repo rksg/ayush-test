@@ -102,14 +102,6 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
               />
                
             </div>
-            <div
-              class="sc-papXJ dOYSmh"
-              id="ap-302002015732"
-            >
-              <svg
-                data-testid="APMeshRoleMesh"
-              />
-            </div>
           </div>
         </div>
         <div>
@@ -126,14 +118,6 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
                 data-testid="DeviceOutlined"
               />
                
-            </div>
-            <div
-              class="sc-papXJ dOYSmh"
-              id="ap-FEK3224R72N"
-            >
-              <svg
-                data-testid="APMeshRoleMesh"
-              />
             </div>
           </div>
         </div>
@@ -291,14 +275,6 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
                       >
                          
                       </div>
-                      <div
-                        class="sc-papXJ dOYSmh"
-                        id="ap-302002015732"
-                      >
-                        <svg
-                          data-testid="APMeshRoleMesh"
-                        />
-                      </div>
                     </div>
                   </div>
                   <div>
@@ -312,14 +288,6 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
                         style="align-items: center; display: flex; justify-content: center; cursor: pointer;"
                       >
                          
-                      </div>
-                      <div
-                        class="sc-papXJ dOYSmh"
-                        id="ap-FEK3224R72N"
-                      >
-                        <svg
-                          data-testid="APMeshRoleMesh"
-                        />
                       </div>
                     </div>
                   </div>
@@ -479,14 +447,6 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
               />
                
             </div>
-            <div
-              class="sc-papXJ dOYSmh"
-              id="ap-302002015732"
-            >
-              <svg
-                data-testid="APMeshRoleMesh"
-              />
-            </div>
           </div>
         </div>
         <div>
@@ -503,14 +463,6 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
                 data-testid="DeviceOutlined"
               />
                
-            </div>
-            <div
-              class="sc-papXJ dOYSmh"
-              id="ap-FEK3224R72N"
-            >
-              <svg
-                data-testid="APMeshRoleMesh"
-              />
             </div>
           </div>
         </div>
@@ -668,14 +620,6 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
                       >
                          
                       </div>
-                      <div
-                        class="sc-papXJ dOYSmh"
-                        id="ap-302002015732"
-                      >
-                        <svg
-                          data-testid="APMeshRoleMesh"
-                        />
-                      </div>
                     </div>
                   </div>
                   <div>
@@ -689,14 +633,6 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
                         style="align-items: center; display: flex; justify-content: center; cursor: pointer;"
                       >
                          
-                      </div>
-                      <div
-                        class="sc-papXJ dOYSmh"
-                        id="ap-FEK3224R72N"
-                      >
-                        <svg
-                          data-testid="APMeshRoleMesh"
-                        />
                       </div>
                     </div>
                   </div>

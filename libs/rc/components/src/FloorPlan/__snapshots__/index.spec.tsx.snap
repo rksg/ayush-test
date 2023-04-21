@@ -284,14 +284,6 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
                           >
                              
                           </div>
-                          <div
-                            class="sc-papXJ dOYSmh"
-                            id="ap-302002015732"
-                          >
-                            <svg
-                              data-testid="APMeshRoleMesh"
-                            />
-                          </div>
                         </div>
                       </div>
                       <div>
@@ -305,14 +297,6 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
                             style="align-items: center; display: flex; justify-content: center; cursor: pointer;"
                           >
                              
-                          </div>
-                          <div
-                            class="sc-papXJ dOYSmh"
-                            id="ap-FEK3224R72N"
-                          >
-                            <svg
-                              data-testid="APMeshRoleMesh"
-                            />
                           </div>
                         </div>
                       </div>
@@ -518,14 +502,6 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
                           />
                            
                         </div>
-                        <div
-                          class="sc-papXJ dOYSmh"
-                          id="ap-302002015732"
-                        >
-                          <svg
-                            data-testid="APMeshRoleMesh"
-                          />
-                        </div>
                       </div>
                     </div>
                     <div>
@@ -542,14 +518,6 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
                             data-testid="DeviceOutlined"
                           />
                            
-                        </div>
-                        <div
-                          class="sc-papXJ dOYSmh"
-                          id="ap-FEK3224R72N"
-                        >
-                          <svg
-                            data-testid="APMeshRoleMesh"
-                          />
                         </div>
                       </div>
                     </div>
