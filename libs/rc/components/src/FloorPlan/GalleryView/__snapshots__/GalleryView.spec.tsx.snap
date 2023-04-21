@@ -79,14 +79,6 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
                       />
                        
                     </div>
-                    <div
-                      class="sc-papXJ dOYSmh"
-                      id="ap-302002015732"
-                    >
-                      <svg
-                        data-testid="APMeshRoleMesh"
-                      />
-                    </div>
                   </div>
                 </div>
                 <div>
@@ -103,14 +95,6 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
                         data-testid="DeviceOutlined"
                       />
                        
-                    </div>
-                    <div
-                      class="sc-papXJ dOYSmh"
-                      id="ap-FEK3224R72N"
-                    >
-                      <svg
-                        data-testid="APMeshRoleMesh"
-                      />
                     </div>
                   </div>
                 </div>
