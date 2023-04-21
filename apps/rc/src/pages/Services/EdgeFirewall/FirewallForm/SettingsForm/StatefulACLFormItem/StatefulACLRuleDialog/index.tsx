@@ -83,7 +83,7 @@ export function portRangeCheck (value: string) {
   const start = Number(rangeArray[0])
   const end = Number(rangeArray[1])
   if (isNaN(start) || isNaN(end) || start >= end) {
-    return Promise.reject($t(validationMessages.invalid))
+    return Promise.reject($t({ defaultMessage: 'Invalid port range' }))
   }
 
   return Promise.resolve()
@@ -91,13 +91,13 @@ export function portRangeCheck (value: string) {
 
 export function portNumberOrRangeCheck (value: string) {
   if (!value) return Promise.resolve()
-  const isRange = value.indexOf('-') !== -1
-  if (isRange) {
+  const portNum = Number(value)
+  const isNotNumber = isNaN(portNum)
+  if (isNotNumber) {
     return portRangeCheck(value)
   } else {
-    const portNum = Number(value)
     const { $t } = getIntl()
-    if (isNaN(portNum) || portNum < 1 || portNum > 65535) {
+    if (portNum < 1 || portNum > 65535) {
       return Promise.reject($t({ defaultMessage: 'Invalid port number' }))
     } else {
       return Promise.resolve()
@@ -235,7 +235,10 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
         <Form.Item
           name='protocolType'
           label={$t({ defaultMessage: 'Protocol Type' })}
-          rules={[{ required: true }]}
+          rules={[{
+            required: true,
+            message: $t({ defaultMessage: 'Please select protocol type' })
+          }]}
         >
           <Select>
             {protocolTypes.map(({ label, value }) =>
@@ -273,7 +276,10 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
         >
           <Form.Item
             name='sourceAddressType'
-            rules={[{ required: true }]}
+            rules={[{
+              required: true,
+              message: $t({ defaultMessage: 'Please select source address type' })
+            }]}
           >
             <Radio.Group style={{ width: '100%' }}>
               <SpaceWrapper full direction='vertical' size='large'>
@@ -291,29 +297,38 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
                         {({ getFieldValue }) => {
                           const sourceAddressType = getFieldValue('sourceAddressType')
                           return sourceAddressType === AddressType.SUBNET_ADDRESS &&
-                          <Row>
-                            <Col span={12}>
-                              <Form.Item
-                                name='sourceAddress'
-                                noStyle
-                                rules={[{ required: true }]}
-                              >
-                                <Input placeholder={$t({ defaultMessage: 'Network address' })} />
-                              </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                              <Form.Item
-                                name='sourceAddressMask'
-                                noStyle
-                                rules={[
-                                  { required: true },
-                                  { validator: (_, value) => subnetMaskIpRegExp(value) }
-                                ]}
-                              >
-                                <Input placeholder={$t({ defaultMessage: 'Mask' })} />
-                              </Form.Item>
-                            </Col>
-                          </Row>
+                          <Form.Item>
+                            <Row>
+                              <Col span={12}>
+                                <Form.Item
+                                  name='sourceAddress'
+                                  noStyle
+                                  rules={[{
+                                    required: true,
+                                    message: $t({ defaultMessage: 'Please enter network address' })
+                                  }]}
+                                >
+                                  <Input placeholder={$t({ defaultMessage: 'Network address' })} />
+                                </Form.Item>
+                              </Col>
+                              <Col span={12}>
+                                <Form.Item
+                                  name='sourceAddressMask'
+                                  noStyle
+                                  rules={[
+                                    {
+                                      required: true,
+                                      // eslint-disable-next-line max-len
+                                      message: $t({ defaultMessage: 'Please enter address mask' })
+                                    },
+                                    { validator: (_, value) => subnetMaskIpRegExp(value) }
+                                  ]}
+                                >
+                                  <Input placeholder={$t({ defaultMessage: 'Mask' })} />
+                                </Form.Item>
+                              </Col>
+                            </Row>
+                          </Form.Item>
                         }}
                       </Form.Item>
                       break
@@ -329,7 +344,10 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
                           return sourceAddressType === AddressType.IP_ADDRESS &&
                             <Form.Item
                               name='sourceAddress'
-                              rules={[{ required: true }]}
+                              rules={[{
+                                required: true,
+                                message: $t({ defaultMessage: 'Please enter IP address' })
+                              }]}
                             >
                               <Input placeholder={$t({ defaultMessage: 'IP Address' })}/>
                             </Form.Item>
@@ -372,7 +390,10 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
         >
           <Form.Item
             name='destinationAddressType'
-            rules={[{ required: true }]}
+            rules={[{
+              required: true,
+              message: $t({ defaultMessage: 'Please select destination address type' })
+            }]}
           >
             <Radio.Group style={{ width: '100%' }}>
               <SpaceWrapper full direction='vertical' size='large'>
@@ -391,29 +412,37 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
                         {({ getFieldValue }) => {
                           const destinationAddressType = getFieldValue('destinationAddressType')
                           return destinationAddressType === AddressType.SUBNET_ADDRESS &&
-                          <Row>
-                            <Col span={12}>
-                              <Form.Item
-                                name='destinationAddress'
-                                noStyle
-                                rules={[{ required: true }]}
-                              >
-                                <Input placeholder={$t({ defaultMessage: 'Network address' })} />
-                              </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                              <Form.Item
-                                name='destinationAddressMask'
-                                noStyle
-                                rules={[
-                                  { required: true },
-                                  { validator: (_, value) => subnetMaskIpRegExp(value) }
-                                ]}
-                              >
-                                <Input placeholder={$t({ defaultMessage: 'Mask' })} />
-                              </Form.Item>
-                            </Col>
-                          </Row>
+                          <Form.Item>
+                            <Row>
+                              <Col span={12}>
+                                <Form.Item
+                                  name='destinationAddress'
+                                  noStyle
+                                  rules={[{
+                                    required: true,
+                                    message: $t({ defaultMessage: 'Please enter network address' })
+                                  }]}
+                                >
+                                  <Input placeholder={$t({ defaultMessage: 'Network address' })} />
+                                </Form.Item>
+                              </Col>
+                              <Col span={12}>
+                                <Form.Item
+                                  name='destinationAddressMask'
+                                  noStyle
+                                  rules={[
+                                    {
+                                      required: true,
+                                      message: $t({ defaultMessage: 'Please enter address mask' })
+                                    },
+                                    { validator: (_, value) => subnetMaskIpRegExp(value) }
+                                  ]}
+                                >
+                                  <Input placeholder={$t({ defaultMessage: 'Mask' })} />
+                                </Form.Item>
+                              </Col>
+                            </Row>
+                          </Form.Item>
                         }}
                       </Form.Item>
                       break
@@ -430,7 +459,10 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
                           return destinationAddressType === AddressType.IP_ADDRESS &&
                           <Form.Item
                             name='destinationAddress'
-                            rules={[{ required: true }]}
+                            rules={[{
+                              required: true,
+                              message: $t({ defaultMessage: 'Please enter IP address' })
+                            }]}
                           >
                             <Input placeholder={$t({ defaultMessage: 'IP Address' })} />
                           </Form.Item>

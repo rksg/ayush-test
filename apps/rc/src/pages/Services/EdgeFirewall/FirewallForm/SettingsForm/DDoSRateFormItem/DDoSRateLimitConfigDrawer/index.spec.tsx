@@ -100,7 +100,7 @@ describe('DDos rate limit config drawer', () => {
     await selectOptions(
       await within(dialog).findByRole('combobox', { name: 'DDoS Attack Type' }),
       'DNS Response')
-    await type(within(dialog).getByRole('spinbutton'), '2')
+    await type(within(dialog).getByRole('spinbutton'), '{backspace}2')
     await click(within(dialog).getByRole('button', { name: 'Add' }))
     await screen.findByRole('row', { name: /DNS Response/ })
 
@@ -116,7 +116,7 @@ describe('DDos rate limit config drawer', () => {
 
     expect(mockedSetFieldValue).toBeCalledWith('ddosRateLimitingRules', [{
       ddosAttackType: 'DNS_RESPONSE',
-      rateLimiting: 2
+      rateLimiting: 252
     }])
   })
 

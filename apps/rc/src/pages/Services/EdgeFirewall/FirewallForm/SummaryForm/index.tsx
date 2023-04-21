@@ -22,8 +22,7 @@ export const SummaryForm = styled(({ className }: { className?: string }) => {
   const ddosRulesCount = formValues.ddosRateLimitingRules.length
   const statefulAclEnabled = formValues.statefulAclEnabled
   const customACLRules = filterCustomACLRules(formValues.statefulAcls ?? [])
-  const statefulACLRulesCount = customACLRules.reduce(
-    (acc: number, item: StatefulAcl) => (acc + item.rules.length), 0)
+  const statefulACLRulesCount = customACLRules.length
 
   return (
     <Row gutter={[10, 30]} className={className}>
@@ -40,11 +39,13 @@ export const SummaryForm = styled(({ className }: { className?: string }) => {
           >
             {formValues.serviceName}
           </AntdDescriptions.Item>
+          {/*
           <AntdDescriptions.Item
             label={$t({ defaultMessage: 'Tags' })}
           >
             {formValues.tags?.toString() ?? ''}
           </AntdDescriptions.Item>
+          */}
         </AntdDescriptions>
 
         <Descriptions>
