@@ -168,7 +168,7 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
             guestType === GuestNetworkTypeEnum.SelfSignIn) &&
             <GuestDetails guestDetail={guestDetail} clientMac={clientMac}/>),
           (networkType === 'dpsk' && <DpskPassphraseDetails />),
-          <WiFiCallingDetails client={client} />
+          (client.wifiCallingClient && <WiFiCallingDetails client={client} />)
         ]
         break
       case ClientStatusEnum.HISTORICAL:
@@ -180,7 +180,7 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
             guestType === GuestNetworkTypeEnum.SelfSignIn) &&
             <GuestDetails guestDetail={guestDetail} clientMac={clientMac}/>),
           (networkType === 'dpsk' && <DpskPassphraseDetails />),
-          <WiFiCallingDetails client={client} />
+          (client.wifiCallingClient && <WiFiCallingDetails client={client} />)
         ]
         break
     }
