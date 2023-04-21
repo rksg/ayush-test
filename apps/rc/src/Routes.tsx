@@ -398,7 +398,8 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.RESIDENT_PORTAL, oper: ServiceOperation.EDIT })}
         element={<ResidentPortalForm editMode={true} />}
-
+      />
+      <Route
         path={getServiceRoutePath({
           type: ServiceType.EDGE_FIREWALL, oper: ServiceOperation.CREATE })}
         element={<AddFirewall />}
