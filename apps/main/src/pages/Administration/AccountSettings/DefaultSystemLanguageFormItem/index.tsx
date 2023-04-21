@@ -22,9 +22,10 @@ const DefaultSystemLanguageFormItem = () => {
     const payload = {
       global: { defaultLanguage: langCode }
     }
-    await updatePreferences({ newData: payload })
-    const code = langCode as LangKey
-    locale.setLang(code)
+    updatePreferences({ newData: payload, onSuccess: () => {
+      const code = langCode as LangKey
+      locale.setLang(code)
+    } })
   }
 
   const isLoadingPreference = getReqState.isLoading || getReqState.isFetching

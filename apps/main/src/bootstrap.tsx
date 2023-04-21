@@ -115,22 +115,14 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
   const defaultLang = useYourDefaultLanguage() // tenant level preference
   const browserLang = loadMessages(navigator.languages) // browser detection
   const queryParams = new URLSearchParams(window.location.search) // url query params
-  const userProfile = useUserProfileContext()
-  if (defaultLang) {
-    const lang = ((defaultLang??
-      queryParams.get('lang')??
-      browserLang) as ConfigProviderProps['lang']) as LangKey
-    return <ConfigProvider lang={lang} {...props} />
-  } else {
-    return <Loader
-      fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
-      states={[{ isLoading:
-          !Boolean(defaultLang) ||
-          !Boolean(userProfile.allowedOperations.length)
-      }]}
-      children={props.children}
-    />
-  }
+  const lang = ((defaultLang??
+    queryParams.get('lang')??
+    browserLang) as ConfigProviderProps['lang']) as LangKey
+  return <Loader
+    fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
+    states={[{ isLoading: !Boolean(defaultLang) }]}
+    children={<ConfigProvider lang={lang} {...props} />}
+  />
 }
 
 function DataGuardLoader (props: React.PropsWithChildren) {
