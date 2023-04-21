@@ -42,13 +42,11 @@ export const AuthApp = styled((props: AuthAppProps) => {
     setVisible(false)
   }
 
-  const footer = [
-    <Drawer.FormFooter
-      buttonLabel={{ save: $t({ defaultMessage: 'Confirm' }) }}
-      onCancel={onClose}
-      onSave={async () => form.submit()}
-    />
-  ]
+  const footer = <Drawer.FormFooter
+    buttonLabel={{ save: $t({ defaultMessage: 'Confirm' }) }}
+    onCancel={onClose}
+    onSave={async () => form.submit()}
+  />
 
   return (
     <Drawer

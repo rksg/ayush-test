@@ -10,20 +10,26 @@ interface SpaceWrapperProps extends SpaceProps {
     children: React.ReactNode;
     justifycontent?: 'flex-start' | 'flex-end'
     | 'center' | 'space-between' | 'space-around' | 'space-evenly';
+    full?: boolean;
+    fullWidth?: boolean;
+    fullHeight?: boolean;
 }
 
-const StyledSpace = styled(Space)<SpaceWrapperProps>`
-    width: 100%;
-    height: 100%;
-    justify-content: ${(props) => props.justifycontent || 'center'};
-`
-export const SpaceWrapper = React.forwardRef((props: SpaceWrapperProps, ref) => {
+
+export const StyledSpace = React.forwardRef((
+  { full, fullWidth, fullHeight, ...props }: SpaceWrapperProps, ref) => {
   return (
-    <StyledSpace
+    <Space
       ref={ref as React.MutableRefObject<HTMLDivElement>}
       {...props}
     >
       {props.children}
-    </StyledSpace>
+    </Space>
   )
 })
+
+export const SpaceWrapper = styled(StyledSpace)<SpaceWrapperProps>`
+    width: ${(props) => (props.full || props.fullWidth) ? '100%' : 'auto'};
+    height: ${(props) => (props.full || props.fullHeight) ? '100%' : 'auto'};
+    justify-content: ${(props) => props.justifycontent || 'center'};
+`

@@ -6,6 +6,8 @@ import { apApi }                                        from '@acx-ui/rc/service
 import { CommonUrlsInfo }                               from '@acx-ui/rc/utils'
 import { Provider, store }                              from '@acx-ui/store'
 import { mockRestApiQuery, mockServer, render, screen } from '@acx-ui/test-utils'
+import { RolesEnum }                                    from '@acx-ui/types'
+import { getUserProfile, setUserProfile }               from '@acx-ui/user'
 
 import { apDetailData } from './__tests__/fixtures'
 import { activities }   from './ApTimelineTab/__tests__/fixtures'
@@ -205,6 +207,7 @@ describe('ApDetails', () => {
     expect(tabs.filter(x => x.getAttribute('aria-selected') === 'true'))
       .toHaveLength(0)
   })
+
   it('should go to edit page', async () => {
     const params = {
       tenantId: 'tenant-id',
@@ -216,5 +219,21 @@ describe('ApDetails', () => {
     })
 
     await userEvent.click(await screen.findByRole('button', { name: 'Configure' }))
+  })
+
+  it('should hide analytics when role is READ_ONLY', async () => {
+    setUserProfile({
+      allowedOperations: [],
+      profile: { ...getUserProfile().profile, roles: [RolesEnum.READ_ONLY] }
+    })
+    const params = {
+      tenantId: 'tenant-id',
+      serialNumber: 'ap-serialNumber',
+      activeTab: 'analytics'
+    }
+    render(<Provider><ApDetails /></Provider>, {
+      route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
+    })
+    expect(screen.queryByTestId('rc-ApAnalyticsTab')).toBeNull()
   })
 })
