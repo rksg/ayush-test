@@ -1,14 +1,14 @@
-import { SNRColorMap, SNRIconMap }                       from './contents'
-import { MeshConnectionInfoEntity, SignalStrengthLevel } from './types'
+import { ApMeshLink, SignalStrengthLevel } from '@acx-ui/rc/utils'
+import { snrColorMap, snrIconMap }         from './contents'
 
 export function getSNRColor (snr: number): string {
-  return SNRColorMap[getSignalStrengthLevel(snr)]
+  return snrColorMap[getSignalStrengthLevel(snr)]
 }
 
-export function getColorForLine (meshConnectionInfo: MeshConnectionInfoEntity) {
-  if (meshConnectionInfo.connectionType === 'Wired') return '#23AB36'
+export function getColorForLine (apMeshLink: ApMeshLink) {
+  if (apMeshLink.connectionType === 'Wired') return '#23AB36'
 
-  return getSNRColorForLine(meshConnectionInfo.fromSNR, meshConnectionInfo.toSNR)
+  return getSNRColorForLine(apMeshLink.fromSNR, apMeshLink.toSNR)
 }
 
 export function getSNRColorForLine (fromSNR: number, toSNR: number): string {
@@ -17,7 +17,7 @@ export function getSNRColorForLine (fromSNR: number, toSNR: number): string {
 }
 
 export function getSNRIcon (snr: number) {
-  return SNRIconMap[getSignalStrengthLevel(snr)]
+  return snrIconMap[getSignalStrengthLevel(snr)]
 }
 
 function getSignalStrengthLevel (snr: number): SignalStrengthLevel {

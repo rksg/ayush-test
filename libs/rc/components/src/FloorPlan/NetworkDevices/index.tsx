@@ -1,6 +1,9 @@
 import { FloorplanContext, FloorPlanDto, NetworkDeviceType, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
 
+
 import { NetworkDeviceMarker } from './NetworkDeviceMarker'
+import { ApMeshConnections } from './useApMeshDevice'
+
 
 export default function NetworkDevices ({
   networkDevicesVisibility,
@@ -41,5 +44,7 @@ export default function NetworkDevices ({
             showRogueAp={showRogueAp}/>
         }))
     })
-  }</div>
+  }
+  <ApMeshConnections />
+  </div>
 }

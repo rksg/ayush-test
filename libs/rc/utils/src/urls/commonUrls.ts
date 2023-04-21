@@ -506,6 +506,12 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/viewmodel/tenant/:tenantId/venue/:venueId/topology',
     newApi: true
   },
+  getApMeshTopology: {
+    method: 'get',
+    url: '/venues/:venueId/topologies',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/venue/:venueId/topology',
+    newApi: true
+  },
   getVenueBonjourFencingPolicy: {
     method: 'get',
     url: '/venues/:venueId/bonjourFencingSettings',

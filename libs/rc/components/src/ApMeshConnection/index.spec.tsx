@@ -3,15 +3,15 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
-  mockedWirelessConnection
+  mockedApMeshLink
 } from './__tests__/fixtures'
 
-import MeshConnectionLine from '.'
+import ApMeshConnection from '.'
 
-describe('MeshConnectionLine', () => {
+describe('ApMeshConnection', () => {
   it('should render Mesh connection line', async () => {
 
-    const { asFragment } = render(<MeshConnectionLine lineInfo={mockedWirelessConnection} />)
+    const { asFragment } = render(<ApMeshConnection linkInfo={mockedApMeshLink} />)
 
     expect(asFragment()).toMatchSnapshot()
   })

@@ -1,24 +1,23 @@
 import { Popover, Space } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { APMeshRole } from '@acx-ui/rc/utils'
+import { APMeshRole, ApMeshLink } from '@acx-ui/rc/utils'
 
-import { APMeshRoleLabelMap }       from './contents'
+import { apMeshRoleLabelMap }       from './contents'
 import * as UI                      from './styledComponents'
-import { MeshConnectionInfoEntity } from './types'
 import { getSNRColor, getSNRIcon }  from './utils'
 
-export interface MeshConnectionInfoProps {
-  data: MeshConnectionInfoEntity
+export interface ApMeshConnectionTooltipProps {
+  data: ApMeshLink
   onVisibleChange: (visible: boolean) => void
 }
 
-export default function MeshConnectionInfo (props : MeshConnectionInfoProps) {
+export default function ApMeshConnectionTooltip (props : ApMeshConnectionTooltipProps) {
   const { data, onVisibleChange } = props
 
   return (
     <Popover
-      content={<MeshConnectionInfoContent data={data} />}
+      content={<ApMeshConnectionContent data={data} />}
       visible={true}
       trigger='click'
       color='#333333'
@@ -29,21 +28,21 @@ export default function MeshConnectionInfo (props : MeshConnectionInfoProps) {
   )
 }
 
-function MeshConnectionInfoContent ({ data }: { data: MeshConnectionInfoEntity }) {
+function ApMeshConnectionContent ({ data }: { data: ApMeshLink }) {
   const { $t } = useIntl()
 
   const FromSNRIcon = getSNRIcon(data.fromSNR)
   const ToSNRIcon = getSNRIcon(data.toSNR)
   const isWired = data.connectionType === 'Wired'
 
-  const getDeviceText = (entity: MeshConnectionInfoEntity, flow: 'up' | 'down') => {
+  const getDeviceText = (entity: ApMeshLink, flow: 'up' | 'down') => {
     let fromDevice, toDevice
     if (entity.fromRole === entity.toRole && entity.toRole === APMeshRole.MAP) {
       fromDevice = $t({ defaultMessage: 'AP-{serialNumber}' }, { serialNumber: entity.from })
       toDevice = $t({ defaultMessage: 'AP-{serialNumber}' }, { serialNumber: entity.to })
     } else {
-      fromDevice = $t(APMeshRoleLabelMap[entity.fromRole])
-      toDevice = $t(APMeshRoleLabelMap[entity.toRole])
+      fromDevice = $t(apMeshRoleLabelMap[entity.fromRole])
+      toDevice = $t(apMeshRoleLabelMap[entity.toRole])
     }
     return $t({ defaultMessage: '{fromDevice} to {toDevice}: ' }, {
       fromDevice: flow === 'down' ? fromDevice : toDevice,

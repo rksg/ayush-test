@@ -1,9 +1,8 @@
-import { APMeshRole } from '@acx-ui/rc/utils'
+import { APMeshRole, ApMeshLink } from '@acx-ui/rc/utils'
 
-import { MeshConnectionInfoEntity } from '../types'
 
-export const mockedConnectionRootToMesh: MeshConnectionInfoEntity = {
-  connectionType: 'Wireless',
+export const mockedConnectionRootToMesh: ApMeshLink = {
+  connectionType: 'Mesh',
   from: '922102021547',
   to: '922102021999',
   fromMac: '58:FB:96:1E:29:70',
@@ -12,12 +11,12 @@ export const mockedConnectionRootToMesh: MeshConnectionInfoEntity = {
   toRole: APMeshRole.MAP,
   fromSNR: 60,
   toSNR: 20,
-  band: '5 GHz',
+  band: '5G',
   channel: 1423
 }
 
-export const mockedConnectionMeshToMesh: MeshConnectionInfoEntity = {
-  connectionType: 'Wireless',
+export const mockedConnectionMeshToMesh: ApMeshLink = {
+  connectionType: 'Mesh',
   from: '922102021547',
   to: '922102021999',
   fromMac: '58:FB:96:1E:29:70',
@@ -26,11 +25,11 @@ export const mockedConnectionMeshToMesh: MeshConnectionInfoEntity = {
   toRole: APMeshRole.MAP,
   fromSNR: 60,
   toSNR: 20,
-  band: '5 GHz',
+  band: '5G',
   channel: 1423
 }
 
-export const mockedWiredConnection: MeshConnectionInfoEntity = {
+export const mockedWiredConnection: ApMeshLink = {
   connectionType: 'Wired',
   from: '922102021547',
   to: '922102021999',
@@ -40,6 +39,6 @@ export const mockedWiredConnection: MeshConnectionInfoEntity = {
   toRole: APMeshRole.MAP,
   fromSNR: 60,
   toSNR: 20,
-  band: '5 GHz',
+  band: '5G',
   channel: 1423
 }

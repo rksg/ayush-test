@@ -62,7 +62,9 @@ import {
   downloadFile,
   RequestFormData,
   createNewTableHttpRequest,
-  TableChangePayload
+  TableChangePayload,
+  ApMeshLink,
+  ApMeshTopologyData
 } from '@acx-ui/rc/utils'
 import { baseVenueApi } from '@acx-ui/store'
 
@@ -891,6 +893,18 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return result?.data[0] as TopologyData
       }
     }),
+    getApMeshTopology: build.query<ApMeshTopologyData, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getApMeshTopology, params)
+
+        return {
+          ...req
+        }
+      },
+      transformResponse: (result: { data: ApMeshTopologyData[] }) => {
+        return result?.data[0] as ApMeshTopologyData
+      }
+    }),
     getVenueBonjourFencing: build.query<VenueBonjourFencingPolicy, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(CommonUrlsInfo.getVenueBonjourFencingPolicy, params)
@@ -1187,6 +1201,7 @@ export const {
   useGetVenueLoadBalancingQuery,
   useUpdateVenueLoadBalancingMutation,
   useGetTopologyQuery,
+  useGetApMeshTopologyQuery,
   useGetVenueBonjourFencingQuery,
   useUpdateVenueBonjourFencingMutation,
   useGetPropertyConfigsQuery,

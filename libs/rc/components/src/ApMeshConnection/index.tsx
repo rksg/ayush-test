@@ -2,21 +2,21 @@ import { useState } from 'react'
 
 import Xarrow from 'react-xarrows'
 
-import MeshConnectionInfo           from '../MeshConnectionInfo'
-import { MeshConnectionInfoEntity } from '../MeshConnectionInfo/types'
-import { getColorForLine }          from '../MeshConnectionInfo/utils'
+import { ApMeshLink } from '@acx-ui/rc/utils'
+import { getColorForLine } from '../ApMeshConnectionTooltip/utils'
+import ApMeshConnectionTooltip from '../ApMeshConnectionTooltip'
 
-export interface MeshConnectionLineProps {
-  lineInfo: MeshConnectionInfoEntity
+export interface ApMeshConnectionProps {
+  linkInfo: ApMeshLink
 }
 
-export default function MeshConnectionLine (props: MeshConnectionLineProps) {
-  const { lineInfo } = props
+export default function ApMeshConnection (props: ApMeshConnectionProps) {
+  const { linkInfo: lineInfo } = props
   const [ clickedComponentKey, setClickedComponentKey ] = useState<string | null>(null)
   const isWired = lineInfo.connectionType === 'Wired'
 
-  const fromId = genApMeshConnectionLineId(lineInfo.from)
-  const toId = genApMeshConnectionLineId(lineInfo.to)
+  const fromId = genApMeshConnectionId(lineInfo.from)
+  const toId = genApMeshConnectionId(lineInfo.to)
   const componentKey = fromId + '-' + toId
 
   const onVisibleChange = (visible: boolean) => {
@@ -37,7 +37,7 @@ export default function MeshConnectionLine (props: MeshConnectionLineProps) {
       endAnchor={{ position: 'bottom', offset: { y: -5 } }}
       strokeWidth={clickedComponentKey === componentKey ? 4 : 2}
       labels={clickedComponentKey === componentKey
-        ? <MeshConnectionInfo data={lineInfo} onVisibleChange={onVisibleChange} />
+        ? <ApMeshConnectionTooltip data={lineInfo} onVisibleChange={onVisibleChange} />
         : undefined
       }
       arrowBodyProps={{ onClick: () => {
@@ -47,6 +47,6 @@ export default function MeshConnectionLine (props: MeshConnectionLineProps) {
   )
 }
 
-export function genApMeshConnectionLineId (deviceId: string) {
+export function genApMeshConnectionId (deviceId: string) {
   return 'ap-' + deviceId
 }

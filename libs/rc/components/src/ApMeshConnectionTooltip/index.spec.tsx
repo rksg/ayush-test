@@ -12,10 +12,10 @@ import {
   mockedWiredConnection
 } from './__tests__/fixtures'
 
-import MeshConnectionInfo from '.'
+import ApMeshConnectionTooltip from '.'
 
 
-describe('MeshConnectionInfo', () => {
+describe('ApMeshConnectionTooltip', () => {
   it('should render Mesh connection info for Root to Mesh', async () => {
     const onVisibleChangeFn = jest.fn()
 
@@ -24,7 +24,7 @@ describe('MeshConnectionInfo', () => {
         <div data-testid='outerElementForClosingPopover'>Click Me to close the popover</div>
         <div>
           <span>Mocked Element for popover display</span>
-          <MeshConnectionInfo
+          <ApMeshConnectionTooltip
             data={mockedConnectionRootToMesh}
             onVisibleChange={onVisibleChangeFn}
           />
@@ -46,7 +46,7 @@ describe('MeshConnectionInfo', () => {
     render(
       <div>
         <span>Mocked Element for popover display</span>
-        <MeshConnectionInfo data={mockedConnectionMeshToMesh} onVisibleChange={jest.fn()} />
+        <ApMeshConnectionTooltip data={mockedConnectionMeshToMesh} onVisibleChange={jest.fn()} />
       </div>
     )
 
@@ -61,7 +61,7 @@ describe('MeshConnectionInfo', () => {
     render(
       <div>
         <span>Mocked Element for popover display</span>
-        <MeshConnectionInfo data={mockedWiredConnection} onVisibleChange={jest.fn()} />
+        <ApMeshConnectionTooltip data={mockedWiredConnection} onVisibleChange={jest.fn()} />
       </div>
     )
 

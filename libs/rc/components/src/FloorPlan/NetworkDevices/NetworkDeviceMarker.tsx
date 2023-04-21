@@ -1,23 +1,22 @@
 import { useContext, useRef } from 'react'
 
-import { Badge, Space, Tooltip } from 'antd'
+import { Badge, Tooltip } from 'antd'
 import { isEmpty }               from 'lodash'
 import { useDrag }               from 'react-dnd'
 
 import { deviceCategoryColors } from '@acx-ui/components'
 import {
-  APMeshRoleMesh,
   DeviceOutlined,
   SignalUp
 } from '@acx-ui/icons'
 import { FloorplanContext, NetworkDevice, NetworkDeviceType, RogueApInfo } from '@acx-ui/rc/utils'
-import { getIntl }                                                         from '@acx-ui/utils'
+import { getIntl }                                                                 from '@acx-ui/utils'
 
 import { NetworkDeviceContext }      from '..'
-import { genApMeshConnectionLineId } from '../../MeshConnectionLine'
 
 import * as UI                                                       from './styledComponent'
-import { calculateApColor, calculateDeviceColor, getSnrDisplayInfo } from './utils'
+import { calculateApColor, calculateDeviceColor, getDeviceName, getSnrDisplayInfo } from './utils'
+import { useApMeshDevice } from './useApMeshDevice'
 
 
 
@@ -39,7 +38,11 @@ export function NetworkDeviceMarker ({
 
   const markerContainerRef = useRef<HTMLDivElement>(null)
   const deviceContext = useContext(NetworkDeviceContext) as Function
-  const isApMeshTopologyEnabled = true
+  const {
+    isApMeshEnabled,
+    getApMeshRoleTooltip,
+    getApMeshRoleIcon
+  } = useApMeshDevice(device)
 
   const [{ isDragging }, drag] = useDrag(() => ({
     canDrag: !forbidDrag && !showRogueAp,
@@ -71,41 +74,14 @@ export function NetworkDeviceMarker ({
   const allVenueRogueApAttr: RogueApInfo=
    calculateApColor(device?.deviceStatus, showRogueAp, context, device)
 
-
-  const getDeviceContainerId = () => {
-    return isApMeshTopologyEnabled && device?.id
-      ? genApMeshConnectionLineId(device.id)
-      : undefined
-  }
-
-  const getApMeshRoleIcon = () => {
-    return (
-      <UI.MeshApRoleIconContainer id={getDeviceContainerId()}>
-        <APMeshRoleMesh />
-      </UI.MeshApRoleIconContainer>
-    )
-  }
-
-  const getApMeshRoleTooltip = () => {
-    return (
-      <Space direction='vertical'>
-        <Space style={{ color: '#C4C4C4' }}>
-          <span>{device?.name}</span>
-          <span>(Root AP)</span>
-        </Space>
-        <span style={{ color: '#FFFFFF' }}>Linked directly to 7 mesh APs (2 unplaced)</span>
-      </Space>
-    )
-  }
-
   const getDeviceTooltip = () => {
     if (showRogueAp && device?.rogueCategory) {
       return <RogueApTooltip rogueApInfo={allVenueRogueApAttr}/>
     }
 
-    if (isApMeshTopologyEnabled) return getApMeshRoleTooltip()
+    if (isApMeshEnabled) return getApMeshRoleTooltip()
 
-    return device?.name || device?.switchName || device?.serialNumber
+    return getDeviceName(device)
   }
 
   return <div ref={markerContainerRef}>
@@ -144,7 +120,7 @@ export function NetworkDeviceMarker ({
                 ? <DeviceOutlined/>
                 : <SignalUp />)
           } </div>
-        {isApMeshTopologyEnabled && getApMeshRoleIcon()}
+        {isApMeshEnabled && getApMeshRoleIcon()}
         {
           allVenueRogueApAttr?.allVenueRogueApTooltipAttr?.totalRogueNumber &&
           <UI.RogueApCountBadge

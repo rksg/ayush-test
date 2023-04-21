@@ -244,9 +244,11 @@ export interface APMesh {
   txBytes?: string,
   rxFrames?: string,
   type?: number,
-  upMac?: string
+  upMac?: string,
+  downlinkCount?: number,
+  floorplanId?: string;
 }
-interface Uplink{
+export interface Uplink{
   txFrames: string,
   rssi: number,
   rxBytes: string,
@@ -255,6 +257,7 @@ interface Uplink{
   type: number,
   upMac: string
 }
+
 export interface LanPort {
 	defaultType: string
 	id: string
