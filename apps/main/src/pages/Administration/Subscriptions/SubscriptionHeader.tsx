@@ -46,7 +46,7 @@ const SubscriptionUtilizationWidget = (props: SubscriptionUtilizationWidgetProps
   const isZeroQuantity = total <= 0
 
   return (
-    <SpaceWrapper size='small' justifycontent='space-around'>
+    <SpaceWrapper full size='small' justifycontent='space-around'>
       <Typography.Text>{title}</Typography.Text>
       <StackedBarChart
         style={{ height: 16, width: 135 }}
@@ -129,7 +129,7 @@ export const SubscriptionHeader = () => {
             </Subtitle>
           </Col>
           <Col span={12}>
-            <SpaceWrapper justifycontent='flex-end' size='large'>
+            <SpaceWrapper full justifycontent='flex-end' size='large'>
               <Typography.Text>
                 <FormattedMessage
                   defaultMessage='Current Subscription Tier: <b>{tier}</b>'
