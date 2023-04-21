@@ -13,10 +13,11 @@ import { SummaryForm }                                                          
 const AddFirewall = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const linkToServiceList = useTenantLink(getServiceRoutePath({
+  const firewallListRoute = getServiceRoutePath({
     type: ServiceType.EDGE_FIREWALL,
     oper: ServiceOperation.LIST
-  }))
+  })
+  const linkToServiceList = useTenantLink(firewallListRoute)
   const [addEdgeFirewall] = useAddEdgeFirewallMutation()
 
   const steps = [
@@ -63,7 +64,7 @@ const AddFirewall = () => {
       <PageHeader
         title={$t({ defaultMessage: 'Add Firewall Service' })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Services' }), link: '/services' }
+          { text: $t({ defaultMessage: 'Firewall' }), link: firewallListRoute }
         ]}
       />
       <FirewallForm
