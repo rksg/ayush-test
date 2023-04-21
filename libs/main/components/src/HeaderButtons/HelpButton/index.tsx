@@ -15,7 +15,7 @@ import { ButtonWrapper } from './styledComponents'
 
 export interface HelpButtonProps{
   supportStatus?: string,
-  setIsShown: (b: boolean | null) => void
+  setIsShown?: (b: boolean | null) => void
 }
 
 const HelpButton = (props:HelpButtonProps) => {
@@ -116,7 +116,7 @@ const HelpButton = (props:HelpButtonProps) => {
     />
   )
 
-  return (<ButtonWrapper onClick={() => setIsShown(null)}>
+  return (<ButtonWrapper onClick={() => setIsShown && setIsShown(null)}>
     <Dropdown
       overlay={menuHeaderDropdown}
       trigger={['click']}

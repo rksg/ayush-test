@@ -34,6 +34,7 @@ const defaultPayload: {
 }
 
 interface ActivityButtonProps {
+  // used to determine whether to display, if it is false, activityButton would be displayed
   isShown: boolean,
   setIsShown: (b: boolean | null) => void
 }

@@ -13,6 +13,7 @@ import {
 import { useParams } from '@acx-ui/react-router-dom'
 
 interface AlarmsHeaderButtonProps {
+  // used to determine whether to display, if it is true, activityButton would be displayed
   isShown: boolean | null,
   setIsShown: (b: boolean | null) => void
 }
