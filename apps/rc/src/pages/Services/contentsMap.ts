@@ -11,6 +11,7 @@ export const serviceTypeLabelMapping: Record<ServiceType, MessageDescriptor> = {
   [ServiceType.PORTAL]: defineMessage({ defaultMessage: 'Portal' }),
   [ServiceType.DHCP]: defineMessage({ defaultMessage: 'DHCP for Wi-Fi' }),
   [ServiceType.EDGE_DHCP]: defineMessage({ defaultMessage: 'DHCP for SmartEdge' }),
+  [ServiceType.EDGE_FIREWALL]: defineMessage({ defaultMessage: 'Firewall' }),
   [ServiceType.WIFI_CALLING]: defineMessage({ defaultMessage: 'Wi-Fi Calling' }),
   [ServiceType.MDNS_PROXY]: defineMessage({ defaultMessage: 'mDNS Proxy' }),
   [ServiceType.DPSK]: defineMessage({ defaultMessage: 'DPSK' }),
@@ -24,6 +25,8 @@ export const serviceTypeDescMapping: Record<ServiceType, MessageDescriptor> = {
   // eslint-disable-next-line max-len
   [ServiceType.DHCP]: defineMessage({ defaultMessage: 'Provide client DHCP address assignments from RUCKUS Access Points' }),
   [ServiceType.EDGE_DHCP]: defineMessage({ defaultMessage: 'Provides IP address to end devices' }),
+  // eslint-disable-next-line max-len
+  [ServiceType.EDGE_FIREWALL]: defineMessage({ defaultMessage: 'Provides DDoS and ACL to protect your devices' }),
   // eslint-disable-next-line max-len
   [ServiceType.WIFI_CALLING]: defineMessage({ defaultMessage: 'Identify clients using Wi-Fi calling and provide enhanced QoS' }),
   // eslint-disable-next-line max-len

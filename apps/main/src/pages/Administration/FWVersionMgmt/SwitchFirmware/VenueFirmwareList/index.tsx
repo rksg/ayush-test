@@ -11,6 +11,7 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
 import {
   useGetSwitchUpgradePreferencesQuery,
   useUpdateSwitchUpgradePreferencesMutation,
@@ -28,7 +29,6 @@ import {
   UpdateScheduleRequest,
   TableQuery,
   RequestPayload,
-  firmwareTypeTrans,
   useTableQuery,
   sortProp,
   defaultSort
@@ -47,25 +47,16 @@ import * as UI               from '../../styledComponents'
 import { ChangeScheduleDialog } from './ChangeScheduleDialog'
 import { UpdateNowDialog }      from './UpdateNowDialog'
 
-type TablePaginationPosition =
-  | 'topLeft'
-  | 'topCenter'
-  | 'topRight'
-  | 'bottomLeft'
-  | 'bottomCenter'
-  | 'bottomRight'
-
-const transform = firmwareTypeTrans()
-
 function useColumns (
   searchable?: boolean,
   filterables?: { [key: string]: ColumnType['filterable'] }
 ) {
   const intl = useIntl()
+  const enableSwitchRodanFirmware = useIsSplitOn(Features.SWITCH_RODAN_FIRMWARE)
 
   const columns: TableProps<FirmwareSwitchVenue>['columns'] = [
     {
-      title: intl.$t({ defaultMessage: 'Venue Name' }),
+      title: intl.$t({ defaultMessage: 'Venue' }),
       key: 'name',
       dataIndex: 'name',
       // sorter: true,
@@ -85,35 +76,30 @@ function useColumns (
       filterable: filterables ? filterables['version'] : false,
       filterMultiple: false,
       render: function (data, row) {
-        return row.switchFirmwareVersion?.id.replace('_b392', '') ?? '--'
-      }
-    },
-    {
-      title: intl.$t({ defaultMessage: 'Firmware Type' }),
-      key: 'type',
-      dataIndex: 'type',
-      // sorter: true,
-      sorter: { compare: sortProp('switchFirmwareVersion.category', defaultSort) },
-      filterable: filterables ? filterables['type'] : false,
-      filterMultiple: false,
-      render: function (data, row) {
-        return transform(row.switchFirmwareVersion?.category, 'type') ?? '--'
+        let versionList = []
+        if (row.switchFirmwareVersion?.id) {
+          versionList.push(row.switchFirmwareVersion.id.replace('_b392', ''))
+        }
+        if (enableSwitchRodanFirmware && row.switchFirmwareVersionAboveTen?.id) {
+          versionList.push(row.switchFirmwareVersionAboveTen.id)
+        }
+        return versionList.length > 0 ? versionList.join(' ,') : '--'
       }
     },
     {
       title: intl.$t({ defaultMessage: 'Last Update' }),
       key: 'lastUpdate',
       dataIndex: 'lastUpdate',
-      sorter: false,
+      sorter: { compare: sortProp('lastScheduleUpdateTime', defaultSort) },
       render: function (data, row) {
         return row.lastScheduleUpdateTime ? toUserDate(row.lastScheduleUpdateTime) : '--'
       }
     },
     {
-      title: intl.$t({ defaultMessage: 'Next Update Schedule' }),
+      title: intl.$t({ defaultMessage: 'Scheduling' }),
       key: 'nextSchedule',
       dataIndex: 'nextSchedule',
-      sorter: false,
+      sorter: { compare: sortProp('nextSchedule.timeSlot.startDateTime', defaultSort) },
       render: function (data, row) {
         // return getNextScheduleTpl(intl, row)
         return (!isSwitchNextScheduleTooltipDisabled(row)
@@ -159,7 +145,7 @@ export const VenueFirmwareTable = (
   const [venues, setVenues] = useState<FirmwareSwitchVenue[]>([])
   const [upgradeVersions, setUpgradeVersions] = useState<FirmwareVersion[]>([])
   const [changeUpgradeVersions, setChangeUpgradeVersions] = useState<FirmwareVersion[]>([])
-  const pageBotton: TablePaginationPosition | 'none' = 'none'
+  const enableSwitchRodanFirmware = useIsSplitOn(Features.SWITCH_RODAN_FIRMWARE)
 
   const { data: preDownload } = useGetSwitchFirmwarePredownloadQuery({ params })
 
@@ -238,7 +224,9 @@ export const VenueFirmwareTable = (
       let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
       selectedRows.forEach((row: FirmwareSwitchVenue) => {
         const version = row.switchFirmwareVersion?.id
-        _.remove(filterVersions, (v: FirmwareVersion) => v.id === version)
+        const rodanVersion = enableSwitchRodanFirmware ? row.switchFirmwareVersionAboveTen?.id : ''
+        _.remove(filterVersions, (v: FirmwareVersion) => (
+          v.id === version || v.id === rodanVersion))
       })
       setUpgradeVersions(filterVersions)
       setUpdateModelVisible(true)
@@ -265,7 +253,14 @@ export const VenueFirmwareTable = (
       let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
       selectedRows.forEach((row: FirmwareSwitchVenue) => {
         const version = row.switchFirmwareVersion?.id
-        _.remove(filterVersions, (v: FirmwareVersion) => v.id === version)
+        const rodanVersion = enableSwitchRodanFirmware ? row.switchFirmwareVersionAboveTen?.id : ''
+        _.remove(filterVersions, (v: FirmwareVersion) => {
+          if (!enableSwitchRodanFirmware && v.id.startsWith('100')) {
+            return true
+          }
+
+          return v.id === version || v.id === rodanVersion
+        })
       })
       setChangeUpgradeVersions(filterVersions)
       setChangeScheduleModelVisible(true)
@@ -311,8 +306,7 @@ export const VenueFirmwareTable = (
       <Table
         columns={columns}
         dataSource={tableQuery.data?.data}
-        // eslint-disable-next-line max-len
-        pagination={{ pageSize: 10000, position: [pageBotton as TablePaginationPosition , pageBotton as TablePaginationPosition] }}
+        pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
@@ -352,6 +346,7 @@ export const VenueFirmwareTable = (
 
 export function VenueFirmwareList () {
   const venuePayload = useDefaultVenuePayload()
+  const enableSwitchRodanFirmware = useIsSplitOn(Features.SWITCH_RODAN_FIRMWARE)
 
   const tableQuery = useTableQuery<FirmwareSwitchVenue>({
     useQuery: useGetSwitchVenueVersionListQuery,
@@ -363,9 +358,14 @@ export function VenueFirmwareList () {
 
   const { versionFilterOptions } = useGetSwitchCurrentVersionsQuery({ params: useParams() }, {
     selectFromResult ({ data }) {
+      let versionList = data?.currentVersions
+      if (enableSwitchRodanFirmware && data?.currentVersionsAboveTen && versionList) {
+        versionList = versionList.concat(data?.currentVersionsAboveTen)
+      }
+
       return {
         // eslint-disable-next-line max-len
-        versionFilterOptions: data?.currentVersions?.map(v=>({ key: v, value: v.replace('_b392', '') })) || true
+        versionFilterOptions: versionList?.map(v=>({ key: v, value: v.replace('_b392', '') })) || true
       }
     }
   })

@@ -1,148 +1,270 @@
-import styled from 'styled-components/macro'
-
 import {
-  AIOutlined as AIOutlinedBase,
-  AISolid as AISolidBase,
+  AIOutlined,
+  AISolid,
   AccountCircleOutlined,
   AccountCircleSolid,
   AdminOutlined,
-  AdminSolid as AdminSolidBase,
-  CalendarDateOutlined,
-  CalendarDateSolid,
-  DevicesOutlined,
-  DevicesSolid,
+  AdminSolid,
+  BulbOutlined,
+  BulbSolid,
   LocationOutlined,
   LocationSolid,
-  NetworksOutlined,
-  NetworksSolid,
-  PoliciesOutlined,
-  PoliciesSolid as PoliciesSolidBase,
-  ReportsOutlined,
-  ReportsSolid,
   ServicesOutlined,
-  ServicesSolid as ServicesSolidBase,
+  ServicesSolid,
   SpeedIndicatorOutlined,
   SpeedIndicatorSolid,
-  ServiceValidationSolid,
-  ServiceValidationOutlined
+  SwitchOutlined,
+  SwitchSolid,
+  WiFi
 } from '@acx-ui/icons'
 
-import { genPlaceholder, LayoutProps } from '..'
-import { LayoutUI }                    from '../styledComponents'
-
-const AIOutlined = styled(AIOutlinedBase)`${LayoutUI.iconOutlinedOverride}`
-const AISolid = styled(AISolidBase)`${LayoutUI.iconOutlinedOverride}`
-const AdminSolid = styled(AdminSolidBase)`${LayoutUI.iconSolidOverride}`
-const ServicesSolid = styled(ServicesSolidBase)`${LayoutUI.iconSolidOverride}`
-const PoliciesSolid = styled(PoliciesSolidBase)`${LayoutUI.iconSolidOverride}`
+import { LayoutProps, IsActiveCheck } from '..'
 
 const config: LayoutProps['menuConfig'] = [
+  null,
   {
-    path: '/dashboard',
-    name: 'Dashboard',
+    uri: '/dashboard',
+    label: 'Dashboard',
     inactiveIcon: SpeedIndicatorOutlined,
     activeIcon: SpeedIndicatorSolid
   },
   {
-    path: '/analytics',
-    name: 'AI Analytics',
+    label: 'AI Assurance',
     inactiveIcon: AIOutlined,
     activeIcon: AISolid,
-    routes: [
+    children: [
       {
-        path: '/analytics/incidents',
-        name: 'Incidents'
+        uri: '/analytics/incidents',
+        label: 'Incidents'
       },
       {
-        path: '/analytics/recommendations',
-        name: 'Recommendations'
+        uri: '/analytics/health',
+        label: 'Health'
       },
       {
-        path: '/analytics/health',
-        name: 'Health'
-      },
-      {
-        path: '/analytics/configChange',
-        name: 'Config Change'
-      },
-      {
-        path: '/analytics/occupancy',
-        name: 'Occupancy'
+        uri: '/serviceValidation/networkHealth',
+        label: 'Service Validation'
       }
     ]
   },
   {
-    path: '/timeline',
-    name: 'Timeline',
-    inactiveIcon: CalendarDateOutlined,
-    activeIcon: CalendarDateSolid
-  },
-  {
-    path: '/servicevalidation',
-    name: 'Service Validation',
-    inactiveIcon: ServiceValidationOutlined,
-    activeIcon: ServiceValidationSolid,
-    routes: [
-      {
-        path: '/serviceValidation/networkHealth',
-        name: 'NetworkHealth'
-      },
-      {
-        path: '/serviceValidation/videoCallQoe',
-        name: 'Video Call QoE'
-      }
-    ]
-  },
-  {
-    path: '/reports',
-    name: 'Reports',
-    inactiveIcon: ReportsOutlined,
-    activeIcon: ReportsSolid
-  },
-  genPlaceholder(),
-  {
-    path: '/venues',
-    name: 'Venues',
+    uri: '/venues',
+    label: 'Venues',
     inactiveIcon: LocationOutlined,
     activeIcon: LocationSolid
   },
   {
-    path: '/devices',
-    name: 'Device Inventory',
-    inactiveIcon: DevicesOutlined,
-    activeIcon: DevicesSolid
-  },
-  {
-    path: '/networks',
-    name: 'Networks',
-    inactiveIcon: NetworksOutlined,
-    activeIcon: NetworksSolid
-  },
-  {
-    path: '/services',
-    name: 'Services',
-    inactiveIcon: ServicesOutlined,
-    activeIcon: ServicesSolid
-  },
-  {
-    path: '/policies',
-    name: 'Policies',
-    inactiveIcon: PoliciesOutlined,
-    activeIcon: PoliciesSolid
-  },
-  {
-    path: '/users',
-    name: 'Users',
+    label: 'Clients',
     inactiveIcon: AccountCircleOutlined,
     activeIcon: AccountCircleSolid,
-    disabled: true
+    children: [
+      {
+        type: 'group',
+        label: 'Wireless',
+        children: [
+          {
+            uri: '/users/wifi/clients',
+            label: 'Wireless Clients List'
+          } ,
+          {
+            uri: '/users/wifi/guests',
+            label: 'Guest Pass Credentials'
+          },
+          {
+            uri: '/reports/clients',
+            label: 'Wireless Clients Report',
+            isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
+          }
+        ]
+      },
+      {
+        type: 'group',
+        label: 'Wired',
+        children: [
+          {
+            uri: '/users/switch/clients',
+            label: 'Switch Clients List'
+          }
+        ]
+      }
+    ]
   },
-  genPlaceholder(),
   {
-    path: '/administration',
-    name: 'Administration',
+    label: 'Wi-Fi',
+    inactiveIcon: WiFi,
+    children: [
+      {
+        type: 'group',
+        label: 'Access Points',
+        children: [
+          {
+            uri: '/devices/wifi',
+            label: 'Access Point List'
+          } ,
+          {
+            uri: '/reports/aps',
+            label: 'AP Report',
+            isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
+          },
+          {
+            uri: '/reports/airtime',
+            label: 'Airtime Utilization Report',
+            isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
+          }
+        ]
+      },
+      {
+        type: 'group',
+        label: 'Wi-Fi Networks',
+        children: [
+          {
+            uri: '/networks/wireless',
+            label: 'Wi-Fi Networks List'
+          },
+          {
+            uri: '/reports/wlans',
+            label: 'WLANs Report',
+            isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
+          },
+          {
+            uri: '/reports/applications',
+            label: 'Applications Report',
+            isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
+          },
+          {
+            uri: '/reports/wireless',
+            label: 'Wireless Report',
+            isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
+          }
+        ]
+      }
+    ]
+  },
+  {
+    label: 'Wired',
+    inactiveIcon: SwitchOutlined,
+    activeIcon: SwitchSolid,
+    children: [
+      {
+        type: 'group',
+        label: 'Switches',
+        children: [
+          {
+            uri: '/devices/switch',
+            label: 'Switch List'
+          } ,
+          {
+            uri: '/reports/wired',
+            label: 'Wired Report',
+            isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
+          }
+        ]
+      },
+      {
+        type: 'group',
+        label: 'Wired Network Profiles',
+        children: [
+          {
+            uri: '/networks/wired/profiles',
+            label: 'Configuration Profiles'
+          },
+          {
+            uri: '/networks/wired/onDemandCli',
+            label: 'On-Demand CLI Configuration'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    label: 'Network Control',
+    inactiveIcon: ServicesOutlined,
+    activeIcon: ServicesSolid,
+    children: [
+      {
+        uri: '/services/list',
+        isActiveCheck: new RegExp('^(?=/services/)((?!catalog).)*$'),
+        label: 'My Services'
+      },
+      {
+        uri: '/services/catalog',
+        label: 'Service Catalog'
+      },
+      {
+        uri: '/policies',
+        label: 'Policies & Profiles'
+      }
+    ]
+  },
+  {
+    label: 'Business Insights',
+    inactiveIcon: BulbOutlined,
+    activeIcon: BulbSolid,
+    children: [
+      {
+        uri: '/dataStudio',
+        label: 'Data Studio'
+      },
+      {
+        uri: '/reports/overview',
+        label: 'Reports'
+      }
+    ]
+  },
+  {
+    label: 'Administration',
     inactiveIcon: AdminOutlined,
-    activeIcon: AdminSolid
+    activeIcon: AdminSolid,
+    children: [
+      {
+        type: 'group',
+        label: 'Timeline',
+        children: [
+          {
+            uri: '/timeline/activities',
+            label: 'Activities'
+          },
+          {
+            uri: '/timeline/events',
+            label: 'Events'
+          },
+          {
+            uri: '/timeline/adminlog',
+            label: 'Administrative Logs'
+          }
+        ]
+      },
+      {
+        type: 'group',
+        label: 'Account Management',
+        children: [
+          {
+            uri: '/administration/accountSettings',
+            label: 'Settings'
+          },
+          {
+            uri: '/administration/administrators',
+            label: 'Administrators'
+          },
+          {
+            uri: '/administration/notifications',
+            label: 'Notifications'
+          },
+          {
+            uri: '/administration/subscriptions',
+            label: 'Subscriptions'
+          },
+          {
+            uri: '/administration/fwVersionMgmt',
+            label: 'Firmware Version Management'
+          },
+          {
+            uri: '/administration/localRadiusServer',
+            label: 'Local RADIUS Server'
+          }
+        ]
+      }
+    ]
   }
 ]
 

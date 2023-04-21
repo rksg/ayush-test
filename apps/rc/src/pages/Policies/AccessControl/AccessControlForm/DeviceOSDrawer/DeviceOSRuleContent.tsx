@@ -10,6 +10,7 @@ import { deviceTypeLabelMapping, osVenderLabelMapping } from '../../../contentsM
 
 import {
   deviceOsVendorMappingTable,
+  getDeviceOsVendorMap,
   getDeviceTypeOptions,
   getOsVendorOptions,
   isDeviceOSEnabled, isDeviceTypeEnabled
@@ -55,7 +56,9 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
     $t({ defaultMessage: 'Please select...' }) as OsVendorEnum
   )
   const [deviceOSMappingTable] = useState(
-    deviceOsVendorMappingTable(deviceOSRuleList) as { [key: string]: string[] }
+    deviceOsVendorMappingTable(
+      getDeviceOsVendorMap(), deviceOSRuleList
+    ) as { [key: string]: string[] }
   )
 
   const [
@@ -137,7 +140,9 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
           checked={fromClient}
           onChange={() => {
             drawerForm.setFieldValue('fromClient', !fromClient)
+            drawerForm.setFieldValue('fromClientValue', 200)
             setFromClient(!fromClient)
+            setFromClientValue(200)
           }}>
           {$t({ defaultMessage: 'From Client:' })}
         </Checkbox>
@@ -163,7 +168,9 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
           checked={toClient}
           onChange={() => {
             drawerForm.setFieldValue('toClient', !toClient)
+            drawerForm.setFieldValue('toClientValue', 200)
             setToClient(!toClient)
+            setToClientValue(200)
           }}>
           {$t({ defaultMessage: 'To Client:' })}
         </Checkbox>

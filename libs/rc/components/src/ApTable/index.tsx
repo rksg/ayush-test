@@ -11,9 +11,15 @@ import {
   deviceStatusColors,
   ColumnType
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
 import {
-  useApListQuery, useImportApMutation, useLazyImportResultQuery
+  Features,
+  useIsSplitOn
+} from '@acx-ui/feature-toggle'
+import {
+  DownloadOutlined
+} from '@acx-ui/icons'
+import {
+  useApListQuery, useImportApOldMutation, useImportApMutation, useLazyImportResultQuery
 } from '@acx-ui/rc/services'
 import {
   ApDeviceStatusEnum,
@@ -41,6 +47,7 @@ import { useApActions }              from '../useApActions'
 import {
   getGroupableConfig, groupedFields
 } from './config'
+import { useExportCsv } from './useExportCsv'
 
 export const defaultApPayload = {
   searchString: '',
@@ -233,7 +240,8 @@ export function ApTable (props: ApTableProps) {
       dataIndex: 'switchName',
       render: (data, row : APExtended) => {
         return (
-          <TenantLink to={`/switches/${row.venueId}/details/overview`}>{data}</TenantLink>
+          // eslint-disable-next-line max-len
+          <TenantLink to={`/devices/switch/${row.switchId}/${row.switchSerialNumber}/details/overview`}>{data}</TenantLink>
         )
       }
     }, {
@@ -371,20 +379,44 @@ export function ApTable (props: ApTableProps) {
   }]
   const [ isImportResultLoading, setIsImportResultLoading ] = useState(false)
   const [ importVisible, setImportVisible ] = useState(false)
+  const [ importAps, importApsResult ] = useImportApOldMutation()
   const [ importCsv ] = useImportApMutation()
   const [ importQuery ] = useLazyImportResultQuery()
   const [ importResult, setImportResult ] = useState<ImportErrorRes>({} as ImportErrorRes)
   const apGpsFlag = useIsSplitOn(Features.AP_GPS)
+  const wifiEdaFlag = useIsSplitOn(Features.WIFI_EDA_GATEWAY)
   const importTemplateLink = apGpsFlag ?
     'assets/templates/aps_import_template_with_gps.csv' :
     'assets/templates/aps_import_template.csv'
+  // eslint-disable-next-line max-len
+  const { exportCsv, disabled } = useExportCsv<APExtended>(tableQuery as TableQuery<APExtended, RequestPayload<unknown>, unknown>)
+  const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
 
   useEffect(()=>{
+    if (wifiEdaFlag) {
+      return
+    }
+
+    setIsImportResultLoading(false)
+    if (importApsResult.isSuccess) {
+      setImportVisible(false)
+    } else if (importApsResult.isError && importApsResult?.error &&
+      'data' in importApsResult.error) {
+      setImportResult(importApsResult?.error.data as ImportErrorRes)
+    }
+  },[importApsResult])
+
+  useEffect(()=>{
+    if (!wifiEdaFlag) {
+      return
+    }
+
+    setIsImportResultLoading(false)
     if (importResult.fileErrorsCount === 0) {
       setImportVisible(false)
     }
-    setIsImportResultLoading(false)
   },[importResult])
+
   const basePath = useTenantLink('/devices')
   const handleTableChange: TableProps<APExtended>['onChange'] = (
     pagination, filters, sorter, extra
@@ -431,6 +463,10 @@ export function ApTable (props: ApTableProps) {
             setImportVisible(true)
           }
         }]) : []}
+        searchableWidth={260}
+        filterableWidth={150}
+        // eslint-disable-next-line max-len
+        iconButton={exportDevice ? { icon: <DownloadOutlined />, disabled, onClick: exportCsv } : undefined}
       />
       <ImportFileDrawer type='AP'
         title={$t({ defaultMessage: 'Import from file' })}
@@ -443,13 +479,17 @@ export function ApTable (props: ApTableProps) {
         importError={{ data: importResult } as FetchBaseQueryError}
         importRequest={(formData) => {
           setIsImportResultLoading(true)
-          importCsv({ params: {}, payload: formData,
-            callback: async (res: CommonResult) => {
-              const result = await importQuery(
-                { payload: { requestId: res.requestId } }, true)
-                .unwrap()
-              setImportResult(result)
-            } }).unwrap()
+          if (wifiEdaFlag) {
+            importCsv({ params: {}, payload: formData,
+              callback: async (res: CommonResult) => {
+                const result = await importQuery(
+                  { payload: { requestId: res.requestId } }, true)
+                  .unwrap()
+                setImportResult(result)
+              } }).unwrap()
+          } else {
+            importAps({ params: {}, payload: formData })
+          }
         }}
         onClose={() => setImportVisible(false)}/>
     </Loader>

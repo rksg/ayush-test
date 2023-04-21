@@ -86,7 +86,7 @@ const MspCustomerSelector = () => {
       rules={[{ required: true }]}
     >
       <Radio.Group style={{ width: '100%' }}>
-        <SpaceWrapper direction='vertical' size='middle'>
+        <SpaceWrapper full direction='vertical' size='middle'>
           {ecTypesList.map((item) => {
             return (
               <React.Fragment key={item.value}>

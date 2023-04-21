@@ -228,7 +228,8 @@ describe('SwitchTable', () => {
     })
 
     const input =
-      await screen.findByPlaceholderText('Search Switch, Model, MAC Address, IP Address')
+      await screen
+        .findByPlaceholderText('Search Switch, Model, Serial Number, MAC Address, IP Address')
 
     input.focus()
     fireEvent.change(input, { target: { value: 'ICX7150-C08P' } })

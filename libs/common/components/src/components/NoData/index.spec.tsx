@@ -1,6 +1,6 @@
 import { render } from '@acx-ui/test-utils'
 
-import { NoActiveContent, NoActiveData, NoData, NotAvailable } from '.'
+import { NoActiveContent, NoActiveData, NoData } from '.'
 
 describe('NoData', () => {
   it('should render correctly', () => {
@@ -31,13 +31,6 @@ describe('NoActiveContent', () => {
   })
   it('should render correctly with the prop', () => {
     const { asFragment } = render(<NoActiveContent text='No data available'/>)
-    expect(asFragment()).toMatchSnapshot()
-  })
-})
-
-describe('NotAvailable', () => {
-  it('should render correctly', () => {
-    const { asFragment } = render(<NotAvailable/>)
     expect(asFragment()).toMatchSnapshot()
   })
 })

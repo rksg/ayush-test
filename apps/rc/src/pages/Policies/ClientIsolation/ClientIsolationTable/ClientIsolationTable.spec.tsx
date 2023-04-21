@@ -88,7 +88,7 @@ describe('ClientIsolationTable', () => {
 
     const targetName = mockedTableResult.data[0].name
     // eslint-disable-next-line max-len
-    expect(await screen.findByRole('button', { name: /Add Client Isolation Pofile/i })).toBeVisible()
+    expect(await screen.findByRole('button', { name: /Add Client Isolation Profile/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: new RegExp(targetName) })).toBeVisible()
   })
 

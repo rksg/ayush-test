@@ -158,10 +158,11 @@ jest.mock('@acx-ui/feature-toggle', () => ({
 jest.mock('@acx-ui/icons', ()=> {
   const React = jest.requireActual('react')
   const icons = jest.requireActual('@acx-ui/icons')
-  const keys = Object.keys(icons).map(key => [key, (props) => React.createElement('svg', {
-    'data-testid': key,
-    ...props
-  })])
+  const keys = Object.keys(icons).map(key => [
+    key,
+    React.forwardRef((props, ref) =>
+      React.createElement('svg', { 'data-testid': key, ...props, ref }))
+  ])
   return Object.fromEntries(keys)
 }, { virtual: true })
 

@@ -27,7 +27,8 @@ import {
   TableQuery,
   RequestPayload,
   SwitchStatusEnum,
-  isStrictOperationalSwitch
+  isStrictOperationalSwitch,
+  transformSwitchUnitStatus
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                    from '@acx-ui/user'
@@ -42,10 +43,11 @@ export const SwitchStatus = (
 ) => {
   if(row){
     const switchStatus = transformSwitchStatus(row.deviceStatus, row.configReady, row.syncedSwitchConfig, row.suspendingDeployTime)
+    const switchStatusString = row.isFirstLevel ? getSwitchStatusString(row) : transformSwitchUnitStatus(row.deviceStatus, row.configReady, row.syncedSwitchConfig)
     return (
       <span>
         <Badge color={handleStatusColor(switchStatus.deviceStatus)}
-          text={showText ? getSwitchStatusString(row) : ''}
+          text={showText ? switchStatusString : ''}
         />
       </span>
     )
@@ -59,7 +61,7 @@ const handleStatusColor = (status: DeviceConnectionStatus) => {
 
 export const defaultSwitchPayload = {
   searchString: '',
-  searchTargetFields: ['name', 'model', 'switchMac', 'ipAddress'],
+  searchTargetFields: ['name', 'model', 'switchMac', 'ipAddress', 'serialNumber'],
   fields: [
     'check-all','name','deviceStatus','model','activeSerial','switchMac','ipAddress','venueName','uptime',
     'clientCount','cog','id','serialNumber','isStack','formStacking','venueId','switchName','configReady',
@@ -170,7 +172,8 @@ export function SwitchTable (props : SwitchTableProps) {
       title: $t({ defaultMessage: 'Serial Number' }),
       dataIndex: 'activeSerial',
       sorter: true,
-      show: !!showAllColumns
+      show: !!showAllColumns,
+      searchable: searchable
     }, {
       key: 'switchMac',
       title: $t({ defaultMessage: 'MAC Address' }),
@@ -285,7 +288,7 @@ export function SwitchTable (props : SwitchTableProps) {
       return !!notOperational || !!invalid || !!hasStack
     },
     onClick: (selectedRows) => {
-      navigate(`stack/${selectedRows?.[0]?.venueId}/${selectedRows.map(row => row.serialNumber).join('_')}/add`, { replace: false })
+      navigate(`${linkToEditSwitch.pathname}/stack/${selectedRows?.[0]?.venueId}/${selectedRows.map(row => row.serialNumber).join('_')}/add`)
     }
   }, {
     label: $t({ defaultMessage: 'Delete' }),
@@ -351,8 +354,13 @@ export function SwitchTable (props : SwitchTableProps) {
       visible={importVisible}
       isLoading={importResult.isLoading}
       importError={importResult.error as FetchBaseQueryError}
-      importRequest={(formData) => {
-        importCsv({ params, payload: formData })
+      importRequest={async (formData) => {
+        await importCsv({ params, payload: formData }
+        ).unwrap().then(() => {
+          setImportVisible(false)
+        }).catch((error) => {
+          console.log(error) // eslint-disable-line no-console
+        })
       }}
       onClose={() => setImportVisible(false)}
     />

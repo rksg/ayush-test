@@ -101,7 +101,7 @@ const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
     <Row gutter={24} className={className}>
       <Col span={10}>
         <Form.Item>
-          <SpaceWrapper justifycontent='flex-start'>
+          <SpaceWrapper full justifycontent='flex-start'>
             <Tooltip
               title={isUpdating ?
                 $t({ defaultMessage: 'Updating, please wait' }) :
@@ -128,7 +128,7 @@ const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
           </SpaceWrapper>
         </Form.Item>
 
-        <SpaceWrapper className='descriptionsWrapper'>
+        <SpaceWrapper full className='descriptionsWrapper'>
           <Typography.Paragraph className='description greyText'>
             {$t(MessageMapping.enable_access_support_description)}
           </Typography.Paragraph>
