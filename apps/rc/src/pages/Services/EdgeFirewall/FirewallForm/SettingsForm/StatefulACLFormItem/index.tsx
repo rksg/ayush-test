@@ -39,18 +39,19 @@ const StatefulACLTable = (props: StatefulACLTableProps) => {
       title: $t({ defaultMessage: 'ACL Name' }),
       key: 'name',
       dataIndex: 'name',
-      width: 80
+      width: 300
     },
     {
       title: $t({ defaultMessage: 'Description' }),
       key: 'description',
       dataIndex: 'description',
-      width: 150
+      width: 400
     },
     {
       title: $t({ defaultMessage: 'Direction' }),
       key: 'direction',
       dataIndex: 'direction',
+      width: 100,
       render: (_, row) => {
         return getACLDirectionString($t, row.direction)
       }
@@ -59,6 +60,7 @@ const StatefulACLTable = (props: StatefulACLTableProps) => {
       title: $t({ defaultMessage: 'Rules' }),
       key: 'rules',
       dataIndex: 'rules',
+      width: 100,
       render: (_, row) => {
         return row.rules.length
       }

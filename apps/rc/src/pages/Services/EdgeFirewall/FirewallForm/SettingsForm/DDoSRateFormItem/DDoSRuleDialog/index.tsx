@@ -147,14 +147,15 @@ export const DDoSRuleDialog = styled((props: DDoSRuleDialogProps) => {
           <Form.Item name='rateLimiting'
             noStyle
             rules={[
-              { required: true },
-              { type: 'number', min: 0, max: 100 }
+              { required: true, message: $t({ defaultMessage: 'Please enter rate-limit' }) },
+              { type: 'number', min: 0 }
             ]}
+            initialValue={256}
           >
-            <InputNumber min={0} max={100} />
+            <InputNumber min={0} />
           </Form.Item>
           <span className='ant-form-text' style={{ marginLeft: 8 }}>
-            {$t({ defaultMessage: 'kps' })}
+            {$t({ defaultMessage: 'kbps' })}
           </span>
         </Form.Item>
       </Form>
