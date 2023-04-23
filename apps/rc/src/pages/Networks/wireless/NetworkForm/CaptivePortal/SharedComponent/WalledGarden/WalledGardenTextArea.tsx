@@ -56,12 +56,7 @@ function isExemption (guestNetworkTypeEnum: GuestNetworkTypeEnum) : boolean {
 export function WalledGardenTextArea (props: WalledGardenProps) {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  // const [toggleFlag, setToggleFlag] = useState(useIsSplitOn(Features.WIFI_EDA_BYPASS_CNA_TOGGLE))
   const toggleFlag = useIsSplitOn(Features.WIFI_EDA_BYPASS_CNA_TOGGLE)
-
-
   const { guestNetworkTypeEnum, enableDefaultWalledGarden } = props
 
   /**
@@ -113,8 +108,6 @@ export function WalledGardenTextArea (props: WalledGardenProps) {
     }
   }
 
-
-
   function actionRunnder (currentState: WalledGardenState, IncomingState: WalledGardenState) {
     switch (IncomingState.action) {
       case WallGardenAction.Clear:
@@ -136,7 +129,6 @@ export function WalledGardenTextArea (props: WalledGardenProps) {
     }
   }
 
-  // eslint-disable-next-line no-unused-vars
   const [_, dispatch] = useReducer(actionRunnder, statesCollection.initialState)
 
   // Effect to control the textarea since it won't reset when user click back and change protal type
@@ -158,7 +150,13 @@ export function WalledGardenTextArea (props: WalledGardenProps) {
   if (!isRenderNeed) {
     return null
   }
-
+  /**
+   * The reason why here we have to Form.item is because
+   * I want to try stay the same as the old code.
+   * So that we only extract the old code to a new component
+   * and no sigcanificant change to the submit/validate logic in NetworkForm.tsx
+   * The walledGardensString attribute will be deleted before submit
+   */
   return (<>
     <Form.Item
       data-testid='walled-garden-fullblock'
