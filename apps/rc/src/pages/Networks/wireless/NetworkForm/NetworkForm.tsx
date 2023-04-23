@@ -140,7 +140,8 @@ export default function NetworkForm (props:{
         formRef?.current?.setFieldsValue({ name: data.name + ' - copy' })
       }
       updateSaveData({ ...data, isCloudpathEnabled: data.authRadius?true:false,
-        enableAccountingService: data.accountingRadius?true:false })
+        enableAccountingService: (data.accountingRadius||
+          data.guestPortal?.wisprPage?.accountingRadius)?true:false })
     }
   }, [data])
 

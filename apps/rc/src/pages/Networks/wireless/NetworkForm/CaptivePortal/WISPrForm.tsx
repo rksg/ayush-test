@@ -94,7 +94,7 @@ export function WISPrForm () {
       if(data.guestPortal?.wisprPage?.authRadius?.secondary){
         form.setFieldValue('enableSecondaryAuthServer',true)
       }
-      if(data.guestPortal?.wisprPage?.accountingRadius){
+      if(data.enableAccountingService&&data.guestPortal?.wisprPage?.accountingRadius){
         form.setFieldValue('enableAccountingService', true)
         if(data.guestPortal?.wisprPage?.accountingRadius.secondary){
           form.setFieldValue('enableSecondaryAcctServer',true)

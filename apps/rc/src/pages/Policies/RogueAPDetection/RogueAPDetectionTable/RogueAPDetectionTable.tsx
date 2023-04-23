@@ -230,13 +230,15 @@ function useColumns (venueIds: string[]) {
     {
       key: 'description',
       title: $t({ defaultMessage: 'Description' }),
-      dataIndex: 'description'
+      dataIndex: 'description',
+      sorter: true
     },
     {
       key: 'numOfRules',
       title: $t({ defaultMessage: 'Classification Rules' }),
       dataIndex: 'numOfRules',
-      align: 'center'
+      align: 'center',
+      sorter: true
     },
     {
       key: 'venueIds',
@@ -244,6 +246,7 @@ function useColumns (venueIds: string[]) {
       dataIndex: 'venueIds',
       filterable: venueFilterOptions,
       align: 'center',
+      sorter: true,
       render: (data, row) => row.venueIds.length
     }
   ]

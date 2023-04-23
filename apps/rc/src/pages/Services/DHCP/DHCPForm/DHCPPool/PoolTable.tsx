@@ -7,8 +7,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { DHCPPool, LeaseUnit } from '@acx-ui/rc/utils'
-import { filterByAccess }      from '@acx-ui/user'
+import { defaultSort, DHCPPool, LeaseUnit, sortProp } from '@acx-ui/rc/utils'
+import { filterByAccess }                             from '@acx-ui/user'
 
 export function PoolTable (props:{
   readonly?: boolean
@@ -42,42 +42,31 @@ export function PoolTable (props:{
     }
   ]
 
-  const countIpRangeSize = (startIpAddress: string, endIpAddress: string): number =>{
-    const convertIpToLong = (ipAddress: string): number => {
-      const ipArray = ipAddress.split('.').map(ip => parseInt(ip, 10))
-      return ipArray[0] * 16777216 + ipArray[1] * 65536 + ipArray[2] * 256 + ipArray[3]
-    }
-
-    const startLong = convertIpToLong(startIpAddress)
-    const endLong = convertIpToLong(endIpAddress)
-
-    return endLong - startLong + 1
-  }
-
   const columns: TableProps<DHCPPool>['columns'] = [
     {
       key: 'name',
       title: $t({ defaultMessage: 'Pool Name' }),
       dataIndex: 'name',
-      sorter: true,
+      sorter: { compare: sortProp('name', defaultSort) },
       fixed: 'left'
     },
     {
       key: 'subnetAddress',
-      title: $t({ defaultMessage: 'IP Address' }),
+      title: $t({ defaultMessage: 'Subnet Address' }),
       dataIndex: 'subnetAddress',
-      sorter: true
+      sorter: { compare: sortProp('subnetAddress', defaultSort) }
     },
     {
       key: 'subnetMask',
       title: $t({ defaultMessage: 'Subnet Mask' }),
       dataIndex: 'subnetMask',
-      sorter: true
+      sorter: { compare: sortProp('subnetMask', defaultSort) }
     },
     {
       key: 'leaseTime',
       title: $t({ defaultMessage: 'Lease Time' }),
       dataIndex: 'leaseTime',
+      sorter: { compare: sortProp('leaseTime', defaultSort) },
       render: (data, row) =>{
         if(row.leaseUnit===LeaseUnit.HOURS){
           return <FormattedMessage defaultMessage='{number} Hours' values={{ number: data }} />
@@ -93,15 +82,14 @@ export function PoolTable (props:{
     {
       key: 'vlanId',
       title: $t({ defaultMessage: 'Vlan' }),
-      dataIndex: 'vlanId'
+      dataIndex: 'vlanId',
+      sorter: { compare: sortProp('vlanId', defaultSort) }
     },
     {
       key: 'NumberOfHosts',
       title: $t({ defaultMessage: 'Number of hosts' }),
-      dataIndex: 'subnetAddress',
-      render: (_data, row) =>{
-        return countIpRangeSize(row.startIpAddress, row.endIpAddress)
-      }
+      dataIndex: 'numberOfHosts',
+      sorter: { compare: sortProp('numberOfHosts', defaultSort) }
     }
   ]
   let actions = [{

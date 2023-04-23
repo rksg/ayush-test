@@ -13,10 +13,15 @@ import { Point }                                     from './styledComponents'
 
 import { HealthDrillDown } from '.'
 
+jest.mock('./healthPieChart', () => ({
+  HealthPieChart: () => <div>PIE chart</div>
+}))
+
 jest.mock('./impactedClientTable', () => ({
   ...jest.requireActual('./impactedClientTable'),
   ImpactedClientsTable: () => <div data-testid='impactedClientsTable' />
 }))
+
 describe('HealthDrillDown', () => {
   const filters = {
     startDate: '2022-01-01T00:00:00+08:00',

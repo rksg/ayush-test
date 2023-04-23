@@ -12,9 +12,8 @@ const MapRegionFormItem = () => {
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
 
   const {
-    data: preferenceData,
     currentMapRegion,
-    update: updatePreferences,
+    updatePartial: updatePreferences,
     getReqState,
     updateReqState
   } = usePreference()
@@ -22,7 +21,7 @@ const MapRegionFormItem = () => {
   const handleMapRegionChange = (regionCode:string) => {
     if (!regionCode) return
     const payload = {
-      global: { ...preferenceData?.global, mapRegion: regionCode }
+      global: { mapRegion: regionCode }
     }
 
     updatePreferences({ newData: payload })
