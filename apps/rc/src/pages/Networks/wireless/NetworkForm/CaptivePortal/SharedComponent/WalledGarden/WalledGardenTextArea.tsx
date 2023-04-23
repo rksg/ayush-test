@@ -129,7 +129,8 @@ export function WalledGardenTextArea (props: WalledGardenProps) {
     }
   }
 
-  const [_, dispatch] = useReducer(actionRunnder, statesCollection.initialState)
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+  const [state, dispatch] = useReducer(actionRunnder, statesCollection.initialState)
 
   // Effect to control the textarea since it won't reset when user click back and change protal type
   useEffect(() => {
