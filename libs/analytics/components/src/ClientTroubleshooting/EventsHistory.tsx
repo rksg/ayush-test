@@ -8,6 +8,7 @@ import AutoSizer              from 'react-virtualized-auto-sizer'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { ArrowCollapse }             from '@acx-ui/icons'
 import { TenantLink }                from '@acx-ui/react-router-dom'
+import { hasAccess }                 from '@acx-ui/user'
 
 import {
   DisplayEvent,
@@ -107,7 +108,9 @@ function WrappedItem (
       description={item.description} />
   </List.Item>
   return item.id
-    ? <TenantLink to={`analytics/incidents/${item.id}`}>{Item}</TenantLink>
+    ? hasAccess()
+      ? <TenantLink to={`analytics/incidents/${item.id}`}>{Item}</TenantLink>
+      : Item
     : <ConnectionEventPopover
       event={(item as FormattedEvent).event}
       onVisibleChange={onClick}
