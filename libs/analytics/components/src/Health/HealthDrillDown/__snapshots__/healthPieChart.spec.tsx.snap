@@ -20,7 +20,7 @@ exports[`HealthPieChart should render correctly for many connectionFailures 1`] 
            Top 5 Impacted WLANs
         </div>
         <div
-          style="height: 260px;"
+          style="height: 260px; min-width: 430px;"
         >
           <div
             style="text-align: center;"
@@ -355,7 +355,7 @@ exports[`HealthPieChart should render correctly for missing nodes data 1`] = `
            1 Impacted WLAN
         </div>
         <div
-          style="height: 260px;"
+          style="height: 260px; min-width: 430px;"
         >
           <div
             class="styledComponents__SinglePieChartWrapper-sc-1iwj7vu-12 kFdXHe"
@@ -511,7 +511,7 @@ exports[`HealthPieChart should render correctly for single ttc failures 1`] = `
            1 Impacted WLAN
         </div>
         <div
-          style="height: 260px;"
+          style="height: 260px; min-width: 430px;"
         >
           <div
             style="text-align: center;"

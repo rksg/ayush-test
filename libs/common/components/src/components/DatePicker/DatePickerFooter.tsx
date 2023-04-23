@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 
 import { range as timepickerRange } from 'lodash'
 import { useIntl }                  from 'react-intl'
@@ -52,6 +52,12 @@ export const DatePickerFooter = ({
   onDateApply
 }: DatePickerFooterProps) => {
   const { $t } = useIntl()
+  const initialTimePickerPanelState = timePickerConfig.reduce((acc, { id } ) => {
+    return { ...acc, [id]: false }
+  }, {})
+  const [isTimeSelectorOpen, setIsTimeSelectorOpen] = useState<
+    Record<number, boolean>
+  >(initialTimePickerPanelState)
   const onButtonClick = (type: string) => {
     if (type === 'cancel') {
       setRange(defaultValue)
@@ -63,6 +69,7 @@ export const DatePickerFooter = ({
       })
     }
     setIsCalendarOpen(false)
+    setIsTimeSelectorOpen(initialTimePickerPanelState)
   }
   const onTimePickerSelect = (config: typeof timePickerConfig[number], time: Moment) => {
     if (config.range === 'startDate' && time && time.isAfter(range.endDate)) {
@@ -70,6 +77,7 @@ export const DatePickerFooter = ({
     } else {
       setRange({ ...range, [config.range]: time })
     }
+    setIsTimeSelectorOpen({ ...isTimeSelectorOpen,[config.id]: !isTimeSelectorOpen[config.id] })
   }
   const disabledDateTime = useCallback((): DisabledTimes => {
     if (range.startDate && range.endDate && range.startDate.isSame(range.endDate, 'day')) {
@@ -95,10 +103,15 @@ export const DatePickerFooter = ({
                 placeholder=''
                 suffixIcon={<CaretDownSolid />}
                 allowClear={false}
+                open={isTimeSelectorOpen[config.id]}
                 getPopupContainer={(node: HTMLElement) => node}
                 onSelect={(time) => onTimePickerSelect(config, time)}
                 value={range[config.range as keyof DateRangeType]}
                 disabled={!range[config.range as keyof DateRangeType]}
+                onOpenChange={() => setIsTimeSelectorOpen({
+                  ...isTimeSelectorOpen,
+                  [config.id]: !isTimeSelectorOpen[config.id]
+                })}
                 disabledTime={
                   config.range === 'endDate'
                     ? disabledDateTime
