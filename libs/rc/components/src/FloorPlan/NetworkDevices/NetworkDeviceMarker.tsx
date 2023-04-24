@@ -14,7 +14,7 @@ import { getIntl }                                                         from 
 
 import { NetworkDeviceContext } from '..'
 
-import * as UI                                                                      from './styledComponent'
+import * as UI                                                                      from './styledComponents'
 import { useApMeshDevice }                                                          from './useApMeshDevice'
 import { calculateApColor, calculateDeviceColor, getDeviceName, getSnrDisplayInfo } from './utils'
 

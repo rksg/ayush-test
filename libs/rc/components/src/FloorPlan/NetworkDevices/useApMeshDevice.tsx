@@ -10,7 +10,7 @@ import ApMeshConnection, { genApMeshConnectionId }     from '../../ApMeshConnect
 import { getMeshRole }                                 from '../../Topology/utils'
 import { ApMeshTopologyDevice, ApMeshTopologyContext } from '../PlainView/ApMeshTopologyContext'
 
-import * as UI           from './styledComponent'
+import * as UI           from './styledComponents'
 import { getDeviceName } from './utils'
 
 type APMeshRoleWithoutDisabled = Exclude<APMeshRole, 'DISABLED'>

@@ -31,11 +31,12 @@ export interface ApMeshTopologyContextProviderProps {
   isApMeshTopologyEnabled: boolean
   floorplanId: string
   children: JSX.Element
+  venueId?: string
 }
 
 export function ApMeshTopologyContextProvider (props: ApMeshTopologyContextProviderProps ) {
-  const { children, isApMeshTopologyEnabled, floorplanId } = props
   const params = useParams<{ tenantId: string, venueId: string }>()
+  const { children, isApMeshTopologyEnabled, floorplanId, venueId = params.venueId } = props
   const isApMeshTopologyFFOn = useIsSplitOn(Features.AP_MESH_TOPOLOGY)
 
   const apMeshListPayload = {
@@ -43,7 +44,7 @@ export function ApMeshTopologyContextProvider (props: ApMeshTopologyContextProvi
       'meshRole', 'hops', 'apRssis', 'xPercent', 'yPercent', 'floorplanId'],
     filters: {
       meshRole: [APMeshRole.RAP, APMeshRole.MAP, APMeshRole.EMAP],
-      venueId: [params.venueId]
+      venueId: [venueId]
     }
   }
   // eslint-disable-next-line max-len
@@ -56,7 +57,9 @@ export function ApMeshTopologyContextProvider (props: ApMeshTopologyContextProvi
     skip: !isApMeshTopologyFFOn
   })
 
-  const { data: apMeshTopologyData } = useGetApMeshTopologyQuery({ params }, {
+  const { data: apMeshTopologyData } = useGetApMeshTopologyQuery({
+    params: { tenantId: params.tenantId, venueId }
+  }, {
     skip: !isApMeshTopologyFFOn
   })
 
