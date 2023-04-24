@@ -50,7 +50,7 @@ const FirewallDetail = () => {
         $t(
           { defaultMessage: '{status} ({rulesCount} rules)' },
           {
-            status: edgeFirewallData.ddosRateLimitingRules ?
+            status: edgeFirewallData.ddosEnabled ?
               $t({ defaultMessage: 'ON' }):
               $t({ defaultMessage: 'OFF' }),
             rulesCount: Object.keys(edgeFirewallData?.ddosRateLimitingRules || []).length
@@ -69,10 +69,10 @@ const FirewallDetail = () => {
               $t({ defaultMessage: 'OFF' }),
             inCount: edgeFirewallData.statefulAcls?.filter(item =>
               item.aclDirection === ACLDirection.INBOUND
-            )[0]?.aclRuleNum,
+            )[0]?.aclRuleNum || 0,
             outCount: edgeFirewallData.statefulAcls?.filter(item =>
               item.aclDirection === ACLDirection.OUTBOUND
-            )[0]?.aclRuleNum
+            )[0]?.aclRuleNum || 0
           }
         )
       )
@@ -88,14 +88,14 @@ const FirewallDetail = () => {
           {
             text: $t({ defaultMessage: 'Firewall' }),
             link: getServiceRoutePath({
-              type: ServiceType.FIREWALL,
+              type: ServiceType.EDGE_FIREWALL,
               oper: ServiceOperation.LIST
             })
           }
         ]}
         extra={filterByAccess([
           <TenantLink to={getServiceDetailsLink({
-            type: ServiceType.FIREWALL,
+            type: ServiceType.EDGE_FIREWALL,
             oper: ServiceOperation.EDIT,
             serviceId: params.serviceId!
           })}>
@@ -137,7 +137,7 @@ const FirewallDetail = () => {
                 )}
               </Typography.Title>
             </UI.InstancesMargin>
-            <EdgeTable edgeIds={edgeFirewallData.edgeIds || []} />
+            <EdgeTable edgeIds={edgeFirewallData.edgeIds || ['']} />
           </Card>
         </Space>
       </Loader>

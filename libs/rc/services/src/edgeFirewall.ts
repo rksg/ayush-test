@@ -31,10 +31,9 @@ export const edgeFirewallApi = baseEdgeFirewallApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'AddEdgeFirewallServiceProfile',
-            'UpdateEdgeFirewallServiceProfile',
-            'DeleteEdgeFirewallServiceProfile',
-            'DeleteEdgeFirewallServiceProfile'
+            'Add Firewall',
+            'Update Firewall',
+            'Delete Firewall'
           ], () => {
             api.dispatch(serviceApi.util.invalidateTags([
               { type: 'Service', id: 'LIST' }
@@ -87,10 +86,9 @@ export const edgeFirewallApi = baseEdgeFirewallApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'AddEdgeFirewallServiceProfile',
-            'UpdateEdgeFirewallServiceProfile',
-            'DeleteEdgeFirewallServiceProfile',
-            'DeleteEdgeFirewallServiceProfile'
+            'Add Firewall',
+            'Update Firewall',
+            'Delete Firewall'
           ], () => {
             api.dispatch(serviceApi.util.invalidateTags([
               { type: 'Service', id: 'LIST' }

@@ -90,8 +90,8 @@ import DpskForm                   from './pages/Services/Dpsk/DpskForm/DpskForm'
 import DpskTable                  from './pages/Services/Dpsk/DpskTable/DpskTable'
 import AddFirewall                from './pages/Services/EdgeFirewall/AddFirewall'
 import EditFirewall               from './pages/Services/EdgeFirewall/EditFirewall'
-import FirewallDetail             from './pages/Services/Firewall/FirewallDetail'
-import FirewallTable              from './pages/Services/Firewall/FirewallTable'
+import FirewallDetail             from './pages/Services/EdgeFirewall/FirewallDetail'
+import FirewallTable              from './pages/Services/EdgeFirewall/FirewallTable'
 import MdnsProxyDetail            from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
 import MdnsProxyForm              from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
 import MdnsProxyTable             from './pages/Services/MdnsProxy/MdnsProxyTable/MdnsProxyTable'
@@ -383,11 +383,14 @@ function ServiceRoutes () {
         element={<EditDhcp />}
       />
       <Route
-        path={getServiceRoutePath({ type: ServiceType.FIREWALL, oper: ServiceOperation.LIST })}
+        path={getServiceRoutePath({ type: ServiceType.EDGE_FIREWALL, oper: ServiceOperation.LIST })}
         element={<FirewallTable />}
       />
       <Route
-        path={getServiceRoutePath({ type: ServiceType.FIREWALL, oper: ServiceOperation.DETAIL })}
+        path={getServiceRoutePath({
+          type: ServiceType.EDGE_FIREWALL,
+          oper: ServiceOperation.DETAIL
+        })}
         element={<FirewallDetail />}
       />
       <Route

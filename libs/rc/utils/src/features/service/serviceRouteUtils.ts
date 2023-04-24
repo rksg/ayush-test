@@ -42,8 +42,7 @@ const typePathMapping: Record<ServiceType, string> = {
   [ServiceType.MDNS_PROXY]: 'mdnsProxy',
   [ServiceType.DPSK]: 'dpsk',
   [ServiceType.NETWORK_SEGMENTATION]: 'networkSegmentation',
-  [ServiceType.WEBAUTH_SWITCH]: 'webAuth',
-  [ServiceType.FIREWALL]: 'firewall'
+  [ServiceType.WEBAUTH_SWITCH]: 'webAuth'
 }
 
 function hasTab ({ type, oper }: ServiceRoutePathProps): boolean {

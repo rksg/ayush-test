@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps } from '@acx-ui/components'
@@ -28,6 +30,13 @@ export const EdgeTable = (props: EdgeTableProps) => {
       skip: props.edgeIds.length === 0
     }
   })
+
+  useEffect(() => {
+    tableQuery.setPayload({
+      ...tableQuery.payload,
+      filters: { serialNumber: props.edgeIds }
+    })
+  }, [props.edgeIds])
 
   const columns: TableProps<EdgeStatus>['columns'] = [
     {

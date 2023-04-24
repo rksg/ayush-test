@@ -118,8 +118,7 @@ export enum ServiceType {
   MDNS_PROXY = 'mDNS Proxy',
   DPSK = 'DPSK',
   NETWORK_SEGMENTATION = 'Network Segmentation',
-  WEBAUTH_SWITCH = 'Web Auth',
-  FIREWALL = 'Firewall'
+  WEBAUTH_SWITCH = 'Web Auth'
 }
 
 export enum ServiceStatus {

@@ -1,12 +1,25 @@
 import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import { Button, Loader, PageHeader, Table, TableProps, Tooltip, showActionModal }                 from '@acx-ui/components'
-import { useDeleteEdgeFirewallMutation, useGetEdgeFirewallViewDataListQuery, useGetEdgeListQuery } from '@acx-ui/rc/services'
+import {
+  Button,
+  Loader,
+  PageHeader,
+  Table,
+  TableProps,
+  Tooltip,
+  showActionModal
+} from '@acx-ui/components'
+import {
+  useDeleteEdgeFirewallMutation,
+  useGetEdgeFirewallViewDataListQuery,
+  useGetEdgeListQuery
+} from '@acx-ui/rc/services'
 import {
   DdosAttackType,
   EdgeFirewallViewData,
-  ServiceOperation, ServiceType,
+  ServiceOperation,
+  ServiceType,
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath,
@@ -65,7 +78,7 @@ const FirewallTable = () => {
       render: (data, row) => {
         return (
           <TenantLink to={getServiceDetailsLink({
-            type: ServiceType.FIREWALL,
+            type: ServiceType.EDGE_FIREWALL,
             oper: ServiceOperation.DETAIL,
             serviceId: row.id!
           })}>
@@ -179,7 +192,7 @@ const FirewallTable = () => {
         navigate({
           ...basePath,
           pathname: `${basePath.pathname}/` + getServiceDetailsLink({
-            type: ServiceType.FIREWALL,
+            type: ServiceType.EDGE_FIREWALL,
             oper: ServiceOperation.EDIT,
             serviceId: selectedRows[0].id!
           })
@@ -199,7 +212,7 @@ const FirewallTable = () => {
           },
           onOk: () => {
             rows.length === 1 ?
-              deleteEdgeFirewall({ params: { firewallId: rows[0].id } })
+              deleteEdgeFirewall({ params: { serviceId: rows[0].id } })
                 .then(clearSelection) :
               deleteEdgeFirewall({ payload: rows.map(item => item.id) })
                 .then(clearSelection)
@@ -223,7 +236,7 @@ const FirewallTable = () => {
         ]}
         extra={filterByAccess([
           // eslint-disable-next-line max-len
-          <TenantLink to={getServiceRoutePath({ type: ServiceType.FIREWALL, oper: ServiceOperation.CREATE })}>
+          <TenantLink to={getServiceRoutePath({ type: ServiceType.EDGE_FIREWALL, oper: ServiceOperation.CREATE })}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Firewall Service' })}</Button>
           </TenantLink>
         ])}

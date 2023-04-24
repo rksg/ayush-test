@@ -78,7 +78,7 @@ describe('Firewall Table', () => {
     await user.click(screen.getByRole('button', { name: 'Edit' }))
 
     const editPath = getServiceDetailsLink({
-      type: ServiceType.FIREWALL,
+      type: ServiceType.EDGE_FIREWALL,
       oper: ServiceOperation.EDIT,
       serviceId: '1'
     })
