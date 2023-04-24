@@ -105,7 +105,7 @@ export function FloorPlan () {
   useEffect(() => {
     if (!isApMeshTopologyFFOn || !apsList?.data || isEmpty(unplacedDevicesState.ap)) return
 
-    if (unplacedDevicesState.ap.some(ap => ap.meshRole)) return
+    if (unplacedDevicesState.ap.some(ap => ap.meshRole)) return //XXX  Don't proceed if there is any AP has been set the mesh role
 
     const apDevices = [...unplacedDevicesState.ap]
 

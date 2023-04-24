@@ -4,6 +4,7 @@ import { DndProvider }  from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { act }          from 'react-dom/test-utils'
 
+import { useIsSplitOn }                                                                          from '@acx-ui/feature-toggle'
 import { ApDeviceStatusEnum, CommonUrlsInfo, FloorPlanDto, NetworkDeviceType, SwitchStatusEnum } from '@acx-ui/rc/utils'
 import { Provider }                                                                              from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved }             from '@acx-ui/test-utils'
@@ -60,6 +61,16 @@ const deviceData = {
       {
         deviceStatus: ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD,
         floorplanId: '',
+        id: '931704001509',
+        name: 'R510-ROOT',
+        serialNumber: '931704001509',
+        xPercent: 0,
+        yPercent: 0,
+        networkDeviceType: NetworkDeviceType.ap
+      },
+      {
+        deviceStatus: ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD,
+        floorplanId: '',
         id: '302002015732',
         name: '3 02002015736',
         serialNumber: '302002015732',
@@ -99,6 +110,31 @@ const imageObj = { '01acff37331949c686d40b5a00822ec2-001.jpeg': {
   // eslint-disable-next-line max-len
   signedUrl: 'https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png'
 }
+}
+
+const meshApList = {
+  fields: [],
+  totalCount: 4,
+  page: 1,
+  data: [
+    {
+      serialNumber: '931704001509',
+      name: 'R510-ROOT',
+      model: 'R510',
+      fwVersion: '6.2.1.103.2538',
+      venueId: '101988f2bbcd431884de9a7e6a5875c4',
+      venueName: 'Mesh_setup',
+      deviceStatus: '2_00_Operational',
+      IP: '10.174.116.170',
+      apMac: '0C:F4:D5:27:3B:90',
+      apStatusData: {},
+      meshRole: 'RAP',
+      deviceGroupId: '24d56c947b924a6a9ec001f2d9f414f7',
+      deviceGroupName: '',
+      poePort: '0',
+      healthStatus: 'Excellent'
+    }
+  ]
 }
 
 describe('Floor Plans', () => {
@@ -262,4 +298,23 @@ describe('Floor Plans', () => {
     expect(sortByFloorNumber(list[0], { ...list[1], floorNumber: 0 })).toEqual(0)
   })
 
+  it('should render unplaced AP with mesh role', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (req, res, ctx) => res(ctx.json({ ...meshApList }))
+      )
+    )
+
+    render(<Provider><DndProvider backend={HTML5Backend}><FloorPlan />
+    </DndProvider></Provider>, {
+      route: { params, path: '/:tenantId/venue/:venueId/floor-plan' }
+    })
+
+
+    fireEvent.click(await screen.findByRole('button', { name: /Unplaced Devices/ }))
+    expect(await screen.findByText('R510-ROOT (R)')).toBeInTheDocument()
+  })
 })
