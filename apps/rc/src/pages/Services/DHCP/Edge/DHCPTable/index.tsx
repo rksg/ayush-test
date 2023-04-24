@@ -26,15 +26,15 @@ const EdgeDhcpTable = () => {
       'updateAvailable',
       'serviceVersion',
       'tags'
-    ],
-    filters: {},
-    sortField: 'serviceName',
-    sortOrder: 'ASC',
-    searchTargetFields: ['serviceName']
+    ]
   }
   const tableQuery = useTableQuery({
     useQuery: useGetDhcpStatsQuery,
     defaultPayload: getDhcpStatsPayload,
+    sorter: {
+      sortField: 'serviceName',
+      sortOrder: 'ASC'
+    },
     search: {
       searchTargetFields: ['serviceName']
     }
@@ -45,7 +45,7 @@ const EdgeDhcpTable = () => {
     sortField: 'name',
     sortOrder: 'ASC'
   }
-  const { edgeOptions } = useGetEdgeListQuery(
+  const { edgeOptions = [] } = useGetEdgeListQuery(
     { payload: edgeOptionsDefaultPayload },
     {
       selectFromResult: ({ data }) => {
