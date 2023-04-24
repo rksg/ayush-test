@@ -6,12 +6,12 @@ import { FormattedMessage }       from 'react-intl'
 
 import { Button } from '@acx-ui/components'
 
-import { LinkButton } from '../styledComponents'
+import * as UI from '../styledComponents'
 
 const name = 'link' as const
 const label = defineMessage({ defaultMessage: 'Call Details' })
 
-export function TestLink ({ link }:{ link: string }) {
+export function TestLink ({ link, width='524px' }:{ link: string, width?: string }) {
   const { $t } = useIntl()
   const [copied, setCopied] = useState(false)
   const onCopy = async () => {
@@ -32,7 +32,7 @@ export function TestLink ({ link }:{ link: string }) {
     }}
   />
 
-  return <Form.Item
+  return <UI.FormItemNormal
     name={name}
     label={$t(label)}
     extra={
@@ -40,7 +40,7 @@ export function TestLink ({ link }:{ link: string }) {
     }
     children={
       <Space>
-        <LinkButton type='link'>
+        <UI.LinkButton type='link' style={{ width }}>
           <a
             className='link'
             target='_blank'
@@ -48,7 +48,7 @@ export function TestLink ({ link }:{ link: string }) {
             rel='noreferrer'>
             {link}
           </a>
-        </LinkButton>
+        </UI.LinkButton>
         <Button
           type='primary'
           style={{ marginLeft: 7 }}
