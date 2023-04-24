@@ -264,6 +264,10 @@ describe('formatter', () => {
       expect(formatter(DateFormatEnum.DateTimeFormatWithSeconds)(1456885800000))
         .toBe('Mar 02 2016 02:30:00')
     })
+    it('Should format a timestamp to default format having HH:mm without date', () => {
+      expect(formatter(DateFormatEnum.OnlyTime)(1456885800000))
+        .toBe('02:30')
+    })
     it('Should format based on user profile setting', () => {
       const userProfile = getUserProfile()
       setUserProfile({ ...userProfile, profile: {
