@@ -7,7 +7,6 @@ export * from './networkSegmentationService'
 export * from './mdnsProxyService'
 export * from './portalService'
 
-
 export enum AccessEnum {
   ALLOW = 'Allow',
   BLOCK = 'Block'
