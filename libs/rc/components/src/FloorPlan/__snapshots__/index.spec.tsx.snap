@@ -402,7 +402,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
             type="button"
           >
             <span>
-              Unplaced Devices (1)
+              Unplaced Devices (2)
             </span>
           </button>
         </div>
@@ -656,7 +656,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
             type="button"
           >
             <span>
-              Unplaced Devices (1)
+              Unplaced Devices (2)
             </span>
           </button>
         </div>
