@@ -1,27 +1,50 @@
-import { useIntl } from 'react-intl'
-import AutoSizer   from 'react-virtualized-auto-sizer'
+import { useEffect } from 'react'
+
+import { connect }  from 'echarts'
+import ReactECharts from 'echarts-for-react'
+import { useIntl }  from 'react-intl'
+import AutoSizer    from 'react-virtualized-auto-sizer'
 
 import { TimeSeriesDataType, getSeriesData } from '@acx-ui/analytics/utils'
-import { Card, GridCol, GridRow,
-  Loader, MultiLineTimeSeriesChart,
-  NoData, PageHeader, Table,
-  TableProps, TrendPill, TrendType } from '@acx-ui/components'
+import {
+  Card,
+  GridCol,
+  GridRow,
+  Loader,
+  MultiLineTimeSeriesChart,
+  NoData,
+  PageHeader,
+  Table,
+  TableProps,
+  TrendPill,
+  TrendType,
+  cssStr
+} from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { TenantLink, useParams }     from '@acx-ui/react-router-dom'
 
 import { DetailedResponse, Participants, useVideoCallQoeTestDetailsQuery } from '../VideoCallQoe/services'
 
-import { getConnectionQuality } from './connectionQuality'
-import * as UI                  from './styledComponents'
+import { getConnectionQuality, zoomStatsThresholds } from './connectionQuality'
+import * as UI                                       from './styledComponents'
 
-
-export function VideoCallQoeDetails (){
+export function VideoCallQoeDetails () {
   const { $t } = useIntl()
   const { testId } = useParams()
   const queryResults = useVideoCallQoeTestDetailsQuery({ testId: Number(testId),status: 'ENDED' })
   const callQoeDetails = queryResults.data?.getAllCallQoeTests.at(0)
   const currentMeeting = callQoeDetails?.meetings.at(0)
   const participants = currentMeeting?.participants
+
+  // Connect charts
+  const connectChart = (chart: ReactECharts | null) => {
+    if (chart) {
+      const instance = chart.getEchartsInstance()
+      instance.group = 'group'
+    }
+  }
+  useEffect(() => { connect('group') }, [])
+
   const columnHeaders: TableProps<Participants>['columns'] = [
     {
       title: $t({ defaultMessage: 'Client MAC' }),
@@ -239,16 +262,16 @@ export function VideoCallQoeDetails (){
       </>}
       {callQoeDetails &&
         <UI.CharsContainer>
-          <UI.ReportSectionTitle style={{ padding: '10px 0px' }}>
+          <UI.ReportSectionTitle style={{ padding: '15px 0px' }}>
             {$t({ defaultMessage: 'Zoom Call Statistics' })}
           </UI.ReportSectionTitle>
           <GridRow>
             <GridCol col={{ span: 12 }}>
-              <UI.Label>Participant 1: </UI.Label>
+              <UI.Label>{$t({ defaultMessage: 'Participant 1' })}</UI.Label>
               <UI.Value>{getParticipantName(callQoeDetails,0)}</UI.Value>
             </GridCol>
             <GridCol col={{ span: 12 }}>
-              <UI.Label>Participant 2: </UI.Label>
+              <UI.Label>{$t({ defaultMessage: 'Participant 2' })}</UI.Label>
               <UI.Value>{getParticipantName(callQoeDetails,1)}</UI.Value>
             </GridCol>
             <GridCol col={{ span: 24 }}>
@@ -260,6 +283,15 @@ export function VideoCallQoeDetails (){
                   {({ height, width }) => (
                     getSeries(callQoeDetails, 'jitter', 0).length ?
                       <MultiLineTimeSeriesChart
+                        chartRef={connectChart}
+                        markerAreas={[{
+                          start: zoomStatsThresholds.JITTER,
+                          itemStyle: { opacity: 0.05, color: cssStr('--acx-semantics-red-50') }
+                        }]}
+                        markerLines={[{
+                          threshold: zoomStatsThresholds.JITTER,
+                          lineStyle: { opacity: 0.5, color: cssStr('--acx-semantics-red-50') }
+                        }]}
                         style={{ width: width, height }}
                         data={getSeries(callQoeDetails, 'jitter', 0)}
                         dataFormatter={formatter('durationFormat')}
@@ -275,6 +307,15 @@ export function VideoCallQoeDetails (){
                   {({ height, width }) => (
                     getSeries(callQoeDetails, 'jitter', 1).length ?
                       <MultiLineTimeSeriesChart
+                        chartRef={connectChart}
+                        markerAreas={[{
+                          start: zoomStatsThresholds.JITTER,
+                          itemStyle: { opacity: 0.05, color: cssStr('--acx-semantics-red-50') }
+                        }]}
+                        markerLines={[{
+                          threshold: zoomStatsThresholds.JITTER,
+                          lineStyle: { opacity: 0.5, color: cssStr('--acx-semantics-red-50') }
+                        }]}
                         style={{ width: width, height }}
                         data={getSeries(callQoeDetails, 'jitter', 1)}
                         dataFormatter={formatter('durationFormat')}
@@ -293,6 +334,15 @@ export function VideoCallQoeDetails (){
                   {({ height, width }) => (
                     getSeries(callQoeDetails, 'latency', 0).length ?
                       <MultiLineTimeSeriesChart
+                        chartRef={connectChart}
+                        markerAreas={[{
+                          start: zoomStatsThresholds.LATENCY,
+                          itemStyle: { opacity: 0.05, color: cssStr('--acx-semantics-red-50') }
+                        }]}
+                        markerLines={[{
+                          threshold: zoomStatsThresholds.LATENCY,
+                          lineStyle: { opacity: 0.5, color: cssStr('--acx-semantics-red-50') }
+                        }]}
                         style={{ width: width, height }}
                         data={getSeries(callQoeDetails, 'latency', 0)}
                         dataFormatter={formatter('durationFormat')}
@@ -308,6 +358,15 @@ export function VideoCallQoeDetails (){
                   {({ height, width }) => (
                     getSeries(callQoeDetails, 'latency', 1).length ?
                       <MultiLineTimeSeriesChart
+                        chartRef={connectChart}
+                        markerAreas={[{
+                          start: zoomStatsThresholds.LATENCY,
+                          itemStyle: { opacity: 0.05, color: cssStr('--acx-semantics-red-50') }
+                        }]}
+                        markerLines={[{
+                          threshold: zoomStatsThresholds.LATENCY,
+                          lineStyle: { opacity: 0.5, color: cssStr('--acx-semantics-red-50') }
+                        }]}
                         style={{ width: width, height }}
                         data={getSeries(callQoeDetails, 'latency', 1)}
                         dataFormatter={formatter('durationFormat')}
@@ -326,6 +385,15 @@ export function VideoCallQoeDetails (){
                   {({ height, width }) => (
                     getSeries(callQoeDetails, 'packet_loss', 0).length ?
                       <MultiLineTimeSeriesChart
+                        chartRef={connectChart}
+                        markerAreas={[{
+                          start: zoomStatsThresholds.PACKET_LOSS,
+                          itemStyle: { opacity: 0.05, color: cssStr('--acx-semantics-red-50') }
+                        }]}
+                        markerLines={[{
+                          threshold: zoomStatsThresholds.PACKET_LOSS,
+                          lineStyle: { opacity: 0.5, color: cssStr('--acx-semantics-red-50') }
+                        }]}
                         style={{ width: width, height }}
                         data={getSeries(callQoeDetails, 'packet_loss', 0)}
                         dataFormatter={formatter('percent')}
@@ -341,6 +409,15 @@ export function VideoCallQoeDetails (){
                   {({ height, width }) => (
                     getSeries(callQoeDetails, 'packet_loss', 1).length ?
                       <MultiLineTimeSeriesChart
+                        chartRef={connectChart}
+                        markerAreas={[{
+                          start: zoomStatsThresholds.PACKET_LOSS,
+                          itemStyle: { opacity: 0.05, color: cssStr('--acx-semantics-red-50') }
+                        }]}
+                        markerLines={[{
+                          threshold: zoomStatsThresholds.PACKET_LOSS,
+                          lineStyle: { opacity: 0.5, color: cssStr('--acx-semantics-red-50') }
+                        }]}
                         style={{ width: width, height }}
                         data={getSeries(callQoeDetails, 'packet_loss', 1)}
                         dataFormatter={formatter('percent')}
@@ -359,6 +436,16 @@ export function VideoCallQoeDetails (){
                   {({ height, width }) => (
                     getSeries(callQoeDetails, 'video_frame_rate', 0, true).length ?
                       <MultiLineTimeSeriesChart
+                        chartRef={connectChart}
+                        markerAreas={[{
+                          start: 0,
+                          end: zoomStatsThresholds.VIDEO_FRAME_RATE,
+                          itemStyle: { opacity: 0.05, color: cssStr('--acx-semantics-red-50') }
+                        }]}
+                        markerLines={[{
+                          threshold: zoomStatsThresholds.VIDEO_FRAME_RATE,
+                          lineStyle: { opacity: 0.5, color: cssStr('--acx-semantics-red-50') }
+                        }]}
                         style={{ width: width, height }}
                         data={getSeries(callQoeDetails, 'video_frame_rate', 0, true)}
                         dataFormatter={formatter('fpsFormat')}
@@ -374,6 +461,16 @@ export function VideoCallQoeDetails (){
                   {({ height, width }) => (
                     getSeries(callQoeDetails, 'video_frame_rate', 1, true).length ?
                       <MultiLineTimeSeriesChart
+                        chartRef={connectChart}
+                        markerAreas={[{
+                          start: 0,
+                          end: zoomStatsThresholds.VIDEO_FRAME_RATE,
+                          itemStyle: { opacity: 0.05, color: cssStr('--acx-semantics-red-50') }
+                        }]}
+                        markerLines={[{
+                          threshold: zoomStatsThresholds.VIDEO_FRAME_RATE,
+                          lineStyle: { opacity: 0.5, color: cssStr('--acx-semantics-red-50') }
+                        }]}
                         style={{ width: width, height }}
                         data={getSeries(callQoeDetails, 'video_frame_rate', 1, true)}
                         dataFormatter={formatter('fpsFormat')}

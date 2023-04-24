@@ -6,6 +6,13 @@ const rssGroups = {
   bad: { upper: -86 }
 }
 
+export const zoomStatsThresholds = {
+  JITTER: 40,
+  LATENCY: 150,
+  PACKET_LOSS: 2,
+  VIDEO_FRAME_RATE: 15
+}
+
 const getRSSConnectionQuality = (value:number|null) => {
   if (value === null || value === undefined) return null
   if (value >= rssGroups.good.lower) return 'good'

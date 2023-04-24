@@ -22,7 +22,10 @@ export const Label = styled.span`
     line-height: var(--acx-body-4-line-height);
 `
 export const Value = styled.span`
+    margin-top: 4px;
     color: var(--acx-primary-black);
-    font-size: var(--acx-body-4-font-size);
-    line-height: var(--acx-body-4-line-height);
+    font-size: var(--acx-headline-4-font-size);
+    line-height: var(--acx-headline-4-line-height);
+    font-family: var(--acx-accent-brand-font);
+    font-weight: var(--acx-headline-4-font-weight-bold);
 `
