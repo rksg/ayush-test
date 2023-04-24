@@ -30,6 +30,7 @@ import { hasRoles }                                            from '@acx-ui/use
 export function useMenuConfig () {
   const { $t } = useIntl()
   const showSV = useIsTierAllowed('ANLT-ADV')
+  const showVideoCallQoe = useIsSplitOn(Features.VIDEO_CALL_QOE)
 
   const earlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
   const isEdgeEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
@@ -55,19 +56,35 @@ export function useMenuConfig () {
       activeIcon: AISolid,
       children: [
         {
-          uri: '/analytics/incidents',
-          label: $t({ defaultMessage: 'Incidents' })
+          type: 'group' as const,
+          label: $t({ defaultMessage: 'AI Analytics' }),
+          children: [
+            {
+              uri: '/analytics/incidents',
+              label: $t({ defaultMessage: 'Incidents' })
+            }
+          ]
         },
         {
-          uri: '/analytics/health',
-          label: $t({ defaultMessage: 'Health' })
-        },
-        ...(showSV ? [{
-          uri: '/serviceValidation/networkHealth',
-          label: $t({ defaultMessage: 'Service Validation' })
-        }] : [])
+          type: 'group' as const,
+          label: $t({ defaultMessage: 'Network Assurance' }),
+          children: [
+            {
+              uri: '/analytics/health',
+              label: $t({ defaultMessage: 'Health' })
+            },
+            ...(showSV ? [{
+              uri: '/serviceValidation/networkHealth',
+              label: $t({ defaultMessage: 'Service Validation' })
+            }] : []),
+            ...(showVideoCallQoe ? [{
+              uri: '/serviceValidation/videoCallQoe',
+              label: $t({ defaultMessage: 'Video Call QoE' })
+            }] : [])
+          ]
+        }
       ]
-    }] : []),
+    }]: []),
     {
       uri: '/venues',
       label: $t({ defaultMessage: 'Venues' }),
@@ -139,7 +156,7 @@ export function useMenuConfig () {
             },
             {
               uri: '/reports/aps',
-              label: $t({ defaultMessage: 'AP Report' }),
+              label: $t({ defaultMessage: 'Access Point Report' }),
               isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
             },
             {

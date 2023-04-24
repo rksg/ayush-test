@@ -7,6 +7,7 @@ import { Modal }                from '@acx-ui/components'
 import {
   AclExtendedRule,
   AclStandardRule,
+  validateAclRuleSequence,
   validateSwitchStaticRouteIp
 } from '@acx-ui/rc/utils'
 
@@ -65,7 +66,15 @@ export function ACLRuleModal (props: {
         <Form.Item name='sequence'
           label={$t({ defaultMessage: 'Sequence' })}
           rules={[
-            { required: true }
+            { required: true },
+            { validator: (_, value) => {
+              if(props.editRecord?.sequence !== value && props.currrentRecords) {
+                return validateAclRuleSequence(value, props.currrentRecords)
+              }else {
+                return Promise.resolve()
+              }
+            }
+            }
           ]}
           children={
             <InputNumber

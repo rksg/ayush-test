@@ -218,6 +218,7 @@ export function LicenseBanner (props: BannerProps) {
     return multipleRender()
   }
 
-  return <> { !_.isEmpty(expireList) && isFFEnabled && licenseRender()}
-  </>
+  return <UI.LicenseWrapper>
+    {!_.isEmpty(expireList) && isFFEnabled && licenseRender()}
+  </UI.LicenseWrapper>
 }

@@ -12,9 +12,12 @@ import {
   useUpdateEdgeFirmwareMutation
 } from '@acx-ui/rc/services'
 import {
+  dateSort,
+  defaultSort,
   EdgeVenueFirmware,
   FirmwareCategory,
-  firmwareTypeTrans
+  firmwareTypeTrans,
+  sortProp
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
@@ -41,15 +44,15 @@ export function VenueFirmwareList () {
       title: $t({ defaultMessage: 'Venue Name' }),
       key: 'name',
       dataIndex: 'name',
-      sorter: true,
+      sorter: { compare: sortProp('name', defaultSort) },
       defaultSortOrder: 'ascend',
       width: 120
     },
     {
       title: $t({ defaultMessage: 'Current Edge Firmware' }),
-      key: 'versions[0].version',
-      dataIndex: 'versions[0].version',
-      sorter: true,
+      key: 'versions[0].name',
+      dataIndex: 'versions[0].name',
+      sorter: { compare: sortProp('versions[0].name', defaultSort) },
       render: function (data, row) {
         return row.versions?.[0]?.name || '--'
       },
@@ -59,7 +62,7 @@ export function VenueFirmwareList () {
       title: $t({ defaultMessage: 'Firmware Type' }),
       key: 'versions[0].category',
       dataIndex: 'versions[0].category',
-      sorter: true,
+      sorter: { compare: sortProp('versions[0].category', defaultSort) },
       render: function (data, row) {
         if (!row.versions?.[0]) return '--'
         const text = transform(row.versions[0].category as FirmwareCategory, 'type')
@@ -71,9 +74,9 @@ export function VenueFirmwareList () {
     },
     {
       title: $t({ defaultMessage: 'Last Update' }),
-      key: 'lastUpdate',
-      dataIndex: 'lastUpdate',
-      sorter: true,
+      key: 'updatedDate',
+      dataIndex: 'updatedDate',
+      sorter: { compare: sortProp('updatedDate', dateSort) },
       render: function (data, row) {
         if (!row.updatedDate) return '--'
         return toUserDate(row.updatedDate)

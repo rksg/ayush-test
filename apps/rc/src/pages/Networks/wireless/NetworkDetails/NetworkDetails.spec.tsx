@@ -1,13 +1,17 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                     from '@acx-ui/store'
-import { mockServer, render, screen }   from '@acx-ui/test-utils'
+import { CommonUrlsInfo, WifiUrlsInfo }   from '@acx-ui/rc/utils'
+import { Provider }                       from '@acx-ui/store'
+import { mockServer, render, screen }     from '@acx-ui/test-utils'
+import { RolesEnum }                      from '@acx-ui/types'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
 
 import NetworkDetails from './NetworkDetails'
 
-jest.mock('./NetworkIncidentsTab', () => ({ NetworkIncidentsTab: () => <div>incidents</div> }))
+jest.mock('./NetworkIncidentsTab', () => ({
+  NetworkIncidentsTab: () => <div data-testid='rc-NetworkIncidentsTab'>incidents</div>
+}))
 jest.mock('./NetworkOverviewTab', () => ({ NetworkOverviewTab: () => <div>overview</div> }))
 
 const network = {
@@ -67,6 +71,7 @@ describe('NetworkDetails', () => {
     expect(await screen.findByText('overview')).toBeVisible()
     expect(screen.getAllByRole('tab')).toHaveLength(5)
   })
+
   it('renders another tab', async () => {
     const params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
@@ -79,5 +84,21 @@ describe('NetworkDetails', () => {
 
     expect(await screen.findByText('incidents')).toBeVisible()
     expect(screen.getAllByRole('tab')).toHaveLength(5)
+  })
+
+  it('should hide incidents when role is READ_ONLY', async () => {
+    setUserProfile({
+      allowedOperations: [],
+      profile: { ...getUserProfile().profile, roles: [RolesEnum.READ_ONLY] }
+    })
+    const params = {
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      networkId: '373377b0cb6e46ea8982b1c80aabe1fa',
+      activeTab: 'incidents'
+    }
+    render(<Provider><NetworkDetails /></Provider>, {
+      route: { params, path: '/:tenantId/:networkId/:activeTab' }
+    })
+    expect(screen.queryByTestId('rc-NetworkIncidentsTab')).toBeNull()
   })
 })

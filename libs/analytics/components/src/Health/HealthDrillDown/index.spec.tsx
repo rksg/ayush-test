@@ -9,8 +9,18 @@ import { DateRange }                        from '@acx-ui/utils'
 
 import { mockConnectionDrillDown, mockTtcDrillDown } from './__tests__/fixtures'
 import { api }                                       from './services'
+import { Point }                                     from './styledComponents'
 
 import { HealthDrillDown } from '.'
+
+jest.mock('./healthPieChart', () => ({
+  HealthPieChart: () => <div>PIE chart</div>
+}))
+
+jest.mock('./impactedClientTable', () => ({
+  ...jest.requireActual('./impactedClientTable'),
+  ImpactedClientsTable: () => <div data-testid='impactedClientsTable' />
+}))
 
 describe('HealthDrillDown', () => {
   const filters = {
@@ -106,6 +116,14 @@ describe('HealthDrillDown', () => {
     await userEvent.click(await screen.findByTestId('CloseSymbol'))
     expect(mockSetDrilldownSelection).toBeCalled()
     jest.resetAllMocks()
+  })
+
+  describe('Point', () => {
+    it('should render on null xPos', () => {
+      render(<Point $xPos={null} data-testId='point'/>)
+      const point = screen.getByTestId('point')
+      expect(point).toHaveStyle('left: 50%;')
+    })
   })
 })
 

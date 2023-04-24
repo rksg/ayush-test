@@ -25,7 +25,8 @@ import {
   transformQosPriorityType,
   QosPriorityEnum,
   VenueExtended,
-  Guest
+  Guest,
+  GuestNetworkTypeEnum
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { getIntl }               from '@acx-ui/utils'
@@ -46,7 +47,7 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
   const { tenantId } = useParams()
   const [client, setClient] = useState({} as ClientExtended)
   const [networkType, setNetworkType] = useState('')
-
+  const [guestType, setGuestType] = useState<GuestNetworkTypeEnum>()
   const [getAp] = useLazyGetApQuery()
   const [getVenue] = useLazyGetVenueQuery()
   const [getNetwork] = useLazyGetNetworkQuery()
@@ -96,8 +97,9 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
       const getGuestData = async () => {
         const list = (await getGuestsList({ params: { tenantId: tenantId }, payload }, true)
           .unwrap()).data || []
-        if (list.length === 1) {
-          setGuestDetail(list[0])
+        if (list.length > 0) {
+          setGuestDetail(list.filter(item => (item.networkId === clientDetails.networkId
+            &&item.name===clientDetails.username))[0])
         }
       }
 
@@ -125,6 +127,7 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
       const setData = (apData: ApDeep, venueData: VenueExtended, networkData: NetworkSaveData | null
       ) => {
         setNetworkType(networkData?.type || '')
+        setGuestType(networkData?.guestPortal?.guestNetworkType)
         setClient({
           ...clientDetails,
           hasSwitch: false, // TODO: this.userProfileService.isSwitchEnabled(profile);
@@ -161,7 +164,9 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
           <ClientDetails client={client} />,
           <OperationalData client={client} />,
           <Connection client={client} />,
-          (networkType === 'guest' &&
+          (networkType === 'guest' && (guestType === GuestNetworkTypeEnum.GuestPass ||
+            guestType === GuestNetworkTypeEnum.HostApproval ||
+            guestType === GuestNetworkTypeEnum.SelfSignIn) &&
             <GuestDetails guestDetail={guestDetail} clientMac={clientMac}/>),
           (networkType === 'dpsk' && <DpskPassphraseDetails />),
           <WiFiCallingDetails client={client} />
@@ -171,7 +176,9 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
         obj = [
           <ClientDetails client={client} />,
           <LastSession client={client} />,
-          (networkType === 'guest' &&
+          (networkType === 'guest' && (guestType === GuestNetworkTypeEnum.GuestPass ||
+            guestType === GuestNetworkTypeEnum.HostApproval ||
+            guestType === GuestNetworkTypeEnum.SelfSignIn) &&
             <GuestDetails guestDetail={guestDetail} clientMac={clientMac}/>),
           (networkType === 'dpsk' && <DpskPassphraseDetails />),
           <WiFiCallingDetails client={client} />
@@ -229,10 +236,10 @@ function ClientDetails ({ client }: { client: ClientExtended }) {
         label={$t({ defaultMessage: 'Username' })}
         children={client?.username || client?.userId || '--'}
       />
-      <Descriptions.Item // TODO
+      {/* <Descriptions.Item // TODO: Tags
         label={$t({ defaultMessage: 'Tags' })}
         children={'--'}
-      />
+      /> */}
     </Descriptions>
   </>
 }

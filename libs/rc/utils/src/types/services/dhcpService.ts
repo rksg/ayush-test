@@ -43,6 +43,7 @@ export interface DHCPPool {
   startAddress: string;
   endAddress: string;
   networkAddress: string;
+  numberOfHosts?: number;
 }
 export interface DHCPOption{
   optId: string;
@@ -73,6 +74,7 @@ export interface VenueDHCPProfile {
   enabled: boolean,
   dhcpServiceAps: DHCPProfileAps[],
   wanPortSelectionMode: string,
+  id: string
 }
 
 export interface DHCPProfileAps {

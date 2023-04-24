@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
@@ -7,10 +9,10 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useDeleteEdgeMutation, useGetEdgeListQuery, useSendOtpMutation }         from '@acx-ui/rc/services'
-import { EdgeStatusEnum, EdgeStatus, useTableQuery, TABLE_QUERY, RequestPayload } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useTenantLink }                                 from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                         from '@acx-ui/user'
+import { useDeleteEdgeMutation, useGetEdgeListQuery, useRebootEdgeMutation, useSendOtpMutation } from '@acx-ui/rc/services'
+import { EdgeStatusEnum, EdgeStatus, useTableQuery, TABLE_QUERY, RequestPayload }                from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useTenantLink }                                                from '@acx-ui/react-router-dom'
+import { filterByAccess }                                                                        from '@acx-ui/user'
 
 import { EdgeStatusLight } from './EdgeStatusLight'
 
@@ -21,7 +23,11 @@ export interface EdgesTableQueryProps
 
 interface EdgesTableProps extends Omit<TableProps<EdgeStatus>, 'columns'> {
   tableQuery?: EdgesTableQueryProps;
-  filterColumns?: string[];  // use column key to filter them out
+  // use column key to filter them out,
+  // notice that this is only applied on defaultColumns
+  filterColumns?: string[];
+  // custom column is optional
+  columns?: TableProps<EdgeStatus>['columns']
 }
 
 export const defaultEdgeTablePayload = {
@@ -45,6 +51,12 @@ export const defaultEdgeTablePayload = {
 }
 
 export const EdgesTable = (props: EdgesTableProps) => {
+  const {
+    tableQuery: customTableQuery,
+    columns,
+    filterColumns,
+    ...otherProps
+  } = props
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('')
@@ -52,13 +64,14 @@ export const EdgesTable = (props: EdgesTableProps) => {
   const tableQuery = useTableQuery({
     useQuery: useGetEdgeListQuery,
     defaultPayload: defaultEdgeTablePayload,
-    ...props.tableQuery
+    ...customTableQuery
   })
 
   const [deleteEdge, { isLoading: isDeleteEdgeUpdating }] = useDeleteEdgeMutation()
+  const [ rebootEdge ] = useRebootEdgeMutation()
   const [sendOtp] = useSendOtpMutation()
 
-  const columns: TableProps<EdgeStatus>['columns'] = [
+  const defaultColumns: TableProps<EdgeStatus>['columns'] = useMemo(() => ([
     {
       title: $t({ defaultMessage: 'SmartEdge' }),
       tooltip: $t({ defaultMessage: 'SmartEdge' }),
@@ -146,11 +159,11 @@ export const EdgesTable = (props: EdgesTableProps) => {
       sorter: true,
       show: false
     }
-  ]
+  ]), [$t])
 
-  if (props.filterColumns) {
-    props.filterColumns.forEach((columnTofilter) => {
-      _.remove(columns, { key: columnTofilter })
+  if (filterColumns) {
+    filterColumns.forEach((columnTofilter) => {
+      _.remove(defaultColumns, { key: columnTofilter })
     })
   }
 
@@ -173,7 +186,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
           type: 'confirm',
           customContent: {
             action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Edges' }),
+            entityName: $t({ defaultMessage: 'SmartEdges' }),
             entityValue: rows.length === 1 ? rows[0].name : undefined,
             numOfEntities: rows.length
           },
@@ -183,6 +196,41 @@ export const EdgesTable = (props: EdgesTableProps) => {
                 .then(clearSelection) :
               deleteEdge({ payload: rows.map(item => item.serialNumber) })
                 .then(clearSelection)
+          }
+        })
+      }
+    },
+    {
+      visible: (selectedRows) => (selectedRows.length === 1 &&
+        EdgeStatusEnum.OPERATIONAL === selectedRows[0]?.deviceStatus),
+      label: $t({ defaultMessage: 'Reboot' }),
+      onClick: (rows, clearSelection) => {
+        showActionModal({
+          type: 'confirm',
+          title: $t(
+            { defaultMessage: 'Reboot "{edgeName}"?' },
+            { edgeName: rows[0].name }
+          ),
+          content: $t({
+            defaultMessage: `Rebooting the SmartEdge will disconnect all connected clients.
+              Are you sure you want to reboot?`
+          }),
+          customContent: {
+            action: 'CUSTOM_BUTTONS',
+            buttons: [{
+              text: $t({ defaultMessage: 'Cancel' }),
+              type: 'default',
+              key: 'cancel'
+            }, {
+              text: $t({ defaultMessage: 'Reboot' }),
+              type: 'primary',
+              key: 'ok',
+              closeAfterAction: true,
+              handler: () => {
+                rebootEdge({ params: { serialNumber: rows[0].serialNumber } })
+                  .then(clearSelection)
+              }
+            }]
           }
         })
       }
@@ -204,21 +252,20 @@ export const EdgesTable = (props: EdgesTableProps) => {
       }
     }
   ]
-
   return (
     <Loader states={[
       tableQuery,
       { isLoading: false, isFetching: isDeleteEdgeUpdating }
     ]}>
       <Table
-        {...props}
+        rowActions={filterByAccess(rowActions)}
         settingsId='edges-table'
-        columns={columns}
+        {...otherProps}
+        columns={columns ?? defaultColumns}
         dataSource={tableQuery?.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='serialNumber'
-        rowActions={filterByAccess(rowActions)}
       />
     </Loader>
   )

@@ -52,6 +52,7 @@ const SyslogVenueDetail = () => {
       title: $t({ defaultMessage: 'Wi-Fi' }),
       dataIndex: 'syslogEnable',
       key: 'syslogEnable',
+      sorter: true,
       render: () => {
         return <CheckOutlined />
       }
