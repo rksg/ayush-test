@@ -22,7 +22,7 @@ import PortalFormContext from './PortalFormContext'
 import PortalSettingForm from './PortalSettingForm'
 
 
-const initialPortalData : Portal ={
+export const initialPortalData : Portal ={
   serviceName: '',
   network: [],
   content: {
