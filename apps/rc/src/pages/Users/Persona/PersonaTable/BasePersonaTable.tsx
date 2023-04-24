@@ -56,14 +56,14 @@ function useColumns (
       key: 'email',
       dataIndex: 'email',
       title: $t({ defaultMessage: 'Email' }),
-      sorter: false,
+      sorter: true,
       ...props.email
     },
     {
       key: 'description',
       dataIndex: 'description',
       title: $t({ defaultMessage: 'Description' }),
-      sorter: false,
+      sorter: true,
       ...props.description
     },
     {
@@ -79,6 +79,7 @@ function useColumns (
         key: 'identityId',
         dataIndex: 'identityId',
         title: $t({ defaultMessage: 'Unit' }),
+        sorter: true,
         render: (_, row) =>
           <PropertyUnitLink
             venueId={venueId}
@@ -105,6 +106,7 @@ function useColumns (
       key: 'vlan',
       dataIndex: 'vlan',
       title: $t({ defaultMessage: 'VLAN' }),
+      sorter: true,
       ...props.vlan
     },
     {
@@ -130,6 +132,7 @@ function useColumns (
       key: 'vni',
       dataIndex: 'vni',
       title: $t({ defaultMessage: 'VNI' }),
+      sorter: true,
       ...props.vni
     }
   ]
