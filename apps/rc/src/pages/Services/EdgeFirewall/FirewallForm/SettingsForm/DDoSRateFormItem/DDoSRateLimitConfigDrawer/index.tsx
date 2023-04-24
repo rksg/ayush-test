@@ -205,7 +205,10 @@ export const DDoSRateLimitConfigDrawer = (props: DDoSRateLimitConfigDrawerProps)
                 name='rules'
                 label={$t({ defaultMessage: 'Rules({ruleCount})' },
                   { ruleCount: rules?.length ?? 0 })}
-                rules={[{ required: true }]}
+                rules={[{
+                  required: true,
+                  message: $t({ defaultMessage: 'Please create 1 rule at least.' })
+                }]}
                 valuePropName='data'
                 initialValue={[] as DdosRateLimitingRule[]}
               >
