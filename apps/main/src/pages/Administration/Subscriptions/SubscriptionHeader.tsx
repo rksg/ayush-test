@@ -19,10 +19,10 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams }          from '@acx-ui/react-router-dom'
 import { getJwtTokenPayload } from '@acx-ui/utils'
+import { AccountTier }        from '@acx-ui/utils'
 
 import { ConvertNonVARMSPButton } from './ConvertNonVARMSPButton'
 import * as UI                    from './styledComponent'
-import { AccountTier } from '@acx-ui/utils'
 
 interface SubscriptionUtilizationWidgetProps {
   deviceType: EntitlementDeviceType;
