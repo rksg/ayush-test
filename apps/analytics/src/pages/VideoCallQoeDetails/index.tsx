@@ -150,9 +150,8 @@ export function VideoCallQoeDetails () {
     }
   ]
   const getPill = (mos:number)=>{
-    const isValidMos = mos ? true : false
-    return isValidMos ? (mos >= 4 ? <UI.BigTrendPill value='Good' trend='positive' /> :
-      <UI.BigTrendPill value='Bad' trend='negative' />) : '-'
+    return mos >= 4 ? <UI.BigTrendPill value='Good' trend='positive' /> :
+      <UI.BigTrendPill value='Bad' trend='negative' />
   }
 
   const seriesMapping = [{
