@@ -24,7 +24,7 @@ export function AdaptivePolicyAdvancedSetting (props: AdaptivePolicyAdvancedSett
     editCondition, radiusAttributeDrawerVisible,
     setRadiusAttributeDrawerVisible, settingForm } = props
 
-  const setAccessCondition = (condition: AccessCondition) => {
+  const setAccessConditions = (condition: AccessCondition) => {
     const evaluationRules = settingForm?.getFieldValue('evaluationRules')
     const newConditions: AccessCondition[] = evaluationRules ? evaluationRules.slice() : []
     if (isConditionEdit) {
@@ -42,7 +42,7 @@ export function AdaptivePolicyAdvancedSetting (props: AdaptivePolicyAdvancedSett
       <AccessConditionDrawer
         visible={accessConditionDrawerVisible}
         setVisible={setAccessConditionDrawerVisible}
-        setAccessCondition={setAccessCondition}
+        setAccessConditions={setAccessConditions}
         editCondition={editCondition}
         isEdit={isConditionEdit}
         settingForm={settingForm}/>

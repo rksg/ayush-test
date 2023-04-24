@@ -19,14 +19,14 @@ interface AccessConditionDrawerProps {
   setVisible: (visible: boolean) => void
   isEdit?: boolean,
   editCondition?: AccessCondition,
-  setAccessCondition: (condition: AccessCondition) => void,
+  setAccessConditions: (condition: AccessCondition) => void,
   settingForm?: FormInstance
 }
 
 export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
   const { $t } = useIntl()
   // eslint-disable-next-line max-len
-  const { visible, setVisible, isEdit = false, setAccessCondition, editCondition, settingForm } = props
+  const { visible, setVisible, isEdit = false, setAccessConditions, editCondition, settingForm } = props
   const [form] = Form.useForm()
   const [resetField, setResetField] = useState(false)
   const [attributes, setAttributes] = useState([] as RuleAttribute [])
@@ -89,7 +89,7 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
       templateAttributeId: data.templateAttributeId,
       evaluationRule: toEvaluationRuleData({ ...data })
     } as AccessCondition
-    setAccessCondition(condition)
+    setAccessConditions(condition)
     onClose()
   }
 
@@ -100,7 +100,8 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
         criteriaType,
         when: data.when,
         startTime: moment(data.start).format('HH:mm'),
-        endTime: moment(data.end).format('HH:mm')
+        endTime: moment(data.end).format('HH:mm'),
+        zoneOffset: getZoneHourOffset()
       }
     } else {
       return {
@@ -108,6 +109,10 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
         regexStringCriteria: data.attributeValue
       }
     }
+  }
+
+  const getZoneHourOffset = () => {
+    return '+' + new Date().getTimezoneOffset() / -60
   }
 
   const toEvaluationRuleForm = (evaluationRule: EvaluationRule) => {
