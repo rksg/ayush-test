@@ -16,7 +16,7 @@ export const EdgeTable = (props: EdgeTableProps) => {
   const { $t } = useIntl()
   const defaultEdgePayload = {
     fields: [
-      'id',
+      'serialNumber',
       'name',
       'venueId',
       'venueName'
