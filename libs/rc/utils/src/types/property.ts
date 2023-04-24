@@ -134,5 +134,9 @@ interface uiConfiguration {
     accentColor: string,
     separatorColor: string,
     textColor: string
+  },
+  files?: {
+    logoFileName: string,
+    favIconFileName: string
   }
 }
