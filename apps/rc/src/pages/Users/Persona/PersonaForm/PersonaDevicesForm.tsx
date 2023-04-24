@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import {  Table, TableProps } from '@acx-ui/components'
-import { PersonaDevice }      from '@acx-ui/rc/utils'
-import { filterByAccess }     from '@acx-ui/user'
+import {  Table, TableProps }                   from '@acx-ui/components'
+import { defaultSort, PersonaDevice, sortProp } from '@acx-ui/rc/utils'
+import { filterByAccess }                       from '@acx-ui/user'
 
 import { PersonaDevicesImportDialog } from './PersonaDevicesImportDialog'
 
@@ -40,12 +40,14 @@ export function PersonaDevicesForm (props: PersonaDevicesFormProps) {
     {
       title: $t({ defaultMessage: 'MAC Address' }),
       dataIndex: 'macAddress',
-      key: 'macAddress'
+      key: 'macAddress',
+      sorter: { compare: sortProp('macAddress', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Hostname' }),
       dataIndex: 'hostname',
-      key: 'hostname'
+      key: 'hostname',
+      sorter: { compare: sortProp('hostname', defaultSort) }
     }
   ]
 

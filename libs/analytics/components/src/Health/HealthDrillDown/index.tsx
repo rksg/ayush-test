@@ -18,6 +18,7 @@ import {
 
 } from './config'
 import { FunnelChart }                                       from './funnelChart'
+import { HealthPieChart }                                    from './healthPieChart'
 import { ImpactedClientsTable }                              from './impactedClientTable'
 import { useTtcDrilldownQuery, useConnectionDrilldownQuery } from './services'
 import { Point, Separator, Title, DrillDownRow }             from './styledComponents'
@@ -41,7 +42,7 @@ const HealthDrillDown = (props: {
     start: filters.startDate,
     end: filters.endDate
   }
-  const [selectedStage, setSelectedStage] = useState<Stages>(null)
+  const [selectedStage, setSelectedStage] = useState<Stages | null>(null)
   const [xPos, setXpos] = useState<number | null>(null)
   const setStage = (width: number, stage: Stages) => {
     setSelectedStage(stage)
@@ -98,8 +99,9 @@ const HealthDrillDown = (props: {
     },
     skip: !Boolean(drilldownSelection === TTC)
   })
-  const funnelChartData =
-    drilldownSelection === CONNECTIONFAILURE ? connectionFailureResults : ttcResults
+  const isConnectionFailure = drilldownSelection === CONNECTIONFAILURE
+  const funnelChartData = isConnectionFailure ? connectionFailureResults : ttcResults
+  const format = formatter(isConnectionFailure ? 'countFormat' : 'durationFormat')
   return drilldownSelection ? (
     <DrillDownRow>
       <GridCol col={{ span: 24 }}>
@@ -126,9 +128,7 @@ const HealthDrillDown = (props: {
             colors={colors}
             selectedStage={selectedStage}
             onSelectStage={setStage}
-            valueFormatter={formatter(
-              drilldownSelection === CONNECTIONFAILURE ? 'countFormat' : 'durationFormat'
-            )}
+            valueFormatter={format}
           />
         </Loader>
       </GridCol>
@@ -137,8 +137,13 @@ const HealthDrillDown = (props: {
           <GridCol col={{ span: 24 }} style={{ height: '15px' }}>
             <Separator><Point $xPos={xPos}/></Separator>
           </GridCol>
-          <GridCol col={{ span: 8 }} style={{ height: '210px' }}>
-            PIE chart
+          <GridCol col={{ span: 8 }} style={{ height: '330px' }}>
+            <HealthPieChart
+              filters={filters}
+              queryType={drilldownSelection}
+              selectedStage={selectedStage}
+              valueFormatter={format}
+            />
           </GridCol>
           <GridCol col={{ span: 16 }} style={{ height: '330px', overflow: 'auto' }}>
             <ImpactedClientsTable filters={filters}

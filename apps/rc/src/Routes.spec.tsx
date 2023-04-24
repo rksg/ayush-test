@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { useIsSplitOn }  from '@acx-ui/feature-toggle'
+import { useIsSplitOn }                                    from '@acx-ui/feature-toggle'
 import {
   ServiceType,
   getSelectServiceRoutePath,
@@ -12,7 +12,7 @@ import {
   getPolicyRoutePath,
   PolicyOperation,
   getServiceCatalogRoutePath,
-  getPolicyDetailsLink
+  getPolicyDetailsLink, getAdaptivePolicyDetailRoutePath
 } from '@acx-ui/rc/utils'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
@@ -220,11 +220,43 @@ jest.mock('./pages/Policies/AdaptivePolicy/RadiusAttributeGroup/RadiusAttributeG
 })
 
 jest.mock('./pages/Policies/AdaptivePolicy/RadiusAttributeGroup/RadiusAttributeGroupTable', () => () => {
-  return <div data-testid='AdaptivePolicyList' />
+  return <div data-testid='RadiusAttributeGroupList' />
 })
 
 jest.mock('./pages/Policies/AdaptivePolicy/RadiusAttributeGroup/RadiusAttributeGroupDetail/RadiusAttributeGroupDetail', () => () => {
   return <div data-testid='RadiusAttributeGroupDetail' />
+})
+
+jest.mock('./pages/Policies/AdaptivePolicy/AdaptivePolicy/AdaptivePolicyForm/AdaptivePolicyForm', () => () => {
+  return <div data-testid='AdaptivePolicyForm' />
+})
+
+jest.mock('./pages/Policies/AdaptivePolicy/AdaptivePolicy/AdaptivePolicyTable', () => () => {
+  return <div data-testid='AdaptivePolicyList' />
+})
+
+jest.mock('./pages/Policies/AdaptivePolicy/AdaptivePolicy/AdaptivePolicyDetail/AdaptivePolicyDetail', () => () => {
+  return <div data-testid='AdaptivePolicyDetail' />
+})
+
+jest.mock('./pages/Policies/AdaptivePolicy/AdaptivePolicySet/AdaptivePolicySetFom/AdaptivePolicySetForm', () => () => {
+  return <div data-testid='AdaptivePolicySetForm' />
+})
+
+jest.mock('./pages/Policies/AdaptivePolicy/AdaptivePolicySet/AdaptivePolicySetTable', () => () => {
+  return <div data-testid='AdaptivePolicySetList' />
+})
+
+jest.mock('./pages/Policies/AdaptivePolicy/AdaptivePolicySet/AdaptivePolicySetDetail/AdaptivePolicySetDetail', () => () => {
+  return <div data-testid='AdaptivePolicySetDetail' />
+})
+
+jest.mock('./pages/Services/EdgeFirewall/AddFirewall', () => () => {
+  return <div data-testid='AddEdgeFirewall' />
+})
+
+jest.mock('./pages/Services/EdgeFirewall/EditFirewall', () => () => {
+  return <div data-testid='EditEdgeFirewall' />
 })
 
 describe('RcRoutes: Devices', () => {
@@ -533,6 +565,26 @@ describe('RcRoutes: Services', () => {
     expect(screen.getByTestId('PortalServiceDetail')).toBeVisible()
   })
 
+  test('should navigate to create Edge firewall page', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + getServiceRoutePath({ type: ServiceType.EDGE_FIREWALL, oper: ServiceOperation.CREATE }),
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('AddEdgeFirewall')).toBeVisible()
+  })
+
+  test('should navigate to edit Edge firewall page', async () => {
+    const path = getServiceDetailsLink({ type: ServiceType.EDGE_FIREWALL, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + path,
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('EditEdgeFirewall')).toBeVisible()
+  })
 })
 
 describe('RcRoutes: Policies', () => {
@@ -580,6 +632,7 @@ describe('RcRoutes: Policies', () => {
   })
 
   test('should navigate to create RADIUS ATTRIBUTE GROUP page', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.CREATE }),
@@ -590,6 +643,7 @@ describe('RcRoutes: Policies', () => {
   })
 
   test('should navigate to edit RADIUS ATTRIBUTE GROUP page', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     let path = getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.EDIT })
     path = path.replace(':policyId', 'policyId')
     render(<Provider><RcRoutes /></Provider>, {
@@ -602,6 +656,7 @@ describe('RcRoutes: Policies', () => {
   })
 
   test('should navigate to detail RADIUS ATTRIBUTE GROUP page', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     let path = getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.DETAIL })
     path = path.replace(':policyId', 'policyId')
     render(<Provider><RcRoutes /></Provider>, {
@@ -614,13 +669,14 @@ describe('RcRoutes: Policies', () => {
   })
 
   test('should navigate to RADIUS ATTRIBUTE GROUP table', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST }),
         wrapRoutes: false
       }
     })
-    expect(await screen.findByRole('heading', { level: 1, name: 'Adaptive Policy' })).toBeVisible()
+    expect(await screen.findByRole('heading', { level: 1, name: 'RADIUS Attribute Groups' })).toBeVisible()
   })
 
   test('should navigate to create MAC_REGISTRATION_LIST page', async () => {
@@ -892,5 +948,101 @@ describe('RcRoutes: Timeline', () => {
       }
     })
     expect(screen.getByTestId('Timeline')).toBeVisible()
+  })
+
+  test('should navigate to create Adaptive Policy page', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.CREATE }),
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('AdaptivePolicyForm')).toBeVisible()
+  })
+
+  test('should navigate to edit Adaptive Policy page', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    let path = getAdaptivePolicyDetailRoutePath(PolicyOperation.EDIT)
+    path = path.replace(':templateId', 'templateId').replace(':policyId', 'policyId')
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + path,
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('AdaptivePolicyForm')).toBeVisible()
+  })
+
+  test('should navigate to detail Adaptive Policy page', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    let path = getAdaptivePolicyDetailRoutePath(PolicyOperation.DETAIL)
+    path = path.replace(':templateId', 'templateId').replace(':policyId', 'policyId')
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + path,
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('AdaptivePolicyDetail')).toBeVisible()
+  })
+
+  test('should navigate to Adaptive Policy table', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST }),
+        wrapRoutes: false
+      }
+    })
+    expect(await screen.findByRole('heading', { level: 1, name: 'Adaptive Policy' })).toBeVisible()
+  })
+
+  test('should navigate to create Adaptive Policy Set page', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.CREATE }),
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('AdaptivePolicySetForm')).toBeVisible()
+  })
+
+  test('should navigate to edit Adaptive Policy Set page', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    let path = getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.EDIT })
+    path = path.replace(':policyId', 'policyId')
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + path,
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('AdaptivePolicySetForm')).toBeVisible()
+  })
+
+  test('should navigate to detail Adaptive Policy Set page', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    let path = getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.DETAIL })
+    path = path.replace(':policyId', 'policyId')
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + path,
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('AdaptivePolicySetDetail')).toBeVisible()
+  })
+
+  test('should navigate to Adaptive Policy Set table', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.LIST }),
+        wrapRoutes: false
+      }
+    })
+    expect(await screen.findByRole('heading', { level: 1, name: 'Adaptive Policy Sets' })).toBeVisible()
   })
 })

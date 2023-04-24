@@ -41,6 +41,9 @@ const FWVersionMgmt = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isEdgeFirmwareAvailable, setIsEdgeFirmwareAvailable] = useState(false) // TODO: GetDpFirmwareUpgradeAvailable API
   const [isAPPLibraryAvailable, setIsAPPLibraryAvailable] = useState(true)
+
+  const enableSwitchRodanFirmware = useIsSplitOn(Features.SWITCH_RODAN_FIRMWARE)
+
   useEffect(()=>{
     if (latestReleaseVersions && venueVersionList) {
       // As long as one of the venues' version smaller than the latest release version, it would be the available
@@ -59,8 +62,10 @@ const FWVersionMgmt = () => {
       const latest10 = getReleaseFirmware(latestSwitchReleaseVersions)[1] // 10010e
       const hasOutdated09 = latest09 && switchVenueVersionList.data.some(fv=>
         compareSwitchVersion(latest09.id, fv.switchFirmwareVersion?.id))
-      const hasOutdated10 = latest10 && switchVenueVersionList.data.some(fv=>
-        compareSwitchVersion(latest10.id, fv.switchFirmwareVersionAboveTen?.id))
+      const hasOutdated10 = enableSwitchRodanFirmware ?
+        (latest10 && switchVenueVersionList.data.some(fv =>
+          compareSwitchVersion(latest10.id, fv.switchFirmwareVersionAboveTen?.id))) : false
+
       setIsSwitchFirmwareAvailable(hasOutdated09 || hasOutdated10)
     }
   }, [latestSwitchReleaseVersions, switchVenueVersionList])
