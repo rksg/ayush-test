@@ -114,7 +114,7 @@ function Layout () {
         {!isGuestManager &&
           <>
             <AlarmsButton isShown={isShown} setIsShown={setIsShown}/>
-            <ActivityButton isShown={isShown !== null ? !isShown : false} setIsShown={setIsShown}/>
+            <ActivityButton isShown={isShown === null ? false : !isShown} setIsShown={setIsShown}/>
           </>}
         <FetchBot showFloatingButton={false} statusCallback={setSupportStatus}/>
         <HelpButton supportStatus={supportStatus} setIsShown={setIsShown}/>

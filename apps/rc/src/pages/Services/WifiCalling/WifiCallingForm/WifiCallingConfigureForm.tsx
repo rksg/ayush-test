@@ -10,9 +10,9 @@ import {
 import { useUpdateWifiCallingServiceMutation } from '@acx-ui/rc/services'
 import {
   CreateNetworkFormFields,
-  EPDG,
-  QosPriorityEnum
-} from '@acx-ui/rc/utils'
+  EPDG, getServiceRoutePath,
+  QosPriorityEnum, ServiceOperation, ServiceType
+} from '@acx-ui/rc/utils';
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 
@@ -25,7 +25,9 @@ import WifiCallingSettingForm from './WifiCallingSettingForm'
 const WifiCallingConfigureForm = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const linkToServices = useTenantLink('/services')
+  const linkToServices = useTenantLink(getServiceRoutePath({
+    type: ServiceType.WIFI_CALLING, oper: ServiceOperation.LIST
+  }))
   const params = useParams()
 
   const [ updateWifiCallingService ] = useUpdateWifiCallingServiceMutation()
