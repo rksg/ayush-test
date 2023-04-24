@@ -152,7 +152,7 @@ describe('useColumnsState', () => {
       col1: { order: 0, fixed: 'left', show: true, disable: true },
       col2: { order: 2, fixed: undefined, show: false, disable: false },
       col3: { order: 1, fixed: undefined, show: true, disable: true },
-      col4: { order: 4, fixed: undefined, show: true, disable: false },
+      col4: { order: 4, fixed: undefined, show: false, disable: false },
       col5: { order: 3, fixed: undefined, show: false, disable: false }
     })
 
@@ -161,7 +161,7 @@ describe('useColumnsState', () => {
       col3: true,
       col2: false,
       col5: false,
-      col4: true
+      col4: false
     })
   })
 

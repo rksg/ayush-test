@@ -37,8 +37,8 @@ import { useLegendSelectChanged } from '../Chart/useLegendSelectChanged'
 
 import * as UI from './styledComponents'
 
-import type { ECharts, EChartsOption, MarkAreaComponentOption  } from 'echarts'
-import type { EChartsReactProps }                                from 'echarts-for-react'
+import type { ECharts, EChartsOption, MarkAreaComponentOption, MarkLineComponentOption  } from 'echarts'
+import type { EChartsReactProps }                                                         from 'echarts-for-react'
 
 
 type OnBrushendEvent = { areas: { coordRange: TimeStampRange }[] }
@@ -48,11 +48,28 @@ type MarkAreaOption = Extract<
   Array<unknown>
 >[number]
 
+type MarkLineOption = Extract<
+  Exclude<MarkLineComponentOption['data'], undefined>[number],
+  Array<unknown>
+>[number]
+
 type Marker <MarkerData> = {
   startTime: Exclude<MarkAreaOption['xAxis'], undefined>
   endTime: Exclude<MarkAreaOption['xAxis'], undefined>
   data: MarkerData
   itemStyle?: MarkAreaOption['itemStyle']
+}
+
+type MarkerArea = {
+  itemStyle?: MarkAreaOption['itemStyle'],
+  start: number,
+  end?: number
+}
+
+type MarkerLine = {
+  threshold: number,
+  label?: MarkLineOption['label'],
+  lineStyle?: MarkLineOption['lineStyle']
 }
 
 export interface MultiLineTimeSeriesChartProps <
@@ -77,6 +94,8 @@ export interface MultiLineTimeSeriesChartProps <
     brush?: TimeStampRange
     onBrushChange?: (range: TimeStampRange) => void
     markers?: Marker<MarkerData>[]
+    markerAreas?: MarkerArea[]
+    markerLines?: MarkerLine[]
     onMarkAreaClick?: (data: MarkerData) => void
     grid?: GridOption,
   }
@@ -170,7 +189,7 @@ export function MultiLineTimeSeriesChart <
   const option: EChartsOption = {
     animation: false,
     color: props.lineColors || qualitativeColorSet(),
-    grid: { ...gridOptions({ disableLegend }), ...gridProps },
+    grid: { ...gridOptions({ disableLegend, rightGridOffset: 5 }), ...gridProps },
     ...(disableLegend ? {} : {
       legend: {
         ...legendOptions(),
@@ -222,9 +241,35 @@ export function MultiLineTimeSeriesChart <
         ...(i === 0 ? {
           markArea: props.markers ? {
             data: props.markers?.map(marker => [
-              { xAxis: marker.startTime, itemStyle: marker.itemStyle, data: marker.data },
+              { xAxis: marker.startTime,
+                itemStyle: marker.itemStyle,
+                data: marker.data },
               { xAxis: marker.endTime }
             ])
+          } : props.markerAreas ? {
+            data: props.markerAreas?.map(markerArea => [
+              {
+                yAxis: markerArea.start,
+                itemStyle: markerArea.itemStyle
+              },
+              { ...(markerArea.end ? { yAxis: markerArea.end } : {}) }
+            ])
+          } : undefined
+        } : {}),
+        ...(i === 0 ? {
+          markLine: props.markerLines ? {
+            symbol: 'none',
+            animation: false,
+            emphasis: {
+              disabled: true
+            },
+            label: {
+              show: false
+            },
+            data: props.markerLines?.map(line => (
+              { yAxis: line.threshold,
+                lineStyle: line.lineStyle }
+            ))
           } : undefined
         } : {})
       })),
