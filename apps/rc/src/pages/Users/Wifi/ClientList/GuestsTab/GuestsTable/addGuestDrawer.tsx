@@ -27,7 +27,6 @@ import {
   useLazyGetNetworkQuery
 } from '@acx-ui/rc/services'
 import {
-  excludeExclamationRegExp,
   phoneRegExp,
   emailRegExp,
   NetworkTypeEnum,
@@ -37,7 +36,8 @@ import {
   base64Images,
   PdfGeneratorService,
   Guest,
-  LangCode
+  LangCode,
+  excludeExclamationLeadTrailSpaceRegExp
 } from '@acx-ui/rc/utils'
 import { GuestErrorRes } from '@acx-ui/user'
 import { getIntl }       from '@acx-ui/utils'
@@ -344,7 +344,7 @@ export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boo
           { required: true },
           { min: 1 },
           { max: 256 },
-          { validator: (_, value) => excludeExclamationRegExp(value) }
+          { validator: (_, value) => excludeExclamationLeadTrailSpaceRegExp(value) }
         ]}
         children={<Input />}
       />
