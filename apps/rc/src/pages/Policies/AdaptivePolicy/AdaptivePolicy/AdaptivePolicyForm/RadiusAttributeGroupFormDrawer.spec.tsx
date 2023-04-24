@@ -15,11 +15,11 @@ describe('RadiusAttributeGroupFormDrawer', () => {
   it('should render drawer and add successfully', async () => {
     mockServer.use(
       rest.post(
-        RadiusAttributeGroupUrlsInfo.getAttributeGroupsWithQuery.url,
+        RadiusAttributeGroupUrlsInfo.getAttributeGroupsWithQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(attributeGroupReturnByQuery))
       ),
       rest.post(
-        RadiusAttributeGroupUrlsInfo.getAttributesWithQuery.url,
+        RadiusAttributeGroupUrlsInfo.getAttributesWithQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(radiusAttributeList))
       ),
       rest.get(

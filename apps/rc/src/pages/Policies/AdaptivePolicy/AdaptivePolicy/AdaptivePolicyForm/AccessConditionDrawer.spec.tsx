@@ -31,7 +31,7 @@ describe('AccessConditionDrawer', () => {
           visible={true}
           setVisible={jest.fn()}
           isEdit={false}
-          setAccessCondition={jest.fn()}
+          setAccessConditions={jest.fn()}
           settingForm={formRef.current}
         />
       </Provider>,
@@ -59,7 +59,7 @@ describe('AccessConditionDrawer', () => {
           visible={true}
           setVisible={jest.fn()}
           isEdit={true}
-          setAccessCondition={jest.fn()}
+          setAccessConditions={jest.fn()}
           editCondition={assignConditions.content[0]}
           settingForm={formRef.current}/>
       </Provider>,
