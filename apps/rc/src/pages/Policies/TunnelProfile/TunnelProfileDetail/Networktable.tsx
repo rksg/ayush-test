@@ -32,12 +32,10 @@ export const NetworkTable = (props: NetworkTableProps) => {
   })
 
   useEffect(() => {
-    if(props.networkIds.length > 0) {
-      tableQuery.setPayload({
-        ...tableQuery.payload,
-        filters: { id: props.networkIds }
-      })
-    }
+    tableQuery.setPayload({
+      ...tableQuery.payload,
+      filters: { id: props.networkIds }
+    })
   }, [props.networkIds])
 
   const columns: TableProps<Network>['columns'] = [
