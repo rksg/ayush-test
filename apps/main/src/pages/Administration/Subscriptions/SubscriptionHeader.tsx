@@ -22,6 +22,7 @@ import { getJwtTokenPayload } from '@acx-ui/utils'
 
 import { ConvertNonVARMSPButton } from './ConvertNonVARMSPButton'
 import * as UI                    from './styledComponent'
+import { AccountTier } from '@acx-ui/utils'
 
 interface SubscriptionUtilizationWidgetProps {
   deviceType: EntitlementDeviceType;
@@ -29,6 +30,11 @@ interface SubscriptionUtilizationWidgetProps {
   used: number;
   total: number;
   barColors?: string[];
+}
+
+enum subscriptionType {
+  Platinum = 'Professional',
+  Gold = 'Enterprise'
 }
 
 const SubscriptionUtilizationWidget = (props: SubscriptionUtilizationWidgetProps) => {
@@ -107,6 +113,8 @@ const subscriptionUtilizationTransformer = (
 export const SubscriptionHeader = () => {
   const { $t } = useIntl()
   const params = useParams()
+  const subscriptionVal = (getJwtTokenPayload().acx_account_tier
+    === AccountTier.PLATINUM? subscriptionType.Platinum : subscriptionType.Gold)
 
   // skip MSP data
   const subscriptionDeviceTypeList = getEntitlementDeviceTypes()
@@ -134,7 +142,7 @@ export const SubscriptionHeader = () => {
                 <FormattedMessage
                   defaultMessage='Current Subscription Tier: <b>{tier}</b>'
                   values={{
-                    tier: getJwtTokenPayload().acx_account_tier,
+                    tier: subscriptionVal,
                     b: (chunk) => <b>{chunk}</b>
                   }}
                 />
