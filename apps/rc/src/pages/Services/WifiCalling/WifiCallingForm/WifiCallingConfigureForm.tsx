@@ -7,12 +7,12 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { useUpdateWifiCallingServiceMutation } from '@acx-ui/rc/services'
+import { useUpdateWifiCallingServiceMutation }     from '@acx-ui/rc/services'
 import {
   CreateNetworkFormFields,
   EPDG, getServiceRoutePath,
   QosPriorityEnum, ServiceOperation, ServiceType
-} from '@acx-ui/rc/utils';
+} from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 

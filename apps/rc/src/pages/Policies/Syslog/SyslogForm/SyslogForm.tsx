@@ -11,7 +11,6 @@ import { useAddSyslogPolicyMutation, useUpdateSyslogPolicyMutation } from '@acx-
 import {
   PolicyType,
   PolicyOperation,
-  getPolicyListRoutePath,
   getPolicyRoutePath,
   FacilityEnum,
   FlowLevelEnum,
