@@ -28,7 +28,7 @@ import { DetailedResponse, Participants, useVideoCallQoeTestDetailsQuery } from 
 import { getConnectionQuality, zoomStatsThresholds } from './connectionQuality'
 import * as UI                                       from './styledComponents'
 
-export function VideoCallQoeDetails () {
+export function VideoCallQoeDetails (){
   const { $t } = useIntl()
   const { testId } = useParams()
   const queryResults = useVideoCallQoeTestDetailsQuery({ testId: Number(testId),status: 'ENDED' })
