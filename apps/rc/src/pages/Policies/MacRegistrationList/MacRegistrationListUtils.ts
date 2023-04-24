@@ -37,7 +37,8 @@ export const transferExpirationFormFieldsToData = (data: ExpirationDateEntity) =
   if (data.mode === ExpirationMode.NEVER) {
     expiration = {
       expirationEnabled: false,
-      expirationDate: null
+      expirationDate: null,
+      expirationType: null
     }
   } else if (data.mode === ExpirationMode.BY_DATE) {
     expiration = {

@@ -120,8 +120,9 @@ export default function MacRegistrationListsTable () {
       },
       {
         title: $t({ defaultMessage: 'List Expiration' }),
-        key: 'listExpiration',
-        dataIndex: 'listExpiration',
+        key: 'expirationType',
+        dataIndex: 'expirationType',
+        sorter: true,
         render: function (data, row) {
           return returnExpirationString(row)
         }
