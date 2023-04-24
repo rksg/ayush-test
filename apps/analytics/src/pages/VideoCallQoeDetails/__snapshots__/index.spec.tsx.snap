@@ -521,7 +521,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
     >
       <div
         class="styledComponents__ReportSectionTitle-cc9slb-2 igYais"
-        style="padding: 10px 0px;"
+        style="padding: 15px 0px;"
       >
         Zoom Call Statistics
       </div>
@@ -539,10 +539,10 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
             <span
               class="styledComponents__Label-cc9slb-3 irAGXM"
             >
-              Participant 1: 
+              Participant 1
             </span>
             <span
-              class="styledComponents__Value-cc9slb-4 lkXZOR"
+              class="styledComponents__Value-cc9slb-4 bDzuMc"
             >
               Participant 1
             </span>
@@ -558,10 +558,10 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
             <span
               class="styledComponents__Label-cc9slb-3 irAGXM"
             >
-              Participant 2: 
+              Participant 2
             </span>
             <span
-              class="styledComponents__Value-cc9slb-4 lkXZOR"
+              class="styledComponents__Value-cc9slb-4 bDzuMc"
             >
               Participant 2 (Mac M1)
             </span>
@@ -636,7 +636,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                       class="styledComponents__ResetWrapper-sc-ryy21w-2 styledComponents__Wrapper-sc-um7jvv-0 jpvBzo iQvUMF"
                     >
                       <div
-                        _echarts_instance_="ec_1682075666079"
+                        _echarts_instance_="ec_1682313605926"
                         class="echarts-for-react "
                         size-sensor-id="1"
                         style="height: 800px; width: 1280px; position: relative;"
@@ -664,37 +664,37 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                             />
                             <g>
                               <path
-                                d="M13 776.5L1280 776.5"
+                                d="M13 776.5L1275 776.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M13 645.5L1280 645.5"
+                                d="M13 645.5L1275 645.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M13 513.5L1280 513.5"
+                                d="M13 513.5L1275 513.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M13 382.5L1280 382.5"
+                                d="M13 382.5L1275 382.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M13 251.5L1280 251.5"
+                                d="M13 251.5L1275 251.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M13 120.5L1280 120.5"
+                                d="M13 120.5L1275 120.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M13 776.5L1280 776.5"
+                                d="M13 776.5L1275 776.5"
                                 fill="none"
                                 stroke="#C4C4C4"
                                 stroke-linecap="round"
@@ -806,14 +806,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(194 784)"
+                                transform="translate(193.2857 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(194 784)"
+                                transform="translate(193.2857 784)"
                                 y="8"
                               >
                                 10:22
@@ -821,14 +821,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(375 784)"
+                                transform="translate(373.5714 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(375 784)"
+                                transform="translate(373.5714 784)"
                                 y="8"
                               >
                                 10:23
@@ -836,14 +836,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(556 784)"
+                                transform="translate(553.8571 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(556 784)"
+                                transform="translate(553.8571 784)"
                                 y="8"
                               >
                                 10:24
@@ -851,14 +851,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(737 784)"
+                                transform="translate(734.1429 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(737 784)"
+                                transform="translate(734.1429 784)"
                                 y="8"
                               >
                                 10:25
@@ -866,14 +866,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(918 784)"
+                                transform="translate(914.4286 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(918 784)"
+                                transform="translate(914.4286 784)"
                                 y="8"
                               >
                                 10:26
@@ -881,14 +881,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(1099 784)"
+                                transform="translate(1094.7143 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(1099 784)"
+                                transform="translate(1094.7143 784)"
                                 y="8"
                               >
                                 10:27
@@ -1018,7 +1018,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 clip-path="url(#zr0-c0)"
                               >
                                 <path
-                                  d="M194 566.08C194 566.08 284.9706 566.08 375 566.08C465.9706 566.08 465.0294 539.84 556 539.84C646.0294 539.84 646.5 539.84 737 539.84C827.5 539.84 829.3261 539.84 918 539.84C1010.3261 539.84 1099 487.36 1099 487.36"
+                                  d="M193.2857 566.08C193.2857 566.08 283.901 566.08 373.5714 566.08C464.1867 566.08 463.2419 539.84 553.8571 539.84C643.5276 539.84 644 539.84 734.1429 539.84C824.2857 539.84 826.1185 539.84 914.4286 539.84C1006.4041 539.84 1094.7142 487.36 1094.7142 487.36"
                                   fill="none"
                                   stroke="#66B1E8"
                                   stroke-linejoin="bevel"
@@ -1040,7 +1040,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 clip-path="url(#zr0-c2)"
                               >
                                 <path
-                                  d="M194 434.88C194 434.88 279.772 371.3363 375 329.92C460.772 292.6163 467.5929 277.44 556 277.44C648.5929 277.44 642.5829 356.16 737 356.16C823.5829 356.16 827.9706 356.16 918 356.16C1008.9706 356.16 1099 329.92 1099 329.92"
+                                  d="M193.2857 434.88C193.2857 434.88 278.6882 371.3499 373.5714 329.92C458.9739 292.6299 465.8135 277.44 553.8571 277.44C646.0992 277.44 640.0699 356.16 734.1429 356.16C820.3557 356.16 824.7581 356.16 914.4286 356.16C1005.0438 356.16 1094.7142 329.92 1094.7142 329.92"
                                   fill="none"
                                   stroke="#F9C34B"
                                   stroke-linejoin="bevel"
@@ -1064,7 +1064,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 id="zr0-c0"
                               >
                                 <path
-                                  d="M12 119.4l1268 0l0 657.2l-1268 0Z"
+                                  d="M12 119.4l1263 0l0 657.2l-1263 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -1072,7 +1072,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 id="zr0-c1"
                               >
                                 <path
-                                  d="M12 119.4l1268 0l0 657.2l-1268 0Z"
+                                  d="M12 119.4l1263 0l0 657.2l-1263 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -1080,7 +1080,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 id="zr0-c2"
                               >
                                 <path
-                                  d="M12 119.4l1268 0l0 657.2l-1268 0Z"
+                                  d="M12 119.4l1263 0l0 657.2l-1263 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -1088,7 +1088,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 id="zr0-c3"
                               >
                                 <path
-                                  d="M12 119.4l1268 0l0 657.2l-1268 0Z"
+                                  d="M12 119.4l1263 0l0 657.2l-1263 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -1182,7 +1182,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                       class="styledComponents__ResetWrapper-sc-ryy21w-2 styledComponents__Wrapper-sc-um7jvv-0 jpvBzo iQvUMF"
                     >
                       <div
-                        _echarts_instance_="ec_1682075666080"
+                        _echarts_instance_="ec_1682313605927"
                         class="echarts-for-react "
                         size-sensor-id="2"
                         style="height: 800px; width: 1280px; position: relative;"
@@ -1210,37 +1210,37 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                             />
                             <g>
                               <path
-                                d="M13 776.5L1280 776.5"
+                                d="M13 776.5L1275 776.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M13 645.5L1280 645.5"
+                                d="M13 645.5L1275 645.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M13 513.5L1280 513.5"
+                                d="M13 513.5L1275 513.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M13 382.5L1280 382.5"
+                                d="M13 382.5L1275 382.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M13 251.5L1280 251.5"
+                                d="M13 251.5L1275 251.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M13 120.5L1280 120.5"
+                                d="M13 120.5L1275 120.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M13 776.5L1280 776.5"
+                                d="M13 776.5L1275 776.5"
                                 fill="none"
                                 stroke="#C4C4C4"
                                 stroke-linecap="round"
@@ -1352,14 +1352,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(194 784)"
+                                transform="translate(193.2857 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(194 784)"
+                                transform="translate(193.2857 784)"
                                 y="8"
                               >
                                 10:23
@@ -1367,14 +1367,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(375 784)"
+                                transform="translate(373.5714 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(375 784)"
+                                transform="translate(373.5714 784)"
                                 y="8"
                               >
                                 10:24
@@ -1382,14 +1382,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(556 784)"
+                                transform="translate(553.8571 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(556 784)"
+                                transform="translate(553.8571 784)"
                                 y="8"
                               >
                                 10:25
@@ -1397,14 +1397,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(737 784)"
+                                transform="translate(734.1429 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(737 784)"
+                                transform="translate(734.1429 784)"
                                 y="8"
                               >
                                 10:26
@@ -1412,14 +1412,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(918 784)"
+                                transform="translate(914.4286 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(918 784)"
+                                transform="translate(914.4286 784)"
                                 y="8"
                               >
                                 10:27
@@ -1427,18 +1427,26 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(1099 784)"
+                                transform="translate(1094.7143 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(1099 784)"
+                                transform="translate(1094.7143 784)"
                                 y="8"
                               >
                                 10:28
                               </text>
+                              <path
+                                d="M13 251.2L1275 251.2L1275 120L13 120Z"
+                                fill="#ED1C24"
+                                fill-opacity="0.05"
+                                stroke="#66B1E8"
+                                stroke-opacity="0.05"
+                                stroke-width="0"
+                              />
                               <path
                                 d="M-5 -5l167 0l0 26l-167 0Z"
                                 fill="rgb(0,0,0)"
@@ -1536,6 +1544,13 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 Audio Rx
                               </text>
                               <path
+                                d="M13 251.5L1275 251.5"
+                                fill="none"
+                                stroke="#ED1C24"
+                                stroke-dasharray="4,2"
+                                stroke-opacity="0.5"
+                              />
+                              <path
                                 d="M-5 -5l26 0l0 10l-26 0Z"
                                 fill="none"
                                 stroke="#ccc"
@@ -1564,7 +1579,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 clip-path="url(#zr1-c0)"
                               >
                                 <path
-                                  d="M13 657.92C13 657.92 106.3732 697.28 194 697.28C287.3732 697.28 284.5 618.56 375 618.56C465.5 618.56 461.5829 697.28 556 697.28C642.5829 697.28 646.5 697.28 737 697.28C827.5 697.28 918 697.28 918 697.28"
+                                  d="M13 657.92C13 657.92 106.0251 697.28 193.2857 697.28C286.3108 697.28 283.4286 618.56 373.5714 618.56C463.7143 618.56 459.7842 697.28 553.8571 697.28C640.0699 697.28 644 697.28 734.1429 697.28C824.2857 697.28 914.4286 697.28 914.4286 697.28"
                                   fill="none"
                                   stroke="#66B1E8"
                                   stroke-linejoin="bevel"
@@ -1586,7 +1601,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 clip-path="url(#zr1-c2)"
                               >
                                 <path
-                                  d="M13 592.32C13 592.32 134.9335 592.32 194 579.2C315.9335 552.1158 284.5 251.2 375 251.2C465.5 251.2 434.0665 552.1158 556 579.2C615.0665 592.32 646.3814 592.32 737 592.32C827.3814 592.32 827.6186 592.32 918 592.32C1008.6186 592.32 1099 579.2 1099 579.2"
+                                  d="M13 592.32C13 592.32 134.5717 592.32 193.2857 579.2C314.8574 552.0341 283.4286 251.2 373.5714 251.2C463.7143 251.2 432.2854 552.0341 553.8571 579.2C612.5712 592.32 643.881 592.32 734.1429 592.32C824.1667 592.32 824.4048 592.32 914.4286 592.32C1004.6904 592.32 1094.7142 579.2 1094.7142 579.2"
                                   fill="none"
                                   stroke="#F9C34B"
                                   stroke-linejoin="bevel"
@@ -1610,7 +1625,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 id="zr1-c0"
                               >
                                 <path
-                                  d="M12 119.4l1268 0l0 657.2l-1268 0Z"
+                                  d="M12 119.4l1263 0l0 657.2l-1263 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -1618,7 +1633,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 id="zr1-c1"
                               >
                                 <path
-                                  d="M12 119.4l1268 0l0 657.2l-1268 0Z"
+                                  d="M12 119.4l1263 0l0 657.2l-1263 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -1626,7 +1641,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 id="zr1-c2"
                               >
                                 <path
-                                  d="M12 119.4l1268 0l0 657.2l-1268 0Z"
+                                  d="M12 119.4l1263 0l0 657.2l-1263 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -1634,7 +1649,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 id="zr1-c3"
                               >
                                 <path
-                                  d="M12 119.4l1268 0l0 657.2l-1268 0Z"
+                                  d="M12 119.4l1263 0l0 657.2l-1263 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -1742,7 +1757,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                       class="styledComponents__ResetWrapper-sc-ryy21w-2 styledComponents__Wrapper-sc-um7jvv-0 jpvBzo iQvUMF"
                     >
                       <div
-                        _echarts_instance_="ec_1682075666081"
+                        _echarts_instance_="ec_1682313605928"
                         class="echarts-for-react "
                         size-sensor-id="3"
                         style="height: 800px; width: 1280px; position: relative;"
@@ -1770,42 +1785,42 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                             />
                             <g>
                               <path
-                                d="M14 776.5L1280 776.5"
+                                d="M14 776.5L1275 776.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 666.5L1280 666.5"
+                                d="M14 666.5L1275 666.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 557.5L1280 557.5"
+                                d="M14 557.5L1275 557.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 448.5L1280 448.5"
+                                d="M14 448.5L1275 448.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 338.5L1280 338.5"
+                                d="M14 338.5L1275 338.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 229.5L1280 229.5"
+                                d="M14 229.5L1275 229.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 120.5L1280 120.5"
+                                d="M14 120.5L1275 120.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 776.5L1280 776.5"
+                                d="M14 776.5L1275 776.5"
                                 fill="none"
                                 stroke="#C4C4C4"
                                 stroke-linecap="round"
@@ -1932,14 +1947,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(194.8571 784)"
+                                transform="translate(194.1429 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(194.8571 784)"
+                                transform="translate(194.1429 784)"
                                 y="8"
                               >
                                 10:22
@@ -1947,14 +1962,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(375.7143 784)"
+                                transform="translate(374.2857 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(375.7143 784)"
+                                transform="translate(374.2857 784)"
                                 y="8"
                               >
                                 10:23
@@ -1962,14 +1977,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(556.5714 784)"
+                                transform="translate(554.4286 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(556.5714 784)"
+                                transform="translate(554.4286 784)"
                                 y="8"
                               >
                                 10:24
@@ -1977,14 +1992,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(737.4286 784)"
+                                transform="translate(734.5714 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(737.4286 784)"
+                                transform="translate(734.5714 784)"
                                 y="8"
                               >
                                 10:25
@@ -1992,14 +2007,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(918.2857 784)"
+                                transform="translate(914.7143 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(918.2857 784)"
+                                transform="translate(914.7143 784)"
                                 y="8"
                               >
                                 10:26
@@ -2007,18 +2022,26 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(1099.1429 784)"
+                                transform="translate(1094.8571 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(1099.1429 784)"
+                                transform="translate(1094.8571 784)"
                                 y="8"
                               >
                                 10:27
                               </text>
+                              <path
+                                d="M14 448L1275 448L1275 120L14 120Z"
+                                fill="#ED1C24"
+                                fill-opacity="0.05"
+                                stroke="#66B1E8"
+                                stroke-opacity="0.05"
+                                stroke-width="0"
+                              />
                               <path
                                 d="M-5 -5l167 0l0 26l-167 0Z"
                                 fill="rgb(0,0,0)"
@@ -2116,6 +2139,13 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 Audio Rx
                               </text>
                               <path
+                                d="M14 448.5L1275 448.5"
+                                fill="none"
+                                stroke="#ED1C24"
+                                stroke-dasharray="4,2"
+                                stroke-opacity="0.5"
+                              />
+                              <path
                                 d="M-5 -5l26 0l0 10l-26 0Z"
                                 fill="none"
                                 stroke="#ccc"
@@ -2144,7 +2174,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 clip-path="url(#zr2-c0)"
                               >
                                 <path
-                                  d="M194.8571 660.1067C194.8571 660.1067 291.7181 570.4073 375.7143 469.8667C472.5752 353.9273 483.5609 227.1467 556.5714 227.1467C664.418 227.1467 612.6407 636.0533 737.4286 636.0533C793.4979 636.0533 823.1628 548.5867 918.2857 548.5867C1004.0199 548.5867 1099.1428 557.3333 1099.1428 557.3333"
+                                  d="M194.1429 660.1067C194.1429 660.1067 290.6421 570.3822 374.2857 469.8667C470.785 353.9022 481.7395 227.1467 554.4286 227.1467C661.8824 227.1467 610.1778 636.0533 734.5714 636.0533C790.3207 636.0533 819.9336 548.5867 914.7143 548.5867C1000.0765 548.5867 1094.8572 557.3333 1094.8572 557.3333"
                                   fill="none"
                                   stroke="#66B1E8"
                                   stroke-linejoin="bevel"
@@ -2166,7 +2196,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 clip-path="url(#zr2-c2)"
                               >
                                 <path
-                                  d="M194.8571 651.36C194.8571 651.36 290.6856 563.1577 375.7143 465.4933C471.5428 355.4243 484.2996 235.8933 556.5714 235.8933C665.1567 235.8933 612.8012 636.0533 737.4286 636.0533C793.6584 636.0533 825.0187 555.1467 918.2857 555.1467C1005.8758 555.1467 1099.1428 598.88 1099.1428 598.88"
+                                  d="M194.1429 651.36C194.1429 651.36 289.6112 563.1365 374.2857 465.4933C469.7541 355.4032 482.4786 235.8933 554.4286 235.8933C662.6214 235.8933 610.335 636.0533 734.5714 636.0533C790.4778 636.0533 821.7957 555.1467 914.7143 555.1467C1001.9386 555.1467 1094.8572 598.88 1094.8572 598.88"
                                   fill="none"
                                   stroke="#F9C34B"
                                   stroke-linejoin="bevel"
@@ -2190,7 +2220,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 id="zr2-c0"
                               >
                                 <path
-                                  d="M13 119.4l1267 0l0 657.2l-1267 0Z"
+                                  d="M13 119.4l1262 0l0 657.2l-1262 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -2198,7 +2228,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 id="zr2-c1"
                               >
                                 <path
-                                  d="M13 119.4l1267 0l0 657.2l-1267 0Z"
+                                  d="M13 119.4l1262 0l0 657.2l-1262 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -2206,7 +2236,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 id="zr2-c2"
                               >
                                 <path
-                                  d="M13 119.4l1267 0l0 657.2l-1267 0Z"
+                                  d="M13 119.4l1262 0l0 657.2l-1262 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -2214,7 +2244,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 id="zr2-c3"
                               >
                                 <path
-                                  d="M13 119.4l1267 0l0 657.2l-1267 0Z"
+                                  d="M13 119.4l1262 0l0 657.2l-1262 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -2308,7 +2338,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                       class="styledComponents__ResetWrapper-sc-ryy21w-2 styledComponents__Wrapper-sc-um7jvv-0 jpvBzo iQvUMF"
                     >
                       <div
-                        _echarts_instance_="ec_1682075666082"
+                        _echarts_instance_="ec_1682313605929"
                         class="echarts-for-react "
                         size-sensor-id="4"
                         style="height: 800px; width: 1280px; position: relative;"
@@ -2336,37 +2366,37 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                             />
                             <g>
                               <path
-                                d="M14 776.5L1280 776.5"
+                                d="M14 776.5L1275 776.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 645.5L1280 645.5"
+                                d="M14 645.5L1275 645.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 513.5L1280 513.5"
+                                d="M14 513.5L1275 513.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 382.5L1280 382.5"
+                                d="M14 382.5L1275 382.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 251.5L1280 251.5"
+                                d="M14 251.5L1275 251.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 120.5L1280 120.5"
+                                d="M14 120.5L1275 120.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 776.5L1280 776.5"
+                                d="M14 776.5L1275 776.5"
                                 fill="none"
                                 stroke="#C4C4C4"
                                 stroke-linecap="round"
@@ -2478,14 +2508,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(194.8571 784)"
+                                transform="translate(194.1429 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(194.8571 784)"
+                                transform="translate(194.1429 784)"
                                 y="8"
                               >
                                 10:23
@@ -2493,14 +2523,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(375.7143 784)"
+                                transform="translate(374.2857 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(375.7143 784)"
+                                transform="translate(374.2857 784)"
                                 y="8"
                               >
                                 10:24
@@ -2508,14 +2538,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(556.5714 784)"
+                                transform="translate(554.4286 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(556.5714 784)"
+                                transform="translate(554.4286 784)"
                                 y="8"
                               >
                                 10:25
@@ -2523,14 +2553,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(737.4286 784)"
+                                transform="translate(734.5714 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(737.4286 784)"
+                                transform="translate(734.5714 784)"
                                 y="8"
                               >
                                 10:26
@@ -2538,14 +2568,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(918.2857 784)"
+                                transform="translate(914.7143 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(918.2857 784)"
+                                transform="translate(914.7143 784)"
                                 y="8"
                               >
                                 10:27
@@ -2553,18 +2583,26 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(1099.1429 784)"
+                                transform="translate(1094.8571 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(1099.1429 784)"
+                                transform="translate(1094.8571 784)"
                                 y="8"
                               >
                                 10:28
                               </text>
+                              <path
+                                d="M14 579.2L1275 579.2L1275 120L14 120Z"
+                                fill="#ED1C24"
+                                fill-opacity="0.05"
+                                stroke="#66B1E8"
+                                stroke-opacity="0.05"
+                                stroke-width="0"
+                              />
                               <path
                                 d="M-5 -5l167 0l0 26l-167 0Z"
                                 fill="rgb(0,0,0)"
@@ -2662,6 +2700,13 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 Audio Rx
                               </text>
                               <path
+                                d="M14 579.5L1275 579.5"
+                                fill="none"
+                                stroke="#ED1C24"
+                                stroke-dasharray="4,2"
+                                stroke-opacity="0.5"
+                              />
+                              <path
                                 d="M-5 -5l26 0l0 10l-26 0Z"
                                 fill="none"
                                 stroke="#ccc"
@@ -2690,7 +2735,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 clip-path="url(#zr3-c0)"
                               >
                                 <path
-                                  d="M14 689.408C14 689.408 132.1233 659.1221 194.8571 577.888C312.9804 424.9301 294.6322 221.024 375.7143 221.024C475.4893 221.024 425.0776 678.912 556.5714 678.912C605.9348 678.912 646.6961 640.864 737.4286 640.864C827.5532 640.864 918.2857 672.352 918.2857 672.352"
+                                  d="M14 689.408C14 689.408 131.7407 659.013 194.1429 577.888C311.8836 424.821 293.536 221.024 374.2857 221.024C473.6789 221.024 423.3378 678.912 554.4286 678.912C603.4806 678.912 644.1949 640.864 734.5714 640.864C824.3378 640.864 914.7143 672.352 914.7143 672.352"
                                   fill="none"
                                   stroke="#66B1E8"
                                   stroke-linejoin="bevel"
@@ -2712,7 +2757,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 clip-path="url(#zr3-c2)"
                               >
                                 <path
-                                  d="M14 709.088C14 709.088 132.8685 675.0995 194.8571 591.008C313.7256 429.7555 294.5044 218.4 375.7143 218.4C475.3615 218.4 423.9975 693.344 556.5714 693.344C604.8546 693.344 646.0974 653.984 737.4286 653.984C826.9545 653.984 828.829 654.7881 918.2857 668.416C1009.6861 682.3401 1099.1428 709.088 1099.1428 709.088"
+                                  d="M14 709.088C14 709.088 132.4809 674.9879 194.1429 591.008C312.6238 429.6439 293.4078 218.4 374.2857 218.4C473.5506 218.4 422.2628 693.344 554.4286 693.344C602.4056 693.344 643.594 653.984 734.5714 653.984C823.7368 653.984 825.6183 654.7892 914.7143 668.416C1005.7612 682.3412 1094.8572 709.088 1094.8572 709.088"
                                   fill="none"
                                   stroke="#F9C34B"
                                   stroke-linejoin="bevel"
@@ -2736,7 +2781,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 id="zr3-c0"
                               >
                                 <path
-                                  d="M13 119.4l1267 0l0 657.2l-1267 0Z"
+                                  d="M13 119.4l1262 0l0 657.2l-1262 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -2744,7 +2789,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 id="zr3-c1"
                               >
                                 <path
-                                  d="M13 119.4l1267 0l0 657.2l-1267 0Z"
+                                  d="M13 119.4l1262 0l0 657.2l-1262 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -2752,7 +2797,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 id="zr3-c2"
                               >
                                 <path
-                                  d="M13 119.4l1267 0l0 657.2l-1267 0Z"
+                                  d="M13 119.4l1262 0l0 657.2l-1262 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -2760,7 +2805,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 id="zr3-c3"
                               >
                                 <path
-                                  d="M13 119.4l1267 0l0 657.2l-1267 0Z"
+                                  d="M13 119.4l1262 0l0 657.2l-1262 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -2868,7 +2913,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                       class="styledComponents__ResetWrapper-sc-ryy21w-2 styledComponents__Wrapper-sc-um7jvv-0 jpvBzo iQvUMF"
                     >
                       <div
-                        _echarts_instance_="ec_1682075666083"
+                        _echarts_instance_="ec_1682313605930"
                         class="echarts-for-react "
                         size-sensor-id="5"
                         style="height: 800px; width: 1280px; position: relative;"
@@ -2896,17 +2941,17 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                             />
                             <g>
                               <path
-                                d="M11 776.5L1280 776.5"
+                                d="M11 776.5L1275 776.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M11 120.5L1280 120.5"
+                                d="M11 120.5L1275 120.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M11 776.5L1280 776.5"
+                                d="M11 776.5L1275 776.5"
                                 fill="none"
                                 stroke="#C4C4C4"
                                 stroke-linecap="round"
@@ -2959,14 +3004,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(192.2857 784)"
+                                transform="translate(191.5714 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(192.2857 784)"
+                                transform="translate(191.5714 784)"
                                 y="8"
                               >
                                 10:22
@@ -2974,14 +3019,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(373.5714 784)"
+                                transform="translate(372.1429 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(373.5714 784)"
+                                transform="translate(372.1429 784)"
                                 y="8"
                               >
                                 10:23
@@ -2989,14 +3034,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(554.8571 784)"
+                                transform="translate(552.7143 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(554.8571 784)"
+                                transform="translate(552.7143 784)"
                                 y="8"
                               >
                                 10:24
@@ -3004,14 +3049,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(736.1429 784)"
+                                transform="translate(733.2857 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(736.1429 784)"
+                                transform="translate(733.2857 784)"
                                 y="8"
                               >
                                 10:25
@@ -3019,14 +3064,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(917.4286 784)"
+                                transform="translate(913.8571 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(917.4286 784)"
+                                transform="translate(913.8571 784)"
                                 y="8"
                               >
                                 10:26
@@ -3034,14 +3079,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(1098.7143 784)"
+                                transform="translate(1094.4286 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(1098.7143 784)"
+                                transform="translate(1094.4286 784)"
                                 y="8"
                               >
                                 10:27
@@ -3171,7 +3216,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 clip-path="url(#zr4-c0)"
                               >
                                 <path
-                                  d="M192.2857 776C192.2857 776 282.9286 579.2 373.5714 579.2C464.2143 579.2 446.7895 776 554.8571 776C628.0752 776 645.5 776 736.1429 776C826.7857 776 826.7857 776 917.4286 776C1008.0714 776 1098.7142 776 1098.7142 776"
+                                  d="M191.5714 776C191.5714 776 281.8571 579.2 372.1429 579.2C462.4286 579.2 444.9795 776 552.7143 776C625.5509 776 643 776 733.2857 776C823.5714 776 823.5714 776 913.8571 776C1004.1429 776 1094.4286 776 1094.4286 776"
                                   fill="none"
                                   stroke="#66B1E8"
                                   stroke-linejoin="bevel"
@@ -3193,7 +3238,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 clip-path="url(#zr4-c2)"
                               >
                                 <path
-                                  d="M192.2857 776C192.2857 776 282.9286 513.6 373.5714 513.6C464.2143 513.6 439.2717 776 554.8571 776C620.5574 776 645.5 776 736.1429 776C826.7857 776 826.7857 776 917.4286 776C1008.0714 776 1098.7142 776 1098.7142 776"
+                                  d="M191.5714 776C191.5714 776 281.8571 513.6 372.1429 513.6C462.4286 513.6 437.4727 776 552.7143 776C618.0441 776 643 776 733.2857 776C823.5714 776 823.5714 776 913.8571 776C1004.1429 776 1094.4286 776 1094.4286 776"
                                   fill="none"
                                   stroke="#F9C34B"
                                   stroke-linejoin="bevel"
@@ -3217,7 +3262,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 id="zr4-c0"
                               >
                                 <path
-                                  d="M10 119.4l1270 0l0 657.2l-1270 0Z"
+                                  d="M10 119.4l1265 0l0 657.2l-1265 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -3225,7 +3270,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 id="zr4-c1"
                               >
                                 <path
-                                  d="M10 119.4l1270 0l0 657.2l-1270 0Z"
+                                  d="M10 119.4l1265 0l0 657.2l-1265 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -3233,7 +3278,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 id="zr4-c2"
                               >
                                 <path
-                                  d="M10 119.4l1270 0l0 657.2l-1270 0Z"
+                                  d="M10 119.4l1265 0l0 657.2l-1265 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -3241,7 +3286,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 id="zr4-c3"
                               >
                                 <path
-                                  d="M10 119.4l1270 0l0 657.2l-1270 0Z"
+                                  d="M10 119.4l1265 0l0 657.2l-1265 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -3335,7 +3380,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                       class="styledComponents__ResetWrapper-sc-ryy21w-2 styledComponents__Wrapper-sc-um7jvv-0 jpvBzo iQvUMF"
                     >
                       <div
-                        _echarts_instance_="ec_1682075666084"
+                        _echarts_instance_="ec_1682313605931"
                         class="echarts-for-react "
                         size-sensor-id="6"
                         style="height: 800px; width: 1280px; position: relative;"
@@ -3363,22 +3408,22 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                             />
                             <g>
                               <path
-                                d="M11 776.5L1280 776.5"
+                                d="M11 776.5L1275 776.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M11 448.5L1280 448.5"
+                                d="M11 448.5L1275 448.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M11 120.5L1280 120.5"
+                                d="M11 120.5L1275 120.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M11 776.5L1280 776.5"
+                                d="M11 776.5L1275 776.5"
                                 fill="none"
                                 stroke="#C4C4C4"
                                 stroke-linecap="round"
@@ -3446,14 +3491,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(192.2857 784)"
+                                transform="translate(191.5714 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(192.2857 784)"
+                                transform="translate(191.5714 784)"
                                 y="8"
                               >
                                 10:23
@@ -3461,14 +3506,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(373.5714 784)"
+                                transform="translate(372.1429 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(373.5714 784)"
+                                transform="translate(372.1429 784)"
                                 y="8"
                               >
                                 10:24
@@ -3476,14 +3521,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(554.8571 784)"
+                                transform="translate(552.7143 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(554.8571 784)"
+                                transform="translate(552.7143 784)"
                                 y="8"
                               >
                                 10:25
@@ -3491,14 +3536,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(736.1429 784)"
+                                transform="translate(733.2857 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(736.1429 784)"
+                                transform="translate(733.2857 784)"
                                 y="8"
                               >
                                 10:26
@@ -3506,14 +3551,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(917.4286 784)"
+                                transform="translate(913.8571 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(917.4286 784)"
+                                transform="translate(913.8571 784)"
                                 y="8"
                               >
                                 10:27
@@ -3521,18 +3566,26 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(1098.7143 784)"
+                                transform="translate(1094.4286 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(1098.7143 784)"
+                                transform="translate(1094.4286 784)"
                                 y="8"
                               >
                                 10:28
                               </text>
+                              <path
+                                d="M11 120L1275 120L11 120Z"
+                                fill="#ED1C24"
+                                fill-opacity="0.05"
+                                stroke="#66B1E8"
+                                stroke-opacity="0.05"
+                                stroke-width="0"
+                              />
                               <path
                                 d="M-5 -5l167 0l0 26l-167 0Z"
                                 fill="rgb(0,0,0)"
@@ -3630,6 +3683,13 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 Audio Rx
                               </text>
                               <path
+                                d="M11 120.5L1275 120.5"
+                                fill="none"
+                                stroke="#ED1C24"
+                                stroke-dasharray="4,2"
+                                stroke-opacity="0.5"
+                              />
+                              <path
                                 d="M-5 -5l26 0l0 10l-26 0Z"
                                 fill="none"
                                 stroke="#ccc"
@@ -3658,7 +3718,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 clip-path="url(#zr5-c0)"
                               >
                                 <path
-                                  d="M11 776C11 776 133.1822 776 192.2857 776C314.468 776 282.9286 448 373.5714 448C464.2143 448 432.6749 776 554.8571 776C613.9606 776 645.5 776 736.1429 776C826.7857 776 917.4286 776 917.4286 776"
+                                  d="M11 776C11 776 132.8209 776 191.5714 776C313.3923 776 281.8571 448 372.1429 448C462.4286 448 430.8934 776 552.7143 776C611.4649 776 643 776 733.2857 776C823.5714 776 913.8571 776 913.8571 776"
                                   fill="none"
                                   stroke="#66B1E8"
                                   stroke-linejoin="bevel"
@@ -3680,7 +3740,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 clip-path="url(#zr5-c2)"
                               >
                                 <path
-                                  d="M11 776C11 776 151.1481 776 192.2857 776C332.4338 776 282.9286 185.6 373.5714 185.6C464.2143 185.6 414.7091 776 554.8571 776C595.9948 776 645.5 776 736.1429 776C826.7857 776 826.7857 776 917.4286 776C1008.0714 776 1098.7142 776 1098.7142 776"
+                                  d="M11 776C11 776 150.7101 776 191.5714 776C331.2815 776 281.8571 185.6 372.1429 185.6C462.4286 185.6 413.0042 776 552.7143 776C593.5756 776 643 776 733.2857 776C823.5714 776 823.5714 776 913.8571 776C1004.1429 776 1094.4286 776 1094.4286 776"
                                   fill="none"
                                   stroke="#F9C34B"
                                   stroke-linejoin="bevel"
@@ -3704,7 +3764,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 id="zr5-c0"
                               >
                                 <path
-                                  d="M10 119.4l1270 0l0 657.2l-1270 0Z"
+                                  d="M10 119.4l1265 0l0 657.2l-1265 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -3712,7 +3772,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 id="zr5-c1"
                               >
                                 <path
-                                  d="M10 119.4l1270 0l0 657.2l-1270 0Z"
+                                  d="M10 119.4l1265 0l0 657.2l-1265 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -3720,7 +3780,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 id="zr5-c2"
                               >
                                 <path
-                                  d="M10 119.4l1270 0l0 657.2l-1270 0Z"
+                                  d="M10 119.4l1265 0l0 657.2l-1265 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -3728,7 +3788,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 id="zr5-c3"
                               >
                                 <path
-                                  d="M10 119.4l1270 0l0 657.2l-1270 0Z"
+                                  d="M10 119.4l1265 0l0 657.2l-1265 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -3836,7 +3896,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                       class="styledComponents__ResetWrapper-sc-ryy21w-2 styledComponents__Wrapper-sc-um7jvv-0 jpvBzo iQvUMF"
                     >
                       <div
-                        _echarts_instance_="ec_1682075666085"
+                        _echarts_instance_="ec_1682313605932"
                         class="echarts-for-react "
                         size-sensor-id="7"
                         style="height: 800px; width: 1280px; position: relative;"
@@ -3864,42 +3924,42 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                             />
                             <g>
                               <path
-                                d="M14 776.5L1280 776.5"
+                                d="M14 776.5L1275 776.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 666.5L1280 666.5"
+                                d="M14 666.5L1275 666.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 557.5L1280 557.5"
+                                d="M14 557.5L1275 557.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 448.5L1280 448.5"
+                                d="M14 448.5L1275 448.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 338.5L1280 338.5"
+                                d="M14 338.5L1275 338.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 229.5L1280 229.5"
+                                d="M14 229.5L1275 229.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 120.5L1280 120.5"
+                                d="M14 120.5L1275 120.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 776.5L1280 776.5"
+                                d="M14 776.5L1275 776.5"
                                 fill="none"
                                 stroke="#C4C4C4"
                                 stroke-linecap="round"
@@ -4027,14 +4087,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(194.8571 784)"
+                                transform="translate(194.1429 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(194.8571 784)"
+                                transform="translate(194.1429 784)"
                                 y="8"
                               >
                                 10:22
@@ -4042,14 +4102,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(375.7143 784)"
+                                transform="translate(374.2857 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(375.7143 784)"
+                                transform="translate(374.2857 784)"
                                 y="8"
                               >
                                 10:23
@@ -4057,14 +4117,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(556.5714 784)"
+                                transform="translate(554.4286 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(556.5714 784)"
+                                transform="translate(554.4286 784)"
                                 y="8"
                               >
                                 10:24
@@ -4072,14 +4132,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(737.4286 784)"
+                                transform="translate(734.5714 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(737.4286 784)"
+                                transform="translate(734.5714 784)"
                                 y="8"
                               >
                                 10:25
@@ -4087,14 +4147,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(918.2857 784)"
+                                transform="translate(914.7143 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(918.2857 784)"
+                                transform="translate(914.7143 784)"
                                 y="8"
                               >
                                 10:26
@@ -4102,18 +4162,26 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(1099.1429 784)"
+                                transform="translate(1094.8571 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(1099.1429 784)"
+                                transform="translate(1094.8571 784)"
                                 y="8"
                               >
                                 10:27
                               </text>
+                              <path
+                                d="M14 776L1275 776L1275 448L14 448Z"
+                                fill="#ED1C24"
+                                fill-opacity="0.05"
+                                stroke="#66B1E8"
+                                stroke-opacity="0.05"
+                                stroke-width="0"
+                              />
                               <path
                                 d="M-5 -5l81 0l0 26l-81 0Z"
                                 fill="rgb(0,0,0)"
@@ -4167,6 +4235,13 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 Video Rx
                               </text>
                               <path
+                                d="M14 448.5L1275 448.5"
+                                fill="none"
+                                stroke="#ED1C24"
+                                stroke-dasharray="4,2"
+                                stroke-opacity="0.5"
+                              />
+                              <path
                                 d="M-5 -5l26 0l0 10l-26 0Z"
                                 fill="none"
                                 stroke="#ccc"
@@ -4195,7 +4270,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 clip-path="url(#zr6-c0)"
                               >
                                 <path
-                                  d="M194.8571 273.0667C194.8571 273.0667 276.087 141.8667 375.7143 141.8667C456.9442 141.8667 466.1429 163.7333 556.5714 163.7333C647 163.7333 646.6719 141.8667 737.4286 141.8667C827.5291 141.8667 828.1852 141.8667 918.2857 141.8667C1009.0423 141.8667 1099.1428 163.7333 1099.1428 163.7333"
+                                  d="M194.1429 273.0667C194.1429 273.0667 274.9935 141.8667 374.2857 141.8667C455.1364 141.8667 464.3571 163.7333 554.4286 163.7333C644.5 163.7333 644.1706 141.8667 734.5714 141.8667C824.3135 141.8667 824.9722 141.8667 914.7143 141.8667C1005.1151 141.8667 1094.8572 163.7333 1094.8572 163.7333"
                                   fill="none"
                                   stroke="#66B1E8"
                                   stroke-linejoin="bevel"
@@ -4206,7 +4281,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 clip-path="url(#zr6-c1)"
                               >
                                 <path
-                                  d="M194.8571 273.0667C194.8571 273.0667 282.4924 207.4667 375.7143 207.4667C463.3495 207.4667 468.9362 207.4667 556.5714 207.4667C649.7934 207.4667 647 141.8667 737.4286 141.8667C827.8571 141.8667 918.2857 207.4667 918.2857 207.4667"
+                                  d="M194.1429 273.0667C194.1429 273.0667 281.4112 207.4667 374.2857 207.4667C461.554 207.4667 467.1603 207.4667 554.4286 207.4667C647.3031 207.4667 644.5 141.8667 734.5714 141.8667C824.6429 141.8667 914.7143 207.4667 914.7143 207.4667"
                                   fill="none"
                                   stroke="#EC7100"
                                   stroke-linejoin="bevel"
@@ -4219,7 +4294,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 id="zr6-c0"
                               >
                                 <path
-                                  d="M13 119.4l1267 0l0 657.2l-1267 0Z"
+                                  d="M13 119.4l1262 0l0 657.2l-1262 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -4227,7 +4302,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 id="zr6-c1"
                               >
                                 <path
-                                  d="M13 119.4l1267 0l0 657.2l-1267 0Z"
+                                  d="M13 119.4l1262 0l0 657.2l-1262 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -4321,7 +4396,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                       class="styledComponents__ResetWrapper-sc-ryy21w-2 styledComponents__Wrapper-sc-um7jvv-0 jpvBzo iQvUMF"
                     >
                       <div
-                        _echarts_instance_="ec_1682075666086"
+                        _echarts_instance_="ec_1682313605933"
                         class="echarts-for-react "
                         size-sensor-id="8"
                         style="height: 800px; width: 1280px; position: relative;"
@@ -4349,47 +4424,47 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                             />
                             <g>
                               <path
-                                d="M14 776.5L1280 776.5"
+                                d="M14 776.5L1275 776.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 682.5L1280 682.5"
+                                d="M14 682.5L1275 682.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 588.5L1280 588.5"
+                                d="M14 588.5L1275 588.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 495.5L1280 495.5"
+                                d="M14 495.5L1275 495.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 401.5L1280 401.5"
+                                d="M14 401.5L1275 401.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 307.5L1280 307.5"
+                                d="M14 307.5L1275 307.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 213.5L1280 213.5"
+                                d="M14 213.5L1275 213.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 120.5L1280 120.5"
+                                d="M14 120.5L1275 120.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 776.5L1280 776.5"
+                                d="M14 776.5L1275 776.5"
                                 fill="none"
                                 stroke="#C4C4C4"
                                 stroke-linecap="round"
@@ -4532,14 +4607,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(194.8571 784)"
+                                transform="translate(194.1429 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(194.8571 784)"
+                                transform="translate(194.1429 784)"
                                 y="8"
                               >
                                 10:23
@@ -4547,14 +4622,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(375.7143 784)"
+                                transform="translate(374.2857 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(375.7143 784)"
+                                transform="translate(374.2857 784)"
                                 y="8"
                               >
                                 10:24
@@ -4562,14 +4637,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(556.5714 784)"
+                                transform="translate(554.4286 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(556.5714 784)"
+                                transform="translate(554.4286 784)"
                                 y="8"
                               >
                                 10:25
@@ -4577,14 +4652,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(737.4286 784)"
+                                transform="translate(734.5714 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(737.4286 784)"
+                                transform="translate(734.5714 784)"
                                 y="8"
                               >
                                 10:26
@@ -4592,14 +4667,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(918.2857 784)"
+                                transform="translate(914.7143 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(918.2857 784)"
+                                transform="translate(914.7143 784)"
                                 y="8"
                               >
                                 10:27
@@ -4607,18 +4682,26 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(1099.1429 784)"
+                                transform="translate(1094.8571 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(1099.1429 784)"
+                                transform="translate(1094.8571 784)"
                                 y="8"
                               >
                                 10:28
                               </text>
+                              <path
+                                d="M14 776L1275 776L1275 494.8571L14 494.8571Z"
+                                fill="#ED1C24"
+                                fill-opacity="0.05"
+                                stroke="#66B1E8"
+                                stroke-opacity="0.05"
+                                stroke-width="0"
+                              />
                               <path
                                 d="M-5 -5l81 0l0 26l-81 0Z"
                                 fill="rgb(0,0,0)"
@@ -4672,6 +4755,13 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 Video Rx
                               </text>
                               <path
+                                d="M14 495.5L1275 495.5"
+                                fill="none"
+                                stroke="#ED1C24"
+                                stroke-dasharray="4,2"
+                                stroke-opacity="0.5"
+                              />
+                              <path
                                 d="M-5 -5l26 0l0 10l-26 0Z"
                                 fill="none"
                                 stroke="#ccc"
@@ -4700,7 +4790,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 clip-path="url(#zr7-c0)"
                               >
                                 <path
-                                  d="M14 326.1714C14 326.1714 103.4777 288.6857 194.8571 288.6857C284.3348 288.6857 285.2857 288.6857 375.7143 288.6857C466.1429 288.6857 466.1429 288.6857 556.5714 288.6857C647 288.6857 737.4286 288.6857 737.4286 288.6857"
+                                  d="M14 326.1714C14 326.1714 103.1169 288.6857 194.1429 288.6857C283.2598 288.6857 284.2143 288.6857 374.2857 288.6857C464.3571 288.6857 464.3571 288.6857 554.4286 288.6857C644.5 288.6857 734.5714 288.6857 734.5714 288.6857"
                                   fill="none"
                                   stroke="#66B1E8"
                                   stroke-linejoin="bevel"
@@ -4711,7 +4801,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 clip-path="url(#zr7-c1)"
                               >
                                 <path
-                                  d="M14 307.4286C14 307.4286 101.7953 232.4571 194.8571 232.4571C282.6525 232.4571 284.5763 269.9429 375.7143 269.9429C465.4335 269.9429 466.8522 265.1469 556.5714 251.2C647.7094 237.0326 647 213.7143 737.4286 213.7143C827.8571 213.7143 918.2857 251.2 918.2857 251.2"
+                                  d="M14 307.4286C14 307.4286 101.4297 232.4571 194.1429 232.4571C281.5726 232.4571 283.5022 269.9429 374.2857 269.9429C463.6451 269.9429 465.0692 265.146 554.4286 251.2C645.2121 237.0317 644.5 213.7143 734.5714 213.7143C824.6429 213.7143 914.7143 251.2 914.7143 251.2"
                                   fill="none"
                                   stroke="#EC7100"
                                   stroke-linejoin="bevel"
@@ -4724,7 +4814,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 id="zr7-c0"
                               >
                                 <path
-                                  d="M13 119.4l1267 0l0 657.2l-1267 0Z"
+                                  d="M13 119.4l1262 0l0 657.2l-1262 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -4732,7 +4822,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 id="zr7-c1"
                               >
                                 <path
-                                  d="M13 119.4l1267 0l0 657.2l-1267 0Z"
+                                  d="M13 119.4l1262 0l0 657.2l-1262 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -5351,7 +5441,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
     >
       <div
         class="styledComponents__ReportSectionTitle-cc9slb-2 igYais"
-        style="padding: 10px 0px;"
+        style="padding: 15px 0px;"
       >
         Zoom Call Statistics
       </div>
@@ -5369,10 +5459,10 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
             <span
               class="styledComponents__Label-cc9slb-3 irAGXM"
             >
-              Participant 1: 
+              Participant 1
             </span>
             <span
-              class="styledComponents__Value-cc9slb-4 lkXZOR"
+              class="styledComponents__Value-cc9slb-4 bDzuMc"
             >
               Test
             </span>
@@ -5388,10 +5478,10 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
             <span
               class="styledComponents__Label-cc9slb-3 irAGXM"
             >
-              Participant 2: 
+              Participant 2
             </span>
             <span
-              class="styledComponents__Value-cc9slb-4 lkXZOR"
+              class="styledComponents__Value-cc9slb-4 bDzuMc"
             >
               User 2 (Mac M1)
             </span>
@@ -5466,7 +5556,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                       class="styledComponents__ResetWrapper-sc-ryy21w-2 styledComponents__Wrapper-sc-um7jvv-0 jpvBzo iQvUMF"
                     >
                       <div
-                        _echarts_instance_="ec_1682075666087"
+                        _echarts_instance_="ec_1682313605934"
                         class="echarts-for-react "
                         size-sensor-id="9"
                         style="height: 800px; width: 1280px; position: relative;"
@@ -5494,37 +5584,37 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                             />
                             <g>
                               <path
-                                d="M13 776.5L1280 776.5"
+                                d="M13 776.5L1275 776.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M13 645.5L1280 645.5"
+                                d="M13 645.5L1275 645.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M13 513.5L1280 513.5"
+                                d="M13 513.5L1275 513.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M13 382.5L1280 382.5"
+                                d="M13 382.5L1275 382.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M13 251.5L1280 251.5"
+                                d="M13 251.5L1275 251.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M13 120.5L1280 120.5"
+                                d="M13 120.5L1275 120.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M13 776.5L1280 776.5"
+                                d="M13 776.5L1275 776.5"
                                 fill="none"
                                 stroke="#C4C4C4"
                                 stroke-linecap="round"
@@ -5636,14 +5726,14 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(329.75 784)"
+                                transform="translate(328.5 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(329.75 784)"
+                                transform="translate(328.5 784)"
                                 y="8"
                               >
                                 04:41
@@ -5651,14 +5741,14 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(646.5 784)"
+                                transform="translate(644 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(646.5 784)"
+                                transform="translate(644 784)"
                                 y="8"
                               >
                                 04:42
@@ -5666,18 +5756,26 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(963.25 784)"
+                                transform="translate(959.5 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(963.25 784)"
+                                transform="translate(959.5 784)"
                                 y="8"
                               >
                                 04:43
                               </text>
+                              <path
+                                d="M13 251.2L1275 251.2L1275 120L13 120Z"
+                                fill="#ED1C24"
+                                fill-opacity="0.05"
+                                stroke="#66B1E8"
+                                stroke-opacity="0.05"
+                                stroke-width="0"
+                              />
                               <path
                                 d="M-5 -5l167 0l0 26l-167 0Z"
                                 fill="rgb(0,0,0)"
@@ -5775,6 +5873,13 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 Audio Rx
                               </text>
                               <path
+                                d="M13 251.5L1275 251.5"
+                                fill="none"
+                                stroke="#ED1C24"
+                                stroke-dasharray="4,2"
+                                stroke-opacity="0.5"
+                              />
+                              <path
                                 d="M-5 -5l26 0l0 10l-26 0Z"
                                 fill="none"
                                 stroke="#ccc"
@@ -5803,7 +5908,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 clip-path="url(#zr8-c0)"
                               >
                                 <path
-                                  d="M329.75 277.44C329.75 277.44 447.8381 749.76 646.5 749.76C764.5881 749.76 963.25 631.68 963.25 631.68"
+                                  d="M328.5 277.44C328.5 277.44 445.9564 749.76 644 749.76C761.4564 749.76 959.5 631.68 959.5 631.68"
                                   fill="none"
                                   stroke="#66B1E8"
                                   stroke-linejoin="bevel"
@@ -5849,7 +5954,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 id="zr8-c0"
                               >
                                 <path
-                                  d="M12 119.4l1268 0l0 657.2l-1268 0Z"
+                                  d="M12 119.4l1263 0l0 657.2l-1263 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -5857,7 +5962,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 id="zr8-c1"
                               >
                                 <path
-                                  d="M12 119.4l1268 0l0 657.2l-1268 0Z"
+                                  d="M12 119.4l1263 0l0 657.2l-1263 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -5865,7 +5970,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 id="zr8-c2"
                               >
                                 <path
-                                  d="M12 119.4l1268 0l0 657.2l-1268 0Z"
+                                  d="M12 119.4l1263 0l0 657.2l-1263 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -5873,7 +5978,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 id="zr8-c3"
                               >
                                 <path
-                                  d="M12 119.4l1268 0l0 657.2l-1268 0Z"
+                                  d="M12 119.4l1263 0l0 657.2l-1263 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -5967,7 +6072,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                       class="styledComponents__ResetWrapper-sc-ryy21w-2 styledComponents__Wrapper-sc-um7jvv-0 jpvBzo iQvUMF"
                     >
                       <div
-                        _echarts_instance_="ec_1682075666088"
+                        _echarts_instance_="ec_1682313605935"
                         class="echarts-for-react "
                         size-sensor-id="10"
                         style="height: 800px; width: 1280px; position: relative;"
@@ -5995,37 +6100,37 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                             />
                             <g>
                               <path
-                                d="M13 776.5L1280 776.5"
+                                d="M13 776.5L1275 776.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M13 645.5L1280 645.5"
+                                d="M13 645.5L1275 645.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M13 513.5L1280 513.5"
+                                d="M13 513.5L1275 513.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M13 382.5L1280 382.5"
+                                d="M13 382.5L1275 382.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M13 251.5L1280 251.5"
+                                d="M13 251.5L1275 251.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M13 120.5L1280 120.5"
+                                d="M13 120.5L1275 120.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M13 776.5L1280 776.5"
+                                d="M13 776.5L1275 776.5"
                                 fill="none"
                                 stroke="#C4C4C4"
                                 stroke-linecap="round"
@@ -6120,95 +6225,35 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 25 ms
                               </text>
                               <path
-                                d="M-4 0l8 0l0 16l-8 0Z"
+                                d="M0 0l0 0l0 0l0 0Z"
                                 fill="none"
-                                transform="translate(171.375 784)"
+                                transform="translate(170.75 784)"
                               />
-                              <text
-                                dominant-baseline="central"
-                                fill="#ACAEB0"
-                                style="font: normal 400 10px 'Open Sans', sans-serif"
-                                text-anchor="middle"
-                                transform="translate(171.375 784)"
-                                y="8"
-                              >
-                                04:41:15
-                              </text>
                               <path
-                                d="M-4 0l8 0l0 16l-8 0Z"
+                                d="M0 0l0 0l0 0l0 0Z"
                                 fill="none"
-                                transform="translate(329.75 784)"
+                                transform="translate(328.5 784)"
                               />
-                              <text
-                                dominant-baseline="central"
-                                fill="#ACAEB0"
-                                style="font: normal 400 10px 'Open Sans', sans-serif"
-                                text-anchor="middle"
-                                transform="translate(329.75 784)"
-                                y="8"
-                              >
-                                04:41:30
-                              </text>
                               <path
-                                d="M-4 0l8 0l0 16l-8 0Z"
+                                d="M0 0l0 0l0 0l0 0Z"
                                 fill="none"
-                                transform="translate(488.125 784)"
+                                transform="translate(486.25 784)"
                               />
-                              <text
-                                dominant-baseline="central"
-                                fill="#ACAEB0"
-                                style="font: normal 400 10px 'Open Sans', sans-serif"
-                                text-anchor="middle"
-                                transform="translate(488.125 784)"
-                                y="8"
-                              >
-                                04:41:45
-                              </text>
                               <path
-                                d="M-4 0l8 0l0 16l-8 0Z"
+                                d="M0 0l0 0l0 0l0 0Z"
                                 fill="none"
-                                transform="translate(804.875 784)"
+                                transform="translate(801.75 784)"
                               />
-                              <text
-                                dominant-baseline="central"
-                                fill="#ACAEB0"
-                                style="font: normal 400 10px 'Open Sans', sans-serif"
-                                text-anchor="middle"
-                                transform="translate(804.875 784)"
-                                y="8"
-                              >
-                                04:42:15
-                              </text>
                               <path
-                                d="M-4 0l8 0l0 16l-8 0Z"
+                                d="M0 0l0 0l0 0l0 0Z"
                                 fill="none"
-                                transform="translate(963.25 784)"
+                                transform="translate(959.5 784)"
                               />
-                              <text
-                                dominant-baseline="central"
-                                fill="#ACAEB0"
-                                style="font: normal 400 10px 'Open Sans', sans-serif"
-                                text-anchor="middle"
-                                transform="translate(963.25 784)"
-                                y="8"
-                              >
-                                04:42:30
-                              </text>
                               <path
-                                d="M-4 0l8 0l0 16l-8 0Z"
+                                d="M0 0l0 0l0 0l0 0Z"
                                 fill="none"
-                                transform="translate(1121.625 784)"
+                                transform="translate(1117.25 784)"
                               />
-                              <text
-                                dominant-baseline="central"
-                                fill="#ACAEB0"
-                                style="font: normal 400 10px 'Open Sans', sans-serif"
-                                text-anchor="middle"
-                                transform="translate(1121.625 784)"
-                                y="8"
-                              >
-                                04:42:45
-                              </text>
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
@@ -6227,14 +6272,14 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(646.5 784)"
+                                transform="translate(644 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(646.5 784)"
+                                transform="translate(644 784)"
                                 y="8"
                               >
                                 04:42
@@ -6364,7 +6409,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 clip-path="url(#zr9-c0)"
                               >
                                 <path
-                                  d="M646.5 644.8"
+                                  d="M644 644.8"
                                   fill="none"
                                   stroke="#66B1E8"
                                   stroke-linejoin="bevel"
@@ -6386,7 +6431,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 clip-path="url(#zr9-c2)"
                               >
                                 <path
-                                  d="M646.5 434.88C646.5 434.88 1280 277.44 1280 277.44"
+                                  d="M644 434.88C644 434.88 1275 277.44 1275 277.44"
                                   fill="none"
                                   stroke="#F9C34B"
                                   stroke-linejoin="bevel"
@@ -6410,7 +6455,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 id="zr9-c0"
                               >
                                 <path
-                                  d="M12 119.4l1268 0l0 657.2l-1268 0Z"
+                                  d="M12 119.4l1263 0l0 657.2l-1263 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -6418,7 +6463,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 id="zr9-c1"
                               >
                                 <path
-                                  d="M12 119.4l1268 0l0 657.2l-1268 0Z"
+                                  d="M12 119.4l1263 0l0 657.2l-1263 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -6426,7 +6471,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 id="zr9-c2"
                               >
                                 <path
-                                  d="M12 119.4l1268 0l0 657.2l-1268 0Z"
+                                  d="M12 119.4l1263 0l0 657.2l-1263 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -6434,7 +6479,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 id="zr9-c3"
                               >
                                 <path
-                                  d="M12 119.4l1268 0l0 657.2l-1268 0Z"
+                                  d="M12 119.4l1263 0l0 657.2l-1263 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -6542,7 +6587,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                       class="styledComponents__ResetWrapper-sc-ryy21w-2 styledComponents__Wrapper-sc-um7jvv-0 jpvBzo iQvUMF"
                     >
                       <div
-                        _echarts_instance_="ec_1682075666089"
+                        _echarts_instance_="ec_1682313605936"
                         class="echarts-for-react "
                         size-sensor-id="11"
                         style="height: 800px; width: 1280px; position: relative;"
@@ -6570,32 +6615,32 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                             />
                             <g>
                               <path
-                                d="M14 776.5L1280 776.5"
+                                d="M14 776.5L1275 776.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 612.5L1280 612.5"
+                                d="M14 612.5L1275 612.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 448.5L1280 448.5"
+                                d="M14 448.5L1275 448.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 284.5L1280 284.5"
+                                d="M14 284.5L1275 284.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 120.5L1280 120.5"
+                                d="M14 120.5L1275 120.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 776.5L1280 776.5"
+                                d="M14 776.5L1275 776.5"
                                 fill="none"
                                 stroke="#C4C4C4"
                                 stroke-linecap="round"
@@ -6692,14 +6737,14 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(330.5 784)"
+                                transform="translate(329.25 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(330.5 784)"
+                                transform="translate(329.25 784)"
                                 y="8"
                               >
                                 04:41
@@ -6707,14 +6752,14 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(647 784)"
+                                transform="translate(644.5 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(647 784)"
+                                transform="translate(644.5 784)"
                                 y="8"
                               >
                                 04:42
@@ -6722,18 +6767,26 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(963.5 784)"
+                                transform="translate(959.75 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(963.5 784)"
+                                transform="translate(959.75 784)"
                                 y="8"
                               >
                                 04:43
                               </text>
+                              <path
+                                d="M14 530L1275 530L1275 120L14 120Z"
+                                fill="#ED1C24"
+                                fill-opacity="0.05"
+                                stroke="#66B1E8"
+                                stroke-opacity="0.05"
+                                stroke-width="0"
+                              />
                               <path
                                 d="M-5 -5l167 0l0 26l-167 0Z"
                                 fill="rgb(0,0,0)"
@@ -6831,6 +6884,13 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 Audio Rx
                               </text>
                               <path
+                                d="M14 530.5L1275 530.5"
+                                fill="none"
+                                stroke="#ED1C24"
+                                stroke-dasharray="4,2"
+                                stroke-opacity="0.5"
+                              />
+                              <path
                                 d="M-5 -5l26 0l0 10l-26 0Z"
                                 fill="none"
                                 stroke="#ccc"
@@ -6859,7 +6919,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 clip-path="url(#zr10-c0)"
                               >
                                 <path
-                                  d="M330.5 205.28C330.5 205.28 439.7456 725.16 647 725.16C756.2456 725.16 963.5 672.68 963.5 672.68"
+                                  d="M329.25 205.28C329.25 205.28 437.8658 725.16 644.5 725.16C753.1158 725.16 959.75 672.68 959.75 672.68"
                                   fill="none"
                                   stroke="#66B1E8"
                                   stroke-linejoin="bevel"
@@ -6905,7 +6965,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 id="zr10-c0"
                               >
                                 <path
-                                  d="M13 119.4l1267 0l0 657.2l-1267 0Z"
+                                  d="M13 119.4l1262 0l0 657.2l-1262 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -6913,7 +6973,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 id="zr10-c1"
                               >
                                 <path
-                                  d="M13 119.4l1267 0l0 657.2l-1267 0Z"
+                                  d="M13 119.4l1262 0l0 657.2l-1262 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -6921,7 +6981,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 id="zr10-c2"
                               >
                                 <path
-                                  d="M13 119.4l1267 0l0 657.2l-1267 0Z"
+                                  d="M13 119.4l1262 0l0 657.2l-1262 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -6929,7 +6989,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 id="zr10-c3"
                               >
                                 <path
-                                  d="M13 119.4l1267 0l0 657.2l-1267 0Z"
+                                  d="M13 119.4l1262 0l0 657.2l-1262 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -7023,7 +7083,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                       class="styledComponents__ResetWrapper-sc-ryy21w-2 styledComponents__Wrapper-sc-um7jvv-0 jpvBzo iQvUMF"
                     >
                       <div
-                        _echarts_instance_="ec_1682075666090"
+                        _echarts_instance_="ec_1682313605937"
                         class="echarts-for-react "
                         size-sensor-id="12"
                         style="height: 800px; width: 1280px; position: relative;"
@@ -7051,37 +7111,37 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                             />
                             <g>
                               <path
-                                d="M14 776.5L1280 776.5"
+                                d="M14 776.5L1275 776.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 645.5L1280 645.5"
+                                d="M14 645.5L1275 645.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 513.5L1280 513.5"
+                                d="M14 513.5L1275 513.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 382.5L1280 382.5"
+                                d="M14 382.5L1275 382.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 251.5L1280 251.5"
+                                d="M14 251.5L1275 251.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 120.5L1280 120.5"
+                                d="M14 120.5L1275 120.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 776.5L1280 776.5"
+                                d="M14 776.5L1275 776.5"
                                 fill="none"
                                 stroke="#C4C4C4"
                                 stroke-linecap="round"
@@ -7176,95 +7236,35 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 100 ms
                               </text>
                               <path
-                                d="M-4 0l8 0l0 16l-8 0Z"
+                                d="M0 0l0 0l0 0l0 0Z"
                                 fill="none"
-                                transform="translate(172.25 784)"
+                                transform="translate(171.625 784)"
                               />
-                              <text
-                                dominant-baseline="central"
-                                fill="#ACAEB0"
-                                style="font: normal 400 10px 'Open Sans', sans-serif"
-                                text-anchor="middle"
-                                transform="translate(172.25 784)"
-                                y="8"
-                              >
-                                04:41:15
-                              </text>
                               <path
-                                d="M-4 0l8 0l0 16l-8 0Z"
+                                d="M0 0l0 0l0 0l0 0Z"
                                 fill="none"
-                                transform="translate(330.5 784)"
+                                transform="translate(329.25 784)"
                               />
-                              <text
-                                dominant-baseline="central"
-                                fill="#ACAEB0"
-                                style="font: normal 400 10px 'Open Sans', sans-serif"
-                                text-anchor="middle"
-                                transform="translate(330.5 784)"
-                                y="8"
-                              >
-                                04:41:30
-                              </text>
                               <path
-                                d="M-4 0l8 0l0 16l-8 0Z"
+                                d="M0 0l0 0l0 0l0 0Z"
                                 fill="none"
-                                transform="translate(488.75 784)"
+                                transform="translate(486.875 784)"
                               />
-                              <text
-                                dominant-baseline="central"
-                                fill="#ACAEB0"
-                                style="font: normal 400 10px 'Open Sans', sans-serif"
-                                text-anchor="middle"
-                                transform="translate(488.75 784)"
-                                y="8"
-                              >
-                                04:41:45
-                              </text>
                               <path
-                                d="M-4 0l8 0l0 16l-8 0Z"
+                                d="M0 0l0 0l0 0l0 0Z"
                                 fill="none"
-                                transform="translate(805.25 784)"
+                                transform="translate(802.125 784)"
                               />
-                              <text
-                                dominant-baseline="central"
-                                fill="#ACAEB0"
-                                style="font: normal 400 10px 'Open Sans', sans-serif"
-                                text-anchor="middle"
-                                transform="translate(805.25 784)"
-                                y="8"
-                              >
-                                04:42:15
-                              </text>
                               <path
-                                d="M-4 0l8 0l0 16l-8 0Z"
+                                d="M0 0l0 0l0 0l0 0Z"
                                 fill="none"
-                                transform="translate(963.5 784)"
+                                transform="translate(959.75 784)"
                               />
-                              <text
-                                dominant-baseline="central"
-                                fill="#ACAEB0"
-                                style="font: normal 400 10px 'Open Sans', sans-serif"
-                                text-anchor="middle"
-                                transform="translate(963.5 784)"
-                                y="8"
-                              >
-                                04:42:30
-                              </text>
                               <path
-                                d="M-4 0l8 0l0 16l-8 0Z"
+                                d="M0 0l0 0l0 0l0 0Z"
                                 fill="none"
-                                transform="translate(1121.75 784)"
+                                transform="translate(1117.375 784)"
                               />
-                              <text
-                                dominant-baseline="central"
-                                fill="#ACAEB0"
-                                style="font: normal 400 10px 'Open Sans', sans-serif"
-                                text-anchor="middle"
-                                transform="translate(1121.75 784)"
-                                y="8"
-                              >
-                                04:42:45
-                              </text>
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
@@ -7283,14 +7283,14 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(647 784)"
+                                transform="translate(644.5 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(647 784)"
+                                transform="translate(644.5 784)"
                                 y="8"
                               >
                                 04:42
@@ -7420,7 +7420,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 clip-path="url(#zr11-c0)"
                               >
                                 <path
-                                  d="M647 559.52"
+                                  d="M644.5 559.52"
                                   fill="none"
                                   stroke="#66B1E8"
                                   stroke-linejoin="bevel"
@@ -7442,7 +7442,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 clip-path="url(#zr11-c2)"
                               >
                                 <path
-                                  d="M647 316.8C647 316.8 1280 185.6 1280 185.6"
+                                  d="M644.5 316.8C644.5 316.8 1275 185.6 1275 185.6"
                                   fill="none"
                                   stroke="#F9C34B"
                                   stroke-linejoin="bevel"
@@ -7466,7 +7466,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 id="zr11-c0"
                               >
                                 <path
-                                  d="M13 119.4l1267 0l0 657.2l-1267 0Z"
+                                  d="M13 119.4l1262 0l0 657.2l-1262 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -7474,7 +7474,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 id="zr11-c1"
                               >
                                 <path
-                                  d="M13 119.4l1267 0l0 657.2l-1267 0Z"
+                                  d="M13 119.4l1262 0l0 657.2l-1262 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -7482,7 +7482,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 id="zr11-c2"
                               >
                                 <path
-                                  d="M13 119.4l1267 0l0 657.2l-1267 0Z"
+                                  d="M13 119.4l1262 0l0 657.2l-1262 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -7490,7 +7490,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 id="zr11-c3"
                               >
                                 <path
-                                  d="M13 119.4l1267 0l0 657.2l-1267 0Z"
+                                  d="M13 119.4l1262 0l0 657.2l-1262 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -7598,7 +7598,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                       class="styledComponents__ResetWrapper-sc-ryy21w-2 styledComponents__Wrapper-sc-um7jvv-0 jpvBzo iQvUMF"
                     >
                       <div
-                        _echarts_instance_="ec_1682075666091"
+                        _echarts_instance_="ec_1682313605938"
                         class="echarts-for-react "
                         size-sensor-id="13"
                         style="height: 800px; width: 1280px; position: relative;"
@@ -7626,22 +7626,22 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                             />
                             <g>
                               <path
-                                d="M11 776.5L1280 776.5"
+                                d="M11 776.5L1275 776.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M11 448.5L1280 448.5"
+                                d="M11 448.5L1275 448.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M11 120.5L1280 120.5"
+                                d="M11 120.5L1275 120.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M11 776.5L1280 776.5"
+                                d="M11 776.5L1275 776.5"
                                 fill="none"
                                 stroke="#C4C4C4"
                                 stroke-linecap="round"
@@ -7709,14 +7709,14 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(328.25 784)"
+                                transform="translate(327 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(328.25 784)"
+                                transform="translate(327 784)"
                                 y="8"
                               >
                                 04:41
@@ -7724,14 +7724,14 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(645.5 784)"
+                                transform="translate(643 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(645.5 784)"
+                                transform="translate(643 784)"
                                 y="8"
                               >
                                 04:42
@@ -7739,18 +7739,26 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(962.75 784)"
+                                transform="translate(959 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(962.75 784)"
+                                transform="translate(959 784)"
                                 y="8"
                               >
                                 04:43
                               </text>
+                              <path
+                                d="M11 120L1275 120L11 120Z"
+                                fill="#ED1C24"
+                                fill-opacity="0.05"
+                                stroke="#66B1E8"
+                                stroke-opacity="0.05"
+                                stroke-width="0"
+                              />
                               <path
                                 d="M-5 -5l167 0l0 26l-167 0Z"
                                 fill="rgb(0,0,0)"
@@ -7848,6 +7856,13 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 Audio Rx
                               </text>
                               <path
+                                d="M11 120.5L1275 120.5"
+                                fill="none"
+                                stroke="#ED1C24"
+                                stroke-dasharray="4,2"
+                                stroke-opacity="0.5"
+                              />
+                              <path
                                 d="M-5 -5l26 0l0 10l-26 0Z"
                                 fill="none"
                                 stroke="#ccc"
@@ -7876,7 +7891,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 clip-path="url(#zr12-c0)"
                               >
                                 <path
-                                  d="M328.25 644.8C328.25 644.8 511.854 743.2 645.5 743.2C829.104 743.2 962.75 415.2 962.75 415.2"
+                                  d="M327 644.8C327 644.8 510.0112 743.2 643 743.2C826.0112 743.2 959 415.2 959 415.2"
                                   fill="none"
                                   stroke="#66B1E8"
                                   stroke-linejoin="bevel"
@@ -7922,7 +7937,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 id="zr12-c0"
                               >
                                 <path
-                                  d="M10 119.4l1270 0l0 657.2l-1270 0Z"
+                                  d="M10 119.4l1265 0l0 657.2l-1265 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -7930,7 +7945,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 id="zr12-c1"
                               >
                                 <path
-                                  d="M10 119.4l1270 0l0 657.2l-1270 0Z"
+                                  d="M10 119.4l1265 0l0 657.2l-1265 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -7938,7 +7953,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 id="zr12-c2"
                               >
                                 <path
-                                  d="M10 119.4l1270 0l0 657.2l-1270 0Z"
+                                  d="M10 119.4l1265 0l0 657.2l-1265 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -7946,7 +7961,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 id="zr12-c3"
                               >
                                 <path
-                                  d="M10 119.4l1270 0l0 657.2l-1270 0Z"
+                                  d="M10 119.4l1265 0l0 657.2l-1265 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -8040,7 +8055,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                       class="styledComponents__ResetWrapper-sc-ryy21w-2 styledComponents__Wrapper-sc-um7jvv-0 jpvBzo iQvUMF"
                     >
                       <div
-                        _echarts_instance_="ec_1682075666092"
+                        _echarts_instance_="ec_1682313605939"
                         class="echarts-for-react "
                         size-sensor-id="14"
                         style="height: 800px; width: 1280px; position: relative;"
@@ -8068,32 +8083,32 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                             />
                             <g>
                               <path
-                                d="M11 776.5L1280 776.5"
+                                d="M11 776.5L1275 776.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M11 612.5L1280 612.5"
+                                d="M11 612.5L1275 612.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M11 448.5L1280 448.5"
+                                d="M11 448.5L1275 448.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M11 284.5L1280 284.5"
+                                d="M11 284.5L1275 284.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M11 120.5L1280 120.5"
+                                d="M11 120.5L1275 120.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M11 776.5L1280 776.5"
+                                d="M11 776.5L1275 776.5"
                                 fill="none"
                                 stroke="#C4C4C4"
                                 stroke-linecap="round"
@@ -8174,95 +8189,35 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 4 %
                               </text>
                               <path
-                                d="M-4 0l8 0l0 16l-8 0Z"
+                                d="M0 0l0 0l0 0l0 0Z"
                                 fill="none"
-                                transform="translate(169.625 784)"
+                                transform="translate(169 784)"
                               />
-                              <text
-                                dominant-baseline="central"
-                                fill="#ACAEB0"
-                                style="font: normal 400 10px 'Open Sans', sans-serif"
-                                text-anchor="middle"
-                                transform="translate(169.625 784)"
-                                y="8"
-                              >
-                                04:41:15
-                              </text>
                               <path
-                                d="M-4 0l8 0l0 16l-8 0Z"
+                                d="M0 0l0 0l0 0l0 0Z"
                                 fill="none"
-                                transform="translate(328.25 784)"
+                                transform="translate(327 784)"
                               />
-                              <text
-                                dominant-baseline="central"
-                                fill="#ACAEB0"
-                                style="font: normal 400 10px 'Open Sans', sans-serif"
-                                text-anchor="middle"
-                                transform="translate(328.25 784)"
-                                y="8"
-                              >
-                                04:41:30
-                              </text>
                               <path
-                                d="M-4 0l8 0l0 16l-8 0Z"
+                                d="M0 0l0 0l0 0l0 0Z"
                                 fill="none"
-                                transform="translate(486.875 784)"
+                                transform="translate(485 784)"
                               />
-                              <text
-                                dominant-baseline="central"
-                                fill="#ACAEB0"
-                                style="font: normal 400 10px 'Open Sans', sans-serif"
-                                text-anchor="middle"
-                                transform="translate(486.875 784)"
-                                y="8"
-                              >
-                                04:41:45
-                              </text>
                               <path
-                                d="M-4 0l8 0l0 16l-8 0Z"
+                                d="M0 0l0 0l0 0l0 0Z"
                                 fill="none"
-                                transform="translate(804.125 784)"
+                                transform="translate(801 784)"
                               />
-                              <text
-                                dominant-baseline="central"
-                                fill="#ACAEB0"
-                                style="font: normal 400 10px 'Open Sans', sans-serif"
-                                text-anchor="middle"
-                                transform="translate(804.125 784)"
-                                y="8"
-                              >
-                                04:42:15
-                              </text>
                               <path
-                                d="M-4 0l8 0l0 16l-8 0Z"
+                                d="M0 0l0 0l0 0l0 0Z"
                                 fill="none"
-                                transform="translate(962.75 784)"
+                                transform="translate(959 784)"
                               />
-                              <text
-                                dominant-baseline="central"
-                                fill="#ACAEB0"
-                                style="font: normal 400 10px 'Open Sans', sans-serif"
-                                text-anchor="middle"
-                                transform="translate(962.75 784)"
-                                y="8"
-                              >
-                                04:42:30
-                              </text>
                               <path
-                                d="M-4 0l8 0l0 16l-8 0Z"
+                                d="M0 0l0 0l0 0l0 0Z"
                                 fill="none"
-                                transform="translate(1121.375 784)"
+                                transform="translate(1117 784)"
                               />
-                              <text
-                                dominant-baseline="central"
-                                fill="#ACAEB0"
-                                style="font: normal 400 10px 'Open Sans', sans-serif"
-                                text-anchor="middle"
-                                transform="translate(1121.375 784)"
-                                y="8"
-                              >
-                                04:42:45
-                              </text>
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
@@ -8281,18 +8236,26 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(645.5 784)"
+                                transform="translate(643 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(645.5 784)"
+                                transform="translate(643 784)"
                                 y="8"
                               >
                                 04:42
                               </text>
+                              <path
+                                d="M11 448L1275 448L1275 120L11 120Z"
+                                fill="#ED1C24"
+                                fill-opacity="0.05"
+                                stroke="#66B1E8"
+                                stroke-opacity="0.05"
+                                stroke-width="0"
+                              />
                               <path
                                 d="M-5 -5l167 0l0 26l-167 0Z"
                                 fill="rgb(0,0,0)"
@@ -8390,6 +8353,13 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 Audio Rx
                               </text>
                               <path
+                                d="M11 448.5L1275 448.5"
+                                fill="none"
+                                stroke="#ED1C24"
+                                stroke-dasharray="4,2"
+                                stroke-opacity="0.5"
+                              />
+                              <path
                                 d="M-5 -5l26 0l0 10l-26 0Z"
                                 fill="none"
                                 stroke="#ccc"
@@ -8418,7 +8388,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 clip-path="url(#zr13-c0)"
                               >
                                 <path
-                                  d="M645.5 776"
+                                  d="M643 776"
                                   fill="none"
                                   stroke="#66B1E8"
                                   stroke-linejoin="bevel"
@@ -8440,7 +8410,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 clip-path="url(#zr13-c2)"
                               >
                                 <path
-                                  d="M645.5 316.8C645.5 316.8 1280 677.6 1280 677.6"
+                                  d="M643 316.8C643 316.8 1275 677.6 1275 677.6"
                                   fill="none"
                                   stroke="#F9C34B"
                                   stroke-linejoin="bevel"
@@ -8464,7 +8434,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 id="zr13-c0"
                               >
                                 <path
-                                  d="M10 119.4l1270 0l0 657.2l-1270 0Z"
+                                  d="M10 119.4l1265 0l0 657.2l-1265 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -8472,7 +8442,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 id="zr13-c1"
                               >
                                 <path
-                                  d="M10 119.4l1270 0l0 657.2l-1270 0Z"
+                                  d="M10 119.4l1265 0l0 657.2l-1265 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -8480,7 +8450,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 id="zr13-c2"
                               >
                                 <path
-                                  d="M10 119.4l1270 0l0 657.2l-1270 0Z"
+                                  d="M10 119.4l1265 0l0 657.2l-1265 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -8488,7 +8458,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 id="zr13-c3"
                               >
                                 <path
-                                  d="M10 119.4l1270 0l0 657.2l-1270 0Z"
+                                  d="M10 119.4l1265 0l0 657.2l-1265 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -8596,7 +8566,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                       class="styledComponents__ResetWrapper-sc-ryy21w-2 styledComponents__Wrapper-sc-um7jvv-0 jpvBzo iQvUMF"
                     >
                       <div
-                        _echarts_instance_="ec_1682075666093"
+                        _echarts_instance_="ec_1682313605940"
                         class="echarts-for-react "
                         size-sensor-id="15"
                         style="height: 800px; width: 1280px; position: relative;"
@@ -8624,42 +8594,42 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                             />
                             <g>
                               <path
-                                d="M14 776.5L1280 776.5"
+                                d="M14 776.5L1275 776.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 666.5L1280 666.5"
+                                d="M14 666.5L1275 666.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 557.5L1280 557.5"
+                                d="M14 557.5L1275 557.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 448.5L1280 448.5"
+                                d="M14 448.5L1275 448.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 338.5L1280 338.5"
+                                d="M14 338.5L1275 338.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 229.5L1280 229.5"
+                                d="M14 229.5L1275 229.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 120.5L1280 120.5"
+                                d="M14 120.5L1275 120.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 776.5L1280 776.5"
+                                d="M14 776.5L1275 776.5"
                                 fill="none"
                                 stroke="#C4C4C4"
                                 stroke-linecap="round"
@@ -8787,14 +8757,14 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(330.5 784)"
+                                transform="translate(329.25 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(330.5 784)"
+                                transform="translate(329.25 784)"
                                 y="8"
                               >
                                 04:41
@@ -8802,14 +8772,14 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(647 784)"
+                                transform="translate(644.5 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(647 784)"
+                                transform="translate(644.5 784)"
                                 y="8"
                               >
                                 04:42
@@ -8817,18 +8787,26 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(963.5 784)"
+                                transform="translate(959.75 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(963.5 784)"
+                                transform="translate(959.75 784)"
                                 y="8"
                               >
                                 04:43
                               </text>
+                              <path
+                                d="M14 776L1275 776L1275 448L14 448Z"
+                                fill="#ED1C24"
+                                fill-opacity="0.05"
+                                stroke="#66B1E8"
+                                stroke-opacity="0.05"
+                                stroke-width="0"
+                              />
                               <path
                                 d="M-5 -5l81 0l0 26l-81 0Z"
                                 fill="rgb(0,0,0)"
@@ -8882,6 +8860,13 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 Video Rx
                               </text>
                               <path
+                                d="M14 448.5L1275 448.5"
+                                fill="none"
+                                stroke="#ED1C24"
+                                stroke-dasharray="4,2"
+                                stroke-opacity="0.5"
+                              />
+                              <path
                                 d="M-5 -5l26 0l0 10l-26 0Z"
                                 fill="none"
                                 stroke="#ccc"
@@ -8910,7 +8895,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 clip-path="url(#zr14-c0)"
                               >
                                 <path
-                                  d="M330.5 316.8C330.5 316.8 484.2912 207.4667 647 207.4667C800.7912 207.4667 963.5 207.4667 963.5 207.4667"
+                                  d="M329.25 316.8C329.25 316.8 482.4005 207.4667 644.5 207.4667C797.6505 207.4667 959.75 207.4667 959.75 207.4667"
                                   fill="none"
                                   stroke="#66B1E8"
                                   stroke-linejoin="bevel"
@@ -8934,7 +8919,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 id="zr14-c0"
                               >
                                 <path
-                                  d="M13 119.4l1267 0l0 657.2l-1267 0Z"
+                                  d="M13 119.4l1262 0l0 657.2l-1262 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -8942,7 +8927,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 id="zr14-c1"
                               >
                                 <path
-                                  d="M13 119.4l1267 0l0 657.2l-1267 0Z"
+                                  d="M13 119.4l1262 0l0 657.2l-1262 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -9036,7 +9021,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                       class="styledComponents__ResetWrapper-sc-ryy21w-2 styledComponents__Wrapper-sc-um7jvv-0 jpvBzo iQvUMF"
                     >
                       <div
-                        _echarts_instance_="ec_1682075666094"
+                        _echarts_instance_="ec_1682313605941"
                         class="echarts-for-react "
                         size-sensor-id="16"
                         style="height: 800px; width: 1280px; position: relative;"
@@ -9064,42 +9049,42 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                             />
                             <g>
                               <path
-                                d="M14 776.5L1280 776.5"
+                                d="M14 776.5L1275 776.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 666.5L1280 666.5"
+                                d="M14 666.5L1275 666.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 557.5L1280 557.5"
+                                d="M14 557.5L1275 557.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 448.5L1280 448.5"
+                                d="M14 448.5L1275 448.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 338.5L1280 338.5"
+                                d="M14 338.5L1275 338.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 229.5L1280 229.5"
+                                d="M14 229.5L1275 229.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 120.5L1280 120.5"
+                                d="M14 120.5L1275 120.5"
                                 fill="none"
                                 stroke="#EBEDEE"
                               />
                               <path
-                                d="M14 776.5L1280 776.5"
+                                d="M14 776.5L1275 776.5"
                                 fill="none"
                                 stroke="#C4C4C4"
                                 stroke-linecap="round"
@@ -9210,95 +9195,35 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 30 fps
                               </text>
                               <path
-                                d="M-4 0l8 0l0 16l-8 0Z"
+                                d="M0 0l0 0l0 0l0 0Z"
                                 fill="none"
-                                transform="translate(172.25 784)"
+                                transform="translate(171.625 784)"
                               />
-                              <text
-                                dominant-baseline="central"
-                                fill="#ACAEB0"
-                                style="font: normal 400 10px 'Open Sans', sans-serif"
-                                text-anchor="middle"
-                                transform="translate(172.25 784)"
-                                y="8"
-                              >
-                                04:41:15
-                              </text>
                               <path
-                                d="M-4 0l8 0l0 16l-8 0Z"
+                                d="M0 0l0 0l0 0l0 0Z"
                                 fill="none"
-                                transform="translate(330.5 784)"
+                                transform="translate(329.25 784)"
                               />
-                              <text
-                                dominant-baseline="central"
-                                fill="#ACAEB0"
-                                style="font: normal 400 10px 'Open Sans', sans-serif"
-                                text-anchor="middle"
-                                transform="translate(330.5 784)"
-                                y="8"
-                              >
-                                04:41:30
-                              </text>
                               <path
-                                d="M-4 0l8 0l0 16l-8 0Z"
+                                d="M0 0l0 0l0 0l0 0Z"
                                 fill="none"
-                                transform="translate(488.75 784)"
+                                transform="translate(486.875 784)"
                               />
-                              <text
-                                dominant-baseline="central"
-                                fill="#ACAEB0"
-                                style="font: normal 400 10px 'Open Sans', sans-serif"
-                                text-anchor="middle"
-                                transform="translate(488.75 784)"
-                                y="8"
-                              >
-                                04:41:45
-                              </text>
                               <path
-                                d="M-4 0l8 0l0 16l-8 0Z"
+                                d="M0 0l0 0l0 0l0 0Z"
                                 fill="none"
-                                transform="translate(805.25 784)"
+                                transform="translate(802.125 784)"
                               />
-                              <text
-                                dominant-baseline="central"
-                                fill="#ACAEB0"
-                                style="font: normal 400 10px 'Open Sans', sans-serif"
-                                text-anchor="middle"
-                                transform="translate(805.25 784)"
-                                y="8"
-                              >
-                                04:42:15
-                              </text>
                               <path
-                                d="M-4 0l8 0l0 16l-8 0Z"
+                                d="M0 0l0 0l0 0l0 0Z"
                                 fill="none"
-                                transform="translate(963.5 784)"
+                                transform="translate(959.75 784)"
                               />
-                              <text
-                                dominant-baseline="central"
-                                fill="#ACAEB0"
-                                style="font: normal 400 10px 'Open Sans', sans-serif"
-                                text-anchor="middle"
-                                transform="translate(963.5 784)"
-                                y="8"
-                              >
-                                04:42:30
-                              </text>
                               <path
-                                d="M-4 0l8 0l0 16l-8 0Z"
+                                d="M0 0l0 0l0 0l0 0Z"
                                 fill="none"
-                                transform="translate(1121.75 784)"
+                                transform="translate(1117.375 784)"
                               />
-                              <text
-                                dominant-baseline="central"
-                                fill="#ACAEB0"
-                                style="font: normal 400 10px 'Open Sans', sans-serif"
-                                text-anchor="middle"
-                                transform="translate(1121.75 784)"
-                                y="8"
-                              >
-                                04:42:45
-                              </text>
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
@@ -9317,18 +9242,26 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               <path
                                 d="M-2.5 0l5 0l0 16l-5 0Z"
                                 fill="none"
-                                transform="translate(647 784)"
+                                transform="translate(644.5 784)"
                               />
                               <text
                                 dominant-baseline="central"
                                 fill="#ACAEB0"
                                 style="font: normal 400 10px 'Open Sans', sans-serif"
                                 text-anchor="middle"
-                                transform="translate(647 784)"
+                                transform="translate(644.5 784)"
                                 y="8"
                               >
                                 04:42
                               </text>
+                              <path
+                                d="M14 776L1275 776L1275 448L14 448Z"
+                                fill="#ED1C24"
+                                fill-opacity="0.05"
+                                stroke="#66B1E8"
+                                stroke-opacity="0.05"
+                                stroke-width="0"
+                              />
                               <path
                                 d="M-5 -5l81 0l0 26l-81 0Z"
                                 fill="rgb(0,0,0)"
@@ -9382,6 +9315,13 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 Video Rx
                               </text>
                               <path
+                                d="M14 448.5L1275 448.5"
+                                fill="none"
+                                stroke="#ED1C24"
+                                stroke-dasharray="4,2"
+                                stroke-opacity="0.5"
+                              />
+                              <path
                                 d="M-5 -5l26 0l0 10l-26 0Z"
                                 fill="none"
                                 stroke="#ccc"
@@ -9421,7 +9361,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 clip-path="url(#zr15-c1)"
                               >
                                 <path
-                                  d="M14 316.8C14 316.8 328.174 207.4667 647 207.4667C961.174 207.4667 1280 207.4667 1280 207.4667"
+                                  d="M14 316.8C14 316.8 326.9151 207.4667 644.5 207.4667C957.4151 207.4667 1275 207.4667 1275 207.4667"
                                   fill="none"
                                   stroke="#EC7100"
                                   stroke-linejoin="bevel"
@@ -9434,7 +9374,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 id="zr15-c0"
                               >
                                 <path
-                                  d="M13 119.4l1267 0l0 657.2l-1267 0Z"
+                                  d="M13 119.4l1262 0l0 657.2l-1262 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -9442,7 +9382,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 id="zr15-c1"
                               >
                                 <path
-                                  d="M13 119.4l1267 0l0 657.2l-1267 0Z"
+                                  d="M13 119.4l1262 0l0 657.2l-1262 0Z"
                                   fill="#000"
                                 />
                               </clippath>
@@ -10061,7 +10001,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
     >
       <div
         class="styledComponents__ReportSectionTitle-cc9slb-2 igYais"
-        style="padding: 10px 0px;"
+        style="padding: 15px 0px;"
       >
         Zoom Call Statistics
       </div>
@@ -10079,10 +10019,10 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
             <span
               class="styledComponents__Label-cc9slb-3 irAGXM"
             >
-              Participant 1: 
+              Participant 1
             </span>
             <span
-              class="styledComponents__Value-cc9slb-4 lkXZOR"
+              class="styledComponents__Value-cc9slb-4 bDzuMc"
             >
               Test-part-1
             </span>
@@ -10098,10 +10038,10 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
             <span
               class="styledComponents__Label-cc9slb-3 irAGXM"
             >
-              Participant 2: 
+              Participant 2
             </span>
             <span
-              class="styledComponents__Value-cc9slb-4 lkXZOR"
+              class="styledComponents__Value-cc9slb-4 bDzuMc"
             >
               User 2
             </span>
@@ -11410,7 +11350,7 @@ exports[`VideoCallQoe Details Page render the page properly when mos is null 1`]
     >
       <div
         class="styledComponents__ReportSectionTitle-cc9slb-2 igYais"
-        style="padding: 10px 0px;"
+        style="padding: 15px 0px;"
       >
         Zoom Call Statistics
       </div>
@@ -11428,10 +11368,10 @@ exports[`VideoCallQoe Details Page render the page properly when mos is null 1`]
             <span
               class="styledComponents__Label-cc9slb-3 irAGXM"
             >
-              Participant 1: 
+              Participant 1
             </span>
             <span
-              class="styledComponents__Value-cc9slb-4 lkXZOR"
+              class="styledComponents__Value-cc9slb-4 bDzuMc"
             >
               Participant1
             </span>
@@ -11447,10 +11387,10 @@ exports[`VideoCallQoe Details Page render the page properly when mos is null 1`]
             <span
               class="styledComponents__Label-cc9slb-3 irAGXM"
             >
-              Participant 2: 
+              Participant 2
             </span>
             <span
-              class="styledComponents__Value-cc9slb-4 lkXZOR"
+              class="styledComponents__Value-cc9slb-4 bDzuMc"
             >
               Participant2
             </span>
