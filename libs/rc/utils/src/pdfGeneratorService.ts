@@ -8,7 +8,12 @@ export class PdfGeneratorService {
     printDiv.id = 'printArea'
     this.bodyElement.append(printDiv)
     this.printArea = document.querySelector('#printArea')
-    this.bodyElement.classList.add('not-printable')
+    this.bodyElement.classList.add('body-print')
+    document.getElementById('root')?.classList.add('not-printable')
+    const elements = document.getElementsByClassName('ant-message')
+    for (let i = 0; i < elements.length; i++) {
+      elements[i].classList.add('not-printable')
+    }
   }
 
   public generatePrint (printTemplate: string) {
@@ -23,7 +28,12 @@ export class PdfGeneratorService {
       this.printArea.remove()
       this.printArea = null
     }
-    this.bodyElement.classList.remove('not-printable')
+    this.bodyElement.classList.remove('body-print')
+    document.getElementById('root')?.classList.remove('not-printable')
+    const elements = document.getElementsByClassName('ant-message')
+    for (let i = 0; i < elements.length; i++) {
+      elements[i].classList.remove('not-printable')
+    }
   }
 
   private printDocument () {
@@ -32,19 +42,19 @@ export class PdfGeneratorService {
       // For Safari support
       mediaQueryList.onchange = (e) => {
         if (!e.matches) {
-          // this.removePrintArea()
+          this.removePrintArea()
         }
       }
       setTimeout(() => {
         window.print()
         if (navigator.userAgent.indexOf('Safari') === -1) {
-          // this.removePrintArea()
+          this.removePrintArea()
         }
       }, 100)
     } else {
+      window.print()
       setTimeout(() => {
-        window.print()
-        // this.removePrintArea()
+        this.removePrintArea()
       }, 100)
     }
   }
