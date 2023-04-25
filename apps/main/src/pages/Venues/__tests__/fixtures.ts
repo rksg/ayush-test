@@ -652,7 +652,6 @@ export const networkDeepList = {
           l2AclEnable: false,
           l3AclEnable: false,
           wifiCallingEnabled: false,
-          singleSessionIdAccounting: false,
           proxyARP: false,
           enableAirtimeDecongestion: false,
           enableJoinRSSIThreshold: false,

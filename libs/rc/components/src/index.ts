@@ -77,6 +77,7 @@ export { GoogleMapWithPreference } from './GoogleMapWithPreference'
 export { TunnelProfileForm } from './TunnelProfileForm'
 export { EdgeDhcpPoolTable } from './EdgeDhcpPoolTable'
 export { EdgeDhcpLeaseTable } from './EdgeDhcpLeaseTable'
+export { RadiusOptionsForm } from './RadiusOptionsForm'
 
 export * from './services'
 export * from './EdgeStatisticWidget'
