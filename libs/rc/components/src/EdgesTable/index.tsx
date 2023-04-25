@@ -1,5 +1,4 @@
-import { useMemo } from 'react'
-
+import { Badge }   from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
@@ -9,10 +8,18 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useDeleteEdgeMutation, useGetEdgeListQuery, useRebootEdgeMutation, useSendOtpMutation } from '@acx-ui/rc/services'
-import { EdgeStatusEnum, EdgeStatus, useTableQuery, TABLE_QUERY, RequestPayload }                from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useTenantLink }                                                from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                                        from '@acx-ui/user'
+import {
+  useDeleteEdgeMutation,
+  useGetEdgeListQuery,
+  useRebootEdgeMutation,
+  useSendOtpMutation,
+  useVenuesListQuery
+} from '@acx-ui/rc/services'
+import { EdgeStatusEnum, EdgeStatus, useTableQuery, TABLE_QUERY, RequestPayload } from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useTenantLink }                                 from '@acx-ui/react-router-dom'
+import { filterByAccess }                                                         from '@acx-ui/user'
+
+import { seriesMappingAP } from '../DevicesWidget'
 
 import { EdgeStatusLight } from './EdgeStatusLight'
 
@@ -44,8 +51,11 @@ export const defaultEdgeTablePayload = {
     'edgeGroupId',
     'tags',
     'firmwareVersion'
-  ],
-  filters: {},
+  ]
+}
+const venueOptionsDefaultPayload = {
+  fields: ['name', 'id'],
+  pageSize: 10000,
   sortField: 'name',
   sortOrder: 'ASC'
 }
@@ -64,21 +74,39 @@ export const EdgesTable = (props: EdgesTableProps) => {
   const tableQuery = useTableQuery({
     useQuery: useGetEdgeListQuery,
     defaultPayload: defaultEdgeTablePayload,
+    sorter: {
+      sortField: 'name',
+      sortOrder: 'ASC'
+    },
+    search: {
+      searchTargetFields: ['name', 'serialNumber', 'ip']
+    },
     ...customTableQuery
   })
+  const statusFilterOptions = seriesMappingAP().map(({ key, name, color }) => ({
+    key, value: name, label: <Badge color={color} text={name} />
+  }))
+  const { venueOptions = [] } = useVenuesListQuery(
+    { payload: venueOptionsDefaultPayload }, {
+      selectFromResult: ({ data }) => {
+        return {
+          venueOptions: data?.data.map(item => ({ value: item.name, key: item.id }))
+        }
+      }
+    })
 
   const [deleteEdge, { isLoading: isDeleteEdgeUpdating }] = useDeleteEdgeMutation()
   const [ rebootEdge ] = useRebootEdgeMutation()
   const [sendOtp] = useSendOtpMutation()
 
-  const defaultColumns: TableProps<EdgeStatus>['columns'] = useMemo(() => ([
+  const defaultColumns: TableProps<EdgeStatus>['columns'] = [
     {
       title: $t({ defaultMessage: 'SmartEdge' }),
-      tooltip: $t({ defaultMessage: 'SmartEdge' }),
       key: 'name',
       dataIndex: 'name',
       sorter: true,
       defaultSortOrder: 'ascend',
+      searchable: true,
       fixed: 'left',
       render: (data, row) => {
         return (
@@ -94,6 +122,8 @@ export const EdgesTable = (props: EdgesTableProps) => {
       dataIndex: 'deviceStatus',
       sorter: true,
       fixed: 'left',
+      filterable: statusFilterOptions,
+      filterKey: 'deviceStatusSeverity',
       render: (data, row) => {
         return (
           <EdgeStatusLight data={row.deviceStatus} />
@@ -116,13 +146,15 @@ export const EdgesTable = (props: EdgesTableProps) => {
       title: $t({ defaultMessage: 'Serial Number' }),
       key: 'serialNumber',
       dataIndex: 'serialNumber',
-      sorter: true
+      sorter: true,
+      searchable: true
     },
     {
       title: $t({ defaultMessage: 'IP Address' }),
       key: 'ip',
       dataIndex: 'ip',
-      sorter: true
+      sorter: true,
+      searchable: true
     },
     {
       title: $t({ defaultMessage: 'Ports' }),
@@ -135,6 +167,8 @@ export const EdgesTable = (props: EdgesTableProps) => {
       key: 'venue',
       dataIndex: ['venueName'],
       sorter: true,
+      filterable: venueOptions,
+      filterKey: 'venueId',
       render: (data, row) => {
         return (
           <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
@@ -159,7 +193,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
       sorter: true,
       show: false
     }
-  ]), [$t])
+  ]
 
   if (filterColumns) {
     filterColumns.forEach((columnTofilter) => {
@@ -258,14 +292,16 @@ export const EdgesTable = (props: EdgesTableProps) => {
       { isLoading: false, isFetching: isDeleteEdgeUpdating }
     ]}>
       <Table
-        rowActions={filterByAccess(rowActions)}
         settingsId='edges-table'
-        {...otherProps}
+        rowKey='serialNumber'
+        rowActions={filterByAccess(rowActions)}
         columns={columns ?? defaultColumns}
         dataSource={tableQuery?.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
-        rowKey='serialNumber'
+        onFilterChange={tableQuery.handleFilterChange}
+        enableApiFilter
+        {...otherProps}
       />
     </Loader>
   )

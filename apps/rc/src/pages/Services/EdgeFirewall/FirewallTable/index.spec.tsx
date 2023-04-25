@@ -1,0 +1,141 @@
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
+
+import { EdgeFirewallUrls, EdgeUrlsInfo, ServiceOperation, ServiceType, getServiceDetailsLink } from '@acx-ui/rc/utils'
+import { Provider }                                                                             from '@acx-ui/store'
+import { mockServer, render, screen, within }                                                   from '@acx-ui/test-utils'
+
+import { mockEdgeList }           from '../../../Devices/Edge/__tests__/fixtures'
+import { mockedFirewallDataList } from '../__tests__/fixtures'
+
+import FirewallTable from '.'
+
+const mockedUsedNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
+}))
+
+describe('Firewall Table', () => {
+  let params: { tenantId: string }
+  beforeEach(() => {
+    params = {
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+    }
+
+    mockServer.use(
+      rest.post(
+        EdgeFirewallUrls.getEdgeFirewallViewDataList.url,
+        (req, res, ctx) => res(ctx.json(mockedFirewallDataList))
+      ),
+      rest.delete(
+        EdgeFirewallUrls.batchDeleteEdgeFirewall.url,
+        (req, res, ctx) => res(ctx.status(202))
+      ),
+      rest.delete(
+        EdgeFirewallUrls.deleteEdgeFirewall.url,
+        (req, res, ctx) => res(ctx.status(202))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeList.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeList))
+      )
+    )
+  })
+
+  it('should create FirewallTable successfully', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <FirewallTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/services/firewall/list' }
+      }
+    )
+    const row = await screen.findAllByRole('row', { name: /TestFirewall/i })
+    expect(row.length).toBe(2)
+    const ddosCheckMark = await screen.findByTestId('ddos-check-mark-1')
+    await user.hover(ddosCheckMark)
+    await screen.findByText('ALL: 220')
+    await screen.findByText('ICMP: 200')
+    const aclCheckMark = await screen.findByTestId('acl-check-mark-1')
+    await user.hover(aclCheckMark)
+    await screen.findByText('ACL1 (inbound)')
+    await screen.findByText('ACL2 (outbound)')
+  })
+
+  it('should go edit page', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <FirewallTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/services/firewall/list' }
+      }
+    )
+    const row = await screen.findByRole('row', { name: /TestFirewall1/i })
+    await user.click(within(row).getByRole('checkbox'))
+    await user.click(screen.getByRole('button', { name: 'Edit' }))
+
+    const editPath = getServiceDetailsLink({
+      type: ServiceType.EDGE_FIREWALL,
+      oper: ServiceOperation.EDIT,
+      serviceId: '1'
+    })
+
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: `/t/${params.tenantId}/${editPath}`,
+      hash: '',
+      search: ''
+    })
+  })
+
+  it('edit button will remove when select above 1 row', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <FirewallTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/services/firewall/list' }
+      }
+    )
+    const row = await screen.findAllByRole('row', { name: /TestFirewall/i })
+    await user.click(within(row[0]).getByRole('checkbox'))
+    await user.click(within(row[1]).getByRole('checkbox'))
+    expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
+  })
+
+  it('should delete selected row', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <FirewallTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/services/firewall/list' }
+      }
+    )
+    const row = await screen.findByRole('row', { name: /TestFirewall1/i })
+    await user.click(within(row).getByRole('checkbox'))
+    await user.click(screen.getByRole('button', { name: 'Delete' }))
+    await screen.findByText('Delete "TestFirewall1"?')
+    await user.click(screen.getByRole('button', { name: 'Delete Firewall' }))
+  })
+
+  it('should delete selected row(multiple)', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <FirewallTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/services/firewall/list' }
+      }
+    )
+    const row1 = await screen.findByRole('row', { name: /TestFirewall1/i })
+    const row2 = await screen.findByRole('row', { name: /TestFirewall2/i })
+    await user.click(within(row1).getByRole('checkbox'))
+    await user.click(within(row2).getByRole('checkbox'))
+    await user.click(screen.getByRole('button', { name: 'Delete' }))
+    await screen.findByText('Delete "2 Firewall"?')
+    await user.click(screen.getByRole('button', { name: 'Delete Firewall' }))
+  })
+})

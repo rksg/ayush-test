@@ -6,6 +6,12 @@ export const StyledFlagFilled = styled(FlagFilled)`
  `
 
 export const ModalStyles = css`
+  .ant-radio-group{
+    .ant-form-item {
+      margin-bottom: 0;
+    }
+  }
+
   .ant-modal-footer {
     display: flex;
     align-items: center;
