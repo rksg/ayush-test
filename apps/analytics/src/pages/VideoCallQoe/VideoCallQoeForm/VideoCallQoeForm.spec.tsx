@@ -46,7 +46,7 @@ describe('VideoCallQoeForm', () => {
 
     // Step 1
     await type(await screen.findByRole('textbox', {
-      name: /test name/i
+      name: /test call name/i
     }), 'Test 1')
 
     // Navigate to Step 2
