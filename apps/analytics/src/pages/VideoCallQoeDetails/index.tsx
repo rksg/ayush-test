@@ -185,8 +185,7 @@ export function VideoCallQoeDetails (){
   const getSeries = (
     callQoeDetails: DetailedResponse['getAllCallQoeTests'][0],
     metricName: Exclude<keyof Participants['callMetrics'][0], 'date_time'>,
-    participantNumber: number, isVideoFrameRate = false
-  ) => {
+    participantNumber: number) => {
     const data = callQoeDetails.meetings.at(0)?.participants.at(participantNumber)?.callMetrics
     const time: number[] = []
     const videoTx: (number | null)[] = []
@@ -194,13 +193,14 @@ export function VideoCallQoeDetails (){
     const audioTx: (number | null)[] = []
     const audioRx: (number | null)[] = []
 
+    const isVideoFrameRate = metricName === 'video_frame_rate'
     data?.forEach((metric: Participants['callMetrics'][0] ) => {
       time.push(new Date(metric.date_time).valueOf())
 
       if(isVideoFrameRate) {
         videoTx.push(metric.video_frame_rate.tx)
         videoRx.push(metric.video_frame_rate.rx)
-      } else if (metricName !== 'video_frame_rate') {
+      } else {
         videoTx.push(metric[metricName].video.tx)
         videoRx.push(metric[metricName].video.rx)
         audioTx.push(metric[metricName].audio.tx)
@@ -452,7 +452,7 @@ export function VideoCallQoeDetails (){
               <Card>
                 <AutoSizer>
                   {({ height, width }) => (
-                    getSeries(callQoeDetails, 'video_frame_rate', 0, true).length ?
+                    getSeries(callQoeDetails, 'video_frame_rate', 0).length ?
                       <MultiLineTimeSeriesChart
                         chartRef={connectChart}
                         markerAreas={[{
@@ -465,7 +465,7 @@ export function VideoCallQoeDetails (){
                           lineStyle: { opacity: 0.5, color: cssStr('--acx-semantics-red-50') }
                         }]}
                         style={{ width: width, height }}
-                        data={getSeries(callQoeDetails, 'video_frame_rate', 0, true)}
+                        data={getSeries(callQoeDetails, 'video_frame_rate', 0)}
                         dataFormatter={formatter('fpsFormat')}
                       />
                       : <NoData/>
@@ -477,7 +477,7 @@ export function VideoCallQoeDetails (){
               <Card>
                 <AutoSizer>
                   {({ height, width }) => (
-                    getSeries(callQoeDetails, 'video_frame_rate', 1, true).length ?
+                    getSeries(callQoeDetails, 'video_frame_rate', 1).length ?
                       <MultiLineTimeSeriesChart
                         chartRef={connectChart}
                         markerAreas={[{
@@ -490,7 +490,7 @@ export function VideoCallQoeDetails (){
                           lineStyle: { opacity: 0.5, color: cssStr('--acx-semantics-red-50') }
                         }]}
                         style={{ width: width, height }}
-                        data={getSeries(callQoeDetails, 'video_frame_rate', 1, true)}
+                        data={getSeries(callQoeDetails, 'video_frame_rate', 1)}
                         dataFormatter={formatter('fpsFormat')}
                       />
                       : <NoData/>
