@@ -33,7 +33,7 @@ export function VideoCallQoeDetails (){
             <EditOutlinedIcon style={{ height: '16px', width: '16px' }} />
           </Space>
         }
-        return ''
+        return '-'
       }
     },
     {
@@ -61,6 +61,8 @@ export function VideoCallQoeDetails (){
       dataIndex: ['apDetails','apName'],
       key: 'apName',
       render: (value:unknown)=>{
+        if(!value)
+          return '-'
         return <TenantLink to={'/devices/wifi'}>{value as string}</TenantLink>
       }
     },
@@ -69,6 +71,8 @@ export function VideoCallQoeDetails (){
       dataIndex: ['apDetails','apMac'],
       key: 'apMac',
       render: (value:unknown)=>{
+        if(!value)
+          return '-'
         return <TenantLink to={'/devices/wifi'}>{value as string}</TenantLink>
       }
     },
@@ -77,6 +81,8 @@ export function VideoCallQoeDetails (){
       dataIndex: ['apDetails','ssid'],
       key: 'ssid',
       render: (value:unknown)=>{
+        if(!value)
+          return '-'
         return <TenantLink to={'/networks/wireless'}>{value as string}</TenantLink>
       }
     },
@@ -85,10 +91,9 @@ export function VideoCallQoeDetails (){
       dataIndex: ['apDetails','radio'],
       key: 'radio',
       render: (value:unknown)=>{
-        if(value){
-          return `${value} Ghz`
-        }
-        return ''
+        if(!value)
+          return '-'
+        return `${value} Ghz`
       }
     },
     {
@@ -140,7 +145,7 @@ export function VideoCallQoeDetails (){
           </Tooltip>
         }
         else
-          return ''
+          return '-'
       }
     }
   ]
@@ -162,8 +167,8 @@ export function VideoCallQoeDetails (){
     - new Date(currentMeeting.startTime).getTime())}`
           }
           extra={[
-            <>{$t({ defaultMessage: 'Video Call QoE' })}</>,
-            <>{getPill(currentMeeting.mos)}</>
+            <div style={{ paddingTop: '4px' }}>{$t({ defaultMessage: 'Video Call QoE' })}</div>,
+            <div style={{ paddingTop: '4px' }}>{getPill(currentMeeting.mos)}</div>
           ]}
           breadcrumb={[{
             text: $t({ defaultMessage: 'Video Call QoE' }),

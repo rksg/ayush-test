@@ -88,17 +88,25 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                 class="ant-space-item"
                 style="margin-right: 8px;"
               >
-                Video Call QoE
+                <div
+                  style="padding-top: 4px;"
+                >
+                  Video Call QoE
+                </div>
               </div>
               <div
                 class="ant-space-item"
               >
-                <span
-                  class="styledComponents__Pill-sc-j61ge1-0 NKxEo styledComponents__BigTrendPill-cc9slb-0 dSVxJE"
-                  type="positive"
+                <div
+                  style="padding-top: 4px;"
                 >
-                  Good
-                </span>
+                  <span
+                    class="styledComponents__Pill-sc-j61ge1-0 NKxEo styledComponents__BigTrendPill-cc9slb-0 fqGrmO"
+                    type="positive"
+                  >
+                    Good
+                  </span>
+                </div>
               </div>
             </div>
           </span>
@@ -391,7 +399,9 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                             >
                               <td
                                 class="ant-table-cell"
-                              />
+                              >
+                                -
+                              </td>
                               <td
                                 class="ant-table-cell"
                               >
@@ -410,27 +420,23 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                <a
-                                  href="/t/tenant-id/devices/wifi"
-                                />
+                                -
                               </td>
                               <td
                                 class="ant-table-cell"
                               >
-                                <a
-                                  href="/t/tenant-id/devices/wifi"
-                                />
+                                -
                               </td>
                               <td
                                 class="ant-table-cell"
                               >
-                                <a
-                                  href="/t/tenant-id/networks/wireless"
-                                />
+                                -
                               </td>
                               <td
                                 class="ant-table-cell"
-                              />
+                              >
+                                -
+                              </td>
                               <td
                                 class="ant-table-cell"
                                 style="text-align: center;"
@@ -448,7 +454,9 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <td
                                 class="ant-table-cell"
                                 style="text-align: center;"
-                              />
+                              >
+                                -
+                              </td>
                               <td
                                 class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
                                 style="position: sticky; right: 0px;"
@@ -645,17 +653,25 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                 class="ant-space-item"
                 style="margin-right: 8px;"
               >
-                Video Call QoE
+                <div
+                  style="padding-top: 4px;"
+                >
+                  Video Call QoE
+                </div>
               </div>
               <div
                 class="ant-space-item"
               >
-                <span
-                  class="styledComponents__Pill-sc-j61ge1-0 chVxOo styledComponents__BigTrendPill-cc9slb-0 dSVxJE"
-                  type="negative"
+                <div
+                  style="padding-top: 4px;"
                 >
-                  Bad
-                </span>
+                  <span
+                    class="styledComponents__Pill-sc-j61ge1-0 chVxOo styledComponents__BigTrendPill-cc9slb-0 fqGrmO"
+                    type="negative"
+                  >
+                    Bad
+                  </span>
+                </div>
               </div>
             </div>
           </span>
@@ -1294,17 +1310,25 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                 class="ant-space-item"
                 style="margin-right: 8px;"
               >
-                Video Call QoE
+                <div
+                  style="padding-top: 4px;"
+                >
+                  Video Call QoE
+                </div>
               </div>
               <div
                 class="ant-space-item"
               >
-                <span
-                  class="styledComponents__Pill-sc-j61ge1-0 NKxEo styledComponents__BigTrendPill-cc9slb-0 dSVxJE"
-                  type="positive"
+                <div
+                  style="padding-top: 4px;"
                 >
-                  Good
-                </span>
+                  <span
+                    class="styledComponents__Pill-sc-j61ge1-0 NKxEo styledComponents__BigTrendPill-cc9slb-0 fqGrmO"
+                    type="positive"
+                  >
+                    Good
+                  </span>
+                </div>
               </div>
             </div>
           </span>
@@ -1695,27 +1719,23 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                               <td
                                 class="ant-table-cell"
                               >
-                                <a
-                                  href="/t/tenant-id/devices/wifi"
-                                />
+                                -
                               </td>
                               <td
                                 class="ant-table-cell"
                               >
-                                <a
-                                  href="/t/tenant-id/devices/wifi"
-                                />
+                                -
                               </td>
                               <td
                                 class="ant-table-cell"
                               >
-                                <a
-                                  href="/t/tenant-id/networks/wireless"
-                                />
+                                -
                               </td>
                               <td
                                 class="ant-table-cell"
-                              />
+                              >
+                                -
+                              </td>
                               <td
                                 class="ant-table-cell"
                                 style="text-align: center;"
@@ -1733,7 +1753,9 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                               <td
                                 class="ant-table-cell"
                                 style="text-align: center;"
-                              />
+                              >
+                                -
+                              </td>
                               <td
                                 class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
                                 style="position: sticky; right: 0px;"
@@ -1744,7 +1766,9 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                             >
                               <td
                                 class="ant-table-cell"
-                              />
+                              >
+                                -
+                              </td>
                               <td
                                 class="ant-table-cell"
                               >
@@ -1763,27 +1787,23 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                               <td
                                 class="ant-table-cell"
                               >
-                                <a
-                                  href="/t/tenant-id/devices/wifi"
-                                />
+                                -
                               </td>
                               <td
                                 class="ant-table-cell"
                               >
-                                <a
-                                  href="/t/tenant-id/devices/wifi"
-                                />
+                                -
                               </td>
                               <td
                                 class="ant-table-cell"
                               >
-                                <a
-                                  href="/t/tenant-id/networks/wireless"
-                                />
+                                -
                               </td>
                               <td
                                 class="ant-table-cell"
-                              />
+                              >
+                                -
+                              </td>
                               <td
                                 class="ant-table-cell"
                                 style="text-align: center;"
@@ -1801,7 +1821,9 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                               <td
                                 class="ant-table-cell"
                                 style="text-align: center;"
-                              />
+                              >
+                                -
+                              </td>
                               <td
                                 class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
                                 style="position: sticky; right: 0px;"
