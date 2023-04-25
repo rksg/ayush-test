@@ -55,6 +55,58 @@ enum MgmtTxRateEnum {
   VALUE_24 = '24'
 }
 
+export const enableBSSRules = {
+  // eslint-disable-next-line max-len
+  shouldBeEnabled (wlanSecurity: WlanSecurityEnum,networkType: NetworkTypeEnum, isToggleEnabled: boolean) {
+
+    if (networkType === NetworkTypeEnum.DPSK) return false
+
+    return this.rules.find((rule) => [
+      rule.allowWlanSecurity.includes(wlanSecurity),
+      rule.allowNetworkType.includes(networkType),
+      (rule.enableWithoutToggle || isToggleEnabled)
+    ].every(Boolean))? true : false
+  },
+
+  rules: [
+    {
+      label: 'WPA2And1',
+      allowWlanSecurity: [
+        WlanSecurityEnum.WPA2Personal,
+        WlanSecurityEnum.WPAPersonal,
+        WlanSecurityEnum.WPA2Enterprise
+      ],
+      allowNetworkType: [
+        NetworkTypeEnum.AAA
+      ],
+      enableWithoutToggle: true
+    },
+    {
+      label: 'WPA23Mixed',
+      allowWlanSecurity: [
+        WlanSecurityEnum.WPA23Mixed
+      ],
+      allowNetworkType: [
+        NetworkTypeEnum.PSK,
+        NetworkTypeEnum.CAPTIVEPORTAL
+      ],
+      enableWithoutToggle: false
+    },
+    {
+      label: 'WPA3',
+      allowWlanSecurity: [
+        WlanSecurityEnum.WPA3
+      ],
+      allowNetworkType: [
+        NetworkTypeEnum.PSK,
+        NetworkTypeEnum.AAA,
+        NetworkTypeEnum.CAPTIVEPORTAL
+      ],
+      enableWithoutToggle: true
+    }
+  ]
+}
+
 export function NetworkMoreSettingsForm (props: {
   wlanData: NetworkSaveData | null
 }) {
@@ -139,6 +191,7 @@ export function MoreSettingsForm (props: {
 
   const form = Form.useFormInstance()
   const wlanData = (editMode) ? props.wlanData : form.getFieldsValue()
+  const enableWPA3_80211R = useIsSplitOn(Features.WPA3_80211R)
 
   const isPortalDefaultVLANId = (data?.enableDhcp||enableDhcp) &&
     data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&
@@ -147,13 +200,17 @@ export function MoreSettingsForm (props: {
     delete data?.wlan?.vlanId
     form.setFieldValue(['wlan', 'vlanId'], 3000)
   }
-  const isNetworkWPASecured = wlanData?.wlan?.wlanSecurity ? [
-    WlanSecurityEnum.WPA2Personal,
-    WlanSecurityEnum.WPAPersonal,
-    WlanSecurityEnum.WPA2Enterprise].includes(wlanData?.wlan.wlanSecurity) : false
 
-  const isFastBssVisible = (isNetworkWPASecured || data?.type === NetworkTypeEnum.AAA) &&
-    data?.type !== NetworkTypeEnum.DPSK
+  const isFastBssVisible = (toggleEnabled: boolean) => {
+
+    const wlanSecurity = wlanData?.wlan?.wlanSecurity ?? undefined
+    const networkType = data?.type ?? undefined
+
+    if (!(wlanSecurity)) return false
+    if (!(networkType)) return false
+    // eslint-disable-next-line max-len
+    return enableBSSRules.shouldBeEnabled(wlanSecurity, networkType, toggleEnabled)
+  }
 
   const showDynamicWlan = data?.type === NetworkTypeEnum.AAA ||
     data?.type === NetworkTypeEnum.DPSK
@@ -381,8 +438,9 @@ export function MoreSettingsForm (props: {
           }
         />
 
-        {isFastBssVisible &&
+        {isFastBssVisible(enableWPA3_80211R) &&
           <UI.FormItemNoLabel
+            data-testid='enableFastRoaming-full-block'
             name={['wlan', 'advancedCustomization', 'enableFastRoaming']}
             style={{ marginBottom: '15px' }}
             valuePropName='checked'
@@ -398,6 +456,7 @@ export function MoreSettingsForm (props: {
             <Form.Item
               name={['wlan','advancedCustomization','mobilityDomainId']}
               label={$t({ defaultMessage: 'Mobility Domain ID' })}
+              data-testid='mobilityDomainId-full-block'
               initialValue={1}
               rules={[
                 {
@@ -408,7 +467,10 @@ export function MoreSettingsForm (props: {
                 }
               ]}
               style={{ marginBottom: '15px' }}
-              children={<Input style={{ width: '150px' }} />}
+              children={
+                <Input data-testid='mobilityDomainId-input'
+                  style={{ width: '150px' }}
+                />}
             />
         }
 
