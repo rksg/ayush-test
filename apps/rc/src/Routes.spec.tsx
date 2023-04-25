@@ -568,7 +568,7 @@ describe('RcRoutes: Services', () => {
   test('should navigate to create Edge firewall page', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + getServiceRoutePath({ type: ServiceType.EDGE_FIREWALL, oper: ServiceOperation.CREATE }),
+        path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.EDGE_FIREWALL, oper: ServiceOperation.CREATE }),
         wrapRoutes: false
       }
     })
@@ -579,7 +579,7 @@ describe('RcRoutes: Services', () => {
     const path = getServiceDetailsLink({ type: ServiceType.EDGE_FIREWALL, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + path,
+        path: '/tenantId/t/' + path,
         wrapRoutes: false
       }
     })
