@@ -32,7 +32,7 @@ interface SubscriptionUtilizationWidgetProps {
   barColors?: string[];
 }
 
-enum subscriptionType {
+enum SubscriptionTierType {
   Platinum = 'Professional',
   Gold = 'Enterprise'
 }
@@ -114,7 +114,7 @@ export const SubscriptionHeader = () => {
   const { $t } = useIntl()
   const params = useParams()
   const subscriptionVal = (getJwtTokenPayload().acx_account_tier
-    === AccountTier.PLATINUM? subscriptionType.Platinum : subscriptionType.Gold)
+    === AccountTier.PLATINUM? SubscriptionTierType.Platinum : SubscriptionTierType.Gold)
 
   // skip MSP data
   const subscriptionDeviceTypeList = getEntitlementDeviceTypes()
