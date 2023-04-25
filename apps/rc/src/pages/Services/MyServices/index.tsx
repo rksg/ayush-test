@@ -10,7 +10,8 @@ import {
   useGetNetworkSegmentationStatsListQuery,
   useGetEnhancedPortalProfileListQuery,
   useGetEnhancedWifiCallingServiceListQuery,
-  useWebAuthTemplateListQuery
+  useWebAuthTemplateListQuery,
+  useGetEdgeFirewallViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
   getSelectServiceRoutePath,
@@ -31,21 +32,19 @@ export default function MyServices () {
   const earlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
   const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
-  const isEdgeDhcpEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
+  const isEdgeEnabled = useIsSplitOn(Features.EDGES)
+  const isEdgeDhcpEnabled = isEdgeEnabled || earlyBetaEnabled
 
   const services = [
     {
       type: ServiceType.MDNS_PROXY,
-      categories: [RadioCardCategory.WIFI],
-      tableQuery: useGetEnhancedMdnsProxyListQuery({
-        params, payload: defaultPayload
-      })
+      category: RadioCardCategory.WIFI,
+      tableQuery: useGetEnhancedMdnsProxyListQuery({ params, payload: defaultPayload })
     },
     {
       type: ServiceType.DHCP,
-      categories: [RadioCardCategory.WIFI],
-      tableQuery: useGetDHCPProfileListViewModelQuery({ params,
-        payload: { ...defaultPayload } })
+      category: RadioCardCategory.WIFI,
+      tableQuery: useGetDHCPProfileListViewModelQuery({ params, payload: defaultPayload })
     },
     {
       type: ServiceType.EDGE_DHCP,
@@ -66,6 +65,16 @@ export default function MyServices () {
         skip: !networkSegmentationEnabled
       }),
       disabled: !networkSegmentationEnabled
+    },
+    {
+      type: ServiceType.EDGE_FIREWALL,
+      categories: [RadioCardCategory.EDGE],
+      tableQuery: useGetEdgeFirewallViewDataListQuery({
+        params, payload: { ...defaultPayload }
+      },{
+        skip: !isEdgeEnabled
+      }),
+      disabled: !isEdgeEnabled
     },
     {
       type: ServiceType.DPSK,

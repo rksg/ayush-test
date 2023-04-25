@@ -251,6 +251,14 @@ jest.mock('./pages/Policies/AdaptivePolicy/AdaptivePolicySet/AdaptivePolicySetDe
   return <div data-testid='AdaptivePolicySetDetail' />
 })
 
+jest.mock('./pages/Services/EdgeFirewall/AddFirewall', () => () => {
+  return <div data-testid='AddEdgeFirewall' />
+})
+
+jest.mock('./pages/Services/EdgeFirewall/EditFirewall', () => () => {
+  return <div data-testid='EditEdgeFirewall' />
+})
+
 describe('RcRoutes: Devices', () => {
   test('should redirect devices to devices/wifi', async () => {
     render(<Provider><RcRoutes /></Provider>, {
@@ -557,6 +565,26 @@ describe('RcRoutes: Services', () => {
     expect(screen.getByTestId('PortalServiceDetail')).toBeVisible()
   })
 
+  test('should navigate to create Edge firewall page', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + getServiceRoutePath({ type: ServiceType.EDGE_FIREWALL, oper: ServiceOperation.CREATE }),
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('AddEdgeFirewall')).toBeVisible()
+  })
+
+  test('should navigate to edit Edge firewall page', async () => {
+    const path = getServiceDetailsLink({ type: ServiceType.EDGE_FIREWALL, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + path,
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('EditEdgeFirewall')).toBeVisible()
+  })
 })
 
 describe('RcRoutes: Policies', () => {

@@ -6,9 +6,8 @@ import { defineMessage, MessageDescriptor, useIntl }                            
 import { ContentSwitcher, ContentSwitcherProps, GridCol, GridRow } from '@acx-ui/components'
 import {
   ApplicationAclType,
-  ApplicationRuleType, AvcCategory,
+  ApplicationRuleType, AvcCategory, generalIpAddressRegExp,
   portRegExp,
-  serverIpAddressRegExp,
   subnetMaskIpRegExp
 } from '@acx-ui/rc/utils'
 
@@ -381,7 +380,7 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
       initialValue={''}
       rules={[
         { required: true },
-        { validator: (_, value) => serverIpAddressRegExp(value) }
+        { validator: (_, value) => generalIpAddressRegExp(value) }
       ]}
       children={<Input
         placeholder={$t({ defaultMessage: 'Enter a destination Ip' })}

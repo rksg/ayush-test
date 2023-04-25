@@ -3,11 +3,11 @@ import '@testing-library/jest-dom'
 
 import { Provider }                           from '@acx-ui/store'
 import { render, screen, waitFor, fireEvent } from '@acx-ui/test-utils'
+import { RolesEnum }                          from '@acx-ui/types'
+import { getUserProfile, setUserProfile }     from '@acx-ui/user'
 
-import {
-  switchDetailData
-} from './__tests__/fixtures'
-import SwitchTabs from './SwitchTabs'
+import { switchDetailData } from './__tests__/fixtures'
+import SwitchTabs           from './SwitchTabs'
 
 const params = {
   tenantId: 'tenantId',
@@ -40,5 +40,16 @@ describe('SwitchTabs', () => {
       hash: '',
       search: ''
     })
+  })
+
+  it('should hide incidents when role is READ_ONLY', async () => {
+    setUserProfile({
+      allowedOperations: [],
+      profile: { ...getUserProfile().profile, roles: [RolesEnum.READ_ONLY] }
+    })
+    render(<Provider>
+      <SwitchTabs switchDetail={switchDetailData} />
+    </Provider>, { route: { params } })
+    expect(screen.queryByText('Incidents')).toBeNull()
   })
 })

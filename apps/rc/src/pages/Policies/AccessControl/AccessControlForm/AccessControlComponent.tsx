@@ -4,7 +4,9 @@ import { Form, FormItemProps, Switch } from 'antd'
 import { useIntl }                     from 'react-intl'
 import styled                          from 'styled-components/macro'
 
-import { AccessControlProfile } from '@acx-ui/rc/utils'
+import { CustomButtonProps, showActionModal } from '@acx-ui/components'
+import { AccessControlProfile }               from '@acx-ui/rc/utils'
+import { getIntl }                            from '@acx-ui/utils'
 
 import ApplicationDrawer from './ApplicationDrawer'
 import ClientRateLimit   from './ClientRateLimit'
@@ -96,6 +98,33 @@ const AccessControlComponent = () => {
       </FieldLabel>
     </>
   )
+}
+
+export const showUnsavedConfirmModal = (callback?: () => void) => {
+  const { $t } = getIntl()
+  const buttons = [{
+    text: $t({ defaultMessage: 'Cancel' }),
+    key: 'close',
+    closeAfterAction: true
+  }, {
+    text: $t({ defaultMessage: 'Discard Changes' }),
+    key: 'discard',
+    closeAfterAction: true,
+    handler: async () => {
+      callback?.()
+    }
+  }]
+
+  showActionModal({
+    type: 'confirm',
+    width: 450,
+    title: $t({ defaultMessage: 'You Have Unsaved Changes' }),
+    content: $t({ defaultMessage: 'Do you want to discard your changes?' }),
+    customContent: {
+      action: 'CUSTOM_BUTTONS',
+      buttons: buttons as CustomButtonProps[]
+    }
+  })
 }
 
 export default AccessControlComponent

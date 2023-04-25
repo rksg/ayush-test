@@ -347,11 +347,6 @@ describe('Wired', () => {
     await userEvent.click(venueCheckbox[0])
     await userEvent.click(await screen.findByRole('button', { name: 'Deactivate' }) )
     await userEvent.click(await screen.findByRole('button', { name: 'Activate' }) )
-
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
-    await screen.findByRole('heading', { level: 3, name: /Summary/ })
-
-    await userEvent.click(await screen.findByRole('button', { name: 'Finish' }) )
   })
 
   it('should create Switch Configuration Profile with trust ports correctly', async () => {
@@ -403,18 +398,9 @@ describe('Wired', () => {
     const saveTrustPortButton =
       await within(trustedPortModal).findByRole('button', { name: 'Finish' })
     await userEvent.click(saveTrustPortButton)
-
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
-    await screen.findByRole('heading', { level: 3, name: /Venues/i })
-
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
-    await screen.findByRole('heading', { level: 3, name: /Summary/i })
-
-    const finishButton = await screen.findAllByRole('button', { name: /Finish/i })
-    await userEvent.click(finishButton[1])
   })
 
-  xit('should create Switch Configuration Profile with trust ports ICX7550 correctly', async () => {
+  it('should create Switch Configuration Profile with trust ports ICX7550 correctly', async () => {
     const params = {
       tenantId: 'tenant-id'
     }
@@ -473,14 +459,5 @@ describe('Wired', () => {
     const saveTrustPortButton =
       await within(trustedPortModal).findByRole('button', { name: 'Finish' })
     await userEvent.click(saveTrustPortButton)
-
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
-    await screen.findByRole('heading', { level: 3, name: /Venues/i })
-
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
-    await screen.findByRole('heading', { level: 3, name: /Summary/i })
-
-    const finishButton = await screen.findAllByRole('button', { name: /Finish/i })
-    await userEvent.click(finishButton[1])
   })
 })

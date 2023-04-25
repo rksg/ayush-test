@@ -23,6 +23,7 @@ import { AccessStatus, CommonResult, defaultSort, DeviceRule, sortProp } from '@
 import { useParams }                                                     from '@acx-ui/react-router-dom'
 import { filterByAccess }                                                from '@acx-ui/user'
 
+import { showUnsavedConfirmModal }     from '../AccessControlComponent'
 import { AddModeProps, editModeProps } from '../AccessControlForm'
 
 import DeviceOSRuleContent, { DrawerFormItem } from './DeviceOSRuleContent'
@@ -571,8 +572,12 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       <Drawer
         title={$t({ defaultMessage: 'Device & OS Access Settings' })}
         visible={visible}
+        mask={true}
         zIndex={10}
-        onClose={handleDeviceOSDrawerClose}
+        onClose={() => !isViewMode()
+          ? showUnsavedConfirmModal(handleDeviceOSDrawerClose)
+          : handleDeviceOSDrawerClose()
+        }
         children={content}
         footer={
           <Drawer.FormFooter

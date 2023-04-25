@@ -5,6 +5,7 @@ import { Features, useIsSplitOn }                                  from '@acx-ui
 import { useGetPropertyConfigsQuery, useGetPropertyUnitListQuery } from '@acx-ui/rc/services'
 import { PropertyConfigStatus, VenueDetailHeader }                 from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }                   from '@acx-ui/react-router-dom'
+import { hasAccess }                                               from '@acx-ui/user'
 
 function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   const { $t } = useIntl()
@@ -44,10 +45,10 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
       <Tabs.TabPane tab={$t({ defaultMessage: 'Overview' })} key='overview' />
-      <Tabs.TabPane
+      { hasAccess() && <Tabs.TabPane
         tab={$t({ defaultMessage: 'AI Analytics' })}
         key='analytics'
-      />
+      /> }
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Clients ({clientsCount})' }, { clientsCount })}
         key='clients'

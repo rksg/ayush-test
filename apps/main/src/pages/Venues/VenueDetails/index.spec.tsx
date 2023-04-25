@@ -7,6 +7,8 @@ import { venueApi }                            from '@acx-ui/rc/services'
 import { CommonUrlsInfo, DHCPUrls, Dashboard } from '@acx-ui/rc/utils'
 import { Provider, store }                     from '@acx-ui/store'
 import { mockServer, render, screen }          from '@acx-ui/test-utils'
+import { RolesEnum }                           from '@acx-ui/types'
+import { getUserProfile, setUserProfile }      from '@acx-ui/user'
 
 import {
   venueDetailHeaderData,
@@ -202,6 +204,7 @@ describe('VenueDetails', () => {
     expect(screen.getAllByRole('tab').filter(x => x.getAttribute('aria-selected') === 'true'))
       .toHaveLength(0)
   })
+
   it('should go to edit page', async () => {
     const params = {
       tenantId: 'f378d3ba5dd44e62bacd9b625ffec681',
@@ -213,5 +216,21 @@ describe('VenueDetails', () => {
     })
 
     await userEvent.click(await screen.findByRole('button', { name: 'Configure' }))
+  })
+
+  it('should hide analytics when role is READ_ONLY', async () => {
+    setUserProfile({
+      allowedOperations: [],
+      profile: { ...getUserProfile().profile, roles: [RolesEnum.READ_ONLY] }
+    })
+    const params = {
+      tenantId: 'f378d3ba5dd44e62bacd9b625ffec681',
+      venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
+      activeTab: 'analytics'
+    }
+    render(<Provider><VenueDetails /></Provider>, {
+      route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
+    })
+    expect(screen.queryByTestId('rc-VenueAnalyticsTab')).toBeNull()
   })
 })

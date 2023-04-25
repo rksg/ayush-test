@@ -5,6 +5,8 @@ import { CommonUrlsInfo }                                 from '@acx-ui/rc/utils
 import { generatePath }                                   from '@acx-ui/react-router-dom'
 import { Provider }                                       from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, fireEvent } from '@acx-ui/test-utils'
+import { RolesEnum }                                      from '@acx-ui/types'
+import { getUserProfile, setUserProfile }                 from '@acx-ui/user'
 
 import NetworkTabs from './NetworkTabs'
 
@@ -51,5 +53,14 @@ describe('NetworkTabs', () => {
       hash: '',
       search: ''
     })
+  })
+
+  it('should hide incidents when role is READ_ONLY', async () => {
+    setUserProfile({
+      allowedOperations: [],
+      profile: { ...getUserProfile().profile, roles: [RolesEnum.READ_ONLY] }
+    })
+    render(<Provider><NetworkTabs /></Provider>, { route: { params } })
+    expect(screen.queryByText('Incidents')).toBeNull()
   })
 })

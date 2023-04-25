@@ -52,7 +52,7 @@ export function PoolTable (props:{
     },
     {
       key: 'subnetAddress',
-      title: $t({ defaultMessage: 'IP Address' }),
+      title: $t({ defaultMessage: 'Subnet Address' }),
       dataIndex: 'subnetAddress',
       sorter: { compare: sortProp('subnetAddress', defaultSort) }
     },
@@ -61,6 +61,16 @@ export function PoolTable (props:{
       title: $t({ defaultMessage: 'Subnet Mask' }),
       dataIndex: 'subnetMask',
       sorter: { compare: sortProp('subnetMask', defaultSort) }
+    },
+    {
+      key: 'startIpAddress',
+      title: $t({ defaultMessage: 'Address Pool' }),
+      dataIndex: 'startIpAddress',
+      sorter: { compare: sortProp('startIpAddress', defaultSort) },
+      render: function (_data, row) {
+        return $t({ defaultMessage: '{start} - {end}' },
+          { start: row.startIpAddress, end: row.endIpAddress })
+      }
     },
     {
       key: 'leaseTime',

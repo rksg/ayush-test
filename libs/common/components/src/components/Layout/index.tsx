@@ -142,6 +142,7 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
       openKeys={openKeys}
       items={props.menuConfig.map(item => getMenuItem(item, ''))}
       onOpenChange={keys => setOpenKeys(keys.slice(-1))}
+      getPopupContainer={trigger => trigger.parentNode as HTMLElement}
     />
   </>
 }
