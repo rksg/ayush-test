@@ -206,6 +206,7 @@ const ActivityTable = ({
       data={getDrawerData(current)}
       timeLine={current.steps}
       width={464}
+      status={current.status}
     /> }
   </Loader>
 }

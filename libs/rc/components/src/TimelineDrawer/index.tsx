@@ -5,6 +5,7 @@ import { TextAreaRef }                from 'antd/lib/input/TextArea'
 import { MessageDescriptor, useIntl } from 'react-intl'
 
 import { Drawer, Descriptions, Timeline, TimelineItem } from '@acx-ui/components'
+import { TimelineStatus }                               from '@acx-ui/types'
 import { noDataDisplay }                                from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
@@ -17,6 +18,7 @@ export interface DrawerProps {
   onBackClick?: () => void
   width?: number
   timeLine?: TimelineItem[]
+  status?: TimelineStatus
 }
 
 export const TimelineDrawer = (props: DrawerProps) => {
@@ -68,7 +70,7 @@ export const TimelineDrawer = (props: DrawerProps) => {
       }</Descriptions>
       {props.timeLine && props.timeLine.length > 0 && <>
         <Divider/>
-        <Timeline items={activityErrorDetails ?? []}/>
+        <Timeline items={activityErrorDetails ?? []} status={props?.status}/>
       </>}
     </>}
   />
