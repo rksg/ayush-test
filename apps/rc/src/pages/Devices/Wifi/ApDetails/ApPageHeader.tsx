@@ -14,9 +14,9 @@ import { useApActions }                    from '@acx-ui/rc/components'
 import { useApDetailHeaderQuery }          from '@acx-ui/rc/services'
 import {
   ApDetailHeader,
-  ApDeviceStatusEnum
+  ApDeviceStatusEnum,
+  useApContext
 } from '@acx-ui/rc/utils'
-import { useApContext } from '@acx-ui/rc/utils'
 import {
   useLocation,
   useNavigate,
