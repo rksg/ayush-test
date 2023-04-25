@@ -23,7 +23,8 @@ import {
   mockedTenantId,
   mockedServiceId,
   mockedDpskPassphrase,
-  mockedDpskPassphraseListWithPersona, mockedDpskPassphraseDevices
+  mockedDpskPassphraseListWithPersona,
+  mockedDpskPassphraseDevices
 } from './__tests__/fixtures'
 import DpskPassphraseManagement from './DpskPassphraseManagement'
 
@@ -324,7 +325,7 @@ describe('DpskPassphraseManagement', () => {
     await userEvent.click(within(targetRow).getByRole('checkbox'))
     await userEvent.click(await screen.findByRole('button', { name: 'Manage Devices' }))
 
-    await screen.findByRole('link', {
+    await screen.findByRole('cell', {
       name: /ad:2c:3b:1d:4d:4e/i
     })
 
@@ -384,7 +385,7 @@ describe('DpskPassphraseManagement', () => {
     await userEvent.click(within(targetRow).getByRole('checkbox'))
     await userEvent.click(await screen.findByRole('button', { name: 'Manage Devices' }))
 
-    await screen.findByRole('link', {
+    await screen.findByRole('cell', {
       name: /ad:2c:3b:1d:4d:4e/i
     })
 
@@ -392,5 +393,10 @@ describe('DpskPassphraseManagement', () => {
 
     await userEvent.click(within(targetDevice).getByRole('checkbox'))
     await userEvent.click((await screen.findAllByText('Delete'))[1])
+
+    await waitFor(() => {
+      const dialog = screen.getByRole('dialog')
+      expect(within(dialog).queryByText(/delete/i)).toBeNull()
+    })
   })
 })

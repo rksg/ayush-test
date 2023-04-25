@@ -13,8 +13,10 @@ import {
 } from '@acx-ui/rc/services'
 import {
   DPSKDeviceInfo,
-  MacAddressFilterRegExp,
-  NewDpskPassphrase
+  FILTER,
+  SEARCH,
+  NewDpskPassphrase,
+  generalMacAddressRegExp
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
@@ -29,10 +31,13 @@ const { useWatch } = Form
 
 const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
   const { $t } = useIntl()
+  const ONLINE = 'Online'
+
   const { visible, setVisible, passphraseInfo } = props
   const params = useParams()
   const [modalVisible, setModalVisible] = useState(false)
   const [addAnother, setAddAnother] = useState(false)
+  const [searchString, setSearchString] = useState('')
   const [form] = Form.useForm()
 
   const macAddress = useWatch<string>('macAddress', form)
@@ -42,7 +47,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
       ...params,
       passphraseId: passphraseInfo.id
     }
-  }, { skip: !Object.keys(passphraseInfo).length && !passphraseInfo.id })
+  })
 
   const [updateDevicesData] = useUpdateDpskPassphraseDevicesMutation()
   const [deleteDevicesData] = useDeleteDpskPassphraseDevicesMutation()
@@ -57,8 +62,10 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
       defaultSortOrder: 'ascend',
       fixed: 'left',
       render: (data, row) => {
-        return <TenantLink
-          to={`/users/wifi/clients/${row.mac}/details/`}>{row.mac}</TenantLink>
+        return row.lastConnected === ONLINE ? <TenantLink
+          to={`/users/wifi/clients/${row.mac}/details/`}>
+          {row.mac}
+        </TenantLink>: row.mac
       }
     },
     {
@@ -123,28 +130,27 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
 
   const onOk = async () => {
     try {
-      const valid = await form.validateFields()
-      if (valid) {
-        await updateDevicesData({
-          params: {
-            ...params,
-            passphraseId: passphraseInfo.id
-          },
-          payload: {
-            id: passphraseInfo.id,
-            devicesMac: [
-              macAddress
-            ],
-            poolId: params.serviceId,
-            tenantId: params.tenantId
-          }
-        })
-
-        if (addAnother) {
-          form.setFieldValue('macAddress', '')
-        } else {
-          setModalVisible(false)
+      await form.validateFields()
+      console.log(await form.validateFields())
+      await updateDevicesData({
+        params: {
+          ...params,
+          passphraseId: passphraseInfo.id
+        },
+        payload: {
+          id: passphraseInfo.id,
+          devicesMac: [
+            macAddress
+          ],
+          poolId: params.serviceId,
+          tenantId: params.tenantId
         }
+      })
+
+      if (addAnother) {
+        form.setFieldValue('macAddress', '')
+      } else {
+        setModalVisible(false)
       }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -158,10 +164,21 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
     return false
   }
 
+  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
+    if (customSearch.searchString && customSearch.searchString !== '') {
+      setSearchString(customSearch.searchString.toLowerCase())
+    } else {
+      setSearchString('')
+    }
+  }
+
   const deviceTable = <Table<DPSKDeviceInfo>
+    onFilterChange={handleFilterChange}
     columns={columns}
     actions={actions}
-    dataSource={devicesData}
+    dataSource={devicesData?.filter(data => {
+      return searchString ? data.mac.toLowerCase().includes(searchString) : true
+    })}
     enableApiFilter={true}
     rowKey='mac'
     rowActions={rowActions}
@@ -198,9 +215,6 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
           <Drawer.FormFooter
             showAddAnother={false}
             showSaveButton={false}
-            buttonLabel={({
-              save: $t({ defaultMessage: 'Cancel' })
-            })}
             onCancel={onClose}
           />
         }
@@ -222,7 +236,15 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
             label={$t({ defaultMessage: 'MAC Address' })}
             rules={[
               { required: true },
-              { validator: (_, value) => MacAddressFilterRegExp(value) }
+              { validator: (_, value) => {
+                if (devicesData?.map(deviceData => deviceData.mac)
+                  .filter(mac => mac === value).length) {
+                  return Promise.reject($t({
+                    defaultMessage: 'MAC address {macAddress} is already exists'
+                  }, { macAddress: value }))
+                }
+                return generalMacAddressRegExp(value)
+              } }
             ]}
             labelCol={{ span: 24 }}
             validateFirst

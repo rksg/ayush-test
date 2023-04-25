@@ -66,7 +66,7 @@ export default function DpskPassphraseManagement () {
   const { $t } = intl
   const [ addPassphrasesDrawerVisible, setAddPassphrasesDrawerVisible ] = useState(false)
   const [ manageDevicesVisible, setManageDevicesVisible ] = useState(false)
-  const [ manageDeviceInfo, setManageDeviceInfo ] = useState({} as NewDpskPassphrase)
+  const [ managePassphraseInfo, setManagePassphraseInfo ] = useState({} as NewDpskPassphrase)
   const [
     passphrasesDrawerEditMode,
     setPassphrasesDrawerEditMode
@@ -202,7 +202,7 @@ export default function DpskPassphraseManagement () {
       // eslint-disable-next-line max-len
       visible: (selectedRows: NewDpskPassphrase[]) => isCloudpathEnabled && selectedRows.length === 1,
       onClick: ([selectedRow]) => {
-        setManageDeviceInfo(selectedRow)
+        setManagePassphraseInfo(selectedRow)
         setManageDevicesVisible(true)
       }
     },
@@ -291,11 +291,11 @@ export default function DpskPassphraseManagement () {
       setVisible={setAddPassphrasesDrawerVisible}
       editMode={passphrasesDrawerEditMode}
     />
-    { manageDeviceInfo && <ManageDevicesDrawer
+    { managePassphraseInfo && <ManageDevicesDrawer
       visible={manageDevicesVisible}
       setVisible={setManageDevicesVisible}
-      passphraseInfo={manageDeviceInfo}
-      setPassphraseInfo={setManageDeviceInfo}
+      passphraseInfo={managePassphraseInfo}
+      setPassphraseInfo={setManagePassphraseInfo}
     /> }
     <ImportFileDrawer type='DPSK'
       title={$t({ defaultMessage: 'Import from file' })}
