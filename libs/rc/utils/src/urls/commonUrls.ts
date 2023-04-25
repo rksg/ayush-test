@@ -506,7 +506,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getApMeshTopology: {
     method: 'get',
-    url: '/venues/:venueId/topologies',
+    url: '/venues/:venueId/meshTopologies',
     oldUrl: '/api/viewmodel/tenant/:tenantId/venue/:venueId/topology',
     newApi: true
   },
