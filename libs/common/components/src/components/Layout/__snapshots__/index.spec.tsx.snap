@@ -391,6 +391,7 @@ exports[`Layout should render correctly 1`] = `
           >
             <div
               class="styledComponents__Content-sc-iwostn-2 dTPuAm"
+              id="layout-content"
             >
               <div>
                 content
@@ -555,6 +556,7 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
           >
             <div
               class="styledComponents__Content-sc-iwostn-2 dTPuAm"
+              id="layout-content"
             >
               <div>
                 content

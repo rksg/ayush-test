@@ -27,8 +27,8 @@ export const IncidentTabContentLegacy = (props: {
   const incidentsPageFilters = widgetFilters ? widgetFilters : filters
   const incidentCodesBasedOnCategory: IncidentCode[] | undefined
     = categoryCodeMap[tabSelection as CategoryOption]?.codes as IncidentCode[]
-  return (
-    <GridRow>
+  return (<>
+    <GridRow style={{ marginBottom: 20 }}>
       {disableGraphs ? null : <>
         <GridCol col={{ span: 4 }} style={{ height: '210px' }}>
           <IncidentBySeverity
@@ -45,11 +45,9 @@ export const IncidentTabContentLegacy = (props: {
         </GridCol>
       </>
       }
-      <GridCol col={{ span: 24 }} style={{ minHeight: '180px' }}>
-        <IncidentTable filters={{ ...incidentsPageFilters, code: incidentCodesBasedOnCategory }} />
-      </GridCol>
     </GridRow>
-  )
+    <IncidentTable filters={{ ...incidentsPageFilters, code: incidentCodesBasedOnCategory }} />
+  </>)
 }
 
 function IncidentListPageLegacy () {

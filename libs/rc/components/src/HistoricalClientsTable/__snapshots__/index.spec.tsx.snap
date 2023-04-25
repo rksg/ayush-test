@@ -12,7 +12,8 @@ exports[`HistoricalClientsTable should render correctly 1`] = `
         Historical Clients
       </h4>
       <div
-        class="styledComponents__Wrapper-sc-1abm7iv-12 jdrCXZ"
+        class="styledComponents__Wrapper-sc-1abm7iv-12 dbQSib"
+        style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-filters: 0;"
       >
         <div
           class="ant-pro-table"
@@ -74,34 +75,20 @@ exports[`HistoricalClientsTable should render correctly 1`] = `
                         class="ant-table-container"
                       >
                         <div
-                          class="ant-table-content"
-                          style="overflow-x: auto; overflow-y: hidden;"
+                          class="ant-table-header ant-table-sticky-holder"
+                          style="overflow: hidden; top: 0px;"
                         >
                           <table
-                            style="min-width: 100%; table-layout: auto;"
+                            style="table-layout: fixed; visibility: hidden;"
                           >
-                            <colgroup>
-                              <col
-                                style="width: 200px;"
-                              />
-                              <col />
-                              <col />
-                              <col />
-                              <col />
-                              <col />
-                              <col />
-                              <col />
-                              <col
-                                style="width: 32px;"
-                              />
-                            </colgroup>
+                            <colgroup />
                             <thead
                               class="ant-table-thead"
                             >
                               <tr>
                                 <th
                                   aria-sort="ascending"
-                                  class="ant-table-cell ant-table-column-sort ant-table-cell-fix-left ant-table-cell-fix-left-last ant-table-column-has-sorters"
+                                  class="ant-table-cell ant-table-column-sort ant-table-cell-fix-left ant-table-cell-fix-left-last ant-table-cell-fix-sticky ant-table-column-has-sorters"
                                   style="position: sticky; left: 0px;"
                                   tabindex="0"
                                 >
@@ -582,11 +569,35 @@ exports[`HistoricalClientsTable should render correctly 1`] = `
                                   </div>
                                 </th>
                                 <th
-                                  class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                  class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first ant-table-cell-fix-sticky"
                                   style="position: sticky; right: 0px;"
                                 />
                               </tr>
                             </thead>
+                          </table>
+                        </div>
+                        <div
+                          class="ant-table-body"
+                          style="overflow-x: auto; overflow-y: hidden;"
+                        >
+                          <table
+                            style="min-width: 100%; table-layout: auto;"
+                          >
+                            <colgroup>
+                              <col
+                                style="width: 200px;"
+                              />
+                              <col />
+                              <col />
+                              <col />
+                              <col />
+                              <col />
+                              <col />
+                              <col />
+                              <col
+                                style="width: 32px;"
+                              />
+                            </colgroup>
                             <tbody
                               class="ant-table-tbody"
                             >

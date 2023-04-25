@@ -6,13 +6,13 @@ import escapeStringRegexp                                             from 'esca
 import _                                                              from 'lodash'
 import Highlighter                                                    from 'react-highlight-words'
 import { useIntl }                                                    from 'react-intl'
-import AutoSizer                                                      from 'react-virtualized-auto-sizer'
 
 import { SettingsOutlined }        from '@acx-ui/icons'
 import { TABLE_DEFAULT_PAGE_SIZE } from '@acx-ui/utils'
 
 import { Button, DisabledButton, ButtonProps } from '../Button'
 import { Dropdown }                            from '../Dropdown'
+import { useLayoutContext }                    from '../Layout'
 import { Tooltip }                             from '../Tooltip'
 
 import {
@@ -128,7 +128,8 @@ function Table <RecordType extends Record<string, any>> ({
   type = 'tall', columnState, enableApiFilter, iconButton, onFilterChange, settingsId,
   onDisplayRowChange, ...props
 }: TableProps<RecordType>) {
-  const { dataSource, filterableWidth, searchableWidth } = props
+  const { dataSource, filterableWidth, searchableWidth, style } = props
+  const layout = useLayoutContext()
   const rowKey = (props.rowKey ?? 'key')
   const intl = useIntl()
   const { $t } = intl
@@ -409,18 +410,27 @@ function Table <RecordType extends Record<string, any>> ({
       children: column.children?.map(child => _.flow([columnRender, columnResize])(child))
     })
   }))
-  const WrappedTable = (style: { width?: number }) => <UI.Wrapper
-    style={style}
+
+  let offsetHeader = layout.y
+  if (props.actions?.length) offsetHeader += 18
+  if (hasHeader || rowSelection?.type) offsetHeader += 36
+
+  return <UI.Wrapper
+    style={{
+      ...(style ?? {}),
+      '--sticky-offset': `${layout.y}px`,
+      '--sticky-has-actions': props.actions?.length ? '1' : '0',
+      '--sticky-has-filters': hasHeader ? '1' : '0'
+    } as React.CSSProperties}
     $type={type}
     $rowSelectionActive={
       Boolean(props.rowSelection) && !hasHeader && props.tableAlertRender !== false
     }
   >
     <UI.TableSettingsGlobalOverride />
-    {props.actions && <Space
+    {props.actions && <UI.ActionsContainer
       size={0}
-      split={<UI.Divider type='vertical' />}
-      style={{ display: 'flex', justifyContent: 'flex-end', margin: '3px 0' }}>
+      split={<UI.Divider type='vertical' />}>
       {props.actions?.map((action, index) => {
         const props: ButtonProps & { key: React.Key } = {
           key: action.key ?? `action-${index}`,
@@ -440,7 +450,7 @@ function Table <RecordType extends Record<string, any>> ({
           </Dropdown>
           : content
       })}
-    </Space>}
+    </UI.ActionsContainer>}
     {hasHeader && (
       <UI.Header style={props.floatRightFilters ? { float: 'right' } : {}}>
         <div>
@@ -501,6 +511,7 @@ function Table <RecordType extends Record<string, any>> ({
           setColWidth({})
         }
       }}
+      sticky={type === 'tall' ? { offsetHeader } : undefined}
       scroll={{ x: hasEllipsisColumn || type !== 'tall' ? '100%' : 'max-content' }}
       rowSelection={rowSelection}
       pagination={pagination}
@@ -580,11 +591,6 @@ function Table <RecordType extends Record<string, any>> ({
       ))}
     />
   </UI.Wrapper>
-  if (hasEllipsisColumn) {
-    return <AutoSizer>{({ width }) => WrappedTable({ width })}</AutoSizer>
-  } else {
-    return WrappedTable({})
-  }
 }
 
 Table.SubTitle = UI.SubTitle

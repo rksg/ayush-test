@@ -180,10 +180,10 @@ exports[`PageHeader should render page header with tabs 1`] = `
         </div>
       </div>
     </div>
+    <div
+      class="styledComponents__Spacer-sc-xov27h-1 ikA-dJH"
+    />
   </div>
-  <div
-    class="styledComponents__Spacer-sc-xov27h-1 ikA-dJH"
-  />
 </DocumentFragment>
 `;
 

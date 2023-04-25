@@ -216,7 +216,7 @@ export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
   ], []) // '$t' 'basePath' 'intl' are not changing
 
   return (
-    <Loader states={[queryResults]}>
+    <Loader states={[queryResults]} style={{ height: 'auto' }}>
       <UI.IncidentTableWrapper
         settingsId='incident-table'
         type='tall'

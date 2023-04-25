@@ -650,16 +650,16 @@ describe('Table component', () => {
       const input = await screen
         .findByPlaceholderText('Search Name, Given Name, Surname, Description, Address')
 
-      expect(await screen.findAllByRole('checkbox')).toHaveLength(5)
+      expect(await screen.findAllByRole('checkbox')).toHaveLength(4)
 
       const invalidSearchTerm = 'w'
       fireEvent.change(input, { target: { value: invalidSearchTerm } })
-      expect(await screen.findAllByRole('checkbox')).toHaveLength(5)
+      expect(await screen.findAllByRole('checkbox')).toHaveLength(4)
 
       const validSearchTerm = 'John Doe'
       fireEvent.change(input, { target: { value: validSearchTerm } })
       expect(await screen.findAllByText(validSearchTerm)).toHaveLength(1)
-      expect(await screen.findAllByRole('checkbox')).toHaveLength(2)
+      expect(await screen.findAllByRole('checkbox')).toHaveLength(1)
 
       fireEvent.change(input, { target: { value: 'edna' } })
       expect(await screen.findAllByText('Jane')).toHaveLength(1)
@@ -671,7 +671,7 @@ describe('Table component', () => {
       fireEvent.click(buttons[3])
       expect(await screen.findAllByText('Edna')).toHaveLength(3)
 
-      expect(await screen.findAllByRole('checkbox')).toHaveLength(5)
+      expect(await screen.findAllByRole('checkbox')).toHaveLength(4)
     })
 
     it('filtering inputs & searching', async () => {

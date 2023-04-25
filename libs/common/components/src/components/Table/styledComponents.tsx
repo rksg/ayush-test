@@ -2,7 +2,8 @@ import {
   Button,
   Divider as AntDivider,
   Input,
-  Select
+  Select,
+  Space
 } from 'antd'
 import styled, { css, createGlobalStyle } from 'styled-components/macro'
 
@@ -192,7 +193,14 @@ const tallStyle = css<StyledTable>`
     }
 
     &-list-toolbar {
-      &-container { padding: 0; }
+      position: sticky;
+      top: calc(var(--sticky-offset) + (18px * var(--sticky-has-actions)) + (36px * var(--sticky-has-filters)));
+      z-index: 3;
+      overflow: visible;
+      &-container {
+        padding: 0;
+        position: relative;
+      }
       &-right {
         // setting to 0 due to empty toolbar still take up space
         // need to revisit this if we intend to use toolbar for other usage
@@ -350,6 +358,10 @@ export const Header = styled.div`
   height: ${actionsHeight};
   display: flex;
   justify-content: space-between;
+  position: sticky;
+  top: calc(var(--sticky-offset) + (18px * var(--sticky-has-actions)));
+  z-index: 2;
+  background-color: var(--acx-primary-white);
 `
 
 export const HeaderComps = styled.div`
@@ -525,4 +537,14 @@ export const GroupCell = styled.div`
   display: flex;
   justify-content: space-between;
   gap: 20px;
+`
+
+export const ActionsContainer = styled(Space)`
+  display: flex;
+  justify-content: flex-end;
+  margin: 3px 0;
+  position: sticky;
+  top: var(--sticky-offset);
+  background-color: var(--acx-primary-white);
+  z-index: 1;
 `

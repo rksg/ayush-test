@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useLayoutEffect, useRef } from 'react'
 
 import {
   PageHeader as AntPageHeader,
@@ -9,6 +9,8 @@ import {
 import _ from 'lodash'
 
 import { TenantLink, TenantType } from '@acx-ui/react-router-dom'
+
+import { useLayoutContext } from '../Layout'
 
 import * as UI from './styledComponents'
 
@@ -25,9 +27,24 @@ PageHeader.defaultProps = {
   footerSpacer: true
 }
 
+declare global {
+  // eslint-disable-next-line no-var
+  var xxx: HTMLDivElement | null
+}
+
 function PageHeader (props: PageHeaderProps) {
+  const ref = useRef<HTMLDivElement>(null)
+  const layout = useLayoutContext()
   const pageHeaderProps: AntPageHeaderProps = _.omit(props, 'breadcrumb', 'subTitle')
   pageHeaderProps.title = <Typography.Title ellipsis>{props.title}</Typography.Title>
+
+  useLayoutEffect(() => {
+    window.xxx = ref.current
+    if (!ref.current) return
+    const box = ref.current.getBoundingClientRect()
+    layout.setY(box.top + box.height)
+  })
+
   if (props.titleExtra) {
     pageHeaderProps.title = <>
       {pageHeaderProps.title}
@@ -54,12 +71,12 @@ function PageHeader (props: PageHeaderProps) {
       <Breadcrumb.Item key='last'>&nbsp;</Breadcrumb.Item>
     </Breadcrumb>
   }
-  return <>
-    <UI.Wrapper><AntPageHeader {...pageHeaderProps} extra={extra}>
+  return <UI.Wrapper ref={ref}>
+    <AntPageHeader {...pageHeaderProps} extra={extra}>
       {props.subTitle && <Typography.Text ellipsis>{props.subTitle}</Typography.Text>}
-    </AntPageHeader></UI.Wrapper>
+    </AntPageHeader>
     {props.footer && props.footerSpacer && <UI.Spacer />}
-  </>
+  </UI.Wrapper>
 }
 
 export { PageHeader }

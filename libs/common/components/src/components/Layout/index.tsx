@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { createContext, useContext, useState } from 'react'
 
 import ProLayout                             from '@ant-design/pro-layout'
 import { Menu }                              from 'antd'
@@ -113,7 +113,7 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
     delete rest.isActiveCheck
 
     const activePatterns = getActivePatterns(item)
-    const isActive = activePatterns.some(pattern => activeUri.match(pattern))
+    const isActive = activePatterns?.some(pattern => activeUri.match(pattern))
     const IconComponent = isActive ? activeIcon ?? inactiveIcon : inactiveIcon
     const content = <>
       {IconComponent && <UI.MenuIcon children={<IconComponent />} />}
@@ -130,7 +130,7 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
           data-label={item.label}>{content}</TenantNavLink>
         : content,
       ...(isSubMenuType(item) && {
-        popupClassName: item.children.some(child => get(child, 'type') === 'group')
+        popupClassName: item.children?.some(child => get(child, 'type') === 'group')
           ? 'layout-group-horizontal' : '',
         children: item.children.map(child => getMenuItem(child, key))
       })
@@ -149,6 +149,13 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
   </>
 }
 
+type LayoutContextType = {
+  y: number
+  setY: (y: number) => void
+}
+const LayoutContext = createContext({ y: 0, setY: () => {} } as LayoutContextType)
+export const useLayoutContext = () => useContext(LayoutContext)
+
 export function Layout ({
   logo,
   menuConfig,
@@ -159,6 +166,7 @@ export function Layout ({
   const { $t } = useIntl()
   const [collapsed, setCollapsed] = useState(false)
   const location = useLocation()
+  const [y, setY] = useState(0)
 
   return <UI.Wrapper>
     <ProLayout
@@ -182,7 +190,9 @@ export function Layout ({
       </>}
       className={collapsed ? 'sider-collapsed' : ''}
     >
-      <UI.Content>{content}</UI.Content>
+      <LayoutContext.Provider value={{ y, setY }}>
+        <UI.Content id='layout-content'>{content}</UI.Content>
+      </LayoutContext.Provider>
     </ProLayout>
   </UI.Wrapper>
 }
