@@ -1,14 +1,17 @@
-import { Typography } from 'antd'
-import { useIntl }    from 'react-intl'
+import { Space, Typography } from 'antd'
+import { useIntl }           from 'react-intl'
 
-import { Loader, PageHeader, Table, TableProps, TrendPill, TrendType, cssStr } from '@acx-ui/components'
-import { DateFormatEnum, formatter }                                           from '@acx-ui/formatter'
-import { TenantLink, useParams }                                               from '@acx-ui/react-router-dom'
+import { Loader, PageHeader, Table, TableProps, Tooltip, TrendPill, TrendType, cssStr } from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                                    from '@acx-ui/formatter'
+import {
+  EditOutlinedIcon
+} from '@acx-ui/icons'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 import { Participants, useVideoCallQoeTestDetailsQuery } from '../VideoCallQoe/services'
 
-import { getConnectionQuality } from './connectionQuality'
-import { BigTrendPill }         from './styledComponents'
+import { getConnectionQuality, getConnectionQualityTooltip } from './connectionQuality'
+import { BigTrendPill }                                      from './styledComponents'
 
 
 export function VideoCallQoeDetails (){
@@ -22,7 +25,16 @@ export function VideoCallQoeDetails (){
     {
       title: $t({ defaultMessage: 'Client MAC' }),
       dataIndex: 'macAddress',
-      key: 'macAddress'
+      key: 'macAddress',
+      render: (value:unknown, row:Participants)=>{
+        if(row.networkType.toLowerCase() === 'wifi'){
+          return <Space>
+            {value ? <span>{value as string}</span> : <div style={{ width: '100px' }}>-</div>}
+            <EditOutlinedIcon style={{ height: '16px', width: '16px' }} />
+          </Space>
+        }
+        return ''
+      }
     },
     {
       title: $t({ defaultMessage: 'Participant' }),
@@ -38,7 +50,11 @@ export function VideoCallQoeDetails (){
     {
       title: $t({ defaultMessage: 'Network Type' }),
       dataIndex: 'networkType',
-      key: 'networkType'
+      key: 'networkType',
+      width: 100,
+      render: (value:unknown)=>{
+        return (value as string).toLowerCase() === 'wifi' ? 'Wi-Fi' : value as string
+      }
     },
     {
       title: $t({ defaultMessage: 'AP' }),
@@ -91,8 +107,9 @@ export function VideoCallQoeDetails (){
       key: 'leaveTime',
       align: 'center',
       width: 50,
-      render: (value:unknown)=>{
-        return formatter(DateFormatEnum.OnlyTime)(value as string)
+      render: (value:unknown,row:Participants)=>{
+        return <Tooltip title={row.leaveReason.replace('<br>','\n')}>
+          {formatter(DateFormatEnum.OnlyTime)(value as string)}</Tooltip>
       }
     },
     {
@@ -109,13 +126,18 @@ export function VideoCallQoeDetails (){
           throughput: number
         } | null
         const connectionQuality = getConnectionQuality(wifiMetrics)
+        const connectionQualityTooltip = getConnectionQualityTooltip(wifiMetrics)
+
         if(connectionQuality){
           let [trend,quality] = ['none','Average']
           if(connectionQuality === 'bad')
             [trend,quality]=['negative','Bad']
           else if(connectionQuality === 'good')
             [trend,quality]=['positive','Good']
-          return <TrendPill value={quality} trend={trend as TrendType} />
+
+          return <Tooltip title={connectionQualityTooltip}>
+            <TrendPill value={quality} trend={trend as TrendType} />
+          </Tooltip>
         }
         else
           return ''
@@ -140,9 +162,14 @@ export function VideoCallQoeDetails (){
     - new Date(currentMeeting.startTime).getTime())}`
           }
           extra={[
-            <>{$t({ defaultMessage: 'Video Call QOE' })}</>,
+            <>{$t({ defaultMessage: 'Video Call QoE' })}</>,
             <>{getPill(currentMeeting.mos)}</>
-          ]} />
+          ]}
+          breadcrumb={[{
+            text: $t({ defaultMessage: 'Video Call QoE' }),
+            link: '/serviceValidation/videoCallQoe'
+          }]}
+        />
         <Typography.Text style={{
           fontSize: cssStr('--acx-body-2-font-size'),
           fontWeight: cssStr('--acx-body-font-weight-bold'),

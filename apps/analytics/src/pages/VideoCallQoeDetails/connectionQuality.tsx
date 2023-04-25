@@ -1,4 +1,7 @@
+import { Space } from 'antd'
 import { maxBy } from 'lodash'
+
+import { TrendPill, TrendType } from '@acx-ui/components'
 
 const rssGroups = {
   good: { lower: -74 },
@@ -79,4 +82,50 @@ export const getConnectionQuality = (wifiMetrics:{
   const qualities = Object.entries<number|null>(wifiMetrics).map(([key,value])=>
     getConnectionQualityFor(key,value)).filter(q => q !== null)
   return takeWorseQuality(qualities as string[])
+}
+
+export const getConnectionQualityTooltip = (wifiMetrics:{
+  rss: number | null
+  snr: number | null
+  avgTxMCS: number | null
+  throughput: number | null
+} | null) => {
+  if(!wifiMetrics){
+    return []
+  }
+  const tooltipArr: JSX.Element[]=[]
+  Object.entries<number|null>(wifiMetrics).forEach(([key,value])=>{
+    const quality = getConnectionQualityFor(key,value)
+    let qualityTitle = ''
+    switch (key) {
+      case 'rss':
+        qualityTitle='RSS'
+        break
+      case 'snr':
+        qualityTitle='SNR'
+        break
+      case 'avgTxMCS':
+        qualityTitle='Avg. MCS (Downlink)'
+        break
+      case 'throughput':
+        qualityTitle='Client Throughput'
+        break
+    }
+    let [trend,pillValue] = ['none','None']
+    if(quality === 'bad')
+      [trend,pillValue]=['negative','Bad']
+    else if(quality === 'good')
+      [trend,pillValue]=['positive','Good']
+    else if(quality === 'average')
+      [trend,pillValue]=['none','Average']
+
+    tooltipArr.push(
+      <div style={{ paddingBottom: '5px' }} title={pillValue}>
+        <Space>
+          {quality ? <TrendPill value='' trend={trend as TrendType} /> : '-'}
+          {qualityTitle}
+        </Space>
+      </div>)
+  })
+  return tooltipArr
 }
