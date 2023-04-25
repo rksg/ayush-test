@@ -105,7 +105,7 @@ COPY tools/docker/nginx/nginx.conf \
   tools/docker/nginx/env.json.template \
   /etc/nginx/
 
-COPY --from=acx-ui-tests /app/dist/apps ./
+COPY --from=build /app/dist/apps ./
 RUN \
   # Move all other apps into main
   ls | grep -v main | xargs mv -t main && \
