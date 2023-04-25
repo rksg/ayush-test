@@ -82,7 +82,14 @@ export function DeviceInventory () {
       'serialNumber',
       'tenantId',
       'model',
-      'customerName' ]
+      'customerName',
+      'apMac',
+      'switchMac',
+      'deviceType',
+      'name',
+      'deviceStatus'
+    ],
+    searchTargetFields: ['apMac','switchMac','serialNumber']
   }
 
   const filterResults = useTableQuery({

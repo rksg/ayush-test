@@ -25,7 +25,7 @@ export function useColumnsState <RecordType> (options: UseColumnsStateOptions<Re
   useEffect(() => setState(initialState), [setState, initialState])
 
   const onChange = useCallback((state: TableColumnState) => {
-    const newState = Object.entries(state).every(([,col]) => col.disable || !col.show)
+    const newState = Object.entries(state).every(([,col]) => !col.show)
       ? initialState : state
 
     options.settingsId && localStorage.setItem(options.settingsId, JSON.stringify(newState))
