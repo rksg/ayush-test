@@ -517,7 +517,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
       </div>
     </div>
     <div
-      class="styledComponents__CharsContainer-cc9slb-1 ibEoJW"
+      class="styledComponents__ChartsContainer-cc9slb-1 beMslC"
     >
       <div
         class="styledComponents__ReportSectionTitle-cc9slb-2 igYais"
@@ -5437,7 +5437,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
       </div>
     </div>
     <div
-      class="styledComponents__CharsContainer-cc9slb-1 ibEoJW"
+      class="styledComponents__ChartsContainer-cc9slb-1 beMslC"
     >
       <div
         class="styledComponents__ReportSectionTitle-cc9slb-2 igYais"
@@ -9997,7 +9997,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
       </div>
     </div>
     <div
-      class="styledComponents__CharsContainer-cc9slb-1 ibEoJW"
+      class="styledComponents__ChartsContainer-cc9slb-1 beMslC"
     >
       <div
         class="styledComponents__ReportSectionTitle-cc9slb-2 igYais"

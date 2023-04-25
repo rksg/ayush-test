@@ -7,7 +7,7 @@ export const BigTrendPill = styled(TrendPill)`
     padding: 7px 10px;
     font-weight: normal;
 `
-export const CharsContainer = styled.div`
+export const ChartsContainer = styled.div`
     padding-top: 20px;
 `
 export const ReportSectionTitle = styled.div`

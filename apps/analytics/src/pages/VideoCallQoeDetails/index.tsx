@@ -260,7 +260,7 @@ export function VideoCallQoeDetails (){
         />
       </>}
       {callQoeDetails &&
-        <UI.CharsContainer>
+        <UI.ChartsContainer>
           <UI.ReportSectionTitle style={{ padding: '15px 0px' }}>
             {$t({ defaultMessage: 'Zoom Call Statistics' })}
           </UI.ReportSectionTitle>
@@ -480,7 +480,7 @@ export function VideoCallQoeDetails (){
               </Card>
             </GridCol>
           </GridRow>
-        </UI.CharsContainer>
+        </UI.ChartsContainer>
       }
     </Loader>
   )
