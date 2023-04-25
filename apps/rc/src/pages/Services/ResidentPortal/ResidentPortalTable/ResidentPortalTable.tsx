@@ -82,6 +82,7 @@ export default function ResidentPortalTable () {
       sorter: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
+      filterable: true,
       render: function (data, row) {
         return (
           <TenantLink
@@ -96,7 +97,10 @@ export default function ResidentPortalTable () {
       }
     },
     {
-      key: 'title',
+      // NOTE: Turning off sorting for the time being as these fields can't be sorted.
+      //  sorting uses the 'key' field, while dataIndex is used to present the data.
+      // sorter: true,
+      key: 'uiConfiguration.text.title',
       title: intl.$t({ defaultMessage: 'Title' }),
       dataIndex: ['uiConfiguration','text','title']
     },

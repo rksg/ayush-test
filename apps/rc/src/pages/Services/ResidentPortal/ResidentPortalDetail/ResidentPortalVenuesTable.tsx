@@ -42,7 +42,6 @@ export default function ResidentPortalVenuesTable () {
       defaultSortOrder: 'ascend',
       fixed: 'left',
       filterable: true,
-      filterKey: 'venueName',
       render: function (data, row, _, highlightFn) {
         return (
           <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
