@@ -1,16 +1,13 @@
 import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
 
 import { healthApi }                   from '@acx-ui/analytics/services'
 import { AnalyticsFilter }             from '@acx-ui/analytics/utils'
-import { CommonUrlsInfo }              from '@acx-ui/rc/utils'
 import { BrowserRouter as Router }     from '@acx-ui/react-router-dom'
 import { dataApiURL, Provider, store } from '@acx-ui/store'
 import {
   cleanup,
   mockGraphqlMutation,
   mockGraphqlQuery,
-  mockServer,
   render,
   screen,
   waitForElementToBeRemoved
@@ -25,8 +22,8 @@ import KpiSection from '.'
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
   useApContext: jest.fn()
-    .mockReturnValueOnce({})
-    .mockReturnValueOnce({ tenantId: 'testTenant' })
+    .mockReturnValueOnce(null)
+    .mockReturnValueOnce({ venueId: 'testTenant' })
     .mockReturnValue({})
 }))
 
@@ -92,14 +89,9 @@ describe('Kpi Section', () => {
         <KpiSection tab={'overview'} filters={{ ...filters, path }} />
       </HealthPageContext.Provider>
     </Provider>, { route: { params, path: '/:tenantId' } })
-
-    const button = await screen.findByRole('button', { name: 'Apply' })
-    expect(button).toBeDisabled()
-    // eslint-disable-next-line testing-library/no-node-access
-    await userEvent.hover(button.parentElement!)
-    // eslint-disable-next-line max-len
-    expect(await screen.findByText(/Cannot save threshold at organisation level/)).toBeInTheDocument()
-  }, 60000)
+    const loaders = await screen.findAllByRole('img', { name: 'loader' })
+    expect(loaders.length).toBeGreaterThanOrEqual(1)
+  })
 
   it('should render disabled tooltip with no permissions', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
@@ -154,12 +146,6 @@ describe('Kpi Section', () => {
   }, 60000)
 
   it('should render valid threshold apply for single ap path', async () => {
-    mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getApsList.url,
-        (_, res, ctx) => res(ctx.json({ data: [{ venueId: 'testVenueId' }] }))
-      )
-    )
     mockGraphqlQuery(dataApiURL, 'KPI', {
       data: {
         mutationAllowed: true

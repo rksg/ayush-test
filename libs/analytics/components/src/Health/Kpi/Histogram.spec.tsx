@@ -1,4 +1,5 @@
-import { act } from 'react-dom/test-utils'
+import userEvent from '@testing-library/user-event'
+import { act }   from 'react-dom/test-utils'
 
 import { healthApi }                   from '@acx-ui/analytics/services'
 import { AnalyticsFilter }             from '@acx-ui/analytics/utils'
@@ -9,7 +10,8 @@ import {
   render,
   screen,
   fireEvent,
-  cleanup
+  cleanup,
+  waitFor
 } from '@acx-ui/test-utils'
 import { DateRange } from '@acx-ui/utils'
 
@@ -91,12 +93,20 @@ describe('Threshold Histogram chart', () => {
           threshold={thresholdMap['rss']}
           thresholds={thresholdMap}
           setKpiThreshold={setKpiThreshold}
-          mutationAllowed={true}
-          isNetwork={false}
+          mutationAllowed={false}
+          isNetwork={true}
         />
       </Provider>
     )
     expect(await screen.findByText('10')).toBeVisible()
+    const button = await screen.findByRole('button', { name: 'Apply' })
+    expect(button).toBeDisabled()
+    // eslint-disable-next-line testing-library/no-node-access
+    await userEvent.hover(button.parentElement!)
+    await waitFor(async () => {
+      expect(await screen.findByText(/Cannot save threshold at organisation level/))
+        .toBeInTheDocument()
+    })
   })
   it('should handle data greater than the splits size', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
