@@ -7,7 +7,7 @@ import { setUpIntl } from './intlUtil'
 
 type Message = string | NestedMessages
 type NestedMessages = { [key: string]: Message }
-type Messages = Locale & Record<string, string>
+export type Messages = Locale & Record<string, string>
 
 function flattenMessages (nestedMessages: NestedMessages, prefix = ''): Record<string, string> {
   return Object.keys(nestedMessages).reduce((messages, key) => {
@@ -128,9 +128,9 @@ export const localeLoaders = {
 }
 
 const allowedLang = Object.keys(localeLoaders)
-type Key = keyof typeof localeLoaders
-const cache: Partial<Record<Key, Messages>> = {}
-export async function loadLocale (locale: Key, ignoreCache = false) {
+export type LangKey = keyof typeof localeLoaders
+const cache: Partial<Record<LangKey, Messages>> = {}
+export async function loadLocale (locale: LangKey, ignoreCache = false) {
   // fallback when browser detected or url param provided lang not supported
   locale = allowedLang.includes(locale) ? locale : 'en-US'
   const result = cache[locale]
@@ -141,8 +141,8 @@ export async function loadLocale (locale: Key, ignoreCache = false) {
 }
 
 export interface LocaleContextType {
-  lang: Key
-  setLang: (lang: Key) => void
+  lang: LangKey
+  setLang: (lang: LangKey) => void
   messages?: Messages
 }
 
@@ -151,7 +151,7 @@ export const useLocaleContext = () => useContext(LocaleContext)
 
 export interface LocaleProviderProps {
   /** @default 'en-US' */
-  lang?: Key
+  lang?: LangKey
   children: ReactElement
 }
 
