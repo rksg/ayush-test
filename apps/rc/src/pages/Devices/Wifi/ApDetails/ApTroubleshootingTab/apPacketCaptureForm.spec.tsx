@@ -19,7 +19,7 @@ import {
 import { ApPacketCaptureForm } from './apPacketCaptureForm'
 
 const params = { tenantId: 'tenant-id', serialNumber: 'serial-number' }
-jest.mock('../ApContext', () => ({
+jest.mock('@acx-ui/rc/utils', () => ({
   useApContext: () => params
 }))
 

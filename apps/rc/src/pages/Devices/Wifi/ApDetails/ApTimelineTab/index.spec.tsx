@@ -5,7 +5,7 @@ import { CommonUrlsInfo }                               from '@acx-ui/rc/utils'
 import { Provider }                                     from '@acx-ui/store'
 import { mockServer, render, screen, mockRestApiQuery } from '@acx-ui/test-utils'
 
-import { ApContextProvider } from '../ApContext'
+import { ApContextProvider } from '@acx-ui/rc/utils'
 
 import { activities, events, eventsMeta } from './__tests__/fixtures'
 

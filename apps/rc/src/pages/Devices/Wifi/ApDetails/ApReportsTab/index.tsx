@@ -4,7 +4,7 @@ import {
   reportTypeDataStudioMapping
 } from '@acx-ui/reports/components'
 
-import { useApContext } from '../ApContext'
+import { useApContext } from '@acx-ui/rc/utils'
 
 export function ApReportsTab () {
   const { apMac } = useApContext()

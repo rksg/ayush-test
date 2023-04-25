@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { Tabs }          from '@acx-ui/components'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 
-import { useApContext } from '../ApContext'
+import { useApContext } from '@acx-ui/rc/utils'
 
 import { ApPacketCaptureForm } from './apPacketCaptureForm'
 import { ApPingForm }          from './apPingForm'

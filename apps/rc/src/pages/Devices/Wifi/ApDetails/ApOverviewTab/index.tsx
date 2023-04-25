@@ -12,10 +12,9 @@ import { AnalyticsFilter }                                                      
 import { GridCol, GridRow }                                                                                         from '@acx-ui/components'
 import { ApInfoWidget, TopologyFloorPlanWidget }                                                                    from '@acx-ui/rc/components'
 import { useApDetailsQuery, useApViewModelQuery }                                                                   from '@acx-ui/rc/services'
-import { ApDetails, ApViewModel, NetworkDevice, NetworkDevicePosition, NetworkDeviceType, ShowTopologyFloorplanOn } from '@acx-ui/rc/utils'
+import { ApDetails, ApViewModel, NetworkDevice, NetworkDevicePosition, NetworkDeviceType, ShowTopologyFloorplanOn, useApContext } from '@acx-ui/rc/utils'
 import { useDateFilter }                                                                                            from '@acx-ui/utils'
 
-import { useApContext } from '../ApContext'
 
 import { ApPhoto }      from './ApPhoto'
 import { ApProperties } from './ApProperties'

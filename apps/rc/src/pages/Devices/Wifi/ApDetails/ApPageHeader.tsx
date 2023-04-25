@@ -25,7 +25,7 @@ import {
 import { filterByAccess } from '@acx-ui/user'
 import { useDateFilter }  from '@acx-ui/utils'
 
-import { useApContext } from './ApContext'
+import { useApContext } from '@acx-ui/rc/utils'
 import ApTabs           from './ApTabs'
 
 function ApPageHeader () {

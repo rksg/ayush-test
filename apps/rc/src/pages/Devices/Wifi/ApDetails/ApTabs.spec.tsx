@@ -12,7 +12,7 @@ const params = {
   tenantId: 'tenant-id',
   serialNumber: 'ap-id'
 }
-jest.mock('./ApContext', () => ({
+jest.mock('@acx-ui/rc/utils', () => ({
   useApContext: () => params
 }))
 

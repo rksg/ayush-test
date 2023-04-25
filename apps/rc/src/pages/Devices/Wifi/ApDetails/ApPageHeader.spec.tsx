@@ -21,7 +21,7 @@ jest.mock('react-router-dom', () => ({
 }))
 
 const params = { tenantId: 't1', serialNumber: 'v1' }
-jest.mock('./ApContext', () => ({
+jest.mock('@acx-ui/rc/utils', () => ({
   useApContext: () => params
 }))
 

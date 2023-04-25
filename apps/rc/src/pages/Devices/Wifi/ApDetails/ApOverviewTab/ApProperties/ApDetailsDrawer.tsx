@@ -11,7 +11,7 @@ import { ApDetails, ApLanPort, ApRadio, ApVenueStatusEnum, ApViewModel, DeviceGp
 import { TenantLink }                                                                                                                 from '@acx-ui/react-router-dom'
 import { useUserProfileContext }                                                                                                      from '@acx-ui/user'
 
-import { useApContext } from '../../ApContext'
+import { useApContext } from '@acx-ui/rc/utils'
 
 import { ApCellularProperties } from './ApCellularProperties'
 import { ApDetailsSettings }    from './ApDetailsSettings'

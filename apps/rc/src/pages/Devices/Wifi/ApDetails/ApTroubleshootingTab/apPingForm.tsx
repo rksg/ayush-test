@@ -7,9 +7,8 @@ import { useIntl }               from 'react-intl'
 
 import { Button, Loader, Tooltip }                       from '@acx-ui/components'
 import { usePingApMutation }                             from '@acx-ui/rc/services'
-import { targetHostRegExp, WifiTroubleshootingMessages } from '@acx-ui/rc/utils'
+import { targetHostRegExp, WifiTroubleshootingMessages, useApContext } from '@acx-ui/rc/utils'
 
-import { useApContext } from '../ApContext'
 
 export function ApPingForm () {
   const { $t } = useIntl()

@@ -13,7 +13,7 @@ import * as CropImage from './cropImage'
 
 import { ApPhoto } from '.'
 
-jest.mock('../../ApContext', () => ({
+jest.mock('@acx-ui/rc/utils', () => ({
   useApContext: () => ({
     venueId: 'venue-id',
     tenantId: 'tenant-id',
