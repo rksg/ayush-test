@@ -1,6 +1,7 @@
 import '@acx-ui/theme'
 
 import { ConfigProvider } from '@acx-ui/components'
+import { useLocaleContext } from '@acx-ui/utils'
 
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },
@@ -22,9 +23,18 @@ export const decorators = [
     return (
       <ConfigProvider lang='en-US'>
         <div>
-          <Story />
+          <WaitLocale>
+            <Story />
+          </WaitLocale>
         </div>
       </ConfigProvider>
     )
   }
 ]
+
+function WaitLocale (props) {
+  const locale = useLocaleContext()
+
+  if (!locale.messages) return null
+  return props.children
+}
