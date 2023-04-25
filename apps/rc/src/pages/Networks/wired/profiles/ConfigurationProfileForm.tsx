@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 
+import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { StepsForm, PageHeader, StepsFormInstance, Loader, showActionModal } from '@acx-ui/components'
+import { StepsFormNew, PageHeader, Loader, showActionModal } from '@acx-ui/components'
 import {
   useAddSwitchConfigProfileMutation,
   useUpdateSwitchConfigProfileMutation,
@@ -24,6 +25,7 @@ export function ConfigurationProfileForm () {
   const navigate = useNavigate()
   const params = useParams()
   const linkToProfiles = useTenantLink('/networks/wired/profiles')
+  const [form] = Form.useForm()
 
   const { data, isLoading } = useGetSwitchConfigProfileQuery(
     { params }, { skip: !params.profileId })
@@ -38,8 +40,6 @@ export function ConfigurationProfileForm () {
   const [ arpInspection, setArpInspection ] = useState(false)
   const [ currentData, setCurrentData ] =
     useState<SwitchConfigurationProfile>({} as SwitchConfigurationProfile)
-
-  const formRef = useRef<StepsFormInstance<SwitchConfigurationProfile>>()
 
   useEffect(() => {
     if(data){
@@ -142,57 +142,55 @@ export function ConfigurationProfileForm () {
         ]}
       />
       <ConfigurationProfileFormContext.Provider value={{ editMode, currentData }}>
-        <StepsForm
-          formRef={formRef}
+        <StepsFormNew
+          form={form}
           editMode={editMode}
           onCancel={() => navigate(linkToProfiles, { replace: true })}
-          onFinish={async (data) => {
-            editMode ? handleEditProfile(data) : handleAddProfile(data)
-          }}
+          onFinish={editMode ? handleEditProfile : handleAddProfile}
         >
-          <StepsForm.StepForm
+          <StepsFormNew.StepForm
             title={$t({ defaultMessage: 'General' })}
             onFinish={updateCurrentData}
           >
             <GeneralSetting />
-          </StepsForm.StepForm>
+          </StepsFormNew.StepForm>
 
-          <StepsForm.StepForm
+          <StepsFormNew.StepForm
             title={$t({ defaultMessage: 'VLANs' })}
             onFinish={updateVlanCurrentData}
           >
             <VlanSetting />
-          </StepsForm.StepForm>
+          </StepsFormNew.StepForm>
 
-          <StepsForm.StepForm
+          <StepsFormNew.StepForm
             title={$t({ defaultMessage: 'ACLs' })}
             onFinish={updateCurrentData}
           >
             <AclSetting />
-          </StepsForm.StepForm>
+          </StepsFormNew.StepForm>
 
           {(ipv4DhcpSnooping || arpInspection) &&
-            <StepsForm.StepForm
+            <StepsFormNew.StepForm
               title={$t({ defaultMessage: 'Trusted Ports' })}
               onFinish={updateTrustedPortsCurrentData}
             >
               <TrustedPorts />
-            </StepsForm.StepForm>
+            </StepsFormNew.StepForm>
           }
 
-          <StepsForm.StepForm
+          <StepsFormNew.StepForm
             title={$t({ defaultMessage: 'Venues' })}
             onFinish={updateCurrentData}
           >
             <VenueSetting />
-          </StepsForm.StepForm>
+          </StepsFormNew.StepForm>
 
-          <StepsForm.StepForm
+          <StepsFormNew.StepForm
             title={$t({ defaultMessage: 'Summary' })}
           >
             <Summary />
-          </StepsForm.StepForm>
-        </StepsForm>
+          </StepsFormNew.StepForm>
+        </StepsFormNew>
       </ConfigurationProfileFormContext.Provider>
     </Loader>
   )
