@@ -23,7 +23,6 @@ import BarChart               from './BarChart'
 import Histogram              from './Histogram'
 import HealthPill             from './Pill'
 import KpiTimeseries          from './Timeseries'
-import { useInjectVenuePath } from './useInjectVenuePath'
 
 export const defaultThreshold: KpiThresholdType = {
   timeToConnect: kpiConfig.timeToConnect.histogram.initialThreshold,
@@ -41,8 +40,14 @@ export default function KpiSections (props: { tab: CategoryTab, filters: Analyti
   const { kpis } = kpisForTab[tab]
   const { useGetKpiThresholdsQuery, useFetchThresholdPermissionQuery } = healthApi
   const thresholdKeys = Object.keys(defaultThreshold) as (keyof KpiThresholdType)[]
-  const finalPath = useInjectVenuePath(filters)
-  console.log(useApContext())
+  const apContext = useApContext()
+  let finalPath = filters.path
+  if (apContext && apContext.tenantId) {
+    const injectedPath = { type: 'zone' as 'zone', name: apContext.venueId as string }
+    const copy = [...filters.path]
+    copy.unshift(injectedPath)
+    finalPath = copy
+  }
   const customThresholdQuery = useGetKpiThresholdsQuery({
     ...filters, path: finalPath, kpis: thresholdKeys })
   const { data, fulfilledTimeStamp } = customThresholdQuery
