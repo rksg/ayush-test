@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState, useMemo } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { connect }  from 'echarts'
 import ReactECharts from 'echarts-for-react'
@@ -41,23 +41,17 @@ export default function KpiSections (props: { tab: CategoryTab, filters: Analyti
   const { useGetKpiThresholdsQuery, useFetchThresholdPermissionQuery } = healthApi
   const thresholdKeys = Object.keys(defaultThreshold) as (keyof KpiThresholdType)[]
   const apContext = useApContext()
-  const finalPath = useMemo(() => {
-    if (apContext && apContext.tenantId) {
-      const injectedPath = { type: 'zone' as 'zone', name: apContext.venueId as string }
-      const copy = [...filters.path]
-      copy.unshift(injectedPath)
-      return copy
-    }
-    return filters.path
-  }, [apContext, filters.path])
+  const path = apContext
+    ? [{ type: 'zone' as 'zone', name: apContext.venueId as string }, filters.path[0]]
+    : filters.path
   const customThresholdQuery = useGetKpiThresholdsQuery({
-    ...filters, path: finalPath, kpis: thresholdKeys })
+    ...filters, path, kpis: thresholdKeys })
   const { data, fulfilledTimeStamp } = customThresholdQuery
   const thresholds = thresholdKeys.reduce((kpis, kpi) => {
     kpis[kpi] = data?.[`${kpi}Threshold`]?.value ?? defaultThreshold[kpi]
     return kpis
   }, {} as KpiThresholdType)
-  const thresholdPermissionQuery = useFetchThresholdPermissionQuery({ path: finalPath })
+  const thresholdPermissionQuery = useFetchThresholdPermissionQuery({ path })
   const mutationAllowed = Boolean(thresholdPermissionQuery.data?.mutationAllowed)
   return <Loader states={[customThresholdQuery, thresholdPermissionQuery]}>
     {fulfilledTimeStamp && <KpiSection
@@ -65,7 +59,7 @@ export default function KpiSections (props: { tab: CategoryTab, filters: Analyti
       kpis={kpis}
       thresholds={thresholds}
       mutationAllowed={mutationAllowed}
-      filters={{ ...filters, path: finalPath }}
+      filters={{ ...filters, path }}
     />}
   </Loader>
 }
