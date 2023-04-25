@@ -55,7 +55,7 @@ describe('RadiusAttributeGroupFormDrawer', () => {
 
     const inputs = await screen.findAllByRole('textbox')
     const attributeValue = inputs[2]
-    await userEvent.type(attributeValue, 'testValue')
+    await userEvent.type(attributeValue, '123')
 
     const comboBoxes = await screen.findAllByRole('combobox')
     await userEvent.click(comboBoxes[0])
@@ -65,11 +65,12 @@ describe('RadiusAttributeGroupFormDrawer', () => {
 
     await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loading' }))
 
-    await userEvent.click(await screen.findByText('Foundry-Privilege-Level'))
+    await userEvent.click(await screen.findByText('Foundry-Privilege-Level (INTEGER)'))
 
     addBtns = screen.getAllByText('Add')
     await userEvent.click(addBtns[2])
 
+    // eslint-disable-next-line max-len
     const row = await screen.findByRole('row', { name: new RegExp('Foundry-Privilege-Level') })
     fireEvent.click(within(row).getByRole('radio'))
     await userEvent.click(screen.getByText('Edit'))

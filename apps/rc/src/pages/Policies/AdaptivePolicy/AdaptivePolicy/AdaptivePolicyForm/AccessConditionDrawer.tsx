@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import { Form, FormInstance, Input, Radio, Select, Space, TimePicker } from 'antd'
-import moment                                                          from 'moment'
+import moment                                                          from 'moment-timezone'
 import { useIntl }                                                     from 'react-intl'
 
 import { Drawer, Loader }                              from '@acx-ui/components'
@@ -112,7 +112,12 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
   }
 
   const getZoneHourOffset = () => {
-    return '+' + new Date().getTimezoneOffset() / -60
+    const timezoneOffset = new Date().getTimezoneOffset()
+    const offset = Math.abs(timezoneOffset)
+    const offsetOperator = timezoneOffset < 0 ? '+' : '-'
+    const offsetHours = Math.floor(offset / 60).toString().padStart(2, '0')
+    const offsetMinutes = Math.floor(offset % 60).toString().padStart(2, '0')
+    return `${offsetOperator}${offsetHours}:${offsetMinutes}`
   }
 
   const toEvaluationRuleForm = (evaluationRule: EvaluationRule) => {

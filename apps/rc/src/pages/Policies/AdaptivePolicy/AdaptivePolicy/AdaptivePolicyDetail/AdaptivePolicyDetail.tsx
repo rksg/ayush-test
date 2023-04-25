@@ -53,7 +53,7 @@ export default function AdaptivePolicyDetail () {
       // eslint-disable-next-line max-len
       const criteria = condition.evaluationRule.criteriaType === CriteriaOption.DATE_RANGE ?
         // eslint-disable-next-line max-len
-        `${condition.evaluationRule?.when} ${moment(condition.evaluationRule.startTime, 'HH:mm:ss').format('h:mm a')} - ${moment(condition.evaluationRule.endTime, 'HH:mm:ss').format('h:mm a')}`
+        `${condition.evaluationRule?.when}, ${moment(condition.evaluationRule.startTime, 'HH:mm:ss').format('h:mm A')} - ${moment(condition.evaluationRule.endTime, 'HH:mm:ss').format('h:mm A')}, ${condition.evaluationRule.zoneOffset}`
         : condition.evaluationRule.regexStringCriteria
       return (
         <Col span={6} key={condition.id}>

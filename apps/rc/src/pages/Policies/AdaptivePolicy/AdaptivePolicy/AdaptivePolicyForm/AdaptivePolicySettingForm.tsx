@@ -85,9 +85,10 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
         dataIndex: 'conditionValue',
         render: function (data, row) {
           if(row.evaluationRule.criteriaType === CriteriaOption.DATE_RANGE) {
-            return `${row.evaluationRule?.when}
-            ${moment(row.evaluationRule.startTime, 'HH:mm:ss').format('h:mm a')} -
-            ${moment(row.evaluationRule.endTime, 'HH:mm:ss').format('h:mm a')}`
+            return `${row.evaluationRule?.when},
+            ${moment(row.evaluationRule.startTime, 'HH:mm:ss').format('h:mm A')} -
+            ${moment(row.evaluationRule.endTime, 'HH:mm:ss').format('h:mm A')},
+            ${row.evaluationRule.zoneOffset}`
           } else {
             return row.evaluationRule.regexStringCriteria
           }
