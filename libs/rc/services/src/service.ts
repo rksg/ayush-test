@@ -667,12 +667,12 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'DpskPassphrase', id: 'LIST' }],
+      providesTags: [{ type: 'DpskPassphraseDevices', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
           ], () => {
-            api.dispatch(serviceApi.util.invalidateTags( [{ type: 'DpskPassphrase', id: 'LIST' }]))
+            api.dispatch(serviceApi.util.invalidateTags( [{ type: 'DpskPassphraseDevices', id: 'LIST' }]))
           })
         })
       }
@@ -685,7 +685,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
+      invalidatesTags: [{ type: 'DpskPassphraseDevices', id: 'LIST' }]
     }),
     deleteDpskPassphraseDevices: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -695,7 +695,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
+      invalidatesTags: [{ type: 'DpskPassphraseDevices', id: 'LIST' }]
     }),
     uploadPassphrases: build.mutation<{}, RequestFormData>({
       query: ({ params, payload }) => {
