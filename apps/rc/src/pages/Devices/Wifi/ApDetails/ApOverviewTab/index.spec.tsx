@@ -31,6 +31,7 @@ const params = {
   activeTab: 'overview'
 }
 jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
   useApContext: () => params
 }))
 

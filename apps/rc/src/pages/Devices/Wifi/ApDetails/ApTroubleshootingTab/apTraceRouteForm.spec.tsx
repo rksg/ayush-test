@@ -11,6 +11,7 @@ import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 import { ApTraceRouteForm } from './apTraceRouteForm'
 
 jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
   useApContext: () => ({ tenantId: 'tenant-id', serialNumber: 'serial-number' })
 }))
 

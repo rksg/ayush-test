@@ -13,6 +13,7 @@ const params = {
   serialNumber: 'ap-id'
 }
 jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
   useApContext: () => params
 }))
 
