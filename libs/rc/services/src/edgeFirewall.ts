@@ -8,7 +8,8 @@ import {
   NewAPITableResult,
   transferNewResToTableResult,
   EdgeFirewallUrls,
-  EdgeFirewallSetting
+  EdgeFirewallSetting,
+  EdgeFirewallViewData
 } from '@acx-ui/rc/utils'
 import { baseEdgeFirewallApi } from '@acx-ui/store'
 
@@ -30,10 +31,9 @@ export const edgeFirewallApi = baseEdgeFirewallApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'AddEdgeFirewallServiceProfile',
-            'UpdateEdgeFirewallServiceProfile',
-            'DeleteEdgeFirewallServiceProfile',
-            'DeleteEdgeFirewallServiceProfile'
+            'Add Firewall',
+            'Update Firewall',
+            'Delete Firewall'
           ], () => {
             api.dispatch(serviceApi.util.invalidateTags([
               { type: 'Service', id: 'LIST' }
@@ -73,6 +73,49 @@ export const edgeFirewallApi = baseEdgeFirewallApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'EdgeFirewall', id: 'LIST' }]
+    }),
+    getEdgeFirewallViewDataList: build.query<TableResult<EdgeFirewallViewData>, RequestPayload>({
+      query: ({ payload }) => {
+        const req = createHttpRequest(EdgeFirewallUrls.getEdgeFirewallViewDataList)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'EdgeFirewall', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'Add Firewall',
+            'Update Firewall',
+            'Delete Firewall'
+          ], () => {
+            api.dispatch(serviceApi.util.invalidateTags([
+              { type: 'Service', id: 'LIST' }
+            ]))
+            api.dispatch(edgeFirewallApi.util.invalidateTags([
+              { type: 'EdgeFirewall', id: 'LIST' }
+            ]))
+          })
+        })
+      }
+    }),
+    deleteEdgeFirewall: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        if(payload){ //delete multiple rows
+          const req = createHttpRequest(EdgeFirewallUrls.batchDeleteEdgeFirewall)
+          return {
+            ...req,
+            body: payload
+          }
+        }else{ //delete single row
+          const req = createHttpRequest(EdgeFirewallUrls.deleteEdgeFirewall, params)
+          return {
+            ...req
+          }
+        }
+      },
+      invalidatesTags: [{ type: 'EdgeFirewall', id: 'LIST' }]
     })
   })
 })
@@ -81,5 +124,7 @@ export const {
   useAddEdgeFirewallMutation,
   useUpdateEdgeFirewallMutation,
   useGetEdgeFirewallListQuery,
-  useGetEdgeFirewallQuery
+  useGetEdgeFirewallQuery,
+  useGetEdgeFirewallViewDataListQuery,
+  useDeleteEdgeFirewallMutation
 } = edgeFirewallApi
