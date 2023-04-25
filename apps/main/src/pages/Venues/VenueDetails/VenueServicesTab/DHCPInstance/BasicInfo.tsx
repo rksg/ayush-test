@@ -9,7 +9,7 @@ import { Modal, GridRow, GridCol, Card } from '@acx-ui/components'
 import {
   useUpdateVenueDHCPProfileMutation,
   useGetDHCPProfileListQuery,
-  useVenuesListQuery
+  useGetVenueSettingsQuery
 } from '@acx-ui/rc/services'
 import { DHCPConfigTypeEnum } from '@acx-ui/rc/utils'
 import { TenantLink }         from '@acx-ui/react-router-dom'
@@ -21,9 +21,7 @@ import VenueDHCPForm from './VenueDHCPForm'
 interface DHCPFormRefType {
   resetForm: Function,
 }
-export default function BasicInfo (props:{
-  venueId?: string
-}) {
+export default function BasicInfo () {
   type LocationState = {
     showConfig?: boolean
   }
@@ -40,12 +38,7 @@ export default function BasicInfo (props:{
   const natGateway = _.take(dhcpInfo.gateway, DISPLAY_GATEWAY_MAX_NUM)
   const dhcpForm = useRef<DHCPFormRefType>()
   const [form] = Form.useForm()
-  const venuesList = useVenuesListQuery({ params, payload: {
-    fields: ['mesh', 'id'],
-    filters: {
-      id: [props.venueId]
-    }
-  } })
+  const { data: venue } = useGetVenueSettingsQuery({ params })
   const { data: dhcpProfileList } = useGetDHCPProfileListQuery({ params })
   const getSelectedDHCPMode = (dhcpServiceID:string)=> {
     if(dhcpProfileList && dhcpServiceID){
@@ -104,7 +97,7 @@ export default function BasicInfo (props:{
     }
     return payload
   }
-  const meshEnable = venuesList.data?.data?.[0].mesh?.enabled
+  const meshEnable = venue?.mesh?.enabled
   return <>
     <Card type='solid-bg'>
       <GridRow justify='space-between'>

@@ -22,6 +22,23 @@ const markers = [{
   itemStyle: { opacity: 0.3, color: '#FF00FF' }
 }]
 
+const markerAreas = [{
+  start: 150,
+  itemStyle: { opacity: 0.1, color: '#FF00FF' }
+},{
+  start: 0,
+  end: 20,
+  itemStyle: { opacity: 0.1, color: '#FF00FF' }
+}]
+
+const markerLines = [{
+  threshold: 150,
+  lineStyle: { color: '#FF00FF' }
+},{
+  threshold: 20,
+  lineStyle: { color: '#FF00FF' }
+}]
+
 describe('MultiLineTimeSeriesChart', () => {
 
   it('should use imperative handle', async () => {
@@ -117,6 +134,29 @@ describe('MultiLineTimeSeriesChart', () => {
     await waitFor(() => {
       const markAreaPaths = asFragment().querySelectorAll('path[fill="#FF00FF"]')
       expect(markAreaPaths.length).toEqual(1)
+    })
+  })
+
+  it('should render horizontal mark area if enabled', async () => {
+    const { asFragment } = render(<MultiLineTimeSeriesChart
+      data={getSeriesData()}
+      markerAreas={markerAreas}
+    />)
+
+    await waitFor(() => {
+      const markAreaPaths = asFragment().querySelectorAll('path[fill="#FF00FF"]')
+      expect(markAreaPaths.length).toEqual(2)
+    })
+  })
+
+  it('should render mark line if enabled', async () => {
+    const { asFragment } = render(<MultiLineTimeSeriesChart
+      data={getSeriesData()}
+      markerLines={markerLines}
+    />)
+    await waitFor(() => {
+      const markAreaPaths = asFragment().querySelectorAll('path[stroke="#FF00FF"]')
+      expect(markAreaPaths.length).toEqual(2)
     })
   })
 })
