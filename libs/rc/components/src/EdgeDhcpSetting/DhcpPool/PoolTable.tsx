@@ -11,23 +11,23 @@ export function PoolTable (props:{
   data: EdgeDhcpPool[]
   openDrawer: (data?: EdgeDhcpPool) => void
   onDelete?: (data:EdgeDhcpPool[]) => void
-  isDefaultService?: Boolean
 }) {
+
   const { $t } = useIntl()
-  const { data } = props
+  const { data, openDrawer, onDelete } = props
 
   const rowActions: TableProps<EdgeDhcpPool>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedRows) => selectedRows.length === 1,
       onClick: (rows: EdgeDhcpPool[]) => {
-        props.openDrawer(rows[0])
+        openDrawer(rows[0])
       }
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows: EdgeDhcpPool[], clearSelection) => {
-        props.onDelete?.(rows)
+        onDelete?.(rows)
         clearSelection()
       }
     }
@@ -65,10 +65,12 @@ export function PoolTable (props:{
       sorter: { compare: sortProp('gatewayIp', defaultSort) }
     }
   ]
+
   let actions = [{
     label: $t({ defaultMessage: 'Add DHCP Pool' }),
-    onClick: () => props.openDrawer()
+    onClick: () => openDrawer()
   }]
+
   return (
     <Table
       rowKey='id'
