@@ -1337,7 +1337,7 @@ export const callQoeTestDetailsFixtures3 = {
                   jitter: {
                     audio: {
                       rx: null,
-                      tx: 16
+                      tx: null
                     },
                     video: {
                       tx: null,
@@ -1347,7 +1347,7 @@ export const callQoeTestDetailsFixtures3 = {
                   latency: {
                     audio: {
                       rx: null,
-                      tx: 137
+                      tx: null
                     },
                     video: {
                       tx: null,
@@ -1357,7 +1357,7 @@ export const callQoeTestDetailsFixtures3 = {
                   packet_loss: {
                     audio: {
                       rx: null,
-                      tx: 0.9
+                      tx: null
                     },
                     video: {
                       tx: null,
