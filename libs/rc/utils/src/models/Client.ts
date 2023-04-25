@@ -42,6 +42,7 @@ export class Client {
   wifiCallingTx?: number
   wifiCallingRx?: number
   isVenueExists?: boolean
+  wifiCallingClient?: boolean
   isApExists?: boolean
 
   constructor () {
