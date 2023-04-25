@@ -41,7 +41,6 @@ export function BypassCaptiveNetworkAssistantCheckbox (props: BypassCNAProps) {
   useEffect(() => {
     if (editMode || cloneMode) {
       form.setFieldValue(['wlan', 'bypassCNA'], networkFromContextData?.wlan?.bypassCNA)
-      return
     }
     else {
       form.setFieldValue(['wlan', 'bypassCNA'], false)
