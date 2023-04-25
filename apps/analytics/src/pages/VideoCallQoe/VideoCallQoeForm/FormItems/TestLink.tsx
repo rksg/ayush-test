@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { Form, Space }            from 'antd'
+import { Space }                  from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 import { FormattedMessage }       from 'react-intl'
 
