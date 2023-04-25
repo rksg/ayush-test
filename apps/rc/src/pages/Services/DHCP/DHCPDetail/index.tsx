@@ -16,7 +16,8 @@ import { DHCPUsage }      from '@acx-ui/rc/utils'
 import { TenantLink }     from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
-import { PoolTable } from '../DHCPForm/DHCPPool/PoolTable'
+import { DEFAULT_GUEST_DHCP_NAME } from '../DHCPForm/DHCPForm'
+import { PoolTable }               from '../DHCPForm/DHCPPool/PoolTable'
 
 import DHCPInstancesTable from './DHCPInstancesTable'
 import DHCPOverview       from './DHCPOverview'
@@ -51,7 +52,8 @@ export default function DHCPServiceDetail () {
             serviceId: params.serviceId!
           })}>
             <Button key='configure'
-              disabled={venuesList.data && venuesList.data.data.length>0}
+              disabled={(venuesList.data && venuesList.data.data.length>0)
+                || data?.serviceName === DEFAULT_GUEST_DHCP_NAME}
               type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
         ])}

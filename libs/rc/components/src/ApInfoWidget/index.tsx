@@ -17,6 +17,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
 import { useParams }                     from '@acx-ui/react-router-dom'
+import { WrapIfAccessible }              from '@acx-ui/user'
 
 import { AlarmsDrawer } from '../AlarmsDrawer'
 
@@ -127,28 +128,48 @@ export function ApInfoWidget (props:{ currentAP: ApViewModel, filters: Analytics
         </GridCol>
         <GridCol col={{ span: 4 }}>
           <UI.Wrapper>
-            <UI.TenantLinkSvg to={`/devices/wifi/${apId}/details/analytics`}>
+            <WrapIfAccessible wrapper={children =>
+              <UI.TenantLinkSvg
+                to={`/devices/wifi/${apId}/details/analytics`}
+                children={children}
+              />
+            }>
               <IncidentBySeverityDonutChart type='no-card-style' filters={filters}/>
-            </UI.TenantLinkSvg>
+            </WrapIfAccessible>
           </UI.Wrapper>
         </GridCol>
         <GridCol col={{ span: 5 }}>
           <UI.Wrapper>
-            <UI.TenantLinkBlack to={`/devices/wifi/${apId}/details/analytics/health/overview`}>
+            <WrapIfAccessible wrapper={children =>
+              <UI.TenantLinkBlack
+                to={`/devices/wifi/${apId}/details/analytics/health/overview`}
+                children={children}
+              />
+            }>
               <KpiWidget type='no-chart-style' filters={filters} name='connectionSuccess' />
-            </UI.TenantLinkBlack>
+            </WrapIfAccessible>
           </UI.Wrapper>
         </GridCol>
         <GridCol col={{ span: 5 }}>
           <UI.Wrapper>
-            <UI.TenantLinkBlack to={`/devices/wifi/${apId}/details/analytics/health/overview`}>
+            <WrapIfAccessible wrapper={children =>
+              <UI.TenantLinkBlack
+                to={`/devices/wifi/${apId}/details/analytics/health/overview`}
+                children={children}
+              />
+            }>
               <TtcTimeWidget filters={filters}/>
-            </UI.TenantLinkBlack>
+            </WrapIfAccessible>
           </UI.Wrapper>
         </GridCol>
         <GridCol col={{ span: 5 }}>
           <UI.Wrapper>
-            <UI.TenantLinkBlack to={`/devices/wifi/${apId}/details/analytics/health/overview`}>
+            <WrapIfAccessible wrapper={children =>
+              <UI.TenantLinkBlack
+                to={`/devices/wifi/${apId}/details/analytics/health/overview`}
+                children={children}
+              />
+            }>
               <KpiWidget
                 type='no-chart-style'
                 filters={filters}
@@ -156,7 +177,7 @@ export function ApInfoWidget (props:{ currentAP: ApViewModel, filters: Analytics
                 threshold={healthData?.clientThroughputThreshold?.value ??
                   kpiConfig.clientThroughput.histogram.initialThreshold}
               />
-            </UI.TenantLinkBlack>
+            </WrapIfAccessible>
           </UI.Wrapper>
         </GridCol>
       </GridRow>
