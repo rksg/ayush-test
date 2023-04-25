@@ -6,9 +6,8 @@ import { useIntl }                            from 'react-intl'
 
 import { StepsForm, TableProps, useStepFormContext } from '@acx-ui/components'
 import { formatter }                                 from '@acx-ui/formatter'
-import { EdgesTable, SpaceWrapper }                  from '@acx-ui/rc/components'
+import { EdgesTable }                                from '@acx-ui/rc/components'
 import { EdgeStatus }                                from '@acx-ui/rc/utils'
-import { TenantLink }                                from '@acx-ui/react-router-dom'
 
 import { FirewallFormEdge, FirewallFormModel } from '..'
 
