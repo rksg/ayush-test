@@ -672,6 +672,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
           ], () => {
+            // eslint-disable-next-line max-len
             api.dispatch(serviceApi.util.invalidateTags( [{ type: 'DpskPassphraseDevices', id: 'LIST' }]))
           })
         })
