@@ -38,7 +38,7 @@ const DefaultSystemLanguageFormItem = () => {
   }
 
   const supportedLangs = [
-    DEFAULT_SYS_LANG // FIXME: should be updated when supportedLangs is ready
+    DEFAULT_SYS_LANG // TODO: should be updated when supportedLangs is ready
   ].map(val => ({
     label: generateLangLabel(val.slice(0, 2)),
     value: val
