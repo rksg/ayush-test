@@ -15,6 +15,7 @@ import {
   kpiConfig
 } from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Loader } from '@acx-ui/components'
+import { useApContext }             from '@acx-ui/rc/utils'
 
 import { HealthPageContext } from '../HealthPageContext'
 
@@ -41,6 +42,7 @@ export default function KpiSections (props: { tab: CategoryTab, filters: Analyti
   const { useGetKpiThresholdsQuery, useFetchThresholdPermissionQuery } = healthApi
   const thresholdKeys = Object.keys(defaultThreshold) as (keyof KpiThresholdType)[]
   const finalPath = useInjectVenuePath(filters)
+  console.log(useApContext())
   const customThresholdQuery = useGetKpiThresholdsQuery({
     ...filters, path: finalPath, kpis: thresholdKeys })
   const { data, fulfilledTimeStamp } = customThresholdQuery
