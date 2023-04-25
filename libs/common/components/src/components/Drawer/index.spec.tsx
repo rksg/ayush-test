@@ -52,6 +52,22 @@ describe('Drawer', () => {
     expect(onClose).toBeCalled()
   })
 
+  it('should render drawer without mask attribute correctly', async () => {
+    render(<Drawer
+      title={'Test Mask Drawer'}
+      visible={true}
+      onClose={onClose}
+      children={content}
+    />)
+
+    const button = screen.getByRole('button', { name: /close/i })
+    await screen.findByText('Test Mask Drawer')
+    await screen.findByText('some content')
+
+    fireEvent.click(button)
+    expect(onClose).toBeCalled()
+  })
+
   it('should render custom drawer correctly', async () => {
     const footer = [
       <button onClick={onClose} >Save</button>,

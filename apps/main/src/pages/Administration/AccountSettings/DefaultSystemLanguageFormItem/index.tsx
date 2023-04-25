@@ -5,6 +5,8 @@ import { usePreference }             from '@acx-ui/rc/components'
 import { LangKey, useLocaleContext } from '@acx-ui/utils'
 
 import { MessageMapping } from '../MessageMapping'
+
+const DEFAULT_SYS_LANG = 'en-US'
 const DefaultSystemLanguageFormItem = () => {
   const isDev = (window.location.hostname === 'localhost' ||
                   window.location.hostname === 'devalto.ruckuswireless.com')
@@ -32,7 +34,7 @@ const DefaultSystemLanguageFormItem = () => {
   const isUpdatingPreference = updateReqState.isLoading
 
   const generateLangLabel = (val: string): string | undefined => {
-    const lang = (currentDefaultLang ?? 'en-US').slice(0, 2)
+    const lang = (currentDefaultLang ?? DEFAULT_SYS_LANG).slice(0, 2)
     const languageNames = new Intl.DisplayNames([val], { type: 'language' })
     const currLangDisplay = new Intl.DisplayNames([lang], { type: 'language' })
     if (lang === val) return currLangDisplay.of(val)
@@ -46,12 +48,12 @@ const DefaultSystemLanguageFormItem = () => {
   if (isDev) {
     // This is temporary conditional check for Dev env for QA testing
     // Once we get actual translated language bundles we should clean this up
-    supportedLangs = [ 'en-US', 'es-ES', 'ja-JP'].map(val => ({
+    supportedLangs = [ 'en-US', 'ja-JP', 'fr-FR', 'pt-BR', 'ko-KR', 'es-ES'].map(val => ({
       label: generateLangLabel(val.slice(0, 2)),
       value: val
     }))
   } else {
-    supportedLangs = ['en-US'].map(val => ({
+    supportedLangs = [DEFAULT_SYS_LANG].map(val => ({
       label: generateLangLabel(val.slice(0, 2)),
       value: val
     }))
@@ -64,7 +66,7 @@ const DefaultSystemLanguageFormItem = () => {
           label={$t({ defaultMessage: 'Default System Language' })}
         >
           <Select
-            value={currentDefaultLang}
+            value={currentDefaultLang || DEFAULT_SYS_LANG}
             onChange={handleDefaultLangChange}
             showSearch
             allowClear

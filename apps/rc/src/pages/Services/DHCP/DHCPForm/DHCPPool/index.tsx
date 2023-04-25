@@ -198,7 +198,7 @@ export default function DHCPPoolTable ({
         />
         <Form.Item
           name='subnetAddress'
-          label={$t({ defaultMessage: 'IP Address' })}
+          label={$t({ defaultMessage: 'Subnet Address' })}
           rules={[
             { required: true },
             { validator: (_, value) => networkWifiIpRegExp(value) },
