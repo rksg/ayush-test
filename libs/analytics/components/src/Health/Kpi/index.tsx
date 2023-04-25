@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState, useMemo } from 'react'
 
 import { connect }  from 'echarts'
 import ReactECharts from 'echarts-for-react'
@@ -19,10 +19,10 @@ import { useApContext }             from '@acx-ui/rc/utils'
 
 import { HealthPageContext } from '../HealthPageContext'
 
-import BarChart               from './BarChart'
-import Histogram              from './Histogram'
-import HealthPill             from './Pill'
-import KpiTimeseries          from './Timeseries'
+import BarChart      from './BarChart'
+import Histogram     from './Histogram'
+import HealthPill    from './Pill'
+import KpiTimeseries from './Timeseries'
 
 export const defaultThreshold: KpiThresholdType = {
   timeToConnect: kpiConfig.timeToConnect.histogram.initialThreshold,
@@ -41,13 +41,15 @@ export default function KpiSections (props: { tab: CategoryTab, filters: Analyti
   const { useGetKpiThresholdsQuery, useFetchThresholdPermissionQuery } = healthApi
   const thresholdKeys = Object.keys(defaultThreshold) as (keyof KpiThresholdType)[]
   const apContext = useApContext()
-  let finalPath = filters.path
-  if (apContext && apContext.tenantId) {
-    const injectedPath = { type: 'zone' as 'zone', name: apContext.venueId as string }
-    const copy = [...filters.path]
-    copy.unshift(injectedPath)
-    finalPath = copy
-  }
+  const finalPath = useMemo(() => {
+    if (apContext && apContext.tenantId) {
+      const injectedPath = { type: 'zone' as 'zone', name: apContext.venueId as string }
+      const copy = [...filters.path]
+      copy.unshift(injectedPath)
+      return copy
+    }
+    return filters.path
+  }, [apContext, filters.path])
   const customThresholdQuery = useGetKpiThresholdsQuery({
     ...filters, path: finalPath, kpis: thresholdKeys })
   const { data, fulfilledTimeStamp } = customThresholdQuery

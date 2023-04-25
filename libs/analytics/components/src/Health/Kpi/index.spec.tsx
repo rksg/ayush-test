@@ -22,6 +22,14 @@ import { HealthPageContext } from '../HealthPageContext'
 
 import KpiSection from '.'
 
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useApContext: jest.fn()
+    .mockReturnValueOnce({})
+    .mockReturnValueOnce({ tenantId: 'testTenant' })
+    .mockReturnValue({})
+}))
+
 describe('Kpi Section', () => {
   beforeEach(() => {
     store.dispatch(healthApi.util.resetApiState())
@@ -152,13 +160,6 @@ describe('Kpi Section', () => {
         (_, res, ctx) => res(ctx.json({ data: [{ venueId: 'testVenueId' }] }))
       )
     )
-
-    mockGraphqlQuery(dataApiURL, 'histogramKPI', {
-      data: { network: { histogram: { data: [0, 2, 2, 3, 3, 0] } } }
-    })
-    mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
-      data: { network: { timeSeries: sampleTS } }
-    })
     mockGraphqlQuery(dataApiURL, 'KPI', {
       data: {
         mutationAllowed: true
@@ -169,21 +170,21 @@ describe('Kpi Section', () => {
         timeToConnectThreshold: { value: 30000 }
       }
     })
-    mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
-      data: {
-        saveThreshold: {
-          success: true
-        }
-      }
+
+    mockGraphqlQuery(dataApiURL, 'histogramKPI', {
+      data: { network: { histogram: { data: [0, 2, 2, 3, 3, 0] } } }
+    })
+    mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
+      data: { network: { timeSeries: sampleTS } }
     })
 
-    const path =
-      [{ type: 'ap', name: 'z1' }] as NetworkPath
+    const path = [{ type: 'ap', name: 'z1' }] as NetworkPath
     const period = fixedEncodeURIComponent(JSON.stringify(filters))
     const analyticsNetworkFilter = fixedEncodeURIComponent(JSON.stringify({
       path,
       raw: []
     }))
+
 
     render(<Provider>
       <HealthPageContext.Provider value={healthContext}>

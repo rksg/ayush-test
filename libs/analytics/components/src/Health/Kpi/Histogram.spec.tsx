@@ -271,7 +271,7 @@ describe('Threshold Histogram chart', () => {
 
     mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
       data: {
-        timeToConnect: {
+        saveThreshold: {
           success: true
         }
       }
@@ -300,7 +300,7 @@ describe('Threshold Histogram chart', () => {
 
     mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
       data: {
-        timeToConnect: {
+        saveThreshold: {
           success: true
         }
       }
