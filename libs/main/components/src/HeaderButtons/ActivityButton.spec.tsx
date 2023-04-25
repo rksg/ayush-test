@@ -26,7 +26,7 @@ describe('ActivityButton', () => {
 
   it('should render ActivityButton correctly', async () => {
     render(<Provider>
-      <ActivityButton/>
+      <ActivityButton isShown={false} setIsShown={() => {}}/>
     </Provider>, { route: { params } })
     await userEvent.click(screen.getByRole('button'))
     expect(await screen.findByText('123roam')).toBeVisible()
@@ -37,7 +37,7 @@ describe('ActivityButton', () => {
 
   it('should navigate to all activities', async () => {
     render(<Provider>
-      <ActivityButton/>
+      <ActivityButton isShown={false} setIsShown={() => {}}/>
     </Provider>, { route: { params } })
     await userEvent.click(screen.getByRole('button'))
     expect(await screen.findByText('123roam')).toBeVisible()
@@ -51,7 +51,7 @@ describe('ActivityButton', () => {
 
   it('should open/close activity drawer', async () => {
     render(<Provider>
-      <ActivityButton/>
+      <ActivityButton isShown={false} setIsShown={() => {}}/>
     </Provider>, { route: { params } })
     await userEvent.click(screen.getByRole('button'))
     const activity = await screen.findByText('123roam')

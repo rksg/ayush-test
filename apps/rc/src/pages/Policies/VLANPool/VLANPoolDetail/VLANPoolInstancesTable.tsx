@@ -41,7 +41,6 @@ export default function VLANPoolInstancesTable (){
       key: 'apGroupData',
       title: $t({ defaultMessage: 'APs' }),
       dataIndex: 'apGroupData',
-      sorter: true,
       render: (groups) => _.sumBy(groups as VLANPoolAPGroup[], (o)=> o.apCount )
     },
     {
@@ -49,7 +48,6 @@ export default function VLANPoolInstancesTable (){
       title: $t({ defaultMessage: 'Deployment Scope' }),
       dataIndex: 'apGroupData',
       searchable: true,
-      sorter: true,
       render: (groups) => {
         const isAllAP = _.some(groups as VLANPoolAPGroup[], { apGroupName: 'ALL_APS' })
         return isAllAP ? $t({ defaultMessage: 'All APs' }):(groups as VLANPoolAPGroup[]).length
