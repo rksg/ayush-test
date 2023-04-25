@@ -325,9 +325,7 @@ describe('DpskPassphraseManagement', () => {
     await userEvent.click(within(targetRow).getByRole('checkbox'))
     await userEvent.click(await screen.findByRole('button', { name: 'Manage Devices' }))
 
-    await screen.findByRole('cell', {
-      name: /ad:2c:3b:1d:4d:4e/i
-    })
+    await screen.findByText(/ad:2c:3b:1d:4d:4e/i)
 
     await userEvent.click(await screen.findByRole('button', {
       name: /add device/i
@@ -385,9 +383,7 @@ describe('DpskPassphraseManagement', () => {
     await userEvent.click(within(targetRow).getByRole('checkbox'))
     await userEvent.click(await screen.findByRole('button', { name: 'Manage Devices' }))
 
-    await screen.findByRole('cell', {
-      name: /ad:2c:3b:1d:4d:4e/i
-    })
+    await screen.findByText(/ad:2c:3b:1d:4d:4e/i)
 
     const targetDevice = await screen.findByRole('row', { name: /ad:2c:3b:1d:4d:4e/i })
 
