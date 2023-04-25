@@ -1,32 +1,24 @@
 import { useEffect } from 'react'
 
-import { connect }  from 'echarts'
-import ReactECharts from 'echarts-for-react'
-import { useIntl }  from 'react-intl'
-import AutoSizer    from 'react-virtualized-auto-sizer'
+import { Space, Typography } from 'antd'
+import { connect }           from 'echarts'
+import ReactECharts          from 'echarts-for-react'
+import { useIntl }           from 'react-intl'
+import AutoSizer             from 'react-virtualized-auto-sizer'
 
-import { TimeSeriesDataType, getSeriesData } from '@acx-ui/analytics/utils'
+import { TimeSeriesDataType, getSeriesData }                                                                                                       from '@acx-ui/analytics/utils'
+import { Loader, PageHeader, Table, TableProps, Tooltip, TrendPill, TrendType, cssStr,  Card, GridCol, GridRow, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                                                                                               from '@acx-ui/formatter'
 import {
-  Card,
-  GridCol,
-  GridRow,
-  Loader,
-  MultiLineTimeSeriesChart,
-  NoData,
-  PageHeader,
-  Table,
-  TableProps,
-  TrendPill,
-  TrendType,
-  cssStr
-} from '@acx-ui/components'
-import { DateFormatEnum, formatter } from '@acx-ui/formatter'
-import { TenantLink, useParams }     from '@acx-ui/react-router-dom'
+  EditOutlinedIcon
+} from '@acx-ui/icons'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+
 
 import { DetailedResponse, Participants, useVideoCallQoeTestDetailsQuery } from '../VideoCallQoe/services'
 
-import { getConnectionQuality, zoomStatsThresholds } from './connectionQuality'
-import * as UI                                       from './styledComponents'
+import { getConnectionQuality, getConnectionQualityTooltip, zoomStatsThresholds } from './connectionQuality'
+import * as UI                                                                    from './styledComponents'
 
 export function VideoCallQoeDetails (){
   const { $t } = useIntl()
@@ -49,7 +41,16 @@ export function VideoCallQoeDetails (){
     {
       title: $t({ defaultMessage: 'Client MAC' }),
       dataIndex: 'macAddress',
-      key: 'macAddress'
+      key: 'macAddress',
+      render: (value:unknown, row:Participants)=>{
+        if(row.networkType.toLowerCase() === 'wifi'){
+          return <Space>
+            {value ? <span>{value as string}</span> : <div style={{ width: '100px' }}>-</div>}
+            <EditOutlinedIcon style={{ height: '16px', width: '16px' }} />
+          </Space>
+        }
+        return ''
+      }
     },
     {
       title: $t({ defaultMessage: 'Participant' }),
@@ -65,7 +66,11 @@ export function VideoCallQoeDetails (){
     {
       title: $t({ defaultMessage: 'Network Type' }),
       dataIndex: 'networkType',
-      key: 'networkType'
+      key: 'networkType',
+      width: 100,
+      render: (value:unknown)=>{
+        return (value as string).toLowerCase() === 'wifi' ? 'Wi-Fi' : value as string
+      }
     },
     {
       title: $t({ defaultMessage: 'AP' }),
@@ -118,8 +123,9 @@ export function VideoCallQoeDetails (){
       key: 'leaveTime',
       align: 'center',
       width: 50,
-      render: (value:unknown)=>{
-        return formatter(DateFormatEnum.OnlyTime)(value as string)
+      render: (value:unknown,row:Participants)=>{
+        return <Tooltip title={row.leaveReason.replace('<br>','\n')}>
+          {formatter(DateFormatEnum.OnlyTime)(value as string)}</Tooltip>
       }
     },
     {
@@ -136,13 +142,18 @@ export function VideoCallQoeDetails (){
           throughput: number
         } | null
         const connectionQuality = getConnectionQuality(wifiMetrics)
+        const connectionQualityTooltip = getConnectionQualityTooltip(wifiMetrics)
+
         if(connectionQuality){
           let [trend,quality] = ['none','Average']
           if(connectionQuality === 'bad')
             [trend,quality]=['negative','Bad']
           else if(connectionQuality === 'good')
             [trend,quality]=['positive','Good']
-          return <TrendPill value={quality} trend={trend as TrendType} />
+
+          return <Tooltip title={connectionQualityTooltip}>
+            <TrendPill value={quality} trend={trend as TrendType} />
+          </Tooltip>
         }
         else
           return ''
@@ -250,10 +261,18 @@ export function VideoCallQoeDetails (){
           extra={[
             <>{$t({ defaultMessage: 'Video Call QoE' })}</>,
             <>{getPill(currentMeeting.mos)}</>
-          ]} />
-        <UI.ReportSectionTitle>
-          {$t({ defaultMessage: 'Participant Details' })}
-        </UI.ReportSectionTitle>
+          ]}
+          breadcrumb={[{
+            text: $t({ defaultMessage: 'Video Call QoE' }),
+            link: '/serviceValidation/videoCallQoe'
+          }]}
+        />
+        <Typography.Text style={{
+          fontSize: cssStr('--acx-body-2-font-size'),
+          fontWeight: cssStr('--acx-body-font-weight-bold'),
+          fontFamily: cssStr('--acx-accent-brand-font'),
+          lineHeight: cssStr('--acx-body-3-line-height')
+        }}>{$t({ defaultMessage: 'Participant Details' })}</Typography.Text>
         <Table
           columns={columnHeaders}
           dataSource={participants}

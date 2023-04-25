@@ -1,14 +1,17 @@
-import { getConnectionQuality, getConnectionQualityFor, takeWorseQuality } from './connectionQuality'
+import { getConnectionQuality, getConnectionQualityFor, getConnectionQualityTooltip, takeWorseQuality } from './connectionQuality'
 
 describe('connectionQuality', () => {
   test('wifiMetrices having null', () => {
-    const quality = getConnectionQuality({
+    const connectionQuality = {
       rss: null,
       snr: null,
       avgTxMCS: null,
       throughput: null
-    })
+    }
+    const quality = getConnectionQuality(connectionQuality)
+    const tooltip = getConnectionQualityTooltip(connectionQuality)
     expect(quality).toBe(null)
+    expect(tooltip).toMatchSnapshot()
   })
   test('takeWorseQuality with other qualities',()=>{
     const quality = takeWorseQuality(['nice','awesome','nice'])

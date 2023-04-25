@@ -1102,51 +1102,37 @@ export const callQoeTestDetailsFixtures2 = {
 export const callQoeTestDetailsFixtures3 = {
   getAllCallQoeTests: [
     {
-      id: 58,
-      name: 'Test 3',
+      id: 62,
+      name: 'Test-Qoe',
       meetings: [
         {
-          id: 58,
-          zoomMeetingId: '98908385413',
+          id: 62,
+          zoomMeetingId: '93384956746',
           status: 'ENDED',
           invalidReason: null,
-          joinUrl: 'https://zoom.us/j/98908385463?pwd=bkErOUIxc0tPSVJVYWlJVWI5bWJtZz09',
+          joinUrl: 'https://zoom.us/j/93384956746?pwd=MnNxU1Y5c3pCaVQvOE1jUUoyTDBpZz09',
           participantCount: 2,
-          mos: 3,
-          createdTime: '2023-04-11T04:39:28.000Z',
-          startTime: '2023-04-11T04:40:20.000Z',
-          endTime: '2023-04-11T04:44:06.000Z',
+          mos: 5,
+          createdTime: '2023-04-11T05:04:26.000Z',
+          startTime: '2023-04-11T05:04:58.000Z',
+          endTime: '2023-04-11T05:08:23.000Z',
           participants: [
             {
               id: 11,
-              userName: 'Test-part-1',
+              userName: 'Test',
               hostname: '',
               networkType: 'Wifi',
-              macAddress: 'A8:64:F1:1A:D0:33',
+              macAddress: null,
               device: 'Unknown',
               ipAddress: '134.242.238.1',
-              joinTime: '2023-04-11T04:40:20.000Z',
-              leaveTime: '2023-04-11T04:44:06.000Z',
-              leaveReason: 'Test-part-1 left the meeting.<br>Reason: left the meeting.',
-              apDetails: {
-                system: null,
-                domains: null,
-                zone: 'Sandeep',
-                apGroup: 'Unknown',
-                apName: 'Switch_client',
-                apMac: 'C8:08:73:08:10:50',
-                ssid: 'Divya_unlimited',
-                radio: '5'
-              },
-              wifiMetrics: {
-                rss: -90,
-                snr: 3,
-                avgTxMCS: 2048,
-                throughput: 999
-              },
+              joinTime: '2023-04-11T05:04:58.000Z',
+              leaveTime: '2023-04-11T05:08:23.000Z',
+              leaveReason: 'Test left the meeting.<br>Reason: left the meeting.',
+              apDetails: null,
+              wifiMetrics: null,
               callMetrics: [
                 {
-                  date_time: '2023-04-11T04:40:00Z',
+                  date_time: '2023-04-11T05:05:00Z',
                   jitter: {
                     audio: {
                       rx: null,
@@ -1183,7 +1169,7 @@ export const callQoeTestDetailsFixtures3 = {
                   }
                 },
                 {
-                  date_time: '2023-04-11T04:41:00Z',
+                  date_time: '2023-04-11T05:06:00Z',
                   jitter: {
                     audio: {
                       rx: null,
@@ -1220,7 +1206,7 @@ export const callQoeTestDetailsFixtures3 = {
                   }
                 },
                 {
-                  date_time: '2023-04-11T04:42:00Z',
+                  date_time: '2023-04-11T05:07:00Z',
                   jitter: {
                     audio: {
                       rx: null,
@@ -1257,44 +1243,7 @@ export const callQoeTestDetailsFixtures3 = {
                   }
                 },
                 {
-                  date_time: '2023-04-11T04:43:00Z',
-                  jitter: {
-                    audio: {
-                      rx: null,
-                      tx: null
-                    },
-                    video: {
-                      tx: null,
-                      rx: null
-                    }
-                  },
-                  latency: {
-                    audio: {
-                      rx: null,
-                      tx: null
-                    },
-                    video: {
-                      tx: null,
-                      rx: null
-                    }
-                  },
-                  packet_loss: {
-                    audio: {
-                      rx: null,
-                      tx: null
-                    },
-                    video: {
-                      tx: null,
-                      rx: null
-                    }
-                  },
-                  video_frame_rate: {
-                    rx: null,
-                    tx: null
-                  }
-                },
-                {
-                  date_time: '2023-04-11T04:44:00Z',
+                  date_time: '2023-04-11T05:08:00Z',
                   jitter: {
                     audio: {
                       rx: null,
@@ -1334,34 +1283,20 @@ export const callQoeTestDetailsFixtures3 = {
             },
             {
               id: 12,
-              userName: 'User 2',
+              userName: 'iPhone 13 mini',
               hostname: '',
-              networkType: 'Wifi',
-              macAddress: 'F0:B3:EC:2A:A8:05',
+              networkType: 'Cellular',
+              macAddress: null,
               device: 'Unknown',
-              ipAddress: '134.242.238.1',
-              joinTime: '2023-04-11T04:41:28.000Z',
-              leaveTime: '2023-04-11T04:43:39.000Z',
-              leaveReason: 'User 2 left the meeting.<br>Reason: left the meeting.',
-              apDetails: {
-                system: null,
-                domains: null,
-                zone: 'New_Venue_ACX-27668_3',
-                apGroup: 'Unknown',
-                apName: 'r320-11-154',
-                apMac: 'B4:79:C8:12:8C:50',
-                ssid: 'CIOT',
-                radio: '5'
-              },
-              wifiMetrics: {
-                rss: -80,
-                snr: 10,
-                avgTxMCS: 12288,
-                throughput: 1500
-              },
+              ipAddress: '223.231.146.0',
+              joinTime: '2023-04-11T05:05:35.000Z',
+              leaveTime: '2023-04-11T05:08:08.000Z',
+              leaveReason: 'iPhone 13 mini left the meeting.<br>Reason: left the meeting.',
+              apDetails: null,
+              wifiMetrics: null,
               callMetrics: [
                 {
-                  date_time: '2023-04-11T04:41:00Z',
+                  date_time: '2023-04-11T05:06:00Z',
                   jitter: {
                     audio: {
                       rx: null,
@@ -1398,11 +1333,11 @@ export const callQoeTestDetailsFixtures3 = {
                   }
                 },
                 {
-                  date_time: '2023-04-11T04:42:00Z',
+                  date_time: '2023-04-11T05:07:00Z',
                   jitter: {
                     audio: {
                       rx: null,
-                      tx: null
+                      tx: 16
                     },
                     video: {
                       tx: null,
@@ -1412,7 +1347,7 @@ export const callQoeTestDetailsFixtures3 = {
                   latency: {
                     audio: {
                       rx: null,
-                      tx: null
+                      tx: 137
                     },
                     video: {
                       tx: null,
@@ -1422,7 +1357,7 @@ export const callQoeTestDetailsFixtures3 = {
                   packet_loss: {
                     audio: {
                       rx: null,
-                      tx: null
+                      tx: 0.9
                     },
                     video: {
                       tx: null,
@@ -1435,7 +1370,7 @@ export const callQoeTestDetailsFixtures3 = {
                   }
                 },
                 {
-                  date_time: '2023-04-11T04:43:00Z',
+                  date_time: '2023-04-11T05:08:00Z',
                   jitter: {
                     audio: {
                       rx: null,

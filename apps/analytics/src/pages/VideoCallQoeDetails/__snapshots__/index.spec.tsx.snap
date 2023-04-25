@@ -9,8 +9,42 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
       class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
     >
       <div
-        class="ant-page-header ant-page-header-ghost"
+        class="ant-page-header has-breadcrumb ant-page-header-ghost"
       >
+        <nav
+          class="ant-breadcrumb"
+        >
+          <ol>
+            <li>
+              <span
+                class="ant-breadcrumb-link"
+              >
+                <a
+                  href="/t/tenant-id/serviceValidation/videoCallQoe"
+                >
+                  Video Call QoE
+                </a>
+              </span>
+              <span
+                class="ant-breadcrumb-separator"
+              >
+                /
+              </span>
+            </li>
+            <li>
+              <span
+                class="ant-breadcrumb-link"
+              >
+                 
+              </span>
+              <span
+                class="ant-breadcrumb-separator"
+              >
+                /
+              </span>
+            </li>
+          </ol>
+        </nav>
         <div
           class="ant-page-header-heading"
         >
@@ -103,11 +137,12 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
         </div>
       </div>
     </div>
-    <div
-      class="styledComponents__ReportSectionTitle-cc9slb-2 igYais"
+    <span
+      class="ant-typography"
+      style="font-size: 16px; font-weight: 700; font-family: 'Montserrat', sans-serif; line-height: 20px;"
     >
       Participant Details
-    </div>
+    </span>
     <div
       class="styledComponents__Wrapper-sc-1abm7iv-12 fiibDB"
     >
@@ -152,7 +187,9 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               style="width: 200px;"
                             />
                             <col />
-                            <col />
+                            <col
+                              style="width: 100px;"
+                            />
                             <col />
                             <col />
                             <col />
@@ -410,7 +447,9 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                10:28
+                                <span>
+                                  10:28
+                                </span>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -427,7 +466,26 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                F0:81:73:20:84:39
+                                <div
+                                  class="ant-space ant-space-horizontal ant-space-align-center"
+                                >
+                                  <div
+                                    class="ant-space-item"
+                                    style="margin-right: 8px;"
+                                  >
+                                    <span>
+                                      F0:81:73:20:84:39
+                                    </span>
+                                  </div>
+                                  <div
+                                    class="ant-space-item"
+                                  >
+                                    <svg
+                                      data-testid="EditOutlinedIcon"
+                                      style="height: 16px; width: 16px;"
+                                    />
+                                  </div>
+                                </div>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -442,7 +500,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                Wifi
+                                Wi-Fi
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -486,7 +544,9 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                10:29
+                                <span>
+                                  10:29
+                                </span>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -4876,8 +4936,42 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
       class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
     >
       <div
-        class="ant-page-header ant-page-header-ghost"
+        class="ant-page-header has-breadcrumb ant-page-header-ghost"
       >
+        <nav
+          class="ant-breadcrumb"
+        >
+          <ol>
+            <li>
+              <span
+                class="ant-breadcrumb-link"
+              >
+                <a
+                  href="/t/tenant-id/serviceValidation/videoCallQoe"
+                >
+                  Video Call QoE
+                </a>
+              </span>
+              <span
+                class="ant-breadcrumb-separator"
+              >
+                /
+              </span>
+            </li>
+            <li>
+              <span
+                class="ant-breadcrumb-link"
+              >
+                 
+              </span>
+              <span
+                class="ant-breadcrumb-separator"
+              >
+                /
+              </span>
+            </li>
+          </ol>
+        </nav>
         <div
           class="ant-page-header-heading"
         >
@@ -4933,11 +5027,12 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
         </div>
       </div>
     </div>
-    <div
-      class="styledComponents__ReportSectionTitle-cc9slb-2 igYais"
+    <span
+      class="ant-typography"
+      style="font-size: 16px; font-weight: 700; font-family: 'Montserrat', sans-serif; line-height: 20px;"
     >
       Participant Details
-    </div>
+    </span>
     <div
       class="styledComponents__Wrapper-sc-1abm7iv-12 fiibDB"
     >
@@ -4982,7 +5077,9 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               style="width: 200px;"
                             />
                             <col />
-                            <col />
+                            <col
+                              style="width: 100px;"
+                            />
                             <col />
                             <col />
                             <col />
@@ -5264,7 +5361,26 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               <td
                                 class="ant-table-cell"
                               >
-                                A8:64:F1:1A:D0:33
+                                <div
+                                  class="ant-space ant-space-horizontal ant-space-align-center"
+                                >
+                                  <div
+                                    class="ant-space-item"
+                                    style="margin-right: 8px;"
+                                  >
+                                    <span>
+                                      A8:64:F1:1A:D0:33
+                                    </span>
+                                  </div>
+                                  <div
+                                    class="ant-space-item"
+                                  >
+                                    <svg
+                                      data-testid="EditOutlinedIcon"
+                                      style="height: 16px; width: 16px;"
+                                    />
+                                  </div>
+                                </div>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -5279,7 +5395,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               <td
                                 class="ant-table-cell"
                               >
-                                Wifi
+                                Wi-Fi
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -5323,7 +5439,9 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                04:44
+                                <span>
+                                  04:44
+                                </span>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -5347,7 +5465,26 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               <td
                                 class="ant-table-cell"
                               >
-                                F0:B3:EC:2A:A8:05
+                                <div
+                                  class="ant-space ant-space-horizontal ant-space-align-center"
+                                >
+                                  <div
+                                    class="ant-space-item"
+                                    style="margin-right: 8px;"
+                                  >
+                                    <span>
+                                      F0:B3:EC:2A:A8:05
+                                    </span>
+                                  </div>
+                                  <div
+                                    class="ant-space-item"
+                                  >
+                                    <svg
+                                      data-testid="EditOutlinedIcon"
+                                      style="height: 16px; width: 16px;"
+                                    />
+                                  </div>
+                                </div>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -5362,7 +5499,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               <td
                                 class="ant-table-cell"
                               >
-                                Wifi
+                                Wi-Fi
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -5406,7 +5543,9 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                04:43
+                                <span>
+                                  04:43
+                                </span>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -9436,8 +9575,42 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
       class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
     >
       <div
-        class="ant-page-header ant-page-header-ghost"
+        class="ant-page-header has-breadcrumb ant-page-header-ghost"
       >
+        <nav
+          class="ant-breadcrumb"
+        >
+          <ol>
+            <li>
+              <span
+                class="ant-breadcrumb-link"
+              >
+                <a
+                  href="/t/tenant-id/serviceValidation/videoCallQoe"
+                >
+                  Video Call QoE
+                </a>
+              </span>
+              <span
+                class="ant-breadcrumb-separator"
+              >
+                /
+              </span>
+            </li>
+            <li>
+              <span
+                class="ant-breadcrumb-link"
+              >
+                 
+              </span>
+              <span
+                class="ant-breadcrumb-separator"
+              >
+                /
+              </span>
+            </li>
+          </ol>
+        </nav>
         <div
           class="ant-page-header-heading"
         >
@@ -9450,7 +9623,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
               <h1
                 class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
               >
-                Test 3
+                Test-Qoe
               </h1>
             </span>
           </div>
@@ -9470,10 +9643,10 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                 class="ant-space-item"
               >
                 <span
-                  class="styledComponents__Pill-sc-j61ge1-0 chVxOo styledComponents__BigTrendPill-cc9slb-0 dSVxJE"
-                  type="negative"
+                  class="styledComponents__Pill-sc-j61ge1-0 NKxEo styledComponents__BigTrendPill-cc9slb-0 dSVxJE"
+                  type="positive"
                 >
-                  Bad
+                  Good
                 </span>
               </div>
             </div>
@@ -9486,18 +9659,19 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
             class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
           >
             Start Time:
-            04/11/2023 04:40:20 | End Time:
-            04/11/2023 04:44:06 | Duration:
-            3 m 46 s
+            04/11/2023 05:04:58 | End Time:
+            04/11/2023 05:08:23 | Duration:
+            3 m 25 s
           </span>
         </div>
       </div>
     </div>
-    <div
-      class="styledComponents__ReportSectionTitle-cc9slb-2 igYais"
+    <span
+      class="ant-typography"
+      style="font-size: 16px; font-weight: 700; font-family: 'Montserrat', sans-serif; line-height: 20px;"
     >
       Participant Details
-    </div>
+    </span>
     <div
       class="styledComponents__Wrapper-sc-1abm7iv-12 fiibDB"
     >
@@ -9542,7 +9716,9 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                               style="width: 200px;"
                             />
                             <col />
-                            <col />
+                            <col
+                              style="width: 100px;"
+                            />
                             <col />
                             <col />
                             <col />
@@ -9824,12 +10000,33 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                               <td
                                 class="ant-table-cell"
                               >
-                                A8:64:F1:1A:D0:33
+                                <div
+                                  class="ant-space ant-space-horizontal ant-space-align-center"
+                                >
+                                  <div
+                                    class="ant-space-item"
+                                    style="margin-right: 8px;"
+                                  >
+                                    <div
+                                      style="width: 100px;"
+                                    >
+                                      -
+                                    </div>
+                                  </div>
+                                  <div
+                                    class="ant-space-item"
+                                  >
+                                    <svg
+                                      data-testid="EditOutlinedIcon"
+                                      style="height: 16px; width: 16px;"
+                                    />
+                                  </div>
+                                </div>
                               </td>
                               <td
                                 class="ant-table-cell"
                               >
-                                Test-part-1
+                                Test
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -9839,63 +10036,50 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                               <td
                                 class="ant-table-cell"
                               >
-                                Wifi
+                                Wi-Fi
                               </td>
                               <td
                                 class="ant-table-cell"
                               >
                                 <a
                                   href="/t/tenant-id/devices/wifi"
-                                >
-                                  Switch_client
-                                </a>
+                                />
                               </td>
                               <td
                                 class="ant-table-cell"
                               >
                                 <a
                                   href="/t/tenant-id/devices/wifi"
-                                >
-                                  C8:08:73:08:10:50
-                                </a>
+                                />
                               </td>
                               <td
                                 class="ant-table-cell"
                               >
                                 <a
                                   href="/t/tenant-id/networks/wireless"
-                                >
-                                  Divya_unlimited
-                                </a>
+                                />
                               </td>
                               <td
                                 class="ant-table-cell"
+                              />
+                              <td
+                                class="ant-table-cell"
+                                style="text-align: center;"
                               >
-                                5 Ghz
+                                05:04
                               </td>
                               <td
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                04:40
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                                style="text-align: center;"
-                              >
-                                04:44
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                                style="text-align: center;"
-                              >
-                                <span
-                                  class="styledComponents__Pill-sc-j61ge1-0 chVxOo"
-                                  type="negative"
-                                >
-                                  Bad
+                                <span>
+                                  05:08
                                 </span>
                               </td>
+                              <td
+                                class="ant-table-cell"
+                                style="text-align: center;"
+                              />
                               <td
                                 class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
                                 style="position: sticky; right: 0px;"
@@ -9906,79 +10090,64 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                             >
                               <td
                                 class="ant-table-cell"
+                              />
+                              <td
+                                class="ant-table-cell"
                               >
-                                F0:B3:EC:2A:A8:05
+                                iPhone 13 mini
                               </td>
                               <td
                                 class="ant-table-cell"
                               >
-                                User 2
+                                223.231.146.0
                               </td>
                               <td
                                 class="ant-table-cell"
                               >
-                                134.242.238.1
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                Wifi
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                <a
-                                  href="/t/tenant-id/devices/wifi"
-                                >
-                                  r320-11-154
-                                </a>
+                                Cellular
                               </td>
                               <td
                                 class="ant-table-cell"
                               >
                                 <a
                                   href="/t/tenant-id/devices/wifi"
-                                >
-                                  B4:79:C8:12:8C:50
-                                </a>
+                                />
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                <a
+                                  href="/t/tenant-id/devices/wifi"
+                                />
                               </td>
                               <td
                                 class="ant-table-cell"
                               >
                                 <a
                                   href="/t/tenant-id/networks/wireless"
-                                >
-                                  CIOT
-                                </a>
+                                />
                               </td>
                               <td
                                 class="ant-table-cell"
+                              />
+                              <td
+                                class="ant-table-cell"
+                                style="text-align: center;"
                               >
-                                5 Ghz
+                                05:05
                               </td>
                               <td
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                04:41
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                                style="text-align: center;"
-                              >
-                                04:43
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                                style="text-align: center;"
-                              >
-                                <span
-                                  class="styledComponents__Pill-sc-j61ge1-0 ddNaCp"
-                                  type="none"
-                                >
-                                  Average
+                                <span>
+                                  05:08
                                 </span>
                               </td>
+                              <td
+                                class="ant-table-cell"
+                                style="text-align: center;"
+                              />
                               <td
                                 class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
                                 style="position: sticky; right: 0px;"
@@ -10024,7 +10193,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
             <span
               class="styledComponents__Value-cc9slb-4 bDzuMc"
             >
-              Test-part-1
+              Test
             </span>
           </div>
         </div>
@@ -10043,7 +10212,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
             <span
               class="styledComponents__Value-cc9slb-4 bDzuMc"
             >
-              User 2
+              iPhone 13 mini
             </span>
           </div>
         </div>
@@ -10197,16 +10366,453 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                     style="overflow: visible; height: 0px; width: 0px;"
                   >
                     <div
-                      class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                      class="styledComponents__ResetWrapper-sc-ryy21w-2 styledComponents__Wrapper-sc-um7jvv-0 jpvBzo iQvUMF"
                     >
                       <div
-                        class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
+                        _echarts_instance_="ec_mock"
+                        class="echarts-for-react "
+                        size-sensor-id="25"
+                        style="height: 800px; width: 1280px; position: relative;"
                       >
                         <div
-                          class="ant-space-item"
+                          style="position: relative; overflow: hidden; width: 1280px; height: 800px;"
                         >
-                          No data to display
+                          <svg
+                            baseProfile="full"
+                            height="800"
+                            style="position:absolute;left:0;top:0;user-select:none"
+                            version="1.1"
+                            width="1280"
+                            xmlns="http://www.w3.org/2000/svg"
+                            xmlns:xlink="http://www.w3.org/1999/xlink"
+                          >
+                            <rect
+                              fill="none"
+                              fill-opacity="1"
+                              height="800"
+                              id="0"
+                              width="1280"
+                              x="0"
+                              y="0"
+                            />
+                            <g>
+                              <path
+                                d="M13 776.5L1275 776.5"
+                                fill="none"
+                                stroke="#EBEDEE"
+                              />
+                              <path
+                                d="M13 666.5L1275 666.5"
+                                fill="none"
+                                stroke="#EBEDEE"
+                              />
+                              <path
+                                d="M13 557.5L1275 557.5"
+                                fill="none"
+                                stroke="#EBEDEE"
+                              />
+                              <path
+                                d="M13 448.5L1275 448.5"
+                                fill="none"
+                                stroke="#EBEDEE"
+                              />
+                              <path
+                                d="M13 338.5L1275 338.5"
+                                fill="none"
+                                stroke="#EBEDEE"
+                              />
+                              <path
+                                d="M13 229.5L1275 229.5"
+                                fill="none"
+                                stroke="#EBEDEE"
+                              />
+                              <path
+                                d="M13 120.5L1275 120.5"
+                                fill="none"
+                                stroke="#EBEDEE"
+                              />
+                              <path
+                                d="M13 776.5L1275 776.5"
+                                fill="none"
+                                stroke="#C4C4C4"
+                                stroke-linecap="round"
+                              />
+                              <path
+                                d="M-1 -8l1 0l0 16l-1 0Z"
+                                fill="none"
+                                transform="translate(5 776)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="end"
+                                transform="translate(5 776)"
+                              >
+                                0
+                              </text>
+                              <path
+                                d="M-4 -8l4 0l0 16l-4 0Z"
+                                fill="none"
+                                transform="translate(5 666.6667)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="end"
+                                transform="translate(5 666.6667)"
+                                xml:space="preserve"
+                              >
+                                3 ms
+                              </text>
+                              <path
+                                d="M-4 -8l4 0l0 16l-4 0Z"
+                                fill="none"
+                                transform="translate(5 557.3333)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="end"
+                                transform="translate(5 557.3333)"
+                                xml:space="preserve"
+                              >
+                                6 ms
+                              </text>
+                              <path
+                                d="M-4 -8l4 0l0 16l-4 0Z"
+                                fill="none"
+                                transform="translate(5 448)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="end"
+                                transform="translate(5 448)"
+                                xml:space="preserve"
+                              >
+                                9 ms
+                              </text>
+                              <path
+                                d="M-5 -8l5 0l0 16l-5 0Z"
+                                fill="none"
+                                transform="translate(5 338.6667)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="end"
+                                transform="translate(5 338.6667)"
+                                xml:space="preserve"
+                              >
+                                12 ms
+                              </text>
+                              <path
+                                d="M-5 -8l5 0l0 16l-5 0Z"
+                                fill="none"
+                                transform="translate(5 229.3333)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="end"
+                                transform="translate(5 229.3333)"
+                                xml:space="preserve"
+                              >
+                                15 ms
+                              </text>
+                              <path
+                                d="M-5 -8l5 0l0 16l-5 0Z"
+                                fill="none"
+                                transform="translate(5 120)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="end"
+                                transform="translate(5 120)"
+                                xml:space="preserve"
+                              >
+                                18 ms
+                              </text>
+                              <path
+                                d="M0 0l0 0l0 0l0 0Z"
+                                fill="none"
+                                transform="translate(170.75 784)"
+                              />
+                              <path
+                                d="M0 0l0 0l0 0l0 0Z"
+                                fill="none"
+                                transform="translate(328.5 784)"
+                              />
+                              <path
+                                d="M0 0l0 0l0 0l0 0Z"
+                                fill="none"
+                                transform="translate(486.25 784)"
+                              />
+                              <path
+                                d="M0 0l0 0l0 0l0 0Z"
+                                fill="none"
+                                transform="translate(801.75 784)"
+                              />
+                              <path
+                                d="M0 0l0 0l0 0l0 0Z"
+                                fill="none"
+                                transform="translate(959.5 784)"
+                              />
+                              <path
+                                d="M0 0l0 0l0 0l0 0Z"
+                                fill="none"
+                                transform="translate(1117.25 784)"
+                              />
+                              <path
+                                d="M-2.5 0l5 0l0 16l-5 0Z"
+                                fill="none"
+                                transform="translate(13 784)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font: normal 400 10px 'Open Sans', sans-serif"
+                                text-anchor="middle"
+                                transform="translate(13 784)"
+                                y="8"
+                              >
+                                05:06
+                              </text>
+                              <path
+                                d="M-2.5 0l5 0l0 16l-5 0Z"
+                                fill="none"
+                                transform="translate(644 784)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font: normal 400 10px 'Open Sans', sans-serif"
+                                text-anchor="middle"
+                                transform="translate(644 784)"
+                                y="8"
+                              >
+                                05:07
+                              </text>
+                              <path
+                                d="M-5 -5l167 0l0 26l-167 0Z"
+                                fill="rgb(0,0,0)"
+                                fill-opacity="0"
+                                stroke="#ccc"
+                                stroke-width="0"
+                                transform="translate(1103 5)"
+                              />
+                              <path
+                                d="M0 0l14 0l0 14l-14 0Z"
+                                fill="#66B1E8"
+                                transform="translate(1103 6)"
+                              />
+                              <path
+                                d="M20 -1l8 0l0 16l-8 0Z"
+                                fill="none"
+                                transform="translate(1103 6)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#333333"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="start"
+                                transform="translate(1103 6)"
+                                x="20"
+                                xml:space="preserve"
+                                y="7"
+                              >
+                                Video Tx
+                              </text>
+                              <path
+                                d="M0 0l14 0l0 14l-14 0Z"
+                                fill="#EC7100"
+                                transform="translate(1146 6)"
+                              />
+                              <path
+                                d="M20 -1l8 0l0 16l-8 0Z"
+                                fill="none"
+                                transform="translate(1146 6)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#333333"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="start"
+                                transform="translate(1146 6)"
+                                x="20"
+                                xml:space="preserve"
+                                y="7"
+                              >
+                                Video Rx
+                              </text>
+                              <path
+                                d="M0 0l14 0l0 14l-14 0Z"
+                                fill="#F9C34B"
+                                transform="translate(1189 6)"
+                              />
+                              <path
+                                d="M20 -1l8 0l0 16l-8 0Z"
+                                fill="none"
+                                transform="translate(1189 6)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#333333"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="start"
+                                transform="translate(1189 6)"
+                                x="20"
+                                xml:space="preserve"
+                                y="7"
+                              >
+                                Audio Tx
+                              </text>
+                              <path
+                                d="M0 0l14 0l0 14l-14 0Z"
+                                fill="#61C46E"
+                                transform="translate(1232 6)"
+                              />
+                              <path
+                                d="M20 -1l8 0l0 16l-8 0Z"
+                                fill="none"
+                                transform="translate(1232 6)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#333333"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="start"
+                                transform="translate(1232 6)"
+                                x="20"
+                                xml:space="preserve"
+                                y="7"
+                              >
+                                Audio Rx
+                              </text>
+                              <path
+                                d="M-5 -5l26 0l0 10l-26 0Z"
+                                fill="none"
+                                stroke="#ccc"
+                                stroke-width="0"
+                                transform="translate(1259 5)"
+                              />
+                              <path
+                                d=""
+                                fill="none"
+                                stroke="#666"
+                                transform="translate(1259 5)"
+                              />
+                              <path
+                                d=""
+                                fill="none"
+                                stroke="#3E98C5"
+                                transform="translate(1267 5)"
+                              />
+                              <path
+                                d=""
+                                fill="none"
+                                stroke="#666"
+                                transform="translate(1275 5)"
+                              />
+                              <g
+                                clip-path="url(#zr24-c0)"
+                              >
+                                <path
+                                  d=""
+                                  fill="none"
+                                  stroke="#66B1E8"
+                                  stroke-linejoin="bevel"
+                                  stroke-width="1.2"
+                                />
+                              </g>
+                              <g
+                                clip-path="url(#zr24-c1)"
+                              >
+                                <path
+                                  d=""
+                                  fill="none"
+                                  stroke="#EC7100"
+                                  stroke-linejoin="bevel"
+                                  stroke-width="1.2"
+                                />
+                              </g>
+                              <g
+                                clip-path="url(#zr24-c2)"
+                              >
+                                <path
+                                  d="M644 192.8889"
+                                  fill="none"
+                                  stroke="#F9C34B"
+                                  stroke-linejoin="bevel"
+                                  stroke-width="1.2"
+                                />
+                              </g>
+                              <g
+                                clip-path="url(#zr24-c3)"
+                              >
+                                <path
+                                  d=""
+                                  fill="none"
+                                  stroke="#61C46E"
+                                  stroke-linejoin="bevel"
+                                  stroke-width="1.2"
+                                />
+                              </g>
+                            </g>
+                            <defs>
+                              <clippath
+                                id="zr24-c0"
+                              >
+                                <path
+                                  d="M12 119.4l1263 0l0 657.2l-1263 0Z"
+                                  fill="#000"
+                                />
+                              </clippath>
+                              <clippath
+                                id="zr24-c1"
+                              >
+                                <path
+                                  d="M12 119.4l1263 0l0 657.2l-1263 0Z"
+                                  fill="#000"
+                                />
+                              </clippath>
+                              <clippath
+                                id="zr24-c2"
+                              >
+                                <path
+                                  d="M12 119.4l1263 0l0 657.2l-1263 0Z"
+                                  fill="#000"
+                                />
+                              </clippath>
+                              <clippath
+                                id="zr24-c3"
+                              >
+                                <path
+                                  d="M12 119.4l1263 0l0 657.2l-1263 0Z"
+                                  fill="#000"
+                                />
+                              </clippath>
+                            </defs>
+                          </svg>
                         </div>
+                        <div
+                          class=""
+                        />
+                        <object
+                          class="size-sensor-object"
+                          data="about:blank"
+                          style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                          tabindex="-1"
+                          type="text/html"
+                        />
                       </div>
                     </div>
                   </div>
@@ -10379,16 +10985,468 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                     style="overflow: visible; height: 0px; width: 0px;"
                   >
                     <div
-                      class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                      class="styledComponents__ResetWrapper-sc-ryy21w-2 styledComponents__Wrapper-sc-um7jvv-0 jpvBzo iQvUMF"
                     >
                       <div
-                        class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
+                        _echarts_instance_="ec_mock"
+                        class="echarts-for-react "
+                        size-sensor-id="26"
+                        style="height: 800px; width: 1280px; position: relative;"
                       >
                         <div
-                          class="ant-space-item"
+                          style="position: relative; overflow: hidden; width: 1280px; height: 800px;"
                         >
-                          No data to display
+                          <svg
+                            baseProfile="full"
+                            height="800"
+                            style="position:absolute;left:0;top:0;user-select:none"
+                            version="1.1"
+                            width="1280"
+                            xmlns="http://www.w3.org/2000/svg"
+                            xmlns:xlink="http://www.w3.org/1999/xlink"
+                          >
+                            <rect
+                              fill="none"
+                              fill-opacity="1"
+                              height="800"
+                              id="0"
+                              width="1280"
+                              x="0"
+                              y="0"
+                            />
+                            <g>
+                              <path
+                                d="M14 776.5L1275 776.5"
+                                fill="none"
+                                stroke="#EBEDEE"
+                              />
+                              <path
+                                d="M14 666.5L1275 666.5"
+                                fill="none"
+                                stroke="#EBEDEE"
+                              />
+                              <path
+                                d="M14 557.5L1275 557.5"
+                                fill="none"
+                                stroke="#EBEDEE"
+                              />
+                              <path
+                                d="M14 448.5L1275 448.5"
+                                fill="none"
+                                stroke="#EBEDEE"
+                              />
+                              <path
+                                d="M14 338.5L1275 338.5"
+                                fill="none"
+                                stroke="#EBEDEE"
+                              />
+                              <path
+                                d="M14 229.5L1275 229.5"
+                                fill="none"
+                                stroke="#EBEDEE"
+                              />
+                              <path
+                                d="M14 120.5L1275 120.5"
+                                fill="none"
+                                stroke="#EBEDEE"
+                              />
+                              <path
+                                d="M14 776.5L1275 776.5"
+                                fill="none"
+                                stroke="#C4C4C4"
+                                stroke-linecap="round"
+                              />
+                              <path
+                                d="M-1 -8l1 0l0 16l-1 0Z"
+                                fill="none"
+                                transform="translate(6 776)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="end"
+                                transform="translate(6 776)"
+                              >
+                                0
+                              </text>
+                              <path
+                                d="M-5 -8l5 0l0 16l-5 0Z"
+                                fill="none"
+                                transform="translate(6 666.6667)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="end"
+                                transform="translate(6 666.6667)"
+                                xml:space="preserve"
+                              >
+                                30 ms
+                              </text>
+                              <path
+                                d="M-5 -8l5 0l0 16l-5 0Z"
+                                fill="none"
+                                transform="translate(6 557.3333)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="end"
+                                transform="translate(6 557.3333)"
+                                xml:space="preserve"
+                              >
+                                60 ms
+                              </text>
+                              <path
+                                d="M-5 -8l5 0l0 16l-5 0Z"
+                                fill="none"
+                                transform="translate(6 448)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="end"
+                                transform="translate(6 448)"
+                                xml:space="preserve"
+                              >
+                                90 ms
+                              </text>
+                              <path
+                                d="M-6 -8l6 0l0 16l-6 0Z"
+                                fill="none"
+                                transform="translate(6 338.6667)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="end"
+                                transform="translate(6 338.6667)"
+                                xml:space="preserve"
+                              >
+                                120 ms
+                              </text>
+                              <path
+                                d="M-6 -8l6 0l0 16l-6 0Z"
+                                fill="none"
+                                transform="translate(6 229.3333)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="end"
+                                transform="translate(6 229.3333)"
+                                xml:space="preserve"
+                              >
+                                150 ms
+                              </text>
+                              <path
+                                d="M-6 -8l6 0l0 16l-6 0Z"
+                                fill="none"
+                                transform="translate(6 120)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="end"
+                                transform="translate(6 120)"
+                                xml:space="preserve"
+                              >
+                                180 ms
+                              </text>
+                              <path
+                                d="M0 0l0 0l0 0l0 0Z"
+                                fill="none"
+                                transform="translate(171.625 784)"
+                              />
+                              <path
+                                d="M0 0l0 0l0 0l0 0Z"
+                                fill="none"
+                                transform="translate(329.25 784)"
+                              />
+                              <path
+                                d="M0 0l0 0l0 0l0 0Z"
+                                fill="none"
+                                transform="translate(486.875 784)"
+                              />
+                              <path
+                                d="M0 0l0 0l0 0l0 0Z"
+                                fill="none"
+                                transform="translate(802.125 784)"
+                              />
+                              <path
+                                d="M0 0l0 0l0 0l0 0Z"
+                                fill="none"
+                                transform="translate(959.75 784)"
+                              />
+                              <path
+                                d="M0 0l0 0l0 0l0 0Z"
+                                fill="none"
+                                transform="translate(1117.375 784)"
+                              />
+                              <path
+                                d="M-2.5 0l5 0l0 16l-5 0Z"
+                                fill="none"
+                                transform="translate(14 784)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font: normal 400 10px 'Open Sans', sans-serif"
+                                text-anchor="middle"
+                                transform="translate(14 784)"
+                                y="8"
+                              >
+                                05:06
+                              </text>
+                              <path
+                                d="M-2.5 0l5 0l0 16l-5 0Z"
+                                fill="none"
+                                transform="translate(644.5 784)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font: normal 400 10px 'Open Sans', sans-serif"
+                                text-anchor="middle"
+                                transform="translate(644.5 784)"
+                                y="8"
+                              >
+                                05:07
+                              </text>
+                              <path
+                                d="M14 229.3333L1275 229.3333L1275 120L14 120Z"
+                                fill="#ED1C24"
+                                fill-opacity="0.05"
+                                stroke="#66B1E8"
+                                stroke-opacity="0.05"
+                                stroke-width="0"
+                              />
+                              <path
+                                d="M-5 -5l167 0l0 26l-167 0Z"
+                                fill="rgb(0,0,0)"
+                                fill-opacity="0"
+                                stroke="#ccc"
+                                stroke-width="0"
+                                transform="translate(1103 5)"
+                              />
+                              <path
+                                d="M0 0l14 0l0 14l-14 0Z"
+                                fill="#66B1E8"
+                                transform="translate(1103 6)"
+                              />
+                              <path
+                                d="M20 -1l8 0l0 16l-8 0Z"
+                                fill="none"
+                                transform="translate(1103 6)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#333333"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="start"
+                                transform="translate(1103 6)"
+                                x="20"
+                                xml:space="preserve"
+                                y="7"
+                              >
+                                Video Tx
+                              </text>
+                              <path
+                                d="M0 0l14 0l0 14l-14 0Z"
+                                fill="#EC7100"
+                                transform="translate(1146 6)"
+                              />
+                              <path
+                                d="M20 -1l8 0l0 16l-8 0Z"
+                                fill="none"
+                                transform="translate(1146 6)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#333333"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="start"
+                                transform="translate(1146 6)"
+                                x="20"
+                                xml:space="preserve"
+                                y="7"
+                              >
+                                Video Rx
+                              </text>
+                              <path
+                                d="M0 0l14 0l0 14l-14 0Z"
+                                fill="#F9C34B"
+                                transform="translate(1189 6)"
+                              />
+                              <path
+                                d="M20 -1l8 0l0 16l-8 0Z"
+                                fill="none"
+                                transform="translate(1189 6)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#333333"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="start"
+                                transform="translate(1189 6)"
+                                x="20"
+                                xml:space="preserve"
+                                y="7"
+                              >
+                                Audio Tx
+                              </text>
+                              <path
+                                d="M0 0l14 0l0 14l-14 0Z"
+                                fill="#61C46E"
+                                transform="translate(1232 6)"
+                              />
+                              <path
+                                d="M20 -1l8 0l0 16l-8 0Z"
+                                fill="none"
+                                transform="translate(1232 6)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#333333"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="start"
+                                transform="translate(1232 6)"
+                                x="20"
+                                xml:space="preserve"
+                                y="7"
+                              >
+                                Audio Rx
+                              </text>
+                              <path
+                                d="M14 229.5L1275 229.5"
+                                fill="none"
+                                stroke="#ED1C24"
+                                stroke-dasharray="4,2"
+                                stroke-opacity="0.5"
+                              />
+                              <path
+                                d="M-5 -5l26 0l0 10l-26 0Z"
+                                fill="none"
+                                stroke="#ccc"
+                                stroke-width="0"
+                                transform="translate(1259 5)"
+                              />
+                              <path
+                                d=""
+                                fill="none"
+                                stroke="#666"
+                                transform="translate(1259 5)"
+                              />
+                              <path
+                                d=""
+                                fill="none"
+                                stroke="#3E98C5"
+                                transform="translate(1267 5)"
+                              />
+                              <path
+                                d=""
+                                fill="none"
+                                stroke="#666"
+                                transform="translate(1275 5)"
+                              />
+                              <g
+                                clip-path="url(#zr25-c0)"
+                              >
+                                <path
+                                  d=""
+                                  fill="none"
+                                  stroke="#66B1E8"
+                                  stroke-linejoin="bevel"
+                                  stroke-width="1.2"
+                                />
+                              </g>
+                              <g
+                                clip-path="url(#zr25-c1)"
+                              >
+                                <path
+                                  d=""
+                                  fill="none"
+                                  stroke="#EC7100"
+                                  stroke-linejoin="bevel"
+                                  stroke-width="1.2"
+                                />
+                              </g>
+                              <g
+                                clip-path="url(#zr25-c2)"
+                              >
+                                <path
+                                  d="M644.5 276.7111"
+                                  fill="none"
+                                  stroke="#F9C34B"
+                                  stroke-linejoin="bevel"
+                                  stroke-width="1.2"
+                                />
+                              </g>
+                              <g
+                                clip-path="url(#zr25-c3)"
+                              >
+                                <path
+                                  d=""
+                                  fill="none"
+                                  stroke="#61C46E"
+                                  stroke-linejoin="bevel"
+                                  stroke-width="1.2"
+                                />
+                              </g>
+                            </g>
+                            <defs>
+                              <clippath
+                                id="zr25-c0"
+                              >
+                                <path
+                                  d="M13 119.4l1262 0l0 657.2l-1262 0Z"
+                                  fill="#000"
+                                />
+                              </clippath>
+                              <clippath
+                                id="zr25-c1"
+                              >
+                                <path
+                                  d="M13 119.4l1262 0l0 657.2l-1262 0Z"
+                                  fill="#000"
+                                />
+                              </clippath>
+                              <clippath
+                                id="zr25-c2"
+                              >
+                                <path
+                                  d="M13 119.4l1262 0l0 657.2l-1262 0Z"
+                                  fill="#000"
+                                />
+                              </clippath>
+                              <clippath
+                                id="zr25-c3"
+                              >
+                                <path
+                                  d="M13 119.4l1262 0l0 657.2l-1262 0Z"
+                                  fill="#000"
+                                />
+                              </clippath>
+                            </defs>
+                          </svg>
                         </div>
+                        <div
+                          class=""
+                        />
+                        <object
+                          class="size-sensor-object"
+                          data="about:blank"
+                          style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                          tabindex="-1"
+                          type="text/html"
+                        />
                       </div>
                     </div>
                   </div>
@@ -10561,6 +11619,442 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                     style="overflow: visible; height: 0px; width: 0px;"
                   >
                     <div
+                      class="styledComponents__ResetWrapper-sc-ryy21w-2 styledComponents__Wrapper-sc-um7jvv-0 jpvBzo iQvUMF"
+                    >
+                      <div
+                        _echarts_instance_="ec_mock"
+                        class="echarts-for-react "
+                        size-sensor-id="27"
+                        style="height: 800px; width: 1280px; position: relative;"
+                      >
+                        <div
+                          style="position: relative; overflow: hidden; width: 1280px; height: 800px;"
+                        >
+                          <svg
+                            baseProfile="full"
+                            height="800"
+                            style="position:absolute;left:0;top:0;user-select:none"
+                            version="1.1"
+                            width="1280"
+                            xmlns="http://www.w3.org/2000/svg"
+                            xmlns:xlink="http://www.w3.org/1999/xlink"
+                          >
+                            <rect
+                              fill="none"
+                              fill-opacity="1"
+                              height="800"
+                              id="0"
+                              width="1280"
+                              x="0"
+                              y="0"
+                            />
+                            <g>
+                              <path
+                                d="M11 776.5L1275 776.5"
+                                fill="none"
+                                stroke="#EBEDEE"
+                              />
+                              <path
+                                d="M11 120.5L1275 120.5"
+                                fill="none"
+                                stroke="#EBEDEE"
+                              />
+                              <path
+                                d="M11 776.5L1275 776.5"
+                                fill="none"
+                                stroke="#C4C4C4"
+                                stroke-linecap="round"
+                              />
+                              <path
+                                d="M-3 -8l3 0l0 16l-3 0Z"
+                                fill="none"
+                                transform="translate(3 776)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="end"
+                                transform="translate(3 776)"
+                                xml:space="preserve"
+                              >
+                                0 %
+                              </text>
+                              <path
+                                d="M-3 -8l3 0l0 16l-3 0Z"
+                                fill="none"
+                                transform="translate(3 120)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="end"
+                                transform="translate(3 120)"
+                                xml:space="preserve"
+                              >
+                                1 %
+                              </text>
+                              <path
+                                d="M0 0l0 0l0 0l0 0Z"
+                                fill="none"
+                                transform="translate(169 784)"
+                              />
+                              <path
+                                d="M0 0l0 0l0 0l0 0Z"
+                                fill="none"
+                                transform="translate(327 784)"
+                              />
+                              <path
+                                d="M0 0l0 0l0 0l0 0Z"
+                                fill="none"
+                                transform="translate(485 784)"
+                              />
+                              <path
+                                d="M0 0l0 0l0 0l0 0Z"
+                                fill="none"
+                                transform="translate(801 784)"
+                              />
+                              <path
+                                d="M0 0l0 0l0 0l0 0Z"
+                                fill="none"
+                                transform="translate(959 784)"
+                              />
+                              <path
+                                d="M0 0l0 0l0 0l0 0Z"
+                                fill="none"
+                                transform="translate(1117 784)"
+                              />
+                              <path
+                                d="M-2.5 0l5 0l0 16l-5 0Z"
+                                fill="none"
+                                transform="translate(11 784)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font: normal 400 10px 'Open Sans', sans-serif"
+                                text-anchor="middle"
+                                transform="translate(11 784)"
+                                y="8"
+                              >
+                                05:06
+                              </text>
+                              <path
+                                d="M-2.5 0l5 0l0 16l-5 0Z"
+                                fill="none"
+                                transform="translate(643 784)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font: normal 400 10px 'Open Sans', sans-serif"
+                                text-anchor="middle"
+                                transform="translate(643 784)"
+                                y="8"
+                              >
+                                05:07
+                              </text>
+                              <path
+                                d="M-5 -5l167 0l0 26l-167 0Z"
+                                fill="rgb(0,0,0)"
+                                fill-opacity="0"
+                                stroke="#ccc"
+                                stroke-width="0"
+                                transform="translate(1103 5)"
+                              />
+                              <path
+                                d="M0 0l14 0l0 14l-14 0Z"
+                                fill="#66B1E8"
+                                transform="translate(1103 6)"
+                              />
+                              <path
+                                d="M20 -1l8 0l0 16l-8 0Z"
+                                fill="none"
+                                transform="translate(1103 6)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#333333"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="start"
+                                transform="translate(1103 6)"
+                                x="20"
+                                xml:space="preserve"
+                                y="7"
+                              >
+                                Video Tx
+                              </text>
+                              <path
+                                d="M0 0l14 0l0 14l-14 0Z"
+                                fill="#EC7100"
+                                transform="translate(1146 6)"
+                              />
+                              <path
+                                d="M20 -1l8 0l0 16l-8 0Z"
+                                fill="none"
+                                transform="translate(1146 6)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#333333"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="start"
+                                transform="translate(1146 6)"
+                                x="20"
+                                xml:space="preserve"
+                                y="7"
+                              >
+                                Video Rx
+                              </text>
+                              <path
+                                d="M0 0l14 0l0 14l-14 0Z"
+                                fill="#F9C34B"
+                                transform="translate(1189 6)"
+                              />
+                              <path
+                                d="M20 -1l8 0l0 16l-8 0Z"
+                                fill="none"
+                                transform="translate(1189 6)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#333333"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="start"
+                                transform="translate(1189 6)"
+                                x="20"
+                                xml:space="preserve"
+                                y="7"
+                              >
+                                Audio Tx
+                              </text>
+                              <path
+                                d="M0 0l14 0l0 14l-14 0Z"
+                                fill="#61C46E"
+                                transform="translate(1232 6)"
+                              />
+                              <path
+                                d="M20 -1l8 0l0 16l-8 0Z"
+                                fill="none"
+                                transform="translate(1232 6)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#333333"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="start"
+                                transform="translate(1232 6)"
+                                x="20"
+                                xml:space="preserve"
+                                y="7"
+                              >
+                                Audio Rx
+                              </text>
+                              <path
+                                d="M-5 -5l26 0l0 10l-26 0Z"
+                                fill="none"
+                                stroke="#ccc"
+                                stroke-width="0"
+                                transform="translate(1259 5)"
+                              />
+                              <path
+                                d=""
+                                fill="none"
+                                stroke="#666"
+                                transform="translate(1259 5)"
+                              />
+                              <path
+                                d=""
+                                fill="none"
+                                stroke="#3E98C5"
+                                transform="translate(1267 5)"
+                              />
+                              <path
+                                d=""
+                                fill="none"
+                                stroke="#666"
+                                transform="translate(1275 5)"
+                              />
+                              <g
+                                clip-path="url(#zr26-c0)"
+                              >
+                                <path
+                                  d=""
+                                  fill="none"
+                                  stroke="#66B1E8"
+                                  stroke-linejoin="bevel"
+                                  stroke-width="1.2"
+                                />
+                              </g>
+                              <g
+                                clip-path="url(#zr26-c1)"
+                              >
+                                <path
+                                  d=""
+                                  fill="none"
+                                  stroke="#EC7100"
+                                  stroke-linejoin="bevel"
+                                  stroke-width="1.2"
+                                />
+                              </g>
+                              <g
+                                clip-path="url(#zr26-c2)"
+                              >
+                                <path
+                                  d="M643 185.6"
+                                  fill="none"
+                                  stroke="#F9C34B"
+                                  stroke-linejoin="bevel"
+                                  stroke-width="1.2"
+                                />
+                              </g>
+                              <g
+                                clip-path="url(#zr26-c3)"
+                              >
+                                <path
+                                  d=""
+                                  fill="none"
+                                  stroke="#61C46E"
+                                  stroke-linejoin="bevel"
+                                  stroke-width="1.2"
+                                />
+                              </g>
+                            </g>
+                            <defs>
+                              <clippath
+                                id="zr26-c0"
+                              >
+                                <path
+                                  d="M10 119.4l1265 0l0 657.2l-1265 0Z"
+                                  fill="#000"
+                                />
+                              </clippath>
+                              <clippath
+                                id="zr26-c1"
+                              >
+                                <path
+                                  d="M10 119.4l1265 0l0 657.2l-1265 0Z"
+                                  fill="#000"
+                                />
+                              </clippath>
+                              <clippath
+                                id="zr26-c2"
+                              >
+                                <path
+                                  d="M10 119.4l1265 0l0 657.2l-1265 0Z"
+                                  fill="#000"
+                                />
+                              </clippath>
+                              <clippath
+                                id="zr26-c3"
+                              >
+                                <path
+                                  d="M10 119.4l1265 0l0 657.2l-1265 0Z"
+                                  fill="#000"
+                                />
+                              </clippath>
+                            </defs>
+                          </svg>
+                        </div>
+                        <div
+                          class=""
+                        />
+                        <object
+                          class="size-sensor-object"
+                          data="about:blank"
+                          style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                          tabindex="-1"
+                          type="text/html"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="resize-triggers"
+                  >
+                    <div
+                      class="expand-trigger"
+                    >
+                      <div
+                        style="width: 1281px; height: 801px;"
+                      />
+                    </div>
+                    <div
+                      class="contract-trigger"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div
+            class="Grid__Container-sc-5irhjd-1 zzbxI"
+          >
+            <div
+              class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+            >
+              Video Frame Rate
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div
+            class="Grid__Container-sc-5irhjd-1 zzbxI"
+            style="height: 200px;"
+          >
+            <div
+              class="styledComponents__Wrapper-sc-13w5wfx-4 lhrXqm"
+              type="default"
+            >
+              <div
+                class="ant-card"
+              >
+                <div
+                  class="ant-card-head"
+                >
+                  <div
+                    class="ant-card-head-wrapper"
+                  >
+                    <div
+                      class="ant-card-head-title"
+                    >
+                      <div
+                        class="ant-space ant-space-horizontal ant-space-align-center"
+                      >
+                        <div
+                          class="ant-space-item"
+                        >
+                          <div
+                            class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-card-extra"
+                    >
+                      <div
+                        class="ant-space ant-space-horizontal ant-space-align-center"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-card-body"
+                >
+                  <div
+                    style="overflow: visible; height: 0px; width: 0px;"
+                  >
+                    <div
                       class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
                     >
                       <div
@@ -10571,6 +12065,2519 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                         >
                           No data to display
                         </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="resize-triggers"
+                  >
+                    <div
+                      class="expand-trigger"
+                    >
+                      <div
+                        style="width: 1281px; height: 801px;"
+                      />
+                    </div>
+                    <div
+                      class="contract-trigger"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div
+            class="Grid__Container-sc-5irhjd-1 zzbxI"
+            style="height: 200px;"
+          >
+            <div
+              class="styledComponents__Wrapper-sc-13w5wfx-4 lhrXqm"
+              type="default"
+            >
+              <div
+                class="ant-card"
+              >
+                <div
+                  class="ant-card-head"
+                >
+                  <div
+                    class="ant-card-head-wrapper"
+                  >
+                    <div
+                      class="ant-card-head-title"
+                    >
+                      <div
+                        class="ant-space ant-space-horizontal ant-space-align-center"
+                      >
+                        <div
+                          class="ant-space-item"
+                        >
+                          <div
+                            class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-card-extra"
+                    >
+                      <div
+                        class="ant-space ant-space-horizontal ant-space-align-center"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-card-body"
+                >
+                  <div
+                    style="overflow: visible; height: 0px; width: 0px;"
+                  >
+                    <div
+                      class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                    >
+                      <div
+                        class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
+                      >
+                        <div
+                          class="ant-space-item"
+                        >
+                          No data to display
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="resize-triggers"
+                  >
+                    <div
+                      class="expand-trigger"
+                    >
+                      <div
+                        style="width: 1281px; height: 801px;"
+                      />
+                    </div>
+                    <div
+                      class="contract-trigger"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`VideoCallQoe Details Page render the page properly without client MAC 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+  >
+    <div
+      class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
+    >
+      <div
+        class="ant-page-header has-breadcrumb ant-page-header-ghost"
+      >
+        <nav
+          class="ant-breadcrumb"
+        >
+          <ol>
+            <li>
+              <span
+                class="ant-breadcrumb-link"
+              >
+                <a
+                  href="/t/tenant-id/serviceValidation/videoCallQoe"
+                >
+                  Video Call QoE
+                </a>
+              </span>
+              <span
+                class="ant-breadcrumb-separator"
+              >
+                /
+              </span>
+            </li>
+            <li>
+              <span
+                class="ant-breadcrumb-link"
+              >
+                 
+              </span>
+              <span
+                class="ant-breadcrumb-separator"
+              >
+                /
+              </span>
+            </li>
+          </ol>
+        </nav>
+        <div
+          class="ant-page-header-heading"
+        >
+          <div
+            class="ant-page-header-heading-left"
+          >
+            <span
+              class="ant-page-header-heading-title"
+            >
+              <h1
+                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+              >
+                Test-Qoe
+              </h1>
+            </span>
+          </div>
+          <span
+            class="ant-page-header-heading-extra"
+          >
+            <div
+              class="ant-space ant-space-horizontal ant-space-align-center"
+            >
+              <div
+                class="ant-space-item"
+                style="margin-right: 8px;"
+              >
+                Video Call QoE
+              </div>
+              <div
+                class="ant-space-item"
+              >
+                <span
+                  class="styledComponents__Pill-sc-j61ge1-0 NKxEo styledComponents__BigTrendPill-cc9slb-0 dSVxJE"
+                  type="positive"
+                >
+                  Good
+                </span>
+              </div>
+            </div>
+          </span>
+        </div>
+        <div
+          class="ant-page-header-content"
+        >
+          <span
+            class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+          >
+            Start Time:
+            04/11/2023 05:04:58 | End Time:
+            04/11/2023 05:08:23 | Duration:
+            3 m 25 s
+          </span>
+        </div>
+      </div>
+    </div>
+    <span
+      class="ant-typography"
+      style="font-size: 16px; font-weight: 700; font-family: 'Montserrat', sans-serif; line-height: 20px;"
+    >
+      Participant Details
+    </span>
+    <div
+      class="styledComponents__Wrapper-sc-1abm7iv-12 fiibDB"
+    >
+      <div
+        class="ant-pro-table"
+      >
+        <div
+          class="ant-pro-card"
+        >
+          <div
+            class="ant-pro-card-body"
+            style="padding-top: 0px;"
+          >
+            <div
+              class="ant-pro-table-list-toolbar"
+            />
+            <div
+              class="ant-table-wrapper"
+            >
+              <div
+                class="ant-spin-nested-loading"
+              >
+                <div
+                  class="ant-spin-container"
+                >
+                  <div
+                    class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
+                  >
+                    <div
+                      class="ant-table-container"
+                    >
+                      <div
+                        class="ant-table-content"
+                        style="overflow-x: auto; overflow-y: hidden;"
+                      >
+                        <table
+                          style="min-width: 100%; table-layout: auto;"
+                        >
+                          <colgroup>
+                            <col />
+                            <col
+                              style="width: 200px;"
+                            />
+                            <col />
+                            <col
+                              style="width: 100px;"
+                            />
+                            <col />
+                            <col />
+                            <col />
+                            <col />
+                            <col
+                              style="width: 50px;"
+                            />
+                            <col
+                              style="width: 50px;"
+                            />
+                            <col
+                              style="width: 150px;"
+                            />
+                            <col
+                              style="width: 32px;"
+                            />
+                          </colgroup>
+                          <thead
+                            class="ant-table-thead"
+                          >
+                            <tr>
+                              <th
+                                class="ant-table-cell react-resizable"
+                              >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
+                                Client MAC
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
+                              </th>
+                              <th
+                                class="ant-table-cell react-resizable"
+                              >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
+                                Participant
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
+                              </th>
+                              <th
+                                class="ant-table-cell react-resizable"
+                              >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
+                                IP Address
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
+                              </th>
+                              <th
+                                class="ant-table-cell react-resizable"
+                              >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
+                                Network Type
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
+                              </th>
+                              <th
+                                class="ant-table-cell react-resizable"
+                              >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
+                                AP
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
+                              </th>
+                              <th
+                                class="ant-table-cell react-resizable"
+                              >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
+                                AP MAC
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
+                              </th>
+                              <th
+                                class="ant-table-cell react-resizable"
+                              >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
+                                SSID
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
+                              </th>
+                              <th
+                                class="ant-table-cell react-resizable"
+                              >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
+                                Radio
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
+                              </th>
+                              <th
+                                class="ant-table-cell react-resizable"
+                                style="text-align: center;"
+                              >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
+                                Join Time
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
+                              </th>
+                              <th
+                                class="ant-table-cell react-resizable"
+                                style="text-align: center;"
+                              >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
+                                Leave Time
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
+                              </th>
+                              <th
+                                class="ant-table-cell react-resizable"
+                                style="text-align: center;"
+                              >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
+                                Wi-Fi Connection Quality
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
+                              </th>
+                              <th
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
+                                style="position: sticky; right: 0px;"
+                              >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody
+                            class="ant-table-tbody"
+                          >
+                            <tr
+                              aria-hidden="true"
+                              class="ant-table-measure-row"
+                              style="height: 0px; font-size: 0px;"
+                            >
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                            </tr>
+                            <tr
+                              class="ant-table-row ant-table-row-level-0"
+                            >
+                              <td
+                                class="ant-table-cell"
+                              >
+                                <div
+                                  class="ant-space ant-space-horizontal ant-space-align-center"
+                                >
+                                  <div
+                                    class="ant-space-item"
+                                    style="margin-right: 8px;"
+                                  >
+                                    <div
+                                      style="width: 100px;"
+                                    >
+                                      -
+                                    </div>
+                                  </div>
+                                  <div
+                                    class="ant-space-item"
+                                  >
+                                    <svg
+                                      data-testid="EditOutlinedIcon"
+                                      style="height: 16px; width: 16px;"
+                                    />
+                                  </div>
+                                </div>
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                Test
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                134.242.238.1
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                Wi-Fi
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                <a
+                                  href="/t/tenant-id/devices/wifi"
+                                />
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                <a
+                                  href="/t/tenant-id/devices/wifi"
+                                />
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                <a
+                                  href="/t/tenant-id/networks/wireless"
+                                />
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              />
+                              <td
+                                class="ant-table-cell"
+                                style="text-align: center;"
+                              >
+                                05:04
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                                style="text-align: center;"
+                              >
+                                <span>
+                                  05:08
+                                </span>
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                                style="text-align: center;"
+                              />
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
+                              />
+                            </tr>
+                            <tr
+                              class="ant-table-row ant-table-row-level-0"
+                            >
+                              <td
+                                class="ant-table-cell"
+                              />
+                              <td
+                                class="ant-table-cell"
+                              >
+                                iPhone 13 mini
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                223.231.146.0
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                Cellular
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                <a
+                                  href="/t/tenant-id/devices/wifi"
+                                />
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                <a
+                                  href="/t/tenant-id/devices/wifi"
+                                />
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                <a
+                                  href="/t/tenant-id/networks/wireless"
+                                />
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              />
+                              <td
+                                class="ant-table-cell"
+                                style="text-align: center;"
+                              >
+                                05:05
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                                style="text-align: center;"
+                              >
+                                <span>
+                                  05:08
+                                </span>
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                                style="text-align: center;"
+                              />
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
+                              />
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="styledComponents__ChartsContainer-cc9slb-1 beMslC"
+    >
+      <div
+        class="styledComponents__ReportSectionTitle-cc9slb-2 igYais"
+        style="padding: 15px 0px;"
+      >
+        Zoom Call Statistics
+      </div>
+      <div
+        class="ant-row Grid__GridRow-sc-5irhjd-2"
+        style="margin: -10px -10px -10px -10px;"
+      >
+        <div
+          class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div
+            class="Grid__Container-sc-5irhjd-1 zzbxI"
+          >
+            <span
+              class="styledComponents__Label-cc9slb-3 irAGXM"
+            >
+              Participant 1
+            </span>
+            <span
+              class="styledComponents__Value-cc9slb-4 bDzuMc"
+            >
+              Test
+            </span>
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div
+            class="Grid__Container-sc-5irhjd-1 zzbxI"
+          >
+            <span
+              class="styledComponents__Label-cc9slb-3 irAGXM"
+            >
+              Participant 2
+            </span>
+            <span
+              class="styledComponents__Value-cc9slb-4 bDzuMc"
+            >
+              iPhone 13 mini
+            </span>
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div
+            class="Grid__Container-sc-5irhjd-1 zzbxI"
+          >
+            <div
+              class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+            >
+              Jitter
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div
+            class="Grid__Container-sc-5irhjd-1 zzbxI"
+            style="height: 200px;"
+          >
+            <div
+              class="styledComponents__Wrapper-sc-13w5wfx-4 lhrXqm"
+              type="default"
+            >
+              <div
+                class="ant-card"
+              >
+                <div
+                  class="ant-card-head"
+                >
+                  <div
+                    class="ant-card-head-wrapper"
+                  >
+                    <div
+                      class="ant-card-head-title"
+                    >
+                      <div
+                        class="ant-space ant-space-horizontal ant-space-align-center"
+                      >
+                        <div
+                          class="ant-space-item"
+                        >
+                          <div
+                            class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-card-extra"
+                    >
+                      <div
+                        class="ant-space ant-space-horizontal ant-space-align-center"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-card-body"
+                >
+                  <div
+                    style="overflow: visible; height: 0px; width: 0px;"
+                  >
+                    <div
+                      class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                    >
+                      <div
+                        class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
+                      >
+                        <div
+                          class="ant-space-item"
+                        >
+                          No data to display
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="resize-triggers"
+                  >
+                    <div
+                      class="expand-trigger"
+                    >
+                      <div
+                        style="width: 1281px; height: 801px;"
+                      />
+                    </div>
+                    <div
+                      class="contract-trigger"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div
+            class="Grid__Container-sc-5irhjd-1 zzbxI"
+            style="height: 200px;"
+          >
+            <div
+              class="styledComponents__Wrapper-sc-13w5wfx-4 lhrXqm"
+              type="default"
+            >
+              <div
+                class="ant-card"
+              >
+                <div
+                  class="ant-card-head"
+                >
+                  <div
+                    class="ant-card-head-wrapper"
+                  >
+                    <div
+                      class="ant-card-head-title"
+                    >
+                      <div
+                        class="ant-space ant-space-horizontal ant-space-align-center"
+                      >
+                        <div
+                          class="ant-space-item"
+                        >
+                          <div
+                            class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-card-extra"
+                    >
+                      <div
+                        class="ant-space ant-space-horizontal ant-space-align-center"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-card-body"
+                >
+                  <div
+                    style="overflow: visible; height: 0px; width: 0px;"
+                  >
+                    <div
+                      class="styledComponents__ResetWrapper-sc-ryy21w-2 styledComponents__Wrapper-sc-um7jvv-0 jpvBzo iQvUMF"
+                    >
+                      <div
+                        _echarts_instance_="ec_mock"
+                        class="echarts-for-react "
+                        size-sensor-id="18"
+                        style="height: 800px; width: 1280px; position: relative;"
+                      >
+                        <div
+                          style="position: relative; overflow: hidden; width: 1280px; height: 800px;"
+                        >
+                          <svg
+                            baseProfile="full"
+                            height="800"
+                            style="position:absolute;left:0;top:0;user-select:none"
+                            version="1.1"
+                            width="1280"
+                            xmlns="http://www.w3.org/2000/svg"
+                            xmlns:xlink="http://www.w3.org/1999/xlink"
+                          >
+                            <rect
+                              fill="none"
+                              fill-opacity="1"
+                              height="800"
+                              id="0"
+                              width="1280"
+                              x="0"
+                              y="0"
+                            />
+                            <g>
+                              <path
+                                d="M13 776.5L1275 776.5"
+                                fill="none"
+                                stroke="#EBEDEE"
+                              />
+                              <path
+                                d="M13 666.5L1275 666.5"
+                                fill="none"
+                                stroke="#EBEDEE"
+                              />
+                              <path
+                                d="M13 557.5L1275 557.5"
+                                fill="none"
+                                stroke="#EBEDEE"
+                              />
+                              <path
+                                d="M13 448.5L1275 448.5"
+                                fill="none"
+                                stroke="#EBEDEE"
+                              />
+                              <path
+                                d="M13 338.5L1275 338.5"
+                                fill="none"
+                                stroke="#EBEDEE"
+                              />
+                              <path
+                                d="M13 229.5L1275 229.5"
+                                fill="none"
+                                stroke="#EBEDEE"
+                              />
+                              <path
+                                d="M13 120.5L1275 120.5"
+                                fill="none"
+                                stroke="#EBEDEE"
+                              />
+                              <path
+                                d="M13 776.5L1275 776.5"
+                                fill="none"
+                                stroke="#C4C4C4"
+                                stroke-linecap="round"
+                              />
+                              <path
+                                d="M-1 -8l1 0l0 16l-1 0Z"
+                                fill="none"
+                                transform="translate(5 776)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="end"
+                                transform="translate(5 776)"
+                              >
+                                0
+                              </text>
+                              <path
+                                d="M-4 -8l4 0l0 16l-4 0Z"
+                                fill="none"
+                                transform="translate(5 666.6667)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="end"
+                                transform="translate(5 666.6667)"
+                                xml:space="preserve"
+                              >
+                                3 ms
+                              </text>
+                              <path
+                                d="M-4 -8l4 0l0 16l-4 0Z"
+                                fill="none"
+                                transform="translate(5 557.3333)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="end"
+                                transform="translate(5 557.3333)"
+                                xml:space="preserve"
+                              >
+                                6 ms
+                              </text>
+                              <path
+                                d="M-4 -8l4 0l0 16l-4 0Z"
+                                fill="none"
+                                transform="translate(5 448)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="end"
+                                transform="translate(5 448)"
+                                xml:space="preserve"
+                              >
+                                9 ms
+                              </text>
+                              <path
+                                d="M-5 -8l5 0l0 16l-5 0Z"
+                                fill="none"
+                                transform="translate(5 338.6667)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="end"
+                                transform="translate(5 338.6667)"
+                                xml:space="preserve"
+                              >
+                                12 ms
+                              </text>
+                              <path
+                                d="M-5 -8l5 0l0 16l-5 0Z"
+                                fill="none"
+                                transform="translate(5 229.3333)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="end"
+                                transform="translate(5 229.3333)"
+                                xml:space="preserve"
+                              >
+                                15 ms
+                              </text>
+                              <path
+                                d="M-5 -8l5 0l0 16l-5 0Z"
+                                fill="none"
+                                transform="translate(5 120)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="end"
+                                transform="translate(5 120)"
+                                xml:space="preserve"
+                              >
+                                18 ms
+                              </text>
+                              <path
+                                d="M0 0l0 0l0 0l0 0Z"
+                                fill="none"
+                                transform="translate(170.75 784)"
+                              />
+                              <path
+                                d="M0 0l0 0l0 0l0 0Z"
+                                fill="none"
+                                transform="translate(328.5 784)"
+                              />
+                              <path
+                                d="M0 0l0 0l0 0l0 0Z"
+                                fill="none"
+                                transform="translate(486.25 784)"
+                              />
+                              <path
+                                d="M0 0l0 0l0 0l0 0Z"
+                                fill="none"
+                                transform="translate(801.75 784)"
+                              />
+                              <path
+                                d="M0 0l0 0l0 0l0 0Z"
+                                fill="none"
+                                transform="translate(959.5 784)"
+                              />
+                              <path
+                                d="M0 0l0 0l0 0l0 0Z"
+                                fill="none"
+                                transform="translate(1117.25 784)"
+                              />
+                              <path
+                                d="M-2.5 0l5 0l0 16l-5 0Z"
+                                fill="none"
+                                transform="translate(13 784)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font: normal 400 10px 'Open Sans', sans-serif"
+                                text-anchor="middle"
+                                transform="translate(13 784)"
+                                y="8"
+                              >
+                                05:06
+                              </text>
+                              <path
+                                d="M-2.5 0l5 0l0 16l-5 0Z"
+                                fill="none"
+                                transform="translate(644 784)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font: normal 400 10px 'Open Sans', sans-serif"
+                                text-anchor="middle"
+                                transform="translate(644 784)"
+                                y="8"
+                              >
+                                05:07
+                              </text>
+                              <path
+                                d="M-5 -5l167 0l0 26l-167 0Z"
+                                fill="rgb(0,0,0)"
+                                fill-opacity="0"
+                                stroke="#ccc"
+                                stroke-width="0"
+                                transform="translate(1103 5)"
+                              />
+                              <path
+                                d="M0 0l14 0l0 14l-14 0Z"
+                                fill="#66B1E8"
+                                transform="translate(1103 6)"
+                              />
+                              <path
+                                d="M20 -1l8 0l0 16l-8 0Z"
+                                fill="none"
+                                transform="translate(1103 6)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#333333"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="start"
+                                transform="translate(1103 6)"
+                                x="20"
+                                xml:space="preserve"
+                                y="7"
+                              >
+                                Video Tx
+                              </text>
+                              <path
+                                d="M0 0l14 0l0 14l-14 0Z"
+                                fill="#EC7100"
+                                transform="translate(1146 6)"
+                              />
+                              <path
+                                d="M20 -1l8 0l0 16l-8 0Z"
+                                fill="none"
+                                transform="translate(1146 6)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#333333"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="start"
+                                transform="translate(1146 6)"
+                                x="20"
+                                xml:space="preserve"
+                                y="7"
+                              >
+                                Video Rx
+                              </text>
+                              <path
+                                d="M0 0l14 0l0 14l-14 0Z"
+                                fill="#F9C34B"
+                                transform="translate(1189 6)"
+                              />
+                              <path
+                                d="M20 -1l8 0l0 16l-8 0Z"
+                                fill="none"
+                                transform="translate(1189 6)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#333333"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="start"
+                                transform="translate(1189 6)"
+                                x="20"
+                                xml:space="preserve"
+                                y="7"
+                              >
+                                Audio Tx
+                              </text>
+                              <path
+                                d="M0 0l14 0l0 14l-14 0Z"
+                                fill="#61C46E"
+                                transform="translate(1232 6)"
+                              />
+                              <path
+                                d="M20 -1l8 0l0 16l-8 0Z"
+                                fill="none"
+                                transform="translate(1232 6)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#333333"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="start"
+                                transform="translate(1232 6)"
+                                x="20"
+                                xml:space="preserve"
+                                y="7"
+                              >
+                                Audio Rx
+                              </text>
+                              <path
+                                d="M-5 -5l26 0l0 10l-26 0Z"
+                                fill="none"
+                                stroke="#ccc"
+                                stroke-width="0"
+                                transform="translate(1259 5)"
+                              />
+                              <path
+                                d=""
+                                fill="none"
+                                stroke="#666"
+                                transform="translate(1259 5)"
+                              />
+                              <path
+                                d=""
+                                fill="none"
+                                stroke="#3E98C5"
+                                transform="translate(1267 5)"
+                              />
+                              <path
+                                d=""
+                                fill="none"
+                                stroke="#666"
+                                transform="translate(1275 5)"
+                              />
+                              <g
+                                clip-path="url(#zr17-c0)"
+                              >
+                                <path
+                                  d=""
+                                  fill="none"
+                                  stroke="#66B1E8"
+                                  stroke-linejoin="bevel"
+                                  stroke-width="1.2"
+                                />
+                              </g>
+                              <g
+                                clip-path="url(#zr17-c1)"
+                              >
+                                <path
+                                  d=""
+                                  fill="none"
+                                  stroke="#EC7100"
+                                  stroke-linejoin="bevel"
+                                  stroke-width="1.2"
+                                />
+                              </g>
+                              <g
+                                clip-path="url(#zr17-c2)"
+                              >
+                                <path
+                                  d="M644 192.8889"
+                                  fill="none"
+                                  stroke="#F9C34B"
+                                  stroke-linejoin="bevel"
+                                  stroke-width="1.2"
+                                />
+                              </g>
+                              <g
+                                clip-path="url(#zr17-c3)"
+                              >
+                                <path
+                                  d=""
+                                  fill="none"
+                                  stroke="#61C46E"
+                                  stroke-linejoin="bevel"
+                                  stroke-width="1.2"
+                                />
+                              </g>
+                            </g>
+                            <defs>
+                              <clippath
+                                id="zr17-c0"
+                              >
+                                <path
+                                  d="M12 119.4l1263 0l0 657.2l-1263 0Z"
+                                  fill="#000"
+                                />
+                              </clippath>
+                              <clippath
+                                id="zr17-c1"
+                              >
+                                <path
+                                  d="M12 119.4l1263 0l0 657.2l-1263 0Z"
+                                  fill="#000"
+                                />
+                              </clippath>
+                              <clippath
+                                id="zr17-c2"
+                              >
+                                <path
+                                  d="M12 119.4l1263 0l0 657.2l-1263 0Z"
+                                  fill="#000"
+                                />
+                              </clippath>
+                              <clippath
+                                id="zr17-c3"
+                              >
+                                <path
+                                  d="M12 119.4l1263 0l0 657.2l-1263 0Z"
+                                  fill="#000"
+                                />
+                              </clippath>
+                            </defs>
+                          </svg>
+                        </div>
+                        <div
+                          class=""
+                        />
+                        <object
+                          class="size-sensor-object"
+                          data="about:blank"
+                          style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                          tabindex="-1"
+                          type="text/html"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="resize-triggers"
+                  >
+                    <div
+                      class="expand-trigger"
+                    >
+                      <div
+                        style="width: 1281px; height: 801px;"
+                      />
+                    </div>
+                    <div
+                      class="contract-trigger"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div
+            class="Grid__Container-sc-5irhjd-1 zzbxI"
+          >
+            <div
+              class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+            >
+              Latency
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div
+            class="Grid__Container-sc-5irhjd-1 zzbxI"
+            style="height: 200px;"
+          >
+            <div
+              class="styledComponents__Wrapper-sc-13w5wfx-4 lhrXqm"
+              type="default"
+            >
+              <div
+                class="ant-card"
+              >
+                <div
+                  class="ant-card-head"
+                >
+                  <div
+                    class="ant-card-head-wrapper"
+                  >
+                    <div
+                      class="ant-card-head-title"
+                    >
+                      <div
+                        class="ant-space ant-space-horizontal ant-space-align-center"
+                      >
+                        <div
+                          class="ant-space-item"
+                        >
+                          <div
+                            class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-card-extra"
+                    >
+                      <div
+                        class="ant-space ant-space-horizontal ant-space-align-center"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-card-body"
+                >
+                  <div
+                    style="overflow: visible; height: 0px; width: 0px;"
+                  >
+                    <div
+                      class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                    >
+                      <div
+                        class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
+                      >
+                        <div
+                          class="ant-space-item"
+                        >
+                          No data to display
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="resize-triggers"
+                  >
+                    <div
+                      class="expand-trigger"
+                    >
+                      <div
+                        style="width: 1281px; height: 801px;"
+                      />
+                    </div>
+                    <div
+                      class="contract-trigger"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div
+            class="Grid__Container-sc-5irhjd-1 zzbxI"
+            style="height: 200px;"
+          >
+            <div
+              class="styledComponents__Wrapper-sc-13w5wfx-4 lhrXqm"
+              type="default"
+            >
+              <div
+                class="ant-card"
+              >
+                <div
+                  class="ant-card-head"
+                >
+                  <div
+                    class="ant-card-head-wrapper"
+                  >
+                    <div
+                      class="ant-card-head-title"
+                    >
+                      <div
+                        class="ant-space ant-space-horizontal ant-space-align-center"
+                      >
+                        <div
+                          class="ant-space-item"
+                        >
+                          <div
+                            class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-card-extra"
+                    >
+                      <div
+                        class="ant-space ant-space-horizontal ant-space-align-center"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-card-body"
+                >
+                  <div
+                    style="overflow: visible; height: 0px; width: 0px;"
+                  >
+                    <div
+                      class="styledComponents__ResetWrapper-sc-ryy21w-2 styledComponents__Wrapper-sc-um7jvv-0 jpvBzo iQvUMF"
+                    >
+                      <div
+                        _echarts_instance_="ec_mock"
+                        class="echarts-for-react "
+                        size-sensor-id="20"
+                        style="height: 800px; width: 1280px; position: relative;"
+                      >
+                        <div
+                          style="position: relative; overflow: hidden; width: 1280px; height: 800px;"
+                        >
+                          <svg
+                            baseProfile="full"
+                            height="800"
+                            style="position:absolute;left:0;top:0;user-select:none"
+                            version="1.1"
+                            width="1280"
+                            xmlns="http://www.w3.org/2000/svg"
+                            xmlns:xlink="http://www.w3.org/1999/xlink"
+                          >
+                            <rect
+                              fill="none"
+                              fill-opacity="1"
+                              height="800"
+                              id="0"
+                              width="1280"
+                              x="0"
+                              y="0"
+                            />
+                            <g>
+                              <path
+                                d="M14 776.5L1275 776.5"
+                                fill="none"
+                                stroke="#EBEDEE"
+                              />
+                              <path
+                                d="M14 666.5L1275 666.5"
+                                fill="none"
+                                stroke="#EBEDEE"
+                              />
+                              <path
+                                d="M14 557.5L1275 557.5"
+                                fill="none"
+                                stroke="#EBEDEE"
+                              />
+                              <path
+                                d="M14 448.5L1275 448.5"
+                                fill="none"
+                                stroke="#EBEDEE"
+                              />
+                              <path
+                                d="M14 338.5L1275 338.5"
+                                fill="none"
+                                stroke="#EBEDEE"
+                              />
+                              <path
+                                d="M14 229.5L1275 229.5"
+                                fill="none"
+                                stroke="#EBEDEE"
+                              />
+                              <path
+                                d="M14 120.5L1275 120.5"
+                                fill="none"
+                                stroke="#EBEDEE"
+                              />
+                              <path
+                                d="M14 776.5L1275 776.5"
+                                fill="none"
+                                stroke="#C4C4C4"
+                                stroke-linecap="round"
+                              />
+                              <path
+                                d="M-1 -8l1 0l0 16l-1 0Z"
+                                fill="none"
+                                transform="translate(6 776)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="end"
+                                transform="translate(6 776)"
+                              >
+                                0
+                              </text>
+                              <path
+                                d="M-5 -8l5 0l0 16l-5 0Z"
+                                fill="none"
+                                transform="translate(6 666.6667)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="end"
+                                transform="translate(6 666.6667)"
+                                xml:space="preserve"
+                              >
+                                30 ms
+                              </text>
+                              <path
+                                d="M-5 -8l5 0l0 16l-5 0Z"
+                                fill="none"
+                                transform="translate(6 557.3333)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="end"
+                                transform="translate(6 557.3333)"
+                                xml:space="preserve"
+                              >
+                                60 ms
+                              </text>
+                              <path
+                                d="M-5 -8l5 0l0 16l-5 0Z"
+                                fill="none"
+                                transform="translate(6 448)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="end"
+                                transform="translate(6 448)"
+                                xml:space="preserve"
+                              >
+                                90 ms
+                              </text>
+                              <path
+                                d="M-6 -8l6 0l0 16l-6 0Z"
+                                fill="none"
+                                transform="translate(6 338.6667)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="end"
+                                transform="translate(6 338.6667)"
+                                xml:space="preserve"
+                              >
+                                120 ms
+                              </text>
+                              <path
+                                d="M-6 -8l6 0l0 16l-6 0Z"
+                                fill="none"
+                                transform="translate(6 229.3333)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="end"
+                                transform="translate(6 229.3333)"
+                                xml:space="preserve"
+                              >
+                                150 ms
+                              </text>
+                              <path
+                                d="M-6 -8l6 0l0 16l-6 0Z"
+                                fill="none"
+                                transform="translate(6 120)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="end"
+                                transform="translate(6 120)"
+                                xml:space="preserve"
+                              >
+                                180 ms
+                              </text>
+                              <path
+                                d="M0 0l0 0l0 0l0 0Z"
+                                fill="none"
+                                transform="translate(171.625 784)"
+                              />
+                              <path
+                                d="M0 0l0 0l0 0l0 0Z"
+                                fill="none"
+                                transform="translate(329.25 784)"
+                              />
+                              <path
+                                d="M0 0l0 0l0 0l0 0Z"
+                                fill="none"
+                                transform="translate(486.875 784)"
+                              />
+                              <path
+                                d="M0 0l0 0l0 0l0 0Z"
+                                fill="none"
+                                transform="translate(802.125 784)"
+                              />
+                              <path
+                                d="M0 0l0 0l0 0l0 0Z"
+                                fill="none"
+                                transform="translate(959.75 784)"
+                              />
+                              <path
+                                d="M0 0l0 0l0 0l0 0Z"
+                                fill="none"
+                                transform="translate(1117.375 784)"
+                              />
+                              <path
+                                d="M-2.5 0l5 0l0 16l-5 0Z"
+                                fill="none"
+                                transform="translate(14 784)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font: normal 400 10px 'Open Sans', sans-serif"
+                                text-anchor="middle"
+                                transform="translate(14 784)"
+                                y="8"
+                              >
+                                05:06
+                              </text>
+                              <path
+                                d="M-2.5 0l5 0l0 16l-5 0Z"
+                                fill="none"
+                                transform="translate(644.5 784)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font: normal 400 10px 'Open Sans', sans-serif"
+                                text-anchor="middle"
+                                transform="translate(644.5 784)"
+                                y="8"
+                              >
+                                05:07
+                              </text>
+                              <path
+                                d="M14 229.3333L1275 229.3333L1275 120L14 120Z"
+                                fill="#ED1C24"
+                                fill-opacity="0.05"
+                                stroke="#66B1E8"
+                                stroke-opacity="0.05"
+                                stroke-width="0"
+                              />
+                              <path
+                                d="M-5 -5l167 0l0 26l-167 0Z"
+                                fill="rgb(0,0,0)"
+                                fill-opacity="0"
+                                stroke="#ccc"
+                                stroke-width="0"
+                                transform="translate(1103 5)"
+                              />
+                              <path
+                                d="M0 0l14 0l0 14l-14 0Z"
+                                fill="#66B1E8"
+                                transform="translate(1103 6)"
+                              />
+                              <path
+                                d="M20 -1l8 0l0 16l-8 0Z"
+                                fill="none"
+                                transform="translate(1103 6)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#333333"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="start"
+                                transform="translate(1103 6)"
+                                x="20"
+                                xml:space="preserve"
+                                y="7"
+                              >
+                                Video Tx
+                              </text>
+                              <path
+                                d="M0 0l14 0l0 14l-14 0Z"
+                                fill="#EC7100"
+                                transform="translate(1146 6)"
+                              />
+                              <path
+                                d="M20 -1l8 0l0 16l-8 0Z"
+                                fill="none"
+                                transform="translate(1146 6)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#333333"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="start"
+                                transform="translate(1146 6)"
+                                x="20"
+                                xml:space="preserve"
+                                y="7"
+                              >
+                                Video Rx
+                              </text>
+                              <path
+                                d="M0 0l14 0l0 14l-14 0Z"
+                                fill="#F9C34B"
+                                transform="translate(1189 6)"
+                              />
+                              <path
+                                d="M20 -1l8 0l0 16l-8 0Z"
+                                fill="none"
+                                transform="translate(1189 6)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#333333"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="start"
+                                transform="translate(1189 6)"
+                                x="20"
+                                xml:space="preserve"
+                                y="7"
+                              >
+                                Audio Tx
+                              </text>
+                              <path
+                                d="M0 0l14 0l0 14l-14 0Z"
+                                fill="#61C46E"
+                                transform="translate(1232 6)"
+                              />
+                              <path
+                                d="M20 -1l8 0l0 16l-8 0Z"
+                                fill="none"
+                                transform="translate(1232 6)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#333333"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="start"
+                                transform="translate(1232 6)"
+                                x="20"
+                                xml:space="preserve"
+                                y="7"
+                              >
+                                Audio Rx
+                              </text>
+                              <path
+                                d="M14 229.5L1275 229.5"
+                                fill="none"
+                                stroke="#ED1C24"
+                                stroke-dasharray="4,2"
+                                stroke-opacity="0.5"
+                              />
+                              <path
+                                d="M-5 -5l26 0l0 10l-26 0Z"
+                                fill="none"
+                                stroke="#ccc"
+                                stroke-width="0"
+                                transform="translate(1259 5)"
+                              />
+                              <path
+                                d=""
+                                fill="none"
+                                stroke="#666"
+                                transform="translate(1259 5)"
+                              />
+                              <path
+                                d=""
+                                fill="none"
+                                stroke="#3E98C5"
+                                transform="translate(1267 5)"
+                              />
+                              <path
+                                d=""
+                                fill="none"
+                                stroke="#666"
+                                transform="translate(1275 5)"
+                              />
+                              <g
+                                clip-path="url(#zr19-c0)"
+                              >
+                                <path
+                                  d=""
+                                  fill="none"
+                                  stroke="#66B1E8"
+                                  stroke-linejoin="bevel"
+                                  stroke-width="1.2"
+                                />
+                              </g>
+                              <g
+                                clip-path="url(#zr19-c1)"
+                              >
+                                <path
+                                  d=""
+                                  fill="none"
+                                  stroke="#EC7100"
+                                  stroke-linejoin="bevel"
+                                  stroke-width="1.2"
+                                />
+                              </g>
+                              <g
+                                clip-path="url(#zr19-c2)"
+                              >
+                                <path
+                                  d="M644.5 276.7111"
+                                  fill="none"
+                                  stroke="#F9C34B"
+                                  stroke-linejoin="bevel"
+                                  stroke-width="1.2"
+                                />
+                              </g>
+                              <g
+                                clip-path="url(#zr19-c3)"
+                              >
+                                <path
+                                  d=""
+                                  fill="none"
+                                  stroke="#61C46E"
+                                  stroke-linejoin="bevel"
+                                  stroke-width="1.2"
+                                />
+                              </g>
+                            </g>
+                            <defs>
+                              <clippath
+                                id="zr19-c0"
+                              >
+                                <path
+                                  d="M13 119.4l1262 0l0 657.2l-1262 0Z"
+                                  fill="#000"
+                                />
+                              </clippath>
+                              <clippath
+                                id="zr19-c1"
+                              >
+                                <path
+                                  d="M13 119.4l1262 0l0 657.2l-1262 0Z"
+                                  fill="#000"
+                                />
+                              </clippath>
+                              <clippath
+                                id="zr19-c2"
+                              >
+                                <path
+                                  d="M13 119.4l1262 0l0 657.2l-1262 0Z"
+                                  fill="#000"
+                                />
+                              </clippath>
+                              <clippath
+                                id="zr19-c3"
+                              >
+                                <path
+                                  d="M13 119.4l1262 0l0 657.2l-1262 0Z"
+                                  fill="#000"
+                                />
+                              </clippath>
+                            </defs>
+                          </svg>
+                        </div>
+                        <div
+                          class=""
+                        />
+                        <object
+                          class="size-sensor-object"
+                          data="about:blank"
+                          style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                          tabindex="-1"
+                          type="text/html"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="resize-triggers"
+                  >
+                    <div
+                      class="expand-trigger"
+                    >
+                      <div
+                        style="width: 1281px; height: 801px;"
+                      />
+                    </div>
+                    <div
+                      class="contract-trigger"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div
+            class="Grid__Container-sc-5irhjd-1 zzbxI"
+          >
+            <div
+              class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+            >
+              Packet Loss
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div
+            class="Grid__Container-sc-5irhjd-1 zzbxI"
+            style="height: 200px;"
+          >
+            <div
+              class="styledComponents__Wrapper-sc-13w5wfx-4 lhrXqm"
+              type="default"
+            >
+              <div
+                class="ant-card"
+              >
+                <div
+                  class="ant-card-head"
+                >
+                  <div
+                    class="ant-card-head-wrapper"
+                  >
+                    <div
+                      class="ant-card-head-title"
+                    >
+                      <div
+                        class="ant-space ant-space-horizontal ant-space-align-center"
+                      >
+                        <div
+                          class="ant-space-item"
+                        >
+                          <div
+                            class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-card-extra"
+                    >
+                      <div
+                        class="ant-space ant-space-horizontal ant-space-align-center"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-card-body"
+                >
+                  <div
+                    style="overflow: visible; height: 0px; width: 0px;"
+                  >
+                    <div
+                      class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                    >
+                      <div
+                        class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
+                      >
+                        <div
+                          class="ant-space-item"
+                        >
+                          No data to display
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="resize-triggers"
+                  >
+                    <div
+                      class="expand-trigger"
+                    >
+                      <div
+                        style="width: 1281px; height: 801px;"
+                      />
+                    </div>
+                    <div
+                      class="contract-trigger"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div
+            class="Grid__Container-sc-5irhjd-1 zzbxI"
+            style="height: 200px;"
+          >
+            <div
+              class="styledComponents__Wrapper-sc-13w5wfx-4 lhrXqm"
+              type="default"
+            >
+              <div
+                class="ant-card"
+              >
+                <div
+                  class="ant-card-head"
+                >
+                  <div
+                    class="ant-card-head-wrapper"
+                  >
+                    <div
+                      class="ant-card-head-title"
+                    >
+                      <div
+                        class="ant-space ant-space-horizontal ant-space-align-center"
+                      >
+                        <div
+                          class="ant-space-item"
+                        >
+                          <div
+                            class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-card-extra"
+                    >
+                      <div
+                        class="ant-space ant-space-horizontal ant-space-align-center"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-card-body"
+                >
+                  <div
+                    style="overflow: visible; height: 0px; width: 0px;"
+                  >
+                    <div
+                      class="styledComponents__ResetWrapper-sc-ryy21w-2 styledComponents__Wrapper-sc-um7jvv-0 jpvBzo iQvUMF"
+                    >
+                      <div
+                        _echarts_instance_="ec_mock"
+                        class="echarts-for-react "
+                        size-sensor-id="22"
+                        style="height: 800px; width: 1280px; position: relative;"
+                      >
+                        <div
+                          style="position: relative; overflow: hidden; width: 1280px; height: 800px;"
+                        >
+                          <svg
+                            baseProfile="full"
+                            height="800"
+                            style="position:absolute;left:0;top:0;user-select:none"
+                            version="1.1"
+                            width="1280"
+                            xmlns="http://www.w3.org/2000/svg"
+                            xmlns:xlink="http://www.w3.org/1999/xlink"
+                          >
+                            <rect
+                              fill="none"
+                              fill-opacity="1"
+                              height="800"
+                              id="0"
+                              width="1280"
+                              x="0"
+                              y="0"
+                            />
+                            <g>
+                              <path
+                                d="M11 776.5L1275 776.5"
+                                fill="none"
+                                stroke="#EBEDEE"
+                              />
+                              <path
+                                d="M11 120.5L1275 120.5"
+                                fill="none"
+                                stroke="#EBEDEE"
+                              />
+                              <path
+                                d="M11 776.5L1275 776.5"
+                                fill="none"
+                                stroke="#C4C4C4"
+                                stroke-linecap="round"
+                              />
+                              <path
+                                d="M-3 -8l3 0l0 16l-3 0Z"
+                                fill="none"
+                                transform="translate(3 776)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="end"
+                                transform="translate(3 776)"
+                                xml:space="preserve"
+                              >
+                                0 %
+                              </text>
+                              <path
+                                d="M-3 -8l3 0l0 16l-3 0Z"
+                                fill="none"
+                                transform="translate(3 120)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="end"
+                                transform="translate(3 120)"
+                                xml:space="preserve"
+                              >
+                                1 %
+                              </text>
+                              <path
+                                d="M0 0l0 0l0 0l0 0Z"
+                                fill="none"
+                                transform="translate(169 784)"
+                              />
+                              <path
+                                d="M0 0l0 0l0 0l0 0Z"
+                                fill="none"
+                                transform="translate(327 784)"
+                              />
+                              <path
+                                d="M0 0l0 0l0 0l0 0Z"
+                                fill="none"
+                                transform="translate(485 784)"
+                              />
+                              <path
+                                d="M0 0l0 0l0 0l0 0Z"
+                                fill="none"
+                                transform="translate(801 784)"
+                              />
+                              <path
+                                d="M0 0l0 0l0 0l0 0Z"
+                                fill="none"
+                                transform="translate(959 784)"
+                              />
+                              <path
+                                d="M0 0l0 0l0 0l0 0Z"
+                                fill="none"
+                                transform="translate(1117 784)"
+                              />
+                              <path
+                                d="M-2.5 0l5 0l0 16l-5 0Z"
+                                fill="none"
+                                transform="translate(11 784)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font: normal 400 10px 'Open Sans', sans-serif"
+                                text-anchor="middle"
+                                transform="translate(11 784)"
+                                y="8"
+                              >
+                                05:06
+                              </text>
+                              <path
+                                d="M-2.5 0l5 0l0 16l-5 0Z"
+                                fill="none"
+                                transform="translate(643 784)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#ACAEB0"
+                                style="font: normal 400 10px 'Open Sans', sans-serif"
+                                text-anchor="middle"
+                                transform="translate(643 784)"
+                                y="8"
+                              >
+                                05:07
+                              </text>
+                              <path
+                                d="M-5 -5l167 0l0 26l-167 0Z"
+                                fill="rgb(0,0,0)"
+                                fill-opacity="0"
+                                stroke="#ccc"
+                                stroke-width="0"
+                                transform="translate(1103 5)"
+                              />
+                              <path
+                                d="M0 0l14 0l0 14l-14 0Z"
+                                fill="#66B1E8"
+                                transform="translate(1103 6)"
+                              />
+                              <path
+                                d="M20 -1l8 0l0 16l-8 0Z"
+                                fill="none"
+                                transform="translate(1103 6)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#333333"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="start"
+                                transform="translate(1103 6)"
+                                x="20"
+                                xml:space="preserve"
+                                y="7"
+                              >
+                                Video Tx
+                              </text>
+                              <path
+                                d="M0 0l14 0l0 14l-14 0Z"
+                                fill="#EC7100"
+                                transform="translate(1146 6)"
+                              />
+                              <path
+                                d="M20 -1l8 0l0 16l-8 0Z"
+                                fill="none"
+                                transform="translate(1146 6)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#333333"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="start"
+                                transform="translate(1146 6)"
+                                x="20"
+                                xml:space="preserve"
+                                y="7"
+                              >
+                                Video Rx
+                              </text>
+                              <path
+                                d="M0 0l14 0l0 14l-14 0Z"
+                                fill="#F9C34B"
+                                transform="translate(1189 6)"
+                              />
+                              <path
+                                d="M20 -1l8 0l0 16l-8 0Z"
+                                fill="none"
+                                transform="translate(1189 6)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#333333"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="start"
+                                transform="translate(1189 6)"
+                                x="20"
+                                xml:space="preserve"
+                                y="7"
+                              >
+                                Audio Tx
+                              </text>
+                              <path
+                                d="M0 0l14 0l0 14l-14 0Z"
+                                fill="#61C46E"
+                                transform="translate(1232 6)"
+                              />
+                              <path
+                                d="M20 -1l8 0l0 16l-8 0Z"
+                                fill="none"
+                                transform="translate(1232 6)"
+                              />
+                              <text
+                                dominant-baseline="central"
+                                fill="#333333"
+                                style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                text-anchor="start"
+                                transform="translate(1232 6)"
+                                x="20"
+                                xml:space="preserve"
+                                y="7"
+                              >
+                                Audio Rx
+                              </text>
+                              <path
+                                d="M-5 -5l26 0l0 10l-26 0Z"
+                                fill="none"
+                                stroke="#ccc"
+                                stroke-width="0"
+                                transform="translate(1259 5)"
+                              />
+                              <path
+                                d=""
+                                fill="none"
+                                stroke="#666"
+                                transform="translate(1259 5)"
+                              />
+                              <path
+                                d=""
+                                fill="none"
+                                stroke="#3E98C5"
+                                transform="translate(1267 5)"
+                              />
+                              <path
+                                d=""
+                                fill="none"
+                                stroke="#666"
+                                transform="translate(1275 5)"
+                              />
+                              <g
+                                clip-path="url(#zr21-c0)"
+                              >
+                                <path
+                                  d=""
+                                  fill="none"
+                                  stroke="#66B1E8"
+                                  stroke-linejoin="bevel"
+                                  stroke-width="1.2"
+                                />
+                              </g>
+                              <g
+                                clip-path="url(#zr21-c1)"
+                              >
+                                <path
+                                  d=""
+                                  fill="none"
+                                  stroke="#EC7100"
+                                  stroke-linejoin="bevel"
+                                  stroke-width="1.2"
+                                />
+                              </g>
+                              <g
+                                clip-path="url(#zr21-c2)"
+                              >
+                                <path
+                                  d="M643 185.6"
+                                  fill="none"
+                                  stroke="#F9C34B"
+                                  stroke-linejoin="bevel"
+                                  stroke-width="1.2"
+                                />
+                              </g>
+                              <g
+                                clip-path="url(#zr21-c3)"
+                              >
+                                <path
+                                  d=""
+                                  fill="none"
+                                  stroke="#61C46E"
+                                  stroke-linejoin="bevel"
+                                  stroke-width="1.2"
+                                />
+                              </g>
+                            </g>
+                            <defs>
+                              <clippath
+                                id="zr21-c0"
+                              >
+                                <path
+                                  d="M10 119.4l1265 0l0 657.2l-1265 0Z"
+                                  fill="#000"
+                                />
+                              </clippath>
+                              <clippath
+                                id="zr21-c1"
+                              >
+                                <path
+                                  d="M10 119.4l1265 0l0 657.2l-1265 0Z"
+                                  fill="#000"
+                                />
+                              </clippath>
+                              <clippath
+                                id="zr21-c2"
+                              >
+                                <path
+                                  d="M10 119.4l1265 0l0 657.2l-1265 0Z"
+                                  fill="#000"
+                                />
+                              </clippath>
+                              <clippath
+                                id="zr21-c3"
+                              >
+                                <path
+                                  d="M10 119.4l1265 0l0 657.2l-1265 0Z"
+                                  fill="#000"
+                                />
+                              </clippath>
+                            </defs>
+                          </svg>
+                        </div>
+                        <div
+                          class=""
+                        />
+                        <object
+                          class="size-sensor-object"
+                          data="about:blank"
+                          style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                          tabindex="-1"
+                          type="text/html"
+                        />
                       </div>
                     </div>
                   </div>
