@@ -10,9 +10,10 @@ import { IncidentTabContent, HealthPage } from '..'
 export function AnalyticsTabs (props: {
   healthFilter: AnalyticsFilter,
   incidentFilter: AnalyticsFilter,
-  healthPath: string
+  healthPath: string,
+  thresholdPath?: string
 }) {
-  const { healthFilter, incidentFilter, healthPath } = props
+  const { healthFilter, incidentFilter, healthPath, thresholdPath } = props
   const { $t } = useIntl()
   const location = useLocation()
   const navigate = useNavigate()
@@ -36,7 +37,11 @@ export function AnalyticsTabs (props: {
       <IncidentTabContent filters={{ ...dateFilter, ...incidentFilter }} />
     </Tabs.TabPane>
     <Tabs.TabPane tab={$t({ defaultMessage: 'Health' })} key='health'>
-      <HealthPage filters={{ ...dateFilter, ...healthFilter }} path={healthPath} />
+      <HealthPage
+        filters={{ ...dateFilter, ...healthFilter }}
+        path={healthPath}
+        thresholdPath={thresholdPath}
+      />
     </Tabs.TabPane>
   </Tabs>
 }

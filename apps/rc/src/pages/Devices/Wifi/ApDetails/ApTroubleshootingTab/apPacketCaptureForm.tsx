@@ -15,8 +15,9 @@ import {
   useStartPacketCaptureMutation,
   useStopPacketCaptureMutation
 } from '@acx-ui/rc/services'
-import { ApPacketCaptureStateEnum, CaptureInterfaceEnum, MacAddressFilterRegExp, useApContext } from '@acx-ui/rc/utils'
+import { ApPacketCaptureStateEnum, CaptureInterfaceEnum, MacAddressFilterRegExp } from '@acx-ui/rc/utils'
 
+import { useApContext } from '../ApContext'
 
 import * as UI from './styledComponents'
 

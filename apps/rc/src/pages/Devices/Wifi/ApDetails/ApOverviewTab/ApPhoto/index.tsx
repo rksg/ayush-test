@@ -9,10 +9,10 @@ import {
   useApViewModelQuery,
   useWifiCapabilitiesQuery
 } from '@acx-ui/rc/services'
-import { useApContext } from '@acx-ui/rc/utils'
-import { getIntl }      from '@acx-ui/utils'
+import { getIntl } from '@acx-ui/utils'
 
-import PlaceHolder from '../../../../../../assets/images/ap-models-images/placeholder.svg'
+import PlaceHolder      from '../../../../../../assets/images/ap-models-images/placeholder.svg'
+import { useApContext } from '../../ApContext'
 
 import { ApPhotoDrawer }                                                          from './ApPhotoDrawer'
 import { StyledSpace, RoundIconDiv, PhotoDiv, ArrowsOutIcon, PhotoIcon, DotsDiv } from './styledComponents'

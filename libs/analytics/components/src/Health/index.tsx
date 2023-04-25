@@ -16,9 +16,10 @@ import Kpis                          from './Kpi'
 import * as UI                       from './styledComponents'
 import { SummaryBoxes }              from './SummaryBoxes'
 
-const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
+const HealthPage = (props:
+  { filters? : AnalyticsFilter, path?: string, thresholdPath?: string }) => {
   const { $t } = useIntl()
-  const { filters: widgetFilters } = props
+  const { filters: widgetFilters, thresholdPath } = props
   const params = useParams()
   const selectedTab = params['categoryTab'] ?? categoryTabs[0].value
   const navigate = useNavigate()
@@ -71,7 +72,10 @@ const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
             </UI.ThresholdTitle>
           </GridCol>
           <GridCol col={{ span: 24 }}>
-            <Kpis tab={selectedTab as CategoryTab} filters={healthPageFilters}/>
+            <Kpis
+              tab={selectedTab as CategoryTab}
+              filters={healthPageFilters}
+              thresholdPath={thresholdPath}/>
           </GridCol>
         </HealthPageContextProvider>
       </GridRow>

@@ -30,8 +30,7 @@ const params = {
   serialNumber: 'ap-serialNumber',
   activeTab: 'overview'
 }
-jest.mock('@acx-ui/rc/utils', () => ({
-  ...jest.requireActual('@acx-ui/rc/utils'),
+jest.mock('../ApContext', () => ({
   useApContext: () => params
 }))
 

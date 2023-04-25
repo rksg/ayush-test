@@ -8,11 +8,11 @@ import {
   Network,
   NetworkType,
   NetworkTypeEnum,
-  useTableQuery,
-  useApContext
+  useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
+import { useApContext } from '../ApContext'
 
 const defaultPayload = {
   searchString: '',

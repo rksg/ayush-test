@@ -12,8 +12,9 @@ import {
   useWifiCapabilitiesQuery,
   useApViewModelQuery
 } from '@acx-ui/rc/services'
-import { generateHexKey, useApContext } from '@acx-ui/rc/utils'
+import { generateHexKey } from '@acx-ui/rc/utils'
 
+import { useApContext } from '../../ApContext'
 
 import { getCroppedImg }                                from './cropImage'
 import { AppContainer, FooterDiv, PlusIcon, MinusIcon } from './styledComponents'

@@ -15,7 +15,6 @@ import {
   kpiConfig
 } from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Loader } from '@acx-ui/components'
-import { useApContext }             from '@acx-ui/rc/utils'
 
 import { HealthPageContext } from '../HealthPageContext'
 
@@ -35,14 +34,14 @@ export const defaultThreshold: KpiThresholdType = {
 }
 
 
-export default function KpiSections (props: { tab: CategoryTab, filters: AnalyticsFilter }) {
-  const { tab, filters } = props
+export default function KpiSections
+(props: { tab: CategoryTab, filters: AnalyticsFilter, thresholdPath?: string }) {
+  const { tab, filters, thresholdPath } = props
   const { kpis } = kpisForTab[tab]
   const { useGetKpiThresholdsQuery, useFetchThresholdPermissionQuery } = healthApi
   const thresholdKeys = Object.keys(defaultThreshold) as (keyof KpiThresholdType)[]
-  const apContext = useApContext()
-  const path = apContext
-    ? [{ type: 'zone' as 'zone', name: apContext.venueId as string }, filters.path[0]]
+  const path = thresholdPath
+    ? [{ type: 'zone' as 'zone', name: thresholdPath }, filters.path[0]]
     : filters.path
   const customThresholdQuery = useGetKpiThresholdsQuery({
     ...filters, path, kpis: thresholdKeys })

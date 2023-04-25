@@ -12,9 +12,10 @@ import {
   useEventsTableQuery,
   eventTypeMapping
 } from '@acx-ui/rc/components'
-import { TimelineTypes, useApContext } from '@acx-ui/rc/utils'
-import { useTenantLink }               from '@acx-ui/react-router-dom'
+import { TimelineTypes } from '@acx-ui/rc/utils'
+import { useTenantLink } from '@acx-ui/react-router-dom'
 
+import { useApContext } from '../ApContext'
 
 const Events = () => {
   const { serialNumber } = useApContext()

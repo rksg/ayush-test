@@ -3,9 +3,7 @@ import { createContext, useContext, ReactNode } from 'react'
 import { pick }    from 'lodash'
 import { useIntl } from 'react-intl'
 
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { Loader } from '@acx-ui/components'
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { Loader }         from '@acx-ui/components'
 import { useApListQuery } from '@acx-ui/rc/services'
 import { useParams }      from '@acx-ui/react-router-dom'
 import type { Params }    from '@acx-ui/react-router-dom'
