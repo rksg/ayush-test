@@ -131,7 +131,6 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
   const onOk = async () => {
     try {
       await form.validateFields()
-      console.log(await form.validateFields())
       await updateDevicesData({
         params: {
           ...params,
