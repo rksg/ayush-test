@@ -63,6 +63,16 @@ export function PoolTable (props:{
       sorter: { compare: sortProp('subnetMask', defaultSort) }
     },
     {
+      key: 'startIpAddress',
+      title: $t({ defaultMessage: 'Address Pool' }),
+      dataIndex: 'startIpAddress',
+      sorter: { compare: sortProp('startIpAddress', defaultSort) },
+      render: function (_data, row) {
+        return $t({ defaultMessage: '{start} - {end}' },
+          { start: row.startIpAddress, end: row.endIpAddress })
+      }
+    },
+    {
       key: 'leaseTime',
       title: $t({ defaultMessage: 'Lease Time' }),
       dataIndex: 'leaseTime',

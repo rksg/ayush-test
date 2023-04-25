@@ -29,9 +29,7 @@ const getNetworkSegmentationPayload = {
     'networkIds',
     'venueInfos',
     'edgeInfos'
-  ],
-  sortField: 'name',
-  sortOrder: 'ASC'
+  ]
 }
 const venueOptionsDefaultPayload = {
   fields: ['name', 'id'],
@@ -55,7 +53,11 @@ const NetworkSegmentationTable = () => {
   const basePath = useTenantLink('')
   const tableQuery = useTableQuery({
     useQuery: useGetNetworkSegmentationStatsListQuery,
-    defaultPayload: getNetworkSegmentationPayload
+    defaultPayload: getNetworkSegmentationPayload,
+    sorter: {
+      sortField: 'name',
+      sortOrder: 'ASC'
+    }
   })
   const { venueOptions } = useVenuesListQuery(
     { params, payload: venueOptionsDefaultPayload }, {
