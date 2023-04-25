@@ -5,8 +5,8 @@ import TextArea                  from 'antd/lib/input/TextArea'
 import _                         from 'lodash'
 import { useIntl }               from 'react-intl'
 
-import { Button, Loader, Tooltip }                       from '@acx-ui/components'
-import { usePingApMutation }                             from '@acx-ui/rc/services'
+import { Button, Loader, Tooltip }                                     from '@acx-ui/components'
+import { usePingApMutation }                                           from '@acx-ui/rc/services'
 import { targetHostRegExp, WifiTroubleshootingMessages, useApContext } from '@acx-ui/rc/utils'
 
 

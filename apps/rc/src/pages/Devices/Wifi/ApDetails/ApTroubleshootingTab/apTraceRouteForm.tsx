@@ -8,8 +8,7 @@ import { useIntl }               from 'react-intl'
 import { Button, Loader, Tooltip }                       from '@acx-ui/components'
 import { useTraceRouteApMutation }                       from '@acx-ui/rc/services'
 import { targetHostRegExp, WifiTroubleshootingMessages } from '@acx-ui/rc/utils'
-
-import { useApContext } from '@acx-ui/rc/utils'
+import { useApContext }                                  from '@acx-ui/rc/utils'
 
 export function ApTraceRouteForm () {
   const { $t } = useIntl()

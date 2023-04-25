@@ -16,6 +16,7 @@ import {
   ApDetailHeader,
   ApDeviceStatusEnum
 } from '@acx-ui/rc/utils'
+import { useApContext } from '@acx-ui/rc/utils'
 import {
   useLocation,
   useNavigate,
@@ -25,8 +26,7 @@ import {
 import { filterByAccess } from '@acx-ui/user'
 import { useDateFilter }  from '@acx-ui/utils'
 
-import { useApContext } from '@acx-ui/rc/utils'
-import ApTabs           from './ApTabs'
+import ApTabs from './ApTabs'
 
 function ApPageHeader () {
   const { $t } = useIntl()

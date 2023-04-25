@@ -1,7 +1,6 @@
 import { AnalyticsTabs }   from '@acx-ui/analytics/components'
 import { AnalyticsFilter } from '@acx-ui/analytics/utils'
-
-import { useApContext } from '@acx-ui/rc/utils'
+import { useApContext }    from '@acx-ui/rc/utils'
 
 export function ApAnalyticsTab () {
   const { serialNumber, apMac } = useApContext()

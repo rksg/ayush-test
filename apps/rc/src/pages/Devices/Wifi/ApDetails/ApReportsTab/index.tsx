@@ -1,10 +1,10 @@
+import { useApContext }         from '@acx-ui/rc/utils'
 import { EmbeddedReport }       from '@acx-ui/reports/components'
 import {
   ReportType,
   reportTypeDataStudioMapping
 } from '@acx-ui/reports/components'
 
-import { useApContext } from '@acx-ui/rc/utils'
 
 export function ApReportsTab () {
   const { apMac } = useApContext()
