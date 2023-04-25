@@ -6,7 +6,7 @@ import {
   Input,
   Space
 } from 'antd'
-import { useIntl } from 'react-intl'
+import { FormattedMessage, useIntl } from 'react-intl'
 
 import { Button }                                    from '@acx-ui/components'
 import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
@@ -167,22 +167,19 @@ export function WalledGardenTextArea (props: WalledGardenProps) {
       ]}
       label={<>{$t({ defaultMessage: 'Walled Garden' })}
         <Tooltip title={
-          `${$t({ defaultMessage: 'Unauthenticated users will be allowed to access these destinations(i.e., without redirection to captive portal).' })}
-           ${$t({ defaultMessage: 'Each destination should be entered in a new line.' })}
-
-           ${$t({ defaultMessage: 'Accepted formats for destinations are:' })}
-
-           ${$t({ defaultMessage: '-IP address(e.g. 10.11.12.13)' })}
-
-           ${$t({ defaultMessage: '-IP address range(e.g. 10.11.12.13-10.11.12.15)' })}
-
-           ${$t({ defaultMessage: '-CIDR(e.g. 10.11.12.13/28)' })}
-
-           ${$t({ defaultMessage: '-IP address and mask(e.g. 10.11.12.13 255.255.255.0)' })}
-
-           ${$t({ defaultMessage: '-Website FQDN(e.g. www.ruckus.com)' })}
-
-           ${$t({ defaultMessage: '-Website FQDN with a wildcard(e.g. *.amazon.com; *.com)' })}`
+          <FormattedMessage
+            values={{ br: (chunks) => <>{chunks}<br /></> }}
+            defaultMessage={`
+              Unauthenticated users will be allowed to access these destinations(i.e., without redirection to captive portal).<br></br><br></br>
+              Each destination should be entered in a new line. Accepted formats for destinations are:<br></br><br></br>
+              - IP address(e.g. 10.11.12.13)<br></br>
+              - IP address range(e.g. 10.11.12.13-10.11.12.15)<br></br>
+              - CIDR(e.g. 10.11.12.13/28)<br></br>
+              - IP address and mask(e.g. 10.11.12.13 255.255.255.0)<br></br>
+              - Website FQDN(e.g. www.ruckus.com)<br></br>
+              - Website FQDN with a wildcard(e.g. *.amazon.com; *.com)
+            `}
+          />
         }
         placement='bottom'>
           <QuestionMarkCircleOutlined />
