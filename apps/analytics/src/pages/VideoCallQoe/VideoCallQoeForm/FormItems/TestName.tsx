@@ -6,7 +6,7 @@ import { StepsFormNew } from '@acx-ui/components'
 import { useDuplicateNameValidator } from '../../services'
 
 const name = 'name' as const
-const label = defineMessage({ defaultMessage: 'Test Name' })
+const label = defineMessage({ defaultMessage: 'Test Call Name' })
 
 export function TestName () {
   const { $t } = useIntl()
