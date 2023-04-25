@@ -38,7 +38,7 @@ function EdgeOverviewDonutWidget ({ title, data, isLoading, chartDataTransformer
 
   return (
     <Loader states={[{ isLoading }]}>
-      <SpaceWrapper>
+      <SpaceWrapper full>
         { data && data.length > 0
           ?
           <DonutChart

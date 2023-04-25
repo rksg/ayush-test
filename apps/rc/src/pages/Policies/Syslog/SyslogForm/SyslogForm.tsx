@@ -11,7 +11,6 @@ import { useAddSyslogPolicyMutation, useUpdateSyslogPolicyMutation } from '@acx-
 import {
   PolicyType,
   PolicyOperation,
-  getPolicyListRoutePath,
   getPolicyRoutePath,
   FacilityEnum,
   FlowLevelEnum,
@@ -35,7 +34,9 @@ type SyslogFormProps = {
 const SyslogForm = (props: SyslogFormProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const linkToPolicies = useTenantLink(getPolicyListRoutePath())
+  const linkToPolicies = useTenantLink(getPolicyRoutePath({
+    type: PolicyType.SYSLOG, oper: PolicyOperation.LIST
+  }))
   const params = useParams()
   const { edit } = props
 

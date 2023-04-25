@@ -52,7 +52,7 @@ function useCloseOutsideClick(ref: RefObject<HTMLDivElement>, onClose: CallableF
 }
 
 export const Drawer = (props: DrawerProps) => {
-  const { title, icon, subTitle, onBackClick, ...rest } = props
+  const { title, icon, subTitle, onBackClick, mask = false, ...rest } = props
   const headerProps = { title, icon, subTitle, onBackClick }
   const ref = useRef<HTMLDivElement>(null)
   const onClose = (event: ReactMouseEvent | KeyboardEvent) => {
@@ -60,18 +60,18 @@ export const Drawer = (props: DrawerProps) => {
   }
   useCloseOutsideClick(ref, onClose)
   return (
-    <div ref={ref}>
-      <UI.Drawer
-        {...rest}
-        title={<Header {...headerProps}/>}
-        placement='right'
-        mask={false}
-        width={props.width || '336px'}
-        closeIcon={<CloseSymbol />}
-        getContainer={ref.current ?? document.body}
-        destroyOnClose
-      />
-    </div>
+  <div ref={ref}>
+    <UI.Drawer
+      {...rest}
+      title={<Header {...headerProps}/>}
+      placement='right'
+      mask={mask}
+      maskStyle={{ background: 'none' }}
+      maskClosable={mask}
+      width={props.width || '336px'}
+      closeIcon={<CloseSymbol />}
+    />
+  </div>
   )
 }
 

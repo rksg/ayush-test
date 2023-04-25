@@ -1,6 +1,6 @@
 import { MouseEventHandler } from 'react'
 
-import { defineMessage, MessageDescriptor } from 'react-intl'
+import { defineMessage, IntlShape, MessageDescriptor } from 'react-intl'
 
 export const titleConfig = {
   connectionFailure: defineMessage({ defaultMessage: 'Connection Failures' }),
@@ -8,13 +8,16 @@ export const titleConfig = {
 }
 export const topImpactedClientLimit = 100
 export type Stages =
-  | 'authFailure'
-  | 'assoFailure'
-  | 'eapFailure'
-  | 'radiusFailure'
-  | 'dhcpFailure'
-  | null
-export type FunnelChartStages = { name: string; label: MessageDescriptor; value: number | null }[]
+  | 'Authentication'
+  | 'Association'
+  | 'EAP'
+  | 'Radius'
+  | 'DHCP'
+export type FunnelChartStages = {
+    name: string;
+    label: MessageDescriptor;
+    value: number | null
+}[]
 export type DrilldownSelection = 'connectionFailure' | 'ttc' | null
 export type FunnelChartStage = {
   formattedPct: string;
@@ -95,3 +98,23 @@ export const getFormattedToFunnel = (
 
 export const CONNECTIONFAILURE = 'connectionFailure'
 export const TTC = 'ttc'
+
+export const stageNameToCodeMap: Record<Stages, string> = {
+  Authentication: 'auth',
+  Association: 'assoc',
+  EAP: 'eap',
+  Radius: 'radius',
+  DHCP: 'dhcp'
+}
+
+export const stageLabels: Record<Stages, MessageDescriptor> = {
+  Authentication: defineMessage({ defaultMessage: 'Authentication' }),
+  Association: defineMessage({ defaultMessage: 'Association' }),
+  EAP: defineMessage({ defaultMessage: 'EAP' }),
+  Radius: defineMessage({ defaultMessage: 'RADIUS' }),
+  DHCP: defineMessage({ defaultMessage: 'DHCP' })
+}
+
+export const showTopResult = ($t: IntlShape['$t'], count: number, limit: number) => count > limit
+  ? $t({ defaultMessage: 'Top {limit}' }, { limit })
+  : count

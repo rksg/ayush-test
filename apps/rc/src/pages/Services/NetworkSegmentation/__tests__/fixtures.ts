@@ -376,14 +376,16 @@ export const mockApList = {
       apMac: '18:7C:0B:10:29:50',
       serialNumber: '125488555569',
       venueId: 'mock_venue_1',
-      model: 'R510'
+      model: 'R510',
+      apStatusData: { lanPortStatus: [{ port: '0' }, { port: '1' }, { port: '2' }] }
     },
     {
       name: 'mock-ap2',
       apMac: '18:7C:0B:10:29:51',
       serialNumber: '150000000761',
       venueId: 'mock_venue_1',
-      model: 'R760'
+      model: 'R760',
+      apStatusData: { lanPortStatus: [{ port: '0' }] }
     }
   ]
 }

@@ -137,6 +137,11 @@ export const PoolDrawer = (props: PoolDrawerProps) => {
           ]}
           children={<Input />}
         />
+        <Form.Item
+          name='activated'
+          children={<Input />}
+          hidden
+        />
       </Col>
     </Row>
   </Form>
