@@ -73,6 +73,6 @@ export const sampleFail = [
 ] as TimelineItem[]
 
 storiesOf('Timeline', module)
-  .add('Basic', () => <Timeline items={sample}/>)
+  .add('Basic', () => <Timeline items={sample} status='PENDING' />)
 
 export {}
