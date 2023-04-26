@@ -4,10 +4,10 @@ import { sum, max } from 'lodash'
 import { useIntl }  from 'react-intl'
 import AutoSizer    from 'react-virtualized-auto-sizer'
 
-import { KpiThresholdType, KPIHistogramResponse, healthApi }                                      from '@acx-ui/analytics/services'
-import { AnalyticsFilter, kpiConfig }                                                             from '@acx-ui/analytics/utils'
-import { GridCol, GridRow, Loader, cssStr, VerticalBarChart, showToast, NoData, showActionModal } from '@acx-ui/components'
-import type { TimeStamp }                                                                         from '@acx-ui/types'
+import { KpiThresholdType, KPIHistogramResponse, healthApi }                     from '@acx-ui/analytics/services'
+import { AnalyticsFilter, kpiConfig }                                            from '@acx-ui/analytics/utils'
+import { GridCol, GridRow, Loader, cssStr, VerticalBarChart, showToast, NoData } from '@acx-ui/components'
+import type { TimeStamp }                                                        from '@acx-ui/types'
 
 import { defaultThreshold } from '../Kpi'
 
@@ -76,36 +76,15 @@ function Histogram ({
     setKpiThreshold({ ...thresholds, [kpi]: defaultConfig })
   }, [kpi, setKpiThreshold, thresholds])
   const onButtonApply = async () => {
-    try {
-      const result =
+    const result =
         await triggerSave({ path: filters.path, name: kpi, value: thresholdValue })
           .unwrap() as unknown as { saveThreshold: boolean }
-      if (result && result.saveThreshold) {
-        showToast({
-          type: 'success',
-          content: $t({
-            defaultMessage: 'Threshold set successfully.'
-          })
-        })
-      } else {
-        throw new Error($t({
-          defaultMessage: 'Network returned failure'
-        }))
-      }
-    } catch (e) {
-      let message: string
-      if (e instanceof Error) {
-        message = e.message
-      } else {
-        console.log(e, typeof e)
-        message = 'Unknown Error'
-      }
-      showActionModal({
-        type: 'error',
-        title: $t({ defaultMessage: 'Server Error' }),
+    if (result && result.saveThreshold) {
+      showToast({
+        type: 'success',
         content: $t({
-          defaultMessage: 'Error setting threshold, please try again later. ({message})'
-        }, { message })
+          defaultMessage: 'Threshold set successfully.'
+        })
       })
     }
   }
