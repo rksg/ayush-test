@@ -41,7 +41,7 @@ export default function KpiSections (props: { tab: CategoryTab, filters: Analyti
   const { useGetKpiThresholdsQuery, useFetchThresholdPermissionQuery } = healthApi
   const thresholdKeys = Object.keys(defaultThreshold) as (keyof KpiThresholdType)[]
   const apContext = useApContext()
-  const path = apContext
+  const path = apContext?.venueId
     ? [{ type: 'zone' as 'zone', name: apContext.venueId as string }, filters.path[0]]
     : filters.path
   const customThresholdQuery = useGetKpiThresholdsQuery({
