@@ -1,12 +1,7 @@
 import { unitOfTime } from 'moment-timezone'
-import { useIntl }    from 'react-intl'
 
-import {
-  calculateSeverity,
-  Incident,
-  shortDescription
-} from '@acx-ui/analytics/utils'
-import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
+import { Incident }         from '@acx-ui/analytics/utils'
+import { GridRow, GridCol } from '@acx-ui/components'
 
 import { IncidentAttributes, Attributes }    from '../IncidentAttributes'
 import { Insights }                          from '../Insights'
@@ -16,9 +11,9 @@ import { TimeSeries }                        from '../TimeSeries'
 import { TimeSeriesChartTypes }              from '../TimeSeries/config'
 
 import * as UI from './styledComponents'
+import IncidentDetailsHeader from './IncidentDetailsHeader'
 
 export const FailureTemplate = (incident: Incident) => {
-  const { $t } = useIntl()
   const attributeList = [
     Attributes.ClientImpactCount,
     Attributes.IncidentCategory,
@@ -56,16 +51,10 @@ export const FailureTemplate = (incident: Incident) => {
     front: { value: 6, unit: 'hours' as unitOfTime.Base },
     back: { value: 6, unit: 'hours' as unitOfTime.Base }
   }
+  
   return (
     <>
-      <PageHeader
-        title={$t({ defaultMessage: 'Incident Details' })}
-        titleExtra={<SeverityPill severity={calculateSeverity(incident.severity)!} />}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Incidents' }), link: '/analytics/incidents' }
-        ]}
-        subTitle={shortDescription(incident)}
-      />
+      <IncidentDetailsHeader incident={incident} />
       <GridRow>
         <GridCol col={{ span: 4 }}>
           <UI.FixedAutoSizer>
