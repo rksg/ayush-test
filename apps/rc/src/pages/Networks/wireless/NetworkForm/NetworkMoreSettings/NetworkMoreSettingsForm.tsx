@@ -61,6 +61,12 @@ export const enableBSSRules = {
 
     if (networkType === NetworkTypeEnum.DPSK) return false
 
+    /**
+     * To have back compatibility, the old rules are in WPA2And1,
+     * and WPA2And1 will show even Feature toggle is off since
+     * it was there before the feature.
+     * The rest are the latest rules and needs to follow the feature toggle.
+     */
     return this.rules.find((rule) => [
       rule.allowWlanSecurity.includes(wlanSecurity),
       rule.allowNetworkType.includes(networkType),
