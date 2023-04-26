@@ -1,5 +1,7 @@
 import '@testing-library/jest-dom'
 
+import { useState } from 'react'
+
 import { BulbOutlined }              from '@acx-ui/icons'
 import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
@@ -10,6 +12,8 @@ const resetFields = jest.fn()
 const content = <p>some content</p>
 
 describe('Drawer', () => {
+  afterEach(() => jest.resetAllMocks())
+
   it('should match snapshot for basic drawer', () => {
     render(<Drawer
       title={'Test Drawer'}
@@ -108,6 +112,66 @@ describe('Drawer', () => {
 
     fireEvent.click(backButton)
     expect(handleBackClick).toBeCalled()
+  })
+
+  it('should handle close on outside click correctly', async () => {
+    const TestWrapper = () => {
+      const [visible, setVisible] = useState(true)
+      const _close = () => {
+        onClose()
+        setVisible(false)
+      }
+      return <div>
+        extra element
+        <div>
+          <div>extra sibling element</div>
+          <Drawer
+            title={'Test Drawer'}
+            visible={visible}
+            onClose={_close}
+            children={content}
+            mask={false}
+          />
+        </div>
+      </div>
+    }
+    render(<TestWrapper />)
+
+    const drawerTitle = await screen.findByText('some content')
+    fireEvent.mouseDown(drawerTitle)
+    expect(onClose).not.toBeCalled()
+
+    const extraElement = await screen.findByText('extra element')
+    fireEvent.mouseDown(extraElement)
+    expect(onClose).toBeCalled()
+  })
+
+  it('should keep default behavior with mask on', async () => {
+    const TestWrapper = () => {
+      const [visible, setVisible] = useState(true)
+      const _close = () => {
+        onClose()
+        setVisible(false)
+      }
+      return <div>
+        extra element
+        <div>
+          <div>extra sibling element</div>
+          <Drawer
+            title={'Test Drawer'}
+            visible={visible}
+            onClose={_close}
+            children={content}
+            mask={true}
+          />
+        </div>
+      </div>
+    }
+    render(<TestWrapper />)
+
+    const extraElement = await screen.findByText('extra element')
+    fireEvent.mouseDown(extraElement)
+    expect(onClose).not.toHaveBeenCalled()
   })
 
   describe('FormFooter', () => {

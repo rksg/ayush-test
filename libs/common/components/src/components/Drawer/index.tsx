@@ -36,14 +36,16 @@ const Header = (props: DrawerHeaderProps) => {
 }
 
 function useCloseOutsideClick (
-  ref: RefObject<HTMLDivElement>, onClose: CallableFunction, mask: boolean) {
+  ref: RefObject<HTMLDivElement | null>, onClose: CallableFunction, mask: boolean) {
   useEffect(() => {
     if (mask) return
     const handleOutsideClick = (event: MouseEvent) => {
       const target = event.target as HTMLElement
-      const validTargets = ref.current && target
-      if (validTargets && ref.current !== target && !ref.current.contains(target)) {
-        onClose && onClose()
+      if (ref.current && target) {
+        const isOutsideClick = !target.closest('div[class="ant-drawer-content-wrapper"]')
+        if (isOutsideClick) {
+          onClose?.()
+        }
       }
     }
     document.addEventListener('mousedown', handleOutsideClick)
@@ -54,7 +56,7 @@ function useCloseOutsideClick (
 export const Drawer = (props: DrawerProps) => {
   const { title, icon, subTitle, onBackClick, mask = false, ...rest } = props
   const headerProps = { title, icon, subTitle, onBackClick }
-  const ref = useRef<HTMLDivElement>(null)
+  const ref = useRef<HTMLDivElement | null>(null)
   const onClose = (event: ReactMouseEvent | KeyboardEvent) => props.onClose?.(event)
   useCloseOutsideClick(ref, onClose, mask)
   return (
