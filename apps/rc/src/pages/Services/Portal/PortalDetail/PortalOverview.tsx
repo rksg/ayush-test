@@ -10,11 +10,12 @@ import { Demo, PortalLanguageEnum } from '@acx-ui/rc/utils'
 import { useParams }                from '@acx-ui/react-router-dom'
 import { loadImageWithJWT }         from '@acx-ui/utils'
 
-import Photo              from '../../../../assets/images/portal-demo/PortalPhoto.svg'
-import Powered            from '../../../../assets/images/portal-demo/PoweredLogo.svg'
-import Logo               from '../../../../assets/images/portal-demo/RuckusCloud.svg'
-import { getLanguage }    from '../../commonUtils'
-import PortalPreviewModal from '../PortalPreviewModal'
+import Photo                 from '../../../../assets/images/portal-demo/PortalPhoto.svg'
+import Powered               from '../../../../assets/images/portal-demo/PoweredLogo.svg'
+import Logo                  from '../../../../assets/images/portal-demo/RuckusCloud.svg'
+import { getLanguage }       from '../../commonUtils'
+import { initialPortalData } from '../PortalForm/PortalForm'
+import PortalPreviewModal    from '../PortalPreviewModal'
 
 export default function PortalOverview (props: { demoValue: Demo }) {
   const { $t } = useIntl()
@@ -22,11 +23,12 @@ export default function PortalOverview (props: { demoValue: Demo }) {
   const params = useParams()
   const [newDemo, setNewDemo]=useState({} as Demo)
   const getDemo = async ()=>{
-    const newDemoValue = { ...demoValue, poweredImg: demoValue.poweredImg?
-      await loadImageWithJWT(demoValue.poweredImg):Powered,
-    logo: demoValue.logo?await loadImageWithJWT(demoValue.logo):Logo,
-    photo: demoValue.photo?await loadImageWithJWT(demoValue.photo): Photo,
-    bgImage: demoValue.bgImage?await loadImageWithJWT(demoValue.bgImage):'' }
+    const newDemoValue = { ...initialPortalData.content,
+      ...demoValue, poweredImg: demoValue?.poweredImg?
+        await loadImageWithJWT(demoValue.poweredImg):Powered,
+      logo: demoValue?.logo?await loadImageWithJWT(demoValue.logo):Logo,
+      photo: demoValue?.photo?await loadImageWithJWT(demoValue.photo): Photo,
+      bgImage: demoValue?.bgImage?await loadImageWithJWT(demoValue.bgImage):'' }
     setNewDemo(newDemoValue)
   }
   const [getPortalLang] = useGetPortalLangMutation()

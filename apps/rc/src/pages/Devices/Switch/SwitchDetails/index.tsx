@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom'
 
 import { useSwitchDetailHeaderQuery }                                   from '@acx-ui/rc/services'
 import { isStrictOperationalSwitch, SwitchStatusEnum, SwitchViewModel } from '@acx-ui/rc/utils'
+import { hasAccess }                                                    from '@acx-ui/user'
 
 import { SwitchClientsTab }         from './SwitchClientsTab'
 import { SwitchConfigurationTab }   from './SwitchConfigurationTab'
@@ -17,7 +18,7 @@ import { SwitchTroubleshootingTab } from './SwitchTroubleshootingTab'
 
 const tabs = {
   overview: SwitchOverviewTab,
-  incidents: SwitchIncidentsTab,
+  incidents: () => hasAccess() ? <SwitchIncidentsTab/> : null,
   troubleshooting: SwitchTroubleshootingTab,
   clients: SwitchClientsTab,
   configuration: SwitchConfigurationTab,

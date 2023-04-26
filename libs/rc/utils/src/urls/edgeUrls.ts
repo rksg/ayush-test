@@ -135,10 +135,12 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   },
   reboot: {
     method: 'post',
-    url: '/edges/:serialNumber/reboot'
+    url: '/edges/:serialNumber/reboot',
+    newApi: true
   },
   factoryReset: {
     method: 'post',
-    url: '/edges/:serialNumber/configReset'
+    url: '/edges/:serialNumber/configReset',
+    newApi: true
   }
 }
