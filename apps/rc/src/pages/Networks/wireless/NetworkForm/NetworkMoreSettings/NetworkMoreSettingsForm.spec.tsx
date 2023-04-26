@@ -247,10 +247,6 @@ describe('NetworkMoreSettingsForm', () => {
       })
     })
     describe('Test case for visibility of Fast BSS Transition and Mobility Domain Id', () => {
-
-      beforeAll(() => {
-        jest.spyOn(console, 'error').mockImplementation(() => {})
-      })
       it('Test case under feature toggle is disabled.', () => {
         jest.mocked(useIsSplitOn).mockReturnValue(false)
         for (let networkType in NetworkTypeEnum) {
