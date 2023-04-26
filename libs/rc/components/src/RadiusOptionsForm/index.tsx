@@ -19,19 +19,24 @@ const CalledStationIdTypeOptions = [
   { label: defineMessage({ defaultMessage: 'None' }), value: CalledStationIdTypeEnum.NONE }
 ]
 
-const DelimiterRadioGroup = (props: { fieldName: string[] }) => {
+const DelimiterRadioGroup = (props: { fieldName: string[], onChanged?: (()=> void) }) => {
   const { $t } = useIntl()
 
   const options = [
     { label: defineMessage({ defaultMessage: 'Dash' }), value: NasIdDelimiterEnum.DASH },
     { label: defineMessage({ defaultMessage: 'Colon' }), value: NasIdDelimiterEnum.COLON }
   ]
+
+  const handleChanged = () => {
+    props.onChanged?.()
+  }
+
   return <Form.Item
     label={$t({ defaultMessage: 'Delimiter' })}
     name={props.fieldName}
     initialValue={options[0].value}
     children={
-      <Radio.Group>
+      <Radio.Group onChange={handleChanged}>
         <Space size='large'>
           {
             options.map(o => {
@@ -49,7 +54,8 @@ const { useWatch } = Form
 
 type RadiusOptionsFormProps = {
   context: string,
-  showSingleSessionIdAccounting: boolean
+  showSingleSessionIdAccounting: boolean,
+  onDataChanged?: (()=> void)
 }
 
 export const RadiusOptionsForm = (props: RadiusOptionsFormProps) => {
@@ -70,8 +76,7 @@ export const RadiusOptionsForm = (props: RadiusOptionsFormProps) => {
   const calledStationIdTypeFieldName = [...fieldDataKey, 'calledStationIdType']
   const singleSessionIdAccountingFieldName = [...fieldDataKey, 'singleSessionIdAccounting']
 
-  const [ nasIdType ] = [ useWatch(nasIdTypeFieldName)]
-
+  const nasIdType = useWatch(nasIdTypeFieldName)
 
   const userDefinedNasIdValidator = (value: string) => {
     const re = new RegExp('(?=^((?!(`|\\$\\()).){2,64}$)^(\\S.*\\S)$')
@@ -79,6 +84,10 @@ export const RadiusOptionsForm = (props: RadiusOptionsFormProps) => {
       return Promise.reject($t({ defaultMessage: 'Invalid NAS ID' }))
     }
     return Promise.resolve()
+  }
+
+  const handleChanged = () => {
+    props?.onDataChanged?.()
   }
 
   return (
@@ -99,7 +108,7 @@ export const RadiusOptionsForm = (props: RadiusOptionsFormProps) => {
         style={{ width: '150px' }}
         initialValue={NasIdTypeEnum.BSSID}
       >
-        <Select>{NasIdTypeOptions.map(o => {
+        <Select onChange={handleChanged}>{NasIdTypeOptions.map(o => {
           const { value, label } = o
           return <Select.Option key={value} value={value}>{$t(label)}</Select.Option>
         })}
@@ -107,7 +116,7 @@ export const RadiusOptionsForm = (props: RadiusOptionsFormProps) => {
       </Form.Item>
 
       {(nasIdType === NasIdTypeEnum.BSSID || nasIdType === NasIdTypeEnum.AP_MAC) &&
-        <DelimiterRadioGroup fieldName={nasIdDelimiterFieldName} />
+        <DelimiterRadioGroup fieldName={nasIdDelimiterFieldName} onChanged={handleChanged}/>
       }
       {nasIdType === NasIdTypeEnum.USER && <Form.Item
         name={userDefinedNasIdFieldName}
@@ -118,7 +127,8 @@ export const RadiusOptionsForm = (props: RadiusOptionsFormProps) => {
           { max: 64 },
           { validator: (_, value) => userDefinedNasIdValidator(value) }
         ]}
-        children={<Input placeholder={$t({ defaultMessage: 'Maximun is 64 characters' })}/>}
+        children={<Input onChange={handleChanged}
+          placeholder={$t({ defaultMessage: 'Maximun is 64 characters' })}/>}
       />
       }
       <Form.Item required label={$t({ defaultMessage: 'NAS Request Timeout' })}>
@@ -132,7 +142,11 @@ export const RadiusOptionsForm = (props: RadiusOptionsFormProps) => {
                 defaultMessage: 'Please enter a number between 2 and 20'
               })
             }]}
-            children={<InputNumber min={2} max={20} style={{ width: '150px' }} />}
+            children={<InputNumber
+              min={2}
+              max={20}
+              style={{ width: '150px' }}
+              onChange={handleChanged} />}
           />
           <div style={{ height: '32px' }}>
             {$t({ defaultMessage: 'Seconds' })}
@@ -150,7 +164,11 @@ export const RadiusOptionsForm = (props: RadiusOptionsFormProps) => {
                 defaultMessage: 'Please enter a number between 2 and 10'
               })
             }]}
-            children={<InputNumber min={2} max={10} style={{ width: '150px' }}/>}
+            children={<InputNumber
+              min={2}
+              max={10}
+              style={{ width: '150px' }}
+              onChange={handleChanged}/>}
           />
           <div style={{ height: '32px' }}>
             {$t({ defaultMessage: 'Retries' })}
@@ -168,7 +186,11 @@ export const RadiusOptionsForm = (props: RadiusOptionsFormProps) => {
               })
             }]}
             initialValue={5}
-            children={<InputNumber min={1} max={300} style={{ width: '150px' }}/>}
+            children={<InputNumber
+              min={1}
+              max={300}
+              style={{ width: '150px' }}
+              onChange={handleChanged}/>}
           />
           <div style={{ height: '32px' }}>
             {$t({ defaultMessage: 'Minutes' })}
@@ -181,7 +203,7 @@ export const RadiusOptionsForm = (props: RadiusOptionsFormProps) => {
         style={{ width: '150px' }}
         initialValue={CalledStationIdTypeEnum.BSSID}
       >
-        <Select>{CalledStationIdTypeOptions.map(o => {
+        <Select onChange={handleChanged}>{CalledStationIdTypeOptions.map(o => {
           const { value, label } = o
           return <Select.Option key={value} value={value}>{$t(label)}</Select.Option>
         })}
@@ -203,7 +225,7 @@ export const RadiusOptionsForm = (props: RadiusOptionsFormProps) => {
             valuePropName='checked'
             initialValue={false}
             style={{ marginBottom: 0 }}
-            children={<Switch />}
+            children={<Switch onChange={handleChanged} />}
           />
         </div>
       }

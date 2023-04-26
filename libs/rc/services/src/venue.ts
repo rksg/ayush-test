@@ -62,7 +62,8 @@ import {
   downloadFile,
   RequestFormData,
   createNewTableHttpRequest,
-  TableChangePayload
+  TableChangePayload,
+  VenueRadiusOptions
 } from '@acx-ui/rc/utils'
 import { baseVenueApi } from '@acx-ui/store'
 
@@ -1104,6 +1105,35 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
         return { data: result }
       }
+    }),
+    getVenueRadiusOptions: build.query<VenueRadiusOptions, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenueRadiusOptions, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Venue', id: 'RADIUS_OPTIONS' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateVenueRadiusOptions'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'RADIUS_OPTIONS' }]))
+          })
+        })
+      }
+    }),
+    updateVenueRadiusOptions: build.mutation<VenueRadiusOptions, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.updateVenueRadiusOptions, params)
+        return{
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Venue', id: 'RADIUS_OPTIONS' }]
     })
   })
 })
@@ -1202,5 +1232,7 @@ export const {
   useGetResidentPortalListQuery,
   useImportPropertyUnitsMutation,
   useLazyDownloadPropertyUnitsQuery,
-  useGetVenueWithSetPropertyQuery
+  useGetVenueWithSetPropertyQuery,
+  useGetVenueRadiusOptionsQuery,
+  useUpdateVenueRadiusOptionsMutation
 } = venueApi

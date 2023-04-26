@@ -59,5 +59,7 @@ export * from './TunnelProfileEnum'
 export * from './NasIdTypeEnum'
 export * from './NasIdDelimiterEnum'
 export * from './NasIdTypeEnum'
-export * from './RadiusOptions'
 export * from './CalledStationIdTypeEnum'
+export * from './RadiusOptions'
+export * from './VenueRadiusOptions'
+

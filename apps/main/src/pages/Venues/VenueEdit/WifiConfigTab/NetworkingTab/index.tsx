@@ -16,16 +16,18 @@ import { CellularOptionsForm } from './CellularOptions/CellularOptionsForm'
 import { DirectedMulticast }   from './DirectedMulticast'
 import { LanPorts }            from './LanPorts'
 import { MeshNetwork }         from './MeshNetwork'
+import { RadiusOptions }       from './RadiusOptions'
 
 
 export interface NetworkingSettingContext {
   cellularData: VenueApModelCellular,
   meshData: { mesh: boolean },
-  updateCellular: ((cellularData: VenueApModelCellular) => void),
-  updateMesh: ((check: boolean) => void),
-  updateDirectedMulticast: (() => void),
-  updateLanPorts: (() => void),
-  discardLanPorts?: (() => void)
+  updateCellular?: ((cellularData: VenueApModelCellular) => void),
+  updateMesh?: ((check: boolean) => void),
+  updateDirectedMulticast?: (() => void),
+  updateLanPorts?: (() => void),
+  discardLanPorts?: (() => void),
+  updateRadiusOptions?: (() => void)
 }
 
 export function NetworkingTab () {
@@ -34,12 +36,14 @@ export function NetworkingTab () {
   const basePath = useTenantLink('/venues/')
 
   const supportDirectedMulticast = useIsSplitOn(Features.DIRECTED_MULTICAST)
+  const supportRadiusOptions = useIsSplitOn(Features.RADIUS_OPTIONS)
 
   const {
     previousPath,
     editContextData,
     setEditContextData,
-    editNetworkingContextData
+    editNetworkingContextData,
+    setEditNetworkingContextData
   } = useContext(VenueEditContext)
 
   const items = [{
@@ -94,17 +98,43 @@ export function NetworkingTab () {
       </> })
   }
 
+  if (supportRadiusOptions) {
+    items.push({
+      title: $t({ defaultMessage: 'RADIUS Options' }),
+      content: <>
+        <StepsForm.SectionTitle id='radius-options'>
+          { $t({ defaultMessage: 'RADIUS Options' }) }
+        </StepsForm.SectionTitle>
+        <RadiusOptions />
+      </> })
+  }
+
   const handleUpdateAllSettings = async () => {
     try {
       await editNetworkingContextData?.updateLanPorts?.()
       await editNetworkingContextData?.updateCellular?.(editNetworkingContextData.cellularData)
       await editNetworkingContextData?.updateMesh?.(editNetworkingContextData.meshData.mesh)
       await editNetworkingContextData?.updateDirectedMulticast?.()
+      await editNetworkingContextData?.updateRadiusOptions?.()
+
       setEditContextData({
         ...editContextData,
         unsavedTabKey: 'networking',
         isDirty: false
       })
+
+      // clear update functions avoid to be trigger again
+      if (editNetworkingContextData) {
+        const newData = { ...editNetworkingContextData }
+        delete newData.updateLanPorts
+        delete newData.updateCellular
+        delete newData.updateMesh
+        delete newData.updateDirectedMulticast
+        delete newData.updateRadiusOptions
+
+        setEditNetworkingContextData(newData)
+      }
+
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

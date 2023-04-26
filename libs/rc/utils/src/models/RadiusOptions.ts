@@ -23,5 +23,4 @@ export class RadiusOptions {
     this.userDefinedNasId = ''
     this.singleSessionIdAccounting = false
   }
-
 }
