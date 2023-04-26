@@ -35,13 +35,13 @@ const Header = (props: DrawerHeaderProps) => {
   </>
 }
 
-function useCloseOutsideClick (
+export function useCloseOutsideClick (
   ref: RefObject<HTMLDivElement | null>, onClose: CallableFunction, mask: boolean) {
   useEffect(() => {
     if (mask) return
     const handleOutsideClick = (event: MouseEvent) => {
       const target = event.target as HTMLElement
-      if (ref.current && target) {
+      if (target && ref.current) {
         const isOutsideClick = !target.closest('div[class="ant-drawer-content-wrapper"]')
         if (isOutsideClick) {
           onClose?.()

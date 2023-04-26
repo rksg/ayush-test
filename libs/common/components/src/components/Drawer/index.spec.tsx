@@ -1,11 +1,11 @@
 import '@testing-library/jest-dom'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 
-import { BulbOutlined }              from '@acx-ui/icons'
-import { render, screen, fireEvent } from '@acx-ui/test-utils'
+import { BulbOutlined }                       from '@acx-ui/icons'
+import { render, screen, fireEvent, waitFor } from '@acx-ui/test-utils'
 
-import { Drawer } from '.'
+import { Drawer, useCloseOutsideClick } from '.'
 
 const onClose = jest.fn()
 const resetFields = jest.fn()
@@ -172,6 +172,26 @@ describe('Drawer', () => {
     const extraElement = await screen.findByText('extra element')
     fireEvent.mouseDown(extraElement)
     expect(onClose).not.toHaveBeenCalled()
+  })
+
+  it('should not trigger outside click close on unmounted state', async () => {
+    const ref = { current: null }
+    Object.defineProperty(ref, 'current', {
+      get: jest.fn(() => null),
+      set: jest.fn(() => null)
+    })
+    const HookItem = () => {
+      useCloseOutsideClick(ref, onClose, false)
+      return <div>hook item</div>
+    }
+    render(<div>
+      <div>extra element</div>
+      <HookItem />
+    </div>)
+
+    const extraElem = await screen.findByText('extra element')
+    fireEvent.mouseDown(extraElem)
+    await waitFor(() => expect(onClose).not.toHaveBeenCalled())
   })
 
   describe('FormFooter', () => {
