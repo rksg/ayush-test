@@ -1,8 +1,8 @@
-import { KeyboardEvent, MouseEvent as ReactMouseEvent, RefObject, useRef, useEffect, useState, createRef, MutableRefObject } from 'react'
+import { KeyboardEvent, MouseEvent as ReactMouseEvent, RefObject, useRef, useEffect, useState } from 'react'
 
-import { Drawer as AntDrawer, DrawerProps as AntDrawerProps } from 'antd'
-import Checkbox, { CheckboxChangeEvent } from 'antd/lib/checkbox'
-import { useIntl }                       from 'react-intl'
+import {  DrawerProps as AntDrawerProps } from 'antd'
+import Checkbox, { CheckboxChangeEvent }  from 'antd/lib/checkbox'
+import { useIntl }                        from 'react-intl'
 
 import { CloseSymbol, ArrowBack } from '@acx-ui/icons'
 
@@ -35,14 +35,12 @@ const Header = (props: DrawerHeaderProps) => {
   </>
 }
 
-function useCloseOutsideClick(ref: RefObject<HTMLDivElement>, onClose: CallableFunction) {
+function useCloseOutsideClick (ref: RefObject<HTMLDivElement>, onClose: CallableFunction) {
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
-      console.log(event, ref)
-      const typedRef = ref as unknown as RefObject<HTMLDivElement>
-      const validObjs = typedRef.current && event
-      const validOutsideClick = validObjs && event.target
-      if (validOutsideClick && !typedRef.current!.contains(event.target as unknown as HTMLElement)) {
+      const target = event.target as HTMLElement
+      const validTargets = ref.current && target
+      if (validTargets && ref.current !== target && !ref.current.contains(target)) {
         onClose && onClose()
       }
     }
@@ -60,18 +58,19 @@ export const Drawer = (props: DrawerProps) => {
   }
   useCloseOutsideClick(ref, onClose)
   return (
-  <div ref={ref}>
-    <UI.Drawer
-      {...rest}
-      title={<Header {...headerProps}/>}
-      placement='right'
-      mask={mask}
-      maskStyle={{ background: 'none' }}
-      maskClosable={mask}
-      width={props.width || '336px'}
-      closeIcon={<CloseSymbol />}
-    />
-  </div>
+    <div ref={ref}>
+      <UI.Drawer
+        {...rest}
+        title={<Header {...headerProps}/>}
+        placement='right'
+        mask={mask}
+        maskStyle={{ background: 'none' }}
+        maskClosable={mask}
+        width={props.width || '336px'}
+        closeIcon={<CloseSymbol />}
+        getContainer={props.getContainer ?? (ref.current ?? document.body)}
+      />
+    </div>
   )
 }
 
