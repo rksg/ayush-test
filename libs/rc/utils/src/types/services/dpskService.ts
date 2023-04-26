@@ -77,3 +77,13 @@ export interface DpskPassphrasesSaveData {
   email?: string;
   phoneNumber?: string;
 }
+
+export interface DpskPassphraseClient {
+  passphraseId: string;
+  username: string;
+  passphrase: string;
+  numberOfDevices?: number;
+  clientMac: string[];
+  createDate: string;
+  expirationDate: string;
+}

@@ -102,5 +102,10 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
     url: NewDpskPassphraseBaseUrl,
     oldUrl: DpskPassphraseBaseUrl,
     newApi: true
+  },
+  getPassphraseClient: {
+    method: 'post',
+    url: '/dpskpassphrases/client',
+    newApi: true
   }
 }
