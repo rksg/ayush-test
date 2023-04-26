@@ -19,6 +19,14 @@ import { HealthPageContext } from '../HealthPageContext'
 
 import KpiSection from '.'
 
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useApContext: jest.fn()
+    .mockReturnValueOnce(null)
+    .mockReturnValueOnce({ venueId: 'testTenant' })
+    .mockReturnValue({})
+}))
+
 describe('Kpi Section', () => {
   beforeEach(() => {
     store.dispatch(healthApi.util.resetApiState())
@@ -162,15 +170,11 @@ describe('Kpi Section', () => {
       path,
       raw: []
     }))
-    const venueId = 'testVenue'
 
 
     render(<Provider>
       <HealthPageContext.Provider value={healthContext}>
-        <KpiSection
-          tab={'overview'}
-          filters={{ ...filters, path: path }}
-          thresholdPath={venueId} />
+        <KpiSection tab={'overview'} filters={{ ...filters, path: path }} />
       </HealthPageContext.Provider>
     </Provider>, {
       route: {
