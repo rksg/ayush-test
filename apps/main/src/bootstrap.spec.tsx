@@ -1,9 +1,8 @@
 import '@testing-library/jest-dom'
-import { rest }       from 'msw'
+
 import { createRoot } from 'react-dom/client'
 
-import { AdministrationUrlsInfo }                             from '@acx-ui/rc/utils'
-import { act, screen, mockServer, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { act, screen } from '@acx-ui/test-utils'
 
 import * as bootstrap from './bootstrap'
 
@@ -35,23 +34,13 @@ jest.mock('@acx-ui/utils', () => ({
 
 
 describe('bootstrap.init', () => {
-  beforeEach(() => {
-    mockServer.use(
-      rest.get(
-        AdministrationUrlsInfo.getPreferences.url,
-        (_req, res, ctx) => res(ctx.json({ global: {
-          defaultLanguage: 'en-US'
-        } }))
-      )
-    )
-  })
   it('renders correctly', async () => {
     const rootEl = document.createElement('div')
     rootEl.id = 'root'
     document.body.appendChild(rootEl)
     const root = createRoot(rootEl)
+
     await act(() => bootstrap.init(root))
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(screen.getByTestId('all-routes')).toBeVisible()
   })
 })
