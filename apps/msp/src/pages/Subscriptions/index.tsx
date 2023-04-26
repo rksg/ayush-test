@@ -1,8 +1,8 @@
 
 import { useEffect, useState } from 'react'
 
-import { Row, Space } from 'antd'
-import { useIntl }    from 'react-intl'
+import { Row, Space }         from 'antd'
+import { IntlShape, useIntl } from 'react-intl'
 
 import {
   Button,
@@ -34,6 +34,18 @@ import {
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponent'
+
+const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
+  { key: '', value: $t({ defaultMessage: 'Show All' }) },
+  {
+    key: 'VALID',
+    value: $t({ defaultMessage: 'Show Active' })
+  },
+  {
+    key: 'EXPIRED',
+    value: $t({ defaultMessage: 'Show Expired' })
+  }
+]
 
 export function Subscriptions () {
   const { $t } = useIntl()
@@ -117,7 +129,17 @@ export function Subscriptions () {
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'status',
       key: 'status',
-      filterable: true
+      filterMultiple: false,
+      filterValueNullable: true,
+      filterable: statusTypeFilterOpts($t),
+      sorter: { compare: sortProp('status', defaultSort) },
+      render: function (_, row) {
+        if( row.status === 'VALID') {
+          return $t({ defaultMessage: 'Active' })
+        } else {
+          return $t({ defaultMessage: 'Expired' })
+        }
+      }
     }
   ]
 
@@ -232,14 +254,6 @@ export function Subscriptions () {
     )
   }
 
-  const GetStatus = (status: String) => {
-    if( status === 'VALID') {
-      return $t({ defaultMessage: 'Active' })
-    } else {
-      return $t({ defaultMessage: 'Expired' })
-    }
-  }
-
   const SubscriptionTable = () => {
     const queryResults = useMspEntitlementListQuery({
       params: useParams()
@@ -252,8 +266,7 @@ export function Subscriptions () {
     const subscriptionData = queryResults.data?.map(response => {
       return {
         ...response,
-        name: EntitlementUtil.getMspDeviceTypeText(response?.deviceType),
-        status: GetStatus(response?.status as String)
+        name: EntitlementUtil.getMspDeviceTypeText(response?.deviceType)
       }
     })
 

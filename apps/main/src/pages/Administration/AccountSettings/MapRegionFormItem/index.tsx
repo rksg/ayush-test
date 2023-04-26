@@ -6,6 +6,7 @@ import { countryCodes, usePreference } from '@acx-ui/rc/components'
 
 import { MessageMapping } from '../MessageMapping'
 
+const DEFAULT_MAP_REGION = 'US'
 
 const MapRegionFormItem = () => {
   const { $t } = useIntl()
@@ -38,7 +39,7 @@ const MapRegionFormItem = () => {
         >
           {isMapEnabled ? (
             <Select
-              value={currentMapRegion}
+              value={currentMapRegion || DEFAULT_MAP_REGION}
               onChange={handleMapRegionChange}
               showSearch
               allowClear
