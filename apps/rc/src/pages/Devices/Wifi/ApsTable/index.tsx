@@ -65,6 +65,7 @@ export default function ApsTable () {
   const [ importCsv ] = useImportApMutation()
   const [ importQuery ] = useLazyImportResultQuery()
   const [ importResult, setImportResult ] = useState<ImportErrorRes>({} as ImportErrorRes)
+  const [ importErrors, setImportErrors ] = useState<ImportErrorRes>({} as ImportErrorRes)
 
   const apGpsFlag = useIsSplitOn(Features.AP_GPS)
   const wifiEdaFlag = useIsSplitOn(Features.WIFI_EDA_GATEWAY)
@@ -92,8 +93,10 @@ export default function ApsTable () {
     }
 
     setIsImportResultLoading(false)
-    if ( importResult.fileErrorsCount === 0 ) {
+    if ( importResult?.fileErrorsCount === 0 ) {
       setImportVisible(false)
+    } else {
+      setImportErrors(importResult)
     }
   },[importResult])
 
@@ -147,7 +150,7 @@ export default function ApsTable () {
         templateLink={importTemplateLink}
         visible={importVisible}
         isLoading={isImportResultLoading}
-        importError={{ data: importResult } as FetchBaseQueryError}
+        importError={{ data: importErrors } as FetchBaseQueryError}
         importRequest={(formData) => {
           setIsImportResultLoading(true)
           if (wifiEdaFlag) {
