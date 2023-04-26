@@ -1337,6 +1337,322 @@ export const callQoeTestDetailsFixtures3 = {
                   jitter: {
                     audio: {
                       rx: null,
+                      tx: 16
+                    },
+                    video: {
+                      tx: null,
+                      rx: null
+                    }
+                  },
+                  latency: {
+                    audio: {
+                      rx: null,
+                      tx: 137
+                    },
+                    video: {
+                      tx: null,
+                      rx: null
+                    }
+                  },
+                  packet_loss: {
+                    audio: {
+                      rx: null,
+                      tx: 0.9
+                    },
+                    video: {
+                      tx: null,
+                      rx: null
+                    }
+                  },
+                  video_frame_rate: {
+                    rx: null,
+                    tx: null
+                  }
+                },
+                {
+                  date_time: '2023-04-11T05:08:00Z',
+                  jitter: {
+                    audio: {
+                      rx: null,
+                      tx: null
+                    },
+                    video: {
+                      tx: null,
+                      rx: null
+                    }
+                  },
+                  latency: {
+                    audio: {
+                      rx: null,
+                      tx: null
+                    },
+                    video: {
+                      tx: null,
+                      rx: null
+                    }
+                  },
+                  packet_loss: {
+                    audio: {
+                      rx: null,
+                      tx: null
+                    },
+                    video: {
+                      tx: null,
+                      rx: null
+                    }
+                  },
+                  video_frame_rate: {
+                    rx: null,
+                    tx: null
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+export const callQoeTestDetailsFixtures4 = {
+  getAllCallQoeTests: [
+    {
+      id: 62,
+      name: 'Test-Qoe',
+      meetings: [
+        {
+          id: 62,
+          zoomMeetingId: '93384956746',
+          status: 'ENDED',
+          invalidReason: null,
+          joinUrl: 'https://zoom.us/j/93384956746?pwd=MnNxU1Y5c3pCaVQvOE1jUUoyTDBpZz09',
+          participantCount: 2,
+          mos: 5,
+          createdTime: '2023-04-11T05:04:26.000Z',
+          startTime: '2023-04-11T05:04:58.000Z',
+          endTime: '2023-04-11T05:08:23.000Z',
+          participants: [
+            {
+              id: 11,
+              userName: 'Test',
+              hostname: '',
+              networkType: 'Wifi',
+              macAddress: null,
+              device: 'Unknown',
+              ipAddress: '134.242.238.1',
+              joinTime: '2023-04-11T05:04:58.000Z',
+              leaveTime: '2023-04-11T05:08:23.000Z',
+              leaveReason: 'Test left the meeting.<br>Reason: left the meeting.',
+              apDetails: null,
+              wifiMetrics: null,
+              callMetrics: [
+                {
+                  date_time: '2023-04-11T05:05:00Z',
+                  jitter: {
+                    audio: {
+                      rx: null,
+                      tx: null
+                    },
+                    video: {
+                      tx: null,
+                      rx: null
+                    }
+                  },
+                  latency: {
+                    audio: {
+                      rx: null,
+                      tx: null
+                    },
+                    video: {
+                      tx: null,
+                      rx: null
+                    }
+                  },
+                  packet_loss: {
+                    audio: {
+                      rx: null,
+                      tx: null
+                    },
+                    video: {
+                      tx: null,
+                      rx: null
+                    }
+                  },
+                  video_frame_rate: {
+                    rx: null,
+                    tx: null
+                  }
+                },
+                {
+                  date_time: '2023-04-11T05:06:00Z',
+                  jitter: {
+                    audio: {
+                      rx: null,
+                      tx: null
+                    },
+                    video: {
+                      tx: null,
+                      rx: null
+                    }
+                  },
+                  latency: {
+                    audio: {
+                      rx: null,
+                      tx: null
+                    },
+                    video: {
+                      tx: null,
+                      rx: null
+                    }
+                  },
+                  packet_loss: {
+                    audio: {
+                      rx: null,
+                      tx: null
+                    },
+                    video: {
+                      tx: null,
+                      rx: null
+                    }
+                  },
+                  video_frame_rate: {
+                    rx: null,
+                    tx: null
+                  }
+                },
+                {
+                  date_time: '2023-04-11T05:07:00Z',
+                  jitter: {
+                    audio: {
+                      rx: null,
+                      tx: null
+                    },
+                    video: {
+                      tx: null,
+                      rx: null
+                    }
+                  },
+                  latency: {
+                    audio: {
+                      rx: null,
+                      tx: null
+                    },
+                    video: {
+                      tx: null,
+                      rx: null
+                    }
+                  },
+                  packet_loss: {
+                    audio: {
+                      rx: null,
+                      tx: null
+                    },
+                    video: {
+                      tx: null,
+                      rx: null
+                    }
+                  },
+                  video_frame_rate: {
+                    rx: null,
+                    tx: null
+                  }
+                },
+                {
+                  date_time: '2023-04-11T05:08:00Z',
+                  jitter: {
+                    audio: {
+                      rx: null,
+                      tx: null
+                    },
+                    video: {
+                      tx: null,
+                      rx: null
+                    }
+                  },
+                  latency: {
+                    audio: {
+                      rx: null,
+                      tx: null
+                    },
+                    video: {
+                      tx: null,
+                      rx: null
+                    }
+                  },
+                  packet_loss: {
+                    audio: {
+                      rx: null,
+                      tx: null
+                    },
+                    video: {
+                      tx: null,
+                      rx: null
+                    }
+                  },
+                  video_frame_rate: {
+                    rx: null,
+                    tx: null
+                  }
+                }
+              ]
+            },
+            {
+              id: 12,
+              userName: 'iPhone 13 mini',
+              hostname: '',
+              networkType: 'Cellular',
+              macAddress: null,
+              device: 'Unknown',
+              ipAddress: '223.231.146.0',
+              joinTime: '2023-04-11T05:05:35.000Z',
+              leaveTime: '2023-04-11T05:08:08.000Z',
+              leaveReason: 'iPhone 13 mini left the meeting.<br>Reason: left the meeting.',
+              apDetails: null,
+              wifiMetrics: null,
+              callMetrics: [
+                {
+                  date_time: '2023-04-11T05:06:00Z',
+                  jitter: {
+                    audio: {
+                      rx: null,
+                      tx: null
+                    },
+                    video: {
+                      tx: null,
+                      rx: null
+                    }
+                  },
+                  latency: {
+                    audio: {
+                      rx: null,
+                      tx: null
+                    },
+                    video: {
+                      tx: null,
+                      rx: null
+                    }
+                  },
+                  packet_loss: {
+                    audio: {
+                      rx: null,
+                      tx: null
+                    },
+                    video: {
+                      tx: null,
+                      rx: null
+                    }
+                  },
+                  video_frame_rate: {
+                    rx: null,
+                    tx: null
+                  }
+                },
+                {
+                  date_time: '2023-04-11T05:07:00Z',
+                  jitter: {
+                    audio: {
+                      rx: null,
                       tx: null
                     },
                     video: {

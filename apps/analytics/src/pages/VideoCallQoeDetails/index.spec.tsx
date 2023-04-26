@@ -1,7 +1,7 @@
 import { Provider, videoCallQoeURL }                                   from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { callQoeTestDetailsFixtures1, callQoeTestDetailsFixtures2, callQoeTestDetailsFixtures3 } from '../VideoCallQoe/__tests__/fixtures'
+import { callQoeTestDetailsFixtures1, callQoeTestDetailsFixtures2, callQoeTestDetailsFixtures3, callQoeTestDetailsFixtures4 } from '../VideoCallQoe/__tests__/fixtures'
 
 import { VideoCallQoeDetails } from '.'
 
@@ -56,7 +56,7 @@ describe('VideoCallQoe Details Page',()=>{
   })
   it('render the page properly when call stats are null',async ()=>{
     mockGraphqlQuery(videoCallQoeURL, 'CallQoeTestDetails',
-      { data: callQoeTestDetailsFixtures3 })
+      { data: callQoeTestDetailsFixtures4 })
     const { asFragment } = render(
       <Provider>
         <VideoCallQoeDetails />
