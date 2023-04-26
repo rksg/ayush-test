@@ -12,6 +12,13 @@ import {
   deviceStatusColors,
   ColumnType
 } from '@acx-ui/components'
+import {
+  Features,
+  useIsSplitOn
+} from '@acx-ui/feature-toggle'
+import {
+  DownloadOutlined
+} from '@acx-ui/icons'
 import { useImportSwitchesMutation,
   useLazyGetJwtTokenQuery,
   useSwitchListQuery } from '@acx-ui/rc/services'
@@ -37,6 +44,8 @@ import { seriesSwitchStatusMapping } from '../DevicesWidget/helper'
 import { CsvSize, ImportFileDrawer } from '../ImportFileDrawer'
 import { SwitchCliSession }          from '../SwitchCliSession'
 import { useSwitchActions }          from '../useSwitchActions'
+
+import { useExportCsv } from './useExportCsv'
 
 export const SwitchStatus = (
   { row, showText = true }: { row: SwitchRow, showText?: boolean }
@@ -101,6 +110,8 @@ export function SwitchTable (props : SwitchTableProps) {
     option: { skip: Boolean(props.tableQuery) }
   })
   const tableQuery = props.tableQuery || inlineTableQuery
+  const { exportCsv, disabled } = useExportCsv<SwitchRow>(tableQuery as TableQuery<SwitchRow, RequestPayload<unknown>, unknown>)
+  const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
 
   const switchAction = useSwitchActions()
   const tableData = tableQuery.data?.data ?? []
@@ -337,6 +348,8 @@ export function SwitchTable (props : SwitchTableProps) {
         }
       }
       ] : [])}
+      // eslint-disable-next-line max-len
+      iconButton={exportDevice ? { icon: <DownloadOutlined />, disabled, onClick: exportCsv } : undefined}
     />
     <SwitchCliSession
       modalState={cliModalState}
