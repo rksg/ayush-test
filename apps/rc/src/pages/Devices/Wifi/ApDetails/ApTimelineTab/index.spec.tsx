@@ -2,9 +2,10 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { CommonUrlsInfo }                               from '@acx-ui/rc/utils'
-import { ApContextProvider }                            from '@acx-ui/rc/utils'
 import { Provider }                                     from '@acx-ui/store'
 import { mockServer, render, screen, mockRestApiQuery } from '@acx-ui/test-utils'
+
+import { ApContextProvider } from '../ApContextProvider'
 
 
 import { activities, events, eventsMeta } from './__tests__/fixtures'
