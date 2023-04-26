@@ -58,11 +58,11 @@ const subscriptionTypeFilterOpts = ($t: IntlShape['$t']) => [
 const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
   { key: '', value: $t({ defaultMessage: 'Show All' }) },
   {
-    key: 'valid',
+    key: 'active',
     value: $t({ defaultMessage: 'Show Active' })
   },
   {
-    key: 'invalid',
+    key: 'expired',
     value: $t({ defaultMessage: 'Show Expired' })
   }
 ]
