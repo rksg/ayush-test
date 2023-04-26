@@ -86,7 +86,7 @@ const VenueDHCPForm = (props: {
     setDHCPServiceID(dhcpInfo.id as string)
     refreshList()
   }, [venueDHCPProfile, form, dhcpInfo.id, dhcpInfo.primaryDHCP.serialNumber,
-    dhcpInfo.secondaryDHCP.serialNumber])
+    dhcpInfo.secondaryDHCP.serialNumber, apList])
 
 
   const resetForm = ()=>{
@@ -106,8 +106,10 @@ const VenueDHCPForm = (props: {
     return {
       enabled: venueDHCPProfile?.enabled,
       serviceProfileId: dhcpInfo?.id,
-      primaryServerSN: dhcpInfo?.primaryDHCP.serialNumber,
-      backupServerSN: dhcpInfo?.secondaryDHCP.serialNumber,
+      primaryServerSN: _.find(apList?.data, (ap)=> ap.serialNumber===
+        dhcpInfo?.primaryDHCP.serialNumber, 0)?dhcpInfo?.primaryDHCP.serialNumber:'',
+      backupServerSN: _.find(apList?.data, (ap)=> ap.serialNumber===
+        dhcpInfo?.secondaryDHCP.serialNumber, 0)?dhcpInfo?.secondaryDHCP.serialNumber:'',
       gateways: natGatewayList
     }
   }
