@@ -142,5 +142,11 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/edges/:serialNumber/configReset',
     newApi: true
+  },
+  downloadEdgesCSV: {
+    method: 'post',
+    url: '/edgeProfiles/inventories/query/csvFiles',
+    oldUrl: '/edgeProfiles/inventories/query/csvFiles',
+    newApi: true
   }
 }
