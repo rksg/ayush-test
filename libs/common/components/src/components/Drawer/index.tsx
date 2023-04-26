@@ -1,4 +1,4 @@
-import { KeyboardEvent, MouseEvent as ReactMouseEvent, RefObject, useRef, useEffect, useState } from 'react'
+import { KeyboardEvent, MouseEvent as ReactMouseEvent, RefObject, useRef, useEffect, useState, ReactNode } from 'react'
 
 import {  DrawerProps as AntDrawerProps } from 'antd'
 import Checkbox, { CheckboxChangeEvent }  from 'antd/lib/checkbox'
@@ -36,9 +36,14 @@ const Header = (props: DrawerHeaderProps) => {
 }
 
 export function useCloseOutsideClick (
-  ref: RefObject<HTMLDivElement | null>, onClose: CallableFunction, mask: boolean) {
+  ref: RefObject<HTMLDivElement | null>,
+  onClose: CallableFunction,
+  mask: boolean,
+  footer: ReactNode | undefined
+) {
   useEffect(() => {
     if (mask) return
+    if (footer) return
     const handleOutsideClick = (event: MouseEvent) => {
       const target = event.target as HTMLElement
       if (target && ref.current) {
@@ -50,7 +55,7 @@ export function useCloseOutsideClick (
     }
     document.addEventListener('mousedown', handleOutsideClick)
     return () => document.removeEventListener('mousedown', handleOutsideClick)
-  }, [onClose, ref, mask])
+  }, [onClose, ref, mask, footer])
 }
 
 export const Drawer = (props: DrawerProps) => {
@@ -58,7 +63,7 @@ export const Drawer = (props: DrawerProps) => {
   const headerProps = { title, icon, subTitle, onBackClick }
   const ref = useRef<HTMLDivElement | null>(null)
   const onClose = (event: ReactMouseEvent | KeyboardEvent) => props.onClose?.(event)
-  useCloseOutsideClick(ref, onClose, mask)
+  useCloseOutsideClick(ref, onClose, mask, props.footer)
   return (
     <div ref={ref}>
       <UI.Drawer
