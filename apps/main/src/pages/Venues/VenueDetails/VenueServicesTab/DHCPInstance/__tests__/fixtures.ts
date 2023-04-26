@@ -254,14 +254,12 @@ const pools = [
 ]
 
 export const mockVenueData = {
-  fields: ['id', 'mesh'],
-  totalCount: 3,
-  page: 1,
-  data: [
-    { id: 'mock_venue_1', mesh: {} },
-    { id: 'mock_venue_2', mesh: {} },
-    { id: 'mock_venue_3', mesh: {} }
-  ]
+  tenantId: '15a04f095a8f4a96acaf17e921e8a6df',
+  wifiFirmwareVersion: '6.2.0.103.486',
+  countryCode: 'US',
+  mesh: {
+    enabled: false
+  }
 }
 export const successResponse = { requestId: 'request-id' }
 
@@ -290,7 +288,7 @@ const handlers:Array<RestHandler> = [
   rest.delete(DHCPUrls.deactivateVenueDHCPPool.url,(_,res,ctx) =>
     res(ctx.json(successResponse))
   ),
-  rest.post(CommonUrlsInfo.getVenuesList.url,(_,res,ctx) =>
+  rest.get(CommonUrlsInfo.getVenueSettings.url,(_,res,ctx) =>
     res(ctx.json(mockVenueData))
   ),
   rest.post(DHCPUrls.updateVenueDHCPProfile.url,(_,res,ctx) =>
