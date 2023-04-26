@@ -1,6 +1,7 @@
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import _                       from 'lodash'
 
+import { Filter }                    from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   createHttpRequest,
@@ -54,9 +55,17 @@ import {
   SwitchRearView,
   Lag,
   SwitchVlan,
-  enableNewApi
+  enableNewApi,
+  downloadFile,
+  SEARCH,
+  SORTER
 } from '@acx-ui/rc/utils'
 import { baseSwitchApi } from '@acx-ui/store'
+
+export type SwitchsExportPayload = {
+  filters: Filter
+  tenantId: string
+} & SEARCH & SORTER
 
 export const switchApi = baseSwitchApi.injectEndpoints({
   endpoints: (build) => ({
@@ -1037,6 +1046,24 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    downloadSwitchsCSV: build.mutation<Blob, SwitchsExportPayload>({
+      query: (payload) => {
+        const req = createHttpRequest(SwitchUrlsInfo.downloadSwitchsCSV,
+          { tenantId: payload.tenantId }
+        )
+        return {
+          ...req,
+          body: payload,
+          responseHandler: async (response) => {
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1]
+              : 'download.csv'
+            downloadFile(response, fileName)
+          }
+        }
+      }
     })
     // getCliFamilyModels: build.query<CliProfileFamilyModels[], RequestPayload>({
     //   query: ({ params, payload }) => {
@@ -1236,5 +1263,6 @@ export const {
   useGetSwitchConfigProfileDetailQuery,
   useAddSwitchConfigProfileMutation,
   useUpdateSwitchConfigProfileMutation,
-  useGetSwitchModelListQuery
+  useGetSwitchModelListQuery,
+  useDownloadSwitchsCSVMutation
 } = switchApi
