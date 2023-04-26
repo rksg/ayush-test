@@ -1,32 +1,40 @@
 import { Col, Select, Form, Row, Typography } from 'antd'
 import { useIntl }                            from 'react-intl'
 
-import { usePreference } from '@acx-ui/rc/components'
+import { usePreference }             from '@acx-ui/rc/components'
+import { LangKey, useLocaleContext } from '@acx-ui/utils'
 
 import { MessageMapping } from '../MessageMapping'
 
+const DEFAULT_SYS_LANG = 'en-US'
 const DefaultSystemLanguageFormItem = () => {
+  const isDev = (window.location.hostname === 'localhost' ||
+                  window.location.hostname === 'devalto.ruckuswireless.com')
   const { $t } = useIntl()
   const {
-    currentPreferredLang,
+    currentDefaultLang,
     updatePartial: updatePreferences,
     getReqState,
     updateReqState
   } = usePreference()
 
-  const handlePreferredLangChange = (langCode: string) => {
+  const locale = useLocaleContext()
+  const handleDefaultLangChange = async (langCode: string) => {
     if (!langCode) return
     const payload = {
-      global: { preferredLanguage: langCode }
+      global: { defaultLanguage: langCode }
     }
-    updatePreferences({ newData: payload })
+    updatePreferences({ newData: payload, onSuccess: () => {
+      const code = langCode as LangKey
+      locale.setLang(code)
+    } })
   }
 
   const isLoadingPreference = getReqState.isLoading || getReqState.isFetching
   const isUpdatingPreference = updateReqState.isLoading
 
   const generateLangLabel = (val: string): string | undefined => {
-    const lang = (currentPreferredLang ?? 'en-US').slice(0, 2)
+    const lang = (currentDefaultLang ?? DEFAULT_SYS_LANG).slice(0, 2)
     const languageNames = new Intl.DisplayNames([val], { type: 'language' })
     const currLangDisplay = new Intl.DisplayNames([lang], { type: 'language' })
     if (lang === val) return currLangDisplay.of(val)
@@ -36,12 +44,20 @@ const DefaultSystemLanguageFormItem = () => {
     })
   }
 
-  const supportedLangs = [
-    'en-US'
-  ].map(val => ({
-    label: generateLangLabel(val.slice(0, 2)),
-    value: val
-  }))
+  let supportedLangs = []
+  if (isDev) {
+    // This is temporary conditional check for Dev env for QA testing
+    // Once we get actual translated language bundles we should clean this up
+    supportedLangs = [ 'en-US', 'ja-JP', 'fr-FR', 'pt-BR', 'ko-KR', 'es-ES'].map(val => ({
+      label: generateLangLabel(val.slice(0, 2)),
+      value: val
+    }))
+  } else {
+    supportedLangs = [DEFAULT_SYS_LANG].map(val => ({
+      label: generateLangLabel(val.slice(0, 2)),
+      value: val
+    }))
+  }
 
   return (
     <Row gutter={24}>
@@ -50,8 +66,8 @@ const DefaultSystemLanguageFormItem = () => {
           label={$t({ defaultMessage: 'Default System Language' })}
         >
           <Select
-            value={currentPreferredLang}
-            onChange={handlePreferredLangChange}
+            value={currentDefaultLang || DEFAULT_SYS_LANG}
+            onChange={handleDefaultLangChange}
             showSearch
             allowClear
             optionFilterProp='children'

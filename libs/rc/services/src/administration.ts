@@ -28,6 +28,7 @@ import {
   NewEntitlementSummary
 } from '@acx-ui/rc/utils'
 import { baseAdministrationApi } from '@acx-ui/store'
+import { LangKey, getTenantId }  from '@acx-ui/utils'
 
 export const administrationApi = baseAdministrationApi.injectEndpoints({
   endpoints: (build) => ({
@@ -527,6 +528,13 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
     })
   })
 })
+
+export function useYourDefaultLanguage (): LangKey {
+  const tenantId = getTenantId()
+  const { data } = useGetPreferencesQuery({ tenantId })
+  const lang = data?.global.defaultLanguage as LangKey
+  return lang
+}
 
 const transformAdministratorList = (data: Administrator[]) => {
   return data.map(item => {
