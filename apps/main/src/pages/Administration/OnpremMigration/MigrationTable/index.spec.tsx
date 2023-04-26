@@ -7,6 +7,7 @@ import {
   Provider
 } from '@acx-ui/store'
 import {
+  fireEvent,
   mockServer,
   render,
   screen,
@@ -44,8 +45,12 @@ describe('Migration Table', () => {
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    await screen.findByText('Bak Filename')
+    await screen.findByText('Backup File')
     expect(asFragment().querySelector('div[class="ant-space-item"]')).not.toBeNull()
+
+    const items = await screen.findAllByText('success')
+    fireEvent.click(items[0])
+    await screen.findByText('Migration Details')
   })
 
 })
