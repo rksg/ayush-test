@@ -42,9 +42,6 @@ export function BypassCaptiveNetworkAssistantCheckbox (props: BypassCNAProps) {
     if (editMode || cloneMode) {
       form.setFieldValue(['wlan', 'bypassCNA'], networkFromContextData?.wlan?.bypassCNA)
     }
-    else {
-      form.setFieldValue(['wlan', 'bypassCNA'], false)
-    }
   },[])
 
   const featureToggle = useIsSplitOn(Features.WIFI_EDA_BYPASS_CNA_TOGGLE)
@@ -63,6 +60,7 @@ export function BypassCaptiveNetworkAssistantCheckbox (props: BypassCNAProps) {
         name={['wlan', 'bypassCNA']}
         noStyle
         valuePropName='checked'
+        initialValue={false}
         children={
           <Checkbox
             data-testid='bypasscna-checkbox'
