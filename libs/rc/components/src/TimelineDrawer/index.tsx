@@ -5,6 +5,7 @@ import { TextAreaRef }                from 'antd/lib/input/TextArea'
 import { MessageDescriptor, useIntl } from 'react-intl'
 
 import { Drawer, Descriptions, Timeline, TimelineItem } from '@acx-ui/components'
+import { Activity }                                     from '@acx-ui/rc/utils'
 import { TimelineStatus }                               from '@acx-ui/types'
 import { noDataDisplay }                                from '@acx-ui/utils'
 
@@ -19,6 +20,7 @@ export interface DrawerProps {
   width?: number
   timeLine?: TimelineItem[]
   status?: TimelineStatus
+  activity?: Activity
 }
 
 export const TimelineDrawer = (props: DrawerProps) => {
@@ -46,7 +48,6 @@ export const TimelineDrawer = (props: DrawerProps) => {
           value={JSON.stringify(parsedError, null, 2)}
         />
         <UI.CopyButton
-          style={{ paddingLeft: 170 }}
           type='link'
           onClick={() => copyText(i.error!)}
         >{$t({ defaultMessage: 'Copy to clipboard' })}</UI.CopyButton>

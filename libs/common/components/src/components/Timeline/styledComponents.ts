@@ -64,6 +64,7 @@ export const ItemWrapper = styled.div`
 
 export const ContentWrapper = styled.div`
   margin: -27px 4px 0px 30px;
+  display: grid;
 `
 
 export const StatusWrapper = styled.div<{ status: TimelineStatus }>`

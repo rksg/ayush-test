@@ -18,6 +18,7 @@ export const FailureTextArea = styled(TextArea)`
     border-color: var(--acx-neutrals-30);
     box-shadow: none
   }
+  margin-top: 10px;
 `
 
 export const CopyButton = styled(Button)`
@@ -28,4 +29,5 @@ export const CopyButton = styled(Button)`
   color: var(--acx-accents-blue-50);
   height: auto;
   margin: 4px 0 4px auto;
+  justify-self: end;
 `

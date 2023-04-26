@@ -109,14 +109,13 @@ const Timeline = (props: TimelineProps) => {
                 <div>
                   <StatusComp status={item.status}/>
                   <DescriptionWrapper
-                    style={{ paddingBottom: item.status === 'FAIL' && item.error ? 10 : 0 }}
                   >{item.description}</DescriptionWrapper>
                 </div>
                 <ExpanderWrapper onClick={()=> {
                   const key = `${item.startDatetime}-${item.endDatetime}`
                   setExpand({ ...expand, [key]: !expand[key] })
                 }}>
-                  {item.status === 'FAIL' && item.error
+                  {item.children
                     ? expand[`${item.startDatetime}-${item.endDatetime}`]
                       ? <MinusSquareSolid/> : <PlusSquareSolid/>
                     : null}
