@@ -240,8 +240,12 @@ describe('Threshold Histogram chart', () => {
     const applyBtn = await screen.findByRole('button', { name: 'Apply' })
     expect(applyBtn).toBeDefined()
     fireEvent.click(applyBtn)
-    const errorMsgs = await screen.findByText('Error setting threshold, please try again later.')
-    expect(errorMsgs).toBeInTheDocument()
+    const errorTitle = await screen.findByText('Server Error')
+    expect(errorTitle).toBeInTheDocument()
+    const errorMsg = await screen.findByText(
+      'Error setting threshold, please try again later. (Network returned failure)'
+    )
+    expect(errorMsg).toBeInTheDocument()
   })
 
 
@@ -270,7 +274,8 @@ describe('Threshold Histogram chart', () => {
     const applyBtn = await screen.findByRole('button', { name: 'Apply' })
     expect(applyBtn).toBeDefined()
     fireEvent.click(applyBtn)
-    const errorMsgs = await screen.findByText('Error setting threshold, please try again later.')
+    const errorMsgs = await screen.findByText(
+      'Error setting threshold, please try again later. (Unknown Error)')
     expect(errorMsgs).toBeInTheDocument()
   })
 
