@@ -4,7 +4,7 @@ import { Form, Typography } from 'antd'
 import _                    from 'lodash'
 import { useIntl }          from 'react-intl'
 
-import { Modal, ModalType, StepsForm } from '@acx-ui/components'
+import { Modal, ModalType, StepsFormNew } from '@acx-ui/components'
 import {
   SwitchModelPortData,
   TrustedPort,
@@ -78,11 +78,27 @@ export function VlanPortsModal (props: {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onSaveUntagged = async (data: any) => {
+    console.log(data)
     setVlanSettingValues({
       ...vlanSettingValues,
       switchFamilyModels: {
         ...vlanSettingValues.switchFamilyModels,
-        ...data.switchFamilyModels
+        ...data.switchFamilyModels,
+        taggedPorts: vlanSettingValues.switchFamilyModels?.taggedPorts || []
+      }
+    })
+    return true
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const onSaveTagged = async (data: any) => {
+    console.log(data)
+    setVlanSettingValues({
+      ...vlanSettingValues,
+      switchFamilyModels: {
+        ...vlanSettingValues.switchFamilyModels,
+        ...data.switchFamilyModels,
+        untaggedPorts: vlanSettingValues.switchFamilyModels?.untaggedPorts || []
       }
     })
     return true
@@ -90,6 +106,7 @@ export function VlanPortsModal (props: {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onFinish = async (data: any) => {
+    console.log(data)
     const switchFamilyModelsData = {
       ...data.switchFamilyModels,
       title: '',
@@ -123,11 +140,13 @@ export function VlanPortsModal (props: {
     >
       <VlanPortsContext.Provider value={{
         vlanSettingValues, setVlanSettingValues, vlanList, editMode }}>
-        <StepsForm
+        <StepsFormNew
+          editMode={editMode}
           onCancel={onCancel}
           onFinish={onFinish}
+          style={{ paddingBlockEnd: 0 }}
         >
-          <StepsForm.StepForm
+          <StepsFormNew.StepForm
             title={$t({ defaultMessage: 'Select Model' })}
             onFinish={onSaveModel}
           >
@@ -142,17 +161,20 @@ export function VlanPortsModal (props: {
               </Typography.Text>
             }
             <SelectModelStep editMode={editRecord !== undefined}/>
-          </StepsForm.StepForm>
-          <StepsForm.StepForm
+          </StepsFormNew.StepForm>
+          <StepsFormNew.StepForm
             title={$t({ defaultMessage: 'Untagged Ports' })}
             onFinish={onSaveUntagged}
           >
             <UntaggedPortsStep />
-          </StepsForm.StepForm>
-          <StepsForm.StepForm title={$t({ defaultMessage: 'Tagged Ports' })}>
+          </StepsFormNew.StepForm>
+          <StepsFormNew.StepForm
+            title={$t({ defaultMessage: 'Tagged Ports' })}
+            onFinish={onSaveTagged}
+          >
             <TaggedPortsStep />
-          </StepsForm.StepForm>
-        </StepsForm>
+          </StepsFormNew.StepForm>
+        </StepsFormNew>
       </VlanPortsContext.Provider>
     </Modal>
   )

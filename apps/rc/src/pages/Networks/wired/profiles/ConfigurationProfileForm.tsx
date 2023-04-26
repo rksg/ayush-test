@@ -74,27 +74,6 @@ export function ConfigurationProfileForm () {
     return true
   }
 
-  const updateTrustedPortsCurrentData = async (data: Partial<SwitchConfigurationProfile>) => {
-    const hasEmptyTrustPorts = data.trustedPorts?.some(port => port.trustPorts.length === 0)
-
-    if(hasEmptyTrustPorts){
-      showActionModal({
-        type: 'error',
-        title: $t({ defaultMessage: 'Error' }),
-        content: $t({ defaultMessage:
-          'Please select trusted ports in order to make this configuration profile valid' })
-      })
-      return false
-    }
-
-    setCurrentData({
-      ...currentData,
-      ...data
-    })
-
-    return true
-  }
-
   const proceedData = (data: SwitchConfigurationProfile) => {
     if(data.trustedPorts){
       const vlanModels = data.vlans.map(
@@ -108,9 +87,9 @@ export function ConfigurationProfileForm () {
     return data
   }
 
-  const handleAddProfile = async (data: SwitchConfigurationProfile) => {
+  const handleAddProfile = async () => {
     try {
-      await addSwitchConfigProfile({ params, payload: proceedData(data) }).unwrap()
+      await addSwitchConfigProfile({ params, payload: proceedData(currentData) }).unwrap()
       setCurrentData({} as SwitchConfigurationProfile)
       navigate(linkToProfiles, { replace: true })
     } catch(err) {
@@ -118,14 +97,29 @@ export function ConfigurationProfileForm () {
     }
   }
 
-  const handleEditProfile = async (data: SwitchConfigurationProfile) => {
+  const handleEditProfile = async () => {
     try {
-      await updateSwitchConfigProfile({ params, payload: proceedData(data) }).unwrap()
+      if(ipv4DhcpSnooping || arpInspection){
+        const hasEmptyTrustPorts =
+          currentData.trustedPorts?.some(port => port.trustPorts.length === 0)
+
+        if(hasEmptyTrustPorts){
+          showActionModal({
+            type: 'error',
+            title: $t({ defaultMessage: 'Error' }),
+            content: $t({ defaultMessage:
+              'Please select trusted ports in order to make this configuration profile valid' })
+          })
+          return false
+        }
+      }
+      await updateSwitchConfigProfile({ params, payload: proceedData(currentData) }).unwrap()
       setCurrentData({} as SwitchConfigurationProfile)
       navigate(linkToProfiles)
     } catch (err) {
       console.log(err) // eslint-disable-line no-console
     }
+    return true
   }
 
   return (
@@ -172,7 +166,7 @@ export function ConfigurationProfileForm () {
           {(ipv4DhcpSnooping || arpInspection) &&
             <StepsFormNew.StepForm
               title={$t({ defaultMessage: 'Trusted Ports' })}
-              onFinish={updateTrustedPortsCurrentData}
+              onFinish={updateCurrentData}
             >
               <TrustedPorts />
             </StepsFormNew.StepForm>
