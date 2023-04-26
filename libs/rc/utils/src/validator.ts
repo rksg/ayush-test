@@ -33,6 +33,15 @@ export function serverIpAddressRegExp (value: string) {
   return Promise.resolve()
 }
 
+export function generalIpAddressRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp(/(\b25[0-5]|\b2[0-4][0-9]|\b[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}/)
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.ipAddress))
+  }
+  return Promise.resolve()
+}
+
 export function networkWifiPortRegExp (value: number) {
   const { $t } = getIntl()
   if (value && value <= 0){

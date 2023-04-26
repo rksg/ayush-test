@@ -155,6 +155,28 @@ storiesOf('MultiLineTimeSeriesChart', module)
     onMarkAreaClick={(data) => { console.log(data) }}
   />)
 
+  .add('With Horizontal Marker Areas and Marker Lines', () => <MultiLineTimeSeriesChart
+    style={{ width: 504, height: 300 }}
+    data={getSeriesData()}
+    markerAreas={[{
+      start: 1600,
+      itemStyle: { opacity: 0.1, color: cssStr(incidentSeverities.P1.color) }
+    },{
+      start: 0,
+      end: 600,
+      itemStyle: { opacity: 0.1, color: cssStr(incidentSeverities.P3.color) }
+    }]}
+    markerLines={[{
+      threshold: 1600,
+      lineStyle: { color: cssStr(incidentSeverities.P1.color) }
+    },{
+      threshold: 600,
+      lineStyle: { color: cssStr(incidentSeverities.P3.color) }
+    }]}
+    // eslint-disable-next-line no-console
+    onMarkAreaClick={(data) => { console.log(data) }}
+  />)
+
   .add('With Brush', () => <MultiLineTimeSeriesChart
     style={{ width: 504, height: 300 }}
     data={getSeriesData()}
