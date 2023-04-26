@@ -61,12 +61,10 @@ export function defaultRanges (subRange?: DateRange[]) {
   return defaultRange
 }
 
-export function computeRangeFilter <
-  Filter extends object & { dateFilter?: DateRangeFilter }
-> (
+export function computeRangeFilter <Filter extends object & { dateFilter?: DateRangeFilter }> (
   payload?: Filter,
   names = ['startDate', 'endDate']
-) {
+): { [key: string]: unknown } | undefined {
   if (!payload) return
 
   const { dateFilter, ...body } = payload

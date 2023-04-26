@@ -75,10 +75,20 @@ export const clientApi = baseClientApi.injectEndpoints({
       }
     }),
     getGuestsList: build.query<TableResult<Guest>, RequestPayload>({
-      query: ({ params, payload }) => ({
-        ...createHttpRequest(CommonUrlsInfo.getGuestsList, params),
-        body: latestTimeFilter(payload)
-      }),
+      query: ({ params, payload }) => {
+        const body = latestTimeFilter(payload)
+        const filters = body.filters?.fromTime && body.filters?.toTime
+          ? {
+            ...body.filters,
+            fromTime: [body.filters.fromTime],
+            toTime: [body.filters.toTime]
+          }
+          : body.filters
+        return {
+          ...createHttpRequest(CommonUrlsInfo.getGuestsList, params),
+          body: { ...body, filters }
+        }
+      },
       providesTags: [{ type: 'Guest', id: 'LIST' }],
       keepUnusedDataFor: 0,
       async onCacheEntryAdded (requestArgs, api) {
