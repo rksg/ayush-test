@@ -11,7 +11,8 @@ import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 import { ApPingForm } from './apPingForm'
 
 const params = { tenantId: 'tenant-id', serialNumber: 'serial-number' }
-jest.mock('../ApContext', () => ({
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
   useApContext: () => params
 }))
 
