@@ -33,7 +33,7 @@ describe('dateUtil', () => {
       const range = DateRange.last24Hours
       expect(getDateRangeFilter(range)).toMatchObject({
         range,
-        endDate: '2022-01-01T00:00:00+00:00',
+        endDate: '2022-01-01T00:00:59+00:00',
         startDate: '2021-12-31T00:00:00+00:00'
       })
 
@@ -41,7 +41,7 @@ describe('dateUtil', () => {
 
       expect(getDateRangeFilter(range)).toMatchObject({
         range,
-        endDate: '2022-01-01T00:05:00+00:00',
+        endDate: '2022-01-01T00:05:59+00:00',
         startDate: '2021-12-31T00:05:00+00:00'
       })
     })
@@ -49,7 +49,7 @@ describe('dateUtil', () => {
       const dateFilter = getDateRangeFilter('not valid' as DateRange)
       expect(dateFilter).toMatchObject({
         range: 'not valid',
-        endDate: '2022-01-01T00:00:00+00:00',
+        endDate: '2022-01-01T00:00:59+00:00',
         startDate: '2021-12-31T00:00:00+00:00'
       })
     })
@@ -75,14 +75,14 @@ describe('dateUtil', () => {
       expect(computeRangeFilter(filters)).toMatchObject({
         abc: 'def',
         startDate: '2021-12-31T00:00:00Z',
-        endDate: '2022-01-01T00:00:00Z'
+        endDate: '2022-01-01T00:00:59Z'
       })
     })
     it('allow customize field name', () => {
       expect(computeRangeFilter(filters, ['fromTime', 'toTime'])).toMatchObject({
         abc: 'def',
         fromTime: '2021-12-31T00:00:00Z',
-        toTime: '2022-01-01T00:00:00Z'
+        toTime: '2022-01-01T00:00:59Z'
       })
     })
   })

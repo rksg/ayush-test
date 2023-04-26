@@ -39,16 +39,16 @@ export function getDateRangeFilter (
 export function defaultRanges (subRange?: DateRange[]) {
   const defaultRange: Partial<{ [key in DateRange]: moment.Moment[] }> = {
     [DateRange.last24Hours]: [
-      moment().subtract(1, 'days').seconds(0),
-      moment().seconds(0)
+      moment().subtract(1, 'days').seconds(0).milliseconds(0),
+      moment().seconds(59).milliseconds(999)
     ],
     [DateRange.last7Days]: [
-      moment().subtract(7, 'days').seconds(0),
-      moment().seconds(0)
+      moment().subtract(7, 'days').seconds(0).milliseconds(0),
+      moment().seconds(59).milliseconds(999)
     ],
     [DateRange.last30Days]: [
-      moment().subtract(30, 'days').seconds(0),
-      moment().seconds(0)
+      moment().subtract(30, 'days').seconds(0).milliseconds(0),
+      moment().seconds(59).milliseconds(999)
     ],
     [DateRange.allTime]: [
       moment(),
