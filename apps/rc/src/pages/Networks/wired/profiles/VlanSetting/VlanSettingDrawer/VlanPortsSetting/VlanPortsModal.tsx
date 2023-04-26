@@ -25,7 +25,8 @@ export interface VlanSettingInterface {
   selectedOptionOfSlot3?: string
   selectedOptionOfSlot4?: string
   switchFamilyModels?: SwitchModelPortData
-  trustedPorts: TrustedPort[]
+  trustedPorts: TrustedPort[],
+  throughSecondStep?: boolean
 }
 
 export function VlanPortsModal (props: {
@@ -42,7 +43,12 @@ export function VlanPortsModal (props: {
   const [editMode, setEditMode] = useState(false)
   const [noModelMsg, setNoModelMsg] = useState(false)
   const [vlanSettingValues, setVlanSettingValues] =
-    useState<VlanSettingInterface>({ family: '', model: '', trustedPorts: [] })
+    useState<VlanSettingInterface>({
+      family: '',
+      model: '',
+      trustedPorts: [],
+      throughSecondStep: false
+    })
 
   useEffect(()=>{
     form.resetFields()
@@ -78,9 +84,9 @@ export function VlanPortsModal (props: {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onSaveUntagged = async (data: any) => {
-    console.log(data)
     setVlanSettingValues({
       ...vlanSettingValues,
+      throughSecondStep: true,
       switchFamilyModels: {
         ...vlanSettingValues.switchFamilyModels,
         ...data.switchFamilyModels,
@@ -92,7 +98,6 @@ export function VlanPortsModal (props: {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onSaveTagged = async (data: any) => {
-    console.log(data)
     setVlanSettingValues({
       ...vlanSettingValues,
       switchFamilyModels: {
@@ -106,7 +111,6 @@ export function VlanPortsModal (props: {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onFinish = async (data: any) => {
-    console.log(data)
     const switchFamilyModelsData = {
       ...data.switchFamilyModels,
       title: '',
@@ -121,7 +125,9 @@ export function VlanPortsModal (props: {
       }))
     switchFamilyModelsData.ports = data.switchFamilyModels.untaggedPorts.length +
       data.switchFamilyModels.taggedPorts.length
-    switchFamilyModelsData.untaggedPorts = data.switchFamilyModels.untaggedPorts.join(',')
+    switchFamilyModelsData.untaggedPorts = vlanSettingValues.throughSecondStep ?
+      data.switchFamilyModels.untaggedPorts.join(',') :
+      vlanSettingValues.switchFamilyModels?.untaggedPorts
     switchFamilyModelsData.taggedPorts = data.switchFamilyModels.taggedPorts.join(',')
     onSave(switchFamilyModelsData)
   }
