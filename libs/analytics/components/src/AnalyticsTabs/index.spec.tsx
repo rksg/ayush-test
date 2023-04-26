@@ -15,6 +15,14 @@ jest.mock('react-router-dom', () => ({
   useParams: jest.fn()
 }))
 
+jest.mock('../Incidents', () => ({
+  IncidentTabContent: () => <div>IncidentTabContent</div>
+}))
+
+jest.mock('../Health', () => ({
+  HealthPage: () => <div>HealthPage</div>
+}))
+
 describe('AnalyticsTabs', () => {
   beforeEach(() => {
     mockedUsedNavigate.mockReset()
