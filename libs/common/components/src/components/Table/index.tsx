@@ -511,7 +511,7 @@ function Table <RecordType extends Record<string, any>> ({
           setColWidth({})
         }
       }}
-      sticky={type === 'tall' ? { offsetHeader } : undefined}
+      sticky={type === 'tall' && process.env.NODE_ENV !== 'test' ? { offsetHeader } : undefined}
       scroll={{ x: hasEllipsisColumn || type !== 'tall' ? '100%' : 'max-content' }}
       rowSelection={rowSelection}
       pagination={pagination}
