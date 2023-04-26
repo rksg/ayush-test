@@ -116,6 +116,14 @@ describe('formatter', () => {
     123: '123',
     91890620: '91,890,620'
   }))
+  it('fpsFormat', () => testFormat('fpsFormat', {
+    123: '123 fps',
+    91890620: '91890620 fps'
+  }))
+  it('percent', () => testFormat('percent', {
+    123: '123 %',
+    0.918: '0.918 %'
+  }))
   describe('calendarFormat', () => {
     beforeEach(() => {
       jest
