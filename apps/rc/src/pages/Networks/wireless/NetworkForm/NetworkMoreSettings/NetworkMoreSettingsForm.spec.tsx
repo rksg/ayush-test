@@ -9,10 +9,12 @@ import { CommonUrlsInfo, NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum } fr
 import { Provider }                                                           from '@acx-ui/store'
 import { mockServer, within, render, screen, cleanup, fireEvent }             from '@acx-ui/test-utils'
 
-import { externalProviders, policyListResponse }      from '../__tests__/fixtures'
-import NetworkFormContext, { NetworkFormContextType } from '../NetworkFormContext'
+import { externalProviders, policyListResponse } from '../__tests__/fixtures'
+import { NetworkFormContextType }                from '../NetworkFormContext'
 
-import { MoreSettingsForm, NetworkMoreSettingsForm, enableBSSRules } from './NetworkMoreSettingsForm'
+import { MockedMoreSettingsForm, MoreSettingsFormTestCase } from './fixture'
+import { MoreSettingsForm, NetworkMoreSettingsForm }        from './NetworkMoreSettingsForm'
+
 
 const mockWlanData = {
   name: 'test',
@@ -225,41 +227,53 @@ describe('NetworkMoreSettingsForm', () => {
     expect(within(mgmtTxRateSelect).getByText(/5.5 mbps/i)).toBeVisible()
   })
   describe('Test case for Fast BSS Transition and Mobility Domain ID', () => {
+    /**
+      * Test case for Fast BSS Transition and Mobility Domain ID.
+      *
+      * Please note that OPEN network type is not in the test case
+      * due to it doesn't have security mode.
+      *
+      * And also note that AAA is not always need all protocal, I
+      * just put all protocal in the table and it will be easier
+      * for testing
+      *
+      * +-------------------+-----+------+-----+---------------+------+
+      * |     Protocal      | PSK | OPEN | AAA | CAPTIVEPORTAL | DPSK |
+      * +-------------------+-----+------+-----+---------------+------+
+      * | Open              | No  | No   | Yes | No            | No   |
+      * | WPAPersonal       | Yes | No   | Yes | Yes           | No   |
+      * | WPA2Personal      | Yes | No   | Yes | Yes           | No   |
+      * | WPAEnterprise     | Yes | No   | Yes | Yes           | No   |
+      * | WPA2Enterprise    | No  | No   | Yes | No            | No   |
+      * | OpenCaptivePortal | No  | No   | Yes | No            | No   |
+      * | WEP               | No  | No   | Yes | No            | No   |
+      * | None              | No  | No   | Yes | No            | No   |
+      * | WPA23Mixed        | Yes | No   | Yes | Yes           | No   |
+      * | WPA3              | Yes | No   | Yes | Yes           | No   |
+      * +-------------------+-----+------+-----+---------------+------+
+     */
 
-    describe('Test case for enableBSSRules.shouldBeEnabled()', () => {
-      it('test case that should return true', () => {
-        // eslint-disable-next-line max-len
-        expect(enableBSSRules.shouldBeEnabled(WlanSecurityEnum.WPA2Personal, NetworkTypeEnum.AAA, false)).toBeTruthy()
-        // eslint-disable-next-line max-len
-        expect(enableBSSRules.shouldBeEnabled(WlanSecurityEnum.WPA23Mixed, NetworkTypeEnum.PSK, true)).toBeTruthy()
-        // eslint-disable-next-line max-len
-        expect(enableBSSRules.shouldBeEnabled(WlanSecurityEnum.WPA3, NetworkTypeEnum.AAA, true)).toBeTruthy()
-      })
-      it('test case that should return false', () => {
-        // eslint-disable-next-line max-len
-        expect(enableBSSRules.shouldBeEnabled(WlanSecurityEnum.WPA2Personal, NetworkTypeEnum.PSK, false)).toBeFalsy()
-        // eslint-disable-next-line max-len
-        expect(enableBSSRules.shouldBeEnabled(WlanSecurityEnum.WPA23Mixed, NetworkTypeEnum.AAA, true)).toBeFalsy()
-        // eslint-disable-next-line max-len
-        expect(enableBSSRules.shouldBeEnabled(WlanSecurityEnum.WPA3, NetworkTypeEnum.DPSK, true)).toBeFalsy()
-        // eslint-disable-next-line max-len
-        expect(enableBSSRules.shouldBeEnabled(WlanSecurityEnum.WEP, NetworkTypeEnum.DPSK, true)).toBeFalsy()
-      })
+    beforeAll(() => {
+      jest.spyOn(console, 'error').mockImplementation(() => {})
     })
     describe('Test case for visibility of Fast BSS Transition and Mobility Domain Id', () => {
       it('Test case under feature toggle is disabled.', () => {
         jest.mocked(useIsSplitOn).mockReturnValue(false)
         for (let networkType in NetworkTypeEnum) {
+          const castedNetworkType = NetworkTypeEnum[networkType as keyof typeof NetworkTypeEnum]
+          if (castedNetworkType === 'open'){
+            cleanup()
+            continue
+          }
           for (let wlanSecurity in WlanSecurityEnum) {
             const castedWlanSecurity = wlanSecurity as WlanSecurityEnum
-            const castedNetworkType = NetworkTypeEnum[networkType as keyof typeof NetworkTypeEnum]
             const mockWlanData = { wlan: { wlanSecurity: castedWlanSecurity } } as NetworkSaveData
             // eslint-disable-next-line max-len
             const mockContextData = { editMode: true, data: { type: castedNetworkType } } as NetworkFormContextType
             const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
             render(MockedMoreSettingsForm(mockWlanData, mockContextData) ,{ route: { params } })
             // eslint-disable-next-line max-len
-            const isEnabled = enableBSSRules.shouldBeEnabled(castedWlanSecurity, castedNetworkType, false)
+            const isEnabled = MoreSettingsFormTestCase.shouldBeEnabled(castedWlanSecurity, castedNetworkType, false)
             const result = {
               BSSfullblock: screen.queryByTestId('enableFastRoaming-full-block') ? true : false,
               BSSinput: screen.queryByTestId('enableFastRoaming') ? true : false
@@ -275,16 +289,20 @@ describe('NetworkMoreSettingsForm', () => {
       it('Test case under feature toggle is enabled.', () => {
         jest.mocked(useIsSplitOn).mockReturnValue(true)
         for (let networkType in NetworkTypeEnum) {
+          const castedNetworkType = NetworkTypeEnum[networkType as keyof typeof NetworkTypeEnum]
+          if (castedNetworkType === 'open'){
+            cleanup()
+            continue
+          }
           for (let wlanSecurity in WlanSecurityEnum) {
             const castedWlanSecurity = wlanSecurity as WlanSecurityEnum
-            const castedNetworkType = NetworkTypeEnum[networkType as keyof typeof NetworkTypeEnum]
             const mockWlanData = { wlan: { wlanSecurity: castedWlanSecurity } } as NetworkSaveData
             // eslint-disable-next-line max-len
             const mockContextData = { editMode: true, data: { type: castedNetworkType } } as NetworkFormContextType
             const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
             render(MockedMoreSettingsForm(mockWlanData, mockContextData) ,{ route: { params } })
             // eslint-disable-next-line max-len
-            const isEnabled = enableBSSRules.shouldBeEnabled(castedWlanSecurity, castedNetworkType, true)
+            const isEnabled = MoreSettingsFormTestCase.shouldBeEnabled(castedWlanSecurity, castedNetworkType, true)
             const result = {
               BSSfullblock: screen.queryByTestId('enableFastRoaming-full-block') ? true : false,
               BSSinput: screen.queryByTestId('enableFastRoaming') ? true : false
@@ -297,32 +315,33 @@ describe('NetworkMoreSettingsForm', () => {
           }
         }
       })
-      it('Test case for visibility of Mobility Domain Id', () => {
-        jest.spyOn(console, 'error').mockImplementation(() => {})
-        const mockWlanData = { wlan: { wlanSecurity: WlanSecurityEnum.WPA3 } } as NetworkSaveData
-        // eslint-disable-next-line max-len
-        const mockContextData = { editMode: true, data: { type: NetworkTypeEnum.CAPTIVEPORTAL } } as NetworkFormContextType
-        const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
-        render(MockedMoreSettingsForm(mockWlanData, mockContextData) ,{ route: { params } })
-        const checkbox = screen.getByTestId('enableFastRoaming')
-        expect(checkbox).toBeVisible()
-        fireEvent.click(checkbox)
-        expect(screen.getByTestId('mobilityDomainId-full-block')).toBeVisible()
-        fireEvent.click(checkbox)
-        expect(screen.queryByTestId('mobilityDomainId-full-block')).toBeNull()
+      describe('Test case for visibility of Mobility Domain Id', () => {
+        it('Toggle enabled', () => {
+          jest.mocked(useIsSplitOn).mockReturnValue(true)
+          const mockWlanData = { wlan: { wlanSecurity: WlanSecurityEnum.WPA3 } } as NetworkSaveData
+          // eslint-disable-next-line max-len
+          const mockContextData = { editMode: true, data: { type: NetworkTypeEnum.CAPTIVEPORTAL } } as NetworkFormContextType
+          const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+          render(MockedMoreSettingsForm(mockWlanData, mockContextData) ,{ route: { params } })
+          const checkbox = screen.getByTestId('enableFastRoaming')
+          expect(checkbox).toBeVisible()
+          fireEvent.click(checkbox)
+          expect(screen.getByTestId('mobilityDomainId-full-block')).toBeVisible()
+          fireEvent.click(checkbox)
+          expect(screen.queryByTestId('mobilityDomainId-full-block')).toBeNull()
+        })
+        it('Toggle disabled', () => {
+          jest.mocked(useIsSplitOn).mockReturnValue(false)
+          const mockWlanData = { wlan: { wlanSecurity: WlanSecurityEnum.WPA3 } } as NetworkSaveData
+          // eslint-disable-next-line max-len
+          const mockContextData = { editMode: true, data: { type: NetworkTypeEnum.CAPTIVEPORTAL } } as NetworkFormContextType
+          const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+          render(MockedMoreSettingsForm(mockWlanData, mockContextData) ,{ route: { params } })
+          const checkbox = screen.queryByTestId('enableFastRoaming')
+          expect(checkbox).toBeNull()
+          expect(screen.queryByTestId('mobilityDomainId-full-block')).toBeNull()
+        })
       })
     })
   })
 })
-// eslint-disable-next-line max-len
-export function MockedMoreSettingsForm (wlanData: NetworkSaveData, networkFormContext: NetworkFormContextType) {
-  return (
-    <Provider>
-      <NetworkFormContext.Provider value={networkFormContext}>
-        <Form>
-          <MoreSettingsForm wlanData={wlanData} />
-        </Form>
-      </NetworkFormContext.Provider>
-    </Provider>
-  )
-}
