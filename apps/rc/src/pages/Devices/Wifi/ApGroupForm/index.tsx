@@ -207,10 +207,7 @@ export function ApGroupForm () {
                 }]}
                 children={<Select
                   disabled={isEditMode}
-                  options={[
-                    { label: $t({ defaultMessage: 'Select venue...' }), value: null },
-                    ...venueOption
-                  ]}
+                  options={venueOption}
                   onChange={async (value) => await handleVenueChange(value)}
                 />}
               />

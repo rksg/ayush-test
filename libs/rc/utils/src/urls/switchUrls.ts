@@ -571,5 +571,11 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/switchProfiles/:profileId',
     oldUrl: '/api/switch/tenant/:tenantId/profile/:profileId',
     newApi: true
+  },
+  downloadSwitchsCSV: {
+    method: 'post',
+    url: '/switches/inventories/query/csvFiles',
+    oldUrl: '/switches/inventories/query/csvFiles',
+    newApi: true
   }
 }

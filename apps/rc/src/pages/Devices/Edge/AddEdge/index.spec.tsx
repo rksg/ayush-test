@@ -6,7 +6,8 @@ import { CommonUrlsInfo, EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                     from '@acx-ui/store'
 import {
   fireEvent, mockServer, render,
-  screen
+  screen,
+  waitFor
 } from '@acx-ui/test-utils'
 
 import { mockValidationFailedDataWithDefinedCode, mockValidationFailedDataWithUndefinedCode, mockVenueData } from '../__tests__/fixtures'
@@ -92,6 +93,20 @@ describe('AddEdge', () => {
     expect(await screen.findByText('serialNumber must be up to 34 characters')).toBeVisible()
   })
 
+  it('should be blocked when serial number is invalid', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <AddEdge />
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/edge/add' }
+      })
+    const serialNumberInput = await screen.findByRole('textbox', { name: 'Serial Number' })
+    fireEvent.change(serialNumberInput, { target: { value: '12345' } })
+    await user.click(screen.getByRole('button', { name: 'Add' }))
+    expect(await screen.findByText('This field is invalid')).toBeVisible()
+  })
+
   it('should add edge successfully', async () => {
     const user = userEvent.setup()
     render(
@@ -107,15 +122,13 @@ describe('AddEdge', () => {
     fireEvent.change(edgeNameInput, { target: { value: 'edge_name_test' } })
     const serialNumberInput = screen.getByRole('textbox',
       { name: 'Serial Number' })
-    fireEvent.change(serialNumberInput, { target: { value: 'serial_number_test' } })
+    fireEvent.change(serialNumberInput, { target: { value: '96123456789' } })
     await user.click(screen.getByRole('button', { name: 'Add' }))
-    // AddEdge success should back to /devices/edge/list, use UI to test this case is normal
-    // but use jest always fail
-    // expect(mockedUsedNavigate).toHaveBeenCalledWith({
-    //   pathname: `/t/${params.tenantId}/devices/edge/list`,
-    //   hash: '',
-    //   search: ''
-    // })
+    await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: `/t/${params.tenantId}/devices/edge/list`,
+      hash: '',
+      search: ''
+    }, { replace: true }))
   })
 
   it('cancel and go back to device list', async () => {
@@ -169,7 +182,7 @@ describe('AddEdge api fail', () => {
     fireEvent.change(edgeNameInput, { target: { value: 'edge_name_test' } })
     const serialNumberInput = screen.getByRole('textbox',
       { name: 'Serial Number' })
-    fireEvent.change(serialNumberInput, { target: { value: 'serial_number_test' } })
+    fireEvent.change(serialNumberInput, { target: { value: '96123456789' } })
     await user.click(screen.getByRole('button', { name: 'Add' }))
     await screen.findByText("There's no available SmartEdge license")
   })
@@ -199,7 +212,7 @@ describe('AddEdge api fail', () => {
     fireEvent.change(edgeNameInput, { target: { value: 'edge_name_test' } })
     const serialNumberInput = screen.getByRole('textbox',
       { name: 'Serial Number' })
-    fireEvent.change(serialNumberInput, { target: { value: 'serial_number_test' } })
+    fireEvent.change(serialNumberInput, { target: { value: '96123456789' } })
     await user.click(screen.getByRole('button', { name: 'Add' }))
     await screen.findByText('Undefined message')
   })
