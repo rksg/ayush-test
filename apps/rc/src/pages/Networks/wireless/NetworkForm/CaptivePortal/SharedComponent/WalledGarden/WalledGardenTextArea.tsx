@@ -168,7 +168,7 @@ export function WalledGardenTextArea (props: WalledGardenProps) {
       label={<>{$t({ defaultMessage: 'Walled Garden' })}
         <Tooltip title={
           <FormattedMessage
-            values={{ br: (chunks) => <>{chunks}<br /></> }}
+            values={{ br: () => <br /> }}
             defaultMessage={`
               Unauthenticated users will be allowed to access these destinations(i.e., without redirection to captive portal).<br></br><br></br>
               Each destination should be entered in a new line. Accepted formats for destinations are:<br></br><br></br>
