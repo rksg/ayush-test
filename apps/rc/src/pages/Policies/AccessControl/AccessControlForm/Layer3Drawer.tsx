@@ -366,7 +366,11 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     return <div style={{ display: 'flex', flexDirection: 'column' }}>
       <span>{$t({ defaultMessage: 'IP:' })} {ipString}</span>
       { access !== 'BLOCK' && <span>
-        {$t({ defaultMessage: 'Port:' })} {network.port === '' ? AnyText : network.port }
+        {$t({ defaultMessage: 'Port:' })} {
+          network.port === '' || network.port === undefined
+            ? AnyText
+            : network.port
+        }
       </span> }
     </div>
   }
