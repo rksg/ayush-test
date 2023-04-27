@@ -2,9 +2,11 @@ import { Space }     from 'antd'
 import { maxBy }     from 'lodash'
 import { IntlShape } from 'react-intl'
 
-import { TrendPill, TrendType } from '@acx-ui/components'
+import { TrendType } from '@acx-ui/components'
 
 import { WifiMetrics } from '../VideoCallQoe/services'
+
+import { TrendCircle } from './styledComponents'
 
 const rssGroups = {
   good: { lower: -74 },
@@ -122,7 +124,7 @@ export const getConnectionQualityTooltip = (wifiMetrics: WifiMetrics | null,{ $t
     tooltipArr.push(
       <div style={{ paddingBottom: '5px' }} title={pillValue}>
         <Space>
-          {quality ? <TrendPill value='' trend={trend as TrendType} /> : '-'}
+          {quality ? <TrendCircle value='' trend={trend as TrendType} /> : '-'}
           {qualityTitle}
         </Space>
       </div>)

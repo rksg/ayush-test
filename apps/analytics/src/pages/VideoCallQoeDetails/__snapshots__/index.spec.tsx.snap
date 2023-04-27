@@ -561,7 +561,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 style="text-align: center;"
                               >
                                 <span
-                                  class="styledComponents__Pill-sc-j61ge1-0 NKxEo styledComponents__TrendCircle-cc9slb-1 bGmjdl"
+                                  class="styledComponents__Pill-sc-j61ge1-0 NKxEo"
                                   type="positive"
                                 >
                                   Good
@@ -5464,7 +5464,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 style="text-align: center;"
                               >
                                 <span
-                                  class="styledComponents__Pill-sc-j61ge1-0 chVxOo styledComponents__TrendCircle-cc9slb-1 bGmjdl"
+                                  class="styledComponents__Pill-sc-j61ge1-0 chVxOo"
                                   type="negative"
                                 >
                                   Bad
@@ -5568,7 +5568,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 style="text-align: center;"
                               >
                                 <span
-                                  class="styledComponents__Pill-sc-j61ge1-0 ddNaCp styledComponents__TrendCircle-cc9slb-1 bGmjdl"
+                                  class="styledComponents__Pill-sc-j61ge1-0 ddNaCp"
                                   type="none"
                                 >
                                   Average

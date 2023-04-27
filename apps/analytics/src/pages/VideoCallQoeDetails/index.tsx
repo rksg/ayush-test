@@ -6,9 +6,9 @@ import ReactECharts          from 'echarts-for-react'
 import { useIntl }           from 'react-intl'
 import AutoSizer             from 'react-virtualized-auto-sizer'
 
-import { TimeSeriesDataType, getSeriesData }                                                                                                   from '@acx-ui/analytics/utils'
-import { Loader, PageHeader, Table, TableProps, Tooltip, TrendType, cssStr,  Card, GridCol, GridRow, MultiLineTimeSeriesChart, NoData, Alert } from '@acx-ui/components'
-import { DateFormatEnum, formatter }                                                                                                           from '@acx-ui/formatter'
+import { TimeSeriesDataType, getSeriesData }                                                                                                              from '@acx-ui/analytics/utils'
+import { Loader, PageHeader, Table, TableProps, Tooltip, TrendType, cssStr,  Card, GridCol, GridRow, MultiLineTimeSeriesChart, NoData, Alert, TrendPill } from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                                                                                                      from '@acx-ui/formatter'
 import {
   EditOutlinedIcon
 } from '@acx-ui/icons'
@@ -160,7 +160,7 @@ export function VideoCallQoeDetails (){
             [trend,quality]=['positive', $t({ defaultMessage: 'Good' })]
 
           return <Tooltip title={connectionQualityTooltip}>
-            <UI.TrendCircle value={quality} trend={trend as TrendType} />
+            <TrendPill value={quality} trend={trend as TrendType} />
           </Tooltip>
         }
         else
