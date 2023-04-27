@@ -129,7 +129,9 @@ export const TableSettingsGlobalOverride = createGlobalStyle`
   }
 `
 
-const actionsHeight = '36px'
+const actionsHeight = '22px'
+const rowActionsHeight = '36px'
+const minColumnHeight = '45px'
 
 type StyledTable = {
   $type: 'tall' | 'compact' | 'tooltip' | 'form' | 'compactBordered',
@@ -142,10 +144,9 @@ export const ResizableHandle = styled.div``
 /* eslint-disable max-len */
 const tallStyle = css<StyledTable>`
   .ant-pro-table {
-    ${props => props.$rowSelectionActive && css`
-      .ant-table-wrapper {
-      }
-    `}
+    .ant-table-wrapper {
+      margin-top: -${minColumnHeight};
+    }
 
     .ant-table {
       &-thead > tr:last-child > th,
@@ -191,36 +192,38 @@ const tallStyle = css<StyledTable>`
     }
 
     &-list-toolbar {
+      height: ${minColumnHeight};
+      pointer-events: none; // prevent from blocking table header
       position: sticky;
-      top: calc(var(--sticky-offset) + (22px * var(--sticky-has-actions)) + (36px * var(--sticky-has-filters)));
+      top: calc(
+        var(--sticky-offset) +
+        (${actionsHeight} * var(--sticky-has-actions)) +
+        (${rowActionsHeight} * var(--sticky-has-filters))
+      );
       z-index: 4;
       overflow: visible;
       &-container {
         padding: 0;
         position: relative;
+        height: 100%;
       }
-      &-right {
-        // setting to 0 due to empty toolbar still take up space
-        // need to revisit this if we intend to use toolbar for other usage
-        height: 0;
-      }
-      &-setting-items .ant-space-item:last-child {
-        position: absolute;
-        right: 0;
-        z-index: 3;
-        top: 11px;
+      &-setting-item {
+        pointer-events: all; // enable setting button to be clickable
       }
     }
 
     &-alert {
       margin: 0px;
       position: sticky;
-      top: calc(var(--sticky-offset) + (22px * var(--sticky-has-actions)));
+      top: calc(
+        var(--sticky-offset) +
+        (${actionsHeight} * var(--sticky-has-actions))
+      );
       z-index: 4;
       overflow: visible;
 
       .ant-alert {
-        height: ${actionsHeight};
+        height: ${rowActionsHeight};
         background-color: var(--acx-accents-blue-10);
         border: var(--acx-accents-blue-10);
         padding: 10px 16px;
@@ -362,11 +365,14 @@ const styles = {
 }
 
 export const Header = styled.div`
-  height: ${actionsHeight};
+  height: ${rowActionsHeight};
   display: flex;
   justify-content: space-between;
   position: sticky;
-  top: calc(var(--sticky-offset) + (22px * var(--sticky-has-actions)));
+  top: calc(
+    var(--sticky-offset) +
+    (${actionsHeight} * var(--sticky-has-actions))
+  );
   z-index: 3;
   background-color: var(--acx-primary-white);
 `
