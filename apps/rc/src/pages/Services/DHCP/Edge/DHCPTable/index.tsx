@@ -26,15 +26,15 @@ const EdgeDhcpTable = () => {
       'updateAvailable',
       'serviceVersion',
       'tags'
-    ],
-    filters: {},
-    sortField: 'serviceName',
-    sortOrder: 'ASC',
-    searchTargetFields: ['serviceName']
+    ]
   }
   const tableQuery = useTableQuery({
     useQuery: useGetDhcpStatsQuery,
     defaultPayload: getDhcpStatsPayload,
+    sorter: {
+      sortField: 'serviceName',
+      sortOrder: 'ASC'
+    },
     search: {
       searchTargetFields: ['serviceName']
     }
@@ -45,7 +45,7 @@ const EdgeDhcpTable = () => {
     sortField: 'name',
     sortOrder: 'ASC'
   }
-  const { edgeOptions } = useGetEdgeListQuery(
+  const { edgeOptions = [] } = useGetEdgeListQuery(
     { payload: edgeOptionsDefaultPayload },
     {
       selectFromResult: ({ data }) => {
@@ -82,7 +82,8 @@ const EdgeDhcpTable = () => {
       title: $t({ defaultMessage: 'DHCP Pools' }),
       align: 'center',
       key: 'dhcpPoolNum',
-      dataIndex: 'dhcpPoolNum'
+      dataIndex: 'dhcpPoolNum',
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'SmartEdges' }),
@@ -90,18 +91,21 @@ const EdgeDhcpTable = () => {
       key: 'edgeNum',
       dataIndex: 'edgeNum',
       filterable: edgeOptions,
-      filterKey: 'edgeIds'
+      filterKey: 'edgeIds',
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'Venues' }),
       align: 'center',
       key: 'venueNum',
-      dataIndex: 'venueNum'
+      dataIndex: 'venueNum',
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'Health' }),
       key: 'health',
       dataIndex: 'health',
+      sorter: true,
       render (data, row) {
         return <EdgeDhcpServiceStatusLight data={row.health} />
       }
@@ -111,6 +115,7 @@ const EdgeDhcpTable = () => {
       align: 'center',
       key: 'updateAvailable',
       dataIndex: 'updateAvailable',
+      sorter: true,
       render (data, row) {
         return row.updateAvailable ? $t({ defaultMessage: 'Yes' }) : $t({ defaultMessage: 'No' })
       }
@@ -119,12 +124,14 @@ const EdgeDhcpTable = () => {
       title: $t({ defaultMessage: 'Service Version' }),
       align: 'center',
       key: 'serviceVersion',
-      dataIndex: 'serviceVersion'
+      dataIndex: 'serviceVersion',
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'Tags' }),
       key: 'tags',
       dataIndex: 'tags',
+      sorter: true,
       render (data, row) {
         return row.tags?.join(',')
       }

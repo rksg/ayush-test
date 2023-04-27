@@ -102,7 +102,7 @@ export const defaultHistoricalClientPayload = {
     'serialNumber', 'ssid', 'disconnectTime', 'cog', 'ssid', 'venueName', 'apName',
     'event_datetime', 'eventId', 'networkId'],
   sortField: 'event_datetime',
-  searchTargetFields: ['clientMac', 'userName', 'hostname'],
+  searchTargetFields: ['clientMac', 'userName', 'hostname', 'clientIP'],
   filters: {}
 }
 
