@@ -417,10 +417,6 @@ function Table <RecordType extends Record<string, any>> ({
     })
   }))
 
-  let offsetHeader = layout.y
-  if (props.actions?.length) offsetHeader += 22
-  if (hasHeader) offsetHeader += 36
-
   const headerItems = hasHeaderItems ? <>
     <div>
       <Space size={12}>
@@ -459,6 +455,17 @@ function Table <RecordType extends Record<string, any>> ({
       { type === 'tall' && iconButton && <IconButton {...iconButton}/> }
     </UI.HeaderComps>
   </> : null
+
+  let offsetHeader = layout.y
+  if (props.actions?.length) offsetHeader += 22
+  if (hasHeader) offsetHeader += 36
+  const sticky = type === 'tall' &&
+    // disable in test env as it will result in 2 tables rendered
+    // this is to prevent confusing/inconvenience for implementor
+    // to find out themselves when they are using Table and
+    // expect single table to be rendered
+    process.env.NODE_ENV !== 'test'
+    ? { offsetHeader } : undefined
 
   return <UI.Wrapper
     style={{
@@ -520,7 +527,7 @@ function Table <RecordType extends Record<string, any>> ({
           setColWidth({})
         }
       }}
-      sticky={type === 'tall' && process.env.NODE_ENV !== 'test' ? { offsetHeader } : undefined}
+      sticky={sticky}
       scroll={{ x: hasEllipsisColumn || type !== 'tall' ? '100%' : 'max-content' }}
       rowSelection={rowSelection}
       pagination={pagination}
