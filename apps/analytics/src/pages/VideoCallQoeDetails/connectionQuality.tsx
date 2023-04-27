@@ -1,7 +1,10 @@
-import { Space } from 'antd'
-import { maxBy } from 'lodash'
+import { Space }     from 'antd'
+import { maxBy }     from 'lodash'
+import { IntlShape } from 'react-intl'
 
 import { TrendPill, TrendType } from '@acx-ui/components'
+
+import { WifiMetrics } from '../VideoCallQoe/services'
 
 const rssGroups = {
   good: { lower: -74 },
@@ -77,54 +80,44 @@ export const takeWorseQuality = (qualities: string[]) => {
   return max?.quality
 }
 
-export const getConnectionQuality = (wifiMetrics:{
-    rss: number | null
-    snr: number | null
-    avgTxMCS: number | null
-    throughput: number | null
-  } | null) => {
+export const getConnectionQuality = (wifiMetrics:WifiMetrics | null) => {
   if(!wifiMetrics){
     return null
   }
-  const qualities = Object.entries<number|null>(wifiMetrics).map(([key,value])=>
+  const qualities = Object.entries(wifiMetrics).map(([key,value])=>
     getConnectionQualityFor(key,value)).filter(q => q !== null)
   return takeWorseQuality(qualities as string[])
 }
 
-export const getConnectionQualityTooltip = (wifiMetrics:{
-  rss: number | null
-  snr: number | null
-  avgTxMCS: number | null
-  throughput: number | null
-} | null) => {
+export const getConnectionQualityTooltip = (wifiMetrics: WifiMetrics | null,{ $t }:IntlShape) => {
   if(!wifiMetrics){
     return []
   }
   const tooltipArr: JSX.Element[]=[]
-  Object.entries<number|null>(wifiMetrics).forEach(([key,value])=>{
+  Object.entries(wifiMetrics).forEach(([key,value])=>{
     const quality = getConnectionQualityFor(key,value)
     let qualityTitle = ''
     switch (key) {
       case 'rss':
-        qualityTitle='RSS'
+        qualityTitle=$t({ defaultMessage: 'RSS' })
         break
       case 'snr':
-        qualityTitle='SNR'
+        qualityTitle=$t({ defaultMessage: 'SNR' })
         break
       case 'avgTxMCS':
-        qualityTitle='Avg. MCS (Downlink)'
+        qualityTitle=$t({ defaultMessage: 'Avg. MCS (Downlink)' })
         break
       case 'throughput':
-        qualityTitle='Client Throughput'
+        qualityTitle=$t({ defaultMessage: 'Client Throughput' })
         break
     }
-    let [trend,pillValue] = ['none','None']
+    let [trend,pillValue] = ['none',$t({ defaultMessage: 'None' })]
     if(quality === 'bad')
-      [trend,pillValue]=['negative','Bad']
+      [trend,pillValue]=['negative',$t({ defaultMessage: 'Bad' })]
     else if(quality === 'good')
-      [trend,pillValue]=['positive','Good']
+      [trend,pillValue]=['positive',$t({ defaultMessage: 'Good' })]
     else if(quality === 'average')
-      [trend,pillValue]=['none','Average']
+      [trend,pillValue]=['none',$t({ defaultMessage: 'Average' })]
 
     tooltipArr.push(
       <div style={{ paddingBottom: '5px' }} title={pillValue}>

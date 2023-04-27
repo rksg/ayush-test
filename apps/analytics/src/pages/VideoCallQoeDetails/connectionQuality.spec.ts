@@ -1,15 +1,22 @@
+import { useIntl } from 'react-intl'
+
+import { renderHook } from '@acx-ui/test-utils'
+
+import { WifiMetrics } from '../VideoCallQoe/services'
+
 import { getConnectionQuality, getConnectionQualityFor, getConnectionQualityTooltip, takeWorseQuality } from './connectionQuality'
 
 describe('connectionQuality', () => {
   test('wifiMetrices having null', () => {
-    const connectionQuality = {
+    const connectionQuality:WifiMetrics|null = {
       rss: null,
       snr: null,
       avgTxMCS: null,
       throughput: null
     }
     const quality = getConnectionQuality(connectionQuality)
-    const tooltip = getConnectionQualityTooltip(connectionQuality)
+    const { current: tooltip } = renderHook(()=>
+      getConnectionQualityTooltip(connectionQuality, useIntl())).result
     expect(quality).toBe(null)
     expect(tooltip).toMatchSnapshot()
   })

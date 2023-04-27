@@ -30,7 +30,12 @@ export interface DetailedResponse {
     } []
   } []
 }
-
+export interface WifiMetrics {
+  rss: number | null
+  snr: number | null
+  avgTxMCS: number | null
+  throughput: number| null
+}
 export interface Participants{
   id: number
   userName: string
@@ -52,12 +57,7 @@ export interface Participants{
     ssid: string | null
     radio: string | null
   } | null
-  wifiMetrics: {
-    rss: number
-    snr: number
-    avgTxMCS: number
-    throughput: number
-  } | null
+  wifiMetrics: WifiMetrics | null
   callMetrics: {
     date_time: TimeStamp
     jitter: {

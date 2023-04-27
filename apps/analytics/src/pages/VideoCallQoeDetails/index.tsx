@@ -15,13 +15,14 @@ import {
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 
-import { DetailedResponse, Participants, useVideoCallQoeTestDetailsQuery } from '../VideoCallQoe/services'
+import { DetailedResponse, Participants, WifiMetrics, useVideoCallQoeTestDetailsQuery } from '../VideoCallQoe/services'
 
 import { getConnectionQuality, getConnectionQualityTooltip, zoomStatsThresholds } from './connectionQuality'
 import * as UI                                                                    from './styledComponents'
 
 export function VideoCallQoeDetails (){
-  const { $t } = useIntl()
+  const intl= useIntl()
+  const { $t } = intl
   const { testId } = useParams()
   const queryResults = useVideoCallQoeTestDetailsQuery({ testId: Number(testId),status: 'ENDED' })
   const callQoeDetails = queryResults.data?.getAllCallQoeTests.at(0)
@@ -147,21 +148,16 @@ export function VideoCallQoeDetails (){
       align: 'center',
       width: 150,
       render: (value:unknown)=>{
-        const wifiMetrics = value as {
-          rss: number
-          snr: number
-          avgTxMCS: number
-          throughput: number
-        } | null
+        const wifiMetrics = value as WifiMetrics | null
         const connectionQuality = getConnectionQuality(wifiMetrics)
-        const connectionQualityTooltip = getConnectionQualityTooltip(wifiMetrics)
+        const connectionQualityTooltip = getConnectionQualityTooltip(wifiMetrics, intl)
 
         if(connectionQuality){
-          let [trend,quality] = ['none','Average']
+          let [trend,quality] = ['none', $t({ defaultMessage: 'Average' })]
           if(connectionQuality === 'bad')
-            [trend,quality]=['negative','Bad']
+            [trend,quality]=['negative', $t({ defaultMessage: 'Bad' })]
           else if(connectionQuality === 'good')
-            [trend,quality]=['positive','Good']
+            [trend,quality]=['positive', $t({ defaultMessage: 'Good' })]
 
           return <Tooltip title={connectionQualityTooltip}>
             <TrendPill value={quality} trend={trend as TrendType} />
