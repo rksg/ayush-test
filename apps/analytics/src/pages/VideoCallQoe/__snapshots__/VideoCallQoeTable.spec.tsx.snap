@@ -6,11 +6,11 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 dbQSib"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 UEvh"
       style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-filters: 1;"
     >
       <div
-        class="styledComponents__Header-sc-1abm7iv-10 eLtgPA"
+        class="styledComponents__Header-sc-1abm7iv-10 fzRCig"
       >
         <div>
           <div
@@ -759,8 +759,8 @@ exports[`VideoCallQoe Table should render table 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 gXBDPk"
-      style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-filters: 0;"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 jmSCV"
+      style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-filters: 1;"
     >
       <div
         class="ant-pro-table"

@@ -291,7 +291,13 @@ function Table <RecordType extends Record<string, any>> ({
   })
 
   const hasRowSelected = Boolean(selectedRowKeys.length)
-  const hasHeader = !hasRowSelected &&
+  const hasHeader = [
+    props.rowSelection?.type,
+    filterables.length,
+    searchables.length,
+    iconButton
+  ].some(Boolean)
+  const hasHeaderItems = !hasRowSelected &&
     (Boolean(filterables.length) || Boolean(searchables.length) || Boolean(iconButton))
   const selectAllRowSelection = {
     columnWidth: '45px',
@@ -412,8 +418,47 @@ function Table <RecordType extends Record<string, any>> ({
   }))
 
   let offsetHeader = layout.y
-  if (props.actions?.length) offsetHeader += 18
-  if (hasHeader || rowSelection?.type) offsetHeader += 36
+  if (props.actions?.length) offsetHeader += 22
+  if (hasHeader) offsetHeader += 36
+
+  const headerItems = hasHeaderItems ? <>
+    <div>
+      <Space size={12}>
+        {Boolean(searchables.length) &&
+          renderSearch<RecordType>(
+            intl, searchables, searchValue, setSearchValue, searchWidth
+          )}
+        {filterables.map((column, i) =>
+          renderFilter<RecordType>(
+            column, i, dataSource, filterValues,
+            setFilterValues, !!enableApiFilter, filterWidth)
+        )}
+        {Boolean(groupable.length) && <GroupSelect<RecordType>
+          $t={$t}
+          groupable={groupable}
+          setValue={setGroupByValue}
+          value={groupByValue}
+          style={{ width: filterWidth }}
+        />}
+      </Space>
+    </div>
+    <UI.HeaderComps>
+      {(
+        Boolean(activeFilters.length) ||
+        (Boolean(searchValue) && searchValue.length >= MIN_SEARCH_LENGTH) ||
+        isGroupByActive)
+        && <Button
+          style={props.floatRightFilters ? { marginLeft: '12px' } : {}}
+          onClick={() => {
+            setFilterValues({} as Filter)
+            setSearchValue('')
+            setGroupByValue(undefined)
+          }}>
+          {$t({ defaultMessage: 'Clear Filters' })}
+        </Button>}
+      { type === 'tall' && iconButton && <IconButton {...iconButton}/> }
+    </UI.HeaderComps>
+  </> : null
 
   return <UI.Wrapper
     style={{
@@ -424,7 +469,7 @@ function Table <RecordType extends Record<string, any>> ({
     } as React.CSSProperties}
     $type={type}
     $rowSelectionActive={
-      Boolean(props.rowSelection) && !hasHeader && props.tableAlertRender !== false
+      Boolean(props.rowSelection) && !hasHeaderItems && props.tableAlertRender !== false
     }
   >
     <UI.TableSettingsGlobalOverride />
@@ -451,46 +496,10 @@ function Table <RecordType extends Record<string, any>> ({
           : content
       })}
     </UI.ActionsContainer>}
-    {hasHeader && (
-      <UI.Header style={props.floatRightFilters ? { float: 'right' } : {}}>
-        <div>
-          <Space size={12}>
-            {Boolean(searchables.length) &&
-              renderSearch<RecordType>(
-                intl, searchables, searchValue, setSearchValue, searchWidth
-              )}
-            {filterables.map((column, i) =>
-              renderFilter<RecordType>(
-                column, i, dataSource, filterValues,
-                setFilterValues, !!enableApiFilter, filterWidth)
-            )}
-            {Boolean(groupable.length) && <GroupSelect<RecordType>
-              $t={$t}
-              groupable={groupable}
-              setValue={setGroupByValue}
-              value={groupByValue}
-              style={{ width: filterWidth }}
-            />}
-          </Space>
-        </div>
-        <UI.HeaderComps>
-          {(
-            Boolean(activeFilters.length) ||
-            (Boolean(searchValue) && searchValue.length >= MIN_SEARCH_LENGTH) ||
-            isGroupByActive)
-            && <Button
-              style={props.floatRightFilters ? { marginLeft: '12px' } : {}}
-              onClick={() => {
-                setFilterValues({} as Filter)
-                setSearchValue('')
-                setGroupByValue(undefined)
-              }}>
-              {$t({ defaultMessage: 'Clear Filters' })}
-            </Button>}
-          { type === 'tall' && iconButton && <IconButton {...iconButton}/> }
-        </UI.HeaderComps>
-      </UI.Header>
-    )}
+    {!hasRowSelected && hasHeader && <UI.Header
+      style={props.floatRightFilters ? { justifyContent: 'flex-end' } : {}}
+      children={headerItems}
+    />}
     <ProTable<RecordType>
       {...props}
       dataSource={enableApiFilter

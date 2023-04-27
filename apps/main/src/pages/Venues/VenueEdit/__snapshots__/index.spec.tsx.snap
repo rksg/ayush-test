@@ -3,7 +3,7 @@
 exports[`VenueEdit should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 cbMLbS"
+    class="styledComponents__Wrapper-sc-xov27h-0 DOqVh"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -237,9 +237,9 @@ exports[`VenueEdit should render correctly 1`] = `
         </div>
       </div>
     </div>
+    <div
+      class="styledComponents__Spacer-sc-xov27h-1 ikA-dJH"
+    />
   </div>
-  <div
-    class="styledComponents__Spacer-sc-xov27h-1 ikA-dJH"
-  />
 </DocumentFragment>
 `;

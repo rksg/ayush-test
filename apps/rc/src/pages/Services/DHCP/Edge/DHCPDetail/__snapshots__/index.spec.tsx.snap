@@ -3,7 +3,7 @@
 exports[`EdgeDhcpDetail Should render EdgeDhcpDetail successfully 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 cbMLbS"
+    class="styledComponents__Wrapper-sc-xov27h-0 DOqVh"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -355,7 +355,7 @@ exports[`EdgeDhcpDetail Should render EdgeDhcpDetail successfully 1`] = `
                   Instances (0)
                 </h2>
                 <div
-                  class="styledComponents__Wrapper-sc-1abm7iv-12 dbQSib"
+                  class="styledComponents__Wrapper-sc-1abm7iv-12 UEvh"
                   style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-filters: 0;"
                 >
                   <div

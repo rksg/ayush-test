@@ -3,7 +3,7 @@
 exports[`NetworkForm should create different SSID successfully 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 cbMLbS"
+    class="styledComponents__Wrapper-sc-xov27h-0 DOqVh"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -1037,7 +1037,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                             class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
                           >
                             <div
-                              class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
+                              class="styledComponents__FallbackWrapper-sc-1352uh8-1 kymHqF"
                             >
                               <span
                                 aria-label="loader"
@@ -1069,9 +1069,12 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                               </span>
                             </div>
                             <div
-                              class="styledComponents__Wrapper-sc-1abm7iv-12 gXBDPk"
-                              style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-filters: 0;"
+                              class="styledComponents__Wrapper-sc-1abm7iv-12 jmSCV"
+                              style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-filters: 1;"
                             >
+                              <div
+                                class="styledComponents__Header-sc-1abm7iv-10 fzRCig"
+                              />
                               <div
                                 class="ant-pro-table"
                               >
@@ -2242,7 +2245,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
 exports[`NetworkForm should create open network successfully 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 cbMLbS"
+    class="styledComponents__Wrapper-sc-xov27h-0 DOqVh"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -2968,7 +2971,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                             class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
                           >
                             <div
-                              class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
+                              class="styledComponents__FallbackWrapper-sc-1352uh8-1 kymHqF"
                             >
                               <span
                                 aria-label="loader"

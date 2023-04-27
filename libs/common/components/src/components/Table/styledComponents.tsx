@@ -144,12 +144,10 @@ const tallStyle = css<StyledTable>`
   .ant-pro-table {
     ${props => props.$rowSelectionActive && css`
       .ant-table-wrapper {
-        padding-top: ${actionsHeight};
       }
     `}
 
     .ant-table {
-
       &-thead > tr:last-child > th,
       &-thead > tr:first-child > th[rowspan] {
         &:not(.ant-table-selection-column):not(.ant-table-cell-fix-right) {
@@ -194,7 +192,7 @@ const tallStyle = css<StyledTable>`
 
     &-list-toolbar {
       position: sticky;
-      top: calc(var(--sticky-offset) + (18px * var(--sticky-has-actions)) + (36px * var(--sticky-has-filters)));
+      top: calc(var(--sticky-offset) + (22px * var(--sticky-has-actions)) + (36px * var(--sticky-has-filters)));
       z-index: 4;
       overflow: visible;
       &-container {
@@ -210,15 +208,16 @@ const tallStyle = css<StyledTable>`
         position: absolute;
         right: 0;
         z-index: 3;
-        top: ${props => props.$rowSelectionActive ? `calc(11px + ${actionsHeight})` : '11px' };
+        top: 11px;
       }
     }
 
     &-alert {
       margin: 0px;
-      position: absolute;
-      left: 0;
-      right: 0;
+      position: sticky;
+      top: calc(var(--sticky-offset) + (22px * var(--sticky-has-actions)));
+      z-index: 4;
+      overflow: visible;
 
       .ant-alert {
         height: ${actionsHeight};
@@ -231,6 +230,14 @@ const tallStyle = css<StyledTable>`
           line-height: var(--acx-body-4-line-height);
         }
       }
+    }
+
+    .ant-pagination {
+      position: relative;
+      z-index: 4;
+      background-color: var(--acx-primary-white);
+      padding: 16px 0;
+      margin: unset;
     }
   }
 `
@@ -359,7 +366,7 @@ export const Header = styled.div`
   display: flex;
   justify-content: space-between;
   position: sticky;
-  top: calc(var(--sticky-offset) + (18px * var(--sticky-has-actions)));
+  top: calc(var(--sticky-offset) + (22px * var(--sticky-has-actions)));
   z-index: 3;
   background-color: var(--acx-primary-white);
 `
@@ -542,7 +549,7 @@ export const GroupCell = styled.div`
 export const ActionsContainer = styled(Space)`
   display: flex;
   justify-content: flex-end;
-  margin: 3px 0;
+  padding: 3px 0;
   position: sticky;
   top: var(--sticky-offset);
   background-color: var(--acx-primary-white);

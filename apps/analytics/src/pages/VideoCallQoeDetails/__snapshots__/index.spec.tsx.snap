@@ -6,7 +6,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-xov27h-0 cbMLbS"
+      class="styledComponents__Wrapper-sc-xov27h-0 DOqVh"
     >
       <div
         class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -179,7 +179,8 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
       Participant Details
     </div>
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 jdrCXZ"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 UEvh"
+      style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-filters: 0;"
     >
       <div
         class="ant-pro-table"
@@ -4987,7 +4988,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-xov27h-0 cbMLbS"
+      class="styledComponents__Wrapper-sc-xov27h-0 DOqVh"
     >
       <div
         class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -5123,7 +5124,8 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
       Participant Details
     </div>
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 jdrCXZ"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 UEvh"
+      style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-filters: 0;"
     >
       <div
         class="ant-pro-table"
@@ -9655,7 +9657,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-xov27h-0 cbMLbS"
+      class="styledComponents__Wrapper-sc-xov27h-0 DOqVh"
     >
       <div
         class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -9829,7 +9831,8 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
       </div>
     </div>
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 jdrCXZ"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 UEvh"
+      style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-filters: 0;"
     >
       <div
         class="ant-pro-table"
@@ -11133,7 +11136,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-xov27h-0 cbMLbS"
+      class="styledComponents__Wrapper-sc-xov27h-0 DOqVh"
     >
       <div
         class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -11307,7 +11310,8 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
       </div>
     </div>
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 jdrCXZ"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 UEvh"
+      style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-filters: 0;"
     >
       <div
         class="ant-pro-table"
