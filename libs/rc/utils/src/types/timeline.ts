@@ -28,8 +28,8 @@ export interface Activity {
     endDatetime: string
     error?: string
   }[]
-tenantId: string
-useCase: string
+  tenantId: string
+  useCase: string
 }
 
 export interface EventBase {

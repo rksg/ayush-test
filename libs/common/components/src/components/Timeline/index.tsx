@@ -63,7 +63,7 @@ export interface TimelineItem {
 
 interface TimelineProps {
   items: TimelineItem[]
-  status?: TimelineStatus
+  status: TimelineStatus
 }
 
 enum TimelineType {
@@ -134,7 +134,7 @@ const Timeline = (props: TimelineProps) => {
   return <Wrapper>
     <Descriptions>
       <Descriptions.Item label={$t({ defaultMessage: 'Current Status' })}>
-        {$t(statusMap[props.status!])}
+        {$t(statusMap[props.status])}
       </Descriptions.Item>
     </Descriptions>
     <AntTimeline>
