@@ -81,6 +81,7 @@ export const apApi = baseApApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
+            'AddAp',
             'AddAps',
             'UpdateAp',
             'DeleteAp',
@@ -182,8 +183,6 @@ export const apApi = baseApApi.injectEndpoints({
             const response = await api.cacheDataLoaded
             if (response && msg.useCase === 'ImportApsCsv'
             && ((msg.steps?.find((step) => {
-              return step.id === 'ImportAps'
-            })?.status === 'FAIL') || (msg.steps?.find((step) => {
               return step.id === 'PostProcessedImportAps'
             })?.status !== 'IN_PROGRESS'))) {
               (requestArgs.callback as Function)(response.data)

@@ -5,6 +5,7 @@ import { usePreference } from '@acx-ui/rc/components'
 
 import { MessageMapping } from '../MessageMapping'
 
+const DEFAULT_SYS_LANG = 'en-US'
 const DefaultSystemLanguageFormItem = () => {
   const { $t } = useIntl()
   const {
@@ -26,7 +27,7 @@ const DefaultSystemLanguageFormItem = () => {
   const isUpdatingPreference = updateReqState.isLoading
 
   const generateLangLabel = (val: string): string | undefined => {
-    const lang = (currentPreferredLang ?? 'en-US').slice(0, 2)
+    const lang = (currentPreferredLang ?? DEFAULT_SYS_LANG).slice(0, 2)
     const languageNames = new Intl.DisplayNames([val], { type: 'language' })
     const currLangDisplay = new Intl.DisplayNames([lang], { type: 'language' })
     if (lang === val) return currLangDisplay.of(val)
@@ -37,7 +38,7 @@ const DefaultSystemLanguageFormItem = () => {
   }
 
   const supportedLangs = [
-    'en-US'
+    DEFAULT_SYS_LANG // FIXME: should be updated when supportedLangs is ready
   ].map(val => ({
     label: generateLangLabel(val.slice(0, 2)),
     value: val
@@ -50,7 +51,7 @@ const DefaultSystemLanguageFormItem = () => {
           label={$t({ defaultMessage: 'Default System Language' })}
         >
           <Select
-            value={currentPreferredLang}
+            value={currentPreferredLang || DEFAULT_SYS_LANG}
             onChange={handlePreferredLangChange}
             showSearch
             allowClear

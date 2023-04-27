@@ -664,13 +664,7 @@ export function StackForm () {
                     initialValue={null}
                     children={
                       <Select
-                        options={[
-                          {
-                            label: $t({ defaultMessage: 'Select venue...' }),
-                            value: null
-                          },
-                          ...venueOption
-                        ]}
+                        options={venueOption}
                         onChange={async (value) => await handleVenueChange(value)}
                         disabled={readOnly || editMode || isStackSwitches}
                       />
