@@ -1,10 +1,10 @@
 import '@testing-library/jest-dom'
 
 import { ApVenueStatusEnum, ApViewModel, CelluarInfo } from '@acx-ui/rc/utils'
-import { mockGraphqlQuery, render }                                      from '@acx-ui/test-utils'
+import { dataApiURL, Provider }                        from '@acx-ui/store'
+import { mockGraphqlQuery, render }                    from '@acx-ui/test-utils'
 
 import { APDetailsCard } from './APDetailsCard'
-import { dataApiURL, Provider } from '@acx-ui/store'
 
 const apDetail = {
   serialNumber: '132106000082',

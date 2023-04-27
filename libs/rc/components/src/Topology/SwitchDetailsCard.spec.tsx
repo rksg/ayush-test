@@ -1,11 +1,10 @@
 import '@testing-library/jest-dom'
 
-import { SwitchViewModel } from '@acx-ui/rc/utils'
-import { mockGraphqlQuery, render }          from '@acx-ui/test-utils'
+import { SwitchViewModel }          from '@acx-ui/rc/utils'
+import { dataApiURL, Provider }     from '@acx-ui/store'
+import { mockGraphqlQuery, render } from '@acx-ui/test-utils'
 
 import { SwitchDetailsCard } from './SwitchDetailsCard'
-import { dataApiURL, Provider } from '@acx-ui/store'
-import { params } from '../NetworkApGroupDialog/__tests__/NetworkVenueTestData'
 
 const switchDetail = {
   type: 'Switch',
