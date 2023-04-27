@@ -1,10 +1,13 @@
-import { Badge, Button } from 'antd'
-import { useIntl }       from 'react-intl'
+import { Badge, Button, Typography } from 'antd'
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { IncidentsBySeverityData, useIncidentsBySeverityQuery } from 'libs/analytics/components/src/IncidentBySeverity/services'
+import { useIntl }                                              from 'react-intl'
 
-import { Card, Descriptions, Loader }        from '@acx-ui/components'
-import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
-import { SwitchStatusEnum, SwitchViewModel } from '@acx-ui/rc/utils'
-import { noDataDisplay }                     from '@acx-ui/utils'
+import { AnalyticsFilter }                             from '@acx-ui/analytics/utils'
+import { Card, Descriptions, Loader, StackedBarChart } from '@acx-ui/components'
+import { DateFormatEnum, formatter }                   from '@acx-ui/formatter'
+import { SwitchStatusEnum, SwitchViewModel }           from '@acx-ui/rc/utils'
+import { noDataDisplay, useDateFilter }                from '@acx-ui/utils'
 
 import { getDeviceColor, switchStatus } from './utils'
 
@@ -14,6 +17,25 @@ export function SwitchDetailsCard (props: {
   }) {
   const { switchDetail, isLoading } = props
   const { $t } = useIntl()
+  const { dateFilter } = useDateFilter()
+
+  const filters = {
+    ...dateFilter,
+    path: [{ type: 'switch', name: switchDetail?.switchMac?.toUpperCase() as string },
+      { type: 'switchGroup', name: switchDetail?.venueId }]
+  } as AnalyticsFilter
+
+  const incidentData = useIncidentsBySeverityQuery(filters, {
+    selectFromResult: ({ data, ...rest }) => ({
+      data: { ...data } as IncidentsBySeverityData,
+      ...rest
+    })
+  })
+
+  const totalIncidents = incidentData?.data.P1
+                  + incidentData?.data.P2
+                  + incidentData?.data.P3
+                  + incidentData?.data.P4
 
   return <Card
     type='no-border'
@@ -34,7 +56,7 @@ export function SwitchDetailsCard (props: {
     <Loader states={[
       { isLoading }
     ]}>
-      <Descriptions labelWidthPercent={40}>
+      <Descriptions labelWidthPercent={50}>
         {/* model  */}
         <Descriptions.Item
           label={$t({ defaultMessage: 'Model' })}
@@ -57,6 +79,50 @@ export function SwitchDetailsCard (props: {
             key={switchDetail?.id + 'status'}
             color={getDeviceColor(switchDetail?.deviceStatus as SwitchStatusEnum)}
             text={switchStatus(switchDetail?.deviceStatus as SwitchStatusEnum)} />} />
+
+        {/* Incidents */}
+        <Descriptions.Item
+          label={$t({ defaultMessage: 'Incidents (Last 24 hrs)' })}
+          style={{ alignItems: 'center' }}
+          contentStyle={{ display: 'inline-flex',
+            alignItems: 'center' }}
+          children={
+            incidentData?.data ?
+              <>{ !! totalIncidents &&
+                <StackedBarChart
+                  style={{ height: 16, width: 135, marginRight: 4 }}
+                  barWidth={12}
+                  showLabels={false}
+                  showTotal={false}
+                  data={[{
+                    category: 'Switch Incidents',
+                    series: [
+                      {
+                        name: 'P1',
+                        value: incidentData?.data.P1
+                      },
+                      {
+                        name: 'P2',
+                        value: incidentData?.data.P2
+                      },
+                      {
+                        name: 'P3',
+                        value: incidentData?.data.P3
+                      },
+                      {
+                        name: 'P4',
+                        value: incidentData?.data.P4
+                      }
+                    ]
+                  }]} />
+              }
+              <Typography.Text>
+                { totalIncidents }
+              </Typography.Text>
+              </>
+              : noDataDisplay
+          }
+        />
 
         {/* Uptime  */}
         <Descriptions.Item
