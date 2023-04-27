@@ -187,10 +187,15 @@ describe('Topology AP Card', () => {
   })
 
   it('should show empty traffic data', async () => {
-    const { asFragment } = render(<APDetailsCard
+    mockGraphqlQuery(dataApiURL, 'IncidentsBySeverityWidget', {
+      data: { network: { hierarchyNode: { ...sample } } }
+    })
+    const { asFragment } = render(<Provider><APDetailsCard
       apDetail={apDetailWithNullTraffic as ApViewModel}
       isLoading={false}
-    />)
+    /></Provider>, {
+      route: {}
+    })
 
     expect(asFragment()).toMatchSnapshot()
   })
