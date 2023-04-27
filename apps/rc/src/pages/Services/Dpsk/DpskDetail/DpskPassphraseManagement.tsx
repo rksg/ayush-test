@@ -1,7 +1,6 @@
 import { useState } from 'react'
 
 import { Modal as AntModal, Form, Input } from 'antd'
-import moment                             from 'moment-timezone'
 import { RawIntlProvider, useIntl }       from 'react-intl'
 
 import {
@@ -24,7 +23,7 @@ import {
   useUploadPassphrasesMutation
 } from '@acx-ui/rc/services'
 import {
-  EXPIRATION_TIME_FORMAT,
+  ExpirationType,
   NetworkTypeEnum,
   NewDpskPassphrase,
   transformAdvancedDpskExpirationText,
@@ -145,7 +144,11 @@ export default function DpskPassphraseManagement () {
       sorter: true,
       render: function (data) {
         if (data) {
-          return moment(data as string).format(EXPIRATION_TIME_FORMAT)
+          return transformAdvancedDpskExpirationText(intl, {
+            expirationType: ExpirationType.SPECIFIED_DATE,
+            expirationDate: data as string,
+            displayTime: true
+          })
         }
         return transformAdvancedDpskExpirationText(intl, { expirationType: null })
       }

@@ -28,7 +28,9 @@ import {
   Guest,
   GuestNetworkTypeEnum,
   NetworkTypeEnum,
-  EXPIRATION_TIME_FORMAT
+  EXPIRATION_TIME_FORMAT,
+  transformAdvancedDpskExpirationText,
+  ExpirationType
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { getIntl }               from '@acx-ui/utils'
@@ -623,7 +625,11 @@ function DpskPassphraseDetails (props: { networkId: string, clientMac: string })
       <Descriptions.Item
         label={intl.$t({ defaultMessage: 'Expireation Time' })}
         children={passphraseClient &&
-          moment(passphraseClient.expirationDate).format(EXPIRATION_TIME_FORMAT)
+          transformAdvancedDpskExpirationText(intl, {
+            expirationType: ExpirationType.SPECIFIED_DATE,
+            expirationDate: passphraseClient.expirationDate,
+            displayTime: true
+          })
         }
       />
       <Descriptions.Item
