@@ -1,4 +1,5 @@
-import { ApiInfo, TableResult } from '@acx-ui/rc/utils'
+import { ApiInfo, TableResult }                from '@acx-ui/rc/utils'
+import { DateRangeFilter, computeRangeFilter } from '@acx-ui/utils'
 
 type MetaBase = { id: string }
 
@@ -16,4 +17,9 @@ export function getMetaList<T extends MetaBase> (
   return {
     ...httpRequest, body
   }
+}
+
+export function latestTimeFilter (payload: unknown) {
+  const { filters, ...body } = payload! as { filters: { dateFilter?: DateRangeFilter } }
+  return { ...body, filters: computeRangeFilter(filters, ['fromTime', 'toTime']) }
 }
