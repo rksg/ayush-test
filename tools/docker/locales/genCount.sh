@@ -17,10 +17,10 @@ awk '{ \
 }' $JSON_FILE > ./tmp
 
 UNIQUE_STRINGS=$(wc -l ./tmp | awk '{print $1}')
-echo "Unique Strings: ${UNIQUE_STRINGS}"
+echo -e 'Unique Strings:\t\t'"${UNIQUE_STRINGS}"
 
 WORD_COUNT=$(wc -w ./tmp | awk '{print $1}')
-echo "Word Count:  ${WORD_COUNT}"
+echo -e 'Word Count:\t\t'"${WORD_COUNT}"
 
 UNIQUE_WORD_COUNT=$(tr ' ' '\n' < ./tmp | sort | uniq -c | wc -l | awk '{print $1}')
-echo "Unique Word Count: ${UNIQUE_WORD_COUNT}"
+echo -e 'Unique Word Count:\t'"${UNIQUE_WORD_COUNT}"
