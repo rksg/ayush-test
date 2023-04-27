@@ -9,9 +9,10 @@ import {
   Loader,
   SuspenseBoundary
 } from '@acx-ui/components'
-import { get }           from '@acx-ui/config'
-import { BrowserRouter } from '@acx-ui/react-router-dom'
-import { Provider }      from '@acx-ui/store'
+import { get }                    from '@acx-ui/config'
+import { useYourDefaultLanguage } from '@acx-ui/rc/services'
+import { BrowserRouter }          from '@acx-ui/react-router-dom'
+import { Provider }               from '@acx-ui/store'
 import {
   UserProfileProvider,
   useUserProfileContext,
@@ -20,7 +21,9 @@ import {
 import {
   getTenantId,
   createHttpRequest,
-  useLocaleContext
+  useLocaleContext,
+  LangKey,
+  DEFAULT_SYS_LANG
 } from '@acx-ui/utils'
 
 import AllRoutes           from './AllRoutes'
@@ -32,6 +35,8 @@ import '@acx-ui/theme'
 const supportedLocales = {
   'en-US': 'en-US',
   'en': 'en-US',
+  'es': 'es-ES',
+  'es-ES': 'es-ES',
   'de-DE': 'de-DE',
   'de': 'de-DE',
   'ja-JP': 'ja-JP',
@@ -107,6 +112,20 @@ export async function pendoInitalization (): Promise<void> {
   }
 }
 
+function PreferredLangConfigProvider (props: React.PropsWithChildren) {
+  const defaultLang = useYourDefaultLanguage()?? DEFAULT_SYS_LANG // tenant level preference
+  const browserLang = loadMessages(navigator.languages) // browser detection
+  const queryParams = new URLSearchParams(window.location.search) // url query params
+  const lang = ((defaultLang??
+    queryParams.get('lang')??
+    browserLang) as ConfigProviderProps['lang']) as LangKey
+  return <Loader
+    fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
+    states={[{ isLoading: !Boolean(defaultLang) }]}
+    children={<ConfigProvider lang={lang} {...props} />}
+  />
+}
+
 function DataGuardLoader (props: React.PropsWithChildren) {
   const locale = useLocaleContext()
   const userProfile = useUserProfileContext()
@@ -122,10 +141,6 @@ function DataGuardLoader (props: React.PropsWithChildren) {
 }
 
 export async function init (root: Root) {
-  const browserLang = loadMessages(navigator.languages)
-  const queryParams = new URLSearchParams(window.location.search)
-  const lang = (queryParams.get('lang') ?? browserLang) as ConfigProviderProps['lang']
-
   // Pendo initialization
   // @ts-ignore
   if ( get('DISABLE_PENDO') === 'false' ) {
@@ -137,8 +152,8 @@ export async function init (root: Root) {
   root.render(
     <React.StrictMode>
       <Provider>
-        <BrowserRouter>
-          <ConfigProvider lang={lang}>
+        <PreferredLangConfigProvider>
+          <BrowserRouter>
             <UserProfileProvider>
               <DataGuardLoader>
                 <React.Suspense fallback={null}>
@@ -146,8 +161,8 @@ export async function init (root: Root) {
                 </React.Suspense>
               </DataGuardLoader>
             </UserProfileProvider>
-          </ConfigProvider>
-        </BrowserRouter>
+          </BrowserRouter>
+        </PreferredLangConfigProvider>
       </Provider>
     </React.StrictMode>
   )
