@@ -91,7 +91,7 @@ const Timeline = (props: TimelineProps) => {
     <AntTimeline.Item
       key={`timeline-start-${index}`}
       dot={<Step $state={item.type!} />}>
-      { item.type === 'future'
+      { item.type === TimelineType.FUTURE
         ? '--'
         : formatter(DateFormatEnum.DateTimeFormatWithSeconds)(item.startDatetime)
       }
@@ -101,11 +101,13 @@ const Timeline = (props: TimelineProps) => {
   const EndDot = (item: TimelineItem, index: number) => (
     <AntTimeline.Item
       key={`timeline-end-${index}`}
-      dot={<Step $state={item.endDatetime ? 'previous' : 'future'} />}>
+      dot={<Step $state={item.type === TimelineType.PREVIOUS
+        ? TimelineType.PREVIOUS : TimelineType.FUTURE} />}>
       <ItemWrapper>
-        {item.endDatetime
+        { item.type === TimelineType.PREVIOUS
           ? formatter(DateFormatEnum.DateTimeFormatWithSeconds)(item.endDatetime)
-          : '--'}
+          : '--'
+        }
         <ContentWrapper>
           <WithExpanderWrapper>
             <div>

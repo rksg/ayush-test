@@ -4,9 +4,9 @@ import { Divider }                    from 'antd'
 import { TextAreaRef }                from 'antd/lib/input/TextArea'
 import { MessageDescriptor, useIntl } from 'react-intl'
 
-import { Drawer, Descriptions, Timeline } from '@acx-ui/components'
-import { Activity }                       from '@acx-ui/rc/utils'
-import { noDataDisplay }                  from '@acx-ui/utils'
+import { Drawer, Descriptions, Timeline, TimelineItem } from '@acx-ui/components'
+import { Activity }                                     from '@acx-ui/rc/utils'
+import { noDataDisplay }                                from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -29,26 +29,29 @@ export const TimelineDrawer = (props: DrawerProps) => {
     inputEl.current?.resizableTextArea?.textArea.select()
   }
 
-  const activityErrorDetails = props.activity?.steps.map(i => {
-    if (i.status !== 'FAIL' || !i.error) {
-      return i
-    }
-    const parsedError = JSON.parse(i.error!)
+  const FailureArea = (item: TimelineItem, error: string) => (
+    <>
+      <UI.FailureTextArea
+        ref={inputEl}
+        rows={20}
+        readOnly={true}
+        value={JSON.stringify(error, null, 2)}
+      />
+      <UI.CopyButton
+        type='link'
+        onClick={() => copyText(item.error!)}
+      >{$t({ defaultMessage: 'Copy to clipboard' })}</UI.CopyButton>
+    </>
+  )
 
+  const activityErrorDetails = props.activity?.steps.map(step => {
+    if (step.status !== 'FAIL' || !step.error) {
+      return step
+    }
+    const parsedError = JSON.parse(step.error!)
     return {
-      ...i,
-      children: <>
-        <UI.FailureTextArea
-          ref={inputEl}
-          rows={20}
-          readOnly={true}
-          value={JSON.stringify(parsedError, null, 2)}
-        />
-        <UI.CopyButton
-          type='link'
-          onClick={() => copyText(i.error!)}
-        >{$t({ defaultMessage: 'Copy to clipboard' })}</UI.CopyButton>
-      </>
+      ...step,
+      children: FailureArea(step, parsedError)
     }
   })
 
