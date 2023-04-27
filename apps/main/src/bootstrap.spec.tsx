@@ -2,8 +2,8 @@ import '@testing-library/jest-dom'
 import { rest }       from 'msw'
 import { createRoot } from 'react-dom/client'
 
-import { AdministrationUrlsInfo }                             from '@acx-ui/rc/utils'
-import { act, screen, mockServer, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { AdministrationUrlsInfo }  from '@acx-ui/rc/utils'
+import { act, screen, mockServer } from '@acx-ui/test-utils'
 
 import * as bootstrap from './bootstrap'
 
