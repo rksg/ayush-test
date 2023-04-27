@@ -38,5 +38,8 @@ export enum Features {
   CLOUDMOTE_SERVICE = 'cloudmote-service-enabled',
   RADIUS_ATTRIBUTE_GROUP_CONFIG = 'radius-attrib-group-service-enabled',
   RADIUS_OPTIONS = 'wifi-eda-wlan-radius-options-toggle',
-  MESH_ENHANCEMENTS = 'wifi-eda-mesh-enhancements-toggle'
+  MESH_ENHANCEMENTS = 'wifi-eda-mesh-enhancements-toggle',
+  SWITCH_RODAN_FIRMWARE = 'switch-consumer-collect-config-toggle',
+  EXPORT_DEVICE = 'viewmodel-export-device-inventory',
+  I18N_TOGGLE = 'acx-ui-i18n-toggle'
 }

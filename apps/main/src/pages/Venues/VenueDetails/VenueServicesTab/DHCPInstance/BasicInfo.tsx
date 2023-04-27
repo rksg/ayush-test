@@ -8,7 +8,8 @@ import { useLocation, useParams } from 'react-router-dom'
 import { Modal, GridRow, GridCol, Card } from '@acx-ui/components'
 import {
   useUpdateVenueDHCPProfileMutation,
-  useGetDHCPProfileListQuery
+  useGetDHCPProfileListQuery,
+  useGetVenueSettingsQuery
 } from '@acx-ui/rc/services'
 import { DHCPConfigTypeEnum } from '@acx-ui/rc/utils'
 import { TenantLink }         from '@acx-ui/react-router-dom'
@@ -37,7 +38,7 @@ export default function BasicInfo () {
   const natGateway = _.take(dhcpInfo.gateway, DISPLAY_GATEWAY_MAX_NUM)
   const dhcpForm = useRef<DHCPFormRefType>()
   const [form] = Form.useForm()
-
+  const { data: venue } = useGetVenueSettingsQuery({ params })
   const { data: dhcpProfileList } = useGetDHCPProfileListQuery({ params })
   const getSelectedDHCPMode = (dhcpServiceID:string)=> {
     if(dhcpProfileList && dhcpServiceID){
@@ -96,7 +97,7 @@ export default function BasicInfo () {
     }
     return payload
   }
-
+  const meshEnable = venue?.mesh?.enabled
   return <>
     <Card type='solid-bg'>
       <GridRow justify='space-between'>
@@ -158,6 +159,9 @@ export default function BasicInfo () {
                 setVisible(true)
               }}
               type='link'
+              disabled={meshEnable}
+              title={meshEnable?$t({ defaultMessage: 'You cannot activate the DHCP service on this'+
+                ' venue because it already enabled mesh setting' }):''}
               block>
               {$t({ defaultMessage: 'Manage Local Service' })}
             </Button>

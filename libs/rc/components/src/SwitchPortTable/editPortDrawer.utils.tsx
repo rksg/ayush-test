@@ -69,7 +69,7 @@ export const getPortEditStatus = (status: string) => {
 
 export const getPortSpeed = (selectedPorts: SwitchPortViewModel[]) => {
   const portsSpeedOptions = selectedPorts.map((item: SwitchPortViewModel) => {
-    return getPortSpeedOptions(item.switchModel, item.portIdentifier)
+    return getPortSpeedOptions(item.switchModel, item.portIdentifier, item)
   })
 
   return _.intersection(...portsSpeedOptions) as string[]

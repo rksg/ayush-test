@@ -4,11 +4,11 @@ import { Switch }  from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Loader, Button, Drawer, Table, TableProps }    from '@acx-ui/components'
-import { APStatus, seriesMappingAP }                    from '@acx-ui/rc/components'
-import { useApListQuery }                               from '@acx-ui/rc/services'
-import { AP, ApDeviceStatusEnum, useTableQuery, Venue } from '@acx-ui/rc/utils'
-import { filterByAccess }                               from '@acx-ui/user'
+import { Loader, Button, Drawer, Table, TableProps }                       from '@acx-ui/components'
+import { APStatus, seriesMappingAP }                                       from '@acx-ui/rc/components'
+import { useApListQuery }                                                  from '@acx-ui/rc/services'
+import { AP, ApDeviceStatusEnum, ApVenueStatusEnum, useTableQuery, Venue } from '@acx-ui/rc/utils'
+import { filterByAccess }                                                  from '@acx-ui/user'
 
 export interface SimpleApRecord {
   serialNumber: string;
@@ -30,9 +30,10 @@ export function MdnsProxyScopeApDrawer (props: MdnsProxyScopeApDrawerProps) {
   const [ tableData, setTableData ] = useState<AP[]>([])
   const [ selectedRowKeys, setSelectedRowKeys ] = useState([])
 
-  const getTableFiltersForVenue = (venue: Venue) => {
-    return { venueId: [venue.id] }
-  }
+  const getTableFiltersForVenue = (venue: Venue) => ({
+    venueId: [venue.id],
+    deviceStatusSeverity: [ApVenueStatusEnum.OPERATIONAL]
+  })
 
   const tableQuery = useTableQuery({
     useQuery: useApListQuery,

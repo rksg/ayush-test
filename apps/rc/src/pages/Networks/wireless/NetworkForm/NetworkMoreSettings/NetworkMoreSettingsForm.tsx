@@ -13,11 +13,11 @@ import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { get }                 from 'lodash'
 import { useIntl }             from 'react-intl'
 
-import { Button }                                             from '@acx-ui/components'
-import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
-import { RadiusOptionsForm }                                  from '@acx-ui/rc/components'
-import { NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
-import { validationMessages }                                 from '@acx-ui/utils'
+import { Button }                                                                   from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
+import { RadiusOptionsForm }                                                        from '@acx-ui/rc/components'
+import { NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum, GuestNetworkTypeEnum } from '@acx-ui/rc/utils'
+import { validationMessages }                                                       from '@acx-ui/utils'
 
 import NetworkFormContext from '../NetworkFormContext'
 import { hasAuthRadius }  from '../utils'
@@ -28,6 +28,7 @@ import { LoadControlForm }    from './LoadControlForm'
 import { ServicesForm }       from './ServicesForm'
 import * as UI                from './styledComponents'
 import { UserConnectionForm } from './UserConnectionForm'
+
 
 
 const { Panel } = Collapse
@@ -118,6 +119,7 @@ export function MoreSettingsForm (props: {
   const isRadiusOptionsSupport = useIsSplitOn(Features.RADIUS_OPTIONS)
 
   const [
+    enableDhcp,
     enableOfdmOnly,
     enableFastRoaming,
     enableAirtimeDecongestion,
@@ -127,6 +129,7 @@ export function MoreSettingsForm (props: {
     enableVlanPooling,
     bssMinimumPhyRate //BSS Min Rate
   ] = [
+    useWatch<boolean>('enableDhcp'),
     useWatch<boolean>('enableOfdmOnly'),
     useWatch<boolean>(['wlan', 'advancedCustomization', 'enableFastRoaming']),
     useWatch<boolean>(['wlan', 'advancedCustomization', 'enableAirtimeDecongestion']),
@@ -141,7 +144,14 @@ export function MoreSettingsForm (props: {
   const form = Form.useFormInstance()
   const wlanData = (editMode) ? props.wlanData : form.getFieldsValue()
 
+  const isPortalDefaultVLANId = (data?.enableDhcp||enableDhcp) &&
+    data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&
+    data.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.Cloudpath
 
+  if (isPortalDefaultVLANId) {
+    delete data?.wlan?.vlanId
+    form.setFieldValue(['wlan', 'vlanId'], 3000)
+  }
 
   const isNetworkWPASecured = wlanData?.wlan?.wlanSecurity ? [
     WlanSecurityEnum.WPA2Personal,
@@ -214,7 +224,7 @@ export function MoreSettingsForm (props: {
                   message: $t(validationMessages.vlanRange)
                 }]}
               style={{ marginBottom: '15px' }}
-              children={<InputNumber style={{ width: '80px' }} />}
+              children={<InputNumber style={{ width: '80px' }} disabled={isPortalDefaultVLANId}/>}
             />
 
             {showDynamicWlan &&

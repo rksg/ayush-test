@@ -63,3 +63,5 @@ export * from './CalledStationIdTypeEnum'
 export * from './RadiusOptions'
 export * from './VenueRadiusOptions'
 
+export * from './EdgeFirewallEnum'
+export * from './EdgeDhcpEnum'
