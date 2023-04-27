@@ -87,3 +87,11 @@ export interface DpskPassphraseClient {
   createDate: string;
   expirationDate: string;
 }
+
+export interface DPSKDeviceInfo {
+  mac: string,
+  isOnline: boolean,
+  lastConnected: string,
+  lastConnectedNetwork: string,
+  devicePassphrase: string
+}

@@ -5,7 +5,9 @@ import { ApiInfo, createHttpRequest, RequestPayload } from '@acx-ui/rc/utils'
 export const BASE_RELATIVE_URL = '/api/a4rc/explorer'
 
 export const reportsBaseApi = createApi({
-  baseQuery: fetchBaseQuery(),
+  baseQuery: fetchBaseQuery({
+    mode: 'cors'
+  }),
   reducerPath: 'reportsApi',
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })

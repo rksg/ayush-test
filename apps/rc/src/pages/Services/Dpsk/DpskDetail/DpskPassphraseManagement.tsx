@@ -37,6 +37,7 @@ import NetworkForm from '../../../Networks/wireless/NetworkForm/NetworkForm'
 
 import { unlimitedNumberOfDeviceLabel }                 from './contentsMap'
 import DpskPassphraseDrawer, { DpskPassphraseEditMode } from './DpskPassphraseDrawer'
+import ManageDevicesDrawer                              from './ManageDevicesDrawer'
 
 
 interface UploadPassphrasesFormFields {
@@ -61,6 +62,8 @@ export default function DpskPassphraseManagement () {
   const intl = useIntl()
   const { $t } = intl
   const [ addPassphrasesDrawerVisible, setAddPassphrasesDrawerVisible ] = useState(false)
+  const [ manageDevicesVisible, setManageDevicesVisible ] = useState(false)
+  const [ managePassphraseInfo, setManagePassphraseInfo ] = useState({} as NewDpskPassphrase)
   const [
     passphrasesDrawerEditMode,
     setPassphrasesDrawerEditMode
@@ -187,6 +190,15 @@ export default function DpskPassphraseManagement () {
       }
     },
     {
+      label: $t({ defaultMessage: 'Manage Devices' }),
+      // eslint-disable-next-line max-len
+      visible: (selectedRows: NewDpskPassphrase[]) => isCloudpathEnabled && selectedRows.length === 1,
+      onClick: ([selectedRow]) => {
+        setManagePassphraseInfo(selectedRow)
+        setManageDevicesVisible(true)
+      }
+    },
+    {
       label: $t({ defaultMessage: 'Revoke' }),
       visible: isCloudpathEnabled,
       onClick: (selectedRows: NewDpskPassphrase[], clearSelection) => {
@@ -271,6 +283,12 @@ export default function DpskPassphraseManagement () {
       setVisible={setAddPassphrasesDrawerVisible}
       editMode={passphrasesDrawerEditMode}
     />
+    { managePassphraseInfo && <ManageDevicesDrawer
+      visible={manageDevicesVisible}
+      setVisible={setManageDevicesVisible}
+      passphraseInfo={managePassphraseInfo}
+      setPassphraseInfo={setManagePassphraseInfo}
+    /> }
     <ImportFileDrawer type='DPSK'
       title={$t({ defaultMessage: 'Import from file' })}
       maxSize={CsvSize['20MB']}

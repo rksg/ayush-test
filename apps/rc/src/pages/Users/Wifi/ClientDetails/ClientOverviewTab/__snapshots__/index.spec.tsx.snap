@@ -165,7 +165,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                               <h2
                                 class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                               >
-                                30 m 3 s
+                                0
                               </h2>
                             </div>
                           </div>
@@ -575,7 +575,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    92:37:9d:40:3d:bd
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -598,7 +598,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    10.206.1.137
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -621,23 +621,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <div
-                                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__OsType-sc-75u9lp-4 ezlfJi"
-                                    >
-                                      <div
-                                        class="ant-space-item"
-                                        style="margin-right: 4px;"
-                                      >
-                                        <svg
-                                          data-testid="Apple"
-                                        />
-                                      </div>
-                                      <div
-                                        class="ant-space-item"
-                                      >
-                                        iOS Phone
-                                      </div>
-                                    </div>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -660,7 +644,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    92:37:9d:40:3d:bd
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -708,6 +692,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                 >
                   <div
                     class="ant-space-item"
+                    style="margin-right: 8px;"
                   >
                     <h4
                       class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
@@ -740,7 +725,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    11/24/2022 07:37
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -763,7 +748,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    11/24/2022 08:07
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -786,7 +771,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    30 m 3 s
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -811,11 +796,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <a
-                                      href="/t/tenant-id/devices/aps/422039000230/details/overview"
-                                    >
-                                      UI team ONLY
-                                    </a>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -838,11 +819,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <a
-                                      href="/t/tenant-id/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
-                                    >
-                                      UI-TEST-VENUE
-                                    </a>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -865,11 +842,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <a
-                                      href="/t/tenant-id/networks/wireless/0189575828434f94a7c0b0e611379d26/network-details/overview"
-                                    >
-                                      NMS-app6-WLAN-QA
-                                    </a>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -1055,7 +1028,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                               <h2
                                 class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                               >
-                                30 m 3 s
+                                0
                               </h2>
                             </div>
                           </div>
@@ -1465,7 +1438,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    92:37:9d:40:3d:bd
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -1488,7 +1461,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    10.206.1.137
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -1511,23 +1484,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <div
-                                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__OsType-sc-75u9lp-4 ezlfJi"
-                                    >
-                                      <div
-                                        class="ant-space-item"
-                                        style="margin-right: 4px;"
-                                      >
-                                        <svg
-                                          data-testid="Apple"
-                                        />
-                                      </div>
-                                      <div
-                                        class="ant-space-item"
-                                      >
-                                        iOS Phone
-                                      </div>
-                                    </div>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -1550,7 +1507,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    92:37:9d:40:3d:bd
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -1630,7 +1587,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    11/24/2022 07:37
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -1653,7 +1610,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    11/24/2022 08:07
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -1676,7 +1633,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    30 m 3 s
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -1701,11 +1658,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <a
-                                      href="/t/tenant-id/devices/aps/422039000230/details/overview"
-                                    >
-                                      UI team ONLY
-                                    </a>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -1728,11 +1681,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <a
-                                      href="/t/tenant-id/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
-                                    >
-                                      UI-TEST-VENUE
-                                    </a>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -1755,11 +1704,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <a
-                                      href="/t/tenant-id/networks/wireless/0189575828434f94a7c0b0e611379d26/network-details/overview"
-                                    >
-                                      --
-                                    </a>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -1945,7 +1890,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                               <h2
                                 class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                               >
-                                30 m 3 s
+                                0
                               </h2>
                             </div>
                           </div>
@@ -2355,7 +2300,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    92:37:9d:40:3d:bd
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -2378,7 +2323,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    10.206.1.137
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -2401,23 +2346,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <div
-                                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__OsType-sc-75u9lp-4 ezlfJi"
-                                    >
-                                      <div
-                                        class="ant-space-item"
-                                        style="margin-right: 4px;"
-                                      >
-                                        <svg
-                                          data-testid="Apple"
-                                        />
-                                      </div>
-                                      <div
-                                        class="ant-space-item"
-                                      >
-                                        iOS Phone
-                                      </div>
-                                    </div>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -2440,7 +2369,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    92:37:9d:40:3d:bd
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -2520,7 +2449,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    11/24/2022 07:37
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -2543,7 +2472,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    11/24/2022 08:07
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -2566,7 +2495,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    30 m 3 s
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -2591,11 +2520,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <a
-                                      href="/t/tenant-id/devices/aps/422039000230/details/overview"
-                                    >
-                                      UI team ONLY
-                                    </a>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -2618,11 +2543,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <a
-                                      href="/t/tenant-id/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
-                                    >
-                                      UI-TEST-VENUE
-                                    </a>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -2645,11 +2566,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <a
-                                      href="/t/tenant-id/networks/wireless/0189575828434f94a7c0b0e611379d26/network-details/overview"
-                                    >
-                                      NMS-app6-WLAN-QA
-                                    </a>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -3245,7 +3162,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    92:37:9d:40:3d:bd
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -3268,7 +3185,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    10.206.1.137
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -3291,23 +3208,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <div
-                                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__OsType-sc-75u9lp-4 ezlfJi"
-                                    >
-                                      <div
-                                        class="ant-space-item"
-                                        style="margin-right: 4px;"
-                                      >
-                                        <svg
-                                          data-testid="Apple"
-                                        />
-                                      </div>
-                                      <div
-                                        class="ant-space-item"
-                                      >
-                                        iOS Phone
-                                      </div>
-                                    </div>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -3330,7 +3231,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    92:37:9d:40:3d:bd
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -3481,11 +3382,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <a
-                                      href="/t/tenant-id/devices/aps/422039000230/details/overview"
-                                    >
-                                      UI team ONLY
-                                    </a>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -3508,11 +3405,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <a
-                                      href="/t/tenant-id/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
-                                    >
-                                      UI-TEST-VENUE
-                                    </a>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -4131,7 +4024,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    24:41:8c:c3:16:df
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -4154,7 +4047,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    10.206.1.93
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -4177,23 +4070,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <div
-                                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__OsType-sc-75u9lp-4 ezlfJi"
-                                    >
-                                      <div
-                                        class="ant-space-item"
-                                        style="margin-right: 4px;"
-                                      >
-                                        <svg
-                                          data-testid="Microsoft"
-                                        />
-                                      </div>
-                                      <div
-                                        class="ant-space-item"
-                                      >
-                                        Windows
-                                      </div>
-                                    </div>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -4216,7 +4093,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    LP-XXXXX
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -4239,7 +4116,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    24418cc316df
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -4299,7 +4176,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    140
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -4322,9 +4199,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <span>
-                                      21.5 MB
-                                    </span>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -4347,7 +4222,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    87,872
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -4370,9 +4245,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <span>
-                                      99.3 MB
-                                    </span>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -4395,7 +4268,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    344,641
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -4447,9 +4320,9 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                                       class="styledComponents__WifiSignal-sc-13pjjdq-1 bCaMWh"
                                     >
                                       <span>
-                                        64 dB
+                                        --
                                         <svg
-                                          class="styledComponents__SNRSolidIcon-sc-13pjjdq-0 cjMfQm"
+                                          class="styledComponents__SNRSolidIcon-sc-13pjjdq-0 jpwHhy"
                                           data-testid="SNRSolid"
                                         />
                                       </span>
@@ -4480,13 +4353,12 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                                   >
                                     <div
                                       class="ant-space ant-space-horizontal ant-space-align-center"
-                                      style="color: rgb(35, 171, 54);"
                                     >
                                       <div
                                         class="ant-space-item"
                                       >
                                         <span>
-                                          -32 dBm
+                                          --
                                         </span>
                                       </div>
                                     </div>
@@ -4514,13 +4386,13 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                                   >
                                     <div
                                       class="ant-space ant-space-horizontal ant-space-align-center"
-                                      style="color: rgb(35, 171, 54);"
+                                      style="color: rgb(237, 28, 36);"
                                     >
                                       <div
                                         class="ant-space-item"
                                       >
                                         <span>
-                                          -96 dBm
+                                          --
                                         </span>
                                       </div>
                                     </div>
@@ -4582,11 +4454,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <a
-                                      href="/t/tenant-id/devices/wifi/422039000230/details/overview"
-                                    >
-                                      UI team ONLY
-                                    </a>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -4609,11 +4477,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <a
-                                      href="/t/tenant-id/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
-                                    >
-                                      UI-TEST-VENUE
-                                    </a>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -4636,11 +4500,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <a
-                                      href="/t/tenant-id/networks/wireless/423c3673e74f44e69c0f3b35cd579ecc/network-details/overview"
-                                    >
-                                      NMS-app6-WLAN-QA
-                                    </a>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -4665,7 +4525,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    NMS-app6-WLAN-QA
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -4690,7 +4550,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    1
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -4715,7 +4575,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    28:b3:71:a8:78:51
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -5311,7 +5171,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client w
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    24:41:8c:c3:16:df
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -5334,7 +5194,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client w
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    10.206.1.93
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -5403,7 +5263,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client w
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    24418cc316df
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -5463,7 +5323,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client w
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    140
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -5486,9 +5346,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client w
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <span>
-                                      21.5 MB
-                                    </span>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -5511,7 +5369,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client w
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    87,872
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -5534,9 +5392,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client w
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <span>
-                                      99.3 MB
-                                    </span>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -5559,7 +5415,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client w
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    344,641
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -5644,13 +5500,12 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client w
                                   >
                                     <div
                                       class="ant-space ant-space-horizontal ant-space-align-center"
-                                      style="color: rgb(249, 195, 75);"
                                     >
                                       <div
                                         class="ant-space-item"
                                       >
                                         <span>
-                                          -70 dBm
+                                          --
                                         </span>
                                       </div>
                                     </div>
@@ -5712,7 +5567,6 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client w
                 >
                   <div
                     class="ant-space-item"
-                    style="margin-right: 8px;"
                   >
                     <h4
                       class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
@@ -5747,7 +5601,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client w
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    UI team ONLY
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -5770,7 +5624,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client w
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    UI-TEST-VENUE
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -5818,7 +5672,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client w
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    NMS-app6-WLAN-QA
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -5843,7 +5697,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client w
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    1
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -5868,156 +5722,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client w
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    28:b3:71:a8:78:51
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-space-item"
-                  >
-                    <div
-                      class="ant-divider ant-divider-horizontal"
-                      role="separator"
-                    />
-                  </div>
-                </div>
-                <div
-                  class="ant-space ant-space-horizontal ant-space-align-center"
-                  style="display: block;"
-                >
-                  <div
-                    class="ant-space-item"
-                  >
-                    <h4
-                      class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                    >
-                      Wi-Fi Calling Details
-                    </h4>
-                    <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
-                    >
-                      <div
-                        class="ant-descriptions-view"
-                      >
-                        <table>
-                          <tbody>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Carrier Name
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    att1
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    QoS Priority
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    Voice
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Total Traffic
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    237 KB
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Transmitted Traffic
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    118 KB
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Recieved Traffic
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    118 KB
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -6613,7 +6318,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    24:41:8c:c3:16:df
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -6636,7 +6341,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    10.206.1.93
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -6659,23 +6364,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <div
-                                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__OsType-sc-75u9lp-4 ezlfJi"
-                                    >
-                                      <div
-                                        class="ant-space-item"
-                                        style="margin-right: 4px;"
-                                      >
-                                        <svg
-                                          data-testid="Apple"
-                                        />
-                                      </div>
-                                      <div
-                                        class="ant-space-item"
-                                      >
-                                        apple
-                                      </div>
-                                    </div>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -6698,7 +6387,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    LP-XXXXX
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -6721,7 +6410,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    24418cc316df
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -6781,7 +6470,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    140
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -6804,9 +6493,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <span>
-                                      21.5 MB
-                                    </span>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -6829,7 +6516,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    87,872
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -6852,9 +6539,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <span>
-                                      99.3 MB
-                                    </span>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -6877,7 +6562,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    344,641
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -6929,9 +6614,9 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                       class="styledComponents__WifiSignal-sc-13pjjdq-1 bCaMWh"
                                     >
                                       <span>
-                                        64 dB
+                                        --
                                         <svg
-                                          class="styledComponents__SNRSolidIcon-sc-13pjjdq-0 cjMfQm"
+                                          class="styledComponents__SNRSolidIcon-sc-13pjjdq-0 jpwHhy"
                                           data-testid="SNRSolid"
                                         />
                                       </span>
@@ -6962,13 +6647,12 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                   >
                                     <div
                                       class="ant-space ant-space-horizontal ant-space-align-center"
-                                      style="color: rgb(237, 28, 36);"
                                     >
                                       <div
                                         class="ant-space-item"
                                       >
                                         <span>
-                                          -90 dBm
+                                          --
                                         </span>
                                       </div>
                                     </div>
@@ -7002,7 +6686,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                         class="ant-space-item"
                                       >
                                         <span>
-                                          -60 dBm
+                                          --
                                         </span>
                                       </div>
                                     </div>
@@ -7064,11 +6748,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <a
-                                      href="/t/tenant-id/devices/wifi/422039000230/details/overview"
-                                    >
-                                      --
-                                    </a>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -7091,11 +6771,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <a
-                                      href="/t/tenant-id/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
-                                    >
-                                      --
-                                    </a>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -7118,11 +6794,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <a
-                                      href="/t/tenant-id/networks/wireless/423c3673e74f44e69c0f3b35cd579ecc/network-details/overview"
-                                    >
-                                      --
-                                    </a>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -7147,7 +6819,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    NMS-app6-WLAN-QA
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -7172,7 +6844,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    1
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -7197,7 +6869,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    28:b3:71:a8:78:51
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -7793,7 +7465,7 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    24:41:8c:c3:16:df
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -7816,7 +7488,7 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    10.206.1.93
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -7839,23 +7511,7 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <div
-                                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__OsType-sc-75u9lp-4 ezlfJi"
-                                    >
-                                      <div
-                                        class="ant-space-item"
-                                        style="margin-right: 4px;"
-                                      >
-                                        <svg
-                                          data-testid="Microsoft"
-                                        />
-                                      </div>
-                                      <div
-                                        class="ant-space-item"
-                                      >
-                                        Windows
-                                      </div>
-                                    </div>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -7878,7 +7534,7 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    LP-XXXXX
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -7901,7 +7557,7 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    24418cc316df
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -7961,7 +7617,7 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    140
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -7984,9 +7640,7 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <span>
-                                      21.5 MB
-                                    </span>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -8009,7 +7663,7 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    87,872
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -8032,9 +7686,7 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <span>
-                                      99.3 MB
-                                    </span>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -8057,7 +7709,7 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    344,641
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -8109,9 +7761,9 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                                       class="styledComponents__WifiSignal-sc-13pjjdq-1 bCaMWh"
                                     >
                                       <span>
-                                        64 dB
+                                        --
                                         <svg
-                                          class="styledComponents__SNRSolidIcon-sc-13pjjdq-0 cjMfQm"
+                                          class="styledComponents__SNRSolidIcon-sc-13pjjdq-0 jpwHhy"
                                           data-testid="SNRSolid"
                                         />
                                       </span>
@@ -8142,13 +7794,12 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                                   >
                                     <div
                                       class="ant-space ant-space-horizontal ant-space-align-center"
-                                      style="color: rgb(35, 171, 54);"
                                     >
                                       <div
                                         class="ant-space-item"
                                       >
                                         <span>
-                                          -32 dBm
+                                          --
                                         </span>
                                       </div>
                                     </div>
@@ -8176,13 +7827,13 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                                   >
                                     <div
                                       class="ant-space ant-space-horizontal ant-space-align-center"
-                                      style="color: rgb(35, 171, 54);"
+                                      style="color: rgb(237, 28, 36);"
                                     >
                                       <div
                                         class="ant-space-item"
                                       >
                                         <span>
-                                          -96 dBm
+                                          --
                                         </span>
                                       </div>
                                     </div>
@@ -8244,11 +7895,7 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <a
-                                      href="/t/tenant-id/devices/wifi/422039000230/details/overview"
-                                    >
-                                      UI team ONLY
-                                    </a>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -8271,11 +7918,7 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <a
-                                      href="/t/tenant-id/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
-                                    >
-                                      UI-TEST-VENUE
-                                    </a>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -8298,11 +7941,7 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <a
-                                      href="/t/tenant-id/networks/wireless/423c3673e74f44e69c0f3b35cd579ecc/network-details/overview"
-                                    >
-                                      NMS-app6-WLAN-QA
-                                    </a>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -8327,7 +7966,7 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    NMS-app6-WLAN-QA
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -8352,7 +7991,7 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    1
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -8377,7 +8016,7 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    28:b3:71:a8:78:51
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -8563,7 +8202,7 @@ exports[`ClientOverviewTab OverviewWidget should render correctly when search pa
                               <h2
                                 class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                               >
-                                30 m 3 s
+                                0
                               </h2>
                             </div>
                           </div>
@@ -8973,7 +8612,7 @@ exports[`ClientOverviewTab OverviewWidget should render correctly when search pa
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    92:37:9d:40:3d:bd
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -8996,7 +8635,7 @@ exports[`ClientOverviewTab OverviewWidget should render correctly when search pa
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    10.206.1.137
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -9019,23 +8658,7 @@ exports[`ClientOverviewTab OverviewWidget should render correctly when search pa
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <div
-                                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__OsType-sc-75u9lp-4 ezlfJi"
-                                    >
-                                      <div
-                                        class="ant-space-item"
-                                        style="margin-right: 4px;"
-                                      >
-                                        <svg
-                                          data-testid="Apple"
-                                        />
-                                      </div>
-                                      <div
-                                        class="ant-space-item"
-                                      >
-                                        iOS Phone
-                                      </div>
-                                    </div>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -9058,7 +8681,7 @@ exports[`ClientOverviewTab OverviewWidget should render correctly when search pa
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    92:37:9d:40:3d:bd
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -9106,6 +8729,7 @@ exports[`ClientOverviewTab OverviewWidget should render correctly when search pa
                 >
                   <div
                     class="ant-space-item"
+                    style="margin-right: 8px;"
                   >
                     <h4
                       class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
@@ -9138,7 +8762,7 @@ exports[`ClientOverviewTab OverviewWidget should render correctly when search pa
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    11/24/2022 07:37
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -9161,7 +8785,7 @@ exports[`ClientOverviewTab OverviewWidget should render correctly when search pa
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    11/24/2022 08:07
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -9184,7 +8808,7 @@ exports[`ClientOverviewTab OverviewWidget should render correctly when search pa
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    30 m 3 s
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -9209,11 +8833,7 @@ exports[`ClientOverviewTab OverviewWidget should render correctly when search pa
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <a
-                                      href="/t/tenant-id/devices/aps/422039000230/details/overview"
-                                    >
-                                      UI team ONLY
-                                    </a>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -9236,11 +8856,7 @@ exports[`ClientOverviewTab OverviewWidget should render correctly when search pa
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <a
-                                      href="/t/tenant-id/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
-                                    >
-                                      UI-TEST-VENUE
-                                    </a>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -9263,11 +8879,7 @@ exports[`ClientOverviewTab OverviewWidget should render correctly when search pa
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <a
-                                      href="/t/tenant-id/networks/wireless/0189575828434f94a7c0b0e611379d26/network-details/overview"
-                                    >
-                                      NMS-app6-WLAN-QA
-                                    </a>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -9453,7 +9065,7 @@ exports[`ClientOverviewTab OverviewWidget should render historical client info c
                               <h2
                                 class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                               >
-                                30 m 3 s
+                                0
                               </h2>
                             </div>
                           </div>
@@ -9863,7 +9475,7 @@ exports[`ClientOverviewTab OverviewWidget should render historical client info c
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    92:37:9d:40:3d:bd
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -9886,7 +9498,7 @@ exports[`ClientOverviewTab OverviewWidget should render historical client info c
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    10.206.1.137
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -9909,23 +9521,7 @@ exports[`ClientOverviewTab OverviewWidget should render historical client info c
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <div
-                                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__OsType-sc-75u9lp-4 ezlfJi"
-                                    >
-                                      <div
-                                        class="ant-space-item"
-                                        style="margin-right: 4px;"
-                                      >
-                                        <svg
-                                          data-testid="Apple"
-                                        />
-                                      </div>
-                                      <div
-                                        class="ant-space-item"
-                                      >
-                                        iOS Phone
-                                      </div>
-                                    </div>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -9948,7 +9544,7 @@ exports[`ClientOverviewTab OverviewWidget should render historical client info c
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    92:37:9d:40:3d:bd
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -10028,7 +9624,7 @@ exports[`ClientOverviewTab OverviewWidget should render historical client info c
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    11/24/2022 07:37
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -10051,7 +9647,7 @@ exports[`ClientOverviewTab OverviewWidget should render historical client info c
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    11/24/2022 08:07
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -10074,7 +9670,7 @@ exports[`ClientOverviewTab OverviewWidget should render historical client info c
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    30 m 3 s
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -10099,11 +9695,7 @@ exports[`ClientOverviewTab OverviewWidget should render historical client info c
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <a
-                                      href="/t/tenant-id/devices/aps/422039000230/details/overview"
-                                    >
-                                      UI team ONLY
-                                    </a>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -10126,11 +9718,7 @@ exports[`ClientOverviewTab OverviewWidget should render historical client info c
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <a
-                                      href="/t/tenant-id/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
-                                    >
-                                      UI-TEST-VENUE
-                                    </a>
+                                    --
                                   </span>
                                 </div>
                               </td>
@@ -10153,11 +9741,7 @@ exports[`ClientOverviewTab OverviewWidget should render historical client info c
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    <a
-                                      href="/t/tenant-id/networks/wireless/0189575828434f94a7c0b0e611379d26/network-details/overview"
-                                    >
-                                      NMS-app6-WLAN-QA
-                                    </a>
+                                    --
                                   </span>
                                 </div>
                               </td>

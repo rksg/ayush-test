@@ -49,7 +49,7 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
   clientDetails: Client
 }) {
   const { tenantId } = useParams()
-  const [client, setClient] = useState({} as ClientExtended)
+  const [client, setClient] = useState(undefined as unknown as ClientExtended)
   const [networkType, setNetworkType] = useState<NetworkTypeEnum>()
   const [guestType, setGuestType] = useState<GuestNetworkTypeEnum>()
   const [getAp] = useLazyGetApQuery()
@@ -150,6 +150,8 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
       }
 
       getMetaData()
+    } else {
+      setClient({} as ClientExtended)
     }
   }, [clientDetails])
 
@@ -177,7 +179,7 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
             <GuestDetails guestDetail={guestDetail} clientMac={clientMac}/>),
           (shouldDisplayDpskPassphraseDetail() &&
             <DpskPassphraseDetails networkId={client.networkId} clientMac={client.clientMac} />),
-          (client.wifiCallingClient && <WiFiCallingDetails client={client} />)
+          (client?.wifiCallingClient && <WiFiCallingDetails client={client} />)
         ]
         break
       case ClientStatusEnum.HISTORICAL:
@@ -188,7 +190,7 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
             <GuestDetails guestDetail={guestDetail} clientMac={clientMac}/>),
           (shouldDisplayDpskPassphraseDetail() &&
             <DpskPassphraseDetails networkId={client.networkId} clientMac={client.clientMac} />),
-          (client.wifiCallingClient && <WiFiCallingDetails client={client} />)
+          (client?.wifiCallingClient && <WiFiCallingDetails client={client} />)
         ]
         break
     }
@@ -205,7 +207,7 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
 
   return <Card>
     <Loader states={[{
-      isLoading: !Object.keys(client).length
+      isLoading: !client
     }]}>
       { getProperties(clientStatus, clientDetails.clientMac) }
     </Loader>
