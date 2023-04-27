@@ -569,7 +569,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
             'UpdateVenueRogueAp',
             'UpdateDenialOfServiceProtection'
           ]
-          console.log(msg)
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
           })
@@ -587,7 +586,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
       providesTags: [{ type: 'RogueAp', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          console.log(msg)
           onActivityMessageReceived(msg, [
             'UpdateVenueRogueAp',
             'UpdateDenialOfServiceProtection',
