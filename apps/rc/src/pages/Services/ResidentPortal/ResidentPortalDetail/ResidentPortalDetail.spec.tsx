@@ -1,9 +1,6 @@
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
+import { rest } from 'msw'
 
 import {
-  DpskUrls,
-  getServiceDetailsLink,
   getServiceRoutePath,
   PropertyUrlsInfo,
   ServiceOperation,
@@ -14,15 +11,12 @@ import { Provider } from '@acx-ui/store'
 import {
   mockServer,
   render,
-  screen,
-  waitFor,
-  within
+  screen
 } from '@acx-ui/test-utils'
-import { mockedDetailedResidentPortalList, mockedResidentPortal, mockedResidentPortalList, mockPropertyConfigs } from '../__tests__/fixtures'
-import ResidentPortalDetail from './ResidentPortalDetail'
 
-// import { mockedDpskList, mockedDpskListWithPersona } from './__tests__/fixtures'
-// import DpskTable                                     from './DpskTable'
+import { mockedResidentPortal, mockPropertyConfigs } from '../__tests__/fixtures'
+
+import ResidentPortalDetail from './ResidentPortalDetail'
 
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
@@ -43,8 +37,8 @@ describe('ResidentPortalDetail', () => {
     serviceId: '12345'
   }
 
-  const detailPath = 
-    '/:tenantId/' 
+  const detailPath =
+    '/:tenantId/'
     + getServiceRoutePath({ type: ServiceType.RESIDENT_PORTAL, oper: ServiceOperation.DETAIL })
 
   beforeEach(async () => {
@@ -63,7 +57,7 @@ describe('ResidentPortalDetail', () => {
       ),
       rest.post(
         PropertyUrlsInfo.getPropertyConfigsQuery.url,
-        (req, res, ctx) => res(ctx.json({ ... mockPropertyConfigs }))
+        (req, res, ctx) => res(ctx.json({ ...mockPropertyConfigs }))
       )
     )
   })
@@ -79,24 +73,28 @@ describe('ResidentPortalDetail', () => {
 
     expect(await screen.findByRole('button', { name: /Configure/i })).toBeVisible()
 
-    const nameInput = await screen.findByText(mockedResidentPortal.name)
+    const nameInput =
+      await screen.findByText(mockedResidentPortal.name)
     expect(nameInput).toBeInTheDocument()
 
-    const titleInput = await screen.findByText(mockedResidentPortal.uiConfiguration?.text.title)
+    const titleInput =
+      await screen.findByText(mockedResidentPortal.uiConfiguration?.text.title)
     expect(titleInput).toBeInTheDocument()
 
-    const subtitleInput = await screen.findByText(mockedResidentPortal.uiConfiguration?.text.subTitle)
+    const subtitleInput =
+      await screen.findByText(mockedResidentPortal.uiConfiguration?.text.subTitle)
     expect(subtitleInput).toBeInTheDocument()
 
-    const loginInput = await screen.findByText(mockedResidentPortal.uiConfiguration?.text.loginText)
+    const loginInput =
+      await screen.findByText(mockedResidentPortal.uiConfiguration?.text.loginText)
     expect(loginInput).toBeInTheDocument()
 
-    const announcementsInput = await screen.findByText(mockedResidentPortal.uiConfiguration?.text.announcements)
+    const announcementsInput =
+      await screen.findByText(mockedResidentPortal.uiConfiguration?.text.announcements)
     expect(announcementsInput).toBeInTheDocument()
 
-    const helpInput = await screen.findByText(mockedResidentPortal.uiConfiguration?.text.helpText)
+    const helpInput =
+      await screen.findByText(mockedResidentPortal.uiConfiguration?.text.helpText)
     expect(helpInput).toBeInTheDocument()
-
-    // TODO: color scheme and logos?
   })
 })

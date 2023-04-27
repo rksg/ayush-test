@@ -8,7 +8,7 @@ import {
   Loader,
   showActionModal
 } from '@acx-ui/components'
-import { useDeleteResidentPortalsMutation, 
+import { useDeleteResidentPortalsMutation,
   useGetQueriableResidentPortalsQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -26,14 +26,14 @@ export default function ResidentPortalTable () {
   const intl = useIntl()
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
-    const [ deleteResidentPortals ] = useDeleteResidentPortalsMutation()
+  const [ deleteResidentPortals ] = useDeleteResidentPortalsMutation()
 
   const tableQuery = useTableQuery({
     useQuery: useGetQueriableResidentPortalsQuery,
     defaultPayload: {
       filters: {},
       fields: ['id']
-    },
+    }
   })
 
   const rowActions: TableProps<ResidentPortal>['rowActions'] = [
@@ -115,12 +115,12 @@ export default function ResidentPortalTable () {
       dataIndex: ['venueCount']
     }
   ]
-  
+
   return (
     <>
       <PageHeader
         title={
-          intl.$t({ defaultMessage: 'Resident Portals ({count})' }, 
+          intl.$t({ defaultMessage: 'Resident Portals ({count})' },
             { count: tableQuery.data?.totalCount })
         }
         breadcrumb={[
@@ -129,8 +129,8 @@ export default function ResidentPortalTable () {
         extra={filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={
-            getServiceRoutePath({ 
-              type: ServiceType.RESIDENT_PORTAL, 
+            getServiceRoutePath({
+              type: ServiceType.RESIDENT_PORTAL,
               oper: ServiceOperation.CREATE })}>
             <Button type='primary'>{intl.$t({ defaultMessage: 'Add Resident Portal' })}</Button>
           </TenantLink>

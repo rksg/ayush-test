@@ -21,7 +21,10 @@ export default function ResidentPortalSettingsForm () {
     }).unwrap()).data
       .filter(n => n.id !== id)
       .map(n => ({ name: n.name }))
-    return checkObjectNotExists(list, { name: value }, intl.$t({ defaultMessage: 'Resident Portal' }))
+
+    return checkObjectNotExists(list,
+      { name: value },
+      intl.$t({ defaultMessage: 'Resident Portal' }))
   }
 
   return (<GridRow>

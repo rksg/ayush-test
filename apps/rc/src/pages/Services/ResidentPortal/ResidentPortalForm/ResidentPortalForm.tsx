@@ -1,6 +1,5 @@
 import { useRef, useEffect } from 'react'
 
-import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
@@ -9,14 +8,13 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { useAddResidentPortalMutation, 
-  useGetResidentPortalQuery, 
+import { useAddResidentPortalMutation,
+  useGetResidentPortalQuery,
   useUpdateResidentPortalMutation } from '@acx-ui/rc/services'
 import {
   ServiceType,
   getServiceRoutePath,
   ServiceOperation,
-  ResidentPortal,
   getServiceListRoutePath
 } from '@acx-ui/rc/utils'
 import {
@@ -25,8 +23,8 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { CreateResidentPortalFormFields, 
-  transferFormFieldsToSaveData, 
+import { CreateResidentPortalFormFields,
+  transferFormFieldsToSaveData,
   transferSaveDataToFormFields } from './formParsing'
 import ResidentPortalSettingsForm from './ResidentPortalSettingsForm'
 
@@ -68,19 +66,17 @@ export default function ResidentPortalForm (props: ResidentPortalFormProps) {
 
     const residentPortalSaveData = transferFormFieldsToSaveData(data)
 
-    let result: ResidentPortal
-
     try {
-
-      const portalConfiguration = new Blob([JSON.stringify(residentPortalSaveData)], { type: 'application/json' })
+      const portalConfiguration =
+        new Blob([JSON.stringify(residentPortalSaveData)], { type: 'application/json' })
       const formData = new FormData()
 
       if (editMode) {
         formData.append('changes', portalConfiguration, '')
-        result = await updateResidentPortal({ params, payload: formData }).unwrap()
+        await updateResidentPortal({ params, payload: formData }).unwrap()
       } else {
         formData.append('portal', portalConfiguration, '')
-        result = await addResidentPortal({ payload: formData }).unwrap()
+        await addResidentPortal({ payload: formData }).unwrap()
       }
 
       navigate(linkToServices, { replace: true })
@@ -100,7 +96,8 @@ export default function ResidentPortalForm (props: ResidentPortalFormProps) {
           { text: $t({ defaultMessage: 'Services' }), link: getServiceListRoutePath(true) },
           {
             text: $t({ defaultMessage: 'Resident Portals' }),
-            link: getServiceRoutePath({ type: ServiceType.RESIDENT_PORTAL, oper: ServiceOperation.LIST })
+            link: getServiceRoutePath(
+              { type: ServiceType.RESIDENT_PORTAL, oper: ServiceOperation.LIST })
           }
         ]}
       />

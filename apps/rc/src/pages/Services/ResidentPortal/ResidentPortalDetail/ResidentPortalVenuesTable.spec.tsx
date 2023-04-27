@@ -1,4 +1,4 @@
-import { rest }  from 'msw'
+import { rest } from 'msw'
 
 import {
   getServiceRoutePath,
@@ -13,8 +13,10 @@ import {
   render,
   screen
 } from '@acx-ui/test-utils'
-import ResidentPortalVenuesTable from './ResidentPortalVenuesTable'
+
 import { mockPropertyConfigs } from '../__tests__/fixtures'
+
+import ResidentPortalVenuesTable from './ResidentPortalVenuesTable'
 
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
@@ -35,8 +37,8 @@ describe('ResidentPortalVenuesTable', () => {
     serviceId: '123545'
   }
 
-  const tablePath = 
-    '/:tenantId/' 
+  const tablePath =
+    '/:tenantId/'
     + getServiceRoutePath({ type: ServiceType.RESIDENT_PORTAL, oper: ServiceOperation.DETAIL })
 
   beforeEach(async () => {

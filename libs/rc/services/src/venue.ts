@@ -948,7 +948,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       query: ({ params, payload }) => {
         const req = createHttpRequest(PropertyUrlsInfo.getPropertyConfigsQuery, params,
           { Accept: 'application/hal+json' })
-        
+
         return {
           ...req,
           body: payload
@@ -1109,8 +1109,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
     getQueriableResidentPortals: build.query<TableResult<ResidentPortal>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(PropertyUrlsInfo.getResidentPortalsQuery, params,
-          { 'Accept': '*/*' })
-        
+          { Accept: '*/*' })
+
         return {
           ...req,
           body: payload
@@ -1133,7 +1133,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       invalidatesTags: [{ type: 'ResidentPortal', id: 'LIST' }]
     }),
     getResidentPortal: build.query<ResidentPortal, RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ params }) => {
         const req = createHttpRequest(
           PropertyUrlsInfo.getResidentPortal,
           params,

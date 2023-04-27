@@ -12,13 +12,13 @@ describe('ColorBoxIcon', () => {
     const color = '#FF0000'
 
     render(
-      <div data-testid="main-component">
-        <ColorBoxIcon style={{color: color}} />
+      <div data-testid='main-component'>
+        <ColorBoxIcon style={{ color: color }} />
       </div>
     )
 
-    const element = screen.getByTestId('main-component').querySelector(".anticon")
-    expect(element).toHaveStyle({color: color})
+    const element = screen.getByTestId('main-component').querySelector('.anticon')
+    expect(element).toHaveStyle({ color: color })
   })
 
 })

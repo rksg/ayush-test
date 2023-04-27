@@ -2,7 +2,6 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import {
-  DpskUrls,
   getServiceDetailsLink,
   getServiceRoutePath,
   PropertyUrlsInfo,
@@ -18,8 +17,10 @@ import {
   waitFor,
   within
 } from '@acx-ui/test-utils'
-import ResidentPortalTable from './ResidentPortalTable'
+
 import { mockedDetailedResidentPortalList, mockedResidentPortalList } from '../__tests__/fixtures'
+
+import ResidentPortalTable from './ResidentPortalTable'
 
 // import { mockedDpskList, mockedDpskListWithPersona } from './__tests__/fixtures'
 // import DpskTable                                     from './DpskTable'
@@ -42,8 +43,8 @@ describe('ResidentPortalTable', () => {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
   }
 
-  const tablePath = 
-    '/:tenantId/' 
+  const tablePath =
+    '/:tenantId/'
     + getServiceRoutePath({ type: ServiceType.RESIDENT_PORTAL, oper: ServiceOperation.LIST })
 
   beforeEach(async () => {
@@ -66,7 +67,8 @@ describe('ResidentPortalTable', () => {
 
     const targetResidentPortal = mockedResidentPortalList.content[0]
     expect(await screen.findByRole('button', { name: /Add Resident Portal/i })).toBeVisible()
-    expect(await screen.findByRole('row', { name: new RegExp(targetResidentPortal.name) })).toBeVisible()
+    expect(await screen.findByRole('row', { name: new RegExp(targetResidentPortal.name) }))
+      .toBeVisible()
   })
 
   it('should delete selected row', async () => {
@@ -97,7 +99,9 @@ describe('ResidentPortalTable', () => {
     await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
 
     expect(await screen.findByText('Delete "' + targetPortal.name + '"?')).toBeVisible()
-    const deleteServiceButton = await screen.findByRole('button', { name: /Delete Resident Portal/i })
+    const deleteServiceButton =
+      await screen.findByRole('button', { name: /Delete Resident Portal/i })
+
     await userEvent.click(deleteServiceButton)
 
     await waitFor(() => {
@@ -106,7 +110,7 @@ describe('ResidentPortalTable', () => {
   })
 
   it('should not delete the selected row when it is mapped to Venue', async () => {
-    
+
     render(
       <Provider>
         <ResidentPortalTable />

@@ -1,26 +1,27 @@
+import { Params } from 'react-router-dom'
+
 import {
   ApiInfo,
   createHttpRequest,
   PropertyUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Params } from 'react-router-dom'
 
-export async function loadResidentPortalLogo<Promise>(params:Params) {
+export async function loadResidentPortalLogo (params:Params) {
   return loadResidentPortalImage(PropertyUrlsInfo.getResidentPortalLogo, params)
 }
 
-export async function loadResidentPortalFavIcon<Promise>(params:Params) {
+export async function loadResidentPortalFavIcon (params:Params) {
   return loadResidentPortalImage(PropertyUrlsInfo.getResidentPortalFavicon, params)
 }
 
-async function loadResidentPortalImage<Promise>(url: ApiInfo, params:Params) {
+async function loadResidentPortalImage (url: ApiInfo, params:Params) {
   const request = createHttpRequest(url, params)
 
-  const response = await fetch(request.url, 
-    {headers: request.headers, 
-    credentials: request.credentials, 
-    method: request.method})
-  
+  const response = await fetch(request.url,
+    { headers: request.headers,
+      credentials: request.credentials,
+      method: request.method })
+
   const blob = await response.blob()
 
   const reader = new FileReader()

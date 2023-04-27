@@ -1,13 +1,15 @@
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
-import { Provider }                                from '@acx-ui/store'
-import { mockServer, render, renderHook, screen }  from '@acx-ui/test-utils'
+
+import { ResidentPortal }                         from '@acx-ui/rc/utils'
+import { Provider }                               from '@acx-ui/store'
+import { mockServer, render, renderHook, screen } from '@acx-ui/test-utils'
 
 import { mockedResidentPortal, mockedResidentPortalList } from '../__tests__/fixtures'
+
 import { transferSaveDataToFormFields } from './formParsing'
-import ResidentPortalSettingsForm from './ResidentPortalSettingsForm'
-import { ResidentPortal } from '@acx-ui/rc/utils'
+import ResidentPortalSettingsForm       from './ResidentPortalSettingsForm'
 
 describe('ResidentPortal', () => {
   beforeEach(() => {
@@ -25,7 +27,8 @@ describe('ResidentPortal', () => {
       return form
     })
 
-    formRef.current.setFieldsValue(transferSaveDataToFormFields(mockedResidentPortal as ResidentPortal))
+    formRef.current.setFieldsValue(
+      transferSaveDataToFormFields(mockedResidentPortal as ResidentPortal))
 
     render(
       <Provider>

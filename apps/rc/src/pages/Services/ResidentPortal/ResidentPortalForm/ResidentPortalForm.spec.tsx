@@ -1,11 +1,12 @@
-import userEvent   from '@testing-library/user-event'
-import { rest }    from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
+import { venueApi }                                                      from '@acx-ui/rc/services'
 import {
   PropertyUrlsInfo, ServiceOperation, ServiceType, getServiceRoutePath
 } from '@acx-ui/rc/utils'
 import { Path, To, useTenantLink } from '@acx-ui/react-router-dom'
-import { Provider, store }                from '@acx-ui/store'
+import { Provider, store }         from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -14,15 +15,15 @@ import {
 } from '@acx-ui/test-utils'
 
 
-import ResidentPortalForm from './ResidentPortalForm'
-import { mockedTenantId, 
-  createPath, 
-  mockedResidentPortal, 
-  mockedCreateFormData, 
-  mockedResidentPortalList, 
-  mockedServiceId, 
+import { mockedTenantId,
+  createPath,
+  mockedResidentPortal,
+  mockedCreateFormData,
+  mockedResidentPortalList,
+  mockedServiceId,
   editPath } from '../__tests__/fixtures'
-import { venueApi } from '@acx-ui/rc/services'
+
+import ResidentPortalForm from './ResidentPortalForm'
 
 
 const mockedUseNavigate = jest.fn()
@@ -122,15 +123,15 @@ describe('ResidentPortalForm', () => {
     const nameInput = await screen.findByDisplayValue(mockedResidentPortal.name)
     expect(nameInput).toBeInTheDocument()
 
-    const titleInput = 
+    const titleInput =
       await screen.findByDisplayValue(mockedResidentPortal.uiConfiguration?.text.title)
     expect(titleInput).toBeInTheDocument()
 
-    const subtitleInput = 
+    const subtitleInput =
       await screen.findByDisplayValue(mockedResidentPortal.uiConfiguration?.text.subTitle)
     expect(subtitleInput).toBeInTheDocument()
 
-    const loginInput = 
+    const loginInput =
       await screen.findByDisplayValue(mockedResidentPortal.uiConfiguration?.text.loginText)
     expect(loginInput).toBeInTheDocument()
 
@@ -138,7 +139,7 @@ describe('ResidentPortalForm', () => {
       await screen.findByDisplayValue(mockedResidentPortal.uiConfiguration?.text.announcements)
     expect(announcementsInput).toBeInTheDocument()
 
-    const helpInput = 
+    const helpInput =
       await screen.findByDisplayValue(mockedResidentPortal.uiConfiguration?.text.helpText)
     expect(helpInput).toBeInTheDocument()
 

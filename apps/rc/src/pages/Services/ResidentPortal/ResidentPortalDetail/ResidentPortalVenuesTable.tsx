@@ -1,5 +1,6 @@
-import { useIntl }         from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { Typography } from 'antd'
+import { useIntl }    from 'react-intl'
+import { useParams }  from 'react-router-dom'
 
 import {
   Table,
@@ -11,21 +12,18 @@ import {
   useTableQuery,
   PropertyConfigs
 } from '@acx-ui/rc/utils'
-import { Path, TenantLink, useTenantLink } from '@acx-ui/react-router-dom'
-import { Typography } from 'antd'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
 
 export default function ResidentPortalVenuesTable () {
   const params = useParams()
   const { $t } = useIntl()
 
-  const tenantBasePath: Path = useTenantLink('')
-
   const tableQuery = useTableQuery({
     useQuery: useGetQueriablePropertyConfigsQuery,
     defaultPayload: {
       filters: { residentPortalId: params.serviceId },
-      fields: ['id', 'venueId', 'venueName'],
+      fields: ['id', 'venueId', 'venueName']
     },
     sorter: {
       sortField: 'venueName',
@@ -42,7 +40,7 @@ export default function ResidentPortalVenuesTable () {
       defaultSortOrder: 'ascend',
       fixed: 'left',
       filterable: true,
-      render: function (data, row, _, highlightFn) {
+      render: function (data, row) {
         return (
           <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
             {data}
@@ -57,7 +55,7 @@ export default function ResidentPortalVenuesTable () {
       sorter: true
     }
   ]
-  
+
   return (
     <>
       <Typography.Title level={2}>
@@ -73,5 +71,5 @@ export default function ResidentPortalVenuesTable () {
         />
       </Loader>
     </>
-  )   
+  )
 }

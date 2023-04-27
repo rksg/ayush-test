@@ -11,7 +11,7 @@ export interface CreateResidentPortalFormFields {
   textHelp: string;
 }
 
-export function transferSaveDataToFormFields (data: ResidentPortal): CreateResidentPortalFormFields {
+export function transferSaveDataToFormFields (data: ResidentPortal):CreateResidentPortalFormFields {
   const uiConfiguration = data.uiConfiguration && data.uiConfiguration.text ? {
     textTitle: data.uiConfiguration.text.title ? data.uiConfiguration.text.title : '',
     textSubtitle: data.uiConfiguration.text.subTitle ? data.uiConfiguration.text.subTitle : '',
@@ -34,7 +34,7 @@ export function transferSaveDataToFormFields (data: ResidentPortal): CreateResid
   }
 }
 
-export function transferFormFieldsToSaveData (data: CreateResidentPortalFormFields): ResidentPortal {
+export function transferFormFieldsToSaveData (data: CreateResidentPortalFormFields):ResidentPortal {
   return {
     name: data.serviceName,
     uiConfiguration: {

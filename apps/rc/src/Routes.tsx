@@ -386,19 +386,27 @@ function ServiceRoutes () {
         element={<EditDhcp />}
       />
       <Route
-        path={getServiceRoutePath({ type: ServiceType.RESIDENT_PORTAL, oper: ServiceOperation.LIST })}
+        path={getServiceRoutePath({
+          type: ServiceType.RESIDENT_PORTAL,
+          oper: ServiceOperation.LIST })}
         element={<ResidentPortalTable />}
       />
       <Route
-        path={getServiceRoutePath({ type: ServiceType.RESIDENT_PORTAL, oper: ServiceOperation.DETAIL })}
+        path={getServiceRoutePath({
+          type: ServiceType.RESIDENT_PORTAL,
+          oper: ServiceOperation.DETAIL })}
         element={<ResidentPortalDetail />}
       />
       <Route
-        path={getServiceRoutePath({ type: ServiceType.RESIDENT_PORTAL, oper: ServiceOperation.CREATE })}
+        path={getServiceRoutePath({
+          type: ServiceType.RESIDENT_PORTAL,
+          oper: ServiceOperation.CREATE })}
         element={<ResidentPortalForm />}
       />
       <Route
-        path={getServiceRoutePath({ type: ServiceType.RESIDENT_PORTAL, oper: ServiceOperation.EDIT })}
+        path={getServiceRoutePath({
+          type: ServiceType.RESIDENT_PORTAL,
+          oper: ServiceOperation.EDIT })}
         element={<ResidentPortalForm editMode={true} />}
       />
       <Route
