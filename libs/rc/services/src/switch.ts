@@ -69,10 +69,14 @@ export type SwitchsExportPayload = {
 
 export const switchApi = baseSwitchApi.injectEndpoints({
   endpoints: (build) => ({
-    switchList: build.query<TableResult<SwitchRow>, RequestPayload>({
+    switchList: build.query<TableResult<SwitchRow>, RequestPayload<any>>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const hasGroupBy = arg.payload?.groupBy
+        const req = hasGroupBy
+          ? createHttpRequest(SwitchUrlsInfo.getSwitchListByGroup, arg.params)
+          : createHttpRequest(SwitchUrlsInfo.getSwitchList, arg.params)
         const listInfo = {
-          ...createHttpRequest(SwitchUrlsInfo.getSwitchList, arg.params),
+          ...req,
           body: arg.payload
         }
         const listQuery = await fetchWithBQ(listInfo)
@@ -80,9 +84,13 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const stackMembers:{ [index:string]: StackMember[] } = {}
         const stacks: string[] = []
         if(!list) return { error: listQuery.error as FetchBaseQueryError }
+        
         list.data.forEach(async (item:SwitchRow) => {
           if(item.isStack || item.formStacking){
             stacks.push(item.serialNumber)
+          }
+          if(item.switches){
+            item.children = item.switches
           }
         })
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
