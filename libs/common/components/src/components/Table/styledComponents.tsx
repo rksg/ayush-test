@@ -195,7 +195,7 @@ const tallStyle = css<StyledTable>`
     &-list-toolbar {
       position: sticky;
       top: calc(var(--sticky-offset) + (18px * var(--sticky-has-actions)) + (36px * var(--sticky-has-filters)));
-      z-index: 3;
+      z-index: 4;
       overflow: visible;
       &-container {
         padding: 0;
@@ -360,7 +360,7 @@ export const Header = styled.div`
   justify-content: space-between;
   position: sticky;
   top: calc(var(--sticky-offset) + (18px * var(--sticky-has-actions)));
-  z-index: 2;
+  z-index: 3;
   background-color: var(--acx-primary-white);
 `
 
@@ -546,5 +546,5 @@ export const ActionsContainer = styled(Space)`
   position: sticky;
   top: var(--sticky-offset);
   background-color: var(--acx-primary-white);
-  z-index: 1;
+  z-index: 3;
 `
