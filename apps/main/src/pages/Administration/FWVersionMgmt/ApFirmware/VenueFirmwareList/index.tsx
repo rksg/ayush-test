@@ -72,7 +72,7 @@ function useColumns (
       dataIndex: 'name',
       // sorter: true,
       sorter: { compare: sortProp('name', defaultSort) },
-      // defaultSortOrder: 'ascend',
+      defaultSortOrder: 'ascend',
       searchable: searchable,
       render: function (data, row) {
         return row.name

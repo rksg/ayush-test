@@ -1,10 +1,10 @@
 import '@testing-library/jest-dom'
 
-import { store, videoCallQoeURL } from '@acx-ui/store'
-import { mockGraphqlQuery }       from '@acx-ui/test-utils'
+import { store, Provider ,videoCallQoeURL }                                  from '@acx-ui/store'
+import { act, mockGraphqlMutation,  mockGraphqlQuery,  renderHook, waitFor } from '@acx-ui/test-utils'
 
-import { callQoeTestDetailsFixtures1 } from './__tests__/fixtures'
-import { api }                         from './services'
+import { createTestResponse, deleteTestResponse, callQoeTestDetailsFixtures1 } from './__tests__/fixtures'
+import { api, useCreateCallQoeTestMutation, useDeleteCallQoeTestMutation }     from './services'
 
 describe('videoCallQoeApi', () => {
   const expectedResponse = {
@@ -32,39 +32,65 @@ describe('videoCallQoeApi', () => {
 
   beforeEach(() => store.dispatch(api.util.resetApiState()))
 
-  it('api should return populated data', async () => {
-    mockGraphqlQuery(videoCallQoeURL,'CallQoeTests', {
-      data: expectedResponse
-    })
-    const { status, data, error } = await store.dispatch(
-      api.endpoints.videoCallQoeTests.initiate(null))
+  describe('getAllCallQoeTest end point', ()=>{
+    it('api should return populated data', async () => {
+      mockGraphqlQuery(videoCallQoeURL,'CallQoeTests', {
+        data: expectedResponse
+      })
+      const { status, data, error } = await store.dispatch(
+        api.endpoints.videoCallQoeTests.initiate(null))
 
-    expect(error).toBeUndefined()
-    expect(status).toBe('fulfilled')
-    expect(data).toMatchObject(expectedResponse)
-  })
-  it('api should return empty data', async () => {
-    mockGraphqlQuery(videoCallQoeURL,'CallQoeTests', {
-      data: {}
+      expect(error).toBeUndefined()
+      expect(status).toBe('fulfilled')
+      expect(data).toMatchObject(expectedResponse)
     })
-    const { status, data, error } = await store.dispatch(
-      api.endpoints.videoCallQoeTests.initiate(null))
+    it('api should return empty data', async () => {
+      mockGraphqlQuery(videoCallQoeURL,'CallQoeTests', {
+        data: {}
+      })
+      const { status, data, error } = await store.dispatch(
+        api.endpoints.videoCallQoeTests.initiate(null))
 
-    expect(error).toBeUndefined()
-    expect(status).toBe('fulfilled')
-    expect(data).toStrictEqual({})
-  })
-  it('api should return error', async () => {
-    mockGraphqlQuery(videoCallQoeURL,'CallQoeTests', {
-      error: new Error('something went wrong!')
+      expect(error).toBeUndefined()
+      expect(status).toBe('fulfilled')
+      expect(data).toStrictEqual({})
     })
-    const { status, data, error } = await store.dispatch(
-      api.endpoints.videoCallQoeTests.initiate(null))
+    it('api should return error', async () => {
+      mockGraphqlQuery(videoCallQoeURL,'CallQoeTests', {
+        error: new Error('something went wrong!')
+      })
+      const { status, data, error } = await store.dispatch(
+        api.endpoints.videoCallQoeTests.initiate(null))
 
-    expect(status).toBe('rejected')
-    expect(data).toBe(undefined)
-    expect(error).not.toBe(undefined)
+      expect(status).toBe('rejected')
+      expect(data).toBe(undefined)
+      expect(error).not.toBe(undefined)
+    })
   })
+
+  it('createCallQoeTest api should create a test', async () => {
+    mockGraphqlMutation(videoCallQoeURL, 'CreateVideoCallQoeTest', { data: createTestResponse })
+    const { result } = renderHook(() => useCreateCallQoeTestMutation(),
+      { wrapper: Provider })
+    act(() => {
+      result.current[0]({ name: 'test call' })
+    })
+    await waitFor(() => expect(result.current[1].isSuccess).toBe(true))
+    expect(result.current[1].data)
+      .toEqual(createTestResponse.createCallQoeTest)
+  })
+
+  it('deleteCallQoeTest api should delete a test', async () => {
+    mockGraphqlMutation(videoCallQoeURL, 'DeleteVideoCallQoeTest', { data: deleteTestResponse })
+    const { result } = renderHook(() => useDeleteCallQoeTestMutation(),
+      { wrapper: Provider })
+    act(() => {
+      result.current[0]({ id: 1 })
+    })
+    await waitFor(() => expect(result.current[1].isSuccess).toBe(true))
+    expect(result.current[1].data).toEqual(true)
+  })
+
 })
 
 describe('videoCallQoeTestDetails', () => {
