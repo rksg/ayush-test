@@ -19,5 +19,6 @@ export const videoCallQoeApi = createApi({
   baseQuery: baseQuery,
   reducerPath: 'video-call-qoe-api',
   refetchOnMountOrArgChange: true,
+  tagTypes: ['VideoCallQoe'],
   endpoints: () => ({ })
 })
