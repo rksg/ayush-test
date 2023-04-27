@@ -459,6 +459,16 @@ export function MacAddressFilterRegExp (value: string){
   return Promise.resolve()
 }
 
+export function generalMacAddressRegExp (value: string){
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const re = new RegExp(/^[a-fA-F0-9]{2}(:[a-fA-F0-9]{2}){5}$/)
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.invalid))
+  }
+  return Promise.resolve()
+}
+
 export function MacRegistrationFilterRegExp (value: string){
   const { $t } = getIntl()
   const HYPHEN_2_GROUPS = new RegExp(/^([0-9A-Fa-f]{6})-([0-9A-Fa-f]{6})$/)
