@@ -6,9 +6,9 @@ import ReactECharts          from 'echarts-for-react'
 import { useIntl }           from 'react-intl'
 import AutoSizer             from 'react-virtualized-auto-sizer'
 
-import { TimeSeriesDataType, getSeriesData }                                                                                                              from '@acx-ui/analytics/utils'
-import { Loader, PageHeader, Table, TableProps, Tooltip, TrendPill, TrendType, cssStr,  Card, GridCol, GridRow, MultiLineTimeSeriesChart, NoData, Alert } from '@acx-ui/components'
-import { DateFormatEnum, formatter }                                                                                                                      from '@acx-ui/formatter'
+import { TimeSeriesDataType, getSeriesData }                                                                                                   from '@acx-ui/analytics/utils'
+import { Loader, PageHeader, Table, TableProps, Tooltip, TrendType, cssStr,  Card, GridCol, GridRow, MultiLineTimeSeriesChart, NoData, Alert } from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                                                                                           from '@acx-ui/formatter'
 import {
   EditOutlinedIcon
 } from '@acx-ui/icons'
@@ -17,7 +17,7 @@ import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 import { DetailedResponse, Participants, WifiMetrics, useVideoCallQoeTestDetailsQuery } from '../VideoCallQoe/services'
 
-import { getConnectionQuality, getConnectionQualityTooltip, zoomStatsThresholds } from './connectionQuality'
+import { getConnectionQuality, getConnectionQualityTooltip, zoomStatsThresholds } from './helper'
 import * as UI                                                                    from './styledComponents'
 
 export function VideoCallQoeDetails (){
@@ -160,7 +160,7 @@ export function VideoCallQoeDetails (){
             [trend,quality]=['positive', $t({ defaultMessage: 'Good' })]
 
           return <Tooltip title={connectionQualityTooltip}>
-            <TrendPill value={quality} trend={trend as TrendType} />
+            <UI.TrendCircle value={quality} trend={trend as TrendType} />
           </Tooltip>
         }
         else

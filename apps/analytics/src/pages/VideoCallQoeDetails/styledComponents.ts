@@ -7,6 +7,10 @@ export const BigTrendPill = styled(TrendPill)`
     padding: 7px 12px;
     font-weight: normal;
 `
+export const TrendCircle = styled(TrendPill)`
+    padding: 3px 3px;
+`
+
 export const ChartsContainer = styled.div`
     padding-top: 20px;
 `

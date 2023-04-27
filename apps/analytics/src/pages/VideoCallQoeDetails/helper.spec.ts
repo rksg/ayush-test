@@ -4,7 +4,7 @@ import { renderHook } from '@acx-ui/test-utils'
 
 import { WifiMetrics } from '../VideoCallQoe/services'
 
-import { getConnectionQuality, getConnectionQualityFor, getConnectionQualityTooltip, takeWorseQuality } from './connectionQuality'
+import { getConnectionQuality, getConnectionQualityFor, getConnectionQualityTooltip, takeWorseQuality } from './helper'
 
 describe('connectionQuality', () => {
   test('wifiMetrices having null', () => {
