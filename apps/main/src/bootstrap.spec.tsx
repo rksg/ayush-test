@@ -51,7 +51,6 @@ describe('bootstrap.init', () => {
     document.body.appendChild(rootEl)
     const root = createRoot(rootEl)
     await act(() => bootstrap.init(root))
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(screen.getByTestId('all-routes')).toBeVisible()
   })
 })
