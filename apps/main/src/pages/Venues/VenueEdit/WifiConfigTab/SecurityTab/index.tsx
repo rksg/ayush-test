@@ -125,6 +125,10 @@ export function SecurityTab () {
         roguePolicyId
       })
     }
+
+    if (venueRogueApData?.roguePolicyId) {
+      setRoguePolicyIdValue(venueRogueApData.roguePolicyId)
+    }
   }, [dosProctectionData, venueRogueApData])
 
   const handleUpdateSecuritySettings = async (data?: SecuritySetting) => {
