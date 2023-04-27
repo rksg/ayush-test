@@ -87,35 +87,47 @@ export function ConfigurationProfileForm () {
     return data
   }
 
+  const checkTrustedPort = () => {
+    if(ipv4DhcpSnooping || arpInspection){
+      const hasEmptyTrustPorts =
+        currentData.trustedPorts?.some(port => port.trustPorts.length === 0)
+
+      if(hasEmptyTrustPorts){
+        showActionModal({
+          type: 'error',
+          title: $t({ defaultMessage: 'Error' }),
+          content: $t({ defaultMessage:
+            'Please select trusted ports in order to make this configuration profile valid' })
+        })
+        return false
+      }
+    }
+    return true
+  }
+
   const handleAddProfile = async () => {
     try {
+      if(!checkTrustedPort()){
+        return false
+      }
       await addSwitchConfigProfile({ params, payload: proceedData(currentData) }).unwrap()
       setCurrentData({} as SwitchConfigurationProfile)
       navigate(linkToProfiles, { replace: true })
     } catch(err) {
       console.log(err) // eslint-disable-line no-console
     }
+    return true
   }
 
   const handleEditProfile = async () => {
     try {
-      if(ipv4DhcpSnooping || arpInspection){
-        const hasEmptyTrustPorts =
-          currentData.trustedPorts?.some(port => port.trustPorts.length === 0)
-
-        if(hasEmptyTrustPorts){
-          showActionModal({
-            type: 'error',
-            title: $t({ defaultMessage: 'Error' }),
-            content: $t({ defaultMessage:
-              'Please select trusted ports in order to make this configuration profile valid' })
-          })
-          return false
-        }
+      if(!checkTrustedPort()){
+        return false
       }
       await updateSwitchConfigProfile({ params, payload: proceedData(currentData) }).unwrap()
       setCurrentData({} as SwitchConfigurationProfile)
       navigate(linkToProfiles)
+      return true
     } catch (err) {
       console.log(err) // eslint-disable-line no-console
     }
