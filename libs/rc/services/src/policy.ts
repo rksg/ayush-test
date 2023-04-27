@@ -404,7 +404,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'AddRogueApPolicyProfile'
+            'AddRogueApPolicyProfile',
+            'UpdateVenueRogueAp',
+            'UpdateDenialOfServiceProtection'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'RogueAp', id: 'LIST' }]))
           })
@@ -560,7 +562,19 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+      providesTags: [{ type: 'Policy', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateVenueRogueAp',
+            'UpdateDenialOfServiceProtection'
+          ]
+          console.log(msg)
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
+          })
+        })
+      }
     }),
     enhancedRoguePolicies: build.query<TableResult<EnhancedRoguePolicyType>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -573,7 +587,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
       providesTags: [{ type: 'RogueAp', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
+          console.log(msg)
           onActivityMessageReceived(msg, [
+            'UpdateVenueRogueAp',
+            'UpdateDenialOfServiceProtection',
             'DeleteVenue',
             'DeleteVenues'
           ], () => {
