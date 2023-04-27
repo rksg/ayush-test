@@ -688,7 +688,7 @@ exports[`Topology AP Card should show empty traffic data 1`] = `
                           style="align-items: center; display: inline-flex;"
                         >
                           <div
-                            _echarts_instance_="ec_1682615882465"
+                            _echarts_instance_="ec_1682618378648"
                             class="echarts-for-react "
                             size-sensor-id="1"
                             style="height: 16px; width: 135px; margin-right: 4px; position: relative;"
