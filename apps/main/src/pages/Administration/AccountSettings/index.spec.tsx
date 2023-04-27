@@ -90,7 +90,7 @@ describe('Account Settings', () => {
     )
 
 
-    expect((await screen.findAllByTestId(/rc-.*/)).length).toBe(5)
+    expect((await screen.findAllByTestId(/rc-.*/)).length).toBe(4)
   })
 
   it('should not display map region selector', async () => {
@@ -153,7 +153,7 @@ describe('Account Settings', () => {
 
     await screen.findByTestId('rc-MapRegionFormItem')
     expect(screen.queryByTestId('rc-AccessSupportFormItem')).not.toBeInTheDocument()
-    expect((await screen.findAllByRole('separator')).length).toBe(3)
+    expect((await screen.findAllByRole('separator')).length).toBe(2)
   })
   it('should not display enable MFA checkbox', async () => {
     const fakeUser = _.cloneDeep(fakeUserProfile)
@@ -172,6 +172,6 @@ describe('Account Settings', () => {
 
     await screen.findByTestId('rc-MapRegionFormItem')
     expect(screen.queryByTestId('rc-MFAFormItem')).not.toBeInTheDocument()
-    expect((await screen.findAllByRole('separator')).length).toBe(3)
+    expect((await screen.findAllByRole('separator')).length).toBe(2)
   })
 })
