@@ -27,11 +27,6 @@ PageHeader.defaultProps = {
   footerSpacer: true
 }
 
-declare global {
-  // eslint-disable-next-line no-var
-  var xxx: HTMLDivElement | null
-}
-
 function PageHeader (props: PageHeaderProps) {
   const ref = useRef<HTMLDivElement>(null)
   const layout = useLayoutContext()
@@ -39,9 +34,7 @@ function PageHeader (props: PageHeaderProps) {
   pageHeaderProps.title = <Typography.Title ellipsis>{props.title}</Typography.Title>
 
   useLayoutEffect(() => {
-    window.xxx = ref.current
-    if (!ref.current) return
-    const box = ref.current.getBoundingClientRect()
+    const box = ref.current!.getBoundingClientRect()
     layout.setY(box.top + box.height)
   })
 
