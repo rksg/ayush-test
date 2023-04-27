@@ -46,11 +46,11 @@ export default function useDHCPInfo () {
     configurationType: dhcpProfile ? DHCPConfigTypeMessages[dhcpProfile.dhcpMode]:null,
     poolsNum: dhcpProfile? dhcpProfile?.dhcpPools.length : 0,
     primaryDHCP: {
-      name: primaryServerSN && apList ? apListGroupSN[primaryServerSN].name:'',
+      name: primaryServerSN && apList ? apListGroupSN[primaryServerSN]?.name:'',
       serialNumber: primaryServerSN
     },
     secondaryDHCP: {
-      name: backupServerSN && apList ? apListGroupSN[backupServerSN].name:'',
+      name: backupServerSN && apList ? apListGroupSN[backupServerSN]?.name:'',
       serialNumber: backupServerSN
     },
     gateway: (!_.isEmpty(apListGroupSN) && gatewayList.length>0) ? gatewayList.map(( gateway )=>{

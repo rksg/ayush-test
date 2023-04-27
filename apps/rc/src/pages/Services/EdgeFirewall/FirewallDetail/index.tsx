@@ -137,7 +137,7 @@ const FirewallDetail = () => {
                 )}
               </Typography.Title>
             </UI.InstancesMargin>
-            <EdgeTable edgeIds={edgeFirewallData.edgeIds || ['']} />
+            <EdgeTable edgeIds={edgeFirewallData.edgeIds || []} />
           </Card>
         </Space>
       </Loader>

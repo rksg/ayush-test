@@ -1,23 +1,17 @@
-import { createContext, useContext, ReactNode } from 'react'
+import { ReactNode } from 'react'
 
-import { pick }    from 'lodash'
-import { useIntl } from 'react-intl'
+import { pick }              from 'lodash'
+import { useIntl }           from 'react-intl'
+import { useParams, Params } from 'react-router-dom'
 
 import { Loader }         from '@acx-ui/components'
 import { useApListQuery } from '@acx-ui/rc/services'
-import { useParams }      from '@acx-ui/react-router-dom'
-import type { Params }    from '@acx-ui/react-router-dom'
-
-const ApContext = createContext({} as Params<string>)
-
-export function useApContext () {
-  return useContext(ApContext)
-}
+import { ApContext }      from '@acx-ui/rc/utils'
 
 export function ApContextProvider (props: { children: ReactNode }) {
   const params = useParams()
   const { $t } = useIntl()
-  const fields = ['serialNumber', 'venueName', 'apMac']
+  const fields = ['serialNumber', 'venueName', 'apMac', 'venueId']
   const results = useApListQuery({
     params: { tenantId: params.tenantId },
     payload: {

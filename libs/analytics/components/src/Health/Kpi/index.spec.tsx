@@ -9,7 +9,8 @@ import {
   mockGraphqlMutation,
   mockGraphqlQuery,
   render,
-  screen
+  screen,
+  waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 import { TimeStampRange }                                  from '@acx-ui/types'
 import { DateRange, NetworkPath, fixedEncodeURIComponent } from '@acx-ui/utils'
@@ -17,6 +18,14 @@ import { DateRange, NetworkPath, fixedEncodeURIComponent } from '@acx-ui/utils'
 import { HealthPageContext } from '../HealthPageContext'
 
 import KpiSection from '.'
+
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useApContext: jest.fn()
+    .mockReturnValueOnce(null)
+    .mockReturnValueOnce({ venueId: 'testTenant' })
+    .mockReturnValue({})
+}))
 
 describe('Kpi Section', () => {
   beforeEach(() => {
@@ -72,21 +81,17 @@ describe('Kpi Section', () => {
       }
     })
     const path = [{ type: 'network', name: 'Network' }] as NetworkPath
-    render(<Router><Provider>
+    const params = { tenantId: 'testTenant' }
+    render(<Provider>
       <HealthPageContext.Provider
         value={{ ...healthContext, path }}
       >
         <KpiSection tab={'overview'} filters={{ ...filters, path }} />
       </HealthPageContext.Provider>
-    </Provider></Router>)
-
-    const button = await screen.findByRole('button', { name: 'Apply' })
-    expect(button).toBeDisabled()
-    // eslint-disable-next-line testing-library/no-node-access
-    await userEvent.hover(button.parentElement!)
-    // eslint-disable-next-line max-len
-    expect(await screen.findByText(/Cannot save threshold at organisation level/)).toBeInTheDocument()
-  }, 60000)
+    </Provider>, { route: { params, path: '/:tenantId' } })
+    const loaders = await screen.findAllByRole('img', { name: 'loader' })
+    expect(loaders.length).toBeGreaterThanOrEqual(1)
+  })
 
   it('should render disabled tooltip with no permissions', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
@@ -107,7 +112,7 @@ describe('Kpi Section', () => {
     })
     mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
       data: {
-        timeToConnect: {
+        saveThreshold: {
           success: true
         }
       }
@@ -138,6 +143,51 @@ describe('Kpi Section', () => {
     await userEvent.hover(button.parentElement!)
     // eslint-disable-next-line max-len
     expect(await screen.findByText('You don\'t have permission to set threshold for selected network node.')).toBeInTheDocument()
+  }, 60000)
+
+  it('should render valid threshold apply for single ap path', async () => {
+    mockGraphqlQuery(dataApiURL, 'KPI', {
+      data: {
+        mutationAllowed: true
+      }
+    })
+    mockGraphqlQuery(dataApiURL, 'GetKpiThresholds', {
+      data: {
+        timeToConnectThreshold: { value: 30000 }
+      }
+    })
+
+    mockGraphqlQuery(dataApiURL, 'histogramKPI', {
+      data: { network: { histogram: { data: [0, 2, 2, 3, 3, 0] } } }
+    })
+    mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
+      data: { network: { timeSeries: sampleTS } }
+    })
+
+    const path = [{ type: 'ap', name: 'z1' }] as NetworkPath
+    const period = fixedEncodeURIComponent(JSON.stringify(filters))
+    const analyticsNetworkFilter = fixedEncodeURIComponent(JSON.stringify({
+      path,
+      raw: []
+    }))
+
+
+    render(<Provider>
+      <HealthPageContext.Provider value={healthContext}>
+        <KpiSection tab={'overview'} filters={{ ...filters, path: path }} />
+      </HealthPageContext.Provider>
+    </Provider>, {
+      route: {
+        path: '/:tenantId',
+        params: { tenantId: 'testTenant' },
+        search: `period=${period}&analyticsNetworkFilter=${analyticsNetworkFilter}`,
+        wrapRoutes: false
+      }
+    })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const buttons = await screen.findAllByRole('button', { name: 'Apply' })
+    expect(buttons).toHaveLength(4)
+    expect(buttons[0]).not.toBeDisabled()
   }, 60000)
 
   it('should render with smaller timewindow', async () => {
