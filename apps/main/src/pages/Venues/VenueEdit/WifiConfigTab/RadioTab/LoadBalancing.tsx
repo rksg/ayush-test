@@ -1,9 +1,9 @@
 /* eslint-disable max-len */
 import { useContext, useEffect } from 'react'
 
-import { Col, Form, Radio, Row, Slider, Space, Switch } from 'antd'
-import { defineMessage, FormattedMessage, useIntl }     from 'react-intl'
-import { useParams }                                    from 'react-router-dom'
+import { Col, InputNumber, Form, Radio, Row, Slider, Space, Switch } from 'antd'
+import { defineMessage, FormattedMessage, useIntl }                  from 'react-intl'
+import { useParams }                                                 from 'react-router-dom'
 
 import { cssStr, Loader, Tooltip }                                            from '@acx-ui/components'
 import { InformationSolid, QuestionMarkCircleOutlined }                       from '@acx-ui/icons'
@@ -20,9 +20,12 @@ export function LoadBalancing () {
   const { $t } = useIntl()
   const { venueId } = useParams()
   const form = Form.useFormInstance()
-  const [enabled, loadBalancingMethod, bandBalancingEnabled ] = [
+  const [enabled, loadBalancingMethod, stickyClientSteeringEnabled, snrThreshold, percentageThreshold, bandBalancingEnabled ] = [
     useWatch('enabled'),
     useWatch('loadBalancingMethod'),
+    useWatch('stickyClientSteeringEnabled'),
+    useWatch('stickyClientSnrThreshold'),
+    useWatch('stickyClientNbrApPercentageThreshold'),
     useWatch('bandBalancingEnabled')
   ]
 
@@ -57,6 +60,10 @@ export function LoadBalancing () {
       })
     }
   ]
+
+  const stickyClientSteeringInfoMessage = defineMessage({
+    defaultMessage: 'Enabling this feature will help clients who have low SNR to transit to a better AP, and will disable SmartRoam feature on AP'
+  })
 
   const steeringModes = [
     {
@@ -121,6 +128,7 @@ export function LoadBalancing () {
     const {
       enabled,
       loadBalancingMethod,
+      stickyClientSteeringEnabled,
       bandBalancingEnabled,
       bandBalancingClientPercent24G,
       steeringMode
@@ -129,6 +137,7 @@ export function LoadBalancing () {
     return {
       enabled,
       loadBalancingMethod,
+      stickyClientSteeringEnabled,
       bandBalancingEnabled,
       bandBalancingClientPercent24G,
       steeringMode
@@ -216,6 +225,84 @@ export function LoadBalancing () {
             </Space>
           </Radio.Group>
         </Form.Item>
+      </Col>
+    </Row>
+    }
+
+    {enabled &&
+    <Row>
+      <Col span={colSpan}>
+        <FieldLabel width='200px'>
+          <Space>
+            {$t({ defaultMessage: 'Sticky Client Steering' })}
+            {stickyClientSteeringInfoMessage &&
+              <Tooltip title={$t(stickyClientSteeringInfoMessage)} placement='bottom'>
+                <QuestionMarkCircleOutlined style={{ height: '14px', marginBottom: -3 }}/>
+              </Tooltip>
+            }
+          </Space>
+          <Form.Item
+            name='stickyClientSteeringEnabled'
+            valuePropName='checked'
+            style={{ marginTop: '-5px' }}
+            children={<Switch
+              data-testid='sticky-client-steering-enabled'
+              onChange={onFormDataChanged} />}
+          />
+        </FieldLabel>
+      </Col>
+    </Row>
+    }
+
+    {enabled && stickyClientSteeringEnabled &&
+    <Row>
+      <Col span={colSpan}>
+        <Space>
+          <Form.Item
+            label={$t({ defaultMessage: 'SNR Threshold ' })}
+            name='stickyClientSnrThreshold'
+            initialValue={15}
+            rules={[
+              { required: true },
+              { type: 'number', min: 5 },
+              { type: 'number', max: 30 }
+            ]}
+            children={<InputNumber
+              data-testid='sticky-client-snr-threshold'
+              min={5}
+              max={30}
+              onChange={onFormDataChanged} />} />
+          <span className='ant-form-text' style={{ marginLeft: '-4px', marginTop: '8px' }}>
+            {$t({ defaultMessage: 'dB' })}
+          </span>
+          <Form.Item
+            label={$t({ defaultMessage: 'Neighbor AP ' })}
+            // eslint-disable-next-line max-len
+            tooltip={$t({ defaultMessage: 'NBRAP percentage is used to calculate a base SNR and compare it to the SNR received from a neighbor AP.' })}
+            name='stickyClientNbrApPercentageThreshold'
+            initialValue={20}
+            rules={[
+              { required: true },
+              { type: 'number', min: 10 },
+              { type: 'number', max: 40 }
+            ]}
+            children={<InputNumber
+              data-testid='stickyClientNbrApPercentageThreshold'
+              min={10}
+              max={40}
+              onChange={onFormDataChanged} />} />
+          <span className='ant-form-text' style={{ marginLeft: '-4px', marginTop: '8px' }}>
+            {$t({ defaultMessage: '%' })}
+          </span>
+        </Space>
+        <Form.Item
+          label={
+            $t({ defaultMessage: `Clients with SNR lower than {snrThreshold}dB will be steered to neighbor access 
+            points with SNR greater than {percentThreshold}% above the current client SNR.` },
+            { snrThreshold: snrThreshold,
+              percentThreshold: percentageThreshold })
+          }
+        />
       </Col>
     </Row>
     }
