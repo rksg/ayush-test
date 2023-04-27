@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
@@ -14,6 +14,7 @@ interface NetworkTableProps {
 export const NetworkTable = (props: NetworkTableProps) => {
 
   const { $t } = useIntl()
+  const [isDataReady,setIsDataReady] = useState(false)
   const defaultNetworkPayload = {
     fields: [
       'id',
@@ -27,7 +28,7 @@ export const NetworkTable = (props: NetworkTableProps) => {
     useQuery: useNetworkListQuery,
     defaultPayload: defaultNetworkPayload,
     option: {
-      skip: props.networkIds.length === 0
+      skip: !isDataReady || props.networkIds.length === 0
     }
   })
 
@@ -37,6 +38,12 @@ export const NetworkTable = (props: NetworkTableProps) => {
       filters: { id: props.networkIds }
     })
   }, [props.networkIds])
+
+  useEffect(() => {
+    if(tableQuery?.payload?.filters?.id.length > 0) {
+      setIsDataReady(true)
+    }
+  }, [tableQuery.payload.filters])
 
   const columns: TableProps<Network>['columns'] = [
     {

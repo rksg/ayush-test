@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
@@ -14,6 +14,7 @@ interface EdgeTableProps {
 export const EdgeTable = (props: EdgeTableProps) => {
 
   const { $t } = useIntl()
+  const [isDataReady,setIsDataReady] = useState(false)
   const defaultEdgePayload = {
     fields: [
       'serialNumber',
@@ -27,7 +28,7 @@ export const EdgeTable = (props: EdgeTableProps) => {
     useQuery: useGetEdgeListQuery,
     defaultPayload: defaultEdgePayload,
     option: {
-      skip: props.edgeIds.length === 0
+      skip: !isDataReady || props.edgeIds.length === 0
     }
   })
 
@@ -37,6 +38,12 @@ export const EdgeTable = (props: EdgeTableProps) => {
       filters: { serialNumber: props.edgeIds }
     })
   }, [props.edgeIds])
+
+  useEffect(() => {
+    if(tableQuery?.payload?.filters?.serialNumber.length > 0) {
+      setIsDataReady(true)
+    }
+  }, [tableQuery.payload.filters])
 
   const columns: TableProps<EdgeStatus>['columns'] = [
     {
