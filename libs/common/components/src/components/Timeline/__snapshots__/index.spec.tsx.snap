@@ -31,7 +31,7 @@ exports[`Timeline should render 1`] = `
                   <span
                     class="ant-descriptions-item-content"
                   >
-                    Pending
+                    In progress
                   </span>
                 </div>
               </td>
@@ -53,153 +53,13 @@ exports[`Timeline should render 1`] = `
           class="ant-timeline-item-head ant-timeline-item-head-custom ant-timeline-item-head-blue"
         >
           <div
-            class="styledComponents__Step-sc-1to6ymf-4 gBXlKK"
-          />
-        </div>
-        <div
-          class="ant-timeline-item-content"
-        >
-          --
-        </div>
-      </li>
-      <li
-        class="ant-timeline-item"
-      >
-        <div
-          class="ant-timeline-item-tail"
-        />
-        <div
-          class="ant-timeline-item-head ant-timeline-item-head-custom ant-timeline-item-head-blue"
-        >
-          <div
-            class="styledComponents__Step-sc-1to6ymf-4 gBXlKK"
-          />
-        </div>
-        <div
-          class="ant-timeline-item-content"
-        >
-          <div
-            class="styledComponents__ItemWrapper-sc-1to6ymf-1 gsdtQA"
-          >
-            --
-            <div
-              class="styledComponents__ContentWrapper-sc-1to6ymf-2 caChNg"
-            >
-              <div
-                class="styledComponents__WithExpanderWrapper-sc-1to6ymf-6 jSjuUQ"
-              >
-                <div>
-                  <div
-                    class="styledComponents__StatusWrapper-sc-1to6ymf-3 bOwEFv"
-                  >
-                    <svg
-                      class="styledComponents__PendingsIcon-sc-1to6ymf-10 dMjqBx"
-                      data-testid="Pending"
-                    />
-                    Pending
-                  </div>
-                  <div
-                    class="styledComponents__DescriptionWrapper-sc-1to6ymf-5 zACBC"
-                    style="padding-bottom: 0px;"
-                  >
-                    AddVenue
-                  </div>
-                </div>
-                <div
-                  class="styledComponents__ExpanderWrapper-sc-1to6ymf-7 fhkogC"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </li>
-      <li
-        class="ant-timeline-item"
-      >
-        <div
-          class="ant-timeline-item-tail"
-        />
-        <div
-          class="ant-timeline-item-head ant-timeline-item-head-custom ant-timeline-item-head-blue"
-        >
-          <div
-            class="styledComponents__Step-sc-1to6ymf-4 gBXlKK"
-          />
-        </div>
-        <div
-          class="ant-timeline-item-content"
-        >
-          --
-        </div>
-      </li>
-      <li
-        class="ant-timeline-item"
-      >
-        <div
-          class="ant-timeline-item-tail"
-        />
-        <div
-          class="ant-timeline-item-head ant-timeline-item-head-custom ant-timeline-item-head-blue"
-        >
-          <div
-            class="styledComponents__Step-sc-1to6ymf-4 gBXlKK"
-          />
-        </div>
-        <div
-          class="ant-timeline-item-content"
-        >
-          <div
-            class="styledComponents__ItemWrapper-sc-1to6ymf-1 gsdtQA"
-          >
-            --
-            <div
-              class="styledComponents__ContentWrapper-sc-1to6ymf-2 caChNg"
-            >
-              <div
-                class="styledComponents__WithExpanderWrapper-sc-1to6ymf-6 jSjuUQ"
-              >
-                <div>
-                  <div
-                    class="styledComponents__StatusWrapper-sc-1to6ymf-3 bOwEFv"
-                  >
-                    <svg
-                      class="styledComponents__InProgressIcon-sc-1to6ymf-11 kXLEWK"
-                      data-testid="InProgress"
-                    />
-                    In progress
-                  </div>
-                  <div
-                    class="styledComponents__DescriptionWrapper-sc-1to6ymf-5 zACBC"
-                    style="padding-bottom: 0px;"
-                  >
-                    UpdateSwitchPosition
-                  </div>
-                </div>
-                <div
-                  class="styledComponents__ExpanderWrapper-sc-1to6ymf-7 fhkogC"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </li>
-      <li
-        class="ant-timeline-item"
-      >
-        <div
-          class="ant-timeline-item-tail"
-        />
-        <div
-          class="ant-timeline-item-head ant-timeline-item-head-custom ant-timeline-item-head-blue"
-        >
-          <div
             class="styledComponents__Step-sc-1to6ymf-4 kiDmfG"
           />
         </div>
         <div
           class="ant-timeline-item-content"
         >
-          12/20/2022 09:55:03
+          12/20/2022 07:55:03
         </div>
       </li>
       <li
@@ -221,9 +81,9 @@ exports[`Timeline should render 1`] = `
           <div
             class="styledComponents__ItemWrapper-sc-1to6ymf-1 gsdtQA"
           >
-            12/20/2022 09:55:04
+            12/20/2022 07:55:04
             <div
-              class="styledComponents__ContentWrapper-sc-1to6ymf-2 caChNg"
+              class="styledComponents__ContentWrapper-sc-1to6ymf-2 icRQur"
             >
               <div
                 class="styledComponents__WithExpanderWrapper-sc-1to6ymf-6 jSjuUQ"
@@ -240,7 +100,6 @@ exports[`Timeline should render 1`] = `
                   </div>
                   <div
                     class="styledComponents__DescriptionWrapper-sc-1to6ymf-5 zACBC"
-                    style="padding-bottom: 0px;"
                   >
                     AddVenue
                   </div>
@@ -248,6 +107,225 @@ exports[`Timeline should render 1`] = `
                 <div
                   class="styledComponents__ExpanderWrapper-sc-1to6ymf-7 fhkogC"
                 />
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>
+      <li
+        class="ant-timeline-item"
+      >
+        <div
+          class="ant-timeline-item-tail"
+        />
+        <div
+          class="ant-timeline-item-head ant-timeline-item-head-custom ant-timeline-item-head-blue"
+        >
+          <div
+            class="styledComponents__Step-sc-1to6ymf-4 kiDmfG"
+          />
+        </div>
+        <div
+          class="ant-timeline-item-content"
+        >
+          12/20/2022 08:00:00
+        </div>
+      </li>
+      <li
+        class="ant-timeline-item"
+      >
+        <div
+          class="ant-timeline-item-tail"
+        />
+        <div
+          class="ant-timeline-item-head ant-timeline-item-head-custom ant-timeline-item-head-blue"
+        >
+          <div
+            class="styledComponents__Step-sc-1to6ymf-4 kiDmfG"
+          />
+        </div>
+        <div
+          class="ant-timeline-item-content"
+        >
+          <div
+            class="styledComponents__ItemWrapper-sc-1to6ymf-1 gsdtQA"
+          >
+            12/20/2022 08:05:00
+            <div
+              class="styledComponents__ContentWrapper-sc-1to6ymf-2 icRQur"
+            >
+              <div
+                class="styledComponents__WithExpanderWrapper-sc-1to6ymf-6 jSjuUQ"
+              >
+                <div>
+                  <div
+                    class="styledComponents__StatusWrapper-sc-1to6ymf-3 bvHcIB"
+                  >
+                    <svg
+                      class="styledComponents__FailIcon-sc-1to6ymf-9 iZmNvE"
+                      data-testid="CancelCircleSolid"
+                    />
+                    Failed
+                  </div>
+                  <div
+                    class="styledComponents__DescriptionWrapper-sc-1to6ymf-5 zACBC"
+                  >
+                    AddVenue
+                  </div>
+                </div>
+                <div
+                  class="styledComponents__ExpanderWrapper-sc-1to6ymf-7 fhkogC"
+                >
+                  <svg
+                    data-testid="PlusSquareSolid"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>
+      <li
+        class="ant-timeline-item"
+      >
+        <div
+          class="ant-timeline-item-tail"
+        />
+        <div
+          class="ant-timeline-item-head ant-timeline-item-head-custom ant-timeline-item-head-blue"
+        >
+          <div
+            class="styledComponents__Step-sc-1to6ymf-4 dgFaxb"
+          />
+        </div>
+        <div
+          class="ant-timeline-item-content"
+        >
+          12/20/2022 08:02:00
+        </div>
+      </li>
+      <li
+        class="ant-timeline-item"
+      >
+        <div
+          class="ant-timeline-item-tail"
+        />
+        <div
+          class="ant-timeline-item-head ant-timeline-item-head-custom ant-timeline-item-head-blue"
+        >
+          <div
+            class="styledComponents__Step-sc-1to6ymf-4 gBXlKK"
+          />
+        </div>
+        <div
+          class="ant-timeline-item-content"
+        >
+          <div
+            class="styledComponents__ItemWrapper-sc-1to6ymf-1 gsdtQA"
+          >
+            --
+            <div
+              class="styledComponents__ContentWrapper-sc-1to6ymf-2 icRQur"
+            >
+              <div
+                class="styledComponents__WithExpanderWrapper-sc-1to6ymf-6 jSjuUQ"
+              >
+                <div>
+                  <div
+                    class="styledComponents__StatusWrapper-sc-1to6ymf-3 bOwEFv"
+                  >
+                    <svg
+                      class="styledComponents__InProgressIcon-sc-1to6ymf-11 kXLEWK"
+                      data-testid="InProgress"
+                    />
+                    In progress
+                  </div>
+                  <div
+                    class="styledComponents__DescriptionWrapper-sc-1to6ymf-5 zACBC"
+                  >
+                    UpdateSwitchPosition
+                  </div>
+                </div>
+                <div
+                  class="styledComponents__ExpanderWrapper-sc-1to6ymf-7 fhkogC"
+                >
+                  <svg
+                    data-testid="PlusSquareSolid"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>
+      <li
+        class="ant-timeline-item"
+      >
+        <div
+          class="ant-timeline-item-tail"
+        />
+        <div
+          class="ant-timeline-item-head ant-timeline-item-head-custom ant-timeline-item-head-blue"
+        >
+          <div
+            class="styledComponents__Step-sc-1to6ymf-4 gBXlKK"
+          />
+        </div>
+        <div
+          class="ant-timeline-item-content"
+        >
+          --
+        </div>
+      </li>
+      <li
+        class="ant-timeline-item"
+      >
+        <div
+          class="ant-timeline-item-tail"
+        />
+        <div
+          class="ant-timeline-item-head ant-timeline-item-head-custom ant-timeline-item-head-blue"
+        >
+          <div
+            class="styledComponents__Step-sc-1to6ymf-4 gBXlKK"
+          />
+        </div>
+        <div
+          class="ant-timeline-item-content"
+        >
+          <div
+            class="styledComponents__ItemWrapper-sc-1to6ymf-1 gsdtQA"
+          >
+            --
+            <div
+              class="styledComponents__ContentWrapper-sc-1to6ymf-2 icRQur"
+            >
+              <div
+                class="styledComponents__WithExpanderWrapper-sc-1to6ymf-6 jSjuUQ"
+              >
+                <div>
+                  <div
+                    class="styledComponents__StatusWrapper-sc-1to6ymf-3 bOwEFv"
+                  >
+                    <svg
+                      class="styledComponents__InProgressIcon-sc-1to6ymf-11 kXLEWK"
+                      data-testid="InProgress"
+                    />
+                    In progress
+                  </div>
+                  <div
+                    class="styledComponents__DescriptionWrapper-sc-1to6ymf-5 zACBC"
+                  >
+                    UpdateSwitchPosition
+                  </div>
+                </div>
+                <div
+                  class="styledComponents__ExpanderWrapper-sc-1to6ymf-7 fhkogC"
+                >
+                  <svg
+                    data-testid="PlusSquareSolid"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -282,7 +360,7 @@ exports[`Timeline should render 1`] = `
           class="ant-timeline-item-head ant-timeline-item-head-custom ant-timeline-item-head-blue"
         >
           <div
-            class="styledComponents__Step-sc-1to6ymf-4 kiDmfG"
+            class="styledComponents__Step-sc-1to6ymf-4 gBXlKK"
           />
         </div>
         <div
@@ -291,37 +369,32 @@ exports[`Timeline should render 1`] = `
           <div
             class="styledComponents__ItemWrapper-sc-1to6ymf-1 gsdtQA"
           >
-            12/20/2022 09:55:04
+            --
             <div
-              class="styledComponents__ContentWrapper-sc-1to6ymf-2 caChNg"
+              class="styledComponents__ContentWrapper-sc-1to6ymf-2 icRQur"
             >
               <div
                 class="styledComponents__WithExpanderWrapper-sc-1to6ymf-6 jSjuUQ"
               >
                 <div>
                   <div
-                    class="styledComponents__StatusWrapper-sc-1to6ymf-3 bvHcIB"
+                    class="styledComponents__StatusWrapper-sc-1to6ymf-3 bOwEFv"
                   >
                     <svg
-                      class="styledComponents__FailIcon-sc-1to6ymf-9 iZmNvE"
-                      data-testid="CancelCircleSolid"
+                      class="styledComponents__PendingsIcon-sc-1to6ymf-10 dMjqBx"
+                      data-testid="Pending"
                     />
-                    Failed
+                    Pending
                   </div>
                   <div
                     class="styledComponents__DescriptionWrapper-sc-1to6ymf-5 zACBC"
-                    style="padding-bottom: 10px;"
                   >
                     AddVenue
                   </div>
                 </div>
                 <div
                   class="styledComponents__ExpanderWrapper-sc-1to6ymf-7 fhkogC"
-                >
-                  <svg
-                    data-testid="PlusSquareSolid"
-                  />
-                </div>
+                />
               </div>
             </div>
           </div>
