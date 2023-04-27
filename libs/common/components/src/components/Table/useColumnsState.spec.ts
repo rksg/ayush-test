@@ -115,6 +115,13 @@ describe('useColumnsState', () => {
   })
 
   it('resets state to default when deselect all columns', () => {
+    const columns = [
+      { key: 'col1', dataIndex: 'col1' },
+      { key: 'col2', dataIndex: 'col2' },
+      { key: 'col3', dataIndex: 'col3' },
+      { key: 'col4', dataIndex: 'col4', show: false },
+      { key: 'col5', dataIndex: 'col5', show: true }
+    ] as TableColumn<unknown>[]
     const onChange = jest.fn()
     const options: Options = {
       columns,
@@ -131,28 +138,28 @@ describe('useColumnsState', () => {
     }
     const { result } = renderHook(useColumnsState, { initialProps: options })
     expect(result.current.value).toEqual({
-      col1: { order: 0, fixed: 'left', show: true, disable: true },
+      col1: { order: 0, fixed: undefined, show: true, disable: false },
       col2: { order: 2, fixed: undefined, show: false, disable: false },
-      col3: { order: 1, fixed: undefined, show: true, disable: true },
+      col3: { order: 1, fixed: undefined, show: true, disable: false },
       col4: { order: 4, fixed: undefined, show: true, disable: false },
       col5: { order: 3, fixed: undefined, show: false, disable: false }
     })
 
     act(() => {
       result.current.onChange({
-        col1: { order: 0, fixed: 'left', show: true, disable: true },
+        col1: { order: 0, fixed: undefined, show: false, disable: false },
         col2: { order: 2, fixed: undefined, show: false, disable: false },
-        col3: { order: 1, fixed: undefined, show: true, disable: true },
+        col3: { order: 1, fixed: undefined, show: false, disable: false },
         col4: { order: 4, fixed: undefined, show: false, disable: false },
         col5: { order: 3, fixed: undefined, show: false, disable: false }
       })
     })
 
     expect(result.current.value).toEqual({
-      col1: { order: 0, fixed: 'left', show: true, disable: true },
+      col1: { order: 0, fixed: undefined, show: true, disable: false },
       col2: { order: 2, fixed: undefined, show: false, disable: false },
-      col3: { order: 1, fixed: undefined, show: true, disable: true },
-      col4: { order: 4, fixed: undefined, show: false, disable: false },
+      col3: { order: 1, fixed: undefined, show: true, disable: false },
+      col4: { order: 4, fixed: undefined, show: true, disable: false },
       col5: { order: 3, fixed: undefined, show: false, disable: false }
     })
 
@@ -161,7 +168,7 @@ describe('useColumnsState', () => {
       col3: true,
       col2: false,
       col5: false,
-      col4: false
+      col4: true
     })
   })
 
