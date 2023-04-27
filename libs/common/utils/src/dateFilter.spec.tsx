@@ -22,7 +22,7 @@ describe('useDateFilter', () => {
     })
     expect(result.current).toMatchObject({
       startDate: '2021-12-31T00:00:00+00:00',
-      endDate: '2022-01-01T00:00:00+00:00',
+      endDate: '2022-01-01T00:00:59+00:00',
       range: 'Last 24 Hours'
     })
   })
@@ -62,7 +62,7 @@ describe('useDateFilter', () => {
       ...window.location,
       search: fixedEncodeURIComponent(JSON.stringify({
         startDate: '2022-07-23T18:31:00+08:00',
-        endDate: '2022-07-24T18:31:00+08:00',
+        endDate: '2022-07-24T18:31:59+08:00',
         range: 'Last 24 Hours'
       }))
     }
@@ -82,7 +82,7 @@ describe('useDateFilter', () => {
 
 describe('defaultRanges', () => {
   beforeEach(() => {
-    Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
+    Date.now = jest.fn(() => new Date('2022-01-01T00:00:30.123Z').getTime())
   })
 
   afterAll(() => Date.now = original)
@@ -95,10 +95,10 @@ describe('defaultRanges', () => {
         return agg
       }, {} as Record<string, string[]>)
     ).toStrictEqual({
-      'All Time': ['2022-01-01T00:00:00.000Z', '2022-01-01T00:00:00.000Z'],
-      'Last 24 Hours': ['2021-12-31T00:00:00.000Z', '2022-01-01T00:00:00.000Z'],
-      'Last 7 Days': ['2021-12-25T00:00:00.000Z', '2022-01-01T00:00:00.000Z'],
-      'Last 30 Days': ['2021-12-02T00:00:00.000Z', '2022-01-01T00:00:00.000Z']
+      'All Time': ['2022-01-01T00:00:30.123Z', '2022-01-01T00:00:30.123Z'],
+      'Last 24 Hours': ['2021-12-31T00:00:00.000Z', '2022-01-01T00:00:59.999Z'],
+      'Last 7 Days': ['2021-12-25T00:00:00.000Z', '2022-01-01T00:00:59.999Z'],
+      'Last 30 Days': ['2021-12-02T00:00:00.000Z', '2022-01-01T00:00:59.999Z']
     })
   })
 
@@ -110,7 +110,7 @@ describe('defaultRanges', () => {
         return agg
       }, {} as Record<string, string[]>)
     ).toStrictEqual({
-      'Last 24 Hours': ['2021-12-31T00:00:00.000Z', '2022-01-01T00:00:00.000Z']
+      'Last 24 Hours': ['2021-12-31T00:00:00.000Z', '2022-01-01T00:00:59.999Z']
     })
   })
 })

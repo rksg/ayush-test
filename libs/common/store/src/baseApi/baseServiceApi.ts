@@ -7,6 +7,7 @@ export const baseServiceApi = createApi({
     'Service',
     'Dpsk',
     'DpskPassphrase',
+    'DpskPassphraseDevices',
     'MdnsProxy',
     'MdnsProxyAp',
     'WifiCalling',
