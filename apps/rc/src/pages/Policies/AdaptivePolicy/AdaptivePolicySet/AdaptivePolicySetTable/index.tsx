@@ -154,10 +154,12 @@ export default function AdaptivePolicySetTable () {
           const pools: string [] = assignedMacPools.get(row.id) ?? []
           const dpsks: string [] = assignedDpsks.get(row.id) ?? []
           if(dpsks.length > 0) {
-            items = [...items, `DPSK Pools (${dpsks.length})`, ...dpsks]
+            // eslint-disable-next-line max-len
+            items = [...items, $t({ defaultMessage: 'DPSK Pools ({size})' }, { size: dpsks.length }), ...dpsks]
           }
           if(pools.length > 0){
-            items = [...items, `Mac Registration Lists (${pools.length})`, ...pools]
+            // eslint-disable-next-line max-len
+            items = [...items, $t({ defaultMessage: 'Mac Registration Lists ({size})' }, { size: pools.length }), ...pools]
           }
           const totalCount = pools.length + dpsks.length
           return totalCount === 0 ? '0' :
