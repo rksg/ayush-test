@@ -6,9 +6,9 @@ import ReactECharts          from 'echarts-for-react'
 import { useIntl }           from 'react-intl'
 import AutoSizer             from 'react-virtualized-auto-sizer'
 
-import { TimeSeriesDataType, getSeriesData }                                                                                                       from '@acx-ui/analytics/utils'
-import { Loader, PageHeader, Table, TableProps, Tooltip, TrendPill, TrendType, cssStr,  Card, GridCol, GridRow, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
-import { DateFormatEnum, formatter }                                                                                                               from '@acx-ui/formatter'
+import { TimeSeriesDataType, getSeriesData }                                                                                                              from '@acx-ui/analytics/utils'
+import { Loader, PageHeader, Table, TableProps, Tooltip, TrendPill, TrendType, cssStr,  Card, GridCol, GridRow, MultiLineTimeSeriesChart, NoData, Alert } from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                                                                                                      from '@acx-ui/formatter'
 import {
   EditOutlinedIcon
 } from '@acx-ui/icons'
@@ -36,6 +36,13 @@ export function VideoCallQoeDetails (){
     }
   }
   useEffect(() => { connect('group') }, [])
+
+  const isMissingClientMac = (participants:Participants[])=>{
+    const missingMacCount = participants
+      .filter(participant=>
+        !participant.macAddress && participant.networkType.toLowerCase() === 'wifi').length
+    return missingMacCount > 0
+  }
 
   const columnHeaders: TableProps<Participants>['columns'] = [
     {
@@ -278,6 +285,16 @@ export function VideoCallQoeDetails (){
           fontFamily: cssStr('--acx-accent-brand-font'),
           lineHeight: cssStr('--acx-body-3-line-height')
         }}>{$t({ defaultMessage: 'Participant Details' })}</Typography.Text>
+
+        {isMissingClientMac(participants as Participants[]) &&
+        <div style={{ marginTop: '10px' }}><Alert
+          message={$t({
+            // eslint-disable-next-line max-len
+            defaultMessage: 'To see the details of Video Call QoE, you must select "Client MAC" for participants'
+          })}
+          type='warning'
+          showIcon /></div> }
+
         <Table
           columns={columnHeaders}
           dataSource={participants}
