@@ -1,9 +1,10 @@
 import '@testing-library/jest-dom'
 
 import { ApVenueStatusEnum, ApViewModel, CelluarInfo } from '@acx-ui/rc/utils'
-import { render }                                      from '@acx-ui/test-utils'
+import { mockGraphqlQuery, render }                                      from '@acx-ui/test-utils'
 
 import { APDetailsCard } from './APDetailsCard'
+import { dataApiURL, Provider } from '@acx-ui/store'
 
 const apDetail = {
   serialNumber: '132106000082',
@@ -167,13 +168,20 @@ const apDetailWithNullTraffic = {
   deviceModelType: 'Indoor'
 }
 
+const sample = { P1: 1, P2: 2, P3: 3, P4: 4 }
+
 
 describe('Topology AP Card', () => {
   it('should render correctly', async () => {
-    const { asFragment } = render(<APDetailsCard
+    mockGraphqlQuery(dataApiURL, 'IncidentsBySeverityWidget', {
+      data: { network: { hierarchyNode: { ...sample } } }
+    })
+    const { asFragment } = render(<Provider><APDetailsCard
       apDetail={apDetail as ApViewModel}
       isLoading={false}
-    />)
+    /></Provider>, {
+      route: {}
+    })
 
     expect(asFragment()).toMatchSnapshot()
   })

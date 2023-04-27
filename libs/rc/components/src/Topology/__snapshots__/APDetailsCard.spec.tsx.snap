@@ -59,7 +59,7 @@ exports[`Topology AP Card should render correctly 1`] = `
           class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
         >
           <div
-            class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 AfEyr"
+            class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
           >
             <div
               class="ant-descriptions-view"
@@ -83,6 +83,7 @@ exports[`Topology AP Card should render correctly 1`] = `
                         </span>
                         <span
                           class="ant-descriptions-item-content"
+                          style="align-items: center;"
                         >
                           R760
                         </span>
@@ -106,6 +107,7 @@ exports[`Topology AP Card should render correctly 1`] = `
                         </span>
                         <span
                           class="ant-descriptions-item-content"
+                          style="align-items: center;"
                         >
                           B4:79:C8:3E:C8:70
                         </span>
@@ -129,6 +131,7 @@ exports[`Topology AP Card should render correctly 1`] = `
                         </span>
                         <span
                           class="ant-descriptions-item-content"
+                          style="align-items: center;"
                         >
                           192.168.181.66
                         </span>
@@ -152,6 +155,7 @@ exports[`Topology AP Card should render correctly 1`] = `
                         </span>
                         <span
                           class="ant-descriptions-item-content"
+                          style="align-items: center;"
                         >
                           <span
                             class="ant-badge ant-badge-status ant-badge-not-a-wrapper"
@@ -175,6 +179,35 @@ exports[`Topology AP Card should render correctly 1`] = `
                     <td
                       class="ant-descriptions-item"
                       colspan="1"
+                      style="align-items: center;"
+                    >
+                      <div
+                        class="ant-descriptions-item-container"
+                      >
+                        <span
+                          class="ant-descriptions-item-label"
+                        >
+                          Incidents (Last 24 hrs)
+                        </span>
+                        <span
+                          class="ant-descriptions-item-content"
+                          style="align-items: center; display: inline-flex;"
+                        >
+                          <span
+                            class="ant-typography"
+                          >
+                            NaN
+                          </span>
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr
+                    class="ant-descriptions-row"
+                  >
+                    <td
+                      class="ant-descriptions-item"
+                      colspan="1"
                     >
                       <div
                         class="ant-descriptions-item-container"
@@ -186,6 +219,7 @@ exports[`Topology AP Card should render correctly 1`] = `
                         </span>
                         <span
                           class="ant-descriptions-item-content"
+                          style="align-items: center;"
                         >
                           --
                         </span>
@@ -222,6 +256,7 @@ exports[`Topology AP Card should render correctly 1`] = `
                       >
                         <span
                           class="ant-descriptions-item-content"
+                          style="align-items: center;"
                         >
                           <div
                             class="styledComponents__NoLabel-sc-xapams-1 hllmcF"
@@ -378,6 +413,7 @@ exports[`Topology AP Card should render correctly 1`] = `
                         </span>
                         <span
                           class="ant-descriptions-item-content"
+                          style="align-items: center;"
                         >
                           --
                         </span>
@@ -401,6 +437,7 @@ exports[`Topology AP Card should render correctly 1`] = `
                         </span>
                         <span
                           class="ant-descriptions-item-content"
+                          style="align-items: center;"
                         >
                           02/07/2023 08:31
                         </span>
@@ -416,7 +453,7 @@ exports[`Topology AP Card should render correctly 1`] = `
             role="separator"
           />
           <div
-            class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 AfEyr"
+            class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
           >
             <div
               class="ant-descriptions-view"
