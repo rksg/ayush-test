@@ -205,8 +205,6 @@ const ActivityTable = ({
       onClose={()=>setVisible(false)}
       data={getDrawerData(current)}
       width={464}
-      timeLine={current.steps}
-      status={current.status}
       activity={current}
     /> }
   </Loader>

@@ -58,6 +58,7 @@ export interface TimelineItem {
   description: string,
   children?: React.ReactElement
   error?: string
+  type?: TimelineType
 }
 
 interface TimelineProps {
@@ -65,21 +66,68 @@ interface TimelineProps {
   status?: TimelineStatus
 }
 
+enum TimelineType {
+  PREVIOUS = 'previous',
+  CURRENT = 'current',
+  FUTURE = 'future'
+}
+
 const Timeline = (props: TimelineProps) => {
   const { $t } = useIntl()
   const [ expand, setExpand ] = useState<Record<string, boolean>>({})
-  const currentStep = props.items.findIndex(({ endDatetime }) => endDatetime === undefined)
 
-  const modifiedProps = props.items.map((i, index) => {
-    if (index <= currentStep || currentStep < 0 || i.status === 'SUCCESS') {
-      return i
-    } else {
-      return {
-        ...i,
-        startDatetime: ''
-      }
+  const currentStep = props.items.findIndex(item => !item.endDatetime)
+  const modifiedProps = props.items.map((item, index) => {
+    if(currentStep && (index < currentStep || currentStep === -1)){
+      return ({ ...item, type: TimelineType.PREVIOUS })
     }
+    if((currentStep && index === currentStep) || currentStep === 0){
+      return ({ ...item, type: TimelineType.CURRENT })
+    }
+    return ({ ...item, type: TimelineType.FUTURE })
   })
+
+  const StartDot = (item: TimelineItem, index: number) => (
+    <AntTimeline.Item
+      key={`timeline-start-${index}`}
+      dot={<Step $state={item.type!} />}>
+      { item.type === 'future'
+        ? '--'
+        : formatter(DateFormatEnum.DateTimeFormatWithSeconds)(item.startDatetime)
+      }
+    </AntTimeline.Item>
+  )
+
+  const EndDot = (item: TimelineItem, index: number) => (
+    <AntTimeline.Item
+      key={`timeline-end-${index}`}
+      dot={<Step $state={item.endDatetime ? 'previous' : 'future'} />}>
+      <ItemWrapper>
+        {item.endDatetime
+          ? formatter(DateFormatEnum.DateTimeFormatWithSeconds)(item.endDatetime)
+          : '--'}
+        <ContentWrapper>
+          <WithExpanderWrapper>
+            <div>
+              <StatusComp status={item.status}/>
+              <DescriptionWrapper
+              >{item.description}</DescriptionWrapper>
+            </div>
+            <ExpanderWrapper onClick={()=> {
+              const key = `${item.startDatetime}-${item.endDatetime}`
+              setExpand({ ...expand, [key]: !expand[key] })
+            }}>
+              {item.children
+                ? expand[`${item.startDatetime}-${item.endDatetime}`]
+                  ? <MinusSquareSolid/> : <PlusSquareSolid/>
+                : null}
+            </ExpanderWrapper>
+          </WithExpanderWrapper>
+          { expand[`${item.startDatetime}-${item.endDatetime}`] ? item.children : null}
+        </ContentWrapper>
+      </ItemWrapper>
+    </AntTimeline.Item>
+  )
 
   return <Wrapper>
     <Descriptions>
@@ -89,42 +137,8 @@ const Timeline = (props: TimelineProps) => {
     </Descriptions>
     <AntTimeline>
       {modifiedProps.map((item, index)=>[
-        <AntTimeline.Item
-          key={`timeline-start-${index}`}
-          dot={<Step $state={
-            item.startDatetime ? item.endDatetime ? 'previous' : 'current' : 'future'} />}>
-          {item.startDatetime
-            ? formatter(DateFormatEnum.DateTimeFormatWithSeconds)(item.startDatetime)
-            : '--'}
-        </AntTimeline.Item>,
-        <AntTimeline.Item
-          key={`timeline-end-${index}`}
-          dot={<Step $state={item.endDatetime ? 'previous' : 'future'} />}>
-          <ItemWrapper>
-            {item.endDatetime
-              ? formatter(DateFormatEnum.DateTimeFormatWithSeconds)(item.endDatetime)
-              : '--'}
-            <ContentWrapper>
-              <WithExpanderWrapper>
-                <div>
-                  <StatusComp status={item.status}/>
-                  <DescriptionWrapper
-                  >{item.description}</DescriptionWrapper>
-                </div>
-                <ExpanderWrapper onClick={()=> {
-                  const key = `${item.startDatetime}-${item.endDatetime}`
-                  setExpand({ ...expand, [key]: !expand[key] })
-                }}>
-                  {item.children
-                    ? expand[`${item.startDatetime}-${item.endDatetime}`]
-                      ? <MinusSquareSolid/> : <PlusSquareSolid/>
-                    : null}
-                </ExpanderWrapper>
-              </WithExpanderWrapper>
-              { expand[`${item.startDatetime}-${item.endDatetime}`] ? item.children : null}
-            </ContentWrapper>
-          </ItemWrapper>
-        </AntTimeline.Item>
+        StartDot(item, index),
+        EndDot(item, index)
       ])}
     </AntTimeline>
   </Wrapper>

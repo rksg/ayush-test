@@ -208,7 +208,7 @@ export default function ActivityButton (props: ActivityButtonProps) {
       onClose={()=>setDetailModalOpen(false)}
       onBackClick={()=>setDetailModalOpen(false)}
       data={getDrawerData?.(detail!)}
-      timeLine={detail?.steps}
+      activity={detail}
     />}
   </>
 }

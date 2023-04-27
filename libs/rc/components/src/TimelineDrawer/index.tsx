@@ -4,10 +4,9 @@ import { Divider }                    from 'antd'
 import { TextAreaRef }                from 'antd/lib/input/TextArea'
 import { MessageDescriptor, useIntl } from 'react-intl'
 
-import { Drawer, Descriptions, Timeline, TimelineItem } from '@acx-ui/components'
-import { Activity }                                     from '@acx-ui/rc/utils'
-import { TimelineStatus }                               from '@acx-ui/types'
-import { noDataDisplay }                                from '@acx-ui/utils'
+import { Drawer, Descriptions, Timeline } from '@acx-ui/components'
+import { Activity }                       from '@acx-ui/rc/utils'
+import { noDataDisplay }                  from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -18,8 +17,6 @@ export interface DrawerProps {
   data: { title: MessageDescriptor, value: string | JSX.Element }[]
   onBackClick?: () => void
   width?: number
-  timeLine?: TimelineItem[]
-  status?: TimelineStatus
   activity?: Activity
 }
 
@@ -32,7 +29,7 @@ export const TimelineDrawer = (props: DrawerProps) => {
     inputEl.current?.resizableTextArea?.textArea.select()
   }
 
-  const activityErrorDetails = props.timeLine?.map(i => {
+  const activityErrorDetails = props.activity?.steps.map(i => {
     if (i.status !== 'FAIL' || !i.error) {
       return i
     }
@@ -69,9 +66,9 @@ export const TimelineDrawer = (props: DrawerProps) => {
           children={value || noDataDisplay}
         />)
       }</Descriptions>
-      {props.timeLine && props.timeLine.length > 0 && <>
+      {props.activity?.steps && props.activity?.steps.length > 0 && <>
         <Divider/>
-        <Timeline items={activityErrorDetails ?? []} status={props?.status}/>
+        <Timeline items={activityErrorDetails ?? []} status={props.activity?.status}/>
       </>}
     </>}
   />
