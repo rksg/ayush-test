@@ -39,7 +39,6 @@ interface DatePickerProps {
   showTimePicker?: boolean;
   rangeOptions?: DateRange[];
   selectedRange: DateRangeType;
-  onDateChange?: Function;
   onDateApply: Function;
   selectionType: DateRange;
   showAllTime?: boolean;
@@ -50,12 +49,10 @@ export const RangePicker = ({
   showTimePicker,
   rangeOptions,
   selectedRange,
-  onDateChange,
   onDateApply,
   showAllTime,
   selectionType
 }: DatePickerProps) => {
-  const didMountRef = useRef(false)
   const { $t } = useIntl()
   const { translatedRanges, translatedOptions } = useMemo(() => {
     const ranges = defaultRanges(rangeOptions)
@@ -82,6 +79,12 @@ export const RangePicker = ({
     },
     [allowedDateRange]
   )
+
+  useEffect(
+    () => setRange(selectedRange),
+    [selectedRange.startDate, selectedRange.endDate]
+  )
+
   useEffect(() => {
     const handleClickForDatePicker = (event: MouseEvent) => {
       const target = event.target as HTMLElement
@@ -97,14 +100,10 @@ export const RangePicker = ({
       }
     }
     document.addEventListener('click', handleClickForDatePicker)
-    if (didMountRef.current) {
-      onDateChange?.(range)
-    }
-    didMountRef.current = true
     return () => {
       document.removeEventListener('click', handleClickForDatePicker)
     }
-  }, [range, onDateChange, onDateApply, translatedOptions])
+  }, [range, onDateApply, translatedOptions])
 
   const allTimeKey = $t(dateRangeMap[DateRange.allTime])
   const rangeText = `[${$t(dateRangeMap[selectionType])}]`

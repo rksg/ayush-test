@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 
-import moment                     from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps, Button } from '@acx-ui/components'
@@ -32,14 +31,6 @@ export const columnState = {
   }
 }
 
-const useActivityTableFilter = () => {
-  const { startDate, endDate } = useDateFilter()
-  return {
-    fromTime: moment(startDate).utc().format(),
-    toTime: moment(endDate).utc().format()
-  }
-}
-
 const defaultSorter = {
   sortField: 'startDatetime',
   sortOrder: 'DESC'
@@ -60,8 +51,8 @@ const defaultPayload = {
 }
 
 export function useActivityTableQuery (baseFilters: Record<string, string> = {}) {
-  const { fromTime, toTime } = useActivityTableFilter()
-  const filters = { ...baseFilters, fromTime, toTime }
+  const { dateFilter } = useDateFilter()
+  const filters = { ...baseFilters, dateFilter }
 
   const tableQuery = useTableQuery<Activity>({
     useQuery: useActivitiesQuery,
@@ -75,7 +66,7 @@ export function useActivityTableQuery (baseFilters: Record<string, string> = {})
       ...tableQuery.payload,
       filters: { ...(tableQuery.payload.filters as object), ...filters }
     }),
-    [fromTime, toTime]
+    [dateFilter]
   )
 
   return tableQuery

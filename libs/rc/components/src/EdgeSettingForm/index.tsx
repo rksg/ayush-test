@@ -1,12 +1,15 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Form, Input, Select } from 'antd'
+import { useWatch }            from 'antd/lib/form/Form'
 import TextArea                from 'antd/lib/input/TextArea'
 import { useIntl }             from 'react-intl'
 
-import { Alert, Loader, Tooltip } from '@acx-ui/components'
-import { useVenuesListQuery }     from '@acx-ui/rc/services'
-import { useParams }              from '@acx-ui/react-router-dom'
+import { Alert, Loader, Tooltip, useStepFormContext } from '@acx-ui/components'
+import { useVenuesListQuery }                         from '@acx-ui/rc/services'
+import { EdgeGeneralSetting }                         from '@acx-ui/rc/utils'
+import { useParams }                                  from '@acx-ui/react-router-dom'
+import { getIntl, validationMessages }                from '@acx-ui/utils'
 
 interface EdgeSettingFormProps {
   isEdit?: boolean
@@ -24,11 +27,19 @@ const venueOptionsDefaultPayload = {
   pageSize: 10000
 }
 
+async function edgeSerialNumberValidator (value: string) {
+  const { $t } = getIntl()
+  if (value.startsWith('96')) return
+  return Promise.reject($t(validationMessages.invalid))
+}
+
 export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
 
   const { $t } = useIntl()
   const params = useParams()
   const [showOtpMessage, setShowOtpMessage] = useState(false)
+  const { form } = useStepFormContext<EdgeGeneralSetting>()
+  const serialNumber = useWatch('serialNumber', form)
   const { venueOptions, isLoading: isVenuesListLoading } = useVenuesListQuery({ params:
     { tenantId: params.tenantId }, payload: venueOptionsDefaultPayload }, {
     selectFromResult: ({ data, isLoading }) => {
@@ -39,9 +50,9 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
     }
   })
 
-  const needOtpMessage = (serialNumber: string) => {
-    setShowOtpMessage(serialNumber.startsWith('96'))
-  }
+  useEffect(() => {
+    setShowOtpMessage(!!serialNumber?.startsWith('96') && !!!props.isEdit)
+  }, [serialNumber])
 
   return (
     <Loader states={[{
@@ -65,6 +76,7 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
           { max: 64 }
         ]}
         children={<Input />}
+        validateFirst
       />
       <Form.Item
         name='serialNumber'
@@ -80,13 +92,11 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
             required: true,
             message: $t({ defaultMessage: 'Please enter Serial Number' })
           },
-          { max: 34 }
+          { max: 34 },
+          { validator: (_, value) => edgeSerialNumberValidator(value) }
         ]}
-        children={
-          <Input
-            disabled={props.isEdit}
-            onChange={({ target: { value } }) => needOtpMessage(value)} />
-        }
+        children={<Input disabled={props.isEdit} />}
+        validateFirst
       />
       <Form.Item
         name='description'

@@ -2,6 +2,7 @@ import moment from 'moment-timezone'
 
 import { Event, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
 import { renderHook }                        from '@acx-ui/test-utils'
+import { DateRange }                         from '@acx-ui/utils'
 
 import { useExportCsv } from './useExportCsv'
 
@@ -21,7 +22,6 @@ jest.mock('@acx-ui/user', () => ({
 
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
-  useDateFilter: () => ({ startDate: '2021-12-31T23:00:00Z', endDate: '2022-01-01T00:00:00Z' }),
   useTenantId: () => 'tenantId'
 }))
 
@@ -59,8 +59,11 @@ describe('useExportCsv', () => {
         searchTargetFields: ['searchTargetFields'],
         filters: {
           entity_type: ['AP', 'CLIENT', 'SWITCH', 'NETWORK'],
-          fromTime: '2021-12-31T23:00:00Z',
-          toTime: '2022-01-01T00:00:00Z'
+          dateFilter: {
+            range: DateRange.custom,
+            startDate: '2021-12-31T23:00:00Z',
+            endDate: '2022-01-01T00:00:00Z'
+          }
         }
       },
       sorter: { sortField: 'event_datetime', sortOrder: 'DESC' }
