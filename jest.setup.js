@@ -4,7 +4,7 @@ require('@testing-library/jest-dom')
 const { registerTsProject } = require('nx/src/utils/register')
 const cleanupRegisteredPaths = registerTsProject('.', 'tsconfig.base.json')
 
-const { mockServer, mockDOMSize, mockLightTheme, mockReactXarrow } = require('@acx-ui/test-utils')
+const { mockServer, mockDOMSize, mockLightTheme } = require('@acx-ui/test-utils')
 const config = require('@acx-ui/config')
 const { setUpIntl } = require('@acx-ui/utils')
 const { mockInstances } = require('@googlemaps/jest-mocks')
@@ -171,4 +171,12 @@ HTMLCanvasElement.prototype.getContext = () => null
 
 jest.setTimeout(20000)
 
-mockReactXarrow()
+// Mock module because the xarrow component will get the error: '_c.getTotalLength is not a function' when testing
+jest.mock('react-xarrows', () => {
+  const React = jest.requireActual('react')
+  return {
+    __esModule: true,
+    default: () => React.createElement('span'),
+    useXarrow: () => null
+  }
+})
