@@ -1,7 +1,7 @@
 
 import { CreateResidentPortalFormFields, transferFormFieldsToSaveData, transferSaveDataToFormFields } from './formParsing'
 
-import { mockedCreateFormData, mockedResidentPortal } from './__tests__/fixtures'
+import { mockedCreateFormData, mockedResidentPortal } from '../__tests__/fixtures'
 import { ResidentPortal } from '@acx-ui/rc/utils'
 
 describe('ResidentPortal parser', () => {

@@ -4,7 +4,7 @@ import { rest }  from 'msw'
 import { Provider }                                from '@acx-ui/store'
 import { mockServer, render, renderHook, screen }  from '@acx-ui/test-utils'
 
-import { mockedResidentPortal, mockedResidentPortalList } from './__tests__/fixtures'
+import { mockedResidentPortal, mockedResidentPortalList } from '../__tests__/fixtures'
 import { transferSaveDataToFormFields } from './formParsing'
 import ResidentPortalSettingsForm from './ResidentPortalSettingsForm'
 import { ResidentPortal } from '@acx-ui/rc/utils'

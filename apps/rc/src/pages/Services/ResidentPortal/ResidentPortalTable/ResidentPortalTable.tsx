@@ -8,7 +8,8 @@ import {
   Loader,
   showActionModal
 } from '@acx-ui/components'
-import { useDeleteResidentPortalsMutation, useGetQueriableResidentPortalsQuery, useGetResidentPortalListQuery } from '@acx-ui/rc/services'
+import { useDeleteResidentPortalsMutation, 
+  useGetQueriableResidentPortalsQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
   ServiceOperation,
@@ -37,9 +38,8 @@ export default function ResidentPortalTable () {
 
   const rowActions: TableProps<ResidentPortal>['rowActions'] = [
     {
-      // TODO: update this to not allow deletion when portal is in use????
       label: intl.$t({ defaultMessage: 'Delete' }),
-      // TODO: visible: ([selectedRow]) => selectedRow && !selectedRow.identityId, -- don't be visible if portal is in use
+      visible: ([selectedRow]) => selectedRow && !selectedRow.venueCount,
       onClick: ([{ id, name }], clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -110,8 +110,8 @@ export default function ResidentPortalTable () {
       dataIndex: ['uiConfiguration','text','subTitle']
     },
     {
-      key: 'Assigned Venues', // TODO: fix name
-      title: intl.$t({ defaultMessage: 'Assigned Venues' }),
+      key: 'venueCount',
+      title: intl.$t({ defaultMessage: 'Venues' }),
       dataIndex: ['venueCount']
     }
   ]
@@ -120,15 +120,19 @@ export default function ResidentPortalTable () {
     <>
       <PageHeader
         title={
-          intl.$t({ defaultMessage: 'Resident Portals ({count})' }, { count: tableQuery.data?.totalCount })
+          intl.$t({ defaultMessage: 'Resident Portals ({count})' }, 
+            { count: tableQuery.data?.totalCount })
         }
         breadcrumb={[
           { text: intl.$t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
         extra={filterByAccess([
           // eslint-disable-next-line max-len
-          <TenantLink to={getServiceRoutePath({ type: ServiceType.RESIDENT_PORTAL, oper: ServiceOperation.CREATE })}>
-            <Button type='primary'>{intl.$t({ defaultMessage: 'Add Resdient Portal' })}</Button>
+          <TenantLink to={
+            getServiceRoutePath({ 
+              type: ServiceType.RESIDENT_PORTAL, 
+              oper: ServiceOperation.CREATE })}>
+            <Button type='primary'>{intl.$t({ defaultMessage: 'Add Resident Portal' })}</Button>
           </TenantLink>
         ])}
       />

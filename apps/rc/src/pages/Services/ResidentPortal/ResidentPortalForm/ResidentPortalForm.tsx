@@ -9,7 +9,9 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { useAddResidentPortalMutation, useGetResidentPortalQuery, useUpdateResidentPortalMutation } from '@acx-ui/rc/services'
+import { useAddResidentPortalMutation, 
+  useGetResidentPortalQuery, 
+  useUpdateResidentPortalMutation } from '@acx-ui/rc/services'
 import {
   ServiceType,
   getServiceRoutePath,
@@ -23,8 +25,10 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { CreateResidentPortalFormFields, transferFormFieldsToSaveData, transferSaveDataToFormFields } from './formParsing'
-import ResidentPortalSettingsForm                                                                     from './ResidentPortalSettingsForm'
+import { CreateResidentPortalFormFields, 
+  transferFormFieldsToSaveData, 
+  transferSaveDataToFormFields } from './formParsing'
+import ResidentPortalSettingsForm from './ResidentPortalSettingsForm'
 
 interface ResidentPortalFormProps {
   editMode?: boolean

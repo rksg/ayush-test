@@ -35,7 +35,7 @@ export default function ResidentPortalVenuesTable () {
 
   const columns: TableProps<PropertyConfigs>['columns'] = [
     {
-      key: 'id',
+      key: 'venueName',
       title: $t({ defaultMessage: 'Venue Name' }),
       dataIndex: 'venueName',
       sorter: true,
@@ -69,7 +69,7 @@ export default function ResidentPortalVenuesTable () {
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
-          rowKey='id'
+          rowKey='venueId'
         />
       </Loader>
     </>

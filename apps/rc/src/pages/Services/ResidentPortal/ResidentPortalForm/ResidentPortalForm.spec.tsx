@@ -5,7 +5,7 @@ import {
   PropertyUrlsInfo, ServiceOperation, ServiceType, getServiceRoutePath
 } from '@acx-ui/rc/utils'
 import { Path, To, useTenantLink } from '@acx-ui/react-router-dom'
-import { Provider }                from '@acx-ui/store'
+import { Provider, store }                from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -15,7 +15,14 @@ import {
 
 
 import ResidentPortalForm from './ResidentPortalForm'
-import { mockedTenantId, createPath, mockedResidentPortal, mockedCreateFormData, mockedResidentPortalList, mockedServiceId, editPath } from './__tests__/fixtures'
+import { mockedTenantId, 
+  createPath, 
+  mockedResidentPortal, 
+  mockedCreateFormData, 
+  mockedResidentPortalList, 
+  mockedServiceId, 
+  editPath } from '../__tests__/fixtures'
+import { venueApi } from '@acx-ui/rc/services'
 
 
 const mockedUseNavigate = jest.fn()
@@ -33,9 +40,14 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   }
 }))
 
+const { result: selectServicePath } = renderHook(() => {
+  return useTenantLink(getServiceRoutePath(
+    { type: ServiceType.RESIDENT_PORTAL, oper: ServiceOperation.LIST }))
+})
 
 describe('ResidentPortalForm', () => {
   beforeEach(async () => {
+    store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
       rest.get(
         PropertyUrlsInfo.getResidentPortal.url,
@@ -44,11 +56,16 @@ describe('ResidentPortalForm', () => {
       rest.get(
         '/residentPortals',
         (req, res, ctx) => res(ctx.json({ ...mockedResidentPortalList }))
+      ),
+      rest.post(
+        PropertyUrlsInfo.addResidentPortal.url,
+        (req, res, ctx) => res(ctx.json(mockedResidentPortal))
       )
     )
   })
 
   it('should create a Resident Portal service', async () => {
+
     render(
       <Provider>
         <ResidentPortalForm />
@@ -88,8 +105,6 @@ describe('ResidentPortalForm', () => {
       await screen.findByRole('textbox', { name: /Help Text/i }),
       dataToCreate.textHelp
     )
-
-    await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
   })
 
   it('should render Edit form', async () => {
@@ -107,29 +122,29 @@ describe('ResidentPortalForm', () => {
     const nameInput = await screen.findByDisplayValue(mockedResidentPortal.name)
     expect(nameInput).toBeInTheDocument()
 
-    const titleInput = await screen.findByDisplayValue(mockedResidentPortal.uiConfiguration?.text.title)
+    const titleInput = 
+      await screen.findByDisplayValue(mockedResidentPortal.uiConfiguration?.text.title)
     expect(titleInput).toBeInTheDocument()
 
-    const subtitleInput = await screen.findByDisplayValue(mockedResidentPortal.uiConfiguration?.text.subTitle)
+    const subtitleInput = 
+      await screen.findByDisplayValue(mockedResidentPortal.uiConfiguration?.text.subTitle)
     expect(subtitleInput).toBeInTheDocument()
 
-    const loginInput = await screen.findByDisplayValue(mockedResidentPortal.uiConfiguration?.text.loginText)
+    const loginInput = 
+      await screen.findByDisplayValue(mockedResidentPortal.uiConfiguration?.text.loginText)
     expect(loginInput).toBeInTheDocument()
 
-    const announcementsInput = await screen.findByDisplayValue(mockedResidentPortal.uiConfiguration?.text.announcements)
+    const announcementsInput =
+      await screen.findByDisplayValue(mockedResidentPortal.uiConfiguration?.text.announcements)
     expect(announcementsInput).toBeInTheDocument()
 
-    const helpInput = await screen.findByDisplayValue(mockedResidentPortal.uiConfiguration?.text.helpText)
+    const helpInput = 
+      await screen.findByDisplayValue(mockedResidentPortal.uiConfiguration?.text.helpText)
     expect(helpInput).toBeInTheDocument()
 
   })
 
-  it('should navigate to the DPSK table when clicking Cancel button', async () => {
-    const { result: selectServicePath } = renderHook(() => {
-      return useTenantLink(getServiceRoutePath(
-        { type: ServiceType.RESIDENT_PORTAL, oper: ServiceOperation.LIST }))
-    })
-
+  it('should navigate to the Resident Portal table when clicking Cancel button', async () => {
     render(
       <Provider>
         <ResidentPortalForm />
