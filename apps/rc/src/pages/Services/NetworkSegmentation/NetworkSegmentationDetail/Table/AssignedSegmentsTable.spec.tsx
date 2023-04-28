@@ -24,8 +24,6 @@ describe('NSG Detail - AssignedSegments Table Page', () => {
         (req, res, ctx) => res(ctx.json(mockPersonaList))
       )
     )
-
-    // mockRestApiQuery(PersonaUrls.searchPersonaList.url, 'post', mockPersonaList)
   })
 
   it('Should be AssignedSegments data in the page', async () => {
