@@ -65,7 +65,11 @@ export function RadiusAttributeGroupSelectDrawer (props: RadiusAttributeDrawerPr
 
   const tableQuery = useTableQuery({
     useQuery: useRadiusAttributeGroupListQuery,
-    defaultPayload: {}
+    defaultPayload: {},
+    pagination: {
+      pageSize: 2000,
+      page: 1
+    }
   })
 
   useEffect(() => {
