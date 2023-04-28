@@ -402,6 +402,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
+                              data-row-key="13"
                             >
                               <td
                                 class="ant-table-cell"
@@ -470,6 +471,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
+                              data-row-key="14"
                             >
                               <td
                                 class="ant-table-cell"
@@ -5373,6 +5375,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
+                              data-row-key="9"
                             >
                               <td
                                 class="ant-table-cell"
@@ -5477,6 +5480,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
+                              data-row-key="10"
                             >
                               <td
                                 class="ant-table-cell"
@@ -10058,6 +10062,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
+                              data-row-key="11"
                             >
                               <td
                                 class="ant-table-cell"
@@ -10147,6 +10152,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
+                              data-row-key="12"
                             >
                               <td
                                 class="ant-table-cell"
@@ -11486,6 +11492,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
+                              data-row-key="11"
                             >
                               <td
                                 class="ant-table-cell"
@@ -11575,6 +11582,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
+                              data-row-key="12"
                             >
                               <td
                                 class="ant-table-cell"
