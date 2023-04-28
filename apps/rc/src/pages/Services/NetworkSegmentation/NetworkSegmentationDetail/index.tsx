@@ -9,14 +9,16 @@ import {
   useGetEdgeListQuery,
   useGetNetworkSegmentationGroupByIdQuery,
   useVenuesListQuery,
-  useApListQuery
+  useApListQuery,
+  useSearchPersonaListQuery
 } from '@acx-ui/rc/services'
 import {
   APExtended,
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath, RequestPayload,
-  ServiceOperation, ServiceType, useTableQuery
+  ServiceOperation, ServiceType, useTableQuery,
+  Persona
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useParams } from '@acx-ui/react-router-dom'
 
@@ -56,6 +58,13 @@ const NetworkSegmentationDetail = () => {
     },option: { skip: !nsgData }
   })
 
+  const personaListQuery = useTableQuery<Persona, RequestPayload<unknown>, unknown>({
+    useQuery: useSearchPersonaListQuery,
+    defaultPayload: {
+      keyword: ''
+    },option: { skip: !nsgData }
+  })
+
   useEffect(() => {
     apListTableQuery.setPayload(
       {
@@ -63,6 +72,14 @@ const NetworkSegmentationDetail = () => {
         filters: { venueId: [nsgData?.venueInfos[0]?.venueId??''] }
       }
     )
+
+    personaListQuery.setPayload(
+      {
+        keyword: '',
+        groupId: nsgData?.venueInfos[0]?.personaGroupId??''
+      }
+    )
+
   }, [nsgData])
 
   const tabs = {
@@ -84,8 +101,9 @@ const NetworkSegmentationDetail = () => {
         distributionSwitchInfos={nsgData?.distributionSwitchInfos} />
     },
     assignedSegments: {
-      title: $t({ defaultMessage: 'Assigned Segments (0)' }),
-      content: <AssignedSegmentsTable />
+      title: $t({ defaultMessage: 'Assigned Segments ({num}})' },
+        { num: personaListQuery?.data?.data?.length??0 }),
+      content: <AssignedSegmentsTable tableQuery={personaListQuery}/>
     }
   }
 
