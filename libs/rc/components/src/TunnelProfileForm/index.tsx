@@ -121,7 +121,7 @@ export const TunnelProfileForm = () => {
           />
         </StepsForm.FieldLabel>
       </Col>
-      <Col span={8}>
+      <Col span={5}>
         <Form.Item
           name={['ageTimeMinutes']}
           label={$t({ defaultMessage: 'Idle Period' })}
@@ -132,8 +132,11 @@ export const TunnelProfileForm = () => {
           validateFirst
           children={<InputNumber />}
         />
+      </Col>
+      <Col span={5}>
         <Form.Item
           name='ageTimeUnit'
+          label={<div></div>}
           initialValue={'minutes'}
         >
           <Select>
