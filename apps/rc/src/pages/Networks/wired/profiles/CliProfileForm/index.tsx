@@ -145,7 +145,7 @@ export default function CliProfileForm () {
                   content: 'Please select at least one model'
                 })
               }
-              return !!data?.models?.length ?? true
+              return true
             }}
           >
             <CliStepModels />
@@ -158,7 +158,7 @@ export default function CliProfileForm () {
               if (!data?.cliValid?.valid) {
                 showToast({ type: 'error', duration: 2, content: data?.cliValid?.tooltip })
               }
-              return data?.cliValid?.valid ?? true
+              return true
             }}
           >
             <CliStepConfiguration />

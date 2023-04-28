@@ -180,6 +180,7 @@ export function CliStepModels () {
               )
             }
           </UI.FamilyModelsGroup>}
+          rules={[{ required: true }]}
         />
       </Col>
     </Row>

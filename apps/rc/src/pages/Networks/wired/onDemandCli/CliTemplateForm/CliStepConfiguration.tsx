@@ -252,6 +252,9 @@ export function CliStepConfiguration () {
           hidden={true}
           name='cliValid'
           children={<Input />}
+          rules={[
+            { validator: (_, value) => value.valid ? Promise.resolve() : Promise.reject() }
+          ]}
         />
         <Form.Item
           hidden={true}

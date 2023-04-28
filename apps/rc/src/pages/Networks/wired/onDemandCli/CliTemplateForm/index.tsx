@@ -145,7 +145,7 @@ export default function CliTemplateForm () {
               if (!data?.cliValid?.valid) {
                 showToast({ type: 'error', duration: 2, content: data?.cliValid?.tooltip })
               }
-              return data?.cliValid?.valid ?? true
+              return true
             }}
           >
             <CliStepConfiguration />
