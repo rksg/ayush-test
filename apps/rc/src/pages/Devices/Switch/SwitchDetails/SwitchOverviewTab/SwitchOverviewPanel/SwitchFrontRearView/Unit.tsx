@@ -341,7 +341,7 @@ export function Unit (props:{
                 <div className='icon'>
                   <UI.RearPowerIcon />
                 </div>
-                <div className='status'>{unit.poeUsage.used} / {unit.poeUsage.total} ({unit.poeUsage.percentage})</div>
+                <div className='status'>{unit.poeUsage.used} W / {unit.poeUsage.total} W ({unit.poeUsage.percentage})</div>
               </>
               : <>
                 <div className='unit-header'>{unit.switchUnit}</div>

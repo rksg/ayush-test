@@ -81,7 +81,8 @@ export function ConfigurationProfileForm () {
       showActionModal({
         type: 'error',
         title: $t({ defaultMessage: 'Error' }),
-        content: $t({ defaultMessage: 'No Trusted Ports selected' })
+        content: $t({ defaultMessage:
+          'Please select trusted ports in order to make this configuration profile valid' })
       })
       return false
     }

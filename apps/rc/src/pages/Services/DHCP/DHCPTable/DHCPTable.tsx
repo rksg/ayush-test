@@ -18,7 +18,8 @@ import {
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                          from '@acx-ui/user'
 
-import * as UI from '../DHCPForm/styledComponents'
+import { DEFAULT_GUEST_DHCP_NAME } from '../DHCPForm/DHCPForm'
+import * as UI                     from '../DHCPForm/styledComponents'
 export default function DHCPTable () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
@@ -48,7 +49,8 @@ export default function DHCPTable () {
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedRows) => {
         return !selectedRows.some((row)=>{
-          return row.venueIds && row.venueIds.length>0
+          return (row.venueIds && row.venueIds.length>0)||
+            row.name === DEFAULT_GUEST_DHCP_NAME
         })
       },
       onClick: ([{ id, name }], clearSelection) => {
@@ -69,7 +71,8 @@ export default function DHCPTable () {
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedRows) => {
         return !selectedRows.some((row)=>{
-          return row.venueIds && row.venueIds.length>0
+          return (row.venueIds && row.venueIds.length>0)||
+            row.name === DEFAULT_GUEST_DHCP_NAME
         })
       },
       onClick: ([{ id }]) => {

@@ -45,7 +45,7 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
   clientDetails: Client
 }) {
   const { tenantId } = useParams()
-  const [client, setClient] = useState({} as ClientExtended)
+  const [client, setClient] = useState(undefined as unknown as ClientExtended)
   const [networkType, setNetworkType] = useState('')
   const [guestType, setGuestType] = useState<GuestNetworkTypeEnum>()
   const [getAp] = useLazyGetApQuery()
@@ -98,7 +98,8 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
         const list = (await getGuestsList({ params: { tenantId: tenantId }, payload }, true)
           .unwrap()).data || []
         if (list.length > 0) {
-          setGuestDetail(list.filter(item => item.networkId === clientDetails.networkId)[0])
+          setGuestDetail(list.filter(item => (item.networkId === clientDetails.networkId
+            &&item.name===clientDetails.username))[0])
         }
       }
 
@@ -152,6 +153,8 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
       //     params: { tenantId }, payload: {}
       //   }, true).unwrap()
       // }
+    } else {
+      setClient({} as ClientExtended)
     }
   }, [clientDetails])
 
@@ -168,7 +171,7 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
             guestType === GuestNetworkTypeEnum.SelfSignIn) &&
             <GuestDetails guestDetail={guestDetail} clientMac={clientMac}/>),
           (networkType === 'dpsk' && <DpskPassphraseDetails />),
-          <WiFiCallingDetails client={client} />
+          (client?.wifiCallingClient && <WiFiCallingDetails client={client} />)
         ]
         break
       case ClientStatusEnum.HISTORICAL:
@@ -180,7 +183,7 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
             guestType === GuestNetworkTypeEnum.SelfSignIn) &&
             <GuestDetails guestDetail={guestDetail} clientMac={clientMac}/>),
           (networkType === 'dpsk' && <DpskPassphraseDetails />),
-          <WiFiCallingDetails client={client} />
+          (client?.wifiCallingClient && <WiFiCallingDetails client={client} />)
         ]
         break
     }
@@ -197,7 +200,7 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
 
   return <Card>
     <Loader states={[{
-      isLoading: !Object.keys(client).length
+      isLoading: !client
     }]}>
       { getProperties(clientStatus, networkType, clientDetails.clientMac) }
     </Loader>
@@ -235,10 +238,10 @@ function ClientDetails ({ client }: { client: ClientExtended }) {
         label={$t({ defaultMessage: 'Username' })}
         children={client?.username || client?.userId || '--'}
       />
-      <Descriptions.Item // TODO
+      {/* <Descriptions.Item // TODO: Tags
         label={$t({ defaultMessage: 'Tags' })}
         children={'--'}
-      />
+      /> */}
     </Descriptions>
   </>
 }
