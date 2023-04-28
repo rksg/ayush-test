@@ -59,7 +59,7 @@ describe('Edge Table', () => {
         route: { params, path: '/:tenantId/devices/edge/list' }
       })
     const row = await screen.findAllByRole('row', { name: /Smart Edge/i })
-    expect(row.length).toBe(10)
+    expect(row.length).toBe(12)
   })
 
   it('edge detail page link should be correct', async () => {
