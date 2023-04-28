@@ -5,7 +5,7 @@ import { Col, Form, Row } from 'antd'
 import { useIntl }        from 'react-intl'
 
 import { PageHeader, StepsFormNew }                                 from '@acx-ui/components'
-import { TunnelProfileForm }                                        from '@acx-ui/rc/components'
+import { TunnelProfileForm, TunnelProfileProps }                    from '@acx-ui/rc/components'
 import { useGetTunnelProfileQuery, useUpdateTunnelProfileMutation } from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink,
@@ -14,8 +14,7 @@ import {
   MtuTypeEnum,
   PolicyOperation,
   PolicyType,
-  redirectPreviousPage,
-  TunnelProfile
+  redirectPreviousPage
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -36,11 +35,33 @@ const EditTunnelProfile = () => {
   const [updateTunnelProfile] = useUpdateTunnelProfileMutation()
 
   useEffect(() => {
-    form.setFieldsValue(tunnelProfileData)
-  }, [tunnelProfileData])
+    form.setFieldValue('name', tunnelProfileData?.name)
+    form.setFieldValue('mtuSize', tunnelProfileData?.mtuSize)
+    form.setFieldValue('mtuType', tunnelProfileData?.mtuType)
+    form.setFieldValue('forceFragmentation', tunnelProfileData?.forceFragmentation)
+    let ageTime = 20
+    if (tunnelProfileData?.ageTimeMinutes !== undefined) {
+      ageTime = tunnelProfileData.ageTimeMinutes
+    }
+    if (ageTime % 10080 === 0) {
+      form.setFieldValue('ageTimeMinutes', ageTime / 10080)
+      form.setFieldValue('ageTimeUnit', 'week')
+    } else if (ageTime % 1440 === 0) {
+      form.setFieldValue('ageTimeMinutes', ageTime / 1440)
+      form.setFieldValue('ageTimeUnit', 'days')
+    } else {
+      form.setFieldValue('ageTimeMinutes', ageTime)
+      form.setFieldValue('ageTimeUnit', 'minutes')
+    }
+  }, [form, tunnelProfileData])
 
-  const handleUpdateTunnelProfile = async (data: TunnelProfile) => {
+  const handleUpdateTunnelProfile = async (data: TunnelProfileProps) => {
     try {
+      if (data.ageTimeUnit === 'week') {
+        data.ageTimeMinutes = data.ageTimeMinutes* 7 * 24 * 60
+      } else if (data.ageTimeUnit === 'days') {
+        data.ageTimeMinutes = data.ageTimeMinutes * 24 * 60
+      }
       let pathParams = { id: params.policyId }
       await updateTunnelProfile({ params: pathParams, payload: data }).unwrap()
       redirectPreviousPage(navigate, previousPath, linkToTableView)

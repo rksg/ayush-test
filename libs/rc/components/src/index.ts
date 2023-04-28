@@ -73,7 +73,7 @@ export { usePreference, countryCodes } from './usePreference'
 export type { updatePreferenceProps } from './usePreference'
 export { GoogleMapWithPreference } from './GoogleMapWithPreference'
 
-export { TunnelProfileForm } from './TunnelProfileForm'
+export { TunnelProfileForm, TunnelProfileProps } from './TunnelProfileForm'
 export { EdgeDhcpPoolTable } from './EdgeDhcpPoolTable'
 export { EdgeDhcpLeaseTable } from './EdgeDhcpLeaseTable'
 
