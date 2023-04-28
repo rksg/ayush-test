@@ -3,7 +3,7 @@ import { hasAccess } from '@acx-ui/user'
 
 import { ApAnalyticsTab }       from './ApAnalyticsTab'
 import { ApClientsTab }         from './ApClientsTab'
-import { ApContextProvider }    from './ApContext'
+import { ApContextProvider }    from './ApContextProvider'
 import { ApNetworksTab }        from './ApNetworksTab'
 import { ApOverviewTab }        from './ApOverviewTab'
 import ApPageHeader             from './ApPageHeader'

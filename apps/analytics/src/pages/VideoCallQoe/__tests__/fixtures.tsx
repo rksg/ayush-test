@@ -1,3 +1,20 @@
+export const createTestResponse = {
+  createCallQoeTest: {
+    id: 85,
+    name: 'Test 1.2',
+    meetings: [
+      {
+        zoomMeetingId: '94882688780',
+        joinUrl: 'https://zoom.us/j/94882688780?pwd=d2MxWW5PbDlvaGlPNVVXVFVJcGIxUT09'
+      }
+    ]
+  }
+}
+
+export const deleteTestResponse = {
+  deleteCallQoeTest: true
+}
+
 export const getAllCallQoeTests = {
   getAllCallQoeTests: [
     {
@@ -53,4 +70,27 @@ export const getAllCallQoeTests = {
     }
   ],
   noData: []
+}
+
+export const getAllCallQoeTestsWithNotStarted = {
+  getAllCallQoeTests:
+  [
+    {
+      id: 90,
+      name: 'test 1.4',
+      meetings: [
+        {
+          id: 90,
+          zoomMeetingId: '94194732704',
+          status: 'NOT_STARTED',
+          invalidReason: null,
+          joinUrl: 'https://zoom.us/j/94194732704?pwd=QmNPMC9qaVViMGZwTjErZmpJdGM5QT09',
+          participantCount: null,
+          mos: null,
+          createdTime: '2023-04-19T10:29:00.000Z',
+          startTime: null
+        }
+      ]
+    }
+  ]
 }

@@ -1,3 +1,4 @@
+import { Badge }   from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
@@ -7,12 +8,28 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useDeleteEdgeMutation, useGetEdgeListQuery, useRebootEdgeMutation, useSendOtpMutation } from '@acx-ui/rc/services'
-import { EdgeStatusEnum, EdgeStatus, useTableQuery, TABLE_QUERY, RequestPayload }                from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useTenantLink }                                                from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                                        from '@acx-ui/user'
+import {
+  Features,
+  useIsSplitOn
+} from '@acx-ui/feature-toggle'
+import {
+  DownloadOutlined
+} from '@acx-ui/icons'
+import {
+  useDeleteEdgeMutation,
+  useGetEdgeListQuery,
+  useRebootEdgeMutation,
+  useSendOtpMutation,
+  useVenuesListQuery
+} from '@acx-ui/rc/services'
+import { EdgeStatusEnum, EdgeStatus, useTableQuery, TABLE_QUERY, TableQuery, RequestPayload } from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useTenantLink }                                             from '@acx-ui/react-router-dom'
+import { filterByAccess }                                                                     from '@acx-ui/user'
+
+import { seriesMappingAP } from '../DevicesWidget'
 
 import { EdgeStatusLight } from './EdgeStatusLight'
+import { useExportCsv }    from './useExportCsv'
 
 export { EdgeStatusLight } from './EdgeStatusLight'
 
@@ -21,7 +38,11 @@ export interface EdgesTableQueryProps
 
 interface EdgesTableProps extends Omit<TableProps<EdgeStatus>, 'columns'> {
   tableQuery?: EdgesTableQueryProps;
-  filterColumns?: string[];  // use column key to filter them out
+  // use column key to filter them out,
+  // notice that this is only applied on defaultColumns
+  filterColumns?: string[];
+  // custom column is optional
+  columns?: TableProps<EdgeStatus>['columns']
 }
 
 export const defaultEdgeTablePayload = {
@@ -38,13 +59,22 @@ export const defaultEdgeTablePayload = {
     'edgeGroupId',
     'tags',
     'firmwareVersion'
-  ],
-  filters: {},
+  ]
+}
+const venueOptionsDefaultPayload = {
+  fields: ['name', 'id'],
+  pageSize: 10000,
   sortField: 'name',
   sortOrder: 'ASC'
 }
 
 export const EdgesTable = (props: EdgesTableProps) => {
+  const {
+    tableQuery: customTableQuery,
+    columns,
+    filterColumns,
+    ...otherProps
+  } = props
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('')
@@ -52,21 +82,42 @@ export const EdgesTable = (props: EdgesTableProps) => {
   const tableQuery = useTableQuery({
     useQuery: useGetEdgeListQuery,
     defaultPayload: defaultEdgeTablePayload,
-    ...props.tableQuery
+    sorter: {
+      sortField: 'name',
+      sortOrder: 'ASC'
+    },
+    search: {
+      searchTargetFields: ['name', 'serialNumber', 'ip']
+    },
+    ...customTableQuery
   })
+  const statusFilterOptions = seriesMappingAP().map(({ key, name, color }) => ({
+    key, value: name, label: <Badge color={color} text={name} />
+  }))
+  const { venueOptions = [] } = useVenuesListQuery(
+    { payload: venueOptionsDefaultPayload }, {
+      selectFromResult: ({ data }) => {
+        return {
+          venueOptions: data?.data.map(item => ({ value: item.name, key: item.id }))
+        }
+      }
+    })
 
   const [deleteEdge, { isLoading: isDeleteEdgeUpdating }] = useDeleteEdgeMutation()
   const [ rebootEdge ] = useRebootEdgeMutation()
   const [sendOtp] = useSendOtpMutation()
+  // eslint-disable-next-line max-len
+  const { exportCsv, disabled } = useExportCsv<EdgeStatus>(tableQuery as TableQuery<EdgeStatus, RequestPayload<unknown>, unknown>)
+  const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
 
-  const columns: TableProps<EdgeStatus>['columns'] = [
+  const defaultColumns: TableProps<EdgeStatus>['columns'] = [
     {
       title: $t({ defaultMessage: 'SmartEdge' }),
-      tooltip: $t({ defaultMessage: 'SmartEdge' }),
       key: 'name',
       dataIndex: 'name',
       sorter: true,
       defaultSortOrder: 'ascend',
+      searchable: true,
       fixed: 'left',
       render: (data, row) => {
         return (
@@ -82,6 +133,8 @@ export const EdgesTable = (props: EdgesTableProps) => {
       dataIndex: 'deviceStatus',
       sorter: true,
       fixed: 'left',
+      filterable: statusFilterOptions,
+      filterKey: 'deviceStatusSeverity',
       render: (data, row) => {
         return (
           <EdgeStatusLight data={row.deviceStatus} />
@@ -104,13 +157,15 @@ export const EdgesTable = (props: EdgesTableProps) => {
       title: $t({ defaultMessage: 'Serial Number' }),
       key: 'serialNumber',
       dataIndex: 'serialNumber',
-      sorter: true
+      sorter: true,
+      searchable: true
     },
     {
       title: $t({ defaultMessage: 'IP Address' }),
       key: 'ip',
       dataIndex: 'ip',
-      sorter: true
+      sorter: true,
+      searchable: true
     },
     {
       title: $t({ defaultMessage: 'Ports' }),
@@ -123,6 +178,8 @@ export const EdgesTable = (props: EdgesTableProps) => {
       key: 'venue',
       dataIndex: ['venueName'],
       sorter: true,
+      filterable: venueOptions,
+      filterKey: 'venueId',
       render: (data, row) => {
         return (
           <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
@@ -149,9 +206,9 @@ export const EdgesTable = (props: EdgesTableProps) => {
     }
   ]
 
-  if (props.filterColumns) {
-    props.filterColumns.forEach((columnTofilter) => {
-      _.remove(columns, { key: columnTofilter })
+  if (filterColumns) {
+    filterColumns.forEach((columnTofilter) => {
+      _.remove(defaultColumns, { key: columnTofilter })
     })
   }
 
@@ -240,21 +297,24 @@ export const EdgesTable = (props: EdgesTableProps) => {
       }
     }
   ]
-
   return (
     <Loader states={[
       tableQuery,
       { isLoading: false, isFetching: isDeleteEdgeUpdating }
     ]}>
       <Table
-        {...props}
         settingsId='edges-table'
-        columns={columns}
+        rowKey='serialNumber'
+        rowActions={filterByAccess(rowActions)}
+        columns={columns ?? defaultColumns}
         dataSource={tableQuery?.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
-        rowKey='serialNumber'
-        rowActions={filterByAccess(rowActions)}
+        onFilterChange={tableQuery.handleFilterChange}
+        enableApiFilter
+        // eslint-disable-next-line max-len
+        iconButton={exportDevice ? { icon: <DownloadOutlined />, disabled, onClick: exportCsv } : undefined}
+        {...otherProps}
       />
     </Loader>
   )

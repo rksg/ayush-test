@@ -213,6 +213,16 @@ describe('StepsForm', () => {
     expect(screen.getByRole('button', { name: 'Done' })).toBeVisible()
   })
 
+  it('should not display submit button when label is empty value', async () => {
+    render(<CustomForm buttonLabel={{
+      pre: 'Before',
+      next: 'After',
+      cancel: 'Kill',
+      submit: ''
+    }} />)
+    expect(screen.getAllByRole('button').length).toBe(3)
+  })
+
   it('prevent navigate to other steps when field invalid', async () => {
     render(
       <StepsForm editMode>

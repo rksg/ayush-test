@@ -11,23 +11,23 @@ export function HostTable (props:{
   data: EdgeDhcpHost[]
   openDrawer: (data?: EdgeDhcpHost) => void
   onDelete?: (data:EdgeDhcpHost[]) => void
-  isDefaultService?: Boolean
 }) {
+
   const { $t } = useIntl()
-  const { data } = props
+  const { data, openDrawer, onDelete } = props
 
   const rowActions: TableProps<EdgeDhcpHost>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedRows) => selectedRows.length === 1,
       onClick: (rows: EdgeDhcpHost[]) => {
-        props.openDrawer(rows[0])
+        openDrawer(rows[0])
       }
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows: EdgeDhcpHost[], clearSelection) => {
-        props.onDelete?.(rows)
+        onDelete?.(rows)
         clearSelection()
       }
     }
@@ -53,10 +53,12 @@ export function HostTable (props:{
       sorter: { compare: sortProp('fixedAddress', defaultSort) }
     }
   ]
+
   let actions = [{
     label: $t({ defaultMessage: 'Add Host' }),
-    onClick: () => props.openDrawer()
+    onClick: () => openDrawer()
   }]
+
   return (
     <Table
       rowKey='id'
