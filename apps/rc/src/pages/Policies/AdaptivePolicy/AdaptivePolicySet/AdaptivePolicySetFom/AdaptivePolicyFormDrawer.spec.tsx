@@ -5,10 +5,8 @@ import { RadiusAttributeGroupUrlsInfo, RulesManagementUrlsInfo } from '@acx-ui/r
 import { Provider }                                              from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, within }         from '@acx-ui/test-utils'
 
-import { groupList } from '../../AdaptivePolicy/AdaptivePolicyForm/__test__/fixtures'
-
-import { adaptivePolicyList, attributeList, templateList } from './__test__/fixtures'
-import { AdaptivePolicyFormDrawer }                        from './AdaptivePolicyFormDrawer'
+import { adaptivePolicyList, attributeList, templateList, groupList, mockGroup } from './__test__/fixtures'
+import { AdaptivePolicyFormDrawer }                                              from './AdaptivePolicyFormDrawer'
 
 
 describe('AdaptivePolicyFormDrawer', () => {
@@ -17,16 +15,24 @@ describe('AdaptivePolicyFormDrawer', () => {
   beforeEach(() => {
     mockServer.use(
       rest.get(
-        RulesManagementUrlsInfo.getPolicyTemplateAttributes.url,
+        RulesManagementUrlsInfo.getPolicyTemplateAttributes.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(attributeList))
       ),
       rest.get(
-        RulesManagementUrlsInfo.getPolicyTemplateList.url,
+        RulesManagementUrlsInfo.getPolicyTemplateList.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(templateList))
       ),
       rest.post(
-        RulesManagementUrlsInfo.getPoliciesByQuery.url,
+        RulesManagementUrlsInfo.getPoliciesByQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(adaptivePolicyList))
+      ),
+      rest.get(
+        RulesManagementUrlsInfo.getPolicyTemplateList.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(templateList))
+      ),
+      rest.get(
+        RadiusAttributeGroupUrlsInfo.getAttributeGroup.url,
+        (req, res, ctx) => res(ctx.json(mockGroup))
       )
     )
   })
@@ -34,7 +40,7 @@ describe('AdaptivePolicyFormDrawer', () => {
   it('should add new policy successfully', async () => {
     mockServer.use(
       rest.get(
-        RadiusAttributeGroupUrlsInfo.getAttributeGroups.url,
+        RadiusAttributeGroupUrlsInfo.getAttributeGroups.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(groupList))
       ),
       rest.post(
