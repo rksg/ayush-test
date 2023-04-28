@@ -40,9 +40,10 @@ function Layout () {
   const companyName = userProfile?.companyName
   const [licenseExpanded, setLicenseExpanded] = useState<boolean>(false)
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
+  const isMsp = window.location.pathname.includes('/v/')
 
   useEffect(() => {
-    if (isGuestManager && params['*'] !== 'guestsManager') {
+    if (isGuestManager && params['*'] !== 'guestsManager' && !isMsp) {
       navigate({
         ...basePath,
         pathname: `${basePath.pathname}`

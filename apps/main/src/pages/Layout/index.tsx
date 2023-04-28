@@ -54,9 +54,10 @@ function Layout () {
 
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const basePath = useTenantLink('/users/guestsManager')
+  const isMsp = window.location.pathname.includes('/v/')
 
   useEffect(() => {
-    if (isGuestManager && params['*'] !== 'guestsManager') {
+    if (isGuestManager && params['*'] !== 'guestsManager' && !isMsp) {
       navigate({
         ...basePath,
         pathname: `${basePath.pathname}`
