@@ -10,7 +10,8 @@ import { TimeSeriesDataType, getSeriesData }                                    
 import { Loader, PageHeader, Table, TableProps, Tooltip, TrendType, cssStr,  Card, GridCol, GridRow, MultiLineTimeSeriesChart, NoData, Alert, TrendPill } from '@acx-ui/components'
 import { DateFormatEnum, formatter }                                                                                                                      from '@acx-ui/formatter'
 import {
-  EditOutlinedIcon
+  EditOutlinedIcon,
+  EditOutlinedDisabledIcon
 } from '@acx-ui/icons'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
@@ -59,7 +60,12 @@ export function VideoCallQoeDetails (){
             <EditOutlinedIcon style={{ height: '16px', width: '16px' }} />
           </Space>
         }
-        return '-'
+        return <Space>
+          <div style={{ width: '100px' }}>{$t({ defaultMessage: 'NA' })}</div>
+          <Tooltip title={$t({ defaultMessage: 'Not allowed as participant not on WiFi' })}>
+            <EditOutlinedDisabledIcon style={{ height: '16px', width: '16px' }} />
+          </Tooltip>
+        </Space>
       }
     },
     {
@@ -149,7 +155,10 @@ export function VideoCallQoeDetails (){
       key: 'quality',
       align: 'center',
       width: 150,
-      render: (value:unknown)=>{
+      render: (value:unknown, row:Participants)=>{
+        if(row.networkType.toLowerCase() !== 'wifi'){
+          return $t({ defaultMessage: 'NA' })
+        }
         const wifiMetrics = value as WifiMetrics | null
         const connectionQuality = getConnectionQuality(wifiMetrics)
         const connectionQualityTooltip = getConnectionQualityTooltip(wifiMetrics, intl)

@@ -407,7 +407,28 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                -
+                                <div
+                                  class="ant-space ant-space-horizontal ant-space-align-center"
+                                >
+                                  <div
+                                    class="ant-space-item"
+                                    style="margin-right: 8px;"
+                                  >
+                                    <div
+                                      style="width: 100px;"
+                                    >
+                                      NA
+                                    </div>
+                                  </div>
+                                  <div
+                                    class="ant-space-item"
+                                  >
+                                    <svg
+                                      data-testid="EditOutlinedDisabledIcon"
+                                      style="height: 16px; width: 16px;"
+                                    />
+                                  </div>
+                                </div>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -462,7 +483,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                -
+                                NA
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
@@ -10157,7 +10178,28 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                               <td
                                 class="ant-table-cell"
                               >
-                                -
+                                <div
+                                  class="ant-space ant-space-horizontal ant-space-align-center"
+                                >
+                                  <div
+                                    class="ant-space-item"
+                                    style="margin-right: 8px;"
+                                  >
+                                    <div
+                                      style="width: 100px;"
+                                    >
+                                      NA
+                                    </div>
+                                  </div>
+                                  <div
+                                    class="ant-space-item"
+                                  >
+                                    <svg
+                                      data-testid="EditOutlinedDisabledIcon"
+                                      style="height: 16px; width: 16px;"
+                                    />
+                                  </div>
+                                </div>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -10212,7 +10254,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                -
+                                NA
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
@@ -11587,7 +11629,28 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                               <td
                                 class="ant-table-cell"
                               >
-                                -
+                                <div
+                                  class="ant-space ant-space-horizontal ant-space-align-center"
+                                >
+                                  <div
+                                    class="ant-space-item"
+                                    style="margin-right: 8px;"
+                                  >
+                                    <div
+                                      style="width: 100px;"
+                                    >
+                                      NA
+                                    </div>
+                                  </div>
+                                  <div
+                                    class="ant-space-item"
+                                  >
+                                    <svg
+                                      data-testid="EditOutlinedDisabledIcon"
+                                      style="height: 16px; width: 16px;"
+                                    />
+                                  </div>
+                                </div>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -11642,7 +11705,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                -
+                                NA
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
