@@ -84,6 +84,25 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
               </span>
             </span>
           </div>
+          <span
+            class="ant-page-header-heading-extra"
+          >
+            <div
+              class="ant-space ant-space-horizontal ant-space-align-center"
+            >
+              <div
+                class="ant-space-item"
+              >
+                <span
+                  class="styledComponents__Icon-sc-iwostn-9 styledComponents__IconContainer-sc-cwxgii-2 ekcjfg fNyEaU ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+                >
+                  <svg
+                    data-testid="ConfigurationOutlined"
+                  />
+                </span>
+              </div>
+            </div>
+          </span>
         </div>
         <div
           class="ant-page-header-content"
