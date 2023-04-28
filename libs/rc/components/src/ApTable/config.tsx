@@ -109,6 +109,9 @@ export const getGroupableConfig = (
     attributes: [
       {
         key: 'AP Group',
+        renderer: (record: APExtended) => record.deviceGroupName
+          ? <div style={{ fontStyle: 'bold' }}>{record.deviceGroupName}</div>
+          : $t({ defaultMessage: 'Ungrouped APs' })
       },
       ...commonAttributes($t)
     ]
