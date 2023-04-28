@@ -12,6 +12,7 @@ import {
   HelpButton,
   UserButton,
   LicenseBanner,
+  Logo,
   HeaderContext,
   RegionButton
 } from '@acx-ui/main/components'
@@ -23,13 +24,13 @@ import { Outlet, useParams, useNavigate, useTenantLink } from '@acx-ui/react-rou
 import { RolesEnum }                                     from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }               from '@acx-ui/user'
 
-import { useMenuConfig }     from './menuConfig'
-import { LeftHeaderWrapper } from './styledComponents'
+import { useMenuConfig } from './menuConfig'
 
 function Layout () {
   const { tenantId } = useParams()
   const [tenantType, setTenantType] = useState('')
   const [supportStatus,setSupportStatus] = useState('')
+  const [isShown, setIsShown] = useState<boolean | null>(null)
   const basePath = useTenantLink('/users/guestsManager')
   const navigate = useNavigate()
   const params = useParams()
@@ -61,6 +62,7 @@ function Layout () {
 
   return (
     <LayoutComponent
+      logo={<Logo />}
       menuConfig={useMenuConfig(tenantType)}
       content={
         <>
@@ -68,22 +70,21 @@ function Layout () {
           <Outlet />
         </>
       }
-      leftHeaderContent={<LeftHeaderWrapper>
+      leftHeaderContent={<>
         <RegionButton/>
         <HeaderContext.Provider value={{ licenseExpanded, setLicenseExpanded }}>
           <LicenseBanner isMSPUser={true}/>
         </HeaderContext.Provider>
-      </LeftHeaderWrapper>
-      }
+      </>}
       rightHeaderContent={<>
         <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>
         {!isGuestManager &&
           <>
-            <AlarmsButton />
-            <ActivityButton />
+            <AlarmsButton isShown={isShown} setIsShown={setIsShown}/>
+            <ActivityButton isShown={isShown !== null ? !isShown : false} setIsShown={setIsShown}/>
           </>}
         <FetchBot showFloatingButton={false} statusCallback={setSupportStatus}/>
-        <HelpButton supportStatus={supportStatus}/>
+        <HelpButton supportStatus={supportStatus} setIsShown={setIsShown}/>
         <UserButton/>
       </>}
     />

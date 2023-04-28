@@ -6,8 +6,8 @@ import { defineMessage, MessageDescriptor, useIntl }                            
 import { ContentSwitcher, ContentSwitcherProps, GridCol, GridRow } from '@acx-ui/components'
 import {
   ApplicationAclType,
-  ApplicationRuleType, AvcCategory,
-  serverIpAddressRegExp,
+  ApplicationRuleType, AvcCategory, generalIpAddressRegExp,
+  portRegExp,
   subnetMaskIpRegExp
 } from '@acx-ui/rc/utils'
 
@@ -83,6 +83,7 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
   useEffect(() => {
     if (applicationsRule.ruleSettings) {
       setCategory(applicationsRule.ruleSettings.category ?? '')
+      drawerForm.setFieldValue('portMappingOnly', !applicationsRule.ruleSettings.destinationIp)
     }
   }, [applicationsRule.ruleSettings])
 
@@ -91,10 +92,13 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
       <span style={{ width: '200px' }}>
         <Checkbox
           checked={maxUplinkRate.status}
-          onChange={() => setMaxUplinkRate({
-            ...maxUplinkRate,
-            status: !maxUplinkRate.status
-          })}
+          onChange={() => {
+            setMaxUplinkRate({
+              value: maxUplinkRate.value ?? 0.25,
+              status: !maxUplinkRate.status
+            })
+            drawerForm.setFieldValue(['uplink'], 0.25)
+          }}
         >
           {$t({ defaultMessage: 'Max uplink rate:' })}
         </Checkbox>
@@ -120,10 +124,13 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
       <span style={{ width: '200px' }}>
         <Checkbox
           checked={maxDownlinkRate.status}
-          onChange={() => setMaxDownlinkRate({
-            ...maxDownlinkRate,
-            status: !maxDownlinkRate.status
-          })}
+          onChange={() => {
+            setMaxDownlinkRate({
+              value: maxDownlinkRate.value ?? 0.25,
+              status: !maxDownlinkRate.status
+            })
+            drawerForm.setFieldValue(['downlink'], 0.25)
+          }}
         >
           {$t({ defaultMessage: 'Max downlink rate:' })}
         </Checkbox>
@@ -373,7 +380,7 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
       initialValue={''}
       rules={[
         { required: true },
-        { validator: (_, value) => serverIpAddressRegExp(value) }
+        { validator: (_, value) => generalIpAddressRegExp(value) }
       ]}
       children={<Input
         placeholder={$t({ defaultMessage: 'Enter a destination Ip' })}
@@ -397,7 +404,7 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
       initialValue={''}
       rules={[
         { required: true },
-        { max: 64 }
+        { validator: (_, value) => portRegExp(value) }
       ]}
       children={<Input
         placeholder={$t({ defaultMessage: 'Enter a port number' })}

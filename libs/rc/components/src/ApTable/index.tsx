@@ -11,7 +11,13 @@ import {
   deviceStatusColors,
   ColumnType
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                         from '@acx-ui/feature-toggle'
+import {
+  Features,
+  useIsSplitOn
+} from '@acx-ui/feature-toggle'
+import {
+  DownloadOutlined
+} from '@acx-ui/icons'
 import {
   useApListQuery, useImportApOldMutation, useImportApMutation, useLazyImportResultQuery
 } from '@acx-ui/rc/services'
@@ -41,6 +47,7 @@ import { useApActions }              from '../useApActions'
 import {
   getGroupableConfig, groupedFields
 } from './config'
+import { useExportCsv } from './useExportCsv'
 
 export const defaultApPayload = {
   searchString: '',
@@ -306,7 +313,7 @@ export function ApTable (props: ApTableProps) {
       title: $t({ defaultMessage: 'PoE Port' }),
       dataIndex: 'poePort',
       show: false,
-      sorter: true,
+      sorter: false,
       render: (data, row : APExtended) => {
         if (!row.hasPoeStatus) {
           return <span></span>
@@ -376,11 +383,15 @@ export function ApTable (props: ApTableProps) {
   const [ importCsv ] = useImportApMutation()
   const [ importQuery ] = useLazyImportResultQuery()
   const [ importResult, setImportResult ] = useState<ImportErrorRes>({} as ImportErrorRes)
+  const [ importErrors, setImportErrors ] = useState<ImportErrorRes>({} as ImportErrorRes)
   const apGpsFlag = useIsSplitOn(Features.AP_GPS)
   const wifiEdaFlag = useIsSplitOn(Features.WIFI_EDA_GATEWAY)
   const importTemplateLink = apGpsFlag ?
     'assets/templates/aps_import_template_with_gps.csv' :
     'assets/templates/aps_import_template.csv'
+  // eslint-disable-next-line max-len
+  const { exportCsv, disabled } = useExportCsv<APExtended>(tableQuery as TableQuery<APExtended, RequestPayload<unknown>, unknown>)
+  const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
 
   useEffect(()=>{
     if (wifiEdaFlag) {
@@ -402,8 +413,10 @@ export function ApTable (props: ApTableProps) {
     }
 
     setIsImportResultLoading(false)
-    if (importResult.fileErrorsCount === 0) {
+    if (importResult?.fileErrorsCount === 0) {
       setImportVisible(false)
+    } else {
+      setImportErrors(importResult)
     }
   },[importResult])
 
@@ -455,6 +468,8 @@ export function ApTable (props: ApTableProps) {
         }]) : []}
         searchableWidth={260}
         filterableWidth={150}
+        // eslint-disable-next-line max-len
+        iconButton={exportDevice ? { icon: <DownloadOutlined />, disabled, onClick: exportCsv } : undefined}
       />
       <ImportFileDrawer type='AP'
         title={$t({ defaultMessage: 'Import from file' })}
@@ -464,7 +479,7 @@ export function ApTable (props: ApTableProps) {
         templateLink={importTemplateLink}
         visible={importVisible}
         isLoading={isImportResultLoading}
-        importError={{ data: importResult } as FetchBaseQueryError}
+        importError={{ data: importErrors } as FetchBaseQueryError}
         importRequest={(formData) => {
           setIsImportResultLoading(true)
           if (wifiEdaFlag) {

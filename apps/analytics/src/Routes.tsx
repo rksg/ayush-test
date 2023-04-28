@@ -9,22 +9,22 @@ import {
 import { useIsTierAllowed }                  from '@acx-ui/feature-toggle'
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
-import { RolesEnum }                         from '@acx-ui/types'
-import { hasRoles }                          from '@acx-ui/user'
+import { hasAccess }                         from '@acx-ui/user'
 
 import IncidentDetailsPage                                from './pages/IncidentDetails'
 import NetworkHealthDetails                               from './pages/NetworkHealth/NetworkHealthDetails'
 import NetworkHealthForm                                  from './pages/NetworkHealth/NetworkHealthForm'
 import { NetworkHealthSpecGuard, NetworkHealthTestGuard } from './pages/NetworkHealth/NetworkHealthGuard'
 import NetworkHealthList                                  from './pages/NetworkHealth/NetworkHealthList'
-import VideoCallQoePage                                   from './pages/VideoCallQoe'
+import VideoCallQoeListPage                               from './pages/VideoCallQoe'
+import { VideoCallQoeForm }                               from './pages/VideoCallQoe/VideoCallQoeForm/VideoCallQoeForm'
 
 export default function AnalyticsRoutes () {
   const { $t } = useIntl()
   const canUseSV = useIsTierAllowed('ANLT-ADV')
 
   // eslint-disable-next-line react/jsx-no-useless-fragment
-  if (!hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])) return <React.Fragment />
+  if (!hasAccess()) return <React.Fragment />
 
   const routes = rootRoutes(
     <Route path='t/:tenantId'>
@@ -61,7 +61,8 @@ export default function AnalyticsRoutes () {
             />
           </Route>
         </Route>
-        <Route path='videoCallQoe' element={<VideoCallQoePage />} />
+        <Route path='videoCallQoe' element={<VideoCallQoeListPage />} />
+        <Route path='videoCallQoe/add' element={<VideoCallQoeForm />} />
       </Route>}
     </Route>
   )

@@ -365,10 +365,7 @@ export function ApForm () {
                 }]}
                 children={<Select
                   disabled={apMeshRoleDisabled || dhcpRoleDisabled}
-                  options={[
-                    { label: $t({ defaultMessage: 'Select venue...' }), value: null },
-                    ...venueOption
-                  ]}
+                  options={venueOption}
                   onChange={async (value) => await handleVenueChange(value)}
                 />}
               />
@@ -401,7 +398,7 @@ export function ApForm () {
                     validator: (_, value) => {
                       const venueId = formRef?.current?.getFieldValue('venueId')
                       const nameList = apList?.data?.filter(item => (
-                        item.serialNumber !== apDetails?.serialNumber
+                        item.name !== apDetails?.name
                         && (selectedVenue ? item.venueId === venueId : false)
                       )).map(item => item.name) ?? []
                       return checkObjectNotExists(nameList, value,

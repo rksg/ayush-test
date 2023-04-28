@@ -33,7 +33,7 @@ export const VenueEdgesTable = () => {
   }
 
   return (<>
-    <SpaceWrapper >
+    <SpaceWrapper>
       <TenantLink to='/devices/edge/add' key='add'>
         <Button type='link'>{ $t({ defaultMessage: 'Add SmartEdge' }) }</Button>
       </TenantLink>

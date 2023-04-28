@@ -22,7 +22,10 @@ import {
 
 import AccountSettings from './'
 
-const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  useTenantId: () => 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+}))
 
 jest.mock('./AccessSupportFormItem', () => ({
   AccessSupportFormItem: () => <div data-testid={'rc-AccessSupportFormItem'} title='AccessSupportFormItem' />
@@ -83,12 +86,11 @@ describe('Account Settings', () => {
         >
           <AccountSettings />
         </UserProfileContext.Provider>
-      </Provider>, {
-        route: { params }
-      })
+      </Provider>
+    )
 
 
-    expect((await screen.findAllByTestId(/rc-.*/)).length).toBe(5)
+    expect((await screen.findAllByTestId(/rc-.*/)).length).toBe(4)
   })
 
   it('should not display map region selector', async () => {
@@ -103,12 +105,29 @@ describe('Account Settings', () => {
         >
           <AccountSettings />
         </UserProfileContext.Provider>
-      </Provider>, {
-        route: { params }
-      })
+      </Provider>
+    )
 
     expect(screen.queryByTestId('rc-MapRegionFormItem')).not.toBeInTheDocument()
-    expect((await screen.findAllByRole('separator')).length).toBe(3)
+    expect((await screen.findAllByRole('separator')).length).toBe(2)
+  })
+
+  it('should not display language selector', async () => {
+    const fakeNotAdminUser = _.cloneDeep(fakeUserProfile)
+    fakeNotAdminUser.roles = []
+    const notPrimeAdminUser: () => boolean = jest.fn().mockReturnValue(false)
+
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={{ data: fakeNotAdminUser, isPrimeAdmin: notPrimeAdminUser } as UserProfileContextProps}
+        >
+          <AccountSettings />
+        </UserProfileContext.Provider>
+      </Provider>)
+
+    expect(screen.queryByTestId('rc-DefaultSystemLanguageFormItem')).not.toBeInTheDocument()
+    expect((await screen.findAllByRole('separator')).length).toBe(2)
   })
 
   it('should not display access support checkbox', async () => {
@@ -129,13 +148,12 @@ describe('Account Settings', () => {
         >
           <AccountSettings />
         </UserProfileContext.Provider>
-      </Provider>, {
-        route: { params }
-      })
+      </Provider>
+    )
 
     await screen.findByTestId('rc-MapRegionFormItem')
     expect(screen.queryByTestId('rc-AccessSupportFormItem')).not.toBeInTheDocument()
-    expect((await screen.findAllByRole('separator')).length).toBe(3)
+    expect((await screen.findAllByRole('separator')).length).toBe(2)
   })
   it('should not display enable MFA checkbox', async () => {
     const fakeUser = _.cloneDeep(fakeUserProfile)
@@ -149,12 +167,11 @@ describe('Account Settings', () => {
         >
           <AccountSettings />
         </UserProfileContext.Provider>
-      </Provider>, {
-        route: { params }
-      })
+      </Provider>
+    )
 
     await screen.findByTestId('rc-MapRegionFormItem')
     expect(screen.queryByTestId('rc-MFAFormItem')).not.toBeInTheDocument()
-    expect((await screen.findAllByRole('separator')).length).toBe(3)
+    expect((await screen.findAllByRole('separator')).length).toBe(2)
   })
 })

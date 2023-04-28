@@ -11,13 +11,7 @@ import { getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath, MtuTy
 import { Path, TenantLink, useNavigate, useTenantLink }                                                                                                     from '@acx-ui/react-router-dom'
 import { filterByAccess }                                                                                                                                   from '@acx-ui/user'
 
-const defaultTunnelProfileTablePayload = {
-  filters: {},
-  sortField: 'name',
-  sortOrder: 'ASC',
-  searchString: '',
-  searchTargetFields: ['name']
-}
+const defaultTunnelProfileTablePayload = {}
 
 const TunnelProfileTable = () => {
 
@@ -27,6 +21,10 @@ const TunnelProfileTable = () => {
   const tableQuery = useTableQuery({
     useQuery: useGetTunnelProfileViewDataListQuery,
     defaultPayload: defaultTunnelProfileTablePayload,
+    sorter: {
+      sortField: 'name',
+      sortOrder: 'ASC'
+    },
     search: {
       searchTargetFields: ['name']
     }
@@ -109,7 +107,8 @@ const TunnelProfileTable = () => {
       dataIndex: 'networkSegmentIds',
       align: 'center',
       filterable: nsgOptions,
-      render: (data, row) => row.networkSegmentIds?.length
+      sorter: true,
+      render: (data, row) => row.networkSegmentIds?.length || 0
     },
     {
       title: $t({ defaultMessage: 'Networks' }),
@@ -117,7 +116,8 @@ const TunnelProfileTable = () => {
       dataIndex: 'networkIds',
       align: 'center',
       filterable: networkOptions,
-      render: (data, row) => row.networkIds?.length
+      sorter: true,
+      render: (data, row) => row.networkIds?.length || 0
     }
     // {
     //   title: $t({ defaultMessage: 'Tags' }),

@@ -29,9 +29,7 @@ const getNetworkSegmentationPayload = {
     'networkIds',
     'venueInfos',
     'edgeInfos'
-  ],
-  sortField: 'name',
-  sortOrder: 'ASC'
+  ]
 }
 const venueOptionsDefaultPayload = {
   fields: ['name', 'id'],
@@ -55,7 +53,11 @@ const NetworkSegmentationTable = () => {
   const basePath = useTenantLink('')
   const tableQuery = useTableQuery({
     useQuery: useGetNetworkSegmentationStatsListQuery,
-    defaultPayload: getNetworkSegmentationPayload
+    defaultPayload: getNetworkSegmentationPayload,
+    sorter: {
+      sortField: 'name',
+      sortOrder: 'ASC'
+    }
   })
   const { venueOptions } = useVenuesListQuery(
     { params, payload: venueOptionsDefaultPayload }, {
@@ -105,7 +107,8 @@ const NetworkSegmentationTable = () => {
     {
       title: $t({ defaultMessage: 'Venue' }),
       key: 'venue',
-      dataIndex: 'venue',
+      dataIndex: 'venueInfos',
+      sorter: true,
       render: (data, row) => {
         const venueId = row.venueInfos[0]?.venueId
         return (
@@ -118,7 +121,8 @@ const NetworkSegmentationTable = () => {
     {
       title: $t({ defaultMessage: 'SmartEdge' }),
       key: 'edge',
-      dataIndex: 'edge',
+      dataIndex: 'edgeInfos',
+      sorter: true,
       render: (data, row) => {
         const edgeId = row.edgeInfos[0]?.edgeId
         return (
@@ -131,7 +135,7 @@ const NetworkSegmentationTable = () => {
     {
       title: $t({ defaultMessage: 'Networks' }),
       key: 'networks',
-      dataIndex: 'networks',
+      dataIndex: 'networkIds',
       align: 'center',
       render: (data, row) => {
         return (row.networkIds?.length)
@@ -141,27 +145,32 @@ const NetworkSegmentationTable = () => {
       title: $t({ defaultMessage: 'Switches' }),
       key: 'switches',
       dataIndex: 'switches',
-      align: 'center'
+      align: 'center',
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'Health' }),
       key: 'health',
-      dataIndex: 'health'
+      dataIndex: 'health',
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'Update Available' }),
       key: 'updateAvailable',
-      dataIndex: 'updateAvailable'
+      dataIndex: 'updateAvailable',
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'Service Version' }),
       key: 'version',
-      dataIndex: ['version']
+      dataIndex: ['version'],
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'Tags' }),
       key: 'tags',
-      dataIndex: 'tags'
+      dataIndex: 'tags',
+      sorter: true
     }
   ]
 

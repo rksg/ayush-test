@@ -21,7 +21,7 @@ import { CsvSize, ImportFileDrawer } from '@acx-ui/rc/components'
 import {
   useDeleteDpskPassphraseListMutation,
   useDownloadPassphrasesMutation,
-  useDpskPassphraseListQuery,
+  useGetEnhancedDpskPassphraseListQuery,
   useRevokeDpskPassphraseListMutation,
   useUploadPassphrasesMutation
 } from '@acx-ui/rc/services'
@@ -40,16 +40,33 @@ import NetworkForm from '../../../Networks/wireless/NetworkForm/NetworkForm'
 
 import { unlimitedNumberOfDeviceLabel }                 from './contentsMap'
 import DpskPassphraseDrawer, { DpskPassphraseEditMode } from './DpskPassphraseDrawer'
+import ManageDevicesDrawer                              from './ManageDevicesDrawer'
 
 
 interface UploadPassphrasesFormFields {
   usernamePrefix: string
 }
 
+const defaultPayload = {
+  filters: {}
+}
+
+const defaultSearch = {
+  searchTargetFields: ['username'],
+  searchString: ''
+}
+
+const defaultSorter = {
+  sortField: 'createdDate',
+  sortOrder: 'DESC'
+}
+
 export default function DpskPassphraseManagement () {
   const intl = useIntl()
   const { $t } = intl
   const [ addPassphrasesDrawerVisible, setAddPassphrasesDrawerVisible ] = useState(false)
+  const [ manageDevicesVisible, setManageDevicesVisible ] = useState(false)
+  const [ managePassphraseInfo, setManagePassphraseInfo ] = useState({} as NewDpskPassphrase)
   const [
     passphrasesDrawerEditMode,
     setPassphrasesDrawerEditMode
@@ -64,12 +81,10 @@ export default function DpskPassphraseManagement () {
   const isCloudpathEnabled = useIsSplitOn(Features.DPSK_CLOUDPATH_FEATURE)
 
   const tableQuery = useTableQuery({
-    useQuery: useDpskPassphraseListQuery,
-    sorter: {
-      sortField: 'createdDate',
-      sortOrder: 'desc'
-    },
-    defaultPayload: {}
+    useQuery: useGetEnhancedDpskPassphraseListQuery,
+    sorter: defaultSorter,
+    defaultPayload,
+    search: defaultSearch
   })
 
   const downloadPassphrases = () => {
@@ -95,15 +110,16 @@ export default function DpskPassphraseManagement () {
       title: $t({ defaultMessage: 'User Name' }),
       dataIndex: 'username',
       sorter: true,
-      ellipsis: true
+      ellipsis: true,
+      searchable: true
     },
     {
       key: 'numberOfDevices',
       title: $t({ defaultMessage: 'No. of Devices' }),
       dataIndex: 'numberOfDevices',
-      sorter: false,
+      sorter: true,
       render: function (data) {
-        return data ? data : $t(unlimitedNumberOfDeviceLabel)
+        return (data && data !== -1) ? data : $t(unlimitedNumberOfDeviceLabel)
       }
     },
     {
@@ -152,7 +168,22 @@ export default function DpskPassphraseManagement () {
       key: 'revocationReason',
       title: $t({ defaultMessage: 'Revocation Reason' }),
       dataIndex: 'revocationReason',
-      show: isCloudpathEnabled
+      show: isCloudpathEnabled,
+      sorter: true
+    },
+    {
+      key: 'email',
+      title: $t({ defaultMessage: 'Contact Email Address' }),
+      dataIndex: 'email',
+      show: isCloudpathEnabled,
+      sorter: true
+    },
+    {
+      key: 'phoneNumber',
+      title: $t({ defaultMessage: 'Contact Phone Number' }),
+      dataIndex: 'phoneNumber',
+      show: isCloudpathEnabled,
+      sorter: true
     }
   ]
 
@@ -164,6 +195,15 @@ export default function DpskPassphraseManagement () {
       onClick: ([selectedRow]) => {
         setPassphrasesDrawerEditMode({ isEdit: true, passphraseId: selectedRow.id })
         setAddPassphrasesDrawerVisible(true)
+      }
+    },
+    {
+      label: $t({ defaultMessage: 'Manage Devices' }),
+      // eslint-disable-next-line max-len
+      visible: (selectedRows: NewDpskPassphrase[]) => isCloudpathEnabled && selectedRows.length === 1,
+      onClick: ([selectedRow]) => {
+        setManagePassphraseInfo(selectedRow)
+        setManageDevicesVisible(true)
       }
     },
     {
@@ -251,6 +291,12 @@ export default function DpskPassphraseManagement () {
       setVisible={setAddPassphrasesDrawerVisible}
       editMode={passphrasesDrawerEditMode}
     />
+    { managePassphraseInfo && <ManageDevicesDrawer
+      visible={manageDevicesVisible}
+      setVisible={setManageDevicesVisible}
+      passphraseInfo={managePassphraseInfo}
+      setPassphraseInfo={setManagePassphraseInfo}
+    /> }
     <ImportFileDrawer type='DPSK'
       title={$t({ defaultMessage: 'Import from file' })}
       maxSize={CsvSize['20MB']}
@@ -303,6 +349,8 @@ export default function DpskPassphraseManagement () {
         rowActions={filterByAccess(rowActions)}
         rowSelection={{ type: 'checkbox' }}
         rowKey='id'
+        onFilterChange={tableQuery.handleFilterChange}
+        enableApiFilter={true}
       />
     </Loader>
   </>)

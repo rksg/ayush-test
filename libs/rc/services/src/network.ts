@@ -18,7 +18,8 @@ import {
   NetworkDetail,
   RadiusValidate,
   WifiUrlsInfo,
-  ExternalProviders
+  ExternalProviders,
+  enableNewApi
 } from '@acx-ui/rc/utils'
 import { baseNetworkApi } from '@acx-ui/store'
 
@@ -270,11 +271,15 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     }),
     dashboardV2Overview: build.query<Dashboard, RequestPayload>({
       query: ({ params, payload }) => {
-        const dashboardOverviewReq
-          = createHttpRequest(CommonUrlsInfo.getDashboardV2Overview, params)
-        return {
-          ...dashboardOverviewReq,
-          body: payload
+        if(enableNewApi(CommonUrlsInfo.getDashboardV2Overview)) {
+          return {
+            ...createHttpRequest(CommonUrlsInfo.getDashboardV2Overview, params),
+            body: payload
+          }
+        } else {
+          return {
+            ...createHttpRequest(CommonUrlsInfo.getDashboardOverview, params)
+          }
         }
       },
       providesTags: [{ type: 'Network', id: 'Overview' }]

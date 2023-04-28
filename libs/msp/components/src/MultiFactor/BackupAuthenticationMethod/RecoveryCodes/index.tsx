@@ -41,6 +41,7 @@ export const RecoveryCodes = styled((props: RecoveryCodeDrawerProps) => {
       width={336}
     >
       <SpaceWrapper
+        full
         direction='vertical'
         justifycontent='flex-start'
       >
@@ -61,7 +62,7 @@ export const RecoveryCodes = styled((props: RecoveryCodeDrawerProps) => {
           autoSize={false}
           readOnly={true}
         />
-        <SpaceWrapper justifycontent='flex-end'>
+        <SpaceWrapper full justifycontent='flex-end'>
           <Typography.Link
             onClick={handleClickCopyCodes}
             copyable={{

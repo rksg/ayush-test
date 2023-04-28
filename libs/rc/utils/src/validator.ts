@@ -9,9 +9,9 @@ import {
 
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
-import { AclTypeEnum }    from './constants'
-import { IpUtilsService } from './ipUtilsService'
-import { Acl, Vlan }      from './types'
+import { AclTypeEnum }                from './constants'
+import { IpUtilsService }             from './ipUtilsService'
+import { Acl, AclExtendedRule, Vlan } from './types'
 
 const Netmask = require('netmask').Netmask
 
@@ -27,6 +27,15 @@ export function networkWifiIpRegExp (value: string) {
 export function serverIpAddressRegExp (value: string) {
   const { $t } = getIntl()
   const re = new RegExp(/^([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])(\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])){2}\.([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-4])$/)
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.ipAddress))
+  }
+  return Promise.resolve()
+}
+
+export function generalIpAddressRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp(/(\b25[0-5]|\b2[0-4][0-9]|\b[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}/)
   if (value && !re.test(value)) {
     return Promise.reject($t(validationMessages.ipAddress))
   }
@@ -450,6 +459,16 @@ export function MacAddressFilterRegExp (value: string){
   return Promise.resolve()
 }
 
+export function generalMacAddressRegExp (value: string){
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const re = new RegExp(/^[a-fA-F0-9]{2}(:[a-fA-F0-9]{2}){5}$/)
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.invalid))
+  }
+  return Promise.resolve()
+}
+
 export function MacRegistrationFilterRegExp (value: string){
   const { $t } = getIntl()
   const HYPHEN_2_GROUPS = new RegExp(/^([0-9A-Fa-f]{6})-([0-9A-Fa-f]{6})$/)
@@ -760,6 +779,14 @@ export function checkAclName (aclName: string, aclType: string) {
     }
     return Promise.resolve()
   }
+}
+
+export function validateAclRuleSequence (sequence: number, currrentRecords: AclExtendedRule[]) {
+  const { $t } = getIntl()
+  if (currrentRecords.some(item => item.sequence === sequence)) {
+    return Promise.reject($t(validationMessages.aclRuleSequenceInvalid))
+  }
+  return Promise.resolve()
 }
 
 export function validateDuplicateAclName (aclName: string, aclList: Acl[]) {

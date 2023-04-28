@@ -4,30 +4,30 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { EdgeDhcpPool }   from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
+import { defaultSort, EdgeDhcpPool, sortProp } from '@acx-ui/rc/utils'
+import { filterByAccess }                      from '@acx-ui/user'
 
 export function PoolTable (props:{
   data: EdgeDhcpPool[]
   openDrawer: (data?: EdgeDhcpPool) => void
   onDelete?: (data:EdgeDhcpPool[]) => void
-  isDefaultService?: Boolean
 }) {
+
   const { $t } = useIntl()
-  const { data } = props
+  const { data, openDrawer, onDelete } = props
 
   const rowActions: TableProps<EdgeDhcpPool>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedRows) => selectedRows.length === 1,
       onClick: (rows: EdgeDhcpPool[]) => {
-        props.openDrawer(rows[0])
+        openDrawer(rows[0])
       }
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows: EdgeDhcpPool[], clearSelection) => {
-        props.onDelete?.(rows)
+        onDelete?.(rows)
         clearSelection()
       }
     }
@@ -38,37 +38,39 @@ export function PoolTable (props:{
       key: 'poolName',
       title: $t({ defaultMessage: 'Pool Name' }),
       dataIndex: 'poolName',
-      sorter: true
+      sorter: { compare: sortProp('poolName', defaultSort) }
     },
     {
       key: 'subnetMask',
       title: $t({ defaultMessage: 'Subnet Mask' }),
       dataIndex: 'subnetMask',
-      sorter: true
+      sorter: { compare: sortProp('subnetMask', defaultSort) }
     },
     {
       key: 'poolStartIp',
       title: $t({ defaultMessage: 'Pool Start IP' }),
       dataIndex: 'poolStartIp',
-      sorter: true
+      sorter: { compare: sortProp('poolStartIp', defaultSort) }
     },
     {
       key: 'poolEndIp',
       title: $t({ defaultMessage: 'Pool End IP' }),
       dataIndex: 'poolEndIp',
-      sorter: true
+      sorter: { compare: sortProp('poolEndIp', defaultSort) }
     },
     {
       key: 'gatewayIp',
       title: $t({ defaultMessage: 'Gateway' }),
       dataIndex: 'gatewayIp',
-      sorter: true
+      sorter: { compare: sortProp('gatewayIp', defaultSort) }
     }
   ]
+
   let actions = [{
     label: $t({ defaultMessage: 'Add DHCP Pool' }),
-    onClick: () => props.openDrawer()
+    onClick: () => openDrawer()
   }]
+
   return (
     <Table
       rowKey='id'
