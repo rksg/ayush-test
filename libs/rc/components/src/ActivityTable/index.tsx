@@ -144,7 +144,6 @@ const ActivityTable = ({
       key: 'description',
       title: $t({ defaultMessage: 'Description' }),
       dataIndex: 'description',
-      sorter: true,
       render: function (_, row) {
         return getActivityDescription(row.descriptionTemplate, row.descriptionData)
       }

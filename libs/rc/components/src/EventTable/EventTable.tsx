@@ -119,7 +119,6 @@ export const EventTable = ({
       key: 'message',
       title: $t({ defaultMessage: 'Description' }),
       dataIndex: 'message',
-      sorter: true,
       render: function (_, row, __, highlightFn) {
         const searchable = Array.isArray(searchables)
           ? searchables.includes('message') : searchables
