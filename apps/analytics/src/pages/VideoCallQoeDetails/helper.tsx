@@ -4,22 +4,11 @@ import { IntlShape } from 'react-intl'
 
 import { TrendType } from '@acx-ui/components'
 
-import { WifiMetrics } from '../VideoCallQoe/services'
+import { rssGroups }   from '../VideoCallQoe/constants'
+import { WifiMetrics } from '../VideoCallQoe/types'
 
 import { TrendCircle } from './styledComponents'
 
-const rssGroups = {
-  good: { lower: -74 },
-  average: { lower: -85, upper: -75 },
-  bad: { upper: -86 }
-}
-
-export const zoomStatsThresholds = {
-  JITTER: 40,
-  LATENCY: 150,
-  PACKET_LOSS: 2,
-  VIDEO_FRAME_RATE: 15
-}
 
 const getRSSConnectionQuality = (value:number|null) => {
   if (value === null || value === undefined) return null

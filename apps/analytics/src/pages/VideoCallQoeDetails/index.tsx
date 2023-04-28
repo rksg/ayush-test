@@ -15,10 +15,12 @@ import {
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 
-import { DetailedResponse, Participants, WifiMetrics, useVideoCallQoeTestDetailsQuery } from '../VideoCallQoe/services'
+import { zoomStatsThresholds }                         from '../VideoCallQoe/constants'
+import { useVideoCallQoeTestDetailsQuery }             from '../VideoCallQoe/services'
+import { DetailedResponse, Participants, WifiMetrics } from '../VideoCallQoe/types'
 
-import { getConnectionQuality, getConnectionQualityTooltip, zoomStatsThresholds } from './helper'
-import * as UI                                                                    from './styledComponents'
+import { getConnectionQuality, getConnectionQualityTooltip } from './helper'
+import * as UI                                               from './styledComponents'
 
 export function VideoCallQoeDetails (){
   const intl= useIntl()

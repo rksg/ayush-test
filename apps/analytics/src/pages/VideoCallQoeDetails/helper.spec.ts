@@ -2,7 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { renderHook } from '@acx-ui/test-utils'
 
-import { WifiMetrics } from '../VideoCallQoe/services'
+import { WifiMetrics } from '../VideoCallQoe/types'
 
 import { getConnectionQuality, getConnectionQualityFor, getConnectionQualityTooltip, takeWorseQuality } from './helper'
 

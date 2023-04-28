@@ -8,7 +8,7 @@ export const BigTrendPill = styled(TrendPill)`
     font-weight: normal;
 `
 export const TrendCircle = styled(TrendPill)`
-    padding: 3px 3px;
+    padding: 4px 4px;
 `
 
 export const ChartsContainer = styled.div`
