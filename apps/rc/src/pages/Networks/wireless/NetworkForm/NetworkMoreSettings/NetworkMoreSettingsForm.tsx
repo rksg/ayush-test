@@ -149,53 +149,22 @@ export function MoreSettingsForm (props: {
     form.setFieldValue(['wlan', 'vlanId'], 3000)
   }
 
-  const isFastBssVisible = () => {
+  let networkWPASecuredList = [
+    WlanSecurityEnum.WPA2Personal,
+    WlanSecurityEnum.WPAPersonal,
+    WlanSecurityEnum.WPA2Enterprise]
 
-    // Please be advised that Security protocal is probably undefined
-    // because network type like OPEN does not have security protocol
-    const wlanSecurity = wlanData?.wlan?.wlanSecurity ?? undefined
-    if (!(wlanSecurity)) return false
-
-    const networkType = data?.type ?? undefined
-    if (!(networkType)) return false
-
-    /**
-     * Fast roaming that use WPA23Mixed, WPA3 protocal only enable when
-     * Features.WPA3_80211R is enabled.
-     * The rest conditions are extracted into individual if statement
-     * for better readability, and all of them follow the original logic
-     */
-    if([WlanSecurityEnum.WPA23Mixed, WlanSecurityEnum.WPA3].includes(wlanSecurity)) {
-
-      if (enableWPA3_80211R === false) return false
-
-      const allowNetworkType = [
-        NetworkTypeEnum.PSK,
-        NetworkTypeEnum.CAPTIVEPORTAL,
-        NetworkTypeEnum.AAA]
-
-      if (allowNetworkType.includes(networkType)) {
-        return true
-      }
-
-      return false
-    }
-
-    // Fast BSS(Fast roaming) is not supported for DPSK
-    if (networkType === NetworkTypeEnum.DPSK) return false
-
-    // Fast BSS(Fast roaming) is allow under Network type AAA no matter what security protocol is
-    if (networkType === NetworkTypeEnum.AAA) return true
-
-    // Usually these are for PSK and Captive portal since OPEN will be filtered out above
-    if ([WlanSecurityEnum.WPA2Personal,
-      WlanSecurityEnum.WPAPersonal,
-      WlanSecurityEnum.WPA2Enterprise].includes(wlanSecurity)) {
-      return true
-    }
-
-    return false
+  if (enableWPA3_80211R) {
+    networkWPASecuredList = networkWPASecuredList.concat([
+      WlanSecurityEnum.WPA23Mixed,
+      WlanSecurityEnum.WPA3])
   }
+
+  const isNetworkWPASecured = wlanData?.wlan?.wlanSecurity ?
+    networkWPASecuredList.includes(wlanData?.wlan.wlanSecurity) : false
+
+  const isFastBssVisible = data?.type === NetworkTypeEnum.AAA ? true : (
+    data?.type !== NetworkTypeEnum.DPSK && isNetworkWPASecured )
 
   const showDynamicWlan = data?.type === NetworkTypeEnum.AAA ||
     data?.type === NetworkTypeEnum.DPSK
@@ -423,7 +392,7 @@ export function MoreSettingsForm (props: {
           }
         />
 
-        {isFastBssVisible() &&
+        {isFastBssVisible &&
           <UI.FormItemNoLabel
             data-testid='enableFastRoaming-full-block'
             name={['wlan', 'advancedCustomization', 'enableFastRoaming']}
