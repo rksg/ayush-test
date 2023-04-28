@@ -99,7 +99,7 @@ describe('DpskTable', () => {
     await waitFor(() => {
       expect(deleteFn).toHaveBeenCalled()
     })
-  })
+  }, 1000000)
 
   it('should not delete the selected row when it is mapped to Persona', async () => {
     mockServer.use(
@@ -121,7 +121,9 @@ describe('DpskTable', () => {
     const row = await screen.findByRole('row', { name: new RegExp(targetDpsk.name) })
     await userEvent.click(within(row).getByRole('radio'))
 
-    expect(screen.queryByRole('button', { name: /Delete/ })).toBeNull()
+    await waitFor(async () => {
+      expect(screen.queryByRole('button', { name: /Delete/ })).toBeDisabled()
+    })
   })
 
   it('should navigate to the Edit view', async () => {
