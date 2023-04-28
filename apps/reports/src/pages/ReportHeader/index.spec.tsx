@@ -3,7 +3,6 @@ import { render, screen } from '@acx-ui/test-utils'
 
 import { ReportHeader } from '.'
 
-
 jest.mock('@acx-ui/analytics/components', () => ({
   ...jest.requireActual('@acx-ui/analytics/components'),
   NetworkFilter: () => <div data-testid='network-filter' />
@@ -14,7 +13,7 @@ describe('Report Header', () => {
 
   it('should render the report header', async () => {
     render(<Provider>
-      <ReportHeader name={'Some Report'} />
+      <ReportHeader name={'Some Report'} mode='none'/>
     </Provider>, { route: { params } })
     expect(await screen.findByText('Some Report')).toBeTruthy()
   })
