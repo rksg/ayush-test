@@ -9,8 +9,8 @@ import {
   useUpdateSwitchConfigProfileMutation,
   useGetSwitchConfigProfileQuery
 }                   from '@acx-ui/rc/services'
-import { SwitchConfigurationProfile, TrustedPortTypeEnum, Vlan } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }                 from '@acx-ui/react-router-dom'
+import { SwitchConfigurationProfile, Vlan }      from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { AclSetting }                               from './AclSetting'
 import { ConfigurationProfileFormContext }          from './ConfigurationProfileFormContext'
@@ -50,27 +50,8 @@ export function ConfigurationProfileForm () {
 
   const checkTrustedPortEmpty = (data: Partial<SwitchConfigurationProfile>) => {
     if(ipv4DhcpSnooping || arpInspection){
-      let mergedTrustPorts = []
       const trustedPortModels = generateTrustedPortsModels(data)
-        .map(item => ({
-          vlanDemand: true,
-          model: item.model,
-          slots: item.slots,
-          trustPorts: [],
-          trustedPortType: TrustedPortTypeEnum.ALL
-        }))
-
-      if(data.trustedPorts){
-        const filterTrustedPortModels = trustedPortModels
-          .filter(item => data.trustedPorts && !data.trustedPorts.map(
-            tpItem => tpItem.model).includes(item.model)) || []
-
-        mergedTrustPorts = [...data.trustedPorts, ...filterTrustedPortModels]
-      }else{
-        mergedTrustPorts = trustedPortModels
-      }
-
-      const hasEmptyTrustPorts = mergedTrustPorts.some(port => port.trustPorts.length === 0)
+      const hasEmptyTrustPorts = trustedPortModels.some(port => port.trustPorts.length === 0)
 
       if(hasEmptyTrustPorts){
         showActionModal({

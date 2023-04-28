@@ -8,7 +8,7 @@ import {
   defaultSort,
   sortProp,
   SwitchConfigurationProfile,
-  SwitchModel,
+  SwitchSlot2,
   TrustedPort,
   TrustedPortTypeEnum
 } from '@acx-ui/rc/utils'
@@ -33,7 +33,8 @@ export interface VlanTrustPortInterface {
 }
 
 export const generateTrustedPortsModels = (profile: Partial<SwitchConfigurationProfile>) => {
-  const models: SwitchModel[] = []
+  const models: TrustedPort[] = []
+  let mergedTrustPorts: TrustedPort[] = []
   if(profile.vlans){
     profile.vlans.forEach((v) => {
       if ((v.ipv4DhcpSnooping === false && v.arpInspection === false) ||
@@ -43,12 +44,28 @@ export const generateTrustedPortsModels = (profile: Partial<SwitchConfigurationP
       v.switchFamilyModels?.forEach((m) => {
         const exist = models.find(item => item.model === m.model)
         if (!exist) {
-          models.push(m)
+          models.push({
+            vlanDemand: true,
+            model: m.model,
+            slots: m.slots as SwitchSlot2[],
+            trustPorts: [],
+            trustedPortType: TrustedPortTypeEnum.ALL
+          })
         }
       })
     })
+
+    if(profile.trustedPorts){
+      const filterTrustedPortModels = models
+        .filter(item => profile.trustedPorts && !profile.trustedPorts.map(
+          tpItem => tpItem.model).includes(item.model)) || []
+
+      mergedTrustPorts = [...profile.trustedPorts, ...filterTrustedPortModels]
+    } else {
+      mergedTrustPorts = models
+    }
   }
-  return models
+  return mergedTrustPorts
 }
 
 export function TrustedPorts () {
@@ -62,28 +79,8 @@ export function TrustedPorts () {
 
   useEffect(() => {
     const trustedPortModels = generateTrustedPortsModels(currentData)
-      .map(item => ({
-        vlanDemand: true,
-        model: item.model,
-        slots: item.slots,
-        trustPorts: [],
-        trustedPortType: TrustedPortTypeEnum.ALL
-      }))
-
-    if(currentData.trustedPorts){
-      const filterTrustedPortModels = trustedPortModels
-        .filter(item => !currentData.trustedPorts.map(
-          tpItem => tpItem.model).includes(item.model)) || []
-
-      const mergedTrustPorts =
-        [...currentData.trustedPorts, ...filterTrustedPortModels] as TrustedPort[]
-
-      form.setFieldValue('trustedPorts', mergedTrustPorts)
-      setRuleList(mergedTrustPorts as TrustedPort[])
-    }else{
-      form.setFieldValue('trustedPorts', trustedPortModels)
-      setRuleList(trustedPortModels as TrustedPort[])
-    }
+    form.setFieldValue('trustedPorts', trustedPortModels)
+    setRuleList(trustedPortModels as TrustedPort[])
   }, [currentData, form])
 
   const trustedPortsColumns: TableProps<TrustedPort>['columns']= [{
