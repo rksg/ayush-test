@@ -209,15 +209,6 @@ export function excludeExclamationRegExp (value: string) {
   return Promise.resolve()
 }
 
-export function excludeExclamationLeadTrailSpaceRegExp (value: string) {
-  const { $t } = getIntl()
-  const re = new RegExp(/^(?:(?!")[\s\S])*?(?<!\s)$/)
-  if (value!=='' && !re.test(value)) {
-    return Promise.reject($t(validationMessages.excludeExclamationRegExp))
-  }
-  return Promise.resolve()
-}
-
 export function excludeQuoteRegExp (value: string) {
   const { $t } = getIntl()
   const re = new RegExp(/^(?:(?!").)*$/)
@@ -462,6 +453,16 @@ export function MacAddressFilterRegExp (value: string){
   const { $t } = getIntl()
   // eslint-disable-next-line max-len
   const re = new RegExp(/^(?:[0-9A-Fa-f]{2}([-:]?))(?:[0-9A-Fa-f]{2}\1){4}[0-9A-Fa-f]{2}|([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$/)
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.invalid))
+  }
+  return Promise.resolve()
+}
+
+export function generalMacAddressRegExp (value: string){
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const re = new RegExp(/^[a-fA-F0-9]{2}(:[a-fA-F0-9]{2}){5}$/)
   if (value && !re.test(value)) {
     return Promise.reject($t(validationMessages.invalid))
   }

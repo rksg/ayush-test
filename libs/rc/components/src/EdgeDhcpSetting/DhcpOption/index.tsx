@@ -1,21 +1,19 @@
-import {
-  EdgeDhcpHost
-} from '@acx-ui/rc/utils'
+import { EdgeDhcpOption } from '@acx-ui/rc/utils'
 
 import { useTableControl } from '..'
 
-import { HostDrawer } from './HostDrawer'
-import { HostTable }  from './HostTable'
+import { OptionDrawer } from './OptionDrawer'
+import { OptionTable }  from './OptionTable'
 
-type DhcpHostProps = {
-  value?: EdgeDhcpHost[]
-  onChange?: (data: EdgeDhcpHost[]) => void
+type DhcpOptionProps = {
+  value?: EdgeDhcpOption[]
+  onChange?: (data: EdgeDhcpOption[]) => void
 }
 
-export default function DhcpHost ({
+export default function DhcpOption ({
   value = [],
   onChange
-}: DhcpHostProps) {
+}: DhcpOptionProps) {
 
   const {
     openDrawer,
@@ -24,21 +22,21 @@ export default function DhcpHost ({
     setVisible,
     onAddOrEdit,
     currentEditData
-  } = useTableControl<EdgeDhcpHost>({ value, onChange })
+  } = useTableControl<EdgeDhcpOption>({ value, onChange })
 
   return (
     <>
-      <HostTable
+      <OptionTable
         data={value}
         openDrawer={openDrawer}
         onDelete={onDelete}
       />
-      <HostDrawer
+      <OptionDrawer
         visible={visible}
         setVisible={setVisible}
         onAddOrEdit={onAddOrEdit}
         data={currentEditData}
-        allHost={value}
+        allOptions={value}
       />
     </>
   )
