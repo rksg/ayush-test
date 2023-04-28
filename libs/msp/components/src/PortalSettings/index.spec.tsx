@@ -86,7 +86,7 @@ const externalProviders: ExternalProviders =
 
 const baseUrl: BaseUrl =
     {
-      base_url: 'msp.devalto.ruckuswireless.com'
+      base_url: 'msp.dev.ruckus.cloud'
     }
 
 const services = require('@acx-ui/rc/services')
