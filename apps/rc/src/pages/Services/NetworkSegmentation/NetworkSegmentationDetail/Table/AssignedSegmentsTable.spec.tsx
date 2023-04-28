@@ -1,9 +1,9 @@
 import { rest } from 'msw'
 
-import { useSearchPersonaListQuery }                                         from '@acx-ui/rc/services'
-import { Persona, PersonaUrls, RequestPayload, useTableQuery }               from '@acx-ui/rc/utils'
-import { Provider }                                                          from '@acx-ui/store'
-import { logRoles, mockServer, render, renderHook, screen, waitFor, within } from '@acx-ui/test-utils'
+import { useSearchPersonaListQuery }                               from '@acx-ui/rc/services'
+import { Persona, PersonaUrls, RequestPayload, useTableQuery }     from '@acx-ui/rc/utils'
+import { Provider }                                                from '@acx-ui/store'
+import { mockServer, render, renderHook, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import { mockPersonaList, replacePagination } from '../../__tests__/fixtures'
 
