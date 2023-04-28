@@ -417,7 +417,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                     <div
                                       style="width: 100px;"
                                     >
-                                      NA
+                                      -
                                     </div>
                                   </div>
                                   <div
@@ -425,7 +425,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                   >
                                     <svg
                                       data-testid="EditOutlinedDisabledIcon"
-                                      style="height: 16px; width: 16px;"
+                                      style="height: 16px; width: 16px; cursor: not-allowed;"
                                     />
                                   </div>
                                 </div>
@@ -513,7 +513,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                   >
                                     <svg
                                       data-testid="EditOutlinedIcon"
-                                      style="height: 16px; width: 16px;"
+                                      style="height: 16px; width: 16px; cursor: pointer;"
                                     />
                                   </div>
                                 </div>
@@ -5417,7 +5417,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                   >
                                     <svg
                                       data-testid="EditOutlinedIcon"
-                                      style="height: 16px; width: 16px;"
+                                      style="height: 16px; width: 16px; cursor: pointer;"
                                     />
                                   </div>
                                 </div>
@@ -5522,7 +5522,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                   >
                                     <svg
                                       data-testid="EditOutlinedIcon"
-                                      style="height: 16px; width: 16px;"
+                                      style="height: 16px; width: 16px; cursor: pointer;"
                                     />
                                   </div>
                                 </div>
@@ -10106,7 +10106,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                                   >
                                     <svg
                                       data-testid="EditOutlinedIcon"
-                                      style="height: 16px; width: 16px;"
+                                      style="height: 16px; width: 16px; cursor: pointer;"
                                     />
                                   </div>
                                 </div>
@@ -10188,7 +10188,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                                     <div
                                       style="width: 100px;"
                                     >
-                                      NA
+                                      -
                                     </div>
                                   </div>
                                   <div
@@ -10196,7 +10196,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                                   >
                                     <svg
                                       data-testid="EditOutlinedDisabledIcon"
-                                      style="height: 16px; width: 16px;"
+                                      style="height: 16px; width: 16px; cursor: not-allowed;"
                                     />
                                   </div>
                                 </div>
@@ -11557,7 +11557,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                                   >
                                     <svg
                                       data-testid="EditOutlinedIcon"
-                                      style="height: 16px; width: 16px;"
+                                      style="height: 16px; width: 16px; cursor: pointer;"
                                     />
                                   </div>
                                 </div>
@@ -11639,7 +11639,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                                     <div
                                       style="width: 100px;"
                                     >
-                                      NA
+                                      -
                                     </div>
                                   </div>
                                   <div
@@ -11647,7 +11647,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                                   >
                                     <svg
                                       data-testid="EditOutlinedDisabledIcon"
-                                      style="height: 16px; width: 16px;"
+                                      style="height: 16px; width: 16px; cursor: not-allowed;"
                                     />
                                   </div>
                                 </div>

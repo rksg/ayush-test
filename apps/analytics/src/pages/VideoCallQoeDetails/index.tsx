@@ -57,13 +57,16 @@ export function VideoCallQoeDetails (){
         if(row.networkType.toLowerCase() === 'wifi'){
           return <Space>
             {value ? <span>{value as string}</span> : <div style={{ width: '100px' }}>-</div>}
-            <EditOutlinedIcon style={{ height: '16px', width: '16px' }} />
+            <Tooltip title={$t({ defaultMessage: 'Select Client' })}>
+              <EditOutlinedIcon style={{ height: '16px', width: '16px', cursor: 'pointer' }} />
+            </Tooltip>
           </Space>
         }
         return <Space>
-          <div style={{ width: '100px' }}>{$t({ defaultMessage: 'NA' })}</div>
+          <div style={{ width: '100px' }}>-</div>
           <Tooltip title={$t({ defaultMessage: 'Not allowed as participant not on WiFi' })}>
-            <EditOutlinedDisabledIcon style={{ height: '16px', width: '16px' }} />
+            <EditOutlinedDisabledIcon
+              style={{ height: '16px', width: '16px', cursor: 'not-allowed' }} />
           </Tooltip>
         </Space>
       }
