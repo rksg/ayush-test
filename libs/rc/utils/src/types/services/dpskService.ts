@@ -76,4 +76,5 @@ export interface DpskPassphrasesSaveData {
   expirationDate?: string;
   email?: string;
   phoneNumber?: string;
+  override?: boolean;
 }

@@ -22,7 +22,8 @@ import {
   mockedServiceId,
   mockedDpskPassphraseFormFields,
   mockedSingleDpskPassphrase,
-  mockedDpskPassphrase
+  mockedDpskPassphrase,
+  mockedDpskPassphraseList
 } from './__tests__/fixtures'
 import DpskPassphraseDrawer from './DpskPassphraseDrawer'
 
@@ -37,7 +38,16 @@ describe('DpskPassphraseDrawer', () => {
   // eslint-disable-next-line max-len
   const detailPath = '/:tenantId/' + getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.DETAIL })
 
-  it('should add passphrases manaully', async () => {
+  beforeEach(() => {
+    mockServer.use(
+      rest.post(
+        DpskUrls.getEnhancedPassphraseList.url,
+        (req, res, ctx) => res(ctx.json({ data: [] }))
+      )
+    )
+  })
+
+  it('should add passphrases', async () => {
     const setVisible = jest.fn()
     const saveFn = jest.fn()
 
@@ -75,14 +85,26 @@ describe('DpskPassphraseDrawer', () => {
     })
   })
 
-  it('should show the message if add passphrase error', async () => {
+  it('should add passphrases with duplicated MAC', async () => {
+    const targetPassPhraseList = { ...mockedDpskPassphraseList }
+    const targetMac = targetPassPhraseList.data[1].mac
+    const saveFn = jest.fn()
+
     mockServer.use(
       rest.post(
         DpskUrls.addPassphrase.url,
         (req, res, ctx) => {
-          return res(ctx.status(404), ctx.json({
-            message: 'An error occurred'
+          saveFn(req.body)
+          return res(ctx.json({
+            requestId: '__REQUEST_ID__',
+            response: {}
           }))
+        }
+      ),
+      rest.post(
+        DpskUrls.getEnhancedPassphraseList.url,
+        (req, res, ctx) => {
+          return res(ctx.json(targetPassPhraseList))
         }
       )
     )
@@ -95,13 +117,20 @@ describe('DpskPassphraseDrawer', () => {
       }
     )
 
-    await populateValues(mockedDpskPassphraseFormFields)
+    await populateValues({
+      ...mockedSingleDpskPassphrase,
+      mac: targetMac
+    })
 
     await userEvent.click(await screen.findByRole('button', { name: /Add/ }))
 
-    // TODO
-    // const errorMsgElem = await screen.findByText('Sever Error')
-    // expect(errorMsgElem).toBeInTheDocument()
+    expect(await screen.findByText('Replace Passphrase For MAC Address?')).toBeVisible()
+
+    await userEvent.click(screen.getByRole('button', { name: /Replace Passphrase/ }))
+
+    await waitFor(() => {
+      expect(saveFn).toHaveBeenCalledWith(expect.objectContaining({ override: true }))
+    })
   })
 
   it('should save data with the specified expiration date', async () => {

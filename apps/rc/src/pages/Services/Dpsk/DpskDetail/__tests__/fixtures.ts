@@ -42,7 +42,7 @@ export const mockedDpskPassphraseList = {
       passphrase: 'abced12345',
       username: 'DPSK_USER_1',
       vlanId: 1,
-      mac: null,
+      mac: undefined,
       numberOfDevices: 3,
       createdDate: '2022-12-07T21:39:00',
       expirationDate: '2022-12-08T08:39:00'
@@ -62,7 +62,7 @@ export const mockedDpskPassphraseList = {
       passphrase: 'JjCc87!!!!!',
       username: 'DPSK_USER_3',
       vlanId: 3,
-      mac: null,
+      mac: undefined,
       numberOfDevices: 2,
       createdDate: '2022-12-22T14:20:00'
     }
