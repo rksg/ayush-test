@@ -32,6 +32,25 @@ export interface VlanTrustPortInterface {
   trustedPorts: TrustedPort[]
 }
 
+export const generateTrustedPortsModels = (profile: Partial<SwitchConfigurationProfile>) => {
+  const models: SwitchModel[] = []
+  if(profile.vlans){
+    profile.vlans.forEach((v) => {
+      if ((v.ipv4DhcpSnooping === false && v.arpInspection === false) ||
+      _.isEmpty(v.switchFamilyModels)) {
+        return
+      }
+      v.switchFamilyModels?.forEach((m) => {
+        const exist = models.find(item => item.model === m.model)
+        if (!exist) {
+          models.push(m)
+        }
+      })
+    })
+  }
+  return models
+}
+
 export function TrustedPorts () {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
@@ -146,23 +165,6 @@ export function TrustedPorts () {
     setOpenModal(false)
   }
 
-  const generateTrustedPortsModels = (profile: SwitchConfigurationProfile) => {
-    const models: SwitchModel[] = []
-    profile?.vlans.forEach((v) => {
-      if ((v.ipv4DhcpSnooping === false && v.arpInspection === false) ||
-      _.isEmpty(v.switchFamilyModels)) {
-        return
-      }
-      v.switchFamilyModels?.forEach((m) => {
-        const exist = models.find(item => item.model === m.model)
-        if (!exist) {
-          models.push(m)
-        }
-      })
-    })
-    return models
-  }
-
   return (
     <>
       <Row gutter={20}>
@@ -205,6 +207,11 @@ export function TrustedPorts () {
         initialValue={ruleList}
         hidden={true}
         children={<Input />}
+        rules={[
+          { validator: (_, value) => value?.some(
+            (port: Partial<TrustedPort>) => port.trustPorts && port.trustPorts.length === 0) ?
+            Promise.reject() : Promise.resolve() }
+        ]}
       />
       <TrustedPortsModal
         open={openModal}

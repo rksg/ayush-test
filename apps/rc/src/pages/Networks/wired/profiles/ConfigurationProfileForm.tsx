@@ -9,16 +9,16 @@ import {
   useUpdateSwitchConfigProfileMutation,
   useGetSwitchConfigProfileQuery
 }                   from '@acx-ui/rc/services'
-import { SwitchConfigurationProfile, Vlan }      from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { SwitchConfigurationProfile, TrustedPortTypeEnum, Vlan } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                 from '@acx-ui/react-router-dom'
 
-import { AclSetting }                      from './AclSetting'
-import { ConfigurationProfileFormContext } from './ConfigurationProfileFormContext'
-import { GeneralSetting }                  from './GeneralSetting'
-import { Summary }                         from './Summary'
-import { TrustedPorts }                    from './TrustedPorts'
-import { VenueSetting }                    from './VenueSetting'
-import { VlanSetting }                     from './VlanSetting'
+import { AclSetting }                               from './AclSetting'
+import { ConfigurationProfileFormContext }          from './ConfigurationProfileFormContext'
+import { GeneralSetting }                           from './GeneralSetting'
+import { Summary }                                  from './Summary'
+import { generateTrustedPortsModels, TrustedPorts } from './TrustedPorts'
+import { VenueSetting }                             from './VenueSetting'
+import { VlanSetting }                              from './VlanSetting'
 
 export function ConfigurationProfileForm () {
   const { $t } = useIntl()
@@ -48,6 +48,52 @@ export function ConfigurationProfileForm () {
     }
   }, [data])
 
+  const checkTrustedPortEmpty = (data: Partial<SwitchConfigurationProfile>) => {
+    if(ipv4DhcpSnooping || arpInspection){
+      let mergedTrustPorts = []
+      const trustedPortModels = generateTrustedPortsModels(data)
+        .map(item => ({
+          vlanDemand: true,
+          model: item.model,
+          slots: item.slots,
+          trustPorts: [],
+          trustedPortType: TrustedPortTypeEnum.ALL
+        }))
+
+      if(data.trustedPorts){
+        const filterTrustedPortModels = trustedPortModels
+          .filter(item => data.trustedPorts && !data.trustedPorts.map(
+            tpItem => tpItem.model).includes(item.model)) || []
+
+        mergedTrustPorts = [...data.trustedPorts, ...filterTrustedPortModels]
+      }else{
+        mergedTrustPorts = trustedPortModels
+      }
+
+      const hasEmptyTrustPorts = mergedTrustPorts.some(port => port.trustPorts.length === 0)
+
+      if(hasEmptyTrustPorts){
+        showActionModal({
+          type: 'error',
+          title: $t({ defaultMessage: 'Error' }),
+          content: $t({ defaultMessage:
+            'Please select trusted ports in order to make this configuration profile valid' })
+        })
+        return false
+      }
+    }
+    return true
+  }
+
+  const updateCurrentData = async (data: Partial<SwitchConfigurationProfile>) => {
+    setCurrentData({
+      ...currentData,
+      ...data
+    })
+
+    return true
+  }
+
   const updateVlanCurrentData = async (data: Partial<SwitchConfigurationProfile>) => {
     const ipv4DhcpSnoopingValue =
       data.vlans?.filter((item: Partial<Vlan>) => item.ipv4DhcpSnooping === true) || []
@@ -65,7 +111,8 @@ export function ConfigurationProfileForm () {
     return true
   }
 
-  const updateCurrentData = async (data: Partial<SwitchConfigurationProfile>) => {
+  const updateTrustedPortsCurrentData = async (data: Partial<SwitchConfigurationProfile>) => {
+    checkTrustedPortEmpty(data)
     setCurrentData({
       ...currentData,
       ...data
@@ -76,38 +123,24 @@ export function ConfigurationProfileForm () {
 
   const proceedData = (data: SwitchConfigurationProfile) => {
     if(data.trustedPorts){
-      const vlanModels = data.vlans.map(
-        item => item.switchFamilyModels?.map(obj => obj.model)) ||['']
-      data.trustedPorts = data.trustedPorts.map(
-        item => { return {
-          ...item,
-          ...{ vlanDemand: vlanModels.join(',').indexOf(item.model) > -1 }
-        }})
+      if(ipv4DhcpSnooping || arpInspection){
+        const vlanModels = data.vlans.map(
+          item => item.switchFamilyModels?.map(obj => obj.model)) ||['']
+        data.trustedPorts = data.trustedPorts.map(
+          item => { return {
+            ...item,
+            ...{ vlanDemand: vlanModels.join(',').indexOf(item.model) > -1 }
+          }})
+      } else {
+        data.trustedPorts = []
+      }
     }
     return data
   }
 
-  const checkTrustedPort = () => {
-    if(ipv4DhcpSnooping || arpInspection){
-      const hasEmptyTrustPorts =
-        currentData.trustedPorts?.some(port => port.trustPorts.length === 0)
-
-      if(hasEmptyTrustPorts){
-        showActionModal({
-          type: 'error',
-          title: $t({ defaultMessage: 'Error' }),
-          content: $t({ defaultMessage:
-            'Please select trusted ports in order to make this configuration profile valid' })
-        })
-        return false
-      }
-    }
-    return true
-  }
-
   const handleAddProfile = async () => {
     try {
-      if(!checkTrustedPort()){
+      if(!checkTrustedPortEmpty(currentData)){
         return false
       }
       await addSwitchConfigProfile({ params, payload: proceedData(currentData) }).unwrap()
@@ -121,7 +154,7 @@ export function ConfigurationProfileForm () {
 
   const handleEditProfile = async () => {
     try {
-      if(!checkTrustedPort()){
+      if(!checkTrustedPortEmpty(currentData)){
         return false
       }
       await updateSwitchConfigProfile({ params, payload: proceedData(currentData) }).unwrap()
@@ -178,7 +211,7 @@ export function ConfigurationProfileForm () {
           {(ipv4DhcpSnooping || arpInspection) &&
             <StepsFormNew.StepForm
               title={$t({ defaultMessage: 'Trusted Ports' })}
-              onFinish={updateCurrentData}
+              onFinish={updateTrustedPortsCurrentData}
             >
               <TrustedPorts />
             </StepsFormNew.StepForm>
