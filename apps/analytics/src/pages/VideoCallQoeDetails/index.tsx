@@ -292,6 +292,7 @@ export function VideoCallQoeDetails (){
           showIcon /></div> }
 
         <Table
+          rowKey='id'
           columns={columnHeaders}
           dataSource={participants}
         />
