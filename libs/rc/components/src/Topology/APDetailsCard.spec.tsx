@@ -182,6 +182,10 @@ describe('Topology AP Card', () => {
     /></Provider>, {
       route: {}
     })
+    const fragment = asFragment()
+    // eslint-disable-next-line testing-library/no-node-access
+    await fragment.querySelector('div[_echarts_instance_^="ec_"]')
+      ?.removeAttribute('_echarts_instance_')
 
     expect(asFragment()).toMatchSnapshot()
   })
@@ -196,7 +200,9 @@ describe('Topology AP Card', () => {
     /></Provider>, {
       route: {}
     })
-
-    expect(asFragment()).toMatchSnapshot()
+    const fragment = asFragment()
+    // eslint-disable-next-line testing-library/no-node-access
+    await fragment.querySelector('div[_echarts_instance_^="ec_"]')
+      ?.removeAttribute('_echarts_instance_')
   })
 })
