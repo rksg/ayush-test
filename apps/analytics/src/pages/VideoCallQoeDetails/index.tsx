@@ -1,10 +1,6 @@
-import { useEffect } from 'react'
-
-import { Space, Typography } from 'antd'
-import { connect }           from 'echarts'
-import ReactECharts          from 'echarts-for-react'
-import { useIntl }           from 'react-intl'
-import AutoSizer             from 'react-virtualized-auto-sizer'
+import { Space }   from 'antd'
+import { useIntl } from 'react-intl'
+import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { TimeSeriesDataType, getSeriesData }                                                                                                              from '@acx-ui/analytics/utils'
 import { Loader, PageHeader, Table, TableProps, Tooltip, TrendType, cssStr,  Card, GridCol, GridRow, MultiLineTimeSeriesChart, NoData, Alert, TrendPill } from '@acx-ui/components'
@@ -32,15 +28,6 @@ export function VideoCallQoeDetails (){
   const currentMeeting = callQoeDetails?.meetings.at(0)
   const participants = currentMeeting?.participants
 
-  // Connect charts
-  const connectChart = (chart: ReactECharts | null) => {
-    if (chart) {
-      const instance = chart.getEchartsInstance()
-      instance.group = 'group'
-    }
-  }
-  useEffect(() => { connect('group') }, [])
-
   const isMissingClientMac = (participants:Participants[])=>{
     const missingMacCount = participants
       .filter(participant=>
@@ -57,14 +44,14 @@ export function VideoCallQoeDetails (){
         if(row.networkType.toLowerCase() === 'wifi'){
           return <Space>
             {value ? <span>{value as string}</span> : <div style={{ width: '100px' }}>-</div>}
-            <Tooltip title={$t({ defaultMessage: 'Select Client' })}>
+            <Tooltip title={$t({ defaultMessage: 'Select Client MAC' })}>
               <EditOutlinedIcon style={{ height: '16px', width: '16px', cursor: 'pointer' }} />
             </Tooltip>
           </Space>
         }
         return <Space>
           <div style={{ width: '100px' }}>-</div>
-          <Tooltip title={$t({ defaultMessage: 'Not allowed as participant not on WiFi' })}>
+          <Tooltip title={$t({ defaultMessage: 'Not allowed as participant not on Wi-Fi' })}>
             <EditOutlinedDisabledIcon
               style={{ height: '16px', width: '16px', cursor: 'not-allowed' }} />
           </Tooltip>
@@ -289,22 +276,21 @@ export function VideoCallQoeDetails (){
             link: '/serviceValidation/videoCallQoe'
           }]}
         />
-        <Typography.Text style={{
-          fontSize: cssStr('--acx-body-2-font-size'),
-          fontWeight: cssStr('--acx-body-font-weight-bold'),
-          fontFamily: cssStr('--acx-accent-brand-font'),
-          lineHeight: cssStr('--acx-body-3-line-height')
-        }}>{$t({ defaultMessage: 'Participant Details' })}</Typography.Text>
-
-        {isMissingClientMac(participants as Participants[]) &&
-        <div style={{ marginTop: '10px' }}><Alert
-          message={$t({
-            // eslint-disable-next-line max-len
-            defaultMessage: 'To see the details of Video Call QoE, you must select "Client MAC" for participants'
-          })}
-          type='warning'
-          showIcon /></div> }
-
+        <UI.ReportSectionTitle>
+          {$t({ defaultMessage: 'Participant Details' })}
+        </UI.ReportSectionTitle>
+        {
+          isMissingClientMac(participants as Participants[]) &&
+          <div style={{ marginTop: '10px' }}>
+            <Alert
+              message={$t({
+              // eslint-disable-next-line max-len
+                defaultMessage: 'To see the details of Wi-Fi Connection Quality, you must select "Client MAC" for participants'
+              })}
+              type='warning'
+              showIcon />
+          </div>
+        }
         <Table
           rowKey='id'
           columns={columnHeaders}
@@ -334,7 +320,6 @@ export function VideoCallQoeDetails (){
                   {({ height, width }) => (
                     getSeries(callQoeDetails, 'jitter', 0).length ?
                       <MultiLineTimeSeriesChart
-                        chartRef={connectChart}
                         markerAreas={[{
                           start: zoomStatsThresholds.JITTER,
                           itemStyle: { opacity: 0.05, color: cssStr('--acx-semantics-red-50') }
@@ -358,7 +343,6 @@ export function VideoCallQoeDetails (){
                   {({ height, width }) => (
                     getSeries(callQoeDetails, 'jitter', 1).length ?
                       <MultiLineTimeSeriesChart
-                        chartRef={connectChart}
                         markerAreas={[{
                           start: zoomStatsThresholds.JITTER,
                           itemStyle: { opacity: 0.05, color: cssStr('--acx-semantics-red-50') }
@@ -385,7 +369,6 @@ export function VideoCallQoeDetails (){
                   {({ height, width }) => (
                     getSeries(callQoeDetails, 'latency', 0).length ?
                       <MultiLineTimeSeriesChart
-                        chartRef={connectChart}
                         markerAreas={[{
                           start: zoomStatsThresholds.LATENCY,
                           itemStyle: { opacity: 0.05, color: cssStr('--acx-semantics-red-50') }
@@ -409,7 +392,6 @@ export function VideoCallQoeDetails (){
                   {({ height, width }) => (
                     getSeries(callQoeDetails, 'latency', 1).length ?
                       <MultiLineTimeSeriesChart
-                        chartRef={connectChart}
                         markerAreas={[{
                           start: zoomStatsThresholds.LATENCY,
                           itemStyle: { opacity: 0.05, color: cssStr('--acx-semantics-red-50') }
@@ -436,7 +418,6 @@ export function VideoCallQoeDetails (){
                   {({ height, width }) => (
                     getSeries(callQoeDetails, 'packet_loss', 0).length ?
                       <MultiLineTimeSeriesChart
-                        chartRef={connectChart}
                         markerAreas={[{
                           start: zoomStatsThresholds.PACKET_LOSS,
                           itemStyle: { opacity: 0.05, color: cssStr('--acx-semantics-red-50') }
@@ -460,7 +441,6 @@ export function VideoCallQoeDetails (){
                   {({ height, width }) => (
                     getSeries(callQoeDetails, 'packet_loss', 1).length ?
                       <MultiLineTimeSeriesChart
-                        chartRef={connectChart}
                         markerAreas={[{
                           start: zoomStatsThresholds.PACKET_LOSS,
                           itemStyle: { opacity: 0.05, color: cssStr('--acx-semantics-red-50') }
@@ -487,7 +467,6 @@ export function VideoCallQoeDetails (){
                   {({ height, width }) => (
                     getSeries(callQoeDetails, 'video_frame_rate', 0).length ?
                       <MultiLineTimeSeriesChart
-                        chartRef={connectChart}
                         markerAreas={[{
                           start: 0,
                           end: zoomStatsThresholds.VIDEO_FRAME_RATE,
@@ -512,7 +491,6 @@ export function VideoCallQoeDetails (){
                   {({ height, width }) => (
                     getSeries(callQoeDetails, 'video_frame_rate', 1).length ?
                       <MultiLineTimeSeriesChart
-                        chartRef={connectChart}
                         markerAreas={[{
                           start: 0,
                           end: zoomStatsThresholds.VIDEO_FRAME_RATE,

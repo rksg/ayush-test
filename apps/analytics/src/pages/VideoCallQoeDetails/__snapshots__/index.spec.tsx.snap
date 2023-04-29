@@ -145,12 +145,11 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
         </div>
       </div>
     </div>
-    <span
-      class="ant-typography"
-      style="font-size: 16px; font-weight: 700; font-family: 'Montserrat', sans-serif; line-height: 20px;"
+    <div
+      class="styledComponents__ReportSectionTitle-cc9slb-3 fpRra-d"
     >
       Participant Details
-    </span>
+    </div>
     <div
       class="styledComponents__Wrapper-sc-1abm7iv-12 fiibDB"
     >
@@ -5066,12 +5065,11 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
         </div>
       </div>
     </div>
-    <span
-      class="ant-typography"
-      style="font-size: 16px; font-weight: 700; font-family: 'Montserrat', sans-serif; line-height: 20px;"
+    <div
+      class="styledComponents__ReportSectionTitle-cc9slb-3 fpRra-d"
     >
       Participant Details
-    </span>
+    </div>
     <div
       class="styledComponents__Wrapper-sc-1abm7iv-12 fiibDB"
     >
@@ -9715,12 +9713,11 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
         </div>
       </div>
     </div>
-    <span
-      class="ant-typography"
-      style="font-size: 16px; font-weight: 700; font-family: 'Montserrat', sans-serif; line-height: 20px;"
+    <div
+      class="styledComponents__ReportSectionTitle-cc9slb-3 fpRra-d"
     >
       Participant Details
-    </span>
+    </div>
     <div
       style="margin-top: 10px;"
     >
@@ -9754,7 +9751,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
           <div
             class="ant-alert-message"
           >
-            To see the details of Video Call QoE, you must select "Client MAC" for participants
+            To see the details of Wi-Fi Connection Quality, you must select "Client MAC" for participants
           </div>
         </div>
       </div>
@@ -11166,12 +11163,11 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
         </div>
       </div>
     </div>
-    <span
-      class="ant-typography"
-      style="font-size: 16px; font-weight: 700; font-family: 'Montserrat', sans-serif; line-height: 20px;"
+    <div
+      class="styledComponents__ReportSectionTitle-cc9slb-3 fpRra-d"
     >
       Participant Details
-    </span>
+    </div>
     <div
       style="margin-top: 10px;"
     >
@@ -11205,7 +11201,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
           <div
             class="ant-alert-message"
           >
-            To see the details of Video Call QoE, you must select "Client MAC" for participants
+            To see the details of Wi-Fi Connection Quality, you must select "Client MAC" for participants
           </div>
         </div>
       </div>
