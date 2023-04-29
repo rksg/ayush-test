@@ -20,15 +20,16 @@ export interface Activity {
   startDatetime: string
   status: TimelineStatus
   steps: {
-    id: string,
-    description: string,
-    status: TimelineStatus,
+    id: string
+    description: string
+    status: TimelineStatus
     progressType: string
     startDatetime: string
     endDatetime: string
+    error?: string
   }[]
-tenantId: string
-useCase: string
+  tenantId: string
+  useCase: string
 }
 
 export interface EventBase {

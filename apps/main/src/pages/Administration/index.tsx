@@ -39,15 +39,15 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
       { hasAdministratorTab &&
       ( <Tabs.TabPane tab={$t({ defaultMessage: 'Administrators' })} key='administrators' /> )
       }
-      { isCloudMoteEnabled &&
-        <Tabs.TabPane tab={$t({ defaultMessage: 'ZD Migration' })} key='onpremMigration' />
-      }
       <Tabs.TabPane tab={$t({ defaultMessage: 'Notifications' })} key='notifications' />
       <Tabs.TabPane tab={$t({ defaultMessage: 'Subscriptions' })} key='subscriptions' />
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Firmware Version Management' })}
         key='fwVersionMgmt'
       />
+      { isCloudMoteEnabled &&
+        <Tabs.TabPane tab={$t({ defaultMessage: 'ZD Migration' })} key='onpremMigration' />
+      }
       { isRadiusClientEnabled &&
         <Tabs.TabPane tab={$t({ defaultMessage: 'Local RADIUS Server' })} key='localRadiusServer' />
       }
