@@ -21,9 +21,6 @@ import * as UI                  from './styledComponents'
 import { TestDetailsDrawer }    from './TestDetailsDrawer'
 import { Meeting, TestDetails } from './types'
 
-
-
-
 export function VideoCallQoeTable () {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)

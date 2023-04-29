@@ -21,7 +21,7 @@ export function TestLink ({ link, width='524px' }:{ link: string, width?: string
   const linkDescription = <FormattedMessage
     defaultMessage={`
     <highlight>
-    The meeting is accessible by clicking the URL above. Copy and share the URL 
+    The meeting is accessible by clicking the URL above. Copy and share the URL
     with other participants.
     </highlight>
   `}
@@ -39,7 +39,7 @@ export function TestLink ({ link, width='524px' }:{ link: string, width?: string
       linkDescription
     }
     children={
-      <Space>
+      <Space style={{ paddingTop: 10 }}>
         <UI.LinkButton type='link' style={{ width }}>
           <a
             className='link'
@@ -51,7 +51,7 @@ export function TestLink ({ link, width='524px' }:{ link: string, width?: string
         </UI.LinkButton>
         <Button
           type='primary'
-          style={{ marginLeft: 7 }}
+          style={{ marginLeft: 8.5 }}
           onClick={onCopy}
         >
           {
