@@ -14,7 +14,7 @@ import { useParams, TenantLink } from '@acx-ui/react-router-dom'
 export const defaultSwitchClientPayload = {
   searchString: '',
   searchTargetFields: ['clientName', 'clientMac', 'clientDesc', 'clientType',
-    'venueName', 'switchName', 'vlanName'],
+    'venueName', 'switchName', 'clientVlan', 'switchPort'],
   fields: ['switchId','clientVlan','venueId','switchSerialNumber','clientMac',
     'clientName','clientDesc','clientType','deviceType','switchPort','vlanName',
     'switchName', 'venueName' ,'cog','id','switchPortFormatted'],

@@ -1,11 +1,10 @@
-import { useRef } from 'react'
 
 import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
 import {
-  PageHeader, showActionModal, StepsForm,
-  StepsFormInstance
+  PageHeader, showActionModal,
+  StepsFormNew
 } from '@acx-ui/components'
 import {
   EdgeSettingForm
@@ -24,7 +23,6 @@ const AddEdge = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const linkToEdgeList = useTenantLink('/devices/edge/list')
-  const formRef = useRef<StepsFormInstance<EdgeGeneralSetting>>()
   const [addEdge] = useAddEdgeMutation()
 
   const handleAddEdge = async (data: EdgeGeneralSetting) => {
@@ -47,20 +45,19 @@ const AddEdge = () => {
           { text: $t({ defaultMessage: 'SmartEdge' }), link: '/devices/edge/list' }
         ]}
       />
-      <StepsForm
-        formRef={formRef}
+      <StepsFormNew
         onFinish={handleAddEdge}
         onCancel={() => navigate(linkToEdgeList)}
         buttonLabel={{ submit: $t({ defaultMessage: 'Add' }) }}
       >
-        <StepsForm.StepForm>
+        <StepsFormNew.StepForm>
           <Row gutter={20}>
             <Col span={8}>
               <EdgeSettingForm />
             </Col>
           </Row>
-        </StepsForm.StepForm>
-      </StepsForm>
+        </StepsFormNew.StepForm>
+      </StepsFormNew>
     </>
   )
 }

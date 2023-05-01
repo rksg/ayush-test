@@ -15,6 +15,7 @@ import {
   kpiConfig
 } from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Loader } from '@acx-ui/components'
+import { useApContext }             from '@acx-ui/rc/utils'
 
 import { HealthPageContext } from '../HealthPageContext'
 
@@ -33,18 +34,24 @@ export const defaultThreshold: KpiThresholdType = {
   switchPoeUtilization: kpiConfig.switchPoeUtilization.histogram.initialThreshold
 }
 
+
 export default function KpiSections (props: { tab: CategoryTab, filters: AnalyticsFilter }) {
   const { tab, filters } = props
   const { kpis } = kpisForTab[tab]
   const { useGetKpiThresholdsQuery, useFetchThresholdPermissionQuery } = healthApi
   const thresholdKeys = Object.keys(defaultThreshold) as (keyof KpiThresholdType)[]
-  const customThresholdQuery = useGetKpiThresholdsQuery({ ...filters, kpis: thresholdKeys })
+  const apContext = useApContext()
+  const path = apContext?.venueId
+    ? [{ type: 'zone' as 'zone', name: apContext.venueId as string }, filters.path[0]]
+    : filters.path
+  const customThresholdQuery = useGetKpiThresholdsQuery({
+    ...filters, path, kpis: thresholdKeys })
   const { data, fulfilledTimeStamp } = customThresholdQuery
   const thresholds = thresholdKeys.reduce((kpis, kpi) => {
     kpis[kpi] = data?.[`${kpi}Threshold`]?.value ?? defaultThreshold[kpi]
     return kpis
   }, {} as KpiThresholdType)
-  const thresholdPermissionQuery = useFetchThresholdPermissionQuery({ path: filters.path })
+  const thresholdPermissionQuery = useFetchThresholdPermissionQuery({ path })
   const mutationAllowed = Boolean(thresholdPermissionQuery.data?.mutationAllowed)
   return <Loader states={[customThresholdQuery, thresholdPermissionQuery]}>
     {fulfilledTimeStamp && <KpiSection
@@ -52,7 +59,7 @@ export default function KpiSections (props: { tab: CategoryTab, filters: Analyti
       kpis={kpis}
       thresholds={thresholds}
       mutationAllowed={mutationAllowed}
-      filters={filters}
+      filters={{ ...filters, path }}
     />}
   </Loader>
 }

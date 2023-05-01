@@ -166,7 +166,6 @@ describe('RangePicker', () => {
     expect(container.getElementsByClassName('ant-picker-dropdown-hidden').length).toBe(1)
   })
   it('should select date when click on date selection', async () => {
-    const onDateChange = jest.fn()
     render(
       <IntlProvider locale='en'>
         <RangePicker
@@ -175,7 +174,6 @@ describe('RangePicker', () => {
             startDate: moment().subtract(7, 'days').seconds(0),
             endDate: moment().seconds(0)
           }}
-          onDateChange={onDateChange}
           onDateApply={() => {}}
         />
       </IntlProvider>
@@ -189,17 +187,14 @@ describe('RangePicker', () => {
     const today = formatter(DateFormatEnum.DateFormat)(moment())
     const yestFormat = formatter(DateFormatEnum.DateFormat)(yesterday)
     expect(screen.getByRole('display-date-range')).toHaveTextContent(`${yestFormat} - ${today}`)
-    expect(onDateChange).toBeCalledTimes(1)
   })
   it('should select time when click on time selection', async () => {
-    const onDateChange = jest.fn()
     render(
       <IntlProvider locale='en'>
         <RangePicker
           selectionType={DateRange.last7Days}
           showTimePicker
           rangeOptions={[DateRange.last24Hours, DateRange.last7Days]}
-          onDateChange={onDateChange}
           onDateApply={() => {}}
           selectedRange={{
             startDate: moment().subtract(7, 'days').seconds(0),
@@ -216,17 +211,14 @@ describe('RangePicker', () => {
     const hourSelect = await screen.findAllByText('20')
     await user.click(hourSelect[hourSelect.length - 1])
     expect(screen.getByRole('display-date-range')).toHaveTextContent('20:')
-    expect(onDateChange).toBeCalledTimes(1)
   })
   it('should select end time when click on end time selection', async () => {
-    const onDateChange = jest.fn()
     render(
       <IntlProvider locale='en'>
         <RangePicker
           showTimePicker
           selectionType={DateRange.last7Days}
           rangeOptions={[DateRange.last24Hours, DateRange.last7Days]}
-          onDateChange={onDateChange}
           onDateApply={() => {}}
           selectedRange={{
             startDate: moment().subtract(7, 'days').seconds(0),
@@ -244,16 +236,13 @@ describe('RangePicker', () => {
     const hourSelect = await screen.findAllByText('20')
     await user.click(hourSelect[hourSelect.length - 1])
     expect(screen.getByRole('display-date-range')).toHaveTextContent('20:')
-    expect(onDateChange).toBeCalledTimes(1)
   })
   it('should reset endTime to startTime when select startTime greater than endTime', async () => {
-    const onDateChange = jest.fn()
     render(
       <IntlProvider locale='en'>
         <RangePicker
           showTimePicker
           rangeOptions={[DateRange.last24Hours, DateRange.last7Days]}
-          onDateChange={onDateChange}
           selectionType={DateRange.custom}
           onDateApply={() => {}}
           selectedRange={{
@@ -271,16 +260,13 @@ describe('RangePicker', () => {
     const hourSelect = await screen.findAllByText('20')
     await user.click(hourSelect[hourSelect.length - 1])
     expect(screen.getByRole('display-date-range')).toHaveTextContent('20:')
-    expect(onDateChange).toBeCalledTimes(1)
   })
   it('should display selection for null values', async () => {
-    const onDateChange = jest.fn()
     render(
       <IntlProvider locale='en'>
         <RangePicker
           selectionType={DateRange.custom}
           selectedRange={{ startDate: null, endDate: null }}
-          onDateChange={onDateChange}
           onDateApply={() => {}}
         />
       </IntlProvider>
@@ -291,7 +277,6 @@ describe('RangePicker', () => {
     expect(screen.getByRole('display-date-range')).toHaveTextContent('-')
   })
   it.skip('should display only start date when end date is not selected', async () => {
-    const onDateChange = jest.fn()
     render(
       <IntlProvider locale='en'>
         <RangePicker
@@ -300,7 +285,6 @@ describe('RangePicker', () => {
             startDate: moment().subtract(7, 'days').seconds(0),
             endDate: null
           }}
-          onDateChange={onDateChange}
           onDateApply={() => {}}
         />
       </IntlProvider>
@@ -315,7 +299,6 @@ describe('RangePicker', () => {
     ).toHaveTextContent(formatter(DateFormatEnum.DateFormat)(moment()))
   })
   it.skip('should display only end date when start date is not selected', async () => {
-    const onDateChange = jest.fn()
     render(
       <IntlProvider locale='en'>
         <RangePicker
@@ -324,7 +307,6 @@ describe('RangePicker', () => {
             startDate: null,
             endDate: moment().subtract(7, 'days').seconds(0)
           }}
-          onDateChange={onDateChange}
           onDateApply={() => {}}
         />
       </IntlProvider>
@@ -339,7 +321,6 @@ describe('RangePicker', () => {
     ).toHaveTextContent(formatter(DateFormatEnum.DateFormat)(moment()))
   })
   it('should disable apply when startdate and end date are same', async () => {
-    const onDateChange = jest.fn()
     const apply = jest.fn()
     render(
       <IntlProvider locale='en'>
@@ -349,7 +330,6 @@ describe('RangePicker', () => {
             startDate: moment('03/01/2022').hours(12),
             endDate: moment('03/01/2022').hours(12)
           }}
-          onDateChange={onDateChange}
           onDateApply={apply}
           showTimePicker
         />
@@ -369,7 +349,6 @@ describe('RangePicker', () => {
   })
   it('should restrict date for gold tier license', async () => {
     mockGetJwtTokenPayload.mockReturnValue({ acx_account_tier: AccountTier.GOLD })
-    const onDateChange = jest.fn()
     const apply = jest.fn()
     render(
       <IntlProvider locale='en'>
@@ -379,7 +358,6 @@ describe('RangePicker', () => {
             startDate: moment().subtract(3, 'months').seconds(0),
             endDate: moment().seconds(0)
           }}
-          onDateChange={onDateChange}
           onDateApply={apply}
         />
       </IntlProvider>
@@ -393,18 +371,15 @@ describe('RangePicker', () => {
     await user.click(dateSelect[0])
     const applyButton = await screen.findByText('Apply')
     await user.click(applyButton)
-    expect(onDateChange).toHaveBeenCalledTimes(0)
     expect(apply).toHaveBeenCalledTimes(1)
   })
 
   it('should display all time', async () => {
-    const onDateChange = jest.fn()
     render(
       <IntlProvider locale='en'>
         <RangePicker
           selectionType={DateRange.custom}
           selectedRange={{ startDate: null, endDate: null }}
-          onDateChange={onDateChange}
           onDateApply={() => {}}
           showAllTime={true}
         />
@@ -417,7 +392,6 @@ describe('RangePicker', () => {
   })
 
   it('should from all time change to last 24 hours correctly', async () => {
-    const onDateChange = jest.fn()
     mockUseDateFilter.mockReturnValue({
       startDate: '2022-01-01T00:00:00+08:00',
       endDate: null,
@@ -429,7 +403,7 @@ describe('RangePicker', () => {
         <RangePicker
           showTimePicker
           rangeOptions={[DateRange.last24Hours, DateRange.last7Days]}
-          onDateChange={onDateChange}
+
           selectionType={DateRange.custom}
           onDateApply={() => {}}
           selectedRange={{
