@@ -113,7 +113,7 @@ export async function pendoInitalization (): Promise<void> {
 }
 
 function PreferredLangConfigProvider (props: React.PropsWithChildren) {
-  const defaultLang = useYourDefaultLanguage()?? DEFAULT_SYS_LANG // tenant level preference
+  const defaultLang = useYourDefaultLanguage() // tenant level preference
   const browserLang = loadMessages(navigator.languages) // browser detection
   const queryParams = new URLSearchParams(window.location.search) // url query params
   const lang = ((defaultLang??
@@ -122,7 +122,7 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
     states={[{ isLoading: !Boolean(defaultLang) }]}
-    children={<ConfigProvider lang={lang} {...props} />}
+    children={<ConfigProvider lang={lang?? DEFAULT_SYS_LANG} {...props} />}
   />
 }
 
