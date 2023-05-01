@@ -8,6 +8,8 @@ import { GridCol, GridRow, StepsForm, Subtitle } from '@acx-ui/components'
 import { useLazyGetResidentPortalListQuery }     from '@acx-ui/rc/services'
 import { checkObjectNotExists }                  from '@acx-ui/rc/utils'
 import { getIntl }                               from '@acx-ui/utils'
+import { ColorPickerInput } from './ColorPickerInput'
+
 
 export default function ResidentPortalSettingsForm () {
   const intl = getIntl()
@@ -109,6 +111,34 @@ export default function ResidentPortalSettingsForm () {
         hasFeedback
         children={<TextArea />}
       />
+      {/* ** Visual Properties ** */}
+      <Subtitle level={3}>
+        { intl.$t({ defaultMessage: 'VisualProperties' }) }
+      </Subtitle>
+      <Form.Item name='colorMain'
+        label={intl.$t({ defaultMessage: 'Main Color' })}
+        children={
+          // @ts-ignore
+        <ColorPickerInput defaultColorHex='#101820' colorName={intl.$t({ defaultMessage: 'Main Color' })} />}
+        />
+      <Form.Item name='colorAccent'
+        label={intl.$t({ defaultMessage: 'Accent Color' })}
+        children={
+          // @ts-ignore
+        <ColorPickerInput defaultColorHex='#E57200' colorName={intl.$t({ defaultMessage: 'Accent Color' })} />}
+        />
+      <Form.Item name='colorSeparator'
+        label={intl.$t({ defaultMessage: 'Separator Color' })}
+        children={
+          // @ts-ignore
+        <ColorPickerInput defaultColorHex='#D9D9D6' colorName={intl.$t({ defaultMessage: 'Separator Color' })} />}
+        />
+      <Form.Item name='colorText'
+        label={intl.$t({ defaultMessage: 'Text Color' })}
+        children={
+          // @ts-ignore
+        <ColorPickerInput defaultColorHex='#54585A' colorName={intl.$t({ defaultMessage: 'Text Color' })} />}
+        />
     </GridCol>
   </GridRow>)
 }

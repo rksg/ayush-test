@@ -9,6 +9,10 @@ export interface CreateResidentPortalFormFields {
   textLogin: string;
   textAnnouncements: string;
   textHelp: string;
+  colorMain: string;
+  colorAccent: string;
+  colorSeparator: string;
+  colorText: string;
 }
 
 export function transferSaveDataToFormFields (data: ResidentPortal):CreateResidentPortalFormFields {
@@ -18,13 +22,25 @@ export function transferSaveDataToFormFields (data: ResidentPortal):CreateReside
     textLogin: data.uiConfiguration.text.loginText ? data.uiConfiguration.text.loginText : '',
     textAnnouncements: data.uiConfiguration.text.announcements ?
       data.uiConfiguration.text.announcements : '',
-    textHelp: data.uiConfiguration.text.helpText ? data.uiConfiguration.text.helpText : ''
+    textHelp: data.uiConfiguration.text.helpText ? data.uiConfiguration.text.helpText : '',
+
+    colorMain: data.uiConfiguration?.color?.mainColor ? data.uiConfiguration.color.mainColor : '',
+    colorAccent: data.uiConfiguration?.color?.accentColor ? 
+      data.uiConfiguration.color.accentColor : '',
+    colorSeparator: data.uiConfiguration?.color?.separatorColor ? 
+      data.uiConfiguration.color.separatorColor : '',
+    colorText: data.uiConfiguration?.color?.textColor ? data.uiConfiguration.color.textColor : ''
   } : {
     textTitle: '',
     textSubtitle: '',
     textLogin: '',
     textAnnouncements: '',
-    textHelp: ''
+    textHelp: '',
+
+    colorMain: '',
+    colorAccent: '',
+    colorSeparator: '',
+    colorText: ''
   }
 
   return {
@@ -35,6 +51,7 @@ export function transferSaveDataToFormFields (data: ResidentPortal):CreateReside
 }
 
 export function transferFormFieldsToSaveData (data: CreateResidentPortalFormFields):ResidentPortal {
+
   return {
     name: data.serviceName,
     uiConfiguration: {
@@ -46,6 +63,12 @@ export function transferFormFieldsToSaveData (data: CreateResidentPortalFormFiel
         loginText: data.textLogin,
         announcements: data.textAnnouncements,
         helpText: data.textHelp
+      },
+      color: {
+        mainColor: data.colorMain,
+        accentColor: data.colorAccent,
+        separatorColor: data.colorSeparator,
+        textColor: data.colorText
       }
     }
   }
