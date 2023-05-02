@@ -183,7 +183,7 @@ export function SwitchVeTable ( { isVenueLevel } : {
 
   return <Loader states={[tableQuery]}>
     <Table
-      columns={columns}
+      columns={isVenueLevel ? columns: columns.filter(item => item.key !== 'switchName')}
       dataSource={transformData(tableQuery.data?.data)}
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}

@@ -116,6 +116,14 @@ describe('formatter', () => {
     123: '123',
     91890620: '91,890,620'
   }))
+  it('fpsFormat', () => testFormat('fpsFormat', {
+    123: '123 fps',
+    91890620: '91890620 fps'
+  }))
+  it('percent', () => testFormat('percent', {
+    123: '123 %',
+    0.918: '0.918 %'
+  }))
   describe('calendarFormat', () => {
     beforeEach(() => {
       jest
@@ -263,6 +271,10 @@ describe('formatter', () => {
     it('Should format a timestamp to default format with HH:mm:ss', () => {
       expect(formatter(DateFormatEnum.DateTimeFormatWithSeconds)(1456885800000))
         .toBe('Mar 02 2016 02:30:00')
+    })
+    it('Should format a timestamp to default format having HH:mm without date', () => {
+      expect(formatter(DateFormatEnum.OnlyTime)(1456885800000))
+        .toBe('02:30')
     })
     it('Should format based on user profile setting', () => {
       const userProfile = getUserProfile()
