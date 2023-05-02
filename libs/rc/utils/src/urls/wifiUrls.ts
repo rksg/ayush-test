@@ -288,13 +288,11 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   addApPhoto: {
-    // [New API] 500 Internal Server Error
-    // method: 'post',
-    // url: '/venues/aps/:serialNumber/pictures',
-    // oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/picture/deep',
-    // newApi: true
-    method: 'post',
-    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/picture/deep'
+    method: 'put',
+    url: '/venues/aps/:serialNumber/pictures',
+    oldMethod: 'post',
+    oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/picture/deep',
+    newApi: true
   },
   deleteApPhoto: {
     method: 'delete',

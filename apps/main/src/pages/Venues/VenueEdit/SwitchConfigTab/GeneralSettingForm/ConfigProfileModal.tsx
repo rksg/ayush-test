@@ -100,6 +100,7 @@ export function ConfigProfileModal (props: {
     visible={changeModalvisible}
     width={500}
     destroyOnClose={true}
+    onCancel={onCancel}
     footer={[
       <Button key='back' onClick={onCancel}>Cancel</Button>,
       <Tooltip
