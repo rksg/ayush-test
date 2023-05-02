@@ -1082,7 +1082,8 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                                                 />
                                               </th>
                                               <th
-                                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
+                                                aria-sort="ascending"
+                                                class="ant-table-cell ant-table-column-sort ant-table-column-has-sorters react-resizable"
                                                 tabindex="0"
                                               >
                                                 <div
@@ -1104,7 +1105,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                                                     >
                                                       <span
                                                         aria-label="caret-up"
-                                                        class="anticon anticon-caret-up ant-table-column-sorter-up"
+                                                        class="anticon anticon-caret-up ant-table-column-sorter-up active"
                                                         role="img"
                                                       >
                                                         <svg

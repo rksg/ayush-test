@@ -25,12 +25,12 @@ export function ReportHeader (props: {
   const shouldQuerySwitch = ['switch','both'].includes(mode)
   const showRadioBand = ['ap','both'].includes(mode)
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
-  const { setNetworkPath: setReportsNetworkPath } = useReportsFilter()
+  const { setNetworkPath } = useReportsFilter()
 
   useEffect(()=>{
     if(isLoaded || mode === 'none'){
       // Reset when filter mode changes
-      setReportsNetworkPath([],[],[])
+      setNetworkPath([],[],[])
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[mode])

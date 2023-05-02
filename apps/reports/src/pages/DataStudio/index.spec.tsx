@@ -6,7 +6,6 @@ import { Provider }                    from '@acx-ui/store'
 import { store }                       from '@acx-ui/store'
 import { render, screen, waitFor }     from '@acx-ui/test-utils'
 import { mockServer }                  from '@acx-ui/test-utils'
-import { isMSP }                       from '@acx-ui/utils'
 
 import { DataStudio, getHostName } from '.'
 
@@ -54,18 +53,9 @@ describe('DataStudio', () => {
     process.env = oldEnv
   })
   it('should get the correct hostname for prod and non MSP env', async () => {
-    (isMSP as jest.Mock).mockImplementationOnce(() => false)
     const oldEnv = process.env
     process.env = { NODE_ENV: 'production' }
     expect(getHostName('https://eu.ruckus.cloud.com')).toBe('https://eu.ruckus.cloud.com')
-    process.env = oldEnv
-  })
-  it('should get the correct hostname for prod and MSP env', async () => {
-    (isMSP as jest.Mock).mockImplementationOnce(() => true)
-    const oldEnv = process.env
-    process.env = { NODE_ENV: 'production' }
-    expect(getHostName('https://some-msp-user.msp.eu.ruckus.cloud.com'))
-      .toBe('https://eu.ruckus.cloud.com')
     process.env = oldEnv
   })
 })

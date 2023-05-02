@@ -102,7 +102,7 @@ describe('CaptiveNetworkForm-WISPr', () => {
     fireEvent.change(wpa3Pass, { target: { value: 'wpa3xxxxxxxx' } })
     fireEvent.blur(wpa3Pass)
 
-    const walledGarden = await screen.findByLabelText(/Walled Garden/)
+    const walledGarden = screen.getByTestId('walled-garden-showed-textarea')
     fireEvent.change(walledGarden, { target: { value: 'test123.com' } })
     fireEvent.blur(walledGarden)
     await userEvent.click(await screen.findByRole('checkbox', { name: /Redirect users to/ }))

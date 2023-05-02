@@ -81,6 +81,7 @@ export const apApi = baseApApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
+            'AddAp',
             'AddAps',
             'UpdateAp',
             'DeleteAp',

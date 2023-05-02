@@ -36,6 +36,7 @@ export function OptionTable (props:{
       key: 'optionName',
       title: $t({ defaultMessage: 'Option Name' }),
       dataIndex: 'optionName',
+      defaultSortOrder: 'ascend',
       sorter: { compare: sortProp('optionName', defaultSort) }
     },
     {
