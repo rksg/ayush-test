@@ -106,7 +106,9 @@ export default function MyServices () {
     {
       type: ServiceType.RESIDENT_PORTAL,
       categories: [RadioCardCategory.WIFI],
-      tableQuery: useGetResidentPortalListQuery({ params, payload: { filters: {} } }),
+      tableQuery: useGetResidentPortalListQuery({ params, payload: { filters: {} } }, {
+        skip: !propertyManagementEnabled
+      }),
       disabled: !propertyManagementEnabled
     }
   ]

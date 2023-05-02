@@ -142,7 +142,7 @@ export default function ResidentPortalDetail () {
               <GridRow>
                 <GridCol col={{ span: 6 }}>
                   <Card.Title>
-                    {$t({ defaultMessage: 'Annoucements' })}
+                    {$t({ defaultMessage: 'Announcements' })}
                   </Card.Title>
                   <Typography.Paragraph>
                     {residentPortalData?.uiConfiguration?.text.announcements}
