@@ -99,7 +99,7 @@ describe('AdaptivePolicyForm', () => {
     )
 
     // select policy type
-    await userEvent.click(screen.getByRole('radio', { name: /RADIUS/i }))
+    await userEvent.click(await screen.findByRole('radio', { name: /RADIUS/i }))
 
     // add condition
     await userEvent.click(screen.getByText('Add'))
