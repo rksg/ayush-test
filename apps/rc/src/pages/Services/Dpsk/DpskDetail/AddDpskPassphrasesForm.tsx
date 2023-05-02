@@ -22,7 +22,8 @@ import {
   ExpirationDateEntity,
   ExpirationMode,
   NewDpskPassphrase,
-  phoneRegExp
+  phoneRegExp,
+  validateVlanId
 } from '@acx-ui/rc/utils'
 import { validationMessages } from '@acx-ui/utils'
 
@@ -272,16 +273,11 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
           </>
         }
         rules={[
-          {
-            type: 'number',
-            min: 1,
-            max: 4094,
-            message: $t(validationMessages.vlanRange)
-          }
+          { validator: (_, value) => validateVlanId(value) },
         ]}
         name='vlanId'
         children={
-          <InputNumber
+          <Input
             placeholder={$t({ defaultMessage: 'If empty, the network\'s default will be used' })}
             style={{ width: '100%' }}
           />
