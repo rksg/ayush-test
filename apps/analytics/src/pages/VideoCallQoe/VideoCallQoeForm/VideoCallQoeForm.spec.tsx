@@ -7,6 +7,7 @@ import {
   videoCallQoeURL
 } from '@acx-ui/store'
 import {
+  logRoles,
   mockGraphqlMutation,
   mockGraphqlQuery,
   render,
@@ -33,10 +34,11 @@ describe('VideoCallQoeForm', () => {
   })
 
   it('works correctly for create flow', async () => {
-    render(<VideoCallQoeForm />, {
+    const view = render(<VideoCallQoeForm />, {
       wrapper: Provider,
       route: { params: { tenantId: 't-id' } }
     })
+    logRoles(view.container)
 
     mockGraphqlQuery(videoCallQoeURL,'CallQoeTests', {
       data: getAllCallQoeTests
@@ -52,7 +54,7 @@ describe('VideoCallQoeForm', () => {
     // Navigate to Step 2
     mockGraphqlMutation(videoCallQoeURL, 'CreateVideoCallQoeTest', { data: createTestResponse })
     await click(await screen.findByText(/add/i))
-    expect(await screen.findByRole('heading', { name: /test details/i })).toBeVisible()
+    expect(await screen.findByRole('heading', { name: /test call details/i })).toBeVisible()
 
     expect((await screen.findAllByRole('link')).at(1))
       .toHaveTextContent(createTestResponse.createCallQoeTest.meetings[0].joinUrl)

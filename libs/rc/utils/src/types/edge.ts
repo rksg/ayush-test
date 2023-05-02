@@ -46,6 +46,8 @@ export interface EdgeStatus extends EdgeResourceUtilization {
   ip: string
   ports: string
   firmwareVersion?: string
+  firewallId?: string
+  firewallName?: string
 }
 export interface EdgeDetails {
   serialNumber: string
