@@ -216,9 +216,10 @@ describe('DpskPassphraseDrawer', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: /Save/ }))
 
-    const { createdDate, ...other } = editingData
+    const { createdDate, vlanId, ...otherEditingData } = editingData
     const expectedPayload = {
-      ...other,
+      ...otherEditingData,
+      vlanId: vlanId?.toString(),
       numberOfPassphrases: 1
     }
     await waitFor(() => {

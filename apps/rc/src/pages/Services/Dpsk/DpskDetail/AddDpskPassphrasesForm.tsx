@@ -318,7 +318,7 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
 }
 
 function transferServerDataToFormFields (data: NewDpskPassphrase): CreateDpskPassphrasesFormFields {
-  const { expirationDate, createdDate, ...rest } = data
+  const { expirationDate, createdDate, vlanId, ...rest } = data
   const expiration = new ExpirationDateEntity()
 
   if (expirationDate) {
@@ -330,6 +330,7 @@ function transferServerDataToFormFields (data: NewDpskPassphrase): CreateDpskPas
   return {
     ...rest,
     numberOfPassphrases: 1,
-    expiration
+    expiration,
+    vlanId: vlanId?.toString()
   }
 }
