@@ -139,7 +139,6 @@ export const HostDrawer = (props: HostDrawerProps) => {
       title={getTitle()}
       visible={props.visible}
       onClose={onClose}
-      mask={true}
       children={drawerContent}
       destroyOnClose={true}
       width={475}

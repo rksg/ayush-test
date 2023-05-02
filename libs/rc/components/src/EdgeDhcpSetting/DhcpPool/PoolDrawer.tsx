@@ -161,7 +161,6 @@ export const PoolDrawer = (props: PoolDrawerProps) => {
       title={getTitle()}
       visible={props.visible}
       onClose={onClose}
-      mask={true}
       children={drawerContent}
       destroyOnClose={true}
       width={475}

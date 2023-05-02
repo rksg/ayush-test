@@ -20,7 +20,6 @@ describe('Drawer', () => {
       visible={true}
       onClose={onClose}
       children={content}
-      mask={false}
     />)
     expect(screen.getAllByRole('dialog')).toMatchSnapshot()
   })
@@ -34,7 +33,6 @@ describe('Drawer', () => {
       visible={true}
       onClose={onClose}
       children={content}
-      mask={false}
     />)
     expect(screen.getAllByRole('dialog')).toMatchSnapshot()
   })
@@ -45,7 +43,6 @@ describe('Drawer', () => {
       visible={true}
       onClose={onClose}
       children={content}
-      mask={false}
     />)
 
     const button = screen.getByRole('button', { name: /close/i })
@@ -86,7 +83,6 @@ describe('Drawer', () => {
       visible={true}
       onClose={onClose}
       children={content}
-      mask={false}
       footer={footer}
     />)
 
@@ -130,7 +126,6 @@ describe('Drawer', () => {
             visible={visible}
             onClose={_close}
             children={content}
-            mask={false}
           />
         </div>
       </div>
@@ -144,34 +139,6 @@ describe('Drawer', () => {
     const extraElement = await screen.findByText('extra element')
     fireEvent.mouseDown(extraElement)
     expect(onClose).toBeCalled()
-  })
-
-  it('should keep default behavior with mask on', async () => {
-    const TestWrapper = () => {
-      const [visible, setVisible] = useState(true)
-      const _close = () => {
-        onClose()
-        setVisible(false)
-      }
-      return <div>
-        extra element
-        <div>
-          <div>extra sibling element</div>
-          <Drawer
-            title={'Test Drawer'}
-            visible={visible}
-            onClose={_close}
-            children={content}
-            mask={true}
-          />
-        </div>
-      </div>
-    }
-    render(<TestWrapper />)
-
-    const extraElement = await screen.findByText('extra element')
-    fireEvent.mouseDown(extraElement)
-    expect(onClose).not.toHaveBeenCalled()
   })
 
   it('should not trigger outside click close on unmounted state', async () => {

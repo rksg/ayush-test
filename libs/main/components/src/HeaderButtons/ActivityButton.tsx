@@ -198,7 +198,6 @@ export default function ActivityButton (props: ActivityButtonProps) {
       onClose={() => {
         setActivityModalOpen(false)
       }}
-      mask={true}
       children={activityList}
     />
     {detailModal && <TimelineDrawer
