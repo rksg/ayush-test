@@ -17,6 +17,7 @@ describe('TunnelProfileForm', () => {
     screen.getByRole('radio', { name: 'Auto' })
     screen.getByRole('radio', { name: 'Manual' })
     screen.getByRole('switch', { name: 'Force Fragmentation' })
+    screen.getByRole('spinbutton', { name: 'Idle Period' })
   })
 
   it('should show MTU size field when select Manual', async () => {
