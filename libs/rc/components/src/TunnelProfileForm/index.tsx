@@ -27,21 +27,21 @@ async function validateAgeTimeValue (value: number, ageTimeUnit: string) {
   return Promise.resolve()
 }
 
-export interface TunnelProfileProps extends TunnelProfile {
+export interface TunnelProfileFormType extends TunnelProfile {
   ageTimeUnit? : string
 }
 
 export const TunnelProfileForm = () => {
 
-  const [
-    ageTimeUnit
-  ] = [
-    useWatch<string>('ageTimeUnit')
+  const ageTimeUnit = useWatch<string>('ageTimeUnit')
+  const mtuType = useWatch('mtuType')
+  const { $t } = useIntl()
+  const ageTimeOptions = [
+    { label: $t({ defaultMessage: 'Minute(s)' }), value: 'minutes' },
+    { label: $t({ defaultMessage: 'Day(s)' }), value: 'days' },
+    { label: $t({ defaultMessage: 'Week' }), value: 'week' }
   ]
 
-  const mtuType = useWatch('mtuType')
-
-  const { $t } = useIntl()
   return (
     <Row>
       <Col span={14}>
@@ -123,7 +123,7 @@ export const TunnelProfileForm = () => {
       </Col>
       <Col span={5}>
         <Form.Item
-          name={['ageTimeMinutes']}
+          name='ageTimeMinutes'
           label={$t({ defaultMessage: 'Idle Period' })}
           rules={[
             { required: true },
@@ -139,11 +139,7 @@ export const TunnelProfileForm = () => {
           label={<div></div>}
           initialValue={'minutes'}
         >
-          <Select>
-            <Option value={'minutes'}>{$t({ defaultMessage: 'Minute(s)' })}</Option>
-            <Option value={'days'}>{$t({ defaultMessage: 'Day(s)' })}</Option>
-            <Option value={'week'}>{$t({ defaultMessage: 'Week' })}</Option>
-          </Select>
+          <Select options={ageTimeOptions} />
         </Form.Item>
       </Col>
     </Row>

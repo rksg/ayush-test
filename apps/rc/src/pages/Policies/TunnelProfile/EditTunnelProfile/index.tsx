@@ -5,7 +5,7 @@ import { Col, Form, Row } from 'antd'
 import { useIntl }        from 'react-intl'
 
 import { PageHeader, StepsFormNew }                                 from '@acx-ui/components'
-import { TunnelProfileForm, TunnelProfileProps }                    from '@acx-ui/rc/components'
+import { TunnelProfileForm, TunnelProfileFormType }                 from '@acx-ui/rc/components'
 import { useGetTunnelProfileQuery, useUpdateTunnelProfileMutation } from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink,
@@ -39,10 +39,8 @@ const EditTunnelProfile = () => {
     form.setFieldValue('mtuSize', tunnelProfileData?.mtuSize)
     form.setFieldValue('mtuType', tunnelProfileData?.mtuType)
     form.setFieldValue('forceFragmentation', tunnelProfileData?.forceFragmentation)
-    let ageTime = 20
-    if (tunnelProfileData?.ageTimeMinutes !== undefined) {
-      ageTime = tunnelProfileData.ageTimeMinutes
-    }
+
+    const ageTime = tunnelProfileData?.ageTimeMinutes || 20
     if (ageTime % 10080 === 0) {
       form.setFieldValue('ageTimeMinutes', ageTime / 10080)
       form.setFieldValue('ageTimeUnit', 'week')
@@ -55,7 +53,7 @@ const EditTunnelProfile = () => {
     }
   }, [form, tunnelProfileData])
 
-  const handleUpdateTunnelProfile = async (data: TunnelProfileProps) => {
+  const handleUpdateTunnelProfile = async (data: TunnelProfileFormType) => {
     try {
       if (data.ageTimeUnit === 'week') {
         data.ageTimeMinutes = data.ageTimeMinutes* 7 * 24 * 60

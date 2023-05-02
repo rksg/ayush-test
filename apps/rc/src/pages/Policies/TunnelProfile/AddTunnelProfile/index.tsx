@@ -2,9 +2,9 @@
 import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import { PageHeader, StepsFormNew }              from '@acx-ui/components'
-import { TunnelProfileForm, TunnelProfileProps } from '@acx-ui/rc/components'
-import { useCreateTunnelProfileMutation }        from '@acx-ui/rc/services'
+import { PageHeader, StepsFormNew }                 from '@acx-ui/components'
+import { TunnelProfileForm, TunnelProfileFormType } from '@acx-ui/rc/components'
+import { useCreateTunnelProfileMutation }           from '@acx-ui/rc/services'
 import {
   getPolicyRoutePath,
   LocationExtended,
@@ -28,7 +28,7 @@ const AddTunnelProfile = () => {
   const linkToTableView = useTenantLink(tablePath)
   const [createTunnelProfile] = useCreateTunnelProfileMutation()
 
-  const handleAddTunnelProfile = async (data: TunnelProfileProps) => {
+  const handleAddTunnelProfile = async (data: TunnelProfileFormType) => {
     try {
       if (data.ageTimeUnit === 'week') {
         data.ageTimeMinutes = data.ageTimeMinutes* 7 * 24 * 60
