@@ -73,7 +73,6 @@ const AdminLogTable = ({ tableQuery }: AdminLogTableProps) => {
       key: 'message',
       title: $t({ defaultMessage: 'Description' }),
       dataIndex: 'message',
-      sorter: true,
       searchable: true,
       render: (_, row, __, highlightFn) => getDescription(row, highlightFn)
     }

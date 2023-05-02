@@ -12,9 +12,10 @@ import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
-import { DhcpCheckbox }     from './DhcpCheckbox'
-import { RedirectUrlInput } from './RedirectUrlInput'
-
+import { DhcpCheckbox }                          from './DhcpCheckbox'
+import { RedirectUrlInput }                      from './RedirectUrlInput'
+import { BypassCaptiveNetworkAssistantCheckbox } from './SharedComponent/BypassCNA/BypassCaptiveNetworkAssistantCheckbox'
+import { WalledGardenTextArea }                  from './SharedComponent/WalledGarden/WalledGardenTextArea'
 
 
 export function GuestPassForm () {
@@ -39,6 +40,11 @@ export function GuestPassForm () {
         <StepsForm.Title>{intl.$t({ defaultMessage: 'Host Settings' })}</StepsForm.Title>
         <RedirectUrlInput></RedirectUrlInput>
         <DhcpCheckbox />
+        <BypassCaptiveNetworkAssistantCheckbox
+          guestNetworkTypeEnum={GuestNetworkTypeEnum.GuestPass} />
+        <WalledGardenTextArea
+          guestNetworkTypeEnum={GuestNetworkTypeEnum.GuestPass}
+          enableDefaultWalledGarden={false} />
         {!(editMode) && <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />}
       </GridCol>
       <GridCol col={{ span: 14 }}>
