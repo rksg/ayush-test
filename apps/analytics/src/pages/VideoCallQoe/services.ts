@@ -6,8 +6,8 @@ import { useIntl }       from 'react-intl'
 
 import { videoCallQoeApi } from '@acx-ui/store'
 
-import { messageMapping }             from './contents'
-import { Response, VideoCallQoeTest } from './types'
+import { messageMapping }                               from './contents'
+import { DetailedResponse, Response, VideoCallQoeTest } from './types'
 
 export const api = videoCallQoeApi.injectEndpoints({
   endpoints: (build) => ({
@@ -35,6 +35,102 @@ export const api = videoCallQoeApi.injectEndpoints({
       }),
       providesTags: [{ type: 'VideoCallQoe', id: 'LIST' }],
       transformResponse: (response: Response) => {
+        return response
+      }
+    }),
+    videoCallQoeTestDetails: build.query({
+      query: (payload) => ({
+        document: gql`
+        query CallQoeTestDetails($testId: Int!, $status: String){
+            getAllCallQoeTests(id: $testId, status: $status) {
+              id
+              name
+              meetings {
+                id
+                zoomMeetingId
+                status
+                invalidReason
+                joinUrl
+                participantCount
+                mos
+                createdTime
+                startTime
+                endTime
+                participants {
+                  id
+                  userName
+                  hostname
+                  networkType
+                  macAddress
+                  device
+                  ipAddress
+                  joinTime
+                  leaveTime
+                  leaveReason
+                  apDetails {
+                    system
+                    domains
+                    zone
+                    apGroup
+                    apName
+                    apMac
+                    ssid
+                    radio
+                  }
+                  wifiMetrics {
+                    rss
+                    snr
+                    avgTxMCS
+                    throughput
+                  }
+                  callMetrics {
+                    date_time
+                    jitter {
+                      audio {
+                        rx
+                        tx
+                      }
+                      video {
+                        tx
+                        rx
+                      }
+                    }
+                    latency {
+                      audio {
+                        rx
+                        tx
+                      }
+                      video {
+                        tx
+                        rx
+                      }
+                    }
+                    packet_loss {
+                      audio {
+                        rx
+                        tx
+                      }
+                      video {
+                        tx
+                        rx
+                      }
+                    }
+                    video_frame_rate {
+                      rx
+                      tx
+                    }
+                  }
+                }
+              }
+            }
+          }
+          `,
+        variables: {
+          testId: payload.testId,
+          status: payload.status
+        }
+      }),
+      transformResponse: (response: DetailedResponse) => {
         return response
       }
     }),
@@ -75,7 +171,8 @@ export const {
   useVideoCallQoeTestsQuery,
   useLazyVideoCallQoeTestsQuery,
   useCreateCallQoeTestMutation,
-  useDeleteCallQoeTestMutation
+  useDeleteCallQoeTestMutation,
+  useVideoCallQoeTestDetailsQuery
 } = api
 
 export function useDuplicateNameValidator () {
