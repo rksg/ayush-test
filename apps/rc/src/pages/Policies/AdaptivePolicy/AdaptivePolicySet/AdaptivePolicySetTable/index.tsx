@@ -187,7 +187,13 @@ export default function AdaptivePolicySetTable () {
     label: $t({ defaultMessage: 'Delete' }),
     disabled: (([selectedItem]) =>
       (selectedItem && selectedItem.id)
-        ? assignedMacPools.has(selectedItem.id) : false
+        ? assignedMacPools.has(selectedItem.id) || assignedDpsks.has(selectedItem.id): false
+    ),
+    tooltip: (([selectedItem]) =>
+      selectedItem ?
+        (assignedMacPools.has(selectedItem.id) || assignedDpsks.has(selectedItem.id) ?
+        // eslint-disable-next-line max-len
+          $t({ defaultMessage: 'This set is in use by one or more Mac Registrations Lists and one or more DPSK.' }) : undefined ) : undefined
     ),
     onClick: ([{ name, id }], clearSelection) => {
       showActionModal({
