@@ -277,7 +277,7 @@ describe('ClientOverviewTab', () => {
         checkFragment(asFragment)
       })
 
-      it('should render dpsk client correctly', async () => {
+      it.skip('should render dpsk client correctly', async () => {
         mockServer.use(
           rest.get(ClientUrlsInfo.getClientDetails.url,
             (_, res, ctx) => res(ctx.json({

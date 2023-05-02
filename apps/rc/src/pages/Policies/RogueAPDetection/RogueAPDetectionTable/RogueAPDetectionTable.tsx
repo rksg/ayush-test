@@ -93,6 +93,9 @@ export default function RogueAPDetectionTable () {
   const rowActions: TableProps<EnhancedRoguePolicyType>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
+      visible: (selectedItems =>
+        selectedItems.length > 0 && selectedItems[0].name !== DEFAULT_PROFILE
+      ),
       onClick: ([{ id, name, venueIds }], clearSelection) => {
         if (Number(venueIds.length) !== 0 || name === DEFAULT_PROFILE) {
           showActionModal({
@@ -120,6 +123,9 @@ export default function RogueAPDetectionTable () {
     },
     {
       label: $t({ defaultMessage: 'Edit' }),
+      visible: (selectedItems =>
+        selectedItems.length > 0 && selectedItems[0].name !== DEFAULT_PROFILE
+      ),
       onClick: ([{ id }]) => {
         navigate({
           ...tenantBasePath,

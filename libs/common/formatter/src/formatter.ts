@@ -122,22 +122,28 @@ export enum DateFormatEnum {
   DateFormat = 'dateFormat',
   DateTimeFormat = 'dateTimeFormat',
   DateTimeFormatWithTimezone = 'dateTimeFormatWithTimezone',
-  DateTimeFormatWithSeconds = 'dateTimeFormatWithSeconds'
+  DateTimeFormatWithSeconds = 'dateTimeFormatWithSeconds',
+  OnlyTime = 'onlyTime'
 }
 
 const dateTimeFormats = {
   dateFormat: '',
   dateTimeFormat: 'HH:mm',
   dateTimeFormatWithTimezone: '- HH:mm z',
-  dateTimeFormatWithSeconds: 'HH:mm:ss'
+  dateTimeFormatWithSeconds: 'HH:mm:ss',
+  onlyTime: 'HH:mm'
 }
 
 export function userDateTimeFormat (format: DateFormatEnum) {
   const dateFormat = getUserProfile().profile.dateFormat as string
-  return [
+  const dateTimeArr = [
     dateFormat?.toUpperCase() || defaultDateFormat,
     dateTimeFormats[format]
-  ].filter(Boolean).join(' ')
+  ]
+  if(format === DateFormatEnum.OnlyTime){
+    dateTimeArr.shift()
+  }
+  return dateTimeArr.filter(Boolean).join(' ')
 }
 
 function dateTimeFormatter (
@@ -192,7 +198,9 @@ export const formats = {
   txFormat: (value: keyof typeof txpowerMapping) =>
     (txpowerMapping[value] ? txpowerMapping[value] : value),
   numberWithCommas: (number: number) =>
-    number?.toLocaleString('en-US', { maximumFractionDigits: 0 })
+    number?.toLocaleString('en-US', { maximumFractionDigits: 0 }),
+  fpsFormat: (value: number) => `${value} fps`,
+  percent: (value: number) => `${value} %`
 } as const
 
 const enabledFormat: MessageDescriptor = defineMessage({
