@@ -261,7 +261,7 @@ function Table <RecordType extends Record<string, any>> ({
   const searchables = aggregator(columns, 'searchable')
 
   const activeFilters = filterables.filter(column => {
-    const key = column.dataIndex as keyof RecordType
+    const key = column.filterKey || column.dataIndex as keyof RecordType
     const filteredValue = filterValues[key as keyof Filter]
     return filteredValue
   })
