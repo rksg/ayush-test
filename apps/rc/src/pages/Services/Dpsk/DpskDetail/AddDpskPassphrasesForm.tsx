@@ -273,7 +273,7 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
           </>
         }
         rules={[
-          { validator: (_, value) => validateVlanId(value) },
+          { validator: (_, value) => validateVlanId(value) }
         ]}
         name='vlanId'
         children={
