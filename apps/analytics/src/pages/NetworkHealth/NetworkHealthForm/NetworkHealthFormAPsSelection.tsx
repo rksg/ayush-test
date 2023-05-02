@@ -1,9 +1,10 @@
 import { Col, Row }                  from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { StepsForm, Tooltip } from '@acx-ui/components'
+import { StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
 
-import * as contents from '../contents'
+import * as contents                                          from '../contents'
+import { NetworkHealthFormDto, ClientType as ClientTypeEnum } from '../types'
 
 import * as FormItems from './FormItems'
 
@@ -14,10 +15,12 @@ const tooltip = <FormattedMessage
 
 export function NetworkHealthFormAPsSelection () {
   const { $t } = useIntl()
+  const { form } = useStepFormContext<NetworkHealthFormDto>()
   return <>
     <StepsForm.Title>
       {$t(contents.steps.apsSelection)}
-      <Tooltip.Question title={tooltip} placement='right' />
+      {form.getFieldValue(FormItems.ClientType.fieldName) === ClientTypeEnum.VirtualClient &&
+        <Tooltip.Question title={tooltip} placement='right' />}
     </StepsForm.Title>
     <Row gutter={20}>
       <Col span={18}>
