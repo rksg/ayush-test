@@ -51,7 +51,6 @@ export function VideoCallQoeTable () {
       render: (value: unknown, row: unknown) => {
         const formattedStatus = startCase(toLower((row as Meeting).status as string))
         const meetingId = (row as Meeting).id
-        // TODO implement url text based on Ended or Not Started Call
         const urlTxt = [MeetingType.ENDED, MeetingType.NOT_STARTED]
           .includes(formattedStatus) ? `${meetingId}` : `${meetingId}`
         return [MeetingType.ENDED]
