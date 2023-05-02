@@ -1,9 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { StepsFormNew }                          from '@acx-ui/components'
 import { CommonUrlsInfo }                        from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent } from '@acx-ui/test-utils'
+import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { mockVenueData } from './__tests__/fixtures'
 
@@ -25,23 +26,26 @@ describe('EdgeSettingForm', () => {
   })
 
   it('should create EdgeSettingForm successfully', async () => {
-    const { asFragment } = render(
+    render(
       <Provider>
         <EdgeSettingForm />
       </Provider>, { route: { params } }
     )
     await screen.findByRole('combobox', { name: 'Venue' })
-    expect(asFragment()).toMatchSnapshot()
+    await screen.findByRole('textbox', { name: 'SmartEdge Name' })
+    await screen.findByRole('textbox', { name: 'Serial Number' })
+    await screen.findByRole('textbox', { name: 'Description' })
+    await screen.findByRole('combobox', { name: 'Tags' })
   })
 
   it('should create EdgeSettingForm with edit mode successfully', async () => {
-    const { asFragment } = render(
+    render(
       <Provider>
         <EdgeSettingForm isEdit />
       </Provider>, { route: { params } }
     )
-    await screen.findByRole('combobox', { name: 'Venue' })
-    expect(asFragment()).toMatchSnapshot()
+    expect(await screen.findByRole('combobox', { name: 'Venue' })).toBeDisabled()
+    expect(await screen.findByRole('textbox', { name: 'Serial Number' })).toBeDisabled()
   })
 
   it('should render init data correctly', async () => {
@@ -59,14 +63,37 @@ describe('EdgeSettingForm', () => {
   })
 
   it('should show OTP message correctly', async () => {
-    const { asFragment } = render(
+    render(
       <Provider>
-        <EdgeSettingForm />
+        <StepsFormNew>
+          <StepsFormNew.StepForm>
+            <EdgeSettingForm />
+          </StepsFormNew.StepForm>
+        </StepsFormNew>
       </Provider>, { route: { params } }
     )
     const serialNumberInput = await screen.findByRole('textbox',
       { name: 'Serial Number' })
     fireEvent.change(serialNumberInput, { target: { value: '96_serial_number_test' } })
-    expect(asFragment()).toMatchSnapshot()
+    await screen.findByRole('alert')
+  })
+
+  it('should show error when serial number is invalid', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <StepsFormNew>
+          <StepsFormNew.StepForm>
+            <EdgeSettingForm />
+          </StepsFormNew.StepForm>
+        </StepsFormNew>
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/edge/add' }
+      })
+    const serialNumberInput = await screen.findByRole('textbox',
+      { name: 'Serial Number' })
+    fireEvent.change(serialNumberInput, { target: { value: '12345' } })
+    await user.click(screen.getByRole('button', { name: 'Finish' }))
+    expect(await screen.findByText('This field is invalid')).toBeVisible()
   })
 })

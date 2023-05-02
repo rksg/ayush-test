@@ -2,6 +2,8 @@ import { Tooltip as AntTooltip } from 'antd'
 
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 
+import * as UI from './styledComponents'
+
 import type { TooltipProps } from 'antd'
 
 Tooltip.defaultProps = {
@@ -10,7 +12,10 @@ Tooltip.defaultProps = {
 }
 
 function Tooltip ({ ...props }: TooltipProps) {
-  return <AntTooltip {...props} />
+  return <>
+    <UI.TooltipGlobalStyle />
+    <AntTooltip {...props} />
+  </>
 }
 
 export { Tooltip, TooltipProps }

@@ -128,8 +128,7 @@ export function ClientOverviewTab () {
           payload: {
             filters: {
               clientMAC: [clientId],
-              fromTime: filters.startDate,
-              toTime: filters.endDate,
+              dateFilter,
               isTribandAp: isTribandAp
             }
           }
