@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react'
 
-import { useAuthenticateMutation }            from '@acx-ui/reports/services'
-import { getHostNameForMSPDataStudio, isMSP } from '@acx-ui/utils'
+import { useAuthenticateMutation } from '@acx-ui/reports/services'
 
 export const getHostName = (origin: string) => {
   if(process.env['NODE_ENV'] === 'development')
     return 'https://dev.ruckus.cloud'
 
-  return isMSP() ? getHostNameForMSPDataStudio(origin) : origin
+  return origin
 }
 
 export function DataStudio () {

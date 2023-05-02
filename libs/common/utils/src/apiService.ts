@@ -47,17 +47,6 @@ export const isProdEnv = () => {
   return window.location.hostname.includes('ruckus.cloud')
 }
 
-export const isMSP = () => {
-  return window.location.hostname.includes('.msp.')
-}
-
-export const getHostNameForMSPDataStudio = (origin: string) => {
-  const url = new URL(origin)
-  const hostnameParts = url.hostname.split('.msp.')
-  const subdomain = hostnameParts.slice(-1).join('.')
-  return `${url.protocol}//${subdomain}`
-}
-
 export const createHttpRequest = (
   apiInfo: ApiInfo,
   paramValues?: Params<string>,
@@ -76,9 +65,7 @@ export const createHttpRequest = (
     window.location.hostname, get('NEW_API_DOMAIN_NAME'))
   const domain = (enableNewApi(apiInfo) && !isLocalHost())
     ? newApiHostName
-    : (isMSP() && apiInfo.url === '/api/a4rc/explorer/authenticate/') // DataStudio auth
-      ? getHostNameForMSPDataStudio(origin)
-      : origin
+    : origin
 
   const url = enableNewApi(apiInfo) ? generatePath(`${apiInfo.url}`, paramValues) :
     generatePath(`${apiInfo.oldUrl || apiInfo.url}`, paramValues)
