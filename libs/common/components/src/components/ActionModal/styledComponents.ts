@@ -1,5 +1,5 @@
 import { Collapse as AntCollapse } from 'antd'
-import styled                      from 'styled-components/macro'
+import styled, { css }             from 'styled-components/macro'
 
 import { Button } from '../Button'
 
@@ -17,6 +17,21 @@ export const FooterButtons = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
+`
+
+export const copyableTextArea = css`
+  background: var(--acx-neutrals-10);
+  border: 1px solid var(--acx-neutrals-30);
+  font-size: var(--acx-subtitle-6-font-size);
+  line-height: var(--acx-subtitle-6-line-height);
+  padding: 12px;
+  max-height: 200px;
+  resize: none;
+  &:hover,
+  &:focus {
+    border-color: var(--acx-neutrals-30);
+    box-shadow: none
+  }
 `
 
 export const Collapse = styled(AntCollapse)`
@@ -48,18 +63,7 @@ export const Collapse = styled(AntCollapse)`
   }
 
   textarea {
-    background: var(--acx-neutrals-10);
-    border: 1px solid var(--acx-neutrals-30);
-    font-size: var(--acx-subtitle-6-font-size);
-    line-height: var(--acx-subtitle-6-line-height);
-    padding: 12px;
-    max-height: 200px;
-    resize: none;
-    &:hover,
-    &:focus {
-      border-color: var(--acx-neutrals-30);
-      box-shadow: none
-    }
+    ${copyableTextArea}
   }
 `
 
