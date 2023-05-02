@@ -1,20 +1,24 @@
+import { useState } from 'react'
+
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { TimeSeriesDataType, getSeriesData }                                                                                                              from '@acx-ui/analytics/utils'
-import { Loader, PageHeader, Table, TableProps, Tooltip, TrendType, cssStr,  Card, GridCol, GridRow, MultiLineTimeSeriesChart, NoData, Alert, TrendPill } from '@acx-ui/components'
-import { DateFormatEnum, formatter }                                                                                                                      from '@acx-ui/formatter'
+import { TimeSeriesDataType, getSeriesData }                 from '@acx-ui/analytics/utils'
+import { Loader, PageHeader, Table, TableProps, Tooltip,
+  TrendType, cssStr,  Card, GridCol, GridRow,
+  MultiLineTimeSeriesChart,NoData, Alert, TrendPill, Modal } from '@acx-ui/components'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   EditOutlinedIcon,
   EditOutlinedDisabledIcon
 } from '@acx-ui/icons'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { TenantLink, useParams }   from '@acx-ui/react-router-dom'
+import { TABLE_DEFAULT_PAGE_SIZE } from '@acx-ui/utils'
 
-
-import { zoomStatsThresholds }                         from '../VideoCallQoe/constants'
-import { useVideoCallQoeTestDetailsQuery }             from '../VideoCallQoe/services'
-import { DetailedResponse, Participants, WifiMetrics } from '../VideoCallQoe/types'
+import { zoomStatsThresholds }                                                  from '../VideoCallQoe/constants'
+import { useUpdateCallQoeParticipantMutation, useVideoCallQoeTestDetailsQuery } from '../VideoCallQoe/services'
+import { DetailedResponse, Participants, WifiMetrics }                          from '../VideoCallQoe/types'
 
 import { getConnectionQuality, getConnectionQualityTooltip } from './helper'
 import * as UI                                               from './styledComponents'
@@ -23,10 +27,14 @@ export function VideoCallQoeDetails (){
   const intl= useIntl()
   const { $t } = intl
   const { testId } = useParams()
+  const [isModalOpen,setIsModalOpen] = useState(false)
+  const [participantId,setParticipantId] = useState<number|null>(null)
+  const [selectedMac,setSelectedMac] = useState<string|null>(null)
   const queryResults = useVideoCallQoeTestDetailsQuery({ testId: Number(testId),status: 'ENDED' })
   const callQoeDetails = queryResults.data?.getAllCallQoeTests.at(0)
   const currentMeeting = callQoeDetails?.meetings.at(0)
   const participants = currentMeeting?.participants
+  const [ updateParticipant ] = useUpdateCallQoeParticipantMutation()
 
   const isMissingClientMac = (participants:Participants[])=>{
     const missingMacCount = participants
@@ -45,7 +53,11 @@ export function VideoCallQoeDetails (){
           return <Space>
             {value ? <span>{value as string}</span> : <div style={{ width: '100px' }}>-</div>}
             <Tooltip title={$t({ defaultMessage: 'Select Client MAC' })}>
-              <EditOutlinedIcon style={{ height: '16px', width: '16px', cursor: 'pointer' }} />
+              <EditOutlinedIcon style={{ height: '16px', width: '16px', cursor: 'pointer' }}
+                onClick={()=>{
+                  setParticipantId(row.id)
+                  setIsModalOpen(true)
+                }}/>
             </Tooltip>
           </Space>
         }
@@ -291,6 +303,82 @@ export function VideoCallQoeDetails (){
               showIcon />
           </div>
         }
+        {isModalOpen && <Modal
+          width={400}
+          visible={isModalOpen}
+          title={$t({ defaultMessage: 'Select Client MAC' })}
+          okText={$t({ defaultMessage: 'Select' })}
+          onOk={async ()=>{
+            setIsModalOpen(false)
+            // eslint-disable-next-line no-console
+            console.log({
+              participantId,
+              selectedMac
+            })
+            if(participantId && selectedMac){
+              // eslint-disable-next-line react-hooks/rules-of-hooks
+              const updatedParticipantId = await updateParticipant({
+                participantId, macAddr: selectedMac }).unwrap()
+              if(updatedParticipantId){
+                // eslint-disable-next-line no-restricted-globals
+                location.reload()
+              }
+            }
+
+          }}
+          onCancel={()=>{
+            setSelectedMac(null)
+            setIsModalOpen(false)
+          }}
+        >
+          <Table
+            rowKey='mac'
+            rowSelection={{ type: 'radio', onChange: (keys)=>{
+              if(keys.length){
+                setSelectedMac(keys[0] as string)
+              }
+            } }}
+            showHeader={false}
+            columns={[
+              {
+                dataIndex: 'mac',
+                key: 'mac',
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                render: (mac:unknown, row:any)=>{
+                  return <>
+                    <GridRow>
+                      <GridCol col={{ span: 24 }}><strong>{mac as string}</strong></GridCol>
+                    </GridRow>
+                    <GridRow>
+                      <GridCol col={{ span: 12 }}>Username:</GridCol>
+                      <GridCol col={{ span: 12 }}>{row.username}</GridCol>
+                    </GridRow>
+                    <GridRow>
+                      <GridCol col={{ span: 12 }}>Hostname:</GridCol>
+                      <GridCol col={{ span: 12 }}>{row.hostname}</GridCol>
+                    </GridRow>
+                  </>
+                }
+              }
+            ]}
+            dataSource={[
+              {
+                mac: 'A8:64:F1:1A:D0:33',
+                username: 'user1',
+                hostname: 'host1'
+              },
+              {
+                mac: 'F0:B3:EC:2A:A8:05',
+                username: 'user2',
+                hostname: 'host2'
+              }
+            ]}
+            pagination={{
+              pageSize: TABLE_DEFAULT_PAGE_SIZE,
+              defaultPageSize: TABLE_DEFAULT_PAGE_SIZE
+            }}
+          />
+        </Modal>}
         <Table
           rowKey='id'
           columns={columnHeaders}

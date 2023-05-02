@@ -163,6 +163,17 @@ export const api = videoCallQoeApi.injectEndpoints({
       }),
       invalidatesTags: [{ type: 'VideoCallQoe', id: 'LIST' }],
       transformResponse: (response: { deleteCallQoeTest : boolean }) => response.deleteCallQoeTest
+    }),
+    updateCallQoeParticipant: build.mutation<number, { participantId: number, macAddr: string }>({
+      query: (variables) => ({
+        variables,
+        document: gql`mutation UpdateCallQoeParticipant($participantId: Int!, $macAddr: String!) {
+          updateCallQoeParticipant(id: $participantId, macAddress: $macAddr)
+        }`
+      }),
+      invalidatesTags: [{ type: 'VideoCallQoe', id: 'LIST' }],
+      transformResponse: (response: { updateCallQoeParticipant : number }) =>
+        response.updateCallQoeParticipant
     })
   })
 })
@@ -172,7 +183,8 @@ export const {
   useLazyVideoCallQoeTestsQuery,
   useCreateCallQoeTestMutation,
   useDeleteCallQoeTestMutation,
-  useVideoCallQoeTestDetailsQuery
+  useVideoCallQoeTestDetailsQuery,
+  useUpdateCallQoeParticipantMutation
 } = api
 
 export function useDuplicateNameValidator () {
