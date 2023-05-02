@@ -48,16 +48,13 @@ function Layout () {
   const showHomeButton =
     isDelegationMode() || userProfile?.var || tenantType === AccountType.MSP_NON_VAR ||
     tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
-  const isBackToRC = (PverName.ACX === getJwtTokenPayload().pver ||
-    PverName.ACX_HYBRID === getJwtTokenPayload().pver)
   const [isShown, setIsShown] = useState<boolean | null>(null)
 
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const basePath = useTenantLink('/users/guestsManager')
-  const isMsp = window.location.pathname.includes('/v/')
 
   useEffect(() => {
-    if (isGuestManager && params['*'] !== 'guestsManager' && !isMsp) {
+    if (isGuestManager && params['*'] !== 'guestsManager') {
       navigate({
         ...basePath,
         pathname: `${basePath.pathname}`
@@ -82,19 +79,13 @@ function Layout () {
         </>
       }
       leftHeaderContent={<>
-        { showHomeButton && (isBackToRC ?
-          <a href={`/api/ui/v/${getJwtTokenPayload().tenantId}`}>
+        { showHomeButton &&
+          <a href={`${getBasePath()}/v/${getJwtTokenPayload().tenantId}`}>
             <UI.Home>
               <LayoutUI.Icon children={<HomeSolid />} />
               {$t({ defaultMessage: 'Home' })}
             </UI.Home>
-          </a> :
-          <Link to={`${getBasePath()}/v/${getJwtTokenPayload().tenantId}`}>
-            <UI.Home>
-              <LayoutUI.Icon children={<HomeSolid />} />
-              {$t({ defaultMessage: 'Home' })}
-            </UI.Home>
-          </Link>)
+          </a>
         }
         <RegionButton/>
         <HeaderContext.Provider value={{
