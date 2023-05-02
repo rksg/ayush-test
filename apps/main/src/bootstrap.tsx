@@ -5,12 +5,11 @@ import { addMiddleware } from 'redux-dynamic-middlewares'
 
 import {
   ConfigProvider,
-  ConfigProviderProps,
   Loader,
   SuspenseBoundary
 } from '@acx-ui/components'
 import { get }                    from '@acx-ui/config'
-import { useYourDefaultLanguage } from '@acx-ui/rc/services'
+import { useGetPreferencesQuery } from '@acx-ui/rc/services'
 import { BrowserRouter }          from '@acx-ui/react-router-dom'
 import { Provider }               from '@acx-ui/store'
 import {
@@ -32,7 +31,7 @@ import { errorMiddleware } from './errorMiddleware'
 import '@acx-ui/theme'
 
 // Needed for Browser language detection
-const supportedLocales = {
+const supportedLocales: Record<string, LangKey> = {
   'en-US': 'en-US',
   'en': 'en-US',
   'es': 'es-ES',
@@ -49,9 +48,9 @@ declare global {
   }
   function pendoInitalization (): void
 }
-export function loadMessages (locales: readonly string[]): string {
+export function loadMessages (locales: readonly string[]): LangKey {
   const locale = locales.find(locale =>
-    supportedLocales[locale as keyof typeof supportedLocales]) || 'en-US'
+    supportedLocales[locale as keyof typeof supportedLocales]) || DEFAULT_SYS_LANG
   return supportedLocales[locale as keyof typeof supportedLocales]
 }
 
@@ -113,16 +112,13 @@ export async function pendoInitalization (): Promise<void> {
 }
 
 function PreferredLangConfigProvider (props: React.PropsWithChildren) {
-  const defaultLang = useYourDefaultLanguage() // tenant level preference
-  const browserLang = loadMessages(navigator.languages) // browser detection
-  const queryParams = new URLSearchParams(window.location.search) // url query params
-  const lang = ((defaultLang??
-    queryParams.get('lang')??
-    browserLang) as ConfigProviderProps['lang']) as LangKey
+  const request = useGetPreferencesQuery({ tenantId: getTenantId() })
+  const lang = String(request.data?.global.defaultLanguage)
+
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
-    states={[{ isLoading: !Boolean(defaultLang) }]}
-    children={<ConfigProvider lang={lang?? DEFAULT_SYS_LANG} {...props} />}
+    states={[{ isLoading: request.isLoading || request.isFetching }]}
+    children={<ConfigProvider {...props} lang={loadMessages([lang])} />}
   />
 }
 

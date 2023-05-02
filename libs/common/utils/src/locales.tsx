@@ -8,7 +8,7 @@ import { setUpIntl } from './intlUtil'
 type Message = string | NestedMessages
 type NestedMessages = { [key: string]: Message }
 export type Messages = Locale & Record<string, string>
-export const DEFAULT_SYS_LANG = 'en-US'
+export const DEFAULT_SYS_LANG: LangKey = 'en-US'
 
 function flattenMessages (nestedMessages: NestedMessages, prefix = ''): Record<string, string> {
   return Object.keys(nestedMessages).reduce((messages, key) => {
@@ -166,7 +166,7 @@ function LocaleProviderWrap (props: LocaleProviderProps): ReactElement {
 }
 
 function LocaleProvider (props: LocaleProviderProps) {
-  const [lang, setLang] = useState(props.lang ?? 'en-US') // fallback language by default en-US
+  const [lang, setLang] = useState(props.lang ?? DEFAULT_SYS_LANG) // fallback language by default en-US
   const [messages, setMessages] = useState<Messages>()
 
   useEffect(() => {
