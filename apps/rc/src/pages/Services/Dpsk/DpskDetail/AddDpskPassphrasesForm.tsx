@@ -25,7 +25,6 @@ import {
   phoneRegExp,
   validateVlanId
 } from '@acx-ui/rc/utils'
-import { validationMessages } from '@acx-ui/utils'
 
 import { MAX_DEVICES_PER_PASSPHRASE, MAX_PASSPHRASES } from '../constants'
 
