@@ -1197,6 +1197,7 @@ export const {
   useGetPropertyUnitByIdQuery,
   useLazyGetPropertyUnitByIdQuery,
   useGetPropertyUnitListQuery,
+  useLazyGetPropertyUnitListQuery,
   useUpdatePropertyUnitMutation,
   useDeletePropertyUnitsMutation,
   useGetResidentPortalListQuery,
