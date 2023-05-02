@@ -74,7 +74,7 @@ describe('AdaptivePolicyFormDrawer', () => {
     )
 
     // select policy type
-    await userEvent.click(screen.getByRole('radio', { name: /RADIUS/i }))
+    await userEvent.click(await screen.findByRole('radio', { name: /RADIUS/i }))
 
     // add condition
     let addBtns = await screen.findAllByText('Add')
