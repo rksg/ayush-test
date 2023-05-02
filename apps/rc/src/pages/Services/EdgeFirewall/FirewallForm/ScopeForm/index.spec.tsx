@@ -4,9 +4,9 @@ import userEvent              from '@testing-library/user-event'
 import { Form }               from 'antd'
 import { rest }               from 'msw'
 
-import { StepsFormNew } from '@acx-ui/components'
-import { EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }     from '@acx-ui/store'
+import { StepsFormNew }                 from '@acx-ui/components'
+import { CommonUrlsInfo, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                     from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -40,6 +40,10 @@ describe('Scope Form', () => {
             return res(ctx.json(mockEdgeList))
           }
         }
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (req, res, ctx) => res(ctx.json({ data: [] }))
       )
     )
   })
