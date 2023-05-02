@@ -4,10 +4,10 @@ import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { TimeSeriesDataType, getSeriesData }                 from '@acx-ui/analytics/utils'
+import { TimeSeriesDataType, getSeriesData }                  from '@acx-ui/analytics/utils'
 import { Loader, PageHeader, Table, TableProps, Tooltip,
   TrendType, cssStr,  Card, GridCol, GridRow,
-  MultiLineTimeSeriesChart,NoData, Alert, TrendPill, Modal } from '@acx-ui/components'
+  MultiLineTimeSeriesChart,NoData, Alert, TrendPill, Drawer } from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   EditOutlinedIcon,
@@ -27,7 +27,7 @@ export function VideoCallQoeDetails (){
   const intl= useIntl()
   const { $t } = intl
   const { testId } = useParams()
-  const [isModalOpen,setIsModalOpen] = useState(false)
+  const [isDrawerOpen,setIsDrawerOpen] = useState(false)
   const [participantId,setParticipantId] = useState<number|null>(null)
   const [selectedMac,setSelectedMac] = useState<string|null>(null)
   const queryResults = useVideoCallQoeTestDetailsQuery({ testId: Number(testId),status: 'ENDED' })
@@ -56,7 +56,7 @@ export function VideoCallQoeDetails (){
               <EditOutlinedIcon style={{ height: '16px', width: '16px', cursor: 'pointer' }}
                 onClick={()=>{
                   setParticipantId(row.id)
-                  setIsModalOpen(true)
+                  setIsDrawerOpen(true)
                 }}/>
             </Tooltip>
           </Space>
@@ -265,6 +265,20 @@ export function VideoCallQoeDetails (){
     participantNumber: number) =>
     callQoeDetails.meetings.at(0)?.participants.at(participantNumber)?.userName
 
+  const onCancelClientMac = ()=>{
+    setSelectedMac(null)
+    setIsDrawerOpen(false)
+  }
+  const onSelectClientMac = async ()=>{
+    if(participantId && selectedMac){
+      const updatedParticipantId = await updateParticipant({
+        participantId, macAddr: selectedMac }).unwrap()
+      if(updatedParticipantId){
+        queryResults.refetch()
+      }
+    }
+    setIsDrawerOpen(false)
+  }
   return (
     <Loader states={[queryResults]}>
       {callQoeDetails && currentMeeting && <>
@@ -303,39 +317,27 @@ export function VideoCallQoeDetails (){
               showIcon />
           </div>
         }
-        {isModalOpen && <Modal
-          width={400}
-          visible={isModalOpen}
+        {isDrawerOpen && <Drawer
+          visible={isDrawerOpen}
           title={$t({ defaultMessage: 'Select Client MAC' })}
-          okText={$t({ defaultMessage: 'Select' })}
-          onOk={async ()=>{
-            setIsModalOpen(false)
-            // eslint-disable-next-line no-console
-            console.log({
-              participantId,
-              selectedMac
-            })
-            if(participantId && selectedMac){
-              // eslint-disable-next-line react-hooks/rules-of-hooks
-              const updatedParticipantId = await updateParticipant({
-                participantId, macAddr: selectedMac }).unwrap()
-              if(updatedParticipantId){
-                // eslint-disable-next-line no-restricted-globals
-                location.reload()
-              }
-            }
-
+          onClose={()=>{
+            setIsDrawerOpen(false)
           }}
-          onCancel={()=>{
-            setSelectedMac(null)
-            setIsModalOpen(false)
-          }}
+          footer={<Drawer.FormFooter showAddAnother={false}
+            buttonLabel={({
+              save: $t({ defaultMessage: 'Select' })
+            })}
+            onCancel={onCancelClientMac}
+            onSave={onSelectClientMac}
+          />}
         >
           <Table
             rowKey='mac'
             rowSelection={{ type: 'radio', onChange: (keys)=>{
               if(keys.length){
                 setSelectedMac(keys[0] as string)
+              }else{
+                setSelectedMac(null)
               }
             } }}
             showHeader={false}
@@ -378,7 +380,7 @@ export function VideoCallQoeDetails (){
               defaultPageSize: TABLE_DEFAULT_PAGE_SIZE
             }}
           />
-        </Modal>}
+        </Drawer>}
         <Table
           rowKey='id'
           columns={columnHeaders}
