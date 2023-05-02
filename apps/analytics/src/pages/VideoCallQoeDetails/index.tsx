@@ -72,8 +72,8 @@ export function VideoCallQoeDetails (){
     },
     {
       title: $t({ defaultMessage: 'Participant' }),
-      dataIndex: 'userName',
-      key: 'userName',
+      dataIndex: 'User Name',
+      key: 'User Name',
       width: 200
     },
     {
@@ -366,13 +366,58 @@ export function VideoCallQoeDetails (){
             dataSource={[
               {
                 mac: 'A8:64:F1:1A:D0:33',
-                username: 'user1',
-                hostname: 'host1'
+                username: 'User 1',
+                hostname: 'Host 1'
               },
               {
                 mac: 'F0:B3:EC:2A:A8:05',
-                username: 'user2',
-                hostname: 'host2'
+                username: 'User 2',
+                hostname: 'Host 2'
+              },
+              {
+                mac: '0a:0f:36:f5:51:e8',
+                username: 'User 3',
+                hostname: 'Host 3'
+              },
+              {
+                mac: '16:e6:fc:d0:0b:6d',
+                username: 'User 4',
+                hostname: 'Host 4'
+              },
+              {
+                mac: '1c:1b:b5:55:dc:37',
+                username: 'User 5',
+                hostname: 'Host 5'
+              },
+              {
+                mac: '24:0a:64:7b:93:90',
+                username: 'User 6',
+                hostname: 'Host 6'
+              },
+              {
+                mac: '32:58:0d:58:82:ef',
+                username: 'User 7',
+                hostname: 'Host 7'
+              },
+              {
+                mac: '36:a5:57:c9:0c:dc',
+                username: 'User 8',
+                hostname: 'Host 8'
+              },
+              {
+                mac: '3a:ad:db:c0:b9:79',
+                username: 'User 9',
+                hostname: 'Host 9'
+              },
+              {
+                mac: '50:76:af:b4:43:99',
+                username: 'User 10',
+                hostname: 'Host 10'
+              },
+              {
+                mac: '7e:d5:59:87:25:d3',
+                username: 'User 11',
+                hostname: 'Host 11'
               }
             ]}
             pagination={{
