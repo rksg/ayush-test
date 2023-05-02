@@ -18,7 +18,7 @@ interface DrawerHeaderProps {
 }
 
 export interface DrawerProps extends
-  Omit<AntDrawerProps, 'title'|'placement'|'extra'|'footerStyle'>,
+  Omit<AntDrawerProps, 'title'|'placement'|'extra'|'footerStyle'|'maskClosable'>,
   DrawerHeaderProps {}
 
 const Header = (props: DrawerHeaderProps) => {
@@ -42,8 +42,7 @@ export function useCloseOutsideClick (
   footer: ReactNode | undefined
 ) {
   useEffect(() => {
-    if (mask) return
-    if (footer) return
+    if (mask || footer) return
     const handleOutsideClick = (event: MouseEvent) => {
       const target = event.target as HTMLElement
       if (target && ref.current) {

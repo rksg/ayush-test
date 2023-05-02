@@ -272,7 +272,6 @@ export function AlarmsDrawer (props: AlarmsType) {
     onClose={() => {
       setVisible(false)
     }}
-    maskClosable={true}
     mask={true}
     children={alarmList}
   />

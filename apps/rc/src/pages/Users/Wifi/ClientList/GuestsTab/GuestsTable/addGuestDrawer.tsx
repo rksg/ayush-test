@@ -550,7 +550,6 @@ export function AddGuestDrawer (props: AddGuestProps) {
         </Form>
       }
       footer={<FooterDiv>{footer}</FooterDiv>}
-      maskClosable={true}
     />
   )
 }
