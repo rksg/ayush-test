@@ -23,7 +23,7 @@ import {
 } from '@acx-ui/msp/components'
 import { CloudMessageBanner }                                     from '@acx-ui/rc/components'
 import { isDelegationMode }                                       from '@acx-ui/rc/utils'
-import { getBasePath, Outlet, useNavigate, useTenantLink }  from '@acx-ui/react-router-dom'
+import { getBasePath, Outlet, useNavigate, useTenantLink }        from '@acx-ui/react-router-dom'
 import { useParams }                                              from '@acx-ui/react-router-dom'
 import { RolesEnum }                                              from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }                        from '@acx-ui/user'
