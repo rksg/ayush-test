@@ -24,6 +24,11 @@ export interface Response {
   getAllCallQoeTests : VideoCallQoeTest []
 }
 
+export type TestDetails = {
+  name: string
+  link: string
+}
+
 export interface DetailedResponse {
   getAllCallQoeTests : {
     id: number,
