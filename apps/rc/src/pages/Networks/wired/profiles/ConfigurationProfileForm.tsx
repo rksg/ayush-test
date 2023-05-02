@@ -60,10 +60,10 @@ export function ConfigurationProfileForm () {
           content: $t({ defaultMessage:
             'Please select trusted ports in order to make this configuration profile valid' })
         })
-        return false
+        return true
       }
     }
-    return true
+    return false
   }
 
   const updateCurrentData = async (data: Partial<SwitchConfigurationProfile>) => {
@@ -121,7 +121,7 @@ export function ConfigurationProfileForm () {
 
   const handleAddProfile = async () => {
     try {
-      if(!checkTrustedPortEmpty(currentData)){
+      if(checkTrustedPortEmpty(currentData)){
         return false
       }
       await addSwitchConfigProfile({ params, payload: proceedData(currentData) }).unwrap()
@@ -135,7 +135,7 @@ export function ConfigurationProfileForm () {
 
   const handleEditProfile = async () => {
     try {
-      if(!checkTrustedPortEmpty(currentData)){
+      if(checkTrustedPortEmpty(currentData)){
         return false
       }
       await updateSwitchConfigProfile({ params, payload: proceedData(currentData) }).unwrap()
