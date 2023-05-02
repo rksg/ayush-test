@@ -67,7 +67,7 @@ describe('CaptiveNetworkForm-Cloudpath', () => {
       }}
     ><StepsForm><StepsForm.StepForm><CloudpathForm /></StepsForm.StepForm>
       </StepsForm></NetworkFormContext.Provider></Provider>, { route: { params } })
-    const walledGarden = (await screen.findAllByLabelText(/Walled Garden/))[1]
+    const walledGarden = screen.getByTestId('walled-garden-showed-textarea')
     fireEvent.change(walledGarden, { target: { value: '' } })
     fireEvent.blur(walledGarden)
   })
