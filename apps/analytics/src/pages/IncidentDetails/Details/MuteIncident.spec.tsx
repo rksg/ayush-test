@@ -39,8 +39,10 @@ describe('Mute Incident', () => {
     expect(screen.getByRole('switch')).toBeInTheDocument()
   })
   it('should mute and unmute incident correctly', async () => {
-    mockedMuteIncident.mockImplementation(() => Promise.resolve({
-      data: { toggleMute: { success: true, errorCode: '', errorMsg: '' } }
+    mockedMuteIncident.mockImplementation(() => ({
+      unwrap: () => Promise.resolve({
+        toggleMute: { success: true, errorCode: '', errorMsg: '' }
+      })
     }))
     render(
       <Provider><MuteIncident incident={fakeIncident1}/></Provider>,
@@ -60,8 +62,10 @@ describe('Mute Incident', () => {
     })
   })
   it('should handle error correctly', async () => {
-    mockedMuteIncident.mockImplementation(() => Promise.resolve({
-      data: { toggleMute: { success: false, errorCode: '1', errorMsg: 'error' } }
+    mockedMuteIncident.mockImplementation(() => ({
+      unwrap: () => Promise.resolve({
+        toggleMute: { success: false, errorCode: '1', errorMsg: 'error' }
+      })
     }))
     render(
       <Provider><MuteIncident incident={fakeIncident1}/></Provider>,

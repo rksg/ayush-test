@@ -3,15 +3,18 @@ import { useState } from 'react'
 import { Switch }  from 'antd'
 import { useIntl } from 'react-intl'
 
-import { useMuteIncidentsMutation, MutationResponse } from '@acx-ui/analytics/components'
-import { calculateSeverity }                          from '@acx-ui/analytics/utils'
-import { Incident }                                   from '@acx-ui/analytics/utils'
-import { Dropdown, Card, showToast }                  from '@acx-ui/components'
-import { ConfigurationOutlined }                      from '@acx-ui/icons'
-import { TenantLink }                                 from '@acx-ui/react-router-dom'
+import { useMuteIncidentsMutation }  from '@acx-ui/analytics/components'
+import { calculateSeverity }         from '@acx-ui/analytics/utils'
+import { Incident }                  from '@acx-ui/analytics/utils'
+import { Dropdown, Card, showToast } from '@acx-ui/components'
+import { ConfigurationOutlined }     from '@acx-ui/icons'
+import { TenantLink }                from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
+type MuteIncidentResponse = {
+  toggleMute: { success: boolean; errorCode: string; errorMsg: string; }
+}
 function MuteIncident ({ incident } : { incident: Incident }) {
   const { $t } = useIntl()
   const [ isMuted, setIsMuted ] = useState(incident.isMuted)
@@ -25,9 +28,9 @@ function MuteIncident ({ incident } : { incident: Incident }) {
           onChange={async (checked) => {
             setIsMuted(checked)
             const { id, code, severity } = incident
-            const { data: { toggleMute } } = await muteIncident(
+            const { toggleMute } = await muteIncident(
               { id, code, priority: calculateSeverity(severity), mute: checked }
-            ) as unknown as MutationResponse
+            ).unwrap() as unknown as MuteIncidentResponse
             if (toggleMute.success) {
               showToast({
                 type: 'success',
