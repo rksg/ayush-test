@@ -3,7 +3,8 @@ import userEvent from '@testing-library/user-event'
 import { dataApi, dataApiURL, store }       from '@acx-ui/store'
 import { mockGraphqlQuery, screen, within } from '@acx-ui/test-utils'
 
-import { mockNetworkHierarchy, renderForm } from '../../../__tests__/fixtures'
+import { mockNetworkHierarchy, mockHiddenAPs, renderForm } from '../../../__tests__/fixtures'
+import { ClientType }                                      from '../../../types'
 
 import { APsSelection } from './APsSelection'
 
@@ -12,11 +13,11 @@ const { click, type } = userEvent
 describe('APsSelection', () => {
   beforeEach(() => {
     store.dispatch(dataApi.util.resetApiState())
-    mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', { data: mockNetworkHierarchy })
+    mockGraphqlQuery(dataApiURL, 'RecentNetworkHierarchy', { data: mockNetworkHierarchy })
   })
 
   it('supports select AP from venue', async () => {
-    renderForm(<APsSelection />)
+    renderForm(<APsSelection />, { initialValues: { clientType: ClientType.VirtualClient } })
 
     expect(await screen.findByRole('menu')).toBeInTheDocument()
 
@@ -32,7 +33,7 @@ describe('APsSelection', () => {
   })
 
   it('supports select partial of APs from venue', async () => {
-    renderForm(<APsSelection />)
+    renderForm(<APsSelection />, { initialValues: { clientType: ClientType.VirtualClient } })
 
     expect(await screen.findByRole('menu')).toBeInTheDocument()
 
@@ -50,7 +51,7 @@ describe('APsSelection', () => {
   })
 
   it('can search for AP', async () => {
-    renderForm(<APsSelection />)
+    renderForm(<APsSelection />, { initialValues: { clientType: ClientType.VirtualClient } })
 
     expect(await screen.findByRole('menu')).toBeInTheDocument()
 
@@ -77,13 +78,42 @@ describe('APsSelection', () => {
       { type: 'apMac', list: ['00:00:00:00:00:02'] }
     ]))
   })
+
+  it('should hide unsupport APs when ClientType.VirtualClient', async () => {
+    mockGraphqlQuery(
+      dataApiURL, 'RecentNetworkHierarchy', { data: mockHiddenAPs })
+    renderForm(<APsSelection />, { initialValues: { clientType: ClientType.VirtualClient } })
+
+    expect(await screen.findByRole('menu')).toBeInTheDocument()
+
+    await click(await screen.findByRole('menuitemcheckbox', { name: 'Venue 1' }))
+    await click(await screen.findByRole('menuitemcheckbox', { name: 'APs' }))
+    expect(screen.queryByRole('menuitemcheckbox', { name: 'AP 1' })).toBeNull()
+    expect(screen.queryByRole('menuitemcheckbox', { name: 'AP 2' })).toBeNull()
+    expect(screen.queryByRole('menuitemcheckbox', { name: 'AP 3' })).toBeValid()
+  })
+
+  it('should hide unsupport APs when ClientType.VirtualWirelessClient', async () => {
+    mockGraphqlQuery(
+      dataApiURL, 'RecentNetworkHierarchy', { data: mockHiddenAPs })
+    renderForm(<APsSelection />,
+      { initialValues: { clientType: ClientType.VirtualWirelessClient } })
+
+    expect(await screen.findByRole('menu')).toBeInTheDocument()
+
+    await click(await screen.findByRole('menuitemcheckbox', { name: 'Venue 1' }))
+    await click(await screen.findByRole('menuitemcheckbox', { name: 'APs' }))
+    expect(screen.queryByRole('menuitemcheckbox', { name: 'AP 1' })).toBeValid()
+    expect(screen.queryByRole('menuitemcheckbox', { name: 'AP 2' })).toBeNull()
+    expect(screen.queryByRole('menuitemcheckbox', { name: 'AP 3' })).toBeValid()
+  })
 })
 
 describe('APsSelection.FieldSummary', () => {
   beforeEach(() => store.dispatch(dataApi.util.resetApiState()))
 
   it('renders selected APs in Venues', async () => {
-    mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', { data: mockNetworkHierarchy })
+    mockGraphqlQuery(dataApiURL, 'RecentNetworkHierarchy', { data: mockNetworkHierarchy })
 
     renderForm(<APsSelection.FieldSummary />, {
       initialValues: {
