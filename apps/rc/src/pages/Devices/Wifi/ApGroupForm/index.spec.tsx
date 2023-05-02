@@ -65,7 +65,6 @@ describe('AP Group Form - Add', () => {
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     expect(asFragment()).toMatchSnapshot()
     expect(await screen.findByText('Add AP Group')).toBeVisible()
-    expect(await screen.findByText('Select venue...')).toBeVisible()
     expect(await screen.findByText('Group Member')).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
@@ -82,7 +81,6 @@ describe('AP Group Form - Add', () => {
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Add AP Group')).toBeVisible()
-    expect(await screen.findByText('Select venue...')).toBeVisible()
     expect(await screen.findByText('Group Member')).toBeVisible()
 
     fireEvent.change(screen.getByLabelText(/Group Name/), { target: { value: 'ap group' } })

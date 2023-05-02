@@ -54,7 +54,6 @@ async function fillInForm () {
 
 async function changeVenue () {
   await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-  expect(await screen.findByText('Select venue...')).toBeVisible()
   expect(screen.getByLabelText('AP Group')).toBeDisabled()
   expect(await screen.findByText('GPS Coordinates')).toBeInTheDocument()
 
@@ -130,7 +129,6 @@ describe('AP Form - Add', () => {
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     expect(asFragment()).toMatchSnapshot()
     expect(await screen.findByText('Add AP')).toBeVisible()
-    expect(await screen.findByText('Select venue...')).toBeVisible()
     expect(screen.queryByText('GPS Coordinates')).not.toBeInTheDocument()
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({

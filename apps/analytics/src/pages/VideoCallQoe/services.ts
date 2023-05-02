@@ -1,26 +1,13 @@
-import { gql } from 'graphql-request'
+import { useCallback } from 'react'
+
+import { gql }           from 'graphql-request'
+import { ValidatorRule } from 'rc-field-form/lib/interface'
+import { useIntl }       from 'react-intl'
 
 import { videoCallQoeApi } from '@acx-ui/store'
-import { TimeStamp }       from '@acx-ui/types'
 
-export interface Response {
-  getAllCallQoeTests : {
-    id: number,
-    name: string,
-    meetings:
-    {
-      id:number,
-      zoomMeetingId: number,
-      status: string,
-      invalidReason: string,
-      joinUrl:string,
-      participantCount:number,
-      mos:number,
-      createdTime: TimeStamp,
-      startTime: TimeStamp
-    } []
-  } []
-}
+import { messageMapping }             from './contents'
+import { Response, VideoCallQoeTest } from './types'
 
 export const api = videoCallQoeApi.injectEndpoints({
   endpoints: (build) => ({
@@ -46,11 +33,60 @@ export const api = videoCallQoeApi.injectEndpoints({
           }
           `
       }),
+      providesTags: [{ type: 'VideoCallQoe', id: 'LIST' }],
       transformResponse: (response: Response) => {
         return response
       }
+    }),
+    createCallQoeTest: build.mutation<VideoCallQoeTest, { name: string }>({
+      query: (variables) => ({
+        variables,
+        document: gql`mutation CreateVideoCallQoeTest ($name: String!) {
+          createCallQoeTest (name: $name)
+          { 
+            id,
+            name,
+            meetings {
+              zoomMeetingId,
+              joinUrl
+            }
+          }
+        }`
+      }),
+      invalidatesTags: [{ type: 'VideoCallQoe', id: 'LIST' }],
+      transformResponse: (response: { createCallQoeTest: VideoCallQoeTest }) =>
+        response.createCallQoeTest
+    }),
+    deleteCallQoeTest: build.mutation<boolean, { id: number }>({
+      query: (variables) => ({
+        variables,
+        document: gql`mutation DeleteVideoCallQoeTest ($id : Int!)
+        {
+          deleteCallQoeTest(id: $id)
+        }`
+      }),
+      invalidatesTags: [{ type: 'VideoCallQoe', id: 'LIST' }],
+      transformResponse: (response: { deleteCallQoeTest : boolean }) => response.deleteCallQoeTest
     })
   })
 })
 
-export const { useVideoCallQoeTestsQuery } = api
+export const {
+  useVideoCallQoeTestsQuery,
+  useLazyVideoCallQoeTestsQuery,
+  useCreateCallQoeTestMutation,
+  useDeleteCallQoeTestMutation
+} = api
+
+export function useDuplicateNameValidator () {
+  const { $t } = useIntl()
+  const [submit] = useLazyVideoCallQoeTestsQuery()
+  const validator: ValidatorRule['validator'] = useCallback(async (rule, value: string) => {
+    const videoCallQoeTests = await submit({}).unwrap()
+    const testNames = videoCallQoeTests.getAllCallQoeTests.map(test => test.name)
+    if (!testNames.includes(value)) return
+
+    throw new Error($t(messageMapping.DUPLICATE_NAME_NOT_ALLOWED))
+  }, [$t, submit])
+  return validator
+}

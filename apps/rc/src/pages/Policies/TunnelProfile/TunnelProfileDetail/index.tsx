@@ -115,7 +115,7 @@ const TunnelProfileDetail = () => {
                 )}
               </Typography.Title>
             </UI.InstancesMargin>
-            <NetworkTable networkIds={tunnelProfileData.networkIds || ['']} />
+            <NetworkTable networkIds={tunnelProfileData.networkIds || []} />
           </Card>
         </Space>
       </Loader>

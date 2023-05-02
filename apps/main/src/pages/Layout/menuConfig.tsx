@@ -36,6 +36,7 @@ export function useMenuConfig () {
   const isEdgeEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
   const isServiceEnabled = useIsSplitOn(Features.SERVICES)
   const isPolicyEnabled = useIsSplitOn(Features.POLICIES)
+  const isCloudMoteEnabled = useIsSplitOn(Features.CLOUDMOTE_SERVICE)
   const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
   const isPersonaEnabled = useIsSplitOn(Features.PERSONA)
   const isMacRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
@@ -313,6 +314,10 @@ export function useMenuConfig () {
               uri: '/administration/fwVersionMgmt',
               label: $t({ defaultMessage: 'Firmware Version Management' })
             },
+            ...(isCloudMoteEnabled ? [{
+              uri: '/administration/onpremMigration',
+              label: $t({ defaultMessage: 'ZD Migration' })
+            }] : []),
             ...(isRadiusClientEnabled ? [{
               uri: '/administration/localRadiusServer',
               label: $t({ defaultMessage: 'Local RADIUS Server' })

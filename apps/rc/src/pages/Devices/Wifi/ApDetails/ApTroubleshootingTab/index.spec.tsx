@@ -7,7 +7,8 @@ import { ApTroubleshootingTab } from '.'
 
 
 const params = { serialNumber: 'ap-id', tenantId: 'tenant-id' }
-jest.mock('../ApContext', () => ({
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
   useApContext: () => params
 }))
 const mockedUsedNavigate = jest.fn()

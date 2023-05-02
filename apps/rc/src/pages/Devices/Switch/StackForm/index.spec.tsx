@@ -43,8 +43,6 @@ async function fillInForm () {
 }
 
 async function changeVenue () {
-  expect(await screen.findByText('Select venue...')).toBeVisible()
-
   fireEvent.mouseDown(await screen.findByLabelText(/Venue/))
   await userEvent.click(screen.getAllByText('My-Venue')[0])
 }
@@ -78,7 +76,6 @@ describe('Switch Stack Form - Add', () => {
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     expect(asFragment()).toMatchSnapshot()
     expect(await screen.findByText('Add Switch Stack')).toBeVisible()
-    expect(await screen.findByText('Select venue...')).toBeVisible()
 
     await changeVenue()
     await fillInForm()

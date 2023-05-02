@@ -4,6 +4,7 @@ import { useStreamActivityMessagesQuery }    from '@acx-ui/rc/services'
 import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 
 import Administration    from './pages/Administration'
+import MigrationForm     from './pages/Administration/OnpremMigration/MigrationForm/MigrationForm'
 import AnalyticsBase     from './pages/Analytics'
 import Dashboard         from './pages/Dashboard'
 import Dashboardv2       from './pages/Dashboardv2'
@@ -118,6 +119,7 @@ function AdministrationRoutes () {
         element={<TenantNavigate replace to='/administration/accountSettings' />}
       />
       <Route path=':activeTab' element={<Administration />} />
+      <Route path='onpremMigration/add' element={<MigrationForm />} />
 
     </Route>
   )
