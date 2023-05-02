@@ -114,6 +114,9 @@ function AccessPointLanPortSelector (props: { venueId: string }) {
           { defaultMessage: 'Select LAN Ports for ({model})' },
           { model: selectedModel?.model ?? noDataDisplay }
         )}
+        rules={[
+          { required: !!accessAp, message: $t({ defaultMessage: 'Please select the LAN ports' }) }
+        ]}
       >
         {selectedModel.lanPorts &&
           <Checkbox.Group >
