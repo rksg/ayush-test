@@ -15,8 +15,6 @@ export const sessionMapping: { [key: string]: number } = {
   minutes: 10080
 }
 
-const { Option } = Select
-
 async function validateAgeTimeValue (value: number, ageTimeUnit: string) {
   const { $t } = getIntl()
   if (value < (ageTimeUnit === 'minutes' ? 5 : 1) || value > sessionMapping[ageTimeUnit]) {
