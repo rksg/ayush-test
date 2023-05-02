@@ -72,8 +72,8 @@ export function VideoCallQoeDetails (){
     },
     {
       title: $t({ defaultMessage: 'Participant' }),
-      dataIndex: 'User Name',
-      key: 'User Name',
+      dataIndex: 'userName',
+      key: 'userName',
       width: 200
     },
     {
@@ -346,17 +346,17 @@ export function VideoCallQoeDetails (){
                 dataIndex: 'mac',
                 key: 'mac',
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                render: (mac:unknown, row:any)=>{
+                render: (value:unknown, row:any)=>{
                   return <>
                     <GridRow>
-                      <GridCol col={{ span: 24 }}><strong>{mac as string}</strong></GridCol>
+                      <GridCol col={{ span: 24 }}><strong>{value as string}</strong></GridCol>
                     </GridRow>
                     <GridRow>
-                      <GridCol col={{ span: 12 }}>Username:</GridCol>
+                      <GridCol col={{ span: 12 }}>{$t({ defaultMessage: 'Username' })}:</GridCol>
                       <GridCol col={{ span: 12 }}>{row.username}</GridCol>
                     </GridRow>
                     <GridRow>
-                      <GridCol col={{ span: 12 }}>Hostname:</GridCol>
+                      <GridCol col={{ span: 12 }}>{$t({ defaultMessage: 'Hostname' })}:</GridCol>
                       <GridCol col={{ span: 12 }}>{row.hostname}</GridCol>
                     </GridRow>
                   </>
