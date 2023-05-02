@@ -10,9 +10,13 @@ export class PdfGeneratorService {
     this.printArea = document.querySelector('#printArea')
     this.bodyElement.classList.add('body-print')
     document.getElementById('root')?.classList.add('not-printable')
-    const elements = document.getElementsByClassName('ant-message')
-    for (let i = 0; i < elements.length; i++) {
-      elements[i].classList.add('not-printable')
+    const elements1 = document.getElementsByClassName('ant-message')
+    for (let i = 0; i < elements1.length; i++) {
+      elements1[i].classList.add('not-printable')
+    }
+    const elements2 = document.getElementsByClassName('ant-drawer')
+    for (let i = 0; i < elements2.length; i++) {
+      elements2[i].classList.add('not-printable')
     }
   }
 
@@ -30,9 +34,13 @@ export class PdfGeneratorService {
     }
     this.bodyElement.classList.remove('body-print')
     document.getElementById('root')?.classList.remove('not-printable')
-    const elements = document.getElementsByClassName('ant-message')
-    for (let i = 0; i < elements.length; i++) {
-      elements[i].classList.remove('not-printable')
+    const elements1 = document.getElementsByClassName('ant-message')
+    for (let i = 0; i < elements1.length; i++) {
+      elements1[i].classList.remove('not-printable')
+    }
+    const elements2 = document.getElementsByClassName('ant-drawer')
+    for (let i = 0; i < elements2.length; i++) {
+      elements2[i].classList.remove('not-printable')
     }
   }
 

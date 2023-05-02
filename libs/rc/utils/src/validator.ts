@@ -737,7 +737,8 @@ export function validateSwitchStaticRouteNextHop (ipAddress: string) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len
   const nextHopRegexp = new RegExp(/^((1\.){3}([1-9]|[1-9]\d|[12]\d\d)|(1\.){2}([2-9]|[1-9]\d|[12]\d\d)\.([1-9]?\d|[12]\d\d)|1\.([2-9]|[1-9]\d|[12]\d\d)(\.([1-9]?\d|[12]\d\d)){2}|([2-9]|[1-9]\d|1\d\d|2[01]\d|22[0-3])(\.([1-9]?\d|[12]\d\d)){3})$/)
-  if (!nextHopRegexp.test(ipAddress)) {
+  // Next Hop accept "0.0.0.0".
+  if (!nextHopRegexp.test(ipAddress) && ipAddress !== '0.0.0.0') {
     return Promise.reject($t(validationMessages.switchStaticRouteNextHopInvalid))
   }
   return Promise.resolve()
