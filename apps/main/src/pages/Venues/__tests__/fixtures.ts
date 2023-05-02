@@ -1514,6 +1514,20 @@ export const mockDirectedMulticast = {
   networkEnabled: true
 }
 
+export const mockRadiusOptions = {
+  radiusOptions: {
+    overrideEnabled: false,
+    nasIdType: 'BSSID',
+    nasRequestTimeoutSec: 3,
+    nasMaxRetry: 2,
+    nasReconnectPrimaryMin: 5,
+    calledStationIdType: 'BSSID',
+    nasIdDelimiter: 'DASH',
+    userDefinedNasId: '',
+    singleSessionIdAccounting: false
+  }
+}
+
 export const mockLoadBalabcing = {
   enabled: true,
   loadBalancingMethod: 'BASED_ON_CLIENT_COUNT',

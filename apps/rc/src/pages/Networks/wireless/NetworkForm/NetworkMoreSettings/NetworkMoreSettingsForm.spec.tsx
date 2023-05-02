@@ -4,12 +4,13 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, NetworkSaveData }    from '@acx-ui/rc/utils'
-import { Provider }                           from '@acx-ui/store'
-import { mockServer, within, render, screen } from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { Provider }                                                               from '@acx-ui/store'
+import { mockServer, within, render, screen }                                     from '@acx-ui/test-utils'
 
 import { externalProviders, policyListResponse } from '../__tests__/fixtures'
+import { hasAuthRadius }                         from '../utils'
 
 import { MoreSettingsForm, NetworkMoreSettingsForm } from './NetworkMoreSettingsForm'
 
@@ -222,6 +223,79 @@ describe('NetworkMoreSettingsForm', () => {
     await userEvent.click(screen.getByText(/none/i))
     await userEvent.click(screen.getByText(/5.5 Mbps/i))
     expect(within(mgmtTxRateSelect).getByText(/5.5 mbps/i)).toBeVisible()
+  })
+
+  it('Test network types for show the RADIUS Options settings', async () => {
+    // AAA network type
+    const aaaData = { type: NetworkTypeEnum.AAA }
+    const aaaWlanData = { }
+    expect(hasAuthRadius(aaaData, aaaWlanData)).toBeTruthy()
+
+    // open/psk network type
+    const openData = { type: NetworkTypeEnum.OPEN }
+    const pskData = { type: NetworkTypeEnum.PSK }
+    let wlanData = {
+      wlan: {
+        macAddressAuthentication: true,
+        isMacRegistrationList: true
+      }
+    }
+    expect(hasAuthRadius(openData, wlanData)).toBeFalsy()
+    expect(hasAuthRadius(pskData, wlanData)).toBeFalsy()
+
+    wlanData = {
+      wlan: {
+        macAddressAuthentication: false,
+        isMacRegistrationList: false
+      }
+    }
+    expect(hasAuthRadius(openData, wlanData)).toBeFalsy()
+    expect(hasAuthRadius(pskData, wlanData)).toBeFalsy()
+
+    wlanData = {
+      wlan: {
+        macAddressAuthentication: true,
+        isMacRegistrationList: false
+      }
+    }
+    expect(hasAuthRadius(openData, wlanData)).toBeTruthy()
+    expect(hasAuthRadius(pskData, wlanData)).toBeTruthy()
+
+    // dpsk network type
+    const dpskData = { type: NetworkTypeEnum.DPSK }
+    let dpskWlanData = { isCloudpathEnabled: true }
+    expect(hasAuthRadius(dpskData, dpskWlanData)).toBeTruthy()
+    dpskWlanData = { isCloudpathEnabled: false }
+    expect(hasAuthRadius(dpskData, dpskWlanData)).toBeFalsy()
+
+    // captive portal network type
+    let guestData = {
+      type: NetworkTypeEnum.CAPTIVEPORTAL,
+      guestPortal: {
+        guestNetworkType: GuestNetworkTypeEnum.Cloudpath
+      }
+    }
+    expect(hasAuthRadius(guestData, {})).toBeTruthy()
+
+    guestData = {
+      type: NetworkTypeEnum.CAPTIVEPORTAL,
+      guestPortal: {
+        guestNetworkType: GuestNetworkTypeEnum.WISPr
+      }
+    }
+    expect(hasAuthRadius(guestData, {})).toBeFalsy()
+
+    const guestWlanData = {
+      guestPortal: {
+        wisprPage: {
+          customExternalProvider: true
+        }
+      }
+    }
+
+    expect(hasAuthRadius(guestData, guestWlanData)).toBeTruthy()
+
+    expect(hasAuthRadius({ }, {})).toBeFalsy()
   })
 })
 

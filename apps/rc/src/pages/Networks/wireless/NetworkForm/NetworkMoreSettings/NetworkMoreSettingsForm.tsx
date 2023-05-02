@@ -630,7 +630,7 @@ export function MoreSettingsForm (props: {
             </div>
           </>}
       </Panel>
-      {showRadiusOptions && <Panel header={$t({ defaultMessage: 'RADIUS Options' })} key='5'>
+      {showRadiusOptions && <Panel header={$t({ defaultMessage: 'RADIUS Options' })} key='4'>
         <RadiusOptionsForm context='network'
           showSingleSessionIdAccounting={showSingleSessionIdAccounting} />
       </Panel>

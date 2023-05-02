@@ -25,6 +25,13 @@ export const hasAuthRadius = (data: NetworkSaveData | null, wlanData: any) => {
       if (guestPortal?.guestNetworkType === GuestNetworkTypeEnum.Cloudpath) {
         return true
       }
+
+      if  (guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr) {
+        const wisprPage = wlanData?.guestPortal?.wisprPage
+        if (wisprPage?.customExternalProvider === true) {
+          return true
+        }
+      }
       return false
 
     default:
