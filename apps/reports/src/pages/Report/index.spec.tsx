@@ -28,7 +28,7 @@ describe('Report', () => {
   it('should render the report without Header', async () => {
     render(
       <Provider>
-        <Report type={ReportType.ACCESS_POINT} withHeader={false}/>
+        <Report type={ReportType.OVERVIEW} withHeader={false}/>
       </Provider>, { route: { params } })
     expect(await screen.findByTestId('reportPage')).toBeTruthy()
     expect(screen.queryByTestId('reportHeader')).toBeFalsy()

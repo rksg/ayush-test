@@ -144,7 +144,6 @@ const ActivityTable = ({
       key: 'description',
       title: $t({ defaultMessage: 'Description' }),
       dataIndex: 'description',
-      sorter: true,
       render: function (_, row) {
         return getActivityDescription(row.descriptionTemplate, row.descriptionData)
       }
@@ -195,7 +194,8 @@ const ActivityTable = ({
       visible={visible}
       onClose={()=>setVisible(false)}
       data={getDrawerData(current)}
-      timeLine={current.steps}
+      width={464}
+      activity={current}
     /> }
   </Loader>
 }
