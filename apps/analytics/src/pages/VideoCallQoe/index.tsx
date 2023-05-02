@@ -20,9 +20,8 @@ function VideoCallQoeListPage () {
     return <span>{ $t({ defaultMessage: 'Video Call QoE is not enabled' }) }</span>
   }
 
-  const isNotStartedCall = queryResults.data?.getAllCallQoeTests
+  const isCallNotStarted = queryResults.data?.getAllCallQoeTests
     ?.every(test => test.meetings[0].status !== 'NOT_STARTED')
-
 
   return (
     <>
@@ -32,7 +31,7 @@ function VideoCallQoeListPage () {
           {$t({ defaultMessage: 'Total Test Calls:' })} {noOfTestCalls}
         </Loader>}
         extra={[
-          isNotStartedCall ?
+          isCallNotStarted ?
             <TenantLink to='/serviceValidation/videoCallQoe/add'>
               <Button type='primary'>{$t({ defaultMessage: 'Create Test Call' })}</Button>
             </TenantLink>
