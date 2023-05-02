@@ -68,6 +68,8 @@ export function SecurityTab () {
   const { data: venueRogueApData } = useGetVenueRogueApQuery({ params })
 
   const [roguePolicyIdValue, setRoguePolicyIdValue] = useState('')
+  const [triggerDoSProtection, setTriggerDoSProtection] = useState(false)
+  const [triggerRogueAPDetection, setTriggerRogueAPDetection] = useState(false)
   const [rogueDrawerVisible, setRogueDrawerVisible] = useState(false)
 
   const { selectOptions, selected } = useGetRoguePolicyListQuery({ params },{
@@ -133,20 +135,24 @@ export function SecurityTab () {
 
   const handleUpdateSecuritySettings = async (data?: SecuritySetting) => {
     try {
-      const dosProtectionPayload = {
-        enabled: data?.dosProtectionEnabled,
-        blockingPeriod: data?.blockingPeriod,
-        checkPeriod: data?.checkPeriod,
-        failThreshold: data?.failThreshold
+      if(triggerDoSProtection){
+        const dosProtectionPayload = {
+          enabled: data?.dosProtectionEnabled,
+          blockingPeriod: data?.blockingPeriod,
+          checkPeriod: data?.checkPeriod,
+          failThreshold: data?.failThreshold
+        }
+        await updateDenialOfServiceProtection({ params, payload: dosProtectionPayload })
       }
-      await updateDenialOfServiceProtection({ params, payload: dosProtectionPayload })
 
-      const rogueApPayload = {
-        enabled: data?.rogueApEnabled,
-        reportThreshold: data?.reportThreshold,
-        roguePolicyId: data?.roguePolicyId
+      if(triggerRogueAPDetection){
+        const rogueApPayload = {
+          enabled: data?.rogueApEnabled,
+          reportThreshold: data?.reportThreshold,
+          roguePolicyId: data?.roguePolicyId
+        }
+        await updateVenueRogueAp({ params, payload: rogueApPayload })
       }
-      await updateVenueRogueAp({ params, payload: rogueApPayload })
 
       setEditContextData({
         ...editContextData,
@@ -188,7 +194,8 @@ export function SecurityTab () {
             name='dosProtectionEnabled'
             label={$t({ defaultMessage: 'DoS Protection:' })}
             initialValue={false}
-            switchStyle={{ marginLeft: '78.5px' }}>
+            switchStyle={{ marginLeft: '78.5px' }}
+            triggerDirtyFunc={setTriggerDoSProtection}>
             <FormattedMessage
               defaultMessage={`
               Block a client for <blockingPeriod></blockingPeriod> seconds
@@ -247,7 +254,8 @@ export function SecurityTab () {
             name='rogueApEnabled'
             label={$t({ defaultMessage: 'Rogue AP Detection:' })}
             initialValue={false}
-            switchStyle={{}}>
+            switchStyle={{}}
+            triggerDirtyFunc={setTriggerRogueAPDetection}>
             <Form.Item
               label={<>
                 {$t({ defaultMessage: 'Report SNR Threshold:' })}
@@ -308,10 +316,19 @@ const FieldsetItem = ({
   children,
   label,
   switchStyle,
+  triggerDirtyFunc,
   ...props
-}: FormItemProps & { label: string, children: ReactNode, switchStyle: CSSProperties }) => <Form.Item
+}: FormItemProps &
+  { label: string,
+    children: ReactNode,
+    switchStyle: CSSProperties,
+    triggerDirtyFunc: (checked: boolean) => void
+  }) => <Form.Item
   {...props}
   valuePropName='checked'
 >
-  <Fieldset {...{ label, children }} switchStyle={switchStyle}/>
+  <Fieldset
+    {...{ label, children }}
+    switchStyle={switchStyle}
+    onChange={() => triggerDirtyFunc(true)}/>
 </Form.Item>
