@@ -48,6 +48,8 @@ function Layout () {
   const showHomeButton =
     isDelegationMode() || userProfile?.var || tenantType === AccountType.MSP_NON_VAR ||
     tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
+  const isBackToRC = (PverName.ACX === getJwtTokenPayload().pver ||
+    PverName.ACX_HYBRID === getJwtTokenPayload().pver)
   const [isShown, setIsShown] = useState<boolean | null>(null)
 
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
@@ -79,13 +81,19 @@ function Layout () {
         </>
       }
       leftHeaderContent={<>
-        { showHomeButton &&
+        { showHomeButton && (isBackToRC ?
+          <a href={`/api/ui/v/${getJwtTokenPayload().tenantId}`}>
+            <UI.Home>
+              <LayoutUI.Icon children={<HomeSolid />} />
+              {$t({ defaultMessage: 'Home' })}
+            </UI.Home>
+          </a> :
           <a href={`${getBasePath()}/v/${getJwtTokenPayload().tenantId}`}>
             <UI.Home>
               <LayoutUI.Icon children={<HomeSolid />} />
               {$t({ defaultMessage: 'Home' })}
             </UI.Home>
-          </a>
+          </a>)
         }
         <RegionButton/>
         <HeaderContext.Provider value={{
