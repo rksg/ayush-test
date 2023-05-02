@@ -79,15 +79,15 @@ export const getGroupableConfig = (
     actions: [
       {
         key: 'edit',
-        renderer: (record: APExtended) => (
-          <TenantLink to={`devices/apgroups/${record.deviceGroupId}/edit`}>
+        renderer: (record: APExtended) => record.deviceGroupName
+          ? <TenantLink to={`devices/apgroups/${record.deviceGroupId}/edit`}>
             {$t(defineMessage({ defaultMessage: 'Edit' }))}
           </TenantLink>
-        )
+          : <span></span>
       }, {
         key: 'delete',
-        renderer: (record: APExtended) => (
-          <Button
+        renderer: (record: APExtended) => record.deviceGroupName
+          ? <Button
             style={{
               padding: '0px',
               margin: '0px',
@@ -102,15 +102,16 @@ export const getGroupableConfig = (
           >
             {$t(defineMessage({ defaultMessage: 'Delete' }))}
           </Button>
-        )
+          : <span></span>
+
       }
     ],
     attributes: [
       {
         key: 'AP Group',
-        renderer: (record: APExtended) => (
-          <div style={{ fontStyle: 'bold' }}>{record.deviceGroupName}</div>
-        )
+        renderer: (record: APExtended) => record.deviceGroupName
+          ? <div style={{ fontStyle: 'bold' }}>{record.deviceGroupName}</div>
+          : $t({ defaultMessage: 'Ungrouped APs' })
       },
       ...commonAttributes($t)
     ]

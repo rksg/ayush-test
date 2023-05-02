@@ -39,7 +39,7 @@ export function VideoCallQoeTable () {
 
   const columnHeaders: TableProps<Meeting>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Name' }),
+      title: $t({ defaultMessage: 'Test Call Name' }),
       dataIndex: 'name',
       key: 'name',
       searchable: true,
