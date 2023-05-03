@@ -13,6 +13,8 @@ export interface CreateResidentPortalFormFields {
   colorAccent: string;
   colorSeparator: string;
   colorText: string;
+  fileLogo: any;
+  fileFavicon: any;
 }
 
 export function transferSaveDataToFormFields (data: ResidentPortal):CreateResidentPortalFormFields {
@@ -29,7 +31,10 @@ export function transferSaveDataToFormFields (data: ResidentPortal):CreateReside
       data.uiConfiguration.color.accentColor : '',
     colorSeparator: data.uiConfiguration?.color?.separatorColor ? 
       data.uiConfiguration.color.separatorColor : '',
-    colorText: data.uiConfiguration?.color?.textColor ? data.uiConfiguration.color.textColor : ''
+    colorText: data.uiConfiguration?.color?.textColor ? data.uiConfiguration.color.textColor : '',
+
+    fileLogo: undefined,
+    fileFavicon: undefined
   } : {
     textTitle: '',
     textSubtitle: '',
@@ -40,7 +45,10 @@ export function transferSaveDataToFormFields (data: ResidentPortal):CreateReside
     colorMain: '',
     colorAccent: '',
     colorSeparator: '',
-    colorText: ''
+    colorText: '',
+
+    fileLogo: undefined,
+    fileFavicon: undefined
   }
 
   return {
@@ -69,6 +77,10 @@ export function transferFormFieldsToSaveData (data: CreateResidentPortalFormFiel
         accentColor: data.colorAccent,
         separatorColor: data.colorSeparator,
         textColor: data.colorText
+      },
+      files: {
+        logoFileName: data.fileLogo ? data.fileLogo.file.name : undefined,
+        favIconFileName: data.fileFavicon ? data.fileFavicon.file.name : undefined
       }
     }
   }

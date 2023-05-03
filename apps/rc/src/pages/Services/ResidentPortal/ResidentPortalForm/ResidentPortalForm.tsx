@@ -64,6 +64,9 @@ export default function ResidentPortalForm (props: ResidentPortalFormProps) {
 
   const saveData = async (data: CreateResidentPortalFormFields) => {
 
+    // TODO: remove
+    console.log("Form Submission data:", data)
+
     const residentPortalSaveData = transferFormFieldsToSaveData(data)
 
     try {
@@ -73,9 +76,22 @@ export default function ResidentPortalForm (props: ResidentPortalFormProps) {
 
       if (editMode) {
         formData.append('changes', portalConfiguration, '')
+        if(data.fileLogo) {
+          formData.append('logo', data.fileLogo.file)
+        }
+        if(data.fileFavicon) {
+          formData.append('favIcon', data.fileFavicon.file)
+        }
         await updateResidentPortal({ params, payload: formData }).unwrap()
       } else {
         formData.append('portal', portalConfiguration, '')
+        
+        if(data.fileLogo) {
+          formData.append('logo', data.fileLogo.file)
+        }
+        if(data.fileFavicon) {
+          formData.append('favIcon', data.fileFavicon.file)
+        }
         await addResidentPortal({ payload: formData }).unwrap()
       }
 
@@ -102,12 +118,12 @@ export default function ResidentPortalForm (props: ResidentPortalFormProps) {
         ]}
       />
       <Loader states={[{ isLoading, isFetching }]}>
-        <StepsForm<CreateResidentPortalFormFields>
+        <StepsForm
           formRef={formRef}
           onCancel={() => navigate(linkToServices)}
-          onFinish={saveData}
+          onFinish={saveData as any}
         >
-          <StepsForm.StepForm<CreateResidentPortalFormFields>
+          <StepsForm.StepForm
             name='details'
             title={$t({ defaultMessage: 'Settings' })}
             initialValues={initialValues}

@@ -1,6 +1,7 @@
 import {
   Form,
-  Input
+  Input,
+  Upload
 } from 'antd'
 import TextArea from 'antd/lib/input/TextArea'
 
@@ -9,7 +10,8 @@ import { useLazyGetResidentPortalListQuery }     from '@acx-ui/rc/services'
 import { checkObjectNotExists }                  from '@acx-ui/rc/utils'
 import { getIntl }                               from '@acx-ui/utils'
 import { ColorPickerInput } from './ColorPickerInput'
-
+import { PlusCircleOutlined } from '@acx-ui/icons'
+import ImageInput from './ResidentPortalImageUpload'
 
 export default function ResidentPortalSettingsForm () {
   const intl = getIntl()
@@ -29,6 +31,7 @@ export default function ResidentPortalSettingsForm () {
       intl.$t({ defaultMessage: 'Resident Portal' }))
   }
 
+  // Render ////////////////////
   return (<GridRow>
     <GridCol col={{ span: 6 }}>
       <StepsForm.Title>{intl.$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
@@ -139,6 +142,11 @@ export default function ResidentPortalSettingsForm () {
           // @ts-ignore
         <ColorPickerInput defaultColorHex='#54585A' colorName={intl.$t({ defaultMessage: 'Text Color' })} />}
         />
+      
+        {/* TODO: figure out how to load the existing image when editing */}
+        
+      <ImageInput formItemProps={{name:'fileLogo', label: intl.$t({ defaultMessage: 'Logo' })}} />
+      <ImageInput formItemProps={{name:'fileFavicon', label: intl.$t({ defaultMessage: 'Favicon' })}} />
     </GridCol>
   </GridRow>)
 }
