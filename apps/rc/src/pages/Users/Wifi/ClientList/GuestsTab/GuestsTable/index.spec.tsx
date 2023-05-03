@@ -72,7 +72,7 @@ describe('Guest Table', () => {
       <Provider>
         <GuestsTable dateFilter={mockDateFilter} />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/wifi/guests' }
+        route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
     await screen.findByText('test1')
     jest.useRealTimers()
@@ -84,7 +84,7 @@ describe('Guest Table', () => {
       <Provider>
         <GuestsTable dateFilter={mockDateFilter} />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/wifi/guests' }
+        route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
 
 
@@ -97,7 +97,7 @@ describe('Guest Table', () => {
       <Provider>
         <GuestsTable dateFilter={mockDateFilter} />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/wifi/guests' }
+        route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
 
     const userProfile = getUserProfile()
@@ -113,7 +113,7 @@ describe('Guest Table', () => {
       <Provider>
         <GuestsTable dateFilter={mockDateFilter} />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/wifi/guests' }
+        route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
 
 
@@ -129,7 +129,7 @@ describe('Guest Table', () => {
       <Provider>
         <GuestsTable dateFilter={mockDateFilter} />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/wifi/guests' }
+        route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
 
 
@@ -143,7 +143,7 @@ describe('Guest Table', () => {
       <Provider>
         <GuestsTable dateFilter={mockDateFilter} />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/wifi/guests' }
+        route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
 
 
@@ -158,7 +158,7 @@ describe('Guest Table', () => {
       <Provider>
         <GuestsTable dateFilter={mockDateFilter} />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/wifi/guests' }
+        route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
 
 
@@ -173,7 +173,7 @@ describe('Guest Table', () => {
       <Provider>
         <GuestsTable dateFilter={mockDateFilter} />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/wifi/guests' },
+        route: { params, path: '/:tenantId/t/users/wifi/guests' },
         wrapper: Provider
       })
 
@@ -192,7 +192,7 @@ describe('Guest Table', () => {
       <Provider>
         <GuestsTable dateFilter={mockDateFilter} />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/wifi/guests' }
+        route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
 
 
@@ -253,7 +253,7 @@ describe('Guest Table', () => {
       <Provider>
         <GuestsTable dateFilter={mockDateFilter} />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/wifi/guests' }
+        route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
 
 
@@ -304,7 +304,7 @@ describe('Guest Table', () => {
       <Provider>
         <GuestsTable dateFilter={mockDateFilter} />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/wifi/guests' }
+        route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
 
 
@@ -324,7 +324,7 @@ describe('Guest Table', () => {
       <Provider>
         <GuestsTable dateFilter={mockDateFilter} />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/wifi/guests' }
+        route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
 
 
@@ -339,7 +339,7 @@ describe('Guest Table', () => {
       <Provider>
         <GuestsTable dateFilter={mockDateFilter} />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/wifi/guests' }
+        route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
 
 
@@ -364,7 +364,7 @@ describe('Guest Table', () => {
       <Provider>
         <GuestsTable dateFilter={mockDateFilter} />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/wifi/guests' }
+        route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
 
     fireEvent.click(await screen.findByText('test4'))
@@ -401,7 +401,7 @@ describe('Guest Table', () => {
       <Provider>
         <GuestsTable dateFilter={mockDateFilter} />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/wifi/guests' }
+        route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
     await waitFor(() =>
       expect(screen.getByRole('button', { name: 'Import from file' })).toBeEnabled())

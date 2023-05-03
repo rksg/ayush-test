@@ -16,7 +16,7 @@ import { Layout } from '.'
 
 describe('Layout', () => {
   const route = {
-    path: '/:tenantType/:tenantId/:page',
+    path: '/:tenantId/:tenantType/:page',
     params: { tenantType: 't', tenantId: 't-id', page: 'dashboard' },
     wrapRoutes: false
   }
