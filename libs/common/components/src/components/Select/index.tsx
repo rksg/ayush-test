@@ -202,7 +202,7 @@ export function Select (props: CascaderProps) {
         dropdownRender={withFooter}
         expandTrigger='hover'
         maxTagCount='responsive'
-        showSearch
+        showSearch={antProps.showSearch || true}
         onDropdownVisibleChange={setOpen}
         open={open}
         getPopupContainer={(triggerNode) => triggerNode.parentNode}
