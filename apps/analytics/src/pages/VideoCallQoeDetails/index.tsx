@@ -1,24 +1,26 @@
 import { useState } from 'react'
 
 import { Space }   from 'antd'
+import _           from 'lodash'
+import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { TimeSeriesDataType, getSeriesData }                  from '@acx-ui/analytics/utils'
+import { TimeSeriesDataType, aggregateDataBy, getSeriesData } from '@acx-ui/analytics/utils'
 import { Loader, PageHeader, Table, TableProps, Tooltip,
   TrendType, cssStr,  Card, GridCol, GridRow,
-  MultiLineTimeSeriesChart,NoData, Alert, TrendPill, Drawer } from '@acx-ui/components'
+  MultiLineTimeSeriesChart,NoData, Alert, TrendPill,
+  Drawer, SearchBar }                from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   EditOutlinedIcon,
   EditOutlinedDisabledIcon
 } from '@acx-ui/icons'
-import { TenantLink, useParams }   from '@acx-ui/react-router-dom'
-import { TABLE_DEFAULT_PAGE_SIZE } from '@acx-ui/utils'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
-import { zoomStatsThresholds }                                                  from '../VideoCallQoe/constants'
-import { useUpdateCallQoeParticipantMutation, useVideoCallQoeTestDetailsQuery } from '../VideoCallQoe/services'
-import { DetailedResponse, Participants, WifiMetrics }                          from '../VideoCallQoe/types'
+import { zoomStatsThresholds }                                                                                from '../VideoCallQoe/constants'
+import { Client, useSeachClientsQuery, useUpdateCallQoeParticipantMutation, useVideoCallQoeTestDetailsQuery } from '../VideoCallQoe/services'
+import { DetailedResponse, Participants, WifiMetrics }                                                        from '../VideoCallQoe/types'
 
 import { getConnectionQuality, getConnectionQualityTooltip } from './helper'
 import * as UI                                               from './styledComponents'
@@ -43,6 +45,30 @@ export function VideoCallQoeDetails (){
     return missingMacCount > 0
   }
 
+  const [ search, setSearch ] = useState('')
+  const searchQueryResults = useSeachClientsQuery({
+    //start: '2023-04-02T12:36:21+05:30',
+    //end: '2023-05-02T12:36:21+05:30',
+    //start: currentMeeting? currentMeeting?.startTime.toString() : moment().toISOString(),
+    start: moment().toISOString(),
+    //end: currentMeeting? currentMeeting?.endTime.toString(): moment().toISOString(),
+    end: moment().toISOString(),
+    query: search,
+    limit: 100
+  }, { selectFromResult: (states) => ({
+    ...states,
+    data: states.data && aggregateDataBy<Client>('mac')(states.data).map( client => {
+      return {
+        hostname: client.hostname[0],
+        mac: client.mac[0],
+        username: client.username[0]
+      }
+    })
+  }) })
+
+  console.log('#### searchQueryResults:', searchQueryResults.data)
+
+
   const columnHeaders: TableProps<Participants>['columns'] = [
     {
       title: $t({ defaultMessage: 'Client MAC' }),
@@ -57,6 +83,7 @@ export function VideoCallQoeDetails (){
                 onClick={()=>{
                   setParticipantId(row.id)
                   setIsDrawerOpen(true)
+                  setSelectedMac(null)
                 }}/>
             </Tooltip>
           </Space>
@@ -317,70 +344,82 @@ export function VideoCallQoeDetails (){
               showIcon />
           </div>
         }
-        {isDrawerOpen && <Drawer
-          visible={isDrawerOpen}
-          title={$t({ defaultMessage: 'Select Client MAC' })}
-          onClose={()=>{
-            setIsDrawerOpen(false)
-          }}
-          footer={<Drawer.FormFooter showAddAnother={false}
-            buttonLabel={({
-              save: $t({ defaultMessage: 'Select' })
-            })}
-            onCancel={onCancelClientMac}
-            onSave={onSelectClientMac}
-          />}
-        >
-          <Table
-            rowKey='mac'
-            rowSelection={{ type: 'radio', onChange: (keys)=>{
-              if(keys.length){
-                setSelectedMac(keys[0] as string)
-              }else{
-                setSelectedMac(null)
-              }
-            } }}
-            showHeader={false}
-            columns={[
-              {
-                dataIndex: 'mac',
-                key: 'mac',
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                render: (mac:unknown, row:any)=>{
-                  return <>
-                    <GridRow>
-                      <GridCol col={{ span: 24 }}><strong>{mac as string}</strong></GridCol>
-                    </GridRow>
-                    <GridRow>
-                      <GridCol col={{ span: 12 }}>Username:</GridCol>
-                      <GridCol col={{ span: 12 }}>{row.username}</GridCol>
-                    </GridRow>
-                    <GridRow>
-                      <GridCol col={{ span: 12 }}>Hostname:</GridCol>
-                      <GridCol col={{ span: 12 }}>{row.hostname}</GridCol>
-                    </GridRow>
-                  </>
-                }
-              }
-            ]}
-            dataSource={[
-              {
-                mac: 'A8:64:F1:1A:D0:33',
-                username: 'user1',
-                hostname: 'host1'
-              },
-              {
-                mac: 'F0:B3:EC:2A:A8:05',
-                username: 'user2',
-                hostname: 'host2'
-              }
-            ]}
-            pagination={{
-              pageSize: TABLE_DEFAULT_PAGE_SIZE,
-              defaultPageSize: TABLE_DEFAULT_PAGE_SIZE
+        {isDrawerOpen &&
+          <Drawer
+            visible={isDrawerOpen}
+            title={$t({ defaultMessage: 'Select Client MAC' })}
+            onClose={()=>{
+              setIsDrawerOpen(false)
             }}
-          />
-        </Drawer>}
+            footer={<Drawer.FormFooter showAddAnother={false}
+              buttonLabel={({
+                save: $t({ defaultMessage: 'Select' })
+              })}
+              showSaveButton={selectedMac!= null}
+              onCancel={onCancelClientMac}
+              onSave={onSelectClientMac}
+            />}
+          >
+            <SearchBar
+              placeHolder='Search by MAC, username or hostname'
+              onChange={(q) => q && q.length>=0 && _.debounce(
+                (search) => setSearch(search),1000
+              )(q)}
+            />
+            <Loader states={[searchQueryResults]}>
+              <Table
+                rowKey='mac'
+                rowSelection={{ type: 'radio', onChange: (keys)=>{
+                  if(keys.length){
+                    setSelectedMac(keys[0] as string)
+                  }else{
+                    setSelectedMac(null)
+                  }
+                } }}
+                showHeader={false}
+                columns={[
+                  {
+                    dataIndex: 'mac',
+                    key: 'mac',
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    render: (mac:unknown, row:any)=>{
+                      return <>
+                        <GridRow>
+                          <GridCol col={{ span: 24 }}><strong>{mac as string}</strong></GridCol>
+                        </GridRow>
+                        <GridRow>
+                          <GridCol col={{ span: 12 }}>Username:</GridCol>
+                          <GridCol col={{ span: 12 }}>{row.username}</GridCol>
+                        </GridRow>
+                        <GridRow>
+                          <GridCol col={{ span: 12 }}>Hostname:</GridCol>
+                          <GridCol col={{ span: 12 }}>{row.hostname}</GridCol>
+                        </GridRow>
+                      </>
+                    }
+                  }
+                ]}
+                // dataSource={[
+                //   {
+                //     mac: 'A8:64:F1:1A:D0:33',
+                //     username: 'user1',
+                //     hostname: 'host1'
+                //   },
+                //   {
+                //     mac: 'F0:B3:EC:2A:A8:05',
+                //     username: 'user2',
+                //     hostname: 'host2'
+                //   }
+                // ]}
+                // pagination={{
+                //   pageSize: 5,
+                //   defaultPageSize: 5
+                // }}
+                dataSource={searchQueryResults.data}
+              />
+            </Loader>
+          </Drawer>
+        }
         <Table
           rowKey='id'
           columns={columnHeaders}
