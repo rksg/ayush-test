@@ -74,7 +74,7 @@ describe('AllRoutes', () => {
   test('should navigate to dashboard', async () => {
     render(<Provider><AllRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/dashboard',
+        path: '/tenantId/t/dashboard',
         wrapRoutes: false
       }
     })
@@ -83,7 +83,7 @@ describe('AllRoutes', () => {
   test('should navigate to analytics/*', async () => {
     render(<Provider><AllRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/analytics/some-page',
+        path: '/tenantId/t/analytics/some-page',
         wrapRoutes: false
       }
     })
@@ -92,7 +92,7 @@ describe('AllRoutes', () => {
   test('should navigate to reports/*', async () => {
     render(<Provider><AllRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/reports/network/wireless',
+        path: '/tenantId/t/reports/network/wireless',
         wrapRoutes: false
       }
     })
@@ -101,7 +101,7 @@ describe('AllRoutes', () => {
   test('should navigate to dataStudio', async () => {
     render(<Provider><AllRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/dataStudio',
+        path: '/tenantId/t/dataStudio',
         wrapRoutes: false
       }
     })
@@ -111,7 +111,7 @@ describe('AllRoutes', () => {
   test('should navigate to devices/*', async () => {
     render(<Provider><AllRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/devices/some-page',
+        path: '/tenantId/t/devices/some-page',
         wrapRoutes: false
       }
     })
@@ -121,7 +121,7 @@ describe('AllRoutes', () => {
   test('should navigate to networks/*', async () => {
     render(<Provider><AllRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/networks/some-page',
+        path: '/tenantId/t/networks/some-page',
         wrapRoutes: false
       }
     })
@@ -133,7 +133,7 @@ describe('AllRoutes', () => {
 
     render(<Provider><AllRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/services/some-page',
+        path: '/tenantId/t/services/some-page',
         wrapRoutes: false
       }
     })
@@ -146,7 +146,7 @@ describe('AllRoutes', () => {
 
     render(<Provider><AllRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/services/some-page',
+        path: '/tenantId/t/services/some-page',
         wrapRoutes: false
       }
     })
@@ -159,7 +159,7 @@ describe('AllRoutes', () => {
 
     render(<Provider><AllRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/policies/some-page',
+        path: '/tenantId/t/policies/some-page',
         wrapRoutes: false
       }
     })
@@ -172,7 +172,7 @@ describe('AllRoutes', () => {
 
     render(<Provider><AllRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/policies/some-page',
+        path: '/tenantId/t/policies/some-page',
         wrapRoutes: false
       }
     })
@@ -183,7 +183,7 @@ describe('AllRoutes', () => {
   test('should navigate to venues/*', async () => {
     render(<Provider><AllRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/venues'
+        path: '/tenantId/t/venues'
       }
     })
     await screen.findByTestId('venues')
@@ -192,7 +192,7 @@ describe('AllRoutes', () => {
   test('should navigate to msp pages', async () => {
     render(<Provider><AllRoutes /></Provider>, {
       route: {
-        path: '/v/tenantId/dashboard'
+        path: '/tenantId/v/dashboard'
       }
     })
     expect(await screen.findByTestId('msp')).toBeVisible()
@@ -204,7 +204,7 @@ describe('AllRoutes', () => {
     const { rerender } = render(<AllRoutes />, {
       wrapper: Provider,
       route: {
-        path: '/t/tenantId/dashboard'
+        path: '/tenantId/t/dashboard'
       }
     })
 

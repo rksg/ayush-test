@@ -55,15 +55,20 @@ function open_localhost(tab) {
   }
 
   let tenantId;
-  const regExArr = /\/[tv]\/([0-9a-f]*)/.exec(tab.url);
-  if (regExArr && regExArr.length > 0) {
-    tenantId = regExArr[1];
+  
+  const matchedIds = tab.url.match(/[a-f0-9]{32}/)
+  
+  if (matchedIds) {
+    tenantId = matchedIds[0];
+  } else {
+    console.log('Tenant id not found in url');
+    return;
   }
 
   chrome.tabs.create({
     active: true,
     index: tab.index + 1,
-    url: `http://localhost:3000/t/${tenantId}`
+    url: `http://localhost:3000/${tenantId}/t`
   }, (tab) => {
     console.log('tab opened');
   });

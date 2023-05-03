@@ -122,7 +122,7 @@ describe('Administration page', () => {
 
     fireEvent.click(screen.getByText('Notifications'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/administration/notifications`,
+      pathname: `/${params.tenantId}/t/administration/notifications`,
       hash: '',
       search: ''
     })

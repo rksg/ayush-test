@@ -88,7 +88,10 @@ describe('Persona Group Details', () => {
       <Provider>
         <PersonaGroupDetails />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/persona-management/persona-group/:personaGroupId' }
+        route: {
+          params,
+          path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId'
+        }
       }
     )
 
@@ -103,7 +106,10 @@ describe('Persona Group Details', () => {
       <Provider>
         <PersonaGroupDetails />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/persona-management/persona-group/:personaGroupId' }
+        route: {
+          params,
+          path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId'
+        }
       }
     )
 
@@ -127,7 +133,10 @@ describe('Persona Group Details', () => {
       <Provider>
         <PersonaGroupDetails />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/persona-management/persona-group/:personaGroupId' }
+        route: {
+          params,
+          path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId'
+        }
       }
     )
 
@@ -149,7 +158,10 @@ describe('Persona Group Details', () => {
       <Provider>
         <PersonaGroupDetails />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/persona-management/persona-group/:personaGroupId' }
+        route: {
+          params,
+          path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId'
+        }
       }
     )
 
