@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 
 import {
   Col,
@@ -11,9 +11,15 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { StepsForm } from '@acx-ui/components'
+import {
+  StepsForm
+} from '@acx-ui/components'
+import {
+  MigrationActionTypes
+} from '@acx-ui/rc/utils'
 
 import { MessageMapping } from '../MessageMapping'
+import MigrationContext   from '../MigrationContext'
 
 import type { UploadFile, UploadProps } from 'antd/es/upload/interface'
 // import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface'
@@ -21,6 +27,11 @@ import type { UploadFile, UploadProps } from 'antd/es/upload/interface'
 
 const UploadForm = () => {
   const { $t } = useIntl()
+
+  const {
+    dispatch
+  } = useContext(MigrationContext)
+
   const [fileList, setFileList] = useState<UploadFile[]>([])
   // const [uploading, setUploading] = useState(false)
 
@@ -57,8 +68,15 @@ const UploadForm = () => {
       newFileList.splice(index, 1)
       setFileList(newFileList)
     },
-    beforeUpload: (file) => {
-      setFileList([...fileList, file])
+    beforeUpload: (file: File) => {
+      // setFileList([...fileList, file])
+
+      dispatch({
+        type: MigrationActionTypes.UPLOADFILE,
+        payload: {
+          file: file
+        }
+      })
 
       return false
     },
