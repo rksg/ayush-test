@@ -20,7 +20,7 @@ describe('ClientIsolationDetail', () => {
     policyId: '4b76b1952c80401b8500b00d68106576'
   }
   // eslint-disable-next-line max-len
-  const detailPath = '/:tenantId/' + getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.DETAIL })
+  const detailPath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.DETAIL })
 
   beforeEach(() => {
     mockServer.use(
@@ -58,7 +58,7 @@ describe('ClientIsolationDetail', () => {
   })
 
   it('should navigate to the edit page', async () => {
-    const editLink = `/t/${params.tenantId}/` + getPolicyDetailsLink({
+    const editLink = `/${params.tenantId}/t/` + getPolicyDetailsLink({
       type: PolicyType.CLIENT_ISOLATION,
       oper: PolicyOperation.EDIT,
       policyId: params.policyId

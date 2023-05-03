@@ -24,12 +24,12 @@ describe('VenueAnalyticsTab', () => {
       <VenueAnalyticsTab />
     </Provider>, {
       route: {
-        path: '/t/t1/venues/v1/venue-details/analytics'
+        path: '/t1/t/venues/v1/venue-details/analytics'
       }
     })
     fireEvent.click(await screen.findByText('Health'))
     expect(mockedUsedNavigate.mock.calls[0][0].pathname).toEqual(
-      '/t/t1/venues/v1/venue-details/analytics/health/overview'
+      '/t1/t/venues/v1/venue-details/analytics/health/overview'
     )
   })
 })

@@ -45,7 +45,7 @@ describe('DpskDetails', () => {
     activeTab: DpskDetailsTabKey.OVERVIEW
   }
   // eslint-disable-next-line max-len
-  const detailPath = '/:tenantId/' + getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.DETAIL })
+  const detailPath = '/:tenantId/t/' + getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.DETAIL })
 
   beforeEach(() => {
     mockServer.use(
@@ -108,7 +108,7 @@ describe('DpskDetails', () => {
   })
 
   it('should navigate to the edit page', async () => {
-    const editLink = `/t/${paramsForOverviewTab.tenantId}/` + getServiceDetailsLink({
+    const editLink = `/${paramsForOverviewTab.tenantId}/t/` + getServiceDetailsLink({
       type: ServiceType.DPSK,
       oper: ServiceOperation.EDIT,
       serviceId: paramsForOverviewTab.serviceId
