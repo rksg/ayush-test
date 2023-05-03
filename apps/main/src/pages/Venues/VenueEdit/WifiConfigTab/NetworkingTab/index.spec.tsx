@@ -79,7 +79,7 @@ describe('NetworkingTab', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/venues`,
+      pathname: `/${params.tenantId}/t/venues`,
       hash: '',
       search: ''
     })

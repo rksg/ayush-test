@@ -48,7 +48,7 @@ describe('PoeLowTable', () => {
       </Provider>,
       {
         route: {
-          path: '/t/tenantId/analytics/incidents',
+          path: '/tenantId/t/analytics/incidents',
           wrapRoutes: false
         }
       }
@@ -58,7 +58,7 @@ describe('PoeLowTable', () => {
     expect(rows[1].textContent).toMatch(/AnotherAP/)
     const links: HTMLAnchorElement[] = screen.getAllByRole('link')
     expect(links[0].href).toBe(
-      'http://localhost/t/undefined/devices/wifi/84:23:88:2F:ED:61/details/overview'
+      'http://localhost/undefined/t/devices/wifi/84:23:88:2F:ED:61/details/overview'
     )
   })
   it('should show Ap Group column when sliceType is zone', async () => {
@@ -73,7 +73,7 @@ describe('PoeLowTable', () => {
       </Provider>,
       {
         route: {
-          path: '/t/tenantId/analytics/incidents',
+          path: '/tenantId/t/analytics/incidents',
           wrapRoutes: false
         }
       }

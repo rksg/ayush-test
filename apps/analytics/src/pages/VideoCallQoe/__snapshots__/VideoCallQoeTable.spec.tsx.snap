@@ -32,7 +32,7 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
                 </span>
                 <input
                   class="ant-input"
-                  placeholder="Search Name"
+                  placeholder="Search Test Call Name"
                   type="text"
                   value=""
                 />
@@ -240,7 +240,7 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
                                   <span
                                     class="ant-table-column-title"
                                   >
-                                    Name
+                                    Test Call Name
                                   </span>
                                   <span
                                     class="ant-table-column-sorter ant-table-column-sorter-full"
@@ -927,7 +927,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                   <span
                                     class="ant-table-column-title"
                                   >
-                                    Name
+                                    Test Call Name
                                   </span>
                                   <span
                                     class="ant-table-column-sorter ant-table-column-sorter-full"
@@ -1506,7 +1506,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 class="ant-table-cell"
                               >
                                 <a
-                                  href="/t/tenant-id/serviceValidation/videoCallQoe/57"
+                                  href="/tenant-id/t/serviceValidation/videoCallQoe/57"
                                 >
                                   Asraf - Test1
                                 </a>
@@ -1579,7 +1579,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 class="ant-table-cell"
                               >
                                 <a
-                                  href="/t/tenant-id/serviceValidation/videoCallQoe/13"
+                                  href="/tenant-id/t/serviceValidation/videoCallQoe/13"
                                 >
                                   ACX_test
                                 </a>
