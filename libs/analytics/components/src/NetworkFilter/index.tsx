@@ -206,12 +206,31 @@ export const getNetworkFilterData = (
   )
 }
 
+const searchHelper = (str: string, input: string) =>
+  str.toLowerCase().includes(input.toLowerCase())
+
 const search = (input: string, path: DefaultOptionType[]): boolean => {
   const item = path.slice(-1)[0]
   return item.ignoreSelection // non-selection implies non-searchable
     ? false
-    : (item?.displayLabel as string)?.toLowerCase().includes(input.toLowerCase())
+    : searchHelper(item?.displayLabel as string, input)
 }
+
+const reportSearch = (input: string, path: DefaultOptionType[]): boolean => {
+  const device = path.slice(-1)[0]
+  const venue = path.slice(0)[0]
+  const matchVenue = searchHelper(venue?.displayLabel as string, input)
+  const matchDevice = searchHelper(device?.displayLabel as string, input)
+  return device.ignoreSelection // non-selection implies non-searchable
+    ? false
+    : matchVenue || matchDevice
+}
+
+const reportSearchRender = (input: string, path: DefaultOptionType[]) => {
+  const items = path.map((val) => (val?.displayLabel as string))
+  return items.join(' / ')
+}
+
 // eslint-disable-next-line no-empty-pattern
 export const displayRender = ({}, selectedOptions: DefaultOptionType[] | undefined) =>
   selectedOptions?.map((option) => option?.displayLabel || option?.label).join(' / ')
@@ -266,7 +285,8 @@ function ConnectedNetworkFilter (
       ...rest
     })
   })
-  const rawVal = filterFor === 'reports' ? reportsRaw : raw
+  const isReports = filterFor === 'reports'
+  const rawVal = isReports ? reportsRaw : raw
   return (
     <UI.Container $open={open}>
       <Loader states={[queryResults]}>
@@ -309,7 +329,10 @@ function ConnectedNetworkFilter (
             }
           }}
           displayRender={displayRender}
-          showSearch={{ filter: search }}
+          showSearch={{
+            filter: isReports ? reportSearch : search,
+            render: reportSearchRender
+          }}
           allowClear
           open={open}
           onDropdownVisibleChange={setOpen}

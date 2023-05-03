@@ -362,6 +362,27 @@ describe('Network Filter', () => {
     onApply(path, setNetworkPath)
     expect(setNetworkPath).toBeCalledWith(defaultNetworkPath, path)
   })
+
+  it('should search node for reports', async () => {
+    mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
+      data: { network: { hierarchyNode: networkFilterResult } }
+    })
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: mockIncidents } } }
+    })
+    render(<Provider><NetworkFilter filterFor='reports' shouldQuerySwitch/></Provider>)
+    await screen.findByText('Entire Organization')
+    await userEvent.type(screen.getByRole('combobox'), 'swg')
+    await screen.findByText('swg')
+    fireEvent.click(screen.getByText('swg'))
+    const path = [
+      { type: 'network', name: 'Network' },
+      { type: 'switchGroup', name: 'id4' }
+    ]
+    const raw = [JSON.stringify(path)]
+    expect(mockSetNetworkPath).toHaveBeenCalledTimes(1)
+    expect(mockSetNetworkPath).toHaveBeenCalledWith(path, raw)
+  })
 })
 describe('Network Filter with incident severity', () => {
   beforeEach(() => {
