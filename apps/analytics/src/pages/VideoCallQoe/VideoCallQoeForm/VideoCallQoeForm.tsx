@@ -23,7 +23,10 @@ export function VideoCallQoeForm () {
   const [ submit ] = useCreateCallQoeTestMutation()
 
   return <>
-    <PageHeader title={$t({ defaultMessage: 'Create Test Call' })} breadcrumb={breadcrumb} />
+    <PageHeader title={!link
+      ? $t({ defaultMessage: 'Create Test Call' })
+      : $t({ defaultMessage: 'Test Call Details' })}
+    breadcrumb={breadcrumb} />
     <StepsFormNew
       onFinish={async (values: { name: string }) => {
         const response = await submit(values).unwrap()
@@ -32,7 +35,7 @@ export function VideoCallQoeForm () {
       onCancel={navigateToList}
       buttonLabel={{
         submit: link ? '': $t({ defaultMessage: 'Add' }),
-        cancel: link? $t({ defaultMessage: 'Done' }) :$t({ defaultMessage: 'Cancel' })
+        cancel: link ? $t({ defaultMessage: 'Done' }) : $t({ defaultMessage: 'Cancel' })
       }}
     >
       {

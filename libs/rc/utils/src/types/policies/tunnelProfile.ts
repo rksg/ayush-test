@@ -7,6 +7,7 @@ export interface TunnelProfile {
   mtuType: MtuTypeEnum
   mtuSize: number
   forceFragmentation: boolean
+  ageTimeMinutes: number
 }
 
 export interface TunnelProfileViewData {
@@ -16,6 +17,7 @@ export interface TunnelProfileViewData {
   mtuType: MtuTypeEnum
   mtuSize: number
   forceFragmentation: boolean
-  networkSegmentIds: string[]
+  ageTimeMinutes: number
+  networkSegmentationIds: string[]
   networkIds: string[]
 }

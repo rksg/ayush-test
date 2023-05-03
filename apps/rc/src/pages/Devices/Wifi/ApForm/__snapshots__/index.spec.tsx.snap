@@ -201,11 +201,8 @@ exports[`AP Form - Add should render correctly 1`] = `
                                       />
                                     </span>
                                     <span
-                                      class="ant-select-selection-item"
-                                      title="Select venue..."
-                                    >
-                                      Select venue...
-                                    </span>
+                                      class="ant-select-selection-placeholder"
+                                    />
                                   </div>
                                   <span
                                     aria-hidden="true"

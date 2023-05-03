@@ -23,7 +23,6 @@ function VideoCallQoeListPage () {
   const isNotStartedCall = queryResults.data?.getAllCallQoeTests
     ?.every(test => test.meetings[0].status !== 'NOT_STARTED')
 
-
   return (
     <>
       <PageHeader
