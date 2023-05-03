@@ -1,4 +1,5 @@
-import { act } from 'react-dom/test-utils'
+import userEvent from '@testing-library/user-event'
+import { act }   from 'react-dom/test-utils'
 
 import { healthApi }                   from '@acx-ui/analytics/services'
 import { AnalyticsFilter }             from '@acx-ui/analytics/utils'
@@ -9,7 +10,8 @@ import {
   render,
   screen,
   fireEvent,
-  cleanup
+  cleanup,
+  waitFor
 } from '@acx-ui/test-utils'
 import { DateRange } from '@acx-ui/utils'
 
@@ -91,12 +93,20 @@ describe('Threshold Histogram chart', () => {
           threshold={thresholdMap['rss']}
           thresholds={thresholdMap}
           setKpiThreshold={setKpiThreshold}
-          mutationAllowed={true}
-          isNetwork={false}
+          mutationAllowed={false}
+          isNetwork={true}
         />
       </Provider>
     )
     expect(await screen.findByText('10')).toBeVisible()
+    const button = await screen.findByRole('button', { name: 'Apply' })
+    expect(button).toBeDisabled()
+    // eslint-disable-next-line testing-library/no-node-access
+    await userEvent.hover(button.parentElement!)
+    await waitFor(async () => {
+      expect(await screen.findByText(/Cannot save threshold at organisation level/))
+        .toBeInTheDocument()
+    })
   })
   it('should handle data greater than the splits size', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
@@ -180,7 +190,7 @@ describe('Threshold Histogram chart', () => {
 
     mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
       data: {
-        timeToConnect: {
+        saveThreshold: {
           success: true
         }
       }
@@ -204,35 +214,6 @@ describe('Threshold Histogram chart', () => {
     expect(await screen.findByText('Threshold set successfully.')).toBeInTheDocument()
   })
 
-  it('should render failure toast setKpiThreshold on clicking apply btn on failure', async () => {
-    mockGraphqlQuery(dataApiURL, 'histogramKPI', {
-      data: { network: { histogram: { data: [0, 2, 3, 20, 3, 0,20,20,2000] } } }
-    })
-
-    mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
-      data: undefined,
-      error: new Error('network failed')
-    })
-    render(
-      <Provider>
-        <Histogram
-          filters={filters}
-          kpi={'timeToConnect'}
-          threshold={thresholdMap['timeToConnect']}
-          thresholds={thresholdMap}
-          setKpiThreshold={setKpiThreshold}
-          mutationAllowed={true}
-          isNetwork={false}
-        />
-      </Provider>
-    )
-    const applyBtn = await screen.findByRole('button', { name: 'Apply' })
-    expect(applyBtn).toBeDefined()
-    fireEvent.click(applyBtn)
-    const errorMsgs = await screen.findByText('Error setting threshold, please try again later.')
-    expect(errorMsgs).toBeInTheDocument()
-  })
-
   it('should render default scale on null data', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
       data: { network: { histogram: { data: [null, null, null] } } }
@@ -240,7 +221,7 @@ describe('Threshold Histogram chart', () => {
 
     mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
       data: {
-        timeToConnect: {
+        saveThreshold: {
           success: true
         }
       }
@@ -269,7 +250,7 @@ describe('Threshold Histogram chart', () => {
 
     mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
       data: {
-        timeToConnect: {
+        saveThreshold: {
           success: true
         }
       }

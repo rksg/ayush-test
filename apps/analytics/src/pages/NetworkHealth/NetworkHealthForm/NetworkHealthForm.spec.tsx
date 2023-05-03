@@ -83,7 +83,7 @@ describe('NetworkHealthForm', () => {
     store.dispatch(dataApi.util.resetApiState())
     store.dispatch(networkApi.util.resetApiState())
     store.dispatch(api.util.resetApiState())
-    mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', { data: mockNetworkHierarchy })
+    mockGraphqlQuery(dataApiURL, 'RecentNetworkHierarchy', { data: mockNetworkHierarchy })
   })
 
   it('works correctly for create flow', async () => {
@@ -121,6 +121,7 @@ describe('NetworkHealthForm', () => {
     // Navigate to Step 2
     await click(actions.getByRole('button', { name: 'Next' }))
     expect(await body.findByRole('heading', { name: 'APs Selection' })).toBeVisible()
+    expect(await body.findByTestId('QuestionMarkCircleOutlined')).toBeVisible()
 
     // Step 2
     await type(await screen.findByRole('combobox'), '2')
@@ -161,6 +162,7 @@ describe('NetworkHealthForm', () => {
     // Navigate to Step 2
     await click(screen.getByRole('button', { name: 'APs Selection' }))
     expect(await body.findByRole('heading', { name: 'APs Selection' })).toBeVisible()
+    expect(body.queryByTestId('QuestionMarkCircleOutlined')).toBeNull()
 
     const expected = { spec: { id: 'spec-id' }, userErrors: null }
     mockGraphqlMutation(apiUrl, 'UpdateServiceGuardSpec', {

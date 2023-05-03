@@ -9,19 +9,27 @@ import {
   TableProps
 } from '@acx-ui/components'
 import {
+  Features,
+  useIsSplitOn
+} from '@acx-ui/feature-toggle'
+import {
+  DownloadOutlined
+} from '@acx-ui/icons'
+import {
   useDeleteEdgeMutation,
   useGetEdgeListQuery,
   useRebootEdgeMutation,
   useSendOtpMutation,
   useVenuesListQuery
 } from '@acx-ui/rc/services'
-import { EdgeStatusEnum, EdgeStatus, useTableQuery, TABLE_QUERY, RequestPayload } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useTenantLink }                                 from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                         from '@acx-ui/user'
+import { EdgeStatusEnum, EdgeStatus, useTableQuery, TABLE_QUERY, TableQuery, RequestPayload } from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useTenantLink }                                             from '@acx-ui/react-router-dom'
+import { filterByAccess }                                                                     from '@acx-ui/user'
 
 import { seriesMappingAP } from '../DevicesWidget'
 
 import { EdgeStatusLight } from './EdgeStatusLight'
+import { useExportCsv }    from './useExportCsv'
 
 export { EdgeStatusLight } from './EdgeStatusLight'
 
@@ -98,6 +106,9 @@ export const EdgesTable = (props: EdgesTableProps) => {
   const [deleteEdge, { isLoading: isDeleteEdgeUpdating }] = useDeleteEdgeMutation()
   const [ rebootEdge ] = useRebootEdgeMutation()
   const [sendOtp] = useSendOtpMutation()
+  // eslint-disable-next-line max-len
+  const { exportCsv, disabled } = useExportCsv<EdgeStatus>(tableQuery as TableQuery<EdgeStatus, RequestPayload<unknown>, unknown>)
+  const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
 
   const defaultColumns: TableProps<EdgeStatus>['columns'] = [
     {
@@ -301,6 +312,8 @@ export const EdgesTable = (props: EdgesTableProps) => {
         onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter
+        // eslint-disable-next-line max-len
+        iconButton={(exportDevice && false) ? { icon: <DownloadOutlined />, disabled, onClick: exportCsv } : undefined}
         {...otherProps}
       />
     </Loader>

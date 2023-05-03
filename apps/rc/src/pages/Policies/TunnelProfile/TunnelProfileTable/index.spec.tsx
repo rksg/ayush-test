@@ -87,7 +87,7 @@ describe('TunnelProfileList', () => {
     const smartEdgeLink = await screen.findByRole('link',
       { name: 'tunnelProfile1' }) as HTMLAnchorElement
     expect(smartEdgeLink.href)
-      .toContain(`/t/${params.tenantId}/${getPolicyDetailsLink({
+      .toContain(`/${params.tenantId}/t/${getPolicyDetailsLink({
         type: PolicyType.TUNNEL_PROFILE,
         oper: PolicyOperation.DETAIL,
         policyId: 'tunnelProfileId1'
@@ -106,7 +106,7 @@ describe('TunnelProfileList', () => {
     await user.click(within(row).getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Edit' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/${getPolicyDetailsLink({
+      pathname: `/${params.tenantId}/t/${getPolicyDetailsLink({
         type: PolicyType.TUNNEL_PROFILE,
         oper: PolicyOperation.EDIT,
         policyId: 'tunnelProfileId1'

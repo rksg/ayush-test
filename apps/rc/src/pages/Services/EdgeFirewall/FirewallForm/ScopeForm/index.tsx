@@ -11,6 +11,8 @@ import { EdgeStatus }                                from '@acx-ui/rc/utils'
 
 import { FirewallFormEdge, FirewallFormModel } from '..'
 
+import { StyledFWInfoText } from './styledComponents'
+
 const FirewallEdgesTable = (props: { data?: FirewallFormEdge[] }) => {
   const { data: selectedEdges = [] } = props
   const { $t } = useIntl()
@@ -59,35 +61,63 @@ const FirewallEdgesTable = (props: { data?: FirewallFormEdge[] }) => {
     {
       title: $t({ defaultMessage: 'Venue' }),
       key: 'venue',
-      dataIndex: ['venueName']
+      dataIndex: 'venueName'
     },
     {
       title: $t({ defaultMessage: 'MAC Address' }),
       key: 'mac',
-      dataIndex: 'mac'
+      dataIndex: 'mac',
+      width: 120
     },
     {
       title: $t({ defaultMessage: 'IP Address' }),
       key: 'ip',
-      dataIndex: 'ip'
+      dataIndex: 'ip',
+      width: 120
     },
     {
       title: $t({ defaultMessage: 'Clients' }),
       key: 'clients',
-      dataIndex: 'clients'
+      dataIndex: 'clients',
+      align: 'center',
+      width: 80
     },
     {
       title: $t({ defaultMessage: 'Up Time' }),
       key: 'upTime',
       dataIndex: 'upTime',
+      align: 'center',
+      width: 100,
       render: (data) => {
         return formatter('longDurationFormat')(data)
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Firewall Server' }),
+      key: 'firewall',
+      dataIndex: 'firewallId',
+      align: 'center',
+      render: (_, row) => {
+        const fwId = row.firewallId
+        return fwId
+          ?<StyledFWInfoText>
+            {$t({ defaultMessage: 'ON{br}({serviceNameLink})' },
+              {
+                br: <br/>,
+                serviceNameLink: <Typography.Text>
+                  {row.firewallName}
+                </Typography.Text>
+              })}
+          </StyledFWInfoText>
+          : $t({ defaultMessage: 'OFF' })
       }
     },
     {
       title: $t({ defaultMessage: 'Activate' }),
       key: 'action',
       dataIndex: 'action',
+      align: 'center',
+      width: 80,
       render: (data, row) => {
         return <ActivateSwitch row={row}/>
       }
@@ -117,12 +147,29 @@ const FirewallEdgesTable = (props: { data?: FirewallFormEdge[] }) => {
     }
   ]
 
+  const edgeOptionsDefaultPayload = {
+    fields: [
+      'name',
+      'serialNumber',
+      'venueName',
+      'mac',
+      'ip',
+      'clients',
+      'upTime',
+      'firewallId',
+      'firewallName'
+    ],
+    sortField: 'name',
+    sortOrder: 'ASC'
+  }
+
   return (
     <EdgesTable
       settingsId='edgefirewall-edge-table'
       columns={columns}
       rowSelection={{ type: 'checkbox' }}
       rowActions={rowActions}
+      tableQuery={{ defaultPayload: edgeOptionsDefaultPayload }}
     />
   )}
 

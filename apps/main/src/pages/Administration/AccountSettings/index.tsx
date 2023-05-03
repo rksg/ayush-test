@@ -1,7 +1,8 @@
 import { Form, Divider } from 'antd'
 import styled            from 'styled-components/macro'
 
-import { Loader }           from '@acx-ui/components'
+import { Loader }                 from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useGetRecoveryPassphraseQuery,
   useGetMspEcProfileQuery
@@ -42,6 +43,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const isMspEc = hasMSPEcLabel && userProfileData?.varTenantId && canMSPDelegation === true
 
   const isPrimeAdminUser = isPrimeAdmin()
+  const isI18n = useIsSplitOn(Features.I18N_TOGGLE)
   const showRksSupport = isMspEc === false
   const isFirstLoading = recoveryPassphraseData.isLoading
     || mfaTenantDetailsData.isLoading || mspEcProfileData.isLoading
@@ -57,7 +59,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
       >
         <RecoveryPassphraseFormItem recoveryPassphraseData={recoveryPassphraseData?.data} />
 
-        { isPrimeAdminUser && (
+        { (isPrimeAdminUser && isI18n) && (
           <>
             <Divider />
             <DefaultSystemLanguageFormItem />
