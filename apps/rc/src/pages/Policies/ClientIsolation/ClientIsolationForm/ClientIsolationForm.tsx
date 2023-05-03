@@ -87,7 +87,7 @@ export default function ClientIsolationForm (props: ClientIsolationFormProps) {
           name='details'
           title={$t({ defaultMessage: 'Settings' })}
         >
-          <ClientIsolationSettingsForm />
+          <ClientIsolationSettingsForm editMode={editMode} />
         </StepsForm.StepForm>
       </StepsForm>
     </>
