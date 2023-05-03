@@ -51,7 +51,7 @@ export function VideoCallQoeTable () {
           .includes(formattedStatus) ? `${meetingId}` : `${meetingId}`
         return [MeetingType.ENDED, MeetingType.NOT_STARTED, MeetingType.STARTED]
           .includes(formattedStatus) ?
-          <TenantLink to={`/serviceValidation/videoCallQoe/${urlTxt}`}>
+          <TenantLink to={`/analytics/videoCallQoe/${urlTxt}`}>
             {value as string}
           </TenantLink>
           : value as string

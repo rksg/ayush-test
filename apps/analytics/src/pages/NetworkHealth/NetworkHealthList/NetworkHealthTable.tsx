@@ -44,7 +44,7 @@ export function NetworkHealthTable () {
   const { $t } = useIntl()
   const queryResults = useAllNetworkHealthSpecsQuery()
   const navigate = useNavigate()
-  const networkHealthPath = useTenantLink('/serviceValidation/networkHealth/')
+  const networkHealthPath = useTenantLink('/analytics/serviceValidation/')
   const { data: userProfile } = useUserProfileContext()
   const { deleteTest, response: deleteResponse } = useDeleteNetworkHealthTestMutation()
   const { runTest, response: runResponse } = useRunNetworkHealthTestMutation()
@@ -173,7 +173,7 @@ export function NetworkHealthTable () {
         const highlightedValue = highlightFn(String(value))
         return row.latestTest?.summary.apsTestedCount
           ? <TenantLink
-            to={`/serviceValidation/networkHealth/${row.id}/tests/${row.latestTest?.id}`}
+            to={`/analytics/serviceValidation/${row.id}/tests/${row.latestTest?.id}`}
           >
             {highlightedValue}
           </TenantLink>

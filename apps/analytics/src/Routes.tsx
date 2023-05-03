@@ -39,13 +39,10 @@ export default function AnalyticsRoutes () {
       <Route path='analytics/configChange'
         element={<div>{$t({ defaultMessage: 'Config Change' }) }</div>} />
 
-      {canUseSV && <Route path='serviceValidation'>
-        <Route path=''
-          element={<TenantNavigate replace to='./serviceValidation/networkHealth' />}
-        />
-        <Route path='networkHealth' element={<NetworkHealthList />} />
-        <Route path='networkHealth/add' element={<NetworkHealthForm />} />
-        <Route path='networkHealth/:specId'>
+      {canUseSV && <Route>
+        <Route path='analytics/serviceValidation' element={<NetworkHealthList />} />
+        <Route path='analytics/serviceValidation/add' element={<NetworkHealthForm />} />
+        <Route path='analytics/serviceValidation/:specId'>
           <Route
             path='edit'
             element={<NetworkHealthSpecGuard children={<NetworkHealthForm />} />}
@@ -61,9 +58,10 @@ export default function AnalyticsRoutes () {
             />
           </Route>
         </Route>
-        <Route path='videoCallQoe' element={<VideoCallQoeListPage />} />
-        <Route path='videoCallQoe/add' element={<VideoCallQoeForm />} />
-      </Route>}
+        <Route path='analytics/videoCallQoe' element={<VideoCallQoeListPage />} />
+        <Route path='analytics/videoCallQoe/add' element={<VideoCallQoeForm />} />
+      </Route>
+      }
     </Route>
   )
   return (

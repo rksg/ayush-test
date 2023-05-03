@@ -12,7 +12,7 @@ function NetworkHealthList () {
       <PageHeader
         title={$t({ defaultMessage: 'Network Health' })}
         extra={[
-          <TenantLink to='/serviceValidation/networkHealth/add' key='add'>
+          <TenantLink to='/analytics/serviceValidation/add' key='add'>
             <Button type='primary'>{ $t({ defaultMessage: 'Create Test' }) }</Button>
           </TenantLink>
         ]}

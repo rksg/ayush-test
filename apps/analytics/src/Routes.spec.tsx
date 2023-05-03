@@ -40,11 +40,11 @@ test('should redirect analytics to analytics/incidents', async () => {
   })
   expect(screen.getByTestId('incidentsListPage')).toBeVisible()
 })
-test('should redirect service validation to serviceValidation/networkHealth', async () => {
+test('should redirect service validation to analytics/serviceValidation', async () => {
   jest.mocked(useIsTierAllowed).mockReturnValue(true)
   render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
-      path: '/t/tenantId/serviceValidation',
+      path: '/t/tenantId/analytics/serviceValidation',
       wrapRoutes: false
     }
   })
@@ -59,32 +59,32 @@ test('should navigate to analytics/incidents', async () => {
   })
   expect(screen.getByTestId('incidentsListPage')).toBeVisible()
 })
-test('should navigate to serviceValidation/networkHealth', async () => {
+test('should navigate to analytics/serviceValidation', async () => {
   jest.mocked(useIsTierAllowed).mockReturnValue(true)
   render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
-      path: '/t/tenantId/serviceValidation/networkHealth',
+      path: '/t/tenantId/analytics/serviceValidation',
       wrapRoutes: false
     }
   })
   expect(screen.getByTestId('NetworkHealthPage')).toBeVisible()
 })
-test('should navigate to Netework Health add page', async () => {
+test('should navigate to Service Validation add page', async () => {
   jest.mocked(useIsTierAllowed).mockReturnValue(true)
   render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
-      path: '/t/tenantId/serviceValidation/networkHealth/add',
+      path: '/t/tenantId/analytics/serviceValidation/add',
       wrapRoutes: false
     }
   })
   expect(screen.getByTestId('NetworkHealthForm')).toBeVisible()
 })
-test('should navigate to Netework Health edit page', async () => {
+test('should navigate to Service Validation edit page', async () => {
   jest.mocked(useIsTierAllowed).mockReturnValue(true)
   mockGraphqlQuery(networkHealthApiURL, 'FetchServiceGuardSpec', { data: fetchServiceGuardSpec })
   render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
-      path: '/t/tenantId/serviceValidation/networkHealth/specId/edit',
+      path: '/t/tenantId/analytics/serviceValidation/specId/edit',
       wrapRoutes: false
     }
   })
@@ -92,13 +92,13 @@ test('should navigate to Netework Health edit page', async () => {
     expect(screen.getByTestId('NetworkHealthForm')).toBeVisible()
   })
 })
-test('should navigate to serviceValidation/networkHealth by NetworkHealthSpecGuard', async () => {
+test('should navigate to analytics/serviceValidation by NetworkHealthSpecGuard', async () => {
   jest.mocked(useIsTierAllowed).mockReturnValue(true)
   mockGraphqlQuery(
     networkHealthApiURL, 'FetchServiceGuardSpec', { data: { serviceGuardSpec: null } })
   render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
-      path: '/t/tenantId/serviceValidation/networkHealth/specId/edit',
+      path: '/t/tenantId/analytics/serviceValidation/specId/edit',
       wrapRoutes: false
     }
   })
@@ -164,13 +164,13 @@ test('should navigate to analytics/incidents/tab/overview', async () => {
   })
   expect(screen.getByTestId('incidentsListPage')).toBeVisible()
 })
-test('should navigate to serviceValidation/networkHealth/tab/overview', async () => {
+test('should navigate to analytics/serviceValidation/tab/overview', async () => {
   mockGraphqlQuery(
     networkHealthApiURL, 'FetchServiceGuardTest', { data: fetchServiceGuardTest })
   jest.mocked(useIsTierAllowed).mockReturnValue(true)
   render(< Provider><AnalyticsRoutes /></Provider>, {
     route: {
-      path: '/t/tenantId/serviceValidation/networkHealth/1/tests/1/tab/overview',
+      path: '/t/tenantId/analytics/serviceValidation/1/tests/1/tab/overview',
       wrapRoutes: false
     }
   })
@@ -178,25 +178,25 @@ test('should navigate to serviceValidation/networkHealth/tab/overview', async ()
     expect(screen.getByTestId('NetworkHealthDetails')).toBeVisible()
   })
 })
-test('should navigate to serviceValidation/networkHealth/tab/details', async () => {
+test('should navigate to analytics/serviceValidation/tab/details', async () => {
   mockGraphqlQuery(
     networkHealthApiURL, 'FetchServiceGuardTest', { data: fetchServiceGuardTest })
   jest.mocked(useIsTierAllowed).mockReturnValue(true)
   render(< Provider><AnalyticsRoutes /></Provider>, {
     route: {
-      path: '/t/tenantId/serviceValidation/networkHealth/1/tests/1/tab/details',
+      path: '/t/tenantId/analytics/serviceValidation/1/tests/1/tab/details',
       wrapRoutes: false
     }
   })
   expect(screen.getByTestId('NetworkHealthDetails')).toBeVisible()
 })
-test('should navigate to serviceValidation/networkHealth by NetworkHealthTestGuard', async () => {
+test('should navigate to analytics/serviceValidation by NetworkHealthTestGuard', async () => {
   jest.mocked(useIsTierAllowed).mockReturnValue(true)
   mockGraphqlQuery(
     networkHealthApiURL, 'FetchServiceGuardTest', { data: { serviceGuardTest: null } })
   render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
-      path: '/t/tenantId/serviceValidation/networkHealth/1/tests/1/tab/overview',
+      path: '/t/tenantId/analytics/serviceValidation/1/tests/1/tab/overview',
       wrapRoutes: false
     }
   })
@@ -205,12 +205,12 @@ test('should navigate to serviceValidation/networkHealth by NetworkHealthTestGua
   })
   expect(screen.getByText('Network Health test does not exist')).toBeVisible()
 })
-test('should navigate to serviceValidation/videoCallQoe', () => {
+test('should navigate to analytics/videoCallQoe', () => {
   jest.mocked(useIsTierAllowed).mockReturnValue(true)
   jest.mocked(useIsSplitOn).mockReturnValue(true)
   render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
-      path: '/t/tenantId/serviceValidation/videoCallQoe',
+      path: '/t/tenantId/analytics/videoCallQoe',
       wrapRoutes: false
     }
   })

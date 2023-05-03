@@ -121,7 +121,7 @@ describe('Network Health Table', () => {
     await userEvent.click(radio[0])
     await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
     expect(mockedNavigate)
-      .toBeCalledWith('/t/tenant-id/serviceValidation/networkHealth/spec-id/edit')
+      .toBeCalledWith('/t/tenant-id/analytics/serviceValidation/spec-id/edit')
 
     await userEvent.click(radio[1])
     expect(await screen.findByRole('button', { name: 'Edit' })).toBeDisabled()

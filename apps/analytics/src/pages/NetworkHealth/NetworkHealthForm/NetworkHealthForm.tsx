@@ -41,10 +41,10 @@ export const initialValues: NetworkHealthFormDto = {
 
 export function NetworkHealthForm () {
   const { $t } = useIntl()
-  const navigateToList = useNavigateToPath('/serviceValidation/networkHealth')
+  const navigateToList = useNavigateToPath('/analytics/serviceValidation')
   const breadcrumb = [{
-    text: $t({ defaultMessage: 'Network Health' }),
-    link: '/serviceValidation/networkHealth'
+    text: $t({ defaultMessage: 'Service Validation' }),
+    link: '/analytics/serviceValidation'
   }]
 
   const { editMode, spec, submit, response } = useNetworkHealthSpecMutation()

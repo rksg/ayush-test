@@ -46,7 +46,7 @@ function AllRoutes () {
           <Route path='timeline/*' element={<TimelineBase />}>
             <Route path='*' element={<RcRoutes />} />
           </Route>
-          <Route path='serviceValidation/*' element={<ServiceValidation />}>
+          <Route path='analytics/serviceValidation/*' element={<ServiceValidation />}>
             <Route path='*' element={<AnalyticsRoutes />} />
           </Route>
           <Route path='reports/*' element={<ReportsBase />}>

@@ -35,7 +35,7 @@ function genNetworkHealthGuard (
   const NetworkHealthGuard = (props: React.PropsWithChildren) => {
     const { $t } = useIntl()
     const queryResults = (useQueryFn as typeof useNetworkHealthSpec | typeof useNetworkHealthTest)()
-    const navigateToList = useNavigateToPath('/serviceValidation/networkHealth')
+    const navigateToList = useNavigateToPath('/analytics/serviceValidation')
     const showedToast = useRef(false)
 
     useEffect(() => {

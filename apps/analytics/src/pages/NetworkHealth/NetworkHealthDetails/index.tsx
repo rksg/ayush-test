@@ -26,7 +26,7 @@ const tabs : {
   }
 ]
 
-const rootPath = '/serviceValidation/networkHealth'
+const rootPath = '/analytics/serviceValidation'
 
 function NetworkHealthDetails () {
   const { $t } = useIntl()
@@ -47,7 +47,7 @@ function NetworkHealthDetails () {
         subTitle={<SubTitle />}
         breadcrumb={[{
           text: $t({ defaultMessage: 'Network Health' }),
-          link: '/serviceValidation/networkHealth'
+          link: '/analytics/serviceValidation'
         }]}
         extra={[
           <ReRunButton key='re-run' />,

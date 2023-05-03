@@ -13,7 +13,7 @@ import { statsFromSummary }                                      from '../../uti
 export const ReRunButton = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const basePath = useTenantLink('/serviceValidation/networkHealth')
+  const basePath = useTenantLink('/analytics/serviceValidation')
   const params = useParams<{ specId: string }>()
 
   const queryResults = useNetworkHealthTest()

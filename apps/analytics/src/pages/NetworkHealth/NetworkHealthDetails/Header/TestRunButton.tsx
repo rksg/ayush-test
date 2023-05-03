@@ -22,7 +22,7 @@ const TestRunTable = (
       dataIndex: 'createdAt',
       key: 'createdAt',
       render: (_, value) =>
-        <TenantLink to={`/serviceValidation/networkHealth/${value.specId}/tests/${value.id}`}>
+        <TenantLink to={`/analytics/serviceValidation/${value.specId}/tests/${value.id}`}>
           {formatter(DateFormatEnum.DateTimeFormatWithSeconds)(value.createdAt)}
         </TenantLink>
     },
