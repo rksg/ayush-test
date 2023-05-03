@@ -1520,7 +1520,10 @@ export const mockLoadBalabcing = {
   loadBalancingMethod: 'BASED_ON_CLIENT_COUNT',
   bandBalancingEnabled: true,
   bandBalancingClientPercent24G: 25,
-  steeringMode: 'BASIC'
+  steeringMode: 'BASIC',
+  stickyClientSteeringEnabled: true,
+  stickyClientSnrThreshold: 15,
+  stickyClientNbrApPercentageThreshold: 20
 }
 
 export const radiusList = {
