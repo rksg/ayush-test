@@ -267,31 +267,35 @@ export function LoadBalancing () {
               { type: 'number', min: 5 },
               { type: 'number', max: 30 }
             ]}
+            style={{ width: '100px' }}
             children={<InputNumber
               data-testid='sticky-client-snr-threshold'
+              placeholder='5-30'
               min={5}
               max={30}
               onChange={onFormDataChanged} />} />
-          <span className='ant-form-text' style={{ marginLeft: '-4px', marginTop: '8px' }}>
+          <span className='ant-form-text' style={{ marginLeft: '-5px', marginTop: '8px' }}>
             {$t({ defaultMessage: 'dB' })}
           </span>
           <Form.Item
-            label={$t({ defaultMessage: 'Neighbor AP ' })}
-            // eslint-disable-next-line max-len
-            tooltip={$t({ defaultMessage: 'NBRAP percentage is used to calculate a base SNR and compare it to the SNR received from a neighbor AP.' })}
+            label={<>
+              {$t({ defaultMessage: 'Neighbor AP ' })}
+              <Tooltip.Question title={$t({ defaultMessage: 'NBRAP percentage is used to calculate a base SNR and compare it to the SNR received from a neighbor AP.' })} />
+            </>}
             name='stickyClientNbrApPercentageThreshold'
             initialValue={20}
             rules={[
-              { required: true },
+              { required: true, message: $t({ defaultMessage: 'Please enter Neighbor AP' }) },
               { type: 'number', min: 10 },
               { type: 'number', max: 40 }
             ]}
             children={<InputNumber
-              data-testid='stickyClientNbrApPercentageThreshold'
+              data-testid='sticky-client-nbr-percentage-threshold'
+              placeholder='10-40'
               min={10}
               max={40}
               onChange={onFormDataChanged} />} />
-          <span className='ant-form-text' style={{ marginLeft: '-4px', marginTop: '8px' }}>
+          <span className='ant-form-text' style={{ marginLeft: '-9px', marginTop: '8px' }}>
             {$t({ defaultMessage: '%' })}
           </span>
         </Space>

@@ -47,6 +47,9 @@ describe('Venue Load Balancing', () => {
     expect(await screen.findByTestId('load-balancing-enabled')).toBeVisible()
     expect(await screen.findByRole('radio', { name: /Based on Client Count/i })).toBeVisible()
 
+    expect(await screen.findByTestId('sticky-client-snr-threshold')).toBeVisible()
+    expect(await screen.findByTestId('sticky-client-nbr-percentage-threshold')).toBeVisible()
+
     expect(await screen.findByTestId('band-balancing-enabled')).toBeVisible()
     expect(await screen.findByRole('slider')).toBeVisible()
 
