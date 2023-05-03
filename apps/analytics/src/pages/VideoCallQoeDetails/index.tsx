@@ -49,10 +49,8 @@ export function VideoCallQoeDetails (){
   const searchQueryResults = useSeachClientsQuery({
     //start: '2023-04-02T12:36:21+05:30',
     //end: '2023-05-02T12:36:21+05:30',
-    //start: currentMeeting? currentMeeting?.startTime.toString() : moment().toISOString(),
-    start: moment().toISOString(),
-    //end: currentMeeting? currentMeeting?.endTime.toString(): moment().toISOString(),
-    end: moment().toISOString(),
+    start: moment(currentMeeting? currentMeeting.startTime: moment()).format(),
+    end: moment(currentMeeting? currentMeeting.endTime: moment()).format(),
     query: search,
     limit: 100
   }, { selectFromResult: (states) => ({
@@ -346,6 +344,7 @@ export function VideoCallQoeDetails (){
         }
         {isDrawerOpen &&
           <Drawer
+            width={350}
             visible={isDrawerOpen}
             title={$t({ defaultMessage: 'Select Client MAC' })}
             onClose={()=>{
