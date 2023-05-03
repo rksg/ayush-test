@@ -237,8 +237,8 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   downloadApsCSV: {
     method: 'post',
-    url: '/aps/inventories/query/csvFiles',
-    oldUrl: '/aps/inventories/query/csvFiles',
+    url: '/aps/query/csvFiles',
+    oldUrl: '/aps/query/csvFiles',
     newApi: true
   },
   getService: {

@@ -36,7 +36,7 @@ describe('ClientIsolationAllowList', () => {
       oper: PolicyOperation.DETAIL,
       policyId: targetPolicy.id
     })
-    const policyDetailsLink = `/t/${params.tenantId}/${policyDetailsPath}`
+    const policyDetailsLink = `/${params.tenantId}/t/${policyDetailsPath}`
 
     render(
       <Provider>
@@ -44,7 +44,7 @@ describe('ClientIsolationAllowList', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/venues/:venueId/venue-details/services'
+          path: '/:tenantId/t/venues/:venueId/venue-details/services'
         }
       }
     )

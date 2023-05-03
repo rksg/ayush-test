@@ -4,15 +4,18 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum } from '@acx-ui/rc/utils'
-import { Provider }                                                               from '@acx-ui/store'
-import { mockServer, within, render, screen }                                     from '@acx-ui/test-utils'
 
-import { externalProviders, policyListResponse } from '../__tests__/fixtures'
-import { hasAuthRadius }                         from '../utils'
+import { useIsSplitOn }                                                                             from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
+import { Provider }                                                                                 from '@acx-ui/store'
+import { mockServer, within, render, screen, cleanup, fireEvent }                                   from '@acx-ui/test-utils'
+
+import { externalProviders, policyListResponse }      from '../__tests__/fixtures'
+import NetworkFormContext, { NetworkFormContextType } from '../NetworkFormContext'
+import { hasAuthRadius }                              from '../utils'
 
 import { MoreSettingsForm, NetworkMoreSettingsForm } from './NetworkMoreSettingsForm'
+
 
 const mockWlanData = {
   name: 'test',
@@ -297,5 +300,112 @@ describe('NetworkMoreSettingsForm', () => {
 
     expect(hasAuthRadius({ }, {})).toBeFalsy()
   })
+
+  describe('Test case for Fast BSS Transition and Mobility Domain ID', () => {
+    beforeAll(() => {
+      jest.spyOn(console, 'error').mockImplementation(() => {})
+    })
+    describe('Test case for visibility of Fast BSS Transition and Mobility Domain Id', () => {
+      const testNetworkTypes = [
+        NetworkTypeEnum.CAPTIVEPORTAL,
+        NetworkTypeEnum.PSK
+      ]
+      describe('Test case under feature toggle is disabled.', () => {
+        it('WPA23Mixed', () => {
+          // eslint-disable-next-line max-len
+          const mockWlanData = { wlan: { wlanSecurity: WlanSecurityEnum.WPA23Mixed } } as NetworkSaveData
+          const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+          for (const networkType in testNetworkTypes) {
+            jest.mocked(useIsSplitOn).mockReturnValue(false)
+            // eslint-disable-next-line max-len
+            const mockContextData = { editMode: true, data: { type: NetworkTypeEnum[networkType as keyof typeof NetworkTypeEnum] } } as NetworkFormContextType
+            render(MockedMoreSettingsForm(mockWlanData, mockContextData) ,{ route: { params } })
+            expect(screen.queryByTestId('enableFastRoaming-full-block')).toBeNull()
+            cleanup()
+          }
+        })
+        it('WPA3', () => {
+          // eslint-disable-next-line max-len
+          const mockWlanData = { wlan: { wlanSecurity: WlanSecurityEnum.WPA23Mixed } } as NetworkSaveData
+          const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+          for (const networkType in testNetworkTypes) {
+            jest.mocked(useIsSplitOn).mockReturnValue(false)
+            // eslint-disable-next-line max-len
+            const mockContextData = { editMode: true, data: { type: NetworkTypeEnum[networkType as keyof typeof NetworkTypeEnum] } } as NetworkFormContextType
+            render(MockedMoreSettingsForm(mockWlanData, mockContextData) ,{ route: { params } })
+            expect(screen.queryByTestId('enableFastRoaming-full-block')).toBeNull()
+            cleanup()
+          }
+        })
+      })
+      describe('Test case under feature toggle is enabled.', () => {
+        it('WPA23Mixed', () => {
+          jest.mocked(useIsSplitOn).mockReturnValue(true)
+          // eslint-disable-next-line max-len
+          const mockWlanData = { wlan: { wlanSecurity: WlanSecurityEnum.WPA23Mixed } } as NetworkSaveData
+          const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+          for (const networkType in testNetworkTypes) {
+            // eslint-disable-next-line max-len
+            const mockContextData = { editMode: true, data: { type: NetworkTypeEnum[networkType as keyof typeof NetworkTypeEnum] } } as NetworkFormContextType
+            render(MockedMoreSettingsForm(mockWlanData, mockContextData) ,{ route: { params } })
+            expect(screen.getByTestId('enableFastRoaming-full-block')).toBeVisible()
+            cleanup()
+          }
+        })
+        it('WPA3', () => {
+          jest.mocked(useIsSplitOn).mockReturnValue(true)
+          // eslint-disable-next-line max-len
+          const mockWlanData = { wlan: { wlanSecurity: WlanSecurityEnum.WPA23Mixed } } as NetworkSaveData
+          const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+          for (const networkType in testNetworkTypes) {
+            // eslint-disable-next-line max-len
+            const mockContextData = { editMode: true, data: { type: NetworkTypeEnum[networkType as keyof typeof NetworkTypeEnum] } } as NetworkFormContextType
+            render(MockedMoreSettingsForm(mockWlanData, mockContextData) ,{ route: { params } })
+            expect(screen.getByTestId('enableFastRoaming-full-block')).toBeVisible()
+            cleanup()
+          }
+        })
+      })
+      describe('Test case for visibility of Mobility Domain Id', () => {
+        it('Toggle enabled', () => {
+          jest.mocked(useIsSplitOn).mockReturnValue(true)
+          const mockWlanData = { wlan: { wlanSecurity: WlanSecurityEnum.WPA3 } } as NetworkSaveData
+          // eslint-disable-next-line max-len
+          const mockContextData = { editMode: true, data: { type: NetworkTypeEnum.CAPTIVEPORTAL } } as NetworkFormContextType
+          const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+          render(MockedMoreSettingsForm(mockWlanData, mockContextData) ,{ route: { params } })
+          const checkbox = screen.getByTestId('enableFastRoaming')
+          expect(checkbox).toBeVisible()
+          fireEvent.click(checkbox)
+          expect(screen.getByTestId('mobilityDomainId-full-block')).toBeVisible()
+          fireEvent.click(checkbox)
+          expect(screen.queryByTestId('mobilityDomainId-full-block')).toBeNull()
+        })
+        it('Toggle disabled', () => {
+          jest.mocked(useIsSplitOn).mockReturnValue(false)
+          const mockWlanData = { wlan: { wlanSecurity: WlanSecurityEnum.WPA3 } } as NetworkSaveData
+          // eslint-disable-next-line max-len
+          const mockContextData = { editMode: true, data: { type: NetworkTypeEnum.CAPTIVEPORTAL } } as NetworkFormContextType
+          const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+          render(MockedMoreSettingsForm(mockWlanData, mockContextData) ,{ route: { params } })
+          const checkbox = screen.queryByTestId('enableFastRoaming')
+          expect(checkbox).toBeNull()
+          expect(screen.queryByTestId('mobilityDomainId-full-block')).toBeNull()
+        })
+      })
+    })
+  })
 })
 
+// eslint-disable-next-line max-len
+export function MockedMoreSettingsForm (wlanData: NetworkSaveData, networkFormContext: NetworkFormContextType) {
+  return (
+    <Provider>
+      <NetworkFormContext.Provider value={networkFormContext}>
+        <Form>
+          <MoreSettingsForm wlanData={wlanData} />
+        </Form>
+      </NetworkFormContext.Provider>
+    </Provider>
+  )
+}
