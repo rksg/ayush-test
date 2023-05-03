@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 
 import { Col, Form, Input, Row } from 'antd'
 import { useIntl }               from 'react-intl'
@@ -6,6 +5,8 @@ import { useIntl }               from 'react-intl'
 import { Drawer }                                                from '@acx-ui/components'
 import { EdgeDhcpPool, networkWifiIpRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
 import { getIntl, validationMessages }                           from '@acx-ui/utils'
+
+import { useDrawerControl } from '..'
 
 interface PoolDrawerProps {
   visible: boolean
@@ -38,43 +39,19 @@ async function nameValidator (
 
 export const PoolDrawer = (props: PoolDrawerProps) => {
   const { $t } = useIntl()
-  const [form] = Form.useForm()
-
-  useEffect(() => {
-    if(props.visible) {
-      form.resetFields()
-      form.setFieldsValue(props.data)
-    }
-  }, [props.visible, form, props.data])
+  const { visible, setVisible, onAddOrEdit, data, allPool } = props
+  const { form, onSubmit, onSave, onClose } = useDrawerControl({
+    visible,
+    setVisible,
+    data,
+    initData: initPoolData,
+    onAddOrEdit
+  })
 
   const getTitle = () => {
     return $t({ defaultMessage: '{operation} DHCP Pool' },
-      { operation: !!props.data ? $t({ defaultMessage: 'Edit' }) :
+      { operation: !!data ? $t({ defaultMessage: 'Edit' }) :
         $t({ defaultMessage: 'Add' }) })
-  }
-
-  const onClose = () => {
-    props.setVisible(false)
-  }
-
-  const onSave = async (addAnotherPoolChecked: boolean) => {
-    try {
-      await form.validateFields()
-      form.submit()
-
-      if (!addAnotherPoolChecked) {
-        onClose()
-      }
-    } catch (error) {
-      // if (error instanceof Error) throw error
-    }
-  }
-
-  const onSubmit = (data: EdgeDhcpPool) => {
-    let id = data.id
-    if (id === initPoolData.id) { id = data.id = '_NEW_'+String(Date.now()) }
-    props.onAddOrEdit(data)
-    form.resetFields()
   }
 
   const drawerContent = <Form
@@ -94,7 +71,7 @@ export const PoolDrawer = (props: PoolDrawerProps) => {
             { max: 15 },
             {
               validator: (_, value) =>
-                nameValidator(value, props.allPool, form.getFieldValue('id'))
+                nameValidator(value, allPool, form.getFieldValue('id'))
             }
           ]}
           validateFirst
@@ -147,10 +124,10 @@ export const PoolDrawer = (props: PoolDrawerProps) => {
   </Form>
 
   const drawerFooter = <Drawer.FormFooter
-    showAddAnother={!!!props.data}
+    showAddAnother={!!!data}
     buttonLabel={({
       addAnother: $t({ defaultMessage: 'Add another pool' }),
-      save: !!props.data ? $t({ defaultMessage: 'Apply' }) : $t({ defaultMessage: 'Add' })
+      save: !!data ? $t({ defaultMessage: 'Apply' }) : $t({ defaultMessage: 'Add' })
     })}
     onCancel={onClose}
     onSave={onSave}
@@ -159,7 +136,7 @@ export const PoolDrawer = (props: PoolDrawerProps) => {
   return (
     <Drawer
       title={getTitle()}
-      visible={props.visible}
+      visible={visible}
       onClose={onClose}
       children={drawerContent}
       destroyOnClose={true}

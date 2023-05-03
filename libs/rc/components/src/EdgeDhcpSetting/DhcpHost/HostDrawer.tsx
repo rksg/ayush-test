@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 
 import { Col, Form, Input, Row } from 'antd'
 import { useIntl }               from 'react-intl'
@@ -6,6 +5,8 @@ import { useIntl }               from 'react-intl'
 import { Drawer }                            from '@acx-ui/components'
 import { EdgeDhcpHost, networkWifiIpRegExp } from '@acx-ui/rc/utils'
 import { getIntl, validationMessages }       from '@acx-ui/utils'
+
+import { useDrawerControl } from '..'
 
 interface HostDrawerProps {
   visible: boolean
@@ -38,43 +39,19 @@ async function nameValidator (
 
 export const HostDrawer = (props: HostDrawerProps) => {
   const { $t } = useIntl()
-  const [form] = Form.useForm()
-
-  useEffect(() => {
-    if(props.visible) {
-      form.resetFields()
-      form.setFieldsValue(props.data)
-    }
-  }, [props.visible, form, props.data])
+  const { visible, setVisible, onAddOrEdit, data, allHost } = props
+  const { form, onSubmit, onSave, onClose } = useDrawerControl({
+    visible,
+    setVisible,
+    data,
+    initData: initHostData,
+    onAddOrEdit
+  })
 
   const getTitle = () => {
     return $t({ defaultMessage: '{operation} Host' },
-      { operation: !!props.data ? $t({ defaultMessage: 'Edit' }) :
+      { operation: !!data ? $t({ defaultMessage: 'Edit' }) :
         $t({ defaultMessage: 'Add' }) })
-  }
-
-  const onClose = () => {
-    props.setVisible(false)
-  }
-
-  const onSave = async (addAnotherHostChecked: boolean) => {
-    try {
-      await form.validateFields()
-      form.submit()
-
-      if (!addAnotherHostChecked) {
-        onClose()
-      }
-    } catch (error) {
-      // if (error instanceof Error) throw error
-    }
-  }
-
-  const onSubmit = (data: EdgeDhcpHost) => {
-    let id = data.id
-    if (id === initHostData.id) { id = data.id = '_NEW_'+String(Date.now()) }
-    props.onAddOrEdit(data)
-    form.resetFields()
   }
 
   const drawerContent = <Form
@@ -96,7 +73,7 @@ export const HostDrawer = (props: HostDrawerProps) => {
             { max: 32 },
             {
               validator: (_, value) =>
-                nameValidator(value, props.allHost, form.getFieldValue('id'))
+                nameValidator(value, allHost, form.getFieldValue('id'))
             }
           ]}
           validateFirst
@@ -125,10 +102,10 @@ export const HostDrawer = (props: HostDrawerProps) => {
   </Form>
 
   const drawerFooter = <Drawer.FormFooter
-    showAddAnother={!!!props.data}
+    showAddAnother={!!!data}
     buttonLabel={({
       addAnother: $t({ defaultMessage: 'Add another host' }),
-      save: !!props.data ? $t({ defaultMessage: 'Apply' }) : $t({ defaultMessage: 'Add' })
+      save: !!data ? $t({ defaultMessage: 'Apply' }) : $t({ defaultMessage: 'Add' })
     })}
     onCancel={onClose}
     onSave={onSave}
@@ -137,7 +114,7 @@ export const HostDrawer = (props: HostDrawerProps) => {
   return (
     <Drawer
       title={getTitle()}
-      visible={props.visible}
+      visible={visible}
       onClose={onClose}
       children={drawerContent}
       destroyOnClose={true}

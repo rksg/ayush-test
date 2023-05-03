@@ -83,7 +83,7 @@ interface FormFooterProps {
   showAddAnother?: boolean
   showSaveButton?: boolean
   onCancel: () => void
-  onSave: (checked: boolean) => Promise<void>
+  onSave?: (checked: boolean) => Promise<void>
   buttonLabel?: {
     addAnother?: string
     cancel?: string
@@ -122,7 +122,7 @@ const FormFooter = (props: FormFooterProps) => {
         <Button onClick={onCancel}>
           {buttonLabel.cancel}
         </Button>
-        {showSaveButton && <Button
+        {showSaveButton && onSave && <Button
           loading={loading}
           onClick={() => {
             setLoading(true)

@@ -78,13 +78,13 @@ const ApLocateDetail = (props: { row: RogueOldApResponseType }) => {
     <>
       { row.locatable ? <Button style={{ borderStyle: 'none' }} onClick={showModal}>
         <VenueMarkerRed />
-      </Button> : <Tooltip
+      </Button> : <Button style={{ borderStyle: 'none' }} ><Tooltip
         title={$t({
           // eslint-disable-next-line max-len
           defaultMessage: 'Cannot locate this rogue AP since the detecting APs are not placed in any floor plans.'
         })}>
         <VenueMarkerGrey />
-      </Tooltip> }
+      </Tooltip></Button> }
       <Modal
         title={$t({ defaultMessage: 'RogueAP: {apMac}' }, { apMac: row.rogueMac })}
         visible={visible}
