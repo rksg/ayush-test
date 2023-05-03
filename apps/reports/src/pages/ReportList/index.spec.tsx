@@ -12,7 +12,7 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 }))
 
 describe('ReportList', () => {
-  const path = '/t/:tenantId'
+  const path = '/:tenantId/t'
   const params = {
     tenantId: '15320bc221d94d2cb537fa0189fee742'
   }
@@ -29,7 +29,7 @@ describe('ReportList', () => {
     const card = screen.getByText('Overview').parentElement
     await userEvent.click(within(card!).getByRole('button'))
     expect(mockedUseNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/reports/overview`,
+      pathname: `/${params.tenantId}/t/reports/overview`,
       hash: '',
       search: ''
     })

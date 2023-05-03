@@ -20,7 +20,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                 class="ant-breadcrumb-link"
               >
                 <a
-                  href="/t/tenant-id/serviceValidation/videoCallQoe"
+                  href="/tenant-id/t/serviceValidation/videoCallQoe"
                 >
                   Video Call QoE
                 </a>
@@ -536,7 +536,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 class="ant-table-cell"
                               >
                                 <a
-                                  href="/t/tenant-id/devices/wifi"
+                                  href="/tenant-id/t/devices/wifi"
                                 >
                                   AP-Group-Issue
                                 </a>
@@ -545,7 +545,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 class="ant-table-cell"
                               >
                                 <a
-                                  href="/t/tenant-id/devices/wifi"
+                                  href="/tenant-id/t/devices/wifi"
                                 >
                                   F0:3E:90:36:D3:00
                                 </a>
@@ -554,7 +554,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 class="ant-table-cell"
                               >
                                 <a
-                                  href="/t/tenant-id/networks/wireless"
+                                  href="/tenant-id/t/networks/wireless"
                                 >
                                   CIOT
                                 </a>
@@ -4977,7 +4977,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                 class="ant-breadcrumb-link"
               >
                 <a
-                  href="/t/tenant-id/serviceValidation/videoCallQoe"
+                  href="/tenant-id/t/serviceValidation/videoCallQoe"
                 >
                   Video Call QoE
                 </a>
@@ -5439,7 +5439,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 class="ant-table-cell"
                               >
                                 <a
-                                  href="/t/tenant-id/devices/wifi"
+                                  href="/tenant-id/t/devices/wifi"
                                 >
                                   Switch_client
                                 </a>
@@ -5448,7 +5448,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 class="ant-table-cell"
                               >
                                 <a
-                                  href="/t/tenant-id/devices/wifi"
+                                  href="/tenant-id/t/devices/wifi"
                                 >
                                   C8:08:73:08:10:50
                                 </a>
@@ -5457,7 +5457,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 class="ant-table-cell"
                               >
                                 <a
-                                  href="/t/tenant-id/networks/wireless"
+                                  href="/tenant-id/t/networks/wireless"
                                 >
                                   Divya_unlimited
                                 </a>
@@ -5544,7 +5544,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 class="ant-table-cell"
                               >
                                 <a
-                                  href="/t/tenant-id/devices/wifi"
+                                  href="/tenant-id/t/devices/wifi"
                                 >
                                   r320-11-154
                                 </a>
@@ -5553,7 +5553,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 class="ant-table-cell"
                               >
                                 <a
-                                  href="/t/tenant-id/devices/wifi"
+                                  href="/tenant-id/t/devices/wifi"
                                 >
                                   B4:79:C8:12:8C:50
                                 </a>
@@ -5562,7 +5562,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 class="ant-table-cell"
                               >
                                 <a
-                                  href="/t/tenant-id/networks/wireless"
+                                  href="/tenant-id/t/networks/wireless"
                                 >
                                   CIOT
                                 </a>
@@ -9625,7 +9625,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                 class="ant-breadcrumb-link"
               >
                 <a
-                  href="/t/tenant-id/serviceValidation/videoCallQoe"
+                  href="/tenant-id/t/serviceValidation/videoCallQoe"
                 >
                   Video Call QoE
                 </a>
@@ -11075,7 +11075,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                 class="ant-breadcrumb-link"
               >
                 <a
-                  href="/t/tenant-id/serviceValidation/videoCallQoe"
+                  href="/tenant-id/t/serviceValidation/videoCallQoe"
                 >
                   Video Call QoE
                 </a>

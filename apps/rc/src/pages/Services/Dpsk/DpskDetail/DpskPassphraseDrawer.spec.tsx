@@ -36,7 +36,7 @@ describe('DpskPassphraseDrawer', () => {
   }
 
   // eslint-disable-next-line max-len
-  const detailPath = '/:tenantId/' + getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.DETAIL })
+  const detailPath = '/:tenantId/t/' + getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.DETAIL })
 
   beforeEach(() => {
     mockServer.use(

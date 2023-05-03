@@ -39,7 +39,7 @@ describe('MdnsProxySettingsForm', () => {
       <Provider>
         <Form><MdnsProxySettingsForm /></Form>
       </Provider>, {
-        route: { params: { tenantId: '__tenant_ID__' }, path: '/:tenantId/' }
+        route: { params: { tenantId: '__tenant_ID__' }, path: '/:tenantId/t/' }
       }
     )
 
