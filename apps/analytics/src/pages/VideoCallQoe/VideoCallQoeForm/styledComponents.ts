@@ -11,7 +11,7 @@ export const NotificationBox = styled.div`
   background: #FEF6ED;
   border-radius: 8px;
   font-family: var(--acx-neutral-brand-font);
-  font-weight: var(--acx-body-4-font-weight);
+  font-weight: var(--acx-subtitle-6-font-weight);
   font-size: var(--acx-body-4-font-size);
   line-height: var(--acx-body-4-line-height);
   color: var(--acx-primary-black);
@@ -39,6 +39,20 @@ export const OverwriteFormItem = styled(Form.Item)`
     font-weight: var(--acx-subtitle-4-font-weight);
     color: var(--acx-primary-black);
   }
+  .ant-form-item-label > label::after {
+    content: '';
+  }
+  .ant-form-item-row {
+    display: block !important ;
+  }
+`
+export const FormItemNormal = styled(Form.Item)`
+  .ant-form-item-label > label::after {
+    content: '';
+  }
+  .ant-form-item-row {
+    display: block !important ;
+  }
 `
 
 export const DisclaimerContainer = styled.div`
@@ -46,4 +60,10 @@ export const DisclaimerContainer = styled.div`
   font-size: var(--acx-body-4-font-size);
   line-height: var(--acx-body-4-line-height);
   font-weight: var(--acx-body-font-weight);
+`
+export const PrerequisiteTitle = styled.span`
+  line-height: var(--acx-subtitle-4-line-height);
+  font-size: var(--acx-subtitle-4-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-4-font-weight);
 `

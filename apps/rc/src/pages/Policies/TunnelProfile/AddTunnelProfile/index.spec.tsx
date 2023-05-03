@@ -40,6 +40,8 @@ describe('AddTunnelProfile', () => {
     )
     const policyNameField = screen.getByRole('textbox', { name: 'Policy Name' })
     await user.type(policyNameField, 'TestTunnel')
+    const ageTimeField = screen.getByRole('spinbutton', { name: 'Idle Period' })
+    await user.type(ageTimeField, '20')
     await user.click(screen.getByRole('button', { name: 'Add' }))
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/t/${params.tenantId}/policies/tunnelProfile/list`,
