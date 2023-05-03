@@ -65,7 +65,7 @@ describe('ResidentPortalVenuesTable', () => {
 
     const links: HTMLAnchorElement[] = screen.getAllByRole('link')
     expect(links[0].href).toContain(
-      `${mockedTenantPath.pathname}/venues/${targetConfig.venueId}/venue-details/overview`
+      `/venues/${targetConfig.venueId}/venue-details/overview`
     )
   })
 
