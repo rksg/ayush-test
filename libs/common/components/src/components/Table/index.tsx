@@ -289,10 +289,6 @@ function Table <RecordType extends Record<string, any>> ({
   let pagination: false | TablePaginationConfig = false
   if (type === 'tall') {
     pagination = { ...defaultPagination, ...props.pagination || {} } as TablePaginationConfig
-    console.log(pagination.total, dataSource?.length, pagination.defaultPageSize)
-    console.log(pagination.total || dataSource?.length || 0)
-    console.log(pagination.total ?? dataSource?.length ?? 0)
-    console.log((pagination.total || dataSource?.length) || 0)
     if (((pagination.total || dataSource?.length) || 0) <= pagination.defaultPageSize!) {
       pagination = false
     }
