@@ -2,15 +2,16 @@ import { defineMessage, useIntl } from 'react-intl'
 
 import * as UI from '../styledComponents'
 
-const label = defineMessage({ defaultMessage: 'Pre Requisites' })
 export function Prerequisites () {
   const { $t } = useIntl()
 
   return <UI.OverwriteFormItem
     name='prerequisites'
-    label={$t(label)}
     children={
       <UI.NotificationBox>
+        <UI.PrerequisiteTitle>
+          {$t(defineMessage({ defaultMessage: 'Pre Requisites' }))}
+        </UI.PrerequisiteTitle>
         <span>
           {$t(defineMessage({ defaultMessage: 'For optimal test results, you are asked to' }))}
         </span>
