@@ -57,7 +57,7 @@ describe('MacRegistrationsTab', () => {
     policyId: '1b5c434b-1d28-4ac1-9fe6-cdbee9f934e3'
   }
 
-  const tablePath = '/:tenantId/' + getPolicyDetailsLink({
+  const tablePath = '/:tenantId/t/' + getPolicyDetailsLink({
     type: PolicyType.MAC_REGISTRATION_LIST,
     oper: PolicyOperation.DETAIL,
     policyId: '/:policyId',
