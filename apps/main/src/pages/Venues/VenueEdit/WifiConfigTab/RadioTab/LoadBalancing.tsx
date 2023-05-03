@@ -274,7 +274,7 @@ export function LoadBalancing () {
               min={5}
               max={30}
               onChange={onFormDataChanged} />} />
-          <span className='ant-form-text' style={{ marginLeft: '-5px', marginTop: '8px' }}>
+          <span className='ant-form-text' style={{ marginLeft: '-8px', marginTop: '8px' }}>
             {$t({ defaultMessage: 'dB' })}
           </span>
           <Form.Item
