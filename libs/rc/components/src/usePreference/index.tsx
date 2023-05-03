@@ -1,14 +1,12 @@
-import { useEffect } from 'react'
+import _           from 'lodash'
+import { useIntl } from 'react-intl'
 
-import _ from 'lodash'
-
+import { showActionModal }                                      from '@acx-ui/components'
 import { useGetPreferencesQuery, useUpdatePreferenceMutation }  from '@acx-ui/rc/services'
 import { COUNTRY_CODE, TenantPreferenceSettings, CommonResult } from '@acx-ui/rc/utils'
-import { useParams }                                            from '@acx-ui/react-router-dom'
+import { useNavigate, useParams }                               from '@acx-ui/react-router-dom'
 
-import { useUpdateGoogleMapRegion } from './useUpdateGoogleMapRegion'
-
-const getMapRegion = (data: TenantPreferenceSettings | undefined): string => {
+export const getMapRegion = (data: TenantPreferenceSettings | undefined): string => {
   return data?.global.mapRegion as string
 }
 
@@ -24,16 +22,16 @@ export interface updatePreferenceProps {
 }
 
 export const usePreference = () => {
+  const { $t } = useIntl()
   const params = useParams()
-  const { update: updateGoogleMapRegion } = useUpdateGoogleMapRegion()
-
+  const navigate = useNavigate()
   const { data, ...getReqState } = useGetPreferencesQuery({ params })
   const [ updatePreference, updateReqState] = useUpdatePreferenceMutation()
   const currentMapRegion = getMapRegion(data)
+  const currentDefaultLang = data?.global.defaultLanguage as string
 
-  const update = async (props: updatePreferenceProps) => {
+  const innerUpdate = async (props: updatePreferenceProps) => {
     const { newData, onSuccess, onError } = props
-
     const payload = _.merge({}, data, newData)
 
     try {
@@ -48,17 +46,45 @@ export const usePreference = () => {
     }
   }
 
-  useEffect(() => {
-    updateGoogleMapRegion(currentMapRegion)
-  }, [currentMapRegion, updateGoogleMapRegion])
+  const updatePartial = async (props: updatePreferenceProps) => {
+    const { newData } = props
 
+    // only handle update on "mapRegion" field
+    if (newData.global?.mapRegion && newData.global?.mapRegion !== data?.global?.mapRegion) {
+      // limitation due to known issue on GoogleMap js-api-loader:
+      //   https://github.com/googlemaps/js-api-loader/issues/210
+      showActionModal({
+        type: 'confirm',
+        title: $t({ defaultMessage: 'Confirm' }),
+        content: $t({
+          defaultMessage: `Changing Map Region will affect all users in this account.{br}
+                            Are you sure you what to change Map Region?`
+        }, {
+          br: <br/>
+        }),
+        onOk: async () => {
+          await innerUpdate({
+            ...props,
+            onSuccess: (res) => {
+              if (props.onSuccess)
+                props.onSuccess(res)
+
+              navigate(0)
+            } })
+        }
+      })
+    } else {
+      await innerUpdate(props)
+    }
+  }
 
   return {
     currentMapRegion,
     getReqState,
     updateReqState,
+    currentDefaultLang,
     data,
-    update,
-    updatePreference
+    updatePartial,
+    update: updatePreference
   }
 }

@@ -8,7 +8,8 @@ import {
   Loader,
   showActionModal
 } from '@acx-ui/components'
-import { useDeleteDpskMutation, useGetDpskListQuery } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
+import { useDeleteDpskMutation, useGetEnhancedDpskListQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
   useTableQuery,
@@ -20,22 +21,39 @@ import {
   DpskNetworkType,
   transformAdvancedDpskExpirationText,
   DpskDetailsTabKey,
-  getServiceListRoutePath
+  getServiceListRoutePath,
+  PassphraseFormatEnum
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                               from '@acx-ui/user'
+
+import { displayDefaultAccess, displayDeviceCountLimit } from '../utils'
+
+const defaultPayload = {
+  filters: {}
+}
+const defaultSearch = {
+  searchTargetFields: ['name'],
+  searchString: ''
+}
 
 export default function DpskTable () {
   const intl = useIntl()
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteDpsk ] = useDeleteDpskMutation()
+  const isCloudpathEnabled = useIsSplitOn(Features.DPSK_CLOUDPATH_FEATURE)
 
-  const tableQuery = useTableQuery({ useQuery: useGetDpskListQuery, defaultPayload: {} })
+  const tableQuery = useTableQuery({
+    useQuery: useGetEnhancedDpskListQuery,
+    defaultPayload,
+    search: defaultSearch
+  })
 
   const rowActions: TableProps<DpskSaveData>['rowActions'] = [
     {
       label: intl.$t({ defaultMessage: 'Delete' }),
+      visible: ([selectedRow]) => selectedRow && !selectedRow.identityId,
       onClick: ([{ id, name }], clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -70,6 +88,10 @@ export default function DpskTable () {
     }
   ]
 
+  const passphraseFormatOptions = Object.keys(PassphraseFormatEnum).map((key =>
+    ({ key, value: transformDpskNetwork(intl, DpskNetworkType.FORMAT, key) })
+  ))
+
   const columns: TableProps<DpskSaveData>['columns'] = [
     {
       key: 'name',
@@ -77,6 +99,7 @@ export default function DpskTable () {
       dataIndex: 'name',
       sorter: true,
       defaultSortOrder: 'ascend',
+      searchable: true,
       fixed: 'left',
       render: function (data, row) {
         return (
@@ -97,6 +120,8 @@ export default function DpskTable () {
       title: intl.$t({ defaultMessage: 'Passphrase Format' }),
       dataIndex: 'passphraseFormat',
       sorter: true,
+      filterKey: 'passphraseFormat',
+      filterable: passphraseFormatOptions,
       render: function (data) {
         return transformDpskNetwork(
           intl,
@@ -109,12 +134,14 @@ export default function DpskTable () {
       key: 'passphraseLength',
       title: intl.$t({ defaultMessage: 'Passphrase Length' }),
       dataIndex: 'passphraseLength',
-      align: 'center'
+      align: 'center',
+      sorter: true
     },
     {
       key: 'expirationType',
       title: intl.$t({ defaultMessage: 'Passphrase Expiration' }),
       dataIndex: 'expirationType',
+      sorter: true,
       render: function (data, row) {
         return transformAdvancedDpskExpirationText(
           intl,
@@ -133,6 +160,26 @@ export default function DpskTable () {
       align: 'center',
       render: function (data) {
         return data ? (data as Array<string>).length : 0
+      }
+    },
+    {
+      key: 'deviceCountLimit',
+      title: intl.$t({ defaultMessage: 'Devices allowed per passphrase' }),
+      dataIndex: 'deviceCountLimit',
+      show: isCloudpathEnabled,
+      sorter: true,
+      render: function (data, row) {
+        return displayDeviceCountLimit(row.deviceCountLimit)
+      }
+    },
+    {
+      key: 'policyDefaultAccess',
+      title: intl.$t({ defaultMessage: 'Default Access' }),
+      dataIndex: 'policyDefaultAccess',
+      show: isCloudpathEnabled,
+      sorter: true,
+      render: function (data, row) {
+        return displayDefaultAccess(row.policyDefaultAccess)
       }
     }
   ]
@@ -162,6 +209,8 @@ export default function DpskTable () {
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
+          onFilterChange={tableQuery.handleFilterChange}
+          enableApiFilter={true}
         />
       </Loader>
     </>

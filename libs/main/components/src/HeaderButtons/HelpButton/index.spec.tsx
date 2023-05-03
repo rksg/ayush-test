@@ -41,9 +41,9 @@ describe('HelpPage Component', () => {
     mockServer.use(
       rest.get(getMappingURL(), (_, res, ctx) =>
         res(ctx.json({
-          't/*/dashboard': 'GUID-A338E06B-7FD9-4492-B1B2-D43841D704F1.html',
-          't/*/administration/accountSettings': 'GUID-95DB93A0-D295-4D31-8F53-47659D019295.html',
-          't/*/venues': 'GUID-800174C7-D49A-4C02-BCEB-CE0D9581BABA.html'
+          'dashboard': 'GUID-A338E06B-7FD9-4492-B1B2-D43841D704F1.html',
+          'administration/accountSettings': 'GUID-95DB93A0-D295-4D31-8F53-47659D019295.html',
+          'venues': 'GUID-800174C7-D49A-4C02-BCEB-CE0D9581BABA.html'
         }))
       ),
       rest.get(getDocsURL()+':docID', (_, res, ctx) =>
@@ -53,7 +53,7 @@ describe('HelpPage Component', () => {
     render(<HelpPage modalState={true} setIsModalOpen={() => {}}/>, {
       wrapper: Provider,
       route: {
-        path: '/t/a5804cffcefd408c8d36aca5bd112838/dashboard',
+        path: '/a5804cffcefd408c8d36aca5bd112838/t/dashboard',
         wrapRoutes: false
       }
     })
@@ -119,9 +119,9 @@ describe('HelpPage Component', () => {
     mockServer.use(
       rest.get(getMappingURL(), (_, res, ctx) =>
         res(ctx.json({
-          '/t/*/dashboard': 'GUID-A338E06B-7FD9-4492-B1B2-D43841D704F1.html',
-          '/t/*/administration/accountSettings': 'GUID-95DB93A0-D295-4D31-8F53-47659D019295.html',
-          '/t/*/venues': 'GUID-800174C7-D49A-4C02-BCEB-CE0D9581BABA.html'
+          'dashboard': 'GUID-A338E06B-7FD9-4492-B1B2-D43841D704F1.html',
+          'administration/accountSettings': 'GUID-95DB93A0-D295-4D31-8F53-47659D019295.html',
+          'venues': 'GUID-800174C7-D49A-4C02-BCEB-CE0D9581BABA.html'
         }))
       ),
       rest.get(getDocsURL()+':docID', (_, res, ctx) =>
@@ -180,9 +180,9 @@ describe('HelpPage menus Button', () => {
     mockServer.use(
       rest.get(getMappingURL(), (_, res, ctx) =>
         res(ctx.json({
-          '/t/*/dashboard': 'GUID-A338E06B-7FD9-4492-B1B2-D43841D704F1.html',
-          '/t/*/administration/accountSettings': 'GUID-95DB93A0-D295-4D31-8F53-47659D019295.html',
-          '/t/*/venues': 'GUID-800174C7-D49A-4C02-BCEB-CE0D9581BABA.html'
+          'dashboard': 'GUID-A338E06B-7FD9-4492-B1B2-D43841D704F1.html',
+          'administration/accountSettings': 'GUID-95DB93A0-D295-4D31-8F53-47659D019295.html',
+          'venues': 'GUID-800174C7-D49A-4C02-BCEB-CE0D9581BABA.html'
         }))
       ),
       rest.get(getDocsURL()+':docID', (_, res, ctx) =>
@@ -220,37 +220,6 @@ describe('HelpPage menus Button', () => {
     await userEvent.click(screen.getByRole('menuitem', { name: 'Firewall ACL Inputs' }))
 
     expect(mockOpenFn).toBeCalledTimes(5)
-  })
-
-})
-
-
-
-describe('HelpPage menus Button should be disabled', () => {
-  const params = { tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1' }
-  it('HelpPage menus Button should be disabled', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    mockServer.use(
-      rest.get(getMappingURL(), (_, res, ctx) =>
-        res(ctx.json({
-          '/t/*/dashboard': 'GUID-A338E06B-7FD9-4492-B1B2-D43841D704F1.html'
-        }))
-      ),
-      rest.get(getDocsURL()+':docID', (_, res, ctx) =>
-        res(
-          // Send a valid HTTP status code
-          ctx.status(404),
-          // And a response body, if necessary
-          ctx.json({
-            errorMessage: 'File not found'
-          })
-        )
-      ))
-    render(<Provider>
-      <HelpButton/>
-    </Provider>, { route: { params } })
-    const helpBtn = screen.getByRole('button')
-    expect(helpBtn).toBeDisabled()
   })
 
 })

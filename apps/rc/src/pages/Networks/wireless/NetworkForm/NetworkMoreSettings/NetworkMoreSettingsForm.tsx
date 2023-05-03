@@ -13,10 +13,10 @@ import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { get }                 from 'lodash'
 import { useIntl }             from 'react-intl'
 
-import { Button }                                             from '@acx-ui/components'
-import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
-import { NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
-import { validationMessages }                                 from '@acx-ui/utils'
+import { Button }                                                                   from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
+import { NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum, GuestNetworkTypeEnum } from '@acx-ui/rc/utils'
+import { validationMessages }                                                       from '@acx-ui/utils'
 
 import NetworkFormContext from '../NetworkFormContext'
 import VLANPoolInstance   from '../VLANPoolInstance'
@@ -26,6 +26,7 @@ import { LoadControlForm }    from './LoadControlForm'
 import { ServicesForm }       from './ServicesForm'
 import * as UI                from './styledComponents'
 import { UserConnectionForm } from './UserConnectionForm'
+
 
 
 const { Panel } = Collapse
@@ -114,6 +115,7 @@ export function MoreSettingsForm (props: {
   const { $t } = useIntl()
   const { editMode, data } = useContext(NetworkFormContext)
   const [
+    enableDhcp,
     enableOfdmOnly,
     enableFastRoaming,
     enableAirtimeDecongestion,
@@ -123,6 +125,7 @@ export function MoreSettingsForm (props: {
     enableVlanPooling,
     bssMinimumPhyRate //BSS Min Rate
   ] = [
+    useWatch<boolean>('enableDhcp'),
     useWatch<boolean>('enableOfdmOnly'),
     useWatch<boolean>(['wlan', 'advancedCustomization', 'enableFastRoaming']),
     useWatch<boolean>(['wlan', 'advancedCustomization', 'enableAirtimeDecongestion']),
@@ -136,15 +139,32 @@ export function MoreSettingsForm (props: {
 
   const form = Form.useFormInstance()
   const wlanData = (editMode) ? props.wlanData : form.getFieldsValue()
+  const enableWPA3_80211R = useIsSplitOn(Features.WPA3_80211R)
 
+  const isPortalDefaultVLANId = (data?.enableDhcp||enableDhcp) &&
+    data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&
+    data.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.Cloudpath
+  if(isPortalDefaultVLANId){
+    delete data?.wlan?.vlanId
+    form.setFieldValue(['wlan', 'vlanId'], 3000)
+  }
 
-  const isNetworkWPASecured = wlanData?.wlan?.wlanSecurity ? [
+  let networkWPASecuredList = [
     WlanSecurityEnum.WPA2Personal,
     WlanSecurityEnum.WPAPersonal,
-    WlanSecurityEnum.WPA2Enterprise].includes(wlanData?.wlan.wlanSecurity) : false
+    WlanSecurityEnum.WPA2Enterprise]
 
-  const isFastBssVisible = (isNetworkWPASecured || data?.type === NetworkTypeEnum.AAA) &&
-    data?.type !== NetworkTypeEnum.DPSK
+  if (enableWPA3_80211R) {
+    networkWPASecuredList = networkWPASecuredList.concat([
+      WlanSecurityEnum.WPA23Mixed,
+      WlanSecurityEnum.WPA3])
+  }
+
+  const isNetworkWPASecured = wlanData?.wlan?.wlanSecurity ?
+    networkWPASecuredList.includes(wlanData?.wlan.wlanSecurity) : false
+
+  const isFastBssVisible = data?.type === NetworkTypeEnum.AAA ? true : (
+    data?.type !== NetworkTypeEnum.DPSK && isNetworkWPASecured )
 
   const showDynamicWlan = data?.type === NetworkTypeEnum.AAA ||
     data?.type === NetworkTypeEnum.DPSK
@@ -206,7 +226,7 @@ export function MoreSettingsForm (props: {
                   message: $t(validationMessages.vlanRange)
                 }]}
               style={{ marginBottom: '15px' }}
-              children={<InputNumber style={{ width: '80px' }} />}
+              children={<InputNumber style={{ width: '80px' }} disabled={isPortalDefaultVLANId}/>}
             />
 
             {showDynamicWlan &&
@@ -374,6 +394,7 @@ export function MoreSettingsForm (props: {
 
         {isFastBssVisible &&
           <UI.FormItemNoLabel
+            data-testid='enableFastRoaming-full-block'
             name={['wlan', 'advancedCustomization', 'enableFastRoaming']}
             style={{ marginBottom: '15px' }}
             valuePropName='checked'
@@ -389,6 +410,7 @@ export function MoreSettingsForm (props: {
             <Form.Item
               name={['wlan','advancedCustomization','mobilityDomainId']}
               label={$t({ defaultMessage: 'Mobility Domain ID' })}
+              data-testid='mobilityDomainId-full-block'
               initialValue={1}
               rules={[
                 {
@@ -399,7 +421,10 @@ export function MoreSettingsForm (props: {
                 }
               ]}
               style={{ marginBottom: '15px' }}
-              children={<Input style={{ width: '150px' }} />}
+              children={
+                <Input data-testid='mobilityDomainId-input'
+                  style={{ width: '150px' }}
+                />}
             />
         }
 

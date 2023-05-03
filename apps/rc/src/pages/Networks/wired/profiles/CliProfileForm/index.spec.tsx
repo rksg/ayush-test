@@ -105,6 +105,9 @@ describe('Cli Profile Form - Add', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 
     await screen.findByRole('heading', { level: 3, name: 'Venues' })
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
     const row1 = await screen.findByRole('row', { name: /My-Venue/i })
     await userEvent.click(await within(row1).findByRole('checkbox'))
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
@@ -202,8 +205,8 @@ describe('Cli Profile Form - Add', () => {
   }, 30000)
 })
 
-// TODO: remove skip when ACX-13452 is fixed by moving to StepsFormNew
-describe.skip('Cli Profile Form - Edit', () => {
+
+describe('Cli Profile Form - Edit', () => {
   const params = {
     tenantId: 'tenant-id',
     action: 'edit',
@@ -220,7 +223,7 @@ describe.skip('Cli Profile Form - Edit', () => {
       rest.post(CommonUrlsInfo.getConfigProfiles.url,
         (_, res, ctx) => res(ctx.json({ data: profiles }))
       ),
-      rest.get(CommonUrlsInfo.getSwitchConfigProfile.url,
+      rest.get(SwitchUrlsInfo.getSwitchConfigProfile.url,
         (_, res, ctx) => res(ctx.json(cliProfile))
       ),
       rest.get(SwitchUrlsInfo.getCliConfigExamples.url,

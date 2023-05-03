@@ -9,3 +9,4 @@ data:
   change.password: "https://support.ruckuswireless.com/edit_my_profile"
   manage.licenses: "https://support.ruckuswireless.com/cloud_subscriptions"
   fetchbot.js.url: "https://storage.googleapis.com/tdi-static/chat/tdi-prd-latest.min.js"
+  new.api.domain.name: "api.ruckus.cloud"

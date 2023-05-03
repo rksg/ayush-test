@@ -753,7 +753,7 @@ exports[`Network Filter should select network node and bands 1`] = `
                   <div
                     title="swg, swg1, venue, 2 bands selected"
                   >
-                    3 items selected
+                    2 items selected
                   </div>
                 </span>
               </span>

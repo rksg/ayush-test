@@ -7,7 +7,9 @@ import { showActionModal, Table, TableProps } from '@acx-ui/components'
 import {
   MdnsProxyForwardingRule,
   BridgeServiceEnum,
-  mdnsProxyRuleTypeLabelMapping
+  mdnsProxyRuleTypeLabelMapping,
+  sortProp,
+  defaultSort
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
@@ -71,6 +73,7 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'service',
       key: 'service',
+      sorter: { compare: sortProp('service', defaultSort) },
       render: (data, row) => {
         return getRuleTypeLabel(row)
       }
@@ -78,12 +81,14 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
     {
       title: $t({ defaultMessage: 'From VLAN' }),
       dataIndex: 'fromVlan',
-      key: 'fromVlan'
+      key: 'fromVlan',
+      sorter: { compare: sortProp('fromVlan', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'To VLAN' }),
       dataIndex: 'toVlan',
-      key: 'toVlan'
+      key: 'toVlan',
+      sorter: { compare: sortProp('toVlan', defaultSort) }
     }
   ]
 
@@ -147,7 +152,6 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
       }
       <Table
         columns={columns}
-        columnState={{ hidden: readonly }}
         dataSource={rules}
         rowKey='id'
         actions={readonly ? [] : filterByAccess(actions)}

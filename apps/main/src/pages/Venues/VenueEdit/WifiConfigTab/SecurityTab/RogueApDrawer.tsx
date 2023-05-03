@@ -82,7 +82,6 @@ const RogueApDrawer = (props: {
         columns={basicColumns}
         dataSource={data?.rules}
         rowKey='name'
-        columnState={{ hidden: true }}
       />
     </Form.Item>
   </Form>

@@ -3,7 +3,9 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }               from '@acx-ui/feature-toggle'
 import {  MacRegListUrlsInfo }        from '@acx-ui/rc/utils'
+import { BrowserRouter as Router }    from '@acx-ui/react-router-dom'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
@@ -41,6 +43,7 @@ const list = {
 }
 
 describe('MacRegistrationListSettingForm', () => {
+  jest.mocked(useIsSplitOn).mockReturnValue(true)
 
   it('should render form successfully', async () => {
     mockServer.use(
@@ -51,11 +54,13 @@ describe('MacRegistrationListSettingForm', () => {
     )
 
     render(
-      <Provider>
-        <Form>
-          <MacRegistrationListSettingForm />
-        </Form>
-      </Provider>
+      <Router>
+        <Provider>
+          <Form>
+            <MacRegistrationListSettingForm />
+          </Form>
+        </Provider>
+      </Router>
     )
     await userEvent.type(await screen.findByRole('textbox', { name: 'Name' }), 'mac-auth-2')
   })

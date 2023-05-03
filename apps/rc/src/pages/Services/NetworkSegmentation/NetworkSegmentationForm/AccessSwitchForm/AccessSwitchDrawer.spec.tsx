@@ -15,7 +15,7 @@ describe('AccessSwitchDrawer', () => {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
     serviceId: 'testServiceId'
   }
-  const path = '/:tenantId/services/networkSegmentation/:serviceId/edit'
+  const path = '/:tenantId/t/services/networkSegmentation/:serviceId/edit'
   beforeEach(async () => {
     mockServer.use(
       rest.post(
@@ -65,5 +65,26 @@ describe('AccessSwitchDrawer', () => {
     await user.click(templateSelectBtn)
 
     await screen.findByRole('button', { name: 'Customize' })
+  })
+
+  it('Should edit multi-record successfully', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <AccessSwitchDrawer open={true}
+          editRecords={[
+            ...mockNsgSwitchInfoData.accessSwitches,
+            { id: 'c0:c5:20:aa:35:ff', name: 'mockAS', distributionSwitchId: 'c8:03:f5:3a:95:c6' }
+          ]}
+          venueId={mockNsgData.venueInfos[0].venueId} />
+      </Provider>, {
+        route: { params, path }
+      })
+
+    await screen.findByText(/Edit Access Switch: FEK3224R09N---AS---3, mockAS/i)
+
+    await user.click(await screen.findByText(/Uplink Port/))
+
+    await user.click(await screen.findByText(/LAG/))
   })
 })

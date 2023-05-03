@@ -44,6 +44,7 @@ import { filterByAccess } from '@acx-ui/user'
 
 import { layer3ProtocolLabelMapping } from '../../contentsMap'
 
+import { showUnsavedConfirmModal }     from './AccessControlComponent'
 import { AddModeProps, editModeProps } from './AccessControlForm'
 
 const { useWatch } = Form
@@ -314,7 +315,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       dataIndex: 'source',
       key: 'source',
       render: (data, row) => {
-        return <NetworkColumnComponent network={row.source} />
+        return <NetworkColumnComponent network={row.source} access={row.access} />
       }
     },
     {
@@ -322,7 +323,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       dataIndex: 'destination',
       key: 'destination',
       render: (data, row) => {
-        return <NetworkColumnComponent network={row.destination} />
+        return <NetworkColumnComponent network={row.destination} access={row.access} />
       }
     },
     {
@@ -346,8 +347,8 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     }
   ]
 
-  const NetworkColumnComponent = (props: { network: Layer3NetworkCol }) => {
-    const { network } = props
+  const NetworkColumnComponent = (props: { network: Layer3NetworkCol, access: string }) => {
+    const { network, access } = props
 
     let ipString = RuleSourceType.ANY as string
     if (network.type === RuleSourceType.SUBNET) {
@@ -362,9 +363,15 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       ipString = `${network.ip}`
     }
 
+    let portString = network.port === '' || network.port === undefined
+      ? AnyText
+      : network.port
+
     return <div style={{ display: 'flex', flexDirection: 'column' }}>
-      <span>{$t({ defaultMessage: 'IP:' })} {ipString}</span>
-      <span>{$t({ defaultMessage: 'Port:' })} {network.port === '' ? AnyText : network.port }</span>
+      <span>{$t({ defaultMessage: 'IP: {ipString}' }, { ipString: ipString })}</span>
+      { access !== 'BLOCK' && <span>
+        {$t({ defaultMessage: 'Port: {portString}' }, { portString: portString })}
+      </span> }
     </div>
   }
 
@@ -414,27 +421,41 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
   const handleLayer3Rule = () => {
     setRuleDrawerEditMode(false)
 
+    let sourceIpSettings = {} as { subnet: string, ipMask: string, ip: string }
+    if (drawerForm.getFieldValue('sourceType') !== AnyText) {
+      sourceIpSettings = {
+        subnet: drawerForm.getFieldValue('sourceNetworkAddress') ?? '',
+        ipMask: drawerForm.getFieldValue('sourceMask') ?? '',
+        ip: drawerForm.getFieldValue('sourceMask') !== undefined
+          ? drawerForm.getFieldValue('sourceNetworkAddress')
+          : drawerForm.getFieldValue('sourceIp')
+      }
+    }
+
+    let destIpSettings = {} as { subnet: string, ipMask: string, ip: string }
+    if (drawerForm.getFieldValue('destType') !== AnyText) {
+      destIpSettings = {
+        subnet: drawerForm.getFieldValue('destNetworkAddress') ?? '',
+        ipMask: drawerForm.getFieldValue('destMask') ?? '',
+        ip: drawerForm.getFieldValue('destMask') !== undefined
+          ? drawerForm.getFieldValue('destNetworkAddress')
+          : drawerForm.getFieldValue('destIp')
+      }
+    }
+
     const ruleObject = {
       description: drawerForm.getFieldValue('description') ?? '',
       access: drawerForm.getFieldValue('access'),
       protocol: drawerForm.getFieldValue('protocol'),
       source: {
         type: drawerForm.getFieldValue('sourceType') ?? AnyText,
-        subnet: drawerForm.getFieldValue('sourceNetworkAddress') ?? '',
-        ipMask: drawerForm.getFieldValue('sourceMask') ?? '',
-        ip: drawerForm.getFieldValue('sourceMask') !== undefined
-          ? drawerForm.getFieldValue('sourceNetworkAddress')
-          : drawerForm.getFieldValue('sourceIp'),
+        ...sourceIpSettings,
         port: drawerForm.getFieldValue('sourcePort') ?? '',
         enableIpSubnet: drawerForm.getFieldValue('sourceMask') !== undefined
       },
       destination: {
         type: drawerForm.getFieldValue('destType') ?? AnyText,
-        subnet: drawerForm.getFieldValue('destNetworkAddress') ?? '',
-        ipMask: drawerForm.getFieldValue('destMask') ?? '',
-        ip: drawerForm.getFieldValue('destMask') !== undefined
-          ? drawerForm.getFieldValue('destNetworkAddress')
-          : drawerForm.getFieldValue('destIp'),
+        ...destIpSettings,
         port: drawerForm.getFieldValue('destPort') ?? '',
         enableIpSubnet: drawerForm.getFieldValue('destMask') !== undefined
       }
@@ -546,7 +567,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     drawerForm.setFieldValue('destination', ruleObj.destination)
     let destValue = 1
     if (ruleObj.destination.ipMask) {
-      drawerForm.setFieldValue(['destinationNetworkAddress'], ruleObj.destination.ip)
+      drawerForm.setFieldValue(['destNetworkAddress'], ruleObj.destination.ip)
       drawerForm.setFieldValue(['destMask'], ruleObj.destination.ipMask)
       destValue = 2
     } else if (ruleObj.destination.ip) {
@@ -722,7 +743,6 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       actions={filterByAccess(actions)}
       rowActions={filterByAccess(rowActions)}
       rowSelection={{ type: 'radio' }}
-      columnState={{ hidden: true }}
       components={{
         body: {
           wrapper: DraggableContainer,
@@ -994,8 +1014,12 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       <Drawer
         title={$t({ defaultMessage: 'Layer 3 Settings' })}
         visible={visible}
+        mask={true}
         zIndex={10}
-        onClose={handleLayer3DrawerClose}
+        onClose={() => !isViewMode()
+          ? showUnsavedConfirmModal(handleLayer3DrawerClose)
+          : handleLayer3DrawerClose()
+        }
         destroyOnClose={true}
         children={content}
         footer={

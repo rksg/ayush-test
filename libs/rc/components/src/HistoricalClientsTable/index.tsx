@@ -102,7 +102,7 @@ export const defaultHistoricalClientPayload = {
     'serialNumber', 'ssid', 'disconnectTime', 'cog', 'ssid', 'venueName', 'apName',
     'event_datetime', 'eventId', 'networkId'],
   sortField: 'event_datetime',
-  searchTargetFields: ['clientMac', 'userName', 'hostname'],
+  searchTargetFields: ['clientMac', 'userName', 'hostname', 'clientIP'],
   filters: {}
 }
 
@@ -146,6 +146,7 @@ export function HistoricalClientsTable
             {$t({ defaultMessage: 'Historical Clients' })}
           </Subtitle>
           <Table
+            settingsId='historical-clients-table'
             columns={getCols(useIntl())}
             dataSource={tableQuery.data?.data}
             pagination={tableQuery.pagination}
@@ -177,6 +178,7 @@ export const GlobalSearchHistoricalClientsTable = (props: {
   const tableQuery = props.tableQuery
   return (
     <Table
+      settingsId='historical-clients-table'
       columns={getCols(useIntl())}
       dataSource={tableQuery?.data?.data}
       onChange={tableQuery?.handleTableChange}

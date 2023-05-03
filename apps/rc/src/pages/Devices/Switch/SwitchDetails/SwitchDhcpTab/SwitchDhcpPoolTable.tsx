@@ -68,12 +68,12 @@ export function SwitchDhcpPoolTable () {
       key: 'subnetAddress',
       title: $t({ defaultMessage: 'Address Pool' }),
       dataIndex: 'subnetAddress',
-      sorter: false
+      sorter: true
     }, {
       key: 'subnetMask',
       title: $t({ defaultMessage: 'Subnet Mask' }),
       dataIndex: 'subnetMask',
-      sorter: false
+      sorter: true
     }, {
       key: 'leaseDays',
       title: $t({ defaultMessage: 'Lease Time' }),
@@ -127,7 +127,6 @@ export function SwitchDhcpPoolTable () {
   return (
     <Loader states={[tableQuery]}>
       <Table columns={columns}
-        columnState={{ hidden: true }}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}

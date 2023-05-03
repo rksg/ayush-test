@@ -1,19 +1,20 @@
 
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Checkbox, Col, Form, Row, Select, Space } from 'antd'
 import { CheckboxValueType }                       from 'antd/lib/checkbox/Group'
 import { useIntl }                                 from 'react-intl'
 import { useParams }                               from 'react-router-dom'
 
-import { StepsForm, useStepFormContext } from '@acx-ui/components'
-import { useVenueNetworkListQuery }      from '@acx-ui/rc/services'
+import { Loader, StepsForm, useStepFormContext }                          from '@acx-ui/components'
+import { useGetTunnelProfileViewDataListQuery, useVenueNetworkListQuery } from '@acx-ui/rc/services'
 
-import { NetworkSegmentationGroupForm } from '..'
-import { useWatch }                     from '../../useWatch'
+import { NetworkSegmentationGroupFormData } from '..'
+import { useWatch }                         from '../../useWatch'
 
-import * as UI from './styledComponents'
+import * as UI                from './styledComponents'
+import { TunnelProfileModal } from './TunnelProfileModal'
 
 const venueNetworkDefaultPayload = {
   fields: ['name', 'id'],
@@ -23,14 +24,33 @@ const venueNetworkDefaultPayload = {
   sortOrder: 'ASC'
 }
 
+const tunnelProfileDefaultPayload = {
+  fields: ['name', 'id'],
+  pageSize: 10000,
+  sortField: 'name',
+  sortOrder: 'ASC'
+}
+
 export const WirelessNetworkForm = () => {
 
   const { $t } = useIntl()
   const params = useParams()
-  const { form } = useStepFormContext<NetworkSegmentationGroupForm>()
+  const { form } = useStepFormContext<NetworkSegmentationGroupFormData>()
+  const [defaultTunnelValue, setDefaultTunnelValue] = useState('')
   const venueId = useWatch('venueId', form)
   const tunnelProfileId = useWatch('vxlanTunnelProfileId', form)
-  const { networkOptions } = useVenueNetworkListQuery({
+  const { tunnelOptions = [], isLoading: isTunnelLoading } = useGetTunnelProfileViewDataListQuery({
+    payload: tunnelProfileDefaultPayload
+  }, {
+    selectFromResult: ({ data, isLoading }) => {
+      return {
+        tunnelOptions: data?.data.filter(item => item.id !== params.tenantId)
+          .map(item => ({ label: item.name, value: item.id })),
+        isLoading
+      }
+    }
+  })
+  const { networkOptions, isLoading: isDpskLoading } = useVenueNetworkListQuery({
     params: { ...params, venueId: venueId },
     payload: venueNetworkDefaultPayload
   }, {
@@ -46,6 +66,8 @@ export const WirelessNetworkForm = () => {
   useEffect(() => {
     if(!!!tunnelProfileId) {
       form.setFieldValue('tunnelProfileName', 'Default')
+    } else if(tunnelProfileId === params.tenantId) {
+      setDefaultTunnelValue(tunnelProfileId)
     }
   }, [])
 
@@ -58,22 +80,24 @@ export const WirelessNetworkForm = () => {
 
   return(
     <>
-      <Row gutter={20}>
+      <StepsForm.Title>{$t({ defaultMessage: 'Wireless Network Settings' })}</StepsForm.Title>
+      <Row gutter={20} align='middle'>
         <Col span={8}>
-          <StepsForm.Title>{$t({ defaultMessage: 'Wireless Network Settings' })}</StepsForm.Title>
           <Form.Item
             name='vxlanTunnelProfileId'
             label={$t({ defaultMessage: 'Tunnel Profile' })}
             children={
               <Select
+                loading={isTunnelLoading}
                 options={[
-                  { label: $t({ defaultMessage: 'Default' }), value: null }
+                  { label: $t({ defaultMessage: 'Default' }), value: defaultTunnelValue },
+                  ...tunnelOptions
                 ]}
               />
             }
           />
-
         </Col>
+        <TunnelProfileModal />
       </Row>
       <Row gutter={20}>
         <Col>
@@ -95,24 +119,28 @@ export const WirelessNetworkForm = () => {
                 }
               </UI.Description>
             </Space>
-            <Form.Item
-              name='networkIds'
-              rules={[
-                {
-                  required: true,
-                  message: $t({ defaultMessage: 'Please select at least 1 network' })
+            <Loader states={[{ isLoading: isDpskLoading, isFetching: false }]}>
+              <Form.Item
+                name='networkIds'
+                rules={[
+                  {
+                    required: true,
+                    message: $t({ defaultMessage: 'Please select at least 1 network' })
+                  }
+                ]}
+                children={
+                  <Checkbox.Group onChange={onNetworkChange}>
+                    <Space direction='vertical'>
+                      {
+                        networkOptions?.map(item => (
+                          <Checkbox value={item.value} children={item.label} key={item.value} />
+                        ))
+                      }
+                    </Space>
+                  </Checkbox.Group>
                 }
-              ]}
-              children={
-                <Checkbox.Group onChange={onNetworkChange}>
-                  <Space direction='vertical'>
-                    {networkOptions?.map(item => (
-                      <Checkbox value={item.value} children={item.label} />
-                    ))}
-                  </Space>
-                </Checkbox.Group>
-              }
-            />
+              />
+            </Loader>
           </Space>
         </Col>
       </Row>

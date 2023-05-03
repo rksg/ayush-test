@@ -20,15 +20,16 @@ export interface Activity {
   startDatetime: string
   status: TimelineStatus
   steps: {
-    id: string,
-    description: string,
-    status: TimelineStatus,
+    id: string
+    description: string
+    status: TimelineStatus
     progressType: string
     startDatetime: string
     endDatetime: string
+    error?: string
   }[]
-tenantId: string
-useCase: string
+  tenantId: string
+  useCase: string
 }
 
 export interface EventBase {
@@ -36,10 +37,12 @@ export interface EventBase {
   adminName?: string
   entity_id: string
   entity_type: string
+  ipAddress?: string
   event_datetime: string
   id: string
   macAddress: string
   message: string
+  detailedDescription?: string
   name: string
   product: string
   radio: string
@@ -65,6 +68,7 @@ export interface EventMeta {
   switchMac?: string
   switchName: string
   venueName: string
+  tableKey?: string
 }
 
 export type Event = EventBase & EventMeta

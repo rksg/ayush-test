@@ -229,15 +229,10 @@ export function TaggedPortsStep () {
     }
 
   const getDisabledPorts = (timeslot: string) => {
-    const vlanSelectedPorts = vlanList ? vlanList.map(item => item.switchFamilyModels
-      ?.filter(obj => obj.model === vlanSettingValues.switchFamilyModels?.model)) : []
-    const portExists = vlanSelectedPorts.map(item => item?.map(
-      obj => { return obj.taggedPorts?.includes(timeslot)}))[0]
-
     const untaggedPorts =
         vlanSettingValues.switchFamilyModels?.untaggedPorts?.toString().split(',') || []
 
-    const disabledPorts = untaggedPorts.includes(timeslot) || (portExists && portExists[0]) || false
+    const disabledPorts = untaggedPorts.includes(timeslot) || false
     return disabledPorts
   }
 
@@ -245,29 +240,33 @@ export function TaggedPortsStep () {
     const untaggedPorts =
     vlanSettingValues.switchFamilyModels?.untaggedPorts?.toString().split(',') || []
 
-    const vlanSelectedPorts = vlanList ? vlanList.map(item => item.switchFamilyModels
-      ?.filter(obj => obj.model === vlanSettingValues.switchFamilyModels?.model)) : []
+    const untaggedModel = vlanList ?
+      vlanList.filter(item => item.switchFamilyModels?.some(
+        switchModel => switchModel.model === vlanSettingValues.switchFamilyModels?.model &&
+        switchModel.untaggedPorts?.split(',').includes(timeslot))) : []
 
-    const untaggedPortExists = vlanSelectedPorts.map(item => item?.map(
-      obj => { return obj.untaggedPorts?.includes(timeslot) }))[0]
-
-    const taggedPortExists = vlanSelectedPorts.map(item => item?.map(
-      obj => { return obj.taggedPorts?.includes(timeslot) }))[0]
-
-    const filteredModel = vlanList ? vlanList.filter(model => model.switchFamilyModels?.some(
-      switchModel => switchModel.model === vlanSettingValues.switchFamilyModels?.model)) : []
+    const taggedModel = vlanList ?
+      vlanList.filter(item => item.switchFamilyModels?.some(
+        switchModel => switchModel.model === vlanSettingValues.switchFamilyModels?.model &&
+        switchModel.taggedPorts?.split(',').includes(timeslot))) : []
 
     if(untaggedPorts.includes(timeslot)){
       return <div>{$t({ defaultMessage: 'Port set as untagged' })}</div>
     }else{
       return <div>
         <div>{$t({ defaultMessage: 'Networks on this port:' })}</div>
-        <div><UI.TagsOutlineIcon /><UI.PortSpan>
-          {untaggedPortExists && untaggedPortExists[0] ?
-            filteredModel[0].vlanId : '-'}</UI.PortSpan></div>
-        <div><UI.TagsSolidIcon /><UI.PortSpan>
-          {taggedPortExists && taggedPortExists[0] ?
-            filteredModel[0].vlanId : '-'}</UI.PortSpan></div>
+        <div>
+          <UI.TagsOutlineIcon />
+          <UI.PortSpan>
+            {untaggedModel[0] ? untaggedModel[0].vlanId : '-'}
+          </UI.PortSpan>
+        </div>
+        <div>
+          <UI.TagsSolidIcon />
+          <UI.PortSpan>
+            {taggedModel.length > 0 ? taggedModel.map(item => item.vlanId).join(',') : '-'}
+          </UI.PortSpan>
+        </div>
       </div>
     }
   }
@@ -406,7 +405,7 @@ export function TaggedPortsStep () {
                           data-disabled={getDisabledPorts(timeslot.value)}
                           style={{ width: '20px', height: '20px' }}
                         ></div>
-                        <p>{getPortLabel(i+1, 1)}</p>
+                        <p>{getPortLabel(i+1, 3)}</p>
                       </Tooltip>,
                       value: timeslot.value,
                       disabled: getDisabledPorts(timeslot.value)

@@ -114,6 +114,7 @@ export interface AppRule {
   accessControl: string,
   applicationId: number,
   applicationName: string,
+  application: string,
   category: string,
   categoryId: number,
   id: string,
@@ -121,7 +122,10 @@ export interface AppRule {
   priority: number,
   ruleType: string,
   uplink?: number,
-  downlink?: number
+  downlink?: number,
+  upLinkMarkingType?: string,
+  markingPriority?: string,
+  downLinkMarkingType? : string
 }
 
 export interface AvcCategory {

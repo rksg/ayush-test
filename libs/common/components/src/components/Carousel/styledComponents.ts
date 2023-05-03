@@ -10,7 +10,7 @@ export const Wrapper = styled.div`
     border-radius: 8px;
     background: var(--acx-primary-black);
     overflow: hidden;
-  } 
+  }
   .carousel-card {
     margin: 0;
     color: var(--acx-primary-white);
@@ -30,6 +30,7 @@ export const Wrapper = styled.div`
     }
   }
   .carousel-dots {
+    z-index: 1;
     li {
       width: 6px;
       height: 6px;

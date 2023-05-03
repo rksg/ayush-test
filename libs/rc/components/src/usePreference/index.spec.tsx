@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
-import { rest } from 'msw'
-import { act }  from 'react-dom/test-utils'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
+import { act }   from 'react-dom/test-utils'
 
 import { useIsSplitOn }           from '@acx-ui/feature-toggle'
 import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
@@ -8,8 +9,8 @@ import { Provider  }              from '@acx-ui/store'
 import {
   mockServer,
   renderHook,
-  fireEvent,
-  waitFor
+  waitFor,
+  screen
 } from '@acx-ui/test-utils'
 
 import { fakePreference } from './fixtures'
@@ -17,9 +18,14 @@ import { fakePreference } from './fixtures'
 import { usePreference } from '.'
 
 const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
-
+const mockedUsedNavigate = jest.fn()
 jest.mock('@acx-ui/config', () => ({
   get: jest.fn().mockReturnValue('fake-google-maps-key')
+}))
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
 }))
 
 const mockedUpdateReqFn = jest.fn()
@@ -49,6 +55,7 @@ describe('usePreference', () => {
     )
   })
 
+
   it('should be able to update deep field', async () => {
     mockServer.use(
       rest.get(
@@ -75,7 +82,7 @@ describe('usePreference', () => {
     })
 
     await act(async () => {
-      result.current.update({
+      result.current.updatePartial({
         newData: {
           global: { other: { field: 'test' } }
         }
@@ -95,7 +102,7 @@ describe('usePreference', () => {
     })
   })
 
-  it('should update google map script correctly', async () => {
+  it('should popup confirm dialog', async () => {
     const { result, rerender } = renderHook(
       () => usePreference(),
       { wrapper: getWrapper(), route: { params } }
@@ -106,7 +113,7 @@ describe('usePreference', () => {
     })
 
     await act(async () => {
-      result.current.update({
+      result.current.updatePartial({
         newData: {
           global: { mapRegion: 'GB' }
         }
@@ -122,14 +129,23 @@ describe('usePreference', () => {
 
     rerender()
 
-    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
-    const scripts = document.getElementsByTagName('script')
+    await screen.findByRole('dialog')
+    await screen.findByText(/Are you sure you what to change Map Region/)
+    await userEvent.click(await screen.findByRole('button', { name: 'OK' }))
     await waitFor(() => {
-      expect(scripts[0].src).toBe('https://maps.googleapis.com/maps/api/js?key=fake-google-maps-key&region=GB&libraries=places&language=en')//.toContain('&region=GB')
+      expect(mockedUpdateReqFn).toBeCalledWith({
+        global: {
+          mapRegion: 'GB'
+        }
+      })
+    })
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toBeCalledWith(0)
     })
 
-    fireEvent.load(scripts[0])
-    fireEvent.error(scripts[0])
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).toBeNull()
+    })
   })
 
   it('should invoke on success when request succeed', async () => {
@@ -144,7 +160,7 @@ describe('usePreference', () => {
     })
 
     await act(async () => {
-      result.current.update({
+      result.current.updatePartial({
         newData: {
           global: { mapRegion: 'GB' }
         },
@@ -152,8 +168,12 @@ describe('usePreference', () => {
       })
     })
 
+    await userEvent.click(await screen.findByRole('button', { name: 'OK' }))
     await waitFor(() => {
       expect(mockedOnSuccessFn).toHaveBeenCalled()
+    })
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).toBeNull()
     })
   })
 
@@ -176,21 +196,18 @@ describe('usePreference', () => {
     })
 
     await act(async () => {
-      result.current.update({
-        newData: { global: { mapRegion: 'JR' } }
-      })
-    })
-
-    expect(result.current.currentMapRegion).toBe('TW')
-    await act(async () => {
-      result.current.update({
+      result.current.updatePartial({
         newData: { global: { mapRegion: 'GB' } },
         onError: mockedOnErrorFn
       })
     })
 
+    await userEvent.click(await screen.findByRole('button', { name: 'OK' }))
     await waitFor(() => {
       expect(mockedOnErrorFn).toBeCalled()
+    })
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).toBeNull()
     })
   })
 })

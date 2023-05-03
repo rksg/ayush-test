@@ -1,4 +1,7 @@
 import {
+  Filter
+} from '@acx-ui/components'
+import {
   CommonResult,
   createHttpRequest,
   EdgeDnsServers,
@@ -16,9 +19,17 @@ import {
   EdgeVenueFirmware,
   EdgeFirmwareVersion,
   onSocketActivityChanged,
-  onActivityMessageReceived
+  onActivityMessageReceived,
+  downloadFile,
+  SEARCH,
+  SORTER
 } from '@acx-ui/rc/utils'
 import { baseEdgeApi } from '@acx-ui/store'
+
+export type EdgesExportPayload = {
+  filters: Filter
+  tenantId: string
+} & SEARCH & SORTER
 
 export const edgeApi = baseEdgeApi.injectEndpoints({
   endpoints: (build) => ({
@@ -118,7 +129,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Edge', id: 'DETAIL' }]
+      providesTags: [{ type: 'Edge', id: 'DETAIL' }, { type: 'Edge', id: 'DNS' }]
     }),
     updateDnsServers: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -127,7 +138,8 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'DNS' }]
     }),
     getPortConfig: build.query<EdgePortConfig, RequestPayload>({
       query: ({ params }) => {
@@ -136,7 +148,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Edge', id: 'DETAIL_PORTS' }],
+      providesTags: [{ type: 'Edge', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
@@ -174,7 +186,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           totalCount: response.totalCount
         }
       },
-      providesTags: [{ type: 'Edge', id: 'DETAIL_SUB_INTERFACE' }]
+      providesTags: [{ type: 'Edge', id: 'DETAIL' }, { type: 'Edge', id: 'SUB_INTERFACE' }]
     }),
     addSubInterfaces: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -184,7 +196,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Edge', id: 'DETAIL_SUB_INTERFACE' }]
+      invalidatesTags: [{ type: 'Edge', id: 'SUB_INTERFACE' }]
     }),
     updateSubInterfaces: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -194,7 +206,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Edge', id: 'DETAIL_SUB_INTERFACE' }]
+      invalidatesTags: [{ type: 'Edge', id: 'SUB_INTERFACE' }]
     }),
     deleteSubInterfaces: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -203,7 +215,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Edge', id: 'DETAIL_SUB_INTERFACE' }]
+      invalidatesTags: [{ type: 'Edge', id: 'SUB_INTERFACE' }]
     }),
     getStaticRoutes: build.query<EdgeStaticRouteConfig, RequestPayload>({
       query: ({ params }) => {
@@ -212,7 +224,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Edge', id: 'DETAIL_ROUTES' }]
+      providesTags: [{ type: 'Edge', id: 'DETAIL' }, { type: 'Edge', id: 'ROUTES' }]
     }),
     updateStaticRoutes: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -222,7 +234,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Edge', id: 'DETAIL_ROUTES' }]
+      invalidatesTags: [{ type: 'Edge', id: 'ROUTES' }]
     }),
     getEdgePortsStatusList: build.query<EdgePortStatus[], RequestPayload>({
       query: ({ payload, params }) => {
@@ -242,7 +254,8 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         return {
           ...req
         }
-      }
+      },
+      providesTags: [{ type: 'Edge', id: 'FIRMWARE_LIST' }]
     }),
     getVenueEdgeFirmwareList: build.query<EdgeVenueFirmware[], RequestPayload>({
       query: () => {
@@ -280,6 +293,36 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Edge', id: 'FIRMWARE_LIST' }]
+    }),
+    rebootEdge: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(EdgeUrlsInfo.reboot, params)
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'LIST' }, { type: 'Edge', id: 'DETAIL' }]
+    }),
+    factoryResetEdge: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(EdgeUrlsInfo.factoryReset, params)
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'LIST' }, { type: 'Edge', id: 'DETAIL' }]
+    }),
+    downloadEdgesCSV: build.mutation<Blob, EdgesExportPayload>({
+      query: (payload) => {
+        const req = createHttpRequest(EdgeUrlsInfo.downloadSwitchsCSV,
+          { tenantId: payload.tenantId }
+        )
+        return {
+          ...req,
+          body: payload,
+          responseHandler: async (response) => {
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1]
+              : 'download.csv'
+            downloadFile(response, fileName)
+          }
+        }
+      }
     })
   })
 })
@@ -307,5 +350,8 @@ export const {
   useGetAvailableEdgeFirmwareVersionsQuery,
   useGetVenueEdgeFirmwareListQuery,
   useUpdateEdgeFirmwareMutation,
-  useGetLatestEdgeFirmwareQuery
+  useGetLatestEdgeFirmwareQuery,
+  useRebootEdgeMutation,
+  useFactoryResetEdgeMutation,
+  useDownloadEdgesCSVMutation
 } = edgeApi

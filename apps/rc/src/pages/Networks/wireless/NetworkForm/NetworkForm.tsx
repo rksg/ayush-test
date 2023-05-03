@@ -140,7 +140,8 @@ export default function NetworkForm (props:{
         formRef?.current?.setFieldsValue({ name: data.name + ' - copy' })
       }
       updateSaveData({ ...data, isCloudpathEnabled: data.authRadius?true:false,
-        enableAccountingService: data.accountingRadius?true:false })
+        enableAccountingService: (data.accountingRadius||
+          data.guestPortal?.wisprPage?.accountingRadius)?true:false })
     }
   }, [data])
 
@@ -401,11 +402,11 @@ export default function NetworkForm (props:{
             title={intl.$t(settingTitle, { type: saveState.type })}
             onFinish={async (data) => {
               if (saveState.type !== NetworkTypeEnum.CAPTIVEPORTAL) {
-                const radiusChanged = !_.isEqual(
+                const radiusChanged = (data?.authRadius || data?.accountingRadius)&&(!_.isEqual(
                   data?.authRadius,
                   // TODO: saveState?.authRadius would become null when user move back to settings, then radiusChanged will equal to true but there is no value in authRadius
                   saveState?.authRadius === null ? undefined : saveState?.authRadius
-                ) || !_.isEqual(data?.accountingRadius, saveState?.accountingRadius)
+                ) || !_.isEqual(data?.accountingRadius, saveState?.accountingRadius))
                 const radiusValidate = !data.cloudpathServerId && radiusChanged
                   ? await checkIpsValues(data) : false
                 const hasRadiusError = radiusValidate
@@ -485,18 +486,7 @@ export default function NetworkForm (props:{
                   return true
                 }}
               >
-                {saveState?.guestPortal?.guestNetworkType===
-                 GuestNetworkTypeEnum.ClickThrough&&<OnboardingForm />}
-                {saveState?.guestPortal?.guestNetworkType===
-                 GuestNetworkTypeEnum.SelfSignIn&&<SelfSignInForm />}
-                {saveState?.guestPortal?.guestNetworkType===
-                 GuestNetworkTypeEnum.Cloudpath&&<CloudpathForm/>}
-                {saveState?.guestPortal?.guestNetworkType===
-                 GuestNetworkTypeEnum.HostApproval&&<HostApprovalForm />}
-                {saveState?.guestPortal?.guestNetworkType===
-                 GuestNetworkTypeEnum.GuestPass&&<GuestPassForm />}
-                {saveState?.guestPortal?.guestNetworkType===
-                 GuestNetworkTypeEnum.WISPr&&<WISPrForm />}
+                {pickOneCaptivePortalForm(saveState)}
               </StepsForm.StepForm>
           }
           {editMode &&
@@ -514,25 +504,33 @@ export default function NetworkForm (props:{
               <NetworkMoreSettingsForm wlanData={saveState} />
 
             </StepsForm.StepForm>}
-          { saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&(
-            saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.ClickThrough||
-            saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.SelfSignIn||
-            saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.GuestPass||
-            saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.HostApproval
-          )
-              &&<StepsForm.StepForm
-                name='portalweb'
-                title={intl.$t({ defaultMessage: 'Portal Web Page' })}
-                onFinish={handlePortalWebPage}
-              >
-                <PortalInstance updatePortalData={(data)=>setPortalDemo(data)}/>
-              </StepsForm.StepForm>
+          { isPortalWebRender(saveState) &&<StepsForm.StepForm
+            name='portalweb'
+            title={intl.$t({ defaultMessage: 'Portal Web Page' })}
+            onFinish={handlePortalWebPage}
+          >
+            <PortalInstance updatePortalData={(data)=>setPortalDemo(data)}/>
+          </StepsForm.StepForm>
           }
           <StepsForm.StepForm
             name='venues'
             title={intl.$t({ defaultMessage: 'Venues' })}
             onFinish={async (data) => {
-              const settingSaveData = transferVenuesToSave(data, saveState)
+              let venueData = data
+              if (cloneMode) {
+                venueData = {
+                  venues: data.venues.map((v: { apGroups: { id?: string }[] }) => {
+                    if (v.apGroups) {
+                      v.apGroups.map((ag: { id?: string }) => {
+                        delete ag.id
+                        return ag
+                      })
+                    }
+                    return v
+                  })
+                }
+              }
+              const settingSaveData = transferVenuesToSave(venueData, saveState)
               updateSaveData(settingSaveData)
               return true
             }}
@@ -548,6 +546,45 @@ export default function NetworkForm (props:{
       </NetworkFormContext.Provider>
     </>
   )
+}
+
+function isPortalWebRender (saveState: NetworkSaveData): boolean {
+  if (saveState.type !== NetworkTypeEnum.CAPTIVEPORTAL) {
+    return false
+  }
+
+  switch (saveState.guestPortal?.guestNetworkType) {
+    case GuestNetworkTypeEnum.ClickThrough:
+    case GuestNetworkTypeEnum.SelfSignIn:
+    case GuestNetworkTypeEnum.GuestPass:
+    case GuestNetworkTypeEnum.HostApproval:
+      return true
+    default:
+      // eslint-disable-next-line no-console
+      console.error(`Unknown Network Type: ${saveState?.guestPortal?.guestNetworkType}`)
+      return false
+  }
+}
+
+function pickOneCaptivePortalForm (saveState: NetworkSaveData) {
+  switch (saveState?.guestPortal?.guestNetworkType) {
+    case GuestNetworkTypeEnum.ClickThrough:
+      return <OnboardingForm />
+    case GuestNetworkTypeEnum.SelfSignIn:
+      return <SelfSignInForm />
+    case GuestNetworkTypeEnum.Cloudpath:
+      return <CloudpathForm/>
+    case GuestNetworkTypeEnum.HostApproval:
+      return <HostApprovalForm />
+    case GuestNetworkTypeEnum.GuestPass:
+      return <GuestPassForm />
+    case GuestNetworkTypeEnum.WISPr:
+      return <WISPrForm />
+    default:
+      // eslint-disable-next-line no-console
+      console.error(`Unknown Network Type: ${saveState?.guestPortal?.guestNetworkType}`)
+      return <OnboardingForm />
+  }
 }
 
 function showConfigConflictModal (

@@ -2,10 +2,13 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { venueApi }                            from '@acx-ui/rc/services'
 import { CommonUrlsInfo, DHCPUrls, Dashboard } from '@acx-ui/rc/utils'
 import { Provider, store }                     from '@acx-ui/store'
 import { mockServer, render, screen }          from '@acx-ui/test-utils'
+import { RolesEnum }                           from '@acx-ui/types'
+import { getUserProfile, setUserProfile }      from '@acx-ui/user'
 
 import {
   venueDetailHeaderData,
@@ -63,6 +66,8 @@ jest.mock('./VenueTimelineTab', () => ({
 
 describe('VenueDetails', () => {
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
     store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
       rest.get(
@@ -107,10 +112,10 @@ describe('VenueDetails', () => {
       activeTab: 'overview'
     }
     render(<Provider><VenueDetails /></Provider>, {
-      route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
+      route: { params, path: '/:tenantId/t/:venueId/venue-details/:activeTab' }
     })
     expect(await screen.findByText('testVenue')).toBeVisible()
-    expect(screen.getAllByRole('tab')).toHaveLength(8)
+    expect(screen.getAllByRole('tab')).toHaveLength(7)
   })
 
   it('should navigate to analytic tab correctly', async () => {
@@ -120,7 +125,7 @@ describe('VenueDetails', () => {
       activeTab: 'analytics'
     }
     render(<Provider><VenueDetails /></Provider>, {
-      route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
+      route: { params, path: '/:tenantId/:venueId/t/venue-details/:activeTab' }
     })
     expect(await screen.findByTestId('rc-VenueAnalyticsTab')).toBeVisible()
   })
@@ -132,7 +137,7 @@ describe('VenueDetails', () => {
       activeTab: 'clients'
     }
     render(<Provider><VenueDetails /></Provider>, {
-      route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
+      route: { params, path: '/:tenantId/:venueId/t/venue-details/:activeTab' }
     })
     expect(await screen.findByTestId('rc-VenueClientsTab')).toBeVisible()
   })
@@ -144,7 +149,7 @@ describe('VenueDetails', () => {
       activeTab: 'devices'
     }
     render(<Provider><VenueDetails /></Provider>, {
-      route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
+      route: { params, path: '/:tenantId/t/:venueId/venue-details/:activeTab' }
     })
     expect(await screen.findByTestId('rc-VenueDevicesTab')).toBeVisible()
   })
@@ -156,7 +161,7 @@ describe('VenueDetails', () => {
       activeTab: 'networks'
     }
     render(<Provider><VenueDetails /></Provider>, {
-      route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
+      route: { params, path: '/:tenantId/t/:venueId/venue-details/:activeTab' }
     })
     expect(await screen.findByTestId('rc-VenueNetworksTab')).toBeVisible()
   })
@@ -168,7 +173,7 @@ describe('VenueDetails', () => {
       activeTab: 'services'
     }
     render(<Provider><VenueDetails /></Provider>, {
-      route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
+      route: { params, path: '/:tenantId/t/:venueId/venue-details/:activeTab' }
     })
     expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
       .toEqual('Services')
@@ -181,7 +186,7 @@ describe('VenueDetails', () => {
       activeTab: 'timeline'
     }
     render(<Provider><VenueDetails /></Provider>, {
-      route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
+      route: { params, path: '/:tenantId/t/:venueId/venue-details/:activeTab' }
     })
     expect(await screen.findByTestId('rc-VenueTimelineTab')).toBeVisible()
   })
@@ -193,12 +198,13 @@ describe('VenueDetails', () => {
       activeTab: 'not-exist'
     }
     render(<Provider><VenueDetails /></Provider>, {
-      route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
+      route: { params, path: '/:tenantId/t/:venueId/venue-details/:activeTab' }
     })
 
     expect(screen.getAllByRole('tab').filter(x => x.getAttribute('aria-selected') === 'true'))
       .toHaveLength(0)
   })
+
   it('should go to edit page', async () => {
     const params = {
       tenantId: 'f378d3ba5dd44e62bacd9b625ffec681',
@@ -206,9 +212,25 @@ describe('VenueDetails', () => {
       activeTab: 'overview'
     }
     render(<Provider><VenueDetails /></Provider>, {
-      route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
+      route: { params, path: '/:tenantId/t/:venueId/venue-details/:activeTab' }
     })
 
     await userEvent.click(await screen.findByRole('button', { name: 'Configure' }))
+  })
+
+  it('should hide analytics when role is READ_ONLY', async () => {
+    setUserProfile({
+      allowedOperations: [],
+      profile: { ...getUserProfile().profile, roles: [RolesEnum.READ_ONLY] }
+    })
+    const params = {
+      tenantId: 'f378d3ba5dd44e62bacd9b625ffec681',
+      venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
+      activeTab: 'analytics'
+    }
+    render(<Provider><VenueDetails /></Provider>, {
+      route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
+    })
+    expect(screen.queryByTestId('rc-VenueAnalyticsTab')).toBeNull()
   })
 })

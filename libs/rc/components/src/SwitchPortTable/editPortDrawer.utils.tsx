@@ -69,7 +69,7 @@ export const getPortEditStatus = (status: string) => {
 
 export const getPortSpeed = (selectedPorts: SwitchPortViewModel[]) => {
   const portsSpeedOptions = selectedPorts.map((item: SwitchPortViewModel) => {
-    return getPortSpeedOptions(item.switchModel, item.portIdentifier)
+    return getPortSpeedOptions(item.switchModel, item.portIdentifier, item)
   })
 
   return _.intersection(...portsSpeedOptions) as string[]
@@ -232,10 +232,10 @@ export const getPoeClass = (selectedPorts: SwitchPortViewModel[]) => {
     { label: defineMessage({ defaultMessage: '2 (802.3af 7.0 W)' }), value: 'TWO' },
     { label: defineMessage({ defaultMessage: '3 (802.3af 15.4 W)' }), value: 'THREE' },
     { label: defineMessage({ defaultMessage: '4 (802.3af 30 W)' }), value: 'FOUR' },
-    { label: defineMessage({ defaultMessage: '5 (802.3bf 45 W)' }), value: 'FIVE' },
-    { label: defineMessage({ defaultMessage: '6 (802.3bf 60 W)' }), value: 'SIX' },
-    { label: defineMessage({ defaultMessage: '7 (802.3bf 75 W)' }), value: 'SEVEN' },
-    { label: defineMessage({ defaultMessage: '8 (802.3bf 99 W)' }), value: 'EIGHT' }
+    { label: defineMessage({ defaultMessage: '5 (802.3bt 45 W)' }), value: 'FIVE' },
+    { label: defineMessage({ defaultMessage: '6 (802.3bt 60 W)' }), value: 'SIX' },
+    { label: defineMessage({ defaultMessage: '7 (802.3bt 75 W)' }), value: 'SEVEN' },
+    { label: defineMessage({ defaultMessage: '8 (802.3bt 99 W)' }), value: 'EIGHT' }
   ]
 
   let support5to8PoeClass = true
@@ -243,9 +243,9 @@ export const getPoeClass = (selectedPorts: SwitchPortViewModel[]) => {
     const portNumber = Number(port.portIdentifier.split('/').pop())
 
     const supportMorePoeClass820048zp2 = port.switchModel === 'ICX8200-48ZP2' && portNumber > 32
-    const is820048zp = port.switchModel === 'ICX8200-48ZP'
+    const is820024zp = port.switchModel === 'ICX8200-24ZP'
     const is8200c08zp = port.switchModel === 'ICX8200-C08ZP'
-    const support = is8200c08zp || is820048zp || supportMorePoeClass820048zp2
+    const support = is8200c08zp || is820024zp || supportMorePoeClass820048zp2
     if(!support) {
       support5to8PoeClass = false
     }

@@ -21,6 +21,7 @@ export type ErrorAction = {
   payload: {
     data?: ErrorDetailsProps
     originalStatus?: number
+    status?: number
   }
 }
 
@@ -33,8 +34,8 @@ let isModalShown = false
 // TODO: workaround for skipping general error dialog
 const ignoreEndpointList = [
   'addAp', 'updateAp', 'inviteDelegation', 'addRecipient', 'updateRecipient', 'getDnsServers',
-  'addEdge', 'clientInfo', 'getClientDetails', 'createNetworkSegmentationGroup',
-  'getPropertyConfigs'
+  'addEdge', 'clientInfo', 'getClientDetails', 'getPropertyConfigs', 'getDhcpByEdgeId',
+  'convertNonVARToMSP'
 ]
 
 export const errorMessage = {
@@ -80,7 +81,9 @@ export const errorMessage = {
 
 export const getErrorContent = (action: ErrorAction) => {
   const { $t } = getIntl()
-  const status = action.meta.baseQueryMeta?.response?.status || action.payload?.originalStatus
+  const status = action.meta.baseQueryMeta?.response?.status
+   || action.payload?.originalStatus
+   || action.payload?.status
 
   let errorMsg = {} as ErrorMessageType
   let type: ActionModalType = 'error'

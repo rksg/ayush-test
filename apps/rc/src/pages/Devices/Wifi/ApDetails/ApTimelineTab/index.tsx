@@ -12,15 +12,15 @@ import {
   useEventsTableQuery,
   eventTypeMapping
 } from '@acx-ui/rc/components'
-import { TimelineTypes } from '@acx-ui/rc/utils'
-import { useTenantLink } from '@acx-ui/react-router-dom'
+import { TimelineTypes, useApContext } from '@acx-ui/rc/utils'
+import { useTenantLink }               from '@acx-ui/react-router-dom'
 
-import { useApContext } from '../ApContext'
 
 const Events = () => {
   const { serialNumber } = useApContext()
   const tableQuery = useEventsTableQuery({ serialNumber: [serialNumber] })
   return <EventTable
+    settingsId='ap-event-table'
     tableQuery={tableQuery}
     filterables={['severity', 'entity_type']}
     eventTypeMap={omit(eventTypeMapping, 'SWITCH')}
@@ -33,6 +33,7 @@ const Activities = () => {
   const tableQuery = useActivityTableQuery({ entityType: 'AP', entityId: serialNumber! })
 
   return <ActivityTable
+    settingsId='ap-activity-table'
     tableQuery={tableQuery}
     filterables={['status']}
     columnState={activityTableColumnState}

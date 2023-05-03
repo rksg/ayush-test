@@ -9,7 +9,8 @@ import {
   FirmwareVenue,
   FirmwareSwitchVenue,
   createHttpRequest,
-  RequestPayload
+  RequestPayload,
+  enableNewApi
 } from '@acx-ui/rc/utils'
 import { baseFirmwareApi } from '@acx-ui/store'
 
@@ -24,6 +25,15 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       },
       providesTags: [{ type: 'Firmware', id: 'PREFERENCES' }]
     }),
+    getSwitchUpgradePreferences: build.query<UpgradePreferences, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getSwitchUpgradePreferences, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Firmware', id: 'SWITCH_PREFERENCES' }]
+    }),
     updateUpgradePreferences: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(FirmwareUrlsInfo.updateUpgradePreferences, params)
@@ -34,20 +44,37 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Firmware', id: 'PREFERENCES' }]
     }),
+    updateSwitchUpgradePreferences: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.updateSwitchUpgradePreferences, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Firmware', id: 'SWITCH_PREFERENCES' }]
+    }),
     getVenueVersionList: build.query<TableResult<FirmwareVenue>, RequestPayload>({
       query: ({ params, payload }) => {
         // eslint-disable-next-line max-len
         const queryString = payload as { searchString: string, filters: { version: [], type: string[] } }
         const req = createHttpRequest(FirmwareUrlsInfo.getVenueVersionList, {
           ...params,
-          version: queryString.filters?.version ? queryString.filters.version.join(',') : '',
+          version: queryString?.filters?.version ? queryString.filters.version.join(',') : '',
           // eslint-disable-next-line max-len
-          type: queryString.filters?.type ? queryString.filters.type.map(t => t.toLowerCase()).join(',') : '',
-          search: queryString.searchString ?? ''
+          type: queryString?.filters?.type ? queryString.filters.type.map(t => t.toLowerCase()).join(',') : '',
+          search: queryString?.searchString ?? ''
         })
         return{
           ...req
         }
+      },
+      transformResponse (result: FirmwareVenue[] ) {
+        return {
+          data: result,
+          page: 1,
+          totalCount: result.length
+        } as TableResult<FirmwareVenue>
       },
       providesTags: [{ type: 'Firmware', id: 'LIST' }]
     }),
@@ -63,18 +90,16 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
     getLatestFirmwareList: build.query<FirmwareVersion[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(FirmwareUrlsInfo.getLatestFirmwareList, params)
-        return {
-          ...req
-        }
+        return enableNewApi(FirmwareUrlsInfo.getLatestFirmwareList) ?
+          { ...req, body: { status: 'latest' } } : { ...req }
       },
       providesTags: [{ type: 'Firmware', id: 'LIST' }]
     }),
     getAvailableFirmwareList: build.query<FirmwareVersion[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(FirmwareUrlsInfo.getAvailableFirmwareList, params)
-        return {
-          ...req
-        }
+        return enableNewApi(FirmwareUrlsInfo.getAvailableFirmwareList) ?
+          { ...req, body: { status: 'release' } } : { ...req }
       },
       providesTags: [{ type: 'Firmware', id: 'LIST' }]
     }),
@@ -160,11 +185,11 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         // eslint-disable-next-line max-len
         const queryString = payload as { searchString: string, filters: { version: [], type: string[] } }
         let typeString = ''
-        if (queryString.filters?.type && queryString.filters.type.join(',') === 'Release') {
+        if (queryString?.filters?.type && queryString.filters.type.join(',') === 'Release') {
           typeString = 'RECOMMENDED'
         }
         // eslint-disable-next-line max-len
-        if (queryString.filters?.type && queryString.filters.type.join(',') === 'Beta') {
+        if (queryString?.filters?.type && queryString.filters.type.join(',') === 'Beta') {
           typeString = 'BETA'
         }
         const venueListReq = createHttpRequest(FirmwareUrlsInfo.getSwitchVenueVersionList, params)
@@ -173,8 +198,8 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
           body: {
             firmwareType: typeString,
             // eslint-disable-next-line max-len
-            firmwareVersion: queryString.filters?.version ? queryString.filters.version.join(',') : '',
-            search: queryString.searchString ?? '',
+            firmwareVersion: queryString?.filters?.version ? queryString.filters.version.join(',') : '',
+            search: queryString?.searchString ?? '',
             updateAvailable: ''
           }
         }
@@ -233,6 +258,8 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
 export const {
   useGetUpgradePreferencesQuery,
   useUpdateUpgradePreferencesMutation,
+  useGetSwitchUpgradePreferencesQuery,
+  useUpdateSwitchUpgradePreferencesMutation,
   useGetVenueVersionListQuery,
   useGetLatestFirmwareListQuery,
   useGetAvailableFirmwareListQuery,

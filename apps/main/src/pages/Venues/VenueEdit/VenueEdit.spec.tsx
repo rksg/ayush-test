@@ -4,7 +4,7 @@ import { Modal } from 'antd'
 import { rest }  from 'msw'
 
 import { venueApi }                                                                          from '@acx-ui/rc/services'
-import { CommonUrlsInfo, SyslogUrls }                                                        from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, SwitchUrlsInfo, SyslogUrls }                                        from '@acx-ui/rc/utils'
 import { Provider, store }                                                                   from '@acx-ui/store'
 import { render, screen, fireEvent, mockServer, waitFor, within, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -99,7 +99,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
         (_, res, ctx) => res(ctx.json({}))),
       rest.put(CommonUrlsInfo.updateVenueMesh.url,
         (_, res, ctx) => res(ctx.json({}))),
-      rest.get(CommonUrlsInfo.getSwitchConfigProfile.url,
+      rest.get(SwitchUrlsInfo.getSwitchConfigProfile.url,
         (_, res, ctx) => res(ctx.json(switchConfigProfile[0]))),
       rest.get(SyslogUrls.getSyslogPolicyList.url,
         (_, res, ctx) => res(ctx.json(syslogServerProfiles)))
@@ -123,7 +123,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
         }))
       }))
       render(<Provider><VenueEdit /></Provider>, {
-        route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
+        route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab/:activeSubTab' }
       })
       await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
       await waitFor(() => screen.findByText('profile01 (Regular)'))
@@ -157,7 +157,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
 
     it('should open invalid changes modal', async () => {
       render(<Provider><VenueEdit /></Provider>, {
-        route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
+        route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab/:activeSubTab' }
       })
       await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
       await updateAdvancedSettings(false)
@@ -166,7 +166,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
     })
     it('should open invalid changes modal and handle changes discarded', async () => {
       render(<Provider><VenueEdit /></Provider>, {
-        route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
+        route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab/:activeSubTab' }
       })
       await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
       await updateAdvancedSettings(false)
@@ -175,7 +175,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
     })
     it('should open unsaved changes modal', async () => {
       render(<Provider><VenueEdit /></Provider>, {
-        route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
+        route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab/:activeSubTab' }
       })
       await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
       await updateAdvancedSettings(true)
@@ -204,7 +204,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
     })
     it('should open unsaved changes modal and handle changes discarded', async () => {
       render(<Provider><VenueEdit /></Provider>, {
-        route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
+        route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab/:activeSubTab' }
       })
       await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
       await waitFor(() => screen.findByText('AP Model'))
@@ -215,7 +215,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
     })
     it('should open unsaved changes modal and handle changes saved', async () => {
       render(<Provider><VenueEdit /></Provider>, {
-        route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
+        route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab/:activeSubTab' }
       })
       await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
       await waitFor(() => screen.findByText('AP Model'))
@@ -245,7 +245,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
     })
     it('should open unsaved changes modal and handle changes discarded', async () => {
       render(<Provider><VenueEdit /></Provider>, {
-        route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
+        route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab/:activeSubTab' }
       })
       await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
       await waitFor(() => screen.findByText('Enable Server'))
@@ -253,7 +253,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
     })
     it('should open unsaved changes modal and handle changes saved', async () => {
       render(<Provider><VenueEdit /></Provider>, {
-        route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
+        route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab/:activeSubTab' }
       })
       await waitFor(() => screen.findByText('Enable Server'))
       fireEvent.click(await screen.findByText('Back to venue details'))

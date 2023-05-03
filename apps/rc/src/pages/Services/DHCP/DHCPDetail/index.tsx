@@ -1,11 +1,11 @@
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { PageHeader, GridRow, GridCol, DisabledButton, Button, Tabs } from '@acx-ui/components'
-import { ClockOutlined }                                              from '@acx-ui/icons'
+import { PageHeader, GridRow, GridCol, Button, Tabs } from '@acx-ui/components'
 import {
   useGetDHCPProfileQuery,
-  useVenuesListQuery } from '@acx-ui/rc/services'
+  useVenuesListQuery
+} from '@acx-ui/rc/services'
 import {
   getServiceDetailsLink,
   getServiceRoutePath,
@@ -16,7 +16,8 @@ import { DHCPUsage }      from '@acx-ui/rc/utils'
 import { TenantLink }     from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
-import { PoolTable } from '../DHCPForm/DHCPPool/PoolTable'
+import { DEFAULT_GUEST_DHCP_NAME } from '../DHCPForm/DHCPForm'
+import { PoolTable }               from '../DHCPForm/DHCPPool/PoolTable'
 
 import DHCPInstancesTable from './DHCPInstancesTable'
 import DHCPOverview       from './DHCPOverview'
@@ -45,16 +46,14 @@ export default function DHCPServiceDetail () {
           }
         ]}
         extra={filterByAccess([
-          <DisabledButton key={'date-filter'} icon={<ClockOutlined />}>
-            {$t({ defaultMessage: 'Last 24 hours' })}
-          </DisabledButton>,
           <TenantLink to={getServiceDetailsLink({
             type: ServiceType.DHCP,
             oper: ServiceOperation.EDIT,
             serviceId: params.serviceId!
           })}>
             <Button key='configure'
-              disabled={venuesList.data && venuesList.data.data.length>0}
+              disabled={(venuesList.data && venuesList.data.data.length>0)
+                || data?.serviceName === DEFAULT_GUEST_DHCP_NAME}
               type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
         ])}

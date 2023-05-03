@@ -62,7 +62,7 @@ describe('ClientIsolationTable', () => {
   }
 
   // eslint-disable-next-line max-len
-  const tablePath = '/:tenantId/' + getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.LIST })
+  const tablePath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.LIST })
 
   beforeEach(async () => {
     mockServer.use(
@@ -88,7 +88,7 @@ describe('ClientIsolationTable', () => {
 
     const targetName = mockedTableResult.data[0].name
     // eslint-disable-next-line max-len
-    expect(await screen.findByRole('button', { name: /Add Client Isolation Pofile/i })).toBeVisible()
+    expect(await screen.findByRole('button', { name: /Add Client Isolation Profile/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: new RegExp(targetName) })).toBeVisible()
   })
 

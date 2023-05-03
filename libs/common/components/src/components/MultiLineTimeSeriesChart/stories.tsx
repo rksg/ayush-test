@@ -26,7 +26,7 @@ export const getData = () => {
   return data as [TimeStamp, number][]
 }
 const seriesNames = [
-  ['New Clients', 'Impacted Clients', 'Connected Clients'],
+  ['New Client Associations', 'Impacted Clients', 'Connected Clients'],
   ['Total Failures', 'EAP Failures', 'EAP Attempts']
 ]
 export const getSeriesData = (index = 0) => {
@@ -150,6 +150,28 @@ storiesOf('MultiLineTimeSeriesChart', module)
       endTime: +new Date('2020-11-30T00:00:00.000Z'),
       data: { id: 5 },
       itemStyle: { opacity: 0.3, color: cssStr(incidentSeverities.P2.color) }
+    }]}
+    // eslint-disable-next-line no-console
+    onMarkAreaClick={(data) => { console.log(data) }}
+  />)
+
+  .add('With Horizontal Marker Areas and Marker Lines', () => <MultiLineTimeSeriesChart
+    style={{ width: 504, height: 300 }}
+    data={getSeriesData()}
+    markerAreas={[{
+      start: 1600,
+      itemStyle: { opacity: 0.1, color: cssStr(incidentSeverities.P1.color) }
+    },{
+      start: 0,
+      end: 600,
+      itemStyle: { opacity: 0.1, color: cssStr(incidentSeverities.P3.color) }
+    }]}
+    markerLines={[{
+      threshold: 1600,
+      lineStyle: { color: cssStr(incidentSeverities.P1.color) }
+    },{
+      threshold: 600,
+      lineStyle: { color: cssStr(incidentSeverities.P3.color) }
     }]}
     // eslint-disable-next-line no-console
     onMarkAreaClick={(data) => { console.log(data) }}

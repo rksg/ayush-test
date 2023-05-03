@@ -17,7 +17,7 @@ exports[`Switch Stack Form - Add should render correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/tenant-id/devices/switch"
+                href="/tenant-id/t/devices/switch"
               >
                 Switches
               </a>
@@ -287,11 +287,8 @@ exports[`Switch Stack Form - Add should render correctly 1`] = `
                                         />
                                       </span>
                                       <span
-                                        class="ant-select-selection-item"
-                                        title="Select venue..."
-                                      >
-                                        Select venue...
-                                      </span>
+                                        class="ant-select-selection-placeholder"
+                                      />
                                     </div>
                                     <span
                                       aria-hidden="true"

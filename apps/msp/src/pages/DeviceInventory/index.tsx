@@ -82,7 +82,14 @@ export function DeviceInventory () {
       'serialNumber',
       'tenantId',
       'model',
-      'customerName' ]
+      'customerName',
+      'apMac',
+      'switchMac',
+      'deviceType',
+      'name',
+      'deviceStatus'
+    ],
+    searchTargetFields: ['apMac','switchMac','serialNumber']
   }
 
   const filterResults = useTableQuery({
@@ -221,6 +228,7 @@ export function DeviceInventory () {
     return (
       <Loader states={[tableQuery]}>
         <Table
+          settingsId='device-inventory-table'
           columns={columns}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}

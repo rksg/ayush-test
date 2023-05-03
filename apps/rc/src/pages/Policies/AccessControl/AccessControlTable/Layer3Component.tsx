@@ -153,6 +153,7 @@ const Layer3Component = () => {
       onlyAddMode={addModeStatus}
     />
     <Table<L3AclPolicy>
+      settingsId='policies-access-control-layer3-table'
       columns={useColumns(networkFilterOptions, editMode, setEditMode)}
       enableApiFilter={true}
       dataSource={tableQuery.data?.data}

@@ -19,6 +19,7 @@ const Events = () => {
   const { networkId } = useParams()
   const tableQuery = useEventsTableQuery({ networkId: [networkId] })
   return <EventTable
+    settingsId='network-event-table'
     tableQuery={tableQuery}
     filterables={['severity', 'entity_type']}
     eventTypeMap={omit(eventTypeMapping, 'SWITCH')}
@@ -31,6 +32,7 @@ const Activities = () => {
   const tableQuery = useActivityTableQuery({ entityType: 'NETWORK', entityId: networkId! })
 
   return <ActivityTable
+    settingsId='network-activity-table'
     tableQuery={tableQuery}
     filterables={['status']}
     columnState={activityTableColumnState}

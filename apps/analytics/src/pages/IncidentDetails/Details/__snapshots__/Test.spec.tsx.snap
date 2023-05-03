@@ -17,7 +17,7 @@ exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -202,7 +202,7 @@ exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -387,7 +387,7 @@ exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -572,7 +572,7 @@ exports[`Test Details should render ApservDowntimeHigh correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -757,7 +757,7 @@ exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -945,7 +945,7 @@ exports[`Test Details should render CovClientrssiLow correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -1145,7 +1145,7 @@ exports[`Test Details should render FailureTemplate correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -1333,7 +1333,7 @@ exports[`Test Details should render FailureTemplate correctly 2`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -1521,7 +1521,7 @@ exports[`Test Details should render FailureTemplate correctly 3`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -1709,7 +1709,7 @@ exports[`Test Details should render FailureTemplate correctly 4`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -1897,7 +1897,7 @@ exports[`Test Details should render FailureTemplate correctly 5`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -2085,7 +2085,7 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -2195,142 +2195,6 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
         />
       </div>
     </div>
-    <div
-      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
-      style="padding: 10px 10px 10px 10px;"
-    >
-      <div
-        class="Grid__Container-sc-5irhjd-1 zzbxI"
-        style="min-height: 250px;"
-      >
-        <div
-          class="styledComponents__Wrapper-sc-13w5wfx-4 edzPbE"
-          type="no-border"
-        >
-          <div
-            class="ant-card"
-          >
-            <div
-              class="ant-card-head"
-            >
-              <div
-                class="ant-card-head-wrapper"
-              >
-                <div
-                  class="ant-card-head-title"
-                >
-                  <div
-                    class="ant-space ant-space-horizontal ant-space-align-center"
-                  >
-                    <div
-                      class="ant-space-item"
-                    >
-                      <div
-                        class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
-                      >
-                        Details
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="ant-card-extra"
-                >
-                  <div
-                    class="ant-space ant-space-horizontal ant-space-align-center"
-                  />
-                </div>
-              </div>
-            </div>
-            <div
-              class="ant-card-body"
-            >
-              <div
-                class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
-              >
-                <div
-                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
-                >
-                  <div
-                    class="ant-space-item"
-                  >
-                    Not available in this Beta version
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
-      style="padding: 10px 10px 10px 10px;"
-    >
-      <div
-        class="Grid__Container-sc-5irhjd-1 zzbxI"
-        style="min-height: 250px;"
-      >
-        <div
-          class="styledComponents__Wrapper-sc-13w5wfx-4 edzPbE"
-          type="no-border"
-        >
-          <div
-            class="ant-card"
-          >
-            <div
-              class="ant-card-head"
-            >
-              <div
-                class="ant-card-head-wrapper"
-              >
-                <div
-                  class="ant-card-head-title"
-                >
-                  <div
-                    class="ant-space ant-space-horizontal ant-space-align-center"
-                  >
-                    <div
-                      class="ant-space-item"
-                    >
-                      <div
-                        class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
-                      >
-                        Memory Utilization
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="ant-card-extra"
-                >
-                  <div
-                    class="ant-space ant-space-horizontal ant-space-align-center"
-                  />
-                </div>
-              </div>
-            </div>
-            <div
-              class="ant-card-body"
-            >
-              <div
-                class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
-              >
-                <div
-                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
-                >
-                  <div
-                    class="ant-space-item"
-                  >
-                    Not available in this Beta version
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </DocumentFragment>
 `;
@@ -2352,7 +2216,7 @@ exports[`Test Details should render SwitchPoePd correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -2460,74 +2324,6 @@ exports[`Test Details should render SwitchPoePd correctly 1`] = `
         <div
           data-testid="insights"
         />
-      </div>
-    </div>
-    <div
-      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
-      style="padding: 10px 10px 10px 10px;"
-    >
-      <div
-        class="Grid__Container-sc-5irhjd-1 zzbxI"
-        style="min-height: 250px;"
-      >
-        <div
-          class="styledComponents__Wrapper-sc-13w5wfx-4 edzPbE"
-          type="no-border"
-        >
-          <div
-            class="ant-card"
-          >
-            <div
-              class="ant-card-head"
-            >
-              <div
-                class="ant-card-head-wrapper"
-              >
-                <div
-                  class="ant-card-head-title"
-                >
-                  <div
-                    class="ant-space ant-space-horizontal ant-space-align-center"
-                  >
-                    <div
-                      class="ant-space-item"
-                    >
-                      <div
-                        class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
-                      >
-                        Details
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="ant-card-extra"
-                >
-                  <div
-                    class="ant-space ant-space-horizontal ant-space-align-center"
-                  />
-                </div>
-              </div>
-            </div>
-            <div
-              class="ant-card-body"
-            >
-              <div
-                class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
-              >
-                <div
-                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
-                >
-                  <div
-                    class="ant-space-item"
-                  >
-                    Not available in this Beta version
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
     <div
@@ -2564,7 +2360,7 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -2674,142 +2470,6 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
         />
       </div>
     </div>
-    <div
-      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
-      style="padding: 10px 10px 10px 10px;"
-    >
-      <div
-        class="Grid__Container-sc-5irhjd-1 zzbxI"
-        style="min-height: 250px;"
-      >
-        <div
-          class="styledComponents__Wrapper-sc-13w5wfx-4 edzPbE"
-          type="no-border"
-        >
-          <div
-            class="ant-card"
-          >
-            <div
-              class="ant-card-head"
-            >
-              <div
-                class="ant-card-head-wrapper"
-              >
-                <div
-                  class="ant-card-head-title"
-                >
-                  <div
-                    class="ant-space ant-space-horizontal ant-space-align-center"
-                  >
-                    <div
-                      class="ant-space-item"
-                    >
-                      <div
-                        class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
-                      >
-                        Details
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="ant-card-extra"
-                >
-                  <div
-                    class="ant-space ant-space-horizontal ant-space-align-center"
-                  />
-                </div>
-              </div>
-            </div>
-            <div
-              class="ant-card-body"
-            >
-              <div
-                class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
-              >
-                <div
-                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
-                >
-                  <div
-                    class="ant-space-item"
-                  >
-                    Not available in this Beta version
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
-      style="padding: 10px 10px 10px 10px;"
-    >
-      <div
-        class="Grid__Container-sc-5irhjd-1 zzbxI"
-        style="min-height: 250px;"
-      >
-        <div
-          class="styledComponents__Wrapper-sc-13w5wfx-4 edzPbE"
-          type="no-border"
-        >
-          <div
-            class="ant-card"
-          >
-            <div
-              class="ant-card-head"
-            >
-              <div
-                class="ant-card-head-wrapper"
-              >
-                <div
-                  class="ant-card-head-title"
-                >
-                  <div
-                    class="ant-space ant-space-horizontal ant-space-align-center"
-                  >
-                    <div
-                      class="ant-space-item"
-                    >
-                      <div
-                        class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
-                      >
-                        Impacted Switches
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="ant-card-extra"
-                >
-                  <div
-                    class="ant-space ant-space-horizontal ant-space-align-center"
-                  />
-                </div>
-              </div>
-            </div>
-            <div
-              class="ant-card-body"
-            >
-              <div
-                class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
-              >
-                <div
-                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
-                >
-                  <div
-                    class="ant-space-item"
-                  >
-                    Not available in this Beta version
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </DocumentFragment>
 `;
@@ -2831,7 +2491,7 @@ exports[`Test Details should render Ttc correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>

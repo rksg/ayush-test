@@ -1,12 +1,12 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ServiceType,
   DpskDetailsTabKey,
   getServiceRoutePath,
   ServiceOperation,
-  NewDpskPassphraseBaseUrl,
   DpskUrls
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
@@ -21,9 +21,17 @@ import {
 import {
   mockedDpskPassphraseList,
   mockedTenantId,
-  mockedServiceId
+  mockedServiceId,
+  mockedDpskPassphrase,
+  mockedDpskPassphraseListWithPersona,
+  mockedDpskPassphraseDevices
 } from './__tests__/fixtures'
 import DpskPassphraseManagement from './DpskPassphraseManagement'
+
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  downloadFile: jest.fn()
+}))
 
 describe('DpskPassphraseManagement', () => {
   const paramsForPassphraseTab = {
@@ -32,13 +40,13 @@ describe('DpskPassphraseManagement', () => {
     activeTab: DpskDetailsTabKey.PASSPHRASE_MGMT
   }
   // eslint-disable-next-line max-len
-  const detailPath = '/:tenantId/' + getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.DETAIL })
+  const detailPath = '/:tenantId/t/' + getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.DETAIL })
 
   beforeEach(() => {
     mockServer.use(
-      rest.get(
-        NewDpskPassphraseBaseUrl,
-        (req, res, ctx) => res(ctx.json(mockedDpskPassphraseList))
+      rest.post(
+        DpskUrls.getEnhancedPassphraseList.url,
+        (req, res, ctx) => res(ctx.json({ ...mockedDpskPassphraseList }))
       )
     )
   })
@@ -52,7 +60,7 @@ describe('DpskPassphraseManagement', () => {
       }
     )
 
-    const targetRecord = mockedDpskPassphraseList.content[0]
+    const targetRecord = mockedDpskPassphraseList.data[0]
 
     const targetRow = await screen.findByRole('row', { name: new RegExp(targetRecord.username) })
     expect(targetRow).toBeInTheDocument()
@@ -86,7 +94,7 @@ describe('DpskPassphraseManagement', () => {
       }
     )
 
-    const targetRecord = mockedDpskPassphraseList.content[0]
+    const targetRecord = mockedDpskPassphraseList.data[0]
 
     const targetRow = await screen.findByRole('row', { name: new RegExp(targetRecord.username) })
     await userEvent.click(within(targetRow).getByRole('checkbox'))
@@ -96,6 +104,30 @@ describe('DpskPassphraseManagement', () => {
     expect(confirmMsgElem).toBeInTheDocument()
 
     await userEvent.click(await screen.findByRole('button', { name: /Delete Passphrase/i }))
+  })
+
+  it.skip('should not delete selected passphrase when it is mapped to Persona', async () => {
+    mockServer.use(
+      rest.post(
+        DpskUrls.getEnhancedPassphraseList.url,
+        (req, res, ctx) => res(ctx.json({ ...mockedDpskPassphraseListWithPersona }))
+      )
+    )
+
+    render(
+      <Provider>
+        <DpskPassphraseManagement />
+      </Provider>, {
+        route: { params: paramsForPassphraseTab, path: detailPath }
+      }
+    )
+
+    const targetRecord = mockedDpskPassphraseListWithPersona.data[0]
+
+    const targetRow = await screen.findByRole('row', { name: new RegExp(targetRecord.username) })
+    await userEvent.click(within(targetRow).getByRole('checkbox'))
+
+    expect(screen.queryByRole('button', { name: /Delete/ })).toBeNull()
   })
 
   it('should show error message when import CSV file failed', async () => {
@@ -138,14 +170,14 @@ describe('DpskPassphraseManagement', () => {
 
     mockServer.use(
       rest.get(
-        NewDpskPassphraseBaseUrl,
+        DpskUrls.exportPassphrases.url,
         (req, res, ctx) => {
 
           const headers = req.headers['headers']
 
           // Get List API: 'Content-Type': 'application/json'
           if (headers['content-type'] === 'application/json') {
-            return res(ctx.json(mockedDpskPassphraseList))
+            return res(ctx.json({ ...mockedDpskPassphraseList }))
           }
 
           // Export to file API: 'Content-Type': 'text/csv'
@@ -171,6 +203,196 @@ describe('DpskPassphraseManagement', () => {
 
     await waitFor(() => {
       expect(exportFn).toHaveBeenCalled()
+    })
+  })
+
+  it('should render the edit passphrase view', async () => {
+    mockServer.use(
+      rest.get(
+        DpskUrls.getPassphrase.url,
+        (req, res, ctx) => res(ctx.json({ ...mockedDpskPassphrase }))
+      )
+    )
+
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <DpskPassphraseManagement />
+      </Provider>, {
+        route: { params: paramsForPassphraseTab, path: detailPath }
+      }
+    )
+
+    const targetRecord = mockedDpskPassphraseList.data[0]
+
+    const targetRow = await screen.findByRole('row', { name: new RegExp(targetRecord.username) })
+    await userEvent.click(within(targetRow).getByRole('checkbox'))
+    await userEvent.click(await screen.findByRole('button', { name: /Edit Passphrase/i }))
+
+    const dialog = await screen.findByRole('dialog')
+    expect(within(dialog).getByRole('button', { name: /Save/i })).toBeVisible()
+  })
+
+  it('should revoke/unrevoke the passphrases', async () => {
+    const [ revokeFn, unrevokeFn ] = [ jest.fn(), jest.fn() ]
+
+    mockServer.use(
+      rest.patch(
+        DpskUrls.revokePassphrases.url,
+        (req, res, ctx) => {
+          const body = req.body as { ids: string[], changes: { revocationReason: string | null } }
+
+          if (body.changes.revocationReason) {
+            revokeFn(body)
+          } else {
+            unrevokeFn(body)
+          }
+
+          return res(ctx.json({ requestId: '12345' }))
+        }
+      )
+    )
+
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <DpskPassphraseManagement />
+      </Provider>, {
+        route: { params: paramsForPassphraseTab, path: detailPath }
+      }
+    )
+
+    const targetRecord = mockedDpskPassphraseList.data[0]
+    const targetRow = await screen.findByRole('row', { name: new RegExp(targetRecord.username) })
+
+    await userEvent.click(within(targetRow).getByRole('checkbox'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Revoke' }))
+
+    const dialog = await screen.findByRole('dialog')
+    expect(await within(dialog).findByText('Revoke "' + targetRecord.username + '"?')).toBeVisible()
+
+    await userEvent.type(
+      within(dialog).getByRole('textbox', { name: /Type the reason to revoke/i }),
+      '1234'
+    )
+
+    await userEvent.click(within(dialog).getByRole('button', { name: /OK/i }))
+    await waitFor(() => {
+      expect(revokeFn).toHaveBeenCalledWith({
+        ids: [targetRecord.id],
+        changes: { revocationReason: '1234' }
+      })
+    })
+
+    await userEvent.click(await within(targetRow).findByRole('checkbox', { checked: false }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Unrevoke' }))
+    await waitFor(() => {
+      expect(unrevokeFn).toHaveBeenCalledWith({
+        ids: [targetRecord.id],
+        changes: { revocationReason: null }
+      })
+    })
+  })
+
+  it('should be able to add device in DpskPassphrase', async () => {
+    mockServer.use(
+      rest.get(
+        DpskUrls.getPassphraseDevices.url,
+        (req, res, ctx) => res(ctx.json(mockedDpskPassphraseDevices))
+      ),
+      rest.patch(
+        DpskUrls.updatePassphraseDevices.url,
+        (req, res, ctx) => res(ctx.json({ requestId: 'req1' }))
+      ),
+      rest.delete(
+        DpskUrls.deletePassphraseDevices.url,
+        (req, res, ctx) => res(ctx.json({ requestId: 'req2' }))
+      )
+    )
+
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <DpskPassphraseManagement />
+      </Provider>, {
+        route: { params: paramsForPassphraseTab, path: detailPath }
+      }
+    )
+
+    const targetRecord = mockedDpskPassphraseList.data[0]
+    const targetRow = await screen.findByRole('row', { name: new RegExp(targetRecord.username) })
+
+    await userEvent.click(within(targetRow).getByRole('checkbox'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Manage Devices' }))
+
+    await screen.findByText(/ad:2c:3b:1d:4d:4e/i)
+
+    await userEvent.click(await screen.findByRole('button', {
+      name: /add device/i
+    }))
+
+    await screen.findByRole('dialog', {
+      name: /add device/i
+    })
+
+    await userEvent.type(
+      screen.getByRole('textbox', {
+        name: /mac address/i
+      }), 'DC:AE:EB:22:5E:60'
+    )
+
+    await userEvent.click(screen.getByText(/add another device/i))
+
+    await userEvent.click(
+      await screen.findByRole('button', { name: 'Add' })
+    )
+
+    await userEvent.click(screen.getAllByText(/cancel/i)[1])
+
+    await userEvent.click(screen.getAllByText(/cancel/i)[0])
+  })
+
+  it('should be able to delete device in DpskPassphrase', async () => {
+    mockServer.use(
+      rest.get(
+        DpskUrls.getPassphraseDevices.url,
+        (req, res, ctx) => res(ctx.json(mockedDpskPassphraseDevices))
+      ),
+      rest.patch(
+        DpskUrls.updatePassphraseDevices.url,
+        (req, res, ctx) => res(ctx.json({ requestId: 'req1' }))
+      ),
+      rest.delete(
+        DpskUrls.deletePassphraseDevices.url,
+        (req, res, ctx) => res(ctx.json({ requestId: 'req2' }))
+      )
+    )
+
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <DpskPassphraseManagement />
+      </Provider>, {
+        route: { params: paramsForPassphraseTab, path: detailPath }
+      }
+    )
+
+    const targetRecord = mockedDpskPassphraseList.data[0]
+    const targetRow = await screen.findByRole('row', { name: new RegExp(targetRecord.username) })
+
+    await userEvent.click(within(targetRow).getByRole('checkbox'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Manage Devices' }))
+
+    await screen.findByText(/ad:2c:3b:1d:4d:4e/i)
+
+    const targetDevice = await screen.findByRole('row', { name: /ad:2c:3b:1d:4d:4e/i })
+
+    await userEvent.click(within(targetDevice).getByRole('checkbox'))
+    await userEvent.click((await screen.findAllByText('Delete'))[1])
+
+    await waitFor(() => {
+      const dialog = screen.getByRole('dialog')
+      expect(within(dialog).queryByText(/delete/i)).toBeNull()
     })
   })
 })

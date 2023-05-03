@@ -14,9 +14,14 @@ import {
   useDeleteNotificationRecipientsMutation,
   useDeleteNotificationRecipientMutation
 } from '@acx-ui/rc/services'
-import { NotificationRecipientUIModel, NotificationEndpointType } from '@acx-ui/rc/utils'
-import { useParams }                                              from '@acx-ui/react-router-dom'
-import { filterByAccess }                                         from '@acx-ui/user'
+import {
+  NotificationRecipientUIModel,
+  NotificationEndpointType,
+  sortProp,
+  defaultSort
+} from '@acx-ui/rc/utils'
+import { useParams }      from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 import RecipientDialog from './RecipientDialog'
 import * as UI         from './styledComponents'
@@ -86,12 +91,14 @@ export const NotificationsTable = () => {
       key: 'description',
       dataIndex: 'description',
       defaultSortOrder: 'ascend',
-      width: 600
+      width: 600,
+      sorter: { compare: sortProp('description', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Email Address' }),
       key: 'email',
       dataIndex: 'email',
+      sorter: { compare: sortProp('email', defaultSort) },
       render: (data, row) => {
         return renderDataWithStatus(row.email, row.emailEnabled)
       }
@@ -100,6 +107,7 @@ export const NotificationsTable = () => {
       title: $t({ defaultMessage: 'Mobile Phone' }),
       key: 'mobile',
       dataIndex: 'mobile',
+      sorter: { compare: sortProp('mobile', defaultSort) },
       render: (data, row) => {
         return renderDataWithStatus(row.mobile, row.mobileEnabled)
       }
@@ -160,7 +168,6 @@ export const NotificationsTable = () => {
       ]}>
         <Table
           columns={columns}
-          columnState={{ hidden: true }}
           dataSource={notificationList.data}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}

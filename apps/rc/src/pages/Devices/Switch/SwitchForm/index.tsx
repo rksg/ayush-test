@@ -98,6 +98,7 @@ export function SwitchForm () {
   const [deviceOnline, setDeviceOnline] = useState(false)
   const [isSupportStack, setIsSupportStack] = useState(true)
   const [isOnlyFirmware, setIsOnlyFirmware] = useState(false)
+  const [isRodanModel, setIsRodanModel] = useState(false)
   const [serialNumber, setSerialNumber] = useState('')
   const [readOnly, setReadOnly] = useState(false)
   const [disableIpSetting, setDisableIpSetting] = useState(false)
@@ -142,7 +143,7 @@ export function SwitchForm () {
   const handleSwitchList = async () => {
     const payload = {
       ...switchListPayload,
-      searchString: switchModel,
+      searchString: switchModel.split('-')[0],
       filters: { isStack: [true], venueId: [venueId] }
     }
     const memberList =
@@ -265,6 +266,14 @@ export function SwitchForm () {
     }
   }
 
+  const setFirmwareType = function (value: string) {
+    const isRodan = getSwitchModel(value)?.includes('8200')
+    if (isRodan) {
+      formRef.current?.setFieldValue('specifiedType', FIRMWARE.ROUTER)
+    }
+    setIsRodanModel(isRodan || false)
+  }
+
   const serialNumberRegExp = function (value: string) {
     const modelNotSupportStack = ['ICX7150-C08P', 'ICX7150-C08PT']
     // Only 7150-C08P/C08PT are Switch Only.
@@ -282,6 +291,7 @@ export function SwitchForm () {
       setIsSupportStack(!(modelNotSupportStack.indexOf(model) > -1))
       setIsOnlyFirmware(!!modelOnlyFirmware.find(item => model?.indexOf(item) > -1))
       setSerialNumber(value)
+      setFirmwareType(value)
     }
     return Promise.resolve()
   }
@@ -346,10 +356,7 @@ export function SwitchForm () {
                     message: $t({ defaultMessage: 'Please select Venue' })
                   }]}
                   children={<Select
-                    options={[
-                      { label: $t({ defaultMessage: 'Select venue...' }), value: null },
-                      ...venueOption
-                    ]}
+                    options={venueOption}
                     onChange={async (value) => await handleVenueChange(value)}
                     disabled={readOnly || editMode}
                   />}
@@ -473,7 +480,7 @@ export function SwitchForm () {
                     </>}
                     hidden={editMode}
                   >
-                    <Select disabled={isOnlyFirmware}>
+                    <Select disabled={isOnlyFirmware || isRodanModel}>
                       <Option value={FIRMWARE.AUTO}>
                         {$t({ defaultMessage: 'Factory default' })}
                       </Option>

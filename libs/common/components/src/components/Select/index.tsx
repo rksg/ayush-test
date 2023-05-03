@@ -209,10 +209,10 @@ export function Select (props: CascaderProps) {
         onClear={antProps.allowClear ? onClearMultiple : undefined}
         removeIcon={open ? undefined : null}
         placeholder={placeholder}
-        maxTagPlaceholder={
+        maxTagPlaceholder={ommited =>
           <div title={currentLabels?.join(', ')}>
             {$t(selectedItemsDesc,{
-              count: currentValues.length,
+              count: ommited.length,
               singular: $t(entityName.singular),
               plural: $t(entityName.plural)
             })}

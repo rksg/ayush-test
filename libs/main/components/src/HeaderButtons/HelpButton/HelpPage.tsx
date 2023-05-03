@@ -55,7 +55,8 @@ const getMapping = async (basePath: string, showError: () => void, isMspUser:boo
   }
 
   result = await result.json()
-  const mapKey = Object.keys(result).find(item => basePath === item)
+  const pagePath = isMspUser ? basePath.replace('*/v/', '') : basePath.replace('*/t/', '')
+  const mapKey = Object.keys(result).find(item => pagePath === item)
   return result[mapKey as keyof typeof result]
 }
 
@@ -145,7 +146,11 @@ export default function HelpPage (props: {
           }}
           type='link'
           size='small'>
-          {$t({ defaultMessage: 'RUCKUS One User Guide' })}
+          { isMSPUserType ?
+            $t({ defaultMessage: 'RUCKUS One MSP Guide' })
+            :
+            $t({ defaultMessage: 'RUCKUS One User Guide' })
+          }
         </Button>
       </p>}
 

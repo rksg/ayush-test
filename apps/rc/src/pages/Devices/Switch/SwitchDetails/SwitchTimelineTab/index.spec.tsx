@@ -11,7 +11,10 @@ import { SwitchTimelineTab } from '.'
 
 jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user'),
-  useUserProfileContext: () => ({ data: { detailLevel: 'it' } })
+  useUserProfileContext: () => ({ data: {
+    detailLevel: 'it',
+    dateFormat: 'mm/dd/yyyy'
+  } })
 }))
 
 describe('SwitchTimelineTab', () => {
@@ -30,7 +33,7 @@ describe('SwitchTimelineTab', () => {
           serialNumber: 'serialNumber',
           activeSubTab: 'activities'
         },
-        path: '/t/:tenantId/devices/switch/:switchId/:serialNumber/details/timeline/:activeSubTab'
+        path: '/:tenantId/t/devices/switch/:switchId/:serialNumber/details/timeline/:activeSubTab'
 
       }
     })

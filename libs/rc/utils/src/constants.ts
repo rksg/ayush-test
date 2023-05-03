@@ -113,6 +113,7 @@ export enum ServiceType {
   PORTAL = 'Portal',
   DHCP = 'DHCP (Wi-Fi)',
   EDGE_DHCP = 'DHCP (Edge)',
+  EDGE_FIREWALL = 'Firewall (Edge)',
   WIFI_CALLING = 'Wi-Fi Calling',
   MDNS_PROXY = 'mDNS Proxy',
   DPSK = 'DPSK',
@@ -1093,6 +1094,11 @@ export const ICX_MODELS_INFORMATION: SwitchModelInfoMap = {
       ]
     }
   }
+}
+
+export const VLAN_PREFIX = {
+  VLAN: 'VLAN-',
+  POOL: 'VLAN Pool: '
 }
 
 export const PORTAL_LIMIT_NUMBER = 256

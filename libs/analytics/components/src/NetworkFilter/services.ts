@@ -11,6 +11,9 @@ export type ApOrSwitch = {
   path?: NetworkPath
   name: string
   mac: string
+  serial?: string
+  model?: string
+  firmware?: string
 }
 export type ApsOrSwitches = { aps?: ApOrSwitch[], switches?: ApOrSwitch[] }
 export type Child = NetworkData & ApsOrSwitches
@@ -69,8 +72,42 @@ export const api = dataApi.injectEndpoints({
       providesTags: [{ type: 'Monitoring', id: 'ANALYTICS_NETWORK_FILTER' }],
       transformResponse: (response: Response) =>
         response.network.hierarchyNode.children
+    }),
+    recentNetworkFilter: build.query<
+      Child[],
+      Omit<NetworkHierarchyFilter, 'path'>
+    >({
+      query: payload => ({
+        document: gql`
+          query RecentNetworkHierarchy(
+            $path: [HierarchyNodeInput], $start: DateTime, $end: DateTime
+          ) {
+            network(start: $start, end: $end) {
+              hierarchyNode(path: $path) {
+                type
+                name
+                path { type name }
+                children {
+                  id
+                  type
+                  name
+                  path { type name }
+                  aps: recentAps { name mac serial model firmware }
+                }
+              }
+            }
+          }
+        `,
+        variables: {
+          path: defaultNetworkPath,
+          start: payload.startDate,
+          end: payload.endDate
+        }
+      }),
+      providesTags: [{ type: 'Monitoring', id: 'ANALYTICS_RECENT_NETWORK_FILTER' }],
+      transformResponse: (response: Response) => response.network.hierarchyNode.children
     })
   })
 })
 
-export const { useNetworkFilterQuery } = api
+export const { useNetworkFilterQuery, useRecentNetworkFilterQuery } = api

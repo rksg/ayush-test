@@ -22,11 +22,12 @@ import { Path, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui
 import { filterByAccess }                                          from '@acx-ui/user'
 import { loadImageWithJWT }                                        from '@acx-ui/utils'
 
-import Photo              from '../../../../assets/images/portal-demo/PortalPhoto.svg'
-import Powered            from '../../../../assets/images/portal-demo/PoweredLogo.svg'
-import Logo               from '../../../../assets/images/portal-demo/RuckusCloud.svg'
-import { getLanguage }    from '../../commonUtils'
-import PortalPreviewModal from '../PortalPreviewModal'
+import Photo                 from '../../../../assets/images/portal-demo/PortalPhoto.svg'
+import Powered               from '../../../../assets/images/portal-demo/PoweredLogo.svg'
+import Logo                  from '../../../../assets/images/portal-demo/RuckusCloud.svg'
+import { getLanguage }       from '../../commonUtils'
+import { initialPortalData } from '../PortalForm/PortalForm'
+import PortalPreviewModal    from '../PortalPreviewModal'
 
 
 export default function PortalTable () {
@@ -41,7 +42,9 @@ export default function PortalTable () {
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedPortalProfileListQuery,
     defaultPayload: {
-      filters: {},
+      filters: {}
+    },
+    search: {
       searchTargetFields: ['serviceName'],
       searchString: ''
     }
@@ -120,7 +123,7 @@ export default function PortalTable () {
       title: intl.$t({ defaultMessage: 'Language' }),
       dataIndex: 'language',
       render: (data, row) =>{
-        return getLanguage(row.content.displayLangCode as keyof typeof PortalLanguageEnum )
+        return getLanguage((row.content?.displayLangCode||'en')as keyof typeof PortalLanguageEnum )
       }
     },
     {
@@ -131,15 +134,16 @@ export default function PortalTable () {
       render: (data, row) =>{
         return (<div aria-label={row.id}
           onClick={async (e)=>{
-            const demoValue = row.content
-            const tempDemo = { ...demoValue, poweredImg: demoValue.poweredImg?
-              await loadImageWithJWT(demoValue.poweredImg):Powered,
-            logo: demoValue.logo?await loadImageWithJWT(demoValue.logo):Logo,
-            photo: demoValue.photo?await loadImageWithJWT(demoValue.photo): Photo,
-            bgImage: demoValue.bgImage?await loadImageWithJWT(demoValue.bgImage):'' }
+            const demoValue = { ...row.content }
+            const tempDemo = { ...initialPortalData.content, ...demoValue,
+              poweredImg: demoValue.poweredImg?
+                await loadImageWithJWT(demoValue.poweredImg):Powered,
+              logo: demoValue.logo?await loadImageWithJWT(demoValue.logo):Logo,
+              photo: demoValue.photo?await loadImageWithJWT(demoValue.photo): Photo,
+              bgImage: demoValue.bgImage?await loadImageWithJWT(demoValue.bgImage):'' }
             setNewDemo(tempDemo)
             getPortalLang({ params: { ...params, messageName:
-              row.content.displayLangCode+'.json' } }).unwrap().then(res=>{
+              tempDemo.displayLangCode+'.json' } }).unwrap().then(res=>{
               setPortalId(row.id as string)
               setPortalLang(res)
             })

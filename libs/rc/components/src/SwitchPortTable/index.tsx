@@ -26,7 +26,7 @@ import { SwitchLagDrawer } from '../SwitchLagDrawer'
 import { EditPortDrawer } from './editPortDrawer'
 import * as UI            from './styledComponents'
 
-const STACK_PORT_FIELD = 'SwitchPortStackingPortField'
+const STACK_PORT_FIELD = 'usedInFormingStack'
 
 export function SwitchPortTable ({ isVenueLevel }: {
   isVenueLevel: boolean
@@ -79,7 +79,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
         'lagId', 'syncedSwitchConfig', 'ingressAclName', 'egressAclName', 'usedInFormingStack',
         'id', 'poeType', 'signalIn', 'signalOut', 'lagName', 'opticsType',
         'broadcastIn', 'broadcastOut', 'multicastIn', 'multicastOut', 'inErr', 'outErr',
-        'crcErr', 'inDiscard', 'usedInFormingStack'
+        'crcErr', 'inDiscard', 'usedInFormingStack', 'mediaType', 'poeUsage'
       ]
     },
     search: {
@@ -142,16 +142,20 @@ export function SwitchPortTable ({ isVenueLevel }: {
   }, {
     key: 'poeUsed',
     title: $t({ defaultMessage: 'PoE Usage' }),
-    dataIndex: 'poeUsed',
+    dataIndex: 'poeUsage',
     sorter: true,
     render: (data, row) => {
-      if (row.poeEnabled === false) {
-        return 'off'
+      if (!data) {
+        if (row.poeEnabled === false) {
+          return 'off'
+        }
+        const poeTotal = (row.poeTotal) ? Math.round(row.poeTotal / 1000) : 0
+        const poeUsed = (row.poeUsed) ? Math.round(row.poeUsed / 1000) : 0
+        const poePercentage = (!poeUsed || !poeTotal) ? 0 : Math.round(poeUsed / poeTotal * 100)
+        return `${poeUsed}/${poeTotal}W (${poePercentage}%)`
+      } else {
+        return data
       }
-      const poeTotal = (row.poeTotal) ? Math.round(row.poeTotal / 1000) : 0
-      const poeUsed = (row.poeUsed) ? Math.round(row.poeUsed / 1000) : 0
-      const poePercentage = (!poeUsed || !poeTotal) ? 0 : Math.round(poeUsed / poeTotal * 100)
-      return `${poeUsed}/${poeTotal}W (${poePercentage}%)`
     }
   }, {
     key: 'vlanIds',
@@ -279,6 +283,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
 
   return <Loader states={[tableQuery]}>
     <Table
+      settingsId='switch-port-table'
       columns={getColumns()}
       dataSource={transformData(tableQuery.data?.data)}
       pagination={tableQuery.pagination}

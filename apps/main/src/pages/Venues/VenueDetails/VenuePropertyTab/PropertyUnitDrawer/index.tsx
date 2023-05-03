@@ -21,7 +21,7 @@ import {
   APExtended,
   emailRegExp,
   Persona,
-  PersonaEthernetPort,
+  PersonaEthernetPort, phoneRegExp,
   PropertyDpskType,
   PropertyUnit,
   PropertyUnitFormFields,
@@ -29,25 +29,19 @@ import {
   UnitPersonaConfig,
   VenueLanPorts
 } from '@acx-ui/rc/utils'
-import { useParams }          from '@acx-ui/react-router-dom'
-import { validationMessages } from '@acx-ui/utils'
+import { useParams }                         from '@acx-ui/react-router-dom'
+import { noDataDisplay, validationMessages } from '@acx-ui/utils'
 
 
-function AccessPointLanPortSelector (props: {
-  venueId: string,
-  ethernetPorts?: PersonaEthernetPort[] }
-) {
+function AccessPointLanPortSelector (props: { venueId: string }) {
   const { $t } = useIntl()
   const { tenantId } = useParams()
-  const { venueId, ethernetPorts } = props
+  const { venueId } = props
   const form = Form.useFormInstance()
   const [selectedModel, setSelectedModel] = useState({} as VenueLanPorts)
-  const selectedApMac = Form.useWatch('accessAp')
-  const apName = ethernetPorts?.[0]?.name
-  const accessAp = ethernetPorts?.[0]?.macAddress?.replaceAll('-', ':')
-  const ports = ethernetPorts?.map(p => p.portIndex)
+  const accessAp = Form.useWatch('accessAp')
 
-  const venueLanPorts = useGetVenueLanPortsQuery({ params: { tenantId, venueId } })
+  const { data: venueLanPorts } = useGetVenueLanPortsQuery({ params: { tenantId, venueId } })
 
   const apListQueryDefaultPayload = {
     fields: ['name', 'serialNumber', 'model', 'apMac'],
@@ -57,34 +51,37 @@ function AccessPointLanPortSelector (props: {
     sortOrder: 'ASC'
   }
 
-  const { apOptions } = useApListQuery({
+  const { data: apListResult } = useApListQuery({
     params: useParams(),
     payload: {
       ...apListQueryDefaultPayload,
       filters: { venueId: venueId ? [venueId] : [] }
     }
-  }, {
-    selectFromResult ({ data }) {
-      return {
-        apOptions: data?.data
-          .filter((ap: APExtended) => ap.apMac && ap.model)
-          .map((ap: APExtended) => ({
-            value: ap.apMac,
-            label: ap.name,
-            model: ap.model
-          }))
-      }
-    }
   })
 
   useEffect(() => {
-    if (!selectedApMac || !apOptions || !venueLanPorts) return
-    onSelectApChange(selectedApMac)
-  }, [selectedApMac, apOptions, venueLanPorts])
+    if (!venueLanPorts || !apListResult?.data || !accessAp) return
+    onSelectApChange(accessAp)
+  }, [apListResult, venueLanPorts, accessAp])
+
+  const apOptions = apListResult?.data
+    ?.filter((ap: APExtended) => ap.apMac && ap.model)
+    ?.map((ap: APExtended) => ({
+      value: ap.apMac,
+      label: ap.name,
+      model: ap.model
+    }))
 
   const onSelectApChange = (macAddress: string) => {
     const selectedAp = apOptions?.find(ap => ap.value === macAddress)
-    const lanPort = venueLanPorts?.data
+
+    if (!selectedAp) {
+      // When the ap can not match any device, clean the state to prevent the data inconsistency.
+      form.setFieldValue('accessAp', undefined)
+      form.setFieldValue('ports', undefined)
+    }
+
+    const lanPort = venueLanPorts
       ?.find(lan => lan.model === selectedAp?.model) ?? {} as VenueLanPorts
     setSelectedModel(lanPort)
     form.setFieldValue('apName', selectedAp?.label)
@@ -95,24 +92,26 @@ function AccessPointLanPortSelector (props: {
       <Form.Item
         hidden
         name={'apName'}
-        initialValue={apName}
       />
       <Form.Item
         label={$t({ defaultMessage: 'Select AP' })}
         name={'accessAp'}
-        initialValue={accessAp}
         children={
           <Select
+            allowClear
             placeholder={$t({ defaultMessage: 'Select...' })}
+            onChange={(selected) => {
+              form.setFieldValue('ports', [])
+              onSelectApChange(selected)
+            }}
             options={apOptions}
           />}
       />
       <Form.Item
         name={'ports'}
-        initialValue={ports}
         label={$t(
           { defaultMessage: 'Select LAN Ports for ({model})' },
-          { model: selectedModel?.model ?? 'null' }
+          { model: selectedModel?.model ?? noDataDisplay }
         )}
       >
         {selectedModel.lanPorts &&
@@ -150,7 +149,6 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   const { isEdit, visible, onClose, venueId, unitId } = props
   const [form] = Form.useForm<PropertyUnitFormFields>()
   const [withNsg, setWithNsg] = useState(false)
-  const [ethernetPorts, setEthernetPorts] = useState<PersonaEthernetPort[]|undefined>()
 
   // VLAN fields state
   const enableGuestVlan = useWatch('enableGuestVlan', form)
@@ -161,7 +159,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
 
   const [getUnitById, unitResult] = useLazyGetPropertyUnitByIdQuery()
   const [getPersonaById, personaResult] = useLazyGetPersonaByIdQuery()
-  const [getPersonaGroupById] = useLazyGetPersonaGroupByIdQuery()
+  const [getPersonaGroupById, personaGroupResult] = useLazyGetPersonaGroupByIdQuery()
 
   // Mutation - Create & Update
   const [addUnitMutation] = useAddPropertyUnitMutation()
@@ -179,13 +177,12 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   }, [propertyConfigsQuery.data])
 
   useEffect(() => {
-    if (visible && unitId && venueId) {
+    if (visible && unitId && venueId && personaGroupId) {
       form.resetFields()
       getUnitById({ params: { venueId, unitId } })
         .then(result => {
           if (result.data) {
             const { personaId, guestPersonaId } = result.data
-            // TODO: access point need to parsing here
             // console.log('Unit :: ', result.data)
             combinePersonaInfo(personaId, guestPersonaId, result.data)
           }
@@ -211,31 +208,30 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
       .then(([personaResult, guestResult]) => {
         form.setFieldsValue(data ?? {})
         if (personaResult?.data) {
-          // console.log('Persona :: ', result.data)
           const { vlan, dpskPassphrase, ethernetPorts, vni } = personaResult.data as Persona
           if (withNsg) {
+            const apName = ethernetPorts?.[0]?.name
             const accessAp = ethernetPorts?.[0]?.macAddress?.replaceAll('-', ':')
             const ports = ethernetPorts?.map(p => p.portIndex)
-            setEthernetPorts(ethernetPorts)
+
+            form.setFieldValue('apName', apName)
             form.setFieldValue('accessAp', accessAp)
-            form.setFieldValue('ports', ports)
-            form.setFieldValue('vxlan', vni)
-          } else {
-            form.setFieldValue(['unitPersona', 'vlan'], vlan)
+            form.setFieldValue('ports', ports?.map(i => i.toString()))
+            form.setFieldValue('vxlan', vni ?? noDataDisplay)
           }
+
+          form.setFieldValue(['unitPersona', 'vlan'], vlan)
           form.setFieldValue(['unitPersona', 'dpskPassphrase'], dpskPassphrase)
         }
 
         if (guestResult?.data) {
           const { vlan, dpskPassphrase } = guestResult.data
-          // console.log('Guest Persona :: ', result.data)
-          if (!withNsg) {
-            form.setFieldValue('enableGuestVlan', personaResult?.data?.vlan !== vlan)
-            // if no timeout would not render exactly
-            setTimeout(() => {
-              form.setFieldValue(['guestPersona', 'vlan'], vlan)
-            }, 10)
-          }
+
+          form.setFieldValue('enableGuestVlan', personaResult?.data?.vlan !== vlan)
+          // if no timeout would not render exactly
+          setTimeout(() => {
+            form.setFieldValue(['guestPersona', 'vlan'], vlan)
+          }, 10)
           form.setFieldValue(['guestPersona', 'dpskPassphrase'], dpskPassphrase)
         }
       })
@@ -350,46 +346,6 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
     }
   }
 
-  const withoutNsgForm = <>
-    <Form.Item label={$t({ defaultMessage: 'VLAN' })}>
-      <Form.Item
-        noStyle
-        name={['unitPersona', 'vlan']}
-        rules={[{
-          type: 'number',
-          min: 1,
-          max: 4094,
-          message: $t(validationMessages.vlanRange)
-        }]}
-      >
-        <InputNumber />
-      </Form.Item>
-    </Form.Item>
-
-    <StepsForm.FieldLabel width={'160px'}>
-      {$t({ defaultMessage: 'Separate VLAN for guests' })}
-      <Form.Item
-        style={{ marginBottom: '10px' }}
-        name={'enableGuestVlan'}
-        valuePropName={'checked'}
-        children={<Switch />}
-      />
-    </StepsForm.FieldLabel>
-    {enableGuestVlan &&
-        <Form.Item
-          name={['guestPersona', 'vlan']}
-          rules={[{
-            type: 'number',
-            min: 1,
-            max: 4094,
-            message: $t(validationMessages.vlanRange)
-          }]}
-        >
-          <InputNumber />
-        </Form.Item>
-    }
-  </>
-
   const withNsgForm = (<>
     {isEdit &&
       <Form.Item
@@ -398,7 +354,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
         children={<Input readOnly bordered={false}/>}
       />
     }
-    <AccessPointLanPortSelector venueId={venueId} ethernetPorts={ethernetPorts} />
+    <AccessPointLanPortSelector venueId={venueId} />
   </>)
 
   return (
@@ -415,7 +371,8 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
           states={[
             unitResult,
             propertyConfigsQuery,
-            personaResult
+            personaResult,
+            personaGroupResult
           ]}
         >
           <Form
@@ -446,12 +403,52 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
               label={$t({ defaultMessage: 'Guest DPSK Passphrase' })}
               children={<Input />}
             />
+            <Form.Item label={$t({ defaultMessage: 'VLAN' })}>
+              <Form.Item
+                noStyle
+                name={['unitPersona', 'vlan']}
+                rules={[{
+                  type: 'number',
+                  min: 1,
+                  max: 4094,
+                  message: $t(validationMessages.vlanRange)
+                }]}
+              >
+                <InputNumber />
+              </Form.Item>
+            </Form.Item>
 
-            {withNsg ? withNsgForm : withoutNsgForm}
+            <StepsForm.FieldLabel width={'160px'}>
+              {$t({ defaultMessage: 'Separate VLAN for guests' })}
+              <Form.Item
+                style={{ marginBottom: '10px' }}
+                name={'enableGuestVlan'}
+                valuePropName={'checked'}
+                children={<Switch />}
+              />
+            </StepsForm.FieldLabel>
+            {enableGuestVlan &&
+              <Form.Item
+                name={['guestPersona', 'vlan']}
+                rules={[{
+                  type: 'number',
+                  min: 1,
+                  max: 4094,
+                  message: $t(validationMessages.vlanRange)
+                }]}
+              >
+                <InputNumber />
+              </Form.Item>
+            }
+
+            {withNsg && withNsgForm}
 
             <Form.Item
               name={['resident', 'name']}
               label={$t({ defaultMessage: 'Resident Name' })}
+              rules={[
+                { required: true }
+              ]}
               children={<Input />}
             />
             <Form.Item
@@ -463,6 +460,9 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
             <Form.Item
               name={['resident', 'phoneNumber']}
               label={$t({ defaultMessage: 'Resident\'s Phone Number' })}
+              rules={[
+                { validator: (_, value) => phoneRegExp(value) }
+              ]}
               children={<Input />}
             />
           </Form>

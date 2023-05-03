@@ -10,7 +10,7 @@
         "compiler": "babel",
         "outputPath": "dist/apps/main",
         "index": "apps/main/src/index.html",
-        "baseHref": "/api/ui-beta/",
+        "baseHref": "/tenant/t/",
         "main": "apps/main/src/main.ts",
         "polyfills": "apps/main/src/polyfills.ts",
         "tsConfig": "apps/main/tsconfig.app.json",
@@ -19,7 +19,8 @@
           "apps/main/src/env.json",
           "apps/main/src/assets",
           "apps/main/src/locales",
-          "apps/main/src/robots.txt"
+          "apps/main/src/robots.txt",
+          { "glob": "**/*", "input": "libs/main/assets/", "output": "./assets/" }
         ],
         "styles": [],
         "scripts": [],

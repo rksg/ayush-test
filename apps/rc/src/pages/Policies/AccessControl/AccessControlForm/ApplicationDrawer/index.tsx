@@ -24,11 +24,14 @@ import {
 } from '@acx-ui/rc/services'
 import {
   ApplicationAclType,
-  ApplicationRuleType, AvcCategory,
-  CommonResult
+  AvcCategory,
+  CommonResult,
+  defaultSort,
+  sortProp
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
+import { showUnsavedConfirmModal }     from '../AccessControlComponent'
 import { AddModeProps, editModeProps } from '../AccessControlForm'
 
 import {
@@ -64,6 +67,7 @@ export interface ApplicationsRule {
   ruleName: string,
   ruleType: string,
   applications: string,
+  application: string,
   accessControl: string,
   details: string,
   ruleSettings: {
@@ -210,7 +214,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     { skip: skipFetch }
   )
 
-  const [categoryAppMappingObject, setCategoryAppMappingObject] = useState({} as {
+  const [categoryAppMap, setCategoryAppMap] = useState({} as {
     [key: string]: { catId: number, appId: number }
   })
 
@@ -224,44 +228,49 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     skip: !avcCategoryList
   })
 
-  useEffect(() => {
-    if (avcCategoryList) {
-      setAvcSelectOptions(
-        [{
-          catId: 0,
-          catName: 'All',
-          appNames: []
-        }, ...avcCategoryList.slice()
-          .sort((a: AvcCategory, b: AvcCategory) => a.catId - b.catId)
-          .map(avcCat => {
-            return {
-              ...avcCat,
-              appNames: ['All']
-            }
-          })
-        ]
-      )
-    }
+  const hasAllCategoryOption = () => {
+    return avcSelectOptions &&
+    avcSelectOptions.length > 0 &&
+    avcSelectOptions[0].catName === 'All'
+  }
 
-    if (avcAppList) {
-      avcAppList.map(avcApp => {
+  useEffect(() => {
+    if (!avcCategoryList || hasAllCategoryOption()) return
+
+    setAvcSelectOptions(
+      [{
+        catId: 0,
+        catName: 'All',
+        appNames: []
+      },
+      ...avcCategoryList.slice()
+        .sort((a: AvcCategory, b: AvcCategory) => a.catId - b.catId)
+        .map(avcCat => ({ ...avcCat, appNames: ['All'] }))
+      ]
+    )
+  }, [avcCategoryList])
+
+  useEffect(() => {
+    if (!avcAppList) return
+
+    avcAppList.forEach(avcApp => {
+      categoryAppMap[avcApp.appName] = avcApp.avcAppAndCatId
+    })
+    setCategoryAppMap({ ...categoryAppMap })
+
+
+    setAvcSelectOptions(avcSelectOptions => {
+      avcAppList.forEach(avcApp => {
         let catId = avcSelectOptions.findIndex(option =>
           option.catId === avcApp.avcAppAndCatId.catId
         )
         if (avcSelectOptions[catId]) {
           avcSelectOptions[catId].appNames.push(avcApp.appName)
         }
-
-        if (!categoryAppMappingObject.hasOwnProperty(avcApp.appName)) {
-          categoryAppMappingObject[avcApp.appName] = avcApp.avcAppAndCatId
-        }
       })
-      setAvcSelectOptions(
-        [...avcSelectOptions]
-      )
-      setCategoryAppMappingObject({ ...categoryAppMappingObject })
-    }
-  }, [avcCategoryList, avcAppList])
+      return avcSelectOptions
+    })
+  }, [avcAppList])
 
   const isViewMode = () => {
     if (queryPolicyId === '') {
@@ -323,12 +332,14 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     {
       title: $t({ defaultMessage: 'Rule Name' }),
       dataIndex: 'ruleName',
-      key: 'ruleName'
+      key: 'ruleName',
+      sorter: { compare: sortProp('ruleName', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Rule Type' }),
       dataIndex: 'ruleType',
       key: 'ruleType',
+      sorter: { compare: sortProp('ruleType', defaultSort) },
       render: (data, row) => {
         return _.startCase(row.ruleType)
       }
@@ -337,17 +348,13 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       title: $t({ defaultMessage: 'Application' }),
       dataIndex: 'application',
       key: 'application',
-      render: (data, row) => {
-        if (row.ruleSettings.ruleType === ApplicationRuleType.USER_DEFINED) {
-          return row.ruleSettings.appNameUserDefined
-        }
-        return row.ruleSettings?.appNameSystemDefined?.replace('_', ' > ')
-      }
+      sorter: { compare: sortProp('application', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Access Control' }),
       dataIndex: 'accessControl',
       key: 'accessControl',
+      sorter: { compare: sortProp('accessControl', defaultSort) },
       render: (data, row) => {
         return _.startCase(row.accessControl)
       }
@@ -431,13 +438,17 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   }] : []
 
   const handleAppPolicy = async (edit: boolean) => {
+    const transformedRules = [
+      ...transformToRulesForPayload(applicationsRuleList, categoryAppMap, avcCategoryList!)
+    ]
+
     try {
       if (!edit) {
         const appRes: CommonResult = await createAppPolicy({
           params: params,
           payload: {
             name: policyName,
-            rules: [...transformToRulesForPayload(applicationsRuleList, categoryAppMappingObject)],
+            rules: transformedRules,
             description: null,
             tenantId: params.tenantId
           }
@@ -455,7 +466,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
           payload: {
             id: queryPolicyId,
             name: policyName,
-            rules: [...transformToRulesForPayload(applicationsRuleList, categoryAppMappingObject)],
+            rules: transformedRules,
             description: null,
             tenantId: params.tenantId
           }
@@ -500,6 +511,13 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     }
   }] as { label: string, onClick: () => void }[]
 
+  const ruleValidator = () => {
+    if (!applicationsRuleList.length) {
+      return Promise.reject($t({ defaultMessage: 'No rule were added yet' }))
+    }
+    return Promise.resolve()
+  }
+
   const content = <Form layout='horizontal' form={contentForm}>
     <DrawerFormItem
       name={'policyName'}
@@ -524,6 +542,9 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     <DrawerFormItem
       name='applicationsRule'
       label={$t({ defaultMessage: 'Rules ({count})' }, { count: applicationsRuleList.length })}
+      rules={[
+        { validator: () => ruleValidator() }
+      ]}
     />
     <Table
       columns={basicColumns}
@@ -606,8 +627,12 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       <Drawer
         title={$t({ defaultMessage: 'Application Access Settings' })}
         visible={visible}
+        mask={true}
         zIndex={10}
-        onClose={handleApplicationsDrawerClose}
+        onClose={() => !isViewMode()
+          ? showUnsavedConfirmModal(handleApplicationsDrawerClose)
+          : handleApplicationsDrawerClose()
+        }
         destroyOnClose={true}
         children={content}
         footer={

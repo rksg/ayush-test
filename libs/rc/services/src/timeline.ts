@@ -1,5 +1,6 @@
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 
+import { Filter } from '@acx-ui/components'
 import {
   Activity,
   EventBase,
@@ -12,11 +13,14 @@ import {
   CommonUrlsInfo,
   TableResult,
   RequestPayload,
-  onSocketActivityChanged
+  onSocketActivityChanged,
+  downloadFile,
+  SEARCH,
+  SORTER
 } from '@acx-ui/rc/utils'
 import { baseTimelineApi } from '@acx-ui/store'
 
-import { getMetaList } from './utils'
+import { getMetaList, latestTimeFilter } from './utils'
 
 const metaFields = [
   'apName',
@@ -31,20 +35,28 @@ const metaFields = [
   'recipientName'
 ]
 
+export type EventsExportPayload = {
+  clientDateFormat: string
+  clientTimeZone: string
+  detailLevel: string
+  eventsPeriodForExport: {
+    fromTime: string
+    toTime: string
+  }
+  filters: Filter
+  isSupport: boolean
+  tenantId: string
+} & SEARCH & SORTER
+
 export const timelineApi = baseTimelineApi.injectEndpoints({
   endpoints: (build) => ({
     activities: build.query<TableResult<Activity>, RequestPayload>({
       providesTags: [{ type: 'Activity', id: 'LIST' }],
-      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
-        const activityListInfo = {
+      query (arg) {
+        return {
           ...createHttpRequest(CommonUrlsInfo.getActivityList, arg.params),
-          body: arg.payload
+          body: latestTimeFilter(arg.payload)
         }
-        const baseListQuery = await fetchWithBQ(activityListInfo)
-        const baseList = baseListQuery.data as TableResult<Activity>
-        return baseList
-          ? { data: baseList }
-          : { error: baseListQuery.error as FetchBaseQueryError }
       },
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, () => {
@@ -57,7 +69,7 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const eventListInfo = {
           ...createHttpRequest(CommonUrlsInfo.getEventList, arg.params),
-          body: arg.payload
+          body: latestTimeFilter(arg.payload)
         }
         const baseListQuery = await fetchWithBQ(eventListInfo)
         const baseList = baseListQuery.data as TableResult<EventBase>
@@ -79,7 +91,8 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
             data: baseListData.map((base) => ({
               ...base,
               ...{ entity_type: base.entity_type.toUpperCase() },
-              ...(metaListData.find(meta=>meta.id === base.id))
+              ...(metaListData.find(meta=>meta.id === base.id)),
+              ...{ tableKey: base.event_datetime + base.id }
             })) as Event[]
           }
         }
@@ -90,7 +103,7 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const adminlogListInfo = {
           ...createHttpRequest(CommonUrlsInfo.getEventList, arg.params),
-          body: arg.payload
+          body: latestTimeFilter(arg.payload)
         }
         const baseListQuery = await fetchWithBQ(adminlogListInfo)
         const baseList = baseListQuery.data as TableResult<AdminLogBase>
@@ -112,8 +125,27 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
             data: baseListData.map((base) => ({
               ...base,
               ...{ entity_type: base.entity_type.toUpperCase() },
-              ...(metaListData.find(meta=>meta.id === base.id))
+              ...(metaListData.find(meta=>meta.id === base.id)),
+              ...{ tableKey: base.event_datetime + base.id }
             })) as AdminLog[]
+          }
+        }
+      }
+    }),
+    downloadEventsCSV: build.mutation<Blob, EventsExportPayload>({
+      query: (payload) => {
+        const req = createHttpRequest(CommonUrlsInfo.downloadCSV,
+          { tenantId: payload.tenantId }
+        )
+        return {
+          ...req,
+          body: latestTimeFilter(payload),
+          responseHandler: async (response) => {
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1]
+              : 'download.csv'
+            downloadFile(response, fileName)
           }
         }
       }
@@ -124,5 +156,6 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
 export const {
   useActivitiesQuery,
   useEventsQuery,
-  useAdminLogsQuery
+  useAdminLogsQuery,
+  useDownloadEventsCSVMutation
 } = timelineApi

@@ -8,7 +8,8 @@ import { useIntl }      from 'react-intl'
 import {
   Loader,
   Table,
-  TableProps
+  TableProps,
+  Tooltip
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
@@ -239,13 +240,24 @@ export function VenueNetworksTab () {
       dataIndex: ['activated', 'isActivated'],
       align: 'center',
       render: function (data, row) {
-        return <Switch
-          checked={Boolean(data)}
-          onClick={(checked, event) => {
-            activateNetwork(checked, row)
-            event.stopPropagation()
-          }}
-        />
+        let disabled = false
+        // eslint-disable-next-line max-len
+        let title = $t({ defaultMessage: 'You cannot activate the DHCP Network on this venue because it already enabled mesh setting' })
+        if(_.get(row,'deepNetwork.enableDhcp') && _.get(venueDetailsQuery.data,'venue.mesh.enabled')){
+          disabled = true
+        }else{
+          title = ''
+        }
+        return <Tooltip
+          title={title}
+          placement='bottom'><Switch
+            checked={Boolean(data)}
+            disabled={disabled}
+            onClick={(checked, event) => {
+              activateNetwork(checked, row)
+              event.stopPropagation()
+            }}
+          /></Tooltip>
       }
     },
     {
@@ -254,7 +266,7 @@ export function VenueNetworksTab () {
       dataIndex: 'vlan',
       width: 80,
       render: function (data, row) {
-        return transformVLAN(getCurrentVenue(row), row.deepNetwork?.wlan, (e) => handleClickApGroups(row, e))
+        return transformVLAN(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e))
       }
     },
     {
@@ -263,7 +275,7 @@ export function VenueNetworksTab () {
       dataIndex: 'aps',
       width: 80,
       render: function (data, row) {
-        return transformAps(getCurrentVenue(row), (e) => handleClickApGroups(row, e))
+        return transformAps(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e))
       }
     },
     {
@@ -272,7 +284,7 @@ export function VenueNetworksTab () {
       dataIndex: 'radios',
       width: 140,
       render: function (data, row) {
-        return transformRadios(getCurrentVenue(row), (e) => handleClickApGroups(row, e))
+        return transformRadios(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e))
       }
     },
     {
@@ -374,6 +386,7 @@ export function VenueNetworksTab () {
       { isLoading: false, isFetching: isDeleteNetworkUpdating }
     ]}>
       <Table
+        settingsId='venue-networks-table'
         rowKey='id'
         actions={filterByAccess(actions)}
         // rowSelection={{

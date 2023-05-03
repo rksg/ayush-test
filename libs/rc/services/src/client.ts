@@ -25,7 +25,8 @@ import {
   RequestFormData, enableNewApi
 } from '@acx-ui/rc/utils'
 import { baseClientApi } from '@acx-ui/store'
-import { getJwtToken }   from '@acx-ui/utils'
+
+import { latestTimeFilter } from './utils'
 
 export const clientApi = baseClientApi.injectEndpoints({
   endpoints: (build) => ({
@@ -75,13 +76,17 @@ export const clientApi = baseClientApi.injectEndpoints({
     }),
     getGuestsList: build.query<TableResult<Guest>, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(
-          CommonUrlsInfo.getGuestsList,
-          params
-        )
+        const body = latestTimeFilter(payload)
+        const filters = body.filters?.fromTime && body.filters?.toTime
+          ? {
+            ...body.filters,
+            fromTime: [body.filters.fromTime],
+            toTime: [body.filters.toTime]
+          }
+          : body.filters
         return {
-          ...req,
-          body: payload
+          ...createHttpRequest(CommonUrlsInfo.getGuestsList, params),
+          body: { ...body, filters }
         }
       },
       providesTags: [{ type: 'Guest', id: 'LIST' }],
@@ -144,9 +149,8 @@ export const clientApi = baseClientApi.injectEndpoints({
           },
           body: payload,
           headers: {
-            'Content-Type': 'application/json',
-            'accept': 'application/json,text/plain,*/*',
-            ...(getJwtToken() ? { Authorization: `Bearer ${getJwtToken()}` } : {})
+            ...req.headers,
+            Accept: 'application/json,text/plain,*/*'
           }
         }
       }
@@ -211,13 +215,10 @@ export const clientApi = baseClientApi.injectEndpoints({
       providesTags: [{ type: 'HistoricalClient', id: 'LIST' }]
     }),
     getHistoricalStatisticsReports: build.query<ClientStatistic, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getHistoricalStatisticsReportsV2, params)
-        return {
-          ...req,
-          body: payload
-        }
-      }
+      query: ({ params, payload }) => ({
+        ...createHttpRequest(CommonUrlsInfo.getHistoricalStatisticsReportsV2, params),
+        body: latestTimeFilter(payload)
+      })
     }),
     addGuestPass: build.mutation<Guest, RequestPayload>({
       query: ({ params, payload }) => {

@@ -4,6 +4,7 @@ import { useStreamActivityMessagesQuery }    from '@acx-ui/rc/services'
 import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 
 import Administration    from './pages/Administration'
+import MigrationForm     from './pages/Administration/OnpremMigration/MigrationForm/MigrationForm'
 import AnalyticsBase     from './pages/Analytics'
 import Dashboard         from './pages/Dashboard'
 import Dashboardv2       from './pages/Dashboardv2'
@@ -33,11 +34,11 @@ function AllRoutes () {
   useStreamActivityMessagesQuery({})
   return rootRoutes(
     <>
-      <Route path='t/:tenantId' element={<MFACheck />}>
+      <Route path=':tenantId/t' element={<MFACheck />}>
         <Route path='*' element={<Layout />}>
           <Route index element={<TenantNavigate replace to='/dashboard' />} />
-          <Route path='dashboard' element={<Dashboard />} />
-          <Route path='dashboardv2' element={<Dashboardv2 />} />
+          <Route path='dashboard' element={<Dashboardv2 />} />
+          <Route path='dashboard-v1' element={<Dashboard />} />
           <Route path='userprofile' element={<UserProfile />} />
           <Route path='analytics/*' element={<AnalyticsBase />}>
             <Route path='*' element={<AnalyticsRoutes />} />
@@ -74,16 +75,25 @@ function AllRoutes () {
           <Route path='administration/*' element={<AdministrationRoutes />} />
         </Route>
       </Route>
-      <Route path='v/:tenantId/*' element={<MFACheck />}>
+      <Route path=':tenantId/v/*' element={<MFACheck />}>
         <Route path='*' element={<MspRoutes />}/>
       </Route>
+      {/* redirect old urls to dashboard */}
+      <Route
+        path='/api/ui-beta/t/:tenantId/*'
+        element={<TenantNavigate replace to='dashboard' />}
+      />
+      <Route
+        path='/api/ui-beta/v/:tenantId/*'
+        element={<TenantNavigate replace to='dashboard' tenantType='v' />}
+      />
     </>
   )
 }
 
 function VenuesRoutes () {
   return rootRoutes(
-    <Route path='t/:tenantId/venues'>
+    <Route path='/:tenantId/t/venues'>
       <Route index element={<VenuesTable />} />
       <Route path='add' element={<VenuesForm />} />
       <Route path=':venueId/venue-details/:activeTab' element={<VenueDetails />} />
@@ -103,12 +113,13 @@ function VenuesRoutes () {
 
 function AdministrationRoutes () {
   return rootRoutes(
-    <Route path='t/:tenantId/administration'>
+    <Route path=':tenantId/t/administration'>
       <Route
         index
         element={<TenantNavigate replace to='/administration/accountSettings' />}
       />
       <Route path=':activeTab' element={<Administration />} />
+      <Route path='onpremMigration/add' element={<MigrationForm />} />
 
     </Route>
   )

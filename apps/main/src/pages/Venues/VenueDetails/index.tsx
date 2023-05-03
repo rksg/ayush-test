@@ -1,4 +1,5 @@
 import { useParams } from '@acx-ui/react-router-dom'
+import { hasAccess } from '@acx-ui/user'
 
 import { VenueAnalyticsTab } from './VenueAnalyticsTab'
 import { VenueClientsTab }   from './VenueClientsTab'
@@ -12,7 +13,7 @@ import { VenueTimelineTab }  from './VenueTimelineTab'
 
 const tabs = {
   overview: VenueOverviewTab,
-  analytics: VenueAnalyticsTab,
+  analytics: () => hasAccess() ? <VenueAnalyticsTab/> : null,
   clients: VenueClientsTab,
   devices: VenueDevicesTab,
   networks: VenueNetworksTab,

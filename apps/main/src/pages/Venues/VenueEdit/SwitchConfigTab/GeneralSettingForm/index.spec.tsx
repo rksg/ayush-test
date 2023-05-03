@@ -4,7 +4,7 @@ import { rest }  from 'msw'
 
 
 import { venueApi }                                                                          from '@acx-ui/rc/services'
-import { CommonUrlsInfo }                                                                    from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, SwitchUrlsInfo }                                                    from '@acx-ui/rc/utils'
 import { Provider, store }                                                                   from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, within, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -38,7 +38,7 @@ describe('GeneralSettingForm', () => {
         (_, res, ctx) => res(ctx.json(venueSwitchSetting[0]))),
       rest.put(CommonUrlsInfo.updateVenueSwitchSetting.url,
         (_, res, ctx) => res(ctx.json(successResponse))),
-      rest.get(CommonUrlsInfo.getSwitchConfigProfile.url,
+      rest.get(SwitchUrlsInfo.getSwitchConfigProfile.url,
         (_, res, ctx) => res(ctx.json(switchConfigProfile[0])))
     )
   })
@@ -60,7 +60,7 @@ describe('GeneralSettingForm', () => {
     mockServer.use(
       rest.get(CommonUrlsInfo.getVenueSwitchSetting.url,
         (_, res, ctx) => res(ctx.json(venueSwitchSetting[2]))),
-      rest.get(CommonUrlsInfo.getSwitchConfigProfile.url,
+      rest.get(SwitchUrlsInfo.getSwitchConfigProfile.url,
         (_, res, ctx) => res(ctx.json(switchConfigProfile[1])))
     )
 
@@ -216,7 +216,7 @@ describe('GeneralSettingForm', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/venues`,
+      pathname: `/${params.tenantId}/t/venues`,
       hash: '',
       search: ''
     })

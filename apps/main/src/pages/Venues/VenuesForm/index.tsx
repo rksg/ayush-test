@@ -11,10 +11,10 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { get }                    from '@acx-ui/config'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { SearchOutlined }         from '@acx-ui/icons'
-import { countryCodes }           from '@acx-ui/rc/components'
+import { get }                                   from '@acx-ui/config'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
+import { SearchOutlined }                        from '@acx-ui/icons'
+import { countryCodes, GoogleMapWithPreference } from '@acx-ui/rc/components'
 import {
   useAddVenueMutation,
   useLazyVenuesListQuery,
@@ -198,10 +198,17 @@ export function VenuesForm () {
       .unwrap()).data.filter(n => n.id !== data?.id).map(n => ({ name: n.name }))
     return checkObjectNotExists(list, { name: value } , intl.$t({ defaultMessage: 'Venue' }))
   }
+
   const addressValidator = async (value: string) => {
     const isEdit = action === 'edit'
     const isSameValue = value ===
       formRef.current?.getFieldsValue(['address', 'addressLine']).address?.addressLine
+
+    if(Object.keys(address).length === 0){
+      return Promise.reject(
+        intl.$t({ defaultMessage: 'Please select address from suggested list' })
+      )
+    }
 
     if (isEdit && !_.isEmpty(value) && isSameValue && !sameCountry) {
       return Promise.reject(
@@ -210,7 +217,6 @@ export function VenuesForm () {
     }
     return Promise.resolve()
   }
-
 
   const addressOnChange: ChangeEventHandler<HTMLInputElement> = async (event) => {
     updateAddress({})
@@ -347,7 +353,7 @@ export function VenuesForm () {
                   />
                 </Form.Item>
                 {isMapEnabled ?
-                  <GoogleMap
+                  <GoogleMapWithPreference
                     libraries={['places']}
                     mapTypeControl={false}
                     streetViewControl={false}
@@ -356,7 +362,7 @@ export function VenuesForm () {
                     center={center}
                   >
                     {marker && <GoogleMapMarker position={marker} />}
-                  </GoogleMap>
+                  </GoogleMapWithPreference>
                   :
                   <GoogleMap.NotEnabled />
                 }

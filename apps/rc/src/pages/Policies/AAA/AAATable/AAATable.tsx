@@ -28,7 +28,9 @@ export default function AAATable () {
   const tableQuery = useTableQuery({
     useQuery: useGetAAAPolicyViewModelListQuery,
     defaultPayload: {
-      filters: {},
+      filters: {}
+    },
+    search: {
       searchString: '',
       searchTargetFields: ['name']
     }
@@ -70,7 +72,7 @@ export default function AAATable () {
       <PageHeader
         title={
           $t({
-            defaultMessage: 'Radius Server ({count})'
+            defaultMessage: 'RADIUS Server ({count})'
           },
           {
             count: tableQuery.data?.totalCount
@@ -86,12 +88,13 @@ export default function AAATable () {
             <Button type='primary'
               disabled={tableQuery.data?.totalCount
                 ? tableQuery.data?.totalCount >= AAA_LIMIT_NUMBER
-                : false} >{$t({ defaultMessage: 'Add Radius Server' })}</Button>
+                : false} >{$t({ defaultMessage: 'Add RADIUS Server' })}</Button>
           </TenantLink>
         ])}
       />
       <Loader states={[tableQuery]}>
         <Table<AAAViewModalType>
+          settingsId='policies-aaa-table'
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
@@ -149,7 +152,7 @@ function useColumns () {
     },
     {
       key: 'type',
-      title: $t({ defaultMessage: 'Radius Type' }),
+      title: $t({ defaultMessage: 'RADIUS Type' }),
       dataIndex: 'type',
       sorter: true,
       render: (data) =>{
@@ -174,6 +177,7 @@ function useColumns () {
       dataIndex: 'networkIds',
       align: 'center',
       filterable: networkNameMap,
+      sorter: true,
       render: (data, row) =>{
         if (!row.networkIds || row.networkIds.length === 0) return 0
         const networkIds = row.networkIds

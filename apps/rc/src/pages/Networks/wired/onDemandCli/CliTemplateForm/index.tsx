@@ -1,13 +1,14 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect } from 'react'
 
+import { Form }                   from 'antd'
+import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import {
   Loader,
   PageHeader,
   showToast,
-  StepsForm,
-  StepsFormInstance
+  StepsFormNew
 } from '@acx-ui/components'
 import {
   useGetCliTemplateQuery,
@@ -23,11 +24,10 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { CliStepConfiguration }                  from './CliStepConfiguration'
-import { CliStepNotice }                         from './CliStepNotice'
-import { CliStepSummary }                        from './CliStepSummary'
-import { CliStepSwitches }                       from './CliStepSwitches'
-import CliTemplateFormContext, { ApplySwitches } from './CliTemplateFormContext'
+import { CliStepConfiguration } from './CliStepConfiguration'
+import { CliStepNotice }        from './CliStepNotice'
+import { CliStepSummary }       from './CliStepSummary'
+import { CliStepSwitches }      from './CliStepSwitches'
 
 /* eslint-disable max-len */
 export const tooltip = {
@@ -52,24 +52,19 @@ export default function CliTemplateForm () {
   const linkToNetworks = useTenantLink('/networks/wired/onDemandCli')
   const editMode = params.action === 'edit'
 
-  const formRef = useRef<StepsFormInstance>()
+  const [form] = Form.useForm()
   const [addCliTemplate] = useAddCliTemplateMutation()
   const [updateCliTemplate] = useUpdateCliTemplateMutation()
   const { data: cliTemplate, isLoading: isCliTemplateLoading }
     = useGetCliTemplateQuery({ params }, { skip: !editMode })
 
-  const [data, setData] = useState(null as unknown as CliConfiguration | undefined)
-  const [applySwitches, setApplySwitches] = useState({} as Record<string, ApplySwitches[]>)
-  const [cliValidation, setCliValidation] = useState({ valid: false, tooltip: '' })
-  const [initCodeMirror, setInitCodeMirror] = useState(false)
-  const [summaryData, setSummaryData] = useState({} as CliConfiguration)
-
   const handleEditCli = async (data: CliConfiguration) => {
     try {
       await updateCliTemplate({
         params, payload: {
-          ...data,
+          ..._.omit(data, ['applyNow', 'cliValid', 'applySwitch']),
           id: params.templateId,
+          applyLater: !data.applyNow,
           venueSwitches: transformVenueSwitches(
             data.venueSwitches as unknown as Map<string, string[]>[]
           )
@@ -85,7 +80,8 @@ export default function CliTemplateForm () {
     try {
       await addCliTemplate({
         params, payload: {
-          ...data,
+          ..._.omit(data, ['applyNow', 'cliValid', 'applySwitch']),
+          applyLater: !data.applyNow,
           venueSwitches: transformVenueSwitches(
             data.venueSwitches as unknown as Map<string, string[]>[]
           )
@@ -99,7 +95,18 @@ export default function CliTemplateForm () {
 
   useEffect(() => {
     if (!isCliTemplateLoading) {
-      setData(cliTemplate)
+      const data = {
+        ...cliTemplate,
+        applyNow: editMode && cliTemplate ? !cliTemplate?.applyLater : false,
+        ...(cliTemplate?.venueSwitches && {
+          venueSwitches: cliTemplate?.venueSwitches?.reduce((result, v) => ({
+            ...result,
+            [v.venueId as string]: v.switches
+          }), {})
+        })
+      }
+
+      form?.setFieldsValue(data)
     }
   }, [cliTemplate])
 
@@ -114,74 +121,53 @@ export default function CliTemplateForm () {
         ]}
       />
 
-      <CliTemplateFormContext.Provider value={{
-        data,
-        editMode,
-        cliValidation,
-        setCliValidation,
-        applySwitches,
-        setApplySwitches,
-        initCodeMirror
-      }}>
-        <Loader states={[{ isLoading: editMode && isCliTemplateLoading }]}>
-          <StepsForm
-            formRef={formRef}
-            editMode={editMode}
-            onCurrentChange={(current) => {
-              if (editMode && current === 1) {
-                setInitCodeMirror(true)
-              }
-            }}
-            onCancel={() => navigate(linkToNetworks)}
-            onFinish={editMode ? handleEditCli : handleAddCli}
+      <Loader states={[{ isLoading: editMode && isCliTemplateLoading }]}>
+        <StepsFormNew
+          form={form}
+          editMode={editMode}
+          onCancel={() => navigate(linkToNetworks)}
+          onFinish={editMode ? handleEditCli : handleAddCli}
+        >
+          <StepsFormNew.StepForm
+            key='notice'
+            name='notice'
+            title={$t({ defaultMessage: 'Important Notice' })}
+            layout='horizontal'
           >
-            <StepsForm.StepForm
-              name='notice'
-              title={$t({ defaultMessage: 'Important Notice' })}
-              layout='horizontal'
-              onFinish={async () => {
-                return true
-              }}
-            >
-              <CliStepNotice />
-            </StepsForm.StepForm>
+            <CliStepNotice />
+          </StepsFormNew.StepForm>
 
-            <StepsForm.StepForm
-              name='settings'
-              title={$t({ defaultMessage: 'CLI Configuration' })}
-              onFinish={async (data) => {
-                setSummaryData({ ...summaryData, ...data })
-                if (!cliValidation?.valid) {
-                  showToast({ type: 'error', duration: 2, content: cliValidation?.tooltip })
-                }
-                return cliValidation?.valid ?? true
-              }}
-            >
-              <CliStepConfiguration />
-            </StepsForm.StepForm>
+          <StepsFormNew.StepForm
+            name='settings'
+            key='settings'
+            title={$t({ defaultMessage: 'CLI Configuration' })}
+            onFinish={async (data: CliConfiguration) => {
+              if (!data?.cliValid?.valid) {
+                showToast({ type: 'error', duration: 2, content: data?.cliValid?.tooltip })
+              }
+              return true
+            }}
+          >
+            <CliStepConfiguration />
+          </StepsFormNew.StepForm>
 
-            <StepsForm.StepForm
-              name='switches'
-              title={$t({ defaultMessage: 'Switches' })}
-              onFinish={async (data) => {
-                setSummaryData({ ...summaryData, ...data })
-                return true
-              }}
-            >
-              <CliStepSwitches />
-            </StepsForm.StepForm>
+          <StepsFormNew.StepForm
+            name='switches'
+            title={$t({ defaultMessage: 'Switches' })}
+          >
+            <CliStepSwitches />
+          </StepsFormNew.StepForm>
 
-            {!editMode &&
-              <StepsForm.StepForm
+          {!editMode &&
+              <StepsFormNew.StepForm
                 name='summary'
                 title={$t({ defaultMessage: 'Summary' })}
               >
-                <CliStepSummary data={summaryData} />
-              </StepsForm.StepForm>
-            }
-          </StepsForm>
-        </Loader>
-      </CliTemplateFormContext.Provider>
+                <CliStepSummary />
+              </StepsFormNew.StepForm>
+          }
+        </StepsFormNew>
+      </Loader>
     </>
   )
 }

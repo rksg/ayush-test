@@ -5,11 +5,11 @@ import {
   RegisteredSeriesOption,
   TooltipComponentOption
 }                                                   from 'echarts'
-import { CallbackDataParams, InsideDataZoomOption } from 'echarts/types/dist/shared'
-import { FormatXMLElementFn }                       from 'intl-messageformat'
-import moment                                       from 'moment-timezone'
-import { renderToString }                           from 'react-dom/server'
-import { RawIntlProvider, FormattedMessage }        from 'react-intl'
+import { InsideDataZoomOption }              from 'echarts/types/dist/shared'
+import { FormatXMLElementFn }                from 'intl-messageformat'
+import moment                                from 'moment-timezone'
+import { renderToString }                    from 'react-dom/server'
+import { RawIntlProvider, FormattedMessage } from 'react-intl'
 
 import { TimeSeriesChartData }       from '@acx-ui/analytics/utils'
 import { formatter, DateFormatEnum } from '@acx-ui/formatter'
@@ -59,10 +59,11 @@ export const gridOptions = ({
   disableLegend = false,
   hasXAxisName = false,
   xAxisOffset = 0,
-  yAxisOffset = 0
+  yAxisOffset = 0,
+  rightGridOffset = 0
 } = {}) => ({
   left: yAxisOffset,
-  right: 0,
+  right: rightGridOffset,
   bottom: hasXAxisName ? 16 + xAxisOffset : 0,
   top: disableLegend ? 6 : '15%',
   containLabel: true
@@ -88,10 +89,11 @@ export const dataZoomOptions = (data: TimeSeriesChartData[]) => [{
   type: 'inside',
   filterMode: 'none' as InsideDataZoomOption['filterMode'],
   zoomLock: true,
-  minValueSpan: Math.max(...data.map(datum =>
-    moment.duration(moment(datum.data[1][0])
+  minValueSpan: Math.max(...data.map(datum => datum.data.length > 1
+    ? moment.duration(moment(datum.data[1][0])
       .diff(moment(datum.data[0][0])))
       .asMilliseconds()
+    : 0
   ))
 }]
 
@@ -181,7 +183,8 @@ export const dateAxisFormatter = () => {
     year: convertDateTimeFormat('YYYY'),
     month: convertDateTimeFormat('MMM'),
     day: convertDateTimeFormat('MMM DD'),
-    hour: convertDateTimeFormat('HH:mm')
+    hour: convertDateTimeFormat('HH:mm'),
+    second: '' // Disable showing seconds
   }
 }
 
@@ -248,17 +251,23 @@ export const timeSeriesTooltipFormatter = (
   )
 }
 
-export const getTimeSeriesSymbol = (data: TimeSeriesChartData[]) =>
-  (_: TimeSeriesChartData['data'], params: CallbackDataParams) => {
-    const series = data[params.seriesIndex!].data
-    if( params.dataIndex - 1 > 0
-        && typeof series[(params.dataIndex - 1) as number ][1] !== 'number'
-        && params.dataIndex + 1 < series.length
-        && typeof series[params.dataIndex + 1][1] !== 'number'){
-      return 'circle'
+export const handleSingleBinData = (data: [TimeStamp, number|null][]) => {
+  let formatted = [ ...data ]
+  for(let i = 0; i< data.length; i++){
+    if(data[i][1] !== null &&
+      (i === 0 || (i - 1 > 0 && data[i - 1][1] === null)) &&
+      (i >= data.length -1 || (i + 1 < data.length && data[i + 1][1] === null))
+    ){
+      if(i - 1 > 0) {
+        formatted[i-1] = [formatted[i-1][0], 0]
+      }
+      if(i + 1 < data.length) {
+        formatted[i+1] = [formatted[i+1][0], 0]
+      }
     }
-    return 'none'
   }
+  return formatted
+}
 
 export type EventParams = {
   // The component name clicked,

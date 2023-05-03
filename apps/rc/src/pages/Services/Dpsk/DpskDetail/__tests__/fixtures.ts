@@ -13,7 +13,13 @@ export const mockedDpsk = {
   expirationOffset: 1
 }
 
-export const mockedDpskPassphrase: Partial<CreateDpskPassphrasesFormFields> = {
+export const mockedCloudpathDpsk = {
+  ...mockedDpsk,
+  deviceCountLimit: 1,
+  policyDefaultAccess: true
+}
+
+export const mockedDpskPassphraseFormFields: Partial<CreateDpskPassphrasesFormFields> = {
   numberOfPassphrases: 5,
   numberOfDevices: 1,
   username: 'User 1',
@@ -30,7 +36,7 @@ export const mockedSingleDpskPassphrase: Partial<CreateDpskPassphrasesFormFields
 }
 
 export const mockedDpskPassphraseList = {
-  content: [
+  data: [
     {
       id: '__PASSPHRASE_ID_1__',
       passphrase: 'abced12345',
@@ -61,14 +67,55 @@ export const mockedDpskPassphraseList = {
       createdDate: '2022-12-22T14:20:00'
     }
   ],
-  totalElements: 3,
-  totalPages: 1,
-  pageable: {
-    pageNumber: 0,
-    pageSize: 10
-  },
-  sort: []
+  page: 1,
+  totalCount: 3,
+  totalPages: 1
 }
+
+export const mockedDpskPassphraseListWithPersona = {
+  data: [
+    {
+      id: '__PASSPHRASE_ID_1__',
+      passphrase: 'abced12345',
+      username: 'DPSK_USER_1',
+      vlanId: 1,
+      mac: null,
+      numberOfDevices: 3,
+      createdDate: '2022-12-07T21:39:00',
+      expirationDate: '2022-12-08T08:39:00',
+      identityId: '123456789'
+    }
+  ],
+  page: 1,
+  totalCount: 1,
+  totalPages: 1
+}
+
+export const mockedDpskPassphrase = {
+  id: '__PASSPHRASE_ID_1__',
+  passphrase: 'abced12345',
+  username: 'DPSK_USER_1',
+  vlanId: 1,
+  createdDate: '2022-12-07T21:39:00',
+  expirationDate: '2022-12-08T08:39:00'
+}
+
+export const mockedDpskPassphraseDevices = [
+  {
+    mac: 'AD:2C:3B:1D:4D:4E',
+    isOnline: null,
+    lastConnected: null,
+    lastConnectedNetwork: null,
+    devicePassphrase: 'a%sdfa@gw342r3f'
+  },
+  {
+    mac: 'AD:2C:3B:1D:4D:5E',
+    isOnline: null,
+    lastConnected: null,
+    lastConnectedNetwork: null,
+    devicePassphrase: 'a%sdfa@gw332r3f'
+  }
+]
 
 export const mockedNetworks = {
   fields: [

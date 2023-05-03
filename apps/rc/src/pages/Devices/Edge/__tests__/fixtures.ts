@@ -83,7 +83,7 @@ export const mockEdgeList = {
 }
 
 export const mockEdgeData = {
-  serialNumber: '000000000000',
+  serialNumber: '96123456789',
   venueId: '66e6694ca3334997998c42def9326797',
   edgeGroupId: '',
   description: 'This is description rr',
@@ -392,4 +392,30 @@ export const mockValidationFailedDataWithUndefinedCode = {
     message: 'Undefined message'
   }],
   requestId: 'test'
+}
+
+export const mockEdgeDhcpHostStats = {
+  fields: null,
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      hostName: 'TestHost1',
+      dhcpPoolName: 'pool1',
+      hostIpAddr: '22.22.22.3',
+      hostMac: '00:0c:29:26:dd:24',
+      hostStatus: 'ONLINE',
+      hostExpireDate: '2023-04-07 10:39:36',
+      edgeId: '96B341ADD6C16C11ED8B8B000C296600F2'
+    },
+    {
+      hostName: 'TestHost2',
+      dhcpPoolName: 'pool2',
+      hostIpAddr: '22.22.22.1',
+      hostMac: '00:0c:29:26:dd:20',
+      hostStatus: 'OFFLINE',
+      hostExpireDate: '2023-04-07 10:39:36',
+      edgeId: '96B341ADD6C16C11ED8B8B000C296600F2'
+    }
+  ]
 }

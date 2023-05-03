@@ -14,7 +14,7 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-const tableViewPath = '/t/:tenantId/policies/tunnelProfile/list'
+const createViewPath = '/:tenantId/t/policies/tunnelProfile/create'
 
 describe('AddTunnelProfile', () => {
   let params: { tenantId: string }
@@ -36,16 +36,18 @@ describe('AddTunnelProfile', () => {
       <Provider>
         <AddTunnelProfile />
       </Provider>
-      , { route: { path: tableViewPath, params } }
+      , { route: { path: createViewPath, params } }
     )
     const policyNameField = screen.getByRole('textbox', { name: 'Policy Name' })
     await user.type(policyNameField, 'TestTunnel')
+    const ageTimeField = screen.getByRole('spinbutton', { name: 'Idle Period' })
+    await user.type(ageTimeField, '20')
     await user.click(screen.getByRole('button', { name: 'Add' }))
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/policies/tunnelProfile/list`,
+      pathname: `/${params.tenantId}/t/policies/tunnelProfile/list`,
       hash: '',
       search: ''
-    }, { replace: true }))
+    }))
   })
 
   it('Click cancel button and go back to list page', async () => {
@@ -54,11 +56,11 @@ describe('AddTunnelProfile', () => {
       <Provider>
         <AddTunnelProfile />
       </Provider>
-      , { route: { path: tableViewPath, params } }
+      , { route: { path: createViewPath, params } }
     )
     await user.click(screen.getByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/policies/tunnelProfile/list`,
+      pathname: `/${params.tenantId}/t/policies/tunnelProfile/list`,
       hash: '',
       search: ''
     })

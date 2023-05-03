@@ -1,38 +1,33 @@
-import { useContext, useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
 import { Col, Divider, Row, Typography } from 'antd'
 import { useIntl }                       from 'react-intl'
 
-import { Descriptions, StepsForm, Tooltip } from '@acx-ui/components'
-import { CodeMirrorWidget }                 from '@acx-ui/rc/components'
-import { CliConfiguration }                 from '@acx-ui/rc/utils'
+import { Descriptions, StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
+import { CodeMirrorWidget }                                     from '@acx-ui/rc/components'
+import { CliConfiguration }                                     from '@acx-ui/rc/utils'
 
-import CliTemplateFormContext from './CliTemplateFormContext'
-import * as UI                from './styledComponents'
+import * as UI from './styledComponents'
 
-export function CliStepSummary (props: {
-  data: CliConfiguration
-}) {
+export function CliStepSummary () {
   const { $t } = useIntl()
-  const { data } = props
+  const { form } = useStepFormContext()
   const [switchCount, setSwitchCount] = useState(0)
   const [switchTooltip, setSwitchTooltip] = useState('')
-  const { applySwitches } = useContext(CliTemplateFormContext)
 
+  const data = (form?.getFieldsValue(true) as CliConfiguration)
   const codeMirrorEl = useRef(null as unknown as {
     setValue: Function,
   })
 
   useEffect(() => {
-    const cli = data?.cli
-    const switches = Object.values(applySwitches ?? {}).flat()?.length ?? 0
-    const switcheTooltip = Object.values(applySwitches ?? {}).flat()
-      .map(s => `${s.name}(${s.venueName})`).join(', ')
+    const switches = Object.values(data.applySwitch ?? {}).flat()?.length ?? 0
+    const switcheTooltip = Object.values(data.applySwitch ?? {}).flat()
+      .map(s => `${s?.name}(${s?.venueName})`).join(', ')
 
-    cli && codeMirrorEl?.current?.setValue(cli)
     setSwitchCount(switches)
     setSwitchTooltip(switcheTooltip)
-  }, [data])
+  }, [])
 
   return <>
     <Row gutter={24}>
@@ -47,7 +42,7 @@ export function CliStepSummary (props: {
           <Descriptions.Item
             label={$t({ defaultMessage: 'Switches to apply' })}
             children={
-              <Tooltip // TODO: tooltip format
+              <Tooltip
                 title={switchTooltip}
                 placement='bottom'
               >
@@ -62,7 +57,7 @@ export function CliStepSummary (props: {
             } />
           <Descriptions.Item
             label={$t({ defaultMessage: 'Apply the CLI template after adding it' })}
-            children={data?.applyLater
+            children={data?.applyNow
               ? $t({ defaultMessage: 'ON' })
               : $t({ defaultMessage: 'OFF' })
             } />
@@ -85,7 +80,7 @@ export function CliStepSummary (props: {
               width: '100%'
             }}
             data={{
-              clis: '',
+              clis: data?.cli || '',
               configOptions: {
                 readOnly: true
               }

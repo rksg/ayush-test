@@ -10,7 +10,8 @@ import {
   useGetNetworkSegmentationStatsListQuery,
   useGetEnhancedPortalProfileListQuery,
   useGetEnhancedWifiCallingServiceListQuery,
-  useWebAuthTemplateListQuery
+  useWebAuthTemplateListQuery,
+  useGetEdgeFirewallViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
   getSelectServiceRoutePath,
@@ -31,25 +32,23 @@ export default function MyServices () {
   const earlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
   const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
-  const isEdgeDhcpEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
+  const isEdgeEnabled = useIsSplitOn(Features.EDGES)
+  const isEdgeDhcpEnabled = isEdgeEnabled || earlyBetaEnabled
 
   const services = [
     {
       type: ServiceType.MDNS_PROXY,
       category: RadioCardCategory.WIFI,
-      tableQuery: useGetEnhancedMdnsProxyListQuery({
-        params, payload: defaultPayload
-      })
+      tableQuery: useGetEnhancedMdnsProxyListQuery({ params, payload: defaultPayload })
     },
     {
       type: ServiceType.DHCP,
       category: RadioCardCategory.WIFI,
-      tableQuery: useGetDHCPProfileListViewModelQuery({ params,
-        payload: { ...defaultPayload } })
+      tableQuery: useGetDHCPProfileListViewModelQuery({ params, payload: defaultPayload })
     },
     {
       type: ServiceType.EDGE_DHCP,
-      category: RadioCardCategory.EDGE,
+      categories: [RadioCardCategory.EDGE],
       tableQuery: useGetDhcpStatsQuery({
         params, payload: { ...defaultPayload }
       },{
@@ -59,7 +58,7 @@ export default function MyServices () {
     },
     {
       type: ServiceType.NETWORK_SEGMENTATION,
-      category: RadioCardCategory.EDGE,
+      categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
       tableQuery: useGetNetworkSegmentationStatsListQuery({
         params, payload: { ...defaultPayload }
       },{
@@ -68,25 +67,35 @@ export default function MyServices () {
       disabled: !networkSegmentationEnabled
     },
     {
+      type: ServiceType.EDGE_FIREWALL,
+      categories: [RadioCardCategory.EDGE],
+      tableQuery: useGetEdgeFirewallViewDataListQuery({
+        params, payload: { ...defaultPayload }
+      },{
+        skip: !isEdgeEnabled
+      }),
+      disabled: !isEdgeEnabled
+    },
+    {
       type: ServiceType.DPSK,
-      category: RadioCardCategory.WIFI,
+      categories: [RadioCardCategory.WIFI],
       tableQuery: useGetDpskListQuery({})
     },
     {
       type: ServiceType.WIFI_CALLING,
-      category: RadioCardCategory.WIFI,
+      categories: [RadioCardCategory.WIFI],
       tableQuery: useGetEnhancedWifiCallingServiceListQuery({
         params, payload: defaultPayload
       })
     },
     {
       type: ServiceType.PORTAL,
-      category: RadioCardCategory.WIFI,
+      categories: [RadioCardCategory.WIFI],
       tableQuery: useGetEnhancedPortalProfileListQuery({ params, payload: { filters: {} } })
     },
     {
       type: ServiceType.WEBAUTH_SWITCH,
-      category: RadioCardCategory.SWITCH,
+      categories: [RadioCardCategory.SWITCH],
       tableQuery: useWebAuthTemplateListQuery({ params, payload: { ...defaultPayload } }, {
         skip: !networkSegmentationEnabled || !networkSegmentationSwitchEnabled
       }),
@@ -113,7 +122,7 @@ export default function MyServices () {
               <ServiceCard
                 key={service.type}
                 serviceType={service.type}
-                categories={[service.category]}
+                categories={service.categories}
                 count={service.tableQuery.data?.totalCount}
                 type={'default'}
               />

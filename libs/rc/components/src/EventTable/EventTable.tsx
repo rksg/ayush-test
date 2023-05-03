@@ -4,17 +4,19 @@ import { defineMessage, useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps, Button } from '@acx-ui/components'
 import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
+import { DownloadOutlined }                  from '@acx-ui/icons'
 import { Event, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 
-import { filtersFrom, getDescription, getSource, valueFrom } from './helpers'
+import { filtersFrom, getDescription, getDetail, getSource, valueFrom } from './helpers'
 import {
   severityMapping,
   eventTypeMapping,
   productMapping,
   typeMapping
 } from './mapping'
+import { useExportCsv } from './useExportCsv'
 
 export const defaultColumnState = {
   event_datetime: true,
@@ -27,16 +29,17 @@ export const defaultColumnState = {
 }
 
 interface EventTableProps {
+  settingsId?: string
   tableQuery: TableQuery<Event, RequestPayload<unknown>, unknown>,
   searchables?: boolean | string[]
   filterables?: boolean | string[]
   eventTypeMap?: Partial<typeof eventTypeMapping>
-  detailLevel?: string
   columnState?: TableProps<Event>['columnState']
   omitColumns?: string[]
 }
 
 export const EventTable = ({
+  settingsId,
   tableQuery,
   searchables = true,
   filterables = true,
@@ -47,6 +50,7 @@ export const EventTable = ({
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const [current, setCurrent] = useState<Event>()
+  const { exportCsv, disabled } = useExportCsv<Event>(tableQuery)
 
   useEffect(() => { setVisible(false) },[tableQuery.data?.data])
 
@@ -80,7 +84,7 @@ export const EventTable = ({
     {
       key: 'entity_type',
       title: $t({ defaultMessage: 'Event Type' }),
-      dataIndex: 'entity_id',
+      dataIndex: 'entity_type',
       sorter: true,
       render: (_, row) => valueFrom(typeMapping, row.entity_type),
       filterable: filtersFrom(eventTypeMap, filterables, 'entity_type')
@@ -96,7 +100,7 @@ export const EventTable = ({
     {
       key: 'source',
       title: $t({ defaultMessage: 'Source' }),
-      dataIndex: 'entity_type',
+      dataIndex: 'entity_id',
       sorter: true,
       render: function (_, row, __, highlightFn) {
         const searchable = Array.isArray(searchables)
@@ -115,7 +119,6 @@ export const EventTable = ({
       key: 'message',
       title: $t({ defaultMessage: 'Description' }),
       dataIndex: 'message',
-      sorter: true,
       render: function (_, row, __, highlightFn) {
         const searchable = Array.isArray(searchables)
           ? searchables.includes('message') : searchables
@@ -144,12 +147,17 @@ export const EventTable = ({
     {
       title: defineMessage({ defaultMessage: 'Description' }),
       value: getDescription(data)
+    },
+    {
+      title: defineMessage({ defaultMessage: 'Detail' }),
+      value: getDetail(data)
     }
   ]
 
   return <Loader states={[tableQuery]}>
     <Table
-      rowKey='id'
+      settingsId={settingsId}
+      rowKey='tableKey'
       columns={columns.filter(({ key })=>!(omitColumns && omitColumns.includes(key)))}
       columnState={columnState || { defaultValue: defaultColumnState }}
       dataSource={tableQuery.data?.data ?? []}
@@ -157,6 +165,7 @@ export const EventTable = ({
       onChange={tableQuery.handleTableChange}
       onFilterChange={tableQuery.handleFilterChange}
       enableApiFilter={true}
+      iconButton={{ icon: <DownloadOutlined />, disabled, onClick: exportCsv }}
     />
     {visible && <TimelineDrawer
       title={defineMessage({ defaultMessage: 'Event Details' })}

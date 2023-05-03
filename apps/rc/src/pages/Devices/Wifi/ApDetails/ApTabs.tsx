@@ -1,11 +1,11 @@
 /* eslint-disable max-len */
 import { useIntl } from 'react-intl'
 
-import { Tabs }                               from '@acx-ui/components'
-import { ApDetailHeader, ApDeviceStatusEnum } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }         from '@acx-ui/react-router-dom'
+import { Tabs }                                             from '@acx-ui/components'
+import { ApDetailHeader, ApDeviceStatusEnum, useApContext } from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }                       from '@acx-ui/react-router-dom'
+import { hasAccess }                                        from '@acx-ui/user'
 
-import { useApContext } from './ApContext'
 
 function ApTabs (props:{ apDetail: ApDetailHeader }) {
   const { $t } = useIntl()
@@ -25,7 +25,7 @@ function ApTabs (props:{ apDetail: ApDetailHeader }) {
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
       <Tabs.TabPane tab={$t({ defaultMessage: 'Overview' })} key='overview' />
-      <Tabs.TabPane tab={$t({ defaultMessage: 'AI Analytics' })} key='analytics' />
+      { hasAccess() && <Tabs.TabPane tab={$t({ defaultMessage: 'AI Analytics' })} key='analytics' /> }
       {currentApOperational &&
         <Tabs.TabPane tab={$t({ defaultMessage: 'Troubleshooting' })}
           key='troubleshooting' />}
@@ -41,13 +41,10 @@ function ApTabs (props:{ apDetail: ApDetailHeader }) {
         key='clients'
       />
       {/* Not supported for GA
-      <Tabs.TabPane
-        disabled={!releaseTag}
-        tab={<Tooltip title={$t(notAvailableMsg)}>
-          {$t({ defaultMessage: 'Services ({servicesCount})' }, { servicesCount: apDetail?.headers?.services || 0 })}
-        </Tooltip>}
+      isFFOn ? <Tabs.TabPane
+        tab={$t({ defaultMessage: 'Services ({servicesCount})' }, { servicesCount: apDetail?.headers?.services || 0 })}
         key='services'
-      /> */}
+      /> : null */}
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Timeline' })}
         key='timeline'

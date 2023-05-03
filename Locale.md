@@ -51,6 +51,23 @@ This doc is for I18n management for local development
 
     Check the [IncidentTable services -> transformData method](apps/analytics/src/components/IncidentTable/services.ts) for usage outside of React.
 
+
+## Commands & Steps to extract strings & word count for translator
+```sh
+# Extract latest i18n strings
+git checkout origin/master         # Switch to the branch you wish to do the extraction
+nvm use 14                         # switch to Node.js v14
+./tools/docker/locales/generate.sh # extract and compile JSONs
+./tools/docker/locales/genCount.sh # get Unique Strings, Word Count and Unique Word Count
+```
+
+Sample result
+```
+Unique Strings:     4,396
+Word Count:        27,190
+Unique Word Count:  5,367
+```
+
 ## Update i18n messages for all locales
 
 Run command below when there are new/updated contents added to the code base

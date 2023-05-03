@@ -17,7 +17,7 @@ exports[`VenueEdit should render correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/tenant-id/venues"
+                href="/tenant-id/t/venues"
               >
                 Venues
               </a>
@@ -141,7 +141,6 @@ exports[`VenueEdit should render correctly 1`] = `
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-property"
-                    aria-disabled="false"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-property"

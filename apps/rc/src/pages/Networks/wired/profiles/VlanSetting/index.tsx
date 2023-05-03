@@ -1,12 +1,16 @@
 import { useContext, useState, useEffect } from 'react'
 
 import { Row, Col, Form, Input } from 'antd'
+import _                         from 'lodash'
 
 import { showActionModal, Table, TableProps, StepsForm, Tooltip } from '@acx-ui/components'
 import {
   Vlan,
   SwitchModel,
-  SpanningTreeProtocolName } from '@acx-ui/rc/utils'
+  SpanningTreeProtocolName,
+  sortProp,
+  defaultSort
+} from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 import { getIntl }        from '@acx-ui/utils'
 
@@ -44,23 +48,28 @@ export function VlanSetting () {
   const vlansColumns: TableProps<Vlan>['columns']= [{
     title: $t({ defaultMessage: 'VLAN ID' }),
     dataIndex: 'vlanId',
-    key: 'vlanId'
+    key: 'vlanId',
+    sorter: { compare: sortProp('vlanId', defaultSort) }
   }, {
     title: $t({ defaultMessage: 'VLAN Name' }),
     dataIndex: 'vlanName',
-    key: 'vlanName'
+    key: 'vlanName',
+    sorter: { compare: sortProp('vlanName', defaultSort) }
   }, {
     title: $t({ defaultMessage: 'IGMP Snooping' }),
     dataIndex: 'igmpSnooping',
-    key: 'igmpSnooping'
+    key: 'igmpSnooping',
+    sorter: { compare: sortProp('igmpSnooping', defaultSort) }
   }, {
     title: $t({ defaultMessage: 'Multicast Version' }),
     dataIndex: 'multicastVersion',
-    key: 'multicastVersion'
+    key: 'multicastVersion',
+    sorter: { compare: sortProp('multicastVersion', defaultSort) }
   }, {
     title: $t({ defaultMessage: 'Spanning Tree' }),
     dataIndex: 'spanningTreeProtocol',
     key: 'spanningTreeProtocol',
+    sorter: { compare: sortProp('spanningTreeProtocol', defaultSort) },
     render: (data) => {
       return data ? SpanningTreeProtocolName[data as keyof typeof SpanningTreeProtocolName] : null
     }
@@ -123,10 +132,10 @@ export function VlanSetting () {
 
     data.switchFamilyModels = sfm
     setVlanTable([...filterData, data])
-    if(defaultVlan){
-      form.setFieldValue('vlans', [...filterData, data, defaultVlan])
-    }else{
+    if(_.isEmpty(defaultVlan)){
       form.setFieldValue('vlans', [...filterData, data])
+    }else{
+      form.setFieldValue('vlans', [...filterData, data, defaultVlan])
     }
     setDrawerEditMode(false)
     setDrawerFormRule(undefined)
@@ -168,10 +177,10 @@ export function VlanSetting () {
                 .includes(option.vlanId)
             })
             setVlanTable(vlanRows)
-            if(defaultVlan){
-              form.setFieldValue('vlans', [...vlanRows, defaultVlan])
-            }else{
+            if(_.isEmpty(defaultVlan)){
               form.setFieldValue('vlans', [...vlanRows])
+            } else {
+              form.setFieldValue('vlans', [...vlanRows, defaultVlan])
             }
             setDrawerEditMode(false)
             clearSelection()

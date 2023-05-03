@@ -42,10 +42,3 @@ export enum EdgeStatusSeverityEnum {
   REQUIRES_ATTENTION = '3_RequiresAttention',
   TRANSIENT_ISSUE = '4_TransientIssue'
 }
-
-export enum EdgeDhcpServiceStatusEnum {
-  GOOD = 'Good',
-  REQUIRES_ATTENTION = 'Requires Attention',
-  POOR = 'Poor',
-  UNKNOWN = 'Unknown'
-}

@@ -8,30 +8,31 @@ import { Button, StepsForm, Tooltip, useStepFormContext }                       
 import { useGetDhcpByEdgeIdQuery, useGetEdgeDhcpListQuery, useGetEdgeListQuery } from '@acx-ui/rc/services'
 import { EdgeDhcpPool }                                                          from '@acx-ui/rc/utils'
 
-import { NetworkSegmentationGroupForm } from '..'
-import { useWatch }                     from '../../useWatch'
+import { NetworkSegmentationGroupFormData } from '..'
+import { useWatch }                         from '../../useWatch'
 
 import { DhcpPoolTable }        from './DhcpPoolTable'
 import { DhcpServiceModal }     from './DhcpServiceModal'
 import { SelectDhcpPoolDrawer } from './SelectDhcpPoolDrawer'
 
-
+interface SmartEdgeFormProps {
+  editMode?: boolean
+}
 
 const dhcpDefaultPayload = {
   page: 1,
   pageSize: 10000
 }
 
-export const SmartEdgeForm = () => {
+export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
 
   const { $t } = useIntl()
   const params = useParams()
-  const { form } = useStepFormContext<NetworkSegmentationGroupForm>()
+  const { form } = useStepFormContext<NetworkSegmentationGroupFormData>()
   const venueId = useWatch('venueId', form)
   const edgeId = useWatch('edgeId', form)
   const dhcpId = useWatch('dhcpId', form)
   const poolId = useWatch('poolId', form)
-  const poolName = useWatch('poolName', form)
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [shouldDhcpDisabled, setShouldDhcpDisabled] = useState(true)
 
@@ -75,14 +76,18 @@ export const SmartEdgeForm = () => {
     })
 
   useEffect(() => {
-    if(!isGetDhcpByEdgeIdFetching) {
-      if(!dhcpId) {
-        form.setFieldValue('dhcpId', (!!!edgeId || isGetDhcpByEdgeIdFail) ?
-          null :
-          currentEdgeDhcp?.id)
+    if(isGetDhcpByEdgeIdFetching) return
+    if(!dhcpId) {
+      if(!!!edgeId || isGetDhcpByEdgeIdFail) {
+        form.setFieldValue('dhcpId', null)
+        form.setFieldValue('dhcpName', null)
+      } else {
+        form.setFieldValue('dhcpId', currentEdgeDhcp?.id)
+        form.setFieldValue('dhcpName', currentEdgeDhcp?.serviceName)
       }
-      setShouldDhcpDisabled(!isGetDhcpByEdgeIdFail)
     }
+    setShouldDhcpDisabled(!isGetDhcpByEdgeIdFail)
+
   }, [
     currentEdgeDhcp,
     isGetDhcpByEdgeIdFail,
@@ -90,12 +95,14 @@ export const SmartEdgeForm = () => {
     isGetDhcpByEdgeIdFetching
   ])
 
+  const poolName = !!poolMap &&
+    (poolMap[dhcpId]?.find(item => item.id === poolId)?.poolName || poolId)
+
   useEffect(() => {
-    if(poolId) {
-      const poolItem = !!poolMap && poolMap[dhcpId]?.find(item => item.id === poolId)
-      form.setFieldValue('poolName', poolItem?.poolName || poolId)
+    if(poolName) {
+      form.setFieldValue('poolName', poolName)
     }
-  }, [poolId, poolMap])
+  }, [poolName])
 
   const onEdgeChange = (value: string) => {
     const edgeItem = edgeOptions?.find(item => item.value === value)
@@ -147,13 +154,16 @@ export const SmartEdgeForm = () => {
                 />
               </>
             }
-            rules={[{ required: true }]}
+            rules={[{
+              required: true,
+              message: $t({ defaultMessage: 'Please enter SmartEdge' })
+            }]}
             children={
               <Select
                 loading={isEdgeOptionsLoading}
                 onChange={onEdgeChange}
                 options={[
-                  { label: $t({ defaultMessage: 'Select...' }), value: null },
+                  { label: $t({ defaultMessage: 'Select...' }), value: '' },
                   ...(edgeOptions || [])
                 ]}
               />
@@ -227,17 +237,19 @@ export const SmartEdgeForm = () => {
               ]}
             >
               <Space size={20}>
+                {poolId ? poolName : $t({ defaultMessage: 'No Pool selected' })}
                 {
-                  poolId ? poolName : $t({ defaultMessage: 'No Pool selected' })}
-                <Button
-                  type='link'
-                  onClick={openDrawer}
-                  children={
-                    poolId ?
-                      $t({ defaultMessage: 'Change Pool' }) :
-                      $t({ defaultMessage: 'Select Pool' })
-                  }
-                />
+                  !props.editMode &&
+                  <Button
+                    type='link'
+                    onClick={openDrawer}
+                    children={
+                      poolId ?
+                        $t({ defaultMessage: 'Change Pool' }) :
+                        $t({ defaultMessage: 'Select Pool' })
+                    }
+                  />
+                }
               </Space>
               {
                 poolId &&

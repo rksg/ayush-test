@@ -5,6 +5,8 @@ import { CommonUrlsInfo }                                 from '@acx-ui/rc/utils
 import { generatePath }                                   from '@acx-ui/react-router-dom'
 import { Provider }                                       from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, fireEvent } from '@acx-ui/test-utils'
+import { RolesEnum }                                      from '@acx-ui/types'
+import { getUserProfile, setUserProfile }                 from '@acx-ui/user'
 
 import NetworkTabs from './NetworkTabs'
 
@@ -47,9 +49,18 @@ describe('NetworkTabs', () => {
     await waitFor(() => screen.findByText('APs (1)'))
     fireEvent.click(await screen.findByText('APs (1)'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/networks/wireless/${params.networkId}/network-details/aps`,
+      pathname: `/${params.tenantId}/t/networks/wireless/${params.networkId}/network-details/aps`,
       hash: '',
       search: ''
     })
+  })
+
+  it('should hide incidents when role is READ_ONLY', async () => {
+    setUserProfile({
+      allowedOperations: [],
+      profile: { ...getUserProfile().profile, roles: [RolesEnum.READ_ONLY] }
+    })
+    render(<Provider><NetworkTabs /></Provider>, { route: { params } })
+    expect(screen.queryByText('Incidents')).toBeNull()
   })
 })

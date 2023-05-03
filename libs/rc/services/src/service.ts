@@ -43,7 +43,9 @@ import {
   NewAPITableResult,
   transferNewResToTableResult,
   MdnsProxyViewModel,
-  PortalTablePayload
+  PortalTablePayload,
+  DPSKDeviceInfo,
+  IpUtilsService
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -52,7 +54,6 @@ import {
   AccessControlProfile
 } from '@acx-ui/rc/utils'
 import { baseServiceApi } from '@acx-ui/store'
-import { getJwtToken }    from '@acx-ui/utils'
 
 const defaultNewTablePaginationParams: TableChangePayload = {
   sortField: 'name',
@@ -231,6 +232,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             pool.leaseTime = pool.leaseTimeHours
           }
 
+          // eslint-disable-next-line max-len
+          pool.numberOfHosts = IpUtilsService.countIpRangeSize(pool.startIpAddress, pool.endIpAddress)
         })
         return dhcpProfile
       },
@@ -535,7 +538,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'Dpsk', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Dpsk', id: 'LIST' }]
     }),
     updateDpsk: build.mutation<DpskSaveData, RequestPayload<DpskSaveData>>({
       query: ({ params, payload }) => {
@@ -545,7 +548,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'Dpsk', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Dpsk', id: 'LIST' }]
     }),
     getDpskList: build.query<TableResult<DpskSaveData>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -559,10 +562,21 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           ...getDpskListReq
         }
       },
-      providesTags: [{ type: 'Service', id: 'LIST' }, { type: 'Dpsk', id: 'LIST' }],
+      providesTags: [{ type: 'Dpsk', id: 'LIST' }],
       transformResponse (result: NewTableResult<DpskSaveData>) {
         return transferToTableResult<DpskSaveData>(result)
       }
+    }),
+    getEnhancedDpskList: build.query<TableResult<DpskSaveData>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const getDpskListReq = createHttpRequest(DpskUrls.getEnhancedDpskList, params)
+
+        return {
+          ...getDpskListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Dpsk', id: 'LIST' }]
     }),
     getDpsk: build.query<DpskSaveData, RequestPayload>({
       query: ({ params, payload }) => {
@@ -594,23 +608,36 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
     }),
-    // eslint-disable-next-line max-len
-    dpskPassphraseList: build.query<TableResult<NewDpskPassphrase>, RequestPayload>({
+    updateDpskPassphrases: build.mutation<CommonResult, RequestPayload<DpskPassphrasesSaveData>>({
       query: ({ params, payload }) => {
-        const getDpskPassphraseListReq = createNewTableHttpRequest({
-          apiInfo: DpskUrls.getPassphraseList,
-          params,
-          payload: payload as TableChangePayload
-        })
-
+        const createDpskPassphrasesReq = createHttpRequest(DpskUrls.updatePassphrase, params)
         return {
-          ...getDpskPassphraseListReq
+          ...createDpskPassphrasesReq,
+          body: payload
         }
       },
-      transformResponse (result: NewTableResult<NewDpskPassphrase>) {
-        return transferToTableResult<NewDpskPassphrase>(result)
+      invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
+    }),
+    getEnhancedDpskPassphraseList: build.query<TableResult<NewDpskPassphrase>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const getDpskListReq = createHttpRequest(DpskUrls.getEnhancedPassphraseList, params)
+
+        return {
+          ...getDpskListReq,
+          body: payload
+        }
       },
       providesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
+    }),
+    getDpskPassphrase: build.query<NewDpskPassphrase, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(DpskUrls.getPassphrase, params)
+
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'DpskPassphrase', id: 'DETAIL' }]
     }),
     deleteDpskPassphraseList: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -621,6 +648,55 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
+    }),
+    revokeDpskPassphraseList: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(DpskUrls.revokePassphrases, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      // eslint-disable-next-line max-len
+      invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }, { type: 'DpskPassphrase', id: 'DETAIL' }]
+    }),
+    getDpskPassphraseDevices: build.query<DPSKDeviceInfo[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(DpskUrls.getPassphraseDevices, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'DpskPassphraseDevices', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+          ], () => {
+            // eslint-disable-next-line max-len
+            api.dispatch(serviceApi.util.invalidateTags( [{ type: 'DpskPassphraseDevices', id: 'LIST' }]))
+          })
+        })
+      }
+    }),
+    updateDpskPassphraseDevices: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(DpskUrls.updatePassphraseDevices, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'DpskPassphraseDevices', id: 'LIST' }]
+    }),
+    deleteDpskPassphraseDevices: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(DpskUrls.deletePassphraseDevices, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'DpskPassphraseDevices', id: 'LIST' }]
     }),
     uploadPassphrases: build.mutation<{}, RequestFormData>({
       query: ({ params, payload }) => {
@@ -637,11 +713,16 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     // eslint-disable-next-line max-len
     downloadPassphrases: build.mutation<Blob, RequestPayload<{ timezone: string, dateFormat: string }>>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(DpskUrls.exportPassphrases, {
-          ...params,
-          timezone: payload?.timezone ?? 'UTC',
-          dateFormat: payload?.dateFormat ?? 'dd/MM/yyyy HH:mm'
-        })
+        const req = createHttpRequest(
+          DpskUrls.exportPassphrases,
+          {
+            ...params,
+            timezone: payload?.timezone ?? 'UTC',
+            dateFormat: payload?.dateFormat ?? 'dd/MM/yyyy HH:mm'
+          },
+          {},
+          true
+        )
 
         return {
           ...req,
@@ -653,9 +734,9 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             downloadFile(response, fileName)
           },
           headers: {
+            ...req.headers,
             'Content-Type': 'text/csv',
-            'Accept': 'text/csv',
-            ...(getJwtToken() ? { Authorization: `Bearer ${getJwtToken()}` } : {})
+            'Accept': 'text/csv'
           }
         }
       }
@@ -743,7 +824,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       }
     })
-
   })
 })
 
@@ -780,10 +860,17 @@ export const {
   useLazyGetDpskQuery,
   useGetDpskListQuery,
   useLazyGetDpskListQuery,
+  useGetEnhancedDpskListQuery,
   useDeleteDpskMutation,
-  useDpskPassphraseListQuery,
+  useGetEnhancedDpskPassphraseListQuery,
+  useGetDpskPassphraseQuery,
   useCreateDpskPassphrasesMutation,
+  useUpdateDpskPassphrasesMutation,
   useDeleteDpskPassphraseListMutation,
+  useRevokeDpskPassphraseListMutation,
+  useGetDpskPassphraseDevicesQuery,
+  useUpdateDpskPassphraseDevicesMutation,
+  useDeleteDpskPassphraseDevicesMutation,
   useUploadPassphrasesMutation,
   useDownloadPassphrasesMutation,
   useGetPortalQuery,

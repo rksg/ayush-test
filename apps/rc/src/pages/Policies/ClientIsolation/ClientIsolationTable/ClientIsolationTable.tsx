@@ -1,4 +1,3 @@
-import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
@@ -15,15 +14,13 @@ import {
   PolicyOperation,
   getPolicyListRoutePath,
   getPolicyRoutePath,
-  ClientIsolationViewModel,
-  FILTER,
-  SEARCH
+  ClientIsolationViewModel
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                          from '@acx-ui/user'
 
 const defaultPayload = {
-  fields: ['id', 'name', 'tenantId', 'clientEntries', 'venueIds'],
+  fields: ['id', 'name', 'tenantId', 'clientEntries', 'venueIds', 'description'],
   searchString: '',
   filters: {}
 }
@@ -72,19 +69,6 @@ export default function ClientIsolationTable () {
     }
   ]
 
-  const handleFilterChange = (filters: FILTER, search: SEARCH) => {
-    const currentPayload = tableQuery.payload
-    // eslint-disable-next-line max-len
-    if (currentPayload.searchString === search.searchString && _.isEqual(currentPayload.filters, filters)) {
-      return
-    }
-    tableQuery.setPayload({
-      ...currentPayload,
-      searchString: search.searchString,
-      filters
-    })
-  }
-
   return (
     <>
       <PageHeader
@@ -98,12 +82,13 @@ export default function ClientIsolationTable () {
         extra={filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.CREATE })}>
-            <Button type='primary'>{$t({ defaultMessage: 'Add Client Isolation Pofile' })}</Button>
+            <Button type='primary'>{$t({ defaultMessage: 'Add Client Isolation Profile' })}</Button>
           </TenantLink>
         ])}
       />
       <Loader states={[tableQuery]}>
         <Table<ClientIsolationViewModel>
+          settingsId='policies-client-isolation-table'
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
@@ -111,7 +96,7 @@ export default function ClientIsolationTable () {
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
-          onFilterChange={handleFilterChange}
+          onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />
       </Loader>
@@ -162,13 +147,15 @@ function useColumns () {
     {
       key: 'description',
       title: $t({ defaultMessage: 'Description' }),
-      dataIndex: 'description'
+      dataIndex: 'description',
+      sorter: true
     },
     {
       key: 'clientEntries',
       title: $t({ defaultMessage: 'Client Entries' }),
       dataIndex: 'clientEntries',
       align: 'center',
+      sorter: true,
       render: function (data) {
         return data
           ? <SimpleListTooltip
@@ -186,6 +173,7 @@ function useColumns () {
       align: 'center',
       filterKey: 'venueIds',
       filterable: venueNameMap,
+      sorter: true,
       render: function (data, row) {
         if (!row.venueIds || row.venueIds.length === 0) return 0
 

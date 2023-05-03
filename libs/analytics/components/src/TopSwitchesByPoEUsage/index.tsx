@@ -53,11 +53,12 @@ const getSwitchUsageRichStyle = () => ({
 })
 export const onClick = (navigate: NavigateFunction, basePath: Path) => {
   return (params: EventParams) => {
-    const mac = params.componentType ==='series' && Array.isArray(params.value) && params.value[3]
+    const serial = params.componentType ==='series' && Array.isArray(params.value)
+      && params.value[4]
     navigate({
       ...basePath,
       // TODO: Actual path to be updated later
-      pathname: `${basePath.pathname}/${mac}`
+      pathname: `${basePath.pathname}/${serial}/${serial}/details/overview`
     })
   }
 }
@@ -65,7 +66,7 @@ export const onClick = (navigate: NavigateFunction, basePath: Path) => {
 export { TopSwitchesByPoEUsageWidget as TopSwitchesByPoEUsage }
 
 function TopSwitchesByPoEUsageWidget ({ filters }: { filters : AnalyticsFilter }) {
-  const basePath = useTenantLink('/switch/')
+  const basePath = useTenantLink('/devices/switch/')
   const navigate = useNavigate()
 
   const intl = useIntl()

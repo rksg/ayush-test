@@ -11,7 +11,10 @@ import { VenueTimelineTab } from '.'
 
 jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user'),
-  useUserProfileContext: () => ({ data: { detailLevel: 'it' } })
+  useUserProfileContext: () => ({ data: {
+    detailLevel: 'it',
+    dateFormat: 'mm/dd/yyyy'
+  } })
 }))
 
 describe('VenueTimelineTab', () => {
@@ -25,7 +28,7 @@ describe('VenueTimelineTab', () => {
       wrapper: Provider,
       route: {
         params: { tenantId: 't1', venueId: 'venueId', activeSubTab: 'activities' },
-        path: '/t/:tenantId/venues/:venueId/venue-details/timeline/:activeSubTab'
+        path: '/:tenantId/t/venues/:venueId/venue-details/timeline/:activeSubTab'
       }
     })
     expect(await screen.findAllByText('123roam')).toHaveLength(1)

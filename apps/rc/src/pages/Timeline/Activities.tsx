@@ -6,10 +6,7 @@ import {
 const Activities = () => {
   const tableQuery = useActivityTableQuery()
 
-  return <ActivityTable
-    columnState={{ hidden: true }}
-    tableQuery={tableQuery}
-  />
+  return <ActivityTable tableQuery={tableQuery} />
 }
 
 export { Activities }

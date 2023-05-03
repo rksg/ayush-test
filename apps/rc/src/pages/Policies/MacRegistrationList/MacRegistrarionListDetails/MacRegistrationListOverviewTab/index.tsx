@@ -1,11 +1,15 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Col, Form, Row, Space, Typography } from 'antd'
 import { useIntl }                           from 'react-intl'
 import { useParams }                         from 'react-router-dom'
 
-import { Card, Loader }          from '@acx-ui/components'
-import { useGetMacRegListQuery } from '@acx-ui/rc/services'
+import { Card, Loader }              from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import {
+  useGetMacRegListQuery,
+  useLazyGetAdaptivePolicySetQuery
+} from '@acx-ui/rc/services'
 
 import { returnExpirationString } from '../../MacRegistrationListUtils'
 
@@ -17,6 +21,22 @@ export function MacRegistrationListOverviewTab () {
   const macRegistrationListQuery = useGetMacRegListQuery({ params: { policyId } })
   const data = macRegistrationListQuery.data
   const { Paragraph } = Typography
+  const [ policySetName, setPolicySetName ] = useState('')
+
+  const [ getAdaptivePolicySet ] = useLazyGetAdaptivePolicySetQuery()
+
+  const policyEnabled = useIsSplitOn(Features.POLICY_MANAGEMENT)
+
+  useEffect(() => {
+    if(policyEnabled && data?.policySetId) {
+      getAdaptivePolicySet({ params: { policySetId: data.policySetId } })
+        .then(result => {
+          if (result.data) {
+            setPolicySetName(result.data.name)
+          }
+        })
+    }
+  }, [data])
 
   return (
     <Space direction={'vertical'}>
@@ -49,33 +69,29 @@ export function MacRegistrationListOverviewTab () {
                     $t({ defaultMessage: 'No' })}</Paragraph>
                 </Form.Item>
               </Col>
-              <Col span={6}>
-                <Form.Item
-                  label={$t({ defaultMessage: 'Behavior' })}
-                >
-                  {/* eslint-disable-next-line max-len */}
-                  <Paragraph>{$t({ defaultMessage: 'Always redirect to authenticate user' })}</Paragraph>
-                </Form.Item>
-              </Col>
-              <Col span={6}>
-                <Form.Item
-                  label={$t({ defaultMessage: 'Default Access' })}
-                >
-                  <Paragraph>{data?.defaultAccess ?? ''}</Paragraph>
-                </Form.Item>
-              </Col>
-              <Col span={6}>
-                <Form.Item
-                  label={$t({ defaultMessage: 'Access Policy Set' })}
-                >
-                  <Paragraph>{data?.policyId ?? ''}</Paragraph>
-                </Form.Item>
-              </Col>
+              {policyEnabled &&
+                <>
+                  <Col span={6}>
+                    <Form.Item
+                      label={$t({ defaultMessage: 'Default Access' })}
+                    >
+                      <Paragraph>{data?.policySetId ? data?.defaultAccess : ''}</Paragraph>
+                    </Form.Item>
+                  </Col>
+                  <Col span={6}>
+                    <Form.Item
+                      label={$t({ defaultMessage: 'Access Policy Set' })}
+                    >
+                      <Paragraph>{policySetName}</Paragraph>
+                    </Form.Item>
+                  </Col>
+                </>
+              }
             </Row>
           </Form>
         </Loader>
       </Card>
-      <NetworkTable/>
+      <NetworkTable networkIds={data?.networkIds}/>
     </Space>
   )
 }

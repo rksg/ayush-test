@@ -3,10 +3,10 @@ import userEvent      from '@testing-library/user-event'
 import { Modal }      from 'antd'
 import { rest }       from 'msw'
 
-import { useIsSplitOn }                 from '@acx-ui/feature-toggle'
-import { apApi, venueApi }              from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }              from '@acx-ui/store'
+import { useIsSplitOn }                                         from '@acx-ui/feature-toggle'
+import { apApi, venueApi }                                      from '@acx-ui/rc/services'
+import { AdministrationUrlsInfo, CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                      from '@acx-ui/store'
 import {
   act,
   mockServer,
@@ -54,7 +54,6 @@ async function fillInForm () {
 
 async function changeVenue () {
   await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-  expect(await screen.findByText('Select venue...')).toBeVisible()
   expect(screen.getByLabelText('AP Group')).toBeDisabled()
   expect(await screen.findByText('GPS Coordinates')).toBeInTheDocument()
 
@@ -110,7 +109,13 @@ describe('AP Form - Add', () => {
       rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
         (_, res, ctx) => res(ctx.json(apDetailsList[0]))),
       rest.get(WifiUrlsInfo.getAp.url.split(':serialNumber')[0],
-        (_, res, ctx) => res(ctx.json(apDetailsList)))
+        (_, res, ctx) => res(ctx.json(apDetailsList))),
+      rest.get(
+        AdministrationUrlsInfo.getPreferences.url,
+        (_req, res, ctx) => res(ctx.json({ global: {
+          mapRegion: 'TW'
+        } }))
+      )
     )
   })
   afterEach(() => {
@@ -118,17 +123,16 @@ describe('AP Form - Add', () => {
   })
   it('should render correctly', async () => {
     const { asFragment } = render(<Provider><ApForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/wifi/:action' }
+      route: { params, path: '/:tenantId/t/devices/wifi/:action' }
     })
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     expect(asFragment()).toMatchSnapshot()
     expect(await screen.findByText('Add AP')).toBeVisible()
-    expect(await screen.findByText('Select venue...')).toBeVisible()
     expect(screen.queryByText('GPS Coordinates')).not.toBeInTheDocument()
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/devices`,
+      pathname: `/${params.tenantId}/t/devices`,
       hash: '',
       search: ''
     })
@@ -141,7 +145,7 @@ describe('AP Form - Add', () => {
 
     it('should handle Add AP', async () => {
       render(<Provider><ApForm /></Provider>, {
-        route: { params, path: '/:tenantId/devices/wifi/:action' }
+        route: { params, path: '/:tenantId/t/devices/wifi/:action' }
       })
       await changeVenue()
       await fillInForm()
@@ -150,7 +154,7 @@ describe('AP Form - Add', () => {
 
     it('should handle Add AP with custom coordinates', async () => {
       render(<Provider><ApForm /></Provider>, {
-        route: { params, path: '/:tenantId/devices/wifi/:action' }
+        route: { params, path: '/:tenantId/t/devices/wifi/:action' }
       })
       await changeVenue()
       await fillInForm()
@@ -165,7 +169,7 @@ describe('AP Form - Add', () => {
 
     it('should handle discard coordinates input', async () => {
       render(<Provider><ApForm /></Provider>, {
-        route: { params, path: '/:tenantId/devices/wifi/:action' }
+        route: { params, path: '/:tenantId/t/devices/wifi/:action' }
       })
       await changeVenue()
       await changeCoordinates(validCoordinates[0], false)
@@ -173,7 +177,7 @@ describe('AP Form - Add', () => {
 
     it('should handle valid coordinates input', async () => {
       render(<Provider><ApForm /></Provider>, {
-        route: { params, path: '/:tenantId/devices/wifi/:action' }
+        route: { params, path: '/:tenantId/t/devices/wifi/:action' }
       })
       await changeVenue()
       await changeCoordinates(validCoordinates[1], true)
@@ -216,7 +220,7 @@ describe('AP Form - Add', () => {
           })
       )
       render(<Provider><ApForm /></Provider>, {
-        route: { params, path: '/:tenantId/devices/wifi/:action' }
+        route: { params, path: '/:tenantId/t/devices/wifi/:action' }
       })
       await changeVenue()
       await fillInForm()
@@ -232,7 +236,7 @@ describe('AP Form - Add', () => {
           })
       )
       render(<Provider><ApForm /></Provider>, {
-        route: { params, path: '/:tenantId/devices/wifi/:action' }
+        route: { params, path: '/:tenantId/t/devices/wifi/:action' }
       })
       await changeVenue()
       await fillInForm()

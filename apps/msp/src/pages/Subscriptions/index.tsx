@@ -1,8 +1,8 @@
 
 import { useEffect, useState } from 'react'
 
-import { Row }     from 'antd'
-import { useIntl } from 'react-intl'
+import { Row, Space }         from 'antd'
+import { IntlShape, useIntl } from 'react-intl'
 
 import {
   Button,
@@ -25,10 +25,27 @@ import {
   useRefreshMspEntitlementMutation
 } from '@acx-ui/rc/services'
 import {
+  dateSort,
+  defaultSort,
   EntitlementUtil,
-  MspEntitlement
+  MspEntitlement,
+  sortProp
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+
+import * as UI from './styledComponent'
+
+const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
+  { key: '', value: $t({ defaultMessage: 'Show All' }) },
+  {
+    key: 'VALID',
+    value: $t({ defaultMessage: 'Show Active' })
+  },
+  {
+    key: 'EXPIRED',
+    value: $t({ defaultMessage: 'Show Expired' })
+  }
+]
 
 export function Subscriptions () {
   const { $t } = useIntl()
@@ -65,6 +82,7 @@ export function Subscriptions () {
       title: $t({ defaultMessage: 'Device Count' }),
       dataIndex: 'quantity',
       key: 'quantity',
+      sorter: { compare: sortProp('quantity', defaultSort) },
       render: function (_, row) {
         return row.quantity
       }
@@ -73,6 +91,7 @@ export function Subscriptions () {
       title: $t({ defaultMessage: 'Starting Date' }),
       dataIndex: 'effectiveDate',
       key: 'effectiveDate',
+      sorter: { compare: sortProp('effectiveDate', dateSort) },
       render: function (_, row) {
         const effectiveDate = new Date(Date.parse(row.effectiveDate))
         return formatter(DateFormatEnum.DateFormat)(effectiveDate)
@@ -82,6 +101,7 @@ export function Subscriptions () {
       title: $t({ defaultMessage: 'Expiration Date' }),
       dataIndex: 'expirationDate',
       key: 'expirationDate',
+      sorter: { compare: sortProp('expirationDate', dateSort) },
       render: function (_, row) {
         const expirationDate = new Date(Date.parse(row.expirationDate))
         return formatter(DateFormatEnum.DateFormat)(expirationDate)
@@ -89,18 +109,37 @@ export function Subscriptions () {
     },
     {
       title: $t({ defaultMessage: 'Time left' }),
-      dataIndex: 'timeLeft',
+      dataIndex: 'expirationDate',
+      // key needs to be unique
       key: 'timeLeft',
+      sorter: { compare: sortProp('expirationDate', dateSort) },
+      // active license should be first
+      defaultSortOrder: 'descend',
       render: function (_, row) {
         const remainingDays = EntitlementUtil.timeLeftInDays(row.expirationDate)
-        return EntitlementUtil.timeLeftValues(remainingDays)
+        const TimeLeftWrapper = remainingDays < 0
+          ? UI.Expired
+          : (remainingDays <= 60 ? UI.Warning : Space)
+        return <TimeLeftWrapper>{
+          EntitlementUtil.timeLeftValues(remainingDays)
+        }</TimeLeftWrapper>
       }
     },
     {
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'status',
       key: 'status',
-      filterable: true
+      filterMultiple: false,
+      filterValueNullable: true,
+      filterable: statusTypeFilterOpts($t),
+      sorter: { compare: sortProp('status', defaultSort) },
+      render: function (_, row) {
+        if( row.status === 'VALID') {
+          return $t({ defaultMessage: 'Active' })
+        } else {
+          return $t({ defaultMessage: 'Expired' })
+        }
+      }
     }
   ]
 
@@ -215,14 +254,6 @@ export function Subscriptions () {
     )
   }
 
-  const GetStatus = (status: String) => {
-    if( status === 'VALID') {
-      return $t({ defaultMessage: 'Active' })
-    } else {
-      return $t({ defaultMessage: 'Expired' })
-    }
-  }
-
   const SubscriptionTable = () => {
     const queryResults = useMspEntitlementListQuery({
       params: useParams()
@@ -235,14 +266,14 @@ export function Subscriptions () {
     const subscriptionData = queryResults.data?.map(response => {
       return {
         ...response,
-        name: EntitlementUtil.getMspDeviceTypeText(response?.deviceType),
-        status: GetStatus(response?.status as String)
+        name: EntitlementUtil.getMspDeviceTypeText(response?.deviceType)
       }
     })
 
     return (
       <Loader states={[queryResults]}>
         <Table
+          settingsId='msp-subscription-table'
           columns={columns}
           actions={actions}
           dataSource={subscriptionData}

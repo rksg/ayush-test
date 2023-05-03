@@ -4,6 +4,7 @@ import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
 import { Loader, PageHeader, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
 import {
   useAddMacRegListMutation,
   useGetMacRegListQuery,
@@ -13,7 +14,9 @@ import {
   MacRegistrationPoolFormFields,
   getPolicyRoutePath,
   PolicyType,
-  PolicyOperation
+  PolicyOperation,
+  getPolicyListRoutePath,
+  MacRegistrationPool
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -25,7 +28,7 @@ import { MacRegistrationListSettingForm } from './MacRegistrationListSetting/Mac
 interface MacRegistrationListFormProps {
   editMode?: boolean,
   modalMode?: boolean,
-  modalCallBack?: (name?: string) => void
+  modalCallBack?: (saveData?: MacRegistrationPool) => void
 }
 
 export default function MacRegistrationListForm (props: MacRegistrationListFormProps) {
@@ -41,15 +44,22 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
   const [addMacRegList] = useAddMacRegListMutation()
   const [updateMacRegList, { isLoading: isUpdating }] = useUpdateMacRegListMutation()
 
+  const policyEnabled = useIsSplitOn(Features.POLICY_MANAGEMENT)
+
   useEffect(() => {
     if (data && editMode) {
       formRef.current?.setFieldsValue({
         name: data.name,
         autoCleanup: data.autoCleanup,
-        ...transferDataToExpirationFormFields(data),
-        defaultAccess: data.defaultAccess
-        // policyId
+        ...transferDataToExpirationFormFields(data)
       })
+
+      if(policyEnabled) {
+        formRef.current?.setFieldsValue({
+          defaultAccess: data.defaultAccess,
+          policySetId: data.policySetId
+        })
+      }
     }
   }, [data, editMode])
 
@@ -59,10 +69,10 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
         name: data.name,
         autoCleanup: data.autoCleanup,
         ...transferExpirationFormFieldsToData(data.expiration),
-        defaultAccess: data.defaultAccess
-        // policyId
+        defaultAccess: data.defaultAccess ?? 'ACCEPT',
+        policySetId: data.policySetId
       }
-      await addMacRegList({ payload: saveData }).unwrap()
+      const result = await addMacRegList({ payload: saveData }).unwrap() as MacRegistrationPool
 
       showToast({
         type: 'success',
@@ -72,7 +82,7 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
         )
       })
 
-      modalMode ? modalCallBack?.(data.name) : navigate(linkToList, { replace: true })
+      modalMode ? modalCallBack?.(result) : navigate(linkToList, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -84,8 +94,8 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
         name: data.name,
         ...transferExpirationFormFieldsToData(data.expiration),
         autoCleanup: data.autoCleanup,
-        defaultAccess: data.defaultAccess
-        // policyId
+        defaultAccess: data.defaultAccess ?? 'ACCEPT',
+        policySetId: data.policySetId ?? null
       }
       await updateMacRegList({
         params: { policyId },
@@ -113,11 +123,11 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
           ? intl.$t({ defaultMessage: 'Configure {listName}' }, { listName: data?.name })
           : intl.$t({ defaultMessage: 'Add MAC Registration List' })}
         breadcrumb={[
-          {
-            text: intl.$t({ defaultMessage: 'Policies & Profiles > MAC Registration Lists' }),
+          // eslint-disable-next-line max-len
+          { text: intl.$t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) },
+          { text: intl.$t({ defaultMessage: 'MAC Registration Lists' }),
             // eslint-disable-next-line max-len
-            link: getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST })
-          }
+            link: getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST }) }
         ]}
       />}
       <StepsForm<MacRegistrationPoolFormFields>

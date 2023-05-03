@@ -14,18 +14,19 @@ import { useApActions }                    from '@acx-ui/rc/components'
 import { useApDetailHeaderQuery }          from '@acx-ui/rc/services'
 import {
   ApDetailHeader,
-  ApDeviceStatusEnum
+  ApDeviceStatusEnum,
+  useApContext
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
   useNavigate,
-  useTenantLink
+  useTenantLink,
+  useParams
 } from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 import { useDateFilter }  from '@acx-ui/utils'
 
-import { useApContext } from './ApContext'
-import ApTabs           from './ApTabs'
+import ApTabs from './ApTabs'
 
 function ApPageHeader () {
   const { $t } = useIntl()
@@ -33,6 +34,7 @@ function ApPageHeader () {
   const { tenantId, serialNumber } = useApContext()
   const { data } = useApDetailHeaderQuery({ params: { tenantId, serialNumber } })
   const apAction = useApActions()
+  const { activeTab } = useParams()
 
   const navigate = useNavigate()
   const location = useLocation()
@@ -81,6 +83,9 @@ function ApPageHeader () {
     />
   )
 
+  const enableTimeFilter = () =>
+    !['clients', 'networks', 'troubleshooting'].includes(activeTab as string)
+
   return (
     <PageHeader
       title={data?.title || ''}
@@ -89,13 +94,15 @@ function ApPageHeader () {
         { text: $t({ defaultMessage: 'Access Points' }), link: '/devices/wifi' }
       ]}
       extra={filterByAccess([
-        <RangePicker
-          key='date-filter'
-          selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
-          onDateApply={setDateFilter as CallableFunction}
-          showTimePicker
-          selectionType={range}
-        />,
+        enableTimeFilter()
+          ? <RangePicker
+            key='date-filter'
+            selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
+            onDateApply={setDateFilter as CallableFunction}
+            showTimePicker
+            selectionType={range}
+          />
+          : <></>,
         <Dropdown overlay={menu}>
           <Button>
             <Space>

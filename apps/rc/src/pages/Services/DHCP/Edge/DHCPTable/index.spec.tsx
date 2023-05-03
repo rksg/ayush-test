@@ -1,10 +1,17 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeDhcpUrls, getServiceDetailsLink, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
-import { Provider }                                                                                from '@acx-ui/store'
-import { mockServer, render, screen, within }                                                      from '@acx-ui/test-utils'
+import {
+  EdgeDhcpUrls,
+  EdgeUrlsInfo,
+  getServiceDetailsLink,
+  getServiceRoutePath,
+  ServiceOperation, ServiceType
+} from '@acx-ui/rc/utils'
+import { Provider }                           from '@acx-ui/store'
+import { mockServer, render, screen, within } from '@acx-ui/test-utils'
 
+import { mockEdgeList }      from '../../../../Devices/Edge/__tests__/fixtures'
 import { mockDhcpStatsData } from '../__tests__/fixtures'
 
 import DHCPTable from '.'
@@ -17,7 +24,7 @@ jest.mock('react-router-dom', () => ({
 
 describe('EdgeDhcpTable', () => {
   let params: { tenantId: string }
-  const tablePath = '/:tenantId/' + getServiceRoutePath({
+  const tablePath = '/:tenantId/t/' + getServiceRoutePath({
     type: ServiceType.EDGE_DHCP,
     oper: ServiceOperation.LIST
   })
@@ -38,6 +45,10 @@ describe('EdgeDhcpTable', () => {
       rest.delete(
         EdgeDhcpUrls.bulkDeleteDhcpServices.url,
         (req, res, ctx) => res(ctx.status(202))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeList.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeList))
       )
     )
   })
@@ -63,7 +74,7 @@ describe('EdgeDhcpTable', () => {
     const edgeDhcpServiceDetailLink = await screen.findByRole('link',
       { name: 'TestDHCP-1' }) as HTMLAnchorElement
     expect(edgeDhcpServiceDetailLink.href)
-      .toContain(`/t/${params.tenantId}/${getServiceDetailsLink({
+      .toContain(`/${params.tenantId}/t/${getServiceDetailsLink({
         type: ServiceType.EDGE_DHCP,
         oper: ServiceOperation.DETAIL,
         serviceId: '1'
@@ -82,7 +93,7 @@ describe('EdgeDhcpTable', () => {
     await user.click(within(row).getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Edit' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/${getServiceDetailsLink({
+      pathname: `/${params.tenantId}/t/${getServiceDetailsLink({
         type: ServiceType.EDGE_DHCP,
         oper: ServiceOperation.EDIT,
         serviceId: '1'

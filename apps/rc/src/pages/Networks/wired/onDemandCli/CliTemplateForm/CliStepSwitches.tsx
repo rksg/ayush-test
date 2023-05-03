@@ -1,25 +1,25 @@
-import { useContext, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 import { Col, Collapse, Form, Input, Row, Space, Switch, Typography } from 'antd'
 import { useIntl, FormattedMessage }                                  from 'react-intl'
 
-import { cssStr, StepsForm, Table, TableProps, Loader } from '@acx-ui/components'
-import { PlusSquareOutlined, MinusSquareOutlined }      from '@acx-ui/icons'
-import { useGetVenuesQuery, useLazyGetSwitchListQuery } from '@acx-ui/rc/services'
-import { CliTemplateVenueSwitches, SwitchViewModel }    from '@acx-ui/rc/utils'
-import { useParams }                                    from '@acx-ui/react-router-dom'
+import { cssStr, StepsForm, Table, TableProps, Loader, useStepFormContext } from '@acx-ui/components'
+import { PlusSquareOutlined, MinusSquareOutlined }                          from '@acx-ui/icons'
+import { useGetVenuesQuery, useLazyGetSwitchListQuery }                     from '@acx-ui/rc/services'
+import { ApplySwitch, CliTemplateVenueSwitches, SwitchViewModel }           from '@acx-ui/rc/utils'
+import { useParams }                                                        from '@acx-ui/react-router-dom'
 
-import CliTemplateFormContext from './CliTemplateFormContext'
-import * as UI                from './styledComponents'
+import * as UI from './styledComponents'
 
 export function CliStepSwitches () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
-  const form = Form.useFormInstance()
+  const { form, editMode } = useStepFormContext()
 
   const { data: venues } = useGetVenuesQuery({
     params: { tenantId }, payload: {
-      fields: ['name', 'switches', 'id'], // TODO: add 'operationalSwitches' for new api
+      fields: ['name', 'id', 'operationalSwitches'],
+      pageSize: 9999,
       sortField: 'name',
       sortOrder: 'ASC'
     }
@@ -28,7 +28,7 @@ export function CliStepSwitches () {
   const [venueSwitches, setVenueSwitches] = useState([] as CliTemplateVenueSwitches[])
   const [selectedSwitches, setSelectedSwitches] = useState([] as Map<React.Key, React.Key[]>[])
   const [getSwitchList] = useLazyGetSwitchListQuery()
-  const { editMode, data, applySwitches, setApplySwitches } = useContext(CliTemplateFormContext)
+  const [applySwitches, setApplySwitches] = useState({} as Record<string, ApplySwitch[]>)
 
   const getSwitchListPayload = (venueId: string) => ({
     fields: [
@@ -46,23 +46,13 @@ export function CliStepSwitches () {
   })
 
   useEffect(() => {
-    if (editMode && data) {
-      const selected = data.venueSwitches?.reduce((result, v) => ({
-        ...result,
-        [v.venueId as string]: v.switches
-      }), {})
-
-      setSelectedSwitches(selected as Map<React.Key, React.Key[]>[])
-      form?.setFieldsValue({
-        venueSwitches: selected,
-        applyLater: data?.applyLater
-      })
-    }
-  }, [data])
+    const selected = form.getFieldValue('venueSwitches')
+    setSelectedSwitches(selected)
+  }, [])
 
   useEffect(() => {
     if (venues?.data) {
-      const switches = venues?.data.filter((v) => v.switches) // operationalSwitches
+      const switches = venues?.data.filter((v) => v.operationalSwitches)
         .map((v) => ({ id: v.id })) as CliTemplateVenueSwitches[]
       setVenueSwitches(switches)
     }
@@ -113,7 +103,7 @@ export function CliStepSwitches () {
         children={<>
           <Form.Item
             noStyle
-            name='applyLater'
+            name='applyNow'
             valuePropName='checked'
             children={<Switch disabled={checkToggleDisabled(selectedSwitches)} />}
           />
@@ -128,6 +118,11 @@ export function CliStepSwitches () {
       <Form.Item
         hidden={true}
         name='venueSwitches'
+        children={<Input />}
+      />
+      <Form.Item
+        hidden={true}
+        name='applySwitches'
         children={<Input />}
       />
 
@@ -166,10 +161,9 @@ export function CliStepSwitches () {
                   <Checkbox />
                 </Form.Item> */}
                 <Space>{v?.name}</Space>
-                {/* v?.operationalSwitches ?? 0 */}
-                <Space>{v?.switches ?? 0}{$t({ defaultMessage: 'Switches' })}</Space>
+                <Space>{v?.operationalSwitches ?? 0}{$t({ defaultMessage: 'Switches' })}</Space>
               </Space>}
-              collapsible={v?.switches ? 'header' : 'disabled'}
+              collapsible={v?.operationalSwitches ? 'header' : 'disabled'}
               key={v?.id}
             >
               <Loader states={[{
@@ -196,10 +190,13 @@ export function CliStepSwitches () {
 
                       setApplySwitches?.(applySwitch)
                       setSelectedSwitches(venueSwitch)
-                      form?.setFieldValue('venueSwitches', venueSwitch)
+                      form?.setFieldsValue({
+                        venueSwitches: venueSwitch,
+                        applySwitch: applySwitch
+                      })
 
                       if (checkToggleDisabled(venueSwitch)) {
-                        form?.setFieldValue('applyLater', false)
+                        form?.setFieldValue('applyNow', false)
                       }
                     }
                   }}

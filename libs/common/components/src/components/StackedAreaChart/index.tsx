@@ -106,7 +106,7 @@ export function StackedAreaChart <
   const option: EChartsOption = {
     animation: false,
     color: props.stackColors || qualitativeColorSet(),
-    grid: { ...gridOptions({ disableLegend }) },
+    grid: { ...gridOptions({ disableLegend, rightGridOffset: 5 }) },
     ...(disableLegend ? {} : {
       legend: {
         ...legendOptions(),
@@ -151,8 +151,8 @@ export function StackedAreaChart <
       smooth: true,
       step: type === 'step' ? 'start' : false,
       symbol: 'none',
-      lineStyle: { width: 0 },
-      areaStyle: { opacity: 1 }
+      lineStyle: { width: 1 },
+      areaStyle: { opacity: 0.5 }
     })),
     toolbox: {
       feature: {

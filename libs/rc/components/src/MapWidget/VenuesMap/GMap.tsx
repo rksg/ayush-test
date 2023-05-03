@@ -1,16 +1,16 @@
 import React from 'react'
 
-
 import { MarkerClusterer, SuperClusterAlgorithm } from '@googlemaps/markerclusterer'
 import * as _                                     from 'lodash'
 import { createRoot }                             from 'react-dom/client'
 import { RawIntlProvider, useIntl }               from 'react-intl'
 
+import { VenueMarkerOptions } from '@acx-ui/rc/utils'
+
 import { getMarkerSVG, getMarkerColor, getIcon }    from './helper'
 import VenueClusterRenderer                         from './VenueClusterRenderer'
 import VenueFilterControlBox, { FilterStateChange } from './VenueFilterControlBox'
 import { VenueMarkerTooltip }                       from './VenueMarkerTooltip'
-import VenueMarkerWithLabel, { VenueMarkerOptions } from './VenueMarkerWithLabel'
 
 import { NavigateProps } from './index'
 
@@ -112,14 +112,16 @@ const GMap: React.FC<MapProps> = ({
         const svgMarkerHover = getMarkerSVG(markerColor.hover)
         const scaledSize = new google.maps.Size(markerSize, markerSize)
 
-        const marker = new VenueMarkerWithLabel({
-          labelContent: '',
+        const marker = new google.maps.Marker({
           position: (venueMarker.latitude && venueMarker.longitude) ?
             new google.maps.LatLng(venueMarker.latitude, venueMarker.longitude):
             venueMarker.position,
           ...getIcon(svgMarkerDefault, scaledSize),
           visible: venueMarker.visible
-        }, venueMarker)
+        })
+
+        // Set venue data into marker
+        marker.set('venueMarker', venueMarker)
 
         let closeInfoWindowWithTimeout: NodeJS.Timeout
         marker.addListener('mouseover', () => {

@@ -1,3 +1,7 @@
+diff --git a/node_modules/@superset-ui/embedded-sdk/.DS_Store b/node_modules/@superset-ui/embedded-sdk/.DS_Store
+new file mode 100644
+index 0000000..c88a062
+Binary files /dev/null and b/node_modules/@superset-ui/embedded-sdk/.DS_Store differ
 diff --git a/node_modules/@superset-ui/embedded-sdk/dist/index.d.ts b/node_modules/@superset-ui/embedded-sdk/dist/index.d.ts
 index b8bf5ad..0ad406e 100644
 --- a/node_modules/@superset-ui/embedded-sdk/dist/index.d.ts
@@ -18,7 +22,7 @@ index b8bf5ad..0ad406e 100644
 -export declare function embedDashboard({ id, supersetDomain, mountPoint, fetchGuestToken, dashboardUiConfig, debug }: EmbedDashboardParams): Promise<EmbeddedDashboard>;
 +export declare function embedDashboard({ id, supersetDomain, mountPoint, fetchGuestToken, dashboardUiConfig, debug, authToken }: EmbedDashboardParams): Promise<EmbeddedDashboard>;
 diff --git a/node_modules/@superset-ui/embedded-sdk/lib/index.js b/node_modules/@superset-ui/embedded-sdk/lib/index.js
-index 5c8591d..e968106 100644
+index 5c8591d..ea333d8 100644
 --- a/node_modules/@superset-ui/embedded-sdk/lib/index.js
 +++ b/node_modules/@superset-ui/embedded-sdk/lib/index.js
 @@ -41,7 +41,8 @@ async function embedDashboard(_ref) {
@@ -43,7 +47,7 @@ index 5c8591d..e968106 100644
  
        iframe.sandbox.add("allow-same-origin"); // needed for postMessage to work
  
-@@ -120,7 +126,7 @@ async function embedDashboard(_ref) {
+@@ -120,22 +126,29 @@ async function embedDashboard(_ref) {
            debug
          }));
        });
@@ -52,9 +56,15 @@ index 5c8591d..e968106 100644
        mountPoint.replaceChildren(iframe);
        log('placed the iframe');
      });
-@@ -128,14 +134,16 @@ async function embedDashboard(_ref) {
+   }
  
-   const [guestToken, ourPort] = await Promise.all([fetchGuestToken(), mountIframe()]);
+-  const [guestToken, ourPort] = await Promise.all([fetchGuestToken(), mountIframe()]);
++  // const [guestToken, ourPort] = await Promise.all([fetchGuestToken(), mountIframe()]);
++  // iframe was trying to load while guestToken was still not fetched
++  // So awaiting for guestToken before calling mountIframe
++  const guestToken = await fetchGuestToken();
++  log('Fetched guest token');
++  const ourPort = await mountIframe();
    ourPort.emit('guestToken', {
 -    guestToken
 +    guestToken,

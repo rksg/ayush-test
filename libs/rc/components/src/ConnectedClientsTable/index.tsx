@@ -135,29 +135,32 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
     {
       key: 'venueId',
       title: intl.$t({ defaultMessage: 'Venue' }),
-      dataIndex: 'venueId',
+      dataIndex: 'venueName',
+      sorter: true,
       filterable: apId ? false : venueId ? false : GetVenueFilterOptions(tenantId),
       render: (data, row) => {
         return (
-          <TenantLink to={`/venues/${data}/venue-details/overview`}>{row.venueName}</TenantLink>
+          <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{data}</TenantLink>
         )
       }
     },
     {
       key: 'serialNumber',
       title: intl.$t({ defaultMessage: 'AP' }),
-      dataIndex: 'serialNumber',
+      dataIndex: 'apName',
+      sorter: true,
       filterable: apId ? false : GetApFilterOptions(tenantId, venueId),
       render: (data, row) => {
         return (
-          <TenantLink to={`/devices/wifi/${data}/details/overview`}>{row.apName}</TenantLink>
+          <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>{data}</TenantLink>
         )
       }
     },
     {
       key: 'switchSerialNumber',
       title: intl.$t({ defaultMessage: 'Switch' }),
-      dataIndex: 'switchSerialNumber',
+      dataIndex: 'switchName',
+      sorter: true,
       render: (data, row) => {
         if(!row.switchName){
           return '--'
@@ -412,6 +415,7 @@ export const ConnectedClientsTable = (props: {
           {$t({ defaultMessage: 'Connected Clients' })}
         </Subtitle>
         <Table<ClientList>
+          settingsId='connected-clients-table'
           columns={GetCols(useIntl(), showAllColumns)}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}

@@ -34,7 +34,7 @@ exports[`PoliciesTable should render table 1`] = `
               class="ant-space-item"
             >
               <a
-                href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/policies/select"
+                href="/ecc2d7cf9d2342fdb31ae0e24958fcac/t/policies/select"
               >
                 <button
                   class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 ibsWZY"
@@ -69,38 +69,7 @@ exports[`PoliciesTable should render table 1`] = `
           >
             <div
               class="ant-pro-table-list-toolbar"
-            >
-              <div
-                class="ant-pro-table-list-toolbar-container"
-              >
-                <div
-                  class="ant-pro-table-list-toolbar-left"
-                />
-                <div
-                  class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
-                >
-                  <div
-                    class="ant-space-item"
-                  >
-                    <div
-                      class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="ant-pro-table-list-toolbar-setting-item"
-                        >
-                          <svg
-                            data-testid="SettingsOutlined"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            />
             <div
               class="ant-table-wrapper"
             >
@@ -480,7 +449,7 @@ exports[`PoliciesTable should render table 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/policies/accessControl/cc080e33-26a7-4d34-870f-b7f312fcfccb/detail"
+                                  href="/ecc2d7cf9d2342fdb31ae0e24958fcac/t/policies/accessControl/cc080e33-26a7-4d34-870f-b7f312fcfccb/detail"
                                 >
                                   Policy 1
                                 </a>
@@ -533,7 +502,7 @@ exports[`PoliciesTable should render table 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/policies/vlanPool/aa080e33-26a7-4d34-870f-b7f312fcfccb/detail"
+                                  href="/ecc2d7cf9d2342fdb31ae0e24958fcac/t/policies/vlanPool/aa080e33-26a7-4d34-870f-b7f312fcfccb/detail"
                                 >
                                   Policy 2
                                 </a>
@@ -586,7 +555,7 @@ exports[`PoliciesTable should render table 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/policies/rogueAp/aa080e33-26a7-4d34-870f-b7f312fcfccc/detail"
+                                  href="/ecc2d7cf9d2342fdb31ae0e24958fcac/t/policies/rogueAp/aa080e33-26a7-4d34-870f-b7f312fcfccc/detail"
                                 >
                                   Policy 3
                                 </a>
@@ -639,7 +608,7 @@ exports[`PoliciesTable should render table 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/policies/rogueAp/bbc80e33-2547-4d34-870f-b7f245fcfccc/detail"
+                                  href="/ecc2d7cf9d2342fdb31ae0e24958fcac/t/policies/rogueAp/bbc80e33-2547-4d34-870f-b7f245fcfccc/detail"
                                 >
                                   Default profile
                                 </a>

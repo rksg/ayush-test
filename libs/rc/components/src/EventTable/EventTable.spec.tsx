@@ -11,6 +11,12 @@ import { events, eventsMeta } from './__tests__/fixtures'
 
 import { EventTable } from '.'
 
+const mockExportCsv = jest.fn()
+jest.mock('./useExportCsv', () => ({
+  ...jest.requireActual('./useExportCsv'),
+  useExportCsv: () => ({ exportCsv: mockExportCsv })
+}))
+
 jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user'),
   useUserProfileContext: () => ({ data: { detailLevel: 'it' } })
@@ -175,6 +181,15 @@ describe('EventTable', () => {
 
     expect(await within(cell).findByText(eventsMeta[0].apName!)).toBeVisible()
     expect(await within(cell).findByTestId('tooltip-content')).toHaveTextContent('Not available')
+  })
+
+  it('should download csv on click', async () => {
+    render(
+      <EventTable tableQuery={tableQuery} />,
+      { route: { params }, wrapper: Provider }
+    )
+    await userEvent.click(screen.getByTestId('DownloadOutlined'))
+    expect(mockExportCsv).toBeCalled()
   })
 
   it('should not render omitColumns',async () => {

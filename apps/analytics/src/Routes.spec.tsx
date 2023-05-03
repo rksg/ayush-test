@@ -1,4 +1,4 @@
-import { useIsTierAllowed }                                     from '@acx-ui/feature-toggle'
+import { useIsSplitOn, useIsTierAllowed }                       from '@acx-ui/feature-toggle'
 import { networkHealthApiURL, Provider }                        from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitFor, fireEvent } from '@acx-ui/test-utils'
 import { RolesEnum }                                            from '@acx-ui/types'
@@ -34,7 +34,7 @@ jest.mock('./pages/IncidentDetails', () => () => {
 test('should redirect analytics to analytics/incidents', async () => {
   render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
-      path: '/t/tenantId/analytics',
+      path: '/tenantId/t/analytics',
       wrapRoutes: false
     }
   })
@@ -44,7 +44,7 @@ test('should redirect service validation to serviceValidation/networkHealth', as
   jest.mocked(useIsTierAllowed).mockReturnValue(true)
   render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
-      path: '/t/tenantId/serviceValidation',
+      path: '/tenantId/t/serviceValidation',
       wrapRoutes: false
     }
   })
@@ -53,7 +53,7 @@ test('should redirect service validation to serviceValidation/networkHealth', as
 test('should navigate to analytics/incidents', async () => {
   render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
-      path: '/t/tenantId/analytics/incidents',
+      path: '/tenantId/t/analytics/incidents',
       wrapRoutes: false
     }
   })
@@ -63,7 +63,7 @@ test('should navigate to serviceValidation/networkHealth', async () => {
   jest.mocked(useIsTierAllowed).mockReturnValue(true)
   render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
-      path: '/t/tenantId/serviceValidation/networkHealth',
+      path: '/tenantId/t/serviceValidation/networkHealth',
       wrapRoutes: false
     }
   })
@@ -73,7 +73,7 @@ test('should navigate to Netework Health add page', async () => {
   jest.mocked(useIsTierAllowed).mockReturnValue(true)
   render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
-      path: '/t/tenantId/serviceValidation/networkHealth/add',
+      path: '/tenantId/t/serviceValidation/networkHealth/add',
       wrapRoutes: false
     }
   })
@@ -84,7 +84,7 @@ test('should navigate to Netework Health edit page', async () => {
   mockGraphqlQuery(networkHealthApiURL, 'FetchServiceGuardSpec', { data: fetchServiceGuardSpec })
   render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
-      path: '/t/tenantId/serviceValidation/networkHealth/specId/edit',
+      path: '/tenantId/t/serviceValidation/networkHealth/specId/edit',
       wrapRoutes: false
     }
   })
@@ -98,7 +98,7 @@ test('should navigate to serviceValidation/networkHealth by NetworkHealthSpecGua
     networkHealthApiURL, 'FetchServiceGuardSpec', { data: { serviceGuardSpec: null } })
   render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
-      path: '/t/tenantId/serviceValidation/networkHealth/specId/edit',
+      path: '/tenantId/t/serviceValidation/networkHealth/specId/edit',
       wrapRoutes: false
     }
   })
@@ -113,7 +113,7 @@ test('should navigate to serviceValidation/networkHealth by NetworkHealthSpecGua
 test('should navigate to analytics/recommendations', () => {
   render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
-      path: '/t/tenantId/analytics/recommendations',
+      path: '/tenantId/t/analytics/recommendations',
       wrapRoutes: false
     }
   })
@@ -122,7 +122,7 @@ test('should navigate to analytics/recommendations', () => {
 test('should navigate to analytics/health', () => {
   render(<AnalyticsRoutes />, {
     route: {
-      path: '/t/tenantId/analytics/health',
+      path: '/tenantId/t/analytics/health',
       wrapRoutes: false
     }
   })
@@ -131,7 +131,7 @@ test('should navigate to analytics/health', () => {
 test('should navigate to analytics/health/tab/overview', async () => {
   render(< Provider><AnalyticsRoutes /></Provider>, {
     route: {
-      path: '/t/tenantId/analytics/health/tab/overview',
+      path: '/tenantId/t/analytics/health/tab/overview',
       wrapRoutes: false
     }
   })
@@ -140,7 +140,7 @@ test('should navigate to analytics/health/tab/overview', async () => {
 test('should navigate to analytics/configChange', () => {
   render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
-      path: '/t/tenantId/analytics/configChange',
+      path: '/tenantId/t/analytics/configChange',
       wrapRoutes: false
     }
   })
@@ -149,7 +149,7 @@ test('should navigate to analytics/configChange', () => {
 test('should navigate to analytics/incidentDetails', async () => {
   render(< Provider><AnalyticsRoutes /></Provider>, {
     route: {
-      path: '/t/tenantId/analytics/incidents/incidentId',
+      path: '/tenantId/t/analytics/incidents/incidentId',
       wrapRoutes: false
     }
   })
@@ -158,7 +158,7 @@ test('should navigate to analytics/incidentDetails', async () => {
 test('should navigate to analytics/incidents/tab/overview', async () => {
   render(< Provider><AnalyticsRoutes /></Provider>, {
     route: {
-      path: '/t/tenantId/analytics/incidents/tab/overview',
+      path: '/tenantId/t/analytics/incidents/tab/overview',
       wrapRoutes: false
     }
   })
@@ -170,7 +170,7 @@ test('should navigate to serviceValidation/networkHealth/tab/overview', async ()
   jest.mocked(useIsTierAllowed).mockReturnValue(true)
   render(< Provider><AnalyticsRoutes /></Provider>, {
     route: {
-      path: '/t/tenantId/serviceValidation/networkHealth/1/tests/1/tab/overview',
+      path: '/tenantId/t/serviceValidation/networkHealth/1/tests/1/tab/overview',
       wrapRoutes: false
     }
   })
@@ -184,7 +184,7 @@ test('should navigate to serviceValidation/networkHealth/tab/details', async () 
   jest.mocked(useIsTierAllowed).mockReturnValue(true)
   render(< Provider><AnalyticsRoutes /></Provider>, {
     route: {
-      path: '/t/tenantId/serviceValidation/networkHealth/1/tests/1/tab/details',
+      path: '/tenantId/t/serviceValidation/networkHealth/1/tests/1/tab/details',
       wrapRoutes: false
     }
   })
@@ -196,7 +196,7 @@ test('should navigate to serviceValidation/networkHealth by NetworkHealthTestGua
     networkHealthApiURL, 'FetchServiceGuardTest', { data: { serviceGuardTest: null } })
   render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
-      path: '/t/tenantId/serviceValidation/networkHealth/1/tests/1/tab/overview',
+      path: '/tenantId/t/serviceValidation/networkHealth/1/tests/1/tab/overview',
       wrapRoutes: false
     }
   })
@@ -205,7 +205,17 @@ test('should navigate to serviceValidation/networkHealth by NetworkHealthTestGua
   })
   expect(screen.getByText('Network Health test does not exist')).toBeVisible()
 })
-
+test('should navigate to serviceValidation/videoCallQoe', () => {
+  jest.mocked(useIsTierAllowed).mockReturnValue(true)
+  jest.mocked(useIsSplitOn).mockReturnValue(true)
+  render(<Provider><AnalyticsRoutes /></Provider>, {
+    route: {
+      path: '/tenantId/t/serviceValidation/videoCallQoe',
+      wrapRoutes: false
+    }
+  })
+  expect(screen.getByText('Video Call QoE')).toBeVisible()
+})
 describe('if tier no access', () => {
   // eslint-disable-next-line no-console
   afterAll(() => jest.mocked(console.warn).mockRestore())
@@ -215,7 +225,7 @@ describe('if tier no access', () => {
     jest.spyOn(console, 'warn').mockImplementation(() => {})
     const { container } = render(<AnalyticsRoutes />, {
       route: {
-        path: '/t/tenantId/serviceValidation',
+        path: '/tenantId/t/serviceValidation',
         wrapRoutes: false
       },
       wrapper: Provider
@@ -237,7 +247,7 @@ describe('RBAC', () => {
     const { container } = render(<AnalyticsRoutes />, {
       wrapper: Provider,
       route: {
-        path: '/t/tenantId/analytics',
+        path: '/tenantId/t/analytics',
         wrapRoutes: false
       }
     })
@@ -248,7 +258,7 @@ describe('RBAC', () => {
     const { container } = render(<AnalyticsRoutes />, {
       wrapper: Provider,
       route: {
-        path: '/t/tenantId/serviceValidation',
+        path: '/tenantId/t/serviceValidation',
         wrapRoutes: false
       }
     })

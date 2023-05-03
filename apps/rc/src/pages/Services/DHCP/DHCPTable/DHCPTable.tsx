@@ -12,12 +12,14 @@ import {
   getServiceRoutePath,
   DHCPSaveData,
   DHCP_LIMIT_NUMBER,
-  DHCPPool
+  DHCPPool,
+  IpUtilsService
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                          from '@acx-ui/user'
 
-import * as UI from '../DHCPForm/styledComponents'
+import { DEFAULT_GUEST_DHCP_NAME } from '../DHCPForm/DHCPForm'
+import * as UI                     from '../DHCPForm/styledComponents'
 export default function DHCPTable () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
@@ -27,8 +29,6 @@ export default function DHCPTable () {
   const tableQuery = useTableQuery({
     useQuery: useGetDHCPProfileListViewModelQuery,
     defaultPayload: {
-      searchString: '',
-      searchTargetFields: ['name'],
       filters: {},
       fields: [
         'id',
@@ -37,6 +37,10 @@ export default function DHCPTable () {
         'venueIds',
         'technology'
       ]
+    },
+    search: {
+      searchString: '',
+      searchTargetFields: ['name']
     }
   })
 
@@ -45,7 +49,8 @@ export default function DHCPTable () {
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedRows) => {
         return !selectedRows.some((row)=>{
-          return row.venueIds && row.venueIds.length>0
+          return (row.venueIds && row.venueIds.length>0)||
+            row.name === DEFAULT_GUEST_DHCP_NAME
         })
       },
       onClick: ([{ id, name }], clearSelection) => {
@@ -66,7 +71,8 @@ export default function DHCPTable () {
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedRows) => {
         return !selectedRows.some((row)=>{
-          return row.venueIds && row.venueIds.length>0
+          return (row.venueIds && row.venueIds.length>0)||
+            row.name === DEFAULT_GUEST_DHCP_NAME
         })
       },
       onClick: ([{ id }]) => {
@@ -141,17 +147,7 @@ function useColumns () {
         : emptyVenues
     })
   })
-  const countIpRangeSize = (startIpAddress: string, endIpAddress: string): number =>{
-    const convertIpToLong = (ipAddress: string): number => {
-      const ipArray = ipAddress.split('.').map(ip => parseInt(ip, 10))
-      return ipArray[0] * 16777216 + ipArray[1] * 65536 + ipArray[2] * 256 + ipArray[3]
-    }
 
-    const startLong = convertIpToLong(startIpAddress)
-    const endLong = convertIpToLong(endIpAddress)
-
-    return endLong - startLong + 1
-  }
   const poolColumns: TableProps<DHCPPool>['columns'] = [
     {
       key: 'name',
@@ -179,7 +175,7 @@ function useColumns () {
       dataIndex: 'networkAddress',
       align: 'center',
       render: (data,row)=>{
-        return countIpRangeSize(row.startAddress, row.endAddress)
+        return IpUtilsService.countIpRangeSize(row.startAddress, row.endAddress)
       }
     }
   ]
@@ -210,6 +206,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'DHCP Pools' }),
       dataIndex: 'dhcpPools',
       align: 'center',
+      sorter: true,
       render: (data, row) =>{
         if (!row.dhcpPools || row.dhcpPools.length === 0) return 0
         const dhcpPools = row.dhcpPools
@@ -217,7 +214,6 @@ function useColumns () {
           <Table<DHCPPool>
             type='compactBordered'
             style={{ width: 500 }}
-            columnState={{ hidden: true }}
             columns={poolColumns}
             dataSource={dhcpPools}
           />
@@ -233,6 +229,7 @@ function useColumns () {
       dataIndex: 'venueIds',
       filterable: venueNameMap,
       align: 'center',
+      sorter: true,
       render: (data, row) =>{
         if (!row.venueIds || row.venueIds.length === 0) return 0
         const venueIds = row.venueIds

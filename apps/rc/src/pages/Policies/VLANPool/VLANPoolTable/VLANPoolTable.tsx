@@ -26,8 +26,6 @@ export default function VLANPoolTable () {
   const tableQuery = useTableQuery({
     useQuery: useGetVLANPoolPolicyViewModelListQuery,
     defaultPayload: {
-      searchString: '',
-      searchTargetFields: ['name'],
       fields: [
         'id',
         'name',
@@ -36,6 +34,10 @@ export default function VLANPoolTable () {
         'venueIds'
       ],
       filters: {}
+    },
+    search: {
+      searchString: '',
+      searchTargetFields: ['name']
     }
   })
 
@@ -97,6 +99,7 @@ export default function VLANPoolTable () {
       />
       <Loader states={[tableQuery]}>
         <Table<VLANPoolViewModelType>
+          settingsId='policies-vlan-pool-table'
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
@@ -156,6 +159,7 @@ function useColumns () {
       key: 'vlanMembers',
       title: $t({ defaultMessage: 'VLANs' }),
       dataIndex: 'vlanMembers',
+      sorter: true,
       render: (data) =>{
         return data?.toString()
       }
@@ -165,6 +169,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Venues' }),
       dataIndex: 'venueIds',
       filterable: venueNameMap,
+      sorter: true,
       render: (data, row) =>{
         if (!row.venueIds || row.venueIds.length === 0) return 0
         const venueIds = row.venueIds

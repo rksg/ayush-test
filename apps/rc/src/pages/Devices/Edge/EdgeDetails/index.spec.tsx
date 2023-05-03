@@ -43,25 +43,26 @@ describe('EdgeDetails', () => {
     render(<Provider>
       <EdgeDetails />
     </Provider>, {
-      route: { params, path: '/:tenantId/devices/edge/:serialNumber/details/:activeTab' }
+      route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/details/:activeTab' }
     })
 
     const tab = await screen.findByText('Overview')
     expect(tab.getAttribute('aria-selected')).toBe('true')
   })
 
-  it('should display troubleshooting tab correctly', async () => {
-    params['activeTab'] = 'troubleshooting'
+  // Troubleshooting TBD
+  // it('should display troubleshooting tab correctly', async () => {
+  //   params['activeTab'] = 'troubleshooting'
 
-    render(<Provider>
-      <EdgeDetails />
-    </Provider>, {
-      route: { params, path: '/:tenantId/devices/edge/:serialNumber/details/:activeTab' }
-    })
+  //   render(<Provider>
+  //     <EdgeDetails />
+  //   </Provider>, {
+  //     route: { params, path: '/:tenantId/devices/edge/:serialNumber/details/:activeTab' }
+  //   })
 
-    const tab = await screen.findByRole('tab', { name: 'Troubleshooting' })
-    expect(tab.getAttribute('aria-selected')).toBe('true')
-  })
+  //   const tab = await screen.findByRole('tab', { name: 'Troubleshooting' })
+  //   expect(tab.getAttribute('aria-selected')).toBe('true')
+  // })
 
   it('should display service tab correctly', async () => {
     params['activeTab'] = 'services'
@@ -69,7 +70,7 @@ describe('EdgeDetails', () => {
     render(<Provider>
       <EdgeDetails />
     </Provider>, {
-      route: { params, path: '/:tenantId/devices/edge/:serialNumber/details/:activeTab' }
+      route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/details/:activeTab' }
     })
 
     const tab = await screen.findByText('Services (0)')
@@ -82,7 +83,7 @@ describe('EdgeDetails', () => {
     render(<Provider>
       <EdgeDetails />
     </Provider>, {
-      route: { params, path: '/:tenantId/devices/edge/:serialNumber/details/:activeTab' }
+      route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/details/:activeTab' }
     })
 
     const target = await screen.findByRole('tab', { name: 'DHCP' })
@@ -96,7 +97,7 @@ describe('EdgeDetails', () => {
     render(<Provider>
       <EdgeDetails />
     </Provider>, {
-      route: { params, path: '/:tenantId/devices/edge/:serialNumber/details/:activeTab' }
+      route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/details/:activeTab' }
     })
 
     const target = await screen.findByRole('tab', { name: 'Timeline' })
@@ -109,24 +110,24 @@ describe('EdgeDetails', () => {
     render(<Provider>
       <EdgeDetails />
     </Provider>, {
-      route: { params, path: '/:tenantId/devices/edge/:serialNumber/details/:activeTab' }
+      route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/details/:activeTab' }
     })
 
     await user.click(screen.getByRole('tab', { name: 'Services (0)' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/devices/edge/${params.serialNumber}/edge-details/services`,
+      pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/edge-details/services`,
       hash: '',
       search: ''
     })
     await user.click(screen.getByRole('tab', { name: 'DHCP' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/devices/edge/${params.serialNumber}/edge-details/dhcp/pools`,
+      pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/edge-details/dhcp/pools`,
       hash: '',
       search: ''
     })
     await user.click(screen.getByRole('tab', { name: 'Timeline' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/devices/edge/${params.serialNumber}/edge-details/timeline`,
+      pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/edge-details/timeline`,
       hash: '',
       search: ''
     })

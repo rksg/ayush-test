@@ -1,10 +1,12 @@
 import {
   CreateDpskFormFields,
+  DeviceNumberType,
   DpskSaveData,
   ExpirationDateEntity,
   ExpirationMode,
   ExpirationType,
-  PassphraseFormatEnum
+  PassphraseFormatEnum,
+  PolicyDefaultAccess
 } from '@acx-ui/rc/utils'
 
 import { transferFormFieldsToSaveData, transferSaveDataToFormFields } from './parser'
@@ -49,6 +51,13 @@ describe('DpskForm parser', () => {
     })
     expect(saveDataExpireAfterTime.expirationType).toBe(ExpirationType.DAYS_AFTER_TIME)
     expect(saveDataExpireAfterTime.expirationOffset).toBe(mockedExpirationAfterTime.offset)
+
+    // Verify cloudpath fatures field
+    const saveDataCloudPath: DpskSaveData = transferFormFieldsToSaveData({
+      ...mockedBasicFormFields,
+      policyDefaultAccess: PolicyDefaultAccess.REJECT
+    })
+    expect(saveDataCloudPath.policyDefaultAccess).toEqual(false)
   })
 
   it('should transfer the DPSK saved data to form fields', () => {
@@ -97,5 +106,21 @@ describe('DpskForm parser', () => {
     expect(formFieldsExpireAfterTime.expiration.type).toBe(mockedExpirationAfterTime.expirationType)
     // eslint-disable-next-line max-len
     expect(formFieldsExpireAfterTime.expiration.offset).toBe(mockedExpirationAfterTime.expirationOffset)
+
+    // Verify cloudpath fatures field
+    const formFieldsCloudpath1: CreateDpskFormFields = transferSaveDataToFormFields({
+      ...mockedBasicSaveData,
+      policyDefaultAccess: true,
+      deviceCountLimit: 10
+    })
+    expect(formFieldsCloudpath1.policyDefaultAccess).toBe(PolicyDefaultAccess.ACCEPT)
+    expect(formFieldsCloudpath1.deviceNumberType).toBe(DeviceNumberType.LIMITED)
+
+    const formFieldsCloudpath2: CreateDpskFormFields = transferSaveDataToFormFields({
+      ...mockedBasicSaveData,
+      policyDefaultAccess: false
+    })
+    expect(formFieldsCloudpath2.policyDefaultAccess).toBe(PolicyDefaultAccess.REJECT)
+    expect(formFieldsCloudpath2.deviceNumberType).toBe(DeviceNumberType.UNLIMITED)
   })
 })

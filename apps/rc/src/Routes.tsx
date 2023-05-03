@@ -1,4 +1,4 @@
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   getPolicyListRoutePath,
   getPolicyRoutePath,
@@ -10,7 +10,8 @@ import {
   PolicyOperation,
   PolicyType,
   ServiceOperation,
-  ServiceType
+  ServiceType,
+  getAdaptivePolicyDetailRoutePath
 } from '@acx-ui/rc/utils'
 import { Navigate, rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                                    from '@acx-ui/store'
@@ -43,6 +44,10 @@ import AccessControlDetail                          from './pages/Policies/Acces
 import AccessControlForm                            from './pages/Policies/AccessControl/AccessControlForm/AccessControlForm'
 import AccessControlTable                           from './pages/Policies/AccessControl/AccessControlTable/AccessControlTable'
 import AdaptivePolicyList, { AdaptivePolicyTabKey } from './pages/Policies/AdaptivePolicy'
+import AdaptivePolicyDetail                         from './pages/Policies/AdaptivePolicy/AdaptivePolicy/AdaptivePolicyDetail/AdaptivePolicyDetail'
+import AdaptivePolicyForm                           from './pages/Policies/AdaptivePolicy/AdaptivePolicy/AdaptivePolicyForm/AdaptivePolicyForm'
+import AdaptivePolicySetDetail                      from './pages/Policies/AdaptivePolicy/AdaptivePolicySet/AdaptivePolicySetDetail/AdaptivePolicySetDetail'
+import AdaptivePolicySetForm                        from './pages/Policies/AdaptivePolicy/AdaptivePolicySet/AdaptivePolicySetFom/AdaptivePolicySetForm'
 import RadiusAttributeGroupDetail
   // eslint-disable-next-line max-len
   from './pages/Policies/AdaptivePolicy/RadiusAttributeGroup/RadiusAttributeGroupDetail/RadiusAttributeGroupDetail'
@@ -67,6 +72,9 @@ import SyslogDetailView           from './pages/Policies/Syslog/SyslogDetail/Sys
 import SyslogForm                 from './pages/Policies/Syslog/SyslogForm/SyslogForm'
 import SyslogTable                from './pages/Policies/Syslog/SyslogTable/SyslogTable'
 import AddTunnelProfile           from './pages/Policies/TunnelProfile/AddTunnelProfile'
+import EditTunnelProfile          from './pages/Policies/TunnelProfile/EditTunnelProfile'
+import TunnelProfileDetail        from './pages/Policies/TunnelProfile/TunnelProfileDetail'
+import TunnelProfileTable         from './pages/Policies/TunnelProfile/TunnelProfileTable'
 import VLANPoolDetail             from './pages/Policies/VLANPool/VLANPoolDetail'
 import VLANPoolForm               from './pages/Policies/VLANPool/VLANPoolForm/VLANPoolForm'
 import VLANPoolTable              from './pages/Policies/VLANPool/VLANPoolTable/VLANPoolTable'
@@ -80,12 +88,17 @@ import EditDhcp                   from './pages/Services/DHCP/Edge/EditDHCP'
 import DpskDetails                from './pages/Services/Dpsk/DpskDetail/DpskDetails'
 import DpskForm                   from './pages/Services/Dpsk/DpskForm/DpskForm'
 import DpskTable                  from './pages/Services/Dpsk/DpskTable/DpskTable'
+import AddFirewall                from './pages/Services/EdgeFirewall/AddFirewall'
+import EditFirewall               from './pages/Services/EdgeFirewall/EditFirewall'
+import FirewallDetail             from './pages/Services/EdgeFirewall/FirewallDetail'
+import FirewallTable              from './pages/Services/EdgeFirewall/FirewallTable'
 import MdnsProxyDetail            from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
 import MdnsProxyForm              from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
 import MdnsProxyTable             from './pages/Services/MdnsProxy/MdnsProxyTable/MdnsProxyTable'
 import MyServices                 from './pages/Services/MyServices'
+import AddNetworkSegmentation     from './pages/Services/NetworkSegmentation/AddNetworkSegmentation'
+import EditNetworkSegmentation    from './pages/Services/NetworkSegmentation/EditNetworkSegmentation'
 import NetworkSegmentationDetail  from './pages/Services/NetworkSegmentation/NetworkSegmentationDetail'
-import NetworkSegmentationForm    from './pages/Services/NetworkSegmentation/NetworkSegmentationForm'
 import NetworkSegmentationTable   from './pages/Services/NetworkSegmentation/NetworkSegmentationTable'
 import NetworkSegAuthDetail       from './pages/Services/NetworkSegWebAuth/NetworkSegAuthDetail'
 import NetworkSegAuthForm         from './pages/Services/NetworkSegWebAuth/NetworkSegAuthForm'
@@ -110,7 +123,7 @@ import GuestManagerPage           from './pages/Users/Wifi/GuestManagerPage'
 
 export default function RcRoutes () {
   const routes = rootRoutes(
-    <Route path='t/:tenantId'>
+    <Route path=':tenantId/t'>
       <Route path='devices/*' element={<DeviceRoutes />} />
       <Route path='networks/*' element={<NetworkRoutes />} />
       <Route path='services/*' element={<ServiceRoutes />} />
@@ -126,7 +139,7 @@ export default function RcRoutes () {
 
 function DeviceRoutes () {
   return rootRoutes(
-    <Route path='t/:tenantId'>
+    <Route path=':tenantId/t'>
       <Route path='devices' element={<TenantNavigate replace to='/devices/wifi' />} />
       <Route path='devices/wifi' element={<ApsTable />} />
       <Route path='devices/wifi/:action' element={<ApForm />} />
@@ -182,7 +195,7 @@ function DeviceRoutes () {
 
 function NetworkRoutes () {
   return rootRoutes(
-    <Route path='t/:tenantId'>
+    <Route path=':tenantId/t'>
       <Route path='networks' element={<TenantNavigate replace to='/networks/wireless' />} />
       <Route path='networks/wireless' element={<NetworksTable />} />
       <Route path='networks/wireless/add' element={<NetworkForm />} />
@@ -224,7 +237,7 @@ function NetworkRoutes () {
 
 function ServiceRoutes () {
   return rootRoutes(
-    <Route path='t/:tenantId'>
+    <Route path=':tenantId/t'>
       <Route path='services'
         element={<TenantNavigate replace to={getServiceListRoutePath(true)} />}
       />
@@ -304,7 +317,7 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
           oper: ServiceOperation.CREATE })}
-        element={<NetworkSegmentationForm />}
+        element={<AddNetworkSegmentation />}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
@@ -319,7 +332,7 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
           oper: ServiceOperation.EDIT })}
-        element={<NetworkSegmentationForm editMode={true} />}
+        element={<EditNetworkSegmentation />}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.WEBAUTH_SWITCH,
@@ -369,14 +382,39 @@ function ServiceRoutes () {
         path={getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.EDIT })}
         element={<EditDhcp />}
       />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.EDGE_FIREWALL, oper: ServiceOperation.LIST })}
+        element={<FirewallTable />}
+      />
+      <Route
+        path={getServiceRoutePath({
+          type: ServiceType.EDGE_FIREWALL,
+          oper: ServiceOperation.DETAIL
+        })}
+        element={<FirewallDetail />}
+      />
+      <Route
+        path={getServiceRoutePath({
+          type: ServiceType.EDGE_FIREWALL, oper: ServiceOperation.CREATE })}
+        element={<AddFirewall />}
+      />
+      <Route
+        path={getServiceRoutePath({
+          type: ServiceType.EDGE_FIREWALL, oper: ServiceOperation.EDIT })}
+        element={<EditFirewall />}
+      />
     </Route>
   )
 }
 
 function PolicyRoutes () {
   const isMacRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
+  const isAttributeGroupEnabled = useIsSplitOn(Features.RADIUS_ATTRIBUTE_GROUP_CONFIG)
+  // eslint-disable-next-line max-len
+  const isAdaptivePolicyEnabled = useIsSplitOn(Features.POLICY_MANAGEMENT) && isAttributeGroupEnabled
+
   return rootRoutes(
-    <Route path='t/:tenantId'>
+    <Route path=':tenantId/t'>
       <Route path={getPolicyListRoutePath()} element={<MyPolicies />} />
       <Route path={getSelectPolicyRoutePath()} element={<SelectPolicyForm />} />
       <Route
@@ -530,38 +568,80 @@ function PolicyRoutes () {
         element={<SnmpAgentDetail />}
       />
       <Route
-        // eslint-disable-next-line max-len
-        path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST })}
-        element={<AdaptivePolicyList tabKey={AdaptivePolicyTabKey.RADIUS_ATTRIBUTE_GROUP}/>}
-      />
-      <Route
-        // eslint-disable-next-line max-len
-        path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST })}
-        element={<AdaptivePolicyList tabKey={AdaptivePolicyTabKey.ADAPTIVE_POLICY}/>}
-      />
-      <Route
-        // eslint-disable-next-line max-len
-        path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.LIST })}
-        element={<AdaptivePolicyList tabKey={AdaptivePolicyTabKey.ADAPTIVE_POLICY_SET}/>}
-      />
-      <Route
-        // eslint-disable-next-line max-len
-        path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.CREATE })}
-        element={<RadiusAttributeGroupForm />}
-      />
-      <Route
-        // eslint-disable-next-line max-len
-        path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.EDIT })}
-        element={<RadiusAttributeGroupForm editMode={true}/>}
-      />
-      <Route
-        // eslint-disable-next-line max-len
-        path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.DETAIL })}
-        element={<RadiusAttributeGroupDetail />} />
-      <Route
         path={getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.CREATE })}
         element={<AddTunnelProfile />}
       />
+      <Route
+        path={getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.LIST })}
+        element={<TunnelProfileTable />}
+      />
+      <Route
+        path={getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.DETAIL })}
+        element={<TunnelProfileDetail />}
+      />
+      <Route
+        path={getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.EDIT })}
+        element={<EditTunnelProfile />}
+      />
+      {isAdaptivePolicyEnabled && <>
+        <Route
+          // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST })}
+          element={<AdaptivePolicyList tabKey={AdaptivePolicyTabKey.RADIUS_ATTRIBUTE_GROUP}/>}
+        />
+        <Route
+          // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.CREATE })}
+          element={<RadiusAttributeGroupForm />}
+        />
+        <Route
+          // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.EDIT })}
+          element={<RadiusAttributeGroupForm editMode={true}/>}
+        />
+        <Route
+          // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.DETAIL })}
+          element={<RadiusAttributeGroupDetail />} />
+        <Route
+          // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST })}
+          element={<AdaptivePolicyList tabKey={AdaptivePolicyTabKey.ADAPTIVE_POLICY}/>}
+        />
+        <Route
+          // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.CREATE })}
+          element={<AdaptivePolicyForm/>}
+        />
+        <Route
+          path={getAdaptivePolicyDetailRoutePath(PolicyOperation.EDIT)}
+          element={<AdaptivePolicyForm editMode={true}/>}
+        />
+        <Route
+          path={getAdaptivePolicyDetailRoutePath(PolicyOperation.DETAIL)}
+          element={<AdaptivePolicyDetail/>}
+        />
+        <Route
+          // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.CREATE })}
+          element={<AdaptivePolicySetForm/>}
+        />
+        <Route
+          // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.EDIT })}
+          element={<AdaptivePolicySetForm editMode={true}/>}
+        />
+        <Route
+          // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.DETAIL })}
+          element={<AdaptivePolicySetDetail/>}
+        />
+        <Route
+          // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.LIST })}
+          element={<AdaptivePolicyList tabKey={AdaptivePolicyTabKey.ADAPTIVE_POLICY_SET}/>}
+        /> </>
+      }
     </Route>
   )
 }
@@ -571,7 +651,7 @@ function UserRoutes () {
   const isMacRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
 
   return rootRoutes(
-    <Route path='t/:tenantId'>
+    <Route path=':tenantId/t'>
       <Route path='users/guestsManager' element={<GuestManagerPage />} />
       <Route path='users' element={<TenantNavigate replace to='/users/wifi/clients' />} />
       <Route path='users/wifi' element={<TenantNavigate replace to='/users/wifi/clients' />} />
@@ -601,7 +681,7 @@ function UserRoutes () {
 
 function TimelineRoutes () {
   return rootRoutes(
-    <Route path='t/:tenantId'>
+    <Route path=':tenantId/t'>
       <Route path='timeline' element={<TenantNavigate replace to='/timeline/activities' />} />
       <Route path='timeline/:activeTab' element={<Timeline />} />
     </Route>

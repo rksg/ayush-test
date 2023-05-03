@@ -199,7 +199,7 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
 
   const TooltipRow: React.FC<TooltipRowProps> = (props) => {
     const isPrimeAdminItself =
-      props['data-row-key'] === userProfileData.adminId && isPrimeAdminUser
+      props['data-row-key'] === userProfileData?.adminId && isPrimeAdminUser
 
     return isPrimeAdminItself ?
       <Tooltip
@@ -224,7 +224,6 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
       </UI.TableTitleWrapper>
       <Table
         columns={columns}
-        columnState={{ hidden: true }}
         dataSource={adminList}
         rowKey='id'
         components={{

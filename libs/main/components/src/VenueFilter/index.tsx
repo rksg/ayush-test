@@ -50,7 +50,7 @@ export function VenueFilter () {
           value={value}
           options={queryResults.data}
           onApply={(selectedOptions) => setNodeFilter(selectedOptions as string[][])}
-          placement='bottomRight'
+          placement='bottomLeft'
           allowClear
         />
       </Loader>

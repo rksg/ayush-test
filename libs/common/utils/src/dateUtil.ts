@@ -10,6 +10,12 @@ export enum DateRange {
   allTime = 'All Time'
 }
 
+export type DateRangeFilter = {
+  startDate: string
+  endDate: string
+  range: DateRange
+}
+
 type Ranges = Record<string, [moment.Moment, moment.Moment]>
 let ranges = defaultRanges()
 
@@ -19,7 +25,9 @@ export function getDateRangeFilter (
   range: DateRange,
   start?: string,
   end?: string
-) {
+): DateRangeFilter {
+  resetRanges() // reset so it takes latest value
+
   const [startDate, endDate] =
     range === DateRange.custom && start && end
       ? [start, end]
@@ -31,26 +39,48 @@ export function getDateRangeFilter (
 export function defaultRanges (subRange?: DateRange[]) {
   const defaultRange: Partial<{ [key in DateRange]: moment.Moment[] }> = {
     [DateRange.last24Hours]: [
-      moment().subtract(1, 'days').seconds(0),
-      moment().seconds(0)
+      moment().subtract(1, 'days').seconds(0).milliseconds(0),
+      moment().seconds(59).milliseconds(999)
     ],
     [DateRange.last7Days]: [
-      moment().subtract(7, 'days').seconds(0),
-      moment().seconds(0)
+      moment().subtract(7, 'days').seconds(0).milliseconds(0),
+      moment().seconds(59).milliseconds(999)
     ],
     [DateRange.last30Days]: [
-      moment().subtract(30, 'days').seconds(0),
-      moment().seconds(0)
+      moment().subtract(30, 'days').seconds(0).milliseconds(0),
+      moment().seconds(59).milliseconds(999)
     ],
     [DateRange.allTime]: [
-      moment(undefined),
-      moment(undefined)
+      moment(),
+      moment()
     ]
   }
   if (subRange) {
     return pick(defaultRange, subRange)
   }
   return defaultRange
+}
+
+export function computeRangeFilter <Filter extends object & { dateFilter?: DateRangeFilter }> (
+  payload?: Filter,
+  names = ['startDate', 'endDate']
+): { [key: string]: unknown } | undefined {
+  if (!payload) return
+
+  const { dateFilter, ...body } = payload
+  if (!dateFilter) return body
+
+  const { startDate, endDate } = getDateRangeFilter(
+    dateFilter.range,
+    dateFilter.startDate,
+    dateFilter.endDate
+  )
+
+  return {
+    ...body,
+    [names[0]]: moment(startDate).utc().format(),
+    [names[1]]: moment(endDate).utc().format()
+  }
 }
 
 export function dateRangeForLast (

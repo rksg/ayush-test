@@ -19,10 +19,11 @@ import {
   useGetDevicePolicyQuery,
   useUpdateDevicePolicyMutation
 } from '@acx-ui/rc/services'
-import { AccessStatus, CommonResult, DeviceRule } from '@acx-ui/rc/utils'
-import { useParams }                              from '@acx-ui/react-router-dom'
-import { filterByAccess }                         from '@acx-ui/user'
+import { AccessStatus, CommonResult, defaultSort, DeviceRule, sortProp } from '@acx-ui/rc/utils'
+import { useParams }                                                     from '@acx-ui/react-router-dom'
+import { filterByAccess }                                                from '@acx-ui/user'
 
+import { showUnsavedConfirmModal }     from '../AccessControlComponent'
 import { AddModeProps, editModeProps } from '../AccessControlForm'
 
 import DeviceOSRuleContent, { DrawerFormItem } from './DeviceOSRuleContent'
@@ -58,6 +59,12 @@ export interface DeviceOSDrawerProps {
 export const GenDetailsColumn = (props: { row: DeviceOSRule }) => {
   const { $t } = useIntl()
   const { row } = props
+
+  if (row.access === AccessStatus.BLOCK) {
+    return <div>
+      {$t({ defaultMessage: 'All Traffic is blocked' })}
+    </div>
+  }
 
   const linkArray = []
   if (row.details.upLink >= 0) {
@@ -203,22 +210,26 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     {
       title: $t({ defaultMessage: 'Rule Name' }),
       dataIndex: 'ruleName',
-      key: 'ruleName'
+      key: 'ruleName',
+      sorter: { compare: sortProp('ruleName', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Device Type' }),
       dataIndex: 'deviceType',
-      key: 'deviceType'
+      key: 'deviceType',
+      sorter: { compare: sortProp('deviceType', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'OS Vendor' }),
       dataIndex: 'osVendor',
-      key: 'osVendor'
+      key: 'osVendor',
+      sorter: { compare: sortProp('osVendor', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Access' }),
       dataIndex: 'access',
       key: 'access',
+      sorter: { compare: sortProp('access', defaultSort) },
       render: (data, row) => {
         return row.access
       }
@@ -289,15 +300,18 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
 
 
   const handleEditDetailsInfo = (rule: DeviceOSRule) => {
-    drawerForm.setFieldValue('details', rule.details)
-    drawerForm.setFieldValue('vlan', rule.details.vlan)
-    if (rule.details.upLink !== -1) {
-      drawerForm.setFieldValue('fromClient', true)
-      drawerForm.setFieldValue('fromClientValue', rule.details.upLink)
-    }
-    if (rule.details.downLink !== -1) {
-      drawerForm.setFieldValue('toClient', true)
-      drawerForm.setFieldValue('toClientValue', rule.details.downLink)
+    drawerForm.setFieldValue('access', rule.access)
+    if (rule.access !== AccessStatus.BLOCK) {
+      drawerForm.setFieldValue('details', rule.details)
+      drawerForm.setFieldValue('vlan', rule.details.vlan)
+      if (rule.details.upLink && rule.details.upLink !== -1) {
+        drawerForm.setFieldValue('fromClient', true)
+        drawerForm.setFieldValue('fromClientValue', rule.details.upLink)
+      }
+      if (rule.details.downLink && rule.details.downLink !== -1) {
+        drawerForm.setFieldValue('toClient', true)
+        drawerForm.setFieldValue('toClientValue', rule.details.downLink)
+      }
     }
   }
 
@@ -354,9 +368,11 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
           action: rule.access,
           deviceType: rule.deviceType,
           osVendor: rule.osVendor,
-          uploadRateLimit: rule.details.upLink >= 0 ? rule.details.upLink : null,
-          downloadRateLimit: rule.details.downLink >= 0 ? rule.details.downLink : null,
-          vlan: rule.details.vlan
+          uploadRateLimit: rule.access !== AccessStatus.BLOCK && rule.details.upLink >= 0
+            ? rule.details.upLink : null,
+          downloadRateLimit: rule.access !== AccessStatus.BLOCK && rule.details.downLink >= 0
+            ? rule.details.downLink : null,
+          vlan: rule.access !== AccessStatus.BLOCK ? rule.details.vlan : null
         }
       })],
       description: null
@@ -401,6 +417,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       drawerForm.setFieldValue('ruleName', editRow.ruleName)
       drawerForm.setFieldValue('deviceType', editRow.deviceType)
       drawerForm.setFieldValue('osVendor', editRow.osVendor)
+      drawerForm.setFieldValue('tempOsVendor', editRow.osVendor)
       handleEditDetailsInfo(editRow)
       clearSelection()
     }
@@ -425,6 +442,13 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       })
     }
   }] as { label: string, onClick: () => void }[]
+
+  const ruleValidator = () => {
+    if (!deviceOSRuleList.length) {
+      return Promise.reject($t({ defaultMessage: 'No rule were added yet' }))
+    }
+    return Promise.resolve()
+  }
 
   const content = <Form layout='horizontal' form={contentForm}>
     <DrawerFormItem
@@ -462,6 +486,9 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       label={$t({ defaultMessage: 'Rules ({number})' }, {
         number: deviceOSRuleList.length
       })}
+      rules={[
+        { validator: () => ruleValidator() }
+      ]}
     />
     <Table
       columns={basicColumns}
@@ -545,8 +572,12 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       <Drawer
         title={$t({ defaultMessage: 'Device & OS Access Settings' })}
         visible={visible}
+        mask={true}
         zIndex={10}
-        onClose={handleDeviceOSDrawerClose}
+        onClose={() => !isViewMode()
+          ? showUnsavedConfirmModal(handleDeviceOSDrawerClose)
+          : handleDeviceOSDrawerClose()
+        }
         children={content}
         footer={
           <Drawer.FormFooter

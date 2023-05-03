@@ -74,14 +74,10 @@ const PortsGeneral = (props: PortsGeneralProps) => {
     if (changedValue === EdgePortTypeEnum.LAN) {
       formRef.current?.setFieldValue([changedNamePath[0], 'ipMode'], EdgeIpModeEnum.STATIC)
 
-      // Remove this line after Edge early-beta is stable to solve ACX-23885
-      formRef.current?.setFieldValue([changedNamePath[0], 'natEnabled'], false)
-
     } else if (changedValue === EdgePortTypeEnum.WAN) {
       const initialPortType = data[index]?.portType
       if (initialPortType !== EdgePortTypeEnum.WAN) {
-        // Add this line back after Edge early-beta is stable to solve ACX-23885
-        // formRef.current?.setFieldValue([changedNamePath[0], 'natEnabled'], true)
+        formRef.current?.setFieldValue([changedNamePath[0], 'natEnabled'], true)
       }
     }
   }

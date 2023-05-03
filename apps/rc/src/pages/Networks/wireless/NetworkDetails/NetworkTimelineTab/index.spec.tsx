@@ -11,7 +11,10 @@ import { NetworkTimelineTab } from '.'
 
 jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user'),
-  useUserProfileContext: () => ({ data: { detailLevel: 'it' } })
+  useUserProfileContext: () => ({ data: {
+    detailLevel: 'it',
+    dateFormat: 'mm/dd/yyyy'
+  } })
 }))
 
 describe('NetworkTimelineTab', ()=>{
@@ -25,7 +28,7 @@ describe('NetworkTimelineTab', ()=>{
       wrapper: Provider,
       route: {
         params: { tenantId: 't1', networkId: 'networkId', activeSubTab: 'activities' },
-        path: '/t/:tenantId/networks/wireless/:networkId/network-details/timeline/:activeSubTab'
+        path: '/:tenantId/t/networks/wireless/:networkId/network-details/timeline/:activeSubTab'
       }
     })
     expect(await screen.findAllByText('123roam')).toHaveLength(1)

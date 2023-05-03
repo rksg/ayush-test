@@ -1,15 +1,13 @@
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Col, Form, Input, Row, Typography } from 'antd'
 import _                                     from 'lodash'
 import { useIntl }                           from 'react-intl'
 
-import { cssStr, Loader, StepsForm, Table, TableProps, Tooltip } from '@acx-ui/components'
-import { useVenuesListQuery, useGetCliFamilyModelsQuery }        from '@acx-ui/rc/services'
-import { Venue, useTableQuery }                                  from '@acx-ui/rc/utils'
-import { useParams }                                             from '@acx-ui/react-router-dom'
-
-import CliTemplateFormContext from '../../onDemandCli/CliTemplateForm/CliTemplateFormContext'
+import { cssStr, Loader, StepsForm, Table, TableProps, Tooltip, useStepFormContext } from '@acx-ui/components'
+import { useVenuesListQuery, useGetCliFamilyModelsQuery }                            from '@acx-ui/rc/services'
+import { CliConfiguration, Venue, useTableQuery }                                    from '@acx-ui/rc/utils'
+import { useParams }                                                                 from '@acx-ui/react-router-dom'
 
 import { cliFormMessages } from './'
 
@@ -22,9 +20,9 @@ interface VenueExtend extends Venue {
 export function CliStepVenues () {
   const { $t } = useIntl()
   const params = useParams()
-  const form = Form.useFormInstance()
 
-  const { data, applyModels } = useContext(CliTemplateFormContext)
+  const { form, initialValues } = useStepFormContext()
+  const data = (form?.getFieldsValue(true) as CliConfiguration)
   const { data: cliFamilyModels } = useGetCliFamilyModelsQuery({ params })
   const [selectedRows, setSelectedRows] = useState<React.Key[]>([])
 
@@ -90,7 +88,8 @@ export function CliStepVenues () {
         ?.map(m => m.model)
 
       const isModelOverlap =
-        (!selectedVenues?.includes(venue.id) && !data?.venues?.includes(venue.id))
+        (!selectedVenues?.includes(venue.id)
+        && !(initialValues as CliConfiguration)?.venues?.includes(venue.id))
         && _.intersection(models, venueApplyModels)?.length > 0
 
       return {
@@ -107,17 +106,17 @@ export function CliStepVenues () {
   }, [data])
 
   useEffect(() => {
-    const list = transformData(tableQuery?.data?.data, applyModels, selectedRows)
+    const list = transformData(tableQuery?.data?.data, data?.models, selectedRows)
     const venues = form?.getFieldValue('venues')
     const updateVenues = venues?.filter((vId:string) => {
       const venueApplyModels = list?.find(v => v.id === vId)?.models
       const excludeApplyingModels = venueApplyModels?.filter(m => !data?.models?.includes(m))
-      const isModelOverlap = _.intersection(applyModels, excludeApplyingModels)?.length > 0
+      const isModelOverlap = _.intersection(data?.models, excludeApplyingModels)?.length > 0
       return !isModelOverlap
     })
     setSelectedRows(updateVenues as React.Key[])
     form?.setFieldValue('venues', updateVenues)
-  }, [applyModels])
+  }, [data?.models])
 
   return <Row gutter={24}>
     <Col span={24}>
@@ -141,10 +140,10 @@ export function CliStepVenues () {
         children={<Input />}
       />
 
-      <Loader states={[{ isLoading: false }]}>
+      <Loader states={[{ isLoading: tableQuery.isLoading || tableQuery.isFetching }]}>
         <Table
           columns={columns}
-          dataSource={transformData(tableQuery?.data?.data, applyModels, selectedRows)}
+          dataSource={transformData(tableQuery?.data?.data, data?.models, selectedRows)}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'

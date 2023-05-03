@@ -76,19 +76,14 @@ function Histogram ({
     setKpiThreshold({ ...thresholds, [kpi]: defaultConfig })
   }, [kpi, setKpiThreshold, thresholds])
   const onButtonApply = async () => {
-    try {
-      await triggerSave({ path: filters.path, name: kpi, value: thresholdValue }).unwrap()
+    const result =
+        await triggerSave({ path: filters.path, name: kpi, value: thresholdValue })
+          .unwrap() as unknown as { saveThreshold: boolean }
+    if (result && result.saveThreshold) {
       showToast({
         type: 'success',
         content: $t({
           defaultMessage: 'Threshold set successfully.'
-        })
-      })
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({
-          defaultMessage: 'Error setting threshold, please try again later.'
         })
       })
     }

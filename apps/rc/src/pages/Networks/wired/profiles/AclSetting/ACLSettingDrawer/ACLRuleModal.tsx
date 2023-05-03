@@ -3,20 +3,20 @@ import { useEffect, useState } from 'react'
 import { Form, Input, InputNumber, Radio, RadioChangeEvent, Select } from 'antd'
 import { useIntl }                                                   from 'react-intl'
 
-import { Modal }                from '@acx-ui/components'
+import { Modal }            from '@acx-ui/components'
 import {
   AclExtendedRule,
-  AclStandardRule,
-  validateSwitchStaticRouteIp
+  validateSwitchStaticRouteIp,
+  validateAclRuleSequence
 } from '@acx-ui/rc/utils'
 
 export function ACLRuleModal (props: {
   open: boolean,
   aclType: string,
-  onSave?:(values: AclStandardRule | AclExtendedRule)=>void,
+  onSave?:(values: AclExtendedRule)=>void,
   onCancel?: ()=>void,
-  editRecord?: AclStandardRule | AclExtendedRule
-  currrentRecords?: AclStandardRule[] | AclExtendedRule[]
+  editRecord?: AclExtendedRule
+  currrentRecords?: AclExtendedRule[]
 }) {
   const { Option } = Select
   const { $t } = useIntl()
@@ -30,6 +30,8 @@ export function ACLRuleModal (props: {
     setSourceSpecific(false)
     setDestinationSpecific(false)
     if (props.open && props.editRecord) {
+      setSourceSpecific(props.editRecord.source === 'specific')
+      setDestinationSpecific(props.editRecord.destination === 'specific')
       form.setFieldsValue(props.editRecord)
     }
   }, [form, props.open, props.editRecord])
@@ -65,7 +67,15 @@ export function ACLRuleModal (props: {
         <Form.Item name='sequence'
           label={$t({ defaultMessage: 'Sequence' })}
           rules={[
-            { required: true }
+            { required: true },
+            { validator: (_, value) => {
+              if(props.editRecord?.sequence !== value && props.currrentRecords) {
+                return validateAclRuleSequence(value, props.currrentRecords)
+              }else {
+                return Promise.resolve()
+              }
+            }
+            }
           ]}
           children={
             <InputNumber

@@ -250,7 +250,7 @@ export const {
       }
     }),
     networkHealthTestResults: build.query<
-    NetworkHealthTestResults,
+      NetworkHealthTestResults,
       { testId: NetworkHealthTest['id']; offset: number; limit: number }
     >({
       query: (variables) => ({ variables, document: fetchServiceGuardTestResults }),
