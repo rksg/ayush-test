@@ -47,7 +47,7 @@ exports[`PageHeader should render page header with tabs 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/networks"
+                href="/undefined/t/networks"
               >
                 Networks
               </a>
@@ -204,7 +204,7 @@ exports[`PageHeader should render page header with title, breadcrumb & subtitle 
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/networks"
+                href="/undefined/t/networks"
               >
                 Networks
               </a>

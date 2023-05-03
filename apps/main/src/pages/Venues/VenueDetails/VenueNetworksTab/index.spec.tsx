@@ -70,7 +70,7 @@ describe('VenueNetworksTab', () => {
 
   it('should render correctly', async () => {
     render(<Provider><VenueNetworksTab /></Provider>, {
-      route: { params, path: '/:tenantId/venues/:venueId/venue-details/networks' }
+      route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/networks' }
     })
 
     const row = await screen.findByRole('row', { name: /test_1/i })
@@ -80,7 +80,7 @@ describe('VenueNetworksTab', () => {
 
   it('should clicks add network correctly', async () => {
     render(<Provider><VenueNetworksTab /></Provider>, {
-      route: { params, path: '/:tenantId/venues/:venueId/venue-details/networks' }
+      route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/networks' }
     })
 
     expect(await screen.findByText('Add Network')).toBeVisible()
@@ -91,7 +91,7 @@ describe('VenueNetworksTab', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     render(<Provider><VenueNetworksTab /></Provider>, {
-      route: { params, path: '/:tenantId/venues/:venueId/venue-details/networks' }
+      route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/networks' }
     })
     const row = await screen.findByRole('row', { name: /test_2/i })
 
@@ -124,7 +124,7 @@ describe('VenueNetworksTab', () => {
 
   it('deactivate Network', async () => {
     render(<Provider><VenueNetworksTab /></Provider>, {
-      route: { params, path: '/:tenantId/venues/:venueId/venue-details/networks' }
+      route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/networks' }
     })
     const row = await screen.findByRole('row', { name: /test_1/i })
 
@@ -157,7 +157,7 @@ describe('VenueNetworksTab', () => {
 
   it('click VLAN, APs, Radios', async () => {
     render(<Provider><VenueNetworksTab /></Provider>, {
-      route: { params, path: '/:tenantId/venues/:venueId/venue-details/networks' }
+      route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/networks' }
     })
 
     const row = await screen.findByRole('row', { name: /test_1/i })

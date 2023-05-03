@@ -48,4 +48,25 @@ describe('VideoCallQoe Table', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(asFragment()).toMatchSnapshot()
   })
+
+  it('should open the drawer for the not started test call', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockGraphqlQuery(videoCallQoeURL, 'CallQoeTests',
+      { data: fixtures.getAllCallQoeTestsWithNotStarted })
+    render(
+      <Provider>
+        <VideoCallQoeTable />
+      </Provider>, {
+        route: { params }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await userEvent.click(screen.getByText(/test 1\.4/i))
+    expect(screen.getByText(/call details/i)).toBeVisible()
+    expect(screen.getByRole('link',
+      { name: /https:\/\/zoom\.us\/j\/94194732704\?pwd=qmnpmc9qavvimgzwtjerzmpjdgm5qt09/i })
+    ).toBeVisible()
+
+    await userEvent.click(screen.getByRole('button', { name: /close/i }))
+  })
 })
