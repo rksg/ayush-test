@@ -42,7 +42,7 @@ jest.mock('@acx-ui/rc/components', () => ({
   usePreference: () => {
     return {
       data: { global: {
-        preferredLanguage: 'en-US'
+        defaultLanguage: 'en-US'
       } },
       currentPreferredLang: 'en-US',
       updatePartial: mockedUpdatePreference,

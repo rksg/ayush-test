@@ -309,7 +309,7 @@ describe('VenueWifi', () => {
 
   it('should render correctly', async () => {
     render(<Provider><VenueDetails /></Provider>, {
-      route: { params, path: '/:tenantId/venues/:venueId/venue-details/:activeTab/:activeSubTab' }
+      route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/:activeTab/:activeSubTab' }
     })
 
     fireEvent.click(await screen.findByTestId('LineChartOutline'))
@@ -346,14 +346,17 @@ describe('Venue device tab', () => {
       <Provider>
         <VenueDevicesTab />
       </Provider>, {
-        route: { params, path: '/:tenantId/venues/:venueId/venue-details/:activeTab/:activeSubTab' }
+        route: {
+          params,
+          path: '/:tenantId/t/venues/:venueId/venue-details/:activeTab/:activeSubTab'
+        }
       })
 
     const tab = await screen.findByRole('tab', { name: 'Switch' })
     fireEvent.click(tab)
 
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/venues/${params.venueId}/venue-details/devices/switch`,
+      pathname: `/${params.tenantId}/t/venues/${params.venueId}/venue-details/devices/switch`,
       hash: '',
       search: ''
     })
@@ -364,7 +367,10 @@ describe('Venue device tab', () => {
       <Provider>
         <VenueDevicesTab />
       </Provider>, {
-        route: { params, path: '/:tenantId/venues/:venueId/venue-details/:activeTab/:activeSubTab' }
+        route: {
+          params,
+          path: '/:tenantId/t/venues/:venueId/venue-details/:activeTab/:activeSubTab'
+        }
       })
 
     expect(await screen.findByRole('cell', { name: /Smart Edge 3/ })).toBeTruthy()
@@ -375,10 +381,13 @@ describe('Venue device tab', () => {
       <Provider>
         <VenueDevicesTab />
       </Provider>, {
-        route: { params, path: '/:tenantId/venues/:venueId/venue-details/:activeTab/:activeSubTab' }
+        route: {
+          params,
+          path: '/:tenantId/t/venues/:venueId/venue-details/:activeTab/:activeSubTab'
+        }
       })
 
     const target = await screen.findByRole('link', { name: 'Add SmartEdge' })
-    expect(target.getAttribute('href')).toBe(`/t/${params.tenantId}/devices/edge/add`)
+    expect(target.getAttribute('href')).toBe(`/${params.tenantId}/t/devices/edge/add`)
   })
 })

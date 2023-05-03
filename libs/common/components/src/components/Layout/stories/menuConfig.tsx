@@ -259,6 +259,10 @@ const config: LayoutProps['menuConfig'] = [
             label: 'Firmware Version Management'
           },
           {
+            uri: '/administration/onpremMigration',
+            label: 'ZD Migration'
+          },
+          {
             uri: '/administration/localRadiusServer',
             label: 'Local RADIUS Server'
           }

@@ -14,3 +14,9 @@ export const EditOutlinedIcon = styled(EditOutlined)`
     stroke: var(--acx-accents-blue-50) !important;
   }
 `
+
+export const EditOutlinedDisabledIcon = styled(EditOutlined)`
+  path {
+    stroke: var(--acx-neutrals-40) !important;
+  }
+`

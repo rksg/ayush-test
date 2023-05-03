@@ -63,7 +63,7 @@ describe('CaptiveNetworkForm-Cloudpath', () => {
     const insertInput = await screen.findByLabelText(/Enrollment Workflow URL/)
     fireEvent.change(insertInput, { target: { value: 'http://ruckus.abc.com' } })
     fireEvent.blur(insertInput)
-    const walledGarden = (await screen.findAllByLabelText(/Walled Garden/))[1]
+    const walledGarden = screen.getByTestId('walled-garden-showed-textarea')
     fireEvent.change(walledGarden, { target: { value: 'test123.com' } })
     fireEvent.blur(walledGarden)
     await userEvent.click(await screen.findByText('Reset to default'))

@@ -136,9 +136,9 @@ export function VenueRogueAps () {
         dataIndex: 'band'
       },
       {
-        key: 'closestAp_snr',
+        key: 'closestAp.snr',
         title: intl.$t({ defaultMessage: 'SNR' }),
-        dataIndex: 'closestAp_snr',
+        dataIndex: 'closestAp.snr',
         sorter: true,
         align: 'center',
         render: (data, row) => {
@@ -149,22 +149,19 @@ export function VenueRogueAps () {
         }
       },
       {
-        key: 'closestAp_apName',
+        key: 'closestAp.apName',
         title: intl.$t({ defaultMessage: 'Closest AP' }),
-        dataIndex: 'closestAp_apName',
+        dataIndex: 'closestAp.apName',
         // filterable: true, // TODO: change to search or provide static list
         sorter: true
       },
       {
-        key: 'detectingAps',
+        key: 'numberOfDetectingAps',
         title: intl.$t({ defaultMessage: 'Detecting APs' }),
-        dataIndex: 'detectingAps',
+        dataIndex: 'numberOfDetectingAps',
         sorter: true,
         sortDirections: ['descend', 'ascend', 'descend'],
-        align: 'center',
-        render: (data, row) => {
-          return row.detectingAps.length
-        }
+        align: 'center'
       },
       {
         key: 'lastUpdTime',
@@ -180,6 +177,7 @@ export function VenueRogueAps () {
         key: 'locatable',
         title: intl.$t({ defaultMessage: 'Locate Rogue' }),
         dataIndex: 'locatable',
+        align: 'center',
         render: (data, row) => {
           return <ApLocateDetail row={row} />
         }

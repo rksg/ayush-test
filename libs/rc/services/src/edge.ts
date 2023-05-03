@@ -1,4 +1,7 @@
 import {
+  Filter
+} from '@acx-ui/components'
+import {
   CommonResult,
   createHttpRequest,
   EdgeDnsServers,
@@ -16,9 +19,17 @@ import {
   EdgeVenueFirmware,
   EdgeFirmwareVersion,
   onSocketActivityChanged,
-  onActivityMessageReceived
+  onActivityMessageReceived,
+  downloadFile,
+  SEARCH,
+  SORTER
 } from '@acx-ui/rc/utils'
 import { baseEdgeApi } from '@acx-ui/store'
+
+export type EdgesExportPayload = {
+  filters: Filter
+  tenantId: string
+} & SEARCH & SORTER
 
 export const edgeApi = baseEdgeApi.injectEndpoints({
   endpoints: (build) => ({
@@ -284,6 +295,24 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         return createHttpRequest(EdgeUrlsInfo.factoryReset, params)
       },
       invalidatesTags: [{ type: 'Edge', id: 'LIST' }, { type: 'Edge', id: 'DETAIL' }]
+    }),
+    downloadEdgesCSV: build.mutation<Blob, EdgesExportPayload>({
+      query: (payload) => {
+        const req = createHttpRequest(EdgeUrlsInfo.downloadSwitchsCSV,
+          { tenantId: payload.tenantId }
+        )
+        return {
+          ...req,
+          body: payload,
+          responseHandler: async (response) => {
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1]
+              : 'download.csv'
+            downloadFile(response, fileName)
+          }
+        }
+      }
     })
   })
 })
@@ -313,5 +342,6 @@ export const {
   useUpdateEdgeFirmwareMutation,
   useGetLatestEdgeFirmwareQuery,
   useRebootEdgeMutation,
-  useFactoryResetEdgeMutation
+  useFactoryResetEdgeMutation,
+  useDownloadEdgesCSVMutation
 } = edgeApi

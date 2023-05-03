@@ -7,11 +7,10 @@ import { useIntl }              from 'react-intl'
 
 import { ContentSwitcher, ContentSwitcherProps, Drawer, Descriptions }                                                                from '@acx-ui/components'
 import { useApLanPortsQuery, useGetApCapabilitiesQuery, useGetApRadioCustomizationQuery, useGetVenueQuery, useGetVenueSettingsQuery } from '@acx-ui/rc/services'
-import { ApDetails, ApLanPort, ApRadio, ApVenueStatusEnum, ApViewModel, DeviceGps, gpsToFixed }                                       from '@acx-ui/rc/utils'
+import { ApDetails, ApLanPort, ApRadio, ApVenueStatusEnum, ApViewModel, DeviceGps, gpsToFixed, useApContext }                         from '@acx-ui/rc/utils'
 import { TenantLink }                                                                                                                 from '@acx-ui/react-router-dom'
 import { useUserProfileContext }                                                                                                      from '@acx-ui/user'
 
-import { useApContext } from '../../ApContext'
 
 import { ApCellularProperties } from './ApCellularProperties'
 import { ApDetailsSettings }    from './ApDetailsSettings'

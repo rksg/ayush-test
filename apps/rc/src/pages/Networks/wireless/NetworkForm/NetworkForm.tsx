@@ -486,18 +486,7 @@ export default function NetworkForm (props:{
                   return true
                 }}
               >
-                {saveState?.guestPortal?.guestNetworkType===
-                 GuestNetworkTypeEnum.ClickThrough&&<OnboardingForm />}
-                {saveState?.guestPortal?.guestNetworkType===
-                 GuestNetworkTypeEnum.SelfSignIn&&<SelfSignInForm />}
-                {saveState?.guestPortal?.guestNetworkType===
-                 GuestNetworkTypeEnum.Cloudpath&&<CloudpathForm/>}
-                {saveState?.guestPortal?.guestNetworkType===
-                 GuestNetworkTypeEnum.HostApproval&&<HostApprovalForm />}
-                {saveState?.guestPortal?.guestNetworkType===
-                 GuestNetworkTypeEnum.GuestPass&&<GuestPassForm />}
-                {saveState?.guestPortal?.guestNetworkType===
-                 GuestNetworkTypeEnum.WISPr&&<WISPrForm />}
+                {pickOneCaptivePortalForm(saveState)}
               </StepsForm.StepForm>
           }
           {editMode &&
@@ -515,19 +504,13 @@ export default function NetworkForm (props:{
               <NetworkMoreSettingsForm wlanData={saveState} />
 
             </StepsForm.StepForm>}
-          { saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&(
-            saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.ClickThrough||
-            saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.SelfSignIn||
-            saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.GuestPass||
-            saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.HostApproval
-          )
-              &&<StepsForm.StepForm
-                name='portalweb'
-                title={intl.$t({ defaultMessage: 'Portal Web Page' })}
-                onFinish={handlePortalWebPage}
-              >
-                <PortalInstance updatePortalData={(data)=>setPortalDemo(data)}/>
-              </StepsForm.StepForm>
+          { isPortalWebRender(saveState) &&<StepsForm.StepForm
+            name='portalweb'
+            title={intl.$t({ defaultMessage: 'Portal Web Page' })}
+            onFinish={handlePortalWebPage}
+          >
+            <PortalInstance updatePortalData={(data)=>setPortalDemo(data)}/>
+          </StepsForm.StepForm>
           }
           <StepsForm.StepForm
             name='venues'
@@ -563,6 +546,45 @@ export default function NetworkForm (props:{
       </NetworkFormContext.Provider>
     </>
   )
+}
+
+function isPortalWebRender (saveState: NetworkSaveData): boolean {
+  if (saveState.type !== NetworkTypeEnum.CAPTIVEPORTAL) {
+    return false
+  }
+
+  switch (saveState.guestPortal?.guestNetworkType) {
+    case GuestNetworkTypeEnum.ClickThrough:
+    case GuestNetworkTypeEnum.SelfSignIn:
+    case GuestNetworkTypeEnum.GuestPass:
+    case GuestNetworkTypeEnum.HostApproval:
+      return true
+    default:
+      // eslint-disable-next-line no-console
+      console.error(`Unknown Network Type: ${saveState?.guestPortal?.guestNetworkType}`)
+      return false
+  }
+}
+
+function pickOneCaptivePortalForm (saveState: NetworkSaveData) {
+  switch (saveState?.guestPortal?.guestNetworkType) {
+    case GuestNetworkTypeEnum.ClickThrough:
+      return <OnboardingForm />
+    case GuestNetworkTypeEnum.SelfSignIn:
+      return <SelfSignInForm />
+    case GuestNetworkTypeEnum.Cloudpath:
+      return <CloudpathForm/>
+    case GuestNetworkTypeEnum.HostApproval:
+      return <HostApprovalForm />
+    case GuestNetworkTypeEnum.GuestPass:
+      return <GuestPassForm />
+    case GuestNetworkTypeEnum.WISPr:
+      return <WISPrForm />
+    default:
+      // eslint-disable-next-line no-console
+      console.error(`Unknown Network Type: ${saveState?.guestPortal?.guestNetworkType}`)
+      return <OnboardingForm />
+  }
 }
 
 function showConfigConflictModal (

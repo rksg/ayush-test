@@ -180,7 +180,7 @@ describe('Convert NonVAR MSP Button', () => {
       })
     })
 
-    expect(mockedUsedNavigate).toHaveBeenCalledWith(`/v/${params.tenantId}/dashboard/mspCustomers`, { replace: true })
+    expect(mockedUsedNavigate).toHaveBeenCalledWith(`/${params.tenantId}/v/dashboard/mspCustomers`, { replace: true })
     await waitFor(() => {
       expect(screen.queryAllByRole('dialog').length).toBe(0)
     })
@@ -229,7 +229,7 @@ describe('Convert NonVAR MSP Button', () => {
         }
       })
     })
-    expect(mockedUsedNavigate).toHaveBeenCalledWith(`/v/${params.tenantId}/dashboard/mspCustomers`, { replace: true })
+    expect(mockedUsedNavigate).toHaveBeenCalledWith(`/${params.tenantId}/v/dashboard/mspCustomers`, { replace: true })
     await waitFor(() => {
       expect(screen.queryAllByRole('dialog').length).toBe(0)
     })
