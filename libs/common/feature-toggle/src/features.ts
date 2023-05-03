@@ -38,5 +38,6 @@ export enum Features {
   CLOUDMOTE_SERVICE = 'cloudmote-service-enabled',
   RADIUS_ATTRIBUTE_GROUP_CONFIG = 'radius-attrib-group-service-enabled',
   SWITCH_RODAN_FIRMWARE = 'switch-consumer-collect-config-toggle',
-  EXPORT_DEVICE = 'viewmodel-export-device-inventory'
+  EXPORT_DEVICE = 'viewmodel-export-device-inventory',
+  STICKY_CLIENT_STEERING = 'wifi-eda-sticky-client-steering-toggle'
 }
