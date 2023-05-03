@@ -18,6 +18,11 @@ const { TextArea } = Input
 
 export type ActionModalType = 'info' | 'error' | 'confirm' | 'warning'
 
+export const ActionModal = {
+  copyableTextAreaStyle: UI.copyableTextArea,
+  CopyButton: UI.CopyButton
+}
+
 type DeleteContent = {
   action: 'DELETE',
   entityName: string,

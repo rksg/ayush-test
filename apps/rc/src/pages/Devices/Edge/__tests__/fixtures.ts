@@ -83,7 +83,7 @@ export const mockEdgeList = {
 }
 
 export const mockEdgeData = {
-  serialNumber: '000000000000',
+  serialNumber: '96123456789',
   venueId: '66e6694ca3334997998c42def9326797',
   edgeGroupId: '',
   description: 'This is description rr',

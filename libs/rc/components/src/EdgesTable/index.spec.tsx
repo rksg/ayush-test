@@ -1,8 +1,8 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }     from '@acx-ui/store'
+import { CommonUrlsInfo, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                     from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -32,6 +32,10 @@ describe('Edge Table', () => {
         EdgeUrlsInfo.getEdgeList.url,
         (req, res, ctx) => res(ctx.json(mockEdgeList))
       ),
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (req, res, ctx) => res(ctx.json({ data: [] }))
+      ),
       rest.delete(
         EdgeUrlsInfo.deleteEdge.url,
         (req, res, ctx) => res(ctx.status(202))
@@ -56,7 +60,7 @@ describe('Edge Table', () => {
       <Provider>
         <EdgesTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/list' }
+        route: { params, path: '/:tenantId/t/devices/edge/list' }
       })
     const row = await screen.findAllByRole('row', { name: /Smart Edge/i })
     expect(row.length).toBe(10)
@@ -67,12 +71,12 @@ describe('Edge Table', () => {
       <Provider>
         <EdgesTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/list' }
+        route: { params, path: '/:tenantId/t/devices/edge/list' }
       })
     const smartEdgeLink = await screen.findByRole('link',
       { name: 'Smart Edge 1' }) as HTMLAnchorElement
     expect(smartEdgeLink.href)
-      .toContain(`/t/${params.tenantId}/devices/edge/0000000001/edge-details/overview`)
+      .toContain(`/${params.tenantId}/t/devices/edge/0000000001/edge-details/overview`)
   })
 
   it('venue detail page link should be correct', async () => {
@@ -80,11 +84,11 @@ describe('Edge Table', () => {
       <Provider>
         <EdgesTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/list' }
+        route: { params, path: '/:tenantId/t/devices/edge/list' }
       })
     const venue1List = await screen.findAllByRole('link', { name: 'Venue 1' })
     const venue1Link = venue1List[0] as HTMLAnchorElement
-    expect(venue1Link.href).toContain(`/t/${params.tenantId}/venues/00001/venue-details/overview`)
+    expect(venue1Link.href).toContain(`/${params.tenantId}/t/venues/00001/venue-details/overview`)
   })
 
   it('should go edit page', async () => {
@@ -93,13 +97,13 @@ describe('Edge Table', () => {
       <Provider>
         <EdgesTable rowSelection={{ type: 'checkbox' }}/>
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/list' }
+        route: { params, path: '/:tenantId/t/devices/edge/list' }
       })
     const row = await screen.findByRole('row', { name: /Smart Edge 2/i })
     await user.click(within(row).getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Edit' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/devices/edge/0000000002/edit/general-settings`,
+      pathname: `/${params.tenantId}/t/devices/edge/0000000002/edit/general-settings`,
       hash: '',
       search: ''
     })
@@ -111,7 +115,7 @@ describe('Edge Table', () => {
       <Provider>
         <EdgesTable rowSelection={{ type: 'checkbox' }}/>
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/list' }
+        route: { params, path: '/:tenantId/t/devices/edge/list' }
       })
     const row = await screen.findAllByRole('row', { name: /Smart Edge/i })
     await user.click(within(row[0]).getByRole('checkbox'))
@@ -125,7 +129,7 @@ describe('Edge Table', () => {
       <Provider>
         <EdgesTable rowSelection={{ type: 'checkbox' }}/>
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/list' }
+        route: { params, path: '/:tenantId/t/devices/edge/list' }
       })
     const row = await screen.findByRole('row', { name: /Smart Edge 2/i })
     await user.click(within(row).getByRole('checkbox'))
@@ -140,7 +144,7 @@ describe('Edge Table', () => {
       <Provider>
         <EdgesTable rowSelection={{ type: 'checkbox' }}/>
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/list' }
+        route: { params, path: '/:tenantId/t/devices/edge/list' }
       })
     const row = await screen.findByRole('row', { name: /Smart Edge 2/i })
     await user.click(within(row).getByRole('checkbox'))
@@ -154,7 +158,7 @@ describe('Edge Table', () => {
       <Provider>
         <EdgesTable filterColumns={['venue']}/>
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/list' }
+        route: { params, path: '/:tenantId/t/devices/edge/list' }
       })
 
     await screen.findByRole('row', { name: /Smart Edge 2/i })
@@ -168,7 +172,7 @@ describe('Edge Table', () => {
       <Provider>
         <EdgesTable rowSelection={{ type: 'checkbox' }}/>
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/list' }
+        route: { params, path: '/:tenantId/t/devices/edge/list' }
       })
     const row2 = await screen.findByRole('row', { name: /Smart Edge 2/i })
     const row3 = await screen.findByRole('row', { name: /Smart Edge 3/i })

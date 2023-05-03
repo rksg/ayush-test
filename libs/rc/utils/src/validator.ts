@@ -33,6 +33,15 @@ export function serverIpAddressRegExp (value: string) {
   return Promise.resolve()
 }
 
+export function generalIpAddressRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp(/(\b25[0-5]|\b2[0-4][0-9]|\b[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}/)
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.ipAddress))
+  }
+  return Promise.resolve()
+}
+
 export function networkWifiPortRegExp (value: number) {
   const { $t } = getIntl()
   if (value && value <= 0){
@@ -450,6 +459,16 @@ export function MacAddressFilterRegExp (value: string){
   return Promise.resolve()
 }
 
+export function generalMacAddressRegExp (value: string){
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const re = new RegExp(/^[a-fA-F0-9]{2}(:[a-fA-F0-9]{2}){5}$/)
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.invalid))
+  }
+  return Promise.resolve()
+}
+
 export function MacRegistrationFilterRegExp (value: string){
   const { $t } = getIntl()
   const HYPHEN_2_GROUPS = new RegExp(/^([0-9A-Fa-f]{6})-([0-9A-Fa-f]{6})$/)
@@ -718,7 +737,8 @@ export function validateSwitchStaticRouteNextHop (ipAddress: string) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len
   const nextHopRegexp = new RegExp(/^((1\.){3}([1-9]|[1-9]\d|[12]\d\d)|(1\.){2}([2-9]|[1-9]\d|[12]\d\d)\.([1-9]?\d|[12]\d\d)|1\.([2-9]|[1-9]\d|[12]\d\d)(\.([1-9]?\d|[12]\d\d)){2}|([2-9]|[1-9]\d|1\d\d|2[01]\d|22[0-3])(\.([1-9]?\d|[12]\d\d)){3})$/)
-  if (!nextHopRegexp.test(ipAddress)) {
+  // Next Hop accept "0.0.0.0".
+  if (!nextHopRegexp.test(ipAddress) && ipAddress !== '0.0.0.0') {
     return Promise.reject($t(validationMessages.switchStaticRouteNextHopInvalid))
   }
   return Promise.resolve()

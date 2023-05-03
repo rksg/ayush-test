@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { DdosAttackType, EdgeFirewallSetting, EdgeFirewallUrls, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, DdosAttackType, EdgeFirewallSetting, EdgeFirewallUrls, EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import {
   Provider
 } from '@acx-ui/store'
@@ -21,7 +21,7 @@ import { mockFirewall } from '../__tests__/fixtures'
 import EditFirewall from './'
 
 
-const { click, type, selectOptions } = userEvent
+const { click, type, selectOptions, clear } = userEvent
 
 const mockedNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
@@ -86,6 +86,10 @@ describe('Edit edge firewall service', () => {
           }
         }
       ),
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (req, res, ctx) => res(ctx.json({ data: [] }))
+      ),
       rest.put(
         EdgeFirewallUrls.updateEdgeFirewall.url,
         (req, res, ctx) => {
@@ -139,6 +143,7 @@ describe('Edit edge firewall service', () => {
     await selectOptions(
       await within(dialog).findByRole('combobox', { name: 'DDoS Attack Type' }),
       'ICMP')
+    await clear(within(dialog).getByRole('spinbutton'))
     await type(within(dialog).getByRole('spinbutton'), '6')
     await click(within(dialog).getByRole('button', { name: 'Add' }))
     const icmpRow = await within(drawer).findByRole('row', { name: /ICMP/ })

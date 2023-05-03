@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { AddressType, EdgeFirewallUrls, EdgeUrlsInfo, ProtocolType } from '@acx-ui/rc/utils'
+import { AddressType, CommonUrlsInfo, EdgeFirewallUrls, EdgeUrlsInfo, ProtocolType } from '@acx-ui/rc/utils'
 import {
   Provider
 } from '@acx-ui/store'
@@ -18,7 +18,7 @@ import { mockEdgeList } from '../../../Devices/Edge/__tests__/fixtures'
 
 import AddFirewall from './'
 
-const { click, type, selectOptions } = userEvent
+const { click, type, selectOptions, clear } = userEvent
 
 const mockedNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
@@ -61,6 +61,10 @@ describe('Add edge firewall service', () => {
         (req, res, ctx) => res(ctx.json(mockEdgeList))
       ),
       rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (req, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.post(
         EdgeFirewallUrls.addEdgeFirewall.url,
         (req, res, ctx) => {
           mockedAddFn(req.body)
@@ -98,6 +102,7 @@ describe('Add edge firewall service', () => {
     await selectOptions(
       await within(dialog).findByRole('combobox', { name: 'DDoS Attack Type' }),
       'ICMP')
+    await clear(within(dialog).getByRole('spinbutton'))
     await type(within(dialog).getByRole('spinbutton'), '6')
     await click(within(dialog).getByRole('button', { name: 'Add' }))
     await within(drawer).findByRole('row', { name: /ICMP/ })
@@ -108,7 +113,7 @@ describe('Add edge firewall service', () => {
     await selectOptions(
       await within(dialog).findByRole('combobox', { name: 'DDoS Attack Type' }),
       'DNS Response')
-    await type(within(dialog).getByRole('spinbutton'), '2')
+    await type(within(dialog).getByRole('spinbutton'), '{backspace}{backspace}{backspace}2')
     await click(within(dialog).getByRole('button', { name: 'Add' }))
     await within(drawer).findByRole('row', { name: /DNS Response/ })
     await click(within(drawer).getByRole('button', { name: 'Apply' }))
@@ -223,7 +228,7 @@ describe('Add edge firewall service', () => {
     const aclResult = await screen.findByText(/Stateful ACL/)
     // eslint-disable-next-line testing-library/no-node-access
     expect((aclResult.parentNode as HTMLDivElement).textContent)
-      .toBe('Stateful ACLON (1 ACL)')
+      .toBe('Stateful ACLON (2 ACL)')
 
     expect(screen.getByText('SmartEdge (2)')).not.toBeNull()
     expect(screen.getByText('Smart Edge 3')).not.toBeNull()

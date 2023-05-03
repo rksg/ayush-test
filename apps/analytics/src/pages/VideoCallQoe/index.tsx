@@ -1,7 +1,9 @@
+import { Button }  from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, Loader, PageHeader, SuspenseBoundary } from '@acx-ui/components'
-import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
+import { Loader, PageHeader, SuspenseBoundary, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
+import { TenantLink }                                    from '@acx-ui/react-router-dom'
 
 import { useVideoCallQoeTestsQuery } from './services'
 import { VideoCallQoeTable }         from './VideoCallQoeTable'
@@ -18,6 +20,9 @@ function VideoCallQoeListPage () {
     return <span>{ $t({ defaultMessage: 'Video Call QoE is not enabled' }) }</span>
   }
 
+  const isCallNotStarted = queryResults.data?.getAllCallQoeTests
+    ?.every(test => test.meetings[0].status !== 'NOT_STARTED')
+
   return (
     <>
       <PageHeader
@@ -26,7 +31,21 @@ function VideoCallQoeListPage () {
           {$t({ defaultMessage: 'Total Test Calls:' })} {noOfTestCalls}
         </Loader>}
         extra={[
-          <Button type='primary'>{$t({ defaultMessage: 'Create Test Call' })}</Button>
+          isCallNotStarted ?
+            <TenantLink to='/serviceValidation/videoCallQoe/add'>
+              <Button type='primary'>{$t({ defaultMessage: 'Create Test Call' })}</Button>
+            </TenantLink>
+            :
+            <Tooltip
+              placement='left'
+              key='disableCallButton'
+              trigger='hover'
+              title={$t({ defaultMessage: 'There is already a test call which is not started.' })}
+            >
+              <Button type='primary' disabled>
+                {$t({ defaultMessage: 'Create Test Call' })}
+              </Button>
+            </Tooltip>
         ]} />
       <VideoCallQoeTable />
     </>

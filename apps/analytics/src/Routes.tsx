@@ -17,6 +17,8 @@ import NetworkHealthForm                                  from './pages/NetworkH
 import { NetworkHealthSpecGuard, NetworkHealthTestGuard } from './pages/NetworkHealth/NetworkHealthGuard'
 import NetworkHealthList                                  from './pages/NetworkHealth/NetworkHealthList'
 import VideoCallQoeListPage                               from './pages/VideoCallQoe'
+import { VideoCallQoeForm }                               from './pages/VideoCallQoe/VideoCallQoeForm/VideoCallQoeForm'
+import { VideoCallQoeDetails }                            from './pages/VideoCallQoeDetails'
 
 export default function AnalyticsRoutes () {
   const { $t } = useIntl()
@@ -26,7 +28,7 @@ export default function AnalyticsRoutes () {
   if (!hasAccess()) return <React.Fragment />
 
   const routes = rootRoutes(
-    <Route path='t/:tenantId'>
+    <Route path=':tenantId/t'>
       <Route path='analytics' element={<TenantNavigate replace to='/analytics/incidents' />} />
       <Route path='analytics/incidents' element={<IncidentListPage />} />
       <Route path='analytics/incidents/tab/:activeTab' element={<IncidentListPage />} />
@@ -61,6 +63,8 @@ export default function AnalyticsRoutes () {
           </Route>
         </Route>
         <Route path='videoCallQoe' element={<VideoCallQoeListPage />} />
+        <Route path='videoCallQoe/:testId' element={<VideoCallQoeDetails/>} />
+        <Route path='videoCallQoe/add' element={<VideoCallQoeForm />} />
       </Route>}
     </Route>
   )

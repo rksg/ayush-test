@@ -45,3 +45,21 @@ export interface StatefulAclRule {
   destinationAddressMask?: string;
   destinationPort?: string;
 }
+
+export interface EdgeFirewallViewData {
+  id?: string
+  tenantId?: string
+  firewallName?: string
+  tags?: string[]
+  ddosEnabled?: boolean
+  ddosRateLimitingRules?: {
+     [key in DdosAttackType]?: number
+  }
+  statefulAclEnabled?: boolean
+  statefulAcls?: {
+        aclName: string,
+        aclDirection: ACLDirection,
+        aclRuleNum: number
+    }[]
+  edgeIds?: string[]
+}
