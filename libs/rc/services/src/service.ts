@@ -44,6 +44,7 @@ import {
   transferNewResToTableResult,
   MdnsProxyViewModel,
   PortalTablePayload,
+  DPSKDeviceInfo,
   IpUtilsService
 } from '@acx-ui/rc/utils'
 import {
@@ -659,6 +660,44 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       // eslint-disable-next-line max-len
       invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }, { type: 'DpskPassphrase', id: 'DETAIL' }]
     }),
+    getDpskPassphraseDevices: build.query<DPSKDeviceInfo[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(DpskUrls.getPassphraseDevices, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'DpskPassphraseDevices', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+          ], () => {
+            // eslint-disable-next-line max-len
+            api.dispatch(serviceApi.util.invalidateTags( [{ type: 'DpskPassphraseDevices', id: 'LIST' }]))
+          })
+        })
+      }
+    }),
+    updateDpskPassphraseDevices: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(DpskUrls.updatePassphraseDevices, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'DpskPassphraseDevices', id: 'LIST' }]
+    }),
+    deleteDpskPassphraseDevices: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(DpskUrls.deletePassphraseDevices, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'DpskPassphraseDevices', id: 'LIST' }]
+    }),
     uploadPassphrases: build.mutation<{}, RequestFormData>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(DpskUrls.uploadPassphrases, params, {
@@ -830,6 +869,9 @@ export const {
   useUpdateDpskPassphrasesMutation,
   useDeleteDpskPassphraseListMutation,
   useRevokeDpskPassphraseListMutation,
+  useGetDpskPassphraseDevicesQuery,
+  useUpdateDpskPassphraseDevicesMutation,
+  useDeleteDpskPassphraseDevicesMutation,
   useUploadPassphrasesMutation,
   useDownloadPassphrasesMutation,
   useGetPortalQuery,

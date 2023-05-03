@@ -3,8 +3,8 @@ import '@testing-library/jest-dom'
 import { store, Provider ,videoCallQoeURL }                                  from '@acx-ui/store'
 import { act, mockGraphqlMutation,  mockGraphqlQuery,  renderHook, waitFor } from '@acx-ui/test-utils'
 
-import { createTestResponse, deleteTestResponse }                          from './__tests__/fixtures'
-import { api, useCreateCallQoeTestMutation, useDeleteCallQoeTestMutation } from './services'
+import { createTestResponse, deleteTestResponse, callQoeTestDetailsFixtures1 } from './__tests__/fixtures'
+import { api, useCreateCallQoeTestMutation, useDeleteCallQoeTestMutation }     from './services'
 
 describe('videoCallQoeApi', () => {
   const expectedResponse = {
@@ -91,4 +91,43 @@ describe('videoCallQoeApi', () => {
     expect(result.current[1].data).toEqual(true)
   })
 
+})
+
+describe('videoCallQoeTestDetails', () => {
+  beforeEach(() => store.dispatch(api.util.resetApiState()))
+  const payload = { testId: 1, status: 'ENDED' }
+
+  it('api should return populated data', async () => {
+    mockGraphqlQuery(videoCallQoeURL,'CallQoeTestDetails', {
+      data: callQoeTestDetailsFixtures1
+    })
+    const { status, data, error } = await store.dispatch(
+      api.endpoints.videoCallQoeTestDetails.initiate(payload))
+
+    expect(error).toBeUndefined()
+    expect(status).toBe('fulfilled')
+    expect(data).toMatchObject(callQoeTestDetailsFixtures1)
+  })
+  it('api should return empty data', async () => {
+    mockGraphqlQuery(videoCallQoeURL,'CallQoeTestDetails', {
+      data: {}
+    })
+    const { status, data, error } = await store.dispatch(
+      api.endpoints.videoCallQoeTestDetails.initiate(payload))
+
+    expect(error).toBeUndefined()
+    expect(status).toBe('fulfilled')
+    expect(data).toStrictEqual({})
+  })
+  it('api should return error', async () => {
+    mockGraphqlQuery(videoCallQoeURL,'CallQoeTestDetails', {
+      error: new Error('something went wrong!')
+    })
+    const { status, data, error } = await store.dispatch(
+      api.endpoints.videoCallQoeTestDetails.initiate(payload))
+
+    expect(status).toBe('rejected')
+    expect(data).toBe(undefined)
+    expect(error).not.toBe(undefined)
+  })
 })

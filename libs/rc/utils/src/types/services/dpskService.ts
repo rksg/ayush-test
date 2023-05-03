@@ -78,3 +78,11 @@ export interface DpskPassphrasesSaveData {
   phoneNumber?: string;
   override?: boolean;
 }
+
+export interface DPSKDeviceInfo {
+  mac: string,
+  isOnline: boolean,
+  lastConnected: string,
+  lastConnectedNetwork: string,
+  devicePassphrase: string
+}

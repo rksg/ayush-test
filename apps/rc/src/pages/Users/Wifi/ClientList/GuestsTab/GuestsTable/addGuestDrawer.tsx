@@ -37,7 +37,7 @@ import {
   PdfGeneratorService,
   Guest,
   LangCode,
-  excludeExclamationLeadTrailSpaceRegExp
+  trailingNorLeadingSpaces
 } from '@acx-ui/rc/utils'
 import { GuestErrorRes } from '@acx-ui/user'
 import { getIntl }       from '@acx-ui/utils'
@@ -344,7 +344,7 @@ export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boo
           { required: true },
           { min: 1 },
           { max: 256 },
-          { validator: (_, value) => excludeExclamationLeadTrailSpaceRegExp(value) }
+          { validator: (_, value) => trailingNorLeadingSpaces(value) }
         ]}
         children={<Input />}
       />

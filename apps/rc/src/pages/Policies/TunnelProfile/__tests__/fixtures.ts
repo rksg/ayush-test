@@ -9,7 +9,7 @@ export const mockedTunnelProfileViewData = {
       mtuType: 'MANUAL',
       mtuSize: 1450,
       forceFragmentation: true,
-      networkSegmentIds: ['nsg1', 'nsg2'],
+      networkSegmentationIds: ['nsg1', 'nsg2'],
       networkIds: ['network1', 'network2']
     },
     {
@@ -19,7 +19,7 @@ export const mockedTunnelProfileViewData = {
       mtuType: 'AUTO',
       mtuSize: 0,
       forceFragmentation: false,
-      networkSegmentIds: ['nsg1', 'nsg2'],
+      networkSegmentationIds: ['nsg1', 'nsg2'],
       networkIds: ['network1', 'network2']
     }
   ]
@@ -45,7 +45,8 @@ export const mockedTunnelProfileData = {
   tag: 'test',
   mtuType: 'MANUAL',
   mtuSize: 1450,
-  forceFragmentation: true
+  forceFragmentation: true,
+  ageTimeMinutes: 20
 }
 export const mockedNetworkOptions = {
   totalCount: 2,
