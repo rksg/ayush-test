@@ -2,9 +2,9 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import {
-  DpskUrls,
   getServiceDetailsLink,
   getServiceRoutePath,
+  PropertyUrlsInfo,
   ServiceOperation,
   ServiceType
 } from '@acx-ui/rc/utils'
@@ -18,8 +18,12 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { mockedDpskList, mockedDpskListWithPersona } from './__tests__/fixtures'
-import DpskTable                                     from './DpskTable'
+import { mockedDetailedResidentPortalList, mockedResidentPortalList } from '../__tests__/fixtures'
+
+import ResidentPortalTable from './ResidentPortalTable'
+
+// import { mockedDpskList, mockedDpskListWithPersona } from './__tests__/fixtures'
+// import DpskTable                                     from './DpskTable'
 
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
@@ -34,19 +38,20 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useTenantLink: (): Path => mockedTenantPath
 }))
 
-describe('DpskTable', () => {
+describe('ResidentPortalTable', () => {
   const params = {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
   }
 
-  // eslint-disable-next-line max-len
-  const tablePath = '/:tenantId/t/' + getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST })
+  const tablePath =
+    '/:tenantId/'
+    + getServiceRoutePath({ type: ServiceType.RESIDENT_PORTAL, oper: ServiceOperation.LIST })
 
   beforeEach(async () => {
     mockServer.use(
       rest.post(
-        DpskUrls.getEnhancedDpskList.url,
-        (req, res, ctx) => res(ctx.json({ ...mockedDpskList }))
+        PropertyUrlsInfo.getResidentPortalsQuery.url,
+        (req, res, ctx) => res(ctx.json({ ...mockedDetailedResidentPortalList }))
       )
     )
   })
@@ -54,15 +59,16 @@ describe('DpskTable', () => {
   it('should render the table', async () => {
     render(
       <Provider>
-        <DpskTable />
+        <ResidentPortalTable />
       </Provider>, {
         route: { params, path: tablePath }
       }
     )
 
-    const targetDpsk = mockedDpskList.data[0]
-    expect(await screen.findByRole('button', { name: /Add DPSK Service/i })).toBeVisible()
-    expect(await screen.findByRole('row', { name: new RegExp(targetDpsk.name) })).toBeVisible()
+    const targetResidentPortal = mockedResidentPortalList.content[0]
+    expect(await screen.findByRole('button', { name: /Add Resident Portal/i })).toBeVisible()
+    expect(await screen.findByRole('row', { name: new RegExp(targetResidentPortal.name) }))
+      .toBeVisible()
   })
 
   it('should delete selected row', async () => {
@@ -70,7 +76,7 @@ describe('DpskTable', () => {
 
     mockServer.use(
       rest.delete(
-        DpskUrls.deleteDpsk.url,
+        PropertyUrlsInfo.deleteResidentPortals.url,
         (req, res, ctx) => {
           deleteFn(req.body)
           return res(ctx.json({ requestId: '12345' }))
@@ -80,76 +86,70 @@ describe('DpskTable', () => {
 
     render(
       <Provider>
-        <DpskTable />
+        <ResidentPortalTable />
       </Provider>, {
         route: { params, path: tablePath }
       }
     )
 
-    const targetDpsk = mockedDpskList.data[0]
-    const row = await screen.findByRole('row', { name: new RegExp(targetDpsk.name) })
+    const targetPortal = mockedDetailedResidentPortalList.content[1]
+    const row = await screen.findByRole('row', { name: new RegExp(targetPortal.name) })
     await userEvent.click(within(row).getByRole('radio'))
 
     await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
 
-    expect(await screen.findByText('Delete "' + targetDpsk.name + '"?')).toBeVisible()
-    const deleteServiceButton = await screen.findByRole('button', { name: /Delete DPSK Service/i })
+    expect(await screen.findByText('Delete "' + targetPortal.name + '"?')).toBeVisible()
+    const deleteServiceButton =
+      await screen.findByRole('button', { name: /Delete Resident Portal/i })
+
     await userEvent.click(deleteServiceButton)
 
     await waitFor(() => {
       expect(deleteFn).toHaveBeenCalled()
     })
-  }, 1000000)
+  })
 
-  it('should not delete the selected row when it is mapped to Persona', async () => {
-    mockServer.use(
-      rest.post(
-        DpskUrls.getEnhancedDpskList.url,
-        (req, res, ctx) => res(ctx.json({ ...mockedDpskListWithPersona }))
-      )
-    )
+  it('should not delete the selected row when it is mapped to Venue', async () => {
 
     render(
       <Provider>
-        <DpskTable />
+        <ResidentPortalTable />
       </Provider>, {
         route: { params, path: tablePath }
       }
     )
 
-    const targetDpsk = mockedDpskListWithPersona.data[0]
-    const row = await screen.findByRole('row', { name: new RegExp(targetDpsk.name) })
+    const targetPortal = mockedDetailedResidentPortalList.content[0]
+    const row = await screen.findByRole('row', { name: new RegExp(targetPortal.name) })
     await userEvent.click(within(row).getByRole('radio'))
 
-    await waitFor(async () => {
-      expect(screen.queryByRole('button', { name: /Delete/ })).toBeDisabled()
-    })
+    expect(screen.queryByRole('button', { name: /Delete/ })).toBeNull()
   })
 
   it('should navigate to the Edit view', async () => {
     render(
       <Provider>
-        <DpskTable />
+        <ResidentPortalTable />
       </Provider>, {
         route: { params, path: tablePath }
       }
     )
 
-    const targetDpsk = mockedDpskList.data[0]
-    const row = await screen.findByRole('row', { name: new RegExp(targetDpsk.name) })
+    const targetPortal = mockedDetailedResidentPortalList.content[0]
+    const row = await screen.findByRole('row', { name: new RegExp(targetPortal.name) })
     await userEvent.click(within(row).getByRole('radio'))
 
     await userEvent.click(screen.getByRole('button', { name: /Edit/ }))
 
-    const dpskEditPath = getServiceDetailsLink({
-      type: ServiceType.DPSK,
+    const portalEditPath = getServiceDetailsLink({
+      type: ServiceType.RESIDENT_PORTAL,
       oper: ServiceOperation.EDIT,
-      serviceId: targetDpsk.id
+      serviceId: targetPortal.id
     })
 
     expect(mockedUseNavigate).toHaveBeenCalledWith({
       ...mockedTenantPath,
-      pathname: `${mockedTenantPath.pathname}/${dpskEditPath}`
+      pathname: `${mockedTenantPath.pathname}/${portalEditPath}`
     })
   })
 })
