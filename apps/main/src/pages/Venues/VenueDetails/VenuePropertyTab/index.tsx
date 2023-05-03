@@ -224,15 +224,31 @@ export function VenuePropertyTab () {
     },
     {
       label: $t({ defaultMessage: 'Suspend' }),
+      visible: (selectedRows => {
+        const activateCount = selectedRows.filter(row => enabled(row.status)).length
+        return activateCount > 0 && activateCount === selectedRows.length
+      }),
       onClick: (items, clearSelection) => {
         items.forEach(unit => {
           updateUnitById({
             params: { venueId, unitId: unit.id },
-            payload: {
-              status: enabled(unit.status)
-                ? PropertyUnitStatus.DISABLED
-                : PropertyUnitStatus.ENABLED
-            }
+            payload: { status: PropertyUnitStatus.DISABLED }
+          })
+            .then(clearSelection)
+        })
+      }
+    },
+    {
+      label: $t({ defaultMessage: 'Activate' }),
+      visible: (selectedRows => {
+        const suspendCount = selectedRows.filter(row => !enabled(row.status)).length
+        return suspendCount > 0 && suspendCount === selectedRows.length
+      }),
+      onClick: (items, clearSelection) => {
+        items.forEach(unit => {
+          updateUnitById({
+            params: { venueId, unitId: unit.id },
+            payload: { status: PropertyUnitStatus.ENABLED }
           })
             .then(clearSelection)
         })
