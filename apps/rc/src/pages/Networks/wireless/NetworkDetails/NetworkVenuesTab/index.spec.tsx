@@ -87,7 +87,7 @@ describe('NetworkVenuesTab', () => {
 
   it('should render correctly', async () => {
     render(<Provider><NetworkVenuesTab /></Provider>, {
-      route: { params, path: '/:tenantId/:networkId' }
+      route: { params, path: '/:tenantId/t/:networkId' }
     })
 
     await waitFor(() => {
@@ -109,7 +109,7 @@ describe('NetworkVenuesTab', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     render(<Provider><NetworkVenuesTab /></Provider>, {
-      route: { params, path: '/:tenantId/:networkId' }
+      route: { params, path: '/:tenantId/t/:networkId' }
     })
 
     await waitFor(() => {
@@ -173,7 +173,7 @@ describe('NetworkVenuesTab', () => {
 
   it('deactivate Network', async () => {
     render(<Provider><NetworkVenuesTab /></Provider>, {
-      route: { params, path: '/:tenantId/:networkId' }
+      route: { params, path: '/:tenantId/t/:networkId' }
     })
 
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
@@ -211,7 +211,7 @@ describe('NetworkVenuesTab', () => {
 
   it('Table action bar activate Network', async () => {
     render(<Provider><NetworkVenuesTab /></Provider>, {
-      route: { params, path: '/:tenantId/:networkId' }
+      route: { params, path: '/:tenantId/t/:networkId' }
     })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -263,7 +263,7 @@ describe('NetworkVenuesTab', () => {
     )
 
     render(<Provider><NetworkVenuesTab /></Provider>, {
-      route: { params, path: '/:tenantId/:networkId' }
+      route: { params, path: '/:tenantId/t/:networkId' }
     })
 
     await waitFor(() => {
@@ -305,7 +305,7 @@ describe('NetworkVenuesTab', () => {
 
   it('Table action bar deactivate Network', async () => {
     render(<Provider><NetworkVenuesTab /></Provider>, {
-      route: { params, path: '/:tenantId/:networkId' }
+      route: { params, path: '/:tenantId/t/:networkId' }
     })
 
     await waitFor(() => {
@@ -428,7 +428,7 @@ describe('NetworkVenuesTab', () => {
     jest.setSystemTime(new Date(Date.parse('2022-08-04T01:20:00+10:00'))) // Australian Eastern Standard Time
 
     render(<Provider><NetworkVenuesTab /></Provider>, {
-      route: { params, path: '/:tenantId/:networkId' }
+      route: { params, path: '/:tenantId/t/:networkId' }
     })
 
     await waitFor(() => {
@@ -489,7 +489,7 @@ describe('NetworkVenuesTab', () => {
     )
 
     render(<Provider><NetworkVenuesTab /></Provider>, {
-      route: { params, path: '/:tenantId/:networkId' }
+      route: { params, path: '/:tenantId/t/:networkId' }
     })
 
     await waitFor(() => {
@@ -527,7 +527,7 @@ describe('NetworkVenuesTab', () => {
     )
 
     render(<Provider><NetworkVenuesTab /></Provider>, {
-      route: { params, path: '/:tenantId/:networkId' }
+      route: { params, path: '/:tenantId/t/:networkId' }
     })
 
     await waitFor(() => {
@@ -576,7 +576,7 @@ describe('NetworkVenuesTab', () => {
     )
 
     render(<Provider><NetworkVenuesTab /></Provider>, {
-      route: { params, path: '/:tenantId/:networkId' }
+      route: { params, path: '/:tenantId/t/:networkId' }
     })
 
     await waitFor(() => {

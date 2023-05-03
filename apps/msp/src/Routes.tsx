@@ -12,7 +12,7 @@ import { VarCustomers }    from './pages/VarCustomers'
 
 export default function MspRoutes () {
   const routes = rootRoutes(
-    <Route path='v/:tenantId' element={<Layout />}>
+    <Route path=':tenantId/v' element={<Layout />}>
       <Route index element={<TenantNavigate replace to='/dashboard' tenantType='v'/>} />
       <Route
         path='dashboard'
@@ -36,12 +36,12 @@ export default function MspRoutes () {
 function CustomersRoutes () {
   return rootRoutes(
     <Route>
-      <Route path='v/:tenantId/dashboard/mspCustomers'>
+      <Route path=':tenantId/v/dashboard/mspCustomers'>
         <Route index element={<MspCustomers />} />
         <Route path='create' element={<ManageCustomer />} />
         <Route path=':action/:status/:mspEcTenantId' element={<ManageCustomer />} />
       </Route>
-      <Route path='v/:tenantId/integrators'>
+      <Route path=':tenantId/v/integrators'>
         <Route index element={<Integrators />} />
         <Route path='create' element={<ManageIntegrator />} />
         <Route path=':action/:type/:mspEcTenantId' element={<ManageIntegrator />} />
