@@ -437,7 +437,7 @@ export function FloorPlan () {
                   networkDevicesVisibility={networkDevicesVisibility}
                   showRogueAp={showRogueAp}/>
               }
-              { !!unplacedDevicesCount && <UI.StyledSpace size={24}>
+              { <UI.StyledSpace size={24}>
                 { venueRogueApData?.enabled && <UI.RogueApButton key='rogueApBtn'
                   size='small'
                   type='link'

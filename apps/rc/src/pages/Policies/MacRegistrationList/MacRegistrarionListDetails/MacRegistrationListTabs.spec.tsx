@@ -27,7 +27,7 @@ describe('MacRegistrationListTab', () =>{
     fireEvent.click(await screen.findByText('MAC Registrations'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       // eslint-disable-next-line max-len
-      pathname: `/t/${params.tenantId}/policies/macRegistrationList/${params.policyId}/detail/macRegistrations`,
+      pathname: `/${params.tenantId}/t/policies/macRegistrationList/${params.policyId}/detail/macRegistrations`,
       hash: '',
       search: ''
     })

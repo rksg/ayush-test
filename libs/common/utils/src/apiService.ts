@@ -59,10 +59,14 @@ export const createHttpRequest = (
     ...customHeaders,
     ...getJwtHeaders({ ignoreDelegation })
   }
-  const newApiHostName = window.location.origin.replace(
+
+  const origin = window.location.origin
+  const newApiHostName = origin.replace(
     window.location.hostname, get('NEW_API_DOMAIN_NAME'))
-  const domain = (enableNewApi(apiInfo) && !isLocalHost()) ?
-    newApiHostName : window.location.origin
+  const domain = (enableNewApi(apiInfo) && !isLocalHost())
+    ? newApiHostName
+    : origin
+
   const url = enableNewApi(apiInfo) ? generatePath(`${apiInfo.url}`, paramValues) :
     generatePath(`${apiInfo.oldUrl || apiInfo.url}`, paramValues)
   const method = enableNewApi(apiInfo) ? apiInfo.method : (apiInfo.oldMethod || apiInfo.method)

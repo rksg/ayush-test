@@ -15,8 +15,7 @@ export const OutboundDefaultRules = [{
   description: 'Cloud mgmt.',
   accessAction: AccessAction.INSPECT,
   protocolType: ProtocolType.ANY,
-  sourceAddressType: AddressType.IP_ADDRESS,
-  sourceAddress: 'SmartEdge IP',
+  sourceAddressType: AddressType.ANY_IP_ADDRESS,
   destinationAddressType: AddressType.IP_ADDRESS,
   destinationAddress: 'RuckusOne IP'
 },{
@@ -24,8 +23,7 @@ export const OutboundDefaultRules = [{
   description: 'Cloud mgmt.(https)',
   accessAction: AccessAction.INSPECT,
   protocolType: ProtocolType.TCP,
-  sourceAddressType: AddressType.IP_ADDRESS,
-  sourceAddress: 'SmartEdge IP',
+  sourceAddressType: AddressType.ANY_IP_ADDRESS,
   destinationAddressType: AddressType.ANY_IP_ADDRESS,
   destinationPort: 443
 },{
@@ -33,8 +31,7 @@ export const OutboundDefaultRules = [{
   description: 'Cloud mgmt.(ntp)',
   accessAction: AccessAction.INSPECT,
   protocolType: ProtocolType.ANY,
-  sourceAddressType: AddressType.IP_ADDRESS,
-  sourceAddress: 'SmartEdge IP',
+  sourceAddressType: AddressType.ANY_IP_ADDRESS,
   destinationAddressType: AddressType.ANY_IP_ADDRESS,
   destinationPort: 123
 },{

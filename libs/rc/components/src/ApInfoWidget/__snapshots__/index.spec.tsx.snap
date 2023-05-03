@@ -115,7 +115,7 @@ exports[`AP Information Widget should render "No active alarms" when no alarms e
                 >
                   <a
                     class="styledComponents__TenantLinkSvg-sc-1kux3bo-4 eMltkO"
-                    href="/t/tenant-id/devices/wifi/undefined/details/analytics"
+                    href="/tenant-id/t/devices/wifi/undefined/details/analytics"
                   >
                     <div
                       data-testid="analytics-IncidentBySeverityDonutChart"
@@ -141,7 +141,7 @@ exports[`AP Information Widget should render "No active alarms" when no alarms e
                 >
                   <a
                     class="styledComponents__TenantLinkBlack-sc-1kux3bo-3 hsPaUF"
-                    href="/t/tenant-id/devices/wifi/undefined/details/analytics/health/overview"
+                    href="/tenant-id/t/devices/wifi/undefined/details/analytics/health/overview"
                   >
                     <div
                       data-testid="analytics-KpiWidget"
@@ -167,7 +167,7 @@ exports[`AP Information Widget should render "No active alarms" when no alarms e
                 >
                   <a
                     class="styledComponents__TenantLinkBlack-sc-1kux3bo-3 hsPaUF"
-                    href="/t/tenant-id/devices/wifi/undefined/details/analytics/health/overview"
+                    href="/tenant-id/t/devices/wifi/undefined/details/analytics/health/overview"
                   >
                     <div
                       data-testid="analytics-TtcTimeWidget"
@@ -193,7 +193,7 @@ exports[`AP Information Widget should render "No active alarms" when no alarms e
                 >
                   <a
                     class="styledComponents__TenantLinkBlack-sc-1kux3bo-3 hsPaUF"
-                    href="/t/tenant-id/devices/wifi/undefined/details/analytics/health/overview"
+                    href="/tenant-id/t/devices/wifi/undefined/details/analytics/health/overview"
                   >
                     <div
                       data-testid="analytics-KpiWidget"

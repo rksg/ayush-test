@@ -10,9 +10,9 @@ import { VenueRogueAp }                                                         
 import { VenueSyslog }                                                                                        from '../models/VenueSyslog'
 
 
-import { ApStatusDetails, LanPort } from './ap'
-import { RogueCategory }            from './policies'
-import { ConfigurationHistory }     from './switch'
+import { ApStatusDetails, LanPort }                  from './ap'
+import { RogueCategory }                             from './policies'
+import { ConfigurationHistory, CliTemplateVariable } from './switch'
 
 import { ApVenueStatusEnum, EdgeStatusSeverityStatistic, SwitchStatusEnum } from './index'
 
@@ -383,6 +383,7 @@ export interface ConfigurationProfile {
 		name: string,
 		overwrite: boolean
 		switchModels?: string
+		variables?: CliTemplateVariable[]
 	}
 	vlans?: Vlan[],
 	acls?: Acl[],

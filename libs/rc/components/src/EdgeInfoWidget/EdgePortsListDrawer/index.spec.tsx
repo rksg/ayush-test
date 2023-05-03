@@ -49,7 +49,7 @@ describe('Edge Ports List', () => {
     fireEvent.click(await screen.findByText('Configure Port Settings'))
 
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/devices/edge/${params.serialNumber}/edit/ports`,
+      pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/edit/ports`,
       hash: '',
       search: ''
     })
