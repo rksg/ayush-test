@@ -165,7 +165,6 @@ export default function DpskTable () {
       key: 'expirationType',
       title: intl.$t({ defaultMessage: 'Passphrase Expiration' }),
       dataIndex: 'expirationType',
-      sorter: true,
       render: function (data, row) {
         return transformAdvancedDpskExpirationText(
           intl,
