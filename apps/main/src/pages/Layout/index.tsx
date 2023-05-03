@@ -23,7 +23,7 @@ import {
 } from '@acx-ui/msp/components'
 import { CloudMessageBanner }                                     from '@acx-ui/rc/components'
 import { isDelegationMode }                                       from '@acx-ui/rc/utils'
-import { getBasePath, Link, Outlet, useNavigate, useTenantLink }  from '@acx-ui/react-router-dom'
+import { Link, Outlet, useNavigate, useTenantLink }               from '@acx-ui/react-router-dom'
 import { useParams }                                              from '@acx-ui/react-router-dom'
 import { RolesEnum }                                              from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }                        from '@acx-ui/user'
@@ -54,7 +54,6 @@ function Layout () {
 
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const basePath = useTenantLink('/users/guestsManager')
-
   useEffect(() => {
     if (isGuestManager && params['*'] !== 'guestsManager') {
       navigate({
@@ -88,7 +87,7 @@ function Layout () {
               {$t({ defaultMessage: 'Home' })}
             </UI.Home>
           </a> :
-          <Link to={`${getBasePath()}/v/${getJwtTokenPayload().tenantId}`}>
+          <Link to={`/${getJwtTokenPayload().tenantId}/v`}>
             <UI.Home>
               <LayoutUI.Icon children={<HomeSolid />} />
               {$t({ defaultMessage: 'Home' })}

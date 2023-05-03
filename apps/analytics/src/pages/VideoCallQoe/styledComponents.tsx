@@ -1,5 +1,7 @@
 import styled from 'styled-components'
 
+import { Drawer as AntdDrawer } from '@acx-ui/components'
+
 export const withDottedUnderline = `
   text-decoration: dotted underline;
   // below css will hide the default safari tooltip
@@ -14,3 +16,8 @@ export const WithDottedUnderline = styled.span`
 `
 WithDottedUnderline.displayName = 'WithDottedUnderline'
 
+export const Drawer = styled(AntdDrawer)`
+  .ant-drawer-body {
+    overflow-x: hidden;
+  }
+`

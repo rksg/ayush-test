@@ -134,9 +134,9 @@ const mockedTenantId = '__Tenant_ID__'
 const mockedPolicyId = '__Policy_ID__'
 
 // eslint-disable-next-line max-len
-const createPath = '/:tenantId/' + getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.CREATE })
+const createPath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.CREATE })
 // eslint-disable-next-line max-len
-const editPath = '/:tenantId/' + getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.EDIT })
+const editPath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.EDIT })
 
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
