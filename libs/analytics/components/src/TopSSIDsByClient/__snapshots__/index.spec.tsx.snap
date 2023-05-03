@@ -164,7 +164,7 @@ Array [
       class="ant-table-cell"
     >
       <a
-        href="/t/undefined/networks"
+        href="/undefined/t/networks"
       >
         birdywlan-dev
       </a>
@@ -267,7 +267,7 @@ Array [
       class="ant-table-cell"
     >
       <a
-        href="/t/undefined/networks"
+        href="/undefined/t/networks"
       >
         Home-550
       </a>
@@ -370,7 +370,7 @@ Array [
       class="ant-table-cell"
     >
       <a
-        href="/t/undefined/networks"
+        href="/undefined/t/networks"
       >
         psk_test
       </a>
@@ -473,7 +473,7 @@ Array [
       class="ant-table-cell"
     >
       <a
-        href="/t/undefined/networks"
+        href="/undefined/t/networks"
       >
         A-T-Wlan-01
       </a>
@@ -576,7 +576,7 @@ Array [
       class="ant-table-cell"
     >
       <a
-        href="/t/undefined/networks"
+        href="/undefined/t/networks"
       >
         testGoogleZ
       </a>

@@ -177,6 +177,7 @@ export function VenueRogueAps () {
         key: 'locatable',
         title: intl.$t({ defaultMessage: 'Locate Rogue' }),
         dataIndex: 'locatable',
+        align: 'center',
         render: (data, row) => {
           return <ApLocateDetail row={row} />
         }

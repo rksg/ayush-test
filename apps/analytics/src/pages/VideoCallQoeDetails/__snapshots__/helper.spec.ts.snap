@@ -1,0 +1,58 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`connectionQuality wifiMetrices having null 1`] = `
+Array [
+  <div
+    style={
+      Object {
+        "paddingBottom": "5px",
+      }
+    }
+    title="None"
+  >
+    <Space>
+      -
+      RSS
+    </Space>
+  </div>,
+  <div
+    style={
+      Object {
+        "paddingBottom": "5px",
+      }
+    }
+    title="None"
+  >
+    <Space>
+      -
+      SNR
+    </Space>
+  </div>,
+  <div
+    style={
+      Object {
+        "paddingBottom": "5px",
+      }
+    }
+    title="None"
+  >
+    <Space>
+      -
+      Avg. MCS (Downlink)
+    </Space>
+  </div>,
+  <div
+    style={
+      Object {
+        "paddingBottom": "5px",
+      }
+    }
+    title="None"
+  >
+    <Space>
+      -
+      Client Throughput
+    </Space>
+  </div>,
+]
+`;

@@ -1,4 +1,4 @@
-import { useContext, useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
 import { Col, Dropdown, Form, Input, List, Menu, MenuProps, Row, Space, Select, Switch, Typography, FormInstance } from 'antd'
 import { useIntl, FormattedMessage }                                                                               from 'react-intl'
@@ -10,7 +10,8 @@ import {
   SelectionControl,
   StepsForm,
   Tabs,
-  Tooltip
+  Tooltip,
+  useStepFormContext
 } from '@acx-ui/components'
 import { CsvSize, CodeMirrorWidget, ImportFileDrawer } from '@acx-ui/rc/components'
 import {
@@ -27,9 +28,8 @@ import {
 import { useParams } from '@acx-ui/react-router-dom'
 import { getIntl }   from '@acx-ui/utils'
 
-import CliTemplateFormContext from './CliTemplateFormContext'
-import { CliVariableModal }   from './CliVariableModal'
-import * as UI                from './styledComponents'
+import { CliVariableModal } from './CliVariableModal'
+import * as UI              from './styledComponents'
 
 import { tooltip } from './'
 
@@ -91,7 +91,7 @@ const cliTemplatesPayload = {
 export function CliStepConfiguration () {
   const { $t } = useIntl()
   const params = useParams()
-  const form = Form.useFormInstance()
+  const { form, editMode } = useStepFormContext()
   const isTemplate = params?.configType !== 'profiles'
   const cliDefaultString = isTemplate ? '' : 'manager registrar'
 
@@ -103,8 +103,8 @@ export function CliStepConfiguration () {
   const [variableModalEditMode, setVariableModalEditMode] = useState(false)
   const [selectedEditVariable, setSelectedEditVariable] = useState({} as CliTemplateVariable)
   const [importModalvisible, setImportModalvisible] = useState(false)
+  const [initVariableList, setInitVariableList] = useState(false)
 
-  const { editMode, data, initCodeMirror, setCliValidation } = useContext(CliTemplateFormContext)
   const { data: configExamples } = useGetCliConfigExamplesQuery({ params })
   const { data: cliTemplates }
     = useGetCliTemplatesQuery({ params, payload: cliTemplatesPayload }, { skip: !isTemplate })
@@ -128,34 +128,36 @@ export function CliStepConfiguration () {
         cm: CodeMirror.EditorFromTextArea,
         event: React.KeyboardEvent
       ) => codemirrorOnKeyup(cm, event, form))
+
+      const cli = form?.getFieldValue('cli')
+      codeMirrorInstance?.setValue(cli ?? cliDefaultString)
+      !isTemplate && markCodeMirrorReadOnlyText(codeMirrorInstance)
     }
   }, [codeMirrorInstance])
 
   useEffect(() => {
-    if (codeMirrorInstance && initCodeMirror) {
-      const templateData = isTemplate ? data : data?.venueCliTemplate
-      codeMirrorInstance?.setValue(templateData?.cli ?? cliDefaultString)
-      !isTemplate && markCodeMirrorReadOnlyText(codeMirrorInstance)
+    const data = form?.getFieldsValue(true)
+    if (data) {
+      setVariableList((data?.variables ?? []) as CliTemplateVariable[])
+      setInitVariableList(true)
     }
-  }, [initCodeMirror])
+  }, [])
 
   useEffect(() => {
-    const templateData = isTemplate ? data : data?.venueCliTemplate
-    if (editMode && data) {
-      form?.setFieldsValue(templateData)
-      setVariableList((templateData?.variables ?? []) as CliTemplateVariable[])
+    if (initVariableList && codeMirrorInstance) {
+      const validation = validateCLI(codeMirrorEl, variableList, cliDefaultString)
+      form?.setFieldsValue({
+        variables: variableList,
+        cliValid: validation
+      })
     }
-  }, [data])
-
-  useEffect(() => {
-    const validation = validateCLI(codeMirrorEl, variableList, cliDefaultString)
-    setCliValidation?.(validation)
-    form?.setFieldsValue({ variables: variableList })
   }, [variableList])
 
   useEffect(() => {
-    const validation = validateCLI(codeMirrorEl, variableList, cliDefaultString)
-    setCliValidation?.(validation)
+    if (codeMirrorInstance) {
+      const validation = validateCLI(codeMirrorEl, variableList, cliDefaultString)
+      form?.setFieldsValue({ cliValid: validation })
+    }
   }, [cli])
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
@@ -245,6 +247,14 @@ export function CliStepConfiguration () {
           hidden={true}
           name='cli'
           children={<Input />}
+        />
+        <Form.Item
+          hidden={true}
+          name='cliValid'
+          children={<Input />}
+          rules={[
+            { validator: (_, value) => value.valid ? Promise.resolve() : Promise.reject() }
+          ]}
         />
         <Form.Item
           hidden={true}
