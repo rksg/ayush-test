@@ -51,7 +51,7 @@ const EditNetworkSegmentation = () => {
     },
     {
       title: $t({ defaultMessage: 'SmartEdge' }),
-      content: <SmartEdgeForm />
+      content: <SmartEdgeForm editMode />
     },
     {
       title: $t({ defaultMessage: 'Wireless Network' }),
