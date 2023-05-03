@@ -20,6 +20,7 @@ const switchDetailsContextData = {
     id: 'id',
     venueId: 'venue-id',
     stackMembers: [],
+    firmware: 'SPR09010g',
     syncedSwitchConfig: true,
     switchType: SWITCH_TYPE.ROUTER
   }
