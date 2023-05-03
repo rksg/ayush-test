@@ -374,7 +374,19 @@ export const mockPersonaGroup = {
   id: 'testPersonaId',
   name: 'TestPersona',
   personaCount: 2,
-  dpskPoolId: 'testDpskId'
+  dpskPoolId: 'testDpskId',
+  personas: [
+    {
+      id: 'c677cbb0-8520-421c-99b6-59b3cef5ebc1',
+      groupId: 'e5247c1c-630a-46f1-a715-1974e49ec867',
+      name: 'mock-persona1'
+    },
+    {
+      id: '1e7f81ab-9bb7-4db7-ae20-315743f83183',
+      groupId: 'e5247c1c-630a-46f1-a715-1974e49ec867',
+      name: 'mock-persona2'
+    }
+  ]
 }
 
 export const mockDpsk = {
@@ -453,4 +465,5 @@ export const mockPersonaList = {
       primary: true
     }
   ]
+
 }

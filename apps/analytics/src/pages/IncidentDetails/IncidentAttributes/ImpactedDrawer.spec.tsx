@@ -42,7 +42,7 @@ describe('Drawer', () => {
       screen.getByText('1 Impacted AP')
       const links: HTMLAnchorElement[] = screen.getAllByRole('link')
       expect(links[0].href).toBe(
-        'http://localhost/t/undefined/devices/wifi/mac/details/overview'
+        'http://localhost/undefined/t/devices/wifi/mac/details/overview'
       )
     })
     it('should render error', async () => {

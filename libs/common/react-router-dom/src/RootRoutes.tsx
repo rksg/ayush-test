@@ -6,7 +6,6 @@ import {
   Route
 } from 'react-router-dom'
 
-import { getBasePath } from './helpers'
 
 import type { RoutesProps } from 'react-router-dom'
 
@@ -29,6 +28,6 @@ export function RootRoutes (props: RoutesProps) {
 
 export function rootRoutes (routes: React.ReactNode) {
   return <RootRoutes>
-    <Route path={getBasePath()} children={routes} />
+    <Route path='' children={routes} />
   </RootRoutes>
 }
