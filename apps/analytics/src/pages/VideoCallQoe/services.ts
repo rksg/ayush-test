@@ -4,7 +4,7 @@ import { gql }           from 'graphql-request'
 import { ValidatorRule } from 'rc-field-form/lib/interface'
 import { useIntl }       from 'react-intl'
 
-import { videoCallQoeApi } from '@acx-ui/store'
+import { dataApiSearch, videoCallQoeApi } from '@acx-ui/store'
 
 import { messageMapping }                               from './contents'
 import { DetailedResponse, Response, VideoCallQoeTest } from './types'
@@ -199,3 +199,53 @@ export function useDuplicateNameValidator () {
   }, [$t, submit])
   return validator
 }
+
+export interface Client {
+  hostname: string
+  username: string
+  mac: string
+  ipAddress: string
+}
+export interface RequestPayload {
+  start: string
+  end: string
+  query: string
+  limit: number
+}
+
+interface SearchResponse <T> {
+  search: T
+}
+
+export const clientSearchApi = dataApiSearch.injectEndpoints({
+  endpoints: (build) => ({
+    seachClients: build.query<Client[], RequestPayload>({
+      query: (payload) => ({
+        document: gql`
+        query Search(
+          $start: DateTime,
+          $end: DateTime,
+          $query: String,
+          $limit: Int
+        ) {
+          search(start: $start, end: $end, query: $query, limit: $limit) {
+            clients {
+              hostname
+              username
+              mac
+              ipAddress
+            }
+          }
+        }
+        `,
+        variables: payload
+      }),
+      providesTags: [{ type: 'Monitoring', id: 'SEARCH' }],
+      transformResponse: (response: SearchResponse<{ clients: Client[] }>) =>
+        response.search.clients
+    })
+  })
+})
+export const {
+  useSeachClientsQuery
+} = clientSearchApi
