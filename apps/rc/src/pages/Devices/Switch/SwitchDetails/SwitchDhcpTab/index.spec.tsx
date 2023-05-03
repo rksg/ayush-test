@@ -48,7 +48,7 @@ describe('SwitchDhcpTab', () => {
   it('should render correctly', async () => {
     render(<Provider><SwitchDhcpTab /></Provider>, {
       route: { params,
-        path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
+        path: '/:tenantId/t/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
       }
     })
 
@@ -59,7 +59,7 @@ describe('SwitchDhcpTab', () => {
     fireEvent.click(leaseTab)
 
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: '/t/:tenantId/devices/switch/:switchId/:serialNumber/details/dhcp/lease',
+      pathname: '/:tenantId/t/devices/switch/:switchId/:serialNumber/details/dhcp/lease',
       hash: '',
       search: ''
     })
@@ -83,7 +83,7 @@ describe('SwitchDhcpTab', () => {
 
     render(<Provider><SwitchDhcpTab /></Provider>, {
       route: { params: { ...params, activeSubTab: 'lease' },
-        path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
+        path: '/:tenantId/t/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
       }
     })
 
