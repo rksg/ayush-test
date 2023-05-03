@@ -84,7 +84,7 @@ describe('Firewall Table', () => {
     })
 
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/${editPath}`,
+      pathname: `/${params.tenantId}/t/${editPath}`,
       hash: '',
       search: ''
     })

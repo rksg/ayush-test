@@ -13,7 +13,7 @@ import {
   useDelegateToMspEcPath
 }  from '@acx-ui/rc/services'
 import { MspEc, useTableQuery, VarCustomer } from '@acx-ui/rc/utils'
-import { getBasePath, Link, useParams  }     from '@acx-ui/react-router-dom'
+import { Link, useParams  }                  from '@acx-ui/react-router-dom'
 import { useUserProfileContext }             from '@acx-ui/user'
 import { AccountType, getJwtTokenPayload }   from '@acx-ui/utils'
 
@@ -181,7 +181,7 @@ export function MspEcDropdownList () {
         } : {}
       },
       render: function (data, row) {
-        const to = `${getBasePath()}/t/${row.id}`
+        const to = `/${row.id}/t`
         return (
           (row.status === 'Active') ? <Link to={to}>{data}</Link> : data
         )
@@ -217,7 +217,7 @@ export function MspEcDropdownList () {
         }
       },
       render: function (data, row) {
-        const to = `${getBasePath()}/t/${row.tenantId}`
+        const to = `/${row.tenantId}/t`
         return (
           <Link to={to}>{data}</Link>
         )
