@@ -237,11 +237,9 @@ export function LoadBalancing () {
         <FieldLabel width='200px'>
           <Space>
             {$t({ defaultMessage: 'Sticky Client Steering' })}
-            {stickyClientSteeringInfoMessage &&
-              <Tooltip title={$t(stickyClientSteeringInfoMessage)} placement='bottom'>
-                <QuestionMarkCircleOutlined style={{ height: '14px', marginBottom: -3, marginLeft: -8 }}/>
-              </Tooltip>
-            }
+            <Tooltip title={$t(stickyClientSteeringInfoMessage)} placement='bottom'>
+              <QuestionMarkCircleOutlined style={{ height: '14px', marginBottom: -3, marginLeft: -8 }}/>
+            </Tooltip>
           </Space>
           <Form.Item
             name='stickyClientSteeringEnabled'
