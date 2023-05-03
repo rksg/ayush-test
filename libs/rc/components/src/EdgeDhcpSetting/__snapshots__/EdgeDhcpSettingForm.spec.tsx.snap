@@ -936,9 +936,9 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                         </div>
                       </div>
                     </div>
+                    <div />
                   </div>
                 </div>
-                <div />
               </div>
             </div>
           </div>
@@ -1298,6 +1298,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                         </div>
                       </div>
                     </div>
+                    <div />
                   </div>
                 </div>
               </div>
@@ -1733,9 +1734,9 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                         </div>
                       </div>
                     </div>
+                    <div />
                   </div>
                 </div>
-                <div />
               </div>
             </div>
           </div>

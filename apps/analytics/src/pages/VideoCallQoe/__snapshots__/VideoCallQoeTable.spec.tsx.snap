@@ -769,6 +769,7 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
         </div>
       </div>
     </div>
+    <div />
   </div>
 </DocumentFragment>
 `;
@@ -1742,6 +1743,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
         </div>
       </div>
     </div>
+    <div />
   </div>
 </DocumentFragment>
 `;
