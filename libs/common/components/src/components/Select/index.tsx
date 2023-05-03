@@ -192,14 +192,6 @@ export function Select (props: CascaderProps) {
       })
       currentLabels?.push(placeholder)
     }
-    const filter = (inputValue: string, path: DefaultOptionType[]) => {
-      console.log(path.length, path)
-      const item = path.slice(-1)[0]
-      console.log('##### item displayLabel: ', item?.displayLabel)
-      return item.ignoreSelection // non-selection implies non-searchable
-        ? false
-        : (item?.displayLabel as string)?.toLowerCase().includes(inputValue.toLowerCase())
-    }
     return (
       <UI.Cascader
         {...antProps}
@@ -210,8 +202,7 @@ export function Select (props: CascaderProps) {
         dropdownRender={withFooter}
         expandTrigger='hover'
         maxTagCount='responsive'
-        showSearch={{ filter }}
-        onSearch={(value) => console.log(value)}
+        showSearch
         onDropdownVisibleChange={setOpen}
         open={open}
         getPopupContainer={(triggerNode) => triggerNode.parentNode}
