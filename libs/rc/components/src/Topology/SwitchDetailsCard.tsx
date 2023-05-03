@@ -1,13 +1,12 @@
 import { Badge, Button, Typography } from 'antd'
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { IncidentsBySeverityData, useIncidentsBySeverityQuery } from 'libs/analytics/components/src/IncidentBySeverity/services'
-import { useIntl }                                              from 'react-intl'
+import { useIntl }                   from 'react-intl'
 
-import { AnalyticsFilter }                             from '@acx-ui/analytics/utils'
-import { Card, Descriptions, Loader, StackedBarChart } from '@acx-ui/components'
-import { DateFormatEnum, formatter }                   from '@acx-ui/formatter'
-import { SwitchStatusEnum, SwitchViewModel }           from '@acx-ui/rc/utils'
-import { noDataDisplay, useDateFilter }                from '@acx-ui/utils'
+import { IncidentsBySeverityData, useIncidentsBySeverityQuery } from '@acx-ui/analytics/components'
+import { AnalyticsFilter }                                      from '@acx-ui/analytics/utils'
+import { Card, Descriptions, Loader, StackedBarChart }          from '@acx-ui/components'
+import { DateFormatEnum, formatter }                            from '@acx-ui/formatter'
+import { SwitchStatusEnum, SwitchViewModel }                    from '@acx-ui/rc/utils'
+import { noDataDisplay, useDateFilter }                         from '@acx-ui/utils'
 
 import { getDeviceColor, switchStatus } from './utils'
 

@@ -1,8 +1,7 @@
 import { Badge, Button, Divider, Typography } from 'antd'
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { IncidentsBySeverityData, useIncidentsBySeverityQuery } from 'libs/analytics/components/src/IncidentBySeverity/services'
-import { useIntl }                                              from 'react-intl'
+import { useIntl }                            from 'react-intl'
 
+import { IncidentsBySeverityData, useIncidentsBySeverityQuery }                                     from '@acx-ui/analytics/components'
 import { AnalyticsFilter }                                                                          from '@acx-ui/analytics/utils'
 import { Card, Descriptions, Loader, StackedBarChart, Subtitle }                                    from '@acx-ui/components'
 import { DateFormatEnum, formatter }                                                                from '@acx-ui/formatter'
