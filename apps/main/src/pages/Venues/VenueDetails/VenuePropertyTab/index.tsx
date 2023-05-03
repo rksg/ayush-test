@@ -229,12 +229,31 @@ export function VenuePropertyTab () {
         return activateCount > 0 && activateCount === selectedRows.length
       }),
       onClick: (items, clearSelection) => {
-        items.forEach(unit => {
-          updateUnitById({
-            params: { venueId, unitId: unit.id },
-            payload: { status: PropertyUnitStatus.DISABLED }
-          })
-            .then(clearSelection)
+        showActionModal({
+          type: 'confirm',
+          title: $t({
+            defaultMessage: `Suspend "{count, plural,
+            one {{entityValue}}
+            other {{count} {entityName}}
+            }"?` }, {
+            count: items.length,
+            entityValue: items[0].name,
+            entityName: $t({ defaultMessage: 'Unit' })
+          }),
+          content: $t({ defaultMessage: `Are you sure you want to suspend {count, plural,
+              one {this}
+              other {these}
+              } Unit?` }, { count: items.length }),
+          okText: $t({ defaultMessage: 'Suspend' }),
+          onOk () {
+            items.forEach(unit => {
+              updateUnitById({
+                params: { venueId, unitId: unit.id },
+                payload: { status: PropertyUnitStatus.DISABLED }
+              })
+                .then(clearSelection)
+            })
+          }
         })
       }
     },
