@@ -50,7 +50,7 @@ export const seriesSwitchStatusMapping = () => [
     name: transformSwitchStatus(SwitchStatusEnum.FIRMWARE_UPD_START).message
   },
   { key: SwitchStatusEnum.OPERATIONAL,
-    name: transformSwitchStatus(SwitchStatusEnum.OPERATIONAL).message
+    name: transformSwitchStatus(SwitchStatusEnum.OPERATIONAL, true, true).message
   },
   { key: SwitchStatusEnum.DISCONNECTED,
     name: transformSwitchStatus(SwitchStatusEnum.DISCONNECTED).message
