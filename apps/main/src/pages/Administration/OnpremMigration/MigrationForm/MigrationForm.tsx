@@ -7,13 +7,13 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
+// import {
+//   useAddZdMigrationMutation, useLazyMigrateResultQuery
+// } from '@acx-ui/rc/services'
 import {
-  FacilityEnum,
-  FlowLevelEnum,
-  PriorityEnum,
-  ProtocolEnum,
-  SyslogVenue,
-  SyslogContextType
+  // CommonResult,
+  // ImportErrorRes,
+  MigrationContextType
 } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -30,42 +30,40 @@ const MigrationForm = () => {
   const linkToMigration = useTenantLink('/administration/onpremMigration')
   const edit = false
 
+  const file = new Blob()
   const policyName = ''
   const server = ''
-  const port = 514
-  const protocol = ProtocolEnum.UDP
   const secondaryServer = ''
-  const secondaryPort = 514
-  const secondaryProtocol = ProtocolEnum.TCP
-  const facility = FacilityEnum.KEEP_ORIGINAL
-  const priority = PriorityEnum.INFO
-  const flowLevel = FlowLevelEnum.CLIENT_FLOW
-  const venues:SyslogVenue[] = []
   const [isFinish, setIsFinish] = useState(false)
   const [isMigrating, setIsMigrating] = useState(false)
 
-  const formRef = useRef<StepsFormInstance<SyslogContextType>>()
+  // const [ migrateZdCsv ] = useAddZdMigrationMutation()
+  // const [ migrateZdQuery ] = useLazyMigrateResultQuery()
+  // const [ migrateZdResult, setMigrateZdResult ] = useState<ImportErrorRes>({} as ImportErrorRes)
+  // const [isMigrationFinish, setIsMigrationFinish] = useState(false)
+
+  // useEffect(()=>{
+  //   console.log('migrate finish')
+  //   if (migrateZdResult?.fileErrorsCount) {
+  //     setIsMigrationFinish(true)
+  //   }
+  // },[migrateZdResult?.fileErrorsCount])
+
+  const formRef = useRef<StepsFormInstance<MigrationContextType>>()
   const [state, dispatch] = useReducer(mainReducer, {
+    file,
     policyName,
     server,
-    port,
-    protocol,
-    secondaryServer,
-    secondaryPort,
-    secondaryProtocol,
-    facility,
-    priority,
-    flowLevel,
-    venues
+    secondaryServer
   })
 
-  const waitTime = (time: number = 100) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(true)
-      }, time)
-    })
-  }
+  // const waitTime = (time: number = 100) => {
+  //   return new Promise((resolve) => {
+  //     setTimeout(() => {
+  //       resolve(true)
+  //     }, time)
+  //   })
+  // }
 
   return (
     <MigrationContext.Provider value={{ state, dispatch }}>
@@ -75,7 +73,7 @@ const MigrationForm = () => {
           { text: $t({ defaultMessage: 'Administration' }), link: '/administration' }
         ]}
       />
-      <StepsForm<SyslogContextType>
+      <StepsForm<MigrationContextType>
         formRef={formRef}
         editMode={edit}
         buttonLabel={{
@@ -91,7 +89,7 @@ const MigrationForm = () => {
         }}
         onCancel={() => navigate(linkToMigration)}
       >
-        <StepsForm.StepForm<SyslogContextType>
+        <StepsForm.StepForm<MigrationContextType>
           name='backupFile'
           title={$t({ defaultMessage: 'Backup File Selection' })}
           onFinish={async () => {
@@ -107,7 +105,20 @@ const MigrationForm = () => {
           title={$t({ defaultMessage: 'Migration' })}
           onFinish={async () => {
             setIsMigrating(true)
-            await waitTime(2000)
+            // await waitTime(2000)
+            // const file = state.file as File
+            // const newFormData = new FormData()
+            // newFormData.append('file', file, file.name)
+            // migrateZdCsv({ params: {}, payload: newFormData,
+            //   callback: async (res: CommonResult) => {
+            //     const result = await migrateZdQuery(
+            //       { payload: { requestId: res.requestId } }, true)
+            //       .unwrap()
+            //     setMigrateZdResult(result)
+            //     setIsMigrationFinish(true)
+            //   } }).unwrap()
+            // await waitTime(4000)
+
             return true
           }}
         >
@@ -117,12 +128,17 @@ const MigrationForm = () => {
           }
         </StepsForm.StepForm>
 
-        { !edit && <StepsForm.StepForm
+        <StepsForm.StepForm
           name='summary'
           title={$t({ defaultMessage: 'Summary' })}
         >
-          <div>Summary</div>
-        </StepsForm.StepForm> }
+          {
+            // isMigrationFinish
+            // ? <div>Summary { migrateZdResult?.fileErrorsCount }</div>
+            // : <MigrationStatusForm />
+          }
+          <MigrationStatusForm />
+        </StepsForm.StepForm>
       </StepsForm>
     </MigrationContext.Provider>
   )
