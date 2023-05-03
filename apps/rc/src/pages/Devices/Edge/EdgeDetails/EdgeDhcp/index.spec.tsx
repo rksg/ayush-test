@@ -105,7 +105,7 @@ describe('Edge DHCP', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
         }
       })
     const poolsTab = screen.getByRole('tab', { name: 'Pools' })
@@ -120,7 +120,7 @@ describe('Edge DHCP', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
         }
       })
     const leasesTab = await screen.findByRole('tab', { name: 'Leases ( 2 online )' })
@@ -136,13 +136,13 @@ describe('Edge DHCP', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
         }
       })
     await user.click(await screen.findByRole('tab', { name: 'Leases ( 2 online )' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       // eslint-disable-next-line max-len
-      pathname: `/t/${params.tenantId}/devices/edge/${params.serialNumber}/edge-details/dhcp/leases`,
+      pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/edge-details/dhcp/leases`,
       hash: '',
       search: ''
     })
@@ -157,7 +157,7 @@ describe('Edge DHCP', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
         }
       })
     const settingIcon = screen.getByTestId('setting-icon')
@@ -178,7 +178,7 @@ describe('Edge DHCP', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
         }
       })
     const dhcpSwitch = screen.getByRole('switch')

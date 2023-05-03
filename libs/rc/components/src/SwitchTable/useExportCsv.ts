@@ -11,6 +11,7 @@ export function useExportCsv<T> (
   const [ downloadCsv ] = useDownloadSwitchsCSVMutation()
 
   const payload = {
+    fields: tableQuery.payload?.fields,
     filters: _.omit(tableQuery?.payload?.filters as Filter, ['fromTime', 'toTime']),
     searchString: tableQuery.payload?.searchString as string,
     searchTargetFields: tableQuery.payload?.searchTargetFields as string[],

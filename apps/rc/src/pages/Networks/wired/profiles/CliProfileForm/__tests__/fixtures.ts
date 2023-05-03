@@ -3,7 +3,8 @@ export const venues = [{
   name: 'My-Venue',
   city: 'New York',
   country: 'United States',
-  switches: 5
+  switches: 5,
+  operationalSwitches: 5
 }, {
   id: 'ca211ea6e80b456d891556690ae9db1c',
   name: 'test-cli',

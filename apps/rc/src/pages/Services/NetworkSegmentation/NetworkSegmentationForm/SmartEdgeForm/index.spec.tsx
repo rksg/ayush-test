@@ -45,7 +45,7 @@ jest.mock('antd', () => {
 
 const mockedFinishFn = jest.fn()
 
-const createNsgPath = '/:tenantId/services/networkSegmentation/create'
+const createNsgPath = '/:tenantId/t/services/networkSegmentation/create'
 
 describe('SmartEdgeForm', () => {
   let params: { tenantId: string, serviceId: string }

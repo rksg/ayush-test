@@ -72,6 +72,7 @@ function useStepsFormNew <T> ({
       .finally(() => {
         clearTimeout(timeout)
         setLoading(false)
+        setSubmitting(false)
       })
   }
 
