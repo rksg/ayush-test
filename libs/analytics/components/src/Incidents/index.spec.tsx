@@ -92,7 +92,7 @@ describe('Incidents Page', () => {
     )
     fireEvent.click(await screen.findByText('Connection'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/analytics/incidents/tab/connection`,
+      pathname: `/${params.tenantId}/t/analytics/incidents/tab/connection`,
       hash: '',
       search: ''
     })

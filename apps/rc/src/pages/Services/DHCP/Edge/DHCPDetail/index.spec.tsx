@@ -11,7 +11,7 @@ import EdgeDHCPDetail from '.'
 
 describe('EdgeDhcpDetail', () => {
   let params: { tenantId: string, serviceId: string }
-  const detailPath = '/:tenantId/' + getServiceRoutePath({
+  const detailPath = '/:tenantId/t/' + getServiceRoutePath({
     type: ServiceType.EDGE_DHCP,
     oper: ServiceOperation.DETAIL
   })
