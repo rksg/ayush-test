@@ -1,8 +1,9 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 
-import { useIntl }                                                                                          from 'react-intl'
-import { useParams }                                                                                        from 'react-router-dom'
-import { SortableContainer, SortableElement, SortableHandle, SortableElementProps, SortableContainerProps } from 'react-sortable-hoc'
+import { DndProvider, useDrag, useDrop } from 'react-dnd'
+import { HTML5Backend }                  from 'react-dnd-html5-backend'
+import { useIntl }                       from 'react-intl'
+import { useParams }                     from 'react-router-dom'
 
 import { showActionModal, Table, TableProps }                      from '@acx-ui/components'
 import { Drag }                                                    from '@acx-ui/icons'
@@ -20,6 +21,10 @@ type RuleTableProps = {
   edit: boolean
 }
 
+type DragItemProps = {
+  id: number
+}
+
 const RuleTable = (props: RuleTableProps) => {
   const { $t } = useIntl()
   const { edit } = props
@@ -32,10 +37,6 @@ const RuleTable = (props: RuleTableProps) => {
   const [ruleName, setRuleName] = useState('')
   const [visibleAdd, setVisibleAdd] = useState(false)
   const [visibleEdit, setVisibleEdit] = useState(false)
-
-  const DragHandle = SortableHandle(() =>
-    <Drag style={{ cursor: 'grab', color: '#6e6e6e' }} />
-  )
 
   const basicColumns: TableProps<RogueAPRule>['columns'] = [
     {
@@ -67,7 +68,7 @@ const RuleTable = (props: RuleTableProps) => {
       width: 60,
       render: (data, row) => {
         return <div data-testid={`${row.name}_Icon`} style={{ textAlign: 'center' }}>
-          <DragHandle/>
+          <Drag style={{ cursor: 'grab', color: '#6e6e6e' }} />
         </div>
       }
     }
@@ -104,31 +105,56 @@ const RuleTable = (props: RuleTableProps) => {
   }]
 
   // @ts-ignore
-  const SortableItem = SortableElement((props: SortableElementProps) => <tr {...props} />)
-  // @ts-ignore
-  const SortContainer = SortableContainer((props: SortableContainerProps) => <tbody {...props} />)
+  const DraggableRow = (props) => {
+    const ref = useRef(null)
+    const { className, onClick, ...restProps } = props
 
-  const DraggableContainer = (props: SortableContainerProps) => {
-    return <SortContainer
-      useDragHandle
-      disableAutoscroll
-      onSortEnd={({ oldIndex, newIndex }: { oldIndex: number; newIndex: number }) => {
-        dispatch({
-          type: RogueAPDetectionActionTypes.DRAG_AND_DROP,
-          payload: {
-            oldIndex, newIndex
-          }
-        })
-      }}
-      {...props}
-    />
-  }
+    const [, drag] = useDrag(() => ({
+      type: 'DraggableRow',
+      item: {
+        id: props['data-row-key']
+      },
+      collect: monitor => ({
+        isDragging: monitor.isDragging()
+      })
+    }))
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const DraggableBodyRow = (props: any) => {
-    const { className, style, ...restProps } = props
-    const index = state.rules.findIndex((x) => x.name === restProps['data-row-key'])
-    return <SortableItem index={index} {...restProps} />
+    const [{ isOver }, drop] = useDrop({
+      accept: 'DraggableRow',
+      drop: (item: DragItemProps) => {
+        // @ts-ignore
+        const hoverIdx = Number(ref.current.getAttribute('data-row-key'))
+        const idx = item.id ?? -1
+        if (idx && idx !== hoverIdx) {
+          dispatch({
+            type: RogueAPDetectionActionTypes.DRAG_AND_DROP,
+            payload: {
+              oldIndex: idx - 1, newIndex: hoverIdx - 1
+            }
+          })
+        }
+      },
+      collect: (monitor) => ({
+        isOver: monitor.isOver()
+      })
+    })
+
+    drag(drop(ref))
+
+    return (
+      <tr
+        ref={ref}
+        className={className}
+        onClick={onClick}
+        {...restProps}
+        style={isOver ? {
+          backgroundColor: 'var(--acx-accents-blue-10)',
+          borderColor: 'var(--acx-accents-blue-10)'
+        } : {}}
+      >
+        {props.children}
+      </tr>
+    )
   }
 
   const editAction = (rows: RogueAPRule[], clearSelection: () => void) => {
@@ -185,20 +211,21 @@ const RuleTable = (props: RuleTableProps) => {
         isEditMode={true}
         queryRuleName={ruleName}
       />
-      <Table
-        columns={basicColumns}
-        dataSource={state.rules}
-        rowKey='name'
-        actions={filterByAccess(actions)}
-        rowActions={filterByAccess(rowActions)}
-        rowSelection={{ type: 'checkbox' }}
-        components={{
-          body: {
-            wrapper: DraggableContainer,
-            row: DraggableBodyRow
-          }
-        }}
-      />
+      <DndProvider backend={HTML5Backend} >
+        <Table
+          columns={basicColumns}
+          dataSource={state.rules}
+          rowKey='priority'
+          actions={filterByAccess(actions)}
+          rowActions={filterByAccess(rowActions)}
+          rowSelection={{ type: 'checkbox' }}
+          components={{
+            body: {
+              row: DraggableRow
+            }
+          }}
+        />
+      </DndProvider>
     </>
   )
 }
