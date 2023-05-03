@@ -71,10 +71,10 @@ describe('MdnsProxyForm', () => {
     tenantId: mockedTenantId
   }
   // eslint-disable-next-line max-len
-  const createPath = '/:tenantId/' + getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.CREATE })
+  const createPath = '/:tenantId/t/' + getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.CREATE })
 
   // eslint-disable-next-line max-len
-  const editPath = '/:tenantId/' + getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.EDIT })
+  const editPath = '/:tenantId/t/' + getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.EDIT })
 
   beforeEach(async () => {
     mockServer.use(

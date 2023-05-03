@@ -40,7 +40,7 @@ describe( 'NetworkSegAuthForm', () => {
     render(
       <Provider>
         <NetworkSegAuthForm />
-      </Provider>, { route: { params, path: '/:tenantId/services/webAuth/add' } }
+      </Provider>, { route: { params, path: '/:tenantId/t/services/webAuth/add' } }
     )
 
     expect(await screen.findByRole('heading', { level: 1 }))
@@ -57,7 +57,7 @@ describe( 'NetworkSegAuthForm', () => {
     render(
       <Provider>
         <NetworkSegAuthForm editMode={true} />
-      </Provider>, { route: { params, path: '/:tenantId/services/webAuth/:serviceId/edit' } }
+      </Provider>, { route: { params, path: '/:tenantId/t/services/webAuth/:serviceId/edit' } }
     )
 
     expect(await screen.findByRole('heading', { level: 1 }))

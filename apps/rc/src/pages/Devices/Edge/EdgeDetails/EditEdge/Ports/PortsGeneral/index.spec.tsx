@@ -59,7 +59,7 @@ describe('EditEdge ports - ports general', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
     await screen.findByRole('radio', { name: 'Port 1' })
@@ -77,7 +77,7 @@ describe('EditEdge ports - ports general', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
     const ipInput = await screen.findByRole('textbox', { name: 'IP Address' })
@@ -97,7 +97,7 @@ describe('EditEdge ports - ports general', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
     const ipInput = await screen.findByRole('textbox', { name: 'IP Address' })
@@ -120,7 +120,7 @@ describe('EditEdge ports - ports general', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
     await user.click(await screen.findByRole('switch', { name: 'Port Enabled' }))
@@ -143,12 +143,12 @@ describe('EditEdge ports - ports general', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
     await user.click(screen.getByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/devices/edge/list`,
+      pathname: `/${params.tenantId}/t/devices/edge/list`,
       hash: '',
       search: ''
     })
@@ -162,7 +162,7 @@ describe('EditEdge ports - ports general', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
     await user.click(await screen.findByRole('radio', { name: 'Port 5' }))
@@ -181,7 +181,7 @@ describe('EditEdge ports - ports general', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
     await user.click(await screen.findByRole('combobox', { name: 'Port Type' }))
@@ -198,7 +198,7 @@ describe('EditEdge ports - ports general', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
     await user.click(await screen.findByRole('radio', { name: 'Port 2' }))
@@ -220,7 +220,7 @@ describe('EditEdge ports - ports general', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
     await user.click(await screen.findByRole('radio', { name: 'Port 2' }))
@@ -240,7 +240,7 @@ describe('EditEdge ports - ports general', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
     expect(screen.getByText('No data to display')).toBeVisible()
@@ -277,7 +277,7 @@ describe('EditEdge ports - ports general  api fail', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
     const ipInput = await screen.findByRole('textbox', { name: 'IP Address' })

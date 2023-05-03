@@ -301,7 +301,7 @@ exports[`TopologyFloorPlanWidget should render floorplan topology widget under A
                   class="ant-empty-footer"
                 >
                   <a
-                    href="/t/undefined/venues/7231da344778480d88f37f0cca1c534f/venue-details/overview"
+                    href="/undefined/t/venues/7231da344778480d88f37f0cca1c534f/venue-details/overview"
                   >
                     Go to floor plans to place the Access Point
                   </a>
@@ -507,7 +507,7 @@ exports[`TopologyFloorPlanWidget should render floorplan topology widget under S
                   class="ant-empty-footer"
                 >
                   <a
-                    href="/t/undefined/venues/7231da344778480d88f37f0cca1c534f/venue-details/overview"
+                    href="/undefined/t/venues/7231da344778480d88f37f0cca1c534f/venue-details/overview"
                   >
                     Go to floor plans to place the Switch
                   </a>
