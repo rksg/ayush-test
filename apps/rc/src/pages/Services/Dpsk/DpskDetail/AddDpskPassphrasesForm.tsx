@@ -105,7 +105,7 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
   }, [])
 
   return (
-    <Form layout='vertical' form={form}>
+    <Form layout='vertical' form={form} validateTrigger={'onKeyUp'}>
       <Form.Item name='id' noStyle>
         <Input type='hidden' />
       </Form.Item>

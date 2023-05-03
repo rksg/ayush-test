@@ -102,7 +102,7 @@ export function RadiusAttributeGroupSelectDrawer (props: RadiusAttributeDrawerPr
   )
 
   const content = (
-    <Form form={form} onFinish={onSubmit}>
+    <Form form={form} onFinish={onSubmit} validateTrigger={'onKeyUp'}>
       <Form.Item name='attributeId'
         rules={[
           {

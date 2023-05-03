@@ -47,6 +47,7 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
 
   const content = <Form layout='vertical'
     form={form}
+    validateTrigger={'onKeyUp'}
   >
     <Form.Item
       name='userName'

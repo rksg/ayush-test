@@ -112,7 +112,8 @@ export function DhcpOptionModal (props: {
       <Form layout='horizontal'
         labelCol={{ span: 6 }}
         form={form}
-        onFinish={props.onSave}>
+        onFinish={props.onSave}
+        validateTrigger={'onKeyUp'}>
         <Form.Item name='seq'
           label={$t({ defaultMessage: 'DHCP Option' })}
           rules={[{ required: true }]}

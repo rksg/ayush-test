@@ -48,7 +48,11 @@ export const SelectDhcpPoolDrawer = (props: SelectDhcpPoolDrawerProps) => {
     setVisible(false)
   }
 
-  const drawerContent = <Form layout='vertical' form={formRef} onFinish={handleFinish}>
+  const drawerContent = <Form
+    layout='vertical'
+    form={formRef}
+    onFinish={handleFinish}
+    validateTrigger={'onKeyUp'}>
     <Row justify='end'>
       <Col>
         <Button

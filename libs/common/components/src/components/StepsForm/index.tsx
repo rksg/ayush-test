@@ -183,7 +183,7 @@ function StepForm <FormValue = any> (
   return <ProAntStepsForm.StepForm<FormValue>
     {...formProps}
     requiredMark={true}
-    validateTrigger={'onBlur'}
+    validateTrigger={['onBlur', 'onKeyUp']}
   >{props.children}
   </ProAntStepsForm.StepForm>
 }

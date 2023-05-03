@@ -85,7 +85,11 @@ const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
     handleClose()
   }
 
-  const drawerContent = <Form layout='vertical' form={formRef} onFinish={handleFinish}>
+  const drawerContent = <Form
+    layout='vertical'
+    form={formRef}
+    onFinish={handleFinish}
+    validateTrigger={['onKeyUp']}>
     <Form.Item
       name='portType'
       initialValue={EdgePortTypeEnum.LAN}

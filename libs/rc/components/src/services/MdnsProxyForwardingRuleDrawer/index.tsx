@@ -124,7 +124,8 @@ function ForwardingRuleForm (props: ForwardingRuleFormProps) {
       onFinish={(data: MdnsProxyForwardingRule) => {
         setRule(data)
         form.resetFields()
-      }}>
+      }}
+      validateTrigger={'onKeyUp'}>
       <Form.Item name='id' noStyle>
         <Input type='hidden' />
       </Form.Item>

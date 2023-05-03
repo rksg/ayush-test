@@ -51,7 +51,7 @@ export function IpAddressDrawer (props: IpAddressDrawerProps) {
     return Promise.resolve()
   }
 
-  const content = <Form layout='vertical' form={form}>
+  const content = <Form layout='vertical' form={form} validateTrigger={'onKeyUp'}>
     <Form.Item
       name='singleIpAddress'
       label={$t({ defaultMessage: 'IP Address' })}

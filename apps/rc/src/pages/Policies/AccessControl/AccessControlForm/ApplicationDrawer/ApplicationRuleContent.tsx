@@ -286,7 +286,7 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
     </Select>
   )
 
-  const ruleContent = <Form layout='horizontal' form={drawerForm}>
+  const ruleContent = <Form layout='horizontal' form={drawerForm} validateTrigger={'onKeyUp'}>
     <DrawerFormItem
       name='ruleName'
       label={$t({ defaultMessage: 'Rule Name' })}

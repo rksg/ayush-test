@@ -545,7 +545,12 @@ export function AddGuestDrawer (props: AddGuestProps) {
       visible={visible}
       onClose={onClose}
       children={
-        <Form layout='vertical' form={form} onFinish={onSave} data-testid='guest-form'>
+        <Form
+          layout='vertical'
+          form={form}
+          onFinish={onSave}
+          data-testid='guest-form'
+          validateTrigger={'onKeyUp'}>
           <GuestFields />
         </Form>
       }

@@ -248,7 +248,7 @@ const genDeleteModal = (
   const confirmText = 'Delete'
   let resetType = 'cloud'
 
-  const content = (<Form layout='vertical'>
+  const content = (<Form layout='vertical' validateTrigger={'onKeyUp'}>
     <Form.Item>{$t({
       defaultMessage: `Are you sure you want to delete {count, plural,
         one {this AP}

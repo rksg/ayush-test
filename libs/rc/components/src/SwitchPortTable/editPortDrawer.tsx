@@ -712,7 +712,7 @@ export function EditPortDrawer ({
       isLoading: loading,
       isFetching: isPortsSettingUpdating
     }]}>
-      <Form layout='vertical'>
+      <Form layout='vertical' validateTrigger={'onKeyUp'}>
         <Form.Item
           label={$t({ defaultMessage: 'Selected Port' })}
           children={

@@ -111,6 +111,7 @@ function AddNewClientForm (props: AddNewClientFormProps) {
     <Form layout='vertical'
       form={form}
       preserve={false}
+      validateTrigger={'onKeyUp'}
     >
       <Form.Item
         label={$t({ defaultMessage: 'MAC Address' })}

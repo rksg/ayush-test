@@ -175,7 +175,7 @@ const RogueAPDetectionDrawer = (props: RogueAPDetectionDrawerProps) => {
     </Select>
   )
 
-  const content = <Form layout='vertical' form={drawerForm}>
+  const content = <Form layout='vertical' form={drawerForm} validateTrigger={'onKeyUp'}>
     <Form.Item
       name='ruleName'
       label={$t({ defaultMessage: 'Rule Name' })}

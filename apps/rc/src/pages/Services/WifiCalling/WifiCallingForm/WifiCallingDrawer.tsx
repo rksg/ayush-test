@@ -39,6 +39,7 @@ const WifiCallingDrawer = (props: WifiCallingDrawerProps) => {
 
   const content = <Form layout='vertical'
     form={form}
+    validateTrigger={'onKeyUp'}
   >
     <Form.Item
       name='domain'

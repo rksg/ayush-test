@@ -412,7 +412,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
   }
 
   const content = <>
-    <Form layout='horizontal' form={contentForm}>
+    <Form layout='horizontal' form={contentForm} validateTrigger={'onKeyUp'}>
       <DrawerFormItem
         name={'policyName'}
         label={$t({ defaultMessage: 'Policy Name:' })}

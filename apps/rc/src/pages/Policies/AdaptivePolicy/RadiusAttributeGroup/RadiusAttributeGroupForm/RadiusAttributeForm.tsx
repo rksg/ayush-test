@@ -91,7 +91,7 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
 
   return (
     <Loader states={[{ isLoading: radiusAttributeVendorListQuery.isLoading }]}>
-      <Form layout='vertical' form={form}>
+      <Form layout='vertical' form={form} validateTrigger={'onKeyUp'}>
         <Form.Item name='id' hidden children={<Input />}/>
         <Form.Item name='attributeName'
           label={$t({ defaultMessage: 'Attribute Type' })}

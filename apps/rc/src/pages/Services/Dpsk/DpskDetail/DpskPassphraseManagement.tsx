@@ -403,7 +403,7 @@ function RevokeForm (props: {
   })
 
   return (
-    <Form form={form} layout='horizontal'>
+    <Form form={form} layout='horizontal' validateTrigger={'onKeyUp'}>
       <Form.Item
         name='reason'
         label={$t({ defaultMessage: 'Type the reason to revoke' })}
