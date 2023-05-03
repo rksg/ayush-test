@@ -47,9 +47,9 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 
 describe('RadiusAttributeGroupForm', () => {
   // eslint-disable-next-line max-len
-  const createPath = '/:tenantId/' + getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.CREATE })
+  const createPath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.CREATE })
   // eslint-disable-next-line max-len
-  const editPath = '/:tenantId/' + getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.EDIT })
+  const editPath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.EDIT })
 
   beforeEach(async () => {
     mockServer.use(

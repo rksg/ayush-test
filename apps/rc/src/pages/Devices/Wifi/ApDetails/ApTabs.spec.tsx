@@ -39,7 +39,7 @@ describe('ApTabs', () => {
     await waitFor(() => screen.findByText('Networks (2)'))
     fireEvent.click(await screen.findByText('Networks (2)'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/devices/wifi/${params.serialNumber}/details/networks`,
+      pathname: `/${params.tenantId}/t/devices/wifi/${params.serialNumber}/details/networks`,
       hash: '',
       search: ''
     })
@@ -53,7 +53,7 @@ describe('ApTabs', () => {
     fireEvent.click(await screen.findByText(/Troubleshooting/))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname:
-        `/t/${params.tenantId}/devices/wifi/${params.serialNumber}/details/troubleshooting/ping`,
+        `/${params.tenantId}/t/devices/wifi/${params.serialNumber}/details/troubleshooting/ping`,
       hash: '',
       search: ''
     })

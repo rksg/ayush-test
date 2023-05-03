@@ -36,7 +36,7 @@ function TestUserProfile () {
   </>
 }
 
-const route = { path: '/t/:tenantId', params: { tenantId } }
+const route = { path: '/:tenantId/t', params: { tenantId } }
 
 describe('UserProfileContext', () => {
   const wrapper = (props: { children: React.ReactNode }) => (

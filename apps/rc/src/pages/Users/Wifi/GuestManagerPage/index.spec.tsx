@@ -30,7 +30,7 @@ describe('GuestManagerPage', () => {
       <Provider>
         <GuestManagerPage />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/guestsManager' }
+        route: { params, path: '/:tenantId/t/users/guestsManager' }
       })
 
     expect(await screen.findByTestId('rc-GuestsTable')).toBeVisible()

@@ -1612,7 +1612,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 class="ant-table-cell"
                               >
                                 <a
-                                  href="/t/tenant-id/serviceValidation/videoCallQoe/57"
+                                  href="/tenant-id/t/serviceValidation/videoCallQoe/57"
                                 >
                                   Asraf - Test1
                                 </a>
@@ -1685,7 +1685,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 class="ant-table-cell"
                               >
                                 <a
-                                  href="/t/tenant-id/serviceValidation/videoCallQoe/13"
+                                  href="/tenant-id/t/serviceValidation/videoCallQoe/13"
                                 >
                                   ACX_test
                                 </a>
