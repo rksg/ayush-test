@@ -1,25 +1,30 @@
 
+import { useState } from 'react'
+
 import { SortOrder }          from 'antd/lib/table/interface'
 import { startCase, toLower } from 'lodash'
 import { useIntl }            from 'react-intl'
 import { defineMessage }      from 'react-intl'
 
-import { defaultSort, dateSort, sortProp }       from '@acx-ui/analytics/utils'
-import { Table, TableProps, Tooltip, TrendPill } from '@acx-ui/components'
-import { Loader }                                from '@acx-ui/components'
-import { DateFormatEnum, formatter }             from '@acx-ui/formatter'
-import { TenantLink }                            from '@acx-ui/react-router-dom'
-import { TABLE_DEFAULT_PAGE_SIZE }               from '@acx-ui/utils'
+import { defaultSort, dateSort, sortProp }               from '@acx-ui/analytics/utils'
+import { Button, Table, TableProps, Tooltip, TrendPill } from '@acx-ui/components'
+import { Loader }                                        from '@acx-ui/components'
+import { DateFormatEnum, formatter }                     from '@acx-ui/formatter'
+import { TenantLink }                                    from '@acx-ui/react-router-dom'
+import { TABLE_DEFAULT_PAGE_SIZE }                       from '@acx-ui/utils'
 
 import { useVideoCallQoeTestsQuery } from '../VideoCallQoe/services'
 
-import * as MeetingType   from './constants'
-import { messageMapping } from './contents'
-import * as UI            from './styledComponents'
-import { Meeting }        from './types'
+import * as MeetingType         from './constants'
+import { messageMapping }       from './contents'
+import * as UI                  from './styledComponents'
+import { TestDetailsDrawer }    from './TestDetailsDrawer'
+import { Meeting, TestDetails } from './types'
 
 export function VideoCallQoeTable () {
   const { $t } = useIntl()
+  const [visible, setVisible] = useState(false)
+  const [testDetails, setTestDetails] = useState<TestDetails>({ name: '', link: '' })
   const queryResults = useVideoCallQoeTestsQuery({})
   const allCallQoeTests = queryResults.data?.getAllCallQoeTests
   const meetingList: Meeting[] = []
@@ -46,15 +51,25 @@ export function VideoCallQoeTable () {
       render: (value: unknown, row: unknown) => {
         const formattedStatus = startCase(toLower((row as Meeting).status as string))
         const meetingId = (row as Meeting).id
-        // TODO implement url text based on Ended or Not Started Call
         const urlTxt = [MeetingType.ENDED, MeetingType.NOT_STARTED]
           .includes(formattedStatus) ? `${meetingId}` : `${meetingId}`
-        return [MeetingType.ENDED, MeetingType.NOT_STARTED, MeetingType.STARTED]
+        return [MeetingType.ENDED]
           .includes(formattedStatus) ?
           <TenantLink to={`/serviceValidation/videoCallQoe/${urlTxt}`}>
             {value as string}
           </TenantLink>
-          : value as string
+          : [MeetingType.NOT_STARTED, MeetingType.STARTED].includes(formattedStatus)?
+            <Button
+              type='link'
+              onClick={()=>{
+                setVisible(true)
+                setTestDetails({ name: value as string, link: (row as Meeting).joinUrl })
+              }
+              }
+            >
+              {value as string}
+            </Button>
+            : value as string
       },
       sorter: { compare: sortProp('name', defaultSort) }
     },
@@ -142,6 +157,7 @@ export function VideoCallQoeTable () {
           defaultPageSize: TABLE_DEFAULT_PAGE_SIZE
         }}
       />
+      <TestDetailsDrawer visible={visible} setVisible={setVisible} testDetails={testDetails}/>
     </Loader>
   )
 }

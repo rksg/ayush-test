@@ -32,7 +32,6 @@ TestName.FieldSummary = function TestNameFieldSummary () {
   const { $t } = useIntl()
 
   return <Form.Item
-    style={{ padding: -5 }}
     name={name}
     label={$t(label)}
     children={<StepsFormNew.FieldSummary />}
