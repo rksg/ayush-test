@@ -237,7 +237,7 @@ export function LoadBalancing () {
             {$t({ defaultMessage: 'Sticky Client Steering' })}
             {stickyClientSteeringInfoMessage &&
               <Tooltip title={$t(stickyClientSteeringInfoMessage)} placement='bottom'>
-                <QuestionMarkCircleOutlined style={{ height: '14px', marginBottom: -3 }}/>
+                <QuestionMarkCircleOutlined style={{ height: '14px', marginBottom: -3, marginLeft: -8 }}/>
               </Tooltip>
             }
           </Space>
