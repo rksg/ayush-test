@@ -28,7 +28,8 @@ export function SwitchDetailsCard (props: {
     selectFromResult: ({ data, ...rest }) => ({
       data: { ...data } as IncidentsBySeverityData,
       ...rest
-    })
+    }),
+    skip: !switchDetail?.switchMac || !switchDetail?.venueId
   })
 
   const totalIncidents = incidentData?.data.P1
