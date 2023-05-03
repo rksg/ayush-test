@@ -10,7 +10,7 @@ describe('AdaptivePolicyList', () =>{
   const params = { tenantId: '_tenantId_' }
 
   it('should render correctly', async () => {
-    const policiesPath = '/t/' + params.tenantId + getPolicyListRoutePath(true)
+    const policiesPath = `/${params.tenantId}/t${getPolicyListRoutePath(true)}`
 
     render(<Provider><AdaptivePolicyList tabKey={AdaptivePolicyTabKey.ADAPTIVE_POLICY}/></Provider>,
       { route: { params } })
