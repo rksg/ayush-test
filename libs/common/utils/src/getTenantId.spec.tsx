@@ -8,16 +8,16 @@ const getWrapper = (initialEntries: string, appendedPath: string = '') =>
   ({ children }: { children: React.ReactElement }) => (
     <MemoryRouter initialEntries={[initialEntries]}>
       <Routes>
-        <Route path={`/t/:tenantId${'/' + appendedPath}`} element={children} />
-        <Route path={`/v/:tenantId${'/' + appendedPath}`} element={children} />
+        <Route path={`/:tenantId/t${'/' + appendedPath}`} element={children} />
+        <Route path={`/:tenantId/v${'/' + appendedPath}`} element={children} />
         <Route path='*' element={children} />
       </Routes>
     </MemoryRouter>
   )
 
 describe('useTenantId', () => {
-  const tenantId = 'tenant-id'
-  const initPath = `/t/${tenantId}`
+  const tenantId = '8b9e8338c81d404e986c1d651ca7fed0'
+  const initPath = `/${tenantId}/t`
 
   beforeEach(() => {
     Object.defineProperty(window, 'location', {
@@ -29,7 +29,7 @@ describe('useTenantId', () => {
     })})
 
   it('return URL tenantId by window.location', () => {
-    expect(getTenantId()).toEqual('tenant-id')
+    expect(getTenantId()).toEqual(tenantId)
   })
 
   it('tenant type t', () => {
@@ -37,7 +37,7 @@ describe('useTenantId', () => {
       () => useTenantId(),
       { wrapper: getWrapper(initPath) }
     )
-    expect(result.current).toEqual('tenant-id')
+    expect(result.current).toEqual(tenantId)
   })
 
   it('other path', () => {
@@ -46,21 +46,12 @@ describe('useTenantId', () => {
       { wrapper: getWrapper(initPath, '/another/path') }
     )
 
-    expect(result.current).toEqual('tenant-id')
-  })
-
-  it('path does not prefix with /t or /v', () => {
-    const { result } = renderHook(
-      () => useTenantId(),
-      { wrapper: getWrapper(`/r/${tenantId}`) }
-    )
-
-    expect(result.current).toEqual(undefined)
+    expect(result.current).toEqual('8b9e8338c81d404e986c1d651ca7fed0')
   })
 })
 
 describe('tenant type v', () => {
-  const initPath = '/v/v-tenant'
+  const initPath = '/8b9e8338c81d404e986c1d651ca7fed0/v'
   const { location } = window
 
   beforeEach(() => {
@@ -74,7 +65,7 @@ describe('tenant type v', () => {
   })
 
   it('return URL tenantId by window.location', () => {
-    expect(getTenantId()).toEqual('v-tenant')
+    expect(getTenantId()).toEqual('8b9e8338c81d404e986c1d651ca7fed0')
   })
 
   it('tenant type v', () => {
@@ -82,7 +73,7 @@ describe('tenant type v', () => {
       () => useTenantId(),
       { wrapper: getWrapper(initPath) }
     )
-    expect(result.current).toEqual('v-tenant')
+    expect(result.current).toEqual('8b9e8338c81d404e986c1d651ca7fed0')
   })
 
   it('other path', () => {
@@ -91,34 +82,28 @@ describe('tenant type v', () => {
       { wrapper: getWrapper(initPath, '/another/path') }
     )
 
-    expect(result.current).toEqual('v-tenant')
+    expect(result.current).toEqual('8b9e8338c81d404e986c1d651ca7fed0')
   })
 })
 
 describe('other path', () => {
-  const initPath = '/someType/others-tenant'
-  const { location } = window
+  const tenantId = '8b9e8338c81d404e986c1d651ca7fed0'
+  const data = [
+    { path: '', tenantId: undefined },
+    { path: '/', tenantId: undefined },
+    { path: `/api/ui-beta/t/${tenantId}`, tenantId },
+    { path: `/t/${tenantId}`, tenantId },
+    { path: `/v/${tenantId}`, tenantId },
+    { path: `/api/ui-beta/v/${tenantId}`, tenantId },
+    { path: `/${tenantId}/t`, tenantId },
+    { path: `/${tenantId}/t/`, tenantId },
+    { path: `/${tenantId}/v`, tenantId },
+    { path: `/${tenantId}/v/`, tenantId },
+    { path: `/${tenantId}/t/other-path`, tenantId },
+    { path: `/${tenantId}/v/other/path`, tenantId }
+  ]
 
-  beforeEach(() => {
-    Object.defineProperty(window, 'location', {
-      writable: true,
-      value: {
-        ...location,
-        pathname: initPath
-      }
-    })
-  })
-
-  it('return URL tenantId by window.location', () => {
-    expect(getTenantId()).toEqual(undefined)
-  })
-
-  it('other path', () => {
-    const { result } = renderHook(
-      () => useTenantId(),
-      { wrapper: getWrapper(initPath, '/another/path') }
-    )
-
-    expect(result.current).toEqual(undefined)
+  it('should return correct tenant id', () => {
+    data.forEach(({ path, tenantId }) => expect(getTenantId(path)).toEqual(tenantId))
   })
 })
