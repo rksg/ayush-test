@@ -3,8 +3,8 @@ import '@testing-library/jest-dom'
 import { store, Provider ,videoCallQoeURL }                                  from '@acx-ui/store'
 import { act, mockGraphqlMutation,  mockGraphqlQuery,  renderHook, waitFor } from '@acx-ui/test-utils'
 
-import { createTestResponse, deleteTestResponse, callQoeTestDetailsFixtures1 } from './__tests__/fixtures'
-import { api, useCreateCallQoeTestMutation, useDeleteCallQoeTestMutation }     from './services'
+import { createTestResponse, deleteTestResponse, callQoeTestDetailsFixtures1 }                                  from './__tests__/fixtures'
+import { api, useCreateCallQoeTestMutation, useDeleteCallQoeTestMutation, useUpdateCallQoeParticipantMutation } from './services'
 
 describe('videoCallQoeApi', () => {
   const expectedResponse = {
@@ -89,6 +89,18 @@ describe('videoCallQoeApi', () => {
     })
     await waitFor(() => expect(result.current[1].isSuccess).toBe(true))
     expect(result.current[1].data).toEqual(true)
+  })
+
+  it('updateCallQoeParticipant api should update the participant mac address', async () => {
+    mockGraphqlMutation(videoCallQoeURL, 'UpdateCallQoeParticipant',
+      { data: { updateCallQoeParticipant: 1 } })
+    const { result } = renderHook(() => useUpdateCallQoeParticipantMutation(),
+      { wrapper: Provider })
+    act(() => {
+      result.current[0]({ participantId: 1, macAddr: 'some-mac' })
+    })
+    await waitFor(() => expect(result.current[1].isSuccess).toBe(true))
+    expect(result.current[1].data).toBe(1)
   })
 
 })

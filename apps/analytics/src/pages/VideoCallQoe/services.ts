@@ -171,7 +171,6 @@ export const api = videoCallQoeApi.injectEndpoints({
           updateCallQoeParticipant(id: $participantId, macAddress: $macAddr)
         }`
       }),
-      invalidatesTags: [{ type: 'VideoCallQoe', id: 'LIST' }],
       transformResponse: (response: { updateCallQoeParticipant : number }) =>
         response.updateCallQoeParticipant
     })
