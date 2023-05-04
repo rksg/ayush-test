@@ -200,7 +200,16 @@ export const formats = {
   numberWithCommas: (number: number) =>
     number?.toLocaleString('en-US', { maximumFractionDigits: 0 }),
   fpsFormat: (value: number) => `${value} fps`,
-  percent: (value: number) => `${value} %`
+  percent: (value: number) => `${value} %`,
+  concatTxAndRxFormat: (detail: {
+    tx: number | null,
+    rx: number | null,
+    total: number | null,
+  }) => {
+    return `${numberFormat(1024, bytes, detail.total ?? 0)}\
+     (Tx: ${numberFormat(1024, bytes, detail.tx ?? 0)},\
+      Rx: ${numberFormat(1024, bytes, detail.rx ?? 0)})`
+  }
 } as const
 
 const enabledFormat: MessageDescriptor = defineMessage({
