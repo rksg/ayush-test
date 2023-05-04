@@ -46,11 +46,7 @@ function MuteIncident ({ incident } : { incident: Incident }) {
         />
         <p>
           {/* eslint-disable max-len */}
-          {$t({ defaultMessage: 'While this incident is muted, it will be hidden in the UI. You can unmute this incident via setting icon in the' })}
-        &nbsp;
-          <TenantLink to='/analytics/incidents'>
-            {$t({ defaultMessage: 'incidents table' })}
-          </TenantLink>
+          {$t({ defaultMessage: 'While this incident is muted, it will be hidden in the UI. You can unmute this incident via setting icon in the {link}' }, { link: <TenantLink to='/analytics/incidents'>{$t({ defaultMessage: 'incidents table' })}</TenantLink> })}
           {/* eslint-enable max-len */}
         </p>
       </UI.MuteIncidentContainer>
