@@ -1,68 +1,63 @@
-import { useIntl } from 'react-intl'
-import AutoSizer   from 'react-virtualized-auto-sizer'
+import { defineMessage, useIntl } from 'react-intl'
+import AutoSizer                  from 'react-virtualized-auto-sizer'
 
-import type { DonutChartData }                         from '@acx-ui/components'
-import {
-  cssStr, DonutChart, HistoricalCard, Loader, NoData
-} from '@acx-ui/components'
-import { EdgePortStatus } from '@acx-ui/rc/utils'
+import { qualitativeColorSet }                                        from '@acx-ui/components'
+import { DonutChart, HistoricalCard, Loader, NoData, DonutChartData } from '@acx-ui/components'
+import { formatter }                                                  from '@acx-ui/formatter'
+import { EdgeStatus }                                                 from '@acx-ui/rc/utils'
 
-type ReduceReturnType = Record<string, number>
-const getChartData = (ports: EdgePortStatus[]): DonutChartData[] => {
-  // TODOs: generate series mapping data dynamically by the responsed data.
+import { EdgePortsByTrafficWidgetMockData } from './__test__/fixture'
 
-  //
-  const seriesMapping = [
-    { key: 'Enabled',
-      name: 'Up',
-      color: cssStr('--acx-semantics-green-50') },
-    { key: 'Disabled',
-      name: 'Down',
-      color: cssStr('--acx-accents-orange-30') }
-  ] as Array<{ key: string, name: string, color: string }>
+const getChartData = (edgeStatus: EdgeStatus | undefined): DonutChartData[] => {
+
   const chartData: DonutChartData[] = []
 
-  if (ports && ports.length > 0) {
-    const portsSummary = ports.reduce<ReduceReturnType>((acc, { adminStatus }) => {
-      acc[adminStatus] = (acc[adminStatus] || 0) + 1
-      return acc
-    }, {})
-
-    seriesMapping.forEach(({ key, name, color }) => {
-      if (portsSummary[key]) {
-        chartData.push({
-          name,
-          value: portsSummary[key],
-          color
-        })
-      }
-    })
+  if (!edgeStatus) {
+    return chartData
   }
+
+  // TODO Retrieve by API
+  const traffic = EdgePortsByTrafficWidgetMockData.traffic
+
+  const colors = qualitativeColorSet()
+
+  traffic.forEach((traffic, index) => {
+    chartData.push({
+      name: `Port ${index + 1}`,
+      value: traffic,
+      color: colors[index]
+    })
+  })
 
   return chartData
 }
 
-export function EdgePortsByTrafficWidget ({ edgePortsSetting, isLoading }:
-   { edgePortsSetting: EdgePortStatus[], isLoading: boolean }) {
+export function EdgePortsByTrafficWidget ({ currentEdge, isLoading }:
+   { currentEdge: EdgeStatus | undefined, isLoading: boolean }) {
   const { $t } = useIntl()
 
-  // TODO: retrieve by API, use fake data for testing
-  const chartData = getChartData(edgePortsSetting)
+  const chartData = getChartData(currentEdge)
 
   return (
     <Loader states={[ { isLoading } ]}>
       <HistoricalCard title={$t({ defaultMessage: 'Top Ports by Traffic' })}>
         <AutoSizer>
-          {({ height, width }) => (
-            chartData && chartData.length > 0
-              ?
-              <DonutChart
-                title={$t({ defaultMessage: 'Ports' })}
-                style={{ width, height }}
-                legend={'name-value'}
-                data={chartData}
-              />
-              : <NoData />
+          {({ height, width }) => ( chartData && chartData.length > 0 ?
+            <DonutChart
+              title={$t({ defaultMessage: 'Ports' })}
+              style={{ width, height }}
+              showLabel={true}
+              showTotal={false}
+              showLegend={false}
+              data={chartData}
+              size={'x-large'}
+              dataFormatter={formatter('bytesFormat')}
+              tooltipFormat={defineMessage({
+                defaultMessage: `{name}<br></br>
+                    <space><b>{formattedValue}</b> ({formattedPercent})</space>`
+              })}
+            />
+            : <NoData />
           )}
         </AutoSizer>
       </HistoricalCard>
