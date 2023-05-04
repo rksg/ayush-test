@@ -57,6 +57,7 @@ export function VenuePropertyTab () {
   const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
   const [groupId, setGroupId] =
     useState<string|undefined>(propertyConfigsQuery?.data?.personaGroupId)
+  const hasAssociation = !!groupId
   const [getPersonaById] = useLazyGetPersonaByIdQuery()
   const [getPersonaGroupById, personaGroupQuery] = useLazyGetPersonaGroupByIdQuery()
   const [downloadCsv] = useLazyDownloadPropertyUnitsQuery()
@@ -201,10 +202,12 @@ export function VenuePropertyTab () {
   const actions: TableProps<PropertyUnit>['actions'] = [
     {
       label: $t({ defaultMessage: 'Add Unit' }),
+      disabled: !hasAssociation,
       onClick: () => setDrawerState({ isEdit: false, visible: true, unitId: undefined })
     },
     {
       label: $t({ defaultMessage: 'Import From File' }),
+      disabled: !hasAssociation,
       onClick: () => setUploadCsvDrawerVisible(true)
     },
     {
