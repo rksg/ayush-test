@@ -244,9 +244,9 @@ export function VenuePropertyTab () {
             entityName: $t({ defaultMessage: 'Units' })
           }),
           content: $t({ defaultMessage: `Are you sure you want to suspend {count, plural,
-              one {this}
-              other {these}
-              } Unit?` }, { count: items.length }),
+              one {this Unit}
+              other {these Units}
+              }?` }, { count: items.length }),
           okText: $t({ defaultMessage: 'Suspend' }),
           onOk () {
             items.forEach(unit => {
