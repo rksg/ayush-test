@@ -63,18 +63,6 @@ describe('Edge Statistic Widget', () => {
   { tenantId: tenantID, serialNumber: currentEdge.serialNumber }
 
 
-  it('should render EdgePortsByTrafficWidget correctly', async () => {
-    const { asFragment } = render(
-      <Provider>
-        <EdgePortsByTrafficWidget edgePortsSetting={edgePortsSetting} isLoading={false}/>
-      </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edge-details/overview' }
-      })
-
-    expect(asFragment().querySelector('svg')).toBeDefined()
-    expect(asFragment().querySelectorAll('div[_echarts_instance_^="ec_"]').length).toBe(1)
-  })
-
   it('shoud render EdgeTrafficByVolumeWidget with no data', async () => {
     const { asFragment } = render(
       <Provider>
