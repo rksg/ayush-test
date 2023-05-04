@@ -13,6 +13,8 @@ import { ConfigurationProfileFormContext } from './ConfigurationProfileFormConte
 
 const defaultPayload = {
   searchString: '',
+  page: 1,
+  pageSize: 10000,
   fields: [
     'name',
     'id'
