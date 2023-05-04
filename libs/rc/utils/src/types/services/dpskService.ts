@@ -58,7 +58,7 @@ export interface CreateDpskPassphrasesFormFields {
   numberOfPassphrases: number;
   passphrase?: string;
   username?: string;
-  vlanId?: number;
+  vlanId?: string;
   mac?: string;
   numberOfDevices?: number;
   expiration: Omit<ExpirationDateEntity, 'offset'>
@@ -71,12 +71,13 @@ export interface DpskPassphrasesSaveData {
   numberOfPassphrases: number;
   passphrase?: string | null;
   username?: string;
-  vlanId?: number;
+  vlanId?: string;
   mac?: string;
   numberOfDevices?: number;
   expirationDate?: string;
   email?: string;
   phoneNumber?: string;
+  override?: boolean;
 }
 
 export interface DPSKDeviceInfo {

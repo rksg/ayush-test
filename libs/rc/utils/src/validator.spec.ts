@@ -21,7 +21,9 @@ import {
   specialCharactersRegExp,
   serialNumberRegExp,
   targetHostRegExp,
-  validateRecoveryPassphrasePart, ipv6RegExp
+  validateRecoveryPassphrasePart,
+  validateVlanId,
+  ipv6RegExp
 } from './validator'
 
 describe('validator', () => {
@@ -117,6 +119,21 @@ describe('validator', () => {
     it('Should display error message if Vlan Member values incorrectly', async () => {
       const result1 = checkVlanMember('1-5000')
       await expect(result1).rejects.toEqual('This field is invalid')
+    })
+  })
+
+  describe('check Vlan ID', () => {
+    it('Should take care of Vlan ID with valid value', async () => {
+      const result = validateVlanId('100')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should take care of Vlan ID with invalid number', async () => {
+      const result = validateVlanId('4099')
+      await expect(result).rejects.toEqual('VLAN ID must be between 1 and 4094')
+    })
+    it('Should take care of Vlan ID with alphabet', async () => {
+      const result1 = validateVlanId('abc')
+      await expect(result1).rejects.toEqual('VLAN ID must be between 1 and 4094')
     })
   })
 

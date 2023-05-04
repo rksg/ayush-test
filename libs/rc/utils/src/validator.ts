@@ -800,6 +800,15 @@ export function validateDuplicateAclName (aclName: string, aclList: Acl[]) {
   }
 }
 
+export function validateVlanId (vlanId: string){
+  const { $t } = getIntl()
+  const vlanRegexp = new RegExp('^([1-9]|[1-9][0-9]{1,2}|[1-3][0-9]{3}|40[0-8][0-9]|409[0-4])$') // Only 1 - 4094
+  if (!vlanRegexp.test(vlanId)) {
+    return Promise.reject($t(validationMessages.vlanRange))
+  }
+  return Promise.resolve()
+}
+
 export function validateVlanName (vlanName: string){
   const { $t } = getIntl()
   const vlanRegexp = new RegExp('^([1-9]|[1-8][0-9]|9[0-9]|[1-8][0-9]{2}|9[0-8][0-9]|99[0-9]|[1-3][0-9]{3}|40[0-7][0-9]|408[0-6]|4088|4089|4095)$')

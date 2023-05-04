@@ -106,6 +106,9 @@ import NetworkSegAuthTable        from './pages/Services/NetworkSegWebAuth/Netwo
 import PortalServiceDetail        from './pages/Services/Portal/PortalDetail'
 import PortalForm                 from './pages/Services/Portal/PortalForm/PortalForm'
 import PortalTable                from './pages/Services/Portal/PortalTable'
+import ResidentPortalDetail       from './pages/Services/ResidentPortal/ResidentPortalDetail/ResidentPortalDetail'
+import ResidentPortalForm         from './pages/Services/ResidentPortal/ResidentPortalForm/ResidentPortalForm'
+import ResidentPortalTable        from './pages/Services/ResidentPortal/ResidentPortalTable/ResidentPortalTable'
 import SelectServiceForm          from './pages/Services/SelectServiceForm'
 import ServiceCatalog             from './pages/Services/ServiceCatalog'
 import WifiCallingDetailView      from './pages/Services/WifiCalling/WifiCallingDetail/WifiCallingDetailView'
@@ -381,6 +384,30 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.EDIT })}
         element={<EditDhcp />}
+      />
+      <Route
+        path={getServiceRoutePath({
+          type: ServiceType.RESIDENT_PORTAL,
+          oper: ServiceOperation.LIST })}
+        element={<ResidentPortalTable />}
+      />
+      <Route
+        path={getServiceRoutePath({
+          type: ServiceType.RESIDENT_PORTAL,
+          oper: ServiceOperation.DETAIL })}
+        element={<ResidentPortalDetail />}
+      />
+      <Route
+        path={getServiceRoutePath({
+          type: ServiceType.RESIDENT_PORTAL,
+          oper: ServiceOperation.CREATE })}
+        element={<ResidentPortalForm />}
+      />
+      <Route
+        path={getServiceRoutePath({
+          type: ServiceType.RESIDENT_PORTAL,
+          oper: ServiceOperation.EDIT })}
+        element={<ResidentPortalForm editMode={true} />}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.EDGE_FIREWALL, oper: ServiceOperation.LIST })}
