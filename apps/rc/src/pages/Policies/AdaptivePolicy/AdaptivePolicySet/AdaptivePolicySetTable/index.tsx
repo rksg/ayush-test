@@ -74,20 +74,17 @@ export default function AdaptivePolicySetTable () {
   }, [macRegList])
 
   useEffect(() => {
-    if(getDpsksLoading)
-      return
-    if(dpskList) {
-      const dpsksMap = new Map()
-      dpskList.data.forEach(item => {
-        const { policySetId } = item
-        if(dpsksMap.has(policySetId)) {
-          dpsksMap.set(policySetId, [ ...dpsksMap.get(policySetId), item.name])
-        }else {
-          dpsksMap.set(policySetId, [item.name])
-        }
-      })
-      setAssignedDpsks(dpsksMap)
-    }
+    if(getDpsksLoading || !dpskList) return
+    const dpsksMap = new Map()
+    dpskList.data.forEach(item => {
+      const { policySetId } = item
+      if(dpsksMap.has(policySetId)) {
+        dpsksMap.set(policySetId, [ ...dpsksMap.get(policySetId), item.name])
+      }else {
+        dpsksMap.set(policySetId, [item.name])
+      }
+    })
+    setAssignedDpsks(dpsksMap)
   }, [dpskList])
 
   useEffect(() => {

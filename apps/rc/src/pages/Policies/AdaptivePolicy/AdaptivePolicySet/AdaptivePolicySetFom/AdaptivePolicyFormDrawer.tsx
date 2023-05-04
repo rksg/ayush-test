@@ -1,5 +1,3 @@
-import React, { useState } from 'react'
-
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
@@ -8,10 +6,8 @@ import {
   useAddAdaptivePolicyMutation,
   useAddPolicyConditionsMutation
 } from '@acx-ui/rc/services'
-import { AccessCondition } from '@acx-ui/rc/utils'
 
-import { AdaptivePolicyAdvancedSetting } from '../../AdaptivePolicy/AdaptivePolicyForm/AdaptivePolicyAdvancedSetting'
-import { AdaptivePolicySettingForm }     from '../../AdaptivePolicy/AdaptivePolicyForm/AdaptivePolicySettingForm'
+import { AdaptivePolicySettingForm } from '../../AdaptivePolicy/AdaptivePolicyForm/AdaptivePolicySettingForm'
 
 interface AdaptivePolicyFormDrawerProps {
   visible: boolean
@@ -24,10 +20,6 @@ export function AdaptivePolicyFormDrawer (props: AdaptivePolicyFormDrawerProps) 
   const [form] = Form.useForm()
   const [addAdaptivePolicy] = useAddAdaptivePolicyMutation()
   const [addConditions] = useAddPolicyConditionsMutation()
-  const [attributeGroupVisible, setAttributeGroupVisible] = useState(false)
-  const [accessConditionsVisible, setAccessConditionsVisible] = useState(false)
-  const [editCondition, setEditCondition] = useState<AccessCondition>()
-  const [editConditionMode, setEditConditionMode] = useState(false)
 
   const handleSubmit = async () => {
     try {
@@ -91,34 +83,18 @@ export function AdaptivePolicyFormDrawer (props: AdaptivePolicyFormDrawerProps) 
   const content = (
     <Form layout={'vertical'}
       form={form}>
-      <AdaptivePolicySettingForm
-        drawerMode={true}
-        setAttributeGroupVisible={setAttributeGroupVisible}
-        setAccessConditionsVisible={setAccessConditionsVisible}
-        setEditCondition={setEditCondition}
-        setEditConditionMode={setEditConditionMode}/>
+      <AdaptivePolicySettingForm drawerMode={true}/>
     </Form>
   )
 
   return (
-    <>
-      <Drawer
-        title={$t({ defaultMessage: 'Add Adaptive Policy' })}
-        visible={visible}
-        onClose={onClose}
-        children={content}
-        footer={footer}
-        width={600}
-      />
-      <AdaptivePolicyAdvancedSetting
-        accessConditionDrawerVisible={accessConditionsVisible}
-        setAccessConditionDrawerVisible={setAccessConditionsVisible}
-        isConditionEdit={editConditionMode}
-        editCondition={editCondition}
-        radiusAttributeDrawerVisible={attributeGroupVisible}
-        setRadiusAttributeDrawerVisible={setAttributeGroupVisible}
-        settingForm={form}
-      />
-    </>
+    <Drawer
+      title={$t({ defaultMessage: 'Add Adaptive Policy' })}
+      visible={visible}
+      onClose={onClose}
+      children={content}
+      footer={footer}
+      width={600}
+    />
   )
 }

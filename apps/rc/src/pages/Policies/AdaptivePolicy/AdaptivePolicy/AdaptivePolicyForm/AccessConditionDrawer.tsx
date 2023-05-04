@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 
-import { Form, FormInstance, Input, Radio, Select, Space, TimePicker } from 'antd'
-import moment                                                          from 'moment-timezone'
-import { useIntl }                                                     from 'react-intl'
+import { Form, Input, Radio, Select, Space, TimePicker } from 'antd'
+import moment                                            from 'moment-timezone'
+import { useIntl }                                       from 'react-intl'
 
 import { Drawer, Loader }                              from '@acx-ui/components'
 import { useLazyGetPolicyTemplateAttributesListQuery } from '@acx-ui/rc/services'
@@ -20,22 +20,20 @@ interface AccessConditionDrawerProps {
   isEdit?: boolean,
   editCondition?: AccessCondition,
   setAccessConditions: (condition: AccessCondition) => void,
-  settingForm?: FormInstance
+  templateId: number | undefined,
+  accessConditions: AccessCondition []
 }
 
 export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
   const { $t } = useIntl()
   // eslint-disable-next-line max-len
-  const { visible, setVisible, isEdit = false, setAccessConditions, editCondition, settingForm } = props
+  const { visible, setVisible, isEdit = false, setAccessConditions, editCondition, templateId, accessConditions } = props
   const [form] = Form.useForm()
   const [resetField, setResetField] = useState(false)
   const [attributes, setAttributes] = useState([] as RuleAttribute [])
 
   const conditionId = Form.useWatch('conditionId', form)
   const attributeType = Form.useWatch('attributeType', form)
-
-  const templateId = Form.useWatch('templateTypeId', settingForm)
-  const accessConditions: AccessCondition [] = Form.useWatch('evaluationRules', settingForm)
 
   const [attributeList, { isLoading } ] = useLazyGetPolicyTemplateAttributesListQuery()
 

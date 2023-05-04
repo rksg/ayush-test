@@ -13,7 +13,7 @@ import { RadiusAttributeGroupFormDrawer } from './RadiusAttributeGroupFormDrawer
 interface RadiusAttributeDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
-  settingForm?: FormInstance
+  settingForm: FormInstance
 }
 
 function useColumns () {

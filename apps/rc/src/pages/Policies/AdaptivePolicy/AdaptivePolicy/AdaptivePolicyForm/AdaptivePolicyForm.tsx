@@ -21,8 +21,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 
-import { AdaptivePolicyAdvancedSetting } from './AdaptivePolicyAdvancedSetting'
-import { AdaptivePolicySettingForm }     from './AdaptivePolicySettingForm'
+import { AdaptivePolicySettingForm } from './AdaptivePolicySettingForm'
 
 interface AdaptivePolicyFormProps {
   editMode?: boolean,
@@ -51,10 +50,6 @@ export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
     params: { policyId, templateId } }, { skip: !editMode })
 
   const [isUpdating, setIsUpdating] = useState(false)
-  const [attributeGroupVisible, setAttributeGroupVisible] = useState(false)
-  const [accessConditionsVisible, setAccessConditionsVisible] = useState(false)
-  const [editConditionMode, setEditConditionMode] = useState(false)
-  const [editCondition, setEditCondition] = useState<AccessCondition>()
 
   useEffect(() => {
     if(data && editMode) {
@@ -197,21 +192,7 @@ export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
             isLoading: isGetPolicyLoading || isGetConditionsLoading,
             isFetching: isUpdating
           }]}>
-            <AdaptivePolicySettingForm editMode={editMode}
-              drawerMode={drawerMode}
-              setAttributeGroupVisible={setAttributeGroupVisible}
-              setAccessConditionsVisible={setAccessConditionsVisible}
-              setEditCondition={setEditCondition}
-              setEditConditionMode={setEditConditionMode}/>
-            <AdaptivePolicyAdvancedSetting
-              accessConditionDrawerVisible={accessConditionsVisible}
-              setAccessConditionDrawerVisible={setAccessConditionsVisible}
-              isConditionEdit={editConditionMode}
-              editCondition={editCondition}
-              radiusAttributeDrawerVisible={attributeGroupVisible}
-              setRadiusAttributeDrawerVisible={setAttributeGroupVisible}
-              settingForm={formRef.current}
-            />
+            <AdaptivePolicySettingForm editMode={editMode} drawerMode={drawerMode}/>
           </Loader>
         </StepsForm.StepForm>
       </StepsForm>
