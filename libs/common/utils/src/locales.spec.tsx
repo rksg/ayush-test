@@ -184,7 +184,7 @@ describe('loadLocale', () => {
 })
 
 describe('LocaleProvider', () => {
-  const url = `https://storage.googleapis.com/ruckus-web-1/locales/compiled/:locale.json`
+  const url = 'https://storage.googleapis.com/ruckus-web-1/locales/compiled/:locale.json'
   beforeEach(() => {
     mockServer.use(
       rest.get(url, (req, res, ctx) => {
