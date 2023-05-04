@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }       from '@acx-ui/feature-toggle'
 import { venueApi }           from '@acx-ui/rc/services'
 import { WifiUrlsInfo }       from '@acx-ui/rc/utils'
 import { Provider, store }    from '@acx-ui/store'
@@ -34,6 +35,7 @@ describe('Venue Load Balancing', () => {
   })
 
   it('should render correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(
       <Provider>
         <Form>
@@ -46,6 +48,9 @@ describe('Venue Load Balancing', () => {
 
     expect(await screen.findByTestId('load-balancing-enabled')).toBeVisible()
     expect(await screen.findByRole('radio', { name: /Based on Client Count/i })).toBeVisible()
+
+    expect(await screen.findByTestId('sticky-client-snr-threshold')).toBeVisible()
+    expect(await screen.findByTestId('sticky-client-nbr-percentage-threshold')).toBeVisible()
 
     expect(await screen.findByTestId('band-balancing-enabled')).toBeVisible()
     expect(await screen.findByRole('slider')).toBeVisible()
