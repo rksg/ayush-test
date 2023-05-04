@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
+import { getSeriesData, AnalyticsFilter } from '@acx-ui/analytics/utils'
 import {
   HistoricalCard,
   Loader,
@@ -9,12 +10,31 @@ import {
 } from '@acx-ui/components'
 import { formatter } from '@acx-ui/formatter'
 
+import { EdgeResourceUtilizationWidgetMockData } from './__test__/fixture'
+
+type Key = keyof Omit<ResourceUtilizationData, 'time'>
+
+export type ResourceUtilizationData = {
+  time: string[]
+  cpu: number[]
+  memory: number[]
+  disk: number[]
+}
+
 function EdgeResourceUtilizationWidget () {
   const { $t } = useIntl()
 
+  const seriesMapping = [
+    { key: 'cpu', name: $t({ defaultMessage: 'CPU' }) },
+    { key: 'memory', name: $t({ defaultMessage: 'Memory' }) },
+    { key: 'disk', name: $t({ defaultMessage: 'Disk' }) }
+  ] as Array<{ key: Key, name: string }>
+
   // TODO: wait for backend support, use fake empty data for testing
   // API response format is still TBD
-  const queryResults = { data: [], isLoading: false }
+  // const queryResults = { data: [], isLoading: false }
+  // eslint-disable-next-line max-len
+  const queryResults = { data: getSeriesData(EdgeResourceUtilizationWidgetMockData.timeSeries, seriesMapping), isLoading: false }
 
   return (
     <Loader states={[queryResults]}>
@@ -25,11 +45,10 @@ function EdgeResourceUtilizationWidget () {
               <MultiLineTimeSeriesChart
                 style={{ width, height }}
                 data={queryResults.data}
-                dataFormatter={formatter('bytesFormat')}
                 seriesFormatters={{
-                  cpu: formatter('hertzFormat'),
-                  memory: formatter('bytesFormat'),
-                  storage: formatter('bytesFormat')
+                  cpu: formatter('percent'),
+                  memory: formatter('percent'),
+                  disk: formatter('percent')
                 }}
               />
               : <NoData/>
