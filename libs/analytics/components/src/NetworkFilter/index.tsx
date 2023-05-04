@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { DefaultOptionType }         from 'antd/lib/select'
 import { omit, groupBy, pick, find } from 'lodash'
 import { SingleValueType }           from 'rc-cascader/lib/Cascader'
+import Highlighter                   from 'react-highlight-words'
 import { useIntl }                   from 'react-intl'
 
 import {
@@ -228,7 +229,14 @@ const reportSearch = (input: string, path: DefaultOptionType[]): boolean => {
 
 const reportSearchRender = (input: string, path: DefaultOptionType[]) => {
   const items = path.map((val) => (val?.displayLabel as string))
-  return items.join(' / ')
+  return <Highlighter
+    highlightStyle={{
+      fontWeight: 'bold', background: 'none', padding: 0, color: 'inherit'
+    }}
+    searchWords={[input]}
+    textToHighlight={items.join(' / ')}
+    autoEscape
+  />
 }
 
 // eslint-disable-next-line no-empty-pattern
