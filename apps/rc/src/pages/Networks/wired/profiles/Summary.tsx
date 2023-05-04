@@ -24,8 +24,7 @@ export function Summary () {
   const params = useParams()
   const { currentData } = useContext(ConfigurationProfileFormContext)
 
-  const { data } = useVenuesListQuery({ params:
-    { tenantId: params.tenantId, networkId: 'UNKNOWN-NETWORK-ID' }, payload: defaultPayload })
+  const { data } = useVenuesListQuery({ params, payload: defaultPayload })
 
   const venueList = data?.data.reduce<Record<Venue['id'], Venue>>((map, obj) => {
     map[obj.id] = obj
