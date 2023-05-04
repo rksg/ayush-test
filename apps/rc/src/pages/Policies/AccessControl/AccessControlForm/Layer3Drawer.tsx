@@ -967,8 +967,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         <Form.Item
           name={[...inputName, 'l3AclPolicyId']}
           rules={[{
-            required: true
-          }, {
+            required: true,
             message: $t({ defaultMessage: 'Please select Layer 3 profile' })
           }]}
           children={
