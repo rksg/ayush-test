@@ -5,7 +5,6 @@ import { isEqual }                                 from 'lodash'
 import { useIntl }                                 from 'react-intl'
 
 import { Loader, StepsForm }       from '@acx-ui/components'
-import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import {
   useGetSyslogPolicyListQuery,
   useGetVenueSyslogApQuery,
