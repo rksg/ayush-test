@@ -5,7 +5,8 @@ import { CommonUrlsInfo }                               from '@acx-ui/rc/utils'
 import { Provider }                                     from '@acx-ui/store'
 import { mockServer, render, screen, mockRestApiQuery } from '@acx-ui/test-utils'
 
-import { ApContextProvider } from '../ApContext'
+import { ApContextProvider } from '../ApContextProvider'
+
 
 import { activities, events, eventsMeta } from './__tests__/fixtures'
 
@@ -44,7 +45,7 @@ describe('ApTimelineTab', ()=>{
       wrapper,
       route: {
         params: { tenantId: 't1', apId: '000000000001', activeSubTab: 'activities' },
-        path: '/t/:tenantId/devices/wifi/:apId/details/timeline/:activeSubTab'
+        path: '/:tenantId/t/devices/wifi/:apId/details/timeline/:activeSubTab'
       }
     })
 

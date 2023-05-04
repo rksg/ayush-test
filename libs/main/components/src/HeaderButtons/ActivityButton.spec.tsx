@@ -26,7 +26,7 @@ describe('ActivityButton', () => {
 
   it('should render ActivityButton correctly', async () => {
     render(<Provider>
-      <ActivityButton/>
+      <ActivityButton isShown={false} setIsShown={() => {}}/>
     </Provider>, { route: { params } })
     await userEvent.click(screen.getByRole('button'))
     expect(await screen.findByText('123roam')).toBeVisible()
@@ -37,21 +37,21 @@ describe('ActivityButton', () => {
 
   it('should navigate to all activities', async () => {
     render(<Provider>
-      <ActivityButton/>
+      <ActivityButton isShown={false} setIsShown={() => {}}/>
     </Provider>, { route: { params } })
     await userEvent.click(screen.getByRole('button'))
     expect(await screen.findByText('123roam')).toBeVisible()
     await userEvent.click(screen.getByRole('button', { name: 'View all activities' }))
     expect(mockUseNavigate).toHaveBeenCalledWith({
       hash: '',
-      pathname: '/t/a27e3eb0bd164e01ae731da8d976d3b1/timeline',
+      pathname: '/a27e3eb0bd164e01ae731da8d976d3b1/t/timeline',
       search: ''
     })
   })
 
   it('should open/close activity drawer', async () => {
     render(<Provider>
-      <ActivityButton/>
+      <ActivityButton isShown={false} setIsShown={() => {}}/>
     </Provider>, { route: { params } })
     await userEvent.click(screen.getByRole('button'))
     const activity = await screen.findByText('123roam')

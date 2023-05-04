@@ -20,7 +20,7 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
                 class="ant-breadcrumb-link"
               >
                 <a
-                  href="/t/undefined/analytics/incidents"
+                  href="/undefined/t/analytics/incidents"
                 >
                   Incidents
                 </a>
