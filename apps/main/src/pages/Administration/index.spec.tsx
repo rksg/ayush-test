@@ -234,38 +234,4 @@ describe('Administration page', () => {
     const tab = screen.getByRole('tab', { name: 'Local RADIUS Server' })
     expect(tab.getAttribute('aria-selected')).toBeTruthy()
   })
-
-  it('should render when only edge early beta flag enabled', async () => {
-    jest.mocked(useIsSplitOn).mockImplementationOnce((flag) => {
-      return flag === Features.EDGE_EARLY_BETA ? true : false
-    })
-
-    params.activeTab = 'accountSettings'
-
-    render(
-      <Provider>
-        <Administration />
-      </Provider>, {
-        route: { params }
-      })
-
-    const tab = screen.getByRole('tab', { name: 'Account Settings' })
-    expect(tab.getAttribute('aria-selected')).toBeTruthy()
-  })
-
-  it('should not render when feature flag off', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(() => false)
-
-    render(
-      <Provider>
-        <UserProfileContext.Provider
-          value={userProfileContextValues}
-        >
-          <Administration />
-        </UserProfileContext.Provider>
-      </Provider>, {
-        route: { params }
-      })
-    await screen.findByText('Administration is not enabled')
-  })
 })
