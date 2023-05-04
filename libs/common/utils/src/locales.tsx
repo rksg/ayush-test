@@ -26,14 +26,31 @@ function flattenMessages (nestedMessages: NestedMessages, prefix = ''): Record<s
 }
 
 function localePath (locale: string) {
-  return `locales/compiled/${locale}.json`
+  // return `locales/compiled/${locale}.json`
+  const myHeaders = new Headers()
+  myHeaders.append('origin', 'https://devalto.ruckuswireless.com')
+
+  const requestOptions = {
+    method: 'GET',
+    headers: myHeaders
+  }
+
+  fetch(`https://storage.googleapis.com/ruckus-web-1/locales/compiled/${locale}.json`,
+    requestOptions)
+    .then(response => response.text())
+    .then(result => {
+      console.log(result) // eslint-disable-line no-console
+      return result
+    })
+    .catch(error => console.log('error', error)) // eslint-disable-line no-console
 }
 
 async function loadEnUS (): Promise<Messages> {
   const [base, proBase, translation] = await Promise.all([
     import('antd/lib/locale/en_US').then(result => result.default),
     import('@ant-design/pro-provider/lib/locale/en_US').then(result => result.default),
-    fetch(localePath('en-US')).then(res => res.json()) as Promise<NestedMessages>
+    // fetch(localePath('en-US')).then(res => res.json()) as Promise<NestedMessages>
+    localePath('en-US')
   ])
 
   const combine = merge({}, base, proBase, translation)
@@ -44,7 +61,8 @@ async function loadDe (): Promise<Messages> {
   const [base, proBase, translation] = await Promise.all([
     import('antd/lib/locale/de_DE').then(result => result.default),
     import('@ant-design/pro-provider/lib/locale/de_DE').then(result => result.default),
-    fetch(localePath('de-DE')).then(res => res.json()) as Promise<NestedMessages>
+    // fetch(localePath('de-DE')).then(res => res.json()) as Promise<NestedMessages>
+    localePath('de-DE')
   ])
 
   const combine = merge({}, base, proBase, translation)
@@ -55,7 +73,8 @@ async function loadJp (): Promise<Messages> {
   const [base, proBase, translation] = await Promise.all([
     import('antd/lib/locale/ja_JP').then(result => result.default),
     import('@ant-design/pro-provider/lib/locale/ja_JP').then(result => result.default),
-    fetch(localePath('ja-JP')).then(res => res.json()) as Promise<NestedMessages>
+    // fetch(localePath('ja-JP')).then(res => res.json()) as Promise<NestedMessages>
+    localePath('ja-JP')
   ])
 
   const combine = merge({}, base, proBase, translation)
@@ -66,7 +85,8 @@ async function loadEs (): Promise<Messages> {
   const [base, proBase, translation] = await Promise.all([
     import('antd/lib/locale/es_ES').then(result => result.default),
     import('@ant-design/pro-provider/lib/locale/es_ES').then(result => result.default),
-    fetch(localePath('es-ES')).then(res => res.json()) as Promise<NestedMessages>
+    // fetch(localePath('es-ES')).then(res => res.json()) as Promise<NestedMessages>
+    localePath('es-ES')
   ])
 
   const combine = merge({}, base, proBase, translation)
@@ -77,7 +97,8 @@ async function loadFr (): Promise<Messages> {
   const [base, proBase, translation] = await Promise.all([
     import('antd/lib/locale/fr_FR').then(result => result.default),
     import('@ant-design/pro-provider/lib/locale/fr_FR').then(result => result.default),
-    fetch(localePath('fr-FR')).then(res => res.json()) as Promise<NestedMessages>
+    // fetch(localePath('fr-FR')).then(res => res.json()) as Promise<NestedMessages>
+    localePath('fr-FR')
   ])
 
   const combine = merge({}, base, proBase, translation)
@@ -88,7 +109,8 @@ async function loadKoKR (): Promise<Messages> {
   const [base, proBase, translation] = await Promise.all([
     import('antd/lib/locale/ko_KR').then(result => result.default),
     import('@ant-design/pro-provider/lib/locale/ko_KR').then(result => result.default),
-    fetch(localePath('ko-KR')).then(res => res.json()) as Promise<NestedMessages>
+    // fetch(localePath('ko-KR')).then(res => res.json()) as Promise<NestedMessages>
+    localePath('ko-KR')
   ])
 
   const combine = merge({}, base, proBase, translation)
@@ -99,7 +121,8 @@ async function loadZhCN (): Promise<Messages> {
   const [base, proBase, translation] = await Promise.all([
     import('antd/lib/locale/zh_CN').then(result => result.default),
     import('@ant-design/pro-provider/lib/locale/zh_CN').then(result => result.default),
-    fetch(localePath('zh-CN')).then(res => res.json()) as Promise<NestedMessages>
+    // fetch(localePath('zh-CN')).then(res => res.json()) as Promise<NestedMessages>
+    localePath('zh-CN')
   ])
 
   const combine = merge({}, base, proBase, translation)
@@ -110,7 +133,8 @@ async function loadPtBR (): Promise<Messages> {
   const [base, proBase, translation] = await Promise.all([
     import('antd/lib/locale/pt_BR').then(result => result.default),
     import('@ant-design/pro-provider/lib/locale/pt_BR').then(result => result.default),
-    fetch(localePath('pt-BR')).then(res => res.json()) as Promise<NestedMessages>
+    // fetch(localePath('pt-BR')).then(res => res.json()) as Promise<NestedMessages>
+    localePath('pt-BR')
   ])
 
   const combine = merge({}, base, proBase, translation)
