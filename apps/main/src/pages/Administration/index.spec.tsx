@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { Provider  }              from '@acx-ui/store'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Provider  }    from '@acx-ui/store'
 import {
   render,
   screen,
