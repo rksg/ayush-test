@@ -23,7 +23,7 @@ import {
 } from '@acx-ui/msp/components'
 import { CloudMessageBanner }                                     from '@acx-ui/rc/components'
 import { isDelegationMode }                                       from '@acx-ui/rc/utils'
-import { Link, Outlet, useNavigate, useTenantLink }               from '@acx-ui/react-router-dom'
+import { Outlet, useNavigate, useTenantLink }                     from '@acx-ui/react-router-dom'
 import { useParams }                                              from '@acx-ui/react-router-dom'
 import { RolesEnum }                                              from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }                        from '@acx-ui/user'
@@ -87,12 +87,12 @@ function Layout () {
               {$t({ defaultMessage: 'Home' })}
             </UI.Home>
           </a> :
-          <Link to={`/${getJwtTokenPayload().tenantId}/v`}>
+          <a href={`/${getJwtTokenPayload().tenantId}/v`}>
             <UI.Home>
               <LayoutUI.Icon children={<HomeSolid />} />
               {$t({ defaultMessage: 'Home' })}
             </UI.Home>
-          </Link>)
+          </a>)
         }
         <RegionButton/>
         <HeaderContext.Provider value={{
