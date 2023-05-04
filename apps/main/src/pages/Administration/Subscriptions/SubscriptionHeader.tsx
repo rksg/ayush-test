@@ -37,19 +37,43 @@ enum SubscriptionTierType {
   Gold = 'Enterprise'
 }
 
-const SubscriptionUtilizationWidget = (props: SubscriptionUtilizationWidgetProps) => {
+export const SubscriptionUtilizationWidget = (props: SubscriptionUtilizationWidgetProps) => {
   const {
     deviceType,
     title,
     used,
-    total,
-    barColors = [
-      cssStr('--acx-accents-blue-50'),
-      cssStr('--acx-neutrals-30')
-    ]
+    total
   } = props
 
   const isZeroQuantity = total <= 0
+  const isOverused = used > total
+
+  let usedBarColors = [
+    cssStr('--acx-accents-blue-50'),
+    cssStr('--acx-neutrals-30')
+  ]
+
+  let series = [
+    { name: 'used',
+      value: isZeroQuantity ? 0: (used / total)*100 },
+    { name: 'available',
+      value: isZeroQuantity ? 100 : ((total-used) / total)*100 }
+  ]
+
+  if (isOverused) {
+    usedBarColors = [
+      cssStr('--acx-accents-blue-50'),
+      cssStr('--acx-semantics-red-50')
+    ]
+
+    const overPercent = (Math.abs(total-used) / total)*100
+    series = [
+      { name: 'used',
+        value: isZeroQuantity ? 0 : (100 - (overPercent > 100 ? 100 : overPercent)) },
+      { name: 'overused',
+        value: isZeroQuantity ? 100: overPercent }
+    ]
+  }
 
   return (
     <SpaceWrapper full size='small' justifycontent='space-around'>
@@ -62,17 +86,16 @@ const SubscriptionUtilizationWidget = (props: SubscriptionUtilizationWidgetProps
         barWidth={12}
         data={[{
           category: `${deviceType} Licenses `,
-          series: [
-            { name: 'used',
-              value: isZeroQuantity ? 0: (used * 100 / total) },
-            { name: 'available',
-              value: isZeroQuantity ? 100 : ((total-used) * 100 / total) }
-          ]
+          series
         }]}
-        barColors={barColors}
+        barColors={usedBarColors}
       />
       <Typography.Text>
-        {used} / {total}
+        {
+          isOverused
+            ? <UI.OverutilizationText>{used}</UI.OverutilizationText>
+            : used
+        } / {total}
       </Typography.Text>
     </SpaceWrapper>
   )
@@ -129,7 +152,7 @@ export const SubscriptionHeader = () => {
 
   return (
     <Loader states={[queryResults]}>
-      <UI.FullWidthSpace direction='vertical'>
+      <SpaceWrapper fullWidth direction='vertical'>
         <Row>
           <Col span={12}>
             <Subtitle level={4}>
@@ -151,7 +174,7 @@ export const SubscriptionHeader = () => {
             </SpaceWrapper>
           </Col>
         </Row>
-        <UI.FullWidthSpace size='large'>
+        <SpaceWrapper fullWidth size='large' justifycontent='flex-start'>
           {
             subscriptionDeviceTypeList.map((item) => {
               const summary = summaryData[item.value]
@@ -164,8 +187,8 @@ export const SubscriptionHeader = () => {
               /> : ''
             })
           }
-        </UI.FullWidthSpace>
-      </UI.FullWidthSpace>
+        </SpaceWrapper>
+      </SpaceWrapper>
     </Loader>
   )
 }
