@@ -14,18 +14,18 @@ import styled        from 'styled-components/macro'
 import { StepsForm }                   from '@acx-ui/components'
 import { useGetSyslogPolicyListQuery } from '@acx-ui/rc/services'
 import {
-  SyslogActionTypes
+  MigrationActionTypes
 } from '@acx-ui/rc/utils'
 
 import MigrationContext from '../MigrationContext'
 
 import * as UI from './styledComponents'
 
-type SyslogSettingFormProps = {
+type MigrationSettingFormProps = {
   className?: string
 }
 
-const MigrationSettingForm = styled((props: SyslogSettingFormProps) => {
+const MigrationSettingForm = styled((props: MigrationSettingFormProps) => {
   const { $t } = useIntl()
   const { className } = props
   const params = useParams()
@@ -39,7 +39,7 @@ const MigrationSettingForm = styled((props: SyslogSettingFormProps) => {
 
   const handlePolicyName = (policyName: string) => {
     dispatch({
-      type: SyslogActionTypes.POLICYNAME,
+      type: MigrationActionTypes.POLICYNAME,
       payload: {
         policyName: policyName
       }

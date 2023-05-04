@@ -68,7 +68,7 @@ describe('Edge Details Tabs', () => {
 
     fireEvent.click(screen.getByText('Timeline'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/devices/edge/${currentEdge.serialNumber}/edge-details/timeline`,
+      pathname: `/${params.tenantId}/t/devices/edge/${currentEdge.serialNumber}/edge-details/timeline`,
       hash: '',
       search: ''
     })

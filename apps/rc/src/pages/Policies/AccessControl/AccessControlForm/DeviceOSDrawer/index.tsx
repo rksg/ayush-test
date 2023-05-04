@@ -523,8 +523,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         <Form.Item
           name={[...inputName, 'devicePolicyId']}
           rules={[{
-            required: true
-          }, {
+            required: true,
             message: $t({ defaultMessage: 'Please select Device & OS profile' })
           }]}
           children={

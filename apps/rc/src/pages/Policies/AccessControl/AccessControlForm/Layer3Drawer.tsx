@@ -363,10 +363,14 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       ipString = `${network.ip}`
     }
 
+    let portString = network.port === '' || network.port === undefined
+      ? AnyText
+      : network.port
+
     return <div style={{ display: 'flex', flexDirection: 'column' }}>
-      <span>{$t({ defaultMessage: 'IP:' })} {ipString}</span>
+      <span>{$t({ defaultMessage: 'IP: {ipString}' }, { ipString: ipString })}</span>
       { access !== 'BLOCK' && <span>
-        {$t({ defaultMessage: 'Port:' })} {network.port === '' ? AnyText : network.port }
+        {$t({ defaultMessage: 'Port: {portString}' }, { portString: portString })}
       </span> }
     </div>
   }
@@ -962,8 +966,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         <Form.Item
           name={[...inputName, 'l3AclPolicyId']}
           rules={[{
-            required: true
-          }, {
+            required: true,
             message: $t({ defaultMessage: 'Please select Layer 3 profile' })
           }]}
           children={
