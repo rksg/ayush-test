@@ -241,7 +241,7 @@ export function VenuePropertyTab () {
             }"?` }, {
             count: items.length,
             entityValue: items[0].name,
-            entityName: $t({ defaultMessage: 'Unit' })
+            entityName: $t({ defaultMessage: 'Units' })
           }),
           content: $t({ defaultMessage: `Are you sure you want to suspend {count, plural,
               one {this}
