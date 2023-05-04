@@ -1,12 +1,11 @@
 import { rest } from 'msw'
 
 import { useIsSplitOn }                                            from '@acx-ui/feature-toggle'
-import { AdministrationUrlsInfo, EntitlementDeviceType }           from '@acx-ui/rc/utils'
+import { AdministrationUrlsInfo }                                  from '@acx-ui/rc/utils'
 import { Provider }                                                from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitFor, within  } from '@acx-ui/test-utils'
 
 import { mockedEtitlementsList, mockedSummary } from './__tests__/fixtures'
-import { SubscriptionUtilizationWidget }        from './SubscriptionHeader'
 
 import Subscriptions from '.'
 
@@ -19,11 +18,6 @@ jest.mock('@acx-ui/components', () => ({
 }))
 jest.mock('./ConvertNonVARMSPButton', () => ({
   ConvertNonVARMSPButton: () => (<div data-testid='convertNonVARMSPButton' />)
-}))
-jest.mock('./styledComponent', () => ({
-  ...jest.requireActual('./styledComponent'),
-  OverutilizationText: (props: React.PropsWithChildren) =>
-    (<div data-testid='overutilizationText' >{props.children}</div>)
 }))
 
 describe('Subscriptions', () => {
@@ -177,58 +171,5 @@ describe('Subscriptions', () => {
 
     await screen.findByRole('columnheader', { name: 'Device Count' })
     await screen.findByRole('row', { name: /Edge/i })
-  })
-})
-
-describe('Subscription utilization widget', () => {
-  it('should correctly display overutilization', async () => {
-    render(<SubscriptionUtilizationWidget
-      deviceType={EntitlementDeviceType.ANALYTICS}
-      title='Analytics'
-      total={60}
-      used={80}
-    />)
-
-    await screen.findByText('Analytics')
-    expect(screen.queryByTestId('overutilizationText')).toBeVisible()
-    expect(screen.queryByTestId('overutilizationText')?.textContent).toBe('80')
-  })
-
-  it('should correctly display zero quantity', async () => {
-    render(<SubscriptionUtilizationWidget
-      deviceType={EntitlementDeviceType.ANALYTICS}
-      title='Analytics'
-      total={0}
-      used={0}
-    />)
-
-    await screen.findByText('Analytics')
-    expect(await screen.findByText(/0\s+\/\s+0/i)).toBeVisible()
-  })
-
-  it('should correctly display zero quantity overutilization', async () => {
-    render(<SubscriptionUtilizationWidget
-      deviceType={EntitlementDeviceType.ANALYTICS}
-      title='Analytics'
-      total={0}
-      used={10}
-    />)
-
-    await screen.findByText('Analytics')
-    expect(screen.queryByTestId('overutilizationText')).toBeVisible()
-    expect(screen.queryByTestId('overutilizationText')?.textContent).toBe('10')
-  })
-
-  it('should correctly display too much overutilization', async () => {
-    render(<SubscriptionUtilizationWidget
-      deviceType={EntitlementDeviceType.ANALYTICS}
-      title='Analytics'
-      total={60}
-      used={180}
-    />)
-
-    await screen.findByText('Analytics')
-    expect(screen.queryByTestId('overutilizationText')).toBeVisible()
-    expect(screen.queryByTestId('overutilizationText')?.textContent).toBe('180')
   })
 })
