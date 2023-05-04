@@ -50,24 +50,20 @@ export function VideoCallQoeTable () {
       key: 'name',
       searchable: true,
       render: (value: unknown, row: unknown) => {
-        const formattedStatus = startCase(toLower((row as Meeting).status as string))
+        const status = startCase(toLower((row as Meeting).status as string))
         const meetingId = (row as Meeting).id
-        const urlTxt = [MeetingType.ENDED, MeetingType.NOT_STARTED]
-          .includes(formattedStatus) ? `${meetingId}` : `${meetingId}`
-        return [MeetingType.ENDED]
-          .includes(formattedStatus) ?
-          <TenantLink to={`/serviceValidation/videoCallQoe/${urlTxt}`}>
+        return [MeetingType.ENDED].includes(status)
+          ? <TenantLink to={`/serviceValidation/videoCallQoe/${meetingId}`}>
             {value as string}
           </TenantLink>
-          : [MeetingType.NOT_STARTED, MeetingType.STARTED].includes(formattedStatus)?
-            <Button
+          : [MeetingType.NOT_STARTED, MeetingType.STARTED].includes(status)
+            ? <Button
               type='link'
               onClick={()=>{
                 setVisible(true)
                 setTestDetails({ name: value as string, link: (row as Meeting).joinUrl })
               }
-              }
-            >
+              }>
               {value as string}
             </Button>
             : value as string
