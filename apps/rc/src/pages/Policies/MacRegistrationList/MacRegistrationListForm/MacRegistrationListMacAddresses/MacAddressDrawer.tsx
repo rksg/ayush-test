@@ -117,7 +117,7 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
   }
 
   const addManuallyContent =
-    <Form layout='vertical' form={form} validateTrigger={'onKeyUp'}>
+    <Form layout='vertical' form={form}>
       <Form.Item name='macAddress'
         label={intl.$t({ defaultMessage: 'MAC Address' })}
         rules={[

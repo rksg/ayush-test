@@ -92,11 +92,7 @@ const StaticRoutesDrawer = (props: StaticRoutesDrawerProps) => {
     formRef.resetFields()
   }
 
-  const drawerContent = <Form
-    layout='vertical'
-    form={formRef}
-    onFinish={handleFinish}
-    validateTrigger={'onKeyUp'}>
+  const drawerContent = <Form layout='vertical' form={formRef} onFinish={handleFinish}>
     <Form.Item
       name='destinationIp'
       label={$t({ defaultMessage: 'Destination IP' })}

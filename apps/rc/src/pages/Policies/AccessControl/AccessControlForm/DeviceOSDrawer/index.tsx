@@ -450,7 +450,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     return Promise.resolve()
   }
 
-  const content = <Form layout='horizontal' form={contentForm} validateTrigger={'onKeyUp'}>
+  const content = <Form layout='horizontal' form={contentForm}>
     <DrawerFormItem
       name={'policyName'}
       label={$t({ defaultMessage: 'Policy Name:' })}

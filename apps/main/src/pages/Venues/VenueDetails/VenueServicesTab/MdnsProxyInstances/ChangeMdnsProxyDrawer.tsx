@@ -47,7 +47,6 @@ export default function ChangeMdnsProxyDrawer (props: ChangeMdnsProxyDrawerProps
     <Form layout='vertical'
       form={form}
       preserve={false}
-      validateTrigger={'onKeyUp'}
     >
       <MdnsProxySelector
         formItemProps={{

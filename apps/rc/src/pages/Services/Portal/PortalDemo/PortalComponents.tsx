@@ -17,7 +17,7 @@ export default function PortalComponents (props:{
   const { $t } = useIntl()
   const { updateViewContent, demoValue } = props
   return (
-    <Form layout='vertical' validateTrigger={'onKeyUp'}>
+    <Form layout='vertical'>
       <Form.Item
         name='manageComponents'
         label={$t({ defaultMessage: 'Manage Components' })}

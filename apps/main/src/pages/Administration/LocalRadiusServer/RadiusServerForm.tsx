@@ -120,7 +120,7 @@ export function RadiusServerForm () {
     }]}>
       <Row>
         <Col span={10}>
-          <Form layout='vertical' onFinish={onSubmit} form={form} validateTrigger={'onKeyUp'}>
+          <Form layout='vertical' onFinish={onSubmit} form={form}>
             <Form.Item label={$t({ defaultMessage: 'RADIUS Host' })}>
               <Paragraph>{serverSettingData?.host}</Paragraph>
             </Form.Item>

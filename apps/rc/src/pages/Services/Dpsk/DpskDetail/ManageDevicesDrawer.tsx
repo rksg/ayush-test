@@ -229,7 +229,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
         onCancel={onCancel}
         onOk={onOk}
       >
-        <Form form={form} validateTrigger={'onKeyUp'}>
+        <Form form={form}>
           <Form.Item
             name='macAddress'
             label={$t({ defaultMessage: 'MAC Address' })}

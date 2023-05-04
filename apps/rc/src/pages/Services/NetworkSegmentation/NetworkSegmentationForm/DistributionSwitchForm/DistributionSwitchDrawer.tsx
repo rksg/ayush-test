@@ -91,8 +91,7 @@ export function DistributionSwitchDrawer (props: {
       <Form form={form}
         onFinish={handleFormFinish}
         layout='vertical'
-        initialValues={editRecord || defaultRecord}
-        validateTrigger={'onKeyUp'}>
+        initialValues={editRecord || defaultRecord}>
 
         <Form.Item name='siteName' hidden children={<Input />} />
         <Form.Item name='id'

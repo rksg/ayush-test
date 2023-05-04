@@ -46,7 +46,6 @@ const SnmpV2AgentDrawer = (props: SnmpV2AgentDrawerProps) => {
 
   const content = <Form layout='vertical'
     form={form}
-    validateTrigger={'onKeyUp'}
   >
     <Form.Item
       name='communityName'

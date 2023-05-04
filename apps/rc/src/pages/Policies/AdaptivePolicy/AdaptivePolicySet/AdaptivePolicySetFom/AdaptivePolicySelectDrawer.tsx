@@ -190,9 +190,7 @@ export function AdaptivePoliciesSelectDrawer (props: AdaptivePoliciesSelectDrawe
   }
 
   const content = (
-    <Form
-      layout={'vertical'}
-      validateTrigger={'onKeyUp'}>
+    <Form layout={'vertical'}>
       <Loader states={[
         adaptivePolicyListTableQuery
       ]}>

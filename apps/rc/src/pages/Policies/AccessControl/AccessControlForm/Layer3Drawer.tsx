@@ -701,7 +701,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     return <SortableItem index={index} {...restProps} />
   }
 
-  const content = <Form layout='horizontal' form={contentForm} validateTrigger={'onKeyUp'}>
+  const content = <Form layout='horizontal' form={contentForm}>
     <DrawerFormItem
       name={'policyName'}
       label={$t({ defaultMessage: 'Policy Name:' })}
@@ -752,7 +752,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     />
   </Form>
 
-  const ruleContent = <Form layout='horizontal' form={drawerForm} validateTrigger={'onKeyUp'}>
+  const ruleContent = <Form layout='horizontal' form={drawerForm}>
     <DrawerFormItem
       name='description'
       label={$t({ defaultMessage: 'Description' })}

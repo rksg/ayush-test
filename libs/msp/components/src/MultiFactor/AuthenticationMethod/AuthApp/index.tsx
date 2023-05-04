@@ -58,7 +58,7 @@ export const AuthApp = styled((props: AuthAppProps) => {
       destroyOnClose
       width={336}
     >
-      <Form layout='vertical' form={form} onFinish={handleSave} validateTrigger={'onKeyUp'}>
+      <Form layout='vertical' form={form} onFinish={handleSave}>
         <Typography>
           <Typography.Paragraph>
             <Typography.Text>

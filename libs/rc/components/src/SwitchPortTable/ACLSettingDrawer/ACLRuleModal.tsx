@@ -62,7 +62,6 @@ export function ACLRuleModal (props: {
         labelCol={{ span: 8 }}
         form={form}
         onFinish={props.onSave}
-        validateTrigger={'onKeyUp'}
       >
         <Form.Item name='sequence'
           label={$t({ defaultMessage: 'Sequence' })}

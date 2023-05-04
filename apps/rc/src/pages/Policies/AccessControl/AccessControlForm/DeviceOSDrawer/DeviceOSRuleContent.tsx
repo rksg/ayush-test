@@ -193,7 +193,7 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
   </div>
 
 
-  return <Form layout='horizontal' form={drawerForm} validateTrigger={'onKeyUp'}>
+  return <Form layout='horizontal' form={drawerForm}>
     <DrawerFormItem
       name='ruleName'
       label={$t({ defaultMessage: 'Rule Name' })}

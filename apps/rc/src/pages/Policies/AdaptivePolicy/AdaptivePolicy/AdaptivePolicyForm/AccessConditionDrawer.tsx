@@ -135,7 +135,7 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
 
   const content = (
     <Loader states={[{ isLoading }]}>
-      <Form layout='vertical' form={form} onFinish={onSubmit} validateTrigger={'onKeyUp'}>
+      <Form layout='vertical' form={form} onFinish={onSubmit}>
         <Form.Item name='conditionId' hidden children={<Input />}/>
         <Form.Item name='name' hidden children={<Input />}/>
         <Form.Item name='attributeType' hidden children={<Input />}/>

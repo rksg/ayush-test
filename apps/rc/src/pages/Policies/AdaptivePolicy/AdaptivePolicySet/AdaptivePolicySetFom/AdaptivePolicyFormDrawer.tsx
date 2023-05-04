@@ -82,8 +82,7 @@ export function AdaptivePolicyFormDrawer (props: AdaptivePolicyFormDrawerProps) 
 
   const content = (
     <Form layout={'vertical'}
-      form={form}
-      validateTrigger={'onKeyUp'}>
+      form={form}>
       <AdaptivePolicySettingForm drawerMode={true}/>
     </Form>
   )

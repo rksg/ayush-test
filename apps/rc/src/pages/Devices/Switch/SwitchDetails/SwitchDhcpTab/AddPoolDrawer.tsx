@@ -135,7 +135,7 @@ export function AddPoolDrawer (props: {
         </Button>
       </div>}
     >
-      <Form layout='vertical' form={form} onFinish={handleFormFinish} validateTrigger={['onKeyUp']}>
+      <Form layout='vertical' form={form} onFinish={handleFormFinish}>
         <Form.Item name={'id'} hidden children={<input type='hidden' />} />
         <Form.Item
           name='poolName'

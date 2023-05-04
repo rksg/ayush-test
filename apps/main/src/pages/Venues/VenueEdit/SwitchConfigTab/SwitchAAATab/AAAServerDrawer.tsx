@@ -104,11 +104,7 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
     }
   }
 
-  const radiusForm = <Form
-    layout='vertical'
-    form={form}
-    onFinish={onSubmit}
-    validateTrigger={'onKeyUp'}>
+  const radiusForm = <Form layout='vertical'form={form} onFinish={onSubmit}>
     <Form.Item
       name='name'
       label={$t({ defaultMessage: 'Name' })}
@@ -160,11 +156,7 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
     />
   </Form>
 
-  const tacacsForm = <Form
-    layout='vertical'
-    form={form}
-    onFinish={onSubmit}
-    validateTrigger={'onKeyUp'}>
+  const tacacsForm = <Form layout='vertical'form={form} onFinish={onSubmit}>
     <Form.Item
       name='name'
       label={$t({ defaultMessage: 'Name' })}
@@ -220,11 +212,7 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
     </Form.Item>
   </Form>
 
-  const localUserForm = <Form
-    layout='vertical'
-    form={form}
-    onFinish={onSubmit}
-    validateTrigger={['onKeyUp']}>
+  const localUserForm = <Form layout='vertical' form={form} onFinish={onSubmit}>
     <Form.Item
       name='username'
       label={$t({ defaultMessage: 'Username' })}

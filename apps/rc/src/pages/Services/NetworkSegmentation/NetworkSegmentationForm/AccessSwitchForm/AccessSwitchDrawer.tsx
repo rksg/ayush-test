@@ -244,8 +244,7 @@ export function AccessSwitchDrawer (props: {
       <Form layout='vertical'
         form={form}
         onFinish={saveHandler}
-        initialValues={!isMultipleEdit ? editRecords[0] : {}}
-        validateTrigger={'onKeyUp'}>
+        initialValues={!isMultipleEdit ? editRecords[0] : {}}>
         <UI.OverwriteFormItem label={<>
           { isMultipleEdit &&
             <Checkbox onChange={(e)=>setUplinkInfoOverwrite(e.target.checked)}></Checkbox>}
