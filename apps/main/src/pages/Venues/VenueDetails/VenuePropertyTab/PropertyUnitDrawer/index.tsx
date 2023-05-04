@@ -15,10 +15,11 @@ import {
   useGetPropertyConfigsQuery,
   useUpdatePropertyUnitMutation,
   useUpdatePersonaMutation,
-  useLazyGetPersonaGroupByIdQuery
+  useLazyGetPersonaGroupByIdQuery,
+  useLazyGetPropertyUnitListQuery
 } from '@acx-ui/rc/services'
 import {
-  APExtended,
+  APExtended, checkObjectNotExists,
   emailRegExp,
   Persona,
   PersonaEthernetPort, phoneRegExp,
@@ -113,6 +114,9 @@ function AccessPointLanPortSelector (props: { venueId: string }) {
           { defaultMessage: 'Select LAN Ports for ({model})' },
           { model: selectedModel?.model ?? noDataDisplay }
         )}
+        rules={[
+          { required: !!accessAp, message: $t({ defaultMessage: 'Please select the LAN ports' }) }
+        ]}
       >
         {selectedModel.lanPorts &&
           <Checkbox.Group >
@@ -157,6 +161,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   const [personaGroupId, setPersonaGroupId]
     = useState<string|undefined>(propertyConfigsQuery?.data?.personaGroupId)
 
+  const [getUnitList] = useLazyGetPropertyUnitListQuery()
   const [getUnitById, unitResult] = useLazyGetPropertyUnitByIdQuery()
   const [getPersonaById, personaResult] = useLazyGetPersonaByIdQuery()
   const [getPersonaGroupById, personaGroupResult] = useLazyGetPersonaGroupByIdQuery()
@@ -357,6 +362,18 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
     <AccessPointLanPortSelector venueId={venueId} />
   </>)
 
+  const nameValidator = async (name: string) => {
+    try {
+      const list = (await getUnitList({
+        params: { venueId },
+        payload: { sortField: 'name', sortOrder: 'ASC', pageSize: 10, page: 1, filters: { name } }
+      }, true).unwrap()).data.filter(u => u.id !== unitId).map(u => ({ name: u.name }))
+      return checkObjectNotExists(list, { name } , $t({ defaultMessage: 'Unit' }))
+    } catch (e) {
+      return Promise.resolve()
+    }
+  }
+
   return (
     <Drawer
       destroyOnClose
@@ -388,9 +405,13 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
             <Form.Item
               name={'name'}
               label={$t({ defaultMessage: 'Unit Name' })}
+              hasFeedback
+              validateFirst
+              validateTrigger={['onBlur']}
               children={<Input />}
               rules={[
-                { required: true }
+                { required: true },
+                { validator: (_, value) => nameValidator(value) }
               ]}
             />
             <Form.Item
