@@ -39,9 +39,6 @@ export function Syslog () {
   const { Paragraph } = Typography
   const { $t } = useIntl()
   const { tenantId, venueId } = useParams()
-
-  const unreleased = useIsSplitOn(Features.UNRELEASED)
-
   const {
     editContextData,
     setEditContextData,
@@ -166,7 +163,6 @@ export function Syslog () {
               })}
               style={{ width: '200px' }}
             />
-            {unreleased &&
             <TenantLink
               to={getPolicyRoutePath({
                 type: PolicyType.SYSLOG,
@@ -176,7 +172,6 @@ export function Syslog () {
             >
               {$t({ defaultMessage: 'Add Server Profile:' })}
             </TenantLink>
-            }
           </Form.Item>
           {defaultSyslogValue &&
           <UI.FieldGroup>
