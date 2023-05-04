@@ -1,11 +1,10 @@
 /* eslint-disable max-len */
 import { useContext, useEffect, useState } from 'react'
 
-import Tooltip     from 'antd/es/tooltip'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Button, Descriptions, Drawer, showActionModal }                                                                                                                                                           from '@acx-ui/components'
+import { Button, Descriptions, Drawer, showActionModal, Tooltip }                                                                                                                                                  from '@acx-ui/components'
 import { useAcknowledgeSwitchMutation, useDeleteStackMemberMutation, useLazySwitchFrontViewQuery, useLazySwitchRearViewQuery }                                                                                     from '@acx-ui/rc/services'
 import { getPoeUsage, getSwitchModel, getSwitchPortLabel, isEmpty, StackMember, SwitchFrontView, SwitchModelInfo, SwitchRearViewUISlot, SwitchSlot, SwitchStatusEnum, SwitchViewModel, transformSwitchUnitStatus } from '@acx-ui/rc/utils'
 import { useParams }                                                                                                                                                                                               from '@acx-ui/react-router-dom'
@@ -341,7 +340,7 @@ export function Unit (props:{
                 <div className='icon'>
                   <UI.RearPowerIcon />
                 </div>
-                <div className='status'>{unit.poeUsage.used} / {unit.poeUsage.total} ({unit.poeUsage.percentage})</div>
+                <div className='status'>{unit.poeUsage.used} W / {unit.poeUsage.total} W ({unit.poeUsage.percentage})</div>
               </>
               : <>
                 <div className='unit-header'>{unit.switchUnit}</div>

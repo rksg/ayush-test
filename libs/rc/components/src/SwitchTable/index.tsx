@@ -12,6 +12,13 @@ import {
   deviceStatusColors,
   ColumnType
 } from '@acx-ui/components'
+import {
+  Features,
+  useIsSplitOn
+} from '@acx-ui/feature-toggle'
+import {
+  DownloadOutlined
+} from '@acx-ui/icons'
 import { useImportSwitchesMutation,
   useLazyGetJwtTokenQuery,
   useSwitchListQuery } from '@acx-ui/rc/services'
@@ -27,7 +34,8 @@ import {
   TableQuery,
   RequestPayload,
   SwitchStatusEnum,
-  isStrictOperationalSwitch
+  isStrictOperationalSwitch,
+  transformSwitchUnitStatus
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                    from '@acx-ui/user'
@@ -37,15 +45,18 @@ import { CsvSize, ImportFileDrawer } from '../ImportFileDrawer'
 import { SwitchCliSession }          from '../SwitchCliSession'
 import { useSwitchActions }          from '../useSwitchActions'
 
+import { useExportCsv } from './useExportCsv'
+
 export const SwitchStatus = (
   { row, showText = true }: { row: SwitchRow, showText?: boolean }
 ) => {
   if(row){
     const switchStatus = transformSwitchStatus(row.deviceStatus, row.configReady, row.syncedSwitchConfig, row.suspendingDeployTime)
+    const switchStatusString = row.isFirstLevel ? getSwitchStatusString(row) : transformSwitchUnitStatus(row.deviceStatus, row.configReady, row.syncedSwitchConfig)
     return (
       <span>
         <Badge color={handleStatusColor(switchStatus.deviceStatus)}
-          text={showText ? getSwitchStatusString(row) : ''}
+          text={showText ? switchStatusString : ''}
         />
       </span>
     )
@@ -99,6 +110,8 @@ export function SwitchTable (props : SwitchTableProps) {
     option: { skip: Boolean(props.tableQuery) }
   })
   const tableQuery = props.tableQuery || inlineTableQuery
+  const { exportCsv, disabled } = useExportCsv<SwitchRow>(tableQuery as TableQuery<SwitchRow, RequestPayload<unknown>, unknown>)
+  const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
 
   const switchAction = useSwitchActions()
   const tableData = tableQuery.data?.data ?? []
@@ -335,6 +348,8 @@ export function SwitchTable (props : SwitchTableProps) {
         }
       }
       ] : [])}
+      // eslint-disable-next-line max-len
+      iconButton={exportDevice ? { icon: <DownloadOutlined />, disabled, onClick: exportCsv } : undefined}
     />
     <SwitchCliSession
       modalState={cliModalState}
@@ -352,8 +367,13 @@ export function SwitchTable (props : SwitchTableProps) {
       visible={importVisible}
       isLoading={importResult.isLoading}
       importError={importResult.error as FetchBaseQueryError}
-      importRequest={(formData) => {
-        importCsv({ params, payload: formData })
+      importRequest={async (formData) => {
+        await importCsv({ params, payload: formData }
+        ).unwrap().then(() => {
+          setImportVisible(false)
+        }).catch((error) => {
+          console.log(error) // eslint-disable-line no-console
+        })
       }}
       onClose={() => setImportVisible(false)}
     />

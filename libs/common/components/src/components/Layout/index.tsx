@@ -11,7 +11,6 @@ import {
 } from 'rc-menu/lib/interface'
 import { useIntl } from 'react-intl'
 
-import { Logo }                                   from '@acx-ui/icons'
 import { TenantType, useLocation, TenantNavLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                              from '@acx-ui/types'
 import { hasRoles }                               from '@acx-ui/user'
@@ -56,6 +55,7 @@ export function isMenuItemGroupType (value: ItemType): value is MenuItemGroupTyp
 }
 
 export interface LayoutProps {
+  logo: React.ReactNode;
   menuConfig: ItemType[];
   rightHeaderContent: React.ReactNode;
   leftHeaderContent?: React.ReactNode;
@@ -67,9 +67,7 @@ function useActiveUri () {
   const chunks = pathname.split('/')
   for (const c in chunks) {
     if (['v', 't'].includes(chunks[c])) {
-      // TODO
-      // update to "+ 1" once URL updated to "/tenant-id/v|t"
-      return '/' + chunks.slice(Number(c) + 2).join('/')
+      return '/' + chunks.slice(Number(c) + 1).join('/')
     }
   }
   return pathname
@@ -144,6 +142,7 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
       openKeys={openKeys}
       items={props.menuConfig.map(item => getMenuItem(item, ''))}
       onOpenChange={keys => setOpenKeys(keys.slice(-1))}
+      getPopupContainer={trigger => trigger.parentNode as HTMLElement}
     />
   </>
 }
@@ -162,6 +161,7 @@ function findDashboard (menuConfig: ItemType[]): ItemType | undefined {
 }
 
 export function Layout ({
+  logo,
   menuConfig,
   rightHeaderContent,
   leftHeaderContent,
@@ -186,12 +186,10 @@ export function Layout ({
       menuHeaderRender={() => <TenantNavLink
         to={indexPath}
         tenantType={get(dashboard, 'tenantType', 't')}
-        children={<Logo />}
+        children={logo}
       />}
-      headerContentRender={() => leftHeaderContent && <UI.LeftHeaderContentWrapper>
-        <UI.LogoDivider />
-        {leftHeaderContent}
-      </UI.LeftHeaderContentWrapper>}
+      headerContentRender={() => leftHeaderContent &&
+        <UI.LeftHeaderContentWrapper children={leftHeaderContent} />}
       rightContentRender={() => <UI.RightHeaderContentWrapper children={rightHeaderContent} />}
       onCollapse={setCollapsed}
       collapsedButtonRender={(collapsed: boolean) => <>

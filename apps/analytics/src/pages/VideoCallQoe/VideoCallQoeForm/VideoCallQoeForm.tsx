@@ -1,0 +1,52 @@
+
+import { useState } from 'react'
+
+import { useIntl } from 'react-intl'
+
+import { PageHeader, StepsFormNew } from '@acx-ui/components'
+import { useNavigateToPath }        from '@acx-ui/react-router-dom'
+
+import { useCreateCallQoeTestMutation } from '../services'
+
+import { VideoCallQoeCreateForm }  from './VideoCallQoeCreateForm'
+import { VideoCallQoeDetailsForm } from './VideoCallQoeDetailsForm'
+
+export function VideoCallQoeForm () {
+  const { $t } = useIntl()
+  const [ link, setLink ] = useState('')
+  const navigateToList = useNavigateToPath('/serviceValidation/videoCallQoe')
+  const breadcrumb = [{
+    text: $t({ defaultMessage: 'Video Call QoE' }),
+    link: '/serviceValidation/videoCallQoe'
+  }]
+
+  const [ submit ] = useCreateCallQoeTestMutation()
+
+  return <>
+    <PageHeader title={!link
+      ? $t({ defaultMessage: 'Create Test Call' })
+      : $t({ defaultMessage: 'Test Call Details' })}
+    breadcrumb={breadcrumb} />
+    <StepsFormNew
+      onFinish={async (values: { name: string }) => {
+        const response = await submit(values).unwrap()
+        setLink(response?.meetings[0]?.joinUrl)
+      }}
+      onCancel={navigateToList}
+      buttonLabel={{
+        submit: link ? '': $t({ defaultMessage: 'Add' }),
+        cancel: link ? $t({ defaultMessage: 'Done' }) : $t({ defaultMessage: 'Cancel' })
+      }}
+    >
+      {
+        <StepsFormNew.StepForm
+          children={link?
+            <VideoCallQoeDetailsForm link={link}/>
+            :
+            <VideoCallQoeCreateForm />
+          }/>
+      }
+
+    </StepsFormNew>
+  </>
+}

@@ -21,45 +21,39 @@ import {
 import {
   MspEcDropdownList
 } from '@acx-ui/msp/components'
-import { CloudMessageBanner }                                    from '@acx-ui/rc/components'
-import { isDelegationMode }                                      from '@acx-ui/rc/utils'
-import { getBasePath, Link, Outlet, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { useParams }                                             from '@acx-ui/react-router-dom'
-import { RolesEnum }                                             from '@acx-ui/types'
-import { hasRoles, useUserProfileContext }                       from '@acx-ui/user'
-import { AccountType, getJwtTokenPayload, PverName }             from '@acx-ui/utils'
+import { CloudMessageBanner }                                     from '@acx-ui/rc/components'
+import { isDelegationMode }                                       from '@acx-ui/rc/utils'
+import { Outlet, useNavigate, useTenantLink }                     from '@acx-ui/react-router-dom'
+import { useParams }                                              from '@acx-ui/react-router-dom'
+import { RolesEnum }                                              from '@acx-ui/types'
+import { hasRoles, useUserProfileContext }                        from '@acx-ui/user'
+import { AccountType, getJwtTokenPayload, PverName, useTenantId } from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
 import SearchBar         from './SearchBar'
 import * as UI           from './styledComponents'
+import { useLogo }       from './useLogo'
 
 function Layout () {
-  const [supportStatus,setSupportStatus] = useState('')
+  const { $t } = useIntl()
+  const navigate = useNavigate()
+  const tenantId = useTenantId()
+  const params = useParams()
+
+  const logo = useLogo(tenantId)
+
   const { data: userProfile } = useUserProfileContext()
   const companyName = userProfile?.companyName
   const tenantType = getJwtTokenPayload().tenantType
   const showHomeButton =
     isDelegationMode() || userProfile?.var || tenantType === AccountType.MSP_NON_VAR ||
     tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
-  const { $t } = useIntl()
-  const basePath = useTenantLink('/users/guestsManager')
-  const navigate = useNavigate()
-  const params = useParams()
-  const searchFromUrl = params.searchVal || ''
-
-  const [searchExpanded, setSearchExpanded] = useState<boolean>(searchFromUrl !== '')
-  const [licenseExpanded, setLicenseExpanded] = useState<boolean>(false)
-  const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
-
   const isBackToRC = (PverName.ACX === getJwtTokenPayload().pver ||
     PverName.ACX_HYBRID === getJwtTokenPayload().pver)
+  const [isShown, setIsShown] = useState<boolean | null>(null)
 
-  const getIndexPath = () => {
-    return isGuestManager
-      ? `${getBasePath()}/v/${getJwtTokenPayload().tenantId}/users/guestsManager`
-      : `${getBasePath()}/v/${getJwtTokenPayload().tenantId}`
-  }
-
+  const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
+  const basePath = useTenantLink('/users/guestsManager')
   useEffect(() => {
     if (isGuestManager && params['*'] !== 'guestsManager') {
       navigate({
@@ -69,8 +63,15 @@ function Layout () {
     }
   }, [isGuestManager, params['*']])
 
+  const searchFromUrl = params.searchVal || ''
+  const [searchExpanded, setSearchExpanded] = useState<boolean>(searchFromUrl !== '')
+  const [licenseExpanded, setLicenseExpanded] = useState<boolean>(false)
+
+  const [supportStatus, setSupportStatus] = useState('')
+
   return (
     <LayoutComponent
+      logo={logo}
       menuConfig={useMenuConfig()}
       content={
         <>
@@ -78,29 +79,27 @@ function Layout () {
           <Outlet />
         </>
       }
-      leftHeaderContent={
-        <UI.LeftHeaderWrapper>
-          { showHomeButton && (isBackToRC ?
-            <a href={`/api/ui/v/${getJwtTokenPayload().tenantId}`}>
-              <UI.Home>
-                <LayoutUI.Icon children={<HomeSolid />} />
-                {$t({ defaultMessage: 'Home' })}
-              </UI.Home>
-            </a> :
-            <Link to={getIndexPath()}>
-              <UI.Home>
-                <LayoutUI.Icon children={<HomeSolid />} />
-                {$t({ defaultMessage: 'Home' })}
-              </UI.Home>
-            </Link>)
-          }
-          <RegionButton/>
-          <HeaderContext.Provider value={{
-            searchExpanded, licenseExpanded, setSearchExpanded, setLicenseExpanded }}>
-            <LicenseBanner/>
-          </HeaderContext.Provider>
-        </UI.LeftHeaderWrapper>
-      }
+      leftHeaderContent={<>
+        { showHomeButton && (isBackToRC ?
+          <a href={`/api/ui/v/${getJwtTokenPayload().tenantId}`}>
+            <UI.Home>
+              <LayoutUI.Icon children={<HomeSolid />} />
+              {$t({ defaultMessage: 'Home' })}
+            </UI.Home>
+          </a> :
+          <a href={`/${getJwtTokenPayload().tenantId}/v`}>
+            <UI.Home>
+              <LayoutUI.Icon children={<HomeSolid />} />
+              {$t({ defaultMessage: 'Home' })}
+            </UI.Home>
+          </a>)
+        }
+        <RegionButton/>
+        <HeaderContext.Provider value={{
+          searchExpanded, licenseExpanded, setSearchExpanded, setLicenseExpanded }}>
+          <LicenseBanner/>
+        </HeaderContext.Provider>
+      </>}
 
       rightHeaderContent={<>
         <HeaderContext.Provider value={{
@@ -113,11 +112,11 @@ function Layout () {
           : <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>}
         {!isGuestManager &&
           <>
-            <AlarmsButton />
-            <ActivityButton />
+            <AlarmsButton isShown={isShown} setIsShown={setIsShown}/>
+            <ActivityButton isShown={isShown === null ? false : !isShown} setIsShown={setIsShown}/>
           </>}
         <FetchBot showFloatingButton={false} statusCallback={setSupportStatus}/>
-        <HelpButton supportStatus={supportStatus}/>
+        <HelpButton supportStatus={supportStatus} setIsShown={setIsShown}/>
         <UserButton/>
       </>}
     />

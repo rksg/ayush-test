@@ -1,5 +1,5 @@
 export const mockedDpskList = {
-  content: [
+  data: [
     {
       id: '123456789a',
       name: 'DPSK Service 1',
@@ -25,31 +25,24 @@ export const mockedDpskList = {
       networkIds: ['123', '456']
     }
   ],
-  totalElements: 3,
-  totalPages: 1,
-  pageable: {
-    pageNumber: 0,
-    pageSize: 10
-  },
-  sort: []
+  page: 1,
+  totalCount: 3,
+  totalPages: 1
 }
 
 export const mockedDpskListWithPersona = {
-  content: [
+  data: [
     {
       id: '123456789a',
       name: 'DPSK Service 1',
       passphraseLength: 18,
       passphraseFormat: 'MOST_SECURED',
       expirationType: null,
-      identityId: '123456789'
+      identityId: '123456789',
+      networkIds: ['123', '456']
     }
   ],
-  totalElements: 1,
-  totalPages: 1,
-  pageable: {
-    pageNumber: 0,
-    pageSize: 10
-  },
-  sort: []
+  page: 1,
+  totalCount: 1,
+  totalPages: 1
 }

@@ -17,10 +17,10 @@ const sample = {
     '2022-04-07T10:00:00.000Z',
     '2022-04-07T10:15:00.000Z'
   ],
-  totalTraffic_all: [1, 2, 3, 4, 5],
-  totalTraffic_6: [6, 7, 8, 9, 10],
-  totalTraffic_5: [11, 12, 13, 14, 15],
-  totalTraffic_24: [16, 17, 18, 19, 20]
+  userTraffic_all: [1, 2, 3, 4, 5],
+  userTraffic_6: [6, 7, 8, 9, 10],
+  userTraffic_5: [11, 12, 13, 14, 15],
+  userTraffic_24: [16, 17, 18, 19, 20]
 }
 
 const sampleNoData = {
@@ -31,10 +31,10 @@ const sampleNoData = {
     '2022-04-07T10:00:00.000Z',
     '2022-04-07T10:15:00.000Z'
   ],
-  totalTraffic_all: [null],
-  totalTraffic_6: [null],
-  totalTraffic_5: [null],
-  totalTraffic_24: [null]
+  userTraffic_all: [null],
+  userTraffic_6: [null],
+  userTraffic_5: [null],
+  userTraffic_24: [null]
 }
 
 describe('TrafficByVolumeWidget', () => {

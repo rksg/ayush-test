@@ -7,12 +7,13 @@ import { deviceCategoryColors, Loader, Table, TableProps } from '@acx-ui/compone
 import {
   SignalBad,
   SignalExcellent,
-  SignalGood, SignalPoor,
-  VenueMarkerGrey,
-  VenueMarkerRed
+  SignalGood,
+  SignalPoor
 } from '@acx-ui/icons'
 import { useGetOldVenueRogueApQuery }                                 from '@acx-ui/rc/services'
 import { RogueDeviceCategory, RogueOldApResponseType, useTableQuery } from '@acx-ui/rc/utils'
+
+import ApLocateDetail from './ApLocateDetail'
 
 const defaultPayload = {
   url: '/api/viewmodel/tenant/{tenantId}/venue/{venueId}/rogue/ap',
@@ -57,7 +58,7 @@ const renderSignal = (snr: number) => {
   return <SignalBad height={21} />
 }
 
-const handleCategoryColor = (status: RogueDeviceCategory) => {
+export const handleCategoryColor = (status: RogueDeviceCategory) => {
   return `var(${deviceCategoryColors[status]})`
 }
 
@@ -85,8 +86,14 @@ export function VenueRogueAps () {
         key: 'rogueMac',
         title: intl.$t({ defaultMessage: 'BSSID' }),
         dataIndex: 'rogueMac',
+        sorter: true,
         searchable: true,
-        fixed: 'left'
+        fixed: 'left',
+        render: (data, row) => {
+          return <span>
+            {row.rogueMac}
+          </span>
+        }
       },
       {
         key: 'category',
@@ -105,7 +112,7 @@ export function VenueRogueAps () {
       },
       {
         key: 'classificationPolicyName',
-        title: intl.$t({ defaultMessage: 'Classification Profile' }),
+        title: intl.$t({ defaultMessage: 'Classification Rule' }),
         dataIndex: 'classificationPolicyName',
         sorter: true
       },
@@ -119,17 +126,19 @@ export function VenueRogueAps () {
         key: 'channel',
         title: intl.$t({ defaultMessage: 'Channel' }),
         dataIndex: 'channel',
+        sortDirections: ['descend', 'ascend', 'descend'],
         sorter: true
       },
       {
         key: 'band',
         title: intl.$t({ defaultMessage: 'Band' }),
+        sorter: true,
         dataIndex: 'band'
       },
       {
-        key: 'closestAp_snr',
+        key: 'closestAp.snr',
         title: intl.$t({ defaultMessage: 'SNR' }),
-        dataIndex: 'closestAp_snr',
+        dataIndex: 'closestAp.snr',
         sorter: true,
         align: 'center',
         render: (data, row) => {
@@ -140,21 +149,19 @@ export function VenueRogueAps () {
         }
       },
       {
-        key: 'closestAp_apName',
-        title: intl.$t({ defaultMessage: 'Closest Ap' }),
-        dataIndex: 'closestAp_apName',
+        key: 'closestAp.apName',
+        title: intl.$t({ defaultMessage: 'Closest AP' }),
+        dataIndex: 'closestAp.apName',
         // filterable: true, // TODO: change to search or provide static list
         sorter: true
       },
       {
-        key: 'detectingAps',
-        title: intl.$t({ defaultMessage: 'Detecting AP' }),
-        dataIndex: 'detectingAps',
+        key: 'numberOfDetectingAps',
+        title: intl.$t({ defaultMessage: 'Detecting APs' }),
+        dataIndex: 'numberOfDetectingAps',
         sorter: true,
-        align: 'center',
-        render: (data, row) => {
-          return row.detectingAps.length
-        }
+        sortDirections: ['descend', 'ascend', 'descend'],
+        align: 'center'
       },
       {
         key: 'lastUpdTime',
@@ -170,11 +177,9 @@ export function VenueRogueAps () {
         key: 'locatable',
         title: intl.$t({ defaultMessage: 'Locate Rogue' }),
         dataIndex: 'locatable',
-        sorter: true,
+        align: 'center',
         render: (data, row) => {
-          return row.locatable
-            ? <VenueMarkerRed />
-            : <VenueMarkerGrey />
+          return <ApLocateDetail row={row} />
         }
       }
     ]
@@ -194,11 +199,7 @@ export function VenueRogueAps () {
   const VenueRogueApsTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useGetOldVenueRogueApQuery,
-      defaultPayload,
-      sorter: {
-        sortField: 'lastUpdTime',
-        sortOrder: 'DESC'
-      }
+      defaultPayload
     })
 
     return (
@@ -207,6 +208,7 @@ export function VenueRogueAps () {
       ]}>
         <Table
           settingsId='venue-rogue-aps-table'
+          enableApiFilter={true}
           columns={getCols(useIntl())}
           dataSource={transformData(tableQuery?.data?.data || [])}
           pagination={tableQuery.pagination}

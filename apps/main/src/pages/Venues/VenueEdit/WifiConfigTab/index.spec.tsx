@@ -33,13 +33,13 @@ describe('WifiConfigTab', () => {
     await screen.findByRole('tab', { name: 'Radio' })
     await screen.findByRole('tab', { name: 'Networking' })
     await screen.findByRole('tab', { name: 'Security' })
-    await screen.findByRole('tab', { name: 'Services & Policies' })
+    await screen.findByRole('tab', { name: 'Network Controls' })
     await screen.findByRole('tab', { name: 'Advanced Settings' })
     expect(asFragment()).toMatchSnapshot()
 
     fireEvent.click(await screen.findByRole('tab', { name: 'Security' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/venues/${params.venueId}/edit/wifi/security`,
+      pathname: `/${params.tenantId}/t/venues/${params.venueId}/edit/wifi/security`,
       hash: '',
       search: ''
     })

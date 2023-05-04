@@ -40,7 +40,13 @@ export default function FloorplanUpload ({ validateFile, imageFile } : {
       isValidfileType: true,
       isValidFileSize: true
     })
-    const acceptedImageTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/svg']
+    const acceptedImageTypes = [
+      'image/png',
+      'image/jpeg',
+      'image/jpg',
+      'image/gif',
+      'image/svg',
+      'image/svg+xml']
     const validImage = acceptedImageTypes.includes(file.type)
     if (!validImage) {
       const content = $t({ defaultMessage: 'Invalid Image type!' })

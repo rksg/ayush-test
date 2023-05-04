@@ -200,7 +200,9 @@ export function StackForm () {
               model: `${item.model === undefined ? getSwitchModel(item.id) : item.model}
                 ${_.get(switchDetail, 'activeSerial') === item.id ? '(Active)' : ''}`,
               active: _.get(switchDetail, 'activeSerial') === item.id,
-              disabled: _.get(switchDetail, 'activeSerial') === item.id || !!switchDetail.cliApplied
+              disabled: _.get(switchDetail, 'activeSerial') === item.id ||
+                !!switchDetail.cliApplied ||
+                switchDetail.deviceStatus === SwitchStatusEnum.OPERATIONAL
             }
           })
 
@@ -662,13 +664,7 @@ export function StackForm () {
                     initialValue={null}
                     children={
                       <Select
-                        options={[
-                          {
-                            label: $t({ defaultMessage: 'Select venue...' }),
-                            value: null
-                          },
-                          ...venueOption
-                        ]}
+                        options={venueOption}
                         onChange={async (value) => await handleVenueChange(value)}
                         disabled={readOnly || editMode || isStackSwitches}
                       />

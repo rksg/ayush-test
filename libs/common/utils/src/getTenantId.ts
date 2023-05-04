@@ -1,11 +1,9 @@
 import { useLocation } from 'react-router-dom'
 
+
 export function getTenantId (pathname = window.location.pathname): string | undefined {
-  const chunks = pathname.split('/')
-  for (const c in chunks) {
-    if (['v', 't'].includes(chunks[c])) { return chunks[Number(c) + 1] }
-  }
-  return
+  const matchedIds = pathname.match(/[a-f0-9]{32}/)
+  return matchedIds ? matchedIds[0] : undefined
 }
 
 export function useTenantId () {

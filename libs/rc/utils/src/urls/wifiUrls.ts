@@ -20,13 +20,25 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getNetwork: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/network/:networkId/deep'
+    url: '/networks/:networkId',
+    oldUrl: '/api/tenant/:tenantId/wifi/network/:networkId/deep',
+    newApi: true
   },
   addNetworkDeep: {
+    // [New API] not support activate multiple venue in one request
+    // method: 'post',
+    // url: '/networks',
+    // oldUrl: '/api/tenant/:tenantId/wifi/network/deep?quickAck=true',
+    // newApi: false
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/network/deep?quickAck=true'
   },
   updateNetworkDeep: {
+    // [New API] not support activate multiple venue in one request
+    // method: 'put',
+    // url: '/networks',
+    // oldUrl: '/api/tenant/:tenantId/wifi/network/:networkId/deep?quickAck=true',
+    // newApi: false
     method: 'put',
     url: '/api/tenant/:tenantId/wifi/network/:networkId/deep?quickAck=true'
   },
@@ -61,7 +73,11 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getVenueApCapabilities: {
-    // [New API] private api
+    // [New API] new uri not ready
+    // method: 'get',
+    // url: '/venues/:venueId/aps/capabilities',
+    // oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/capabilities',
+    // newApi: false
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/capabilities'
   },
@@ -142,7 +158,11 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getWifiCapabilities: {
-    // [New API] private api
+    // [New API] new uri not ready
+    // method: 'get',
+    // url: '/venues/aps/capabilities',
+    // oldUrl: '/api/tenant/:tenantId/wifi/capabilities',
+    // newApi: false
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/capabilities'
   },
@@ -268,13 +288,11 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   addApPhoto: {
-    // 500 Internal Server Error
-    // method: 'post',
-    // url: '/venues/aps/:serialNumber/pictures',
-    // oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/picture/deep',
-    // newApi: true
-    method: 'post',
-    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/picture/deep'
+    method: 'put',
+    url: '/venues/aps/:serialNumber/pictures',
+    oldMethod: 'post',
+    oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/picture/deep',
+    newApi: true
   },
   deleteApPhoto: {
     method: 'delete',
@@ -347,7 +365,11 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getApCapabilities: {
-    // [New API] private api
+    // [New API] new uri not ready
+    // method: 'get',
+    // url: '/venues/aps/:serialNumber/capabilities',
+    // oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/capabilities',
+    // newApi: false
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/capabilities'
   },

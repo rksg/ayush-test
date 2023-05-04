@@ -416,6 +416,7 @@ export interface SwitchPortViewModel extends GridDataRow {
   unitStatus: string; // stack unit role (Standalone/Member...etc)
   unitState: SwitchStatusEnum; // stack unit status (Online/Offline)
   SwitchPortStackingPortField: boolean;
+  mediaType?: string;
 }
 
 export interface SwitchPortStatus {
@@ -720,13 +721,24 @@ export interface CliTemplateVenueSwitches {
   switches: string[]
 }
 
+export interface ApplySwitch {
+  id: string
+  name?: string
+  venueName: string
+}
+
 export interface CliConfiguration {
   id?: string
   name?: string
   cli?: string
+  cliValid?: {
+    tooltip: string
+    valid: boolean
+  }
   reload?: boolean
   applyNow?: boolean
   applyLater?: boolean
+  applySwitch?: ApplySwitch[]
   venueSwitches?: CliTemplateVenueSwitches[]
   variables?: CliTemplateVariable[]
 
@@ -734,7 +746,7 @@ export interface CliConfiguration {
   overwrite?: boolean
   venues?: string[]
   models?: string[]
-  venueCliTemplate?: { //
+  venueCliTemplate?: {
 		cli?: string,
 		id?: string,
 		name?: string,

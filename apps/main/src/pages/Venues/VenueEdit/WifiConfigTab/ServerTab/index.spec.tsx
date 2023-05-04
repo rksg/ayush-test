@@ -78,7 +78,7 @@ describe('ServerTab', () => {
           <ServerTab />
         </VenueEditContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
+        route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab/:activeSubTab' }
       })
 
     await waitFor(() => screen.findByText('Enable Server'))
@@ -91,7 +91,7 @@ describe('ServerTab', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/venues`,
+      pathname: `/${params.tenantId}/t/venues`,
       hash: '',
       search: ''
     })

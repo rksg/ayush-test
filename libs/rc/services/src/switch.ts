@@ -1,6 +1,7 @@
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import _                       from 'lodash'
 
+import { Filter }                    from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   createHttpRequest,
@@ -54,9 +55,17 @@ import {
   SwitchRearView,
   Lag,
   SwitchVlan,
-  enableNewApi
+  enableNewApi,
+  downloadFile,
+  SEARCH,
+  SORTER
 } from '@acx-ui/rc/utils'
 import { baseSwitchApi } from '@acx-ui/store'
+
+export type SwitchsExportPayload = {
+  filters: Filter
+  tenantId: string
+} & SEARCH & SORTER
 
 export const switchApi = baseSwitchApi.injectEndpoints({
   endpoints: (build) => ({
@@ -70,6 +79,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const list = listQuery.data as TableResult<SwitchRow>
         const stackMembers:{ [index:string]: StackMember[] } = {}
         const stacks: string[] = []
+        if(!list) return { error: listQuery.error as FetchBaseQueryError }
         list.data.forEach(async (item:SwitchRow) => {
           if(item.isStack || item.formStacking){
             stacks.push(item.serialNumber)
@@ -85,9 +95,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
 
         const aggregatedList = aggregatedSwitchListData(list, stackMembers)
 
-        return listQuery.data
-          ? { data: aggregatedList }
-          : { error: listQuery.error as FetchBaseQueryError }
+        return { data: aggregatedList }
       },
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'Switch', id: 'LIST' }],
@@ -957,7 +965,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      keepUnusedDataFor: 0
     }),
     addCliTemplate: build.mutation<CliConfiguration, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1036,6 +1045,24 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         return {
           ...req,
           body: payload
+        }
+      }
+    }),
+    downloadSwitchsCSV: build.mutation<Blob, SwitchsExportPayload>({
+      query: (payload) => {
+        const req = createHttpRequest(SwitchUrlsInfo.downloadSwitchsCSV,
+          { tenantId: payload.tenantId }
+        )
+        return {
+          ...req,
+          body: payload,
+          responseHandler: async (response) => {
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1]
+              : 'download.csv'
+            downloadFile(response, fileName)
+          }
         }
       }
     })
@@ -1237,5 +1264,6 @@ export const {
   useGetSwitchConfigProfileDetailQuery,
   useAddSwitchConfigProfileMutation,
   useUpdateSwitchConfigProfileMutation,
-  useGetSwitchModelListQuery
+  useGetSwitchModelListQuery,
+  useDownloadSwitchsCSVMutation
 } = switchApi

@@ -93,6 +93,9 @@ export default function RogueAPDetectionTable () {
   const rowActions: TableProps<EnhancedRoguePolicyType>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
+      visible: (selectedItems =>
+        selectedItems.length > 0 && selectedItems[0].name !== DEFAULT_PROFILE
+      ),
       onClick: ([{ id, name, venueIds }], clearSelection) => {
         if (Number(venueIds.length) !== 0 || name === DEFAULT_PROFILE) {
           showActionModal({
@@ -120,6 +123,9 @@ export default function RogueAPDetectionTable () {
     },
     {
       label: $t({ defaultMessage: 'Edit' }),
+      visible: (selectedItems =>
+        selectedItems.length > 0 && selectedItems[0].name !== DEFAULT_PROFILE
+      ),
       onClick: ([{ id }]) => {
         navigate({
           ...tenantBasePath,
@@ -230,13 +236,15 @@ function useColumns (venueIds: string[]) {
     {
       key: 'description',
       title: $t({ defaultMessage: 'Description' }),
-      dataIndex: 'description'
+      dataIndex: 'description',
+      sorter: true
     },
     {
       key: 'numOfRules',
       title: $t({ defaultMessage: 'Classification Rules' }),
       dataIndex: 'numOfRules',
-      align: 'center'
+      align: 'center',
+      sorter: true
     },
     {
       key: 'venueIds',
@@ -244,6 +252,7 @@ function useColumns (venueIds: string[]) {
       dataIndex: 'venueIds',
       filterable: venueFilterOptions,
       align: 'center',
+      sorter: true,
       render: (data, row) => row.venueIds.length
     }
   ]

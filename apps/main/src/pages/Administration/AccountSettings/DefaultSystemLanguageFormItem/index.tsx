@@ -1,33 +1,37 @@
 import { Col, Select, Form, Row, Typography } from 'antd'
 import { useIntl }                            from 'react-intl'
 
-import { usePreference } from '@acx-ui/rc/components'
+import { usePreference }                               from '@acx-ui/rc/components'
+import { LangKey, useLocaleContext, DEFAULT_SYS_LANG } from '@acx-ui/utils'
 
 import { MessageMapping } from '../MessageMapping'
 
 const DefaultSystemLanguageFormItem = () => {
   const { $t } = useIntl()
   const {
-    data: preferenceData,
-    currentPreferredLang,
-    update: updatePreferences,
+    currentDefaultLang,
+    updatePartial: updatePreferences,
     getReqState,
     updateReqState
   } = usePreference()
 
-  const handlePreferredLangChange = (langCode: string) => {
+  const locale = useLocaleContext()
+  const handleDefaultLangChange = async (langCode: string) => {
     if (!langCode) return
     const payload = {
-      global: { ...preferenceData?.global, preferredLanguage: langCode }
+      global: { defaultLanguage: langCode }
     }
-    updatePreferences({ newData: payload })
+    updatePreferences({ newData: payload, onSuccess: () => {
+      const code = langCode as LangKey
+      locale.setLang(code)
+    } })
   }
 
   const isLoadingPreference = getReqState.isLoading || getReqState.isFetching
   const isUpdatingPreference = updateReqState.isLoading
 
   const generateLangLabel = (val: string): string | undefined => {
-    const lang = (currentPreferredLang ?? 'en-US').slice(0, 2)
+    const lang = (currentDefaultLang ?? DEFAULT_SYS_LANG).slice(0, 2)
     const languageNames = new Intl.DisplayNames([val], { type: 'language' })
     const currLangDisplay = new Intl.DisplayNames([lang], { type: 'language' })
     if (lang === val) return currLangDisplay.of(val)
@@ -37,9 +41,8 @@ const DefaultSystemLanguageFormItem = () => {
     })
   }
 
-  const supportedLangs = [
-    'en-US'
-  ].map(val => ({
+  const supportedLangs = [DEFAULT_SYS_LANG,
+    'ja-JP', 'fr-FR', 'pt-BR', 'ko-KR', 'es-ES'].map(val => ({
     label: generateLangLabel(val.slice(0, 2)),
     value: val
   }))
@@ -51,8 +54,8 @@ const DefaultSystemLanguageFormItem = () => {
           label={$t({ defaultMessage: 'Default System Language' })}
         >
           <Select
-            value={currentPreferredLang}
-            onChange={handlePreferredLangChange}
+            value={currentDefaultLang || DEFAULT_SYS_LANG}
+            onChange={handleDefaultLangChange}
             showSearch
             allowClear
             optionFilterProp='children'

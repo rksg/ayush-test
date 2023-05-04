@@ -69,7 +69,7 @@ export const getPortEditStatus = (status: string) => {
 
 export const getPortSpeed = (selectedPorts: SwitchPortViewModel[]) => {
   const portsSpeedOptions = selectedPorts.map((item: SwitchPortViewModel) => {
-    return getPortSpeedOptions(item.switchModel, item.portIdentifier)
+    return getPortSpeedOptions(item.switchModel, item.portIdentifier, item)
   })
 
   return _.intersection(...portsSpeedOptions) as string[]
@@ -243,9 +243,9 @@ export const getPoeClass = (selectedPorts: SwitchPortViewModel[]) => {
     const portNumber = Number(port.portIdentifier.split('/').pop())
 
     const supportMorePoeClass820048zp2 = port.switchModel === 'ICX8200-48ZP2' && portNumber > 32
-    const is820048zp = port.switchModel === 'ICX8200-48ZP'
+    const is820024zp = port.switchModel === 'ICX8200-24ZP'
     const is8200c08zp = port.switchModel === 'ICX8200-C08ZP'
-    const support = is8200c08zp || is820048zp || supportMorePoeClass820048zp2
+    const support = is8200c08zp || is820024zp || supportMorePoeClass820048zp2
     if(!support) {
       support5to8PoeClass = false
     }

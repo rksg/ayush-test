@@ -21,6 +21,52 @@ jest.mock('@acx-ui/rc/components', () => ({
   EdgeDhcpPoolTable: () => <div data-testid='edge-dhcp-pool-table' />
 }))
 
+describe('Edge DHCP no initial data', () => {
+
+  let params: { tenantId: string, serialNumber: string, activeTab?: string, activeSubTab?: string }
+  beforeEach(() => {
+    params = {
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      serialNumber: '000000000000',
+      activeTab: 'dhcp'
+    }
+    mockServer.use(
+      rest.post(
+        EdgeDhcpUrls.getDhcpPoolStats.url,
+        (req, res, ctx) => res(ctx.json({ totalCount: 0, data: [] }))
+      ),
+      rest.post(
+        EdgeDhcpUrls.getDhcpHostStats.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeDhcpHostStats))
+      ),
+      rest.get(
+        EdgeDhcpUrls.getDhcpList.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeDhcpDataList))
+      ),
+      rest.patch(
+        EdgeDhcpUrls.patchDhcpService.url,
+        (req, res, ctx) => res(ctx.status(202))
+      )
+    )
+  })
+
+  it('open apply DHCP drawer', async () => {
+    params.activeSubTab = 'pools'
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <EdgeDhcp />
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
+        }
+      })
+    await user.click(screen.getByRole('switch'))
+    await screen.findByText('Manage DHCP for SmartEdge Service')
+  })
+})
+
 describe('Edge DHCP', () => {
 
   let params: { tenantId: string, serialNumber: string, activeTab?: string, activeSubTab?: string }
@@ -59,7 +105,7 @@ describe('Edge DHCP', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
         }
       })
     const poolsTab = screen.getByRole('tab', { name: 'Pools' })
@@ -74,7 +120,7 @@ describe('Edge DHCP', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
         }
       })
     const leasesTab = await screen.findByRole('tab', { name: 'Leases ( 2 online )' })
@@ -90,13 +136,13 @@ describe('Edge DHCP', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
         }
       })
     await user.click(await screen.findByRole('tab', { name: 'Leases ( 2 online )' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       // eslint-disable-next-line max-len
-      pathname: `/t/${params.tenantId}/devices/edge/${params.serialNumber}/edge-details/dhcp/leases`,
+      pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/edge-details/dhcp/leases`,
       hash: '',
       search: ''
     })
@@ -111,7 +157,7 @@ describe('Edge DHCP', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
         }
       })
     const settingIcon = screen.getByTestId('setting-icon')
@@ -132,7 +178,7 @@ describe('Edge DHCP', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
         }
       })
     const dhcpSwitch = screen.getByRole('switch')
@@ -140,52 +186,5 @@ describe('Edge DHCP', () => {
     await user.click(screen.getByRole('switch'))
     await screen.findByText('Deactive DHCP Service')
     await user.click(screen.getByRole('button', { name: 'OK' }))
-  })
-})
-
-describe('Edge DHCP no initial data', () => {
-
-  let params: { tenantId: string, serialNumber: string, activeTab?: string, activeSubTab?: string }
-  beforeEach(() => {
-    params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      serialNumber: '000000000000',
-      activeTab: 'dhcp'
-    }
-
-    mockServer.use(
-      rest.post(
-        EdgeDhcpUrls.getDhcpPoolStats.url,
-        (req, res, ctx) => res(ctx.json({ totalCount: 0, data: [] }))
-      ),
-      rest.post(
-        EdgeDhcpUrls.getDhcpHostStats.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeDhcpHostStats))
-      ),
-      rest.get(
-        EdgeDhcpUrls.getDhcpList.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeDhcpDataList))
-      ),
-      rest.patch(
-        EdgeDhcpUrls.patchDhcpService.url,
-        (req, res, ctx) => res(ctx.status(202))
-      )
-    )
-  })
-
-  it('open apply DHCP drawer', async () => {
-    params.activeSubTab = 'pools'
-    const user = userEvent.setup()
-    render(
-      <Provider>
-        <EdgeDhcp />
-      </Provider>, {
-        route: {
-          params,
-          path: '/:tenantId/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
-        }
-      })
-    await user.click(screen.getByRole('switch'))
-    await screen.findByText('Manage DHCP for SmartEdge Service')
   })
 })

@@ -16,6 +16,9 @@ jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
   StackedBarChart: () => (<div data-testid='rc-StackedBarChart' />)
 }))
+jest.mock('./ConvertNonVARMSPButton', () => ({
+  ConvertNonVARMSPButton: () => (<div data-testid='convertNonVARMSPButton' />)
+}))
 
 describe('Subscriptions', () => {
   let params: { tenantId: string }
@@ -135,7 +138,8 @@ describe('Subscriptions', () => {
 
     await screen.findByRole('columnheader', { name: 'Device Count' })
     const data = await screen.findAllByRole('row')
-    const cells = await within(data[data.length - 1] as HTMLTableRowElement).findAllByRole('cell')
+    // because it is default sorted by "timeleft" in descending order
+    const cells = await within(data[data.length - 2] as HTMLTableRowElement).findAllByRole('cell')
     expect((cells[0] as HTMLTableCellElement).innerHTML).toBe('')
   })
 

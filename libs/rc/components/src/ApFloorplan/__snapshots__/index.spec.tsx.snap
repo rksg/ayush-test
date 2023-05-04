@@ -6,7 +6,7 @@ exports[`AP floorplan should render correctly 1`] = `
     style="width: 100%; position: relative; max-height: 300px; padding-right: 35px; margin-bottom: 35px;"
   >
     <a
-      href="/t/undefined/venues/7231da344778480d88f37f0cca1c534f/venue-details/overview"
+      href="/undefined/t/venues/7231da344778480d88f37f0cca1c534f/venue-details/overview"
       style="margin-left: 10px; line-height: 24px; font-size: 14px;"
     >
       TEST_2

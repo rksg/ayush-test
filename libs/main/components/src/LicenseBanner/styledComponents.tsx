@@ -13,6 +13,12 @@ import {
 }                          from '@acx-ui/icons'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
+export const LicenseWrapper = styled.div`
+  --acx-license-banner-horizontal-space: 10px;
+  min-width: 290px;
+  height: 40px;
+`
+
 export const LicenseContainer = styled.div`
   background-color: var(--acx-neutrals-90);
   display: flex;
@@ -20,8 +26,7 @@ export const LicenseContainer = styled.div`
   border-radius: 4px;
   flex-direction: column;
   border: 1px solid var(--acx-accents-orange-55);
-  position: absolute;
-  top: 8px;
+  overflow: hidden;
 `
 export const LicenseContainerSingle = styled.div.attrs((props: { expired: boolean }) => props)`
   display: flex;
@@ -30,7 +35,6 @@ export const LicenseContainerSingle = styled.div.attrs((props: { expired: boolea
   height: 40px;
   align-items: center;
   border-radius: 4px;
-  padding-left: 5px;
 `
 export const ContentWrapper = styled.div`
   display: flex;
@@ -38,11 +42,10 @@ export const ContentWrapper = styled.div`
 `
 
 export const LicenseIconWrapper = styled.div`
-  width: 45px;
   display: flex;
   align-self: center;
   justify-content: center;
-  padding: 0px 18px 0px 18px;
+  padding: 0px var(--acx-license-banner-horizontal-space);
 `
 
 export const TipsWrapper = styled.div`
@@ -51,9 +54,8 @@ export const TipsWrapper = styled.div`
   line-height: 16px;
   align-items: start;
   white-space: nowrap;
-  margin-right: 10px;
+  margin-right: var(--acx-license-banner-horizontal-space);
 `
-
 
 export const MainTips = styled.div.attrs((props: { expired: boolean }) => props)`
   height: 16px;
@@ -81,7 +83,6 @@ ButtonProps & { $expired?: boolean }
     'var(--acx-primary-white);':'var(--acx-accents-orange-50);' }
   font-weight: var(--acx-subtitle-5-font-weight);
   font-size: 12px;
-  padding-left: 2px;
 `
 
 export const LayoutIcon = styled(LayoutUI.Icon)`
@@ -160,12 +161,12 @@ export const LicenseGrid = styled.div.attrs((props: { expired: boolean,
   width: 100%;
   border-top: ${props => props.isWhiteBorder ?
     '1px solid rgba(86,87,88,0.7);':'1px solid rgba(255,255,255,0.4);'}
-`//border color: var(--acx-neutrals-70);
+`
 
 export const WarningBtnContainer = styled.div`
   display: flex;
   width: 100%;
-  padding-right: 10px;
+  padding-right: var(--acx-license-banner-horizontal-space);
   justify-content: space-between;
 `
 // eslint-disable-next-line max-len
@@ -175,10 +176,15 @@ export const LicenseWarningBtn = styled.div.attrs((props: { isCritical: boolean,
   background-color: ${props => props.isCritical ?
     'var(--acx-accents-orange-55);' : 'var(--acx-neutrals-90);'}
   height: 40px;
-  width:100%;
   align-items: center;
-  margin-right:5px;
-  border-radius: ${props => (props.isExpanded && props.isCritical) ? ';':'4px;'}
+  ${props => (props.isExpanded && props.isCritical) ? `
+    width: calc(100% + 1px);
+    margin-left: -1px;
+    margin-top: -1px;
+  ` : `
+    width: 100%;
+    border-radius: 4px;
+  `}
 `
 
 const Caret = css`

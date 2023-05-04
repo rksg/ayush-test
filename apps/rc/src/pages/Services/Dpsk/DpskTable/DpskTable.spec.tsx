@@ -40,12 +40,12 @@ describe('DpskTable', () => {
   }
 
   // eslint-disable-next-line max-len
-  const tablePath = '/:tenantId/' + getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST })
+  const tablePath = '/:tenantId/t/' + getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST })
 
   beforeEach(async () => {
     mockServer.use(
-      rest.get(
-        DpskUrls.getDpskList.url,
+      rest.post(
+        DpskUrls.getEnhancedDpskList.url,
         (req, res, ctx) => res(ctx.json({ ...mockedDpskList }))
       )
     )
@@ -60,7 +60,7 @@ describe('DpskTable', () => {
       }
     )
 
-    const targetDpsk = mockedDpskList.content[0]
+    const targetDpsk = mockedDpskList.data[0]
     expect(await screen.findByRole('button', { name: /Add DPSK Service/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: new RegExp(targetDpsk.name) })).toBeVisible()
   })
@@ -86,7 +86,7 @@ describe('DpskTable', () => {
       }
     )
 
-    const targetDpsk = mockedDpskList.content[0]
+    const targetDpsk = mockedDpskList.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(targetDpsk.name) })
     await userEvent.click(within(row).getByRole('radio'))
 
@@ -99,12 +99,12 @@ describe('DpskTable', () => {
     await waitFor(() => {
       expect(deleteFn).toHaveBeenCalled()
     })
-  })
+  }, 1000000)
 
   it('should not delete the selected row when it is mapped to Persona', async () => {
     mockServer.use(
-      rest.get(
-        DpskUrls.getDpskList.url,
+      rest.post(
+        DpskUrls.getEnhancedDpskList.url,
         (req, res, ctx) => res(ctx.json({ ...mockedDpskListWithPersona }))
       )
     )
@@ -117,11 +117,13 @@ describe('DpskTable', () => {
       }
     )
 
-    const targetDpsk = mockedDpskListWithPersona.content[0]
+    const targetDpsk = mockedDpskListWithPersona.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(targetDpsk.name) })
     await userEvent.click(within(row).getByRole('radio'))
 
-    expect(screen.queryByRole('button', { name: /Delete/ })).toBeNull()
+    await waitFor(async () => {
+      expect(screen.queryByRole('button', { name: /Delete/ })).toBeDisabled()
+    })
   })
 
   it('should navigate to the Edit view', async () => {
@@ -133,7 +135,7 @@ describe('DpskTable', () => {
       }
     )
 
-    const targetDpsk = mockedDpskList.content[0]
+    const targetDpsk = mockedDpskList.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(targetDpsk.name) })
     await userEvent.click(within(row).getByRole('radio'))
 

@@ -272,17 +272,18 @@ export const StepLabel = styled.p`
 `
 type ChartWrapperProps = ElementType<HTMLDivElement> & {
   $selected?: boolean
+  $hasAccess?: boolean
 }
 
 export const ChartWrapper = styled.div.attrs((props: ChartWrapperProps) => props)`
   path[d="M1 0A1 1 0 1 1 1 -0.0001"] {
-    cursor: pointer !important; 
+    cursor: ${({ $hasAccess }) => $hasAccess ? 'pointer' : 'crosshair'} !important;
   }
-  ${({ $selected }) => $selected
+  ${({ $selected, $hasAccess }) => $selected
   && `
     div[_echarts_instance_] {
       g[clip-path] {
-        cursor: pointer !important;
+        cursor: ${$hasAccess ? 'pointer' : 'crosshair'} !important;
       }
     }
   `
@@ -299,7 +300,7 @@ export const HistoryItemWrapper = styled.div.attrs((props: HistoryItemWrapperPro
     font-weight: var(--acx-body-font-weight-bold);
 
     .ant-list-item-meta-title {
-      font-weight: var(--acx-body-font-weight-bold); 
+      font-weight: var(--acx-body-font-weight-bold);
     }
   `
 }

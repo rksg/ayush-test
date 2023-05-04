@@ -39,13 +39,13 @@ jest.mock('./Administrators', () => ({
     return <div data-testid='mocked-Administrators'></div>
   }
 }))
-// jest.mock('./FWVersionMgmt', () => ({
-//   ...jest.requireActual('./FWVersionMgmt'),
-//   __esModule: true,
-//   default: () => {
-//     return <div data-testid='mocked-FWVersionMgmt'></div>
-//   }
-// }))
+jest.mock('./FWVersionMgmt', () => ({
+  ...jest.requireActual('./FWVersionMgmt'),
+  __esModule: true,
+  default: () => {
+    return <div data-testid='mocked-FWVersionMgmt'></div>
+  }
+}))
 jest.mock('./LocalRadiusServer', () => ({
   ...jest.requireActual('./LocalRadiusServer'),
   __esModule: true,
@@ -105,7 +105,7 @@ describe('Administration page', () => {
       })
 
     const tabs = screen.getAllByRole('tab')
-    expect(tabs.length).toBe(6 )
+    expect(tabs.length).toBe(7 )
   })
 
   it('should handle tab changes', async () => {
@@ -122,7 +122,7 @@ describe('Administration page', () => {
 
     fireEvent.click(screen.getByText('Notifications'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/administration/notifications`,
+      pathname: `/${params.tenantId}/t/administration/notifications`,
       hash: '',
       search: ''
     })

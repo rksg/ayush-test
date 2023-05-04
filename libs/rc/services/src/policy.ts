@@ -56,7 +56,14 @@ import {
   RadiusAttributeVendor,
   EnhancedRoguePolicyType,
   RulesManagementUrlsInfo,
-  AdaptivePolicySet
+  AdaptivePolicySet,
+  AdaptivePolicy,
+  RuleTemplate,
+  RuleAttribute,
+  AccessCondition,
+  PrioritizedPolicy,
+  Assignment,
+  NewAPITableResult, transferNewResToTableResult
 } from '@acx-ui/rc/utils'
 import { basePolicyApi } from '@acx-ui/store'
 
@@ -397,7 +404,11 @@ export const policyApi = basePolicyApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'AddRogueApPolicyProfile'
+            'AddRogueApPolicyProfile',
+            'UpdateRogueApPolicyProfile',
+            'DeleteRogueApPolicyProfile',
+            'UpdateVenueRogueAp',
+            'UpdateDenialOfServiceProtection'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'RogueAp', id: 'LIST' }]))
           })
@@ -553,7 +564,18 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+      providesTags: [{ type: 'Policy', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateVenueRogueAp',
+            'UpdateDenialOfServiceProtection'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
+          })
+        })
+      }
     }),
     enhancedRoguePolicies: build.query<TableResult<EnhancedRoguePolicyType>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -567,6 +589,11 @@ export const policyApi = basePolicyApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
+            'AddRogueApPolicyProfile',
+            'UpdateRogueApPolicyProfile',
+            'DeleteRogueApPolicyProfile',
+            'UpdateVenueRogueAp',
+            'UpdateDenialOfServiceProtection',
             'DeleteVenue',
             'DeleteVenues'
           ], () => {
@@ -1237,8 +1264,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'AddApSnmpAgent',
-            'UpdateApSnmpAgent',
+            'AddApSnmpAgentProfile',
+            'UpdateApSnmpAgentProfile',
             'DeleteApSnmpAgentProfile'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'SnmpAgent', id: 'LIST' }]))
@@ -1317,9 +1344,12 @@ export const policyApi = basePolicyApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'AddApSnmpAgent',
+            'AddApSnmpAgentProfile',
+            'UpdateApSnmpAgentProfile',
+            'DeleteApSnmpAgentProfile',
+            'UpdateVenueApSnmpAgent',
             'UpdateApSnmpAgent',
-            'DeleteApSnmpAgentProfile'
+            'ResetApSnmpAgent'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'SnmpAgent', id: 'LIST' }]))
           })
@@ -1397,9 +1427,12 @@ export const policyApi = basePolicyApi.injectEndpoints({
         const req = createHttpRequest(RadiusAttributeGroupUrlsInfo.getAttributeGroupsWithQuery, params)
         return {
           ...req,
-          body: payload
+          body: {
+            ...(payload as TableChangePayload), page: (payload as TableChangePayload).page - 1
+          }
         }
-      }
+      },
+      providesTags: [{ type: 'RadiusAttributeGroup', id: 'LIST' }]
     }),
     radiusAttributeList: build.query<TableResult<RadiusAttribute>, RequestPayload>({
       query: ({ params }) => {
@@ -1487,30 +1520,291 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'RadiusAttributeGroup', id: 'DETAIL' }]
     }),
-    adaptivePolicySetList: build.query<TableResult<AdaptivePolicySet>, RequestPayload>({
+    createAssignment: build.mutation<Assignment, RequestPayload>({
       query: ({ params, payload }) => {
-        const poolsReq = createNewTableHttpRequest({
-          apiInfo: RulesManagementUrlsInfo.getAdaptivePolicySets,
+        const req = createHttpRequest(RadiusAttributeGroupUrlsInfo.createAssignment, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getAssignment: build.mutation<Assignment, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RadiusAttributeGroupUrlsInfo.getAssignment, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    getAssignments: build.query<TableResult<Assignment>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createNewTableHttpRequest({
+          apiInfo: RadiusAttributeGroupUrlsInfo.getAssignments,
           params,
           payload: payload as TableChangePayload
         })
         return {
-          ...poolsReq
+          ...req
         }
       },
-      transformResponse (result: NewTableResult<AdaptivePolicySet>) {
-        return transferToTableResult<AdaptivePolicySet>(result)
+      transformResponse (result: NewTableResult<Assignment>) {
+        return transferToTableResult<Assignment>(result)
+      }
+    }),
+    adaptivePolicyList: build.query<TableResult<AdaptivePolicy>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createNewTableHttpRequest({
+          apiInfo: RulesManagementUrlsInfo.getPolicies,
+          params,
+          payload: payload as TableChangePayload
+        })
+        return {
+          ...req
+        }
+      },
+      transformResponse (result: NewAPITableResult<AdaptivePolicy>) {
+        return transferNewResToTableResult<AdaptivePolicy>(result, { pageStartZero: true })
+      },
+      providesTags: [{ type: 'AdaptivePolicy', id: 'LIST' }]
+    }),
+    adaptivePolicyListByQuery: build.query<TableResult<AdaptivePolicy>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RulesManagementUrlsInfo.getPoliciesByQuery, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      transformResponse (result: NewAPITableResult<AdaptivePolicy>) {
+        return transferNewResToTableResult<AdaptivePolicy>(result, { pageStartZero: true })
+      }
+    }),
+    getAdaptivePolicy: build.query<AdaptivePolicy, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RulesManagementUrlsInfo.getPolicyByTemplate, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'AdaptivePolicy', id: 'DETAIL' }]
+    }),
+    deleteAdaptivePolicy: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RulesManagementUrlsInfo.deletePolicy, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'AdaptivePolicy', id: 'LIST' }]
+    }),
+    policyTemplateList: build.query<TableResult<RuleTemplate>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createNewTableHttpRequest({
+          apiInfo: RulesManagementUrlsInfo.getPolicyTemplateList,
+          params,
+          payload: payload as TableChangePayload
+        })
+        return {
+          ...req
+        }
+      },
+      transformResponse (result: NewAPITableResult<RuleTemplate>) {
+        return transferNewResToTableResult<RuleTemplate>(result, { pageStartZero: true })
+      }
+    }),
+    getPolicyTemplateAttributesList: build.query<TableResult<RuleAttribute>, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createNewTableHttpRequest({
+          apiInfo: RulesManagementUrlsInfo.getPolicyTemplateAttributes,
+          params,
+          payload: payload as TableChangePayload
+        })
+        return {
+          ...req
+        }
+      },
+      transformResponse (result: NewTableResult<RuleAttribute>) {
+        return transferToTableResult<RuleAttribute>(result)
+      }
+    }),
+    addAdaptivePolicy: build.mutation<AdaptivePolicy, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RulesManagementUrlsInfo.createPolicy, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'AdaptivePolicy', id: 'LIST' }]
+    }),
+    addPolicyConditions: build.mutation<AccessCondition, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RulesManagementUrlsInfo.addConditions, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'AdaptivePolicyCondition', id: 'LIST' }]
+    }),
+    updatePolicyConditions: build.mutation<AccessCondition, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RulesManagementUrlsInfo.updateConditions, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'AdaptivePolicyCondition', id: 'LIST' }]
+    }),
+    deletePolicyConditions: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RulesManagementUrlsInfo.deleteConditions, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    getConditionsInPolicy: build.query<TableResult<AccessCondition>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createNewTableHttpRequest({
+          apiInfo: RulesManagementUrlsInfo.getConditionsInPolicy,
+          params,
+          payload: payload as TableChangePayload
+        })
+        return {
+          ...req
+        }
+      },
+      transformResponse (result: NewAPITableResult<AccessCondition>) {
+        return transferNewResToTableResult<AccessCondition>(result, { pageStartZero: true })
+      },
+      providesTags: [{ type: 'AdaptivePolicyCondition', id: 'LIST' }]
+    }),
+    updateAdaptivePolicy: build.mutation<AdaptivePolicy, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RulesManagementUrlsInfo.updatePolicy, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'AdaptivePolicy', id: 'LIST' }]
+    }),
+    adaptivePolicySetList: build.query<TableResult<AdaptivePolicySet>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createNewTableHttpRequest({
+          apiInfo: RulesManagementUrlsInfo.getPolicySets,
+          params,
+          payload: payload as TableChangePayload
+        })
+        return {
+          ...req
+        }
+      },
+      transformResponse (result: NewAPITableResult<AdaptivePolicySet>) {
+        return transferNewResToTableResult<AdaptivePolicySet>(result, { pageStartZero: true })
       },
       providesTags: [{ type: 'AdaptivePolicySet', id: 'LIST' }]
     }),
+    deleteAdaptivePolicySet: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RulesManagementUrlsInfo.deletePolicySet, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'AdaptivePolicySet', id: 'LIST' }]
+    }),
+    adaptivePolicySetLisByQuery: build.query<TableResult<AdaptivePolicySet>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RulesManagementUrlsInfo.getPolicySetsByQuery, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      transformResponse (result: NewAPITableResult<AdaptivePolicySet>) {
+        return transferNewResToTableResult<AdaptivePolicySet>(result, { pageStartZero: true })
+      }
+    }),
     getAdaptivePolicySet: build.query<AdaptivePolicySet, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(RulesManagementUrlsInfo.getAdaptivePolicySet, params)
+        const req = createHttpRequest(RulesManagementUrlsInfo.getPolicySet, params)
         return{
           ...req
         }
       },
       providesTags: [{ type: 'AdaptivePolicySet', id: 'DETAIL' }]
+    }),
+    addAdaptivePolicySet: build.mutation<AdaptivePolicySet, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RulesManagementUrlsInfo.createPolicySet, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'AdaptivePolicySet', id: 'LIST' }]
+    }),
+    updateAdaptivePolicySet: build.mutation<AdaptivePolicySet, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RulesManagementUrlsInfo.updatePolicySet, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'AdaptivePolicySet', id: 'LIST' }]
+    }),
+    addPrioritizedPolicy: build.mutation<PrioritizedPolicy, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RulesManagementUrlsInfo.assignPolicyPriority, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'AdaptivePrioritizedPolicy', id: 'LIST' }]
+    }),
+    getPrioritizedPolicy: build.query<TableResult<AdaptivePolicySet>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RulesManagementUrlsInfo.getPolicySetsByQuery, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      transformResponse (result: NewAPITableResult<AdaptivePolicySet>) {
+        return transferNewResToTableResult<AdaptivePolicySet>(result, { pageStartZero: true })
+      },
+      providesTags: [{ type: 'AdaptivePrioritizedPolicy', id: 'DETAIL' }]
+    }),
+    deletePrioritizedPolicy: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RulesManagementUrlsInfo.removePrioritizedAssignment, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'AdaptivePrioritizedPolicy', id: 'LIST' }]
+    }),
+    getPrioritizedPolicies: build.query<TableResult<PrioritizedPolicy>, RequestPayload>({
+      query: ({ params }) => {
+        const req = createNewTableHttpRequest({
+          apiInfo: RulesManagementUrlsInfo.getPrioritizedPolicies,
+          params
+        })
+        return {
+          ...req
+        }
+      },
+      transformResponse (result: NewAPITableResult<PrioritizedPolicy>) {
+        return transferNewResToTableResult<PrioritizedPolicy>(result, { pageStartZero: true })
+      },
+      providesTags: [{ type: 'AdaptivePrioritizedPolicy', id: 'LIST' }]
     })
   })
 })
@@ -1631,8 +1925,39 @@ export const {
   useLazyRadiusAttributeGroupListQuery,
   useUpdateRadiusAttributeGroupMutation,
   useAddRadiusAttributeGroupMutation,
+  useRadiusAttributeGroupListByQueryQuery,
   useLazyRadiusAttributeGroupListByQueryQuery,
+  useLazyGetAdaptivePolicySetQuery,
+  useLazyGetRadiusAttributeGroupQuery,
+  // policy
+  useAdaptivePolicyListQuery,
+  useLazyAdaptivePolicyListQuery,
+  useGetAdaptivePolicyQuery,
+  useLazyGetAdaptivePolicyQuery,
+  useDeleteAdaptivePolicyMutation,
+  usePolicyTemplateListQuery,
+  useGetPolicyTemplateAttributesListQuery,
+  useLazyGetPolicyTemplateAttributesListQuery,
+  useAddAdaptivePolicyMutation,
+  useGetConditionsInPolicyQuery,
+  useLazyGetConditionsInPolicyQuery,
+  useUpdateAdaptivePolicyMutation,
+  useAddPolicyConditionsMutation,
+  useUpdatePolicyConditionsMutation,
+  useLazyAdaptivePolicyListByQueryQuery,
+  useDeletePolicyConditionsMutation,
+  useAdaptivePolicyListByQueryQuery,
+  // policy set
   useAdaptivePolicySetListQuery,
+  useLazyAdaptivePolicySetListQuery,
+  useLazyAdaptivePolicySetLisByQueryQuery,
+  useDeleteAdaptivePolicySetMutation,
+  useLazyGetPrioritizedPoliciesQuery,
   useGetAdaptivePolicySetQuery,
-  useLazyGetAdaptivePolicySetQuery
+  useAddAdaptivePolicySetMutation,
+  useUpdateAdaptivePolicySetMutation,
+  useAddPrioritizedPolicyMutation,
+  useDeletePrioritizedPolicyMutation,
+  useGetPrioritizedPolicyQuery,
+  useGetPrioritizedPoliciesQuery
 } = policyApi

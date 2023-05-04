@@ -2,17 +2,18 @@ import '@testing-library/jest-dom'
 
 import { Provider }                           from '@acx-ui/store'
 import { render, screen, waitFor, fireEvent } from '@acx-ui/test-utils'
+import { RolesEnum }                          from '@acx-ui/types'
+import { getUserProfile, setUserProfile }     from '@acx-ui/user'
 
-import {
-  apDetailData
-} from './__tests__/fixtures'
-import ApTabs from './ApTabs'
+import { apDetailData } from './__tests__/fixtures'
+import ApTabs           from './ApTabs'
 
 const params = {
   tenantId: 'tenant-id',
   serialNumber: 'ap-id'
 }
-jest.mock('./ApContext', () => ({
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
   useApContext: () => params
 }))
 
@@ -38,11 +39,12 @@ describe('ApTabs', () => {
     await waitFor(() => screen.findByText('Networks (2)'))
     fireEvent.click(await screen.findByText('Networks (2)'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/devices/wifi/${params.serialNumber}/details/networks`,
+      pathname: `/${params.tenantId}/t/devices/wifi/${params.serialNumber}/details/networks`,
       hash: '',
       search: ''
     })
   })
+
   it('should handle troubleshooting tab changes', async () => {
     render(<Provider>
       <ApTabs apDetail={apDetailData} />
@@ -51,9 +53,20 @@ describe('ApTabs', () => {
     fireEvent.click(await screen.findByText(/Troubleshooting/))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname:
-        `/t/${params.tenantId}/devices/wifi/${params.serialNumber}/details/troubleshooting/ping`,
+        `/${params.tenantId}/t/devices/wifi/${params.serialNumber}/details/troubleshooting/ping`,
       hash: '',
       search: ''
     })
+  })
+
+  it('should hide analytics when role is READ_ONLY', async () => {
+    setUserProfile({
+      allowedOperations: [],
+      profile: { ...getUserProfile().profile, roles: [RolesEnum.READ_ONLY] }
+    })
+    render(<Provider>
+      <ApTabs apDetail={apDetailData} />
+    </Provider>, { route: { params } })
+    expect(screen.queryByText('AI Analytics')).toBeNull()
   })
 })
