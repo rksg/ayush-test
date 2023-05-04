@@ -210,27 +210,27 @@ export const transformSwitchStatus = (switchStatusEnum: SwitchStatusEnum, config
       break
     case SwitchStatusEnum.FIRMWARE_UPD_START:
       message = $t({ defaultMessage: 'Firmware Updating' })
-      deviceStatus = DeviceConnectionStatus.CONNECTED
+      deviceStatus = DeviceConnectionStatus.ALERTING
       break
     case SwitchStatusEnum.FIRMWARE_UPD_VALIDATING_PARAMETERS:
       message = $t({ defaultMessage: 'Firmware Update - Validating Parameters' })
-      deviceStatus = DeviceConnectionStatus.CONNECTED
+      deviceStatus = DeviceConnectionStatus.ALERTING
       break
     case SwitchStatusEnum.FIRMWARE_UPD_DOWNLOADING:
       message = $t({ defaultMessage: 'Firmware Update - Downloading' })
-      deviceStatus = DeviceConnectionStatus.CONNECTED
+      deviceStatus = DeviceConnectionStatus.ALERTING
       break
     case SwitchStatusEnum.FIRMWARE_UPD_VALIDATING_IMAGE:
       message = $t({ defaultMessage: 'Firmware Update - Validating Image' })
-      deviceStatus = DeviceConnectionStatus.CONNECTED
+      deviceStatus = DeviceConnectionStatus.ALERTING
       break
     case SwitchStatusEnum.FIRMWARE_UPD_SYNCING_TO_REMOTE:
       message = $t({ defaultMessage: 'Firmware Update - Syncing To Remote' })
-      deviceStatus = DeviceConnectionStatus.CONNECTED
+      deviceStatus = DeviceConnectionStatus.ALERTING
       break
     case SwitchStatusEnum.FIRMWARE_UPD_WRITING_TO_FLASH:
       message = $t({ defaultMessage: 'Firmware Update - Writing To Flash' })
-      deviceStatus = DeviceConnectionStatus.CONNECTED
+      deviceStatus = DeviceConnectionStatus.ALERTING
       break
     case SwitchStatusEnum.FIRMWARE_UPD_FAIL:
       message = $t({ defaultMessage: 'Firmware Update - Failed' })
@@ -238,7 +238,7 @@ export const transformSwitchStatus = (switchStatusEnum: SwitchStatusEnum, config
       break
     case SwitchStatusEnum.APPLYING_FIRMWARE:
       message = $t({ defaultMessage: 'Firmware updating' })
-      deviceStatus = DeviceConnectionStatus.CONNECTED
+      deviceStatus = DeviceConnectionStatus.ALERTING
       break
     case SwitchStatusEnum.OPERATIONAL:
       if (configReady && syncedSwitchConfig) {
