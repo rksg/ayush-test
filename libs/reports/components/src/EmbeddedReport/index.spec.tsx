@@ -6,7 +6,7 @@ import { Provider, store }                    from '@acx-ui/store'
 import { render, mockServer }                 from '@acx-ui/test-utils'
 import { NetworkPath }                        from '@acx-ui/utils'
 
-import { ReportType, reportTypeDataStudioMapping } from '../mapping/reportsMapping'
+import { ReportType } from '../mapping/reportsMapping'
 
 import { EmbeddedReport, convertDateTimeToSqlFormat, getSupersetRlsClause } from '.'
 
@@ -65,7 +65,7 @@ describe('EmbeddedDashboard', () => {
     )
     render(<Provider>
       <EmbeddedReport
-        embedDashboardName={reportTypeDataStudioMapping[ReportType.AP_DETAIL]} />
+        reportName={ReportType.AP_DETAIL} />
     </Provider>, { route: { params } })
     // expect(mockEmbedDashboard).toHaveBeenCalledWith()
     // TODO - Will revisit this
@@ -74,7 +74,7 @@ describe('EmbeddedDashboard', () => {
     process.env = { NODE_ENV: 'development' }
     render(<Provider>
       <EmbeddedReport
-        embedDashboardName={reportTypeDataStudioMapping[ReportType.AP_DETAIL]} />
+        reportName={ReportType.AP_DETAIL} />
     </Provider>, { route: { params } })
   })
   it('should render the dashboard rls clause', async () => {
@@ -84,7 +84,7 @@ describe('EmbeddedDashboard', () => {
     )
     render(<Provider>
       <EmbeddedReport
-        embedDashboardName={reportTypeDataStudioMapping[ReportType.AP_DETAIL]}
+        reportName={ReportType.AP_DETAIL}
         rlsClause='venue filter'/>
     </Provider>, { route: { params } })
   })

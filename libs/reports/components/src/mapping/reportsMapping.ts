@@ -62,3 +62,9 @@ export const reportTypeModeMapping: Record<ReportType, FilterMode> = {
   [ReportType.WLAN]: 'ap',
   [ReportType.AIRTIME_UTILIZATION]: 'ap'
 }
+
+export const bandDisabledReports:ReportType[] = [
+  ReportType.APPLICATION,
+  ReportType.ACCESS_POINT,
+  ReportType.AIRTIME_UTILIZATION
+]

@@ -12,8 +12,10 @@ import { useGuestTokenMutation, useEmbeddedIdMutation, BASE_RELATIVE_URL } from 
 import { useReportsFilter }                                                from '@acx-ui/reports/utils'
 import { useDateFilter, getJwtToken, NetworkPath }                         from '@acx-ui/utils'
 
+import { bandDisabledReports, ReportType, reportTypeDataStudioMapping, reportTypeModeMapping } from '../mapping/reportsMapping'
+
 interface ReportProps {
-  embedDashboardName: string
+  reportName: ReportType
   rlsClause?: string
   hideHeader?: boolean
 }
@@ -22,7 +24,12 @@ export function convertDateTimeToSqlFormat (dateTime: string): string {
   return moment.utc(dateTime).format('YYYY-MM-DD HH:mm:ss')
 }
 
-export const getSupersetRlsClause = (paths?:NetworkPath[],radioBands?:RadioBand[]) => {
+export const getSupersetRlsClause = (reportName:ReportType,
+  paths?:NetworkPath[],radioBands?:RadioBand[]) => {
+  const mode=reportTypeModeMapping[reportName]
+  const isApReport = ['ap','both'].includes(mode)
+  const isSwitchReport = ['switch','both'].includes(mode)
+  const isRadioBandDisabled = bandDisabledReports.includes(reportName)
   let radioBandClause = ''
   let zoneClause = ''
   let apClause = ''
@@ -30,7 +37,7 @@ export const getSupersetRlsClause = (paths?:NetworkPath[],radioBands?:RadioBand[
   let switchClause = ''
   let networkClause = ''
 
-  if(radioBands?.length){
+  if(radioBands?.length && isApReport && !isRadioBandDisabled){
     radioBandClause = ` "band" in (${radioBands.map(radioBand=>`'${radioBand}'`).join(', ')})`
   }
 
@@ -53,19 +60,19 @@ export const getSupersetRlsClause = (paths?:NetworkPath[],radioBands?:RadioBand[
         switchMacs.push(`'${path[2].name}'`)
       }
     })
-    if(zoneIds.length){
+    if(zoneIds.length && isApReport){
       zoneClause = `"zoneName" in (${zoneIds.join(', ')})`
     }
 
-    if(apMacs.length){
+    if(apMacs.length && isApReport){
       apClause = `"apMac" in (${apMacs.join(', ')})`
     }
 
-    if(switchGroupIds.length){
+    if(switchGroupIds.length && isSwitchReport){
       switchGroupClause = `"switchGroupLevelOneName" in (${switchGroupIds.join(', ')})`
     }
 
-    if(switchMacs.length){
+    if(switchMacs.length && isSwitchReport){
       switchClause = `"switchId" in (${switchMacs.join(', ')})`
     }
 
@@ -83,14 +90,16 @@ export const getSupersetRlsClause = (paths?:NetworkPath[],radioBands?:RadioBand[
 
 
 export function EmbeddedReport (props: ReportProps) {
-  const { embedDashboardName, rlsClause, hideHeader } = props
+  const { reportName, rlsClause, hideHeader } = props
+  const embedDashboardName = reportTypeDataStudioMapping[reportName]
   const params = useParams()
   const [ guestToken ] = useGuestTokenMutation()
   const [ embeddedId ] = useEmbeddedIdMutation()
   const { startDate, endDate } = useDateFilter()
   const [dashboardEmbeddedId, setDashboardEmbeddedId] = useState<string | null>(null)
   const { filters: { paths, bands } } = useReportsFilter()
-  const { networkClause, radioBandClause } = getSupersetRlsClause(paths,bands as RadioBand[])
+  const { networkClause, radioBandClause } = getSupersetRlsClause(reportName,
+    paths,bands as RadioBand[])
 
   /**
   * Hostname - Backend service where superset is running.
