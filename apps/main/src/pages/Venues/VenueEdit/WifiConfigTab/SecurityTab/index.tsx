@@ -177,7 +177,7 @@ export function SecurityTab () {
     })
   }
 
-  const setPolicyId = (id: string) => {
+  const setRogueApPolicyId = (id: string) => {
     formRef.current?.setFieldValue('roguePolicyId', id)
     setTriggerRogueAPDetection(true)
     setRoguePolicyIdValue(id)
@@ -307,11 +307,7 @@ export function SecurityTab () {
                   <Select
                     children={selectOptions}
                     value={roguePolicyIdValue}
-                    onChange={(value => {
-                      formRef.current?.setFieldValue('roguePolicyId', value)
-                      setTriggerRogueAPDetection(true)
-                      setRoguePolicyIdValue(value)
-                    })}
+                    onChange={(value => setRogueApPolicyId(value))}
                     style={{ width: '200px' }}
                   />
                 </Form.Item>
@@ -326,7 +322,7 @@ export function SecurityTab () {
                   {$t({ defaultMessage: 'View Details' })}
                 </Button>
                 <RogueApModal
-                  setPolicyId={setPolicyId}
+                  setPolicyId={setRogueApPolicyId}
                 />
               </Space>
               { rogueDrawerVisible && <RogueApDrawer
