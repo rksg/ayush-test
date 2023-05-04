@@ -1,13 +1,14 @@
-import { Badge, Button, Divider, Typography } from 'antd'
-import { useIntl }                            from 'react-intl'
+import { Badge, Button, Divider } from 'antd'
+import { useIntl }                from 'react-intl'
 
 import { IncidentsBySeverityData, useIncidentsBySeverityQuery }                                     from '@acx-ui/analytics/components'
 import { AnalyticsFilter }                                                                          from '@acx-ui/analytics/utils'
-import { Card, Descriptions, Loader, StackedBarChart, Subtitle, SuspenseBoundary }                  from '@acx-ui/components'
+import { Card, Descriptions, Loader, Subtitle }                                                     from '@acx-ui/components'
 import { DateFormatEnum, formatter }                                                                from '@acx-ui/formatter'
 import { ApDeviceStatusEnum, APMeshRole, APView, ApViewModel, SwitchStatusEnum, transformApStatus } from '@acx-ui/rc/utils'
 import { noDataDisplay, useDateFilter }                                                             from '@acx-ui/utils'
 
+import IncidentStackedBar              from './IncidentStackedBar'
 import * as UI                         from './styledComponents'
 import { getDeviceColor, getMeshRole } from './utils'
 
@@ -34,13 +35,6 @@ export function APDetailsCard (props: {
     }),
     skip: !apDetail?.venueId || !apDetail?.apMac
   })
-
-  const { DefaultFallback: Spinner } = SuspenseBoundary
-
-  const totalIncidents = incidentData?.data.P1
-                  + incidentData?.data.P2
-                  + incidentData?.data.P3
-                  + incidentData?.data.P4
 
   return <Card
     type='no-border'
@@ -97,48 +91,12 @@ export function APDetailsCard (props: {
             display: 'inline-flex'
           }}
           children={
-            <Loader
-              fallback={<Spinner size='small' />}
-              states={[
-                incidentData
-              ]}>
-              { incidentData?.data ?
-                <div style={{
-                  display: 'inline-flex'
-                }}>
-                  { !!totalIncidents && <StackedBarChart
-                    style={{ height: 16, width: 135, marginRight: 4 }}
-                    barWidth={12}
-                    showLabels={false}
-                    showTotal={false}
-                    data={[{
-                      category: 'AP Incidents',
-                      series: [
-                        {
-                          name: 'P1',
-                          value: incidentData?.data.P1
-                        },
-                        {
-                          name: 'P2',
-                          value: incidentData?.data.P2
-                        },
-                        {
-                          name: 'P3',
-                          value: incidentData?.data.P3
-                        },
-                        {
-                          name: 'P4',
-                          value: incidentData?.data.P4
-                        }
-                      ]
-                    }]} /> }
-                  <Typography.Text>
-                    { totalIncidents }
-                  </Typography.Text>
-                </div>
-                : noDataDisplay
-              }
-            </Loader>
+            incidentData?.data &&
+            <IncidentStackedBar
+              incidentData={incidentData?.data}
+              isLoading={incidentData?.isLoading}
+              category='AP Incidents'
+            />
           }
         />
 
