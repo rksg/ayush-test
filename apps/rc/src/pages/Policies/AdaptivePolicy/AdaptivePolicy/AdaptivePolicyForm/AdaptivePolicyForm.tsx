@@ -85,21 +85,6 @@ export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
 
         const conditions: AccessCondition [] = conditionsData?.data ?? []
 
-        // delete conditions
-        if(conditions) {
-          for (let condition of conditions) {
-            // eslint-disable-next-line max-len
-            if (data.evaluationRules.findIndex((p: AccessCondition) => p.id === condition.id) === -1) {
-              await deleteCondition({
-                params: {
-                  templateId: data.templateTypeId,
-                  policyId,
-                  conditionId: condition.id }
-              }).unwrap()
-            }
-          }
-        }
-
         for (let rule of data.evaluationRules) {
           const existRule = conditions.find(item => item.id === rule.id)
           if(existRule){  // Update conditions if value was changed
@@ -114,6 +99,21 @@ export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
           } else { // Add conditions
             await addConditions({ params: { templateId: data.templateTypeId, policyId },
               payload: { ...rule, policyId } }).unwrap()
+          }
+        }
+
+        // delete conditions
+        if(conditions) {
+          for (let condition of conditions) {
+            // eslint-disable-next-line max-len
+            if (data.evaluationRules.findIndex((p: AccessCondition) => p.id === condition.id) === -1) {
+              await deleteCondition({
+                params: {
+                  templateId: data.templateTypeId,
+                  policyId,
+                  conditionId: condition.id }
+              }).unwrap()
+            }
           }
         }
 
