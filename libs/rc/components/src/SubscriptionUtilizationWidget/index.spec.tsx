@@ -3,6 +3,12 @@ import { render, screen }        from '@acx-ui/test-utils'
 
 import { SubscriptionUtilizationWidget } from '.'
 
+jest.mock('./styledComponent', () => ({
+  ...jest.requireActual('./styledComponent'),
+  OverutilizationText: (props: React.PropsWithChildren) =>
+    (<div data-testid='overutilizationText' >{props.children}</div>)
+}))
+
 describe('Subscription utilization widget', () => {
   it('should correctly display overutilization', async () => {
     render(<SubscriptionUtilizationWidget
