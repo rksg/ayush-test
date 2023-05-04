@@ -131,6 +131,8 @@ export function LoadBalancing () {
       enabled,
       loadBalancingMethod,
       stickyClientSteeringEnabled,
+      stickyClientSnrThreshold,
+      stickyClientNbrApPercentageThreshold,
       bandBalancingEnabled,
       bandBalancingClientPercent24G,
       steeringMode
@@ -140,6 +142,8 @@ export function LoadBalancing () {
       enabled,
       loadBalancingMethod,
       stickyClientSteeringEnabled,
+      stickyClientSnrThreshold,
+      stickyClientNbrApPercentageThreshold,
       bandBalancingEnabled,
       bandBalancingClientPercent24G,
       steeringMode
