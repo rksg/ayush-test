@@ -15,6 +15,8 @@ export interface PropertyConfigs {
   status: PropertyConfigStatus,
   personaGroupId?: string,
   residentPortalId?: string,
+  venueId?: string,
+  venueName?: string,
   unitConfig?: {
     type: string,
     guestAllowed: boolean
@@ -111,6 +113,30 @@ export interface PropertyUnitFormFields extends PropertyUnit {
 }
 
 export interface ResidentPortal {
-  id: string,
-  name: string
+  id?: string,
+  name: string,
+  venueCount?: number,
+  uiConfiguration?: uiConfiguration
+}
+
+interface uiConfiguration {
+  type: 'uiConfiguration',
+  text: {
+    type?: 'text',
+    title: string,
+    subTitle: string,
+    loginText: string,
+    announcements: string,
+    helpText: string
+  },
+  color?: {
+    mainColor: string,
+    accentColor: string,
+    separatorColor: string,
+    textColor: string
+  },
+  files?: {
+    logoFileName: string,
+    favIconFileName: string
+  }
 }
