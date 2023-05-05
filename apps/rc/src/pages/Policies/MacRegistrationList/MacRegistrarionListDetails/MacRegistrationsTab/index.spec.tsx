@@ -51,6 +51,24 @@ const list = {
   empty: false
 }
 
+const macReg = {
+  id: '61551109-c54d-4516-bc2a-42e9716b00d9',
+  name: '12836-mac-pool',
+  autoCleanup: true,
+  expirationType: 'SPECIFIED_DATE',
+  expirationOffset: 2,
+  expirationDate: '2023-08-25T15:59:59Z',
+  priority: 0,
+  enabled: true,
+  expirationEnabled: true,
+  registrationCount: 1,
+  defaultAccess: 'REJECT',
+  createdDate: '2023-02-23T03:10:38Z',
+  policySetId: 'a3a8449e-a649-4bf4-8798-d772ee1dbd5f',
+  associationIds: ['9bfdd123-1851-44f1-8b66-b97aed28ec3f'],
+  networkIds: []
+}
+
 describe('MacRegistrationsTab', () => {
   const params = {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
@@ -66,13 +84,28 @@ describe('MacRegistrationsTab', () => {
   beforeEach(() => {
     mockServer.use(
       rest.get(
-        MacRegListUrlsInfo.getMacRegistrations.url,
+        MacRegListUrlsInfo.getMacRegistrations.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(list))
+      ),
+      rest.post(
+        MacRegListUrlsInfo.searchMacRegistrations.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(list))
+      ),
+      rest.get(
+        MacRegListUrlsInfo.getMacRegistrationPool.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(macReg))
       )
     )
   })
 
   it('should render correctly', async () => {
+    mockServer.use(
+      rest.patch(
+        MacRegListUrlsInfo.updateMacRegistration.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json({}))
+      )
+    )
+
     render(<Provider><MacRegistrationsTab /></Provider>, {
       route: { params, path: tablePath }
     })
@@ -171,7 +204,7 @@ describe('MacRegistrationsTab', () => {
   it('should show "Import from file" correctly', async () => {
     mockServer.use(
       rest.post(
-        MacRegListUrlsInfo.addMacRegistration.url,
+        MacRegListUrlsInfo.uploadMacRegistration.url,
         (req, res, ctx) => res(ctx.status(201), ctx.json({}))
       )
     )
@@ -179,9 +212,6 @@ describe('MacRegistrationsTab', () => {
     render(<Provider><MacRegistrationsTab /></Provider>, {
       route: { params, path: tablePath }
     })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
     fireEvent.click(await screen.findByRole('button', { name: /import from file/i }))
 
     const dialog = await screen.findByRole('dialog')
@@ -214,7 +244,7 @@ describe('MacRegistrationsTab', () => {
 
     mockServer.use(
       rest.post(
-        MacRegListUrlsInfo.addMacRegistration.url,
+        MacRegListUrlsInfo.uploadMacRegistration.url,
         (req, res, ctx) => res(ctx.status(500), ctx.json(error))
       )
     )
