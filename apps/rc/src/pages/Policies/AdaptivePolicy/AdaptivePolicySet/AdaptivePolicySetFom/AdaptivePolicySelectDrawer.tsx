@@ -18,10 +18,11 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
+import { AdaptivePolicyFormDrawer } from './AdaptivePolicyFormDrawer'
+
 interface AdaptivePoliciesSelectDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
-  setAdaptivePolicyDrawerVisible: (visible: boolean) => void
   accessPolicies: AdaptivePolicy []
   setAccessPolicies: (accessPolicies: AdaptivePolicy [] ) => void
 }
@@ -29,8 +30,9 @@ interface AdaptivePoliciesSelectDrawerProps {
 export function AdaptivePoliciesSelectDrawer (props: AdaptivePoliciesSelectDrawerProps) {
   const { $t } = useIntl()
   // eslint-disable-next-line max-len
-  const { setVisible, visible, setAdaptivePolicyDrawerVisible, accessPolicies, setAccessPolicies } = props
+  const { setVisible, visible, accessPolicies, setAccessPolicies } = props
 
+  const [adaptivePolicyDrawerVisible, setAdaptivePolicyDrawerVisible] = useState(false)
   const [conditionCountMap, setConditionCountMap] = useState(new Map())
   const [selectedPolicies, setSelectedPolicies] = useState(new Map())
   const [templateIdMap, setTemplateIdMap] = useState(new Map())
@@ -76,7 +78,6 @@ export function AdaptivePoliciesSelectDrawer (props: AdaptivePoliciesSelectDrawe
       return
 
     const templateIds = new Map()
-
     templateList?.data.forEach( template => {
       templateIds.set(template.ruleType, template.id)
     })
@@ -92,12 +93,13 @@ export function AdaptivePoliciesSelectDrawer (props: AdaptivePoliciesSelectDrawe
         })
     })
 
-    if(accessPolicies) {
+    if(accessPolicies && selectedPolicies.size === 0) {
       setSelectedPolicies(new Map(accessPolicies.map(item => [item.id, item])))
     }
   }, [adaptivePolicyListTableQuery.data, templateList?.data, visible])
 
   const onClose = () => {
+    setSelectedPolicies(new Map())
     setVisible(false)
   }
 
@@ -216,13 +218,19 @@ export function AdaptivePoliciesSelectDrawer (props: AdaptivePoliciesSelectDrawe
   )
 
   return (
-    <Drawer
-      title={$t({ defaultMessage: 'Select Access Policies' })}
-      visible={visible}
-      onClose={onClose}
-      children={content}
-      footer={footer}
-      width={600}
-    />
+    <>
+      <Drawer
+        title={$t({ defaultMessage: 'Select Access Policies' })}
+        visible={visible}
+        onClose={onClose}
+        children={content}
+        footer={footer}
+        width={600}
+      />
+      <AdaptivePolicyFormDrawer
+        visible={adaptivePolicyDrawerVisible}
+        setVisible={setAdaptivePolicyDrawerVisible}
+      />
+    </>
   )
 }

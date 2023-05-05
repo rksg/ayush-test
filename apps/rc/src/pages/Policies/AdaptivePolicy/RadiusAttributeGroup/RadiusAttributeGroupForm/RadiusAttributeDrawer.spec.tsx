@@ -57,7 +57,7 @@ describe('RadiusAttributeDrawer', () => {
 
     const editAttribute = {
       attributeName: 'attributeName1',
-      attributeValue: 'test',
+      attributeValue: '123',
       dataType: DataType.BYTE,
       operator: OperatorType.DOES_NOT_EXIST
     }
@@ -96,7 +96,7 @@ describe('RadiusAttributeDrawer', () => {
 
     await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loading' }))
 
-    await userEvent.click(await screen.findByText('Foundry-Privilege-Level'))
+    await userEvent.click(await screen.findByText('Foundry-Privilege-Level (INTEGER)'))
 
     const addButton = screen.getByText('Done')
     expect(addButton).toBeInTheDocument()

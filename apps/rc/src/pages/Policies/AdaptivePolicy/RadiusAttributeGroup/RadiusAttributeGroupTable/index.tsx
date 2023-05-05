@@ -61,7 +61,8 @@ export default function RadiusAttributeGroupTable () {
       { isLoading: isDeleteMacGroupUpdating }
     ] = useDeleteRadiusAttributeGroupMutation()
 
-    const checkDelete = (id: string) => {
+    const checkDelete = (id?: string) => {
+      if (!id) return false
       const policy = policyMap.get(id) ?? [] as string []
       return policy.length !== 0
     }
@@ -83,6 +84,12 @@ export default function RadiusAttributeGroupTable () {
       label: $t({ defaultMessage: 'Delete' }),
       // eslint-disable-next-line max-len
       disabled: (([selectedItem]) => (selectedItem && selectedItem.id) ? checkDelete(selectedItem.id) : false),
+      tooltip: (([selectedItem]) =>
+        selectedItem ?
+          checkDelete(selectedItem.id) ?
+          // eslint-disable-next-line max-len
+            $t({ defaultMessage: 'This group is in use by one or more Adaptive Policies.' }) : undefined : undefined
+      ),
       onClick: ([{ name, id }], clearSelection) => {
         showActionModal({
           type: 'confirm',
