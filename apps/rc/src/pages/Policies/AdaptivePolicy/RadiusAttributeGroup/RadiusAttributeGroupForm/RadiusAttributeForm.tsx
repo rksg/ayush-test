@@ -5,26 +5,39 @@ import {  useIntl }                                             from 'react-intl
 
 import { Loader }                                                                      from '@acx-ui/components'
 import { useLazyRadiusAttributeListWithQueryQuery, useRadiusAttributeVendorListQuery } from '@acx-ui/rc/services'
-import { AttributeAssignment, OperatorType, RadiusAttribute, treeNode }                from '@acx-ui/rc/utils'
+import {
+  AttributeAssignment,
+  ipv6RegExp,
+  cliIpAddressRegExp,
+  DataType,
+  OperatorType,
+  RadiusAttribute,
+  treeNode
+} from '@acx-ui/rc/utils'
+import { validationMessages } from '@acx-ui/utils'
 
 import { AttributeOperationLabelMapping } from '../../../contentsMap'
 
-
 interface RadiusAttributeFormProps {
   form: FormInstance,
+  isEdit?: boolean,
   editAttribute?: AttributeAssignment
 }
 
 export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
   const { $t } = useIntl()
-  const { form, editAttribute } = props
-  const [attributeName] = useState<string | undefined>(undefined)
+  const { form, isEdit = false, editAttribute } = props
+
   const [attributeTreeData, setAttributeTreeData] = useState([] as treeNode [])
 
   const commonAttributeKey = 'Common Attributes'
 
   const radiusAttributeVendorListQuery = useRadiusAttributeVendorListQuery({ params: {} })
   const [radiusAttributeListQuery] = useLazyRadiusAttributeListWithQueryQuery()
+
+  const dataType = Form.useWatch('dataType', form)
+
+  const [treeSelectValue, setTreeSelectValue] = useState<string | undefined>(undefined)
 
   useEffect(()=>{
     if(radiusAttributeVendorListQuery.data) {
@@ -35,8 +48,10 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
   }, [radiusAttributeVendorListQuery.data])
 
   useEffect(() => {
-    if (editAttribute) {
-      form.setFieldsValue(editAttribute)
+    if(isEdit && editAttribute) {
+      setTreeSelectValue(`${editAttribute.attributeName } (${editAttribute.dataType})`)
+    } else{
+      setTreeSelectValue(undefined)
     }
   }, [editAttribute])
 
@@ -68,7 +83,7 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
     dataType?: string) : treeNode => {
     return {
       value: value,
-      title: value,
+      title: isLeaf ? `${value} (${dataType})` : value,
       isLeaf: isLeaf,
       selectable: isLeaf,
       children: children ?? undefined,
@@ -89,6 +104,19 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
     return dataType
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const attributeValueValidator = async (value: any) => {
+    let result = true
+    if(dataType === DataType.INTEGER || dataType === DataType.BYTE) {
+      result = !isNaN(value)
+    } else if(dataType === DataType.IPADDR){
+      return cliIpAddressRegExp(value)
+    } else if(dataType === DataType.IPV6ADDR){
+      return ipv6RegExp(value)
+    }
+    return result ? Promise.resolve() : Promise.reject($t(validationMessages.invalid))
+  }
+
   return (
     <Loader states={[{ isLoading: radiusAttributeVendorListQuery.isLoading }]}>
       <Form layout='vertical' form={form}>
@@ -97,16 +125,20 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
           label={$t({ defaultMessage: 'Attribute Type' })}
           rules={[{ required: true }]}
         >
-          <TreeSelect
-            showSearch
-            value={attributeName}
-            placeholder={$t({ defaultMessage: 'Select attribute type' })}
-            treeData={attributeTreeData}
-            loadData={onLoadData}
-            onChange={(value) => {
-              form.setFieldValue('dataType', getAttributeDataType(value))
-            }}
-          />
+          <Form.Item>
+            <TreeSelect
+              showSearch
+              value={treeSelectValue}
+              placeholder={$t({ defaultMessage: 'Select attribute type' })}
+              treeData={attributeTreeData}
+              loadData={onLoadData}
+              onChange={(value) => {
+                if(!value) return
+                setTreeSelectValue(value)
+                form.setFieldsValue({ attributeName: value, dataType: getAttributeDataType(value) })
+              }}
+            />
+          </Form.Item>
         </Form.Item>
         <Form.Item label={$t({ defaultMessage: 'Condition Value' })}>
           <Space direction='horizontal'>
@@ -118,8 +150,10 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
               </Select>
             </Form.Item>
             <Form.Item name='attributeValue'
-              rules={[{ required: true }]}
-              children={<Input />}/>
+              rules={[
+                { required: true },
+                { validator: (_, value) => attributeValueValidator(value) }]}
+              children={<Input/>}/>
           </Space>
         </Form.Item>
         <Form.Item name='dataType' hidden children={<Input/>}/>

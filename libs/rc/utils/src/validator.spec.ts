@@ -22,7 +22,8 @@ import {
   serialNumberRegExp,
   targetHostRegExp,
   validateRecoveryPassphrasePart,
-  validateVlanId
+  validateVlanId,
+  ipv6RegExp
 } from './validator'
 
 describe('validator', () => {
@@ -339,4 +340,16 @@ describe('validator', () => {
         'Special characters (other than space, $, -, . and _) are not allowed')
     })
   })
+
+  describe('ipv6RegExp', () => {
+    it('Should take care of IP value correctly', async () => {
+      const result = ipv6RegExp('2001:db8:3333:4444:5555:6666:7777:8888')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if IP value incorrectly', async () => {
+      const result1 = ipv6RegExp('1.1.1.255')
+      await expect(result1).rejects.toEqual('Please enter a valid IP address')
+    })
+  })
+
 })
