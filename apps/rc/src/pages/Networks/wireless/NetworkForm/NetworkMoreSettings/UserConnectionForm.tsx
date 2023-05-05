@@ -68,7 +68,7 @@ export function UserConnectionForm () {
           form.setFieldValue('userSessionTimeoutUnit', 'hours')
         }else {
           form.setFieldValue(['guestPortal','userSessionTimeout'],
-            data.guestPortal.lockoutPeriod)
+            data.guestPortal.userSessionTimeout)
           form.setFieldValue('userSessionTimeoutUnit', 'minutes')
         }
         if(data.guestPortal.lockoutPeriod && data.guestPortal.lockoutPeriod>=oneDay
@@ -100,7 +100,7 @@ export function UserConnectionForm () {
           form.setFieldValue('userSessionTimeoutUnit', 'hours')
         }else {
           form.setFieldValue(['guestPortal','userSessionTimeout'],
-            data.guestPortal?.lockoutPeriod)
+            data.guestPortal?.userSessionTimeout)
           form.setFieldValue('userSessionTimeoutUnit', 'minutes')
         }
         if(data.guestPortal?.macCredentialsDuration &&
