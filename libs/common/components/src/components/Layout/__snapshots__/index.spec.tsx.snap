@@ -28,7 +28,7 @@ exports[`Layout should render correctly 1`] = `
             >
               <a
                 class=""
-                href="/t/undefined/dashboard"
+                href="/undefined/t/dashboard"
               >
                 <div />
               </a>
@@ -54,7 +54,7 @@ exports[`Layout should render correctly 1`] = `
                     <a
                       class=""
                       data-label="Dashboard"
-                      href="/t/undefined/dashboard"
+                      href="/undefined/t/dashboard"
                     >
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-1 ccvYDe"
@@ -109,7 +109,7 @@ exports[`Layout should render correctly 1`] = `
                     <a
                       class=""
                       data-label="Venues"
-                      href="/t/undefined/venues"
+                      href="/undefined/t/venues"
                     >
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-1 ccvYDe"
@@ -437,7 +437,7 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
             >
               <a
                 class=""
-                href="/v/undefined/dashboard"
+                href="/undefined/v/dashboard"
               >
                 <div />
               </a>

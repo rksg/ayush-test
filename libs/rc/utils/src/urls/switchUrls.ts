@@ -581,8 +581,8 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   downloadSwitchsCSV: {
     method: 'post',
-    url: '/switches/inventories/query/csvFiles',
-    oldUrl: '/switches/inventories/query/csvFiles',
+    url: '/switches/query/csvFiles',
+    oldUrl: '/switches/query/csvFiles',
     newApi: true
   }
 }

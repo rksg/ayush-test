@@ -115,7 +115,7 @@ describe('Property Config Tab', () => {
 
     const { tenantId, venueId } = enabledParams
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${tenantId}/venues/${venueId}/venue-details/overview`,
+      pathname: `/${tenantId}/t/venues/${venueId}/venue-details/overview`,
       hash: '',
       search: ''
     })

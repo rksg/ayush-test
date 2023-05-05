@@ -198,10 +198,17 @@ export function VenuesForm () {
       .unwrap()).data.filter(n => n.id !== data?.id).map(n => ({ name: n.name }))
     return checkObjectNotExists(list, { name: value } , intl.$t({ defaultMessage: 'Venue' }))
   }
+
   const addressValidator = async (value: string) => {
     const isEdit = action === 'edit'
     const isSameValue = value ===
       formRef.current?.getFieldsValue(['address', 'addressLine']).address?.addressLine
+
+    if(Object.keys(address).length === 0){
+      return Promise.reject(
+        intl.$t({ defaultMessage: 'Please select address from suggested list' })
+      )
+    }
 
     if (isEdit && !_.isEmpty(value) && isSameValue && !sameCountry) {
       return Promise.reject(
@@ -210,7 +217,6 @@ export function VenuesForm () {
     }
     return Promise.resolve()
   }
-
 
   const addressOnChange: ChangeEventHandler<HTMLInputElement> = async (event) => {
     updateAddress({})

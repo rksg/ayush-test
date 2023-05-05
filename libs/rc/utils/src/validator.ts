@@ -209,15 +209,6 @@ export function excludeExclamationRegExp (value: string) {
   return Promise.resolve()
 }
 
-export function excludeExclamationLeadTrailSpaceRegExp (value: string) {
-  const { $t } = getIntl()
-  const re = new RegExp(/^(?:(?!")[\s\S])*?(?<!\s)$/)
-  if (value!=='' && !re.test(value)) {
-    return Promise.reject($t(validationMessages.excludeExclamationRegExp))
-  }
-  return Promise.resolve()
-}
-
 export function excludeQuoteRegExp (value: string) {
   const { $t } = getIntl()
   const re = new RegExp(/^(?:(?!").)*$/)
@@ -746,7 +737,8 @@ export function validateSwitchStaticRouteNextHop (ipAddress: string) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len
   const nextHopRegexp = new RegExp(/^((1\.){3}([1-9]|[1-9]\d|[12]\d\d)|(1\.){2}([2-9]|[1-9]\d|[12]\d\d)\.([1-9]?\d|[12]\d\d)|1\.([2-9]|[1-9]\d|[12]\d\d)(\.([1-9]?\d|[12]\d\d)){2}|([2-9]|[1-9]\d|1\d\d|2[01]\d|22[0-3])(\.([1-9]?\d|[12]\d\d)){3})$/)
-  if (!nextHopRegexp.test(ipAddress)) {
+  // Next Hop accept "0.0.0.0".
+  if (!nextHopRegexp.test(ipAddress) && ipAddress !== '0.0.0.0') {
     return Promise.reject($t(validationMessages.switchStaticRouteNextHopInvalid))
   }
   return Promise.resolve()
@@ -806,6 +798,15 @@ export function validateDuplicateAclName (aclName: string, aclList: Acl[]) {
   } else {
     return Promise.resolve()
   }
+}
+
+export function validateVlanId (vlanId: string){
+  const { $t } = getIntl()
+  const vlanRegexp = new RegExp('^([1-9]|[1-9][0-9]{1,2}|[1-3][0-9]{3}|40[0-8][0-9]|409[0-4])$') // Only 1 - 4094
+  if (!vlanRegexp.test(vlanId)) {
+    return Promise.reject($t(validationMessages.vlanRange))
+  }
+  return Promise.resolve()
 }
 
 export function validateVlanName (vlanName: string){

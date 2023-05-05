@@ -17,7 +17,7 @@ exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -64,6 +64,25 @@ exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
             </span>
           </span>
         </div>
+        <span
+          class="ant-page-header-heading-extra"
+        >
+          <div
+            class="ant-space ant-space-horizontal ant-space-align-center"
+          >
+            <div
+              class="ant-space-item"
+            >
+              <span
+                class="styledComponents__Icon-sc-iwostn-9 styledComponents__IconContainer-sc-cwxgii-2 ekcjfg fNyEaU ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+              >
+                <svg
+                  data-testid="ConfigurationOutlined"
+                />
+              </span>
+            </div>
+          </div>
+        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -202,7 +221,7 @@ exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -249,6 +268,25 @@ exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
             </span>
           </span>
         </div>
+        <span
+          class="ant-page-header-heading-extra"
+        >
+          <div
+            class="ant-space ant-space-horizontal ant-space-align-center"
+          >
+            <div
+              class="ant-space-item"
+            >
+              <span
+                class="styledComponents__Icon-sc-iwostn-9 styledComponents__IconContainer-sc-cwxgii-2 ekcjfg fNyEaU ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+              >
+                <svg
+                  data-testid="ConfigurationOutlined"
+                />
+              </span>
+            </div>
+          </div>
+        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -387,7 +425,7 @@ exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -434,6 +472,25 @@ exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
             </span>
           </span>
         </div>
+        <span
+          class="ant-page-header-heading-extra"
+        >
+          <div
+            class="ant-space ant-space-horizontal ant-space-align-center"
+          >
+            <div
+              class="ant-space-item"
+            >
+              <span
+                class="styledComponents__Icon-sc-iwostn-9 styledComponents__IconContainer-sc-cwxgii-2 ekcjfg fNyEaU ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+              >
+                <svg
+                  data-testid="ConfigurationOutlined"
+                />
+              </span>
+            </div>
+          </div>
+        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -572,7 +629,7 @@ exports[`Test Details should render ApservDowntimeHigh correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -619,6 +676,25 @@ exports[`Test Details should render ApservDowntimeHigh correctly 1`] = `
             </span>
           </span>
         </div>
+        <span
+          class="ant-page-header-heading-extra"
+        >
+          <div
+            class="ant-space ant-space-horizontal ant-space-align-center"
+          >
+            <div
+              class="ant-space-item"
+            >
+              <span
+                class="styledComponents__Icon-sc-iwostn-9 styledComponents__IconContainer-sc-cwxgii-2 ekcjfg fNyEaU ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+              >
+                <svg
+                  data-testid="ConfigurationOutlined"
+                />
+              </span>
+            </div>
+          </div>
+        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -757,7 +833,7 @@ exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -804,6 +880,25 @@ exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
             </span>
           </span>
         </div>
+        <span
+          class="ant-page-header-heading-extra"
+        >
+          <div
+            class="ant-space ant-space-horizontal ant-space-align-center"
+          >
+            <div
+              class="ant-space-item"
+            >
+              <span
+                class="styledComponents__Icon-sc-iwostn-9 styledComponents__IconContainer-sc-cwxgii-2 ekcjfg fNyEaU ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+              >
+                <svg
+                  data-testid="ConfigurationOutlined"
+                />
+              </span>
+            </div>
+          </div>
+        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -945,7 +1040,7 @@ exports[`Test Details should render CovClientrssiLow correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -992,6 +1087,25 @@ exports[`Test Details should render CovClientrssiLow correctly 1`] = `
             </span>
           </span>
         </div>
+        <span
+          class="ant-page-header-heading-extra"
+        >
+          <div
+            class="ant-space ant-space-horizontal ant-space-align-center"
+          >
+            <div
+              class="ant-space-item"
+            >
+              <span
+                class="styledComponents__Icon-sc-iwostn-9 styledComponents__IconContainer-sc-cwxgii-2 ekcjfg fNyEaU ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+              >
+                <svg
+                  data-testid="ConfigurationOutlined"
+                />
+              </span>
+            </div>
+          </div>
+        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -1145,7 +1259,7 @@ exports[`Test Details should render FailureTemplate correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -1192,6 +1306,25 @@ exports[`Test Details should render FailureTemplate correctly 1`] = `
             </span>
           </span>
         </div>
+        <span
+          class="ant-page-header-heading-extra"
+        >
+          <div
+            class="ant-space ant-space-horizontal ant-space-align-center"
+          >
+            <div
+              class="ant-space-item"
+            >
+              <span
+                class="styledComponents__Icon-sc-iwostn-9 styledComponents__IconContainer-sc-cwxgii-2 ekcjfg fNyEaU ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+              >
+                <svg
+                  data-testid="ConfigurationOutlined"
+                />
+              </span>
+            </div>
+          </div>
+        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -1333,7 +1466,7 @@ exports[`Test Details should render FailureTemplate correctly 2`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -1380,6 +1513,25 @@ exports[`Test Details should render FailureTemplate correctly 2`] = `
             </span>
           </span>
         </div>
+        <span
+          class="ant-page-header-heading-extra"
+        >
+          <div
+            class="ant-space ant-space-horizontal ant-space-align-center"
+          >
+            <div
+              class="ant-space-item"
+            >
+              <span
+                class="styledComponents__Icon-sc-iwostn-9 styledComponents__IconContainer-sc-cwxgii-2 ekcjfg fNyEaU ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+              >
+                <svg
+                  data-testid="ConfigurationOutlined"
+                />
+              </span>
+            </div>
+          </div>
+        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -1521,7 +1673,7 @@ exports[`Test Details should render FailureTemplate correctly 3`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -1568,6 +1720,25 @@ exports[`Test Details should render FailureTemplate correctly 3`] = `
             </span>
           </span>
         </div>
+        <span
+          class="ant-page-header-heading-extra"
+        >
+          <div
+            class="ant-space ant-space-horizontal ant-space-align-center"
+          >
+            <div
+              class="ant-space-item"
+            >
+              <span
+                class="styledComponents__Icon-sc-iwostn-9 styledComponents__IconContainer-sc-cwxgii-2 ekcjfg fNyEaU ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+              >
+                <svg
+                  data-testid="ConfigurationOutlined"
+                />
+              </span>
+            </div>
+          </div>
+        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -1709,7 +1880,7 @@ exports[`Test Details should render FailureTemplate correctly 4`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -1756,6 +1927,25 @@ exports[`Test Details should render FailureTemplate correctly 4`] = `
             </span>
           </span>
         </div>
+        <span
+          class="ant-page-header-heading-extra"
+        >
+          <div
+            class="ant-space ant-space-horizontal ant-space-align-center"
+          >
+            <div
+              class="ant-space-item"
+            >
+              <span
+                class="styledComponents__Icon-sc-iwostn-9 styledComponents__IconContainer-sc-cwxgii-2 ekcjfg fNyEaU ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+              >
+                <svg
+                  data-testid="ConfigurationOutlined"
+                />
+              </span>
+            </div>
+          </div>
+        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -1897,7 +2087,7 @@ exports[`Test Details should render FailureTemplate correctly 5`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -1944,6 +2134,25 @@ exports[`Test Details should render FailureTemplate correctly 5`] = `
             </span>
           </span>
         </div>
+        <span
+          class="ant-page-header-heading-extra"
+        >
+          <div
+            class="ant-space ant-space-horizontal ant-space-align-center"
+          >
+            <div
+              class="ant-space-item"
+            >
+              <span
+                class="styledComponents__Icon-sc-iwostn-9 styledComponents__IconContainer-sc-cwxgii-2 ekcjfg fNyEaU ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+              >
+                <svg
+                  data-testid="ConfigurationOutlined"
+                />
+              </span>
+            </div>
+          </div>
+        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -2085,7 +2294,7 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -2132,6 +2341,25 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
             </span>
           </span>
         </div>
+        <span
+          class="ant-page-header-heading-extra"
+        >
+          <div
+            class="ant-space ant-space-horizontal ant-space-align-center"
+          >
+            <div
+              class="ant-space-item"
+            >
+              <span
+                class="styledComponents__Icon-sc-iwostn-9 styledComponents__IconContainer-sc-cwxgii-2 ekcjfg fNyEaU ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+              >
+                <svg
+                  data-testid="ConfigurationOutlined"
+                />
+              </span>
+            </div>
+          </div>
+        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -2216,7 +2444,7 @@ exports[`Test Details should render SwitchPoePd correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -2263,6 +2491,25 @@ exports[`Test Details should render SwitchPoePd correctly 1`] = `
             </span>
           </span>
         </div>
+        <span
+          class="ant-page-header-heading-extra"
+        >
+          <div
+            class="ant-space ant-space-horizontal ant-space-align-center"
+          >
+            <div
+              class="ant-space-item"
+            >
+              <span
+                class="styledComponents__Icon-sc-iwostn-9 styledComponents__IconContainer-sc-cwxgii-2 ekcjfg fNyEaU ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+              >
+                <svg
+                  data-testid="ConfigurationOutlined"
+                />
+              </span>
+            </div>
+          </div>
+        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -2360,7 +2607,7 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -2407,6 +2654,25 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
             </span>
           </span>
         </div>
+        <span
+          class="ant-page-header-heading-extra"
+        >
+          <div
+            class="ant-space ant-space-horizontal ant-space-align-center"
+          >
+            <div
+              class="ant-space-item"
+            >
+              <span
+                class="styledComponents__Icon-sc-iwostn-9 styledComponents__IconContainer-sc-cwxgii-2 ekcjfg fNyEaU ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+              >
+                <svg
+                  data-testid="ConfigurationOutlined"
+                />
+              </span>
+            </div>
+          </div>
+        </span>
       </div>
       <div
         class="ant-page-header-content"
@@ -2491,7 +2757,7 @@ exports[`Test Details should render Ttc correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics/incidents"
+                href="/undefined/t/analytics/incidents"
               >
                 Incidents
               </a>
@@ -2538,6 +2804,25 @@ exports[`Test Details should render Ttc correctly 1`] = `
             </span>
           </span>
         </div>
+        <span
+          class="ant-page-header-heading-extra"
+        >
+          <div
+            class="ant-space ant-space-horizontal ant-space-align-center"
+          >
+            <div
+              class="ant-space-item"
+            >
+              <span
+                class="styledComponents__Icon-sc-iwostn-9 styledComponents__IconContainer-sc-cwxgii-2 ekcjfg fNyEaU ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+              >
+                <svg
+                  data-testid="ConfigurationOutlined"
+                />
+              </span>
+            </div>
+          </div>
+        </span>
       </div>
       <div
         class="ant-page-header-content"

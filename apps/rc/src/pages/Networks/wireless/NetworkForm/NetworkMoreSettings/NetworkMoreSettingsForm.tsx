@@ -139,6 +139,7 @@ export function MoreSettingsForm (props: {
 
   const form = Form.useFormInstance()
   const wlanData = (editMode) ? props.wlanData : form.getFieldsValue()
+  const enableWPA3_80211R = useIsSplitOn(Features.WPA3_80211R)
 
   const isPortalDefaultVLANId = (data?.enableDhcp||enableDhcp) &&
     data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&
@@ -147,13 +148,23 @@ export function MoreSettingsForm (props: {
     delete data?.wlan?.vlanId
     form.setFieldValue(['wlan', 'vlanId'], 3000)
   }
-  const isNetworkWPASecured = wlanData?.wlan?.wlanSecurity ? [
+
+  let networkWPASecuredList = [
     WlanSecurityEnum.WPA2Personal,
     WlanSecurityEnum.WPAPersonal,
-    WlanSecurityEnum.WPA2Enterprise].includes(wlanData?.wlan.wlanSecurity) : false
+    WlanSecurityEnum.WPA2Enterprise]
 
-  const isFastBssVisible = (isNetworkWPASecured || data?.type === NetworkTypeEnum.AAA) &&
-    data?.type !== NetworkTypeEnum.DPSK
+  if (enableWPA3_80211R) {
+    networkWPASecuredList = networkWPASecuredList.concat([
+      WlanSecurityEnum.WPA23Mixed,
+      WlanSecurityEnum.WPA3])
+  }
+
+  const isNetworkWPASecured = wlanData?.wlan?.wlanSecurity ?
+    networkWPASecuredList.includes(wlanData?.wlan.wlanSecurity) : false
+
+  const isFastBssVisible = data?.type === NetworkTypeEnum.AAA ? true : (
+    data?.type !== NetworkTypeEnum.DPSK && isNetworkWPASecured )
 
   const showDynamicWlan = data?.type === NetworkTypeEnum.AAA ||
     data?.type === NetworkTypeEnum.DPSK
@@ -383,6 +394,7 @@ export function MoreSettingsForm (props: {
 
         {isFastBssVisible &&
           <UI.FormItemNoLabel
+            data-testid='enableFastRoaming-full-block'
             name={['wlan', 'advancedCustomization', 'enableFastRoaming']}
             style={{ marginBottom: '15px' }}
             valuePropName='checked'
@@ -398,6 +410,7 @@ export function MoreSettingsForm (props: {
             <Form.Item
               name={['wlan','advancedCustomization','mobilityDomainId']}
               label={$t({ defaultMessage: 'Mobility Domain ID' })}
+              data-testid='mobilityDomainId-full-block'
               initialValue={1}
               rules={[
                 {
@@ -408,7 +421,10 @@ export function MoreSettingsForm (props: {
                 }
               ]}
               style={{ marginBottom: '15px' }}
-              children={<Input style={{ width: '150px' }} />}
+              children={
+                <Input data-testid='mobilityDomainId-input'
+                  style={{ width: '150px' }}
+                />}
             />
         }
 
