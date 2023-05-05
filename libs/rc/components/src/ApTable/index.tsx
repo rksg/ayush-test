@@ -288,13 +288,12 @@ export function ApTable (props: ApTableProps) {
         })
         return acc
       }, [] as TableProps<APExtended | APExtendedGrouped>['columns'])
-    // }, { TODO: Waiting for TAG feature support
-      // key: 'tags',
-      // title: $t({ defaultMessage: 'Tags' }),
-      // dataIndex: 'tags',
-      // searchable: searchable,
-      // sorter: true
-      //TODO: Click-> Filter by Tag
+    }, {
+      key: 'tags',
+      title: $t({ defaultMessage: 'Tags' }),
+      dataIndex: 'tags',
+      searchable: searchable,
+      sorter: true
     }, {
       key: 'serialNumber',
       title: $t({ defaultMessage: 'Serial Number' }),
