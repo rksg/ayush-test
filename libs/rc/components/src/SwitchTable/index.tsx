@@ -326,7 +326,7 @@ export function SwitchTable (props : SwitchTableProps) {
       onChange={tableQuery.handleTableChange}
       onFilterChange={tableQuery.handleFilterChange}
       enableApiFilter={true}
-      rowKey={(record)=> record.serialNumber + (!record.isFirstLevel ? 'stack-member' : '')}
+      rowKey={(record)=> record.isGroup || record.serialNumber + (!record.isFirstLevel ? 'stack-member' : '')}
       rowActions={filterByAccess(rowActions)}
       rowSelection={{
         type: 'checkbox',

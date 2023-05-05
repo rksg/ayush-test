@@ -71,7 +71,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
   endpoints: (build) => ({
     switchList: build.query<TableResult<SwitchRow>, RequestPayload<any>>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
-        const hasGroupBy = arg.payload?.groupBy
+        const hasGroupBy = !!arg.payload?.groupBy
         const req = hasGroupBy
           ? createHttpRequest(SwitchUrlsInfo.getSwitchListByGroup, arg.params)
           : createHttpRequest(SwitchUrlsInfo.getSwitchList, arg.params)
@@ -86,11 +86,15 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         if(!list) return { error: listQuery.error as FetchBaseQueryError }
         
         list.data.forEach(async (item:SwitchRow) => {
-          if(item.isStack || item.formStacking){
-            stacks.push(item.serialNumber)
-          }
-          if(item.switches){
+          if(hasGroupBy){
             item.children = item.switches
+            item.switches.forEach((i:any) => {
+              if(i.isStack || i.formStacking){
+                stacks.push(i.serialNumber)
+              }
+            })
+          }else if(item.isStack || item.formStacking){
+            stacks.push(item.serialNumber)
           }
         })
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -101,7 +105,9 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           stackMembers[id] = allStacksMember[index]?.data.data
         })
 
-        const aggregatedList = aggregatedSwitchListData(list, stackMembers)
+        const aggregatedList = hasGroupBy 
+        ? aggregatedSwitchGroupByListData(list, stackMembers) 
+        : aggregatedSwitchListData(list, stackMembers)
 
         return { data: aggregatedList }
       },
@@ -1123,6 +1129,31 @@ const genStackMemberPayload = (arg:RequestPayload<unknown>, serialNumber:string)
         activeUnitId: [serialNumber]
       }
     }
+  }
+}
+
+const aggregatedSwitchGroupByListData = (switches: TableResult<SwitchRow>,
+  stackMembers:{ [index:string]: StackMember[] }) => {
+  const data = JSON.parse(JSON.stringify(switches.data))
+  data.forEach((item:SwitchRow, index:number) => {
+    item.isGroup = 'group' + index // for table rowKey
+    item.children?.forEach(i => {
+      i.isFirstLevel = true
+      if (stackMembers[i.serialNumber]) {
+        const tmpMember = _.cloneDeep(stackMembers[i.serialNumber])
+        tmpMember.forEach((member: StackMember, index: number) => {
+          if (member.serialNumber === i.serialNumber) {
+            tmpMember[index].unitStatus = STACK_MEMBERSHIP.ACTIVE
+          }
+        })
+        // i.children = tmpMember
+      }
+    })
+  })
+
+  return {
+    ...switches,
+    data
   }
 }
 

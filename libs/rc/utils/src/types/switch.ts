@@ -265,6 +265,8 @@ export interface SwitchRow {
 }
 
 export interface StackMember {
+  isFirstLevel: boolean
+  children: StackMember[]
   venueName: string
   serialNumber: string
   operStatusFound?: boolean

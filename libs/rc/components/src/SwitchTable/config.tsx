@@ -31,15 +31,6 @@ const commonAttributes = ($t: IntlShape['$t']) => [
         {$t(defineMessage({ defaultMessage: 'Connected Clients' }))}: {record.clients}
       </div>
     )
-  },
-  {
-    key: 'networks',
-    renderer: (record: APExtended) => (
-      <div>
-        {$t(defineMessage({ defaultMessage: 'Wireless Networks' }))}:{' '}
-        {record.networks ? record.networks.count : 0}
-      </div>
-    )
   }
 ]
 
