@@ -7,7 +7,7 @@ import { useIntl }     from 'react-intl'
 import { useParams }   from 'react-router-dom'
 
 import { GridCol, GridRow }                                                     from '@acx-ui/components'
-import { StepsFormLegacy }                                                            from '@acx-ui/components'
+import { StepsFormLegacy }                                                      from '@acx-ui/components'
 import { useGetAccessControlProfileListQuery, useGetAccessControlProfileQuery } from '@acx-ui/rc/services'
 import { AclEmbeddedObject }                                                    from '@acx-ui/rc/utils'
 

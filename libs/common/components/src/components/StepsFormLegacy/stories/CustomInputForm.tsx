@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Row, Col, Form, Input, Typography } from 'antd'
 import _                                     from 'lodash'
 
-import { StepsFormLegacy }         from '..'
+import { StepsFormLegacy }   from '..'
 import { Button }            from '../../Button'
 import { Modal }             from '../../Modal'
 import { Table, TableProps } from '../../Table'

@@ -4,7 +4,7 @@ import { Row, Col, Form, Input } from 'antd'
 import { RuleObject }            from 'antd/lib/form'
 
 import { StepsFormLegacy } from '..'
-import { showToast } from '../../Toast'
+import { showToast }       from '../../Toast'
 
 function wait (ms: number) { return new Promise(resolve => setTimeout(resolve, ms)) }
 

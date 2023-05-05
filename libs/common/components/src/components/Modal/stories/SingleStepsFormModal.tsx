@@ -4,7 +4,7 @@ import { Form, Input, Row, Col } from 'antd'
 
 import { Button }           from '../../Button'
 import { Modal, ModalType } from '../../Modal'
-import { StepsFormLegacy }        from '../../StepsFormLegacy'
+import { StepsFormLegacy }  from '../../StepsFormLegacy'
 import { showToast }        from '../../Toast'
 
 function wait (ms: number) { return new Promise(resolve => setTimeout(resolve, ms)) }

@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 
 import { Row, Col, Form, Input } from 'antd'
 
-import { Button }    from '../../Button'
 import { StepsFormLegacy } from '..'
-import { showToast } from '../../Toast'
+import { Button }          from '../../Button'
+import { showToast }       from '../../Toast'
 
 function wait (ms: number) { return new Promise(resolve => setTimeout(resolve, ms)) }
 
