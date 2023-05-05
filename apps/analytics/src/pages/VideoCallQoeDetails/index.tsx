@@ -47,7 +47,7 @@ export function VideoCallQoeDetails (){
 
   const [ search, setSearch ] = useState('')
   const searchQueryResults = useSeachClientsQuery({
-    //start: '2023-04-02T12:36:21+05:30',
+    //start: '2023-01-02T12:36:21+05:30',
     //end: '2023-05-02T12:36:21+05:30',
     start: moment(currentMeeting? currentMeeting.startTime: moment()).format(),
     end: moment(currentMeeting? currentMeeting.endTime: moment()).format(),
@@ -292,6 +292,7 @@ export function VideoCallQoeDetails (){
 
   const onCancelClientMac = ()=>{
     setSelectedMac(null)
+    setSearch('')
     setIsDrawerOpen(false)
   }
   const onSelectClientMac = async ()=>{
@@ -344,11 +345,12 @@ export function VideoCallQoeDetails (){
         }
         {isDrawerOpen &&
           <Drawer
-            width={350}
+            width={400}
             visible={isDrawerOpen}
             title={$t({ defaultMessage: 'Select Client MAC' })}
             onClose={()=>{
               setIsDrawerOpen(false)
+              setSearch('')
             }}
             footer={<Drawer.FormFooter showAddAnother={false}
               buttonLabel={({
@@ -361,9 +363,9 @@ export function VideoCallQoeDetails (){
           >
             <SearchBar
               placeHolder='Search by MAC, username or hostname'
-              onChange={(q) => q && q.length>=0 && _.debounce(
+              onChange={(q) => q && q.trim().length>=0 && _.debounce(
                 (search) => setSearch(search),1000
-              )(q)}
+              )(q.trim())}
             />
             <Loader states={[searchQueryResults]}>
               <Table
@@ -387,14 +389,14 @@ export function VideoCallQoeDetails (){
                           <GridCol col={{ span: 24 }}><strong>{value as string}</strong></GridCol>
                         </GridRow>
                         <GridRow>
-                          <GridCol col={{ span: 12 }}>
+                          <GridCol col={{ span: 8 }}>
                             {$t({ defaultMessage: 'Username' })}:</GridCol>
-                          <GridCol col={{ span: 12 }}>{row.username}</GridCol>
+                          <GridCol col={{ span: 16 }}>{row.username}</GridCol>
                         </GridRow>
                         <GridRow>
-                          <GridCol col={{ span: 12 }}>
+                          <GridCol col={{ span: 8 }}>
                             {$t({ defaultMessage: 'Hostname' })}:</GridCol>
-                          <GridCol col={{ span: 12 }}>{row.hostname}</GridCol>
+                          <GridCol col={{ span: 16 }}>{row.hostname}</GridCol>
                         </GridRow>
                       </>
                     }
