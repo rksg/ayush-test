@@ -23,6 +23,9 @@ export const messageMapping = {
   TEST_CREATE_ERROR: defineMessage({
     defaultMessage: 'Unable to create test currently, try again later'
   }),
+  TEST_DELETE_SUCCESS: defineMessage({
+    defaultMessage: 'Test call deleted successfully'
+  }),
   TEST_DELETE_ERROR: defineMessage({
     defaultMessage: 'Unable to delete test call. Try again later'
   }),
