@@ -74,7 +74,8 @@ export default function HelpPage (props: {
   const location = useLocation()
   const [helpDesc, setHelpDesc] = useState<string>()
   const [helpUrl, setHelpUrl] = useState<string|null>()
-  const [, tenantType, basePath] = location.pathname.match(/^\/[a-f0-9]{32}\/(v|t)\/(.+)$/) || []
+  const [, tenantType, pathname] = location.pathname.match(/^\/[a-f0-9]{32}\/(v|t)\/(.+)$/) || []
+  const basePath = pathname.replaceAll(/([A-Z0-9]{11,})|([0-9a-fA-F]{1,2}[:]){5}([0-9a-fA-F]{1,2})|([a-f-\d]{32,36}|[A-F-\d]{32,36})|([a-zA-Z0-9+\=]{84})|\d+/g, '*') // eslint-disable-line max-len
   const isMspUser = tenantType === 'v'
   const showError = useCallback(() => {
     setHelpDesc($t({ defaultMessage: 'The content is not available.' }))
