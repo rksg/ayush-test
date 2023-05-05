@@ -1,7 +1,6 @@
 import {
   Form,
-  Input,
-  Upload
+  Input
 } from 'antd'
 import TextArea from 'antd/lib/input/TextArea'
 
@@ -10,15 +9,20 @@ import { useLazyGetResidentPortalListQuery }     from '@acx-ui/rc/services'
 import { checkObjectNotExists }                  from '@acx-ui/rc/utils'
 import { getIntl }                               from '@acx-ui/utils'
 import { ColorPickerInput } from './ColorPickerInput'
-import { PlusCircleOutlined } from '@acx-ui/icons'
-import ImageInput from './ResidentPortalImageUpload'
+import ResidentPortalImageUpload, { ExistingImage } from './ResidentPortalImageUpload'
 
-export default function ResidentPortalSettingsForm () {
+export interface SettingsFormProps {
+  existingLogo: ExistingImage,
+  existingFavicon: ExistingImage
+}
+
+export default function ResidentPortalSettingsForm (props : SettingsFormProps) {
   const intl = getIntl()
   const form = Form.useFormInstance()
   const id = Form.useWatch<string>('id', form)
 
   const [ residentPortalList ] = useLazyGetResidentPortalListQuery()
+
   const nameValidator = async (value: string) => {
     const list = (await residentPortalList({
       payload: { pageSize: 10000, sortField: 'name', sortOrder: 'ASC' }
@@ -143,10 +147,17 @@ export default function ResidentPortalSettingsForm () {
         <ColorPickerInput defaultColorHex='#54585A' colorName={intl.$t({ defaultMessage: 'Text Color' })} />}
         />
       
-        {/* TODO: figure out how to load the existing image when editing */}
-        
-      <ImageInput formItemProps={{name:'fileLogo', label: intl.$t({ defaultMessage: 'Logo' })}} />
-      <ImageInput formItemProps={{name:'fileFavicon', label: intl.$t({ defaultMessage: 'Favicon' })}} />
+      <Form.Item name='fileLogo' label={intl.$t({ defaultMessage: 'Logo' })}
+        children={
+          // @ts-ignore
+          <ResidentPortalImageUpload existingImage={props.existingLogo}/>
+        }/>
+
+      <Form.Item name='fileFavicon' label={intl.$t({ defaultMessage: 'Favicon' })}
+        children={
+          // @ts-ignore
+          <ResidentPortalImageUpload existingImage={props.existingFavicon}/>
+        }/>
     </GridCol>
   </GridRow>)
 }

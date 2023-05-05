@@ -17,7 +17,7 @@ import { TenantLink }     from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
 import ColorBoxIcon                                          from './ColorBoxIcon'
-import { loadResidentPortalFavIcon, loadResidentPortalLogo } from './portalImageService'
+import { loadResidentPortalFavIcon, loadResidentPortalLogo } from '../portalImageService'
 import ResidentPortalVenuesTable                             from './ResidentPortalVenuesTable'
 
 export default function ResidentPortalDetail () {
