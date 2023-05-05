@@ -14,12 +14,13 @@ import {
   apRadio,
   r650Cap,
   r650ap
-} from '../../__tests__/fixtures'
+} from '../../../__tests__/fixtures'
 
 import { ApPacketCaptureForm } from './apPacketCaptureForm'
 
 const params = { tenantId: 'tenant-id', serialNumber: 'serial-number' }
-jest.mock('../ApContext', () => ({
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
   useApContext: () => params
 }))
 

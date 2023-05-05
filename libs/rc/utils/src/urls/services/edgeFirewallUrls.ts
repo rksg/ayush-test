@@ -31,9 +31,14 @@ export const EdgeFirewallUrls: { [key: string]: ApiInfo } = {
     url: '/edgeFirewallServices/:serviceId',
     newApi: true
   },
-  deleteEdgeFirewalls: {
+  batchDeleteEdgeFirewall: {
     method: 'delete',
     url: '/edgeFirewallServices',
+    newApi: true
+  },
+  getEdgeFirewallViewDataList: {
+    method: 'post',
+    url: '/edgeFirewallServices/query',
     newApi: true
   }
 }

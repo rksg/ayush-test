@@ -36,10 +36,12 @@ import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 import { getIntl }        from '@acx-ui/utils'
 
-import NetworkForm from '../../../Networks/wireless/NetworkForm/NetworkForm'
+import NetworkForm                      from '../../../Networks/wireless/NetworkForm/NetworkForm'
+import { serviceInUsedMessageTemplate } from '../contentsMap'
 
 import { unlimitedNumberOfDeviceLabel }                 from './contentsMap'
 import DpskPassphraseDrawer, { DpskPassphraseEditMode } from './DpskPassphraseDrawer'
+import ManageDevicesDrawer                              from './ManageDevicesDrawer'
 
 
 interface UploadPassphrasesFormFields {
@@ -64,6 +66,8 @@ export default function DpskPassphraseManagement () {
   const intl = useIntl()
   const { $t } = intl
   const [ addPassphrasesDrawerVisible, setAddPassphrasesDrawerVisible ] = useState(false)
+  const [ manageDevicesVisible, setManageDevicesVisible ] = useState(false)
+  const [ managePassphraseInfo, setManagePassphraseInfo ] = useState({} as NewDpskPassphrase)
   const [
     passphrasesDrawerEditMode,
     setPassphrasesDrawerEditMode
@@ -184,6 +188,16 @@ export default function DpskPassphraseManagement () {
     }
   ]
 
+  const hasAppliedPersona = (selectedRows: NewDpskPassphrase[]): boolean => {
+    return selectedRows.some(row => row.identityId)
+  }
+
+  const getDeleteButtonTooltip = (selectedRows: NewDpskPassphrase[]): string | undefined => {
+    return hasAppliedPersona(selectedRows)
+      ? $t(serviceInUsedMessageTemplate, { serviceName: 'Persona' })
+      : undefined
+  }
+
   const rowActions: TableProps<NewDpskPassphrase>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit Passphrase' }),
@@ -192,6 +206,15 @@ export default function DpskPassphraseManagement () {
       onClick: ([selectedRow]) => {
         setPassphrasesDrawerEditMode({ isEdit: true, passphraseId: selectedRow.id })
         setAddPassphrasesDrawerVisible(true)
+      }
+    },
+    {
+      label: $t({ defaultMessage: 'Manage Devices' }),
+      // eslint-disable-next-line max-len
+      visible: (selectedRows: NewDpskPassphrase[]) => isCloudpathEnabled && selectedRows.length === 1,
+      onClick: ([selectedRow]) => {
+        setManagePassphraseInfo(selectedRow)
+        setManageDevicesVisible(true)
       }
     },
     {
@@ -225,7 +248,8 @@ export default function DpskPassphraseManagement () {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
-      visible: (selectedRows) => !selectedRows.some(row => row.identityId),
+      disabled: (selectedRows) => hasAppliedPersona(selectedRows),
+      tooltip: (selectedRows) => getDeleteButtonTooltip(selectedRows),
       onClick: (selectedRows: NewDpskPassphrase[], clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -279,6 +303,12 @@ export default function DpskPassphraseManagement () {
       setVisible={setAddPassphrasesDrawerVisible}
       editMode={passphrasesDrawerEditMode}
     />
+    { managePassphraseInfo && <ManageDevicesDrawer
+      visible={manageDevicesVisible}
+      setVisible={setManageDevicesVisible}
+      passphraseInfo={managePassphraseInfo}
+      setPassphraseInfo={setManagePassphraseInfo}
+    /> }
     <ImportFileDrawer type='DPSK'
       title={$t({ defaultMessage: 'Import from file' })}
       maxSize={CsvSize['20MB']}

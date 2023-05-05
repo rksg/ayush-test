@@ -7,7 +7,8 @@ import { ApTroubleshootingTab } from '.'
 
 
 const params = { serialNumber: 'ap-id', tenantId: 'tenant-id' }
-jest.mock('../ApContext', () => ({
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
   useApContext: () => params
 }))
 const mockedUsedNavigate = jest.fn()
@@ -34,7 +35,7 @@ describe('ApSettingsTab', () => {
     fireEvent.click(await screen.findByText('Traceroute'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       // eslint-disable-next-line max-len
-      pathname: `/t/${params.tenantId}/devices/wifi/${params.serialNumber}/details/troubleshooting/traceroute`,
+      pathname: `/${params.tenantId}/t/devices/wifi/${params.serialNumber}/details/troubleshooting/traceroute`,
       hash: '',
       search: ''
     })

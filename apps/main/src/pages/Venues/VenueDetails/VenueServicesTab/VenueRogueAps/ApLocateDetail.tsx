@@ -31,7 +31,7 @@ const ApLocateDetail = (props: { row: RogueOldApResponseType }) => {
       'meshRole', 'hops', 'apUpRssi', 'deviceStatus', 'deviceStatusSeverity',
       'isMeshEnable', 'lastUpdTime', 'deviceModelType', 'apStatusData.APSystem.uptime',
       'venueId', 'uplink', 'apStatusData', 'apStatusData.cellularInfo', 'tags'],
-    filters: { apMac: [row.rogueMac] }
+    filters: { serialNumber: [row.closestAp.apSerialNumber] }
   }
   const { data: currentAP }
     = useApViewModelQuery({
@@ -76,15 +76,15 @@ const ApLocateDetail = (props: { row: RogueOldApResponseType }) => {
 
   return (
     <>
-      { row.locatable ? <Button onClick={showModal}>
+      { row.locatable ? <Button style={{ borderStyle: 'none' }} onClick={showModal}>
         <VenueMarkerRed />
-      </Button> : <Tooltip
+      </Button> : <Button style={{ borderStyle: 'none' }} ><Tooltip
         title={$t({
           // eslint-disable-next-line max-len
           defaultMessage: 'Cannot locate this rogue AP since the detecting APs are not placed in any floor plans.'
         })}>
         <VenueMarkerGrey />
-      </Tooltip> }
+      </Tooltip></Button> }
       <Modal
         title={$t({ defaultMessage: 'RogueAP: {apMac}' }, { apMac: row.rogueMac })}
         visible={visible}

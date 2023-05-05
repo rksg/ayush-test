@@ -23,7 +23,7 @@ import {
 } from '@acx-ui/msp/components'
 import { CloudMessageBanner }                                     from '@acx-ui/rc/components'
 import { isDelegationMode }                                       from '@acx-ui/rc/utils'
-import { getBasePath, Link, Outlet, useNavigate, useTenantLink }  from '@acx-ui/react-router-dom'
+import { Outlet, useNavigate, useTenantLink }                     from '@acx-ui/react-router-dom'
 import { useParams }                                              from '@acx-ui/react-router-dom'
 import { RolesEnum }                                              from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }                        from '@acx-ui/user'
@@ -50,10 +50,10 @@ function Layout () {
     tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
   const isBackToRC = (PverName.ACX === getJwtTokenPayload().pver ||
     PverName.ACX_HYBRID === getJwtTokenPayload().pver)
+  const [isShown, setIsShown] = useState<boolean | null>(null)
 
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const basePath = useTenantLink('/users/guestsManager')
-
   useEffect(() => {
     if (isGuestManager && params['*'] !== 'guestsManager') {
       navigate({
@@ -87,12 +87,12 @@ function Layout () {
               {$t({ defaultMessage: 'Home' })}
             </UI.Home>
           </a> :
-          <Link to={`${getBasePath()}/v/${getJwtTokenPayload().tenantId}`}>
+          <a href={`/${getJwtTokenPayload().tenantId}/v/dashboard`}>
             <UI.Home>
               <LayoutUI.Icon children={<HomeSolid />} />
               {$t({ defaultMessage: 'Home' })}
             </UI.Home>
-          </Link>)
+          </a>)
         }
         <RegionButton/>
         <HeaderContext.Provider value={{
@@ -112,11 +112,11 @@ function Layout () {
           : <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>}
         {!isGuestManager &&
           <>
-            <AlarmsButton />
-            <ActivityButton />
+            <AlarmsButton isShown={isShown} setIsShown={setIsShown}/>
+            <ActivityButton isShown={isShown === null ? false : !isShown} setIsShown={setIsShown}/>
           </>}
         <FetchBot showFloatingButton={false} statusCallback={setSupportStatus}/>
-        <HelpButton supportStatus={supportStatus}/>
+        <HelpButton supportStatus={supportStatus} setIsShown={setIsShown}/>
         <UserButton/>
       </>}
     />

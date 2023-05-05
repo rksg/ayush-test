@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { AddressType, EdgeFirewallUrls, EdgeUrlsInfo, ProtocolType } from '@acx-ui/rc/utils'
+import { AddressType, CommonUrlsInfo, EdgeFirewallUrls, EdgeUrlsInfo, ProtocolType } from '@acx-ui/rc/utils'
 import {
   Provider
 } from '@acx-ui/store'
@@ -59,6 +59,10 @@ describe('Add edge firewall service', () => {
       rest.post(
         EdgeUrlsInfo.getEdgeList.url,
         (req, res, ctx) => res(ctx.json(mockEdgeList))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (req, res, ctx) => res(ctx.json({ data: [] }))
       ),
       rest.post(
         EdgeFirewallUrls.addEdgeFirewall.url,
@@ -172,7 +176,7 @@ describe('Add edge firewall service', () => {
 
     // edit outbound ACL
     const outboundRow = await body.findByRole('row', { name: /Outbound ACL/i })
-    await click(within(outboundRow).getByRole('checkbox'))
+    await click(within(outboundRow).getByRole('radio'))
     await click(body.getByRole('button', { name: 'Edit' }))
     const drawer = await screen.findByRole('dialog')
     expect(await screen.findByText('Stateful ACL Settings')).toBeVisible()

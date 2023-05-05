@@ -244,8 +244,7 @@ describe('Stateful ACL config drawer', () => {
         description: 'Cloud mgmt.',
         accessAction: 'INSPECT',
         protocolType: 'ANY',
-        sourceAddressType: 'IP_ADDRESS',
-        sourceAddress: 'SmartEdge IP',
+        sourceAddressType: 'ANY_IP_ADDRESS',
         destinationAddressType: 'IP_ADDRESS',
         destinationAddress: 'RuckusOne IP'
       },{
@@ -253,8 +252,7 @@ describe('Stateful ACL config drawer', () => {
         description: 'Cloud mgmt.(https)',
         accessAction: 'INSPECT',
         protocolType: 'TCP',
-        sourceAddressType: 'IP_ADDRESS',
-        sourceAddress: 'SmartEdge IP',
+        sourceAddressType: 'ANY_IP_ADDRESS',
         destinationAddressType: 'ANY_IP_ADDRESS',
         destinationPort: 443
       },{
@@ -262,8 +260,7 @@ describe('Stateful ACL config drawer', () => {
         description: 'Cloud mgmt.(ntp)',
         accessAction: 'INSPECT',
         protocolType: 'ANY',
-        sourceAddressType: 'IP_ADDRESS',
-        sourceAddress: 'SmartEdge IP',
+        sourceAddressType: 'ANY_IP_ADDRESS',
         destinationAddressType: 'ANY_IP_ADDRESS',
         destinationPort: 123
       },{

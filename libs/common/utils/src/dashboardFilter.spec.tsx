@@ -28,7 +28,7 @@ describe('useDashboardFilter', () => {
     expect(result.current.filters).toEqual({
       path: [{ name: 'Network', type: 'network' }],
       startDate: '2021-12-31T00:00:00+00:00',
-      endDate: '2022-01-01T00:00:00+00:00',
+      endDate: '2022-01-01T00:00:59+00:00',
       range: 'Last 24 Hours',
       filter: {}
     })
