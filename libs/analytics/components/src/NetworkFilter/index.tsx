@@ -244,7 +244,7 @@ function ConnectedNetworkFilter (
   const { setNetworkPath, filters, raw } = useAnalyticsFilter()
   const { setNetworkPath: setReportsNetworkPath,
     raw: reportsRaw, filters: reportsFilter } = useReportsFilter()
-  const { bands: selectedBands } = reportsFilter
+  let { bands: selectedBands } = reportsFilter
   const incidentsList = useIncidentsListQuery(
     omit({
       ...filters, path: defaultNetworkPath, includeMuted: false
@@ -266,7 +266,17 @@ function ConnectedNetworkFilter (
       ...rest
     })
   })
-  const rawVal = filterFor === 'reports' ? reportsRaw : raw
+  let rawVal:string[][] = filterFor === 'reports' ? reportsRaw : raw
+  if(filterMode === 'switch'){
+    selectedBands=[]
+    rawVal=rawVal.filter(value=>{
+      return !value[0].includes('zone')
+    })
+  }else if(filterMode === 'ap'){
+    rawVal=rawVal.filter(value=>{
+      return !value[0].includes('switchGroup')
+    })
+  }
   return (
     <UI.Container $open={open}>
       <Loader states={[queryResults]}>
