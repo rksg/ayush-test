@@ -227,7 +227,7 @@ const reportSearch = (input: string, path: DefaultOptionType[]): boolean => {
     : matchVenue || matchDevice
 }
 
-const reportSearchRender = (input: string, path: DefaultOptionType[]) => {
+const searchResultsRender = (input: string, path: DefaultOptionType[]) => {
   const items = path.map((val) => (val?.displayLabel as string))
   return <Highlighter
     highlightStyle={{
@@ -339,7 +339,7 @@ function ConnectedNetworkFilter (
           displayRender={displayRender}
           showSearch={{
             filter: isReports ? reportSearch : search,
-            render: reportSearchRender
+            render: searchResultsRender
           }}
           allowClear
           open={open}
