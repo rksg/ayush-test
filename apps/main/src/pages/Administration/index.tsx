@@ -68,13 +68,7 @@ const tabPanes = {
 export default function Administration () {
   const { $t } = useIntl()
   const { tenantId, activeTab } = useParams()
-  const isEdgeEarlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
-  const isEnable = useIsSplitOn(Features.UNRELEASED) || isEdgeEarlyBetaEnabled
   const { data: userProfileData } = useUserProfileContext()
-
-  if (!isEnable) {
-    return <span>{ $t({ defaultMessage: 'Administration is not enabled' }) }</span>
-  }
 
   // support dashboard - his own account
   let isSupport: boolean = false
