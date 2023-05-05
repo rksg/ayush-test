@@ -2,12 +2,10 @@ import { Typography, Row, Col }      from 'antd'
 import { useIntl, FormattedMessage } from 'react-intl'
 
 import {
-  cssStr,
   Loader,
-  StackedBarChart,
   Subtitle
 } from '@acx-ui/components'
-import { SpaceWrapper }           from '@acx-ui/rc/components'
+import { SpaceWrapper, SubscriptionUtilizationWidget } from '@acx-ui/rc/components'
 import {
   useGetEntitlementSummaryQuery
 } from '@acx-ui/rc/services'
@@ -22,60 +20,10 @@ import { getJwtTokenPayload } from '@acx-ui/utils'
 import { AccountTier }        from '@acx-ui/utils'
 
 import { ConvertNonVARMSPButton } from './ConvertNonVARMSPButton'
-import * as UI                    from './styledComponent'
-
-interface SubscriptionUtilizationWidgetProps {
-  deviceType: EntitlementDeviceType;
-  title: string;
-  used: number;
-  total: number;
-  barColors?: string[];
-}
 
 enum SubscriptionTierType {
   Platinum = 'Professional',
   Gold = 'Enterprise'
-}
-
-const SubscriptionUtilizationWidget = (props: SubscriptionUtilizationWidgetProps) => {
-  const {
-    deviceType,
-    title,
-    used,
-    total,
-    barColors = [
-      cssStr('--acx-accents-blue-50'),
-      cssStr('--acx-neutrals-30')
-    ]
-  } = props
-
-  const isZeroQuantity = total <= 0
-
-  return (
-    <SpaceWrapper full size='small' justifycontent='space-around'>
-      <Typography.Text>{title}</Typography.Text>
-      <StackedBarChart
-        style={{ height: 16, width: 135 }}
-        showLabels={false}
-        showTotal={false}
-        showTooltip={false}
-        barWidth={12}
-        data={[{
-          category: `${deviceType} Licenses `,
-          series: [
-            { name: 'used',
-              value: isZeroQuantity ? 0: (used * 100 / total) },
-            { name: 'available',
-              value: isZeroQuantity ? 100 : ((total-used) * 100 / total) }
-          ]
-        }]}
-        barColors={barColors}
-      />
-      <Typography.Text>
-        {used} / {total}
-      </Typography.Text>
-    </SpaceWrapper>
-  )
 }
 
 const subscriptionUtilizationTransformer = (
@@ -129,7 +77,7 @@ export const SubscriptionHeader = () => {
 
   return (
     <Loader states={[queryResults]}>
-      <UI.FullWidthSpace direction='vertical'>
+      <SpaceWrapper fullWidth direction='vertical'>
         <Row>
           <Col span={12}>
             <Subtitle level={4}>
@@ -151,7 +99,7 @@ export const SubscriptionHeader = () => {
             </SpaceWrapper>
           </Col>
         </Row>
-        <UI.FullWidthSpace size='large'>
+        <SpaceWrapper fullWidth size='large' justifycontent='flex-start'>
           {
             subscriptionDeviceTypeList.map((item) => {
               const summary = summaryData[item.value]
@@ -164,8 +112,8 @@ export const SubscriptionHeader = () => {
               /> : ''
             })
           }
-        </UI.FullWidthSpace>
-      </UI.FullWidthSpace>
+        </SpaceWrapper>
+      </SpaceWrapper>
     </Loader>
   )
 }

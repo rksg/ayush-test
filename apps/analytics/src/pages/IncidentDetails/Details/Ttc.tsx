@@ -15,7 +15,8 @@ import { NetworkImpactChartTypes }           from '../NetworkImpact/config'
 import { TimeSeries }                        from '../TimeSeries'
 import { TimeSeriesChartTypes }              from '../TimeSeries/config'
 
-import * as UI from './styledComponents'
+import MuteIncident from './MuteIncident'
+import * as UI      from './styledComponents'
 
 export const Ttc = (incident: Incident) => {
   const { $t } = useIntl()
@@ -60,6 +61,7 @@ export const Ttc = (incident: Incident) => {
           { text: $t({ defaultMessage: 'Incidents' }), link: '/analytics/incidents' }
         ]}
         subTitle={shortDescription(incident)}
+        extra={[<MuteIncident incident={incident} />]}
       />
       <GridRow>
         <GridCol col={{ span: 4 }}>
