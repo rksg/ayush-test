@@ -8,7 +8,7 @@ import 'codemirror/addon/hint/show-hint.js'
 import {
   Button,
   SelectionControl,
-  StepsForm,
+  StepsFormNew,
   Tabs,
   Tooltip,
   useStepFormContext
@@ -50,7 +50,7 @@ const cliExamplesTooltip = <FormattedMessage
   defaultMessage={`
     <p>Click on the template to add it to the CLI configuration.</p>
     <br></br>
-    <p>Replace the command input field enclosed in < > and 
+    <p>Replace the command input field enclosed in < > and
       highlighted in orange with the desired value.</p>
     <br></br>
     <div>
@@ -188,7 +188,7 @@ export function CliStepConfiguration () {
   return <>
     <Row gutter={24}>
       <Col span={8}>
-        <StepsForm.Title>{$t({ defaultMessage: 'CLI Configuration' })}</StepsForm.Title>
+        <StepsFormNew.Title children={$t({ defaultMessage: 'CLI Configuration' })} />
         {isTemplate && <Form.Item
           name='name'
           label={$t({ defaultMessage: 'Template Name' })}

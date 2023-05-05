@@ -5,8 +5,8 @@ import { Col, Form, Row, Select, Switch } from 'antd'
 import { FormFinishInfo }                 from 'rc-field-form/lib/FormContext'
 import { useIntl }                        from 'react-intl'
 
-import { Button, Loader, StepsForm, StepsFormInstance, Tabs, Subtitle } from '@acx-ui/components'
-import { PersonaGroupSelect, TemplateSelector }                         from '@acx-ui/rc/components'
+import { Button, Loader, StepsFormLegacy, StepsFormLegacyInstance, Tabs, Subtitle } from '@acx-ui/components'
+import { PersonaGroupSelect, TemplateSelector }                                     from '@acx-ui/rc/components'
 import {
   useGetPropertyConfigsQuery,
   useGetPropertyUnitListQuery,
@@ -68,7 +68,7 @@ export function PropertyManagementTab () {
   const { tenantId, venueId } = useParams()
   const { data: venueData } = useGetVenueQuery({ params: { tenantId, venueId } })
   const navigate = useNavigate()
-  const formRef = useRef<StepsFormInstance<PropertyConfigs>>()
+  const formRef = useRef<StepsFormLegacyInstance<PropertyConfigs>>()
   const { editContextData, setEditContextData } = useContext(VenueEditContext)
   const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
   const [personaGroupVisible, setPersonaGroupVisible] = useState(false)
@@ -194,7 +194,7 @@ export function PropertyManagementTab () {
         { isLoading: false, isFetching: registrationResult.isLoading }
       ]}
     >
-      <StepsForm
+      <StepsFormLegacy
         formRef={formRef}
         onFormFinish={onFormFinish}
         onFormChange={handleFormChange}
@@ -204,17 +204,17 @@ export function PropertyManagementTab () {
         })}
         buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
       >
-        <StepsForm.StepForm
+        <StepsFormLegacy.StepForm
           initialValues={defaultPropertyConfigs}
         >
-          <StepsForm.FieldLabel width={'200px'}>
+          <StepsFormLegacy.FieldLabel width={'200px'}>
             {$t({ defaultMessage: 'Enable Property Management' })}
             <Form.Item
               name='isPropertyEnable'
               valuePropName={'checked'}
               children={<Switch />}
             />
-          </StepsForm.FieldLabel>
+          </StepsFormLegacy.FieldLabel>
           {formRef?.current?.getFieldValue('isPropertyEnable') &&
             <Row gutter={20}>
               <Col span={8}>
@@ -250,7 +250,7 @@ export function PropertyManagementTab () {
                   hidden
                   name={['unitConfig', 'type']}
                 />
-                <StepsForm.FieldLabel width={'190px'}>
+                <StepsFormLegacy.FieldLabel width={'190px'}>
                   {$t({ defaultMessage: 'Enable Guest DPSK for Units' })}
                   <Form.Item
                     name={['unitConfig', 'guestAllowed']}
@@ -258,8 +258,8 @@ export function PropertyManagementTab () {
                     valuePropName={'checked'}
                     children={<Switch />}
                   />
-                </StepsForm.FieldLabel>
-                <StepsForm.FieldLabel width={'190px'}>
+                </StepsFormLegacy.FieldLabel>
+                <StepsFormLegacy.FieldLabel width={'190px'}>
                   {$t({ defaultMessage: 'Enable Resident Portal' })}
                   <Form.Item
                     name={['unitConfig', 'residentPortalAllowed']}
@@ -267,7 +267,7 @@ export function PropertyManagementTab () {
                     valuePropName={'checked'}
                     children={<Switch />}
                   />
-                </StepsForm.FieldLabel>
+                </StepsFormLegacy.FieldLabel>
                 {formRef?.current?.getFieldValue(['unitConfig', 'residentPortalAllowed']) &&
                     <Form.Item
                       name='residentPortalId'
@@ -285,7 +285,7 @@ export function PropertyManagementTab () {
                 <Subtitle level={4}>
                   {$t({ defaultMessage: 'Communication Templates' })}
                 </Subtitle>
-                <StepsForm.FieldLabel width={'190px'}>
+                <StepsFormLegacy.FieldLabel width={'190px'}>
                   {$t({ defaultMessage: 'Enable Email Notification' })}
                   <Form.Item
                     name={['communicationConfig', 'sendEmail']}
@@ -293,8 +293,8 @@ export function PropertyManagementTab () {
                     valuePropName={'checked'}
                     children={<Switch />}
                   />
-                </StepsForm.FieldLabel>
-                <StepsForm.FieldLabel width={'190px'}>
+                </StepsFormLegacy.FieldLabel>
+                <StepsFormLegacy.FieldLabel width={'190px'}>
                   {$t({ defaultMessage: 'Enable SMS Notification' })}
                   <Form.Item
                     name={['communicationConfig', 'sendSms']}
@@ -302,7 +302,7 @@ export function PropertyManagementTab () {
                     valuePropName={'checked'}
                     children={<Switch />}
                   />
-                </StepsForm.FieldLabel>
+                </StepsFormLegacy.FieldLabel>
 
                 <Tabs
                   defaultActiveKey={'email'}
@@ -339,8 +339,8 @@ export function PropertyManagementTab () {
               </Col>
             </Row>
           }
-        </StepsForm.StepForm>
-      </StepsForm>
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>
 
       <PersonaGroupDrawer
         isEdit={false}

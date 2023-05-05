@@ -2,8 +2,8 @@ import { Col, Row, Descriptions as AntdDescriptions } from 'antd'
 import { FormattedMessage, useIntl }                  from 'react-intl'
 import styled                                         from 'styled-components'
 
-import { Descriptions, StepsForm, useStepFormContext, Subtitle } from '@acx-ui/components'
-import { SpaceWrapper }                                          from '@acx-ui/rc/components'
+import { Descriptions, StepsFormNew, useStepFormContext, Subtitle } from '@acx-ui/components'
+import { SpaceWrapper }                                             from '@acx-ui/rc/components'
 
 import { FirewallFormModel, filterCustomACLRules } from '..'
 
@@ -26,7 +26,7 @@ export const SummaryForm = styled(({ className }: { className?: string }) => {
   return (
     <Row gutter={[10, 30]} className={className}>
       <Col span={24}>
-        <StepsForm.Title>{$t({ defaultMessage: 'Summary' })}</StepsForm.Title>
+        <StepsFormNew.Title>{$t({ defaultMessage: 'Summary' })}</StepsFormNew.Title>
 
         <Subtitle level={4}>
           { $t({ defaultMessage: 'Settings' }) }
@@ -53,7 +53,7 @@ export const SummaryForm = styled(({ className }: { className?: string }) => {
           >
             {
               ddosLimitEnabled
-                ? $t({ defaultMessage: `{ddosLimitEnabled} 
+                ? $t({ defaultMessage: `{ddosLimitEnabled}
                       ({ddosRulesCount} {ddosRulesCount, plural, one {Rule} other {Rules}})` },
                 {
                   ddosLimitEnabled: <FormattedMessage defaultMessage='ON' />,

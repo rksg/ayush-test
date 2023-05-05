@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { Col, Form, Row } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { Alert, StepsForm, Subtitle, useStepFormContext } from '@acx-ui/components'
+import { Alert, StepsFormNew, Subtitle, useStepFormContext } from '@acx-ui/components'
 
 import { NetworkSegmentationGroupFormData } from '..'
 import { useWatch }                         from '../../useWatch'
@@ -44,7 +44,7 @@ export const SummaryForm = () => {
   }, [edgeName, segments, devices, dhcpName, poolName])
 
   return (<>
-    <StepsForm.Title>{$t({ defaultMessage: 'Summary' })}</StepsForm.Title>
+    <StepsFormNew.Title>{$t({ defaultMessage: 'Summary' })}</StepsFormNew.Title>
     <Alert message={
       $t({ defaultMessage: `For segment assignment for AP wired,
         please go to the Venue/ property Units page to assign an AP

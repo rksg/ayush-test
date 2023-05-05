@@ -3,7 +3,7 @@ import { useLayoutEffect } from 'react'
 import { Col, Form, Input, Radio, Row, Select, Space, Switch } from 'antd'
 import { useIntl }                                             from 'react-intl'
 
-import { StepsForm }                                                                                              from '@acx-ui/components'
+import { StepsFormLegacy }                                                                                        from '@acx-ui/components'
 import { EdgeIpModeEnum, EdgePort, EdgePortTypeEnum, isSubnetOverlap, serverIpAddressRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
 
 import * as UI from '../styledComponents'
@@ -177,14 +177,14 @@ export const PortConfigForm = (props: ConfigFormProps) => {
               />
             </>
           }
-          <StepsForm.FieldLabel width='120px'>
+          <StepsFormLegacy.FieldLabel width='120px'>
             {$t({ defaultMessage: 'Use NAT Service' })}
             <Form.Item
               name='natEnabled'
               valuePropName='checked'
               children={<Switch />}
             />
-          </StepsForm.FieldLabel>
+          </StepsFormLegacy.FieldLabel>
         </>
       )
     }
@@ -224,17 +224,17 @@ export const PortConfigForm = (props: ConfigFormProps) => {
           />
           {(portType === EdgePortTypeEnum.LAN || portType === EdgePortTypeEnum.WAN) &&
                 <>
-                  <StepsForm.FieldLabel width='120px'>
+                  <StepsFormLegacy.FieldLabel width='120px'>
                     {$t({ defaultMessage: 'Port Enabled' })}
                     <Form.Item
                       name='enabled'
                       valuePropName='checked'
                       children={<Switch />}
                     />
-                  </StepsForm.FieldLabel>
+                  </StepsFormLegacy.FieldLabel>
                   {enabled &&
                     <>
-                      <StepsForm.Title>{$t({ defaultMessage: 'IP Settings' })}</StepsForm.Title>
+                      <StepsFormLegacy.Title children={$t({ defaultMessage: 'IP Settings' })} />
                       {getFieldsByPortType(portType)}
                     </>
                   }

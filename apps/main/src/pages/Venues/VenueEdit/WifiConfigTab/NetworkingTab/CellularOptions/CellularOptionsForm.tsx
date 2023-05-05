@@ -9,7 +9,7 @@ import _             from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, StepsForm, StepsFormInstance }                                                                                            from '@acx-ui/components'
+import { Loader, StepsFormLegacy, StepsFormLegacyInstance }                                                                                      from '@acx-ui/components'
 import { useGetAvailableLteBandsQuery, useGetVenueApModelCellularQuery, useGetVenueSettingsQuery, useUpdateVenueCellularSettingsMutation } from '@acx-ui/rc/services'
 import { AvailableLteBands, LteBandRegionEnum, VenueApModelCellular }                                                                      from '@acx-ui/rc/utils'
 
@@ -35,7 +35,7 @@ export function CellularOptionsForm () {
   const { $t } = useIntl()
   const params = useParams()
   const { tenantId, venueId } = useParams()
-  const formRef = useRef<StepsFormInstance>()
+  const formRef = useRef<StepsFormLegacyInstance>()
   const form = Form.useFormInstance()
 
   const {
@@ -181,8 +181,8 @@ export function CellularOptionsForm () {
 
   return (
     <Loader states={[{ isLoading: false, isFetching: isUpdatingVenueCellularSettings }]}>
-      <StepsForm buttonLabel={{ cancel: '' }}>
-        <StepsForm.StepForm
+      <StepsFormLegacy buttonLabel={{ cancel: '' }}>
+        <StepsFormLegacy.StepForm
           formRef={formRef}
           onValuesChange={onChange}>
           <div data-testid='primarySim'>
@@ -251,8 +251,8 @@ export function CellularOptionsForm () {
               children={<InputNumber style={{ width: '150px' }} />}
             />
           </div>
-        </StepsForm.StepForm>
-      </StepsForm>
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>
     </Loader>
 
   )

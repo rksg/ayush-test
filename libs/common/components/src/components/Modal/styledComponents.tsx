@@ -1,7 +1,7 @@
 import { Modal as AntModal } from 'antd'
 import styled, { css }       from 'styled-components/macro'
 
-import { ActionsContainer } from '../StepsForm/styledComponents'
+import { ActionsContainer } from '../StepsFormLegacy/styledComponents'
 
 const withStepsFormStyle = css`
   ${ActionsContainer} {

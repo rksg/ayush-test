@@ -4,11 +4,11 @@ import { Col, Checkbox, Form, Input, Row, Space, Typography } from 'antd'
 import _                                                      from 'lodash'
 import { useIntl }                                            from 'react-intl'
 
-import { Button, cssStr, StepsForm, useStepFormContext } from '@acx-ui/components'
-import { useGetProfilesQuery }                           from '@acx-ui/rc/services'
-import { checkObjectNotExists, whitespaceOnlyRegExp }    from '@acx-ui/rc/utils'
-import { ICX_MODELS_MODULES }                            from '@acx-ui/rc/utils'
-import { useParams }                                     from '@acx-ui/react-router-dom'
+import { Button, cssStr, StepsFormNew, useStepFormContext } from '@acx-ui/components'
+import { useGetProfilesQuery }                              from '@acx-ui/rc/services'
+import { checkObjectNotExists, whitespaceOnlyRegExp }       from '@acx-ui/rc/utils'
+import { ICX_MODELS_MODULES }                               from '@acx-ui/rc/utils'
+import { useParams }                                        from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
@@ -87,7 +87,7 @@ export function CliStepModels () {
   return <>
     <Row gutter={24}>
       <Col span={8}>
-        <StepsForm.Title>{$t({ defaultMessage: 'Models' })}</StepsForm.Title>
+        <StepsFormNew.Title>{$t({ defaultMessage: 'Models' })}</StepsFormNew.Title>
         <Form.Item
           name='name'
           label={$t({ defaultMessage: 'Profile Name' })}

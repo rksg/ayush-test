@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { StepsForm, PageHeader, StepsFormInstance, Loader, showActionModal } from '@acx-ui/components'
+import { StepsFormLegacy, PageHeader, StepsFormLegacyInstance, Loader, showActionModal } from '@acx-ui/components'
 import {
   useAddSwitchConfigProfileMutation,
   useUpdateSwitchConfigProfileMutation,
@@ -39,7 +39,7 @@ export function ConfigurationProfileForm () {
   const [ currentData, setCurrentData ] =
     useState<SwitchConfigurationProfile>({} as SwitchConfigurationProfile)
 
-  const formRef = useRef<StepsFormInstance<SwitchConfigurationProfile>>()
+  const formRef = useRef<StepsFormLegacyInstance<SwitchConfigurationProfile>>()
 
   useEffect(() => {
     if(data){
@@ -142,7 +142,7 @@ export function ConfigurationProfileForm () {
         ]}
       />
       <ConfigurationProfileFormContext.Provider value={{ editMode, currentData }}>
-        <StepsForm
+        <StepsFormLegacy
           formRef={formRef}
           editMode={editMode}
           onCancel={() => navigate(linkToProfiles, { replace: true })}
@@ -150,49 +150,49 @@ export function ConfigurationProfileForm () {
             editMode ? handleEditProfile(data) : handleAddProfile(data)
           }}
         >
-          <StepsForm.StepForm
+          <StepsFormLegacy.StepForm
             title={$t({ defaultMessage: 'General' })}
             onFinish={updateCurrentData}
           >
             <GeneralSetting />
-          </StepsForm.StepForm>
+          </StepsFormLegacy.StepForm>
 
-          <StepsForm.StepForm
+          <StepsFormLegacy.StepForm
             title={$t({ defaultMessage: 'VLANs' })}
             onFinish={updateVlanCurrentData}
           >
             <VlanSetting />
-          </StepsForm.StepForm>
+          </StepsFormLegacy.StepForm>
 
-          <StepsForm.StepForm
+          <StepsFormLegacy.StepForm
             title={$t({ defaultMessage: 'ACLs' })}
             onFinish={updateCurrentData}
           >
             <AclSetting />
-          </StepsForm.StepForm>
+          </StepsFormLegacy.StepForm>
 
           {(ipv4DhcpSnooping || arpInspection) &&
-            <StepsForm.StepForm
+            <StepsFormLegacy.StepForm
               title={$t({ defaultMessage: 'Trusted Ports' })}
               onFinish={updateTrustedPortsCurrentData}
             >
               <TrustedPorts />
-            </StepsForm.StepForm>
+            </StepsFormLegacy.StepForm>
           }
 
-          <StepsForm.StepForm
+          <StepsFormLegacy.StepForm
             title={$t({ defaultMessage: 'Venues' })}
             onFinish={updateCurrentData}
           >
             <VenueSetting />
-          </StepsForm.StepForm>
+          </StepsFormLegacy.StepForm>
 
-          <StepsForm.StepForm
+          <StepsFormLegacy.StepForm
             title={$t({ defaultMessage: 'Summary' })}
           >
             <Summary />
-          </StepsForm.StepForm>
-        </StepsForm>
+          </StepsFormLegacy.StepForm>
+        </StepsFormLegacy>
       </ConfigurationProfileFormContext.Provider>
     </Loader>
   )

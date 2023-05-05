@@ -4,7 +4,7 @@ import { Form, Typography } from 'antd'
 import _                    from 'lodash'
 import { useIntl }          from 'react-intl'
 
-import { Modal, ModalType, StepsForm } from '@acx-ui/components'
+import { Modal, ModalType, StepsFormLegacy } from '@acx-ui/components'
 import {
   SwitchModelPortData,
   TrustedPort,
@@ -123,11 +123,11 @@ export function VlanPortsModal (props: {
     >
       <VlanPortsContext.Provider value={{
         vlanSettingValues, setVlanSettingValues, vlanList, editMode }}>
-        <StepsForm
+        <StepsFormLegacy
           onCancel={onCancel}
           onFinish={onFinish}
         >
-          <StepsForm.StepForm
+          <StepsFormLegacy.StepForm
             title={$t({ defaultMessage: 'Select Model' })}
             onFinish={onSaveModel}
           >
@@ -142,17 +142,17 @@ export function VlanPortsModal (props: {
               </Typography.Text>
             }
             <SelectModelStep editMode={editRecord !== undefined}/>
-          </StepsForm.StepForm>
-          <StepsForm.StepForm
+          </StepsFormLegacy.StepForm>
+          <StepsFormLegacy.StepForm
             title={$t({ defaultMessage: 'Untagged Ports' })}
             onFinish={onSaveUntagged}
           >
             <UntaggedPortsStep />
-          </StepsForm.StepForm>
-          <StepsForm.StepForm title={$t({ defaultMessage: 'Tagged Ports' })}>
+          </StepsFormLegacy.StepForm>
+          <StepsFormLegacy.StepForm title={$t({ defaultMessage: 'Tagged Ports' })}>
             <TaggedPortsStep />
-          </StepsForm.StepForm>
-        </StepsForm>
+          </StepsFormLegacy.StepForm>
+        </StepsFormLegacy>
       </VlanPortsContext.Provider>
     </Modal>
   )

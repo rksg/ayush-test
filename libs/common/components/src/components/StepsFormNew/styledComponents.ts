@@ -9,7 +9,7 @@ export {
   ActionsContainer,
   ActionsContainerGlobalOverride,
   StepsContainerGlobalOverride as StepsGlobalOverride
-} from '../StepsForm/styledComponents'
+} from '../StepsFormLegacy/styledComponents'
 
 export const Wrapper = styled.section`
   --acx-steps-form-steps-title-color: var(--acx-primary-black);

@@ -3,8 +3,8 @@ import React, { useEffect, useRef } from 'react'
 import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import { Loader, PageHeader, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
+import { Loader, PageHeader, showToast, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
 import {
   useAddMacRegListMutation,
   useGetMacRegListQuery,
@@ -38,7 +38,7 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
   // eslint-disable-next-line max-len
   const linkToList = useTenantLink('/' + getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST }))
   const navigate = useNavigate()
-  const formRef = useRef<StepsFormInstance<MacRegistrationPoolFormFields>>()
+  const formRef = useRef<StepsFormLegacyInstance<MacRegistrationPoolFormFields>>()
 
   const { data, isLoading } = useGetMacRegListQuery({ params: { policyId } }, { skip: !editMode })
   const [addMacRegList] = useAddMacRegListMutation()
@@ -130,13 +130,13 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
             link: getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST }) }
         ]}
       />}
-      <StepsForm<MacRegistrationPoolFormFields>
+      <StepsFormLegacy<MacRegistrationPoolFormFields>
         editMode={editMode}
         formRef={formRef}
         buttonLabel={{ submit: intl.$t({ defaultMessage: 'Apply' }) }}
         onCancel={() => modalMode ? modalCallBack?.() : navigate(linkToList)}
         onFinish={editMode ? handleEditList : handleAddList}>
-        <StepsForm.StepForm<MacRegistrationPoolFormFields>>
+        <StepsFormLegacy.StepForm<MacRegistrationPoolFormFields>>
           <Loader states={[{
             isLoading: isLoading,
             isFetching: isUpdating
@@ -147,8 +147,8 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
               </Col>
             </Row>
           </Loader>
-        </StepsForm.StepForm>
-      </StepsForm>
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>
     </>
   )
 }

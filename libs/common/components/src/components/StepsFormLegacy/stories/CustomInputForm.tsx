@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Row, Col, Form, Input, Typography } from 'antd'
 import _                                     from 'lodash'
 
-import { StepsForm }         from '..'
+import { StepsFormLegacy }         from '..'
 import { Button }            from '../../Button'
 import { Modal }             from '../../Modal'
 import { Table, TableProps } from '../../Table'
@@ -130,14 +130,14 @@ function DataTableWithModalInput (props: {
 
 export function CustomInputForm () {
   return (
-    <StepsForm
+    <StepsFormLegacy
       onCancel={() => showToast({ type: 'info', content: 'Cancel' })}
       onFinish={async () => {
         await wait(1000) // mimic external service call
         showToast({ type: 'success', content: 'Submitted' }) // show notification to indicate submission successful
       }}
     >
-      <StepsForm.StepForm
+      <StepsFormLegacy.StepForm
         title='Step 1'
         initialValues={{ field1: [], field2: defaultData.slice(0, 1) }}
         // eslint-disable-next-line no-console
@@ -146,7 +146,7 @@ export function CustomInputForm () {
         <Typography.Text>Check Chrome Inspector Console to see the value on submit</Typography.Text>
         <Row gutter={20}>
           <Col span={10}>
-            <StepsForm.Title children='Step 1' />
+            <StepsFormLegacy.Title children='Step 1' />
             <Form.Item name='field1' label='Table as Custom Input'>
               <DataTableInput />
             </Form.Item>
@@ -155,7 +155,7 @@ export function CustomInputForm () {
             </Form.Item>
           </Col>
         </Row>
-      </StepsForm.StepForm>
-    </StepsForm>
+      </StepsFormLegacy.StepForm>
+    </StepsFormLegacy>
   )
 }

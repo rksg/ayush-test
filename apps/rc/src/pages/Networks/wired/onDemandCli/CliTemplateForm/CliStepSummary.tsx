@@ -3,9 +3,9 @@ import { useState, useRef, useEffect } from 'react'
 import { Col, Divider, Row, Typography } from 'antd'
 import { useIntl }                       from 'react-intl'
 
-import { Descriptions, StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
-import { CodeMirrorWidget }                                     from '@acx-ui/rc/components'
-import { CliConfiguration }                                     from '@acx-ui/rc/utils'
+import { Descriptions, StepsFormNew, Tooltip, useStepFormContext } from '@acx-ui/components'
+import { CodeMirrorWidget }                                        from '@acx-ui/rc/components'
+import { CliConfiguration }                                        from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
 
@@ -31,7 +31,7 @@ export function CliStepSummary () {
 
   return <>
     <Row gutter={24}>
-      <StepsForm.Title>{$t({ defaultMessage: 'Summary' })}</StepsForm.Title>
+      <StepsFormNew.Title children={$t({ defaultMessage: 'Summary' })} />
     </Row>
     <Row>
       <Col span={6}>

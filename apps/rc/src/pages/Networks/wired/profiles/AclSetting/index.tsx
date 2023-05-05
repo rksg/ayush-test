@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react'
 
 import { Row, Col, Form, Input } from 'antd'
 
-import { showActionModal, StepsForm, Table, TableProps } from '@acx-ui/components'
+import { showActionModal, StepsFormLegacy, Table, TableProps } from '@acx-ui/components'
 import {
   Acl,
   AclRule,
@@ -122,7 +122,7 @@ export function AclSetting () {
     <>
       <Row gutter={20}>
         <Col span={20}>
-          <StepsForm.Title children={$t({ defaultMessage: 'ACLs' })} />
+          <StepsFormLegacy.Title children={$t({ defaultMessage: 'ACLs' })} />
           <Table
             rowKey='name'
             rowActions={filterByAccess(rowActions)}

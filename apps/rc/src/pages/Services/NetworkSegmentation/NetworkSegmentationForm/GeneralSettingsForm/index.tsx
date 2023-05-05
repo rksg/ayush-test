@@ -5,7 +5,7 @@ import { Col, Form, Input, Row, Select } from 'antd'
 import { FormattedMessage, useIntl }     from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
-import { Alert, StepsForm, Tooltip, useStepFormContext }                                   from '@acx-ui/components'
+import { Alert, StepsFormNew, Tooltip, useStepFormContext }                                from '@acx-ui/components'
 import { useGetPropertyConfigsQuery, useGetVenueWithSetPropertyQuery, useVenuesListQuery } from '@acx-ui/rc/services'
 
 import { NetworkSegmentationGroupFormData } from '..'
@@ -103,7 +103,7 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
     <>
       <Row gutter={20}>
         <Col span={8}>
-          <StepsForm.Title>{$t({ defaultMessage: 'General Settings' })}</StepsForm.Title>
+          <StepsFormNew.Title>{$t({ defaultMessage: 'General Settings' })}</StepsFormNew.Title>
           <Form.Item
             name='name'
             label={$t({ defaultMessage: 'Service Name' })}

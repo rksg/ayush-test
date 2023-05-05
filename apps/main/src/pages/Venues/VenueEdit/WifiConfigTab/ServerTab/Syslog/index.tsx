@@ -4,7 +4,7 @@ import { Form, Select, Space, Switch, Typography } from 'antd'
 import { isEqual }                                 from 'lodash'
 import { useIntl }                                 from 'react-intl'
 
-import { Loader, StepsForm }       from '@acx-ui/components'
+import { Loader, StepsFormLegacy } from '@acx-ui/components'
 import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import {
   useGetSyslogPolicyListQuery,
@@ -137,7 +137,7 @@ export function Syslog () {
       isFetching: isUpdatingVenueSyslog
     }]}>
       <Space align='start'>
-        <StepsForm.FieldLabel
+        <StepsFormLegacy.FieldLabel
           width='max-content'
           style={{ height: '32px', display: 'flex', alignItems: 'center' }}
         >
@@ -150,7 +150,7 @@ export function Syslog () {
             }}
             style={{ marginLeft: '20px' }}
           />
-        </StepsForm.FieldLabel>
+        </StepsFormLegacy.FieldLabel>
         {enableServerRadio &&
         <Space direction='vertical'>
           <Form.Item style={{ margin: '0' }}>

@@ -2,48 +2,62 @@ import React from 'react'
 
 import { Row, Col, Form, Input } from 'antd'
 
-import { StepsForm } from '..'
+import { StepsFormLegacy } from '..'
 import { showToast } from '../../Toast'
 
 function wait (ms: number) { return new Promise(resolve => setTimeout(resolve, ms)) }
 
-export function SingleStep () {
+export function EditMode () {
   return (
-    <StepsForm
+    <StepsFormLegacy
+      editMode
       onCancel={() => showToast({ type: 'info', content: 'Cancel' })}
       onFinish={async () => {
         await wait(1000) // mimic external service call
         showToast({ type: 'success', content: 'Submitted' }) // show notification to indicate submission successful
       }}
-      buttonLabel={{ submit: 'Add' }}
     >
-      <StepsForm.StepForm>
+      <StepsFormLegacy.StepForm name='step1' title='Step 1'>
         <Row gutter={20}>
-          <Col span={8}>
+          <Col span={10}>
+            <StepsFormLegacy.Title children='Step 1' />
             <Form.Item name='field1' label='Field 1'>
               <Input />
             </Form.Item>
             <Form.Item name='field2' label='Field 2'>
               <Input />
             </Form.Item>
+          </Col>
+        </Row>
+      </StepsFormLegacy.StepForm>
+
+      <StepsFormLegacy.StepForm title='Step 2'>
+        <Row gutter={20}>
+          <Col span={10}>
+            <StepsFormLegacy.Title children='Step 2' />
             <Form.Item name='field3' label='Field 3'>
               <Input />
             </Form.Item>
             <Form.Item name='field4' label='Field 4'>
               <Input />
             </Form.Item>
+          </Col>
+        </Row>
+      </StepsFormLegacy.StepForm>
+
+      <StepsFormLegacy.StepForm title='Step 3'>
+        <Row gutter={20}>
+          <Col span={10}>
+            <StepsFormLegacy.Title children='Step 3' />
             <Form.Item name='field5' label='Field 5'>
               <Input />
             </Form.Item>
-            <Form.Item name='field6' label='Field 6'>
-              <Input />
-            </Form.Item>
-            <Form.Item name='field7' label='Field 7'>
+            <Form.Item name='field7' label='Field 6'>
               <Input />
             </Form.Item>
           </Col>
         </Row>
-      </StepsForm.StepForm>
-    </StepsForm>
+      </StepsFormLegacy.StepForm>
+    </StepsFormLegacy>
   )
 }

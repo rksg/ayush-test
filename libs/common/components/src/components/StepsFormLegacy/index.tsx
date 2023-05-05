@@ -17,12 +17,12 @@ import type {
 } from '../StepsFormProAnt'
 import type { ProFormInstance } from '@ant-design/pro-form'
 
-export type { ProFormInstance as StepsFormInstance }
+export type { ProFormInstance as StepsFormLegacyInstance }
 
 const { useImperativeHandle, useRef, useState } = React
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type StepsFormProps <FormValue = any> =
+export type StepsFormLegacyProps <FormValue = any> =
   Omit<ProAntStepsFormProps<FormValue>, 'stepsProps' | 'submitter'> &
   {
     /**
@@ -44,15 +44,15 @@ export type StepsFormProps <FormValue = any> =
     }
   }
 
-export type StepFormProps <FormValue> = Omit<
+export type StepFormLegacyProps <FormValue> = Omit<
   ProAntStepFormProps<FormValue>,
   'requiredMark' |
   // omitted and replace with ReactNode as we don't support using RenderProps for now
   'children'> & { children?: React.ReactNode }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function StepsForm <FormValue = any> (
-  props: React.PropsWithChildren<StepsFormProps<FormValue>>
+export function StepsFormLegacy <FormValue = any> (
+  props: React.PropsWithChildren<StepsFormLegacyProps<FormValue>>
 ) {
   const {
     children,
@@ -80,7 +80,7 @@ export function StepsForm <FormValue = any> (
 
   const _children = toArray(children)
   const items = _children.map((child, index) => {
-    const itemProps = child.props as StepFormProps<FormValue>
+    const itemProps = child.props as StepFormLegacyProps<FormValue>
 
     return React.cloneElement(child, {
       ...itemProps,
@@ -175,7 +175,7 @@ export function StepsForm <FormValue = any> (
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function StepForm <FormValue = any> (
-  props: Omit<StepFormProps<FormValue>, 'requireMark' | 'validateTrigger'>
+  props: Omit<StepFormLegacyProps<FormValue>, 'requireMark' | 'validateTrigger'>
 ) {
   const keys = ['state']
   const formProps = _.omit(props, keys)
@@ -188,8 +188,8 @@ function StepForm <FormValue = any> (
   </ProAntStepsForm.StepForm>
 }
 
-StepsForm.StepForm = StepForm
-StepsForm.Title = UI.Title
-StepsForm.SectionTitle = UI.SectionTitle
-StepsForm.FieldLabel = UI.FieldLabel
-StepsForm.MultiSelect = UI.MultiSelect
+StepsFormLegacy.StepForm = StepForm
+StepsFormLegacy.Title = UI.Title
+StepsFormLegacy.SectionTitle = UI.SectionTitle
+StepsFormLegacy.FieldLabel = UI.FieldLabel
+StepsFormLegacy.MultiSelect = UI.MultiSelect
