@@ -29,19 +29,19 @@ describe('AdaptivePolicyForm', () => {
   beforeEach(() => {
     mockServer.use(
       rest.get(
-        RulesManagementUrlsInfo.getPolicyTemplateAttributes.url,
+        RulesManagementUrlsInfo.getPolicyTemplateAttributes.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(attributeList))
       ),
       rest.get(
-        RulesManagementUrlsInfo.getPolicyTemplateList.url,
+        RulesManagementUrlsInfo.getPolicyTemplateList.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(templateList))
       ),
       rest.post(
-        RulesManagementUrlsInfo.getPoliciesByQuery.url,
+        RulesManagementUrlsInfo.getPoliciesByQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(adaptivePolicyList))
       ),
       rest.get(
-        RadiusAttributeGroupUrlsInfo.getAttributeGroups.url,
+        RadiusAttributeGroupUrlsInfo.getAttributeGroups.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(groupList))
       )
     )
@@ -63,7 +63,7 @@ describe('AdaptivePolicyForm', () => {
   it('should submit list successfully', async () => {
     mockServer.use(
       rest.get(
-        RadiusAttributeGroupUrlsInfo.getAttributeGroups.url,
+        RadiusAttributeGroupUrlsInfo.getAttributeGroups.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(groupList))
       ),
       rest.post(
@@ -99,7 +99,7 @@ describe('AdaptivePolicyForm', () => {
     )
 
     // select policy type
-    await userEvent.click(screen.getByRole('radio', { name: /RADIUS/i }))
+    await userEvent.click(await screen.findByRole('radio', { name: /RADIUS/i }))
 
     // add condition
     await userEvent.click(screen.getByText('Add'))
@@ -132,11 +132,11 @@ describe('AdaptivePolicyForm', () => {
   it('should edit giving data successfully', async () => {
     mockServer.use(
       rest.get(
-        RadiusAttributeGroupUrlsInfo.getAttributeGroups.url,
+        RadiusAttributeGroupUrlsInfo.getAttributeGroups.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(groupList))
       ),
       rest.get(
-        RulesManagementUrlsInfo.getPolicyByTemplate.url,
+        RulesManagementUrlsInfo.getPolicyByTemplate.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(editAdaptivePolicy))
       ),
       rest.patch(
@@ -148,7 +148,7 @@ describe('AdaptivePolicyForm', () => {
         (req, res, ctx) => res(ctx.json({}))
       ),
       rest.get(
-        RulesManagementUrlsInfo.getConditionsInPolicy.url,
+        RulesManagementUrlsInfo.getConditionsInPolicy.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(assignConditions))
       ),
       rest.get(
@@ -200,8 +200,7 @@ describe('AdaptivePolicyForm', () => {
     await userEvent.click(screen.getByText('Edit'))
 
     await screen.findByText('Edit Access Condition')
-    await userEvent.click(screen.getByRole('combobox', { name: 'When' }))
-    await userEvent.click(await screen.findByText('Weekdays'))
+    await userEvent.click(screen.getByRole('radio', { name: 'Weekdays (Mon-Fri)' }))
     await userEvent.type(inputs[4], 'testValueChange')
     await userEvent.click(screen.getByText('Done'))
 
