@@ -93,10 +93,10 @@ export const mockedSummary =
     },
     {
       deviceSubType: null,
-      deviceType: 'LTE',
+      deviceType: 'ANALYTICS',
       tempLicense: false,
-      quantity: 0,
-      deviceCount: 0,
+      quantity: 60,
+      deviceCount: 80,
       remainingDevices: 0
     }
   ]
