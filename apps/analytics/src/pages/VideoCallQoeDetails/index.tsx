@@ -75,7 +75,8 @@ export function VideoCallQoeDetails (){
       render: (value:unknown, row:Participants)=>{
         if(row.networkType.toLowerCase() === 'wifi'){
           return <Space>
-            {value ? <span>{value as string}</span> : <div style={{ width: '100px' }}>-</div>}
+            {value ? <span>{(value as string).toUpperCase()}</span>
+              : <div style={{ width: '100px' }}>-</div>}
             <Tooltip title={$t({ defaultMessage: 'Select Client MAC' })}>
               <EditOutlinedIcon style={{ height: '16px', width: '16px', cursor: 'pointer' }}
                 onClick={()=>{
@@ -297,13 +298,10 @@ export function VideoCallQoeDetails (){
   }
   const onSelectClientMac = async ()=>{
     if(participantId && selectedMac){
-      const updatedParticipantId = await updateParticipant({
-        participantId, macAddr: selectedMac }).unwrap()
-      if(updatedParticipantId){
-        queryResults.refetch()
-      }
+      await updateParticipant({ participantId, macAddr: selectedMac }).unwrap()
+      queryResults.refetch()
+      setIsDrawerOpen(false)
     }
-    setIsDrawerOpen(false)
   }
   return (
     <Loader states={[queryResults]}>
