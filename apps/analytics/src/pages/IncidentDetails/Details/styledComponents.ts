@@ -16,7 +16,6 @@ export const MuteIncidentContainer = styled.div`
   .ant-switch-handle {
     width: 16px;
     height: 16px;
-    top: 3px;
   }
   .ant-switch-handle::before {
     border-radius: 8px;
