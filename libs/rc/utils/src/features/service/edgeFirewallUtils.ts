@@ -16,7 +16,7 @@ export const getACLDirectionString = ($t: IntlShape['$t'], type: ACLDirection) =
 export const getProtocolTypeString = ($t: IntlShape['$t'], type: ProtocolType) => {
   switch (type) {
     case ProtocolType.ANY:
-      return $t({ defaultMessage: 'ANY' })
+      return $t({ defaultMessage: 'Any' })
     case ProtocolType.TCP:
       return $t({ defaultMessage: 'TCP' })
     case ProtocolType.UDP:

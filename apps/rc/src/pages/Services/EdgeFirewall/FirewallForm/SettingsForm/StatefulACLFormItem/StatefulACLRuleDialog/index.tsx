@@ -260,7 +260,13 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
               ? <Form.Item
                 name='protocolValue'
                 label={$t({ defaultMessage: 'Protocol Value' })}
-                rules={[{ type: 'number', min: 1, max: 255 }]}
+                rules={[
+                  {
+                    required: true,
+                    message: $t({ defaultMessage: 'Please enter protocol value' })
+                  },
+                  { type: 'number', min: 1, max: 255 }
+                ]}
               >
                 <InputNumber placeholder='1-255' />
               </Form.Item>
