@@ -48,33 +48,75 @@ export function FrontViewSlot (props:{
     <UI.SlotVertical>
       {
         slot.portStatus
-          .filter((item: SwitchPortStatus) => item.portnumber%2 == 1)
-          .map((port: SwitchPortStatus) => (
-            <FrontViewPort key={port.portIdentifier}
-              labelText={portLabel + port.portnumber}
-              labelPosition='top'
-              portColor={getPortColor(port)}
-              portIcon={getPortIcon(port)}
-              tooltipEnable={isOnline}
-              portData={port}
-            />
-          ))
+          .filter((item: SwitchPortStatus) => {
+            const portNumber = item.portnumber
+            if (String(portNumber).includes(':') && String(portNumber).split(':')[1] === '1') {
+              return Number(String(portNumber).split(':')[0]) % 2 === 1
+            }
+
+            return portNumber % 2 === 1
+          })
+          .map((port: SwitchPortStatus) => {
+            const isBreakOutPort = String(port.portnumber).includes(':')
+            if (isBreakOutPort) {
+              return (<FrontViewPort key={port.portIdentifier}
+                labelText={portLabel + String(port.portnumber).split(':')[0]}
+                labelPosition='top'
+                portColor={getPortColor(port)}
+                portIcon={getPortIcon(port)}
+                tooltipEnable={isOnline}
+                portData={port}
+              />)
+            } else {
+              return (
+                <FrontViewPort key={port.portIdentifier}
+                  labelText={portLabel + String(port.portnumber)}
+                  labelPosition='top'
+                  portColor={getPortColor(port)}
+                  portIcon={getPortIcon(port)}
+                  tooltipEnable={isOnline}
+                  portData={port}
+                />
+              )
+            }
+          })
       }
     </UI.SlotVertical>
     <UI.SlotVertical>
       {
         slot.portStatus
-          .filter((item: SwitchPortStatus) => item.portnumber%2 == 0)
-          .map((port: SwitchPortStatus) => (
-            <FrontViewPort key={port.portIdentifier}
-              labelText={portLabel + port.portnumber}
-              labelPosition='bottom'
-              portColor={getPortColor(port)}
-              portIcon={getPortIcon(port)}
-              tooltipEnable={isOnline}
-              portData={port}
-            />
-          ))
+          .filter((item: SwitchPortStatus) => {
+            const portNumber = item.portnumber
+            if (String(portNumber).includes(':') && String(portNumber).split(':')[1] === '1') {
+              return Number(String(portNumber).split(':')[0]) % 2 === 0
+            }
+            return item.portnumber%2 == 0})
+          .map((port: SwitchPortStatus) => {
+            const isBreakOutPort = String(port.portnumber).includes(':')
+            if (isBreakOutPort) {
+              return (
+                <FrontViewPort key={port.portIdentifier}
+                  labelText={portLabel + String(port.portnumber).split(':')[0]}
+                  labelPosition='bottom'
+                  portColor={getPortColor(port)}
+                  portIcon={getPortIcon(port)}
+                  tooltipEnable={isOnline}
+                  portData={port}
+                />
+              )
+            } else {
+              return (
+                <FrontViewPort key={port.portIdentifier}
+                  labelText={portLabel + port.portnumber}
+                  labelPosition='bottom'
+                  portColor={getPortColor(port)}
+                  portIcon={getPortIcon(port)}
+                  tooltipEnable={isOnline}
+                  portData={port}
+                />
+              )
+            }
+          })
       }
     </UI.SlotVertical>
   </UI.SlotWrapper>
