@@ -279,7 +279,7 @@ function Table <RecordType extends Record<string, any>> ({
     },
     ...isGroupByActive
       ? {
-        getCheckboxProps: record => 'children' in record
+        getCheckboxProps: record => 'children' in record && 'isGroup' in record
           ? ({ disabled: true, style: { display: 'none' } })
           : ({})
       }
@@ -461,7 +461,7 @@ function Table <RecordType extends Record<string, any>> ({
       expandable={expandable}
       rowClassName={props.rowClassName
         ? props.rowClassName
-        : (record) => isGroupByActive && 'children' in record
+        : (record) => isGroupByActive && 'children' in record && 'isGroup' in record
           ? 'parent-row-data'
           : ''
       }

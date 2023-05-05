@@ -1,4 +1,4 @@
-import { useMemo, Key } from 'react'
+import { useMemo, Key, useState } from 'react'
 
 import { Select }    from 'antd'
 import _             from 'lodash'
@@ -59,6 +59,7 @@ export function useGroupBy<RecordType> (
     const targetCol = groupable.find(col => col.key === groupByValue)
     const attributes = targetCol?.groupable?.attributes ?? []
     const actionsList = targetCol?.groupable?.actions ?? []
+    const [expandedKeys, setExpandedKeys] = useState(expandedRowKeys || [])
     const renderGroupRow = (record: RecordType) => (
       <UI.GroupRow>
         <UI.GroupCell>
@@ -75,23 +76,28 @@ export function useGroupBy<RecordType> (
       ? count + ('children' in column ? column.children?.length || 1 : 1)
       : count, 0)
     const addColSpan = (colSpan: number) =>
-      (record: RecordType) => 'children' in record ? ({ colSpan }) : ({})
+      (record: RecordType) => {
+        return 'children' in record && 'isGroup' in record ? ({ colSpan }) : ({})
+      }
     return {
       groupable,
       columns: isGroupByActive
         ? columns.map((column, columnIndex) => {
           const { render, searchable, dataIndex } = column
           const renderer: typeof render = (dom, record, index, highlightFn, action, schema) => {
-            if ('children' in record) {
+            if ('children' in record && 'isGroup' in record) {
               return columnIndex === 0 ? renderGroupRow(record) : null
-            } else {
+            } else {              
               if (render) {
                 return render(dom, record, index, highlightFn, action, schema)
               }
               if (searchable) {
                 return highlightFn(_.get(record, dataIndex))
               }
-              return dom
+              if (typeof dom !== 'object') {
+                return dom
+              }
+              return
             }
           }
           return {
@@ -106,7 +112,24 @@ export function useGroupBy<RecordType> (
         })
         : columns,
       isGroupByActive,
-      expandable: isGroupByActive ? { expandedRowKeys, showExpandColumn: false } : undefined
+      expandable: undefined
+      // expandable: isGroupByActive ? { 
+      //   expandedRowKeys: expandedKeys,
+      //   onExpand: (expanded:any, record:any)=>{
+      //     console.log(expanded, record)
+      //     if (expanded) {
+      //       setExpandedKeys([
+      //         ...expandedKeys,
+      //         record.key
+      //       ])
+      //     } else {
+      //       const index = expandedKeys.findIndex(e => e === record.key)
+      //       const newKeys = [...expandedKeys]
+      //       setExpandedKeys(newKeys.splice(index, 1))
+      //     }
+      //   }
+      // } 
+      // : undefined
     }
   }, [columns, groupByValue, expandedRowKeys, columnsState])
 }
