@@ -88,7 +88,7 @@ describe('MacRegistrationListsTable', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
       rest.get(
-        MacRegListUrlsInfo.getMacRegistrationPools.url,
+        MacRegListUrlsInfo.getMacRegistrationPools.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(list))
       ),
       rest.get(
@@ -98,6 +98,10 @@ describe('MacRegistrationListsTable', () => {
       rest.post(
         CommonUrlsInfo.getVMNetworksList.url,
         (req, res, ctx) => res(ctx.json(networkList))
+      ),
+      rest.post(
+        MacRegListUrlsInfo.searchMacRegistrationPools.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(list))
       )
     )
   })

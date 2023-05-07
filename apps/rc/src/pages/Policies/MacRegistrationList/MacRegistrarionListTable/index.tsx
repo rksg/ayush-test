@@ -16,16 +16,17 @@ import {
   useDeleteMacRegListMutation,
   useLazyGetAdaptivePolicySetQuery,
   useLazyNetworkListQuery,
-  useMacRegListsQuery
+  useSearchMacRegListsQuery
 } from '@acx-ui/rc/services'
 import {
+  FILTER,
   getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
   MacRegistrationDetailsTabKey,
   MacRegistrationPool,
   PolicyOperation,
-  PolicyType,
+  PolicyType, SEARCH,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
@@ -43,9 +44,20 @@ export default function MacRegistrationListsTable () {
 
   const policyEnabled = useIsSplitOn(Features.POLICY_MANAGEMENT)
 
+  const filter = {
+    filterKey: 'name',
+    operation: 'cn',
+    value: ''
+  }
+
   const tableQuery = useTableQuery({
-    useQuery: useMacRegListsQuery,
-    defaultPayload: {}
+    useQuery: useSearchMacRegListsQuery,
+    defaultPayload: {
+      dataOption: 'all',
+      searchCriteriaList: [
+        { ...filter }
+      ]
+    }
   })
 
   const [
@@ -108,8 +120,9 @@ export default function MacRegistrationListsTable () {
       },
       {
         title: $t({ defaultMessage: 'List Expiration' }),
-        key: 'listExpiration',
-        dataIndex: 'listExpiration',
+        key: 'expirationType',
+        dataIndex: 'expirationType',
+        sorter: true,
         render: function (data, row) {
           return returnExpirationString(row)
         }
@@ -173,7 +186,6 @@ export default function MacRegistrationListsTable () {
   }
 
   const rowActions: TableProps<MacRegistrationPool>['rowActions'] = [{
-    visible: (selectedRows) => selectedRows.length === 1,
     label: $t({ defaultMessage: 'Edit' }),
     onClick: (selectedRows) => {
       navigate({
@@ -223,6 +235,16 @@ export default function MacRegistrationListsTable () {
     }
   }]
 
+  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
+    const payload = {
+      dataOption: 'all',
+      searchCriteriaList: [
+        { ...filter, value: customSearch?.searchString ?? '' }
+      ]
+    }
+    tableQuery.setPayload(payload)
+  }
+
   return (
     <>
       <PageHeader
@@ -246,6 +268,7 @@ export default function MacRegistrationListsTable () {
         { isLoading: false, isFetching: isDeleteMacRegListUpdating }
       ]}>
         <Table<MacRegistrationPool>
+          enableApiFilter
           settingsId='mac-reg-list-table'
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
@@ -253,6 +276,7 @@ export default function MacRegistrationListsTable () {
           onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={rowActions}
+          onFilterChange={handleFilterChange}
           rowSelection={{ type: 'radio' }}
         />
       </Loader>

@@ -185,6 +185,7 @@ export function ManageCustomer () {
   const [startSubscriptionVisible, setStartSubscriptionVisible] = useState(false)
   const [subscriptionStartDate, setSubscriptionStartDate] = useState<moment.Moment>()
   const [subscriptionEndDate, setSubscriptionEndDate] = useState<moment.Moment>()
+  const [subscriptionOrigEndDate, setSubscriptionOrigEndDate] = useState<moment.Moment>()
   const [address, updateAddress] = useState<Address>(isMapEnabled? {} : defaultAddress)
   const [formData, setFormData] = useState({} as Partial<EcFormData>)
 
@@ -268,6 +269,7 @@ export function ManageCustomer () {
 
         setSubscriptionStartDate(moment(data?.service_effective_date))
         setSubscriptionEndDate(moment(data?.service_expiration_date))
+        setSubscriptionOrigEndDate(moment(data?.service_expiration_date))
         setWifiLicense(wLic)
         setSwitchLicense(sLic)
       }
@@ -466,6 +468,8 @@ export function ManageCustomer () {
       const ecFormData = { ...values }
       const today = EntitlementUtil.getServiceStartDate()
       const expirationDate = EntitlementUtil.getServiceEndDate(subscriptionEndDate)
+      const expirationDateOrig = EntitlementUtil.getServiceEndDate(subscriptionOrigEndDate)
+      const needUpdateLicense = expirationDate !== expirationDateOrig
 
       const licAssignment = []
       if (isTrialEditMode) {
@@ -486,9 +490,10 @@ export function ManageCustomer () {
           deviceType: EntitlementDeviceType.MSP_SWITCH
         })
       } else {
-        if (_.isString(ecFormData.wifiLicense)) {
+        if (_.isString(ecFormData.wifiLicense) || needUpdateLicense) {
           const wifiAssignId = getAssignmentId(EntitlementDeviceType.MSP_WIFI)
-          const quantityWifi = parseInt(ecFormData.wifiLicense, 10)
+          const quantityWifi = _.isString(ecFormData.wifiLicense)
+            ? parseInt(ecFormData.wifiLicense, 10) : ecFormData.wifiLicense
           const actionWifi = wifiAssignId === 0 ? AssignActionEnum.ADD : AssignActionEnum.MODIFY
           licAssignment.push({
             quantity: quantityWifi,
@@ -498,9 +503,10 @@ export function ManageCustomer () {
             deviceType: EntitlementDeviceType.MSP_WIFI
           })
         }
-        if (_.isString(ecFormData.switchLicense)) {
+        if (_.isString(ecFormData.switchLicense) || needUpdateLicense) {
           const switchAssignId = getAssignmentId(EntitlementDeviceType.MSP_SWITCH)
-          const quantitySwitch = parseInt(ecFormData.switchLicense, 10)
+          const quantitySwitch = _.isString(ecFormData.switchLicense)
+            ? parseInt(ecFormData.switchLicense, 10) : ecFormData.switchLicense
           const actionSwitch = switchAssignId === 0 ? AssignActionEnum.ADD : AssignActionEnum.MODIFY
           licAssignment.push({
             quantity: quantitySwitch,
