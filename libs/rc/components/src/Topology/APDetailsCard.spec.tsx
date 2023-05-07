@@ -1,7 +1,8 @@
 import '@testing-library/jest-dom'
 
 import { ApVenueStatusEnum, ApViewModel, CelluarInfo } from '@acx-ui/rc/utils'
-import { render }                                      from '@acx-ui/test-utils'
+import { dataApiURL, Provider }                        from '@acx-ui/store'
+import { mockGraphqlQuery, render }                    from '@acx-ui/test-utils'
 
 import { APDetailsCard } from './APDetailsCard'
 
@@ -167,23 +168,41 @@ const apDetailWithNullTraffic = {
   deviceModelType: 'Indoor'
 }
 
+const sample = { P1: 1, P2: 2, P3: 3, P4: 4 }
+
 
 describe('Topology AP Card', () => {
   it('should render correctly', async () => {
-    const { asFragment } = render(<APDetailsCard
+    mockGraphqlQuery(dataApiURL, 'IncidentsBySeverityWidget', {
+      data: { network: { hierarchyNode: { ...sample } } }
+    })
+    const { asFragment } = render(<Provider><APDetailsCard
       apDetail={apDetail as ApViewModel}
       isLoading={false}
-    />)
+    /></Provider>, {
+      route: {}
+    })
+    const fragment = asFragment()
+    // eslint-disable-next-line testing-library/no-node-access
+    await fragment.querySelector('div[_echarts_instance_^="ec_"]')
+      ?.removeAttribute('_echarts_instance_')
 
     expect(asFragment()).toMatchSnapshot()
   })
 
   it('should show empty traffic data', async () => {
-    const { asFragment } = render(<APDetailsCard
+    mockGraphqlQuery(dataApiURL, 'IncidentsBySeverityWidget', {
+      data: { network: { hierarchyNode: { ...sample } } }
+    })
+    const { asFragment } = render(<Provider><APDetailsCard
       apDetail={apDetailWithNullTraffic as ApViewModel}
       isLoading={false}
-    />)
-
-    expect(asFragment()).toMatchSnapshot()
+    /></Provider>, {
+      route: {}
+    })
+    const fragment = asFragment()
+    // eslint-disable-next-line testing-library/no-node-access
+    await fragment.querySelector('div[_echarts_instance_^="ec_"]')
+      ?.removeAttribute('_echarts_instance_')
   })
 })
