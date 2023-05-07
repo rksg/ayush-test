@@ -902,6 +902,31 @@ export function isSubnetOverlap (firstIpAddress: string, firstSubnetMask:string,
 
 }
 
+export function validateTags (value: string[]) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line no-control-regex
+  const tagPattern = /^((([^\u0000-\u007F]|([a-zA-Z0-9]))+)[\!@#$%^&*(){}-]*)|([\!@#$%^&*(){}-]*(([^\u0000-\u007F]|([a-zA-Z0-9]))+))|([\!@#$%^&*(){}-]+)$/
+
+  if(value === undefined || value.length === 0){
+    return Promise.resolve()
+  }
+
+  if(value.length >= 24) {
+    return Promise.reject($t(validationMessages.tagMaxLengthInvalid))
+  }
+
+  for (const tag of value) {
+    if ((tagPattern.test(tag) || tag === '') && !tag.startsWith(' ') && !tag.endsWith(' ')
+    && (tag.length === 0 || tag.length >= 2) && tag.length <= 64) {
+      continue
+    } else {
+      return Promise.reject($t(validationMessages.tagInvalid))
+    }
+  }
+
+  return Promise.resolve()
+}
+
 export function ipv6RegExp (value: string) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len

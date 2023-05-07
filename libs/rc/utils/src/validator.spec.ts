@@ -23,7 +23,8 @@ import {
   targetHostRegExp,
   validateRecoveryPassphrasePart,
   validateVlanId,
-  ipv6RegExp
+  ipv6RegExp,
+  validateTags
 } from './validator'
 
 describe('validator', () => {
@@ -352,4 +353,20 @@ describe('validator', () => {
     })
   })
 
+
+  describe('validateTags', () => {
+    it('Should take care of tags value correctly', async () => {
+      const result = validateTags(['test'])
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if tags value incorrectly', async () => {
+      const result1 = validateTags(['1'])
+      await expect(result1).rejects.toEqual('Tag is invalid')
+    })
+    it('Should display error message if tags array more than 24 tags', async () => {
+      // eslint-disable-next-line max-len
+      const result1 = validateTags(['11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35'])
+      await expect(result1).rejects.toEqual('No more than 24 Tags are allowed')
+    })
+  })
 })
