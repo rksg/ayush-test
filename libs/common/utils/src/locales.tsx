@@ -2,7 +2,9 @@ import { createContext, ReactElement, useContext, useEffect, useMemo, useState }
 
 import { Locale } from 'antd/lib/locale-provider'
 import { merge }  from 'lodash'
-import { get }                               from '@acx-ui/config'
+
+import { get } from '@acx-ui/config'
+
 import { setUpIntl } from './intlUtil'
 
 type Message = string | NestedMessages
