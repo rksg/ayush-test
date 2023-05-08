@@ -23,7 +23,7 @@ jest.mock('antd', () => ({
 }))
 
 describe('ConfigProvider', () => {
-  it.skip('renders correctly', async () => {
+  it('renders correctly', async () => {
     mockServer.use(rest.get(
       '/locales/compiled/en-US.json',
       (req, res, ctx) => res(ctx.json({ language: 'Language' }))
