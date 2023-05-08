@@ -38,7 +38,7 @@ export function VenueSetting () {
   const { $t } = useIntl()
   const params = useParams()
   const form = Form.useFormInstance()
-  const { currentData, editMode } = useContext(ConfigurationProfileFormContext)
+  const { currentData } = useContext(ConfigurationProfileFormContext)
   const tableQuery = useTableQuery({
     useQuery: useVenuesListQuery,
     defaultPayload
@@ -62,7 +62,7 @@ export function VenueSetting () {
       })
       setTableData(data)
     }
-    if(currentData.venues && editMode){
+    if(currentData.venues){
       form.setFieldValue('venues', currentData.venues)
       setVenueList(currentData.venues || [])
     }
