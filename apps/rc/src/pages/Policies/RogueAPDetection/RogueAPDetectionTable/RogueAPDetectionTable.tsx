@@ -5,6 +5,7 @@ import { useIntl } from 'react-intl'
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import {
+  useDelRoguePoliciesMutation,
   useDelRoguePolicyMutation,
   useEnhancedRoguePoliciesQuery,
   useVenuesListQuery
@@ -70,6 +71,7 @@ export default function RogueAPDetectionTable () {
   const tenantBasePath: Path = useTenantLink('')
   const DEFAULT_PROFILE = 'Default profile'
   const [ deleteFn ] = useDelRoguePolicyMutation()
+  const [ bulkDelete ] = useDelRoguePoliciesMutation()
 
   const tableQuery = useTableQuery({
     useQuery: useEnhancedRoguePoliciesQuery,
@@ -96,13 +98,14 @@ export default function RogueAPDetectionTable () {
       visible: (selectedItems =>
         selectedItems.length > 0 && selectedItems[0].name !== DEFAULT_PROFILE
       ),
-      onClick: ([{ id, name, venueIds }], clearSelection) => {
-        if (Number(venueIds.length) !== 0 || name === DEFAULT_PROFILE) {
+      onClick: (rows, clearSelection) => {
+        if (rows.map(row => Number(row.venueIds.length)).find(num => num !== 0)
+          || rows.map(row => row.name).includes(DEFAULT_PROFILE)) {
           showActionModal({
             type: 'error',
             content: $t({
               // eslint-disable-next-line max-len
-              defaultMessage: 'This policy has been applied in network or it is default profile policy.'
+              defaultMessage: 'One of the policy has been applied in network or it is default profile policy.'
             })
           })
           clearSelection()
@@ -112,10 +115,16 @@ export default function RogueAPDetectionTable () {
             customContent: {
               action: 'DELETE',
               entityName: $t({ defaultMessage: 'Policy' }),
-              entityValue: name
+              entityValue: rows.length === 1 ? rows[0].name : undefined,
+              numOfEntities: rows.length
             },
             onOk: () => {
-              deleteFn({ params: { ...params, policyId: id } }).then(clearSelection)
+              rows.length === 1
+                ? deleteFn({ params: { ...params, policyId: rows[0].id } }).then(clearSelection)
+                : bulkDelete({
+                  params: { ...params },
+                  payload: rows.map(row => row.id)
+                }).then(clearSelection)
             }
           })
         }
@@ -124,7 +133,7 @@ export default function RogueAPDetectionTable () {
     {
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedItems =>
-        selectedItems.length > 0 && selectedItems[0].name !== DEFAULT_PROFILE
+        selectedItems.length === 1 && selectedItems[0].name !== DEFAULT_PROFILE
       ),
       onClick: ([{ id }]) => {
         navigate({
@@ -171,7 +180,7 @@ export default function RogueAPDetectionTable () {
           enableApiFilter={true}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'radio' }}
+          rowSelection={{ type: 'checkbox' }}
         />
       </Loader>
     </>
