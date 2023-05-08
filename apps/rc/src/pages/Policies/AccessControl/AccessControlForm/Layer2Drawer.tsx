@@ -575,8 +575,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
         <Form.Item
           name={[...inputName, 'l2AclPolicyId']}
           rules={[{
-            required: true
-          }, {
+            required: true,
             message: $t({ defaultMessage: 'Please select Layer 2 profile' })
           }]}
           children={

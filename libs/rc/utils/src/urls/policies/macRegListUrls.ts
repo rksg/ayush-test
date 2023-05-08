@@ -13,6 +13,12 @@ export const MacRegListUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: macRegApiBaseUrl + paginationParams,
     newApi: true
   },
+  searchMacRegistrationPools: {
+    method: 'post',
+    url: newMacRegApiBaseUrl + '/query' + paginationParams,
+    oldUrl: macRegApiBaseUrl + '/query' + paginationParams,
+    newApi: true
+  },
   createMacRegistrationPool: {
     method: 'post',
     url: newMacRegApiBaseUrl,
@@ -43,6 +49,12 @@ export const MacRegListUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: macRegApiBaseUrl + '/:policyId/registrations' + paginationParams,
     newApi: true
   },
+  searchMacRegistrations: {
+    method: 'post',
+    url: newMacRegApiBaseUrl + '/:policyId/registrations/query' + paginationParams,
+    oldUrl: macRegApiBaseUrl + '/:policyId/registrations/query' + paginationParams,
+    newApi: true
+  },
   createMacRegistration: {
     method: 'post',
     url: newMacRegApiBaseUrl + '/:policyId/registrations',
@@ -71,6 +83,12 @@ export const MacRegListUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: newMacRegApiBaseUrl + '/:policyId/registrations',
     oldUrl: macRegApiBaseUrl + '/:policyId/registrations',
+    newApi: true
+  },
+  uploadMacRegistration: {
+    method: 'post',
+    url: newMacRegApiBaseUrl + '/:policyId/registrations/csvFile',
+    oldUrl: macRegApiBaseUrl + '/:policyId/registrations/csvFile',
     newApi: true
   }
 }

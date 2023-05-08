@@ -288,13 +288,12 @@ export function ApTable (props: ApTableProps) {
         })
         return acc
       }, [] as TableProps<APExtended | APExtendedGrouped>['columns'])
-    // }, { TODO: Waiting for TAG feature support
-      // key: 'tags',
-      // title: $t({ defaultMessage: 'Tags' }),
-      // dataIndex: 'tags',
-      // searchable: searchable,
-      // sorter: true
-      //TODO: Click-> Filter by Tag
+    }, {
+      key: 'tags',
+      title: $t({ defaultMessage: 'Tags' }),
+      dataIndex: 'tags',
+      searchable: searchable,
+      sorter: true
     }, {
       key: 'serialNumber',
       title: $t({ defaultMessage: 'Serial Number' }),
@@ -385,7 +384,7 @@ export function ApTable (props: ApTableProps) {
   const [ importResult, setImportResult ] = useState<ImportErrorRes>({} as ImportErrorRes)
   const [ importErrors, setImportErrors ] = useState<ImportErrorRes>({} as ImportErrorRes)
   const apGpsFlag = useIsSplitOn(Features.AP_GPS)
-  const wifiEdaFlag = useIsSplitOn(Features.WIFI_EDA_GATEWAY)
+  const wifiEdaFlag = useIsSplitOn(Features.WIFI_EDA_READY_TOGGLE)
   const importTemplateLink = apGpsFlag ?
     'assets/templates/aps_import_template_with_gps.csv' :
     'assets/templates/aps_import_template.csv'

@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
 
-import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {  Drawer }     from '@acx-ui/components'
@@ -28,19 +27,6 @@ export const getDocsURL = (isMspUser:boolean) => process.env['NODE_ENV'] === 'de
 
 export const DOCS_HOME_URL = 'https://docs.cloud.ruckuswireless.com'
 
-// eslint-disable-next-line max-len
-const reg = /([A-Z0-9]{11,})|([0-9a-fA-F]{1,2}[:]){5}([0-9a-fA-F]{1,2})|([a-f-\d]{32,36}|[A-F-\d]{32,36})|([a-zA-Z0-9+\=]{84})|\d+\/?/g
-
-const useBasePath = () => {
-  const location = useLocation()
-  const basePath = location.pathname.replace(new URL(document.baseURI).pathname,'')
-  return _.replace(basePath, reg, (matchStr)=>{
-    // eslint-disable-next-line max-len
-    const paramReg = /([A-Z0-9]{11,})|([0-9a-fA-F]{1,2}[:]){5}([0-9a-fA-F]{1,2})|([a-f-\d]{32,36}|[A-F-\d]{32,36})|([a-zA-Z0-9+\=]{84})|\d+/g
-    return matchStr.replaceAll(paramReg,'*')
-  })
-}
-
 const getMapping = async (basePath: string, showError: () => void, isMspUser:boolean) => {
   let result = await fetch(getMappingURL(isMspUser), {
     method: 'GET',
@@ -55,8 +41,7 @@ const getMapping = async (basePath: string, showError: () => void, isMspUser:boo
   }
 
   result = await result.json()
-  const pagePath = isMspUser ? basePath.replace('*/v/', '') : basePath.replace('*/t/', '')
-  const mapKey = Object.keys(result).find(item => pagePath === item)
+  const mapKey = Object.keys(result).find(item => basePath === item)
   return result[mapKey as keyof typeof result]
 }
 
@@ -86,11 +71,12 @@ export default function HelpPage (props: {
   setIsModalOpen: (isModalOpen: boolean) => void
 }) {
   const { $t } = useIntl()
+  const location = useLocation()
   const [helpDesc, setHelpDesc] = useState<string>()
   const [helpUrl, setHelpUrl] = useState<string|null>()
-  const [isMSPUserType, setIsMSPUserType] = useState<boolean>(false)
-  const basePath = useBasePath()
-
+  const [, tenantType, pathname] = location.pathname.match(/^\/[a-f0-9]{32}\/(v|t)\/(.+)$/) || []
+  const basePath = pathname?.replaceAll(/([A-Z0-9]{11,})|([0-9a-fA-F]{1,2}[:]){5}([0-9a-fA-F]{1,2})|([a-f-\d]{32,36}|[A-F-\d]{32,36})|([a-zA-Z0-9+\=]{84})|\d+/g, '*') // eslint-disable-line max-len
+  const isMspUser = tenantType === 'v'
   const showError = useCallback(() => {
     setHelpDesc($t({ defaultMessage: 'The content is not available.' }))
     setHelpUrl(null)
@@ -99,14 +85,6 @@ export default function HelpPage (props: {
   useEffect(() => {
     if (!props.modalState) return
     (async ()=> {
-      let isMspUser = false
-      if(basePath.startsWith('v/*') || basePath.startsWith('*/v')){
-        setIsMSPUserType(true)
-        isMspUser=true
-      }else{
-        setIsMSPUserType(false)
-        isMspUser=false
-      }
       const mappingRs = await getMapping(basePath, showError, isMspUser)
       if (!mappingRs) {
         return showError()
@@ -121,7 +99,7 @@ export default function HelpPage (props: {
         isMspUser
       )
     })()
-  }, [props.modalState, showError, basePath])
+  }, [props.modalState, showError, basePath, isMspUser])
 
   return <Drawer
     title={$t({ defaultMessage: 'Help for this page' })}
@@ -139,14 +117,14 @@ export default function HelpPage (props: {
         {' '}
         <Button
           onClick={()=>{
-            isMSPUserType ?
+            isMspUser ?
               window.open(DOCS_HOME_URL+'/ruckusone/mspguide/index.html', '_blank')
               :
               window.open(DOCS_HOME_URL+'/ruckusone/userguide/index.html', '_blank')
           }}
           type='link'
           size='small'>
-          { isMSPUserType ?
+          { isMspUser ?
             $t({ defaultMessage: 'RUCKUS One MSP Guide' })
             :
             $t({ defaultMessage: 'RUCKUS One User Guide' })

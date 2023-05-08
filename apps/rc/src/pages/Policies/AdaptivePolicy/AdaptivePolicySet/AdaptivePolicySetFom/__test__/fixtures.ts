@@ -19,6 +19,26 @@ export const policySetList = {
   ]
 }
 
+export const mockGroup = {
+  name: 'group1',
+  id: 'a954a698-d40b-ae3e-ddbd-e08210c8d4b9',
+  description: 'test',
+  attributeAssignments: [
+    {
+      attributeName: 'attributeName1',
+      attributeValue: 'attributeValue1',
+      dataType: 'INTEGER',
+      operator: 'DOES_NOT_EXIST'
+    },
+    {
+      attributeName: 'attributeName2',
+      attributeValue: 'attributeValue2',
+      dataType: 'INTEGER',
+      operator: 'DOES_NOT_EXIST'
+    }
+  ]
+}
+
 export const groupList = {
   content: [
     {
@@ -110,7 +130,7 @@ export const prioritizedPolicies = {
 }
 
 export const assignConditions = {
-  paging: { totalCount: 1, page: 1, pageSize: 1, pageCount: 1 },
+  paging: { totalCount: 2, page: 1, pageSize: 10, pageCount: 1 },
   content: [
     {
       id: 'a81bb403-d5e6-4c2b-a525-3bfbabebb48c',
