@@ -48,6 +48,7 @@ export function VlanSetting () {
     title: $t({ defaultMessage: 'VLAN ID' }),
     dataIndex: 'vlanId',
     key: 'vlanId',
+    defaultSortOrder: 'ascend',
     sorter: { compare: sortProp('vlanId', defaultSort) }
   }, {
     title: $t({ defaultMessage: 'VLAN Name' }),
