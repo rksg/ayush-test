@@ -84,7 +84,7 @@ const StatefulACLTable = (props: StatefulACLTableProps) => {
       dataSource={data}
       rowKey='direction'
       rowActions={filterByAccess(rowActions)}
-      rowSelection={{ type: 'checkbox' }}
+      rowSelection={{ type: 'radio' }}
     />
     <StatefulACLConfigDrawer
       visible={drawerVisible}

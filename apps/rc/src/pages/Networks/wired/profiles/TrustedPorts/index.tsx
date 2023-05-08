@@ -71,6 +71,7 @@ export function TrustedPorts () {
     title: $t({ defaultMessage: 'Model' }),
     dataIndex: 'model',
     key: 'model',
+    defaultSortOrder: 'ascend',
     sorter: { compare: sortProp('model', defaultSort) }
   }, {
     title: $t({ defaultMessage: 'Trusted' }),

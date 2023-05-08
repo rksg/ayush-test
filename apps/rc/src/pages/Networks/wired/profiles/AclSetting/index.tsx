@@ -59,6 +59,7 @@ export function AclSetting () {
     title: $t({ defaultMessage: 'ACL Name' }),
     dataIndex: 'name',
     key: 'name',
+    defaultSortOrder: 'ascend',
     sorter: { compare: sortProp('name', defaultSort) }
   }, {
     title: $t({ defaultMessage: 'ACL Type' }),

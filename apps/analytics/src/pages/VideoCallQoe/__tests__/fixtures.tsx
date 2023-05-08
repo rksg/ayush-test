@@ -15,6 +15,10 @@ export const deleteTestResponse = {
   deleteCallQoeTest: true
 }
 
+export const deleteTestFailedResponse = {
+  deleteCallQoeTest: false
+}
+
 export const getAllCallQoeTests = {
   getAllCallQoeTests: [
     {

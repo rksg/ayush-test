@@ -99,6 +99,7 @@ export function VenueSetting () {
       key: 'name',
       title: $t({ defaultMessage: 'Venue' }),
       dataIndex: 'name',
+      defaultSortOrder: 'ascend',
       sorter: true
     },
     {

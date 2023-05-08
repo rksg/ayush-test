@@ -30,6 +30,7 @@ import * as UI from './styledComponents'
 
 export interface AlarmsType {
   setVisible: (visible: boolean) => void,
+  setIsShown?: (visible: boolean) => void,
   visible?: boolean,
   serialNumber?: string
 }
@@ -66,10 +67,11 @@ export function AlarmsDrawer (props: AlarmsType) {
   const params = useParams()
   const { data } = useGetAlarmCountQuery({ params })
   const { $t } = useIntl()
-  const { visible, setVisible, serialNumber } = props
+  const { visible, setVisible, serialNumber, setIsShown } = props
 
   window.addEventListener('showAlarmDrawer',(function (e:CustomEvent){
     setVisible(true)
+    setIsShown && setIsShown(true)
     setSeverity(e.detail.data.name)
   }) as EventListener)
 

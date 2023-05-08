@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Form, FormInstance } from 'antd'
 import {  useIntl }           from 'react-intl'
@@ -55,17 +55,29 @@ export function RadiusAttributeGroupSelectDrawer (props: RadiusAttributeDrawerPr
   const { $t } = useIntl()
 
   const { visible, setVisible, settingForm } = props
-  const [selectedGroup, setSelectedGroup ] = useState({} as RadiusAttributeGroup)
   const [form] = Form.useForm()
-  const [selectedRowKeys, setSelectedRowKeys] = useState([])
+  const [selectedRowKeys, setSelectedRowKeys] = useState([] as string [])
 
   // eslint-disable-next-line max-len
   const [radiusAttributeGroupFormDrawerVisible, setRadiusAttributeGroupFormDrawerVisible] = useState(false)
 
+  const selectedGroupId = Form.useWatch('attributeGroupId', settingForm)
+
   const tableQuery = useTableQuery({
     useQuery: useRadiusAttributeGroupListQuery,
-    defaultPayload: {}
+    defaultPayload: {},
+    pagination: {
+      pageSize: 2000,
+      page: 1
+    }
   })
+
+  useEffect(() => {
+    if(visible && selectedGroupId) {
+      setSelectedRowKeys([selectedGroupId])
+      form.setFieldValue('attributeId', selectedGroupId)
+    }
+  }, [visible, selectedGroupId])
 
   const onClose = () => {
     setSelectedRowKeys([])
@@ -76,14 +88,14 @@ export function RadiusAttributeGroupSelectDrawer (props: RadiusAttributeDrawerPr
   const onSelectChange = (keys: React.Key[], rows: RadiusAttributeGroup[]) => {
     if(rows.length > 0) {
       form.setFieldValue('attributeId', rows[0].id)
-      setSelectedGroup(rows[0])
     } else{
       form.resetFields()
     }
   }
 
   const onSubmit = () => {
-    settingForm.setFieldValue('attributeGroupId', selectedGroup.id)
+    const attributeId = form.getFieldValue('attributeId')
+    settingForm?.setFieldValue('attributeGroupId', attributeId)
     onClose()
   }
 
@@ -116,6 +128,7 @@ export function RadiusAttributeGroupSelectDrawer (props: RadiusAttributeDrawerPr
             columns={useColumns()}
             dataSource={tableQuery.data?.data}
             showHeader={false}
+            tableAlertRender={false}
             rowSelection={{
               type: 'radio',
               onChange: onSelectChange,
