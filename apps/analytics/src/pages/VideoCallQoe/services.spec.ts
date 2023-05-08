@@ -1,40 +1,49 @@
 import '@testing-library/jest-dom'
 
-import { store, Provider ,videoCallQoeURL }                                  from '@acx-ui/store'
-import { act, mockGraphqlMutation,  mockGraphqlQuery,  renderHook, waitFor } from '@acx-ui/test-utils'
+import { store, Provider, videoCallQoeURL, dataApiSearchURL }              from '@acx-ui/store'
+import { act, mockGraphqlMutation, mockGraphqlQuery, renderHook, waitFor } from '@acx-ui/test-utils'
 
-import { createTestResponse, deleteTestResponse, callQoeTestDetailsFixtures1 }                                  from './__tests__/fixtures'
-import { api, useCreateCallQoeTestMutation, useDeleteCallQoeTestMutation, useUpdateCallQoeParticipantMutation } from './services'
+import { createTestResponse, deleteTestResponse, callQoeTestDetailsFixtures1, searchClientsFixture } from './__tests__/fixtures'
+import {
+  api,
+  clientSearchApi,
+  useCreateCallQoeTestMutation,
+  useDeleteCallQoeTestMutation,
+  useUpdateCallQoeParticipantMutation
+} from './services'
 
 describe('videoCallQoeApi', () => {
   const expectedResponse = {
     getAllCallQoeTests:
-    [
-      {
-        id: 6,
-        name: 'testname',
-        meetings: [
-          {
-            id: 6,
-            zoomMeetingId: '92334125972',
-            status: 'INVALID',
-            invalidReason: 'ZOOM_CALL_NO_PARTICIPANT_ON_WIFI',
-            joinUrl: 'https://zoom.us/j/92334125972?pwd=dG1iNFZNa2dNNW9veHpGNVpKV2FlZz09',
-            participantCount: 0,
-            mos: null,
-            createdTime: '2022-11-10T11:18:05.000Z',
-            startTime: null
-          }
-        ]
-      }
-    ]
+      [
+        {
+          id: 6,
+          name: 'testname',
+          meetings: [
+            {
+              id: 6,
+              zoomMeetingId: '92334125972',
+              status: 'INVALID',
+              invalidReason: 'ZOOM_CALL_NO_PARTICIPANT_ON_WIFI',
+              joinUrl: 'https://zoom.us/j/92334125972?pwd=dG1iNFZNa2dNNW9veHpGNVpKV2FlZz09',
+              participantCount: 0,
+              mos: null,
+              createdTime: '2022-11-10T11:18:05.000Z',
+              startTime: null
+            }
+          ]
+        }
+      ]
   }
 
-  beforeEach(() => store.dispatch(api.util.resetApiState()))
+  beforeEach(() => {
+    store.dispatch(api.util.resetApiState())
+    store.dispatch(clientSearchApi.util.resetApiState())
+  })
 
-  describe('getAllCallQoeTest end point', ()=>{
+  describe('getAllCallQoeTest end point', () => {
     it('api should return populated data', async () => {
-      mockGraphqlQuery(videoCallQoeURL,'CallQoeTests', {
+      mockGraphqlQuery(videoCallQoeURL, 'CallQoeTests', {
         data: expectedResponse
       })
       const { status, data, error } = await store.dispatch(
@@ -45,7 +54,7 @@ describe('videoCallQoeApi', () => {
       expect(data).toMatchObject(expectedResponse)
     })
     it('api should return empty data', async () => {
-      mockGraphqlQuery(videoCallQoeURL,'CallQoeTests', {
+      mockGraphqlQuery(videoCallQoeURL, 'CallQoeTests', {
         data: {}
       })
       const { status, data, error } = await store.dispatch(
@@ -56,7 +65,7 @@ describe('videoCallQoeApi', () => {
       expect(data).toStrictEqual({})
     })
     it('api should return error', async () => {
-      mockGraphqlQuery(videoCallQoeURL,'CallQoeTests', {
+      mockGraphqlQuery(videoCallQoeURL, 'CallQoeTests', {
         error: new Error('something went wrong!')
       })
       const { status, data, error } = await store.dispatch(
@@ -106,11 +115,20 @@ describe('videoCallQoeApi', () => {
 })
 
 describe('videoCallQoeTestDetails', () => {
-  beforeEach(() => store.dispatch(api.util.resetApiState()))
+  beforeEach(() => {
+    store.dispatch(api.util.resetApiState())
+    store.dispatch(clientSearchApi.util.resetApiState())
+  })
   const payload = { testId: 1, status: 'ENDED' }
+  const searchPayload = {
+    start: '2023-04-06T15:26:21+05:30',
+    end: '2023-04-06T15:29:48+05:30',
+    query: 'sometext',
+    limit: 100
+  }
 
   it('api should return populated data', async () => {
-    mockGraphqlQuery(videoCallQoeURL,'CallQoeTestDetails', {
+    mockGraphqlQuery(videoCallQoeURL, 'CallQoeTestDetails', {
       data: callQoeTestDetailsFixtures1
     })
     const { status, data, error } = await store.dispatch(
@@ -121,7 +139,7 @@ describe('videoCallQoeTestDetails', () => {
     expect(data).toMatchObject(callQoeTestDetailsFixtures1)
   })
   it('api should return empty data', async () => {
-    mockGraphqlQuery(videoCallQoeURL,'CallQoeTestDetails', {
+    mockGraphqlQuery(videoCallQoeURL, 'CallQoeTestDetails', {
       data: {}
     })
     const { status, data, error } = await store.dispatch(
@@ -132,7 +150,7 @@ describe('videoCallQoeTestDetails', () => {
     expect(data).toStrictEqual({})
   })
   it('api should return error', async () => {
-    mockGraphqlQuery(videoCallQoeURL,'CallQoeTestDetails', {
+    mockGraphqlQuery(videoCallQoeURL, 'CallQoeTestDetails', {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(
@@ -141,5 +159,30 @@ describe('videoCallQoeTestDetails', () => {
     expect(status).toBe('rejected')
     expect(data).toBe(undefined)
     expect(error).not.toBe(undefined)
+  })
+
+
+  it('search api should return the data', async () => {
+    mockGraphqlQuery(dataApiSearchURL, 'Search', {
+      data: searchClientsFixture
+    })
+    const { status, data, error } = await store.dispatch(
+      clientSearchApi.endpoints.seachClients.initiate(searchPayload))
+
+    expect(error).toBeUndefined()
+    expect(status).toBe('fulfilled')
+    expect(data).toMatchObject([
+      {
+        hostname: 'IT', ipAddress: '10.174.116.111',
+        mac: 'A8:64:F1:1A:D0:33', username: 'DPSK_User_8709'
+      },
+      {
+        hostname: 'DESKTOP-K1PAM9U', ipAddress: '10.174.116.121',
+        mac: 'D0:C6:37:D7:52:80', username: 'd0c637d75280'
+      },
+      {
+        hostname: 'e0:d4:64:05:7d:4b', ipAddress: '10.174.116.216',
+        mac: 'E0:D4:64:05:7D:4B', username: 'e0d464057d4b' }
+    ])
   })
 })
