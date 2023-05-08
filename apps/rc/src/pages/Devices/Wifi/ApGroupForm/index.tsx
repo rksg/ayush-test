@@ -232,7 +232,7 @@ export function ApGroupForm () {
                   showSearch
                   showSelectAll={false}
                   filterOption={(inputValue, item) =>
-                    item.name!.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1
+                    (item.name && item.name.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1)
                   }
                   dataSource={apsOption}
                   render={item => item.name}
