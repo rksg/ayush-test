@@ -1,5 +1,6 @@
 import { rest } from 'msw'
 
+import { RadioBand }                          from '@acx-ui/components'
 import {  ReportUrlsInfo, reportsApi }        from '@acx-ui/reports/services'
 import type { GuestToken, DashboardMetadata } from '@acx-ui/reports/services'
 import { Provider, store }                    from '@acx-ui/store'
@@ -91,65 +92,70 @@ describe('EmbeddedDashboard', () => {
 })
 
 describe('getSupersetRlsClause',()=>{
-  it('should return RLS clause based network filters',()=>{
-    const paths:NetworkPath[] = [
-      [{
-        type: 'network',
-        name: 'Network'
-      }, {
-        type: 'switchGroup',
-        name: 'Switch-Venue'
-      }, {
-        type: 'switch',
-        name: 'C0:C5:20:AA:33:2D'
-      }],
-      [{
-        type: 'network',
-        name: 'Network'
-      }, {
-        type: 'switchGroup',
-        name: 'Switch-Venue'
-      }, {
-        type: 'switch',
-        name: 'C0:C5:20:B2:11:59'
-      }],
-      [{
-        type: 'network',
-        name: 'Network'
-      }, {
-        type: 'switchGroup',
-        name: 'Switch-Venue1'
-      }],
-      [{
-        type: 'network',
-        name: 'Network'
-      }, {
-        type: 'zone',
-        name: 'Sindhuja-Venue'
-      }],
-      [{
-        type: 'network',
-        name: 'Network'
-      }, {
-        type: 'zone',
-        name: 'Sonali'
-      }, {
-        type: 'AP',
-        name: '00:0C:29:1E:9F:E4'
-      }],
-      [{
-        type: 'network',
-        name: 'Network'
-      }, {
-        type: 'zone',
-        name: 'Sonali'
-      }, {
-        type: 'AP',
-        name: '38:FF:36:13:DB:D0'
-      }]
-    ]
-    const rlsClause = getSupersetRlsClause(paths,['6','2.4'])
-    expect(rlsClause).toMatchSnapshot()
+  const radioBands:RadioBand[]=['6','2.4']
+  const paths:NetworkPath[] = [
+    [{
+      type: 'network',
+      name: 'Network'
+    }, {
+      type: 'switchGroup',
+      name: 'Switch-Venue'
+    }, {
+      type: 'switch',
+      name: 'C0:C5:20:AA:33:2D'
+    }],
+    [{
+      type: 'network',
+      name: 'Network'
+    }, {
+      type: 'switchGroup',
+      name: 'Switch-Venue'
+    }, {
+      type: 'switch',
+      name: 'C0:C5:20:B2:11:59'
+    }],
+    [{
+      type: 'network',
+      name: 'Network'
+    }, {
+      type: 'switchGroup',
+      name: 'Switch-Venue1'
+    }],
+    [{
+      type: 'network',
+      name: 'Network'
+    }, {
+      type: 'zone',
+      name: 'Sindhuja-Venue'
+    }],
+    [{
+      type: 'network',
+      name: 'Network'
+    }, {
+      type: 'zone',
+      name: 'Sonali'
+    }, {
+      type: 'AP',
+      name: '00:0C:29:1E:9F:E4'
+    }],
+    [{
+      type: 'network',
+      name: 'Network'
+    }, {
+      type: 'zone',
+      name: 'Sonali'
+    }, {
+      type: 'AP',
+      name: '38:FF:36:13:DB:D0'
+    }]
+  ]
+  it('should return RLS clause based network filters and report type',()=>{
+    const rlsClauseWirelessReport = getSupersetRlsClause(ReportType.WIRELESS,paths,radioBands)
+    const rlsClauseWiredReport = getSupersetRlsClause(ReportType.WIRED,paths,radioBands)
+    const rlsClauseApplicationReport = getSupersetRlsClause(ReportType.APPLICATION,paths,radioBands)
+    expect(rlsClauseWirelessReport).toMatchSnapshot('rlsClauseWirelessReport')
+    expect(rlsClauseWiredReport).toMatchSnapshot('rlsClauseWiredReport')
+    expect(rlsClauseApplicationReport).toMatchSnapshot('rlsClauseApplicationReport')
   })
 })
 
