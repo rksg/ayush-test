@@ -48,8 +48,6 @@ export function VideoCallQoeDetails (){
 
   const [ search, setSearch ] = useState('')
   const searchQueryResults = useSeachClientsQuery({
-    //start: '2023-01-02T12:36:21+05:30',
-    //end: '2023-05-02T12:36:21+05:30',
     start: moment(currentMeeting? currentMeeting.startTime: moment()).format(),
     end: moment(currentMeeting? currentMeeting.endTime: moment()).format(),
     query: search,
@@ -360,19 +358,26 @@ export function VideoCallQoeDetails (){
             <SearchBar
               placeHolder='Search by MAC, username or hostname'
               onChange={(q) => q && q.trim().length>=0 && _.debounce(
-                (search) => setSearch(search),1000
+                (search) => {
+                  setSearch(search)
+                  setSelectedMac(null)
+                }
+                ,1000
               )(q.trim())}
             />
             <Loader states={[searchQueryResults]}>
               <Table
                 rowKey='mac'
-                rowSelection={{ type: 'radio', onChange: (keys)=>{
-                  if(keys.length){
-                    setSelectedMac(keys[0] as string)
-                  }else{
-                    setSelectedMac(null)
-                  }
-                } }}
+                rowSelection={
+                  { type: 'radio',
+                    selectedRowKeys: selectedMac ? [selectedMac] : [],
+                    onChange: (keys)=>{
+                      if(keys.length){
+                        setSelectedMac(keys[0] as string)
+                      }else{
+                        setSelectedMac(null)
+                      }
+                    } }}
                 showHeader={false}
                 columns={[
                   {
