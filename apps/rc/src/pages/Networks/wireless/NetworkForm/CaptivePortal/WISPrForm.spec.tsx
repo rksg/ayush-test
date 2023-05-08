@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { StepsForm }                             from '@acx-ui/components'
+import { StepsFormLegacy }                       from '@acx-ui/components'
 import { useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, WifiUrlsInfo }          from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
@@ -66,8 +66,8 @@ describe('CaptiveNetworkForm-WISPr', () => {
       value={{
         editMode: true, cloneMode: true, data: wisprDataWPA2
       }}
-    ><StepsForm><StepsForm.StepForm><WISPrForm /></StepsForm.StepForm>
-      </StepsForm></NetworkFormContext.Provider></Provider>, { route: { params } })
+    ><StepsFormLegacy><StepsFormLegacy.StepForm><WISPrForm /></StepsFormLegacy.StepForm>
+      </StepsFormLegacy></NetworkFormContext.Provider></Provider>, { route: { params } })
     await userEvent.click((await screen.findAllByTitle('Select provider'))[0])
     await userEvent.click((await screen.findAllByTitle('Skyfii'))[0])
     await userEvent.click((await screen.findAllByTitle('Select Region'))[0])

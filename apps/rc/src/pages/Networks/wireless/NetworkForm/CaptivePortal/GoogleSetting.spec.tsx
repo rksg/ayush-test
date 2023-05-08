@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
-import { StepsForm }                 from '@acx-ui/components'
+import { StepsFormLegacy }           from '@acx-ui/components'
 import { Provider }                  from '@acx-ui/store'
 import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
@@ -19,8 +19,8 @@ describe('CaptiveNetworkForm-SelfSignInGoogle', () => {
       value={{
         editMode: true, cloneMode: true, data: selfsignData
       }}
-    ><StepsForm><StepsForm.StepForm><GoogleSetting redirectURL={''} /></StepsForm.StepForm>
-      </StepsForm></NetworkFormContext.Provider></Provider>)
+    ><StepsFormLegacy><StepsFormLegacy.StepForm children={<GoogleSetting redirectURL={''} />} />
+      </StepsFormLegacy></NetworkFormContext.Provider></Provider>)
     fireEvent.click(await screen.findByTitle('settingicon'))
     const googleId = await screen.findByLabelText(/Client ID/)
     fireEvent.change(googleId, { target: { value: 'google' } })
@@ -35,8 +35,8 @@ describe('CaptiveNetworkForm-SelfSignInGoogle', () => {
       value={{
         editMode: false, cloneMode: true, data: selfsignData
       }}
-    ><StepsForm><StepsForm.StepForm><GoogleSetting redirectURL={''} /></StepsForm.StepForm>
-      </StepsForm></NetworkFormContext.Provider></Provider>)
+    ><StepsFormLegacy><StepsFormLegacy.StepForm children={<GoogleSetting redirectURL={''} />} />
+      </StepsFormLegacy></NetworkFormContext.Provider></Provider>)
     fireEvent.click(await screen.findByTitle('settingicon'))
     await userEvent.click((await screen.findAllByRole('button', { name: 'Cancel' }))[1])
   })
