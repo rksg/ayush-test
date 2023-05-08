@@ -1,18 +1,20 @@
-import { ReactNode, useEffect, useState } from 'react'
+import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useEffect, useRef, useState } from 'react'
 
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, PageHeader, Tabs }               from '@acx-ui/components'
-import { useGetEdgeQuery }                        from '@acx-ui/rc/services'
-import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                         from '@acx-ui/user'
-import { getIntl }                                from '@acx-ui/utils'
+import { Button, CustomButtonProps, PageHeader, Tabs, showActionModal }                          from '@acx-ui/components'
+import { useGetEdgeQuery }                                                                       from '@acx-ui/rc/services'
+import { UNSAFE_NavigationContext as NavigationContext, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess }                                                                        from '@acx-ui/user'
+import { getIntl }                                                                               from '@acx-ui/utils'
 
 import DnsServer       from './DnsServer'
 import GeneralSettings from './GeneralSettings'
 import Ports           from './Ports'
 import StaticRoutes    from './StaticRoutes'
+
+import type { History, Transition } from 'history'
 
 const { $t } = getIntl()
 
@@ -40,6 +42,48 @@ const EditEdgeTabs = () => {
   const navigate = useNavigate()
   const { activeTab, serialNumber } = useParams()
   const basePath = useTenantLink(`/devices/edge/${serialNumber}/edit`)
+  const { navigator } = useContext(NavigationContext)
+  const blockNavigator = navigator as History
+  const unblockRef = useRef<Function>()
+  const editEdgeContext = useContext(EdgeEditContext)
+  const { formControl } = editEdgeContext
+
+  useEffect(() => {
+    if (formControl?.isDirty) {
+      unblockRef.current?.()
+      unblockRef.current = blockNavigator.block((tx: Transition) => {
+        // do not trigger modal twice
+        editEdgeContext.setFormControl({
+          ...editEdgeContext.formControl,
+          isDirty: false
+        })
+        showUnsavedModal(
+          editEdgeContext,
+          {
+            cancel: () => {
+              editEdgeContext.setFormControl({
+                ...editEdgeContext.formControl,
+                isDirty: true
+              })
+            },
+            discard: () => {
+              editEdgeContext.setFormControl({
+                ...editEdgeContext.formControl,
+                isDirty: false
+              })
+              tx.retry()
+            },
+            save: () => {
+              formControl?.applyFn?.()
+              tx.retry()
+            }
+          }
+        )
+      })
+    } else {
+      unblockRef.current?.()
+    }
+  }, [editEdgeContext])
 
   const onTabChange = (activeKey: string) => {
     if(activeKey === 'ports') activeKey = activeKey + '/ports-general'
@@ -63,13 +107,20 @@ const EditEdge = () => {
   const { serialNumber, activeTab } = useParams()
   const { data: edgeInfoData } = useGetEdgeQuery({ params: { serialNumber: serialNumber } })
   const [activeTabContent, setActiveTabContent] = useState<ReactNode>()
+  const [activeSubTab, setActiveSubTab] = useState({ key: '', title: '' })
+  const [formControl, setFormControl] = useState({} as EditEdgeFormControlType)
 
   useEffect(() => {
     setActiveTabContent(tabs[activeTab as keyof typeof tabs].content)
   }, [activeTab])
 
   return (
-    <>
+    <EdgeEditContext.Provider value={{
+      activeSubTab,
+      setActiveSubTab,
+      formControl,
+      setFormControl
+    }}>
       <PageHeader
         title={edgeInfoData?.name}
         breadcrumb={[
@@ -85,9 +136,83 @@ const EditEdge = () => {
         ])}
         footer={<EditEdgeTabs />}
       />
+
       {activeTabContent}
-    </>
+    </EdgeEditContext.Provider>
   )
 }
 
 export default EditEdge
+
+interface EditEdgeContextType {
+  activeSubTab: { key: string, title: string }
+  setActiveSubTab: Dispatch<SetStateAction<{ key: string, title: string }>>
+  formControl: EditEdgeFormControlType
+  setFormControl: Dispatch<SetStateAction<EditEdgeFormControlType>>
+}
+
+interface EditEdgeFormControlType {
+  isDirty: boolean
+  hasError: boolean
+  applyFn: Function | undefined,
+}
+
+export const EdgeEditContext = createContext({} as EditEdgeContextType)
+
+export function showUnsavedModal (
+  edgeEditContext: EditEdgeContextType,
+  callback?: {
+    cancel?: () => void,
+    discard?: () => void,
+    save?: () => void,
+    default?: () => void
+  }
+) {
+  const { activeSubTab, formControl } = edgeEditContext
+  const { hasError } = formControl
+  const { $t } = getIntl()
+  const title = activeSubTab.title || ''
+  const btns = [{
+    text: $t({ defaultMessage: 'Cancel' }),
+    key: 'close',
+    closeAfterAction: true,
+    handler: async () => {
+      callback?.cancel?.()
+      callback?.default?.()
+    }
+  }, {
+    text: $t({ defaultMessage: 'Discard Changes' }),
+    key: 'discard',
+    closeAfterAction: true,
+    handler: async () => {
+      callback?.discard?.()
+      callback?.default?.()
+    }
+  }, {
+    text: $t({ defaultMessage: 'Save Changes' }),
+    type: 'primary',
+    key: 'save',
+    closeAfterAction: true,
+    handler: async () => {
+      callback?.save?.()
+      callback?.default?.()
+    }
+  }]
+
+  showActionModal({
+    type: 'confirm',
+    width: 450,
+    title: hasError
+      ? $t({ defaultMessage: 'You Have Invalid Changes' })
+      : $t({ defaultMessage: 'You Have Unsaved Changes' }),
+    content: hasError
+      ? $t({ defaultMessage: 'Do you want to discard your changes in "{title}"?' }, { title })
+      : $t({
+        defaultMessage: 'Do you want to save your changes in "{title}", or discard all changes?'
+      }, { title }),
+    customContent: {
+      action: 'CUSTOM_BUTTONS',
+      buttons: (hasError ? btns.slice(0, 2) : btns) as CustomButtonProps[]
+    }
+  })
+}

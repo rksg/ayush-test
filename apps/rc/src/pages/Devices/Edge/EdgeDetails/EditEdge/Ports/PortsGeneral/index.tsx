@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 
 import { Form }                         from 'antd'
 import { InternalNamePath, StoreValue } from 'antd/lib/form/interface'
+import { isEqual }                      from 'lodash'
 import { FormChangeInfo }               from 'rc-field-form/es/FormContext'
 import { useIntl }                      from 'react-intl'
 
@@ -10,7 +11,11 @@ import { useUpdatePortConfigMutation }                                          
 import { EdgeIpModeEnum, EdgePort, EdgePortTypeEnum, serverIpAddressRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }                                                 from '@acx-ui/react-router-dom'
 
+
+import { EdgeEditContext } from '../..'
+
 import { EdgePortWithStatus, lanPortsubnetValidator, PortConfigForm } from './PortConfigForm'
+
 
 interface PortsGeneralProps {
   data: EdgePortWithStatus[]
@@ -26,36 +31,36 @@ const PortsGeneral = (props: PortsGeneralProps) => {
   const params = useParams()
   const navigate = useNavigate()
   const linkToEdgeList = useTenantLink('/devices/edge/list')
-  const linkToOverview = useTenantLink(`/devices/edge/${params.serialNumber}/edge-details/overview`)
-  const [tabDetails, setTabDetails] = useState<ContentSwitcherProps['tabDetails']>([])
   const [currentTab, setCurrentTab] = useState<string>('0')
   const formRef = useRef<StepsFormInstance<PortConfigFormType>>()
   const [updatePortConfig, { isLoading: isPortConfigUpdating }] = useUpdatePortConfigMutation()
+  const editEdgeContext = useContext(EdgeEditContext)
 
   useEffect(() => {
-    if(data) {
-      let tabData = [] as ContentSwitcherProps['tabDetails']
-      let formData = {} as PortConfigFormType
-      data.forEach((item, index) => {
-        tabData.push({
-          label: $t({ defaultMessage: 'Port {index}' }, { index: index + 1 }),
-          value: `${index}`,
-          children: <Form.List name={`port_${index}`}>
-            {() => ([<PortConfigForm key={index} index={index} />])}
-          </Form.List>
-        })
-        formData[`port_${index}`] = item
-      })
-      setTabDetails(tabData)
-      formRef.current?.setFieldsValue(formData)
-    }
-  }, [data, $t])
+    editEdgeContext.setActiveSubTab({
+      key: 'ports-general',
+      title: $t({ defaultMessage: 'Ports General' })
+    })
+  }, [])
+
+  let tabData = [] as ContentSwitcherProps['tabDetails']
+  let formData = {} as PortConfigFormType
+  data.forEach((item, index) => {
+    tabData.push({
+      label: $t({ defaultMessage: 'Port {index}' }, { index: index + 1 }),
+      value: `${index}`,
+      children: <Form.List initialValue={[item]} name={`port_${index}`}>
+        {() => ([<PortConfigForm key={index} index={index} />])}
+      </Form.List>
+    })
+    formData[`port_${index}`] = item
+  })
 
   const handleTabChange = (value: string) => {
     setCurrentTab(value)
   }
 
-  const handleFormChange = (name: string, formInfo: FormChangeInfo) => {
+  const handleFormChange = async (name: string, formInfo: FormChangeInfo) => {
     const changedField = formInfo.changedFields[0]
     if(changedField) {
       const changedNamePath = changedField.name as InternalNamePath
@@ -65,6 +70,14 @@ const PortsGeneral = (props: PortsGeneralProps) => {
       if (changedNamePath.includes('portType')) {
         handlePortTypeChange(changedNamePath, changedValue, index)
       }
+      const formData = Object.values(formRef.current?.getFieldsValue(true))
+      const errorTab = await validateData(formData as EdgePort[])
+      editEdgeContext.setFormControl({
+        ...editEdgeContext.formControl,
+        isDirty: !isEqual(data, formData),
+        hasError: errorTab > -1,
+        applyFn: () => handleFinish()
+      })
     }
   }
 
@@ -138,7 +151,6 @@ const PortsGeneral = (props: PortsGeneralProps) => {
 
     try {
       await updatePortConfig({ params: params, payload: { ports: formData } }).unwrap()
-      navigate(linkToOverview)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -157,9 +169,9 @@ const PortsGeneral = (props: PortsGeneralProps) => {
           onFormChange={handleFormChange}
           buttonLabel={{ submit: $t({ defaultMessage: 'Apply Ports General' }) }}
         >
-          <StepsForm.StepForm>
+          <StepsForm.StepForm initialValues={formData}>
             <ContentSwitcher
-              tabDetails={tabDetails}
+              tabDetails={tabData}
               defaultValue='0'
               value={currentTab}
               onChange={handleTabChange}
