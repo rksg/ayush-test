@@ -378,6 +378,14 @@ export const validationMessages = {
   subnetOverlapping: defineMessage({
     defaultMessage: 'The ports have overlapping subnets',
     description: 'Validation - subnet range'
+  }),
+  tagMaxLengthInvalid: defineMessage({
+    defaultMessage: 'No more than 24 Tags are allowed',
+    description: 'Validation - max tags'
+  }),
+  tagInvalid: defineMessage({
+    defaultMessage: 'Tag is invalid',
+    description: 'Validation - tags'
   })
 }
 

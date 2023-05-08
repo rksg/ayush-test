@@ -51,12 +51,11 @@ export const transformToApplicationRule = (
 
       if (rule.portMapping === ApplicationPortMappingType.IP_WITH_PORT
         && rule.destinationIp
-        && rule.protocol
         && rule.netmask) {
         userDefined.netmask = rule.netmask
-        userDefined.protocol = rule.protocol
       }
 
+      userDefined.protocol = rule.protocol!
       userDefined.destinationPort = rule.destinationPort!
       userDefined.destinationIp = rule.destinationIp!
     }

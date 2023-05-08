@@ -180,5 +180,19 @@ export const templateList = {
   ]
 }
 
+export const attributeGroup = {
+  id: '876fac8f-686a-41f0-a7c1-2d4d7107e652',
+  name: 'rag9',
+  description: 'rag9',
+  attributeAssignments: [
+    {
+      attributeName: 'UKERNA-GSS-Acceptor-Host-Name',
+      operator: 'ADD',
+      attributeValue: '121212',
+      dataType: 'STRING'
+    }
+  ]
+}
+
 
 

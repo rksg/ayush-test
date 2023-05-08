@@ -182,7 +182,7 @@ export function MspCustomers () {
       'creationDate',
       'expirationDate',
       'wifiLicense',
-      'switchLicens',
+      'switchLicense',
       'streetAddress'
     ],
     searchTargetFields: ['name']
@@ -208,7 +208,7 @@ export function MspCustomers () {
       'creationDate',
       'expirationDate',
       'wifiLicense',
-      'switchLicens',
+      'switchLicense',
       'streetAddress'
     ],
     searchTargetFields: ['name']
@@ -229,7 +229,7 @@ export function MspCustomers () {
       'creationDate',
       'expirationDate',
       'wifiLicense',
-      'switchLicens',
+      'switchLicense',
       'streetAddress'
     ],
     searchTargetFields: ['name'],
@@ -349,8 +349,8 @@ export function MspCustomers () {
     }]),
     {
       title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
-      dataIndex: 'wifiLicenses',
-      key: 'wifiLicenses',
+      dataIndex: 'wifiLicense',
+      key: 'wifiLicense',
       align: 'center',
       sorter: true,
       render: function (data, row) {
@@ -369,9 +369,9 @@ export function MspCustomers () {
     },
     {
       title: $t({ defaultMessage: 'Switch Licenses' }),
-      dataIndex: 'switchLicens',
+      dataIndex: 'switchLicense',
       align: 'center',
-      key: 'switchLicens',
+      key: 'switchLicense',
       sorter: true,
       render: function (data, row) {
         return transformSwitchEntitlement(row)
