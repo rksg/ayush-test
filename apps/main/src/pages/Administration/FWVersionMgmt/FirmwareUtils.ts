@@ -13,6 +13,7 @@ import {
   EdgeFirmwareVersion,
   LatestEdgeFirmwareVersion
 } from '@acx-ui/rc/utils'
+import _ from 'lodash'
 
 export const expirationTimeUnits: Record<string, string> = {
   HOURS_AFTER_TIME: 'Hours',
@@ -115,7 +116,7 @@ export const getVersionLabel = (version: FirmwareVersion | EdgeFirmwareVersion):
 }
 
 export const getSwitchVersionLabel = (version: FirmwareVersion): string => {
-  const versionName = version?.name
+  const versionName = parseSwitchVersion(version?.name)
   const versionType = transform(version?.category)
 
   return `${versionName} (${versionType})`
@@ -204,9 +205,17 @@ export const isSwitchNextScheduleTooltipDisabled = (venue: FirmwareSwitchVenue) 
 
 export const getSwitchNextScheduleTplTooltip = (venue: FirmwareSwitchVenue): string | undefined => {
   if (venue.nextSchedule) {
-    // eslint-disable-next-line max-len
-    return venue.nextSchedule.version?.name
+    const versionName = venue.nextSchedule.version?.name
+    return versionName ? parseSwitchVersion(versionName) : versionName
   }
   return ''
+}
+
+export const parseSwitchVersion = (version: string) => {
+  const defaultVersion = ['09010f_b19', '09010e_b392']
+  if (defaultVersion.includes(version)) {
+    return version.split('_')[0]
+  }
+  return version
 }
 
