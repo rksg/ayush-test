@@ -16,7 +16,8 @@ import {
   EditOutlinedIcon,
   EditOutlinedDisabledIcon
 } from '@acx-ui/icons'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { TenantLink, useParams }   from '@acx-ui/react-router-dom'
+import { TABLE_DEFAULT_PAGE_SIZE } from '@acx-ui/utils'
 
 import { zoomStatsThresholds }                                                                        from '../VideoCallQoe/constants'
 import { useSeachClientsQuery, useUpdateCallQoeParticipantMutation, useVideoCallQoeTestDetailsQuery } from '../VideoCallQoe/services'
@@ -300,6 +301,7 @@ export function VideoCallQoeDetails (){
       await updateParticipant({ participantId, macAddr: selectedMac }).unwrap()
       queryResults.refetch()
       setIsDrawerOpen(false)
+      setSearch('')
     }
   }
   return (
@@ -396,23 +398,11 @@ export function VideoCallQoeDetails (){
                     }
                   }
                 ]}
-                // dataSource={[
-                //   {
-                //     mac: 'A8:64:F1:1A:D0:33',
-                //     username: 'user1',
-                //     hostname: 'host1'
-                //   },
-                //   {
-                //     mac: 'F0:B3:EC:2A:A8:05',
-                //     username: 'user2',
-                //     hostname: 'host2'
-                //   }
-                // ]}
-                // pagination={{
-                //   pageSize: 5,
-                //   defaultPageSize: 5
-                // }}
                 dataSource={searchQueryResults.data}
+                pagination={{
+                  pageSize: TABLE_DEFAULT_PAGE_SIZE,
+                  defaultPageSize: TABLE_DEFAULT_PAGE_SIZE
+                }}
               />
             </Loader>
           </Drawer>
