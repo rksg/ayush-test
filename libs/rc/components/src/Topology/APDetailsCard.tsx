@@ -1,13 +1,17 @@
 import { Badge, Button, Divider } from 'antd'
 import { useIntl }                from 'react-intl'
 
+import { IncidentsBySeverityData, useIncidentsBySeverityQuery }                                     from '@acx-ui/analytics/components'
+import { AnalyticsFilter }                                                                          from '@acx-ui/analytics/utils'
 import { Card, Descriptions, Loader, Subtitle }                                                     from '@acx-ui/components'
 import { DateFormatEnum, formatter }                                                                from '@acx-ui/formatter'
 import { ApDeviceStatusEnum, APMeshRole, APView, ApViewModel, SwitchStatusEnum, transformApStatus } from '@acx-ui/rc/utils'
-import { noDataDisplay }                                                                            from '@acx-ui/utils'
+import { noDataDisplay, useDateFilter }                                                             from '@acx-ui/utils'
 
+import IncidentStackedBar              from './IncidentStackedBar'
 import * as UI                         from './styledComponents'
 import { getDeviceColor, getMeshRole } from './utils'
+
 
 export function APDetailsCard (props: {
     apDetail: ApViewModel,
@@ -15,6 +19,22 @@ export function APDetailsCard (props: {
   }) {
   const { apDetail, isLoading } = props
   const { $t } = useIntl()
+
+  const { dateFilter } = useDateFilter()
+
+  const filters = {
+    ...dateFilter,
+    path: [{ type: 'zone', name: apDetail?.venueId },
+      { type: 'AP', name: apDetail?.apMac as string }]
+  } as AnalyticsFilter
+
+  const incidentData = useIncidentsBySeverityQuery(filters, {
+    selectFromResult: ({ data, ...rest }) => ({
+      data: { ...data } as IncidentsBySeverityData,
+      ...rest
+    }),
+    skip: !apDetail?.venueId || !apDetail?.apMac
+  })
 
   return <Card
     type='no-border'
@@ -34,7 +54,7 @@ export function APDetailsCard (props: {
     <Loader states={[
       { isLoading }
     ]}>
-      <Descriptions labelWidthPercent={40}>
+      <Descriptions labelWidthPercent={50} contentStyle={{ alignItems: 'center' }}>
         {/* model  */}
         <Descriptions.Item
           label={$t({ defaultMessage: 'AP Model' })}
@@ -62,6 +82,23 @@ export function APDetailsCard (props: {
                 APView.AP_OVERVIEW_PAGE).message} // passing AP_OVERVIEW_PAGE to get single AP status message
             />
           } />
+
+        {/* Incidents */}
+        <Descriptions.Item
+          label={$t({ defaultMessage: 'Incidents (Last 24 hrs)' })}
+          contentStyle={{
+            alignSelf: 'center',
+            display: 'inline-flex'
+          }}
+          children={
+            incidentData?.data &&
+            <IncidentStackedBar
+              incidentData={incidentData?.data}
+              isLoading={incidentData?.isLoading}
+              category='AP Incidents'
+            />
+          }
+        />
 
         {/* Health  */}
         <Descriptions.Item
@@ -161,7 +198,7 @@ export function APDetailsCard (props: {
 
       </Descriptions>
       <Divider />
-      <Descriptions labelWidthPercent={40}>
+      <Descriptions labelWidthPercent={50}>
         <Descriptions.Item
           label={$t({ defaultMessage: 'Mesh Role' })}
           children={

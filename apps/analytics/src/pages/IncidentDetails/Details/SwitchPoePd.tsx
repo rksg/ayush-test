@@ -11,7 +11,8 @@ import { PoePdTable }                     from '../Charts/PoePdTable'
 import { IncidentAttributes, Attributes } from '../IncidentAttributes'
 import { Insights }                       from '../Insights'
 
-import * as UI from './styledComponents'
+import MuteIncident from './MuteIncident'
+import * as UI      from './styledComponents'
 
 export const SwitchPoePd = (incident: Incident) => {
   const { $t } = useIntl()
@@ -34,6 +35,7 @@ export const SwitchPoePd = (incident: Incident) => {
           { text: $t({ defaultMessage: 'Incidents' }), link: '/analytics/incidents' }
         ]}
         subTitle={shortDescription(incident)}
+        extra={[<MuteIncident incident={incident} />]}
       />
       <GridRow>
         <GridCol col={{ span: 4 }}>
