@@ -114,6 +114,7 @@ export const SwitchDetailsDrawer = (props: DrawerProps) => {
                 children={
                   <Select
                     defaultValue={0}
+                    getPopupContainer={trigger => trigger.parentNode as HTMLElement}
                     onChange={event => parserUnitDetialsData(event)}
                     options={switchDetail?.unitDetails?.map((unit, index) => {
                       const stackRole = unit.unitStatus ?
