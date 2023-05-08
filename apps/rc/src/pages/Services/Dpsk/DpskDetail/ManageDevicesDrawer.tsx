@@ -149,6 +149,10 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
 
       if (!addAnother) {
         setModalVisible(false)
+      } else {
+        if (devicesData &&
+          passphraseInfo.numberOfDevices! - 1 === devicesData.length + 1
+        ) setAddAnother(false)
       }
       form.resetFields()
     } catch (error) {

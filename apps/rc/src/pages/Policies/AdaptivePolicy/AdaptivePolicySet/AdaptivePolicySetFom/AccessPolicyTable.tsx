@@ -20,7 +20,6 @@ import {
 import { TenantLink }     from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
-import { AdaptivePolicyFormDrawer }     from './AdaptivePolicyFormDrawer'
 import { AdaptivePoliciesSelectDrawer } from './AdaptivePolicySelectDrawer'
 
 type AccessPolicyTableProps = {
@@ -39,7 +38,6 @@ const AccessPolicyTable = (props: AccessPolicyTableProps) => {
   const [templateIdMap, setTemplateIdMap] = useState(new Map())
   const [policySetPoliciesMap, setPolicySetPoliciesMap] = useState(new Map())
 
-  const [adaptivePolicyDrawerVisible, setAdaptivePolicyDrawerVisible] = useState(false)
   // eslint-disable-next-line max-len
   const [adaptivePoliciesSelectDrawerVisible, setAdaptivePoliciesSelectDrawerVisible] = useState(false)
 
@@ -241,13 +239,8 @@ const AccessPolicyTable = (props: AccessPolicyTableProps) => {
       <AdaptivePoliciesSelectDrawer
         visible={adaptivePoliciesSelectDrawerVisible}
         setVisible={setAdaptivePoliciesSelectDrawerVisible}
-        setAdaptivePolicyDrawerVisible={setAdaptivePolicyDrawerVisible}
         accessPolicies={accessPolicies}
         setAccessPolicies={setAccessPolicies}/>
-      <AdaptivePolicyFormDrawer
-        visible={adaptivePolicyDrawerVisible}
-        setVisible={setAdaptivePolicyDrawerVisible}
-      />
     </Loader>
   )
 }

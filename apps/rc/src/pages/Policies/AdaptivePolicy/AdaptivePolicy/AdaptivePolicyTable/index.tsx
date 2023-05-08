@@ -158,6 +158,12 @@ export default function AdaptivePolicyTable () {
   {
     label: $t({ defaultMessage: 'Delete' }),
     disabled: (([selectedItem]) => selectedItem ? checkDelete(selectedItem.id) : false),
+    tooltip: (([selectedItem]) =>
+      selectedItem ?
+        checkDelete(selectedItem.id) ?
+        // eslint-disable-next-line max-len
+          $t({ defaultMessage: 'This policy is in use by one or more Adaptive Policy Sets.' }) : undefined : undefined
+    ),
     onClick: ([{ name, id, policyType }], clearSelection) => {
       showActionModal({
         type: 'confirm',
