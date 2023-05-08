@@ -1,7 +1,8 @@
 import '@testing-library/jest-dom'
 
-import { SwitchViewModel } from '@acx-ui/rc/utils'
-import { render }          from '@acx-ui/test-utils'
+import { SwitchViewModel }          from '@acx-ui/rc/utils'
+import { dataApiURL, Provider }     from '@acx-ui/store'
+import { mockGraphqlQuery, render } from '@acx-ui/test-utils'
 
 import { SwitchDetailsCard } from './SwitchDetailsCard'
 
@@ -68,13 +69,17 @@ const switchDetail = {
   numOfPorts: 16
 }
 
+const sample = { P1: 1, P2: 2, P3: 3, P4: 4 }
 
 describe('Topology Switch Card', () => {
   it('should render orrectly', async () => {
-    const { asFragment } = render(<SwitchDetailsCard
+    mockGraphqlQuery(dataApiURL, 'IncidentsBySeverityWidget', {
+      data: { network: { hierarchyNode: { ...sample } } }
+    })
+    const { asFragment } = render(<Provider><SwitchDetailsCard
       switchDetail={switchDetail as SwitchViewModel}
       isLoading={false}
-    />)
+    /></Provider>, { route: {} })
 
     expect(asFragment()).toMatchSnapshot()
   })

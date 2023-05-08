@@ -23,6 +23,7 @@ export function ProfilesTab () {
     key: 'name',
     title: $t({ defaultMessage: 'Profile Name' }),
     dataIndex: 'name',
+    defaultSortOrder: 'ascend',
     sorter: true
   },{
     key: 'profileType',
