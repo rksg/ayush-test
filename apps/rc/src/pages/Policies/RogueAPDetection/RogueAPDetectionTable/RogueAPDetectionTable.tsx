@@ -4,6 +4,7 @@ import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
+import { SimpleListTooltip }                                              from '@acx-ui/rc/components'
 import {
   useDelRoguePoliciesMutation,
   useDelRoguePolicyMutation,
@@ -262,7 +263,13 @@ function useColumns (venueIds: string[]) {
       filterable: venueFilterOptions,
       align: 'center',
       sorter: true,
-      render: (data, row) => row.venueIds.length
+      render: (data, row) => {
+        if (!row.venueIds || row.venueIds.length === 0) return 0
+
+        // eslint-disable-next-line max-len
+        const tooltipItems = venueFilterOptions.filter(v => row.venueIds!.includes(v.key)).map(v => v.value)
+        return <SimpleListTooltip items={tooltipItems} displayText={row.venueIds.length} />
+      }
     }
   ]
 
