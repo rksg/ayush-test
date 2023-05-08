@@ -64,7 +64,6 @@ export function VideoCallQoeDetails (){
     })
   }) })
 
-  console.log('#### searchQueryResults:', searchQueryResults.data)
 
 
   const columnHeaders: TableProps<Participants>['columns'] = [
@@ -346,10 +345,7 @@ export function VideoCallQoeDetails (){
             width={400}
             visible={isDrawerOpen}
             title={$t({ defaultMessage: 'Select Client MAC' })}
-            onClose={()=>{
-              setIsDrawerOpen(false)
-              setSearch('')
-            }}
+            onClose={onCancelClientMac}
             footer={<Drawer.FormFooter showAddAnother={false}
               buttonLabel={({
                 save: $t({ defaultMessage: 'Select' })
