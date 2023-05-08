@@ -6,8 +6,8 @@ import { useIntl }       from 'react-intl'
 
 import { dataApiSearch, videoCallQoeApi } from '@acx-ui/store'
 
-import { messageMapping }                               from './contents'
-import { DetailedResponse, Response, VideoCallQoeTest } from './types'
+import { messageMapping }                                                                       from './contents'
+import { Client, DetailedResponse, RequestPayload, Response, SearchResponse, VideoCallQoeTest } from './types'
 
 export const api = videoCallQoeApi.injectEndpoints({
   endpoints: (build) => ({
@@ -197,23 +197,6 @@ export function useDuplicateNameValidator () {
     throw new Error($t(messageMapping.DUPLICATE_NAME_NOT_ALLOWED))
   }, [$t, submit])
   return validator
-}
-
-export interface Client {
-  hostname: string
-  username: string
-  mac: string
-  ipAddress: string
-}
-export interface RequestPayload {
-  start: string
-  end: string
-  query: string
-  limit: number
-}
-
-interface SearchResponse <T> {
-  search: T
 }
 
 export const clientSearchApi = dataApiSearch.injectEndpoints({

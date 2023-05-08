@@ -161,7 +161,6 @@ describe('videoCallQoeTestDetails', () => {
     expect(error).not.toBe(undefined)
   })
 
-
   it('search api should return the data', async () => {
     mockGraphqlQuery(dataApiSearchURL, 'Search', {
       data: searchClientsFixture

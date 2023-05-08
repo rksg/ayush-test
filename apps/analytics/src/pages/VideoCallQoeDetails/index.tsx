@@ -18,9 +18,9 @@ import {
 } from '@acx-ui/icons'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
-import { zoomStatsThresholds }                                                                                from '../VideoCallQoe/constants'
-import { Client, useSeachClientsQuery, useUpdateCallQoeParticipantMutation, useVideoCallQoeTestDetailsQuery } from '../VideoCallQoe/services'
-import { DetailedResponse, Participants, WifiMetrics }                                                        from '../VideoCallQoe/types'
+import { zoomStatsThresholds }                                                                        from '../VideoCallQoe/constants'
+import { useSeachClientsQuery, useUpdateCallQoeParticipantMutation, useVideoCallQoeTestDetailsQuery } from '../VideoCallQoe/services'
+import { DetailedResponse, Participants, WifiMetrics, Client }                                        from '../VideoCallQoe/types'
 
 import { getConnectionQuality, getConnectionQualityTooltip } from './helper'
 import * as UI                                               from './styledComponents'

@@ -1771,7 +1771,6 @@ export const getAllCallQoeTestsWithNotStarted = {
   ]
 }
 
-
 export const searchClientsFixture = {
   search: {
     clients: [
