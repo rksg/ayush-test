@@ -37,7 +37,7 @@ const messages = {
 }
 
 describe('loadLocale', () => {
-  it.skip('loads locale translation json of correct language', async () => {
+  it('loads locale translation json of correct language', async () => {
     mockServer.use(
       rest.get('/locales/compiled/:locale.json', (req, res, ctx) => {
         const { locale } = req.params as { locale: keyof typeof messages }
@@ -184,7 +184,7 @@ describe('loadLocale', () => {
 })
 
 describe('LocaleProvider', () => {
-  const url = 'https://storage.googleapis.com/ruckus-web-1/locales/compiled/:locale.json'
+  const url = '/locales/compiled/:locale.json'
   beforeEach(() => {
     mockServer.use(
       rest.get(url, (req, res, ctx) => {
@@ -194,7 +194,7 @@ describe('LocaleProvider', () => {
     )
   })
 
-  it.skip('default to en-US', async () => {
+  it('default to en-US', async () => {
     render(
       <LocaleProvider>
         <LocaleContext.Consumer>
@@ -206,7 +206,7 @@ describe('LocaleProvider', () => {
     const target = await waitFor(() => screen.findByText('Language'))
     expect(target).toBeVisible()
   })
-  it.skip('loads other locale', async () => {
+  it('loads other locale', async () => {
     render(
       <LocaleProvider lang='de-DE'>
         <LocaleContext.Consumer>
@@ -219,7 +219,7 @@ describe('LocaleProvider', () => {
     expect(target).toBeVisible()
   })
 
-  it.skip('supports changing locale', async () => {
+  it('supports changing locale', async () => {
     render(
       <LocaleProvider lang='de-DE'>
         <LocaleContext.Consumer>
@@ -240,7 +240,7 @@ describe('LocaleProvider', () => {
     await waitFor(() => expect(target).toHaveTextContent('Language'))
   })
 
-  it.skip('skip render LocaleProvider when already in LocaleContext', async () => {
+  it('skip render LocaleProvider when already in LocaleContext', async () => {
     render(
       <LocaleProvider lang='de-DE'>
         <LocaleProvider lang='en-US'>
@@ -257,7 +257,7 @@ describe('LocaleProvider', () => {
 })
 
 describe('useLocaleContext', () => {
-  it.skip('returns locale', async () => {
+  it('returns locale', async () => {
     const TestUseLocaleContext = () => {
       const locale = useLocaleContext()
       return <div>{locale.messages?.lang}</div>

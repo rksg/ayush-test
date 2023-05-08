@@ -2,7 +2,7 @@ import { createContext, ReactElement, useContext, useEffect, useMemo, useState }
 
 import { Locale } from 'antd/lib/locale-provider'
 import { merge }  from 'lodash'
-
+import { get }                               from '@acx-ui/config'
 import { setUpIntl } from './intlUtil'
 
 type Message = string | NestedMessages
@@ -26,6 +26,7 @@ function flattenMessages (nestedMessages: NestedMessages, prefix = ''): Record<s
 }
 
 async function localePath (locale: string) {
+  const gcs = get('STATIC_ASSETS')
   const myHeaders = new Headers()
   myHeaders.append('origin', 'window.origin')
   const requestOptions = {
@@ -33,7 +34,7 @@ async function localePath (locale: string) {
     headers: myHeaders
   }
 
-  const url = `https://storage.googleapis.com/ruckus-web-1/locales/compiled/${locale}.json`
+  const url = `${gcs}/locales/compiled/${locale}.json`
   const response = await fetch(url, requestOptions )
   if (!response.ok) {
     throw new Error(`Error! status: ${response.status}`)
