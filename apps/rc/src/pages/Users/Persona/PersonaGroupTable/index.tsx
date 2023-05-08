@@ -66,12 +66,13 @@ function useColumns (
       key: 'description',
       title: $t({ defaultMessage: 'Description' }),
       dataIndex: 'description',
-      sorter: false
+      sorter: true
     },
     {
       key: 'propertyId',
       title: $t({ defaultMessage: 'Venue' }),
       dataIndex: 'propertyId',
+      sorter: true,
       render: (_, row) =>
         <VenueLink
           // FIXME: After the property id does not present in UUID format, I will remove .replace()

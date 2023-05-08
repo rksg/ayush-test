@@ -9,8 +9,7 @@ import {
 import { useIsTierAllowed }                  from '@acx-ui/feature-toggle'
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
-import { RolesEnum }                         from '@acx-ui/types'
-import { hasRoles }                          from '@acx-ui/user'
+import { hasAccess }                         from '@acx-ui/user'
 
 import IncidentDetailsPage                                from './pages/IncidentDetails'
 import NetworkHealthDetails                               from './pages/NetworkHealth/NetworkHealthDetails'
@@ -18,16 +17,18 @@ import NetworkHealthForm                                  from './pages/NetworkH
 import { NetworkHealthSpecGuard, NetworkHealthTestGuard } from './pages/NetworkHealth/NetworkHealthGuard'
 import NetworkHealthList                                  from './pages/NetworkHealth/NetworkHealthList'
 import VideoCallQoeListPage                               from './pages/VideoCallQoe'
+import { VideoCallQoeForm }                               from './pages/VideoCallQoe/VideoCallQoeForm/VideoCallQoeForm'
+import { VideoCallQoeDetails }                            from './pages/VideoCallQoeDetails'
 
 export default function AnalyticsRoutes () {
   const { $t } = useIntl()
   const canUseSV = useIsTierAllowed('ANLT-ADV')
 
   // eslint-disable-next-line react/jsx-no-useless-fragment
-  if (!hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])) return <React.Fragment />
+  if (!hasAccess()) return <React.Fragment />
 
   const routes = rootRoutes(
-    <Route path='t/:tenantId'>
+    <Route path=':tenantId/t'>
       <Route path='analytics' element={<TenantNavigate replace to='/analytics/incidents' />} />
       <Route path='analytics/incidents' element={<IncidentListPage />} />
       <Route path='analytics/incidents/tab/:activeTab' element={<IncidentListPage />} />
@@ -62,6 +63,8 @@ export default function AnalyticsRoutes () {
           </Route>
         </Route>
         <Route path='videoCallQoe' element={<VideoCallQoeListPage />} />
+        <Route path='videoCallQoe/:testId' element={<VideoCallQoeDetails/>} />
+        <Route path='videoCallQoe/add' element={<VideoCallQoeForm />} />
       </Route>}
     </Route>
   )

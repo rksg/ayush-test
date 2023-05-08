@@ -67,7 +67,7 @@ export function RadiusAttributeDrawer (props: RadiusAttributeDrawerProps) {
         $t({ defaultMessage: 'Add RADIUS Attribute' })}
       visible={visible}
       onClose={onClose}
-      children={<RadiusAttributeForm form={form}/>}
+      children={<RadiusAttributeForm form={form} editAttribute={editAttribute} isEdit={isEdit}/>}
       footer={footer}
       destroyOnClose={resetField}
       width={600}

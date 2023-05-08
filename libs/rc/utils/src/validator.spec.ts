@@ -21,7 +21,10 @@ import {
   specialCharactersRegExp,
   serialNumberRegExp,
   targetHostRegExp,
-  validateRecoveryPassphrasePart
+  validateRecoveryPassphrasePart,
+  validateVlanId,
+  ipv6RegExp,
+  validateTags
 } from './validator'
 
 describe('validator', () => {
@@ -117,6 +120,21 @@ describe('validator', () => {
     it('Should display error message if Vlan Member values incorrectly', async () => {
       const result1 = checkVlanMember('1-5000')
       await expect(result1).rejects.toEqual('This field is invalid')
+    })
+  })
+
+  describe('check Vlan ID', () => {
+    it('Should take care of Vlan ID with valid value', async () => {
+      const result = validateVlanId('100')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should take care of Vlan ID with invalid number', async () => {
+      const result = validateVlanId('4099')
+      await expect(result).rejects.toEqual('VLAN ID must be between 1 and 4094')
+    })
+    it('Should take care of Vlan ID with alphabet', async () => {
+      const result1 = validateVlanId('abc')
+      await expect(result1).rejects.toEqual('VLAN ID must be between 1 and 4094')
     })
   })
 
@@ -321,6 +339,34 @@ describe('validator', () => {
       const result1 = specialCharactersRegExp('test t@$t-t._t')
       await expect(result1).rejects.toEqual(
         'Special characters (other than space, $, -, . and _) are not allowed')
+    })
+  })
+
+  describe('ipv6RegExp', () => {
+    it('Should take care of IP value correctly', async () => {
+      const result = ipv6RegExp('2001:db8:3333:4444:5555:6666:7777:8888')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if IP value incorrectly', async () => {
+      const result1 = ipv6RegExp('1.1.1.255')
+      await expect(result1).rejects.toEqual('Please enter a valid IP address')
+    })
+  })
+
+
+  describe('validateTags', () => {
+    it('Should take care of tags value correctly', async () => {
+      const result = validateTags(['test'])
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if tags value incorrectly', async () => {
+      const result1 = validateTags(['1'])
+      await expect(result1).rejects.toEqual('Tag is invalid')
+    })
+    it('Should display error message if tags array more than 24 tags', async () => {
+      // eslint-disable-next-line max-len
+      const result1 = validateTags(['11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35'])
+      await expect(result1).rejects.toEqual('No more than 24 Tags are allowed')
     })
   })
 })

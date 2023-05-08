@@ -37,7 +37,7 @@ import {
   PdfGeneratorService,
   Guest,
   LangCode,
-  excludeExclamationLeadTrailSpaceRegExp
+  trailingNorLeadingSpaces
 } from '@acx-ui/rc/utils'
 import { GuestErrorRes } from '@acx-ui/user'
 import { getIntl }       from '@acx-ui/utils'
@@ -344,7 +344,7 @@ export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boo
           { required: true },
           { min: 1 },
           { max: 256 },
-          { validator: (_, value) => excludeExclamationLeadTrailSpaceRegExp(value) }
+          { validator: (_, value) => trailingNorLeadingSpaces(value) }
         ]}
         children={<Input />}
       />
@@ -497,6 +497,7 @@ export function AddGuestDrawer (props: AddGuestProps) {
 
   const onClose = () => {
     setVisible(false)
+    form.resetFields()
   }
 
   const onSave = async () => {
@@ -520,6 +521,7 @@ export function AddGuestDrawer (props: AddGuestProps) {
         })
       setVisible(false)
     }
+    form.resetFields()
   }
 
 
@@ -544,6 +546,7 @@ export function AddGuestDrawer (props: AddGuestProps) {
       title={'Add Guest Pass'}
       visible={visible}
       onClose={onClose}
+      destroyOnClose={true}
       children={
         <Form layout='vertical' form={form} onFinish={onSave} data-testid='guest-form'>
           <GuestFields />

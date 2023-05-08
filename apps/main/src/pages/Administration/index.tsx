@@ -39,15 +39,15 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
       { hasAdministratorTab &&
       ( <Tabs.TabPane tab={$t({ defaultMessage: 'Administrators' })} key='administrators' /> )
       }
-      { isCloudMoteEnabled &&
-        <Tabs.TabPane tab={$t({ defaultMessage: 'ZD Migration' })} key='onpremMigration' />
-      }
       <Tabs.TabPane tab={$t({ defaultMessage: 'Notifications' })} key='notifications' />
       <Tabs.TabPane tab={$t({ defaultMessage: 'Subscriptions' })} key='subscriptions' />
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Firmware Version Management' })}
         key='fwVersionMgmt'
       />
+      { isCloudMoteEnabled &&
+        <Tabs.TabPane tab={$t({ defaultMessage: 'ZD Migration' })} key='onpremMigration' />
+      }
       { isRadiusClientEnabled &&
         <Tabs.TabPane tab={$t({ defaultMessage: 'Local RADIUS Server' })} key='localRadiusServer' />
       }
@@ -68,13 +68,7 @@ const tabPanes = {
 export default function Administration () {
   const { $t } = useIntl()
   const { tenantId, activeTab } = useParams()
-  const isEdgeEarlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
-  const isEnable = useIsSplitOn(Features.UNRELEASED) || isEdgeEarlyBetaEnabled
   const { data: userProfileData } = useUserProfileContext()
-
-  if (!isEnable) {
-    return <span>{ $t({ defaultMessage: 'Administration is not enabled' }) }</span>
-  }
 
   // support dashboard - his own account
   let isSupport: boolean = false

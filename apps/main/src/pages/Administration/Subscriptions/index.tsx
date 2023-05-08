@@ -11,6 +11,7 @@ import {
 import { get }                             from '@acx-ui/config'
 import { useIsSplitOn, Features }          from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }       from '@acx-ui/formatter'
+import { SpaceWrapper }                    from '@acx-ui/rc/components'
 import {
   useGetEntitlementsListQuery,
   useRefreshEntitlementsMutation,
@@ -58,11 +59,11 @@ const subscriptionTypeFilterOpts = ($t: IntlShape['$t']) => [
 const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
   { key: '', value: $t({ defaultMessage: 'Show All' }) },
   {
-    key: 'valid',
+    key: 'active',
     value: $t({ defaultMessage: 'Show Active' })
   },
   {
-    key: 'invalid',
+    key: 'expired',
     value: $t({ defaultMessage: 'Show Expired' })
   }
 ]
@@ -224,10 +225,10 @@ const SubscriptionTable = () => {
 
 const Subscriptions = () => {
   return (
-    <UI.FullWidthSpace size='large' direction='vertical'>
+    <SpaceWrapper fullWidth size='large' direction='vertical'>
       <SubscriptionHeader />
       <SubscriptionTable />
-    </UI.FullWidthSpace>
+    </SpaceWrapper>
   )
 }
 

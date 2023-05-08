@@ -3,10 +3,10 @@ import React from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Card, Table, TableProps }             from '@acx-ui/components'
-import { useVenueRoguePolicyQuery }            from '@acx-ui/rc/services'
-import { useTableQuery, VenueRoguePolicyType } from '@acx-ui/rc/utils'
-import { TenantLink }                          from '@acx-ui/react-router-dom'
+import { Card, Table, TableProps }                                    from '@acx-ui/components'
+import { useVenueRoguePolicyQuery }                                   from '@acx-ui/rc/services'
+import { defaultSort, sortProp, useTableQuery, VenueRoguePolicyType } from '@acx-ui/rc/utils'
+import { TenantLink }                                                 from '@acx-ui/react-router-dom'
 
 const defaultPayload = {
   url: '/api/viewmodel/tenant/{tenantId}/venue',
@@ -20,6 +20,9 @@ const defaultPayload = {
     'rogueDetection',
     'status'
   ],
+  search: {
+    searchTargetFields: ['name']
+  },
   sortField: 'name',
   sortOrder: 'ASC',
   page: 1,
@@ -49,7 +52,7 @@ const RogueAPDetectionVenueDetail = () => {
     {
       title: $t({ defaultMessage: 'Address' }),
       dataIndex: 'city',
-      sorter: true,
+      sorter: { compare: sortProp('country', defaultSort) },
       key: 'city',
       render: (data, row) => {
         let trimCity = row.city?.trim()
@@ -77,6 +80,9 @@ const RogueAPDetectionVenueDetail = () => {
       filters: {
         'rogueDetection.policyId': [params.policyId]
       }
+    },
+    search: {
+      searchTargetFields: ['name']
     }
   })
 

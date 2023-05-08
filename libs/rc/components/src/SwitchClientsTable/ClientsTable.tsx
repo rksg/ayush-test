@@ -14,7 +14,7 @@ import { useParams, TenantLink } from '@acx-ui/react-router-dom'
 export const defaultSwitchClientPayload = {
   searchString: '',
   searchTargetFields: ['clientName', 'clientMac', 'clientDesc', 'clientType',
-    'venueName', 'switchName', 'vlanName'],
+    'venueName', 'switchName', 'clientVlan', 'switchPort'],
   fields: ['switchId','clientVlan','venueId','switchSerialNumber','clientMac',
     'clientName','clientDesc','clientType','deviceType','switchPort','vlanName',
     'switchName', 'venueName' ,'cog','id','switchPortFormatted'],
@@ -53,6 +53,7 @@ export function ClientsTable (props: {
       key: 'clientName',
       title: intl.$t({ defaultMessage: 'Hostname' }),
       dataIndex: 'clientName',
+      defaultSortOrder: 'ascend',
       sorter: true,
       fixed: 'left',
       render: (data, row) => {

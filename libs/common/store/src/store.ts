@@ -12,6 +12,7 @@ import {
   baseEdgeDhcpApi as edgeDhcpApi,
   baseEventAlarmApi as eventAlarmApi,
   baseFirmwareApi as firmwareApi,
+  baseMigrationApi as migrationApi,
   baseLicenseApi as licenseApi,
   baseMspApi as mspApi,
   baseNetworkApi as networkApi,
@@ -27,7 +28,8 @@ import {
   networkHealthApi,
   userApi,
   baseMsgTemplateApi as msgTemplateApi,
-  videoCallQoeApi
+  videoCallQoeApi,
+  baseEdgeFirewallApi as edgeFirewallApi
 } from './baseApi'
 
 const isDev = process.env['NODE_ENV'] === 'development'
@@ -53,13 +55,15 @@ export const store = configureStore({
     [switchApi.reducerPath]: switchApi.reducer,
     [administrationApi.reducerPath]: administrationApi.reducer,
     [firmwareApi.reducerPath]: firmwareApi.reducer,
+    [migrationApi.reducerPath]: migrationApi.reducer,
     [edgeDhcpApi.reducerPath]: edgeDhcpApi.reducer,
     [personaApi.reducerPath]: personaApi.reducer,
     [networkHealthApi.reducerPath]: networkHealthApi.reducer,
     [nsgApi.reducerPath]: nsgApi.reducer,
     [tunnelProfileApi.reducerPath]: tunnelProfileApi.reducer,
     [msgTemplateApi.reducerPath]: msgTemplateApi.reducer,
-    [videoCallQoeApi.reducerPath]: videoCallQoeApi.reducer
+    [videoCallQoeApi.reducerPath]: videoCallQoeApi.reducer,
+    [edgeFirewallApi.reducerPath]: edgeFirewallApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -87,13 +91,15 @@ export const store = configureStore({
       switchApi.middleware,
       administrationApi.middleware,
       firmwareApi.middleware,
+      migrationApi.middleware,
       edgeDhcpApi.middleware,
       personaApi.middleware,
       networkHealthApi.middleware,
       nsgApi.middleware,
       tunnelProfileApi.middleware,
       msgTemplateApi.middleware,
-      videoCallQoeApi.middleware
+      videoCallQoeApi.middleware,
+      edgeFirewallApi.middleware
     ])
   },
 

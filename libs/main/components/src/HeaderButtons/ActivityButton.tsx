@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react'
 import { ClockCircleFilled }      from '@ant-design/icons'
 import { Select }                 from 'antd'
 import { SorterResult }           from 'antd/lib/table/interface'
-import moment                     from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { LayoutUI, Loader, Badge, StatusIcon }                                              from '@acx-ui/components'
@@ -12,12 +11,15 @@ import { TimelineDrawer }                                                       
 import { useActivitiesQuery }                                                               from '@acx-ui/rc/services'
 import { Activity, CommonUrlsInfo, useTableQuery, getActivityDescription, severityMapping } from '@acx-ui/rc/utils'
 import { useTenantLink, useNavigate }                                                       from '@acx-ui/react-router-dom'
+import { DateRange, DateRangeFilter, getDateRangeFilter }                                   from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
+type Payload = typeof defaultPayload
+
 const defaultPayload: {
   url: string
-  filters?: Record<string, string|[string]>
+  filters: { status?: string, dateFilter: DateRangeFilter }
   fields: string[]
 } = {
   url: CommonUrlsInfo.getActivityList.url,
@@ -30,19 +32,29 @@ const defaultPayload: {
     'descriptionTemplate',
     'descriptionData',
     'severity'
-  ]
+  ],
+  filters: {
+    dateFilter: getDateRangeFilter(DateRange.last7Days)
+  }
 }
 
-export default function ActivityButton () {
+interface ActivityButtonProps {
+  // used to determine whether to display, if it is false, activityButton would be displayed
+  isShown: boolean,
+  setIsShown: (b: boolean | null) => void
+}
+
+export default function ActivityButton (props: ActivityButtonProps) {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/timeline')
+  const { isShown, setIsShown } = props
   const [status, setStatus] = useState('all')
   const [detail, setDetail] = useState<Activity>()
   const [detailModal, setDetailModalOpen] = useState<boolean>()
   const [activityModal, setActivityModalOpen] = useState<boolean>()
 
-  const tableQuery = useTableQuery({
+  const tableQuery = useTableQuery<Activity>({
     useQuery: useActivitiesQuery,
     defaultPayload,
     sorter: {
@@ -59,12 +71,15 @@ export default function ActivityButton () {
     tableQuery.setPayload({
       ...tableQuery.payload,
       filters: {
-        fromTime: moment().subtract(7,'d').format(),
-        toTime: moment().format(),
+        ...tableQuery.payload.filters as Payload['filters'],
         ...(status === 'all' ? {} : { status: [status] })
       }
     })
   }, [status])
+
+  useEffect(() => {
+    setActivityModalOpen(isShown)
+  }, [isShown])
 
   const activityList = <>
     <UI.FilterRow>
@@ -176,6 +191,7 @@ export default function ActivityButton () {
       offset={[-3, 0]}
       children={<LayoutUI.ButtonSolid icon={<ClockCircleFilled />}
         onClick={()=>{
+          setIsShown(false)
           setActivityModalOpen(true)
         }}/>}
     />
@@ -196,7 +212,7 @@ export default function ActivityButton () {
       onClose={()=>setDetailModalOpen(false)}
       onBackClick={()=>setDetailModalOpen(false)}
       data={getDrawerData?.(detail!)}
-      timeLine={detail?.steps}
+      activity={detail}
     />}
   </>
 }

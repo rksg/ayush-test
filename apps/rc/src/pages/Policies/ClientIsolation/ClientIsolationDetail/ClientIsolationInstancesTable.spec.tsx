@@ -19,7 +19,7 @@ describe('ClientIsolationInstancesTable', () => {
     policyId: '4b76b1952c80401b8500b00d68106576'
   }
   // eslint-disable-next-line max-len
-  const detailPath = '/:tenantId/' + getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.DETAIL })
+  const detailPath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.DETAIL })
 
   it('should render the table view', async () => {
     mockServer.use(

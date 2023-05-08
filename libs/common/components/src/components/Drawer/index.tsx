@@ -36,14 +36,16 @@ const Header = (props: DrawerHeaderProps) => {
 }
 
 export const Drawer = (props: DrawerProps) => {
-  const { title, icon, subTitle, onBackClick, ...rest } = props
+  const { title, icon, subTitle, onBackClick, mask = false, ...rest } = props
   const headerProps = { title, icon, subTitle, onBackClick }
   return (
     <UI.Drawer
       {...rest}
       title={<Header {...headerProps}/>}
       placement='right'
-      mask={false}
+      mask={mask}
+      maskStyle={{ background: 'none' }}
+      maskClosable={mask}
       width={props.width || '336px'}
       closeIcon={<CloseSymbol />}
     />
@@ -54,7 +56,7 @@ interface FormFooterProps {
   showAddAnother?: boolean
   showSaveButton?: boolean
   onCancel: () => void
-  onSave: (checked: boolean) => Promise<void>
+  onSave?: (checked: boolean) => Promise<void>
   buttonLabel?: {
     addAnother?: string
     cancel?: string
@@ -93,7 +95,7 @@ const FormFooter = (props: FormFooterProps) => {
         <Button onClick={onCancel}>
           {buttonLabel.cancel}
         </Button>
-        {showSaveButton && <Button
+        {showSaveButton && onSave && <Button
           loading={loading}
           onClick={() => {
             setLoading(true)

@@ -12,6 +12,7 @@ export interface EdgeDhcpSetting {
     leaseTimeUnit?: LeaseTimeUnit;
     dhcpPools: EdgeDhcpPool[];
     hosts: EdgeDhcpHost[];
+    dhcpOptions: EdgeDhcpOption[];
     edgeIds: string[];
 }
 
@@ -30,6 +31,13 @@ export interface EdgeDhcpHost {
     hostName: string;
     mac: string;
     fixedAddress: string;
+}
+
+export interface EdgeDhcpOption {
+  id: string;
+  optionId: string;
+  optionName: string;
+  optionValue: string;
 }
 
 export interface DhcpPoolStats {

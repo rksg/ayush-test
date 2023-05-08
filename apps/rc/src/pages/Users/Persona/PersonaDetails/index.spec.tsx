@@ -103,7 +103,7 @@ describe('Persona Details', () => {
         route: {
           params,
           // eslint-disable-next-line max-len
-          path: '/:tenantId/users/persona-management/persona-group/:personaGroupId/persona/:personaId'
+          path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId/persona/:personaId'
         }
       }
     )
@@ -120,7 +120,7 @@ describe('Persona Details', () => {
         <PersonaDevicesTable persona={mockPersona} title={'Devices'} />
       </Provider>, {
         // eslint-disable-next-line max-len
-        route: { params, path: '/:tenantId/users/persona-management/persona-group/:personaGroupId/persona/:personaId' }
+        route: { params, path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId/persona/:personaId' }
       }
     )
     const addButton = await screen.findByRole('button', { name: /Add Device/i })
@@ -143,7 +143,7 @@ describe('Persona Details', () => {
         <PersonaDetails />
       </Provider>, {
         // eslint-disable-next-line max-len
-        route: { params, path: '/:tenantId/users/persona-management/persona-group/:personaGroupId/persona/:personaId' }
+        route: { params, path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId/persona/:personaId' }
       }
     )
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
@@ -176,7 +176,7 @@ describe('Persona Details', () => {
         <PersonaDevicesTable persona={mockPersona} title={'Devices'}/>
       </Provider>, {
         // eslint-disable-next-line max-len
-        route: { params, path: '/:tenantId/users/persona-management/persona-group/:personaGroupId/persona/:personaId' }
+        route: { params, path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId/persona/:personaId' }
       }
     )
 

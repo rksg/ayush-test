@@ -107,7 +107,11 @@ export function ApGroupForm () {
     }
 
     if (extraMemberList && defaultApGroupOption) {
-      setApsOption(defaultApGroupOption.concat(extraMemberList) as TransferItem[])
+      setApsOption(defaultApGroupOption.concat(extraMemberList)
+        .filter((option, ind) => ind ===
+          defaultApGroupOption.findIndex(elem => elem.name === option.name &&
+            elem.key === option.key)
+        ) as TransferItem[])
     } else {
       formRef.current?.validateFields(['name'])
       setApsOption(defaultApGroupOption as TransferItem[])
@@ -207,10 +211,7 @@ export function ApGroupForm () {
                 }]}
                 children={<Select
                   disabled={isEditMode}
-                  options={[
-                    { label: $t({ defaultMessage: 'Select venue...' }), value: null },
-                    ...venueOption
-                  ]}
+                  options={venueOption}
                   onChange={async (value) => await handleVenueChange(value)}
                 />}
               />
