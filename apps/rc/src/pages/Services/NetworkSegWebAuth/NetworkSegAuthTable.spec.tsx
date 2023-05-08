@@ -48,7 +48,7 @@ describe( 'NetworkSegAuthTable', () => {
     render(
       <Provider>
         <NetworkSegAuthTable />
-      </Provider>, { route: { params, path: '/:tenantId/services/webAuth/list' } }
+      </Provider>, { route: { params, path: '/:tenantId/t/services/webAuth/list' } }
     )
 
     const row = await screen.findByRole('row', { name: /Mock Template name/i })
@@ -61,7 +61,7 @@ describe( 'NetworkSegAuthTable', () => {
     render(
       <Provider>
         <NetworkSegAuthTable />
-      </Provider>, { route: { params, path: '/:tenantId/services/webAuth/list' } }
+      </Provider>, { route: { params, path: '/:tenantId/t/services/webAuth/list' } }
     )
     const row = await screen.findByRole('row', { name: /Mock Template name/i })
     await user.click(within(row).getByRole('radio'))
@@ -75,7 +75,7 @@ describe( 'NetworkSegAuthTable', () => {
     render(
       <Provider>
         <NetworkSegAuthTable />
-      </Provider>, { route: { params, path: '/:tenantId/services/webAuth/list' } }
+      </Provider>, { route: { params, path: '/:tenantId/t/services/webAuth/list' } }
     )
     const row = await screen.findByRole('row', { name: /Mock Template name/i })
     await user.click(within(row).getByRole('radio'))

@@ -58,7 +58,8 @@ export interface EvaluationRule {
   numberCriteria?: number,
   when?: string,
   startTime?: string,
-  endTime?: string
+  endTime?: string,
+  zoneOffset?: string
 }
 
 export enum RuleType {

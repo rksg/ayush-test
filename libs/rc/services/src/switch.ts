@@ -965,7 +965,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      keepUnusedDataFor: 0
     }),
     addCliTemplate: build.mutation<CliConfiguration, RequestPayload>({
       query: ({ params, payload }) => {

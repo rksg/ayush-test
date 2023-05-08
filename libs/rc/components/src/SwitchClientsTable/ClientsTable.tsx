@@ -53,6 +53,7 @@ export function ClientsTable (props: {
       key: 'clientName',
       title: intl.$t({ defaultMessage: 'Hostname' }),
       dataIndex: 'clientName',
+      defaultSortOrder: 'ascend',
       sorter: true,
       fixed: 'left',
       render: (data, row) => {

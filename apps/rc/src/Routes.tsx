@@ -106,6 +106,9 @@ import NetworkSegAuthTable        from './pages/Services/NetworkSegWebAuth/Netwo
 import PortalServiceDetail        from './pages/Services/Portal/PortalDetail'
 import PortalForm                 from './pages/Services/Portal/PortalForm/PortalForm'
 import PortalTable                from './pages/Services/Portal/PortalTable'
+import ResidentPortalDetail       from './pages/Services/ResidentPortal/ResidentPortalDetail/ResidentPortalDetail'
+import ResidentPortalForm         from './pages/Services/ResidentPortal/ResidentPortalForm/ResidentPortalForm'
+import ResidentPortalTable        from './pages/Services/ResidentPortal/ResidentPortalTable/ResidentPortalTable'
 import SelectServiceForm          from './pages/Services/SelectServiceForm'
 import ServiceCatalog             from './pages/Services/ServiceCatalog'
 import WifiCallingDetailView      from './pages/Services/WifiCalling/WifiCallingDetail/WifiCallingDetailView'
@@ -123,7 +126,7 @@ import GuestManagerPage           from './pages/Users/Wifi/GuestManagerPage'
 
 export default function RcRoutes () {
   const routes = rootRoutes(
-    <Route path='t/:tenantId'>
+    <Route path=':tenantId/t'>
       <Route path='devices/*' element={<DeviceRoutes />} />
       <Route path='networks/*' element={<NetworkRoutes />} />
       <Route path='services/*' element={<ServiceRoutes />} />
@@ -139,7 +142,7 @@ export default function RcRoutes () {
 
 function DeviceRoutes () {
   return rootRoutes(
-    <Route path='t/:tenantId'>
+    <Route path=':tenantId/t'>
       <Route path='devices' element={<TenantNavigate replace to='/devices/wifi' />} />
       <Route path='devices/wifi' element={<ApsTable />} />
       <Route path='devices/wifi/:action' element={<ApForm />} />
@@ -195,7 +198,7 @@ function DeviceRoutes () {
 
 function NetworkRoutes () {
   return rootRoutes(
-    <Route path='t/:tenantId'>
+    <Route path=':tenantId/t'>
       <Route path='networks' element={<TenantNavigate replace to='/networks/wireless' />} />
       <Route path='networks/wireless' element={<NetworksTable />} />
       <Route path='networks/wireless/add' element={<NetworkForm />} />
@@ -237,7 +240,7 @@ function NetworkRoutes () {
 
 function ServiceRoutes () {
   return rootRoutes(
-    <Route path='t/:tenantId'>
+    <Route path=':tenantId/t'>
       <Route path='services'
         element={<TenantNavigate replace to={getServiceListRoutePath(true)} />}
       />
@@ -383,6 +386,30 @@ function ServiceRoutes () {
         element={<EditDhcp />}
       />
       <Route
+        path={getServiceRoutePath({
+          type: ServiceType.RESIDENT_PORTAL,
+          oper: ServiceOperation.LIST })}
+        element={<ResidentPortalTable />}
+      />
+      <Route
+        path={getServiceRoutePath({
+          type: ServiceType.RESIDENT_PORTAL,
+          oper: ServiceOperation.DETAIL })}
+        element={<ResidentPortalDetail />}
+      />
+      <Route
+        path={getServiceRoutePath({
+          type: ServiceType.RESIDENT_PORTAL,
+          oper: ServiceOperation.CREATE })}
+        element={<ResidentPortalForm />}
+      />
+      <Route
+        path={getServiceRoutePath({
+          type: ServiceType.RESIDENT_PORTAL,
+          oper: ServiceOperation.EDIT })}
+        element={<ResidentPortalForm editMode={true} />}
+      />
+      <Route
         path={getServiceRoutePath({ type: ServiceType.EDGE_FIREWALL, oper: ServiceOperation.LIST })}
         element={<FirewallTable />}
       />
@@ -414,7 +441,7 @@ function PolicyRoutes () {
   const isAdaptivePolicyEnabled = useIsSplitOn(Features.POLICY_MANAGEMENT) && isAttributeGroupEnabled
 
   return rootRoutes(
-    <Route path='t/:tenantId'>
+    <Route path=':tenantId/t'>
       <Route path={getPolicyListRoutePath()} element={<MyPolicies />} />
       <Route path={getSelectPolicyRoutePath()} element={<SelectPolicyForm />} />
       <Route
@@ -651,7 +678,7 @@ function UserRoutes () {
   const isMacRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
 
   return rootRoutes(
-    <Route path='t/:tenantId'>
+    <Route path=':tenantId/t'>
       <Route path='users/guestsManager' element={<GuestManagerPage />} />
       <Route path='users' element={<TenantNavigate replace to='/users/wifi/clients' />} />
       <Route path='users/wifi' element={<TenantNavigate replace to='/users/wifi/clients' />} />
@@ -681,7 +708,7 @@ function UserRoutes () {
 
 function TimelineRoutes () {
   return rootRoutes(
-    <Route path='t/:tenantId'>
+    <Route path=':tenantId/t'>
       <Route path='timeline' element={<TenantNavigate replace to='/timeline/activities' />} />
       <Route path='timeline/:activeTab' element={<Timeline />} />
     </Route>

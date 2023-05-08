@@ -250,7 +250,7 @@ describe('Edit edge firewall service', () => {
 
     // edit acl rule
     const inboundRow = await body.findByRole('row', { name: /Inbound ACL/i })
-    await click(within(inboundRow).getByRole('checkbox'))
+    await click(within(inboundRow).getByRole('radio'))
     await click(body.getByRole('button', { name: 'Edit' }))
     const drawer = await screen.findByRole('dialog')
     expect(await screen.findByText('Stateful ACL Settings')).toBeVisible()

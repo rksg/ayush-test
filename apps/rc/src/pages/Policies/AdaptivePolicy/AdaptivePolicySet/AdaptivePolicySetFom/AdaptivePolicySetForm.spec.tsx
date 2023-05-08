@@ -8,8 +8,8 @@ import {
   RadiusAttributeGroupUrlsInfo,
   RulesManagementUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider }                                      from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, within } from '@acx-ui/test-utils'
+import { Provider }                                                                 from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import {
   adaptivePolicyList,
@@ -120,10 +120,14 @@ describe('AdaptivePolicySetForm', () => {
     await screen.findByRole('row', { name: new RegExp( '1 ' + adaptivePolicyList.content[0].name) })
 
     await userEvent.click(screen.getByText('Apply'))
+
+    const validating = await screen.findByRole('img', { name: 'loading' })
+    await waitForElementToBeRemoved(validating)
+
     await screen.findByText('Policy Set testPolicy was added')
   })
 
-  it.skip('should edit set successfully', async () => {
+  it('should edit set successfully', async () => {
     mockServer.use(
       rest.get(
         RulesManagementUrlsInfo.getPolicySet.url.split('?')[0],
@@ -160,14 +164,19 @@ describe('AdaptivePolicySetForm', () => {
 
     // eslint-disable-next-line max-len
     const row = await screen.findByRole('row', { name: new RegExp(adaptivePolicyList.content[1].name) })
-    fireEvent.click(within(row).getByRole('switch'))
+    await userEvent.click(within(row).getByRole('switch'))
 
     await userEvent.click(screen.getByText('Add'))
 
     // eslint-disable-next-line max-len
-    await screen.findByRole('row', { name: new RegExp( '1 ' + adaptivePolicyList.content[1].name) })
+    await screen.findByRole('row', { name: new RegExp( '1 ' + adaptivePolicyList.content[0].name) })
+    await screen.findByRole('row', { name: new RegExp( '2 ' + adaptivePolicyList.content[1].name) })
 
     await userEvent.click(screen.getByText('Apply'))
+
+    const validating = await screen.findByRole('img', { name: 'loading' })
+    await waitForElementToBeRemoved(validating)
+
     await screen.findByText('Policy Set aps1 was updated')
   })
 
