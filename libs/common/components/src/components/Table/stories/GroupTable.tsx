@@ -759,6 +759,7 @@ export const groupByColumns: TableProps<APExtendedGroupedResponse | APExtended>[
     dataIndex: 'IP',
     key: 'ip',
     sorter: true,
+    render: (dom) => dom
   },
   {
     title: 'MAC Addresses',
@@ -782,6 +783,7 @@ export const groupByColumns: TableProps<APExtendedGroupedResponse | APExtended>[
     key: 'clients',
     dataIndex: 'clients',
     sorter: true,
+    render: (dom) => dom
   },
   {
     title: 'AP Group',
@@ -843,211 +845,15 @@ export const groupByColumns: TableProps<APExtendedGroupedResponse | APExtended>[
   }
 ]
 
-const test = [
-  {
-    aps: [],
-    "deviceGroupId": "",
-    "deviceGroupName": "",
-    "deviceStatus": "",
-    "model": "R550",
-    "networks": {
-      "count": 0,
-      "names": []
-    },
-    "members": 2,
-    "incidents": 2,
-    "clients": 3,
-    "id": "154",
-    isGroup: true,
-    "children": [
-      {
-        "serialNumber": "302002015736",
-        "name": "ap1-parent",
-        "debug": true,
-        "model": "R550",
-        "fwVersion": "6.2.0.103.500",
-        "venueId": "4c778ed630394b76b17bce7fe230cf9f",
-        "venueName": "My-Venue",
-        "deviceStatus": "2_00_Operational",
-        "IP": "10.206.1.34",
-        "apMac": "34:20:E3:19:79:F0",
-        "apStatusData": {
-          "APRadio": [
-            {
-              "txPower": null,
-              "channel": 1,
-              "band": "2.4G",
-              "Rssi": null,
-              "radioId": 0
-            },
-            {
-              "txPower": null,
-              "channel": 77,
-              "band": "5G",
-              "Rssi": null,
-              "radioId": 1
-            }
-          ]
-        },
-        "meshRole": "DISABLED",
-        "deviceGroupId": "99227979648c421c93c15c586e6ed80b",
-        "clients": 2,
-        "tags": "tag2",
-        "deviceGroupName": "AP_GROUP",
-        "id": "152",
-        "children": [
-          {
-            "debug": true,
-            "serialNumber": "30200201573601",
-            "name": "test-1",
-            "model": "R550",
-            "fwVersion": "6.2.0.103.500",
-            "venueId": "4c778ed630394b76b17bce7fe230cf9f",
-            "venueName": "My-Venue",
-            "deviceStatus": "2_00_Operational",
-            "IP": "10.206.1.34",
-            "apMac": "34:20:E3:19:79:F0",
-            "apStatusData": {
-              "APRadio": [
-                {
-                  "txPower": null,
-                  "channel": 1,
-                  "band": "2.4G",
-                  "Rssi": null,
-                  "radioId": 0
-                },
-                {
-                  "txPower": null,
-                  "channel": 36,
-                  "band": "5G",
-                  "Rssi": null,
-                  "radioId": 1
-                }
-              ]
-            },
-            "meshRole": "DISABLED",
-            "deviceGroupId": "99227979648c421c93c15c586e6ed80b",
-            "clients": 2,
-            "tags": "tag2",
-            "deviceGroupName": "AP_GROUP",
-            "id": "153",
-          }
-        ]
-      },
-      {
-        "serialNumber": "302002015732",
-        "name": "ap-test-2",
-        "model": "R550",
-        "fwVersion": "6.2.0.103.500",
-        "venueId": "4c778ed630394b76b17bce7fe230cf9f",
-        "venueName": "My-Venue",
-        "deviceStatus": "2_00_Operational",
-        "IP": "10.206.1.34",
-        "apMac": "34:20:E3:19:79:F0",
-        "apStatusData": {
-          "APRadio": [
-            {
-              "txPower": null,
-              "channel": 1,
-              "band": "2.4G",
-              "Rssi": null,
-              "radioId": 0
-            },
-            {
-              "txPower": null,
-              "channel": 36,
-              "band": "5G",
-              "Rssi": null,
-              "radioId": 1
-            }
-          ]
-        },
-        "meshRole": "DISABLED",
-        "deviceGroupId": "99227979648c421c93c15c586e6ed80b",
-        "clients": 2,
-        "tags": "tag2",
-        "deviceGroupName": "AP_GROUP",
-        "id": "166"
-      },
-    ]
-  },
-  {
-    isGroup: true,
-    "deviceGroupId": "",
-    "deviceGroupName": "",
-    "deviceStatus": "",
-    "model": "",
-    "networks": {
-      "count": 0,
-      "names": []
-    },
-    "members": 1,
-    "incidents": 2,
-    "clients": 3,
-    "id": "156",
-    "children": [
-      {
-        "serialNumber": "302002015735",
-        "name": "ap2",
-        "model": " ",
-        "fwVersion": "6.2.0.103.500",
-        "venueId": "4c778ed630394b76b17bce7fe230cf9f",
-        "venueName": "My-Venue",
-        "deviceStatus": "2_00_Operational",
-        "IP": "10.206.1.34",
-        "apMac": "34:20:E3:19:79:00",
-        "apStatusData": {
-          "APRadio": [
-            {
-              "txPower": null,
-              "channel": 1,
-              "band": "2.4G",
-              "Rssi": null,
-              "radioId": 0
-            },
-            {
-              "txPower": null,
-              "channel": 36,
-              "band": "5G",
-              "Rssi": null,
-              "radioId": 1
-            }
-          ]
-        },
-        "meshRole": "DISABLED",
-        "deviceGroupId": "99227979648c421c93c15c586e6ed80b",
-        "clients": 2,
-        "tags": "tag1",
-        "deviceGroupName": "",
-        "id": "155"
-      }
-    ]
-  }
-]
-
 export function GroupTable (props: TableProps<APExtended | APExtendedGroupedResponse>) {
   const [ grouping, setGrouping ] = React.useState<string | undefined>('')
-  const sources: Record<string, any[]> = {
+  const sources: Record<string, APExtendedGroupedResponse[]> = {
     deviceGroupName: cleanResponse(apGroupResponse),
     deviceStatus: cleanResponse(deviceStatusResponse),
-    model: test //cleanResponse(modelResponse)
+    model: cleanResponse(modelResponse)
   }
   return <>
-    With groupby:
-    <br/>
-    (1) 2 levels (Like AP group by table)
-    <Table<APExtendedGroupedResponse | APExtended>
-      {...props}
-      columns={groupByColumns}
-      dataSource={sources[grouping || ''] || flatData.map((row, i) => ({ ...row, id: i }))}
-      rowKey='id' // need to set unique entry per record to ensure proper behaviour
-      indentSize={6}
-      columnEmptyText='-'
-      rowSelection={{ defaultSelectedRowKeys: [] }}
-      onFilterChange={(_filter, _search, groupBy) => setGrouping(groupBy)}
-    />
-    <br/>
-    (2) 3 levels (Like Switch group by table)
+    with groupby:
     <Table<APExtendedGroupedResponse | APExtended>
       {...props}
       columns={groupByColumns}
