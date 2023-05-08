@@ -12,7 +12,8 @@ import {
   getPolicyRoutePath,
   AAAViewModalType,
   AAAPurposeEnum,
-  AAA_LIMIT_NUMBER
+  AAA_LIMIT_NUMBER,
+  profileInUsedMessageForDelete
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                          from '@acx-ui/user'
@@ -36,9 +37,23 @@ export default function AAATable () {
     }
   })
 
+  const hasAppliedNetwork = (selectedRow?: AAAViewModalType): boolean => {
+    return !!selectedRow?.networkIds && selectedRow.networkIds.length > 0
+  }
+
+  const getDeleteButtonTooltip = (selectedRow: AAAViewModalType): string | undefined => {
+    if (hasAppliedNetwork(selectedRow)) {
+      return $t(profileInUsedMessageForDelete, { serviceName: $t({ defaultMessage: 'Network' }) })
+    }
+
+    return
+  }
+
   const rowActions: TableProps<AAAViewModalType>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
+      disabled: ([selectedRow]) => hasAppliedNetwork(selectedRow),
+      tooltip: ([selectedRow]) => getDeleteButtonTooltip(selectedRow),
       onClick: ([{ id, name }], clearSelection) => {
         showActionModal({
           type: 'confirm',

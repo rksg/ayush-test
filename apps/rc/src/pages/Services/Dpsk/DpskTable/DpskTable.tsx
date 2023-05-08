@@ -22,12 +22,12 @@ import {
   transformAdvancedDpskExpirationText,
   DpskDetailsTabKey,
   getServiceListRoutePath,
-  PassphraseFormatEnum
+  PassphraseFormatEnum,
+  profileInUsedMessageForDelete
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                               from '@acx-ui/user'
 
-import { serviceInUsedMessageTemplate }                  from '../contentsMap'
 import { displayDefaultAccess, displayDeviceCountLimit } from '../utils'
 
 const defaultPayload = {
@@ -56,14 +56,14 @@ export default function DpskTable () {
   const getDeleteButtonTooltip = (selectedRow: DpskSaveData): string | undefined => {
     const inUsedService: string[] = []
     if (hasAppliedPersona(selectedRow)) {
-      inUsedService.push('Persona')
+      inUsedService.push(intl.$t({ defaultMessage: 'Persona' }))
     }
     if (hasAppliedNetwork(selectedRow)) {
-      inUsedService.push('Network')
+      inUsedService.push(intl.$t({ defaultMessage: 'Network' }))
     }
 
     return inUsedService.length > 0
-      ? intl.$t(serviceInUsedMessageTemplate, { serviceName: inUsedService.join(',') })
+      ? intl.$t(profileInUsedMessageForDelete, { serviceName: inUsedService.join(',') })
       : undefined
   }
 

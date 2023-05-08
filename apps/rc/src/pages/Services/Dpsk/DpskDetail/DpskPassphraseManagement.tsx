@@ -29,6 +29,7 @@ import {
   EXPIRATION_TIME_FORMAT,
   NetworkTypeEnum,
   NewDpskPassphrase,
+  profileInUsedMessageForDelete,
   transformAdvancedDpskExpirationText,
   useTableQuery
 } from '@acx-ui/rc/utils'
@@ -36,8 +37,7 @@ import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 import { getIntl }        from '@acx-ui/utils'
 
-import NetworkForm                      from '../../../Networks/wireless/NetworkForm/NetworkForm'
-import { serviceInUsedMessageTemplate } from '../contentsMap'
+import NetworkForm from '../../../Networks/wireless/NetworkForm/NetworkForm'
 
 import { unlimitedNumberOfDeviceLabel }                 from './contentsMap'
 import DpskPassphraseDrawer, { DpskPassphraseEditMode } from './DpskPassphraseDrawer'
@@ -194,7 +194,7 @@ export default function DpskPassphraseManagement () {
 
   const getDeleteButtonTooltip = (selectedRows: NewDpskPassphrase[]): string | undefined => {
     return hasAppliedPersona(selectedRows)
-      ? $t(serviceInUsedMessageTemplate, { serviceName: 'Persona' })
+      ? $t(profileInUsedMessageForDelete, { serviceName: $t({ defaultMessage: 'Persona' }) })
       : undefined
   }
 
