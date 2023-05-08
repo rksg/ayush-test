@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, ReactNode } from 'react'
 
 import { DefaultOptionType }         from 'antd/lib/select'
 import { omit, groupBy, pick, find } from 'lodash'
@@ -17,7 +17,7 @@ import { NetworkPath, getIntl }              from '@acx-ui/utils'
 
 import { useIncidentsListQuery } from '../IncidentTable/services'
 
-import { LabelWithSeverityCircle }                  from './LabelWithSeverityCircles'
+import { LabelWithSeverityCircle, SeverityCircles } from './LabelWithSeverityCircles'
 import { Child, useNetworkFilterQuery, ApOrSwitch } from './services'
 import * as UI                                      from './styledComponents'
 
@@ -116,20 +116,22 @@ export const getNetworkFilterData = (
       ? [path[0], { ...path[1], name: id }]
       : path
     if (shouldPushVenue() && !venues[name]) {
+      const severityData = getSeverityCircles(
+        getApsAndSwitches(data, name),
+        nodesWithSeverities[name],
+        'venue'
+      )
       venues[name] = {
         label: (
           <LabelWithSeverityCircle
-            severityCircles={getSeverityCircles(
-              getApsAndSwitches(data, name),
-              nodesWithSeverities[name],
-              'venue'
-            )}
+            severityCircles={severityData}
             name={name}
           />
         ),
         value: JSON.stringify(venuePath),
         displayLabel: name,
-        children: [] as Option[]
+        children: [] as Option[],
+        extraLabel: <SeverityCircles severityCircles={severityData} />
       }
     }
     const venue = venues[name]
@@ -150,18 +152,20 @@ export const getNetworkFilterData = (
         ignoreSelection: true,
         value: `aps${replaceVenueNameWithId ? id : name}`,
         children: aps.map((ap: ApOrSwitch) => {
+          const severityData = getSeverityCircles(
+            [ap],
+            nodesWithSeverities[name]
+          )
           return {
             label: (
               <LabelWithSeverityCircle
-                severityCircles={getSeverityCircles(
-                  [ap],
-                  nodesWithSeverities[name]
-                )}
+                severityCircles={severityData}
                 name={ap.name}
               />
             ),
             displayLabel: ap.name,
-            value: JSON.stringify([...venuePath, { type: 'AP', name: ap.mac }])
+            value: JSON.stringify([...venuePath, { type: 'AP', name: ap.mac }]),
+            extraLabel: <SeverityCircles severityCircles={severityData} />
           }
         })
       })
@@ -183,18 +187,20 @@ export const getNetworkFilterData = (
         ignoreSelection: true,
         value: `switches${replaceVenueNameWithId ? id : name}`,
         children: switches.map((switchNode: ApOrSwitch) => {
+          const severityData = getSeverityCircles(
+            [switchNode],
+            nodesWithSeverities[name]
+          )
           return {
             label: (
               <LabelWithSeverityCircle
-                severityCircles={getSeverityCircles(
-                  [switchNode],
-                  nodesWithSeverities[name]
-                )}
+                severityCircles={severityData}
                 name={switchNode.name}
               />
             ),
             displayLabel: switchNode.name,
-            value: JSON.stringify([...venuePath, { type: 'switch', name: switchNode.mac }])
+            value: JSON.stringify([...venuePath, { type: 'switch', name: switchNode.mac }]),
+            extraLabel: <SeverityCircles severityCircles={severityData} />
           }
         })
       })
@@ -229,14 +235,22 @@ const reportSearch = (input: string, path: DefaultOptionType[]): boolean => {
 
 const searchResultsRender = (input: string, path: DefaultOptionType[]) => {
   const items = path.map((val) => (val?.displayLabel as string))
-  return <Highlighter
-    highlightStyle={{
-      fontWeight: 'bold', background: 'none', padding: 0, color: 'inherit'
-    }}
-    searchWords={[input]}
-    textToHighlight={items.join(' / ')}
-    autoEscape
-  />
+  const labels = path.map(item => item?.extraLabel as unknown as ReactNode)
+  const label = labels.length ? labels[labels.length - 1] : null
+
+  return <UI.LabelContainer>
+    <UI.Label>
+      <Highlighter
+        highlightStyle={{
+          fontWeight: 'bold', background: 'none', padding: 0, color: 'inherit'
+        }}
+        searchWords={[input]}
+        textToHighlight={items.join(' / ')}
+        autoEscape
+      />
+    </UI.Label>
+    {label}
+  </UI.LabelContainer>
 }
 
 // eslint-disable-next-line no-empty-pattern

@@ -25,7 +25,8 @@ export interface Option {
   ignoreSelection?: boolean
   disabled?: boolean
   children?: Option[]
-  isLeaf?: boolean
+  isLeaf?: boolean,
+  extraLabel?: React.ReactNode
 }
 
 export type CascaderProps = AntCascaderProps<Option> & {
