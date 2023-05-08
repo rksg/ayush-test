@@ -13,7 +13,6 @@ import {
   EdgeFirmwareVersion,
   LatestEdgeFirmwareVersion
 } from '@acx-ui/rc/utils'
-import _ from 'lodash'
 
 export const expirationTimeUnits: Record<string, string> = {
   HOURS_AFTER_TIME: 'Hours',
