@@ -156,7 +156,7 @@ export default function ResidentPortalSettingsForm (props : SettingsFormProps) {
       <Form.Item name='fileFavicon' label={intl.$t({ defaultMessage: 'Favicon' })}
         children={
           // @ts-ignore
-          <ResidentPortalImageUpload existingImage={props.existingFavicon}/>
+          <ResidentPortalImageUpload existingImage={props.existingFavicon} imageType='FAVICON'/>
         }/>
     </GridCol>
   </GridRow>)

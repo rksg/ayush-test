@@ -69,7 +69,7 @@ export default function ResidentPortalForm (props: ResidentPortalFormProps) {
     }
   }, [originalPortalData, areImagesLoading, editMode])
 
-  // TODO: this is getting called multiple times, need to fix that
+  // TODO: this is getting called multiple times, need to fix that 
   // Load Logo and FavIcon
   useEffect(() => {
     const fetchLogo = async () => {
@@ -116,7 +116,7 @@ export default function ResidentPortalForm (props: ResidentPortalFormProps) {
 
       if (editMode) {
         formData.append('changes', portalConfiguration, '')
-        // TODO: handle removing of images
+        // TODO: handle deletion of images
         if(data.fileLogo?.file) {
           formData.append('logo', data.fileLogo.file)
         }
