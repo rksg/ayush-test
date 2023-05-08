@@ -3,13 +3,14 @@ import { graphqlRequestBaseQuery } from '@rtk-query/graphql-request-base-query'
 
 import { getJwtHeaders } from '@acx-ui/utils'
 
-export const dataApiURL = `${window.location.origin}/api/a4rc/api/rsa-data-api/graphql`
+export const dataApiURL = `${window.location.origin}/api/a4rc/api/rsa-data-api/graphql/analytics`
+export const dataApiSearchURL = `${window.location.origin}/api/a4rc/api/rsa-data-api/graphql/search`
 
 // GraphQL queries are place in the context of their respective route/widget,
 // please refer to them in source folder under /apps/analytics/src
 export const dataApi = createApi({
   baseQuery: graphqlRequestBaseQuery({
-    url: `${dataApiURL}/analytics`,
+    url: dataApiURL,
     prepareHeaders: (headers) => {
       Object.entries(getJwtHeaders())
         .forEach(([header, value]) => headers.set(header, value))
@@ -24,7 +25,7 @@ export const dataApi = createApi({
 
 export const dataApiSearch = createApi({
   baseQuery: graphqlRequestBaseQuery({
-    url: `${dataApiURL}/search`,
+    url: dataApiSearchURL,
     prepareHeaders: (headers) => {
       Object.entries(getJwtHeaders())
         .forEach(([header, value]) => headers.set(header, value))
