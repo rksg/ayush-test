@@ -85,7 +85,6 @@ export default function ResidentPortalImageUpload (props: SimpleImageUploadProps
   }
 
   const removeImage = function() {
-    // TODO: verify this is working correctly when saving/removing the file
     if(existingImage?.fileSrc) {
       onChange({file: undefined, isRemoved: true})
     } else {
@@ -96,8 +95,24 @@ export default function ResidentPortalImageUpload (props: SimpleImageUploadProps
     setImageName('')
   }
 
+  const resetImage = function() {
+    onChange({file: undefined})
+    
+    if(existingImage?.fileSrc) {
+      setImageUrl(existingImage.fileSrc)
+      setImageName(existingImage.filename? existingImage.filename : '')
+    } else {
+      setImageUrl('')
+      setImageName('')
+    }
+  }
+
   const showInvalidToast = function (content: string) {
     showToast({ type: 'error', content })
+  }
+
+  const isImageChangedFromExisting = function() {
+    return existingImage?.fileSrc && imageUrl !== existingImage.fileSrc
   }
 
   return (
@@ -125,11 +140,18 @@ export default function ResidentPortalImageUpload (props: SimpleImageUploadProps
       </Upload>
       <HelpText type='secondary'>
         {(imageUrl) ? imageName : $t({defaultMessage: 'No File Selected'})}<br />
-        {(imageUrl) ? 
-          <HelpTextButton type="link" size='small' onClick={removeImage}>
-            {$t({defaultMessage: 'Remove'})}
-          </HelpTextButton>
-          : ''}<br />
+        <Space direction='horizontal' size="small">
+          {(isImageChangedFromExisting()) ? <HelpTextButton type="link" size='small' onClick={resetImage}>
+            {$t({defaultMessage: 'Reset'})}
+          </HelpTextButton> : ''}
+          {(imageUrl) ? 
+            <HelpTextButton type="link" size='small' onClick={removeImage}>
+              {$t({defaultMessage: 'Remove'})}
+            </HelpTextButton>
+            : ''}
+          
+        </Space>
+        <br />
         {$t({ defaultMessage: 'Max. image size: 20 MB' })}<br />
         {imageType === 'FAVICON' ? 
           $t({ defaultMessage: 'Supported formats: PNG, JPEG, GIF, SVG, ICO' })

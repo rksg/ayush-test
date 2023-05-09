@@ -9,6 +9,8 @@ import {
   StepsFormInstance
 } from '@acx-ui/components'
 import { useAddResidentPortalMutation,
+  useDeleteResidentPortalFaviconMutation,
+  useDeleteResidentPortalLogoMutation,
   useGetResidentPortalQuery,
   useUpdateResidentPortalMutation } from '@acx-ui/rc/services'
 import {
@@ -43,6 +45,8 @@ export default function ResidentPortalForm (props: ResidentPortalFormProps) {
 
   const [ addResidentPortal ] = useAddResidentPortalMutation()
   const [ updateResidentPortal ] = useUpdateResidentPortalMutation()
+  const [ deleteLogo ] = useDeleteResidentPortalLogoMutation()
+  const [ deleteFavicon ] = useDeleteResidentPortalFaviconMutation()
 
   const {
     data: originalPortalData,
@@ -69,7 +73,6 @@ export default function ResidentPortalForm (props: ResidentPortalFormProps) {
     }
   }, [originalPortalData, areImagesLoading, editMode])
 
-  // TODO: this is getting called multiple times, need to fix that 
   // Load Logo and FavIcon
   useEffect(() => {
     const fetchLogo = async () => {
@@ -104,9 +107,6 @@ export default function ResidentPortalForm (props: ResidentPortalFormProps) {
   // Save Form Data //
   const saveData = async (data: CreateResidentPortalFormFields) => {
 
-    // TODO: remove
-    console.log("Form Submission data:", data)
-
     const residentPortalSaveData = transferFormFieldsToSaveData(data)
 
     try {
@@ -116,11 +116,15 @@ export default function ResidentPortalForm (props: ResidentPortalFormProps) {
 
       if (editMode) {
         formData.append('changes', portalConfiguration, '')
-        // TODO: handle deletion of images
-        if(data.fileLogo?.file) {
+        if(data.fileLogo?.isRemoved){
+          await deleteLogo({params}).unwrap()
+        } else if(data.fileLogo?.file) {
           formData.append('logo', data.fileLogo.file)
         }
-        if(data.fileFavicon?.file) {
+
+        if(data.fileFavicon?.isRemoved){
+          await deleteFavicon({params}).unwrap()
+        } else if(data.fileFavicon?.file) {
           formData.append('favIcon', data.fileFavicon.file)
         }
         await updateResidentPortal({ params, payload: formData }).unwrap()

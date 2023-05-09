@@ -79,8 +79,8 @@ export function transferFormFieldsToSaveData (data: CreateResidentPortalFormFiel
         textColor: data.colorText
       },
       files: {
-        logoFileName: data.fileLogo?.file ? data.fileLogo.file.name : '',
-        favIconFileName: data.fileFavicon?.file ? data.fileFavicon.file.name : ''
+        logoFileName: data.fileLogo?.file && !data.fileLogo.isRemoved ? data.fileLogo.file.name : '',
+        favIconFileName: data.fileFavicon?.file && !data.fileLogo.isRemoved ? data.fileFavicon.file.name : ''
       }
     }
   }
