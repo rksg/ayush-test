@@ -162,10 +162,12 @@ describe('ConnectionEvent', () => {
   it('renders correctly for disconnect event', async () => {
     render(<ConnectionEventPopover event={disconnectEvent}>test</ConnectionEventPopover>)
     fireEvent.click(await screen.findByText(/test/i))
+    expect(screen.getByText('Disconnect Type')).toBeValid()
+    expect(screen.getByText('Client disconnected')).toBeValid()
     expect(screen.getByText(
       'Deauthenticated because sending STA is leaving (or has left) IBSS or ESS (reason code 3)'
-    )).not.toBeNull()
-    expect(screen.getByText('Reason')).not.toBeNull()
+    )).toBeValid()
+    expect(screen.getByText('Reason')).toBeValid()
   })
 
   it('renders correctly for slow event', () => {
@@ -194,7 +196,6 @@ describe('ConnectionEvent', () => {
     const test = asFragment().querySelectorAll('section')
     expect(test).toHaveLength(0)
   })
-
 
   it('renders correctly for empty messageId', () => {
     const { asFragment } =
