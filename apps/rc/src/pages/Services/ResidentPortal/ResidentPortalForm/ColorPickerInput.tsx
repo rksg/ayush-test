@@ -4,6 +4,8 @@ import { Button, Popover, Space } from 'antd'
 import { SketchPicker }           from 'react-color'
 import { useIntl }                from 'react-intl'
 
+import { isValidColorHex } from '../residentPortalUtilities'
+
 interface OnChangeHandler {
   // eslint-disable-next-line
   (e: any): void;
@@ -27,7 +29,8 @@ export function ColorPickerInput (props: ColorPickerProps) {
     defaultColorHex
   } = props
 
-  const [selectedColor, setSelectedColor] = useState(value ? value : defaultColorHex)
+  const [selectedColor, setSelectedColor] =
+    useState(value && isValidColorHex(value) ? value : defaultColorHex)
   const [showColorPicker, setShowColorPicker] = useState<boolean>(false)
 
   useEffect(() => {

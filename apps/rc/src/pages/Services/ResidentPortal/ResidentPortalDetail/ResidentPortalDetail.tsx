@@ -17,6 +17,7 @@ import { TenantLink }     from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
 import { loadResidentPortalFavIcon, loadResidentPortalLogo } from '../portalImageService'
+import { isValidColorHex }                                   from '../residentPortalUtilities'
 
 import ColorBoxIcon              from './ColorBoxIcon'
 import ResidentPortalVenuesTable from './ResidentPortalVenuesTable'
@@ -47,13 +48,17 @@ export default function ResidentPortalDetail () {
       const customColors = residentPortalData.uiConfiguration.color
 
       colors.mainColor =
-          customColors.mainColor ? customColors.mainColor : colors.mainColor
+        customColors.mainColor && isValidColorHex(customColors.mainColor)
+          ? customColors.mainColor : colors.mainColor
       colors.accentColor =
-          customColors.accentColor ? customColors.accentColor : colors.accentColor
+          customColors.accentColor && isValidColorHex(customColors.accentColor)
+            ? customColors.accentColor : colors.accentColor
       colors.separatorColor =
-          customColors.separatorColor ? customColors.separatorColor : colors.separatorColor
+          customColors.separatorColor && isValidColorHex(customColors.separatorColor)
+            ? customColors.separatorColor : colors.separatorColor
       colors.textColor =
-          customColors.textColor ? customColors.textColor : colors.textColor
+          customColors.textColor && isValidColorHex(customColors.textColor)
+            ? customColors.textColor : colors.textColor
     }
 
     return colors
