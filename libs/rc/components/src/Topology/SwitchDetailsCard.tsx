@@ -1,11 +1,14 @@
 import { Badge, Button } from 'antd'
 import { useIntl }       from 'react-intl'
 
-import { Card, Descriptions, Loader }        from '@acx-ui/components'
-import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
-import { SwitchStatusEnum, SwitchViewModel } from '@acx-ui/rc/utils'
-import { noDataDisplay }                     from '@acx-ui/utils'
+import { IncidentsBySeverityData, useIncidentsBySeverityQuery } from '@acx-ui/analytics/components'
+import { AnalyticsFilter }                                      from '@acx-ui/analytics/utils'
+import { Card, Descriptions, Loader }                           from '@acx-ui/components'
+import { DateFormatEnum, formatter }                            from '@acx-ui/formatter'
+import { SwitchStatusEnum, SwitchViewModel }                    from '@acx-ui/rc/utils'
+import { noDataDisplay, useDateFilter }                         from '@acx-ui/utils'
 
+import IncidentStackedBar               from './IncidentStackedBar'
 import { getDeviceColor, switchStatus } from './utils'
 
 export function SwitchDetailsCard (props: {
@@ -14,6 +17,21 @@ export function SwitchDetailsCard (props: {
   }) {
   const { switchDetail, isLoading } = props
   const { $t } = useIntl()
+  const { dateFilter } = useDateFilter()
+
+  const filters = {
+    ...dateFilter,
+    path: [{ type: 'switch', name: switchDetail?.switchMac?.toUpperCase() as string },
+      { type: 'switchGroup', name: switchDetail?.venueId }]
+  } as AnalyticsFilter
+
+  const incidentData = useIncidentsBySeverityQuery(filters, {
+    selectFromResult: ({ data, ...rest }) => ({
+      data: { ...data } as IncidentsBySeverityData,
+      ...rest
+    }),
+    skip: !switchDetail?.switchMac || !switchDetail?.venueId
+  })
 
   return <Card
     type='no-border'
@@ -34,7 +52,7 @@ export function SwitchDetailsCard (props: {
     <Loader states={[
       { isLoading }
     ]}>
-      <Descriptions labelWidthPercent={40}>
+      <Descriptions labelWidthPercent={50}>
         {/* model  */}
         <Descriptions.Item
           label={$t({ defaultMessage: 'Model' })}
@@ -57,6 +75,23 @@ export function SwitchDetailsCard (props: {
             key={switchDetail?.id + 'status'}
             color={getDeviceColor(switchDetail?.deviceStatus as SwitchStatusEnum)}
             text={switchStatus(switchDetail?.deviceStatus as SwitchStatusEnum)} />} />
+
+        {/* Incidents */}
+        <Descriptions.Item
+          label={$t({ defaultMessage: 'Incidents (Last 24 hrs)' })}
+          contentStyle={{
+            alignSelf: 'center',
+            display: 'inline-flex'
+          }}
+          children={
+            incidentData?.data &&
+            <IncidentStackedBar
+              incidentData={incidentData?.data}
+              isLoading={incidentData?.isLoading}
+              category='Switch Incidents'
+            />
+          }
+        />
 
         {/* Uptime  */}
         <Descriptions.Item

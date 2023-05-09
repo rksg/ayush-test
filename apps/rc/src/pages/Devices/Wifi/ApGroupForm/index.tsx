@@ -107,7 +107,11 @@ export function ApGroupForm () {
     }
 
     if (extraMemberList && defaultApGroupOption) {
-      setApsOption(defaultApGroupOption.concat(extraMemberList) as TransferItem[])
+      setApsOption(defaultApGroupOption.concat(extraMemberList)
+        .filter((option, ind) => ind ===
+          defaultApGroupOption.findIndex(elem => elem.name === option.name &&
+            elem.key === option.key)
+        ) as TransferItem[])
     } else {
       formRef.current?.validateFields(['name'])
       setApsOption(defaultApGroupOption as TransferItem[])
@@ -227,8 +231,10 @@ export function ApGroupForm () {
                   listStyle={{ width: 250, height: 316 }}
                   showSearch
                   showSelectAll={false}
-                  dataSource={
-                    apsOption}
+                  filterOption={(inputValue, item) =>
+                    (item.name && item.name.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1)
+                  }
+                  dataSource={apsOption}
                   render={item => item.name}
                   operations={['Add', 'Remove']}
                   titles={[$t({ defaultMessage: 'Available APs' }),

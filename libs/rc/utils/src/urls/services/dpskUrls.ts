@@ -107,6 +107,11 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
     oldUrl: DpskPassphraseBaseUrl,
     newApi: true
   },
+  getPassphraseClient: {
+    method: 'post',
+    url: '/dpskpassphrases/client',
+    newApi: true
+  },
   getPassphraseDevices: {
     method: 'get',
     url: NewDpskPassphraseDevices + '?tenantId=:tenantId',
