@@ -101,7 +101,8 @@ export const store = configureStore({
       tunnelProfileApi.middleware,
       msgTemplateApi.middleware,
       videoCallQoeApi.middleware,
-      edgeFirewallApi.middleware
+      edgeFirewallApi.middleware,
+      sigPackApi.middleware
     ])
   },
 

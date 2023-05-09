@@ -36,6 +36,7 @@ export const NewAPPTable=(props:{
     type='form'
     columns={newColumn}
     dataSource={props.data}
+    rowKey='toApplicationId'
     actions={filterByAccess(props.actions)}
   />)
 }
@@ -76,6 +77,7 @@ export const UpdateAPPTable=(props:{
     type='form'
     columns={updateColumn}
     dataSource={props.data}
+    rowKey='toApplicationId'
     actions={filterByAccess(props.actions)}
   />)
 }
@@ -115,6 +117,7 @@ export const MergedAPPTable=(props:{
     type='form'
     columns={mergedColumn}
     dataSource={props.data}
+    rowKey='toApplicationId'
     actions={filterByAccess(props.actions)}
   />)
 }
@@ -148,6 +151,7 @@ export const RemovedAPPTable=(props:{
     type='form'
     columns={removedColumn}
     dataSource={props.data}
+    rowKey='applicationId'
     actions={filterByAccess(props.actions)}
   />)
 }
@@ -181,6 +185,7 @@ export const ChangedAPPTable=(props:{
     type='form'
     columns={changedColumn}
     dataSource={props.data}
+    rowKey='toApplicationId'
     actions={filterByAccess(props.actions)}
   />)
 }
