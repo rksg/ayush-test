@@ -1,0 +1,14 @@
+export enum ClientEventEnum {
+  INFO_UPDATED = 'EVENT_CLIENT_INFO_UPDATED',
+  JOIN ='EVENT_CLIENT_JOIN',
+  ROAM = 'EVENT_CLIENT_ROAMING',
+  DISCONNECT = 'EVENT_CLIENT_DISCONNECT',                          // 204
+  INACTIVITY_TIMEOUT = 'EVENT_CLIENT_INACTIVITY_TIMEOUT',          // 205, as disconnect
+  SESSION_EXPIRED = 'EVENT_CLIENT_SESSION_EXPIRED',                // 208, as disconnect
+  LOGGED_OUT = 'EVENT_CLIENT_LOGGED_OUT',                          // 210, as disconnect
+  ROAMING_DISCONNECTED = 'EVENT_CLIENT_ROAMING_DISCONNECTED',      // 218, as disconnect
+  FORCE_DHCP_DISCONNECTED = 'EVENT_FORCE_DHCP_DISCONNECTED',       // 225, as disconnect
+  AUTHENTICATION_FAILURE = 'EVENT_CLIENT_AUTHENTICATION_FAILURE',  // 201, as isolated
+  BLOCKED = 'EVENT_CLIENT_BLOCKED',                                // 219, as isolated
+  BLOCKED_BY_BARING = 'EVENT_CLIENT_BLOCKED_BY_BARING',            // 228, as isolated
+}

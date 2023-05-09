@@ -172,7 +172,7 @@ export const VerticalLine = styled.div`
   background: var(--acx-neutrals-30);
 `
 export const ListDetails = styled.div`
-  width: 250px;
+  width: 265px;
 `
 export const Wrapper = styled.section.attrs((props: { layers: Array<unknown> }) => props)`
   overflow-y: scroll;
