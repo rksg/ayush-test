@@ -74,7 +74,8 @@ export type { updatePreferenceProps } from './usePreference'
 export { GoogleMapWithPreference } from './GoogleMapWithPreference'
 export { SubscriptionUtilizationWidget } from './SubscriptionUtilizationWidget'
 
-export { TunnelProfileForm, TunnelProfileFormType } from './TunnelProfileForm'
+export { TunnelProfileForm } from './TunnelProfileForm'
+export type { TunnelProfileFormType } from './TunnelProfileForm'
 export { EdgeDhcpPoolTable } from './EdgeDhcpPoolTable'
 export { EdgeDhcpLeaseTable } from './EdgeDhcpLeaseTable'
 
