@@ -54,7 +54,7 @@ describe('Network Health', () => {
     await userEvent.click(screen.getByText('Details'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       // eslint-disable-next-line max-len
-      pathname: `/t/${params.tenantId}/analytics/serviceValidation/spec-id/tests/test-id/tab/details`,
+      pathname: `/${params.tenantId}/t/analytics/serviceValidation/spec-id/tests/test-id/tab/details`,
       hash: '',
       search: ''
     })
