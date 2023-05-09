@@ -22,9 +22,9 @@ import {
   ExpirationDateEntity,
   ExpirationMode,
   NewDpskPassphrase,
-  phoneRegExp
+  phoneRegExp,
+  validateVlanId
 } from '@acx-ui/rc/utils'
-import { validationMessages } from '@acx-ui/utils'
 
 import { MAX_DEVICES_PER_PASSPHRASE, MAX_PASSPHRASES } from '../constants'
 
@@ -272,16 +272,14 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
           </>
         }
         rules={[
-          {
-            type: 'number',
-            min: 1,
-            max: 4094,
-            message: $t(validationMessages.vlanRange)
-          }
+          { validator: (_, value) => {
+            if (value) return validateVlanId(value)
+            return Promise.resolve()
+          } }
         ]}
         name='vlanId'
         children={
-          <InputNumber
+          <Input
             placeholder={$t({ defaultMessage: 'If empty, the network\'s default will be used' })}
             style={{ width: '100%' }}
           />
@@ -323,7 +321,7 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
 }
 
 function transferServerDataToFormFields (data: NewDpskPassphrase): CreateDpskPassphrasesFormFields {
-  const { expirationDate, createdDate, ...rest } = data
+  const { expirationDate, createdDate, vlanId, ...rest } = data
   const expiration = new ExpirationDateEntity()
 
   if (expirationDate) {
@@ -335,6 +333,7 @@ function transferServerDataToFormFields (data: NewDpskPassphrase): CreateDpskPas
   return {
     ...rest,
     numberOfPassphrases: 1,
-    expiration
+    expiration,
+    vlanId: vlanId?.toString()
   }
 }

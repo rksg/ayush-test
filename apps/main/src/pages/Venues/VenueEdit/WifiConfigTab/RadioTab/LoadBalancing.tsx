@@ -1,11 +1,12 @@
 /* eslint-disable max-len */
 import { useContext, useEffect } from 'react'
 
-import { Col, Form, Radio, Row, Slider, Space, Switch } from 'antd'
-import { defineMessage, FormattedMessage, useIntl }     from 'react-intl'
-import { useParams }                                    from 'react-router-dom'
+import { Col, InputNumber, Form, Radio, Row, Slider, Space, Switch } from 'antd'
+import { defineMessage, FormattedMessage, useIntl }                  from 'react-intl'
+import { useParams }                                                 from 'react-router-dom'
 
 import { cssStr, Loader, Tooltip }                                            from '@acx-ui/components'
+import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
 import { InformationSolid, QuestionMarkCircleOutlined }                       from '@acx-ui/icons'
 import { useGetVenueLoadBalancingQuery, useUpdateVenueLoadBalancingMutation } from '@acx-ui/rc/services'
 import { LoadBalancingMethodEnum, SteeringModeEnum }                          from '@acx-ui/rc/utils'
@@ -20,9 +21,12 @@ export function LoadBalancing () {
   const { $t } = useIntl()
   const { venueId } = useParams()
   const form = Form.useFormInstance()
-  const [enabled, loadBalancingMethod, bandBalancingEnabled ] = [
+  const [enabled, loadBalancingMethod, stickyClientSteeringEnabled, snrThreshold, percentageThreshold, bandBalancingEnabled ] = [
     useWatch('enabled'),
     useWatch('loadBalancingMethod'),
+    useWatch('stickyClientSteeringEnabled'),
+    useWatch('stickyClientSnrThreshold'),
+    useWatch('stickyClientNbrApPercentageThreshold'),
     useWatch('bandBalancingEnabled')
   ]
 
@@ -37,6 +41,7 @@ export function LoadBalancing () {
   const [updateVenueLoadBalancing, { isLoading: isUpdatingVenueLoadBalancing }] =
     useUpdateVenueLoadBalancingMutation()
 
+  const stickyClientFlag = useIsSplitOn(Features.STICKY_CLIENT_STEERING)
 
   const infoMessage = defineMessage({
     defaultMessage: `Make sure <b>background scan</b> is selected for channel selection
@@ -57,6 +62,10 @@ export function LoadBalancing () {
       })
     }
   ]
+
+  const stickyClientSteeringInfoMessage = defineMessage({
+    defaultMessage: 'Enabling this feature will help clients who have low SNR to transit to a better AP, and will disable SmartRoam feature on AP'
+  })
 
   const steeringModes = [
     {
@@ -121,6 +130,9 @@ export function LoadBalancing () {
     const {
       enabled,
       loadBalancingMethod,
+      stickyClientSteeringEnabled,
+      stickyClientSnrThreshold,
+      stickyClientNbrApPercentageThreshold,
       bandBalancingEnabled,
       bandBalancingClientPercent24G,
       steeringMode
@@ -129,6 +141,9 @@ export function LoadBalancing () {
     return {
       enabled,
       loadBalancingMethod,
+      stickyClientSteeringEnabled,
+      stickyClientSnrThreshold,
+      stickyClientNbrApPercentageThreshold,
       bandBalancingEnabled,
       bandBalancingClientPercent24G,
       steeringMode
@@ -216,6 +231,86 @@ export function LoadBalancing () {
             </Space>
           </Radio.Group>
         </Form.Item>
+      </Col>
+    </Row>
+    }
+
+    {stickyClientFlag && enabled &&
+    <Row>
+      <Col span={colSpan}>
+        <FieldLabel width='200px'>
+          <Space>
+            {$t({ defaultMessage: 'Sticky Client Steering' })}
+            <Tooltip title={$t(stickyClientSteeringInfoMessage)} placement='bottom'>
+              <QuestionMarkCircleOutlined style={{ height: '14px', marginBottom: -3, marginLeft: -8 }}/>
+            </Tooltip>
+          </Space>
+          <Form.Item
+            name='stickyClientSteeringEnabled'
+            valuePropName='checked'
+            style={{ marginTop: '-5px' }}
+            children={<Switch
+              data-testid='sticky-client-steering-enabled'
+              onChange={onFormDataChanged} />}
+          />
+        </FieldLabel>
+      </Col>
+    </Row>
+    }
+
+    {stickyClientFlag && enabled && stickyClientSteeringEnabled &&
+    <Row>
+      <Col span={colSpan}>
+        <Space>
+          <Form.Item
+            label={$t({ defaultMessage: 'SNR Threshold ' })}
+            name='stickyClientSnrThreshold'
+            initialValue={15}
+            rules={[
+              { required: true },
+              { type: 'number', min: 5 },
+              { type: 'number', max: 30 }
+            ]}
+            style={{ width: '100px' }}
+            children={<InputNumber
+              data-testid='sticky-client-snr-threshold'
+              placeholder='5-30'
+              min={5}
+              max={30}
+              onChange={onFormDataChanged} />} />
+          <span className='ant-form-text' style={{ marginLeft: '-8px', marginTop: '8px' }}>
+            {$t({ defaultMessage: 'dB' })}
+          </span>
+          <Form.Item
+            label={<>
+              {$t({ defaultMessage: 'Neighbor AP ' })}
+              <Tooltip.Question title={$t({ defaultMessage: 'NBRAP percentage is used to calculate a base SNR and compare it to the SNR received from a neighbor AP.' })} />
+            </>}
+            name='stickyClientNbrApPercentageThreshold'
+            initialValue={20}
+            rules={[
+              { required: true, message: $t({ defaultMessage: 'Please enter Neighbor AP' }) },
+              { type: 'number', min: 10 },
+              { type: 'number', max: 40 }
+            ]}
+            children={<InputNumber
+              data-testid='sticky-client-nbr-percentage-threshold'
+              placeholder='10-40'
+              min={10}
+              max={40}
+              onChange={onFormDataChanged} />} />
+          <span className='ant-form-text' style={{ marginLeft: '-9px', marginTop: '8px' }}>
+            {$t({ defaultMessage: '%' })}
+          </span>
+        </Space>
+        <Form.Item
+          label={
+            $t({ defaultMessage: `Clients with SNR lower than {snrThreshold}dB will be steered to neighbor access 
+            points with SNR greater than {percentThreshold}% above the current client SNR.` },
+            { snrThreshold: snrThreshold,
+              percentThreshold: percentageThreshold })
+          }
+        />
       </Col>
     </Row>
     }

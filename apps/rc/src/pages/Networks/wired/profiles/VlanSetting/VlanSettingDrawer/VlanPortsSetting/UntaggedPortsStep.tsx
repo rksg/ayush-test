@@ -249,7 +249,7 @@ export function UntaggedPortsStep () {
   }
 
   return (
-    <>
+    <div style={{ height: '300px' }}>
       <Row gutter={20}>
         <Col>
           <label style={{ color: 'var(--acx-neutrals-60)' }}>
@@ -396,6 +396,6 @@ export function UntaggedPortsStep () {
         hidden={true}
         children={<Input />}
       />
-    </>
+    </div>
   )
 }

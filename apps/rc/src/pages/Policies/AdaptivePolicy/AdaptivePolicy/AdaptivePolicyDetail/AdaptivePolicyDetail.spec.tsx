@@ -1,23 +1,27 @@
 import { rest } from 'msw'
 
-import { RulesManagementUrlsInfo }    from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { RadiusAttributeGroupUrlsInfo, RulesManagementUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                              from '@acx-ui/store'
+import { mockServer, render, screen }                            from '@acx-ui/test-utils'
 
-import { adpativePolicy, assignConditions } from './__test__/fixtures'
-import AdaptivePolicyDetail                 from './AdaptivePolicyDetail'
+import { adpativePolicy, assignConditions, attributeGroup } from './__test__/fixtures'
+import AdaptivePolicyDetail                                 from './AdaptivePolicyDetail'
 
 
 describe('AdaptivePolicyDetail', () => {
   beforeEach(() => {
     mockServer.use(
       rest.get(
-        RulesManagementUrlsInfo.getPolicyByTemplate.url,
+        RulesManagementUrlsInfo.getPolicyByTemplate.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(adpativePolicy))
       ),
       rest.get(
-        RulesManagementUrlsInfo.getConditionsInPolicy.url,
+        RulesManagementUrlsInfo.getConditionsInPolicy.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(assignConditions))
+      ),
+      rest.get(
+        RadiusAttributeGroupUrlsInfo.getAttributeGroup.url,
+        (req, res, ctx) => res(ctx.json(attributeGroup))
       )
     )
   })
@@ -44,6 +48,8 @@ describe('AdaptivePolicyDetail', () => {
 
     // eslint-disable-next-line max-len
     expect(await screen.findByText(assignConditions.content[0].evaluationRule.regexStringCriteria ?? '')).toBeVisible()
+
+    await screen.findByText('rag9')
   })
 
 })

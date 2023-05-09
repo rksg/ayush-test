@@ -38,7 +38,7 @@ export default function AlarmsHeaderButton (props: AlarmsHeaderButtonProps) {
     if (visible && isShown) {
       setVisible(isShown)
     }
-  }, [isShown])
+  }, [isShown, visible])
 
   return <>
     <Badge
@@ -51,6 +51,6 @@ export default function AlarmsHeaderButton (props: AlarmsHeaderButtonProps) {
           setVisible(true)
         }}/>}
     />
-    <AlarmsDrawer visible={visible && !!isShown} setVisible={setVisible} />
+    <AlarmsDrawer visible={visible && !!isShown} setVisible={setVisible} setIsShown={setIsShown}/>
   </>
 }
