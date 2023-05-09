@@ -33,6 +33,12 @@ const disconnects = [
     code: ClientEventEnum.ROAMING_DISCONNECTED,
     text: defineMessage({ defaultMessage: 'Client roaming disconnected' }),
     reason: defineMessage({ defaultMessage: 'This event occurs when the client disconnects from the WLAN due to a smart roam policy' })
+  },
+  {
+    id: 225,
+    code: ClientEventEnum.FORCE_DHCP_DISCONNECTED,
+    text: defineMessage({ defaultMessage: 'Force DHCP disconnected' }),
+    reason: defineMessage({ defaultMessage: 'Client disconnected by AP due to lack DHCP activity' })
   }
 ]
 
@@ -48,12 +54,6 @@ const isolatedDisconnects = [
     code: ClientEventEnum.BLOCKED,
     text: defineMessage({ defaultMessage: 'Client blocked' }),
     reason: defineMessage({ defaultMessage: 'Client blocked due to policy' })
-  },
-  {
-    id: 225,
-    code: ClientEventEnum.FORCE_DHCP_DISCONNECTED,
-    text: defineMessage({ defaultMessage: 'Force DHCP disconnected' }),
-    reason: defineMessage({ defaultMessage: 'Client disconnected by AP due to lack DHCP activity' })
   },
   {
     id: 228,

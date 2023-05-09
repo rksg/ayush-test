@@ -7,8 +7,8 @@ export enum ClientEventEnum {
   SESSION_EXPIRED = 'EVENT_CLIENT_SESSION_EXPIRED',                // 208, as disconnect
   LOGGED_OUT = 'EVENT_CLIENT_LOGGED_OUT',                          // 210, as disconnect
   ROAMING_DISCONNECTED = 'EVENT_CLIENT_ROAMING_DISCONNECTED',      // 218, as disconnect
+  FORCE_DHCP_DISCONNECTED = 'EVENT_FORCE_DHCP_DISCONNECTED',       // 225, as disconnect
   AUTHENTICATION_FAILURE = 'EVENT_CLIENT_AUTHENTICATION_FAILURE',  // 201, as isolated
   BLOCKED = 'EVENT_CLIENT_BLOCKED',                                // 219, as isolated
-  FORCE_DHCP_DISCONNECTED = 'EVENT_FORCE_DHCP_DISCONNECTED',       // 225, as isolated
   BLOCKED_BY_BARING = 'EVENT_CLIENT_BLOCKED_BY_BARING',            // 228, as isolated
 }
