@@ -6,6 +6,7 @@ import { FormFinishInfo }                 from 'rc-field-form/lib/FormContext'
 import { useIntl }                        from 'react-intl'
 
 import { Button, Loader, StepsForm, StepsFormInstance, Tabs, Subtitle } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import { PersonaGroupSelect, TemplateSelector }                         from '@acx-ui/rc/components'
 import {
   useGetPropertyConfigsQuery,
@@ -66,6 +67,7 @@ export function PropertyManagementTab () {
   const { $t } = useIntl()
   const basePath = useTenantLink('/venues/')
   const { tenantId, venueId } = useParams()
+  const msgTemplateEnabled = useIsSplitOn(Features.MSG_TEMPLATE)
   const { data: venueData } = useGetVenueQuery({ params: { tenantId, venueId } })
   const navigate = useNavigate()
   const formRef = useRef<StepsFormInstance<PropertyConfigs>>()
@@ -278,64 +280,52 @@ export function PropertyManagementTab () {
                     />
                 }
 
-                <Form.Item
-                  hidden
-                  name={['communicationConfig', 'type']}
-                />
-                <Subtitle level={4}>
-                  {$t({ defaultMessage: 'Communication Templates' })}
-                </Subtitle>
-                <StepsForm.FieldLabel width={'190px'}>
-                  {$t({ defaultMessage: 'Enable Email Notification' })}
-                  <Form.Item
-                    name={['communicationConfig', 'sendEmail']}
-                    rules={[{ required: true }]}
-                    valuePropName={'checked'}
-                    children={<Switch />}
-                  />
-                </StepsForm.FieldLabel>
-                <StepsForm.FieldLabel width={'190px'}>
-                  {$t({ defaultMessage: 'Enable SMS Notification' })}
-                  <Form.Item
-                    name={['communicationConfig', 'sendSms']}
-                    rules={[{ required: true }]}
-                    valuePropName={'checked'}
-                    children={<Switch />}
-                  />
-                </StepsForm.FieldLabel>
-
-                <Tabs
-                  defaultActiveKey={'email'}
-                >
-                  <Tabs.TabPane
-                    forceRender
-                    key={'email'}
-                    tab={$t({ defaultMessage: 'Email' })}
-                    children={templateScopeIds.email.map(id =>
-                      venueId &&
-                      <TemplateSelector
-                        key={id}
-                        formItemProps={{ name: id }}
-                        scopeId={id}
-                        registrationId={venueId}
-                      />)
-                    }
-                  />
-                  <Tabs.TabPane
-                    forceRender
-                    key={'sms'}
-                    tab={$t({ defaultMessage: 'SMS' })}
-                    children={templateScopeIds.sms.map(id =>
-                      venueId &&
-                      <TemplateSelector
-                        key={id}
-                        formItemProps={{ name: id }}
-                        scopeId={id}
-                        registrationId={venueId}
-                      />)
-                    }
-                  />
-                </Tabs>
+                {msgTemplateEnabled &&
+                  <>
+                    <Form.Item
+                      hidden
+                      name={['communicationConfig', 'type']}/><Subtitle level={4}>
+                      {$t({ defaultMessage: 'Communication Templates' })}
+                    </Subtitle><StepsForm.FieldLabel width={'190px'}>
+                      {$t({ defaultMessage: 'Enable Email Notification' })}
+                      <Form.Item
+                        name={['communicationConfig', 'sendEmail']}
+                        rules={[{ required: true }]}
+                        valuePropName={'checked'}
+                        children={<Switch/>}/>
+                    </StepsForm.FieldLabel><StepsForm.FieldLabel width={'190px'}>
+                      {$t({ defaultMessage: 'Enable SMS Notification' })}
+                      <Form.Item
+                        name={['communicationConfig', 'sendSms']}
+                        rules={[{ required: true }]}
+                        valuePropName={'checked'}
+                        children={<Switch/>}/>
+                    </StepsForm.FieldLabel><Tabs
+                      defaultActiveKey={'email'}
+                    >
+                      <Tabs.TabPane
+                        forceRender
+                        key={'email'}
+                        tab={$t({ defaultMessage: 'Email' })}
+                        children={templateScopeIds.email.map(id => venueId &&
+                        <TemplateSelector
+                          key={id}
+                          formItemProps={{ name: id }}
+                          scopeId={id}
+                          registrationId={venueId}/>)}/>
+                      <Tabs.TabPane
+                        forceRender
+                        key={'sms'}
+                        tab={$t({ defaultMessage: 'SMS' })}
+                        children={templateScopeIds.sms.map(id => venueId &&
+                        <TemplateSelector
+                          key={id}
+                          formItemProps={{ name: id }}
+                          scopeId={id}
+                          registrationId={venueId}/>)}/>
+                    </Tabs>
+                  </>
+                }
               </Col>
             </Row>
           }

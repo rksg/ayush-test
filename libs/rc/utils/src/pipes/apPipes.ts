@@ -46,7 +46,7 @@ export function transformApStatus ({ $t }: IntlShape, status: ApDeviceStatusEnum
       message = apView === APView.AP_LIST
         ? $t({ defaultMessage: 'Applying firmware' })
         : $t({ defaultMessage: 'AP - applying firmware' })
-      deviceStatus = DeviceConnectionStatus.CONNECTED
+      deviceStatus = DeviceConnectionStatus.ALERTING
       break
 
     case ApDeviceStatusEnum.APPLYING_CONFIGURATION:
