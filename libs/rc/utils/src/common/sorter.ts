@@ -3,7 +3,7 @@ import moment from 'moment-timezone'
 
 import { getIntl } from '@acx-ui/utils'
 
-type SortResult = -1 | 0 | 1
+export type SortResult = -1 | 0 | 1
 
 export function defaultSort (a: unknown, b: unknown): SortResult {
   if (typeof a === 'number' && typeof b === 'number') {
