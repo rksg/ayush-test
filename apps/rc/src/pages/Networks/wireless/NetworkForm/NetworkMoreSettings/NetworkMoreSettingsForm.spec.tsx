@@ -12,7 +12,7 @@ import { mockServer, within, render, screen, cleanup, fireEvent }               
 
 import { externalProviders, policyListResponse }      from '../__tests__/fixtures'
 import NetworkFormContext, { NetworkFormContextType } from '../NetworkFormContext'
-import { hasAuthRadius }                              from '../utils'
+import { hasAccountingRadius, hasAuthRadius }         from '../utils'
 
 import { MoreSettingsForm, NetworkMoreSettingsForm } from './NetworkMoreSettingsForm'
 
@@ -228,7 +228,7 @@ describe('NetworkMoreSettingsForm', () => {
     expect(within(mgmtTxRateSelect).getByText(/5.5 mbps/i)).toBeVisible()
   })
 
-  it('Test network types for show the RADIUS Options settings', async () => {
+  it('Test network types for show the RADIUS Options settings', () => {
     // AAA network type
     const aaaData = { type: NetworkTypeEnum.AAA }
     const aaaWlanData = { }
@@ -286,7 +286,6 @@ describe('NetworkMoreSettingsForm', () => {
         guestNetworkType: GuestNetworkTypeEnum.WISPr
       }
     }
-    expect(hasAuthRadius(guestData, {})).toBeFalsy()
 
     const guestWlanData = {
       guestPortal: {
@@ -299,6 +298,79 @@ describe('NetworkMoreSettingsForm', () => {
     expect(hasAuthRadius(guestData, guestWlanData)).toBeTruthy()
 
     expect(hasAuthRadius({ }, {})).toBeFalsy()
+  })
+
+  // eslint-disable-next-line max-len
+  it('Test network settings for show the SingleSessionIdAccounting of the RADIUS Options', () => {
+    let wlanData = { }
+
+    // AAA/open/psk/dpsk network type
+    let aaaData = { type: NetworkTypeEnum.AAA, enableAccountingService: false }
+    let openData = { type: NetworkTypeEnum.OPEN, enableAccountingService: false }
+    let pskData = { type: NetworkTypeEnum.PSK, enableAccountingService: false }
+    expect(hasAccountingRadius(aaaData, wlanData)).toBeFalsy()
+    expect(hasAccountingRadius(openData, wlanData)).toBeFalsy()
+    expect(hasAccountingRadius(pskData, wlanData)).toBeFalsy()
+
+    aaaData = { type: NetworkTypeEnum.AAA, enableAccountingService: true }
+    openData = { type: NetworkTypeEnum.OPEN, enableAccountingService: true }
+    pskData = { type: NetworkTypeEnum.PSK, enableAccountingService: true }
+    expect(hasAccountingRadius(aaaData, wlanData)).toBeTruthy()
+    expect(hasAccountingRadius(openData, wlanData)).toBeTruthy()
+    expect(hasAccountingRadius(pskData, wlanData)).toBeTruthy()
+
+
+    // captive portal network type
+    let guestData = {
+      type: NetworkTypeEnum.CAPTIVEPORTAL,
+      enableAccountingService: false,
+      guestPortal: {
+        guestNetworkType: GuestNetworkTypeEnum.WISPr
+      }
+    }
+
+    let guestWlanData = {
+      guestPortal: {
+        wisprPage: {
+          customExternalProvider: false,
+          externalProviderName: 'Height8'
+        }
+      }
+    }
+    expect(hasAccountingRadius(guestData, guestWlanData)).toBeFalsy()
+
+    guestWlanData = {
+      guestPortal: {
+        wisprPage: {
+          customExternalProvider: false,
+          externalProviderName: 'Aislelabs'
+        }
+      }
+    }
+    expect(hasAccountingRadius(guestData, guestWlanData)).toBeTruthy()
+
+    guestWlanData = {
+      guestPortal: {
+        wisprPage: {
+          customExternalProvider: true,
+          externalProviderName: 'Other Provider'
+        }
+      }
+    }
+
+    expect(hasAccountingRadius(guestData, guestWlanData)).toBeFalsy()
+
+
+    guestData = {
+      type: NetworkTypeEnum.CAPTIVEPORTAL,
+      enableAccountingService: true,
+      guestPortal: {
+        guestNetworkType: GuestNetworkTypeEnum.WISPr
+      }
+    }
+    expect(hasAccountingRadius(guestData, guestWlanData)).toBeTruthy()
+
+    expect(hasAccountingRadius({ }, {})).toBeFalsy()
   })
 
   describe('Test case for Fast BSS Transition and Mobility Domain ID', () => {

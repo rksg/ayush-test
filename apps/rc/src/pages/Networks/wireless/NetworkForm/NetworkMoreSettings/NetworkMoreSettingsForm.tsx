@@ -19,9 +19,9 @@ import { RadiusOptionsForm }                                                    
 import { NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum, GuestNetworkTypeEnum } from '@acx-ui/rc/utils'
 import { validationMessages }                                                       from '@acx-ui/utils'
 
-import NetworkFormContext from '../NetworkFormContext'
-import { hasAuthRadius }  from '../utils'
-import VLANPoolInstance   from '../VLANPoolInstance'
+import NetworkFormContext                     from '../NetworkFormContext'
+import { hasAccountingRadius, hasAuthRadius } from '../utils'
+import VLANPoolInstance                       from '../VLANPoolInstance'
 
 import { AccessControlForm }  from './AccessControlForm'
 import { LoadControlForm }    from './LoadControlForm'
@@ -175,7 +175,7 @@ export function MoreSettingsForm (props: {
     data?.type === NetworkTypeEnum.DPSK
 
   const showRadiusOptions = isRadiusOptionsSupport && hasAuthRadius(data, wlanData)
-  const showSingleSessionIdAccounting = (data?.enableAccountingService === true)
+  const showSingleSessionIdAccounting = hasAccountingRadius(data, wlanData)
 
   const onBbsMinRateChange = function (value: BssMinRateEnum) {
     if (value === BssMinRateEnum.VALUE_NONE) {

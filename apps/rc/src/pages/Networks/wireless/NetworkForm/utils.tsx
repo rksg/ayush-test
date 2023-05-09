@@ -27,10 +27,14 @@ export const hasAuthRadius = (data: NetworkSaveData | null, wlanData: any) => {
       }
 
       if  (guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr) {
+        /*
+        // keep this for next feature ( authservice is 'always accept')
         const wisprPage = wlanData?.guestPortal?.wisprPage
-        if (wisprPage?.customExternalProvider === true) {
+        if (wisprPage?.customExternalProvider === true) { // other provider
           return true
         }
+        */
+        return true
       }
       return false
 
@@ -39,4 +43,26 @@ export const hasAuthRadius = (data: NetworkSaveData | null, wlanData: any) => {
   }
 }
 
+const noAccountingPorviderNames = ['Height8', 'SocialSignin', 'WILAS', 'WILAS-2']
+
+export const hasAccountingRadius = (data: NetworkSaveData | null, wlanData: any) => {
+  if (!data) return false
+
+  const { type, enableAccountingService } = data
+
+  if (type === NetworkTypeEnum.CAPTIVEPORTAL) {
+    const { guestPortal } = data
+    if (guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr) {
+      const wisprPage = wlanData?.guestPortal?.wisprPage
+      if (wisprPage) {
+        const { customExternalProvider = false, externalProviderName = '' } = wisprPage
+        if (!customExternalProvider && externalProviderName !== '' ) {
+          return !noAccountingPorviderNames.includes(externalProviderName)
+        }
+      }
+    }
+  }
+
+  return enableAccountingService === true
+}
 
