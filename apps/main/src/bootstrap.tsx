@@ -39,7 +39,10 @@ const supportedLocales: Record<string, LangKey> = {
   'de-DE': 'de-DE',
   'de': 'de-DE',
   'ja-JP': 'ja-JP',
-  'ja': 'ja-JP'
+  'ja': 'ja-JP',
+  'fr-FR': 'fr-FR',
+  'ko-KR': 'ko-KR',
+  'pt-BR': 'pt-BR'
 }
 declare global {
   /* eslint-disable no-var */

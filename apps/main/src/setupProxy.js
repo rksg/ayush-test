@@ -8,6 +8,7 @@ const { createProxyMiddleware } = require('http-proxy-middleware')
  */
 const CLOUD_URL = 'https://dev.ruckus.cloud'
 const LOCAL_MLISA_URL = 'https://alto.local.mlisa.io'
+const STATIC_ASSETS = 'https://storage.googleapis.com/ruckus-web-1'
 module.exports = async function setupProxy (app) {
   const localDataApi = new Promise((resolve) => {
     https
@@ -39,7 +40,16 @@ module.exports = async function setupProxy (app) {
       pathRewrite: { '^/docs': '/' }
     }
   ))
-
+  app.use(createProxyMiddleware(
+    '/locales/compiled/',
+    {
+      target: STATIC_ASSETS,
+      changeOrigin: true,
+      onProxyReqWs: function (request) {
+        request.setHeader('origin', STATIC_ASSETS)
+      }
+    }
+  ))
   app.use(createProxyMiddleware(
     '/api/websocket/socket.io',
     {
