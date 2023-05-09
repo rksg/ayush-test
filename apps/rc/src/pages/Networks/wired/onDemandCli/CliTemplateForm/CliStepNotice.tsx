@@ -72,6 +72,7 @@ export function CliStepNotice () {
         children={
           <Input style={{ width: '120px' }} />
         }
+        validateTrigger={'onBlur'}
       />}
     </Col>
   </Row>

@@ -58,6 +58,7 @@ export function GeneralSetting () {
           ]}
           hasFeedback
           validateFirst
+          validateTrigger={'onBlur'}
         >
           <Input />
         </Form.Item>
