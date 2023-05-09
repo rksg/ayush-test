@@ -42,7 +42,7 @@ export function OnDemandCliTab () {
       if (row.venueSwitches) {
         return <Tooltip
           title={switchArray.join('\n')}>
-          {row.venueSwitches.length}
+          {switchArray.length}
         </Tooltip>
       }
       return 0
