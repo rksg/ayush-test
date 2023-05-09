@@ -4,7 +4,6 @@ import { Loader }                 from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { Outlet }                 from '@acx-ui/react-router-dom'
 
-
 function ServiceValidation () {
   const isServiceValidationEnabled = useIsSplitOn(Features.SERVICE_VALIDATION)
   const { $t } = useIntl()

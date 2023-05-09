@@ -12,6 +12,7 @@ import { Provider }                          from '@acx-ui/store'
 import { hasAccess }                         from '@acx-ui/user'
 
 import IncidentDetailsPage                                from './pages/IncidentDetails'
+import NetworkHealth                                      from './pages/NetworkHealth'
 import NetworkHealthDetails                               from './pages/NetworkHealth/NetworkHealthDetails'
 import NetworkHealthForm                                  from './pages/NetworkHealth/NetworkHealthForm'
 import { NetworkHealthSpecGuard, NetworkHealthTestGuard } from './pages/NetworkHealth/NetworkHealthGuard'
@@ -41,22 +42,24 @@ export default function AnalyticsRoutes () {
         element={<div>{$t({ defaultMessage: 'Config Change' }) }</div>} />
 
       {canUseSV && <Route>
-        <Route path='analytics/serviceValidation' element={<NetworkHealthList />} />
-        <Route path='analytics/serviceValidation/add' element={<NetworkHealthForm />} />
-        <Route path='analytics/serviceValidation/:specId'>
-          <Route
-            path='edit'
-            element={<NetworkHealthSpecGuard children={<NetworkHealthForm />} />}
-          />
-          <Route path='tests/:testId'>
+        <Route path='analytics/serviceValidation/*' element={<NetworkHealth />}>
+          <Route path='' element={<NetworkHealthList />} />
+          <Route path='add' element={<NetworkHealthForm />} />
+          <Route path=':specId'>
             <Route
-              path=''
-              element={<NetworkHealthTestGuard children={<NetworkHealthDetails />} />}
+              path='edit'
+              element={<NetworkHealthSpecGuard children={<NetworkHealthForm />} />}
             />
-            <Route
-              path='tab/:activeTab'
-              element={<NetworkHealthTestGuard children={<NetworkHealthDetails />} />}
-            />
+            <Route path='tests/:testId'>
+              <Route
+                path=''
+                element={<NetworkHealthTestGuard children={<NetworkHealthDetails />} />}
+              />
+              <Route
+                path='tab/:activeTab'
+                element={<NetworkHealthTestGuard children={<NetworkHealthDetails />} />}
+              />
+            </Route>
           </Route>
         </Route>
         <Route path='analytics/videoCallQoe' element={<VideoCallQoeListPage />} />

@@ -3,27 +3,26 @@ import React from 'react'
 import { useStreamActivityMessagesQuery }    from '@acx-ui/rc/services'
 import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 
-import Administration    from './pages/Administration'
-import MigrationForm     from './pages/Administration/OnpremMigration/MigrationForm/MigrationForm'
-import AnalyticsBase     from './pages/Analytics'
-import Dashboard         from './pages/Dashboard'
-import Dashboardv2       from './pages/Dashboardv2'
-import DevicesBase       from './pages/Devices'
-import Layout            from './pages/Layout'
-import { MFACheck }      from './pages/Layout/MFACheck'
-import NetworksBase      from './pages/Networks'
-import PoliciesBase      from './pages/Policies'
-import ReportsBase       from './pages/Reports'
-import SearchResults     from './pages/SearchResults'
-import ServicesBase      from './pages/Services'
-import ServiceValidation from './pages/ServiceValidation'
-import TimelineBase      from './pages/Timeline'
-import { UserProfile }   from './pages/UserProfile'
-import UsersBase         from './pages/Users'
-import { VenueDetails }  from './pages/Venues/VenueDetails'
-import { VenueEdit }     from './pages/Venues/VenueEdit'
-import { VenuesForm }    from './pages/Venues/VenuesForm'
-import { VenuesTable }   from './pages/Venues/VenuesTable'
+import Administration   from './pages/Administration'
+import MigrationForm    from './pages/Administration/OnpremMigration/MigrationForm/MigrationForm'
+import AnalyticsBase    from './pages/Analytics'
+import Dashboard        from './pages/Dashboard'
+import Dashboardv2      from './pages/Dashboardv2'
+import DevicesBase      from './pages/Devices'
+import Layout           from './pages/Layout'
+import { MFACheck }     from './pages/Layout/MFACheck'
+import NetworksBase     from './pages/Networks'
+import PoliciesBase     from './pages/Policies'
+import ReportsBase      from './pages/Reports'
+import SearchResults    from './pages/SearchResults'
+import ServicesBase     from './pages/Services'
+import TimelineBase     from './pages/Timeline'
+import { UserProfile }  from './pages/UserProfile'
+import UsersBase        from './pages/Users'
+import { VenueDetails } from './pages/Venues/VenueDetails'
+import { VenueEdit }    from './pages/Venues/VenueEdit'
+import { VenuesForm }   from './pages/Venues/VenuesForm'
+import { VenuesTable }  from './pages/Venues/VenuesTable'
 
 const RcRoutes = React.lazy(() => import('rc/Routes'))
 const AnalyticsRoutes = React.lazy(() => import('analytics/Routes'))
@@ -45,9 +44,6 @@ function AllRoutes () {
           </Route>
           <Route path='timeline/*' element={<TimelineBase />}>
             <Route path='*' element={<RcRoutes />} />
-          </Route>
-          <Route path='analytics/serviceValidation/*' element={<ServiceValidation />}>
-            <Route path='*' element={<AnalyticsRoutes />} />
           </Route>
           <Route path='reports/*' element={<ReportsBase />}>
             <Route path='*' element={<ReportsRoutes />} />
