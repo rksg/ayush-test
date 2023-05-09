@@ -313,8 +313,11 @@ describe('Floor Plans', () => {
       route: { params, path: '/:tenantId/venue/:venueId/floor-plan' }
     })
 
+    const unplacedDevicesCount = deviceData.data[0].ap.filter(ap => !ap.floorplanId).length
 
-    fireEvent.click(await screen.findByRole('button', { name: /Unplaced Devices/ }))
+    // eslint-disable-next-line max-len
+    fireEvent.click(await screen.findByRole('button', { name: 'Unplaced Devices (' + unplacedDevicesCount + ')' }))
+
     expect(await screen.findByText('R510-ROOT (R)')).toBeInTheDocument()
   })
 })
