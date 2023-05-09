@@ -1,11 +1,15 @@
-import React from 'react'
-
 import { Form,Space, Typography } from 'antd'
 import { useIntl }                from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
-import { Button, Card, GridCol, GridRow, Loader, PageHeader }           from '@acx-ui/components'
-import { useGetAdaptivePolicySetQuery, useGetPrioritizedPoliciesQuery } from '@acx-ui/rc/services'
+import { Button, Card, GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
+import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
+import {
+  useGetAdaptivePolicySetQuery,
+  useGetDpskListQuery,
+  useGetPrioritizedPoliciesQuery,
+  useSearchMacRegListsQuery
+} from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink,
   getPolicyListRoutePath,
@@ -16,16 +20,46 @@ import {
 import { TenantLink }     from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
+import { NetworkTable } from './NetworkTable'
+
 export default function AdaptivePolicySetDetail () {
   const { $t } = useIntl()
-  const { policyId } = useParams()
+  const { policyId, tenantId } = useParams()
   const { Paragraph } = Typography
+
+  const isCloudpathEnabled = useIsSplitOn(Features.DPSK_CLOUDPATH_FEATURE)
 
   // eslint-disable-next-line max-len
   const { data: policySetData, isLoading: isGetAdaptivePolicySetLoading }= useGetAdaptivePolicySetQuery({ params: { policySetId: policyId } })
 
   // eslint-disable-next-line max-len
   const { data: prioritizedPolicies } = useGetPrioritizedPoliciesQuery({ params: { policySetId: policyId } })
+
+  // eslint-disable-next-line max-len
+  const { networkIdsInMacList } = useSearchMacRegListsQuery({ params: { tenantId, size: '100000', page: '1', sort: 'name,desc' },
+    payload: {
+      dataOption: 'all',
+      searchCriteriaList: [
+        { filterKey: 'policySetId', operation: 'eq', value: policyId }
+      ]
+    } }, {
+    selectFromResult ({ data }) {
+      return {
+        networkIdsInMacList: data?.data.map(pool => pool.networkIds ?? []).flat() ?? []
+      }
+    } })
+
+  // eslint-disable-next-line max-len
+  const { networkIdsInDpsk } = useGetDpskListQuery({ params: { size: '100000', page: '0', sort: 'name,desc' } },
+    {
+      skip: !isCloudpathEnabled,
+      selectFromResult ({ data }) {
+        return {
+          // eslint-disable-next-line max-len
+          networkIdsInDpsk: data?.data.filter(pool => pool.policySetId === policyId).map(pool => pool.networkIds ?? []).flat() ?? []
+        }
+      } }
+  )
 
   return (
     <>
@@ -73,6 +107,7 @@ export default function AdaptivePolicySetDetail () {
             </Form>
           </Loader>
         </Card>
+        <NetworkTable networkIds={[...new Set([...networkIdsInMacList, ...networkIdsInDpsk])]}/>
       </Space>
     </>
   )

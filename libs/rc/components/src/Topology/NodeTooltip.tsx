@@ -60,7 +60,7 @@ tooltipNode: Node,
   })
 
   const { data: switchDetail, isLoading: switchLoading } =
-    useSwitchDetailHeaderQuery({ params: { ...params, switchId: tooltipNode.id } },
+    useSwitchDetailHeaderQuery({ params: { ...params, switchId: tooltipNode?.id } },
       { skip: skipSwitchCall(tooltipNode?.type as DeviceTypes) })
 
 
@@ -86,7 +86,7 @@ tooltipNode: Node,
       zIndex: 9999
     }}>
     {
-      (tooltipNode.type === DeviceTypes.Switch || tooltipNode.type === DeviceTypes.SwitchStack)
+      (tooltipNode?.type === DeviceTypes.Switch || tooltipNode?.type === DeviceTypes.SwitchStack)
         ? <SwitchDetailsCard
           switchDetail={switchDetail as SwitchViewModel}
           isLoading={switchLoading}/>

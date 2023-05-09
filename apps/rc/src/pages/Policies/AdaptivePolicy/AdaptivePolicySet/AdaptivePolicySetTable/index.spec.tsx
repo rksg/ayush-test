@@ -2,6 +2,7 @@ import { rest } from 'msw'
 
 import { useIsSplitOn }     from '@acx-ui/feature-toggle'
 import {
+  DpskUrls,
   getPolicyDetailsLink, getPolicyRoutePath, MacRegListUrlsInfo,
   PolicyOperation,
   PolicyType,
@@ -10,6 +11,8 @@ import {
 import { Path }                                                   from '@acx-ui/react-router-dom'
 import { Provider }                                               from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
+
+import { dpskList } from '../AdaptivePolicySetDetail/__test__/fixtures'
 
 import { policySetList, prioritizedPolicies, adaptivePolicyList, macList } from './__test__/fixtures'
 
@@ -41,24 +44,24 @@ describe('AdaptivePolicySetTable', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
       rest.get(
-        RulesManagementUrlsInfo.getPolicySets.url,
+        RulesManagementUrlsInfo.getPolicySets.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(policySetList))
       ),
       rest.get(
-        RulesManagementUrlsInfo.getPrioritizedPolicies.url,
+        RulesManagementUrlsInfo.getPrioritizedPolicies.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(prioritizedPolicies))
       ),
       rest.get(
-        RulesManagementUrlsInfo.getPolicies.url,
+        RulesManagementUrlsInfo.getPolicies.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(adaptivePolicyList))
       ),
       rest.get(
-        RulesManagementUrlsInfo.getPolicies.url,
-        (req, res, ctx) => res(ctx.json(adaptivePolicyList))
-      ),
-      rest.get(
-        MacRegListUrlsInfo.getMacRegistrationPools.url,
+        MacRegListUrlsInfo.getMacRegistrationPools.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(macList))
+      ),
+      rest.get(
+        DpskUrls.getDpskList.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(dpskList))
       )
     )
   })

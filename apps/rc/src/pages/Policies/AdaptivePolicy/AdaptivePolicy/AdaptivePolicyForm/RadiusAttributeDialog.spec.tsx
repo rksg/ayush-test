@@ -44,7 +44,7 @@ describe('RadiusAttributeDialog', () => {
     )
 
     const inputs = await screen.findAllByRole('textbox')
-    await userEvent.type(inputs[1], 'testValue')
+    await userEvent.type(inputs[1], '123')
 
     const comboBoxes = await screen.findAllByRole('combobox')
     const attributeType = comboBoxes[0]
@@ -55,7 +55,7 @@ describe('RadiusAttributeDialog', () => {
 
     await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loading' }))
 
-    await userEvent.click(await screen.findByText('Foundry-Privilege-Level'))
+    await userEvent.click(await screen.findByText('Foundry-Privilege-Level (INTEGER)'))
 
     await userEvent.click(screen.getByText('Add'))
   })
