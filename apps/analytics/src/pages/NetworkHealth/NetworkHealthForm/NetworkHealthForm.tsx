@@ -4,7 +4,7 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { PageHeader, StepsForm, showToast } from '@acx-ui/components'
-import { useNavigateToPath }                   from '@acx-ui/react-router-dom'
+import { useNavigateToPath }                from '@acx-ui/react-router-dom'
 
 import * as contents          from '../contents'
 import {

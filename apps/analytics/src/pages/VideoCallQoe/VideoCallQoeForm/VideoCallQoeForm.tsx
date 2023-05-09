@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { PageHeader, StepsForm } from '@acx-ui/components'
-import { useNavigateToPath }        from '@acx-ui/react-router-dom'
+import { useNavigateToPath }     from '@acx-ui/react-router-dom'
 
 import { useCreateCallQoeTestMutation } from '../services'
 
