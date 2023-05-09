@@ -153,6 +153,7 @@ export function useStepsForm <T> ({
 
   const labels = {
     next: $t({ defaultMessage: 'Next' }),
+    apply: $t({ defaultMessage: 'Apply' }),
     submit: $t({ defaultMessage: 'Finish' }),
     pre: $t({ defaultMessage: 'Back' }),
     cancel: $t({ defaultMessage: 'Cancel' }),
@@ -168,6 +169,12 @@ export function useStepsForm <T> ({
       onClick={() => newConfig.gotoStep(formConfig.current - 1)}
       children={labels.pre}
       disabled={formConfig.current === 0}
+    />,
+    apply: <Button
+      type='secondary'
+      loading={loading}
+      onClick={() => submit()}
+      children={labels.apply}
     />,
     // TODO:
     // - handle disable when validation not passed
@@ -186,25 +193,34 @@ export function useStepsForm <T> ({
       />
   }
 
-  const buttonsLayout = steps.length > 1
-    ? <>
+  let buttonsLayout: React.ReactNode
+  if (steps.length > 1 && !editMode) {
+    buttonsLayout = <>
       {buttons.cancel}
       <Space align='center' size={12}>
         {buttons.pre}
         {buttons.submit}
       </Space>
     </>
-    : <>
-      {buttons.submit}
-      {buttons.cancel}
-    </>
+  } else buttonsLayout = <>
+    {editMode ? buttons.apply : buttons.submit}
+    {buttons.cancel}
+  </>
 
   const buttonEls = <>
     <UI.ActionsContainerGlobalOverride />
     <UI.ActionsContainer data-testid='steps-form-actions'>
-      <Space align='center' size={12}>
-        {buttonsLayout}
-      </Space>
+      <Space
+        align={editMode ? 'start' : 'center'}
+        size={12}
+        // was testing to see if this could set the right margin to match steps at the left
+        // not sure if this is a good idea
+        style={{ marginLeft: editMode ? `calc((
+          100% - var(--acx-sider-width) -
+          var(--acx-content-horizontal-space) * 2
+        ) * 4 / 24 - 20px)` : undefined }}
+        children={buttonsLayout}
+      />
     </UI.ActionsContainer>
   </>
 

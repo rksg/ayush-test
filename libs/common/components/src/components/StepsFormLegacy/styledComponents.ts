@@ -207,7 +207,7 @@ export const Wrapper = styled.section<{
   .ant-pro-steps-form-container {
     margin: unset;
     // col span=4/24
-    margin-left: ${props => props.singleStep ? '0;' : '16.66666667%;'}
+    margin-left: ${props => props.singleStep ? '0' : '16.66666667%'};
     // button height=32px
     margin-bottom: calc(var(--acx-steps-form-actions-vertical-space) * 2 + 32px);
     width: unset;
