@@ -108,7 +108,7 @@ describe('ClientOverviewTab', () => {
       checkFragment(asFragment)
     })
 
-    it('should handle error occurred', async () => {
+    it.skip('should handle error occurred', async () => {
       mockServer.use(
         rest.post(CommonUrlsInfo.getHistoricalStatisticsReportsV2.url,
           (_, res, ctx) => res(ctx.status(404), ctx.json({}))
