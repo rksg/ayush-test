@@ -14,13 +14,13 @@ const disconnects = [
     id: 205,
     code: ClientEventEnum.INACTIVITY_TIMEOUT,
     text: defineMessage({ defaultMessage: 'Client connection timed out' }),
-    reason: defineMessage({ defaultMessage: 'Client session terminated by the AP due to client inactivity timeout' })
+    reason: defineMessage({ defaultMessage: 'This event occurs when client disconnects from WLAN on AP due to inactivity' })
   },
   {
     id: 208,
     code: ClientEventEnum.SESSION_EXPIRED,
     text: defineMessage({ defaultMessage: 'Client session expired' }),
-    reason: defineMessage({ defaultMessage: 'Client session expired due to session timeout' })
+    reason: defineMessage({ defaultMessage: 'This event occurs when the client exceeds the session time limit resulting in a session termination' })
   },
   {
     id: 210,
@@ -38,7 +38,7 @@ const disconnects = [
     id: 225,
     code: ClientEventEnum.FORCE_DHCP_DISCONNECTED,
     text: defineMessage({ defaultMessage: 'Force DHCP disconnected' }),
-    reason: defineMessage({ defaultMessage: 'Client disconnected by AP due to lack DHCP activity' })
+    reason: defineMessage({ defaultMessage: 'This event occurs when the client disconnects by force dynamic host configuration protocol (DHCP)' })
   }
 ]
 
@@ -47,13 +47,13 @@ const isolatedDisconnects = [
     id: 201,
     code: ClientEventEnum.AUTHENTICATION_FAILURE,
     text: defineMessage({ defaultMessage: 'Client authentication failed' }),
-    reason: defineMessage({ defaultMessage: 'Client encountered authentication failure' })
+    reason: defineMessage({ defaultMessage: 'This event occurs when the client fails to join WLAN on the AP due to an authentication failure' })
   },
   {
     id: 219,
     code: ClientEventEnum.BLOCKED,
     text: defineMessage({ defaultMessage: 'Client blocked' }),
-    reason: defineMessage({ defaultMessage: 'Client blocked due to policy' })
+    reason: defineMessage({ defaultMessage: 'This event occurs when a client is blocked by a device policy' })
   },
   {
     id: 228,
