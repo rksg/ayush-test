@@ -18,7 +18,8 @@ import {
   getProtocolTypeString,
   getAccessActionString,
   getAddressTypeString,
-  ACLDirection
+  ACLDirection,
+  networkWifiIpRegExp
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -312,7 +313,9 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
                                   rules={[{
                                     required: true,
                                     message: $t({ defaultMessage: 'Please enter network address' })
-                                  }]}
+                                  },
+                                  { validator: (_, value) => networkWifiIpRegExp(value) }
+                                  ]}
                                 >
                                   <Input placeholder={$t({ defaultMessage: 'Network address' })} />
                                 </Form.Item>
@@ -353,7 +356,9 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
                               rules={[{
                                 required: true,
                                 message: $t({ defaultMessage: 'Please enter IP address' })
-                              }]}
+                              },
+                              { validator: (_, value) => networkWifiIpRegExp(value) }
+                              ]}
                             >
                               <Input placeholder={$t({ defaultMessage: 'IP Address' })}/>
                             </Form.Item>
@@ -427,7 +432,9 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
                                   rules={[{
                                     required: true,
                                     message: $t({ defaultMessage: 'Please enter network address' })
-                                  }]}
+                                  },
+                                  { validator: (_, value) => networkWifiIpRegExp(value) }
+                                  ]}
                                 >
                                   <Input placeholder={$t({ defaultMessage: 'Network address' })} />
                                 </Form.Item>
@@ -468,7 +475,9 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
                             rules={[{
                               required: true,
                               message: $t({ defaultMessage: 'Please enter IP address' })
-                            }]}
+                            },
+                            { validator: (_, value) => networkWifiIpRegExp(value) }
+                            ]}
                           >
                             <Input placeholder={$t({ defaultMessage: 'IP Address' })} />
                           </Form.Item>

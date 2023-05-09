@@ -5,11 +5,11 @@ import _                      from 'lodash'
 import { useIntl }            from 'react-intl'
 
 import { cssNumber, Drawer, showActionModal, Table, TableProps, useStepFormContext } from '@acx-ui/components'
-import { DdosRateLimitingRule }                                                      from '@acx-ui/rc/utils'
+import { DdosRateLimitingRule, getDDoSAttackTypeString }                             from '@acx-ui/rc/utils'
 import { filterByAccess }                                                            from '@acx-ui/user'
 
-import { FirewallFormModel }                       from '../../..'
-import { DDoSRuleDialog, getDDoSAttackTypeString } from '../DDoSRuleDialog'
+import { FirewallFormModel } from '../../..'
+import { DDoSRuleDialog }    from '../DDoSRuleDialog'
 
 interface DDoDRateLimitRulesTableProps {
   data?: DdosRateLimitingRule[]
