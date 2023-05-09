@@ -1,61 +1,65 @@
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps }     from '@acx-ui/components'
-import { ApplicationPolicyMgmt } from '@acx-ui/rc/utils'
-import { filterByAccess }        from '@acx-ui/user'
+import { Table, TableProps } from '@acx-ui/components'
+import { SimpleListTooltip } from '@acx-ui/rc/components'
+import { ApplicationInfo }   from '@acx-ui/rc/utils'
+import { filterByAccess }    from '@acx-ui/user'
 
 
+
+const getRulesInfo = (row: ApplicationInfo)=>{
+  if (!row.impactedItems || row.impactedItems.length === 0) return 0
+  const impactedItems = row.impactedItems
+  // eslint-disable-next-line max-len
+  const tooltipItems = impactedItems.map(v => v.applicationPolicyName + '-' + v.applicationPolicyRuleName)
+  return <SimpleListTooltip items={tooltipItems} displayText={impactedItems.length} />
+}
 export const NewAPPTable=(props:{
-  actions: { label:string, click?: ()=>void }[]
+  actions: { label:string, onClick?: ()=>void }[],
+  data: ApplicationInfo[]
 })=>{
   const { $t } = useIntl()
-  const tableActions = []
-  tableActions.push({
-    label: $t({ defaultMessage: 'Export All' })
-  })
-  tableActions.push({
-    label: $t({ defaultMessage: 'Export Current List' })
-  })
-  const newColumn: TableProps<ApplicationPolicyMgmt>['columns'] =[
+  const newColumn: TableProps<ApplicationInfo>['columns'] =[
     {
       title: $t({ defaultMessage: 'Application Name' }),
-      key: 'appName',
-      dataIndex: 'appName',
+      key: 'toApplicationName',
+      dataIndex: 'toApplicationName',
       sorter: false
     }, {
       title: $t({ defaultMessage: 'Application Category' }),
-      key: 'appCategory',
-      dataIndex: 'appCategory',
+      key: 'toCategoryName',
+      dataIndex: 'toCategoryName',
       sorter: false
     }
   ]
-  return (<Table<ApplicationPolicyMgmt>
+  return (<Table<ApplicationInfo>
     type='form'
     columns={newColumn}
-    dataSource={[]}
+    dataSource={props.data}
     actions={filterByAccess(props.actions)}
   />)
 }
 export const UpdateAPPTable=(props:{
-    actions: { label:string, click?: ()=>void }[]
+    actions: { label:string, onClick?: ()=>void }[],
+    data: ApplicationInfo[]
 })=>{
   const { $t } = useIntl()
 
-  const updateColumn: TableProps<ApplicationPolicyMgmt>['columns'] =[
+  const updateColumn: TableProps<ApplicationInfo>['columns'] =[
     {
       title: $t({ defaultMessage: 'Application Name' }),
-      key: 'appName',
-      dataIndex: 'appName',
+      key: 'applicationName',
+      dataIndex: 'applicationName',
       sorter: false
     }, {
       title: $t({ defaultMessage: 'Current Application Category' }),
-      key: 'appCurrentCategory',
-      dataIndex: 'appCurrentCategory',
+      key: 'categoryName',
+      dataIndex: 'categoryName',
       sorter: false
     }, {
       title: $t({ defaultMessage: 'New Application Category' }),
-      key: 'appNewCategory',
-      dataIndex: 'appNewCategory',
+      key: 'toCategoryName',
+      dataIndex: 'toCategoryName',
       sorter: false
     }, {
       title: $t({ defaultMessage: 'Impacted Rules' }),
@@ -63,117 +67,120 @@ export const UpdateAPPTable=(props:{
       dataIndex: 'impactedRules',
       sorter: false,
       render: (data, row)=>{
-        return data+row.appName
+        return getRulesInfo(row)
       }
     }
   ]
 
-  return (<Table<ApplicationPolicyMgmt>
+  return (<Table<ApplicationInfo>
     type='form'
     columns={updateColumn}
-    dataSource={[]}
+    dataSource={props.data}
     actions={filterByAccess(props.actions)}
   />)
 }
 export const MergedAPPTable=(props:{
-    actions: { label:string, click?: ()=>void }[]
+    actions: { label:string, onClick?: ()=>void }[],
+    data: ApplicationInfo[]
 })=>{
   const { $t } = useIntl()
-  const mergedColumn: TableProps<ApplicationPolicyMgmt>['columns'] =[
+  const mergedColumn: TableProps<ApplicationInfo>['columns'] =[
     {
       title: $t({ defaultMessage: 'Current Applications' }),
-      key: 'appMergedName',
-      dataIndex: 'appMergedName',
+      key: 'applicationName',
+      dataIndex: 'applicationName',
       sorter: false
     }, {
       title: $t({ defaultMessage: 'New Application Name' }),
-      key: 'appNewName',
-      dataIndex: 'appNewName',
+      key: 'toApplicationName',
+      dataIndex: 'toApplicationName',
       sorter: false
     }, {
       title: $t({ defaultMessage: 'Application Category' }),
-      key: 'appCategory',
+      key: 'toCategoryName',
       dataIndex: 'appCategory',
       sorter: false
     }, {
       title: $t({ defaultMessage: 'Impacted Rules' }),
-      key: 'impactedRules',
-      dataIndex: 'impactedRules',
+      key: 'impactedItems',
+      dataIndex: 'impactedItems',
       sorter: false,
       render: (data, row)=>{
-        return data+row.appName
+        return getRulesInfo(row)
       }
     }
   ]
 
-  return (<Table<ApplicationPolicyMgmt>
+  return (<Table<ApplicationInfo>
     type='form'
     columns={mergedColumn}
-    dataSource={[]}
+    dataSource={props.data}
     actions={filterByAccess(props.actions)}
   />)
 }
 export const RemovedAPPTable=(props:{
-    actions: { label:string, click?: ()=>void }[]
+    actions: { label:string, onClick?: ()=>void }[],
+    data: ApplicationInfo[]
 })=>{
   const { $t } = useIntl()
-  const removedColumn: TableProps<ApplicationPolicyMgmt>['columns'] =[
+  const removedColumn: TableProps<ApplicationInfo>['columns'] =[
     {
       title: $t({ defaultMessage: 'Application Name' }),
-      key: 'appName',
-      dataIndex: 'appName',
+      key: 'applicationName',
+      dataIndex: 'applicationName',
       sorter: false
     }, {
       title: $t({ defaultMessage: 'Application Category' }),
-      key: 'appCategory',
-      dataIndex: 'appCategory',
+      key: 'categoryName',
+      dataIndex: 'categoryName',
       sorter: false
     }, {
       title: $t({ defaultMessage: 'Impacted Rules' }),
-      key: 'impactedRules',
-      dataIndex: 'impactedRules',
+      key: 'impactedItems',
+      dataIndex: 'impactedItems',
       sorter: false,
       render: (data, row)=>{
-        return data+row.appName
+        return getRulesInfo(row)
       }
     }
   ]
-  return (<Table<ApplicationPolicyMgmt>
+  return (<Table<ApplicationInfo>
     type='form'
     columns={removedColumn}
-    dataSource={[]}
+    dataSource={props.data}
     actions={filterByAccess(props.actions)}
   />)
 }
 export const ChangedAPPTable=(props:{
-    actions: { label:string, click?: ()=>void }[]
+    actions: { label:string, onClick?: ()=>void }[],
+    data: ApplicationInfo[]
 })=>{
   const { $t } = useIntl()
-  const changedColumn: TableProps<ApplicationPolicyMgmt>['columns'] =[
+  const changedColumn: TableProps<ApplicationInfo>['columns'] =[
     {
       title: $t({ defaultMessage: 'Current Application Name' }),
-      key: 'appCurrentName',
-      dataIndex: 'appCurrentName',
+      key: 'applicationName',
+      dataIndex: 'applicationName',
       sorter: false
     }, {
       title: $t({ defaultMessage: 'New Application Name' }),
-      key: 'appNewName',
-      dataIndex: 'appNewName',
+      key: 'toApplicationName',
+      dataIndex: 'toApplicationName',
       sorter: false
     }, {
       title: $t({ defaultMessage: 'Impacted Rules' }),
-      key: 'impactedRules',
-      dataIndex: 'impactedRules',
+      key: 'impactedItems',
+      dataIndex: 'impactedItems',
       sorter: false,
       render: (data, row)=>{
-        return data+row.appName
+        return getRulesInfo(row)
       }
     }
   ]
-  return (<Table<ApplicationPolicyMgmt>
+  return (<Table<ApplicationInfo>
     type='form'
     columns={changedColumn}
-    dataSource={[]}
+    dataSource={props.data}
     actions={filterByAccess(props.actions)}
   />)
 }

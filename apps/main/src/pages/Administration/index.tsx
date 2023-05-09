@@ -5,15 +5,13 @@ import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { useUserProfileContext }                 from '@acx-ui/user'
 
-import AccountSettings       from './AccountSettings'
-import Administrators        from './Administrators'
-import ApplicationPolicyMgmt from './ApplicationPolicyMgmt'
-import * as UI               from './ApplicationPolicyMgmt/styledComponents'
-import FWVersionMgmt         from './FWVersionMgmt'
-import LocalRadiusServer     from './LocalRadiusServer'
-import Notifications         from './Notifications'
-import OnpremMigration       from './OnpremMigration'
-import Subscriptions         from './Subscriptions'
+import AccountSettings   from './AccountSettings'
+import Administrators    from './Administrators'
+import FWVersionMgmt     from './FWVersionMgmt'
+import LocalRadiusServer from './LocalRadiusServer'
+import Notifications     from './Notifications'
+import OnpremMigration   from './OnpremMigration'
+import Subscriptions     from './Subscriptions'
 
 const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: boolean }) => {
   const { $t } = useIntl()
@@ -52,9 +50,6 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
       { isRadiusClientEnabled &&
         <Tabs.TabPane tab={$t({ defaultMessage: 'Local RADIUS Server' })} key='localRadiusServer' />
       }
-      <Tabs.TabPane tab={<>{$t({ defaultMessage: 'Application Policy Management' })}
-        <UI.InformationIcon/></>}
-      key='appPolicyMgmt' />
     </Tabs>
   )
 }
@@ -66,8 +61,7 @@ const tabPanes = {
   notifications: Notifications,
   subscriptions: Subscriptions,
   fwVersionMgmt: FWVersionMgmt,
-  localRadiusServer: LocalRadiusServer,
-  appPolicyMgmt: ApplicationPolicyMgmt
+  localRadiusServer: LocalRadiusServer
 
 }
 

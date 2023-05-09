@@ -1,17 +1,39 @@
+import { useEffect, useState } from 'react'
+
 import { Divider, Space } from 'antd'
 import { useIntl }        from 'react-intl'
 
 
-import {  Tabs } from '@acx-ui/components'
+import {  Tabs }                                                                     from '@acx-ui/components'
+import { useExportAllSigPackMutation, useExportSigPackMutation, useGetSigPackQuery } from '@acx-ui/rc/services'
+import { ApplicationInfo }                                                           from '@acx-ui/rc/utils'
 
 import * as UI                                                                           from './styledComponents'
 import { UpdateConfirms }                                                                from './UpdateConfirms'
 import { ChangedAPPTable, MergedAPPTable, NewAPPTable, RemovedAPPTable, UpdateAPPTable } from './UpdateTables'
 
-
 const ApplicationPolicyMgmt = ()=>{
   const { $t } = useIntl()
-  const updateAvailable = true
+  const [ exportAllSigPack ] = useExportAllSigPackMutation()
+  const [ exportSigPack] = useExportSigPackMutation()
+  const [type, setType] = useState('APPLICATION_ADDED')
+  const [updateAvailable, setUpdateAvailable] = useState(false)
+  const [added, setAdded] = useState([] as ApplicationInfo[])
+  const [updated, setUpdated] = useState([] as ApplicationInfo[])
+  const [merged, setMerged] = useState([] as ApplicationInfo[])
+  const [removed, setRemoved] = useState([] as ApplicationInfo[])
+  const [renamed, setRenamed] = useState([] as ApplicationInfo[])
+  const { data } = useGetSigPackQuery({ params: { changesIncluded: 'true' } })
+  useEffect(()=>{
+    if(data&&data.changedApplication.length){
+      setUpdateAvailable(true)
+      setAdded(data.changedApplication.filter(item=>item.type === 'APPLICATION_ADDED'))
+      setUpdated(data.changedApplication.filter(item=>item.type === 'APPLICATION_UPDATED'))
+      setMerged(data.changedApplication.filter(item=>item.type === 'APPLICATION_MERGED'))
+      setRemoved(data.changedApplication.filter(item=>item.type === 'APPLICATION_REMOVED'))
+      setRenamed(data.changedApplication.filter(item=>item.type === 'APPLICATION_RENAMED'))
+    }
+  },[data])
   const showCurrentInfo = ()=>{
     return (
       <UI.BannerVersion>
@@ -76,9 +98,9 @@ const ApplicationPolicyMgmt = ()=>{
             </UI.CurrentDetail>
           </UI.FwContainer>
         </Space>
-        {updateAvailable&&<div style={{ marginTop: 5 }}>
+        {updateAvailable&&<div style={{ marginTop: 10, color: 'var(--acx-neutrals-70)' }}>
           {$t({ defaultMessage: 'Clicking "Update" will proceed with '+
-            'the below update details under this tenant' })}
+            'the below updates under this tenant' })}
         </div>}
         {updateAvailable&&<div style={{ marginTop: 10 }}>
           <UpdateConfirms/>
@@ -89,55 +111,67 @@ const ApplicationPolicyMgmt = ()=>{
   const updateDetails = ()=>{
     const tableActions = []
     tableActions.push({
-      label: $t({ defaultMessage: 'Export All' })
+      label: $t({ defaultMessage: 'Export All' }),
+      onClick: ()=>{
+        exportAllSigPack({}).unwrap().catch((error) => {
+          console.log(error) // eslint-disable-line no-console
+        })
+      }
     })
     tableActions.push({
-      label: $t({ defaultMessage: 'Export Current List' })
+      label: $t({ defaultMessage: 'Export Current List' }),
+      onClick: ()=>{
+        exportSigPack({ params: { type } }).unwrap().catch((error) => {
+          console.log(error) // eslint-disable-line no-console
+        })
+      }
     })
     const tabs = {
-      newApplication: {
-        title: <UI.TabSpan>{$t({ defaultMessage: 'New Application ({totalNew})' },{ totalNew: 5 })}
+      APPLICATION_ADDED: {
+        title: <UI.TabSpan>{$t({ defaultMessage: 'New Application ({totalNew})' },
+          { totalNew: added.length })}
         </UI.TabSpan>,
-        content: <NewAPPTable actions={tableActions}/>,
+        content: <NewAPPTable actions={tableActions} data={added}/>,
         visible: true
       },
-      categoryUpdate: {
+      CATEGORY_UPDATED: {
         title: <UI.TabSpan>{$t({ defaultMessage: 'Category Update ({totalUpdate})' },
-          { totalUpdate: 4 })}
+          { totalUpdate: updated.length })}
         </UI.TabSpan>,
-        content: <UpdateAPPTable actions={tableActions}/>,
+        content: <UpdateAPPTable actions={tableActions} data={updated}/>,
         visible: true
       },
-      appMerged: {
+      APPLICATION_MERGED: {
         title: <UI.TabSpan>{$t({ defaultMessage: 'Application Merged ({totalMerged})' },
-          { totalMerged: 3 })}
+          { totalMerged: merged.length })}
         </UI.TabSpan>,
-        content: <MergedAPPTable actions={tableActions}/>,
+        content: <MergedAPPTable actions={tableActions} data={merged}/>,
         visible: true
       },
-      appRemoved: {
+      APPLICATION_REMOVED: {
         title: <UI.TabSpan>{$t({ defaultMessage: 'Application Removed ({totalRemoved})' },
-          { totalRemoved: 2 })}
+          { totalRemoved: removed.length })}
         </UI.TabSpan>,
-        content: <RemovedAPPTable actions={tableActions}/>,
+        content: <RemovedAPPTable actions={tableActions} data={removed}/>,
         visible: true
       },
-      appChanged: {
+      APPLICATION_RENAMED: {
         title: <UI.TabSpan>{$t({ defaultMessage: 'Application Name Changed ({totalChanged})' },
-          { totalChanged: 1 })}
+          { totalChanged: renamed.length })}
         </UI.TabSpan>,
-        content: <ChangedAPPTable actions={tableActions}/>,
+        content: <ChangedAPPTable actions={tableActions} data={renamed}/>,
         visible: true
       }
     }
     return <>
-      <div style={{ fontWeight: 600, marginTop: 40 }}>
+      <div style={{ fontWeight: 600, marginTop: 20 }}>
         {$t({ defaultMessage: 'Update Details' })}
       </div>
       <div>
         <Tabs
-          defaultActiveKey='newApplication'
-          type='card'
+          defaultActiveKey='APPLICATION_ADDED'
+          type='third'
+          onChange={(key)=>setType(key)}
         >
           {
             Object.entries(tabs).map((item) =>

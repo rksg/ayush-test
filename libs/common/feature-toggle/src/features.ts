@@ -42,5 +42,6 @@ export enum Features {
   EXPORT_DEVICE = 'viewmodel-export-device-inventory',
   WPA3_80211R = 'wifi-eda-wpa3-80211r-toggle',
   I18N_TOGGLE = 'acx-ui-i18n-toggle',
-  STICKY_CLIENT_STEERING = 'wifi-eda-sticky-client-steering-toggle'
+  STICKY_CLIENT_STEERING = 'wifi-eda-sticky-client-steering-toggle',
+  SIGPACK_UPGRADE = 'acx-ui-sigpack-upgrade'
 }

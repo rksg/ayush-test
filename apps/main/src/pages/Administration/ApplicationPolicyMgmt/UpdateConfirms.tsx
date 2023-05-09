@@ -1,13 +1,15 @@
 import { Input, Modal }                     from 'antd'
+import { useIntl }                          from 'react-intl'
 import { MessageDescriptor, defineMessage } from 'react-intl'
 
-import { Button }  from '@acx-ui/components'
-import { getIntl } from '@acx-ui/utils'
+import { Button }                   from '@acx-ui/components'
+import { useUpdateSigPackMutation } from '@acx-ui/rc/services'
 
 import * as UI from './styledComponents'
 
 export const UpdateConfirms = ()=>{
-  const { $t } = getIntl()
+  const { $t } = useIntl()
+  const [updateSigPack]=useUpdateSigPackMutation()
   const title = $t({ defaultMessage: 'Update Application policy?' })
   const contentType='C'
   const contentDescription: Record<string, MessageDescriptor> = {
@@ -24,7 +26,8 @@ export const UpdateConfirms = ()=>{
     'on this tenant will be removed. Are you sure you want to update the application '+
     'under this tenant?' })
   }
-  const typeWords = $t({ defaultMessage: 'Type the word "{text}" to confirm:' }, { text: 'Update' })
+  const typeText = 'Update'
+  const typeWords = $t({ defaultMessage: 'Type the word "{text}" to confirm:' }, { text: typeText })
   const showModal = ()=>{
     const modal = Modal.confirm({
       type: 'confirm',
@@ -33,12 +36,16 @@ export const UpdateConfirms = ()=>{
       content: <><UI.DialogContent>{$t(contentDescription[contentType], { count: 3 })}
       </UI.DialogContent>
       <UI.TypeContent>{typeWords}<Input onChange={(e)=>{
-        modal.update({ okButtonProps: { disabled: e.target.value !== 'Update' } })
+        modal.update({ okButtonProps: { disabled: e.target.value !== typeText } })
       }}
       style={{ width: 80, marginLeft: 5 }}
       /></UI.TypeContent></>,
       okButtonProps: { disabled: true },
       onOk: ()=>{
+        updateSigPack({
+          params: {},
+          payload: { action: 'update' }
+        })
       },
       icon: <> </>
     })
