@@ -497,6 +497,7 @@ export function AddGuestDrawer (props: AddGuestProps) {
 
   const onClose = () => {
     setVisible(false)
+    form.resetFields()
   }
 
   const onSave = async () => {
@@ -520,6 +521,7 @@ export function AddGuestDrawer (props: AddGuestProps) {
         })
       setVisible(false)
     }
+    form.resetFields()
   }
 
 
@@ -544,6 +546,7 @@ export function AddGuestDrawer (props: AddGuestProps) {
       title={'Add Guest Pass'}
       visible={visible}
       onClose={onClose}
+      destroyOnClose={true}
       children={
         <Form layout='vertical' form={form} onFinish={onSave} data-testid='guest-form'>
           <GuestFields />

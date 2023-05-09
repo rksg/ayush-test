@@ -99,13 +99,6 @@ const RogueApDrawer = (props: {
         showAddAnother={false}
         showSaveButton={false}
         onCancel={handleRogueApDrawerClose}
-        onSave={async () => {
-          try {
-            handleRogueApDrawerClose()
-          } catch (error) {
-            if (error instanceof Error) throw error
-          }
-        }}
       />
     }
     width={'800px'}

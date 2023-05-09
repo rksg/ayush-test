@@ -1,13 +1,13 @@
-import { useRef, useEffect } from 'react'
+import { useRef } from 'react'
 
 import { Col, Divider, Row, Typography } from 'antd'
 import { useIntl }                       from 'react-intl'
 
-import { Descriptions, StepsForm } from '@acx-ui/components'
-import { CodeMirrorWidget }        from '@acx-ui/rc/components'
-import { useVenuesListQuery }      from '@acx-ui/rc/services'
-import { CliConfiguration }        from '@acx-ui/rc/utils'
-import { useParams }               from '@acx-ui/react-router-dom'
+import { Descriptions, StepsForm, useStepFormContext } from '@acx-ui/components'
+import { CodeMirrorWidget }                            from '@acx-ui/rc/components'
+import { useVenuesListQuery }                          from '@acx-ui/rc/services'
+import { CliConfiguration }                            from '@acx-ui/rc/utils'
+import { useParams }                                   from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
@@ -18,23 +18,18 @@ const venuesListPayload = {
   sortOrder: 'ASC'
 }
 
-export function CliStepSummary (props: {
-  data: CliConfiguration
-}) {
+export function CliStepSummary () {
   const { $t } = useIntl()
+  const { form } = useStepFormContext()
   const { tenantId } = useParams()
-  const { data } = props
 
+  const data = (form?.getFieldsValue(true) as CliConfiguration)
   const codeMirrorEl = useRef(null as unknown as {
     setValue: Function,
   })
 
   const { data: venuesList }
   = useVenuesListQuery({ params: { tenantId }, payload: venuesListPayload })
-
-  useEffect(() => {
-    codeMirrorEl?.current?.setValue(data?.cli || '')
-  }, [data])
 
   return <>
     <Row gutter={24}>
@@ -84,7 +79,7 @@ export function CliStepSummary (props: {
               width: '100%'
             }}
             data={{
-              clis: '',
+              clis: data?.cli || '',
               configOptions: {
                 readOnly: true
               }

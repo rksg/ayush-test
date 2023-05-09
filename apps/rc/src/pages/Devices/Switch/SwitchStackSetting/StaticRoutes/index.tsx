@@ -33,6 +33,7 @@ const StaticRoutes = (props: { readOnly: boolean }) => {
       title: $t({ defaultMessage: 'Destination IP' }),
       key: 'destinationIp',
       dataIndex: 'destinationIp',
+      defaultSortOrder: 'ascend',
       sorter: { compare: sortProp('destinationIp', defaultSort) }
     },
     {

@@ -24,6 +24,7 @@ export function OnDemandCliTab () {
     key: 'name',
     title: $t({ defaultMessage: 'CLI Template Name' }),
     dataIndex: 'name',
+    defaultSortOrder: 'ascend',
     sorter: true
   },{
     key: 'switches',

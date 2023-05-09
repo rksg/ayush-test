@@ -34,7 +34,7 @@ jest.mock('./pages/IncidentDetails', () => () => {
 test('should redirect analytics to analytics/incidents', async () => {
   render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
-      path: '/t/tenantId/analytics',
+      path: '/tenantId/t/analytics',
       wrapRoutes: false
     }
   })
@@ -53,7 +53,7 @@ test('should redirect service validation to analytics/serviceValidation', async 
 test('should navigate to analytics/incidents', async () => {
   render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
-      path: '/t/tenantId/analytics/incidents',
+      path: '/tenantId/t/analytics/incidents',
       wrapRoutes: false
     }
   })
@@ -113,7 +113,7 @@ test('should navigate to analytics/serviceValidation by NetworkHealthSpecGuard',
 test('should navigate to analytics/recommendations', () => {
   render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
-      path: '/t/tenantId/analytics/recommendations',
+      path: '/tenantId/t/analytics/recommendations',
       wrapRoutes: false
     }
   })
@@ -122,7 +122,7 @@ test('should navigate to analytics/recommendations', () => {
 test('should navigate to analytics/health', () => {
   render(<AnalyticsRoutes />, {
     route: {
-      path: '/t/tenantId/analytics/health',
+      path: '/tenantId/t/analytics/health',
       wrapRoutes: false
     }
   })
@@ -131,7 +131,7 @@ test('should navigate to analytics/health', () => {
 test('should navigate to analytics/health/tab/overview', async () => {
   render(< Provider><AnalyticsRoutes /></Provider>, {
     route: {
-      path: '/t/tenantId/analytics/health/tab/overview',
+      path: '/tenantId/t/analytics/health/tab/overview',
       wrapRoutes: false
     }
   })
@@ -140,7 +140,7 @@ test('should navigate to analytics/health/tab/overview', async () => {
 test('should navigate to analytics/configChange', () => {
   render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
-      path: '/t/tenantId/analytics/configChange',
+      path: '/tenantId/t/analytics/configChange',
       wrapRoutes: false
     }
   })
@@ -149,7 +149,7 @@ test('should navigate to analytics/configChange', () => {
 test('should navigate to analytics/incidentDetails', async () => {
   render(< Provider><AnalyticsRoutes /></Provider>, {
     route: {
-      path: '/t/tenantId/analytics/incidents/incidentId',
+      path: '/tenantId/t/analytics/incidents/incidentId',
       wrapRoutes: false
     }
   })
@@ -158,7 +158,7 @@ test('should navigate to analytics/incidentDetails', async () => {
 test('should navigate to analytics/incidents/tab/overview', async () => {
   render(< Provider><AnalyticsRoutes /></Provider>, {
     route: {
-      path: '/t/tenantId/analytics/incidents/tab/overview',
+      path: '/tenantId/t/analytics/incidents/tab/overview',
       wrapRoutes: false
     }
   })
@@ -225,7 +225,7 @@ describe('if tier no access', () => {
     jest.spyOn(console, 'warn').mockImplementation(() => {})
     const { container } = render(<AnalyticsRoutes />, {
       route: {
-        path: '/t/tenantId/serviceValidation',
+        path: '/tenantId/t/serviceValidation',
         wrapRoutes: false
       },
       wrapper: Provider
@@ -247,7 +247,7 @@ describe('RBAC', () => {
     const { container } = render(<AnalyticsRoutes />, {
       wrapper: Provider,
       route: {
-        path: '/t/tenantId/analytics',
+        path: '/tenantId/t/analytics',
         wrapRoutes: false
       }
     })
@@ -258,7 +258,7 @@ describe('RBAC', () => {
     const { container } = render(<AnalyticsRoutes />, {
       wrapper: Provider,
       route: {
-        path: '/t/tenantId/serviceValidation',
+        path: '/tenantId/t/serviceValidation',
         wrapRoutes: false
       }
     })

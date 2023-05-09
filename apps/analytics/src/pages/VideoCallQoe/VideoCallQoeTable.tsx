@@ -6,14 +6,14 @@ import { startCase, toLower } from 'lodash'
 import { useIntl }            from 'react-intl'
 import { defineMessage }      from 'react-intl'
 
-import { defaultSort, dateSort, sortProp }               from '@acx-ui/analytics/utils'
-import { Button, Table, TableProps, Tooltip, TrendPill } from '@acx-ui/components'
-import { Loader }                                        from '@acx-ui/components'
-import { DateFormatEnum, formatter }                     from '@acx-ui/formatter'
-import { TenantLink }                                    from '@acx-ui/react-router-dom'
-import { TABLE_DEFAULT_PAGE_SIZE }                       from '@acx-ui/utils'
+import { defaultSort, dateSort, sortProp }                                           from '@acx-ui/analytics/utils'
+import { Button, Table, TableProps, Tooltip, TrendPill, showActionModal, showToast } from '@acx-ui/components'
+import { Loader }                                                                    from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                                 from '@acx-ui/formatter'
+import { TenantLink }                                                                from '@acx-ui/react-router-dom'
+import { TABLE_DEFAULT_PAGE_SIZE }                                                   from '@acx-ui/utils'
 
-import { useVideoCallQoeTestsQuery } from '../VideoCallQoe/services'
+import { useVideoCallQoeTestsQuery, useDeleteCallQoeTestMutation } from '../VideoCallQoe/services'
 
 import * as MeetingType         from './constants'
 import { messageMapping }       from './contents'
@@ -34,6 +34,7 @@ export function VideoCallQoeTable () {
       meetingList.push( { ...meeting, name } )
     })
   })
+  const [ deleteCallQoeTest ] = useDeleteCallQoeTestMutation()
 
   const statusMapping = {
     NOT_STARTED: defineMessage({ defaultMessage: 'Not Started' }),
@@ -49,24 +50,20 @@ export function VideoCallQoeTable () {
       key: 'name',
       searchable: true,
       render: (value: unknown, row: unknown) => {
-        const formattedStatus = startCase(toLower((row as Meeting).status as string))
+        const status = startCase(toLower((row as Meeting).status as string))
         const meetingId = (row as Meeting).id
-        const urlTxt = [MeetingType.ENDED, MeetingType.NOT_STARTED]
-          .includes(formattedStatus) ? `${meetingId}` : `${meetingId}`
-        return [MeetingType.ENDED]
-          .includes(formattedStatus) ?
-          <TenantLink to={`/analytics/videoCallQoe/${urlTxt}`}>
+        return [MeetingType.ENDED].includes(status)
+          ? <TenantLink to={`/analytics/videoCallQoe/${meetingId}`}>
             {value as string}
           </TenantLink>
-          : [MeetingType.NOT_STARTED, MeetingType.STARTED].includes(formattedStatus)?
-            <Button
+          : [MeetingType.NOT_STARTED, MeetingType.STARTED].includes(status)
+            ? <Button
               type='link'
               onClick={()=>{
                 setVisible(true)
                 setTestDetails({ name: value as string, link: (row as Meeting).joinUrl })
               }
-              }
-            >
+              }>
               {value as string}
             </Button>
             : value as string
@@ -142,7 +139,30 @@ export function VideoCallQoeTable () {
     }
   ]
 
-  const actions: TableProps<(typeof meetingList)[0]>['rowActions'] = []
+  const actions: TableProps<(typeof meetingList)[0]>['rowActions'] = [
+    {
+      label: $t({ defaultMessage: 'Delete' }),
+      onClick: ([{ name, id }], clearSelection) => {
+        showActionModal({
+          type: 'confirm',
+          customContent: {
+            action: 'DELETE',
+            entityName: $t({ defaultMessage: 'Test Call' }),
+            entityValue: name
+          },
+          onOk: async () => {
+            const deleteResponse = await deleteCallQoeTest({ id }).unwrap()
+            if (deleteResponse) {
+              showToast({ type: 'success', content: $t(messageMapping.TEST_DELETE_SUCCESS) })
+            } else {
+              showToast({ type: 'error', content: $t(messageMapping.TEST_DELETE_ERROR) })
+            }
+            clearSelection()
+          }
+        })
+      }
+    }
+  ]
 
   return (
     <Loader states={[queryResults]}>
@@ -151,7 +171,7 @@ export function VideoCallQoeTable () {
         dataSource={meetingList}
         rowActions={actions}
         rowKey='id'
-        rowSelection={{ type: 'checkbox' }}
+        rowSelection={{ type: 'radio' }}
         pagination={{
           pageSize: TABLE_DEFAULT_PAGE_SIZE,
           defaultPageSize: TABLE_DEFAULT_PAGE_SIZE

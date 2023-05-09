@@ -22,7 +22,8 @@ import {
   mockedServiceId,
   mockedDpskPassphraseFormFields,
   mockedSingleDpskPassphrase,
-  mockedDpskPassphrase
+  mockedDpskPassphrase,
+  mockedDpskPassphraseList
 } from './__tests__/fixtures'
 import DpskPassphraseDrawer from './DpskPassphraseDrawer'
 
@@ -35,9 +36,18 @@ describe('DpskPassphraseDrawer', () => {
   }
 
   // eslint-disable-next-line max-len
-  const detailPath = '/:tenantId/' + getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.DETAIL })
+  const detailPath = '/:tenantId/t/' + getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.DETAIL })
 
-  it('should add passphrases manaully', async () => {
+  beforeEach(() => {
+    mockServer.use(
+      rest.post(
+        DpskUrls.getEnhancedPassphraseList.url,
+        (req, res, ctx) => res(ctx.json({ data: [] }))
+      )
+    )
+  })
+
+  it('should add passphrases', async () => {
     const setVisible = jest.fn()
     const saveFn = jest.fn()
 
@@ -75,13 +85,17 @@ describe('DpskPassphraseDrawer', () => {
     })
   })
 
-  it('should show the message if add passphrase error', async () => {
+  it('should add passphrase by default values', async () => {
+    const saveFn = jest.fn()
+
     mockServer.use(
       rest.post(
         DpskUrls.addPassphrase.url,
         (req, res, ctx) => {
-          return res(ctx.status(404), ctx.json({
-            message: 'An error occurred'
+          saveFn(req.body)
+          return res(ctx.json({
+            requestId: '__REQUEST_ID__',
+            response: {}
           }))
         }
       )
@@ -95,13 +109,62 @@ describe('DpskPassphraseDrawer', () => {
       }
     )
 
-    await populateValues(mockedDpskPassphraseFormFields)
+    await userEvent.click(await screen.findByRole('button', { name: /Add/ }))
+
+    await waitFor(() => {
+      expect(saveFn).toHaveBeenCalledWith(expect.objectContaining({
+        numberOfPassphrases: 1,
+        numberOfDevices: 1
+      }))
+    })
+  })
+
+  it('should add passphrases with duplicated MAC', async () => {
+    const targetPassPhraseList = { ...mockedDpskPassphraseList }
+    const targetMac = targetPassPhraseList.data[1].mac
+    const saveFn = jest.fn()
+
+    mockServer.use(
+      rest.post(
+        DpskUrls.addPassphrase.url,
+        (req, res, ctx) => {
+          saveFn(req.body)
+          return res(ctx.json({
+            requestId: '__REQUEST_ID__',
+            response: {}
+          }))
+        }
+      ),
+      rest.post(
+        DpskUrls.getEnhancedPassphraseList.url,
+        (req, res, ctx) => {
+          return res(ctx.json(targetPassPhraseList))
+        }
+      )
+    )
+
+    render(
+      <Provider>
+        <DpskPassphraseDrawer visible={true} setVisible={jest.fn()} editMode={{ isEdit: false }} />
+      </Provider>, {
+        route: { params: paramsForPassphraseTab, path: detailPath }
+      }
+    )
+
+    await populateValues({
+      ...mockedSingleDpskPassphrase,
+      mac: targetMac
+    })
 
     await userEvent.click(await screen.findByRole('button', { name: /Add/ }))
 
-    // TODO
-    // const errorMsgElem = await screen.findByText('Sever Error')
-    // expect(errorMsgElem).toBeInTheDocument()
+    expect(await screen.findByText('Replace Passphrase For MAC Address?')).toBeVisible()
+
+    await userEvent.click(screen.getByRole('button', { name: /Replace Passphrase/ }))
+
+    await waitFor(() => {
+      expect(saveFn).toHaveBeenCalledWith(expect.objectContaining({ override: true }))
+    })
   })
 
   it('should save data with the specified expiration date', async () => {
@@ -187,9 +250,10 @@ describe('DpskPassphraseDrawer', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: /Save/ }))
 
-    const { createdDate, ...other } = editingData
+    const { createdDate, vlanId, ...otherEditingData } = editingData
     const expectedPayload = {
-      ...other,
+      ...otherEditingData,
+      vlanId: vlanId?.toString(),
       numberOfPassphrases: 1
     }
     await waitFor(() => {

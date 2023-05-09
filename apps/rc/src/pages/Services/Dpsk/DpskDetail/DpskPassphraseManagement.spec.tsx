@@ -40,7 +40,7 @@ describe('DpskPassphraseManagement', () => {
     activeTab: DpskDetailsTabKey.PASSPHRASE_MGMT
   }
   // eslint-disable-next-line max-len
-  const detailPath = '/:tenantId/' + getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.DETAIL })
+  const detailPath = '/:tenantId/t/' + getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.DETAIL })
 
   beforeEach(() => {
     mockServer.use(
@@ -106,7 +106,7 @@ describe('DpskPassphraseManagement', () => {
     await userEvent.click(await screen.findByRole('button', { name: /Delete Passphrase/i }))
   })
 
-  it.skip('should not delete selected passphrase when it is mapped to Persona', async () => {
+  it('should not delete selected passphrase when it is mapped to Persona', async () => {
     mockServer.use(
       rest.post(
         DpskUrls.getEnhancedPassphraseList.url,
@@ -127,7 +127,9 @@ describe('DpskPassphraseManagement', () => {
     const targetRow = await screen.findByRole('row', { name: new RegExp(targetRecord.username) })
     await userEvent.click(within(targetRow).getByRole('checkbox'))
 
-    expect(screen.queryByRole('button', { name: /Delete/ })).toBeNull()
+    await waitFor(async () => {
+      expect(screen.queryByRole('button', { name: /Delete/ })).toBeDisabled()
+    })
   })
 
   it('should show error message when import CSV file failed', async () => {

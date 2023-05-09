@@ -222,10 +222,13 @@ export function VarCustomers () {
     },
     {
       title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
-      dataIndex: 'wifiLicenses',
+      dataIndex: 'apEntitlement.quantity',
       align: 'center',
-      key: 'wifiLicenses',
-      sorter: true
+      key: 'apEntitlement.quantity',
+      sorter: true,
+      render: function (data, row) {
+        return row.wifiLicenses ? row.wifiLicenses : 0
+      }
     },
     {
       title: $t({ defaultMessage: 'Wi-Fi Licenses Utilization' }),
@@ -239,10 +242,13 @@ export function VarCustomers () {
     },
     {
       title: $t({ defaultMessage: 'Switch Licenses' }),
-      dataIndex: 'switchLicenses',
+      dataIndex: 'switchEntitlement',
       align: 'center',
-      key: 'switchLicenses',
-      sorter: true
+      key: 'switchEntitlement',
+      sorter: true,
+      render: function (data, row) {
+        return row.switchLicenses ? row.switchLicenses : 0
+      }
     },
     {
       title: $t({ defaultMessage: 'Next License Expiration' }),
