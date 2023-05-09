@@ -127,8 +127,7 @@ async function loadPtBR (): Promise<Messages> {
   const [base, proBase, translation] = await Promise.all([
     import('antd/lib/locale/pt_BR').then(result => result.default),
     import('@ant-design/pro-provider/lib/locale/pt_BR').then(result => result.default),
-    // fetch(localePath('pt-BR')).then(res => res.json()) as Promise<NestedMessages>
-    await localePath('pt-BR')
+    localePath('pt-BR') as Promise<NestedMessages>
   ])
 
   const combine = merge({}, base, proBase, translation)
