@@ -32,7 +32,11 @@ describe('ResidentPortal', () => {
 
     render(
       <Provider>
-        <Form form={formRef.current}><ResidentPortalSettingsForm /></Form>
+        <Form form={formRef.current}>
+          <ResidentPortalSettingsForm 
+            existingFavicon={{fileSrc:'', filename:''}}
+            existingLogo={{fileSrc:'', filename:''}}/>
+          </Form>
       </Provider>
     )
 
@@ -58,7 +62,11 @@ describe('ResidentPortal', () => {
   it('should validate the service name', async () => {
     render(
       <Provider>
-        <Form><ResidentPortalSettingsForm /></Form>
+        <Form>
+          <ResidentPortalSettingsForm 
+            existingFavicon={{fileSrc:'', filename:''}}
+            existingLogo={{fileSrc:'', filename:''}}/>
+        </Form>
       </Provider>
     )
 
