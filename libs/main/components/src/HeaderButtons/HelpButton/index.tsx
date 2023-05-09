@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
 
-import { Menu, Dropdown } from 'antd'
-import { useIntl }        from 'react-intl'
+import { Menu, Dropdown, Space } from 'antd'
+import { useIntl }               from 'react-intl'
 
-import { LayoutUI }                from '@acx-ui/components'
-import { get }                     from '@acx-ui/config'
-import { QuestionMarkCircleSolid } from '@acx-ui/icons'
-import { RolesEnum }               from '@acx-ui/types'
-import { hasRoles }                from '@acx-ui/user'
+import { LayoutUI, Tooltip }                              from '@acx-ui/components'
+import { get }                                            from '@acx-ui/config'
+import { QuestionMarkCircleSolid, WarningCircleOutlined } from '@acx-ui/icons'
+import { RolesEnum }                                      from '@acx-ui/types'
+import { hasRoles }                                       from '@acx-ui/user'
 
 import Firewall          from './Firewall'
 import HelpPage          from './HelpPage'
@@ -24,11 +24,17 @@ const HelpButton = (props:HelpButtonProps) => {
 
   const [firewallModalState, setFirewallModalOpen] = useState(false)
   const [helpPageModalState, setHelpPageModalOpen] = useState(false)
+  const [isChatStarted, setIsChatStarted] = useState(false)
+  const [isBlocked, setIsBlocked] = useState(false)
   const [isChatDisabled, setIsChatDisabled] = useState(true)
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
 
   useEffect(()=>{
     switch (supportStatus) {
+      case 'start':
+        setIsChatDisabled(true)
+        setIsChatStarted(true)
+        break
       case 'ready':
         setIsChatDisabled(false)
         break
@@ -40,6 +46,18 @@ const HelpButton = (props:HelpButtonProps) => {
         break
     }
   },[supportStatus])
+
+  useEffect(()=>{
+    if(isChatStarted && supportStatus && ['start','ready'].includes(supportStatus)){
+      const timeout:NodeJS.Timeout=setTimeout(()=>{
+        setIsBlocked(true)
+      },30*1000)
+      if(supportStatus === 'ready'){
+        clearTimeout(timeout)
+        setIsBlocked(false)
+      }
+    }
+  },[isChatStarted, supportStatus])
 
   const documentationCenter = get('DOCUMENTATION_CENTER')
   const myOpenCases = get('MY_OPEN_CASES')
@@ -93,7 +111,13 @@ const HelpButton = (props:HelpButtonProps) => {
       {
         key: 'support',
         disabled: isChatDisabled,
-        label: $t({ defaultMessage: 'Contact Support' })
+        label: <Space>{$t({ defaultMessage: 'Contact Support' })}
+          {isBlocked && <Tooltip showArrow={false}
+            // eslint-disable-next-line max-len
+            title={$t({ defaultMessage: 'Some security browser extentions/plugins might block this feature. Please disable those extensions/plugins and try again.' })}>
+            <WarningCircleOutlined style={{ marginBottom: '-5px', width: '18px', height: '18px' }}/>
+          </Tooltip>}
+        </Space>
       },
       {
         key: 'models',
