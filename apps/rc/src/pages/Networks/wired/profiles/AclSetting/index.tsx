@@ -42,14 +42,14 @@ export const defaultExtendedRuleList = {
 export function AclSetting () {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
-  const { currentData, editMode } = useContext(ConfigurationProfileFormContext)
+  const { currentData } = useContext(ConfigurationProfileFormContext)
   const [ aclsTable, setAclsTable ] = useState<Acl[]>([])
   const [ drawerFormRule, setDrawerFormRule ] = useState<Acl>()
   const [ drawerEditMode, setDrawerEditMode ] = useState(false)
   const [ drawerVisible, setDrawerVisible ] = useState(false)
 
   useEffect(() => {
-    if(currentData.acls && editMode){
+    if(currentData.acls){
       form.setFieldValue('acls', currentData.acls)
       setAclsTable(currentData.acls)
     }
@@ -59,6 +59,7 @@ export function AclSetting () {
     title: $t({ defaultMessage: 'ACL Name' }),
     dataIndex: 'name',
     key: 'name',
+    defaultSortOrder: 'ascend',
     sorter: { compare: sortProp('name', defaultSort) }
   }, {
     title: $t({ defaultMessage: 'ACL Type' }),

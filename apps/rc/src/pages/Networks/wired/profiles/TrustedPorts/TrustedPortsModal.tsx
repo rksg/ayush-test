@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react'
 import { Form, Typography } from 'antd'
 import { useIntl }          from 'react-intl'
 
-import { Modal, ModalType, StepsFormLegacy } from '@acx-ui/components'
-import { TrustedPort }                       from '@acx-ui/rc/utils'
+import { Modal, ModalType, StepsForm } from '@acx-ui/components'
+import { TrustedPort }                 from '@acx-ui/rc/utils'
 
 import { SelectModelStep }  from './SelectModelStep'
 import { TrustedPortsStep } from './TrustedPortsStep'
@@ -51,10 +51,11 @@ export function TrustedPortsModal (props: {
       title={$t({ defaultMessage: 'Select Ports By Model' })}
       data-testid='trustedPortModal'
     >
-      <StepsFormLegacy
+      <StepsForm
         editMode={!!editRecord}
         onCancel={onCancel}
-        onFinish={async (data) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onFinish={async (data: any) => {
           if(data.trustedPorts.trustPorts){
             onSave(data)
             return true
@@ -64,9 +65,9 @@ export function TrustedPortsModal (props: {
         buttonLabel={{ submit: editRecord ?
           $t({ defaultMessage: 'Save' }) : $t({ defaultMessage: 'Finish' }) }}
       >
-        <StepsFormLegacy.StepForm
+        <StepsForm.StepForm
           title={$t({ defaultMessage: 'Select Model' })}
-          onFinish={async (data) => {
+          onFinish={async (data: VlanTrustPortInterface) => {
             if(data.family && data.model){
               setNoModelMsg(false)
               setVlanSettingValues(data)
@@ -88,13 +89,13 @@ export function TrustedPortsModal (props: {
             </Typography.Text>
           }
           <SelectModelStep editRecord={editRecord}/>
-        </StepsFormLegacy.StepForm>
-        <StepsFormLegacy.StepForm
+        </StepsForm.StepForm>
+        <StepsForm.StepForm
           title={$t({ defaultMessage: 'Trusted Ports' })}
         >
           <TrustedPortsStep vlanSettingValues={vlanSettingValues} editRecord={editRecord} />
-        </StepsFormLegacy.StepForm>
-      </StepsFormLegacy>
+        </StepsForm.StepForm>
+      </StepsForm>
     </Modal>
   )
 }

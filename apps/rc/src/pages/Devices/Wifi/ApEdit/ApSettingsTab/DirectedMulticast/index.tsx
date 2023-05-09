@@ -199,10 +199,10 @@ export function DirectedMulticast () {
               Currently settings as the venue (<venuelink></venuelink>)
             `}
                   values={{
-                    venuelink: () =>
+                    venuelink: () => venue?
                       <TenantLink
                         to={`venues/${venue.id}/venue-details/overview`}>{venue?.name}
-                      </TenantLink>
+                      </TenantLink>: ''
                   }}/>
                 : $t({ defaultMessage: 'Custom settings' })
               }

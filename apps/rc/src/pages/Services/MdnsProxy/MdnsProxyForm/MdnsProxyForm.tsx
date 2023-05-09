@@ -4,7 +4,7 @@ import _             from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { PageHeader, StepsFormLegacy } from '@acx-ui/components'
+import { PageHeader, StepsForm } from '@acx-ui/components'
 import {
   useAddMdnsProxyMutation,
   useGetMdnsProxyQuery,
@@ -85,27 +85,27 @@ export default function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps)
         ]}
       />
       <MdnsProxyFormContext.Provider value={{ editMode, currentData }}>
-        <StepsFormLegacy<MdnsProxyFormData>
+        <StepsForm<MdnsProxyFormData>
           editMode={editMode}
           onCancel={() => navigate(serviceTablePath)}
           onFinish={(data) => saveData(editMode, data)}
         >
-          <StepsFormLegacy.StepForm
+          <StepsForm.StepForm
             name='settings'
             title={$t({ defaultMessage: 'Settings' })}
             onFinish={updateCurrentData}
           >
             <MdnsProxySettingsForm />
-          </StepsFormLegacy.StepForm>
-          <StepsFormLegacy.StepForm
+          </StepsForm.StepForm>
+          <StepsForm.StepForm
             name='scope'
             title={$t({ defaultMessage: 'Scope' })}
             onFinish={updateCurrentData}
           >
             <MdnsProxyScope />
-          </StepsFormLegacy.StepForm>
+          </StepsForm.StepForm>
           {!editMode &&
-            <StepsFormLegacy.StepForm
+            <StepsForm.StepForm
               name='summary'
               title={$t({ defaultMessage: 'Summary' })}
               onFinish={async () => {
@@ -113,10 +113,10 @@ export default function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps)
               }}
             >
               <MdnsProxySummary />
-            </StepsFormLegacy.StepForm>
+            </StepsForm.StepForm>
           }
 
-        </StepsFormLegacy>
+        </StepsForm>
       </MdnsProxyFormContext.Provider>
     </>
   )

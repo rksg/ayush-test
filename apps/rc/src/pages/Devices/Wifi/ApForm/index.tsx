@@ -47,7 +47,8 @@ import {
   VenueExtended,
   WifiNetworkMessages,
   gpsToFixed,
-  redirectPreviousPage
+  redirectPreviousPage,
+  validateTags
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -438,11 +439,14 @@ export function ApForm () {
                 initialValue=''
                 children={<Input.TextArea rows={4} maxLength={180} />}
               />
-              {/* <Form.Item // TODO: Waiting for TAG feature support
+              <Form.Item
                 name='tags'
                 label={$t({ defaultMessage: 'Tags' })}
-                children={<Select mode='tags' />}
-              /> */}
+                rules={[{
+                  validator: (_, value) => validateTags(value)
+                }]}
+                children={<Select mode='tags' maxLength={24} />}
+              />
               {isApGpsFeatureEnabled && <GpsCoordinatesFormItem />}
             </Loader>
           </Col>

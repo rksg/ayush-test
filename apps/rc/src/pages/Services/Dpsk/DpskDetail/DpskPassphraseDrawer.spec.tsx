@@ -85,6 +85,40 @@ describe('DpskPassphraseDrawer', () => {
     })
   })
 
+  it('should add passphrase by default values', async () => {
+    const saveFn = jest.fn()
+
+    mockServer.use(
+      rest.post(
+        DpskUrls.addPassphrase.url,
+        (req, res, ctx) => {
+          saveFn(req.body)
+          return res(ctx.json({
+            requestId: '__REQUEST_ID__',
+            response: {}
+          }))
+        }
+      )
+    )
+
+    render(
+      <Provider>
+        <DpskPassphraseDrawer visible={true} setVisible={jest.fn()} editMode={{ isEdit: false }} />
+      </Provider>, {
+        route: { params: paramsForPassphraseTab, path: detailPath }
+      }
+    )
+
+    await userEvent.click(await screen.findByRole('button', { name: /Add/ }))
+
+    await waitFor(() => {
+      expect(saveFn).toHaveBeenCalledWith(expect.objectContaining({
+        numberOfPassphrases: 1,
+        numberOfDevices: 1
+      }))
+    })
+  })
+
   it('should add passphrases with duplicated MAC', async () => {
     const targetPassPhraseList = { ...mockedDpskPassphraseList }
     const targetMac = targetPassPhraseList.data[1].mac

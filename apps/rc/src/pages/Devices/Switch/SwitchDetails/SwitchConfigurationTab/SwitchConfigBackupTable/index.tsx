@@ -109,6 +109,7 @@ export function SwitchConfigBackupTable () {
     title: $t({ defaultMessage: 'Name' }),
     dataIndex: 'name',
     disable: true,
+    defaultSortOrder: 'ascend',
     sorter: true
   }, {
     key: 'createdDate',

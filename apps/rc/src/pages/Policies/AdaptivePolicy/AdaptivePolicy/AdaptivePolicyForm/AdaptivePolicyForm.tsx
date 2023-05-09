@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -50,7 +50,6 @@ export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
     params: { policyId, templateId } }, { skip: !editMode })
 
   const [isUpdating, setIsUpdating] = useState(false)
-
 
   useEffect(() => {
     if(data && editMode) {
@@ -117,6 +116,7 @@ export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
             }
           }
         }
+
       } else {
         const { id: addedPolicyId } = await addAdaptivePolicy({
           params: { templateId: data.templateTypeId },

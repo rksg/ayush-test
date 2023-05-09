@@ -56,10 +56,10 @@ const cliExamplesTooltip = <FormattedMessage
     <div>
       <p>For example:</p>
       <p>interface ve 100 </p>
-      <p>vrf forwarding <strong> &lt; vrf_name  &gt; </strong> </p>
-      <p>ip address <strong> &lt; ip address/mask &gt; </strong> </p>
+      <p>vrf forwarding <strong> < vrf_name > </strong> </p>
+      <p>ip address <strong> < ip address/mask > </strong> </p>
       <p>ip pim-sparse  </p>
-      <p>ip ospf area <strong> &lt; area number/ip format &gt; </strong> </p>
+      <p>ip ospf area <strong> < area number/ip format > </strong> </p>
     </div>
     <br></br>
     <div>
