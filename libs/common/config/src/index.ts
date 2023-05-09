@@ -24,6 +24,7 @@ export interface EnvironmentConfig {
   SUPPORTED_AP_MODELS: string
   HOW_TO_VIDEOS: string
   NEW_API_DOMAIN_NAME: string
+  STATIC_ASSETS: string
 }
 
 const config: { value?: EnvironmentConfig } = {}
