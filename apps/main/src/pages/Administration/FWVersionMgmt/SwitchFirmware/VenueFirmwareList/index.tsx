@@ -39,6 +39,7 @@ import {
   getNextScheduleTpl,
   getSwitchNextScheduleTplTooltip,
   isSwitchNextScheduleTooltipDisabled,
+  parseSwitchVersion,
   toUserDate
 } from '../../FirmwareUtils'
 import { PreferencesDialog } from '../../PreferencesDialog'
@@ -78,7 +79,7 @@ function useColumns (
       render: function (data, row) {
         let versionList = []
         if (row.switchFirmwareVersion?.id) {
-          versionList.push(row.switchFirmwareVersion.id.replace('_b392', ''))
+          versionList.push(parseSwitchVersion(row.switchFirmwareVersion.id))
         }
         if (enableSwitchRodanFirmware && row.switchFirmwareVersionAboveTen?.id) {
           versionList.push(row.switchFirmwareVersionAboveTen.id)
@@ -365,7 +366,7 @@ export function VenueFirmwareList () {
 
       return {
         // eslint-disable-next-line max-len
-        versionFilterOptions: versionList?.map(v=>({ key: v, value: v.replace('_b392', '') })) || true
+        versionFilterOptions: versionList?.map(v=>({ key: v, value: parseSwitchVersion(v) })) || true
       }
     }
   })
