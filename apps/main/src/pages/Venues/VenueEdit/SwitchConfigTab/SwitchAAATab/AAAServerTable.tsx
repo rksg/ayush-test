@@ -23,22 +23,27 @@ function useColumns (type: AAAServerTypeEnum) {
     {
       title: $t({ defaultMessage: 'Name' }),
       key: 'name',
-      dataIndex: 'name'
+      dataIndex: 'name',
+      defaultSortOrder: 'ascend',
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'IP Address' }),
       key: 'ip',
-      dataIndex: 'ip'
+      dataIndex: 'ip',
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'Authentication Port' }),
       key: 'authPort',
-      dataIndex: 'authPort'
+      dataIndex: 'authPort',
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'Accounting Port' }),
       key: 'acctPort',
-      dataIndex: 'acctPort'
+      dataIndex: 'acctPort',
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'Shared Secret' }),
@@ -59,17 +64,21 @@ function useColumns (type: AAAServerTypeEnum) {
     {
       title: $t({ defaultMessage: 'Name' }),
       key: 'name',
-      dataIndex: 'name'
+      dataIndex: 'name',
+      defaultSortOrder: 'ascend',
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'IP Address' }),
       key: 'ip',
-      dataIndex: 'ip'
+      dataIndex: 'ip',
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'Authentication Port' }),
       key: 'authPort',
-      dataIndex: 'authPort'
+      dataIndex: 'authPort',
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'Shared Secret' }),
@@ -98,7 +107,9 @@ function useColumns (type: AAAServerTypeEnum) {
     {
       title: $t({ defaultMessage: 'Username' }),
       key: 'username',
-      dataIndex: 'username'
+      dataIndex: 'username',
+      defaultSortOrder: 'ascend',
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'Password' }),
@@ -118,6 +129,7 @@ function useColumns (type: AAAServerTypeEnum) {
       title: $t({ defaultMessage: 'Privilege' }),
       key: 'level',
       dataIndex: 'level',
+      sorter: true,
       render: function (data) {
         return <FormattedMessage {...levelDisplayText[data as AAA_Level_Type]}/>
       }

@@ -4,7 +4,7 @@ import { Form, Typography } from 'antd'
 import _                    from 'lodash'
 import { useIntl }          from 'react-intl'
 
-import { Modal, ModalType, StepsForm } from '@acx-ui/components'
+import { Modal, ModalType, StepsFormNew } from '@acx-ui/components'
 import {
   SwitchModelPortData,
   TrustedPort,
@@ -25,7 +25,8 @@ export interface VlanSettingInterface {
   selectedOptionOfSlot3?: string
   selectedOptionOfSlot4?: string
   switchFamilyModels?: SwitchModelPortData
-  trustedPorts: TrustedPort[]
+  trustedPorts: TrustedPort[],
+  throughSecondStep?: boolean
 }
 
 export function VlanPortsModal (props: {
@@ -42,7 +43,12 @@ export function VlanPortsModal (props: {
   const [editMode, setEditMode] = useState(false)
   const [noModelMsg, setNoModelMsg] = useState(false)
   const [vlanSettingValues, setVlanSettingValues] =
-    useState<VlanSettingInterface>({ family: '', model: '', trustedPorts: [] })
+    useState<VlanSettingInterface>({
+      family: '',
+      model: '',
+      trustedPorts: [],
+      throughSecondStep: false
+    })
 
   useEffect(()=>{
     form.resetFields()
@@ -80,9 +86,24 @@ export function VlanPortsModal (props: {
   const onSaveUntagged = async (data: any) => {
     setVlanSettingValues({
       ...vlanSettingValues,
+      throughSecondStep: true,
       switchFamilyModels: {
         ...vlanSettingValues.switchFamilyModels,
-        ...data.switchFamilyModels
+        ...data.switchFamilyModels,
+        taggedPorts: vlanSettingValues.switchFamilyModels?.taggedPorts || []
+      }
+    })
+    return true
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const onSaveTagged = async (data: any) => {
+    setVlanSettingValues({
+      ...vlanSettingValues,
+      switchFamilyModels: {
+        ...vlanSettingValues.switchFamilyModels,
+        ...data.switchFamilyModels,
+        untaggedPorts: vlanSettingValues.switchFamilyModels?.untaggedPorts || []
       }
     })
     return true
@@ -104,7 +125,9 @@ export function VlanPortsModal (props: {
       }))
     switchFamilyModelsData.ports = data.switchFamilyModels.untaggedPorts.length +
       data.switchFamilyModels.taggedPorts.length
-    switchFamilyModelsData.untaggedPorts = data.switchFamilyModels.untaggedPorts.join(',')
+    switchFamilyModelsData.untaggedPorts = vlanSettingValues.throughSecondStep ?
+      data.switchFamilyModels.untaggedPorts.join(',') :
+      vlanSettingValues.switchFamilyModels?.untaggedPorts
     switchFamilyModelsData.taggedPorts = data.switchFamilyModels.taggedPorts.join(',')
     onSave(switchFamilyModelsData)
   }
@@ -123,11 +146,13 @@ export function VlanPortsModal (props: {
     >
       <VlanPortsContext.Provider value={{
         vlanSettingValues, setVlanSettingValues, vlanList, editMode }}>
-        <StepsForm
+        <StepsFormNew
+          editMode={editMode}
           onCancel={onCancel}
           onFinish={onFinish}
+          style={{ paddingBlockEnd: 0 }}
         >
-          <StepsForm.StepForm
+          <StepsFormNew.StepForm
             title={$t({ defaultMessage: 'Select Model' })}
             onFinish={onSaveModel}
           >
@@ -142,17 +167,20 @@ export function VlanPortsModal (props: {
               </Typography.Text>
             }
             <SelectModelStep editMode={editRecord !== undefined}/>
-          </StepsForm.StepForm>
-          <StepsForm.StepForm
+          </StepsFormNew.StepForm>
+          <StepsFormNew.StepForm
             title={$t({ defaultMessage: 'Untagged Ports' })}
             onFinish={onSaveUntagged}
           >
             <UntaggedPortsStep />
-          </StepsForm.StepForm>
-          <StepsForm.StepForm title={$t({ defaultMessage: 'Tagged Ports' })}>
+          </StepsFormNew.StepForm>
+          <StepsFormNew.StepForm
+            title={$t({ defaultMessage: 'Tagged Ports' })}
+            onFinish={onSaveTagged}
+          >
             <TaggedPortsStep />
-          </StepsForm.StepForm>
-        </StepsForm>
+          </StepsFormNew.StepForm>
+        </StepsFormNew>
       </VlanPortsContext.Provider>
     </Modal>
   )

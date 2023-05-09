@@ -212,6 +212,7 @@ export function VenueRogueAps () {
           columns={getCols(useIntl())}
           dataSource={transformData(tableQuery?.data?.data || [])}
           pagination={tableQuery.pagination}
+          onFilterChange={tableQuery.handleFilterChange}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
         />

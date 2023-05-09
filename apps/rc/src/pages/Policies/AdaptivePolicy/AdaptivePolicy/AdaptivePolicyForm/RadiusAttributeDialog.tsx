@@ -55,7 +55,7 @@ export function RadiusAttributeDialog (props: RadiusAttributeDialogProps) {
       }
       onOk={triggerSubmit}
       onCancel={onModalCancel}>
-      <RadiusAttributeForm form={form}/>
+      <RadiusAttributeForm form={form} editAttribute={editAttribute}/>
     </Modal>
   )
 }
