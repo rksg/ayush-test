@@ -12,7 +12,7 @@ import {
   firmwareTypeTrans
 } from '@acx-ui/rc/utils'
 
-import { getReleaseFirmware } from '../../FirmwareUtils'
+import { getReleaseFirmware, parseSwitchVersion } from '../../FirmwareUtils'
 
 import * as UI from './styledComponents'
 
@@ -32,7 +32,7 @@ export const VersionBanner = () => {
     return (<UI.FwContainer>
       <div>
         <span>{$t({ defaultMessage: 'For ICX Models ({models}):' }, { models })} </span>
-        <UI.VersionName>{firmware?.name.replace('_b392', '')}</UI.VersionName>
+        <UI.VersionName>{parseSwitchVersion(firmware?.name)}</UI.VersionName>
       </div>
       <div>
         <UI.TypeSpace split={<Divider type='vertical' />}>
