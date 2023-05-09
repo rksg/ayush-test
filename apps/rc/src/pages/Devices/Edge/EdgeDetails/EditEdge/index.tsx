@@ -37,7 +37,7 @@ const tabs = {
   }
 }
 
-const EditEdgeTabs = () => {
+export const EditEdgeTabs = () => {
 
   const navigate = useNavigate()
   const { activeTab, serialNumber } = useParams()
