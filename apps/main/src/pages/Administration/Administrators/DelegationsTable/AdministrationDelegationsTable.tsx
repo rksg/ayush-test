@@ -110,6 +110,7 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
       title: $t({ defaultMessage: 'Status' }),
       key: 'status',
       dataIndex: 'status',
+      defaultSortOrder: 'ascend',
       sorter: { compare: sortProp('status', defaultSort) },
       render: (_, row) => {
         return $t(getDelegetionStatusIntlString(row.status))
@@ -121,7 +122,6 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
       title: $t({ defaultMessage: 'Action' }),
       key: 'action',
       dataIndex: 'action',
-      defaultSortOrder: 'ascend',
       sorter: { compare: sortProp('status',
         (a: AdministrationDelegationStatus, b: AdministrationDelegationStatus): SortResult => {
           const _a = a !== AdministrationDelegationStatus.ACCEPTED ? 0 : 1
