@@ -114,18 +114,15 @@ export function VenuePropertyTab () {
   }, [propertyConfigsQuery.data])
 
   useEffect(() => {
-    if (queryUnitList.isLoading || !queryUnitList.data || !groupId) return
+    if (queryUnitList.isLoading || queryUnitList.isFetching
+      || !queryUnitList.data || !groupId) return
 
     const personaIds = queryUnitList.data.data
       .filter(({ id, personaId }) => (id && personaId))
       .map(({ personaId }) => personaId)
-    // const personaIds = [
-    //   '1e0c5e78-6a1c-471a-9edd-e6d2acb4e758',
-    //   '6f700763-03e3-4515-987a-93da9e053f0b',
-    //   'b6616987-ddc4-4495-8b26-ee354f5adcd0']
 
     fetchPersonaData(personaIds)
-  }, [queryUnitList.isLoading, groupId])
+  }, [queryUnitList.isLoading, queryUnitList.isFetching, groupId])
 
   useEffect(() => {
     const apMacs: string[] = []
@@ -159,6 +156,7 @@ export function VenuePropertyTab () {
   const fetchApData = (apMac: string[]) => {
     // console.log('Fetch aps : ', apMac)
 
+    setApMap(new Map())
     getApList({ payload: { ...apViewModelPayload, filters: { apMac } } })
       .then(result => {
         if (result.data) {
@@ -174,6 +172,7 @@ export function VenuePropertyTab () {
   const fetchSwitchData = (switchMac: string[]) => {
     // console.log('Fetch switches : ', switchMac)
 
+    setSwitchMap(new Map())
     getSwitchList({
       params: { tenantId },
       payload: { ...switchViewModelPayload, filters: { switchMac } }
