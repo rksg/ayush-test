@@ -51,10 +51,9 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getSwitchListByGroup: {
     method: 'post',
-    url: '/api/viewmodel/:tenantId/switch/grouped'
-    // url: '/switches/aggregationDetails',
-    // oldUrl: '/api/viewmodel/:tenantId/switch/grouped',
-    // newApi: true
+    url: '/switches/aggregationDetails',
+    oldUrl: '/api/viewmodel/:tenantId/switch/grouped',
+    newApi: true
   },
   getSwitchModelList: {
     method: 'post',

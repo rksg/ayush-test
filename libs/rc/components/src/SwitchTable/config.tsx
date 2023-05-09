@@ -1,16 +1,14 @@
-import { Button }                   from 'antd'
 import { defineMessage, IntlShape } from 'react-intl'
 
-import { ApDeviceStatusEnum, APExtended } from '@acx-ui/rc/utils'
-import { Params, TenantLink }             from '@acx-ui/react-router-dom'
-import { getIntl }                        from '@acx-ui/utils'
+import { SwitchRow } from '@acx-ui/rc/utils'
+import { getIntl }   from '@acx-ui/utils'
 
 import { SwitchStatus } from '.'
 
 const commonAttributes = ($t: IntlShape['$t']) => [
   {
     key: 'members',
-    renderer: (record: APExtended) => (
+    renderer: (record: SwitchRow) => (
       <div>
         {$t(defineMessage({ defaultMessage: 'Members' }))}: {record.members}
       </div>
@@ -18,7 +16,7 @@ const commonAttributes = ($t: IntlShape['$t']) => [
   },
   {
     key: 'incidents',
-    renderer: (record: APExtended) => (
+    renderer: (record: SwitchRow) => (
       <div>
         {$t(defineMessage({ defaultMessage: 'Incidents (24 hours)' }))}: {record.incidents}
       </div>
@@ -26,7 +24,7 @@ const commonAttributes = ($t: IntlShape['$t']) => [
   },
   {
     key: 'clients',
-    renderer: (record: APExtended) => (
+    renderer: (record: SwitchRow) => (
       <div>
         {$t(defineMessage({ defaultMessage: 'Connected Clients' }))}: {record.clients}
       </div>
@@ -34,11 +32,7 @@ const commonAttributes = ($t: IntlShape['$t']) => [
   }
 ]
 
-export const getGroupableConfig = (
-  params? :Readonly<Params<string>>,
-  apAction?: {
-    showDeleteApGroups: (record: APExtended, tenantId: string) => void
-  } ) => {
+export const getGroupableConfig = () => {
   const { $t } = getIntl()
   const deviceStatusGroupableOptions = {
     key: 'deviceStatus',
@@ -46,7 +40,7 @@ export const getGroupableConfig = (
     attributes: [
       {
         key: 'deviceStatus',
-        renderer: (record: any) => (
+        renderer: (record: SwitchRow) => (
           <SwitchStatus row={record} />
         )
       },
@@ -59,7 +53,9 @@ export const getGroupableConfig = (
     attributes: [
       {
         key: 'model',
-        renderer: (record: APExtended) => <div style={{ fontStyle: 'bold' }}>{record.model}</div>
+        renderer: (record: SwitchRow) => <div style={{ fontStyle: 'bold' }}>
+          {record.model && record.model.toLocaleUpperCase()}
+        </div>
       },
       ...commonAttributes($t)
     ]
@@ -67,25 +63,3 @@ export const getGroupableConfig = (
 
   return { deviceStatusGroupableOptions, modelGroupableOptions }
 }
-
-export const groupedFields = [
-  'check-all',
-  'name',
-  'deviceStatus',
-  'model',
-  'meshRole',
-  'IP',
-  'apMac',
-  'venueName',
-  'switchName',
-  'clients',
-  'deviceGroupName',
-  'apStatusData.APRadio.band',
-  'tags',
-  'serialNumber',
-  'fwVersion',
-  'cog',
-  'venueId',
-  'apStatusData.APRadio.radioId',
-  'apStatusData.APRadio.channel'
-]
