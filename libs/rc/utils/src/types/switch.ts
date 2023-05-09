@@ -236,7 +236,6 @@ export class SwitchViewModel extends Switch {
 }
 
 export interface SwitchRow {
-  // [x: string]: any
   id: string
   model: string
   serialNumber: string
