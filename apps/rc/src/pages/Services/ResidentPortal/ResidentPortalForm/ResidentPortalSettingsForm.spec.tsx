@@ -33,10 +33,10 @@ describe('ResidentPortal', () => {
     render(
       <Provider>
         <Form form={formRef.current}>
-          <ResidentPortalSettingsForm 
-            existingFavicon={{fileSrc:'', filename:''}}
-            existingLogo={{fileSrc:'', filename:''}}/>
-          </Form>
+          <ResidentPortalSettingsForm
+            existingFavicon={{ fileSrc: '', filename: '' }}
+            existingLogo={{ fileSrc: '', filename: '' }}/>
+        </Form>
       </Provider>
     )
 
@@ -63,9 +63,9 @@ describe('ResidentPortal', () => {
     render(
       <Provider>
         <Form>
-          <ResidentPortalSettingsForm 
-            existingFavicon={{fileSrc:'', filename:''}}
-            existingLogo={{fileSrc:'', filename:''}}/>
+          <ResidentPortalSettingsForm
+            existingFavicon={{ fileSrc: '', filename: '' }}
+            existingLogo={{ fileSrc: '', filename: '' }}/>
         </Form>
       </Provider>
     )

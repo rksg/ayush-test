@@ -5,10 +5,17 @@ import { Upload, Space } from 'antd'
 import { showToast }          from '@acx-ui/components'
 import { PlusCircleOutlined } from '@acx-ui/icons'
 import { getIntl }            from '@acx-ui/utils'
+
 import { HelpText, HelpTextButton } from './styledComponents'
 
+
+export interface ResidentPortalImageValue {
+  file?: File,
+  isRemoved?: boolean
+}
+
 interface OnChangeHandler {
-  (e:any): void;
+  (e:ResidentPortalImageValue): void;
 }
 
 export interface ExistingImage {
@@ -20,13 +27,12 @@ export interface SimpleImageUploadProps {
   value: string,
   onChange: OnChangeHandler,
   existingImage: ExistingImage,
-  imageType: "LOGO" | "FAVICON"
+  imageType: 'LOGO' | 'FAVICON'
 }
 
 export default function ResidentPortalImageUpload (props: SimpleImageUploadProps) {
 
   const {
-    value,
     onChange,
     existingImage,
     imageType
@@ -73,7 +79,7 @@ export default function ResidentPortalImageUpload (props: SimpleImageUploadProps
     }
 
     // validation successful -- set image
-    onChange({file: file})
+    onChange({ file: file })
 
     const reader = new FileReader()
     reader.readAsDataURL(file)
@@ -84,20 +90,20 @@ export default function ResidentPortalImageUpload (props: SimpleImageUploadProps
     return false
   }
 
-  const removeImage = function() {
+  const removeImage = function () {
     if(existingImage?.fileSrc) {
-      onChange({file: undefined, isRemoved: true})
+      onChange({ file: undefined, isRemoved: true })
     } else {
-      onChange({file: undefined})
+      onChange({ file: undefined })
     }
 
     setImageUrl('')
     setImageName('')
   }
 
-  const resetImage = function() {
-    onChange({file: undefined})
-    
+  const resetImage = function () {
+    onChange({ file: undefined })
+
     if(existingImage?.fileSrc) {
       setImageUrl(existingImage.fileSrc)
       setImageName(existingImage.filename? existingImage.filename : '')
@@ -111,7 +117,7 @@ export default function ResidentPortalImageUpload (props: SimpleImageUploadProps
     showToast({ type: 'error', content })
   }
 
-  const isImageChangedFromExisting = function() {
+  const isImageChangedFromExisting = function () {
     return existingImage?.fileSrc && imageUrl !== existingImage.fileSrc
   }
 
@@ -127,36 +133,38 @@ export default function ResidentPortalImageUpload (props: SimpleImageUploadProps
         style={{ height: '180px' }}>
         {(imageUrl)
           ? <img src={imageUrl}
-            alt={imageType === "FAVICON" ? 'favicon' : 'logo'}
+            alt={imageType === 'FAVICON' ? 'favicon' : 'logo'}
             style={{ width: 'auto',
               height: 'auto',
               maxHeight: '100%',
               maxWidth: '100%'
-            }} /> 
+            }} />
           : <div>
-              <PlusCircleOutlined />
-              <div className='ant-upload-text'>{ $t({ defaultMessage: 'Upload' }) }</div>
+            <PlusCircleOutlined />
+            <div className='ant-upload-text'>{ $t({ defaultMessage: 'Upload' }) }</div>
           </div>}
       </Upload>
       <HelpText type='secondary'>
-        {(imageUrl) ? imageName : $t({defaultMessage: 'No File Selected'})}<br />
-        <Space direction='horizontal' size="small">
-          {(isImageChangedFromExisting()) ? <HelpTextButton type="link" size='small' onClick={resetImage}>
-            {$t({defaultMessage: 'Reset'})}
-          </HelpTextButton> : ''}
-          {(imageUrl) ? 
-            <HelpTextButton type="link" size='small' onClick={removeImage}>
-              {$t({defaultMessage: 'Remove'})}
+        {(imageUrl) ? imageName : $t({ defaultMessage: 'No File Selected' })}<br />
+        <Space direction='horizontal' size='small'>
+          {(isImageChangedFromExisting()) ?
+            <HelpTextButton type='link' size='small' onClick={resetImage}>
+              {$t({ defaultMessage: 'Reset' })}
             </HelpTextButton>
             : ''}
-          
+          {(imageUrl) ?
+            <HelpTextButton type='link' size='small' onClick={removeImage}>
+              {$t({ defaultMessage: 'Remove' })}
+            </HelpTextButton>
+            : ''}
+
         </Space>
         <br />
         {$t({ defaultMessage: 'Max. image size: 20 MB' })}<br />
-        {imageType === 'FAVICON' ? 
+        {imageType === 'FAVICON' ?
           $t({ defaultMessage: 'Supported formats: PNG, JPEG, GIF, SVG, ICO' })
           : $t({ defaultMessage: 'Supported formats: PNG, JPEG, GIF, SVG' })}
-        
+
       </HelpText>
     </Space>
   )

@@ -1,5 +1,7 @@
 import { ResidentPortal } from '@acx-ui/rc/utils'
 
+import { ResidentPortalImageValue } from './ResidentPortalImageUpload'
+
 
 export interface CreateResidentPortalFormFields {
   id?: string;
@@ -13,8 +15,8 @@ export interface CreateResidentPortalFormFields {
   colorAccent: string;
   colorSeparator: string;
   colorText: string;
-  fileLogo: any;
-  fileFavicon: any;
+  fileLogo: ResidentPortalImageValue;
+  fileFavicon: ResidentPortalImageValue;
 }
 
 export function transferSaveDataToFormFields (data: ResidentPortal):CreateResidentPortalFormFields {
@@ -27,14 +29,14 @@ export function transferSaveDataToFormFields (data: ResidentPortal):CreateReside
     textHelp: data.uiConfiguration.text.helpText ? data.uiConfiguration.text.helpText : '',
 
     colorMain: data.uiConfiguration?.color?.mainColor ? data.uiConfiguration.color.mainColor : '',
-    colorAccent: data.uiConfiguration?.color?.accentColor ? 
+    colorAccent: data.uiConfiguration?.color?.accentColor ?
       data.uiConfiguration.color.accentColor : '',
-    colorSeparator: data.uiConfiguration?.color?.separatorColor ? 
+    colorSeparator: data.uiConfiguration?.color?.separatorColor ?
       data.uiConfiguration.color.separatorColor : '',
     colorText: data.uiConfiguration?.color?.textColor ? data.uiConfiguration.color.textColor : '',
 
-    fileLogo: undefined,
-    fileFavicon: undefined
+    fileLogo: { file: undefined },
+    fileFavicon: { file: undefined }
   } : {
     textTitle: '',
     textSubtitle: '',
@@ -47,8 +49,8 @@ export function transferSaveDataToFormFields (data: ResidentPortal):CreateReside
     colorSeparator: '',
     colorText: '',
 
-    fileLogo: undefined,
-    fileFavicon: undefined
+    fileLogo: { file: undefined },
+    fileFavicon: { file: undefined }
   }
 
   return {
@@ -79,8 +81,10 @@ export function transferFormFieldsToSaveData (data: CreateResidentPortalFormFiel
         textColor: data.colorText
       },
       files: {
-        logoFileName: data.fileLogo?.file && !data.fileLogo.isRemoved ? data.fileLogo.file.name : '',
-        favIconFileName: data.fileFavicon?.file && !data.fileLogo.isRemoved ? data.fileFavicon.file.name : ''
+        logoFileName:
+          data.fileLogo?.file && !data.fileLogo.isRemoved ? data.fileLogo.file.name : '',
+        favIconFileName:
+          data.fileFavicon?.file && !data.fileLogo.isRemoved ? data.fileFavicon.file.name : ''
       }
     }
   }

@@ -8,7 +8,8 @@ import { GridCol, GridRow, StepsForm, Subtitle } from '@acx-ui/components'
 import { useLazyGetResidentPortalListQuery }     from '@acx-ui/rc/services'
 import { checkObjectNotExists }                  from '@acx-ui/rc/utils'
 import { getIntl }                               from '@acx-ui/utils'
-import { ColorPickerInput } from './ColorPickerInput'
+
+import { ColorPickerInput }                         from './ColorPickerInput'
 import ResidentPortalImageUpload, { ExistingImage } from './ResidentPortalImageUpload'
 
 export interface SettingsFormProps {
@@ -126,34 +127,40 @@ export default function ResidentPortalSettingsForm (props : SettingsFormProps) {
         label={intl.$t({ defaultMessage: 'Main Color' })}
         children={
           // @ts-ignore
-        <ColorPickerInput defaultColorHex='#101820' colorName={intl.$t({ defaultMessage: 'Main Color' })} />}
-        />
+          <ColorPickerInput defaultColorHex='#101820'
+            colorName={intl.$t({ defaultMessage: 'Main Color' })} />}
+      />
       <Form.Item name='colorAccent'
         label={intl.$t({ defaultMessage: 'Accent Color' })}
         children={
           // @ts-ignore
-        <ColorPickerInput defaultColorHex='#E57200' colorName={intl.$t({ defaultMessage: 'Accent Color' })} />}
-        />
+          <ColorPickerInput defaultColorHex='#E57200'
+            colorName={intl.$t({ defaultMessage: 'Accent Color' })} />}
+      />
       <Form.Item name='colorSeparator'
         label={intl.$t({ defaultMessage: 'Separator Color' })}
         children={
           // @ts-ignore
-        <ColorPickerInput defaultColorHex='#D9D9D6' colorName={intl.$t({ defaultMessage: 'Separator Color' })} />}
-        />
+          <ColorPickerInput defaultColorHex='#D9D9D6'
+            colorName={intl.$t({ defaultMessage: 'Separator Color' })} />}
+      />
       <Form.Item name='colorText'
         label={intl.$t({ defaultMessage: 'Text Color' })}
         children={
           // @ts-ignore
-        <ColorPickerInput defaultColorHex='#54585A' colorName={intl.$t({ defaultMessage: 'Text Color' })} />}
-        />
-      
-      <Form.Item name='fileLogo' label={intl.$t({ defaultMessage: 'Logo' })}
+          <ColorPickerInput defaultColorHex='#54585A'
+            colorName={intl.$t({ defaultMessage: 'Text Color' })} />}
+      />
+
+      <Form.Item name='fileLogo'
+        label={intl.$t({ defaultMessage: 'Logo' })}
         children={
           // @ts-ignore
           <ResidentPortalImageUpload existingImage={props.existingLogo}/>
         }/>
 
-      <Form.Item name='fileFavicon' label={intl.$t({ defaultMessage: 'Favicon' })}
+      <Form.Item name='fileFavicon'
+        label={intl.$t({ defaultMessage: 'Favicon' })}
         children={
           // @ts-ignore
           <ResidentPortalImageUpload existingImage={props.existingFavicon} imageType='FAVICON'/>

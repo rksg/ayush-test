@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 
 import { Button, Popover, Space } from 'antd'
-import _                                                 from 'lodash'
-import { useIntl }                                       from 'react-intl'
-import { SketchPicker } from 'react-color'
+import { SketchPicker }           from 'react-color'
+import { useIntl }                from 'react-intl'
 
 interface OnChangeHandler {
-  (e:any): void;
+  // eslint-disable-next-line
+  (e: any): void;
 }
 
 export interface ColorPickerProps {
@@ -54,30 +54,36 @@ export function ColorPickerInput (props: ColorPickerProps) {
                 disableAlpha={true}
                 onChangeComplete={(color) => updateSelectedColor(color.hex)} />
             </div>
-            <Button type="primary" block onClick={() => setShowColorPicker(false)}>{$t({defaultMessage: "Close"})}</Button>
+            <Button type='primary' block onClick={() => setShowColorPicker(false)}>
+              {$t({ defaultMessage: 'Close' })}
+            </Button>
           </div>}
-        trigger="click"
+        trigger='click'
         visible={showColorPicker}
         onVisibleChange={setShowColorPicker}>
-        
-          <Button 
-            type="primary"
-            color={selectedColor}
-            style={{ minWidth: 150, backgroundColor: selectedColor, borderColor: selectedColor }}
-            onClick={()=>{
-              setShowColorPicker(true)
-            }}>
-              {/* show button with no text */}
+
+        <Button
+          type='primary'
+          color={selectedColor}
+          style={{ minWidth: 150, backgroundColor: selectedColor, borderColor: selectedColor }}
+          onClick={()=>{
+            setShowColorPicker(true)
+          }}>
+          {/* show button with no text */}
               &nbsp;
-          </Button>
-        </Popover>
-      
-        <Button type="link" onClick={()=>{setShowColorPicker(true)}}>
-          {$t({defaultMessage: 'Change'})}
         </Button>
-        <Button type="link" onClick={() => {updateSelectedColor(defaultColorHex), setShowColorPicker(false)}}>
-          {$t({defaultMessage: 'Reset to Default'})}
-        </Button>
-      </Space>
+      </Popover>
+
+      <Button type='link' onClick={()=>{setShowColorPicker(true)}}>
+        {$t({ defaultMessage: 'Change' })}
+      </Button>
+      <Button type='link'
+        onClick={() => {
+          updateSelectedColor(defaultColorHex)
+          setShowColorPicker(false)
+        }}>
+        {$t({ defaultMessage: 'Reset to Default' })}
+      </Button>
+    </Space>
   )
 }

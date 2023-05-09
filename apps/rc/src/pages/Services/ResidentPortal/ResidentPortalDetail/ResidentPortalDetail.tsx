@@ -16,9 +16,10 @@ import {
 import { TenantLink }     from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
-import ColorBoxIcon                                          from './ColorBoxIcon'
 import { loadResidentPortalFavIcon, loadResidentPortalLogo } from '../portalImageService'
-import ResidentPortalVenuesTable                             from './ResidentPortalVenuesTable'
+
+import ColorBoxIcon              from './ColorBoxIcon'
+import ResidentPortalVenuesTable from './ResidentPortalVenuesTable'
 
 export default function ResidentPortalDetail () {
   const params = useParams()
@@ -176,16 +177,16 @@ export default function ResidentPortalDetail () {
                     {$t({ defaultMessage: 'Logo' })}
                   </Card.Title>
                   <Typography.Paragraph>
-                    {(logoImage) ? 
+                    {(logoImage) ?
                       <Image
-                      style={{ maxHeight: maxLogoSize, maxWidth: maxLogoSize }}
-                      alt={residentPortalData?.uiConfiguration?.files?.logoFileName ?
-                        $t({ defaultMessage: 'Logo: {imageName}' },
-                          { imageName: residentPortalData?.uiConfiguration?.files?.logoFileName })
-                        : $t({ defaultMessage: 'Resident Portal Logo' })}
-                      src={`${logoImage}`} />
-                      : $t({defaultMessage: 'No Custom Image Set'})}
-                    
+                        style={{ maxHeight: maxLogoSize, maxWidth: maxLogoSize }}
+                        alt={residentPortalData?.uiConfiguration?.files?.logoFileName ?
+                          $t({ defaultMessage: 'Logo: {imageName}' },
+                            { imageName: residentPortalData?.uiConfiguration?.files?.logoFileName })
+                          : $t({ defaultMessage: 'Resident Portal Logo' })}
+                        src={`${logoImage}`} />
+                      : $t({ defaultMessage: 'No Custom Image Set' })}
+
                   </Typography.Paragraph>
                 </GridCol>
                 <GridCol col={{ span: 6 }}>
@@ -193,18 +194,18 @@ export default function ResidentPortalDetail () {
                     {$t({ defaultMessage: 'Favicon' })}
                   </Card.Title>
                   <Typography.Paragraph>
-                    {(favIconImage) ? 
+                    {(favIconImage) ?
                       <Image
-                      style={{ maxHeight: 100, maxWidth: 100 }}
-                      alt={residentPortalData?.uiConfiguration?.files?.favIconFileName ?
-                        $t({ defaultMessage: 'Favicon: {imageName}' },
-                          { imageName:
+                        style={{ maxHeight: 100, maxWidth: 100 }}
+                        alt={residentPortalData?.uiConfiguration?.files?.favIconFileName ?
+                          $t({ defaultMessage: 'Favicon: {imageName}' },
+                            { imageName:
                             residentPortalData?.uiConfiguration?.files?.favIconFileName })
-                        : $t({ defaultMessage: 'Resident Portal Favicon' })}
-                      src={favIconImage}/>
-                      : $t({defaultMessage: 'No Custom Image Set'})
+                          : $t({ defaultMessage: 'Resident Portal Favicon' })}
+                        src={favIconImage}/>
+                      : $t({ defaultMessage: 'No Custom Image Set' })
                     }
-                    
+
                   </Typography.Paragraph>
                 </GridCol>
               </GridRow>

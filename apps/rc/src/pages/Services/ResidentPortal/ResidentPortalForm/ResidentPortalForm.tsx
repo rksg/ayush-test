@@ -25,11 +25,12 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
+import { loadResidentPortalFavIcon, loadResidentPortalLogo } from '../portalImageService'
+
 import { CreateResidentPortalFormFields,
   transferFormFieldsToSaveData,
   transferSaveDataToFormFields } from './formParsing'
 import ResidentPortalSettingsForm from './ResidentPortalSettingsForm'
-import { loadResidentPortalFavIcon, loadResidentPortalLogo } from '../portalImageService'
 
 interface ResidentPortalFormProps {
   editMode?: boolean
@@ -66,7 +67,7 @@ export default function ResidentPortalForm (props: ResidentPortalFormProps) {
   const [favIconImage, setFavIconImageString] = useState<string>('')
 
   useEffect(() => {
-    // Only set form values once the images are loaded - otherwise the form component won't be 
+    // Only set form values once the images are loaded - otherwise the form component won't be
     // ready for the values yet.
     if (originalPortalData && !areImagesLoading && editMode) {
       formRef.current?.setFieldsValue(transferSaveDataToFormFields(originalPortalData))
@@ -97,7 +98,7 @@ export default function ResidentPortalForm (props: ResidentPortalFormProps) {
     if(editMode) {
       setImagesLoading(true)
       fetchLogo().finally(() => {
-        setImagesLoading(false)    
+        setImagesLoading(false)
       })
     } else {
       setImagesLoading(false)
@@ -117,20 +118,20 @@ export default function ResidentPortalForm (props: ResidentPortalFormProps) {
       if (editMode) {
         formData.append('changes', portalConfiguration, '')
         if(data.fileLogo?.isRemoved){
-          await deleteLogo({params}).unwrap()
+          await deleteLogo({ params }).unwrap()
         } else if(data.fileLogo?.file) {
           formData.append('logo', data.fileLogo.file)
         }
 
         if(data.fileFavicon?.isRemoved){
-          await deleteFavicon({params}).unwrap()
+          await deleteFavicon({ params }).unwrap()
         } else if(data.fileFavicon?.file) {
           formData.append('favIcon', data.fileFavicon.file)
         }
         await updateResidentPortal({ params, payload: formData }).unwrap()
       } else {
         formData.append('portal', portalConfiguration, '')
-        
+
         if(data.fileLogo?.file) {
           formData.append('logo', data.fileLogo.file)
         }
@@ -166,19 +167,19 @@ export default function ResidentPortalForm (props: ResidentPortalFormProps) {
         <StepsForm
           formRef={formRef}
           onCancel={() => navigate(linkToServices)}
-          onFinish={saveData as any}>
+          onFinish={saveData}>
           <StepsForm.StepForm
             name='details'
             title={$t({ defaultMessage: 'Settings' })}
             initialValues={initialValues}
             preserve={true}>
-            <ResidentPortalSettingsForm 
+            <ResidentPortalSettingsForm
               existingLogo={{
-                fileSrc: logoImage, 
-                filename: originalPortalData?.uiConfiguration?.files?.logoFileName}} 
+                fileSrc: logoImage,
+                filename: originalPortalData?.uiConfiguration?.files?.logoFileName }}
               existingFavicon={{
-                fileSrc: favIconImage, 
-                filename: originalPortalData?.uiConfiguration?.files?.favIconFileName}} />
+                fileSrc: favIconImage,
+                filename: originalPortalData?.uiConfiguration?.files?.favIconFileName }} />
           </StepsForm.StepForm>
         </StepsForm>
       </Loader>
