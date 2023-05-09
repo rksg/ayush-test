@@ -1,23 +1,35 @@
 import { rest } from 'msw'
 
-import { RulesManagementUrlsInfo }    from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { CommonUrlsInfo, DpskUrls, MacRegListUrlsInfo, RulesManagementUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                              from '@acx-ui/store'
+import { mockServer, render, screen }                                            from '@acx-ui/test-utils'
 
 
-import { adaptivePolicy, prioritizedPolicies } from './__test__/fixtures'
-import AdaptivePolicySetDetail                 from './AdaptivePolicySetDetail'
+import { adaptivePolicy, dpskList, macList, networkList, prioritizedPolicies } from './__test__/fixtures'
+import AdaptivePolicySetDetail                                                 from './AdaptivePolicySetDetail'
 
 describe('AdaptivePolicySetDetail', () => {
   beforeEach(() => {
     mockServer.use(
       rest.get(
-        RulesManagementUrlsInfo.getPolicySet.url,
+        RulesManagementUrlsInfo.getPolicySet.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(adaptivePolicy))
       ),
       rest.get(
-        RulesManagementUrlsInfo.getPrioritizedPolicies.url,
+        RulesManagementUrlsInfo.getPrioritizedPolicies.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(prioritizedPolicies))
+      ),
+      rest.get(
+        DpskUrls.getDpskList.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(dpskList))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVMNetworksList.url,
+        (req, res, ctx) => res(ctx.json(networkList))
+      ),
+      rest.post(
+        MacRegListUrlsInfo.searchMacRegistrationPools.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(macList))
       )
     )
   })

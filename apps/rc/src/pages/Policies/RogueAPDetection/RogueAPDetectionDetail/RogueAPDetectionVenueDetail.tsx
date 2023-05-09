@@ -20,6 +20,9 @@ const defaultPayload = {
     'rogueDetection',
     'status'
   ],
+  search: {
+    searchTargetFields: ['name']
+  },
   sortField: 'name',
   sortOrder: 'ASC',
   page: 1,
@@ -77,6 +80,9 @@ const RogueAPDetectionVenueDetail = () => {
       filters: {
         'rogueDetection.policyId': [params.policyId]
       }
+    },
+    search: {
+      searchTargetFields: ['name']
     }
   })
 
