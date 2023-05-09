@@ -1037,7 +1037,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
           const activities = [
             'ADD_UNIT',
             'UPDATE_UNIT',
-            'DELETE_UNITS'
+            'DELETE_UNITS',
+            'UpdatePersona'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(venueApi.util.invalidateTags([

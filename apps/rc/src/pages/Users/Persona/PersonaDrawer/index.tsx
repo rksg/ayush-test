@@ -4,7 +4,7 @@ import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 
-import { Drawer, showToast }                               from '@acx-ui/components'
+import { Drawer }                                          from '@acx-ui/components'
 import { useAddPersonaMutation, useUpdatePersonaMutation } from '@acx-ui/rc/services'
 import { Persona }                                         from '@acx-ui/rc/utils'
 
@@ -39,14 +39,6 @@ export function PersonaDrawer (props: PersonaDrawerProps) {
       isEdit
         ? await handleEditPersona(contextData)
         : await handleAddPersona(contextData)
-
-      showToast({
-        type: 'success',
-        content: $t(
-          { defaultMessage: 'Persona {name} was {isEdit, select, true {updated} other {added}}' },
-          { name: contextData.name, isEdit }
-        )
-      })
 
       onClose()
     } catch (error) {

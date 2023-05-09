@@ -10,12 +10,12 @@ export function getDeviceColor (deviceStatus: DeviceStatus
     case DeviceStatus.Operational:
     case SwitchStatusEnum.OPERATIONAL:
     case ApDeviceStatusEnum.APPLYING_CONFIGURATION:
-    case ApDeviceStatusEnum.APPLYING_FIRMWARE:
     case ApDeviceStatusEnum.OPERATIONAL:
       return 'var(--acx-semantics-green-50)'
     case DeviceStatus.Degraded:
     case ApDeviceStatusEnum.REBOOTING:
     case ApDeviceStatusEnum.HEARTBEAT_LOST:
+    case ApDeviceStatusEnum.APPLYING_FIRMWARE:
       return 'var(--acx-semantics-yellow-40)'
     case ApDeviceStatusEnum.FIRMWARE_UPDATE_FAILED:
     case ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED:

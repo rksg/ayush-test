@@ -231,8 +231,10 @@ export function ApGroupForm () {
                   listStyle={{ width: 250, height: 316 }}
                   showSearch
                   showSelectAll={false}
-                  dataSource={
-                    apsOption}
+                  filterOption={(inputValue, item) =>
+                    (item.name && item.name.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1)
+                  }
+                  dataSource={apsOption}
                   render={item => item.name}
                   operations={['Add', 'Remove']}
                   titles={[$t({ defaultMessage: 'Available APs' }),
