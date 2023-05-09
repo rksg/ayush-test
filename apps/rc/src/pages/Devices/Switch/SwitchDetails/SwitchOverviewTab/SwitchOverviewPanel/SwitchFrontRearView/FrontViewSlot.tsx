@@ -1,6 +1,7 @@
 import { SwitchPortStatus, SwitchSlot, SwitchStatusEnum } from '@acx-ui/rc/utils'
 
 import { FrontViewPort } from './FrontViewPort'
+import { FrontViewStackPort } from './FrontViewStackPort'
 import * as UI           from './styledComponents'
 
 export function FrontViewSlot (props:{
@@ -59,11 +60,10 @@ export function FrontViewSlot (props:{
           .map((port: SwitchPortStatus) => {
             const isBreakOutPort = String(port.portnumber).includes(':')
             if (isBreakOutPort) {
-              return (<FrontViewPort key={port.portIdentifier}
+              return (<FrontViewStackPort key={port.portIdentifier}
+                ports={slot.portStatus}
                 labelText={portLabel + String(port.portnumber).split(':')[0]}
                 labelPosition='top'
-                portColor={getPortColor(port)}
-                portIcon={getPortIcon(port)}
                 tooltipEnable={isOnline}
                 portData={port}
               />)
@@ -95,11 +95,10 @@ export function FrontViewSlot (props:{
             const isBreakOutPort = String(port.portnumber).includes(':')
             if (isBreakOutPort) {
               return (
-                <FrontViewPort key={port.portIdentifier}
+                <FrontViewStackPort key={port.portIdentifier}
+                  ports={slot.portStatus}
                   labelText={portLabel + String(port.portnumber).split(':')[0]}
                   labelPosition='bottom'
-                  portColor={getPortColor(port)}
-                  portIcon={getPortIcon(port)}
                   tooltipEnable={isOnline}
                   portData={port}
                 />
