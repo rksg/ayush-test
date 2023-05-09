@@ -17,7 +17,7 @@ describe('AdaptivePolicyTabs', () =>{
   beforeEach(() => {
     mockServer.use(
       rest.get(
-        RadiusAttributeGroupUrlsInfo.getAttributeGroups.url,
+        RadiusAttributeGroupUrlsInfo.getAttributeGroups.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(groupList))
       )
     )
@@ -26,7 +26,10 @@ describe('AdaptivePolicyTabs', () =>{
   const params = { tenantId: '_tenantId_', activeTab: AdaptivePolicyTabKey.ADAPTIVE_POLICY }
 
   it('should render correctly', async () => {
-    render(<Provider><AdaptivePolicyTabs /></Provider>, { route: { params } })
+    render(<Provider>
+      <AdaptivePolicyTabs activeTab={AdaptivePolicyTabKey.RADIUS_ATTRIBUTE_GROUP}/>
+    </Provider>,
+    { route: { params } })
 
     const tabs = screen.getAllByRole('tab')
     expect(tabs.length).toBe(3)

@@ -38,7 +38,8 @@ export const mockedDpskListWithPersona = {
       passphraseLength: 18,
       passphraseFormat: 'MOST_SECURED',
       expirationType: null,
-      identityId: '123456789'
+      identityId: '123456789',
+      networkIds: ['123', '456']
     }
   ],
   page: 1,

@@ -579,8 +579,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         <Form.Item
           name={[...inputName, 'applicationPolicyId']}
           rules={[{
-            required: true
-          }, {
+            required: true,
             message: $t({ defaultMessage: 'Please select Application profile' })
           }]}
           children={

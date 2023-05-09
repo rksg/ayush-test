@@ -278,7 +278,7 @@ export function TaggedPortsStep () {
   }
 
   return (
-    <>
+    <div style={{ height: '300px' }}>
       <Row gutter={20}>
         <Col>
           <label style={{ color: 'var(--acx-neutrals-60)' }}>
@@ -424,6 +424,6 @@ export function TaggedPortsStep () {
         hidden={true}
         children={<Input />}
       />
-    </>
+    </div>
   )
 }
