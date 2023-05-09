@@ -104,7 +104,7 @@ export function StepsFormLegacy <FormValue = any> (
             ? setStep
             : undefined
           const key = child.props.name ?? child.props.step ?? String(index)
-          // Temporary measure until ACX-13452 is fixed by moving to StepsFormNew
+          // Temporary measure until ACX-13452 is fixed by moving to StepsForm
           return <Steps.Step {...{ key, title, onStepClick, disabled: editMode }} />
         })}
       </Steps>

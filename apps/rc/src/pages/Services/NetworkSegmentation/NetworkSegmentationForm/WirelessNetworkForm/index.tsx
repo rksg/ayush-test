@@ -7,7 +7,7 @@ import { CheckboxValueType }                       from 'antd/lib/checkbox/Group
 import { useIntl }                                 from 'react-intl'
 import { useParams }                               from 'react-router-dom'
 
-import { Loader, StepsFormNew, useStepFormContext }                       from '@acx-ui/components'
+import { Loader, StepsForm, useStepFormContext }                          from '@acx-ui/components'
 import { useGetTunnelProfileViewDataListQuery, useVenueNetworkListQuery } from '@acx-ui/rc/services'
 
 import { NetworkSegmentationGroupFormData } from '..'
@@ -80,7 +80,7 @@ export const WirelessNetworkForm = () => {
 
   return(
     <>
-      <StepsFormNew.Title>{$t({ defaultMessage: 'Wireless Network Settings' })}</StepsFormNew.Title>
+      <StepsForm.Title>{$t({ defaultMessage: 'Wireless Network Settings' })}</StepsForm.Title>
       <Row gutter={20} align='middle'>
         <Col span={8}>
           <Form.Item

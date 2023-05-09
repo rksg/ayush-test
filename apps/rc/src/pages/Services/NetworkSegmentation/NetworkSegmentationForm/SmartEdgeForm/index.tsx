@@ -4,7 +4,7 @@ import { Col, Form, InputNumber, Row, Select, Space } from 'antd'
 import { useIntl }                                    from 'react-intl'
 import { useParams }                                  from 'react-router-dom'
 
-import { Button, StepsFormNew, Tooltip, useStepFormContext }                     from '@acx-ui/components'
+import { Button, StepsForm, Tooltip, useStepFormContext }                        from '@acx-ui/components'
 import { useGetDhcpByEdgeIdQuery, useGetEdgeDhcpListQuery, useGetEdgeListQuery } from '@acx-ui/rc/services'
 import { EdgeDhcpPool }                                                          from '@acx-ui/rc/utils'
 
@@ -141,7 +141,7 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
       />
       <Row gutter={20}>
         <Col span={8}>
-          <StepsFormNew.Title>{$t({ defaultMessage: 'SmartEdge Settings' })}</StepsFormNew.Title>
+          <StepsForm.Title>{$t({ defaultMessage: 'SmartEdge Settings' })}</StepsForm.Title>
           <Form.Item
             name='edgeId'
             label={

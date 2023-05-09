@@ -3,11 +3,11 @@ import { useState, useEffect } from 'react'
 import { Col, Collapse, Form, Input, Row, Space, Switch, Typography } from 'antd'
 import { useIntl, FormattedMessage }                                  from 'react-intl'
 
-import { cssStr, StepsFormNew, Table, TableProps, Loader, useStepFormContext } from '@acx-ui/components'
-import { PlusSquareOutlined, MinusSquareOutlined }                             from '@acx-ui/icons'
-import { useGetVenuesQuery, useLazyGetSwitchListQuery }                        from '@acx-ui/rc/services'
-import { ApplySwitch, CliTemplateVenueSwitches, SwitchViewModel }              from '@acx-ui/rc/utils'
-import { useParams }                                                           from '@acx-ui/react-router-dom'
+import { cssStr, StepsForm, Table, TableProps, Loader, useStepFormContext } from '@acx-ui/components'
+import { PlusSquareOutlined, MinusSquareOutlined }                          from '@acx-ui/icons'
+import { useGetVenuesQuery, useLazyGetSwitchListQuery }                     from '@acx-ui/rc/services'
+import { ApplySwitch, CliTemplateVenueSwitches, SwitchViewModel }           from '@acx-ui/rc/utils'
+import { useParams }                                                        from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
@@ -83,7 +83,7 @@ export function CliStepSwitches () {
 
   return <Row gutter={24}>
     <Col span={18}>
-      <StepsFormNew.Title children={$t({ defaultMessage: 'Switches' })} />
+      <StepsForm.Title children={$t({ defaultMessage: 'Switches' })} />
       <Typography.Text style={{
         display: 'block', marginBottom: '15px', fontSize: '14px',
         color: cssStr('--acx-primary-black')

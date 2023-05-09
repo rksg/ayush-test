@@ -5,7 +5,7 @@ import { renderHook, within } from '@testing-library/react'
 import userEvent              from '@testing-library/user-event'
 import { Form }               from 'antd'
 
-import { StepsFormNew }              from '@acx-ui/components'
+import { StepsForm }                 from '@acx-ui/components'
 import { ACLDirection, StatefulAcl } from '@acx-ui/rc/utils'
 import { Provider }                  from '@acx-ui/store'
 import {
@@ -78,7 +78,7 @@ describe('Stateful ACL config drawer', () => {
 
     render(
       <Provider>
-        <StepsFormNew
+        <StepsForm
           form={stepFormRef.current}
         >
           <StatefulACLConfigDrawer
@@ -86,7 +86,7 @@ describe('Stateful ACL config drawer', () => {
             setVisible={visibleRef.current.setVisible}
             editData={mockedEmptyInbound}
           />
-        </StepsFormNew>
+        </StepsForm>
       </Provider>)
 
     expect(await screen.findByText('Stateful ACL Settings')).toBeVisible()
@@ -167,7 +167,7 @@ describe('Stateful ACL config drawer', () => {
 
     render(
       <Provider>
-        <StepsFormNew
+        <StepsForm
           form={stepFormRef.current}
         >
           <StatefulACLConfigDrawer
@@ -175,7 +175,7 @@ describe('Stateful ACL config drawer', () => {
             setVisible={visibleRef.current.setVisible}
             editData={mockedEmptyOutbound}
           />
-        </StepsFormNew>
+        </StepsForm>
       </Provider>)
 
     expect(await screen.findByText('Stateful ACL Settings')).toBeVisible()

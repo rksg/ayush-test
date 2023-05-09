@@ -8,7 +8,7 @@ import { FormattedMessage, defineMessage, useIntl } from 'react-intl'
 
 import { getNetworkFilterData, useRecentNetworkFilterQuery, HierarchyNodeChild } from '@acx-ui/analytics/components'
 import { meetVersionRequirements }                                               from '@acx-ui/analytics/utils'
-import { Loader, StepsFormNew, useStepFormContext }                              from '@acx-ui/components'
+import { Loader, StepsForm, useStepFormContext }                              from '@acx-ui/components'
 import { APListNode, DateRange }                                                 from '@acx-ui/utils'
 
 import { isAPListNodes, isNetworkNodes, ClientType as ClientTypeEnum } from '../../../types'
@@ -108,7 +108,7 @@ APsSelection.FieldSummary = function APsSelectionFieldSummary () {
     <Form.Item
       name={name as unknown as NamePath}
       label={$t(label)}
-      children={<StepsFormNew.FieldSummary convert={convert} />}
+      children={<StepsForm.FieldSummary convert={convert} />}
     />
   </Loader>
 

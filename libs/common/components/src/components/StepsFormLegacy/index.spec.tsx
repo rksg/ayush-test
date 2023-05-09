@@ -74,7 +74,7 @@ describe('StepsFormLegacy', () => {
     expect(await screen.findByRole('heading', { name: 'Step 1 Title' })).toBeVisible()
   })
 
-  // TODO: remove skip when ACX-13452 is fixed by moving to StepsFormNew
+  // TODO: remove skip when ACX-13452 is fixed by moving to StepsForm
   it.skip('handles navigate to any step in editMode', async () => {
     render(<CustomForm editMode />)
 

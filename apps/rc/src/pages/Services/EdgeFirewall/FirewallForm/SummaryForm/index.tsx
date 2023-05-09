@@ -2,8 +2,8 @@ import { Col, Row, Descriptions as AntdDescriptions } from 'antd'
 import { FormattedMessage, useIntl }                  from 'react-intl'
 import styled                                         from 'styled-components'
 
-import { Descriptions, StepsFormNew, useStepFormContext, Subtitle } from '@acx-ui/components'
-import { SpaceWrapper }                                             from '@acx-ui/rc/components'
+import { Descriptions, StepsForm, useStepFormContext, Subtitle } from '@acx-ui/components'
+import { SpaceWrapper }                                          from '@acx-ui/rc/components'
 
 import { FirewallFormModel, filterCustomACLRules } from '..'
 
@@ -26,7 +26,7 @@ export const SummaryForm = styled(({ className }: { className?: string }) => {
   return (
     <Row gutter={[10, 30]} className={className}>
       <Col span={24}>
-        <StepsFormNew.Title>{$t({ defaultMessage: 'Summary' })}</StepsFormNew.Title>
+        <StepsForm.Title>{$t({ defaultMessage: 'Summary' })}</StepsForm.Title>
 
         <Subtitle level={4}>
           { $t({ defaultMessage: 'Settings' }) }

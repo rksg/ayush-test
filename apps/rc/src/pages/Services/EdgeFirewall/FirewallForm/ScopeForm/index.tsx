@@ -4,10 +4,10 @@ import { Col, Form, Row, Switch, Typography } from 'antd'
 import _                                      from 'lodash'
 import { useIntl }                            from 'react-intl'
 
-import { StepsFormNew, TableProps, useStepFormContext } from '@acx-ui/components'
-import { formatter }                                    from '@acx-ui/formatter'
-import { EdgesTable }                                   from '@acx-ui/rc/components'
-import { EdgeStatus }                                   from '@acx-ui/rc/utils'
+import { StepsForm, TableProps, useStepFormContext } from '@acx-ui/components'
+import { formatter }                                 from '@acx-ui/formatter'
+import { EdgesTable }                                from '@acx-ui/rc/components'
+import { EdgeStatus }                                from '@acx-ui/rc/utils'
 
 import { FirewallFormEdge, FirewallFormModel } from '..'
 
@@ -180,7 +180,7 @@ export const ScopeForm = () => {
     <>
       <Row>
         <Col span={24}>
-          <StepsFormNew.Title>{$t({ defaultMessage: 'Scope' })}</StepsFormNew.Title>
+          <StepsForm.Title>{$t({ defaultMessage: 'Scope' })}</StepsForm.Title>
         </Col>
       </Row>
       <Row >

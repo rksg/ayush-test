@@ -2,7 +2,7 @@ import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
 import {
-  StepsFormNew
+  StepsForm
 } from '@acx-ui/components'
 
 import * as contents from '../contents'
@@ -13,7 +13,7 @@ export function NetworkHealthFormSummary () {
   const { $t } = useIntl()
 
   return <>
-    <StepsFormNew.Title children={$t(contents.steps.summary)} />
+    <StepsForm.Title children={$t(contents.steps.summary)} />
     <Row gutter={20}>
       <Col span={12} xl={10} xxl={8}>
         <FormItems.TestName.FieldSummary />

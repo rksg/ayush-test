@@ -4,10 +4,10 @@ import { Col, Form, Input, Row, Typography } from 'antd'
 import _                                     from 'lodash'
 import { useIntl }                           from 'react-intl'
 
-import { cssStr, Loader, StepsFormNew, Table, TableProps, Tooltip, useStepFormContext } from '@acx-ui/components'
-import { useVenuesListQuery, useGetCliFamilyModelsQuery }                               from '@acx-ui/rc/services'
-import { CliConfiguration, Venue, useTableQuery }                                       from '@acx-ui/rc/utils'
-import { useParams }                                                                    from '@acx-ui/react-router-dom'
+import { cssStr, Loader, StepsForm, Table, TableProps, Tooltip, useStepFormContext } from '@acx-ui/components'
+import { useVenuesListQuery, useGetCliFamilyModelsQuery }                            from '@acx-ui/rc/services'
+import { CliConfiguration, Venue, useTableQuery }                                    from '@acx-ui/rc/utils'
+import { useParams }                                                                 from '@acx-ui/react-router-dom'
 
 import { cliFormMessages } from './'
 
@@ -120,7 +120,7 @@ export function CliStepVenues () {
 
   return <Row gutter={24}>
     <Col span={24}>
-      <StepsFormNew.Title>{$t({ defaultMessage: 'Venues' })}</StepsFormNew.Title>
+      <StepsForm.Title>{$t({ defaultMessage: 'Venues' })}</StepsForm.Title>
       <Typography.Text style={{
         fontWeight: 600,
         display: 'block',

@@ -1,7 +1,7 @@
 import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import { StepsFormNew } from '@acx-ui/components'
+import { StepsForm } from '@acx-ui/components'
 
 import * as contents from '../contents'
 
@@ -11,7 +11,7 @@ export function NetworkHealthFormSettings () {
   const { $t } = useIntl()
 
   return <>
-    <StepsFormNew.Title children={$t(contents.steps.settings)} />
+    <StepsForm.Title children={$t(contents.steps.settings)} />
     <Row gutter={20}>
       <Col span={12} xl={10} xxl={8}>
         <FormItems.TestName />

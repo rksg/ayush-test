@@ -3,11 +3,11 @@ import { useRef } from 'react'
 import { Col, Divider, Row, Typography } from 'antd'
 import { useIntl }                       from 'react-intl'
 
-import { Descriptions, StepsFormNew, useStepFormContext } from '@acx-ui/components'
-import { CodeMirrorWidget }                               from '@acx-ui/rc/components'
-import { useVenuesListQuery }                             from '@acx-ui/rc/services'
-import { CliConfiguration }                               from '@acx-ui/rc/utils'
-import { useParams }                                      from '@acx-ui/react-router-dom'
+import { Descriptions, StepsForm, useStepFormContext } from '@acx-ui/components'
+import { CodeMirrorWidget }                            from '@acx-ui/rc/components'
+import { useVenuesListQuery }                          from '@acx-ui/rc/services'
+import { CliConfiguration }                            from '@acx-ui/rc/utils'
+import { useParams }                                   from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
@@ -33,7 +33,7 @@ export function CliStepSummary () {
 
   return <>
     <Row gutter={24}>
-      <StepsFormNew.Title>{$t({ defaultMessage: 'Summary' })}</StepsFormNew.Title>
+      <StepsForm.Title>{$t({ defaultMessage: 'Summary' })}</StepsForm.Title>
     </Row>
     <Row>
       <Col span={6}>

@@ -8,7 +8,7 @@ import 'codemirror/addon/hint/show-hint.js'
 import {
   Button,
   SelectionControl,
-  StepsFormNew,
+  StepsForm,
   Tabs,
   Tooltip,
   useStepFormContext
@@ -188,7 +188,7 @@ export function CliStepConfiguration () {
   return <>
     <Row gutter={24}>
       <Col span={8}>
-        <StepsFormNew.Title children={$t({ defaultMessage: 'CLI Configuration' })} />
+        <StepsForm.Title children={$t({ defaultMessage: 'CLI Configuration' })} />
         {isTemplate && <Form.Item
           name='name'
           label={$t({ defaultMessage: 'Template Name' })}

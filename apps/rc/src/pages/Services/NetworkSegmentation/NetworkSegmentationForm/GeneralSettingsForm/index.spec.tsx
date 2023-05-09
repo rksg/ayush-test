@@ -2,7 +2,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { StepsFormNew } from '@acx-ui/components'
+import { StepsForm } from '@acx-ui/components'
 import {
   CommonUrlsInfo,
   DpskUrls, PersonaUrls,
@@ -85,11 +85,11 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <StepsFormNew onFinish={mockedFinishFn}>
-          <StepsFormNew.StepForm>
+        <StepsForm onFinish={mockedFinishFn}>
+          <StepsForm.StepForm>
             <GeneralSettingsForm />
-          </StepsFormNew.StepForm>
-        </StepsFormNew>
+          </StepsForm.StepForm>
+        </StepsForm>
       </Provider>,
       { route: { params, path: createNsgPath } })
     const serviceNameInput = await screen.findByRole('textbox', { name: 'Service Name' })
@@ -107,11 +107,11 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <StepsFormNew onFinish={mockedFinishFn}>
-          <StepsFormNew.StepForm>
+        <StepsForm onFinish={mockedFinishFn}>
+          <StepsForm.StepForm>
             <GeneralSettingsForm />
-          </StepsFormNew.StepForm>
-        </StepsFormNew>
+          </StepsForm.StepForm>
+        </StepsForm>
       </Provider>,
       { route: { params, path: createNsgPath } })
     await user.click(await screen.findByRole('button', { name: 'Finish' }))

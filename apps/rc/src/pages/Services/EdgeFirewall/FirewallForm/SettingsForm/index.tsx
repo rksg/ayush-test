@@ -1,8 +1,8 @@
 import { Col, Form, Input, Row } from 'antd'
 import { useIntl }               from 'react-intl'
 
-import { StepsFormNew, Subtitle } from '@acx-ui/components'
-import { SpaceWrapper }           from '@acx-ui/rc/components'
+import { StepsForm, Subtitle } from '@acx-ui/components'
+import { SpaceWrapper }        from '@acx-ui/rc/components'
 
 import { DDoSRateFormItem }    from './DDoSRateFormItem'
 import { StatefulACLFormItem } from './StatefulACLFormItem'
@@ -15,9 +15,9 @@ export const SettingsForm = () => {
     <Wrapper>
       <Row>
         <Col span={8}>
-          <StepsFormNew.Title>
+          <StepsForm.Title>
             {$t({ defaultMessage: 'Settings' })}
-          </StepsFormNew.Title>
+          </StepsForm.Title>
 
           <Form.Item
             name='serviceName'

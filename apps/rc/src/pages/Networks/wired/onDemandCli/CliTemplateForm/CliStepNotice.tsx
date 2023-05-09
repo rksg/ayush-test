@@ -1,10 +1,10 @@
 import { Form, Input, Col, Row, Space, Typography } from 'antd'
 import { FormattedMessage, useIntl }                from 'react-intl'
 
-import { cssStr, StepsFormNew } from '@acx-ui/components'
-import { InformationSolid }     from '@acx-ui/icons'
-import { agreeRegExp }          from '@acx-ui/rc/utils'
-import { useParams }            from '@acx-ui/react-router-dom'
+import { cssStr, StepsForm } from '@acx-ui/components'
+import { InformationSolid }  from '@acx-ui/icons'
+import { agreeRegExp }       from '@acx-ui/rc/utils'
+import { useParams }         from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
@@ -21,7 +21,7 @@ export function CliStepNotice () {
 
   return <Row gutter={20}>
     <Col span={10}>
-      <StepsFormNew.Title children={$t({ defaultMessage: 'Important Notice' })} />
+      <StepsForm.Title children={$t({ defaultMessage: 'Important Notice' })} />
       <Typography.Text style={{
         fontWeight: 600,
         display: 'block', margin: '4px 0 12px',
