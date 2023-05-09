@@ -105,6 +105,16 @@ export function UserProfile () {
                 }
               />
               <Form.Item
+                name='preferredLanguage'
+                label={$t({ defaultMessage: 'Preferred Language' })}
+                initialValue={userProfile?.detailLevel}
+                children={
+                  <Select>
+                    <Option>{$t({ defaultMessage: 'English' })}</Option>
+                  </Select>
+                }
+              />
+              <Form.Item
                 name='detailLevel'
                 label={$t({ defaultMessage: 'Event Details Level' })}
                 initialValue={userProfile?.detailLevel}
