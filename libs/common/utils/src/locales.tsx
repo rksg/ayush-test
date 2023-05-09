@@ -39,7 +39,9 @@ async function localePath (locale: string) {
   const url = `${gcs}/locales/compiled/${locale}.json`
   const response = await fetch(url, requestOptions )
   if (!response.ok) {
-    throw new Error(`Error! status: ${response.status}`)
+    // eslint-disable-next-line no-console
+    console.error(`Error fetching ${url}, status: ${response.status}`)
+    return {}
   } else {
     const result = await response.json()
     return result
