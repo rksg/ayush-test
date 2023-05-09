@@ -246,7 +246,16 @@ export const {
           id: specId,
           tests: { items }
         } = result.serviceGuardTest.spec
-        return items.map(({ id, createdAt, summary }) => ({ specId, id, createdAt, ...summary }))
+        return items.map(({ id, createdAt, summary }) => ({
+          specId, id, createdAt,
+          ...((summary.apsTestedCount === 0)
+            ? Object.entries(summary).reduce((acc, [key]) => {
+              acc[key] = '-'
+              return acc
+            }, summary)
+            : summary
+          )
+        }))
       }
     }),
     networkHealthTestResults: build.query<

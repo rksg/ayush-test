@@ -78,8 +78,8 @@ export const fetchServiceGuardTest = {
       apsErrorCount: 0,
       apsFailureCount: 0,
       apsPendingCount: 0,
-      apsSuccessCount: 0,
-      apsTestedCount: 0,
+      apsSuccessCount: 2,
+      apsTestedCount: 1,
       ...Object.keys(stages).reduce((acc, stage) => ({
         ...acc,
         [`${stage}Error`]: 0,
@@ -104,7 +104,7 @@ export const fetchServiceGuardRelatedTests = {
           {
             id: 2,
             createdAt: '2023-02-15T00:00:00.000Z',
-            summary: { apsErrorCount: 0, apsFailureCount: 0, apsSuccessCount: 0, apsTestedCount: 0 }
+            summary: { apsErrorCount: 1, apsFailureCount: 1, apsSuccessCount: 1, apsTestedCount: 3 }
           },
           {
             id: 1,
@@ -197,7 +197,7 @@ export const fetchAllServiceGuardSpecs = {
     },
     {
       id: 'spec-id-ongoing',
-      name: 'test-2',
+      name: 'test-3',
       type: TestType.Scheduled,
       apsCount: 2,
       userId: 'user-id',
@@ -207,6 +207,21 @@ export const fetchAllServiceGuardSpecs = {
         { id: 2,
           createdAt: '2023-02-24T07:34:33.336Z',
           summary: { apsTestedCount: 2, apsSuccessCount: 1, apsPendingCount: 1 }
+        }
+      ] }
+    },
+    {
+      id: 'spec-id-finished-2',
+      name: 'test-4',
+      type: TestType.Scheduled,
+      apsCount: 2,
+      userId: 'user-id-other',
+      clientType: ClientType.VirtualWirelessClient,
+      schedule: { nextExecutionTime: '2023-02-24T16:00:00.000Z' },
+      tests: { items: [
+        { id: 3,
+          createdAt: '2023-02-24T07:34:33.336Z',
+          summary: { apsTestedCount: 0, apsSuccessCount: 0, apsPendingCount: 0 }
         }
       ] }
     }
