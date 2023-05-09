@@ -1,23 +1,21 @@
 import { useParams } from 'react-router-dom'
 import styled        from 'styled-components/macro'
 
-import { GridCol, GridRow }   from '@acx-ui/components'
+
+import { GridCol, GridRow } from '@acx-ui/components'
 import {
   EdgeInfoWidget,
   EdgePortsByTrafficWidget,
   EdgeResourceUtilizationWidget,
-  EdgeTrafficByVolumeWidget
+  EdgeTrafficByVolumeWidget,
+  EdgeUpTimeWidget
 } from '@acx-ui/rc/components'
 import {
   useEdgeBySerialNumberQuery, useGetDnsServersQuery, useGetEdgePortsStatusListQuery
 } from '@acx-ui/rc/services'
-import { EdgePortStatus } from '@acx-ui/rc/utils'
-
-import { EdgeUpTimeWidget } from './EdgeUpTimeWidget'
 
 export const EdgeOverview = styled(({ className }:{ className?: string }) => {
   const params = useParams()
-
   const edgeStatusPayload = {
     fields: [
       'name',
@@ -92,7 +90,7 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
       {/* TODO: wait for API*/}
       <GridCol col={{ span: 12 }} className='statistic'>
         <EdgePortsByTrafficWidget
-          edgePortsSetting={portStatusList as EdgePortStatus[]}
+          currentEdge={currentEdge}
           isLoading={isPortListLoading}
         />
       </GridCol>
