@@ -34,7 +34,7 @@ describe('RadiusAttributeDrawer', () => {
         route: { params: {
           tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
           policyId: '1b5c434b-1d28-4ac1-9fe6-cdbee9f934e3'
-        }, path: '/:tenantId/:policyId' }
+        }, path: '/:tenantId/t/:policyId' }
       }
     )
 
@@ -57,7 +57,7 @@ describe('RadiusAttributeDrawer', () => {
 
     const editAttribute = {
       attributeName: 'attributeName1',
-      attributeValue: 'test',
+      attributeValue: '123',
       dataType: DataType.BYTE,
       operator: OperatorType.DOES_NOT_EXIST
     }
@@ -76,7 +76,7 @@ describe('RadiusAttributeDrawer', () => {
         route: { params: {
           tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
           policyId: '1b5c434b-1d28-4ac1-9fe6-cdbee9f934e3'
-        }, path: '/:tenantId/:policyId' }
+        }, path: '/:tenantId/t/:policyId' }
       }
     )
 
@@ -96,7 +96,7 @@ describe('RadiusAttributeDrawer', () => {
 
     await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loading' }))
 
-    await userEvent.click(await screen.findByText('Foundry-Privilege-Level'))
+    await userEvent.click(await screen.findByText('Foundry-Privilege-Level (INTEGER)'))
 
     const addButton = screen.getByText('Done')
     expect(addButton).toBeInTheDocument()

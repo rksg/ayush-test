@@ -38,7 +38,7 @@ jest.mock('react-router-dom', () => ({
 
 describe('NetworkSegmentationList', () => {
   let params: { tenantId: string }
-  const tablePath = '/:tenantId/' + getServiceRoutePath({
+  const tablePath = '/:tenantId/t' + getServiceRoutePath({
     type: ServiceType.NETWORK_SEGMENTATION,
     oper: ServiceOperation.LIST
   })
@@ -88,7 +88,7 @@ describe('NetworkSegmentationList', () => {
     const smartEdgeLink = await screen.findByRole('link',
       { name: 'nsg1' }) as HTMLAnchorElement
     expect(smartEdgeLink.href)
-      .toContain(`/t/${params.tenantId}/${getServiceDetailsLink({
+      .toContain(`/${params.tenantId}/t/${getServiceDetailsLink({
         type: ServiceType.NETWORK_SEGMENTATION,
         oper: ServiceOperation.DETAIL,
         serviceId: '1'
@@ -105,7 +105,7 @@ describe('NetworkSegmentationList', () => {
     const smartEdgeLink = await screen.findByRole('link',
       { name: 'Smart Edge 1' }) as HTMLAnchorElement
     expect(smartEdgeLink.href)
-      .toContain(`/t/${params.tenantId}/devices/edge/0000000001/edge-details/overview`)
+      .toContain(`/${params.tenantId}/t/devices/edge/0000000001/edge-details/overview`)
   })
 
   it('venue detail page link should be correct', async () => {
@@ -118,7 +118,7 @@ describe('NetworkSegmentationList', () => {
     const venue1List = await screen.findAllByRole('link', { name: 'Mock Venue 1' })
     const venue1Link = venue1List[0] as HTMLAnchorElement
     expect(venue1Link.href)
-      .toContain(`/t/${params.tenantId}/venues/mock_venue_1/venue-details/overview`)
+      .toContain(`/${params.tenantId}/t/venues/mock_venue_1/venue-details/overview`)
   })
 
   it('should go edit page', async () => {
@@ -133,7 +133,7 @@ describe('NetworkSegmentationList', () => {
     await user.click(within(row).getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Edit' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/${getServiceDetailsLink({
+      pathname: `/${params.tenantId}/t/${getServiceDetailsLink({
         type: ServiceType.NETWORK_SEGMENTATION,
         oper: ServiceOperation.EDIT,
         serviceId: '1'

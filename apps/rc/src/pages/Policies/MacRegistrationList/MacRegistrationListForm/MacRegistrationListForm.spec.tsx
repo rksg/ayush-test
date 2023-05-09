@@ -94,16 +94,16 @@ const list = {
 describe('MacRegistrationListForm', () => {
 
   // eslint-disable-next-line max-len
-  const createPath = '/:tenantId/' + getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.CREATE })
+  const createPath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.CREATE })
   // eslint-disable-next-line max-len
-  const editPath = '/:tenantId/' + getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.EDIT })
+  const editPath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.EDIT })
 
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     mockServer.use(
       rest.get(
-        MacRegListUrlsInfo.getMacRegistrationPools.url,
+        MacRegListUrlsInfo.getMacRegistrationPools.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(list))
       ),
       rest.get(
@@ -115,8 +115,12 @@ describe('MacRegistrationListForm', () => {
         (req, res, ctx) => res(ctx.json({}))
       ),
       rest.get(
-        RulesManagementUrlsInfo.getPolicySets.url,
+        RulesManagementUrlsInfo.getPolicySets.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(policySetList))
+      ),
+      rest.post(
+        MacRegListUrlsInfo.searchMacRegistrationPools.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(list))
       )
     )
   })

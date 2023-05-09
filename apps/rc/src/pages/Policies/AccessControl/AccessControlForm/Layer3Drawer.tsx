@@ -315,7 +315,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       dataIndex: 'source',
       key: 'source',
       render: (data, row) => {
-        return <NetworkColumnComponent network={row.source} access={row.access} />
+        return <NetworkColumnComponent network={row.source} row={row} />
       }
     },
     {
@@ -323,7 +323,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       dataIndex: 'destination',
       key: 'destination',
       render: (data, row) => {
-        return <NetworkColumnComponent network={row.destination} access={row.access} />
+        return <NetworkColumnComponent network={row.destination} row={row} />
       }
     },
     {
@@ -347,8 +347,9 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     }
   ]
 
-  const NetworkColumnComponent = (props: { network: Layer3NetworkCol, access: string }) => {
-    const { network, access } = props
+  const NetworkColumnComponent = (props: { network: Layer3NetworkCol, row: Layer3Rule }) => {
+    const { network, row } = props
+    const { access, protocol } = row
 
     let ipString = RuleSourceType.ANY as string
     if (network.type === RuleSourceType.SUBNET) {
@@ -363,10 +364,14 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       ipString = `${network.ip}`
     }
 
+    let portString = network.port === '' || network.port === undefined
+      ? AnyText
+      : network.port
+
     return <div style={{ display: 'flex', flexDirection: 'column' }}>
-      <span>{$t({ defaultMessage: 'IP:' })} {ipString}</span>
-      { access !== 'BLOCK' && <span>
-        {$t({ defaultMessage: 'Port:' })} {network.port === '' ? AnyText : network.port }
+      <span>{$t({ defaultMessage: 'IP: {ipString}' }, { ipString: ipString })}</span>
+      { (access !== 'BLOCK' && protocol !== Layer3ProtocolType.L3ProtocolEnum_ICMP_ICMPV4) && <span>
+        {$t({ defaultMessage: 'Port: {portString}' }, { portString: portString })}
       </span> }
     </div>
   }
@@ -962,8 +967,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         <Form.Item
           name={[...inputName, 'l3AclPolicyId']}
           rules={[{
-            required: true
-          }, {
+            required: true,
             message: $t({ defaultMessage: 'Please select Layer 3 profile' })
           }]}
           children={

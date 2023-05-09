@@ -261,7 +261,7 @@ function Table <RecordType extends Record<string, any>> ({
   const searchables = aggregator(columns, 'searchable')
 
   const activeFilters = filterables.filter(column => {
-    const key = column.dataIndex as keyof RecordType
+    const key = column.filterKey || column.dataIndex as keyof RecordType
     const filteredValue = filterValues[key as keyof Filter]
     return filteredValue
   })
@@ -289,7 +289,7 @@ function Table <RecordType extends Record<string, any>> ({
   let pagination: false | TablePaginationConfig = false
   if (type === 'tall') {
     pagination = { ...defaultPagination, ...props.pagination || {} } as TablePaginationConfig
-    if ((pagination.total || dataSource?.length || 0) < pagination.defaultPageSize!) {
+    if (((pagination.total || dataSource?.length) || 0) <= pagination.defaultPageSize!) {
       pagination = false
     }
   }

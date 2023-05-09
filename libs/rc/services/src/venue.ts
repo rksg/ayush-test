@@ -944,6 +944,21 @@ export const venueApi = baseVenueApi.injectEndpoints({
         })
       }
     }),
+    getQueriablePropertyConfigs: build.query<TableResult<PropertyConfigs>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.getPropertyConfigsQuery, params,
+          { Accept: 'application/hal+json' })
+
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      transformResponse (result: NewTableResult<PropertyConfigs>) {
+        return transferToTableResult<PropertyConfigs>(result)
+      },
+      providesTags: [{ type: 'PropertyConfigs', id: 'LIST' }]
+    }),
     updatePropertyConfigs: build.mutation<PropertyConfigs, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(PropertyUrlsInfo.updatePropertyConfigs, params)
@@ -1022,7 +1037,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
           const activities = [
             'ADD_UNIT',
             'UPDATE_UNIT',
-            'DELETE_UNITS'
+            'DELETE_UNITS',
+            'UpdatePersona'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(venueApi.util.invalidateTags([
@@ -1091,6 +1107,66 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       providesTags: [{ type: 'ResidentPortal', id: 'LIST' }]
     }),
+    getQueriableResidentPortals: build.query<TableResult<ResidentPortal>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.getResidentPortalsQuery, params,
+          { Accept: '*/*' })
+
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      transformResponse (result: NewTableResult<ResidentPortal>) {
+        return transferToTableResult<ResidentPortal>(result)
+      },
+      providesTags: [{ type: 'ResidentPortal', id: 'LIST' }]
+    }),
+    addResidentPortal: build.mutation<ResidentPortal, RequestFormData>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.addResidentPortal, params,
+          { 'Content-Type': undefined, 'Accept': '*/*' })
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'ResidentPortal', id: 'LIST' }]
+    }),
+    getResidentPortal: build.query<ResidentPortal, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          PropertyUrlsInfo.getResidentPortal,
+          params,
+          { Accept: 'application/hal+json' })
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'ResidentPortal', id: 'ID' }]
+    }),
+    updateResidentPortal: build.mutation<ResidentPortal, RequestFormData>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.patchResidentPortal, params,
+          { 'Content-Type': undefined, 'Accept': '*/*' })
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'ResidentPortal', id: 'LIST' }]
+    }),
+    deleteResidentPortals: build.mutation<ResidentPortal, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.deleteResidentPortals, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'ResidentPortal', id: 'LIST' }]
+    }),
+
     getVenueWithSetProperty: build.query<string[], string[]>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const result: string[] = []
@@ -1189,7 +1265,9 @@ export const {
   useGetTopologyQuery,
   useGetVenueMdnsFencingQuery,
   useUpdateVenueMdnsFencingMutation,
+
   useGetPropertyConfigsQuery,
+  useGetQueriablePropertyConfigsQuery,
   useUpdatePropertyConfigsMutation,
   usePatchPropertyConfigsMutation,
   useAddPropertyUnitMutation,
@@ -1197,9 +1275,18 @@ export const {
   useGetPropertyUnitByIdQuery,
   useLazyGetPropertyUnitByIdQuery,
   useGetPropertyUnitListQuery,
+  useLazyGetPropertyUnitListQuery,
   useUpdatePropertyUnitMutation,
   useDeletePropertyUnitsMutation,
+
   useGetResidentPortalListQuery,
+  useGetQueriableResidentPortalsQuery,
+  useLazyGetResidentPortalListQuery,
+  useAddResidentPortalMutation,
+  useGetResidentPortalQuery,
+  useUpdateResidentPortalMutation,
+  useDeleteResidentPortalsMutation,
+
   useImportPropertyUnitsMutation,
   useLazyDownloadPropertyUnitsQuery,
   useGetVenueWithSetPropertyQuery

@@ -404,7 +404,11 @@ export const policyApi = basePolicyApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'AddRogueApPolicyProfile'
+            'AddRogueApPolicyProfile',
+            'UpdateRogueApPolicyProfile',
+            'DeleteRogueApPolicyProfile',
+            'UpdateVenueRogueAp',
+            'UpdateDenialOfServiceProtection'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'RogueAp', id: 'LIST' }]))
           })
@@ -560,7 +564,18 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+      providesTags: [{ type: 'Policy', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateVenueRogueAp',
+            'UpdateDenialOfServiceProtection'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
+          })
+        })
+      }
     }),
     enhancedRoguePolicies: build.query<TableResult<EnhancedRoguePolicyType>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -574,6 +589,11 @@ export const policyApi = basePolicyApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
+            'AddRogueApPolicyProfile',
+            'UpdateRogueApPolicyProfile',
+            'DeleteRogueApPolicyProfile',
+            'UpdateVenueRogueAp',
+            'UpdateDenialOfServiceProtection',
             'DeleteVenue',
             'DeleteVenues'
           ], () => {
@@ -803,6 +823,23 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'MacRegistrationPool', id: 'LIST' }]
     }),
+    searchMacRegLists: build.query<TableResult<MacRegistrationPool>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const poolsReq = createNewTableHttpRequest({
+          apiInfo: MacRegListUrlsInfo.searchMacRegistrationPools,
+          params,
+          payload: payload as TableChangePayload
+        })
+        return {
+          ...poolsReq,
+          body: payload
+        }
+      },
+      transformResponse (result: NewTableResult<MacRegistrationPool>) {
+        return transferToTableResult<MacRegistrationPool>(result)
+      },
+      providesTags: [{ type: 'MacRegistrationPool', id: 'LIST' }]
+    }),
     macRegistrations: build.query<TableResult<MacRegistration>, RequestPayload>({
       query: ({ params, payload }) => {
         const poolsReq = createNewTableHttpRequest({
@@ -812,6 +849,23 @@ export const policyApi = basePolicyApi.injectEndpoints({
         })
         return {
           ...poolsReq
+        }
+      },
+      transformResponse (result: NewTableResult<MacRegistration>) {
+        return transferToTableResult<MacRegistration>(result)
+      },
+      providesTags: [{ type: 'MacRegistration', id: 'LIST' }]
+    }),
+    searchMacRegistrations: build.query<TableResult<MacRegistration>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const poolsReq = createNewTableHttpRequest({
+          apiInfo: MacRegListUrlsInfo.searchMacRegistrations,
+          params,
+          payload: payload as TableChangePayload
+        })
+        return {
+          ...poolsReq,
+          body: payload
         }
       },
       transformResponse (result: NewTableResult<MacRegistration>) {
@@ -1084,7 +1138,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     uploadMacRegistration: build.mutation<{}, RequestFormData>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(MacRegListUrlsInfo.addMacRegistration, params, {
+        const req = createHttpRequest(MacRegListUrlsInfo.uploadMacRegistration, params, {
           'Content-Type': undefined,
           'Accept': '*/*'
         })
@@ -1792,9 +1846,13 @@ export const policyApi = basePolicyApi.injectEndpoints({
 export const {
   usePolicyListQuery,
   useMacRegListsQuery,
+  useSearchMacRegListsQuery,
+  useLazySearchMacRegListsQuery,
   useDeleteMacRegListMutation,
   useGetMacRegListQuery,
   useMacRegistrationsQuery,
+  useSearchMacRegistrationsQuery,
+  useLazySearchMacRegistrationsQuery,
   useDeleteMacRegistrationMutation,
   useAddMacRegistrationMutation,
   useUpdateMacRegistrationMutation,

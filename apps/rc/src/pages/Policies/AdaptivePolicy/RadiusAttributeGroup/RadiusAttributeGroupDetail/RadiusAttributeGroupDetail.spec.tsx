@@ -44,7 +44,7 @@ describe('RadiusAttributeGroupDetail', () => {
   })
 
   // eslint-disable-next-line max-len
-  const path = '/:tenantId/' + getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.DETAIL })
+  const path = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.DETAIL })
 
   it('should render correctly', async () => {
     render(<Provider><RadiusAttributeGroupDetail /></Provider>, {
@@ -64,7 +64,7 @@ describe('RadiusAttributeGroupDetail', () => {
   })
 
   it('should navigate to edit page', async () => {
-    const editLink = `/t/${params.tenantId}/` + getPolicyDetailsLink({
+    const editLink = `/${params.tenantId}/t/` + getPolicyDetailsLink({
       type: PolicyType.RADIUS_ATTRIBUTE_GROUP,
       oper: PolicyOperation.EDIT,
       policyId: params.policyId

@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { MacRegListUrlsInfo }                                    from '@acx-ui/rc/utils'
-import { Provider }                                              from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { MacRegListUrlsInfo }         from '@acx-ui/rc/utils'
+import { Provider }                   from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { MacAddressDrawer } from './MacAddressDrawer'
 
@@ -60,7 +60,7 @@ describe('MacAddressDrawer', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.get(
-        MacRegListUrlsInfo.getMacRegistrations.url,
+        MacRegListUrlsInfo.getMacRegistrations.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(list))
       ),
       rest.post(
@@ -70,6 +70,10 @@ describe('MacAddressDrawer', () => {
       rest.patch(
         MacRegListUrlsInfo.updateMacRegistration.url,
         (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        MacRegListUrlsInfo.searchMacRegistrations.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(list))
       )
     )
   })
@@ -88,7 +92,7 @@ describe('MacAddressDrawer', () => {
         route: { params: {
           tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
           policyId: '1b5c434b-1d28-4ac1-9fe6-cdbee9f934e3'
-        }, path: '/:tenantId/:policyId' }
+        }, path: '/:tenantId/t/:policyId' }
       }
     )
     let saveButton = screen.getByText('Add')
@@ -99,6 +103,8 @@ describe('MacAddressDrawer', () => {
     // eslint-disable-next-line max-len
     await userEvent.type(await screen.findByRole('textbox', { name: 'MAC Address' }), '11:22:33:44:55:77')
     await userEvent.click(saveButton)
+
+    await screen.findByText('MAC Address 11:22:33:44:55:77 was added')
   })
 
   it('should cancel the drawer successfully', async () => {
@@ -116,7 +122,7 @@ describe('MacAddressDrawer', () => {
         route: { params: {
           tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
           policyId: '1b5c434b-1d28-4ac1-9fe6-cdbee9f934e3'
-        }, path: '/:tenantId/:policyId' }
+        }, path: '/:tenantId/t/:policyId' }
       }
     )
     const saveButton = screen.getByText('Add')
@@ -141,7 +147,7 @@ describe('MacAddressDrawer', () => {
         route: { params: {
           tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
           policyId: '1b5c434b-1d28-4ac1-9fe6-cdbee9f934e3'
-        }, path: '/:tenantId/:policyId' }
+        }, path: '/:tenantId/t/:policyId' }
       }
     )
     let saveButton = screen.getByText('Done')
@@ -161,7 +167,6 @@ describe('MacAddressDrawer', () => {
 
     await userEvent.click(saveButton)
 
-    const validating = await screen.findByRole('img', { name: 'loading' })
-    await waitForElementToBeRemoved(validating)
+    await screen.findByText('MAC Address 3A-B8-A9-29-35-D5 was updated')
   })
 })

@@ -72,8 +72,9 @@ export { SelectConnectedClientsTable, OSIconContainer } from './SelectConnectedC
 export { usePreference, countryCodes } from './usePreference'
 export type { updatePreferenceProps } from './usePreference'
 export { GoogleMapWithPreference } from './GoogleMapWithPreference'
+export { SubscriptionUtilizationWidget } from './SubscriptionUtilizationWidget'
 
-export { TunnelProfileForm } from './TunnelProfileForm'
+export { TunnelProfileForm, TunnelProfileFormType } from './TunnelProfileForm'
 export { EdgeDhcpPoolTable } from './EdgeDhcpPoolTable'
 export { EdgeDhcpLeaseTable } from './EdgeDhcpLeaseTable'
 

@@ -36,7 +36,7 @@ describe( 'NetworkSegAuthDetail', () => {
     render(
       <Provider>
         <NetworkSegAuthDetail />
-      </Provider>, { route: { params, path: '/:tenantId/services/webAuth/:serviceId/detail' } }
+      </Provider>, { route: { params, path: '/:tenantId/t/services/webAuth/:serviceId/detail' } }
     )
 
     await waitFor(() => expect(screen.getByText('DPSK Password')).toBeVisible())

@@ -122,6 +122,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
 
   const onCancel = () => {
     setModalVisible(false)
+    form.resetFields()
   }
 
   const onClose = () => {
@@ -146,11 +147,14 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
         }
       })
 
-      if (addAnother) {
-        form.setFieldValue('macAddress', '')
-      } else {
+      if (!addAnother) {
         setModalVisible(false)
+      } else {
+        if (devicesData &&
+          passphraseInfo.numberOfDevices! - 1 === devicesData.length + 1
+        ) setAddAnother(false)
       }
+      form.resetFields()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

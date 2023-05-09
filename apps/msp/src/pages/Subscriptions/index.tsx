@@ -1,15 +1,13 @@
 
 import { useEffect, useState } from 'react'
 
-import { Row, Space }         from 'antd'
+import { Space }              from 'antd'
 import { IntlShape, useIntl } from 'react-intl'
 
 import {
   Button,
-  cssStr,
   Loader,
   PageHeader,
-  StackedBarChart,
   Subtitle,
   Table,
   TableProps
@@ -19,6 +17,7 @@ import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   SubscriptionUsageReportDialog
 } from '@acx-ui/msp/components'
+import { SpaceWrapper, SubscriptionUtilizationWidget } from '@acx-ui/rc/components'
 import {
   useMspEntitlementListQuery,
   useMspAssignmentSummaryQuery,
@@ -27,6 +26,7 @@ import {
 import {
   dateSort,
   defaultSort,
+  EntitlementDeviceType,
   EntitlementUtil,
   MspEntitlement,
   sortProp
@@ -200,56 +200,25 @@ export function Subscriptions () {
       }
     })
 
-    const barColors = [
-      cssStr('--acx-accents-blue-50'),
-      cssStr('--acx-neutrals-30')
-    ]
-
     return (
       <>
         <Subtitle level={4}>
-          {$t({ defaultMessage: 'Subscription Utilization' })}</Subtitle>
-        <Row>
-          <label>{$t({ defaultMessage: 'Wi-Fi' })}</label>
-          <StackedBarChart
-            style={{ marginLeft: 8, height: 16, width: 135 }}
-            showLabels={false}
-            showTotal={false}
-            showTooltip={false}
-            barWidth={12}
-            data={[{
-              category: 'Wi-Fi Licenses: ',
-              series: [
-                { name: 'used',
-                  value: usedWifiCount * 100/totalWifiCount },
-                { name: 'available',
-                  value: (totalWifiCount-usedWifiCount)* 100/totalWifiCount }
-              ]
-            }]}
-            barColors={barColors}
+          {$t({ defaultMessage: 'Subscription Utilization' })}
+        </Subtitle>
+        <SpaceWrapper fullWidth size={40} justifycontent='flex-start'>
+          <SubscriptionUtilizationWidget
+            deviceType={EntitlementDeviceType.MSP_WIFI}
+            title={$t({ defaultMessage: 'Wi-Fi' })}
+            total={totalWifiCount}
+            used={usedWifiCount}
           />
-          <label style={{ marginLeft: 8 }}>{usedWifiCount} / {totalWifiCount}</label>
-
-          <label style={{ marginLeft: 40 }}>{$t({ defaultMessage: 'Switch' })}</label>
-          <StackedBarChart
-            style={{ marginLeft: 8, height: 16, width: 135 }}
-            showLabels={false}
-            showTotal={false}
-            showTooltip={false}
-            barWidth={12}
-            data={[{
-              category: 'Switch Licenses: ',
-              series: [
-                { name: 'used',
-                  value: usedSwitchCount * 100/totalSwitchCount },
-                { name: 'available',
-                  value: (totalSwitchCount-usedSwitchCount)* 100/totalSwitchCount }
-              ]
-            }]}
-            barColors={barColors}
+          <SubscriptionUtilizationWidget
+            deviceType={EntitlementDeviceType.MSP_SWITCH}
+            title={$t({ defaultMessage: 'Switch' })}
+            total={totalSwitchCount}
+            used={usedSwitchCount}
           />
-          <label style={{ marginLeft: 8 }}>{usedSwitchCount} / {totalSwitchCount}</label>
-        </Row>
+        </SpaceWrapper>
       </>
     )
   }
