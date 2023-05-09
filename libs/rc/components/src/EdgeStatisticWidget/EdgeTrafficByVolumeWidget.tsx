@@ -26,10 +26,12 @@ import type { EChartsOption, TooltipComponentOption } from 'echarts'
 interface TrafficResponse {
   time: TimeStamp[],
   timeSeries: {
-    tx: number[],
-    rx: number[],
-    total: number[]
-  }[]
+    ports : {
+      tx: number[],
+      rx: number[],
+      total: number[]
+    }[]
+  }
 }
 
 interface TrafficSeriesFragment {
@@ -43,7 +45,7 @@ interface TrafficSeriesFragment {
 }
 
 const transformTimeSeriesChartData = (data: TrafficResponse): TimeSeriesChartData[] => {
-  return data.timeSeries.map((traffic, index) => {
+  return data.timeSeries.ports.map((traffic, index) => {
     return {
       key: `Port ${index + 1}`,
       name: `Port ${index + 1}`,
@@ -53,7 +55,7 @@ const transformTimeSeriesChartData = (data: TrafficResponse): TimeSeriesChartDat
 }
 
 const transformTrafficSeriesFragment = (data: TrafficResponse): TrafficSeriesFragment[] => {
-  return data.timeSeries.map((traffic, index) => {
+  return data.timeSeries.ports.map((traffic, index) => {
     return {
       key: `Port ${index + 1}`,
       // eslint-disable-next-line max-len
