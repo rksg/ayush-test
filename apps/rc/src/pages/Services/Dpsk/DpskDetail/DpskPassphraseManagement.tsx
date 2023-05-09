@@ -303,7 +303,7 @@ export default function DpskPassphraseManagement () {
       setVisible={setAddPassphrasesDrawerVisible}
       editMode={passphrasesDrawerEditMode}
     />
-    { managePassphraseInfo && <ManageDevicesDrawer
+    { Object.keys(managePassphraseInfo).length > 0 && <ManageDevicesDrawer
       visible={manageDevicesVisible}
       setVisible={setManageDevicesVisible}
       passphraseInfo={managePassphraseInfo}
