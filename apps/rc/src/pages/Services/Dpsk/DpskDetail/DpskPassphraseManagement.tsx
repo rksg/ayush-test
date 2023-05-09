@@ -353,6 +353,7 @@ export default function DpskPassphraseManagement () {
     />
     <Loader states={[tableQuery]}>
       <Table<NewDpskPassphrase>
+        settingsId='dpsk-passphrase-table'
         columns={columns}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}

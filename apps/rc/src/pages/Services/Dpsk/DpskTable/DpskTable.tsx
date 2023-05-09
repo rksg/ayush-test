@@ -225,6 +225,7 @@ export default function DpskTable () {
       />
       <Loader states={[tableQuery]}>
         <Table<DpskSaveData>
+          settingsId='dpsk-table'
           columns={columns}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
