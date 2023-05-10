@@ -4,19 +4,29 @@ import { useDrag }       from 'react-dnd'
 import { getEmptyImage } from 'react-dnd-html5-backend'
 import { useIntl }       from 'react-intl'
 
-import { DeviceOutlined, SignalUp }         from '@acx-ui/icons'
-import { NetworkDevice, NetworkDeviceType } from '@acx-ui/rc/utils'
+import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
+import { DeviceOutlined, SignalUp }                     from '@acx-ui/icons'
+import { APMeshRole, NetworkDevice, NetworkDeviceType } from '@acx-ui/rc/utils'
 
 import { NetworkDeviceContext } from '..'
+import { getDeviceName }        from '../NetworkDevices/utils'
 
 import CustomDragLayer from './CustomDragLayer'
 import * as UI         from './styledComponents'
+
+export const apMeshRoleAbbrMap: Record<APMeshRole, string> = {
+  [APMeshRole.RAP]: 'R',
+  [APMeshRole.MAP]: 'M',
+  [APMeshRole.EMAP]: 'E',
+  [APMeshRole.DISABLED]: ''
+}
 
 export default function UnplacedDevice (props: { device: NetworkDevice }) {
 
   const { device } = props
   const { $t } = useIntl()
   const deviceContext = useContext(NetworkDeviceContext) as Function
+  const isApMeshTopologyFFOn = useIsSplitOn(Features.AP_MESH_TOPOLOGY)
 
   const [{ isDragging }, drag, dragPreview] = useDrag(() => ({
     type: 'device',
@@ -30,10 +40,13 @@ export default function UnplacedDevice (props: { device: NetworkDevice }) {
       if (!didDrop) {
         // device unplaced
         deviceContext(item)
-
       }
     }
   }), [device])
+
+  const getApMeshRoleAbbr = () => {
+    return device.meshRole ? `(${apMeshRoleAbbrMap[device.meshRole]})` : ''
+  }
 
   useEffect(() => {
     dragPreview(getEmptyImage())
@@ -64,7 +77,7 @@ export default function UnplacedDevice (props: { device: NetworkDevice }) {
                 ? <DeviceOutlined/>
                 : <SignalUp/>
             }
-          </div> {device?.name || device?.switchName || device?.serialNumber}
+          </div>{getDeviceName(device)} {isApMeshTopologyFFOn && getApMeshRoleAbbr()}
         </>
       }
       { isDragging && <CustomDragLayer key={device?.id} device={device}/> }
