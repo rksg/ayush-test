@@ -70,6 +70,33 @@ Object {
 
 exports[`readCodesIntoMap return correct map 2`] = `
 Object {
+  "EVENT_CLIENT_AUTHENTICATION_FAILURE": Object {
+    "defaultMessage": Array [
+      Object {
+        "type": 0,
+        "value": "Client authentication failed",
+      },
+    ],
+    "id": "620GDh",
+  },
+  "EVENT_CLIENT_BLOCKED": Object {
+    "defaultMessage": Array [
+      Object {
+        "type": 0,
+        "value": "Client blocked",
+      },
+    ],
+    "id": "YMXe6C",
+  },
+  "EVENT_CLIENT_BLOCKED_BY_BARING": Object {
+    "defaultMessage": Array [
+      Object {
+        "type": 0,
+        "value": "Client is blocked because of barring UE rule",
+      },
+    ],
+    "id": "6qiMN5",
+  },
   "EVENT_CLIENT_DISCONNECT": Object {
     "defaultMessage": Array [
       Object {
@@ -78,6 +105,15 @@ Object {
       },
     ],
     "id": "ia0RRf",
+  },
+  "EVENT_CLIENT_INACTIVITY_TIMEOUT": Object {
+    "defaultMessage": Array [
+      Object {
+        "type": 0,
+        "value": "Client connection timed out",
+      },
+    ],
+    "id": "LJ1uoU",
   },
   "EVENT_CLIENT_INFO_UPDATED": Object {
     "defaultMessage": Array [
@@ -97,6 +133,15 @@ Object {
     ],
     "id": "WNtrPx",
   },
+  "EVENT_CLIENT_LOGGED_OUT": Object {
+    "defaultMessage": Array [
+      Object {
+        "type": 0,
+        "value": "Client logged out",
+      },
+    ],
+    "id": "5imi4i",
+  },
   "EVENT_CLIENT_ROAMING": Object {
     "defaultMessage": Array [
       Object {
@@ -105,6 +150,33 @@ Object {
       },
     ],
     "id": "E65tJO",
+  },
+  "EVENT_CLIENT_ROAMING_DISCONNECTED": Object {
+    "defaultMessage": Array [
+      Object {
+        "type": 0,
+        "value": "Client roaming disconnected",
+      },
+    ],
+    "id": "KHOG3S",
+  },
+  "EVENT_CLIENT_SESSION_EXPIRED": Object {
+    "defaultMessage": Array [
+      Object {
+        "type": 0,
+        "value": "Client session expired",
+      },
+    ],
+    "id": "lc/hUQ",
+  },
+  "EVENT_FORCE_DHCP_DISCONNECTED": Object {
+    "defaultMessage": Array [
+      Object {
+        "type": 0,
+        "value": "Force DHCP disconnected",
+      },
+    ],
+    "id": "yBHU7Y",
   },
   "SG_DHCP_CCD_REASON_DEAUTH_LEAVING": Object {
     "defaultMessage": Array [
