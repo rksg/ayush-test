@@ -40,6 +40,7 @@ describe('ResidentPortal', () => {
       </Provider>
     )
 
+
     const nameInput = await screen.findByRole('textbox', { name: /Service Name/ })
     expect(nameInput).toHaveValue(mockedResidentPortal.name)
 
