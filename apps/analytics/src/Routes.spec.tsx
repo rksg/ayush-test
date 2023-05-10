@@ -60,6 +60,17 @@ test('should navigate to analytics/serviceValidation', async () => {
   })
   expect(screen.getByTestId('ServiceGuardPage')).toBeVisible()
 })
+test('should not navigate to analytics/serviceValidation when feature disabled', async () => {
+  jest.mocked(useIsTierAllowed).mockReturnValue(true)
+  jest.mocked(useIsSplitOn).mockReturnValue(false)
+  render(<Provider><AnalyticsRoutes /></Provider>, {
+    route: {
+      path: '/tenantId/t/analytics/serviceValidation',
+      wrapRoutes: false
+    }
+  })
+  expect(await screen.findByText('Service Validation is not enabled')).toBeVisible()
+})
 test('should navigate to Service Validation add page', async () => {
   jest.mocked(useIsTierAllowed).mockReturnValue(true)
   jest.mocked(useIsSplitOn).mockReturnValue(true)
