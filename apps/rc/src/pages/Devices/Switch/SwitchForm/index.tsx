@@ -9,8 +9,8 @@ import { useIntl }                                                from 'react-in
 import {
   PageHeader,
   Loader,
-  StepsForm,
-  StepsFormInstance,
+  StepsFormLegacy,
+  StepsFormLegacyInstance,
   Tooltip,
   Tabs,
   Alert
@@ -76,7 +76,7 @@ export function SwitchForm () {
   const editMode = action === 'edit'
   const navigate = useNavigate()
   const location = useLocation()
-  const formRef = useRef<StepsFormInstance<Switch>>()
+  const formRef = useRef<StepsFormLegacyInstance<Switch>>()
   const basePath = useTenantLink('/devices/')
   const venuesList = useVenuesListQuery({ params: { tenantId: tenantId }, payload: defaultPayload })
   const { data: switchData, isLoading: isSwitchDataLoading } =
@@ -312,7 +312,7 @@ export function SwitchForm () {
         { text: $t({ defaultMessage: 'Switches' }), link: '/devices/switch' }
       ]}
     />
-    <StepsForm
+    <StepsFormLegacy
       formRef={formRef}
       onFinish={editMode ? handleEditSwitch : handleAddSwitch}
       onCancel={() =>
@@ -325,7 +325,7 @@ export function SwitchForm () {
         cancel: readOnly ? '' : $t({ defaultMessage: 'Cancel' })
       }}
     >
-      <StepsForm.StepForm>
+      <StepsFormLegacy.StepForm>
         <Loader states={[{
           isLoading: venuesList.isLoading || isSwitchDataLoading || isSwitchDetailLoading
         }]}>
@@ -537,8 +537,8 @@ export function SwitchForm () {
             </Col>
           </Row>
         </Loader>
-      </StepsForm.StepForm>
-    </StepsForm>
+      </StepsFormLegacy.StepForm>
+    </StepsFormLegacy>
   </>
 }
 

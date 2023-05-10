@@ -18,8 +18,11 @@ import {
 } from '@acx-ui/rc/services'
 import {
   AdministrationDelegationStatus,
+  defaultSort,
   Delegation,
-  getDelegetionStatusIntlString
+  getDelegetionStatusIntlString,
+  sortProp,
+  SortResult
 } from '@acx-ui/rc/utils'
 import { RolesEnum }                from '@acx-ui/types'
 import { filterByAccess, hasRoles } from '@acx-ui/user'
@@ -98,6 +101,7 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
       title: $t({ defaultMessage: 'Partner Name' }),
       key: 'delegatedToName',
       dataIndex: 'delegatedToName',
+      sorter: { compare: sortProp('delegatedToName', defaultSort) },
       render: (data, row) => {
         return row.delegatedToName
       }
@@ -106,6 +110,8 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
       title: $t({ defaultMessage: 'Status' }),
       key: 'status',
       dataIndex: 'status',
+      defaultSortOrder: 'ascend',
+      sorter: { compare: sortProp('status', defaultSort) },
       render: (_, row) => {
         return $t(getDelegetionStatusIntlString(row.status))
       }
@@ -116,6 +122,13 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
       title: $t({ defaultMessage: 'Action' }),
       key: 'action',
       dataIndex: 'action',
+      sorter: { compare: sortProp('status',
+        (a: AdministrationDelegationStatus, b: AdministrationDelegationStatus): SortResult => {
+          const _a = a !== AdministrationDelegationStatus.ACCEPTED ? 0 : 1
+          const _b = b !== AdministrationDelegationStatus.ACCEPTED ? 0 : 1
+          // accepted sorted first in ascending
+          return (_b - _a) as SortResult
+        }) },
       render: (_, row) => {
         return <Button
           onClick={handleClickRevokeInvitation(row)}

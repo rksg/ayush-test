@@ -11,8 +11,8 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { GridCol, GridRow, StepsForm, Tooltip } from '@acx-ui/components'
-import { get }                                  from '@acx-ui/config'
+import { GridCol, GridRow, StepsFormLegacy, Tooltip } from '@acx-ui/components'
+import { get }                                        from '@acx-ui/config'
 import {
   QuestionMarkCircleOutlined
 } from '@acx-ui/icons'
@@ -158,7 +158,7 @@ export function SelfSignInForm () {
   return (
     <GridRow>
       <GridCol col={{ span: 12 }}>
-        <StepsForm.Title>{$t({ defaultMessage: 'Onboarding' })}</StepsForm.Title>
+        <StepsFormLegacy.Title>{$t({ defaultMessage: 'Onboarding' })}</StepsFormLegacy.Title>
         <Form.Item
           name='allowSign'
           initialValue={[]}

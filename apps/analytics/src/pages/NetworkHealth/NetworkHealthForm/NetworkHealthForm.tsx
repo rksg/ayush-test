@@ -3,8 +3,8 @@ import { useCallback } from 'react'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { PageHeader, StepsFormNew, showToast } from '@acx-ui/components'
-import { useNavigateToPath }                   from '@acx-ui/react-router-dom'
+import { PageHeader, StepsForm, showToast } from '@acx-ui/components'
+import { useNavigateToPath }                from '@acx-ui/react-router-dom'
 
 import * as contents          from '../contents'
 import {
@@ -65,24 +65,24 @@ export function NetworkHealthForm () {
 
   return <>
     <PageHeader title={title} breadcrumb={breadcrumb} />
-    <StepsFormNew
+    <StepsForm
       editMode={editMode}
       initialValues={specToDto(spec.data) ?? initialValues}
       onFinish={async (values) => { await submit(values).unwrap() }}
       onCancel={navigateToList}
     >
-      <StepsFormNew.StepForm
+      <StepsForm.StepForm
         title={$t(contents.steps.settings)}
         children={<NetworkHealthFormSettings />}
       />
-      <StepsFormNew.StepForm
+      <StepsForm.StepForm
         title={$t(contents.steps.apsSelection)}
         children={<NetworkHealthFormAPsSelection />}
       />
-      {!editMode ? <StepsFormNew.StepForm
+      {!editMode ? <StepsForm.StepForm
         title={$t(contents.steps.summary)}
         children={<NetworkHealthFormSummary />}
       /> : null}
-    </StepsFormNew>
+    </StepsForm>
   </>
 }

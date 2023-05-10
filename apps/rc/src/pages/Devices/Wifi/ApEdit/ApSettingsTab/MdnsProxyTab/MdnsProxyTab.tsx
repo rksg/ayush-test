@@ -11,8 +11,8 @@ import {
   GridCol,
   GridRow,
   Loader,
-  StepsForm,
-  StepsFormInstance
+  StepsFormLegacy,
+  StepsFormLegacyInstance
 } from '@acx-ui/components'
 import { MdnsProxySelector }                                         from '@acx-ui/rc/components'
 import { useGetApQuery }                                             from '@acx-ui/rc/services'
@@ -60,7 +60,7 @@ interface MdnsProxyTabFormFieldType {
 }
 
 export function MdnsProxyTab () {
-  const formRef = useRef<StepsFormInstance<MdnsProxyTabFormFieldType>>()
+  const formRef = useRef<StepsFormLegacyInstance<MdnsProxyTabFormFieldType>>()
   const { $t } = useIntl()
   const params = useParams()
   const { serialNumber } = params
@@ -142,7 +142,7 @@ export function MdnsProxyTab () {
       isLoading,
       isFetching: isDataFetching || isUpdating || isDeleting
     }]}>
-      <StepsForm
+      <StepsFormLegacy
         formRef={formRef}
         onCancel={() =>
           redirectPreviousPage(navigate, previousPath, basePath)
@@ -153,7 +153,7 @@ export function MdnsProxyTab () {
         onFormChange={() => setIsFormChangedHandled(false)}
       >
         {isSuccess &&
-          <StepsForm.StepForm<MdnsProxyTabFormFieldType>
+          <StepsFormLegacy.StepForm<MdnsProxyTabFormFieldType>
             onFinish={onSave}
             layout='horizontal'
           >
@@ -162,9 +162,9 @@ export function MdnsProxyTab () {
                 <MdnsProxyTabFormField serviceId={apDetail.multicastDnsProxyServiceProfileId} />
               </GridCol>
             </GridRow>
-          </StepsForm.StepForm>
+          </StepsFormLegacy.StepForm>
         }
-      </StepsForm>
+      </StepsFormLegacy>
     </Loader>
   )
 }

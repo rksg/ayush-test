@@ -2,7 +2,7 @@ import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { AnchorLayout, StepsForm }               from '@acx-ui/components'
+import { AnchorLayout, StepsFormLegacy }         from '@acx-ui/components'
 import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { redirectPreviousPage }                  from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
@@ -36,9 +36,9 @@ export function RadioTab () {
     title: wifiSettingTitle,
     content: (
       <>
-        <StepsForm.SectionTitle id='radio-settings'>
+        <StepsFormLegacy.SectionTitle id='radio-settings'>
           { wifiSettingTitle }
-        </StepsForm.SectionTitle>
+        </StepsFormLegacy.SectionTitle>
         <RadioSettings />
       </>
     )
@@ -47,9 +47,9 @@ export function RadioTab () {
     title: externalTitle,
     content: (
       <>
-        <StepsForm.SectionTitle id='external-antenna'>
+        <StepsFormLegacy.SectionTitle id='external-antenna'>
           { externalTitle }
-        </StepsForm.SectionTitle>
+        </StepsFormLegacy.SectionTitle>
         <ExternalAntennaSection />
       </>
     )
@@ -60,9 +60,9 @@ export function RadioTab () {
       title: loadBalancingTitle,
       content: (
         <>
-          <StepsForm.SectionTitle id='load-balancing'>
+          <StepsFormLegacy.SectionTitle id='load-balancing'>
             { loadBalancingTitle }
-          </StepsForm.SectionTitle>
+          </StepsFormLegacy.SectionTitle>
           <LoadBalancing />
         </>
       )
@@ -109,16 +109,16 @@ export function RadioTab () {
   }
 
   return (
-    <StepsForm
+    <StepsFormLegacy
       onFinish={() => handleUpdateSetting(false)}
       onCancel={() =>
         redirectPreviousPage(navigate, previousPath, basePath)
       }
       buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
     >
-      <StepsForm.StepForm>
+      <StepsFormLegacy.StepForm>
         <AnchorLayout items={anchorItems} offsetTop={275} />
-      </StepsForm.StepForm>
-    </StepsForm>
+      </StepsFormLegacy.StepForm>
+    </StepsFormLegacy>
   )
 }

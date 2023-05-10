@@ -3,10 +3,10 @@ import { useEffect, useState } from 'react'
 import { Col, Divider, Form, Row } from 'antd'
 import { useIntl }                 from 'react-intl'
 
-import { Button, Drawer, StepsForm, Subtitle } from '@acx-ui/components'
-import { PoolDrawer }                          from '@acx-ui/rc/components'
-import { usePatchEdgeDhcpServiceMutation }     from '@acx-ui/rc/services'
-import { EdgeDhcpPool }                        from '@acx-ui/rc/utils'
+import { Button, Drawer, StepsFormLegacy, Subtitle } from '@acx-ui/components'
+import { PoolDrawer }                                from '@acx-ui/rc/components'
+import { usePatchEdgeDhcpServiceMutation }           from '@acx-ui/rc/services'
+import { EdgeDhcpPool }                              from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
 
@@ -72,18 +72,18 @@ export const SelectDhcpPoolDrawer = (props: SelectDhcpPoolDrawerProps) => {
           pools?.map(item => ({
             label: <>
               <Subtitle level={4}>{item.poolName}</Subtitle>
-              <StepsForm.FieldLabel width='100px'>
+              <StepsFormLegacy.FieldLabel width='100px'>
                 {$t({ defaultMessage: 'Subnet Mask:' })}
                 <UI.RadioDescription
                   children={item.subnetMask}
                 />
-              </StepsForm.FieldLabel>
-              <StepsForm.FieldLabel width='100px'>
+              </StepsFormLegacy.FieldLabel>
+              <StepsFormLegacy.FieldLabel width='100px'>
                 {$t({ defaultMessage: 'Pool Range:' })}
                 <UI.RadioDescription
                   children={`${item.poolStartIp} - ${item.poolEndIp}`}
                 />
-              </StepsForm.FieldLabel>
+              </StepsFormLegacy.FieldLabel>
               <Divider />
             </>,
             value: item.id
