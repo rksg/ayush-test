@@ -85,7 +85,6 @@ export default function ActivityButton (props: ActivityButtonProps) {
     <UI.FilterRow>
       <Select value={status}
         size='small'
-        getPopupContainer={trigger => trigger.parentNode as HTMLElement}
         onChange={(val)=>{
           setStatus(val)
         }}>
