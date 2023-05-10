@@ -2,9 +2,7 @@ import { ReactNode } from 'react'
 
 import { defineMessage } from 'react-intl'
 
-import {
-  categoryOptions
-} from '@acx-ui/analytics/utils'
+import { ClientEventEnum, categoryOptions, disconnectClientEventsMap } from '@acx-ui/analytics/utils'
 
 import { ConnectionEvent } from './services'
 export const SUCCESS = 'success'
@@ -21,21 +19,22 @@ export const RADIO5G = '5'
 export const RADIO65G = '6(5)'
 export const EAPOLMessageIds = ['21', '22', '23', '24']
 export const filterEventMap = {
-  [JOIN]: 'EVENT_CLIENT_JOIN',
-  [INFO_UPDATED]: 'EVENT_CLIENT_INFO_UPDATED',
-  [ROAMED]: 'EVENT_CLIENT_ROAMING',
-  [DISCONNECTED]: 'EVENT_CLIENT_DISCONNECT',
-  [FAILURE]: 'FAILURE',
-  [RADIO2DOT4G]: '2.4',
-  [RADIO5G]: '5',
-  [RADIO65G]: '6(5)'
+  [JOIN]: [ClientEventEnum.JOIN],
+  [INFO_UPDATED]: [ClientEventEnum.INFO_UPDATED],
+  [ROAMED]: [ClientEventEnum.ROAM],
+  [DISCONNECTED]: Object.keys(disconnectClientEventsMap),
+  [FAILURE]: ['FAILURE'],
+  [RADIO2DOT4G]: ['2.4'],
+  [RADIO5G]: ['5'] ,
+  [RADIO65G]: ['6(5)']
 }
 export const EVENT_STATES = {
   NORMAL: 'normal',
   JOIN: 'join',
   REASSOC: 're-associate',
   SPURIOUS_DISCONNECT: 'spurious-disconnect',
-  SPURIOUS_INFO_UPDATED: 'spurious-info-updated'
+  SPURIOUS_INFO_UPDATED: 'spurious-info-updated',
+  ISOLATED_DISCONNECT: 'isolated-disconnect'
 }
 
 export const TYPES = {

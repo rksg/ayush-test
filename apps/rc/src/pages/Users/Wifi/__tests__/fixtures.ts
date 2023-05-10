@@ -959,3 +959,17 @@ export const eventMeta = {
   ],
   fields: ['networkId', 'venueName', 'apName']
 }
+
+export const dpskPassphraseClient = {
+  passphraseId: '123456789',
+  username: 'Fake User 1',
+  passphrase: '123456789!@#$%^',
+  numberOfDevices: 5,
+  clientMac: [
+    'ce:f3:08:00:84:f9',
+    'f6:a3:81:28:85:b0',
+    'bc:d0:74:3f:2a:e6'
+  ],
+  createDate: '2023-04-25T16:00:00.000+0000',
+  expirationDate: '2023-04-27T16:00:00.000+0000'
+}
