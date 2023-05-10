@@ -189,7 +189,7 @@ export const getDelegetionStatusIntlString = (status: AdministrationDelegationSt
     case AdministrationDelegationStatus.REJECTED :
       return defineMessage({ defaultMessage: 'Invitation declined' })
     case AdministrationDelegationStatus.REVOKED :
-      return defineMessage({ defaultMessage: 'revoked' })
+      return defineMessage({ defaultMessage: 'Revoked' })
     default:
       return defineMessage({ defaultMessage: 'Unknown' })
   }

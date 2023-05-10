@@ -11,7 +11,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 import styled        from 'styled-components/macro'
 
-import { StepsForm }                   from '@acx-ui/components'
+import { StepsFormLegacy }             from '@acx-ui/components'
 import { useGetSyslogPolicyListQuery } from '@acx-ui/rc/services'
 import {
   MigrationActionTypes
@@ -50,7 +50,7 @@ const MigrationSettingForm = styled((props: MigrationSettingFormProps) => {
   return (
     <Row gutter={20} className={className}>
       <Col span={10}>
-        <StepsForm.Title>{$t({ defaultMessage: 'Migration' })}</StepsForm.Title>
+        <StepsFormLegacy.Title>{$t({ defaultMessage: 'Migration' })}</StepsFormLegacy.Title>
         <Typography.Text>
           {// eslint-disable-next-line max-len
             $t({ defaultMessage: 'Migration assistant will migrate ZoneDirector configuration from the selected backup file and create a new venue.' })}

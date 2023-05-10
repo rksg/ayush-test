@@ -3,8 +3,8 @@ import React from 'react'
 import { Form, Input }               from 'antd'
 import { useIntl, FormattedMessage } from 'react-intl'
 
-import { GridCol, GridRow, StepsForm, Tooltip } from '@acx-ui/components'
-import { useVlanPoolListQuery }                 from '@acx-ui/rc/services'
+import { GridCol, GridRow, StepsFormLegacy, Tooltip } from '@acx-ui/components'
+import { useVlanPoolListQuery }                       from '@acx-ui/rc/services'
 import {
   checkVlanPoolMembers
 } from '@acx-ui/rc/utils'
@@ -42,7 +42,7 @@ const VLANPoolSettingForm = (props: VLANPoolSettingFormProps) => {
   return (
     <GridRow>
       <GridCol col={{ span: 8 }}>
-        <StepsForm.Title>{$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
+        <StepsFormLegacy.Title>{$t({ defaultMessage: 'Settings' })}</StepsFormLegacy.Title>
         <Form.Item
           name='name'
           label={$t({ defaultMessage: 'Policy Name' })}

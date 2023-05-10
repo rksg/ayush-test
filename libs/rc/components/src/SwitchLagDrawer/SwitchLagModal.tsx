@@ -15,8 +15,8 @@ import Transfer, { TransferItem } from 'antd/lib/transfer'
 import _                          from 'lodash'
 import { useIntl }                from 'react-intl'
 
-import { Button, Modal, showActionModal, StepsForm, Tooltip } from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }                         from '@acx-ui/icons'
+import { Button, Modal, showActionModal, StepsFormLegacy, Tooltip } from '@acx-ui/components'
+import { QuestionMarkCircleOutlined }                               from '@acx-ui/icons'
 import {
   useAddLagMutation,
   useGetDefaultVlanQuery,
@@ -401,10 +401,10 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
                     </Radio.Group>
                   }
                 />
-                <StepsForm.Title
+                <StepsFormLegacy.Title
                   style={{ padding: '10px 0px' }}>
                   {$t({ defaultMessage: 'Select Ports' })}
-                </StepsForm.Title>
+                </StepsFormLegacy.Title>
                 <Form.Item
                   name='portsType'
                   label={<>
