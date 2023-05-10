@@ -1,9 +1,17 @@
 import { rest } from 'msw'
 
-import { AnalyticsFilter }                                                                      from '@acx-ui/analytics/utils'
-import { apApi, venueApi, networkApi, clientApi }                                               from '@acx-ui/rc/services'
-import { CommonUrlsInfo, ClientUrlsInfo, WifiUrlsInfo, Client, ClientStatistic, getUrlForTest } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                      from '@acx-ui/store'
+import { AnalyticsFilter }                        from '@acx-ui/analytics/utils'
+import { apApi, venueApi, networkApi, clientApi } from '@acx-ui/rc/services'
+import {
+  CommonUrlsInfo,
+  ClientUrlsInfo,
+  WifiUrlsInfo,
+  Client,
+  ClientStatistic,
+  getUrlForTest,
+  DpskUrls
+} from '@acx-ui/rc/utils'
+import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -22,7 +30,8 @@ import {
   clientReportList,
   eventMetaList,
   histClientList,
-  GuestClient
+  GuestClient,
+  dpskPassphraseClient
 } from '../../__tests__/fixtures'
 
 import { ClientOverviewWidget } from './ClientOverviewWidget'
@@ -288,16 +297,20 @@ describe('ClientOverviewTab', () => {
           rest.get(WifiUrlsInfo.getNetwork.url,
             (_, res, ctx) => res(ctx.json({
               ...clientNetworkList[0],
-              type: 'dpsk'
+              type: 'dpsk',
+              dpskServiceProfileId: '123456789'
             }))
+          ),
+          rest.post(DpskUrls.getPassphraseClient.url,
+            (_, res, ctx) => res(ctx.json({ ...dpskPassphraseClient }))
           )
         )
-        const { asFragment } = render(<Provider><ClientOverviewTab /></Provider>, {
+        render(<Provider><ClientOverviewTab /></Provider>, {
           route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
         })
 
-        await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-        checkFragment(asFragment)
+        expect(await screen.findByText(dpskPassphraseClient.username)).toBeVisible()
+        expect(await screen.findByRole('link', { name: dpskPassphraseClient.clientMac[0] })).toBeVisible()
       })
     })
 
@@ -391,15 +404,21 @@ describe('ClientOverviewTab', () => {
           rest.get(WifiUrlsInfo.getNetwork.url,
             (_, res, ctx) => res(ctx.json({
               ...clientNetworkList[0],
-              type: 'dpsk'
+              type: 'dpsk',
+              dpskServiceProfileId: '123456789'
             }))
+          ),
+          rest.post(DpskUrls.getPassphraseClient.url,
+            (_, res, ctx) => res(ctx.json({ ...dpskPassphraseClient }))
           )
         )
-        const { asFragment } = render(<Provider><ClientOverviewTab /></Provider>, {
+
+        render(<Provider><ClientOverviewTab /></Provider>, {
           route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
         })
-        await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-        checkFragment(asFragment)
+
+        expect(await screen.findByText(dpskPassphraseClient.username)).toBeVisible()
+        expect(await screen.findByRole('link', { name: dpskPassphraseClient.clientMac[0] })).toBeVisible()
       })
 
       it('should render correctly when search parameters is disappeared', async () => {

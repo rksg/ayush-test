@@ -32,6 +32,7 @@ export enum Features {
   WISPR_ENCRYPT_MAC_IP = 'acx-ui-wispr-encrypt-mac-ip-toggle',
   HEALTH_DRILLDOWN = 'acx-ui-health-drilldown-toggle',
   PROPERTY_MANAGEMENT = 'property-management-enabled',
+  MSG_TEMPLATE = 'msgtemplate-service-enabled',
   RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
   POLICY_MANAGEMENT = 'policy-management-service-enabled',
   WIFI_EDA_READY_TOGGLE = 'wifi-eda-ready-toggle',
