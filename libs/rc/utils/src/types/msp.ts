@@ -132,6 +132,8 @@ export interface VarCustomer {
   tenantId: string;
   tenantName: string;
   tenantEmail: string;
+  wifiLicenses: string;
+  switchLicenses: string;
   entitlements: DelegationEntitlementRecord[];
   entitlement: DelegationEntitlementRecord;
 }

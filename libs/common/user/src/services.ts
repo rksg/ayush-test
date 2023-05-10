@@ -61,7 +61,9 @@ export const UserUrlsInfo = {
   },
   guestAllowedOperations: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/guest-user/allowed-operations'
+    url: '/tenants/allowedOperations?service=guest',
+    oldUrl: '/api/tenant/:tenantId/wifi/guest-user/allowed-operations',
+    newApi: true
   },
   upgradeAllowedOperations: {
     method: 'get',
