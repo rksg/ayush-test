@@ -3,7 +3,7 @@ import { useContext } from 'react'
 import { Col, Form, Row, Space } from 'antd'
 import { useIntl }               from 'react-intl'
 
-import { StepsForm, Subtitle }           from '@acx-ui/components'
+import { StepsFormLegacy, Subtitle }     from '@acx-ui/components'
 import { MdnsProxyForwardingRulesTable } from '@acx-ui/rc/components'
 
 import MdnsProxyFormContext from '../MdnsProxyForm/MdnsProxyFormContext'
@@ -20,7 +20,7 @@ export function MdnsProxySummary () {
 
   return (
     <>
-      <StepsForm.Title>{ $t({ defaultMessage: 'Summary' }) }</StepsForm.Title>
+      <StepsFormLegacy.Title>{ $t({ defaultMessage: 'Summary' }) }</StepsFormLegacy.Title>
       <Space direction='vertical' size='middle'>
         <Row gutter={[24, 8]}>
           <Col span={24}>

@@ -5,7 +5,7 @@ import _                                       from 'lodash'
 import { useIntl }                             from 'react-intl'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
-import { showActionModal, StepsFormNew } from '@acx-ui/components'
+import { showActionModal, StepsForm } from '@acx-ui/components'
 import {
   AccessSwitch,
   CatchErrorResponse,
@@ -107,7 +107,7 @@ export const NetworkSegmentationForm = (props: NetworkSegmentationFormProps) => 
   }
 
   return (
-    <StepsFormNew editMode={props.editMode}
+    <StepsForm editMode={props.editMode}
       form={props.form}
       onCancel={() => redirectPreviousPage(navigate, previousPath, linkToServices)}
       onFinish={handleFinish}
@@ -115,15 +115,15 @@ export const NetworkSegmentationForm = (props: NetworkSegmentationFormProps) => 
     >
       {
         props.steps.map((item, index) =>
-          <StepsFormNew.StepForm
+          <StepsForm.StepForm
             key={`step-${index}`}
             name={index.toString()}
             title={item.title}
           >
             {item.content}
-          </StepsFormNew.StepForm>)
+          </StepsForm.StepForm>)
       }
-    </StepsFormNew>
+    </StepsForm>
   )
 }
 

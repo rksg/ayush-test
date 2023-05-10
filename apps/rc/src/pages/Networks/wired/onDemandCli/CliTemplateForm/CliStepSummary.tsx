@@ -31,7 +31,7 @@ export function CliStepSummary () {
 
   return <>
     <Row gutter={24}>
-      <StepsForm.Title>{$t({ defaultMessage: 'Summary' })}</StepsForm.Title>
+      <StepsForm.Title children={$t({ defaultMessage: 'Summary' })} />
     </Row>
     <Row>
       <Col span={6}>

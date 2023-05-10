@@ -6,7 +6,7 @@ import {
   GridRow,
   PageHeader,
   RadioCardCategory,
-  StepsForm
+  StepsFormLegacy
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
@@ -104,11 +104,11 @@ export default function SelectServiceForm () {
           { text: $t({ defaultMessage: 'Services' }), link: getServiceListRoutePath(true) }
         ]}
       />
-      <StepsForm
+      <StepsFormLegacy
         onCancel={() => navigate(myServicesPath)}
         buttonLabel={{ submit: $t({ defaultMessage: 'Next' }) }}
       >
-        <StepsForm.StepForm
+        <StepsFormLegacy.StepForm
           name='selectService'
           onFinish={(data) => navigateToCreateService(data)}
         >
@@ -138,8 +138,8 @@ export default function SelectServiceForm () {
               )}
             </Radio.Group>
           </Form.Item>
-        </StepsForm.StepForm>
-      </StepsForm>
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>
     </>
   )
 }

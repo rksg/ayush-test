@@ -5,7 +5,7 @@ import { Form }                   from 'antd'
 import _                          from 'lodash'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { StepsFormNew }                                                                  from '@acx-ui/components'
+import { StepsForm }                                                                     from '@acx-ui/components'
 import { useLazyGetEdgeListQuery }                                                       from '@acx-ui/rc/services'
 import { EdgeFirewallSetting }                                                           from '@acx-ui/rc/utils'
 import { ACLDirection, getServiceRoutePath, ServiceOperation, ServiceType, StatefulAcl } from '@acx-ui/rc/utils'
@@ -132,7 +132,7 @@ const FirewallForm = (props: FirewallFormProps) => {
     }
   }, [form, editData])
 
-  return (<StepsFormNew
+  return (<StepsForm
     form={form}
     onCancel={() => navigate(linkToServiceList)}
     onFinish={onFinish}
@@ -140,15 +140,15 @@ const FirewallForm = (props: FirewallFormProps) => {
   >
     {
       steps.map((item, index) =>
-        <StepsFormNew.StepForm
+        <StepsForm.StepForm
           key={`step-${index}`}
           name={index.toString()}
           title={item.title}
         >
           {item.content}
-        </StepsFormNew.StepForm>)
+        </StepsForm.StepForm>)
     }
-  </StepsFormNew>
+  </StepsForm>
   )
 }
 
