@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
-import { Space, Badge }        from 'antd'
+import { Badge }               from 'antd'
 import { useIntl }             from 'react-intl'
 
 import {
@@ -168,10 +168,10 @@ export function SwitchTable (props : SwitchTableProps) {
           <TenantLink to={`/devices/switch/${row.id || row.serialNumber}/${row.serialNumber}/details/overview`}>
             {getSwitchName(row)}
           </TenantLink> :
-          <Space>
-            <>{getSwitchName(row)}</>
-            <span>({getStackMemberStatus(row.unitStatus || '', true)})</span>
-          </Space>
+          <div>
+            {getSwitchName(row)}
+            <span style={{ marginLeft: '4px' }}>({getStackMemberStatus(row.unitStatus || '', true)})</span>
+          </div>
       }
     }, {
       key: 'deviceStatus',
