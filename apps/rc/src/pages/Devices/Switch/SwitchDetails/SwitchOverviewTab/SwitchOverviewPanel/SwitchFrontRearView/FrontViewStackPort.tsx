@@ -15,7 +15,10 @@ export function FrontViewStackPort (props:{
   tooltipEnable: boolean
 }) {
   const { $t } = useIntl()
-  const { portData, labelText, labelPosition, tooltipEnable } = props
+  const { ports, portData, labelText, labelPosition, tooltipEnable } = props
+
+  const portNumber = portData.portIdentifier.split(':')[0]
+  const breakOutPorts = ports.filter(p => p.portIdentifier.includes(portNumber))
 
   const portColor ='grey'
   const getTooltip = (port: SwitchPortStatus) => {
