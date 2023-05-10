@@ -20,6 +20,7 @@ import {
   roleStringMap
 } from '@acx-ui/user'
 
+import { PreferredLanguageFormItem } from './PreferredLanguageFormItem'
 import {
   RecentLogin
 } from './RecentLogin'
@@ -105,16 +106,6 @@ export function UserProfile () {
                 }
               />
               <Form.Item
-                name='preferredLanguage'
-                label={$t({ defaultMessage: 'Preferred Language' })}
-                initialValue={userProfile?.detailLevel}
-                children={
-                  <Select>
-                    <Option>{$t({ defaultMessage: 'English' })}</Option>
-                  </Select>
-                }
-              />
-              <Form.Item
                 name='detailLevel'
                 label={$t({ defaultMessage: 'Event Details Level' })}
                 initialValue={userProfile?.detailLevel}
@@ -131,6 +122,8 @@ export function UserProfile () {
                   </Select>
                 }
               />
+              
+              <PreferredLanguageFormItem />
             </Col>
           </Row>
         </StepsForm.StepForm>
