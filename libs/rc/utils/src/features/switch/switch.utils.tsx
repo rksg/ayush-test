@@ -199,7 +199,8 @@ export const transformSwitchStatus = (switchStatusEnum: SwitchStatusEnum, config
   let message = ''
   let deviceStatus = DeviceConnectionStatus.INITIAL
   let isOperational = false
-  switch (switchStatusEnum) {
+  const status = switchStatusEnum && switchStatusEnum.toLocaleUpperCase()
+  switch (status) {
     case SwitchStatusEnum.NEVER_CONTACTED_CLOUD:
       message = $t({ defaultMessage: 'Never contacted cloud' })
       deviceStatus = DeviceConnectionStatus.INITIAL

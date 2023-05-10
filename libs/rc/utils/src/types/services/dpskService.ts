@@ -80,6 +80,16 @@ export interface DpskPassphrasesSaveData {
   override?: boolean;
 }
 
+export interface DpskPassphraseClient {
+  passphraseId: string;
+  username: string;
+  passphrase: string;
+  numberOfDevices?: number;
+  clientMac: string[];
+  createDate: string;
+  expirationDate: string;
+}
+
 export interface DPSKDeviceInfo {
   mac: string,
   isOnline: boolean,
