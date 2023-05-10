@@ -7,8 +7,8 @@ import { useIntl } from 'react-intl'
 import {
   Loader,
   PageHeader,
-  StepsForm,
-  StepsFormInstance
+  StepsFormLegacy,
+  StepsFormLegacyInstance
 } from '@acx-ui/components'
 import { useCreateDpskMutation, useGetDpskQuery, useUpdateDpskMutation } from '@acx-ui/rc/services'
 import {
@@ -50,7 +50,7 @@ export default function DpskForm (props: DpskFormProps) {
     isLoading,
     isFetching
   } = useGetDpskQuery({ params }, { skip: !editMode })
-  const formRef = useRef<StepsFormInstance<CreateDpskFormFields>>()
+  const formRef = useRef<StepsFormLegacyInstance<CreateDpskFormFields>>()
   const initialValues: Partial<CreateDpskFormFields> = {
     passphraseFormat: PassphraseFormatEnum.MOST_SECURED,
     passphraseLength: 18,
@@ -95,20 +95,20 @@ export default function DpskForm (props: DpskFormProps) {
         ]}
       />}
       <Loader states={[{ isLoading, isFetching }]}>
-        <StepsForm<CreateDpskFormFields>
+        <StepsFormLegacy<CreateDpskFormFields>
           formRef={formRef}
           onCancel={() => modalMode ? modalCallBack?.() : navigate(linkToServices)}
           onFinish={saveData}
         >
-          <StepsForm.StepForm<CreateDpskFormFields>
+          <StepsFormLegacy.StepForm<CreateDpskFormFields>
             name='details'
             title={$t({ defaultMessage: 'Settings' })}
             initialValues={initialValues}
             preserve={modalMode ? false : true}
           >
             <DpskSettingsForm />
-          </StepsForm.StepForm>
-        </StepsForm>
+          </StepsFormLegacy.StepForm>
+        </StepsFormLegacy>
       </Loader>
     </>
   )

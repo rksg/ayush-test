@@ -3,8 +3,8 @@ import { useContext, useState, useRef, useEffect, Key } from 'react'
 import { Col, Divider, Form, Input, Space, Switch } from 'antd'
 import { isEqual }                                  from 'lodash'
 
-import { Button, Loader, StepsForm, StepsFormInstance } from '@acx-ui/components'
-import { ConfigurationOutlined }                        from '@acx-ui/icons'
+import { Button, Loader, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
+import { ConfigurationOutlined }                                    from '@acx-ui/icons'
 import {
   useConfigProfilesQuery,
   useVenueSwitchSettingQuery,
@@ -59,7 +59,7 @@ export function GeneralSettingForm () {
   const basePath = useTenantLink('/venues/')
   const { editContextData, setEditContextData, previousPath } = useContext(VenueEditContext)
 
-  const formRef = useRef<StepsFormInstance<VenueSwitchConfiguration>>()
+  const formRef = useRef<StepsFormLegacyInstance<VenueSwitchConfiguration>>()
   const venueSwitchSetting = useVenueSwitchSettingQuery({ params: { tenantId, venueId } })
   const configProfiles = useConfigProfilesQuery({ params: { tenantId, venueId }, payload: {} })
   const [updateVenueSwitchSetting, {
@@ -177,7 +177,7 @@ export function GeneralSettingForm () {
       isLoading: venueSwitchSetting.isLoading || configProfiles.isLoading,
       isFetching: isUpdatingVenueSwitchSetting
     }]}>
-      <StepsForm
+      <StepsFormLegacy
         formRef={formRef}
         onFinish={() => handleUpdate()}
         onCancel={() =>
@@ -185,7 +185,7 @@ export function GeneralSettingForm () {
         }
         buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
       >
-        <StepsForm.StepForm
+        <StepsFormLegacy.StepForm
           layout='horizontal'
           labelAlign='left'
           labelCol={{ span: 6 }}
@@ -318,8 +318,8 @@ export function GeneralSettingForm () {
             <SyslogServerModal {...{ formState, setFormState, formData, setFormData }} />}
           {formState.regularModalvisible &&
             <RegularProfileDetailModal {...{ formState, setFormState, formData }} />}
-        </StepsForm.StepForm>
-      </StepsForm>
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>
     </Loader>
   )
 }

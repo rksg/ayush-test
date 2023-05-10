@@ -4,7 +4,7 @@ import { Form, Select, Switch, Row, Button, Col } from 'antd'
 import { isEqual }                                from 'lodash'
 import { useIntl }                                from 'react-intl'
 
-import { Loader, StepsForm, showToast, StepsFormInstance, showActionModal } from '@acx-ui/components'
+import { Loader, StepsFormLegacy, showToast, StepsFormLegacyInstance, showActionModal } from '@acx-ui/components'
 import {
   useGetApQuery,
   useGetApSnmpPolicyListQuery,
@@ -47,7 +47,7 @@ export function ApSnmp () {
 
   const { editContextData, setEditContextData } = useContext(ApEditContext)
 
-  const formRef = useRef<StepsFormInstance<ApSnmpSettings>>()
+  const formRef = useRef<StepsFormLegacyInstance<ApSnmpSettings>>()
 
   // Store database AP SNMP settings, reset the form once user discard/switch customized settings
   const [stateOfApSnmpSettings, setStateOfApSnmpSettings] = useState(defaultApSnmpSettings)
@@ -188,7 +188,7 @@ export function ApSnmp () {
     isFetching: isUpdatingApSnmpSettings|| isResettingApSnmpSettings
   }]}>
 
-    <StepsForm
+    <StepsFormLegacy
       formRef={formRef}
       onFormChange={() => handleFormApSnmpChange()}
       onFinish={sendApSnmpSetting}
@@ -200,7 +200,7 @@ export function ApSnmp () {
         submit: $t({ defaultMessage: 'Apply' })
       }}
     >
-      <StepsForm.StepForm
+      <StepsFormLegacy.StepForm
         layout='horizontal'
         initialValues={stateOfApSnmpSettings}>
         <Row style={{ backgroundColor: '#F2F2F2', marginBottom: '10px' }} align='middle'>
@@ -276,7 +276,7 @@ export function ApSnmp () {
         </Col>
           }
         </Row>
-      </StepsForm.StepForm>
-    </StepsForm>
+      </StepsFormLegacy.StepForm>
+    </StepsFormLegacy>
   </Loader>)
 }

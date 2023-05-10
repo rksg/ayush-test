@@ -4,8 +4,8 @@ import { useContext, useEffect, useState } from 'react'
 import { Form, InputNumber, Space, Switch } from 'antd'
 import { useIntl }                          from 'react-intl'
 
-import { StepsForm, Tooltip } from '@acx-ui/components'
-import { ExternalAntenna }    from '@acx-ui/rc/utils'
+import { StepsFormLegacy, Tooltip } from '@acx-ui/components'
+import { ExternalAntenna }          from '@acx-ui/rc/utils'
 
 import { VenueEditContext } from '../..'
 
@@ -228,7 +228,7 @@ export function ExternalAntennaForm (props:{
     <>
       {
         formSettings.singleToggle?.show &&
-        <StepsForm.FieldLabel width='190px'>
+        <StepsFormLegacy.FieldLabel width='190px'>
           { $t({ defaultMessage: 'Enable:' }) }
           <Form.Item
             name={['external', 'apModel', model, 'coupled']}
@@ -243,12 +243,12 @@ export function ExternalAntennaForm (props:{
               />
             }
           />
-        </StepsForm.FieldLabel>
+        </StepsFormLegacy.FieldLabel>
       }
 
       {
         (formSettings.has24G && !formSettings.singleToggle?.show) &&
-        <StepsForm.FieldLabel width='190px'>
+        <StepsFormLegacy.FieldLabel width='190px'>
           { $t({ defaultMessage: 'Enable 2.4 GHz:' }) }
           <Form.Item
             name={['external', 'apModel', model, 'enable24G']}
@@ -263,7 +263,7 @@ export function ExternalAntennaForm (props:{
               />
             }
           />
-        </StepsForm.FieldLabel>
+        </StepsFormLegacy.FieldLabel>
       }
       {
         (formSettings.has24G && (enable24G || coupled)) &&
@@ -291,7 +291,7 @@ export function ExternalAntennaForm (props:{
 
       {
         (formSettings.has50G && !formSettings.singleToggle?.show) &&
-        <StepsForm.FieldLabel width='190px'>
+        <StepsFormLegacy.FieldLabel width='190px'>
           { $t({ defaultMessage: 'Enable 5 GHz:' }) }
           <Form.Item
             name={['external', 'apModel', model, 'enable50G']}
@@ -306,7 +306,7 @@ export function ExternalAntennaForm (props:{
               />
             }
           />
-        </StepsForm.FieldLabel>
+        </StepsFormLegacy.FieldLabel>
       }
       {
         (formSettings.has50G && (enable50G || coupled)) &&
