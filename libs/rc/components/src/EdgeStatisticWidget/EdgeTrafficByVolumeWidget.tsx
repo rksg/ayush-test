@@ -1,9 +1,12 @@
-import _                                             from 'lodash'
-import { renderToString }                            from 'react-dom/server'
-import { RawIntlProvider, useIntl,FormattedMessage } from 'react-intl'
-import AutoSizer                                     from 'react-virtualized-auto-sizer'
+import { useEffect, useState } from 'react'
 
-import type { TimeSeriesChartData } from '@acx-ui/analytics/utils'
+import _                                              from 'lodash'
+import { renderToString }                             from 'react-dom/server'
+import { RawIntlProvider, useIntl, FormattedMessage } from 'react-intl'
+import { useParams }                                  from 'react-router-dom'
+import AutoSizer                                      from 'react-virtualized-auto-sizer'
+
+import { calculateGranularity, TimeSeriesChartData } from '@acx-ui/analytics/utils'
 import {
   HistoricalCard,
   Loader,
@@ -15,24 +18,13 @@ import {
   Badge,
   defaultRichTextFormatValues
 } from '@acx-ui/components'
-import { formatter, DateFormatEnum } from '@acx-ui/formatter'
-import type { TimeStamp }            from '@acx-ui/types'
-import { getIntl }                   from '@acx-ui/utils'
-
-import { EdgeTrafficByVolumeWidgetMockData } from './__test__/fixture'
+import { formatter, DateFormatEnum }                     from '@acx-ui/formatter'
+import { useGetEdgePortTrafficMutation }                 from '@acx-ui/rc/services'
+import { EdgeAllPortTrafficData, EdgeTimeSeriesPayload } from '@acx-ui/rc/utils'
+import type { TimeStamp }                                from '@acx-ui/types'
+import { useDateFilter, getIntl  }                       from '@acx-ui/utils'
 
 import type { EChartsOption, TooltipComponentOption } from 'echarts'
-
-interface TrafficResponse {
-  time: TimeStamp[],
-  timeSeries: {
-    ports : {
-      tx: number[],
-      rx: number[],
-      total: number[]
-    }[]
-  }
-}
 
 interface TrafficSeriesFragment {
   key: string,
@@ -44,7 +36,7 @@ interface TrafficSeriesFragment {
   }[]
 }
 
-const transformTimeSeriesChartData = (data: TrafficResponse): TimeSeriesChartData[] => {
+const transformTimeSeriesChartData = (data: EdgeAllPortTrafficData): TimeSeriesChartData[] => {
   return data.timeSeries.ports.map((traffic, index) => {
     return {
       key: `Port ${index + 1}`,
@@ -54,7 +46,7 @@ const transformTimeSeriesChartData = (data: TrafficResponse): TimeSeriesChartDat
   })
 }
 
-const transformTrafficSeriesFragment = (data: TrafficResponse): TrafficSeriesFragment[] => {
+const transformTrafficSeriesFragment = (data: EdgeAllPortTrafficData): TrafficSeriesFragment[] => {
   return data.timeSeries.ports.map((traffic, index) => {
     return {
       key: `Port ${index + 1}`,
@@ -71,9 +63,47 @@ const transformTrafficSeriesFragment = (data: TrafficResponse): TrafficSeriesFra
   })
 }
 
-function EdgeTrafficByVolumeWidget () {
+export function EdgeTrafficByVolumeWidget ({ isLoading }: { isLoading: boolean }) {
   const { $t } = useIntl()
-  const queryResults = { data: EdgeTrafficByVolumeWidgetMockData, isLoading: false }
+  const filters = useDateFilter()
+  const params = useParams()
+
+  const [queryResults, setQueryResults] = useState<EdgeAllPortTrafficData | null>(null)
+
+  const [trigger] = useGetEdgePortTrafficMutation()
+
+  useEffect(() => {
+    const initialWidget = async () => {
+      await trigger({
+        params: { serialNumber: params.serialNumber },
+        payload: {
+          start: filters?.startDate,
+          end: filters?.endDate,
+          granularity: calculateGranularity(filters?.startDate, filters?.endDate, 'PT15M')
+        } as EdgeTimeSeriesPayload
+      }).unwrap()
+        .then((data) => {
+          setQueryResults(data)
+        })
+        .catch((error) => {
+          // eslint-disable-next-line no-console
+          console.error(error)
+        })
+    }
+    if (!isLoading) {
+      initialWidget()
+    }
+  }, [isLoading])
+
+  if (!queryResults || _.isEmpty(queryResults.time)) {
+    return (
+      <HistoricalCard title={$t({ defaultMessage: 'Traffic by Volume' })}>
+        <AutoSizer>
+          {() =><NoData />}
+        </AutoSizer>
+      </HistoricalCard>
+    )
+  }
 
   const defaultOption: EChartsOption = {
     tooltip: {
@@ -93,29 +123,32 @@ function EdgeTrafficByVolumeWidget () {
                 {formatter(DateFormatEnum.DateTimeFormat)(time) as string}
               </time>
               <ul>{
-                // eslint-disable-next-line max-len
-                transformTrafficSeriesFragment(queryResults.data as TrafficResponse).map((traffic: TrafficSeriesFragment)=> {
-                  const color = graphParameters.find(p => p.seriesName === traffic.key)?.color || ''
-                  const fragment = traffic.fragment[graphDataIndex]
-                  let text = <FormattedMessage
-                    defaultMessage='{name}: <b>{value}</b>'
-                    description='Label before colon, value after colon'
-                    values={{
-                      ...defaultRichTextFormatValues,
-                      name: traffic.key,
-                      value: formatter('concatTxAndRxFormat')(fragment)
-                    }}
-                  />
-                  return (
-                    <li key={traffic.key}>
-                      <Badge
-                        className='acx-chart-tooltip'
-                        color={(color) as string}
-                        text={text}
-                      />
-                    </li>
-                  )
-                })
+                transformTrafficSeriesFragment(queryResults)
+                  .map((traffic: TrafficSeriesFragment)=> {
+                    // eslint-disable-next-line max-len
+                    const color = graphParameters.find(p => p.seriesName === traffic.key)?.color || ''
+                    const fragment = traffic.fragment[graphDataIndex]
+                    let text = <FormattedMessage
+                      defaultMessage='{name}: <b>{value}</b>'
+                      description='Label before colon, value after colon'
+                      values={{
+                        ...defaultRichTextFormatValues,
+                        name: traffic.key,
+                        value: `${formatter('bytesFormat')(fragment.total)}\
+                                 Tx: ${formatter('bytesFormat')(fragment.tx)},\
+                                 Rx: ${formatter('bytesFormat')(fragment.rx)})`
+                      }}
+                    />
+                    return (
+                      <li key={traffic.key}>
+                        <Badge
+                          className='acx-chart-tooltip'
+                          color={(color) as string}
+                          text={text}
+                        />
+                      </li>
+                    )
+                  })
               }</ul>
             </TooltipWrapper>
           </RawIntlProvider>
@@ -124,25 +157,20 @@ function EdgeTrafficByVolumeWidget () {
     } as TooltipComponentOption
   }
 
-
   return (
-    <Loader states={[queryResults]}>
+    <Loader states={[{ isLoading }]}>
       <HistoricalCard title={$t({ defaultMessage: 'Traffic by Volume' })}>
         <AutoSizer>
           {({ height, width }) => (
-            queryResults.data ?
-              <MultiLineTimeSeriesChart
-                style={{ width, height }}
-                data={transformTimeSeriesChartData(queryResults.data as TrafficResponse)}
-                dataFormatter={formatter('bytesFormat')}
-                echartOptions={defaultOption}
-              />
-              : <NoData/>
+            <MultiLineTimeSeriesChart
+              style={{ width, height }}
+              data={transformTimeSeriesChartData(queryResults)}
+              dataFormatter={formatter('bytesFormat')}
+              echartOptions={defaultOption}
+            />
           )}
         </AutoSizer>
       </HistoricalCard>
     </Loader>
   )
 }
-
-export { EdgeTrafficByVolumeWidget }

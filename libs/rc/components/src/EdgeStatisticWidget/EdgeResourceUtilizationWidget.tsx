@@ -1,28 +1,53 @@
-import { useIntl } from 'react-intl'
-import AutoSizer   from 'react-virtualized-auto-sizer'
+import { useEffect, useState } from 'react'
 
-import { getSeriesData, AnalyticsFilter } from '@acx-ui/analytics/utils'
+import _                                              from 'lodash'
+import { renderToString }                             from 'react-dom/server'
+import { RawIntlProvider, useIntl, FormattedMessage } from 'react-intl'
+import { useParams }                                  from 'react-router-dom'
+import AutoSizer                                      from 'react-virtualized-auto-sizer'
+
+
+import { getSeriesData, calculateGranularity, TimeSeriesChartData } from '@acx-ui/analytics/utils'
 import {
   HistoricalCard,
   Loader,
   MultiLineTimeSeriesChart,
-  NoData
+  NoData,
+  tooltipOptions,
+  TooltipFormatterParams,
+  TooltipWrapper,
+  Badge,
+  defaultRichTextFormatValues
 } from '@acx-ui/components'
-import { formatter } from '@acx-ui/formatter'
+import { formatter, DateFormatEnum }                     from '@acx-ui/formatter'
+import { useGetEdgeResourceUtilizationMutation }         from '@acx-ui/rc/services'
+import { EdgeResourceTimeSeries, EdgeTimeSeriesPayload } from '@acx-ui/rc/utils'
+import type { TimeStamp }                                from '@acx-ui/types'
+import { useDateFilter, getIntl }                        from '@acx-ui/utils'
 
-import { EdgeResourceUtilizationWidgetMockData } from './__test__/fixture'
+import type { EChartsOption, TooltipComponentOption } from 'echarts'
 
-type Key = keyof Omit<ResourceUtilizationData, 'time'>
-
-export type ResourceUtilizationData = {
-  time: string[]
-  cpu: number[]
-  memory: number[]
-  disk: number[]
+interface UtilizationSeriesFragment {
+  key: string,
+  fragment: {
+    percentage: number,
+    unit: number | undefined,
+    time: TimeStamp
+  }[]
 }
 
-function EdgeResourceUtilizationWidget () {
+type Key = keyof Omit<EdgeResourceTimeSeries, 'time'>
+
+export function EdgeResourceUtilizationWidget ({ isLoading }:{ isLoading: boolean }) {
   const { $t } = useIntl()
+  const filters = useDateFilter()
+  const params = useParams()
+
+  const [queryResults, setQueryResults] = useState<TimeSeriesChartData[]>([])
+  const [seriesFragment, setSeriesFragment] = useState<UtilizationSeriesFragment[]>([])
+
+
+  const [trigger] = useGetEdgeResourceUtilizationMutation()
 
   const seriesMapping = [
     { key: 'cpu', name: $t({ defaultMessage: 'CPU' }) },
@@ -30,33 +55,138 @@ function EdgeResourceUtilizationWidget () {
     { key: 'disk', name: $t({ defaultMessage: 'Disk' }) }
   ] as Array<{ key: Key, name: string }>
 
-  // TODO: wait for backend support, use fake empty data for testing
-  // API response format is still TBD
-  // const queryResults = { data: [], isLoading: false }
-  // eslint-disable-next-line max-len
-  const queryResults = { data: getSeriesData(EdgeResourceUtilizationWidgetMockData.timeSeries, seriesMapping), isLoading: false }
+  useEffect(() => {
+    const initialWidget = async () => {
+      await trigger({
+        params: { serialNumber: params.serialNumber },
+        payload: {
+          start: filters?.startDate,
+          end: filters?.endDate,
+          granularity: calculateGranularity(filters?.startDate, filters?.endDate, 'PT15M')
+        } as EdgeTimeSeriesPayload
+      }).unwrap()
+        .then((data) => {
+          setQueryResults(getSeriesData(data.timeSeries, seriesMapping))
 
-  return (
-    <Loader states={[queryResults]}>
+          const { cpu, memory, disk, time, memoryUsedBytes, diskUsedBytes } = data.timeSeries
+          setSeriesFragment([
+            {
+              key: 'cpu',
+              fragment: _.zipWith(cpu, time, (percentage, time) => {
+                return {
+                  percentage,
+                  unit: undefined,
+                  time
+                }
+              })
+            },
+            {
+              key: 'memory',
+              fragment: _.zipWith(memory, memoryUsedBytes, time, (percentage, unit, time) => {
+                return {
+                  percentage,
+                  unit,
+                  time
+                }
+              })
+            },
+            {
+              key: 'disk',
+              fragment: _.zipWith(disk, diskUsedBytes, time, (percentage, unit, time) => {
+                return {
+                  percentage,
+                  unit,
+                  time
+                }
+              })
+            }
+          ])
+        })
+        .catch((error) => {
+          // eslint-disable-next-line no-console
+          console.error(error)
+        })
+    }
+    if (!isLoading) {
+      initialWidget()
+    }
+  }, [isLoading])
+
+  if (_.isEmpty(queryResults)) {
+    return (
       <HistoricalCard title={$t({ defaultMessage: 'Resource Utilization' })}>
         <AutoSizer>
-          {({ height, width }) => (
-            queryResults.data.length ?
-              <MultiLineTimeSeriesChart
-                style={{ width, height }}
-                data={queryResults.data}
-                seriesFormatters={{
-                  cpu: formatter('percent'),
-                  memory: formatter('percent'),
-                  disk: formatter('percent')
-                }}
-              />
-              : <NoData/>
-          )}
+          {() =><NoData />}
+        </AutoSizer>
+      </HistoricalCard>
+    )
+  }
+
+  const defaultOption: EChartsOption = {
+    tooltip: {
+      ...tooltipOptions(),
+      trigger: 'axis',
+      // eslint-disable-next-line max-len
+      formatter: (parameters: TooltipFormatterParams | TooltipFormatterParams[]) : string | HTMLElement | HTMLElement[] => {
+        const intl = getIntl()
+        const graphParameters = Array.isArray(parameters) ? parameters : [parameters]
+        const [ time ] = graphParameters[0].data as [TimeStamp, number]
+        const graphDataIndex = graphParameters[0].dataIndex as number
+
+        return renderToString(
+          <RawIntlProvider value={intl}>
+            <TooltipWrapper maxWidth={300}>
+              <time dateTime={new Date(time).toJSON()}>
+                {formatter(DateFormatEnum.DateTimeFormat)(time) as string}
+              </time>
+              <ul>{
+                seriesFragment.map((resource)=> {
+                  // eslint-disable-next-line max-len
+                  const color = graphParameters.find(p => p.seriesName === resource.key)?.color || ''
+                  const fragment = resource.fragment[graphDataIndex]
+                  let text = <FormattedMessage
+                    defaultMessage='{name}: <b>{value}</b>'
+                    description='Label before colon, value after colon'
+                    values={{
+                      ...defaultRichTextFormatValues,
+                      name: resource.key,
+                      value: fragment.unit ?
+                        // eslint-disable-next-line max-len
+                        `${formatter('percent')(fragment.percentage)}(${formatter('bytesFormat')(fragment.unit)})` :
+                        `${formatter('percent')(fragment.percentage)}`
+                    }}
+                  />
+                  return (
+                    <li key={resource.key}>
+                      <Badge
+                        className='acx-chart-tooltip'
+                        color={(color) as string}
+                        text={text}
+                      />
+                    </li>
+                  )
+                })
+              }</ul>
+            </TooltipWrapper>
+          </RawIntlProvider>
+        )
+      }
+    } as TooltipComponentOption
+  }
+
+  return (
+    <Loader states={[{ isLoading }]}>
+      <HistoricalCard title={$t({ defaultMessage: 'Resource Utilization' })}>
+        <AutoSizer>
+          {({ height, width }) =>
+            <MultiLineTimeSeriesChart
+              style={{ width, height }}
+              data={queryResults}
+              echartOptions={defaultOption}
+            />
+          }
         </AutoSizer>
       </HistoricalCard>
     </Loader>
   )
 }
-
-export { EdgeResourceUtilizationWidget }

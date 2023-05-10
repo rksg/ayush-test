@@ -73,29 +73,27 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
           isPortListLoading={isPortListLoading}
         />
       </GridCol>
-
-      {/* TODO: wait for API*/}
       <GridCol col={{ span: 24 }} className='statistic upTimeWidget'>
-        <EdgeUpTimeWidget />
+        <EdgeUpTimeWidget
+          isLoading={isPortListLoading}
+        />
       </GridCol>
-
-      {/* TODO: wait for API*/}
       <GridCol col={{ span: 12 }} className='statistic'>
-        <EdgeTrafficByVolumeWidget />
+        <EdgeTrafficByVolumeWidget
+          isLoading={isPortListLoading}
+        />
       </GridCol>
-      {/* TODO: wait for API*/}
       <GridCol col={{ span: 12 }} className='statistic'>
-        <EdgeResourceUtilizationWidget />
+        <EdgeResourceUtilizationWidget
+          isLoading={isPortListLoading}
+        />
       </GridCol>
-      {/* TODO: wait for API*/}
       <GridCol col={{ span: 12 }} className='statistic'>
         <EdgePortsByTrafficWidget
-          currentEdge={currentEdge}
           isLoading={isPortListLoading}
         />
       </GridCol>
     </GridRow>
-
   )
 })`
 div.statistic {

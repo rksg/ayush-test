@@ -1,55 +1,82 @@
-import { defineMessage, useIntl } from 'react-intl'
-import AutoSizer                  from 'react-virtualized-auto-sizer'
+import { useEffect, useState } from 'react'
 
+import _                           from 'lodash'
+import { defineMessage, useIntl  } from 'react-intl'
+import { useParams }               from 'react-router-dom'
+import AutoSizer                   from 'react-virtualized-auto-sizer'
+
+import { calculateGranularity }                                       from '@acx-ui/analytics/utils'
 import { qualitativeColorSet }                                        from '@acx-ui/components'
 import { DonutChart, HistoricalCard, Loader, NoData, DonutChartData } from '@acx-ui/components'
 import { formatter }                                                  from '@acx-ui/formatter'
-import { EdgeStatus }                                                 from '@acx-ui/rc/utils'
+import { useGetEdgeTopTrafficMutation }                               from '@acx-ui/rc/services'
+import { EdgeTimeSeriesPayload }                                      from '@acx-ui/rc/utils'
+import { useDateFilter }                                              from '@acx-ui/utils'
 
-import { EdgePortsByTrafficWidgetMockData } from './__test__/fixture'
-
-const getChartData = (edgeStatus: EdgeStatus | undefined): DonutChartData[] => {
-
-  const chartData: DonutChartData[] = []
-
-  if (!edgeStatus) {
-    return chartData
-  }
-
-  // TODO Retrieve by API
-  const traffic = EdgePortsByTrafficWidgetMockData.traffic
-
-  const colors = qualitativeColorSet()
-
-  traffic.forEach((traffic, index) => {
-    chartData.push({
-      name: `Port ${index + 1}`,
-      value: traffic,
-      color: colors[index]
-    })
-  })
-
-  return chartData
-}
-
-export function EdgePortsByTrafficWidget ({ currentEdge, isLoading }:
-   { currentEdge: EdgeStatus | undefined, isLoading: boolean }) {
+export function EdgePortsByTrafficWidget ({ isLoading }:{ isLoading: boolean }) {
   const { $t } = useIntl()
+  const filters = useDateFilter()
+  const params = useParams()
 
-  const chartData = getChartData(currentEdge)
+  const [queryResults, setQueryResults] = useState<DonutChartData[]>([])
+
+  const [trigger] = useGetEdgeTopTrafficMutation()
+
+  useEffect(() => {
+    const initialWidget = async () => {
+      await trigger({
+        params: { serialNumber: params.serialNumber },
+        payload: {
+          start: filters?.startDate,
+          end: filters?.endDate,
+          granularity: calculateGranularity(filters?.startDate, filters?.endDate, 'PT15M')
+        } as EdgeTimeSeriesPayload
+      }).unwrap()
+        .then((data) => {
+          const colors = qualitativeColorSet()
+          const chartData: DonutChartData[] = []
+          data.traffic.forEach((traffic, index) => {
+            chartData.push({
+              name: `Port ${index + 1}`,
+              value: traffic,
+              color: colors[index]
+            })
+          })
+
+          setQueryResults(chartData)
+        })
+        .catch((error) => {
+          // eslint-disable-next-line no-console
+          console.error(error)
+        })
+    }
+    if (!isLoading) {
+      initialWidget()
+    }
+  }, [isLoading])
+
+  if (_.isEmpty(queryResults)) {
+    return (
+      <HistoricalCard title={$t({ defaultMessage: 'Top Ports by Traffic' })}>
+        <AutoSizer>
+          {() =><NoData />}
+        </AutoSizer>
+      </HistoricalCard>
+    )
+  }
 
   return (
     <Loader states={[ { isLoading } ]}>
       <HistoricalCard title={$t({ defaultMessage: 'Top Ports by Traffic' })}>
         <AutoSizer>
-          {({ height, width }) => ( chartData && chartData.length > 0 ?
+          {({ height, width }) =>
             <DonutChart
               title={$t({ defaultMessage: 'Ports' })}
               style={{ width, height }}
               showLabel={true}
               showTotal={false}
               showLegend={false}
-              data={chartData}
+              data={queryResults}
               size={'x-large'}
               dataFormatter={formatter('bytesFormat')}
               tooltipFormat={defineMessage({
@@ -57,8 +84,7 @@ export function EdgePortsByTrafficWidget ({ currentEdge, isLoading }:
                     <space><b>{formattedValue}</b> ({formattedPercent})</space>`
               })}
             />
-            : <NoData />
-          )}
+          }
         </AutoSizer>
       </HistoricalCard>
     </Loader>
