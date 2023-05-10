@@ -6,8 +6,8 @@ import { useIntl } from 'react-intl'
 
 import {
   PageHeader,
-  StepsForm,
-  StepsFormInstance
+  StepsFormLegacy,
+  StepsFormLegacyInstance
 } from '@acx-ui/components'
 import {
   useAddClientIsolationMutation,
@@ -44,7 +44,7 @@ export default function ClientIsolationForm (props: ClientIsolationFormProps) {
   const [ addClientIsolation ] = useAddClientIsolationMutation()
   const [ updateClientIsolation ] = useUpdateClientIsolationMutation()
   const { data: dataFromServer } = useGetClientIsolationQuery({ params }, { skip: !editMode })
-  const formRef = useRef<StepsFormInstance<ClientIsolationSaveData>>()
+  const formRef = useRef<StepsFormLegacyInstance<ClientIsolationSaveData>>()
 
   useEffect(() => {
     if (dataFromServer && editMode) {
@@ -78,18 +78,18 @@ export default function ClientIsolationForm (props: ClientIsolationFormProps) {
           { text: $t({ defaultMessage: 'Client Isolation' }), link: tablePath }
         ]}
       />
-      <StepsForm<ClientIsolationSaveData>
+      <StepsFormLegacy<ClientIsolationSaveData>
         formRef={formRef}
         onCancel={() => navigate(linkToPolicies)}
         onFinish={saveData}
       >
-        <StepsForm.StepForm<ClientIsolationSaveData>
+        <StepsFormLegacy.StepForm<ClientIsolationSaveData>
           name='details'
           title={$t({ defaultMessage: 'Settings' })}
         >
           <ClientIsolationSettingsForm editMode={editMode} />
-        </StepsForm.StepForm>
-      </StepsForm>
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>
     </>
   )
 }

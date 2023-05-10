@@ -2,24 +2,24 @@ import React from 'react'
 
 import { Row, Col, Form, Input, Select } from 'antd'
 
-import { StepsForm } from '..'
-import { showToast } from '../../Toast'
+import { StepsFormLegacy } from '..'
+import { showToast }       from '../../Toast'
 
 function wait (ms: number) { return new Promise(resolve => setTimeout(resolve, ms)) }
 
 export function BasicMultiSteps () {
   return (
-    <StepsForm
+    <StepsFormLegacy
       onCancel={() => showToast({ type: 'info', content: 'Cancel' })}
       onFinish={async () => {
         await wait(1000) // mimic external service call
         showToast({ type: 'success', content: 'Submitted' }) // show notification to indicate submission successful
       }}
     >
-      <StepsForm.StepForm title='Step 1'>
+      <StepsFormLegacy.StepForm title='Step 1'>
         <Row gutter={20}>
           <Col span={10}>
-            <StepsForm.Title children='Step 1' />
+            <StepsFormLegacy.Title children='Step 1' />
             <Form.Item name='field1' label='Field 1'>
               <Input />
             </Form.Item>
@@ -51,12 +51,12 @@ export function BasicMultiSteps () {
             </Form.Item>
           </Col>
         </Row>
-      </StepsForm.StepForm>
+      </StepsFormLegacy.StepForm>
 
-      <StepsForm.StepForm title='Step 2'>
+      <StepsFormLegacy.StepForm title='Step 2'>
         <Row gutter={20}>
           <Col span={10}>
-            <StepsForm.Title children='Step 2' />
+            <StepsFormLegacy.Title children='Step 2' />
             <Form.Item name='field8' label='Field 8'>
               <Input />
             </Form.Item>
@@ -65,7 +65,7 @@ export function BasicMultiSteps () {
             </Form.Item>
           </Col>
         </Row>
-      </StepsForm.StepForm>
-    </StepsForm>
+      </StepsFormLegacy.StepForm>
+    </StepsFormLegacy>
   )
 }

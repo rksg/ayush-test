@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
-import { StepsForm }                 from '@acx-ui/components'
+import { StepsFormLegacy }           from '@acx-ui/components'
 import { Provider }                  from '@acx-ui/store'
 import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
@@ -18,8 +18,8 @@ describe('CaptiveNetworkForm-SelfSignInTwitter', () => {
       value={{
         editMode: true, cloneMode: true, data: selfsignData
       }}
-    ><StepsForm><StepsForm.StepForm><TwitterSetting redirectURL={''} /></StepsForm.StepForm>
-      </StepsForm></NetworkFormContext.Provider></Provider>)
+    ><StepsFormLegacy><StepsFormLegacy.StepForm children={<TwitterSetting redirectURL={''} />} />
+      </StepsFormLegacy></NetworkFormContext.Provider></Provider>)
     fireEvent.click(await screen.findByTitle('settingicon'))
     const twitterId = await screen.findByLabelText(/Consumer Key/)
     fireEvent.change(twitterId, { target: { value: 'twitter' } })
@@ -34,8 +34,8 @@ describe('CaptiveNetworkForm-SelfSignInTwitter', () => {
       value={{
         editMode: false, cloneMode: true, data: selfsignData
       }}
-    ><StepsForm><StepsForm.StepForm><TwitterSetting redirectURL={''} /></StepsForm.StepForm>
-      </StepsForm></NetworkFormContext.Provider></Provider>)
+    ><StepsFormLegacy><StepsFormLegacy.StepForm children={<TwitterSetting redirectURL={''} />} />
+      </StepsFormLegacy></NetworkFormContext.Provider></Provider>)
     fireEvent.click(await screen.findByTitle('settingicon'))
     await userEvent.click((await screen.findAllByRole('button', { name: 'Cancel' }))[1])
   })
