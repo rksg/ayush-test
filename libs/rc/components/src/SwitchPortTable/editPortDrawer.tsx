@@ -528,6 +528,10 @@ export function EditPortDrawer ({
 
     try {
       const payload = switches.map((item) => {
+        const ports = selectedPorts
+          .filter(p => p.switchSerial === item)
+          .map(p => p.portIdentifier)
+
         return {
           switchId: item,
           port: {
@@ -539,8 +543,8 @@ export function EditPortDrawer ({
               voiceVlan: defaultVlanMap?.[item as keyof typeof defaultVlanMap] ?? ''
             }),
             ignoreFields: ignoreFields.toString(),
-            port: selectedPorts.map(p => p.portIdentifier)?.[0],
-            ports: selectedPorts.map(p => p.portIdentifier)
+            port: ports?.[0],
+            ports: ports
           }
         }
       })
