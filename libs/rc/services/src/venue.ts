@@ -63,7 +63,9 @@ import {
   RequestFormData,
   createNewTableHttpRequest,
   TableChangePayload,
-  VenueRadiusOptions
+  VenueRadiusOptions,
+  ApMeshTopologyData,
+  FloorPlanMeshAP
 } from '@acx-ui/rc/utils'
 import { baseVenueApi } from '@acx-ui/store'
 
@@ -213,6 +215,16 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Device', id: 'MESH' }]
+    }),
+    getFloorPlanMeshAps: build.query<TableResult<FloorPlanMeshAP>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const venueMeshReq = createHttpRequest(CommonUrlsInfo.getMeshAps, params)
+        return {
+          ...venueMeshReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Device', id: 'MESH' }, { type: 'VenueFloorPlan', id: 'DEVICE' }]
     }),
     deleteVenue: build.mutation<Venue, RequestPayload>({
       query: ({ params, payload }) => {
@@ -892,6 +904,18 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return result?.data[0] as TopologyData
       }
     }),
+    getApMeshTopology: build.query<ApMeshTopologyData, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getApMeshTopology, params)
+
+        return {
+          ...req
+        }
+      },
+      transformResponse: (result: { data: ApMeshTopologyData[] }) => {
+        return result?.data[0] as ApMeshTopologyData
+      }
+    }),
     getVenueMdnsFencing: build.query<VenueMdnsFencingPolicy, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(CommonUrlsInfo.getVenueMdnsFencingPolicy, params)
@@ -1038,7 +1062,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
           const activities = [
             'ADD_UNIT',
             'UPDATE_UNIT',
-            'DELETE_UNITS'
+            'DELETE_UNITS',
+            'UpdatePersona'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(venueApi.util.invalidateTags([
@@ -1229,6 +1254,7 @@ export const {
   useUpdateVenueMeshMutation,
   useUpdateVenueCellularSettingsMutation,
   useMeshApsQuery,
+  useGetFloorPlanMeshApsQuery,
   useDeleteVenueMutation,
   useGetNetworkApGroupsQuery,
   useGetFloorPlanQuery,
@@ -1292,6 +1318,7 @@ export const {
   useGetVenueLoadBalancingQuery,
   useUpdateVenueLoadBalancingMutation,
   useGetTopologyQuery,
+  useGetApMeshTopologyQuery,
   useGetVenueMdnsFencingQuery,
   useUpdateVenueMdnsFencingMutation,
 
@@ -1300,7 +1327,6 @@ export const {
   useUpdatePropertyConfigsMutation,
   usePatchPropertyConfigsMutation,
   useAddPropertyUnitMutation,
-
   useGetPropertyUnitByIdQuery,
   useLazyGetPropertyUnitByIdQuery,
   useGetPropertyUnitListQuery,

@@ -211,9 +211,9 @@ describe('EventsHistory', () => {
     const firstEvent = events[0]
     // eslint-disable-next-line testing-library/no-unnecessary-act
     act(() => { fireEvent.click(firstEvent) })
-    expect(onPanelCallback).toBeCalledTimes(4)
+    expect(onPanelCallback).toBeCalledTimes(5)
     expect(onClick).toBeCalledTimes(1)
-    expect(scrollIntoView).toBeCalledTimes(3)
+    expect(scrollIntoView).toBeCalledTimes(4)
     HTMLElement.prototype.scrollIntoView = ogView
   })
   it('should hide link when role is READ_ONLY', async () => {

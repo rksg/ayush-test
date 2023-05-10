@@ -5,11 +5,11 @@ import _                      from 'lodash'
 import { useIntl }            from 'react-intl'
 
 import { cssNumber, Drawer, showActionModal, Table, TableProps, useStepFormContext } from '@acx-ui/components'
-import { DdosRateLimitingRule }                                                      from '@acx-ui/rc/utils'
+import { DdosRateLimitingRule, defaultSort, getDDoSAttackTypeString, sortProp }      from '@acx-ui/rc/utils'
 import { filterByAccess }                                                            from '@acx-ui/user'
 
-import { FirewallFormModel }                       from '../../..'
-import { DDoSRuleDialog, getDDoSAttackTypeString } from '../DDoSRuleDialog'
+import { FirewallFormModel } from '../../..'
+import { DDoSRuleDialog }    from '../DDoSRuleDialog'
 
 interface DDoDRateLimitRulesTableProps {
   data?: DdosRateLimitingRule[]
@@ -46,6 +46,7 @@ const DDoDRateLimitRulesTable = (props: DDoDRateLimitRulesTableProps) => {
       key: 'ddosAttackType',
       dataIndex: 'ddosAttackType',
       defaultSortOrder: 'ascend',
+      sorter: { compare: sortProp('ddosAttackType', defaultSort) },
       render: (_, row) => {
         return getDDoSAttackTypeString($t, row.ddosAttackType)
       }
@@ -53,7 +54,8 @@ const DDoDRateLimitRulesTable = (props: DDoDRateLimitRulesTableProps) => {
     {
       title: $t({ defaultMessage: 'Rate-limit Value' }),
       key: 'rateLimiting',
-      dataIndex: 'rateLimiting'
+      dataIndex: 'rateLimiting',
+      sorter: { compare: sortProp('rateLimiting', defaultSort) }
     }
   ]
 
