@@ -11,15 +11,15 @@ import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 import { hasAccess }                         from '@acx-ui/user'
 
-import IncidentDetailsPage                                from './pages/IncidentDetails'
-import NetworkHealth                                      from './pages/NetworkHealth'
-import NetworkHealthDetails                               from './pages/NetworkHealth/NetworkHealthDetails'
-import NetworkHealthForm                                  from './pages/NetworkHealth/NetworkHealthForm'
-import { NetworkHealthSpecGuard, NetworkHealthTestGuard } from './pages/NetworkHealth/NetworkHealthGuard'
-import NetworkHealthList                                  from './pages/NetworkHealth/NetworkHealthList'
-import VideoCallQoeListPage                               from './pages/VideoCallQoe'
-import { VideoCallQoeForm }                               from './pages/VideoCallQoe/VideoCallQoeForm/VideoCallQoeForm'
-import { VideoCallQoeDetails }                            from './pages/VideoCallQoeDetails'
+import IncidentDetailsPage                              from './pages/IncidentDetails'
+import ServiceGuard                                     from './pages/ServiceGuard'
+import ServiceGuardDetails                              from './pages/ServiceGuard/ServiceGuardDetails'
+import ServiceGuardForm                                 from './pages/ServiceGuard/ServiceGuardForm'
+import { ServiceGuardSpecGuard, ServiceGuardTestGuard } from './pages/ServiceGuard/ServiceGuardGuard'
+import ServiceGuardList                                 from './pages/ServiceGuard/ServiceGuardList'
+import VideoCallQoeListPage                             from './pages/VideoCallQoe'
+import { VideoCallQoeForm }                             from './pages/VideoCallQoe/VideoCallQoeForm/VideoCallQoeForm'
+import { VideoCallQoeDetails }                          from './pages/VideoCallQoeDetails'
 
 export default function AnalyticsRoutes () {
   const { $t } = useIntl()
@@ -42,22 +42,22 @@ export default function AnalyticsRoutes () {
         element={<div>{$t({ defaultMessage: 'Config Change' }) }</div>} />
 
       {canUseSV && <Route>
-        <Route path='analytics/serviceValidation/*' element={<NetworkHealth />}>
-          <Route path='' element={<NetworkHealthList />} />
-          <Route path='add' element={<NetworkHealthForm />} />
+        <Route path='analytics/serviceValidation/*' element={<ServiceGuard />}>
+          <Route path='' element={<ServiceGuardList />} />
+          <Route path='add' element={<ServiceGuardForm />} />
           <Route path=':specId'>
             <Route
               path='edit'
-              element={<NetworkHealthSpecGuard children={<NetworkHealthForm />} />}
+              element={<ServiceGuardSpecGuard children={<ServiceGuardForm />} />}
             />
             <Route path='tests/:testId'>
               <Route
                 path=''
-                element={<NetworkHealthTestGuard children={<NetworkHealthDetails />} />}
+                element={<ServiceGuardTestGuard children={<ServiceGuardDetails />} />}
               />
               <Route
                 path='tab/:activeTab'
-                element={<NetworkHealthTestGuard children={<NetworkHealthDetails />} />}
+                element={<ServiceGuardTestGuard children={<ServiceGuardDetails />} />}
               />
             </Route>
           </Route>

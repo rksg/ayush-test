@@ -273,7 +273,7 @@ export function VideoCallQoeDetails (){
           ]}
           breadcrumb={[{
             text: $t({ defaultMessage: 'Video Call QoE' }),
-            link: '/serviceValidation/videoCallQoe'
+            link: '/analytics/videoCallQoe'
           }]}
         />
         <UI.ReportSectionTitle>
