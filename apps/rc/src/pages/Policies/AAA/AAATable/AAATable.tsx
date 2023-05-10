@@ -41,7 +41,7 @@ export default function AAATable () {
     return !!selectedRow?.networkIds && selectedRow.networkIds.length > 0
   }
 
-  const getDeleteButtonTooltip = (selectedRow: AAAViewModalType): string | undefined => {
+  const getDisabledDeleteMessage = (selectedRow: AAAViewModalType): string | undefined => {
     if (hasAppliedNetwork(selectedRow)) {
       return $t(profileInUsedMessageForDelete, { serviceName: $t({ defaultMessage: 'Network' }) })
     }
@@ -49,24 +49,31 @@ export default function AAATable () {
     return
   }
 
+  const doDelete = (selectedRow: AAAViewModalType, callback: () => void) => {
+    if (hasAppliedNetwork(selectedRow)) {
+      showActionModal({
+        type: 'error',
+        content: getDisabledDeleteMessage(selectedRow)
+      })
+    } else {
+      showActionModal({
+        type: 'confirm',
+        customContent: {
+          action: 'DELETE',
+          entityName: $t({ defaultMessage: 'Policy' }),
+          entityValue: selectedRow.name
+        },
+        onOk: () => {
+          deleteFn({ params: { tenantId, policyId: selectedRow.id } }).then(callback)
+        }
+      })
+    }
+  }
+
   const rowActions: TableProps<AAAViewModalType>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
-      disabled: ([selectedRow]) => hasAppliedNetwork(selectedRow),
-      tooltip: ([selectedRow]) => getDeleteButtonTooltip(selectedRow),
-      onClick: ([{ id, name }], clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Policy' }),
-            entityValue: name
-          },
-          onOk: () => {
-            deleteFn({ params: { tenantId, policyId: id } }).then(clearSelection)
-          }
-        })
-      }
+      onClick: ([selectedRow], clearSelection) => doDelete(selectedRow, clearSelection)
     },
     {
       label: $t({ defaultMessage: 'Edit' }),

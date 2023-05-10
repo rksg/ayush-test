@@ -73,7 +73,7 @@ export default function DpskTable () {
     search: defaultSearch
   })
 
-  const doDelete = (selectedRow: DpskSaveData, callback?: () => void) => {
+  const doDelete = (selectedRow: DpskSaveData, callback: () => void) => {
     if (hasAppliedPersona(selectedRow) || hasAppliedNetwork(selectedRow)) {
       showActionModal({
         type: 'error',
@@ -89,8 +89,7 @@ export default function DpskTable () {
         },
         onOk: async () => {
           try {
-            await deleteDpsk({ params: { serviceId: selectedRow.id } }).unwrap()
-            callback && callback()
+            deleteDpsk({ params: { serviceId: selectedRow.id } }).then(callback)
           } catch (error) {
             console.log(error) // eslint-disable-line no-console
           }

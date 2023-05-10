@@ -198,7 +198,7 @@ export default function DpskPassphraseManagement () {
       : undefined
   }
 
-  const doDelete = (selectedRows: NewDpskPassphrase[], callback?: () => void) => {
+  const doDelete = (selectedRows: NewDpskPassphrase[], callback: () => void) => {
     if (hasAppliedPersona(selectedRows)) {
       showActionModal({
         type: 'error',
@@ -214,8 +214,7 @@ export default function DpskPassphraseManagement () {
           numOfEntities: selectedRows.length
         },
         onOk: () => {
-          deletePassphrases({ params, payload: selectedRows.map(p => p.id) })
-          callback && callback()
+          deletePassphrases({ params, payload: selectedRows.map(p => p.id) }).then(callback)
         }
       })
     }
