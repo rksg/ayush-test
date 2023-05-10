@@ -122,7 +122,7 @@ export function UserProfile () {
                   </Select>
                 }
               />
-              
+
               <PreferredLanguageFormItem />
             </Col>
           </Row>
