@@ -12,7 +12,9 @@ import {
   categoryOptions,
   shortDescription,
   categoryCodeMap,
-  IncidentCode
+  IncidentCode,
+  ClientEventEnum,
+  disconnectClientEventsMap
 } from '@acx-ui/analytics/utils'
 import {
   formatter,
@@ -79,14 +81,14 @@ export const transformEvents = (
     }
 
     const category = categorizeEvent(event, ttc)
-    const eventType = category === FAILURE ? filterEventMap[FAILURE] : event
+    const [eventType] = category === FAILURE ? filterEventMap[FAILURE] : [event]
 
     const filterEventTypes = selectedEventTypes.map(
       (e) => filterEventMap[e as keyof typeof filterEventMap]
-    )
+    ).flat()
     const filterRadios = selectedRadios.map(
       (e) => filterEventMap[e as keyof typeof filterEventMap]
-    )
+    ).flat()
     const time = +new Date(timestamp)
     let skip =
       spuriousEvents.includes(state) ||
@@ -97,7 +99,7 @@ export const transformEvents = (
 
     acc.push({
       ...data,
-      type: event === 'EVENT_CLIENT_ROAMING' ? TYPES.ROAMING : TYPES.CONNECTION_EVENTS,
+      type: event === ClientEventEnum.ROAM ? TYPES.ROAMING : TYPES.CONNECTION_EVENTS,
       key: time + mac + eventType + index,
       start: time,
       end: time,
@@ -122,8 +124,8 @@ export const formatEventDesc = (evtObj: DisplayEvent, intl: IntlShape): string =
 export const categorizeEvent = (name: string, ttc: number | null) => {
   const successEvents = [INFO_UPDATED, JOIN, ROAMED].map(
     (key) => filterEventMap[key as keyof typeof filterEventMap]
-  )
-  if (name === 'EVENT_CLIENT_DISCONNECT') return DISCONNECT
+  ).flat()
+  if (disconnectClientEventsMap[name]) return DISCONNECT
   if (!successEvents.includes(name)) return FAILURE
   if (ttc !== null && ttc >= 4000) return SLOW
   return SUCCESS
