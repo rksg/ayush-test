@@ -192,10 +192,33 @@ export default function DpskPassphraseManagement () {
     return selectedRows.some(row => row.identityId)
   }
 
-  const getDeleteButtonTooltip = (selectedRows: NewDpskPassphrase[]): string | undefined => {
+  const getDisabledDeleteMessage = (selectedRows: NewDpskPassphrase[]): string | undefined => {
     return hasAppliedPersona(selectedRows)
       ? $t(profileInUsedMessageForDelete, { serviceName: $t({ defaultMessage: 'Persona' }) })
       : undefined
+  }
+
+  const doDelete = (selectedRows: NewDpskPassphrase[], callback?: () => void) => {
+    if (hasAppliedPersona(selectedRows)) {
+      showActionModal({
+        type: 'error',
+        content: getDisabledDeleteMessage(selectedRows)
+      })
+    } else {
+      showActionModal({
+        type: 'confirm',
+        customContent: {
+          action: 'DELETE',
+          entityName: $t({ defaultMessage: 'Passphrase' }),
+          entityValue: selectedRows[0].username,
+          numOfEntities: selectedRows.length
+        },
+        onOk: () => {
+          deletePassphrases({ params, payload: selectedRows.map(p => p.id) })
+          callback && callback()
+        }
+      })
+    }
   }
 
   const rowActions: TableProps<NewDpskPassphrase>['rowActions'] = [
@@ -248,22 +271,8 @@ export default function DpskPassphraseManagement () {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
-      disabled: (selectedRows) => hasAppliedPersona(selectedRows),
-      tooltip: (selectedRows) => getDeleteButtonTooltip(selectedRows),
       onClick: (selectedRows: NewDpskPassphrase[], clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Passphrase' }),
-            entityValue: selectedRows[0].username,
-            numOfEntities: selectedRows.length
-          },
-          onOk: () => {
-            deletePassphrases({ params, payload: selectedRows.map(p => p.id) })
-            clearSelection()
-          }
-        })
+        doDelete(selectedRows, clearSelection)
       }
     }
   ]

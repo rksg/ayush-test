@@ -53,7 +53,7 @@ export default function DpskTable () {
     return !!selectedRow?.networkIds && selectedRow.networkIds.length > 0
   }
 
-  const getDeleteButtonTooltip = (selectedRow: DpskSaveData): string | undefined => {
+  const getDisabledDeleteMessage = (selectedRow: DpskSaveData): string | undefined => {
     const inUsedService: string[] = []
     if (hasAppliedPersona(selectedRow)) {
       inUsedService.push(intl.$t({ defaultMessage: 'Persona' }))
@@ -73,29 +73,36 @@ export default function DpskTable () {
     search: defaultSearch
   })
 
+  const doDelete = (selectedRow: DpskSaveData, callback?: () => void) => {
+    if (hasAppliedPersona(selectedRow) || hasAppliedNetwork(selectedRow)) {
+      showActionModal({
+        type: 'error',
+        content: getDisabledDeleteMessage(selectedRow)
+      })
+    } else {
+      showActionModal({
+        type: 'confirm',
+        customContent: {
+          action: 'DELETE',
+          entityName: intl.$t({ defaultMessage: 'DPSK Service' }),
+          entityValue: selectedRow.name
+        },
+        onOk: async () => {
+          try {
+            await deleteDpsk({ params: { serviceId: selectedRow.id } }).unwrap()
+            callback && callback()
+          } catch (error) {
+            console.log(error) // eslint-disable-line no-console
+          }
+        }
+      })
+    }
+  }
+
   const rowActions: TableProps<DpskSaveData>['rowActions'] = [
     {
       label: intl.$t({ defaultMessage: 'Delete' }),
-      disabled: ([selectedRow]) => hasAppliedPersona(selectedRow) || hasAppliedNetwork(selectedRow),
-      tooltip: ([selectedRow]) => getDeleteButtonTooltip(selectedRow),
-      onClick: ([{ id, name }], clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: intl.$t({ defaultMessage: 'DPSK Service' }),
-            entityValue: name
-          },
-          onOk: async () => {
-            try {
-              await deleteDpsk({ params: { serviceId: id } }).unwrap()
-              clearSelection()
-            } catch (error) {
-              console.log(error) // eslint-disable-line no-console
-            }
-          }
-        })
-      }
+      onClick: ([selectedRow], clearSelection) => doDelete(selectedRow, clearSelection)
     },
     {
       label: intl.$t({ defaultMessage: 'Edit' }),
