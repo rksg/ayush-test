@@ -239,7 +239,7 @@ const searchResultsRender = (input: string, path: DefaultOptionType[]) => {
   const label = labels.length ? labels[labels.length - 1] : null
 
   return <UI.LabelContainer>
-    <UI.Label>
+    <UI.SearchLabel>
       <Highlighter
         highlightStyle={{
           fontWeight: 'bold', background: 'none', padding: 0, color: 'inherit'
@@ -248,7 +248,7 @@ const searchResultsRender = (input: string, path: DefaultOptionType[]) => {
         textToHighlight={items.join(' / ')}
         autoEscape
       />
-    </UI.Label>
+    </UI.SearchLabel>
     {label}
   </UI.LabelContainer>
 }

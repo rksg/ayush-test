@@ -59,3 +59,10 @@ export const SeveritySpan = styled.span.attrs((props: SeveritySpanProps) => prop
   border: 1px solid var(--acx-primary-white);
   z-index: ${(props) => severityZIndexMap[props.severity]}
 `
+export const SearchLabel = styled.div`
+  width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  justify-content: left
+`
