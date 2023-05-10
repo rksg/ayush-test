@@ -35,13 +35,18 @@ const PortsGeneral = (props: PortsGeneralProps) => {
   const formRef = useRef<StepsFormInstance<PortConfigFormType>>()
   const [updatePortConfig, { isLoading: isPortConfigUpdating }] = useUpdatePortConfigMutation()
   const editEdgeContext = useContext(EdgeEditContext)
+  const dataRef = useRef<EdgePortWithStatus[] | undefined>(undefined)
 
   useEffect(() => {
-    editEdgeContext.setActiveSubTab({
-      key: 'ports-general',
-      title: $t({ defaultMessage: 'Ports General' })
-    })
-  }, [])
+    if(!dataRef.current) {
+      dataRef.current = data
+      return
+    }
+    if(!isEqual(dataRef.current, data)) {
+      dataRef.current = data
+      formRef.current?.resetFields()
+    }
+  }, [data])
 
   let tabData = [] as ContentSwitcherProps['tabDetails']
   let formData = {} as PortConfigFormType
@@ -70,6 +75,10 @@ const PortsGeneral = (props: PortsGeneralProps) => {
       if (changedNamePath.includes('portType')) {
         handlePortTypeChange(changedNamePath, changedValue, index)
       }
+      editEdgeContext.setActiveSubTab({
+        key: 'ports-general',
+        title: $t({ defaultMessage: 'Ports General' })
+      })
       const formData = Object.values(formRef.current?.getFieldsValue(true))
       const errorTab = await validateData(formData as EdgePort[])
       editEdgeContext.setFormControl({
@@ -151,6 +160,10 @@ const PortsGeneral = (props: PortsGeneralProps) => {
 
     try {
       await updatePortConfig({ params: params, payload: { ports: formData } }).unwrap()
+      editEdgeContext.setFormControl({
+        ...editEdgeContext.formControl,
+        isDirty: false
+      })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

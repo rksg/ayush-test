@@ -73,7 +73,6 @@ const Ports = () => {
       defaultActiveKey='ports-general'
       activeKey={activeSubTab}
       type='card'
-      destroyInactiveTabPane
     >
       {Object.keys(tabs)
         .map((key) =>

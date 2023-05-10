@@ -1,4 +1,4 @@
-import { Key, useContext, useEffect, useState } from 'react'
+import { Key, useEffect, useState } from 'react'
 
 import { Col, Row }  from 'antd'
 import { useIntl }   from 'react-intl'
@@ -9,7 +9,6 @@ import { useDeleteSubInterfacesMutation, useGetSubInterfacesQuery }             
 import { DEFAULT_PAGINATION, EdgeSubInterface, useTableQuery }                                       from '@acx-ui/rc/utils'
 import { filterByAccess }                                                                            from '@acx-ui/user'
 
-import { EdgeEditContext }    from '../..'
 import { EdgePortWithStatus } from '../PortsGeneral/PortConfigForm'
 import * as UI                from '../styledComponents'
 
@@ -39,14 +38,6 @@ const SubInterfaceTable = (props: SubInterfaceTableProps) => {
     apiParams: { mac: props.mac }
   })
   const [deleteSubInterfaces] = useDeleteSubInterfacesMutation()
-  const { setActiveSubTab } = useContext(EdgeEditContext)
-
-  useEffect(() => {
-    setActiveSubTab({
-      key: 'sub-interface',
-      title: $t({ defaultMessage: 'Sub-interface' })
-    })
-  }, [])
 
   useEffect(() => {
     setDrawerVisible(false)
