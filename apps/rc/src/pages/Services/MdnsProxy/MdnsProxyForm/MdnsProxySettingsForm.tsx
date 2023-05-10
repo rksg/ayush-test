@@ -4,7 +4,7 @@ import { Form, Input, Col, Row } from 'antd'
 import { useIntl }               from 'react-intl'
 import { useParams }             from 'react-router-dom'
 
-import { StepsForm }                                      from '@acx-ui/components'
+import { StepsFormLegacy }                                from '@acx-ui/components'
 import { MdnsProxyForwardingRulesTable, RULES_MAX_COUNT } from '@acx-ui/rc/components'
 import { useLazyGetMdnsProxyListQuery }                   from '@acx-ui/rc/services'
 import { checkObjectNotExists, MdnsProxyForwardingRule }  from '@acx-ui/rc/utils'
@@ -41,7 +41,7 @@ export function MdnsProxySettingsForm () {
   return (
     <Row gutter={20}>
       <Col span={10}>
-        <StepsForm.Title>{$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
+        <StepsFormLegacy.Title>{$t({ defaultMessage: 'Settings' })}</StepsFormLegacy.Title>
         <Form.Item name='id' noStyle>
           <Input type='hidden' />
         </Form.Item>
@@ -57,6 +57,7 @@ export function MdnsProxySettingsForm () {
           validateFirst
           hasFeedback
           children={<Input />}
+          validateTrigger={'onBlur'}
         />
         <Form.Item
           name='rules'

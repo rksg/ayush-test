@@ -5,8 +5,8 @@ import { useIntl } from 'react-intl'
 
 import {
   PageHeader,
-  StepsForm,
-  StepsFormInstance
+  StepsFormLegacy,
+  StepsFormLegacyInstance
 } from '@acx-ui/components'
 import { useGetPortalQuery, useSavePortalMutation, useUpdatePortalMutation, useUploadURLMutation }               from '@acx-ui/rc/services'
 import { defaultAlternativeLang, defaultComDisplay, getServiceRoutePath, Portal, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
@@ -68,7 +68,7 @@ export const PortalForm = (props:{
   const editMode = props.editMode && !networkView
   const [portalData, setPortalData]=useState<Portal>(initialPortalData)
   const [currentLang, setCurrentLang]=useState({} as { [key:string]:string })
-  const formRef = useRef<StepsFormInstance<Portal>>()
+  const formRef = useRef<StepsFormLegacyInstance<Portal>>()
   const [uploadURL] = useUploadURLMutation()
   const { data } = useGetPortalQuery({ params })
   const [savePortal] = useSavePortalMutation()
@@ -160,7 +160,7 @@ export const PortalForm = (props:{
       />}
       <PortalFormContext.Provider value={{ editMode, portalData, setPortalData,
         currentLang, setCurrentLang }}>
-        <StepsForm<Portal>
+        <StepsFormLegacy<Portal>
           formRef={formRef}
           onCancel={() => networkView? backToNetwork?.()
             : navigate(linkToServices)}
@@ -178,7 +178,7 @@ export const PortalForm = (props:{
             }
             return handleAddPortalService(data)}}
         >
-          <StepsForm.StepForm
+          <StepsFormLegacy.StepForm
             name='settings'
             title={$t({ defaultMessage: 'Settings' })}
             initialValues={initialPortalData}
@@ -186,8 +186,8 @@ export const PortalForm = (props:{
             <PortalSettingForm resetDemoField={()=>{
               formRef.current?.setFieldsValue({ content: { ...portalData.content } })
             }}/>
-          </StepsForm.StepForm>
-        </StepsForm>
+          </StepsFormLegacy.StepForm>
+        </StepsFormLegacy>
       </PortalFormContext.Provider>
     </>
   )

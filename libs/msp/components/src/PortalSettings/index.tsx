@@ -20,8 +20,8 @@ import {
   PageHeader,
   showActionModal,
   showToast,
-  StepsForm,
-  StepsFormInstance,
+  StepsFormLegacy,
+  StepsFormLegacyInstance,
   Subtitle
 } from '@acx-ui/components'
 import {
@@ -68,7 +68,7 @@ export const getFileExtension = function (fileName: string) {
 export function PortalSettings () {
   const intl = useIntl()
   const navigate = useNavigate()
-  const formRef = useRef<StepsFormInstance<MspPortal>>()
+  const formRef = useRef<StepsFormLegacyInstance<MspPortal>>()
   const params = useParams()
 
   const linkDashboard = useTenantLink('/dashboard', 'v')
@@ -420,7 +420,7 @@ export function PortalSettings () {
         title={intl.$t({ defaultMessage: 'Settings' })}
       />
       {mspLabel &&
-        <StepsForm
+        <StepsFormLegacy
           editMode={isEditMode}
           formRef={formRef}
           onFinish={isEditMode ? handleUpdateMspLabel : handleAddMspLabel}
@@ -429,7 +429,7 @@ export function PortalSettings () {
             intl.$t({ defaultMessage: 'Save' }):
             intl.$t({ defaultMessage: 'Create' }) }}
         >
-          <StepsForm.StepForm name='branding'
+          <StepsFormLegacy.StepForm name='branding'
             title={intl.$t({ defaultMessage: 'Branding' })}>
             <Subtitle level={3}>
               { intl.$t({ defaultMessage: 'Branding' }) }</Subtitle>
@@ -671,9 +671,9 @@ export function PortalSettings () {
               </Space>
             </div>
 
-          </StepsForm.StepForm>
+          </StepsFormLegacy.StepForm>
 
-          <StepsForm.StepForm
+          <StepsFormLegacy.StepForm
             name='portalProvider'
             title={intl.$t({ defaultMessage: '3rd Party Portal Providers' })}>
             <Subtitle level={3}>
@@ -701,9 +701,9 @@ export function PortalSettings () {
             <label>
               {intl.$t({ defaultMessage: 'a 3rd party portal (WISPr) network.' })}</label>
 
-          </StepsForm.StepForm>
+          </StepsFormLegacy.StepForm>
 
-          <StepsForm.StepForm name='supportLinks'
+          <StepsFormLegacy.StepForm name='supportLinks'
             title={intl.$t({ defaultMessage: 'Support Links' })}>
             <Subtitle level={3}>
               { intl.$t({ defaultMessage: 'Support links behavior' }) }</Subtitle>
@@ -829,9 +829,9 @@ export function PortalSettings () {
               <img src={supportLinkImg} alt={intl.$t({ defaultMessage: 'Support link image' })} />
             </div>
 
-          </StepsForm.StepForm>
+          </StepsFormLegacy.StepForm>
 
-          <StepsForm.StepForm name='contactInfo'
+          <StepsFormLegacy.StepForm name='contactInfo'
             title={intl.$t({ defaultMessage: 'Contact Info' })}>
             <Subtitle level={3}>
               { intl.$t({ defaultMessage: 'Contact information for emails footer' }) }</Subtitle>
@@ -868,9 +868,9 @@ export function PortalSettings () {
               initialValue={mspLabel?.msp_website}
               children={<Input/>}
             />
-          </StepsForm.StepForm>
+          </StepsFormLegacy.StepForm>
 
-        </StepsForm>
+        </StepsFormLegacy>
       }
     </>
   )

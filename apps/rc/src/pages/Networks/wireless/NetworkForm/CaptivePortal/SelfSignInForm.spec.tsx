@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { StepsForm }                             from '@acx-ui/components'
+import { StepsFormLegacy }                       from '@acx-ui/components'
 import { CommonUrlsInfo, WifiUrlsInfo }          from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent } from '@acx-ui/test-utils'
@@ -46,8 +46,8 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
       value={{
         editMode: false, cloneMode: true, data: selfsignData
       }}
-    ><StepsForm><StepsForm.StepForm><SelfSignInForm /></StepsForm.StepForm>
-      </StepsForm></NetworkFormContext.Provider></Provider>, { route: { params } })
+    ><StepsFormLegacy><StepsFormLegacy.StepForm><SelfSignInForm /></StepsFormLegacy.StepForm>
+      </StepsFormLegacy></NetworkFormContext.Provider></Provider>, { route: { params } })
     await userEvent.click(await screen.findByRole('checkbox',
       { name: /SMS Token/ }))
     await userEvent.click(await screen.findByRole('checkbox',
@@ -77,8 +77,8 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
       value={{
         editMode: false, cloneMode: false, data: selfsignData
       }}
-    ><StepsForm><StepsForm.StepForm><SelfSignInForm /></StepsForm.StepForm>
-      </StepsForm></NetworkFormContext.Provider></Provider>, { route: { params } })
+    ><StepsFormLegacy><StepsFormLegacy.StepForm><SelfSignInForm /></StepsFormLegacy.StepForm>
+      </StepsFormLegacy></NetworkFormContext.Provider></Provider>, { route: { params } })
     await userEvent.click(await screen.findByRole('checkbox',
       { name: /SMS Token/ }))
     await userEvent.click(await screen.findByRole('checkbox',

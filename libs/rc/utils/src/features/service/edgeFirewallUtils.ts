@@ -1,6 +1,26 @@
 import { IntlShape } from 'react-intl'
 
-import { AccessAction, ACLDirection, AddressType, ProtocolType } from '../../models/EdgeFirewallEnum'
+import { AccessAction, ACLDirection, AddressType, DdosAttackType, ProtocolType } from '../../models/EdgeFirewallEnum'
+
+export const getDDoSAttackTypeString = ($t: IntlShape['$t'], type: DdosAttackType) => {
+  switch (type) {
+    case DdosAttackType.ALL:
+      return $t({ defaultMessage: 'All' })
+    case DdosAttackType.ICMP:
+      return $t({ defaultMessage: 'ICMP' })
+    case DdosAttackType.TCP_SYN:
+      return $t({ defaultMessage: 'TCP SYN' })
+    // removed due to device limitation.
+    // case DdosAttackType.IP_FRAGMENT:
+    //   return $t({ defaultMessage: 'IP FRAGMENT' })
+    case DdosAttackType.DNS_RESPONSE:
+      return $t({ defaultMessage: 'DNS Response' })
+    case DdosAttackType.NTP_REFLECTION:
+      return $t({ defaultMessage: 'NTP Reflection' })
+    default:
+      return ''
+  }
+}
 
 export const getACLDirectionString = ($t: IntlShape['$t'], type: ACLDirection) => {
   switch (type) {
@@ -16,7 +36,7 @@ export const getACLDirectionString = ($t: IntlShape['$t'], type: ACLDirection) =
 export const getProtocolTypeString = ($t: IntlShape['$t'], type: ProtocolType) => {
   switch (type) {
     case ProtocolType.ANY:
-      return $t({ defaultMessage: 'ANY' })
+      return $t({ defaultMessage: 'Any' })
     case ProtocolType.TCP:
       return $t({ defaultMessage: 'TCP' })
     case ProtocolType.UDP:

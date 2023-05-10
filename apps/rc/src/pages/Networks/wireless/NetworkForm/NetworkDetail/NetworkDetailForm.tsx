@@ -5,7 +5,7 @@ import TextArea                                from 'antd/lib/input/TextArea'
 import _                                       from 'lodash'
 import { useIntl }                             from 'react-intl'
 
-import { Button, StepsForm, Tooltip, cssStr }                          from '@acx-ui/components'
+import { Button, StepsFormLegacy, Tooltip, cssStr }                    from '@acx-ui/components'
 import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
 import { useLazyGetVenueNetworkApGroupQuery, useLazyNetworkListQuery } from '@acx-ui/rc/services'
 import {
@@ -129,7 +129,7 @@ export function NetworkDetailForm () {
   return (
     <Row gutter={20}>
       <Col span={10}>
-        <StepsForm.Title>{intl.$t({ defaultMessage: 'Network Details' })}</StepsForm.Title>
+        <StepsFormLegacy.Title children={intl.$t({ defaultMessage: 'Network Details' })} />
         <Form.Item
           name='name'
           style={{ marginBottom: '5px' }}
@@ -150,6 +150,7 @@ export function NetworkDetailForm () {
           validateFirst
           hasFeedback
           children={<Input />}
+          validateTrigger={'onBlur'}
         />
         <Form.Item noStyle name='differentSSID'>
           <Button

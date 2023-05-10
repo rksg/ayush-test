@@ -4,7 +4,7 @@ import { useIntl }  from 'react-intl'
 
 import {
   PageHeader, showActionModal,
-  StepsFormNew
+  StepsForm
 } from '@acx-ui/components'
 import {
   EdgeSettingForm
@@ -45,19 +45,19 @@ const AddEdge = () => {
           { text: $t({ defaultMessage: 'SmartEdge' }), link: '/devices/edge/list' }
         ]}
       />
-      <StepsFormNew
+      <StepsForm
         onFinish={handleAddEdge}
         onCancel={() => navigate(linkToEdgeList)}
         buttonLabel={{ submit: $t({ defaultMessage: 'Add' }) }}
       >
-        <StepsFormNew.StepForm>
+        <StepsForm.StepForm>
           <Row gutter={20}>
             <Col span={8}>
               <EdgeSettingForm />
             </Col>
           </Row>
-        </StepsFormNew.StepForm>
-      </StepsFormNew>
+        </StepsForm.StepForm>
+      </StepsForm>
     </>
   )
 }

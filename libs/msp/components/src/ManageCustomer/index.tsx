@@ -19,8 +19,8 @@ import {
   Button,
   PageHeader,
   showToast,
-  StepsForm,
-  StepsFormInstance,
+  StepsFormLegacy,
+  StepsFormLegacyInstance,
   Subtitle
 } from '@acx-ui/components'
 import { useIsSplitOn, Features }    from '@acx-ui/feature-toggle'
@@ -162,7 +162,7 @@ export function ManageCustomer () {
 
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
-  const formRef = useRef<StepsFormInstance<EcFormData>>()
+  const formRef = useRef<StepsFormLegacyInstance<EcFormData>>()
   const { action, status, tenantId, mspEcTenantId } = useParams()
 
   const [isTrialMode, setTrialMode] = useState(false)
@@ -1102,7 +1102,7 @@ export function ManageCustomer () {
             link: '/dashboard/mspcustomers', tenantType: 'v' }
         ]}
       />
-      <StepsForm
+      <StepsFormLegacy
         formRef={formRef}
         onFinish={isEditMode ? handleEditCustomer : handleAddCustomer}
         onCancel={() => navigate(linkToCustomers)}
@@ -1110,7 +1110,7 @@ export function ManageCustomer () {
           intl.$t({ defaultMessage: 'Save' }):
           intl.$t({ defaultMessage: 'Add Customer' }) }}
       >
-        {isEditMode && <StepsForm.StepForm>
+        {isEditMode && <StepsFormLegacy.StepForm>
           <Subtitle level={3}>
             { intl.$t({ defaultMessage: 'Account Details' }) }</Subtitle>
           <Form.Item
@@ -1154,10 +1154,10 @@ export function ManageCustomer () {
           <Form.Item children={displayCustomerAdmins()} />
           <EditCustomerSubscriptionForm></EditCustomerSubscriptionForm>
           <EnableSupportForm></EnableSupportForm>
-        </StepsForm.StepForm>}
+        </StepsFormLegacy.StepForm>}
 
         {!isEditMode && <>
-          <StepsForm.StepForm
+          <StepsFormLegacy.StepForm
             name='accountDetail'
             title={intl.$t({ defaultMessage: 'Account Details' })}
             onFinish={async (data) => {
@@ -1205,20 +1205,20 @@ export function ManageCustomer () {
 
             <MspAdminsForm></MspAdminsForm>
             <CustomerAdminsForm></CustomerAdminsForm>
-          </StepsForm.StepForm>
+          </StepsFormLegacy.StepForm>
 
-          <StepsForm.StepForm name='subscriptions'
+          <StepsFormLegacy.StepForm name='subscriptions'
             title={intl.$t({ defaultMessage: 'Subscriptions' })}>
             <CustomerSubscription />
-          </StepsForm.StepForm>
+          </StepsFormLegacy.StepForm>
 
-          <StepsForm.StepForm name='summary'
+          <StepsFormLegacy.StepForm name='summary'
             title={intl.$t({ defaultMessage: 'Summary' })}>
             <CustomerSummary />
-          </StepsForm.StepForm>
+          </StepsFormLegacy.StepForm>
         </>}
 
-      </StepsForm>
+      </StepsFormLegacy>
 
       {drawerAdminVisible && <ManageAdminsDrawer
         visible={drawerAdminVisible}

@@ -5,29 +5,10 @@ import _                                    from 'lodash'
 import { IntlShape, useIntl }               from 'react-intl'
 import styled                               from 'styled-components'
 
-import { Drawer }                               from '@acx-ui/components'
-import { DdosAttackType, DdosRateLimitingRule } from '@acx-ui/rc/utils'
+import { Drawer }                                                        from '@acx-ui/components'
+import { DdosAttackType, DdosRateLimitingRule, getDDoSAttackTypeString } from '@acx-ui/rc/utils'
 
 import { ModalStyles } from '../styledComponents'
-
-export const getDDoSAttackTypeString = ($t: IntlShape['$t'], type: DdosAttackType) => {
-  switch (type) {
-    case DdosAttackType.ALL:
-      return $t({ defaultMessage: 'All' })
-    case DdosAttackType.ICMP:
-      return $t({ defaultMessage: 'ICMP' })
-    case DdosAttackType.TCP_SYN:
-      return $t({ defaultMessage: 'TCP SYN' })
-    case DdosAttackType.IP_FRAGMENT:
-      return $t({ defaultMessage: 'IP FRAGMENT' })
-    case DdosAttackType.DNS_RESPONSE:
-      return $t({ defaultMessage: 'DNS Response' })
-    case DdosAttackType.NTP_REFLECTION:
-      return $t({ defaultMessage: 'NTP Reflection' })
-    default:
-      return ''
-  }
-}
 
 export const getDDoSAttackTypes = ($t: IntlShape['$t'])
   : Array<{ label: string, value: DdosAttackType }> => {
