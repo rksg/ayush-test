@@ -8,8 +8,8 @@ import {
   GoogleMap,
   GoogleMapMarker,
   PageHeader,
-  StepsForm,
-  StepsFormInstance
+  StepsFormLegacy,
+  StepsFormLegacyInstance
 } from '@acx-ui/components'
 import { get }                                   from '@acx-ui/config'
 import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
@@ -131,7 +131,7 @@ export function VenuesForm () {
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const isNewApi = useIsSplitOn(Features.NEW_API)
   const navigate = useNavigate()
-  const formRef = useRef<StepsFormInstance<VenueExtended>>()
+  const formRef = useRef<StepsFormLegacyInstance<VenueExtended>>()
   const params = useParams()
 
   const linkToVenues = useTenantLink('/venues')
@@ -280,7 +280,7 @@ export function VenuesForm () {
           { text: intl.$t({ defaultMessage: 'Venues' }), link: '/venues' }
         ]}
       />}
-      <StepsForm
+      <StepsFormLegacy
         formRef={formRef}
         onFinish={action === 'edit' ? handleEditVenue : handleAddVenue}
         onCancel={() =>
@@ -290,7 +290,7 @@ export function VenuesForm () {
           intl.$t({ defaultMessage: 'Save' }):
           intl.$t({ defaultMessage: 'Add' }) }}
       >
-        <StepsForm.StepForm>
+        <StepsFormLegacy.StepForm>
           <Row gutter={20}>
             <Col span={8}>
               <Form.Item
@@ -390,8 +390,8 @@ export function VenuesForm () {
             </Col>
           </Row>
           }
-        </StepsForm.StepForm>
-      </StepsForm>
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>
     </>
   )
 }

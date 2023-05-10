@@ -62,7 +62,7 @@ export const DeviceContainer = styled('div')`
   svg {
     transform: rotate(45deg);
   }
-  
+
   .marker {
     border: 3px solid white;
     box-shadow: -2px 0px 4px -1px rgba(0, 0, 0, 0.75);
@@ -269,4 +269,17 @@ export const RogueApCountBadge = styled('div')`
 
   ${getRogueTypeBorderCss()}
 }
+`
+
+export const MeshApRoleIconContainer = styled.div.attrs(props => ({
+  id: props.id
+}))`
+  position: absolute;
+  top: calc(100% - 5px);
+  left: calc(50% - 10px);
+  z-index: 5;
+
+  svg {
+    transform: unset !important;
+  }
 `
