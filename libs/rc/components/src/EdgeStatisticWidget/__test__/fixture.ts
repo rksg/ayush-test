@@ -33,9 +33,15 @@ export const EdgeTrafficByVolumeWidgetMockData = {
 }
 export const EdgeResourceUtilizationWidgetMockData = {
   timeSeries: {
-    cpu: [10, 15, 9, 10, 11],  // percentage
+    cpu: [10, 15, 9, 10, 11],       // percentage
     memory: [30, 50, 70, 60, 50],   // percentage
-    disk: [10, 10, 11, 11, 11],   // percentage
+    disk: [10, 10, 11, 11, 11],     // percentage
+    memoryUsedBytes: [
+      7923642793,1481053204,4814215231,7608329788,5000121746
+    ],// bytes
+    diskUsedBytes: [
+      9132907460,4236789123,7982453611,6348290142,2910357865
+    ],// bytes
     time: [
       '2023-04-26T06:00:00.000',
       '2023-04-26T07:00:00.000',
