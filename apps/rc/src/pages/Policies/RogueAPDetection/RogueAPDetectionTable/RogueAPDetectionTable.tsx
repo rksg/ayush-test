@@ -97,16 +97,15 @@ export default function RogueAPDetectionTable () {
     {
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedItems =>
-        selectedItems.length > 0 && selectedItems[0].name !== DEFAULT_PROFILE
+        selectedItems.length > 0 && !selectedItems.map(item => item.name).includes(DEFAULT_PROFILE)
       ),
       onClick: (rows, clearSelection) => {
-        if (rows.map(row => Number(row.venueIds.length)).find(num => num !== 0)
-          || rows.map(row => row.name).includes(DEFAULT_PROFILE)) {
+        if (rows.some(row => Number(row.venueIds.length) > 0)) {
           showActionModal({
             type: 'error',
             content: $t({
               // eslint-disable-next-line max-len
-              defaultMessage: 'One of the policy has been applied in network or it is default profile policy.'
+              defaultMessage: 'One of the policy has been applied in network.'
             })
           })
           clearSelection()
