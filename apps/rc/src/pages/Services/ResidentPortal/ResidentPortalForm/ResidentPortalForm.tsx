@@ -5,8 +5,8 @@ import { useIntl } from 'react-intl'
 import {
   Loader,
   PageHeader,
-  StepsForm,
-  StepsFormInstance
+  StepsFormLegacy,
+  StepsFormLegacyInstance
 } from '@acx-ui/components'
 import { useAddResidentPortalMutation,
   useDeleteResidentPortalFaviconMutation,
@@ -55,7 +55,7 @@ export default function ResidentPortalForm (props: ResidentPortalFormProps) {
     isFetching
   } = useGetResidentPortalQuery({ params }, { skip: !editMode })
 
-  const formRef = useRef<StepsFormInstance<CreateResidentPortalFormFields>>()
+  const formRef = useRef<StepsFormLegacyInstance<CreateResidentPortalFormFields>>()
 
   const initialValues: Partial<CreateResidentPortalFormFields> = {
     textTitle: $t({ defaultMessage: 'Resident Portal' }),
@@ -164,11 +164,11 @@ export default function ResidentPortalForm (props: ResidentPortalFormProps) {
         ]}
       />
       <Loader states={[{ isLoading: (isLoading || areImagesLoading), isFetching }]}>
-        <StepsForm
+        <StepsFormLegacy<CreateResidentPortalFormFields>
           formRef={formRef}
           onCancel={() => navigate(linkToServices)}
           onFinish={saveData}>
-          <StepsForm.StepForm
+          <StepsFormLegacy.StepForm<CreateResidentPortalFormFields>
             name='details'
             title={$t({ defaultMessage: 'Settings' })}
             initialValues={initialValues}
@@ -180,8 +180,8 @@ export default function ResidentPortalForm (props: ResidentPortalFormProps) {
               existingFavicon={{
                 fileSrc: favIconImage,
                 filename: originalPortalData?.uiConfiguration?.files?.favIconFileName }} />
-          </StepsForm.StepForm>
-        </StepsForm>
+          </StepsFormLegacy.StepForm>
+        </StepsFormLegacy>
       </Loader>
     </>
   )

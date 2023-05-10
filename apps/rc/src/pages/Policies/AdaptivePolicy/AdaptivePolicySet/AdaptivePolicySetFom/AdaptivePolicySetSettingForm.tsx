@@ -53,6 +53,7 @@ export function AdaptivePolicySetSettingForm (props: AdaptivePolicySetSettingFor
           validateFirst
           hasFeedback
           children={<Input/>}
+          validateTrigger={'onBlur'}
         />
       </GridCol>
       <GridCol col={{ span: 24 }}>
@@ -71,6 +72,7 @@ export function AdaptivePolicySetSettingForm (props: AdaptivePolicySetSettingFor
               })
             } }
           ]}
+          validateTrigger={'onBlur'}
         >
           <AccessPolicyTable
             editMode={editMode}

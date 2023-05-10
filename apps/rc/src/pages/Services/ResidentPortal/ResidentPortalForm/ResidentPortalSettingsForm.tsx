@@ -4,10 +4,10 @@ import {
 } from 'antd'
 import TextArea from 'antd/lib/input/TextArea'
 
-import { GridCol, GridRow, StepsForm, Subtitle } from '@acx-ui/components'
-import { useLazyGetResidentPortalListQuery }     from '@acx-ui/rc/services'
-import { checkObjectNotExists }                  from '@acx-ui/rc/utils'
-import { getIntl }                               from '@acx-ui/utils'
+import { GridCol, GridRow, StepsFormLegacy, Subtitle } from '@acx-ui/components'
+import { useLazyGetResidentPortalListQuery }           from '@acx-ui/rc/services'
+import { checkObjectNotExists }                        from '@acx-ui/rc/utils'
+import { getIntl }                                     from '@acx-ui/utils'
 
 import { ColorPickerInput }                         from './ColorPickerInput'
 import ResidentPortalImageUpload, { ExistingImage } from './ResidentPortalImageUpload'
@@ -39,7 +39,7 @@ export default function ResidentPortalSettingsForm (props : SettingsFormProps) {
   // Render ////////////////////
   return (<GridRow>
     <GridCol col={{ span: 6 }}>
-      <StepsForm.Title>{intl.$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
+      <StepsFormLegacy.Title>{intl.$t({ defaultMessage: 'Settings' })}</StepsFormLegacy.Title>
       <Form.Item name='id' noStyle>
         <Input type='hidden' />
       </Form.Item>

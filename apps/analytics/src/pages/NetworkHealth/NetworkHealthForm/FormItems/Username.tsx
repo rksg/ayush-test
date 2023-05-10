@@ -3,7 +3,7 @@ import { NamePath }                  from 'antd/es/form/interface'
 import { defineMessage, useIntl }    from 'react-intl'
 
 import {
-  StepsFormNew,
+  StepsForm,
   useStepFormContext
 } from '@acx-ui/components'
 
@@ -63,6 +63,6 @@ Username.FieldSummary = function UsernameFieldSummary () {
   return <Form.Item
     name={name as unknown as NamePath}
     label={$t(label)}
-    children={<StepsFormNew.FieldSummary />}
+    children={<StepsForm.FieldSummary />}
   />
 }

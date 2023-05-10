@@ -7,7 +7,7 @@ import { useParams }              from 'react-router-dom'
 
 import {
   Loader,
-  StepsFormNew,
+  StepsForm,
   Tooltip,
   useStepFormContext
 } from '@acx-ui/components'
@@ -103,6 +103,6 @@ WlanName.FieldSummary = function WlanNameFieldSummary () {
   return <Form.Item
     name={name as unknown as NamePath}
     label={$t(label)}
-    children={<StepsFormNew.FieldSummary />}
+    children={<StepsForm.FieldSummary />}
   />
 }

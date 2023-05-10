@@ -4,8 +4,9 @@ import { useIntl } from 'react-intl'
 
 import {
   Loader,
-  PageHeader, StepsForm,
-  StepsFormInstance
+  PageHeader,
+  StepsFormLegacy,
+  StepsFormLegacyInstance
 } from '@acx-ui/components'
 import {
   EdgeDhcpSettingForm
@@ -19,7 +20,7 @@ const AddDhcp = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const linkToServices = useTenantLink('/services')
-  const formRef = useRef<StepsFormInstance<EdgeDhcpSetting>>()
+  const formRef = useRef<StepsFormLegacyInstance<EdgeDhcpSetting>>()
   const [addEdgeDhcp, { isLoading: isFormSubmitting }] = useAddEdgeDhcpServiceMutation()
 
   const handleAddEdgeDhcp = async (data: EdgeDhcpSetting) => {
@@ -41,16 +42,16 @@ const AddDhcp = () => {
         ]}
       />
       <Loader states={[{ isLoading: false, isFetching: isFormSubmitting }]}>
-        <StepsForm
+        <StepsFormLegacy
           formRef={formRef}
           onFinish={handleAddEdgeDhcp}
           onCancel={() => navigate(linkToServices)}
           buttonLabel={{ submit: $t({ defaultMessage: 'Add' }) }}
         >
-          <StepsForm.StepForm>
+          <StepsFormLegacy.StepForm>
             <EdgeDhcpSettingForm />
-          </StepsForm.StepForm>
-        </StepsForm>
+          </StepsFormLegacy.StepForm>
+        </StepsFormLegacy>
       </Loader>
     </>
   )

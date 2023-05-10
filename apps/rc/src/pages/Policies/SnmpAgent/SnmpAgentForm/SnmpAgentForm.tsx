@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { PageHeader, showActionModal, StepsForm, StepsFormInstance }                             from '@acx-ui/components'
+import { PageHeader, showActionModal, StepsFormLegacy, StepsFormLegacyInstance }                 from '@acx-ui/components'
 import { useAddApSnmpPolicyMutation, useGetApSnmpPolicyQuery, useUpdateApSnmpPolicyMutation }    from '@acx-ui/rc/services'
 import { ApSnmpPolicy, getPolicyListRoutePath, getPolicyRoutePath, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
 import { useTenantLink }                                                                         from '@acx-ui/react-router-dom'
@@ -25,7 +25,7 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
   const params = useParams()
 
   const { editMode } = props
-  const formRef = useRef<StepsFormInstance<ApSnmpPolicy>>()
+  const formRef = useRef<StepsFormLegacyInstance<ApSnmpPolicy>>()
 
   const { data } = useGetApSnmpPolicyQuery({ params }, { skip: !editMode })
 
@@ -100,7 +100,7 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
           { text: $t({ defaultMessage: 'SNMP Agent' }), link: '/policies/snmpAgent/list' }
         ]}
       />
-      <StepsForm<ApSnmpPolicy>
+      <StepsFormLegacy<ApSnmpPolicy>
         formRef={formRef}
         onCancel={handleCancel}
         onFinish={async (data) => { return handleSaveApSnmpAgentPolicy(data) }}
@@ -111,7 +111,7 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
         >
           <SnmpAgentSettingForm editMode={editMode} saveState={saveState} />
         </UI.OverwriteStepsForm>
-      </StepsForm>
+      </StepsFormLegacy>
     </>
   )
 }

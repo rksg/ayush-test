@@ -62,7 +62,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
     </div>
   </div>
   <section
-    class="styledComponents__Wrapper-sc-1ibvcih-2 kqqYPH"
+    class="styledComponents__Wrapper-sc-71wmpn-2 gKDpFD"
   >
     <div
       class="ant-pro-steps-form"
@@ -76,7 +76,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
           style="padding-left: 12px; padding-right: 12px;"
         >
           <div
-            class="styledComponents__StepsContainer-sc-1ibvcih-0 fzFjZo"
+            class="styledComponents__StepsContainer-sc-71wmpn-0 blGWyw"
           >
             <div
               class="ant-steps ant-steps-vertical ant-steps-dot"
@@ -241,7 +241,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                     style="padding-left: 10px; padding-right: 10px;"
                   >
                     <h3
-                      class="ant-typography styledComponents__Title-sc-1ibvcih-3 kSRaqD"
+                      class="ant-typography styledComponents__Title-sc-71wmpn-3 koemyr"
                     >
                       Network Details
                     </h3>
@@ -622,7 +622,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                         style="margin-bottom: 16px;"
                       >
                         <h3
-                          class="ant-typography styledComponents__Title-sc-1ibvcih-3 kSRaqD"
+                          class="ant-typography styledComponents__Title-sc-71wmpn-3 koemyr"
                         >
                           Settings
                         </h3>
@@ -1030,7 +1030,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                   type="text"
                 />
                 <h3
-                  class="ant-typography styledComponents__Title-sc-1ibvcih-3 kSRaqD"
+                  class="ant-typography styledComponents__Title-sc-71wmpn-3 koemyr"
                 >
                   Venues
                 </h3>
@@ -1764,7 +1764,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                   type="text"
                 />
                 <h3
-                  class="ant-typography styledComponents__Title-sc-1ibvcih-3 kSRaqD"
+                  class="ant-typography styledComponents__Title-sc-71wmpn-3 koemyr"
                 >
                   Summary
                 </h3>
@@ -2198,7 +2198,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
         </div>
       </div>
       <div
-        class="styledComponents__ActionsContainer-sc-1ibvcih-1 dVvdlc"
+        class="styledComponents__ActionsContainer-sc-71wmpn-1 eCCHZw"
       >
         <div
           class="ant-space ant-space-horizontal ant-space-align-center"
@@ -2319,7 +2319,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
     </div>
   </div>
   <section
-    class="styledComponents__Wrapper-sc-1ibvcih-2 kqqYPH"
+    class="styledComponents__Wrapper-sc-71wmpn-2 gKDpFD"
   >
     <div
       class="ant-pro-steps-form"
@@ -2333,7 +2333,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
           style="padding-left: 12px; padding-right: 12px;"
         >
           <div
-            class="styledComponents__StepsContainer-sc-1ibvcih-0 fzFjZo"
+            class="styledComponents__StepsContainer-sc-71wmpn-0 blGWyw"
           >
             <div
               class="ant-steps ant-steps-vertical ant-steps-dot"
@@ -2498,7 +2498,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                     style="padding-left: 10px; padding-right: 10px;"
                   >
                     <h3
-                      class="ant-typography styledComponents__Title-sc-1ibvcih-3 kSRaqD"
+                      class="ant-typography styledComponents__Title-sc-71wmpn-3 koemyr"
                     >
                       Network Details
                     </h3>
@@ -2846,7 +2846,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                     style="padding-left: 10px; padding-right: 10px;"
                   >
                     <h3
-                      class="ant-typography styledComponents__Title-sc-1ibvcih-3 kSRaqD"
+                      class="ant-typography styledComponents__Title-sc-71wmpn-3 koemyr"
                     >
                       Open Settings
                     </h3>
@@ -2960,7 +2960,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                   type="text"
                 />
                 <h3
-                  class="ant-typography styledComponents__Title-sc-1ibvcih-3 kSRaqD"
+                  class="ant-typography styledComponents__Title-sc-71wmpn-3 koemyr"
                 >
                   Venues
                 </h3>
@@ -3038,7 +3038,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                   type="text"
                 />
                 <h3
-                  class="ant-typography styledComponents__Title-sc-1ibvcih-3 kSRaqD"
+                  class="ant-typography styledComponents__Title-sc-71wmpn-3 koemyr"
                 >
                   Summary
                 </h3>
@@ -3250,7 +3250,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
         </div>
       </div>
       <div
-        class="styledComponents__ActionsContainer-sc-1ibvcih-1 dVvdlc"
+        class="styledComponents__ActionsContainer-sc-71wmpn-1 eCCHZw"
       >
         <div
           class="ant-space ant-space-horizontal ant-space-align-center"
