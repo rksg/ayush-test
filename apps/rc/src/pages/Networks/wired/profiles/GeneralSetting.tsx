@@ -4,7 +4,7 @@ import { Row, Col, Form, Input } from 'antd'
 import TextArea                  from 'antd/lib/input/TextArea'
 import { useIntl }               from 'react-intl'
 
-import { StepsForm }                                from '@acx-ui/components'
+import { StepsFormLegacy }                          from '@acx-ui/components'
 import { useLazyValidateUniqueProfileNameQuery }    from '@acx-ui/rc/services'
 import { checkObjectNotExists, excludeSpaceRegExp } from '@acx-ui/rc/utils'
 import { useParams }                                from '@acx-ui/react-router-dom'
@@ -44,7 +44,7 @@ export function GeneralSetting () {
   return (
     <Row gutter={20}>
       <Col span={10}>
-        <StepsForm.Title
+        <StepsFormLegacy.Title
           children={$t({ defaultMessage: 'General Properties' })}
         />
         <Form.Item

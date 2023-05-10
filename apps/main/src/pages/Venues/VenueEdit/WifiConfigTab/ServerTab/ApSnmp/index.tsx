@@ -4,7 +4,7 @@ import { Form, Select, Space, Switch } from 'antd'
 import { isEqual }                     from 'lodash'
 import { useIntl }                     from 'react-intl'
 
-import { Loader, StepsForm, showToast, showActionModal } from '@acx-ui/components'
+import { Loader, StepsFormLegacy, showToast, showActionModal } from '@acx-ui/components'
 import {
   useGetApSnmpPolicyListQuery,
   useGetVenueApSnmpSettingsQuery,
@@ -138,7 +138,7 @@ export function ApSnmp () {
     isFetching: isUpdatingApSnmpSettings
   }]}>
     <Space>
-      <StepsForm.FieldLabel
+      <StepsFormLegacy.FieldLabel
         width='max-content'
         style={{ height: '48px', display: 'flex', alignItems: 'center' }}
       >
@@ -151,7 +151,7 @@ export function ApSnmp () {
           }}
           style={{ marginLeft: '20px' }}
         />
-      </StepsForm.FieldLabel>
+      </StepsFormLegacy.FieldLabel>
       {stateOfEnableApSnmp && <Form.Item style={{ margin: '0' }}>
         <Select
           data-testid='snmp-select'

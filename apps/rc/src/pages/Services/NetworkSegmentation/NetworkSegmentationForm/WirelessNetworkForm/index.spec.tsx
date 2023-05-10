@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { StepsFormNew }               from '@acx-ui/components'
+import { StepsForm }                  from '@acx-ui/components'
 import {
   CommonUrlsInfo, TunnelProfileUrls
 } from '@acx-ui/rc/utils'
@@ -96,11 +96,11 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <StepsFormNew form={formRef.current} onFinish={mockedFinishFn}>
-          <StepsFormNew.StepForm>
+        <StepsForm form={formRef.current} onFinish={mockedFinishFn}>
+          <StepsForm.StepForm>
             <WirelessNetworkForm />
-          </StepsFormNew.StepForm>
-        </StepsFormNew>
+          </StepsForm.StepForm>
+        </StepsForm>
       </Provider>,
       { route: { params, path: createNsgPath } })
     await user.selectOptions(
@@ -115,11 +115,11 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <StepsFormNew onFinish={mockedFinishFn}>
-          <StepsFormNew.StepForm>
+        <StepsForm onFinish={mockedFinishFn}>
+          <StepsForm.StepForm>
             <WirelessNetworkForm />
-          </StepsFormNew.StepForm>
-        </StepsFormNew>
+          </StepsForm.StepForm>
+        </StepsForm>
       </Provider>,
       { route: { params, path: createNsgPath } })
     await user.click(await screen.findByRole('button', { name: 'Finish' }))
@@ -130,11 +130,11 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <StepsFormNew onFinish={mockedFinishFn}>
-          <StepsFormNew.StepForm>
+        <StepsForm onFinish={mockedFinishFn}>
+          <StepsForm.StepForm>
             <WirelessNetworkForm />
-          </StepsFormNew.StepForm>
-        </StepsFormNew>
+          </StepsForm.StepForm>
+        </StepsForm>
       </Provider>,
       { route: { params, path: createNsgPath } })
     await user.click(await screen.findByRole('button', { name: 'Add' }))
@@ -149,11 +149,11 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <StepsFormNew onFinish={mockedFinishFn}>
-          <StepsFormNew.StepForm>
+        <StepsForm onFinish={mockedFinishFn}>
+          <StepsForm.StepForm>
             <WirelessNetworkForm />
-          </StepsFormNew.StepForm>
-        </StepsFormNew>
+          </StepsForm.StepForm>
+        </StepsForm>
       </Provider>,
       { route: { params, path: createNsgPath } })
     await user.click(await screen.findByRole('button', { name: 'Add' }))

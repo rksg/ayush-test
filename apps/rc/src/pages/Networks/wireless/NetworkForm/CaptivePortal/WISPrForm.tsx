@@ -12,8 +12,8 @@ import _             from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, GridCol, GridRow, StepsForm, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
+import { Button, GridCol, GridRow, StepsFormLegacy, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
 import {
   InformationSolid,
   QuestionMarkCircleOutlined
@@ -145,7 +145,7 @@ export function WISPrForm () {
   return (
     <GridRow>
       <GridCol col={{ span: 10 }}>
-        <StepsForm.Title>{$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
+        <StepsFormLegacy.Title>{$t({ defaultMessage: 'Settings' })}</StepsFormLegacy.Title>
         <Form.Item
           name={['guestPortal','wisprPage','externalProviderName']}
           rules={

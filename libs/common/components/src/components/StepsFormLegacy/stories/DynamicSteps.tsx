@@ -2,80 +2,79 @@ import React, { useState } from 'react'
 
 import { Row, Col, Form, Input } from 'antd'
 
-import { StepsForm } from '..'
-import { Button }    from '../../Button'
-import { showToast } from '../../Toast'
+import { StepsFormLegacy } from '..'
+import { Button }          from '../../Button'
+import { showToast }       from '../../Toast'
 
 function wait (ms: number) { return new Promise(resolve => setTimeout(resolve, ms)) }
 
 export function DynamicSteps () {
   const [show, setShow] = useState(false)
   const [showMore, setShowMore] = useState(false)
-
   return (
-    <StepsForm
+    <StepsFormLegacy
       onCancel={() => showToast({ type: 'info', content: 'Cancel' })}
       onFinish={async () => {
         await wait(1000) // mimic external service call
         showToast({ type: 'success', content: 'Submitted' }) // show notification to indicate submission successful
       }}
     >
-      <StepsForm.StepForm title={show ? 'Step 1' : 'Step 1 no Step 3'} name='step-1'>
+      <StepsFormLegacy.StepForm title={show ? 'Step 1' : 'Step 1 no Step 3'} name='step-1'>
         <Row gutter={20}>
           <Col span={10}>
-            <StepsForm.Title children='Step 1' />
+            <StepsFormLegacy.Title children='Step 1' />
             <Form.Item name='field1' label='Field 1'>
               <Input />
             </Form.Item>
             <Button onClick={() => setShow(!show)}>Toggle Step</Button>
           </Col>
         </Row>
-      </StepsForm.StepForm>
+      </StepsFormLegacy.StepForm>
 
-      <StepsForm.StepForm title='Step 2' name='step-2'>
+      <StepsFormLegacy.StepForm title='Step 2' name='step-2'>
         <Row gutter={20}>
           <Col span={10}>
-            <StepsForm.Title children='Step 2' />
+            <StepsFormLegacy.Title children='Step 2' />
             <Form.Item name='field2' label='Field 2'>
               <Input />
             </Form.Item>
             <Button onClick={() => setShowMore(!showMore)}>Toggle More Step</Button>
           </Col>
         </Row>
-      </StepsForm.StepForm>
+      </StepsFormLegacy.StepForm>
 
-      {show ? <StepsForm.StepForm title='Step 3' name='step-3'>
+      {show ? <StepsFormLegacy.StepForm title='Step 3' name='step-3'>
         <Row gutter={20}>
           <Col span={10}>
-            <StepsForm.Title children='Step 3' />
+            <StepsFormLegacy.Title children='Step 3' />
             <Form.Item name='field3' label='Field 3'>
               <Input />
             </Form.Item>
           </Col>
         </Row>
-      </StepsForm.StepForm> : null}
+      </StepsFormLegacy.StepForm> : null}
 
-      <StepsForm.StepForm title='Step 4' name='step-4'>
+      <StepsFormLegacy.StepForm title='Step 4' name='step-4'>
         <Row gutter={20}>
           <Col span={10}>
-            <StepsForm.Title children='Step 4' />
+            <StepsFormLegacy.Title children='Step 4' />
             <Form.Item name='field4' label='Field 4'>
               <Input />
             </Form.Item>
           </Col>
         </Row>
-      </StepsForm.StepForm>
+      </StepsFormLegacy.StepForm>
 
-      {showMore ? <StepsForm.StepForm title='Step 5' name='step-5'>
+      {showMore ? <StepsFormLegacy.StepForm title='Step 5' name='step-5'>
         <Row gutter={20}>
           <Col span={10}>
-            <StepsForm.Title children='Step 5' />
+            <StepsFormLegacy.Title children='Step 5' />
             <Form.Item name='field5' label='Field 5'>
               <Input />
             </Form.Item>
           </Col>
         </Row>
-      </StepsForm.StepForm> : null}
-    </StepsForm>
+      </StepsFormLegacy.StepForm> : null}
+    </StepsFormLegacy>
   )
 }

@@ -5,7 +5,7 @@ import _                from 'lodash'
 import { useIntl }      from 'react-intl'
 import { useParams }    from 'react-router-dom'
 
-import { GridCol, GridRow, StepsForm }                            from '@acx-ui/components'
+import { GridCol, GridRow, StepsFormLegacy }                      from '@acx-ui/components'
 import { useGetPortalLangMutation, useGetPortalProfileListQuery } from '@acx-ui/rc/services'
 import { Demo, Portal, TableResult }                              from '@acx-ui/rc/utils'
 import { loadImageWithJWT }                                       from '@acx-ui/utils'
@@ -97,7 +97,7 @@ const PortalInstance = (props:{
     <>
       <GridRow>
         <GridCol col={{ span: 10 }}>
-          <StepsForm.Title>{$t({ defaultMessage: 'Portal Web Page' })}</StepsForm.Title>
+          <StepsFormLegacy.Title>{$t({ defaultMessage: 'Portal Web Page' })}</StepsFormLegacy.Title>
           <Form.Item
             label={$t({ defaultMessage: 'Define the captive portal web page.' })}
           />

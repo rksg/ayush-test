@@ -5,8 +5,8 @@ import { renderHook, within } from '@testing-library/react'
 import userEvent              from '@testing-library/user-event'
 import { Form }               from 'antd'
 
-import { StepsFormNew } from '@acx-ui/components'
-import { Provider }     from '@acx-ui/store'
+import { StepsForm } from '@acx-ui/components'
+import { Provider }  from '@acx-ui/store'
 import {
   render,
   screen
@@ -63,14 +63,14 @@ describe('DDos rate limit config drawer', () => {
 
     render(
       <Provider>
-        <StepsFormNew
+        <StepsForm
           form={stepFormRef.current}
         >
           <DDoSRateLimitConfigDrawer
             visible={visibleRef.current.visible}
             setVisible={visibleRef.current.setVisible}
           />
-        </StepsFormNew>
+        </StepsForm>
       </Provider>)
 
     expect(await screen.findByText('DDoS Rate-limiting Settings')).toBeVisible()
@@ -133,14 +133,14 @@ describe('DDos rate limit config drawer', () => {
 
     render(
       <Provider>
-        <StepsFormNew
+        <StepsForm
           form={stepFormRef.current}
         >
           <DDoSRateLimitConfigDrawer
             visible={visibleRef.current.visible}
             setVisible={visibleRef.current.setVisible}
           />
-        </StepsFormNew>
+        </StepsForm>
       </Provider>)
 
     expect(await screen.findByText('DDoS Rate-limiting Settings')).toBeVisible()

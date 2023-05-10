@@ -1,7 +1,7 @@
 import { Form, Input }            from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { StepsFormNew, useStepFormContext } from '@acx-ui/components'
+import { StepsForm, useStepFormContext } from '@acx-ui/components'
 
 import { useDuplicateNameValidator } from '../../services'
 
@@ -36,6 +36,6 @@ TestName.FieldSummary = function TestNameFieldSummary () {
   return <Form.Item
     name={name}
     label={$t(label)}
-    children={<StepsFormNew.FieldSummary />}
+    children={<StepsForm.FieldSummary />}
   />
 }

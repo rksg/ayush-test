@@ -4,8 +4,8 @@ import { useIntl } from 'react-intl'
 
 import {
   PageHeader,
-  StepsForm,
-  StepsFormInstance
+  StepsFormLegacy,
+  StepsFormLegacyInstance
 } from '@acx-ui/components'
 import { useGetVLANPoolPolicyDetailQuery, useAddVLANPoolPolicyMutation, useUpdateVLANPoolPolicyMutation } from '@acx-ui/rc/services'
 import {
@@ -31,7 +31,7 @@ const VLANPoolForm = (props: VLANPoolFormProps) => {
   const linkToPolicies = useTenantLink(tablePath)
   const params = useParams()
   const edit = props.edit && !props.networkView
-  const formRef = useRef<StepsFormInstance<VLANPoolPolicyType>>()
+  const formRef = useRef<StepsFormLegacyInstance<VLANPoolPolicyType>>()
   const { data } = useGetVLANPoolPolicyDetailQuery({ params }, { skip: !edit })
   const [ createVLANPoolPolicy ] = useAddVLANPoolPolicyMutation()
 
@@ -75,20 +75,20 @@ const VLANPoolForm = (props: VLANPoolFormProps) => {
           { text: $t({ defaultMessage: 'VLAN Pools' }), link: tablePath }
         ]}
       />
-      <StepsForm<VLANPoolPolicyType>
+      <StepsFormLegacy<VLANPoolPolicyType>
         formRef={formRef}
         onCancel={() => props.networkView? props.backToNetwork?.():navigate(linkToPolicies)}
         onFinish={async (data) => {
           return handleVLANPoolPolicy(data)
         }}
       >
-        <StepsForm.StepForm
+        <StepsFormLegacy.StepForm
           name='settings'
           title={$t({ defaultMessage: 'Settings' })}
         >
           <VLANPoolSettingForm edit={edit}/>
-        </StepsForm.StepForm>
-      </StepsForm>
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>
     </>
   )
 }

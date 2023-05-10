@@ -8,7 +8,7 @@ import {
   Loader,
   PageHeader,
   showToast,
-  StepsFormNew
+  StepsForm
 } from '@acx-ui/components'
 import {
   useGetCliTemplateQuery,
@@ -122,22 +122,22 @@ export default function CliTemplateForm () {
       />
 
       <Loader states={[{ isLoading: editMode && isCliTemplateLoading }]}>
-        <StepsFormNew
+        <StepsForm
           form={form}
           editMode={editMode}
           onCancel={() => navigate(linkToNetworks)}
           onFinish={editMode ? handleEditCli : handleAddCli}
         >
-          <StepsFormNew.StepForm
+          <StepsForm.StepForm
             key='notice'
             name='notice'
             title={$t({ defaultMessage: 'Important Notice' })}
             layout='horizontal'
           >
             <CliStepNotice />
-          </StepsFormNew.StepForm>
+          </StepsForm.StepForm>
 
-          <StepsFormNew.StepForm
+          <StepsForm.StepForm
             name='settings'
             key='settings'
             title={$t({ defaultMessage: 'CLI Configuration' })}
@@ -149,24 +149,24 @@ export default function CliTemplateForm () {
             }}
           >
             <CliStepConfiguration />
-          </StepsFormNew.StepForm>
+          </StepsForm.StepForm>
 
-          <StepsFormNew.StepForm
+          <StepsForm.StepForm
             name='switches'
             title={$t({ defaultMessage: 'Switches' })}
           >
             <CliStepSwitches />
-          </StepsFormNew.StepForm>
+          </StepsForm.StepForm>
 
           {!editMode &&
-              <StepsFormNew.StepForm
+              <StepsForm.StepForm
                 name='summary'
                 title={$t({ defaultMessage: 'Summary' })}
               >
                 <CliStepSummary />
-              </StepsFormNew.StepForm>
+              </StepsForm.StepForm>
           }
-        </StepsFormNew>
+        </StepsForm>
       </Loader>
     </>
   )
