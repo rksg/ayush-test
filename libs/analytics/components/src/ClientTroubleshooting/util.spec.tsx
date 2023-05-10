@@ -1,6 +1,7 @@
 import moment from 'moment-timezone'
 
-import { getIntl } from '@acx-ui/utils'
+import { disconnectClientEventsMap } from '@acx-ui/analytics/utils'
+import { getIntl }                   from '@acx-ui/utils'
 
 import {
   eventDataObj,
@@ -18,6 +19,7 @@ import {
   RADIO5G,
   RADIO2DOT4G,
   ROAMED,
+  DISCONNECTED,
   DisplayEvent,
   rssGroups,
   TimelineData,
@@ -46,6 +48,7 @@ import {
   labelFormatter,
   calculateInterval
 } from './util'
+
 
 
 type TooltipHelper = {
@@ -251,11 +254,42 @@ describe('util', () => {
         start: 1668407707441,
         end: 1668407707441,
         category: 'disconnect'
+      },
+      {
+        timestamp: '2022-11-14T06:35:07.641Z',
+        event: 'EVENT_CLIENT_BLOCKED',
+        ttc: null,
+        mac: '94:B3:4F:3D:15:B0',
+        apName: 'R750-11-112',
+        path: [
+          {
+            type: 'zone',
+            name: 'cliexp4'
+          },
+          {
+            type: 'apGroup',
+            name: 'No group (inherit from Venue)'
+          },
+          {
+            type: 'ap',
+            name: '94:B3:4F:3D:15:B0'
+          }
+        ],
+        code: null,
+        state: 'isolated-disconnect',
+        failedMsgId: null,
+        radio: '5',
+        type: 'connectionEvents',
+        key: '166840770764194:B3:4F:3D:15:B0EVENT_CLIENT_BLOCKED9',
+        start: 1668407707641,
+        end: 1668407707641,
+        category: 'disconnect'
       }
     ]
     it('should return correct data for categorizeEvent', () => {
       const expectedResult = [
         { event: 'EVENT_CLIENT_DISCONNECT', ttc: null, category: DISCONNECT },
+        { event: 'EVENT_CLIENT_BLOCKED', ttc: null, category: DISCONNECT },
         { event: 'EVENT_CLIENT_ROAMING', ttc: 5000, category: SLOW },
         { event: 'EVENT_CLIENT_SPURIOUS_INFO_UPDATED', ttc: null, category: FAILURE },
         { event: 'EVENT_CLIENT_ROAMING', ttc: 2000, category: SUCCESS }
@@ -273,6 +307,8 @@ describe('util', () => {
       expect(transformEvents(connectionEvents, [], [RADIO2DOT4G])).toEqual([])
       expect(transformEvents(connectionEvents, [ROAMED], [])).toEqual([expectedEvents[0]])
       expect(transformEvents(connectionEvents, [ROAMED], [RADIO2DOT4G])).toEqual([])
+      expect(transformEvents(connectionEvents, [DISCONNECTED], [])).toEqual(expectedEvents
+        .filter(event => Object.keys(disconnectClientEventsMap).includes(event.event)))
     })
     it('should return correct data for formatEventDesc', () => {
       const data = [

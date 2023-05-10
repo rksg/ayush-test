@@ -242,6 +242,58 @@ export const connectionEvents: ConnectionEvent[] = [
     failedMsgId: '3',
     radio: '5',
     key: 'eighth_event'
+  },
+  {
+    timestamp: '2022-11-14T06:35:07.541Z',
+    event: 'EVENT_CLIENT_JOIN',
+    ttc: null,
+    mac: '94:B3:4F:3D:15:B0',
+    apName: 'R750-11-112',
+    path: [
+      {
+        type: 'zone',
+        name: 'cliexp4'
+      },
+      {
+        type: 'apGroup',
+        name: 'No group (inherit from Venue)'
+      },
+      {
+        type: 'ap',
+        name: '94:B3:4F:3D:15:B0'
+      }
+    ],
+    code: null,
+    state: 'join',
+    failedMsgId: null,
+    radio: '5',
+    key: 'first_event'
+  },
+  {
+    timestamp: '2022-11-14T06:35:07.641Z',
+    event: 'EVENT_CLIENT_BLOCKED',
+    ttc: null,
+    mac: '94:B3:4F:3D:15:B0',
+    apName: 'R750-11-112',
+    path: [
+      {
+        type: 'zone',
+        name: 'cliexp4'
+      },
+      {
+        type: 'apGroup',
+        name: 'No group (inherit from Venue)'
+      },
+      {
+        type: 'ap',
+        name: '94:B3:4F:3D:15:B0'
+      }
+    ],
+    code: null,
+    state: 'isolated-disconnect',
+    failedMsgId: null,
+    radio: '5',
+    key: 'first_event'
   }
 ]
 export const connectionQualities = [

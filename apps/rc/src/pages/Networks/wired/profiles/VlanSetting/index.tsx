@@ -32,7 +32,7 @@ export function VlanSetting () {
   const [ defaultVlanDrawerVisible, setDefaultVlanDrawerVisible ] = useState(false)
 
   useEffect(() => {
-    if(currentData.vlans && editMode){
+    if(currentData.vlans){
       form.setFieldsValue(currentData)
 
       const defaultVlanData = currentData.vlans.filter(
@@ -41,7 +41,6 @@ export function VlanSetting () {
 
       const vlanList = currentData.vlans.filter(item => item.vlanName !== 'DEFAULT-VLAN' )
       setVlanTable(vlanList)
-
     }
   }, [currentData, editMode])
 
@@ -49,6 +48,7 @@ export function VlanSetting () {
     title: $t({ defaultMessage: 'VLAN ID' }),
     dataIndex: 'vlanId',
     key: 'vlanId',
+    defaultSortOrder: 'ascend',
     sorter: { compare: sortProp('vlanId', defaultSort) }
   }, {
     title: $t({ defaultMessage: 'VLAN Name' }),

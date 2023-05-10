@@ -35,6 +35,7 @@ export interface DpskSaveData {
   identityId?: string; // PersonaGroup id - This DPSK had bound with PersonaGroup
   deviceCountLimit?: number;
   policyDefaultAccess?: boolean;
+  policySetId?: string;
 }
 export interface NewDpskPassphrase {
   id: string;
@@ -77,6 +78,16 @@ export interface DpskPassphrasesSaveData {
   email?: string;
   phoneNumber?: string;
   override?: boolean;
+}
+
+export interface DpskPassphraseClient {
+  passphraseId: string;
+  username: string;
+  passphrase: string;
+  numberOfDevices?: number;
+  clientMac: string[];
+  createDate: string;
+  expirationDate: string;
 }
 
 export interface DPSKDeviceInfo {
