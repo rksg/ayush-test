@@ -111,6 +111,7 @@ describe('Stateful ACL config drawer', () => {
     await type(within(destination).getByRole('textbox', { name: 'Port' }), '3100')
     await click(within(dialog).getByRole('button', { name: 'Add' }))
     const customRow = await screen.findByRole('row', { name: /Custom/ })
+    expect(within(customRow).queryByText(/(20)/)).toBeValid()
 
     // edit added rule
     await click(await within(customRow).findByRole('checkbox'))
@@ -199,7 +200,6 @@ describe('Stateful ACL config drawer', () => {
     await click(await within(destination).findByRole('radio', { name: 'Subnet Address' }))
     await type(within(destination).getByPlaceholderText('Network address'), '10.12.3.4')
     await type(within(destination).getByPlaceholderText('Mask'), '255.255.255.0')
-    // await click(await within(destination).findByRole('radio', { name: 'Any IP Address' }))
     await click(await within(dialog).findByRole('checkbox', { name: 'Add another rule' }))
     await click(within(dialog).getByRole('button', { name: 'Add' }))
 
