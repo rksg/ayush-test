@@ -192,7 +192,7 @@ export function VenuePropertyTab () {
         if (result.data) {
           const residentPortalUrl = (result.data as PropertyUnit)?._links?.residentPortal?.href
           if (residentPortalUrl) {
-            window.open(decodeURIComponent(residentPortalUrl), '_blank')
+            window.open(residentPortalUrl, '_blank')
           }
         }
       })
