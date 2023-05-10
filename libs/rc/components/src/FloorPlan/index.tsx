@@ -7,12 +7,21 @@ import { HTML5Backend }                     from 'react-dnd-html5-backend'
 import { useIntl }                          from 'react-intl'
 import { Location, useLocation, useParams } from 'react-router-dom'
 
-import { Button, Loader, showActionModal }                                                                                                                                                                                                                                from '@acx-ui/components'
-import { BulbOutlined, EyeOpenOutlined, EyeSlashOutlined }                                                                                                                                                                                                                from '@acx-ui/icons'
-import { useAddFloorPlanMutation, useDeleteFloorPlanMutation, useFloorPlanListQuery, useGetAllDevicesQuery, useGetVenueRogueApQuery, useUpdateApPositionMutation, useUpdateCloudpathServerPositionMutation, useUpdateFloorPlanMutation, useUpdateSwitchPositionMutation } from '@acx-ui/rc/services'
-import { FloorPlanDto, FloorPlanFormDto, NetworkDevice, NetworkDevicePayload, NetworkDevicePosition, NetworkDeviceType, TypeWiseNetworkDevices }                                                                                                                          from '@acx-ui/rc/utils'
-import { TenantLink }                                                                                                                                                                                                                                                     from '@acx-ui/react-router-dom'
-import { hasAccess }                                                                                                                                                                                                                                                      from '@acx-ui/user'
+import { Button, Loader, showActionModal }                      from '@acx-ui/components'
+import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
+import { BulbOutlined, EyeOpenOutlined, EyeSlashOutlined }      from '@acx-ui/icons'
+import {
+  useAddFloorPlanMutation, useApListQuery, useDeleteFloorPlanMutation,
+  useFloorPlanListQuery, useGetAllDevicesQuery, useGetVenueRogueApQuery,
+  useUpdateApPositionMutation, useUpdateCloudpathServerPositionMutation,
+  useUpdateFloorPlanMutation, useUpdateSwitchPositionMutation } from '@acx-ui/rc/services'
+import {
+  APMeshRole,
+  FloorPlanDto, FloorPlanFormDto, NetworkDevice, NetworkDevicePayload,
+  NetworkDevicePosition, NetworkDeviceType, TypeWiseNetworkDevices
+} from '@acx-ui/rc/utils'
+import { TenantLink } from '@acx-ui/react-router-dom'
+import { hasAccess }  from '@acx-ui/user'
 
 import AddEditFloorplanModal from './FloorPlanModal'
 import GalleryView           from './GalleryView/GalleryView'
@@ -56,6 +65,7 @@ export function FloorPlan () {
   const [closeOverlay, setCloseOverlay] = useState<boolean>(false)
   const [showRogueAp, setShowRogueAp] = useState<boolean>(false)
   const [deviceList, setDeviceList] = useState<TypeWiseNetworkDevices>({} as TypeWiseNetworkDevices)
+  const isApMeshTopologyFFOn = useIsSplitOn(Features.AP_MESH_TOPOLOGY)
 
   const defaultDevices = {
     ap: [],
@@ -83,6 +93,33 @@ export function FloorPlan () {
   const [networkDevicesVisibility, setNetworkDevicesVisibility] = useState<NetworkDeviceType[]>([])
 
   const getNetworkDevices = useGetAllDevicesQuery({ params, payload: networkDevicePayload })
+
+  const { data: apsList } = useApListQuery({
+    params, payload: {
+      fields: ['serialNumber', 'meshRole'],
+      filters: { venueId: [params.venueId] }
+    }
+  }, { skip: !isApMeshTopologyFFOn })
+
+  // Set mesh role for unplaced AP
+  useEffect(() => {
+    if (!isApMeshTopologyFFOn || !apsList?.data || isEmpty(unplacedDevicesState.ap)) return
+
+    if (unplacedDevicesState.ap.some(ap => ap.meshRole)) return //XXX  Don't proceed if there is any AP has been set the mesh role
+
+    const apDevices = [...unplacedDevicesState.ap]
+
+    apDevices.forEach((apDevice: NetworkDevice) => {
+      const apWithMeshRole = apsList.data.find(ap => ap.serialNumber === apDevice.serialNumber)
+      apDevice.meshRole = apWithMeshRole?.meshRole as APMeshRole
+    })
+
+    setUnplacedDevicesState({
+      ...unplacedDevicesState,
+      ap: apDevices
+    })
+
+  }, [isApMeshTopologyFFOn, apsList?.data, unplacedDevicesState])
 
   useEffect(() => {
     setFloorPlans([])
