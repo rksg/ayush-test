@@ -82,6 +82,8 @@ export function PortalSettings () {
   const [alarmLogoUrl, setAlarmLogoUrl] = useState('')
   const [getUploadURL] = useGetUploadURLMutation()
 
+  const [preferredProvider, setPreferredProvider] = useState<string>()
+
   const [showContactSupport, setContactSupport] = useState(false)
   const [showOpenCase, setOpenCase] = useState(true)
   const [showMyCase, setMyCase] = useState(true)
@@ -147,6 +149,9 @@ export function PortalSettings () {
         setLoginLogoUrl(defaultLoginLogo)
         setSupportLogoUrl(defaultSupportLogo)
         setAlarmLogoUrl(defaultAlarmLogo)
+      }
+      if (mspLabel.preferredWisprProvider && mspLabel.preferredWisprProvider.providerName) {
+        setPreferredProvider(mspLabel.preferredWisprProvider.providerName)
       }
     }
   }, [provider, mspLabel])
@@ -256,36 +261,6 @@ export function PortalSettings () {
     }))
   }
 
-  const getDefaultLogoUuid = async function ()
-  {
-    const defaultLogoFile = await fetch(defaultLoginLogo)
-      .then(res => res.blob())
-      .then(blob => {
-        return new File([blob], defaultLoginLogo, { type: 'image/png' })
-      })
-    const imageType: string = defaultLoginLogo.split(';base64', 1).at(0) ?? ''
-    if (!imageType) {
-      showToast({
-        type: 'error',
-        content: intl.$t({ defaultMessage: 'load default logo failed' })
-      })
-    }
-    const extension: string = getFileExtension(imageType)
-
-    const uploadUrl = await getUploadURL({
-      params: { ...params },
-      payload: { fileExtension: extension }
-    }) as { data: UploadUrlResponse }
-
-    if (uploadUrl && uploadUrl.data && uploadUrl.data.fileId) {
-      await fetch(uploadUrl.data.signedUrl, { method: 'put', body: defaultLogoFile, headers: {
-        'Content-Type': ''
-      } })
-      return uploadUrl.data.fileId
-    }
-    return
-  }
-
   const updateFormFileIds = function (values: MspPortal,
     uploadUrls: { fileName: string, fileId: string, data: UploadUrlResponse }[]) {
     if (values.logo_uuid) {
@@ -319,17 +294,14 @@ export function PortalSettings () {
     const portal: MspPortal = {}
     if (selectedLogo === 'defaultLogo') {
       const formData = { ...mspLabel, ...values }
-      const defaultLogoUid = await getDefaultLogoUuid()
 
       portal.msp_label = formData.msp_label
-      portal.default_logo_uuid = defaultLogoUid
       portal.contact_support_url = showContactSupport ? formData.contact_support_url : ''
       portal.open_case_url = showOpenCase ? formData.open_case_url : ''
       portal.my_open_case_url = showMyCase ? formData.my_open_case_url : ''
       portal.msp_phone = formData.msp_phone
       portal.msp_email = formData.msp_email
       portal.msp_website = formData.msp_website
-      // preferredWisprProvider?: MspPreferredWisprProvider;
     }
     else {
       const uploadedFiles = fileList.filter(file => file.status === 'done')
@@ -364,7 +336,6 @@ export function PortalSettings () {
       portal.msp_phone = formData.msp_phone
       portal.msp_email = formData.msp_email
       portal.msp_website = formData.msp_website
-      // preferredWisprProvider?: MspPreferredWisprProvider;
     }
     if (!showContactSupport) {
       portal.contact_support_behavior = 'hide'
@@ -374,6 +345,15 @@ export function PortalSettings () {
     }
     if (!showMyCase) {
       portal.my_open_case_behavior = 'hide'
+    }
+    if (preferredProvider) {
+      portal.preferredWisprProvider =
+      {
+        providerName: preferredProvider,
+        apiKey: '',
+        apiSecret: '',
+        customExternalProvider: false
+      }
     }
     return portal
   }
@@ -408,6 +388,30 @@ export function PortalSettings () {
         content: intl.$t({ defaultMessage: 'An error occurred: {error}' }, { error: respData.data.message })
       })
     }
+  }
+
+  const PortalProviders = () => {
+    const initialProvider = isEditMode ? preferredProvider : undefined
+    return (
+      <Form.Item
+        name={['external_provider']}
+        label={intl.$t({ defaultMessage: 'Select Preferred Provider' })}
+        style={{ width: '300px' }}
+        initialValue={initialProvider}
+        children={
+          isEditMode && <Select
+            onChange={value => setPreferredProvider(value)}
+            placeholder={intl.$t({ defaultMessage: 'Select preferred provider' })}
+          >
+            {externalProviders?.map(item=>{
+              return <Select.Option key={item.name} value={item.name}>
+                {item.name}
+              </Select.Option>
+            })}
+          </Select>
+        }
+      />
+    )
   }
 
   return (
@@ -675,21 +679,7 @@ export function PortalSettings () {
             <Subtitle level={3}>
               { intl.$t({ defaultMessage: '3rd Party Portal Providers' }) }</Subtitle>
             <Divider></Divider>
-            <Form.Item
-              name='external_provider'
-              label={intl.$t({ defaultMessage: 'Select Preferred Provider' })}
-              style={{ width: '300px' }}
-              initialValue={intl.$t({ defaultMessage: 'Select preferred provider' })}
-              children={
-                <Select>
-                  {externalProviders?.map(item=>{
-                    return <Select.Option key={item.name} value={item.name}>
-                      {item.name}
-                    </Select.Option>
-                  })}
-                </Select>
-              }
-            />
+            <PortalProviders></PortalProviders>
             <div><label>
               {intl.$t({ defaultMessage: 'Only the portal provider you select here will be ' +
         'available to your customers when they set up' })}</label>
