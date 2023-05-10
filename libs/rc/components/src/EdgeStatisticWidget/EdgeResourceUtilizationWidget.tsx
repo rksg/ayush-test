@@ -152,7 +152,7 @@ export function EdgeResourceUtilizationWidget ({ isLoading }:{ isLoading: boolea
                       name: resource.key,
                       value: fragment.unit ?
                         // eslint-disable-next-line max-len
-                        `${formatter('percent')(fragment.percentage)}(${formatter('bytesFormat')(fragment.unit)})` :
+                        `${formatter('percent')(fragment.percentage)} (${formatter('bytesFormat')(fragment.unit)})` :
                         `${formatter('percent')(fragment.percentage)}`
                     }}
                   />
