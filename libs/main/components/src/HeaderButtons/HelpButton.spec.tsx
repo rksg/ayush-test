@@ -9,7 +9,6 @@ import HelpButton                    from './HelpButton'
 import { getMappingURL, getDocsURL } from './HelpButton/HelpPage'
 
 const params = { tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1' }
-jest.setTimeout(60000)
 describe('HelpButton', () => {
   it('should render HelpButton correctly', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -140,5 +139,5 @@ describe('HelpButton', () => {
       <HelpButton supportStatus='ready'/>
     </Provider>)
     expect(screen.queryByTestId('WarningCircleOutlined')).not.toBeInTheDocument()
-  })
+  },40000)
 })
