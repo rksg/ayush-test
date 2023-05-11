@@ -357,7 +357,7 @@ export function VideoCallQoeDetails (){
           >
             <SearchBar
               placeHolder='Search by MAC, username or hostname'
-              onChange={(q) => q && q.trim().length>=0 && _.debounce(
+              onChange={(q) => q?.trim().length>=0 && _.debounce(
                 (search) => {
                   setSearch(search)
                   setSelectedMac(null)
