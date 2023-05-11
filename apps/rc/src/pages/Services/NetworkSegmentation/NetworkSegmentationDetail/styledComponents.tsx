@@ -1,4 +1,4 @@
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 
@@ -15,7 +15,9 @@ export const StyledQuestionMark = styled(QuestionMarkCircleOutlined)`
   height: 15px
 `
 
-export const TitleBesidesSvg = styled.span`
-  display: inline-block;
-  vertical-align: top;
+export const textAlign = css`
+  .text-align-1 {
+    display: inline-block;
+    vertical-align: top;
+  }
 `

@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Space, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
+import styled                from 'styled-components'
 
 import { Button, Card, GridCol, GridRow, Loader, PageHeader, Tabs, Tooltip } from '@acx-ui/components'
 import {
@@ -43,7 +44,7 @@ const edgeOptionsDefaultPayload = {
   fields: ['name', 'serialNumber']
 }
 
-const NetworkSegmentationDetail = () => {
+const NetworkSegmentationDetail = styled(({ className }) => {
 
   const { $t } = useIntl()
   const params = useParams()
@@ -280,7 +281,7 @@ const NetworkSegmentationDetail = () => {
     {
       title: () => (
         <>
-          <UI.TitleBesidesSvg>{$t({ defaultMessage: 'Tunnel' })}</UI.TitleBesidesSvg>
+          <span className='text-align-1'>{$t({ defaultMessage: 'Tunnel' })}</span>
           <Tooltip
             title={tunnelTooltipMsg}
             placement='bottom'
@@ -289,23 +290,19 @@ const NetworkSegmentationDetail = () => {
           </Tooltip>
         </>
       ),
-      content: () => {
-        if(tunnelData) {
-          return (
-            <TenantLink to={getPolicyDetailsLink({
-              type: PolicyType.TUNNEL_PROFILE,
-              oper: PolicyOperation.DETAIL,
-              policyId: tunnelData.id!
-            })}>
-              {
-                `${tunnelData.id === tenantId ? $t({ defaultMessage: 'Default' }): tunnelData.name}
-                (${nsgViewData?.tunnelNumber})`
-              }
-            </TenantLink>
-          )
-        }
-        return null
-      }
+      content: () => (
+        tunnelData &&
+          <TenantLink to={getPolicyDetailsLink({
+            type: PolicyType.TUNNEL_PROFILE,
+            oper: PolicyOperation.DETAIL,
+            policyId: tunnelData.id!
+          })}>
+            {
+              `${tunnelData.id === tenantId ? $t({ defaultMessage: 'Default' }): tunnelData.name}
+              (${nsgViewData?.tunnelNumber})`
+            }
+          </TenantLink>
+      )
     },
     {
       title: $t({ defaultMessage: 'Networks' }),
@@ -360,7 +357,7 @@ const NetworkSegmentationDetail = () => {
         <Space direction='vertical' size={30}>
           <Card type='solid-bg'>
             <UI.InfoMargin>
-              <GridRow>
+              <GridRow className={className}>
                 {infoFields.map((item, index) =>
                   (<GridCol col={{ span: 3 }} key={index}>
                     <Space direction='vertical' size={10}>
@@ -396,6 +393,6 @@ const NetworkSegmentationDetail = () => {
       </Loader>
     </>
   )
-}
+})`${UI.textAlign}`
 
 export default NetworkSegmentationDetail
