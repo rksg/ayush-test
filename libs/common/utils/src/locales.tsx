@@ -28,6 +28,11 @@ function flattenMessages (nestedMessages: NestedMessages, prefix = ''): Record<s
 }
 
 async function localePath (locale: string) {
+  if (locale === DEFAULT_SYS_LANG) {
+    const url = `locales/compiled/${locale}.json`
+    return await fetch(url).then(res => res.json())
+  }
+
   const gcs = get('STATIC_ASSETS')
   const myHeaders = new Headers()
   myHeaders.append('origin', 'window.origin')
@@ -35,7 +40,6 @@ async function localePath (locale: string) {
     method: 'GET',
     headers: myHeaders
   }
-
   const url = `${gcs}/locales/compiled/${locale}.json`
   const response = await fetch(url, requestOptions )
   if (!response.ok) {
