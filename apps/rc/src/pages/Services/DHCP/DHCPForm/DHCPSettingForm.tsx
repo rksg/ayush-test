@@ -90,6 +90,7 @@ export function SettingForm (props: DHCPFormProps) {
           validateFirst
           hasFeedback
           children={<Input disabled={isDefaultService}/>}
+          validateTrigger={'onBlur'}
         />
 
         <Form.Item

@@ -95,6 +95,7 @@ export function RadiusAttributeGroupSettingForm (props: RadiusAttributeGroupSett
         validateFirst
         hasFeedback
         children={<Input/>}
+        validateTrigger={'onBlur'}
       />
       <Form.Item
         name='attributeAssignments'
