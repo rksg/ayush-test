@@ -214,7 +214,7 @@ const RuleTable = (props: RuleTableProps) => {
       <DndProvider backend={HTML5Backend} >
         <Table
           columns={basicColumns}
-          dataSource={state.rules}
+          dataSource={[...state.rules].reverse()}
           rowKey='priority'
           actions={filterByAccess(actions)}
           rowActions={filterByAccess(rowActions)}
