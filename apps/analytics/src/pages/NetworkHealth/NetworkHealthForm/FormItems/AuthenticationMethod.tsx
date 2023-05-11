@@ -6,7 +6,7 @@ import { FormattedMessage, defineMessage, useIntl } from 'react-intl'
 
 import {
   Loader,
-  StepsFormNew,
+  StepsForm,
   Tooltip,
   useStepFormContext
 } from '@acx-ui/components'
@@ -122,7 +122,7 @@ AuthenticationMethod.FieldSummary = function AuthenticationMethodFieldSummary ()
   return <Form.Item
     name={fieldName}
     label={$t(label)}
-    children={<StepsFormNew.FieldSummary<AuthenticationMethodEnum>
+    children={<StepsForm.FieldSummary<AuthenticationMethodEnum>
       convert={(code) => $t(authMethodsByCode[code!].title)}
     />}
   />

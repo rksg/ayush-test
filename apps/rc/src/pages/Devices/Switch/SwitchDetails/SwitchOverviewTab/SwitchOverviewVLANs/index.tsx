@@ -128,7 +128,7 @@ export function SwitchOverviewVLANs () {
         title={$t({ defaultMessage: 'View VLAN' })}
         visible={drawerVisible}
         onClose={onClose}
-        mask={false}
+        mask={true}
         children={
           <VlanDetail
             row={currentRow}

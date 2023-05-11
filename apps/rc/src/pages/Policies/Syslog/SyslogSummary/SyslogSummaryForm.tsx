@@ -3,7 +3,7 @@ import React, { useContext } from 'react'
 import { Form, Col, Row, Typography } from 'antd'
 import { useIntl }                    from 'react-intl'
 
-import { StepsForm, Subtitle } from '@acx-ui/components'
+import { StepsFormLegacy, Subtitle } from '@acx-ui/components'
 
 import SyslogContext from '../SyslogContext'
 
@@ -19,7 +19,7 @@ const SyslogSummaryForm = () => {
   return (
     <Row gutter={20}>
       <Col span={18}>
-        <StepsForm.Title>{$t({ defaultMessage: 'Summary' })}</StepsForm.Title>
+        <StepsFormLegacy.Title>{$t({ defaultMessage: 'Summary' })}</StepsFormLegacy.Title>
         <Row>
           <Col span={24}>
             <Subtitle level={4}>{ $t({ defaultMessage: 'Settings' }) }</Subtitle>

@@ -5,7 +5,7 @@ import { useWatch }                                                  from 'antd/
 import _                                                             from 'lodash'
 import { useIntl }                                                   from 'react-intl'
 
-import { Drawer, Loader, StepsForm } from '@acx-ui/components'
+import { Drawer, Loader, StepsFormLegacy } from '@acx-ui/components'
 import {
   useAddPropertyUnitMutation,
   useApListQuery,
@@ -439,7 +439,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
               </Form.Item>
             </Form.Item>
 
-            <StepsForm.FieldLabel width={'160px'}>
+            <StepsFormLegacy.FieldLabel width={'160px'}>
               {$t({ defaultMessage: 'Separate VLAN for guests' })}
               <Form.Item
                 style={{ marginBottom: '10px' }}
@@ -447,7 +447,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
                 valuePropName={'checked'}
                 children={<Switch />}
               />
-            </StepsForm.FieldLabel>
+            </StepsFormLegacy.FieldLabel>
             {enableGuestVlan &&
               <Form.Item
                 name={['guestPersona', 'vlan']}

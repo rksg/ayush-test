@@ -4,7 +4,7 @@ import { Col, Form, Input, Radio, Row, Space, Typography } from 'antd'
 import { defineMessage, useIntl }                          from 'react-intl'
 import { useNavigate, useParams }                          from 'react-router-dom'
 
-import { Loader, StepsForm, StepsFormInstance }                                                  from '@acx-ui/components'
+import { Loader, StepsFormLegacy, StepsFormLegacyInstance }                                      from '@acx-ui/components'
 import { useApViewModelQuery, useGetApNetworkSettingsQuery, useUpdateApNetworkSettingsMutation } from '@acx-ui/rc/services'
 import { APNetworkSettings, networkWifiIpRegExp, subnetMaskIpRegExp, redirectPreviousPage }      from '@acx-ui/rc/utils'
 import { useTenantLink }                                                                         from '@acx-ui/react-router-dom'
@@ -24,7 +24,7 @@ export function IpSettings () {
 
   const { editContextData, setEditContextData, previousPath } = useContext(ApEditContext)
 
-  const formRef = useRef<StepsFormInstance<APNetworkSettings>>()
+  const formRef = useRef<StepsFormLegacyInstance<APNetworkSettings>>()
 
   const getApIpSettings = useGetApNetworkSettingsQuery({ params: { serialNumber } })
   const [updateApIpSettings, { isLoading: isUpdatingApIpSettings }] =
@@ -122,7 +122,7 @@ export function IpSettings () {
     }
   }
 
-  const updateEditContext = (form: StepsFormInstance, isDirty: boolean) => {
+  const updateEditContext = (form: StepsFormLegacyInstance, isDirty: boolean) => {
     const ipType = form?.getFieldValue('ipType') || IpTypeEnum.DYNAMIC
 
     setCurrentIpType(ipType)
@@ -131,13 +131,13 @@ export function IpSettings () {
       ...editContextData,
       tabTitle: $t({ defaultMessage: 'General' }),
       isDirty: isDirty,
-      hasError: checkFormIsInvalid(form as StepsFormInstance, ipType),
+      hasError: checkFormIsInvalid(form as StepsFormLegacyInstance, ipType),
       updateChanges: () => handleUpdateIpSettings(form?.getFieldsValue()),
       discardChanges: () => handleDiscard()
     })
   }
 
-  const checkFormIsInvalid = (form: StepsFormInstance, ipType: string) => {
+  const checkFormIsInvalid = (form: StepsFormLegacyInstance, ipType: string) => {
     if (ipType === IpTypeEnum.DYNAMIC) {
       return false
     }
@@ -149,14 +149,14 @@ export function IpSettings () {
   }
 
   const handleChange = () => {
-    updateEditContext(formRef?.current as StepsFormInstance, true)
+    updateEditContext(formRef?.current as StepsFormLegacyInstance, true)
   }
 
   return (<Loader states={[{
     isLoading: formInitializing,
     isFetching: isUpdatingApIpSettings || isLoadingApViewModel || isFetchingApViewModel
   }]}>
-    <StepsForm
+    <StepsFormLegacy
       formRef={formRef}
       onFormChange={handleChange}
       onFinish={handleUpdateIpSettings}
@@ -167,7 +167,7 @@ export function IpSettings () {
         submit: $t({ defaultMessage: 'Apply' })
       }}
     >
-      <StepsForm.StepForm initialValues={initData}>
+      <StepsFormLegacy.StepForm initialValues={initData}>
         <Form.Item
           name='ipType'
           label={$t({ defaultMessage: 'IP Settings' })}
@@ -246,8 +246,8 @@ export function IpSettings () {
             </Col>
           </Row>
         )}
-      </StepsForm.StepForm>
-    </StepsForm>
+      </StepsFormLegacy.StepForm>
+    </StepsFormLegacy>
   </Loader>
 
   )
