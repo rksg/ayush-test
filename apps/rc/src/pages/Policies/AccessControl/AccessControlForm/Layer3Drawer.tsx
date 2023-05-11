@@ -1,17 +1,12 @@
-import React, { ReactNode, useEffect, useState } from 'react'
+import React, { ReactNode, useEffect, useRef, useState } from 'react'
 
 import { Form, FormItemProps, Input, Radio, RadioChangeEvent, Select } from 'antd'
 import _                                                               from 'lodash'
+import { DndProvider, useDrag, useDrop }                               from 'react-dnd'
+import { HTML5Backend }                                                from 'react-dnd-html5-backend'
 import { useIntl }                                                     from 'react-intl'
 import { useParams }                                                   from 'react-router-dom'
-import {
-  SortableContainer,
-  SortableContainerProps,
-  SortableElement,
-  SortableElementProps,
-  SortableHandle
-} from 'react-sortable-hoc'
-import styled from 'styled-components/macro'
+import styled                                                          from 'styled-components/macro'
 
 import {
   Button,
@@ -94,6 +89,10 @@ const FormItemsWrapper = styled.div`
     width: 48%
   }
 `
+
+type DragItemProps = {
+  id: number
+}
 
 const DrawerFormItem = (props: FormItemProps) => {
   return (
@@ -290,10 +289,6 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     }
   }, [onlyAddMode])
 
-  const DragHandle = SortableHandle(() =>
-    <Drag style={{ cursor: 'grab', color: '#6e6e6e' }} />
-  )
-
   const basicColumns: TableProps<Layer3Rule>['columns'] = [
     {
       title: $t({ defaultMessage: 'Priority' }),
@@ -315,7 +310,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       dataIndex: 'source',
       key: 'source',
       render: (data, row) => {
-        return <NetworkColumnComponent network={row.source} access={row.access} />
+        return <NetworkColumnComponent network={row.source} row={row} />
       }
     },
     {
@@ -323,7 +318,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       dataIndex: 'destination',
       key: 'destination',
       render: (data, row) => {
-        return <NetworkColumnComponent network={row.destination} access={row.access} />
+        return <NetworkColumnComponent network={row.destination} row={row} />
       }
     },
     {
@@ -341,14 +336,15 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       width: 60,
       render: (data, row) => {
         return <div data-testid={`${row.priority}_Icon`} style={{ textAlign: 'center' }}>
-          <DragHandle/>
+          <Drag style={{ cursor: 'grab', color: '#6e6e6e' }} />
         </div>
       }
     }
   ]
 
-  const NetworkColumnComponent = (props: { network: Layer3NetworkCol, access: string }) => {
-    const { network, access } = props
+  const NetworkColumnComponent = (props: { network: Layer3NetworkCol, row: Layer3Rule }) => {
+    const { network, row } = props
+    const { access, protocol } = row
 
     let ipString = RuleSourceType.ANY as string
     if (network.type === RuleSourceType.SUBNET) {
@@ -369,7 +365,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
 
     return <div style={{ display: 'flex', flexDirection: 'column' }}>
       <span>{$t({ defaultMessage: 'IP: {ipString}' }, { ipString: ipString })}</span>
-      { access !== 'BLOCK' && <span>
+      { (access !== 'BLOCK' && protocol !== Layer3ProtocolType.L3ProtocolEnum_ICMP_ICMPV4) && <span>
         {$t({ defaultMessage: 'Port: {portString}' }, { portString: portString })}
       </span> }
     </div>
@@ -671,34 +667,61 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
   )
 
   // @ts-ignore
-  const SortableItem = SortableElement((props: SortableElementProps) => <tr {...props} />)
-  // @ts-ignore
-  const SortContainer = SortableContainer((props: SortableContainerProps) => <tbody {...props} />)
+  const DraggableRow = (props) => {
+    const ref = useRef(null)
+    const { className, onClick, ...restProps } = props
 
-  const DraggableContainer = (props: SortableContainerProps) => {
-    return <SortContainer
-      useDragHandle
-      disableAutoscroll
-      onSortEnd={({ oldIndex, newIndex }: { oldIndex: number; newIndex: number }) => {
-        const dragAndDropRules = [...layer3RuleList] as Layer3Rule[]
-        [dragAndDropRules[oldIndex], dragAndDropRules[newIndex]] =
-          [dragAndDropRules[newIndex], dragAndDropRules[oldIndex]]
-        setLayer3RuleList(dragAndDropRules.map((rule, i) => {
-          return {
-            ...rule,
-            priority: i + 1
-          }
-        }))
-      }}
-      {...props}
-    />
-  }
+    const [, drag] = useDrag(() => ({
+      type: 'DraggableRow',
+      item: {
+        id: props['data-row-key']
+      },
+      collect: monitor => ({
+        isDragging: monitor.isDragging()
+      })
+    }))
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const DraggableBodyRow = (props: any) => {
-    const { className, style, ...restProps } = props
-    const index = layer3RuleList.findIndex((x) => x.priority === restProps['data-row-key'])
-    return <SortableItem index={index} {...restProps} />
+    const [{ isOver }, drop] = useDrop({
+      accept: 'DraggableRow',
+      drop: (item: DragItemProps) => {
+        // @ts-ignore
+        const hoverIdx = Number(ref.current.getAttribute('data-row-key'))
+        const idx = item.id ?? -1
+        if (idx && idx !== hoverIdx) {
+          let oldIndex = idx - 1
+          let newIndex = hoverIdx -1
+          const dragAndDropRules = [...layer3RuleList] as Layer3Rule[]
+          [dragAndDropRules[oldIndex], dragAndDropRules[newIndex]] =
+            [dragAndDropRules[newIndex], dragAndDropRules[oldIndex]]
+          setLayer3RuleList(dragAndDropRules.map((rule, i) => {
+            return {
+              ...rule,
+              priority: i + 1
+            }
+          }))
+        }
+      },
+      collect: (monitor) => ({
+        isOver: monitor.isOver()
+      })
+    })
+
+    drag(drop(ref))
+
+    return (
+      <tr
+        ref={ref}
+        className={className}
+        onClick={onClick}
+        {...restProps}
+        style={isOver ? {
+          backgroundColor: 'var(--acx-accents-blue-10)',
+          borderColor: 'var(--acx-accents-blue-10)'
+        } : {}}
+      >
+        {props.children}
+      </tr>
+    )
   }
 
   const content = <Form layout='horizontal' form={contentForm}>
@@ -736,20 +759,21 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       name='layer3Rule'
       label={$t({ defaultMessage: 'Layer 3 Rules' }) + ` (${layer3RuleList.length})`}
     />
-    <Table
-      columns={basicColumns}
-      dataSource={layer3RuleList as Layer3Rule[]}
-      rowKey='priority'
-      actions={filterByAccess(actions)}
-      rowActions={filterByAccess(rowActions)}
-      rowSelection={{ type: 'radio' }}
-      components={{
-        body: {
-          wrapper: DraggableContainer,
-          row: DraggableBodyRow
-        }
-      }}
-    />
+    <DndProvider backend={HTML5Backend} >
+      <Table
+        columns={basicColumns}
+        dataSource={layer3RuleList as Layer3Rule[]}
+        rowKey='priority'
+        actions={filterByAccess(actions)}
+        rowActions={filterByAccess(rowActions)}
+        rowSelection={{ type: 'radio' }}
+        components={{
+          body: {
+            row: DraggableRow
+          }
+        }}
+      />
+    </DndProvider>
   </Form>
 
   const ruleContent = <Form layout='horizontal' form={drawerForm}>
@@ -966,8 +990,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         <Form.Item
           name={[...inputName, 'l3AclPolicyId']}
           rules={[{
-            required: true
-          }, {
+            required: true,
             message: $t({ defaultMessage: 'Please select Layer 3 profile' })
           }]}
           children={

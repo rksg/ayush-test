@@ -54,7 +54,8 @@ export function TrustedPortsModal (props: {
       <StepsForm
         editMode={!!editRecord}
         onCancel={onCancel}
-        onFinish={async (data) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onFinish={async (data: any) => {
           if(data.trustedPorts.trustPorts){
             onSave(data)
             return true
@@ -66,7 +67,7 @@ export function TrustedPortsModal (props: {
       >
         <StepsForm.StepForm
           title={$t({ defaultMessage: 'Select Model' })}
-          onFinish={async (data) => {
+          onFinish={async (data: VlanTrustPortInterface) => {
             if(data.family && data.model){
               setNoModelMsg(false)
               setVlanSettingValues(data)

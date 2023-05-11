@@ -253,7 +253,7 @@ export interface SwitchRow {
   suspendingDeployTime: string
   uptime?: string
   syncedSwitchConfig?: boolean
-  children?: StackMember[]
+  children?: StackMember[] | SwitchRow[]
   isFirstLevel?: boolean
   unitStatus?: STACK_MEMBERSHIP
   syncDataId?: string
@@ -261,9 +261,15 @@ export interface SwitchRow {
   switchName?: string
   xPercent?: number
   yPercent?: number
+  switches?: SwitchRow[]
+  isGroup?: string
+  members?: number
+  clients?: number
+  incidents?: number
 }
 
 export interface StackMember {
+  isFirstLevel: boolean
   venueName: string
   serialNumber: string
   operStatusFound?: boolean

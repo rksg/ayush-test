@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import { Form, Input, Radio, Space } from 'antd'
+import moment                        from 'moment'
 import { useIntl }                   from 'react-intl'
 import { useParams }                 from 'react-router-dom'
 import { v4 as uuidv4 }              from 'uuid'
@@ -30,6 +31,8 @@ interface AdaptivePolicySettingFormProps {
 
 export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps) {
   const { $t } = useIntl()
+
+  // eslint-disable-next-line max-len
   const { editMode = false, drawerMode = false } = props
 
   const evaluationRules = Form.useWatch('evaluationRules')
@@ -88,8 +91,10 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
         dataIndex: 'conditionValue',
         render: function (data, row) {
           if(row.evaluationRule.criteriaType === CriteriaOption.DATE_RANGE) {
-            // eslint-disable-next-line max-len
-            return `${row.evaluationRule?.when} ${row.evaluationRule?.startTime} - ${row.evaluationRule?.endTime}`
+            return `${row.evaluationRule?.when},
+            ${moment(row.evaluationRule.startTime, 'HH:mm:ss').format('h:mm A')} -
+            ${moment(row.evaluationRule.endTime, 'HH:mm:ss').format('h:mm A')},
+            ${row.evaluationRule.zoneOffset}`
           } else {
             return row.evaluationRule.regexStringCriteria
           }
@@ -114,7 +119,7 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
     return checkObjectNotExists(list, { name: value }, $t({ defaultMessage: 'Adaptive Policy' }))
   }
 
-  const setAccessCondition = (condition: AccessCondition) => {
+  const setAccessConditions = (condition: AccessCondition) => {
     const newConditions: AccessCondition[] = evaluationRules ? evaluationRules.slice() : []
     if (editConditionMode) {
       const targetIdx = newConditions.findIndex((r: AccessCondition) => r.id === condition.id)
@@ -186,6 +191,7 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
             validateFirst
             hasFeedback
             children={<Input/>}
+            validateTrigger={'onBlur'}
           />
           <Loader states={[{ isLoading }]}>
             <Form.Item name='templateTypeId'
@@ -196,9 +202,10 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
               children={
                 <Radio.Group
                   disabled={editMode}
-                  onChange={() => {
+                  onChange={(e) => {
                     setAccessConditionsVisible(false)
                     form.setFieldValue('evaluationRules', [])
+                    form.setFieldValue('templateTypeId', e.target.value)
                   }}>
                   <Space direction='vertical'>
                     {templateList?.data.map(({ id, ruleType }) => (
@@ -268,7 +275,7 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
       <AccessConditionDrawer
         visible={accessConditionsVisible}
         setVisible={setAccessConditionsVisible}
-        setAccessCondition={setAccessCondition}
+        setAccessConditions={setAccessConditions}
         editCondition={editCondition}
         isEdit={editConditionMode}
         accessConditions={evaluationRules}

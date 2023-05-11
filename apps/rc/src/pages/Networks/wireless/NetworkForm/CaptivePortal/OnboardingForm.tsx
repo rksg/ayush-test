@@ -5,7 +5,7 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { GridCol, GridRow, StepsForm }                            from '@acx-ui/components'
+import { GridCol, GridRow, StepsFormLegacy }                      from '@acx-ui/components'
 import { GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
@@ -36,7 +36,7 @@ export function OnboardingForm () {
   return (
     <GridRow>
       <GridCol col={{ span: 10 }}>
-        <StepsForm.Title>{intl.$t({ defaultMessage: 'Onboarding' })}</StepsForm.Title>
+        <StepsFormLegacy.Title>{intl.$t({ defaultMessage: 'Onboarding' })}</StepsFormLegacy.Title>
         <RedirectUrlInput />
         <DhcpCheckbox />
         <BypassCaptiveNetworkAssistantCheckbox

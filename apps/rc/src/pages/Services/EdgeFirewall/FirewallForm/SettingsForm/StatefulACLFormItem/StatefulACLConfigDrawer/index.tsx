@@ -1,15 +1,37 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { Empty, Form, Input, Row, RowProps, Select, Space, Typography }                                     from 'antd'
-import TextArea                                                                                             from 'antd/lib/input/TextArea'
-import _                                                                                                    from 'lodash'
-import { IntlShape, useIntl }                                                                               from 'react-intl'
-import { SortableContainer, SortableElement, SortableHandle, SortableElementProps, SortableContainerProps } from 'react-sortable-hoc'
+import { Empty, Form, Input, Row, RowProps, Select, Space, Typography } from 'antd'
+import TextArea                                                         from 'antd/lib/input/TextArea'
+import _                                                                from 'lodash'
+import { IntlShape, useIntl }                                           from 'react-intl'
+import {
+  SortableContainer,
+  SortableElement,
+  SortableHandle,
+  SortableElementProps,
+  SortableContainerProps
+} from 'react-sortable-hoc'
 
-import { cssNumber, Drawer, showActionModal, Table, TableProps, useStepFormContext }                                                    from '@acx-ui/components'
-import { ACLDirection, AddressType, getAccessActionString, getACLDirectionString, getProtocolTypeString, StatefulAcl, StatefulAclRule } from '@acx-ui/rc/utils'
-import { filterByAccess }                                                                                                               from '@acx-ui/user'
-import { getIntl }                                                                                                                      from '@acx-ui/utils'
+import {
+  cssNumber,
+  Drawer,
+  showActionModal,
+  Table,
+  TableProps,
+  useStepFormContext
+} from '@acx-ui/components'
+import {
+  ACLDirection,
+  AddressType,
+  getAccessActionString,
+  getACLDirectionString,
+  getProtocolTypeString,
+  ProtocolType,
+  StatefulAcl,
+  StatefulAclRule
+} from '@acx-ui/rc/utils'
+import { filterByAccess } from '@acx-ui/user'
+import { getIntl }        from '@acx-ui/utils'
 
 import { FirewallFormModel }     from '../../..'
 import { StatefulACLRuleDialog } from '../StatefulACLRuleDialog'
@@ -208,6 +230,7 @@ const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
       dataIndex: 'protocolType',
       render: (_, row) => {
         return getProtocolTypeString($t, row.protocolType)
+         + (row.protocolType === ProtocolType.CUSTOM ? ` (${row.protocolValue})` : '')
       }
     },
     {

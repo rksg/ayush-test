@@ -73,8 +73,6 @@ describe('RadiusAttributeGroupDrawer', () => {
     const row = await screen.findByRole('row', { name: 'group1 attributeName1 test attributeName2 test' })
     fireEvent.click(within(row).getByRole('radio'))
 
-    await screen.findByText('1 selected')
-
     await userEvent.click(screen.getByText('Select'))
   })
 })

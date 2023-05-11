@@ -6,10 +6,10 @@ import { isEqual }                      from 'lodash'
 import { FormChangeInfo }               from 'rc-field-form/es/FormContext'
 import { useIntl }                      from 'react-intl'
 
-import { ContentSwitcher, ContentSwitcherProps, Loader, NoData, StepsForm, StepsFormInstance }   from '@acx-ui/components'
-import { useUpdatePortConfigMutation }                                                           from '@acx-ui/rc/services'
-import { EdgeIpModeEnum, EdgePort, EdgePortTypeEnum, serverIpAddressRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }                                                 from '@acx-ui/react-router-dom'
+import { ContentSwitcher, ContentSwitcherProps, Loader, NoData, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
+import { useUpdatePortConfigMutation }                                                                     from '@acx-ui/rc/services'
+import { EdgeIpModeEnum, EdgePort, EdgePortTypeEnum, serverIpAddressRegExp, subnetMaskIpRegExp }           from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                                                           from '@acx-ui/react-router-dom'
 
 
 import { EdgeEditContext } from '../..'
@@ -32,7 +32,7 @@ const PortsGeneral = (props: PortsGeneralProps) => {
   const navigate = useNavigate()
   const linkToEdgeList = useTenantLink('/devices/edge/list')
   const [currentTab, setCurrentTab] = useState<string>('0')
-  const formRef = useRef<StepsFormInstance<PortConfigFormType>>()
+  const formRef = useRef<StepsFormLegacyInstance<PortConfigFormType>>()
   const [updatePortConfig, { isLoading: isPortConfigUpdating }] = useUpdatePortConfigMutation()
   const editEdgeContext = useContext(EdgeEditContext)
   const dataRef = useRef<EdgePortWithStatus[] | undefined>(undefined)
@@ -175,14 +175,14 @@ const PortsGeneral = (props: PortsGeneralProps) => {
         isLoading: false,
         isFetching: isPortConfigUpdating
       }]}>
-        <StepsForm
+        <StepsFormLegacy
           formRef={formRef}
           onFinish={handleFinish}
           onCancel={() => navigate(linkToEdgeList)}
           onFormChange={handleFormChange}
           buttonLabel={{ submit: $t({ defaultMessage: 'Apply Ports General' }) }}
         >
-          <StepsForm.StepForm initialValues={formData}>
+          <StepsFormLegacy.StepForm initialValues={formData}>
             <ContentSwitcher
               tabDetails={tabData}
               defaultValue='0'
@@ -191,8 +191,8 @@ const PortsGeneral = (props: PortsGeneralProps) => {
               size='large'
               align='left'
             />
-          </StepsForm.StepForm>
-        </StepsForm>
+          </StepsFormLegacy.StepForm>
+        </StepsFormLegacy>
       </Loader>
       : <NoData />
   )

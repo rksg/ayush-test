@@ -1,7 +1,7 @@
 import { Col, Form, Input, Row } from 'antd'
 import { useIntl }               from 'react-intl'
 
-import { StepsForm }                                         from '@acx-ui/components'
+import { StepsFormLegacy }                                   from '@acx-ui/components'
 import { useLazyGetPortalProfileListQuery }                  from '@acx-ui/rc/services'
 import { checkObjectNotExists, hasGraveAccentAndDollarSign } from '@acx-ui/rc/utils'
 import { useParams }                                         from '@acx-ui/react-router-dom'
@@ -28,7 +28,7 @@ const PortalSettingForm = (props:{
     <>
       <Row gutter={20}>
         <Col span={10}>
-          <StepsForm.Title>{$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
+          <StepsFormLegacy.Title>{$t({ defaultMessage: 'Settings' })}</StepsFormLegacy.Title>
           <Form.Item
             name='serviceName'
             label={$t({ defaultMessage: 'Service Name' })}

@@ -3,7 +3,7 @@ import { useContext, useState, useEffect } from 'react'
 import { Row, Col, Form, Input } from 'antd'
 import _                         from 'lodash'
 
-import { showActionModal, Table, TableProps, StepsForm, Tooltip } from '@acx-ui/components'
+import { showActionModal, Table, TableProps, StepsFormLegacy, Tooltip } from '@acx-ui/components'
 import {
   Vlan,
   SwitchModel,
@@ -32,7 +32,7 @@ export function VlanSetting () {
   const [ defaultVlanDrawerVisible, setDefaultVlanDrawerVisible ] = useState(false)
 
   useEffect(() => {
-    if(currentData.vlans && editMode){
+    if(currentData.vlans){
       form.setFieldsValue(currentData)
 
       const defaultVlanData = currentData.vlans.filter(
@@ -41,7 +41,6 @@ export function VlanSetting () {
 
       const vlanList = currentData.vlans.filter(item => item.vlanName !== 'DEFAULT-VLAN' )
       setVlanTable(vlanList)
-
     }
   }, [currentData, editMode])
 
@@ -49,6 +48,7 @@ export function VlanSetting () {
     title: $t({ defaultMessage: 'VLAN ID' }),
     dataIndex: 'vlanId',
     key: 'vlanId',
+    defaultSortOrder: 'ascend',
     sorter: { compare: sortProp('vlanId', defaultSort) }
   }, {
     title: $t({ defaultMessage: 'VLAN Name' }),
@@ -194,7 +194,7 @@ export function VlanSetting () {
     <>
       <Row gutter={20}>
         <Col span={20}>
-          <StepsForm.Title children={$t({ defaultMessage: 'VLANs' })} />
+          <StepsFormLegacy.Title children={$t({ defaultMessage: 'VLANs' })} />
           <Table
             rowKey='vlanId'
             columns={vlansColumns}

@@ -5,7 +5,7 @@ import { Col, Form, Input, Row } from 'antd'
 import { render, screen, fireEvent, waitFor } from '@acx-ui/test-utils'
 
 import { Modal, ModalType } from '../Modal'
-import { StepsForm }        from '../StepsForm'
+import { StepsFormLegacy }  from '../StepsFormLegacy'
 
 describe('Modal', () => {
   const handleCancel = jest.fn()
@@ -63,15 +63,15 @@ describe('Modal', () => {
     expect(handleConfirm).toBeCalled()
   })
 
-  it('should render with StepsForm', () => {
+  it('should render with StepsFormLegacy', () => {
     render(
       <Modal
         type={ModalType.ModalStepsForm}
         title={'modal title'}
         visible={true}
       >
-        <StepsForm>
-          <StepsForm.StepForm>
+        <StepsFormLegacy>
+          <StepsFormLegacy.StepForm>
             <Row gutter={20}>
               <Col span={8}>
                 <Form.Item name='field' label='Field'>
@@ -79,8 +79,8 @@ describe('Modal', () => {
                 </Form.Item>
               </Col>
             </Row>
-          </StepsForm.StepForm>
-        </StepsForm>
+          </StepsFormLegacy.StepForm>
+        </StepsFormLegacy>
       </Modal>
     )
     expect(screen.getByText('modal title')).toBeVisible()
@@ -94,28 +94,28 @@ describe('Modal', () => {
         title={'modal title'}
         visible={true}
       >
-        <StepsForm>
-          <StepsForm.StepForm title='Step 1'>
+        <StepsFormLegacy>
+          <StepsFormLegacy.StepForm title='Step 1'>
             <Row gutter={20}>
               <Col span={10}>
-                <StepsForm.Title children='Step 1' />
+                <StepsFormLegacy.Title children='Step 1' />
                 <Form.Item name='field1' label='Field 1'>
                   <Input />
                 </Form.Item>
               </Col>
             </Row>
-          </StepsForm.StepForm>
-          <StepsForm.StepForm title='Step 2'>
+          </StepsFormLegacy.StepForm>
+          <StepsFormLegacy.StepForm title='Step 2'>
             <Row gutter={20}>
               <Col span={10}>
-                <StepsForm.Title children='Step 2' />
+                <StepsFormLegacy.Title children='Step 2' />
                 <Form.Item name='field2' label='Field 2'>
                   <Input />
                 </Form.Item>
               </Col>
             </Row>
-          </StepsForm.StepForm>
-        </StepsForm>
+          </StepsFormLegacy.StepForm>
+        </StepsFormLegacy>
       </Modal>
     )
     expect(screen.getByText('modal title')).toBeVisible()

@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { Loader, PageHeader, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
+import { Loader, PageHeader, showToast, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
 import {
   useAddAdaptivePolicySetMutation,
   useAddPrioritizedPolicyMutation,
@@ -24,17 +24,19 @@ import { useTenantLink } from '@acx-ui/react-router-dom'
 import { AdaptivePolicySetSettingForm } from './AdaptivePolicySetSettingForm'
 
 interface AdaptivePolicySetFormProps {
-  editMode?: boolean
+  editMode?: boolean,
+  modalMode?: boolean,
+  modalCallBack?: (addedPolicySetId?: string) => void
 }
 
-export default function H (props: AdaptivePolicySetFormProps) {
+export default function AdaptivePolicySetForm (props: AdaptivePolicySetFormProps) {
   const { $t } = useIntl()
-  const { editMode = false } = props
+  const { editMode = false, modalMode = false, modalCallBack } = props
   const { policyId } = useParams()
   // eslint-disable-next-line max-len
   const linkToList = useTenantLink('/' + getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.LIST }))
   const navigate = useNavigate()
-  const formRef = useRef<StepsFormInstance>()
+  const formRef = useRef<StepsFormLegacyInstance>()
 
   const [addAdaptivePolicySet] = useAddAdaptivePolicySetMutation()
   const [updateAdaptiveSetPolicy] = useUpdateAdaptivePolicySetMutation()
@@ -101,6 +103,7 @@ export default function H (props: AdaptivePolicySetFormProps) {
             }
           }
         }
+        navigate(linkToList, { replace: true })
       } else {
         const { id: policySetId } = await addAdaptivePolicySet({
           payload: policyPayload
@@ -113,6 +116,7 @@ export default function H (props: AdaptivePolicySetFormProps) {
             payload: { policyId: policyId, priority: i }
           })
         }
+        modalMode ? modalCallBack?.(policySetId) : navigate(linkToList, { replace: true })
       }
       showToast({
         type: 'success',
@@ -122,7 +126,6 @@ export default function H (props: AdaptivePolicySetFormProps) {
           { name: data.name, editMode }
         )
       })
-      navigate(linkToList, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     } finally {
@@ -132,7 +135,7 @@ export default function H (props: AdaptivePolicySetFormProps) {
 
   return (
     <>
-      <PageHeader
+      {!modalMode && <PageHeader
         title={editMode
           ? $t({ defaultMessage: 'Configure {name}' }, { name: data?.name })
           : $t({ defaultMessage: 'Add Adaptive Policy Set' })}
@@ -143,14 +146,14 @@ export default function H (props: AdaptivePolicySetFormProps) {
             // eslint-disable-next-line max-len
             link: getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.LIST }) }
         ]}
-      />
-      <StepsForm
+      />}
+      <StepsFormLegacy
         editMode={editMode}
         formRef={formRef}
         buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
-        onCancel={() => navigate(linkToList)}
+        onCancel={() => modalMode ? modalCallBack?.() : navigate(linkToList)}
         onFinish={handleSubmit}>
-        <StepsForm.StepForm
+        <StepsFormLegacy.StepForm
           initialValues={{ accessDeletePolicies: [] as PrioritizedPolicy [] }}>
           <Loader states={[{
             isLoading: isGetPolicyLoading,
@@ -161,8 +164,8 @@ export default function H (props: AdaptivePolicySetFormProps) {
               accessPolicies={accessPolicies}
               setAccessPolicies={setAccessPolicies}/>
           </Loader>
-        </StepsForm.StepForm>
-      </StepsForm>
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>
     </>
   )
 }

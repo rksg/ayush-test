@@ -124,12 +124,12 @@ export const ICX_MODELS_MODULES = {
     '48PF2': [['48X10/100/1000Mbps'], ['4X1/10/25G']],
     'C08P': [['8X10/100/1000Mbps'], ['2X1G']],
     'C08PF': [['8X10/100/1000Mbps'], ['2X1/10G']],
-    '24ZP': [['24X100/1000/2500Mbps'], ['4X1/20/25G']],
+    '24ZP': [['24X100/1000/2500Mbps'], ['4X1/10/25G']],
     '48ZP2': [['48X10/100/1000/2500Mbps'], ['4X1/10/25G']],
     '24FX': [['16X1/10G'], ['8X1/10/25G']],
     '24F': [['24X1G'], ['4X1/10/25G']],
     '48F': [['48X1G'], ['4X1/10/25G']],
-    'C08ZP': [['8X100M/1/2.5/5/10G'], ['2X1/10/25G']],
+    'C08ZP': [['8X100/1000/2500Mbps/1/2.5/5/10G'], ['2X1/10/25G']],
     'C08PT': [['8X10/100/1000Mbps'], ['2X1G']],
     'C08PDC': [['8X10/100/1000Mbps'], ['2X1G']]
   }
@@ -199,7 +199,8 @@ export const transformSwitchStatus = (switchStatusEnum: SwitchStatusEnum, config
   let message = ''
   let deviceStatus = DeviceConnectionStatus.INITIAL
   let isOperational = false
-  switch (switchStatusEnum) {
+  const status = switchStatusEnum && switchStatusEnum.toLocaleUpperCase()
+  switch (status) {
     case SwitchStatusEnum.NEVER_CONTACTED_CLOUD:
       message = $t({ defaultMessage: 'Never contacted cloud' })
       deviceStatus = DeviceConnectionStatus.INITIAL
@@ -210,27 +211,27 @@ export const transformSwitchStatus = (switchStatusEnum: SwitchStatusEnum, config
       break
     case SwitchStatusEnum.FIRMWARE_UPD_START:
       message = $t({ defaultMessage: 'Firmware Updating' })
-      deviceStatus = DeviceConnectionStatus.CONNECTED
+      deviceStatus = DeviceConnectionStatus.ALERTING
       break
     case SwitchStatusEnum.FIRMWARE_UPD_VALIDATING_PARAMETERS:
       message = $t({ defaultMessage: 'Firmware Update - Validating Parameters' })
-      deviceStatus = DeviceConnectionStatus.CONNECTED
+      deviceStatus = DeviceConnectionStatus.ALERTING
       break
     case SwitchStatusEnum.FIRMWARE_UPD_DOWNLOADING:
       message = $t({ defaultMessage: 'Firmware Update - Downloading' })
-      deviceStatus = DeviceConnectionStatus.CONNECTED
+      deviceStatus = DeviceConnectionStatus.ALERTING
       break
     case SwitchStatusEnum.FIRMWARE_UPD_VALIDATING_IMAGE:
       message = $t({ defaultMessage: 'Firmware Update - Validating Image' })
-      deviceStatus = DeviceConnectionStatus.CONNECTED
+      deviceStatus = DeviceConnectionStatus.ALERTING
       break
     case SwitchStatusEnum.FIRMWARE_UPD_SYNCING_TO_REMOTE:
       message = $t({ defaultMessage: 'Firmware Update - Syncing To Remote' })
-      deviceStatus = DeviceConnectionStatus.CONNECTED
+      deviceStatus = DeviceConnectionStatus.ALERTING
       break
     case SwitchStatusEnum.FIRMWARE_UPD_WRITING_TO_FLASH:
       message = $t({ defaultMessage: 'Firmware Update - Writing To Flash' })
-      deviceStatus = DeviceConnectionStatus.CONNECTED
+      deviceStatus = DeviceConnectionStatus.ALERTING
       break
     case SwitchStatusEnum.FIRMWARE_UPD_FAIL:
       message = $t({ defaultMessage: 'Firmware Update - Failed' })
@@ -238,7 +239,7 @@ export const transformSwitchStatus = (switchStatusEnum: SwitchStatusEnum, config
       break
     case SwitchStatusEnum.APPLYING_FIRMWARE:
       message = $t({ defaultMessage: 'Firmware updating' })
-      deviceStatus = DeviceConnectionStatus.CONNECTED
+      deviceStatus = DeviceConnectionStatus.ALERTING
       break
     case SwitchStatusEnum.OPERATIONAL:
       if (configReady && syncedSwitchConfig) {
