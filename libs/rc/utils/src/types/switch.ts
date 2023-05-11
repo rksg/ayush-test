@@ -284,6 +284,7 @@ export interface StackMember {
   deviceStatus?: SwitchStatusEnum
   needAck?: boolean
   newSerialNumber?: string
+  children?: SwitchRow
 }
 
 export interface StackMemberList {
