@@ -9,7 +9,7 @@ import HelpButton                    from './HelpButton'
 import { getMappingURL, getDocsURL } from './HelpButton/HelpPage'
 
 const params = { tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1' }
-
+jest.setTimeout(60000)
 describe('HelpButton', () => {
   it('should render HelpButton correctly', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -117,5 +117,28 @@ describe('HelpButton', () => {
     await userEvent.click(screen.getByRole('menuitem', { name: 'Contact Support' }))
     expect(mockChatFn).toBeCalledTimes(0)
     expect(asFragment()).toMatchSnapshot()
+  })
+  it('should show warning icon with tooltip when fetchbot not ready for 30 secs', async () => {
+    mockServer.use(
+      rest.get(getMappingURL(), (_, res, ctx) =>
+        res(ctx.json({
+          '/t/*/dashboard': 'GUID-A338E06B-7FD9-4492-B1B2-D43841D704F1.html'
+        }))
+      ),
+      rest.get(getDocsURL()+':docID', (_, res, ctx) =>
+        res(ctx.text('<p class="shortdesc">Dashboard test</p>'))
+      ))
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const { rerender } = render(<Provider>
+      <HelpButton supportStatus='start'/>
+    </Provider>, { route: { params } })
+    const helpBtn = screen.getByRole('button')
+    await userEvent.click(helpBtn)
+    await new Promise((resolve) => setTimeout(resolve, 31 * 1000))
+    await screen.findByTestId('WarningCircleOutlined')
+    rerender(<Provider>
+      <HelpButton supportStatus='ready'/>
+    </Provider>)
+    expect(screen.queryByTestId('WarningCircleOutlined')).not.toBeInTheDocument()
   })
 })
