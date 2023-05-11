@@ -152,6 +152,7 @@ export function NetworkDetailForm () {
           validateFirst
           hasFeedback
           children={<Input />}
+          validateTrigger={'onBlur'}
         />
         <Form.Item noStyle name='differentSSID'>
           <Button

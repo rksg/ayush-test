@@ -122,7 +122,6 @@ export function useStepsForm <T> ({
     layout: 'vertical',
     requiredMark: true,
     preserve: true,
-    validateTrigger: 'onBlur',
     disabled: submitting
   }
 
