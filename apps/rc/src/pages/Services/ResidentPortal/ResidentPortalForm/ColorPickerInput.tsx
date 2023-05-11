@@ -57,9 +57,6 @@ export function ColorPickerInput (props: ColorPickerProps) {
                 disableAlpha={true}
                 onChangeComplete={(color) => updateSelectedColor(color.hex)} />
             </div>
-            <Button type='primary' block onClick={() => setShowColorPicker(false)}>
-              {$t({ defaultMessage: 'Close' })}
-            </Button>
           </div>}
         trigger='click'
         visible={showColorPicker}
