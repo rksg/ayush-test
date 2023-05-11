@@ -162,7 +162,6 @@ export function AlarmsDrawer (props: AlarmsType) {
     <UI.FilterRow>
       <Select value={severity}
         size='small'
-        getPopupContainer={trigger => trigger.parentNode as HTMLElement}
         onChange={(val)=>{
           setSeverity(val)
         }}>
