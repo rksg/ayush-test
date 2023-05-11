@@ -65,15 +65,9 @@ describe('DpskPassphraseManagement', () => {
     const targetRow = await screen.findByRole('row', { name: new RegExp(targetRecord.username) })
     expect(targetRow).toBeInTheDocument()
 
-    await userEvent.click(await within(targetRow).findByRole('img', { name: /eye-invisible/ }))
-    const passwordElem = await within(targetRow).findByDisplayValue(targetRecord.passphrase)
-    expect(passwordElem).toBeInTheDocument()
-
     // Verify Add Passphrases
     await userEvent.click(await screen.findByRole('button', { name: /Add Passphrases/ }))
-    expect(await screen.findByRole('spinbutton', {
-      name: /Number of Passphrases/
-    })).toBeVisible()
+    expect(await screen.findByRole('spinbutton', { name: /Number of Passphrases/ })).toBeVisible()
 
     // Verify Add DPSK Network
     await userEvent.click(await screen.findByRole('button', { name: /Add DPSK Network/ }))

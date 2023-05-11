@@ -4,15 +4,19 @@ import { Badge, Tooltip } from 'antd'
 import { isEmpty }        from 'lodash'
 import { useDrag }        from 'react-dnd'
 
-import { deviceCategoryColors }                                            from '@acx-ui/components'
-import { DeviceOutlined, SignalUp }                                        from '@acx-ui/icons'
+import { deviceCategoryColors } from '@acx-ui/components'
+import {
+  DeviceOutlined,
+  SignalUp
+} from '@acx-ui/icons'
 import { FloorplanContext, NetworkDevice, NetworkDeviceType, RogueApInfo } from '@acx-ui/rc/utils'
 import { getIntl }                                                         from '@acx-ui/utils'
 
 import { NetworkDeviceContext } from '..'
 
-import * as UI                                                       from './styledComponent'
-import { calculateApColor, calculateDeviceColor, getSnrDisplayInfo } from './utils'
+import * as UI                                                                      from './styledComponents'
+import { useApMeshDevice }                                                          from './useApMeshDevice'
+import { calculateApColor, calculateDeviceColor, getDeviceName, getSnrDisplayInfo } from './utils'
 
 
 
@@ -34,6 +38,11 @@ export function NetworkDeviceMarker ({
 
   const markerContainerRef = useRef<HTMLDivElement>(null)
   const deviceContext = useContext(NetworkDeviceContext) as Function
+  const {
+    isApMeshEnabled,
+    getApMeshRoleTooltip,
+    getApMeshRoleIcon
+  } = useApMeshDevice(device)
 
   const [{ isDragging }, drag] = useDrag(() => ({
     canDrag: !forbidDrag && !showRogueAp,
@@ -65,6 +74,16 @@ export function NetworkDeviceMarker ({
   const allVenueRogueApAttr: RogueApInfo=
    calculateApColor(device?.deviceStatus, showRogueAp, context, device)
 
+  const getDeviceTooltip = () => {
+    if (showRogueAp && device?.rogueCategory) {
+      return <RogueApTooltip rogueApInfo={allVenueRogueApAttr}/>
+    }
+
+    if (isApMeshEnabled) return getApMeshRoleTooltip()
+
+    return getDeviceName(device)
+  }
+
   return <div ref={markerContainerRef}>
     { (showRogueAp && device?.rogueCategory) && <UI.RogueApContainer className={`rogue-snr
       ${device.rogueCategoryType?.toLowerCase() || ' malicious'}
@@ -77,12 +96,7 @@ export function NetworkDeviceMarker ({
     }>
     </UI.RogueApContainer> }
     <Tooltip
-      title={(showRogueAp && device?.rogueCategory) ?
-        <RogueApTooltip rogueApInfo={
-          allVenueRogueApAttr
-        }/>
-        : device?.name || device?.switchName || device?.serialNumber
-      }>
+      title={getDeviceTooltip()}>
       <UI.DeviceContainer
         ref={drag}
         className={className}
@@ -106,6 +120,7 @@ export function NetworkDeviceMarker ({
                 ? <DeviceOutlined/>
                 : <SignalUp />)
           } </div>
+        {isApMeshEnabled && getApMeshRoleIcon()}
         {
           allVenueRogueApAttr?.allVenueRogueApTooltipAttr?.totalRogueNumber &&
           <UI.RogueApCountBadge

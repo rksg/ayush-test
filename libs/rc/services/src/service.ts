@@ -44,8 +44,9 @@ import {
   transferNewResToTableResult,
   MdnsProxyViewModel,
   PortalTablePayload,
-  DPSKDeviceInfo,
-  IpUtilsService
+  IpUtilsService,
+  DpskPassphraseClient,
+  DPSKDeviceInfo
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -741,6 +742,16 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       }
     }),
+    getPassphraseClient: build.query<DpskPassphraseClient, RequestPayload>({
+      query: ({ params, payload }) => {
+        const getDpskListReq = createHttpRequest(DpskUrls.getPassphraseClient, params)
+
+        return {
+          ...getDpskListReq,
+          body: payload
+        }
+      }
+    }),
     getPortalProfileDetail: build.query<Portal | undefined, RequestPayload>({
       query: ({ params }) => {
         const portalDetailReq = createHttpRequest(PortalUrlsInfo.getPortalProfileDetail, params)
@@ -874,6 +885,7 @@ export const {
   useDeleteDpskPassphraseDevicesMutation,
   useUploadPassphrasesMutation,
   useDownloadPassphrasesMutation,
+  useGetPassphraseClientQuery,
   useGetPortalQuery,
   useSavePortalMutation,
   useGetPortalProfileDetailQuery,

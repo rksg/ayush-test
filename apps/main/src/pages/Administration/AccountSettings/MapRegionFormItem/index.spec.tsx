@@ -109,7 +109,7 @@ describe('Map Region Selector', () => {
     )
   })
 
-  it('should be able to clear selector input', async () => {
+  it('should not update when the selected value is empty', async () => {
     render(
       <Provider>
         <MapRegionFormItem />

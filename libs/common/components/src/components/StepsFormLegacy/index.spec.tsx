@@ -6,24 +6,24 @@ import { Form, Input, Radio, RadioChangeEvent } from 'antd'
 
 import { cleanup, render, screen, waitFor } from '@acx-ui/test-utils'
 
-import { StepsForm, StepsFormInstance, StepsFormProps } from './index'
+import { StepsFormLegacy, StepsFormLegacyInstance, StepsFormLegacyProps } from './index'
 
-describe('StepsForm', () => {
-  const CustomForm: React.FC<StepsFormProps> = (props) => (
-    <StepsForm {...props}>
-      <StepsForm.StepForm title='Step 1'>
-        <StepsForm.Title>Step 1 Title</StepsForm.Title>
+describe('StepsFormLegacy', () => {
+  const CustomForm: React.FC<StepsFormLegacyProps> = (props) => (
+    <StepsFormLegacy {...props}>
+      <StepsFormLegacy.StepForm title='Step 1'>
+        <StepsFormLegacy.Title>Step 1 Title</StepsFormLegacy.Title>
         <Form.Item name='field1' label='Field 1'>
           <Input />
         </Form.Item>
-      </StepsForm.StepForm>
-      <StepsForm.StepForm title='Step 2'>
-        <StepsForm.Title>Step 2 Title</StepsForm.Title>
+      </StepsFormLegacy.StepForm>
+      <StepsFormLegacy.StepForm title='Step 2'>
+        <StepsFormLegacy.Title>Step 2 Title</StepsFormLegacy.Title>
         <Form.Item name='field2' label='Field 2'>
           <Input />
         </Form.Item>
-      </StepsForm.StepForm>
-    </StepsForm>
+      </StepsFormLegacy.StepForm>
+    </StepsFormLegacy>
   )
 
   it('renders steps form', async () => {
@@ -74,7 +74,7 @@ describe('StepsForm', () => {
     expect(await screen.findByRole('heading', { name: 'Step 1 Title' })).toBeVisible()
   })
 
-  // TODO: remove skip when ACX-13452 is fixed by moving to StepsFormNew
+  // TODO: remove skip when ACX-13452 is fixed by moving to StepsForm
   it.skip('handles navigate to any step in editMode', async () => {
     render(<CustomForm editMode />)
 
@@ -93,14 +93,14 @@ describe('StepsForm', () => {
 
   it('allow update form title in runtime', async () => {
     const Component: React.FC = () => {
-      const ref = React.useRef<StepsFormInstance>()
+      const ref = React.useRef<StepsFormLegacyInstance>()
       const [type, setType] = React.useState('item-a')
       const title = type === 'item-a' ? 'Step 2a' : 'Step 2b'
 
       return (
-        <StepsForm formRef={ref}>
-          <StepsForm.StepForm title='Step 1'>
-            <StepsForm.Title>Step 1 Title</StepsForm.Title>
+        <StepsFormLegacy formRef={ref}>
+          <StepsFormLegacy.StepForm title='Step 1'>
+            <StepsFormLegacy.Title>Step 1 Title</StepsFormLegacy.Title>
             <Form.Item name='field1' label='Field 1'>
               <Radio.Group
                 onChange={(e: RadioChangeEvent) => setType(e.target.value.toString())}>
@@ -108,14 +108,14 @@ describe('StepsForm', () => {
                 <Radio value='item-b'>Use Step 2b</Radio>
               </Radio.Group>
             </Form.Item>
-          </StepsForm.StepForm>
-          <StepsForm.StepForm title={title}>
-            <StepsForm.Title>Step 2 Title</StepsForm.Title>
+          </StepsFormLegacy.StepForm>
+          <StepsFormLegacy.StepForm title={title}>
+            <StepsFormLegacy.Title>Step 2 Title</StepsFormLegacy.Title>
             <Form.Item name='field2' label='Field 2'>
               <Input />
             </Form.Item>
-          </StepsForm.StepForm>
-        </StepsForm>
+          </StepsFormLegacy.StepForm>
+        </StepsFormLegacy>
       )
     }
 
@@ -129,25 +129,25 @@ describe('StepsForm', () => {
 
   it('supports dynamically add/remove steps', async () => {
     const Component: React.FC = () => {
-      const ref = React.useRef<StepsFormInstance>()
+      const ref = React.useRef<StepsFormLegacyInstance>()
       const [state, setState] = React.useState(false)
 
       return (
-        <StepsForm formRef={ref}>
-          <StepsForm.StepForm title='Step 1'>
-            <StepsForm.Title>Step 1 Title</StepsForm.Title>
+        <StepsFormLegacy formRef={ref}>
+          <StepsFormLegacy.StepForm title='Step 1'>
+            <StepsFormLegacy.Title>Step 1 Title</StepsFormLegacy.Title>
             <button type='button' onClick={() => setState(!state)}>Toggle</button>
-          </StepsForm.StepForm>
-          {state ? <StepsForm.StepForm title='Step 2'>
-            <StepsForm.Title>Step 2 Title</StepsForm.Title>
-          </StepsForm.StepForm> : null}
-          <StepsForm.StepForm title='Step 3'>
-            <StepsForm.Title>Step 3 Title</StepsForm.Title>
-          </StepsForm.StepForm>
-          {state ? <StepsForm.StepForm title='Step 4'>
-            <StepsForm.Title>Step 4 Title</StepsForm.Title>
-          </StepsForm.StepForm> : null}
-        </StepsForm>
+          </StepsFormLegacy.StepForm>
+          {state ? <StepsFormLegacy.StepForm title='Step 2'>
+            <StepsFormLegacy.Title>Step 2 Title</StepsFormLegacy.Title>
+          </StepsFormLegacy.StepForm> : null}
+          <StepsFormLegacy.StepForm title='Step 3'>
+            <StepsFormLegacy.Title>Step 3 Title</StepsFormLegacy.Title>
+          </StepsFormLegacy.StepForm>
+          {state ? <StepsFormLegacy.StepForm title='Step 4'>
+            <StepsFormLegacy.Title>Step 4 Title</StepsFormLegacy.Title>
+          </StepsFormLegacy.StepForm> : null}
+        </StepsFormLegacy>
       )
     }
 
@@ -167,13 +167,13 @@ describe('StepsForm', () => {
   it('renders single step form', async () => {
     const onFinish = jest.fn()
     const Component: React.FC = () => (
-      <StepsForm onFinish={onFinish}>
-        <StepsForm.StepForm>
+      <StepsFormLegacy onFinish={onFinish}>
+        <StepsFormLegacy.StepForm>
           <Form.Item name='field1' label='Field 1'>
             <Input />
           </Form.Item>
-        </StepsForm.StepForm>
-      </StepsForm>
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>
     )
     render(<Component />)
 

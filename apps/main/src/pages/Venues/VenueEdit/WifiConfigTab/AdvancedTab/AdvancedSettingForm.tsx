@@ -10,8 +10,8 @@ import {
 import { isEqual } from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Button, StepsForm, Table, TableProps, Loader, showToast } from '@acx-ui/components'
-import { DeleteOutlinedIcon }                                      from '@acx-ui/icons'
+import { Button, StepsFormLegacy, Table, TableProps, Loader, showToast } from '@acx-ui/components'
+import { DeleteOutlinedIcon }                                            from '@acx-ui/icons'
 import {
   useGetVenueCapabilitiesQuery,
   useGetVenueLedOnQuery,
@@ -209,14 +209,14 @@ export function AdvancedSettingForm () {
   }
 
   return (
-    <StepsForm
+    <StepsFormLegacy
       onFinish={() => handleUpdateSetting()}
       onCancel={() =>
         redirectPreviousPage(navigate, previousPath, basePath)
       }
       buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
     >
-      <StepsForm.StepForm>
+      <StepsFormLegacy.StepForm>
         <Row>
           <Col span={7}>
             <Loader states={[{
@@ -243,7 +243,7 @@ export function AdvancedSettingForm () {
             </Loader>
           </Col>
         </Row>
-      </StepsForm.StepForm>
-    </StepsForm>
+      </StepsFormLegacy.StepForm>
+    </StepsFormLegacy>
   )
 }

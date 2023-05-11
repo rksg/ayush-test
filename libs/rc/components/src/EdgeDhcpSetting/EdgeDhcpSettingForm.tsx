@@ -1,7 +1,7 @@
 import { Col, Form, Input, InputNumber, Row, Select, Space, Switch } from 'antd'
 import { useIntl }                                                   from 'react-intl'
 
-import { Alert, StepsForm, Subtitle } from '@acx-ui/components'
+import { Alert, StepsFormLegacy, Subtitle } from '@acx-ui/components'
 import {
   EdgeDhcpSetting,
   LeaseTimeUnit
@@ -47,7 +47,7 @@ export const EdgeDhcpSettingForm = () => {
             }]}
             children={<Input />}
           />
-          <StepsForm.FieldLabel width='100px'>
+          <StepsFormLegacy.FieldLabel width='100px'>
             {$t({ defaultMessage: 'DHCP Relay:' })}
             <Form.Item
               name='dhcpRelay'
@@ -55,7 +55,7 @@ export const EdgeDhcpSettingForm = () => {
               initialValue={false}
               children={<Switch />}
             />
-          </StepsForm.FieldLabel>
+          </StepsFormLegacy.FieldLabel>
           {dhcpRelay &&
             <>
               <Form.Item
@@ -67,7 +67,7 @@ export const EdgeDhcpSettingForm = () => {
                 children={<Input />}
               />
               <Alert message={
-                $t({ defaultMessage: `If this DHCP service is going to be used for 
+                $t({ defaultMessage: `If this DHCP service is going to be used for
                 Network Segmentation service, please make sure you set the DHCP pool for it.` })
               }
               type='info'

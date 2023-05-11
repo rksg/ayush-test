@@ -289,7 +289,7 @@ function Table <RecordType extends Record<string, any>> ({
   let pagination: false | TablePaginationConfig = false
   if (type === 'tall') {
     pagination = { ...defaultPagination, ...props.pagination || {} } as TablePaginationConfig
-    if ((pagination.total || dataSource?.length || 0) < pagination.defaultPageSize!) {
+    if (((pagination.total || dataSource?.length) || 0) <= pagination.defaultPageSize!) {
       pagination = false
     }
   }

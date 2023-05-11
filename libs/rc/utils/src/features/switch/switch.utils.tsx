@@ -129,7 +129,7 @@ export const ICX_MODELS_MODULES = {
     '24FX': [['16X1/10G'], ['8X1/10/25G']],
     '24F': [['24X1G'], ['4X1/10/25G']],
     '48F': [['48X1G'], ['4X1/10/25G']],
-    'C08ZP': [['8X10/100/1000Mbps/1/2.5/5/10G'], ['2X1/10/25G']],
+    'C08ZP': [['8X100/1000/2500Mbps/1/2.5/5/10G'], ['2X1/10/25G']],
     'C08PT': [['8X10/100/1000Mbps'], ['2X1G']],
     'C08PDC': [['8X10/100/1000Mbps'], ['2X1G']]
   }
@@ -199,7 +199,8 @@ export const transformSwitchStatus = (switchStatusEnum: SwitchStatusEnum, config
   let message = ''
   let deviceStatus = DeviceConnectionStatus.INITIAL
   let isOperational = false
-  switch (switchStatusEnum) {
+  const status = switchStatusEnum && switchStatusEnum.toLocaleUpperCase()
+  switch (status) {
     case SwitchStatusEnum.NEVER_CONTACTED_CLOUD:
       message = $t({ defaultMessage: 'Never contacted cloud' })
       deviceStatus = DeviceConnectionStatus.INITIAL

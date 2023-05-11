@@ -5,8 +5,8 @@ import { useIntl } from 'react-intl'
 import {
   Loader,
   PageHeader,
-  StepsForm,
-  StepsFormInstance
+  StepsFormLegacy,
+  StepsFormLegacyInstance
 } from '@acx-ui/components'
 import { useAddResidentPortalMutation,
   useGetResidentPortalQuery,
@@ -49,7 +49,7 @@ export default function ResidentPortalForm (props: ResidentPortalFormProps) {
     isFetching
   } = useGetResidentPortalQuery({ params }, { skip: !editMode })
 
-  const formRef = useRef<StepsFormInstance<CreateResidentPortalFormFields>>()
+  const formRef = useRef<StepsFormLegacyInstance<CreateResidentPortalFormFields>>()
 
   const initialValues: Partial<CreateResidentPortalFormFields> = {
     textTitle: $t({ defaultMessage: 'Resident Portal' }),
@@ -102,20 +102,20 @@ export default function ResidentPortalForm (props: ResidentPortalFormProps) {
         ]}
       />
       <Loader states={[{ isLoading, isFetching }]}>
-        <StepsForm<CreateResidentPortalFormFields>
+        <StepsFormLegacy<CreateResidentPortalFormFields>
           formRef={formRef}
           onCancel={() => navigate(linkToServices)}
           onFinish={saveData}
         >
-          <StepsForm.StepForm<CreateResidentPortalFormFields>
+          <StepsFormLegacy.StepForm<CreateResidentPortalFormFields>
             name='details'
             title={$t({ defaultMessage: 'Settings' })}
             initialValues={initialValues}
             preserve={true}
           >
             <ResidentPortalSettingsForm />
-          </StepsForm.StepForm>
-        </StepsForm>
+          </StepsFormLegacy.StepForm>
+        </StepsFormLegacy>
       </Loader>
     </>
   )

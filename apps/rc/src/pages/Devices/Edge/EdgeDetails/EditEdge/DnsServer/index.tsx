@@ -4,8 +4,8 @@ import { Col, Form, Input, Row } from 'antd'
 import { useIntl }               from 'react-intl'
 
 import {
-  StepsForm,
-  StepsFormInstance,
+  StepsFormLegacy,
+  StepsFormLegacyInstance,
   Loader
 } from '@acx-ui/components'
 import { useGetDnsServersQuery, useUpdateDnsServersMutation } from '@acx-ui/rc/services'
@@ -22,7 +22,7 @@ const DnsServer = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const linkToEdgeList = useTenantLink('/devices/edge/list')
-  const formRef = useRef<StepsFormInstance<EdgeDnsServers>>()
+  const formRef = useRef<StepsFormLegacyInstance<EdgeDnsServers>>()
   const params = useParams()
   const { data: dnsServersData, isLoading: isLoadingDnsServersData } = useGetDnsServersQuery({
     params: {
@@ -53,13 +53,13 @@ const DnsServer = () => {
   }
 
   return (
-    <StepsForm
+    <StepsFormLegacy
       formRef={formRef}
       onFinish={handleApplyDns}
       onCancel={() => navigate(linkToEdgeList)}
       buttonLabel={{ submit: $t({ defaultMessage: 'Apply DNS Server' }) }}
     >
-      <StepsForm.StepForm>
+      <StepsFormLegacy.StepForm>
         <Row gutter={20}>
           <Col span={5}>
             <Loader states={[{
@@ -86,8 +86,8 @@ const DnsServer = () => {
             </Loader>
           </Col>
         </Row>
-      </StepsForm.StepForm>
-    </StepsForm>
+      </StepsFormLegacy.StepForm>
+    </StepsFormLegacy>
 
   )
 }
