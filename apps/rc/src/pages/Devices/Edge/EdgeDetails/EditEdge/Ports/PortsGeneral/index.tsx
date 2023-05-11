@@ -85,6 +85,7 @@ const PortsGeneral = (props: PortsGeneralProps) => {
         ...editEdgeContext.formControl,
         isDirty: !isEqual(data, formData),
         hasError: errorTab > -1,
+        discardFn: () => formRef.current?.resetFields(),
         applyFn: () => handleFinish()
       })
     }

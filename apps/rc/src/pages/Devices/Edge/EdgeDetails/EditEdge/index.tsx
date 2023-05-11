@@ -71,6 +71,7 @@ export const EditEdgeTabs = () => {
                 ...editEdgeContext.formControl,
                 isDirty: false
               })
+              formControl?.discardFn?.()
               tx.retry()
             },
             save: () => {
@@ -154,7 +155,8 @@ interface EditEdgeContextType {
 interface EditEdgeFormControlType {
   isDirty: boolean
   hasError: boolean
-  applyFn: Function | undefined,
+  discardFn?: Function,
+  applyFn?: Function
 }
 
 export const EdgeEditContext = createContext({} as EditEdgeContextType)
