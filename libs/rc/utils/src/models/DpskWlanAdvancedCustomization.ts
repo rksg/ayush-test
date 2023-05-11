@@ -1,7 +1,8 @@
-import { ClientIsolationOptions } from './ClientIsolationOptions'
-import { DnsProxy }               from './DnsProxy'
-import { VlanPool }               from './VlanPool'
-import { WlanRadioCustomization } from './WlanRadioCustomization'
+import { BasicServiceSetPriorityEnum } from './BasicServiceSetPriorityEnum'
+import { ClientIsolationOptions }      from './ClientIsolationOptions'
+import { DnsProxy }                    from './DnsProxy'
+import { VlanPool }                    from './VlanPool'
+import { WlanRadioCustomization }      from './WlanRadioCustomization'
 
 export class DpskWlanAdvancedCustomization {
   devicePolicyId?: string | null
@@ -113,6 +114,8 @@ export class DpskWlanAdvancedCustomization {
 
   dnsProxy?: DnsProxy
 
+  bssPriority: BasicServiceSetPriorityEnum
+
   constructor () {
     this.maxClientsOnWlanPerRadio = 100
 
@@ -192,5 +195,7 @@ export class DpskWlanAdvancedCustomization {
     this.dnsProxyEnabled = false
 
     this.dnsProxy = new DnsProxy()
+
+    this.bssPriority = BasicServiceSetPriorityEnum.HIGH
   }
 }
