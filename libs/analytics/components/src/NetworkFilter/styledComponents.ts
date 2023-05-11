@@ -59,8 +59,8 @@ export const SeveritySpan = styled.span.attrs((props: SeveritySpanProps) => prop
   border: 1px solid var(--acx-primary-white);
   z-index: ${(props) => severityZIndexMap[props.severity]}
 `
-export const SearchLabel = styled.div`
-  width: 150px;
+export const SearchLabel = styled.div.attrs((props: { $isReports: boolean }) => props)`
+  ${props => props.$isReports ? 'width: 100%;' : 'width: 150px;' } 
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
