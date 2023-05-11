@@ -3,7 +3,7 @@ import { useContext, useState, useEffect } from 'react'
 import { Row, Col, Form, Input } from 'antd'
 import _                         from 'lodash'
 
-import { showActionModal, Table, TableProps, StepsForm, Tooltip } from '@acx-ui/components'
+import { showActionModal, Table, TableProps, StepsFormLegacy, Tooltip } from '@acx-ui/components'
 import {
   Vlan,
   SwitchModel,
@@ -194,7 +194,7 @@ export function VlanSetting () {
     <>
       <Row gutter={20}>
         <Col span={20}>
-          <StepsForm.Title children={$t({ defaultMessage: 'VLANs' })} />
+          <StepsFormLegacy.Title children={$t({ defaultMessage: 'VLANs' })} />
           <Table
             rowKey='vlanId'
             columns={vlansColumns}

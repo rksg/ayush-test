@@ -132,6 +132,7 @@ export function CustomInputForm () {
   return (
     <StepsForm
       onCancel={() => showToast({ type: 'info', content: 'Cancel' })}
+      initialValues={{ field1: [], field2: defaultData.slice(0, 1) }}
       onFinish={async () => {
         await wait(1000) // mimic external service call
         showToast({ type: 'success', content: 'Submitted' }) // show notification to indicate submission successful
@@ -139,7 +140,6 @@ export function CustomInputForm () {
     >
       <StepsForm.StepForm
         title='Step 1'
-        initialValues={{ field1: [], field2: defaultData.slice(0, 1) }}
         // eslint-disable-next-line no-console
         onFinish={async (data) => console.log(data)}
       >

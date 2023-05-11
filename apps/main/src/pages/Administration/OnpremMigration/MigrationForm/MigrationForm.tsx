@@ -4,8 +4,8 @@ import { useIntl } from 'react-intl'
 
 import {
   PageHeader,
-  StepsForm,
-  StepsFormInstance
+  StepsFormLegacy,
+  StepsFormLegacyInstance
 } from '@acx-ui/components'
 // import {
 //   useAddZdMigrationMutation, useLazyMigrateResultQuery
@@ -49,7 +49,7 @@ const MigrationForm = () => {
   //   }
   // },[migrateZdResult?.fileErrorsCount])
 
-  const formRef = useRef<StepsFormInstance<MigrationContextType>>()
+  const formRef = useRef<StepsFormLegacyInstance<MigrationContextType>>()
   const [state, dispatch] = useReducer(mainReducer, {
     file,
     policyName,
@@ -73,7 +73,7 @@ const MigrationForm = () => {
           { text: $t({ defaultMessage: 'Administration' }), link: '/administration' }
         ]}
       />
-      <StepsForm<MigrationContextType>
+      <StepsFormLegacy<MigrationContextType>
         formRef={formRef}
         editMode={edit}
         buttonLabel={{
@@ -89,7 +89,7 @@ const MigrationForm = () => {
         }}
         onCancel={() => navigate(linkToMigration)}
       >
-        <StepsForm.StepForm<MigrationContextType>
+        <StepsFormLegacy.StepForm<MigrationContextType>
           name='backupFile'
           title={$t({ defaultMessage: 'Backup File Selection' })}
           onFinish={async () => {
@@ -98,9 +98,9 @@ const MigrationForm = () => {
           }}
         >
           <UploadForm />
-        </StepsForm.StepForm>
+        </StepsFormLegacy.StepForm>
 
-        <StepsForm.StepForm
+        <StepsFormLegacy.StepForm
           name='migration'
           title={$t({ defaultMessage: 'Migration' })}
           onFinish={async () => {
@@ -126,9 +126,9 @@ const MigrationForm = () => {
             ? <MigrationSettingForm />
             : <MigrationStatusForm />
           }
-        </StepsForm.StepForm>
+        </StepsFormLegacy.StepForm>
 
-        <StepsForm.StepForm
+        <StepsFormLegacy.StepForm
           name='summary'
           title={$t({ defaultMessage: 'Summary' })}
         >
@@ -138,8 +138,8 @@ const MigrationForm = () => {
             // : <MigrationStatusForm />
           }
           <MigrationStatusForm />
-        </StepsForm.StepForm>
-      </StepsForm>
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>
     </MigrationContext.Provider>
   )
 }

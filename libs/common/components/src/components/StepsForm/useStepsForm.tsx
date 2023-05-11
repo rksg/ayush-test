@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 
-import { Col, Form, Row, Space, Steps } from 'antd'
-import { useIntl }                      from 'react-intl'
-import { useStepsForm }                 from 'sunflower-antd'
+import { Col, Form, Row, Space, Steps }    from 'antd'
+import { useIntl }                         from 'react-intl'
+import { useStepsForm as useStepsFormAnt } from 'sunflower-antd'
 
 import { Button } from '../Button'
 
@@ -37,9 +37,7 @@ type UseStepsFormParam <T> = Omit<
   }
 }
 
-export { useStepsFormNew as useStepsForm }
-
-function useStepsFormNew <T> ({
+export function useStepsForm <T> ({
   editMode,
   steps,
   buttonLabel = {},
@@ -51,7 +49,7 @@ function useStepsFormNew <T> ({
   const total = steps.length
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
-  const formConfig = useStepsForm({
+  const formConfig = useStepsFormAnt({
     ...config,
     submit: onFinish,
     total,
@@ -124,7 +122,6 @@ function useStepsFormNew <T> ({
     layout: 'vertical',
     requiredMark: true,
     preserve: true,
-    validateTrigger: 'onBlur',
     disabled: submitting
   }
 

@@ -17,7 +17,9 @@ import {
 export const UserUrlsInfo = {
   getCloudMessageBanner: {
     method: 'get',
-    url: '/api/upgrade/tenant/:tenantId/banner'
+    url: '/upgradeConfig/banners',
+    oldUrl: '/api/upgrade/tenant/:tenantId/banner',
+    newApi: true
   },
   updateUserProfile: {
     method: 'put',

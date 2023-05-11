@@ -6,8 +6,8 @@ import { defineMessage, useIntl, IntlShape } from 'react-intl'
 import {
   PageHeader,
   showActionModal,
-  StepsForm,
-  StepsFormInstance
+  StepsFormLegacy,
+  StepsFormLegacyInstance
 } from '@acx-ui/components'
 import {
   useAddNetworkMutation,
@@ -111,7 +111,7 @@ export default function NetworkForm (props:{
   const [addNetwork] = useAddNetworkMutation()
   const [updateNetwork] = useUpdateNetworkMutation()
   const [getValidateRadius] = useLazyValidateRadiusQuery()
-  const formRef = useRef<StepsFormInstance<NetworkSaveData>>()
+  const formRef = useRef<StepsFormLegacyInstance<NetworkSaveData>>()
 
   const [saveState, updateSaveState] = useState<NetworkSaveData>({
     name: '',
@@ -369,7 +369,7 @@ export default function NetworkForm (props:{
         data: saveState,
         setData: updateSaveState
       }}>
-        <StepsForm<NetworkSaveData>
+        <StepsFormLegacy<NetworkSaveData>
           formRef={formRef}
           editMode={editMode}
           onCancel={() => modalMode
@@ -378,7 +378,7 @@ export default function NetworkForm (props:{
           }
           onFinish={editMode ? handleEditNetwork : handleAddNetwork}
         >
-          <StepsForm.StepForm
+          <StepsFormLegacy.StepForm
             name='details'
             title={intl.$t({ defaultMessage: 'Network Details' })}
             onFinish={async (data) => {
@@ -395,9 +395,9 @@ export default function NetworkForm (props:{
             }}
           >
             <NetworkDetailForm />
-          </StepsForm.StepForm>
+          </StepsFormLegacy.StepForm>
 
-          <StepsForm.StepForm
+          <StepsFormLegacy.StepForm
             name='settings'
             title={intl.$t(settingTitle, { type: saveState.type })}
             onFinish={async (data) => {
@@ -449,9 +449,9 @@ export default function NetworkForm (props:{
             {(saveState.type || createType) === NetworkTypeEnum.CAPTIVEPORTAL && <PortalTypeForm/>}
             {saveState.type === NetworkTypeEnum.PSK && <PskSettingsForm />}
 
-          </StepsForm.StepForm>
+          </StepsFormLegacy.StepForm>
           { saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&
-              <StepsForm.StepForm
+              <StepsFormLegacy.StepForm
                 name='onboarding'
                 title={intl.$t(onboardingTitle, { type: saveState.guestPortal?.guestNetworkType })}
                 onFinish={async (data) => {
@@ -487,10 +487,10 @@ export default function NetworkForm (props:{
                 }}
               >
                 {pickOneCaptivePortalForm(saveState)}
-              </StepsForm.StepForm>
+              </StepsFormLegacy.StepForm>
           }
           {editMode &&
-            <StepsForm.StepForm
+            <StepsFormLegacy.StepForm
               name='moreSettings'
               title={intl.$t({ defaultMessage: 'More Settings' })}
               onFinish={async (data) => {
@@ -503,16 +503,16 @@ export default function NetworkForm (props:{
 
               <NetworkMoreSettingsForm wlanData={saveState} />
 
-            </StepsForm.StepForm>}
-          { isPortalWebRender(saveState) &&<StepsForm.StepForm
+            </StepsFormLegacy.StepForm>}
+          { isPortalWebRender(saveState) &&<StepsFormLegacy.StepForm
             name='portalweb'
             title={intl.$t({ defaultMessage: 'Portal Web Page' })}
             onFinish={handlePortalWebPage}
           >
             <PortalInstance updatePortalData={(data)=>setPortalDemo(data)}/>
-          </StepsForm.StepForm>
+          </StepsFormLegacy.StepForm>
           }
-          <StepsForm.StepForm
+          <StepsFormLegacy.StepForm
             name='venues'
             title={intl.$t({ defaultMessage: 'Venues' })}
             onFinish={async (data) => {
@@ -536,13 +536,13 @@ export default function NetworkForm (props:{
             }}
           >
             <Venues />
-          </StepsForm.StepForm>
+          </StepsFormLegacy.StepForm>
           {!editMode &&
-            <StepsForm.StepForm name='summary' title={intl.$t({ defaultMessage: 'Summary' })}>
+            <StepsFormLegacy.StepForm name='summary' title={intl.$t({ defaultMessage: 'Summary' })}>
               <SummaryForm summaryData={saveState} portalData={portalDemo}/>
-            </StepsForm.StepForm>
+            </StepsFormLegacy.StepForm>
           }
-        </StepsForm>
+        </StepsFormLegacy>
       </NetworkFormContext.Provider>
     </>
   )
@@ -592,7 +592,7 @@ function showConfigConflictModal (
   data: Partial<CreateNetworkFormFields>,
   errors: RadiusValidateErrors[],
   errorList: Record<string, boolean | number>,
-  form: StepsFormInstance<NetworkSaveData> | undefined,
+  form: StepsFormLegacyInstance<NetworkSaveData> | undefined,
   saveState: NetworkSaveData,
   updateSaveData: Function,
   editMode: boolean,

@@ -2,10 +2,10 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, Loader, Modal, ModalType, showToast, StepsForm } from '@acx-ui/components'
-import { EdgeDhcpSettingForm }                                    from '@acx-ui/rc/components'
-import { useAddEdgeDhcpServiceMutation }                          from '@acx-ui/rc/services'
-import { EdgeDhcpSetting }                                        from '@acx-ui/rc/utils'
+import { Button, Loader, Modal, ModalType, showToast, StepsFormLegacy } from '@acx-ui/components'
+import { EdgeDhcpSettingForm }                                          from '@acx-ui/rc/components'
+import { useAddEdgeDhcpServiceMutation }                                from '@acx-ui/rc/services'
+import { EdgeDhcpSetting }                                              from '@acx-ui/rc/utils'
 
 
 
@@ -29,15 +29,15 @@ export const DhcpServiceModal = () => {
   }
 
   const content = <Loader states={[{ isLoading: false, isFetching: isFormSubmitting }]}>
-    <StepsForm
+    <StepsFormLegacy
       onFinish={handleAddEdgeDhcp}
       onCancel={() => setVisible(false)}
       buttonLabel={{ submit: $t({ defaultMessage: 'Add' }) }}
     >
-      <StepsForm.StepForm>
+      <StepsFormLegacy.StepForm>
         <EdgeDhcpSettingForm />
-      </StepsForm.StepForm>
-    </StepsForm>
+      </StepsFormLegacy.StepForm>
+    </StepsFormLegacy>
   </Loader>
 
   return (

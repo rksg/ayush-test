@@ -592,6 +592,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
             'AddRogueApPolicyProfile',
             'UpdateRogueApPolicyProfile',
             'DeleteRogueApPolicyProfile',
+            'DeleteRogueApPolicyProfiles',
             'UpdateVenueRogueAp',
             'UpdateDenialOfServiceProtection',
             'DeleteVenue',

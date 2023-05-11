@@ -3,7 +3,7 @@ import { useContext } from 'react'
 import { Button, Space } from 'antd'
 import { useIntl }       from 'react-intl'
 
-import { AnchorLayout, StepsForm, Tooltip }           from '@acx-ui/components'
+import { AnchorLayout, StepsFormLegacy, Tooltip }     from '@acx-ui/components'
 import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }                 from '@acx-ui/icons'
 import { VenueApModelCellular, redirectPreviousPage } from '@acx-ui/rc/utils'
@@ -49,25 +49,25 @@ export function NetworkingTab () {
   const items = [{
     title: $t({ defaultMessage: 'LAN Ports' }),
     content: <>
-      <StepsForm.SectionTitle id='lan-ports'>
+      <StepsFormLegacy.SectionTitle id='lan-ports'>
         { $t({ defaultMessage: 'LAN Ports' }) }
-      </StepsForm.SectionTitle>
+      </StepsFormLegacy.SectionTitle>
       <LanPorts />
     </>
   }, {
     title: $t({ defaultMessage: 'Cellular Options' }),
     content: <>
-      <StepsForm.SectionTitle id='cellular-options'>
+      <StepsFormLegacy.SectionTitle id='cellular-options'>
         { $t({ defaultMessage: 'Cellular Options' }) }
-      </StepsForm.SectionTitle>
+      </StepsFormLegacy.SectionTitle>
       <CellularOptionsForm />
     </>
   }, {
     title: $t({ defaultMessage: 'Mesh Network' }),
     content: <>
-      <StepsForm.SectionTitle id='mesh-network'>
+      <StepsFormLegacy.SectionTitle id='mesh-network'>
         { $t({ defaultMessage: 'Mesh Network' }) }
-      </StepsForm.SectionTitle>
+      </StepsFormLegacy.SectionTitle>
       <MeshNetwork />
     </>
   // }, {
@@ -79,7 +79,7 @@ export function NetworkingTab () {
     items.push({
       title: $t({ defaultMessage: 'Directed Multicast' }),
       content: <>
-        <StepsForm.SectionTitle id='directed-multicast'>
+        <StepsFormLegacy.SectionTitle id='directed-multicast'>
           {<Space align='baseline'>
             { $t({ defaultMessage: 'Directed Multicast' }) }
             <Tooltip
@@ -93,7 +93,7 @@ export function NetworkingTab () {
             </Tooltip>
           </Space>
           }
-        </StepsForm.SectionTitle>
+        </StepsFormLegacy.SectionTitle>
         <DirectedMulticast />
       </> })
   }
@@ -141,16 +141,16 @@ export function NetworkingTab () {
   }
 
   return (
-    <StepsForm
+    <StepsFormLegacy
       onFinish={handleUpdateAllSettings}
       onCancel={() =>
         redirectPreviousPage(navigate, previousPath, basePath)
       }
       buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
     >
-      <StepsForm.StepForm>
+      <StepsFormLegacy.StepForm>
         <AnchorLayout items={items} offsetTop={275} />
-      </StepsForm.StepForm>
-    </StepsForm>
+      </StepsFormLegacy.StepForm>
+    </StepsFormLegacy>
   )
 }

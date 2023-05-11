@@ -4,7 +4,7 @@ import { Form, FormItemProps, InputNumber, Select, Space } from 'antd'
 import _                                                   from 'lodash'
 import { FormattedMessage, useIntl }                       from 'react-intl'
 
-import { Button, Fieldset, Loader, StepsForm, StepsFormInstance, Tooltip } from '@acx-ui/components'
+import { Button, Fieldset, Loader, StepsFormLegacy, StepsFormLegacyInstance, Tooltip } from '@acx-ui/components'
 import {
   useGetDenialOfServiceProtectionQuery,
   useUpdateDenialOfServiceProtectionMutation,
@@ -51,7 +51,7 @@ export function SecurityTab () {
     name: DEFAULT_PROFILE_NAME
   }]
 
-  const formRef = useRef<StepsFormInstance>()
+  const formRef = useRef<StepsFormLegacyInstance>()
   const {
     previousPath,
     editContextData,
@@ -188,7 +188,7 @@ export function SecurityTab () {
       isLoading: false,
       isFetching: isUpdatingDenialOfServiceProtection || isUpdatingVenueRogueAp
     }]}>
-      <StepsForm
+      <StepsFormLegacy
         formRef={formRef}
         onFinish={handleUpdateSecuritySettings}
         onCancel={() =>
@@ -197,7 +197,7 @@ export function SecurityTab () {
         buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
         onFormChange={handleChange}
       >
-        <StepsForm.StepForm>
+        <StepsFormLegacy.StepForm>
           <FieldsetItem
             name='dosProtectionEnabled'
             label={$t({ defaultMessage: 'DoS Protection:' })}
@@ -331,8 +331,8 @@ export function SecurityTab () {
                 policyId={roguePolicyIdValue} /> }
             </Form.Item>
           </FieldsetItem>
-        </StepsForm.StepForm>
-      </StepsForm>
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>
     </Loader>
   )
 }

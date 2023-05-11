@@ -2,7 +2,7 @@ import { Form, Radio }                              from 'antd'
 import { NamePath }                                 from 'antd/es/form/interface'
 import { FormattedMessage, defineMessage, useIntl } from 'react-intl'
 
-import { StepsFormNew, Tooltip, useStepFormContext } from '@acx-ui/components'
+import { StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
 
 import * as contents                    from '../../contents'
 import { ClientType as ClientTypeEnum } from '../../types'
@@ -29,7 +29,7 @@ export function ClientType () {
   ]
 
   const children = editMode
-    ? <StepsFormNew.FieldSummary
+    ? <StepsForm.FieldSummary
       convert={(value) => $t(contents.clientTypes[value as ClientTypeEnum])}
     />
     : <Radio.Group
@@ -73,7 +73,7 @@ ClientType.FieldSummary = function ClientTypeFieldSummary () {
   return <Form.Item
     name={name}
     label={$t(label)}
-    children={<StepsFormNew.FieldSummary<ClientTypeEnum>
+    children={<StepsForm.FieldSummary<ClientTypeEnum>
       convert={(type) => $t(contents.clientTypes[type!])}
     />}
   />

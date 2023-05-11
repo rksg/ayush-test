@@ -4,8 +4,8 @@ import { useIntl } from 'react-intl'
 
 import {
   PageHeader,
-  StepsForm,
-  StepsFormInstance
+  StepsFormLegacy,
+  StepsFormLegacyInstance
 } from '@acx-ui/components'
 import { useCreateWifiCallingServiceMutation } from '@acx-ui/rc/services'
 import {
@@ -42,7 +42,7 @@ const WifiCallingForm = () => {
   const networksName:string[] = []
   const epdgs:EPDG[] = []
 
-  const formRef = useRef<StepsFormInstance<CreateNetworkFormFields>>()
+  const formRef = useRef<StepsFormLegacyInstance<CreateNetworkFormFields>>()
   const [state, dispatch] = useReducer(mainReducer, {
     serviceName,
     ePDG,
@@ -80,32 +80,32 @@ const WifiCallingForm = () => {
           }
         ]}
       />
-      <StepsForm<CreateNetworkFormFields>
+      <StepsFormLegacy<CreateNetworkFormFields>
         formRef={formRef}
         onCancel={() => navigate(linkToServices, { replace: true })}
         onFinish={handleAddWifiCallingService}
       >
-        <StepsForm.StepForm<CreateNetworkFormFields>
+        <StepsFormLegacy.StepForm<CreateNetworkFormFields>
           name='settings'
           title={$t({ defaultMessage: 'Settings' })}
         >
           <WifiCallingSettingForm />
-        </StepsForm.StepForm>
+        </StepsFormLegacy.StepForm>
 
-        <StepsForm.StepForm
+        <StepsFormLegacy.StepForm
           name='scope'
           title={$t({ defaultMessage: 'Scope' })}
         >
           <WifiCallingScopeForm />
-        </StepsForm.StepForm>
+        </StepsFormLegacy.StepForm>
 
-        <StepsForm.StepForm
+        <StepsFormLegacy.StepForm
           name='summary'
           title={$t({ defaultMessage: 'Summary' })}
         >
           <WifiCallingSummaryForm />
-        </StepsForm.StepForm>
-      </StepsForm>
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>
     </WifiCallingFormContext.Provider>
   )
 }
