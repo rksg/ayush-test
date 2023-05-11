@@ -217,6 +217,8 @@ describe('MigrationForm', () => {
     await screen.findByRole('heading', { level: 3, name: 'Migration' })
 
     await userEvent.type(await screen.findByTestId('name'), 'venuexxxx')
+    await userEvent.type(await screen.findByTestId('description'), 'venuexxxx')
+    await userEvent.type(await screen.findByTestId('address'), 'venuexxxx')
 
     await userEvent.click(screen.getByRole('button', { name: 'Migrate' }))
 
