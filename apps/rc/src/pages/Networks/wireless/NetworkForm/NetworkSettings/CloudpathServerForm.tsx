@@ -72,7 +72,7 @@ export function CloudpathServerForm () {
             onChange={(value)=>onProxyChange(value,'enableAuthProxy')}/>}
           />
           <span>{ $t({ defaultMessage: 'Proxy Service' }) }</span>
-          { data?.type===NetworkTypeEnum.DPSK ? proxyServiceTooltip : DPSKProxyServiceTooltip }
+          { data?.type===NetworkTypeEnum.DPSK ? DPSKProxyServiceTooltip : proxyServiceTooltip}
         </Form.Item>}
       </div>
       <div>
