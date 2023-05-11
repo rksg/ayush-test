@@ -102,9 +102,9 @@ export function NetworkingTab () {
     items.push({
       title: $t({ defaultMessage: 'RADIUS Options' }),
       content: <>
-        <StepsForm.SectionTitle id='radius-options'>
+        <StepsFormLegacy.SectionTitle id='radius-options'>
           { $t({ defaultMessage: 'RADIUS Options' }) }
-        </StepsForm.SectionTitle>
+        </StepsFormLegacy.SectionTitle>
         <RadiusOptions />
       </> })
   }
