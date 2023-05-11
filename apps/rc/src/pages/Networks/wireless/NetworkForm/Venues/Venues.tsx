@@ -7,7 +7,7 @@ import { useIntl }      from 'react-intl'
 
 import {
   Loader,
-  StepsForm,
+  StepsFormLegacy,
   Table,
   TableProps,
   Tooltip
@@ -434,7 +434,7 @@ export function Venues () {
 
   return (
     <>
-      <StepsForm.Title>{ $t({ defaultMessage: 'Venues' }) }</StepsForm.Title>
+      <StepsFormLegacy.Title>{ $t({ defaultMessage: 'Venues' }) }</StepsFormLegacy.Title>
       <p>{ $t({ defaultMessage: 'Select venues to activate this network' }) }</p>
       <Form.Item name='venues'>
         <Loader states={[tableQuery]}>

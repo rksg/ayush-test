@@ -1,7 +1,7 @@
 import { Form, Col, Row, Space } from 'antd'
 import { useIntl }               from 'react-intl'
 
-import { StepsForm }                  from '@acx-ui/components'
+import { StepsFormLegacy }            from '@acx-ui/components'
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 
 import RogueVenueTable from './RogueVenueTable'
@@ -28,7 +28,7 @@ const RogueAPDetectionScopeForm = () => {
   return (
     <Row gutter={20}>
       <Col span={15}>
-        <StepsForm.Title>{$t({ defaultMessage: 'Scope' })}</StepsForm.Title>
+        <StepsFormLegacy.Title>{$t({ defaultMessage: 'Scope' })}</StepsFormLegacy.Title>
 
         <Form.Item
           name='venueTable'

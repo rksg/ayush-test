@@ -1,9 +1,9 @@
 import { Form, Radio } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { GridCol, GridRow, PageHeader, RadioCard, StepsForm, RadioCardCategory } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                from '@acx-ui/feature-toggle'
-import { useGetApSnmpViewModelQuery }                                            from '@acx-ui/rc/services'
+import { GridCol, GridRow, PageHeader, RadioCard, StepsFormLegacy, RadioCardCategory } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
+import { useGetApSnmpViewModelQuery }                                                  from '@acx-ui/rc/services'
 import {
   PolicyType,
   getPolicyListRoutePath,
@@ -91,11 +91,11 @@ export default function SelectPolicyForm () {
           { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) }
         ]}
       />
-      <StepsForm
+      <StepsFormLegacy
         onCancel={() => navigate(policiesTablePath)}
         buttonLabel={{ submit: $t({ defaultMessage: 'Next' }) }}
       >
-        <StepsForm.StepForm
+        <StepsFormLegacy.StepForm
           name='selectService'
           onFinish={(data) => navigateToCreatePolicy(data)}
         >
@@ -118,8 +118,8 @@ export default function SelectPolicyForm () {
               </GridRow>
             </Radio.Group>
           </Form.Item>
-        </StepsForm.StepForm>
-      </StepsForm>
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>
     </>
   )
 }

@@ -56,7 +56,7 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
               TEST_2
             </div>
             <div
-              class="sc-papXJ iBkRgT"
+              class="sc-jqUVSM dKdNIi"
             >
               <div
                 data-testid="dropContainer"
@@ -66,7 +66,7 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
                  
                 <div>
                   <div
-                    class="sc-jSMfEi dSrpFV device-container gallery"
+                    class="sc-jSMfEi UOWfN device-container gallery"
                     draggable="true"
                     style="top: calc(9.839357%); left: calc(65.20548%); opacity: 1;"
                   >
@@ -83,7 +83,7 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
                 </div>
                 <div>
                   <div
-                    class="sc-jSMfEi dSrpFV device-container gallery"
+                    class="sc-jSMfEi UOWfN device-container gallery"
                     draggable="true"
                     style="top: calc(undefined%); left: calc(undefined%); opacity: 1;"
                   >
@@ -160,7 +160,7 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
               dscx
             </div>
             <div
-              class="sc-papXJ iBkRgT"
+              class="sc-jqUVSM dKdNIi"
             >
               <div
                 data-testid="dropContainer"
@@ -230,7 +230,7 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
               dscx
             </div>
             <div
-              class="sc-papXJ iBkRgT"
+              class="sc-jqUVSM dKdNIi"
             >
               <div
                 data-testid="dropContainer"
@@ -300,7 +300,7 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
               dscx
             </div>
             <div
-              class="sc-papXJ iBkRgT"
+              class="sc-jqUVSM dKdNIi"
             >
               <div
                 data-testid="dropContainer"
@@ -370,7 +370,7 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
               dscx
             </div>
             <div
-              class="sc-papXJ iBkRgT"
+              class="sc-jqUVSM dKdNIi"
             >
               <div
                 data-testid="dropContainer"

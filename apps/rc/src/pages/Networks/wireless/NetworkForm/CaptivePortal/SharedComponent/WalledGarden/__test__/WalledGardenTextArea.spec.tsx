@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 
 
-import { StepsForm }                          from '@acx-ui/components'
+import { StepsFormLegacy }                    from '@acx-ui/components'
 import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { GuestNetworkTypeEnum }               from '@acx-ui/rc/utils'
 import { Provider }                           from '@acx-ui/store'
@@ -225,13 +225,13 @@ function WalledGardenTextAreaNormalTestCase (props: WalledGardenProps) {
         data: {}
       }}
     >
-      <StepsForm>
-        <StepsForm.StepForm>
+      <StepsFormLegacy>
+        <StepsFormLegacy.StepForm>
           <WalledGardenTextArea
             guestNetworkTypeEnum={props.guestNetworkTypeEnum}
             enableDefaultWalledGarden={props.enableDefaultWalledGarden} />
-        </StepsForm.StepForm>
-      </StepsForm>
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>
     </NetworkFormContext.Provider>
   </Provider>)
 }
@@ -245,13 +245,13 @@ function WalledGardenTextAreaCloneModeTestCase (props: WalledGardenProps) {
         data: MockNetworkSetting
       }}
     >
-      <StepsForm>
-        <StepsForm.StepForm>
+      <StepsFormLegacy>
+        <StepsFormLegacy.StepForm>
           <WalledGardenTextArea
             guestNetworkTypeEnum={props.guestNetworkTypeEnum}
             enableDefaultWalledGarden={props.enableDefaultWalledGarden} />
-        </StepsForm.StepForm>
-      </StepsForm>
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>
     </NetworkFormContext.Provider>
   </Provider>)
 }
@@ -265,13 +265,13 @@ function WalledGardenTextAreaEditModeTestCase (props: WalledGardenProps) {
         data: MockNetworkSetting
       }}
     >
-      <StepsForm>
-        <StepsForm.StepForm>
+      <StepsFormLegacy>
+        <StepsFormLegacy.StepForm>
           <WalledGardenTextArea
             guestNetworkTypeEnum={props.guestNetworkTypeEnum}
             enableDefaultWalledGarden={props.enableDefaultWalledGarden} />
-        </StepsForm.StepForm>
-      </StepsForm>
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>
     </NetworkFormContext.Provider>
   </Provider>)
 }

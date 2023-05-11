@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { Loader, PageHeader, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
+import { Loader, PageHeader, showToast, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
 import {
   useAddAdaptivePolicySetMutation,
   useAddPrioritizedPolicyMutation,
@@ -36,7 +36,7 @@ export default function AdaptivePolicySetForm (props: AdaptivePolicySetFormProps
   // eslint-disable-next-line max-len
   const linkToList = useTenantLink('/' + getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.LIST }))
   const navigate = useNavigate()
-  const formRef = useRef<StepsFormInstance>()
+  const formRef = useRef<StepsFormLegacyInstance>()
 
   const [addAdaptivePolicySet] = useAddAdaptivePolicySetMutation()
   const [updateAdaptiveSetPolicy] = useUpdateAdaptivePolicySetMutation()
@@ -147,13 +147,13 @@ export default function AdaptivePolicySetForm (props: AdaptivePolicySetFormProps
             link: getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.LIST }) }
         ]}
       />}
-      <StepsForm
+      <StepsFormLegacy
         editMode={editMode}
         formRef={formRef}
         buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
         onCancel={() => modalMode ? modalCallBack?.() : navigate(linkToList)}
         onFinish={handleSubmit}>
-        <StepsForm.StepForm
+        <StepsFormLegacy.StepForm
           initialValues={{ accessDeletePolicies: [] as PrioritizedPolicy [] }}>
           <Loader states={[{
             isLoading: isGetPolicyLoading,
@@ -164,8 +164,8 @@ export default function AdaptivePolicySetForm (props: AdaptivePolicySetFormProps
               accessPolicies={accessPolicies}
               setAccessPolicies={setAccessPolicies}/>
           </Loader>
-        </StepsForm.StepForm>
-      </StepsForm>
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>
     </>
   )
 }

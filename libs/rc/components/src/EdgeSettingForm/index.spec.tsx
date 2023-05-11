@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { StepsFormNew }                          from '@acx-ui/components'
+import { StepsForm }                             from '@acx-ui/components'
 import { CommonUrlsInfo }                        from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
@@ -65,11 +65,11 @@ describe('EdgeSettingForm', () => {
   it('should show OTP message correctly', async () => {
     render(
       <Provider>
-        <StepsFormNew>
-          <StepsFormNew.StepForm>
+        <StepsForm>
+          <StepsForm.StepForm>
             <EdgeSettingForm />
-          </StepsFormNew.StepForm>
-        </StepsFormNew>
+          </StepsForm.StepForm>
+        </StepsForm>
       </Provider>, { route: { params } }
     )
     const serialNumberInput = await screen.findByRole('textbox',
@@ -82,11 +82,11 @@ describe('EdgeSettingForm', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <StepsFormNew>
-          <StepsFormNew.StepForm>
+        <StepsForm>
+          <StepsForm.StepForm>
             <EdgeSettingForm />
-          </StepsFormNew.StepForm>
-        </StepsFormNew>
+          </StepsForm.StepForm>
+        </StepsForm>
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/add' }
       })

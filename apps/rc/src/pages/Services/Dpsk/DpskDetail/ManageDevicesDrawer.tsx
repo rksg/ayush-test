@@ -189,7 +189,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
   />
 
   const footer = [
-    <div style={{ float: 'left', lineHeight: '32px' }}>
+    <div key='checkbox-wrapper' style={{ float: 'left', lineHeight: '32px' }}>
       <Checkbox
         onChange={(e: CheckboxChangeEvent) => setAddAnother(e.target.checked)}
         disabled={isExceed()}

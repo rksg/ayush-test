@@ -4,9 +4,9 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
 
-import { StepsForm }      from '@acx-ui/components'
-import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
+import { StepsFormLegacy } from '@acx-ui/components'
+import { Provider }        from '@acx-ui/store'
+import { render, screen }  from '@acx-ui/test-utils'
 
 import {
   mockGuestMoreData,
@@ -28,9 +28,9 @@ describe('UserConnectionForm', () => {
         value={{
           editMode: true, cloneMode: true, data: mockGuestMoreData
         }}>
-        <StepsForm><StepsForm.StepForm>
-          <UserConnectionForm /></StepsForm.StepForm>
-        </StepsForm></NetworkFormContext.Provider>
+        <StepsFormLegacy><StepsFormLegacy.StepForm>
+          <UserConnectionForm /></StepsFormLegacy.StepForm>
+        </StepsFormLegacy></NetworkFormContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -53,9 +53,9 @@ describe('UserConnectionForm', () => {
         value={{
           editMode: true, cloneMode: true, data: mockGuestMoreDataMinutes
         }}>
-        <StepsForm><StepsForm.StepForm>
-          <UserConnectionForm /></StepsForm.StepForm>
-        </StepsForm></NetworkFormContext.Provider>
+        <StepsFormLegacy><StepsFormLegacy.StepForm>
+          <UserConnectionForm /></StepsFormLegacy.StepForm>
+        </StepsFormLegacy></NetworkFormContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -74,9 +74,9 @@ describe('UserConnectionForm', () => {
         value={{
           editMode: true, cloneMode: true, data: mockGuestMoreDataDays
         }}>
-        <StepsForm><StepsForm.StepForm>
-          <UserConnectionForm /></StepsForm.StepForm>
-        </StepsForm></NetworkFormContext.Provider>
+        <StepsFormLegacy><StepsFormLegacy.StepForm>
+          <UserConnectionForm /></StepsFormLegacy.StepForm>
+        </StepsFormLegacy></NetworkFormContext.Provider>
       </Provider>, {
         route: { params }
       })
