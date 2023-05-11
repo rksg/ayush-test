@@ -57,6 +57,7 @@ export function MdnsProxySettingsForm () {
           validateFirst
           hasFeedback
           children={<Input />}
+          validateTrigger={'onBlur'}
         />
         <Form.Item
           name='rules'
