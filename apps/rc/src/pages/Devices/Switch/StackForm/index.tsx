@@ -26,8 +26,8 @@ import {
   Button,
   PageHeader,
   Loader,
-  StepsForm,
-  StepsFormInstance,
+  StepsFormLegacy,
+  StepsFormLegacyInstance,
   TableProps,
   Table,
   Tabs,
@@ -86,7 +86,7 @@ export function StackForm () {
   const { $t } = useIntl()
   const { tenantId, switchId, action, venueId, stackList } = useParams()
   const editMode = action === 'edit'
-  const formRef = useRef<StepsFormInstance<Switch>>()
+  const formRef = useRef<StepsFormLegacyInstance<Switch>>()
   const navigate = useNavigate()
   const location = useLocation()
   const basePath = useTenantLink('/devices/')
@@ -613,7 +613,7 @@ export function StackForm () {
           }
         ]}
       />
-      <StepsForm
+      <StepsFormLegacy
         formRef={formRef}
         onFinish={editMode
           ? handleEditSwitchStack
@@ -629,7 +629,7 @@ export function StackForm () {
           cancel: readOnly ? '' : $t({ defaultMessage: 'Cancel' })
         }}
       >
-        <StepsForm.StepForm>
+        <StepsFormLegacy.StepForm>
           <Loader
             states={[
               {
@@ -796,8 +796,8 @@ export function StackForm () {
               </Col>
             </Row>
           </Loader>
-        </StepsForm.StepForm>
-      </StepsForm>
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>
     </>
   )
 }

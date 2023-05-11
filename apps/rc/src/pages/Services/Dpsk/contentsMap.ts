@@ -14,3 +14,7 @@ export const defaultAccessLabelMapping: Record<PolicyDefaultAccess, MessageDescr
   [PolicyDefaultAccess.ACCEPT]: defineMessage({ defaultMessage: 'ACCEPT' }),
   [PolicyDefaultAccess.REJECT]: defineMessage({ defaultMessage: 'REJECT' })
 }
+
+export const serviceInUsedMessageTemplate = defineMessage({
+  defaultMessage: 'You are unable to delete this record due to its usage in {serviceName}'
+})

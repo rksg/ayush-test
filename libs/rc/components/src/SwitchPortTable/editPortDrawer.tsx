@@ -138,9 +138,8 @@ export function EditPortDrawer ({
     ipsg,
     lldpQosCheckbox,
     ingressAclCheckbox,
-    egressAclCheckbox
-    // TODO: Waiting for TAG feature support
-    // tagsCheckbox
+    egressAclCheckbox,
+    tagsCheckbox
   } = (useWatch([], form) ?? {})
 
   const { tenantId, venueId, serialNumber } = useParams()
@@ -155,6 +154,9 @@ export function EditPortDrawer ({
   const [aclsOptions, setAclsOptions] = useState([] as DefaultOptionType[])
   const [vlansOptions, setVlansOptions] = useState([] as DefaultOptionType[])
   const [portSpeedOptions, setPortSpeedOptions] = useState([] as string[])
+  const [poeClassOptions, setPoeClassOptions] = useState([] as {
+    label: { defaultMessage: string; }; value: string; }[]
+  )
   const [vlanUsedByVe, setVlanUsedByVe] = useState('')
   const [lldpQosList, setLldpQosList] = useState([] as LldpQosModel[])
 
@@ -290,6 +292,7 @@ export function EditPortDrawer ({
 
       setAclsOptions(getAclOptions(aclUnion))
       setPortSpeedOptions(portSpeed)
+      setPoeClassOptions(getPoeClass(selectedPorts))
       setVlansOptions(getVlanOptions(switchVlans, defaultVlan, voiceVlan))
 
       setHasSwitchProfile(!!switchProfile?.length)
@@ -416,6 +419,7 @@ export function EditPortDrawer ({
       case 'portEnable': return isCloudPort || (isMultipleEdit && !portEnableCheckbox)
       case 'poeEnable': return (isMultipleEdit && !poeEnableCheckbox) || disablePoeCapability
       case 'poeClass': return (isMultipleEdit && !poeClassCheckbox)
+        || poeClassOptions?.length === 1
         || disablePoeCapability
         || !poeEnable
         || (poeBudget && Number(poeBudget) >= 1000 && Number(poeBudget) <= 30000) // workaround for bug
@@ -524,6 +528,10 @@ export function EditPortDrawer ({
 
     try {
       const payload = switches.map((item) => {
+        const ports = selectedPorts
+          .filter(p => p.switchSerial === item)
+          .map(p => p.portIdentifier)
+
         return {
           switchId: item,
           port: {
@@ -535,8 +543,8 @@ export function EditPortDrawer ({
               voiceVlan: defaultVlanMap?.[item as keyof typeof defaultVlanMap] ?? ''
             }),
             ignoreFields: ignoreFields.toString(),
-            port: selectedPorts.map(p => p.portIdentifier)?.[0],
-            ports: selectedPorts.map(p => p.portIdentifier)
+            port: ports?.[0],
+            ports: ports
           }
         }
       })
@@ -804,7 +812,7 @@ export function EditPortDrawer ({
             children={isMultipleEdit && !poeClassCheckbox && hasMultipleValue.includes('poeClass')
               ? <MultipleText />
               : <Select
-                options={getPoeClass(selectedPorts).map(
+                options={poeClassOptions.map(
                   p => ({ label: $t(p.label), value: p.value }))}
                 disabled={getFieldDisabled('poeClass')}
               />}
@@ -1250,7 +1258,7 @@ export function EditPortDrawer ({
           'egressAcl', $t({ defaultMessage: 'Egress ACL' })
         )}
 
-        {/* { getFieldTemplate( TODO: Waiting for TAG feature support
+        {getFieldTemplate(
           <Form.Item
             {...getFormItemLayout(isMultipleEdit)}
             name='tags'
@@ -1258,11 +1266,11 @@ export function EditPortDrawer ({
             initialValue=''
             children={isMultipleEdit && !tagsCheckbox && hasMultipleValue.includes('tags')
               ? <MultipleText />
-              : <Input disabled={getFieldDisabled('tags')} />
+              : <Input disabled={getFieldDisabled('tags')} maxLength={255} />
             }
           />,
           'tags', $t({ defaultMessage: 'Tags' })
-        )} */}
+        )}
 
       </UI.Form>
 

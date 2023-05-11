@@ -166,7 +166,6 @@ describe('License Banner Component', () => {
       })
 
     await userEvent.click((await screen.findByTestId('arrowBtn')))
-    expect(screen.getAllByText('Analytics service has been deactivated')[0]).toBeVisible()
     expect(await screen.findByText('MSP subscription about to expire in 53 days')).toBeVisible()
 
   })

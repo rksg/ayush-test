@@ -10,9 +10,9 @@ import {
 import { DefaultOptionType } from 'antd/lib/select'
 import { useIntl }           from 'react-intl'
 
-import { Button, Modal, ModalType, StepsForm } from '@acx-ui/components'
-import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
-import { useGetDpskListQuery }                 from '@acx-ui/rc/services'
+import { Button, Modal, ModalType, StepsFormLegacy } from '@acx-ui/components'
+import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
+import { useGetDpskListQuery }                       from '@acx-ui/rc/services'
 import {
   WlanSecurityEnum,
   DpskSaveData,
@@ -81,7 +81,7 @@ function SettingsForm () {
     <>
       <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
         <div>
-          <StepsForm.Title>{ $t({ defaultMessage: 'DPSK Settings' }) }</StepsForm.Title>
+          <StepsFormLegacy.Title>{ $t({ defaultMessage: 'DPSK Settings' }) }</StepsFormLegacy.Title>
           <Form.Item
             label={$t({ defaultMessage: 'Security Protocol' })}
             name='dpskWlanSecurity'

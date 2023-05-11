@@ -5,12 +5,24 @@ exports[`AP floorplan should render correctly 1`] = `
   <div
     style="width: 100%; position: relative; max-height: 300px; padding-right: 35px; margin-bottom: 35px;"
   >
-    <a
-      href="/t/undefined/venues/7231da344778480d88f37f0cca1c534f/venue-details/overview"
-      style="margin-left: 10px; line-height: 24px; font-size: 14px;"
+    <div
+      class="ant-row ant-row-space-between"
+      style="height: 2rem; align-items: center;"
     >
-      TEST_2
-    </a>
+      <div
+        class="ant-col"
+      >
+        <a
+          href="/undefined/t/venues/7231da344778480d88f37f0cca1c534f/venue-details/overview"
+          style="margin-left: 10px; line-height: 24px; font-size: 14px;"
+        >
+          TEST_2
+        </a>
+      </div>
+      <div
+        class="ant-col"
+      />
+    </div>
     <div
       style="position: relative; margin: 0px auto; width: calc(100%);"
     >

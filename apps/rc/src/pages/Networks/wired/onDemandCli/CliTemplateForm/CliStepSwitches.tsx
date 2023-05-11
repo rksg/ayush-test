@@ -1,21 +1,20 @@
-import { useContext, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 import { Col, Collapse, Form, Input, Row, Space, Switch, Typography } from 'antd'
 import { useIntl, FormattedMessage }                                  from 'react-intl'
 
-import { cssStr, StepsForm, Table, TableProps, Loader } from '@acx-ui/components'
-import { PlusSquareOutlined, MinusSquareOutlined }      from '@acx-ui/icons'
-import { useGetVenuesQuery, useLazyGetSwitchListQuery } from '@acx-ui/rc/services'
-import { CliTemplateVenueSwitches, SwitchViewModel }    from '@acx-ui/rc/utils'
-import { useParams }                                    from '@acx-ui/react-router-dom'
+import { cssStr, StepsForm, Table, TableProps, Loader, useStepFormContext } from '@acx-ui/components'
+import { PlusSquareOutlined, MinusSquareOutlined }                          from '@acx-ui/icons'
+import { useGetVenuesQuery, useLazyGetSwitchListQuery }                     from '@acx-ui/rc/services'
+import { ApplySwitch, CliTemplateVenueSwitches, SwitchViewModel }           from '@acx-ui/rc/utils'
+import { useParams }                                                        from '@acx-ui/react-router-dom'
 
-import CliTemplateFormContext from './CliTemplateFormContext'
-import * as UI                from './styledComponents'
+import * as UI from './styledComponents'
 
 export function CliStepSwitches () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
-  const form = Form.useFormInstance()
+  const { form, editMode } = useStepFormContext()
 
   const { data: venues } = useGetVenuesQuery({
     params: { tenantId }, payload: {
@@ -29,7 +28,7 @@ export function CliStepSwitches () {
   const [venueSwitches, setVenueSwitches] = useState([] as CliTemplateVenueSwitches[])
   const [selectedSwitches, setSelectedSwitches] = useState([] as Map<React.Key, React.Key[]>[])
   const [getSwitchList] = useLazyGetSwitchListQuery()
-  const { editMode, data, applySwitches, setApplySwitches } = useContext(CliTemplateFormContext)
+  const [applySwitches, setApplySwitches] = useState({} as Record<string, ApplySwitch[]>)
 
   const getSwitchListPayload = (venueId: string) => ({
     fields: [
@@ -47,19 +46,9 @@ export function CliStepSwitches () {
   })
 
   useEffect(() => {
-    if (editMode && data) {
-      const selected = data.venueSwitches?.reduce((result, v) => ({
-        ...result,
-        [v.venueId as string]: v.switches
-      }), {})
-
-      setSelectedSwitches(selected as Map<React.Key, React.Key[]>[])
-      form?.setFieldsValue({
-        venueSwitches: selected,
-        applyNow: !data?.applyLater
-      })
-    }
-  }, [data])
+    const selected = form.getFieldValue('venueSwitches')
+    setSelectedSwitches(selected)
+  }, [])
 
   useEffect(() => {
     if (venues?.data) {
@@ -94,7 +83,7 @@ export function CliStepSwitches () {
 
   return <Row gutter={24}>
     <Col span={18}>
-      <StepsForm.Title>{$t({ defaultMessage: 'Switches' })}</StepsForm.Title>
+      <StepsForm.Title children={$t({ defaultMessage: 'Switches' })} />
       <Typography.Text style={{
         display: 'block', marginBottom: '15px', fontSize: '14px',
         color: cssStr('--acx-primary-black')
@@ -129,6 +118,11 @@ export function CliStepSwitches () {
       <Form.Item
         hidden={true}
         name='venueSwitches'
+        children={<Input />}
+      />
+      <Form.Item
+        hidden={true}
+        name='applySwitches'
         children={<Input />}
       />
 
@@ -196,7 +190,10 @@ export function CliStepSwitches () {
 
                       setApplySwitches?.(applySwitch)
                       setSelectedSwitches(venueSwitch)
-                      form?.setFieldValue('venueSwitches', venueSwitch)
+                      form?.setFieldsValue({
+                        venueSwitches: venueSwitch,
+                        applySwitch: applySwitch
+                      })
 
                       if (checkToggleDisabled(venueSwitch)) {
                         form?.setFieldValue('applyNow', false)

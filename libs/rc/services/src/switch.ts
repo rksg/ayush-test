@@ -69,10 +69,15 @@ export type SwitchsExportPayload = {
 
 export const switchApi = baseSwitchApi.injectEndpoints({
   endpoints: (build) => ({
-    switchList: build.query<TableResult<SwitchRow>, RequestPayload>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    switchList: build.query<TableResult<SwitchRow>, RequestPayload<any>>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const hasGroupBy = !!arg.payload?.groupBy
+        const req = hasGroupBy
+          ? createHttpRequest(SwitchUrlsInfo.getSwitchListByGroup, arg.params)
+          : createHttpRequest(SwitchUrlsInfo.getSwitchList, arg.params)
         const listInfo = {
-          ...createHttpRequest(SwitchUrlsInfo.getSwitchList, arg.params),
+          ...req,
           body: arg.payload
         }
         const listQuery = await fetchWithBQ(listInfo)
@@ -80,8 +85,16 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const stackMembers:{ [index:string]: StackMember[] } = {}
         const stacks: string[] = []
         if(!list) return { error: listQuery.error as FetchBaseQueryError }
+
         list.data.forEach(async (item:SwitchRow) => {
-          if(item.isStack || item.formStacking){
+          if(hasGroupBy){
+            item.children = item.switches
+            item.switches?.forEach((i:SwitchRow) => {
+              if(i.isStack || i.formStacking){
+                stacks.push(i.serialNumber)
+              }
+            })
+          }else if(item.isStack || item.formStacking){
             stacks.push(item.serialNumber)
           }
         })
@@ -93,7 +106,9 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           stackMembers[id] = allStacksMember[index]?.data.data
         })
 
-        const aggregatedList = aggregatedSwitchListData(list, stackMembers)
+        const aggregatedList = hasGroupBy
+          ? aggregatedSwitchGroupByListData(list, stackMembers)
+          : aggregatedSwitchListData(list, stackMembers)
 
         return { data: aggregatedList }
       },
@@ -965,7 +980,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      keepUnusedDataFor: 0
     }),
     addCliTemplate: build.mutation<CliConfiguration, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1114,6 +1130,31 @@ const genStackMemberPayload = (arg:RequestPayload<unknown>, serialNumber:string)
         activeUnitId: [serialNumber]
       }
     }
+  }
+}
+
+const aggregatedSwitchGroupByListData = (switches: TableResult<SwitchRow>,
+  stackMembers:{ [index:string]: StackMember[] }) => {
+  const data = JSON.parse(JSON.stringify(switches.data))
+  data.forEach((item:SwitchRow, index:number) => {
+    item.isGroup = 'group' + index // for table rowKey
+    item.children?.forEach(i => {
+      i.isFirstLevel = true
+      if (stackMembers[i.serialNumber]) {
+        const tmpMember = _.cloneDeep(stackMembers[i.serialNumber])
+        tmpMember.forEach((member: StackMember, index: number) => {
+          if (member.serialNumber === i.serialNumber) {
+            tmpMember[index].unitStatus = STACK_MEMBERSHIP.ACTIVE
+          }
+        })
+        // i.children = tmpMember // TODO: stack members in group by table
+      }
+    })
+  })
+
+  return {
+    ...switches,
+    data
   }
 }
 

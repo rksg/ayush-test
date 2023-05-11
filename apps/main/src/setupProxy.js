@@ -8,6 +8,7 @@ const { createProxyMiddleware } = require('http-proxy-middleware')
  */
 const CLOUD_URL = 'https://devalto.ruckuswireless.com'
 const LOCAL_MLISA_URL = 'https://alto.local.mlisa.io'
+const STATIC_ASSETS = 'https://storage.googleapis.com/ruckus-web-1'
 module.exports = async function setupProxy (app) {
   const localDataApi = new Promise((resolve) => {
     https
@@ -22,7 +23,7 @@ module.exports = async function setupProxy (app) {
         changeOrigin: true,
         onProxyReq: (proxyReq, req) => {
           proxyReq.setHeader('x-mlisa-tenant-id',
-            req.headers['x-mlisa-tenant-id'] || req.headers.referer.match(/t\/([0-9a-f]{32})/)[1])
+            req.headers['x-mlisa-tenant-id'] || req.headers.referer.match(/([0-9a-f]{32})\/t/)[1])
           proxyReq.setHeader('x-mlisa-user-role',
             req.headers['x-mlisa-user-role'] || 'alto-report-only')
           proxyReq.setHeader('x-mlisa-user-id', req.headers['x-mlisa-user-id'] || 'some-id')
@@ -39,7 +40,16 @@ module.exports = async function setupProxy (app) {
       pathRewrite: { '^/docs': '/' }
     }
   ))
-
+  app.use(createProxyMiddleware(
+    '/locales/compiled/',
+    {
+      target: STATIC_ASSETS,
+      changeOrigin: true,
+      onProxyReqWs: function (request) {
+        request.setHeader('origin', STATIC_ASSETS)
+      }
+    }
+  ))
   app.use(createProxyMiddleware(
     '/api/websocket/socket.io',
     {

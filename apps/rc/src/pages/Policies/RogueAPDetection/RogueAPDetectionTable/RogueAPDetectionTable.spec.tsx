@@ -104,7 +104,7 @@ describe('RogueAPDetectionTable', () => {
   }
 
   // eslint-disable-next-line max-len
-  const tablePath = '/:tenantId/' + getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.LIST })
+  const tablePath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.LIST })
 
   beforeEach(async () => {
     mockServer.use(
@@ -161,7 +161,7 @@ describe('RogueAPDetectionTable', () => {
 
     const target = mockTableResult.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
-    await userEvent.click(within(row).getByRole('radio'))
+    await userEvent.click(within(row).getByRole('checkbox'))
 
     await userEvent.click(await screen.findByRole('button', { name: /Delete/ }))
 
@@ -186,7 +186,7 @@ describe('RogueAPDetectionTable', () => {
 
     const target = mockTableResult.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
-    await userEvent.click(within(row).getByRole('radio'))
+    await userEvent.click(within(row).getByRole('checkbox'))
 
     await userEvent.click(screen.getByRole('button', { name: /Edit/ }))
 

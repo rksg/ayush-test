@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 
+import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { StepsForm, PageHeader, StepsFormInstance, Loader, showActionModal } from '@acx-ui/components'
+import { StepsForm, PageHeader, Loader, showActionModal } from '@acx-ui/components'
 import {
   useAddSwitchConfigProfileMutation,
   useUpdateSwitchConfigProfileMutation,
@@ -11,19 +12,20 @@ import {
 import { SwitchConfigurationProfile, Vlan }      from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { AclSetting }                      from './AclSetting'
-import { ConfigurationProfileFormContext } from './ConfigurationProfileFormContext'
-import { GeneralSetting }                  from './GeneralSetting'
-import { Summary }                         from './Summary'
-import { TrustedPorts }                    from './TrustedPorts'
-import { VenueSetting }                    from './VenueSetting'
-import { VlanSetting }                     from './VlanSetting'
+import { AclSetting }                               from './AclSetting'
+import { ConfigurationProfileFormContext }          from './ConfigurationProfileFormContext'
+import { GeneralSetting }                           from './GeneralSetting'
+import { Summary }                                  from './Summary'
+import { generateTrustedPortsModels, TrustedPorts } from './TrustedPorts'
+import { VenueSetting }                             from './VenueSetting'
+import { VlanSetting }                              from './VlanSetting'
 
 export function ConfigurationProfileForm () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const params = useParams()
   const linkToProfiles = useTenantLink('/networks/wired/profiles')
+  const [form] = Form.useForm()
 
   const { data, isLoading } = useGetSwitchConfigProfileQuery(
     { params }, { skip: !params.profileId })
@@ -39,14 +41,39 @@ export function ConfigurationProfileForm () {
   const [ currentData, setCurrentData ] =
     useState<SwitchConfigurationProfile>({} as SwitchConfigurationProfile)
 
-  const formRef = useRef<StepsFormInstance<SwitchConfigurationProfile>>()
-
   useEffect(() => {
     if(data){
       setCurrentData(data as SwitchConfigurationProfile)
       updateVlanCurrentData(data)
     }
   }, [data])
+
+  const checkTrustedPortEmpty = (data: Partial<SwitchConfigurationProfile>) => {
+    if(ipv4DhcpSnooping || arpInspection){
+      const trustedPortModels = generateTrustedPortsModels(data)
+      const hasEmptyTrustPorts = trustedPortModels.some(port => port.trustPorts.length === 0)
+
+      if(hasEmptyTrustPorts){
+        showActionModal({
+          type: 'error',
+          title: $t({ defaultMessage: 'Error' }),
+          content: $t({ defaultMessage:
+            'Please select trusted ports in order to make this configuration profile valid' })
+        })
+        return true
+      }
+    }
+    return false
+  }
+
+  const updateCurrentData = async (data: Partial<SwitchConfigurationProfile>) => {
+    setCurrentData({
+      ...currentData,
+      ...data
+    })
+
+    return true
+  }
 
   const updateVlanCurrentData = async (data: Partial<SwitchConfigurationProfile>) => {
     const ipv4DhcpSnoopingValue =
@@ -65,28 +92,8 @@ export function ConfigurationProfileForm () {
     return true
   }
 
-  const updateCurrentData = async (data: Partial<SwitchConfigurationProfile>) => {
-    setCurrentData({
-      ...currentData,
-      ...data
-    })
-
-    return true
-  }
-
   const updateTrustedPortsCurrentData = async (data: Partial<SwitchConfigurationProfile>) => {
-    const hasEmptyTrustPorts = data.trustedPorts?.some(port => port.trustPorts.length === 0)
-
-    if(hasEmptyTrustPorts){
-      showActionModal({
-        type: 'error',
-        title: $t({ defaultMessage: 'Error' }),
-        content: $t({ defaultMessage:
-          'Please select trusted ports in order to make this configuration profile valid' })
-      })
-      return false
-    }
-
+    checkTrustedPortEmpty(data)
     setCurrentData({
       ...currentData,
       ...data
@@ -97,35 +104,48 @@ export function ConfigurationProfileForm () {
 
   const proceedData = (data: SwitchConfigurationProfile) => {
     if(data.trustedPorts){
-      const vlanModels = data.vlans.map(
-        item => item.switchFamilyModels?.map(obj => obj.model)) ||['']
-      data.trustedPorts = data.trustedPorts.map(
-        item => { return {
-          ...item,
-          ...{ vlanDemand: vlanModels.join(',').indexOf(item.model) > -1 }
-        }})
+      if(ipv4DhcpSnooping || arpInspection){
+        const vlanModels = data.vlans.map(
+          item => item.switchFamilyModels?.map(obj => obj.model)) ||['']
+        data.trustedPorts = data.trustedPorts.map(
+          item => { return {
+            ...item,
+            ...{ vlanDemand: vlanModels.join(',').indexOf(item.model) > -1 }
+          }})
+      } else {
+        data.trustedPorts = []
+      }
     }
     return data
   }
 
-  const handleAddProfile = async (data: SwitchConfigurationProfile) => {
+  const handleAddProfile = async () => {
     try {
-      await addSwitchConfigProfile({ params, payload: proceedData(data) }).unwrap()
+      if(checkTrustedPortEmpty(currentData)){
+        return false
+      }
+      await addSwitchConfigProfile({ params, payload: proceedData(currentData) }).unwrap()
       setCurrentData({} as SwitchConfigurationProfile)
       navigate(linkToProfiles, { replace: true })
     } catch(err) {
       console.log(err) // eslint-disable-line no-console
     }
+    return true
   }
 
-  const handleEditProfile = async (data: SwitchConfigurationProfile) => {
+  const handleEditProfile = async () => {
     try {
-      await updateSwitchConfigProfile({ params, payload: proceedData(data) }).unwrap()
+      if(checkTrustedPortEmpty(currentData)){
+        return false
+      }
+      await updateSwitchConfigProfile({ params, payload: proceedData(currentData) }).unwrap()
       setCurrentData({} as SwitchConfigurationProfile)
       navigate(linkToProfiles)
+      return true
     } catch (err) {
       console.log(err) // eslint-disable-line no-console
     }
+    return true
   }
 
   return (
@@ -143,12 +163,10 @@ export function ConfigurationProfileForm () {
       />
       <ConfigurationProfileFormContext.Provider value={{ editMode, currentData }}>
         <StepsForm
-          formRef={formRef}
+          form={form}
           editMode={editMode}
           onCancel={() => navigate(linkToProfiles, { replace: true })}
-          onFinish={async (data) => {
-            editMode ? handleEditProfile(data) : handleAddProfile(data)
-          }}
+          onFinish={editMode ? handleEditProfile : handleAddProfile}
         >
           <StepsForm.StepForm
             title={$t({ defaultMessage: 'General' })}

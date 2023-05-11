@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { StepsFormNew }                     from '@acx-ui/components'
+import { StepsForm }                        from '@acx-ui/components'
 import {
   NetworkSegmentationUrls, SwitchUrlsInfo
 } from '@acx-ui/rc/utils'
@@ -100,7 +100,7 @@ describe('AccessSwitchForm', () => {
 
     render(
       <Provider>
-        <StepsFormNew form={formRef.current}><AccessSwitchForm /></StepsFormNew>
+        <StepsForm form={formRef.current}><AccessSwitchForm /></StepsForm>
       </Provider>, {
         route: { params, path: updateNsgPath }
       })

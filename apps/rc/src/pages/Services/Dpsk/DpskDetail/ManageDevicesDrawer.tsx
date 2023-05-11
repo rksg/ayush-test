@@ -149,6 +149,10 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
 
       if (!addAnother) {
         setModalVisible(false)
+      } else {
+        if (devicesData &&
+          passphraseInfo.numberOfDevices! - 1 === devicesData.length + 1
+        ) setAddAnother(false)
       }
       form.resetFields()
     } catch (error) {
@@ -185,7 +189,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
   />
 
   const footer = [
-    <div style={{ float: 'left', lineHeight: '32px' }}>
+    <div key='checkbox-wrapper' style={{ float: 'left', lineHeight: '32px' }}>
       <Checkbox
         onChange={(e: CheckboxChangeEvent) => setAddAnother(e.target.checked)}
         disabled={isExceed()}

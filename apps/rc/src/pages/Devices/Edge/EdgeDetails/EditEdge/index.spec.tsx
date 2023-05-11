@@ -29,6 +29,11 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+jest.mock('./DnsServer', () => (() => <div data-testid='DnsServer' />))
+jest.mock('./GeneralSettings', () => (() => <div data-testid='GeneralSettings' />))
+jest.mock('./Ports', () => (() => <div data-testid='Ports' />))
+jest.mock('./StaticRoutes', () => (() => <div data-testid='StaticRoutes' />))
+
 describe('EditEdge', () => {
 
   let params: { tenantId: string, serialNumber: string, activeTab?: string }
@@ -63,7 +68,7 @@ describe('EditEdge', () => {
       <Provider>
         <EditEdge />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab' }
+        route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab' }
       })
     await screen.findByRole('tab', { name: 'Ports', selected: true })
   })
@@ -74,7 +79,7 @@ describe('EditEdge', () => {
       <Provider>
         <EditEdge />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab' }
+        route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab' }
       })
     await screen.findByRole('tab', { name: 'DNS Server', selected: true })
   })
@@ -85,7 +90,7 @@ describe('EditEdge', () => {
       <Provider>
         <EditEdge />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab' }
+        route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab' }
       })
     await screen.findByRole('tab', { name: 'Static Routes', selected: true })
   })
@@ -97,18 +102,18 @@ describe('EditEdge', () => {
       <Provider>
         <EditEdge />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab' }
+        route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab' }
       })
     await user.click(screen.getByRole('tab', { name: 'DNS Server' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/devices/edge/${params.serialNumber}/edit/dns`,
+      pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/edit/dns`,
       hash: '',
       search: ''
     })
     await user.click(screen.getByRole('tab', { name: 'Ports' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       // eslint-disable-next-line max-len
-      pathname: `/t/${params.tenantId}/devices/edge/${params.serialNumber}/edit/ports/ports-general`,
+      pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/edit/ports/ports-general`,
       hash: '',
       search: ''
     })

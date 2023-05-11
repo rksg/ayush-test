@@ -8,6 +8,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
+import { EdgeEditContext }                        from '..'
 import { mockEdgePortConfig, mockEdgePortStatus } from '../../../__tests__/fixtures'
 
 import Ports from '.'
@@ -28,6 +29,20 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
+
+const defaultContextData = {
+  activeSubTab: {
+    key: 'ports-general',
+    title: 'Ports General'
+  },
+  formControl: {
+    isDirty: false,
+    hasError: false,
+    applyFn: jest.fn()
+  },
+  setActiveSubTab: jest.fn(),
+  setFormControl: jest.fn()
+}
 
 describe('EditEdge ports', () => {
   let params: { tenantId: string, serialNumber: string, activeTab?: string, activeSubTab?: string }
@@ -54,11 +69,15 @@ describe('EditEdge ports', () => {
     params.activeSubTab = 'ports-general'
     render(
       <Provider>
-        <Ports />
+        <EdgeEditContext.Provider
+          value={defaultContextData}
+        >
+          <Ports />
+        </EdgeEditContext.Provider>
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
     await screen.findByRole('tab', {
@@ -70,11 +89,15 @@ describe('EditEdge ports', () => {
     params.activeSubTab = 'sub-interface'
     render(
       <Provider>
-        <Ports />
+        <EdgeEditContext.Provider
+          value={defaultContextData}
+        >
+          <Ports />
+        </EdgeEditContext.Provider>
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
     await screen.findByRole('tab', {
@@ -87,11 +110,15 @@ describe('EditEdge ports', () => {
     params.activeSubTab = 'ports-general'
     render(
       <Provider>
-        <Ports />
+        <EdgeEditContext.Provider
+          value={defaultContextData}
+        >
+          <Ports />
+        </EdgeEditContext.Provider>
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
 
@@ -109,17 +136,21 @@ describe('EditEdge ports', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <Ports />
+        <EdgeEditContext.Provider
+          value={defaultContextData}
+        >
+          <Ports />
+        </EdgeEditContext.Provider>
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
     await user.click(screen.getByRole('tab', { name: 'Sub-interface' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       // eslint-disable-next-line max-len
-      pathname: `/t/${params.tenantId}/devices/edge/${params.serialNumber}/edit/ports/sub-interface`,
+      pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/edit/ports/sub-interface`,
       hash: '',
       search: ''
     })

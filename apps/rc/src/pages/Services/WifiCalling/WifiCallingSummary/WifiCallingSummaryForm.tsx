@@ -3,7 +3,7 @@ import { useContext } from 'react'
 import { Form, Col, Row, Typography } from 'antd'
 import { useIntl }                    from 'react-intl'
 
-import { StepsForm }       from '@acx-ui/components'
+import { StepsFormLegacy } from '@acx-ui/components'
 import { QosPriorityEnum } from '@acx-ui/rc/utils'
 
 import { wifiCallingQosPriorityLabelMapping } from '../../contentsMap'
@@ -21,7 +21,7 @@ const WifiCallingSummaryForm = () => {
   return (
     <Row gutter={20}>
       <Col span={18}>
-        <StepsForm.Title>{$t({ defaultMessage: 'Summary' })}</StepsForm.Title>
+        <StepsFormLegacy.Title>{$t({ defaultMessage: 'Summary' })}</StepsFormLegacy.Title>
         <Row>
           <Col span={6}>
             <Form.Item

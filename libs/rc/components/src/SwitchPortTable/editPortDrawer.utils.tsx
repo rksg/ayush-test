@@ -9,6 +9,7 @@ import {
 import {
   AclUnion,
   getPortSpeedOptions,
+  getSwitchModel,
   LldpQosModel,
   SwitchPortViewModel,
   SwitchDefaultVlan,
@@ -225,6 +226,9 @@ export const handlePortSpeedFor765048F = (selectedPorts: SwitchPortViewModel[]) 
 }
 
 export const getPoeClass = (selectedPorts: SwitchPortViewModel[]) => {
+  const nonePoeClassModels = [
+    'ICX8200-24', 'ICX8200-24F', 'ICX8200-24FX', 'ICX8200-48', 'ICX8200-48F'
+  ]
   const poeClassOptions = [
     { label: defineMessage({ defaultMessage: 'Negotiate' }), value: 'UNSET' },
     { label: defineMessage({ defaultMessage: '0 (802.3af 15.4 W)' }), value: 'ZERO' },
@@ -239,18 +243,26 @@ export const getPoeClass = (selectedPorts: SwitchPortViewModel[]) => {
   ]
 
   let support5to8PoeClass = true
+  let isNoPoeClassModel = false
   selectedPorts.forEach(port => {
     const portNumber = Number(port.portIdentifier.split('/').pop())
-
-    const supportMorePoeClass820048zp2 = port.switchModel === 'ICX8200-48ZP2' && portNumber > 32
-    const is820048zp = port.switchModel === 'ICX8200-48ZP'
-    const is8200c08zp = port.switchModel === 'ICX8200-C08ZP'
-    const support = is8200c08zp || is820048zp || supportMorePoeClass820048zp2
+    const switchModel = getSwitchModel(port.switchUnitId) || ''
+    const supportMorePoeClass820048zp2 = switchModel === 'ICX8200-48ZP2' && portNumber > 32
+    const is820024zp = switchModel === 'ICX8200-24ZP'
+    const is8200c08zp = switchModel === 'ICX8200-C08ZP'
+    const support = is8200c08zp || is820024zp || supportMorePoeClass820048zp2
+    const isNoPoeClass = nonePoeClassModels.includes(switchModel)
     if(!support) {
       support5to8PoeClass = false
     }
+    if (isNoPoeClass) {
+      isNoPoeClassModel = true
+    }
   })
-  return support5to8PoeClass ? poeClassOptions : poeClassOptions.splice(0,6)
+
+  return isNoPoeClassModel
+    ? poeClassOptions.slice(1,2)
+    : (support5to8PoeClass ? poeClassOptions : poeClassOptions.splice(0,6))
 }
 
 

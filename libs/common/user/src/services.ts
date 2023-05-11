@@ -17,7 +17,9 @@ import {
 export const UserUrlsInfo = {
   getCloudMessageBanner: {
     method: 'get',
-    url: '/api/upgrade/tenant/:tenantId/banner'
+    url: '/upgradeConfig/banners',
+    oldUrl: '/api/upgrade/tenant/:tenantId/banner',
+    newApi: true
   },
   updateUserProfile: {
     method: 'put',
@@ -61,7 +63,9 @@ export const UserUrlsInfo = {
   },
   guestAllowedOperations: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/guest-user/allowed-operations'
+    url: '/tenants/allowedOperations?service=guest',
+    oldUrl: '/api/tenant/:tenantId/wifi/guest-user/allowed-operations',
+    newApi: true
   },
   upgradeAllowedOperations: {
     method: 'get',

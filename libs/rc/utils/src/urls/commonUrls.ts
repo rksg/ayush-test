@@ -237,8 +237,8 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   downloadApsCSV: {
     method: 'post',
-    url: '/aps/inventories/query/csvFiles',
-    oldUrl: '/aps/inventories/query/csvFiles',
+    url: '/aps/query/csvFiles',
+    oldUrl: '/aps/query/csvFiles',
     newApi: true
   },
   getService: {
@@ -501,6 +501,12 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getTopology: {
     method: 'get',
     url: '/venues/:venueId/topologies',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/venue/:venueId/topology',
+    newApi: true
+  },
+  getApMeshTopology: {
+    method: 'get',
+    url: '/venues/:venueId/meshTopologies',
     oldUrl: '/api/viewmodel/tenant/:tenantId/venue/:venueId/topology',
     newApi: true
   },

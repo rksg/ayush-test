@@ -32,14 +32,18 @@ export enum Features {
   WISPR_ENCRYPT_MAC_IP = 'acx-ui-wispr-encrypt-mac-ip-toggle',
   HEALTH_DRILLDOWN = 'acx-ui-health-drilldown-toggle',
   PROPERTY_MANAGEMENT = 'property-management-enabled',
+  MSG_TEMPLATE = 'msgtemplate-service-enabled',
   RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
   POLICY_MANAGEMENT = 'policy-management-service-enabled',
+  AP_MESH_TOPOLOGY = 'acx-ui-ap-mesh-topology',
   WIFI_EDA_GATEWAY = 'wifi-api-gateway-eda-toggle',
+  WIFI_EDA_READY_TOGGLE = 'wifi-eda-ready-toggle',
   WIFI_EDA_BYPASS_CNA_TOGGLE = 'wifi-eda-bypass-cna-toggle',
   CLOUDMOTE_SERVICE = 'cloudmote-service-enabled',
   RADIUS_ATTRIBUTE_GROUP_CONFIG = 'radius-attrib-group-service-enabled',
   SWITCH_RODAN_FIRMWARE = 'switch-consumer-collect-config-toggle',
   EXPORT_DEVICE = 'viewmodel-export-device-inventory',
   WPA3_80211R = 'wifi-eda-wpa3-80211r-toggle',
-  I18N_TOGGLE = 'acx-ui-i18n-toggle'
+  I18N_TOGGLE = 'acx-ui-i18n-toggle',
+  STICKY_CLIENT_STEERING = 'wifi-eda-sticky-client-steering-toggle'
 }

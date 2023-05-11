@@ -44,17 +44,8 @@ export * from './components/SparklineChart'
 export * from './components/StackedAreaChart'
 export { StackedBarChart } from './components/StackedBarChart'
 export type { StackedBarChartProps } from './components/StackedBarChart'
+export * from './components/StepsFormLegacy'
 export * from './components/StepsForm'
-export {
-  StepsForm as StepsFormNew,
-  useStepFormContext,
-  createStepsFormContext
-} from './components/StepsFormNew'
-export type {
-  FieldSummaryProps,
-  StepsFormProps as StepsFormNewProps,
-  StepFormProps as StepFormNewProps
-} from './components/StepsFormNew'
 export * from './components/Subtitle'
 export type {
   Filter

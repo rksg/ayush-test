@@ -17,7 +17,7 @@ exports[`AP Form - Add should render correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/tenant-id/devices/wifi"
+                href="/tenant-id/t/devices/wifi"
               >
                 Access Points
               </a>
@@ -62,7 +62,7 @@ exports[`AP Form - Add should render correctly 1`] = `
     </div>
   </div>
   <section
-    class="styledComponents__Wrapper-sc-1ibvcih-2 kZHgWB"
+    class="styledComponents__Wrapper-sc-71wmpn-2 jUXjyR"
   >
     <div
       class="ant-pro-steps-form"
@@ -76,7 +76,7 @@ exports[`AP Form - Add should render correctly 1`] = `
           style="padding-left: 12px; padding-right: 12px;"
         >
           <div
-            class="styledComponents__StepsContainer-sc-1ibvcih-0 fzFjZo"
+            class="styledComponents__StepsContainer-sc-71wmpn-0 blGWyw"
           >
             <div
               class="ant-steps ant-steps-vertical ant-steps-dot"
@@ -453,6 +453,82 @@ exports[`AP Form - Add should render correctly 1`] = `
                           </div>
                         </div>
                       </div>
+                      <div
+                        class="ant-form-item"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
+                          <div
+                            class="ant-col ant-form-item-label"
+                          >
+                            <label
+                              class=""
+                              for="0_tags"
+                              title="Tags"
+                            >
+                              Tags
+                            </label>
+                          </div>
+                          <div
+                            class="ant-col ant-form-item-control"
+                          >
+                            <div
+                              class="ant-form-item-control-input"
+                            >
+                              <div
+                                class="ant-form-item-control-input-content"
+                              >
+                                <div
+                                  class="ant-select ant-select-in-form-item ant-select-multiple ant-select-show-search"
+                                  maxlength="24"
+                                >
+                                  <div
+                                    class="ant-select-selector"
+                                  >
+                                    <div
+                                      class="ant-select-selection-overflow"
+                                    >
+                                      <div
+                                        class="ant-select-selection-overflow-item ant-select-selection-overflow-item-suffix"
+                                        style="opacity: 1;"
+                                      >
+                                        <div
+                                          class="ant-select-selection-search"
+                                          style="width: 0px;"
+                                        >
+                                          <input
+                                            aria-activedescendant="0_tags_list_0"
+                                            aria-autocomplete="list"
+                                            aria-controls="0_tags_list"
+                                            aria-haspopup="listbox"
+                                            aria-owns="0_tags_list"
+                                            autocomplete="off"
+                                            class="ant-select-selection-search-input"
+                                            id="0_tags"
+                                            role="combobox"
+                                            type="search"
+                                            value=""
+                                          />
+                                          <span
+                                            aria-hidden="true"
+                                            class="ant-select-selection-search-mirror"
+                                          >
+                                             
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <span
+                                      class="ant-select-selection-placeholder"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -462,7 +538,7 @@ exports[`AP Form - Add should render correctly 1`] = `
         </div>
       </div>
       <div
-        class="styledComponents__ActionsContainer-sc-1ibvcih-1 dVvdlc"
+        class="styledComponents__ActionsContainer-sc-71wmpn-1 eCCHZw"
       >
         <div
           class="ant-space ant-space-horizontal ant-space-align-center"

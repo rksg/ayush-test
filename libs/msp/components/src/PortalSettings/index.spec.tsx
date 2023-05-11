@@ -205,7 +205,7 @@ describe('PortalSettings', () => {
     const formItem = screen.getByRole('textbox')
     expect(formItem).toBeVisible()
     expect(formItem).toHaveValue('demo-msp')
-    expect(screen.getByText('msp.devalto.ruckuswireless.com')).toBeVisible()
+    expect(screen.getByText('.msp.devalto.ruckuswireless.com')).toBeVisible()
     expect(screen.getByDisplayValue('demo-msp')).toBeInTheDocument()
   })
   it('empty domain form item should show correct error message', async () => {

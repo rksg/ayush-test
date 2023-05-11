@@ -12,7 +12,7 @@ import {
 import { useIntl, FormattedMessage } from 'react-intl'
 
 import {
-  StepsForm,
+  StepsFormLegacy,
   Button,
   Subtitle,
   Tooltip
@@ -193,7 +193,7 @@ function SettingsForm () {
   return (
     <>
       <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
-        <StepsForm.Title>{intl.$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
+        <StepsFormLegacy.Title>{intl.$t({ defaultMessage: 'Settings' })}</StepsFormLegacy.Title>
         <div>
           {wlanSecurity !== WlanSecurityEnum.WEP && wlanSecurity !== WlanSecurityEnum.WPA3 &&
             <Form.Item

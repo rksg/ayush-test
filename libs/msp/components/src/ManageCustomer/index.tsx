@@ -19,8 +19,8 @@ import {
   Button,
   PageHeader,
   showToast,
-  StepsForm,
-  StepsFormInstance,
+  StepsFormLegacy,
+  StepsFormLegacyInstance,
   Subtitle
 } from '@acx-ui/components'
 import { useIsSplitOn, Features }    from '@acx-ui/feature-toggle'
@@ -162,7 +162,7 @@ export function ManageCustomer () {
 
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
-  const formRef = useRef<StepsFormInstance<EcFormData>>()
+  const formRef = useRef<StepsFormLegacyInstance<EcFormData>>()
   const { action, status, tenantId, mspEcTenantId } = useParams()
 
   const [isTrialMode, setTrialMode] = useState(false)
@@ -185,6 +185,7 @@ export function ManageCustomer () {
   const [startSubscriptionVisible, setStartSubscriptionVisible] = useState(false)
   const [subscriptionStartDate, setSubscriptionStartDate] = useState<moment.Moment>()
   const [subscriptionEndDate, setSubscriptionEndDate] = useState<moment.Moment>()
+  const [subscriptionOrigEndDate, setSubscriptionOrigEndDate] = useState<moment.Moment>()
   const [address, updateAddress] = useState<Address>(isMapEnabled? {} : defaultAddress)
   const [formData, setFormData] = useState({} as Partial<EcFormData>)
 
@@ -268,6 +269,7 @@ export function ManageCustomer () {
 
         setSubscriptionStartDate(moment(data?.service_effective_date))
         setSubscriptionEndDate(moment(data?.service_expiration_date))
+        setSubscriptionOrigEndDate(moment(data?.service_expiration_date))
         setWifiLicense(wLic)
         setSwitchLicense(sLic)
       }
@@ -466,6 +468,8 @@ export function ManageCustomer () {
       const ecFormData = { ...values }
       const today = EntitlementUtil.getServiceStartDate()
       const expirationDate = EntitlementUtil.getServiceEndDate(subscriptionEndDate)
+      const expirationDateOrig = EntitlementUtil.getServiceEndDate(subscriptionOrigEndDate)
+      const needUpdateLicense = expirationDate !== expirationDateOrig
 
       const licAssignment = []
       if (isTrialEditMode) {
@@ -486,9 +490,10 @@ export function ManageCustomer () {
           deviceType: EntitlementDeviceType.MSP_SWITCH
         })
       } else {
-        if (_.isString(ecFormData.wifiLicense)) {
+        if (_.isString(ecFormData.wifiLicense) || needUpdateLicense) {
           const wifiAssignId = getAssignmentId(EntitlementDeviceType.MSP_WIFI)
-          const quantityWifi = parseInt(ecFormData.wifiLicense, 10)
+          const quantityWifi = _.isString(ecFormData.wifiLicense)
+            ? parseInt(ecFormData.wifiLicense, 10) : ecFormData.wifiLicense
           const actionWifi = wifiAssignId === 0 ? AssignActionEnum.ADD : AssignActionEnum.MODIFY
           licAssignment.push({
             quantity: quantityWifi,
@@ -498,9 +503,10 @@ export function ManageCustomer () {
             deviceType: EntitlementDeviceType.MSP_WIFI
           })
         }
-        if (_.isString(ecFormData.switchLicense)) {
+        if (_.isString(ecFormData.switchLicense) || needUpdateLicense) {
           const switchAssignId = getAssignmentId(EntitlementDeviceType.MSP_SWITCH)
-          const quantitySwitch = parseInt(ecFormData.switchLicense, 10)
+          const quantitySwitch = _.isString(ecFormData.switchLicense)
+            ? parseInt(ecFormData.switchLicense, 10) : ecFormData.switchLicense
           const actionSwitch = switchAssignId === 0 ? AssignActionEnum.ADD : AssignActionEnum.MODIFY
           licAssignment.push({
             quantity: quantitySwitch,
@@ -1096,7 +1102,7 @@ export function ManageCustomer () {
             link: '/dashboard/mspcustomers', tenantType: 'v' }
         ]}
       />
-      <StepsForm
+      <StepsFormLegacy
         formRef={formRef}
         onFinish={isEditMode ? handleEditCustomer : handleAddCustomer}
         onCancel={() => navigate(linkToCustomers)}
@@ -1104,7 +1110,7 @@ export function ManageCustomer () {
           intl.$t({ defaultMessage: 'Save' }):
           intl.$t({ defaultMessage: 'Add Customer' }) }}
       >
-        {isEditMode && <StepsForm.StepForm>
+        {isEditMode && <StepsFormLegacy.StepForm>
           <Subtitle level={3}>
             { intl.$t({ defaultMessage: 'Account Details' }) }</Subtitle>
           <Form.Item
@@ -1148,10 +1154,10 @@ export function ManageCustomer () {
           <Form.Item children={displayCustomerAdmins()} />
           <EditCustomerSubscriptionForm></EditCustomerSubscriptionForm>
           <EnableSupportForm></EnableSupportForm>
-        </StepsForm.StepForm>}
+        </StepsFormLegacy.StepForm>}
 
         {!isEditMode && <>
-          <StepsForm.StepForm
+          <StepsFormLegacy.StepForm
             name='accountDetail'
             title={intl.$t({ defaultMessage: 'Account Details' })}
             onFinish={async (data) => {
@@ -1199,20 +1205,20 @@ export function ManageCustomer () {
 
             <MspAdminsForm></MspAdminsForm>
             <CustomerAdminsForm></CustomerAdminsForm>
-          </StepsForm.StepForm>
+          </StepsFormLegacy.StepForm>
 
-          <StepsForm.StepForm name='subscriptions'
+          <StepsFormLegacy.StepForm name='subscriptions'
             title={intl.$t({ defaultMessage: 'Subscriptions' })}>
             <CustomerSubscription />
-          </StepsForm.StepForm>
+          </StepsFormLegacy.StepForm>
 
-          <StepsForm.StepForm name='summary'
+          <StepsFormLegacy.StepForm name='summary'
             title={intl.$t({ defaultMessage: 'Summary' })}>
             <CustomerSummary />
-          </StepsForm.StepForm>
+          </StepsFormLegacy.StepForm>
         </>}
 
-      </StepsForm>
+      </StepsFormLegacy>
 
       {drawerAdminVisible && <ManageAdminsDrawer
         visible={drawerAdminVisible}

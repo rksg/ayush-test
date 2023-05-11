@@ -2,7 +2,7 @@ import { Checkbox, Form }         from 'antd'
 import { NamePath }               from 'antd/es/form/interface'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { StepsFormNew, Tooltip } from '@acx-ui/components'
+import { StepsForm, Tooltip } from '@acx-ui/components'
 
 const name = ['configs', 0, 'speedTestEnabled'] as const
 const label = defineMessage({ defaultMessage: 'Speed Test' })
@@ -28,7 +28,7 @@ SpeedTest.FieldSummary = function SpeedTestFieldSummary () {
   return <Form.Item
     name={name as unknown as NamePath}
     label={$t(label)}
-    children={<StepsFormNew.FieldSummary<boolean>
+    children={<StepsForm.FieldSummary<boolean>
       convert={(value) => value
         ? $t({ defaultMessage: 'Enabled' })
         : $t({ defaultMessage: 'Disabled' })}
