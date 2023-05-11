@@ -11,8 +11,8 @@ import { defineMessage, useIntl } from 'react-intl'
 import {
   Button,
   PageHeader,
-  StepsForm,
-  StepsFormInstance,
+  StepsFormLegacy,
+  StepsFormLegacyInstance,
   Subtitle
 } from '@acx-ui/components'
 import {
@@ -70,7 +70,7 @@ export default function NetworkSegAuthForm ({ editMode = false }: { editMode?: b
   const [updateWebAuthTemplate] = useUpdateWebAuthTemplateMutation()
   const { data } = useGetWebAuthTemplateQuery({ params }, { skip: !editMode })
 
-  const formRef = useRef<StepsFormInstance<WebAuthTemplate>>()
+  const formRef = useRef<StepsFormLegacyInstance<WebAuthTemplate>>()
 
   const previousPath = (location as LocationExtended)?.state?.from?.pathname
 
@@ -124,18 +124,18 @@ export default function NetworkSegAuthForm ({ editMode = false }: { editMode?: b
           { text: $t({ defaultMessage: 'Services' }), link: getServiceListRoutePath(true) }
         ]}
       />
-      <StepsForm<WebAuthTemplate>
+      <StepsFormLegacy<WebAuthTemplate>
         formRef={formRef}
         editMode={editMode}
         onCancel={() => redirectPreviousPage(navigate, previousPath, linkToServices)}
         onFinish={saveData}
       >
-        <StepsForm.StepForm
+        <StepsFormLegacy.StepForm
           name='settings'
           title={$t({ defaultMessage: 'Settings' })}
           layout='vertical' >
-          <StepsForm.Title>
-            {$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
+          <StepsFormLegacy.Title>
+            {$t({ defaultMessage: 'Settings' })}</StepsFormLegacy.Title>
           <Form.Item name='name'
             label={$t({ defaultMessage: 'Name' })}
             rules={[{ required: true }]} >
@@ -156,8 +156,8 @@ export default function NetworkSegAuthForm ({ editMode = false }: { editMode?: b
                   label={$t(item.label)} />)
               })
           }
-        </StepsForm.StepForm>
-      </StepsForm>
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>
     </>
   )
 }

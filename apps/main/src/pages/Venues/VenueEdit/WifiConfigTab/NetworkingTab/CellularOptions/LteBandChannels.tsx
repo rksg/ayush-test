@@ -9,7 +9,7 @@ import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import _                       from 'lodash'
 import { useIntl }             from 'react-intl'
 
-import { StepsForm }                                                                                                         from '@acx-ui/components'
+import { StepsFormLegacy }                                                                                                   from '@acx-ui/components'
 import { AvailableLteBandOptions, AvailableLteBands, CountryIsoDisctionary, LteBandLockCountriesJson, VenueApModelCellular } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
@@ -130,9 +130,9 @@ export function LteBandChannels (
       }
       {(props.isCurrent || (!props.isCurrent && enableRegion && props.isShowOtherLteBands)) &&
         <>
-          <StepsForm.FieldLabel width='25px'>
+          <StepsFormLegacy.FieldLabel width='25px'>
             {$t({ defaultMessage: '3G:' })}
-            <StepsForm.MultiSelect>
+            <StepsFormLegacy.MultiSelect>
               <Form.Item
                 style={{ marginBottom: '0px' }}
                 initialValue={[]}
@@ -143,12 +143,12 @@ export function LteBandChannels (
                   />
                 }
               />
-            </StepsForm.MultiSelect>
-          </StepsForm.FieldLabel>
+            </StepsFormLegacy.MultiSelect>
+          </StepsFormLegacy.FieldLabel>
 
-          <StepsForm.FieldLabel width='25px'>
+          <StepsFormLegacy.FieldLabel width='25px'>
             {$t({ defaultMessage: '4G:' })}
-            <StepsForm.MultiSelect>
+            <StepsFormLegacy.MultiSelect>
               <Form.Item
                 initialValue={[]}
                 name={['bandLteArray', props.formControlName, props.region, 'band4G']}
@@ -158,8 +158,8 @@ export function LteBandChannels (
                   />
                 }
               />
-            </StepsForm.MultiSelect>
-          </StepsForm.FieldLabel></>
+            </StepsFormLegacy.MultiSelect>
+          </StepsFormLegacy.FieldLabel></>
       }
     </>
 

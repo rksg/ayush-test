@@ -5,7 +5,7 @@ import { isEmpty }                                  from 'lodash'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 import { useNavigate, useParams }                   from 'react-router-dom'
 
-import { Button, Loader, StepsForm, StepsFormInstance } from '@acx-ui/components'
+import { Button, Loader, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
 import {
   useGetApDirectedMulticastQuery,
   useGetApQuery,
@@ -43,7 +43,7 @@ export function DirectedMulticast () {
   const [getVenue] = useLazyGetVenueQuery()
   const [getVenueDirectedMulticast] = useLazyGetVenueDirectedMulticastQuery()
 
-  const formRef = useRef<StepsFormInstance<ApDirectedMulticast>>()
+  const formRef = useRef<StepsFormLegacyInstance<ApDirectedMulticast>>()
 
   const [venue, setVenue] = useState({} as VenueExtended)
   const [initData, setInitData] = useState({} as ApDirectedMulticast)
@@ -117,7 +117,7 @@ export function DirectedMulticast () {
       }
     }
 
-    updateEditContext(formRef?.current as StepsFormInstance, true)
+    updateEditContext(formRef?.current as StepsFormLegacyInstance, true)
   }
 
 
@@ -150,7 +150,7 @@ export function DirectedMulticast () {
     }
   }
 
-  const updateEditContext = (form: StepsFormInstance, isDirty: boolean) => {
+  const updateEditContext = (form: StepsFormLegacyInstance, isDirty: boolean) => {
     setEditContextData && setEditContextData({
       ...editContextData,
       tabTitle: $t({ defaultMessage: 'Directed Multicast' }),
@@ -166,14 +166,14 @@ export function DirectedMulticast () {
   }
 
   const handleChange = () => {
-    updateEditContext(formRef?.current as StepsFormInstance, true)
+    updateEditContext(formRef?.current as StepsFormLegacyInstance, true)
   }
 
   return (<Loader states={[{
     isLoading: formInitializing,
     isFetching: isUpdatingApDirectedMulticast || isResetApDirectedMulticast
   }]}>
-    <StepsForm
+    <StepsFormLegacy
       formRef={formRef}
       onFormChange={handleChange}
       onFinish={handleUpdateDirectedMulticast}
@@ -184,7 +184,7 @@ export function DirectedMulticast () {
         submit: $t({ defaultMessage: 'Apply Directed Multicast' })
       }}
     >
-      <StepsForm.StepForm initialValues={initData}>
+      <StepsFormLegacy.StepForm initialValues={initData}>
         <Row gutter={20}>
           <Col span={8}>
             <Space style={{
@@ -199,10 +199,10 @@ export function DirectedMulticast () {
               Currently settings as the venue (<venuelink></venuelink>)
             `}
                   values={{
-                    venuelink: () =>
+                    venuelink: () => venue?
                       <TenantLink
                         to={`venues/${venue.id}/venue-details/overview`}>{venue?.name}
-                      </TenantLink>
+                      </TenantLink>: ''
                   }}/>
                 : $t({ defaultMessage: 'Custom settings' })
               }
@@ -237,8 +237,8 @@ export function DirectedMulticast () {
             />
           </FieldLabel>
         ))}
-      </StepsForm.StepForm>
-    </StepsForm>
+      </StepsFormLegacy.StepForm>
+    </StepsFormLegacy>
   </Loader>
   )
 }

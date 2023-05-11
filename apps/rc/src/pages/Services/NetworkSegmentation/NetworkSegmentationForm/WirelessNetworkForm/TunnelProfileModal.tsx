@@ -2,10 +2,10 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, Loader, Modal, ModalType, showToast, StepsForm } from '@acx-ui/components'
-import { TunnelProfileForm }                                      from '@acx-ui/rc/components'
-import { useCreateTunnelProfileMutation }                         from '@acx-ui/rc/services'
-import { TunnelProfile }                                          from '@acx-ui/rc/utils'
+import { Button, Loader, Modal, ModalType, showToast, StepsFormLegacy } from '@acx-ui/components'
+import { TunnelProfileForm }                                            from '@acx-ui/rc/components'
+import { useCreateTunnelProfileMutation }                               from '@acx-ui/rc/services'
+import { TunnelProfile }                                                from '@acx-ui/rc/utils'
 
 
 
@@ -28,15 +28,15 @@ export const TunnelProfileModal = () => {
   }
 
   const content = <Loader states={[{ isLoading: false, isFetching: isFormSubmitting }]}>
-    <StepsForm
+    <StepsFormLegacy
       onFinish={handleCreateTunnelProfile}
       onCancel={() => setVisible(false)}
       buttonLabel={{ submit: $t({ defaultMessage: 'Add' }) }}
     >
-      <StepsForm.StepForm>
+      <StepsFormLegacy.StepForm>
         <TunnelProfileForm />
-      </StepsForm.StepForm>
-    </StepsForm>
+      </StepsFormLegacy.StepForm>
+    </StepsFormLegacy>
   </Loader>
 
   return (

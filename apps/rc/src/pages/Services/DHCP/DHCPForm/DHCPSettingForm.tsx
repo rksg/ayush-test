@@ -2,7 +2,7 @@ import { Form, Input, Col, Radio, Row, Space } from 'antd'
 import _                                       from 'lodash'
 import { useIntl }                             from 'react-intl'
 
-import { StepsForm }                      from '@acx-ui/components'
+import { StepsFormLegacy }                from '@acx-ui/components'
 import { useLazyGetDHCPProfileListQuery } from '@acx-ui/rc/services'
 import { useGetDHCPProfileQuery }         from '@acx-ui/rc/services'
 import { DHCPPool }                       from '@acx-ui/rc/utils'
@@ -72,7 +72,7 @@ export function SettingForm (props: DHCPFormProps) {
   return (<>
     <Row gutter={20}>
       <Col span={10}>
-        <StepsForm.Title>{$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
+        <StepsFormLegacy.Title>{$t({ defaultMessage: 'Settings' })}</StepsFormLegacy.Title>
         <Form.Item
           name='id'
           hidden

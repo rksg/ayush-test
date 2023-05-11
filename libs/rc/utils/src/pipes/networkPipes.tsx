@@ -69,19 +69,21 @@ interface AdvancedPassphraseExpirationProps {
   expirationType: ExpirationType | null;
   expirationOffset?: number;
   expirationDate?: string;
+  displayTime?: boolean;
 }
 
 export function transformAdvancedDpskExpirationText (
   { $t }: IntlShape,
   props: AdvancedPassphraseExpirationProps
 ) {
-  const { expirationType, expirationOffset, expirationDate } = props
+  const { expirationType, expirationOffset, expirationDate, displayTime = false } = props
   if (!expirationType) {
     return $t(passphraseExpirationLabel[PassphraseExpirationEnum.UNLIMITED])
   } else if (expirationType === ExpirationType.SPECIFIED_DATE) {
     const expirationDateMoment = moment(expirationDate)
     const text = $t(advancedPassphraseExpirationLabel[ExpirationType.SPECIFIED_DATE], {
-      date: expirationDateMoment.format(EXPIRATION_DATE_FORMAT)
+      // eslint-disable-next-line max-len
+      date: expirationDateMoment.format(displayTime ? EXPIRATION_TIME_FORMAT : EXPIRATION_DATE_FORMAT)
     })
     const isSameOrBeforeToday = expirationDateMoment.isSameOrBefore(new Date())
 

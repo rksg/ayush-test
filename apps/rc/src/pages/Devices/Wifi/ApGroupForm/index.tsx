@@ -8,8 +8,8 @@ import { useIntl }                                 from 'react-intl'
 import {
   PageHeader,
   Loader,
-  StepsForm,
-  StepsFormInstance
+  StepsFormLegacy,
+  StepsFormLegacyInstance
 } from '@acx-ui/components'
 import {
   useVenuesListQuery,
@@ -43,7 +43,7 @@ export function ApGroupForm () {
   const { tenantId, action, apGroupId } = useParams()
   const navigate = useNavigate()
   const params = useParams()
-  const formRef = useRef<StepsFormInstance<AddApGroup>>()
+  const formRef = useRef<StepsFormLegacyInstance<AddApGroup>>()
   const basePath = useTenantLink('/devices/')
   const venuesList = useVenuesListQuery({ params: { tenantId: tenantId }, payload: defaultPayload })
   const isEditMode = action === 'edit'
@@ -167,7 +167,7 @@ export function ApGroupForm () {
         { text: $t({ defaultMessage: 'Access Points' }), link: '/devices/wifi' }
       ]}
     />
-    <StepsForm
+    <StepsFormLegacy
       formRef={formRef}
       onFinish={handleAddApGroup}
       onCancel={() => navigate({
@@ -178,14 +178,14 @@ export function ApGroupForm () {
         submit: !isEditMode ? $t({ defaultMessage: 'Add' }) : $t({ defaultMessage: 'Apply' })
       }}
     >
-      <StepsForm.StepForm>
+      <StepsFormLegacy.StepForm>
 
         <Loader states={[{
           isLoading: venuesList.isLoading
         }]}>
           <Row gutter={20}>
             <Col span={8}>
-              <StepsForm.Title>{$t({ defaultMessage: 'Group Details' })}</StepsForm.Title>
+              <StepsFormLegacy.Title children={$t({ defaultMessage: 'Group Details' })} />
               <Form.Item
                 name='name'
                 label={$t({ defaultMessage: 'Group Name' })}
@@ -219,10 +219,10 @@ export function ApGroupForm () {
           </Row>
           <Row>
             <Col>
-              <StepsForm.Title
+              <StepsFormLegacy.Title
                 style={{ padding: '10px 0px' }}>
                 {$t({ defaultMessage: 'Group Member' })}
-              </StepsForm.Title>
+              </StepsFormLegacy.Title>
               <Form.Item
                 name='apSerialNumbers'
                 valuePropName='targetKeys'
@@ -231,8 +231,10 @@ export function ApGroupForm () {
                   listStyle={{ width: 250, height: 316 }}
                   showSearch
                   showSelectAll={false}
-                  dataSource={
-                    apsOption}
+                  filterOption={(inputValue, item) =>
+                    (item.name && item.name.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1)
+                  }
+                  dataSource={apsOption}
                   render={item => item.name}
                   operations={['Add', 'Remove']}
                   titles={[$t({ defaultMessage: 'Available APs' }),
@@ -242,7 +244,7 @@ export function ApGroupForm () {
             </Col>
           </Row>
         </Loader>
-      </StepsForm.StepForm>
-    </StepsForm>
+      </StepsFormLegacy.StepForm>
+    </StepsFormLegacy>
   </>
 }
