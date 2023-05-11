@@ -208,6 +208,7 @@ function CloudpathFormItems () {
           >
             <Select style={{ width: 200 }}
               placeholder={$t({ defaultMessage: 'Select...' })}
+              allowClear
               options={policySetOptions}
             />
           </Form.Item>
