@@ -12,7 +12,7 @@ import {
 import { useIntl } from 'react-intl'
 
 import {
-  StepsForm
+  StepsFormLegacy
 } from '@acx-ui/components'
 import {
   MigrationActionTypes
@@ -86,7 +86,7 @@ const UploadForm = () => {
   return (
     <Row gutter={20}>
       <Col span={10}>
-        <StepsForm.Title>{$t({ defaultMessage: 'Backup File Selection' })}</StepsForm.Title>
+        <StepsFormLegacy.Title children={$t({ defaultMessage: 'Backup File Selection' })} />
         <Form.Item
           label={$t(MessageMapping.migrate_description)}
         />

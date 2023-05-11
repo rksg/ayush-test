@@ -2,7 +2,7 @@
 import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import { PageHeader, StepsFormNew }                 from '@acx-ui/components'
+import { PageHeader, StepsForm }                    from '@acx-ui/components'
 import { TunnelProfileForm, TunnelProfileFormType } from '@acx-ui/rc/components'
 import { useCreateTunnelProfileMutation }           from '@acx-ui/rc/services'
 import {
@@ -53,7 +53,7 @@ const AddTunnelProfile = () => {
           }
         ]}
       />
-      <StepsFormNew
+      <StepsForm
         onFinish={handleAddTunnelProfile}
         onCancel={() => redirectPreviousPage(navigate, previousPath, linkToTableView)}
         buttonLabel={{ submit: $t({ defaultMessage: 'Add' }) }}
@@ -61,14 +61,14 @@ const AddTunnelProfile = () => {
           mtuType: MtuTypeEnum.AUTO
         }}
       >
-        <StepsFormNew.StepForm>
+        <StepsForm.StepForm>
           <Row gutter={20}>
             <Col span={8}>
               <TunnelProfileForm />
             </Col>
           </Row>
-        </StepsFormNew.StepForm>
-      </StepsFormNew>
+        </StepsForm.StepForm>
+      </StepsForm>
     </>
   )
 }

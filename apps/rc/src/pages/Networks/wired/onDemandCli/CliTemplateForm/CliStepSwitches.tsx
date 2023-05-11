@@ -83,7 +83,7 @@ export function CliStepSwitches () {
 
   return <Row gutter={24}>
     <Col span={18}>
-      <StepsForm.Title>{$t({ defaultMessage: 'Switches' })}</StepsForm.Title>
+      <StepsForm.Title children={$t({ defaultMessage: 'Switches' })} />
       <Typography.Text style={{
         display: 'block', marginBottom: '15px', fontSize: '14px',
         color: cssStr('--acx-primary-black')

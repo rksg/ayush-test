@@ -5,7 +5,7 @@ import { useIntl }                       from 'react-intl'
 
 import {
   Loader,
-  StepsForm,
+  StepsFormLegacy,
   Table,
   TableProps,
   Tooltip
@@ -171,7 +171,7 @@ export function VenueSetting () {
     ]}>
       <Row gutter={20}>
         <Col span={20}>
-          <StepsForm.Title children={$t({ defaultMessage: 'Venues' })} />
+          <StepsFormLegacy.Title children={$t({ defaultMessage: 'Venues' })} />
           <Table
             rowKey='id'
             rowActions={filterByAccess(rowActions)}

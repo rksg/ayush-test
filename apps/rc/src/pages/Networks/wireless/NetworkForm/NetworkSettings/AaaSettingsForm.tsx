@@ -11,7 +11,7 @@ import {
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import {
-  StepsForm,
+  StepsFormLegacy,
   Subtitle,
   Tooltip
 } from '@acx-ui/components'
@@ -91,7 +91,7 @@ function SettingsForm () {
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
       <div>
-        <StepsForm.Title>{ $t({ defaultMessage: 'AAA Settings' }) }</StepsForm.Title>
+        <StepsFormLegacy.Title>{ $t({ defaultMessage: 'AAA Settings' }) }</StepsFormLegacy.Title>
         {triBandRadioFeatureFlag &&
           <Form.Item
             label='Security Protocol'

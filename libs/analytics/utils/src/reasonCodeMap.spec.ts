@@ -11,7 +11,8 @@ import {
   mapCodeToAttempt,
   MapElement,
   mapDisconnectCodeToReason,
-  mapCodeToFailureText
+  mapCodeToFailureText,
+  mapDisconnectCode
 } from './reasonCodeMap'
 
 describe('readCodesIntoMap', () => {
@@ -25,6 +26,9 @@ describe('clientEventDescription', () => {
   it('renders text for event code', () => {
     expect(renderHook(()=> useIntl().$t(
       clientEventDescription('EVENT_CLIENT_DISCONNECT'))).result.current)
+      .toEqual('Client disconnected')
+    expect(renderHook(()=> useIntl().$t(
+      clientEventDescription('EVENT_CLIENT_AUTHENTICATION_FAILURE'))).result.current)
       .toEqual('Client disconnected')
 
     expect(renderHook(()=> useIntl().$t(
@@ -65,17 +69,43 @@ describe('mapCodeToReason', () => {
   })
 })
 
-describe('mapDisconnectCodeToReason', () => {
+describe('mapDisconnectCode', () => {
   it('renders text for given code', () => {
     renderHook(() => {
       const { $t } = useIntl()
-      expect($t(mapDisconnectCodeToReason('2'))).toEqual('Previous authentication no longer valid')
+      expect($t(mapDisconnectCode('EVENT_CLIENT_DISCONNECT'))).toEqual('Client disconnected')
+      expect($t(mapDisconnectCode('EVENT_CLIENT_AUTHENTICATION_FAILURE')))
+        .toEqual('Client authentication failed')
     })
   })
   it('renders Unknown if nothing matches', () => {
     renderHook(() => {
       const { $t } = useIntl()
-      expect($t(mapDisconnectCodeToReason('222'))).toEqual('Unknown')
+      expect($t(mapDisconnectCode('EVENT_NOT_EXISTED'))).toEqual('Unknown')
+    })
+  })
+})
+
+describe('mapDisconnectCodeToReason', () => {
+  it('renders text for given failedMsgId', () => {
+    renderHook(() => {
+      const { $t } = useIntl()
+      expect($t(mapDisconnectCodeToReason('EVENT_CLIENT_DISCONNECT','2')))
+        .toEqual('Previous authentication no longer valid')
+    })
+  })
+  it('renders default reason of disconnect event no failedMsgId', () => {
+    renderHook(() => {
+      const { $t } = useIntl()
+      expect($t(mapDisconnectCodeToReason('EVENT_CLIENT_DISCONNECT','222')))
+        .toEqual('This event occurs when the client disconnects from WLAN on AP')
+    })
+  })
+  it('renders Unknown if nothing matches', () => {
+    renderHook(() => {
+      const { $t } = useIntl()
+      expect($t(mapDisconnectCodeToReason('EVENT_NOT_EXISTED','222')))
+        .toEqual('Unknown')
     })
   })
 })

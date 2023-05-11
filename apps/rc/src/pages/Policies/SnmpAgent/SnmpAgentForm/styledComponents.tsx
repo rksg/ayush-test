@@ -1,9 +1,9 @@
 import styled from 'styled-components'
 
-import { StepsForm } from '@acx-ui/components'
+import { StepsFormLegacy } from '@acx-ui/components'
 
 
-export const OverwriteStepsForm = styled(StepsForm.StepForm)`
+export const OverwriteStepsForm = styled(StepsFormLegacy.StepForm)`
   h3 {
     &::after {
         content: "*";

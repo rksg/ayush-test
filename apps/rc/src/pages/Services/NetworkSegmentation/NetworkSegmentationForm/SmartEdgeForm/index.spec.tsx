@@ -2,7 +2,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { StepsFormNew } from '@acx-ui/components'
+import { StepsForm } from '@acx-ui/components'
 import {
   EdgeDhcpUrls,
   EdgeUrlsInfo
@@ -83,7 +83,7 @@ describe('SmartEdgeForm', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <StepsFormNew><SmartEdgeForm /></StepsFormNew>
+        <StepsForm><SmartEdgeForm /></StepsForm>
       </Provider>, {
         route: { params, path: createNsgPath }
       })
@@ -118,7 +118,7 @@ describe('SmartEdgeForm', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <StepsFormNew><SmartEdgeForm /></StepsFormNew>
+        <StepsForm><SmartEdgeForm /></StepsForm>
       </Provider>, {
         route: { params, path: createNsgPath }
       })
@@ -154,11 +154,11 @@ describe('SmartEdgeForm', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <StepsFormNew onFinish={mockedFinishFn}>
-          <StepsFormNew.StepForm>
+        <StepsForm onFinish={mockedFinishFn}>
+          <StepsForm.StepForm>
             <SmartEdgeForm />
-          </StepsFormNew.StepForm>
-        </StepsFormNew>
+          </StepsForm.StepForm>
+        </StepsForm>
       </Provider>,
       { route: { params, path: createNsgPath } })
     await user.selectOptions(
@@ -185,11 +185,11 @@ describe('SmartEdgeForm', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <StepsFormNew onFinish={mockedFinishFn}>
-          <StepsFormNew.StepForm>
+        <StepsForm onFinish={mockedFinishFn}>
+          <StepsForm.StepForm>
             <SmartEdgeForm />
-          </StepsFormNew.StepForm>
-        </StepsFormNew>
+          </StepsForm.StepForm>
+        </StepsForm>
       </Provider>,
       { route: { params, path: createNsgPath } })
     await user.click(await screen.findByRole('button', { name: 'Finish' }))

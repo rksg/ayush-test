@@ -13,7 +13,7 @@ import {
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { StepsForm }                   from '@acx-ui/components'
+import { StepsFormLegacy }             from '@acx-ui/components'
 import { useGetSyslogPolicyListQuery } from '@acx-ui/rc/services'
 import {
   FacilityEnum,
@@ -232,7 +232,7 @@ const SyslogSettingForm = (props: SyslogSettingFormProps) => {
   return (
     <Row gutter={20}>
       <Col span={10}>
-        <StepsForm.Title>{$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
+        <StepsFormLegacy.Title>{$t({ defaultMessage: 'Settings' })}</StepsFormLegacy.Title>
         <Form.Item
           name='policyName'
           label={$t({ defaultMessage: 'Policy Name' })}

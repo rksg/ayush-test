@@ -175,7 +175,7 @@ describe('administrators delegation list', () => {
   })
 })
 
-describe('when use it not permmited role', () => {
+describe('when use it not permitted role', () => {
   const params = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
   beforeEach(() => {
     (hasRoles as jest.Mock).mockReturnValue(false)
