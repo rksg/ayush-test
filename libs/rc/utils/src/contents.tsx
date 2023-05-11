@@ -305,5 +305,8 @@ export const mdnsProxyRuleTypeLabelMapping: Record<BridgeServiceEnum, MessageDes
 }
 
 export const profileInUsedMessageForDelete = defineMessage({
-  defaultMessage: 'You are unable to delete this record due to its usage in {serviceName}'
+  defaultMessage: `You are unable to delete {count, plural,
+  one {this record}
+  other {these records}
+  } due to its usage in {serviceName}`
 })

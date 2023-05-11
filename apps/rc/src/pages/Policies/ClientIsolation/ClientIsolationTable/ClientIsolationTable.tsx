@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
 import { SimpleListTooltip }                                              from '@acx-ui/rc/components'
 import {
-  useDeleteClientIsolationMutation,
+  useDeleteClientIsolationListMutation,
   useGetEnhancedClientIsolationListQuery,
   useGetVenuesQuery
 } from '@acx-ui/rc/services'
@@ -14,7 +14,8 @@ import {
   PolicyOperation,
   getPolicyListRoutePath,
   getPolicyRoutePath,
-  ClientIsolationViewModel
+  ClientIsolationViewModel,
+  profileInUsedMessageForDelete
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                          from '@acx-ui/user'
@@ -30,32 +31,60 @@ export default function ClientIsolationTable () {
   const navigate = useNavigate()
   const params = useParams()
   const tenantBasePath: Path = useTenantLink('')
-  const [ deleteFn ] = useDeleteClientIsolationMutation()
+  const [ deleteFn ] = useDeleteClientIsolationListMutation()
 
   const tableQuery = useTableQuery<ClientIsolationViewModel>({
     useQuery: useGetEnhancedClientIsolationListQuery,
     defaultPayload
   })
 
+  const hasAppliedVenue = (selectedRows?: ClientIsolationViewModel[]): boolean => {
+    return !!selectedRows && selectedRows.some(row => row.venueIds && row.venueIds.length > 0)
+  }
+
+  // eslint-disable-next-line max-len
+  const getDisabledDeleteMessage = (selectedRows: ClientIsolationViewModel[]): string | undefined => {
+    if (hasAppliedVenue(selectedRows)) {
+      return $t(profileInUsedMessageForDelete, {
+        count: selectedRows.length,
+        serviceName: $t({ defaultMessage: 'Venue' })
+      })
+    }
+    return
+  }
+
+  const doDelete = (selectedRows: ClientIsolationViewModel[], callback: () => void) => {
+    if (hasAppliedVenue(selectedRows)) {
+      showActionModal({
+        type: 'error',
+        content: getDisabledDeleteMessage(selectedRows)
+      })
+    } else {
+      showActionModal({
+        type: 'confirm',
+        customContent: {
+          action: 'DELETE',
+          entityName: $t({ defaultMessage: 'Policy' }),
+          entityValue: selectedRows.length === 1 ? selectedRows[0].name : undefined,
+          numOfEntities: selectedRows.length
+        },
+        onOk: () => {
+          deleteFn({ params, payload: selectedRows.map(row => row.id) }).then(callback)
+        }
+      })
+    }
+  }
+
   const rowActions: TableProps<ClientIsolationViewModel>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ id, name }], clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Policy' }),
-            entityValue: name
-          },
-          onOk: () => {
-            deleteFn({ params: { ...params, policyId: id } }).then(clearSelection)
-          }
-        })
+      onClick: (selectedRows: ClientIsolationViewModel[], clearSelection) => {
+        doDelete(selectedRows, clearSelection)
       }
     },
     {
       label: $t({ defaultMessage: 'Edit' }),
+      visible: (selectedRows) => selectedRows?.length === 1,
       onClick: ([{ id }]) => {
         navigate({
           ...tenantBasePath,
@@ -95,7 +124,7 @@ export default function ClientIsolationTable () {
           onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'radio' }}
+          rowSelection={{ type: 'checkbox' }}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />

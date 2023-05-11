@@ -43,7 +43,10 @@ export default function AAATable () {
 
   const getDisabledDeleteMessage = (selectedRow: AAAViewModalType): string | undefined => {
     if (hasAppliedNetwork(selectedRow)) {
-      return $t(profileInUsedMessageForDelete, { serviceName: $t({ defaultMessage: 'Network' }) })
+      return $t(profileInUsedMessageForDelete, {
+        count: 1,
+        serviceName: $t({ defaultMessage: 'Network' })
+      })
     }
 
     return

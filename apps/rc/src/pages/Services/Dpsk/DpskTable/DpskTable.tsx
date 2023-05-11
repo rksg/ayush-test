@@ -63,7 +63,7 @@ export default function DpskTable () {
     }
 
     return inUsedService.length > 0
-      ? intl.$t(profileInUsedMessageForDelete, { serviceName: inUsedService.join(',') })
+      ? intl.$t(profileInUsedMessageForDelete, { count: 1, serviceName: inUsedService.join(',') })
       : undefined
   }
 

@@ -186,7 +186,10 @@ export default function DpskPassphraseManagement () {
 
   const getDisabledDeleteMessage = (selectedRows: NewDpskPassphrase[]): string | undefined => {
     return hasAppliedPersona(selectedRows)
-      ? $t(profileInUsedMessageForDelete, { serviceName: $t({ defaultMessage: 'Persona' }) })
+      ? $t(profileInUsedMessageForDelete, {
+        count: selectedRows.length,
+        serviceName: $t({ defaultMessage: 'Persona' })
+      })
       : undefined
   }
 
