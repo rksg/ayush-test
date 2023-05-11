@@ -13,8 +13,8 @@ import { includes, isEmpty } from 'lodash'
 import { useIntl }           from 'react-intl'
 import styled                from 'styled-components/macro'
 
-import { Loader, showActionModal, StepsForm, StepsFormInstance, Tabs, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                               from '@acx-ui/feature-toggle'
+import { Loader, showActionModal, StepsFormLegacy, StepsFormLegacyInstance, Tabs, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
 import { ApRadioTypeEnum,
   channelBandwidth24GOptions,
   channelBandwidth5GOptions,
@@ -84,7 +84,7 @@ export function RadioSettings () {
 
   const { tenantId, venueId } = useParams()
 
-  const formRef = useRef<StepsFormInstance<VenueRadioCustomization>>()
+  const formRef = useRef<StepsFormLegacyInstance<VenueRadioCustomization>>()
   const isTriBandRadioRef = useRef<boolean>(false)
   const [isTriBandRadio, setIsTriBandRadio] = useState(false)
   const [isDual5gMode, setIsDual5gMode] = useState(true)
@@ -490,11 +490,11 @@ export function RadioSettings () {
 
   return (
     <Loader states={[{ isLoading: isLoadingVenueData, isFetching: isUpdatingVenueRadio }]}>
-      <StepsForm
+      <StepsFormLegacy
         formRef={formRef}
         onFormChange={handleChange}
       >
-        <StepsForm.StepForm data-testid='radio-settings'>
+        <StepsFormLegacy.StepForm data-testid='radio-settings'>
           <Row gutter={20}>
             <Col span={10}>
               {triBandRadioFeatureFlag &&
@@ -678,8 +678,8 @@ export function RadioSettings () {
               </div>
             </>
           }
-        </StepsForm.StepForm>
-      </StepsForm>
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>
     </Loader>
   )
 }

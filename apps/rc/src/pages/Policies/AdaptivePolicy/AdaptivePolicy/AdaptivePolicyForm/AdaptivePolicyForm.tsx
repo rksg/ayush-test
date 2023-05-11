@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { Loader, PageHeader, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
+import { Loader, PageHeader, showToast, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
 import {
   useAddAdaptivePolicyMutation,
   useAddPolicyConditionsMutation,
@@ -35,7 +35,7 @@ export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
   // eslint-disable-next-line max-len
   const linkToList = useTenantLink('/' + getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST }))
   const navigate = useNavigate()
-  const formRef = useRef<StepsFormInstance>()
+  const formRef = useRef<StepsFormLegacyInstance>()
   const [addAdaptivePolicy] = useAddAdaptivePolicyMutation()
   const [addConditions] = useAddPolicyConditionsMutation()
   const [updateConditions] = useUpdatePolicyConditionsMutation()
@@ -181,21 +181,21 @@ export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
           ]}
         />
       }
-      <StepsForm
+      <StepsFormLegacy
         editMode={editMode}
         formRef={formRef}
         buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
         onCancel={() => navigate(linkToList)}
         onFinish={handleSubmit}>
-        <StepsForm.StepForm initialValues={{ templateTypeId: 0 }}>
+        <StepsFormLegacy.StepForm initialValues={{ templateTypeId: 0 }}>
           <Loader states={[{
             isLoading: isGetPolicyLoading || isGetConditionsLoading,
             isFetching: isUpdating
           }]}>
             <AdaptivePolicySettingForm editMode={editMode} drawerMode={drawerMode}/>
           </Loader>
-        </StepsForm.StepForm>
-      </StepsForm>
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>
     </>
   )
 }

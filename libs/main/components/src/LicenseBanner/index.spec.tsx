@@ -126,7 +126,7 @@ describe('License Single Component', () => {
     mockServer.use(
       rest.get(
         LicenseUrlsInfo.getEntitlementsBanners.url,
-        (req, res, ctx) => res(ctx.json([list[0]]))
+        (req, res, ctx) => res(ctx.json([list[2]]))
       )
     )
   })
@@ -142,7 +142,9 @@ describe('License Single Component', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/dashboard' }
       })
-    expect(await screen.findByText('Analytics service has been deactivated')).toBeVisible()
+    expect(
+      await screen.findByText('Subscription for 40 Wi-Fi will expire in 53 days')
+    ).toBeVisible()
 
   })
 })

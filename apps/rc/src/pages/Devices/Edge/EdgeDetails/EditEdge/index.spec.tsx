@@ -29,6 +29,11 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+jest.mock('./DnsServer', () => (() => <div data-testid='DnsServer' />))
+jest.mock('./GeneralSettings', () => (() => <div data-testid='GeneralSettings' />))
+jest.mock('./Ports', () => (() => <div data-testid='Ports' />))
+jest.mock('./StaticRoutes', () => (() => <div data-testid='StaticRoutes' />))
+
 describe('EditEdge', () => {
 
   let params: { tenantId: string, serialNumber: string, activeTab?: string }

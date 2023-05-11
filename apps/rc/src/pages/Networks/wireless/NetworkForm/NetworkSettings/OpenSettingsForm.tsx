@@ -8,9 +8,9 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { StepsForm, Tooltip }     from '@acx-ui/components'
-import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
-import { WifiNetworkMessages }    from '@acx-ui/rc/utils'
+import { StepsFormLegacy, Tooltip } from '@acx-ui/components'
+import { useIsSplitOn, Features }   from '@acx-ui/feature-toggle'
+import { WifiNetworkMessages }      from '@acx-ui/rc/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext          from '../NetworkFormContext'
@@ -88,7 +88,7 @@ function SettingsForm () {
 
   return (
     <>
-      <StepsForm.Title>{$t({ defaultMessage: 'Open Settings' })}</StepsForm.Title>
+      <StepsFormLegacy.Title>{$t({ defaultMessage: 'Open Settings' })}</StepsFormLegacy.Title>
 
       <div>
         <Form.Item>

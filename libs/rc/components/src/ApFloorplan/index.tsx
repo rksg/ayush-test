@@ -1,16 +1,21 @@
 
 import { useEffect, useRef, useState } from 'react'
 
-import { DndProvider }     from 'react-dnd'
-import { HTML5Backend }    from 'react-dnd-html5-backend'
-import { Link, useParams } from 'react-router-dom'
+import { Col, Row, Switch } from 'antd'
+import { DndProvider }      from 'react-dnd'
+import { HTML5Backend }     from 'react-dnd-html5-backend'
+import { useIntl }          from 'react-intl'
+import { Link, useParams }  from 'react-router-dom'
 
+import { Features, useIsSplitOn }                                                                from '@acx-ui/feature-toggle'
 import { useApListQuery, useGetFloorPlanQuery }                                                  from '@acx-ui/rc/services'
 import { ApPosition, FloorplanContext, getImageFitPercentage, NetworkDevice, NetworkDeviceType } from '@acx-ui/rc/utils'
 import { useTenantLink }                                                                         from '@acx-ui/react-router-dom'
 import { loadImageWithJWT }                                                                      from '@acx-ui/utils'
 
-import { NetworkDeviceMarker } from '../FloorPlan/NetworkDevices/NetworkDeviceMarker'
+import { NetworkDeviceMarker }           from '../FloorPlan/NetworkDevices/NetworkDeviceMarker'
+import { ApMeshConnections }             from '../FloorPlan/NetworkDevices/useApMeshDevice'
+import { ApMeshTopologyContextProvider } from '../FloorPlan/PlainView/ApMeshTopologyContext'
 
 
 export function ApFloorplan (props: { activeDevice: NetworkDevice,
@@ -26,6 +31,10 @@ export function ApFloorplan (props: { activeDevice: NetworkDevice,
   const [apList, setApList] = useState<NetworkDevice[]>([] as NetworkDevice[])
   const [containerWidth, setContainerWidth] = useState<number>(1)
   const [imageUrl, setImageUrl] = useState('')
+  const { $t } = useIntl()
+  const isApMeshTopologyFFOn = useIsSplitOn(Features.AP_MESH_TOPOLOGY)
+  // eslint-disable-next-line max-len
+  const [isApMeshTopologyEnabled, setIsApMeshTopologyEnabled] = useState<boolean>(isApMeshTopologyFFOn)
 
   const { data: extendedApList } = useApListQuery({ params, payload: {
     filters: {
@@ -107,15 +116,25 @@ export function ApFloorplan (props: { activeDevice: NetworkDevice,
     paddingRight: '35px',
     marginBottom: '35px'
   }}>
-    <Link style={{ marginLeft: 10,
-      lineHeight: '24px',
-      fontSize: '14px' }}
-    to={useTenantLink(`/venues/${venueId}/venue-details/overview`)}
-    state={{
-      param: { floorplan: floorplan }
-    }}>
-      {floorplan?.name}
-    </Link>
+    <Row justify='space-between' style={{ height: '2rem', alignItems: 'center' }}>
+      <Col>
+        <Link style={{ marginLeft: 10, lineHeight: '24px', fontSize: '14px' }}
+          to={useTenantLink(`/venues/${venueId}/venue-details/overview`)}
+          state={{
+            param: { floorplan: floorplan }
+          }}>
+          {floorplan?.name}
+        </Link>
+      </Col>
+      <Col>
+        {isApMeshTopologyFFOn &&
+          <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+            <Switch onChange={setIsApMeshTopologyEnabled} checked={isApMeshTopologyEnabled} />
+            {$t({ defaultMessage: 'Show Mesh Topology' })}
+          </div>
+        }
+      </Col>
+    </Row>
     <div
       ref={imageContainerRef}
       style={{
@@ -124,14 +143,23 @@ export function ApFloorplan (props: { activeDevice: NetworkDevice,
         width: `calc(${100 * containerWidth}%)`
       }}>
       { imageLoaded && <DndProvider backend={HTML5Backend}>
-        { apList && apList.map( (device: NetworkDevice) =>
-          <NetworkDeviceMarker
-            key={device?.serialNumber}
-            galleryMode={false}
-            contextAlbum={false}
-            context={FloorplanContext['ap']}
-            device={device}
-            forbidDrag={true}/>)}
+        { apList && apPosition?.floorplanId && <ApMeshTopologyContextProvider
+          isApMeshTopologyEnabled={isApMeshTopologyEnabled}
+          floorplanId={apPosition.floorplanId}
+          venueId={venueId}
+          children={<>{
+            apList.map( (device: NetworkDevice) =>
+              <NetworkDeviceMarker
+                key={device?.serialNumber}
+                galleryMode={false}
+                contextAlbum={false}
+                context={FloorplanContext['ap']}
+                device={device}
+                forbidDrag={true}/>)
+          }
+          <ApMeshConnections />
+          </>}
+        />}
       </DndProvider> }
       <img
         data-testid='floorPlanImage'

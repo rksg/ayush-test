@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react'
 import { Form, Typography } from 'antd'
 import { useIntl }          from 'react-intl'
 
-import { Modal, ModalType, StepsFormNew } from '@acx-ui/components'
-import { TrustedPort }                    from '@acx-ui/rc/utils'
+import { Modal, ModalType, StepsForm } from '@acx-ui/components'
+import { TrustedPort }                 from '@acx-ui/rc/utils'
 
 import { SelectModelStep }  from './SelectModelStep'
 import { TrustedPortsStep } from './TrustedPortsStep'
@@ -51,7 +51,7 @@ export function TrustedPortsModal (props: {
       title={$t({ defaultMessage: 'Select Ports By Model' })}
       data-testid='trustedPortModal'
     >
-      <StepsFormNew
+      <StepsForm
         editMode={!!editRecord}
         onCancel={onCancel}
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -65,7 +65,7 @@ export function TrustedPortsModal (props: {
         buttonLabel={{ submit: editRecord ?
           $t({ defaultMessage: 'Save' }) : $t({ defaultMessage: 'Finish' }) }}
       >
-        <StepsFormNew.StepForm
+        <StepsForm.StepForm
           title={$t({ defaultMessage: 'Select Model' })}
           onFinish={async (data: VlanTrustPortInterface) => {
             if(data.family && data.model){
@@ -89,13 +89,13 @@ export function TrustedPortsModal (props: {
             </Typography.Text>
           }
           <SelectModelStep editRecord={editRecord}/>
-        </StepsFormNew.StepForm>
-        <StepsFormNew.StepForm
+        </StepsForm.StepForm>
+        <StepsForm.StepForm
           title={$t({ defaultMessage: 'Trusted Ports' })}
         >
           <TrustedPortsStep vlanSettingValues={vlanSettingValues} editRecord={editRecord} />
-        </StepsFormNew.StepForm>
-      </StepsFormNew>
+        </StepsForm.StepForm>
+      </StepsForm>
     </Modal>
   )
 }

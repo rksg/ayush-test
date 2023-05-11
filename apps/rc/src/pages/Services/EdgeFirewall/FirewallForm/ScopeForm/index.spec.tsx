@@ -4,7 +4,7 @@ import userEvent              from '@testing-library/user-event'
 import { Form }               from 'antd'
 import { rest }               from 'msw'
 
-import { StepsFormNew }                 from '@acx-ui/components'
+import { StepsForm }                    from '@acx-ui/components'
 import { CommonUrlsInfo, EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                     from '@acx-ui/store'
 import {
@@ -57,11 +57,11 @@ describe('Scope Form', () => {
 
     render(
       <Provider>
-        <StepsFormNew
+        <StepsForm
           form={stepFormRef.current}
         >
           <ScopeForm />
-        </StepsFormNew>
+        </StepsForm>
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
     expect(await screen.findByText('Scope')).toBeVisible()
@@ -89,11 +89,11 @@ describe('Scope Form', () => {
 
     render(
       <Provider>
-        <StepsFormNew
+        <StepsForm
           form={stepFormRef.current}
         >
           <ScopeForm />
-        </StepsFormNew>
+        </StepsForm>
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
     expect(await screen.findByText('Scope')).toBeVisible()
@@ -122,11 +122,11 @@ describe('Scope Form', () => {
 
     render(
       <Provider>
-        <StepsFormNew
+        <StepsForm
           form={stepFormRef.current}
         >
           <ScopeForm />
-        </StepsFormNew>
+        </StepsForm>
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
     expect(await screen.findByText('Scope')).toBeVisible()
@@ -158,11 +158,11 @@ describe('Scope Form', () => {
 
     render(
       <Provider>
-        <StepsFormNew
+        <StepsForm
           form={stepFormRef.current}
         >
           <ScopeForm />
-        </StepsFormNew>
+        </StepsForm>
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
     expect(await screen.findByText('Scope')).toBeVisible()
