@@ -1,21 +1,27 @@
 import { ApiInfo } from '../apiService'
 
 export const MigrationUrlsInfo: { [key: string]: ApiInfo } = {
-  getZdMigrationList: {
-    method: 'get',
-    url: '/aps/query',
-    oldUrl: '/api/zd/migration',
+  uploadZdConfig: {
+    method: 'post',
+    url: '/zd/migration/upload',
+    oldUrl: '/zd/migration/upload',
     newApi: true
   },
   addZdMigration: {
     method: 'post',
-    url: '/venues/aps',
-    oldUrl: '/api/zd/migration',
+    url: '/zd/migration/:id',
+    oldUrl: '/zd/migration/:id',
     newApi: true
   },
-  getMigrateResult: {
+  getZdMigrationList: {
     method: 'get',
-    url: '/venues/aps/importResults',
+    url: '/zd/migration',
+    oldUrl: '/zd/migration',
+    newApi: true
+  },
+  getMigrationResult: {
+    method: 'get',
+    url: '/zd/migration/:id',
     oldUrl: '/venues/aps/importResults',
     newApi: true
   }
