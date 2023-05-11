@@ -15,10 +15,10 @@ import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { get }                 from 'lodash'
 import { useIntl }             from 'react-intl'
 
-import { Button, Tooltip }                                                          from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
-import { NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum, GuestNetworkTypeEnum } from '@acx-ui/rc/utils'
-import { validationMessages }                                                       from '@acx-ui/utils'
+import { Button, Tooltip }                                                                                       from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                from '@acx-ui/feature-toggle'
+import { NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum, GuestNetworkTypeEnum, BasicServiceSetPriorityEnum } from '@acx-ui/rc/utils'
+import { validationMessages }                                                                                    from '@acx-ui/utils'
 
 import NetworkFormContext from '../NetworkFormContext'
 import VLANPoolInstance   from '../VLANPoolInstance'
@@ -651,13 +651,18 @@ export function MoreSettingsForm (props: {
             />
           </>
           }
-          initialValue={'HIGH'}
+          initialValue={BasicServiceSetPriorityEnum.HIGH}
+          valuePropName='value'
           style={{ marginBottom: '15px', width: '300px' }}
           children={
-            <Radio.Group>
+            <Radio.Group data-testid='BSS-Radio-Group'>
               <Space direction='vertical'>
-                <Radio value={'HIGH'}>{$t({ defaultMessage: 'HIGH' })}</Radio>
-                <Radio value={'LOW'}>{$t({ defaultMessage: 'LOW' })}</Radio>
+                <Radio value={BasicServiceSetPriorityEnum.HIGH} data-testid='BSS-Radio-HIGH'>
+                  {$t({ defaultMessage: 'High' })}
+                </Radio>
+                <Radio value={BasicServiceSetPriorityEnum.LOW} data-testid='BSS-Radio-LOW'>
+                  {$t({ defaultMessage: 'Low' })}
+                </Radio>
               </Space>
             </Radio.Group>
           }
