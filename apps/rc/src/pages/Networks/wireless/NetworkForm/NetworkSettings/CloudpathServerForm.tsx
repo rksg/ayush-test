@@ -69,6 +69,7 @@ export function CloudpathServerForm () {
             children={<Switch disabled={
               !enableDPSKProxyService
             }
+            title='Proxy Service'
             onChange={(value)=>onProxyChange(value,'enableAuthProxy')}/>}
           />
           <span>{ $t({ defaultMessage: 'Proxy Service' }) }</span>

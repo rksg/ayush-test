@@ -44,7 +44,7 @@ export function NetworkDetailForm () {
   const onChange = (e: RadioChangeEvent) => {
     setData && setData({ ...data, type: e.target.value as NetworkTypeEnum,
       enableAccountingProxy: false,
-      enableAuthProxy: e.target.value === 'dpsk', // to set default value as true for DPSK while adding new network
+      enableAuthProxy: e.target.value === NetworkTypeEnum.DPSK, // to set default value as true for DPSK while adding new network
       enableAccountingService: false })
   }
 
