@@ -14,7 +14,7 @@ interface NetworkTableProps {
 export const NetworkTable = (props: NetworkTableProps) => {
 
   const { $t } = useIntl()
-  const [isDataReady,setIsDataReady] = useState(false)
+  const [isPayloadReady,setIsPayloadReady] = useState(false)
   const defaultNetworkPayload = {
     fields: [
       'id',
@@ -28,7 +28,7 @@ export const NetworkTable = (props: NetworkTableProps) => {
     useQuery: useNetworkListQuery,
     defaultPayload: defaultNetworkPayload,
     option: {
-      skip: !isDataReady || props.networkIds.length === 0
+      skip: !isPayloadReady || props.networkIds.length === 0
     }
   })
 
@@ -41,7 +41,7 @@ export const NetworkTable = (props: NetworkTableProps) => {
 
   useEffect(() => {
     if(tableQuery?.payload?.filters?.id.length > 0) {
-      setIsDataReady(true)
+      setIsPayloadReady(true)
     }
   }, [tableQuery.payload.filters])
 
