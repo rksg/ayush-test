@@ -399,7 +399,7 @@ export function PortalSettings () {
         style={{ width: '300px' }}
         initialValue={initialProvider}
         children={
-          isEditMode && <Select
+          <Select
             onChange={value => setPreferredProvider(value)}
             placeholder={intl.$t({ defaultMessage: 'Select preferred provider' })}
           >
