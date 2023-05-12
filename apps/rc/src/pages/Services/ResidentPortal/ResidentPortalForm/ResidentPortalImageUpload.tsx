@@ -68,14 +68,14 @@ export default function ResidentPortalImageUpload (props: SimpleImageUploadProps
     if (!validImage) {
       const content = $t({ defaultMessage: 'Invalid Image type!' })
       showInvalidToast(content)
-      return false
+      return
     }
 
     const isLt20M = file.size / 1024 / 1024 < 20
     if (!isLt20M) {
       const content = $t({ defaultMessage: 'Image must smaller than 20MB!' })
       showInvalidToast(content)
-      return false
+      return
     }
 
     // validation successful -- set image
