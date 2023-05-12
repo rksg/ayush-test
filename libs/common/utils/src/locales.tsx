@@ -27,7 +27,14 @@ function flattenMessages (nestedMessages: NestedMessages, prefix = ''): Record<s
   }, {} as Record<string, string>)
 }
 
-async function localePath (locale: string) {
+export async function localePath (locale: string) {
+  // This code is needed when GCS bucket is not configured / GCS is down or unavailable
+  // Also this is a management ask till FF is set to ON, we default to en-US from local repo only
+  // and not from GCS bucket.
+  if (locale === DEFAULT_SYS_LANG) {
+    const url = `locales/compiled/${locale}.json`
+    return await fetch(url).then(res => res.json())
+  }
   const gcs = get('STATIC_ASSETS')
   const myHeaders = new Headers()
   myHeaders.append('origin', 'window.origin')
