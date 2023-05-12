@@ -239,7 +239,7 @@ const searchResultsRender = (input: string, path: DefaultOptionType[]) => {
   const label = labels.length ? labels[labels.length - 1] : null
   const text = items.join(' / ')
   return <UI.LabelContainer title={text}>
-    <UI.SearchLabel $hasChildren={items.length > 1}>
+    <UI.SearchLabel $isDeep={items.length > 1}>
       <Highlighter
         highlightStyle={{ fontWeight: 'bold', background: 'none', padding: 0, color: 'inherit' }}
         searchWords={[input]}
