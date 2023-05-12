@@ -1,8 +1,13 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader }                                      from '@acx-ui/components'
-import { SimpleListTooltip }                                                                  from '@acx-ui/rc/components'
-import { useDeleteAAAPolicyMutation, useGetAAAPolicyViewModelListQuery, useNetworkListQuery } from '@acx-ui/rc/services'
+import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
+import { SimpleListTooltip }                             from '@acx-ui/rc/components'
+import {
+  doProfileDelete,
+  useDeleteAAAPolicyMutation,
+  useGetAAAPolicyViewModelListQuery,
+  useNetworkListQuery
+} from '@acx-ui/rc/services'
 import {
   PolicyType,
   useTableQuery,
@@ -12,8 +17,7 @@ import {
   getPolicyRoutePath,
   AAAViewModalType,
   AAAPurposeEnum,
-  AAA_LIMIT_NUMBER,
-  doProfileDelete
+  AAA_LIMIT_NUMBER
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                          from '@acx-ui/user'

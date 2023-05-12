@@ -3,6 +3,7 @@ import { useIntl } from 'react-intl'
 import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
 import { SimpleListTooltip }                             from '@acx-ui/rc/components'
 import {
+  doProfileDelete,
   useDeleteClientIsolationListMutation,
   useGetEnhancedClientIsolationListQuery,
   useGetVenuesQuery
@@ -14,8 +15,7 @@ import {
   PolicyOperation,
   getPolicyListRoutePath,
   getPolicyRoutePath,
-  ClientIsolationViewModel,
-  doProfileDelete
+  ClientIsolationViewModel
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                          from '@acx-ui/user'

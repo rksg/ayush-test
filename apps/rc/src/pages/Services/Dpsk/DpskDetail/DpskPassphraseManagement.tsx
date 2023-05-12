@@ -15,6 +15,7 @@ import { Features, useIsSplitOn }                      from '@acx-ui/feature-tog
 import { DateFormatEnum, formatter }                   from '@acx-ui/formatter'
 import { CsvSize, ImportFileDrawer, PassphraseViewer } from '@acx-ui/rc/components'
 import {
+  doProfileDelete,
   useDeleteDpskPassphraseListMutation,
   useDownloadPassphrasesMutation,
   useGetEnhancedDpskPassphraseListQuery,
@@ -22,7 +23,6 @@ import {
   useUploadPassphrasesMutation
 } from '@acx-ui/rc/services'
 import {
-  doProfileDelete,
   ExpirationType,
   NetworkTypeEnum,
   NewDpskPassphrase,
