@@ -800,6 +800,15 @@ export function validateDuplicateAclName (aclName: string, aclList: Acl[]) {
   }
 }
 
+export function validateVlanId (vlanId: string){
+  const { $t } = getIntl()
+  const vlanRegexp = new RegExp('^([1-9]|[1-9][0-9]{1,2}|[1-3][0-9]{3}|40[0-8][0-9]|409[0-4])$') // Only 1 - 4094
+  if (!vlanRegexp.test(vlanId)) {
+    return Promise.reject($t(validationMessages.vlanRange))
+  }
+  return Promise.resolve()
+}
+
 export function validateVlanName (vlanName: string){
   const { $t } = getIntl()
   const vlanRegexp = new RegExp('^([1-9]|[1-8][0-9]|9[0-9]|[1-8][0-9]{2}|9[0-8][0-9]|99[0-9]|[1-3][0-9]{3}|40[0-7][0-9]|408[0-6]|4088|4089|4095)$')
@@ -892,3 +901,40 @@ export function isSubnetOverlap (firstIpAddress: string, firstSubnetMask:string,
     : Promise.resolve()
 
 }
+
+export function validateTags (value: string[]) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line no-control-regex
+  const tagPattern = /^((([^\u0000-\u007F]|([a-zA-Z0-9]))+)[\!@#$%^&*(){}-]*)|([\!@#$%^&*(){}-]*(([^\u0000-\u007F]|([a-zA-Z0-9]))+))|([\!@#$%^&*(){}-]+)$/
+
+  if(value === undefined || value.length === 0){
+    return Promise.resolve()
+  }
+
+  if(value.length >= 24) {
+    return Promise.reject($t(validationMessages.tagMaxLengthInvalid))
+  }
+
+  for (const tag of value) {
+    if ((tagPattern.test(tag) || tag === '') && !tag.startsWith(' ') && !tag.endsWith(' ')
+    && (tag.length === 0 || tag.length >= 2) && tag.length <= 64) {
+      continue
+    } else {
+      return Promise.reject($t(validationMessages.tagInvalid))
+    }
+  }
+
+  return Promise.resolve()
+}
+
+export function ipv6RegExp (value: string) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const re = /(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))/gi
+
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.ipAddress))
+  }
+  return Promise.resolve()
+}
+

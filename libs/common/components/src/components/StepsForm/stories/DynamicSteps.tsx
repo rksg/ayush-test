@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 
 import { Row, Col, Form, Input } from 'antd'
 
+import { StepsForm } from '..'
 import { Button }    from '../../Button'
-import { StepsForm } from '../../StepsForm'
 import { showToast } from '../../Toast'
 
 function wait (ms: number) { return new Promise(resolve => setTimeout(resolve, ms)) }
@@ -11,6 +11,7 @@ function wait (ms: number) { return new Promise(resolve => setTimeout(resolve, m
 export function DynamicSteps () {
   const [show, setShow] = useState(false)
   const [showMore, setShowMore] = useState(false)
+
   return (
     <StepsForm
       onCancel={() => showToast({ type: 'info', content: 'Cancel' })}

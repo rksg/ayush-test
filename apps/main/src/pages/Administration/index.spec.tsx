@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { Provider  }              from '@acx-ui/store'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Provider  }    from '@acx-ui/store'
 import {
   render,
   screen,
@@ -44,6 +44,13 @@ jest.mock('./FWVersionMgmt', () => ({
   __esModule: true,
   default: () => {
     return <div data-testid='mocked-FWVersionMgmt'></div>
+  }
+}))
+jest.mock('./OnpremMigration', () => ({
+  ...jest.requireActual('./OnpremMigration'),
+  __esModule: true,
+  default: () => {
+    return <div data-testid='mocked-OnpremMigration'></div>
   }
 }))
 jest.mock('./LocalRadiusServer', () => ({
@@ -216,6 +223,24 @@ describe('Administration page', () => {
     expect(tab.getAttribute('aria-selected')).toBeTruthy()
   })
 
+  it('should render zd migration tab correctly', async () => {
+    params.activeTab = 'onpremMigration'
+
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <Administration />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    const tab = screen.getByRole('tab', { name: 'ZD Migration' })
+    expect(tab.getAttribute('aria-selected')).toBeTruthy()
+  })
+
   it('should render local radius server tab correctly', async () => {
     let params: { tenantId: string, activeTab: string } =
       { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac', activeTab: 'localRadiusServer' }
@@ -233,39 +258,5 @@ describe('Administration page', () => {
 
     const tab = screen.getByRole('tab', { name: 'Local RADIUS Server' })
     expect(tab.getAttribute('aria-selected')).toBeTruthy()
-  })
-
-  it('should render when only edge early beta flag enabled', async () => {
-    jest.mocked(useIsSplitOn).mockImplementationOnce((flag) => {
-      return flag === Features.EDGE_EARLY_BETA ? true : false
-    })
-
-    params.activeTab = 'accountSettings'
-
-    render(
-      <Provider>
-        <Administration />
-      </Provider>, {
-        route: { params }
-      })
-
-    const tab = screen.getByRole('tab', { name: 'Account Settings' })
-    expect(tab.getAttribute('aria-selected')).toBeTruthy()
-  })
-
-  it('should not render when feature flag off', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(() => false)
-
-    render(
-      <Provider>
-        <UserProfileContext.Provider
-          value={userProfileContextValues}
-        >
-          <Administration />
-        </UserProfileContext.Provider>
-      </Provider>, {
-        route: { params }
-      })
-    await screen.findByText('Administration is not enabled')
   })
 })

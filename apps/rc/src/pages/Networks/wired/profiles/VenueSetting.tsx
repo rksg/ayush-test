@@ -5,7 +5,7 @@ import { useIntl }                       from 'react-intl'
 
 import {
   Loader,
-  StepsForm,
+  StepsFormLegacy,
   Table,
   TableProps,
   Tooltip
@@ -38,7 +38,7 @@ export function VenueSetting () {
   const { $t } = useIntl()
   const params = useParams()
   const form = Form.useFormInstance()
-  const { currentData, editMode } = useContext(ConfigurationProfileFormContext)
+  const { currentData } = useContext(ConfigurationProfileFormContext)
   const tableQuery = useTableQuery({
     useQuery: useVenuesListQuery,
     defaultPayload
@@ -62,7 +62,7 @@ export function VenueSetting () {
       })
       setTableData(data)
     }
-    if(currentData.venues && editMode){
+    if(currentData.venues){
       form.setFieldValue('venues', currentData.venues)
       setVenueList(currentData.venues || [])
     }
@@ -99,6 +99,7 @@ export function VenueSetting () {
       key: 'name',
       title: $t({ defaultMessage: 'Venue' }),
       dataIndex: 'name',
+      defaultSortOrder: 'ascend',
       sorter: true
     },
     {
@@ -170,7 +171,7 @@ export function VenueSetting () {
     ]}>
       <Row gutter={20}>
         <Col span={20}>
-          <StepsForm.Title children={$t({ defaultMessage: 'Venues' })} />
+          <StepsFormLegacy.Title children={$t({ defaultMessage: 'Venues' })} />
           <Table
             rowKey='id'
             rowActions={filterByAccess(rowActions)}

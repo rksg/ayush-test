@@ -114,9 +114,9 @@ export const Container = styled.div`
 }
 
 .cm-attribute {
-  color: var(--acx-accents-orange-50);
+  color: var(--acx-accents-orange-50) !important;
 }
 .cm-variable {
-  color: var(--acx-semantics-green-50);
+  color: var(--acx-semantics-green-50) !important;
 }
 `

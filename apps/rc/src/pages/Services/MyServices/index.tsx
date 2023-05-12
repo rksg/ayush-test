@@ -7,10 +7,11 @@ import {
   useGetDhcpStatsQuery,
   useGetDpskListQuery,
   useGetEnhancedMdnsProxyListQuery,
-  useGetNetworkSegmentationStatsListQuery,
+  useGetNetworkSegmentationViewDataListQuery,
   useGetEnhancedPortalProfileListQuery,
   useGetEnhancedWifiCallingServiceListQuery,
   useWebAuthTemplateListQuery,
+  useGetResidentPortalListQuery,
   useGetEdgeFirewallViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -32,6 +33,7 @@ export default function MyServices () {
   const earlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
   const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
+  const propertyManagementEnabled = useIsSplitOn(Features.PROPERTY_MANAGEMENT)
   const isEdgeEnabled = useIsSplitOn(Features.EDGES)
   const isEdgeDhcpEnabled = isEdgeEnabled || earlyBetaEnabled
 
@@ -59,7 +61,7 @@ export default function MyServices () {
     {
       type: ServiceType.NETWORK_SEGMENTATION,
       categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
-      tableQuery: useGetNetworkSegmentationStatsListQuery({
+      tableQuery: useGetNetworkSegmentationViewDataListQuery({
         params, payload: { ...defaultPayload }
       },{
         skip: !networkSegmentationEnabled
@@ -100,6 +102,14 @@ export default function MyServices () {
         skip: !networkSegmentationEnabled || !networkSegmentationSwitchEnabled
       }),
       disabled: !networkSegmentationEnabled || !networkSegmentationSwitchEnabled
+    },
+    {
+      type: ServiceType.RESIDENT_PORTAL,
+      categories: [RadioCardCategory.WIFI],
+      tableQuery: useGetResidentPortalListQuery({ params, payload: { filters: {} } }, {
+        skip: !propertyManagementEnabled
+      }),
+      disabled: !propertyManagementEnabled
     }
   ]
 

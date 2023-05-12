@@ -4,7 +4,7 @@ import _                from 'lodash'
 import { useIntl }      from 'react-intl'
 import { v4 as uuidv4 } from 'uuid'
 
-import { GridCol, GridRow, Loader, PageHeader, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
+import { GridCol, GridRow, Loader, PageHeader, showToast, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
 import {
   useAddRadiusAttributeGroupMutation,
   useGetRadiusAttributeGroupQuery,
@@ -32,7 +32,7 @@ export default function RadiusAttributeGroupForm (props: RadiusAttributeGroupFor
   // eslint-disable-next-line max-len
   const linkToList = useTenantLink('/' + getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST }))
   const navigate = useNavigate()
-  const formRef = useRef<StepsFormInstance>()
+  const formRef = useRef<StepsFormLegacyInstance>()
   // eslint-disable-next-line max-len
   const { data, isLoading } = useGetRadiusAttributeGroupQuery({ params: { policyId } }, { skip: !editMode })
   const [addRadiusAttributeGroup] = useAddRadiusAttributeGroupMutation()
@@ -147,13 +147,13 @@ export default function RadiusAttributeGroupForm (props: RadiusAttributeGroupFor
             link: getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST }) }
         ]}
       />
-      <StepsForm
+      <StepsFormLegacy
         editMode={editMode}
         formRef={formRef}
         buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
         onCancel={() => navigate(linkToList)}
         onFinish={editMode? handleEdit: handleAdd}>
-        <StepsForm.StepForm>
+        <StepsFormLegacy.StepForm>
           <Loader states={[{
             isLoading: isLoading,
             isFetching: isUpdating
@@ -173,8 +173,8 @@ export default function RadiusAttributeGroupForm (props: RadiusAttributeGroupFor
               editAttribute={editAttribute}
               setAttributeAssignments={setAttributeAssignments}/>
           </Loader>
-        </StepsForm.StepForm>
-      </StepsForm>
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>
     </>
   )
 }

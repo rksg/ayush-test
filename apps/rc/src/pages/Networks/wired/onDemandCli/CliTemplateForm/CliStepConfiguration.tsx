@@ -50,16 +50,16 @@ const cliExamplesTooltip = <FormattedMessage
   defaultMessage={`
     <p>Click on the template to add it to the CLI configuration.</p>
     <br></br>
-    <p>Replace the command input field enclosed in < > and 
+    <p>Replace the command input field enclosed in < > and
       highlighted in orange with the desired value.</p>
     <br></br>
     <div>
       <p>For example:</p>
       <p>interface ve 100 </p>
-      <p>vrf forwarding <strong> &lt; vrf_name  &gt; </strong> </p>
-      <p>ip address <strong> &lt; ip address/mask &gt; </strong> </p>
+      <p>vrf forwarding <strong> < vrf_name > </strong> </p>
+      <p>ip address <strong> < ip address/mask > </strong> </p>
       <p>ip pim-sparse  </p>
-      <p>ip ospf area <strong> &lt; area number/ip format &gt; </strong> </p>
+      <p>ip ospf area <strong> < area number/ip format > </strong> </p>
     </div>
     <br></br>
     <div>
@@ -188,7 +188,7 @@ export function CliStepConfiguration () {
   return <>
     <Row gutter={24}>
       <Col span={8}>
-        <StepsForm.Title>{$t({ defaultMessage: 'CLI Configuration' })}</StepsForm.Title>
+        <StepsForm.Title children={$t({ defaultMessage: 'CLI Configuration' })} />
         {isTemplate && <Form.Item
           name='name'
           label={$t({ defaultMessage: 'Template Name' })}

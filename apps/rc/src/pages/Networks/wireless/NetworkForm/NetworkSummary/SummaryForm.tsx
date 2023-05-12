@@ -4,7 +4,7 @@ import { EnvironmentOutlined }     from '@ant-design/icons'
 import { Col, Divider, Form, Row } from 'antd'
 import { useIntl }                 from 'react-intl'
 
-import { StepsForm, Subtitle }                                                 from '@acx-ui/components'
+import { StepsFormLegacy, Subtitle }                                           from '@acx-ui/components'
 import { Features, useIsSplitOn }                                              from '@acx-ui/feature-toggle'
 import { useMacRegListsQuery, useVenuesListQuery }                             from '@acx-ui/rc/services'
 import { Demo, NetworkSaveData, NetworkTypeEnum, transformDisplayText, Venue } from '@acx-ui/rc/utils'
@@ -68,7 +68,7 @@ export function SummaryForm (props: {
   // @ts-ignore
   return (
     <>
-      <StepsForm.Title>{ $t({ defaultMessage: 'Summary' }) }</StepsForm.Title>
+      <StepsFormLegacy.Title>{ $t({ defaultMessage: 'Summary' }) }</StepsFormLegacy.Title>
       <Row gutter={20}>
         <Col flex={1}>
           <Subtitle level={4}>

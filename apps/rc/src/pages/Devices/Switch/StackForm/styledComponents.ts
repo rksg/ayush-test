@@ -1,7 +1,7 @@
 import { Typography } from 'antd'
 import styled         from 'styled-components/macro'
 
-import { StepsForm }          from '@acx-ui/components'
+import { StepsFormLegacy }    from '@acx-ui/components'
 import { DeleteOutlinedIcon } from '@acx-ui/icons'
 
 export const TableContainer = styled.div`
@@ -47,7 +47,7 @@ export const RequiredDotSpan = styled.span`
   color: var(--acx-accents-orange-50)
 `
 
-export const StepFormTitle = styled(StepsForm.Title)`
+export const StepFormTitle = styled(StepsFormLegacy.Title)`
   margin-bottom: 5px !important;
   margin-top: 20px;
 `

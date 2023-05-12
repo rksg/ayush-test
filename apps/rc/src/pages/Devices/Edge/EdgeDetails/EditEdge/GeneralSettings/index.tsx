@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { Col, Form, Row } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { StepsFormNew }                           from '@acx-ui/components'
+import { StepsForm }                              from '@acx-ui/components'
 import { EdgeSettingForm }                        from '@acx-ui/rc/components'
 import { useGetEdgeQuery, useUpdateEdgeMutation } from '@acx-ui/rc/services'
 import { EdgeGeneralSetting }                     from '@acx-ui/rc/utils'
@@ -45,20 +45,20 @@ const GeneralSettings = () => {
   }
 
   return (
-    <StepsFormNew
+    <StepsForm
       form={form}
       onFinish={handleUpdateEdge}
       onCancel={() => navigate(linkToEdgeList)}
       buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
     >
-      <StepsFormNew.StepForm>
+      <StepsForm.StepForm>
         <Row gutter={20}>
           <Col span={8}>
             <EdgeSettingForm isFetching={isEdgeUpdating} isEdit />
           </Col>
         </Row>
-      </StepsFormNew.StepForm>
-    </StepsFormNew>
+      </StepsForm.StepForm>
+    </StepsForm>
   )
 }
 

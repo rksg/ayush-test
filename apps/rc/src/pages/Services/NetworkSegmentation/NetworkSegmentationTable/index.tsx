@@ -8,12 +8,12 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useDeleteNetworkSegmentationGroupMutation, useGetEdgeListQuery, useGetNetworkSegmentationStatsListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
+import { useDeleteNetworkSegmentationGroupMutation, useGetEdgeListQuery, useGetNetworkSegmentationViewDataListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
 import {
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath,
-  NetworkSegmentationGroupStats,
+  NetworkSegmentationGroupViewData,
   ServiceOperation,
   ServiceType,
   useTableQuery
@@ -52,7 +52,7 @@ const NetworkSegmentationTable = () => {
   const location = useLocation()
   const basePath = useTenantLink('')
   const tableQuery = useTableQuery({
-    useQuery: useGetNetworkSegmentationStatsListQuery,
+    useQuery: useGetNetworkSegmentationViewDataListQuery,
     defaultPayload: getNetworkSegmentationPayload,
     sorter: {
       sortField: 'name',
@@ -83,7 +83,7 @@ const NetworkSegmentationTable = () => {
     { isLoading: isNetworkSegmentationGroupDeleting }
   ] = useDeleteNetworkSegmentationGroupMutation()
 
-  const columns: TableProps<NetworkSegmentationGroupStats>['columns'] = [
+  const columns: TableProps<NetworkSegmentationGroupViewData>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
       key: 'name',
@@ -174,7 +174,7 @@ const NetworkSegmentationTable = () => {
     }
   ]
 
-  const rowActions: TableProps<NetworkSegmentationGroupStats>['rowActions'] = [
+  const rowActions: TableProps<NetworkSegmentationGroupViewData>['rowActions'] = [
     {
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),

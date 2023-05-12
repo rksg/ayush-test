@@ -3,7 +3,7 @@ import { NamePath }                  from 'antd/es/form/interface'
 import { defineMessage, useIntl }    from 'react-intl'
 
 import {
-  StepsFormNew,
+  StepsForm,
   useStepFormContext
 } from '@acx-ui/components'
 import { networkWifiIpRegExp } from '@acx-ui/rc/utils'
@@ -67,7 +67,7 @@ DnsServer.FieldSummary = function DnsServerFieldSummary () {
     <Form.Item
       name={name as unknown as NamePath}
       label={$t(label)}
-      children={<StepsFormNew.FieldSummary<string>
+      children={<StepsForm.FieldSummary<string>
         convert={(value) => isCustom ? String(value) : $t({ defaultMessage: 'Default' })}
       />}
     />

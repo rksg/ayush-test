@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { StepsForm }                             from '@acx-ui/components'
+import { StepsFormLegacy }                       from '@acx-ui/components'
 import { CommonUrlsInfo, WifiUrlsInfo }          from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent } from '@acx-ui/test-utils'
@@ -57,16 +57,16 @@ describe('CaptiveNetworkForm-Cloudpath', () => {
       value={{
         editMode: false, cloneMode: true, data: { ...cloudPathDataNone.wlan }
       }}
-    ><StepsForm><StepsForm.StepForm><CloudpathForm /></StepsForm.StepForm>
-      </StepsForm></NetworkFormContext.Provider></Provider>, { route: { params } })
+    ><StepsFormLegacy><StepsFormLegacy.StepForm><CloudpathForm /></StepsFormLegacy.StepForm>
+      </StepsFormLegacy></NetworkFormContext.Provider></Provider>, { route: { params } })
   })
   it('should create WISPr network successfully', async () => {
     render(<Provider><NetworkFormContext.Provider
       value={{
         editMode: false, cloneMode: false, data: { ...cloudPathDataNone.wlan }
       }}
-    ><StepsForm><StepsForm.StepForm><CloudpathForm /></StepsForm.StepForm>
-      </StepsForm></NetworkFormContext.Provider></Provider>, { route: { params } })
+    ><StepsFormLegacy><StepsFormLegacy.StepForm><CloudpathForm /></StepsFormLegacy.StepForm>
+      </StepsFormLegacy></NetworkFormContext.Provider></Provider>, { route: { params } })
     const walledGarden = screen.getByTestId('walled-garden-showed-textarea')
     fireEvent.change(walledGarden, { target: { value: '' } })
     fireEvent.blur(walledGarden)

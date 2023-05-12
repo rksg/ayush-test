@@ -184,9 +184,10 @@ describe('loadLocale', () => {
 })
 
 describe('LocaleProvider', () => {
+  const url = '/locales/compiled/:locale.json'
   beforeEach(() => {
     mockServer.use(
-      rest.get('/locales/compiled/:locale.json', (req, res, ctx) => {
+      rest.get(url, (req, res, ctx) => {
         const { locale } = req.params as { locale: keyof typeof messages }
         return res(ctx.json({ ...messages[locale], locale }))
       })

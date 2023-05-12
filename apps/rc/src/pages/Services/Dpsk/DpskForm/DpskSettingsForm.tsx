@@ -8,8 +8,8 @@ import {
 } from 'antd'
 import { FormattedMessage } from 'react-intl'
 
-import { GridCol, GridRow, SelectionControl, StepsForm, Subtitle, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
+import { GridCol, GridRow, SelectionControl, StepsFormLegacy, Subtitle, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
 import {
   ExpirationDateSelector
 } from '@acx-ui/rc/components'
@@ -56,7 +56,7 @@ export default function DpskSettingsForm () {
   return (<>
     <GridRow>
       <GridCol col={{ span: 6 }}>
-        <StepsForm.Title>{intl.$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
+        <StepsFormLegacy.Title>{intl.$t({ defaultMessage: 'Settings' })}</StepsFormLegacy.Title>
         <Form.Item name='id' noStyle>
           <Input type='hidden' />
         </Form.Item>
@@ -72,6 +72,7 @@ export default function DpskSettingsForm () {
           validateFirst
           hasFeedback
           children={<Input />}
+          validateTrigger={'onBlur'}
         />
         <Subtitle level={3}>
           { intl.$t({ defaultMessage: 'Passphrase Generation Parameters' }) }
