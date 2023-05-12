@@ -233,18 +233,15 @@ const reportSearch = (input: string, path: DefaultOptionType[]): boolean => {
     : matchVenue || matchDevice
 }
 
-const searchResultsRender = (input: string, path: DefaultOptionType[], isReports?: boolean) => {
+const searchResultsRender = (input: string, path: DefaultOptionType[]) => {
   const items = path.map((val) => (val?.displayLabel as string))
   const labels = path.map(item => item?.extraLabel as unknown as ReactNode)
   const label = labels.length ? labels[labels.length - 1] : null
   const text = items.join(' / ')
-
   return <UI.LabelContainer title={text}>
-    <UI.SearchLabel $isReports={isReports}>
+    <UI.SearchLabel $hasChildren={items.length > 1}>
       <Highlighter
-        highlightStyle={{
-          fontWeight: 'bold', background: 'none', padding: 0, color: 'inherit'
-        }}
+        highlightStyle={{ fontWeight: 'bold', background: 'none', padding: 0, color: 'inherit' }}
         searchWords={[input]}
         textToHighlight={text}
         autoEscape
@@ -354,7 +351,7 @@ function ConnectedNetworkFilter (
           displayRender={displayRender}
           showSearch={{
             filter: isReports ? reportSearch : search,
-            render: (input, options) => searchResultsRender(input, options, isReports)
+            render: (input, options) => searchResultsRender(input, options)
           }}
           allowClear
           open={open}
