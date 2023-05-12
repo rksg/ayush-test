@@ -65,7 +65,7 @@ const defaultPayload = {
   ]
 }
 
-export default function RogueAPDetectionTable () {
+export function RogueAPDetectionTable () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const params = useParams()

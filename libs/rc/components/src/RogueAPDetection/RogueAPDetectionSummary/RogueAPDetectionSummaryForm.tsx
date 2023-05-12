@@ -7,7 +7,7 @@ import { StepsFormLegacy, Subtitle } from '@acx-ui/components'
 
 import RogueAPDetectionContext from '../RogueAPDetectionContext'
 
-const RogueAPDetectionSummaryForm = () => {
+export const RogueAPDetectionSummaryForm = () => {
   const { Paragraph } = Typography
 
   const { $t } = useIntl()
@@ -74,5 +74,3 @@ const RogueAPDetectionSummaryForm = () => {
     </Row>
   )
 }
-
-export default RogueAPDetectionSummaryForm

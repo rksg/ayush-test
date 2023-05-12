@@ -20,7 +20,7 @@ type RogueAPDetectionSettingFormProps = {
   formRef?: MutableRefObject<ProFormInstance<RogueAPDetectionContextType> | undefined>
 }
 
-const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormProps) => {
+export const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormProps) => {
   const { $t } = useIntl()
   const { edit, formRef } = props
   const params = useParams()
@@ -144,5 +144,3 @@ const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormProps) =>
     </>
   )
 }
-
-export default RogueAPDetectionSettingForm

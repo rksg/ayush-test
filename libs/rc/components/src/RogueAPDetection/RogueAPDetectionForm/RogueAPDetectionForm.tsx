@@ -19,10 +19,11 @@ import {
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import RogueAPDetectionContext , { mainReducer } from '../RogueAPDetectionContext'
-import RogueAPDetectionScopeForm                 from '../RogueAPDetectionScope/RogueAPDetectionScopeForm'
-import RogueAPDetectionSummaryForm               from '../RogueAPDetectionSummary/RogueAPDetectionSummaryForm'
+import { RogueAPDetectionScopeForm }             from '../RogueAPDetectionScope/RogueAPDetectionScopeForm'
+import { RogueAPDetectionSummaryForm }           from '../RogueAPDetectionSummary/RogueAPDetectionSummaryForm'
 
-import RogueAPDetectionSettingForm from './RogueAPDetectionSettingForm'
+import { RogueAPDetectionSettingForm } from './RogueAPDetectionSettingForm'
+
 
 type RogueAPDetectionFormProps = {
   edit: boolean,
@@ -30,7 +31,7 @@ type RogueAPDetectionFormProps = {
   modalCallBack?: (id?: string) => void
 }
 
-const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
+export const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   // eslint-disable-next-line max-len
@@ -123,5 +124,3 @@ const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
     </RogueAPDetectionContext.Provider>
   )
 }
-
-export default RogueAPDetectionForm

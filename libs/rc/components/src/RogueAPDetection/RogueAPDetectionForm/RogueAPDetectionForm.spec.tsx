@@ -5,6 +5,7 @@ import userEvent     from '@testing-library/user-event'
 import { Form }      from 'antd'
 import { rest }      from 'msw'
 
+import { RogueAPDetectionForm } from '@acx-ui/rc/components'
 import {
   RogueAPDetectionContextType,
   RogueAPRule,
@@ -18,7 +19,6 @@ import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import RogueAPDetectionContext from '../RogueAPDetectionContext'
 
-import RogueAPDetectionForm from './RogueAPDetectionForm'
 
 const policyResponse = {
   requestId: '360cf6c7-b2c6-4973-b4c0-a6be63adaac0'

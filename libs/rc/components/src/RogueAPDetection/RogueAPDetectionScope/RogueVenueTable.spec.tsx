@@ -16,8 +16,7 @@ import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import RogueAPDetectionContext from '../RogueAPDetectionContext'
 
-import RogueVenueTable from './RogueVenueTable'
-
+import { RogueVenueTable } from './RogueVenueTable'
 
 
 const venueTable = {

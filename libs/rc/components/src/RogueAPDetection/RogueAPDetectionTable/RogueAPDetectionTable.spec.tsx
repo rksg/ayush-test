@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 import { Path }  from 'react-router-dom'
 
+import { RogueAPDetectionTable } from '@acx-ui/rc/components'
 import {
   CommonUrlsInfo,
   getPolicyDetailsLink,
@@ -18,8 +19,6 @@ import {
   waitFor,
   within
 } from '@acx-ui/test-utils'
-
-import RogueAPDetectionTable from './RogueAPDetectionTable'
 
 const mockTableResult = {
   fields: [

@@ -11,10 +11,10 @@ import { useRoguePolicyQuery }                                     from '@acx-ui
 import { RogueAPDetectionActionTypes, RogueAPRule, RogueRuleType } from '@acx-ui/rc/utils'
 import { filterByAccess }                                          from '@acx-ui/user'
 
-import { rogueRuleLabelMapping } from '../../contentsMap'
 import RogueAPDetectionContext   from '../RogueAPDetectionContext'
 
-import RogueAPDetectionDrawer from './RogueAPDetectionDrawer'
+import { RogueAPDetectionDrawer } from './RogueAPDetectionDrawer'
+import { rogueRuleLabelMapping } from '@acx-ui/rc/components'
 
 
 type RuleTableProps = {

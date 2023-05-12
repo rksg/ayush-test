@@ -4,7 +4,7 @@ import { useIntl }               from 'react-intl'
 import { StepsFormLegacy }            from '@acx-ui/components'
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 
-import RogueVenueTable from './RogueVenueTable'
+import { RogueVenueTable } from './RogueVenueTable'
 
 const VenueSelectInfo = () => {
   const { $t } = useIntl()
@@ -22,7 +22,7 @@ const VenueSelectInfo = () => {
   </div>
 }
 
-const RogueAPDetectionScopeForm = () => {
+export const RogueAPDetectionScopeForm = () => {
   const { $t } = useIntl()
 
   return (
@@ -46,5 +46,3 @@ const RogueAPDetectionScopeForm = () => {
     </Row>
   )
 }
-
-export default RogueAPDetectionScopeForm

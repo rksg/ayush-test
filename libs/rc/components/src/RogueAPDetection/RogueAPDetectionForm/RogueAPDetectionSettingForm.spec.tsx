@@ -4,16 +4,13 @@ import { act }  from '@testing-library/react'
 import { Form } from 'antd'
 import { rest } from 'msw'
 
+import { RogueAPDetectionForm, RogueAPDetectionSettingForm }                 from '@acx-ui/rc/components'
 import { policyApi }                                                         from '@acx-ui/rc/services'
 import { RogueAPDetectionContextType, RogueApUrls, RogueAPRule, RogueVenue } from '@acx-ui/rc/utils'
 import { Provider, store }                                                   from '@acx-ui/store'
 import { mockServer, render, screen }                                        from '@acx-ui/test-utils'
 
 import RogueAPDetectionContext from '../RogueAPDetectionContext'
-
-import RogueAPDetectionForm        from './RogueAPDetectionForm'
-import RogueAPDetectionSettingForm from './RogueAPDetectionSettingForm'
-
 
 
 const policyListContent = [
