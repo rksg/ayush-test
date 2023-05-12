@@ -1,12 +1,17 @@
-import { ApDetails, ApDeviceStatusEnum, ApPosition, CommonUrlsInfo, FloorPlanDto, NetworkDeviceType, SwitchStatusEnum, TypeWiseNetworkDevices, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                                                           from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitFor }                                                                                                     from '@acx-ui/test-utils'
+import { useIsSplitOn }                  from '@acx-ui/feature-toggle'
+import {
+  ApDetails, ApDeviceStatusEnum, ApPosition, CommonUrlsInfo,
+  FloorPlanDto, NetworkDeviceType, SwitchStatusEnum,
+  TypeWiseNetworkDevices, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                       from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import '@testing-library/jest-dom'
 
 // eslint-disable-next-line import/order
 import { rest }        from 'msw'
 import { ApFloorplan } from '.'
+
 
 const apDetails: ApDetails ={
   serialNumber: '422039000034',
@@ -23,7 +28,6 @@ const apDetails: ApDetails ={
     floorplanId: '94bed28abef24175ab58a3800d01e24a'
   } as ApPosition
 }
-
 
 const floorPlan: FloorPlanDto = {
   id: '94bed28abef24175ab58a3800d01e24a',
@@ -118,6 +122,27 @@ const apListData = {
   }]
 }
 
+const mockedMeshAps = {
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      serialNumber: '931704001509',
+      name: 'R510-ROOT',
+      apMac: '0C:F4:D5:27:3B:90',
+      downlink: [],
+      uplink: [],
+      meshRole: 'RAP',
+      hops: 0,
+      floorplanId: floorPlan.id,
+      xPercent: 79.716515,
+      yPercent: 31.556149,
+      downlinkCount: 2,
+      healthStatus: 'Unknown'
+    }
+  ]
+}
+
 describe('AP floorplan', () => {
 
   beforeEach(() => {
@@ -163,6 +188,53 @@ describe('AP floorplan', () => {
     expect(screen.getByRole('img')).toBeVisible()
     fireEvent.load(screen.getByRole('img'))
     expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('should render floorplan with mesh info', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getMeshAps.url.replace('?mesh=true', ''),
+        (req, res, ctx) => res(ctx.json({ ...mockedMeshAps }))
+      ),
+      rest.get(
+        CommonUrlsInfo.getApMeshTopology.url,
+        (req, res, ctx) => {
+          return res(ctx.json({}))
+        }
+      )
+    )
+
+    render(
+      <Provider>
+        <ApFloorplan
+          activeDevice={networkDevices['94bed28abef24175ab58a3800d01e24a'].ap[0]}
+          venueId={params.venueId}
+          apPosition={apDetails.position as ApPosition}
+        />
+      </Provider>, {
+        route: {
+          params, path: '/:tenantId/venue/:venueId/floor-plan',
+          wrapRoutes: false
+        }
+      }
+    )
+
+    await waitFor(() => {
+      expect(screen.getByRole('img')).toHaveAttribute('src',
+        imageObj['01acff37331949c686d40b5a00822ec2-001.jpeg'].signedUrl)
+    })
+    fireEvent.load(screen.getByRole('img'))
+
+    expect(await screen.findByTestId('APMeshRoleRoot')).toBeVisible()
+
+    await fireEvent.click(await screen.findByRole('switch'))
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('APMeshRoleRoot')).toBeNull()
+    })
+
   })
 
 })

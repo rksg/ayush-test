@@ -7,7 +7,7 @@ import {
   Loader,
   PageHeader,
   showToast,
-  StepsFormNew
+  StepsForm
 } from '@acx-ui/components'
 import {
   useGetSwitchConfigProfileQuery,
@@ -118,7 +118,7 @@ export default function CliProfileForm () {
       />
 
       <Loader states={[{ isLoading: editMode && isProfileLoading }]}>
-        <StepsFormNew
+        <StepsForm
           form={form}
           editMode={editMode}
           initialValues={{
@@ -127,15 +127,15 @@ export default function CliProfileForm () {
           onCancel={() => navigate(linkToNetworks)}
           onFinish={editMode ? handleEditCliProfile : handleAddCliProfile}
         >
-          <StepsFormNew.StepForm
+          <StepsForm.StepForm
             name='notice'
             title={$t({ defaultMessage: 'Important Notice' })}
             layout='horizontal'
           >
             <CliStepNotice />
-          </StepsFormNew.StepForm>
+          </StepsForm.StepForm>
 
-          <StepsFormNew.StepForm
+          <StepsForm.StepForm
             name='models'
             title={$t({ defaultMessage: 'Models' })}
             onFinish={async (data: CliConfiguration) => {
@@ -149,9 +149,9 @@ export default function CliProfileForm () {
             }}
           >
             <CliStepModels />
-          </StepsFormNew.StepForm>
+          </StepsForm.StepForm>
 
-          <StepsFormNew.StepForm
+          <StepsForm.StepForm
             name='settings'
             title={$t({ defaultMessage: 'CLI Configuration' })}
             onFinish={async (data: CliConfiguration) => {
@@ -162,24 +162,24 @@ export default function CliProfileForm () {
             }}
           >
             <CliStepConfiguration />
-          </StepsFormNew.StepForm>
+          </StepsForm.StepForm>
 
-          <StepsFormNew.StepForm
+          <StepsForm.StepForm
             name='venues'
             title={$t({ defaultMessage: 'Venues' })}
           >
             <CliStepVenues />
-          </StepsFormNew.StepForm>
+          </StepsForm.StepForm>
 
           {!editMode &&
-              <StepsFormNew.StepForm
+              <StepsForm.StepForm
                 name='summary'
                 title={$t({ defaultMessage: 'Summary' })}
               >
                 <CliStepSummary />
-              </StepsFormNew.StepForm>
+              </StepsForm.StepForm>
           }
-        </StepsFormNew>
+        </StepsForm>
       </Loader>
     </>
   )

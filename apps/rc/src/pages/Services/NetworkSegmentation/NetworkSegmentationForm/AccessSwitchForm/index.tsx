@@ -8,7 +8,7 @@ import {
 import { useIntl } from 'react-intl'
 
 import {
-  StepsFormNew,
+  StepsForm,
   TableProps,
   useStepFormContext
 } from '@acx-ui/components'
@@ -62,7 +62,7 @@ export function AccessSwitchForm () {
   ]
 
   return (<>
-    <StepsFormNew.Title>{$t({ defaultMessage: 'Access Switch Settings' })}</StepsFormNew.Title>
+    <StepsForm.Title>{$t({ defaultMessage: 'Access Switch Settings' })}</StepsForm.Title>
     <Typography.Paragraph>
       {$t({ defaultMessage: 'Set the configuration on these access switches:' })}
     </Typography.Paragraph>

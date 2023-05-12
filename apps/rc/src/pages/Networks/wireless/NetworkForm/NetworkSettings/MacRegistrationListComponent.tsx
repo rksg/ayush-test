@@ -21,7 +21,7 @@ const MacRegistrationListComponent = (props: MacRegistrationListComponentProps) 
   const { inputName = [] } = props
 
   const [macModalVisible, setMacModalVisible] = useState(false)
-  const [macName, setMacName] = useState('')
+  const [macId, setMacId] = useState('')
   const form = Form.useFormInstance()
 
   const { data: macRegListOption } = useMacRegListsQuery({
@@ -37,10 +37,10 @@ const MacRegistrationListComponent = (props: MacRegistrationListComponentProps) 
     } })
 
   useEffect(() => {
-    if (macName) {
-      form.setFieldValue([...inputName, 'macRegistrationListId'], macName)
+    if (macId) {
+      form.setFieldValue([...inputName, 'macRegistrationListId'], macId)
     }
-  }, [macName])
+  }, [macId])
 
   return <Form.Item
     label={intl.$t({ defaultMessage: 'Select MAC Registration List' })}
@@ -81,7 +81,7 @@ const MacRegistrationListComponent = (props: MacRegistrationListComponentProps) 
         modalMode
         modalCallBack={(macRegPool) => {
           setMacModalVisible(false)
-          setMacName(macRegPool?.name!)
+          setMacId(macRegPool?.id!)
         }}
       />}
       onCancel={() => setMacModalVisible(false)}

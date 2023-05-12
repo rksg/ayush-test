@@ -1,8 +1,10 @@
+import React from 'react'
+
 import { Row, Col, Form, Input } from 'antd'
 import { RuleObject }            from 'antd/lib/form'
 
-import { StepsForm } from '..'
-import { showToast } from '../../Toast'
+import { StepsFormLegacy } from '..'
+import { showToast }       from '../../Toast'
 
 function wait (ms: number) { return new Promise(resolve => setTimeout(resolve, ms)) }
 
@@ -20,14 +22,14 @@ export function AsyncValidation () {
   }
 
   return (
-    <StepsForm<Fields>
+    <StepsFormLegacy<Fields>
       onCancel={() => showToast({ type: 'info', content: 'Cancel' })}
       onFinish={async (data) => {
         console.log(data) // eslint-disable-line
         showToast({ type: 'success', content: 'Submitted' }) // show notification to indicate submission successful
       }}
     >
-      <StepsForm.StepForm<Pick<Fields, 'field1' | 'field2'>>
+      <StepsFormLegacy.StepForm<Pick<Fields, 'field1' | 'field2'>>
         title='Step 1'
         onFinish={async (data) => {
           console.log(data) // eslint-disable-line
@@ -37,7 +39,7 @@ export function AsyncValidation () {
       >
         <Row gutter={20}>
           <Col span={10}>
-            <StepsForm.Title children='Step 1' />
+            <StepsFormLegacy.Title children='Step 1' />
             <Form.Item
               name='field1'
               label='Field 1'
@@ -59,9 +61,9 @@ export function AsyncValidation () {
             </Form.Item>
           </Col>
         </Row>
-      </StepsForm.StepForm>
+      </StepsFormLegacy.StepForm>
 
-      <StepsForm.StepForm<Pick<Fields, 'field1' | 'field2'>>
+      <StepsFormLegacy.StepForm<Pick<Fields, 'field1' | 'field2'>>
         title='Step 2'
         onFinish={async (data) => {
           console.log(data) // eslint-disable-line
@@ -71,7 +73,7 @@ export function AsyncValidation () {
       >
         <Row gutter={20}>
           <Col span={10}>
-            <StepsForm.Title children='Step 2' />
+            <StepsFormLegacy.Title children='Step 2' />
             <Form.Item name='field3' label='Field 3'>
               <Input />
             </Form.Item>
@@ -80,7 +82,7 @@ export function AsyncValidation () {
             </Form.Item>
           </Col>
         </Row>
-      </StepsForm.StepForm>
-    </StepsForm>
+      </StepsFormLegacy.StepForm>
+    </StepsFormLegacy>
   )
 }

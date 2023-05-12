@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { StepsFormNew, PageHeader, Loader, showActionModal } from '@acx-ui/components'
+import { StepsForm, PageHeader, Loader, showActionModal } from '@acx-ui/components'
 import {
   useAddSwitchConfigProfileMutation,
   useUpdateSwitchConfigProfileMutation,
@@ -162,55 +162,55 @@ export function ConfigurationProfileForm () {
         ]}
       />
       <ConfigurationProfileFormContext.Provider value={{ editMode, currentData }}>
-        <StepsFormNew
+        <StepsForm
           form={form}
           editMode={editMode}
           onCancel={() => navigate(linkToProfiles, { replace: true })}
           onFinish={editMode ? handleEditProfile : handleAddProfile}
         >
-          <StepsFormNew.StepForm
+          <StepsForm.StepForm
             title={$t({ defaultMessage: 'General' })}
             onFinish={updateCurrentData}
           >
             <GeneralSetting />
-          </StepsFormNew.StepForm>
+          </StepsForm.StepForm>
 
-          <StepsFormNew.StepForm
+          <StepsForm.StepForm
             title={$t({ defaultMessage: 'VLANs' })}
             onFinish={updateVlanCurrentData}
           >
             <VlanSetting />
-          </StepsFormNew.StepForm>
+          </StepsForm.StepForm>
 
-          <StepsFormNew.StepForm
+          <StepsForm.StepForm
             title={$t({ defaultMessage: 'ACLs' })}
             onFinish={updateCurrentData}
           >
             <AclSetting />
-          </StepsFormNew.StepForm>
+          </StepsForm.StepForm>
 
           {(ipv4DhcpSnooping || arpInspection) &&
-            <StepsFormNew.StepForm
+            <StepsForm.StepForm
               title={$t({ defaultMessage: 'Trusted Ports' })}
               onFinish={updateTrustedPortsCurrentData}
             >
               <TrustedPorts />
-            </StepsFormNew.StepForm>
+            </StepsForm.StepForm>
           }
 
-          <StepsFormNew.StepForm
+          <StepsForm.StepForm
             title={$t({ defaultMessage: 'Venues' })}
             onFinish={updateCurrentData}
           >
             <VenueSetting />
-          </StepsFormNew.StepForm>
+          </StepsForm.StepForm>
 
-          <StepsFormNew.StepForm
+          <StepsForm.StepForm
             title={$t({ defaultMessage: 'Summary' })}
           >
             <Summary />
-          </StepsFormNew.StepForm>
-        </StepsFormNew>
+          </StepsForm.StepForm>
+        </StepsForm>
       </ConfigurationProfileFormContext.Provider>
     </Loader>
   )

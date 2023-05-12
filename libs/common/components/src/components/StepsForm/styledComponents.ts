@@ -1,90 +1,17 @@
-import { Typography }                     from 'antd'
-import styled, { css, createGlobalStyle } from 'styled-components/macro'
+import { Steps as AntSteps } from 'antd'
+import styled, { css }       from 'styled-components/macro'
 
-import { Subtitle } from '../Subtitle'
+export {
+  Title,
+  SectionTitle,
+  FieldLabel,
+  MultiSelect,
+  ActionsContainer,
+  ActionsContainerGlobalOverride,
+  StepsContainerGlobalOverride as StepsGlobalOverride
+} from '../StepsFormLegacy/styledComponents'
 
-const stepCompletedStyle = css`
-  .ant-steps-item-container .ant-steps-item-icon .ant-steps-icon-dot {
-    &::after {
-      top: 1px;
-      left: 1px;
-      background-color: var(--acx-steps-form-steps-step-color);
-    }
-  }
-`
-
-export const StepsContainer = styled.div`
-  position: fixed;
-  padding-top: calc(
-    var(--acx-steps-form-form-title-line-height) +
-    var(--acx-steps-form-form-title-margin-bottom) +
-    3px
-  );
-  z-index: 1;
-`
-export const StepsContainerGlobalOverride = createGlobalStyle`
-  .ant-pro-basicLayout {
-    ${StepsContainer} {
-      // col span=4/24, gutter=20px
-      width: calc((
-        100% - var(--acx-sider-width) -
-        var(--acx-content-horizontal-space) * 2
-      ) * 4 / 24 - 20px);
-    }
-  }
-  .ant-pro-basicLayout.sider-collapsed {
-    ${StepsContainer} {
-      // col span=4/24, gutter=20px
-      width: calc((
-        100% - var(--acx-sider-collapsed-width) -
-        var(--acx-content-horizontal-space) * 2
-      ) * 4 / 24 - 20px);
-    }
-  }
-`
-
-export const ActionsContainer = styled.div`
-  position: fixed;
-  bottom: 0;
-  padding: var(--acx-steps-form-actions-vertical-space) 0;
-  background-color: var(--acx-neutrals-10);
-  z-index: 3;
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0 -100% 0 -100%;
-    background-color: var(--acx-neutrals-10);
-  }
-  .ant-space-item .ant-space {
-    position: absolute;
-    left: 50%;
-    bottom: var(--acx-steps-form-actions-vertical-space);
-    transform: translate(-50%, 0);
-  }
-`
-export const ActionsContainerGlobalOverride = createGlobalStyle`
-  .ant-pro-basicLayout {
-    ${ActionsContainer} {
-      width: calc(
-        100% - var(--acx-sider-width) -
-        var(--acx-content-horizontal-space) * 2
-      );
-    }
-  }
-  .ant-pro-basicLayout.sider-collapsed {
-    ${ActionsContainer} {
-      width: calc(
-        100% - var(--acx-sider-collapsed-width) -
-        var(--acx-content-horizontal-space) * 2
-      );
-    }
-  }
-`
-
-export const Wrapper = styled.section<{
-  singleStep: boolean,
-  editMode?: boolean
-}>`
+export const Wrapper = styled.section`
   --acx-steps-form-steps-title-color: var(--acx-primary-black);
   --acx-steps-form-steps-title-font-size: var(--acx-body-4-font-size);
   --acx-steps-form-steps-title-line-height: var(--acx-body-4-line-height);
@@ -99,27 +26,28 @@ export const Wrapper = styled.section<{
 
   --acx-steps-form-actions-vertical-space: 12px;
 
-  .ant-pro-steps-form {
-    position: relative;
-  }
-  .ant-pro-steps-form-step {
-    position: initial;
-    display: none;
-    margin-top: unset;
-    &.ant-pro-steps-form-step-active {
-      display: block;
+  padding-block-end: calc(var(--acx-steps-form-actions-vertical-space) * 2 + 32px);
+`
+
+const stepCompletedStyle = css`
+  .ant-steps-item-container .ant-steps-item-icon .ant-steps-icon-dot {
+    &::after {
+      top: 1px;
+      left: 1px;
+      background-color: var(--acx-steps-form-steps-step-color);
     }
   }
+`
 
-  // resetting due to it causes extra space out of box
-  .ant-descriptions-view table { table-layout: initial; }
+export const Steps = styled(AntSteps)<{ $editMode?: boolean }>`
+  position: fixed;
+  padding-top: calc(
+    var(--acx-steps-form-form-title-line-height) +
+    var(--acx-steps-form-form-title-margin-bottom) +
+    3px
+  );
 
-  ${props => props.singleStep && css`
-    ${StepsContainer} {
-      display: none;
-    }
-  `}
-  .ant-steps-dot {
+  &.ant-steps-vertical {
     .ant-steps-item {
       .ant-steps-item-title {
         padding: 0 0 var(--acx-steps-form-steps-title-line-height) 12px;
@@ -144,7 +72,7 @@ export const Wrapper = styled.section<{
           &::after {
             margin: 0 auto;
             display: block;
-            ${props => !props.editMode ? css`
+            ${props => !props.$editMode ? css`
               background-color: var(--acx-steps-form-steps-step-color);
             ` : css`
               display: none;
@@ -196,83 +124,11 @@ export const Wrapper = styled.section<{
       &.ant-steps-item-finish {
         ${stepCompletedStyle}
       }
-      ${props => props.editMode ? css`
+      ${props => props.$editMode ? css`
         &.ant-steps-item-wait  {
           ${stepCompletedStyle}
         }
       ` : ''}
-    }
-  }
-
-  .ant-pro-steps-form-container {
-    margin: unset;
-    // col span=4/24
-    margin-left: ${props => props.singleStep ? '0;' : '16.66666667%;'}
-    // button height=32px
-    margin-bottom: calc(var(--acx-steps-form-actions-vertical-space) * 2 + 32px);
-    width: unset;
-    min-width: unset;
-    flex: 1;
-  }
-`
-
-export const Title = styled(Typography.Title).attrs({ level: 3 })`
-  font-size: var(--acx-steps-form-form-title-font-size);
-  line-height: var(--acx-steps-form-form-title-line-height);
-  font-weight: var(--acx-steps-form-form-title-font-weight);
-  margin-bottom: var(--acx-steps-form-form-title-margin-bottom) !important;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  svg {
-    width: 16px;
-    height: 16px;
-  }
-`
-
-export const SectionTitle = styled(Subtitle).attrs({ level: 3 })`
-  &.ant-typography {
-    padding-bottom: 4px;
-    border-bottom: 1px solid var(--acx-neutrals-30);
-    margin-bottom: 32px;
-  }
-`
-
-export const FieldLabel = styled.label<{ width: string }>`
-  font-size: var(--acx-body-4-font-size);
-  display: grid;
-  grid-template-columns: ${props => props.width} 1fr;
-  align-items: baseline;
-`
-
-
-export const MultiSelect = styled.div`
-  div.ant-checkbox-group {
-    display: flex;
-    > label.ant-checkbox-wrapper {
-      font-size: 12px;
-      align-items: center;
-      margin: 0 3px;
-      width: auto;
-      padding: 4px 12px;
-      border: 1px solid var(--acx-primary-black);
-      border-radius: 4px;
-      background-color: white;
-
-      > span:first-child {
-        display: none;
-      }
-    }
-
-    > label.ant-checkbox-wrapper-checked {
-      border: 1px solid var(--acx-primary-black);
-      border-radius: 4px;
-      background-color: var(--acx-primary-black);
-      color: white;
-    }
-
-    > label.ant-checkbox-wrapper:last-child {
-      border-right-width: 1px;
     }
   }
 `
