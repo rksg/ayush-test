@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 
 import { Col, Form, Row, Space, Steps }    from 'antd'
+import _                                   from 'lodash'
 import { useIntl }                         from 'react-intl'
 import { useStepsForm as useStepsFormAnt } from 'sunflower-antd'
 
@@ -49,6 +50,7 @@ export function useStepsForm <T> ({
   const total = steps.length
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+  const [disabled, setDisabled] = useState(!editMode)
   const formConfig = useStepsFormAnt({
     ...config,
     submit: onFinish,
@@ -113,13 +115,13 @@ export function useStepsForm <T> ({
   }
 
   const formProps: FormProps<T> = {
-    // TODO:
-    // combine props & currentStep?.props
+    layout: 'vertical',
+    ...config,
     ...props,
+    ..._.omit(currentStep.props, 'children'),
     // Unable to take from props.initialValues
     // due to it is done via useEffect, which result in delayed
     initialValues: config.defaultFormValues,
-    layout: 'vertical',
     requiredMark: true,
     preserve: true,
     validateTrigger: 'onBlur',
@@ -175,21 +177,22 @@ export function useStepsForm <T> ({
       loading={loading}
       onClick={() => submit()}
       children={labels.apply}
+      disabled={disabled}
     />,
-    // TODO:
-    // - handle disable when validation not passed
     submit: labels.submit.length === 0? null: formConfig.current < steps.length - 1
       ? <Button
         type='secondary'
         loading={loading}
         onClick={() => newConfig.gotoStep(formConfig.current + 1)}
         children={labels.next}
+        disabled={disabled}
       />
       : <Button
         type='secondary'
         loading={loading}
         onClick={() => submit()}
         children={labels.submit}
+        disabled={disabled}
       />
   }
 
@@ -213,12 +216,10 @@ export function useStepsForm <T> ({
       <Space
         align={editMode ? 'start' : 'center'}
         size={12}
-        // was testing to see if this could set the right margin to match steps at the left
-        // not sure if this is a good idea
         style={{ marginLeft: editMode ? `calc((
           100% - var(--acx-sider-width) -
           var(--acx-content-horizontal-space) * 2
-        ) * 4 / 24 - 20px)` : undefined }}
+        ) * 4 / 24 + var(--acx-content-horizontal-space))` : undefined }}
         children={buttonsLayout}
       />
     </UI.ActionsContainer>
@@ -238,7 +239,11 @@ export function useStepsForm <T> ({
     : <Col span={24} data-testid='steps-form-body'>{currentStepEl}</Col>
 
   const stepsFormEl = <UI.Wrapper data-testid='steps-form'>
-    <Form {...newConfig.formProps}>
+    <Form {...newConfig.formProps}
+      onFieldsChange={(...props) => {
+        newConfig.formProps.onFieldsChange?.(...props)
+        setDisabled(form.getFieldsError().filter(({ errors }) => errors.length).length > 0)
+      }}>
       <Row>{formLayout}</Row>
       {buttonEls}
     </Form>
