@@ -59,9 +59,7 @@ export const UserUrlsInfo = {
   },
   tenantAllowedOperations: {
     method: 'get',
-    url: '/tenants/allowed-operations',
-    oldUrl: '/api/tenant/:tenantId/allowed-operations',
-    newApi: true
+    url: '/api/tenant/:tenantId/allowed-operations'
   },
   venueAllowedOperations: {
     method: 'get',
