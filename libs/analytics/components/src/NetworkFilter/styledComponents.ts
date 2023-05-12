@@ -24,6 +24,11 @@ export const Container = styled.div.attrs((props: { $open?: boolean }) => props)
   min-width: 169px;
   max-width: 322px;
   ${(props) => props.$open ? 'width: 322px;' : 'width: 169px;'}
+  .ant-select-selector >
+  .ant-select-selection-overflow >
+  .ant-select-selection-overflow-item.ant-select-selection-overflow-item-suffix {
+    top: revert !important;
+  }
 `
 export const SeverityContainer = styled.div`
   display: flex;
