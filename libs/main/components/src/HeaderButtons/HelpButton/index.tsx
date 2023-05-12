@@ -18,6 +18,8 @@ export interface HelpButtonProps{
   setIsShown?: (b: boolean | null) => void
 }
 
+let timeout:NodeJS.Timeout
+
 const HelpButton = (props:HelpButtonProps) => {
   const { supportStatus, setIsShown } = props
   const { $t } = useIntl()
@@ -48,11 +50,13 @@ const HelpButton = (props:HelpButtonProps) => {
   },[supportStatus])
 
   useEffect(()=>{
-    if(isChatStarted && supportStatus && ['start','ready'].includes(supportStatus)){
-      const timeout:NodeJS.Timeout=setTimeout(()=>{
-        setIsBlocked(true)
-      },30*1000)
-      if(supportStatus === 'ready'){
+    if(isChatStarted){
+      if(supportStatus === 'start'){
+        timeout=setTimeout(()=>{
+          setIsBlocked(true)
+        },30*1000)
+      }
+      else if(supportStatus === 'ready'){
         clearTimeout(timeout)
         setIsBlocked(false)
       }
@@ -114,7 +118,7 @@ const HelpButton = (props:HelpButtonProps) => {
         label: <Space>{$t({ defaultMessage: 'Contact Support' })}
           {isBlocked && <Tooltip showArrow={false}
             // eslint-disable-next-line max-len
-            title={$t({ defaultMessage: 'Some security browser extentions/plugins might block this feature. Please disable those extensions/plugins and try again.' })}>
+            title={$t({ defaultMessage: 'Some security browser extensions/plugins might block this feature. Please disable those extensions/plugins and try again.' })}>
             <WarningCircleOutlined style={{ marginBottom: '-5px', width: '18px', height: '18px' }}/>
           </Tooltip>}
         </Space>
