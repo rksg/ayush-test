@@ -711,7 +711,7 @@ describe('EditPortDrawer', () => {
       await screen.findByText('Default')
       fireEvent.click(await screen.findByRole('button', { name: 'Customize' }))
       await editPortVlans('VLAN-ID-66', '', 'default')
-      await screen.findByText('VLAN-ID: 1 (Default VLAN)')
+      await screen.findByText('--')
       await screen.findByText('VLAN-ID: 66')
     })
 

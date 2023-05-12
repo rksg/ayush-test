@@ -348,7 +348,9 @@ export function EditPortDrawer ({
       portSpeed: portSpeed.find(item => item === portSetting.portSpeed)
         ? portSetting.portSpeed : portSpeed?.[0],
       taggedVlans: (portSetting.revert ? tagged : (portSetting.taggedVlans || '')).toString(),
-      untaggedVlan: (portSetting.revert ? untagged : portSetting.untaggedVlan) || defaultVlan
+      untaggedVlan: portSetting.revert ? untagged :
+        (portSetting.untaggedVlan ? portSetting.untaggedVlan :
+          (portSetting?.taggedVlans ? portSetting.untaggedVlan : defaultVlan))
     })
   }
 
@@ -390,7 +392,8 @@ export function EditPortDrawer ({
       taggedVlans: !hasMultipleValueFields?.includes('taggedVlans')
         ? (portSetting?.taggedVlans || vlansValue.tagged)?.toString() : '',
       untaggedVlan: (!hasMultipleValueFields?.includes('untaggedVlan')
-        && vlansValue.untagged) || portSetting?.untaggedVlan || defaultVlan
+        && vlansValue.untagged) || (portSetting.untaggedVlan ? portSetting.untaggedVlan :
+        (portSetting?.taggedVlans ? portSetting.untaggedVlan : defaultVlan))
     })
   }
 
@@ -485,14 +488,18 @@ export function EditPortDrawer ({
     }
 
     const originalUntaggedVlan = editPortData?.untaggedVlan
-    const isDirtyUntaggedVlan = !_.isEqual(originalUntaggedVlan, untaggedVlan?.toString)
+    const originalTaggedVlan = editPortData?.taggedVlans
+    const isDirtyUntaggedVlan = !_.isEqual(originalUntaggedVlan, untaggedVlan?.toString())
+    const isDirtyTaggedVlan = !_.isEqual(originalTaggedVlan ?
+      originalTaggedVlan : [''], taggedVlans?.split(','))
+    const isDirtyPortVlan = isDirtyUntaggedVlan || isDirtyTaggedVlan
     const ignoreFields = [
       ...getInitIgnoreFields(),
       isMultipleEdit && !portVlansCheckbox && 'revert',
       checkVlanIgnore(
-        'untaggedVlan', untaggedVlan, isMultipleEdit, useVenueSettings, isDirtyUntaggedVlan),
+        'untaggedVlan', untaggedVlan, isMultipleEdit, useVenueSettings, isDirtyPortVlan),
       checkVlanIgnore(
-        'taggedVlans', taggedVlans, isMultipleEdit, useVenueSettings, isDirtyUntaggedVlan),
+        'taggedVlans', taggedVlans, isMultipleEdit, useVenueSettings, isDirtyPortVlan),
       checkAclIgnore('egressAcl', data?.egressAcl, aclsOptions),
       checkAclIgnore('ingressAcl', data?.ingressAcl, aclsOptions)
     ]
