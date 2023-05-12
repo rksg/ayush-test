@@ -3,7 +3,8 @@ import { useIntl } from 'react-intl'
 import { Loader, Table, TableProps } from '@acx-ui/components'
 import {
   APExtended,
-  RequestPayload,
+  APExtendedGrouped,
+  ApExtraParams,
   TableQuery
 } from '@acx-ui/rc/utils'
 
@@ -14,7 +15,9 @@ export const defaultApPayload = {
 }
 
 export interface ApTableProps extends Omit<TableProps<APExtended>, 'columns'> {
-  tableQuery?: TableQuery<APExtended, RequestPayload<unknown>, unknown>
+  tableQuery?: TableQuery<APExtended | APExtendedGrouped,
+  { filters: { venueId: string[]; }; fields: string[]; },
+  ApExtraParams>
 }
 
 export const ApsTable = (props: ApTableProps) => {

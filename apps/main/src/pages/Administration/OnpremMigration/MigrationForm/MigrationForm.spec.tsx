@@ -5,14 +5,20 @@ import { act }   from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { policyApi } from '@acx-ui/rc/services'
+import {
+  policyApi
+} from '@acx-ui/rc/services'
 import {
   MigrationContextType,
-  SyslogUrls
+  SyslogUrls,
+  MigrationUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store }            from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
+import {
+  migrationResult
+} from '../__tests__/fixtures'
 import MigrationContext from '../MigrationContext'
 
 import MigrationForm from './MigrationForm'
@@ -115,9 +121,9 @@ const setSyslogAPConfigure = jest.fn()
 
 const initState = {
   file: new Blob(),
-  policyName: '',
-  server: '',
-  secondaryServer: ''
+  venueName: '',
+  description: '',
+  address: ''
 } as MigrationContextType
 
 jest.mock('@acx-ui/react-router-dom', () => ({
@@ -168,6 +174,21 @@ describe('MigrationForm', () => {
       (_, res, ctx) => res(
         ctx.json(policyResponse)
       )
+    ), rest.post(
+      MigrationUrlsInfo.uploadZdConfig.url,
+      (_, res, ctx) => res(
+        ctx.json(migrationResult)
+      )
+    ), rest.post(
+      MigrationUrlsInfo.addZdMigration.url,
+      (_, res, ctx) => res(
+        ctx.json(migrationResult)
+      )
+    ), rest.get(
+      MigrationUrlsInfo.getMigrationResult.url,
+      (_, res, ctx) => res(
+        ctx.json(migrationResult)
+      )
     ))
 
     render(
@@ -187,16 +208,23 @@ describe('MigrationForm', () => {
 
     await screen.findByRole('heading', { name: 'Backup File Selection', level: 3 })
 
-    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Validate' }))
+
+    expect(await screen.findByText('Validation Table')).toBeVisible()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Migrate' }))
 
     await screen.findByRole('heading', { level: 3, name: 'Migration' })
 
     await userEvent.type(await screen.findByTestId('name'), 'venuexxxx')
+    await userEvent.type(await screen.findByTestId('description'), 'venuexxxx')
+    await userEvent.type(await screen.findByTestId('address'), 'venuexxxx')
 
     await userEvent.click(screen.getByRole('button', { name: 'Migrate' }))
 
-    // eslint-disable-next-line max-len
-    // expect(await screen.findByText('Click Done to return to the ZD Migrations list or wait here for the result.')).toBeVisible()
+    // expect(await screen.findByText('Summary Table')).toBeVisible()
+
+    // await userEvent.click(screen.getByRole('button', { name: 'Done' }))
 
   })
 
