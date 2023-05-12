@@ -64,6 +64,7 @@ describe('ResidentPortal', () => {
 
     const nameInput = await screen.findByRole('textbox', { name: /Service Name/ })
     await userEvent.type(nameInput, mockedResidentPortalList.content[0].name)
+    nameInput.blur()
 
     const errorMessageElem = await screen.findByRole('alert')
     expect(errorMessageElem.textContent).toBe('Resident Portal with that name already exists')
