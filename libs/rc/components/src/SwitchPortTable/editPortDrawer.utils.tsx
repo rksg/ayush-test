@@ -171,8 +171,8 @@ export const checkVlanIgnore = (
   value: string[] | Number,
   isMultipleEdit: boolean,
   useVenueSettings: boolean,
-  isDirtyUntaggedVlan: boolean) => {
-  return !isMultipleEdit && !useVenueSettings && (!value || !isDirtyUntaggedVlan) && field
+  isDirtyPortVlan: boolean) => {
+  return !isMultipleEdit && !useVenueSettings && !isDirtyPortVlan && field
 }
 
 export const checkPortEditStatus = (
