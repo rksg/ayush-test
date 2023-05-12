@@ -523,8 +523,9 @@ export function EditPortDrawer ({
       ...(lldpQosList && { lldpQos: // remove fake lldp id
         lldpQosList?.map(lldp => ( lldp.id.includes('lldp') ? _.omit(lldp, ['id']) : lldp ))
       }),
-      taggedVlans: (useVenueSettings || !form.getFieldValue('taggedVlans'))
-        ? null : form.getFieldValue('taggedVlans')?.split(','),
+      taggedVlans: useVenueSettings ? null :
+        (form.getFieldValue('taggedVlans') ?
+          form.getFieldValue('taggedVlans').split(',') : []),
       untaggedVlan: useVenueSettings ? '' : form.getFieldValue('untaggedVlan'),
       voiceVlan: form.getFieldValue('voiceVlan') ?? null
     }
