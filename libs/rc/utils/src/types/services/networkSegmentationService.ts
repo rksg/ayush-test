@@ -10,15 +10,18 @@ export interface NetworkSegmentationGroup {
   forceOverwriteReboot?: boolean
 }
 
-export interface NetworkSegmentationGroupStats {
+export interface NetworkSegmentationGroupViewData {
   id: string
   name: string
   tags: string[]
+  vxlanTunnelProfileId: string
   networkIds: string[]
   venueInfos: VenueInfo[]
   edgeInfos: EdgeInfo[]
   distributionSwitchInfos: DistributionSwitch[]
   accessSwitchInfos: AccessSwitch[]
+  serviceStatus: string
+  tunnelNumber: string
 }
 
 export interface VenueInfo {
