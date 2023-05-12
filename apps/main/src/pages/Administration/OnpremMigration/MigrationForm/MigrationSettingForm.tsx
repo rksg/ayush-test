@@ -11,10 +11,14 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 import styled        from 'styled-components/macro'
 
-import { StepsFormLegacy }             from '@acx-ui/components'
-import { useGetSyslogPolicyListQuery } from '@acx-ui/rc/services'
+import { StepsFormLegacy } from '@acx-ui/components'
 import {
-  MigrationActionTypes
+  useLazyVenuesListQuery,
+  useGetVenueQuery
+} from '@acx-ui/rc/services'
+import {
+  MigrationActionTypes,
+  checkObjectNotExists
 } from '@acx-ui/rc/utils'
 
 import MigrationContext from '../MigrationContext'
@@ -25,27 +29,59 @@ type MigrationSettingFormProps = {
   className?: string
 }
 
+
 const MigrationSettingForm = styled((props: MigrationSettingFormProps) => {
   const { $t } = useIntl()
   const { className } = props
   const params = useParams()
-  const edit = false
 
   const {
     state, dispatch
   } = useContext(MigrationContext)
 
-  const { data } = useGetSyslogPolicyListQuery({ params: params })
+  const { tenantId, venueId } = useParams()
+  const { data } = useGetVenueQuery({ params: { tenantId, venueId } }, { skip: !venueId })
+  const venuesListPayload = {
+    searchString: '',
+    fields: ['name', 'id'],
+    searchTargetFields: ['name'],
+    filters: {},
+    pageSize: 10000
+  }
+  const [venuesList] = useLazyVenuesListQuery()
+  const nameValidator = async (value: string) => {
+    const payload = { ...venuesListPayload, searchString: value }
+    const list = (await venuesList({ params, payload }, true)
+      .unwrap()).data.filter(n => n.id !== data?.id).map(n => ({ name: n.name }))
+    return checkObjectNotExists(list, { name: value } , $t({ defaultMessage: 'Venue' }))
+  }
 
-  const handlePolicyName = (policyName: string) => {
+  const handleVenueName = (venueName: string) => {
     dispatch({
-      type: MigrationActionTypes.POLICYNAME,
+      type: MigrationActionTypes.VENUENAME,
       payload: {
-        policyName: policyName
+        venueName: venueName
       }
     })
   }
 
+  const handleDescription = (description: string) => {
+    dispatch({
+      type: MigrationActionTypes.DESCRIPTION,
+      payload: {
+        description: description
+      }
+    })
+  }
+
+  const handleAddress = (address: string) => {
+    dispatch({
+      type: MigrationActionTypes.ADDRESS,
+      payload: {
+        address: address
+      }
+    })
+  }
 
   return (
     <Row gutter={20} className={className}>
@@ -61,23 +97,17 @@ const MigrationSettingForm = styled((props: MigrationSettingFormProps) => {
           rules={[
             { min: 2 },
             { max: 32 },
-            { validator: async (rule, value) => {
-              if (!edit && value
-                  && data?.findIndex((policy) => policy.name === value) !== -1) {
-                return Promise.reject(
-                  $t({ defaultMessage: 'The venue with that name already exists' })
-                )
-              }
-              return Promise.resolve()
-            } }
+            {
+              validator: (_, value) => nameValidator(value)
+            }
           ]}
           validateFirst
           hasFeedback
-          initialValue={state.policyName}
+          initialValue={state.venueName}
           children={<Input
             data-testid='name'
             style={{ width: '380px' }}
-            onChange={(event => {handlePolicyName(event.target.value)})}
+            onChange={(event => {handleVenueName(event.target.value)})}
           />}
         />
         <Form.Item
@@ -86,7 +116,7 @@ const MigrationSettingForm = styled((props: MigrationSettingFormProps) => {
           children={<Input
             data-testid='description'
             style={{ width: '380px' }}
-            onChange={(event => {handlePolicyName(event.target.value)})}
+            onChange={(event => {handleDescription(event.target.value)})}
           />}
         />
         <Form.Item
@@ -95,7 +125,7 @@ const MigrationSettingForm = styled((props: MigrationSettingFormProps) => {
           children={<Input
             data-testid='address'
             style={{ width: '380px' }}
-            onChange={(event => {handlePolicyName(event.target.value)})}
+            onChange={(event => {handleAddress(event.target.value)})}
           />}
         />
         <Typography.Text>
