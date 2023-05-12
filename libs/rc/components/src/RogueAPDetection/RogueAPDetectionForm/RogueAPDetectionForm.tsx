@@ -1,11 +1,11 @@
-import { useRef, useReducer } from 'react'
+import { useReducer } from 'react'
 
+import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import {
   PageHeader,
-  StepsFormLegacy,
-  StepsFormLegacyInstance
+  StepsForm
 } from '@acx-ui/components'
 import { useAddRoguePolicyMutation, useUpdateRoguePolicyMutation } from '@acx-ui/rc/services'
 import {
@@ -24,7 +24,6 @@ import { RogueAPDetectionSummaryForm }           from '../RogueAPDetectionSummar
 
 import { RogueAPDetectionSettingForm } from './RogueAPDetectionSettingForm'
 
-
 type RogueAPDetectionFormProps = {
   edit: boolean,
   modalMode?: boolean,
@@ -40,7 +39,7 @@ export const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
   const params = useParams()
   const { edit, modalMode, modalCallBack } = props
 
-  const formRef = useRef<StepsFormLegacyInstance<RogueAPDetectionContextType>>()
+  const form = Form.useFormInstance()
   const [state, dispatch] = useReducer(mainReducer, {
     policyName: '',
     tags: [] as string[],
@@ -94,33 +93,33 @@ export const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
           { text: $t({ defaultMessage: 'Rogue AP Detection' }), link: tablePath }
         ]}
       />}
-      <StepsFormLegacy<RogueAPDetectionContextType>
-        formRef={formRef}
+      <StepsForm<RogueAPDetectionContextType>
+        form={form}
         editMode={edit}
         onCancel={() => modalMode ? modalCallBack?.() : navigate(linkToPolicies, { replace: true })}
         onFinish={() => handleRogueAPDetectionPolicy(edit)}
       >
-        <StepsFormLegacy.StepForm<RogueAPDetectionContextType>
+        <StepsForm.StepForm<RogueAPDetectionContextType>
           name='settings'
           title={$t({ defaultMessage: 'Settings' })}
         >
-          <RogueAPDetectionSettingForm edit={edit} formRef={formRef}/>
-        </StepsFormLegacy.StepForm>
+          <RogueAPDetectionSettingForm edit={edit}/>
+        </StepsForm.StepForm>
 
-        <StepsFormLegacy.StepForm
+        <StepsForm.StepForm
           name='scope'
           title={$t({ defaultMessage: 'Scope' })}
         >
           <RogueAPDetectionScopeForm />
-        </StepsFormLegacy.StepForm>
+        </StepsForm.StepForm>
 
-        { !edit && <StepsFormLegacy.StepForm
+        { !edit && <StepsForm.StepForm
           name='summary'
           title={$t({ defaultMessage: 'Summary' })}
         >
           <RogueAPDetectionSummaryForm />
-        </StepsFormLegacy.StepForm> }
-      </StepsFormLegacy>
+        </StepsForm.StepForm> }
+      </StepsForm>
     </RogueAPDetectionContext.Provider>
   )
 }

@@ -3,7 +3,7 @@ import React, { useContext } from 'react'
 import { Form, Col, Row, Typography } from 'antd'
 import { useIntl }                    from 'react-intl'
 
-import { StepsFormLegacy, Subtitle } from '@acx-ui/components'
+import { StepsForm, Subtitle } from '@acx-ui/components'
 
 import RogueAPDetectionContext from '../RogueAPDetectionContext'
 
@@ -19,7 +19,7 @@ export const RogueAPDetectionSummaryForm = () => {
   return (
     <Row gutter={20}>
       <Col span={18}>
-        <StepsFormLegacy.Title>{$t({ defaultMessage: 'Summary' })}</StepsFormLegacy.Title>
+        <StepsForm.Title>{$t({ defaultMessage: 'Summary' })}</StepsForm.Title>
         <Row>
           <Col span={24}>
             <Subtitle level={4}>{ $t({ defaultMessage: 'Settings' }) }</Subtitle>

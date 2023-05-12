@@ -1,14 +1,13 @@
-import React, { MutableRefObject, useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
-import { ProFormInstance }       from '@ant-design/pro-form'
 import { Col, Form, Input, Row } from 'antd'
 import { useIntl }               from 'react-intl'
 import { useParams }             from 'react-router-dom'
 
-import { StepsFormLegacy }                                   from '@acx-ui/components'
-import { useGetRoguePolicyListQuery }                        from '@acx-ui/rc/services'
+import { StepsForm }                  from '@acx-ui/components'
+import { useGetRoguePolicyListQuery } from '@acx-ui/rc/services'
 import {
-  RogueAPDetectionActionTypes, RogueAPDetectionContextType
+  RogueAPDetectionActionTypes
 } from '@acx-ui/rc/utils'
 
 import RogueAPDetectionContext from '../RogueAPDetectionContext'
@@ -16,15 +15,16 @@ import RogueAPDetectionContext from '../RogueAPDetectionContext'
 import RuleTable from './RuleTable'
 
 type RogueAPDetectionSettingFormProps = {
-  edit: boolean,
-  formRef?: MutableRefObject<ProFormInstance<RogueAPDetectionContextType> | undefined>
+  edit: boolean
 }
 
 export const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormProps) => {
   const { $t } = useIntl()
-  const { edit, formRef } = props
+  const { edit } = props
   const params = useParams()
   const [originalName, setOriginalName] = useState('')
+
+  const form = Form.useFormInstance()
 
   const {
     state, dispatch
@@ -66,8 +66,8 @@ export const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormPr
         }
       })
       setOriginalName(policyData.name)
-      formRef?.current?.setFieldValue('policyName', policyData.name ?? '')
-      formRef?.current?.setFieldValue('description', policyData.description ?? '')
+      form.setFieldValue('policyName', policyData.name ?? '')
+      form.setFieldValue('description', policyData.description ?? '')
     }
   }, [data])
 
@@ -76,7 +76,7 @@ export const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormPr
     <>
       <Row gutter={20}>
         <Col span={10}>
-          <StepsFormLegacy.Title>{$t({ defaultMessage: 'Settings' })}</StepsFormLegacy.Title>
+          <StepsForm.Title>{$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
           <Form.Item
             name='policyName'
             label={$t({ defaultMessage: 'Policy Name' })}
