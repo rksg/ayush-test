@@ -348,7 +348,7 @@ export function EditPortDrawer ({
       portSpeed: portSpeed.find(item => item === portSetting.portSpeed)
         ? portSetting.portSpeed : portSpeed?.[0],
       taggedVlans: (portSetting.revert ? tagged : (portSetting.taggedVlans || '')).toString(),
-      untaggedVlan: portSetting.revert ? untagged :
+      untaggedVlan: portSetting.revert ? (untagged || defaultVlan) :
         (portSetting.untaggedVlan ? portSetting.untaggedVlan :
           (portSetting?.taggedVlans ? portSetting.untaggedVlan : defaultVlan))
     })

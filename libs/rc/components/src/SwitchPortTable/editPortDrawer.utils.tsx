@@ -343,7 +343,8 @@ export const getMultipleVlanValue = ( // TODO: rewrite
           }
           if (!result.untagged[index]) {
             result.untagged[index]
-              = switchesDefaultVlan?.filter(s => s.switchId === item.switchMac)?.[0]?.defaultVlanId
+              = switchesDefaultVlan?.filter(s =>
+                s.switchId === item.switchMac)?.[0]?.defaultVlanId.toString()
           }
         }
       }
