@@ -7,7 +7,7 @@ export interface ApplicationPolicyMgmt {
 }
 export interface ApplicationInfo {
   // eslint-disable-next-line max-len
-  type: 'APPLICATION_ADDED' | 'APPLICATION_REMOVED' | 'APPLICATION_UPDATED' | 'APPLICATION_RENAMED' | 'APPLICATION_MERGED',
+  type: ApplicationUpdateType,
   applicationId: number,
   applicationName: string,
   categoryId: number,
@@ -23,4 +23,18 @@ export interface ImpactedItems {
   applicationPolicyName: string,
   applicationPolicyRuleId: string,
   applicationPolicyRuleName: string
+}
+export enum ApplicationConfirmType {
+  NEW_APP_ONLY = 'New APP only',
+  REMOVED_APP_ONLY = 'Removed APP only',
+  UPDATED_APP_ONLY = 'Updated APP',
+  UPDATED_APPS = 'Updated APPS',
+  UPDATED_REMOVED_APPS = 'Updated and removed APPS'
+}
+export enum ApplicationUpdateType {
+  APPLICATION_ADDED = 'APPLICATION_ADDED',
+  APPLICATION_REMOVED = 'APPLICATION_REMOVED',
+  APPLICATION_UPDATED = 'APPLICATION_UPDATED',
+  APPLICATION_RENAMED = 'APPLICATION_RENAMED',
+  APPLICATION_MERGED = 'APPLICATION_MERGED'
 }

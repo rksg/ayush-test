@@ -5,8 +5,9 @@ import { useIntl }        from 'react-intl'
 
 
 import {  Tabs }                                                                     from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                                 from '@acx-ui/formatter'
 import { useExportAllSigPackMutation, useExportSigPackMutation, useGetSigPackQuery } from '@acx-ui/rc/services'
-import { ApplicationInfo }                                                           from '@acx-ui/rc/utils'
+import { ApplicationConfirmType, ApplicationInfo, ApplicationUpdateType }            from '@acx-ui/rc/utils'
 
 import * as UI                                                                           from './styledComponents'
 import { UpdateConfirms }                                                                from './UpdateConfirms'
@@ -16,8 +17,8 @@ const ApplicationPolicyMgmt = ()=>{
   const { $t } = useIntl()
   const [ exportAllSigPack ] = useExportAllSigPackMutation()
   const [ exportSigPack] = useExportSigPackMutation()
-  const [type, setType] = useState('APPLICATION_ADDED')
-  const [updateAvailable, setUpdateAvailable] = useState(false)
+  const [type, setType] = useState(ApplicationUpdateType.APPLICATION_ADDED)
+  const [updateAvailable, setUpdateAvailable] = useState(true)
   const [added, setAdded] = useState([] as ApplicationInfo[])
   const [updated, setUpdated] = useState([] as ApplicationInfo[])
   const [merged, setMerged] = useState([] as ApplicationInfo[])
@@ -27,13 +28,36 @@ const ApplicationPolicyMgmt = ()=>{
   useEffect(()=>{
     if(data&&data.changedApplication.length){
       setUpdateAvailable(true)
-      setAdded(data.changedApplication.filter(item=>item.type === 'APPLICATION_ADDED'))
-      setUpdated(data.changedApplication.filter(item=>item.type === 'APPLICATION_UPDATED'))
-      setMerged(data.changedApplication.filter(item=>item.type === 'APPLICATION_MERGED'))
-      setRemoved(data.changedApplication.filter(item=>item.type === 'APPLICATION_REMOVED'))
-      setRenamed(data.changedApplication.filter(item=>item.type === 'APPLICATION_RENAMED'))
+      setAdded(data.changedApplication.filter(item=>item.type ===
+        ApplicationUpdateType.APPLICATION_ADDED))
+      setUpdated(data.changedApplication.filter(item=>item.type ===
+        ApplicationUpdateType.APPLICATION_UPDATED))
+      setMerged(data.changedApplication.filter(item=>item.type ===
+        ApplicationUpdateType.APPLICATION_MERGED))
+      setRemoved(data.changedApplication.filter(item=>item.type ===
+        ApplicationUpdateType.APPLICATION_REMOVED))
+      setRenamed(data.changedApplication.filter(item=>item.type ===
+        ApplicationUpdateType.APPLICATION_RENAMED))
     }
   },[data])
+  let confirmationType = ApplicationConfirmType.NEW_APP_ONLY
+  let rulesCount = 0
+  if(added.length&&!removed.length&&!renamed.length&&!updated.length&&!merged.length){
+    confirmationType = ApplicationConfirmType.NEW_APP_ONLY
+  } else if(!added.length&&removed.length&&!renamed.length&&!updated.length&&!merged.length){
+    confirmationType = ApplicationConfirmType.REMOVED_APP_ONLY
+    rulesCount = removed.length
+  } else if(!added.length&&!removed.length&&
+    (Number(!!renamed.length)+Number(!!updated.length)+Number(!!merged.length))===1){
+    confirmationType = ApplicationConfirmType.UPDATED_APP_ONLY
+    rulesCount = updated.length+merged.length+renamed.length
+  }else if(!removed.length&&(Number(!!added.length)+
+    Number(!!renamed.length)+Number(!!updated.length)+Number(!!merged.length))>1){
+    confirmationType = ApplicationConfirmType.UPDATED_APPS
+  }else if(removed.length&&(Number(!!added.length)+
+    Number(!!renamed.length)+Number(!!updated.length)+Number(!!merged.length))>=1){
+    confirmationType = ApplicationConfirmType.UPDATED_REMOVED_APPS
+  }
   const showCurrentInfo = ()=>{
     return (
       <UI.BannerVersion>
@@ -51,7 +75,7 @@ const ApplicationPolicyMgmt = ()=>{
                 {$t({ defaultMessage: 'Latest Application Version:' })}
               </UI.CurrentLabelBold>
               <UI.CurrentValue>
-                v1.867.1
+                {data?.latestVersion}
               </UI.CurrentValue>
             </UI.CurrentDetail>
             <UI.CurrentDetail>
@@ -67,7 +91,7 @@ const ApplicationPolicyMgmt = ()=>{
                 {$t({ defaultMessage: 'Release' })}
               </UI.CurrentValue>
               <UI.CurrentValue>
-                Apr 03, 2022
+                {formatter(DateFormatEnum.DateFormat)(data?.latestReleaseDate)}
               </UI.CurrentValue>
             </Space>
           </UI.FwContainer>}
@@ -77,7 +101,7 @@ const ApplicationPolicyMgmt = ()=>{
                 {$t({ defaultMessage: 'Current Version:' })}
               </UI.CurrentLabelBold>
               <UI.CurrentValue>
-                {$t({ defaultMessage: 'RuckusSigPack-v2-1.6' })}
+                {'RuckusSigPack-'+data?.currentVersion}
               </UI.CurrentValue>
             </UI.CurrentDetail>
             <UI.CurrentDetail>
@@ -93,7 +117,7 @@ const ApplicationPolicyMgmt = ()=>{
                 {$t({ defaultMessage: 'Last Updated:' })}
               </UI.CurrentLabel>
               <UI.CurrentValue>
-                {$t({ defaultMessage: 'Oct 16, 2020' })}
+                {formatter(DateFormatEnum.DateFormat)(data?.currentUpdateDate)}
               </UI.CurrentValue>
             </UI.CurrentDetail>
           </UI.FwContainer>
@@ -103,7 +127,7 @@ const ApplicationPolicyMgmt = ()=>{
             'the below updates under this tenant' })}
         </div>}
         {updateAvailable&&<div style={{ marginTop: 10 }}>
-          <UpdateConfirms/>
+          <UpdateConfirms rulesCount={rulesCount} confirmationType={confirmationType}/>
         </div>}
       </UI.BannerVersion>
     )
@@ -171,7 +195,7 @@ const ApplicationPolicyMgmt = ()=>{
         <Tabs
           defaultActiveKey='APPLICATION_ADDED'
           type='third'
-          onChange={(key)=>setType(key)}
+          onChange={(key)=>setType(key as ApplicationUpdateType)}
         >
           {
             Object.entries(tabs).map((item) =>

@@ -17,7 +17,7 @@ export const SigPackUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   updateSigPack: {
-    method: 'patch',
+    method: 'PATCH',
     url: '/applicationLibrary',
     newApi: true
   }
