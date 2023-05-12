@@ -61,6 +61,7 @@ export function MacRegistrationListSettingForm () {
             validateFirst
             hasFeedback
             children={<Input/>}
+            validateTrigger={'onBlur'}
           />
           <ExpirationDateSelector
             inputName={'expiration'}

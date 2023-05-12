@@ -55,6 +55,7 @@ export default function ResidentPortalSettingsForm (props : SettingsFormProps) {
         validateFirst
         hasFeedback
         children={<Input />}
+        validateTrigger={'onBlur'}
       />
       <Subtitle level={3}>
         { intl.$t({ defaultMessage: 'Portal Details' }) }
