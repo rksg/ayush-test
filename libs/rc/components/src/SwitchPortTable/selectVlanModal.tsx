@@ -259,7 +259,7 @@ export function SelectVlanModal (props: {
         <UI.GroupListLayout>
           <Radio.Group
             onChange={onChangeUntaggedVlan}
-            defaultValue={Number(untaggedVlan)}
+            defaultValue={Number(untaggedVlan) || ''}
             options={displayUntaggedVlan}
           />
         </UI.GroupListLayout>
