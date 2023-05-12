@@ -13,20 +13,20 @@ export const migrationReducer = (
         ...state,
         file: action.payload.file
       }
-    case MigrationActionTypes.POLICYNAME:
+    case MigrationActionTypes.VENUENAME:
       return {
         ...state,
-        policyName: action.payload.policyName
+        venueName: action.payload.venueName
       }
-    case MigrationActionTypes.SERVER:
+    case MigrationActionTypes.DESCRIPTION:
       return {
         ...state,
-        server: action.payload.server
+        description: action.payload.description
       }
-    case MigrationActionTypes.SECONDARYSERVER:
+    case MigrationActionTypes.ADDRESS:
       return {
         ...state,
-        secondaryServer: action.payload.secondaryServer
+        address: action.payload.address
       }
     default:
       return state
