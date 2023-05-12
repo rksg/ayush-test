@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { SimpleListTooltip }                                              from '@acx-ui/rc/components'
+import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
+import { SimpleListTooltip }                             from '@acx-ui/rc/components'
 import {
   useDeleteClientIsolationListMutation,
   useGetEnhancedClientIsolationListQuery,
@@ -15,7 +15,7 @@ import {
   getPolicyListRoutePath,
   getPolicyRoutePath,
   ClientIsolationViewModel,
-  profileInUsedMessageForDelete
+  doProfileDelete
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                          from '@acx-ui/user'
@@ -38,41 +38,14 @@ export default function ClientIsolationTable () {
     defaultPayload
   })
 
-  const hasAppliedVenue = (selectedRows?: ClientIsolationViewModel[]): boolean => {
-    return !!selectedRows && selectedRows.some(row => row.venueIds && row.venueIds.length > 0)
-  }
-
-  // eslint-disable-next-line max-len
-  const getDisabledDeleteMessage = (selectedRows: ClientIsolationViewModel[]): string | undefined => {
-    if (hasAppliedVenue(selectedRows)) {
-      return $t(profileInUsedMessageForDelete, {
-        count: selectedRows.length,
-        serviceName: $t({ defaultMessage: 'Venue' })
-      })
-    }
-    return
-  }
-
   const doDelete = (selectedRows: ClientIsolationViewModel[], callback: () => void) => {
-    if (hasAppliedVenue(selectedRows)) {
-      showActionModal({
-        type: 'error',
-        content: getDisabledDeleteMessage(selectedRows)
-      })
-    } else {
-      showActionModal({
-        type: 'confirm',
-        customContent: {
-          action: 'DELETE',
-          entityName: $t({ defaultMessage: 'Policy' }),
-          entityValue: selectedRows.length === 1 ? selectedRows[0].name : undefined,
-          numOfEntities: selectedRows.length
-        },
-        onOk: () => {
-          deleteFn({ params, payload: selectedRows.map(row => row.id) }).then(callback)
-        }
-      })
-    }
+    doProfileDelete(
+      selectedRows,
+      $t({ defaultMessage: 'Policy' }),
+      selectedRows[0].name,
+      [{ fieldName: 'venueIds', fieldText: $t({ defaultMessage: 'Venue' }) }],
+      async () => deleteFn({ params, payload: selectedRows.map(row => row.id) }).then(callback)
+    )
   }
 
   const rowActions: TableProps<ClientIsolationViewModel>['rowActions'] = [

@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader, showActionModal }                     from '@acx-ui/components'
+import { Button, PageHeader, Table, TableProps, Loader }                                      from '@acx-ui/components'
 import { SimpleListTooltip }                                                                  from '@acx-ui/rc/components'
 import { useDeleteAAAPolicyMutation, useGetAAAPolicyViewModelListQuery, useNetworkListQuery } from '@acx-ui/rc/services'
 import {
@@ -13,7 +13,7 @@ import {
   AAAViewModalType,
   AAAPurposeEnum,
   AAA_LIMIT_NUMBER,
-  profileInUsedMessageForDelete
+  doProfileDelete
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                          from '@acx-ui/user'
@@ -37,40 +37,14 @@ export default function AAATable () {
     }
   })
 
-  const hasAppliedNetwork = (selectedRow?: AAAViewModalType): boolean => {
-    return !!selectedRow?.networkIds && selectedRow.networkIds.length > 0
-  }
-
-  const getDisabledDeleteMessage = (selectedRow: AAAViewModalType): string | undefined => {
-    if (hasAppliedNetwork(selectedRow)) {
-      return $t(profileInUsedMessageForDelete, {
-        count: 1,
-        serviceName: $t({ defaultMessage: 'Network' })
-      })
-    }
-
-    return
-  }
-
   const doDelete = (selectedRow: AAAViewModalType, callback: () => void) => {
-    if (hasAppliedNetwork(selectedRow)) {
-      showActionModal({
-        type: 'error',
-        content: getDisabledDeleteMessage(selectedRow)
-      })
-    } else {
-      showActionModal({
-        type: 'confirm',
-        customContent: {
-          action: 'DELETE',
-          entityName: $t({ defaultMessage: 'Policy' }),
-          entityValue: selectedRow.name
-        },
-        onOk: () => {
-          deleteFn({ params: { tenantId, policyId: selectedRow.id } }).then(callback)
-        }
-      })
-    }
+    doProfileDelete(
+      [selectedRow],
+      $t({ defaultMessage: 'Policy' }),
+      selectedRow.name,
+      [{ fieldName: 'networkIds', fieldText: $t({ defaultMessage: 'Network' }) }],
+      async () => deleteFn({ params: { tenantId, policyId: selectedRow.id } }).then(callback)
+    )
   }
 
   const rowActions: TableProps<AAAViewModalType>['rowActions'] = [

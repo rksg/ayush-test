@@ -303,10 +303,3 @@ export const mdnsProxyRuleTypeLabelMapping: Record<BridgeServiceEnum, MessageDes
   [BridgeServiceEnum.WWW_HTTPS]: defineMessage({ defaultMessage: 'WWW HTTPs' }),
   [BridgeServiceEnum.XGRID]: defineMessage({ defaultMessage: 'Xgrid' })
 }
-
-export const profileInUsedMessageForDelete = defineMessage({
-  defaultMessage: `You are unable to delete {count, plural,
-  one {this record}
-  other {these records}
-  } due to its usage in {serviceName}`
-})

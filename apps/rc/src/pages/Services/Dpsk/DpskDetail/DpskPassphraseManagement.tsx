@@ -8,7 +8,6 @@ import {
   Modal,
   ModalRef,
   ModalType,
-  showActionModal,
   Table,
   TableProps
 } from '@acx-ui/components'
@@ -23,10 +22,10 @@ import {
   useUploadPassphrasesMutation
 } from '@acx-ui/rc/services'
 import {
+  doProfileDelete,
   ExpirationType,
   NetworkTypeEnum,
   NewDpskPassphrase,
-  profileInUsedMessageForDelete,
   transformAdvancedDpskExpirationText,
   useTableQuery
 } from '@acx-ui/rc/utils'
@@ -180,39 +179,14 @@ export default function DpskPassphraseManagement () {
     }
   ]
 
-  const hasAppliedPersona = (selectedRows: NewDpskPassphrase[]): boolean => {
-    return selectedRows.some(row => row.identityId)
-  }
-
-  const getDisabledDeleteMessage = (selectedRows: NewDpskPassphrase[]): string | undefined => {
-    return hasAppliedPersona(selectedRows)
-      ? $t(profileInUsedMessageForDelete, {
-        count: selectedRows.length,
-        serviceName: $t({ defaultMessage: 'Persona' })
-      })
-      : undefined
-  }
-
   const doDelete = (selectedRows: NewDpskPassphrase[], callback: () => void) => {
-    if (hasAppliedPersona(selectedRows)) {
-      showActionModal({
-        type: 'error',
-        content: getDisabledDeleteMessage(selectedRows)
-      })
-    } else {
-      showActionModal({
-        type: 'confirm',
-        customContent: {
-          action: 'DELETE',
-          entityName: $t({ defaultMessage: 'Passphrase' }),
-          entityValue: selectedRows[0].username,
-          numOfEntities: selectedRows.length
-        },
-        onOk: () => {
-          deletePassphrases({ params, payload: selectedRows.map(p => p.id) }).then(callback)
-        }
-      })
-    }
+    doProfileDelete(
+      selectedRows,
+      $t({ defaultMessage: 'Passphrase' }),
+      selectedRows[0].username,
+      [{ fieldName: 'identityId', fieldText: intl.$t({ defaultMessage: 'Persona' }) }],
+      async () => deletePassphrases({ params, payload: selectedRows.map(p => p.id) }).then(callback)
+    )
   }
 
   const rowActions: TableProps<NewDpskPassphrase>['rowActions'] = [

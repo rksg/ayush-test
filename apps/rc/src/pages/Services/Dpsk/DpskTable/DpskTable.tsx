@@ -5,8 +5,7 @@ import {
   PageHeader,
   Table,
   TableProps,
-  Loader,
-  showActionModal
+  Loader
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
 import { useDeleteDpskMutation, useGetEnhancedDpskListQuery } from '@acx-ui/rc/services'
@@ -23,7 +22,7 @@ import {
   DpskDetailsTabKey,
   getServiceListRoutePath,
   PassphraseFormatEnum,
-  profileInUsedMessageForDelete
+  doProfileDelete
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                               from '@acx-ui/user'
@@ -45,28 +44,6 @@ export default function DpskTable () {
   const [ deleteDpsk ] = useDeleteDpskMutation()
   const isCloudpathEnabled = useIsSplitOn(Features.DPSK_CLOUDPATH_FEATURE)
 
-  const hasAppliedPersona = (selectedRow?: DpskSaveData): boolean => {
-    return !!(selectedRow && selectedRow.identityId)
-  }
-
-  const hasAppliedNetwork = (selectedRow?: DpskSaveData): boolean => {
-    return !!selectedRow?.networkIds && selectedRow.networkIds.length > 0
-  }
-
-  const getDisabledDeleteMessage = (selectedRow: DpskSaveData): string | undefined => {
-    const inUsedService: string[] = []
-    if (hasAppliedPersona(selectedRow)) {
-      inUsedService.push(intl.$t({ defaultMessage: 'Persona' }))
-    }
-    if (hasAppliedNetwork(selectedRow)) {
-      inUsedService.push(intl.$t({ defaultMessage: 'Network' }))
-    }
-
-    return inUsedService.length > 0
-      ? intl.$t(profileInUsedMessageForDelete, { count: 1, serviceName: inUsedService.join(',') })
-      : undefined
-  }
-
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedDpskListQuery,
     defaultPayload,
@@ -74,28 +51,16 @@ export default function DpskTable () {
   })
 
   const doDelete = (selectedRow: DpskSaveData, callback: () => void) => {
-    if (hasAppliedPersona(selectedRow) || hasAppliedNetwork(selectedRow)) {
-      showActionModal({
-        type: 'error',
-        content: getDisabledDeleteMessage(selectedRow)
-      })
-    } else {
-      showActionModal({
-        type: 'confirm',
-        customContent: {
-          action: 'DELETE',
-          entityName: intl.$t({ defaultMessage: 'DPSK Service' }),
-          entityValue: selectedRow.name
-        },
-        onOk: async () => {
-          try {
-            deleteDpsk({ params: { serviceId: selectedRow.id } }).then(callback)
-          } catch (error) {
-            console.log(error) // eslint-disable-line no-console
-          }
-        }
-      })
-    }
+    doProfileDelete(
+      [selectedRow],
+      intl.$t({ defaultMessage: 'DPSK Service' }),
+      selectedRow.name,
+      [
+        { fieldName: 'identityId', fieldText: intl.$t({ defaultMessage: 'Persona' }) },
+        { fieldName: 'networkIds', fieldText: intl.$t({ defaultMessage: 'Network' }) }
+      ],
+      async () => deleteDpsk({ params: { serviceId: selectedRow.id } }).then(callback)
+    )
   }
 
   const rowActions: TableProps<DpskSaveData>['rowActions'] = [
