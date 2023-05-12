@@ -195,7 +195,5 @@ export class DpskWlanAdvancedCustomization {
     this.dnsProxyEnabled = false
 
     this.dnsProxy = new DnsProxy()
-
-    this.radiusOptions = new RadiusOptions()
   }
 }

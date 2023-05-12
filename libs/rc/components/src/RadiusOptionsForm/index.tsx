@@ -55,13 +55,14 @@ const { useWatch } = Form
 type RadiusOptionsFormProps = {
   context: string,
   showSingleSessionIdAccounting: boolean,
+  isWispr?: boolean,
   onDataChanged?: (()=> void)
 }
 
 export const RadiusOptionsForm = (props: RadiusOptionsFormProps) => {
   const { $t } = useIntl()
 
-  const { context, showSingleSessionIdAccounting } = props
+  const { context, showSingleSessionIdAccounting, isWispr=false } = props
 
   const fieldDataKey = (context === 'network')
     ? ['wlan','advancedCustomization', 'radiusOptions']
@@ -201,7 +202,7 @@ export const RadiusOptionsForm = (props: RadiusOptionsFormProps) => {
         name={calledStationIdTypeFieldName}
         label={$t({ defaultMessage: 'Called Station ID' })}
         style={{ width: '150px' }}
-        initialValue={CalledStationIdTypeEnum.BSSID}
+        initialValue={isWispr? CalledStationIdTypeEnum.AP_MAC : CalledStationIdTypeEnum.BSSID}
       >
         <Select onChange={handleChanged}>{CalledStationIdTypeOptions.map(o => {
           const { value, label } = o

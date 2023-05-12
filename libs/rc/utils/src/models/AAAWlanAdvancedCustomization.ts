@@ -85,7 +85,8 @@ export class AAAWlanAdvancedCustomization {
 
   wifiCallingIds?: string[]
 
-  //singleSessionIdAccounting?: boolean
+  // Discard. It will move to RADIUS options
+  singleSessionIdAccounting?: boolean
 
   proxyARP?: boolean
 
@@ -173,8 +174,6 @@ export class AAAWlanAdvancedCustomization {
     //@Size(    max = 5 )
     this.wifiCallingIds = []
 
-    //this.singleSessionIdAccounting = false
-
     this.proxyARP = false
 
     this.enableAirtimeDecongestion = false
@@ -210,7 +209,5 @@ export class AAAWlanAdvancedCustomization {
     this.dnsProxyEnabled = false
 
     this.dnsProxy = new DnsProxy()
-
-    this.radiusOptions = new RadiusOptions()
   }
 }

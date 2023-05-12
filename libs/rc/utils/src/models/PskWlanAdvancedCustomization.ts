@@ -198,7 +198,5 @@ export class PskWlanAdvancedCustomization {
     this.dnsProxyEnabled = false
 
     this.dnsProxy = new DnsProxy()
-
-    this.radiusOptions = new RadiusOptions()
   }
 }

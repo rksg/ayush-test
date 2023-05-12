@@ -647,6 +647,7 @@ export function MoreSettingsForm (props: {
       </Panel>
       {showRadiusOptions && <Panel header={$t({ defaultMessage: 'RADIUS Options' })} key='4'>
         <RadiusOptionsForm context='network'
+          isWispr={data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr}
           showSingleSessionIdAccounting={showSingleSessionIdAccounting} />
       </Panel>
       }
