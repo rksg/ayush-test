@@ -26,7 +26,6 @@ const HelpButton = (props:HelpButtonProps) => {
 
   const [firewallModalState, setFirewallModalOpen] = useState(false)
   const [helpPageModalState, setHelpPageModalOpen] = useState(false)
-  const [isChatStarted, setIsChatStarted] = useState(false)
   const [isBlocked, setIsBlocked] = useState(false)
   const [isChatDisabled, setIsChatDisabled] = useState(true)
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
@@ -34,13 +33,15 @@ const HelpButton = (props:HelpButtonProps) => {
   useEffect(()=>{
     switch (supportStatus) {
       case 'start':
+        timeout=setTimeout(()=>{
+          setIsBlocked(true)
+        },30 * 1000) // Wait 30 secs to show to show the warning tooltip
         setIsChatDisabled(true)
-        setIsChatStarted(true)
         break
       case 'ready':
-        setIsChatDisabled(false)
-        break
       case 'chatting':
+        clearTimeout(timeout)
+        setIsBlocked(false)
         setIsChatDisabled(false)
         break
       default:
@@ -48,20 +49,6 @@ const HelpButton = (props:HelpButtonProps) => {
         break
     }
   },[supportStatus])
-
-  useEffect(()=>{
-    if(isChatStarted){
-      if(supportStatus === 'start'){
-        timeout=setTimeout(()=>{
-          setIsBlocked(true)
-        },30*1000)
-      }
-      else if(supportStatus === 'ready'){
-        clearTimeout(timeout)
-        setIsBlocked(false)
-      }
-    }
-  },[isChatStarted, supportStatus])
 
   const documentationCenter = get('DOCUMENTATION_CENTER')
   const myOpenCases = get('MY_OPEN_CASES')
