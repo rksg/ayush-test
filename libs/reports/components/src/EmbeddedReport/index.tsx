@@ -12,7 +12,7 @@ import { useGuestTokenMutation, useEmbeddedIdMutation, BASE_RELATIVE_URL } from 
 import { useReportsFilter }                                                from '@acx-ui/reports/utils'
 import { useDateFilter, getJwtToken, NetworkPath }                         from '@acx-ui/utils'
 
-import { bandDisabledReports, ReportType, reportTypeDataStudioMapping, reportTypeModeMapping } from '../mapping/reportsMapping'
+import { bandDisabledReports, ReportType, reportTypeDataStudioMapping, reportModeMapping } from '../mapping/reportsMapping'
 
 interface ReportProps {
   reportName: ReportType
@@ -26,7 +26,7 @@ export function convertDateTimeToSqlFormat (dateTime: string): string {
 
 export const getSupersetRlsClause = (reportName:ReportType,
   paths?:NetworkPath[],radioBands?:RadioBand[]) => {
-  const mode=reportTypeModeMapping[reportName]
+  const mode=reportModeMapping[reportName]
   const isApReport = ['ap','both'].includes(mode)
   const isSwitchReport = ['switch','both'].includes(mode)
   const isRadioBandDisabled = bandDisabledReports.includes(reportName)
@@ -60,20 +60,23 @@ export const getSupersetRlsClause = (reportName:ReportType,
         switchMacs.push(`'${path[2].name}'`)
       }
     })
-    if(zoneIds.length && isApReport){
-      zoneClause = `"zoneName" in (${zoneIds.join(', ')})`
-    }
+    if(isApReport){
+      if(zoneIds.length){
+        zoneClause = `"zoneName" in (${zoneIds.join(', ')})`
+      }
 
-    if(apMacs.length && isApReport){
-      apClause = `"apMac" in (${apMacs.join(', ')})`
+      if(apMacs.length){
+        apClause = `"apMac" in (${apMacs.join(', ')})`
+      }
     }
+    if(isSwitchReport){
+      if(switchGroupIds.length && isSwitchReport){
+        switchGroupClause = `"switchGroupLevelOneName" in (${switchGroupIds.join(', ')})`
+      }
 
-    if(switchGroupIds.length && isSwitchReport){
-      switchGroupClause = `"switchGroupLevelOneName" in (${switchGroupIds.join(', ')})`
-    }
-
-    if(switchMacs.length && isSwitchReport){
-      switchClause = `"switchId" in (${switchMacs.join(', ')})`
+      if(switchMacs.length && isSwitchReport){
+        switchClause = `"switchId" in (${switchMacs.join(', ')})`
+      }
     }
 
     if(zoneClause || apClause || switchGroupClause || switchClause){

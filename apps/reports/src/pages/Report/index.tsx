@@ -4,7 +4,7 @@ import {
   EmbeddedReport,
   ReportType,
   reportTypeLabelMapping,
-  reportTypeModeMapping,
+  reportModeMapping,
   bandDisabledReports
 } from '@acx-ui/reports/components'
 
@@ -24,7 +24,7 @@ export function Report (props: {
   return (
     <>
       { withHeader && <ReportHeader name={$t(reportTypeLabelMapping[type])}
-        mode={reportTypeModeMapping[type]}
+        mode={reportModeMapping[type]}
         isRadioBandDisabled={isRadioBandDisabled}
         radioBandDisabledReason={radioBandDisabledReason}
         showFilter={showFilter}
