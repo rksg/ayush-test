@@ -1,8 +1,12 @@
+import { useContext, useEffect } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import { Loader, Tabs }                                          from '@acx-ui/components'
 import { useGetEdgePortsStatusListQuery, useGetPortConfigQuery } from '@acx-ui/rc/services'
 import { useNavigate, useParams, useTenantLink }                 from '@acx-ui/react-router-dom'
+
+import { EdgeEditContext } from '..'
 
 import PortsGeneral from './PortsGeneral'
 import SubInterface from './SubInterface'
@@ -15,6 +19,20 @@ const Ports = () => {
   const { data: portDataResponse, isLoading: isPortDataLoading } = useGetPortConfigQuery({
     params: { serialNumber: serialNumber }
   })
+  const {
+    activeSubTab: activeSubTabInContext,
+    setActiveSubTab: setActiveSubTabInContext,
+    formControl
+  } = useContext(EdgeEditContext)
+  const { isDirty } = formControl
+
+  useEffect(() => {
+    setActiveSubTabInContext({
+      key: activeSubTab as string,
+      title: tabs[activeSubTab as keyof typeof tabs].title
+    })
+  }, [])
+
   const portData = portDataResponse?.ports || []
 
   const portStatusPayload = {
@@ -58,7 +76,11 @@ const Ports = () => {
     >
       {Object.keys(tabs)
         .map((key) =>
-          <Tabs.TabPane tab={tabs[key as keyof typeof tabs].title} key={key}>
+          <Tabs.TabPane
+            tab={`${tabs[key as keyof typeof tabs].title}
+              ${(activeSubTabInContext.key === key && isDirty) ? '*' : ''}`}
+            key={key}
+          >
             <Loader states={[{
               isLoading: (isPortDataLoading || isPortStatusLoading),
               isFetching: false }]}>

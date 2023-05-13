@@ -8,7 +8,7 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { GridCol, GridRow, StepsForm }           from '@acx-ui/components'
+import { GridCol, GridRow, StepsFormLegacy }     from '@acx-ui/components'
 import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { GuestNetworkTypeEnum, NetworkTypeEnum } from '@acx-ui/rc/utils'
 
@@ -62,7 +62,7 @@ function TypesForm () {
   const disableAAA = !useIsSplitOn(Features.POLICIES)
   return (
     <>
-      <StepsForm.Title>{intl.$t({ defaultMessage: 'Portal Type' })}</StepsForm.Title>
+      <StepsFormLegacy.Title>{intl.$t({ defaultMessage: 'Portal Type' })}</StepsFormLegacy.Title>
       <Form.Item
         name={['guestPortal', 'guestNetworkType']}
         initialValue={GuestNetworkTypeEnum.ClickThrough}

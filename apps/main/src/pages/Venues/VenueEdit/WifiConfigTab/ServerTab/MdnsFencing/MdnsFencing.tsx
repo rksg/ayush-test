@@ -5,7 +5,7 @@ import _                          from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
-import { Loader, showActionModal, StepsForm } from '@acx-ui/components'
+import { Loader, showActionModal, StepsFormLegacy } from '@acx-ui/components'
 import {
   useGetVenueMdnsFencingQuery,
   useUpdateVenueMdnsFencingMutation
@@ -183,7 +183,7 @@ export function MdnsFencing () {
           setEnableMdnsFencing: setEnableMdnsFencing }}>
         <Row>
           <Col span={5}>
-            <StepsForm.FieldLabel width='200px'>
+            <StepsFormLegacy.FieldLabel width='200px'>
               { $t({ defaultMessage: 'Use mDNS Fencing Service' }) }
               <Form.Item
                 valuePropName='checked'
@@ -196,7 +196,7 @@ export function MdnsFencing () {
                   />
                 }
               />
-            </StepsForm.FieldLabel>
+            </StepsFormLegacy.FieldLabel>
           </Col>
         </Row>
         {enableMdnsFencing &&

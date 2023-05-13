@@ -1,5 +1,5 @@
 
-import { StepsForm }                          from '@acx-ui/components'
+import { StepsFormLegacy }                    from '@acx-ui/components'
 import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { GuestNetworkTypeEnum }               from '@acx-ui/rc/utils'
 import { Provider }                           from '@acx-ui/store'
@@ -108,12 +108,12 @@ function BypassCaptiveNetworkAssistantCheckboxNormalTestCase (props: BypassCNAPr
         data: {}
       }}
     >
-      <StepsForm>
-        <StepsForm.StepForm>
+      <StepsFormLegacy>
+        <StepsFormLegacy.StepForm>
           <BypassCaptiveNetworkAssistantCheckbox
             guestNetworkTypeEnum={props.guestNetworkTypeEnum} />
-        </StepsForm.StepForm>
-      </StepsForm>
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>
     </NetworkFormContext.Provider>
   </Provider>)
 }
@@ -127,12 +127,12 @@ function BypassCaptiveNetworkAssistantCheckboxCloneModeTestCase (props: BypassCN
         data: MockNetworkSetting
       }}
     >
-      <StepsForm>
-        <StepsForm.StepForm>
+      <StepsFormLegacy>
+        <StepsFormLegacy.StepForm>
           <BypassCaptiveNetworkAssistantCheckbox
             guestNetworkTypeEnum={props.guestNetworkTypeEnum} />
-        </StepsForm.StepForm>
-      </StepsForm>
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>
     </NetworkFormContext.Provider>
   </Provider>)
 }
@@ -146,12 +146,12 @@ function BypassCaptiveNetworkAssistantCheckboxEditModeTestCase (props: BypassCNA
         data: MockNetworkSetting
       }}
     >
-      <StepsForm>
-        <StepsForm.StepForm>
+      <StepsFormLegacy>
+        <StepsFormLegacy.StepForm>
           <BypassCaptiveNetworkAssistantCheckbox
             guestNetworkTypeEnum={props.guestNetworkTypeEnum} />
-        </StepsForm.StepForm>
-      </StepsForm>
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>
     </NetworkFormContext.Provider>
   </Provider>)
 }

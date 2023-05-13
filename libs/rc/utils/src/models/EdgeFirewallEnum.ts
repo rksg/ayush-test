@@ -2,7 +2,8 @@ export enum DdosAttackType {
   ALL = 'ALL',
   ICMP = 'ICMP',
   TCP_SYN = 'TCP_SYN',
-  IP_FRAGMENT = 'IP_FRAGMENT',
+  // removed due to device limitation.
+  // IP_FRAGMENT = 'IP_FRAGMENT',
   DNS_RESPONSE = 'DNS_RESPONSE',
   NTP_REFLECTION = 'NTP_REFLECTION'
 }
