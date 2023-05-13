@@ -305,7 +305,8 @@ function ConnectedNetworkFilter (
       ...rest
     })
   })
-  let rawVal:string[][] = filterFor === 'reports' ? reportsRaw : raw
+  const isReports = filterFor === 'reports'
+  let rawVal:string[][] = isReports ? reportsRaw : raw
   if(filterMode === 'switch'){
     selectedBands=[]
     rawVal=rawVal.filter(value=>{
