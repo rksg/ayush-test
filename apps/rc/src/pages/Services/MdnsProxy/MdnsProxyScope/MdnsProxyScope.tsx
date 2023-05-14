@@ -4,10 +4,10 @@ import { Form }    from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { StepsForm, Table, Loader, TableProps }     from '@acx-ui/components'
-import { useVenuesListQuery }                       from '@acx-ui/rc/services'
-import { useTableQuery, Venue, MdnsProxyScopeData } from '@acx-ui/rc/utils'
-import { filterByAccess }                           from '@acx-ui/user'
+import { StepsFormLegacy, Table, Loader, TableProps } from '@acx-ui/components'
+import { useVenuesListQuery }                         from '@acx-ui/rc/services'
+import { useTableQuery, Venue, MdnsProxyScopeData }   from '@acx-ui/rc/utils'
+import { filterByAccess }                             from '@acx-ui/user'
 
 import MdnsProxyFormContext from '../MdnsProxyForm/MdnsProxyFormContext'
 
@@ -116,7 +116,7 @@ export function MdnsProxyScope () {
 
   return (
     <>
-      <StepsForm.Title>{ $t({ defaultMessage: 'Scope' }) }</StepsForm.Title>
+      <StepsFormLegacy.Title>{ $t({ defaultMessage: 'Scope' }) }</StepsFormLegacy.Title>
       <p>{ $t({
         defaultMessage: 'Select the venues and APs where the mDNS Proxy Service will be applied:'
       }) }</p>

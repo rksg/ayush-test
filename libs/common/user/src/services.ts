@@ -17,7 +17,9 @@ import {
 export const UserUrlsInfo = {
   getCloudMessageBanner: {
     method: 'get',
-    url: '/api/upgrade/tenant/:tenantId/banner'
+    url: '/upgradeConfig/banners',
+    oldUrl: '/api/upgrade/tenant/:tenantId/banner',
+    newApi: true
   },
   updateUserProfile: {
     method: 'put',
@@ -33,7 +35,9 @@ export const UserUrlsInfo = {
   },
   getCloudVersion: {
     method: 'get',
-    url: '/api/upgrade/tenant/:tenantId/upgrade-version'
+    url: '/upgradeConfig/productVersions',
+    oldUrl: '/api/upgrade/tenant/:tenantId/upgrade-version',
+    newApi: true
   },
   getAllUserSettings: {
     method: 'get',
@@ -45,7 +49,9 @@ export const UserUrlsInfo = {
   },
   wifiAllowedOperations: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/allowed-operations'
+    url: '/tenants/allowedOperations?service=wifi',
+    oldUrl: '/api/tenant/:tenantId/wifi/allowed-operations',
+    newApi: true
   },
   switchAllowedOperations: {
     method: 'get',
@@ -67,7 +73,9 @@ export const UserUrlsInfo = {
   },
   upgradeAllowedOperations: {
     method: 'get',
-    url: '/api/upgrade/tenant/:tenantId/allowed-operations'
+    url: '/tenants/allowedOperations?service=upgradeConfig',
+    oldUrl: '/api/upgrade/tenant/:tenantId/allowed-operations',
+    newApi: true
   },
   getMfaTenantDetails: {
     method: 'get',

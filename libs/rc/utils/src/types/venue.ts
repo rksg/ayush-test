@@ -1,13 +1,13 @@
 import { Key } from 'react'
 
-import { ApDeviceStatusEnum, CellularNetworkSelectionEnum, LteBandRegionEnum, WanConnectionEnum } from '../constants'
-import { BandBalancing }                                                                          from '../models/BandBalancing'
-import { DenialOfServiceProtection }                                                              from '../models/DenialOfServiceProtection'
-import { Mesh }                                                                                   from '../models/Mesh'
-import { VenueDhcpServiceSetting }                                                                from '../models/VenueDhcpServiceSetting'
-import { VenueRadioCustomization }                                                                from '../models/VenueRadioCustomization'
-import { VenueRogueAp }                                                                           from '../models/VenueRogueAp'
-import { VenueSyslog }                                                                            from '../models/VenueSyslog'
+import { APMeshRole, ApDeviceStatusEnum, CellularNetworkSelectionEnum, LteBandRegionEnum, WanConnectionEnum } from '../constants'
+import { BandBalancing }                                                                                      from '../models/BandBalancing'
+import { DenialOfServiceProtection }                                                                          from '../models/DenialOfServiceProtection'
+import { Mesh }                                                                                               from '../models/Mesh'
+import { VenueDhcpServiceSetting }                                                                            from '../models/VenueDhcpServiceSetting'
+import { VenueRadioCustomization }                                                                            from '../models/VenueRadioCustomization'
+import { VenueRogueAp }                                                                                       from '../models/VenueRogueAp'
+import { VenueSyslog }                                                                                        from '../models/VenueSyslog'
 
 
 import { ApStatusDetails, LanPort }                  from './ap'
@@ -139,6 +139,7 @@ export interface NetworkDevice {
 	rogueCategoryType?: RogueDeviceCategoryType;
 	apMac?: string;
 	switchMac?: string;
+  meshRole?: APMeshRole;
 }
 
 export interface RogueApInfo {
@@ -805,4 +806,30 @@ export enum ShowTopologyFloorplanOn {
 	VENUE_OVERVIEW='VENUE_OVERVIEW',
 	AP_OVERVIEW='AP_OVERVIEW',
 	SWITCH_OVERVIEW='SWITCH_OVERVIEW'
+}
+
+export type ApMeshLink = {
+  connectionType: 'Wired' | 'Mesh'
+  from: string
+  to: string
+  fromMac: string
+  toMac: string
+  fromRole: APMeshRole
+  toRole: APMeshRole
+  fromSNR: number
+  toSNR: number
+  band: string
+  channel: number
+}
+
+export interface ApMeshTopologyData {
+  nodes: Node[]
+  edges: ApMeshLink[]
+}
+
+export enum SignalStrengthLevel {
+  EXCELLENT,
+  GOOD,
+  LOW,
+  POOR
 }

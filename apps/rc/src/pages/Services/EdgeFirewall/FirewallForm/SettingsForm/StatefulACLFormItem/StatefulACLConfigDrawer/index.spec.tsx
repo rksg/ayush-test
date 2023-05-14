@@ -5,7 +5,7 @@ import { renderHook, within } from '@testing-library/react'
 import userEvent              from '@testing-library/user-event'
 import { Form }               from 'antd'
 
-import { StepsFormNew }              from '@acx-ui/components'
+import { StepsForm }                 from '@acx-ui/components'
 import { ACLDirection, StatefulAcl } from '@acx-ui/rc/utils'
 import { Provider }                  from '@acx-ui/store'
 import {
@@ -78,7 +78,7 @@ describe('Stateful ACL config drawer', () => {
 
     render(
       <Provider>
-        <StepsFormNew
+        <StepsForm
           form={stepFormRef.current}
         >
           <StatefulACLConfigDrawer
@@ -86,7 +86,7 @@ describe('Stateful ACL config drawer', () => {
             setVisible={visibleRef.current.setVisible}
             editData={mockedEmptyInbound}
           />
-        </StepsFormNew>
+        </StepsForm>
       </Provider>)
 
     expect(await screen.findByText('Stateful ACL Settings')).toBeVisible()
@@ -111,6 +111,7 @@ describe('Stateful ACL config drawer', () => {
     await type(within(destination).getByRole('textbox', { name: 'Port' }), '3100')
     await click(within(dialog).getByRole('button', { name: 'Add' }))
     const customRow = await screen.findByRole('row', { name: /Custom/ })
+    expect(within(customRow).queryByText(/(20)/)).toBeValid()
 
     // edit added rule
     await click(await within(customRow).findByRole('checkbox'))
@@ -167,7 +168,7 @@ describe('Stateful ACL config drawer', () => {
 
     render(
       <Provider>
-        <StepsFormNew
+        <StepsForm
           form={stepFormRef.current}
         >
           <StatefulACLConfigDrawer
@@ -175,7 +176,7 @@ describe('Stateful ACL config drawer', () => {
             setVisible={visibleRef.current.setVisible}
             editData={mockedEmptyOutbound}
           />
-        </StepsFormNew>
+        </StepsForm>
       </Provider>)
 
     expect(await screen.findByText('Stateful ACL Settings')).toBeVisible()
@@ -199,7 +200,6 @@ describe('Stateful ACL config drawer', () => {
     await click(await within(destination).findByRole('radio', { name: 'Subnet Address' }))
     await type(within(destination).getByPlaceholderText('Network address'), '10.12.3.4')
     await type(within(destination).getByPlaceholderText('Mask'), '255.255.255.0')
-    // await click(await within(destination).findByRole('radio', { name: 'Any IP Address' }))
     await click(await within(dialog).findByRole('checkbox', { name: 'Add another rule' }))
     await click(within(dialog).getByRole('button', { name: 'Add' }))
 

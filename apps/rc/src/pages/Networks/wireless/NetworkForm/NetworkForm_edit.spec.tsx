@@ -215,7 +215,7 @@ describe('NetworkForm', () => {
     )
   })
 
-  // TODO: remove skip when ACX-13452 is fixed by moving to StepsFormNew
+  // TODO: remove skip when ACX-13452 is fixed by moving to StepsForm
   it.skip('should edit open network successfully', async () => {
     const params = {
       networkId: '5d45082c812c45fbb9aab24420f39bf0',

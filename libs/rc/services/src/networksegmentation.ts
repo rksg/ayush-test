@@ -7,7 +7,7 @@ import {
   createHttpRequest,
   DistributionSwitch,
   NetworkSegmentationGroup,
-  NetworkSegmentationGroupStats,
+  NetworkSegmentationGroupViewData,
   NetworkSegmentationUrls,
   NewTableResult,
   RequestPayload,
@@ -30,7 +30,7 @@ export const nsgApi = baseNsgApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Networksegmentation', id: 'LIST' }]
     }),
-    getNetworkSegmentationStatsList: build.query<TableResult<NetworkSegmentationGroupStats>, RequestPayload>({
+    getNetworkSegmentationViewDataList: build.query<TableResult<NetworkSegmentationGroupViewData>, RequestPayload>({
       query: ({ payload }) => {
         const req = createHttpRequest(NetworkSegmentationUrls.getNetworkSegmentationStatsList)
         return {
@@ -222,7 +222,7 @@ const aggregatedNSGData = (
 
 export const {
   useCreateNetworkSegmentationGroupMutation,
-  useGetNetworkSegmentationStatsListQuery,
+  useGetNetworkSegmentationViewDataListQuery,
   useDeleteNetworkSegmentationGroupMutation,
   useUpdateNetworkSegmentationGroupMutation,
   useLazyGetNetworkSegmentationGroupByIdQuery,

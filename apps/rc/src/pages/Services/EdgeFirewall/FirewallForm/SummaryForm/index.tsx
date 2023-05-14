@@ -53,7 +53,7 @@ export const SummaryForm = styled(({ className }: { className?: string }) => {
           >
             {
               ddosLimitEnabled
-                ? $t({ defaultMessage: `{ddosLimitEnabled} 
+                ? $t({ defaultMessage: `{ddosLimitEnabled}
                       ({ddosRulesCount} {ddosRulesCount, plural, one {Rule} other {Rules}})` },
                 {
                   ddosLimitEnabled: <FormattedMessage defaultMessage='ON' />,
