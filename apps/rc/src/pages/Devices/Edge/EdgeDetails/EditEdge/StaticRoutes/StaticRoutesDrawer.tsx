@@ -64,6 +64,7 @@ const StaticRoutesDrawer = (props: StaticRoutesDrawerProps) => {
 
   const validateStaticRoute = (ip: string, subnet: string) => {
     if(!!!ip || !!!subnet) return Promise.resolve()
+    // validation rule: ip & subnet = ip
     const ipSegment = ip.split('.')
     const subnetSegment = subnet.split('.')
     const seg1 = Number(ipSegment[0]) & Number(subnetSegment[0])
