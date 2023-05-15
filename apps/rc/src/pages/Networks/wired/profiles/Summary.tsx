@@ -4,7 +4,7 @@ import { Row, Col, Form } from 'antd'
 import { useIntl }        from 'react-intl'
 
 
-import { StepsForm }          from '@acx-ui/components'
+import { StepsFormLegacy }    from '@acx-ui/components'
 import { useVenuesListQuery } from '@acx-ui/rc/services'
 import { Venue }              from '@acx-ui/rc/utils'
 import { useParams }          from '@acx-ui/react-router-dom'
@@ -50,7 +50,7 @@ export function Summary () {
   return (
     <Row gutter={20}>
       <Col span={10}>
-        <StepsForm.Title
+        <StepsFormLegacy.Title
           children={$t({ defaultMessage: 'Summary' })}
         />
         <Form.Item

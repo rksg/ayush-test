@@ -4,8 +4,8 @@ import { useIntl } from 'react-intl'
 
 import {
   PageHeader,
-  StepsForm,
-  StepsFormInstance
+  StepsFormLegacy,
+  StepsFormLegacyInstance
 } from '@acx-ui/components'
 import { useAddSyslogPolicyMutation, useUpdateSyslogPolicyMutation } from '@acx-ui/rc/services'
 import {
@@ -52,7 +52,7 @@ const SyslogForm = (props: SyslogFormProps) => {
   const flowLevel = FlowLevelEnum.CLIENT_FLOW
   const venues:SyslogVenue[] = []
 
-  const formRef = useRef<StepsFormInstance<SyslogContextType>>()
+  const formRef = useRef<StepsFormLegacyInstance<SyslogContextType>>()
   const [state, dispatch] = useReducer(mainReducer, {
     policyName,
     server,
@@ -136,33 +136,33 @@ const SyslogForm = (props: SyslogFormProps) => {
             link: getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.LIST }) }
         ]}
       />
-      <StepsForm<SyslogContextType>
+      <StepsFormLegacy<SyslogContextType>
         formRef={formRef}
         editMode={edit}
         onCancel={() => navigate(linkToPolicies)}
         onFinish={() => handleSyslogPolicy(edit)}
       >
-        <StepsForm.StepForm<SyslogContextType>
+        <StepsFormLegacy.StepForm<SyslogContextType>
           name='settings'
           title={$t({ defaultMessage: 'Settings' })}
         >
           <SyslogSettingForm edit={edit} formRef={formRef}/>
-        </StepsForm.StepForm>
+        </StepsFormLegacy.StepForm>
 
-        <StepsForm.StepForm
+        <StepsFormLegacy.StepForm
           name='scope'
           title={$t({ defaultMessage: 'Scope' })}
         >
           <SyslogScopeForm />
-        </StepsForm.StepForm>
+        </StepsFormLegacy.StepForm>
 
-        { !edit && <StepsForm.StepForm
+        { !edit && <StepsFormLegacy.StepForm
           name='summary'
           title={$t({ defaultMessage: 'Summary' })}
         >
           <SyslogSummaryForm />
-        </StepsForm.StepForm> }
-      </StepsForm>
+        </StepsFormLegacy.StepForm> }
+      </StepsFormLegacy>
     </SyslogContext.Provider>
   )
 }

@@ -298,7 +298,7 @@ export const renderForm = (
       <div data-testid='field'>{child}</div>
       {ok ? <h1>Valid</h1> : null}
       {ok ? <div data-testid='form-values'>{JSON.stringify(form.getFieldsValue(true))}</div> : null}
-      {/* TODO: might be a source of bug for the StepsFormNew when previous page rely on useWatch to update another value */}
+      {/* TODO: might be a source of bug for the StepsForm when previous page rely on useWatch to update another value */}
       {/* It is required to have fields render in order for useWatch to trigger */}
       {Object.keys(flat({ ...initialValues, ...valuesToUpdate })).map(key => <Form.Item
         key={key}

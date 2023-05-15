@@ -18,8 +18,8 @@ import { useIntl } from 'react-intl'
 
 import {
   PageHeader,
-  StepsForm,
-  StepsFormInstance,
+  StepsFormLegacy,
+  StepsFormLegacyInstance,
   Subtitle
 } from '@acx-ui/components'
 import { useIsSplitOn, Features }        from '@acx-ui/feature-toggle'
@@ -157,7 +157,7 @@ export function ManageIntegrator () {
 
   const navigate = useNavigate()
   const linkToIntegrators = useTenantLink('/integrators', 'v')
-  const formRef = useRef<StepsFormInstance<EcFormData>>()
+  const formRef = useRef<StepsFormLegacyInstance<EcFormData>>()
   const { action, type, tenantId, mspEcTenantId } = useParams()
 
   const [mspAdmins, setAdministrator] = useState([] as MspAdministrator[])
@@ -892,7 +892,7 @@ export function ManageIntegrator () {
             link: '/integrators', tenantType: 'v' }
         ]}
       />
-      <StepsForm
+      <StepsFormLegacy
         formRef={formRef}
         onFinish={isEditMode ? handleEditIntegrator : handleAddIntegrator}
         onCancel={() => navigate(linkToIntegrators)}
@@ -904,7 +904,7 @@ export function ManageIntegrator () {
           setDrawerAssignedEcVisible(false)
         }}
       >
-        {isEditMode && <StepsForm.StepForm>
+        {isEditMode && <StepsFormLegacy.StepForm>
           <Subtitle level={3}>
             { intl.$t({ defaultMessage: 'Account Details' }) }</Subtitle>
           <Form.Item
@@ -948,10 +948,10 @@ export function ManageIntegrator () {
           <Subtitle level={3}>
             { intl.$t({ defaultMessage: 'Subscriptions' }) }</Subtitle>
           <CustomerSubscriptionForm />
-        </StepsForm.StepForm>}
+        </StepsFormLegacy.StepForm>}
 
         {!isEditMode && <>
-          <StepsForm.StepForm
+          <StepsFormLegacy.StepForm
             name='accountDetail'
             title={intl.$t({ defaultMessage: 'Account Details' })}
             onFinish={async (data) => {
@@ -999,9 +999,9 @@ export function ManageIntegrator () {
             </Form.Item>
             <MspAdminsForm />
             <CustomerAdminsForm />
-          </StepsForm.StepForm>
+          </StepsFormLegacy.StepForm>
 
-          <StepsForm.StepForm
+          <StepsFormLegacy.StepForm
             name='customers'
             title={intl.$t({ defaultMessage: 'Customers' })}
             onFinish={async (data) => {
@@ -1016,9 +1016,9 @@ export function ManageIntegrator () {
               <Divider/>
               <AssignEcForm/>
             </Col>
-          </StepsForm.StepForm>
+          </StepsFormLegacy.StepForm>
 
-          <StepsForm.StepForm
+          <StepsFormLegacy.StepForm
             name='subscriptions'
             title={intl.$t({ defaultMessage: 'Subscriptions' })}
             onFinish={async (data) => {
@@ -1031,9 +1031,9 @@ export function ManageIntegrator () {
               { intl.$t({ defaultMessage: 'Subscriptions' }) }</Subtitle>
             <Divider/>
             <CustomerSubscriptionForm />
-          </StepsForm.StepForm>
+          </StepsFormLegacy.StepForm>
 
-          <StepsForm.StepForm
+          <StepsFormLegacy.StepForm
             name='summary'
             title={intl.$t({ defaultMessage: 'Summary' })}
           >
@@ -1041,10 +1041,10 @@ export function ManageIntegrator () {
               {intl.$t({ defaultMessage: 'Summary' })}</Subtitle>
             <Divider/>
             <CustomerSummary />
-          </StepsForm.StepForm>
+          </StepsFormLegacy.StepForm>
         </>}
 
-      </StepsForm>
+      </StepsFormLegacy>
 
       {drawerAdminVisible && <ManageAdminsDrawer
         visible={drawerAdminVisible}

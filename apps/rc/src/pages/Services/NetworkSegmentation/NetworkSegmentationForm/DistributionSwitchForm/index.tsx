@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { StepsFormNew, TableProps, useStepFormContext } from '@acx-ui/components'
-import { useGetAvailableSwitchesQuery }                 from '@acx-ui/rc/services'
-import { DistributionSwitch }                           from '@acx-ui/rc/utils'
-import { useParams }                                    from '@acx-ui/react-router-dom'
+import { StepsForm, TableProps, useStepFormContext } from '@acx-ui/components'
+import { useGetAvailableSwitchesQuery }              from '@acx-ui/rc/services'
+import { DistributionSwitch }                        from '@acx-ui/rc/utils'
+import { useParams }                                 from '@acx-ui/react-router-dom'
 
 import { NetworkSegmentationGroupFormData } from '..'
 import { useWatch }                         from '../../useWatch'
@@ -99,9 +99,9 @@ export function DistributionSwitchForm () {
   }
 
   return (<>
-    <StepsFormNew.Title>
+    <StepsForm.Title>
       {$t({ defaultMessage: 'Distribution Switch Settings' })}
-    </StepsFormNew.Title>
+    </StepsForm.Title>
     <DistributionSwitchTable rowActions={rowActions}
       actions={[{
         key: 'addDs',

@@ -4,7 +4,9 @@ import { disconnectReasonCodeMap } from './mapping/80211MgmtDeauthAndDisassociat
 import { ccd80211ReasonCodes }     from './mapping/ccd80211ReasonCodeMap'
 import { ccdFailureTypes }         from './mapping/ccdFailureTypeMap'
 import { ccdReasonCodes }          from './mapping/ccdReasonCodeMap'
+import { disconnectClientEvents }  from './mapping/clientDisconnectEventsMap'
 import { clientEvents }            from './mapping/clientEventsMap'
+import { ClientEventEnum }         from './types/clientEvent'
 
 export type MapElement = {
   id: number
@@ -39,20 +41,29 @@ const ccdReasonCodeMap = readCodesIntoMap()(
   (ccdReasonCodes as MapElement[]).concat(
   ccd80211ReasonCodes.filter(({ code }) => !code.startsWith('SG_DHCP')) as MapElement[]))
 
-const clientEventsMap = readCodesIntoMap()(clientEvents as MapElement[])
+const clientEventsMap = readCodesIntoMap()(
+  clientEvents as MapElement[])
+export const disconnectClientEventsMap = readCodesIntoMap()(
+  disconnectClientEvents as MapElement[])
+const disconnectDefaultReasonMap = readCodesIntoMap('reason')(
+  disconnectClientEvents as MapElement[])
 
 export function clientEventDescription (
   event: MapElement['code'],
   state?: string
 ) {
-  if (!clientEventsMap.hasOwnProperty(event)) return ccdReasonCodeMap[event] || `${event}`
-  const clientEventDescription = clientEventsMap[event as keyof typeof clientEventsMap]
+  if (!clientEventsMap.hasOwnProperty(event))
+    return ccdReasonCodeMap[event] || `${event}`
 
-  if (event !== 'EVENT_CLIENT_INFO_UPDATED') return clientEventDescription
+  if (disconnectClientEventsMap.hasOwnProperty(event))
+    return disconnectClientEventsMap[ClientEventEnum.DISCONNECT]
+
+  if (event !== ClientEventEnum.INFO_UPDATED)
+    return clientEventsMap[event as ClientEventEnum]
 
   return state === 're-associate'
     ? defineMessage({ defaultMessage: 'Client (re)associated (802.11)' })
-    : clientEventDescription
+    : clientEventsMap[event as ClientEventEnum]
 }
 
 export function mapCodeToReason (code: string, intl: IntlShape) {
@@ -60,8 +71,16 @@ export function mapCodeToReason (code: string, intl: IntlShape) {
   return (typeof reason === 'string') ? reason : intl.$t(reason)
 }
 
-export function mapDisconnectCodeToReason (code: string | null): MessageDescriptor {
-  return (code && disconnectReasonCodeMap[code]) || defineMessage({ defaultMessage: 'Unknown' })
+export function mapDisconnectCode (code: string | null): MessageDescriptor {
+  return (code && disconnectClientEventsMap[code]) || defineMessage({ defaultMessage: 'Unknown' })
+}
+
+export function mapDisconnectCodeToReason (
+  code: string | null, failedMsgId: string | null
+): MessageDescriptor {
+  return (failedMsgId && disconnectReasonCodeMap[failedMsgId])
+    || (code && disconnectDefaultReasonMap[code])
+    || defineMessage({ defaultMessage: 'Unknown' })
 }
 
 export function mapCodeToAttempt (code: string, intl: IntlShape) {

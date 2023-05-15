@@ -7,7 +7,7 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { GridCol, GridRow, StepsForm }    from '@acx-ui/components'
+import { GridCol, GridRow, StepsFormLegacy } from '@acx-ui/components'
 import { CaptivePassphraseExpirationEnum, NetworkSaveData,
   GuestNetworkTypeEnum, NetworkTypeEnum } from '@acx-ui/rc/utils'
 
@@ -49,7 +49,7 @@ export function HostApprovalForm () {
   return (
     <GridRow>
       <GridCol col={{ span: 10 }}>
-        <StepsForm.Title>{$t({ defaultMessage: 'Host Settings' })}</StepsForm.Title>
+        <StepsFormLegacy.Title>{$t({ defaultMessage: 'Host Settings' })}</StepsFormLegacy.Title>
         <DomainsInput required={true}/>
         <Form.Item
           name={['guestPortal','hostGuestConfig', 'hostDurationChoices']}
