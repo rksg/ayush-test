@@ -83,6 +83,7 @@ export function PortalSettings () {
   const [getUploadURL] = useGetUploadURLMutation()
 
   const [preferredProvider, setPreferredProvider] = useState<string>()
+  const [changeNeeded, setChangeNeeded] = useState(true)
 
   const [showContactSupport, setContactSupport] = useState(false)
   const [showOpenCase, setOpenCase] = useState(true)
@@ -394,6 +395,28 @@ export function PortalSettings () {
     }
   }
 
+  const handleChange = (value:string) => {
+    if (isEditMode && changeNeeded) {
+      setChangeNeeded(false)
+      const title = intl.$t( { defaultMessage: 'Changing 3rd Party Portal Provider' } )
+      showActionModal({
+        type: 'confirm',
+        title: title,
+        content: intl.$t({
+          defaultMessage: `
+                    MSP customers will need to contact MSP administrator to be able to update 
+                    WISPr network portal provider settings. Do you want to continue?
+                    `
+        }),
+        okText: intl.$t({ defaultMessage: 'Continue' }),
+        onOk: () => setPreferredProvider(value),
+        onCancel: () => formRef.current?.setFieldValue('external_provider', preferredProvider)
+      })
+    } else {
+      setPreferredProvider(value)
+    }
+  }
+
   const PortalProviders = () => {
     const initialProvider = isEditMode ? preferredProvider : undefined
     return (
@@ -404,7 +427,7 @@ export function PortalSettings () {
         initialValue={initialProvider}
         children={
           <Select
-            onChange={value => setPreferredProvider(value)}
+            onChange={value => handleChange(value)}
             placeholder={intl.$t({ defaultMessage: 'Select preferred provider' })}
           >
             {externalProviders?.map(item=>{
