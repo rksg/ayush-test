@@ -10,7 +10,7 @@ import { useIntl }       from 'react-intl'
 import { showToast, TableProps, useStepFormContext } from '@acx-ui/components'
 import { useParams }                                 from '@acx-ui/react-router-dom'
 import { networkHealthApi }                          from '@acx-ui/store'
-import { TABLE_DEFAULT_PAGE_SIZE }                   from '@acx-ui/utils'
+import { TABLE_DEFAULT_PAGE_SIZE, noDataDisplay }    from '@acx-ui/utils'
 
 import { authMethodsByClientType }     from './authMethods'
 import { messageMapping, stages }      from './contents'
@@ -250,7 +250,7 @@ export const {
           specId, id, createdAt,
           ...((summary.apsTestedCount === 0)
             ? Object.entries(summary).reduce((acc, [key]) => {
-              acc[key] = '-'
+              acc[key] = noDataDisplay
               return acc
             }, summary)
             : summary

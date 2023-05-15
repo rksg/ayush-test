@@ -106,10 +106,10 @@ describe('useNetworkHealthRelatedTests', () => {
         id: 1,
         specId: 'specId',
         createdAt: '2023-02-14T00:00:00.000Z',
-        apsErrorCount: '-',
-        apsFailureCount: '-',
-        apsSuccessCount: '-',
-        apsTestedCount: '-'
+        apsErrorCount: '--',
+        apsFailureCount: '--',
+        apsSuccessCount: '--',
+        apsTestedCount: '--'
       }
     ])
   })
