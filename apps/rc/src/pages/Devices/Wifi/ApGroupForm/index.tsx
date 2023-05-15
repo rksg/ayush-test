@@ -198,6 +198,7 @@ export function ApGroupForm () {
                 validateFirst
                 hasFeedback
                 children={<Input disabled={apGroupData?.isDefault} />}
+                validateTrigger={'onBlur'}
               />
               <Form.Item
                 name='venueId'
@@ -214,6 +215,7 @@ export function ApGroupForm () {
                   options={venueOption}
                   onChange={async (value) => await handleVenueChange(value)}
                 />}
+                validateTrigger={'onBlur'}
               />
             </Col>
           </Row>

@@ -15,7 +15,8 @@ import {
   LocaleProvider,
   LocaleContext,
   useLocaleContext,
-  localeLoaders
+  localeLoaders,
+  localePath
 } from './locales'
 
 const messages = {
@@ -268,5 +269,22 @@ describe('useLocaleContext', () => {
     })
 
     expect(await screen.findByText('Sprache')).toBeVisible()
+  })
+})
+
+describe('localePath', () => {
+  it('should throw an error if response is not ok', async () => {
+    const locale = 'es-ES'
+    try {
+      await localePath(locale)
+    } catch(err) {
+      // eslint-disable-next-line
+      expect(err).toBeInstanceOf(Error)
+    }
+  })
+
+  it('should return empty object', async () => {
+    const result = await localePath('es')
+    expect(result).toEqual({})
   })
 })

@@ -1180,6 +1180,24 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'ResidentPortal', id: 'LIST' }]
     }),
+    deleteResidentPortalLogo: build.mutation<ResidentPortal, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.deleteResidentPortalLogo, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'ResidentPortal', id: 'ID' }]
+    }),
+    deleteResidentPortalFavicon: build.mutation<ResidentPortal, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.deleteResidentPortalFavicon, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'ResidentPortal', id: 'ID' }]
+    }),
     deleteResidentPortals: build.mutation<ResidentPortal, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(PropertyUrlsInfo.deleteResidentPortals, params)
@@ -1311,6 +1329,8 @@ export const {
   useGetResidentPortalQuery,
   useUpdateResidentPortalMutation,
   useDeleteResidentPortalsMutation,
+  useDeleteResidentPortalLogoMutation,
+  useDeleteResidentPortalFaviconMutation,
 
   useImportPropertyUnitsMutation,
   useLazyDownloadPropertyUnitsQuery,
