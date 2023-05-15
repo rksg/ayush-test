@@ -32,9 +32,14 @@ describe('ResidentPortal', () => {
 
     render(
       <Provider>
-        <Form form={formRef.current}><ResidentPortalSettingsForm /></Form>
+        <Form form={formRef.current}>
+          <ResidentPortalSettingsForm
+            existingFavicon={{ fileSrc: '', filename: '' }}
+            existingLogo={{ fileSrc: '', filename: '' }}/>
+        </Form>
       </Provider>
     )
+
 
     const nameInput = await screen.findByRole('textbox', { name: /Service Name/ })
     expect(nameInput).toHaveValue(mockedResidentPortal.name)
@@ -58,12 +63,17 @@ describe('ResidentPortal', () => {
   it('should validate the service name', async () => {
     render(
       <Provider>
-        <Form><ResidentPortalSettingsForm /></Form>
+        <Form>
+          <ResidentPortalSettingsForm
+            existingFavicon={{ fileSrc: '', filename: '' }}
+            existingLogo={{ fileSrc: '', filename: '' }}/>
+        </Form>
       </Provider>
     )
 
     const nameInput = await screen.findByRole('textbox', { name: /Service Name/ })
     await userEvent.type(nameInput, mockedResidentPortalList.content[0].name)
+    nameInput.blur()
 
     const errorMessageElem = await screen.findByRole('alert')
     expect(errorMessageElem.textContent).toBe('Resident Portal with that name already exists')

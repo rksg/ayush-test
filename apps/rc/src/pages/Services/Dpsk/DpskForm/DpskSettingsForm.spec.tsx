@@ -51,6 +51,7 @@ describe('DpskSettingsForm', () => {
 
     const nameInput = await screen.findByRole('textbox', { name: /Service Name/ })
     await userEvent.type(nameInput, mockedDpskList.content[0].name)
+    nameInput.blur()
 
     const errorMessageElem = await screen.findByRole('alert')
     expect(errorMessageElem.textContent).toBe('DPSK service with that name already exists')
