@@ -4,6 +4,7 @@ import AutoSizer                  from 'react-virtualized-auto-sizer'
 import { IncidentFilter }                                                        from '@acx-ui/analytics/utils'
 import { HistoricalCard, Loader, StackedBarChart, NoActiveData }                 from '@acx-ui/components'
 import { intlFormats }                                                           from '@acx-ui/formatter'
+import { formatter }                                                             from '@acx-ui/formatter'
 import { NavigateFunction, Path, useNavigate, useNavigateToPath, useTenantLink } from '@acx-ui/react-router-dom'
 
 import {
@@ -95,7 +96,11 @@ export function IncidentsDashboard ({ filters }: { filters: IncidentFilter }) {
                 showTooltip
                 onAxisLabelClick={onAxisLabelClick(navigate, basePath)}
                 style={{ height: 100 }}
-                axisLabelWidth={80} />
+                axisLabelWidth={80}
+                grid={{ right: 40 }}
+                dataFormatter={formatter('countFormat')}
+                formatTotal
+              />
             </UI.Container>
         )}
       </AutoSizer>
