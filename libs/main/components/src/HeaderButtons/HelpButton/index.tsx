@@ -35,7 +35,7 @@ const HelpButton = (props:HelpButtonProps) => {
       case 'start':
         timeout=setTimeout(()=>{
           setIsBlocked(true)
-        },30 * 1000) // Wait 30 secs to show to show the warning tooltip
+        },30 * 1000) // Wait 30 secs to show the warning tooltip
         setIsChatDisabled(true)
         break
       case 'ready':
