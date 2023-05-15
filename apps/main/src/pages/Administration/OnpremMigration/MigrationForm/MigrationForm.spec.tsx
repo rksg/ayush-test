@@ -9,6 +9,8 @@ import {
   policyApi
 } from '@acx-ui/rc/services'
 import {
+  getUrlForTest,
+  CommonUrlsInfo,
   MigrationContextType,
   MigrationUrlsInfo
 } from '@acx-ui/rc/utils'
@@ -16,11 +18,28 @@ import { Provider, store }            from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import {
+  venuelist,
   migrationResult
 } from '../__tests__/fixtures'
 import MigrationContext from '../MigrationContext'
 
 import MigrationForm from './MigrationForm'
+
+const venueResponse = {
+  id: '2c16284692364ab6a01f4c60f5941836',
+  createdDate: '2022-09-06T09:41:27.550+00:00',
+  updatedDate: '2022-09-22T10:36:28.113+00:00',
+  name: 'My-Venue',
+  description: 'My-Venue',
+  address: {
+    country: 'New York',
+    city: 'United States',
+    addressLine: 'New York, NY, USA',
+    latitude: 40.7127753,
+    longitude: -74.0059728,
+    timezone: 'America/New_York'
+  }
+}
 
 const wrapper = ({ children }: { children: React.ReactElement }) => {
   return <Provider>
@@ -53,6 +72,13 @@ describe('MigrationForm', () => {
 
   it('should render MigrationForm successfully', async () => {
     mockServer.use(rest.post(
+      getUrlForTest(CommonUrlsInfo.getVenuesList),
+      (req, res, ctx) => res(ctx.json(venuelist))
+    ),
+    rest.get(
+      getUrlForTest(CommonUrlsInfo.getVenue),
+      (req, res, ctx) => res(ctx.json(venueResponse))
+    ), rest.post(
       MigrationUrlsInfo.uploadZdConfig.url,
       (_, res, ctx) => res(
         ctx.json(migrationResult)
@@ -94,7 +120,7 @@ describe('MigrationForm', () => {
 
     await screen.findByRole('heading', { level: 3, name: 'Migration' })
 
-    // await userEvent.type(await screen.findByTestId('name'), 'venuexxxx')
+    await userEvent.type(await screen.findByTestId('name'), 'venuexxxx')
     await userEvent.type(await screen.findByTestId('test-description'), 'venuexxxx')
     await userEvent.type(await screen.findByTestId('address'), 'venuexxxx')
 
