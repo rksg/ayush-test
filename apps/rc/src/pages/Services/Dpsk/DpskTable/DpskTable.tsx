@@ -5,11 +5,10 @@ import {
   PageHeader,
   Table,
   TableProps,
-  Loader,
-  showActionModal
+  Loader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
-import { useDeleteDpskMutation, useGetEnhancedDpskListQuery } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }                                              from '@acx-ui/feature-toggle'
+import { doProfileDelete, useDeleteDpskMutation, useGetEnhancedDpskListQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
   useTableQuery,
@@ -27,7 +26,6 @@ import {
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                               from '@acx-ui/user'
 
-import { serviceInUsedMessageTemplate }                  from '../contentsMap'
 import { displayDefaultAccess, displayDeviceCountLimit } from '../utils'
 
 const defaultPayload = {
@@ -45,57 +43,29 @@ export default function DpskTable () {
   const [ deleteDpsk ] = useDeleteDpskMutation()
   const isCloudpathEnabled = useIsSplitOn(Features.DPSK_CLOUDPATH_FEATURE)
 
-  const hasAppliedPersona = (selectedRow?: DpskSaveData): boolean => {
-    return !!(selectedRow && selectedRow.identityId)
-  }
-
-  const hasAppliedNetwork = (selectedRow?: DpskSaveData): boolean => {
-    return !!selectedRow?.networkIds && selectedRow.networkIds.length > 0
-  }
-
-  const getDeleteButtonTooltip = (selectedRow: DpskSaveData): string | undefined => {
-    const inUsedService: string[] = []
-    if (hasAppliedPersona(selectedRow)) {
-      inUsedService.push('Persona')
-    }
-    if (hasAppliedNetwork(selectedRow)) {
-      inUsedService.push('Network')
-    }
-
-    return inUsedService.length > 0
-      ? intl.$t(serviceInUsedMessageTemplate, { serviceName: inUsedService.join(',') })
-      : undefined
-  }
-
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedDpskListQuery,
     defaultPayload,
     search: defaultSearch
   })
 
+  const doDelete = (selectedRow: DpskSaveData, callback: () => void) => {
+    doProfileDelete(
+      [selectedRow],
+      intl.$t({ defaultMessage: 'DPSK Service' }),
+      selectedRow.name,
+      [
+        { fieldName: 'identityId', fieldText: intl.$t({ defaultMessage: 'Persona' }) },
+        { fieldName: 'networkIds', fieldText: intl.$t({ defaultMessage: 'Network' }) }
+      ],
+      async () => deleteDpsk({ params: { serviceId: selectedRow.id } }).then(callback)
+    )
+  }
+
   const rowActions: TableProps<DpskSaveData>['rowActions'] = [
     {
       label: intl.$t({ defaultMessage: 'Delete' }),
-      disabled: ([selectedRow]) => hasAppliedPersona(selectedRow) || hasAppliedNetwork(selectedRow),
-      tooltip: ([selectedRow]) => getDeleteButtonTooltip(selectedRow),
-      onClick: ([{ id, name }], clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: intl.$t({ defaultMessage: 'DPSK Service' }),
-            entityValue: name
-          },
-          onOk: async () => {
-            try {
-              await deleteDpsk({ params: { serviceId: id } }).unwrap()
-              clearSelection()
-            } catch (error) {
-              console.log(error) // eslint-disable-line no-console
-            }
-          }
-        })
-      }
+      onClick: ([selectedRow], clearSelection) => doDelete(selectedRow, clearSelection)
     },
     {
       label: intl.$t({ defaultMessage: 'Edit' }),
@@ -225,6 +195,7 @@ export default function DpskTable () {
       />
       <Loader states={[tableQuery]}>
         <Table<DpskSaveData>
+          settingsId='dpsk-table'
           columns={columns}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
