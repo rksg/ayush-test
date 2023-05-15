@@ -1,7 +1,7 @@
 import { Col, Form, Input, InputNumber, Radio, Row, Select, Space, Switch } from 'antd'
 import { useIntl }                                                          from 'react-intl'
 
-import { StepsForm }                  from '@acx-ui/components'
+import { StepsFormLegacy }            from '@acx-ui/components'
 import { MtuTypeEnum, TunnelProfile } from '@acx-ui/rc/utils'
 import { getIntl }                    from '@acx-ui/utils'
 
@@ -110,14 +110,14 @@ export const TunnelProfileForm = () => {
         />
       </Col>
       <Col span={24}>
-        <StepsForm.FieldLabel width='140px'>
+        <StepsFormLegacy.FieldLabel width='140px'>
           {$t({ defaultMessage: 'Force Fragmentation' })}
           <Form.Item
             name='forceFragmentation'
             valuePropName='checked'
             children={<Switch />}
           />
-        </StepsForm.FieldLabel>
+        </StepsFormLegacy.FieldLabel>
       </Col>
       <Col span={5}>
         <Form.Item

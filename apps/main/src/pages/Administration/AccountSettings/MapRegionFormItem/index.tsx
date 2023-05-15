@@ -42,7 +42,6 @@ const MapRegionFormItem = () => {
               value={currentMapRegion || DEFAULT_MAP_REGION}
               onChange={handleMapRegionChange}
               showSearch
-              allowClear
               optionFilterProp='children'
               disabled={isUpdatingPreference || isLoadingPreference}
             >

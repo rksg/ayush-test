@@ -5,7 +5,7 @@ import _                                       from 'lodash'
 import { useIntl }                             from 'react-intl'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
-import { showActionModal, StepsFormNew } from '@acx-ui/components'
+import { showActionModal, StepsForm } from '@acx-ui/components'
 import {
   AccessSwitch,
   CatchErrorResponse,
@@ -86,7 +86,7 @@ export const NetworkSegmentationForm = (props: NetworkSegmentationFormProps) => 
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
       const overwriteMsg = afterSubmitMessage(error as CatchErrorResponse,
-        [...formData.distributionSwitchInfos, ...formData.accessSwitchInfos])
+        [...(formData.distributionSwitchInfos || []), ...(formData.accessSwitchInfos || [])])
 
       if (overwriteMsg.length > 0) {
         showActionModal({
@@ -102,12 +102,24 @@ export const NetworkSegmentationForm = (props: NetworkSegmentationFormProps) => 
           },
           onCancel: async () => {}
         })
+      } else {
+        showActionModal({
+          type: 'error',
+          title: $t({ defaultMessage: 'Server Error' }),
+          content: $t({
+            defaultMessage: 'An internal error has occurred. Please contact support.'
+          }),
+          customContent: {
+            action: 'SHOW_ERRORS',
+            errorDetails: error as CatchErrorResponse
+          }
+        })
       }
     }
   }
 
   return (
-    <StepsFormNew editMode={props.editMode}
+    <StepsForm editMode={props.editMode}
       form={props.form}
       onCancel={() => redirectPreviousPage(navigate, previousPath, linkToServices)}
       onFinish={handleFinish}
@@ -115,15 +127,15 @@ export const NetworkSegmentationForm = (props: NetworkSegmentationFormProps) => 
     >
       {
         props.steps.map((item, index) =>
-          <StepsFormNew.StepForm
+          <StepsForm.StepForm
             key={`step-${index}`}
             name={index.toString()}
             title={item.title}
           >
             {item.content}
-          </StepsFormNew.StepForm>)
+          </StepsForm.StepForm>)
       }
-    </StepsFormNew>
+    </StepsForm>
   )
 }
 

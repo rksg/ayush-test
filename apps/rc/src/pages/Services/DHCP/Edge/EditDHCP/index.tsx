@@ -6,8 +6,8 @@ import { useNavigate, useParams } from 'react-router-dom'
 import {
   Loader,
   PageHeader,
-  StepsForm,
-  StepsFormInstance
+  StepsFormLegacy,
+  StepsFormLegacyInstance
 } from '@acx-ui/components'
 import {
   EdgeDhcpSettingForm
@@ -24,7 +24,7 @@ const EditDhcp = () => {
   const params = useParams()
   const navigate = useNavigate()
   const linkToServices = useTenantLink('/services')
-  const formRef = useRef<StepsFormInstance<EdgeDhcpSetting>>()
+  const formRef = useRef<StepsFormLegacyInstance<EdgeDhcpSetting>>()
   const {
     data: edgeDhcpData,
     isLoading: isEdgeDhcpDataLoading
@@ -62,16 +62,16 @@ const EditDhcp = () => {
         ]}
       />
       <Loader states={[{ isLoading: isEdgeDhcpDataLoading, isFetching: isFormSubmitting }]}>
-        <StepsForm
+        <StepsFormLegacy
           formRef={formRef}
           onFinish={handleEditEdgeDhcp}
           onCancel={() => navigate(linkToServices)}
           buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
         >
-          <StepsForm.StepForm>
+          <StepsFormLegacy.StepForm>
             <EdgeDhcpSettingForm />
-          </StepsForm.StepForm>
-        </StepsForm>
+          </StepsFormLegacy.StepForm>
+        </StepsFormLegacy>
       </Loader>
     </>
   )

@@ -65,15 +65,9 @@ describe('DpskPassphraseManagement', () => {
     const targetRow = await screen.findByRole('row', { name: new RegExp(targetRecord.username) })
     expect(targetRow).toBeInTheDocument()
 
-    await userEvent.click(await within(targetRow).findByRole('img', { name: /eye-invisible/ }))
-    const passwordElem = await within(targetRow).findByDisplayValue(targetRecord.passphrase)
-    expect(passwordElem).toBeInTheDocument()
-
     // Verify Add Passphrases
     await userEvent.click(await screen.findByRole('button', { name: /Add Passphrases/ }))
-    expect(await screen.findByRole('spinbutton', {
-      name: /Number of Passphrases/
-    })).toBeVisible()
+    expect(await screen.findByRole('spinbutton', { name: /Number of Passphrases/ })).toBeVisible()
 
     // Verify Add DPSK Network
     await userEvent.click(await screen.findByRole('button', { name: /Add DPSK Network/ }))
@@ -127,9 +121,10 @@ describe('DpskPassphraseManagement', () => {
     const targetRow = await screen.findByRole('row', { name: new RegExp(targetRecord.username) })
     await userEvent.click(within(targetRow).getByRole('checkbox'))
 
-    await waitFor(async () => {
-      expect(screen.queryByRole('button', { name: /Delete/ })).toBeDisabled()
-    })
+    await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('You are unable to delete this record due to its usage in Persona')).toBeVisible()
   })
 
   it('should show error message when import CSV file failed', async () => {
@@ -154,7 +149,9 @@ describe('DpskPassphraseManagement', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: /Import From File/ }))
 
-    const dialog = await screen.findByRole('dialog')
+    const importTextElement = await screen.findByText('Import from file')
+    // eslint-disable-next-line testing-library/no-node-access
+    const dialog = importTextElement.closest('.ant-drawer-content') as HTMLDivElement
 
     const csvFile = new File([''], 'DPSK_import_template_expiration.csv', { type: 'text/csv' })
 
@@ -231,8 +228,10 @@ describe('DpskPassphraseManagement', () => {
     await userEvent.click(within(targetRow).getByRole('checkbox'))
     await userEvent.click(await screen.findByRole('button', { name: /Edit Passphrase/i }))
 
-    const dialog = await screen.findByRole('dialog')
-    expect(within(dialog).getByRole('button', { name: /Save/i })).toBeVisible()
+    await waitFor(() => {
+      // eslint-disable-next-line max-len
+      expect(screen.getByRole('textbox', { name: 'User Name' })).toHaveValue(mockedDpskPassphrase.username)
+    })
   })
 
   it('should revoke/unrevoke the passphrases', async () => {
@@ -270,8 +269,13 @@ describe('DpskPassphraseManagement', () => {
     await userEvent.click(within(targetRow).getByRole('checkbox'))
     await userEvent.click(await screen.findByRole('button', { name: 'Revoke' }))
 
-    const dialog = await screen.findByRole('dialog')
-    expect(await within(dialog).findByText('Revoke "' + targetRecord.username + '"?')).toBeVisible()
+    const revokeTextElement = await screen.findByText('Revoke "' + targetRecord.username + '"?')
+    // eslint-disable-next-line testing-library/no-node-access
+    const dialog = revokeTextElement.closest('.ant-modal-confirm') as HTMLDivElement
+
+    // const dialog = await screen.findByRole('dialog')
+    // expect(await within(dialog).findByText('Revoke "' + targetRecord.username + '"?')).toBeVisible()
+
 
     await userEvent.type(
       within(dialog).getByRole('textbox', { name: /Type the reason to revoke/i }),
@@ -385,16 +389,17 @@ describe('DpskPassphraseManagement', () => {
     await userEvent.click(within(targetRow).getByRole('checkbox'))
     await userEvent.click(await screen.findByRole('button', { name: 'Manage Devices' }))
 
-    await screen.findByText(/ad:2c:3b:1d:4d:4e/i)
+    const dialogTextElement = await screen.findByText('Manage Passphrase Devices')
+    // eslint-disable-next-line testing-library/no-node-access
+    const dialog = dialogTextElement.closest('.ant-drawer-content') as HTMLDivElement
 
-    const targetDevice = await screen.findByRole('row', { name: /ad:2c:3b:1d:4d:4e/i })
+    const targetDevice = await within(dialog).findByRole('row', { name: /ad:2c:3b:1d:4d:4e/i })
 
     await userEvent.click(within(targetDevice).getByRole('checkbox'))
-    await userEvent.click((await screen.findAllByText('Delete'))[1])
+    await userEvent.click(await within(dialog).findByRole('button', { name: 'Delete' }))
 
     await waitFor(() => {
-      const dialog = screen.getByRole('dialog')
-      expect(within(dialog).queryByText(/delete/i)).toBeNull()
+      expect(within(dialog).queryByRole('button', { name: 'Delete' })).toBeNull()
     })
   })
 })

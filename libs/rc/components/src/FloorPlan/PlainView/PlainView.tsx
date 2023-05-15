@@ -1,10 +1,11 @@
 import { RefObject, useCallback, useEffect, useRef, useState } from 'react'
 
-import { Col, Divider, Row, Space, Typography } from 'antd'
-import { DropTargetMonitor, useDrop, XYCoord }  from 'react-dnd'
-import { useIntl }                              from 'react-intl'
+import { Col, Divider, Row, Space, Switch, Typography } from 'antd'
+import { DropTargetMonitor, useDrop, XYCoord }          from 'react-dnd'
+import { useIntl }                                      from 'react-intl'
 
 import { Button, Loader, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import {
   AccessPointWiFiOutlined,
   ApplicationsSolid,
@@ -20,10 +21,9 @@ import { loadImageWithJWT }                                                     
 import AddEditFloorplanModal from '../FloorPlanModal'
 import NetworkDevices        from '../NetworkDevices'
 
-import * as UI   from './styledComponents'
-import Thumbnail from './Thumbnail'
-
-
+import { ApMeshTopologyContextProvider } from './ApMeshTopologyContext'
+import * as UI                           from './styledComponents'
+import Thumbnail                         from './Thumbnail'
 
 
 export enum ImageMode {
@@ -80,6 +80,9 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
   const [imageMode, setImageMode] = useState(ImageMode.ORIGINAL)
   const [fitContainerSize, setFitContanierSize] = useState(0)
   const [imageUrl, setImageUrl] = useState('')
+  const isApMeshTopologyFFOn = useIsSplitOn(Features.AP_MESH_TOPOLOGY)
+  // eslint-disable-next-line max-len
+  const [isApMeshTopologyEnabled, setIsApMeshTopologyEnabled] = useState<boolean>(isApMeshTopologyFFOn)
 
   const prepareImageTofit = useCallback((floorPlan: FloorPlanDto) => {
     zoom(ImageMode.ORIGINAL)
@@ -247,7 +250,14 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
           </Typography.Title>
         </Col>
         <Col>
-          { hasAccess() && !showRogueAp && <Space split={<Divider type='vertical' />}>
+          { hasAccess() && !showRogueAp &&
+          <Space split={<Divider type='vertical' />}>
+            {isApMeshTopologyFFOn &&
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <Switch onChange={setIsApMeshTopologyEnabled} checked={isApMeshTopologyEnabled} />
+                {$t({ defaultMessage: 'Show Mesh Topology' })}
+              </div>
+            }
             <AddEditFloorplanModal
               buttonTitle={$t({ defaultMessage: 'Edit' })}
               onAddEditFloorPlan={onEditFloorPlanHandler}
@@ -280,14 +290,20 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
               width: '100%',
               height: '100%'
             }}></div>
-          { imageLoaded && <NetworkDevices
-            networkDevicesVisibility={networkDevicesVisibility}
-            selectedFloorPlan={selectedFloorPlan}
-            networkDevices={networkDevices}
-            contextAlbum={false}
-            context={FloorplanContext['ap']}
-            galleryMode={false}
-            showRogueAp={showRogueAp}/>
+          { imageLoaded &&
+            <ApMeshTopologyContextProvider
+              isApMeshTopologyEnabled={isApMeshTopologyEnabled}
+              floorplanId={selectedFloorPlan.id}
+              children={<NetworkDevices
+                networkDevicesVisibility={networkDevicesVisibility}
+                selectedFloorPlan={selectedFloorPlan}
+                networkDevices={networkDevices}
+                contextAlbum={false}
+                context={FloorplanContext['ap']}
+                galleryMode={false}
+                showRogueAp={showRogueAp}
+              />}
+            />
           }
           <img
             data-testid='floorPlanImage'

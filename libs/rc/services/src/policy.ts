@@ -75,7 +75,7 @@ const RKS_NEW_UI = {
 const clientIsolationMutationUseCases = [
   'AddClientIsolationAllowlist',
   'UpdateClientIsolationAllowlist',
-  'DeleteClientIsolationAllowlist'
+  'DeleteClientIsolationAllowlists'
 ]
 
 const L2AclUseCases = [
@@ -592,6 +592,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
             'AddRogueApPolicyProfile',
             'UpdateRogueApPolicyProfile',
             'DeleteRogueApPolicyProfile',
+            'DeleteRogueApPolicyProfiles',
             'UpdateVenueRogueAp',
             'UpdateDenialOfServiceProtection',
             'DeleteVenue',
@@ -950,14 +951,15 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'ClientIsolation', id: 'LIST' }]
     }),
-    deleteClientIsolation: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(ClientIsolationUrls.deleteClientIsolation, params)
+    deleteClientIsolationList: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ClientIsolationUrls.deleteClientIsolationList, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'ClientIsolation', id: 'LIST' }]
     }),
     vlanPoolList: build.query<VlanPool[], RequestPayload>({
       query: ({ params }) => {
@@ -1916,7 +1918,7 @@ export const {
   useGetVLANPoolPolicyDetailQuery,
   useGetVLANPoolVenuesQuery,
   useAddClientIsolationMutation,
-  useDeleteClientIsolationMutation,
+  useDeleteClientIsolationListMutation,
   useGetClientIsolationListQuery,
   useLazyGetClientIsolationListQuery,
   useGetEnhancedClientIsolationListQuery,

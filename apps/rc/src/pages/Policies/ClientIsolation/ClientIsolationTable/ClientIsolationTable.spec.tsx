@@ -22,14 +22,20 @@ import {
 import ClientIsolationTable from './ClientIsolationTable'
 
 const mockedTableResult = {
-  totalCount: 1,
+  totalCount: 2,
   page: 1,
   data: [{
     id: 'cc080e33-26a7-4d34-870f-b7f312fcfccb',
     name: 'My Client Isolation 1',
     tenantId: '864548131578778',
     description: 'Hello',
-    clientEntries: ['mac1', 'mac2', 'mac3'],
+    clientEntries: ['mac1', 'mac2', 'mac3']
+  }, {
+    id: 'aaaaae33-26a7-4d34-870f-b7f312fcfccb',
+    name: 'My Client Isolation 2',
+    tenantId: '864548131578778',
+    description: 'Hello 2',
+    clientEntries: ['mac4', 'mac5', 'mac6'],
     venueIds: ['v1']
   }]
 }
@@ -97,7 +103,7 @@ describe('ClientIsolationTable', () => {
 
     mockServer.use(
       rest.delete(
-        ClientIsolationUrls.deleteClientIsolation.url,
+        ClientIsolationUrls.deleteClientIsolationList.url,
         (req, res, ctx) => {
           deleteFn(req.body)
           return res(ctx.json({ requestId: '12345' }))
@@ -115,18 +121,37 @@ describe('ClientIsolationTable', () => {
 
     const target = mockedTableResult.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
-    await userEvent.click(within(row).getByRole('radio'))
+    await userEvent.click(within(row).getByRole('checkbox'))
 
     await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
 
     expect(await screen.findByText('Delete "' + target.name + '"?')).toBeVisible()
 
-    // eslint-disable-next-line max-len
     await userEvent.click(await screen.findByRole('button', { name: /Delete Policy/i }))
 
     await waitFor(() => {
       expect(deleteFn).toHaveBeenCalled()
     })
+  })
+
+  it('should not delete selected row when it is applied to Venue', async () => {
+
+    render(
+      <Provider>
+        <ClientIsolationTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+
+    const target = mockedTableResult.data[1]
+    const row = await screen.findByRole('row', { name: new RegExp(target.name) })
+    await userEvent.click(within(row).getByRole('checkbox'))
+
+    await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('You are unable to delete this record due to its usage in Venue')).toBeVisible()
   })
 
   it('should navigate to the Edit view', async () => {
@@ -140,7 +165,7 @@ describe('ClientIsolationTable', () => {
 
     const target = mockedTableResult.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
-    await userEvent.click(within(row).getByRole('radio'))
+    await userEvent.click(within(row).getByRole('checkbox'))
 
     await userEvent.click(screen.getByRole('button', { name: /Edit/ }))
 

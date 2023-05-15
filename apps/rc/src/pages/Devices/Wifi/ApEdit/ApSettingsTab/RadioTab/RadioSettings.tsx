@@ -6,7 +6,7 @@ import { Col, Form, Radio, RadioChangeEvent, Row, Space, Switch } from 'antd'
 import { cloneDeep, includes, isEmpty }                           from 'lodash'
 import { FormattedMessage, useIntl }                              from 'react-intl'
 
-import { Button, Loader, showActionModal, StepsForm, StepsFormInstance, Tabs, Tooltip } from '@acx-ui/components'
+import { Button, Loader, showActionModal, StepsFormLegacy, StepsFormLegacyInstance, Tabs, Tooltip } from '@acx-ui/components'
 import {
   ApRadioTypeEnum,
   channelBandwidth24GOptions,
@@ -54,7 +54,7 @@ export function RadioSettings () {
   const getApCapabilities = useGetApCapabilitiesQuery({ params: { tenantId, serialNumber } })
   const getApAvailableChannels = useGetApValidChannelQuery({ params: { tenantId, serialNumber } })
 
-  const formRef = useRef<StepsFormInstance<ApRadioCustomization>>()
+  const formRef = useRef<StepsFormLegacyInstance<ApRadioCustomization>>()
   const venueRef = useRef<ApRadioCustomization>()
   const currentRef = useRef<ApRadioCustomization>()
 
@@ -582,10 +582,10 @@ export function RadioSettings () {
       }
     }
 
-    updateEditContext(formRef?.current as StepsFormInstance, true)
+    updateEditContext(formRef?.current as StepsFormLegacyInstance, true)
   }
 
-  const updateEditContext = (form: StepsFormInstance, isDirty: boolean) => {
+  const updateEditContext = (form: StepsFormLegacyInstance, isDirty: boolean) => {
     setEditContextData && setEditContextData({
       ...editContextData,
       tabTitle: $t({ defaultMessage: 'Radio' }),
@@ -601,7 +601,7 @@ export function RadioSettings () {
   }
 
   const handleChange = async () => {
-    updateEditContext(formRef?.current as StepsFormInstance, true)
+    updateEditContext(formRef?.current as StepsFormLegacyInstance, true)
   }
 
   return (
@@ -609,7 +609,7 @@ export function RadioSettings () {
       isLoading: formInitializing,
       isFetching: isUpdatingApRadio || isDeletingApRadio
     }]}>
-      <StepsForm
+      <StepsFormLegacy
         formRef={formRef}
         onFormChange={handleChange}
         onFinish={handleUpdateRadioSettings}
@@ -620,7 +620,7 @@ export function RadioSettings () {
           submit: $t({ defaultMessage: 'Apply Radio' })
         }}
       >
-        <StepsForm.StepForm data-testid='radio-settings' initialValues={initData}>
+        <StepsFormLegacy.StepForm data-testid='radio-settings' initialValues={initData}>
           <Row gutter={20}>
             <Col span={12}>
               <Space style={{
@@ -845,8 +845,8 @@ export function RadioSettings () {
               </div>
             </>
           )}
-        </StepsForm.StepForm>
-      </StepsForm>
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>
     </Loader>
   )
 }

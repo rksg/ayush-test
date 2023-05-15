@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { Form, Input, InputNumber, Radio, Space } from 'antd'
 import { useIntl }                                from 'react-intl'
 
-import { Button, Fieldset, GridCol, GridRow, StepsForm }                              from '@acx-ui/components'
+import { Button, Fieldset, GridCol, GridRow, StepsFormLegacy }                        from '@acx-ui/components'
 import { useLazyGetAAAPolicyListQuery }                                               from '@acx-ui/rc/services'
 import {
   AAAPolicyType, checkObjectNotExists, networkWifiIpRegExp, networkWifiSecretRegExp
@@ -57,7 +57,7 @@ const AAASettingForm = (props: AAASettingFormProps) => {
   return (
     <GridRow>
       <GridCol col={{ span: 8 }}>
-        <StepsForm.Title>{$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
+        <StepsFormLegacy.Title>{$t({ defaultMessage: 'Settings' })}</StepsFormLegacy.Title>
         <Form.Item
           name='name'
           label={$t({ defaultMessage: 'Profile Name' })}
@@ -71,6 +71,7 @@ const AAASettingForm = (props: AAASettingFormProps) => {
           hasFeedback
           initialValue={''}
           children={<Input/>}
+          validateTrigger={'onBlur'}
         />
         <Form.Item
           name='type'
