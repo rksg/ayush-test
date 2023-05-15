@@ -1,7 +1,9 @@
-import _           from 'lodash'
-import moment      from 'moment-timezone'
-import { useIntl } from 'react-intl'
-import AutoSizer   from 'react-virtualized-auto-sizer'
+import { CallbackDataParams } from 'echarts/types/dist/shared'
+import _                      from 'lodash'
+import moment                 from 'moment-timezone'
+import { useIntl }            from 'react-intl'
+import AutoSizer              from 'react-virtualized-auto-sizer'
+
 
 import { incidentSeverities, IncidentFilter, BarChartData } from '@acx-ui/analytics/utils'
 import {
@@ -12,6 +14,7 @@ import {
   TrendPill,
   TrendType
 } from '@acx-ui/components'
+import { formatter } from '@acx-ui/formatter'
 
 import { IncidentsBySeverityData, useIncidentsBySeverityQuery } from '../services'
 
@@ -25,8 +28,9 @@ export const getPillData = (
   const currTotal = _.sum(Object.entries(curr).map(([, value]) => value))
   const prevTotal = _.sum(Object.entries(prev).map(([, value]) => value))
   const delta = currTotal - prevTotal
+  const formattedDelta = formatter('countFormat')(delta)
   return {
-    delta: delta > 0 ? `+${delta}` : `${delta}`,
+    delta: delta > 0 ? `+${formattedDelta}` : `${formattedDelta}`,
     trend: delta > 0 ? 'negative' : delta < 0 ? 'positive' : 'none',
     total: currTotal
   }
@@ -46,6 +50,10 @@ export function IncidentBySeverityBarChart ({ filters }: { filters: IncidentFilt
       ...rest
     })
   })
+  const labelFormatter = (params: CallbackDataParams) => {
+    const value = (params.data as string[])?.[1]
+    return formatter('countFormat')(value)
+  }
   const prevResult = useIncidentsBySeverityQuery(
     {
       ...filters,
@@ -75,7 +83,7 @@ export function IncidentBySeverityBarChart ({ filters }: { filters: IncidentFilt
     <Card title={$t({ defaultMessage: 'Total Incidents' })} type='no-border'>
       <UI.Container>
         <UI.Title>
-          <UI.IncidentCount>{pill.total}</UI.IncidentCount>
+          <UI.IncidentCount>{formatter('countFormat')(pill.total?.toString())}</UI.IncidentCount>
           <TrendPill value={pill.delta} trend={pill.trend as TrendType} />
         </UI.Title>
         <AutoSizer>
@@ -83,12 +91,14 @@ export function IncidentBySeverityBarChart ({ filters }: { filters: IncidentFilt
             <BarChart
               style={{ width, height: 140 }}
               data={chart}
-              grid={{ right: 25, top: 5 }}
+              grid={{ right: 30, top: 5 }}
               barColors={barColors}
+              labelFormatter={labelFormatter}
             />
           )}
         </AutoSizer>
       </UI.Container>
     </Card>
   </Loader>
+
 }
