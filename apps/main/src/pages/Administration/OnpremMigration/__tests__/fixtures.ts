@@ -5,11 +5,21 @@ export const successResponse = {
 
 export const migrations = [
   {
-    name: 'migration-001.bak',
-    state: 'success',
-    startTime: '2023-03-02 02:00:10 UTC',
-    endTime: '2023-03-02 03:33:13 UTC',
-    summary: 'All 4 APs were migrated to venue migration-P0d5E3J3'
+    taskId: '3e6e39c9-20a5-462f-a924-e0cba0f1172f',
+    createTime: 1683625826145,
+    state: 'Qualified',
+    tenantId: '523227343adc42a7be6f93a45a45285d',
+    fileName: 'ruckus_db_042823_18_16.bak',
+    apImportResults: [
+      {
+        serial: '0',
+        apName: 'ap-0',
+        state: 'Valid',
+        validationErrors: [
+          ''
+        ]
+      }
+    ]
   }
 ]
 
