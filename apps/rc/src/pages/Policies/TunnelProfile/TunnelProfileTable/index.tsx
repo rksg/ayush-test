@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 import { Button, Loader, PageHeader, showActionModal, Table, TableProps } from '@acx-ui/components'
 import {
   useDeleteTunnelProfileMutation,
-  useGetNetworkSegmentationStatsListQuery,
+  useGetNetworkSegmentationViewDataListQuery,
   useGetTunnelProfileViewDataListQuery,
   useNetworkListQuery
 }                                    from '@acx-ui/rc/services'
@@ -29,7 +29,7 @@ const TunnelProfileTable = () => {
       searchTargetFields: ['name']
     }
   })
-  const { nsgOptions } = useGetNetworkSegmentationStatsListQuery({
+  const { nsgOptions } = useGetNetworkSegmentationViewDataListQuery({
     payload: {
       fields: ['name', 'id'],
       sortField: 'name',

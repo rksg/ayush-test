@@ -307,6 +307,7 @@ export function VenuesForm () {
                 validateFirst
                 hasFeedback
                 children={<Input />}
+                validateTrigger={'onBlur'}
               />
               <Form.Item
                 name='description'
