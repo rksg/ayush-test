@@ -4,7 +4,6 @@ import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
-import { SimpleListTooltip }                                              from '@acx-ui/rc/components'
 import {
   useDelRoguePoliciesMutation,
   useDelRoguePolicyMutation,
@@ -24,6 +23,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                          from '@acx-ui/user'
+
+import { SimpleListTooltip } from '../../SimpleListTooltip'
 
 const useDefaultVenuePayload = (): RequestPayload => {
   const isEdgeEnabled = useIsSplitOn(Features.EDGES)

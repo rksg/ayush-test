@@ -1,8 +1,9 @@
 import React from 'react'
 
-import { RogueAPDetectionScopeForm } from '@acx-ui/rc/components'
-import { Provider }                  from '@acx-ui/store'
-import { render, screen }            from '@acx-ui/test-utils'
+import { Provider }       from '@acx-ui/store'
+import { render, screen } from '@acx-ui/test-utils'
+
+import { RogueAPDetectionScopeForm } from './RogueAPDetectionScopeForm'
 
 
 const wrapper = ({ children }: { children: React.ReactElement }) => {
