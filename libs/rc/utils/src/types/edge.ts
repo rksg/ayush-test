@@ -174,10 +174,11 @@ export interface EdgePortTrafficTimeSeries {
   total: number[]
 }
 export interface EdgeAllPortTrafficData {
-  time: TimeStamp[],
   timeSeries: {
     ports : EdgePortTrafficTimeSeries[]
-  }
+    time: TimeStamp[],
+  },
+  portCount: number
 }
 export interface EdgeTimeSeriesPayload {
     start : string,

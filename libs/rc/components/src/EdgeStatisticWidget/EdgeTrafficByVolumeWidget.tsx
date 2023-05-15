@@ -41,7 +41,7 @@ const transformTimeSeriesChartData = (data: EdgeAllPortTrafficData): TimeSeriesC
     return {
       key: `Port ${index + 1}`,
       name: `Port ${index + 1}`,
-      data: _.zip(data.time, traffic.total) as [TimeStamp, number | null][]
+      data: _.zip(data.timeSeries.time, traffic.total) as [TimeStamp, number | null][]
     }
   })
 }
@@ -51,7 +51,7 @@ const transformTrafficSeriesFragment = (data: EdgeAllPortTrafficData): TrafficSe
     return {
       key: `Port ${index + 1}`,
       // eslint-disable-next-line max-len
-      fragment: _.zipWith(traffic.total, traffic.rx, traffic.tx, data.time, (total, rx, tx, time) => {
+      fragment: _.zipWith(traffic.total, traffic.rx, traffic.tx, data.timeSeries.time, (total, rx, tx, time) => {
         return {
           total,
           rx,
@@ -93,9 +93,9 @@ export function EdgeTrafficByVolumeWidget ({ isLoading }: { isLoading: boolean }
     if (!isLoading) {
       initialWidget()
     }
-  }, [isLoading])
+  }, [isLoading, filters])
 
-  if (!queryResults || _.isEmpty(queryResults.time)) {
+  if (!queryResults || _.isEmpty(queryResults.timeSeries.time)) {
     return (
       <HistoricalCard title={$t({ defaultMessage: 'Traffic by Volume' })}>
         <AutoSizer>
@@ -135,7 +135,7 @@ export function EdgeTrafficByVolumeWidget ({ isLoading }: { isLoading: boolean }
                         ...defaultRichTextFormatValues,
                         name: traffic.key,
                         value: `${formatter('bytesFormat')(fragment.total)}\
-                                 Tx: ${formatter('bytesFormat')(fragment.tx)},\
+                                 (Tx: ${formatter('bytesFormat')(fragment.tx)},\
                                  Rx: ${formatter('bytesFormat')(fragment.rx)})`
                       }}
                     />

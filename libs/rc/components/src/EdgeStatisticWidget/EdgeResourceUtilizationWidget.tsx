@@ -71,7 +71,7 @@ export function EdgeResourceUtilizationWidget ({ isLoading }:{ isLoading: boolea
           const { cpu, memory, disk, time, memoryUsedBytes, diskUsedBytes } = data.timeSeries
           setSeriesFragment([
             {
-              key: 'cpu',
+              key: 'CPU',
               fragment: _.zipWith(cpu, time, (percentage, time) => {
                 return {
                   percentage,
@@ -81,7 +81,7 @@ export function EdgeResourceUtilizationWidget ({ isLoading }:{ isLoading: boolea
               })
             },
             {
-              key: 'memory',
+              key: 'Memory',
               fragment: _.zipWith(memory, memoryUsedBytes, time, (percentage, unit, time) => {
                 return {
                   percentage,
@@ -91,7 +91,7 @@ export function EdgeResourceUtilizationWidget ({ isLoading }:{ isLoading: boolea
               })
             },
             {
-              key: 'disk',
+              key: 'Disk',
               fragment: _.zipWith(disk, diskUsedBytes, time, (percentage, unit, time) => {
                 return {
                   percentage,
@@ -110,7 +110,7 @@ export function EdgeResourceUtilizationWidget ({ isLoading }:{ isLoading: boolea
     if (!isLoading) {
       initialWidget()
     }
-  }, [isLoading])
+  }, [isLoading, filters])
 
   if (_.isEmpty(queryResults)) {
     return (

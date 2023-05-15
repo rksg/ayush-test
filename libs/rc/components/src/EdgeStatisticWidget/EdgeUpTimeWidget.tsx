@@ -106,7 +106,7 @@ export function EdgeUpTimeWidget ({ isLoading }: { isLoading: boolean }) {
     if (!isLoading){
       initialWidget()
     }
-  }, [isLoading])
+  }, [isLoading, filters])
 
   if (!queryResults || _.isEmpty(queryResults.timeSeries)) {
     return (

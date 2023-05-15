@@ -53,7 +53,7 @@ export function EdgePortsByTrafficWidget ({ isLoading }:{ isLoading: boolean }) 
     if (!isLoading) {
       initialWidget()
     }
-  }, [isLoading])
+  }, [isLoading, filters])
 
   if (_.isEmpty(queryResults)) {
     return (
