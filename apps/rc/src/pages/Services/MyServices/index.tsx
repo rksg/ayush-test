@@ -7,7 +7,7 @@ import {
   useGetDhcpStatsQuery,
   useGetDpskListQuery,
   useGetEnhancedMdnsProxyListQuery,
-  useGetNetworkSegmentationStatsListQuery,
+  useGetNetworkSegmentationViewDataListQuery,
   useGetEnhancedPortalProfileListQuery,
   useGetEnhancedWifiCallingServiceListQuery,
   useWebAuthTemplateListQuery,
@@ -61,7 +61,7 @@ export default function MyServices () {
     {
       type: ServiceType.NETWORK_SEGMENTATION,
       categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
-      tableQuery: useGetNetworkSegmentationStatsListQuery({
+      tableQuery: useGetNetworkSegmentationViewDataListQuery({
         params, payload: { ...defaultPayload }
       },{
         skip: !networkSegmentationEnabled

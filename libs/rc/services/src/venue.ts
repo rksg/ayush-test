@@ -1180,6 +1180,24 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'ResidentPortal', id: 'LIST' }]
     }),
+    deleteResidentPortalLogo: build.mutation<ResidentPortal, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.deleteResidentPortalLogo, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'ResidentPortal', id: 'ID' }]
+    }),
+    deleteResidentPortalFavicon: build.mutation<ResidentPortal, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.deleteResidentPortalFavicon, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'ResidentPortal', id: 'ID' }]
+    }),
     deleteResidentPortals: build.mutation<ResidentPortal, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(PropertyUrlsInfo.deleteResidentPortals, params)
@@ -1189,21 +1207,6 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'ResidentPortal', id: 'LIST' }]
-    }),
-
-    getVenueWithSetProperty: build.query<string[], string[]>({
-      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
-        const result: string[] = []
-        for(let venueId of arg) {
-          const urlInfo = createHttpRequest(PropertyUrlsInfo.getPropertyConfigs, { venueId })
-          urlInfo.headers['Accept'] = '*/*'
-          const fetchResult = await fetchWithBQ(urlInfo)
-          if(!fetchResult.error) {
-            result.push(venueId)
-          }
-        }
-        return { data: result }
-      }
     })
   })
 })
@@ -1311,8 +1314,9 @@ export const {
   useGetResidentPortalQuery,
   useUpdateResidentPortalMutation,
   useDeleteResidentPortalsMutation,
+  useDeleteResidentPortalLogoMutation,
+  useDeleteResidentPortalFaviconMutation,
 
   useImportPropertyUnitsMutation,
-  useLazyDownloadPropertyUnitsQuery,
-  useGetVenueWithSetPropertyQuery
+  useLazyDownloadPropertyUnitsQuery
 } = venueApi

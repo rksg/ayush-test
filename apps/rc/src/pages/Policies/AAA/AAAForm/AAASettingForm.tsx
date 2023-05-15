@@ -71,6 +71,7 @@ const AAASettingForm = (props: AAASettingFormProps) => {
           hasFeedback
           initialValue={''}
           children={<Input/>}
+          validateTrigger={'onBlur'}
         />
         <Form.Item
           name='type'

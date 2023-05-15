@@ -2,6 +2,7 @@ import { useRef } from 'react'
 
 import { TooltipComponentFormatterCallbackParams } from 'echarts'
 import ReactECharts                                from 'echarts-for-react'
+import { CallbackDataParams, GridOption }          from 'echarts/types/dist/shared'
 import _                                           from 'lodash'
 import { renderToString }                          from 'react-dom/server'
 import {
@@ -72,7 +73,9 @@ export interface StackedBarChartProps
     dataFormatter?: (value: unknown) => string | null,
     tooltipFormat?: MessageDescriptor
     onAxisLabelClick?: (name: string) => void
-  }
+    formatTotal?: boolean
+    grid?: GridOption
+}
 
 const computeChartData = ({ category, series }: ChartData, isPercent:boolean) => {
   const values = _(series)
@@ -95,7 +98,13 @@ const computeChartData = ({ category, series }: ChartData, isPercent:boolean) =>
 }
 
 const massageData = (
-  data: ChartData[], showTotal: boolean, barWidth: number, isPercent:boolean)
+  data: ChartData[],
+  showTotal: boolean,
+  barWidth: number,
+  isPercent:boolean,
+  formatTotal?:boolean,
+  dataFormatter?:((value: unknown) => string | null)
+)
   : RegisteredSeriesOption['bar'][] => {
   const seriesCommonConfig: RegisteredSeriesOption['bar'] = {
     type: 'bar',
@@ -110,7 +119,10 @@ const massageData = (
     barWidth,
     label: {
       ...barChartSeriesLabelOptions(),
-      formatter: '{@sum}'
+      formatter: (params : CallbackDataParams) =>
+      ((formatTotal && dataFormatter)
+        ? dataFormatter((params.value as string[])?.[3]) :
+        '@sum') as string
     }
   }
 
@@ -202,6 +214,8 @@ export function StackedBarChart <TChartData extends ChartData = ChartData> ({
   data,
   dataFormatter,
   onAxisLabelClick,
+  formatTotal,
+  grid: gridProps,
   ...props
 }: StackedBarChartProps<TChartData>) {
   const eChartsRef = useRef<ReactECharts>(null)
@@ -220,7 +234,8 @@ export function StackedBarChart <TChartData extends ChartData = ChartData> ({
       right: showLabels ? 25 : 0,
       bottom: 0,
       top: 0,
-      containLabel: showLabels
+      containLabel: showLabels,
+      ...gridProps
     },
     xAxis: {
       type: 'value',
@@ -258,7 +273,7 @@ export function StackedBarChart <TChartData extends ChartData = ChartData> ({
         props.total),
       show: showTooltip
     },
-    series: massageData(data, showTotal, barWidth, !!props.total)
+    series: massageData(data, showTotal, barWidth, !!props.total, formatTotal, dataFormatter)
   }
   return (
     <ReactECharts

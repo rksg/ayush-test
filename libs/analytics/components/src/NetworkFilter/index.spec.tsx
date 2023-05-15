@@ -1,10 +1,10 @@
 import userEvent             from '@testing-library/user-event'
 import { DefaultOptionType } from 'antd/lib/select'
 
-import { defaultNetworkPath }                           from '@acx-ui/analytics/utils'
-import { dataApiURL, Provider, store }                  from '@acx-ui/store'
-import { mockGraphqlQuery, render, screen, fireEvent  } from '@acx-ui/test-utils'
-import { DateRange }                                    from '@acx-ui/utils'
+import { defaultNetworkPath }                                    from '@acx-ui/analytics/utils'
+import { dataApiURL, Provider, store }                           from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen, fireEvent, waitFor  } from '@acx-ui/test-utils'
+import { DateRange }                                             from '@acx-ui/utils'
 
 import { api as incidentApi } from '../IncidentTable/services'
 
@@ -333,8 +333,9 @@ describe('Network Filter', () => {
     render(<Provider><NetworkFilter shouldQuerySwitch/></Provider>)
     await screen.findByText('Entire Organization')
     await userEvent.type(screen.getByRole('combobox'), 'swg')
-    await screen.findByText('swg')
-    fireEvent.click(screen.getByText('swg'))
+    const results = await screen.findAllByRole('menuitemcheckbox')
+    await waitFor(() => {expect(results.length).toBeGreaterThan(0)})
+    await userEvent.click(results[0])
     const path = [
       { type: 'network', name: 'Network' },
       { type: 'switchGroup', name: 'id4' }
@@ -361,6 +362,28 @@ describe('Network Filter', () => {
     const path = [JSON.stringify(defaultNetworkPath)]
     onApply(path, setNetworkPath)
     expect(setNetworkPath).toBeCalledWith(defaultNetworkPath, path)
+  })
+
+  it('should search node for reports', async () => {
+    mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
+      data: { network: { hierarchyNode: networkFilterResult } }
+    })
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: mockIncidents } } }
+    })
+    render(<Provider><NetworkFilter filterFor='reports' shouldQuerySwitch/></Provider>)
+    await screen.findByText('Entire Organization')
+    await userEvent.type(screen.getByRole('combobox'), 'swg')
+    const results = await screen.findAllByRole('menuitemcheckbox')
+    await waitFor(() => {expect(results.length).toBeGreaterThan(0)})
+    await userEvent.click(results[0])
+    const path = [
+      { type: 'network', name: 'Network' },
+      { type: 'switchGroup', name: 'id4' }
+    ]
+    const raw = [JSON.stringify(path)]
+    expect(mockSetNetworkPath).toHaveBeenCalledTimes(1)
+    expect(mockSetNetworkPath).toHaveBeenCalledWith(path, raw)
   })
 })
 describe('Network Filter with incident severity', () => {

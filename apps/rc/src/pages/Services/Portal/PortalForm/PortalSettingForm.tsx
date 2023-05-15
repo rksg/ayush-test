@@ -42,6 +42,7 @@ const PortalSettingForm = (props:{
             validateFirst
             hasFeedback
             children={<Input />}
+            validateTrigger={'onBlur'}
           />
         </Col>
       </Row>

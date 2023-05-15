@@ -38,9 +38,9 @@ export const statsFromSummary = (summary: NetworkHealthTest['summary'] | undefin
     lastResult: undefined
   } as StatsFromSummary
   const { apsTestedCount: apsUnderTest, apsPendingCount, apsSuccessCount } = summary
-  const isOngoing = apsPendingCount > 0
-  const apsFinishedTest = apsUnderTest - apsPendingCount
-  const lastResult = apsSuccessCount / apsUnderTest
+  const isOngoing = apsPendingCount !== undefined && apsPendingCount > 0
+  const apsFinishedTest = apsUnderTest ? apsUnderTest - apsPendingCount: undefined
+  const lastResult = apsUnderTest ? apsSuccessCount / apsUnderTest : undefined
   return { isOngoing, apsUnderTest, apsFinishedTest, lastResult } as StatsFromSummary
 }
 

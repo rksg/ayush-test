@@ -7,13 +7,13 @@ import {
 import { migrationReducer } from './MigrationReducer'
 
 describe('MigrationReducer test', () => {
-  it('should update the policy name when POLICYNAME action is dispatched', () => {
+  it('should update the name when VENUENAME action is dispatched', () => {
     const initState = {} as MigrationContextType
 
     const action = {
-      type: MigrationActionTypes.POLICYNAME,
+      type: MigrationActionTypes.VENUENAME,
       payload: {
-        policyName: 'policyNameId1'
+        venueName: 'nameId1'
       }
     }
 
@@ -21,16 +21,16 @@ describe('MigrationReducer test', () => {
 
     expect(updatedState).toEqual({
       ...initState,
-      policyName: 'policyNameId1'
+      venueName: 'nameId1'
     })
   })
-  it('should update the secondary server when SECONDARYSERVER action is dispatched', () => {
+  it('should update the description when DESCRIPTION action is dispatched', () => {
     const initState = {} as MigrationContextType
 
     const action = {
-      type: MigrationActionTypes.SECONDARYSERVER,
+      type: MigrationActionTypes.DESCRIPTION,
       payload: {
-        secondaryServer: '2.2.2.2'
+        description: '2.2.2.2'
       }
     }
 
@@ -38,16 +38,34 @@ describe('MigrationReducer test', () => {
 
     expect(updatedState).toEqual({
       ...initState,
-      secondaryServer: '2.2.2.2'
+      description: '2.2.2.2'
     })
   })
+  it('should update the address when ADDRESS action is dispatched', () => {
+    const initState = {} as MigrationContextType
+
+    const action = {
+      type: MigrationActionTypes.ADDRESS,
+      payload: {
+        address: '2.2.2.2'
+      }
+    }
+
+    const updatedState = migrationReducer(initState, action as MigrationActionPayload)
+
+    expect(updatedState).toEqual({
+      ...initState,
+      address: '2.2.2.2'
+    })
+  })
+
   it('do nothing when undefined action is dispatched', () => {
     const initState = {} as MigrationContextType
 
     const action = {
       type: 'undefined',
       payload: {
-        server: 'server1'
+        address: 'address'
       }
     }
 
