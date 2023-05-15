@@ -78,7 +78,7 @@ export function useMenuConfig () {
               uri: '/analytics/serviceValidation',
               label: $t({ defaultMessage: 'Service Validation' })
             }] : []),
-            ...(showVideoCallQoe ? [{
+            ...(showSV && showVideoCallQoe ? [{
               uri: '/analytics/videoCallQoe',
               label: $t({ defaultMessage: 'Video Call QoE' })
             }] : [])

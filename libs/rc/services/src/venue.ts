@@ -62,7 +62,9 @@ import {
   downloadFile,
   RequestFormData,
   createNewTableHttpRequest,
-  TableChangePayload
+  TableChangePayload,
+  ApMeshTopologyData,
+  FloorPlanMeshAP
 } from '@acx-ui/rc/utils'
 import { baseVenueApi } from '@acx-ui/store'
 
@@ -212,6 +214,16 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Device', id: 'MESH' }]
+    }),
+    getFloorPlanMeshAps: build.query<TableResult<FloorPlanMeshAP>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const venueMeshReq = createHttpRequest(CommonUrlsInfo.getMeshAps, params)
+        return {
+          ...venueMeshReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Device', id: 'MESH' }, { type: 'VenueFloorPlan', id: 'DEVICE' }]
     }),
     deleteVenue: build.mutation<Venue, RequestPayload>({
       query: ({ params, payload }) => {
@@ -891,6 +903,18 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return result?.data[0] as TopologyData
       }
     }),
+    getApMeshTopology: build.query<ApMeshTopologyData, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getApMeshTopology, params)
+
+        return {
+          ...req
+        }
+      },
+      transformResponse: (result: { data: ApMeshTopologyData[] }) => {
+        return result?.data[0] as ApMeshTopologyData
+      }
+    }),
     getVenueMdnsFencing: build.query<VenueMdnsFencingPolicy, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(CommonUrlsInfo.getVenueMdnsFencingPolicy, params)
@@ -1156,6 +1180,24 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'ResidentPortal', id: 'LIST' }]
     }),
+    deleteResidentPortalLogo: build.mutation<ResidentPortal, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.deleteResidentPortalLogo, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'ResidentPortal', id: 'ID' }]
+    }),
+    deleteResidentPortalFavicon: build.mutation<ResidentPortal, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.deleteResidentPortalFavicon, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'ResidentPortal', id: 'ID' }]
+    }),
     deleteResidentPortals: build.mutation<ResidentPortal, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(PropertyUrlsInfo.deleteResidentPortals, params)
@@ -1200,6 +1242,7 @@ export const {
   useUpdateVenueMeshMutation,
   useUpdateVenueCellularSettingsMutation,
   useMeshApsQuery,
+  useGetFloorPlanMeshApsQuery,
   useDeleteVenueMutation,
   useGetNetworkApGroupsQuery,
   useGetFloorPlanQuery,
@@ -1263,6 +1306,7 @@ export const {
   useGetVenueLoadBalancingQuery,
   useUpdateVenueLoadBalancingMutation,
   useGetTopologyQuery,
+  useGetApMeshTopologyQuery,
   useGetVenueMdnsFencingQuery,
   useUpdateVenueMdnsFencingMutation,
 
@@ -1271,7 +1315,6 @@ export const {
   useUpdatePropertyConfigsMutation,
   usePatchPropertyConfigsMutation,
   useAddPropertyUnitMutation,
-
   useGetPropertyUnitByIdQuery,
   useLazyGetPropertyUnitByIdQuery,
   useGetPropertyUnitListQuery,
@@ -1286,6 +1329,8 @@ export const {
   useGetResidentPortalQuery,
   useUpdateResidentPortalMutation,
   useDeleteResidentPortalsMutation,
+  useDeleteResidentPortalLogoMutation,
+  useDeleteResidentPortalFaviconMutation,
 
   useImportPropertyUnitsMutation,
   useLazyDownloadPropertyUnitsQuery,

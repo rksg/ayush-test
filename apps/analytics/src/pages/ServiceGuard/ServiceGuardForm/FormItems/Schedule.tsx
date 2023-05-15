@@ -14,7 +14,7 @@ import {
 } from 'react-intl'
 
 import {
-  StepsFormNew,
+  StepsForm,
   Tooltip,
   useStepFormContext
 } from '@acx-ui/components'
@@ -216,7 +216,7 @@ Schedule.FieldSummary = function ScheduleFieldSummary () {
   return <Form.Item
     name={name}
     label={$t(label)}
-    children={<StepsFormNew.FieldSummary<ScheduleType> convert={(value) => {
+    children={<StepsForm.FieldSummary<ScheduleType> convert={(value) => {
       switch (value!.frequency) {
         case ScheduleFrequency.Daily:
           return timeMap().get(value!.hour!)

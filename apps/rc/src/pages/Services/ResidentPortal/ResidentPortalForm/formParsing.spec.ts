@@ -7,7 +7,6 @@ import { CreateResidentPortalFormFields,
   transferFormFieldsToSaveData,
   transferSaveDataToFormFields } from './formParsing'
 
-
 describe('ResidentPortal parser', () => {
   it('should transfer form fields to the ResidentPortal saved data', () => {
 
@@ -21,6 +20,54 @@ describe('ResidentPortal parser', () => {
     expect(saveData.uiConfiguration?.text.announcements)
       .toBe(mockedCreateFormData.textAnnouncements)
     expect(saveData.uiConfiguration?.text.helpText).toBe(mockedCreateFormData.textHelp)
+    expect(saveData.uiConfiguration?.color?.mainColor).toBe(mockedCreateFormData.colorMain)
+    expect(saveData.uiConfiguration?.color?.accentColor).toBe(mockedCreateFormData.colorAccent)
+    expect(saveData.uiConfiguration?.color?.separatorColor)
+      .toBe(mockedCreateFormData.colorSeparator)
+    expect(saveData.uiConfiguration?.color?.textColor).toBe(mockedCreateFormData.colorText)
+    expect(saveData.uiConfiguration?.files?.logoFileName)
+      .toBe(mockedCreateFormData.fileLogo.file?.name)
+    expect(saveData.uiConfiguration?.files?.favIconFileName)
+      .toBe(mockedCreateFormData.fileFavicon.file?.name)
+  })
+
+  it('should remove file name when file is removed', () => {
+    const formDataRemovedFiles: CreateResidentPortalFormFields = {
+      serviceName: 'New Resident Portal',
+      textTitle: 'Welcome',
+      textSubtitle: 'This is a Mocked Portal',
+      textLogin: 'Login Please',
+      textAnnouncements: 'Announcing a Mocked Portal',
+      textHelp: 'This is a test.',
+      colorMain: '',
+      colorAccent: '',
+      colorSeparator: '',
+      colorText: '',
+      fileLogo: {
+        file: new File(['testLogo'], 'testLogo.png', { type: 'image/png' }),
+        isRemoved: true },
+      fileFavicon: {
+        file: new File(['testFavicon'], 'testFavicon.png', { type: 'image/png' }),
+        isRemoved: true }
+    }
+
+    const saveData: ResidentPortal =
+      transferFormFieldsToSaveData(formDataRemovedFiles)
+
+    expect(saveData.name).toBe(formDataRemovedFiles.serviceName)
+    expect(saveData.uiConfiguration?.text.title).toBe(formDataRemovedFiles.textTitle)
+    expect(saveData.uiConfiguration?.text.subTitle).toBe(formDataRemovedFiles.textSubtitle)
+    expect(saveData.uiConfiguration?.text.loginText).toBe(formDataRemovedFiles.textLogin)
+    expect(saveData.uiConfiguration?.text.announcements)
+      .toBe(formDataRemovedFiles.textAnnouncements)
+    expect(saveData.uiConfiguration?.text.helpText).toBe(formDataRemovedFiles.textHelp)
+    expect(saveData.uiConfiguration?.color?.mainColor).toBe(formDataRemovedFiles.colorMain)
+    expect(saveData.uiConfiguration?.color?.accentColor).toBe(formDataRemovedFiles.colorAccent)
+    expect(saveData.uiConfiguration?.color?.separatorColor)
+      .toBe(formDataRemovedFiles.colorSeparator)
+    expect(saveData.uiConfiguration?.color?.textColor).toBe(formDataRemovedFiles.colorText)
+    expect(saveData.uiConfiguration?.files?.logoFileName).toBe('')
+    expect(saveData.uiConfiguration?.files?.favIconFileName).toBe('')
   })
 
   it('should transfer the ResidentPortal data to form fields', () => {
@@ -33,6 +80,12 @@ describe('ResidentPortal parser', () => {
     expect(formData.textLogin).toBe(mockedResidentPortal.uiConfiguration.text.loginText)
     expect(formData.textAnnouncements).toBe(mockedResidentPortal.uiConfiguration.text.announcements)
     expect(formData.textHelp).toBe(mockedResidentPortal.uiConfiguration.text.helpText)
+    expect(formData.colorMain).toBe(mockedResidentPortal.uiConfiguration.color.mainColor)
+    expect(formData.colorAccent).toBe(mockedResidentPortal.uiConfiguration.color.accentColor)
+    expect(formData.colorSeparator).toBe(mockedResidentPortal.uiConfiguration.color.separatorColor)
+    expect(formData.colorText).toBe(mockedResidentPortal.uiConfiguration.color.textColor)
+    expect(formData.fileLogo.file?.name).toBeUndefined()
+    expect(formData.fileFavicon.file?.name).toBeUndefined()
   })
 
   it('should transfer empty strings to form fields when values are undefined', () => {
@@ -47,6 +100,12 @@ describe('ResidentPortal parser', () => {
           subTitle: '',
           announcements: '',
           helpText: ''
+        },
+        color: {
+          mainColor: '',
+          accentColor: '',
+          separatorColor: '',
+          textColor: ''
         }
       }
     }
@@ -60,6 +119,10 @@ describe('ResidentPortal parser', () => {
     expect(formData.textLogin).toBe('')
     expect(formData.textAnnouncements).toBe('')
     expect(formData.textHelp).toBe('')
+    expect(formData.colorMain).toBe('')
+    expect(formData.colorAccent).toBe('')
+    expect(formData.colorSeparator).toBe('')
+    expect(formData.colorText).toBe('')
   })
 
   it('should transfer empty strings to form fields when uiConfiguration is undefined', () => {
@@ -78,6 +141,12 @@ describe('ResidentPortal parser', () => {
     expect(formData.textLogin).toBe('')
     expect(formData.textAnnouncements).toBe('')
     expect(formData.textHelp).toBe('')
+    expect(formData.colorMain).toBe('')
+    expect(formData.colorAccent).toBe('')
+    expect(formData.colorSeparator).toBe('')
+    expect(formData.colorText).toBe('')
+    expect(formData.fileLogo.file?.name).toBeUndefined()
+    expect(formData.fileFavicon.file?.name).toBeUndefined()
   })
 
 })

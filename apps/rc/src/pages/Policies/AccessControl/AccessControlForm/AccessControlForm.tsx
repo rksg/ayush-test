@@ -5,8 +5,8 @@ import { useParams } from 'react-router-dom'
 
 import {
   PageHeader,
-  StepsForm,
-  StepsFormInstance
+  StepsFormLegacy,
+  StepsFormLegacyInstance
 } from '@acx-ui/components'
 import {
   useAddAccessControlProfileMutation,
@@ -135,7 +135,7 @@ const AccessControlForm = (props: AccessControlFormProps) => {
   const linkToPolicies = useTenantLink(tablePath)
   const { editMode } = props
 
-  const formRef = useRef<StepsFormInstance<AccessControlFormFields>>()
+  const formRef = useRef<StepsFormLegacyInstance<AccessControlFormFields>>()
 
   const [ createAclProfile ] = useAddAccessControlProfileMutation()
 
@@ -174,18 +174,18 @@ const AccessControlForm = (props: AccessControlFormProps) => {
           { text: $t({ defaultMessage: 'Access Control' }), link: tablePath }
         ]}
       />
-      <StepsForm<AccessControlProfile>
+      <StepsFormLegacy<AccessControlProfile>
         formRef={formRef}
         onCancel={() => navigate(linkToPolicies, { replace: true })}
         onFinish={() => handleAccessControlPolicy(editMode)}
       >
-        <StepsForm.StepForm<AccessControlProfile>
+        <StepsFormLegacy.StepForm<AccessControlProfile>
           name='settings'
           title={$t({ defaultMessage: 'Settings' })}
         >
           <AccessControlSettingForm editMode={editMode}/>
-        </StepsForm.StepForm>
-      </StepsForm>
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>
     </>
   )
 }

@@ -1,5 +1,7 @@
 import { ResidentPortal } from '@acx-ui/rc/utils'
 
+import { ResidentPortalImageValue } from './ResidentPortalImageUpload'
+
 
 export interface CreateResidentPortalFormFields {
   id?: string;
@@ -9,6 +11,12 @@ export interface CreateResidentPortalFormFields {
   textLogin: string;
   textAnnouncements: string;
   textHelp: string;
+  colorMain: string;
+  colorAccent: string;
+  colorSeparator: string;
+  colorText: string;
+  fileLogo: ResidentPortalImageValue;
+  fileFavicon: ResidentPortalImageValue;
 }
 
 export function transferSaveDataToFormFields (data: ResidentPortal):CreateResidentPortalFormFields {
@@ -18,13 +26,31 @@ export function transferSaveDataToFormFields (data: ResidentPortal):CreateReside
     textLogin: data.uiConfiguration.text.loginText ? data.uiConfiguration.text.loginText : '',
     textAnnouncements: data.uiConfiguration.text.announcements ?
       data.uiConfiguration.text.announcements : '',
-    textHelp: data.uiConfiguration.text.helpText ? data.uiConfiguration.text.helpText : ''
+    textHelp: data.uiConfiguration.text.helpText ? data.uiConfiguration.text.helpText : '',
+
+    colorMain: data.uiConfiguration?.color?.mainColor ? data.uiConfiguration.color.mainColor : '',
+    colorAccent: data.uiConfiguration?.color?.accentColor ?
+      data.uiConfiguration.color.accentColor : '',
+    colorSeparator: data.uiConfiguration?.color?.separatorColor ?
+      data.uiConfiguration.color.separatorColor : '',
+    colorText: data.uiConfiguration?.color?.textColor ? data.uiConfiguration.color.textColor : '',
+
+    fileLogo: { file: undefined },
+    fileFavicon: { file: undefined }
   } : {
     textTitle: '',
     textSubtitle: '',
     textLogin: '',
     textAnnouncements: '',
-    textHelp: ''
+    textHelp: '',
+
+    colorMain: '',
+    colorAccent: '',
+    colorSeparator: '',
+    colorText: '',
+
+    fileLogo: { file: undefined },
+    fileFavicon: { file: undefined }
   }
 
   return {
@@ -35,6 +61,7 @@ export function transferSaveDataToFormFields (data: ResidentPortal):CreateReside
 }
 
 export function transferFormFieldsToSaveData (data: CreateResidentPortalFormFields):ResidentPortal {
+
   return {
     name: data.serviceName,
     uiConfiguration: {
@@ -46,6 +73,18 @@ export function transferFormFieldsToSaveData (data: CreateResidentPortalFormFiel
         loginText: data.textLogin,
         announcements: data.textAnnouncements,
         helpText: data.textHelp
+      },
+      color: {
+        mainColor: data.colorMain,
+        accentColor: data.colorAccent,
+        separatorColor: data.colorSeparator,
+        textColor: data.colorText
+      },
+      files: {
+        logoFileName:
+          data.fileLogo?.file && !data.fileLogo.isRemoved ? data.fileLogo.file.name : '',
+        favIconFileName:
+          data.fileFavicon?.file && !data.fileLogo.isRemoved ? data.fileFavicon.file.name : ''
       }
     }
   }

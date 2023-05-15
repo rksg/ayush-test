@@ -1,7 +1,7 @@
 import { Col, Row }                  from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
+import { StepsFormLegacy, Tooltip, useStepFormContext } from '@acx-ui/components'
 
 import * as contents                                         from '../contents'
 import { ServiceGuardFormDto, ClientType as ClientTypeEnum } from '../types'
@@ -17,11 +17,11 @@ export function ServiceGuardFormAPsSelection () {
   const { $t } = useIntl()
   const { form } = useStepFormContext<ServiceGuardFormDto>()
   return <>
-    <StepsForm.Title>
+    <StepsFormLegacy.Title>
       {$t(contents.steps.apsSelection)}
       {form.getFieldValue(FormItems.ClientType.fieldName) === ClientTypeEnum.VirtualClient &&
         <Tooltip.Question title={tooltip} placement='right' />}
-    </StepsForm.Title>
+    </StepsFormLegacy.Title>
     <Row gutter={20}>
       <Col span={18}>
         <FormItems.APsSelection />

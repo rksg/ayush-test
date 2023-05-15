@@ -3,7 +3,7 @@ import { NamePath }                  from 'antd/es/form/interface'
 import { defineMessage, useIntl }    from 'react-intl'
 
 import {
-  StepsFormNew,
+  StepsForm,
   useStepFormContext
 } from '@acx-ui/components'
 
@@ -69,7 +69,7 @@ export function Password () {
   if (!field) return null
 
   const children = field.preConfigured
-    ? <StepsFormNew.FieldSummary convert={() => String(placeholder)} />
+    ? <StepsForm.FieldSummary convert={() => String(placeholder)} />
     : <Input.Password {...{ placeholder, disabled }} />
 
   return <Form.Item
@@ -95,7 +95,7 @@ Password.FieldSummary = function PasswordFieldSummary () {
   return <Form.Item
     name={name as unknown as NamePath}
     label={$t(field.preConfigured ? labelAlt : label)}
-    children={<StepsFormNew.FieldSummary<string>
+    children={<StepsForm.FieldSummary<string>
       convert={(value) => field.preConfigured
         ? $t({ defaultMessage: 'Using configured password' })
         : Array(String(value).length).fill('*').join('')}

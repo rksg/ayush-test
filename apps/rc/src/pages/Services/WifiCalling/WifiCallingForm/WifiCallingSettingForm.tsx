@@ -6,7 +6,7 @@ import TextArea                          from 'antd/lib/input/TextArea'
 import { useIntl }                       from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
-import { StepsForm }                                                        from '@acx-ui/components'
+import { StepsFormLegacy }                                                  from '@acx-ui/components'
 import { useGetWifiCallingServiceListQuery, useGetWifiCallingServiceQuery } from '@acx-ui/rc/services'
 import { CreateNetworkFormFields, QosPriorityEnum, WifiCallingActionTypes } from '@acx-ui/rc/utils'
 
@@ -104,7 +104,7 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
   return (
     <Row gutter={20}>
       <Col span={10}>
-        <StepsForm.Title>{$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
+        <StepsFormLegacy.Title>{$t({ defaultMessage: 'Settings' })}</StepsFormLegacy.Title>
         <Form.Item
           name='serviceName'
           label={$t({ defaultMessage: 'Service Name' })}

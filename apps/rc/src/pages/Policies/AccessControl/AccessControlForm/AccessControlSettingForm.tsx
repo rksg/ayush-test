@@ -7,7 +7,7 @@ import { useIntl }     from 'react-intl'
 import { useParams }   from 'react-router-dom'
 
 import { GridCol, GridRow }                                                     from '@acx-ui/components'
-import { StepsForm }                                                            from '@acx-ui/components'
+import { StepsFormLegacy }                                                      from '@acx-ui/components'
 import { useGetAccessControlProfileListQuery, useGetAccessControlProfileQuery } from '@acx-ui/rc/services'
 import { AclEmbeddedObject }                                                    from '@acx-ui/rc/utils'
 
@@ -98,7 +98,7 @@ const AccessControlSettingForm = (props: AccessControlSettingFormProps) => {
   return (
     <GridRow>
       <GridCol col={{ span: 10 }}>
-        <StepsForm.Title>{$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
+        <StepsFormLegacy.Title>{$t({ defaultMessage: 'Settings' })}</StepsFormLegacy.Title>
         <Form.Item
           name='policyName'
           label={$t({ defaultMessage: 'Policy Name' })}

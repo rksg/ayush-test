@@ -3,7 +3,7 @@ import { NamePath }                  from 'antd/es/form/interface'
 import { defineMessage, useIntl }    from 'react-intl'
 
 import {
-  StepsFormNew,
+  StepsForm,
   Tooltip,
   useStepFormContext
 } from '@acx-ui/components'
@@ -69,7 +69,7 @@ RadioBand.FieldSummary = function RadioBandFieldSummary () {
   return <Form.Item
     name={name as unknown as NamePath}
     label={$t(label)}
-    children={<StepsFormNew.FieldSummary<Band>
+    children={<StepsForm.FieldSummary<Band>
       convert={(value) => format(value)}
     />}
   />

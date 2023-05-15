@@ -5,7 +5,7 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { GridCol, GridRow, StepsForm }                            from '@acx-ui/components'
+import { GridCol, GridRow, StepsFormLegacy }                      from '@acx-ui/components'
 import { GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
@@ -37,7 +37,7 @@ export function GuestPassForm () {
   return (
     <GridRow>
       <GridCol col={{ span: 10 }}>
-        <StepsForm.Title>{intl.$t({ defaultMessage: 'Host Settings' })}</StepsForm.Title>
+        <StepsFormLegacy.Title children={intl.$t({ defaultMessage: 'Host Settings' })} />
         <RedirectUrlInput></RedirectUrlInput>
         <DhcpCheckbox />
         <BypassCaptiveNetworkAssistantCheckbox

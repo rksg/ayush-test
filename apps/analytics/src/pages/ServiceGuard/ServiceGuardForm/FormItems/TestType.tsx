@@ -2,7 +2,7 @@ import { Form, Select, Input }    from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 
 import {
-  StepsFormNew,
+  StepsForm,
   useStepFormContext
 } from '@acx-ui/components'
 
@@ -55,7 +55,7 @@ TestType.FieldSummary = function TestTypeFieldSummary () {
   return <Form.Item
     name='typeWithSchedule'
     label={$t(label)}
-    children={<StepsFormNew.FieldSummary<TestTypeEnum>
+    children={<StepsForm.FieldSummary<TestTypeEnum>
       convert={(value) => $t(contents.testTypesWithSchedule[value!])}
     />}
   />

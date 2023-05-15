@@ -52,13 +52,15 @@ describe('UserProfileContext', () => {
         UserUrlsInfo.getUserProfile.url,
         (req, res, ctx) => res(ctx.json(mockedUserProfile))
       ),
-      rest.get(UserUrlsInfo.wifiAllowedOperations.url, (req, res, ctx) =>
-        res(ctx.json(['some-operation']))),
+      rest.get(UserUrlsInfo.wifiAllowedOperations.url.replace('?service=wifi', ''),
+        (req, res, ctx) => res(ctx.json(['some-operation']))),
       rest.get(UserUrlsInfo.switchAllowedOperations.url, (req, res, ctx) => res(ctx.json([]))),
       rest.get(UserUrlsInfo.tenantAllowedOperations.url, (req, res, ctx) => res(ctx.json([]))),
       rest.get(UserUrlsInfo.venueAllowedOperations.url, (req, res, ctx) => res(ctx.json([]))),
-      rest.get(UserUrlsInfo.guestAllowedOperations.url, (req, res, ctx) => res(ctx.json([]))),
-      rest.get(UserUrlsInfo.upgradeAllowedOperations.url, (req, res, ctx) => res(ctx.json([])))
+      rest.get(UserUrlsInfo.guestAllowedOperations.url.replace('?service=guest', ''),
+        (req, res, ctx) => res(ctx.json([]))),
+      rest.get(UserUrlsInfo.upgradeAllowedOperations.url.replace('?service=upgradeConfig', ''),
+        (req, res, ctx) => res(ctx.json([])))
     )
   })
 
@@ -66,7 +68,7 @@ describe('UserProfileContext', () => {
     render(<TestUserProfile />, { wrapper, route })
 
     expect(await screen.findByText('First Last')).toBeVisible()
-    expect(await screen.findByText('["some-operation"]')).toBeVisible()
+    expect(await screen.findByText(/some-operation/)).toBeVisible()
   })
 
   it('should be able to recognize prime admin', async () => {
