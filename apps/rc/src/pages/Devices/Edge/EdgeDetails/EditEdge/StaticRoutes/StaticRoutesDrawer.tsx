@@ -4,8 +4,8 @@ import { useEffect } from 'react'
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { Drawer }                                                                             from '@acx-ui/components'
-import { EdgeStaticRoute, generalIpAddressRegExp, serverIpAddressRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
+import { Drawer }                                                                          from '@acx-ui/components'
+import { EdgeStaticRoute, networkWifiIpRegExp, serverIpAddressRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
 
 interface StaticRoutesDrawerProps {
   visible: boolean
@@ -97,7 +97,7 @@ const StaticRoutesDrawer = (props: StaticRoutesDrawerProps) => {
       label={$t({ defaultMessage: 'Network Address' })}
       rules={[
         { required: true },
-        { validator: (_, value) => generalIpAddressRegExp(value) },
+        { validator: (_, value) => networkWifiIpRegExp(value) },
         {
           validator: (_, value) => validateStaticRoute(value, formRef.getFieldValue('destSubnet'))
         },
