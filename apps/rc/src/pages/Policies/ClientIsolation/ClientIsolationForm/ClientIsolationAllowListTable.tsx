@@ -114,7 +114,8 @@ export function ClientIsolationAllowListTable (props: ClientIsolationAllowListTa
       title: $t({ defaultMessage: 'IP Address' }),
       dataIndex: 'ipAddress',
       key: 'ipAddress',
-      show: showIpAddress
+      show: showIpAddress,
+      sorter: { compare: sortProp('ipAddress', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Description' }),

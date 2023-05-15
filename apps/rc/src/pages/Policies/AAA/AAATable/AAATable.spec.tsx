@@ -21,7 +21,7 @@ import {
 import AAATable from './AAATable'
 
 const mockTableResult = {
-  totalCount: 1,
+  totalCount: 2,
   data: [{
     id: 'cc080e33-26a7-4d34-870f-b7f312fcfccb',
     name: 'My AAA Server 1',
@@ -31,6 +31,17 @@ const mockTableResult = {
       port: 1811,
       sharedSecret: 'xxxxxxxx'
     }
+  },
+  {
+    id: 'abcdeefwef-26a7-4d34-870f-b7f312fcfccb',
+    name: 'Test AAA Server',
+    type: 'AUTHENTICATION',
+    primary: {
+      ip: '1.1.1.1',
+      port: 1811,
+      sharedSecret: 'xxxxxxxx'
+    },
+    networkIds: ['123', '456']
   }]
 }
 
@@ -60,7 +71,7 @@ describe('AAATable', () => {
     mockServer.use(
       rest.post(
         AaaUrls.getAAAPolicyViewModelList.url,
-        (req, res, ctx) => res(ctx.json(mockTableResult))
+        (req, res, ctx) => res(ctx.json({ ...mockTableResult }))
       )
     )
   })
@@ -109,12 +120,30 @@ describe('AAATable', () => {
 
     expect(await screen.findByText('Delete "' + target.name + '"?')).toBeVisible()
 
-    // eslint-disable-next-line max-len
     await userEvent.click(await screen.findByRole('button', { name: /Delete Policy/i }))
 
     await waitFor(() => {
       expect(deleteFn).toHaveBeenCalled()
     })
+  })
+
+  it('should not delete selected row when it is applied to a network', async () => {
+    render(
+      <Provider>
+        <AAATable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+
+    const target = mockTableResult.data[1]
+    const row = await screen.findByRole('row', { name: new RegExp(target.name) })
+    await userEvent.click(within(row).getByRole('radio'))
+
+    await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('You are unable to delete this record due to its usage in Network')).toBeVisible()
   })
 
   it('should navigate to the Edit view', async () => {
