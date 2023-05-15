@@ -35,7 +35,7 @@ let isModalShown = false
 const ignoreEndpointList = [
   'addAp', 'updateAp', 'inviteDelegation', 'addRecipient', 'updateRecipient', 'getDnsServers',
   'addEdge', 'clientInfo', 'getClientDetails', 'getPropertyConfigs', 'getDhcpByEdgeId',
-  'convertNonVARToMSP'
+  'convertNonVARToMSP', 'createNetworkSegmentationGroup', 'updateNetworkSegmentationGroup'
 ]
 
 export const errorMessage = {
