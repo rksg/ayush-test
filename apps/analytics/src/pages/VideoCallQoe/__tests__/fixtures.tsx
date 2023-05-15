@@ -1774,3 +1774,28 @@ export const getAllCallQoeTestsWithNotStarted = {
     }
   ]
 }
+
+export const searchClientsFixture = {
+  search: {
+    clients: [
+      {
+        hostname: 'IT',
+        username: 'DPSK_User_8709',
+        mac: 'A8:64:F1:1A:D0:33',
+        ipAddress: '10.174.116.111'
+      },
+      {
+        hostname: 'DESKTOP-K1PAM9U',
+        username: 'd0c637d75280',
+        mac: 'D0:C6:37:D7:52:80',
+        ipAddress: '10.174.116.121'
+      },
+      {
+        hostname: 'e0:d4:64:05:7d:4b',
+        username: 'e0d464057d4b',
+        mac: 'E0:D4:64:05:7D:4B',
+        ipAddress: '10.174.116.216'
+      }
+    ]
+  }
+}

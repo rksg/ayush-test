@@ -61,6 +61,14 @@ describe('ResidentPortalForm', () => {
       rest.post(
         PropertyUrlsInfo.addResidentPortal.url,
         (req, res, ctx) => res(ctx.json(mockedResidentPortal))
+      ),
+      rest.get(
+        PropertyUrlsInfo.getResidentPortalLogo.url,
+        (req, res, ctx) => res(ctx.status(404))
+      ),
+      rest.get(
+        PropertyUrlsInfo.getResidentPortalFavicon.url,
+        (req, res, ctx) => res(ctx.status(404))
       )
     )
   })

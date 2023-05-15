@@ -43,7 +43,9 @@ export function NetworkDetailForm () {
   const form = Form.useFormInstance()
   const onChange = (e: RadioChangeEvent) => {
     setData && setData({ ...data, type: e.target.value as NetworkTypeEnum,
-      enableAccountingProxy: false, enableAuthProxy: false, enableAccountingService: false })
+      enableAccountingProxy: false,
+      enableAuthProxy: e.target.value === NetworkTypeEnum.DPSK, // to set default value as true for DPSK while adding new network
+      enableAccountingService: false })
   }
 
   useEffect(() => {
@@ -195,6 +197,7 @@ export function NetworkDetailForm () {
             validateFirst
             hasFeedback
             children={<Input />}
+            validateTrigger={'onBlur'}
           />
         }
         <Form.Item

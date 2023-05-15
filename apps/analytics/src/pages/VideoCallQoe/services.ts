@@ -4,10 +4,10 @@ import { gql }           from 'graphql-request'
 import { ValidatorRule } from 'rc-field-form/lib/interface'
 import { useIntl }       from 'react-intl'
 
-import { videoCallQoeApi } from '@acx-ui/store'
+import { dataApiSearch, videoCallQoeApi } from '@acx-ui/store'
 
-import { messageMapping }                               from './contents'
-import { DetailedResponse, Response, VideoCallQoeTest } from './types'
+import { messageMapping }                                                                       from './contents'
+import { Client, DetailedResponse, RequestPayload, Response, SearchResponse, VideoCallQoeTest } from './types'
 
 export const api = videoCallQoeApi.injectEndpoints({
   endpoints: (build) => ({
@@ -163,6 +163,16 @@ export const api = videoCallQoeApi.injectEndpoints({
       }),
       invalidatesTags: [{ type: 'VideoCallQoe', id: 'LIST' }],
       transformResponse: (response: { deleteCallQoeTest : boolean }) => response.deleteCallQoeTest
+    }),
+    updateCallQoeParticipant: build.mutation<number, { participantId: number, macAddr: string }>({
+      query: (variables) => ({
+        variables,
+        document: gql`mutation UpdateCallQoeParticipant($participantId: Int!, $macAddr: String!) {
+          updateCallQoeParticipant(id: $participantId, macAddress: $macAddr)
+        }`
+      }),
+      transformResponse: (response: { updateCallQoeParticipant : number }) =>
+        response.updateCallQoeParticipant
     })
   })
 })
@@ -172,7 +182,8 @@ export const {
   useLazyVideoCallQoeTestsQuery,
   useCreateCallQoeTestMutation,
   useDeleteCallQoeTestMutation,
-  useVideoCallQoeTestDetailsQuery
+  useVideoCallQoeTestDetailsQuery,
+  useUpdateCallQoeParticipantMutation
 } = api
 
 export function useDuplicateNameValidator () {
@@ -187,3 +198,36 @@ export function useDuplicateNameValidator () {
   }, [$t, submit])
   return validator
 }
+
+export const clientSearchApi = dataApiSearch.injectEndpoints({
+  endpoints: (build) => ({
+    seachClients: build.query<Client[], RequestPayload>({
+      query: (payload) => ({
+        document: gql`
+        query Search(
+          $start: DateTime,
+          $end: DateTime,
+          $query: String,
+          $limit: Int
+        ) {
+          search(start: $start, end: $end, query: $query, limit: $limit) {
+            clients {
+              hostname
+              username
+              mac
+              ipAddress
+            }
+          }
+        }
+        `,
+        variables: payload
+      }),
+      providesTags: [{ type: 'Monitoring', id: 'SEARCH' }],
+      transformResponse: (response: SearchResponse<{ clients: Client[] }>) =>
+        response.search.clients
+    })
+  })
+})
+export const {
+  useSeachClientsQuery
+} = clientSearchApi
