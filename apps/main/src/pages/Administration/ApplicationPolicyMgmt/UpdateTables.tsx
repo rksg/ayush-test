@@ -67,6 +67,7 @@ export const UpdateAPPTable=(props:{
       key: 'impactedRules',
       dataIndex: 'impactedRules',
       sorter: false,
+      align: 'center',
       render: (data, row)=>{
         return getRulesInfo(row)
       }
@@ -100,13 +101,14 @@ export const MergedAPPTable=(props:{
     }, {
       title: $t({ defaultMessage: 'Application Category' }),
       key: 'toCategoryName',
-      dataIndex: 'appCategory',
+      dataIndex: 'toCategoryName',
       sorter: false
     }, {
       title: $t({ defaultMessage: 'Impacted Rules' }),
       key: 'impactedItems',
       dataIndex: 'impactedItems',
       sorter: false,
+      align: 'center',
       render: (data, row)=>{
         return getRulesInfo(row)
       }
@@ -142,6 +144,7 @@ export const RemovedAPPTable=(props:{
       key: 'impactedItems',
       dataIndex: 'impactedItems',
       sorter: false,
+      align: 'center',
       render: (data, row)=>{
         return getRulesInfo(row)
       }
@@ -176,6 +179,7 @@ export const ChangedAPPTable=(props:{
       key: 'impactedItems',
       dataIndex: 'impactedItems',
       sorter: false,
+      align: 'center',
       render: (data, row)=>{
         return getRulesInfo(row)
       }

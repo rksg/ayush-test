@@ -18,7 +18,7 @@ const ApplicationPolicyMgmt = ()=>{
   const [ exportAllSigPack ] = useExportAllSigPackMutation()
   const [ exportSigPack] = useExportSigPackMutation()
   const [type, setType] = useState(ApplicationUpdateType.APPLICATION_ADDED)
-  const [updateAvailable, setUpdateAvailable] = useState(true)
+  const [updateAvailable, setUpdateAvailable] = useState(false)
   const [added, setAdded] = useState([] as ApplicationInfo[])
   const [updated, setUpdated] = useState([] as ApplicationInfo[])
   const [merged, setMerged] = useState([] as ApplicationInfo[])
