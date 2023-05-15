@@ -225,6 +225,7 @@ export function CliVariableModal (props: {
       ]}
       validateFirst
       children={<Input data-testid='string' maxLength={20} />}
+      validateTrigger={'onBlur'}
     />}
   </Form>
 
