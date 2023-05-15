@@ -12,7 +12,7 @@ type SyslogSettingFormProps = {
   className?: string
 }
 
-const MigrationStatusForm = styled((props: SyslogSettingFormProps) => {
+const ValidationStatus = styled((props: SyslogSettingFormProps) => {
   const { $t } = useIntl()
   const { className } = props
 
@@ -21,7 +21,7 @@ const MigrationStatusForm = styled((props: SyslogSettingFormProps) => {
       <Col span={10}>
         <Typography.Text>
           {// eslint-disable-next-line max-len
-            $t({ defaultMessage: 'ZoneDirector configurations is being migrated and may take a few minutes to complete.' })}
+            $t({ defaultMessage: 'ZoneDirector configurations is being validated and may take a few minutes to complete.' })}
         </Typography.Text>
         <Typography.Text>
           {// eslint-disable-next-line max-len
@@ -32,4 +32,4 @@ const MigrationStatusForm = styled((props: SyslogSettingFormProps) => {
   )
 })`${UI.styles}`
 
-export default MigrationStatusForm
+export default ValidationStatus

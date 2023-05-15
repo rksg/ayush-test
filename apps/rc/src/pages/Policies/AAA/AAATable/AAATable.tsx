@@ -1,8 +1,13 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader, showActionModal }                     from '@acx-ui/components'
-import { SimpleListTooltip }                                                                  from '@acx-ui/rc/components'
-import { useDeleteAAAPolicyMutation, useGetAAAPolicyViewModelListQuery, useNetworkListQuery } from '@acx-ui/rc/services'
+import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
+import { SimpleListTooltip }                             from '@acx-ui/rc/components'
+import {
+  doProfileDelete,
+  useDeleteAAAPolicyMutation,
+  useGetAAAPolicyViewModelListQuery,
+  useNetworkListQuery
+} from '@acx-ui/rc/services'
 import {
   PolicyType,
   useTableQuery,
@@ -36,22 +41,20 @@ export default function AAATable () {
     }
   })
 
+  const doDelete = (selectedRow: AAAViewModalType, callback: () => void) => {
+    doProfileDelete(
+      [selectedRow],
+      $t({ defaultMessage: 'Policy' }),
+      selectedRow.name,
+      [{ fieldName: 'networkIds', fieldText: $t({ defaultMessage: 'Network' }) }],
+      async () => deleteFn({ params: { tenantId, policyId: selectedRow.id } }).then(callback)
+    )
+  }
+
   const rowActions: TableProps<AAAViewModalType>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ id, name }], clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Policy' }),
-            entityValue: name
-          },
-          onOk: () => {
-            deleteFn({ params: { tenantId, policyId: id } }).then(clearSelection)
-          }
-        })
-      }
+      onClick: ([selectedRow], clearSelection) => doDelete(selectedRow, clearSelection)
     },
     {
       label: $t({ defaultMessage: 'Edit' }),

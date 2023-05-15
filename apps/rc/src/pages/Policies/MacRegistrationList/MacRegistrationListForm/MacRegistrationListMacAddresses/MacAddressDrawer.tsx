@@ -126,7 +126,8 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
           { validator: (_, value) => macAddressValidator(value) }
         ]}
         validateFirst
-        hasFeedback>
+        hasFeedback
+        validateTrigger={'onBlur'}>
         <Input disabled={isEdit}/>
       </Form.Item>
       <Form.Item name='username' label={intl.$t({ defaultMessage: 'Username' })}>

@@ -92,13 +92,26 @@ describe('useNetworkHealthRelatedTests', () => {
       route: { params: { testId: 'test-id' } }
     })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
-    expect(result.current.data).toEqual(
-      fixtures.fetchServiceGuardRelatedTests.serviceGuardTest.spec.tests.items
-        .map(({ summary, ...rest }) => ({
-          ...summary,
-          ...rest,
-          specId: fixtures.fetchServiceGuardRelatedTests.serviceGuardTest.spec.id
-        })))
+    expect(result.current.data).toEqual([
+      {
+        id: 2,
+        specId: 'specId',
+        createdAt: '2023-02-15T00:00:00.000Z',
+        apsErrorCount: 1,
+        apsFailureCount: 1,
+        apsSuccessCount: 1,
+        apsTestedCount: 3
+      },
+      {
+        id: 1,
+        specId: 'specId',
+        createdAt: '2023-02-14T00:00:00.000Z',
+        apsErrorCount: '--',
+        apsFailureCount: '--',
+        apsSuccessCount: '--',
+        apsTestedCount: '--'
+      }
+    ])
   })
   it('handle null result', async () => {
     mockGraphqlQuery(
