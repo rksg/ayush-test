@@ -99,9 +99,9 @@ describe('DpskTable', () => {
     await waitFor(() => {
       expect(deleteFn).toHaveBeenCalled()
     })
-  }, 1000000)
+  })
 
-  it('should not delete the selected row when it is mapped to Persona', async () => {
+  it('should not delete the selected row when it is mapped to Persona or Network', async () => {
     mockServer.use(
       rest.post(
         DpskUrls.getEnhancedDpskList.url,
@@ -121,9 +121,10 @@ describe('DpskTable', () => {
     const row = await screen.findByRole('row', { name: new RegExp(targetDpsk.name) })
     await userEvent.click(within(row).getByRole('radio'))
 
-    await waitFor(async () => {
-      expect(screen.queryByRole('button', { name: /Delete/ })).toBeDisabled()
-    })
+    await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('You are unable to delete this record due to its usage in Persona,Network')).toBeVisible()
   })
 
   it('should navigate to the Edit view', async () => {
