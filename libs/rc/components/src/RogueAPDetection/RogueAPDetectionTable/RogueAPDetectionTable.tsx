@@ -5,8 +5,8 @@ import { useIntl } from 'react-intl'
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import {
+  doProfileDelete,
   useDelRoguePoliciesMutation,
-  useDelRoguePolicyMutation,
   useEnhancedRoguePoliciesQuery,
   useVenuesListQuery
 } from '@acx-ui/rc/services'
@@ -72,8 +72,7 @@ export function RogueAPDetectionTable () {
   const params = useParams()
   const tenantBasePath: Path = useTenantLink('')
   const DEFAULT_PROFILE = 'Default profile'
-  const [ deleteFn ] = useDelRoguePolicyMutation()
-  const [ bulkDelete ] = useDelRoguePoliciesMutation()
+  const [ deleteFn ] = useDelRoguePoliciesMutation()
 
   const tableQuery = useTableQuery({
     useQuery: useEnhancedRoguePoliciesQuery,
@@ -94,6 +93,16 @@ export function RogueAPDetectionTable () {
     }
   }, [tableQuery.data])
 
+  const doDelete = (selectedRows: EnhancedRoguePolicyType[], callback: () => void) => {
+    doProfileDelete(
+      selectedRows,
+      $t({ defaultMessage: 'Policy' }),
+      selectedRows[0].name,
+      [{ fieldName: 'venueIds', fieldText: $t({ defaultMessage: 'Venue' }) }],
+      async () => deleteFn({ params, payload: selectedRows.map(row => row.id) }).then(callback)
+    )
+  }
+
   const rowActions: TableProps<EnhancedRoguePolicyType>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
@@ -111,23 +120,7 @@ export function RogueAPDetectionTable () {
           })
           clearSelection()
         } else {
-          showActionModal({
-            type: 'confirm',
-            customContent: {
-              action: 'DELETE',
-              entityName: $t({ defaultMessage: 'Policy' }),
-              entityValue: rows.length === 1 ? rows[0].name : undefined,
-              numOfEntities: rows.length
-            },
-            onOk: () => {
-              rows.length === 1
-                ? deleteFn({ params: { ...params, policyId: rows[0].id } }).then(clearSelection)
-                : bulkDelete({
-                  params: { ...params },
-                  payload: rows.map(row => row.id)
-                }).then(clearSelection)
-            }
-          })
+          doDelete(rows, clearSelection)
         }
       }
     },
