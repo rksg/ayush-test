@@ -52,11 +52,13 @@ export interface ValidationState {
 }
 
 export interface MigrationResultType {
-  name?: string,
-  description?: string,
   serial: string,
+  apName?: string,
+  apMac?: string,
+  model? : string,
+  description?: string,
   state: string,
-  failure?: string
+  validationErrors?: string[]
 }
 
 export interface TaskContextType {
