@@ -46,7 +46,7 @@ function ServiceGuardDetails () {
         title={<Title />}
         subTitle={<SubTitle />}
         breadcrumb={[{
-          text: $t({ defaultMessage: 'Network Health' }),
+          text: $t({ defaultMessage: 'Service Validation' }),
           link: '/analytics/serviceValidation'
         }]}
         extra={[

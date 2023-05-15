@@ -10,10 +10,10 @@ jest.mock('./ServiceGuardTable', () => ({
   ServiceGuardTable: () => <div data-testid='ServiceGuardTable' />
 }))
 
-describe('Network Health', () => {
+describe('Service Validation', () => {
   it('should render page correctly', async () => {
     render(<ServiceGuardList />,{ wrapper: Provider, route: {} })
-    expect(await screen.findByText('Network Health')).toBeVisible()
+    expect(await screen.findByText('Service Validation')).toBeVisible()
     expect(await screen.findByTestId('ServiceGuardTable')).toBeVisible()
   })
 })

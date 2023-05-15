@@ -27,7 +27,7 @@ jest.mock('@acx-ui/user', () => ({
   useUserProfileContext: () => ({ data: { externalId: 'user-id' } })
 }))
 
-describe('Network Health Table', () => {
+describe('Service Validation Table', () => {
   it('should render table with valid input', async () => {
     mockGraphqlQuery(serviceGuardApiURL, 'FetchAllServiceGuardSpecs',
       { data: fixtures.fetchAllServiceGuardSpecs })
@@ -48,7 +48,7 @@ describe('Network Health Table', () => {
     const radio = await screen.findAllByRole('radio')
     await userEvent.click(radio[1])
     await userEvent.click(await screen.findByRole('button', { name: /run now/i }))
-    expect(await screen.findByText('Network Health test running')).toBeVisible()
+    expect(await screen.findByText('Service Validation test running')).toBeVisible()
   })
 
   it('should not run test when apsPendingCount is more than 0', async () => {
@@ -137,7 +137,7 @@ describe('Network Health Table', () => {
     await userEvent.click(radio[0])
     await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))
     await userEvent.click(await screen.findByText(/delete test/i))
-    expect(await screen.findByText('Network Health test deleted')).toBeVisible()
+    expect(await screen.findByText('Service Validation test deleted')).toBeVisible()
   })
 
   it('should clone test properly',async () => {
@@ -155,7 +155,7 @@ describe('Network Health Table', () => {
     expect(await screen.findByText('Clone test')).toBeVisible()
     await userEvent.type(await screen.findByRole('textbox'), 'test-name')
     await userEvent.click(await screen.findByText('Save'))
-    expect(await screen.findByText('Network Health test cloned')).toBeVisible()
+    expect(await screen.findByText('Service Validation test cloned')).toBeVisible()
   })
 
   describe('lastResultSort', () => {

@@ -138,7 +138,7 @@ describe('ServiceGuardForm', () => {
 
     await click(actions.getByRole('button', { name: 'Finish' }))
 
-    expect(await screen.findByText('Network Health test created')).toBeVisible()
+    expect(await screen.findByText('Service Validation test created')).toBeVisible()
     expect(mockedNavigate).toBeCalled()
   })
 
@@ -172,7 +172,7 @@ describe('ServiceGuardForm', () => {
     // Submit
     await click(actions.getByRole('button', { name: 'Finish' }))
 
-    expect(await screen.findByText('Network Health test updated')).toBeVisible()
+    expect(await screen.findByText('Service Validation test updated')).toBeVisible()
     expect(mockedNavigate).toBeCalled()
   })
 

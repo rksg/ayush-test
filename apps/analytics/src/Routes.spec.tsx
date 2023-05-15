@@ -110,7 +110,7 @@ test('should navigate to analytics/serviceValidation by ServiceGuardSpecGuard', 
   await waitFor(()=>{
     expect(screen.getByTestId('ServiceGuardPage')).toBeVisible()
   })
-  expect(screen.getByText('Network Health test does not exist')).toBeVisible()
+  expect(screen.getByText('Service Validation test does not exist')).toBeVisible()
 
   const close = await screen.findByRole('img')
   fireEvent.click(close)
@@ -211,7 +211,7 @@ test('should navigate to analytics/serviceValidation by ServiceGuardTestGuard', 
   await waitFor(()=>{
     expect(screen.getByTestId('ServiceGuardPage')).toBeVisible()
   })
-  expect(screen.getByText('Network Health test does not exist')).toBeVisible()
+  expect(screen.getByText('Service Validation test does not exist')).toBeVisible()
 })
 test('should navigate to analytics/videoCallQoe', () => {
   jest.mocked(useIsTierAllowed).mockReturnValue(true)

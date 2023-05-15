@@ -28,7 +28,7 @@ jest.mock('./Overview', () => ({
   Overview: () => <div data-testid='ServiceGuardDetails-Overview' />
 }))
 
-describe('Network Health', () => {
+describe('Service Validation', () => {
   it('should render page correctly', async () => {
     render(
       <Provider>
@@ -36,7 +36,7 @@ describe('Network Health', () => {
       </Provider>,
       { route: { params } }
     )
-    expect(await screen.findByText('Network Health')).toBeVisible()
+    expect(await screen.findByText('Service Validation')).toBeVisible()
     expect(await screen.findByTestId('ServiceGuardDetails-Title')).toBeVisible()
     expect(await screen.findByTestId('ServiceGuardDetails-SubTitle')).toBeVisible()
     expect(await screen.findByTestId('ServiceGuardDetails-ReRunButton')).toBeVisible()

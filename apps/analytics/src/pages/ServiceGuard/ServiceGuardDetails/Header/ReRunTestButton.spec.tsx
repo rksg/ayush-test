@@ -35,7 +35,7 @@ describe('ReRunButton', () => {
     const button = await screen.findByText('Re-Run Test')
     await userEvent.click(button)
 
-    expect(await screen.findByText('Network Health test running')).toBeVisible()
+    expect(await screen.findByText('Service Validation test running')).toBeVisible()
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: '/t-id/t/analytics/serviceValidation/spec-id/tests/3',
       hash: '',
@@ -68,7 +68,7 @@ describe('ReRunButton', () => {
     expect(button).toBeVisible()
 
     await userEvent.click(button)
-    expect(await screen.findByText('Network Health test does not exist')).toBeVisible()
+    expect(await screen.findByText('Service Validation test does not exist')).toBeVisible()
   })
   it('should be disabled when test is ongoing', async () => {
     const serviceGuardTest = {

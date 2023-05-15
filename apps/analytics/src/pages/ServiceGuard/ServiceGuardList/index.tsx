@@ -10,7 +10,7 @@ function ServiceGuardList () {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Network Health' })}
+        title={$t({ defaultMessage: 'Service Validation' })}
         extra={[
           <TenantLink to='/analytics/serviceValidation/add' key='add'>
             <Button type='primary'>{ $t({ defaultMessage: 'Create Test' }) }</Button>
