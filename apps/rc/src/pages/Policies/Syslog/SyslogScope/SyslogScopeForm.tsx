@@ -1,7 +1,7 @@
 import { Form, Col, Row } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { StepsFormLegacy } from '@acx-ui/components'
+import { StepsForm } from '@acx-ui/components'
 
 import SyslogVenueTable from './SyslogVenueTable'
 
@@ -11,7 +11,7 @@ const SyslogScopeForm = () => {
   return (
     <Row gutter={20}>
       <Col span={15}>
-        <StepsFormLegacy.Title>{$t({ defaultMessage: 'Scope' })}</StepsFormLegacy.Title>
+        <StepsForm.Title>{$t({ defaultMessage: 'Scope' })}</StepsForm.Title>
 
         <Form.Item
           name='venueTable'

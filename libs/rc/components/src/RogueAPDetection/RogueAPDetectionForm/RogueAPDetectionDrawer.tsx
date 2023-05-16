@@ -42,7 +42,7 @@ export function MacOuiRogueRegExp (value: string){
   return Promise.resolve()
 }
 
-const RogueAPDetectionDrawer = (props: RogueAPDetectionDrawerProps) => {
+export const RogueAPDetectionDrawer = (props: RogueAPDetectionDrawerProps) => {
   const { $t } = useIntl()
 
   const { visible, setVisible, isEditMode, queryRuleName, setRuleName } = props
@@ -395,5 +395,3 @@ const RogueAPDetectionDrawer = (props: RogueAPDetectionDrawerProps) => {
     />
   )
 }
-
-export default RogueAPDetectionDrawer

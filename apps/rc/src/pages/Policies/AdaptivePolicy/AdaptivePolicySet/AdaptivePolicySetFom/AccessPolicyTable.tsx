@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
-import { useIntl }                                                                                          from 'react-intl'
-import { useParams }                                                                                        from 'react-router-dom'
-import { SortableContainer, SortableElement, SortableHandle, SortableElementProps, SortableContainerProps } from 'react-sortable-hoc'
+import { DndProvider, useDrag, useDrop } from 'react-dnd'
+import { HTML5Backend }                  from 'react-dnd-html5-backend'
+import { useIntl }                       from 'react-intl'
+import { useParams }                     from 'react-router-dom'
 
 import { Loader, Table, TableProps }                                                                  from '@acx-ui/components'
 import { Drag }                                                                                       from '@acx-ui/icons'
@@ -26,6 +27,10 @@ type AccessPolicyTableProps = {
   editMode: boolean
   accessPolicies: AdaptivePolicy []
   setAccessPolicies: (accessPolicies: AdaptivePolicy [] ) => void
+}
+
+type DragItemProps = {
+  name: string
 }
 
 const AccessPolicyTable = (props: AccessPolicyTableProps) => {
@@ -116,14 +121,10 @@ const AccessPolicyTable = (props: AccessPolicyTableProps) => {
     }
   }, [adaptivePolicySetList])
 
-  const DragHandle = SortableHandle(() =>
-    <Drag style={{ cursor: 'grab', color: '#6e6e6e' }} />
-  )
-
   const basicColumns: TableProps<AdaptivePolicy>['columns'] = [
     {
-      key: 'index',
-      dataIndex: 'index',
+      key: 'priority',
+      dataIndex: 'priority',
       align: 'center',
       render: (_, row, index) => {
         return index + 1
@@ -176,7 +177,7 @@ const AccessPolicyTable = (props: AccessPolicyTableProps) => {
       width: 60,
       render: (data, row) => {
         return <div data-testid={`${row.name}_Icon`} style={{ textAlign: 'center' }}>
-          <DragHandle/>
+          <Drag style={{ cursor: 'grab', color: '#6e6e6e' }} />
         </div>
       }
     }
@@ -190,52 +191,81 @@ const AccessPolicyTable = (props: AccessPolicyTableProps) => {
   }]
 
   // @ts-ignore
-  const SortableItem = SortableElement((props: SortableElementProps) => <tr {...props} />)
-  // @ts-ignore
-  const SortContainer = SortableContainer((props: SortableContainerProps) => <tbody {...props} />)
+  const DraggableRow = (props) => {
+    const ref = useRef(null)
+    const { className, onClick, ...restProps } = props
 
-  const DraggableContainer = (props: SortableContainerProps) => {
-    return <SortContainer
-      useDragHandle
-      disableAutoscroll
-      onSortEnd={({ oldIndex, newIndex }: { oldIndex: number; newIndex: number }) => {
-        if(oldIndex === newIndex) return
-        const dragAndDropItems = [...accessPolicies] as AdaptivePolicy[]
-        [dragAndDropItems[oldIndex], dragAndDropItems[newIndex]] =
-          [dragAndDropItems[newIndex], dragAndDropItems[oldIndex]]
-        setAccessPolicies(dragAndDropItems.map((policy, i) => {
-          return {
-            ...policy,
-            priority: i + 1
-          }
-        }))
-      }}
-      {...props}
-    />
-  }
+    const getAccessPolicyIndex = (name: string) => {
+      return accessPolicies.findIndex((x) => x.name === name)
+    }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const DraggableBodyRow = (props: any) => {
-    const { className, style, ...restProps } = props
-    const index = accessPolicies.findIndex((x) => x.name === restProps['data-row-key'])
-    return <SortableItem index={index} {...restProps} />
+    const [, drag] = useDrag(() => ({
+      type: 'DraggableRow',
+      item: {
+        name: props['data-row-key']
+      },
+      collect: monitor => ({
+        isDragging: monitor.isDragging()
+      })
+    }))
+
+    const [{ isOver }, drop] = useDrop({
+      accept: 'DraggableRow',
+      drop: (item: DragItemProps) => {
+        // @ts-ignore
+        const newIndex = getAccessPolicyIndex(ref.current.getAttribute('data-row-key'))
+        const oldIndex = getAccessPolicyIndex(item.name)
+        if (newIndex !== oldIndex) {
+          const dragAndDropItems = [...accessPolicies] as AdaptivePolicy[]
+          [dragAndDropItems[oldIndex], dragAndDropItems[newIndex]] =
+            [dragAndDropItems[newIndex], dragAndDropItems[oldIndex]]
+          setAccessPolicies(dragAndDropItems.map((policy, i) => {
+            return {
+              ...policy,
+              priority: i + 1
+            }
+          }))
+        }
+      },
+      collect: (monitor) => ({
+        isOver: monitor.isOver()
+      })
+    })
+
+    drag(drop(ref))
+
+    return (
+      <tr
+        ref={ref}
+        className={className}
+        onClick={onClick}
+        {...restProps}
+        style={isOver ? {
+          backgroundColor: 'var(--acx-accents-blue-10)',
+          borderColor: 'var(--acx-accents-blue-10)'
+        } : {}}
+      >
+        {props.children}
+      </tr>
+    )
   }
 
   return (
     <Loader states={[{ isLoading: adaptivePolicyListTableQuery.isLoading
         || isGetPrioritizedPoliciesLoading } ]}>
-      <Table
-        rowKey='name'
-        columns={basicColumns}
-        dataSource={accessPolicies}
-        actions={filterByAccess(actions)}
-        components={{
-          body: {
-            wrapper: DraggableContainer,
-            row: DraggableBodyRow
-          }
-        }}
-      />
+      <DndProvider backend={HTML5Backend} >
+        <Table
+          rowKey='name'
+          columns={basicColumns}
+          dataSource={accessPolicies}
+          actions={filterByAccess(actions)}
+          components={{
+            body: {
+              row: DraggableRow
+            }
+          }}
+        />
+      </DndProvider>
       <AdaptivePoliciesSelectDrawer
         visible={adaptivePoliciesSelectDrawerVisible}
         setVisible={setAdaptivePoliciesSelectDrawerVisible}
