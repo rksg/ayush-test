@@ -64,7 +64,7 @@ const ApplicationPolicyMgmt = ()=>{
                 {$t({ defaultMessage: 'Release' })}
               </UI.CurrentValue>
               <UI.CurrentValue>
-                {formatter(DateFormatEnum.DateFormat)(data?.latestReleaseDate)}
+                {formatter(DateFormatEnum.DateFormat)(data?.latestReleasedDate)}
               </UI.CurrentValue>
             </Space>
           </UI.FwContainer>}
@@ -90,7 +90,7 @@ const ApplicationPolicyMgmt = ()=>{
                 {$t({ defaultMessage: 'Last Updated:' })}
               </UI.CurrentLabel>
               <UI.CurrentValue>
-                {formatter(DateFormatEnum.DateFormat)(data?.currentUpdateDate)}
+                {formatter(DateFormatEnum.DateFormat)(data?.currentUpdatedDate)}
               </UI.CurrentValue>
             </UI.CurrentDetail>
           </UI.FwContainer>
@@ -100,7 +100,8 @@ const ApplicationPolicyMgmt = ()=>{
             'the below updates under this tenant' })}
         </div>}
         {updateAvailable&&<div style={{ marginTop: 10 }}>
-          <UpdateConfirms rulesCount={rulesCount} confirmationType={confirmationType}/>
+          <UpdateConfirms rulesCount={rulesCount}
+            confirmationType={confirmationType}/>
         </div>}
       </UI.BannerVersion>
     )

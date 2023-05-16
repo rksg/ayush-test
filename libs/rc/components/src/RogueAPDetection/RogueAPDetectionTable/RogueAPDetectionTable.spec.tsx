@@ -19,7 +19,7 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import RogueAPDetectionTable from './RogueAPDetectionTable'
+import { RogueAPDetectionTable } from './RogueAPDetectionTable'
 
 const mockTableResult = {
   fields: [
@@ -143,7 +143,7 @@ describe('RogueAPDetectionTable', () => {
 
     mockServer.use(
       rest.delete(
-        RogueApUrls.deleteRogueApPolicy.url,
+        RogueApUrls.deleteRogueApPolicies.url,
         (req, res, ctx) => {
           deleteFn(req.body)
           return res(ctx.json({ requestId: '12345' }))

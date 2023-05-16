@@ -4,7 +4,7 @@ import { useGetSigPackQuery }                                             from '
 import { ApplicationConfirmType, ApplicationInfo, ApplicationUpdateType } from '@acx-ui/rc/utils'
 
 export function useSigPackDetails () {
-  const [ updateAvailable, setUpdateAvailable ] = useState(false)
+  const [ updateAvailable, setUpdateAvailable ] = useState(true)
   const [ added, setAdded ] = useState([] as ApplicationInfo[])
   const [ updated, setUpdated ] = useState([] as ApplicationInfo[])
   const [ merged, setMerged ] = useState([] as ApplicationInfo[])
@@ -16,19 +16,21 @@ export function useSigPackDetails () {
 
   const { data } = useGetSigPackQuery({ params: { changesIncluded: 'true' } })
   useEffect(() => {
-    if (!data || !data.changedApplication?.length) return
-
-    setUpdateAvailable(true)
-    setAdded(data.changedApplication.filter(item => item.type ===
-      ApplicationUpdateType.APPLICATION_ADDED))
-    setUpdated(data.changedApplication.filter(item => item.type ===
-      ApplicationUpdateType.APPLICATION_UPDATED))
-    setMerged(data.changedApplication.filter(item => item.type ===
-      ApplicationUpdateType.APPLICATION_MERGED))
-    setRemoved(data.changedApplication.filter(item => item.type ===
-      ApplicationUpdateType.APPLICATION_REMOVED))
-    setRenamed(data.changedApplication.filter(item => item.type ===
-      ApplicationUpdateType.APPLICATION_RENAMED))
+    if(data && data.changedApplication?.length) {
+      setUpdateAvailable(true)
+      setAdded(data.changedApplication.filter(item => item.type ===
+        ApplicationUpdateType.APPLICATION_ADDED))
+      setUpdated(data.changedApplication.filter(item => item.type ===
+        ApplicationUpdateType.APPLICATION_UPDATED))
+      setMerged(data.changedApplication.filter(item => item.type ===
+        ApplicationUpdateType.APPLICATION_MERGED))
+      setRemoved(data.changedApplication.filter(item => item.type ===
+        ApplicationUpdateType.APPLICATION_REMOVED))
+      setRenamed(data.changedApplication.filter(item => item.type ===
+        ApplicationUpdateType.APPLICATION_RENAMED))
+    } else {
+      setUpdateAvailable(false)
+    }
   }, [data])
 
   const updatedCount = (): number => {

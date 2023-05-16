@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 export const successResponse = {
   requestId: 'request-id'
 }
@@ -14,7 +13,7 @@ export const sigPackData = {
       categoryId: null,
       categoryName: null,
       toApplicationId: 12,
-      toApplicationName: '12',
+      toApplicationName: 'ADDED_APP',
       toCategoryId: 1,
       toCategoryName: '12',
       impactedItems: [{
@@ -26,11 +25,11 @@ export const sigPackData = {
     {
       type: 'APPLICATION_REMOVED',
       applicationId: null,
-      applicationName: null,
+      applicationName: 'REMOVED_APP',
       categoryId: null,
       categoryName: null,
       toApplicationId: 12,
-      toApplicationName: '12',
+      toApplicationName: null,
       toCategoryId: 1,
       toCategoryName: '12'
     },
@@ -41,9 +40,9 @@ export const sigPackData = {
       categoryId: null,
       categoryName: null,
       toApplicationId: 12,
-      toApplicationName: '12',
+      toApplicationName: 'UPDATED_APP',
       toCategoryId: 1,
-      toCategoryName: '12',
+      toCategoryName: 'UPDATED_APP',
       impactedItems: [{
         applicationPolicyId: 'p1',
         applicationPolicyName: 'p11',
@@ -53,11 +52,11 @@ export const sigPackData = {
     {
       type: 'APPLICATION_RENAMED',
       applicationId: null,
-      applicationName: null,
+      applicationName: 'RENAMED_APP',
       categoryId: null,
       categoryName: null,
       toApplicationId: 12,
-      toApplicationName: '12',
+      toApplicationName: '_APP',
       toCategoryId: 1,
       toCategoryName: '12',
       impactedItems: [{
@@ -73,7 +72,7 @@ export const sigPackData = {
       categoryId: null,
       categoryName: null,
       toApplicationId: 12,
-      toApplicationName: '12',
+      toApplicationName: 'MERGED_APP',
       toCategoryId: 1,
       toCategoryName: '12',
       impactedItems: [{
