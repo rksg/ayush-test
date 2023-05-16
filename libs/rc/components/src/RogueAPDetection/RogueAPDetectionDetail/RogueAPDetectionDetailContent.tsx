@@ -29,16 +29,6 @@ const RogueAPDetectionDetailContent = () => {
 
   return <Card>
     { data && <GridRow>
-      {/* TODO: temporarily hidden until tags column has been supported */}
-      {/*<GridCol col={{ span: 4 }}>*/}
-      {/*  <Card.Title>*/}
-      {/*    {$t({ defaultMessage: 'Tags' })}*/}
-      {/*  </Card.Title>*/}
-      {/*  <Paragraph>*/}
-      {/*    <FormattedList type='conjunction' value={[]} />*/}
-      {/*  </Paragraph>*/}
-      {/*</GridCol>*/}
-
       <GridCol col={{ span: 4 }}>
         <Card.Title>
           {$t({ defaultMessage: 'Description' })}
