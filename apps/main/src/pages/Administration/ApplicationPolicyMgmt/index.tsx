@@ -1,63 +1,36 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { Divider, Space } from 'antd'
 import { useIntl }        from 'react-intl'
 
 
-import {  Tabs }                                                                     from '@acx-ui/components'
-import { DateFormatEnum, formatter }                                                 from '@acx-ui/formatter'
-import { useExportAllSigPackMutation, useExportSigPackMutation, useGetSigPackQuery } from '@acx-ui/rc/services'
-import { ApplicationConfirmType, ApplicationInfo, ApplicationUpdateType }            from '@acx-ui/rc/utils'
+import {  Tabs }                                                 from '@acx-ui/components'
+import { DateFormatEnum, formatter }                             from '@acx-ui/formatter'
+import { useExportAllSigPackMutation, useExportSigPackMutation } from '@acx-ui/rc/services'
+import { ApplicationUpdateType }                                 from '@acx-ui/rc/utils'
 
 import * as UI                                                                           from './styledComponents'
 import { UpdateConfirms }                                                                from './UpdateConfirms'
 import { ChangedAPPTable, MergedAPPTable, NewAPPTable, RemovedAPPTable, UpdateAPPTable } from './UpdateTables'
+import { useSigPackDetails }                                                             from './useSigPackDetails'
 
 const ApplicationPolicyMgmt = ()=>{
   const { $t } = useIntl()
   const [ exportAllSigPack ] = useExportAllSigPackMutation()
-  const [ exportSigPack] = useExportSigPackMutation()
-  const [type, setType] = useState(ApplicationUpdateType.APPLICATION_ADDED)
-  const [updateAvailable, setUpdateAvailable] = useState(false)
-  const [added, setAdded] = useState([] as ApplicationInfo[])
-  const [updated, setUpdated] = useState([] as ApplicationInfo[])
-  const [merged, setMerged] = useState([] as ApplicationInfo[])
-  const [removed, setRemoved] = useState([] as ApplicationInfo[])
-  const [renamed, setRenamed] = useState([] as ApplicationInfo[])
-  const { data } = useGetSigPackQuery({ params: { changesIncluded: 'true' } })
-  useEffect(()=>{
-    if(data&&data.changedApplication.length){
-      setUpdateAvailable(true)
-      setAdded(data.changedApplication.filter(item=>item.type ===
-        ApplicationUpdateType.APPLICATION_ADDED))
-      setUpdated(data.changedApplication.filter(item=>item.type ===
-        ApplicationUpdateType.APPLICATION_UPDATED))
-      setMerged(data.changedApplication.filter(item=>item.type ===
-        ApplicationUpdateType.APPLICATION_MERGED))
-      setRemoved(data.changedApplication.filter(item=>item.type ===
-        ApplicationUpdateType.APPLICATION_REMOVED))
-      setRenamed(data.changedApplication.filter(item=>item.type ===
-        ApplicationUpdateType.APPLICATION_RENAMED))
-    }
-  },[data])
-  let confirmationType = ApplicationConfirmType.NEW_APP_ONLY
-  let rulesCount = 0
-  if(added.length&&!removed.length&&!renamed.length&&!updated.length&&!merged.length){
-    confirmationType = ApplicationConfirmType.NEW_APP_ONLY
-  } else if(!added.length&&removed.length&&!renamed.length&&!updated.length&&!merged.length){
-    confirmationType = ApplicationConfirmType.REMOVED_APP_ONLY
-    rulesCount = removed.length
-  } else if(!added.length&&!removed.length&&
-    (Number(!!renamed.length)+Number(!!updated.length)+Number(!!merged.length))===1){
-    confirmationType = ApplicationConfirmType.UPDATED_APP_ONLY
-    rulesCount = updated.length+merged.length+renamed.length
-  }else if(!removed.length&&(Number(!!added.length)+
-    Number(!!renamed.length)+Number(!!updated.length)+Number(!!merged.length))>1){
-    confirmationType = ApplicationConfirmType.UPDATED_APPS
-  }else if(removed.length&&(Number(!!added.length)+
-    Number(!!renamed.length)+Number(!!updated.length)+Number(!!merged.length))>=1){
-    confirmationType = ApplicationConfirmType.UPDATED_REMOVED_APPS
-  }
+  const [ exportSigPack ] = useExportSigPackMutation()
+  const [ type, setType ] = useState(ApplicationUpdateType.APPLICATION_ADDED)
+  const {
+    data,
+    added,
+    updated,
+    merged,
+    removed,
+    renamed,
+    updateAvailable,
+    confirmationType,
+    rulesCount
+  } = useSigPackDetails()
+
   const showCurrentInfo = ()=>{
     return (
       <UI.BannerVersion>
