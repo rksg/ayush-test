@@ -22,8 +22,7 @@ function getDataConsumptionText (prop:DataConsumptionLabelProp) : string {
       res += '(Monthly)'
     } else if (prop.billingCycleType === 'CYCLE_WEEKLY') {
       res += '(Weekly)'
-    // eslint-disable-next-line max-len
-    } else if (prop.billingCycleType === 'CYCLE_NUM_DAYS' && prop.billingCycleDays !== undefined) {
+    } else if (prop.billingCycleType === 'CYCLE_NUM_DAYS' && prop.billingCycleDays) {
       res += '(Per ' + prop.billingCycleDays + ' days)'
     }
   }

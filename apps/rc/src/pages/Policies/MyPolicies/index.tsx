@@ -11,7 +11,8 @@ import {
   useGetEnhancedClientIsolationListQuery,
   useSyslogPolicyListQuery,
   useMacRegListsQuery,
-  useGetTunnelProfileViewDataListQuery
+  useGetTunnelProfileViewDataListQuery,
+  useGetConnectionMeteringListQuery
 } from '@acx-ui/rc/services'
 import {
   getPolicyRoutePath,
@@ -178,7 +179,9 @@ function useCardData (): CardDataProps[] {
     {
       type: PolicyType.CONNECTION_METERING,
       categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
-      totalCount: 0,
+      totalCount: useGetConnectionMeteringListQuery({
+        params
+      }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.LIST }))
     }

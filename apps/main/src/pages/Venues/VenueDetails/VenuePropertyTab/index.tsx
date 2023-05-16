@@ -72,10 +72,9 @@ function ConnectionMeteringLink (props:{ id?: string, name?: string, expirationE
     } else if ((expirationEpoch - now) / (60 * 60 * 24) < 7) {
       showWarning = true
       expired = false
-      // eslint-disable-next-line max-len
       const expireDate = moment(new Date(0).setUTCSeconds(expirationEpoch)).format('yyyy/MM/DD')
-      // eslint-disable-next-line max-len
-      tooltip = $t({ defaultMessage: 'The Consumption data is due to expire on' }).concat(' ' + expireDate)
+      tooltip = $t({ defaultMessage: 'The Consumption data is due to expire on' })
+        .concat(' ' + expireDate)
     }
   }
   return (
@@ -204,8 +203,8 @@ export function VenuePropertyTab () {
         switchMacs.push(p.switches[0].macAddress)
       }
 
-      if (p?.qosProfileId) {
-        connectionMeteringSet.add(p.qosProfileId)
+      if (p?.meteringProfileId) {
+        connectionMeteringSet.add(p.meteringProfileId)
       }
     })
 
@@ -408,12 +407,12 @@ export function VenuePropertyTab () {
       dataIndex: ['connectionMetering'],
       render: (_, row) => {
         const persona = personaMap.get(row.personaId)
-        const connectionMeteringId = persona?.qosProfileId ?? ''
+        const connectionMeteringId = persona?.meteringProfileId ?? ''
         // eslint-disable-next-line max-len
         const connectionMetering = connectionMeteringMap.get(connectionMeteringId) as ConnectionMetering
         if (connectionMetering) {
           // eslint-disable-next-line max-len
-          return <ConnectionMeteringLink id={connectionMetering.id} name={connectionMetering.name} expirationEpoch={persona?.qosProfileExpirationEpoch}/>
+          return <ConnectionMeteringLink id={connectionMetering.id} name={connectionMetering.name} expirationEpoch={persona?.expirationEpoch}/>
         }
         //return <ConnectionMeteringLink name='test' expirationEpoch={100000000}/>
         return ''

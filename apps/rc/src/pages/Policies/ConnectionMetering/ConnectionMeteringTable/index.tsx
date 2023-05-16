@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import {
@@ -6,11 +8,13 @@ import {
   Table,
   TableProps,
   showActionModal,
-  showToast
+  showToast,
+  Loader
 } from '@acx-ui/components'
 import {
-  useGetConnectionMeteringListQuery,
-  useDeleteConnectionMeteringMutation
+  useDeleteConnectionMeteringMutation,
+  useSearchConnectionMeteringListQuery,
+  useVenuesListQuery
 } from '@acx-ui/rc/services'
 import {
   getPolicyListRoutePath,
@@ -19,11 +23,14 @@ import {
   PolicyType,
   useTableQuery,
   ConnectionMetering,
-  getPolicyDetailsLink
+  getPolicyDetailsLink,
+  FILTER,
+  SEARCH
 } from '@acx-ui/rc/utils'
 import {
   TenantLink,
   useNavigate,
+  useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
 
@@ -34,7 +41,7 @@ import { ConnectionMeteringLink } from '../LinkHelper'
 import { RateLimitingTableCell }  from '../RateLimitingHelper'
 
 
-function useColumns () {
+function useColumns (venueMap: Map<string, string>) {
   const { $t } = useIntl()
 
   const columns: TableProps<ConnectionMetering>['columns'] = [
@@ -81,7 +88,10 @@ function useColumns () {
       title: $t({ defaultMessage: 'Venue' }),
       dataIndex: 'venue',
       show: false,
-      filterable: true
+      filterable: Array.from(venueMap, (entry) => {
+        return { key: entry[0], value: entry[1] }
+      }),
+      filterMultiple: false
     }
   ]
 
@@ -91,15 +101,36 @@ function useColumns () {
 
 export default function ConnectionMeteringTable () {
   const { $t } = useIntl()
-  const tableQuery = useTableQuery( {
-    useQuery: useGetConnectionMeteringListQuery,
-    apiParams: { sort: 'name,ASC' },
-    defaultPayload: {}
-  })
   const tenantBasePath = useTenantLink('')
   const navigate = useNavigate()
+  const [venueMap, setVenueMap] = useState(new Map())
 
-  const [deleteConnectionMetering] = useDeleteConnectionMeteringMutation()
+  const { tenantId } = useParams()
+  const venueListPayload = {
+    fields: [
+      'id',
+      'name'
+    ],
+    filters: { id: [] }
+  }
+
+  const venues = useVenuesListQuery({ params: { tenantId }, payload: { ...venueListPayload } })
+
+  const [deleteConnectionMetering,
+    { isLoading: isDeleteConnectionMetering }
+  ] = useDeleteConnectionMeteringMutation()
+  const tableQuery = useTableQuery( {
+    useQuery: useSearchConnectionMeteringListQuery,
+    defaultPayload: { keyword: '' }
+  })
+
+  useEffect(()=>{
+    if (venues.isLoading) return
+    const map = new Map()
+    // FIXME: After the property id does not present in UUID format, I will remove .replace()
+    venues.data?.data.forEach(venue=> map.set(venue?.id.replaceAll('-', ''), venue?.name))
+    setVenueMap(map)
+  }, [venues])
 
   const rowActions: TableProps<ConnectionMetering>['rowActions'] = [
     {
@@ -120,80 +151,73 @@ export default function ConnectionMeteringTable () {
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedItems, clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Profile' }),
-            entityValue: selectedItems[0].name,
-            numOfEntities: selectedItems.length
-          },
-          content:
-            $t({
-              // Display warning while one of the Connection metering in used.
-              defaultMessage: `{hasUnits, select,
-              true {The connection metering is in used.}
-              other {}
-              }
-              Are you sure you want to delete this connection metering?`
-            }, {
-              hasUnits: !!selectedItems.find(p => (p?.unitCount ?? 0) > 0)
-            }),
-          onOk: () => {
-            const id = selectedItems[0].id
-            const name = selectedItems[0].name
-            deleteConnectionMetering({ params: { id } })
-              .unwrap()
-              .then(() => {
-                showToast({
-                  type: 'success',
-                  // eslint-disable-next-line max-len
-                  content: $t({ defaultMessage: 'Connection Metering {name} was deleted' }, { name })
+        const hasUnits = !!selectedItems.find(p => (p?.unitCount ?? 0) > 0)
+        if (!hasUnits) {
+          showActionModal({
+            type: 'confirm',
+            customContent: {
+              action: 'DELETE',
+              entityName: $t({ defaultMessage: 'Profile' }),
+              entityValue: selectedItems[0].name,
+              numOfEntities: selectedItems.length
+            },
+            content:
+              $t({
+                // Display warning while one of the Connection metering in used.
+                defaultMessage: 'Are you sure you want to delete this connection metering?'
+              }),
+            onOk: () => {
+              const id = selectedItems[0].id
+              const name = selectedItems[0].name
+              deleteConnectionMetering({ params: { id } })
+                .unwrap()
+                .then(() => {
+                  showToast({
+                    type: 'success',
+                    content: $t({ defaultMessage: 'Connection Metering {name} was deleted' },
+                      { name })
+                  })
+                  clearSelection()
+                }).catch((e) => {
+                  // eslint-disable-next-line no-console
+                  console.log(e)
                 })
-                clearSelection()
-              }).catch((e) => {
-                showToast({
-                  type: 'error',
-                  content: $t(
-                    { defaultMessage: 'An error occurred {detail}' },
-                    { detail: e?.data?.message ?? undefined }
-                  )
-                })
-              })
-          }
-        })
+            }
+          })
+        } else {
+          showActionModal({
+            type: 'error',
+            content:
+              $t({
+                // Display warning while one of the Connection metering in used.
+                defaultMessage: 'Not allowed to delete the profile that is in used'
+              }),
+            onOk: () => {
+              clearSelection()
+            }
+          })
+        }
       }
     }
   ]
 
-  const source: ConnectionMetering [] = [{
-    id: 'test',
-    name: 'test',
-    uploadRate: 0,
-    downloadRate: 10,
-    dataCapacity: 100,
-    dataCapacityEnforced: false,
-    dataCapacityThreshold: 10,
-    billingCycleRepeat: false,
-    billingCycleType: 'CYCLE_UNSPECIFIED',
-    venueCount: 1,
-    unitCount: 1
-  }, {
-    id: 'test2',
-    name: 'test2',
-    uploadRate: 0,
-    downloadRate: 10,
-    dataCapacity: 100,
-    dataCapacityEnforced: false,
-    dataCapacityThreshold: 10,
-    billingCycleRepeat: true,
-    billingCycleType: 'CYCLE_MONTHLY',
-    venueCount: 1,
-    unitCount: 1
-  }]
+  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
+    const payload = {
+      ...tableQuery.payload,
+      keyword: customSearch?.searchString ?? '',
+      venueIds: Array.isArray(customFilters?.venue) ?
+        [customFilters?.venue[0]]: undefined
+    }
+    tableQuery.setPayload(payload)
+  }
 
   return (
-    <>
+    <Loader
+      states={[
+        tableQuery,
+        { isLoading: false, isFetching: venues.isLoading && isDeleteConnectionMetering }
+      ]}
+    >
       <PageHeader
         breadcrumb={
           [
@@ -204,8 +228,10 @@ export default function ConnectionMeteringTable () {
         extra={[
           <TenantLink
             key='add'
-            // eslint-disable-next-line max-len
-            to={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.CREATE })}
+            to={getPolicyRoutePath({
+              type: PolicyType.CONNECTION_METERING,
+              oper: PolicyOperation.CREATE
+            })}
           >
             <Button type='primary'>
               { $t({ defaultMessage: 'Add Connection metering profile' }) }
@@ -215,15 +241,15 @@ export default function ConnectionMeteringTable () {
       />
       <Table
         enableApiFilter
-        columns={useColumns()}
-        dataSource={source}
+        columns={useColumns(venueMap)}
         rowActions={rowActions}
-        //dataSource={tableQuery.data?.data}
+        onFilterChange={handleFilterChange}
+        dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='id'
         rowSelection={{ type: 'radio' }}
       />
-    </>
+    </Loader>
   )
 }

@@ -143,8 +143,14 @@ export function ConnectionMeteringForm (props: ConnectionMeteringFormProps) {
     modalCallback?.(undefined)
   }
 
-  // eslint-disable-next-line max-len
-  const { data, isLoading } = useGetConnectionMeteringByIdQuery({ params: { id: policyId } }, { skip: mode === ConnectionMeteringFormMode.CREATE })
+  const {
+    data,
+    isLoading
+  } = useGetConnectionMeteringByIdQuery(
+    { params: { id: policyId } },
+    { skip: mode === ConnectionMeteringFormMode.CREATE }
+  )
+
   useEffect(()=> {
     if (!data || isLoading) return
     if (mode === ConnectionMeteringFormMode.EDIT) {

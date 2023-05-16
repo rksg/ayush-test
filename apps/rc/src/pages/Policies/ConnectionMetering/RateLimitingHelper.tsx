@@ -6,7 +6,6 @@ function rateToText (rate:number):string {
   return rate + 'Mpbs'
 }
 
-// eslint-disable-next-line max-len
 export function RateLimitingTableCell (props: { uploadRate:number, downloadRate:number }) {
   const uploadRateText: string = rateToText(props.uploadRate)
   const downloadRateText: string = rateToText(props.downloadRate)

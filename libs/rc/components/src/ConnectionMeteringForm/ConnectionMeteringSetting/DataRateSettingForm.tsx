@@ -30,7 +30,6 @@ interface RateSettingProps {
   onChange: (value:number|undefined)=>void
 }
 function RateSetting (props:RateSettingProps) {
-  //const ref = useRef(false)
   const [checked, setChecked] = useState(props.checked)
   const [rate, setRate] = useState(props.rate)
   useEffect(()=>{

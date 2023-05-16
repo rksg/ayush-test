@@ -82,13 +82,17 @@ export interface PropertyUnit {
     residentPortal?: {
       href?: string
     }
-  }
+  },
+  meteringProfileId?: string
+  expirationEpoch?: number
 }
 
 export interface UnitPersonaConfig {
   vlan?: number,
   dpskPassphrase?: string,
-  ethernetPorts?: PersonaEthernetPort[] // FIXME: not integrate with Persona
+  ethernetPorts?: PersonaEthernetPort[], // FIXME: not integrate with Persona
+  meteringProfileId?: string,
+  expirationEpoch?: number
 }
 
 export interface PropertyUnitFormFields extends PropertyUnit {
@@ -96,7 +100,9 @@ export interface PropertyUnitFormFields extends PropertyUnit {
   guestPersona?: UnitPersonaConfig,
   accessAp?: string,
   ports?: number[],
-  apName?: string
+  apName?: string,
+  meteringProfileId?: string,
+  expirationDate?: Date
 }
 
 export interface ResidentPortal {

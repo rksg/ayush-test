@@ -19,5 +19,5 @@ export interface ConnectionMetering {
     billingCycleDays?: number
     unitCount?: number
     venueCount?: number
-    persona?: Persona[]
+    personas?: Persona[]
 }
