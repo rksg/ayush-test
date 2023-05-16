@@ -26,8 +26,7 @@ import RecipientDialog, { RecipientDialogProps } from './RecipientDialog'
 const params = {
   tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 }
-const examplePhoneNumber = PhoneNumberUtil.getInstance().getExampleNumber('US')
-const exampleMobile = `+${examplePhoneNumber.getCountryCode()} ${examplePhoneNumber.getNationalNumberOrDefault()}`
+const exampleMobile = /555/
 const mockedSetVisible = jest.fn()
 describe('Recipient form dialog creation mode', () => {
   const mockedAddFn = jest.fn()
@@ -469,12 +468,12 @@ describe('Recipient form dialog edit mode', () => {
     expect(mockedUpdateFn).toBeCalledWith({
       id: 'afd39af2f9854963a61c38700089bc40',
       description: 'testUser',
-      endpoints: [{
+      endpoints: [ {
         id: '478127f284b84a6286aef6324613e3f4',
-        active: false,
+        active: true,
         destination: '+886912345690',
         type: NotificationEndpointType.sms
-      }, {
+      },{
         active: true,
         destination: 'another_test_user@gmail.com',
         type: NotificationEndpointType.email

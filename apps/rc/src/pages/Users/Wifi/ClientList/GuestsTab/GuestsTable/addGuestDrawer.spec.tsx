@@ -33,6 +33,7 @@ import {
 
 jest.mock('socket.io-client')
 
+const mobilePlaceHolder = /555/
 describe('Add Guest Drawer', () => {
   let params: { tenantId: string }
 
@@ -78,7 +79,7 @@ describe('Add Guest Drawer', () => {
       'wifitest'
     )
     await userEvent.type(
-      await screen.findByPlaceholderText(/555/),
+      await screen.findByPlaceholderText(mobilePlaceHolder),
       '+12052220123'
     )
     await userEvent.type(
@@ -191,7 +192,7 @@ describe('Add Guest Drawer', () => {
       'wifitest'
     )
     await userEvent.type(
-      await screen.findByPlaceholderText(/555/),
+      await screen.findByPlaceholderText(mobilePlaceHolder),
       '+12052220123'
     )
     await userEvent.type(
@@ -233,7 +234,7 @@ describe('Add Guest Drawer', () => {
       'wifitest'
     )
     await userEvent.type(
-      await screen.findByPlaceholderText(/555/),
+      await screen.findByPlaceholderText(mobilePlaceHolder),
       '+12052220123'
     )
     await userEvent.type(
@@ -276,7 +277,7 @@ describe('Add Guest Drawer', () => {
       'wifitest'
     )
     await userEvent.type(
-      await screen.findByPlaceholderText(/555/),
+      await screen.findByPlaceholderText(mobilePlaceHolder),
       '+12052220123'
     )
     await userEvent.type(
@@ -320,7 +321,7 @@ describe('Add Guest Drawer', () => {
       'wifitest'
     )
     await userEvent.type(
-      await screen.findByPlaceholderText(/555/),
+      await screen.findByPlaceholderText(mobilePlaceHolder),
       '+12052220123'
     )
     await userEvent.type(
@@ -371,7 +372,7 @@ describe('Add Guest Drawer', () => {
       'wifitest'
     )
     await userEvent.type(
-      await screen.findByPlaceholderText(/555/),
+      await screen.findByPlaceholderText(mobilePlaceHolder),
       '+12052220123'
     )
     await userEvent.type(
