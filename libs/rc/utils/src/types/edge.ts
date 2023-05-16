@@ -13,12 +13,12 @@ export interface EdgeGeneralSetting {
 }
 
 export interface EdgeResourceUtilization {
-  cpuTotal?: number
-  cpuUsed?: number
-  memTotal?: number
-  memUsed?: number
-  diskTotal?: number
-  diskUsed?: number
+  cpuCores? :number,
+  cpuUsedPercentage? :number,
+  memoryUsedKb? :number,
+  memoryTotalKb? :number,
+  diskUsedKb? :number,
+  diskTotalKb? :number,
 }
 export interface Edge extends EdgeResourceUtilization {
   name: string

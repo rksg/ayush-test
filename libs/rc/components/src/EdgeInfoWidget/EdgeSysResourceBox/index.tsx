@@ -2,12 +2,19 @@ import { Statistic as AntStatistic } from 'antd'
 import { useIntl }                   from 'react-intl'
 import styled                        from 'styled-components/macro'
 
-import { Tooltip, GridCol, GridRow, Loader } from '@acx-ui/components'
-import { formatter }                         from '@acx-ui/formatter'
-import { EdgeResourceUtilizationEnum }       from '@acx-ui/rc/utils'
+import { Tooltip, GridCol, GridRow, Loader, cssStr } from '@acx-ui/components'
+import { formatter }                                 from '@acx-ui/formatter'
+import { EdgeResourceUtilizationEnum }               from '@acx-ui/rc/utils'
 
 import { WrapperStyles } from './styledComponents'
 
+
+const calculatePercentage = (value: number, totalVal: number)=> {
+  if (Boolean(totalVal) === false) {
+    return 100
+  }
+  return Math.round(value / totalVal * 100)
+}
 export interface EdgeStateCardProps {
     isLoading: boolean,
     type: string
@@ -31,24 +38,40 @@ export const EdgeSysResourceBox = styled((props: EdgeStateCardProps) => {
     return item+'\r\n'
   })
 
-  const usedValue:number = totalVal ? value/totalVal: totalVal
-  const usedPercentage:number = Math.round(usedValue * 100)
-
-  const freeValue = formatter(type === EdgeResourceUtilizationEnum.CPU
-    ? 'hertzFormat' : 'bytesFormat')(totalVal - value)
-
-  const chartValue = formatter(type === EdgeResourceUtilizationEnum.CPU
-    ? 'hertzFormat' : 'bytesFormat')(value)
+  if (type === EdgeResourceUtilizationEnum.CPU) {
+    return (
+      <Loader states={[{ isLoading }]}>
+        <GridRow className={className}>
+          <GridCol col={{ span: 24 }} >
+            <AntStatistic
+              title={statisticTitle}
+              valueStyle={(value > 90 ? { color: '#cf1322' } : {})}
+              value={`${value}%`}
+            />
+          </GridCol>
+        </GridRow>
+      </Loader>
+    )
+  }
 
   return (
     <Loader states={[{ isLoading }]}>
       <GridRow className={className}>
         <GridCol col={{ span: 24 }} >
-          <Tooltip title={$t({ defaultMessage: '{freeValue} free' }, { freeValue })}>
+          <Tooltip
+            title={
+              // eslint-disable-next-line max-len
+              $t({ defaultMessage: '{freeValue} free' }, { freeValue: formatter('bytesFormat')(totalVal - value) })
+            }>
             <AntStatistic
               title={statisticTitle}
-              value={chartValue}
-              suffix={$t({ defaultMessage: '({usedPercentage}%)' }, { usedPercentage })}
+              value={formatter('bytesFormat')(value)}
+              suffix={
+                // eslint-disable-next-line max-len
+                $t({ defaultMessage: '({usedPercentage}%)' }, { usedPercentage: calculatePercentage(value, totalVal) })
+              }
+              // eslint-disable-next-line max-len
+              valueStyle={(calculatePercentage(value, totalVal) > 90 ? { color: '#cf1322' } : {})}
             />
           </Tooltip>
         </GridCol>
