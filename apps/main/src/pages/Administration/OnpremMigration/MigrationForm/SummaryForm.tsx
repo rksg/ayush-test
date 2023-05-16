@@ -65,10 +65,10 @@ const SummaryForm = (props: SummaryFormProps) => {
   const columns: TableProps<MigrationResultType>['columns'] = [
     {
       title: $t({ defaultMessage: 'AP Name' }),
-      key: 'name',
-      dataIndex: 'name',
+      key: 'apName',
+      dataIndex: 'apName',
       render: (_, row) => {
-        return row.name ?? '--'
+        return row.apName ?? '--'
       }
     },
     {
@@ -86,7 +86,6 @@ const SummaryForm = (props: SummaryFormProps) => {
       render: (_, row) => {
         return row.serial ?? '--'
       }
-
     },
     {
       title: $t({ defaultMessage: 'Status' }),
@@ -98,10 +97,11 @@ const SummaryForm = (props: SummaryFormProps) => {
     },
     {
       title: $t({ defaultMessage: 'Failure Reason' }),
-      key: 'failure',
-      dataIndex: 'failure',
+      key: 'validationErrors',
+      dataIndex: 'validationErrors',
       render: (_, row) => {
-        return row.failure ?? '--'
+        // eslint-disable-next-line max-len
+        return row.validationErrors && row.validationErrors.length > 0 ? row.validationErrors.join(',') : '--'
       }
     }
   ]
@@ -117,12 +117,15 @@ const SummaryForm = (props: SummaryFormProps) => {
           <Subtitle level={4}>
             {$t({ defaultMessage: 'Summary Table' })}
           </Subtitle>
+          <Subtitle level={3}>
+            {$t({ defaultMessage: 'Summary State' })}: {migrateResult?.state ?? '--'}
+          </Subtitle>
         </Col>
       </Row>
       <Table
         columns={columns}
         dataSource={validateZdApsResult}
-        rowKey='id'
+        rowKey='serial'
         locale={{
           // eslint-disable-next-line max-len
           emptyText: <Empty description={$t({ defaultMessage: 'No migration data' })} />

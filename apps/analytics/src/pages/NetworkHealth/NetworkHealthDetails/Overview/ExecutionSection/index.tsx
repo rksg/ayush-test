@@ -4,9 +4,16 @@ import { get, zip }          from 'lodash'
 import { MessageDescriptor } from 'react-intl'
 import AutoSizer             from 'react-virtualized-auto-sizer'
 
-import { GridCol, GridRow, VerticalStackedBarChart, VerticalStackedBarChartData, cssStr } from '@acx-ui/components'
-import { formatter }                                                                      from '@acx-ui/formatter'
-import { getIntl }                                                                        from '@acx-ui/utils'
+import {
+  GridCol,
+  GridRow,
+  NoData,
+  VerticalStackedBarChart,
+  VerticalStackedBarChartData,
+  cssStr
+} from '@acx-ui/components'
+import { formatter } from '@acx-ui/formatter'
+import { getIntl }   from '@acx-ui/utils'
 
 import { NetworkHealthTest, TestStage } from '../../../types'
 import { stagesFromConfig }             from '../../../utils'
@@ -95,14 +102,15 @@ export const ExecutionSection: React.FC<{ details: NetworkHealthTest }> = props 
     <Score details={details} />
     <GridCol col={{ span: 24 }} style={{ height: '390px' }}>
       <AutoSizer>
-        {({ height, width }) => (
-          <VerticalStackedBarChart
+        {({ height, width }) => ((details.testedAps !==0)
+          ? <VerticalStackedBarChart
             key={props.details.id}
             style={{ width, height }}
             data={chart.data}
             categories={chart.categories}
             yAxisLabelFormatter={(value)=>
               formatter('percentFormatRound')(value/props.details.summary.apsTestedCount)}/>
+          : <NoData/>
         )}
       </AutoSizer>
     </GridCol>

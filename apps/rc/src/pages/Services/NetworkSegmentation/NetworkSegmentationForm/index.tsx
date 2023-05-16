@@ -86,7 +86,7 @@ export const NetworkSegmentationForm = (props: NetworkSegmentationFormProps) => 
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
       const overwriteMsg = afterSubmitMessage(error as CatchErrorResponse,
-        [...formData.distributionSwitchInfos, ...formData.accessSwitchInfos])
+        [...(formData.distributionSwitchInfos || []), ...(formData.accessSwitchInfos || [])])
 
       if (overwriteMsg.length > 0) {
         showActionModal({
@@ -101,6 +101,18 @@ export const NetworkSegmentationForm = (props: NetworkSegmentationFormProps) => 
             handleFinish(formData)
           },
           onCancel: async () => {}
+        })
+      } else {
+        showActionModal({
+          type: 'error',
+          title: $t({ defaultMessage: 'Server Error' }),
+          content: $t({
+            defaultMessage: 'An internal error has occurred. Please contact support.'
+          }),
+          customContent: {
+            action: 'SHOW_ERRORS',
+            errorDetails: error as CatchErrorResponse
+          }
         })
       }
     }

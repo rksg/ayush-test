@@ -17,6 +17,7 @@ import {
   useGetVenueQuery
 } from '@acx-ui/rc/services'
 import {
+  Address,
   MigrationActionTypes,
   checkObjectNotExists
 } from '@acx-ui/rc/utils'
@@ -25,10 +26,18 @@ import MigrationContext from '../MigrationContext'
 
 import * as UI from './styledComponents'
 
+export const defaultAddress: Address = {
+  addressLine: '350 W Java Dr, Sunnyvale, CA 94089, USA',
+  city: 'Sunnyvale, California',
+  country: 'United States',
+  latitude: 37.4112751,
+  longitude: -122.0191908,
+  timezone: 'America/Los_Angeles'
+}
+
 type MigrationSettingFormProps = {
   className?: string
 }
-
 
 const MigrationSettingForm = styled((props: MigrationSettingFormProps) => {
   const { $t } = useIntl()
@@ -114,7 +123,7 @@ const MigrationSettingForm = styled((props: MigrationSettingFormProps) => {
           name='description'
           label={$t({ defaultMessage: 'Description' })}
           children={<Input
-            data-testid='description'
+            data-testid='test-description'
             style={{ width: '380px' }}
             onChange={(event => {handleDescription(event.target.value)})}
           />}

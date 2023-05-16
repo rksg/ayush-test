@@ -26,7 +26,7 @@ import RogueAPDetectionVenueDetail   from './RogueAPDetectionVenueDetail'
 
 export const RogueAPDetailContext = createContext({} as RogueAPDetailContextType)
 
-const RogueAPDetectionDetailView = () => {
+export const RogueAPDetectionDetailView = () => {
   const { $t } = useIntl()
   const params = useParams()
   const [filtersId, setFiltersId] = useState([] as string[])
@@ -65,5 +65,3 @@ const RogueAPDetectionDetailView = () => {
     </RogueAPDetailContext.Provider>
   )
 }
-
-export default RogueAPDetectionDetailView
