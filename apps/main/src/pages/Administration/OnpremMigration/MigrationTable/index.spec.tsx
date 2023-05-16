@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 
 import {
-  AdministrationUrlsInfo
+  MigrationUrlsInfo
 } from '@acx-ui/rc/utils'
 import {
   Provider
@@ -27,7 +27,7 @@ describe('Migration Table', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.get(
-        AdministrationUrlsInfo.getDelegations.url,
+        MigrationUrlsInfo.getZdMigrationList.url,
         (req, res, ctx) => res(ctx.json(migrations))
       )
     )
@@ -48,7 +48,7 @@ describe('Migration Table', () => {
     await screen.findByText('Backup File')
     expect(asFragment().querySelector('div[class="ant-space-item"]')).not.toBeNull()
 
-    const items = await screen.findAllByText('success')
+    const items = await screen.findAllByText('Qualified')
     fireEvent.click(items[0])
     await screen.findByText('Migration Details')
   })
