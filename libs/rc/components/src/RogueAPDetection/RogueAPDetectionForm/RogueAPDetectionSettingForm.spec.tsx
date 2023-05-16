@@ -11,9 +11,8 @@ import { mockServer, render, screen }                                        fro
 
 import RogueAPDetectionContext from '../RogueAPDetectionContext'
 
-import RogueAPDetectionForm        from './RogueAPDetectionForm'
-import RogueAPDetectionSettingForm from './RogueAPDetectionSettingForm'
-
+import { RogueAPDetectionForm }        from './RogueAPDetectionForm'
+import { RogueAPDetectionSettingForm } from './RogueAPDetectionSettingForm'
 
 
 const policyListContent = [
