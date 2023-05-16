@@ -57,7 +57,6 @@ const DefaultSystemLanguageFormItem = () => {
             value={currentDefaultLang || DEFAULT_SYS_LANG}
             onChange={handleDefaultLangChange}
             showSearch
-            allowClear
             optionFilterProp='children'
             disabled={isUpdatingPreference || isLoadingPreference}
           >

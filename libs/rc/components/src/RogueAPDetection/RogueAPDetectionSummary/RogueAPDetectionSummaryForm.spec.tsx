@@ -6,7 +6,7 @@ import { render, screen }              from '@acx-ui/test-utils'
 
 import RogueAPDetectionContext from '../RogueAPDetectionContext'
 
-import RogueAPDetectionSummaryForm from './RogueAPDetectionSummaryForm'
+import { RogueAPDetectionSummaryForm } from './RogueAPDetectionSummaryForm'
 
 
 const wrapper = ({ children }: { children: React.ReactElement }) => {

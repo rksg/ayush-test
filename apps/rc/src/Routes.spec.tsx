@@ -211,9 +211,9 @@ jest.mock('./pages/Policies/MacRegistrationList/MacRegistrarionListTable', () =>
   return <div data-testid='MacRegistrationListsTable' />
 })
 
-jest.mock('./pages/Policies/RogueAPDetection/RogueAPDetectionForm/RogueAPDetectionForm', () => () => {
-  return <div data-testid='RogueAPDetectionForm' />
-})
+// jest.mock('./../../../libs/rc/components/src/RogueAPDetectionForm/RogueAPDetectionForm', () => () => {
+//   return <div data-testid='RogueAPDetectionForm' />
+// })
 
 jest.mock('./pages/Policies/AdaptivePolicy/RadiusAttributeGroup/RadiusAttributeGroupForm/RadiusAttributeGroupForm', () => () => {
   return <div data-testid='RadiusAttributeGroupForm' />
@@ -605,7 +605,7 @@ describe('RcRoutes: Policies', () => {
         wrapRoutes: false
       }
     })
-    expect(screen.getByTestId('RogueAPDetectionForm')).toBeVisible()
+    expect(screen.getByText('Add Rogue AP Detection Policy')).toBeVisible()
   })
 
   test('should navigate to edit ROGUE_AP_DETECTION page', async () => {
@@ -617,7 +617,7 @@ describe('RcRoutes: Policies', () => {
         wrapRoutes: false
       }
     })
-    expect(screen.getByTestId('RogueAPDetectionForm')).toBeVisible()
+    expect(screen.getByText('Edit Rogue AP Detection Policy')).toBeVisible()
   })
 
   test('should navigate to detail SYSLOG page', async () => {
