@@ -115,26 +115,15 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
   const [ updateL2AclPolicy ] = useUpdateL2AclPolicyMutation()
 
   const { layer2SelectOptions, layer2List } = useL2AclPolicyListQuery({
-    params: { ...params, requestId: requestId },
-    payload: {
-      fields: [
-        'id',
-        'name',
-        'description',
-        'macAddress',
-        'networkIds'
-      ],
-      page: 1,
-      pageSize: 25
-    }
+    params: { ...params, requestId: requestId }
   }, {
     selectFromResult ({ data }) {
       return {
-        layer2SelectOptions: data?.data?.map(
+        layer2SelectOptions: data ? data.map(
           item => {
             return <Option key={item.id}>{item.name}</Option>
-          }) ?? [],
-        layer2List: data?.data?.map(item => item.name)
+          }) : [],
+        layer2List: data ? data.map(item => item.name) : []
       }
     }
   })
