@@ -37,7 +37,9 @@ const arrayOfIpValidator = async (value: string) => {
     try{
       await networkWifiIpRegExp(ip.trim())
     } catch(err) {
-      return Promise.reject($t(validationMessages.invalid))
+      return Promise.reject($t({
+        defaultMessage: 'Please enter a list of IP addresses, separated by commas'
+      }))
     }
   }
   return Promise.resolve()
@@ -48,7 +50,9 @@ const vendorEncapsulatedValidator = async (value: string) => {
   const { $t } = getIntl()
   const hexRegex = new RegExp(/^[0-9a-fA-F]+$/)
   if (!hexRegex.test(value) || value.trim().length % 2 !== 0) {
-    return Promise.reject($t(validationMessages.invalid))
+    return Promise.reject($t({
+      defaultMessage: 'Please enter an even-length hexadecimal value'
+    }))
   }
   return Promise.resolve()
 }

@@ -96,7 +96,7 @@ describe('Option table(Edge)', () => {
     expect(await screen.findByText('Option Name with that name already exists')).toBeVisible()
   })
 
-  it('should be blocked by invalid dns value', async () => {
+  it('should be blocked by invalid domain server value', async () => {
     const user = userEvent.setup()
     render(<OptionTable value={mockedOptionData} />)
 
@@ -110,7 +110,9 @@ describe('Option table(Edge)', () => {
     const drawer = await screen.findByRole('dialog')
     const optionValueField = within(drawer).getByRole('textbox', { name: 'Option Value' })
     await user.type(optionValueField, '123')
-    expect(await screen.findByText('This field is invalid')).toBeVisible()
+    expect(
+      await screen.findByText('Please enter a list of IP addresses, separated by commas')
+    ).toBeVisible()
   })
 
   it('should be blocked by invalid ntp servers value', async () => {
@@ -129,7 +131,9 @@ describe('Option table(Edge)', () => {
     )
     const optionValueField = within(drawer).getByRole('textbox', { name: 'Option Value' })
     await user.type(optionValueField, '123')
-    expect(await screen.findByText('This field is invalid')).toBeVisible()
+    expect(
+      await screen.findByText('Please enter a list of IP addresses, separated by commas')
+    ).toBeVisible()
   })
 
   it('should be blocked by invalid vendor-encapsulated-options value', async () => {
@@ -148,6 +152,6 @@ describe('Option table(Edge)', () => {
     )
     const optionValueField = within(drawer).getByRole('textbox', { name: 'Option Value' })
     await user.type(optionValueField, '123')
-    expect(await screen.findByText('This field is invalid')).toBeVisible()
+    expect(await screen.findByText('Please enter an even-length hexadecimal value')).toBeVisible()
   })
 })
