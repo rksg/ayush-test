@@ -7,13 +7,13 @@ import {
   Col,
   Input
 } from 'antd'
-import { PhoneNumberUtil } from 'google-libphonenumber'
-import _                   from 'lodash'
-import { FieldData }       from 'rc-field-form/lib/interface'
-import { useIntl }         from 'react-intl'
-import styled              from 'styled-components/macro'
+import _             from 'lodash'
+import { FieldData } from 'rc-field-form/lib/interface'
+import { useIntl }   from 'react-intl'
+import styled        from 'styled-components/macro'
 
 import { Modal, showToast }    from '@acx-ui/components'
+import { PhoneInput }          from '@acx-ui/rc/components'
 import {
   useAddRecipientMutation,
   useUpdateRecipientMutation
@@ -63,7 +63,6 @@ const RecipientDialog = (props: RecipientDialogProps) => {
   } = props
   const [isChanged, setIsChanged] = useState(false)
   const [isValid, setIsValid] = useState(false)
-  const examplePhoneNumber = PhoneNumberUtil.getInstance().getExampleNumber('US')
   const [addRecipient, addState] = useAddRecipientMutation()
   const [updateRecipient, updateState] = useUpdateRecipientMutation()
 
@@ -233,6 +232,11 @@ const RecipientDialog = (props: RecipientDialogProps) => {
     form.resetFields()
   }
 
+  const setPhoneValue = (phoneNumber: string) => {
+    form.setFieldValue('mobile', phoneNumber)
+    form.validateFields(['mobile'])
+  }
+
   useEffect(()=>{
     if (editData && visible) {
       form.setFieldsValue(editData)
@@ -315,7 +319,7 @@ const RecipientDialog = (props: RecipientDialogProps) => {
         <Form.Item
           label={$t({ defaultMessage: 'Mobile Number' })}
         >
-          <Row align='middle' justify='space-between'>
+          <Row align='middle' justify='space-between' style={{ paddingBottom: '100px' }}>
             <Col span={18}>
               <Form.Item
                 name='mobile'
@@ -324,11 +328,9 @@ const RecipientDialog = (props: RecipientDialogProps) => {
                 ]}
                 noStyle
                 initialValue=''
+                validateFirst
               >
-                <Input
-                  // eslint-disable-next-line max-len
-                  placeholder={`+${examplePhoneNumber.getCountryCode()} ${examplePhoneNumber.getNationalNumberOrDefault()}`}
-                />
+                <PhoneInput callback={setPhoneValue} />
               </Form.Item>
             </Col>
             <Col span={4}>
