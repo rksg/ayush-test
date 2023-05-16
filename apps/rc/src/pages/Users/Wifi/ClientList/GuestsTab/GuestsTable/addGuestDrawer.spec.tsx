@@ -78,7 +78,7 @@ describe('Add Guest Drawer', () => {
       'wifitest'
     )
     await userEvent.type(
-      await screen.findByRole('textbox', { name: 'Mobile Phone' }),
+      await screen.findByPlaceholderText(/555/),
       '+12052220123'
     )
     await userEvent.type(
@@ -91,7 +91,7 @@ describe('Add Guest Drawer', () => {
     )
 
     const allowedNetworkCombo = await screen.findAllByRole('combobox')
-    fireEvent.mouseDown(allowedNetworkCombo[0])
+    fireEvent.mouseDown(allowedNetworkCombo[1])
     const option = await screen.findAllByText('guest pass wlan1')
     await userEvent.click(option[0])
 
@@ -110,7 +110,7 @@ describe('Add Guest Drawer', () => {
     )
 
     const allowedNetworkCombo = await screen.findAllByRole('combobox')
-    fireEvent.mouseDown(allowedNetworkCombo[0])
+    fireEvent.mouseDown(allowedNetworkCombo[1])
     const option = await screen.findAllByText('guest pass wlan1')
     await userEvent.click(option[0])
 
@@ -137,7 +137,7 @@ describe('Add Guest Drawer', () => {
     )
 
     const allowedNetworkCombo = await screen.findAllByRole('combobox')
-    fireEvent.mouseDown(allowedNetworkCombo[0])
+    fireEvent.mouseDown(allowedNetworkCombo[1])
     const option = await screen.findAllByText('guest pass wlan1')
     await userEvent.click(option[0])
 
@@ -162,7 +162,7 @@ describe('Add Guest Drawer', () => {
     )
 
     const allowedNetworkCombo = await screen.findAllByRole('combobox')
-    fireEvent.mouseDown(allowedNetworkCombo[0])
+    fireEvent.mouseDown(allowedNetworkCombo[1])
     const option = await screen.findAllByText('guest pass wlan1')
     await userEvent.click(option[0])
 
@@ -191,7 +191,7 @@ describe('Add Guest Drawer', () => {
       'wifitest'
     )
     await userEvent.type(
-      await screen.findByRole('textbox', { name: 'Mobile Phone' }),
+      await screen.findByPlaceholderText(/555/),
       '+12052220123'
     )
     await userEvent.type(
@@ -204,7 +204,7 @@ describe('Add Guest Drawer', () => {
     )
 
     const allowedNetworkCombo = await screen.findAllByRole('combobox')
-    fireEvent.mouseDown(allowedNetworkCombo[0])
+    fireEvent.mouseDown(allowedNetworkCombo[1])
     const option = await screen.findAllByText('guest pass wlan1')
     await userEvent.click(option[0])
 
@@ -233,7 +233,7 @@ describe('Add Guest Drawer', () => {
       'wifitest'
     )
     await userEvent.type(
-      await screen.findByRole('textbox', { name: 'Mobile Phone' }),
+      await screen.findByPlaceholderText(/555/),
       '+12052220123'
     )
     await userEvent.type(
@@ -246,7 +246,7 @@ describe('Add Guest Drawer', () => {
     )
 
     const allowedNetworkCombo = await screen.findAllByRole('combobox')
-    fireEvent.mouseDown(allowedNetworkCombo[0])
+    fireEvent.mouseDown(allowedNetworkCombo[1])
     const option = await screen.findAllByText('guest pass wlan1')
     await userEvent.click(option[0])
 
@@ -276,7 +276,7 @@ describe('Add Guest Drawer', () => {
       'wifitest'
     )
     await userEvent.type(
-      await screen.findByRole('textbox', { name: 'Mobile Phone' }),
+      await screen.findByPlaceholderText(/555/),
       '+12052220123'
     )
     await userEvent.type(
@@ -289,7 +289,7 @@ describe('Add Guest Drawer', () => {
     )
 
     const allowedNetworkCombo = await screen.findAllByRole('combobox')
-    fireEvent.mouseDown(allowedNetworkCombo[0])
+    fireEvent.mouseDown(allowedNetworkCombo[1])
     const option = await screen.findAllByText('guest pass wlan1')
     await userEvent.click(option[0])
 
@@ -320,7 +320,7 @@ describe('Add Guest Drawer', () => {
       'wifitest'
     )
     await userEvent.type(
-      await screen.findByRole('textbox', { name: 'Mobile Phone' }),
+      await screen.findByPlaceholderText(/555/),
       '+12052220123'
     )
     await userEvent.type(
@@ -333,7 +333,7 @@ describe('Add Guest Drawer', () => {
     )
 
     const allowedNetworkCombo = await screen.findAllByRole('combobox')
-    fireEvent.mouseDown(allowedNetworkCombo[0])
+    fireEvent.mouseDown(allowedNetworkCombo[1])
     const option = await screen.findAllByText('guest pass wlan1')
     await userEvent.click(option[0])
 
@@ -371,7 +371,7 @@ describe('Add Guest Drawer', () => {
       'wifitest'
     )
     await userEvent.type(
-      await screen.findByRole('textbox', { name: 'Mobile Phone' }),
+      await screen.findByPlaceholderText(/555/),
       '+12052220123'
     )
     await userEvent.type(
