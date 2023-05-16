@@ -95,4 +95,59 @@ describe('Option table(Edge)', () => {
     )
     expect(await screen.findByText('Option Name with that name already exists')).toBeVisible()
   })
+
+  it('should be blocked by invalid dns value', async () => {
+    const user = userEvent.setup()
+    render(<OptionTable value={mockedOptionData} />)
+
+    const tbody = await findTBody()
+
+    expect(tbody).toBeVisible()
+
+    const row = await screen.findByRole('row', { name: /Domain Server/i })
+    await userEvent.click(within(row).getByRole('checkbox'))
+    await user.click(await screen.findByRole('button', { name: 'Edit' }))
+    const drawer = await screen.findByRole('dialog')
+    const optionValueField = within(drawer).getByRole('textbox', { name: 'Option Value' })
+    await user.type(optionValueField, '123')
+    expect(await screen.findByText('This field is invalid')).toBeVisible()
+  })
+
+  it('should be blocked by invalid ntp servers value', async () => {
+    const user = userEvent.setup()
+    render(<OptionTable value={mockedOptionData} />)
+
+    const tbody = await findTBody()
+
+    expect(tbody).toBeVisible()
+
+    await user.click(await screen.findByRole('button', { name: 'Add Option' }))
+    const drawer = await screen.findByRole('dialog')
+    await user.selectOptions(
+      await within(drawer).findByRole('combobox', { name: 'Option Name' }),
+      await screen.findByRole('option', { name: 'NTP Servers' })
+    )
+    const optionValueField = within(drawer).getByRole('textbox', { name: 'Option Value' })
+    await user.type(optionValueField, '123')
+    expect(await screen.findByText('This field is invalid')).toBeVisible()
+  })
+
+  it('should be blocked by invalid vendor-encapsulated-options value', async () => {
+    const user = userEvent.setup()
+    render(<OptionTable value={mockedOptionData} />)
+
+    const tbody = await findTBody()
+
+    expect(tbody).toBeVisible()
+
+    await user.click(await screen.findByRole('button', { name: 'Add Option' }))
+    const drawer = await screen.findByRole('dialog')
+    await user.selectOptions(
+      await within(drawer).findByRole('combobox', { name: 'Option Name' }),
+      await screen.findByRole('option', { name: 'vendor-encapsulated-options' })
+    )
+    const optionValueField = within(drawer).getByRole('textbox', { name: 'Option Value' })
+    await user.type(optionValueField, '123')
+    expect(await screen.findByText('This field is invalid')).toBeVisible()
+  })
 })
