@@ -39,17 +39,17 @@ export function PreferredLanguageFormItem () {
       <Form.Item
         name='preferredLanguage'
         label={$t({ defaultMessage: 'Preferred Language' })}
-        initialValue={userProfile?.preferredLanguage
-        === DEFAULT_SYS_LANG ? 'English' : ''}
-        children={
-          <Select>
-            {/*<Option>{$t({ defaultMessage: 'English' })}</Option>*/}
-            {supportedLangs.map(({ label, value }) =>
-              (<Select.Option value={value} key={value} children={label}/>)
-            )}
-          </Select>
-        }
-      />
+        initialValue={userProfile?.preferredLanguage}
+      >
+        <Select
+          value={userProfile?.preferredLanguage || DEFAULT_SYS_LANG}
+          optionFilterProp='children'
+        >
+          {supportedLangs.map(({label, value}) =>
+            (<Select.Option value={value} key={value} children={label}/>)
+          )}
+        </Select>
+      </Form.Item>
     </StyledIndex>
   )
 }

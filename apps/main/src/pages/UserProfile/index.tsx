@@ -20,6 +20,7 @@ import {
   roleStringMap
 } from '@acx-ui/user'
 
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { PreferredLanguageFormItem } from './PreferredLanguageFormItem'
 import {
   RecentLogin
@@ -32,6 +33,7 @@ interface fromLoc {
 
 export function UserProfile () {
   const { $t } = useIntl()
+  const isI18n = useIsSplitOn(Features.I18N_TOGGLE)
   const { Option } = Select
   const { Paragraph } = Typography
   const { tenantId } = useParams()
@@ -122,8 +124,11 @@ export function UserProfile () {
                   </Select>
                 }
               />
-
-              <PreferredLanguageFormItem />
+              { isI18n && (
+                <>
+                  <PreferredLanguageFormItem />
+                </>
+              )}
             </Col>
           </Row>
         </StepsFormLegacy.StepForm>
