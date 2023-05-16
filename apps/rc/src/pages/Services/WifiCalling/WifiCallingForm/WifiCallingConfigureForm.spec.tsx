@@ -161,11 +161,7 @@ describe('WifiCallingConfigureForm', () => {
     fireEvent.change(screen.getByRole('textbox', { name: /service name/i }),
       { target: { value: 'service-name-test' } })
 
-    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
-
-    await screen.findByRole('heading', { name: 'Scope', level: 3 })
-
-    await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
   })
 
   it('should render form successfully then click the cancel button', async () => {
