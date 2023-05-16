@@ -74,24 +74,16 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
         />
       </GridCol>
       <GridCol col={{ span: 24 }} className='statistic upTimeWidget'>
-        <EdgeUpTimeWidget
-          isLoading={isPortListLoading}
-        />
+        <EdgeUpTimeWidget />
       </GridCol>
       <GridCol col={{ span: 12 }} className='statistic'>
-        <EdgeTrafficByVolumeWidget
-          isLoading={isPortListLoading}
-        />
+        <EdgeTrafficByVolumeWidget />
       </GridCol>
       <GridCol col={{ span: 12 }} className='statistic'>
-        <EdgeResourceUtilizationWidget
-          isLoading={isPortListLoading}
-        />
+        <EdgeResourceUtilizationWidget />
       </GridCol>
       <GridCol col={{ span: 12 }} className='statistic'>
-        <EdgePortsByTrafficWidget
-          isLoading={isPortListLoading}
-        />
+        <EdgePortsByTrafficWidget />
       </GridCol>
     </GridRow>
   )
