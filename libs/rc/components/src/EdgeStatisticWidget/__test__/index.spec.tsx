@@ -1,89 +1,152 @@
-/* eslint-disable max-len */
-import {
-  ApVenueStatusEnum, EdgePortStatus, EdgePortTypeEnum, EdgeStatus, EdgeStatusEnum
-} from '@acx-ui/rc/utils'
-import { Provider } from '@acx-ui/store'
-import { render }   from '@acx-ui/test-utils'
+import '@testing-library/react'
+import '@testing-library/jest-dom'
 
-import { EdgePortsByTrafficWidget, EdgeResourceUtilizationWidget, EdgeTrafficByVolumeWidget } from '.'
 
-const tenantID = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
-const currentEdge:EdgeStatus = {
-  name: 'edge-01',
-  serialNumber: 'edge-111000001',
-  venueId: '97b77f8a82324a1faa0f4cc3f56d1ef0',
-  venueName: 'testVenue_Edge',
-  model: 'test',
-  type: 'test',
-  deviceStatus: EdgeStatusEnum.OPERATIONAL,
-  deviceStatusSeverity: ApVenueStatusEnum.OPERATIONAL,
-  ip: '1.1.1.1',
-  ports: '62,66',
-  tags: [],
-  cpuTotal: 65 * Math.pow(1024, 2),
-  cpuUsed: 5 * Math.pow(1024, 2),
-  memTotal: 120 * Math.pow(1024, 2),
-  memUsed: 50 * Math.pow(1024, 2),
-  diskTotal: 250 * Math.pow(1024, 3),
-  diskUsed: 162 * Math.pow(1024, 3)
+import { rest } from 'msw'
+
+import { edgeApi }                                                         from '@acx-ui/rc/services'
+import { EdgeUrlsInfo }                                                    from '@acx-ui/rc/utils'
+import { Provider, store }                                                 from '@acx-ui/store'
+import { mockServer, render, screen, waitFor,  waitForElementToBeRemoved } from '@acx-ui/test-utils'
+
+import { EdgeUpTimeWidget, EdgePortsByTrafficWidget, EdgeResourceUtilizationWidget, EdgeTrafficByVolumeWidget } from '../'
+
+import * as EdgeTestCase from './fixture'
+
+const params = {
+  serialNumber: '962604D7DCEEE011ED9715000C2949F53E'
 }
-const edgePortsSetting:EdgePortStatus[] = [{
-  portId: '1',
-  name: 'Port 1',
-  status: 'Up',
-  adminStatus: 'Enabled',
-  type: EdgePortTypeEnum.WAN,
-  mac: 'AA:BB:CC:DD:EE:FF',
-  speedKbps: 12* Math.pow(12, 6),
-  duplex: 'Full',
-  ip: '1.1.1.1',
-  sortIdx: 1
-},
-{
-  portId: '2',
-  name: 'Port 2',
-  status: 'Down',
-  adminStatus: 'Disabled',
-  type: EdgePortTypeEnum.LAN,
-  mac: 'AA:BB:CC:DD:EE:FF',
-  speedKbps: 10* Math.pow(12, 6),
-  duplex: 'Helf',
-  ip: '1.1.1.2',
-  sortIdx: 2
-}]
 
-const mockedUsedNavigate = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedUsedNavigate
-}))
+describe('Test all Edge Statistic Widget', () => {
+  describe('Test all Under No Data', () => {
+    beforeEach(() => {
+      store.dispatch(edgeApi.util.resetApiState())
+      mockServer.use(
+        rest.post(EdgeUrlsInfo.getEdgeUpDownTime.url, (req, res, ctx) => {
+          return res(ctx.json(EdgeTestCase.EdgeUpTimeWidgetEmptyMockData))
+        }),
+        rest.post(EdgeUrlsInfo.getEdgeTopTraffic.url, (req, res, ctx) => {
+          return res(ctx.json(EdgeTestCase.EdgeTopTrafficWidgetEmptyMockData))
+        }),
+        rest.post(EdgeUrlsInfo.getEdgeResourceUtilization.url, (req, res, ctx) => {
+          return res(ctx.json(EdgeTestCase.EdgeResourceUtilizationWidgetEmptyMockData))
+        }),
+        rest.post(EdgeUrlsInfo.getEdgePortTraffic.url, (req, res, ctx) => {
+          return res(ctx.json(EdgeTestCase.EdgeTrafficByVolumeWidgetEmptyMockData))
+        })
+      )
+    })
 
-describe('Edge Statistic Widget', () => {
-  let params: { tenantId: string, serialNumber: string } =
-  { tenantId: tenantID, serialNumber: currentEdge.serialNumber }
-
-
-  it('shoud render EdgeTrafficByVolumeWidget with no data', async () => {
-    const { asFragment } = render(
-      <Provider>
-        <EdgeTrafficByVolumeWidget/>
-      </Provider>,{
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edge-details/overview' }
-      })
-
-    expect(asFragment().querySelector('svg')).toBeDefined()
-    expect(asFragment().querySelectorAll('div[_echarts_instance_^="ec_"]').length).toBe(0)
+    it('Test case for EdgeUpTimeWidget No Data', async () => {
+      render(
+        <Provider>
+          <EdgeUpTimeWidget />
+        </Provider>, {
+          route: { params, path: '/edges/:serialNumber/uptime' }
+        }
+      )
+      await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+      await waitFor(() => screen.findByText('No data to display'))
+      expect(await screen.findByText(/No data to display/)).toBeVisible()
+    })
+    it('Test case for EdgePortsByTrafficWidget No Data', async () => {
+      render(
+        <Provider>
+          <EdgePortsByTrafficWidget />
+        </Provider>, {
+          route: { params, path: '/edges/:serialNumber/topTraffic' }
+        }
+      )
+      await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+      await waitFor(() => screen.findByText('No data to display'))
+      expect(await screen.findByText(/No data to display/)).toBeVisible() })
+    it('Test case for EdgeTrafficByVolumeWidget No Data', async () => {
+      render(
+        <Provider>
+          <EdgeTrafficByVolumeWidget />
+        </Provider>, {
+          route: { params, path: '/edges/:serialNumber/traffic' }
+        }
+      )
+      await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+      await waitFor(() => screen.findByText('No data to display'))
+      expect(await screen.findByText(/No data to display/)).toBeVisible() })
+    it('Test case for EdgeResourceUtilizationWidget No Data', async () => {
+      render(
+        <Provider>
+          <EdgeResourceUtilizationWidget />
+        </Provider>, {
+          route: { params, path: '/edges/:serialNumber/resources' }
+        }
+      )
+      await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+      await waitFor(() => screen.findByText('No data to display'))
+      expect(await screen.findByText(/No data to display/)).toBeVisible()
+    })
   })
 
-  it('shoud render EdgeResourceUtilizationWidget with no data', async () => {
-    const { asFragment } = render(
-      <Provider>
-        <EdgeResourceUtilizationWidget/>
-      </Provider>,{
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edge-details/overview' }
-      })
+  describe('Test all Under Data', () => {
+    beforeEach(() => {
+      store.dispatch(edgeApi.util.resetApiState())
+      mockServer.use(
+        rest.post(EdgeUrlsInfo.getEdgeUpDownTime.url, (req, res, ctx) => {
+          return res(ctx.json(EdgeTestCase.EdgeUpTimeWidgetMockData))
+        }),
+        rest.post(EdgeUrlsInfo.getEdgeTopTraffic.url, (req, res, ctx) => {
+          return res(ctx.json(EdgeTestCase.EdgeTopTrafficWidgetMockData))
+        }),
+        rest.post(EdgeUrlsInfo.getEdgeResourceUtilization.url, (req, res, ctx) => {
+          return res(ctx.json(EdgeTestCase.EdgeResourceUtilizationWidgetMockData))
+        }),
+        rest.post(EdgeUrlsInfo.getEdgePortTraffic.url, (req, res, ctx) => {
+          return res(ctx.json(EdgeTestCase.EdgeTrafficByVolumeWidgetMockData))
+        })
+      )
+    })
 
-    expect(asFragment().querySelector('svg')).toBeDefined()
-    expect(asFragment().querySelectorAll('div[_echarts_instance_^="ec_"]').length).toBe(0)
+    it('Test case for EdgeUpTimeWidget Data', async () => {
+      render(
+        <Provider>
+          <EdgeUpTimeWidget />
+        </Provider>, {
+          route: { params, path: '/edges/:serialNumber/uptime' }
+        }
+      )
+      await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+      expect(screen.queryByText(/No data to display/)).toBeNull()
+    })
+    it('Test case for EdgePortsByTrafficWidget Data', async () => {
+      render(
+        <Provider>
+          <EdgePortsByTrafficWidget />
+        </Provider>, {
+          route: { params, path: '/edges/:serialNumber/topTraffic' }
+        }
+      )
+      await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+      expect(screen.queryByText(/No data to display/)).toBeNull()
+    })
+    it('Test case for EdgeTrafficByVolumeWidget Data', async () => {
+      render(
+        <Provider>
+          <EdgeTrafficByVolumeWidget />
+        </Provider>, {
+          route: { params, path: '/edges/:serialNumber/traffic' }
+        }
+      )
+      await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+      expect(screen.queryByText(/No data to display/)).toBeNull()
+    })
+    it('Test case for EdgeResourceUtilizationWidget Data', async () => {
+      render(
+        <Provider>
+          <EdgeResourceUtilizationWidget />
+        </Provider>, {
+          route: { params, path: '/edges/:serialNumber/resources' }
+        }
+      )
+      await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+      expect(screen.queryByText(/No data to display/)).toBeNull()
+    })
   })
 })

@@ -1,8 +1,33 @@
-export const EdgePortsByTrafficWidgetMockData = {
+export const EdgeTopTrafficWidgetEmptyMockData = {
+  traffic: []
+}
+export const EdgeTrafficByVolumeWidgetEmptyMockData = {
+  timeSeries: {
+    ports: []
+  },
+  time: []
+}
+export const EdgeResourceUtilizationWidgetEmptyMockData = {
+  timeSeries: {
+    cpu: [],
+    memory: [],
+    disk: [],
+    memoryUsedBytes: [],
+    diskUsedBytes: [],
+    time: []
+  }
+}
+export const EdgeUpTimeWidgetEmptyMockData = {
+  timeSeries: {
+    isEdgeUp: [],
+    time: []
+  },
+  totalDowntime: 0,
+  totalUptime: 0
+}
+export const EdgeTopTrafficWidgetMockData = {
   traffic: [100000, 120000, 500000]   // bytes
 }
-
-
 export const EdgeTrafficByVolumeWidgetMockData = {
   timeSeries: {
     ports: [
@@ -21,15 +46,15 @@ export const EdgeTrafficByVolumeWidgetMockData = {
         rx: [null,155374,155547,154962,155007],
         total: [null,155734,155907,155262,155367]
       }
-    ]
+    ],
+    time: (() => {
+      return Array.from({ length: 5 }, (_, i) => {
+        const time = new Date(new Date().getTime() - (i * 15000))
+        return time.toISOString()
+      })
+    })()
   },
-  time: [
-    '2023-04-26T06:00:00.000Z',
-    '2023-04-26T07:00:00.000Z',
-    '2023-04-26T08:00:00.000Z',
-    '2023-04-26T09:00:00.000Z',
-    '2023-04-26T10:00:00.000Z'
-  ]
+  portCount: 3
 }
 export const EdgeResourceUtilizationWidgetMockData = {
   timeSeries: {
@@ -42,23 +67,23 @@ export const EdgeResourceUtilizationWidgetMockData = {
     diskUsedBytes: [
       9132907460,4236789123,7982453611,6348290142,2910357865
     ],// bytes
-    time: [
-      '2023-04-26T06:00:00.000',
-      '2023-04-26T07:00:00.000',
-      '2023-04-26T08:00:00.000',
-      '2023-04-26T09:00:00.000',
-      '2023-04-26T10:00:00.000']
+    time: (() => {
+      return Array.from({ length: 5 }, (_, i) => {
+        const time = new Date(new Date().getTime() - (i * 15000))
+        return time.toISOString()
+      })
+    })()
   }
 }
 export const EdgeUpTimeWidgetMockData = {
   timeSeries: {
     isEdgeUp: [0, 1, 0, 0], // 0 is down; 1 is up
-    time: [
-      '2023-05-08T16:30:00.000Z',
-      '2023-05-08T16:45:00.000Z',
-      '2023-05-08T17:00:00.000Z',
-      '2023-05-08T17:15:00.000Z'
-    ]
+    time: (() => {
+      return Array.from({ length: 4 }, (_, i) => {
+        const time = new Date(new Date().getTime() - (i * 15000))
+        return time.toISOString()
+      })
+    })()
   },
   totalDowntime: 15 * 60, // seconds
   totalUptime: 15 * 4 * 60
