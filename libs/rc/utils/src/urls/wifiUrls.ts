@@ -25,22 +25,16 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   addNetworkDeep: {
-    // [New API] not support activate multiple venue in one request
-    // method: 'post',
-    // url: '/networks',
-    // oldUrl: '/api/tenant/:tenantId/wifi/network/deep?quickAck=true',
-    // newApi: false
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/network/deep?quickAck=true'
+    url: '/networks',
+    oldUrl: '/api/tenant/:tenantId/wifi/network/deep?quickAck=true',
+    newApi: true
   },
   updateNetworkDeep: {
-    // [New API] not support activate multiple venue in one request
-    // method: 'put',
-    // url: '/networks',
-    // oldUrl: '/api/tenant/:tenantId/wifi/network/:networkId/deep?quickAck=true',
-    // newApi: false
     method: 'put',
-    url: '/api/tenant/:tenantId/wifi/network/:networkId/deep?quickAck=true'
+    url: '/networks/:networkId',
+    oldUrl: '/api/tenant/:tenantId/wifi/network/:networkId/deep?quickAck=true',
+    newApi: true
   },
   deleteNetwork: {
     method: 'delete',

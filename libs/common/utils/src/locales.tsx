@@ -27,7 +27,14 @@ function flattenMessages (nestedMessages: NestedMessages, prefix = ''): Record<s
   }, {} as Record<string, string>)
 }
 
-async function localePath (locale: string) {
+export async function localePath (locale: string) {
+  // This code is needed when GCS bucket is not configured / GCS is down or unavailable
+  // Also this is a management ask till FF is set to ON, we default to en-US from local repo only
+  // and not from GCS bucket.
+  if (locale === DEFAULT_SYS_LANG) {
+    const url = `locales/compiled/${locale}.json`
+    return await fetch(url).then(res => res.json())
+  }
   const gcs = get('STATIC_ASSETS')
   const myHeaders = new Headers()
   myHeaders.append('origin', 'window.origin')
@@ -35,16 +42,19 @@ async function localePath (locale: string) {
     method: 'GET',
     headers: myHeaders
   }
-
   const url = `${gcs}/locales/compiled/${locale}.json`
-  const response = await fetch(url, requestOptions )
-  if (!response.ok) {
+  try {
+    const response = await fetch(url, requestOptions )
+    if (!response.ok) {
+      throw new Error(`Fetch response ${response.status}`)
+    } else {
+      const result = await response.json()
+      return result
+    }
+  } catch (err) {
     // eslint-disable-next-line no-console
-    console.error(`Error fetching ${url}, status: ${response.status}`)
+    console.error(`Error fetching ${url}, error: ${err}`)
     return {}
-  } else {
-    const result = await response.json()
-    return result
   }
 }
 

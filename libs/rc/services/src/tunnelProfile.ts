@@ -57,7 +57,7 @@ export const tunnelProfileApi = baseTunnelProfileApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'TunnelProfile', id: 'LIST' }]
     }),
-    getTunnelProfile: build.query<TunnelProfile, RequestPayload>({
+    getTunnelProfileById: build.query<TunnelProfile, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(TunnelProfileUrls.getTunnelProfile, params)
         return {
@@ -83,6 +83,6 @@ export const {
   useCreateTunnelProfileMutation,
   useGetTunnelProfileViewDataListQuery,
   useDeleteTunnelProfileMutation,
-  useGetTunnelProfileQuery,
+  useGetTunnelProfileByIdQuery,
   useUpdateTunnelProfileMutation
 } = tunnelProfileApi
