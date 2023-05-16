@@ -46,10 +46,10 @@ const ValidationForm = (props: ValidationFormProps) => {
   const columns: TableProps<MigrationResultType>['columns'] = [
     {
       title: $t({ defaultMessage: 'AP Name' }),
-      key: 'name',
-      dataIndex: 'name',
+      key: 'apName',
+      dataIndex: 'apName',
       render: (_, row) => {
-        return row.name ?? '--'
+        return row.apName ?? '--'
       }
     },
     {
@@ -67,7 +67,6 @@ const ValidationForm = (props: ValidationFormProps) => {
       render: (_, row) => {
         return row.serial ?? '--'
       }
-
     },
     {
       title: $t({ defaultMessage: 'Status' }),
@@ -79,10 +78,11 @@ const ValidationForm = (props: ValidationFormProps) => {
     },
     {
       title: $t({ defaultMessage: 'Failure Reason' }),
-      key: 'failure',
-      dataIndex: 'failure',
+      key: 'validationErrors',
+      dataIndex: 'validationErrors',
       render: (_, row) => {
-        return row.failure ?? '--'
+        // eslint-disable-next-line max-len
+        return row.validationErrors && row.validationErrors.length > 0 ? row.validationErrors.join(',') : '--'
       }
     }
   ]
@@ -98,12 +98,15 @@ const ValidationForm = (props: ValidationFormProps) => {
           <Subtitle level={4}>
             {$t({ defaultMessage: 'Validation Table' })}
           </Subtitle>
+          <Subtitle level={3}>
+            {$t({ defaultMessage: 'Validation State' })}: {validateResult?.state ?? '--'}
+          </Subtitle>
         </Col>
       </Row>
       <Table
         columns={columns}
         dataSource={validateResult?.apImportResults}
-        rowKey='id'
+        rowKey='serial'
         locale={{
           // eslint-disable-next-line max-len
           emptyText: <Empty description={$t({ defaultMessage: 'No migration data' })} />

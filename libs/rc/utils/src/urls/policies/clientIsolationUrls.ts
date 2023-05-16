@@ -19,10 +19,10 @@ export const ClientIsolationUrls: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/isolation-allowlist/:policyId',
     newApi: true
   },
-  deleteClientIsolation: {
+  deleteClientIsolationList: {
     method: 'delete',
-    url: '/isolationAllowlists/:policyId',
-    oldUrl: '/api/tenant/:tenantId/wifi/isolation-allowlist/:policyId',
+    url: '/isolationAllowlists',
+    oldUrl: '/api/tenant/:tenantId/wifi/isolation-allowlist',
     newApi: true
   },
   getClientIsolationList: {
