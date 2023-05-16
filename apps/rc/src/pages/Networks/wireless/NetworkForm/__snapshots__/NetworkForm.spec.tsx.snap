@@ -62,7 +62,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
     </div>
   </div>
   <section
-    class="styledComponents__Wrapper-sc-71wmpn-2 gKDpFD"
+    class="styledComponents__Wrapper-sc-71wmpn-2 jnXtln"
   >
     <div
       class="ant-pro-steps-form"
@@ -2319,7 +2319,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
     </div>
   </div>
   <section
-    class="styledComponents__Wrapper-sc-71wmpn-2 gKDpFD"
+    class="styledComponents__Wrapper-sc-71wmpn-2 jnXtln"
   >
     <div
       class="ant-pro-steps-form"

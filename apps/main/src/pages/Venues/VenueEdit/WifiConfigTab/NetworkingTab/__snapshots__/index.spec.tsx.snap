@@ -3,7 +3,7 @@
 exports[`NetworkingTab should render correctly 1`] = `
 <DocumentFragment>
   <section
-    class="styledComponents__Wrapper-sc-71wmpn-2 jUXjyR"
+    class="styledComponents__Wrapper-sc-71wmpn-2 dYdDtp"
   >
     <div
       class="ant-pro-steps-form"
@@ -329,7 +329,7 @@ exports[`NetworkingTab should render correctly 1`] = `
                           class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
                         >
                           <section
-                            class="styledComponents__Wrapper-sc-71wmpn-2 jUXjyR"
+                            class="styledComponents__Wrapper-sc-71wmpn-2 dYdDtp"
                           >
                             <div
                               class="ant-pro-steps-form"

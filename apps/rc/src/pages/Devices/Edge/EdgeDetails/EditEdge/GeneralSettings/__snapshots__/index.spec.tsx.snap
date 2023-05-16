@@ -8,6 +8,8 @@ exports[`EditEdge general settings should create GeneralSettings successfully 1`
   >
     <form
       class="ant-form ant-form-vertical"
+      id="0"
+      step="0"
     >
       <div
         class="ant-row"
@@ -38,7 +40,7 @@ exports[`EditEdge general settings should create GeneralSettings successfully 1`
                     >
                       <label
                         class="ant-form-item-required"
-                        for="venueId"
+                        for="0_venueId"
                         title="Venue"
                       >
                         Venue
@@ -63,16 +65,16 @@ exports[`EditEdge general settings should create GeneralSettings successfully 1`
                                 class="ant-select-selection-search"
                               >
                                 <input
-                                  aria-activedescendant="venueId_list_0"
+                                  aria-activedescendant="0_venueId_list_0"
                                   aria-autocomplete="list"
-                                  aria-controls="venueId_list"
+                                  aria-controls="0_venueId_list"
                                   aria-expanded="false"
                                   aria-haspopup="listbox"
-                                  aria-owns="venueId_list"
+                                  aria-owns="0_venueId_list"
                                   autocomplete="off"
                                   class="ant-select-selection-search-input"
                                   disabled=""
-                                  id="venueId"
+                                  id="0_venueId"
                                   readonly=""
                                   role="combobox"
                                   style="opacity: 0;"
@@ -128,7 +130,7 @@ exports[`EditEdge general settings should create GeneralSettings successfully 1`
                     >
                       <label
                         class="ant-form-item-required"
-                        for="name"
+                        for="0_name"
                         title="SmartEdge Name"
                       >
                         SmartEdge Name
@@ -145,7 +147,7 @@ exports[`EditEdge general settings should create GeneralSettings successfully 1`
                         >
                           <input
                             class="ant-input"
-                            id="name"
+                            id="0_name"
                             type="text"
                             value=""
                           />
@@ -165,7 +167,7 @@ exports[`EditEdge general settings should create GeneralSettings successfully 1`
                     >
                       <label
                         class="ant-form-item-required"
-                        for="serialNumber"
+                        for="0_serialNumber"
                         title=""
                       >
                         Serial Number
@@ -186,7 +188,7 @@ exports[`EditEdge general settings should create GeneralSettings successfully 1`
                           <input
                             class="ant-input ant-input-disabled"
                             disabled=""
-                            id="serialNumber"
+                            id="0_serialNumber"
                             type="text"
                             value=""
                           />
@@ -206,7 +208,7 @@ exports[`EditEdge general settings should create GeneralSettings successfully 1`
                     >
                       <label
                         class=""
-                        for="description"
+                        for="0_description"
                         title="Description"
                       >
                         Description
@@ -223,7 +225,7 @@ exports[`EditEdge general settings should create GeneralSettings successfully 1`
                         >
                           <textarea
                             class="ant-input"
-                            id="description"
+                            id="0_description"
                             rows="4"
                           />
                         </div>
@@ -242,7 +244,7 @@ exports[`EditEdge general settings should create GeneralSettings successfully 1`
                     >
                       <label
                         class=""
-                        for="tags"
+                        for="0_tags"
                         title="Tags"
                       >
                         Tags
@@ -275,14 +277,14 @@ exports[`EditEdge general settings should create GeneralSettings successfully 1`
                                     style="width: 0px;"
                                   >
                                     <input
-                                      aria-activedescendant="tags_list_0"
+                                      aria-activedescendant="0_tags_list_0"
                                       aria-autocomplete="list"
-                                      aria-controls="tags_list"
+                                      aria-controls="0_tags_list"
                                       aria-haspopup="listbox"
-                                      aria-owns="tags_list"
+                                      aria-owns="0_tags_list"
                                       autocomplete="off"
                                       class="ant-select-selection-search-input"
-                                      id="tags"
+                                      id="0_tags"
                                       role="combobox"
                                       type="search"
                                       value=""
@@ -316,7 +318,7 @@ exports[`EditEdge general settings should create GeneralSettings successfully 1`
         data-testid="steps-form-actions"
       >
         <div
-          class="ant-space ant-space-horizontal ant-space-align-center"
+          class="ant-space ant-space-horizontal ant-space-align-start"
         >
           <div
             class="ant-space-item"

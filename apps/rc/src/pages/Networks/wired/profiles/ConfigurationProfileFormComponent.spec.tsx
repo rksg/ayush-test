@@ -156,21 +156,21 @@ describe('Wired - VlanSetting', () => {
     fireEvent.click(await within(drawer).findByRole('button', { name: /Edit/i }))
 
     const dialog = await screen.findByTestId('vlanSettingModal')
-    await userEvent.click(await within(dialog).findByRole('button', { name: 'Next' }))
+    await userEvent.click(await within(dialog).findByText('Untagged Ports'))
 
     await userEvent.click(await within(dialog).findByTestId('untagged_module1_1'))
     await userEvent.click(await within(dialog).findByTestId('untagged_module1_2'))
     await userEvent.click(await within(dialog).findByTestId('untagged_module1_3'))
     await userEvent.click(await within(dialog).findByTestId('untagged_module1_4'))
     await userEvent.click(await within(dialog).findByTestId('untagged_module1_5'))
-    await userEvent.click(await within(dialog).findByRole('button', { name: 'Next' }))
+    await userEvent.click(await within(dialog).findByText('Tagged Ports'))
 
     await userEvent.click(await within(dialog).findByTestId('tagged_module1_6'))
     await userEvent.click(await within(dialog).findByTestId('tagged_module1_7'))
     await userEvent.click(await within(dialog).findByTestId('tagged_module1_8'))
     await userEvent.click(await within(dialog).findByTestId('tagged_module1_9'))
     await userEvent.click(await within(dialog).findByTestId('tagged_module1_10'))
-    await userEvent.click(await within(dialog).findByRole('button', { name: 'Finish' }))
+    await userEvent.click(await within(dialog).findByRole('button', { name: 'Apply' }))
     await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
   })
 
@@ -571,8 +571,7 @@ describe('Wired - TrustedPorts', () => {
 
     const editButton = await screen.findByRole('button', { name: /Edit/i })
     fireEvent.click(editButton)
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
-    await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
   })
 
   it('should handle delete trusted ports correctly', async () => {

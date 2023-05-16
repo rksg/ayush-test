@@ -107,13 +107,13 @@ describe('NetworkHealthForm', () => {
     await selectOptions(await body.findByRole('combobox', { name: 'Test Type' }), 'On-Demand')
     await selectOptions(
       await body.findByRole('combobox', {
-        name: (_, el) => el.id === 'configs_0_wlanName'
+        name: (_, el) => el.id === '0_configs_0_wlanName'
       }),
       'Network 1'
     )
     await selectOptions(
       await body.findByRole('combobox', {
-        name: (_, el) => el.id === 'configs_0_authenticationMethod'
+        name: (_, el) => el.id === '0_configs_0_authenticationMethod'
       }),
       await body.findByRole('option', { name: 'Pre-Shared Key (PSK)' })
     )
@@ -170,7 +170,7 @@ describe('NetworkHealthForm', () => {
     })
 
     // Submit
-    await click(actions.getByRole('button', { name: 'Finish' }))
+    await click(actions.getByRole('button', { name: 'Apply' }))
 
     expect(await screen.findByText('Network Health test updated')).toBeVisible()
     expect(mockedNavigate).toBeCalled()
@@ -206,7 +206,7 @@ describe('NetworkHealthForm', () => {
     })
 
     // Submit
-    await click(actions.getByRole('button', { name: 'Finish' }))
+    await click(actions.getByRole('button', { name: 'Apply' }))
 
     expect(await screen.findByText('Duplicate test name exist')).toBeVisible()
     expect(mockedNavigate).not.toBeCalled()
