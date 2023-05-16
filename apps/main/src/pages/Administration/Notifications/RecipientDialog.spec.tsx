@@ -1,11 +1,10 @@
 /* eslint-disable max-len */
 import React from 'react'
 
-import { renderHook }      from '@testing-library/react'
-import userEvent           from '@testing-library/user-event'
-import { PhoneNumberUtil } from 'google-libphonenumber'
-import { rest }            from 'msw'
-import { act }             from 'react-dom/test-utils'
+import { renderHook } from '@testing-library/react'
+import userEvent      from '@testing-library/user-event'
+import { rest }       from 'msw'
+import { act }        from 'react-dom/test-utils'
 
 import {
   AdministrationUrlsInfo,
