@@ -64,7 +64,7 @@ const UploadForm = () => {
       <Col span={10}>
         <StepsFormLegacy.Title children={$t({ defaultMessage: 'Backup File Selection' })} />
         <Form.Item
-          name='backupFile'
+          // name='backupFile'
           label={$t(MessageMapping.migrate_description)}
         />
         <Upload.Dragger {...props}>

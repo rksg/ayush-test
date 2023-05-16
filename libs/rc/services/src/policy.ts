@@ -75,7 +75,7 @@ const RKS_NEW_UI = {
 const clientIsolationMutationUseCases = [
   'AddClientIsolationAllowlist',
   'UpdateClientIsolationAllowlist',
-  'DeleteClientIsolationAllowlist'
+  'DeleteClientIsolationAllowlists'
 ]
 
 const L2AclUseCases = [
@@ -951,14 +951,15 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'ClientIsolation', id: 'LIST' }]
     }),
-    deleteClientIsolation: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(ClientIsolationUrls.deleteClientIsolation, params)
+    deleteClientIsolationList: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ClientIsolationUrls.deleteClientIsolationList, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'ClientIsolation', id: 'LIST' }]
     }),
     vlanPoolList: build.query<VlanPool[], RequestPayload>({
       query: ({ params }) => {
@@ -1185,6 +1186,16 @@ export const policyApi = basePolicyApi.injectEndpoints({
         const req = createHttpRequest(SyslogUrls.deleteSyslogPolicy, params)
         return {
           ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Syslog', id: 'LIST' }]
+    }),
+    delSyslogPolicies: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SyslogUrls.deleteSyslogPolicies, params)
+        return {
+          ...req,
+          body: payload
         }
       },
       invalidatesTags: [{ type: 'Syslog', id: 'LIST' }]
@@ -1917,7 +1928,7 @@ export const {
   useGetVLANPoolPolicyDetailQuery,
   useGetVLANPoolVenuesQuery,
   useAddClientIsolationMutation,
-  useDeleteClientIsolationMutation,
+  useDeleteClientIsolationListMutation,
   useGetClientIsolationListQuery,
   useLazyGetClientIsolationListQuery,
   useGetEnhancedClientIsolationListQuery,
@@ -1929,6 +1940,7 @@ export const {
   useUploadMacRegistrationMutation,
   useAddSyslogPolicyMutation,
   useDelSyslogPolicyMutation,
+  useDelSyslogPoliciesMutation,
   useUpdateSyslogPolicyMutation,
   useVenueSyslogPolicyQuery,
   useGetSyslogPolicyQuery,

@@ -35,7 +35,7 @@ const defaultPayload = {
   }
 }
 
-const RogueVenueTable = () => {
+export const RogueVenueTable = () => {
   const { $t } = useIntl()
   const { state, dispatch } = useContext(RogueAPDetectionContext)
 
@@ -217,5 +217,3 @@ const RogueVenueTable = () => {
     />
   )
 }
-
-export default RogueVenueTable
