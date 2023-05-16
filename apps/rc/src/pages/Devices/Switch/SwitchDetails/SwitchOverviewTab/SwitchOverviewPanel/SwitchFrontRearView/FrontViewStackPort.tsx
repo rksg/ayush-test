@@ -1,125 +1,110 @@
-import { Space }   from 'antd'
-import _           from 'lodash'
+import { useState } from 'react'
+
 import { useIntl } from 'react-intl'
 
-import { Tooltip }          from '@acx-ui/components'
-import { SwitchPortStatus } from '@acx-ui/rc/utils'
+import { Tooltip }                            from '@acx-ui/components'
+import { SwitchPortStatus, SwitchStatusEnum } from '@acx-ui/rc/utils'
 
-import * as UI from './styledComponents'
+import { FrontViewStackPortDrawer } from './FrontViewStackPortDrawer'
+import * as UI                      from './styledComponents'
 
 export function FrontViewStackPort (props:{
   ports: SwitchPortStatus[],
   portData: SwitchPortStatus,
   labelText: string,
+  deviceStatus: SwitchStatusEnum,
   labelPosition: 'top' | 'bottom',
   tooltipEnable: boolean
 }) {
   const { $t } = useIntl()
-  const { ports, portData, labelText, labelPosition, tooltipEnable } = props
+  const { ports, portData, labelText, labelPosition, tooltipEnable, deviceStatus } = props
 
   const portNumber = portData.portIdentifier.split(':')[0]
   const breakOutPorts = ports.filter(p => p.portIdentifier.includes(portNumber))
 
-  const portColor ='grey'
-  const getTooltip = (port: SwitchPortStatus) => {
-    const speedNoData = 'link down or no traffic'
-    const isUnTaggedVlanValid = port.unTaggedVlan !== '' && port.unTaggedVlan !== undefined
-    const UntaggedVlanText = <Space size={4}>
-      <UI.TagsOutlineIcon />{ isUnTaggedVlanValid ? port.unTaggedVlan : '--' }
-    </Space>
-    let taggedVlanText
-
-    if (port.vlanIds !== '' && port.vlanIds !== undefined) {
-      let vlanIdsArray = port.vlanIds.split(' ')
-
-      if (isUnTaggedVlanValid) {
-        let taggedVlan = '--'
-        if (vlanIdsArray.length > 1) {
-          vlanIdsArray = _.remove(vlanIdsArray, n => n !== port.unTaggedVlan)
-          vlanIdsArray.sort((a:string, b:string) => Number(a) - Number(b))
-          // CMS-779 PLM feedback: Show up to 15 vlans in tooltip. If more than 15 VLANs, truncate and add an ellipsis
-          const ellipsis = (vlanIdsArray.length > 15) ? '...' : ''
-          const showVlanIdArray = (vlanIdsArray.length > 15) ?
-            vlanIdsArray.slice(0, 15) : vlanIdsArray
-          taggedVlan = showVlanIdArray.join(', ').concat(ellipsis)
-        }
-
-        taggedVlanText = <Space size={4}><UI.TagsSolidIcon />{ taggedVlan }</Space>
-      } else {
-        taggedVlanText = <Space size={4}><UI.TagsSolidIcon />{ vlanIdsArray.join(', ') }</Space>
-      }
+  const getPortIcon = (port: SwitchPortStatus) => {
+    if (port.usedInUplink) {
+      return <UI.UplinkPortIcon style={{ filter: 'brightness(0) invert(1)' }} />
     }
-
-    const poeUsed = Math.round(port.poeUsed / 1000)
-    const poeTotal = Math.round(port.poeTotal / 1000)
-
-    return <div>
-      <UI.TooltipStyle labelWidthPercent={50}>
-        <UI.TooltipStyle.Item
-          label={$t({ defaultMessage: 'Port' })}
-          children={port.portIdentifier}
-        />
-        <UI.TooltipStyle.Item
-          label={$t({ defaultMessage: 'Name' })}
-          children={port.name === '' ? '--' : port.name}
-        />
-        <UI.TooltipStyle.Item
-          label={$t({ defaultMessage: 'VLAN' })}
-          children={<>
-            <div>{UntaggedVlanText}</div>
-            <div>{taggedVlanText}</div>
-          </>
-          }
-        />
-        <UI.TooltipStyle.Item
-          label={$t({ defaultMessage: 'Port Speed' })}
-          children={port.portSpeed === speedNoData ? '--' : port.portSpeed}
-        />
-        <UI.TooltipStyle.Item
-          label={$t({ defaultMessage: 'Port State' })}
-          children={port.status}
-        />
-        <UI.TooltipStyle.Item
-          label={$t({ defaultMessage: 'Connected Device' })}
-          children={port.neighborName || port.neighborMacAddress || '--'}
-        />
-        <UI.TooltipStyle.Item
-          label={$t({ defaultMessage: 'PoE Usage (Consumed/Allocated)' })}
-          children={<>{poeUsed} W/ {poeTotal} W</>}
-        />
-        <UI.TooltipStyle.Item
-          label={$t({ defaultMessage: 'PoE Device Type' })}
-          children={port.poeType === '' ? '--' : port.poeType}
-        />
-      </UI.TooltipStyle>
+    if (port.poeUsed) {
+      return <UI.PoeUsageIcon style={{ filter: 'brightness(0) invert(1)' }} />
+    }
+    return ''
+  }
+  const getTooltip = () => {
+    return <div style={{
+      fontSize: 'var(--acx-body-4-font-size)',
+      lineHeight: 'var(--acx-body-4-line-height)'
+    }}>
+      <div style={{ paddingBottom: 'var(--acx-descriptions-space)', color: '#c4c4c4' }}>
+        {portNumber}: {$t({ defaultMessage: 'Breakout Port' })} ({breakOutPorts.length})</div>
+      {breakOutPorts.map((p: SwitchPortStatus) => {
+        return <div style={{ gridTemplateColumns: 'auto auto', display: 'grid',
+          paddingBottom: 'var(--acx-descriptions-space)' }}>
+          <div>{`${p.portIdentifier} (${p.status})`}</div>
+          <div>{getPortIcon(p)}</div>
+        </div>
+      })}
     </div>
   }
+
+  const getPortColorEnum = () => {
+
+    if (deviceStatus === SwitchStatusEnum.DISCONNECTED) {
+      return 'lightgray'
+    }
+
+    if (breakOutPorts.filter(p=> p.status === 'Up').length > 0) {
+      return 'green'
+    } else if ((breakOutPorts.filter(p=> p.status === 'Down').length > 0)) {
+      return 'gray'
+    } else if ((breakOutPorts.filter(p=> p.status === 'Offline').length > 0)) {
+      return 'lightgray'
+    }
+    return 'gray'
+  }
+
+  const getPortColor = (portColor: string) => {
+    const colorMap:{ [key:string]: string } = {
+      lightgray: 'var(--acx-neutrals-25)',
+      gray: 'var(--acx-neutrals-50)',
+      green: 'var(--acx-semantics-green-50)'
+    }
+    return colorMap[portColor]
+  }
+  const [drawerVisible, setDrawerVisible] = useState(false)
 
   const portElement = <UI.PortWrapper>
     { labelPosition === 'top' && <UI.PortLabel>{labelText}</UI.PortLabel> }
     <div>
 
-      <UI.Port portColor={portColor}>
-        <div style={{ position: 'relative' , cursor: 'pointer', fontSize: '10px'}}
+      <UI.Port portColor={getPortColorEnum()}>
+        <div style={{ position: 'relative' , cursor: 'pointer', fontSize: '10px' }}
           onClick={()=>{
-            // eslint-disable-next-line no-console
-            console.log(portColor)
+            setDrawerVisible(true)
           }}>
           B
           <div style={{
             width: 0,
             height: 0,
             borderStyle: 'solid',
-            borderWidth: '0 0 4px 4px',
-            borderColor: 'transparent transparent #ff0000 transparent',
-            left: '9px',
-            top: '13px',
+            borderWidth: '0 0 5px 5px',
+            borderColor: `transparent transparent ${getPortColor(getPortColorEnum())} transparent`,
+            left: '7px',
+            top: '11px',
             position: 'absolute'
           }}></div>
         </div>
 
 
       </UI.Port>
+
+      <FrontViewStackPortDrawer
+        portNumber={portNumber}
+        setDrawerVisible={setDrawerVisible}
+        drawerVisible={drawerVisible}
+        stackPorts={breakOutPorts}
+      ></FrontViewStackPortDrawer>
 
     </div>
     { labelPosition === 'bottom' && <UI.PortLabel>{labelText}</UI.PortLabel> }
@@ -129,7 +114,7 @@ export function FrontViewStackPort (props:{
     ? <Tooltip
       placement={'top'}
       overlayStyle={{ maxWidth: '300px' }}
-      title={getTooltip(portData)}>
+      title={getTooltip()}>
       {portElement}
     </Tooltip>
     : portElement

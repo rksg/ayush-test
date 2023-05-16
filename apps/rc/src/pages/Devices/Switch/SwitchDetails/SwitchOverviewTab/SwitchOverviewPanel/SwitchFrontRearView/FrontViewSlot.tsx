@@ -62,6 +62,7 @@ export function FrontViewSlot (props:{
             if (isBreakOutPort) {
               return (<FrontViewStackPort key={port.portIdentifier}
                 ports={slot.portStatus}
+                deviceStatus={deviceStatus}
                 labelText={portLabel + String(port.portnumber).split(':')[0]}
                 labelPosition='top'
                 tooltipEnable={isOnline}
@@ -97,6 +98,7 @@ export function FrontViewSlot (props:{
               return (
                 <FrontViewStackPort key={port.portIdentifier}
                   ports={slot.portStatus}
+                  deviceStatus={deviceStatus}
                   labelText={portLabel + String(port.portnumber).split(':')[0]}
                   labelPosition='bottom'
                   tooltipEnable={isOnline}

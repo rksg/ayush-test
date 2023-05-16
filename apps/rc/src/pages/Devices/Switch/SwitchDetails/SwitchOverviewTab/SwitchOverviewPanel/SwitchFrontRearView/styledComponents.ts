@@ -7,7 +7,7 @@ export const TitleBar = styled.div`
   background: var(--acx-neutrals-10);
   height: 24px;
   display: flex;
-  
+
   .unit-header {
     background-color: var(--acx-primary-black);
     color: var(--acx-primary-white);
@@ -132,7 +132,7 @@ export const PoeUsageIcon = styled(PoeUsage)`
 `
 
 export const TooltipStyle = styled(Descriptions)`
-  .ant-descriptions-item-content, 
+  .ant-descriptions-item-content,
   .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-label {
     color: var(--acx-primary-white);
   }

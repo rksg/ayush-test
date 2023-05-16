@@ -446,6 +446,7 @@ export interface SwitchPortStatus {
   vlanIds: string
   poeTotal: number
   neighborMacAddress: string
+  id: string
 }
 
 export interface SwitchSlot {
