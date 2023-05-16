@@ -29,7 +29,13 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
       'deviceStatus',
       'deviceSeverity',
       'venueId',
-      'tags'
+      'tags',
+      'cpuCores',
+      'cpuUsedPercentage',
+      'memoryUsedKb',
+      'memoryTotalKb',
+      'diskUsedKb',
+      'diskTotalKb'
     ],
     filters: { serialNumber: [params.serialNumber] } }
 
