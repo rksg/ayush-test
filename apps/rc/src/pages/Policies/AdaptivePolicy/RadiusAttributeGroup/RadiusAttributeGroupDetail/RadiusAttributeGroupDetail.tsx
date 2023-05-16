@@ -31,7 +31,7 @@ export default function RadiusAttributeGroupDetail () {
   const { data: policyListData, isLoading: getPolicyListDataLoading } =
     useAdaptivePolicyListByQueryQuery({ params: { policyId, excludeContent: 'false' }, payload: {
       fields: [ 'name' ],
-      page: 0, pageSize: 2000,
+      page: 1, pageSize: 2000,
       filters: { onMatchResponse: policyId }
     } })
 

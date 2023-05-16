@@ -33,18 +33,18 @@ export default function RadiusAttributeGroupTable () {
       defaultPayload: {}
     })
 
-    const [getPolicySetList] = useLazyAdaptivePolicyListByQueryQuery()
+    const [getPolicyList] = useLazyAdaptivePolicyListByQueryQuery()
 
     useEffect( () =>{
       if(tableQuery.isLoading)
         return
 
       tableQuery.data?.data.forEach(item => {
-        getPolicySetList({
+        getPolicyList({
           params: { excludeContent: 'false' },
           payload: {
             fields: [ 'name' ],
-            page: 0, pageSize: 2000,
+            page: 1, pageSize: 2000,
             filters: { onMatchResponse: item.id }
           }
         }).then(result => {

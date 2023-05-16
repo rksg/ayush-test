@@ -2,19 +2,22 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, showActionModal, showToast, Table, TableProps }                                      from '@acx-ui/components'
-import { SimpleListTooltip }                                                                          from '@acx-ui/rc/components'
+import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
+import { SimpleListTooltip }                                     from '@acx-ui/rc/components'
 import {
-  useAdaptivePolicyListQuery, useAdaptivePolicySetListQuery,
+  useAdaptivePolicyListByQueryQuery,
+  useAdaptivePolicySetListQuery,
   useDeleteAdaptivePolicyMutation,
-  useLazyGetConditionsInPolicyQuery, useLazyGetPrioritizedPoliciesQuery, usePolicyTemplateListQuery
+  useLazyGetConditionsInPolicyQuery,
+  useLazyGetPrioritizedPoliciesQuery,
+  usePolicyTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
-  AdaptivePolicy,
+  AdaptivePolicy, FILTER,
   getAdaptivePolicyDetailLink,
   getPolicyRoutePath,
   PolicyOperation,
-  PolicyType, useTableQuery
+  PolicyType, SEARCH, useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                               from '@acx-ui/user'
@@ -30,7 +33,8 @@ export default function AdaptivePolicyTable () {
   const [policySetPoliciesMap, setPolicySetPoliciesMap] = useState(new Map())
 
   const tableQuery = useTableQuery({
-    useQuery: useAdaptivePolicyListQuery,
+    useQuery: useAdaptivePolicyListByQueryQuery,
+    apiParams: { sort: 'name,ASC', excludeContent: 'false' },
     defaultPayload: {}
   })
 
@@ -194,6 +198,11 @@ export default function AdaptivePolicyTable () {
     return Array.from(policySetPoliciesMap.values()).filter(item => item.find((p:string) => p === policyId)).length !== 0
   }
 
+  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
+    const payload = { ...tableQuery.payload, filters: { name: customSearch?.searchString ?? '' } }
+    tableQuery.setPayload(payload)
+  }
+
   return (
     <Loader states={[
       tableQuery,
@@ -201,6 +210,7 @@ export default function AdaptivePolicyTable () {
         isFetching: isDeletePolicyUpdating }
     ]}>
       <Table
+        enableApiFilter
         settingsId='adaptive-policy-list-table'
         columns={useColumns()}
         dataSource={tableQuery.data?.data}
@@ -208,6 +218,7 @@ export default function AdaptivePolicyTable () {
         onChange={tableQuery.handleTableChange}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
+        onFilterChange={handleFilterChange}
         rowSelection={{ type: 'radio' }}
         actions={filterByAccess([{
           label: $t({ defaultMessage: 'Add Policy' }),

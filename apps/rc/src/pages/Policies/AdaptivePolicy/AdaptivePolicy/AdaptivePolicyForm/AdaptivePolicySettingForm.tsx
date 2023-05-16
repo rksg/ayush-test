@@ -50,7 +50,7 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
   const form = Form.useFormInstance()
   const { policyId } = useParams()
 
-  const [getPolicySetList] = useLazyAdaptivePolicyListByQueryQuery()
+  const [getPolicyList] = useLazyAdaptivePolicyListByQueryQuery()
 
   const { data: templateList, isLoading } = usePolicyTemplateListQuery({
     payload: {
@@ -105,13 +105,13 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
   }
 
   const nameValidator = async (value: string) => {
-    const list = (await getPolicySetList({
+    const list = (await getPolicyList({
       params: {
         excludeContent: 'false'
       },
       payload: {
         fields: [ 'name' ],
-        page: 0, pageSize: 10,
+        page: 1, pageSize: 2000,
         filters: { name: value }
       }
     }).unwrap()).data.filter(n => n.id !== policyId).map(n => ({ name: n.name }))

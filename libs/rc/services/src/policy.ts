@@ -1619,7 +1619,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
         const req = createHttpRequest(RulesManagementUrlsInfo.getPoliciesByQuery, params)
         return {
           ...req,
-          body: payload
+          body: {
+            ...(payload as TableChangePayload), page: (payload as TableChangePayload).page - 1
+          }
         }
       },
       transformResponse (result: NewAPITableResult<AdaptivePolicy>) {
@@ -1769,7 +1771,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
         const req = createHttpRequest(RulesManagementUrlsInfo.getPolicySetsByQuery, params)
         return {
           ...req,
-          body: payload
+          body: {
+            ...(payload as TableChangePayload), page: (payload as TableChangePayload).page - 1
+          }
         }
       },
       transformResponse (result: NewAPITableResult<AdaptivePolicySet>) {
@@ -2001,6 +2005,7 @@ export const {
   // policy set
   useAdaptivePolicySetListQuery,
   useLazyAdaptivePolicySetListQuery,
+  useAdaptivePolicySetLisByQueryQuery,
   useLazyAdaptivePolicySetLisByQueryQuery,
   useDeleteAdaptivePolicySetMutation,
   useLazyGetPrioritizedPoliciesQuery,

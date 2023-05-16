@@ -56,6 +56,10 @@ describe('AdaptivePolicySetForm', () => {
       rest.get(
         RulesManagementUrlsInfo.getPrioritizedPolicies.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(prioritizedPolicies))
+      ),
+      rest.post(
+        RulesManagementUrlsInfo.getPoliciesByQuery.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(adaptivePolicyList))
       )
     )
   })

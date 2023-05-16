@@ -33,7 +33,7 @@ export function AdaptivePolicySetSettingForm (props: AdaptivePolicySetSettingFor
       },
       payload: {
         fields: [ 'name' ],
-        page: 0, pageSize: 10,
+        page: 1, pageSize: 2000,
         filters: { name: value }
       }
     }).unwrap()).data.filter(n => n.id !== policyId).map(n => ({ name: n.name }))
