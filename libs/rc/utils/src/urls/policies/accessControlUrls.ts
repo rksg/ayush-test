@@ -74,9 +74,9 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getL2AclPolicyList: {
-    method: 'post',
-    url: '/l2AclPolicies/query',
-    oldUrl: '/api/tenant/:tenantId/wifi/l2-acl-policy/query',
+    method: 'get',
+    url: '/l2AclPolicies',
+    oldUrl: '/api/tenant/:tenantId/wifi/l2-acl-policy',
     newApi: true
   },
   getEnhancedL2AclPolicies: {
@@ -86,9 +86,9 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getL3AclPolicyList: {
-    method: 'post',
-    url: '/l3AclPolicies/query',
-    oldUrl: '/api/tenant/:tenantId/wifi/l3-acl-policy/query',
+    method: 'get',
+    url: '/l3AclPolicies',
+    oldUrl: '/api/tenant/:tenantId/wifi/l3-acl-policy',
     newApi: true
   },
   getEnhancedL3AclPolicies: {
@@ -98,9 +98,9 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getAppPolicyList: {
-    method: 'post',
-    url: '/applicationPolicies/query',
-    oldUrl: '/api/tenant/:tenantId/wifi/application-policy/query',
+    method: 'get',
+    url: '/applicationPolicies',
+    oldUrl: '/api/tenant/:tenantId/wifi/application-policy',
     newApi: true
   },
   getEnhancedApplicationPolicies: {
@@ -185,9 +185,9 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getDevicePolicyList: {
-    method: 'post',
-    url: '/devicePolicies/query',
-    oldUrl: '/api/tenant/:tenantId/wifi/device-policy/query',
+    method: 'get',
+    url: '/devicePolicies',
+    oldUrl: '/api/tenant/:tenantId/wifi/device-policy',
     newApi: true
   },
   getEnhancedDevicePolicies: {

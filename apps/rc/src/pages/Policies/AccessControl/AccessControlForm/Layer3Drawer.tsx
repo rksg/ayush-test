@@ -202,19 +202,15 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
   const [ updateL3AclPolicy ] = useUpdateL3AclPolicyMutation()
 
   const { layer3SelectOptions, layer3List } = useL3AclPolicyListQuery({
-    params: { ...params, requestId: requestId },
-    payload: {
-      fields: ['name', 'id'], sortField: 'name',
-      sortOrder: 'ASC', page: 1, pageSize: 10000
-    }
+    params: { ...params, requestId: requestId }
   }, {
     selectFromResult ({ data }) {
       return {
-        layer3SelectOptions: data?.data?.map(
+        layer3SelectOptions: data ? data.map(
           item => {
             return <Option key={item.id}>{item.name}</Option>
-          }) ?? [],
-        layer3List: data?.data?.map(item => item.name)
+          }) : [],
+        layer3List: data ? data.map(item => item.name) : []
       }
     }
   })

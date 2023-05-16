@@ -370,15 +370,14 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
-    devicePolicyList: build.query<TableResult<DevicePolicy>, RequestPayload>({
-      query: ({ params, payload }) => {
+    devicePolicyList: build.query<DevicePolicy[], RequestPayload>({
+      query: ({ params }) => {
         const devicePolicyListReq = createHttpRequest(
           AccessControlUrls.getDevicePolicyList,
           params
         )
         return {
-          ...devicePolicyListReq,
-          body: payload
+          ...devicePolicyListReq
         }
       },
       providesTags: [{ type: 'AccessControl', id: 'LIST' }],
@@ -734,15 +733,14 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'AAA', id: 'LIST' }]
     }),
-    l2AclPolicyList: build.query<TableResult<L2AclPolicy>, RequestPayload>({
-      query: ({ params, payload }) => {
+    l2AclPolicyList: build.query<L2AclPolicy[], RequestPayload>({
+      query: ({ params }) => {
         const l2AclPolicyListReq = createHttpRequest(
           AccessControlUrls.getL2AclPolicyList,
           params
         )
         return {
-          ...l2AclPolicyListReq,
-          body: payload
+          ...l2AclPolicyListReq
         }
       },
       providesTags: [{ type: 'AccessControl', id: 'LIST' }],
@@ -759,15 +757,14 @@ export const policyApi = basePolicyApi.injectEndpoints({
         })
       }
     }),
-    l3AclPolicyList: build.query<TableResult<L3AclPolicy>, RequestPayload>({
-      query: ({ params, payload }) => {
+    l3AclPolicyList: build.query<L3AclPolicy[], RequestPayload>({
+      query: ({ params }) => {
         const l3AclPolicyListReq = createHttpRequest(
           AccessControlUrls.getL3AclPolicyList,
           params
         )
         return {
-          ...l3AclPolicyListReq,
-          body: payload
+          ...l3AclPolicyListReq
         }
       },
       providesTags: [{ type: 'AccessControl', id: 'LIST' }],
@@ -784,15 +781,14 @@ export const policyApi = basePolicyApi.injectEndpoints({
         })
       }
     }),
-    appPolicyList: build.query<TableResult<ApplicationPolicy>, RequestPayload>({
-      query: ({ params, payload }) => {
+    appPolicyList: build.query<ApplicationPolicy[], RequestPayload>({
+      query: ({ params }) => {
         const appPolicyListReq = createHttpRequest(
           AccessControlUrls.getAppPolicyList,
           params
         )
         return {
-          ...appPolicyListReq,
-          body: payload
+          ...appPolicyListReq
         }
       },
       providesTags: [{ type: 'AccessControl', id: 'LIST' }],

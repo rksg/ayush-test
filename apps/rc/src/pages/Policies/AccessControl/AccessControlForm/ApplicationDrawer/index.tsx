@@ -187,19 +187,15 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   const [ updateAppPolicy ] = useUpdateAppPolicyMutation()
 
   const { appSelectOptions, appList } = useAppPolicyListQuery({
-    params: { ...params, requestId: requestId },
-    payload: {
-      fields: ['name', 'id'], sortField: 'name',
-      sortOrder: 'ASC', page: 1, pageSize: 10000
-    }
+    params: { ...params, requestId: requestId }
   }, {
     selectFromResult ({ data }) {
       return {
-        appSelectOptions: data?.data?.map(
+        appSelectOptions: data ? data.map(
           item => {
             return <Option key={item.id}>{item.name}</Option>
-          }) ?? [],
-        appList: data?.data?.map(item => item.name)
+          }) : [],
+        appList: data ? data.map(item => item.name) : []
       }
     }
   })

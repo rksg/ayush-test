@@ -46,7 +46,8 @@ import {
   PortalTablePayload,
   IpUtilsService,
   DpskPassphraseClient,
-  DPSKDeviceInfo
+  DPSKDeviceInfo,
+  AccessControlUrls
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -131,22 +132,21 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       }
     }),
-    applicationPolicyList: build.query<TableResult<ApplicationPolicy>, RequestPayload>({
-      query: ({ params, payload }) => {
+    applicationPolicyList: build.query<ApplicationPolicy[], RequestPayload>({
+      query: ({ params }) => {
         const applicationPolicyListReq = createHttpRequest(
-          CommonUrlsInfo.getApplicationPolicyList,
+          AccessControlUrls.getApplicationPolicyList,
           params
         )
         return {
-          ...applicationPolicyListReq,
-          body: payload
+          ...applicationPolicyListReq
         }
       }
     }),
     accessControlProfileList: build.query<AccessControlProfile[], RequestPayload>({
       query: ({ params }) => {
         const accessControlProfileListReq = createHttpRequest(
-          CommonUrlsInfo.getAccessControlProfileList,
+          AccessControlUrls.getAccessControlProfileList,
           params
         )
         return {
