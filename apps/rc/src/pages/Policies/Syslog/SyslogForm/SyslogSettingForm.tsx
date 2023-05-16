@@ -1,6 +1,5 @@
-import React, { MutableRefObject, useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
-import { ProFormInstance } from '@ant-design/pro-form'
 import {
   Col,
   Form,
@@ -13,8 +12,8 @@ import {
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { StepsFormLegacy }             from '@acx-ui/components'
-import { useGetSyslogPolicyListQuery } from '@acx-ui/rc/services'
+import { StepsForm, useStepFormContext } from '@acx-ui/components'
+import { useGetSyslogPolicyListQuery }   from '@acx-ui/rc/services'
 import {
   FacilityEnum,
   FlowLevelEnum,
@@ -31,15 +30,15 @@ import SyslogContext                                                         fro
 const { Option } = Select
 
 type SyslogSettingFormProps = {
-  edit: boolean,
-  formRef?: MutableRefObject<ProFormInstance<SyslogContextType> | undefined>
+  edit: boolean
 }
 
 const SyslogSettingForm = (props: SyslogSettingFormProps) => {
   const { $t } = useIntl()
-  const { edit, formRef } = props
+  const { edit } = props
   const params = useParams()
   const [originalName, setOriginalName] = useState('')
+  const { form } = useStepFormContext<SyslogContextType>()
 
   const {
     state, dispatch
@@ -70,17 +69,15 @@ const SyslogSettingForm = (props: SyslogSettingFormProps) => {
         }
       })
       setOriginalName(policyData.name)
-      formRef?.current?.setFieldValue('policyName', policyData.name ?? '')
-      formRef?.current?.setFieldValue('server', policyData.primary.server ?? '')
-      formRef?.current?.setFieldValue('port', policyData.primary.port ?? 514)
-      formRef?.current?.setFieldValue('protocol', policyData.primary.protocol ?? ProtocolEnum.UDP)
-      formRef?.current?.setFieldValue('secondaryServer', policyData.secondary?.server ?? '')
-      formRef?.current?.setFieldValue('secondaryPort', policyData.secondary?.port ?? 514)
-      // eslint-disable-next-line max-len
-      formRef?.current?.setFieldValue('secondaryProtocol', policyData.secondary?.protocol ?? ProtocolEnum.TCP)
-      formRef?.current?.setFieldValue('facility', policyData.facility ?? FacilityEnum.KEEP_ORIGINAL)
-      // eslint-disable-next-line max-len
-      formRef?.current?.setFieldValue('flowLevel', policyData.flowLevel ?? FlowLevelEnum.CLIENT_FLOW)
+      form.setFieldValue('policyName', policyData.name ?? '')
+      form.setFieldValue('server', policyData.primary.server ?? '')
+      form.setFieldValue('port', policyData.primary.port ?? 514)
+      form.setFieldValue('protocol', policyData.primary.protocol ?? ProtocolEnum.UDP)
+      form.setFieldValue('secondaryServer', policyData.secondary?.server ?? '')
+      form.setFieldValue('secondaryPort', policyData.secondary?.port ?? 514)
+      form.setFieldValue('secondaryProtocol', policyData.secondary?.protocol ?? ProtocolEnum.TCP)
+      form.setFieldValue('facility', policyData.facility ?? FacilityEnum.KEEP_ORIGINAL)
+      form.setFieldValue('flowLevel', policyData.flowLevel ?? FlowLevelEnum.CLIENT_FLOW)
     }
   }, [data])
 
@@ -232,7 +229,7 @@ const SyslogSettingForm = (props: SyslogSettingFormProps) => {
   return (
     <Row gutter={20}>
       <Col span={10}>
-        <StepsFormLegacy.Title>{$t({ defaultMessage: 'Settings' })}</StepsFormLegacy.Title>
+        <StepsForm.Title>{$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
         <Form.Item
           name='policyName'
           label={$t({ defaultMessage: 'Policy Name' })}

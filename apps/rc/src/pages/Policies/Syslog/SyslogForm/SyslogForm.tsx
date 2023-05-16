@@ -1,11 +1,10 @@
-import { useRef, useReducer } from 'react'
+import { useReducer } from 'react'
 
 import { useIntl } from 'react-intl'
 
 import {
   PageHeader,
-  StepsFormLegacy,
-  StepsFormLegacyInstance
+  StepsForm
 } from '@acx-ui/components'
 import { useAddSyslogPolicyMutation, useUpdateSyslogPolicyMutation } from '@acx-ui/rc/services'
 import {
@@ -52,7 +51,6 @@ const SyslogForm = (props: SyslogFormProps) => {
   const flowLevel = FlowLevelEnum.CLIENT_FLOW
   const venues:SyslogVenue[] = []
 
-  const formRef = useRef<StepsFormLegacyInstance<SyslogContextType>>()
   const [state, dispatch] = useReducer(mainReducer, {
     policyName,
     server,
@@ -136,33 +134,32 @@ const SyslogForm = (props: SyslogFormProps) => {
             link: getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.LIST }) }
         ]}
       />
-      <StepsFormLegacy<SyslogContextType>
-        formRef={formRef}
+      <StepsForm<SyslogContextType>
         editMode={edit}
         onCancel={() => navigate(linkToPolicies)}
         onFinish={() => handleSyslogPolicy(edit)}
       >
-        <StepsFormLegacy.StepForm<SyslogContextType>
+        <StepsForm.StepForm<SyslogContextType>
           name='settings'
           title={$t({ defaultMessage: 'Settings' })}
         >
-          <SyslogSettingForm edit={edit} formRef={formRef}/>
-        </StepsFormLegacy.StepForm>
+          <SyslogSettingForm edit={edit} />
+        </StepsForm.StepForm>
 
-        <StepsFormLegacy.StepForm
+        <StepsForm.StepForm
           name='scope'
           title={$t({ defaultMessage: 'Scope' })}
         >
           <SyslogScopeForm />
-        </StepsFormLegacy.StepForm>
+        </StepsForm.StepForm>
 
-        { !edit && <StepsFormLegacy.StepForm
+        { !edit && <StepsForm.StepForm
           name='summary'
           title={$t({ defaultMessage: 'Summary' })}
         >
           <SyslogSummaryForm />
-        </StepsFormLegacy.StepForm> }
-      </StepsFormLegacy>
+        </StepsForm.StepForm> }
+      </StepsForm>
     </SyslogContext.Provider>
   )
 }
