@@ -1190,6 +1190,16 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Syslog', id: 'LIST' }]
     }),
+    delSyslogPolicies: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SyslogUrls.deleteSyslogPolicies, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Syslog', id: 'LIST' }]
+    }),
     updateSyslogPolicy: build.mutation<SyslogContextType, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SyslogUrls.updateSyslogPolicy, params)
@@ -1930,6 +1940,7 @@ export const {
   useUploadMacRegistrationMutation,
   useAddSyslogPolicyMutation,
   useDelSyslogPolicyMutation,
+  useDelSyslogPoliciesMutation,
   useUpdateSyslogPolicyMutation,
   useVenueSyslogPolicyQuery,
   useGetSyslogPolicyQuery,

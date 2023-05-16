@@ -8,7 +8,8 @@ import { RogueApUrls }                from '@acx-ui/rc/utils'
 import { Provider, store }            from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import RogueAPDetectionDetailView from './RogueAPDetectionDetailView'
+import { RogueAPDetectionDetailView } from './RogueAPDetectionDetailView'
+
 
 const detailContent = {
   venues: [

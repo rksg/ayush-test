@@ -19,7 +19,7 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import RogueAPDetectionTable from './RogueAPDetectionTable'
+import { RogueAPDetectionTable } from './RogueAPDetectionTable'
 
 const mockTableResult = {
   fields: [
