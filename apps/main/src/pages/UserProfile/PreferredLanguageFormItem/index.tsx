@@ -45,7 +45,7 @@ export function PreferredLanguageFormItem () {
           value={userProfile?.preferredLanguage || DEFAULT_SYS_LANG}
           optionFilterProp='children'
         >
-          {supportedLangs.map(({label, value}) =>
+          {supportedLangs.map(({ label, value }) =>
             (<Select.Option value={value} key={value} children={label}/>)
           )}
         </Select>

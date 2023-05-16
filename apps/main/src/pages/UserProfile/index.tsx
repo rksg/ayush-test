@@ -6,7 +6,8 @@ import {
   StepsFormLegacy,
   Tabs
 } from '@acx-ui/components'
-import { MultiFactor } from '@acx-ui/msp/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { MultiFactor }            from '@acx-ui/msp/components'
 import {
   useLocation,
   useNavigate,
@@ -20,7 +21,6 @@ import {
   roleStringMap
 } from '@acx-ui/user'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { PreferredLanguageFormItem } from './PreferredLanguageFormItem'
 import {
   RecentLogin
@@ -125,9 +125,7 @@ export function UserProfile () {
                 }
               />
               { isI18n && (
-                <>
-                  <PreferredLanguageFormItem />
-                </>
+                <PreferredLanguageFormItem />
               )}
             </Col>
           </Row>
