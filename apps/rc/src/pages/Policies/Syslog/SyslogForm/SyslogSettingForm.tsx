@@ -12,15 +12,14 @@ import {
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { StepsForm, useStepFormContext } from '@acx-ui/components'
-import { useGetSyslogPolicyListQuery }   from '@acx-ui/rc/services'
+import { StepsForm }                   from '@acx-ui/components'
+import { useGetSyslogPolicyListQuery } from '@acx-ui/rc/services'
 import {
   FacilityEnum,
   FlowLevelEnum,
   ProtocolEnum,
   PriorityEnum,
   SyslogActionTypes,
-  SyslogContextType,
   serverIpAddressRegExp
 } from '@acx-ui/rc/utils'
 
@@ -38,12 +37,12 @@ const SyslogSettingForm = (props: SyslogSettingFormProps) => {
   const { edit } = props
   const params = useParams()
   const [originalName, setOriginalName] = useState('')
-  const { form } = useStepFormContext<SyslogContextType>()
 
   const {
     state, dispatch
   } = useContext(SyslogContext)
 
+  const form = Form.useFormInstance()
   const { data } = useGetSyslogPolicyListQuery({ params: params })
 
   useEffect(() => {

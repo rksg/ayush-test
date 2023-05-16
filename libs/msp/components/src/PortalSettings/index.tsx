@@ -89,6 +89,7 @@ export function PortalSettings () {
   const [isEditMode, setEditMode] = useState(false)
 
   const [externalProviders, setExternalProviders]=useState<Providers[]>()
+  const [baseDomainUrl, setBaseDomainUrl] = useState('')
 
   const [addMspLabel] = useAddMspLabelMutation()
   const [updateMspLabel] = useUpdateMspLabelMutation()
@@ -148,6 +149,9 @@ export function PortalSettings () {
         setSupportLogoUrl(defaultSupportLogo)
         setAlarmLogoUrl(defaultAlarmLogo)
       }
+    }
+    if (baseUrl?.base_url) {
+      setBaseDomainUrl(`.${baseUrl.base_url}`)
     }
   }, [provider, mspLabel])
 
@@ -444,7 +448,7 @@ export function PortalSettings () {
                 children={<Input />}
                 style={{ width: '180px', paddingRight: '10px' }}
               />
-              <label>{baseUrl?.base_url}</label>
+              <label>{baseDomainUrl}</label>
             </UI.FieldLabelDomain>
 
             <div style={{ float: 'left', width: '500px' }}>

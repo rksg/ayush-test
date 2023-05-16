@@ -23,6 +23,7 @@ export function TestName () {
       { validator: duplicateNameValidator }
     ]}
     children={<Input />}
+    validateTrigger={'onBlur'}
   />
 }
 

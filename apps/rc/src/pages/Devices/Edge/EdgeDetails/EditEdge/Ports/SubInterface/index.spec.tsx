@@ -8,6 +8,7 @@ import { EdgeSubInterface, EdgeUrlsInfo }     from '@acx-ui/rc/utils'
 import { Provider }                           from '@acx-ui/store'
 import { mockServer, render, screen, within } from '@acx-ui/test-utils'
 
+import { EdgeEditContext }                           from '../..'
 import { mockEdgePortConfig, mockEdgeSubInterfaces } from '../../../../__tests__/fixtures'
 
 import SubInterface from '.'
@@ -30,6 +31,20 @@ jest.mock('./SubInterfaceDrawer', () => (
       <div>{data?.vlan+''}</div>
     </div>
 ))
+
+const defaultContextData = {
+  activeSubTab: {
+    key: 'sub-interface',
+    title: 'Sub-interface'
+  },
+  formControl: {
+    isDirty: false,
+    hasError: false,
+    applyFn: jest.fn()
+  },
+  setActiveSubTab: jest.fn(),
+  setFormControl: jest.fn()
+}
 
 describe('EditEdge ports - sub-interface', () => {
   let params: { tenantId: string, serialNumber: string, activeTab?: string, activeSubTab?: string }
@@ -56,7 +71,11 @@ describe('EditEdge ports - sub-interface', () => {
   it('no SubInterface', async () => {
     render(
       <Provider>
-        <SubInterface data={[]} />
+        <EdgeEditContext.Provider
+          value={defaultContextData}
+        >
+          <SubInterface data={[]} />
+        </EdgeEditContext.Provider>
       </Provider>, {
         route: {
           params,
@@ -69,7 +88,11 @@ describe('EditEdge ports - sub-interface', () => {
   it('should create SubInterface successfully', async () => {
     render(
       <Provider>
-        <SubInterface data={mockEdgePortConfig.ports} />
+        <EdgeEditContext.Provider
+          value={defaultContextData}
+        >
+          <SubInterface data={mockEdgePortConfig.ports} />
+        </EdgeEditContext.Provider>
       </Provider>, {
         route: {
           params,
@@ -83,7 +106,11 @@ describe('EditEdge ports - sub-interface', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <SubInterface data={mockEdgePortConfig.ports} />
+        <EdgeEditContext.Provider
+          value={defaultContextData}
+        >
+          <SubInterface data={mockEdgePortConfig.ports} />
+        </EdgeEditContext.Provider>
       </Provider>, {
         route: {
           params,
@@ -105,7 +132,11 @@ describe('EditEdge ports - sub-interface', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <SubInterface data={mockEdgePortConfig.ports} />
+        <EdgeEditContext.Provider
+          value={defaultContextData}
+        >
+          <SubInterface data={mockEdgePortConfig.ports} />
+        </EdgeEditContext.Provider>
       </Provider>, {
         route: {
           params,
@@ -136,7 +167,11 @@ describe('EditEdge ports - sub-interface', () => {
                   <Route path={`${basePath}/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab`}
                     element={
                       <div>
-                        <SubInterface data={mockEdgePortConfig.ports} />
+                        <EdgeEditContext.Provider
+                          value={defaultContextData}
+                        >
+                          <SubInterface data={mockEdgePortConfig.ports} />
+                        </EdgeEditContext.Provider>
                         {children}
                       </div>
                     } />

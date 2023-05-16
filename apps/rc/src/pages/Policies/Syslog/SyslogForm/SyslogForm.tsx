@@ -1,5 +1,6 @@
 import { useReducer } from 'react'
 
+import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import {
@@ -51,6 +52,7 @@ const SyslogForm = (props: SyslogFormProps) => {
   const flowLevel = FlowLevelEnum.CLIENT_FLOW
   const venues:SyslogVenue[] = []
 
+  const form = Form.useFormInstance()
   const [state, dispatch] = useReducer(mainReducer, {
     policyName,
     server,
@@ -135,6 +137,7 @@ const SyslogForm = (props: SyslogFormProps) => {
         ]}
       />
       <StepsForm<SyslogContextType>
+        form={form}
         editMode={edit}
         onCancel={() => navigate(linkToPolicies)}
         onFinish={() => handleSyslogPolicy(edit)}
@@ -143,7 +146,7 @@ const SyslogForm = (props: SyslogFormProps) => {
           name='settings'
           title={$t({ defaultMessage: 'Settings' })}
         >
-          <SyslogSettingForm edit={edit} />
+          <SyslogSettingForm edit={edit}/>
         </StepsForm.StepForm>
 
         <StepsForm.StepForm

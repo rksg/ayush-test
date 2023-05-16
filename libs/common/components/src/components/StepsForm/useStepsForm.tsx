@@ -124,7 +124,6 @@ export function useStepsForm <T> ({
     initialValues: config.defaultFormValues,
     requiredMark: true,
     preserve: true,
-    validateTrigger: 'onBlur',
     disabled: submitting
   }
 

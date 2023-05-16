@@ -166,7 +166,7 @@ exports[`NetworkVenueTabScheduleDialog should render schedule dialog with schedu
                   <div
                     class="ant-card-extra"
                   >
-                    Venue time zone:
+                    Venue time zone: 
                     <b>
                       UTC +00:00
                        (

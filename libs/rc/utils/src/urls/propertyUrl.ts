@@ -20,7 +20,9 @@ type PropertyUrlType =
   'patchResidentPortal' |
   'deleteResidentPortals' |
   'getResidentPortalLogo' |
-  'getResidentPortalFavicon'
+  'getResidentPortalFavicon' |
+  'deleteResidentPortalLogo' |
+  'deleteResidentPortalFavicon'
 
 const paginationParams = '?size=:pageSize&page=:page&sort=:sort'
 
@@ -117,6 +119,16 @@ export const PropertyUrlsInfo: { [key in PropertyUrlType]: ApiInfo } = {
   },
   getResidentPortalFavicon: {
     method: 'get',
+    newApi: true,
+    url: '/residentPortals/:serviceId/files/favIcon'
+  },
+  deleteResidentPortalLogo: {
+    method: 'delete',
+    newApi: true,
+    url: '/residentPortals/:serviceId/files/logo'
+  },
+  deleteResidentPortalFavicon: {
+    method: 'delete',
     newApi: true,
     url: '/residentPortals/:serviceId/files/favIcon'
   }

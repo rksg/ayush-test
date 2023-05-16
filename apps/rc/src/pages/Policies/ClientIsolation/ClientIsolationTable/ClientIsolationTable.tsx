@@ -1,9 +1,10 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { SimpleListTooltip }                                              from '@acx-ui/rc/components'
+import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
+import { SimpleListTooltip }                             from '@acx-ui/rc/components'
 import {
-  useDeleteClientIsolationMutation,
+  doProfileDelete,
+  useDeleteClientIsolationListMutation,
   useGetEnhancedClientIsolationListQuery,
   useGetVenuesQuery
 } from '@acx-ui/rc/services'
@@ -30,32 +31,33 @@ export default function ClientIsolationTable () {
   const navigate = useNavigate()
   const params = useParams()
   const tenantBasePath: Path = useTenantLink('')
-  const [ deleteFn ] = useDeleteClientIsolationMutation()
+  const [ deleteFn ] = useDeleteClientIsolationListMutation()
 
   const tableQuery = useTableQuery<ClientIsolationViewModel>({
     useQuery: useGetEnhancedClientIsolationListQuery,
     defaultPayload
   })
 
+  const doDelete = (selectedRows: ClientIsolationViewModel[], callback: () => void) => {
+    doProfileDelete(
+      selectedRows,
+      $t({ defaultMessage: 'Policy' }),
+      selectedRows[0].name,
+      [{ fieldName: 'venueIds', fieldText: $t({ defaultMessage: 'Venue' }) }],
+      async () => deleteFn({ params, payload: selectedRows.map(row => row.id) }).then(callback)
+    )
+  }
+
   const rowActions: TableProps<ClientIsolationViewModel>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ id, name }], clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Policy' }),
-            entityValue: name
-          },
-          onOk: () => {
-            deleteFn({ params: { ...params, policyId: id } }).then(clearSelection)
-          }
-        })
+      onClick: (selectedRows: ClientIsolationViewModel[], clearSelection) => {
+        doDelete(selectedRows, clearSelection)
       }
     },
     {
       label: $t({ defaultMessage: 'Edit' }),
+      visible: (selectedRows) => selectedRows?.length === 1,
       onClick: ([{ id }]) => {
         navigate({
           ...tenantBasePath,
@@ -95,7 +97,7 @@ export default function ClientIsolationTable () {
           onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'radio' }}
+          rowSelection={{ type: 'checkbox' }}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />

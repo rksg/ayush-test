@@ -58,6 +58,7 @@ export default function ClientIsolationSettingsForm (props: { editMode: boolean 
             validateFirst
             hasFeedback
             children={<Input />}
+            validateTrigger={'onBlur'}
           />
           <Form.Item
             name='description'

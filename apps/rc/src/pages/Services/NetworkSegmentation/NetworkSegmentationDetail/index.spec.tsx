@@ -1,11 +1,11 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, EdgeDhcpUrls, EdgeUrlsInfo, getServiceRoutePath, NetworkSegmentationUrls, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                                from '@acx-ui/store'
-import { mockServer, render, screen }                                                                                              from '@acx-ui/test-utils'
+import { CommonUrlsInfo, EdgeDhcpUrls, EdgeUrlsInfo, getServiceRoutePath, NetworkSegmentationUrls, PersonaUrls, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                                             from '@acx-ui/store'
+import { mockServer, render, screen }                                                                                                           from '@acx-ui/test-utils'
 
-import { mockApList, mockEdgeData, mockEdgeDhcpDataList, mockNsgData, mockNsgStatsList, mockNsgSwitchInfoData, mockVenueData } from '../__tests__/fixtures'
+import { mockApList, mockEdgeData, mockEdgeDhcpDataList, mockNsgData, mockNsgStatsList, mockNsgSwitchInfoData, mockPersonaGroup, mockPersonaList, mockVenueData, replacePagination } from '../__tests__/fixtures'
 
 import NetworkSegmentationDetail from '.'
 
@@ -62,6 +62,14 @@ describe('NsgDetail', () => {
       rest.get(
         NetworkSegmentationUrls.getSwitchInfoByNSGId.url,
         (req, res, ctx) => res(ctx.json(mockNsgSwitchInfoData))
+      ),
+      rest.post(
+        replacePagination(PersonaUrls.searchPersonaList.url),
+        (req, res, ctx) => res(ctx.json(mockPersonaList))
+      ),
+      rest.get(
+        PersonaUrls.getPersonaGroupById.url,
+        (req, res, ctx) => res(ctx.json(mockPersonaGroup))
       )
     )
   })

@@ -238,3 +238,7 @@ export function getSnrDisplayInfo (snr: number) {
 
   return { cssClass: snrCssClass, activatedBarIndex: snrActivatedBarIndex }
 }
+
+export const getDeviceName = (device?: NetworkDevice) => {
+  return device?.name || device?.switchName || device?.serialNumber
+}
