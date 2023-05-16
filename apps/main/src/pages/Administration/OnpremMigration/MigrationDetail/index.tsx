@@ -5,68 +5,47 @@ import {
   Descriptions
 } from '@acx-ui/components'
 import {
-  MigrateState
+  formatter,
+  DateFormatEnum
+} from '@acx-ui/formatter'
+import {
+  TaskContextType
 } from '@acx-ui/rc/utils'
 
 // import * as UI from '../styledComponents'
 
 interface GuestDetailsDrawerProps {
-  currentGuest: MigrateState,
+  currentTask: TaskContextType,
   triggerClose: () => void
-}
-
-export const defaultGuestPayload = {
-  searchString: '',
-  searchTargetFields: [
-    'name',
-    'mobilePhoneNumber',
-    'emailAddress'],
-  fields: [
-    'creationDate',
-    'name',
-    'passDurationHours',
-    'id',
-    'networkId',
-    'maxNumberOfClients',
-    'notes',
-    'clients',
-    'guestStatus',
-    'emailAddress',
-    'mobilePhoneNumber',
-    'guestType',
-    'ssid',
-    'socialLogin',
-    'expiryDate',
-    'cog'
-  ]
 }
 
 
 export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
   const { $t } = useIntl()
-  const { currentGuest } = props
+  const { currentTask } = props
 
   return (<>
     <Descriptions>
       <Descriptions.Item
         label={$t({ defaultMessage: 'Bak File' })}
-        children={currentGuest.name} />
+        children={currentTask.fileName ?? '--'} />
 
       <Descriptions.Item
         label={$t({ defaultMessage: 'Start Time' })}
-        children={currentGuest.startTime} />
+        // eslint-disable-next-line max-len
+        children={currentTask.createTime ? formatter(DateFormatEnum.DateTimeFormat)(currentTask.createTime) : '--'} />
 
       <Descriptions.Item
         label={$t({ defaultMessage: 'End Time' })}
-        children={currentGuest.endTime} />
+        children={'--'} />
 
       <Descriptions.Item
         label={$t({ defaultMessage: 'State' })}
-        children={currentGuest.state} />
+        children={currentTask.state ?? '--'} />
 
       <Descriptions.Item
         label={$t({ defaultMessage: 'Venue' })}
-        children={''} />
+        children={'--'} />
     </Descriptions>
 
     <Divider />
@@ -74,8 +53,7 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
     <Descriptions>
       <Descriptions.Item
         label={$t({ defaultMessage: 'Unsupported model' })}
-        // eslint-disable-next-line max-len
-        children={'7B:2D:F2:24:F4:17 7B:2D:F2:24:F4:17 7B:2D:F2:24:F4:17 7B:2D:F2:24:F4:17 7B:2D:F2:24:F4:17 7B:2D:F2:24:F4:17 7B:2D:F2:24:F4:17 7B:2D:F2:24:F4:17 7B:2D:F2:24:F4:17'} />
+        children={'--'} />
     </Descriptions>
 
     <Divider />
@@ -83,8 +61,7 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
     <Descriptions>
       <Descriptions.Item
         label={$t({ defaultMessage: 'Duplicated in tenant' })}
-        // eslint-disable-next-line max-len
-        children={'7B:2D:F2:24:F4:17 7B:2D:F2:24:F4:17 7B:2D:F2:24:F4:17 7B:2D:F2:24:F4:17 7B:2D:F2:24:F4:17 7B:2D:F2:24:F4:17 7B:2D:F2:24:F4:17 7B:2D:F2:24:F4:17 7B:2D:F2:24:F4:17'} />
+        children={'--'} />
     </Descriptions>
 
   </>)

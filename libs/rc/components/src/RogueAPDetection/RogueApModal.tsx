@@ -4,9 +4,9 @@ import { useIntl } from 'react-intl'
 
 import { Button, Modal, ModalType } from '@acx-ui/components'
 
-import RogueAPDetectionForm from './RogueAPDetectionForm/RogueAPDetectionForm'
+import { RogueAPDetectionForm } from './RogueAPDetectionForm/RogueAPDetectionForm'
 
-const RogueApModal = (props: {
+export const RogueApModal = (props: {
   setPolicyId: (id: string) => void
 }) => {
   const { $t } = useIntl()
@@ -39,5 +39,3 @@ const RogueApModal = (props: {
     />
   </>
 }
-
-export default RogueApModal

@@ -18,13 +18,17 @@ import {
   showActionModal
 } from '@acx-ui/components'
 import {
+  formatter,
+  DateFormatEnum
+} from '@acx-ui/formatter'
+import {
   SpaceWrapper
 } from '@acx-ui/rc/components'
 import {
-  useGetDelegationsQuery
+  useGetZdMigrationListQuery
 } from '@acx-ui/rc/services'
 import {
-  MigrateState
+  TaskContextType
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
@@ -37,35 +41,35 @@ const MigrationTable = () => {
   const { $t } = useIntl()
   const params = useParams()
   const [visible, setVisible] = useState(false)
-  const [currentGuest, setCurrentGuest] = useState({} as MigrateState)
-  const dataMock = [{
-    name: 'migration-001.bak',
-    state: 'success',
-    startTime: '2023-03-02 02:00:10 UTC',
-    endTime: '2023-03-02 03:33:13 UTC',
-    summary: 'All 4 APs were migrated to venue migration-P0d5E3J3'
-  },{
-    name: 'migration-002.bak',
-    state: 'success',
-    startTime: '2023-03-02 02:00:10 UTC',
-    endTime: '2023-03-02 03:33:13 UTC',
-    summary: 'All 44 APs were migrated to venue migration-ABCDEFG'
-  }]
+  const [currentTask, setCurrentTask] = useState({} as TaskContextType)
+  // const dataMock = [{
+  //   name: 'migration-001.bak',
+  //   state: 'success',
+  //   startTime: '2023-03-02 02:00:10 UTC',
+  //   endTime: '2023-03-02 03:33:13 UTC',
+  //   summary: 'All 4 APs were migrated to venue migration-P0d5E3J3'
+  // },{
+  //   name: 'migration-002.bak',
+  //   state: 'success',
+  //   startTime: '2023-03-02 02:00:10 UTC',
+  //   endTime: '2023-03-02 03:33:13 UTC',
+  //   summary: 'All 44 APs were migrated to venue migration-ABCDEFG'
+  // }]
 
-  const { isLoading, isFetching }= useGetDelegationsQuery({ params })
+  const { data: migrationList, isLoading, isFetching }= useGetZdMigrationListQuery({ params })
 
   const onClose = () => {
     setVisible(false)
   }
 
-  const columns: TableProps<MigrateState>['columns'] = [
+  const columns: TableProps<TaskContextType>['columns'] = [
     {
       title: $t({ defaultMessage: 'Backup File' }),
-      key: 'bakName',
-      dataIndex: 'bakName',
+      key: 'fileName',
+      dataIndex: 'fileName',
       searchable: true,
       render: (_, row) => {
-        return row.name
+        return row.fileName ?? '--'
       }
     },
     {
@@ -87,7 +91,7 @@ const MigrationTable = () => {
           type='link'
           size='small'
           onClick={() => {
-            setCurrentGuest(row)
+            setCurrentTask(row)
             setVisible(true)
           }}
         >
@@ -99,8 +103,8 @@ const MigrationTable = () => {
       key: 'summary',
       dataIndex: 'summary',
       searchable: true,
-      render: (_, row) => {
-        return row.summary
+      render: () => {
+        return '--'
       }
     },
     {
@@ -108,20 +112,20 @@ const MigrationTable = () => {
       key: 'startTime',
       dataIndex: 'startTime',
       render: (_, row) => {
-        return row.startTime
+        return row.createTime ? formatter(DateFormatEnum.DateTimeFormat)(row.createTime) : '--'
       }
     },
     {
       title: $t({ defaultMessage: 'End Date' }),
       key: 'endTime',
       dataIndex: 'endTime',
-      render: (_, row) => {
-        return row.endTime
+      render: () => {
+        return '--'
       }
     }
   ]
 
-  const rowActions: TableProps<MigrateState>['rowActions'] = [{
+  const rowActions: TableProps<TaskContextType>['rowActions'] = [{
     label: $t({ defaultMessage: 'Delete' }),
     // onClick: (rows, clearSelection) => {
     onClick: (rows) => {
@@ -130,7 +134,7 @@ const MigrationTable = () => {
         customContent: {
           action: 'DELETE',
           entityName: $t({ defaultMessage: 'Migrations' }),
-          entityValue: rows.length === 1 ? rows[0].name : undefined,
+          entityValue: rows.length === 1 ? rows[0].fileName : undefined,
           numOfEntities: rows.length,
           confirmationText: 'Delete'
         },
@@ -169,8 +173,8 @@ const MigrationTable = () => {
 
       <Table
         columns={columns}
-        dataSource={dataMock}
-        rowKey='id'
+        dataSource={migrationList}
+        rowKey='taskId'
         rowActions={rowActions}
         rowSelection={{ type: 'checkbox' }}
         locale={{
@@ -187,7 +191,7 @@ const MigrationTable = () => {
         children={
           <GuestsDetail
             triggerClose={onClose}
-            currentGuest={currentGuest}
+            currentTask={currentTask}
           />
         }
         width={'550px'}
