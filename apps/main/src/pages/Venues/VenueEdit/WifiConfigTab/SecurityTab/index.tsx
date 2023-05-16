@@ -5,6 +5,7 @@ import _                                                   from 'lodash'
 import { FormattedMessage, useIntl }                       from 'react-intl'
 
 import { Button, Fieldset, Loader, StepsFormLegacy, StepsFormLegacyInstance, Tooltip } from '@acx-ui/components'
+import { RogueApModal }                                                                from '@acx-ui/rc/components'
 import {
   useGetDenialOfServiceProtectionQuery,
   useUpdateDenialOfServiceProtectionMutation,
@@ -15,8 +16,6 @@ import { VenueMessages, redirectPreviousPage }   from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../../'
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import RogueApModal from '../../../../../../../rc/src/pages/Policies/RogueAPDetection/RogueApModal'
 
 import RogueApDrawer from './RogueApDrawer'
 

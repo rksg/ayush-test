@@ -12,7 +12,8 @@ import {
   venueLanPorts,
   mockEnabledNoNSGPropertyConfig,
   mockEnabledNSGPropertyConfig,
-  mockPersonaGroupWithNSG
+  mockPersonaGroupWithNSG,
+  mockPropertyUnitList
 } from '../../../__tests__/fixtures'
 
 import { PropertyUnitDrawer } from './index'
@@ -100,6 +101,11 @@ describe('Property Unit Drawer', () => {
   })
 
   it('should add no nsg drawer', async () => {
+    mockServer.use(
+      rest.post(
+        PropertyUrlsInfo.getPropertyUnitList.url,
+        (_, res, ctx) => res(ctx.json(mockPropertyUnitList)))
+    )
     render(<Provider>
       <PropertyUnitDrawer isEdit={false} visible onClose={closeFn} venueId={params.noNsgVenueId}/>
     </Provider>)

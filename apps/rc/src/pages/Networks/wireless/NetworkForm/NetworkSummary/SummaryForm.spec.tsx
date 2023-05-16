@@ -26,6 +26,7 @@ const mockSummary = {
   name: 'test',
   type: NetworkTypeEnum.DPSK,
   isCloudpathEnabled: false,
+  enableAuthProxy: true,
   venues: [
     {
       venueId: '6cf550cdb67641d798d804793aaa82db',
@@ -51,7 +52,9 @@ describe('SummaryForm', () => {
         (_, res, ctx) => res(ctx.json(venuesResponse))),
       rest.post(CommonUrlsInfo.getVMNetworksList.url,
         (_, res, ctx) => res(ctx.json(networksResponse))),
-      rest.post(WifiUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
+      rest.post(WifiUrlsInfo.addNetworkDeep.url,
+        (_, res, ctx) => res(ctx.json(successResponse))),
+      rest.put(WifiUrlsInfo.updateNetworkDeep.url,
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.get(CommonUrlsInfo.getCloudpathList.url,
         (_, res, ctx) => res(ctx.json(cloudpathResponse))),
@@ -84,6 +87,24 @@ describe('SummaryForm', () => {
   it('should render cloudpath disabled successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
     mockSummary.isCloudpathEnabled = false
+    const { asFragment } = render(
+      <Provider>
+        <Form>
+          <SummaryForm summaryData={mockSummary} />
+        </Form>
+      </Provider>,
+      {
+        route: { params }
+      }
+    )
+
+    expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('should show proxy service disable for non proxy support', async () => {
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+    mockSummary.isCloudpathEnabled = true
+    mockSummary.enableAuthProxy = false
     const { asFragment } = render(
       <Provider>
         <Form>

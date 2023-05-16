@@ -4,7 +4,6 @@ import { rest }  from 'msw'
 
 import { StepsForm } from '@acx-ui/components'
 import {
-  CommonUrlsInfo,
   DpskUrls, PersonaUrls,
   PropertyUrlsInfo
 } from '@acx-ui/rc/utils'
@@ -16,9 +15,9 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
+  mockAvailablePropertyConfigs,
   mockDpsk, mockPersonaGroup,
-  mockPropertyConfigs,
-  mockVenueData
+  mockPropertyConfigs
 } from '../../__tests__/fixtures'
 
 import { GeneralSettingsForm } from '.'
@@ -63,8 +62,8 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
 
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getVenuesList.url,
-        (req, res, ctx) => res(ctx.json(mockVenueData))
+        PropertyUrlsInfo.getPropertyConfigsQuery.url,
+        (req, res, ctx) => res(ctx.json(mockAvailablePropertyConfigs))
       ),
       rest.get(
         PropertyUrlsInfo.getPropertyConfigs.url,

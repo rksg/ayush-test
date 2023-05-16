@@ -52,6 +52,7 @@ const SnmpAgentSettingForm = (props: SnmpAgentSettingFormProps) => {
             hasFeedback
             initialValue={''}
             children={<Input/>}
+            validateTrigger={'onBlur'}
           />
         </GridCol>
       </GridRow>

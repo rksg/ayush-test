@@ -4,8 +4,8 @@ import { useEffect } from 'react'
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { Drawer }                                                     from '@acx-ui/components'
-import { EdgeStaticRoute, serverIpAddressRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
+import { Drawer }                                                                          from '@acx-ui/components'
+import { EdgeStaticRoute, networkWifiIpRegExp, serverIpAddressRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
 
 interface StaticRoutesDrawerProps {
   visible: boolean
@@ -62,6 +62,24 @@ const StaticRoutesDrawer = (props: StaticRoutesDrawerProps) => {
     formRef.resetFields()
   }
 
+  const validateStaticRoute = (ip: string, subnet: string) => {
+    if(!!!ip || !!!subnet) return Promise.resolve()
+    // validation rule: ip & subnet = ip
+    const ipSegment = ip.split('.')
+    const subnetSegment = subnet.split('.')
+    const seg1 = Number(ipSegment[0]) & Number(subnetSegment[0])
+    const seg2 = Number(ipSegment[1]) & Number(subnetSegment[1])
+    const seg3 = Number(ipSegment[2]) & Number(subnetSegment[2])
+    const seg4 = Number(ipSegment[3]) & Number(subnetSegment[3])
+    if(seg1 !== Number(ipSegment[0]) || seg2 !== Number(ipSegment[1])
+      || seg3 !== Number(ipSegment[2]) || seg4 !== Number(ipSegment[3])) {
+      return Promise.reject($t({
+        defaultMessage: 'Please enter a valid Network Address + Subnet Mask'
+      }))
+    }
+    return Promise.resolve()
+  }
+
   const validateDuplicate = (ip: string, subnet: string) => {
     if((data?.destIp !== ip || data?.destSubnet !== subnet) &&
       allRoutes && allRoutes.filter(item => item.destIp === ip && item.destSubnet === subnet)
@@ -79,7 +97,10 @@ const StaticRoutesDrawer = (props: StaticRoutesDrawerProps) => {
       label={$t({ defaultMessage: 'Network Address' })}
       rules={[
         { required: true },
-        { validator: (_, value) => serverIpAddressRegExp(value) },
+        { validator: (_, value) => networkWifiIpRegExp(value) },
+        {
+          validator: (_, value) => validateStaticRoute(value, formRef.getFieldValue('destSubnet'))
+        },
         { validator: (_, value) => validateDuplicate(value, formRef.getFieldValue('destSubnet')) }
       ]}
       children={<Input />}
@@ -91,6 +112,9 @@ const StaticRoutesDrawer = (props: StaticRoutesDrawerProps) => {
       rules={[
         { required: true },
         { validator: (_, value) => subnetMaskIpRegExp(value) },
+        {
+          validator: (_, value) => validateStaticRoute(formRef.getFieldValue('destIp'), value)
+        },
         { validator: (_, value) => validateDuplicate(formRef.getFieldValue('destIp'), value) }
       ]}
       children={<Input />}
