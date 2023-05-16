@@ -55,7 +55,6 @@ export function EdgeUpTimeWidget () {
   const filters = useDateFilter()
   const params = useParams()
 
-  // state of isLoading
   const [loadingState, setLoadingState] = useState<boolean>(true)
   const [queryResults, setQueryResults] = useState<EdfeUpTimePresentingData | null>(null)
   const [trigger, { isLoading }] = useGetEdgeUptimeMutation()

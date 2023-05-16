@@ -112,7 +112,7 @@ export function EdgeResourceUtilizationWidget () {
     initialWidget()
   }, [filters])
 
-  if (_.isEmpty(queryResults)) {
+  if (_.isEmpty(queryResults)|| _.isEmpty(queryResults[0].data)) {
     return (
       <Loader states={[{ isLoading: loadingState }]}>
         <HistoricalCard title={$t({ defaultMessage: 'Resource Utilization' })}>
