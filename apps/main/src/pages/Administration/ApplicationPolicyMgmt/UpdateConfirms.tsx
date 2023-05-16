@@ -9,12 +9,9 @@ import { useUpdateSigPackMutation } from '@acx-ui/rc/services'
 import { ApplicationConfirmType }   from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
-
-
 export const UpdateConfirms = (props:{
   rulesCount: number,
   confirmationType: ApplicationConfirmType
-
 })=>{
   const { $t } = useIntl()
   const [updateSigPack]=useUpdateSigPackMutation()
@@ -43,7 +40,9 @@ export const UpdateConfirms = (props:{
       updateSigPack({
         params: {},
         payload: { action: 'update' }
-      }).then(()=>{},()=>{
+      }).then(()=>{
+        setTimeout(()=>setDisabled(false), 3500)
+      },()=>{
         setDisabled(false)
       })
     }catch(error){

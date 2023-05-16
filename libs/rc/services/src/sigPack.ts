@@ -2,8 +2,10 @@ import {
   ApplicationPolicyMgmt,
   createHttpRequest,
   downloadFile,
+  onSocketActivityChanged,
   RequestPayload,
-  SigPackUrlsInfo
+  SigPackUrlsInfo,
+  TxStatus
 } from '@acx-ui/rc/utils'
 import { baseSigPackApi } from '@acx-ui/store'
 export const sigPackApi = baseSigPackApi.injectEndpoints({
@@ -46,7 +48,7 @@ export const sigPackApi = baseSigPackApi.injectEndpoints({
             const headerContent = response.headers.get('content-disposition')
             const fileName = headerContent
               ? headerContent.split('filename=')[1]
-              : ('SIGPACK_'+'a'+'.csv')
+              : ('SIGPACK_' + params?.type + '.csv')
             downloadFile(response, fileName)
           },
           headers: {
@@ -57,7 +59,7 @@ export const sigPackApi = baseSigPackApi.injectEndpoints({
         }
       }
     }),
-    updateSigPack: build.mutation<ApplicationPolicyMgmt, RequestPayload>({
+    updateSigPack: build.mutation<{ [key:string]:string }, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SigPackUrlsInfo.updateSigPack, params)
         return {
@@ -65,7 +67,13 @@ export const sigPackApi = baseSigPackApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'SigPack', id: 'SIGPACK' }]
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          if(msg.status === TxStatus.SUCCESS){
+            api.dispatch(sigPackApi.util.invalidateTags([{ type: 'SigPack', id: 'SIGPACK' }]))
+          }
+        })
+      }
     })
   })
 })

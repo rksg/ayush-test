@@ -1,9 +1,9 @@
 export interface ApplicationPolicyMgmt {
   currentVersion: string,
-  currentUpdateDate: string,
+  currentUpdatedDate: string,
   latestVersion: string,
-  latestReleaseDate: string,
-  changedApplication: ApplicationInfo[]
+  latestReleasedDate: string,
+  changedApplication?: ApplicationInfo[]
 }
 export interface ApplicationInfo {
   // eslint-disable-next-line max-len

@@ -48,6 +48,8 @@ const FWVersionMgmt = () => {
   useEffect(()=>{
     if(sigPackUpdate&&sigPackUpdate.currentVersion!==sigPackUpdate.latestVersion){
       setIsAPPLibraryAvailable(true)
+    }else{
+      setIsAPPLibraryAvailable(false)
     }
   }, [sigPackUpdate])
   useEffect(()=>{

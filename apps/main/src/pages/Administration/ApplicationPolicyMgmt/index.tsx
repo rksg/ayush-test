@@ -18,7 +18,7 @@ const ApplicationPolicyMgmt = ()=>{
   const [ exportAllSigPack ] = useExportAllSigPackMutation()
   const [ exportSigPack] = useExportSigPackMutation()
   const [type, setType] = useState(ApplicationUpdateType.APPLICATION_ADDED)
-  const [updateAvailable, setUpdateAvailable] = useState(false)
+  const [updateAvailable, setUpdateAvailable] = useState(true)
   const [added, setAdded] = useState([] as ApplicationInfo[])
   const [updated, setUpdated] = useState([] as ApplicationInfo[])
   const [merged, setMerged] = useState([] as ApplicationInfo[])
@@ -26,7 +26,7 @@ const ApplicationPolicyMgmt = ()=>{
   const [renamed, setRenamed] = useState([] as ApplicationInfo[])
   const { data } = useGetSigPackQuery({ params: { changesIncluded: 'true' } })
   useEffect(()=>{
-    if(data&&data.changedApplication.length){
+    if(data&&data.changedApplication?.length){
       setUpdateAvailable(true)
       setAdded(data.changedApplication.filter(item=>item.type ===
         ApplicationUpdateType.APPLICATION_ADDED))
@@ -38,6 +38,8 @@ const ApplicationPolicyMgmt = ()=>{
         ApplicationUpdateType.APPLICATION_REMOVED))
       setRenamed(data.changedApplication.filter(item=>item.type ===
         ApplicationUpdateType.APPLICATION_RENAMED))
+    }else{
+      setUpdateAvailable(false)
     }
   },[data])
   let confirmationType = ApplicationConfirmType.NEW_APP_ONLY
@@ -91,7 +93,7 @@ const ApplicationPolicyMgmt = ()=>{
                 {$t({ defaultMessage: 'Release' })}
               </UI.CurrentValue>
               <UI.CurrentValue>
-                {formatter(DateFormatEnum.DateFormat)(data?.latestReleaseDate)}
+                {formatter(DateFormatEnum.DateFormat)(data?.latestReleasedDate)}
               </UI.CurrentValue>
             </Space>
           </UI.FwContainer>}
@@ -117,7 +119,7 @@ const ApplicationPolicyMgmt = ()=>{
                 {$t({ defaultMessage: 'Last Updated:' })}
               </UI.CurrentLabel>
               <UI.CurrentValue>
-                {formatter(DateFormatEnum.DateFormat)(data?.currentUpdateDate)}
+                {formatter(DateFormatEnum.DateFormat)(data?.currentUpdatedDate)}
               </UI.CurrentValue>
             </UI.CurrentDetail>
           </UI.FwContainer>
@@ -127,7 +129,8 @@ const ApplicationPolicyMgmt = ()=>{
             'the below updates under this tenant' })}
         </div>}
         {updateAvailable&&<div style={{ marginTop: 10 }}>
-          <UpdateConfirms rulesCount={rulesCount} confirmationType={confirmationType}/>
+          <UpdateConfirms rulesCount={rulesCount}
+            confirmationType={confirmationType}/>
         </div>}
       </UI.BannerVersion>
     )

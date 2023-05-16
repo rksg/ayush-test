@@ -6,18 +6,18 @@ import { ApplicationInfo }   from '@acx-ui/rc/utils'
 import { filterByAccess }    from '@acx-ui/user'
 
 
-
+type APPTableProps = {
+  actions: { label:string, onClick?: ()=>void }[],
+  data: ApplicationInfo[]
+}
 const getRulesInfo = (row: ApplicationInfo)=>{
   if (!row.impactedItems || row.impactedItems.length === 0) return 0
   const impactedItems = row.impactedItems
-  // eslint-disable-next-line max-len
-  const tooltipItems = impactedItems.map(v => v.applicationPolicyName + '-' + v.applicationPolicyRuleName)
+  const tooltipItems = impactedItems.map(v => v.applicationPolicyName +
+    '-' + v.applicationPolicyRuleName)
   return <SimpleListTooltip items={tooltipItems} displayText={impactedItems.length} />
 }
-export const NewAPPTable=(props:{
-  actions: { label:string, onClick?: ()=>void }[],
-  data: ApplicationInfo[]
-})=>{
+export const NewAPPTable=(props: APPTableProps)=>{
   const { $t } = useIntl()
   const newColumn: TableProps<ApplicationInfo>['columns'] =[
     {
@@ -40,10 +40,7 @@ export const NewAPPTable=(props:{
     actions={filterByAccess(props.actions)}
   />)
 }
-export const UpdateAPPTable=(props:{
-    actions: { label:string, onClick?: ()=>void }[],
-    data: ApplicationInfo[]
-})=>{
+export const UpdateAPPTable=(props: APPTableProps)=>{
   const { $t } = useIntl()
 
   const updateColumn: TableProps<ApplicationInfo>['columns'] =[
@@ -82,10 +79,7 @@ export const UpdateAPPTable=(props:{
     actions={filterByAccess(props.actions)}
   />)
 }
-export const MergedAPPTable=(props:{
-    actions: { label:string, onClick?: ()=>void }[],
-    data: ApplicationInfo[]
-})=>{
+export const MergedAPPTable=(props: APPTableProps)=>{
   const { $t } = useIntl()
   const mergedColumn: TableProps<ApplicationInfo>['columns'] =[
     {
@@ -123,10 +117,7 @@ export const MergedAPPTable=(props:{
     actions={filterByAccess(props.actions)}
   />)
 }
-export const RemovedAPPTable=(props:{
-    actions: { label:string, onClick?: ()=>void }[],
-    data: ApplicationInfo[]
-})=>{
+export const RemovedAPPTable=(props: APPTableProps)=>{
   const { $t } = useIntl()
   const removedColumn: TableProps<ApplicationInfo>['columns'] =[
     {
@@ -158,10 +149,7 @@ export const RemovedAPPTable=(props:{
     actions={filterByAccess(props.actions)}
   />)
 }
-export const ChangedAPPTable=(props:{
-    actions: { label:string, onClick?: ()=>void }[],
-    data: ApplicationInfo[]
-})=>{
+export const ChangedAPPTable=(props: APPTableProps)=>{
   const { $t } = useIntl()
   const changedColumn: TableProps<ApplicationInfo>['columns'] =[
     {
