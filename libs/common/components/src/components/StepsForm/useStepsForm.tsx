@@ -50,7 +50,6 @@ export function useStepsForm <T> ({
   const total = steps.length
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
-  const [disabled, setDisabled] = useState(!editMode)
   const formConfig = useStepsFormAnt({
     ...config,
     submit: onFinish,
@@ -116,7 +115,7 @@ export function useStepsForm <T> ({
 
   const formProps: FormProps<T> = {
     layout: 'vertical',
-    ...config,
+    ..._.omit(config, 'defaultFormValues'),
     ...props,
     ..._.omit(currentStep.props, 'children'),
     // Unable to take from props.initialValues
@@ -171,12 +170,13 @@ export function useStepsForm <T> ({
       children={labels.pre}
       disabled={formConfig.current === 0}
     />,
+    // TODO:
+    // - handle disable when validation not passed
     apply: <Button
       type='secondary'
       loading={loading}
       onClick={() => submit()}
       children={labels.apply}
-      disabled={disabled}
     />,
     submit: labels.submit.length === 0? null: formConfig.current < steps.length - 1
       ? <Button
@@ -184,14 +184,12 @@ export function useStepsForm <T> ({
         loading={loading}
         onClick={() => newConfig.gotoStep(formConfig.current + 1)}
         children={labels.next}
-        disabled={disabled}
       />
       : <Button
         type='secondary'
         loading={loading}
         onClick={() => submit()}
         children={labels.submit}
-        disabled={disabled}
       />
   }
 
@@ -238,11 +236,7 @@ export function useStepsForm <T> ({
     : <Col span={24} data-testid='steps-form-body'>{currentStepEl}</Col>
 
   const stepsFormEl = <UI.Wrapper data-testid='steps-form'>
-    <Form {...newConfig.formProps}
-      onFieldsChange={(...props) => {
-        newConfig.formProps.onFieldsChange?.(...props)
-        setDisabled(form.getFieldsError().filter(({ errors }) => errors.length).length > 0)
-      }}>
+    <Form {...newConfig.formProps}>
       <Row>{formLayout}</Row>
       {buttonEls}
     </Form>
