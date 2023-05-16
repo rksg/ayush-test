@@ -49,14 +49,16 @@ function getStartAndEndTimes (timeSeries: TimeSeriesChartData[]) {
   }, [] as [TimeStamp, string, TimeStamp, number | null, string][])
 }
 
-export function EdgeUpTimeWidget ({ isLoading }: { isLoading: boolean }) {
+export function EdgeUpTimeWidget () {
 
   const { $t } = useIntl()
   const filters = useDateFilter()
   const params = useParams()
 
+  // state of isLoading
+  const [loadingState, setLoadingState] = useState<boolean>(true)
   const [queryResults, setQueryResults] = useState<EdfeUpTimePresentingData | null>(null)
-  const [trigger] = useGetEdgeUptimeMutation()
+  const [trigger, { isLoading }] = useGetEdgeUptimeMutation()
 
   type Key = keyof Omit<EdgeStatusTimeSeries, 'time'>
 
@@ -97,41 +99,42 @@ export function EdgeUpTimeWidget ({ isLoading }: { isLoading: boolean }) {
             isLoading: false
           }
           setQueryResults(tramformedData)
+          setLoadingState(isLoading)
         })
         .catch((err) => {
           // eslint-disable-next-line no-console
           console.error(err)
         })
     }
-    if (!isLoading){
-      initialWidget()
-    }
-  }, [isLoading, filters])
+    initialWidget()
+  }, [filters])
 
   if (!queryResults || _.isEmpty(queryResults.timeSeries)) {
     return (
-      <UI.Wrapper>
-        <UI.EdgeStatusHeader col={{ span: 16 }}>
-          <Card.Title>
-            {$t({ defaultMessage: 'Edge Status' })}
-            <Tooltip
-              title={
-                $t({ defaultMessage: 'Historical data is slightly delayed, and not real-time' })}>
-              <UI.HistoricalIcon />
-            </Tooltip>
-          </Card.Title>
-        </UI.EdgeStatusHeader>
-        <GridCol col={{ span: 24 }} style={{ height: '50px' }}>
-          <AutoSizer>
-            {() =><NoData />}
-          </AutoSizer>
-        </GridCol>
-      </UI.Wrapper>
+      <Loader states={[{ isLoading: loadingState }]}>
+        <UI.Wrapper>
+          <UI.EdgeStatusHeader col={{ span: 16 }}>
+            <Card.Title>
+              {$t({ defaultMessage: 'Edge Status' })}
+              <Tooltip
+                title={
+                  $t({ defaultMessage: 'Historical data is slightly delayed, and not real-time' })}>
+                <UI.HistoricalIcon />
+              </Tooltip>
+            </Card.Title>
+          </UI.EdgeStatusHeader>
+          <GridCol col={{ span: 24 }} style={{ height: '50px' }}>
+            <AutoSizer>
+              {() =><NoData />}
+            </AutoSizer>
+          </GridCol>
+        </UI.Wrapper>
+      </Loader>
     )
   }
 
   return (
-    <Loader states={[{ isLoading }]}>
+    <Loader states={[{ isLoading: loadingState }]}>
       <UI.Wrapper>
         <UI.EdgeStatusHeader col={{ span: 16 }}>
           <Card.Title>

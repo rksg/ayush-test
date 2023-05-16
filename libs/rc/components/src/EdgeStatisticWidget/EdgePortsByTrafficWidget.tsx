@@ -13,14 +13,15 @@ import { useGetEdgeTopTrafficMutation }                               from '@acx
 import { EdgeTimeSeriesPayload }                                      from '@acx-ui/rc/utils'
 import { useDateFilter }                                              from '@acx-ui/utils'
 
-export function EdgePortsByTrafficWidget ({ isLoading }:{ isLoading: boolean }) {
+export function EdgePortsByTrafficWidget () {
   const { $t } = useIntl()
   const filters = useDateFilter()
   const params = useParams()
 
+  const [loadingState, setLoadingState] = useState<boolean>(true)
   const [queryResults, setQueryResults] = useState<DonutChartData[]>([])
 
-  const [trigger] = useGetEdgeTopTrafficMutation()
+  const [trigger, { isLoading }] = useGetEdgeTopTrafficMutation()
 
   useEffect(() => {
     const initialWidget = async () => {
@@ -42,7 +43,7 @@ export function EdgePortsByTrafficWidget ({ isLoading }:{ isLoading: boolean }) 
               color: colors[index]
             })
           })
-
+          setLoadingState(isLoading)
           setQueryResults(chartData)
         })
         .catch((error) => {
@@ -50,23 +51,23 @@ export function EdgePortsByTrafficWidget ({ isLoading }:{ isLoading: boolean }) 
           console.error(error)
         })
     }
-    if (!isLoading) {
-      initialWidget()
-    }
-  }, [isLoading, filters])
+    initialWidget()
+  }, [filters])
 
   if (_.isEmpty(queryResults)) {
     return (
-      <HistoricalCard title={$t({ defaultMessage: 'Top Ports by Traffic' })}>
-        <AutoSizer>
-          {() =><NoData />}
-        </AutoSizer>
-      </HistoricalCard>
+      <Loader states={[{ isLoading: loadingState }]}>
+        <HistoricalCard title={$t({ defaultMessage: 'Top Ports by Traffic' })}>
+          <AutoSizer>
+            {() =><NoData />}
+          </AutoSizer>
+        </HistoricalCard>
+      </Loader>
     )
   }
 
   return (
-    <Loader states={[ { isLoading } ]}>
+    <Loader states={[{ isLoading: loadingState }]}>
       <HistoricalCard title={$t({ defaultMessage: 'Top Ports by Traffic' })}>
         <AutoSizer>
           {({ height, width }) =>

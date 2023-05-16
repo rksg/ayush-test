@@ -38,16 +38,17 @@ interface UtilizationSeriesFragment {
 
 type Key = keyof Omit<EdgeResourceTimeSeries, 'time'>
 
-export function EdgeResourceUtilizationWidget ({ isLoading }:{ isLoading: boolean }) {
+export function EdgeResourceUtilizationWidget () {
   const { $t } = useIntl()
   const filters = useDateFilter()
   const params = useParams()
 
+  const [loadingState, setLoadingState] = useState<boolean>(true)
   const [queryResults, setQueryResults] = useState<TimeSeriesChartData[]>([])
   const [seriesFragment, setSeriesFragment] = useState<UtilizationSeriesFragment[]>([])
 
 
-  const [trigger] = useGetEdgeResourceUtilizationMutation()
+  const [trigger, { isLoading }] = useGetEdgeResourceUtilizationMutation()
 
   const seriesMapping = [
     { key: 'cpu', name: $t({ defaultMessage: 'CPU' }) },
@@ -101,24 +102,25 @@ export function EdgeResourceUtilizationWidget ({ isLoading }:{ isLoading: boolea
               })
             }
           ])
+          setLoadingState(isLoading)
         })
         .catch((error) => {
           // eslint-disable-next-line no-console
           console.error(error)
         })
     }
-    if (!isLoading) {
-      initialWidget()
-    }
-  }, [isLoading, filters])
+    initialWidget()
+  }, [filters])
 
   if (_.isEmpty(queryResults)) {
     return (
-      <HistoricalCard title={$t({ defaultMessage: 'Resource Utilization' })}>
-        <AutoSizer>
-          {() =><NoData />}
-        </AutoSizer>
-      </HistoricalCard>
+      <Loader states={[{ isLoading: loadingState }]}>
+        <HistoricalCard title={$t({ defaultMessage: 'Resource Utilization' })}>
+          <AutoSizer>
+            {() =><NoData />}
+          </AutoSizer>
+        </HistoricalCard>
+      </Loader>
     )
   }
 
@@ -175,7 +177,7 @@ export function EdgeResourceUtilizationWidget ({ isLoading }:{ isLoading: boolea
   }
 
   return (
-    <Loader states={[{ isLoading }]}>
+    <Loader states={[{ isLoading: loadingState }]}>
       <HistoricalCard title={$t({ defaultMessage: 'Resource Utilization' })}>
         <AutoSizer>
           {({ height, width }) =>

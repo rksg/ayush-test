@@ -63,14 +63,15 @@ const transformTrafficSeriesFragment = (data: EdgeAllPortTrafficData): TrafficSe
   })
 }
 
-export function EdgeTrafficByVolumeWidget ({ isLoading }: { isLoading: boolean }) {
+export function EdgeTrafficByVolumeWidget () {
   const { $t } = useIntl()
   const filters = useDateFilter()
   const params = useParams()
 
+  const [loadingState, setLoadingState] = useState<boolean>(true)
   const [queryResults, setQueryResults] = useState<EdgeAllPortTrafficData | null>(null)
 
-  const [trigger] = useGetEdgePortTrafficMutation()
+  const [trigger, { isLoading }] = useGetEdgePortTrafficMutation()
 
   useEffect(() => {
     const initialWidget = async () => {
@@ -84,24 +85,25 @@ export function EdgeTrafficByVolumeWidget ({ isLoading }: { isLoading: boolean }
       }).unwrap()
         .then((data) => {
           setQueryResults(data)
+          setLoadingState(isLoading)
         })
         .catch((error) => {
           // eslint-disable-next-line no-console
           console.error(error)
         })
     }
-    if (!isLoading) {
-      initialWidget()
-    }
-  }, [isLoading, filters])
+    initialWidget()
+  }, [filters])
 
   if (!queryResults || _.isEmpty(queryResults.timeSeries.time)) {
     return (
-      <HistoricalCard title={$t({ defaultMessage: 'Traffic by Volume' })}>
-        <AutoSizer>
-          {() =><NoData />}
-        </AutoSizer>
-      </HistoricalCard>
+      <Loader states={[{ isLoading: loadingState }]}>
+        <HistoricalCard title={$t({ defaultMessage: 'Traffic by Volume' })}>
+          <AutoSizer>
+            {() =><NoData />}
+          </AutoSizer>
+        </HistoricalCard>
+      </Loader>
     )
   }
 
@@ -158,7 +160,7 @@ export function EdgeTrafficByVolumeWidget ({ isLoading }: { isLoading: boolean }
   }
 
   return (
-    <Loader states={[{ isLoading }]}>
+    <Loader states={[{ isLoading: loadingState }]}>
       <HistoricalCard title={$t({ defaultMessage: 'Traffic by Volume' })}>
         <AutoSizer>
           {({ height, width }) => (
