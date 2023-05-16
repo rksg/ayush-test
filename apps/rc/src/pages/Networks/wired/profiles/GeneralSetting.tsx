@@ -29,7 +29,7 @@ export function GeneralSetting () {
   const nameValidator = async (value: string) => {
     const payload = { ...profileListPayload, searchString: value }
     const list = (await validateUniqueProfileName({ params, payload }, true).unwrap()).data
-      .filter(n => n.id !== params.networkId)
+      .filter(n => n.id !== params.profileId)
       .map(n => n.name)
 
     return checkObjectNotExists(list, value, $t({ defaultMessage: 'Configuration Profile' }))
