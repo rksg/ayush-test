@@ -161,35 +161,36 @@ export default function AdaptivePolicyTable () {
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
-    disabled: (([selectedItem]) => selectedItem ? checkDelete(selectedItem.id) : false),
-    tooltip: (([selectedItem]) =>
-      selectedItem ?
-        checkDelete(selectedItem.id) ?
-        // eslint-disable-next-line max-len
-          $t({ defaultMessage: 'This policy is in use by one or more Adaptive Policy Sets.' }) : undefined : undefined
-    ),
     onClick: ([{ name, id, policyType }], clearSelection) => {
-      showActionModal({
-        type: 'confirm',
-        customContent: {
-          action: 'DELETE',
-          entityName: $t({ defaultMessage: 'policy' }),
-          entityValue: name
-        },
-        onOk: async () => {
-          deletePolicy({ params: { policyId: id, templateId: templateIdMap.get(policyType) } })
-            .unwrap()
-            .then(() => {
-              showToast({
-                type: 'success',
-                content: $t({ defaultMessage: 'Policy {name} was deleted' }, { name })
+      if (checkDelete(id)) {
+        showActionModal({
+          type: 'error',
+          // eslint-disable-next-line max-len
+          content: $t({ defaultMessage: 'This policy is in use by one or more Adaptive Policy Sets.' })
+        })
+      } else {
+        showActionModal({
+          type: 'confirm',
+          customContent: {
+            action: 'DELETE',
+            entityName: $t({ defaultMessage: 'policy' }),
+            entityValue: name
+          },
+          onOk: async () => {
+            deletePolicy({ params: { policyId: id, templateId: templateIdMap.get(policyType) } })
+              .unwrap()
+              .then(() => {
+                showToast({
+                  type: 'success',
+                  content: $t({ defaultMessage: 'Policy {name} was deleted' }, { name })
+                })
+                clearSelection()
+              }).catch((error) => {
+                console.log(error) // eslint-disable-line no-console
               })
-              clearSelection()
-            }).catch((error) => {
-              console.log(error) // eslint-disable-line no-console
-            })
-        }
-      })
+          }
+        })
+      }
     }
   }]
 

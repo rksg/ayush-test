@@ -82,36 +82,36 @@ export default function RadiusAttributeGroupTable () {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
-      // eslint-disable-next-line max-len
-      disabled: (([selectedItem]) => (selectedItem && selectedItem.id) ? checkDelete(selectedItem.id) : false),
-      tooltip: (([selectedItem]) =>
-        selectedItem ?
-          checkDelete(selectedItem.id) ?
-          // eslint-disable-next-line max-len
-            $t({ defaultMessage: 'This group is in use by one or more Adaptive Policies.' }) : undefined : undefined
-      ),
       onClick: ([{ name, id }], clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'group' }),
-            entityValue: name
-          },
-          onOk: async () => {
-            deleteGroup({ params: { policyId: id } })
-              .unwrap()
-              .then(() => {
-                showToast({
-                  type: 'success',
-                  content: $t({ defaultMessage: 'Group {name} was deleted' }, { name })
+        if (checkDelete(id)) {
+          showActionModal({
+            type: 'error',
+            // eslint-disable-next-line max-len
+            content: $t({ defaultMessage: 'This group is in use by one or more Adaptive Policies.' })
+          })
+        } else {
+          showActionModal({
+            type: 'confirm',
+            customContent: {
+              action: 'DELETE',
+              entityName: $t({ defaultMessage: 'group' }),
+              entityValue: name
+            },
+            onOk: async () => {
+              deleteGroup({ params: { policyId: id } })
+                .unwrap()
+                .then(() => {
+                  showToast({
+                    type: 'success',
+                    content: $t({ defaultMessage: 'Group {name} was deleted' }, { name })
+                  })
+                  clearSelection()
+                }).catch((error) => {
+                  console.log(error) // eslint-disable-line no-console
                 })
-                clearSelection()
-              }).catch((error) => {
-                console.log(error) // eslint-disable-line no-console
-              })
-          }
-        })
+            }
+          })
+        }
       }
     }]
 

@@ -200,38 +200,36 @@ export default function MacRegistrationListsTable () {
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
-    disabled: (([selectedItem]) =>
-      (selectedItem && selectedItem.associationIds && selectedItem.networkIds)
-        ? selectedItem.associationIds.length > 0 || selectedItem.networkIds.length > 0: false
-    ),
-    tooltip: (([selectedItem]) =>
-      (selectedItem && selectedItem.associationIds && selectedItem.networkIds)
-        ? (selectedItem.associationIds.length > 0 || selectedItem.networkIds.length > 0 ?
+    onClick: ([{ name, id, associationIds, networkIds }], clearSelection) => {
+      if ((associationIds && associationIds.length > 0) || (networkIds && networkIds.length > 0)) {
+        showActionModal({
+          type: 'error',
           // eslint-disable-next-line max-len
-          $t({ defaultMessage: 'This list is in use by one or more Networks and one or more Personas.' }) : undefined ) : undefined
-    ),
-    onClick: ([{ name, id }], clearSelection) => {
-      showActionModal({
-        type: 'confirm',
-        customContent: {
-          action: 'DELETE',
-          entityName: $t({ defaultMessage: 'List' }),
-          entityValue: name
-        },
-        onOk: () => {
-          deleteMacRegList({ params: { policyId: id } })
-            .unwrap()
-            .then(() => {
-              showToast({
-                type: 'success',
-                content: $t({ defaultMessage: 'List {name} was deleted' }, { name })
+          content: $t({ defaultMessage: 'This list is in use by one or more Networks and one or more Personas.' })
+        })
+      } else {
+        showActionModal({
+          type: 'confirm',
+          customContent: {
+            action: 'DELETE',
+            entityName: $t({ defaultMessage: 'List' }),
+            entityValue: name
+          },
+          onOk: () => {
+            deleteMacRegList({ params: { policyId: id } })
+              .unwrap()
+              .then(() => {
+                showToast({
+                  type: 'success',
+                  content: $t({ defaultMessage: 'List {name} was deleted' }, { name })
+                })
+                clearSelection()
+              }).catch((error) => {
+                console.log(error) // eslint-disable-line no-console
               })
-              clearSelection()
-            }).catch((error) => {
-              console.log(error) // eslint-disable-line no-console
-            })
-        }
-      })
+          }
+        })
+      }
     }
   }]
 

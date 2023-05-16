@@ -77,28 +77,35 @@ export function MacRegistrationsTab () {
   {
     label: $t({ defaultMessage: 'Delete' }),
     visible: (selectedRows) => selectedRows.length === 1,
-    onClick: ([{ macAddress, id }], clearSelection) => {
-      showActionModal({
-        type: 'confirm',
-        customContent: {
-          action: 'DELETE',
-          entityName: $t({ defaultMessage: 'MAC Address' }),
-          entityValue: macAddress
-        },
-        onOk: () => {
-          deleteMacRegistration({ params: { policyId, registrationId: id } }).unwrap()
-            .then(() => {
-              showToast({
-                type: 'success',
-                // eslint-disable-next-line max-len
-                content: $t({ defaultMessage: 'MAC Address {macAddress} was deleted' }, { macAddress })
+    onClick: ([{ macAddress, id, identityId }], clearSelection) => {
+      if (identityId) {
+        showActionModal({
+          type: 'error',
+          content: $t({ defaultMessage: 'This MAC Address is in use by Persona.' })
+        })
+      } else {
+        showActionModal({
+          type: 'confirm',
+          customContent: {
+            action: 'DELETE',
+            entityName: $t({ defaultMessage: 'MAC Address' }),
+            entityValue: macAddress
+          },
+          onOk: () => {
+            deleteMacRegistration({ params: { policyId, registrationId: id } }).unwrap()
+              .then(() => {
+                showToast({
+                  type: 'success',
+                  // eslint-disable-next-line max-len
+                  content: $t({ defaultMessage: 'MAC Address {macAddress} was deleted' }, { macAddress })
+                })
+                clearSelection()
+              }).catch((error) => {
+                console.log(error) // eslint-disable-line no-console
               })
-              clearSelection()
-            }).catch((error) => {
-              console.log(error) // eslint-disable-line no-console
-            })
-        }
-      })
+          }
+        })
+      }
     }
   },
   {
