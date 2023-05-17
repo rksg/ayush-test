@@ -6,9 +6,11 @@ import { Tabs, Tooltip }          from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { InformationSolid }       from '@acx-ui/icons'
 import {
+  useGetLatestEdgeFirmwareQuery,
   useGetLatestFirmwareListQuery,
   useGetSwitchLatestFirmwareListQuery,
   useGetSwitchVenueVersionListQuery,
+  useGetVenueEdgeFirmwareListQuery,
   useGetVenueVersionListQuery
 } from '@acx-ui/rc/services'
 import { useParams } from '@acx-ui/react-router-dom'
@@ -33,6 +35,12 @@ const FWVersionMgmt = () => {
   const { data: venueVersionList } = useGetVenueVersionListQuery({ params })
   const { data: latestSwitchReleaseVersions } = useGetSwitchLatestFirmwareListQuery({ params })
   const { data: switchVenueVersionList } = useGetSwitchVenueVersionListQuery({ params })
+  const { data: edgeVenueVersionList } = useGetVenueEdgeFirmwareListQuery({})
+  const { latestEdgeReleaseVersion } = useGetLatestEdgeFirmwareQuery({}, {
+    selectFromResult: ({ data }) => ({
+      latestEdgeReleaseVersion: data?.[0]
+    })
+  })
 
   const [isApFirmwareAvailable, setIsApFirmwareAvailable] = useState(false)
   const [isSwitchFirmwareAvailable, setIsSwitchFirmwareAvailable] = useState(false)
@@ -65,6 +73,12 @@ const FWVersionMgmt = () => {
       setIsSwitchFirmwareAvailable(hasOutdated09 || hasOutdated10)
     }
   }, [latestSwitchReleaseVersions, switchVenueVersionList])
+
+  useEffect(() => {
+    const hasOutdated = edgeVenueVersionList?.some(item=>
+      item.versions?.[0].id !== latestEdgeReleaseVersion?.id)
+    setIsEdgeFirmwareAvailable(!!hasOutdated)
+  }, [edgeVenueVersionList, latestEdgeReleaseVersion])
 
   const tabs = {
     apFirmware: {
