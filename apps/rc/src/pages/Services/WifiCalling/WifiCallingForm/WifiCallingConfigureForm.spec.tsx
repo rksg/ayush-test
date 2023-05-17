@@ -161,6 +161,10 @@ describe('WifiCallingConfigureForm', () => {
     fireEvent.change(screen.getByRole('textbox', { name: /service name/i }),
       { target: { value: 'service-name-test' } })
 
+    await userEvent.click(screen.getByText('Scope'))
+
+    await screen.findByRole('heading', { name: 'Scope', level: 3 })
+
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
   })
 

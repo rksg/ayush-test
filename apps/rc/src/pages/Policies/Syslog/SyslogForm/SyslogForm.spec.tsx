@@ -268,6 +268,10 @@ describe('SyslogForm', () => {
 
     await userEvent.type(await screen.findByTestId('name'), 'modify name')
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+    await userEvent.click(await screen.findByText('Scope'))
+
+    const applyBtn = await screen.findByRole('button', { name: 'Apply' })
+
+    await userEvent.click(applyBtn)
   })
 })

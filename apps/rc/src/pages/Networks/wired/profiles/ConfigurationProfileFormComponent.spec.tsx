@@ -571,6 +571,7 @@ describe('Wired - TrustedPorts', () => {
 
     const editButton = await screen.findByRole('button', { name: /Edit/i })
     fireEvent.click(editButton)
+    await userEvent.click((await screen.findAllByText('Trusted Ports'))[1])
     await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
   })
 

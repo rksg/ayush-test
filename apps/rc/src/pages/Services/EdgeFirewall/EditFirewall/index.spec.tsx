@@ -154,6 +154,14 @@ describe('Edit edge firewall service', () => {
     await click(within(dialog).getByRole('button', { name: 'Add' }))
     await click(within(drawer).getByRole('button', { name: 'Apply' }))
 
+    // Navigate to Step 2
+    await click(screen.getByText('Scope'))
+    expect(await body.findByRole('heading', { name: 'Scope' })).toBeVisible()
+
+    // Step 2
+    const rows = await body.findAllByRole('row', { name: /Smart Edge/i })
+    expect(rows.length).toBe(5)
+
     await click(actions.getByRole('button', { name: 'Apply' }))
 
     await waitFor(() => {
@@ -277,12 +285,26 @@ describe('Edit edge firewall service', () => {
     await click(within(dialog).getByRole('button', { name: 'Add' }))
     await click(within(drawer).getByRole('button', { name: 'Add' }))
 
+    // Navigate to Step 2
+    await click(screen.getByText('Scope'))
+    expect(await body.findByRole('heading', { name: 'Scope' })).toBeVisible()
+
+    // Step 2
+    const rows = await body.findAllByRole('row', { name: /Smart Edge/i })
+    expect(rows.length).toBe(5)
+    // eslint-disable-next-line max-len
+    expect(within(await body.findByRole('row', { name: /Smart Edge 2/i })).getByRole('switch')).toBeChecked()
+    await click(
+      within(await body.findByRole('row', { name: /Smart Edge 2/i })).getByRole('checkbox'))
+    await click(await body.findByRole('button', { name: 'Deactivate' }))
+
+
     await click(actions.getByRole('button', { name: 'Apply' }))
 
     await waitFor(() => {
       expect(mockedUpdateFn).toBeCalledWith({
         serviceName: 'test',
-        edgeIds: ['0000000002', '0000000003'],
+        edgeIds: ['0000000003'],
         // tags: [],
         ddosRateLimitingEnabled: true,
         ddosRateLimitingRules: [{

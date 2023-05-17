@@ -177,7 +177,19 @@ describe('Update NetworkSegmentation', () => {
       </Provider>, {
         route: { params, path: updateNsgPath }
       })
+    // step 1
     expect(await screen.findByRole('table')).toBeVisible()
+    await user.click(await screen.findByText('SmartEdge'))
+    // step 2
+    expect(await screen.findByRole('table')).toBeVisible()
+    await user.click(await screen.findByText('Wireless Network'))
+    // step 3
+    await user.click(await screen.findByText('Dist. Switch'))
+    // step 4
+    await screen.findByRole('row', { name: /FMN4221R00H---DS---3/i })
+    await user.click((await screen.findAllByText('Access Switch'))[0])
+    // step 5
+    await screen.findByRole('row', { name: /FEK3224R09N---AS---3/i })
     await user.click(await screen.findByRole('button', { name: 'Apply' }))
     await waitFor(() => expect(mockedUsedNavigate).toBeCalledWith({
       hash: '',
