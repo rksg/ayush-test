@@ -55,7 +55,9 @@ export const UserUrlsInfo = {
   },
   switchAllowedOperations: {
     method: 'get',
-    url: '/api/switch/tenant/:tenantId/allowed-operations'
+    url: '/tenants/allowedOperations?service=switch',
+    oldUrl: '/api/switch/tenant/:tenantId/allowed-operations',
+    newApi: true
   },
   tenantAllowedOperations: {
     method: 'get',
