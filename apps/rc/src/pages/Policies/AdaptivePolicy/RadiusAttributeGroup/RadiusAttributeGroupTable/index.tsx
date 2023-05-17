@@ -120,7 +120,7 @@ export default function RadiusAttributeGroupTable () {
           showActionModal({
             type: 'error',
             // eslint-disable-next-line max-len
-            content: $t({ defaultMessage: 'The Group is still in use by another service.' })
+            content: $t({ defaultMessage: 'This group is still in use by another service.' })
           })
         } else
         {
