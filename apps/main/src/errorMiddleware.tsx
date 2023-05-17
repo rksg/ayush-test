@@ -92,8 +92,8 @@ export const getErrorContent = (action: ErrorAction) => {
   }
   const { $t } = intl
   const status = action.meta.baseQueryMeta?.response?.status
-   || action.payload?.originalStatus
-   || action.payload?.status
+   ?? action.payload?.originalStatus
+   ?? action.payload?.status
 
   let errorMsg = {} as ErrorMessageType
   let type: ActionModalType = 'error'

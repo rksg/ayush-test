@@ -15,6 +15,19 @@ import {
 const { setUpIntl } = utils
 
 describe('getErrorContent', () => {
+  const { location } = window
+  const mockReload = jest.fn()
+  beforeEach(() => Object.defineProperty(window, 'location', {
+    configurable: true,
+    enumerable: true,
+    value: { reload: mockReload }
+  }))
+  afterEach(() => {
+    Object.defineProperty(window, 'location', {
+      configurable: true, enumerable: true, value: location
+    })
+    mockReload.mockReset()
+  })
   it('should handle 400', () => {
     expect(getErrorContent({
       meta: { baseQueryMeta: { response: { status: 400 } } },
@@ -37,12 +50,12 @@ describe('getErrorContent', () => {
   })
   it('should handle 403', () => {
     expect(getErrorContent({
-      meta: { baseQueryMeta: { response: { status: 401 } } },
+      meta: { baseQueryMeta: { response: { status: 403 } } },
       payload: {}
     } as unknown as ErrorAction).title).toBe('Session Expired')
     expect(getErrorContent({
       meta: {},
-      payload: { originalStatus: 401 }
+      payload: { originalStatus: 403 }
     } as unknown as ErrorAction).title).toBe('Session Expired')
   })
   it('should handle 408', () => {
@@ -70,20 +83,26 @@ describe('getErrorContent', () => {
       meta: { baseQueryMeta: { response: { status: 504 } } },
       payload: {}
     } as unknown as ErrorAction).title).toBe('Check Your Connection')
-    expect(getErrorContent({
+    const errorDetails = getErrorContent({
       meta: {},
       payload: { originalStatus: 504 }
-    } as unknown as ErrorAction).title).toBe('Check Your Connection')
+    } as unknown as ErrorAction)
+    expect(errorDetails.title).toBe('Check Your Connection')
+    errorDetails.callback!()
+    expect(mockReload).toBeCalledTimes(1)
   })
   it('should handle 0', () => {
     expect(getErrorContent({
-      meta: { baseQueryMeta: { response: { status: 504 } } },
+      meta: { baseQueryMeta: { response: { status: 0 } } },
       payload: {}
     } as unknown as ErrorAction).title).toBe('Check Your Connection')
-    expect(getErrorContent({
+    const errorDetails = getErrorContent({
       meta: {},
-      payload: { originalStatus: 504 }
-    } as unknown as ErrorAction).title).toBe('Check Your Connection')
+      payload: { originalStatus: 0 }
+    } as unknown as ErrorAction)
+    expect(errorDetails.title).toBe('Check Your Connection')
+    errorDetails.callback!()
+    expect(mockReload).toBeCalledTimes(1)
   })
   it('should handle 422', () => {
     expect(getErrorContent({
