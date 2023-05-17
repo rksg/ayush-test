@@ -5,8 +5,9 @@ import { useIntl } from 'react-intl'
 import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
 import { SimpleListTooltip }                                     from '@acx-ui/rc/components'
 import {
+  useAdaptivePolicyListQuery,
   useDeleteRadiusAttributeGroupMutation,
-  useLazyAdaptivePolicyListByQueryQuery,
+  useLazyGetAssignmentsQuery,
   useRadiusAttributeGroupListByQueryQuery
 } from '@acx-ui/rc/services'
 import {
@@ -25,7 +26,8 @@ export default function RadiusAttributeGroupTable () {
   const tenantBasePath: Path = useTenantLink('')
 
   const RadiusAttributeGroupTable = () => {
-    const [policyMap, setPolicyMap] = useState(new Map())
+    const [policyAssignmentMap, setPolicyAssignmentMap] = useState(new Map())
+    const [externalServiceMap, setExternalServiceMap] = useState(new Map())
 
     const tableQuery = useTableQuery({
       useQuery: useRadiusAttributeGroupListByQueryQuery,
@@ -33,24 +35,43 @@ export default function RadiusAttributeGroupTable () {
       defaultPayload: {}
     })
 
-    const [getPolicyList] = useLazyAdaptivePolicyListByQueryQuery()
+    const { policyListMap } = useAdaptivePolicyListQuery(
+      { payload: { page: 1, pageSize: '2147483647', sort: 'name,ASC' } },
+      {
+        selectFromResult ({ data }) {
+          return {
+            policyListMap: new Map(data?.data.map((policy) => [policy.id, policy.name]))
+          }
+        }
+      }
+    )
+
+    const [getExternalAssignments] = useLazyGetAssignmentsQuery()
 
     useEffect( () =>{
       if(tableQuery.isLoading)
         return
 
-      tableQuery.data?.data.forEach(item => {
-        getPolicyList({
-          params: { excludeContent: 'false' },
+      // get the assignments
+      tableQuery.data?.data.forEach(group => {
+        getExternalAssignments({
+          params: { policyId: group.id },
           payload: {
-            fields: [ 'name' ],
-            page: 1, pageSize: 2000,
-            filters: { onMatchResponse: item.id }
+            pageSize: '2000', sortField: 'serviceName', sortOrder: 'ASC'
           }
         }).then(result => {
-          if (result.data) {
-            const policies : string []= result.data.data.map(p => p.name)
-            setPolicyMap(map => new Map(map.set(item.id, policies)))
+          if (result.data?.data) {
+            const policyIds = [] as string []
+            const externalServiceIds = [] as string []
+            result.data.data.forEach(assignment => {
+              if(assignment.serviceName === 'policy-management') {
+                policyIds.push(assignment.externalAssignmentIdentifier)
+              } else {
+                externalServiceIds.push(assignment.externalAssignmentIdentifier)
+              }
+            })
+            setPolicyAssignmentMap(map => new Map(map.set(group.id, policyIds)))
+            setExternalServiceMap(map => new Map(map.set(group.id, externalServiceIds)))
           }
         })
       })
@@ -61,9 +82,15 @@ export default function RadiusAttributeGroupTable () {
       { isLoading: isDeleteMacGroupUpdating }
     ] = useDeleteRadiusAttributeGroupMutation()
 
-    const checkDelete = (id?: string) => {
+    const checkHasExternalServiceAssignment = (id?: string) => {
       if (!id) return false
-      const policy = policyMap.get(id) ?? [] as string []
+      const service = externalServiceMap.get(id) ?? [] as string []
+      return service.length !== 0
+    }
+
+    const checkHasPolicyAssignment = (id?: string) => {
+      if (!id) return false
+      const policy = policyAssignmentMap.get(id) ?? [] as string []
       return policy.length !== 0
     }
 
@@ -83,13 +110,20 @@ export default function RadiusAttributeGroupTable () {
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: ([{ name, id }], clearSelection) => {
-        if (checkDelete(id)) {
+        if (checkHasPolicyAssignment(id)) {
           showActionModal({
             type: 'error',
             // eslint-disable-next-line max-len
             content: $t({ defaultMessage: 'This group is in use by one or more Adaptive Policies.' })
           })
-        } else {
+        } else if (checkHasExternalServiceAssignment(id)) {
+          showActionModal({
+            type: 'error',
+            // eslint-disable-next-line max-len
+            content: $t({ defaultMessage: 'The Group is still in use by another service.' })
+          })
+        } else
+        {
           showActionModal({
             type: 'confirm',
             customContent: {
@@ -152,9 +186,11 @@ export default function RadiusAttributeGroupTable () {
           dataIndex: 'policies',
           align: 'center',
           render: function (data, row) {
-            const policies = policyMap.get(row.id) ?? [] as string []
-            return policies.length === 0 ? '0' :
-              <SimpleListTooltip items={policies} displayText={policies.length}/>
+            const policyIds = policyAssignmentMap.get(row.id) ?? [] as string []
+            // eslint-disable-next-line max-len
+            const policyNames = policyIds.map((id: string) => policyListMap.get(id) ?? '').filter((name: string) => name.length > 0)
+            // eslint-disable-next-line max-len
+            return policyNames.length === 0 ? '0' : <SimpleListTooltip items={policyNames} displayText={policyNames.length}/>
           }
         }
       ]

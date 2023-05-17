@@ -1984,6 +1984,7 @@ export const {
   useLazyRadiusAttributeGroupListByQueryQuery,
   useLazyGetAdaptivePolicySetQuery,
   useLazyGetRadiusAttributeGroupQuery,
+  useLazyGetAssignmentsQuery,
   // policy
   useAdaptivePolicyListQuery,
   useLazyAdaptivePolicyListQuery,

@@ -56,3 +56,31 @@ export const adaptivePolicyList = {
   },
   content: []
 }
+
+export const assignments = {
+  content: [
+    {
+      id: 'e35dcc0d-31c9-4fb9-8a8d-49395da6fd83',
+      externalAssignmentIdentifier: 'd5b8b080-5390-459c-b17c-0e1677c3f5a8',
+      serviceName: 'policy-management'
+    }
+  ],
+  pageable: {
+    sort: { sorted: true, unsorted: false, empty: false },
+    pageNumber: 0,
+    pageSize: 2000,
+    offset: 0,
+    paged: true,
+    unpaged: false
+  },
+  totalElements: 1,
+  totalPages: 1,
+  last: true,
+  first: true,
+  numberOfElements: 1,
+  sort: { sorted: true, unsorted: false, empty: false },
+  size: 2000,
+  number: 0,
+  empty: false
+}
+
