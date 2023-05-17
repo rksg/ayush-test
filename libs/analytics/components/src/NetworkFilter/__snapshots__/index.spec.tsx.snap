@@ -116,7 +116,7 @@ exports[`Network Filter should list only venues having APs 1`] = `
                           class="styledComponents__LabelContainer-sc-1x390s8-3 eTUeBM"
                         >
                           <div
-                            class="styledComponents__Label-sc-1x390s8-4 Momrt"
+                            class="styledComponents__Label-sc-1x390s8-4 cjAkqv"
                             title="swg1"
                           >
                             swg1
@@ -170,7 +170,7 @@ exports[`Network Filter should list only venues having APs 1`] = `
                           class="styledComponents__LabelContainer-sc-1x390s8-3 eTUeBM"
                         >
                           <div
-                            class="styledComponents__Label-sc-1x390s8-4 Momrt"
+                            class="styledComponents__Label-sc-1x390s8-4 cjAkqv"
                             title="venue"
                           >
                             venue
@@ -224,7 +224,7 @@ exports[`Network Filter should list only venues having APs 1`] = `
                           class="styledComponents__LabelContainer-sc-1x390s8-3 eTUeBM"
                         >
                           <div
-                            class="styledComponents__Label-sc-1x390s8-4 Momrt"
+                            class="styledComponents__Label-sc-1x390s8-4 cjAkqv"
                             title="venue1"
                           >
                             venue1
@@ -477,7 +477,7 @@ exports[`Network Filter should list only venues having Switches 1`] = `
                           class="styledComponents__LabelContainer-sc-1x390s8-3 eTUeBM"
                         >
                           <div
-                            class="styledComponents__Label-sc-1x390s8-4 Momrt"
+                            class="styledComponents__Label-sc-1x390s8-4 cjAkqv"
                             title="swg"
                           >
                             swg
@@ -531,7 +531,7 @@ exports[`Network Filter should list only venues having Switches 1`] = `
                           class="styledComponents__LabelContainer-sc-1x390s8-3 eTUeBM"
                         >
                           <div
-                            class="styledComponents__Label-sc-1x390s8-4 Momrt"
+                            class="styledComponents__Label-sc-1x390s8-4 cjAkqv"
                             title="swg1"
                           >
                             swg1
@@ -585,7 +585,7 @@ exports[`Network Filter should list only venues having Switches 1`] = `
                           class="styledComponents__LabelContainer-sc-1x390s8-3 eTUeBM"
                         >
                           <div
-                            class="styledComponents__Label-sc-1x390s8-4 Momrt"
+                            class="styledComponents__Label-sc-1x390s8-4 cjAkqv"
                             title="venue"
                           >
                             venue
@@ -852,7 +852,7 @@ exports[`Network Filter should select network node and bands 1`] = `
                           class="styledComponents__LabelContainer-sc-1x390s8-3 eTUeBM"
                         >
                           <div
-                            class="styledComponents__Label-sc-1x390s8-4 Momrt"
+                            class="styledComponents__Label-sc-1x390s8-4 cjAkqv"
                             title="swg"
                           >
                             swg
@@ -906,7 +906,7 @@ exports[`Network Filter should select network node and bands 1`] = `
                           class="styledComponents__LabelContainer-sc-1x390s8-3 eTUeBM"
                         >
                           <div
-                            class="styledComponents__Label-sc-1x390s8-4 Momrt"
+                            class="styledComponents__Label-sc-1x390s8-4 cjAkqv"
                             title="swg1"
                           >
                             swg1
@@ -960,7 +960,7 @@ exports[`Network Filter should select network node and bands 1`] = `
                           class="styledComponents__LabelContainer-sc-1x390s8-3 eTUeBM"
                         >
                           <div
-                            class="styledComponents__Label-sc-1x390s8-4 Momrt"
+                            class="styledComponents__Label-sc-1x390s8-4 cjAkqv"
                             title="venue"
                           >
                             venue
@@ -1014,7 +1014,7 @@ exports[`Network Filter should select network node and bands 1`] = `
                           class="styledComponents__LabelContainer-sc-1x390s8-3 eTUeBM"
                         >
                           <div
-                            class="styledComponents__Label-sc-1x390s8-4 Momrt"
+                            class="styledComponents__Label-sc-1x390s8-4 cjAkqv"
                             title="venue1"
                           >
                             venue1
@@ -1070,21 +1070,17 @@ exports[`Network Filter should select network node and bands 1`] = `
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__NonSelectableItem-sc-1x390s8-0 kCNfaN"
+                          class="styledComponents__LabelContainer-sc-1x390s8-3 eTUeBM"
                         >
                           <div
-                            class="styledComponents__LabelContainer-sc-1x390s8-3 eTUeBM"
+                            class="styledComponents__Label-sc-1x390s8-4 cjAkqv"
+                            title="APs"
                           >
-                            <div
-                              class="styledComponents__Label-sc-1x390s8-4 Momrt"
-                              title="APs"
-                            >
-                              APs
-                            </div>
-                            <div
-                              class="styledComponents__SeverityContainer-sc-1x390s8-2 ctilhZ"
-                            />
+                            APs
                           </div>
+                          <div
+                            class="styledComponents__SeverityContainer-sc-1x390s8-2 ctilhZ"
+                          />
                         </div>
                       </div>
                       <div
@@ -1128,21 +1124,17 @@ exports[`Network Filter should select network node and bands 1`] = `
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__NonSelectableItem-sc-1x390s8-0 kCNfaN"
+                          class="styledComponents__LabelContainer-sc-1x390s8-3 eTUeBM"
                         >
                           <div
-                            class="styledComponents__LabelContainer-sc-1x390s8-3 eTUeBM"
+                            class="styledComponents__Label-sc-1x390s8-4 cjAkqv"
+                            title="Switches"
                           >
-                            <div
-                              class="styledComponents__Label-sc-1x390s8-4 Momrt"
-                              title="Switches"
-                            >
-                              Switches
-                            </div>
-                            <div
-                              class="styledComponents__SeverityContainer-sc-1x390s8-2 ctilhZ"
-                            />
+                            Switches
                           </div>
+                          <div
+                            class="styledComponents__SeverityContainer-sc-1x390s8-2 ctilhZ"
+                          />
                         </div>
                       </div>
                       <div
@@ -1414,7 +1406,7 @@ exports[`Network Filter should select network node and bands with onApplyFn 1`] 
                           class="styledComponents__LabelContainer-sc-1x390s8-3 eTUeBM"
                         >
                           <div
-                            class="styledComponents__Label-sc-1x390s8-4 Momrt"
+                            class="styledComponents__Label-sc-1x390s8-4 cjAkqv"
                             title="swg"
                           >
                             swg
@@ -1468,7 +1460,7 @@ exports[`Network Filter should select network node and bands with onApplyFn 1`] 
                           class="styledComponents__LabelContainer-sc-1x390s8-3 eTUeBM"
                         >
                           <div
-                            class="styledComponents__Label-sc-1x390s8-4 Momrt"
+                            class="styledComponents__Label-sc-1x390s8-4 cjAkqv"
                             title="swg1"
                           >
                             swg1
@@ -1522,7 +1514,7 @@ exports[`Network Filter should select network node and bands with onApplyFn 1`] 
                           class="styledComponents__LabelContainer-sc-1x390s8-3 eTUeBM"
                         >
                           <div
-                            class="styledComponents__Label-sc-1x390s8-4 Momrt"
+                            class="styledComponents__Label-sc-1x390s8-4 cjAkqv"
                             title="venue"
                           >
                             venue
@@ -1576,7 +1568,7 @@ exports[`Network Filter should select network node and bands with onApplyFn 1`] 
                           class="styledComponents__LabelContainer-sc-1x390s8-3 eTUeBM"
                         >
                           <div
-                            class="styledComponents__Label-sc-1x390s8-4 Momrt"
+                            class="styledComponents__Label-sc-1x390s8-4 cjAkqv"
                             title="venue1"
                           >
                             venue1

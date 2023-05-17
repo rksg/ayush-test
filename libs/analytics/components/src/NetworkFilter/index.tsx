@@ -96,7 +96,8 @@ export const getNetworkFilterData = (
   data: Child[],
   nodesWithSeverities: VenuesWithSeverityNodes,
   filterMode: FilterMode,
-  replaceVenueNameWithId: boolean
+  replaceVenueNameWithId: boolean,
+  labelMaxWidth?: string
 ): Option[] => {
   const { $t } = getIntl()
   const venues: { [key: string]: Option } = {}
@@ -124,8 +125,9 @@ export const getNetworkFilterData = (
       venues[name] = {
         label: (
           <LabelWithSeverityCircle
-            severityCircles={severityData}
             name={name}
+            severityCircles={severityData}
+            maxWidth={labelMaxWidth}
           />
         ),
         value: JSON.stringify(venuePath),
@@ -138,15 +140,14 @@ export const getNetworkFilterData = (
     if (venue && aps?.length && venue.children && ['ap','both'].includes(filterMode)) {
       venue.children.push({
         label: (
-          <UI.NonSelectableItem key={name}>
-            <LabelWithSeverityCircle
-              severityCircles={getSeverityCircles(
-                aps,
-                nodesWithSeverities[name]
-              )}
-              name={$t({ defaultMessage: 'APs' })}
-            />
-          </UI.NonSelectableItem>
+          <LabelWithSeverityCircle
+            name={$t({ defaultMessage: 'APs' })}
+            severityCircles={getSeverityCircles(
+              aps,
+              nodesWithSeverities[name]
+            )}
+            maxWidth={labelMaxWidth}
+          />
         ),
         displayLabel: $t({ defaultMessage: 'APs' }),
         ignoreSelection: true,
@@ -159,8 +160,9 @@ export const getNetworkFilterData = (
           return {
             label: (
               <LabelWithSeverityCircle
-                severityCircles={severityData}
                 name={ap.name}
+                severityCircles={severityData}
+                maxWidth={labelMaxWidth}
               />
             ),
             displayLabel: ap.name,
@@ -173,15 +175,14 @@ export const getNetworkFilterData = (
     if (venue && switches?.length && venue.children && ['switch','both'].includes(filterMode)) {
       venue.children.push({
         label: (
-          <UI.NonSelectableItem key={name}>
-            <LabelWithSeverityCircle
-              severityCircles={getSeverityCircles(
-                switches,
-                nodesWithSeverities[name]
-              )}
-              name={$t({ defaultMessage: 'Switches' })}
-            />
-          </UI.NonSelectableItem>
+          <LabelWithSeverityCircle
+            name={$t({ defaultMessage: 'Switches' })}
+            severityCircles={getSeverityCircles(
+              switches,
+              nodesWithSeverities[name]
+            )}
+            maxWidth={labelMaxWidth}
+          />
         ),
         displayLabel: $t({ defaultMessage: 'Switches' }),
         ignoreSelection: true,
@@ -194,8 +195,9 @@ export const getNetworkFilterData = (
           return {
             label: (
               <LabelWithSeverityCircle
-                severityCircles={severityData}
                 name={switchNode.name}
+                severityCircles={severityData}
+                maxWidth={labelMaxWidth}
               />
             ),
             displayLabel: switchNode.name,
@@ -301,7 +303,7 @@ function ConnectedNetworkFilter (
     selectFromResult: ({ data, ...rest }) => ({
       data: data ?
         getNetworkFilterData(data, incidentsList.data as VenuesWithSeverityNodes,
-          filterMode, true) : [],
+          filterMode, true, '100px') : [],
       ...rest
     })
   })

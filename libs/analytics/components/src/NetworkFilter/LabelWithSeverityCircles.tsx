@@ -3,8 +3,9 @@ import * as UI from './styledComponents'
 
 
 type LabelProps = {
-  severityCircles? : string[],
-  name : string
+  name: string,
+  severityCircles?: string[],
+  maxWidth?: string
 }
 
 export const SeverityCircles = (props: { severityCircles?: string[] }) => {
@@ -17,10 +18,10 @@ export const SeverityCircles = (props: { severityCircles?: string[] }) => {
 }
 
 export const LabelWithSeverityCircle = (props: LabelProps) => {
-  const { name, severityCircles } = props
+  const { name, severityCircles, maxWidth } = props
   return (
     <UI.LabelContainer>
-      <UI.Label title={name}>
+      <UI.Label title={name} maxWidth={maxWidth}>
         {name}
       </UI.Label>
       <SeverityCircles severityCircles={severityCircles} />

@@ -44,12 +44,10 @@ export const LabelContainer = styled.div`
   align-items: center;
   justify-content: space-between;
 `
-export const Label = styled.div`
-  max-width: 100px;
-  white-space: nowrap;
+export const Label = styled.div<{ maxWidth?: string }>`
+  max-width: ${(props) => props.maxWidth ?? '100%'};
   overflow: hidden;
   text-overflow: ellipsis;
-  justify-content: left
 `
 export const SeveritySpan = styled.span.attrs((props: SeveritySpanProps) => props)`
   background-color: ${(props) => {
