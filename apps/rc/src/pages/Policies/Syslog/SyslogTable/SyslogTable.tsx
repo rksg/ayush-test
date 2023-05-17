@@ -21,6 +21,7 @@ import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui
 import { filterByAccess }                                          from '@acx-ui/user'
 
 import { facilityLabelMapping, flowLevelLabelMapping } from '../../contentsMap'
+import { PROFILE_MAX_COUNT }                           from '../constants'
 
 
 const defaultPayload = {
@@ -98,7 +99,9 @@ export default function SyslogTable () {
         extra={filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.CREATE })}>
-            <Button type='primary'>{$t({ defaultMessage: 'Add Syslog Server' })}</Button>
+            <Button type='primary' disabled={tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT}>
+              {$t({ defaultMessage: 'Add Syslog Server' })}
+            </Button>
           </TenantLink>
         ])}
       />

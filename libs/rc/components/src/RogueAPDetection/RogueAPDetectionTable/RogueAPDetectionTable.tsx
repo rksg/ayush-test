@@ -25,6 +25,7 @@ import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui
 import { filterByAccess }                                          from '@acx-ui/user'
 
 import { SimpleListTooltip } from '../../SimpleListTooltip'
+import { PROFILE_MAX_COUNT } from '../contentsMap'
 
 const useDefaultVenuePayload = (): RequestPayload => {
   const isEdgeEnabled = useIsSplitOn(Features.EDGES)
@@ -157,7 +158,7 @@ export function RogueAPDetectionTable () {
         extra={filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.CREATE })}>
-            <Button type='primary'>
+            <Button type='primary' disabled={tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT}>
               {$t({ defaultMessage: 'Add Rogue AP Detection Policy' })}
             </Button>
           </TenantLink>

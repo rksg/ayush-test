@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
+import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
@@ -14,8 +15,9 @@ import {
 import { AclOptionType, L2AclPolicy, Network, useTableQuery } from '@acx-ui/rc/utils'
 import { filterByAccess }                                     from '@acx-ui/user'
 
-import { AddModeProps } from '../AccessControlForm/AccessControlForm'
-import Layer2Drawer     from '../AccessControlForm/Layer2Drawer'
+import { AddModeProps }                    from '../AccessControlForm/AccessControlForm'
+import Layer2Drawer                        from '../AccessControlForm/Layer2Drawer'
+import { PROFILE_MAX_COUNT_LAYER2_POLICY } from '../constants'
 
 const defaultPayload = {
   searchString: '',
@@ -32,6 +34,7 @@ const defaultPayload = {
 const Layer2Component = () => {
   const { $t } = useIntl()
   const params = useParams()
+  const form = Form.useFormInstance()
   const [addModeStatus, setAddModeStatus] = useState(
     { enable: true, visible: false } as AddModeProps
   )
@@ -102,6 +105,7 @@ const Layer2Component = () => {
 
   const actions = [{
     label: $t({ defaultMessage: 'Add Layer 2 Policy' }),
+    disabled: tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT_LAYER2_POLICY,
     onClick: () => {
       setAddModeStatus({ enable: true, visible: true })
     }
@@ -144,22 +148,24 @@ const Layer2Component = () => {
   ]
 
   return <Loader states={[tableQuery]}>
-    <Layer2Drawer
-      onlyAddMode={addModeStatus}
-    />
-    <Table<L2AclPolicy>
-      settingsId='policies-access-control-layer2-table'
-      columns={useColumns(networkFilterOptions, editMode, setEditMode)}
-      enableApiFilter={true}
-      dataSource={tableQuery.data?.data}
-      pagination={tableQuery.pagination}
-      onChange={tableQuery.handleTableChange}
-      onFilterChange={tableQuery.handleFilterChange}
-      rowKey='id'
-      actions={filterByAccess(actions)}
-      rowActions={filterByAccess(rowActions)}
-      rowSelection={{ type: 'radio' }}
-    />
+    <Form form={form}>
+      <Layer2Drawer
+        onlyAddMode={addModeStatus}
+      />
+      <Table<L2AclPolicy>
+        settingsId='policies-access-control-layer2-table'
+        columns={useColumns(networkFilterOptions, editMode, setEditMode)}
+        enableApiFilter={true}
+        dataSource={tableQuery.data?.data}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
+        onFilterChange={tableQuery.handleFilterChange}
+        rowKey='id'
+        actions={filterByAccess(actions)}
+        rowActions={filterByAccess(rowActions)}
+        rowSelection={{ type: 'radio' }}
+      />
+    </Form>
   </Loader>
 }
 

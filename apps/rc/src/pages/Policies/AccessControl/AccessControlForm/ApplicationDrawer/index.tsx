@@ -31,8 +31,9 @@ import {
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
-import { showUnsavedConfirmModal }     from '../AccessControlComponent'
-import { AddModeProps, editModeProps } from '../AccessControlForm'
+import { PROFILE_MAX_COUNT_APPLICATION_POLICY } from '../../constants'
+import { showUnsavedConfirmModal }              from '../AccessControlComponent'
+import { AddModeProps, editModeProps }          from '../AccessControlForm'
 
 import {
   genRuleObject,
@@ -606,6 +607,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       </AclGridCol>
       <AclGridCol>
         <Button type='link'
+          disabled={appList.length >= PROFILE_MAX_COUNT_APPLICATION_POLICY}
           onClick={() => {
             setVisible(true)
             setQueryPolicyId('')
