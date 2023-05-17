@@ -335,7 +335,6 @@ const RecipientDialog = (props: RecipientDialogProps) => {
             </Col>
             <Col span={4}>
               <Form.Item
-                noStyle
                 name='mobileEnabled'
                 valuePropName='checked'
                 initialValue={false}
