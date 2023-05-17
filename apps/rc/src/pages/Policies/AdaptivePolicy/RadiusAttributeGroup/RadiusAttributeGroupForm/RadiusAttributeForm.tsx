@@ -92,16 +92,20 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
   }
 
   const getAttributeDataType = (attributeName: string) => {
-    let dataType
+    return getAttribute(attributeName)?.dataType
+  }
+
+  const getAttribute = (attributeName: string) : treeNode | undefined => {
+    let findAttribute
     attributeTreeData.forEach(node => {
       if(node.children) {
         const attribute = node.children.find(node => node.value === attributeName)
         if(attribute) {
-          dataType = attribute.dataType
+          findAttribute = attribute
         }
       }
     })
-    return dataType
+    return findAttribute
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -132,6 +136,12 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
               placeholder={$t({ defaultMessage: 'Select attribute type' })}
               treeData={attributeTreeData}
               loadData={onLoadData}
+              onSearch={(value) => {
+                if(!getAttribute(value)) {
+                  setTreeSelectValue(undefined)
+                  form.setFieldsValue({ attributeName: undefined })
+                }
+              }}
               onChange={(value) => {
                 if(!value) return
                 setTreeSelectValue(value)
