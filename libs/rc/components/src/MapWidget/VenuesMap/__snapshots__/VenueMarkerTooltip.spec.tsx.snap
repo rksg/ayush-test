@@ -3,7 +3,7 @@
 exports[`Venue Marker Tooltip should not render any data 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1g4gbr4-12 dbrLEo"
+    class="styledComponents__Wrapper-sc-1g4gbr4-12 bxdeoK"
   >
     <div
       class="styledComponents__InfoWindowHeader-sc-1g4gbr4-15 bJpHCF"
@@ -143,7 +143,7 @@ exports[`Venue Marker Tooltip should not render any data 1`] = `
                                   <div
                                     class="ant-space-item"
                                   >
-                                    No AP Clients
+                                    No AP clients
                                   </div>
                                 </div>
                               </td>
@@ -179,7 +179,43 @@ exports[`Venue Marker Tooltip should not render any data 1`] = `
                                   <div
                                     class="ant-space-item"
                                   >
-                                    No Switch Clients
+                                    No Switch clients
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr
+                              class="ant-table-row ant-table-row-level-0"
+                              data-row-key="3"
+                            >
+                              <td
+                                class="ant-table-cell"
+                              >
+                                SmartEdge
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                <div
+                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-1g4gbr4-13 styledComponents__TextWrapper-sc-1g4gbr4-14 grnANl lkcoTd"
+                                >
+                                  <div
+                                    class="ant-space-item"
+                                  >
+                                    No SmartEdge
+                                  </div>
+                                </div>
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                <div
+                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-1g4gbr4-13 styledComponents__TextWrapper-sc-1g4gbr4-14 grnANl lkcoTd"
+                                >
+                                  <div
+                                    class="ant-space-item"
+                                  >
+                                    No SmartEdge clients
                                   </div>
                                 </div>
                               </td>
@@ -203,7 +239,7 @@ exports[`Venue Marker Tooltip should not render any data 1`] = `
 exports[`Venue Marker Tooltip should render tooltip without padding 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1g4gbr4-12 cqtQnT"
+    class="styledComponents__Wrapper-sc-1g4gbr4-12 eXyIlD"
   >
     <div
       class="styledComponents__InfoWindowHeader-sc-1g4gbr4-15 bJpHCF"
@@ -343,7 +379,7 @@ exports[`Venue Marker Tooltip should render tooltip without padding 1`] = `
                                   <div
                                     class="ant-space-item"
                                   >
-                                    No AP Clients
+                                    No AP clients
                                   </div>
                                 </div>
                               </td>
@@ -379,7 +415,43 @@ exports[`Venue Marker Tooltip should render tooltip without padding 1`] = `
                                   <div
                                     class="ant-space-item"
                                   >
-                                    No Switch Clients
+                                    No Switch clients
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr
+                              class="ant-table-row ant-table-row-level-0"
+                              data-row-key="3"
+                            >
+                              <td
+                                class="ant-table-cell"
+                              >
+                                SmartEdge
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                <div
+                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-1g4gbr4-13 styledComponents__TextWrapper-sc-1g4gbr4-14 grnANl lkcoTd"
+                                >
+                                  <div
+                                    class="ant-space-item"
+                                  >
+                                    No SmartEdge
+                                  </div>
+                                </div>
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                <div
+                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-1g4gbr4-13 styledComponents__TextWrapper-sc-1g4gbr4-14 grnANl lkcoTd"
+                                >
+                                  <div
+                                    class="ant-space-item"
+                                  >
+                                    No SmartEdge clients
                                   </div>
                                 </div>
                               </td>

@@ -117,6 +117,7 @@ export const massageVenuesData = (overviewData?: Dashboard): VenueMarkerOptions[
 
       const { apStat, apsCount } = getApStatusDataByVenue(overviewData, venueId)
       const { switchStat, switchesCount } = getSwitchStatusDataByVenue(overviewData, venueId)
+      const { edgeStat, edgesCount } = getEdgeStatusDataByVenue(overviewData, venueId)
 
       venues.push({
         venueId,
@@ -130,6 +131,9 @@ export const massageVenuesData = (overviewData?: Dashboard): VenueMarkerOptions[
         switchStat,
         apsCount,
         switchesCount,
+        edgeStat,
+        edgesCount,
+        edgeClientsCount: getEdgeClientCountByVenue(overviewData, venueId),
         visible: true
       })
     })
@@ -245,6 +249,64 @@ function getSwitchStatusDataByVenue (overviewData: Dashboard, venueId: string): 
     }],
     switchesCount: switchStat && switchStat[venueId] ? switchStat[venueId].totalCount : 0
   }
+}
+
+function getEdgeStatusDataByVenue (overviewData: Dashboard, venueId: string): {
+  edgeStat: ChartData[],
+  edgesCount: number
+} {
+  const edgeStat = (_.get(overviewData, 'edges.edgesStatus') || []).find((el: [string]) => {
+    for (const key in el) {
+      if (key === venueId) {
+        return true
+      }
+    }
+    return false
+  })
+
+  let operational: number = 0
+  let requires_attention: number = 0
+  let in_setup_phase: number = 0
+  let transient_issue: number = 0
+
+  if (edgeStat && edgeStat[venueId] && edgeStat[venueId].edgeStatus) {
+    if (edgeStat[venueId].edgeStatus[EdgeStatusSeverityEnum.REQUIRES_ATTENTION]) {
+      requires_attention = +edgeStat[venueId].edgeStatus[EdgeStatusSeverityEnum.REQUIRES_ATTENTION]
+    }
+    if (edgeStat[venueId].edgeStatus[EdgeStatusSeverityEnum.IN_SETUP_PHASE]) {
+      in_setup_phase = +edgeStat[venueId].edgeStatus[EdgeStatusSeverityEnum.IN_SETUP_PHASE]
+    }
+    if (edgeStat[venueId].edgeStatus[EdgeStatusSeverityEnum.OFFLINE]) {
+      in_setup_phase += +edgeStat[venueId].edgeStatus[EdgeStatusSeverityEnum.OFFLINE]!
+    }
+    if (edgeStat[venueId].edgeStatus[EdgeStatusSeverityEnum.TRANSIENT_ISSUE]) {
+      transient_issue = +edgeStat[venueId].edgeStatus[EdgeStatusSeverityEnum.TRANSIENT_ISSUE]
+    }
+    if (edgeStat[venueId].edgeStatus[EdgeStatusSeverityEnum.OPERATIONAL]) {
+      operational = +edgeStat[venueId].edgeStatus[EdgeStatusSeverityEnum.OPERATIONAL]
+    }
+  }
+
+  return {
+    edgeStat: [{
+      category: 'Edges',
+      series: [
+        { name: getEdgeStatusDisplayName(EdgeStatusSeverityEnum.REQUIRES_ATTENTION),
+          value: requires_attention },
+        { name: getEdgeStatusDisplayName(EdgeStatusSeverityEnum.TRANSIENT_ISSUE),
+          value: transient_issue },
+        { name: getEdgeStatusDisplayName(EdgeStatusSeverityEnum.IN_SETUP_PHASE),
+          value: in_setup_phase },
+        { name: getEdgeStatusDisplayName(EdgeStatusSeverityEnum.OPERATIONAL),
+          value: operational }
+      ]
+    }],
+    edgesCount: edgeStat && edgeStat[venueId] ? edgeStat[venueId].totalCount : 0
+  }
+}
+
+function getEdgeClientCountByVenue (overviewData: Dashboard, venueId: string): number {
+  return _.get(overviewData, 'summary.edgeClients.summary[' + venueId + ']') || 0
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

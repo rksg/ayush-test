@@ -47,7 +47,10 @@ export function VenueMarkerTooltip (
     apsCount,
     switchesCount,
     clientsCount,
-    switchClientsCount
+    switchClientsCount,
+    edgeStat,
+    edgesCount,
+    edgeClientsCount
   } = props.venueMarker
 
   const { onNavigate, needPadding = true } = props
@@ -88,7 +91,7 @@ export function VenueMarkerTooltip (
           </UI.TotalCount>
         </UI.CellWrapper>
         : <UI.TextWrapper>
-          {$t({ defaultMessage: 'No AP Clients' })}
+          {$t({ defaultMessage: 'No AP clients' })}
         </UI.TextWrapper>
     },
     {
@@ -115,7 +118,34 @@ export function VenueMarkerTooltip (
           </UI.TotalCount>
         </UI.CellWrapper>
         : <UI.TextWrapper>
-          {$t({ defaultMessage: 'No Switch Clients' })}
+          {$t({ defaultMessage: 'No Switch clients' })}
+        </UI.TextWrapper>
+    },
+    {
+      key: '3',
+      name: $t({ defaultMessage: 'SmartEdge' }),
+      networkDevices: edgesCount > 0
+        ? <UI.CellWrapper>
+          <StackedBarChart
+            data={edgeStat}
+            {...commonProps} />
+          <UI.TotalCount onClick={
+            () => onNavigate && onNavigate({ venueId, path: 'venue-details/devices/edge' })}>
+            {edgesCount}
+          </UI.TotalCount>
+        </UI.CellWrapper>
+        : <UI.TextWrapper>
+          {$t({ defaultMessage: 'No SmartEdge' })}
+        </UI.TextWrapper>,
+      clients: edgeClientsCount && edgeClientsCount > 0
+        ? <UI.CellWrapper>
+          <UI.TotalCount onClick={
+            () => onNavigate && onNavigate({ venueId, path: 'venue-details/clients/edge' })}>
+            {edgeClientsCount}
+          </UI.TotalCount>
+        </UI.CellWrapper>
+        : <UI.TextWrapper>
+          {$t({ defaultMessage: 'No SmartEdge clients' })}
         </UI.TextWrapper>
     }
   ]

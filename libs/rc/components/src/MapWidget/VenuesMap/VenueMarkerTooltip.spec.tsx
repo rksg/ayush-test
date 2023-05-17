@@ -6,22 +6,28 @@ import { VenueMarkerTooltip } from './VenueMarkerTooltip'
 const withCounts = {
   apsCount: 1234,
   switchesCount: 1234,
+  edgesCount: 1234,
   clientsCount: 1234,
-  switchClientsCount: 1234
+  switchClientsCount: 1234,
+  edgeClientsCount: 1234
 }
 
 const withoutCounts = {
   apsCount: 0,
   switchesCount: 0,
+  edgesCount: 0,
   clientsCount: 0,
-  switchClientsCount: 0
+  switchClientsCount: 0,
+  edgeClientsCount: 0
 }
 
 const paths = [
   'venue-details/devices',
   'venue-details/clients/wifi',
   'venue-details/devices/switch',
-  'venue-details/clients/switch'
+  'venue-details/clients/switch',
+  'venue-details/devices/edge',
+  'venue-details/clients/edge'
 ]
 
 const common = {
@@ -72,6 +78,29 @@ const common = {
         }
       ]
     }
+  ],
+  edgeStat: [
+    {
+      category: 'Edges',
+      series: [
+        {
+          name: '1 Requires Attention',
+          value: 2
+        },
+        {
+          name: '2 Transient Issue',
+          value: 2
+        },
+        {
+          name: '3 In Setup Phase',
+          value: 2
+        },
+        {
+          name: '4 Operational',
+          value: 2
+        }
+      ]
+    }
   ]
 }
 
@@ -91,7 +120,7 @@ describe('Venue Marker Tooltip', () => {
         venueMarker={venue}
         onNavigate={onNavigateMock} />)
     expect(asFragment().querySelectorAll('div[_echarts_instance_^="ec_"]')).not.toBeNull()
-    expect(asFragment().querySelectorAll('svg').length).toEqual(2)
+    expect(asFragment().querySelectorAll('svg').length).toEqual(3)
 
     const venueTitle = screen.getByText('Aparna-Venue')
     fireEvent.click(venueTitle)
@@ -101,7 +130,7 @@ describe('Venue Marker Tooltip', () => {
     })
 
     const links = screen.getAllByText('1234')
-    expect(links.length).toEqual(4)
+    expect(links.length).toEqual(6)
     links.forEach((link, i) => {
       fireEvent.click(link)
       expect(onNavigateMock).lastCalledWith({
@@ -110,7 +139,7 @@ describe('Venue Marker Tooltip', () => {
       })
     })
 
-    expect(onNavigateMock).toBeCalledTimes(5)
+    expect(onNavigateMock).toBeCalledTimes(7)
   })
   it('should not render any data', async () => {
     const venue: VenueMarkerOptions = {

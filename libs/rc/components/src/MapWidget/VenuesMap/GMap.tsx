@@ -126,7 +126,7 @@ const GMap: React.FC<MapProps> = ({
         let closeInfoWindowWithTimeout: NodeJS.Timeout
         marker.addListener('mouseover', () => {
           marker.setIcon(getIcon(svgMarkerHover, scaledSize).icon)
-
+          console.log('on GMap')
           const infoDiv = document.createElement('div')
           createRoot(infoDiv).render(
             <RawIntlProvider value={intl}>
