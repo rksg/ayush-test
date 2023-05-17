@@ -39,7 +39,7 @@ export const UpdateConfirms = (props:{
     try{
       updateSigPack({
         params: {},
-        payload: { action: 'update' }
+        payload: { action: 'UPDATE' }
       }).then(()=>{
         setTimeout(()=>setDisabled(false), 3500)
       },()=>{
