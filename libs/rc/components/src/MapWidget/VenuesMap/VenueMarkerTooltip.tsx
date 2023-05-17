@@ -3,7 +3,6 @@ import { defineMessage, useIntl } from 'react-intl'
 import { StackedBarChart }                 from '@acx-ui/components'
 import { Table }                           from '@acx-ui/components'
 import { getDeviceConnectionStatusColors } from '@acx-ui/components'
-import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import { VenueMarkerOptions }              from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
@@ -34,13 +33,13 @@ function getCols ({ $t }: ReturnType<typeof useIntl>) {
 
 interface VenueMarkerTooltipProps {
   onNavigate?: (params: NavigateProps) => void;
-  needPadding?: boolean
+  needPadding?: boolean;
+  isEdgeEnabled: boolean;
 }
 
 export function VenueMarkerTooltip (
   props: { venueMarker: VenueMarkerOptions } & VenueMarkerTooltipProps) {
   const { $t } = useIntl()
-  const isEdgeEnabled = useIsSplitOn(Features.EDGES)
   const {
     name,
     venueId,
@@ -55,7 +54,7 @@ export function VenueMarkerTooltip (
     edgeClientsCount
   } = props.venueMarker
 
-  const { onNavigate, needPadding = true } = props
+  const { onNavigate, needPadding = true, isEdgeEnabled } = props
   const deviceConnectionStatusColors = getDeviceConnectionStatusColors()
   const commonProps = {
     animation: false,

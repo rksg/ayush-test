@@ -1,4 +1,3 @@
-import { useIsSplitOn }              from '@acx-ui/feature-toggle'
 import { VenueMarkerOptions }        from '@acx-ui/rc/utils'
 import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
@@ -108,11 +107,9 @@ const common = {
 describe('Venue Marker Tooltip', () => {
   afterEach(() => {
     jest.clearAllMocks()
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
   })
 
   it('should not render edge data if feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
     const venue: VenueMarkerOptions = {
       ...common,
       ...withCounts
@@ -122,7 +119,8 @@ describe('Venue Marker Tooltip', () => {
     const { asFragment } = render(
       <VenueMarkerTooltip
         venueMarker={venue}
-        onNavigate={onNavigateMock} />)
+        onNavigate={onNavigateMock}
+        isEdgeEnabled={false} />)
     expect(asFragment().querySelectorAll('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(asFragment().querySelectorAll('svg').length).toEqual(2)
 
@@ -155,7 +153,8 @@ describe('Venue Marker Tooltip', () => {
     const { asFragment } = render(
       <VenueMarkerTooltip
         venueMarker={venue}
-        onNavigate={onNavigateMock} />)
+        onNavigate={onNavigateMock}
+        isEdgeEnabled={true} />)
     expect(asFragment().querySelectorAll('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(asFragment().querySelectorAll('svg').length).toEqual(3)
 
@@ -186,7 +185,7 @@ describe('Venue Marker Tooltip', () => {
     }
     const onNavigateMock = jest.fn()
     const { asFragment } = render(
-      <VenueMarkerTooltip venueMarker={venue} onNavigate={onNavigateMock} />)
+      <VenueMarkerTooltip venueMarker={venue} onNavigate={onNavigateMock} isEdgeEnabled={true} />)
     expect(asFragment()).toMatchSnapshot()
   })
   it('should render tooltip without padding', async () => {
@@ -196,7 +195,12 @@ describe('Venue Marker Tooltip', () => {
     }
     const onNavigateMock = jest.fn()
     const { asFragment } = render(
-      <VenueMarkerTooltip venueMarker={venue} onNavigate={onNavigateMock} needPadding={false}/>)
+      <VenueMarkerTooltip
+        venueMarker={venue}
+        onNavigate={onNavigateMock}
+        needPadding={false}
+        isEdgeEnabled={true} />)
+
     expect(asFragment()).toMatchSnapshot()
   })
 })

@@ -270,21 +270,26 @@ function getEdgeStatusDataByVenue (overviewData: Dashboard, venueId: string): {
   let transient_issue: number = 0
 
   if (edgeStat && edgeStat[venueId] && edgeStat[venueId].edgeStatus) {
-    if (edgeStat[venueId].edgeStatus[EdgeStatusSeverityEnum.REQUIRES_ATTENTION]) {
-      requires_attention = +edgeStat[venueId].edgeStatus[EdgeStatusSeverityEnum.REQUIRES_ATTENTION]
-    }
-    if (edgeStat[venueId].edgeStatus[EdgeStatusSeverityEnum.IN_SETUP_PHASE]) {
-      in_setup_phase = +edgeStat[venueId].edgeStatus[EdgeStatusSeverityEnum.IN_SETUP_PHASE]
-    }
-    if (edgeStat[venueId].edgeStatus[EdgeStatusSeverityEnum.OFFLINE]) {
-      in_setup_phase += +edgeStat[venueId].edgeStatus[EdgeStatusSeverityEnum.OFFLINE]!
-    }
-    if (edgeStat[venueId].edgeStatus[EdgeStatusSeverityEnum.TRANSIENT_ISSUE]) {
-      transient_issue = +edgeStat[venueId].edgeStatus[EdgeStatusSeverityEnum.TRANSIENT_ISSUE]
-    }
-    if (edgeStat[venueId].edgeStatus[EdgeStatusSeverityEnum.OPERATIONAL]) {
-      operational = +edgeStat[venueId].edgeStatus[EdgeStatusSeverityEnum.OPERATIONAL]
-    }
+    const statusData = edgeStat[venueId].edgeStatus
+    Object.values(EdgeStatusSeverityEnum)
+      .forEach((key) => {
+        const typedKey = key as EdgeStatusSeverityEnum
+        switch(typedKey) {
+          case EdgeStatusSeverityEnum.IN_SETUP_PHASE:
+          case EdgeStatusSeverityEnum.OFFLINE:
+            in_setup_phase += +(statusData[typedKey] ?? 0)
+            break
+          case EdgeStatusSeverityEnum.OPERATIONAL:
+            operational = +(statusData[typedKey] ?? 0)
+            break
+          case EdgeStatusSeverityEnum.TRANSIENT_ISSUE:
+            transient_issue = +(statusData[typedKey] ?? 0)
+            break
+          case EdgeStatusSeverityEnum.REQUIRES_ATTENTION:
+            requires_attention = +(statusData[typedKey] ?? 0)
+            break
+        }
+      })
   }
 
   return {
